@@ -1,0 +1,38 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Jeffrey Doe, Jr.
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="author">
+                <name />
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id": "item-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, Jeffrey,! Jr." }
+   ],
+   "issued": "2001",
+   "title": "My Life as an Anonymous Heir"
+}]
+<<===== INPUT =====<<

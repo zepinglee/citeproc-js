@@ -1,0 +1,40 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+John DoeJane Roeeditors
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="editor">
+                <name/>
+                <label/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "editor": [
+        { "name":"Doe, John", "uri":"http://people.org/doej" },
+        { "name":"Roe, Jane", "uri":"http://people.org/doej" }
+   ],
+   "issued": "2000",
+   "title": "His Anonymous Life"
+}]
+<<===== INPUT =====<<

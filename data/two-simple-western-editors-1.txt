@@ -1,0 +1,9 @@
+{
+   "type": "book",
+   "editor": [
+        { "name":"Doe, John", "uri":"http://people.org/doej" },
+        { "name":"Roe, Jane", "uri":"http://people.org/doej" }
+   ],
+   "issued": "2000",
+   "title": "His Anonymous Life"
+}

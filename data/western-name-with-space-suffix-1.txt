@@ -1,0 +1,9 @@
+{
+   "id":"western-name-with-space-suffix-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, James, III" }
+   ],
+   "issued": "2001",
+   "title": "My Anonymous Heritage"
+}

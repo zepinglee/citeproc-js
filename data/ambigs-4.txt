@@ -1,0 +1,11 @@
+{
+   "id":"ambigs-4",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Albert" },
+        { "name":"Bronchitis, Bosworth" },
+        { "name":"Cold, Crispin" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book J"
+}

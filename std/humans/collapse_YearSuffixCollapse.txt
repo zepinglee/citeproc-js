@@ -1,0 +1,92 @@
+# CSL test file: testYearSuffix001.txt
+# Rintze Zelle circa 2009.04.10
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.9
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Smith 2000a,c-e, 2001
+<<===== RESULT =====<<
+
+
+>>===== CITATION =====>>
+[{ "id": "ITEM-1" },{"id":"ITEM-3"},{"id":"ITEM-4"},{"id":"ITEM-5"},{"id":"ITEM-6"}]
+<<===== CITATION =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+	<option name="collapse" value="year-suffix"/>
+    <option name="disambiguate-add-year-suffix" value="true"/>
+    <option name="year-suffix-delimiter" value=","/>
+    <option name="year-suffix-range-delimiter" value="-"/>
+	<layout delimiter=", ">
+      <group delimiter=" ">
+        <names variable="author">
+          <name form="short"/>
+        </names>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+      </group>
+      <text variable="year-suffix"/>
+	</layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "title": "Paper 1",
+    "issued": {"year":"2000"}
+  },
+  {
+    "id":"ITEM-2",
+    "type": "book",
+    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "title": "Paper 2",
+    "issued": {"year":"2000"}
+  },
+ {
+    "id":"ITEM-3",
+    "type": "book",
+    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "title": "Paper 3",
+    "issued": {"year":"2000"}
+  },
+  {
+    "id":"ITEM-4",
+    "type": "book",
+    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "title": "Paper 4",
+    "issued": {"year":"2000"}
+  },
+  {
+    "id":"ITEM-5",
+    "type": "book",
+    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "title": "Paper 5",
+    "issued": {"year":"2000"}
+  },
+  {
+    "id":"ITEM-6",
+    "type": "book",
+    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "title": "Paper 6",
+    "issued": {"year":"2001"}
+  }
+]
+<<===== INPUT =====<<

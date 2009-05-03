@@ -1,0 +1,11 @@
+{
+   "id":"ambigs-5",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Albert" },
+        { "name":"Bronchitis, Beauregarde" },
+        { "name":"Cold, Crispin" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book I"
+}

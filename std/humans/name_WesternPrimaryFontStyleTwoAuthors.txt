@@ -1,0 +1,40 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+John <b>Doe</b>; Jane <b>Roe</b>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="author">
+                <name delimiter="; "/>
+                <name-part type="primary-key" font-weight="bold"/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John", "uri":"http://people.org/doej" },
+        { "name":"Roe, Jane", "uri":"http://people.org/roej" }
+   ],
+   "issued": "2000",
+   "title": "Our Anonymous Lives"
+}]
+<<===== INPUT =====<<

@@ -1,0 +1,98 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.9
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Brown 2000; Jones 2000a,b; Smith 2000a-c, 2001
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout join-prefix="; ">
+            <names variable="author">
+                <name form="short"/>
+            </names>
+            <date join-prefix=", ">
+                <date-part name="year"/>
+            </date>
+            <text variable="year-suffix" join-prefix="," range-prefix="-"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author": [
+        { "name":"Brown" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book A"
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author": [
+        { "name":"Jones" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book B"
+ },
+ {
+   "id":"ITEM-3",
+   "type": "book",
+   "author": [
+        { "name":"Jones" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book C"
+ },
+ {
+   "id":"ITEM-4",
+   "type": "book",
+   "author": [
+        { "name":"Smith" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book D"
+ },
+ {
+   "id":"ITEM-5",
+   "type": "book",
+   "author": [
+        { "name":"Smith" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book E"
+ },
+ {
+   "id":"ITEM-6",
+   "type": "book",
+   "author": [
+        { "name":"Smith" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book F"
+ },
+ {
+   "id":"ITEM-7",
+   "type": "book",
+   "author": [
+        { "name":"Smith" }
+   ],
+   "issued": {"year": "2001"},
+   "title": "Book G"
+ }
+]
+<<===== INPUT =====<<

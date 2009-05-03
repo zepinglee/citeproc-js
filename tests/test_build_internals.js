@@ -1,0 +1,177 @@
+dojo.provide("tests.test_build_internals");
+
+var nestedsingleton = "<style><text/></style>";
+var decoratedtags = "<style>"
+					+ "<text font-style=\"italic\"/>"
+				+ "</style>";
+var textwithvalue = "<style>"
+					+ "<text value=\"My Aunt Sally\"/>"
+				+ "</style>";
+
+var Item = {
+	"title":"My Aunt Sally"
+};
+
+doh.register("tests.builder_internals", [
+
+	function testValueAttributeAction(){
+		var obj = new CSL.Core.Build(textwithvalue);
+		var builder = new obj._builder(obj.state,true);
+		var res = builder._build(obj.showXml());
+		var dummy = { };
+		var res = res.citation.tokens[0].strings.value;
+		doh.assertEqual( "My Aunt Sally" , res);
+	},
+	function testMacroLoop(){
+		var t = '<style>'
+				+ '<macro name="herring">'
+					+ '<text value="red"/>'
+				+ '</macro>'
+				+ '<macro name="boo">'
+					+ '<text value="one"/>'
+					+ '<text macro="hoo"/>'
+				+ '</macro>'
+				+ '<macro name="hoo">'
+					+ '<text value="two"/>'
+					+ '<text macro="boo"/>'
+				+ '</macro>'
+				+ '<layout>'
+				+ '<text value="two"/>'
+				+ '<text macro="boo"/>'
+				+ '</layout>'
+			+ '</style>';
+		try {
+			var builder = new CSL.Core.Build(t);
+			var res = builder.build();
+		} catch(e){
+			print(e+" (this error is correct)");
+		}
+		doh.assertFalse( res );
+	},
+	function testMacro(){
+		var t = '<style>'
+				+ '<macro name="boo">'
+					+ '<text value="one"/>'
+					+ '<text value=\"three\"/>'
+				+ '</macro>'
+				+ '<layout>'
+				+ '<text value="two"/>'
+				+ '<text macro="boo"/>'
+				+ '</layout>'
+			+ '</style>';
+		var obj = new CSL.Core.Build(t);
+		var builder = new obj._builder(obj.state,true);
+		var res = builder._build(obj.showXml());
+		doh.assertEqual(9, res.citation.tokens.length );
+		doh.assertEqual("function", typeof res.citation.tokens[4].execs[0]);
+		doh.assertEqual("function", typeof res.citation.tokens[5].execs[0]);
+
+	},
+	function testInit(){
+		var obj = new CSL.Core.Build(nestedsingleton);
+		var builder = new obj._builder(obj.state,true);
+		var res = builder._build(obj.showXml());
+		//
+		// note that the style tag is stripped by Build
+		doh.assertEqual( 1, res.citation.tokens.length);
+	},
+	function testDecorationLength(){
+		var obj = new CSL.Core.Build(decoratedtags);
+		var builder = new obj._builder(obj.state,true);
+		var res = builder._build(obj.showXml());
+		doh.assertEqual( 1, res.citation.tokens[0].decorations.length );
+	},
+	function testDecorationValue(){
+		var obj = new CSL.Core.Build(decoratedtags);
+		var builder = new obj._builder(obj.state,true);
+		var res = builder._build(obj.showXml());
+		doh.assertEqual( "italic", res.citation.tokens[0].decorations[0][1]);
+		doh.assertEqual( "@font-style", res.citation.tokens[0].decorations[0][0]);
+	},
+	function testValueAttributeType(){
+		var obj = new CSL.Core.Build(textwithvalue);
+		var builder = new obj._builder(obj.state,true);
+		var res = builder._build(obj.showXml());
+		doh.assertEqual( "function" , typeof res.citation.tokens[0].execs[0]);
+	},
+	function testBadTag(){
+		var t = '<style><badtagname/></style>';
+		var obj = new CSL.Core.Build(t);
+		var builder = new obj._builder(obj.state,true);
+		function tryme() {
+			try {
+				builder._build(obj.showXml());
+				return "Succeeded wrongly";
+			} catch (e) {
+				if ("Unknown tag name \"badtagname\" encountered while attempting to process CSL file"){
+					return "Failed correctly";
+				} else {
+					return "Failed wrongly";
+				}
+			}
+		}
+		var res = tryme();
+		doh.assertEqual("Failed correctly", res );
+	},
+	function testBadAttribute(){
+		var t = '<style><text badattribute="sucks"/></style>';
+		var obj = new CSL.Core.Build(t);
+		var builder = new obj._builder(obj.state,true);
+		function tryme() {
+			try {
+				builder._build(obj.showXml());
+				return "Succeeded wrongly";
+			} catch (e) {
+				if ("Unknown attribute \"@badattribute\" in node \"text\" while processing CSL file"){
+					return "Failed correctly";
+				} else {
+					return "Failed wrongly";
+				}
+			}
+		}
+		var res = tryme();
+		doh.assertEqual("Failed correctly", res );
+	},
+
+	function testGroup(){
+		var t = '<style>'
+				+ '<group>'
+					+ '<text value="hello"/>'
+				+ '</group>'
+			+ '</style>';
+		var obj = new CSL.Core.Build(t);
+		var builder = new obj._builder(obj.state,true);
+		var res = builder._build(obj.showXml());
+		doh.assertEqual(3, res.citation.tokens.length );
+		doh.assertEqual("function", typeof res.citation.tokens[1].execs[0]);
+		var dummy = {};
+		res.citation.tokens[1].execs[0].call(res.citation.tokens[1],obj.state,dummy);
+		doh.assertEqual("hello", obj.state.citation.tokens[1].strings.value);
+	},
+
+	function testConditional(){
+		var t = '<style>'
+				+ '<choose>'
+					+ '<if>'
+						+ '<text value="one"/>'
+					+ '</if>'
+					+ '<else-if>'
+						+ '<text value="two"/>'
+					+ '</else-if>'
+					+ '<else>'
+						+ '<text value="three"/>'
+					+ '</else>'
+				+ '</choose>'
+			+ '</style>';
+		var obj = new CSL.Core.Build(t);
+		var build = new obj._builder(obj.state,true);
+		var res = build._build(obj.showXml());
+		doh.assertEqual(11, res.citation.tokens.length );
+		doh.assertEqual("function", typeof res.citation.tokens[8].execs[0]);
+		var dummy = {};
+		res.citation.tokens[8].execs[0].call(res.citation.tokens[8],obj.state,dummy);
+		doh.assertEqual("three", obj.state.citation.tokens[8].strings.value);
+	},
+
+
+]);

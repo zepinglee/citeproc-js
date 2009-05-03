@@ -1,0 +1,76 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.9 experimental
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+33210
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+
+    <citation>
+        <layout>
+            <option name="et-al-min" value="4"/>
+            <option name="et-al-use-first" value="3"/>
+            <names variable="author">
+                <name form="count"/>
+            </names>
+        </layout>
+    </citation>
+
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"item-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" },
+        { "name":"Brown, Robert" },
+        { "name":"Smith, Tom" }
+   ]
+ },
+ {
+   "id":"item-2",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Doe, Jake" },
+        { "name":"Brown, Robert" }
+   ]
+ },
+ {
+   "id":"item-3",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Doe, Jake" }
+   ]
+ },
+ {
+   "id":"item-4",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" }
+   ]
+ },
+ {
+   "id":"item-5",
+   "type": "book",
+   "editor": [
+        { "name":"Doe, John" }
+   ]
+ }
+]
+<<===== INPUT =====<<

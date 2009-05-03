@@ -1,0 +1,70 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Doe, et al., <i>Book A</i> (2000); Doe, et al., <i>Book B</i> (2000)
+<<===== RESULT =====<<
+
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <option name="disambiguate-add-names" value="true"/>
+        <option name="disambiguate-add-givenname" value="true"/>
+        <option name="et-al-min" value="2"/>
+        <option name="et-al-use-first" value="1"/>
+        <option name="disambiguate-add-year-suffix" value="true"/>
+        <layout delimiter="; ">
+            <group delimiter=", ">
+                <names variable="author">
+                    <name form="short" delimiter=", " and="symbol"/>
+                </names>
+                <choose>
+                    <if disambiguate="true">
+                        <text variable="title" font-style="italic"/>
+                    </if>
+                </choose>
+            </group>
+            <group prefix=" (" suffix=")">
+                <date variable="issued">
+                    <date-part name="year"/>
+                </date>
+                <text variable="year-suffix"/>
+            </group>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book A"
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book B"
+ }
+]
+<<===== INPUT =====<<

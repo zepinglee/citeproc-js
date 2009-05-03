@@ -1,0 +1,32 @@
+>>== MODE ==>>
+citation
+<<== MODE ==<<
+
+>>== SCHEMA ==>>
+0.8
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+And
+<<== RESULT ==<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <text term="and"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "title": "Ignore me"
+}]
+<<===== INPUT =====<<

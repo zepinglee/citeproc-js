@@ -1,0 +1,10 @@
+{
+   "id":"two-simple-western-names-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John", "uri":"http://people.org/doej" },
+        { "name":"Roe, Jane", "uri":"http://people.org/roej" }
+   ],
+   "issued": "2000",
+   "title": "Our Anonymous Lives"
+}

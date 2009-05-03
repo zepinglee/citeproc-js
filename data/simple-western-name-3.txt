@@ -1,0 +1,9 @@
+{
+   "id":"simple-western-name-3",
+   "type": "book",
+   "author": [
+        { "name":"Doe, Joseph", "uri":"http://people.org/doej" }
+   ],
+   "issued": {"year": "1900", "month":"1", "day":"3"},
+   "title": "His Anonymous Life"
+}

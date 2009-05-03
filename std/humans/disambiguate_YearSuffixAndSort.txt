@@ -1,0 +1,191 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+1990m!; 1990l!; 1990k!; 1990j!; 1990i!; 1990h!; 1990g!; 1990f!; 1990e!; 1990d!; 1990c!; 1990b!; 1990a!
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <macro name="date">
+        <date variable="issued">
+            <date-part name="year"/>
+        </date>
+        <text variable="year-suffix" suffix="!"/>
+    </macro>
+    <citation>
+        <option name="disambiguate-add-year-suffix" value="true"/>
+        <layout delimiter="; ">
+            <text macro="date"/>
+        </layout>
+    </citation>
+    <bibliography>
+        <sort>
+            <key macro="date"/>
+            <key variable="title"/>
+        </sort>
+    </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"ambigs-1",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Albert" },
+        { "name":"Bronchitis, Bosworth" },
+        { "name":"Cold, Crispin" },
+        { "name":"Dropsy, David" },
+        { "name":"Ebola, Elvin" },
+        { "name":"Fever, Fergus" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book M"
+},
+{
+   "id":"ambigs-2",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Albert" },
+        { "name":"Bronchitis, Bosworth" },
+        { "name":"Cold, Crispin" },
+        { "name":"Dropsy, David" },
+        { "name":"Enteritis, Ernie" },
+        { "name":"Fever, Fergus" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book L"
+},
+{
+   "id":"ambigs-3",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Albert" },
+        { "name":"Bronchitis, Bosworth" },
+        { "name":"Cold, Crispin" },
+        { "name":"Dropsy, David" },
+        { "name":"Ebola, Elvin" },
+        { "name":"Fever, Fergus" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book K"
+},
+{
+   "id":"ambigs-4",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Albert" },
+        { "name":"Bronchitis, Bosworth" },
+        { "name":"Cold, Crispin" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book J"
+},
+{
+   "id":"ambigs-5",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Albert" },
+        { "name":"Bronchitis, Beauregarde" },
+        { "name":"Cold, Crispin" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book I"
+},
+{
+   "id":"ambigs-6",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Alan" },
+        { "name":"Bronchitis, Bosworth" },
+        { "name":"Cold, Crispin" },
+        { "name":"Dropsy, David" },
+        { "name":"Ebola, Elvin" },
+        { "name":"Fever, Fergus" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book H"
+},
+{
+   "id":"ambigs-7",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Janet" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book G"
+},
+{
+   "id":"ambigs-8",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book F"
+},
+{
+   "id":"ambigs-9",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book E"
+},
+{
+   "id":"ambigs-10",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Janet" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book D"
+},
+{
+   "id":"ambigs-11",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" },
+        { "name":"Jones, Robert" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book C"
+},
+{
+   "id":"ambigs-12",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Josephine" },
+        { "name":"Jones, Robert" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book B"
+},
+{
+   "id":"ambigs-13",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" },
+        { "name":"Jones, Richard" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book A"
+}]
+<<===== INPUT =====<<

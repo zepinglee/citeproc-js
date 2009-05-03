@@ -1,0 +1,47 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+ЧАЙКОВСКИЙ, П.И., van WINKLE, R., 我妻栄, THUCYDIDES, C., III, TOKUGAWA Ieyasu, et al.
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <option name="et-al-min" value="6"/>
+        <option name="et-al-use-first" value="5"/>
+        <layout delimiter="; ">
+            <names variable="author">
+                <name delimiter=", " initialize-with="." sort-separator=", " name-as-sort-order="all"/>
+		        <name-part type="primary-key" text-case="uppercase"/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "author": [
+        { "name":"Чайковский, Пётр Ильич" },
+        { "name":"van Winkle, Rip" },
+        { "name":"我妻, 栄" },
+        { "name":"Thucydides, Carl, III" },
+        { "name":"Tokugawa, Ieyasu !" },
+        { "name":"Ministry of Fear, Loathing and Error !!" },
+        { "name":"Prince" }
+   ],
+   "issued": "2000",
+   "title": "Our Story"
+}]
+<<===== INPUT =====<<

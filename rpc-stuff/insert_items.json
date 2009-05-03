@@ -1,0 +1,23 @@
+{
+  "method": "insertItems",
+  "params": [[
+    {
+      "id": "ITEM-1",
+      "type": "book",
+      "author": [
+                  { "name":"Doe, John", "primary-key":"Doe", "secondary-key":"John" }
+      ],
+      "title": "Book A",
+      "issued": { "year": "2006" }
+    },
+    {
+      "id": "ITEM-2",
+      "type": "book",
+      "author": [
+                  { "name":" Roe, Jane", "primary-key":"Roe", "secondary-key":"Jane" }
+      ],
+      "title": "Book B",
+      "issued": { "year": "2007" }
+    }
+  ]]
+}

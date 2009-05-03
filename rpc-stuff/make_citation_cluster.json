@@ -1,0 +1,25 @@
+{
+  "method": "makeCitationCluster",
+  "params": [[
+    {
+      "id": "ITEM-3",
+      "type": "book",
+      "author": [
+                  { "name":"Anderson, Margaret", "primary-key":"Anderson", "secondary-key":"Margaret" }
+      ],
+      "title": "Book D",
+      "issued": { "year": "1950" }
+    },
+    {
+      "id": "ITEM-4",
+      "type": "book",
+      "author": [
+                  { "name":"Zinfandel, William", "primary-key":"Zinfandel", "secondary-key":"William" }
+      ],
+      "title": "Book C",
+      "issued": { "year": "1945" }
+    }
+  ]]
+}
+
+

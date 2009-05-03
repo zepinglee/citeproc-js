@@ -1,0 +1,10 @@
+{
+   "id":"ambigs-7",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Janet" }
+   ],
+   "issued": {"year": "1990"},
+   "title": "Book G"
+}

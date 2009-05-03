@@ -1,0 +1,118 @@
+This test illustrates a use case for the following rule, discussed on the Zotero forums:
+
+  "When different groups of authors with the same first author and date 
+  occur, they should be cited thus: (Able, Baker & Charles 1986a; Able, 
+  David & Edwards 1986b), then subsequently abbreviated to (Able et al. 
+  1986a; Able et al. 1986b)."
+
+  "Italicized letters 'a', 'b', 'c', etc., should be added to the date of 
+  papers with the same first authorship and year"
+
+The test illustrates that the first rule can be satisfied with the CSL 0.8
+feature set, and the second using the year-suffix text variable introduced
+in CSL 0.9.  It differs slightly from the example given by the poster
+(asplundj) in that the cites do not include author initials, but this conforms
+to the cited style guide.
+
+
+The discussion can be found at: 
+  http://forums.zotero.org/discussion/5290/collapse-year-suffix/
+
+The style guide containing the rule quoted above can be found 
+at:
+  http://www.wiley.com/bw/submit.asp?ref=0269-8463&site=1
+
+
+The point in all of this for implementers is that evaluation of 
+an in-text key for disambiguation purposes should be based on the 
+subsequent form of the cite, even if it occurs only once in the 
+text.
+
+
+Frank Bennett
+2009-04-14
+
+
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.9
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+(Baur, Fröberg, Baur, et al. 2000<i>a</i>; Baur, Schileyko & Baur 2000<i>b</i>; Doe 2000)
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <option name="et-al-min" value="3"/>
+        <option name="et-al-use-first" value="3"/>
+        <option name="et-al-subsequent-min" value="1"/>
+        <option name="et-al-subsequent-use-first" value="1"/>
+        <option name="disambiguate-add-year-suffix" value="true"/>
+        <layout delimiter="; " prefix="(" suffix=")">
+            <names variable="author">
+                <name and="symbol" form="short" delimiter=", "/>
+            </names>
+            <date variable="issued" prefix=" ">
+                <date-part name="year"/>
+            </date>
+            <text variable="year-suffix" font-style="italic"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "article-journal",
+   "author": [
+        { "name":"Baur, Bruno" },
+        { "name": "Fröberg, Lars" },
+        { "name": "Baur, Anette" },
+        { "name": "Guggenheim, Richard" },
+        { "name": "Haase, Martin" }
+   ],
+   "issued": { "year": "2000" },
+   "title": "Ultrastructure of snail grazing damage to calcicolous lichens",
+   "container-title": "Nordic Journal of Botany",
+   "volume": "20",
+   "page-range": "119-128"
+ },
+ {
+    "id":"ITEM-2",
+    "type":"article-journal",
+    "author": [
+        { "name": "Baur, Bruno" },
+        { "name": "Schileyko, Anatoly A." },
+        { "name": "Baur, Anette" }
+    ],
+   "issued": { "year": "2000" },
+   "title": "Ecological observations on _Arianta aethiops aethiops_ (Helicidae), a land snail endemic to the South Carpathian mountains, Romania",
+   "container-title": "Journal of Molluscan Studies",
+   "volume": "66",
+   "page-range": "285-289"
+ },
+ {
+    "id":"ITEM-3",
+    "type":"article-journal",
+    "author": [
+        { "name": "Doe, John" }
+    ],
+   "issued": { "year": "2000" },
+   "title": "Some bogus title",
+   "container-title": "Journal of Irreproducible Results",
+   "volume": "666",
+   "page-range": "000-1"
+ }
+]
+<<===== INPUT =====<<

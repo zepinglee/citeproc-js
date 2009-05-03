@@ -1,0 +1,81 @@
+# TODO
+
+- Flip-flops to be cleared with Bruce D'Arcus and CSL group and
+  implemented.
+    (pending.  fbennett 2009-04-11)
+
+- Numbers.  First off, the current stuff needs to be
+  implemented, with extensions for ranging.
+    (pending.  fbennett 2009-04-17)
+
+- Numbers to be handled as rangeable objects in the
+  output queue.  Rintze Zelle's tests of year-suffix
+  collapsing need to pass.  Formatting of number elements
+  to be implemented somehow.
+    (pending.  fbennett 2009-04-11)
+
+- Aspiring beyond that, there are CSL issues with numbers to be 
+  proposed.  Number could be a span element with per-atom formatting, 
+  as has been done with names.  This will allow superscripting
+  or ordinal suffixes, and maybe some other useful things.
+    (pending.  fbennett 2009-04-13)
+
+- Handle position evaluation and back-references inside the 
+  processor via the registry.  Zotero's own position evaluation 
+  is currently broken, and although it may be fixed soon, demanding 
+  complex evaluation like this is likely to lead to further trouble 
+  in other applications.  If the processor receives the note number 
+  from the application, the CSL processor can take care of the rest.
+  First step will be to draw my positioning patches to
+  integration.js into the citeproc-js code base, and figure out
+  how to stitch it in via an extension to the registry.
+    (pending fbennett 2009-04-17)
+
+- Various options and special formatting attributes need to be
+  implemented.
+    (a very short list of these remain.  fbennett 2009-04-11)
+
+- Deletion support for the registry.
+    (pending.  fbennett 2009-04-11)
+
+- Processor to report the full list of fields required to render
+  any item in the compiled style, to permit the application to
+  optimize database fetches?
+    (pending.  fbennett 2009-04-11)
+
+- Localized date formatting needs to be implemented?
+    Maybe implement a proposal, post to xbib list.
+    (pending.  fbennett 2009-04-11)
+
+---------------
+(Working notes)
+---------------
+
+/*
+ * ATTRIBUTES TO COME
+ * position (pending)
+ * delimiter-precedes-last (stored, pending)
+ * plural (pending)
+ * locator (pending)
+ * include-period (pending)
+ * 
+ *
+ * OPTIONS
+ * collapse
+ *   citation-number (awaits range support)
+ *   year (done)
+ *   year-suffix (done)
+ * line-spacing
+ *   [number] (pending)
+ * entry-spacing
+ *   [number] (pending)
+ * hanging-indent
+ *   [boolean] (pending)
+ * second-field-align
+ *   [true/margin] (pending)
+ * subsequent-author-substitute
+ *   [text] (pending)
+ * 
+ * CONDITIONAL
+ * is-numeric (written, untested)
+ */

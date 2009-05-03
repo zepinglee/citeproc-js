@@ -1,0 +1,51 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+[[X]Jane Roe (ed.); [X]John Doe]
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout prefix="[" suffix="]" delimiter="; ">
+            <names variable="author" prefix="[X]">
+                <name/>
+	            <label form="short" prefix=" (" suffix=".)"/>
+                <substitute>
+                    <names variable="editor"/>
+                </substitute>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "editor": [
+        { "name":"Roe, Jane" }
+   ],
+   "issued": "2000",
+   "title": "Her Anonymous Anthology"
+},
+{
+   "id":"simple-western-name-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John", "uri":"http://people.org/doej" }
+   ],
+   "issued": {"year": "1965", "month":"6", "day":"1"},
+   "title": "His Anonymous Life"
+}]
+<<===== INPUT =====<<

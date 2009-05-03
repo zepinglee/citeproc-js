@@ -1,0 +1,13 @@
+syntax: regexp
+
+^jsdoc.*
+^stripped\.js
+^REPLACE\.sh
+^NAMES_ORIG.js
+^\.emacs-desktop
+(^|.*/)machines
+(^|.*/)csl
+\.*\.result
+^HOLD
+(^|.*/)\.svn
+.*~$

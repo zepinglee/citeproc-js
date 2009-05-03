@@ -1,0 +1,175 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.9 experimental
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Smith, A. (1989a)
+Smith, A. (1989b)
+Smith, A. (1991)
+Smith, A., and C. Allen (1992)
+Smith, A., and B. Frank (1995)
+Smith, A., and B. Frank (1997)
+Smith, A., L. Roberts, and T. Jones (1993)
+Smith, A., T. Jones, and L. Roberts (1997)
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+
+    <!-- KEYS -->
+    <macro name="key-creators">
+        <names variable="author">
+            <name name-as-sort-order="all"/>
+            <substitute>
+                <names variable="editor"/>
+            </substitute>
+        </names>
+    </macro>
+    <macro name="key-creators-count">
+        <names variable="author">
+            <name form="count"/>
+            <substitute>
+                <names variable="editor"/>
+            </substitute>
+        </names>
+    </macro>
+    <macro name="key-year">
+        <date variable="issued">
+            <date-part name="year"/>
+        </date>
+    </macro>
+
+    <!-- DISPLAY NAMES -->
+    <macro name="creators">
+        <names variable="author">
+            <name and="text" initialize-with="." sort-separator=", " delimiter=", " name-as-sort-order="first"/>
+            <substitute>
+                <names variable="editor"/>
+            </substitute>
+        </names>
+    </macro>
+
+    <!-- DISPLAY DATE -->
+    <macro name="year">
+        <group prefix=" (" suffix=")">
+            <date variable="issued">
+                <date-part name="year"/>
+            </date>
+            <text variable="year-suffix"/>
+        </group>
+    </macro>
+
+
+    <citation>
+        <option name="disambiguate-add-year-suffix" value="true" />
+        <layout>
+            <text macro="creators"/>
+            <text macro="year"/>
+        </layout>
+    </citation>
+    <bibliography>
+		<option name="collapse" value="year-suffix"/>
+        <sort>
+            <key macro="key-creators" names-min="1" names-use-first="1"/>
+            <key macro="key-creators-count" names-min="3" names-use-first="3"/>
+            <key macro="key-creators" names-min="3" names-use-first="1"/>
+            <key macro="key-year"/>
+        </sort>
+        <layout>
+            <text macro="creators"/>
+            <text macro="year"/>
+        </layout>
+    </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"item-1",
+   "type": "book",
+   "author": [
+        { "name":"Smith, Al" },
+   ],
+   "issued": {"year": "1989"},
+   "title": "Book One"
+ },
+ {
+   "id":"item-3",
+   "type": "book",
+   "editor": [
+        { "name":"Smith, Al" }
+   ],
+   "issued": {"year": "1991"},
+   "title": "Book Three"
+ },
+ {
+   "id":"item-4",
+   "type": "book",
+   "editor": [
+        { "name":"Smith, Al" },
+        { "name":"Allen, Carl" }
+   ],
+   "issued": {"year": "1992"},
+   "title": "Book Four"
+ },
+ {
+   "id":"item-6",
+   "type": "book",
+   "editor": [
+        { "name":"Smith, Al" },
+        { "name":"Frank, Beauregarde" }
+   ],
+   "issued": {"year": "1997"},
+   "title": "Book Six"
+ },
+ {
+   "id":"item-2",
+   "type": "book",
+   "author": [
+        { "name":"Smith, Al" }
+   ],
+   "issued": {"year": "1989"},
+   "title": "Book Two"
+ },
+ {
+   "id":"item-5",
+   "type": "book",
+   "editor": [
+        { "name":"Smith, Al" },
+        { "name":"Frank, Beauregarde" }
+   ],
+   "issued": {"year": "1995"},
+   "title": "Book Five"
+ },
+ {
+   "id":"item-7",
+   "type": "book",
+   "editor": [
+        { "name":"Smith, Al" },
+        { "name":"Roberts, Lionel" },
+        { "name":"Jones, Theresa" }
+   ],
+   "issued": {"year": "1993"},
+   "title": "Book Seven"
+ },
+ {
+   "id":"item-8",
+   "type": "book",
+   "editor": [
+        { "name":"Smith, Al" },
+        { "name":"Jones, Theresa" },
+        { "name":"Roberts, Lionel" }
+   ],
+   "issued": {"year": "1997"},
+   "title": "Book Eight"
+ }
+]
+<<===== INPUT =====<<

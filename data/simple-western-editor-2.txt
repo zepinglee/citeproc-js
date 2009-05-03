@@ -1,0 +1,8 @@
+{
+   "type": "book",
+   "editor": [
+        { "name":"Roe, Jane" }
+   ],
+   "issued": "2000",
+   "title": "Her Anonymous Anthology"
+}

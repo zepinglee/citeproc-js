@@ -1,0 +1,9 @@
+{
+   "id":"simple-mongolian-name-1",
+   "type": "book",
+   "author": [
+        { "name":"Tserendorj, Balingiin" }
+   ],
+   "issued": {"year": "1925", "month":"3", "day":"4"},
+   "title": "An Altogether Unknown History of Soviet-Mongolian Relations"
+}

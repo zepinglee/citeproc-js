@@ -1,0 +1,39 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+John <i>Doe</i>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="author">
+                <name />
+                <name-part type="primary-key" font-style="italic"/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"simple-western-name-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John", "uri":"http://people.org/doej" }
+   ],
+   "issued": {"year": "1965", "month":"6", "day":"1"},
+   "title": "His Anonymous Life"
+}]
+<<===== INPUT =====<<
