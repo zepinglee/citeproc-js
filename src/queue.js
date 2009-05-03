@@ -221,7 +221,8 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 			ret += blob;
 		} else if (blob.status != CSL.SUPPRESS){
 			// print("doing rangeable blob");
-			var str = blob.blobs;
+			//var str = blob.blobs;
+			var str = blob.formatter.format(blob.num);
 			if (!state.tmp.suppress_decorations){
 				for each (var params in blob.decorations){
 					str = state.fun.decorate[params[0]][params[1]](str);

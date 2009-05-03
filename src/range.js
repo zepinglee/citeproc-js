@@ -27,6 +27,9 @@ CSL.Output.Number = function(num,mother_token){
 		this.successor_prefix = mother_token.successor_prefix;
 		this.range_prefix = mother_token.range_prefix;
 		this.formatter = mother_token.formatter;
+		if (!this.formatter){
+			this.formatter =  new CSL.Output.DefaultFormatter();
+		}
 		if (this.formatter){
 			this.type = this.formatter.format(1);
 		}

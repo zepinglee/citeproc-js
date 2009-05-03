@@ -57,42 +57,42 @@ Smith 2000a,c-e, 2001
   {
     "id":"ITEM-1",
     "type": "book",
-    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "author": [{"name":"Smith, John"}],
     "title": "Paper 1",
     "issued": {"year":"2000"}
   },
   {
     "id":"ITEM-2",
     "type": "book",
-    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "author": [{"name":"Smith, John"}],
     "title": "Paper 2",
     "issued": {"year":"2000"}
   },
  {
     "id":"ITEM-3",
     "type": "book",
-    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "author": [{"name":"Smith, John"}],
     "title": "Paper 3",
     "issued": {"year":"2000"}
   },
   {
     "id":"ITEM-4",
     "type": "book",
-    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "author": [{"name":"Smith, John"}],
     "title": "Paper 4",
     "issued": {"year":"2000"}
   },
   {
     "id":"ITEM-5",
     "type": "book",
-    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "author": [{"name":"Smith, John"}],
     "title": "Paper 5",
     "issued": {"year":"2000"}
   },
   {
     "id":"ITEM-6",
     "type": "book",
-    "author": [{"name":"John Smith","primary-key":"Smith","secondary-key":"John"}],
+    "author": [{"name":"Smith, John"}],
     "title": "Paper 6",
     "issued": {"year":"2001"}
   }

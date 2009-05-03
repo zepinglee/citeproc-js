@@ -253,9 +253,9 @@ CSL.Factory.Registry.prototype.insert = function(state,Item){
 	}
 
 	if ( leftovers && leftovers.length && state[state.tmp.area].opt["disambiguate-add-year-suffix"]){
-		var suffixes = state.fun.suffixator.get_suffixes(leftovers.length);
+		//var suffixes = state.fun.suffixator.get_suffixes(leftovers.length);
 		for (var i in leftovers){
-			this.registry[ leftovers[i].id ].disambig[2] = suffixes[i];
+			this.registry[ leftovers[i].id ].disambig[2] = i;
 			this.registry[ leftovers[i].id ].dseq = i;
 		}
 	}

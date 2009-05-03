@@ -275,8 +275,12 @@ CSL.Lib.Elements.text = new function(){
 				} else if (variable == "year-suffix"){
 					var func = function(state,Item){
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
-							state.tmp.delimiter.replace("");
-							state.output.append(state.registry.registry[Item.id].disambig[2],this);
+							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
+							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+							var number = new CSL.Output.Number(num,this);
+							var formatter = new CSL.Util.Disambiguate.Suffixator(CSL.SUFFIX_CHARS);
+							number.setFormatter(formatter);
+							state.output.append(number,"literal");
 							//
 							// don't ask :)
 							// obviously the variable naming scheme needs
