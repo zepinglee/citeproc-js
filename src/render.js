@@ -188,14 +188,17 @@ CSL.Core.Render._unit_of_reference = function (inputList){
 		// We convert "string" output object to an array
 		// before collapsing blobs.
 		if (composite["str"]){
-			if ("string" == typeof objects[(objects.length-1)]){
-				var newstr = objects.pop() + this.tmp.splice_delimiter + composite["str"];
-				objects.push(newstr);
-			} else {
-				objects.push(composite["str"]);
+			if (objects.length){
+				objects.push(this.tmp.splice_delimiter);
 			}
+			objects.push(composite["str"]);
 		}
 		if (composite["obj"].length){
+			if (!composite["str"]){
+				for each (var obj in composite["obj"]){
+					obj.splice_prefix = this.tmp.splice_delimiter;
+				}
+			}
 			objects = objects.concat(composite["obj"]);
 		}
 	}

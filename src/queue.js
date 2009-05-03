@@ -204,10 +204,6 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 	}
 };
 
-CSL.Output.Queue.prototype.dumbBlobs = function(state,blobs){
-
-};
-
 CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 	var state = this.state;
 	var ret = "";
@@ -218,6 +214,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 	}
 	for each (var blob in blobs){
 		if ("string" == typeof blob){
+			//throw "Attempt to render string as rangeable blob"
 			ret += blob;
 		} else if (blob.status != CSL.SUPPRESS){
 			// print("doing rangeable blob");
@@ -240,7 +237,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 			} else if (blob.status == CSL.START){
 				//
 				// XXXXX needs to be drawn from the object
-				ret += "";
+				ret += blob.splice_prefix;
 			}
 			ret += str;
 		}

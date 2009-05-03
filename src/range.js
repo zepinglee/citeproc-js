@@ -26,6 +26,7 @@ CSL.Output.Number = function(num,mother_token){
 		this.strings.suffix = mother_token.strings.suffix;
 		this.successor_prefix = mother_token.successor_prefix;
 		this.range_prefix = mother_token.range_prefix;
+		this.splice_prefix = "";
 		this.formatter = mother_token.formatter;
 		if (!this.formatter){
 			this.formatter =  new CSL.Output.DefaultFormatter();
@@ -39,6 +40,7 @@ CSL.Output.Number = function(num,mother_token){
 		this.strings.suffix = "";
 		this.successor_prefix = "";
 		this.range_prefix = "";
+		this.splice_prefix = "";
 		this.formatter = new CSL.Output.DefaultFormatter();
 	}
 };
