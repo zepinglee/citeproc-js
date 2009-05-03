@@ -42,7 +42,23 @@ CSL.System.Tests.getTest = function(myname){
 			style.fun.retriever.setInput(style,item);
 			style.registry.insert(style,item);
 		}
-		var ret = style[render](this.input);
+		if (this.citations){
+
+			for each (var cite_cluster in this.citations){
+				var cluster = [];
+				for each (var cite in cite_cluster){
+					for each (var datem in this.input){
+						if (datem.id == cite.id){
+							cluster.push(datem);
+							break;
+						}
+					}
+				}
+				var ret = style[render](cluster);
+			}
+		} else {
+			var ret = style[render](this.input);
+		}
 		return ret;
 	};
 	return test;

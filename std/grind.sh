@@ -41,12 +41,18 @@ for filename in humans/*.txt; do
     MODE=$(cat tmp/TMP.txt | $SED -e "/^>>=.*MODE/,/^<<=.*MODE/!d" | $SED -e "/^\(>>=\|<<=\)/d")
     INPUT=$(cat tmp/TMP.txt | $SED -e "/^>>=.*INPUT/,/^<<=.*INPUT/!d" | $SED -e "/^\(>>=\|<<=\)/d")
     SCHEMA=$(cat tmp/TMP.txt | $SED -e "/^>>=.*SCHEMA/,/^<<=.*SCHEMA/!d" | $SED -e "/^\(>>=\|<<=\)/d")
+	if [ $(cat tmp/TMP.txt | grep -c CITATIONS) -gt 0 ]; then
+        CITATIONS=$(cat tmp/TMP.txt | $SED -e "/^>>=.*CITATIONS/,/^<<=.*CITATIONS/!d" | $SED -e "/^\(>>=\|<<=\)/d")
+    fi
 
     echo '{' > ${RES}
     
     echo '  "name": "'${NAME}'",' >> ${RES}
     echo '  "category": "'${CATEGORY}'",' >> ${RES}
     echo '  "mode": "'${MODE}'",' >> ${RES}
+    if [ "${CITATIONS}" != "" ]; then
+        echo '  "citations": '${CITATIONS}',' >> ${RES}
+    fi
     echo '  "schema":"'${SCHEMA}'",' >> ${RES}
     echo '  "result": "'${RESULT}'",' >> ${RES}
     echo '  "csl": "'${CSL}'",' >> ${RES}

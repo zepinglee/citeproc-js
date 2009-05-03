@@ -16,9 +16,17 @@ Smith 2000a,c-e, 2001
 <<===== RESULT =====<<
 
 
->>===== CITATION =====>>
-[{ "id": "ITEM-1" },{"id":"ITEM-3"},{"id":"ITEM-4"},{"id":"ITEM-5"},{"id":"ITEM-6"}]
-<<===== CITATION =====<<
+>>===== CITATIONS =====>>
+[
+  [
+    {"id":"ITEM-1"},
+    {"id":"ITEM-3"},
+    {"id":"ITEM-4"},
+    {"id":"ITEM-5"},
+    {"id":"ITEM-6"}
+  ]
+]
+<<===== CITATIONS =====<<
 
 
 >>===== CSL =====>>
