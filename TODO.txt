@@ -1,24 +1,14 @@
 # TODO
 
+## Completion of feature set
+
 - Flip-flops to be cleared with Bruce D'Arcus and CSL group and
   implemented.
     (pending.  fbennett 2009-04-11)
 
-- Numbers.  First off, the current stuff needs to be
-  implemented, with extensions for ranging.
+- Numbers.  The current stuff for 0.8 needs to be
+  implemented.
     (pending.  fbennett 2009-04-17)
-
-- Numbers to be handled as rangeable objects in the
-  output queue.  Rintze Zelle's tests of year-suffix
-  collapsing need to pass.  Formatting of number elements
-  to be implemented somehow.
-    (pending.  fbennett 2009-04-11)
-
-- Aspiring beyond that, there are CSL issues with numbers to be 
-  proposed.  Number could be a span element with per-atom formatting, 
-  as has been done with names.  This will allow superscripting
-  or ordinal suffixes, and maybe some other useful things.
-    (pending.  fbennett 2009-04-13)
 
 - Handle position evaluation and back-references inside the 
   processor via the registry.  Zotero's own position evaluation 
@@ -32,8 +22,11 @@
     (pending fbennett 2009-04-17)
 
 - Various options and special formatting attributes need to be
-  implemented.
+  implemented, none of which seem particularly scarey.
     (a very short list of these remain.  fbennett 2009-04-11)
+
+
+## Possible work for Zotero deployment
 
 - Deletion support for the registry.
     (pending.  fbennett 2009-04-11)
@@ -43,39 +36,14 @@
   optimize database fetches?
     (pending.  fbennett 2009-04-11)
 
-- Localized date formatting needs to be implemented?
-    Maybe implement a proposal, post to xbib list.
+
+## Possible proposals for CSL
+
+- Number could be a span element with per-atom formatting, 
+  as has been done with names.  This will allow superscripting
+  or ordinal suffixes, and maybe some other useful things.
+    (pending.  fbennett 2009-04-13)
+
+- Localized date formatting?
     (pending.  fbennett 2009-04-11)
 
----------------
-(Working notes)
----------------
-
-/*
- * ATTRIBUTES TO COME
- * position (pending)
- * delimiter-precedes-last (stored, pending)
- * plural (pending)
- * locator (pending)
- * include-period (pending)
- * 
- *
- * OPTIONS
- * collapse
- *   citation-number (awaits range support)
- *   year (done)
- *   year-suffix (done)
- * line-spacing
- *   [number] (pending)
- * entry-spacing
- *   [number] (pending)
- * hanging-indent
- *   [boolean] (pending)
- * second-field-align
- *   [true/margin] (pending)
- * subsequent-author-substitute
- *   [text] (pending)
- * 
- * CONDITIONAL
- * is-numeric (written, untested)
- */
