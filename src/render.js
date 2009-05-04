@@ -194,9 +194,14 @@ CSL.Core.Render._unit_of_reference = function (inputList){
 			objects.push(composite["str"]);
 		}
 		if (composite["obj"].length){
-			if (!composite["str"]){
+			if (objects.length && !composite["str"]){
 				for each (var obj in composite["obj"]){
 					obj.splice_prefix = this.tmp.splice_delimiter;
+					if (this[this.tmp.area].opt["year-suffix-delimiter"]){
+						obj.successor_prefix = this[this.tmp.area].opt["year-suffix-delimiter"];
+					} else {
+						obj.successor_prefix = this.tmp.splice_delimiter;
+					}
 				}
 			}
 			objects = objects.concat(composite["obj"]);

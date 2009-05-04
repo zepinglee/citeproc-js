@@ -146,15 +146,18 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			};
 			//
 			// If there is a suffix, or any decorations, trailing rangeable
-			// objects must be rendered immediately here.
+			// objects must be rendered and appended immediately here.
 			//
+			if (strPlus["obj"].length && (blobjr.strings.suffix || blobjr.decorations)){
+				strPlus["str"] = strPlus["str"] + state.output.renderBlobs(strPlus["obj"]);
+				strPlus["obj"] = [];
+			}
 			if (strPlus["str"]){
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
 						strPlus["str"] = state.fun.decorate[params[0]][params[1]](strPlus["str"]);
 					}
 				}
-				//print(str+" (with is_rangeable="+blobjr.strings.is_rangeable+")");
 				strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix;
 				ret["str"].push(strPlus["str"]);
 			}
@@ -162,33 +165,14 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			// this passes rangeable objects through
 			ret["obj"] = ret["obj"].concat(strPlus["obj"]);
 		};
-		//
-		// The join only applies to non-rangeable objects.
-		//
 		if (blob) {
 			ret["str"] = ret["str"].join(blob.strings.delimiter);
 		} else {
-			//
-			// The list always seems to consist of a single string when this happens,
-			// which is fine by me.
-			//
-			//ret["str"] = ret["str"].join("");
-			// XXX Obviously something needs to be done with rangeable
-			// XXX objects here!
-			// (will need to reverse the condition below after
-			// providing for force_render)
 			if (state.tmp.handle_ranges){
 				ret["str"] = ret["str"].join("");
-				//ret = ret["str"].join("") + this.renderBlobs(ret["obj"]);
 			} else {
 				ret = ret["str"].join("");
 			}
-			//if (state.tmp.handle_ranges){
-			//	ret = ret["str"].join("") + this.renderBlobs(ret["obj"]);
-			//	//ret = "OK";
-			//} else {
-			//	ret = ret["str"].join("") + this.renderBlobs(ret["obj"]);
-			//}
 		}
 	};
 	this.queue = new Array();
@@ -231,9 +215,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 				// XXXXX needs to be drawn from the object
 				ret += blob.range_prefix;
 			} else if (blob.status == CSL.SUCCESSOR){
-				//
-				// XXXXX needs to be drawn from the object
-				ret += ",";
+				ret += blob.successor_prefix;
 			} else if (blob.status == CSL.START){
 				ret += blob.splice_prefix;
 			}

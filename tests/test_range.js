@@ -3,6 +3,29 @@ dojo.provide("tests.test_range");
 var test = new Object();
 
 doh.registerGroup("tests.range", [
+	function testCheckNextEndOnEOL() {
+		var number1 = new CSL.Output.Number(1);
+		var number2 = new CSL.Output.Number(2);
+		// range_prefix can be set on all objects in the series
+		number2.range_prefix = "-";
+		var number3 = new CSL.Output.Number(3);
+		var numlist = [number1,number2,number3];
+		numlist[0].checkNext(numlist[1]);
+		numlist[1].checkNext(numlist[2]);
+		numlist[2].checkNext(numlist[3]);
+		doh.assertEqual( CSL.END, numlist[2].status );
+	},
+	function testCheckNextSuppress() {
+		var number1 = new CSL.Output.Number(1);
+		var number2 = new CSL.Output.Number(2);
+		// range_prefix can be set on all objects in the series
+		number2.range_prefix = "-";
+		var number3 = new CSL.Output.Number(3);
+		var numlist = [number1,number2,number3];
+		numlist[0].checkNext(numlist[1]);
+		numlist[1].checkNext(numlist[2]);
+		doh.assertEqual( CSL.SUPPRESS, numlist[1].status );
+	},
 	function testYearSuffixFormatter() {
 		var token = new CSL.Factory.Token("bogus",CSL.START);
 		token.formatter = test.fun.suffixator;
@@ -52,30 +75,13 @@ doh.registerGroup("tests.range", [
 		numlist[0].checkNext(numlist[1]);
 		doh.assertEqual( CSL.SUCCESSOR, numlist[1].status );
 	},
-	function testCheckNextSuppress() {
-		var number1 = new CSL.Output.Number(1);
-		var number2 = new CSL.Output.Number(2);
-		var number3 = new CSL.Output.Number(3);
-		var numlist = [number1,number2,number3];
-		numlist[0].checkNext(numlist[1]);
-		numlist[1].checkNext(numlist[2]);
-		doh.assertEqual( CSL.SUPPRESS, numlist[1].status );
-	},
 	function testCheckNextEndOnText() {
 		var number1 = new CSL.Output.Number(1);
 		var number2 = new CSL.Output.Number(2);
+		// range_prefix can be set on all objects in the series
+		number2.range_prefix = "-";
 		var number3 = new CSL.Output.Number(3);
 		var numlist = [number1,number2,number3,"Text"];
-		numlist[0].checkNext(numlist[1]);
-		numlist[1].checkNext(numlist[2]);
-		numlist[2].checkNext(numlist[3]);
-		doh.assertEqual( CSL.END, numlist[2].status );
-	},
-	function testCheckNextEndOnEOL() {
-		var number1 = new CSL.Output.Number(1);
-		var number2 = new CSL.Output.Number(2);
-		var number3 = new CSL.Output.Number(3);
-		var numlist = [number1,number2,number3];
 		numlist[0].checkNext(numlist[1]);
 		numlist[1].checkNext(numlist[2]);
 		numlist[2].checkNext(numlist[3]);
@@ -91,4 +97,3 @@ doh.registerGroup("tests.range", [
 		test = new Object();
 	}
 );
-

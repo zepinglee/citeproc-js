@@ -260,6 +260,9 @@ CSL.Lib.Elements.text = new function(){
 				// queue.
 				if (variable == "citation-number"){
 					//this.strings.is_rangeable = true;
+					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
+						this.range_prefix = "-";
+					}
 					var func = function(state,Item){
 						var id = Item["id"];
 						if (!state.tmp.force_subsequent){

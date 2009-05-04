@@ -2,11 +2,6 @@ dojo.provide("tests.test_formatters");
 
 
 doh.register("tests.formatters", [
-	function testGetSuffix(){
-		var list = "a,b,c,d";
-		var suffixator = new CSL.Util.Disambiguate.Suffixator(list);
-		doh.assertEqual("c",suffixator.format(2));
-	},
 	function testSuffixize(){
 
 		var list = "a,b,c,d";
@@ -20,6 +15,11 @@ doh.register("tests.formatters", [
 
 		var res = suffixator.get_suffixes(351,list);
 		doh.assertEqual("acbca", res[(res.length-1)]);
+	},
+	function testGetSuffix(){
+		var list = "a,b,c,d";
+		var suffixator = new CSL.Util.Disambiguate.Suffixator(list);
+		doh.assertEqual("c",suffixator.format(2));
 	},
 	function testIfItWorksAtAll() {
 		function testme () {
@@ -39,4 +39,3 @@ doh.register("tests.formatters", [
 	},
 
 ]);
-

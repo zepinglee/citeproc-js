@@ -36,7 +36,9 @@ CSL.Util.Disambiguate.Romanizer.prototype.format = function(num){
  * <p>This is a <i>lot</i> harder than it seems.</p>
  */
 CSL.Util.Disambiguate.Suffixator = function(slist){
-	slist = CSL.SUFFIX_CHARS;
+	if (!slist){
+		slist = CSL.SUFFIX_CHARS;
+	}
 	this.slist = slist.split(",");
 };
 

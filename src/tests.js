@@ -43,7 +43,6 @@ CSL.System.Tests.getTest = function(myname){
 			style.registry.insert(style,item);
 		}
 		if (this.citations){
-
 			for each (var cite_cluster in this.citations){
 				var cluster = [];
 				for each (var cite in cite_cluster){

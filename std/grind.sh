@@ -2,6 +2,12 @@
 
 set -e
 
+#
+# For Mac OSX, install the gsed package; the sed that
+# ships with OSX ignores some of the syntax used in
+# the script code below.
+#
+
 if [ $(which gsed | grep -c "/" ) -gt 0 ]; then
     SED="gsed"
 else
@@ -41,8 +47,10 @@ for filename in humans/*.txt; do
     MODE=$(cat tmp/TMP.txt | $SED -e "/^>>=.*MODE/,/^<<=.*MODE/!d" | $SED -e "/^\(>>=\|<<=\)/d")
     INPUT=$(cat tmp/TMP.txt | $SED -e "/^>>=.*INPUT/,/^<<=.*INPUT/!d" | $SED -e "/^\(>>=\|<<=\)/d")
     SCHEMA=$(cat tmp/TMP.txt | $SED -e "/^>>=.*SCHEMA/,/^<<=.*SCHEMA/!d" | $SED -e "/^\(>>=\|<<=\)/d")
-	if [ $(cat tmp/TMP.txt | grep -c CITATIONS) -gt 0 ]; then
+    if [ $(cat tmp/TMP.txt | grep -c CITATIONS) -gt 0 ]; then
         CITATIONS=$(cat tmp/TMP.txt | $SED -e "/^>>=.*CITATIONS/,/^<<=.*CITATIONS/!d" | $SED -e "/^\(>>=\|<<=\)/d")
+    else
+        CITATIONS=""
     fi
 
     echo '{' > ${RES}

@@ -1,0 +1,48 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+<b>([1],[2],[3])</b>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+		<sort>
+			<key variable="citation-number"/>
+		</sort>
+		<layout prefix="(" suffix=")" delimiter="," font-weight="bold">
+			<text variable="citation-number" prefix="[" suffix="]"/>
+		</layout>
+	</citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "title": "Paper 1"
+  },
+  {
+    "id":"ITEM-2",
+    "type": "book",
+    "title": "Paper 2"
+  },
+ {
+    "id":"ITEM-3",
+    "type": "book",
+    "title": "Paper 3"
+  }
+]
+<<===== INPUT =====<<
