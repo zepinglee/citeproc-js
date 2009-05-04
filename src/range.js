@@ -67,8 +67,13 @@ CSL.Output.Number.prototype.checkNext = function(next){
 		if (this.status == CSL.START){
 			next.status = CSL.SUCCESSOR;
 		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
-			next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
-			this.status = CSL.SUPPRESS;
+			if (this.range_prefix){
+				next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
+				this.status = CSL.SUPPRESS;
+			} else {
+				next.status = CSL.SUCCESSOR;
+			}
+
 		}
 	};
 };

@@ -259,20 +259,20 @@ CSL.Lib.Elements.text = new function(){
 				// different set of formatting parameters on the output
 				// queue.
 				if (variable == "citation-number"){
-					this.strings.is_rangeable = true;
+					//this.strings.is_rangeable = true;
 					var func = function(state,Item){
 						var id = Item["id"];
 						if (!state.tmp.force_subsequent){
 							var num = state.registry.registry[id].seq;
-							//
-							// DO SOMETHING USEFUL HERE
-							//
 							var number = new CSL.Output.Number(num,this);
 							state.output.append(number,"literal");
 						}
 					};
 					this["execs"].push(func);
 				} else if (variable == "year-suffix"){
+					if (state[state.tmp.area].opt["year-suffix-range-delimiter"]){
+						this.range_prefix = state[state.tmp.area].opt["year-suffix-range-delimiter"];
+					}
 					var func = function(state,Item){
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
 							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
@@ -1010,6 +1010,9 @@ CSL.Lib.Elements.option = new function(){
 		}
 		if ("year-suffix-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["year-suffix-delimiter"] = this.strings.value;
+		}
+		if ("year-suffix-range-delimiter" == this.strings.name){
+			state[state.tmp.area].opt["year-suffix-range-delimiter"] = this.strings.value;
 		}
 		target.push(this);
 	};

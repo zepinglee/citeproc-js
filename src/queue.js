@@ -229,14 +229,12 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 			if (blob.status == CSL.END){
 				//
 				// XXXXX needs to be drawn from the object
-				ret += "-";
+				ret += blob.range_prefix;
 			} else if (blob.status == CSL.SUCCESSOR){
 				//
 				// XXXXX needs to be drawn from the object
-				ret += ", ";
+				ret += ",";
 			} else if (blob.status == CSL.START){
-				//
-				// XXXXX needs to be drawn from the object
 				ret += blob.splice_prefix;
 			}
 			ret += str;
