@@ -152,18 +152,36 @@ CSL.Core.Render._unit_of_reference = function (inputList){
 		var composite = this.output.string(this,this.output.queue);
 		this.tmp.handle_ranges = false;
 		//
-		// At last!  Compose the trailing blobs here.
-		var blobstr = "";
+		// At last!  Ready to compose trailing blobs.
+		// We convert "string" output object to an array
+		// before collapsing blobs.
+		if (composite["str"]){
+			if (objects.length){
+				objects.push(this.tmp.splice_delimiter);
+			}
+			objects.push(composite["str"]);
+		}
 		if (composite["obj"].length){
+			if (objects.length && !composite["str"]){
+				for each (var obj in composite["obj"]){
+					obj.splice_prefix = this.tmp.splice_delimiter;
+					if (this[this.tmp.area].opt["year-suffix-delimiter"]){
+						obj.successor_prefix = this[this.tmp.area].opt["year-suffix-delimiter"];
+					} else {
+						obj.successor_prefix = this.tmp.splice_delimiter;
+					}
+				}
+			}
 			objects = objects.concat(composite["obj"]);
 		}
-		if (result){
-			result += this.tmp.splice_delimiter;
-		}
-		result += composite["str"];
 	}
 	result += this.output.renderBlobs(objects);
 	result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
+	if (!this.tmp.suppress_decorations){
+		for each (var params in this.citation.opt.layout_decorations){
+			result = this.fun.decorate[params[0]][params[1]](result);
+		}
+	}
 	return result;
 };
 CSL.Core.Render._cite = function(Item){
@@ -404,6 +422,9 @@ CSL.Util.Disambiguate.Romanizer.prototype.format = function(num){
 	return ret;
 };
 CSL.Util.Disambiguate.Suffixator = function(slist){
+	if (!slist){
+		slist = CSL.SUFFIX_CHARS;
+	}
 	this.slist = slist.split(",");
 };
 CSL.Util.Disambiguate.Suffixator.prototype.format = function(num){
@@ -1274,9 +1295,9 @@ CSL.Factory.Registry.prototype.insert = function(state,Item){
 		var leftovers = this.disambiguateCites(state,akey,modes,leftovers);
 	}
 	if ( leftovers && leftovers.length && state[state.tmp.area].opt["disambiguate-add-year-suffix"]){
-		var suffixes = state.fun.suffixator.get_suffixes(leftovers.length);
+		//var suffixes = state.fun.suffixator.get_suffixes(leftovers.length);
 		for (var i in leftovers){
-			this.registry[ leftovers[i].id ].disambig[2] = suffixes[i];
+			this.registry[ leftovers[i].id ].disambig[2] = i;
 			this.registry[ leftovers[i].id ].dseq = i;
 		}
 	}
@@ -1871,24 +1892,31 @@ CSL.Lib.Elements.text = new function(){
 				// different set of formatting parameters on the output
 				// queue.
 				if (variable == "citation-number"){
-					this.strings.is_rangeable = true;
+					//this.strings.is_rangeable = true;
+					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
+						this.range_prefix = "-";
+					}
 					var func = function(state,Item){
 						var id = Item["id"];
 						if (!state.tmp.force_subsequent){
 							var num = state.registry.registry[id].seq;
-							//
-							// DO SOMETHING USEFUL HERE
-							//
 							var number = new CSL.Output.Number(num,this);
 							state.output.append(number,"literal");
 						}
 					};
 					this["execs"].push(func);
 				} else if (variable == "year-suffix"){
+					if (state[state.tmp.area].opt["year-suffix-range-delimiter"]){
+						this.range_prefix = state[state.tmp.area].opt["year-suffix-range-delimiter"];
+					}
 					var func = function(state,Item){
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
-							state.tmp.delimiter.replace("");
-							state.output.append(state.registry.registry[Item.id].disambig[2],this);
+							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
+							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+							var number = new CSL.Output.Number(num,this);
+							var formatter = new CSL.Util.Disambiguate.Suffixator(CSL.SUFFIX_CHARS);
+							number.setFormatter(formatter);
+							state.output.append(number,"literal");
 							//
 							// don't ask :)
 							// obviously the variable naming scheme needs
@@ -2354,12 +2382,9 @@ CSL.Lib.Elements.layout = new function(){
 				//
 				// This is not very pretty.
 				//
-				//state.tmp.delimiter.mystack[0] = this.strings.delimiter;
-				//state.tmp.prefix.mystack[0] = this.strings.prefix;
-				//state.tmp.suffix.mystack[0] = this.strings.suffix;
-				//state.tmp.tokenstore["layout"] = new CSL.Factory.Token("layout");
 				state[state.tmp.area].opt.layout_prefix = this.strings.prefix;
 				state[state.tmp.area].opt.layout_suffix = this.strings.suffix;
+				state[state.tmp.area].opt.layout_decorations = this.decorations;
 				state.output.openLevel("empty");
 			};
 			this["execs"].push(declare_thyself);
@@ -2459,6 +2484,9 @@ CSL.Lib.Elements.option = new function(){
 		}
 		if ("year-suffix-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["year-suffix-delimiter"] = this.strings.value;
+		}
+		if ("year-suffix-range-delimiter" == this.strings.name){
+			state[state.tmp.area].opt["year-suffix-range-delimiter"] = this.strings.value;
 		}
 		target.push(this);
 	};
@@ -3189,15 +3217,18 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			};
 			//
 			// If there is a suffix, or any decorations, trailing rangeable
-			// objects must be rendered immediately here.
+			// objects must be rendered and appended immediately here.
 			//
+			if (strPlus["obj"].length && (blobjr.strings.suffix || blobjr.decorations)){
+				strPlus["str"] = strPlus["str"] + state.output.renderBlobs(strPlus["obj"]);
+				strPlus["obj"] = [];
+			}
 			if (strPlus["str"]){
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
 						strPlus["str"] = state.fun.decorate[params[0]][params[1]](strPlus["str"]);
 					}
 				}
-				//print(str+" (with is_rangeable="+blobjr.strings.is_rangeable+")");
 				strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix;
 				ret["str"].push(strPlus["str"]);
 			}
@@ -3205,33 +3236,14 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			// this passes rangeable objects through
 			ret["obj"] = ret["obj"].concat(strPlus["obj"]);
 		};
-		//
-		// The join only applies to non-rangeable objects.
-		//
 		if (blob) {
 			ret["str"] = ret["str"].join(blob.strings.delimiter);
 		} else {
-			//
-			// The list always seems to consist of a single string when this happens,
-			// which is fine by me.
-			//
-			//ret["str"] = ret["str"].join("");
-			// XXX Obviously something needs to be done with rangeable
-			// XXX objects here!
-			// (will need to reverse the condition below after
-			// providing for force_render)
 			if (state.tmp.handle_ranges){
 				ret["str"] = ret["str"].join("");
-				//ret = ret["str"].join("") + this.renderBlobs(ret["obj"]);
 			} else {
 				ret = ret["str"].join("");
 			}
-			//if (state.tmp.handle_ranges){
-			//	ret = ret["str"].join("") + this.renderBlobs(ret["obj"]);
-			//	//ret = "OK";
-			//} else {
-			//	ret = ret["str"].join("") + this.renderBlobs(ret["obj"]);
-			//}
 		}
 	};
 	this.queue = new Array();
@@ -3245,18 +3257,22 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 		blobs.pop();
 	}
 };
-CSL.Output.Queue.prototype.dumbBlobs = function(state,blobs){
-};
 CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 	var state = this.state;
 	var ret = "";
 	for (var i=0; i < blobs.length; i++){
-		blobs[i].checkNext(blobs[(i+1)]);
+		if (blobs[i].checkNext){
+			blobs[i].checkNext(blobs[(i+1)]);
+		}
 	}
 	for each (var blob in blobs){
-		if (blob.status != CSL.SUPPRESS){
+		if ("string" == typeof blob){
+			//throw "Attempt to render string as rangeable blob"
+			ret += blob;
+		} else if (blob.status != CSL.SUPPRESS){
 			// print("doing rangeable blob");
-			var str = blob.blobs;
+			//var str = blob.blobs;
+			var str = blob.formatter.format(blob.num);
 			if (!state.tmp.suppress_decorations){
 				for each (var params in blob.decorations){
 					str = state.fun.decorate[params[0]][params[1]](str);
@@ -3266,15 +3282,11 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 			if (blob.status == CSL.END){
 				//
 				// XXXXX needs to be drawn from the object
-				ret += "-";
+				ret += blob.range_prefix;
 			} else if (blob.status == CSL.SUCCESSOR){
-				//
-				// XXXXX needs to be drawn from the object
-				ret += ", ";
+				ret += blob.successor_prefix;
 			} else if (blob.status == CSL.START){
-				//
-				// XXXXX needs to be drawn from the object
-				ret += "";
+				ret += blob.splice_prefix;
 			}
 			ret += str;
 		}
@@ -3402,7 +3414,11 @@ CSL.Output.Formats = new CSL.Output.Formats();CSL.Output.Number = function(num,m
 		this.strings.suffix = mother_token.strings.suffix;
 		this.successor_prefix = mother_token.successor_prefix;
 		this.range_prefix = mother_token.range_prefix;
+		this.splice_prefix = "";
 		this.formatter = mother_token.formatter;
+		if (!this.formatter){
+			this.formatter =  new CSL.Output.DefaultFormatter();
+		}
 		if (this.formatter){
 			this.type = this.formatter.format(1);
 		}
@@ -3412,6 +3428,7 @@ CSL.Output.Formats = new CSL.Output.Formats();CSL.Output.Number = function(num,m
 		this.strings.suffix = "";
 		this.successor_prefix = "";
 		this.range_prefix = "";
+		this.splice_prefix = "";
 		this.formatter = new CSL.Output.DefaultFormatter();
 	}
 };
@@ -3432,8 +3449,12 @@ CSL.Output.Number.prototype.checkNext = function(next){
 		if (this.status == CSL.START){
 			next.status = CSL.SUCCESSOR;
 		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
-			next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
-			this.status = CSL.SUPPRESS;
+			if (this.range_prefix){
+				next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
+				this.status = CSL.SUPPRESS;
+			} else {
+				next.status = CSL.SUCCESSOR;
+			}
 		}
 	};
 };
@@ -3902,7 +3923,22 @@ CSL.System.Tests.getTest = function(myname){
 			style.fun.retriever.setInput(style,item);
 			style.registry.insert(style,item);
 		}
-		var ret = style[render](this.input);
+		if (this.citations){
+			for each (var cite_cluster in this.citations){
+				var cluster = [];
+				for each (var cite in cite_cluster){
+					for each (var datem in this.input){
+						if (datem.id == cite.id){
+							cluster.push(datem);
+							break;
+						}
+					}
+				}
+				var ret = style[render](cluster);
+			}
+		} else {
+			var ret = style[render](this.input);
+		}
 		return ret;
 	};
 	return test;
