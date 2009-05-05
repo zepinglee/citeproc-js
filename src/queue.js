@@ -148,7 +148,7 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			// If there is a suffix, or any decorations, trailing rangeable
 			// objects must be rendered and appended immediately here.
 			//
-			if (strPlus["obj"].length && (blobjr.strings.suffix || blobjr.decorations)){
+			if (strPlus["obj"].length && (blobjr.strings.suffix || (blobjr.decorations && blobjr.decorations.length))){
 				strPlus["str"] = strPlus["str"] + state.output.renderBlobs(strPlus["obj"]);
 				strPlus["obj"] = [];
 			}

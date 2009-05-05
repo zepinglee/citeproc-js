@@ -1,6 +1,20 @@
 dojo.provide("tests.test_flipflop");
 
 doh.register("tests.flipflop", [
+	function testSimpleCompositionEscape() {
+		var ff = new CSL.Util.FlipFlopper();
+		ff.register( "[X]", "[Y]", "dummyfunc", []);
+		try {
+			var blob = new CSL.Factory.Blob( false, "One two \\[X] three [Y] four" );
+			var res = ff.compose( blob );
+			var ok = "Success";
+		} catch (e) {
+			var ok = "Oops: "+e;
+		}
+		doh.assertEqual( "Success", ok );
+		doh.assertEqual( 1, res.length);
+		doh.assertEqual( "One two \\[X] three [Y] four", res[0].blobs);
+	},
 	function testSimpleCompositionWorksAtAll() {
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", "dummyfunc", []);
@@ -202,4 +216,3 @@ doh.register("tests.flipflop", [
 		doh.assertEqual( "", res[4] );
 	},
 ]);
-

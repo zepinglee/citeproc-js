@@ -7,6 +7,9 @@ doh.register("tests.std_collapse", [
         var test = CSL.System.Tests.getTest("collapse_CitationNumberRangesWithAffixes");
         doh.assertEqual(test.result, test.run());
     },
+]);
+
+var x = [
     function(){
         var test = CSL.System.Tests.getTest("collapse_CitationNumberRangesWithAffixesNoCollapse");
         doh.assertEqual(test.result, test.run());
@@ -19,4 +22,5 @@ doh.register("tests.std_collapse", [
         var test = CSL.System.Tests.getTest("collapse_YearSuffixCollapseNoRange");
         doh.assertEqual(test.result, test.run());
     },
-]);
+
+]

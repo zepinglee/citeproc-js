@@ -33,6 +33,12 @@ CSL.Util.FlipFlopper.prototype.compose = function(obj){
 	while (this.cont){
 		objlist = this._compose(objlist);
 	}
+	for (var i=1; i < objlist.length; i++){
+		objlist[i].strings.prefix = "";
+	}
+	for (var i=0; i < (objlist.length-1); i++){
+		objlist[i].strings.suffix = "";
+	}
 	return objlist;
 }
 
@@ -104,6 +110,7 @@ CSL.Util.FlipFlopper.prototype._compose = function(objlist){
 CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	var spec = this.flipflops[idx];
 	var lst1 = str.split(spec["start"]);
+	if (lst1.length > 1){
 	if (spec["start"] == spec["end"]){
 		if (lst1.length && (lst1.length % 2) == 0){
 			var buf = lst1.pop();
@@ -115,7 +122,7 @@ CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 		var lst2 = [lst1[0]];
 		for (var i=1; i < lst1.length; i++){
 			var sublst = lst1[i].split(spec["end"]);
-			if (sublst.length == 1){
+			if (sublst.length == 1 || "\\" == lst2[(lst2.length-1)][(lst2[(lst2.length-1)].length-1)]){
 				var buf = lst2.pop();
 				lst2.push( buf + spec["start"] + lst1.slice(i).join(spec["start"]) );
 				this.fail = true;
@@ -128,6 +135,9 @@ CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 			}
 			lst2 = lst2.concat(sublst);
 		}
+	}
+	} else {
+		var lst2 = lst1.slice();
 	}
 	return lst2;
 }
