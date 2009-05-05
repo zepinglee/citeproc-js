@@ -22,6 +22,7 @@ dojo.require("csl.csl");
 //
 // requested tests go here
 if(true){
+  	dojo.require("tests.std_decorations");
   	dojo.require("tests.test_flipflop");
   	dojo.require("tests.std_collapse");
   	dojo.require("tests.std_name");

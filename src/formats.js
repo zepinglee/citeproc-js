@@ -36,7 +36,12 @@ CSL.Output.Formats.prototype.html = {
 	"@text-case/capitalize-all":CSL.Output.Formatters.capitalize_all,
 	"@text-case/title":CSL.Output.Formatters.title_capitalization,
 	"@text-case/sentence":CSL.Output.Formatters.sentence_capitalization,
-	"@quotes":"&lquo;%%STRING%%&rquo;"
+	"@quotes/true":"&ldquo;%%STRING%%&rdquo;",
+	"@quotes/left":"&ldquo;%%STRING%%",
+	"@quotes/right":"%%STRING%%&rdquo;",
+	"@squotes/true":"&lsquo;%%STRING%%&rsquo;",
+	"@squotes/left":"&lsquo;%%STRING%%",
+	"@squotes/right":"%%STRING%%&rsquo;"
 };
 
 CSL.Output.Formats = new CSL.Output.Formats();

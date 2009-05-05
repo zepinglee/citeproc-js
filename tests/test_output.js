@@ -17,7 +17,7 @@ doh.register("tests.output", [
 	},
 
 	function testHtmlLoad() {
-		doh.assertEqual( '&lquo;%%STRING%%&rquo;', CSL.Output.Formats.html["@quotes"] );
+		doh.assertEqual( '&ldquo;%%STRING%%&rdquo;', CSL.Output.Formats.html["@quotes/true"] );
 	},
 
 ]);

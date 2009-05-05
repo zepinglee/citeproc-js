@@ -4,11 +4,11 @@ dojo.require("csl.csl");
 
 doh.register("tests.std_disambiguate", [
     function(){
-        var test = CSL.System.Tests.getTest("disambiguate_BaseNameCountOnFailureIfYearSuffixAvailable");
+        var test = CSL.System.Tests.getTest("disambiguate_BasedOnEtAlSubsequent");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("disambiguate_BasedOnEtAlSubsequent");
+        var test = CSL.System.Tests.getTest("disambiguate_BaseNameCountOnFailureIfYearSuffixAvailable");
         doh.assertEqual(test.result, test.run());
     },
     function(){
