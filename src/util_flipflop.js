@@ -69,7 +69,29 @@ CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
 	//
 	// this needs to work a LITTLE harder.
 	//
-	blob.decorations.push( flipflop["func"]);
+	// we have start, end (which have served their purpose at this point),
+	// func and alt.  These are either key/value tuples that
+	// are drop-in replacements for the values used in the decorations,
+	// or false.
+	// If both func and alt are present, func is added to the front of
+	// the decoration array, as the outermost decoration, unless func
+	// matches an existing item, in which case alt is used.
+	// If alt is false, func is always added to the front of
+	// the decoration array.
+	// Certain decorations (quotation marks) are always deleted
+	// from inner flipflopped objects before rendering.
+	var ffdecor = flipflop.func;
+	if (flipflop.alt){
+		for each (decor in blob.decorations){
+			if (decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1]){
+				ffdecor = flipflop.alt;
+				break;
+			}
+		}
+	}
+	blob.decorations.reverse();
+	blob.decorations.push(ffdecor);
+	blob.decorations.reverse();
 };
 
 

@@ -50,8 +50,8 @@ doh.register("tests.flipflop", [
 	},
 	function testNestedCompositionObjectContentReverseFunctionOrder() {
 		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", "dummyfunc2", []);
-		ff.register( "[A]", "[B]", "dummyfunc1", []);
+		ff.register( "[X]", "[Y]", ["fkey2","fattr2"], ["altkey2","altattr2"]);
+		ff.register( "[A]", "[B]", ["fkey1","fattr1"], ["altkey1","altattr1"]);
 		try {
 			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
 			var res = ff.compose( blob );
@@ -62,13 +62,16 @@ doh.register("tests.flipflop", [
 		doh.assertEqual( "Success", ok );
 		doh.assertEqual( 5, res.length);
 		doh.assertEqual( " three ", res[2].blobs );
-		doh.assertEqual( "dummyfunc1", res[2].decorations[0] );
-		doh.assertEqual( "dummyfunc2", res[2].decorations[1] );
+		doh.assertEqual( "fkey2", res[2].decorations[0][0] );
+		doh.assertEqual( "fattr2", res[2].decorations[0][1] );
+		doh.assertEqual( "fkey1", res[2].decorations[1][0] );
+		doh.assertEqual( "fattr1", res[2].decorations[1][1] );
 	},
 	function testNestedCompositionObjectContent() {
 		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[A]", "[B]", "dummyfunc1", []);
-		ff.register( "[X]", "[Y]", "dummyfunc2", []);
+		ff.register( "[A]", "[B]", ["fkey1","fattr1"], ["altkey1","altattr1"]);
+		ff.register( "[X]", "[Y]", ["fkey2","fattr2"], ["altkey2","altattr2"]);
+
 		try {
 			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
 			var res = ff.compose( blob );
@@ -79,8 +82,10 @@ doh.register("tests.flipflop", [
 		doh.assertEqual( "Success", ok );
 		doh.assertEqual( 5, res.length);
 		doh.assertEqual( " three ", res[2].blobs );
-		doh.assertEqual( "dummyfunc1", res[2].decorations[0] );
-		doh.assertEqual( "dummyfunc2", res[2].decorations[1] );
+		doh.assertEqual( "fkey2", res[2].decorations[0][0] );
+		doh.assertEqual( "fattr2", res[2].decorations[0][1] );
+		doh.assertEqual( "fkey1", res[2].decorations[1][0] );
+		doh.assertEqual( "fattr1", res[2].decorations[1][1] );
 	},
 	function testSimpleCompositionObjectContent() {
 		var ff = new CSL.Util.FlipFlopper();
