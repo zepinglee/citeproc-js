@@ -39,9 +39,11 @@ CSL.Output.Formats.prototype.html = {
 	"@quotes/true":"&ldquo;%%STRING%%&rdquo;",
 	"@quotes/left":"&ldquo;%%STRING%%",
 	"@quotes/right":"%%STRING%%&rdquo;",
+	"@quotes/noop":"%%STRING%%",
 	"@squotes/true":"&lsquo;%%STRING%%&rsquo;",
 	"@squotes/left":"&lsquo;%%STRING%%",
-	"@squotes/right":"%%STRING%%&rsquo;"
+	"@squotes/right":"%%STRING%%&rsquo;",
+	"@squotes/noop":"%%STRING%%"
 };
 
 CSL.Output.Formats = new CSL.Output.Formats();

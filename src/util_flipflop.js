@@ -67,19 +67,27 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 
 CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
 	//
-	// this needs to work a LITTLE harder.
-	//
-	// we have start, end (which have served their purpose at this point),
-	// func and alt.  These are either key/value tuples that
-	// are drop-in replacements for the values used in the decorations,
+	// Func and alt are key/value tuples that serve as
+	// drop-in replacements for the values used in the decorations.
+	// Func is always defined.  Alt may be either a tuple
 	// or false.
-	// If both func and alt are present, func is added to the front of
-	// the decoration array, as the outermost decoration, unless func
-	// matches an existing item, in which case alt is used.
-	// If alt is false, func is always added to the front of
-	// the decoration array.
-	// Certain decorations (quotation marks) are always deleted
-	// from inner flipflopped objects before rendering.
+	//
+	// If both func and alt are present, func and alt are used as
+	// replacements for their partner if it is found on the
+	// decoration stack.  If neither exists, func is placed at
+	// the bottom of the stack, and the innermost formatting
+	// element.
+	//
+	// If alt is false, func is added to the bottom of
+	// the decoration stack unless func is already present.
+	//
+	// Quotation marks require special handling, because they
+	// apply visible characters to the content.  These are
+	// reduced to left-side/right side singletons on the end
+	// chunks of a span when it is split, and noop markers
+	// are placed on the middle objects in the span.  Otherwise,
+	// quotes work as standard flipflops of the first type
+	// described above.
 	var ffdecor = flipflop.func;
 	if (flipflop.alt){
 		for each (decor in blob.decorations){
