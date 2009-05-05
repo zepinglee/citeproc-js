@@ -3,6 +3,8 @@ dojo.provide("csl.util_flipflop");
 CSL.Util.FlipFlopper = function(){
 	this.flipflops = [];
 	this.objlist = [];
+	this.cont = true;
+	this.stoplist = [];
 };
 
 CSL.Util.FlipFlopper.prototype.register = function(start, end, func, opt){
@@ -23,24 +25,77 @@ CSL.Util.FlipFlopper.prototype.makeObj = function(str,funcs){
 }
 
 CSL.Util.FlipFlopper.prototype.compose = function(str){
+	//
+	// Normalize to an object list
+	//
 	var objlist = [];
 	objlist.push( this.makeObj(str,[]));
-	for each (flipflop in this.flipflops){
-		var newobjlist = new Array();
-		for each (obj in objlist){
-			var strlst = this.split(obj["str"]);
-			for (var i=0; i < objlist.length; i++){
-				var obj = this.makeObj(strlst[i], obj.funcs.slice());
-				newobjlist.push(obj);
-			}
-			for (var i=1; i < newobjlist.length; i += 2){
-				newobjlist[i].funcs.push(flipflop.func);
-			}
-			objlist = newobjlist.slice();
-		}
+	//
+	// For each flipflop, process the list and
+	// get the result
+	//
+	this.stoplist = [];
+	while (this.cont){
+		objlist = this._compose(objlist);
 	}
 	return objlist;
-};
+}
+
+CSL.Util.FlipFlopper.prototype.find = function(str){
+	var spos = -1;
+	this.fpos = -1;
+	for (var i in this.flipflops){
+		if (i in this.stoplist){
+			continue;
+		}
+		var pos = str.indexOf(this.flipflops[i]["start"]);
+		if (spos == -1 && pos > -1){
+			spos = pos;
+			this.fpos = i;
+		}
+		if (pos > -1 && pos < spos){
+			this.fpos = i;
+		}
+	}
+	if (this.fpos > -1){
+		this.cont = true;
+		return true;
+	}
+	return false;
+}
+
+CSL.Util.FlipFlopper.prototype._compose = function(objlist){
+	//
+	// be pessimistic
+	//
+	this.cont = false;
+	//
+	// Compose a new object list based on the split
+	//
+	var newobjlist = new Array();
+	this.opos = 0;
+	for (var x in objlist){
+		if ((x+this.opos) in this.stoplist){
+			continue;
+		}
+		var obj = objlist[x];
+		if (this.find(obj["str"])){
+			var flipflop = this.flipflops[this.fpos];
+			var strlst = this.split(this.fpos, obj["str"]);
+			for (var j=0; j < strlst.length; j++){
+				var newobj = this.makeObj(strlst[j], obj.funcs.slice());
+				newobjlist.push(newobj);
+			}
+			for (var j=(this.opos+1); j < newobjlist.length; j += 2){
+				newobjlist[j].funcs.push(flipflop.func);
+			}
+		} else {
+			newobjlist.push(obj);
+		}
+		this.opos = newobjlist.length;
+	}
+	return newobjlist.slice();
+}
 
 CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	var spec = this.flipflops[idx];
@@ -54,12 +109,13 @@ CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 		var lst2 = lst1.slice();
 	} else {
 		var lst2 = [lst1[0]];
-		var do_me = true;
 		for (var i=1; i < lst1.length; i++){
 			var sublst = lst1[i].split(spec["end"]);
 			if (sublst.length == 1){
 				var buf = lst2.pop();
 				lst2.push( buf + spec["start"] + lst1.slice(i).join(spec["start"]) );
+				this.fail = true;
+				this.stoplist.push((this.opos+i));
 				break;
 			}
 			sublst[1] = sublst.slice(1).join(spec["end"]);
