@@ -1,0 +1,11 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+		<option name="collapse" value="citation-number"/>
+		<sort>
+			<key variable="citation-number"/>
+		</sort>
+		<layout prefix="(" suffix=")" delimiter="," font-weight="bold">
+			<text variable="citation-number" prefix="[" suffix="]"/>
+		</layout>
+	</citation>
+</style>

@@ -1,0 +1,9 @@
+{
+  "name": "Asian",
+  "category": "name",
+  "mode": "citation",
+  "schema":"0.8",
+  "result": "Miyamoto Musashi",
+  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <names variable=\"author\">\n <name />\n </names>\n </layout>\n </citation>\n</style>",
+  "input": [{ "id":"simple-sticky-name-1", "type": "book", "author": [ { "name":"Miyamoto, Musashi !" } ], "issued": {"year": "1645", "month":"12", "day":"27"}, "title": "A Book of Five Rings" }]
+}

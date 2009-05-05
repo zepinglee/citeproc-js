@@ -1,0 +1,10 @@
+{
+  "name": "Year Suffix Collapse No Range",
+  "category": "collapse",
+  "mode": "citation",
+  "citations": [ [ {"id":"ITEM-1"}, {"id":"ITEM-3"}, {"id":"ITEM-4"}, {"id":"ITEM-5"}, {"id":"ITEM-6"} ] ],
+  "schema":"0.9",
+  "result": "Smith 2000a,c,d,e, 2001",
+  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <option name=\"collapse\" value=\"year-suffix\"/>\n <option name=\"disambiguate-add-year-suffix\" value=\"true\"/>\n <option name=\"year-suffix-delimiter\" value=\",\"/>\n <layout delimiter=\", \">\n <group delimiter=\" \">\n <names variable=\"author\">\n <name form=\"short\"/>\n </names>\n <date variable=\"issued\">\n <date-part name=\"year\"/>\n </date>\n </group>\n <text variable=\"year-suffix\"/>\n </layout>\n </citation>\n</style>",
+  "input": [ { "id":"ITEM-1", "type": "book", "author": [{"name":"Smith, John"}], "title": "Paper 1", "issued": {"year":"2000"} }, { "id":"ITEM-2", "type": "book", "author": [{"name":"Smith, John"}], "title": "Paper 2", "issued": {"year":"2000"} }, { "id":"ITEM-3", "type": "book", "author": [{"name":"Smith, John"}], "title": "Paper 3", "issued": {"year":"2000"} }, { "id":"ITEM-4", "type": "book", "author": [{"name":"Smith, John"}], "title": "Paper 4", "issued": {"year":"2000"} }, { "id":"ITEM-5", "type": "book", "author": [{"name":"Smith, John"}], "title": "Paper 5", "issued": {"year":"2000"} }, { "id":"ITEM-6", "type": "book", "author": [{"name":"Smith, John"}], "title": "Paper 6", "issued": {"year":"2001"} } ]
+}

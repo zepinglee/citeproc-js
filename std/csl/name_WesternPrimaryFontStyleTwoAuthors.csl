@@ -1,0 +1,10 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="author">
+                <name delimiter="; "/>
+                <name-part type="primary-key" font-weight="bold"/>
+            </names>
+        </layout>
+    </citation>
+</style>

@@ -1,0 +1,21 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+
+    <macro name="author">
+        <names variable="author">
+            <name form="short"/>
+        </names>
+    </macro>
+
+    <citation>
+
+        <sort>
+            <key macro="author"/>
+        </sort>
+
+        <layout delimiter="; ">
+            <text macro="author"/>
+        </layout>
+
+    </citation>
+
+</style>

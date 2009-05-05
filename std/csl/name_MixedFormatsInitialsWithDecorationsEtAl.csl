@@ -1,0 +1,12 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <option name="et-al-min" value="6"/>
+        <option name="et-al-use-first" value="5"/>
+        <layout delimiter="; ">
+            <names variable="author">
+                <name delimiter=", " initialize-with="."/>
+		        <name-part type="primary-key" text-case="uppercase"/>
+            </names>
+        </layout>
+    </citation>
+</style>

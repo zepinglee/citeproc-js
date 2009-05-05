@@ -1,0 +1,9 @@
+{
+  "name": "Mixed Formats Primary Decorations",
+  "category": "name",
+  "mode": "citation",
+  "schema":"0.8",
+  "result": "Пётр Ильич ЧАЙКОВСКИЙ, Rip van WINKLE, 我妻栄, Carl THUCYDIDES III, TOKUGAWA Ieyasu, Ministry of Fear, Loathing and Error, PRINCE",
+  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout delimiter=\"; \">\n <names variable=\"author\">\n <name delimiter=\", \"/>\n <name-part type=\"primary-key\" text-case=\"uppercase\"/>\n </names>\n </layout>\n </citation>\n</style>",
+  "input": [{ "id":"item-1", "type": "book", "author": [ { "name":"Чайковский, Пётр Ильич" }, { "name":"van Winkle, Rip" }, { "name":"我妻, 栄" }, { "name":"Thucydides, Carl, III" }, { "name":"Tokugawa, Ieyasu !" }, { "name":"Ministry of Fear, Loathing and Error !!" }, { "name":"Prince" } ], "issued": "2000", "title": "Our Story" }]
+}

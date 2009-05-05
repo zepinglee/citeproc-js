@@ -1,0 +1,9 @@
+{
+  "name": "Label After Plural Decorations",
+  "category": "name",
+  "mode": "citation",
+  "schema":"0.8",
+  "result": "John Doe, et al. (editors)",
+  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <option name=\"et-al-min\" value=\"2\"/>\n <option name=\"et-al-use-first\" value=\"1\"/>\n <layout>\n <names variable=\"editor\">\n <name delimiter=\", \"/>\n <label prefix=\" (\" suffix=\")\"/>\n </names>\n </layout>\n </citation>\n</style>",
+  "input": [{ "id":"item-1", "type": "book", "editor": [ { "name":"Doe, John", "uri":"http://people.org/doej" }, { "name":"Roe, Jane", "uri":"http://people.org/doej" } ], "issued": "2000", "title": "His Anonymous Life" }]
+}
