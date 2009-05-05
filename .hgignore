@@ -6,7 +6,7 @@ syntax: regexp
 ^NAMES_ORIG.js
 ^\.emacs-desktop
 (^|.*/)machines
-(^|.*/)csl
+(^|.*/)csl$
 \.*\.result
 ^HOLD
 (^|.*/)\.svn
