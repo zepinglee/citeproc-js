@@ -245,6 +245,9 @@ CSL.Factory.State = function (xmlCommandInterface,nodelist){
 	this.fun.suffixator = new CSL.Util.Disambiguate.Suffixator(CSL.SUFFIX_CHARS);
 	this.fun.romanizer = new CSL.Util.Disambiguate.Romanizer();
 	//
+	// flip-flopper for inline markup
+	this.fun.flipflopper = new CSL.Util.FlipFlopper();
+	//
 	// token store stack.
 	this.tmp.tokenstore_stack = new CSL.Factory.Stack();
 
