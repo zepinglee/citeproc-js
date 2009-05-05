@@ -2,6 +2,7 @@ dojo.provide("csl.util_flipflop");
 
 CSL.Util.FlipFlopper = function(){
 	this.flipflops = [];
+	this.objlist = [];
 };
 
 CSL.Util.FlipFlopper.prototype.register = function(start, end, func, opt){
@@ -12,6 +13,33 @@ CSL.Util.FlipFlopper.prototype.register = function(start, end, func, opt){
 		"opt": opt
 	};
 	this.flipflops.push(flipflop);
+};
+
+CSL.Util.FlipFlopper.prototype.makeObj = function(str,funcs){
+	var ret = new Object();
+	ret["str"] = str;
+	ret["funcs"] = funcs.slice();
+	return ret;
+}
+
+CSL.Util.FlipFlopper.prototype.compose = function(str){
+	var objlist = [];
+	objlist.push( this.makeObj(str,[]));
+	for each (flipflop in this.flipflops){
+		var newobjlist = new Array();
+		for each (obj in objlist){
+			var strlst = this.split(obj["str"]);
+			for (var i=0; i < objlist.length; i++){
+				var obj = this.makeObj(strlst[i], obj.funcs.slice());
+				newobjlist.push(obj);
+			}
+			for (var i=1; i < newobjlist.length; i += 2){
+				newobjlist[i].funcs.push(flipflop.func);
+			}
+			objlist = newobjlist.slice();
+		}
+	}
+	return objlist;
 };
 
 CSL.Util.FlipFlopper.prototype.split = function(idx,str){

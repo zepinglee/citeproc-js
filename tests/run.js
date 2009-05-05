@@ -23,6 +23,7 @@ dojo.require("csl.csl");
 // requested tests go here
 if(true){
   	dojo.require("tests.test_flipflop");
+} else {
   	dojo.require("tests.test_range");
   	dojo.require("tests.std_disambiguate");
   	dojo.require("tests.std_term");
@@ -58,7 +59,6 @@ if(true){
 	dojo.require("tests.test_util_names");
   	dojo.require("tests.std_sort");
 	dojo.require("tests.test_sort");
-} else {
 
 	print("Nothing here");
 }
