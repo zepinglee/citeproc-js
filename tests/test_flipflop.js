@@ -1,80 +1,85 @@
 dojo.provide("tests.test_flipflop");
 
 doh.register("tests.flipflop", [
+	function testSimpleCompositionWorksAtAll() {
+		var ff = new CSL.Util.FlipFlopper();
+		ff.register( "[X]", "[Y]", "dummyfunc", []);
+		try {
+			var blob = new CSL.Factory.Blob( false, "One two [X] three [Y] four" );
+			ff.compose( blob );
+			var res = "Success";
+		} catch (e) {
+			var res = "Oops: "+e;
+		}
+		doh.assertEqual( res, "Success" );
+	},
 	function testCrossNestedTagsFailWikiStyle(){
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[A]", "[B]", "dummyfunc1", []);
 		ff.register( "[X]", "[Y]", "dummyfunc2", []);
 		try {
-			var res = ff.compose( "One [A] two [X] three [B] four [Y] five" );
+			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [B] four [Y] five" );
+			var res = ff.compose( blob );
 			var ok = "Success";
 		} catch (e) {
 			var ok = "Oops: "+e;
 		}
 		doh.assertEqual( "Success", ok );
 		doh.assertEqual( 3, res.length);
-		doh.assertEqual( "One ", res[0]["str"]);
-		doh.assertEqual( " two [X] three ", res[1]["str"]);
-		doh.assertEqual( " four [Y] five", res[2]["str"]);
-		doh.assertEqual( 0, res[0]["funcs"].length);
-		doh.assertEqual( 1, res[1]["funcs"].length);
-		doh.assertEqual( 0, res[2]["funcs"].length);
-		doh.assertEqual( "dummyfunc1", res[1]["funcs"][0]);
+		doh.assertEqual( "One ", res[0]["blobs"]);
+		doh.assertEqual( " two [X] three ", res[1]["blobs"]);
+		doh.assertEqual( " four [Y] five", res[2]["blobs"]);
+		doh.assertEqual( 0, res[0]["decorations"].length);
+		doh.assertEqual( 1, res[1]["decorations"].length);
+		doh.assertEqual( 0, res[2]["decorations"].length);
+		doh.assertEqual( "dummyfunc1", res[1]["decorations"][0]);
 	},
 	function testNestedCompositionObjectContentReverseFunctionOrder() {
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", "dummyfunc2", []);
 		ff.register( "[A]", "[B]", "dummyfunc1", []);
 		try {
-			var res = ff.compose( "One [A] two [X] three [Y]  four [B] five" );
+			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
+			var res = ff.compose( blob );
 			var ok = "Success";
 		} catch (e) {
 			var ok = "Oops: "+e;
 		}
 		doh.assertEqual( "Success", ok );
 		doh.assertEqual( 5, res.length);
-		doh.assertEqual( " three ", res[2].str );
-		doh.assertEqual( "dummyfunc1", res[2].funcs[0] );
-		doh.assertEqual( "dummyfunc2", res[2].funcs[1] );
+		doh.assertEqual( " three ", res[2].blobs );
+		doh.assertEqual( "dummyfunc1", res[2].decorations[0] );
+		doh.assertEqual( "dummyfunc2", res[2].decorations[1] );
 	},
 	function testNestedCompositionObjectContent() {
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[A]", "[B]", "dummyfunc1", []);
 		ff.register( "[X]", "[Y]", "dummyfunc2", []);
 		try {
-			var res = ff.compose( "One [A] two [X] three [Y]  four [B] five" );
+			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
+			var res = ff.compose( blob );
 			var ok = "Success";
 		} catch (e) {
 			var ok = "Oops: "+e;
 		}
 		doh.assertEqual( "Success", ok );
 		doh.assertEqual( 5, res.length);
-		doh.assertEqual( " three ", res[2].str );
-		doh.assertEqual( "dummyfunc1", res[2].funcs[0] );
-		doh.assertEqual( "dummyfunc2", res[2].funcs[1] );
+		doh.assertEqual( " three ", res[2].blobs );
+		doh.assertEqual( "dummyfunc1", res[2].decorations[0] );
+		doh.assertEqual( "dummyfunc2", res[2].decorations[1] );
 	},
 	function testSimpleCompositionObjectContent() {
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", "dummyfunc", []);
 		try {
-			var res = ff.compose( "One two [X] three [Y] four" );
+			var blob = new CSL.Factory.Blob( false, "One two [X] three [Y] four" );
+			var res = ff.compose( blob );
 			var ok = "Success";
 		} catch (e) {
 			var ok = "Oops: "+e;
 		}
 		doh.assertEqual( "Success", ok );
 		doh.assertEqual( 3, res.length);
-	},
-	function testSimpleCompositionWorksAtAll() {
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", "dummyfunc", []);
-		try {
-			ff.compose( "One two [X] three [Y] four" );
-			var res = "Success";
-		} catch (e) {
-			var res = "Oops: "+e;
-		}
-		doh.assertEqual( res, "Success" );
 	},
 	function testInstantiation() {
 		try {
@@ -196,5 +201,5 @@ doh.register("tests.flipflop", [
 		doh.assertEqual( " four five ", res[3] );
 		doh.assertEqual( "", res[4] );
 	},
-
 ]);
+

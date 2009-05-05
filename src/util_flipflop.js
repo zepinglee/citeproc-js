@@ -7,29 +7,24 @@ CSL.Util.FlipFlopper = function(){
 	this.stoplist = [];
 };
 
-CSL.Util.FlipFlopper.prototype.register = function(start, end, func, opt){
+CSL.Util.FlipFlopper.prototype.register = function(start, end, func, alt, action){
 	var flipflop = {
 		"start": start,
 		"end": end,
 		"func": func,
-		"opt": opt
+		"alt": alt,
+		"action": action
 	};
 	this.flipflops.push(flipflop);
 };
 
-CSL.Util.FlipFlopper.prototype.makeObj = function(str,funcs){
-	var ret = new Object();
-	ret["str"] = str;
-	ret["funcs"] = funcs.slice();
-	return ret;
-}
 
-CSL.Util.FlipFlopper.prototype.compose = function(str){
+CSL.Util.FlipFlopper.prototype.compose = function(obj){
 	//
 	// Normalize to an object list
 	//
 	var objlist = [];
-	objlist.push( this.makeObj(str,[]));
+	objlist.push( obj );
 	//
 	// For each flipflop, process the list and
 	// get the result
@@ -64,6 +59,14 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 	return false;
 }
 
+CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
+	//
+	// this needs to work a LITTLE harder.
+	//
+	blob.decorations.push( flipflop["func"]);
+};
+
+
 CSL.Util.FlipFlopper.prototype._compose = function(objlist){
 	//
 	// be pessimistic
@@ -79,15 +82,16 @@ CSL.Util.FlipFlopper.prototype._compose = function(objlist){
 			continue;
 		}
 		var obj = objlist[x];
-		if (this.find(obj["str"])){
+		if (this.find(obj["blobs"])){
 			var flipflop = this.flipflops[this.fpos];
-			var strlst = this.split(this.fpos, obj["str"]);
+			var strlst = this.split(this.fpos, obj["blobs"]);
 			for (var j=0; j < strlst.length; j++){
-				var newobj = this.makeObj(strlst[j], obj.funcs.slice());
+				var newobj = new CSL.Factory.Blob(obj,strlst[j]);
+				//this.makeObj(strlst[j], obj.funcs.slice());
 				newobjlist.push(newobj);
 			}
 			for (var j=(this.opos+1); j < newobjlist.length; j += 2){
-				newobjlist[j].funcs.push(flipflop.func);
+				this.applyFlipFlop(newobjlist[j],flipflop);
 			}
 		} else {
 			newobjlist.push(obj);
