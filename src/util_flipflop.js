@@ -45,21 +45,34 @@ CSL.Util.FlipFlopper.prototype.compose = function(obj){
 }
 
 CSL.Util.FlipFlopper.prototype.find = function(str){
-	var spos = -1;
 	this.fpos = -1;
+	var min = [-1, -1];
+	var values = [];
+	var val = [];
 	for (var i in this.flipflops){
 		if (i in this.stoplist){
 			continue;
 		}
-		var pos = str.indexOf(this.flipflops[i]["start"]);
-		if (spos == -1 && pos > -1){
-			spos = pos;
-			this.fpos = i;
-		}
-		if (pos > -1 && pos < spos){
-			this.fpos = i;
+		//
+		// bingo.  found a nasty looping bug.
+		// we need to find the flipflop start character
+		// that has the lowest index value in the string.
+		// this won't do that reliably, because the value of
+		// spos may vary wildly.
+		val = [ i, str.indexOf(this.flipflops[i]["start"]) ];
+		values.push(val.slice());
+	}
+	for each (var val in values){
+		if (val[1] > min[1]){
+			min = val;
+		};
+	}
+	for each (var val in values){
+		if (val[1] > -1 && val[1] < min[1]){
+			min = val;
 		}
 	}
+	this.fpos = min[0];
 	if (this.fpos > -1){
 		this.cont = true;
 		return true;
@@ -90,21 +103,22 @@ CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
 	// are placed on the middle objects in the span.  Otherwise,
 	// quotes work as standard flipflops of the first type
 	// described above.
-	var ffdecor = flipflop.func;
 	var found = false;
 	for (var i in blob.decorations){
 		var decor = blob.decorations[i];
-		if (flipflop.alt && decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1]){
+		var func_match = decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1];
+		var alt_match = decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1];
+		if (flipflop.alt && func_match){
 			// replace with alt, mark as done
 			blob.decorations[i] = flipflop.alt;
 			found = true;
 			break;
-		} else if (flipflop.alt && decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1]){
+		} else if (flipflop.alt && alt_match){
 			// replace with func, mark as done
 			blob.decorations[i] = flipflop.func;
 			found = true;
 			break;
-		} else if (!flipflop.alt && decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1]){
+		} else if (!flipflop.alt && func_match){
 			// just mark as done
 			found = true;
 			break;
@@ -152,7 +166,7 @@ CSL.Util.FlipFlopper.prototype._compose = function(objlist){
 			var foundstart = false;
 			var foundend = false;
 			if (newobjlist.length > 1){
-				for each (var decor in newobjlist[0].decorations){
+				for each (var decor in newobjlist[(this.opos)].decorations){
 					if ("@quotes" == decor[0] || "@squotes" == decor[0]){
 						foundstart = decor[0];
 						break;
@@ -165,10 +179,10 @@ CSL.Util.FlipFlopper.prototype._compose = function(objlist){
 					}
 				}
 				if (foundstart && foundend && foundstart == foundend){
-					for (var j=0; j < newobjlist.length; j++){
+					for (var j=(this.opos); j < newobjlist.length; j++){
 						for each (var decor in newobjlist[j].decorations){
 							if (foundstart == decor[0]){
-								if (j == 0){
+								if (j == this.opos){
 									decor[1] = "left";
 								} else if (j == (newobjlist.length-1)){
 									decor[1] = "right";

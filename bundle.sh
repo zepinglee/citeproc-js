@@ -53,7 +53,7 @@ rm ../tmp/NEW*
 cd ..
 echo $(cat stripped.js | wc -l) lines in product
 
-cp stripped.js rpc-stuff/citeproc-js-combined.js
+cp stripped.js rpc-stuff/src-js/citeproc-js.js
 
 #cd rpc-stuff
 #./citeproc-js-rpc.py

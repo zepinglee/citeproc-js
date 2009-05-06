@@ -141,7 +141,6 @@ class SimpleJSONRPCDispatcher(SimpleXMLRPCServer.SimpleXMLRPCDispatcher):
         """
         rawreq = json.loads(data)
         
-        
         #params, method = xmlrpclib.loads(data)
         id = rawreq.get('id', 0)
         method = rawreq['method']
@@ -293,7 +292,7 @@ if __name__ == '__main__':
     rt = Runtime()
     cx = rt.new_context()
 
-    cslcode = open("citeproc-js-combined.js").read()
+    cslcode = open("./src-js/citeproc-js.js").read()
     cx.eval_script(cslcode)
 
     ## Hack in English locale.  Should inspect the
@@ -317,6 +316,12 @@ if __name__ == '__main__':
         result = cx.eval_script("style.makeCitationCluster(%s)" %(theinput,))
         return result
 
+    def registerFlipFlops(input):
+        theinput = json.dumps(input)
+        #print theinput
+        result = cx.eval_script("style.registerFlipFlops(%s)" %(theinput,))
+        return "Insert items OK"
+
     def makeBibliography():
         result = cx.eval_script("style.makeBibliography()")
         return result
@@ -325,5 +330,7 @@ if __name__ == '__main__':
     server.register_function(lambda csl: makeStyle(csl), 'setStyle')
     server.register_function(lambda input: insertItems(input), 'insertItems')
     server.register_function(lambda input: makeCitationCluster(input), 'makeCitationCluster')
+    server.register_function(lambda input: registerFlipFlops(input), 'registerFlipFlops')
     server.register_function(lambda: makeBibliography(), 'makeBibliography')
     server.serve_forever()
+    

@@ -14,6 +14,12 @@ CSL.makeStyle = function(xml,locale){
 	return ret;
 }
 
+CSL.Factory.State.prototype.registerFlipFlops = function(flist){
+	for each (ff in flist){
+		this.fun.flipflopper.register(ff["start"], ff["end"], ff["func"], ff["alt"]);
+	}
+	return true;
+}
 
 /**
  * Compose a citation "cluster".

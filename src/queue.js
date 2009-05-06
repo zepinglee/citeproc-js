@@ -121,12 +121,18 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if (!blob){
 		blob = new CSL.Factory.Blob(token,str);
 	}
-	var curr = this.current.value();
 	var bloblist = this.state.fun.flipflopper.compose(blob);
-	for each (var blobbie in bloblist){
-		curr.push( blobbie );
+	if (bloblist.length > 1){
+		this.openLevel("empty");
+		var curr = this.current.value();
+		for each (var blobbie in bloblist){
+			curr.push( blobbie );
+		}
+		this.closeLevel();
+	} else {
+		var curr = this.current.value();
+		curr.push( blob );
 	}
-	//curr.push( blob );
 	this.state.tmp.term_predecessor = true;
 }
 

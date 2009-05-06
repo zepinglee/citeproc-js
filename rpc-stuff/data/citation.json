@@ -7,7 +7,7 @@
       "author": [
                   { "name":"Anderson, Margaret", "primary-key":"Anderson", "secondary-key":"Margaret" }
       ],
-      "title": "Book D",
+      "title": "The \"'Amazing Life of the *Grand Petunia Royale* wowie'\"",
       "issued": { "year": "1950" }
     },
     {
@@ -16,10 +16,8 @@
       "author": [
                   { "name":"Zinfandel, William", "primary-key":"Zinfandel", "secondary-key":"William" }
       ],
-      "title": "Book C",
+      "title": "*Peri Bathos*: the art of sinking in poetry (an exercise in flagrant plagiarism)",
       "issued": { "year": "1945" }
     }
   ]]
 }
-
-
