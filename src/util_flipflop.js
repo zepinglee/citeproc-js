@@ -60,7 +60,7 @@ CSL.Util.FlipFlopper.prototype._compose = function(blob){
 		//
 		print("bloblist: "+bloblist);
 		for (var j=1; j < bloblist.length; j += 2){
-			this.applyFlipFlop(bloblist[j],flipflop);
+			this.applyFlipFlop(bloblist[j],flipflop,blob);
 		}
 		//
 		// Install the bloblist and iterate over it
@@ -84,12 +84,6 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 		if (i in this.stoplist){
 			continue;
 		}
-		//
-		// bingo.  found a nasty looping bug.
-		// we need to find the flipflop start character
-		// that has the lowest index value in the string.
-		// this won't do that reliably, because the value of
-		// spos may vary wildly.
 		val = [ i, str.indexOf(this.flipflops[i]["start"]) ];
 		values.push(val.slice());
 	}
@@ -110,7 +104,7 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 	return false;
 }
 
-CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
+CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop,parent){
 	//
 	// Func and alt are key/value tuples that serve as
 	// drop-in replacements for the values used in the decorations.
@@ -135,41 +129,21 @@ CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
 	// described above.
 	var found = false;
 	var thing_to_add = flipflop.func;
-	for (var i in blob.decorations){
-		var decor = blob.decorations[i];
+	for (var i in parent.decorations){
+		var decor = parent.decorations[i];
 		var func_match = decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1];
 		var alt_match = decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1];
 		if (flipflop.alt && func_match){
-			if (!flipflop.additive){
-				// replace with alt, mark as done
-				blob.decorations[i] = flipflop.alt;
-				found = true;
-			} else {
-				thing_to_add = flipflop.alt;
-			}
-			break;
-		} else if (flipflop.alt && alt_match){
-			if (!flipflop.additive){
-				// replace with func, mark as done
-				blob.decorations[i] = flipflop.func;
-				found = true;
-			}
-			break;
-		} else if (!flipflop.alt && func_match){
-			if (!flipflop.additive){
-				// just mark as done
-				found = true;
-			}
+			// replace with alt, mark as done
+			thing_to_add = flipflop.alt;
 			break;
 		}
 	}
-	if (!found){
-		// add func
-		print("decorating!");
-		blob.decorations.reverse();
-		blob.decorations.push( thing_to_add );
-		blob.decorations.reverse();
-	}
+	// add func
+	print("decorating!");
+	blob.decorations.reverse();
+	blob.decorations.push( thing_to_add );
+	blob.decorations.reverse();
 };
 
 
