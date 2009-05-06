@@ -18,7 +18,7 @@ CSL.Output.Formats = function(){};
 CSL.Output.Formats.prototype.html = {
 	"@font-family":"<span style=\"font-family:%%PARAM%%\">%%STRING%%</span>",
 	"@font-style/italic":"<i>%%STRING%%</i>",
-	"@font-style/normal":false,
+	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
 	"@font-style/oblique":"<em>%%STRING%%</em>",
 	"@font-variant/small-caps":"<span style=\"font-variant:small-caps\">%%STRING%%</span>",
 	"@font-variant/normal":false,

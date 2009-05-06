@@ -5,6 +5,8 @@ doh.registerGroup("tests.list",
 	[
 		function testListAppend () {
 			var state = new tests.test_list.state();
+			state.fun = {};
+			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
 
 			var token = CSL.Factory.Token("someelement",CSL.START);
@@ -15,6 +17,8 @@ doh.registerGroup("tests.list",
 
 		function testListNewlevel () {
 			var state = new tests.test_list.state();
+			state.fun = {};
+			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
 			var token = CSL.Factory.Token("someelement",CSL.START);
 
@@ -26,6 +30,8 @@ doh.registerGroup("tests.list",
 
 		function testString () {
 			var state = new tests.test_list.state();
+			state.fun = {};
+			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
 
 			var token1 = new CSL.Factory.Token("sometype",CSL.START);
@@ -50,6 +56,8 @@ doh.registerGroup("tests.list",
 		function testListMerge () {
 			var token = tests.test_list.token();
 			var state = new tests.test_list.state();
+			state.fun = {};
+			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
 
 			res.addToken("newlevel",false,token);

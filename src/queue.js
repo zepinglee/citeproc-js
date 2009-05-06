@@ -122,7 +122,11 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		blob = new CSL.Factory.Blob(token,str);
 	}
 	var curr = this.current.value();
-	curr.push( blob );
+	var bloblist = this.state.fun.flipflopper.compose(blob);
+		for each (var blobbie in bloblist){
+		curr.push( blobbie );
+	}
+	//curr.push( blob );
 	this.state.tmp.term_predecessor = true;
 }
 

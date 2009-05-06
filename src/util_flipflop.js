@@ -29,15 +29,17 @@ CSL.Util.FlipFlopper.prototype.compose = function(obj){
 	// For each flipflop, process the list and
 	// get the result
 	//
-	this.stoplist = [];
-	while (this.cont){
-		objlist = this._compose(objlist);
-	}
-	for (var i=1; i < objlist.length; i++){
-		objlist[i].strings.prefix = "";
-	}
-	for (var i=0; i < (objlist.length-1); i++){
-		objlist[i].strings.suffix = "";
+	if (this.flipflops.length){
+		this.stoplist = [];
+		while (this.cont){
+			objlist = this._compose(objlist);
+		}
+		for (var i=1; i < objlist.length; i++){
+			objlist[i].strings.prefix = "";
+		}
+		for (var i=0; i < (objlist.length-1); i++){
+			objlist[i].strings.suffix = "";
+		}
 	}
 	return objlist;
 }
@@ -81,25 +83,39 @@ CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
 	// If alt is false, func is added to the bottom of
 	// the decoration stack unless func is already present.
 	//
-	// Quotation marks require special handling, because they
-	// apply visible characters to the content.  These are
+	// Quotation marks require special handling elsewhere, because
+	// they apply visible characters to the content.  These are
 	// reduced to left-side/right side singletons on the end
 	// chunks of a span when it is split, and noop markers
 	// are placed on the middle objects in the span.  Otherwise,
 	// quotes work as standard flipflops of the first type
 	// described above.
 	var ffdecor = flipflop.func;
-	if (flipflop.alt){
-		for each (decor in blob.decorations){
-			if (decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1]){
-				ffdecor = flipflop.alt;
-				break;
-			}
+	var found = false;
+	for (var i in blob.decorations){
+		var decor = blob.decorations[i];
+		if (flipflop.alt && decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1]){
+			// replace with alt, mark as done
+			blob.decorations[i] = flipflop.alt;
+			found = true;
+			break;
+		} else if (flipflop.alt && decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1]){
+			// replace with func, mark as done
+			blob.decorations[i] = flipflop.func;
+			found = true;
+			break;
+		} else if (!flipflop.alt && decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1]){
+			// just mark as done
+			found = true;
+			break;
 		}
 	}
-	blob.decorations.reverse();
-	blob.decorations.push(ffdecor);
-	blob.decorations.reverse();
+	if (!found){
+		// add func
+		blob.decorations.reverse();
+		blob.decorations.push(flipflop.func);
+		blob.decorations.reverse();
+	}
 };
 
 
