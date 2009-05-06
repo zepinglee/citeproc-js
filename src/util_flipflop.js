@@ -7,28 +7,31 @@ CSL.Util.FlipFlopper = function(){
 	this.stoplist = [];
 };
 
-CSL.Util.FlipFlopper.prototype.register = function(start, end, func, alt, action){
+CSL.Util.FlipFlopper.prototype.register = function(start, end, func, alt){
+	print("I DID register something!");
 	var flipflop = {
 		"start": start,
 		"end": end,
 		"func": func,
-		"alt": alt,
-		"action": action
+		"alt": alt
 	};
 	this.flipflops.push(flipflop);
 };
 
 
 CSL.Util.FlipFlopper.prototype.compose = function(obj){
+	print("I DID use the compose function!");
 	//
 	// Normalize to an object list
 	//
 	var objlist = [];
 	objlist.push( obj );
+	this.stoplist = [];
 	//
 	// For each flipflop, process the list and
 	// get the result
 	//
+	print("Do I SEE flipflops?  You tell me: "+this.flipflops.length);
 	if (this.flipflops.length){
 		this.stoplist = [];
 		while (this.cont){
@@ -45,13 +48,18 @@ CSL.Util.FlipFlopper.prototype.compose = function(obj){
 }
 
 CSL.Util.FlipFlopper.prototype.find = function(str){
+	print("I DO look for a start marker");
 	var spos = -1;
 	this.fpos = -1;
 	for (var i in this.flipflops){
+		print("My start marker DOES exist, and it is: "+this.flipflops[i].start);
 		if (i in this.stoplist){
 			continue;
 		}
 		var pos = str.indexOf(this.flipflops[i]["start"]);
+		if (pos > -1){
+			print("I DID find a start marker!");
+		}
 		if (spos == -1 && pos > -1){
 			spos = pos;
 			this.fpos = i;

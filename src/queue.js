@@ -123,7 +123,9 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	}
 	var curr = this.current.value();
 	var bloblist = this.state.fun.flipflopper.compose(blob);
-		for each (var blobbie in bloblist){
+	print("Blob list length is: "+bloblist.length);
+	for each (var blobbie in bloblist){
+		print("Oh, come on.  Pushing: "+blobbie.blobs);
 		curr.push( blobbie );
 	}
 	//curr.push( blob );
@@ -132,6 +134,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 
 CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 	//print("string");
+	print("STRING OUTPUT whoa .........................................");
 	var ret;
 	ret = { "str": [], "obj": [] };
 	if (blobs.length == 1 && "string" == blobs[0].blobs){

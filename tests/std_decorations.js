@@ -7,8 +7,12 @@ doh.register("tests.std_decorations", [
         var test = CSL.System.Tests.getTest("decorations_SimpleFlipFlop");
         doh.assertEqual(test.result, test.run());
     },
+]);
+
+var x = [
     function(){
         var test = CSL.System.Tests.getTest("decorations_SimpleQuotes");
         doh.assertEqual(test.result, test.run());
     },
-]);
+
+]
