@@ -39,7 +39,7 @@ CSL.System.Tests.getTest = function(myname){
 		var style = configurator.configure();
 		if (this.flipflops){
 			for each (var ff in this.flipflops){
-				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"] );
+				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
 			}
 		}
 		CSL.System.Tests.fixNames(this.input,myname);

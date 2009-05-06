@@ -8,7 +8,7 @@ citation
 
 
 >>== RESULT ==>>
-&ldquo;My &lsquo;Amazing&rsquo; title&rdquo;
+My &ldquo;&lsquo;Amazing&rdquo; and Bogus&rsquo; title
 <<== RESULT ==<<
 
 
@@ -16,7 +16,7 @@ citation
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
     <citation>
         <layout>
-            <text value="My 'Amazing' title" quotes="true"/>
+            <text variable="title"/>
         </layout>
     </citation>
 </style>
@@ -25,10 +25,24 @@ citation
 >>===== FLIPFLOPS =====>>
 [
   {
+    "start":"\"",
+    "end":"\"",
+    "func":["@quotes","true"],
+    "alt":["@squotes","true"],
+    "additive":"true"
+  },
+  {
     "start":"'",
     "end":"'",
     "func":["@quotes","true"],
     "alt":["@squotes","true"],
+    "additive":"true"
+  },
+  {
+    "start":"*",
+    "end":"*",
+    "func":["@font-weight","bold"],
+    "alt":["@font-weight","normal"],
     "additive":"true"
   }
 ]
@@ -38,6 +52,6 @@ citation
 [{
    "id":"item-1",
    "type": "book",
-   "title": "Ignore me"
+   "title": "My '\"Amazing\" *and* Bogus' Title"
 }]
 <<===== INPUT =====<<

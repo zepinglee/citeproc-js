@@ -18,31 +18,62 @@ CSL.Util.FlipFlopper.prototype.register = function(start, end, func, alt){
 };
 
 
-CSL.Util.FlipFlopper.prototype.compose = function(obj){
+CSL.Util.FlipFlopper.prototype.compose = function(blob){
 	//
-	// Normalize to an object list
+	// Process flipflops and return the result as a single
+	// blob object
 	//
-	var objlist = [];
-	objlist.push( obj );
-	this.cont = true;
-	//
-	// For each flipflop, process the list and
-	// get the result
-	//
+	print("this.flipflops: "+this.flipflops);
 	if (this.flipflops.length){
 		this.stoplist = [];
-		while (this.cont){
-			objlist = this._compose(objlist);
+		blob = this._compose(blob);
+	}
+	print("compose returns blob: "+blob);
+	return blob;
+}
+
+
+CSL.Util.FlipFlopper.prototype._compose = function(blob){
+	//
+	// blob.blobs starts off as a string.  Replace it with
+	// an array if it parses, and recurse on the blob elements
+	// in the array.  Otherwise just return the blob.
+	//
+	if (this.find(blob.blobs)){
+		var str = blob.blobs;
+		var flipflop = this.flipflops[this.fpos];
+		var strlst = this.split(this.fpos, blob.blobs);
+		var bloblist = new Array();
+		//
+		// Cast split items as unformatted objects for
+		// a start.
+		print("strlst: "+strlst);
+		for (var j=0; j < strlst.length; j++){
+			var tok = new CSL.Factory.Token();
+			var newblob = new CSL.Factory.Blob(tok,strlst[j]);
+			bloblist.push(newblob);
 		}
-		for (var i=1; i < objlist.length; i++){
-			objlist[i].strings.prefix = "";
+		//
+		// Apply registered formatting decorations to
+		// every other element of the split, starting
+		// with the second.
+		//
+		print("bloblist: "+bloblist);
+		for (var j=1; j < bloblist.length; j += 2){
+			this.applyFlipFlop(bloblist[j],flipflop);
 		}
-		for (var i=0; i < (objlist.length-1); i++){
-			objlist[i].strings.suffix = "";
+		//
+		// Install the bloblist and iterate over it
+		//
+		blob.blobs = bloblist;
+		for (var i in blob.blobs){
+			blob.blobs[i] = this._compose(blob.blobs[i]);
 		}
 	}
-	return objlist;
+	print("typeof blobs: "+typeof blob.blobs);
+	return blob;
 }
+
 
 CSL.Util.FlipFlopper.prototype.find = function(str){
 	this.fpos = -1;
@@ -74,7 +105,6 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 	}
 	this.fpos = min[0];
 	if (this.fpos > -1){
-		this.cont = true;
 		return true;
 	}
 	return false;
@@ -104,108 +134,49 @@ CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
 	// quotes work as standard flipflops of the first type
 	// described above.
 	var found = false;
+	var thing_to_add = flipflop.func;
 	for (var i in blob.decorations){
 		var decor = blob.decorations[i];
 		var func_match = decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1];
 		var alt_match = decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1];
 		if (flipflop.alt && func_match){
-			// replace with alt, mark as done
-			blob.decorations[i] = flipflop.alt;
-			found = true;
+			if (!flipflop.additive){
+				// replace with alt, mark as done
+				blob.decorations[i] = flipflop.alt;
+				found = true;
+			} else {
+				thing_to_add = flipflop.alt;
+			}
 			break;
 		} else if (flipflop.alt && alt_match){
-			// replace with func, mark as done
-			blob.decorations[i] = flipflop.func;
-			found = true;
+			if (!flipflop.additive){
+				// replace with func, mark as done
+				blob.decorations[i] = flipflop.func;
+				found = true;
+			}
 			break;
 		} else if (!flipflop.alt && func_match){
-			// just mark as done
-			found = true;
+			if (!flipflop.additive){
+				// just mark as done
+				found = true;
+			}
 			break;
 		}
 	}
 	if (!found){
 		// add func
+		print("decorating!");
 		blob.decorations.reverse();
-		blob.decorations.push(flipflop.func);
+		blob.decorations.push( thing_to_add );
 		blob.decorations.reverse();
 	}
 };
 
 
-CSL.Util.FlipFlopper.prototype._compose = function(objlist){
-	//
-	// be pessimistic
-	//
-	this.cont = false;
-	//
-	// Compose a new object list based on the split
-	//
-	var newobjlist = new Array();
-	this.opos = 0;
-	for (var x in objlist){
-		if ((x+this.opos) in this.stoplist){
-			continue;
-		}
-		var obj = objlist[x];
-		if (this.find(obj["blobs"])){
-			var flipflop = this.flipflops[this.fpos];
-			var strlst = this.split(this.fpos, obj["blobs"]);
-			for (var j=0; j < strlst.length; j++){
-				var newobj = new CSL.Factory.Blob(obj,strlst[j]);
-				//this.makeObj(strlst[j], obj.funcs.slice());
-				newobjlist.push(newobj);
-			}
-			for (var j=(this.opos+1); j < newobjlist.length; j += 2){
-				this.applyFlipFlop(newobjlist[j],flipflop);
-			}
-			//
-			// Normalize quotes here.  Verbose, but not terribly
-			// messy.
-			//
-			var foundstart = false;
-			var foundend = false;
-			if (newobjlist.length > 1){
-				for each (var decor in newobjlist[(this.opos)].decorations){
-					if ("@quotes" == decor[0] || "@squotes" == decor[0]){
-						foundstart = decor[0];
-						break;
-					}
-				}
-				for each (var decor in newobjlist[(newobjlist.length-1)].decorations){
-					if ("@quotes" == decor[0] || "@squotes" == decor[0]){
-						foundend = decor[0];
-						break;
-					}
-				}
-				if (foundstart && foundend && foundstart == foundend){
-					for (var j=(this.opos); j < newobjlist.length; j++){
-						for each (var decor in newobjlist[j].decorations){
-							if (foundstart == decor[0]){
-								if (j == this.opos){
-									decor[1] = "left";
-								} else if (j == (newobjlist.length-1)){
-									decor[1] = "right";
-								} else {
-									decor[1] = "noop";
-								}
-								break;
-							}
-						}
-					}
-				}
-			}
-		} else {
-			newobjlist.push(obj);
-		}
-		this.opos = newobjlist.length;
-	}
-	return newobjlist.slice();
-}
-
 CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	var spec = this.flipflops[idx];
 	var lst1 = str.split(spec["start"]);
+	print("lst1: "+lst1);
 	if (lst1.length > 1){
 		if (spec["start"] == spec["end"]){
 			if (lst1.length && (lst1.length % 2) == 0){
@@ -235,5 +206,6 @@ CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	} else {
 		var lst2 = lst1.slice();
 	}
+	print("lst2: "+lst2);
 	return lst2;
 }

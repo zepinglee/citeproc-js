@@ -2,7 +2,7 @@
   "name": "Nested Quotes",
   "category": "decorations",
   "mode": "citation",
-  "flipflops": [ {"start":"'","end":"'","func":["@quotes","true"],"alt":["@squotes","true"]} ],
+  "flipflops": [ { "start":"'", "end":"'", "func":["@quotes","true"], "alt":["@squotes","true"], "additive":"true" } ],
   "schema":"0.8",
   "result": "&ldquo;My &lsquo;Amazing&rsquo; title&rdquo;",
   "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <text value=\"My 'Amazing' title\" quotes=\"true\"/>\n </layout>\n </citation>\n</style>",
