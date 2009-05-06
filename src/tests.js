@@ -38,12 +38,9 @@ CSL.System.Tests.getTest = function(myname){
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
 		if (this.flipflops){
-			print("--->Start reports from tests.js");
 			for each (var ff in this.flipflops){
-				print(ff);
 				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"] );
 			}
-			print("--->End reports from tests.js");
 		}
 		CSL.System.Tests.fixNames(this.input,myname);
 		for each (var item in this.input){

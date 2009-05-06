@@ -1,7 +1,7 @@
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
     <citation>
         <layout>
-            <text value="My *Amazing* Title"/>
+            <text value="My *Amazing* Title" font-style="italic"/>
         </layout>
     </citation>
 </style>
