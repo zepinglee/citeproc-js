@@ -145,6 +145,42 @@ CSL.Util.FlipFlopper.prototype._compose = function(objlist){
 			for (var j=(this.opos+1); j < newobjlist.length; j += 2){
 				this.applyFlipFlop(newobjlist[j],flipflop);
 			}
+			//
+			// Normalize quotes here.  Verbose, but not terribly
+			// messy.
+			//
+			var foundstart = false;
+			var foundend = false;
+			if (newobjlist.length > 1){
+				for each (var decor in newobjlist[0].decorations){
+					if ("@quotes" == decor[0] || "@squotes" == decor[0]){
+						foundstart = decor[0];
+						break;
+					}
+				}
+				for each (var decor in newobjlist[(newobjlist.length-1)].decorations){
+					if ("@quotes" == decor[0] || "@squotes" == decor[0]){
+						foundend = decor[0];
+						break;
+					}
+				}
+				if (foundstart && foundend && foundstart == foundend){
+					for (var j=0; j < newobjlist.length; j++){
+						for each (var decor in newobjlist[j].decorations){
+							if (foundstart == decor[0]){
+								if (j == 0){
+									decor[1] = "left";
+								} else if (j == (newobjlist.length-1)){
+									decor[1] = "right";
+								} else {
+									decor[1] = "noop";
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
 		} else {
 			newobjlist.push(obj);
 		}
@@ -157,31 +193,31 @@ CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	var spec = this.flipflops[idx];
 	var lst1 = str.split(spec["start"]);
 	if (lst1.length > 1){
-	if (spec["start"] == spec["end"]){
-		if (lst1.length && (lst1.length % 2) == 0){
-			var buf = lst1.pop();
-			lst1[(lst1.length-1)] += spec["start"];
-			lst1[(lst1.length-1)] += buf;
-		}
-		var lst2 = lst1.slice();
-	} else {
-		var lst2 = [lst1[0]];
-		for (var i=1; i < lst1.length; i++){
-			var sublst = lst1[i].split(spec["end"]);
-			if (sublst.length == 1 || "\\" == lst2[(lst2.length-1)][(lst2[(lst2.length-1)].length-1)]){
-				var buf = lst2.pop();
-				lst2.push( buf + spec["start"] + lst1.slice(i).join(spec["start"]) );
-				this.fail = true;
-				this.stoplist.push((this.opos+i));
-				break;
+		if (spec["start"] == spec["end"]){
+			if (lst1.length && (lst1.length % 2) == 0){
+				var buf = lst1.pop();
+				lst1[(lst1.length-1)] += spec["start"];
+				lst1[(lst1.length-1)] += buf;
 			}
-			sublst[1] = sublst.slice(1).join(spec["end"]);
-			for (var j=(sublst.length-1); j > 1; j--){
-				sublst.pop();
+			var lst2 = lst1.slice();
+		} else {
+			var lst2 = [lst1[0]];
+			for (var i=1; i < lst1.length; i++){
+				var sublst = lst1[i].split(spec["end"]);
+				if (sublst.length == 1 || "\\" == lst2[(lst2.length-1)][(lst2[(lst2.length-1)].length-1)]){
+					var buf = lst2.pop();
+					lst2.push( buf + spec["start"] + lst1.slice(i).join(spec["start"]) );
+					this.fail = true;
+					this.stoplist.push((this.opos+i));
+					break;
+				}
+				sublst[1] = sublst.slice(1).join(spec["end"]);
+				for (var j=(sublst.length-1); j > 1; j--){
+					sublst.pop();
+				}
+				lst2 = lst2.concat(sublst);
 			}
-			lst2 = lst2.concat(sublst);
 		}
-	}
 	} else {
 		var lst2 = lst1.slice();
 	}
