@@ -22,9 +22,9 @@ dojo.require("csl.csl");
 //
 // requested tests go here
 if(true){
-  	dojo.require("tests.std_decorations");
-} else {
   	dojo.require("tests.test_flipflop");
+} else {
+  	dojo.require("tests.std_decorations");
   	dojo.require("tests.std_collapse");
   	dojo.require("tests.std_name");
   	dojo.require("tests.std_term");

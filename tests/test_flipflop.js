@@ -1,6 +1,47 @@
 dojo.provide("tests.test_flipflop");
 
 doh.register("tests.flipflop", [
+	function testCrossNestedTagsFailWikiStyle(){
+		var ff = new CSL.Util.FlipFlopper();
+		ff.register( "[A]", "[B]", "dummyfunc1", []);
+		ff.register( "[X]", "[Y]", "dummyfunc2", []);
+		try {
+			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [B] four [Y] five" );
+			var res = ff.compose( blob );
+			var ok = "Success";
+		} catch (e) {
+			var ok = "Oops: "+e;
+		}
+		doh.assertEqual( "Success", ok );
+		doh.assertEqual( "One ", res.blobs[0].blobs);
+		//
+		// too deep!
+		doh.assertEqual( " two [X] three ", res.blobs[1].blobs);
+		doh.assertEqual( " four [Y] five", res.blobs[2].blobs);
+		doh.assertEqual( 0, res.blobs[0].decorations.length);
+		doh.assertEqual( 1, res.blobs[1].decorations.length);
+		doh.assertEqual( 0, res.blobs[2].decorations.length);
+		doh.assertEqual( "dummyfunc1", res.blobs[1].decorations[0]);
+	},
+	function testNestedCompositionObjectContent() {
+		var ff = new CSL.Util.FlipFlopper();
+		ff.register( "[A]", "[B]", ["fkey1","fattr1"], ["altkey1","altattr1"]);
+		ff.register( "[X]", "[Y]", ["fkey2","fattr2"], ["altkey2","altattr2"]);
+
+		try {
+			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
+			var res = ff.compose( blob );
+			var ok = "Success";
+		} catch (e) {
+			var ok = "Oops: "+e;
+		}
+		doh.assertEqual( "Success", ok );
+		doh.assertEqual( " three ", res.blobs[1].blobs[1].blobs );
+		doh.assertEqual( "fkey1", res.blobs[1].decorations[0][0] );
+		doh.assertEqual( "fattr1", res.blobs[1].decorations[0][1] );
+		doh.assertEqual( "fkey2", res.blobs[1].blobs[1].decorations[0][0] );
+		doh.assertEqual( "fattr2", res.blobs[1].blobs[1].decorations[0][1] );
+	},
 	function testSimpleCompositionEscape() {
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", "dummyfunc", []);
@@ -27,27 +68,6 @@ doh.register("tests.flipflop", [
 		}
 		doh.assertEqual( res, "Success" );
 	},
-	function testCrossNestedTagsFailWikiStyle(){
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[A]", "[B]", "dummyfunc1", []);
-		ff.register( "[X]", "[Y]", "dummyfunc2", []);
-		try {
-			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [B] four [Y] five" );
-			var res = ff.compose( blob );
-			var ok = "Success";
-		} catch (e) {
-			var ok = "Oops: "+e;
-		}
-		doh.assertEqual( "Success", ok );
-		doh.assertEqual( 3, res.length);
-		doh.assertEqual( "One ", res[0]["blobs"]);
-		doh.assertEqual( " two [X] three ", res[1]["blobs"]);
-		doh.assertEqual( " four [Y] five", res[2]["blobs"]);
-		doh.assertEqual( 0, res[0]["decorations"].length);
-		doh.assertEqual( 1, res[1]["decorations"].length);
-		doh.assertEqual( 0, res[2]["decorations"].length);
-		doh.assertEqual( "dummyfunc1", res[1]["decorations"][0]);
-	},
 	function testNestedCompositionObjectContentReverseFunctionOrder() {
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", ["fkey2","fattr2"], ["altkey2","altattr2"]);
@@ -60,32 +80,11 @@ doh.register("tests.flipflop", [
 			var ok = "Oops: "+e;
 		}
 		doh.assertEqual( "Success", ok );
-		doh.assertEqual( 5, res.length);
-		doh.assertEqual( " three ", res[2].blobs );
-		doh.assertEqual( "fkey2", res[2].decorations[0][0] );
-		doh.assertEqual( "fattr2", res[2].decorations[0][1] );
-		doh.assertEqual( "fkey1", res[2].decorations[1][0] );
-		doh.assertEqual( "fattr1", res[2].decorations[1][1] );
-	},
-	function testNestedCompositionObjectContent() {
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[A]", "[B]", ["fkey1","fattr1"], ["altkey1","altattr1"]);
-		ff.register( "[X]", "[Y]", ["fkey2","fattr2"], ["altkey2","altattr2"]);
-
-		try {
-			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
-			var res = ff.compose( blob );
-			var ok = "Success";
-		} catch (e) {
-			var ok = "Oops: "+e;
-		}
-		doh.assertEqual( "Success", ok );
-		doh.assertEqual( 5, res.length);
-		doh.assertEqual( " three ", res[2].blobs );
-		doh.assertEqual( "fkey2", res[2].decorations[0][0] );
-		doh.assertEqual( "fattr2", res[2].decorations[0][1] );
-		doh.assertEqual( "fkey1", res[2].decorations[1][0] );
-		doh.assertEqual( "fattr1", res[2].decorations[1][1] );
+		doh.assertEqual( " three ", res.blobs[1].blobs[1].blobs );
+		doh.assertEqual( "fkey1", res.blobs[1].decorations[0][0] );
+		doh.assertEqual( "fattr1", res.blobs[1].decorations[0][1] );
+		doh.assertEqual( "fkey2", res.blobs[1].blobs[1].decorations[0][0] );
+		doh.assertEqual( "fattr2", res.blobs[1].blobs[1].decorations[0][1] );
 	},
 	function testSimpleCompositionObjectContent() {
 		var ff = new CSL.Util.FlipFlopper();
@@ -98,7 +97,10 @@ doh.register("tests.flipflop", [
 			var ok = "Oops: "+e;
 		}
 		doh.assertEqual( "Success", ok );
-		doh.assertEqual( 3, res.length);
+		doh.assertEqual( "object", typeof res.blobs);
+		doh.assertEqual( 3, res.blobs.length);
+		doh.assertEqual( "string", typeof res.blobs[1].blobs);
+		doh.assertEqual( " three ", res.blobs[1].blobs);
 	},
 	function testInstantiation() {
 		try {

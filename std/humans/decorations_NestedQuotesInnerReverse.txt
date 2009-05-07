@@ -8,7 +8,7 @@ citation
 
 
 >>== RESULT ==>>
-My &ldquo;&lsquo;Amazing&rdquo; and Bogus&rsquo; title
+My &ldquo;&lsquo;Amazing&rsquo; <b>and</b> Bogus&rdquo; Title
 <<== RESULT ==<<
 
 
