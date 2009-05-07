@@ -46,15 +46,15 @@ doh.register("tests.flipflop", [
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", "dummyfunc", []);
 		try {
-			var blob = new CSL.Factory.Blob( false, "One two \\[X] three [Y] four" );
+			var tok = CSL.Factory.Token("empty");
+			var blob = new CSL.Factory.Blob( tok, "One two \\[X] three [Y] four" );
 			var res = ff.compose( blob );
 			var ok = "Success";
 		} catch (e) {
 			var ok = "Oops: "+e;
 		}
 		doh.assertEqual( "Success", ok );
-		doh.assertEqual( 1, res.length);
-		doh.assertEqual( "One two \\[X] three [Y] four", res[0].blobs);
+		doh.assertEqual( "One two [X] three [Y] four", res.blobs);
 	},
 	function testSimpleCompositionWorksAtAll() {
 		var ff = new CSL.Util.FlipFlopper();
@@ -141,23 +141,27 @@ doh.register("tests.flipflop", [
 		doh.assertEqual( "three", res[1] );
 		doh.assertEqual( " four *five six", res[2] );
 	},
-	function testMismatchExtraStartTagBreaksParseSubsequently(){
+	function testMismatchExtraMidStartTagWithTagAttraction(){
 		var dummyfunc = "dummyfunc";
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", dummyfunc, []);
 		var res = ff.split( 0, "One [X] two [Y] three [X] four [X] five [Y] six" );
-		doh.assertEqual( 3, res.length );
+		doh.assertEqual( 5, res.length );
 		doh.assertEqual( "One ", res[0] );
 		doh.assertEqual( " two ", res[1] );
-		doh.assertEqual( " three [X] four [X] five [Y] six", res[2] );
+		doh.assertEqual( " three [X] four ", res[2] );
+		doh.assertEqual( " five ", res[3] );
+		doh.assertEqual( " six", res[4] );
 	},
-	function testMismatchExtraStartTagBreaksParse(){
+	function testMismatchExtraStartTagWithTagAttraction(){
 		var dummyfunc = "dummyfunc";
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[X]", "[Y]", dummyfunc, []);
 		var res = ff.split( 0, "One two [X] three [X] four five [Y] six" );
-		doh.assertEqual( 1, res.length );
-		doh.assertEqual( "One two [X] three [X] four five [Y] six", res[0] );
+		doh.assertEqual( 3, res.length );
+		doh.assertEqual( "One two [X] three ", res[0] );
+		doh.assertEqual( " four five ", res[1] );
+		doh.assertEqual( " six", res[2] );
 	},
 	function testMismatchDoubleEndTagsIgnored(){
 		var dummyfunc = "dummyfunc";

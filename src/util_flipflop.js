@@ -66,6 +66,8 @@ CSL.Util.FlipFlopper.prototype._compose = function(blob){
 			for (var i in blob.blobs){
 				blob.blobs[i] = this.compose(blob.blobs[i]);
 			}
+		} else {
+			blob.blobs = strlst;
 		}
 	} // if find flipflop string inside blob
 	return blob;
@@ -124,6 +126,19 @@ CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop,parent){
 CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	var spec = this.flipflops[idx];
 	var lst1 = str.split(spec["start"]);
+	for (var i=(lst1.length-1); i > 0; i--){
+		var first = lst1[(i-1)];
+		var second = lst1[i];
+		if ("\\" == first[(first.length-1)]){
+			lst1[(i-1)] = first.slice(0,(first.length-1));
+			var start = lst1.slice(0,i);
+			start[(start.length-1)] += spec["start"];
+			start[(start.length-1)] += lst1[i];
+			var end = lst1.slice((i+1));
+			lst1 = start.concat(end);
+		}
+	}
+	// "\\" == lst2[(lst2.length-1)][(lst2[(lst2.length-1)].length-1)]){
 	if (lst1.length > 1){
 		if (spec["start"] != spec["end"]){
 			for (var i=(lst1.length-1); i > 0; i--){
@@ -144,7 +159,6 @@ CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 					lst1 = start.concat(sublst).concat(end);
 				}
 			}
-			// sublst.length == 1 || "\\" == lst2[(lst2.length-1)][(lst2[(lst2.length-1)].length-1)]){
 		} else {
 			if (lst1.length && (lst1.length % 2) == 0){
 				var buf = lst1.pop();
