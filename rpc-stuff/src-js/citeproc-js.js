@@ -689,23 +689,48 @@ CSL.Util.FlipFlopper.prototype.register = function(start, end, func, alt){
 	};
 	this.flipflops.push(flipflop);
 };
-CSL.Util.FlipFlopper.prototype.compose = function(obj){
-	var objlist = [];
-	objlist.push( obj );
-	this.cont = true;
+CSL.Util.FlipFlopper.prototype.compose = function(blob){
 	if (this.flipflops.length){
 		this.stoplist = [];
-		while (this.cont){
-			objlist = this._compose(objlist);
-		}
-		for (var i=1; i < objlist.length; i++){
-			objlist[i].strings.prefix = "";
-		}
-		for (var i=0; i < (objlist.length-1); i++){
-			objlist[i].strings.suffix = "";
-		}
+		blob = this._compose(blob);
 	}
-	return objlist;
+	return blob;
+}
+CSL.Util.FlipFlopper.prototype._compose = function(blob){
+	if (this.find(blob.blobs)){
+		var str = blob.blobs;
+		var flipflop = this.flipflops[this.fpos];
+		var strlst = this.split(this.fpos, blob.blobs);
+		if (strlst.length > 1){
+			var bloblist = new Array();
+			//
+			// Cast split items as unformatted objects for
+			// a start.
+			for (var j=0; j < strlst.length; j++){
+				var tok = new CSL.Factory.Token();
+				var newblob = new CSL.Factory.Blob(tok,strlst[j]);
+				bloblist.push(newblob);
+			}
+			//
+			// Apply registered formatting decorations to
+			// every other element of the split, starting
+			// with the second.
+			//
+			for (var j=1; j < bloblist.length; j += 2){
+				this.applyFlipFlop(bloblist[j],flipflop,blob);
+			}
+			//
+			// Install the bloblist and iterate over it
+			//
+			blob.blobs = bloblist;
+			for (var i in blob.blobs){
+				blob.blobs[i] = this.compose(blob.blobs[i]);
+			}
+		} else {
+			blob.blobs = strlst;
+		}
+	} // if find flipflop string inside blob
+	return blob;
 }
 CSL.Util.FlipFlopper.prototype.find = function(str){
 	this.fpos = -1;
@@ -716,12 +741,6 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 		if (i in this.stoplist){
 			continue;
 		}
-		//
-		// bingo.  found a nasty looping bug.
-		// we need to find the flipflop start character
-		// that has the lowest index value in the string.
-		// this won't do that reliably, because the value of
-		// spos may vary wildly.
 		val = [ i, str.indexOf(this.flipflops[i]["start"]) ];
 		values.push(val.slice());
 	}
@@ -737,136 +756,71 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 	}
 	this.fpos = min[0];
 	if (this.fpos > -1){
-		this.cont = true;
 		return true;
 	}
 	return false;
 }
-CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
+CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop,parent){
 	var found = false;
-	for (var i in blob.decorations){
-		var decor = blob.decorations[i];
+	var thing_to_add = flipflop.func;
+	for (var i in parent.decorations){
+		var decor = parent.decorations[i];
 		var func_match = decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1];
 		var alt_match = decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1];
 		if (flipflop.alt && func_match){
 			// replace with alt, mark as done
-			blob.decorations[i] = flipflop.alt;
-			found = true;
-			break;
-		} else if (flipflop.alt && alt_match){
-			// replace with func, mark as done
-			blob.decorations[i] = flipflop.func;
-			found = true;
-			break;
-		} else if (!flipflop.alt && func_match){
-			// just mark as done
-			found = true;
+			thing_to_add = flipflop.alt;
 			break;
 		}
 	}
-	if (!found){
-		// add func
-		blob.decorations.reverse();
-		blob.decorations.push(flipflop.func);
-		blob.decorations.reverse();
-	}
+	blob.decorations.reverse();
+	blob.decorations.push( thing_to_add );
+	blob.decorations.reverse();
 };
-CSL.Util.FlipFlopper.prototype._compose = function(objlist){
-	this.cont = false;
-	var newobjlist = new Array();
-	this.opos = 0;
-	for (var x in objlist){
-		if ((x+this.opos) in this.stoplist){
-			continue;
-		}
-		var obj = objlist[x];
-		if (this.find(obj["blobs"])){
-			var flipflop = this.flipflops[this.fpos];
-			var strlst = this.split(this.fpos, obj["blobs"]);
-			for (var j=0; j < strlst.length; j++){
-				var newobj = new CSL.Factory.Blob(obj,strlst[j]);
-				//this.makeObj(strlst[j], obj.funcs.slice());
-				newobjlist.push(newobj);
-			}
-			for (var j=(this.opos+1); j < newobjlist.length; j += 2){
-				this.applyFlipFlop(newobjlist[j],flipflop);
-			}
-			//
-			// Normalize quotes here.  Verbose, but not terribly
-			// messy.
-			//
-			var foundstart = false;
-			var foundend = false;
-			if (newobjlist.length > 1){
-				for each (var decor in newobjlist[(this.opos)].decorations){
-					if ("@quotes" == decor[0] || "@squotes" == decor[0]){
-						foundstart = decor[0];
-						break;
-					}
-				}
-				for each (var decor in newobjlist[(newobjlist.length-1)].decorations){
-					if ("@quotes" == decor[0] || "@squotes" == decor[0]){
-						foundend = decor[0];
-						break;
-					}
-				}
-				if (foundstart && foundend && foundstart == foundend){
-					for (var j=(this.opos); j < newobjlist.length; j++){
-						for each (var decor in newobjlist[j].decorations){
-							if (foundstart == decor[0]){
-								if (j == this.opos){
-									decor[1] = "left";
-								} else if (j == (newobjlist.length-1)){
-									decor[1] = "right";
-								} else {
-									decor[1] = "noop";
-								}
-								break;
-							}
-						}
-					}
-				}
-			}
-		} else {
-			newobjlist.push(obj);
-		}
-		this.opos = newobjlist.length;
-	}
-	return newobjlist.slice();
-}
 CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	var spec = this.flipflops[idx];
 	var lst1 = str.split(spec["start"]);
+	for (var i=(lst1.length-1); i > 0; i--){
+		var first = lst1[(i-1)];
+		var second = lst1[i];
+		if ("\\" == first[(first.length-1)]){
+			lst1[(i-1)] = first.slice(0,(first.length-1));
+			var start = lst1.slice(0,i);
+			start[(start.length-1)] += spec["start"];
+			start[(start.length-1)] += lst1[i];
+			var end = lst1.slice((i+1));
+			lst1 = start.concat(end);
+		}
+	}
 	if (lst1.length > 1){
-		if (spec["start"] == spec["end"]){
+		if (spec["start"] != spec["end"]){
+			for (var i=(lst1.length-1); i > 0; i--){
+				var sublst = lst1[i].split(spec["end"]);
+				// reduce to a two-element list
+				for (var j=(sublst.length-1); j > 1; j--){
+					sublst[(j-1)] += spec["end"];
+					sublst[(j-1)] += sublst[j];
+					sublst.pop();
+				}
+				var start = lst1.slice(0,i);
+				var end = lst1.slice((i+1));
+				if (sublst.length == 1){
+					start[(start.length-1)] += spec["start"];
+					start[(start.length-1)] += sublst[0];
+					lst1 = start.concat(end);
+				} else {
+					lst1 = start.concat(sublst).concat(end);
+				}
+			}
+		} else {
 			if (lst1.length && (lst1.length % 2) == 0){
 				var buf = lst1.pop();
 				lst1[(lst1.length-1)] += spec["start"];
 				lst1[(lst1.length-1)] += buf;
 			}
-			var lst2 = lst1.slice();
-		} else {
-			var lst2 = [lst1[0]];
-			for (var i=1; i < lst1.length; i++){
-				var sublst = lst1[i].split(spec["end"]);
-				if (sublst.length == 1 || "\\" == lst2[(lst2.length-1)][(lst2[(lst2.length-1)].length-1)]){
-					var buf = lst2.pop();
-					lst2.push( buf + spec["start"] + lst1.slice(i).join(spec["start"]) );
-					this.fail = true;
-					this.stoplist.push((this.opos+i));
-					break;
-				}
-				sublst[1] = sublst.slice(1).join(spec["end"]);
-				for (var j=(sublst.length-1); j > 1; j--){
-					sublst.pop();
-				}
-				lst2 = lst2.concat(sublst);
-			}
 		}
-	} else {
-		var lst2 = lst1.slice();
 	}
-	return lst2;
+	return lst1;
 }
 CSL.Factory = {};
 CSL.Factory.version = function(){
@@ -4146,7 +4100,7 @@ CSL.System.Tests.getTest = function(myname){
 		var style = configurator.configure();
 		if (this.flipflops){
 			for each (var ff in this.flipflops){
-				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"] );
+				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
 			}
 		}
 		CSL.System.Tests.fixNames(this.input,myname);
