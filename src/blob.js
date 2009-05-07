@@ -20,6 +20,7 @@ CSL.Factory.Blob = function(token,str){
 	} else {
 		this.blobs = new Array();
 	};
+	this.alldecor = [ this.decorations ];
 };
 
 
@@ -27,6 +28,7 @@ CSL.Factory.Blob.prototype.push = function(blob){
 	if ("string" == typeof this.blobs){
 		throw "Attempt to push blob onto string object";
 	} else {
+		blob.alldecor = blob.alldecor.concat(this.alldecor);
 		this.blobs.push(blob);
 	}
-}
+};

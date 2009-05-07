@@ -702,27 +702,27 @@ CSL.Util.FlipFlopper.prototype._compose = function(blob){
 		var flipflop = this.flipflops[this.fpos];
 		var strlst = this.split(this.fpos, blob.blobs);
 		if (strlst.length > 1){
-			var bloblist = new Array();
+			blob.blobs = new Array();
 			//
 			// Cast split items as unformatted objects for
 			// a start.
 			for (var j=0; j < strlst.length; j++){
 				var tok = new CSL.Factory.Token();
 				var newblob = new CSL.Factory.Blob(tok,strlst[j]);
-				bloblist.push(newblob);
+				blob.push(newblob);
 			}
 			//
 			// Apply registered formatting decorations to
 			// every other element of the split, starting
 			// with the second.
 			//
-			for (var j=1; j < bloblist.length; j += 2){
-				this.applyFlipFlop(bloblist[j],flipflop,blob);
+			for (var j=1; j < blob.blobs.length; j += 2){
+				this.applyFlipFlop(blob.blobs[j],flipflop,blob);
 			}
 			//
 			// Install the bloblist and iterate over it
 			//
-			blob.blobs = bloblist;
+			//blob.blobs = bloblist;
 			for (var i in blob.blobs){
 				blob.blobs[i] = this.compose(blob.blobs[i]);
 			}
@@ -760,16 +760,23 @@ CSL.Util.FlipFlopper.prototype.find = function(str){
 	}
 	return false;
 }
-CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop,parent){
+CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
 	var found = false;
 	var thing_to_add = flipflop.func;
-	for (var i in parent.decorations){
-		var decor = parent.decorations[i];
-		var func_match = decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1];
-		var alt_match = decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1];
-		if (flipflop.alt && func_match){
-			// replace with alt, mark as done
-			thing_to_add = flipflop.alt;
+	var breakme = false;
+	for each (var blobdecorations in blob.alldecor){
+		for (var i in blobdecorations){
+			var decor = blobdecorations[i];
+			var func_match = decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1];
+			var alt_match = decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1];
+			if (flipflop.alt && func_match){
+				// replace with alt, mark as done
+				thing_to_add = flipflop.alt;
+				breakme = true;
+				break;
+			}
+		}
+		if (breakme){
 			break;
 		}
 	}
@@ -1201,6 +1208,15 @@ CSL.Factory.Blob = function(token,str){
 	} else {
 		this.blobs = new Array();
 	};
+	this.alldecor = [ this.decorations ];
+};
+CSL.Factory.Blob.prototype.push = function(blob){
+	if ("string" == typeof this.blobs){
+		throw "Attempt to push blob onto string object";
+	} else {
+		blob.alldecor = blob.alldecor.concat(this.alldecor);
+		this.blobs.push(blob);
+	}
 };
 CSL.Factory.Token = function(name,tokentype){
 	this.name = name;
@@ -3330,7 +3346,7 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
 	var curr = this.current.value();
 	curr.push( blob );
-	this.current.push( blob.blobs );
+	this.current.push( blob );
 };
 CSL.Output.Queue.prototype.closeLevel = function(name){
 	this.current.pop();
@@ -3425,9 +3441,9 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 	return ret;
 };
 CSL.Output.Queue.prototype.clearlevel = function(){
-	var blobs = this.current.value();
-	for (var i=(blobs.length-1); i > -1; i--){
-		blobs.pop();
+	var blob = this.current.value();
+	for (var i=(blob.blobs.length-1); i > -1; i--){
+		blob.blobs.pop();
 	}
 };
 CSL.Output.Queue.prototype.renderBlobs = function(blobs){
