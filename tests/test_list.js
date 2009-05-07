@@ -3,6 +3,23 @@ dojo.provide("tests.test_list");
 
 doh.registerGroup("tests.list",
 	[
+		function testListMerge () {
+			var token = tests.test_list.token();
+			var state = new tests.test_list.state();
+			state.fun = {};
+			state.fun.flipflopper = new CSL.Util.FlipFlopper();
+			var res = new CSL.Output.Queue(state);
+
+			res.addToken("newlevel",false,token);
+
+			res.append("one");
+			res.openLevel("newlevel");
+			res.append("two");
+			res.append("three");
+			doh.assertEqual("two", res.current.value().blobs[0].blobs );
+			res.closeLevel();
+			doh.assertEqual("one", res.current.value()[0].blobs );
+		},
 		function testListAppend () {
 			var state = new tests.test_list.state();
 			state.fun = {};
@@ -53,23 +70,6 @@ doh.registerGroup("tests.list",
 
 			doh.assertEqual("one [X] two [Y] three", res.string(state,res.queue) );
 		},
-		function testListMerge () {
-			var token = tests.test_list.token();
-			var state = new tests.test_list.state();
-			state.fun = {};
-			state.fun.flipflopper = new CSL.Util.FlipFlopper();
-			var res = new CSL.Output.Queue(state);
-
-			res.addToken("newlevel",false,token);
-
-			res.append("one");
-			res.openLevel("newlevel");
-			res.append("two");
-			res.append("three");
-			doh.assertEqual("two", res.current.value()[0].blobs );
-			res.closeLevel();
-			doh.assertEqual("one", res.current.value()[0].blobs );
-		}
 	],
 	function(){
 		tests.test_list.token = function(){

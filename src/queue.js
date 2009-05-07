@@ -86,7 +86,7 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
 	var curr = this.current.value();
 	curr.push( blob );
-	this.current.push( blob.blobs );
+	this.current.push( blob );
 };
 
 /**
@@ -192,9 +192,9 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 };
 
 CSL.Output.Queue.prototype.clearlevel = function(){
-	var blobs = this.current.value();
-	for (var i=(blobs.length-1); i > -1; i--){
-		blobs.pop();
+	var blob = this.current.value();
+	for (var i=(blob.blobs.length-1); i > -1; i--){
+		blob.blobs.pop();
 	}
 };
 

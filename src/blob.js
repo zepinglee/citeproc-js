@@ -21,3 +21,12 @@ CSL.Factory.Blob = function(token,str){
 		this.blobs = new Array();
 	};
 };
+
+
+CSL.Factory.Blob.prototype.push = function(blob){
+	if ("string" == typeof this.blobs){
+		throw "Attempt to push blob onto string object";
+	} else {
+		this.blobs.push(blob);
+	}
+}
