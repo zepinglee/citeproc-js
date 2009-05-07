@@ -7,7 +7,7 @@
       "author": [
                   { "name":"Anderson, Margaret", "primary-key":"Anderson", "secondary-key":"Margaret" }
       ],
-      "title": "The '\"Amazing <i>Life</i> of the *Grand Petunia Royale* wowie\"'",
+      "title": "The '\"Amazing\" <i>Life</i> of the *Grand Petunia Royale*' by Karl Truckload",
       "issued": { "year": "1950" }
     },
     {
@@ -16,7 +16,7 @@
       "author": [
                   { "name":"Zinfandel, William", "primary-key":"Zinfandel", "secondary-key":"William" }
       ],
-      "title": "*Peri Bathos*: the art of sinking in poetry (an exercise in flagrant plagiarism)",
+      "title": "<i>Peri Bathos</i>: on the art of sinking in poetry (an exercise in flagrant plagiarism)",
       "issued": { "year": "1945" }
     }
   ]]
