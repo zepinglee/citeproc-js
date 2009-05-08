@@ -16,6 +16,7 @@ if (!CSL) {
  */
 
 CSL.Output.Number = function(num,mother_token){
+	this.alldecor = new Array();
 	this.num = num;
 	this.blobs = num.toString();
 	this.status = CSL.START;

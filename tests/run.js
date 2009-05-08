@@ -22,8 +22,8 @@ dojo.require("csl.csl");
 //
 // requested tests go here
 if(true){
+  	dojo.require("tests.std_number");
   	dojo.require("tests.std_decorations");
-} else {
   	dojo.require("tests.std_sort");
 	dojo.require("tests.test_list");
   	dojo.require("tests.test_flipflop");
@@ -60,6 +60,7 @@ if(true){
 	dojo.require("tests.test_commands");
 	dojo.require("tests.test_util_names");
 	dojo.require("tests.test_sort");
+} else {
 
 	print("Nothing here");
 }

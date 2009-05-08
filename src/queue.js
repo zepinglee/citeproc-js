@@ -138,8 +138,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 
 CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 	//print("string");
-	var ret;
-	ret = { "str": [], "obj": [] };
+	var ret = { "str": [], "obj": [] };
 	if (blobs.length == 1 && "string" == blobs[0].blobs){
 		ret["str"] = blobs[0];
 	} else {

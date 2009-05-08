@@ -172,6 +172,9 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 		if (this.name == "text"){
 			this.variables = arg.split(/\s+/);
 		};
+		if (this.name == "number"){
+			this.variables = arg.split(/\s+/);
+		};
 		if (this.name == "key"){
 			//
 			// this one is truly wild.  the key element

@@ -10,7 +10,6 @@ CSL.Factory.Blob = function(token,str){
 		for each (keyset in token.decorations){
 			this.decorations.push(keyset.slice());
 		}
-		//this.decorations = token.decorations;
 	} else {
 		this.strings = new Object();
 		this.decorations = new Array();

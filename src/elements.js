@@ -924,6 +924,18 @@ CSL.Lib.Elements.layout = new function(){
 CSL.Lib.Elements.number = new function(){
 	this.build = build;
 	function build(state,target){
+		//
+		// This should push a rangeable object to the queue.
+		//
+		if (this.strings.form == "roman"){
+			this.formatter = state.fun.romanizer;
+		}
+		var push_number = function(state,Item){
+			var num = parseInt(Item[this.variables[0]], 10);
+			var number = new CSL.Output.Number(num,this);
+			state.output.append(number,"literal");
+		};
+		this["execs"].push(push_number);
 		target.push(this);
 	};
 };

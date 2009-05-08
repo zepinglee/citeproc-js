@@ -8,7 +8,7 @@ citation
 
 
 >>== RESULT ==>>
-<i>My <span style="font-style:normal">Amazing</span> Title</i>
+xlii
 <<== RESULT ==<<
 
 
@@ -16,29 +16,18 @@ citation
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
     <citation>
         <layout>
-            <text value="My *Amazing* Title" font-style="italic"/>
+            <number variable="volume" form="roman"/>
         </layout>
     </citation>
 </style>
 <<===== CSL =====<<
 
 
->>===== FLIPFLOPS =====>>
-[
-  {
-    "start": "*",
-    "end": "*",
-    "func": ["@font-style", "italic"],
-    "alt": ["@font-style", "normal"]
-  }
-]
-<<===== FLIPFLOPS =====<<
-
-
 >>===== INPUT =====>>
 [{
    "id":"item-1",
    "type": "book",
-   "title": "Ignore me"
+   "title": "Ignore me",
+   "volume":"42"
 }]
 <<===== INPUT =====<<
