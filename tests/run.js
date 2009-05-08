@@ -19,15 +19,21 @@ dojo.require("doh.runner");
 dojo.require("csl.csl");
 
 //
+// XXXXX rhino specific
+//
+environment["file.encoding"] = "UTF-8";
+
+//
 // requested tests go here
 if(true){
+  	dojo.require("tests.std_name");
+	dojo.require("tests.test_locale");
   	dojo.require("tests.std_number");
   	dojo.require("tests.std_decorations");
   	dojo.require("tests.std_sort");
 	dojo.require("tests.test_list");
   	dojo.require("tests.test_flipflop");
   	dojo.require("tests.std_collapse");
-  	dojo.require("tests.std_name");
   	dojo.require("tests.std_term");
   	dojo.require("tests.std_date");
   	dojo.require("tests.test_range");
@@ -50,7 +56,6 @@ if(true){
 	dojo.require("tests.test_factory");
 	dojo.require("tests.test_xmljs");
 	dojo.require("tests.test_conditions");
-	dojo.require("tests.test_locale");
 	dojo.require("tests.test_retrieval");
 	dojo.require("tests.test_xmle4x");
 	dojo.require("tests.test_groups");

@@ -4,6 +4,10 @@ dojo.require("csl.csl");
 
 doh.register("tests.std_name", [
     function(){
+        var test = CSL.System.Tests.getTest("name_MixedFormatsWithDecorationsEtAl");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = CSL.System.Tests.getTest("name_ArticularPlain");
         doh.assertEqual(test.result, test.run());
     },
@@ -61,10 +65,6 @@ doh.register("tests.std_name", [
     },
     function(){
         var test = CSL.System.Tests.getTest("name_MixedFormatsPrimaryDecorations");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = CSL.System.Tests.getTest("name_MixedFormatsWithDecorationsEtAl");
         doh.assertEqual(test.result, test.run());
     },
     function(){

@@ -18,6 +18,16 @@ CSL.System.Tests.getTest = function(myname){
 	var filename = "std/machines/" + myname + ".json";
 	//
 	// Clean up the CSL token string.
+	//
+	// Half of the fix for encoding problem encountered by Sean
+	// under OSX.  External strings are _read_ correctly, but an
+	// explicit encoding declaration on readFile is needed if
+	// they are to be fed to eval.  This may set the implicit
+	// UTF-8 binary identifier on the stream, as defined in the
+	// ECMAscript specification.  See http://www.ietf.org/rfc/rfc4329.txt
+	//
+	// Python it's not.  :)
+	//
 	var teststring = readFile(filename, "utf8");
 	try {
 		eval( "test = "+teststring );
@@ -89,7 +99,7 @@ CSL.System.Tests.fixNames = function(itemlist,myname){
 							parsed = entry.name.substr(0,one_char).replace(/\s+$/,"");
 						}
 						parsed = parsed.split(/\s*,\s*/);
-						
+
 						if (parsed.length > 0){
 							var m = parsed[0].match(/^\s*([a-z]+)\s+(.*)/);
 							if (m){
