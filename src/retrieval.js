@@ -27,7 +27,7 @@ CSL.System.Retrieval.GetInput.prototype.getInput = function(name){
 			if (this.input[filename]){
 				ret.push(this.input[filename]);
 			} else {
-				var datastring = readFile("data/" + filename + ".txt");
+				var datastring = readFile("data/" + filename + ".txt", "utf8");
 				eval( "obj = " + datastring );
 				CSL.System.Tests.fixNames([obj],filename);
 				this.input[filename] = obj;
@@ -38,7 +38,7 @@ CSL.System.Retrieval.GetInput.prototype.getInput = function(name){
 		if (this.input[filename]){
 			ret.push(this.input[filename]);
 		} else {
-			var datastring = readFile("data/" + filename + ".txt");
+			var datastring = readFile("data/" + filename + ".txt", "utf8");
 			this.input[filename] = obj;
 			eval( "obj = " + datastring );
 			CSL.System.Tests.fixNames([obj],filename);
@@ -60,7 +60,7 @@ CSL.System.Retrieval.getLocaleObjects = function(lang,locale){
 	// global object
 	if ( ! locale ){
 		try {
-			var locale = readFile( "./locale/"+localeRegistry()[lang] );
+			var locale = readFile( "./locale/"+localeRegistry()[lang], "utf8" );
 		} catch (e){
 			throw "Unable to load locale for "+lang+".";
 		}

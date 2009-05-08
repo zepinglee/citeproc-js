@@ -33,13 +33,13 @@ citation
    "id":"item-1",
    "type": "book",
    "author": [
-        { "name":"Чайковский, Пётр Ильич" },
-        { "name":"van Winkle, Rip" },
-        { "name":"我妻, 栄" },
-        { "name":"Thucydides, Carl, III" },
-        { "name":"Tokugawa, Ieyasu !" },
-        { "name":"Ministry of Fear, Loathing and Error !!" },
-        { "name":"Prince" }
+        { "name": "Чайковский, Пётр Ильич" },
+        { "name": "van Winkle, Rip" },
+        { "name": "我妻, 栄" },
+        { "name": "Thucydides, Carl, III" },
+        { "name": "Tokugawa, Ieyasu !" },
+        { "name": "Ministry of Fear, Loathing and Error !!" },
+        { "name": "Prince" }
    ],
    "issued": "2000",
    "title": "Our Story"

@@ -18,7 +18,7 @@ CSL.System.Tests.getTest = function(myname){
 	var filename = "std/machines/" + myname + ".json";
 	//
 	// Clean up the CSL token string.
-	var teststring = readFile(filename);
+	var teststring = readFile(filename, "utf8");
 	try {
 		eval( "test = "+teststring );
 	} catch(e){
