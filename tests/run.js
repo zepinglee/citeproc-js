@@ -11,7 +11,6 @@ load("./dojo/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo/dojo");
 dojo.registerModulePath("dojox","./dojo/dojox");
 dojo.registerModulePath("tests","./tests");
-//dojo.registerModulePath("tests","/home/bennett/src/citeproc-js-fbennett/tests");
 dojo.registerModulePath("csl","./src");
 dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo/util/doh");
