@@ -4,7 +4,7 @@ dojo.provide("tests.test_locale");
 doh.register("tests.locale",
 	[
 		function testManualLoad(){
-			var xml = readFile("./locale/locales-en-US.xml");
+			var xml = readFile("./locale/locales-en-US.xml", "utf8");
 			var builder = new CSL.Core.Build(xml);
 			var tokens = builder.build();
 			doh.assertEqual("¶",builder.state.opt.term["paragraph"]["symbol"][0]);

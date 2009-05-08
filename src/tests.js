@@ -88,9 +88,7 @@ CSL.System.Tests.fixNames = function(itemlist,myname){
 							entry.sticky = true;
 							parsed = entry.name.substr(0,one_char).replace(/\s+$/,"");
 						}
-						print("\n---> b/f split: "+parsed);
 						parsed = parsed.split(/\s*,\s*/);
-						print("---> a/f split: "+parsed);
 						
 						if (parsed.length > 0){
 							var m = parsed[0].match(/^\s*([a-z]+)\s+(.*)/);

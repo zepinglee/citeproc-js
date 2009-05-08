@@ -1,7 +1,7 @@
 dojo.provide("tests.test_xmle4x");
 
 
-var str = readFile("./style/apa.csl");
+var str = readFile("./style/apa.csl", "utf8");
 
 
 

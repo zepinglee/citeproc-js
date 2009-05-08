@@ -3,7 +3,7 @@ dojo.provide("tests.test_load_styles");
 
 var tryStyle = function(style){
 	try {
-		var sty = readFile("style/"+style+".csl");
+		var sty = readFile("style/"+style+".csl", "utf8");
 		if (!sty){
 			throw "Did not find style file: style/"+style+".csl";
 		}
