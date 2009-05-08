@@ -21,7 +21,13 @@ dojo.require("csl.csl");
 //
 // XXXXX rhino specific
 //
-environment["file.encoding"] = "UTF-8";
+print("#####");
+print("Rhino file.encoding: "+environment["file.encoding"]);
+if ("UTF-8" != environment["file.encoding"]){
+	environment["file.encoding"] = "UTF-8";
+	print("Reset Rhino file.encoding to UTF-8");
+}
+print("#####");
 
 //
 // requested tests go here

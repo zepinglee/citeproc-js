@@ -28,7 +28,7 @@ CSL.System.Tests.getTest = function(myname){
 	//
 	// Python it's not.  :)
 	//
-	var teststring = readFile(filename, "utf8");
+	var teststring = readFile(filename, "UTF-8");
 	try {
 		eval( "test = "+teststring );
 	} catch(e){
