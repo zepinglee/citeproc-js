@@ -1,0 +1,16 @@
+Notes on the API commands available in citeproc-js
+
+Things we need to be able to do:
+
+  Add entries to the item registry
+  Delete entries from the item registry
+
+  Add entries to the position registry
+  Delete entries from the position registry
+
+  Validate item registry content
+  Validate position registry content
+
+  Render cite clusters
+  Render the full bibliography
+  
