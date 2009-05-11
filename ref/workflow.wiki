@@ -1,0 +1,146 @@
+=== Proposal !#2: Implementation ===
+
+'''Note:''' ''The "Proposal !#2" content on "implementation" [http://bitbucket.org/fbennett/citeproc-js/wiki/Home will soon be moved]'' (when the {{{BitBucket}}} wiki editing interface stops being broken).
+
+
+In academic publishing, journal styles have specific conventions for the presentation of certain
+elements in the titles of references.  Authors using reference manager software to lighten their
+writing process must find some means of complying with these requirements, but currently there
+is no standard scheme for embedding the necessary hints in individual fields.
+
+Authors might initially choose to add formatting to references by hand after their documents have
+been finalized; but if their bibliographic
+data is contained in a personal database, they might try to make this task easier by marking
+up database records with formatting hints, following an ''ad hoc'' scheme of their own devising.
+Explicit hints written into the content fields will then be included in their documents each 
+time a database record is rendered as a reference.
+
+[[Image(workflow1.png)]]
+
+To save a little more time, Albert and Britney can automate the conversion of these
+formatting hints in the final stage of document production.  If journals in their
+field uniformly dictate that chemical names must be in italics (no such rule exists,
+this is only a silly example) their ''ad hoc'' systems will produce the same rendered output:
+
+[[Image(workflow2.png)]]
+
+Having invested some time in setting up their post-processing tools,
+Albert and Britney can each now enjoy the benefits of more efficient document production.
+If they decide to collaborate, however,
+they will face a difficulty.  Because the in-field markup they have used differs, they 
+will not be able to easily combine their databases.  If they decide to use one of the 
+databases as the starting point for their joint research, one of them will need to learn
+and adjust to the markup scheme and processing tools used by the other.  Furthermore, any
+records gathered during the joint effort will need to be checked and adjusted if they are
+to be transferred to the other researcher's database.
+
+Albert and Britney will be better off in future projects if they agree to use the
+same markup scheme.  However, assuming that they both have a significant volume of
+marked-up entries in their databases already, this will impose significant costs and
+risks on one of them.  Let us suppose that Britney decides to adopt Albert's markup
+scheme, because it involves less typing.  Her conversion process would look
+something like this:
+
+[[Image(workflow3a.png)]]
+
+All of that green in the illustrations above is not a good thing.  The green labels 
+represent one-off planning or programming effort that is specific to a user's own 
+system -- work that cannot be reused or distributed to others without additional effort.  
+Many of the steps in the diagram above also entail risk of database corruption.  We can 
+advise Britney to be careful in her programming adventure, and we should do so.  Her
+likely response will be to forgo the conversion process altogether, in which case she
+becomes the sole occupant of a bibliographic data island.
+
+By declaring a uniform scheme for in-field markup, we might hope to at least save
+future Alberts and Britneys from similar inconvenience.  If we aim
+to do so, the proper location for implementing the standard scheme is the CSL
+processor.  Although both Albert and Britney may be Zotero users, he may do his
+writing in Open Office, while she prefers Microsoft Word (tm).  Their friend
+Christopher Compass may keep his bibliographic data in Mendeley and do his
+writing on a !MacIntosh.  The only common feature between their environments will
+be that their systems format bibliographic data using a standard-conformant CSL
+processor.  It is the logical place in the chain to parse and render in-field
+markup.
+
+We have assumed that Albert and Britney (and Christopher) publish in a field
+with uniform conventions for the formatting of special in-field elements
+(i.e. elements such as those outlined in the [wiki:InlineMarkup#examples Examples] section
+above).  They may have run into publications (in other fields, or in the popular
+press) where different conventions apply; but because their ''ad hoc'' in-field markup
+strategies were their own responsibility, any such issues would not have reached
+the public forum.  That would change abruptly with a move to standard in-field
+markup in CSL.  We might imagine the following scenario, in
+which the same source cited by Albert and Britney in the Case 2 figure above
+is cited in the popular publication ''Journal of Unexpected Results'', the style
+guide for which dictates that chemical names must be set in the Zapf Chancery typeface,
+and gene names in Purisa:
+
+[[Image(workflow4.png)]]
+
+Albert thus discovers that the formatting conventions that hold in his field
+do not hold everywhere, and that distinguishing genes and chemicals in his markup
+is a useful thing to do, at least for records to be used in his main and in this new
+publication channel.  We might call this semantic markup, but the essential
+need, from Albert's perspective, is to have the ''possibility'' of adding
+in-field markup ("meta-markup") that renders differently depending on the style of the target
+publication.  If CSL cannot handle this, he will be driven back to the choice
+between hand-editing of his finished documents, or again falling back to his
+''ad hoc'' post-processing solution, with all of the problems associated with it.
+
+We don't know how common this use case will be, but it is essential that
+any inline markup scheme embedded in CSL be able to cope with it.  If
+semantic markup is adopted, however, this raises a fresh problem (or, more
+accurately, an old problem in a new context).  The class of semantic
+elements cannot be closed in advance of deployment.  As Albert's experience
+above illustrates, the need for semantic markup is driven ''at the user level''
+by the chaotic vagaries of style guides encountered in the wild.  
+New categories are almost certain to emerge, and when they
+do, a (now larger) population of users will need to adapt their databases to them.
+Essentially, responsibility for the conversion morass illustrated in Case 3 above 
+moves from the user's desktop to CSL itself.
+
+In order to allow users and publishers to work out formatting issues in a nimble way,
+while nonetheless moving toward progressive standardization (and thereby lightening
+their burdens over the long term), there should be a status distinction between reserved 
+or standard markup that is known to core CSL, and variable or user-level markup that users
+and publishers settle between themselves for particular projects or publications. The
+latter class of markup is ephemeral; it is coded into the user's database, but should
+not survive export operations.  The former is persistent: standard markup is known to
+CSL styles, and will render correctly on any CSL system, however configured.  It should
+therefore survive export operations.
+
+More formally, in list form ...
+
+ * (more coming ...)
+
+
+
+
+
+
+
+-----
+Unfinished draft below this line
+-----
+
+has not solved the problem.
+
+
+There are several problems with what is happening here.  User B's original tool was a Word macro that did find-and-replace operations in her finished documents.  That tool cannot be used for this purpose, so she will need to build a separate parser to perform the replace operations in her database, using a different text processing tool.  She will also need to know something about the layout of the database, in order to identify the records for conversion.  In both cases there is a possibility of error, so User B has some work ahead of her.  Having done that work, and gotten things working, she might share her conversion tool with others, but there are several problems with this.  First, the tool is specific to User B's reference manager, so users of other products will have to come up with their own solutions.  Second, the tool is specific to User B's own markup syntax, and User B has little incentive to make it configurable and robust (she is in fact likely to lose all interest in it once her own conversion task is complete).  This adds up to a lot of time invested in small-scale tasks.  Given these choices, users who have once adopted some solution to inline markup will tend to just stick with it, and tolerate the awkwardness of collaboration.
+
+
+This is roughly where we stand at present.  With a high cost of migrating from one markup scheme to another, and with 
+
+This is true both as between users, and as between applications and the user communities that they support.  
+
+The attraction of a wiki markup scheme is that it requires relatively little typing, and is more easily readable in plain text form.  But a simple, static wiki markup syntax 
+
+
+A CSL processor with an API for the registration of arbitrary wiki markup conventions can leverage these existing data stores to support a move toward semantic markup.  The processor would be configured locally to recognize the existing markup scheme.  When producing printed documents, the tags would produce the expected presentational form, without the need for post-processing steps.  This would encourage the use of in-field wiki formatting to support the writing process, increasing the granularity of semantic hints in bibliographic data stores.  When exporting records, the registered markup can be converted to an appropriate semantic form.  Through export, re-import, and adjustment of the syntax registered in the CSL processor, a set of records could be migrated from an ad hoc local markup scheme to a standard form suitable for collaborative research.  This would have the following advantages:
+
+  1. The effort invested in adding visual markup hints to existing data stores would not be lost;
+  2. The syntax for adding in-field markup would remain simple, encouraging users to enrich their data in this way;
+  3. Wiki markup conventions could be easily extended to cover fresh semantic categories that are uncovered; and
+  4. The cost in time of building RDF stores with in-field semantic markup would be reduced.
+
+The infrastructure for supporting arbitrary wiki syntax is now running in citeproc-js.  An example has been added to the RPC demo.  To run it, [http://bitbucket.org/fbennett/citeproc-js/ visit the citeproc-js sources on BitBucket], clone the archive, and enter the {{{./rpc-stuff}}} directory.  After starting {{{./server.py}}} in one terminal window, run {{{./client.sh}}} in another to kick up a sample of output in JSON format.  The original data from which the final output response is generated can be inspected in the {{{./data/citation.json}}} subdirectory.  The markup syntax rules registered in the processor are located in {{{./data/inline.json}}}.  When comparing the source with the rendered example, note the "flip-flop" behavior of the markup, with respect to both quotes and formatting tags.
