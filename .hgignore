@@ -10,3 +10,5 @@ syntax: regexp
 (^|.*/)\.svn
 .*~$
 ^MIGRATION.txt
+^all-styles
+/test_load_all_styles.js$
