@@ -1,6 +1,13 @@
 Notes on the API commands available in citeproc-js
 
-Things we need to be able to do:
+Things we need to be able to do.
+
+== Commands
+
+- These are commands initiated by the client (plugin).  These need to 
+  be safe; they should require all information necessary to assure that 
+  text in the client (plugin) agrees with registry content at the end of 
+  the transaction.
 
   Add entries to the item registry
   Delete entries from the item registry
@@ -14,3 +21,9 @@ Things we need to be able to do:
   Render cite clusters
   Render the full bibliography
   
+== Requests
+
+- These are requests made by the processor to the
+  client in order to complete a top-level command.
+
+  ...
