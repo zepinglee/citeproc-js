@@ -9,17 +9,32 @@ Things we need to be able to do.
   text in the client (plugin) agrees with registry content at the end of 
   the transaction.
 
+  Initialization/general refresh
+    list of all cite cluster data sets (basically implemented)
+
   Add entries to the item registry
+    list of Items
   Delete entries from the item registry
+    list of Item IDs
 
   Add entries to the position registry
+    UID of cite cluster
+    list of [Item + params]
   Delete entries from the position registry
+    implicit in the operation above
+    
 
-  Validate item registry content
-  Validate position registry content
+  Reconcile item registry content
+    list of all known item IDs
+  Reconcile position registry content
+    list of all known cite cluster UIDs in sequence (implicit delete)
+  Reconcile position registry content (optional second phase)
+    refresh duplicate cite cluster UIDs
 
   Render cite clusters
+    ready and working
   Render the full bibliography
+    ready and working
   
 == Requests
 

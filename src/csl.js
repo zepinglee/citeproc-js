@@ -3,78 +3,23 @@ dojo.provide("csl.csl");
 
 /**
  * A Javascript implementation of the CSL citation formatting language.
- * <p>This project aims to produce an upgrade to the citation formatter
- * used by
- * <a href="http://www.zotero.org/">Zotero</a>, the popular bibliographic
- * management plugin for Firefox.  Like the current processor, this
- * will be controlled by the Citation Style Language (CSL) authored
- * by Bruce D'Arcus, beginning with a design concept that began
- * taking shape in the <a href="http://community.muohio.edu/blogs/darcusb/archives/2004/08/13/processing-citations">Summer of 2004</a>, leading to a draft schema that emerged
- * in <a href="http://community.muohio.edu/blogs/darcusb/archives/2004/10/05/citation-style-language">October of the same year</a>.  Bruce's work became the basis for
- * citation formatting in Zotero (early on, when it was a GMU in-house product
- * known as Scholar) in the <a href="http://community.muohio.edu/blogs/darcusb/archives/2006/07/29/csl-progress">Summer of 2006</a>.
  *
- * The immediate trigger for the work here was a
- * <a href="http://groups.google.com/group/zotero-dev/browse_thread/thread/ef62506f54fd66de">discussion
- * on the <code>zotero-dev</code> list</a>, in which
- * several people signalled that a remake of the existing processor
- * on functional lines would be welcome.
- * The catalyst of temptation was
- * <a href="http://groups.google.com/group/zotero-dev/msg/2eea3cbc67b8e83d">a
- * post by Erik Hetzner</a>, offering example code for a more modular
- * implementation of the Zotero CSL processor.</p>
- *
- * <p>The only strict principle in this project is that additions or changes
- * to the code must be accompanied by tests proving that they work as intended
- * and don't break anything.  Apart from that, it's mostly about
- * common sense and what works.  Here's a short overview of how things fit
- * together at the moment.</p>
- *
- * <p>Processing takes place in three phases, by {@link CSL.Core.Build},
- * {@link CSL.Core.Configure} and {@link CSL.Core.Render}.  The {@link CSL.Core.Build}
- * module imports the CSL format file to be applied to the citations, and
- * transforms it into a one-dimensional token list, flattening all macros,
- * registering functions and parameters on each token as appropriate,
- * and converting locale terms to a hash for reference during rendering.
- * The {@link CSL.Core.Configure}
- * module sets jump-point information
+ * <p>A configured instance of the process is built in two stages,
+ * using {@link CSL.Core.Build} and {@link CSL.Core.Configure}.
+ * The former sets up hash-accessible locale data and imports the CSL format file
+ * to be applied to the citations,
+ * transforming it into a one-dimensional token list, and
+ * registering functions and parameters on each token as appropriate.
+ * The latter sets jump-point information
  * on tokens that constitute potential branch
  * points, in a single back-to-front scan of the token list.
- * It also sets up a hash containing functions for generating output
- * in a particular format (with a default of <code>HTML</code>).
- * The first two phases
- * yield a token list that can be executed front-to-back by
- * {@link CSL.Core.Render} using a simple execution wrapper that takes a set of
- * Item objects (a "citation") as argument, and returns a string in the
- * requested output format.</p>
+ * This
+ * yields a token list that can be executed front-to-back by
+ * wrapper methods available on the
+ * {@link CSL.Core.Engine} class.</p>
  *
- * <p>The initial development has been done under Rhino, using E4X for the
- * initial parsing of XML style information, but the engine is not anchored
- * to E4X.  The small number of DOM instantiation and navigation functions
- * required by the engine are encased in a wrapper (see {@link CSL.System.Xml}).
- * For those who which to use the engine in environments where E4X is
- * not available, the <code>JunkyardJavascript</code> parser, written in
- * pure Javascript, demonstrates what is needed to implement of an alternative
- * XML parser -- <code>JunkyardJavascript</code> itself is not meant for
- * production use, although it does seem to work).</p>
- *
- * <p>(In passing, I should perhaps mention that the
- * <a href="http://wso2.org/project/mashup/1.5.1/docs/e4xquickstart.html">E4X
- * Quick Start Guide</a> is an enormously helpful a starting point
- * for learning how to manipulate the XML tree using E4X.)</p>
- *
- * <p>If there are things that the style engine will not do, or things
- * that it does incorrectly, or not as well as it might, code contributions
- * are very welcome.  The only requirement, as noted above, is that code
- * be accompanied by tests.  The test suites and the <a href="">online code
- * commentary</a> should provide sufficient guidance on
- * what happens where.  If you have any questions, feel free to
- * <a href="mailto:biercenator@gmail.com">write me direct</a>.  Zotero
- * is a core tool in the writing programs of the faculty where I work,
- * so I'll be sticking with this item for the foreseeable future.</p>
- *
- * <p>Finally, about this top-level {@link CSL} object itself, this is
- * the place to define any constants that are needed during processing.</p>
+ * <p>This top-level {@link CSL} object itself carries
+ * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
 CSL = new function () {
