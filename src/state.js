@@ -17,17 +17,17 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.stop = new Array();
 	/**
 	 * Global options.
-	 * <p>Available in Render.</p>
+	 * <p>Available in at runtime.</p>
 	 */
 	this.opt = new Object();
 	/**
 	 * Scratch variables and stacks.
-	 * <p>Available in Render.</p>
+	 * <p>Available in at runtime.</p>
 	 */
 	this.tmp = new Object();
 	/**
 	 * Generic functions.
-	 * <p>Available in Render.</p>
+	 * <p>Available in at runtime.</p>
 	 */
 	this.fun = new Object();
 	this.fun.retriever = new CSL.System.Retrieval.GetInput();

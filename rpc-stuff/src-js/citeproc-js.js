@@ -152,13 +152,6 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.build.nodeList = new Array();
 	this.build.nodeList.push([0, nodelist]);
 };
-//CSL.Core.Engine.prototype.getAmbiguousCite = CSL.Core.Render.getAmbiguousCite;
-//CSL.Core.Engine.prototype.getSortKeys = CSL.Core.Render.getSortKeys;
-//CSL.Core.Engine.prototype.getAmbigConfig = CSL.Core.Render.getAmbigConfig;
-//CSL.Core.Engine.prototype.getMaxVals = CSL.Core.Render.getMaxVals;
-//CSL.Core.Engine.prototype.getMinVal = CSL.Core.Render.getMinVal;
-//CSL.Core.Engine.prototype.getModes = CSL.Core.Render.getModes;
-//CSL.Core.Engine.prototype.getSpliceDelimiter = CSL.Core.Render.getSpliceDelimiter;
 CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	if (disambig){
 		this.tmp.disambig_request = disambig;
@@ -247,7 +240,7 @@ CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
 	var result = "";
 	var objects = [];
 	for each (var Item in inputList){
-		this._cite.call(this,Item);
+		this._cite(Item);
 		//
 		// This will produce a stack with one
 		// layer, and exactly one or two items.
@@ -297,24 +290,24 @@ CSL.Core.Engine.prototype._cite = function(Item){
 	}
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
-		next = this._render.call(this[this.tmp.area].tokens[next],this,Item);
+		next = this._render(this[this.tmp.area].tokens[next],Item);
     }
 	for each (func in this.stop){
 		func(this,Item);
 	}
 };
-CSL.Core.Engine.prototype._render = function(state,Item){
-    var next = this.next;
+CSL.Core.Engine.prototype._render = function(token,Item){
+    var next = token.next;
 	var maybenext = false;
 	if (false){
-		print("---> Token: "+this.name+" ("+state.tmp.area+")");
-		print("       next is: "+next+", success is: "+this.succeed+", fail is: "+this.fail);
+		print("---> Token: "+token.name+" ("+this.tmp.area+")");
+		print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
-	if (this.evaluator){
-	    next = this.evaluator.call(this,state,Item);
+	if (token.evaluator){
+	    next = token.evaluator.call(token,this,Item);
     };
-	for each (var exec in this.execs){
-	    maybenext = exec.call(this,state,Item);
+	for each (var exec in token.execs){
+	    maybenext = exec.call(token,this,Item);
 		if (maybenext){
 			next = maybenext;
 		};
@@ -1331,9 +1324,9 @@ CSL.Factory.Blob.prototype.push = function(blob){
 CSL.Factory.Token = function(name,tokentype){
 	this.name = name;
 	this.strings = new Object();
-	this.strings["delimiter"] = "";
-	this.strings["prefix"] = "";
-	this.strings["suffix"] = "";
+	this.strings.delimiter = "";
+	this.strings.prefix = "";
+	this.strings.suffix = "";
 	this.decorations = false;
 	this.variables = [];
 	this.execs = new Array();
