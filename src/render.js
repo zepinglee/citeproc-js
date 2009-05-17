@@ -4,19 +4,10 @@ if (!CSL) {
 }
 
 /**
- * Rendering functions.
- * <p>This is a bundle of methods that are attached to the
- * completed style object, and offer facilities for rendering
- * citations and bibliographies.</p>
- * @namespace Rendering functions.
- */
-CSL.Core.Render = {};
-
-/**
  * Get the undisambiguated version of a cite, without decorations
  * <p>This is used internally by the Registry.</p>
  */
-CSL.Core.Render.getAmbiguousCite = function(Item,disambig){
+CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	if (disambig){
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -25,7 +16,7 @@ CSL.Core.Render.getAmbiguousCite = function(Item,disambig){
 	this.tmp.area = "citation";
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
-	CSL.Core.Render._cite.call(this,Item);
+	this._cite.call(this,Item);
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
@@ -40,7 +31,7 @@ CSL.Core.Render.getAmbiguousCite = function(Item,disambig){
  * Get the sort key of an item, without decorations
  * <p>This is used internally by the Registry.</p>
  */
-CSL.Core.Render.getSortKeys = function(Item,key_type){
+CSL.Core.Engine.prototype.getSortKeys = function(Item,key_type){
 	if (false){
 		print("KEY TYPE: "+key_type);
 	}
@@ -49,7 +40,7 @@ CSL.Core.Render.getSortKeys = function(Item,key_type){
 	this.tmp.area = key_type;
 	this.tmp.disambig_request = false;
 	this.tmp.suppress_decorations = true;
-	CSL.Core.Render._cite.call(this,Item);
+	this._cite.call(this,Item);
 	this.tmp.suppress_decorations = false;
 	for (var i in this[key_type].keys){
 		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);
@@ -64,7 +55,7 @@ CSL.Core.Render.getSortKeys = function(Item,key_type){
 /**
  * Return current base configuration for disambiguation
  */
-CSL.Core.Render.getAmbigConfig = function(){
+CSL.Core.Engine.prototype.getAmbigConfig = function(){
 	var config = this.tmp.disambig_request;
 	if (!config){
 		config = this.tmp.disambig_settings;
@@ -77,14 +68,14 @@ CSL.Core.Render.getAmbigConfig = function(){
 /**
  * Return max values for disambiguation
  */
-CSL.Core.Render.getMaxVals = function(){
+CSL.Core.Engine.prototype.getMaxVals = function(){
 	return this.tmp.names_max.mystack.slice();
 };
 
 /**
  * Return min value for disambiguation
  */
-CSL.Core.Render.getMinVal = function(){
+CSL.Core.Engine.prototype.getMinVal = function(){
 	return this.tmp["et-al-min"];
 };
 
@@ -101,14 +92,14 @@ CSL.Core.Render.getMinVal = function(){
  * and are cleared by the processor on
  * completion of the run.</p>
  */
-CSL.Core.Render.getSpliceDelimiter = function(){
+CSL.Core.Engine.prototype.getSpliceDelimiter = function(){
 	return this.tmp.splice_delimiter;
 };
 
 /**
  * Return available modes for disambiguation
  */
-CSL.Core.Render.getModes = function(){
+CSL.Core.Engine.prototype.getModes = function(){
 	var ret = new Array();
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
@@ -126,7 +117,7 @@ CSL.Core.Render.getModes = function(){
  * splicing.  There are lots of possibilities, which will require
  * careful planning.)
  */
-CSL.Core.Render._bibliography_entries = function (){
+CSL.Core.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
 	var input = this.fun.retriever.getInput(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
@@ -136,7 +127,7 @@ CSL.Core.Render._bibliography_entries = function (){
 		if (false){
 			print("BIB: "+item.id);
 		}
-		CSL.Core.Render._cite.call(this,item);
+		this._cite.call(this,item);
 		//this.output.squeeze();
 	}
 	this.output.closeLevel();
@@ -144,26 +135,13 @@ CSL.Core.Render._bibliography_entries = function (){
 	return this.output.string(this,this.output.queue);
 };
 
-/**
- * Register one or more citation items.
- * <p>Accepts a single item key or a list of item keys as
- * a single argument, fetches the relevant Items using the
- * appropriate wrapper in {@link CSL.System.Retrieval},
- * and enters each Item into the persistent session
- * registry.</p>
- */
-CSL.Core.Render.registerItemKeys = function() {
-
-};
-
-
 /*
  * Compose individual cites into a single string.  (This requires
  * further work to accomodate various adjustments to inter-cite
  * splicing.  There are lots of possibilities, which will require
  * careful planning.)
  */
-CSL.Core.Render._unit_of_reference = function (inputList){
+CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
 	this.tmp.area = "citation";
 	var delimiter = "";
 
@@ -172,7 +150,7 @@ CSL.Core.Render._unit_of_reference = function (inputList){
 	var objects = [];
 
 	for each (var Item in inputList){
-		CSL.Core.Render._cite.call(this,Item);
+		this._cite.call(this,Item);
 		//
 		// This will produce a stack with one
 		// layer, and exactly one or two items.
@@ -230,13 +208,13 @@ CSL.Core.Render._unit_of_reference = function (inputList){
  * (This might be dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.Core.Render._cite = function(Item){
+CSL.Core.Engine.prototype._cite = function(Item){
 	for each (var func in this.init){
 		func(this,Item);
 	}
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
-		next = CSL.Core.Render._render.call(this[this.tmp.area].tokens[next],this,Item);
+		next = this._render.call(this[this.tmp.area].tokens[next],this,Item);
     }
 	for each (func in this.stop){
 		func(this,Item);
@@ -250,7 +228,7 @@ CSL.Core.Render._cite = function(Item){
  * This is called on a token, with the state object
  * and an Item object as arguments.
  */
-CSL.Core.Render._render = function(state,Item){
+CSL.Core.Engine.prototype._render = function(state,Item){
     var next = this.next;
 	var maybenext = false;
 	if (false){

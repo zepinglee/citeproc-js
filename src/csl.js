@@ -91,13 +91,13 @@ CSL = new function () {
 
 //SNIP-START
 
-//if (!CSL.Lib){
-//	load("./src/lib.js");
-//}
 if (!CSL.Core){
 	load("./src/core.js");
 }
-if (!CSL.Core.Render){
+if (!CSL.Core.Engine){
+	load("./src/state.js");
+}
+if (!CSL.Core.Engine.prototype.makeBibliography){
 	load("./src/render.js");
 }
 if (!CSL.Core.Build){
@@ -132,9 +132,6 @@ if (!CSL.Util.Positioner){
 }
 if (!CSL.Factory){
 	load("./src/factory.js");
-}
-if (!CSL.Core.Engine){
-	load("./src/state.js");
 }
 if (!CSL.makeStyle){
 	load("./src/commands.js")

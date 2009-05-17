@@ -49,8 +49,117 @@ CSL = new function () {
 	];
 };
 CSL.Core = {};
-CSL.Core.Render = {};
-CSL.Core.Render.getAmbiguousCite = function(Item,disambig){
+CSL.Core.Engine = function (xmlCommandInterface,nodelist){
+	this.init = new Array();
+	this.stop = new Array();
+	this.opt = new Object();
+	this.tmp = new Object();
+	this.fun = new Object();
+	this.fun.retriever = new CSL.System.Retrieval.GetInput();
+	this.build = new Object();
+	this.build["alternate-term"] = false;
+	this.configure = new Object();
+	this.citation = new Object();
+	this.citation.opt = new Object();
+	this.citation.tokens = new Array();
+	this.bibliography = new Object();
+	this.bibliography.opt = new Object();
+	this.bibliography.tokens = new Array();
+	this.citation.opt["et-al-min"] = 0;
+	this.citation.opt["et-al-use-first"] = 1;
+	this.citation.opt["et-al-subsequent-min"] = false;
+	this.citation.opt["et-al-subsequent-use-first"] = false;
+	this.bibliography.opt["et-al-min"] = 0;
+	this.bibliography.opt["et-al-use-first"] = 1;
+	this.bibliography.opt["et-al-subsequent-min"] = 0;
+	this.bibliography.opt["et-al-subsequent-use-first"] = 1;
+	this.bibliography_sort = new Object();
+	this.citation_sort = new Object();
+	this.bibliography_sort.tokens = new Array();
+	this.bibliography_sort.opt = new Object();
+	this.bibliography_sort.opt.sort_directions = new Array();
+	this.bibliography_sort.keys = new Array();
+	this.citation_sort.tokens = new Array();
+	this.citation_sort.opt = new Object();
+	this.citation_sort.opt.sort_directions = new Array();
+	this.citation_sort.keys = new Array();
+	this.opt.lang = false;
+	this.opt.term = new Object();
+	this.citation.opt.collapse = new Array();
+	this.bibliography.opt.collapse = new Array();
+	this.citation.opt["disambiguate-add-names"] = false;
+	this.citation.opt["disambiguate-add-givenname"] = false;
+	this.bibliography.opt["disambiguate-add-names"] = false;
+	this.bibliography.opt["disambiguate-add-givenname"] = false;
+	this.tmp.names_max = new CSL.Factory.Stack();
+	this.tmp.names_base = new CSL.Factory.Stack();
+	this.tmp.givens_base = new CSL.Factory.Stack();
+	this.build.in_bibliography = false;
+	this.tmp.disambig_request = false;
+	this.tmp["name-as-sort-order"] = false;
+	this.tmp.suppress_decorations = false;
+	this.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
+	this.tmp.bib_sort_keys = new Array();
+	this.tmp.prefix = new CSL.Factory.Stack("",CSL.LITERAL);
+	this.tmp.suffix = new CSL.Factory.Stack("",CSL.LITERAL);
+	this.tmp.delimiter = new CSL.Factory.Stack("",CSL.LITERAL);
+	this.fun.names_reinit = CSL.Util.Names.reinit;
+	this.fun.initialize_with = CSL.Util.Names.initialize_with;
+	this.fun.clone_ambig_config = CSL.Factory.cloneAmbigConfig;
+	this.tmp.initialize_with = new CSL.Factory.Stack();
+	this.fun.get_common_term = CSL.Util.Names.getCommonTerm;
+	this.fun.suffixator = new CSL.Util.Disambiguate.Suffixator(CSL.SUFFIX_CHARS);
+	this.fun.romanizer = new CSL.Util.Disambiguate.Romanizer();
+	this.fun.flipflopper = new CSL.Util.FlipFlopper();
+	this.tmp.tokenstore_stack = new CSL.Factory.Stack();
+	this.tmp.name_quash = new Object();
+	this.tmp.last_suffix_used = "";
+	this.tmp.last_names_used = new Array();
+	this.tmp.last_years_used = new Array();
+	this.tmp.years_used = new Array();
+	this.tmp.names_used = new Array();
+	this.splice_delimiter = false;
+	this.tmp.names_substituting = false;
+	this.tmp.nameset_counter = 0;
+	this.fun.mark_output = CSL.Factory.mark_output;
+	this.tmp.term_sibling = new CSL.Factory.Stack( undefined, CSL.LITERAL);
+	this.tmp.term_predecessor = false;
+	this.tmp.jump = new CSL.Factory.Stack(0,CSL.LITERAL);
+	this.tmp.decorations = new CSL.Factory.Stack();
+	this.fun.decorate = false;
+	this.tmp.area = "citation";
+	this.build.area = "citation";
+	this.tmp.value = new Array();
+	this.tmp.namepart_decorations = new Object();
+	this.tmp.namepart_type = false;
+	this.output = new CSL.Output.Queue(this);
+	this.configure.fail = new Array();
+	this.configure.succeed = new Array();
+	this.build.xmlCommandInterface = xmlCommandInterface;
+	this.build.text = false;
+	this.build.lang = false;
+	this.opt["class"] = false;
+	this.build.in_style = false;
+	this.build.skip = false;
+	this.build.postponed_macro = false;
+	this.build.layout_flag = false;
+	this.build.children = new Array();
+	this.build.name = false;
+	this.build.form = false;
+	this.build.term = false;
+	this.build.macro = new Object();
+	this.build.macro_stack = new Array();
+	this.build.nodeList = new Array();
+	this.build.nodeList.push([0, nodelist]);
+};
+//CSL.Core.Engine.prototype.getAmbiguousCite = CSL.Core.Render.getAmbiguousCite;
+//CSL.Core.Engine.prototype.getSortKeys = CSL.Core.Render.getSortKeys;
+//CSL.Core.Engine.prototype.getAmbigConfig = CSL.Core.Render.getAmbigConfig;
+//CSL.Core.Engine.prototype.getMaxVals = CSL.Core.Render.getMaxVals;
+//CSL.Core.Engine.prototype.getMinVal = CSL.Core.Render.getMinVal;
+//CSL.Core.Engine.prototype.getModes = CSL.Core.Render.getModes;
+//CSL.Core.Engine.prototype.getSpliceDelimiter = CSL.Core.Render.getSpliceDelimiter;
+CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	if (disambig){
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -59,7 +168,7 @@ CSL.Core.Render.getAmbiguousCite = function(Item,disambig){
 	this.tmp.area = "citation";
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
-	CSL.Core.Render._cite.call(this,Item);
+	this._cite.call(this,Item);
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
@@ -68,7 +177,7 @@ CSL.Core.Render.getAmbiguousCite = function(Item,disambig){
 	}
 	return ret;
 }
-CSL.Core.Render.getSortKeys = function(Item,key_type){
+CSL.Core.Engine.prototype.getSortKeys = function(Item,key_type){
 	if (false){
 		print("KEY TYPE: "+key_type);
 	}
@@ -77,7 +186,7 @@ CSL.Core.Render.getSortKeys = function(Item,key_type){
 	this.tmp.area = key_type;
 	this.tmp.disambig_request = false;
 	this.tmp.suppress_decorations = true;
-	CSL.Core.Render._cite.call(this,Item);
+	this._cite.call(this,Item);
 	this.tmp.suppress_decorations = false;
 	for (var i in this[key_type].keys){
 		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);
@@ -88,7 +197,7 @@ CSL.Core.Render.getSortKeys = function(Item,key_type){
 	this.tmp.area = area;
 	return this[key_type].keys;
 };
-CSL.Core.Render.getAmbigConfig = function(){
+CSL.Core.Engine.prototype.getAmbigConfig = function(){
 	var config = this.tmp.disambig_request;
 	if (!config){
 		config = this.tmp.disambig_settings;
@@ -96,16 +205,16 @@ CSL.Core.Render.getAmbigConfig = function(){
 	var ret = this.fun.clone_ambig_config(config);
 	return ret;
 };
-CSL.Core.Render.getMaxVals = function(){
+CSL.Core.Engine.prototype.getMaxVals = function(){
 	return this.tmp.names_max.mystack.slice();
 };
-CSL.Core.Render.getMinVal = function(){
+CSL.Core.Engine.prototype.getMinVal = function(){
 	return this.tmp["et-al-min"];
 };
-CSL.Core.Render.getSpliceDelimiter = function(){
+CSL.Core.Engine.prototype.getSpliceDelimiter = function(){
 	return this.tmp.splice_delimiter;
 };
-CSL.Core.Render.getModes = function(){
+CSL.Core.Engine.prototype.getModes = function(){
 	var ret = new Array();
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
@@ -115,7 +224,7 @@ CSL.Core.Render.getModes = function(){
 	}
 	return ret;
 };
-CSL.Core.Render._bibliography_entries = function (){
+CSL.Core.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
 	var input = this.fun.retriever.getInput(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
@@ -125,22 +234,20 @@ CSL.Core.Render._bibliography_entries = function (){
 		if (false){
 			print("BIB: "+item.id);
 		}
-		CSL.Core.Render._cite.call(this,item);
+		this._cite.call(this,item);
 		//this.output.squeeze();
 	}
 	this.output.closeLevel();
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue);
 };
-CSL.Core.Render.registerItemKeys = function() {
-};
-CSL.Core.Render._unit_of_reference = function (inputList){
+CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
 	this.tmp.area = "citation";
 	var delimiter = "";
 	var result = "";
 	var objects = [];
 	for each (var Item in inputList){
-		CSL.Core.Render._cite.call(this,Item);
+		this._cite.call(this,Item);
 		//
 		// This will produce a stack with one
 		// layer, and exactly one or two items.
@@ -184,19 +291,19 @@ CSL.Core.Render._unit_of_reference = function (inputList){
 	}
 	return result;
 };
-CSL.Core.Render._cite = function(Item){
+CSL.Core.Engine.prototype._cite = function(Item){
 	for each (var func in this.init){
 		func(this,Item);
 	}
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
-		next = CSL.Core.Render._render.call(this[this.tmp.area].tokens[next],this,Item);
+		next = this._render.call(this[this.tmp.area].tokens[next],this,Item);
     }
 	for each (func in this.stop){
 		func(this,Item);
 	}
 };
-CSL.Core.Render._render = function(state,Item){
+CSL.Core.Engine.prototype._render = function(state,Item){
     var next = this.next;
 	var maybenext = false;
 	if (false){
@@ -228,7 +335,7 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
 	var xmlParser = CSL.System.Xml[xmlLingo];
 	var xml = xmlParser.parse(stylexml);
 	var xmlCommandInterface = CSL.System.Xml[xmlLingo].commandInterface;
-	var state = new CSL.Factory.State(xmlCommandInterface,xml);
+	var state = new CSL.Core.Engine(xmlCommandInterface,xml);
 	this.state = state;
 	function _builder(state){
 		this._build = _build; // exposed for testing
@@ -1131,116 +1238,6 @@ CSL.Factory.cloneAmbigConfig = function(config){
 	ret["disambiguate"] = config["disambiguate"];
 	return ret;
 };
-CSL.Factory.State = function (xmlCommandInterface,nodelist){
-	this.init = new Array();
-	this.stop = new Array();
-	this.opt = new Object();
-	this.tmp = new Object();
-	this.fun = new Object();
-	this.fun.retriever = new CSL.System.Retrieval.GetInput();
-	this.build = new Object();
-	this.build["alternate-term"] = false;
-	this.configure = new Object();
-	this.citation = new Object();
-	this.citation.opt = new Object();
-	this.citation.tokens = new Array();
-	this.bibliography = new Object();
-	this.bibliography.opt = new Object();
-	this.bibliography.tokens = new Array();
-	this.citation.opt["et-al-min"] = 0;
-	this.citation.opt["et-al-use-first"] = 1;
-	this.citation.opt["et-al-subsequent-min"] = false;
-	this.citation.opt["et-al-subsequent-use-first"] = false;
-	this.bibliography.opt["et-al-min"] = 0;
-	this.bibliography.opt["et-al-use-first"] = 1;
-	this.bibliography.opt["et-al-subsequent-min"] = 0;
-	this.bibliography.opt["et-al-subsequent-use-first"] = 1;
-	this.bibliography_sort = new Object();
-	this.citation_sort = new Object();
-	this.bibliography_sort.tokens = new Array();
-	this.bibliography_sort.opt = new Object();
-	this.bibliography_sort.opt.sort_directions = new Array();
-	this.bibliography_sort.keys = new Array();
-	this.citation_sort.tokens = new Array();
-	this.citation_sort.opt = new Object();
-	this.citation_sort.opt.sort_directions = new Array();
-	this.citation_sort.keys = new Array();
-	this.opt.lang = false;
-	this.opt.term = new Object();
-	this.citation.opt.collapse = new Array();
-	this.bibliography.opt.collapse = new Array();
-	this.citation.opt["disambiguate-add-names"] = false;
-	this.citation.opt["disambiguate-add-givenname"] = false;
-	this.bibliography.opt["disambiguate-add-names"] = false;
-	this.bibliography.opt["disambiguate-add-givenname"] = false;
-	this.tmp.names_max = new CSL.Factory.Stack();
-	this.tmp.names_base = new CSL.Factory.Stack();
-	this.tmp.givens_base = new CSL.Factory.Stack();
-	this.build.in_bibliography = false;
-	this.tmp.disambig_request = false;
-	this.tmp["name-as-sort-order"] = false;
-	this.tmp.suppress_decorations = false;
-	this.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
-	this.tmp.bib_sort_keys = new Array();
-	this.tmp.prefix = new CSL.Factory.Stack("",CSL.LITERAL);
-	this.tmp.suffix = new CSL.Factory.Stack("",CSL.LITERAL);
-	this.tmp.delimiter = new CSL.Factory.Stack("",CSL.LITERAL);
-	this.fun.names_reinit = CSL.Util.Names.reinit;
-	this.fun.initialize_with = CSL.Util.Names.initialize_with;
-	this.fun.clone_ambig_config = CSL.Factory.cloneAmbigConfig;
-	this.tmp.initialize_with = new CSL.Factory.Stack();
-	this.fun.get_common_term = CSL.Util.Names.getCommonTerm;
-	this.fun.suffixator = new CSL.Util.Disambiguate.Suffixator(CSL.SUFFIX_CHARS);
-	this.fun.romanizer = new CSL.Util.Disambiguate.Romanizer();
-	this.fun.flipflopper = new CSL.Util.FlipFlopper();
-	this.tmp.tokenstore_stack = new CSL.Factory.Stack();
-	this.tmp.name_quash = new Object();
-	this.tmp.last_suffix_used = "";
-	this.tmp.last_names_used = new Array();
-	this.tmp.last_years_used = new Array();
-	this.tmp.years_used = new Array();
-	this.tmp.names_used = new Array();
-	this.splice_delimiter = false;
-	this.tmp.names_substituting = false;
-	this.tmp.nameset_counter = 0;
-	this.fun.mark_output = CSL.Factory.mark_output;
-	this.tmp.term_sibling = new CSL.Factory.Stack( undefined, CSL.LITERAL);
-	this.tmp.term_predecessor = false;
-	this.tmp.jump = new CSL.Factory.Stack(0,CSL.LITERAL);
-	this.tmp.decorations = new CSL.Factory.Stack();
-	this.fun.decorate = false;
-	this.tmp.area = "citation";
-	this.build.area = "citation";
-	this.tmp.value = new Array();
-	this.tmp.namepart_decorations = new Object();
-	this.tmp.namepart_type = false;
-	this.output = new CSL.Output.Queue(this);
-	this.configure.fail = new Array();
-	this.configure.succeed = new Array();
-	this.build.xmlCommandInterface = xmlCommandInterface;
-	this.build.text = false;
-	this.build.lang = false;
-	this.opt["class"] = false;
-	this.build.in_style = false;
-	this.build.skip = false;
-	this.build.postponed_macro = false;
-	this.build.layout_flag = false;
-	this.build.children = new Array();
-	this.build.name = false;
-	this.build.form = false;
-	this.build.term = false;
-	this.build.macro = new Object();
-	this.build.macro_stack = new Array();
-	this.build.nodeList = new Array();
-	this.build.nodeList.push([0, nodelist]);
-};
-CSL.Factory.State.prototype.getAmbiguousCite = CSL.Core.Render.getAmbiguousCite;
-CSL.Factory.State.prototype.getSortKeys = CSL.Core.Render.getSortKeys;
-CSL.Factory.State.prototype.getAmbigConfig = CSL.Core.Render.getAmbigConfig;
-CSL.Factory.State.prototype.getMaxVals = CSL.Core.Render.getMaxVals;
-CSL.Factory.State.prototype.getMinVal = CSL.Core.Render.getMinVal;
-CSL.Factory.State.prototype.getModes = CSL.Core.Render.getModes;
-CSL.Factory.State.prototype.getSpliceDelimiter = CSL.Core.Render.getSpliceDelimiter;
 CSL.makeStyle = function(xml,locale){
 	var builder = new CSL.Core.Build(xml);
 	var raw = builder.build(locale);
@@ -1248,13 +1245,13 @@ CSL.makeStyle = function(xml,locale){
 	var ret = conf.configure();
 	return ret;
 }
-CSL.Factory.State.prototype.registerFlipFlops = function(flist){
+CSL.Core.Engine.prototype.registerFlipFlops = function(flist){
 	for each (ff in flist){
 		this.fun.flipflopper.register(ff["start"], ff["end"], ff["func"], ff["alt"]);
 	}
 	return true;
 }
-CSL.Factory.State.prototype.makeCitationCluster = function(inputList){
+CSL.Core.Engine.prototype.makeCitationCluster = function(inputList){
 	this.insertItems(inputList);
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
 		var newlist = new Array();
@@ -1276,10 +1273,10 @@ CSL.Factory.State.prototype.makeCitationCluster = function(inputList){
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
-	var str = CSL.Core.Render._unit_of_reference.call(this,inputList);
+	var str = this._unit_of_reference.call(this,inputList);
 	return str;
 };
-CSL.Factory.State.prototype.makeBibliography = function(){
+CSL.Core.Engine.prototype.makeBibliography = function(){
 	var debug = false;
 	if (debug){
 		for each (tok in this.bibliography.tokens){
@@ -1294,9 +1291,9 @@ CSL.Factory.State.prototype.makeBibliography = function(){
 			print("bibsorttok: "+tok.name);
 		}
 	}
-	return CSL.Core.Render._bibliography_entries.call(this);
+	return this._bibliography_entries.call(this);
 };
-CSL.Factory.State.prototype.insertItems = function(inputList){
+CSL.Core.Engine.prototype.insertItems = function(inputList){
 	for each (item in inputList){
 		this.fun.retriever.input[item.id] = item;
 		this.registry.insert(this,item);
@@ -4023,7 +4020,7 @@ CSL.System.Retrieval.GetInput.prototype.getInput = function(name){
 CSL.System.Retrieval.getLocaleObjects = function(lang,locale){
 	if ( ! locale ){
 		try {
-			var locale = readFile( "./locale/"+localeRegistry()[lang] );
+			var locale = readFile( "./locale/"+localeRegistry()[lang]);
 		} catch (e){
 			throw "Unable to load locale for "+lang+".";
 		}
@@ -4226,7 +4223,7 @@ CSL.System.Tests = function(){};
 CSL.System.Tests.getTest = function(myname){
 	var test;
 	var filename = "std/machines/" + myname + ".json";
-	var teststring = readFile(filename);
+	var teststring = readFile(filename, "UTF-8");
 	try {
 		eval( "test = "+teststring );
 	} catch(e){

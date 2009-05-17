@@ -63,7 +63,7 @@ CSL.Core.Engine.prototype.makeCitationCluster = function(inputList){
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
-	var str = CSL.Core.Render._unit_of_reference.call(this,inputList);
+	var str = this._unit_of_reference.call(this,inputList);
 	return str;
 };
 
@@ -90,7 +90,7 @@ CSL.Core.Engine.prototype.makeBibliography = function(){
 			print("bibsorttok: "+tok.name);
 		}
 	}
-	return CSL.Core.Render._bibliography_entries.call(this);
+	return this._bibliography_entries.call(this);
 };
 
 
