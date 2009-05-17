@@ -29,7 +29,7 @@ CSL.Factory.version = function(){
  * order, for later execution.  The element name is used as a key to
  * invoke the relevant <code>build</code> method of the target element.
  * Element methods are defined in {@link CSL.Lib.Elements}.</p>
- * @param {Object} state  The state object returned by {@link CSL.Factory.State}.
+ * @param {Object} state  The state object returned by {@link CSL.Core.Engine}.
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
  */
@@ -96,7 +96,7 @@ CSL.Factory.mark_output = function(state,content){
  * Formatting hints are distilled to functions
  * later, in the second compilation pass ({@link CSL.Core.Configure}).</p>
  * @param {Object} state The state object returned by
- * {@link CSL.Factory.State}.
+ * {@link CSL.Core.Engine}.
  * @param {Object} attributes The hash object containing
  * the attributes and values extracted from an XML node.
  */
@@ -120,7 +120,7 @@ CSL.Factory.setDecorations = function(state,attributes){
  * is replaced with a list of compiled functions.
  * This is applied by {@link CSL.Core.Configure}.
  * @param {Array} state The state object returned by
- * {@link CSL.Factory.State}.
+ * {@link CSL.Core.Engine}.
  */
 CSL.Factory.renderDecorations = function(state){
 	var ret = new Array();

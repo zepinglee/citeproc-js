@@ -317,7 +317,7 @@ doh.register("tests.registry", [
 		doh.assertEqual("hello", res);
 	},
 	function testInstantiation(){
-		var state = new CSL.Factory.State();
+		var state = new CSL.Core.Engine();
 		var obj = new CSL.Factory.Registry(state);
 		doh.assertTrue(obj);
 	},

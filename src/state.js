@@ -12,7 +12,7 @@ if (!CSL) {
  * @class
  * @param {XML} xml A parsed XML object or XMLList.
  */
-CSL.Factory.State = function (xmlCommandInterface,nodelist){
+CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.init = new Array();
 	this.stop = new Array();
 	/**
@@ -396,10 +396,10 @@ CSL.Factory.State = function (xmlCommandInterface,nodelist){
 	this.build.nodeList.push([0, nodelist]);
 };
 
-CSL.Factory.State.prototype.getAmbiguousCite = CSL.Core.Render.getAmbiguousCite;
-CSL.Factory.State.prototype.getSortKeys = CSL.Core.Render.getSortKeys;
-CSL.Factory.State.prototype.getAmbigConfig = CSL.Core.Render.getAmbigConfig;
-CSL.Factory.State.prototype.getMaxVals = CSL.Core.Render.getMaxVals;
-CSL.Factory.State.prototype.getMinVal = CSL.Core.Render.getMinVal;
-CSL.Factory.State.prototype.getModes = CSL.Core.Render.getModes;
-CSL.Factory.State.prototype.getSpliceDelimiter = CSL.Core.Render.getSpliceDelimiter;
+CSL.Core.Engine.prototype.getAmbiguousCite = CSL.Core.Render.getAmbiguousCite;
+CSL.Core.Engine.prototype.getSortKeys = CSL.Core.Render.getSortKeys;
+CSL.Core.Engine.prototype.getAmbigConfig = CSL.Core.Render.getAmbigConfig;
+CSL.Core.Engine.prototype.getMaxVals = CSL.Core.Render.getMaxVals;
+CSL.Core.Engine.prototype.getMinVal = CSL.Core.Render.getMinVal;
+CSL.Core.Engine.prototype.getModes = CSL.Core.Render.getModes;
+CSL.Core.Engine.prototype.getSpliceDelimiter = CSL.Core.Render.getSpliceDelimiter;

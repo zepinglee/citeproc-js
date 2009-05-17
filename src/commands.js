@@ -14,7 +14,7 @@ CSL.makeStyle = function(xml,locale){
 	return ret;
 }
 
-CSL.Factory.State.prototype.registerFlipFlops = function(flist){
+CSL.Core.Engine.prototype.registerFlipFlops = function(flist){
 	for each (ff in flist){
 		this.fun.flipflopper.register(ff["start"], ff["end"], ff["func"], ff["alt"]);
 	}
@@ -32,7 +32,7 @@ CSL.Factory.State.prototype.registerFlipFlops = function(flist){
  * does recognize keys, but this is intended only for testing
  * purposes.)</p>
  */
-CSL.Factory.State.prototype.makeCitationCluster = function(inputList){
+CSL.Core.Engine.prototype.makeCitationCluster = function(inputList){
 	this.insertItems(inputList);
 	//
 	// don't bother sorting unless there is more than one item.
@@ -75,7 +75,7 @@ CSL.Factory.State.prototype.makeCitationCluster = function(inputList){
  * sorted according to the system locale, with
  * disambiguation adjustments requested by the style.</p>
  */
-CSL.Factory.State.prototype.makeBibliography = function(){
+CSL.Core.Engine.prototype.makeBibliography = function(){
 	var debug = false;
 	if (debug){
 		for each (tok in this.bibliography.tokens){
@@ -94,7 +94,7 @@ CSL.Factory.State.prototype.makeBibliography = function(){
 };
 
 
-CSL.Factory.State.prototype.insertItems = function(inputList){
+CSL.Core.Engine.prototype.insertItems = function(inputList){
 	for each (item in inputList){
 		this.fun.retriever.input[item.id] = item;
 		this.registry.insert(this,item);

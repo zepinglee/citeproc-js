@@ -133,7 +133,7 @@ if (!CSL.Util.Positioner){
 if (!CSL.Factory){
 	load("./src/factory.js");
 }
-if (!CSL.Factory.State){
+if (!CSL.Core.Engine){
 	load("./src/state.js");
 }
 if (!CSL.makeStyle){

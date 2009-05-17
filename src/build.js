@@ -35,7 +35,7 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
 	var xml = xmlParser.parse(stylexml);
 
 	var xmlCommandInterface = CSL.System.Xml[xmlLingo].commandInterface;
-	var state = new CSL.Factory.State(xmlCommandInterface,xml);
+	var state = new CSL.Core.Engine(xmlCommandInterface,xml);
 	this.state = state;
 
 
@@ -49,7 +49,7 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
 	 * walk are peformed by an instance of {@link CSL.Core.Build._getNavi}
 	 * (see below).
 	 *
-	 * @param {Object} state An instance of the {@link CSL.Factory.State}
+	 * @param {Object} state An instance of the {@link CSL.Core.Engine}
 	 * object, configured with a parsed XML object and a
 	 * corresponding set of wrapper functions for manipulating
 	 * it.
@@ -93,7 +93,7 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
 	 * to the appropriate nodes.
 	 *
 	 * @param {Object} state The freshly minted state object
-	 * from {@link CSL.Factory.State} that will represent the style.
+	 * from {@link CSL.Core.Engine} that will represent the style.
 	 */
 	function _getNavi(state){
 		this.getkids = getkids;
@@ -157,7 +157,7 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
  * Tokenize the CSL style.
  * <p>This method casts a CSL style file as a state
  * object with the properties listed below (see the
- * code of {@link CSL.Factory.State} for more
+ * code of {@link CSL.Core.Engine} for more
  * particulars on the sub-fields inside this object).  The state
  * object is passed to {@link CSL.Core.Configure} for the final
  * preparation of the style engine.</p>
