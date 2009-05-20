@@ -2,10 +2,20 @@
 
 ## Completion of feature set
 
+- Provide HTML validation for inline markup.  Return the
+  string with stray markers in HTML-escaped form.  This
+  will display the field in the form it will appear in
+  the document.
+
+- For inline markup, do not recognize purely presentational
+  elements at top level; require semantic markup tags around
+  everything that is to be specially formatted.  Stray
+  presentational tags to be rendered as tag literals.
+
 - Erratum: unparsed dates.  The input object for dates
   should include a "literal" attribute, which renders
   instead of the formatted date if the "year" attribute
-  is nil.
+  is passed as nil.
 
 - Erratum: raw date variables.  These should render as
   2000-12-01 when they appear as the argument to a text
@@ -29,42 +39,18 @@
   wrappers be refactored as a discrete function, and
   (b) that the output queue itself set a return value somewhere
   to indicate whether or not something rendered.
-    (awaits test submission.  fbennett 2009-05-18)
+    (pending.  fbennett 2009-05-18)
 
-- Handle position evaluation and back-references inside the 
-  processor via the registry.  Zotero's own position evaluation 
-  is currently broken, and although it may be fixed soon, demanding 
-  complex evaluation like this is likely to lead to further trouble 
-  in other applications.  If the processor receives the note number 
-  from the application, the CSL processor can take care of the rest.
-  First step will be to draw my positioning patches to
-  integration.js into the citeproc-js code base, and figure out
-  how to stitch it in via an extension to the registry.
-  NOTE: this is on hold pending guidance from Zotero on (a) whether
-  this functionality is desirable, and (b) whether it is possible
-  to receive note numbers and predecessors from the plugins on
-  each transaction.  In any case, not to be implemented until
-  the specifics of the transaction protocol are known.
-    (pending fbennett 2009-04-17)
+- Tidy up and finish out API, provide examples and
+  an overview readme doc.
+    (pending. fbennett 2009-05-21)
 
 - Various options and special formatting attributes need to be
   implemented, none of which seem particularly scarey.
     (a very short list of these remain.  fbennett 2009-04-11)
 
 
-## Possible work for Zotero deployment
-
-- Anything on which I receive guidance.  No requests
-  pending at present.
-    (fbennett 2009-05-18)
-
-
 ## Possible proposals for CSL
-
-- Number could be a span element with per-atom formatting, 
-  as has been done with names.  This will allow superscripting
-  or ordinal suffixes, and maybe some other useful things.
-    (pending.  fbennett 2009-04-13)
 
 - Localized date formatting?
     (pending.  fbennett 2009-04-11)
