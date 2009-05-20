@@ -912,7 +912,7 @@ CSL.Lib.Elements.layout = new function(){
 			state.build.layout_flag = false;
 			var mergeoutput = function(state,Item){
 				state.output.closeLevel();
-				state.tmp.name_quash = new Object();
+				// state.tmp.name_quash = new Object();
 			};
 			this["execs"].push(mergeoutput);
 		}
@@ -1149,7 +1149,7 @@ CSL.Lib.Elements.key = new function(){
 		};
 		end_key["execs"].push(store_key_for_use);
 		var reset_key_params = function(state,Item){
-			state.tmp.name_quash = new Object();
+			// state.tmp.name_quash = new Object();
 			state.tmp["et-al-min"] = false;
 			state.tmp["et-al-use-first"] = false;
 			state.tmp.sort_key_flag = false;

@@ -172,9 +172,13 @@ CSL.Util.Names.reinit = function(state,Item){
 	//
 	// Author vars should render only once.  This flag
 	// can be used to quash unwanted renderings.
-	for each (namevar in state.tmp.value){
-		state.tmp.name_quash[namevar.type] = true;
-	}
+	//
+	// XXXXX: Replaced by more general mechanism for
+	// quashing repeat variable renderings.
+	//
+	//for each (namevar in state.tmp.value){
+	//	state.tmp.name_quash[namevar.type] = true;
+	//}
 	state.tmp.value = new Array();
 	state.tmp.names_substituting = false;
 	state.tmp.name_et_al_term = false;

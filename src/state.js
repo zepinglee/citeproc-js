@@ -251,7 +251,8 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	// token store stack.
 	this.tmp.tokenstore_stack = new CSL.Factory.Stack();
 
-	this.tmp.name_quash = new Object();
+	// XXXXX: superceded
+	// this.tmp.name_quash = new Object();
 	//
 	// for collapsing
 	this.tmp.last_suffix_used = "";
