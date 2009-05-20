@@ -329,7 +329,7 @@ CSL.Lib.Elements.text = new function(){
 				} else if (variable){
 					var func = function(state,Item){
 						if (this.variables.length){
-							state.fun.mark_output(state,Item[variable]);
+							state.fun.check_for_output(state,Item[variable]);
 							state.output.append(Item[variable],this);
 							//state.tmp.value.push(Item[variable]);
 						}
@@ -880,6 +880,14 @@ CSL.Lib.Elements.layout = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
+
+			//
+			// done_vars is used to prevent the repeated
+			// rendering of variables
+			var initialize_done_vars = function(state,Item){
+				state.tmp.done_vars = new Array();
+			};
+			this.execs.push(initialize_done_vars);
 
 			var set_opt_delimiter = function(state,Item){
 				// just in case

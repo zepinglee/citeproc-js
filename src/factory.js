@@ -77,7 +77,7 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 };
 
 
-CSL.Factory.mark_output = function(state,content){
+CSL.Factory.check_for_output = function(state,content){
 	if (content){
 		state.tmp.term_sibling.replace( true );
 	} else {

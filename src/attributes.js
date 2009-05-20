@@ -214,7 +214,7 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 		};
 		if (this.name == "date"){
 			var func = function(state,Item){
-				state.fun.mark_output(state,Item[arg]);
+				state.fun.check_for_output(state,Item[arg]);
 				state.tmp.value.push(Item[arg]);
 			};
 			this["execs"].push(func);
