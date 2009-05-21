@@ -26,7 +26,7 @@ The demo requires the following facilities in order to run:
 Once you have the above items installed on a Linux system, you should 
 be able to run the server in a terminal window:
 
-  ./citeproc-js-rpc.py
+  ./server.py
 
 To configure and control the processor, send commands as JSON objects
 via HTTP POST requests.  Requests have two elements, "method" (a
@@ -44,27 +44,38 @@ your changes will be ignored.
 
 Here is a short description of the sample transactions:
 
-  set_style.json
+  style.json
     Prepares a processor loaded with a simple CSL style.
     
   insert_items.json
     Inserts a couple of items into the processor registry.
-    These will appear in the bibliography when it is rendered.
   
-  make_bibliography.json (first invocation)
-    Delivers a rendered bibliography containing the first two
+  bibliography.json (first invocation)
+    Returns a rendered bibliography containing the first two
     entries loaded, sorted by author name and year.
+    The returned citations contain some literal (unprocessed)
+    inline markup.
   
-  make_citation_cluster.json
-    Delivers a rendered citation cluster for two additional
+  citation.json
+    Returns a rendered citation cluster for two additional
     entries.  These items are automatically inserted into
     the processor registry, and will appear in the bibliography.
     Note that, as declared in the sample CSL style, the cites
-    within the citation are sorted by year.
+    within the citation are sorted by year.  The citation
+    contains some literal (unprocessed) inline markup.
   
-  make_bibliography.json (second invocation)
-    The second invocation of this command delivers a bibliography
-    of four items, correctly sorted.
+  bibliography.json (second invocation)
+    The second invocation of this command returns a bibliography
+    of four items, correctly sorted.  This second rendering
+    of the bibliography still contains unprocessed inline
+    markup.
+    
+  inline.json
+    This loads a configuration for inline markup tags.
+    
+  bibliography.json (third invocation)
+    Returns a bibliography of the same four items as the
+    second invocation, but with processed inline markup.
 
 If you have questions concerning the remainder of the API (the names
 API is currently specific to citeproc-js, as it has not yet been
@@ -75,4 +86,4 @@ provide details.
 Enjoy!
 
 FB
-2009-04-17
+2009-05-22

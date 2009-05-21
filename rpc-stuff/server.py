@@ -119,6 +119,9 @@ except:
 import traceback
 
 
+mypath = os.path.split(sys.argv[0])[0]
+os.chdir(mypath)
+
 class SimpleJSONRPCDispatcher(SimpleXMLRPCServer.SimpleXMLRPCDispatcher):
     """Mix-in class that dispatches JSON-RPC requests.
     Based on SimpleXMLRPCDispatcher, but overrides

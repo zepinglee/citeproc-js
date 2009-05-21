@@ -11,7 +11,7 @@ rm -f results/*.result
 ##
 ## Configure processor
 ##
-wget -q --post-file ./data/config.json -O ./results/config.result http://localhost:8027/
+wget -q --post-file ./data/style.json -O ./results/config.result http://localhost:8027/
 
 if [ "$?" -ne "0" ]; then
     echo wget exited with error ... is server.py running?
@@ -21,11 +21,11 @@ fi
 
 
 echo -------------------------
-echo result of config.json
+echo result of style.json
 echo -------------------------
 
 echo -n '---> '
-cat ./results/config.result
+cat ./results/style.result
 echo
 echo
 
