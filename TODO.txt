@@ -37,9 +37,7 @@
 
 - Erratum: suppression of elements.  Doesn't seem to be
   any mechanism in place for restraining variables from
-  rendering more than once in a citation.  The mark_output
-  function should be extended to support this, with an
-  appropriate hook in the output queue (?).
+  rendering more than once in a citation.
     (awaits test submission.  fbennett 2009-05-18)
 
 - Erratum: all spanned top-level elements within
