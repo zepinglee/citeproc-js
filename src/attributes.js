@@ -167,43 +167,20 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
  * @function
  */
 CSL.Lib.Attributes["@variable"] = function(state,arg){
-
-	if (this.tokentype == CSL.SINGLETON){
-		if (this.name == "key"){
-			//
-			// this one is truly wild.  the key element
-			// will be recast as a start and end tag, so this
-			// function will be copied across to the TEXT
-			// tag that the key tags will enclose.  the text
-			// of the variable will render to an output queue
-			// that is dedicated to producing sort keys.
-			state.build.key_is_variable = true;
+	if (["label","names","date","text","number"].indexOf(this.name) > -1) {
+		this.variables = arg.split(/\s+/);
+	} else if (this.name == "key"){
+		this.variables = arg.split(/\s+/);
+	} else if (["if","else-if"].indexOf(this.name) > -1){
+		var variables = arg.split(/\s+/);
+		for each (var variable in variables){
 			var func = function(state,Item){
-				if ("citation-number" == arg){
-					state.tmp.value.push("citation-number");
-				} else {
-					state.tmp.value.push(Item[arg]);
+				if (Item[variable]){
+					return true;
 				}
+				return false;
 			};
-			this["execs"].push(func);
-		};
-	};
-	if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
-		if (["if","else-if"].indexOf(this.name) > -1){
-			var variables = arg.split(/\s+/);
-			for each (var variable in variables){
-				var func = function(state,Item){
-					if (Item[variable]){
-						return true;
-					}
-					return false;
-				};
-				this["tests"].push(func);
-			};
-		} else if (["label","names","date","text","number"].indexOf(this.name) > -1) {
-			if (arg){
-				this.variables = arg.split(/\s+/);
-			};
+			this["tests"].push(func);
 		};
 	};
 };

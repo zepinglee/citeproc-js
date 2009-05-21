@@ -1115,10 +1115,23 @@ CSL.Lib.Elements.key = new function(){
 		target.push(start_key);
 		//
 		// ops to initialize the key's output structures
-		if (state.build.key_is_variable){
-			state.build.key_is_variable = false;
+		if (this.variables.length){
 			var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
-			single_text["execs"] = this["execs"].slice();
+			single_text.variables = this.variables.slice();
+			//
+			// XXXXX: we need a unified method for obtaining the value
+			// of a variable.  different categories of variable (text,
+			// date, citation-number, etc.) have different requirements.
+			// it's complicated, and should all be in one place.
+			//
+			var func = function(state,Item){
+				if ("citation-number" == this.variables[0]){
+					state.tmp.value.push("citation-number");
+				} else {
+					state.tmp.value.push(Item[this.variables[0]]);
+				};
+			};
+			single_text["execs"].push(func);
 			var output_variables = function(state,Item){
 				for each(var val in state.tmp.value){
 					if (val == "citation-number"){
@@ -1132,8 +1145,6 @@ CSL.Lib.Elements.key = new function(){
 			target.push(single_text);
 		} else {
 			//
-
-
 			// if it's not a variable, it's a macro
 			var token = new CSL.Factory.Token("text",CSL.SINGLETON);
 			token.postponed_macro = state.build.postponed_macro;
