@@ -213,7 +213,7 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			};
 		};
 	};
-	if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON)){
+	if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 		if (this.name == "names" || this.name == "date") {
 			if (arg){
 				this.variables = arg.split(/\s+/);
