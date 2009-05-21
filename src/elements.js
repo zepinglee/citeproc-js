@@ -955,7 +955,9 @@ CSL.Lib.Elements.date = new function(){
 		if (this.tokentype == CSL.START){
 
 			var set_value = function(state,Item){
-				state.tmp.value.push(Item[this.variables[0]]);
+				if (this.variables.length && Item[this.variables[0]]){
+					state.tmp.date_object = Item[this.variables[0]];
+				}
 			};
 			this["execs"].push(set_value);
 
@@ -983,13 +985,14 @@ CSL.Lib.Elements["date-part"] = new function(){
 			this.strings.form = "long";
 		}
 		var render_date_part = function(state,Item){
-			for each (var val in state.tmp.value){
-				value = val[this.strings.name];
-				break;
+			if (state.tmp.date_object){
+				value = state.tmp.date_object[this.strings.name];
 			};
 			var real = !state.tmp.suppress_decorations;
 			var invoked = state[state.tmp.area].opt.collapse == "year-suffix";
 			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
+			//
+			// XXXXX: need a condition for year as well?
 			if (real && precondition && invoked){
 				state.tmp.years_used.push(value);
 				var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
@@ -1124,20 +1127,20 @@ CSL.Lib.Elements.key = new function(){
 			// date, citation-number, etc.) have different requirements.
 			// it's complicated, and should all be in one place.
 			//
-			var func = function(state,Item){
-				if ("citation-number" == this.variables[0]){
-					state.tmp.value.push("citation-number");
-				} else {
-					state.tmp.value.push(Item[this.variables[0]]);
-				};
-			};
-			single_text["execs"].push(func);
+			//var func = function(state,Item){
+			//	if ("citation-number" == this.variables[0]){
+			//		state.tmp.value.push("citation-number");
+			//	} else {
+			//		state.tmp.value.push(Item[this.variables[0]]);
+			//	};
+			//};
+			//single_text["execs"].push(func);
 			var output_variables = function(state,Item){
-				for each(var val in state.tmp.value){
-					if (val == "citation-number"){
+				for each(var variable in single_text.variables){
+					if (variable == "citation-number"){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
 					} else {
-						state.output.append(val,"empty");
+						state.output.append(Item[variable],"empty");
 					}
 				}
 			};

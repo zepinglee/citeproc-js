@@ -15,6 +15,8 @@ CSL.Lib.Elements.names = new function(){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 
 			var init_names = function(state,Item){
+				//
+				// XXXXX: could be wrong here
 				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
 						//

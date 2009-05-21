@@ -112,7 +112,6 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.fun.romanizer = new CSL.Util.Disambiguate.Romanizer();
 	this.fun.flipflopper = new CSL.Util.FlipFlopper();
 	this.tmp.tokenstore_stack = new CSL.Factory.Stack();
-	this.tmp.name_quash = new Object();
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
@@ -121,7 +120,7 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.splice_delimiter = false;
 	this.tmp.names_substituting = false;
 	this.tmp.nameset_counter = 0;
-	this.fun.mark_output = CSL.Factory.mark_output;
+	this.fun.check_for_output = CSL.Factory.check_for_output;
 	this.tmp.term_sibling = new CSL.Factory.Stack( undefined, CSL.LITERAL);
 	this.tmp.term_predecessor = false;
 	this.tmp.jump = new CSL.Factory.Stack(0,CSL.LITERAL);
@@ -705,9 +704,6 @@ CSL.Util.Names.deep_copy = function(nameset){
 // XXXX to be eliminated.  :)
 //
 CSL.Util.Names.reinit = function(state,Item){
-	for each (namevar in state.tmp.value){
-		state.tmp.name_quash[namevar.type] = true;
-	}
 	state.tmp.value = new Array();
 	state.tmp.names_substituting = false;
 	state.tmp.name_et_al_term = false;
@@ -1090,7 +1086,7 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	}
 	CSL.Lib.Elements[name].build.call(token,state,target);
 };
-CSL.Factory.mark_output = function(state,content){
+CSL.Factory.check_for_output = function(state,content){
 	if (content){
 		state.tmp.term_sibling.replace( true );
 	} else {
@@ -2243,7 +2239,7 @@ CSL.Lib.Elements.text = new function(){
 				} else if (variable){
 					var func = function(state,Item){
 						if (this.variables.length){
-							state.fun.mark_output(state,Item[variable]);
+							state.fun.check_for_output(state,Item[variable]);
 							state.output.append(Item[variable],this);
 							//state.tmp.value.push(Item[variable]);
 						}
@@ -2647,6 +2643,13 @@ CSL.Lib.Elements.layout = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
+			//
+			// done_vars is used to prevent the repeated
+			// rendering of variables
+			var initialize_done_vars = function(state,Item){
+				state.tmp.done_vars = new Array();
+			};
+			this.execs.push(initialize_done_vars);
 			var set_opt_delimiter = function(state,Item){
 				// just in case
 				state.tmp.sort_key_flag = false;
@@ -2675,7 +2678,7 @@ CSL.Lib.Elements.layout = new function(){
 			state.build.layout_flag = false;
 			var mergeoutput = function(state,Item){
 				state.output.closeLevel();
-				state.tmp.name_quash = new Object();
+				// state.tmp.name_quash = new Object();
 			};
 			this["execs"].push(mergeoutput);
 		}
@@ -2705,7 +2708,9 @@ CSL.Lib.Elements.date = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			var set_value = function(state,Item){
-				state.tmp.value.push(Item[this.variables[0]]);
+				if (this.variables.length && Item[this.variables[0]]){
+					state.tmp.date_object = Item[this.variables[0]];
+				}
 			};
 			this["execs"].push(set_value);
 			var newoutput = function(state,Item){
@@ -2729,13 +2734,14 @@ CSL.Lib.Elements["date-part"] = new function(){
 			this.strings.form = "long";
 		}
 		var render_date_part = function(state,Item){
-			for each (var val in state.tmp.value){
-				value = val[this.strings.name];
-				break;
+			if (state.tmp.date_object){
+				value = state.tmp.date_object[this.strings.name];
 			};
 			var real = !state.tmp.suppress_decorations;
 			var invoked = state[state.tmp.area].opt.collapse == "year-suffix";
 			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
+			//
+			// XXXXX: need a condition for year as well?
 			if (real && precondition && invoked){
 				state.tmp.years_used.push(value);
 				var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
@@ -2850,16 +2856,29 @@ CSL.Lib.Elements.key = new function(){
 		target.push(start_key);
 		//
 		// ops to initialize the key's output structures
-		if (state.build.key_is_variable){
-			state.build.key_is_variable = false;
+		if (this.variables.length){
 			var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
-			single_text["execs"] = this["execs"].slice();
+			single_text.variables = this.variables.slice();
+			//
+			// XXXXX: we need a unified method for obtaining the value
+			// of a variable.  different categories of variable (text,
+			// date, citation-number, etc.) have different requirements.
+			// it's complicated, and should all be in one place.
+			//
+			//var func = function(state,Item){
+			//	if ("citation-number" == this.variables[0]){
+			//		state.tmp.value.push("citation-number");
+			//	} else {
+			//		state.tmp.value.push(Item[this.variables[0]]);
+			//	};
+			//};
+			//single_text["execs"].push(func);
 			var output_variables = function(state,Item){
-				for each(var val in state.tmp.value){
-					if (val == "citation-number"){
+				for each(var variable in single_text.variables){
+					if (variable == "citation-number"){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
 					} else {
-						state.output.append(val,"empty");
+						state.output.append(Item[variable],"empty");
 					}
 				}
 			};
@@ -2891,7 +2910,7 @@ CSL.Lib.Elements.key = new function(){
 		};
 		end_key["execs"].push(store_key_for_use);
 		var reset_key_params = function(state,Item){
-			state.tmp.name_quash = new Object();
+			// state.tmp.name_quash = new Object();
 			state.tmp["et-al-min"] = false;
 			state.tmp["et-al-use-first"] = false;
 			state.tmp.sort_key_flag = false;
@@ -2905,12 +2924,18 @@ CSL.Lib.Elements.names = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			var init_names = function(state,Item){
+				//
+				// XXXXX: could be wrong here
 				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
 						//
 						// If the item has been marked for quashing, skip it.
-						if (Item[variable] && ! state.tmp.name_quash[variable]){
-							state.fun.mark_output(state,Item[variable]);
+						//
+						// XXXXX: name_quash superceded.
+						//
+						// if (Item[variable] && ! state.tmp.name_quash[variable]){
+						if (Item[variable]){
+							state.fun.check_for_output(state,Item[variable]);
 							state.tmp.names_max.push(Item[variable].length);
 							state.tmp.value.push({"type":variable,"names":Item[variable]});
 							// saving relevant names separately, for reference
@@ -3200,61 +3225,20 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 	}
 };
 CSL.Lib.Attributes["@variable"] = function(state,arg){
-	if (this.tokentype == CSL.SINGLETON){
-		if (this.name == "text"){
-			this.variables = arg.split(/\s+/);
-		};
-		if (this.name == "number"){
-			this.variables = arg.split(/\s+/);
-		};
-		if (this.name == "key"){
-			//
-			// this one is truly wild.  the key element
-			// will be recast as a start and end tag, so this
-			// function will be copied across to the TEXT
-			// tag that the key tags will enclose.  the text
-			// of the variable will render to an output queue
-			// that is dedicated to producing sort keys.
-			state.build.key_is_variable = true;
+	if (["label","names","date","text","number"].indexOf(this.name) > -1) {
+		this.variables = arg.split(/\s+/);
+	} else if (this.name == "key"){
+		this.variables = arg.split(/\s+/);
+	} else if (["if","else-if"].indexOf(this.name) > -1){
+		var variables = arg.split(/\s+/);
+		for each (var variable in variables){
 			var func = function(state,Item){
-				if ("citation-number" == arg){
-					state.tmp.value.push("citation-number");
-				} else {
-					state.tmp.value.push(Item[arg]);
+				if (Item[variable]){
+					return true;
 				}
+				return false;
 			};
-			this["execs"].push(func);
-		};
-		if (this.name == "label"){
-			//
-			// labels treat the "locator" variable specially.
-			print("Note to self: do something for variable= on label elements.");
-		}
-	};
-	if (this.tokentype == CSL.START){
-		if (["if","else-if"].indexOf(this.name) > -1){
-			var variables = arg.split(/\s+/);
-			for each (var variable in variables){
-				var func = function(state,Item){
-					if (Item[variable]){
-						return true;
-					}
-					return false;
-				};
-				this["tests"].push(func);
-			};
-		};
-		if (this.name == "date"){
-			var func = function(state,Item){
-				state.fun.mark_output(state,Item[arg]);
-				state.tmp.value.push(Item[arg]);
-			};
-			this["execs"].push(func);
-		};
-	};
-	if (this.name == "names" && (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON)){
-		if (arg){
-			this.variables = arg.split(/\s+/);
+			this["tests"].push(func);
 		};
 	};
 };
