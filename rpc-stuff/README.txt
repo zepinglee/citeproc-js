@@ -77,6 +77,14 @@ Here is a short description of the sample transactions:
     Returns a bibliography of the same four items as the
     second invocation, but with processed inline markup.
 
+To run the tests with a different style file, copy the style
+to ./rpc-stuff/src-csl/style.csl, and run the script
+./rpc-stuff/tools/config_style.py.  This generates a JSON-encoded
+version of the style, that will be loaded to the processor
+when the client makes its configuration request through the
+server API.  Citations and bib entries should be returned
+as specified in the style.
+
 If you have questions concerning the remainder of the API (the names
 API is currently specific to citeproc-js, as it has not yet been
 agreed and finalized in the CSL group), let me know.  Happy to
