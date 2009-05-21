@@ -169,12 +169,6 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 CSL.Lib.Attributes["@variable"] = function(state,arg){
 
 	if (this.tokentype == CSL.SINGLETON){
-		if (this.name == "text"){
-			this.variables = arg.split(/\s+/);
-		};
-		if (this.name == "number"){
-			this.variables = arg.split(/\s+/);
-		};
 		if (this.name == "key"){
 			//
 			// this one is truly wild.  the key element
@@ -193,13 +187,8 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			};
 			this["execs"].push(func);
 		};
-		if (this.name == "label"){
-			//
-			// labels treat the "locator" variable specially.
-			print("Note to self: do something for variable= on label elements.");
-		}
 	};
-	if (this.tokentype == CSL.START){
+	if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 		if (["if","else-if"].indexOf(this.name) > -1){
 			var variables = arg.split(/\s+/);
 			for each (var variable in variables){
@@ -211,10 +200,7 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 				};
 				this["tests"].push(func);
 			};
-		};
-	};
-	if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
-		if (this.name == "names" || this.name == "date") {
+		} else if (["label","names","date","text","number"].indexOf(this.name) > -1) {
 			if (arg){
 				this.variables = arg.split(/\s+/);
 			};
