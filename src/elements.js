@@ -953,6 +953,7 @@ CSL.Lib.Elements.date = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
+
 			var set_value = function(state,Item){
 				state.tmp.value.push(Item[this.variables[0]]);
 			};

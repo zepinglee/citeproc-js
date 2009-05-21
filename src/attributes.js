@@ -212,17 +212,12 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 				this["tests"].push(func);
 			};
 		};
-		if (this.name == "date"){
-			var func = function(state,Item){
-				state.fun.check_for_output(state,Item[arg]);
-				state.tmp.value.push(Item[arg]);
-			};
-			this["execs"].push(func);
-		};
 	};
-	if (this.name == "names" && (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON)){
-		if (arg){
-			this.variables = arg.split(/\s+/);
+	if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON)){
+		if (this.name == "names" || this.name == "date") {
+			if (arg){
+				this.variables = arg.split(/\s+/);
+			};
 		};
 	};
 };
