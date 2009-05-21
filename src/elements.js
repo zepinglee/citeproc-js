@@ -637,6 +637,15 @@ CSL.Lib.Elements["if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
+			for each (var variable in this.variables){
+				var func = function(state,Item){
+					if (Item[variable]){
+						return true;
+					}
+					return false;
+				};
+				this["tests"].push(func);
+			};
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
@@ -689,6 +698,15 @@ CSL.Lib.Elements["else-if"] = new function(){
 	// these function are the same as those in if, might just clone
 	function build (state,target){
 		if (this.tokentype == CSL.START){
+			for each (var variable in this.variables){
+				var func = function(state,Item){
+					if (Item[variable]){
+						return true;
+					}
+					return false;
+				};
+				this["tests"].push(func);
+			};
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"

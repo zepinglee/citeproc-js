@@ -2472,6 +2472,15 @@ CSL.Lib.Elements["if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
+			for each (var variable in this.variables){
+				var func = function(state,Item){
+					if (Item[variable]){
+						return true;
+					}
+					return false;
+				};
+				this["tests"].push(func);
+			};
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
@@ -2515,6 +2524,15 @@ CSL.Lib.Elements["else-if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
+			for each (var variable in this.variables){
+				var func = function(state,Item){
+					if (Item[variable]){
+						return true;
+					}
+					return false;
+				};
+				this["tests"].push(func);
+			};
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
@@ -3225,21 +3243,10 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 	}
 };
 CSL.Lib.Attributes["@variable"] = function(state,arg){
-	if (["label","names","date","text","number"].indexOf(this.name) > -1) {
+	if (["label","names","date","text","number","if","else-if"].indexOf(this.name) > -1) {
 		this.variables = arg.split(/\s+/);
 	} else if (this.name == "key"){
 		this.variables = arg.split(/\s+/);
-	} else if (["if","else-if"].indexOf(this.name) > -1){
-		var variables = arg.split(/\s+/);
-		for each (var variable in variables){
-			var func = function(state,Item){
-				if (Item[variable]){
-					return true;
-				}
-				return false;
-			};
-			this["tests"].push(func);
-		};
 	};
 };
 CSL.Lib.Attributes["@and"] = function(state,arg){
