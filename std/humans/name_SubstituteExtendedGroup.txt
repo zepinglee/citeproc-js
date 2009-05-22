@@ -8,21 +8,22 @@ citation
 
 
 >>===== RESULT =====>>
-His Anonymous Life, 5
+John Doe
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
-	<citation>
+    <citation>
         <layout>
             <names variable="author">
                 <name/>
                 <substitute>
-					<group>
-						<text variable="title"/>
-						<number variable="edition" prefix=", "/>
-					</group>
+                    <names variable="editor"/>
+                    <group>
+                        <text variable="title"/>
+                        <text value="... this should NOT appear" prefix=", "/>
+                    </group>
                 </substitute>
             </names>
         </layout>
@@ -35,6 +36,9 @@ His Anonymous Life, 5
 [{
    "id":"item-1",
    "type": "book",
+   "author": [
+       { "name": "Doe, John" }
+   ],
    "issued": "2000",
    "title": "His Anonymous Life",
    "edition": "5"

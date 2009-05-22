@@ -80,11 +80,11 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("name_SubsituteExtendedMacro");
+        var test = CSL.System.Tests.getTest("name_SubstituteExtendedGroup");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("name_SubsituteName");
+        var test = CSL.System.Tests.getTest("name_SubstituteExtendedMacro");
         doh.assertEqual(test.result, test.run());
     },
     function(){
@@ -93,6 +93,10 @@ doh.register("tests.std_name", [
     },
     function(){
         var test = CSL.System.Tests.getTest("name_SubstituteMacroInheritDecorations");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteName");
         doh.assertEqual(test.result, test.run());
     },
     function(){
