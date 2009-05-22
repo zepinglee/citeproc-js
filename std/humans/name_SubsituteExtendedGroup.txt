@@ -1,0 +1,42 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+His Anonymous Life, 5
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+	<citation>
+        <layout>
+            <names variable="author">
+                <name/>
+                <substitute>
+					<group>
+						<text variable="title"/>
+						<number variable="edition" prefix=", "/>
+					</group>
+                </substitute>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "issued": "2000",
+   "title": "His Anonymous Life",
+   "edition": "5"
+}]
+<<===== INPUT =====<<
