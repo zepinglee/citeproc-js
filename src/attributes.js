@@ -167,10 +167,26 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
  * @function
  */
 CSL.Lib.Attributes["@variable"] = function(state,arg){
-	if (["label","names","date","text","number","if","else-if"].indexOf(this.name) > -1) {
-		this.variables = arg.split(/\s+/);
-	} else if (this.name == "key"){
-		this.variables = arg.split(/\s+/);
+	this.variables = arg.split(/\s+/);
+	if (["names","date","text","number"].indexOf(this.name) > -1) {
+		//
+		// An oddity of variable handling is that this.variables
+		// is actually ephemeral; the full list of variables is
+		// held in the inner var, and pushed into this.variables
+		// conditionally in order to suppress repeat renderings of
+		// the same item variable.
+		//
+		var set_variable_names = function(state,Item){
+			var variables = this.variables.slice();
+			this.variables = [];
+			for each (var variable in variables){
+				if (state.tmp.done_vars.indexOf(variable) == -1){
+					this.variables.push(variable);
+					state.tmp.done_vars.push(variable);
+				};
+			};
+		};
+		this.execs.push(set_variable_names);
 	};
 };
 

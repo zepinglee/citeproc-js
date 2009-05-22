@@ -5,7 +5,9 @@ doh.register("tests.sort", [
 	function testRegistrationSortKeyReturn(){
 		var xml = "<style>"
 				  + "<citation>"
-					  + "<text variable=\"title\"/>"
+					  + "<layout>"
+						  + "<text variable=\"title\"/>"
+					  + "</layout>"
 				  + "</citation>"
 				  + "<bibliography>"
 				  + "<sort>"
@@ -33,7 +35,9 @@ doh.register("tests.sort", [
 	function testRegistryCiteNumber(){
 		var xml = "<style>"
 				  + "<citation>"
-					  + "<text variable=\"title\"/>"
+					  + "<layout>"
+						  + "<text variable=\"title\"/>"
+					  + "</layout>"
 				  + "</citation>"
 				  + "<bibliography>"
 				  + "<sort>"

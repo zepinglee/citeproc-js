@@ -2238,11 +2238,9 @@ CSL.Lib.Elements.text = new function(){
 					state.build.plural = false;
 				} else if (variable){
 					var func = function(state,Item){
-						if (this.variables.length){
-							state.fun.check_for_output(state,Item[variable]);
-							state.output.append(Item[variable],this);
-							//state.tmp.value.push(Item[variable]);
-						}
+						state.fun.check_for_output(state,Item[variable]);
+						state.output.append(Item[variable],this);
+						//state.tmp.value.push(Item[variable]);
 					};
 					this["execs"].push(func);
 				} else if (this.strings.value){
@@ -2682,9 +2680,6 @@ CSL.Lib.Elements.layout = new function(){
 			};
 			this["execs"].push(reset_nameset_counter);
 			var declare_thyself = function(state,Item){
-				//
-				// This is not very pretty.
-				//
 				state[state.tmp.area].opt.layout_prefix = this.strings.prefix;
 				state[state.tmp.area].opt.layout_suffix = this.strings.suffix;
 				state[state.tmp.area].opt.layout_decorations = this.decorations;
@@ -2833,7 +2828,7 @@ CSL.Lib.Elements.sort = new function(){
 			state.build.sort_flag  = true;
 			state.build.area_return = state.build.area;
 			state.build.area = state.build.area+"_sort";
-		}
+		};
 		if (this.tokentype == CSL.END){
 			state.build.area = state.build.area_return;
 			state.build.sort_flag  = false;
@@ -2846,6 +2841,10 @@ CSL.Lib.Elements.key = new function(){
 		var start_key = new CSL.Factory.Token("key",CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
+		var initialize_done_vars = function(state,Item){
+			state.tmp.done_vars = new Array();
+		};
+		start_key.execs.push(initialize_done_vars);
 		var sort_direction = new Array();
 		if (this.strings.sort_direction == CSL.DESCENDING){
 			sort_direction.push(1);
@@ -3243,10 +3242,26 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 	}
 };
 CSL.Lib.Attributes["@variable"] = function(state,arg){
-	if (["label","names","date","text","number","if","else-if"].indexOf(this.name) > -1) {
-		this.variables = arg.split(/\s+/);
-	} else if (this.name == "key"){
-		this.variables = arg.split(/\s+/);
+	this.variables = arg.split(/\s+/);
+	if (["names","date","text","number"].indexOf(this.name) > -1) {
+		//
+		// An oddity of variable handling is that this.variables
+		// is actually ephemeral; the full list of variables is
+		// held in the inner var, and pushed into this.variables
+		// conditionally in order to suppress repeat renderings of
+		// the same item variable.
+		//
+		var set_variable_names = function(state,Item){
+			var variables = this.variables.slice();
+			this.variables = [];
+			for each (var variable in variables){
+				if (state.tmp.done_vars.indexOf(variable) == -1){
+					this.variables.push(variable);
+					state.tmp.done_vars.push(variable);
+				};
+			};
+		};
+		this.execs.push(set_variable_names);
 	};
 };
 CSL.Lib.Attributes["@and"] = function(state,arg){
