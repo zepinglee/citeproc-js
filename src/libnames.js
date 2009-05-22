@@ -26,7 +26,6 @@ CSL.Lib.Elements.names = new function(){
 						//
 						// if (Item[variable] && ! state.tmp.name_quash[variable]){
 						if (Item[variable]){
-							state.fun.check_for_output(state,Item[variable]);
 							state.tmp.names_max.push(Item[variable].length);
 							state.tmp.value.push({"type":variable,"names":Item[variable]});
 							// saving relevant names separately, for reference

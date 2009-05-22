@@ -76,17 +76,6 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	CSL.Lib.Elements[name].build.call(token,state,target);
 };
 
-
-CSL.Factory.check_for_output = function(state,content){
-	if (content){
-		state.tmp.term_sibling.replace( true );
-	} else {
-		if (undefined == state.tmp.term_sibling.value()) {
-			state.tmp.term_sibling.replace( false, CSL.LITERAL );
-		}
-	}
-}
-
 /**
  * Generate a separate list of formatting attributes.
  * <p>This generates a list of tuples containing attribute

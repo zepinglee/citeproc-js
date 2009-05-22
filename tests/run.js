@@ -32,6 +32,8 @@ print("#####");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.test_term");
+} else {
 	// dojo.require("tests.test_load_all_styles");
   	dojo.require("tests.std_magic");
 	dojo.require("tests.test_load_styles");
@@ -48,7 +50,6 @@ if(true){
   	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.test_formatters");
 	dojo.require("tests.test_registry");
-	dojo.require("tests.test_term");
 	dojo.require("tests.test_build");
 	dojo.require("tests.test_configure");
   	dojo.require("tests.std_condition");
@@ -72,7 +73,6 @@ if(true){
 	dojo.require("tests.test_util_names");
 	dojo.require("tests.test_sort");
 
-} else {
 	print("Nothing here");
 }
 

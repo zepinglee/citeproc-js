@@ -273,7 +273,10 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	// that terms cannot render by themselves unless no
 	// attempt has been made to render a non-term variable
 	// within the same group or citation.
-	this.fun.check_for_output = CSL.Factory.check_for_output;
+	//
+	//  Wheeeeeeeeeeeeeeeeeeeee!
+	//
+	/////  this.fun.check_for_output = CSL.Factory.check_for_output;
 	//
 	// stack flag used for term handling.  Set to true
 	// if at least one variable has tried to render, and

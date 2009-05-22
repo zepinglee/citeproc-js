@@ -205,6 +205,13 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 					break;
 				}
 			}
+			if (output){
+				state.tmp.term_sibling.replace( true );
+			} else {
+				if (undefined == state.tmp.term_sibling.value()) {
+					state.tmp.term_sibling.replace( false, CSL.LITERAL );
+				};
+			};
 			//if (output){
 			//	print("Output! "+this.variables);
 			//} else {
