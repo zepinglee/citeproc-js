@@ -187,6 +187,31 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			};
 		};
 		this.execs.push(set_variable_names);
+
+		var check_for_output = function(state,Item){
+			var output = false;
+			for each (var variable in this.variables){
+				if ("object" == typeof Item[variable]){
+					for (i in Item[variable]){
+						output = true;
+						break;
+					}
+				} else if ("string" == typeof Item[variable] && Item[variable]){
+					output = true;
+				} else if ("number" == typeof Item[variable]){
+					output = true;
+				}
+				if (output){
+					break;
+				}
+			}
+			//if (output){
+			//	print("Output! "+this.variables);
+			//} else {
+			//	print("No output! "+this.variables);
+			//}
+		};
+		this.execs.push(check_for_output);
 	};
 };
 

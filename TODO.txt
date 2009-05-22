@@ -10,7 +10,9 @@
 - Provide a "divide" method that splits a string into 
   "mutable" and "preserve" forks, with index hints to
   be used in recombine the two forks using a "conquer"
-  method.
+  method.  Or something.  This recombinant stuff will be
+  slick when implemented, but there are lots of sharp
+  objects in our path.
 
 - Provide discrete handling for "function" and "tag" types
   of decoration.  The latter work as at present, with
@@ -41,7 +43,7 @@
   false if they render something, and skipping unless
   that value is true.  This will require (a) that the
   code to cast these elements with appropriate conditional
-  wrappers be refactored as a discrete function, and
+  wrappers be refactored as discrete functions, and
   (b) that the output queue itself set a return value somewhere
   to indicate whether or not something rendered.
     (pending.  fbennett 2009-05-18)
