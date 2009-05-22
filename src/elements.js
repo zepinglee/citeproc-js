@@ -326,10 +326,10 @@ CSL.Lib.Elements.text = new function(){
 					state.build.term = false;
 					state.build.form = false;
 					state.build.plural = false;
-				} else if (variable){
+				} else if (this.variables.length){
 					var func = function(state,Item){
-						state.fun.check_for_output(state,Item[variable]);
-						state.output.append(Item[variable],this);
+						state.fun.check_for_output(state,Item[this.variables[0]]);
+						state.output.append(Item[this.variables[0]],this);
 						//state.tmp.value.push(Item[variable]);
 					};
 					this["execs"].push(func);

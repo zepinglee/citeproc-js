@@ -1,6 +1,6 @@
 {
   "name": "Magic Capitalization",
-  "category": "term",
+  "category": "magic",
   "mode": "citation",
   "schema":"0.8",
   "result": "And",
