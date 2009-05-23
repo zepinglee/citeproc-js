@@ -914,6 +914,9 @@ CSL.Lib.Elements.layout = new function(){
 CSL.Lib.Elements.number = new function(){
 	this.build = build;
 	function build(state,target){
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteStart(state,target);
+		};
 		//
 		// This should push a rangeable object to the queue.
 		//
@@ -927,6 +930,10 @@ CSL.Lib.Elements.number = new function(){
 		};
 		this["execs"].push(push_number);
 		target.push(this);
+
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteEnd(state,target);
+		};
 	};
 };
 
@@ -935,6 +942,10 @@ CSL.Lib.Elements.date = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
+
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteStart(state,target);
+			}
 
 			var set_value = function(state,Item){
 				if (this.variables.length && Item[this.variables[0]]){
@@ -955,6 +966,12 @@ CSL.Lib.Elements.date = new function(){
 			this["execs"].push(mergeoutput);
 		}
 		target.push(this);
+
+		if (this.tokentype == CSL.END){
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteEnd(state,target);
+			};
+		};
 	};
 };
 

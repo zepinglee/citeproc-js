@@ -76,14 +76,6 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("name_SubstituteExtendedGroup");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = CSL.System.Tests.getTest("name_SubstituteExtendedMacro");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = CSL.System.Tests.getTest("name_SubstituteInheritLabel");
         doh.assertEqual(test.result, test.run());
     },
@@ -93,6 +85,34 @@ doh.register("tests.std_name", [
     },
     function(){
         var test = CSL.System.Tests.getTest("name_SubstituteName");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteOnDateGroupSpanFail");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteOnGroupSpanGroupSpanFail");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteOnMacroGroupSpanFail");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteOnNamesSingletonGroupSpanFail");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteOnNamesSpanGroupSpanFail");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteOnNamesSpanNamesSpanFail");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = CSL.System.Tests.getTest("name_SubstituteOnNumberGroupSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
