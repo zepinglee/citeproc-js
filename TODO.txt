@@ -26,13 +26,8 @@
   everything that is to be specially formatted.  Stray
   presentational tags to be rendered as tag literals.
 
-- Erratum: unparsed dates.  The input object for dates
-  should include a "literal" attribute, which renders
-  instead of the formatted date if the "year" attribute
-  is passed as nil.
-
 - Erratum: raw date variables.  These should render as
-  2000-12-01 when they appear as the argument to a text
+  2000-12-01 when they appear as the argument to a key
   element.  Important for sort keys, as the raw variable
   is used all over the place in existing styles.
     (awaits test submission.  fbennett 2009-05-18)
