@@ -1,14 +1,15 @@
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
-    <macro name="title-edition">
-		<text variable="title"/>
-		<number variable="edition" prefix=", "/>
-	</macro>
-	<citation>
+    <citation>
         <layout>
-            <names variable="author">
+            <names variable="translator">
                 <name/>
                 <substitute>
-					<text macro="title-edition"/>
+                    <names variable="author" prefix="(" suffix=")">
+                        <name/>
+                    </names>
+                    <names variable="editor">
+                        <name/>
+                    </names>
                 </substitute>
             </names>
         </layout>

@@ -8,18 +8,24 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe
+book
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+
+    <macro name="bogus">
+        <text variable="type"/>
+    </macro>
+
     <citation>
         <layout>
-            <names variable="author">
+            <names variable="translator">
                 <name/>
                 <substitute>
-                    <names variable="editor"/>
+                    <text macro="bogus"/>
+                    <names variable="author"/>
                     <group>
                         <text variable="title"/>
                         <text value="... this should NOT appear" prefix=", "/>

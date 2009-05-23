@@ -8,7 +8,7 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe
+2000
 <<===== RESULT =====<<
 
 
@@ -16,10 +16,13 @@ John Doe
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
     <citation>
         <layout>
-            <names variable="author">
+            <names variable="translator">
                 <name/>
                 <substitute>
                     <names variable="editor"/>
+                    <date variable="issued">
+                        <date-part name="year"/>
+                    </date>
                     <group>
                         <text variable="title"/>
                         <text value="... this should NOT appear" prefix=", "/>
@@ -39,7 +42,7 @@ John Doe
    "author": [
        { "name": "Doe, John" }
    ],
-   "issued": "2000",
+   "issued": { "year": "2000" },
    "title": "His Anonymous Life",
    "edition": "5"
 }]

@@ -14,7 +14,13 @@ CSL.Lib.Elements.names = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteStart(state,target);
+			}
+			state.build.substitute_level.push(1);
+
 			var init_names = function(state,Item){
+
 				//
 				// XXXXX: could be wrong here
 				if (state.tmp.value.length == 0){
@@ -42,7 +48,6 @@ CSL.Lib.Elements.names = new function(){
 
 			state.build.names_flag = true;
 
-			state.build.substitute_level.push(1);
 			var init_can_substitute = function(state,Item){
 				state.tmp.can_substitute.push(true);
 			};
@@ -295,9 +300,15 @@ CSL.Lib.Elements.names = new function(){
 
 			state.build.names_flag = false;
 			state.build.name_flag = false;
-			state.build.substitute_level.pop();
 
 		}
 		target.push(this);
+
+		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
+			state.build.substitute_level.pop();
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteEnd(state,target);
+			}
+		}
 	}
 };

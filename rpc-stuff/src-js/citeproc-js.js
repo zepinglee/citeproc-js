@@ -2578,6 +2578,9 @@ CSL.Lib.Elements.layout = new function(){
 CSL.Lib.Elements.number = new function(){
 	this.build = build;
 	function build(state,target){
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteStart(state,target);
+		};
 		//
 		// This should push a rangeable object to the queue.
 		//
@@ -2591,12 +2594,18 @@ CSL.Lib.Elements.number = new function(){
 		};
 		this["execs"].push(push_number);
 		target.push(this);
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteEnd(state,target);
+		};
 	};
 };
 CSL.Lib.Elements.date = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteStart(state,target);
+			}
 			var set_value = function(state,Item){
 				if (this.variables.length && Item[this.variables[0]]){
 					state.tmp.date_object = Item[this.variables[0]];
@@ -2614,6 +2623,11 @@ CSL.Lib.Elements.date = new function(){
 			this["execs"].push(mergeoutput);
 		}
 		target.push(this);
+		if (this.tokentype == CSL.END){
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteEnd(state,target);
+			};
+		};
 	};
 };
 CSL.Lib.Elements["date-part"] = new function(){
@@ -2817,6 +2831,10 @@ CSL.Lib.Elements.names = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteStart(state,target);
+			}
+			state.build.substitute_level.push(1);
 			var init_names = function(state,Item){
 				//
 				// XXXXX: could be wrong here
@@ -2842,7 +2860,6 @@ CSL.Lib.Elements.names = new function(){
 		};
 		if (this.tokentype == CSL.START){
 			state.build.names_flag = true;
-			state.build.substitute_level.push(1);
 			var init_can_substitute = function(state,Item){
 				state.tmp.can_substitute.push(true);
 			};
@@ -3071,11 +3088,17 @@ CSL.Lib.Elements.names = new function(){
 			this["execs"].push(unsets);
 			state.build.names_flag = false;
 			state.build.name_flag = false;
-			state.build.substitute_level.pop();
 		}
 		target.push(this);
+		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
+			state.build.substitute_level.pop();
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteEnd(state,target);
+			}
+		}
 	}
-};CSL.Lib.Attributes = {};
+};
+CSL.Lib.Attributes = {};
 CSL.Lib.Attributes["@value"] = function(state,arg){
 	this.strings.value = arg;
 };
