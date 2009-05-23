@@ -37,17 +37,6 @@
   is used all over the place in existing styles.
     (awaits test submission.  fbennett 2009-05-18)
 
-- Erratum: all spanned top-level elements within
-  a substitute span need to be treated as well-behaved
-  conditionals, setting the substitute rendering flag to
-  false if they render something, and skipping unless
-  that value is true.  This will require (a) that the
-  code to cast these elements with appropriate conditional
-  wrappers be refactored as discrete functions, and
-  (b) that the output queue itself set a return value somewhere
-  to indicate whether or not something rendered.
-    (pending.  fbennett 2009-05-18)
-
 - Tidy up and finish out API, provide examples and
   an overview readme doc.
     (pending. fbennett 2009-05-21)
