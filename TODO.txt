@@ -26,12 +26,6 @@
   everything that is to be specially formatted.  Stray
   presentational tags to be rendered as tag literals.
 
-- Erratum: raw date variables.  These should render as
-  2000-12-01 when they appear as the argument to a key
-  element.  Important for sort keys, as the raw variable
-  is used all over the place in existing styles.
-    (awaits test submission.  fbennett 2009-05-18)
-
 - Tidy up and finish out API, provide examples and
   an overview readme doc.
     (pending. fbennett 2009-05-21)
