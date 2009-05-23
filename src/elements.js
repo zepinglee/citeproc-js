@@ -948,6 +948,7 @@ CSL.Lib.Elements.date = new function(){
 			}
 
 			var set_value = function(state,Item){
+				state.tmp.element_rendered_ok = false;
 				if (this.variables.length && Item[this.variables[0]]){
 					state.tmp.date_object = Item[this.variables[0]];
 				}
@@ -961,6 +962,9 @@ CSL.Lib.Elements.date = new function(){
 
 		} else if (this.tokentype == CSL.END){
 			var mergeoutput = function(state,Item){
+				if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
+					state.output.append(state.tmp.date_object["literal"],"empty");
+				}
 				state.output.endTag();
 			};
 			this["execs"].push(mergeoutput);

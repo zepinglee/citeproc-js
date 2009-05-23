@@ -278,15 +278,13 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	// tag maps a false value to superior level.
 	this.tmp.can_substitute = new CSL.Factory.Stack( false, CSL.LITERAL);
 	//
+	// notes whether the formatted elements of a date span
+	// rendered anything.  controls whether literal fallback
+	// is used.
+	this.tmp.element_rendered_ok = false;
+	//
 	// counter for total namesets
 	this.tmp.nameset_counter = 0;
-	//
-	// function to mark output.  used to satisfy requirement
-	// that terms cannot render by themselves unless no
-	// attempt has been made to render a non-term variable
-	// within the same group or citation.
-	//
-	//  Wheeeeeeeeeeeeeeeeeeeee!
 	//
 	/////  this.fun.check_for_output = CSL.Factory.check_for_output;
 	//

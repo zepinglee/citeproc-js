@@ -136,5 +136,3 @@ CSL.Util.Dates.day["ordinal"] = function(state,num){
 	}
 	return str;
 }
-
-
