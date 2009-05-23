@@ -120,6 +120,7 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.splice_delimiter = false;
 	this.build.substitute_level = new CSL.Factory.Stack( 0, CSL.LITERAL);
 	this.tmp.can_substitute = new CSL.Factory.Stack( false, CSL.LITERAL);
+	this.tmp.element_rendered_ok = false;
 	this.tmp.nameset_counter = 0;
 	this.tmp.term_sibling = new CSL.Factory.Stack( undefined, CSL.LITERAL);
 	this.tmp.term_predecessor = false;
@@ -439,6 +440,9 @@ CSL.Util = {};
 CSL.Util.Dates = new function(){};
 CSL.Util.Dates.year = new function(){};
 CSL.Util.Dates.year["long"] = function(state,num){
+	if (!num){
+		num = 0;
+	}
 	return num.toString();
 }
 CSL.Util.Dates.year["short"] = function(state,num){
@@ -452,6 +456,9 @@ CSL.Util.Dates.month["numeric"] = function(state,num){
 	return num.toString();
 }
 CSL.Util.Dates.month["numeric-leading-zeros"] = function(state,num){
+	if (!num){
+		num = 0;
+	}
 	num = num.toString();
 	while (num.length < 2){
 		num = "0"+num;
@@ -479,6 +486,9 @@ CSL.Util.Dates.day["numeric"] = function(state,num){
 	return num.toString();
 }
 CSL.Util.Dates.day["numeric-leading-zeros"] = function(state,num){
+	if (!num){
+		num = 0;
+	}
 	num = num.toString();
 	while (num.length < 2){
 		num = "0"+num;
@@ -2607,6 +2617,7 @@ CSL.Lib.Elements.date = new function(){
 				CSL.Util.substituteStart(state,target);
 			}
 			var set_value = function(state,Item){
+				state.tmp.element_rendered_ok = false;
 				if (this.variables.length && Item[this.variables[0]]){
 					state.tmp.date_object = Item[this.variables[0]];
 				}
@@ -2618,6 +2629,9 @@ CSL.Lib.Elements.date = new function(){
 			this["execs"].push(newoutput);
 		} else if (this.tokentype == CSL.END){
 			var mergeoutput = function(state,Item){
+				if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
+					state.output.append(state.tmp.date_object["literal"],"empty");
+				}
 				state.output.endTag();
 			};
 			this["execs"].push(mergeoutput);
@@ -2767,24 +2781,14 @@ CSL.Lib.Elements.key = new function(){
 		if (this.variables.length){
 			var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
 			single_text.variables = this.variables.slice();
-			//
-			// XXXXX: we need a unified method for obtaining the value
-			// of a variable.  different categories of variable (text,
-			// date, citation-number, etc.) have different requirements.
-			// it's complicated, and should all be in one place.
-			//
-			//var func = function(state,Item){
-			//	if ("citation-number" == this.variables[0]){
-			//		state.tmp.value.push("citation-number");
-			//	} else {
-			//		state.tmp.value.push(Item[this.variables[0]]);
-			//	};
-			//};
-			//single_text["execs"].push(func);
 			var output_variables = function(state,Item){
 				for each(var variable in single_text.variables){
 					if (variable == "citation-number"){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
+					} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
+						state.output.append(CSL.Util.Dates.year["long"](state,Item[variable]["year"]));
+						state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable]["month"]));
+						state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable]["day"]));
 					} else {
 						state.output.append(Item[variable],"empty");
 					}

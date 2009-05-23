@@ -33,7 +33,6 @@ print("#####");
 // requested tests go here
 if(true){
   	dojo.require("tests.std_date");
-} else {
   	dojo.require("tests.std_name");
 	dojo.require("tests.test_term");
 	// dojo.require("tests.test_load_all_styles");
@@ -72,6 +71,7 @@ if(true){
 	dojo.require("tests.test_commands");
 	dojo.require("tests.test_util_names");
 	dojo.require("tests.test_sort");
+} else {
 
 	print("Nothing here");
 }

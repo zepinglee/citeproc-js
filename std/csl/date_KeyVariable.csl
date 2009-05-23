@@ -1,0 +1,15 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+		    <text variable="title"/>
+        </layout>
+    </citation>
+    <bibliography>
+        <sort>
+            <key variable="issued" sort="descending"/>
+        </sort>
+        <layout>
+            <text variable="title"/>
+        </layout>
+    </bibliography>
+</style>

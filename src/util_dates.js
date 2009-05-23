@@ -20,6 +20,9 @@ CSL.Util.Dates.year = new function(){};
  * <p>This just passes the number back as a string.</p>
  */
 CSL.Util.Dates.year["long"] = function(state,num){
+	if (!num){
+		num = 0;
+	}
 	return num.toString();
 }
 
@@ -54,6 +57,9 @@ CSL.Util.Dates.month["numeric"] = function(state,num){
  * <p>This just passes the number back as string padded with zeros.</p>
  */
 CSL.Util.Dates.month["numeric-leading-zeros"] = function(state,num){
+	if (!num){
+		num = 0;
+	}
 	num = num.toString();
 	while (num.length < 2){
 		num = "0"+num;
@@ -107,6 +113,9 @@ CSL.Util.Dates.day["numeric"] = function(state,num){
  * <p>This just passes the number back as a string padded with zeros.</p>
  */
 CSL.Util.Dates.day["numeric-leading-zeros"] = function(state,num){
+	if (!num){
+		num = 0;
+	}
 	num = num.toString();
 	while (num.length < 2){
 		num = "0"+num;

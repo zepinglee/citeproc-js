@@ -1,0 +1,65 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Book A
+Book B
+Book C
+Book D
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+		    <text variable="title"/>
+        </layout>
+    </citation>
+    <bibliography>
+        <sort>
+            <key variable="issued" sort="descending"/>
+        </sort>
+        <layout>
+            <text variable="title"/>
+        </layout>
+    </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "title": "Book C",
+    "issued": {"year": "2000", "month": "2", "day": "15" },
+  },
+  {
+    "id":"ITEM-2",
+    "type": "book",
+    "title": "Book B",
+    "issued": {"year": "2000", "month": "12", "day": "15" },
+  },
+  {
+    "id":"ITEM-3",
+    "type": "book",
+    "title": "Book A",
+    "issued": {"year": "2001"},
+  },
+  {
+    "id":"ITEM-4",
+    "type": "book",
+    "title": "Book D",
+    "issued": {"year": "2000"},
+  }
+]
+<<===== INPUT =====<<

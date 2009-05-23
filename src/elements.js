@@ -1128,24 +1128,15 @@ CSL.Lib.Elements.key = new function(){
 		if (this.variables.length){
 			var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
 			single_text.variables = this.variables.slice();
-			//
-			// XXXXX: we need a unified method for obtaining the value
-			// of a variable.  different categories of variable (text,
-			// date, citation-number, etc.) have different requirements.
-			// it's complicated, and should all be in one place.
-			//
-			//var func = function(state,Item){
-			//	if ("citation-number" == this.variables[0]){
-			//		state.tmp.value.push("citation-number");
-			//	} else {
-			//		state.tmp.value.push(Item[this.variables[0]]);
-			//	};
-			//};
-			//single_text["execs"].push(func);
+
 			var output_variables = function(state,Item){
 				for each(var variable in single_text.variables){
 					if (variable == "citation-number"){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
+					} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
+						state.output.append(CSL.Util.Dates.year["long"](state,Item[variable]["year"]));
+						state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable]["month"]));
+						state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable]["day"]));
 					} else {
 						state.output.append(Item[variable],"empty");
 					}
