@@ -33,10 +33,10 @@ print("#####");
 // requested tests go here
 if(true){
 	dojo.require("tests.test_term");
+  	dojo.require("tests.std_name");
 	// dojo.require("tests.test_load_all_styles");
   	dojo.require("tests.std_magic");
 	dojo.require("tests.test_load_styles");
-  	dojo.require("tests.std_name");
 	dojo.require("tests.test_locale");
   	dojo.require("tests.std_number");
   	dojo.require("tests.std_decorations");

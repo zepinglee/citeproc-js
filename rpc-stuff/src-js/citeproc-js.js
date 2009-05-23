@@ -118,9 +118,9 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.tmp.years_used = new Array();
 	this.tmp.names_used = new Array();
 	this.splice_delimiter = false;
-	this.tmp.names_substituting = false;
+	this.build.substitute_level = new CSL.Factory.Stack( 0, CSL.LITERAL);
+	this.tmp.can_substitute = new CSL.Factory.Stack( false, CSL.LITERAL);
 	this.tmp.nameset_counter = 0;
-	this.fun.check_for_output = CSL.Factory.check_for_output;
 	this.tmp.term_sibling = new CSL.Factory.Stack( undefined, CSL.LITERAL);
 	this.tmp.term_predecessor = false;
 	this.tmp.jump = new CSL.Factory.Stack(0,CSL.LITERAL);
@@ -299,7 +299,7 @@ CSL.Core.Engine.prototype._render = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
-		print("---> Token: "+token.name+" ("+this.tmp.area+")");
+		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area);
 		print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 	if (token.evaluator){
@@ -705,7 +705,6 @@ CSL.Util.Names.deep_copy = function(nameset){
 //
 CSL.Util.Names.reinit = function(state,Item){
 	state.tmp.value = new Array();
-	state.tmp.names_substituting = false;
 	state.tmp.name_et_al_term = false;
 	state.tmp.name_et_al_decorations = false;
 	state.tmp.name_et_al_form = "long";
@@ -925,120 +924,38 @@ CSL.Util.FlipFlopper.prototype.split = function(idx,str){
 	}
 	return lst1;
 }
-CSL.Util.Positioner = function(){};
-CSL.Util.Positioner.prototype.getPosition = function(citation, update) {
-	for(var previousIndex = citation.properties.index-1;
-        previousIndex != -1
-	    && (!this.citationsByIndex[previousIndex]
-		|| this.citationsByIndex[previousIndex].properties["delete"]);
-		previousIndex--) {}
-    var previousCitation = (previousIndex == -1 ? false : this.citationsByIndex[previousIndex]);
-    // if one source is the same as the last, use ibid
-    //
-    // Case 1: source in previous citation
-    // (1) Threshold conditions
-    //     (a) there must be a previous citation with one item
-    //     (b) this item must be the first in this citation
-    //     (c) the previous citation must contain a reference to the same item ...
-    // Case 2: immediately preceding source in this citation
-    // (1) Threshold conditions
-    //     (a) there must be an imediately preceding reference to  the
-    //         same item in this citation
-    // Evaluation
-    //     (a) if the previous citation had no locator and this citation
-    //         has one, use ibid+pages
-    //     (b) if the previous citation had no locator and this citation
-    //         also has none, use ibid
-    //     (c) if the previous citation had a locator (page number, etc.)
-    //         and this citation has a locator that is identical, use ibid
-    //     (d) if the previous citation had a locator, and this citation
-    //         has one that differs, use ibid+pages
-    //     (e) if the previous citation had a locator and this citation
-    //         has none, use subsequent
-    //     (f) if the current and previous citations are not the same,
-    //         set as FIRST or SUBSEQUENT, as appropriate.
-    //
-    // For Case 1
-    var curr = citation.citationItems[0];
-	curr.thisRef = citation.properties.index+1;
-	if (!previousCitation) {
-		curr.itemNumber = 1;
-		this.firstItemNumber[curr.itemID] = 1;
-	} else {
-		curr.itemNumber = previousCitation.citationItems[previousCitation.citationItems.length-1].itemNumber+1;
-	}
-    if(previousCitation
-       && previousCitation.citationItems.length == 1
-       && citation.citationItems[0].itemID == previousCitation.citationItems[0].itemID ) {
-		var newPosition = this.checkIbidOrSubsequent(previousCitation.citationItems[0], curr, citation);
-    } else {
-		// check outside this note if necessary
-		var newPosition = this.checkFirstOrSubsequent(curr, citation );
-    }
-    this.updateCitePosition (curr, newPosition, citation, update);
-    citation.citationItems[0].position = newPosition;
-    this.checkCiteContext (citation.citationItems[0], newPosition);
-    //
-    // For Case 2
-	for ( i = 1; i < citation.citationItems.length; i++) {
-		// step through possible preceding cites within same note, from back to front
-		var curr = citation.citationItems[i];
-		var prev = citation.citationItems[i-1];
-		curr.itemNumber = prev.itemNumber+1;
-		curr.thisRef = citation.properties.index+1;
-		var newPosition = undefined;
-		var prev = citation.citationItems[i-1];
-		if ( curr.itemID == prev.itemID ) {
-			// check immediately preceding cite in this note
-			newPosition = this.checkIbidOrSubsequent(prev, curr, citation);
-		} else {
-			// check other preceding cites
-			newPosition = this.checkFirstOrSubsequent(curr, citation );
+CSL.Util.substituteStart = function(state,target){
+	var choose_start = new CSL.Factory.Token("choose",CSL.START);
+	target.push(choose_start);
+	var if_start = new CSL.Factory.Token("if",CSL.START);
+	var check_for_variable = function(state,Item){
+		if (state.tmp.can_substitute.value()){
+			return true;
 		}
-		this.updateCitePosition (curr, newPosition, citation, true);
-		citation.citationItems[i].position = newPosition;
-		this.checkCiteContext (citation.citationItems[i], newPosition);
-	}
-}
-CSL.Util.Positioner.prototype.checkIbidOrSubsequent = function(prev, curr, citation) {
-    var newPosition;
-	curr.distanceToLastRef = citation.properties.index+1 - this.lastRefUnit[curr.itemID];
-	curr.firstRefUnit = this.firstRefUnit[curr.itemID];
-	this.lastRefUnit[curr.itemID] = citation.properties.index+1;
-    if (!prev.locator) {
-		if (curr.locator) {
-			newPosition = Zotero.CSL.POSITION_IBID_WITH_LOCATOR;
-		} else {
-			newPosition = Zotero.CSL.POSITION_IBID;
+		return false;
+	};
+	if_start.tests.push(check_for_variable);
+	var evaluator = function(state,Item){
+	var res = this.fail;
+		state.tmp.jump.replace("fail");
+		for each (var func in this.tests){
+			if (func.call(this,state,Item)){
+				res = this.succeed;
+				state.tmp.jump.replace("succeed");
+				break;
+			}
 		}
-    } else {
-		if (prev.locator == curr.locator) {
-			newPosition = Zotero.CSL.POSITION_IBID;
-		} else if (curr.locator) {
-			newPosition = Zotero.CSL.POSITION_IBID_WITH_LOCATOR;
-		} else {
-			newPosition = Zotero.CSL.POSITION_SUBSEQUENT;
-		}
-    }
-    return newPosition;
-}
-CSL.Util.Positioner.prototype.checkFirstOrSubsequent = function(curr, citation ) {
-    var newPosition;
-    if (!this.firstItemNumber[curr.itemID] || curr.itemNumber == this.firstItemNumber[curr.itemID]) {
-		this.firstItemNumber[curr.itemID] = curr.itemNumber;
-		curr.distanceToLastRef = 0;
-		curr.firstRefUnit = citation.properties.index+1;
-		this.firstRefUnit[curr.itemID] = citation.properties.index+1;
-		this.lastRefUnit[curr.itemID] = citation.properties.index+1;
-		newPosition = Zotero.CSL.POSITION_FIRST;
-    } else {
-		curr.distanceToLastRef = citation.properties.index+1 - this.lastRefUnit[curr.itemID];
-		curr.firstRefUnit = this.firstRefUnit[curr.itemID];
-		this.lastRefUnit[curr.itemID] = citation.properties.index+1;
-		newPosition = Zotero.CSL.POSITION_SUBSEQUENT;
-    }
-    return newPosition;
-}
+		return res;
+	};
+	if_start.evaluator = evaluator;
+	target.push(if_start);
+};
+CSL.Util.substituteEnd = function(state,target){
+	var if_end = new CSL.Factory.Token("if",CSL.END);
+	target.push(if_end);
+	var choose_end = new CSL.Factory.Token("choose",CSL.END);
+	target.push(choose_end);
+};
 CSL.Factory = {};
 CSL.Factory.version = function(){
 	var msg = "\"Entropy\" citation processor (a.k.a. citeproc-js) ver.0.01";
@@ -1086,15 +1003,6 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	}
 	CSL.Lib.Elements[name].build.call(token,state,target);
 };
-CSL.Factory.check_for_output = function(state,content){
-	if (content){
-		state.tmp.term_sibling.replace( true );
-	} else {
-		if (undefined == state.tmp.term_sibling.value()) {
-			state.tmp.term_sibling.replace( false, CSL.LITERAL );
-		}
-	}
-}
 CSL.Factory.setDecorations = function(state,attributes){
 	var ret = new Array();
 	for each (var key in CSL.FORMAT_KEY_SEQUENCE){
@@ -1351,7 +1259,7 @@ CSL.Factory.Stack.prototype.push = function(val,literal){
 };
 CSL.Factory.Stack.prototype.replace = function(val,literal){
 	if (this.mystack.length == 0){
-		throw "Internal CSL processor error: attempt to replace nonexistent stack item";
+		throw "Internal CSL processor error: attempt to replace nonexistent stack item with "+val;
 	}
 	if (literal || val){
 		this.mystack[(this.mystack.length-1)] = val;
@@ -1360,7 +1268,7 @@ CSL.Factory.Stack.prototype.replace = function(val,literal){
 	}
 };
 CSL.Factory.Stack.prototype.pop = function(){
-	this.mystack.pop();
+	return this.mystack.pop();
 };
 CSL.Factory.Stack.prototype.value = function(){
 	return this.mystack[(this.mystack.length-1)];
@@ -2058,6 +1966,9 @@ CSL.Lib.Elements.info = new function(){
 CSL.Lib.Elements.text = new function(){
 	this.build = build;
 	function build (state,target){
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteStart(state,target);
+		}
 		//
 		// CSL permits macros to be called before they
 		// are declared.  We file a placeholder token unless we are
@@ -2092,58 +2003,9 @@ CSL.Lib.Elements.text = new function(){
 				};
 				start_token["execs"].push(newoutput);
 				target.push(start_token);
-				//
-				// Special handling for text macros inside a substitute
-				// environment.
-				if (state.build.names_substituting){
-					//
-					// A text macro inside a substitute environment is
-					// treated as a special conditional.
-					var choose_start = new CSL.Factory.Token("choose",CSL.START);
-					target.push(choose_start);
-					var if_start = new CSL.Factory.Token("if",CSL.START);
-					//
-					// Here's the Clever Part.
-					// Set a test of the shadow if token to skip this
-					// macro if we have acquired a name value.
-					var check_for_variable = function(state,Item){
-						if (state.tmp.value){
-							return true;
-						}
-						return false;
-					};
-					if_start.tests.push(check_for_variable);
-					//
-					// this is cut-and-paste of the "any" evaluator
-					// function, from Attributes.  These functions
-					// should be defined in a namespace for reuse.
-					var evaluator = function(state,Item){
-						var res = this.fail;
-						state.tmp.jump.replace("fail");
-						for each (var func in this.tests){
-							if (func.call(this,state,Item)){
-								res = this.succeed;
-								state.tmp.jump.replace("succeed");
-								break;
-							}
-						}
-						return res;
-					};
-					if_start.evaluator = evaluator;
-					target.push(if_start);
-					var macro = CSL.Factory.expandMacro.call(state,this);
-					for each (var t in macro){
-						target.push(t);
-					}
-					var if_end = new CSL.Factory.Token("if",CSL.END);
-					target.push(if_end);
-					var choose_end = new CSL.Factory.Token("choose",CSL.END);
-					target.push(choose_end);
-				} else {
-					var macro = CSL.Factory.expandMacro.call(state,this);
-					for each (var t in macro){
-						target.push(t);
-					}
+				var macro = CSL.Factory.expandMacro.call(state,this);
+				for each (var t in macro){
+					target.push(t);
 				}
 				var end_token = new CSL.Factory.Token("group",CSL.END);
 				var mergeoutput = function(state,Item){
@@ -2155,7 +2017,6 @@ CSL.Lib.Elements.text = new function(){
 				};
 				end_token["execs"].push(mergeoutput);
 				target.push(end_token);
-				state.build.names_substituting = false;
 			}
 			state.build.postponed_macro = false;
 		} else {
@@ -2236,11 +2097,9 @@ CSL.Lib.Elements.text = new function(){
 					state.build.term = false;
 					state.build.form = false;
 					state.build.plural = false;
-				} else if (variable){
+				} else if (this.variables.length){
 					var func = function(state,Item){
-						state.fun.check_for_output(state,Item[variable]);
-						state.output.append(Item[variable],this);
-						//state.tmp.value.push(Item[variable]);
+						state.output.append(Item[this.variables[0]],this);
 					};
 					this["execs"].push(func);
 				} else if (this.strings.value){
@@ -2263,7 +2122,10 @@ CSL.Lib.Elements.text = new function(){
 			}
 			target.push(this);
 		};
-	}
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteEnd(state,target);
+		};
+	};
 };
 CSL.Lib.Elements.macro = new function(){
 	this.build = build;
@@ -2393,6 +2255,12 @@ CSL.Lib.Elements.group = new function(){
 	this.build = build;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteStart(state,target);
+			}
+			if (state.build.substitute_level.value()){
+				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
+			}
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);
 			};
@@ -2424,6 +2292,14 @@ CSL.Lib.Elements.group = new function(){
 			this["execs"].push(mergeoutput);
 		}
 		target.push(this);
+		if (this.tokentype == CSL.END){
+			if (state.build.substitute_level.value()){
+				state.build.substitute_level.replace((state.build.substitute_level.value()-1));
+			}
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteEnd(state,target);
+			}
+		}
 	}
 };
 CSL.Lib.Elements.citation = new function(){
@@ -2635,13 +2511,14 @@ CSL.Lib.Elements.substitute = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
-			state.build.names_substituting = true;
-			var declare_thyself = function(state,Item){
-				state.tmp.names_substituting = true;
+			var set_conditional = function(state,Item){
+				if (state.tmp.value.length){
+					state.tmp.can_substitute.replace(false, CSL.LITERAL);
+				}
 			};
-			this["execs"].push(declare_thyself);
-		};
-		target.push(this);
+			this.execs.push(set_conditional);
+			target.push(this);
+		}
 	};
 };
 CSL.Lib.Elements["et-al"] = new function(){
@@ -2952,7 +2829,6 @@ CSL.Lib.Elements.names = new function(){
 						//
 						// if (Item[variable] && ! state.tmp.name_quash[variable]){
 						if (Item[variable]){
-							state.fun.check_for_output(state,Item[variable]);
 							state.tmp.names_max.push(Item[variable].length);
 							state.tmp.value.push({"type":variable,"names":Item[variable]});
 							// saving relevant names separately, for reference
@@ -2966,6 +2842,11 @@ CSL.Lib.Elements.names = new function(){
 		};
 		if (this.tokentype == CSL.START){
 			state.build.names_flag = true;
+			state.build.substitute_level.push(1);
+			var init_can_substitute = function(state,Item){
+				state.tmp.can_substitute.push(true);
+			};
+			this.execs.push(init_can_substitute);
 			var set_et_al_params = function(state,Item){
 				state.output.startTag("names",this);
 				//
@@ -3181,12 +3062,16 @@ CSL.Lib.Elements.names = new function(){
 		};
 		if (this.tokentype == CSL.END){
 			var unsets = function(state,Item){
+				if (!state.tmp.can_substitute.pop()){
+					state.tmp.can_substitute.replace(false, CSL.LITERAL);
+				}
 				state.fun.names_reinit(state,Item);
 				state.output.endTag(); // names
 			};
 			this["execs"].push(unsets);
 			state.build.names_flag = false;
 			state.build.name_flag = false;
+			state.build.substitute_level.pop();
 		}
 		target.push(this);
 	}
@@ -3262,6 +3147,38 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			};
 		};
 		this.execs.push(set_variable_names);
+		var check_for_output = function(state,Item){
+			var output = false;
+			for each (var variable in this.variables){
+				if ("object" == typeof Item[variable]){
+					for (i in Item[variable]){
+						output = true;
+						break;
+					}
+				} else if ("string" == typeof Item[variable] && Item[variable]){
+					output = true;
+				} else if ("number" == typeof Item[variable]){
+					output = true;
+				}
+				if (output){
+					break;
+				}
+			}
+			if (output){
+				state.tmp.term_sibling.replace( true );
+				state.tmp.can_substitute.replace(false, CSL.LITERAL);
+			} else {
+				if (undefined == state.tmp.term_sibling.value()) {
+					state.tmp.term_sibling.replace( false, CSL.LITERAL );
+				};
+			};
+			//if (output){
+			//	print("Output! "+this.variables);
+			//} else {
+			//	print("No output! "+this.variables);
+			//}
+		};
+		this.execs.push(check_for_output);
 	};
 };
 CSL.Lib.Attributes["@and"] = function(state,arg){

@@ -262,9 +262,21 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.tmp.names_used = new Array();
 	this.splice_delimiter = false;
 	//
-	// substituting flag.  triggers creation of a special conditional
-	// wrapper around text tags when in force.
-	this.tmp.names_substituting = false;
+	// controls the application of implicit conditional wrappers
+	// to top-level elements inside a names substitute span.
+	// zero by default, build of names tag pushes a
+	// new level with value 1.  group start tag increments by 1,
+	// group end tag decrements by 1.  conditional wrappers are
+	// only applied if value is exactly 1.
+	this.build.substitute_level = new CSL.Factory.Stack( 0, CSL.LITERAL);
+	//
+	// controls the implicit conditional wrappers applied
+	// to top-level elements inside a names substitute span.
+	// false by default, names start tag pushes a new true level,
+	// names end tag pops it.  Output value check in @variable
+	// function of attributes.js sets level to false.  closing names
+	// tag maps a false value to superior level.
+	this.tmp.can_substitute = new CSL.Factory.Stack( false, CSL.LITERAL);
 	//
 	// counter for total namesets
 	this.tmp.nameset_counter = 0;

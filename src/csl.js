@@ -127,8 +127,8 @@ if (!CSL.Util.Names){
 if (!CSL.Util.Sort){
 	load("./src/util_sort.js");
 }
-if (!CSL.Util.Positioner){
-	load("./src/position.js");
+if (!CSL.Util.substituteStart){
+	load("./src/util_substitute.js");
 }
 if (!CSL.Factory){
 	load("./src/factory.js");

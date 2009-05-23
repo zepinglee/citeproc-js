@@ -142,6 +142,9 @@ CSL.Lib.Elements.info = new function(){
 CSL.Lib.Elements.text = new function(){
 	this.build = build;
 	function build (state,target){
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteStart(state,target);
+		}
 		//
 		// CSL permits macros to be called before they
 		// are declared.  We file a placeholder token unless we are
@@ -177,60 +180,9 @@ CSL.Lib.Elements.text = new function(){
 				start_token["execs"].push(newoutput);
 				target.push(start_token);
 
-				//
-				// Special handling for text macros inside a substitute
-				// environment.
-				if (state.build.names_substituting){
-					//
-					// A text macro inside a substitute environment is
-					// treated as a special conditional.
-					var choose_start = new CSL.Factory.Token("choose",CSL.START);
-					target.push(choose_start);
-					var if_start = new CSL.Factory.Token("if",CSL.START);
-					//
-					// Here's the Clever Part.
-					// Set a test of the shadow if token to skip this
-					// macro if we have acquired a name value.
-					var check_for_variable = function(state,Item){
-						if (state.tmp.value){
-							return true;
-						}
-						return false;
-					};
-					if_start.tests.push(check_for_variable);
-					//
-					// this is cut-and-paste of the "any" evaluator
-					// function, from Attributes.  These functions
-					// should be defined in a namespace for reuse.
-					var evaluator = function(state,Item){
-						var res = this.fail;
-						state.tmp.jump.replace("fail");
-						for each (var func in this.tests){
-							if (func.call(this,state,Item)){
-								res = this.succeed;
-								state.tmp.jump.replace("succeed");
-								break;
-							}
-						}
-						return res;
-					};
-					if_start.evaluator = evaluator;
-					target.push(if_start);
-
-					var macro = CSL.Factory.expandMacro.call(state,this);
-					for each (var t in macro){
-						target.push(t);
-					}
-
-					var if_end = new CSL.Factory.Token("if",CSL.END);
-					target.push(if_end);
-					var choose_end = new CSL.Factory.Token("choose",CSL.END);
-					target.push(choose_end);
-				} else {
-					var macro = CSL.Factory.expandMacro.call(state,this);
-					for each (var t in macro){
-						target.push(t);
-					}
+				var macro = CSL.Factory.expandMacro.call(state,this);
+				for each (var t in macro){
+					target.push(t);
 				}
 
 				var end_token = new CSL.Factory.Token("group",CSL.END);
@@ -243,8 +195,6 @@ CSL.Lib.Elements.text = new function(){
 				};
 				end_token["execs"].push(mergeoutput);
 				target.push(end_token);
-
-				state.build.names_substituting = false;
 			}
 			state.build.postponed_macro = false;
 		} else {
@@ -351,7 +301,10 @@ CSL.Lib.Elements.text = new function(){
 			}
 			target.push(this);
 		};
-	}
+		if (state.build.substitute_level.value() == 1){
+			CSL.Util.substituteEnd(state,target);
+		};
+	};
 };
 
 
@@ -537,6 +490,13 @@ CSL.Lib.Elements.group = new function(){
 	function build (state,target){
 		if (this.tokentype == CSL.START){
 
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteStart(state,target);
+			}
+			if (state.build.substitute_level.value()){
+				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
+			}
+
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);
 			};
@@ -570,6 +530,15 @@ CSL.Lib.Elements.group = new function(){
 			this["execs"].push(mergeoutput);
 		}
 		target.push(this);
+
+		if (this.tokentype == CSL.END){
+			if (state.build.substitute_level.value()){
+				state.build.substitute_level.replace((state.build.substitute_level.value()-1));
+			}
+			if (state.build.substitute_level.value() == 1){
+				CSL.Util.substituteEnd(state,target);
+			}
+		}
 	}
 };
 
@@ -844,7 +813,8 @@ CSL.Lib.Elements.label = new function(){
 
 /**
  * The substitute node.
- * <p>A special conditional environment for use inside a names node.</p>
+ * <p>A special conditional environment for use inside a names node.
+ * Just used to record whether a name was found in the main element.</p>
  * @name CSL.Lib.Elements.substitute
  * @function
  */
@@ -852,13 +822,14 @@ CSL.Lib.Elements.substitute = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
-			state.build.names_substituting = true;
-			var declare_thyself = function(state,Item){
-				state.tmp.names_substituting = true;
+			var set_conditional = function(state,Item){
+				if (state.tmp.value.length){
+					state.tmp.can_substitute.replace(false, CSL.LITERAL);
+				}
 			};
-			this["execs"].push(declare_thyself);
-		};
-		target.push(this);
+			this.execs.push(set_conditional);
+			target.push(this);
+		}
 	};
 };
 

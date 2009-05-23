@@ -232,7 +232,7 @@ CSL.Core.Engine.prototype._render = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
-		print("---> Token: "+token.name+" ("+this.tmp.area+")");
+		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area);
 		print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 	if (token.evaluator){

@@ -48,7 +48,7 @@ CSL.Factory.Stack.prototype.replace = function(val,literal){
 	// safety fix after a bug was chased down.  Rhino
 	// JS will process a negative index without error (!).
 	if (this.mystack.length == 0){
-		throw "Internal CSL processor error: attempt to replace nonexistent stack item";
+		throw "Internal CSL processor error: attempt to replace nonexistent stack item with "+val;
 	}
 	if (literal || val){
 		this.mystack[(this.mystack.length-1)] = val;
@@ -63,7 +63,7 @@ CSL.Factory.Stack.prototype.replace = function(val,literal){
  * <p>Just does what it says.</p>
  */
 CSL.Factory.Stack.prototype.pop = function(){
-	this.mystack.pop();
+	return this.mystack.pop();
 };
 
 

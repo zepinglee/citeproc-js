@@ -42,6 +42,12 @@ CSL.Lib.Elements.names = new function(){
 
 			state.build.names_flag = true;
 
+			state.build.substitute_level.push(1);
+			var init_can_substitute = function(state,Item){
+				state.tmp.can_substitute.push(true);
+			};
+			this.execs.push(init_can_substitute);
+
 			var set_et_al_params = function(state,Item){
 				state.output.startTag("names",this);
 				//
@@ -279,6 +285,9 @@ CSL.Lib.Elements.names = new function(){
 
 		if (this.tokentype == CSL.END){
 			var unsets = function(state,Item){
+				if (!state.tmp.can_substitute.pop()){
+					state.tmp.can_substitute.replace(false, CSL.LITERAL);
+				}
 				state.fun.names_reinit(state,Item);
 				state.output.endTag(); // names
 			};
@@ -286,6 +295,8 @@ CSL.Lib.Elements.names = new function(){
 
 			state.build.names_flag = false;
 			state.build.name_flag = false;
+			state.build.substitute_level.pop();
+
 		}
 		target.push(this);
 	}

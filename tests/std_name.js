@@ -76,10 +76,6 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("name_SubsituteExtendedGroup");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = CSL.System.Tests.getTest("name_SubstituteExtendedGroup");
         doh.assertEqual(test.result, test.run());
     },

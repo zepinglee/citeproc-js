@@ -207,6 +207,7 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			}
 			if (output){
 				state.tmp.term_sibling.replace( true );
+				state.tmp.can_substitute.replace(false, CSL.LITERAL);
 			} else {
 				if (undefined == state.tmp.term_sibling.value()) {
 					state.tmp.term_sibling.replace( false, CSL.LITERAL );
