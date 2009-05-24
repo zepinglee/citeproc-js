@@ -2,6 +2,8 @@
 
 ## Completion of feature set
 
+- Get locators working in test suite and via RPC demo.
+
 - Provide HTML validation for inline markup.  Return the
   string with stray markers in HTML-escaped form.  This
   will display the field in the form it will appear in
