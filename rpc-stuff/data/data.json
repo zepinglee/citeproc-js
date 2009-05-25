@@ -1,0 +1,43 @@
+{
+  "method": "loadData",
+  "params": [
+    [
+      {
+        "id": "ITEM-1",
+        "type": "book",
+        "author": [
+          { "name":"Doe, John", "primary-key":"Doe", "secondary-key":"John" }
+        ],
+        "title": "Book A: insert interesting title phrase here",
+        "issued": { "year": "2006" }
+      },
+      {
+        "id": "ITEM-2",
+        "type": "book",
+        "author": [
+          { "name":" Roe, Jane", "primary-key":"Roe", "secondary-key":"Jane" }
+        ],
+        "title": "Book B: quiet reflections on anonymity",
+        "issued": { "year": "2007" }
+      },
+      {
+        "id": "ITEM-3",
+        "type": "book",
+        "author": [
+          { "primary-key":"Anderson", "secondary-key":"Margaret" }
+        ],
+        "title": "The '\"Amazing\" <i>Life</i> of the *Grand Petunia Royale*' by Karl Truckload",
+        "issued": { "year": "1950" }
+      },
+      {
+        "id": "ITEM-4",
+        "type": "book",
+        "author": [
+          { "primary-key":"Zinfandel", "secondary-key":"William" }
+        ],
+        "title": "<i>Peri Bathos</i>: on the art of sinking in poetry (an exercise in flagrant plagiarism)",
+        "issued": { "year": "1945" }
+      }
+    ]
+  ]
+}

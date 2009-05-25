@@ -47,6 +47,10 @@ CSL = new function () {
 		[ "", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm" ],
 		[ "", "m", "mm", "mmm", "mmmm", "mmmmm"]
 	];
+	this.CREATORS = ["author","editor","translator","recipient","interviewer"];
+	this.CREATORS = this.CREATORS.concat(["publisher","composer"]);
+	this.CREATORS = this.CREATORS.concat(["original-publisher","original-author"]);
+	this.CREATORS = this.CREATORS.concat(["container-author","collection-editor"]);
 };
 CSL.Core = {};
 CSL.Core.Engine = function (xmlCommandInterface,nodelist){
@@ -55,7 +59,6 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	this.opt = new Object();
 	this.tmp = new Object();
 	this.fun = new Object();
-	this.fun.retriever = new CSL.System.Retrieval.GetInput();
 	this.build = new Object();
 	this.build["alternate-term"] = false;
 	this.configure = new Object();
@@ -170,6 +173,13 @@ CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	}
 	return ret;
 }
+CSL.Core.Engine.prototype.composeItem = function(item){
+	var Item = this.sys.retrieveItem(item[0]);
+	for (var i in item[1]){
+		Item[i] = item[1][i];
+	}
+	return Item;
+};
 CSL.Core.Engine.prototype.getSortKeys = function(Item,key_type){
 	if (false){
 		print("KEY TYPE: "+key_type);
@@ -219,7 +229,7 @@ CSL.Core.Engine.prototype.getModes = function(){
 };
 CSL.Core.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
-	var input = this.fun.retriever.getInput(this.registry.getSortedIds());
+	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography","\n");
 	this.output.openLevel("bibliography");
@@ -405,7 +415,8 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
 		return xml;
 	}
 };
-CSL.Core.Build.prototype.build = function(locale){
+CSL.Core.Build.prototype.build = function(sys,locale){
+	this.state.sys = sys;
 	this.state.opt.locale = locale;
 	var engine = new this._builder(this.state);
 	var ret = engine.getObject();
@@ -779,6 +790,56 @@ CSL.Util.Sort.strip_prepositions = function(str){
 	};
 	return str;
 };
+//		if (this.flipflops){
+//			for each (var ff in this.flipflops){
+//				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
+//			}
+//		}
+//>>===== FLIPFLOPS =====>>
+//[
+//  {
+//    "start": "<span name=\"foreign-phrase\">",
+//    "end": "</span>",
+//    "func": ["@font-style", "italic"],
+//    "alt": ["@font-style", "normal"]
+//  }
+//]
+//<<===== FLIPFLOPS =====<<
+//>>===== FLIPFLOPS =====>>
+//[
+//  {
+//    "start":"'",
+//    "end":"'",
+//    "func":["@quotes","true"],
+//    "alt":["@squotes","true"],
+//    "additive":"true"
+//  }
+//]
+//<<===== FLIPFLOPS =====<<
+//>>===== FLIPFLOPS =====>>
+//[
+//    "start":"\"",
+//    "end":"\"",
+//    "func":["@quotes","true"],
+//    "alt":["@squotes","true"],
+//    "additive":"true"
+//  },
+//  {
+//    "start":"'",
+//    "end":"'",
+//    "func":["@quotes","true"],
+//    "alt":["@squotes","true"],
+//    "additive":"true"
+//  },
+//  {
+//    "start":"*",
+//    "end":"*",
+//    "func":["@font-weight","bold"],
+//    "alt":["@font-weight","normal"],
+//    "additive":"true"
+//  }
+//]
+//<<===== FLIPFLOPS =====<<
 CSL.Util.FlipFlopper = function(){
 	this.flipflops = [];
 	this.objlist = [];
@@ -1145,9 +1206,9 @@ CSL.Factory.cloneAmbigConfig = function(config){
 	ret["disambiguate"] = config["disambiguate"];
 	return ret;
 };
-CSL.makeStyle = function(xml,locale){
+CSL.makeStyle = function(sys,xml,locale){
 	var builder = new CSL.Core.Build(xml);
-	var raw = builder.build(locale);
+	var raw = builder.build(sys,locale);
 	var conf = new CSL.Core.Configure(raw);
 	var ret = conf.configure();
 	return ret;
@@ -1158,8 +1219,13 @@ CSL.Core.Engine.prototype.registerFlipFlops = function(flist){
 	}
 	return true;
 }
-CSL.Core.Engine.prototype.makeCitationCluster = function(inputList){
-	this.insertItems(inputList);
+CSL.Core.Engine.prototype.makeCitationCluster = function(rawList){
+	var inputList = [];
+	for each (var item in rawList){
+		item = this.composeItem(item);
+		this.registry.insert(this,item);
+		inputList.push(item);
+	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
 		var newlist = new Array();
 		var keys_list = new Array();
@@ -1201,9 +1267,9 @@ CSL.Core.Engine.prototype.makeBibliography = function(){
 	return this._bibliography_entries.call(this);
 };
 CSL.Core.Engine.prototype.insertItems = function(inputList){
-	for each (item in inputList){
-		this.fun.retriever.input[item.id] = item;
-		this.registry.insert(this,item);
+	for each (var item in inputList){
+		var Item = this.sys.retrieveItem(item);
+		this.registry.insert(this,Item);
 	};
 };
 CSL.Factory.Blob = function(token,str){
@@ -1557,7 +1623,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 	for each (var a in ambigs){
 		id_vals.push(a);
 	}
-	var tokens = state.fun.retriever.getInput(id_vals);
+	var tokens = state.sys.retrieveItems(id_vals);
 	var checkerator = new this.Checkerator(tokens,modes);
 	checkerator.lastclashes = (ambigs.length-1);
 	var base = false;
@@ -1895,7 +1961,7 @@ CSL.Lib.Elements.style = new function(){
 			state.opt.lang = state.build.lang;
 			state.build.in_style = true;
 			state.build.lang = false;
-			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state.opt.lang,state.opt.locale);
+			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state);
 			state.tmp.term_predecessor = false;
 		} else {
 			state.tmp.disambig_request = false;
@@ -3925,54 +3991,61 @@ CSL.System.Xml.JunkyardJavascript.prototype.stripParent = function(xml){
 };
 CSL.System.Xml.JunkyardJavascript = new CSL.System.Xml.JunkyardJavascript();
 CSL.System.Retrieval = function(){};
-CSL.System.Retrieval.GetInput = function(){
-	this.input = new Object();
-};
-CSL.System.Retrieval.GetInput.prototype.setInput = function(state,item){
-	this.input[item.id] = item;
-}
-CSL.System.Retrieval.GetInput.prototype.getInput = function(name){
-	var ret = new Array();
-	if ("object" == typeof name && name.length){
-		for each (filename in name){
-			if (this.input[filename]){
-				ret.push(this.input[filename]);
-			} else {
-				var datastring = readFile("data/" + filename + ".txt");
-				eval( "obj = " + datastring );
-				CSL.System.Tests.fixNames([obj],filename);
-				this.input[filename] = obj;
-				ret.push(obj);
-			}
-		}
-	} else if ("object" == typeof name){
-		if (this.input[filename]){
-			ret.push(this.input[filename]);
-		} else {
-			var datastring = readFile("data/" + filename + ".txt");
-			this.input[filename] = obj;
-			eval( "obj = " + datastring );
-			CSL.System.Tests.fixNames([obj],filename);
-			ret.push(obj);
-		}
-	} else {
-		throw "Failure reading test data file, WTF?";
-	}
-	return ret;
-}
-CSL.System.Retrieval.getLocaleObjects = function(lang,locale){
+CSL.System.Retrieval.getLocaleObjects = function(state){
+	var locale = state.opt.locale;
 	if ( ! locale ){
 		try {
-			var locale = readFile( "./locale/"+localeRegistry()[lang]);
+			locale = state.sys.getLang(state.opt.lang);
 		} catch (e){
-			throw "Unable to load locale for "+lang+".";
+			throw "Unable to load locale for "+state.opt.lang+": "+e;
 		}
 	}
 	var builder = new CSL.Core.Build(locale);
 	builder.build();
 	return builder.state.opt.term;
-	function localeRegistry (){
-		return {
+};
+var StdTest = function(myname){
+	this.myname = myname;
+	this._cache = {};
+	this._ids = [];
+	if (myname){
+		this._readTest();
+		this.result = this.test.result;
+		this._fixAllNames();
+		this._setCache();
+		this._fixInputSets();
+	}
+};
+//
+// Retrieve properly composed item from phoney database.
+// (Deployments must provide an instance object with
+// this method.)
+//
+StdTest.prototype.retrieveItem = function(id){
+	return this._cache[id];
+};
+//
+// Retrieve properly composed items from phoney database.
+// (Deployments must provide an instance object with
+// this method.)
+//
+StdTest.prototype.retrieveItems = function(ids){
+	var ret = [];
+	for each (var id in ids){
+		ret.push(this.retrieveItem(id));
+	}
+	return ret;
+};
+//
+// Retrieve locale object from filesystem
+// (Deployments must provide an instance object with
+// this method.)
+//
+StdTest.prototype.getLang = function(lang){
+	return readFile( "./locale/"+this.localeRegistry()[lang]);
+};
+StdTest.prototype.localeRegistry =	function (){
+	return {
 		"af":"locales-af-AZ.xml",
 		"af":"locales-af-ZA.xml",
 		"ar":"locales-ar-AR.xml",
@@ -4012,212 +4085,34 @@ CSL.System.Retrieval.getLocaleObjects = function(lang,locale){
 		"vi":"locales-vi-VN.xml",
 		"zh":"locales-zh-CN.xml",
 		"zh":"locales-zh-TW.xml"
-		};
 	};
 };
-var _slashRe = /^(.*?)\b([0-9]{1,4})(?:([\-\/\.\u5e74])([0-9]{1,2}))?(?:([\-\/\.\u6708])([0-9]{1,4}))?\b(.*?)$/;
-var _yearRe = /^(.*?)\b((?:circa |around |about |c\.? ?)?[0-9]{1,4}(?: ?B\.? ?C\.?(?: ?E\.?)?| ?C\.? ?E\.?| ?A\.? ?D\.?)|[0-9]{3,4})\b(.*?)$/i;
-var _monthRe = null;
-var _dayRe = null;
-CSL.System.Retrieval.strToDate = function(string) {
-	var date = new Object();
-	if(!string) {
-		return date;
+//
+// Build phoney database.
+//
+StdTest.prototype._setCache = function(){
+	for each (item in this.test.input){
+		this._cache[item.id] = item;
+		this._ids.push(item.id);
 	}
-	string = string.toString().replace(/^\s+/, "").replace(/\s+$/, "").replace(/\s+/, " ");
-	var m = _slashRe.exec(string);
-	var pre = m[1];
-	var num1 = m[2];
-	var div1_2 = m[3];
-	var num2 = m[4];
-	var div2_3 = m[5];
-	var num3 = m[6];
-	var post = m[7];
-	if(m){
-		var sane = (!m[5] || m[3] == m[5] || (m[3] == "\u5e74" && m[5] == "\u6708"));
-		var got_data = ((m[2] && m[4] && m[6]) || (!m[1] && !m[7]));
-		if (sane && got_data){
-			// figure out date based on parts
-			if(num1.length == 3 || num1.length == 4 || div1_2 == "\u5e74") {
-				// ISO 8601 style date (big endian)
-				date.year = num1;
-				date.month = num2;
-				date.day = num3;
-			} else {
-				// local style date (middle or little endian)
-				date.year = num3;
-				//
-				// XXXX This is going to need some help
-				var country = "US";
-				if(country == "US" ||	// The United States
-				   country == "FM" ||	// The Federated States of Micronesia
-				   country == "PW" ||	// Palau
-				   country == "PH") {	// The Philippines
-					date.month = num1;
-					date.day = num2;
-				} else {
-					date.month = num2;
-					date.day = num1;
-				}
-			}
-			if(date.year) {
-				date.year = parseInt(date.year, 10);
-			}
-			if(date.day) {
-				date.day = parseInt(date.day, 10);
-			}
-			if(date.month) {
-				date.month = parseInt(date.month, 10);
-				if(date.month > 12) {
-					// swap day and month
-					var tmp = date.day;
-					date.day = date.month;
-					date.month = tmp;
-				}
-			}
-			if((!date.month || date.month <= 12) && (!date.day || date.day <= 31)) {
-				if(date.year && date.year < 100) {	// for two digit years, determine proper
-													// four digit year
-					var today = new Date();
-					var year = today.getFullYear();
-					var twoDigitYear = year % 100;
-					var century = year - twoDigitYear;
-					if(date.year <= twoDigitYear) {
-						// assume this date is from our century
-						date.year = century + date.year;
-					} else {
-						// assume this date is from the previous century
-						date.year = century - 100 + date.year;
-					}
-				}
-				// subtract one for JS style
-				if(date.month){
-					date.month--;
-				}
-				date.part = pre+post;
-			} else {
-				//
-				// give up; we failed the sanity check
-				date = {"part":string};
-			}
-		} else {
-			date.part = string;
-		}
-	} else {
-		date.part = string;
-	}
-	if(!date.year) {
-		var m = _yearRe.exec(date.part);
-		if(m) {
-			date.year = num1;
-			date.part = pre+d1_2;
-		}
-	}
-	if(!date.month) {
-		// compile month regular expression
-		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-			'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		// If using a non-English bibliography locale, try those too
-		if (Zotero.CSL.Global.locale != 'en-US') {
-			months = months.concat(Zotero.CSL.Global.getMonthStrings("short"));
-		}
-		if(!_monthRe) {
-			_monthRe = new RegExp("^(.*)\\b("+months.join("|")+")[^ ]*(?: (.*)$|$)", "i");
-		}
-		var m = _monthRe.exec(date.part);
-		if(m) {
-			// Modulo 12 in case we have multiple languages
-			date.month = months.indexOf(m[2][0].toUpperCase()+m[2].substr(1).toLowerCase()) % 12;
-			date.part = m[1]+m[3];
-		}
-	}
-	if(!date.day) {
-		// compile day regular expression
-		if(!_dayRe) {
-			var daySuffixes = Zotero.getString("date.daySuffixes").replace(/, ?/g, "|");
-			_dayRe = new RegExp("\\b([0-9]{1,2})(?:"+daySuffixes+")?\\b(.*)", "i");
-		}
-		var m = _dayRe.exec(date.part);
-		if(m) {
-			var day = parseInt(m[1], 10);
-			// Sanity check
-			if (day <= 31) {
-				date.day = day;
-				if(m.index > 0) {
-					date.part = date.part.substr(0, m.index);
-					if(m[2]) {
-						date.part += " "+m[2];;
-					}
-				} else {
-					date.part = m[2];
-				}
-			}
-		}
-	}
-	if(date.part) {
-		date.part = date.part.replace(/^[^A-Za-z0-9]+/, "").replace(/[^A-Za-z0-9]+$/, "");
-		if(!date.part.length) {
-			date.part = undefined;
-		}
-	}
-	return date;
 };
-CSL.System.Tests = function(){};
-CSL.System.Tests.getTest = function(myname){
-	var test;
-	var filename = "std/machines/" + myname + ".json";
-	var teststring = readFile(filename, "UTF-8");
-	try {
-		eval( "test = "+teststring );
-	} catch(e){
-		throw e + teststring;
-	}
-	if (test.mode == "bibliography"){
-		var render = "makeBibliography";
-	} else {
-		var render = "makeCitationCluster";
-	}
-	test.run = function(){
-		var builder = new CSL.Core.Build(this.csl);
-		var raw = builder.build();
-		var configurator = new CSL.Core.Configure(raw);
-		var style = configurator.configure();
-		if (this.flipflops){
-			for each (var ff in this.flipflops){
-				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
+StdTest.prototype._fixInputSets = function(){
+	if (this.test.mode == "citation"){
+		if (!this.test.citations){
+			var citation = [];
+			for each (item in this.test.input){
+				citation.push([item.id,{}]);
 			}
+			this.test.citations = [citation];
 		}
-		CSL.System.Tests.fixNames(this.input,myname);
-		for each (var item in this.input){
-			style.fun.retriever.setInput(style,item);
-			style.registry.insert(style,item);
-		}
-		if (this.citations){
-			for each (var cite_cluster in this.citations){
-				var cluster = [];
-				for each (var cite in cite_cluster){
-					for each (var datem in this.input){
-						if (datem.id == cite.id){
-							cluster.push(datem);
-							break;
-						}
-					}
-				}
-				var ret = style[render](cluster);
-			}
-		} else {
-			var ret = style[render](this.input);
-		}
-		return ret;
-	};
-	return test;
+	}
 };
-CSL.System.Tests.fixNames = function(itemlist,myname){
-	for each (obj in itemlist){
+StdTest.prototype._fixAllNames = function(){
+	for each (obj in this.test.input){
 		if (!obj.id){
-			throw "No id for object in: "+myname;
+			throw "No id for object in test: "+this.myname;
 		}
-		for each (key in ["author","editor","translator"]){
+		for each (key in CSL.CREATORS){
 			if (obj[key]){
 				for each (var entry in obj[key]){
 					var one_char = entry.name.length-1;
@@ -4258,5 +4153,210 @@ CSL.System.Tests.fixNames = function(itemlist,myname){
 			}
 		}
 	}
-	return itemlist;
+};
+StdTest.prototype._readTest = function(){
+	var test;
+	var filename = "std/machines/" + this.myname + ".json";
+	var teststring = readFile(filename, "UTF-8");
+	try {
+		eval( "test = "+teststring );
+	} catch(e){
+		throw e + teststring;
+	}
+	this.test = test;
+};
+StdTest.prototype._buildStyle = function(){
+	var builder = new CSL.Core.Build(this.test.csl);
+	var raw = builder.build(this);
+	var configurator = new CSL.Core.Configure(raw);
+	this.style = configurator.configure();
+};
+StdTest.prototype.run = function(){
+	this._buildStyle(this);
+	this.style.insertItems(this._ids);
+	if (this.test.mode == "citation"){
+		var citations = [];
+		for each (var citation in this.test.citations){
+			citations.push(this.style.makeCitationCluster(citation));
+		}
+		var ret = citations.join("\n");
+	} else if (this.test.mode == "bibliography"){
+		var ret = this.style.makeBibliography();
+	} else {
+		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
+	}
+	return ret;
+};
+RhinoTest = function(name){
+	this.dummy = [["dummy",{}]];
+	this.citations = [];
+	this.input = name;
+	this.items = [];
+	this._ids = [];
+	this._cache = {};
+	if (name){
+		if ("string" == typeof name[0]){
+			var input = this._getInput(name);
+		} else {
+			var input = name;
+		}
+		this.fixData(input);
+	} else {
+		this._ids.push("dummy");
+		this._cache["dummy"] = {"id":"dummy"};
+		this.citations.push(["dummy",{}]);
+		this.items.push({"id":"dummy"});
+	}
+};
+RhinoTest.prototype.fixData = function(Item){
+	if (Item){
+		var seqno = 100;
+		this._ids = [];
+		this._cache = {};
+		this.citations = [];
+		for (var i in Item){
+			var realitem = Item[i];
+			if (!realitem.id){
+				realitem.id = "ITEM-"+seqno.toString();
+				seqno += 1;
+			}
+			this._ids.push(realitem.id);
+			this._cache[realitem.id] = realitem;
+			this.citations.push([realitem.id,{}]);
+			this.items.push(realitem);
+		}
+	}
+};
+RhinoTest.prototype.retrieveItem = function(id){
+	return this._cache[id];
+};
+RhinoTest.prototype.retrieveItems = function(ids){
+	var ret = [];
+	for each (var id in ids){
+		ret.push(this.retrieveItem(id));
+	}
+	return ret;
+};
+RhinoTest.prototype.getLang = function(lang){
+	return readFile( "./locale/"+this.localeRegistry()[lang]);
+};
+RhinoTest.prototype._getInput = function(name){
+	this.myname = name;
+	var ret = new Array();
+	if ("object" == typeof name && name.length){
+		for each (filename in name){
+			if (this.input[filename]){
+				ret.push(this.input[filename]);
+			} else {
+				var datastring = readFile("data/" + filename + ".txt");
+				eval( "obj = " + datastring );
+				this._fixAllNames([obj]);
+				this.input[filename] = obj;
+				ret.push(obj);
+			}
+		}
+	} else if ("object" == typeof name){
+		if (this.input[filename]){
+			ret.push(this.input[filename]);
+		} else {
+			var datastring = readFile("data/" + filename + ".txt");
+			this.input[filename] = obj;
+			eval( "obj = " + datastring );
+			this._fixAllNames([obj]);
+			ret.push(obj);
+		}
+	} else {
+		throw "Failure reading test data file, WTF?";
+	}
+	return ret;
+}
+RhinoTest.prototype.localeRegistry =	function (){
+	return {
+		"af":"locales-af-AZ.xml",
+		"af":"locales-af-ZA.xml",
+		"ar":"locales-ar-AR.xml",
+		"bg":"locales-bg-BG.xml",
+		"ca":"locales-ca-AD.xml",
+		"cs":"locales-cs-CZ.xml",
+		"da":"locales-da-DK.xml",
+		"de":"locales-de-AT.xml",
+		"de":"locales-de-CH.xml",
+		"de":"locales-de-DE.xml",
+		"el":"locales-el-GR.xml",
+		"en":"locales-en-US.xml",
+		"es":"locales-es-ES.xml",
+		"et":"locales-et-EE.xml",
+		"fr":"locales-fr-FR.xml",
+		"he":"locales-he-IL.xml",
+		"hu":"locales-hu-HU.xml",
+		"is":"locales-is-IS.xml",
+		"it":"locales-it-IT.xml",
+		"ja":"locales-ja-JP.xml",
+		"ko":"locales-ko-KR.xml",
+		"mn":"locales-mn-MN.xml",
+		"nb":"locales-nb-NO.xml",
+		"nl":"locales-nl-NL.xml",
+		"pl":"locales-pl-PL.xml",
+		"pt":"locales-pt-BR.xml",
+		"pt":"locales-pt-PT.xml",
+		"ro":"locales-ro-RO.xml",
+		"ru":"locales-ru-RU.xml",
+		"sk":"locales-sk-SK.xml",
+		"sl":"locales-sl-SI.xml",
+		"sr":"locales-sr-RS.xml",
+		"sv":"locales-sv-SE.xml",
+		"th":"locales-th-TH.xml",
+		"tr":"locales-tr-TR.xml",
+		"uk":"locales-uk-UA.xml",
+		"vi":"locales-vi-VN.xml",
+		"zh":"locales-zh-CN.xml",
+		"zh":"locales-zh-TW.xml"
+	};
+};
+RhinoTest.prototype._fixAllNames = function(input){
+	for each (obj in input){
+		if (!obj.id){
+			throw "No id for object in test: "+this.myname;
+		}
+		for each (key in CSL.CREATORS){
+			if (obj[key]){
+				for each (var entry in obj[key]){
+					var one_char = entry.name.length-1;
+					var two_chars = one_char-1;
+					entry.sticky = false;
+					if ("!!" == entry.name.substr(two_chars)){
+						entry.literal = entry.name.substr(0,two_chars).replace(/\s+$/,"");
+					} else {
+						var parsed = entry.name;
+						if ("!" == entry.name.substr(one_char)){
+							entry.sticky = true;
+							parsed = entry.name.substr(0,one_char).replace(/\s+$/,"");
+						}
+						parsed = parsed.split(/\s*,\s*/);
+						if (parsed.length > 0){
+							var m = parsed[0].match(/^\s*([a-z]+)\s+(.*)/);
+							if (m){
+								entry.prefix = m[1];
+								entry["primary-key"] = m[2];
+							} else {
+								entry["primary-key"] = parsed[0];
+							}
+						}
+						if (parsed.length > 1){
+							entry["secondary-key"] = parsed[1];
+						}
+						if (parsed.length > 2){
+							var m = parsed[2].match(/\!\s*(.*)/);
+							if (m){
+								entry.suffix = m[1];
+								entry.comma_suffix = true;
+							} else {
+								entry.suffix = parsed[2];
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 };

@@ -36,6 +36,7 @@ CSL.Core.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		item = this.composeItem(item);
+		this.registry.insert(this,item);
 		inputList.push(item);
 	}
 	//this.insertItems(inputList);

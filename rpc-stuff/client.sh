@@ -9,16 +9,27 @@ fi
 rm -f results/*.result
 
 ##
-## Configure processor
+## Load entries to phoney database
 ##
-wget -q --post-file ./data/style.json -O ./results/config.result http://localhost:8027/
+wget -q --post-file ./data/data.json -O ./results/data.result http://localhost:8027/
 
 if [ "$?" -ne "0" ]; then
     echo wget exited with error ... is server.py running?
     exit 1
 fi
+echo -------------------------
+echo result of data.json
+echo -------------------------
+echo -n '---> '
+cat ./results/data.result
+echo
+echo
 
 
+##
+## Configure processor
+##
+wget -q --post-file ./data/style.json -O ./results/style.result http://localhost:8027/
 
 echo -------------------------
 echo result of style.json
@@ -85,6 +96,10 @@ echo -n '---> '
 cat ./results/bibliography2.result
 echo
 echo
+
+
+echo \(Flip-flop portion of demo will return in a few days\)
+exit 0
 
 ##
 ## Register flipflops

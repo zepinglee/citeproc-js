@@ -1,8 +1,8 @@
 dojo.provide("csl.tests");
-if (!CSL){
-	load("./src/csl.js");
-}
 
+/**
+ * Retrieval methods for standard tests.
+ */
 var StdTest = function(myname){
 	this.myname = myname;
 	this._cache = {};

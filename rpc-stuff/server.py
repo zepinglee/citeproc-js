@@ -298,15 +298,30 @@ if __name__ == '__main__':
     cslcode = open("./src-js/citeproc-js.js").read()
     cx.eval_script(cslcode)
 
-    ## Hack in English locale.  Should inspect the
-    ## CSL for other locales needed.
-    locale_en = open("../locale/locales-en-US.xml").read()
-    locale_en = json.dumps(locale_en)
+    print "Loading locales ..."
+    cx.eval_script("locales = new Object();")
+    for filename in os.listdir("../locale"):
+        lang = filename.split("-")[1]
+        fh = open("../locale/%s" % (filename,))
+        fh.readline()
+        xml = fh.read()
+        xml = json.dumps(xml)
+        cx.eval_script("locales[\"%s\"] = %s" % (lang,xml,))
+
+    print "Loading sys ..."
+    system = open("./src-js/sys.js").read()
+    cx.eval_script(system)
+
+    def loadData(input):
+        print "ok"
+        data = json.dumps(input)
+        cx.eval_script("sys.loadData(%s)" %(data,))
+        return "Loaded data OK"
 
     def makeStyle(csl):
         csl = json.dumps(csl)
         #print 'style = CSL.makeStyle(%s,%s)' %(csl,locale_en)
-        cx.eval_script('var style = CSL.makeStyle(%s,%s)' %(csl,locale_en))
+        cx.eval_script('var style = CSL.makeStyle(sys,%s)' %(csl,))
         return "Style init OK"
 
     def insertItems(input):
@@ -330,6 +345,7 @@ if __name__ == '__main__':
         return result
     #
     # Register citeproc-js control functions here.
+    server.register_function(lambda input: loadData(input), 'loadData')
     server.register_function(lambda csl: makeStyle(csl), 'setStyle')
     server.register_function(lambda input: insertItems(input), 'insertItems')
     server.register_function(lambda input: makeCitationCluster(input), 'makeCitationCluster')
