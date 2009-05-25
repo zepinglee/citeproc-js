@@ -15,12 +15,12 @@ doh.register("tests.sort", [
 				  + "</sort>"
 				  + "</bibliography>"
 				  + "</style>";
+		var sys = new RhinoTest(["simple-sticky-name-1","simple-western-name-1","simple-mongolian-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-sticky-name-1","simple-western-name-1","simple-mongolian-name-1"]);
+		var input = sys.items;
 		style.registry.insert(style,input[0]);
 		style.registry.insert(style,input[1]);
 		style.registry.insert(style,input[2]);
@@ -45,12 +45,12 @@ doh.register("tests.sort", [
 				  + "</sort>"
 				  + "</bibliography>"
 				  + "</style>";
+		var sys = new RhinoTest(["simple-sticky-name-1","simple-western-name-1","simple-mongolian-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-sticky-name-1","simple-western-name-1","simple-mongolian-name-1"]);
+		var input = sys.items;
 		style.registry.insert(style,input[0]);
 		style.registry.insert(style,input[1]);
 		style.registry.insert(style,input[2]);

@@ -15,19 +15,18 @@ doh.registerGroup("tests.failing",
 					  + "</layout>"
 					  + "</citation>"
 				+ "</style>";
-
 			var cite = tests.test_failing.makeCite(xml);
 			doh.assertEqual("Hello again, world!<i>Hello world!</i>",cite);
 		}
 	],
 	function(){  //setup
 		tests.test_failing.makeCite = function(xml){
+			var sys = new RhinoTest();
 			var builder = new CSL.Core.Build(xml);
-			var raw = builder.build();
+			var raw = builder.build(sys);
 			var configurator = new CSL.Core.Configure(raw);
 			style = configurator.configure();
-			var Item = [{}];
-			var ret = style.makeCitationCluster(Item);
+			var ret = style.makeCitationCluster(sys.dummy);
 			return ret;
 		};
 	},

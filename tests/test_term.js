@@ -56,17 +56,17 @@ doh.registerGroup("tests.term",
 	],
 	function(){  //setup
 		tests.test_term.makeCite = function(xml,Item){
-			if (!Item){
-				var Item = [{}];
-			}
+			var sys = new RhinoTest();
+			sys.fixData(Item);
 			var builder = new CSL.Core.Build(xml);
-			var raw = builder.build();
+			var raw = builder.build(sys);
 			var configurator = new CSL.Core.Configure(raw);
 			var style = configurator.configure();
-			return style.makeCitationCluster(Item);
+			return style.makeCitationCluster(sys.citations);
 		};
 	},
 	function(){	// teardown
 	}
 
 );
+

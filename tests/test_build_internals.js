@@ -15,10 +15,11 @@ var Item = {
 doh.register("tests.builder_internals", [
 
 	function testValueAttributeAction(){
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(textwithvalue);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
-		var dummy = { };
 		var res = res.citation.tokens[0].strings.value;
 		doh.assertEqual( "My Aunt Sally" , res);
 	},
@@ -41,8 +42,9 @@ doh.register("tests.builder_internals", [
 				+ '</layout>'
 			+ '</style>';
 		try {
+			var sys = new RhinoTest();
 			var builder = new CSL.Core.Build(t);
-			var res = builder.build();
+			var res = builder.build(sys);
 		} catch(e){
 			print(e+" (this error is correct)");
 		}
@@ -59,7 +61,9 @@ doh.register("tests.builder_internals", [
 				+ '<text macro="boo"/>'
 				+ '</layout>'
 			+ '</style>';
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(t);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
 		doh.assertEqual(9, res.citation.tokens.length );
@@ -68,7 +72,9 @@ doh.register("tests.builder_internals", [
 
 	},
 	function testInit(){
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(nestedsingleton);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
 		//
@@ -76,27 +82,35 @@ doh.register("tests.builder_internals", [
 		doh.assertEqual( 1, res.citation.tokens.length);
 	},
 	function testDecorationLength(){
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(decoratedtags);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
 		doh.assertEqual( 1, res.citation.tokens[0].decorations.length );
 	},
 	function testDecorationValue(){
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(decoratedtags);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
 		doh.assertEqual( "italic", res.citation.tokens[0].decorations[0][1]);
 		doh.assertEqual( "@font-style", res.citation.tokens[0].decorations[0][0]);
 	},
 	function testValueAttributeType(){
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(textwithvalue);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
 		doh.assertEqual( "function" , typeof res.citation.tokens[0].execs[0]);
 	},
 	function testBadTag(){
+		var sys = new RhinoTest();
 		var t = '<style><badtagname/></style>';
 		var obj = new CSL.Core.Build(t);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		function tryme() {
 			try {
@@ -114,8 +128,10 @@ doh.register("tests.builder_internals", [
 		doh.assertEqual("Failed correctly", res );
 	},
 	function testBadAttribute(){
+		var sys = new RhinoTest();
 		var t = '<style><text badattribute="sucks"/></style>';
 		var obj = new CSL.Core.Build(t);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		function tryme() {
 			try {
@@ -139,7 +155,9 @@ doh.register("tests.builder_internals", [
 					+ '<text value="hello"/>'
 				+ '</group>'
 			+ '</style>';
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(t);
+		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
 		doh.assertEqual(3, res.citation.tokens.length );
@@ -163,8 +181,10 @@ doh.register("tests.builder_internals", [
 					+ '</else>'
 				+ '</choose>'
 			+ '</style>';
+		var sys = new RhinoTest();
 		var obj = new CSL.Core.Build(t);
 		var build = new obj._builder(obj.state,true);
+		obj.state.sys = sys;
 		var res = build._build(obj.showXml());
 		doh.assertEqual(11, res.citation.tokens.length );
 		doh.assertEqual("function", typeof res.citation.tokens[8].execs[0]);

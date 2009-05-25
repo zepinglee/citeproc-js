@@ -7,8 +7,9 @@ var tryStyle = function(style){
 		if (!sty){
 			throw "Did not find style file: style/"+style+".csl";
 		}
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(sty);
-		var res = builder.build();
+		var res = builder.build(sys);
 	} catch(e) {
 		print("oops: "+e);
 	}

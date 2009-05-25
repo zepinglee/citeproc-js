@@ -12,7 +12,8 @@ var display_names = [
 	}
 ];
 
-var state = CSL.makeStyle("<style></style>");
+var sys = new RhinoTest();
+var state = CSL.makeStyle(sys,"<style></style>");
 
 //
 // Delimiters and formatting decorations are

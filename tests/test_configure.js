@@ -50,8 +50,9 @@ doh.registerGroup("tests.conditions_build",
 
 	],
 	function(){ // setup
+		var sys = new RhinoTest();
 		build = new CSL.Core.Build(nestedsingleton);
-		obj = build.build();
+		obj = build.build(sys);
 	},
 	function(){ // teardown
 		build = false;
@@ -71,8 +72,9 @@ doh.registerGroup("tests.conditions_simple_jumps",
 		}
 	],
 	function(){ // setup
+		var sys = new RhinoTest();
 		build = new CSL.Core.Build(xmlif);
-		obj = build.build();
+		obj = build.build(sys);
 		conf = new CSL.Core.Configure(obj);
 		newobj = conf.configure();
 	},
@@ -95,8 +97,9 @@ doh.registerGroup("tests.conditions_complex_jumps",
 		}
 	],
 	function(){ // setup
+		var sys = new RhinoTest();
 		build = new CSL.Core.Build(xmlifnested);
-		obj = build.build();
+		obj = build.build(sys);
 		conf = new CSL.Core.Configure(obj);
 		newobj = conf.configure();
 

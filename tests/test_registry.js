@@ -14,12 +14,12 @@ doh.register("tests.registry", [
 					  + "</sort>"
 				  + "</bibliography>"
 				  + "</style>";
+		var sys = new RhinoTest(["simple-western-name-1","simple-western-name-2","simple-western-name-3"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1","simple-western-name-2","simple-western-name-3"]);
+		var input = sys.items;
 		style.registry.insert(style,input[0]);
 		style.registry.insert(style,input[1]);
 		style.registry.insert(style,input[0]);
@@ -29,6 +29,10 @@ doh.register("tests.registry", [
 		doh.assertEqual( false, style.registry.registry["simple-western-name-2"].prev );
 		doh.assertEqual( false, style.registry.registry["simple-western-name-1"].next );
 	},
+
+]);
+
+var x = [
 	function testGetSortKeyMacro(){
 		var xml = "<style>"
 				  + "<macro name=\"mymac\">"
@@ -441,4 +445,4 @@ doh.register("tests.registry", [
 	},
 
 
-]);
+]

@@ -18,9 +18,7 @@ doh.registerGroup("tests.conditions",
 					  + "</layout>"
 					  + "</citation>"
 				+ "</style>";
-
-			var Item = [{}];
-			var cite = tests.test_conditions.makeCite(xml,Item);
+			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Omote",cite);
 		},
 		function testAny(){
@@ -62,8 +60,7 @@ doh.registerGroup("tests.conditions",
 					  + "</citation>"
 				+ "</style>";
 
-			var Item = [{}];
-			var cite = tests.test_conditions.makeCite(xml,Item);
+			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Omote",cite);
 		},
 		function testMultipleElseIfFirstIsTrue(){
@@ -87,9 +84,7 @@ doh.registerGroup("tests.conditions",
 					  + "</layout>"
 					  + "</citation>"
 				+ "</style>";
-
-			var Item = [{}];
-			var cite = tests.test_conditions.makeCite(xml,Item);
+			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Mikake",cite);
 		},
 		function testMultipleElseIfSecondIsTrue(){
@@ -113,9 +108,7 @@ doh.registerGroup("tests.conditions",
 					  + "</layout>"
 					  + "</citation>"
 				+ "</style>";
-
-			var Item = [{}];
-			var cite = tests.test_conditions.makeCite(xml,Item);
+			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Omote",cite);
 		},
 		function testNested(){
@@ -149,22 +142,18 @@ doh.registerGroup("tests.conditions",
 					  + "</layout>"
 					  + "</citation>"
 				+ "</style>";
-
-			var Item = [{}];
-			var cite = tests.test_conditions.makeCite(xml,Item);
+			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Ura",cite);
 		}
 	],
 	function(){  //setup
 		tests.test_conditions.makeCite = function(xml,Item){
-			if (!Item){
-				var Item = [{}];
-			}
+			var sys = new RhinoTest(Item);
 			var builder = new CSL.Core.Build(xml);
-			var raw = builder.build();
+			var raw = builder.build(sys);
 			var configurator = new CSL.Core.Configure(raw);
 			var style = configurator.configure();
-			return style.makeCitationCluster(Item);
+			return style.makeCitationCluster(sys.citations);
 		};
 	},
 	function(){	// teardown

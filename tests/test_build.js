@@ -14,7 +14,8 @@ doh.register("tests.build", [
 		var builder = new CSL.Core.Build(nestedsingleton);
 		function testme(){
 			try {
-				builder.build();
+				var sys = new RhinoTest();
+				builder.build(sys);
 				return "Success";
 			} catch(e) {
 				return e;
@@ -65,38 +66,45 @@ doh.register("tests.build", [
 	},
 
 	function testOptGetsCreated (){
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(nestedsingleton);
-		var obj = builder.build();
+		var obj = builder.build(sys);
 		doh.assertTrue( obj.opt );
 	},
 	function testCitationGetsCreated (){
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(nestedsingleton);
-		var obj = builder.build();
+		var obj = builder.build(sys);
 		doh.assertTrue( obj.citation );
 	},
 	function testBibliographyGetsCreated (){
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(nestedsingleton);
-		var obj = builder.build();
+		var obj = builder.build(sys);
 		doh.assertTrue( obj.bibliography );
 	},
 	function testCitationOptGetsCreated (){
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(nestedsingleton);
-		var obj = builder.build();
+		var obj = builder.build(sys);
 		doh.assertTrue( obj.citation.opt );
 	},
 	function testCitationTokensGetsCreated (){
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(nestedsingleton);
-		var obj = builder.build();
+		var obj = builder.build(sys);
 		doh.assertTrue( obj.citation.tokens );
 	},
 	function testBibliographyOptGetsCreated (){
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(nestedsingleton);
-		var obj = builder.build();
+		var obj = builder.build(sys);
 		doh.assertTrue( obj.bibliography.opt );
 	},
 	function testBibliographyTokensGetsCreated (){
+		var sys = new RhinoTest();
 		var builder = new CSL.Core.Build(nestedsingleton);
-		var obj = builder.build();
+		var obj = builder.build(sys);
 		doh.assertTrue( obj.bibliography.tokens );
 	},
 

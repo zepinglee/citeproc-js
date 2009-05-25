@@ -70,12 +70,12 @@ doh.registerGroup("tests.groups",
 	],
 	function(){
 		tests.test_groups.makeCite = function(xml){
+			var sys = new RhinoTest();
 			var builder = new CSL.Core.Build(xml);
-			var raw = builder.build();
+			var raw = builder.build(sys);
 			var configurator = new CSL.Core.Configure(raw);
 			style = configurator.configure();
-			var Item = [{}];
-			return style.makeCitationCluster(Item);
+			return style.makeCitationCluster(sys.citations);
 		};
 	},
 	function(){

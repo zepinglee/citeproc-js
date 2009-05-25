@@ -10,13 +10,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("1965",res);
 	},
 	function testYearFormShort(){
@@ -27,13 +26,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("65",res);
 	},
 	function testMonthFormNumeric(){
@@ -44,13 +42,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("6",res);
 	},
 	function testMonthFormNumericLeadingZeros(){
@@ -61,13 +58,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("06",res);
 	},
 	function testMonthFormShort(){
@@ -78,13 +74,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("Jun",res);
 	},
 	function testMonthFormLong(){
@@ -95,13 +90,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("June",res);
 	},
 	function testDayFormNumeric(){
@@ -112,13 +106,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("1",res);
 	},
 	function testDayFormNumericLeadingZeros(){
@@ -129,13 +122,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("01",res);
 	},
 	function testDayFormOrdinalOne(){
@@ -146,13 +138,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("1st",res);
 	},
 	function testDayFormOrdinalTwo(){
@@ -163,13 +154,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-2"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-2"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("2nd",res);
 	},
 	function testDayFormOrdinalThree(){
@@ -180,13 +170,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-western-name-3"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-western-name-3"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("3rd",res);
 	},
 	function testDayFormOrdinalFour(){
@@ -197,13 +186,12 @@ doh.register("tests.dates", [
 						  + "</date>"
 					  + "</layout>"
 			+ "</style>";
+		var sys = new RhinoTest(["simple-mongolian-name-1"]);
 		var builder = new CSL.Core.Build(xml);
-		var raw = builder.build();
+		var raw = builder.build(sys);
 		var configurator = new CSL.Core.Configure(raw);
 		var style = configurator.configure();
-		var getter = new CSL.System.Retrieval.GetInput();
-		var input = getter.getInput(["simple-mongolian-name-1"]);
-		var res = style.makeCitationCluster(input);
+		var res = style.makeCitationCluster(sys.citations);
 		doh.assertEqual("4th",res);
 	},
 
