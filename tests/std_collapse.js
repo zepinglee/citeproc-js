@@ -12,6 +12,10 @@ doh.register("tests.std_collapse", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdTest("collapse_TrailingDelimiter");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdTest("collapse_YearSuffixCollapse");
         doh.assertEqual(test.result, test.run());
     },
