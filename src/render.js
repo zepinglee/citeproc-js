@@ -26,6 +26,13 @@ CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	return ret;
 }
 
+CSL.Core.Engine.prototype.composeItem = function(item){
+	var Item = this.sys.retrieveItem(item[0]);
+	for (var i in item[1]){
+		Item[i] = item[1][i];
+	}
+	return Item;
+};
 
 /**
  * Get the sort key of an item, without decorations
@@ -119,7 +126,7 @@ CSL.Core.Engine.prototype.getModes = function(){
  */
 CSL.Core.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
-	var input = this.fun.retriever.getInput(this.registry.getSortedIds());
+	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography","\n");
 	this.output.openLevel("bibliography");

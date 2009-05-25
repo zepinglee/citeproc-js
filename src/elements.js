@@ -43,7 +43,7 @@ CSL.Lib.Elements.style = new function(){
 			state.opt.lang = state.build.lang;
 			state.build.in_style = true;
 			state.build.lang = false;
-			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state.opt.lang,state.opt.locale);
+			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state);
 			state.tmp.term_predecessor = false;
 		} else {
 			state.tmp.disambig_request = false;

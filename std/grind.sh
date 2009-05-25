@@ -52,11 +52,11 @@ for filename in humans/*.txt; do
     else
         CITATIONS=""
     fi
-    if [ $(cat tmp/TMP.txt | grep -c FLIPFLOPS) -gt 0 ]; then
-        FLIPFLOPS=$(cat tmp/TMP.txt | $SED -e "/^>>=.*FLIPFLOPS/,/^<<=.*FLIPFLOPS/!d" | $SED -e "/^\(>>=\|<<=\)/d")
-    else
-        FLIPFLOPS=""
-    fi
+    #if [ $(cat tmp/TMP.txt | grep -c FLIPFLOPS) -gt 0 ]; then
+    #    FLIPFLOPS=$(cat tmp/TMP.txt | $SED -e "/^>>=.*FLIPFLOPS/,/^<<=.*FLIPFLOPS/!d" | $SED -e "/^\(>>=\|<<=\)/d")
+    #else
+    #    FLIPFLOPS=""
+    #fi
 
     echo '{' > ${RES}
     
@@ -66,9 +66,9 @@ for filename in humans/*.txt; do
     if [ "${CITATIONS}" != "" ]; then
         echo '  "citations": '${CITATIONS}',' >> ${RES}
     fi
-    if [ "${FLIPFLOPS}" != "" ]; then
-        echo '  "flipflops": '${FLIPFLOPS}',' >> ${RES}
-    fi
+    #if [ "${FLIPFLOPS}" != "" ]; then
+    #    echo '  "flipflops": '${FLIPFLOPS}',' >> ${RES}
+    #fi
     echo '  "schema":"'${SCHEMA}'",' >> ${RES}
     echo '  "result": "'${RESULT}'",' >> ${RES}
     echo '  "csl": "'${CSL}'",' >> ${RES}

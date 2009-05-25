@@ -6,9 +6,9 @@ dojo.provide("csl.commands");
  * this should provide everything you need, once System
  * and Retrieval have been adapted to your environment.
  */
-CSL.makeStyle = function(xml,locale){
+CSL.makeStyle = function(sys,xml,locale){
 	var builder = new CSL.Core.Build(xml);
-	var raw = builder.build(locale);
+	var raw = builder.build(sys,locale);
 	var conf = new CSL.Core.Configure(raw);
 	var ret = conf.configure();
 	return ret;
@@ -32,8 +32,13 @@ CSL.Core.Engine.prototype.registerFlipFlops = function(flist){
  * does recognize keys, but this is intended only for testing
  * purposes.)</p>
  */
-CSL.Core.Engine.prototype.makeCitationCluster = function(inputList){
-	this.insertItems(inputList);
+CSL.Core.Engine.prototype.makeCitationCluster = function(rawList){
+	var inputList = [];
+	for each (var item in rawList){
+		item = this.composeItem(item);
+		inputList.push(item);
+	}
+	//this.insertItems(inputList);
 	//
 	// don't bother sorting unless there is more than one item.
 	// this is really ugly and hackish.  uses a hashed reference
@@ -95,8 +100,8 @@ CSL.Core.Engine.prototype.makeBibliography = function(){
 
 
 CSL.Core.Engine.prototype.insertItems = function(inputList){
-	for each (item in inputList){
-		this.fun.retriever.input[item.id] = item;
-		this.registry.insert(this,item);
+	for each (var item in inputList){
+		var Item = this.sys.retrieveItem(item);
+		this.registry.insert(this,Item);
 	};
 };

@@ -2,7 +2,7 @@
   "name": "Year Suffix Collapse",
   "category": "collapse",
   "mode": "citation",
-  "citations": [ [ {"id":"ITEM-1"}, {"id":"ITEM-3"}, {"id":"ITEM-4"}, {"id":"ITEM-5"}, {"id":"ITEM-6"} ] ],
+  "citations": [ [ ["ITEM-1",{}], ["ITEM-3",{}], ["ITEM-4",{}], ["ITEM-5",{}], ["ITEM-6",{}] ] ],
   "schema":"0.9",
   "result": "Smith 2000a,c-e, 2001",
   "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <option name=\"collapse\" value=\"year-suffix\"/>\n <option name=\"disambiguate-add-year-suffix\" value=\"true\"/>\n <option name=\"year-suffix-delimiter\" value=\",\"/>\n <option name=\"year-suffix-range-delimiter\" value=\"-\"/>\n <layout delimiter=\", \">\n <group delimiter=\" \">\n <names variable=\"author\">\n <name form=\"short\"/>\n </names>\n <date variable=\"issued\">\n <date-part name=\"year\"/>\n </date>\n </group>\n <text variable=\"year-suffix\"/>\n </layout>\n </citation>\n</style>",

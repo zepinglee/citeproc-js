@@ -1,5 +1,62 @@
 dojo.provide("csl.util_flipflop");
 
+//		if (this.flipflops){
+//			for each (var ff in this.flipflops){
+//				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
+//			}
+//		}
+
+//>>===== FLIPFLOPS =====>>
+//[
+//  {
+//    "start": "<span name=\"foreign-phrase\">",
+//    "end": "</span>",
+//    "func": ["@font-style", "italic"],
+//    "alt": ["@font-style", "normal"]
+//  }
+//]
+//<<===== FLIPFLOPS =====<<
+
+//>>===== FLIPFLOPS =====>>
+//[
+//  {
+//    "start":"'",
+//    "end":"'",
+//    "func":["@quotes","true"],
+//    "alt":["@squotes","true"],
+//    "additive":"true"
+//  }
+//]
+//<<===== FLIPFLOPS =====<<
+
+//>>===== FLIPFLOPS =====>>
+//[
+ // {
+//    "start":"\"",
+//    "end":"\"",
+//    "func":["@quotes","true"],
+//    "alt":["@squotes","true"],
+//    "additive":"true"
+//  },
+//  {
+//    "start":"'",
+//    "end":"'",
+//    "func":["@quotes","true"],
+//    "alt":["@squotes","true"],
+//    "additive":"true"
+//  },
+//  {
+//    "start":"*",
+//    "end":"*",
+//    "func":["@font-weight","bold"],
+//    "alt":["@font-weight","normal"],
+//    "additive":"true"
+//  }
+//]
+//<<===== FLIPFLOPS =====<<
+
+
+
 CSL.Util.FlipFlopper = function(){
 	this.flipflops = [];
 	this.objlist = [];

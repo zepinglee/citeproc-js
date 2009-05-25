@@ -87,6 +87,10 @@ CSL = new function () {
 		[ "", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm" ],
 		[ "", "m", "mm", "mmm", "mmmm", "mmmmm"]
 	];
+	this.CREATORS = ["author","editor","translator","recipient","interviewer"];
+	this.CREATORS = this.CREATORS.concat(["publisher","composer"]);
+	this.CREATORS = this.CREATORS.concat(["original-publisher","original-author"]);
+	this.CREATORS = this.CREATORS.concat(["container-author","collection-editor"]);
 };
 
 //SNIP-START

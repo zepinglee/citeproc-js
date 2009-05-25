@@ -22,17 +22,6 @@ citation
 </style>
 <<===== CSL =====<<
 
->>===== FLIPFLOPS =====>>
-[
-  {
-    "start":"'",
-    "end":"'",
-    "func":["@quotes","true"],
-    "alt":["@squotes","true"],
-    "additive":"true"
-  }
-]
-<<===== FLIPFLOPS =====<<
 
 >>===== INPUT =====>>
 [{

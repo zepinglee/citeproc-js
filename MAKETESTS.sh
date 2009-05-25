@@ -65,7 +65,7 @@ for i in std/machines/*.json; do
     BASE=$(basename $i .json)
     CATEGORY=$(echo ${BASE} | sed -e "s/^\([^_]\+\)_.*/\\1/")
 	echo '    function(){' >> "tests/std_"${CATEGORY}".js"
-    echo '        var test = CSL.System.Tests.getTest("'${BASE}'");' >> "tests/std_"${CATEGORY}".js"
+    echo '        var test = new Test("'${BASE}'");' >> "tests/std_"${CATEGORY}".js"
     echo '        doh.assertEqual(test.result, test.run());' >> "tests/std_"${CATEGORY}".js"
 	echo '    },' >> "tests/std_"${CATEGORY}".js"
 done

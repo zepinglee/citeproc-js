@@ -4,19 +4,19 @@ dojo.require("csl.csl");
 
 doh.register("tests.std_decorations", [
     function(){
-        var test = CSL.System.Tests.getTest("decorations_NestedQuotesInnerReverse");
+        var test = new Test("decorations_NestedQuotesInnerReverse");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("decorations_NestedQuotes");
+        var test = new Test("decorations_NestedQuotes");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("decorations_SimpleFlipFlop");
+        var test = new Test("decorations_SimpleFlipFlop");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = CSL.System.Tests.getTest("decorations_SimpleQuotes");
+        var test = new Test("decorations_SimpleQuotes");
         doh.assertEqual(test.result, test.run());
     },
 ]);

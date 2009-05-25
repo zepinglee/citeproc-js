@@ -30,7 +30,10 @@ CSL.Core.Engine = function (xmlCommandInterface,nodelist){
 	 * <p>Available in at runtime.</p>
 	 */
 	this.fun = new Object();
-	this.fun.retriever = new CSL.System.Retrieval.GetInput();
+	//
+	// Replaced with state.sys
+	//
+	//this.fun.retriever = new CSL.System.Retrieval.GetInput();
 	/**
 	 * Build-time scratch area.
 	 * <p>Discarded after Build is complete.</p>

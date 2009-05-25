@@ -22,36 +22,11 @@ My &ldquo;&lsquo;Amazing&rsquo; <b>and</b> Bogus&rdquo; Title
 </style>
 <<===== CSL =====<<
 
->>===== FLIPFLOPS =====>>
-[
-  {
-    "start":"\"",
-    "end":"\"",
-    "func":["@quotes","true"],
-    "alt":["@squotes","true"],
-    "additive":"true"
-  },
-  {
-    "start":"'",
-    "end":"'",
-    "func":["@quotes","true"],
-    "alt":["@squotes","true"],
-    "additive":"true"
-  },
-  {
-    "start":"*",
-    "end":"*",
-    "func":["@font-weight","bold"],
-    "alt":["@font-weight","normal"],
-    "additive":"true"
-  }
-]
-<<===== FLIPFLOPS =====<<
 
 >>===== INPUT =====>>
 [{
    "id":"item-1",
    "type": "book",
-   "title": "My '\"Amazing\" *and* Bogus' Title"
+   "title": "My '\"Amazing\" <span name="foreign-word">and</span> Bogus' Title"
 }]
 <<===== INPUT =====<<

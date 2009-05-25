@@ -19,11 +19,11 @@ Smith 2000a,c-e, 2001
 >>===== CITATIONS =====>>
 [
   [
-    {"id":"ITEM-1"},
-    {"id":"ITEM-3"},
-    {"id":"ITEM-4"},
-    {"id":"ITEM-5"},
-    {"id":"ITEM-6"}
+    ["ITEM-1",{}],
+    ["ITEM-3",{}],
+    ["ITEM-4",{}],
+    ["ITEM-5",{}],
+    ["ITEM-6",{}]
   ]
 ]
 <<===== CITATIONS =====<<

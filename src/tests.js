@@ -3,88 +3,126 @@ if (!CSL){
 	load("./src/csl.js");
 }
 
-/**
- * Static functions for reading and running standard CSL tests.
- * <p>The functions here are specifically designed for test-bed
- * operation of the distribution source.  Implementors may wish
- * to reimplement this module to confirm operation in their
- * local environment.</p>
- * @namespace Tests
- */
-CSL.System.Tests = function(){};
+var Test = function(myname){
+	this.myname = myname;
+	this._cache = {};
+	this._ids = [];
+	//
+	// Normalize input and build style.
+	//
+	this._readTest();
+	this.result = this.test.result;
+	this._fixAllNames();
+	this._setCache();
+	this._fixInputSets();
+};
 
-CSL.System.Tests.getTest = function(myname){
-	var test;
-	var filename = "std/machines/" + myname + ".json";
-	//
-	// Clean up the CSL token string.
-	//
-	// Half of the fix for encoding problem encountered by Sean
-	// under OSX.  External strings are _read_ correctly, but an
-	// explicit encoding declaration on readFile is needed if
-	// they are to be fed to eval.  This may set the implicit
-	// UTF-8 binary identifier on the stream, as defined in the
-	// ECMAscript specification.  See http://www.ietf.org/rfc/rfc4329.txt
-	//
-	// Python it's not.  :)
-	//
-	var teststring = readFile(filename, "UTF-8");
-	try {
-		eval( "test = "+teststring );
-	} catch(e){
-		throw e + teststring;
+//
+// Retrieve properly composed item from phoney database.
+// (Deployments must provide an instance object with
+// this method.)
+//
+Test.prototype.retrieveItem = function(id){
+	return this._cache[id];
+};
+
+//
+// Retrieve properly composed items from phoney database.
+// (Deployments must provide an instance object with
+// this method.)
+//
+Test.prototype.retrieveItems = function(ids){
+	var ret = [];
+	for each (var id in ids){
+		ret.push(this.retrieveItem(id));
 	}
-	//
-	// Set up the token string to use for formatting.
-	if (test.mode == "bibliography"){
-		var render = "makeBibliography";
-	} else {
-		var render = "makeCitationCluster";
-	}
-	// Build run function.
-	test.run = function(){
-		var builder = new CSL.Core.Build(this.csl);
-		var raw = builder.build();
-		var configurator = new CSL.Core.Configure(raw);
-		var style = configurator.configure();
-		if (this.flipflops){
-			for each (var ff in this.flipflops){
-				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
-			}
-		}
-		CSL.System.Tests.fixNames(this.input,myname);
-		for each (var item in this.input){
-			style.fun.retriever.setInput(style,item);
-			style.registry.insert(style,item);
-		}
-		if (this.citations){
-			for each (var cite_cluster in this.citations){
-				var cluster = [];
-				for each (var cite in cite_cluster){
-					for each (var datem in this.input){
-						if (datem.id == cite.id){
-							cluster.push(datem);
-							break;
-						}
-					}
-				}
-				var ret = style[render](cluster);
-			}
-		} else {
-			var ret = style[render](this.input);
-		}
-		return ret;
-	};
-	return test;
+	return ret;
+};
+
+//
+// Retrieve locale object from filesystem
+// (Deployments must provide an instance object with
+// this method.)
+//
+Test.prototype.getLang = function(lang){
+	return readFile( "./locale/"+this.localeRegistry()[lang]);
 };
 
 
-CSL.System.Tests.fixNames = function(itemlist,myname){
-	for each (obj in itemlist){
-		if (!obj.id){
-			throw "No id for object in: "+myname;
+Test.prototype.localeRegistry =	function (){
+	return {
+		"af":"locales-af-AZ.xml",
+		"af":"locales-af-ZA.xml",
+		"ar":"locales-ar-AR.xml",
+		"bg":"locales-bg-BG.xml",
+		"ca":"locales-ca-AD.xml",
+		"cs":"locales-cs-CZ.xml",
+		"da":"locales-da-DK.xml",
+		"de":"locales-de-AT.xml",
+		"de":"locales-de-CH.xml",
+		"de":"locales-de-DE.xml",
+		"el":"locales-el-GR.xml",
+		"en":"locales-en-US.xml",
+		"es":"locales-es-ES.xml",
+		"et":"locales-et-EE.xml",
+		"fr":"locales-fr-FR.xml",
+		"he":"locales-he-IL.xml",
+		"hu":"locales-hu-HU.xml",
+		"is":"locales-is-IS.xml",
+		"it":"locales-it-IT.xml",
+		"ja":"locales-ja-JP.xml",
+		"ko":"locales-ko-KR.xml",
+		"mn":"locales-mn-MN.xml",
+		"nb":"locales-nb-NO.xml",
+		"nl":"locales-nl-NL.xml",
+		"pl":"locales-pl-PL.xml",
+		"pt":"locales-pt-BR.xml",
+		"pt":"locales-pt-PT.xml",
+		"ro":"locales-ro-RO.xml",
+		"ru":"locales-ru-RU.xml",
+		"sk":"locales-sk-SK.xml",
+		"sl":"locales-sl-SI.xml",
+		"sr":"locales-sr-RS.xml",
+		"sv":"locales-sv-SE.xml",
+		"th":"locales-th-TH.xml",
+		"tr":"locales-tr-TR.xml",
+		"uk":"locales-uk-UA.xml",
+		"vi":"locales-vi-VN.xml",
+		"zh":"locales-zh-CN.xml",
+		"zh":"locales-zh-TW.xml"
+	};
+};
+
+//
+// Build phoney database.
+//
+Test.prototype._setCache = function(){
+	for each (item in this.test.input){
+		this._cache[item.id] = item;
+		this._ids.push(item.id);
+	}
+};
+
+
+Test.prototype._fixInputSets = function(){
+	if (this.test.mode == "citation"){
+		if (!this.test.citations){
+			var citation = [];
+			for each (item in this.test.input){
+				citation.push([item.id,{}]);
+			}
+			this.test.citations = [citation];
 		}
-		for each (key in ["author","editor","translator"]){
+	}
+};
+
+
+Test.prototype._fixAllNames = function(){
+	for each (obj in this.test.input){
+		if (!obj.id){
+			throw "No id for object in test: "+this.myname;
+		}
+		for each (key in CSL.CREATORS){
 			if (obj[key]){
 				for each (var entry in obj[key]){
 					var one_char = entry.name.length-1;
@@ -126,5 +164,88 @@ CSL.System.Tests.fixNames = function(itemlist,myname){
 			}
 		}
 	}
-	return itemlist;
 };
+
+Test.prototype._readTest = function(){
+	var test;
+	var filename = "std/machines/" + this.myname + ".json";
+	//
+	// Half of the fix for encoding problem encountered by Sean
+	// under OSX.  External strings are _read_ correctly, but an
+	// explicit encoding declaration on readFile is needed if
+	// they are to be fed to eval.  This may set the implicit
+	// UTF-8 binary identifier on the stream, as defined in the
+	// ECMAscript specification.  See http://www.ietf.org/rfc/rfc4329.txt
+	//
+	// Python it's not.  :)
+	//
+	var teststring = readFile(filename, "UTF-8");
+	//
+	// Grab test data in an object.
+	//
+	try {
+		eval( "test = "+teststring );
+	} catch(e){
+		throw e + teststring;
+	}
+	this.test = test;
+};
+
+
+Test.prototype._buildStyle = function(){
+	var builder = new CSL.Core.Build(this.test.csl);
+	var raw = builder.build(this);
+	var configurator = new CSL.Core.Configure(raw);
+	this.style = configurator.configure();
+};
+
+
+Test.prototype.run = function(){
+	this._buildStyle(this);
+	this.style.insertItems(this._ids);
+	if (this.test.mode == "citation"){
+		var citations = [];
+		for each (var citation in this.test.citations){
+			citations.push(this.style.makeCitationCluster(citation));
+		}
+		var ret = citations.join("\n");
+	} else if (this.test.mode == "bibliography"){
+		var ret = this.style.makeBibliography();
+	} else {
+		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
+	}
+	return ret;
+};
+
+// XXXXXXXXXXXXXXXXXXX
+
+Test.prototype._retrieveInput = function(name){
+	var ret = new Array();
+	if ("object" == typeof name && name.length){
+		for each (filename in name){
+			if (this.input[filename]){
+				ret.push(this.input[filename]);
+			} else {
+				var datastring = readFile("data/" + filename + ".txt");
+				eval( "obj = " + datastring );
+				CSL.System.Tests.fixNames([obj],filename);
+				this.input[filename] = obj;
+				ret.push(obj);
+			}
+		}
+	} else if ("object" == typeof name){
+		if (this.input[filename]){
+			ret.push(this.input[filename]);
+		} else {
+			var datastring = readFile("data/" + filename + ".txt");
+			this.input[filename] = obj;
+			eval( "obj = " + datastring );
+			CSL.System.Tests.fixNames([obj],filename);
+			ret.push(obj);
+		}
+	} else {
+		throw "Failure reading test data file, WTF?";
+	}
+	return ret;
+}
+

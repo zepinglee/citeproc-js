@@ -38,7 +38,6 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
 	var state = new CSL.Core.Engine(xmlCommandInterface,xml);
 	this.state = state;
 
-
 	/*
 	 * First-stage build function.
 	 *
@@ -249,7 +248,8 @@ CSL.Core.Build = function(stylexml,xmlLingo) {
  * </dl>
  * @function
  */
-CSL.Core.Build.prototype.build = function(locale){
+CSL.Core.Build.prototype.build = function(sys,locale){
+	this.state.sys = sys;
 	this.state.opt.locale = locale;
 	var engine = new this._builder(this.state);
 	var ret = engine.getObject();
