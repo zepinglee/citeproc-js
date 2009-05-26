@@ -57,7 +57,6 @@ CSL.Lib.Elements.style = new function(){
 					state.tmp.disambig_request = state.registry.registry[Item.id].disambig;
 					state.tmp.disambig_settings = state.registry.registry[Item.id].disambig;
 				} else {
-
 					state.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
 				}
 			};
@@ -1107,12 +1106,6 @@ CSL.Lib.Elements.key = new function(){
 		state[state.build.area].opt.sort_directions.push(sort_direction);
 
 		var et_al_init = function(state,Item){
-			//
-			// should default to the area value, with these as override.
-			// be sure that the area-level value is set correctly, then
-			// do this up.  lots of inheritance, so lots of explicit
-			// conditions, but it's all very systematic and boring.
-			//
 			state.tmp.sort_key_flag = true;
 			if (this.strings["et-al-min"]){
 				state.tmp["et-al-min"] = this.strings["et-al-min"];

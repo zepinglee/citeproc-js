@@ -55,7 +55,6 @@ CSL.Lib.Elements.names = new function(){
 
 			var set_et_al_params = function(state,Item){
 				state.output.startTag("names",this);
-				//
 				// No value or zero means a first reference,
 				// anything else is a subsequent reference.
 				if (Item.position || state.tmp.force_subsequent){

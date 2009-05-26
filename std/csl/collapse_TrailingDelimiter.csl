@@ -18,6 +18,7 @@
       <group delimiter=" ">
         <names variable="author">
           <name form="short" and="symbol" delimiter=", "/>
+          <et-al prefix=" "/>
         </names>
         <date variable="issued">
           <date-part name="year"/>

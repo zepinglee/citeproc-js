@@ -45,10 +45,12 @@ CSL.Core.Engine.prototype.getSortKeys = function(Item,key_type){
 	var area = this.tmp.area;
 	var strip_prepositions = CSL.Util.Sort.strip_prepositions;
 	this.tmp.area = key_type;
+	this.tmp.disambig_override = true;
 	this.tmp.disambig_request = false;
 	this.tmp.suppress_decorations = true;
 	this._cite.call(this,Item);
 	this.tmp.suppress_decorations = false;
+	this.tmp.disambig_override = false;
 	for (var i in this[key_type].keys){
 		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);
 	}
