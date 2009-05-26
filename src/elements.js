@@ -45,7 +45,7 @@ CSL.Lib.Elements.style = new function(){
 			state.build.lang = false;
 			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state);
 			state.tmp.term_predecessor = false;
-			state.tmp.new_creator = false;
+			state.tmp.have_collapsed = true;
 		} else {
 			state.tmp.disambig_request = false;
 			state.build.in_style = false;
@@ -95,6 +95,10 @@ CSL.Lib.Elements.style = new function(){
 					// forcing the delimiter back to normal if a
 					// suffix or prefix touch the join, even if
 					// a year-suffix is the only output.
+					//
+					// XXXX: This should not be necessary.  Any cite matching
+					// this condition should be forced to full form anyway.
+					//
 					state.tmp.splice_delimiter = state[state.tmp.area].opt.delimiter;
 				} else {
 					// XXXX year-suffix must have been used for special
@@ -992,12 +996,12 @@ CSL.Lib.Elements["date-part"] = new function(){
 				value = state.tmp.date_object[this.strings.name];
 			};
 			var real = !state.tmp.suppress_decorations;
-			var same_creator = !state.tmp.new_creator;
+			var have_collapsed = state.tmp.have_collapsed;
 			var invoked = state[state.tmp.area].opt.collapse == "year-suffix";
 			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
 			//
 			// XXXXX: need a condition for year as well?
-			if (real && precondition && invoked && same_creator){
+			if (real && precondition && invoked && have_collapsed){
 				state.tmp.years_used.push(value);
 				var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
 				if (known_year){
@@ -1044,6 +1048,9 @@ CSL.Lib.Elements.option = new function(){
 		}
 		if ("year-suffix-range-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["year-suffix-range-delimiter"] = this.strings.value;
+		}
+		if ("after-collapse-delimiter" == this.strings.name){
+			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		}
 		target.push(this);
 	};

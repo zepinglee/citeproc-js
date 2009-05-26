@@ -147,10 +147,7 @@ CSL.Lib.Elements.names = new function(){
 							if (state.fun.get_common_term(state,compset)){
 								continue;
 							} else {
-								//
-								// Initialized on style
-								//
-								state.tmp.new_creator = true;
+								state.tmp.have_collapsed = false;
 							}
 						}
 					}

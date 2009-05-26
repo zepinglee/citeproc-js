@@ -101,7 +101,14 @@ CSL.Core.Engine.prototype.getMinVal = function(){
  * and are cleared by the processor on
  * completion of the run.</p>
  */
-CSL.Core.Engine.prototype.getSpliceDelimiter = function(){
+//
+// XXXXX: The handling of delimiters needs cleanup.
+// Is the tmp.delimiter stack used for *anything*?
+//
+CSL.Core.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
+	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
+		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
+	}
 	return this.tmp.splice_delimiter;
 };
 
@@ -159,13 +166,14 @@ CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
 	var objects = [];
 
 	for each (var Item in inputList){
+		var last_collapsed = this.tmp.have_collapsed;
 		this._cite(Item);
 		//
 		// This will produce a stack with one
 		// layer, and exactly one or two items.
 		// We merge these as we go along, to get
 		// the joins right for the pairs.
-		delimiter = this.getSpliceDelimiter();
+		delimiter = this.getSpliceDelimiter(last_collapsed);
 		this.tmp.delimiter.replace(delimiter);
 		this.tmp.handle_ranges = true;
 		var composite = this.output.string(this,this.output.queue);
