@@ -156,9 +156,6 @@ CSL.Lib.Elements.text = new function(){
 		// any inserted macros for nested macro calls, and explode
 		// them.
 		if (state.build.postponed_macro){
-			//
-			// XXXX Could catch undeclared macros here.
-			//
 			if ( ! state.build.layout_flag && ! state.build.sort_flag){
 				//
 				// Fudge it with a placeholder if we're not yet
@@ -172,6 +169,9 @@ CSL.Lib.Elements.text = new function(){
 				//
 				// push an implict group token with the strings and
 				// decorations of the invoking text tag
+
+				// XXXX: this stuff is implicit in expandMacro, isn't it?
+				//
 				var start_token = new CSL.Factory.Token("group",CSL.START);
 				for (i in this.strings){
 					start_token.strings[i] = this.strings[i];
@@ -198,6 +198,7 @@ CSL.Lib.Elements.text = new function(){
 					state.output.endTag();
 				};
 				end_token["execs"].push(mergeoutput);
+				//print("pushing group END token");
 				target.push(end_token);
 			}
 			state.build.postponed_macro = false;
@@ -339,7 +340,8 @@ CSL.Lib.Elements.macro = new function(){
 			// is this slice really needed?
 			state.build.macro[state.build.name] = target.slice();
 			state.build.name = false;
-			state.build.children = new Array();;
+			//state.build.children = new Array();
+			state.build.children.pop();
 		}
 	}
 };
@@ -1065,7 +1067,7 @@ CSL.Lib.Elements.option = new function(){
 		}
 		if (CSL.ET_AL_NAMES.indexOf(this.strings.name) > -1){
 			if (this.strings.value){
-				state[state.tmp.area].opt[this.strings.name] = parseInt(this.strings.value, 10);
+				state[state.build.area].opt[this.strings.name] = parseInt(this.strings.value, 10);
 			}
 		}
 		if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){

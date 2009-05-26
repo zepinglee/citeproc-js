@@ -170,8 +170,7 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 	this.variables = arg.split(/\s+/);
 	if ("label" == this.name && this.variables[0]){
 		state.build.term = this.variables[0];
-	};
-	if (["names","date","text","number"].indexOf(this.name) > -1) {
+	} else if (["names","date","text","number"].indexOf(this.name) > -1) {
 		//
 		// An oddity of variable handling is that this.variables
 		// is actually ephemeral; the full list of variables is
@@ -223,6 +222,26 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			//}
 		};
 		this.execs.push(check_for_output);
+	} else if (["if", "else-if"].indexOf(this.name) > -1){
+		var check_for_variable_value = function(state,Item){
+			for each(variable in this.variables){
+				if (Item[variable]){
+					if ("number" == typeof Item[variable] || "string" == typeof Item[variable]){
+						return true;
+					} else if ("object" == typeof Item[variable]){
+						if (Item[variable].length){
+							return true;
+						} else {
+							for (i in Item[variable]){
+								return true;
+							}
+						}
+					}
+				}
+				return false;
+			};
+		};
+		this.tests.push(check_for_variable_value);
 	};
 };
 

@@ -225,7 +225,6 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	// XXXXX Macros don't take decorations or anything.
 	var start_token = new CSL.Factory.Token("group",CSL.START);
 	ret.push(start_token);
-
 	for (var i in this.build.macro[mkey]){
 		//
 		// could use for each; this was an attempt to get a
@@ -236,7 +235,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 		if (token.postponed_macro){
 			//
 			// nested expansion
-			ret.concat(CSL.Factory.expandMacro.call(this,token));
+			ret = ret.concat(CSL.Factory.expandMacro.call(this,token));
 		} else {
 			//
 			// clone the token, so that navigation pointers are
