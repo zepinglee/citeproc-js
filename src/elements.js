@@ -45,6 +45,7 @@ CSL.Lib.Elements.style = new function(){
 			state.build.lang = false;
 			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state);
 			state.tmp.term_predecessor = false;
+			state.tmp.new_creator = false;
 		} else {
 			state.tmp.disambig_request = false;
 			state.build.in_style = false;
@@ -991,11 +992,12 @@ CSL.Lib.Elements["date-part"] = new function(){
 				value = state.tmp.date_object[this.strings.name];
 			};
 			var real = !state.tmp.suppress_decorations;
+			var same_creator = !state.tmp.new_creator;
 			var invoked = state[state.tmp.area].opt.collapse == "year-suffix";
 			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
 			//
 			// XXXXX: need a condition for year as well?
-			if (real && precondition && invoked){
+			if (real && precondition && invoked && same_creator){
 				state.tmp.years_used.push(value);
 				var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
 				if (known_year){

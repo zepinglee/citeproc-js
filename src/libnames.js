@@ -121,12 +121,36 @@ CSL.Lib.Elements.names = new function(){
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix")){
+						//
+						// XXXX: This looks all messed up.  Apparently I'm using
+						// last_names_used for two purposes -- to compare namesets
+						// in a listing of nameset variables (which is what the code
+						// below does), and to compare the actual name rendered
+						// between cites (which is why the var gets reset before
+						// _unit_of_reference is called from makeCitationCluster.
+						//
+						// Or so it seems on a quick look.  Might not need to touch
+						// this, though; for bug #12, it will be enough to check
+						// whether something has been rendered in the current cite.
+						//
+						// Ah, no.  This is fine, but the naming of the comparison
+						// function is confusing.  This is just checking whether the
+						// current name is the same as the last name rendered
+						// in the last cite, and it works.  Set a toggle if the
+						// test fails, so we can avoid further suppression in the
+						// cite.
+						//
 						if (state.tmp.last_names_used.length == state.tmp.names_used.length){
 							var lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
 							var currentones = state.tmp.names_used[state.tmp.nameset_counter];
 							var compset = currentones.concat(lastones);
 							if (state.fun.get_common_term(state,compset)){
 								continue;
+							} else {
+								//
+								// Initialized on style
+								//
+								state.tmp.new_creator = true;
 							}
 						}
 					}
