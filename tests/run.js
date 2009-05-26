@@ -32,6 +32,7 @@ print("#####");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_locators");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_condition");
 	dojo.require("tests.std_date");

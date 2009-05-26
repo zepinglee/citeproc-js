@@ -1,0 +1,19 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+	<layout delimiter="; " suffix=".">
+      <group delimiter=", ">
+        <names variable="author">
+          <name form="short"/>
+        </names>
+        <text variable="title"/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <group delimiter=" ">
+          <label variable="locator" include-period="true"/>
+          <text variable="locator"/>
+        </group>
+      </group>
+	</layout>
+  </citation>
+</style>

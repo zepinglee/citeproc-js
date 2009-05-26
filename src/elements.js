@@ -810,6 +810,34 @@ CSL.Lib.Elements.label = new function(){
 			state.output.addToken("label",false,this);
 		};
 		this["execs"].push(set_label_info);
+		if (state.build.term){
+			var term = state.build.term;
+			var form = "long";
+			var plural = 0;
+			if (state.build.form){
+				form = state.build.form;
+			}
+			if (state.build.plural){
+				plural = state.build.plural;
+			}
+			var output_label = function(state,Item){
+				if ("locator" == term){
+					myterm = Item["label"];
+				}
+				if (!myterm){
+					myterm = "page";
+				}
+				var myterm = state.opt.term[myterm][form][plural];
+				if (this.strings["include-period"]){
+					myterm += ".";
+				}
+				state.output.append(myterm,this);
+			};
+			this.execs.push(output_label);
+			state.build.plural = false;
+			state.build.term = false;
+			state.build.form = false;
+		}
 		target.push(this);
 	};
 };

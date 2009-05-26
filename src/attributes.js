@@ -168,6 +168,9 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
  */
 CSL.Lib.Attributes["@variable"] = function(state,arg){
 	this.variables = arg.split(/\s+/);
+	if ("label" == this.name && this.variables[0]){
+		state.build.term = this.variables[0];
+	};
 	if (["names","date","text","number"].indexOf(this.name) > -1) {
 		//
 		// An oddity of variable handling is that this.variables
@@ -404,7 +407,7 @@ CSL.Lib.Attributes["@locator"] = function(state,arg){
 
 
 CSL.Lib.Attributes["@include-period"] = function(state,arg){
-
+	this.strings["include-period"] = arg;
 };
 
 

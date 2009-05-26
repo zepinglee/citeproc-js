@@ -187,10 +187,12 @@ CSL.Core.Engine.prototype.getSortKeys = function(Item,key_type){
 	var area = this.tmp.area;
 	var strip_prepositions = CSL.Util.Sort.strip_prepositions;
 	this.tmp.area = key_type;
+	this.tmp.disambig_override = true;
 	this.tmp.disambig_request = false;
 	this.tmp.suppress_decorations = true;
 	this._cite.call(this,Item);
 	this.tmp.suppress_decorations = false;
+	this.tmp.disambig_override = false;
 	for (var i in this[key_type].keys){
 		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);
 	}
@@ -214,7 +216,14 @@ CSL.Core.Engine.prototype.getMaxVals = function(){
 CSL.Core.Engine.prototype.getMinVal = function(){
 	return this.tmp["et-al-min"];
 };
-CSL.Core.Engine.prototype.getSpliceDelimiter = function(){
+//
+// XXXXX: The handling of delimiters needs cleanup.
+// Is the tmp.delimiter stack used for *anything*?
+//
+CSL.Core.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
+	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
+		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
+	}
 	return this.tmp.splice_delimiter;
 };
 CSL.Core.Engine.prototype.getModes = function(){
@@ -250,13 +259,14 @@ CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
 	var result = "";
 	var objects = [];
 	for each (var Item in inputList){
+		var last_collapsed = this.tmp.have_collapsed;
 		this._cite(Item);
 		//
 		// This will produce a stack with one
 		// layer, and exactly one or two items.
 		// We merge these as we go along, to get
 		// the joins right for the pairs.
-		delimiter = this.getSpliceDelimiter();
+		delimiter = this.getSpliceDelimiter(last_collapsed);
 		this.tmp.delimiter.replace(delimiter);
 		this.tmp.handle_ranges = true;
 		var composite = this.output.string(this,this.output.queue);
@@ -1963,6 +1973,7 @@ CSL.Lib.Elements.style = new function(){
 			state.build.lang = false;
 			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state);
 			state.tmp.term_predecessor = false;
+			state.tmp.have_collapsed = true;
 		} else {
 			state.tmp.disambig_request = false;
 			state.build.in_style = false;
@@ -2009,6 +2020,10 @@ CSL.Lib.Elements.style = new function(){
 					// forcing the delimiter back to normal if a
 					// suffix or prefix touch the join, even if
 					// a year-suffix is the only output.
+					//
+					// XXXX: This should not be necessary.  Any cite matching
+					// this condition should be forced to full form anyway.
+					//
 					state.tmp.splice_delimiter = state[state.tmp.area].opt.delimiter;
 				} else {
 					// XXXX year-suffix must have been used for special
@@ -2580,6 +2595,34 @@ CSL.Lib.Elements.label = new function(){
 			state.output.addToken("label",false,this);
 		};
 		this["execs"].push(set_label_info);
+		if (state.build.term){
+			var term = state.build.term;
+			var form = "long";
+			var plural = 0;
+			if (state.build.form){
+				form = state.build.form;
+			}
+			if (state.build.plural){
+				plural = state.build.plural;
+			}
+			var output_label = function(state,Item){
+				if ("locator" == term){
+					myterm = Item["label"];
+				}
+				if (!myterm){
+					myterm = "page";
+				}
+				var myterm = state.opt.term[myterm][form][plural];
+				if (this.strings["include-period"]){
+					myterm += ".";
+				}
+				state.output.append(myterm,this);
+			};
+			this.execs.push(output_label);
+			state.build.plural = false;
+			state.build.term = false;
+			state.build.form = false;
+		}
 		target.push(this);
 	};
 };
@@ -2722,11 +2765,12 @@ CSL.Lib.Elements["date-part"] = new function(){
 				value = state.tmp.date_object[this.strings.name];
 			};
 			var real = !state.tmp.suppress_decorations;
+			var have_collapsed = state.tmp.have_collapsed;
 			var invoked = state[state.tmp.area].opt.collapse == "year-suffix";
 			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
 			//
 			// XXXXX: need a condition for year as well?
-			if (real && precondition && invoked){
+			if (real && precondition && invoked && have_collapsed){
 				state.tmp.years_used.push(value);
 				var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
 				if (known_year){
@@ -2771,6 +2815,9 @@ CSL.Lib.Elements.option = new function(){
 		}
 		if ("year-suffix-range-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["year-suffix-range-delimiter"] = this.strings.value;
+		}
+		if ("after-collapse-delimiter" == this.strings.name){
+			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		}
 		target.push(this);
 	};
@@ -2826,12 +2873,6 @@ CSL.Lib.Elements.key = new function(){
 		}
 		state[state.build.area].opt.sort_directions.push(sort_direction);
 		var et_al_init = function(state,Item){
-			//
-			// should default to the area value, with these as override.
-			// be sure that the area-level value is set correctly, then
-			// do this up.  lots of inheritance, so lots of explicit
-			// conditions, but it's all very systematic and boring.
-			//
 			state.tmp.sort_key_flag = true;
 			if (this.strings["et-al-min"]){
 				state.tmp["et-al-min"] = this.strings["et-al-min"];
@@ -2936,7 +2977,6 @@ CSL.Lib.Elements.names = new function(){
 			this.execs.push(init_can_substitute);
 			var set_et_al_params = function(state,Item){
 				state.output.startTag("names",this);
-				//
 				// No value or zero means a first reference,
 				// anything else is a subsequent reference.
 				if (Item.position || state.tmp.force_subsequent){
@@ -2999,12 +3039,33 @@ CSL.Lib.Elements.names = new function(){
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix")){
+						//
+						// XXXX: This looks all messed up.  Apparently I'm using
+						// last_names_used for two purposes -- to compare namesets
+						// in a listing of nameset variables (which is what the code
+						// below does), and to compare the actual name rendered
+						// between cites (which is why the var gets reset before
+						// _unit_of_reference is called from makeCitationCluster.
+						//
+						// Or so it seems on a quick look.  Might not need to touch
+						// this, though; for bug #12, it will be enough to check
+						// whether something has been rendered in the current cite.
+						//
+						// Ah, no.  This is fine, but the naming of the comparison
+						// function is confusing.  This is just checking whether the
+						// current name is the same as the last name rendered
+						// in the last cite, and it works.  Set a toggle if the
+						// test fails, so we can avoid further suppression in the
+						// cite.
+						//
 						if (state.tmp.last_names_used.length == state.tmp.names_used.length){
 							var lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
 							var currentones = state.tmp.names_used[state.tmp.nameset_counter];
 							var compset = currentones.concat(lastones);
 							if (state.fun.get_common_term(state,compset)){
 								continue;
+							} else {
+								state.tmp.have_collapsed = false;
 							}
 						}
 					}
@@ -3221,6 +3282,9 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 };
 CSL.Lib.Attributes["@variable"] = function(state,arg){
 	this.variables = arg.split(/\s+/);
+	if ("label" == this.name && this.variables[0]){
+		state.build.term = this.variables[0];
+	};
 	if (["names","date","text","number"].indexOf(this.name) > -1) {
 		//
 		// An oddity of variable handling is that this.variables
@@ -3397,6 +3461,7 @@ CSL.Lib.Attributes["@plural"] = function(state,arg){
 CSL.Lib.Attributes["@locator"] = function(state,arg){
 };
 CSL.Lib.Attributes["@include-period"] = function(state,arg){
+	this.strings["include-period"] = arg;
 };
 CSL.Lib.Attributes["@position"] = function(state,arg){
 };
