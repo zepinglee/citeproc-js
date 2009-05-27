@@ -266,8 +266,10 @@ CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
 		// layer, and exactly one or two items.
 		// We merge these as we go along, to get
 		// the joins right for the pairs.
-		delimiter = this.getSpliceDelimiter(last_collapsed);
-		this.tmp.delimiter.replace(delimiter);
+		//delimiter = this.getSpliceDelimiter(last_collapsed);
+		//this.tmp.delimiter.replace(delimiter);
+		this.getSpliceDelimiter(last_collapsed);
+		//this.tmp.delimiter.replace(delimiter);
 		this.tmp.handle_ranges = true;
 		var composite = this.output.string(this,this.output.queue);
 		this.tmp.handle_ranges = false;
@@ -1177,7 +1179,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 		if (token.postponed_macro){
 			//
 			// nested expansion
-			ret.concat(CSL.Factory.expandMacro.call(this,token));
+			ret = ret.concat(CSL.Factory.expandMacro.call(this,token));
 		} else {
 			//
 			// clone the token, so that navigation pointers are
@@ -2067,9 +2069,6 @@ CSL.Lib.Elements.text = new function(){
 		// any inserted macros for nested macro calls, and explode
 		// them.
 		if (state.build.postponed_macro){
-			//
-			// XXXX Could catch undeclared macros here.
-			//
 			if ( ! state.build.layout_flag && ! state.build.sort_flag){
 				//
 				// Fudge it with a placeholder if we're not yet
@@ -2083,6 +2082,8 @@ CSL.Lib.Elements.text = new function(){
 				//
 				// push an implict group token with the strings and
 				// decorations of the invoking text tag
+				// XXXX: this stuff is implicit in expandMacro, isn't it?
+				//
 				var start_token = new CSL.Factory.Token("group",CSL.START);
 				for (i in this.strings){
 					start_token.strings[i] = this.strings[i];
@@ -2107,6 +2108,7 @@ CSL.Lib.Elements.text = new function(){
 					state.output.endTag();
 				};
 				end_token["execs"].push(mergeoutput);
+				//print("pushing group END token");
 				target.push(end_token);
 			}
 			state.build.postponed_macro = false;
@@ -2235,7 +2237,8 @@ CSL.Lib.Elements.macro = new function(){
 			// is this slice really needed?
 			state.build.macro[state.build.name] = target.slice();
 			state.build.name = false;
-			state.build.children = new Array();;
+			//state.build.children = new Array();
+			state.build.children.pop();
 		}
 	}
 };
@@ -2371,6 +2374,12 @@ CSL.Lib.Elements.group = new function(){
 					state.output.clearlevel();
 				}
 				state.tmp.term_sibling.pop();
+				//
+				// Heals group quashing glitch with nested groups.
+				//
+				if (flag && state.tmp.term_sibling.mystack.length > 1){
+					state.tmp.term_sibling.replace(true);
+				}
 			};
 			this["execs"].push(quashnonfields);
 			var mergeoutput = function(state,Item){
@@ -2804,7 +2813,7 @@ CSL.Lib.Elements.option = new function(){
 		}
 		if (CSL.ET_AL_NAMES.indexOf(this.strings.name) > -1){
 			if (this.strings.value){
-				state[state.tmp.area].opt[this.strings.name] = parseInt(this.strings.value, 10);
+				state[state.build.area].opt[this.strings.name] = parseInt(this.strings.value, 10);
 			}
 		}
 		if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){
@@ -3284,8 +3293,7 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 	this.variables = arg.split(/\s+/);
 	if ("label" == this.name && this.variables[0]){
 		state.build.term = this.variables[0];
-	};
-	if (["names","date","text","number"].indexOf(this.name) > -1) {
+	} else if (["names","date","text","number"].indexOf(this.name) > -1) {
 		//
 		// An oddity of variable handling is that this.variables
 		// is actually ephemeral; the full list of variables is
@@ -3336,6 +3344,26 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			//}
 		};
 		this.execs.push(check_for_output);
+	} else if (["if", "else-if"].indexOf(this.name) > -1){
+		var check_for_variable_value = function(state,Item){
+			for each(variable in this.variables){
+				if (Item[variable]){
+					if ("number" == typeof Item[variable] || "string" == typeof Item[variable]){
+						return true;
+					} else if ("object" == typeof Item[variable]){
+						if (Item[variable].length){
+							return true;
+						} else {
+							for (i in Item[variable]){
+								return true;
+							}
+						}
+					}
+				}
+				return false;
+			};
+		};
+		this.tests.push(check_for_variable_value);
 	};
 };
 CSL.Lib.Attributes["@and"] = function(state,arg){
@@ -3616,7 +3644,16 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 						strPlus["str"] = state.fun.decorate[params[0]][params[1]](strPlus["str"]);
 					}
 				}
-				strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix;
+				//
+				// This copes with the fact that the et al element had a period
+				// at the end of it, because it was unstyled.  Very annoying.
+				// Now that this element can be styled, let's hope styles can
+				// be migrated.
+				if (strPlus["str"] && strPlus["str"][(strPlus["str"].length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
+					strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix.slice(1);
+				} else {
+					strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix;
+				}
 				ret["str"].push(strPlus["str"]);
 			}
 			//
