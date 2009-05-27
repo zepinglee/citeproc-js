@@ -167,7 +167,17 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 						strPlus["str"] = state.fun.decorate[params[0]][params[1]](strPlus["str"]);
 					}
 				}
-				strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix;
+				//
+				// This copes with the fact that the et al element had a period
+				// at the end of it, because it was unstyled.  Very annoying.
+				// Now that this element can be styled, let's hope styles can
+				// be migrated.
+				if (strPlus["str"] && strPlus["str"][(strPlus["str"].length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
+					strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix.slice(1);
+				} else {
+					strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix;
+				}
+
 				ret["str"].push(strPlus["str"]);
 			}
 			//

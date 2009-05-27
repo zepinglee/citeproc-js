@@ -523,6 +523,13 @@ CSL.Lib.Elements.group = new function(){
 					state.output.clearlevel();
 				}
 				state.tmp.term_sibling.pop();
+				//
+				// XXXX: should have healed group quashing glitch.
+				// Didn't, though.
+				//
+				if (flag){
+					state.tmp.term_sibling.replace(true);
+				}
 			};
 			this["execs"].push(quashnonfields);
 

@@ -32,12 +32,12 @@ print("#####");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_fullstyles");
+	dojo.require("tests.std_collapse");
 } else {
 	dojo.require("tests.test_build_internals");
+	dojo.require("tests.std_fullstyles");
 
 	dojo.require("tests.std_locators");
-	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_condition");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_disambiguate");

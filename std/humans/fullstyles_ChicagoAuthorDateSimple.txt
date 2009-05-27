@@ -9,7 +9,11 @@ bibliography
 
 
 >>===== RESULT =====>>
-(Condit et al. 2000, 1995, 1998; Connell 1971, Cortes & Hunziker 1971)
+Doe, John. 1990. <i>Book A</i>. Brobdingnag: Zardoz Press
+Doe, John, and Jane Roe. 1991. <i>Book B</i>
+Doe, John, Jane Roe, and Alvin Asthma. 1992. <i>Book C</i>
+Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. 1993. <i>Book D</i>
+Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. 1994. <i>Book E</i>
 <<===== RESULT =====<<
 
 
@@ -393,7 +397,8 @@ bibliography
     "author": [{"name":"Doe, John"}],
     "title": "Book A",
     "issued": {"year":"1990"},
-    "publisher": "Zardoz Press"
+    "publisher": "Zardoz Press",
+    "publisher-place": "Brobdingnag"
   },
   {
     "id":"ITEM-2",

@@ -35,10 +35,12 @@ doh.register("tests.builder_internals", [
 		doh.assertEqual("layout", res.citation.tokens[0].name);
 		doh.assertEqual("group", res.citation.tokens[1].name);
 		doh.assertEqual("group", res.citation.tokens[2].name);
-		doh.assertEqual("text", res.citation.tokens[3].name);
-		doh.assertEqual("group", res.citation.tokens[4].name);
+		doh.assertEqual("group", res.citation.tokens[3].name);
+		doh.assertEqual("text", res.citation.tokens[4].name);
 		doh.assertEqual("group", res.citation.tokens[5].name);
-			doh.assertEqual("layout", res.citation.tokens[6].name);
+		doh.assertEqual("group", res.citation.tokens[6].name);
+		doh.assertEqual("group", res.citation.tokens[7].name);
+			doh.assertEqual("layout", res.citation.tokens[8].name);
 	},
 	function testMacro(){
 		var t = '<style>'
@@ -56,9 +58,9 @@ doh.register("tests.builder_internals", [
 		obj.state.sys = sys;
 		var builder = new obj._builder(obj.state,true);
 		var res = builder._build(obj.showXml());
-		doh.assertEqual(7, res.citation.tokens.length );
-		doh.assertEqual("function", typeof res.citation.tokens[3].execs[0]);
+		doh.assertEqual(9, res.citation.tokens.length );
 		doh.assertEqual("function", typeof res.citation.tokens[4].execs[0]);
+		doh.assertEqual("function", typeof res.citation.tokens[5].execs[0]);
 
 	},
 	function testValueAttributeAction(){
