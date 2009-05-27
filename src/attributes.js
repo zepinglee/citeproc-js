@@ -431,7 +431,13 @@ CSL.Lib.Attributes["@include-period"] = function(state,arg){
 
 
 CSL.Lib.Attributes["@position"] = function(state,arg){
-
+	if (arg == "subsequent"){
+		this.strings.position = CSL.POSITION_SUBSEQUENT;
+	} else if (arg == "ibid") {
+		this.strings.position = CSL.POSITION_IBID;
+	} else if (arg == "ibid-with-locator"){
+		this.strings.position = CSL.POSITION_IBID_WITH_LOCATOR;
+	};
 };
 
 

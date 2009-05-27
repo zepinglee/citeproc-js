@@ -623,6 +623,16 @@ CSL.Lib.Elements["if"] = new function(){
 				};
 				this["tests"].push(func);
 			};
+			if (this.strings.position){
+				var position = this.strings.position;
+				var func = function(state,Item){
+					if (Item["position"] && Item["position"] >= position){
+						return true;
+					};
+					return false;
+				};
+				this.tests.push(func);
+			}
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
@@ -812,9 +822,9 @@ CSL.Lib.Elements.label = new function(){
 			this.strings.label_position = CSL.BEFORE;
 		}
 		var set_label_info = function(state,Item){
-			if (!this.strings.form){
-				this.strings.form = "long";
-			}
+		//	if (!this.strings.form){
+		//		this.strings.form = "long";
+		//	}
 			state.output.addToken("label",false,this);
 		};
 		this["execs"].push(set_label_info);
@@ -822,9 +832,12 @@ CSL.Lib.Elements.label = new function(){
 			var term = state.build.term;
 			var form = "long";
 			var plural = 0;
-			if (state.build.form){
-				form = state.build.form;
+			if (this.strings.form){
+				form = this.strings.form;
 			}
+			//
+			// XXXXX: probably wrong.  needs a test.
+			//
 			if (state.build.plural){
 				plural = state.build.plural;
 			}
