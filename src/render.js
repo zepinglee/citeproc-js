@@ -173,8 +173,10 @@ CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
 		// layer, and exactly one or two items.
 		// We merge these as we go along, to get
 		// the joins right for the pairs.
-		delimiter = this.getSpliceDelimiter(last_collapsed);
-		this.tmp.delimiter.replace(delimiter);
+		//delimiter = this.getSpliceDelimiter(last_collapsed);
+		//this.tmp.delimiter.replace(delimiter);
+		this.getSpliceDelimiter(last_collapsed);
+		//this.tmp.delimiter.replace(delimiter);
 		this.tmp.handle_ranges = true;
 		var composite = this.output.string(this,this.output.queue);
 		this.tmp.handle_ranges = false;

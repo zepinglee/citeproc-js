@@ -33,7 +33,6 @@ print("#####");
 // requested tests go here
 if(true){
 	dojo.require("tests.std_collapse");
-} else {
 	dojo.require("tests.test_build_internals");
 	dojo.require("tests.std_fullstyles");
 
@@ -72,6 +71,7 @@ if(true){
 	dojo.require("tests.test_util_names");
 	dojo.require("tests.test_xmle4x");
 	dojo.require("tests.test_xmljs");
+} else {
 
 	dojo.require("tests.test_load_all_styles");
 	dojo.require("tests.std_decorations");

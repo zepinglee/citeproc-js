@@ -77,6 +77,7 @@ CSL.Output.Queue.prototype.endTag = function(){
 // appends are made to blob list of the new object.
 
 CSL.Output.Queue.prototype.openLevel = function(token){
+	//print("openLevel");
 	if (!this.formats.value()[token]){
 		throw "CSL processor error: call to nonexistent format token \""+token+"\"";
 	}
@@ -93,6 +94,7 @@ CSL.Output.Queue.prototype.openLevel = function(token){
  * "merge" used to be real complicated, now it's real simple.
  */
 CSL.Output.Queue.prototype.closeLevel = function(name){
+	//print("closeLevel");
 	//print("merge");
 	this.current.pop();
 }

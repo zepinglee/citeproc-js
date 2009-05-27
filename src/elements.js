@@ -524,10 +524,9 @@ CSL.Lib.Elements.group = new function(){
 				}
 				state.tmp.term_sibling.pop();
 				//
-				// XXXX: should have healed group quashing glitch.
-				// Didn't, though.
+				// Heals group quashing glitch with nested groups.
 				//
-				if (flag){
+				if (flag && state.tmp.term_sibling.mystack.length > 1){
 					state.tmp.term_sibling.replace(true);
 				}
 			};
