@@ -1,0 +1,112 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.9
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+John Doe, His Book (2000); John Doe, His Other Book (2001).
+Jane Roe, Her Book (1998).
+Jane Roe, Her Other Book (1999).
+Doe, His Book, supra note 1.
+Roe, supra note 2.
+<<===== RESULT =====<<
+
+>>===== CITATIONS =====>>
+[
+  [
+    ["ITEM-1",{}], ["ITEM-2",{}]
+  ],
+  [
+    ["ITEM-3",{}]
+  ],
+  [
+    ["ITEM-4",{}]
+  ],
+  [
+    ["ITEM-1",{}]
+  ],
+  [
+    ["ITEM-3",{}]
+  ]
+]
+<<===== CITATIONS =====<<
+
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+    <layout delimiter="; " suffix=".">
+      <choose>
+        <if position="subsequent">
+          <names variable="author">
+            <name form="short"/>
+          </names>
+          <choose>
+            <if disambiguate="true">
+              <text variable="title" prefix=", "/>
+            </if>
+          </choose>
+          <text value="supra note" prefix=", " suffix=" "/>
+          <number variable="first-reference-note"/>
+        </if>
+        <else>
+          <names variable="author">
+            <name/>
+          </names>
+          <text variable="title" prefix=", "/>
+          <date variable="issued">
+            <date-part name="year" prefix=" (" suffix=")"/>
+          </date>
+        </else>
+      </choose>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" }
+   ],
+   "issued": { "year": "2000" },
+   "title": "His Book"
+ },
+ {
+    "id":"ITEM-2",
+    "type":"book",
+    "author": [
+        { "name": "Doe, John" }
+    ],
+   "title": "His Other Book",
+   "issued": { "year": "2001" }
+ },
+ {
+    "id":"ITEM-3",
+    "type":"book",
+    "author": [
+        { "name": "Roe, Jane" }
+    ],
+   "issued": { "year": "1998" },
+   "title": "Her Book"
+ },
+ {
+    "id":"ITEM-4",
+    "type":"book",
+    "author": [
+        { "name": "Roe, Jane" }
+    ],
+   "issued": { "year": "1999" },
+   "title": "Her Other Book"
+ }
+]
+<<===== INPUT =====<<

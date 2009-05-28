@@ -1,0 +1,29 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+    <layout delimiter="; " suffix=".">
+      <choose>
+        <if position="subsequent">
+          <names variable="author">
+            <name form="short"/>
+          </names>
+          <choose>
+            <if disambiguate="true">
+              <text variable="title" prefix=", "/>
+            </if>
+          </choose>
+          <text value="supra note" prefix=", " suffix=" "/>
+          <number variable="first-reference-note"/>
+        </if>
+        <else>
+          <names variable="author">
+            <name/>
+          </names>
+          <text variable="title" prefix=", "/>
+          <date variable="issued">
+            <date-part name="year" prefix=" (" suffix=")"/>
+          </date>
+        </else>
+      </choose>
+    </layout>
+  </citation>
+</style>
