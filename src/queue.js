@@ -128,14 +128,19 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		this.openLevel("empty");
 		var curr = this.current.value();
 		for each (var blobbie in bloblist){
+			if ("string" == typeof blobbie.blobs){
+				this.state.tmp.term_predecessor = true;
+			}
 			curr.push( blobbie );
 		}
 		this.closeLevel();
 	} else {
 		var curr = this.current.value();
+		if ("string" == typeof blob.blobs){
+			this.state.tmp.term_predecessor = true;
+		}
 		curr.push( blob );
 	}
-	this.state.tmp.term_predecessor = true;
 }
 
 CSL.Output.Queue.prototype.string = function(state,blobs,blob){

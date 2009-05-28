@@ -35,9 +35,10 @@ CSL.Core.Engine.prototype.registerFlipFlops = function(flist){
 CSL.Core.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
-		item = this.composeItem(item);
-		this.registry.insert(this,item);
-		inputList.push(item);
+		var Item = this.sys.retrieveItem(item[0]);
+		this.registry.insert(this,Item);
+		var newitem = this.composeItem([Item,item[1]]);
+		inputList.push(newitem);
 	}
 	//this.insertItems(inputList);
 	//

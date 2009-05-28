@@ -9,7 +9,7 @@ citation
 
 
 >>===== RESULT =====>>
-Swift &ldquo;Tom Swift and His Electric Runabout&rdquo; (1910).
+Appleton &ldquo;Tom Swift and His Electric Runabout&rdquo; (1910).
 Ibid p. 23.
 <<===== RESULT =====<<
 
@@ -17,10 +17,10 @@ Ibid p. 23.
 >>===== CITATIONS =====>>
 [
   [
-    ["ITEM-1",{"position":3, "label":"page", "locator":"23"}]
+    ["ITEM-1",{}]
   ],
   [
-    ["ITEM-1",{}]
+    ["ITEM-1",{"position":3, "label":"page", "locator":"23"}]
   ]
 ]
 <<===== CITATIONS =====<<
@@ -29,7 +29,7 @@ Ibid p. 23.
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
   <citation>
-	<layout>
+	<layout suffix=".">
       <choose>
         <if position="ibid-with-locator">
           <text term="ibid"/>
@@ -42,7 +42,7 @@ Ibid p. 23.
               <name form="short"/>
             </names>
             <text variable="title" quotes="true"/>
-            <date variable="issued">
+            <date variable="issued" prefix="(" suffix=")">
               <date-part name="year"/>
             </date>
           </group>
@@ -59,9 +59,9 @@ Ibid p. 23.
   {
     "id":"ITEM-1",
     "type": "book",
-    "author": [{"name":"Swift, Tom"}],
+    "author": [{"name":"Appleton, Victor"}],
     "title": "Tom Swift and His Electric Runabout",
-    "issued": {"year":"2000"}
+    "issued": {"year":"1910"}
   }
 ]
 <<===== INPUT =====<<

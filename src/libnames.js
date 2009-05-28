@@ -242,10 +242,18 @@ CSL.Lib.Elements.names = new function(){
 						} else {
 							term = state.opt.term[nameset.type];
 						}
-						if (nameset.names.length > 1){
-							label = term[state.output.getToken("label").strings.form][1];
+						//
+						// XXXXX: quick hack.  This should be fixed earlier.
+						//
+						if (!state.output.getToken("label").strings.form){
+							var form = "long";
 						} else {
-							label = term[state.output.getToken("label").strings.form][0];
+							var form = state.output.getToken("label").strings.form;
+						}
+						if (nameset.names.length > 1){
+							label = term[form][1];
+						} else {
+							label = term[form][0];
 						}
 					};
 					//

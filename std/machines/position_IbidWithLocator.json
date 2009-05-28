@@ -2,9 +2,9 @@
   "name": "Ibid With Locator",
   "category": "position",
   "mode": "citation",
-  "citations": [ [ ["ITEM-1",{"position":3, "label":"page", "locator":"23"}] ], [ ["ITEM-1",{}] ] ],
+  "citations": [ [ ["ITEM-1",{}] ], [ ["ITEM-1",{"position":3, "label":"page", "locator":"23"}] ] ],
   "schema":"0.9",
-  "result": "Swift &ldquo;Tom Swift and His Electric Runabout&rdquo; (1910).\nIbid p. 23.",
-  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <choose>\n <if position=\"ibid-with-locator\">\n <text term=\"ibid\"/>\n <label variable=\"locator\" prefix=\" \" include-period=\"true\" form=\"short\"/>\n <text variable=\"locator\" prefix=\" \"/>\n </if>\n <else>\n <group delimiter=\" \">\n <names variable=\"author\">\n <name form=\"short\"/>\n </names>\n <text variable=\"title\" quotes=\"true\"/>\n <date variable=\"issued\">\n <date-part name=\"year\"/>\n </date>\n </group>\n </else>\n </choose>\n </layout>\n </citation>\n</style>",
-  "input": [ { "id":"ITEM-1", "type": "book", "author": [{"name":"Swift, Tom"}], "title": "Tom Swift and His Electric Runabout", "issued": {"year":"2000"} } ]
+  "result": "Appleton &ldquo;Tom Swift and His Electric Runabout&rdquo; (1910).\nIbid p. 23.",
+  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout suffix=\".\">\n <choose>\n <if position=\"ibid-with-locator\">\n <text term=\"ibid\"/>\n <label variable=\"locator\" prefix=\" \" include-period=\"true\" form=\"short\"/>\n <text variable=\"locator\" prefix=\" \"/>\n </if>\n <else>\n <group delimiter=\" \">\n <names variable=\"author\">\n <name form=\"short\"/>\n </names>\n <text variable=\"title\" quotes=\"true\"/>\n <date variable=\"issued\" prefix=\"(\" suffix=\")\">\n <date-part name=\"year\"/>\n </date>\n </group>\n </else>\n </choose>\n </layout>\n </citation>\n</style>",
+  "input": [ { "id":"ITEM-1", "type": "book", "author": [{"name":"Appleton, Victor"}], "title": "Tom Swift and His Electric Runabout", "issued": {"year":"1910"} } ]
 }

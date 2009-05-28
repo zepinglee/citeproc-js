@@ -44,7 +44,6 @@ CSL.Lib.Elements.style = new function(){
 			state.build.in_style = true;
 			state.build.lang = false;
 			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state);
-			state.tmp.term_predecessor = false;
 			state.tmp.have_collapsed = true;
 		} else {
 			state.tmp.disambig_request = false;
@@ -273,7 +272,7 @@ CSL.Lib.Elements.text = new function(){
 						if (!state.tmp.term_predecessor){
 							//print("Capitalize");
 							term = CSL.Output.Formatters.capitalize_first(term);
-							state.tmp.term_predecessor = false;
+							state.tmp.term_predecessor = true;
 						};
 						state.output.append(term,this);
 					};
@@ -830,11 +829,11 @@ CSL.Lib.Elements.label = new function(){
 		this["execs"].push(set_label_info);
 		if (state.build.term){
 			var term = state.build.term;
-			var form = "long";
 			var plural = 0;
-			if (this.strings.form){
-				form = this.strings.form;
+			if (!this.strings.form){
+				this.strings.form = "long";
 			}
+			var form = this.strings.form;
 			//
 			// XXXXX: probably wrong.  needs a test.
 			//
@@ -943,6 +942,7 @@ CSL.Lib.Elements.layout = new function(){
 			this["execs"].push(reset_nameset_counter);
 
 			var declare_thyself = function(state,Item){
+				state.tmp.term_predecessor = false;
 				state[state.tmp.area].opt.layout_prefix = this.strings.prefix;
 				state[state.tmp.area].opt.layout_suffix = this.strings.suffix;
 				state[state.tmp.area].opt.layout_decorations = this.decorations;

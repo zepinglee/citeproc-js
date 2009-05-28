@@ -27,11 +27,15 @@ CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 }
 
 CSL.Core.Engine.prototype.composeItem = function(item){
-	var Item = this.sys.retrieveItem(item[0]);
-	for (var i in item[1]){
-		Item[i] = item[1][i];
+	var newItem = {};
+	//var Item = this.sys.retrieveItem(item[0]);
+	for (var i in item[0]){
+		newItem[i] = item[0][i];
 	}
-	return Item;
+	for (var i in item[1]){
+		newItem[i] = item[1][i];
+	}
+	return newItem;
 };
 
 /**
