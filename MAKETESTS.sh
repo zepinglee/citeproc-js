@@ -18,8 +18,6 @@ IFS=""
 HEADER=`cat<<EOF
 dojo.provide("tests.std_::CATEGORY::");
 
-dojo.require("csl.csl");
-
 doh.register("tests.std_::CATEGORY::", [
 EOF
 `
@@ -65,7 +63,7 @@ for i in std/machines/*.json; do
     BASE=$(basename $i .json)
     CATEGORY=$(echo ${BASE} | sed -e "s/^\([^_]\+\)_.*/\\1/")
 	echo '    function(){' >> "tests/std_"${CATEGORY}".js"
-    echo '        var test = new StdTest("'${BASE}'");' >> "tests/std_"${CATEGORY}".js"
+    echo '        var test = new StdRhinoTest("'${BASE}'");' >> "tests/std_"${CATEGORY}".js"
     echo '        doh.assertEqual(test.result, test.run());' >> "tests/std_"${CATEGORY}".js"
 	echo '    },' >> "tests/std_"${CATEGORY}".js"
 done

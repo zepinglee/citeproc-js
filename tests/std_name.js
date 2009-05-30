@@ -1,142 +1,140 @@
 dojo.provide("tests.std_name");
 
-dojo.require("csl.csl");
-
 doh.register("tests.std_name", [
     function(){
-        var test = new StdTest("name_ArticularPlain");
+        var test = new StdRhinoTest("name_ArticularPlain");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_ArticularWithComma");
+        var test = new StdRhinoTest("name_ArticularWithComma");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_AsianGlyphs");
+        var test = new StdRhinoTest("name_AsianGlyphs");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_Asian");
+        var test = new StdRhinoTest("name_Asian");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_AuthorCount");
+        var test = new StdRhinoTest("name_AuthorCount");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_CollapseRoleLabels");
+        var test = new StdRhinoTest("name_CollapseRoleLabels");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_Delimiter");
+        var test = new StdRhinoTest("name_Delimiter");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_Institution");
+        var test = new StdRhinoTest("name_Institution");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_LabelAfterPluralDecorations");
+        var test = new StdRhinoTest("name_LabelAfterPluralDecorations");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_LabelAfterPlural");
+        var test = new StdRhinoTest("name_LabelAfterPlural");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_LongAbbreviation");
+        var test = new StdRhinoTest("name_LongAbbreviation");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_MixedFormatsInitialSortOrderAllWithDecorationsEtAl");
+        var test = new StdRhinoTest("name_MixedFormatsInitialSortOrderAllWithDecorationsEtAl");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_MixedFormatsInitialSortOrderFirstWithDecorationsEtAl");
+        var test = new StdRhinoTest("name_MixedFormatsInitialSortOrderFirstWithDecorationsEtAl");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_MixedFormatsInitialsWithDecorationsEtAl");
+        var test = new StdRhinoTest("name_MixedFormatsInitialsWithDecorationsEtAl");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_MixedFormatsPrimaryDecorations");
+        var test = new StdRhinoTest("name_MixedFormatsPrimaryDecorations");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_MixedFormatsWithDecorationsEtAl");
+        var test = new StdRhinoTest("name_MixedFormatsWithDecorationsEtAl");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_MixedFormatsWithDecorationsPlusAlternateEtAlDecorations");
+        var test = new StdRhinoTest("name_MixedFormatsWithDecorationsPlusAlternateEtAlDecorations");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_MixedFormatsWithDecorationsPlusEtAlDecorations");
+        var test = new StdRhinoTest("name_MixedFormatsWithDecorationsPlusEtAlDecorations");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteInheritLabel");
+        var test = new StdRhinoTest("name_SubstituteInheritLabel");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteMacroInheritDecorations");
+        var test = new StdRhinoTest("name_SubstituteMacroInheritDecorations");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteName");
+        var test = new StdRhinoTest("name_SubstituteName");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteOnDateGroupSpanFail");
+        var test = new StdRhinoTest("name_SubstituteOnDateGroupSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteOnGroupSpanGroupSpanFail");
+        var test = new StdRhinoTest("name_SubstituteOnGroupSpanGroupSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteOnMacroGroupSpanFail");
+        var test = new StdRhinoTest("name_SubstituteOnMacroGroupSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteOnNamesSingletonGroupSpanFail");
+        var test = new StdRhinoTest("name_SubstituteOnNamesSingletonGroupSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteOnNamesSpanGroupSpanFail");
+        var test = new StdRhinoTest("name_SubstituteOnNamesSpanGroupSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteOnNamesSpanNamesSpanFail");
+        var test = new StdRhinoTest("name_SubstituteOnNamesSpanNamesSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_SubstituteOnNumberGroupSpanFail");
+        var test = new StdRhinoTest("name_SubstituteOnNumberGroupSpanFail");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_TwoRolesSameRenderingSeparateRoleLabels");
+        var test = new StdRhinoTest("name_TwoRolesSameRenderingSeparateRoleLabels");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_WesternArticularLowercase");
+        var test = new StdRhinoTest("name_WesternArticularLowercase");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_WesternPrimaryFontStyle");
+        var test = new StdRhinoTest("name_WesternPrimaryFontStyle");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_WesternPrimaryFontStyleTwoAuthors");
+        var test = new StdRhinoTest("name_WesternPrimaryFontStyleTwoAuthors");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_WesternSimple");
+        var test = new StdRhinoTest("name_WesternSimple");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdTest("name_WesternTwoAuthors");
+        var test = new StdRhinoTest("name_WesternTwoAuthors");
         doh.assertEqual(test.result, test.run());
     },
 ]);

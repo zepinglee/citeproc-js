@@ -253,6 +253,8 @@ CSL.Core.Build.prototype.build = function(sys,locale){
 	this.state.opt.locale = locale;
 	var engine = new this._builder(this.state);
 	var ret = engine.getObject();
+    //default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//print(this.showXml().attributes());
 	ret.registry = new CSL.Factory.Registry(ret);
 	return ret;
 };

@@ -6,13 +6,13 @@
           <names variable="author">
             <name form="short"/>
           </names>
-          <choose>
-            <if disambiguate="true">
-              <text variable="title" prefix=", "/>
+		  <choose>
+            <if variable="fuckingnothing" match="any">
+              <text value="shit"/>
             </if>
-          </choose>
+		  </choose>
           <text value="supra note" prefix=", " suffix=" "/>
-          <number variable="first-reference-note"/>
+          <number variable="first-reference-note-number"/>
         </if>
         <else>
           <names variable="author">

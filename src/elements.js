@@ -593,8 +593,8 @@ CSL.Lib.Elements.choose = new function(){
 	}
 	function configure(state,pos){
 		if (this.tokentype == CSL.END){
-			state.configure["fail"].push((pos+1));
-			state.configure["succeed"].push((pos+1));
+			state.configure["fail"].push((pos));
+			state.configure["succeed"].push((pos));
 		} else {
 			state.configure["fail"].pop();
 			state.configure["succeed"].pop();
@@ -625,7 +625,11 @@ CSL.Lib.Elements["if"] = new function(){
 			if (this.strings.position){
 				var position = this.strings.position;
 				var func = function(state,Item){
-					if (Item["position"] && Item["position"] >= position){
+					var myposition = position;
+					if (state.tmp.force_subsequent){
+						myposition = 1;
+					}
+					if (Item["position"] && Item["position"] >= myposition){
 						return true;
 					};
 					return false;

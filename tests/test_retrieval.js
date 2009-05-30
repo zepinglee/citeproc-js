@@ -4,7 +4,7 @@ dojo.provide("tests.test_retrieval");
 doh.register("tests.retrieval",
 	[
 		function testStdLocaleReturnSomething(t){
-			var sys = new StdTest();
+			var sys = new RhinoTest();
 			var res = sys.getLang("en");
 			t.assertEqual( "string", typeof res );
 			t.assertNotEqual( "", res );

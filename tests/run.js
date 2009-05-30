@@ -1,40 +1,11 @@
-//This file is the command-line entry point for running the tests in
-//Rhino
-
-/*=====
-dojo.tests = {
-	// summary: D.O.H. Test files for Dojo unit testing.
-};
-=====*/
-
-load("./dojo/dojo/dojo.js");
-dojo.registerModulePath("dojo","./dojo/dojo");
-dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
-
 dojo.require("doh.runner");
-dojo.require("csl.csl");
-
-//
-// XXXXX rhino specific
-//
-print("#####");
-print("Rhino file.encoding: "+environment["file.encoding"]);
-if ("UTF-8" != environment["file.encoding"]){
-	environment["file.encoding"] = "UTF-8";
-	print("Reset Rhino file.encoding to UTF-8");
-}
-print("#####");
-
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_disambiguate");
-} else {
 	dojo.require("tests.std_name");
+} else {
+	dojo.require("tests.std_date");
+	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_position");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.test_build_internals");
@@ -42,7 +13,6 @@ if(true){
 
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_condition");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_sort");
@@ -82,4 +52,3 @@ if(true){
 }
 
 tests.run();
-

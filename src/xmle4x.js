@@ -25,9 +25,23 @@ CSL.System.Xml.E4X.prototype.clean = function(xml){
 /**
  * Make an E4X object from a style.
  */
-CSL.System.Xml.E4X.prototype.parse = function(xml){
-	default xml namespace = "http://purl.org/net/xbiblio/csl";
-	return XML( this.clean(xml) );
+CSL.System.Xml.E4X.prototype.parse = function(myxml){
+	var otherns = {};
+	//otherns["http://www.w3.org/XML/1998/namespace"] = "xml";
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var myxml = XML( this.clean(myxml) );
+	//
+	// bare spidermonkey does not groke the xml namespace.
+	//
+	//var xml = new Namespace( "xml" );
+	//myxml.addNamespace("http://www.w3.org/XML/1998/namespace");
+	//var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	//print("my language: "+myxml.@xml::lang);
+	//print( myxml.attributes() );
+	//for each (var attr in myxml.attributes()){
+	//	print(attr.name());
+	//}
+	return myxml;
 };
 
 
@@ -54,6 +68,14 @@ CSL.System.Xml.E4X.prototype.commandInterface = new function(){
 			var key = "@"+attrs[idx].localName();
 			var value = attrs[idx].toString();
 			ret[key] = value;
+		}
+		if (this.localName() == "style" || this.localName() == "locale"){
+			var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+			//print("my language: "+this.@xml::lang.toString());
+			var lang = this.@xml::lang.toString();
+			if (lang){
+				ret["@lang"] = lang;
+			}
 		}
 		return ret;
 	}

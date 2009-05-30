@@ -13,8 +13,8 @@ fi
 if [ -d tmp ]; then
   rm -fR tmp
 fi
-if [ -f stripped.js ]; then
-  rm stripped.js
+if [ -f citeproc.js ]; then
+  rm citeproc.js
 fi
 mkdir tmp
 
@@ -46,20 +46,20 @@ for i in $files; do
 	mv ../tmp/NEW ../tmp/NEW.js
 	cat ../tmp/NEW.js | sed -e "/^\/\/SNIP-START/,/^\/\/SNIP-END/d"  > ../tmp/NEW
 	mv ../tmp/NEW ../tmp/NEW.js
-	cat ../tmp/NEW.js >> ../stripped.js
+	cat ../tmp/NEW.js >> ../citeproc.js
 done
 rm ../tmp/NEW*
 
 cd ..
-echo $(cat stripped.js | wc -l) lines in product
+echo $(cat citeproc.js | wc -l) lines in product
 
-cp stripped.js rpc-stuff/src-js/citeproc-js.js
+cp citeproc.js rpc-stuff/src-js/citeproc-js.js
 
 #cd rpc-stuff
 #./citeproc-js-rpc.py
 #cd ..
 
-rm stripped.js
+#rm stripped.js
 
 ## JSDoc toolkit is available from: http://code.google.com/p/jsdoc-toolkit/
 

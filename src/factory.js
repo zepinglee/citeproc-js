@@ -69,10 +69,13 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	}
 	token.decorations = decorations;
 	if (state.build.children.length){
+		//print("??? Setting state.build.children");
 		var target = state.build.children[0];
 	} else {
+		//print("!!!!!!! Setting target to: "+state.build.area+" before "+token.name);
 		var target = state[state.build.area].tokens;
 	}
+	//print("  <------------ CALL");
 	CSL.Lib.Elements[name].build.call(token,state,target);
 };
 

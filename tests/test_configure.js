@@ -68,7 +68,7 @@ doh.registerGroup("tests.conditions_simple_jumps",
 		},
 
 		function testConfigureJumpHasValue(){
-			doh.assertEqual( 11, newobj["citation"]["tokens"][3]["succeed"]);
+			doh.assertEqual( 10, newobj["citation"]["tokens"][3]["succeed"]);
 		}
 	],
 	function(){ // setup

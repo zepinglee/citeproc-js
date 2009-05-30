@@ -3,15 +3,16 @@ dojo.provide("csl.tests");
 /**
  * Retrieval methods for standard tests.
  */
-var StdTest = function(myname){
+var StdRhinoTest = function(myname){
 	this.myname = myname;
+	var test = readFile("./std/machines/" + myname + ".json");
+	eval( "this.test = "+test);
 	this._cache = {};
 	this._ids = [];
 	//
 	// Normalize input and build style.
 	//
 	if (myname){
-		this._readTest();
 		this.result = this.test.result;
 		this._fixAllNames();
 		this._setCache();
@@ -24,7 +25,7 @@ var StdTest = function(myname){
 // (Deployments must provide an instance object with
 // this method.)
 //
-StdTest.prototype.retrieveItem = function(id){
+StdRhinoTest.prototype.retrieveItem = function(id){
 	return this._cache[id];
 };
 
@@ -33,7 +34,7 @@ StdTest.prototype.retrieveItem = function(id){
 // (Deployments must provide an instance object with
 // this method.)
 //
-StdTest.prototype.retrieveItems = function(ids){
+StdRhinoTest.prototype.retrieveItems = function(ids){
 	var ret = [];
 	for each (var id in ids){
 		ret.push(this.retrieveItem(id));
@@ -46,12 +47,12 @@ StdTest.prototype.retrieveItems = function(ids){
 // (Deployments must provide an instance object with
 // this method.)
 //
-StdTest.prototype.getLang = function(lang){
+StdRhinoTest.prototype.getLang = function(lang){
 	return readFile( "./locale/"+this.localeRegistry()[lang]);
 };
 
 
-StdTest.prototype.localeRegistry =	function (){
+StdRhinoTest.prototype.localeRegistry =	function (){
 	return {
 		"af":"locales-af-AZ.xml",
 		"af":"locales-af-ZA.xml",
@@ -98,7 +99,7 @@ StdTest.prototype.localeRegistry =	function (){
 //
 // Build phoney database.
 //
-StdTest.prototype._setCache = function(){
+StdRhinoTest.prototype._setCache = function(){
 	for each (item in this.test.input){
 		this._cache[item.id] = item;
 		this._ids.push(item.id);
@@ -106,7 +107,7 @@ StdTest.prototype._setCache = function(){
 };
 
 
-StdTest.prototype._fixInputSets = function(){
+StdRhinoTest.prototype._fixInputSets = function(){
 	if (this.test.mode == "citation"){
 		if (!this.test.citations){
 			var citation = [];
@@ -119,7 +120,7 @@ StdTest.prototype._fixInputSets = function(){
 };
 
 
-StdTest.prototype._fixAllNames = function(){
+StdRhinoTest.prototype._fixAllNames = function(){
 	for each (obj in this.test.input){
 		if (!obj.id){
 			throw "No id for object in test: "+this.myname;
@@ -168,7 +169,7 @@ StdTest.prototype._fixAllNames = function(){
 	}
 };
 
-StdTest.prototype._readTest = function(){
+StdRhinoTest.prototype._readTest = function(){
 	var test;
 	var filename = "std/machines/" + this.myname + ".json";
 	//
@@ -194,7 +195,7 @@ StdTest.prototype._readTest = function(){
 };
 
 
-StdTest.prototype._buildStyle = function(){
+StdRhinoTest.prototype._buildStyle = function(){
 	var builder = new CSL.Core.Build(this.test.csl);
 	var raw = builder.build(this);
 	var configurator = new CSL.Core.Configure(raw);
@@ -202,7 +203,7 @@ StdTest.prototype._buildStyle = function(){
 };
 
 
-StdTest.prototype.run = function(){
+StdRhinoTest.prototype.run = function(){
 	this._buildStyle(this);
 	this.style.insertItems(this._ids);
 	if (this.test.mode == "citation"){
