@@ -1,0 +1,16 @@
+Files baked into this build:
+
+dojo.js:
+./jslib/dojoGuardStart.jsfrag
+./../../dojo/_base/_loader/bootstrap.js
+./../../dojo/_base/_loader/loader.js
+./../../dojo/_base/_loader/hostenv_spidermonkey.js
+./../../release/dojo/dojo/_base/lang.js
+./../../release/dojo/dojo/_base/declare.js
+./../../release/dojo/dojo/_base/connect.js
+./../../release/dojo/dojo/_base/Deferred.js
+./../../release/dojo/dojo/_base/json.js
+./../../release/dojo/dojo/_base/array.js
+./../../release/dojo/dojo/_base/Color.js
+./../../release/dojo/dojo/_base.js
+./jslib/dojoGuardEnd.jsfrag
