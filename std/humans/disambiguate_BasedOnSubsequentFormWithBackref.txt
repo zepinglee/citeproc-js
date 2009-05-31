@@ -47,8 +47,8 @@ Roe, supra note 2.
             <name form="short"/>
           </names>
 		  <choose>
-            <if variable="fuckingnothing" match="any">
-              <text value="shit"/>
+            <if variable="nothing" match="any">
+              <text value="nonsense"/>
             </if>
 		  </choose>
           <text value="supra note" prefix=", " suffix=" "/>
