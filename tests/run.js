@@ -3,7 +3,6 @@ dojo.require("doh.runner");
 // requested tests go here
 if(true){
 	dojo.require("tests.std_name");
-} else {
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_position");
@@ -43,6 +42,7 @@ if(true){
 	dojo.require("tests.test_util_names");
 	dojo.require("tests.test_xmle4x");
 	dojo.require("tests.test_xmljs");
+} else {
 
 	dojo.require("tests.test_load_all_styles");
 	dojo.require("tests.std_decorations");

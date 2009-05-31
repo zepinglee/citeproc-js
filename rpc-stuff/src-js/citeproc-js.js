@@ -1648,14 +1648,23 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		// We clear the list of ambigs so it can be rebuilt
 		this.ambigs[akey] = new Array();
 	} else {
+		//var ambigs = this.ambigs[akey].slice();
+		//this.ambigs[akey] = new Array();
 		// candidate list consists of registry tokens.
 		// extract the ids and build an ambigs list.
 		// This is roundabout -- we already collected
 		// these once for the first-phase disambiguation.
 		// Maybe it can be cleaned up later.
+		//
+		// XXXXX: ??? same as above?
+		//
 		var ambigs = new Array();
 		for each (var reg_token in candidate_list){
 			ambigs.push(reg_token.id);
+			var keypos = this.ambigs[akey].indexOf(reg_token.id);
+			if (keypos > -1){
+				this.ambigs[akey] = this.ambigs[akey].slice(0,keypos).concat(this.ambigs[akey].slice((keypos+1)));
+			}
 		}
 	}
 	var id_vals = new Array();
@@ -1663,6 +1672,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		id_vals.push(a);
 	}
 	var tokens = state.sys.retrieveItems(id_vals);
+	if (candidate_list && candidate_list.length){
+		modes = ["disambiguate_true"].concat(modes);
+	}
 	var checkerator = new this.Checkerator(tokens,modes);
 	checkerator.lastclashes = (ambigs.length-1);
 	var base = false;
@@ -1698,9 +1710,16 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			print("base out (givens):"+base["givens"]);
 		}
+		//
+		// XXXXX: scrap this?
+		//
 		if (candidate_list && candidate_list.length){
 			base["disambiguate"] = true;
 		}
+		//if (disambiguate_true){
+		//	print("D TRUE");
+		//	base["disambiguate"] = true;
+		//}
 		checkerator.setBase(base);
 		checkerator.setMaxVals(maxvals);
 		checkerator.setMinVal(minval);
@@ -1809,7 +1828,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.setMode = function(mode){
 };
 CSL.Factory.Registry.prototype.Checkerator.prototype.checkForClash = function(str,otherstr){
 	if (str == otherstr){
-		if (this.mode == "names"){
+		if (this.mode == "names" || this.mode == "disambiguate_true"){
 			this.clashes += 1;
 			if (debug){
 				print("   (mode 0 clash, returning true)");
@@ -1829,7 +1848,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 	if (!this.maxvals.length){
 		return false;
 	}
-	if (this.mode == "names"){
+	if (this.mode == "names" || this.mode == "disambiguate_true"){
 		if (this.clashes){
 			this.lastclashes = this.clashes;
 			this.clashes = 0;
@@ -1884,9 +1903,24 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 	if (!this.maxvals.length){
 		return true;
 	}
+	if (this.mode == "disambiguate_true"){
+		if (this.modes.indexOf("disambiguate_true") < (this.modes.length-1)){
+			this.mode = this.modes[(this.modes.indexOf("disambiguate_true")+1)];
+			this.modepos = 0;
+		} else {
+			this.pos += 1;
+			return true;
+		}
+	}
 	if (this.mode == "names"){
 		//print(this.modepos+" : "+this.base[0].length+" : "+this.base[0][this.modepos]);
 		if (this.modepos == (this.base["names"].length-1) && this.base["names"][this.modepos] == this.maxvals[this.modepos]){
+			//
+			// XXXXX: needs to be smarter?
+			//
+			//if (this.modes.indexOf("names") < (this.modes.length-1)){
+			//	this.mode = this.modes[(this.modes.indexOf("names")+1)];
+			//	this.modepos = 0;
 			if (this.modes.length == 2){
 				this.mode = "givens";
 				this.modepos = 0;
@@ -2485,13 +2519,11 @@ CSL.Lib.Elements["if"] = new function(){
 				this["tests"].push(func);
 			};
 			if (this.strings.position){
-				var position = this.strings.position;
+				var tryposition = this.strings.position;
 				var func = function(state,Item){
-					var myposition = position;
-					if (state.tmp.force_subsequent){
-						myposition = 1;
-					}
-					if (Item["position"] && Item["position"] >= myposition){
+					if (state.tmp.force_subsequent && tryposition < 2){
+						return true;
+					} else if (Item["position"] && Item["position"] >= tryposition){
 						return true;
 					};
 					return false;
@@ -2550,6 +2582,18 @@ CSL.Lib.Elements["else-if"] = new function(){
 				};
 				this["tests"].push(func);
 			};
+			if (this.strings.position){
+				var tryposition = this.strings.position;
+				var func = function(state,Item){
+					if (state.tmp.force_subsequent && tryposition < 2){
+						return true;
+					} else if (Item["position"] && Item["position"] >= tryposition){
+						return true;
+					};
+					return false;
+				};
+				this.tests.push(func);
+			}
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
@@ -3259,6 +3303,9 @@ CSL.Lib.Elements.names = new function(){
 			};
 			this["execs"].push(handle_names);
 		};
+		//
+		// Looks disabled.  Delete, I guess.
+		//
 		if (this.tokentype == CSL.END && state.build.form == "count" && false){
 			state.build.form = false;
 			var output_name_count = function(state,Item){
@@ -3615,7 +3662,7 @@ CSL.Output.Queue.prototype.popFormats = function(tokenstore){
 	this.formats.pop();
 };
 CSL.Output.Queue.prototype.startTag = function(name,token){
-	var tokenstore = {};
+	var tokenstore = new Object();
 	tokenstore[name] = token;
 	this.pushFormats( tokenstore );
 	this.openLevel(name);

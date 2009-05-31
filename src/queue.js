@@ -60,7 +60,7 @@ CSL.Output.Queue.prototype.popFormats = function(tokenstore){
 };
 
 CSL.Output.Queue.prototype.startTag = function(name,token){
-	var tokenstore = {};
+	var tokenstore = new Object();
 	tokenstore[name] = token;
 	this.pushFormats( tokenstore );
 	this.openLevel(name);

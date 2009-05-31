@@ -301,6 +301,9 @@ CSL.Lib.Elements.names = new function(){
 			this["execs"].push(handle_names);
 		};
 
+		//
+		// Looks disabled.  Delete, I guess.
+		//
 		if (this.tokentype == CSL.END && state.build.form == "count" && false){
 			state.build.form = false;
 

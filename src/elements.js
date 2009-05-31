@@ -626,13 +626,11 @@ CSL.Lib.Elements["if"] = new function(){
 				this["tests"].push(func);
 			};
 			if (this.strings.position){
-				var position = this.strings.position;
+				var tryposition = this.strings.position;
 				var func = function(state,Item){
-					var myposition = position;
-					if (state.tmp.force_subsequent){
-						myposition = 1;
-					}
-					if (Item["position"] && Item["position"] >= myposition){
+					if (state.tmp.force_subsequent && tryposition < 2){
+						return true;
+					} else if (Item["position"] && Item["position"] >= tryposition){
 						return true;
 					};
 					return false;
@@ -700,6 +698,18 @@ CSL.Lib.Elements["else-if"] = new function(){
 				};
 				this["tests"].push(func);
 			};
+			if (this.strings.position){
+				var tryposition = this.strings.position;
+				var func = function(state,Item){
+					if (state.tmp.force_subsequent && tryposition < 2){
+						return true;
+					} else if (Item["position"] && Item["position"] >= tryposition){
+						return true;
+					};
+					return false;
+				};
+				this.tests.push(func);
+			}
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"

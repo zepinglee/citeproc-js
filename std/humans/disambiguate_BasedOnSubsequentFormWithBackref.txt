@@ -8,29 +8,29 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe, His Book (2000); John Doe, His Other Book (2001).
-Jane Roe, Her Book (1998).
-Jane Roe, Her Other Book (1999).
+Doe, His Book (2000); Doe, His Other Book (2001).
+Roe, Her Book (1998).
+Roe, Her Other Book (1999).
 Doe, His Book, supra note 1.
-Roe, supra note 2.
+Roe, Her Book, supra note 2.
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
 [
   [
-    ["ITEM-1",{}], ["ITEM-2",{}]
+    ["ITEM-1",{"note-number":"1"}], ["ITEM-2",{"note-number":"1"}]
   ],
   [
-    ["ITEM-3",{}]
+    ["ITEM-3",{"note-number":"2"}]
   ],
   [
-    ["ITEM-4",{}]
+    ["ITEM-4",{"note-number":"3"}]
   ],
   [
-    ["ITEM-1",{"first-reference-note-number":"1","position":1}]
+    ["ITEM-1",{"first-reference-note-number":"1","position":1,"note-number":"4"}]
   ],
   [
-    ["ITEM-3",{"first-reference-note-number":"2","position":1}]
+    ["ITEM-3",{"first-reference-note-number":"2","position":1,"note-number":"5"}]
   ]
 ]
 <<===== CITATIONS =====<<
@@ -46,11 +46,11 @@ Roe, supra note 2.
           <names variable="author">
             <name form="short"/>
           </names>
-		  <choose>
-            <if variable="nothing" match="any">
-              <text value="nonsense"/>
+          <choose>
+            <if disambiguate="true">
+              <text variable="title" prefix=", "/>
             </if>
-		  </choose>
+          </choose>
           <text value="supra note" prefix=", " suffix=" "/>
           <number variable="first-reference-note-number"/>
         </if>
