@@ -3,6 +3,7 @@
 import sys, re
 import os,os.path
 from spidermonkey import Runtime
+from time import time,ctime
 
 try:
     import json
@@ -15,6 +16,8 @@ mypath = os.path.split(sys.argv[0])[0]
 os.chdir(mypath)
 
 if __name__ == '__main__':
+
+    tstart = ctime(time())
 
     rt = Runtime()
     cx = rt.new_context()
@@ -88,4 +91,8 @@ if __name__ == '__main__':
     print "Running tests ..."
     cx.eval_script("tests.run();")
 
-    sys.exit()
+    tend = ctime(time())
+
+    print '%s <--------------START' % (tstart,)
+    print '%s <--------------END' % (tend,)
+

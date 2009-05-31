@@ -1,0 +1,55 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+(As written in Smith 2000)
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+    <layout prefix="(" suffix=")" >
+      <group delimiter=" ">
+        <names variable="author">
+          <name form="short" />
+        </names>
+        <date variable="issued" >
+          <date-part name="year" />
+        </date>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+>>===== CITATIONS ====>>
+[
+  [
+    ["ITEM-1",{"prefix":"As written in"}]
+  ]
+]
+<<===== CITATIONS ====<<
+
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "title": "Book C",
+    "author":[
+      {"name":"Smith, John"}
+    ],
+    "issued": {"year": "2000", "month": "2", "day": "15" }
+  }
+]
+<<===== INPUT =====<<

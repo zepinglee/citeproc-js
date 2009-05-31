@@ -2754,6 +2754,18 @@ CSL.Lib.Elements.layout = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
+			if (state.build.area == "citation"){
+				var prefix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var func = function(state,Item){
+					var sp = "";
+					if (Item["prefix"] && Item["prefix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
+						var sp = " ";
+					}
+					state.output.append((Item["prefix"]+sp),this);
+				};
+				prefix_token["execs"].push(func);
+				target.push(prefix_token);
+			}
 			//
 			// done_vars is used to prevent the repeated
 			// rendering of variables
@@ -2790,6 +2802,14 @@ CSL.Lib.Elements.layout = new function(){
 				// state.tmp.name_quash = new Object();
 			};
 			this["execs"].push(mergeoutput);
+			if (state.build.area == "citation"){
+				var suffix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var func = function(state,Item){
+					state.output.append(Item["suffix"],this);
+				};
+				suffix_token["execs"].push(func);
+				target.push(suffix_token);
+			}
 		}
 		target.push(this);
 	};
