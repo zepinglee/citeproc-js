@@ -226,7 +226,23 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	//
 	// XXXXX This implicit group stuff can be dropped, I think.
 	// XXXXX Macros don't take decorations or anything.
+	//
+	// XXXXX Wrong.  They do take decorations.
+	//
+	// functions used here are c&p from group element.
+	// one more thing that needs some housecleaning.
+	//
 	var start_token = new CSL.Factory.Token("group",CSL.START);
+	start_token.decorations = this.decorations;
+	for (var i in macro_key_token.strings){
+		start_token.strings[i] = macro_key_token.strings[i];
+	}
+	var newoutput = function(state,Item){
+		//state.output.openLevel(this);
+		state.output.startTag("group",this);
+		//state.tmp.decorations.push(this.decorations);
+	};
+	start_token["execs"].push(newoutput);
 	ret.push(start_token);
 	for (var i in this.build.macro[mkey]){
 		//
@@ -253,6 +269,15 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	}
 
 	var end_token = new CSL.Factory.Token("group",CSL.END);
+	var mergeoutput = function(state,Item){
+		//
+		// rendering happens inside the
+		// merge method, by applying decorations to
+		// each token to be merged.
+		state.output.endTag();
+		//state.output.closeLevel();
+	};
+	end_token["execs"].push(mergeoutput);
 	ret.push(end_token);
 
 	this.build.macro_stack.pop();

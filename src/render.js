@@ -268,7 +268,7 @@ CSL.Core.Engine.prototype._render = function(token,Item){
 		};
 	};
 	if (false){
-		print("---> done");
+		print(token.name+" ("+token.tokentype+") ---> done");
 	}
 	return next;
 };

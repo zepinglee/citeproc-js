@@ -80,6 +80,8 @@ if __name__ == '__main__':
         #    continue
         if filename == "std_decorations.js":
             continue
+        if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
+            continue
         run = open("./tests/%s" % (filename,)).read()
         cx.eval_script(run)
 
