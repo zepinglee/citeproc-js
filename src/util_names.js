@@ -201,32 +201,33 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 	if (varnames.indexOf(base_nameset.type) == -1){
 		varnames.push(base_nameset.type);
 	}
-	var name;
 	for each (nameset in namesets.slice(1)){
-		//
-		// could be factored out as a separate function
-		// (for reuse with substitute-author-subsequent-whatever option)
-		//
-		if (base_nameset.length != nameset.length){
+		if (!CSL.Util.Names.compareNamesets(base_nameset,nameset)){
 			return false;
 		}
-		for (var n in nameset.names){
-			name = nameset.names[n];
-			for each (var part in ["primary-key","secondary-key","prefix","suffix"]){
-				if (base_nameset.names[n][part] != name[part]){
-					return false;
-				}
-			}
-		}
-		//
-		// function would end here
-		//
 		if (varnames.indexOf(nameset.type) == -1){
 			varnames.push(nameset.type);
 		}
 	}
 	varnames.sort();
 	return state.opt.term[varnames.join("")];
+};
+
+
+CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
+	if (base_nameset.length != nameset.length){
+		return false;
+	}
+	var name;
+	for (var n in nameset.names){
+		name = nameset.names[n];
+		for each (var part in ["primary-key","secondary-key","prefix","suffix"]){
+			if (base_nameset.names[n][part] != name[part]){
+				return false;
+			}
+		}
+	}
+	return true;
 };
 
 

@@ -760,32 +760,31 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 	if (varnames.indexOf(base_nameset.type) == -1){
 		varnames.push(base_nameset.type);
 	}
-	var name;
 	for each (nameset in namesets.slice(1)){
-		//
-		// could be factored out as a separate function
-		// (for reuse with substitute-author-subsequent-whatever option)
-		//
-		if (base_nameset.length != nameset.length){
+		if (!CSL.Util.Names.compareNamesets(base_nameset,nameset)){
 			return false;
 		}
-		for (var n in nameset.names){
-			name = nameset.names[n];
-			for each (var part in ["primary-key","secondary-key","prefix","suffix"]){
-				if (base_nameset.names[n][part] != name[part]){
-					return false;
-				}
-			}
-		}
-		//
-		// function would end here
-		//
 		if (varnames.indexOf(nameset.type) == -1){
 			varnames.push(nameset.type);
 		}
 	}
 	varnames.sort();
 	return state.opt.term[varnames.join("")];
+};
+CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
+	if (base_nameset.length != nameset.length){
+		return false;
+	}
+	var name;
+	for (var n in nameset.names){
+		name = nameset.names[n];
+		for each (var part in ["primary-key","secondary-key","prefix","suffix"]){
+			if (base_nameset.names[n][part] != name[part]){
+				return false;
+			}
+		}
+	}
+	return true;
 };
 CSL.Util.Names.initialize_with = function(name,terminator){
 	var namelist = name.split(/\s+/);
@@ -2140,46 +2139,15 @@ CSL.Lib.Elements.text = new function(){
 				//
 				// Fudge it with a placeholder if we're not yet
 				// inside the layout area.
+				//
 				this.postponed_macro = state.build.postponed_macro;
 				target.push(this);
 			} else {
-				//
-				// tag this token with the name of the postponed macro
 				this.postponed_macro = state.build.postponed_macro;
-				//
-				// push an implict group token with the strings and
-				// decorations of the invoking text tag
-				// XXXX: this stuff is implicit in expandMacro, isn't it?
-				//
-				//var start_token = new CSL.Factory.Token("group",CSL.START);
-				//for (i in this.strings){
-				//	start_token.strings[i] = this.strings[i];
-				//}
-				//start_token.postponed_macro = this.postponed_macro;
-				//start_token.decorations = this.decorations;
-				//var newoutput = function(state,Item){
-				//	//state.output.openLevel(this);
-				//	state.output.startTag("group",this);
-				//	//state.tmp.decorations.push(this.decorations);
-				//};
-				//start_token["execs"].push(newoutput);
-				//target.push(start_token);
 				var macro = CSL.Factory.expandMacro.call(state,this);
 				for each (var t in macro){
 					target.push(t);
 				}
-				//var end_token = new CSL.Factory.Token("group",CSL.END);
-				//var mergeoutput = function(state,Item){
-				//	//
-				//	// rendering happens inside the
-				//	// merge method, by applying decorations to
-				//	// each token to be merged.
-				//	state.output.endTag();
-				//	//state.output.closeLevel();
-				//};
-				//end_token["execs"].push(mergeoutput);
-				//print("pushing group END token");
-				//target.push(end_token);
 			}
 			state.build.postponed_macro = false;
 		} else {
@@ -3097,7 +3065,7 @@ CSL.Lib.Elements.names = new function(){
 							state.tmp.names_max.push(Item[variable].length);
 							state.tmp.value.push({"type":variable,"names":Item[variable]});
 							// saving relevant names separately, for reference
-							// in splice collapse
+							// in splice collapse and in subsequent-author-substitute
 							state.tmp.names_used.push(state.tmp.value.slice());
 						}
 					};

@@ -35,7 +35,7 @@ CSL.Lib.Elements.names = new function(){
 							state.tmp.names_max.push(Item[variable].length);
 							state.tmp.value.push({"type":variable,"names":Item[variable]});
 							// saving relevant names separately, for reference
-							// in splice collapse
+							// in splice collapse and in subsequent-author-substitute
 							state.tmp.names_used.push(state.tmp.value.slice());
 						}
 					};
