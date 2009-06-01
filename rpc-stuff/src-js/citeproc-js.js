@@ -762,11 +762,12 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 	}
 	var name;
 	for each (nameset in namesets.slice(1)){
+		//
+		// could be factored out as a separate function
+		// (for reuse with substitute-author-subsequent-whatever option)
+		//
 		if (base_nameset.length != nameset.length){
 			return false;
-		}
-		if (varnames.indexOf(nameset.type) == -1){
-			varnames.push(nameset.type);
 		}
 		for (var n in nameset.names){
 			name = nameset.names[n];
@@ -775,6 +776,12 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 					return false;
 				}
 			}
+		}
+		//
+		// function would end here
+		//
+		if (varnames.indexOf(nameset.type) == -1){
+			varnames.push(nameset.type);
 		}
 	}
 	varnames.sort();
