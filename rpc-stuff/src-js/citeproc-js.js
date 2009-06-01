@@ -2754,18 +2754,6 @@ CSL.Lib.Elements.layout = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
-			if (state.build.area == "citation"){
-				var prefix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
-				var func = function(state,Item){
-					var sp = "";
-					if (Item["prefix"] && Item["prefix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
-						var sp = " ";
-					}
-					state.output.append((Item["prefix"]+sp),this);
-				};
-				prefix_token["execs"].push(func);
-				target.push(prefix_token);
-			}
 			//
 			// done_vars is used to prevent the repeated
 			// rendering of variables
@@ -2794,24 +2782,45 @@ CSL.Lib.Elements.layout = new function(){
 				state.output.openLevel("empty");
 			};
 			this["execs"].push(declare_thyself);
+			target.push(this);
+			if (state.build.area == "citation"){
+				var prefix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var func = function(state,Item){
+					if (Item["prefix"]){
+						var sp = "";
+						if (Item["prefix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
+							var sp = " ";
+						}
+						state.output.append((Item["prefix"]+sp),this);
+					};
+				};
+				prefix_token["execs"].push(func);
+				target.push(prefix_token);
+			}
 		};
 		if (this.tokentype == CSL.END){
 			state.build.layout_flag = false;
+			if (state.build.area == "citation"){
+				var suffix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var func = function(state,Item){
+					if (Item["suffix"]){
+						var sp = "";
+						if (Item["suffix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
+							var sp = " ";
+						}
+						state.output.append((sp+Item["suffix"]),this);
+					};
+				};
+				suffix_token["execs"].push(func);
+				target.push(suffix_token);
+			}
 			var mergeoutput = function(state,Item){
 				state.output.closeLevel();
 				// state.tmp.name_quash = new Object();
 			};
 			this["execs"].push(mergeoutput);
-			if (state.build.area == "citation"){
-				var suffix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
-				var func = function(state,Item){
-					state.output.append(Item["suffix"],this);
-				};
-				suffix_token["execs"].push(func);
-				target.push(suffix_token);
-			}
+			target.push(this);
 		}
-		target.push(this);
 	};
 };
 CSL.Lib.Elements.number = new function(){
