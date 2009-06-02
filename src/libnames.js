@@ -289,6 +289,15 @@ CSL.Lib.Elements.names = new function(){
 					state.output.closeLevel(); // term
 
 					state.tmp.nameset_counter += 1;
+					if (!state.tmp.suppress_decorations){
+						if (state.tmp.no_name_rendered){
+							var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
+							if (rendered_name){
+								print("Name to compare: "+rendered_name);
+								state.tmp.no_name_rendered = false;
+							};
+						};
+					};
 				};
 
 				if (state.output.getToken("name").strings.form == "count"){
@@ -326,6 +335,18 @@ CSL.Lib.Elements.names = new function(){
 				}
 				state.fun.names_reinit(state,Item);
 				state.output.endTag(); // names
+				//
+				// !!!!!: per-element rendering works.  hurray.
+				//
+				if (!state.tmp.suppress_decorations){
+					if (state.tmp.no_name_rendered){
+						var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
+						if (rendered_name){
+							print("Name to compare: "+rendered_name);
+						}
+						state.tmp.no_name_rendered = false;
+					};
+				};
 			};
 			this["execs"].push(unsets);
 

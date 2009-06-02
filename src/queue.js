@@ -201,9 +201,11 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			}
 		}
 	};
-	this.queue = new Array();
-	this.current.mystack = new Array();
-	this.current.mystack.push( this.queue );
+	if (!blob && "undefined" == typeof blob){
+		this.queue = new Array();
+		this.current.mystack = new Array();
+		this.current.mystack.push( this.queue );
+	}
 	return ret;
 };
 

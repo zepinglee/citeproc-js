@@ -2734,6 +2734,7 @@ CSL.Lib.Elements.layout = new function(){
 			// rendering of variables
 			var initialize_done_vars = function(state,Item){
 				state.tmp.done_vars = new Array();
+				state.tmp.no_name_rendered = true;
 			};
 			this.execs.push(initialize_done_vars);
 			var set_opt_delimiter = function(state,Item){
@@ -3297,6 +3298,15 @@ CSL.Lib.Elements.names = new function(){
 					}
 					state.output.closeLevel(); // term
 					state.tmp.nameset_counter += 1;
+					if (!state.tmp.suppress_decorations){
+						if (state.tmp.no_name_rendered){
+							var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
+							if (rendered_name){
+								print("Name to compare: "+rendered_name);
+								state.tmp.no_name_rendered = false;
+							};
+						};
+					};
 				};
 				if (state.output.getToken("name").strings.form == "count"){
 					state.output.clearlevel();
@@ -3330,6 +3340,18 @@ CSL.Lib.Elements.names = new function(){
 				}
 				state.fun.names_reinit(state,Item);
 				state.output.endTag(); // names
+				//
+				// !!!!!: per-element rendering works.  hurray.
+				//
+				if (!state.tmp.suppress_decorations){
+					if (state.tmp.no_name_rendered){
+						var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
+						if (rendered_name){
+							print("Name to compare: "+rendered_name);
+						}
+						state.tmp.no_name_rendered = false;
+					};
+				};
 			};
 			this["execs"].push(unsets);
 			state.build.names_flag = false;
@@ -3788,9 +3810,11 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			}
 		}
 	};
-	this.queue = new Array();
-	this.current.mystack = new Array();
-	this.current.mystack.push( this.queue );
+	if (!blob && "undefined" == typeof blob){
+		this.queue = new Array();
+		this.current.mystack = new Array();
+		this.current.mystack.push( this.queue );
+	}
 	return ret;
 };
 CSL.Output.Queue.prototype.clearlevel = function(){

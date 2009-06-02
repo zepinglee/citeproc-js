@@ -2,8 +2,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_affix");
 	dojo.require("tests.std_name");
+	dojo.require("tests.std_affix");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_position");
