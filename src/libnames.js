@@ -289,11 +289,11 @@ CSL.Lib.Elements.names = new function(){
 					state.output.closeLevel(); // term
 
 					state.tmp.nameset_counter += 1;
-					if (!state.tmp.suppress_decorations){
+					if (state.tmp.area == "bibliography" && !state.tmp.suppress_decorations){
 						if (state.tmp.no_name_rendered){
 							var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
 							if (rendered_name){
-								print("Name to compare: "+rendered_name);
+								//print("Name to compare (1): "+rendered_name);
 								state.tmp.no_name_rendered = false;
 							};
 						};
@@ -338,14 +338,16 @@ CSL.Lib.Elements.names = new function(){
 				//
 				// !!!!!: per-element rendering works.  hurray.
 				//
-				if (!state.tmp.suppress_decorations){
+				if (state.tmp.area == "bibliography" && !state.tmp.suppress_decorations){
 					if (state.tmp.no_name_rendered){
 						var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
-						if (rendered_name){
-							print("Name to compare: "+rendered_name);
-						}
 						state.tmp.no_name_rendered = false;
 					};
+					if (rendered_name && rendered_name == state.tmp.last_rendered_name){
+						state.output.current.value().blobs = "-----";
+						//print("Name to compare (2): "+rendered_name);
+					}
+					state.tmp.last_rendered_name = rendered_name;
 				};
 			};
 			this["execs"].push(unsets);

@@ -1123,11 +1123,6 @@ CSL.Lib.Elements.bibliography = new function(){
 		if (this.tokentype == CSL.START){
 			state.build.area_return = state.build.area;
 			state.build.area = "bibliography";
-
-			//var init_sort_keys = function(state,Item){
-			//	state.tmp.sort_keys = new Array();
-			//};
-			//this["execs"].push(init_sort_keys);
 		}
 		if (this.tokentype == CSL.END){
 			state.build.area = state.build.area_return;

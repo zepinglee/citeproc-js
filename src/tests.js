@@ -5,7 +5,7 @@ dojo.provide("csl.tests");
  */
 var StdRhinoTest = function(myname){
 	this.myname = myname;
-	var test = readFile("./std/machines/" + myname + ".json");
+	var test = readFile("./std/machines/" + myname + ".json", "UTF-8");
 	eval( "this.test = "+test);
 	this._cache = {};
 	this._ids = [];
@@ -48,7 +48,7 @@ StdRhinoTest.prototype.retrieveItems = function(ids){
 // this method.)
 //
 StdRhinoTest.prototype.getLang = function(lang){
-	return readFile( "./locale/"+this.localeRegistry()[lang]);
+	return readFile( "./locale/"+this.localeRegistry()[lang], "UTF-8");
 };
 
 
@@ -292,7 +292,7 @@ RhinoTest.prototype._getInput = function(name){
 			if (this.input[filename]){
 				ret.push(this.input[filename]);
 			} else {
-				var datastring = readFile("data/" + filename + ".txt");
+				var datastring = readFile("data/" + filename + ".txt", "UTF-8");
 				eval( "obj = " + datastring );
 				this._fixAllNames([obj]);
 				this.input[filename] = obj;
@@ -303,7 +303,7 @@ RhinoTest.prototype._getInput = function(name){
 		if (this.input[filename]){
 			ret.push(this.input[filename]);
 		} else {
-			var datastring = readFile("data/" + filename + ".txt");
+			var datastring = readFile("data/" + filename + ".txt", "UTF-8");
 			this.input[filename] = obj;
 			eval( "obj = " + datastring );
 			this._fixAllNames([obj]);
