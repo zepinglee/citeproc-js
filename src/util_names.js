@@ -215,6 +215,16 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 
 
 CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
+	//
+	// These might not be namesets at all.  They could be variables
+	// gleaned from entire groups.  And -- yikes -- those groups
+	// could include names, couldn't they.  Something needs to be
+	// done at the validation level to keep this under control.
+	// Otherwise we're going to have to track rendered values,
+	// which is not possible with the current model -- we can't
+	// render just one element, it's the whole cite or nothing.
+	// Sucks.
+	//
 	if (base_nameset.length != nameset.length){
 		return false;
 	}
