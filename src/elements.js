@@ -145,9 +145,7 @@ CSL.Lib.Elements.info = new function(){
 CSL.Lib.Elements.text = new function(){
 	this.build = build;
 	function build (state,target){
-		if (state.build.substitute_level.value() == 1){
-			CSL.Util.substituteStart(state,target);
-		}
+		CSL.Util.substituteStart(state,target);
 		//
 		// CSL permits macros to be called before they
 		// are declared.  We file a placeholder token unless we are
@@ -274,9 +272,7 @@ CSL.Lib.Elements.text = new function(){
 			}
 			target.push(this);
 		};
-		if (state.build.substitute_level.value() == 1){
-			CSL.Util.substituteEnd(state,target);
-		};
+		CSL.Util.substituteEnd(state,target);
 	};
 };
 
@@ -463,14 +459,10 @@ CSL.Lib.Elements.group = new function(){
 	this.build = build;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-
-			if (state.build.substitute_level.value() == 1){
-				CSL.Util.substituteStart(state,target);
-			}
+			CSL.Util.substituteStart(state,target);
 			if (state.build.substitute_level.value()){
 				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
 			}
-
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);
 			};
@@ -515,9 +507,7 @@ CSL.Lib.Elements.group = new function(){
 			if (state.build.substitute_level.value()){
 				state.build.substitute_level.replace((state.build.substitute_level.value()-1));
 			}
-			if (state.build.substitute_level.value() == 1){
-				CSL.Util.substituteEnd(state,target);
-			}
+			CSL.Util.substituteEnd(state,target);
 		}
 	}
 };
@@ -979,9 +969,7 @@ CSL.Lib.Elements.layout = new function(){
 CSL.Lib.Elements.number = new function(){
 	this.build = build;
 	function build(state,target){
-		if (state.build.substitute_level.value() == 1){
-			CSL.Util.substituteStart(state,target);
-		};
+		CSL.Util.substituteStart(state,target);
 		//
 		// This should push a rangeable object to the queue.
 		//
@@ -995,10 +983,7 @@ CSL.Lib.Elements.number = new function(){
 		};
 		this["execs"].push(push_number);
 		target.push(this);
-
-		if (state.build.substitute_level.value() == 1){
-			CSL.Util.substituteEnd(state,target);
-		};
+		CSL.Util.substituteEnd(state,target);
 	};
 };
 
@@ -1007,11 +992,7 @@ CSL.Lib.Elements.date = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
-
-			if (state.build.substitute_level.value() == 1){
-				CSL.Util.substituteStart(state,target);
-			}
-
+			CSL.Util.substituteStart(state,target);
 			var set_value = function(state,Item){
 				state.tmp.element_rendered_ok = false;
 				if (this.variables.length && Item[this.variables[0]]){
@@ -1037,9 +1018,7 @@ CSL.Lib.Elements.date = new function(){
 		target.push(this);
 
 		if (this.tokentype == CSL.END){
-			if (state.build.substitute_level.value() == 1){
-				CSL.Util.substituteEnd(state,target);
-			};
+			CSL.Util.substituteEnd(state,target);
 		};
 	};
 };
