@@ -1,0 +1,25 @@
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="author">
+                <name/>
+            </names>
+        </layout>
+    </citation>
+    <bibliography>
+        <option subsequent-author-substitute="-----"/>
+        <layout>
+            <group delimiter=" ">
+                <group delimiter=", ">
+                    <names variable="author">
+                        <name and="text" delimiter=", "/>
+                    </names>
+                    <text variable="title"/>
+                </group>
+                <date variable="issued" prefix="(" suffix=")">
+                    <date-part name="year"/>
+                </date>
+            </group>
+        </layout>
+    </bibliography>
+</style>

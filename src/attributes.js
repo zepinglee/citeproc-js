@@ -253,12 +253,9 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
  */
 CSL.Lib.Attributes["@and"] = function(state,arg){
 	if ("symbol" == arg){
-		this.strings["and"] = " & ";
+		this.strings["and"] = "&";
 	} else {
 		var and = state.opt.term["and"]["long"][0];
-		if (and.match(/.*[a-zA-Z\u0400-\u052f].*/)){
-			and = ", "+and+" ";
-		}
 		this.strings["and"] = and;
 	}
 };
@@ -429,6 +426,9 @@ CSL.Lib.Attributes["@include-period"] = function(state,arg){
 	this.strings["include-period"] = arg;
 };
 
+CSL.Lib.Attributes["@subsequent-author-substitute"] = function(state,arg){
+	state.bibliography.opt["subsequent-author-substitute"] = arg;
+};
 
 CSL.Lib.Attributes["@position"] = function(state,arg){
 	if (arg == "subsequent"){

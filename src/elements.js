@@ -906,6 +906,7 @@ CSL.Lib.Elements.layout = new function(){
 			var initialize_done_vars = function(state,Item){
 				state.tmp.done_vars = new Array();
 				state.tmp.no_name_rendered = true;
+				state.tmp.rendered_name = false;
 			};
 			this.execs.push(initialize_done_vars);
 

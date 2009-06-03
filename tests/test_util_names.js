@@ -35,7 +35,7 @@ var state = CSL.makeStyle(sys,"<style></style>");
 // element or, if the @and attribute is set
 // on it, the string appropriate to its value.
 var name = new CSL.Factory.Token("name");
-name.strings.delimiter = ", and ";
+name.strings.delimiter = "and";
 name.strings.prefix ="[";
 name.strings.suffix ="]";
 name.strings["name-as-sort-order"] = "first";

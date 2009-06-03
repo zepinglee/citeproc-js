@@ -1,0 +1,9 @@
+{
+  "name": "Subsequent Author Substitute",
+  "category": "bibliography",
+  "mode": "bibliography",
+  "schema":"0.8",
+  "result": "John Smith and Jane Roe, Book A (2000)\n-----, Book B (2001)\nJohn Smith, Book C (2002)",
+  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <names variable=\"author\">\n <name/>\n </names>\n </layout>\n </citation>\n <bibliography>\n <option subsequent-author-substitute=\"-----\"/>\n <layout>\n <group delimiter=\" \">\n <group delimiter=\", \">\n <names variable=\"author\">\n <name and=\"text\" delimiter=\", \"/>\n </names>\n <text variable=\"title\"/>\n </group>\n <date variable=\"issued\" prefix=\"(\" suffix=\")\">\n <date-part name=\"year\"/>\n </date>\n </group>\n </layout>\n </bibliography>\n</style>",
+  "input": [ { "id":"item-1", "type": "book", "author": [ { "name": "Smith, John" }, { "name": "Roe, Jane" } ], "issued": {"year": "2000"}, "title": "Book A" }, { "id":"item-2", "type": "book", "author": [ { "name": "Smith, John" }, { "name": "Roe, Jane" } ], "issued": {"year":"2001"}, "title": "Book B" }, { "id":"item-3", "type": "book", "author": [ { "name": "Smith, John" } ], "issued": {"year": "2002"}, "title": "Book C" } ]
+}

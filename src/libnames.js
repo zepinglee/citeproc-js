@@ -184,7 +184,7 @@ CSL.Lib.Elements.names = new function(){
 					}
 					var overlength = display_names.length > discretionary_names_length;
 					var et_al = false;
-					var and_term = false;
+					var and_term = "";
 					if (sane && overlength){
 						if (! state.tmp.sort_key_flag){
 							et_al = state.output.getToken("etal").strings.et_al_term;
@@ -194,7 +194,6 @@ CSL.Lib.Elements.names = new function(){
 						if (state.output.getToken("name").strings["and"] && ! state.tmp.sort_key_flag && display_names.length > 1){
 							and_term = state.output.getToken("name").strings["and"];
 						}
-
 					}
 					state.tmp.disambig_settings["names"][state.tmp.nameset_counter] = display_names.length;
 					local_count += display_names.length;
@@ -206,9 +205,7 @@ CSL.Lib.Elements.names = new function(){
 					var delim = state.output.getToken("name").strings.delimiter;
 					state.output.addToken("inner",delim);
 					//state.tmp.tokenstore["and"] = new CSL.Factory.Token("and");
-					if (and_term){
-						state.output.formats.value()["name"].strings.delimiter = and_term;
-					}
+					state.output.formats.value()["name"].strings.delimiter = and_term;
 					for (var i in nameset.names){
 						//
 						// set the display mode default for givennames if required
@@ -291,9 +288,13 @@ CSL.Lib.Elements.names = new function(){
 					state.tmp.nameset_counter += 1;
 					if (state.tmp.area == "bibliography" && !state.tmp.suppress_decorations){
 						if (state.tmp.no_name_rendered){
-							var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
-							if (rendered_name){
-								//print("Name to compare (1): "+rendered_name);
+							state.tmp.rendered_name = state.output.string(state,state.output.current.value().blobs,false);
+							if (state.tmp.rendered_name){
+								// print("Name to compare (1): "+rendered_name);
+								//
+								// XXXXX: can't no_name_rendered and rendered_name
+								// be merged?
+								//
 								state.tmp.no_name_rendered = false;
 							};
 						};
@@ -338,13 +339,18 @@ CSL.Lib.Elements.names = new function(){
 				//
 				// !!!!!: per-element rendering works.  hurray.
 				//
-				if (state.tmp.area == "bibliography" && !state.tmp.suppress_decorations){
+				if ("string" == typeof state[state.tmp.area].opt["subsequent-author-substitute"] && !state.tmp.suppress_decorations){
+					var rendered_name = state.tmp.rendered_name;
 					if (state.tmp.no_name_rendered){
-						var rendered_name = state.output.string(state,state.output.current.value().blobs,false);
+						rendered_name = state.output.string(state,state.output.current.value().blobs,false);
 						state.tmp.no_name_rendered = false;
 					};
 					if (rendered_name && rendered_name == state.tmp.last_rendered_name){
-						state.output.current.value().blobs = "-----";
+						//state.output.current.value().blobs = "-----";
+						///state.output.current.value().blobs = [];
+						var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
+						state.output.current.value().blobs = [str];
+
 						//print("Name to compare (2): "+rendered_name);
 					}
 					state.tmp.last_rendered_name = rendered_name;

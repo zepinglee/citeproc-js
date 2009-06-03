@@ -58,7 +58,7 @@ citation
         <option name="disambiguate-add-year-suffix" value="true"/>
         <layout delimiter="; " prefix="(" suffix=")">
             <names variable="author">
-                <name and="symbol" form="short" delimiter=", "/>
+                <name and="symbol" form="short" delimiter=", " delimiter-precedes-last="never"/>
             </names>
             <date variable="issued" prefix=" ">
                 <date-part name="year"/>

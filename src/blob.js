@@ -12,6 +12,9 @@ CSL.Factory.Blob = function(token,str){
 		}
 	} else {
 		this.strings = new Object();
+		this.strings.prefix = "";
+		this.strings.suffix = "";
+		this.strings.delimiter = "";
 		this.decorations = new Array();
 	};
 	if ("string" == typeof str){

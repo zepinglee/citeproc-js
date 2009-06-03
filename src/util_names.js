@@ -27,14 +27,35 @@ CSL.Util.Names.outputNames = function(state,display_names){
 		state.output.addToken("end");
 		state.output.getToken("end").strings.name_as_sort_order = true;
 	}
+	var and = state.output.getToken("name").strings.delimiter;
+	if (state.output.getToken("name").strings["delimiter-precedes-last"] == "always"){
+		and = state.output.getToken("inner").strings.delimiter+and;
+	} else if (state.output.getToken("name").strings["delimiter-precedes-last"] == "never"){
+		if (!and){
+			and = state.output.getToken("inner").strings.delimiter;
+		}
+	} else if ((segments.segments.start.length + segments.segments.middle.length) > 1){
+		and = state.output.getToken("inner").strings.delimiter+and;
+	} else {
+		if (!and){
+			and = state.output.getToken("inner").strings.delimiter;
+		}
+	}
+	if (and.match(/^[&a-zA-Z\u0400-\u052f].*/)){
+		and = " "+and;
+	}
+	if (and.match(/.*[&a-zA-Z\u0400-\u052f]$/)){
+		and = and+" ";
+	}
+	state.output.getToken("name").strings.delimiter = and;
 
 	state.output.openLevel("name");
 	state.output.openLevel("inner");
 	segments.outputSegmentNames("start");
 	segments.outputSegmentNames("middle");
-	state.output.closeLevel();
+	state.output.closeLevel(); // inner
 	segments.outputSegmentNames("end");
-	state.output.closeLevel();
+	state.output.closeLevel(); // name
 };
 
 CSL.Util.Names.StartMiddleEnd = function(state,names){
