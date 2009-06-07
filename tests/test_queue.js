@@ -1,11 +1,11 @@
-dojo.provide("tests.test_list");
+dojo.provide("tests.test_queue");
 
 
-doh.registerGroup("tests.list",
+doh.registerGroup("tests.queue",
 	[
 		function testListMerge () {
-			var token = tests.test_list.token();
-			var state = new tests.test_list.state();
+			var token = tests.test_queue.token();
+			var state = new tests.test_queue.state();
 			state.fun = {};
 			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
@@ -21,7 +21,7 @@ doh.registerGroup("tests.list",
 			doh.assertEqual("one", res.current.value()[0].blobs );
 		},
 		function testListAppend () {
-			var state = new tests.test_list.state();
+			var state = new tests.test_queue.state();
 			state.fun = {};
 			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
@@ -33,7 +33,7 @@ doh.registerGroup("tests.list",
 		},
 
 		function testListNewlevel () {
-			var state = new tests.test_list.state();
+			var state = new tests.test_queue.state();
 			state.fun = {};
 			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
@@ -46,7 +46,7 @@ doh.registerGroup("tests.list",
 		},
 
 		function testString () {
-			var state = new tests.test_list.state();
+			var state = new tests.test_queue.state();
 			state.fun = {};
 			state.fun.flipflopper = new CSL.Util.FlipFlopper();
 			var res = new CSL.Output.Queue(state);
@@ -72,7 +72,7 @@ doh.registerGroup("tests.list",
 		},
 	],
 	function(){
-		tests.test_list.token = function(){
+		tests.test_queue.token = function(){
 			return {
 				"decorations": new Array(),
 				"strings":{
@@ -82,7 +82,7 @@ doh.registerGroup("tests.list",
 				}
 			};
 		};
-		tests.test_list.state = function(){
+		tests.test_queue.state = function(){
 			this.tmp = new Object();
 			this.tmp.delimiter = new CSL.Factory.Stack();
 			this.tmp.prefix = new CSL.Factory.Stack();
@@ -94,5 +94,3 @@ doh.registerGroup("tests.list",
 
 	}
 );
-
-

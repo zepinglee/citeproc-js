@@ -16,14 +16,7 @@ CSL.Factory.Stack = function(val,literal){
 	this.mystack = new Array();
 	if (literal || val){
 		this.mystack.push(val);
-	}
-};
-
-/**
- * Clear the stack
- */
-CSL.Factory.Stack.prototype.clear = function(){
-	this.mystack = new Array();
+	};
 };
 
 /**
@@ -36,6 +29,13 @@ CSL.Factory.Stack.prototype.push = function(val,literal){
 	} else {
 		this.mystack.push("");
 	}
+};
+
+/**
+ * Clear the stack
+ */
+CSL.Factory.Stack.prototype.clear = function(){
+	this.mystack = new Array();
 };
 
 /**

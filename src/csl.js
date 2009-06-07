@@ -16,7 +16,7 @@ dojo.provide("csl.csl");
  * This
  * yields a token list that can be executed front-to-back by
  * wrapper methods available on the
- * {@link CSL.Core.Engine} class.</p>
+ * {@link CSL.Engine} class.</p>
  *
  * <p>This top-level {@link CSL} object itself carries
  * constants that are needed during processing.</p>
@@ -95,38 +95,66 @@ CSL = new function () {
 
 //SNIP-START
 
-if (!CSL.Core){
-	load("./src/core.js");
-}
-if (!CSL.Core.Engine){
-	load("./src/state.js");
-}
-if (!CSL.Core.Engine.prototype.makeBibliography){
-	load("./src/render.js");
-}
-if (!CSL.Core.Build){
+if (!CSL.Engine){
 	load("./src/build.js");
 }
-if (!CSL.Core.Configure){
-	load("./src/configure.js");
+if (!CSL.Engine.Opt){
+	load("./src/state.js");
+}
+if (!CSL.makeStyle){
+	load("./src/commands.js");
+}
+if (!CSL.Engine.prototype.getAmbiguousCite){
+	load("./src/render.js");
+}
+if (!CSL.Lib){
+	load("./src/lib.js");
+}
+if (!CSL.Lib.Elements){
+	load("./src/elements.js");
+}
+if (!CSL.Lib.Elements.names){
+	load("./src/libnames.js");
+}
+if (!CSL.Lib.Elements){
+	load("./src/elements.js");
+}
+
+if (!CSL.Lib.Attributes){
+	load("./src/attributes.js");
+}
+if (!CSL.System){
+	load("./src/system.js");
+}
+if (!CSL.System.Xml){
+	load("./src/xml.js");
+}
+if (!CSL.System.Xml.E4X){
+	load("./src/xmle4x.js");
+}
+if (!CSL.Factory){
+	load("./src/factory.js");
+}
+if (!CSL.Factory.Stack){
+	load("./src/stack.js");
+}
+if (!CSL.Factory.Token){
+	load("./src/token.js");
+}
+if (!CSL.Factory.AmbigConfig){
+	load("./src/ambigconfig.js");
+}
+if (!CSL.Factory.Blob){
+	load("./src/blob.js");
 }
 if (!CSL.Util){
 	load("./src/util.js");
 }
-if (!CSL.Util.TokenFactory){
-	load("./src/util_token.js");
+if (!CSL.Util.Names){
+	load("./src/util_names.js");
 }
 if (!CSL.Util.Dates){
 	load("./src/util_dates.js");
-}
-if (!CSL.Util.Disambiguate){
-	load("./src/util_disambiguate.js");
-}
-if (!CSL.Util.FlipFlop){
-	load("./src/util_flipflop.js");
-}
-if (!CSL.Util.Names){
-	load("./src/util_names.js");
 }
 if (!CSL.Util.Sort){
 	load("./src/util_sort.js");
@@ -134,74 +162,32 @@ if (!CSL.Util.Sort){
 if (!CSL.Util.substituteStart){
 	load("./src/util_substitute.js");
 }
-if (!CSL.Factory){
-	load("./src/factory.js");
+if (!CSL.Util.Suffixator){
+	load("./src/util_mangle_number.js");
 }
-if (!CSL.makeStyle){
-	load("./src/commands.js")
-	;}
-if (!CSL.Factory.Blob){
-	load("./src/blob.js");
+if (!CSL.Util.FlipFlopper){
+	load("./src/util_flipflop.js");
 }
-if (!CSL.Factory.Token){
-	load("./src/token.js");
+if (!CSL.Output){
+	load("./src/output.js");
 }
-if (!CSL.Factory.Stack){
-	load("./src/stack.js");
+if (!CSL.Output.Number){
+	load("./src/range.js");
 }
-if (!CSL.Factory.AmbigConfig){
-	load("./src/ambigconfig.js");
+if (!CSL.Output.Formatters){
+	load("./src/formatters.js");
+}
+if (!CSL.Output.Formats){
+	load("./src/formats.js");
+}
+if (!CSL.Output.Queue){
+	load("./src/queue.js");
 }
 if (!CSL.Factory.Registry){
 	load("./src/registry.js");
 }
 if (!CSL.Factory.Registry.prototype.disambiguateCites){
 	load("./src/disambiguate.js");
-}
-if (!CSL.Lib) {
-    load("./src/lib.js");
-}
-if (!CSL.Lib.Elements) {
-    load("./src/elements.js");
-}
-if (!CSL.Lib.Elements.Names){
-	load("./src/libnames.js");
-}
-if (!CSL.Lib.Attributes) {
-    load("./src/attributes.js");
-}
-if (!CSL.Output){
-	load("./src/output.js");
-}
-if (!CSL.Output.Queue){
-	load("./src/queue.js");
-}
-if (!CSL.Output.Formatters) {
-	load("./src/formatters.js");
-}
-if (!CSL.Output.Formats){
-	load("./src/formats.js");
-}
-if (!CSL.Output.Range){
-	load("./src/range.js");
-}
-if (!CSL.System){
-	load("./src/system.js");
-}
-if (!CSL.System.Xml) {
-	load("./src/xml.js");
-}
-if (!CSL.System.Xml.E4X) {
-	load("./src/xmle4x.js");
-}
-if (!CSL.System.Xml.JunkyardJavascript) {
-	load("./src/xmljs.js");
-}
-if (!CSL.System.Retrieval) {
-    load("./src/retrieval.js");
-}
-if (!CSL.System.Tests) {
-    load("./src/tests.js");
 }
 
 //SNIP-END

@@ -16,8 +16,4 @@ doh.register("tests.output", [
 		doh.assertEqual( "Success", res );
 	},
 
-	function testHtmlLoad() {
-		doh.assertEqual( '&ldquo;%%STRING%%&rdquo;', CSL.Output.Formats.html["@quotes/true"] );
-	},
-
 ]);

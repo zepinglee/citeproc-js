@@ -27,5 +27,7 @@ if ("UTF-8" != environment["file.encoding"]){
 print("#####");
 
 dojo.require("csl.csl");
+dojo.require("csl.testing_rhino");
+dojo.require("csl.testing_stdrhino");
 
 load("./tests/run.js");

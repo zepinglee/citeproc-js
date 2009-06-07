@@ -98,6 +98,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			print("base in (givens):"+base["givens"]);
 		}
 		var str = state.getAmbiguousCite(token,base);
+		print("loc a");
 		var maxvals = state.getMaxVals();
 		var minval = state.getMinVal();
 		base = state.getAmbigConfig();
@@ -124,6 +125,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 				continue;
 			}
 			var otherstr = state.getAmbiguousCite(testpartner,base);
+		print("loc b");
 			if (debug){
 				print("  ---> last clashes: "+checkerator.lastclashes);
 				print("  ---> master:    "+token.id);
@@ -440,14 +442,14 @@ CSL.Factory.Registry.prototype.registerAmbigToken = function (state,akey,id,ambi
 	if (!found){
 		this.ambigs[akey].push(id);
 	}
-	this.registry[id].disambig = state.fun.clone_ambig_config(ambig_config);
+	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };
 
 CSL.Factory.Registry.prototype.decrementNames = function(state,base){
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
 	// unwind
-	var base_return = state.fun.clone_ambig_config(base);
+	var base_return = CSL.Factory.cloneAmbigConfig(base);
 	var do_me = false;
 	for (var i=(base_return["givens"].length-1); i > -1; i--){
 		for (var j=(base_return["givens"][i].length-1); j > -1; j--){

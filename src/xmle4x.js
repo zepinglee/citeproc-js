@@ -1,13 +1,10 @@
 dojo.provide("csl.xmle4x");
 
-if (!CSL) {
-	load("./src/csl.js");
-}
-
 /**
  * Functions for parsing an XML object using E4X.
  */
 CSL.System.Xml.E4X = function(){};
+
 
 
 /**
@@ -26,66 +23,50 @@ CSL.System.Xml.E4X.prototype.clean = function(xml){
  * Make an E4X object from a style.
  */
 CSL.System.Xml.E4X.prototype.parse = function(myxml){
-	var otherns = {};
-	//otherns["http://www.w3.org/XML/1998/namespace"] = "xml";
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var myxml = XML( this.clean(myxml) );
-	//
-	// bare spidermonkey does not groke the xml namespace.
-	//
-	//var xml = new Namespace( "xml" );
-	//myxml.addNamespace("http://www.w3.org/XML/1998/namespace");
-	//var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-	//print("my language: "+myxml.@xml::lang);
-	//print( myxml.attributes() );
-	//for each (var attr in myxml.attributes()){
-	//	print(attr.name());
-	//}
+	myxml = new XML( this.clean(myxml) );
 	return myxml;
 };
 
 
 /**
- * Called on a node.
+ * Methods to call on a node.
  */
-CSL.System.Xml.E4X.prototype.commandInterface = new function(){
-	this.children = children;
-	this.nodename = nodename;
-	this.attributes = attributes;
-	this.content = content;
-	this.numberofnodes = numberofnodes;
+CSL.System.Xml.E4X.prototype.children = function(myxml){
+	var ret = myxml.children();
+	return ret;
+};
 
-	function children(){
-		return this.children();
-	};
-	function nodename(){
-		return this.localName();
+CSL.System.Xml.E4X.prototype.nodename = function(myxml){
+	return myxml.localName();
+};
+
+CSL.System.Xml.E4X.prototype.attributes = function(myxml){
+	var ret = new Object();
+	var attrs = myxml.attributes();
+	for (var idx in attrs){
+		var key = "@"+attrs[idx].localName();
+		var value = attrs[idx].toString();
+		ret[key] = value;
 	}
-	function attributes(){
-		var ret = new Object();
-		var attrs = this.attributes();
-		for (var idx in attrs){
-			var key = "@"+attrs[idx].localName();
-			var value = attrs[idx].toString();
-			ret[key] = value;
+	if (myxml.localName() == "style" || myxml.localName() == "locale"){
+		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+		//print("my language: "+this.@xml::lang.toString());
+		var lang = myxml.@xml::lang.toString();
+		if (lang){
+			ret["@lang"] = lang;
 		}
-		if (this.localName() == "style" || this.localName() == "locale"){
-			var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-			//print("my language: "+this.@xml::lang.toString());
-			var lang = this.@xml::lang.toString();
-			if (lang){
-				ret["@lang"] = lang;
-			}
-		}
-		return ret;
 	}
-	function content(){
-		return this.toString();
-	}
-	function numberofnodes(){
-		return this.length();
-	}
+	return ret;
 };
 
 
-CSL.System.Xml.E4X = new CSL.System.Xml.E4X();
+CSL.System.Xml.E4X.prototype.content = function(myxml){
+	return myxml.toString();
+};
+
+
+CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
+	return myxml.length();
+};
+

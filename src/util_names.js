@@ -1,7 +1,5 @@
 dojo.provide("csl.util_names");
-if (!CSL) {
-	load("./src/csl.js");
-}
+
 
 /**
  * Helper functions for constructing names and namesets.
@@ -138,7 +136,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 			if (0 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
 				continue;
 			} else if (1 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
-				namepart = state.fun.initialize_with(namepart,state.tmp["initialize-with"]);
+				namepart = CSL.Util.Names.initializeWith(namepart,state.tmp["initialize-with"]);
 			}
 		}
 		//state.output.openLevel(key);
@@ -231,7 +229,7 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 		}
 	}
 	varnames.sort();
-	return state.opt.term[varnames.join("")];
+	return state.locale_terms[varnames.join("")];
 };
 
 
@@ -265,7 +263,7 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
 /**
  * Initialize a name.
  */
-CSL.Util.Names.initialize_with = function(name,terminator){
+CSL.Util.Names.initializeWith = function(name,terminator){
 	var namelist = name.split(/\s+/);
 	var nstring = "";
 	for each (var n in namelist){

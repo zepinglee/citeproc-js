@@ -9,20 +9,5 @@ TARGET="${PWD}"/tests/run-rhino.js
 
 java -client -jar "${RHINO}" -opt 1 "${TARGET}" dojoUrl="${DOJO}"  testModule="" 
 
-#
-# Ah, Spidermonkey has no I/O capabilities.  How very interesting.
-#
-#if [ $(which smjs | grep -c "/" ) -gt 0 ]; then
-#    echo "Using spidermonkey"
-#    rm dojo
-#    ln -sf dojo-spidermonkey dojo
-#    smjs "${TARGET}" dojoUrl="${DOJO}"  testModule="" 
-#else
-#    echo "Using java/rhino"
-#    rm dojo
-#    ln -sf dojo-rhino dojo
-#    java -client -jar "${RHINO}" "${TARGET}" dojoUrl="${DOJO}"  testModule="" 
-#fi
-
 echo $START
 echo $(date) \<--------------END

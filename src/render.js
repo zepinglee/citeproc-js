@@ -1,13 +1,11 @@
 dojo.provide("csl.render");
-if (!CSL) {
-	load("./src/csl.js");
-}
+
 
 /**
  * Get the undisambiguated version of a cite, without decorations
  * <p>This is used internally by the Registry.</p>
  */
-CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
+CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	if (disambig){
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -26,7 +24,7 @@ CSL.Core.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	return ret;
 }
 
-CSL.Core.Engine.prototype.composeItem = function(item){
+CSL.Engine.prototype.composeItem = function(item){
 	var newItem = {};
 	//var Item = this.sys.retrieveItem(item[0]);
 	for (var i in item[0]){
@@ -42,7 +40,7 @@ CSL.Core.Engine.prototype.composeItem = function(item){
  * Get the sort key of an item, without decorations
  * <p>This is used internally by the Registry.</p>
  */
-CSL.Core.Engine.prototype.getSortKeys = function(Item,key_type){
+CSL.Engine.prototype.getSortKeys = function(Item,key_type){
 	if (false){
 		print("KEY TYPE: "+key_type);
 	}
@@ -68,12 +66,12 @@ CSL.Core.Engine.prototype.getSortKeys = function(Item,key_type){
 /**
  * Return current base configuration for disambiguation
  */
-CSL.Core.Engine.prototype.getAmbigConfig = function(){
+CSL.Engine.prototype.getAmbigConfig = function(){
 	var config = this.tmp.disambig_request;
 	if (!config){
 		config = this.tmp.disambig_settings;
 	}
-	var ret = this.fun.clone_ambig_config(config);
+	var ret = CSL.Factory.cloneAmbigConfig(config);
 	return ret;
 };
 
@@ -81,14 +79,14 @@ CSL.Core.Engine.prototype.getAmbigConfig = function(){
 /**
  * Return max values for disambiguation
  */
-CSL.Core.Engine.prototype.getMaxVals = function(){
+CSL.Engine.prototype.getMaxVals = function(){
 	return this.tmp.names_max.mystack.slice();
 };
 
 /**
  * Return min value for disambiguation
  */
-CSL.Core.Engine.prototype.getMinVal = function(){
+CSL.Engine.prototype.getMinVal = function(){
 	return this.tmp["et-al-min"];
 };
 
@@ -109,7 +107,7 @@ CSL.Core.Engine.prototype.getMinVal = function(){
 // XXXXX: The handling of delimiters needs cleanup.
 // Is the tmp.delimiter stack used for *anything*?
 //
-CSL.Core.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
+CSL.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
 	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
 		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
 	}
@@ -119,7 +117,7 @@ CSL.Core.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
 /**
  * Return available modes for disambiguation
  */
-CSL.Core.Engine.prototype.getModes = function(){
+CSL.Engine.prototype.getModes = function(){
 	var ret = new Array();
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
@@ -137,7 +135,7 @@ CSL.Core.Engine.prototype.getModes = function(){
  * splicing.  There are lots of possibilities, which will require
  * careful planning.)
  */
-CSL.Core.Engine.prototype._bibliography_entries = function (){
+CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
 	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
@@ -161,7 +159,7 @@ CSL.Core.Engine.prototype._bibliography_entries = function (){
  * splicing.  There are lots of possibilities, which will require
  * careful planning.)
  */
-CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
+CSL.Engine.prototype._unit_of_reference = function (inputList){
 	this.tmp.area = "citation";
 	var delimiter = "";
 
@@ -231,17 +229,13 @@ CSL.Core.Engine.prototype._unit_of_reference = function (inputList){
  * (This might be dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.Core.Engine.prototype._cite = function(Item){
-	for each (var func in this.init){
-		func(this,Item);
-	}
+CSL.Engine.prototype._cite = function(Item){
+	this.start(Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
 		next = this._render(this[this.tmp.area].tokens[next],Item);
     }
-	for each (func in this.stop){
-		func(this,Item);
-	}
+	this.end();
 };
 
 
@@ -251,7 +245,7 @@ CSL.Core.Engine.prototype._cite = function(Item){
  * This is called on a token, with the state object
  * and an Item object as arguments.
  */
-CSL.Core.Engine.prototype._render = function(token,Item){
+CSL.Engine.prototype._render = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
@@ -271,4 +265,50 @@ CSL.Core.Engine.prototype._render = function(token,Item){
 		print(token.name+" ("+token.tokentype+") ---> done");
 	}
 	return next;
+};
+
+CSL.Engine.prototype.start = function(Item){
+	if (this.tmp.disambig_request  && ! this.tmp.disambig_override){
+		this.tmp.have_collapsed = true;
+		this.tmp.disambig_settings = this.tmp.disambig_request;
+	} else if (this.registry.registry[Item.id] && ! this.tmp.disambig_override) {
+		this.tmp.disambig_request = this.registry.registry[Item.id].disambig;
+		this.tmp.disambig_settings = this.registry.registry[Item.id].disambig;
+	} else {
+		this.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
+	}
+
+	this.tmp.names_used = new Array();
+	this.tmp.nameset_counter = 0;
+	this.tmp.years_used = new Array();
+
+	this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;
+
+	this["bibliography_sort"].keys = new Array();
+	this["citation_sort"].keys = new Array();
+};
+
+CSL.Engine.prototype.end = function(){
+
+	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[-.,;:]$/)){
+		this.tmp.splice_delimiter = " ";
+	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[,,:;a-z].*/)){
+		this.tmp.splice_delimiter = " ";
+	} else if (this.tmp.last_suffix_used || this.tmp.prefix.value()){
+			//
+			// forcing the delimiter back to normal if a
+			// suffix or prefix touch the join, even if
+			// a year-suffix is the only output.
+			//
+			// XXXX: This should not be necessary.  Any cite matching
+			// this condition should be forced to full form anyway.
+			//
+		this.tmp.splice_delimiter = state[this.tmp.area].opt.delimiter;
+	}
+
+	this.tmp.last_suffix_used = this.tmp.suffix.value();
+	this.tmp.last_years_used = this.tmp.years_used.slice();
+	this.tmp.last_names_used = this.tmp.names_used.slice();
+
+	//this.tmp.disambig_request = false;
 };

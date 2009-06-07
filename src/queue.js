@@ -1,8 +1,4 @@
 dojo.provide("csl.queue");
-if (!CSL) {
-   load("./src/csl.js");
-}
-
 
 /**
  * Output queue object.

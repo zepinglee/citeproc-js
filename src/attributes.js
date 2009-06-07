@@ -1,7 +1,4 @@
 dojo.provide("csl.attributes");
-if (!CSL) {
-    load("./src/csl.js");
-}
 
 /**
  * Functions corresponding to CSL attribute
@@ -81,14 +78,14 @@ CSL.Lib.Attributes["@macro"] = function(state,arg){
  * singular and plural forms.  This should be a function
  * that ends up in execs, the same as value and
  * variable.  the string content should come from
- * state.opt.term[key][key][0 or 1].
+ * state.getTerm(key,key,0or1).
  * @name CSL.Lib.Attributes.@suffix
  * @function
  */
 CSL.Lib.Attributes["@term"] = function(state,arg){
 	if (this.name == "et-al"){
-		if (state.opt.term[arg]){
-			this.strings.et_al_term = state.opt.term[arg]["long"][0];
+		if (state.locale_terms[arg]){
+			this.strings.et_al_term = state.getTerm(arg,"long",0);
 		} else {
 			this.strings.et_al_term = arg;
 		}
@@ -120,16 +117,6 @@ CSL.Lib.Attributes["@lang"] = function(state,arg){
 		state.build.lang = arg;
 	}
 };
-
-/*
- * Store class attribute in state config object.
- * @name CSL.Lib.Attributes.@class
- * @function
- */
-CSL.Lib.Attributes["@class"] = function(state,arg){
-	state.opt["class"] = arg;
-};
-
 
 
 /*
@@ -255,7 +242,7 @@ CSL.Lib.Attributes["@and"] = function(state,arg){
 	if ("symbol" == arg){
 		this.strings["and"] = "&";
 	} else {
-		var and = state.opt.term["and"]["long"][0];
+		var and = state.getTerm("and","long",0);
 		this.strings["and"] = and;
 	}
 };

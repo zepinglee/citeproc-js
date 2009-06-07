@@ -65,7 +65,7 @@ CSL.Factory.Token = function(name,tokentype){
 	 * or <code>none</code>), by executing the functions registered in the
 	 * <code>tests</code> array (see below), and reacting accordingly.  This
 	 * function is invoked by the execution wrappers found in
-	 * {@link CSL.Core.Engine}.</p>
+	 * {@link CSL.Engine}.</p>
 	 */
 	this.evaluator = false;
 	/**

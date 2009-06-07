@@ -29,28 +29,28 @@ CSL.Factory.version = function(){
  * order, for later execution.  The element name is used as a key to
  * invoke the relevant <code>build</code> method of the target element.
  * Element methods are defined in {@link CSL.Lib.Elements}.</p>
- * @param {Object} state  The state object returned by {@link CSL.Core.Engine}.
+ * @param {Object} state  The state object returned by {@link CSL.Engine}.
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
  */
 CSL.Factory.XmlToToken = function(state,tokentype){
-	var name = state.build.xmlCommandInterface.nodename.call(this);
+	var name = state.sys.xml.nodename(this);
 	// print(tokentype + " : " + name);
 	if (state.build.skip && state.build.skip != name){
 		return;
 	}
 	if (!name){
-		var txt = state.build.xmlCommandInterface.content.call(this);
+		var txt = state.sys.xml.content(this);
 		if (txt){
 			state.build.text = txt;
 		}
 		return;
 	}
-	if ( ! CSL.Lib.Elements[state.build.xmlCommandInterface.nodename.call(this)]){
+	if ( ! CSL.Lib.Elements[state.sys.xml.nodename(this)]){
 		throw "Undefined node name \""+name+"\".";
 	}
 	var attrfuncs = new Array();
-	var attributes = state.build.xmlCommandInterface.attributes.call(this);
+	var attributes = state.sys.xml.attributes(this);
 	var decorations = CSL.Factory.setDecorations.call(this,state,attributes);
 	var token = new CSL.Factory.Token(name,tokentype);
 	for (var key in attributes){
@@ -68,14 +68,12 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 		}
 	}
 	token.decorations = decorations;
-	if (state.build.children.length){
-		//print("??? Setting state.build.children");
-		var target = state.build.children[0];
-	} else {
-		//print("!!!!!!! Setting target to: "+state.build.area+" before "+token.name);
-		var target = state[state.build.area].tokens;
-	}
-	//print("  <------------ CALL");
+	//
+	// !!!!!: eliminate diversion of tokens to separate
+	// token list (formerly used for reading in macros
+	// and terms).
+	//
+	var target = state[state.build.area].tokens;
 	CSL.Lib.Elements[name].build.call(token,state,target);
 };
 
@@ -88,7 +86,7 @@ CSL.Factory.XmlToToken = function(state,tokentype){
  * Formatting hints are distilled to functions
  * later, in the second compilation pass ({@link CSL.Core.Configure}).</p>
  * @param {Object} state The state object returned by
- * {@link CSL.Core.Engine}.
+ * {@link CSL.Engine}.
  * @param {Object} attributes The hash object containing
  * the attributes and values extracted from an XML node.
  */
@@ -112,7 +110,7 @@ CSL.Factory.setDecorations = function(state,attributes){
  * is replaced with a list of compiled functions.
  * This is applied by {@link CSL.Core.Configure}.
  * @param {Array} state The state object returned by
- * {@link CSL.Core.Engine}.
+ * {@link CSL.Engine}.
  */
 CSL.Factory.renderDecorations = function(state){
 	var ret = new Array();

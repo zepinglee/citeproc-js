@@ -17,7 +17,7 @@ doh.register("tests.factory", [
 	},
 
 	function testFactoryStack (){
-		doh.assertEqual( "bogus", new CSL.Core.Engine("bogus").build.xmlCommandInterface );
+		doh.assertEqual( "bogus", new CSL.Engine("bogus").build.xmlCommandInterface );
 	},
 	function testSubstituteOne() {
 		var template = "<b>%%STRING%%</b>";

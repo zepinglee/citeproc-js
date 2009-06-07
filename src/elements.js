@@ -1,7 +1,5 @@
 dojo.provide("csl.elements");
-if (!CSL) {
-    load("./src/csl.js");
-}
+
 
 //
 // XXXXX Fix initialization of given name count.
@@ -26,98 +24,6 @@ if (!CSL) {
  * @class
  */
 CSL.Lib.Elements = {};
-
-
-/**
- * The style element.
- * @name CSL.Lib.Elements.style
- * @function
- */
-CSL.Lib.Elements.style = new function(){
-	this.build = build;
-	function build (state,target){
-		if (this.tokentype == CSL.START){
-			if (!state.build.lang){
-				state.build.lang = "en";
-			}
-			state.opt.lang = state.build.lang;
-			state.build.in_style = true;
-			state.build.lang = false;
-			state.opt.term = CSL.System.Retrieval.getLocaleObjects(state);
-			state.tmp.have_collapsed = true;
-		} else {
-			state.tmp.disambig_request = false;
-			state.build.in_style = false;
-		}
-		if (this.tokentype == CSL.START){
-			var func = function(state,Item){
-				if (state.tmp.disambig_request  && ! state.tmp.disambig_override){
-					state.tmp.disambig_settings = state.tmp.disambig_request;
-				} else if (state.registry.registry[Item.id] && ! state.tmp.disambig_override) {
-					state.tmp.disambig_request = state.registry.registry[Item.id].disambig;
-					state.tmp.disambig_settings = state.registry.registry[Item.id].disambig;
-				} else {
-					state.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
-				}
-			};
-			state["init"].push(func);
-			var tracking_info_init = function(state,Item){
-				state.tmp.names_used = new Array();
-				state.tmp.nameset_counter = 0;
-				state.tmp.years_used = new Array();
-			};
-			state["init"].push(tracking_info_init);
-
-			var splice_init = function(state,Item) {
-				state.tmp.splice_delimiter = state[state.tmp.area].opt.delimiter;
-			};
-			state["init"].push(splice_init);
-
-			var sort_keys_init = function(state,Item) {
-				state["bibliography_sort"].keys = new Array();
-				state["citation_sort"].keys = new Array();
-			};
-			state["init"].push(sort_keys_init);
-
-		};
-		if (this.tokentype == CSL.END){
-			var set_splice = function(state,Item){
-				//
-				// set the inter-cite join delimiter
-				// here.
-				if (state.tmp.last_suffix_used && state.tmp.last_suffix_used.match(/.*[-.,;:]$/)){
-					state.tmp.splice_delimiter = " ";
-				} else if (state.tmp.prefix.value() && state.tmp.prefix.value().match(/^[,,:;a-z].*/)){
-					state.tmp.splice_delimiter = " ";
-				} else if (state.tmp.last_suffix_used || state.tmp.prefix.value()){
-					//
-					// forcing the delimiter back to normal if a
-					// suffix or prefix touch the join, even if
-					// a year-suffix is the only output.
-					//
-					// XXXX: This should not be necessary.  Any cite matching
-					// this condition should be forced to full form anyway.
-					//
-					state.tmp.splice_delimiter = state[state.tmp.area].opt.delimiter;
-				} else {
-					// XXXX year-suffix must have been used for special
-					// XXXX delimiter to be invoked here.
-				}
-			};
-			state["stop"].push(set_splice);
-			var set_lastvals = function(state,Item){
-				state.tmp.last_suffix_used = state.tmp.suffix.value();
-				state.tmp.last_years_used = state.tmp.years_used.slice();
-				state.tmp.last_names_used = state.tmp.names_used.slice();
-			};
-			state["stop"].push(set_lastvals);
-			var func = function(state,Item){
-				state.tmp.disambig_request = false;
-			};
-			state["stop"].push(func);
-		}
-	}
-};
 
 
 /**
@@ -202,7 +108,7 @@ CSL.Lib.Elements.text = new function(){
 							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
 							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
 							var number = new CSL.Output.Number(num,this);
-							var formatter = new CSL.Util.Disambiguate.Suffixator(CSL.SUFFIX_CHARS);
+							var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
 							state.output.append(number,"literal");
 							//
@@ -230,7 +136,7 @@ CSL.Lib.Elements.text = new function(){
 					if (state.build.plural){
 						plural = state.build.plural;
 					}
-					term = state.opt.term[term][form][plural];
+					term = state.getTerm(term,form,plural);
 					var printterm = function(state,Item){
 						// capitalize the first letter of a term, if it is the
 						// first thing rendered in a citation (or if it is
@@ -310,145 +216,6 @@ CSL.Lib.Elements.macro = new function(){
 	}
 };
 
-
-/**
- * Locale node, start and end.
- * <p>Sets a flag on the state, to cause terms to
- * be stored in a state object for later processing.</p>
- * @name CSL.Lib.Elements.locale
- */
-CSL.Lib.Elements.locale = new function(){
-	this.build = build;
-	function build(state,target){
-		if (this.tokentype == CSL.START){
-			if (state.opt.lang && state.build.lang != state.opt.lang){
-				state.build.skip = true;
-			} else {
-				state.build.skip = false;
-			}
-		}
-	}
-};
-
-
-/**
- * Terms node.
- * <p>This is a noop.</p>
- * @name CSL.Lib.Elements.terms
- * @function
- */
-CSL.Lib.Elements.terms = new function(){
-	this.build = build;
-	function build(state,target){
-	}
-};
-
-
-/**
- * Term node, start and end.
- * @name CSL.Lib.Elements.term
- * @function
- */
-CSL.Lib.Elements.term = new function(){
-	this.build = build;
-	function build (state,target){
-		if (this.tokentype == CSL.START){
-			var bufferlist = new Array();
-			state.build.children.push(bufferlist);
-			state.build.name = this.strings.name;
-			state.build.form = this.strings.form;
-
-		} else {
-			if (state.build.text){
-				var single = new CSL.Factory.Token("single",CSL.SINGLETON);
-				var multiple = new CSL.Factory.Token("multiple",CSL.SINGLETON);
-				target.push(single);
-				target.push(multiple);
-				for (i in target){
-					target[i]["string"] = state.build.text;
-				}
-				state.build.text = false;
-			}
-			// set strings from throwaway tokens to term object
-			var termstrings = new Array();
-			// target should be pointing at the state.build.children
-			// array, set by the start tag above
-			for (i in target){
-				termstrings.push(target[i].string);
-			}
-			// initialize object for this term
-			if (!state.opt.term[state.build.name]){
-				state.opt.term[state.build.name] = new Object();
-			}
-			//
-			// long writes to long and any unused form key.
-			//
-			// short writes to short and to symbol if it is unused
-			//
-			// verb writes to verb and to verb-short if it is unused
-			//
-			// symbol and verb-short write only to themselves
-			if (!state.build.form){
-				state.build.form = "long";
-			}
-			var keywrites = new Object();
-			keywrites["long"] = ["verb-short","symbol","verb","short","long"];
-			keywrites["short"] = ["symbol"];
-			keywrites["verb"] = ["verb-short"];
-			keywrites["symbol"] = [];
-			keywrites["verb-short"] = [];
-			// forced write
-			state.opt.term[state.build.name][state.build.form] = termstrings;
-			if ( !state.build.in_style ){
-				// shy write, performed only when external locale
-				// is loaded.
-				for each (var key in keywrites[state.build.form]){
-					if (!state.opt.term[state.build.name][key]){
-						state.opt.term[state.build.name][key] = termstrings;
-					}
-				}
-			}
-			state.build.name = false;
-			state.build.form = false;
-			state.build.children = new Array();
-		}
-	}
-};
-
-
-/**
- * Single term node.
- * @name CSL.Lib.Elements.single
- * @function
- */
-CSL.Lib.Elements.single = new function(){
-	this.build = build;
-	function build(state,target){
-		if (this.tokentype == CSL.END){
-			this["string"] = state.build.text;
-			this["key"] = state.build.name;
-			state.build.text = false;
-			target.push(this);
-		}
-	}
-};
-
-/**
- * Multiple term node.
- * @name CSL.Lib.Elements.multiple
- * @function
- */
-CSL.Lib.Elements.multiple = new function(){
-	this.build = build;
-	function build(state,target){
-		if (this.tokentype == CSL.END){
-			this["string"] = state.build.text;
-			this["key"] = state.build.name;
-			state.build.text = false;
-			target.push(this);
-		}
-	}
-};
 
 /**
  * The group node, start and end.
@@ -820,7 +587,7 @@ CSL.Lib.Elements.label = new function(){
 				if (!myterm){
 					myterm = "page";
 				}
-				var myterm = state.opt.term[myterm][form][plural];
+				var myterm = state.getTerm(myterm,form,plural);
 				if (this.strings["include-period"]){
 					myterm += ".";
 				}
@@ -1041,10 +808,10 @@ CSL.Lib.Elements["date-part"] = new function(){
 			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
 			//
 			// XXXXX: need a condition for year as well?
-			if (real && precondition && invoked && have_collapsed){
+			if (real && precondition && invoked){
 				state.tmp.years_used.push(value);
 				var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
-				if (known_year){
+				if (known_year && have_collapsed){
 					if (state.tmp.last_years_used[(state.tmp.years_used.length-1)] == value){
 						value = false;
 					}

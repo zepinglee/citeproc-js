@@ -1,6 +1,6 @@
-dojo.provide("tests.test_flipflop");
+dojo.provide("tests.test_flipflopper");
 
-doh.register("tests.flipflop", [
+doh.register("tests.flipflopper", [
 	function testCrossNestedTagsFailWikiStyle(){
 		var ff = new CSL.Util.FlipFlopper();
 		ff.register( "[A]", "[B]", "dummyfunc1", []);

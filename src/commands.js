@@ -2,19 +2,15 @@ dojo.provide("csl.commands");
 
 /**
  * This module provides the commands used to instantiate
- * and control the processor.  For integration purposes,
- * this should provide everything you need, once System
- * and Retrieval have been adapted to your environment.
+ * and control the processor.
  */
-CSL.makeStyle = function(sys,xml,locale){
-	var builder = new CSL.Core.Build(xml);
-	var raw = builder.build(sys,locale);
-	var conf = new CSL.Core.Configure(raw);
-	var ret = conf.configure();
-	return ret;
+CSL.makeStyle = function(sys,xml,lang){
+	var engine = new CSL.Engine(sys,xml,lang);
+	return engine;
 }
 
-CSL.Core.Engine.prototype.registerFlipFlops = function(flist){
+
+CSL.Engine.prototype.registerFlipFlops = function(flist){
 	for each (ff in flist){
 		this.fun.flipflopper.register(ff["start"], ff["end"], ff["func"], ff["alt"]);
 	}
@@ -32,7 +28,7 @@ CSL.Core.Engine.prototype.registerFlipFlops = function(flist){
  * does recognize keys, but this is intended only for testing
  * purposes.)</p>
  */
-CSL.Core.Engine.prototype.makeCitationCluster = function(rawList){
+CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item[0]);
@@ -82,7 +78,7 @@ CSL.Core.Engine.prototype.makeCitationCluster = function(rawList){
  * sorted according to the system locale, with
  * disambiguation adjustments requested by the style.</p>
  */
-CSL.Core.Engine.prototype.makeBibliography = function(){
+CSL.Engine.prototype.makeBibliography = function(){
 	var debug = false;
 	if (debug){
 		for each (tok in this.bibliography.tokens){
@@ -101,7 +97,7 @@ CSL.Core.Engine.prototype.makeBibliography = function(){
 };
 
 
-CSL.Core.Engine.prototype.insertItems = function(inputList){
+CSL.Engine.prototype.insertItems = function(inputList){
 	for each (var item in inputList){
 		var Item = this.sys.retrieveItem(item);
 		this.registry.insert(this,Item);

@@ -3,6 +3,7 @@ if (!CSL) {
 	load("./src/csl.js");
 }
 
+// ABANDONED
 
 /**
  * Second-stage compiler.
@@ -44,7 +45,7 @@ CSL.Core.Configure = function(state,mode) {
  * functions used to generate output,
  * deletes the <code>build</code> and
  * <code>configure</code> areas, and attaches the iterface methods
- * from {@link CSL.Core.Engine} that are needed for processing data
+ * from {@link CSL.Engine} that are needed for processing data
  * items.</p>
  */
 CSL.Core.Configure.prototype.configure = function(){

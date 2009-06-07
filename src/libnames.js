@@ -17,7 +17,6 @@ CSL.Lib.Elements.names = new function(){
 			state.build.substitute_level.push(1);
 
 			var init_names = function(state,Item){
-
 				//
 				// XXXXX: could be wrong here
 				if (state.tmp.value.length == 0){
@@ -85,7 +84,7 @@ CSL.Lib.Elements.names = new function(){
 
 			var handle_names = function(state,Item){
 				var namesets = new Array();
-				var common_term = state.fun.get_common_term(state,state.tmp.value);
+				var common_term = CSL.Util.Names.getCommonTerm(state,state.tmp.value);
 				if (common_term){
 					namesets = state.tmp.value.slice(0,1);
 				} else {
@@ -107,7 +106,7 @@ CSL.Lib.Elements.names = new function(){
 					state.output.addToken("label");
 				}
 				if (!state.output.getToken("etal").strings.et_al_term){
-					state.output.getToken("etal").strings.et_al_term = state.opt.term["et-al"]["long"][0];
+					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al","long",0);
 				}
 				state.output.addToken("commasep",", ");
 				for each (namepart in ["secondary-key","primary-key","prefix","suffix"]){
@@ -141,7 +140,7 @@ CSL.Lib.Elements.names = new function(){
 							var lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
 							var currentones = state.tmp.names_used[state.tmp.nameset_counter];
 							var compset = currentones.concat(lastones);
-							if (state.fun.get_common_term(state,compset)){
+							if (CSL.Util.Names.getCommonTerm(state,compset)){
 								continue;
 							} else {
 								state.tmp.have_collapsed = false;
@@ -234,7 +233,7 @@ CSL.Lib.Elements.names = new function(){
 						if (common_term){
 							term = common_term;
 						} else {
-							term = state.opt.term[nameset.type];
+							term = state.locale_terms[nameset.type];
 						}
 						//
 						// XXXXX: quick hack.  This should be fixed earlier.
@@ -297,7 +296,6 @@ CSL.Lib.Elements.names = new function(){
 						};
 					};
 				};
-
 				if (state.output.getToken("name").strings.form == "count"){
 					state.output.clearlevel();
 					state.output.append(local_count.toString());
@@ -331,7 +329,7 @@ CSL.Lib.Elements.names = new function(){
 				if (!state.tmp.can_substitute.pop()){
 					state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}
-				state.fun.names_reinit(state,Item);
+				CSL.Util.Names.reinit(state,Item);
 				state.output.endTag(); // names
 				//
 				// !!!!!: per-element rendering works.  hurray.

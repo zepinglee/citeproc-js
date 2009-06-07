@@ -7,15 +7,9 @@ if (!CSL) {
 // This will probably become CSL.Util.Numbers
 //
 
-/**
- * Auxiliary helper functions for disambiguation.
- * @namespace Disambiguation utilities
- */
-CSL.Util.Disambiguate = new function(){};
+CSL.Util.Romanizer = function (){};
 
-CSL.Util.Disambiguate.Romanizer = function (){};
-
-CSL.Util.Disambiguate.Romanizer.prototype.format = function(num){
+CSL.Util.Romanizer.prototype.format = function(num){
 	var ret = "";
 	if (num < 6000) {
 		var numstr = num.toString().split("");
@@ -35,7 +29,7 @@ CSL.Util.Disambiguate.Romanizer.prototype.format = function(num){
  * Create a suffix formed from a list of arbitrary characters of arbitrary length.
  * <p>This is a <i>lot</i> harder than it seems.</p>
  */
-CSL.Util.Disambiguate.Suffixator = function(slist){
+CSL.Util.Suffixator = function(slist){
 	if (!slist){
 		slist = CSL.SUFFIX_CHARS;
 	}
@@ -49,12 +43,12 @@ CSL.Util.Disambiguate.Suffixator = function(slist){
  * object with such a "format" method.</p>
  */
 
-CSL.Util.Disambiguate.Suffixator.prototype.format = function(num){
+CSL.Util.Suffixator.prototype.format = function(num){
 	var suffixes = this.get_suffixes(num);
 	return suffixes[(suffixes.length-1)];
 }
 
-CSL.Util.Disambiguate.Suffixator.prototype.get_suffixes = function(num){
+CSL.Util.Suffixator.prototype.get_suffixes = function(num){
 	var suffixes = new Array();
 
 	for (var i=0; i <= num; i++){
@@ -76,7 +70,7 @@ CSL.Util.Disambiguate.Suffixator.prototype.get_suffixes = function(num){
 };
 
 
-CSL.Util.Disambiguate.Suffixator.prototype.incrementArray = function (array){
+CSL.Util.Suffixator.prototype.incrementArray = function (array){
 	array = array.slice();
 	var incremented = false;
 	for (var i=(array.length-1); i > -1; i--){
