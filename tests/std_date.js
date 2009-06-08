@@ -20,3 +20,5 @@ doh.register("tests.std_date", [
 ]);
 
 
+var x = [
+]

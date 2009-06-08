@@ -17,6 +17,7 @@ dojo.provide("csl.attributes");
  */
 CSL.Lib.Attributes = {};
 
+CSL.Lib.Attributes["@class"] = function(state,arg){};
 
 /**
  * Store the value attribute on the token.
@@ -66,7 +67,7 @@ CSL.Lib.Attributes["@form"] = function(state,arg){
  * @function
  */
 CSL.Lib.Attributes["@macro"] = function(state,arg){
-	state.build.postponed_macro = arg;
+	this.postponed_macro = arg;
 };
 
 

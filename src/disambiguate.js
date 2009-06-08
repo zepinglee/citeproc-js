@@ -98,7 +98,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			print("base in (givens):"+base["givens"]);
 		}
 		var str = state.getAmbiguousCite(token,base);
-		print("loc a");
 		var maxvals = state.getMaxVals();
 		var minval = state.getMinVal();
 		base = state.getAmbigConfig();
@@ -125,7 +124,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 				continue;
 			}
 			var otherstr = state.getAmbiguousCite(testpartner,base);
-		print("loc b");
 			if (debug){
 				print("  ---> last clashes: "+checkerator.lastclashes);
 				print("  ---> master:    "+token.id);
@@ -151,7 +149,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			if ( ! state["citation"].opt["disambiguate-add-year-suffix"]){
 				//this.registerAmbigToken(state,akey,token.id,base);
 				checkerator.mode1_counts = false;
-				checkerator.maxed_out_bases[token.id] = base;
+				checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
 				if (debug){
 					print("  ---> Max out: remembering token config for: "+token.id);
 					print("       ("+base["names"]+":"+base["givens"]+")");

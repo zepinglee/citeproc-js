@@ -8,8 +8,7 @@ var tryStyle = function(style){
 			throw "Did not find style file: style/"+style+".csl";
 		}
 		var sys = new RhinoTest();
-		var builder = new CSL.Core.Build(sty);
-		var res = builder.build(sys);
+		var res = new CSL.Engine(sys,sty);
 	} catch(e) {
 		print("oops: "+e);
 	}

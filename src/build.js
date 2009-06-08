@@ -3,10 +3,14 @@ dojo.provide("csl.build");
 
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
+	if ("string" != typeof style){
+		style = "";
+	}
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
 	this.build = new CSL.Engine.Build();
 	this.fun = new CSL.Engine.Fun();
+	this.configure = new CSL.Engine.Configure();
 	this.citation = new CSL.Engine.Citation();
 	this.citation_sort = new CSL.Engine.CitationSort();
 	this.bibliography = new CSL.Engine.Bibliography();
@@ -15,11 +19,15 @@ CSL.Engine = function(sys,style,lang) {
 	this.output = new CSL.Output.Queue(this);
 
 	this.cslXml = this.sys.makeXml(style);
+	//
+	// implicit default, "en"
 	this.sys.setLocaleXml();
 	if (lang){
 		this.sys.setLocaleXml(lang);
-		this.sys.setLocaleXml( this.cslXml, lang );
+	} else {
+		lang = "en";
 	}
+	this.sys.setLocaleXml( this.cslXml, lang );
 	this.locale_terms = this.sys.locale_terms;
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
@@ -161,6 +169,7 @@ CSL.Engine.prototype.configureTokenLists = function(){
 		for (var pos=(this[area].tokens.length-1); pos>-1; pos--){
 			var token = this[area].tokens[pos];
 			token["next"] = (pos+1);
+			//print("setting: "+(pos+1)+" ("+token.name+")");
 			if (token.name && CSL.Lib.Elements[token.name].configure){
 				CSL.Lib.Elements[token.name].configure.call(token,this,pos);
 			}

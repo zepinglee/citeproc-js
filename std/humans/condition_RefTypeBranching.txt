@@ -23,6 +23,11 @@ Work 5, John Doe, 2000.
       <name />
     </names>
   </macro>
+  <macro name="author-short">
+    <names variable="author">
+      <name form="short"/>
+    </names>
+  </macro>
   <macro name="title">
     <choose>
       <if type="book">

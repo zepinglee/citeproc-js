@@ -98,8 +98,8 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 		if (term.@form.toString()){
 			form = term.@form.toString();
 		}
-		if (term.multiple.toString()){
-		this.locale_terms[termname][form] = new Array();
+		if (term.multiple.length()){
+			this.locale_terms[termname][form] = new Array();
 			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
 			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
 		} else {

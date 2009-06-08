@@ -268,8 +268,8 @@ CSL.Engine.prototype._render = function(token,Item){
 };
 
 CSL.Engine.prototype.start = function(Item){
+	this.tmp.have_collapsed = true;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override){
-		this.tmp.have_collapsed = true;
 		this.tmp.disambig_settings = this.tmp.disambig_request;
 	} else if (this.registry.registry[Item.id] && ! this.tmp.disambig_override) {
 		this.tmp.disambig_request = this.registry.registry[Item.id].disambig;
@@ -277,7 +277,6 @@ CSL.Engine.prototype.start = function(Item){
 	} else {
 		this.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
 	}
-
 	this.tmp.names_used = new Array();
 	this.tmp.nameset_counter = 0;
 	this.tmp.years_used = new Array();
@@ -310,5 +309,5 @@ CSL.Engine.prototype.end = function(){
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
 
-	//this.tmp.disambig_request = false;
+	this.tmp.disambig_request = false;
 };

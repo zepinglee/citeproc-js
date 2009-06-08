@@ -229,7 +229,7 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 		}
 	}
 	varnames.sort();
-	return state.locale_terms[varnames.join("")];
+	return varnames.join("");
 };
 
 

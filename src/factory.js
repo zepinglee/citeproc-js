@@ -220,16 +220,6 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	} else {
 		this.build.macro_stack.push(mkey);
 	}
-	var ret = new Array();
-	//
-	// XXXXX This implicit group stuff can be dropped, I think.
-	// XXXXX Macros don't take decorations or anything.
-	//
-	// XXXXX Wrong.  They do take decorations.
-	//
-	// functions used here are c&p from group element.
-	// one more thing that needs some housecleaning.
-	//
 	var start_token = new CSL.Factory.Token("group",CSL.START);
 	start_token.decorations = this.decorations;
 	for (var i in macro_key_token.strings){
@@ -241,30 +231,20 @@ CSL.Factory.expandMacro = function(macro_key_token){
 		//state.tmp.decorations.push(this.decorations);
 	};
 	start_token["execs"].push(newoutput);
-	ret.push(start_token);
-	for (var i in this.build.macro[mkey]){
-		//
-		// could use for each; this was an attempt to get a
-		// fresh copy of the token to defeat a loop involving
-		// interaction between sort and citation render.  had
-		// no effect, probably not needed.
-		var token = this.build.macro[mkey][i];
-		if (token.postponed_macro){
-			//
-			// nested expansion
-			ret = ret.concat(CSL.Factory.expandMacro.call(this,token));
-		} else {
-			//
-			// clone the token, so that navigation pointers are
-			// specific to the token list into which the macro
-			//  is being expanded.
-			var newtoken = new Object();
-			for (i in token) {
-				newtoken[i] = token[i];
-			}
-			ret.push(newtoken);
-		}
+	this[this.build.area].tokens.push(start_token);
+	//
+	// Here's where things change pretty dramatically.  We pull
+	// macros out of E4X directly, and process them using the
+	// same combination of tree walker and tag processor that
+	// led us here, but with a different queue.
+	//
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var macroxml = this.cslXml..macro.(@name == mkey);
+	if (!macroxml.toString()){
+		throw "CSL style error: undefined macro \""+mkey+"\"";
 	}
+	var navi = new this._getNavi( this, macroxml );
+	this._build(navi);
 
 	var end_token = new CSL.Factory.Token("group",CSL.END);
 	var mergeoutput = function(state,Item){
@@ -276,11 +256,9 @@ CSL.Factory.expandMacro = function(macro_key_token){
 		//state.output.closeLevel();
 	};
 	end_token["execs"].push(mergeoutput);
-	ret.push(end_token);
+	this[this.build.area].tokens.push(end_token);
 
 	this.build.macro_stack.pop();
-
-	return ret;
 };
 
 

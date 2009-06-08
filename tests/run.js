@@ -2,9 +2,10 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_fullstyles");
+	dojo.require("tests.std_name");
+	dojo.require("tests.test_load_styles");
 	dojo.require("tests.std_condition");
-} else {
-	dojo.require("tests.std_date");
 	dojo.require("tests.test_build");
 	dojo.require("tests.test_sys_rhino_load");
 	dojo.require("tests.test_sys_rhino_locale");
@@ -24,6 +25,17 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.test_queue");
 	dojo.require("tests.test_registry");
+	dojo.require("tests.std_bibliography");
+	dojo.require("tests.std_affix");
+	dojo.require("tests.std_position");
+	dojo.require("tests.std_collapse");
+	dojo.require("tests.std_locators");
+	dojo.require("tests.std_magic");
+	dojo.require("tests.std_number");
+	dojo.require("tests.std_sort");
+	dojo.require("tests.std_date");
+	dojo.require("tests.std_disambiguate");
+} else {
 
 	// most of this stuff now needs to be refactored
 	dojo.require("tests.test_build_internals");
@@ -38,7 +50,6 @@ if(true){
 	dojo.require("tests.test_failing");
 	dojo.require("tests.test_groups");
 	dojo.require("tests.test_list");
-	dojo.require("tests.test_load_styles");
 	dojo.require("tests.test_locale");
 	dojo.require("tests.test_names_import");
 	dojo.require("tests.test_range");
@@ -52,17 +63,6 @@ if(true){
 	dojo.require("tests.test_xmljs");
 
 	// the final challenge
-	dojo.require("tests.std_bibliography");
-	dojo.require("tests.std_name");
-	dojo.require("tests.std_affix");
-	dojo.require("tests.std_disambiguate");
-	dojo.require("tests.std_position");
-	dojo.require("tests.std_collapse");
-	dojo.require("tests.std_fullstyles");
-	dojo.require("tests.std_locators");
-	dojo.require("tests.std_magic");
-	dojo.require("tests.std_number");
-	dojo.require("tests.std_sort");
 
 	// this stuff is either burdensome or broken
 	dojo.require("tests.test_load_all_styles");

@@ -229,11 +229,11 @@ CSL.Lib.Elements.names = new function(){
 					// configure label if poss
 					var label = false;
 					if (state.output.getToken("label").strings.label_position){
-						var term;
+						var termname;
 						if (common_term){
-							term = common_term;
+							termname = common_term;
 						} else {
-							term = state.locale_terms[nameset.type];
+							termname = nameset.type;
 						}
 						//
 						// XXXXX: quick hack.  This should be fixed earlier.
@@ -244,9 +244,9 @@ CSL.Lib.Elements.names = new function(){
 							var form = state.output.getToken("label").strings.form;
 						}
 						if (nameset.names.length > 1){
-							label = term[form][1];
+							label = state.getTerm(termname,form,1);
 						} else {
-							label = term[form][0];
+							label = state.getTerm(termname,form,0);
 						}
 					};
 					//

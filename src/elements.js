@@ -43,6 +43,11 @@ CSL.Lib.Elements.info = new function(){
 	};
 };
 
+CSL.Lib.Elements.macro = new function(){
+	this.build = build;
+	function build (state,target){
+	};
+};
 /**
  * The text element.
  * @name CSL.Lib.Elements.text
@@ -52,28 +57,8 @@ CSL.Lib.Elements.text = new function(){
 	this.build = build;
 	function build (state,target){
 		CSL.Util.substituteStart(state,target);
-		//
-		// CSL permits macros to be called before they
-		// are declared.  We file a placeholder token unless we are
-		// in the layout area, and when in the layout area we scan
-		// any inserted macros for nested macro calls, and explode
-		// them.
-		if (state.build.postponed_macro){
-			if ( ! state.build.layout_flag && ! state.build.sort_flag){
-				//
-				// Fudge it with a placeholder if we're not yet
-				// inside the layout area.
-				//
-				this.postponed_macro = state.build.postponed_macro;
-				target.push(this);
-			} else {
-				this.postponed_macro = state.build.postponed_macro;
-				var macro = CSL.Factory.expandMacro.call(state,this);
-				for each (var t in macro){
-					target.push(t);
-				}
-			}
-			state.build.postponed_macro = false;
+		if (this.postponed_macro){
+			CSL.Factory.expandMacro.call(state,this);
 		} else {
 			// ...
 			//
@@ -180,40 +165,6 @@ CSL.Lib.Elements.text = new function(){
 		};
 		CSL.Util.substituteEnd(state,target);
 	};
-};
-
-
-/**
- * Macro node, start and end.
- * <p>Because macros are expanded into the body of the style,
- * their element function requires only a build method.</p>
- * @name CSL.Lib.Elements.macro
- * @function
- */
-CSL.Lib.Elements.macro = new function(){
-	this.build = build;
-	/*
-	 * Executed on token
-	 */
-	function build (state,target){
-		if (this.tokentype == CSL.START){
-			state.build.name = this.strings.name;
-			var bufferlist = new Array();
-			state.build.children.push(bufferlist);
-		} else {
-			//
-			// catch repeated declarations of the same macro name
-			if (state.build.macro[state.build.name]){
-				throw "CSL processor error: repeated declaration of macro \""+state.build.name+"\"";
-			}
-			//
-			// is this slice really needed?
-			state.build.macro[state.build.name] = target.slice();
-			state.build.name = false;
-			//state.build.children = new Array();
-			state.build.children.pop();
-		}
-	}
 };
 
 
@@ -952,12 +903,8 @@ CSL.Lib.Elements.key = new function(){
 			//
 			// if it's not a variable, it's a macro
 			var token = new CSL.Factory.Token("text",CSL.SINGLETON);
-			token.postponed_macro = state.build.postponed_macro;
-			var macro = CSL.Factory.expandMacro.call(state,token);
-			for each (var t in macro){
-				target.push(t);
-			}
-			state.build.postponed_macro = false;
+			token.postponed_macro = this.postponed_macro;
+			CSL.Factory.expandMacro.call(state,token);
 		}
 		//
 		// ops to output the key string result to an array go

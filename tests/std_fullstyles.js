@@ -10,3 +10,6 @@ doh.register("tests.std_fullstyles", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
+
+var x = [
+]

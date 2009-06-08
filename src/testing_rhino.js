@@ -71,6 +71,7 @@ RhinoTest.prototype.getLang = function(lang){
 
 
 RhinoTest.prototype.makeXml = function(str){
+	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	return XML(str);
 };
@@ -112,8 +113,8 @@ RhinoTest.prototype.setLocaleXml = function(arg,lang){
 		if (term.@form.toString()){
 			form = term.@form.toString();
 		}
-		if (term.multiple.toString()){
-		this.locale_terms[termname][form] = new Array();
+		if (term.multiple.length()){
+			this.locale_terms[termname][form] = new Array();
 			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
 			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
 		} else {
