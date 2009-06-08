@@ -326,6 +326,10 @@ CSL.Lib.Elements.names = new function(){
 
 		if (this.tokentype == CSL.END){
 			var unsets = function(state,Item){
+				//
+				// XXXXX: why not just use a simple var for can_substitute,
+				// and set it to true when we reach the top level again?
+				//
 				if (!state.tmp.can_substitute.pop()){
 					state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}

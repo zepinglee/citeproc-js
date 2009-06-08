@@ -1,0 +1,58 @@
+>>== MODE ==>>
+bibliography
+<<== MODE ==<<
+
+>>== SCHEMA ==>>
+0.8
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+<table style="border-collapse:collapse;line-height:1.1em;">
+  <tr style="vertical-align:top;">
+    <td>[1]</td>
+    <td style="padding-left:4pt;">John Smith, Book A (2000)</td>
+  </tr>
+</table>
+<<== RESULT ==<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <text value="hello"/>
+        </layout>
+    </citation>
+    <bibliography>
+        <option name="second-field-align" value="true"/>
+        <layout>
+            <text variable="citation-number" prefix="[" suffix="]"/>
+            <group delimiter=" ">
+                <group delimiter=", ">
+                    <names variable="author">
+                        <name/>
+                    </names>
+                    <text variable="title"/>
+                </group>
+                <date variable="issued" prefix="(" suffix=")">
+                    <date-part name="year"/>
+                </date>
+            </group>
+        </layout>
+    </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"ITEM-1",
+   "type": "book",
+   "author":[
+      {"name":"Smith, John"}
+   ],
+   "title": "Book A",
+   "issued":{"year":"2000"}
+}]
+<<===== INPUT =====<<

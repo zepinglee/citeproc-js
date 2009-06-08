@@ -149,7 +149,7 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			var strPlus = {"str":"","obj":[]};
 			if ("string" == typeof blobjr.blobs){
 				if ("number" == typeof blobjr.num){
-					strPlus["obj"] = blobjr;
+					strPlus["obj"].push(blobjr);
 				} else {
 					strPlus["str"] = blobjr.blobs;
 				}
@@ -160,8 +160,9 @@ CSL.Output.Queue.prototype.string = function(state,blobs,blob){
 			// If there is a suffix, or any decorations, trailing rangeable
 			// objects must be rendered and appended immediately here.
 			//
+
 			if (strPlus["obj"].length && (blobjr.strings.suffix || (blobjr.decorations && blobjr.decorations.length))){
-				strPlus["str"] = strPlus["str"] + state.output.renderBlobs(strPlus["obj"]);
+				strPlus["str"] = strPlus["str"] + state.output.renderBlobs(strPlus["obj"],"suppress_decorations");
 				strPlus["obj"] = [];
 			}
 			if (strPlus["str"]){
@@ -212,7 +213,7 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 	}
 };
 
-CSL.Output.Queue.prototype.renderBlobs = function(blobs){
+CSL.Output.Queue.prototype.renderBlobs = function(blobs,suppress_decor){
 	var state = this.state;
 	var ret = "";
 	for (var i=0; i < blobs.length; i++){
@@ -228,12 +229,14 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs){
 			// print("doing rangeable blob");
 			//var str = blob.blobs;
 			var str = blob.formatter.format(blob.num);
-			if (!state.tmp.suppress_decorations){
+			if (!state.tmp.suppress_decorations && !suppress_decor){
 				for each (var params in blob.decorations){
 					str = state.fun.decorate[params[0]][params[1]](str);
 				}
 			}
-			str = blob.strings.prefix + str + blob.strings.suffix;
+			if (!suppress_decor){
+				str = blob.strings.prefix + str + blob.strings.suffix;
+			}
 			if (blob.status == CSL.END){
 				//
 				// XXXXX needs to be drawn from the object

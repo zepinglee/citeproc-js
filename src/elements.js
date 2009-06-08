@@ -80,7 +80,11 @@ CSL.Lib.Elements.text = new function(){
 						if (!state.tmp.force_subsequent){
 							var num = state.registry.registry[id].seq;
 							var number = new CSL.Output.Number(num,this);
+							print("XXXXX ... no force_subsequent: "+number.formatter.format(number.num));
 							state.output.append(number,"literal");
+							//print(state.output.string(state,state.output.queue));
+						} else {
+							print("XXXXX ... force_subsequent");
 						}
 					};
 					this["execs"].push(func);

@@ -4,15 +4,24 @@ if (!CSL) {
 }
 
 CSL.Util.substituteStart = function(state,target){
+	//
+	// Contains wrapper code for both substitute and first-field/remaining-fields
+	// formatting.
+	//
+	if (state[state.build.area]["second-field-align"]){
+		print("element is in bibliography: "+this.name);
+	}
 	if (state.build.substitute_level.value() == 1){
 		//
-		// A text macro inside a substitute environment is
-		// treated as a special conditional.
+		// All top-level elements in a substitute environment get
+		// wrapped in conditionals.  The substitute_level variable
+		// is a stack, because spanned names elements (with their
+		// own substitute environments) can be nested inside
+		// a substitute environment.
 		var choose_start = new CSL.Factory.Token("choose",CSL.START);
 		target.push(choose_start);
 		var if_start = new CSL.Factory.Token("if",CSL.START);
 		//
-		// Here's the Clever Part.
 		// Set a test of the shadow if token to skip this
 		// macro if we have acquired a name value.
 		var check_for_variable = function(state,Item){
