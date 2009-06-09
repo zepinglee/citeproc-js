@@ -26,6 +26,7 @@ CSL = new function () {
 	this.START = 0;
 	this.END = 1;
 	this.SINGLETON = 2;
+	this.SEEN = 6;
 
 	this.SUCCESSOR = 3;
 	this.SUCCESSOR_OF_SUCCESSOR = 4;

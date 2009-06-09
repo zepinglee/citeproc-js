@@ -5,9 +5,6 @@ doh.register("tests.std_magic", [
         var test = new StdRhinoTest("magic_SecondFieldAlign");
         doh.assertEqual(test.result, test.run());
     },
-]);
-
-var x = [
     function(){
         var test = new StdRhinoTest("magic_MagicCapitalization");
         doh.assertEqual(test.result, test.run());
@@ -16,4 +13,7 @@ var x = [
         var test = new StdRhinoTest("magic_SuppressDuplicateVariableRendering");
         doh.assertEqual(test.result, test.run());
     },
+]);
+
+var x = [
 ]

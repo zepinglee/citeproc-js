@@ -8,9 +8,9 @@ CSL.Util.substituteStart = function(state,target){
 	// Contains wrapper code for both substitute and first-field/remaining-fields
 	// formatting.
 	//
-	if (state[state.build.area]["second-field-align"]){
-		print("element is in bibliography: "+this.name);
-	}
+	//if (state[state.build.area].opt["second-field-align"]){
+	//	print("element is in bibliography: "+this.name);
+	//}
 	if (state.build.substitute_level.value() == 1){
 		//
 		// All top-level elements in a substitute environment get

@@ -56,7 +56,7 @@ CSL.Lib.Elements.macro = new function(){
 CSL.Lib.Elements.text = new function(){
 	this.build = build;
 	function build (state,target){
-		CSL.Util.substituteStart(state,target);
+		CSL.Util.substituteStart.call(this,state,target);
 		if (this.postponed_macro){
 			CSL.Factory.expandMacro.call(state,this);
 		} else {
@@ -75,22 +75,28 @@ CSL.Lib.Elements.text = new function(){
 					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
 						this.range_prefix = "-";
 					}
+					//
+					// XXXXX: where to get the delimiter for this?  The
+					// layout delimiter is appropriate, where is it?
+					// Is it even safe to set it at this stage of processing?
+					// Guess so.
+					//
+					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					var func = function(state,Item){
 						var id = Item["id"];
 						if (!state.tmp.force_subsequent){
 							var num = state.registry.registry[id].seq;
 							var number = new CSL.Output.Number(num,this);
-							print("XXXXX ... no force_subsequent: "+number.formatter.format(number.num));
 							state.output.append(number,"literal");
-							//print(state.output.string(state,state.output.queue));
-						} else {
-							print("XXXXX ... force_subsequent");
 						}
 					};
 					this["execs"].push(func);
 				} else if (variable == "year-suffix"){
 					if (state[state.tmp.area].opt["year-suffix-range-delimiter"]){
 						this.range_prefix = state[state.tmp.area].opt["year-suffix-range-delimiter"];
+					}
+					if (state[state.tmp.area].opt["year-suffix-delimiter"]){
+						this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
 					}
 					var func = function(state,Item){
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
@@ -167,7 +173,7 @@ CSL.Lib.Elements.text = new function(){
 			}
 			target.push(this);
 		};
-		CSL.Util.substituteEnd(state,target);
+		CSL.Util.substituteEnd.call(this,state,target);
 	};
 };
 
@@ -181,7 +187,7 @@ CSL.Lib.Elements.group = new function(){
 	this.build = build;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-			CSL.Util.substituteStart(state,target);
+			CSL.Util.substituteStart.call(this,state,target);
 			if (state.build.substitute_level.value()){
 				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
 			}
@@ -229,7 +235,7 @@ CSL.Lib.Elements.group = new function(){
 			if (state.build.substitute_level.value()){
 				state.build.substitute_level.replace((state.build.substitute_level.value()-1));
 			}
-			CSL.Util.substituteEnd(state,target);
+			CSL.Util.substituteEnd.call(this,state,target);
 		}
 	}
 };
@@ -637,11 +643,13 @@ CSL.Lib.Elements.layout = new function(){
 			};
 			this["execs"].push(reset_nameset_counter);
 
+			state[state.build.area].opt.layout_prefix = this.strings.prefix;
+			state[state.build.area].opt.layout_suffix = this.strings.suffix;
+			state[state.build.area].opt.layout_delimiter = this.strings.delimiter;
+			state[state.build.area].opt.layout_decorations = this.decorations;
+
 			var declare_thyself = function(state,Item){
 				state.tmp.term_predecessor = false;
-				state[state.tmp.area].opt.layout_prefix = this.strings.prefix;
-				state[state.tmp.area].opt.layout_suffix = this.strings.suffix;
-				state[state.tmp.area].opt.layout_decorations = this.decorations;
 				state.output.openLevel("empty");
 			};
 			this["execs"].push(declare_thyself);
@@ -691,7 +699,7 @@ CSL.Lib.Elements.layout = new function(){
 CSL.Lib.Elements.number = new function(){
 	this.build = build;
 	function build(state,target){
-		CSL.Util.substituteStart(state,target);
+		CSL.Util.substituteStart.call(this,state,target);
 		//
 		// This should push a rangeable object to the queue.
 		//
@@ -705,7 +713,7 @@ CSL.Lib.Elements.number = new function(){
 		};
 		this["execs"].push(push_number);
 		target.push(this);
-		CSL.Util.substituteEnd(state,target);
+		CSL.Util.substituteEnd.call(this,state,target);
 	};
 };
 
@@ -714,7 +722,7 @@ CSL.Lib.Elements.date = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
-			CSL.Util.substituteStart(state,target);
+			CSL.Util.substituteStart.call(this,state,target);
 			var set_value = function(state,Item){
 				state.tmp.element_rendered_ok = false;
 				if (this.variables.length && Item[this.variables[0]]){
@@ -740,7 +748,7 @@ CSL.Lib.Elements.date = new function(){
 		target.push(this);
 
 		if (this.tokentype == CSL.END){
-			CSL.Util.substituteEnd(state,target);
+			CSL.Util.substituteEnd.call(this,state,target);
 		};
 	};
 };
@@ -813,6 +821,9 @@ CSL.Lib.Elements.option = new function(){
 		}
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
+		}
+		if ("second-field-align" == this.strings.name){
+			state[state.build.area].opt["second-field-align"] = this.strings.value;
 		}
 		target.push(this);
 	};

@@ -58,14 +58,23 @@ CSL.Output.DefaultFormatter.prototype.format = function (num){
 	return num.toString();
 };
 
-
+//
+// XXXXX: This needs a little attention.  Non-sequential numbers
+// that follow other numbers should be marked SUCCESSOR.  They are
+// currently marked START (i.e. they are ignored).  It looks like
+// there are more combinations than can be expressed or handled
+// with the three state flags in place at the moment.
+//
 CSL.Output.Number.prototype.checkNext = function(next){
 	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
 		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
 			this.status = CSL.END;
 		}
+		if ("object" == typeof next){
+			next.status = CSL.SEEN;
+		}
 	} else { // next number is in the sequence
-		if (this.status == CSL.START){
+		if (this.status == CSL.START || this.status == CSL.SEEN){
 			next.status = CSL.SUCCESSOR;
 		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
 			if (this.range_prefix){
@@ -75,6 +84,11 @@ CSL.Output.Number.prototype.checkNext = function(next){
 				next.status = CSL.SUCCESSOR;
 			}
 
+		}
+		// won't see this again, so no effect of processing, but this
+		// wakes up the correct delimiter.
+		if (this.status == CSL.SEEN){
+			this.status = CSL.SUCCESSOR;
 		}
 	};
 };

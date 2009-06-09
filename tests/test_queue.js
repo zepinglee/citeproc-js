@@ -46,10 +46,9 @@ doh.registerGroup("tests.queue",
 		},
 
 		function testString () {
-			var state = new tests.test_queue.state();
-			state.fun = {};
-			state.fun.flipflopper = new CSL.Util.FlipFlopper();
-			var res = new CSL.Output.Queue(state);
+			var sys = new RhinoTest();
+			var state = new CSL.Engine(sys);
+			var res = state.output;
 
 			var token1 = new CSL.Factory.Token("sometype",CSL.START);
 			token1.strings.delimiter = " [X] ";
@@ -67,6 +66,7 @@ doh.registerGroup("tests.queue",
 			res.append("three");
 			res.closeLevel();
 			res.closeLevel();
+			print("hello");
 
 			doh.assertEqual("one [X] two [Y] three", res.string(state,res.queue) );
 		},

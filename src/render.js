@@ -162,9 +162,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 CSL.Engine.prototype._unit_of_reference = function (inputList){
 	this.tmp.area = "citation";
 	var delimiter = "";
-
 	var result = "";
-
 	var objects = [];
 
 	for each (var Item in inputList){
@@ -182,28 +180,20 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 		this.tmp.handle_ranges = true;
 		var composite = this.output.string(this,this.output.queue);
 		this.tmp.handle_ranges = false;
-		//
-		// At last!  Ready to compose trailing blobs.
-		// We convert "string" output object to an array
-		// before collapsing blobs.
-		if (composite["str"]){
-			if (objects.length){
-				objects.push(this.tmp.splice_delimiter);
-			}
-			objects.push(composite["str"]);
+		if (objects.length && "string" == typeof composite[0]){
+			composite.reverse();
+			objects.push(this.tmp.splice_delimiter + composite.pop());
+		} else {
+		composite.reverse();
+			objects.push(composite.pop());
 		}
-		if (composite["obj"].length){
-			if (objects.length && !composite["str"]){
-				for each (var obj in composite["obj"]){
-					obj.splice_prefix = this.tmp.splice_delimiter;
-					if (this[this.tmp.area].opt["year-suffix-delimiter"]){
-						obj.successor_prefix = this[this.tmp.area].opt["year-suffix-delimiter"];
-					} else {
-						obj.successor_prefix = this.tmp.splice_delimiter;
-					}
-				}
+		composite.reverse();
+		for each (var obj in composite){
+			if ("string" == typeof obj){
+				objects.push(this.tmp.splice_delimiter + obj);
+				continue;
 			}
-			objects = objects.concat(composite["obj"]);
+			objects.push(composite.pop());
 		}
 	}
 	result += this.output.renderBlobs(objects);

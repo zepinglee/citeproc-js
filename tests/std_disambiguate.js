@@ -2,6 +2,10 @@ dojo.provide("tests.std_disambiguate");
 
 doh.register("tests.std_disambiguate", [
     function(){
+        var test = new StdRhinoTest("disambiguate_YearSuffixAndSort");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
         doh.assertEqual(test.result, test.run());
     },
@@ -29,8 +33,7 @@ doh.register("tests.std_disambiguate", [
         var test = new StdRhinoTest("disambiguate_RetainNamesOnFailureIfYearSuffixNotAvailable");
         doh.assertEqual(test.result, test.run());
     },
-    function(){
-        var test = new StdRhinoTest("disambiguate_YearSuffixAndSort");
-        doh.assertEqual(test.result, test.run());
-    },
 ]);
+
+var x = [
+]

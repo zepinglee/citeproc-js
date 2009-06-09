@@ -139,69 +139,107 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	}
 }
 
-CSL.Output.Queue.prototype.string = function(state,blobs,blob){
-	//print("string");
-	var ret = { "str": [], "obj": [] };
-	if (blobs.length == 1 && "string" == blobs[0].blobs){
-		ret["str"] = blobs[0];
-	} else {
-		for each (var blobjr in blobs){
-			var strPlus = {"str":"","obj":[]};
-			if ("string" == typeof blobjr.blobs){
-				if ("number" == typeof blobjr.num){
-					strPlus["obj"].push(blobjr);
-				} else {
-					strPlus["str"] = blobjr.blobs;
-				}
-			} else {
-				strPlus = this.string(state,blobjr.blobs,blobjr);
-			};
-			//
-			// If there is a suffix, or any decorations, trailing rangeable
-			// objects must be rendered and appended immediately here.
-			//
+//
+// Maybe the way to do this is to take it by layers, and
+// analyze a FLAT list of blobs returned during recursive
+// execution.  If the list is all numbers and there is no
+// group decor, don't touch it.  If it ends in numbers,
+// set the group delimiter on the first in the series,
+// and join the strings with the group delimiter.  If it
+// has numbers followed by strings, render each number
+// in place, and join with the group delimiter.  Return
+// the mixed flat list, and recurse upward.
+//
+// That sort of cascade should work, and should be more
+// easily comprehensible than this mess.
+//
 
-			if (strPlus["obj"].length && (blobjr.strings.suffix || (blobjr.decorations && blobjr.decorations.length))){
-				strPlus["str"] = strPlus["str"] + state.output.renderBlobs(strPlus["obj"],"suppress_decorations");
-				strPlus["obj"] = [];
-			}
-			if (strPlus["str"]){
+CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
+	var blobs = myblobs.slice();
+	var ret = new Array();
+	if (blobs.length == 0){
+		return ret;
+	}
+	for (var i in blobs){
+		var blobjr = blobs[i];
+		if ("string" == typeof blobjr.blobs){
+			if ("number" == typeof blobjr.num){
+				ret.push(blobjr);
+			} else if (blobjr.blobs){
+				// skip empty strings!!!!!!!!!!!!
+				var b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
-						strPlus["str"] = state.fun.decorate[params[0]][params[1]](strPlus["str"]);
+						b = state.fun.decorate[params[0]][params[1]](b);
 					}
 				}
-				//
-				// This copes with the fact that the et al element had a period
-				// at the end of it, because it was unstyled.  Very annoying.
-				// Now that this element can be styled, let's hope styles can
-				// be migrated.
-				if (strPlus["str"] && strPlus["str"][(strPlus["str"].length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
-					strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix.slice(1);
+				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
+					b = blobjr.strings.prefix + b + blobjr.strings.suffix.slice(1);
 				} else {
-					strPlus["str"] = blobjr.strings.prefix + strPlus["str"] + blobjr.strings.suffix;
+					b = blobjr.strings.prefix + b + blobjr.strings.suffix;
 				}
-
-				ret["str"].push(strPlus["str"]);
-			}
-			//
-			// this passes rangeable objects through
-			ret["obj"] = ret["obj"].concat(strPlus["obj"]);
-		};
-		if (blob) {
-			ret["str"] = ret["str"].join(blob.strings.delimiter);
+				ret.push(b);
+			};
+		} else if (blobjr.blobs.length){
+			var addtoret = state.output.string(state,blobjr.blobs,blobjr);
+			ret = ret.concat(addtoret);
 		} else {
-			if (state.tmp.handle_ranges){
-				ret["str"] = ret["str"].join("");
-			} else {
-				ret = ret["str"].join("");
-			}
+			continue;
 		}
 	};
-	if (!blob && "undefined" == typeof blob){
+	var span_split = 0;
+	for (var j in ret){
+		if ("string" == typeof ret[j]){
+			span_split = (parseInt(j,10)+1);
+		}
+	}
+	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
+		span_split = ret.length;
+	}
+	if (blob){
+		var blob_delimiter = blob.strings.delimiter;
+	} else {
+		var blob_delimiter = "";
+	}
+	var blobs_start = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter );
+	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
+		if (!state.tmp.suppress_decorations){
+			for each (var params in blob.decorations){
+				blobs_start = state.fun.decorate[params[0]][params[1]](blobs_start);
+			}
+		}
+		//
+		// XXXX: this is same as a code block above, factor out with
+		// code above as model
+		//
+		var b = blobs_start;
+		if (b[(b.length-1)] == "." && blob.strings.suffix && blob.strings.suffix[0] == "."){
+			b = blob.strings.prefix + b + blob.strings.suffix.slice(1);
+		} else {
+			b = blob.strings.prefix + b + blob.strings.suffix;
+		}
+		blobs_start = b;
+	}
+	var blobs_end = ret.slice(span_split,ret.length);
+	if (!blobs_end.length && blobs_start){
+		ret = [blobs_start];
+	} else if (blobs_end.length && !blobs_start) {
+		ret = blobs_end;
+	} else if (blobs_start && blobs_end.length) {
+		ret = [blobs_start].concat(blobs_end);
+	}
+	//
+	// Blobs is now definitely a string with
+	// trailing blobs.  Return it.
+	if ("undefined" == typeof blob){
 		this.queue = new Array();
 		this.current.mystack = new Array();
 		this.current.mystack.push( this.queue );
+		if (state.tmp.suppress_decorations){
+			ret = state.output.renderBlobs(ret);
+		}
+	} else if ("boolean" == typeof blob){
+		ret = state.output.renderBlobs(ret);
 	}
 	return ret;
 };
@@ -213,30 +251,38 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 	}
 };
 
-CSL.Output.Queue.prototype.renderBlobs = function(blobs,suppress_decor){
+CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
+	if (!delim){
+		delim = "";
+	}
 	var state = this.state;
 	var ret = "";
+	var use_delim = "";
 	for (var i=0; i < blobs.length; i++){
 		if (blobs[i].checkNext){
 			blobs[i].checkNext(blobs[(i+1)]);
 		}
 	}
 	for each (var blob in blobs){
+		if (ret){
+			use_delim = delim;
+		}
 		if ("string" == typeof blob){
 			//throw "Attempt to render string as rangeable blob"
+			ret += use_delim;
 			ret += blob;
 		} else if (blob.status != CSL.SUPPRESS){
 			// print("doing rangeable blob");
 			//var str = blob.blobs;
 			var str = blob.formatter.format(blob.num);
-			if (!state.tmp.suppress_decorations && !suppress_decor){
+			if (!state.tmp.suppress_decorations){
 				for each (var params in blob.decorations){
 					str = state.fun.decorate[params[0]][params[1]](str);
 				}
 			}
-			if (!suppress_decor){
+			//if (!suppress_decor){
 				str = blob.strings.prefix + str + blob.strings.suffix;
-			}
+			//}
 			if (blob.status == CSL.END){
 				//
 				// XXXXX needs to be drawn from the object

@@ -2,8 +2,11 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.test_queue");
+	dojo.require("tests.std_disambiguate");
+	dojo.require("tests.std_collapse");
+	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
-} else {
 	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.std_name");
 	dojo.require("tests.test_load_styles");
@@ -25,17 +28,14 @@ if(true){
 	dojo.require("tests.test_formatters");
 	dojo.require("tests.test_formats");
 	dojo.require("tests.test_output");
-	dojo.require("tests.test_queue");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.std_bibliography");
 	dojo.require("tests.std_affix");
 	dojo.require("tests.std_position");
-	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_sort");
-	dojo.require("tests.std_date");
-	dojo.require("tests.std_disambiguate");
+} else {
 
 	// most of this stuff now needs to be refactored
 	dojo.require("tests.test_build_internals");
