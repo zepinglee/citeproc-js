@@ -13,6 +13,10 @@ bibliography
     <td>[1]</td>
     <td style="padding-left:4pt;">John Smith, Book A (2000)</td>
   </tr>
+  <tr style="vertical-align:top;">
+    <td>[2]</td>
+    <td style="padding-left:4pt;">Robert Jones, Book B (2001)</td>
+  </tr>
 </table>
 <<== RESULT ==<<
 
@@ -46,7 +50,8 @@ bibliography
 
 
 >>===== INPUT =====>>
-[{
+[
+ {
    "id":"ITEM-1",
    "type": "book",
    "author":[
@@ -54,5 +59,15 @@ bibliography
    ],
    "title": "Book A",
    "issued":{"year":"2000"}
-}]
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author":[
+      {"name":"Jones, Robert"}
+   ],
+   "title": "Book B",
+   "issued":{"year":"2001"}
+ }
+]
 <<===== INPUT =====<<

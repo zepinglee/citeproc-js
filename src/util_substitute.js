@@ -8,9 +8,17 @@ CSL.Util.substituteStart = function(state,target){
 	// Contains wrapper code for both substitute and first-field/remaining-fields
 	// formatting.
 	//
-	//if (state[state.build.area].opt["second-field-align"]){
-	//	print("element is in bibliography: "+this.name);
-	//}
+	if (state[state.build.area].opt["second-field-align"]){
+		if (state.build.render_nesting_level == 0 && !state.build.render_seen){
+			var field_start = new CSL.Factory.Token("group",CSL.START);
+			var field_decor_start = function(state,Item){
+				print("    -- first \"field\" start: "+this.name);
+			};
+			field_start.execs.push(field_decor_start);
+			target.push(field_start);
+		}
+		state.build.render_nesting_level += 1;
+	}
 	if (state.build.substitute_level.value() == 1){
 		//
 		// All top-level elements in a substitute environment get
@@ -55,6 +63,19 @@ CSL.Util.substituteStart = function(state,target){
 
 
 CSL.Util.substituteEnd = function(state,target){
+	if (state[state.build.area].opt["second-field-align"]){
+		state.build.render_nesting_level += -1;
+		if (state.build.render_nesting_level == 0 && !state.build.render_seen){
+			state.build.render_seen = true;
+			var field_end = new CSL.Factory.Token("group",CSL.END);
+			var field_decor_end = function(state,Item){
+				print("    -- first \"field\" end: "+this.name);
+				print("    -- second \"field\"+ start");
+			};
+			field_end.execs.push(field_decor_end);
+			target.push(field_end);
+		};
+	};
 	if (state.build.substitute_level.value() == 1){
 		var if_end = new CSL.Factory.Token("if",CSL.END);
 		target.push(if_end);

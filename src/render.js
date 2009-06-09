@@ -140,15 +140,28 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography","\n");
+	if (this.bibliography.opt["second-field-align"]){
+		print("-- bibliography start");
+	}
 	this.output.openLevel("bibliography");
 	for each (item in input){
 		if (false){
 			print("BIB: "+item.id);
 		}
+		if (this.bibliography.opt["second-field-align"]){
+			print("  -- bibliography entry start");
+		};
 		this._cite.call(this,item);
+		if (this.bibliography.opt["second-field-align"]){
+			print("    -- second \"field\"+ end");
+			print("  -- bibliography entry end");
+		};
 		//this.output.squeeze();
 	}
 	this.output.closeLevel();
+	if (this.bibliography.opt["second-field-align"]){
+		print("-- bibliography end");
+	};
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue);
 };
@@ -259,6 +272,7 @@ CSL.Engine.prototype._render = function(token,Item){
 
 CSL.Engine.prototype.start = function(Item){
 	this.tmp.have_collapsed = true;
+	this.tmp.render_seen = false;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override){
 		this.tmp.disambig_settings = this.tmp.disambig_request;
 	} else if (this.registry.registry[Item.id] && ! this.tmp.disambig_override) {

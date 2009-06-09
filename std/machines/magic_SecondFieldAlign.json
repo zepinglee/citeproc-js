@@ -3,7 +3,7 @@
   "category": "magic",
   "mode": "bibliography",
   "schema":"0.8",
-  "result": "<table style=\"border-collapse:collapse;line-height:1.1em;\">\n <tr style=\"vertical-align:top;\">\n <td>[1]</td>\n <td style=\"padding-left:4pt;\">John Smith, Book A (2000)</td>\n </tr>\n</table>",
+  "result": "<table style=\"border-collapse:collapse;line-height:1.1em;\">\n <tr style=\"vertical-align:top;\">\n <td>[1]</td>\n <td style=\"padding-left:4pt;\">John Smith, Book A (2000)</td>\n </tr>\n <tr style=\"vertical-align:top;\">\n <td>[2]</td>\n <td style=\"padding-left:4pt;\">Robert Jones, Book B (2001)</td>\n </tr>\n</table>",
   "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <text value=\"hello\"/>\n </layout>\n </citation>\n <bibliography>\n <option name=\"second-field-align\" value=\"true\"/>\n <layout>\n <text variable=\"citation-number\" prefix=\"[\" suffix=\"]\"/>\n <group delimiter=\" \">\n <group delimiter=\", \">\n <names variable=\"author\">\n <name/>\n </names>\n <text variable=\"title\"/>\n </group>\n <date variable=\"issued\" prefix=\"(\" suffix=\")\">\n <date-part name=\"year\"/>\n </date>\n </group>\n </layout>\n </bibliography>\n</style>",
-  "input": [{ "id":"ITEM-1", "type": "book", "author":[ {"name":"Smith, John"} ], "title": "Book A", "issued":{"year":"2000"} }]
+  "input": [ { "id":"ITEM-1", "type": "book", "author":[ {"name":"Smith, John"} ], "title": "Book A", "issued":{"year":"2000"} }, { "id":"ITEM-2", "type": "book", "author":[ {"name":"Jones, Robert"} ], "title": "Book B", "issued":{"year":"2001"} } ]
 }
