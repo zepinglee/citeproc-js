@@ -66,7 +66,6 @@ doh.registerGroup("tests.queue",
 			res.append("three");
 			res.closeLevel();
 			res.closeLevel();
-			print("hello");
 
 			doh.assertEqual("one [X] two [Y] three", res.string(state,res.queue) );
 		},

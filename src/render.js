@@ -141,7 +141,8 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography","\n");
 	if (this.bibliography.opt["second-field-align"]){
-		print("-- bibliography start");
+		// print("-- bibliography start");
+		this.output.append(this.fun.decorate["second-field-align-bib-start"],"empty");
 	}
 	this.output.openLevel("bibliography");
 	for each (item in input){
@@ -149,18 +150,23 @@ CSL.Engine.prototype._bibliography_entries = function (){
 			print("BIB: "+item.id);
 		}
 		if (this.bibliography.opt["second-field-align"]){
-			print("  -- bibliography entry start");
+			// print("  -- bibliography entry start");
+			this.output.append(this.fun.decorate["second-field-align-entry-start"],"empty");
 		};
 		this._cite.call(this,item);
 		if (this.bibliography.opt["second-field-align"]){
-			print("    -- second \"field\"+ end");
-			print("  -- bibliography entry end");
+			// moved to layout
+			//print("    -- second \"field\"+ end");
+			//this.output.append(this.fun.decorate["second-field-align-second-field-end"],"empty");
+			// print("  -- bibliography entry end");
+			this.output.append(this.fun.decorate["second-field-align-entry-end"],"empty");
 		};
 		//this.output.squeeze();
 	}
 	this.output.closeLevel();
 	if (this.bibliography.opt["second-field-align"]){
-		print("-- bibliography end");
+		// print("-- bibliography end");
+		this.output.append(this.fun.decorate["second-field-align-bib-end"],"empty");
 	};
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue);

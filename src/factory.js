@@ -178,6 +178,10 @@ CSL.Factory.Mode = function(mode){
 
 	var params = CSL.Output.Formats[mode];
 	for (var param in params) {
+		if ("@" != param[0]){
+			decorations[param] = params[param];
+			continue;
+		}
 		var func = false;
 		var val = params[param];
 		var args = param.split('/');
