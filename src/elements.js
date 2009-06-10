@@ -686,12 +686,10 @@ CSL.Lib.Elements.layout = new function(){
 				target.push(suffix_token);
 			}
 			var mergeoutput = function(state,Item){
-				if (state.bibliography.opt["second-field-align"]){
-					// print("    -- second \"field\"+ end");
-					state.output.append(state.fun.decorate["second-field-align-second-field-end"],"empty");
+				if (state[state.tmp.area].opt["second-field-align"]){
+					state.output.endTag();  // second_field_other
 				};
 				state.output.closeLevel();
-				// state.tmp.name_quash = new Object();
 			};
 			this["execs"].push(mergeoutput);
 			target.push(this);

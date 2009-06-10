@@ -10,8 +10,11 @@ CSL.Util.substituteStart = function(state,target){
 		if (state.build.render_nesting_level == 0 && !state.build.render_seen){
 			var field_start = new CSL.Factory.Token("group",CSL.START);
 			var field_decor_start = function(state,Item){
+				var second_field_first = new CSL.Factory.Token("group",CSL.START);
+				second_field_first.decorations = [["@second-field-align","first"]];
+				state.output.startTag("second_field_first",second_field_first);
 				// print("    -- first \"field\" start: "+this.name);
-				state.output.append(state.fun.decorate["second-field-align-first-field-start"],"empty");
+				//state.output.append(state.fun.decorate["second-field-align-first-field-start"],"empty");
 			};
 			field_start.execs.push(field_decor_start);
 			target.push(field_start);
@@ -68,10 +71,10 @@ CSL.Util.substituteEnd = function(state,target){
 			state.build.render_seen = true;
 			var field_end = new CSL.Factory.Token("group",CSL.END);
 			var field_decor_end = function(state,Item){
-				// print("    -- first \"field\" end: "+this.name);
-				state.output.append(state.fun.decorate["second-field-align-first-field-end"],"empty");
-				// print("    -- second \"field\"+ start");
-				state.output.append(state.fun.decorate["second-field-align-second-field-start"],"empty");
+				state.output.endTag(); // second_field_first
+				var second_field_other = new CSL.Factory.Token("group",CSL.START);
+				second_field_other.decorations = [["@second-field-align","other"]];
+				state.output.startTag("second_field_other",second_field_other);
 			};
 			field_end.execs.push(field_decor_end);
 			target.push(field_end);

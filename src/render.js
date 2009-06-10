@@ -140,34 +140,30 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography","\n");
-	if (this.bibliography.opt["second-field-align"]){
-		// print("-- bibliography start");
-		this.output.append(this.fun.decorate["second-field-align-bib-start"],"empty");
-	}
 	this.output.openLevel("bibliography");
+	if (this.bibliography.opt["second-field-align"]){
+		var second_field_table = new CSL.Factory.Token("group",CSL.START);
+		second_field_table.decorations = [["@second-field-align","table"]];
+		this.output.startTag("second_field_table",second_field_table);
+	}
 	for each (item in input){
 		if (false){
 			print("BIB: "+item.id);
 		}
 		if (this.bibliography.opt["second-field-align"]){
-			// print("  -- bibliography entry start");
-			this.output.append(this.fun.decorate["second-field-align-entry-start"],"empty");
+			var second_field_entry = new CSL.Factory.Token("group",CSL.START);
+			second_field_entry.decorations = [["@second-field-align","entry"]];
+			this.output.startTag("second_field_entry",second_field_entry);
 		};
 		this._cite.call(this,item);
 		if (this.bibliography.opt["second-field-align"]){
-			// moved to layout
-			//print("    -- second \"field\"+ end");
-			//this.output.append(this.fun.decorate["second-field-align-second-field-end"],"empty");
-			// print("  -- bibliography entry end");
-			this.output.append(this.fun.decorate["second-field-align-entry-end"],"empty");
+			this.output.endTag(); // second_field_entry
 		};
-		//this.output.squeeze();
 	}
-	this.output.closeLevel();
 	if (this.bibliography.opt["second-field-align"]){
-		// print("-- bibliography end");
-		this.output.append(this.fun.decorate["second-field-align-bib-end"],"empty");
+		this.output.endTag(); // second_field_table
 	};
+	this.output.closeLevel();
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue);
 };

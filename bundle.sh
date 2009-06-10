@@ -27,7 +27,7 @@ function makepaths (){
 	done
 }
 
-files="csl core state render build configure util util_token util_dates util_disambiguate util_names util_sort util_flipflop util_substitute factory commands blob token stack ambigconfig registry disambiguate lib elements libnames attributes output queue formatters formats range system xml xmle4x xmljs retrieval"
+files="csl build state render build configure util util_dates util_names util_sort util_flipflop util_substitute factory commands blob token stack ambigconfig registry disambiguate lib elements libnames attributes output queue formatters formats range system xml xmle4x xmljs retrieval"
 
 
 

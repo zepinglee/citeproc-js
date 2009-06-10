@@ -1,6 +1,5 @@
 dojo.provide("tests.test_queue");
 
-
 doh.registerGroup("tests.queue",
 	[
 		function testListMerge () {

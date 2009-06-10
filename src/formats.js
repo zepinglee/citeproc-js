@@ -16,14 +16,10 @@ CSL.Output.Formats = function(){};
  * output modes.</p>
  */
 CSL.Output.Formats.prototype.html = {
-	"second-field-align-bib-start":"<table style=\"border-collapse:collapse;line-height:1.1em;\">\n",
-	"second-field-align-bib-end":"\n</table>",
-	"second-field-align-entry-start":"<tr style=\"vertical-align:top;\">",
-	"second-field-align-entry-end":"</tr>",
-	"second-field-align-first-field-start":"<td>",
-	"second-field-align-first-field-end":"</td>\n",
-	"second-field-align-second-field-start":"<td style=\"padding-left:4pt;\">",
-	"second-field-align-second-field-end":"</td>",
+	"@second-field-align/table":"<table style=\"border-collapse:collapse;line-height:1.1em;\">%%STRING%%\n</table>",
+	"@second-field-align/entry":"\n<tr style=\"vertical-align:top;\">\n%%STRING%%\n</tr>",
+	"@second-field-align/first":"<td>%%STRING%%</td>\n",
+	"@second-field-align/other":"<td style=\"padding-left:4pt;\">%%STRING%%</td>",
 	"@font-family":"<span style=\"font-family:%%PARAM%%\">%%STRING%%</span>",
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
