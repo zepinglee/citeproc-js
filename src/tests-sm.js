@@ -2,6 +2,8 @@
  * Retrieval methods for standard tests.
  */
 var StdRhinoTest = function(myname){
+	print(":do:");
+	this.xml = new CSL.System.Xml.E4X();
 	this.myname = myname;
 	eval( "this.test = "+testobjects[myname]);
 	this._cache = {};
@@ -17,6 +19,61 @@ var StdRhinoTest = function(myname){
 		this._fixInputSets();
 	}
 };
+
+StdRhinoTest.prototype.makeXml = function(str){
+	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var ret = new XML(str);
+	return ret;
+};
+
+
+StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
+	if ("undefined" == typeof this.locale_terms){
+		this.locale_terms = new Object();
+	}
+	if ("undefined" == typeof arg){
+		var myxml = new XML( this.getLang("en") );
+		lang = "en";
+	} else if ("string" == typeof arg){
+		var myxml = new XML( this.getLang(arg) );
+		lang = arg;
+	} else if ("xml" != typeof arg){
+		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
+	} else if ("string" != typeof lang) {
+		throw "Error in setLocaleXml: Must provide lang string with XML locale object";
+	} else {
+		var myxml = arg;
+	}
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	var locale = new XML();
+	for each (var blob in myxml..locale){
+		if (blob.@xml::lang == lang){
+			locale = blob;
+			break;
+		}
+	}
+	for each (var term in locale.term){
+		var termname = term.@name.toString();
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		if ("undefined" == typeof this.locale_terms[termname]){
+			this.locale_terms[termname] = new Object();
+		};
+		var form = "long";
+		if (term.@form.toString()){
+			form = term.@form.toString();
+		}
+		if (term.multiple.length()){
+			this.locale_terms[termname][form] = new Array();
+			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
+			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
+		} else {
+			this.locale_terms[term.@name.toString()][form] = term.toString();
+		}
+	}
+};
+
 
 //
 // Retrieve properly composed item from phoney database.
@@ -46,7 +103,7 @@ StdRhinoTest.prototype.retrieveItems = function(ids){
 // this method.)
 //
 StdRhinoTest.prototype.getLang = function(lang){
-	return locale[lang];
+	return locale[lang].replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 };
 
 //
@@ -124,15 +181,13 @@ StdRhinoTest.prototype._fixAllNames = function(){
 
 
 StdRhinoTest.prototype._buildStyle = function(){
-	var mybuilder = new CSL.Core.Build(this.test.csl);
-	var myraw = mybuilder.build(this);
-	var myconfigurator = new CSL.Core.Configure(myraw);
-	this.style = myconfigurator.configure();
+	print("makeXml: "+typeof this.style.sys.makeXml);
+	this.style = new CSL.Engine(this,this.test.csl);
 };
 
 
 StdRhinoTest.prototype.run = function(){
-	this._buildStyle(this);
+	this._buildStyle();
 	this.style.insertItems(this._ids);
 	if (this.test.mode == "citation"){
 		var citations = [];

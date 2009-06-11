@@ -313,34 +313,39 @@ if __name__ == '__main__':
     cx.eval_script(system)
 
     def loadData(input):
-        print "ok"
+        print "ok loadData"
         data = json.dumps(input)
         cx.eval_script("sys.loadData(%s)" %(data,))
         return "Loaded data OK"
 
     def makeStyle(csl):
+        print "ok makeStyle"
         csl = json.dumps(csl)
         #print 'style = CSL.makeStyle(%s,%s)' %(csl,locale_en)
         cx.eval_script('var style = CSL.makeStyle(sys,%s)' %(csl,))
         return "Style init OK"
 
     def insertItems(input):
+        print "ok insertItems"
         theinput = json.dumps(input)
         cx.eval_script("style.insertItems(%s)" %(theinput,))
         return "Insert items OK"
 
     def makeCitationCluster(input):
+        print "ok makeCitationCluster"
         theinput = json.dumps(input)
         result = cx.eval_script("style.makeCitationCluster(%s)" %(theinput,))
         return result
 
     def registerFlipFlops(input):
+        print "ok registerFlipFlops"
         theinput = json.dumps(input)
         #print theinput
         result = cx.eval_script("style.registerFlipFlops(%s)" %(theinput,))
         return "Insert items OK"
 
     def makeBibliography():
+        print "ok makeBibliography"
         result = cx.eval_script("style.makeBibliography()")
         return result
     #

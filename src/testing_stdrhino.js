@@ -4,6 +4,7 @@ dojo.provide("csl.testing_stdrhino");
  * Retrieval methods for standard tests.
  */
 var StdRhinoTest = function(myname){
+	print(":doo:");
 	this.xml = new CSL.System.Xml.E4X();
 	this.myname = myname;
 	this._cache = {};
@@ -56,6 +57,8 @@ StdRhinoTest.prototype.getLang = function(lang){
 
 
 StdRhinoTest.prototype.makeXml = function(str){
+	// this is where this should happen
+	//ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var ret = new XML(str);
 	return ret;
