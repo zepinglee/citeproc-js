@@ -49,6 +49,7 @@ if __name__ == '__main__':
 
     #print "Loading retrieval functions ..."
     system = open("./src/tests-sm.js").read()
+    print "Ehllo"
     cx.eval_script(system)
 
     #print "Loading dojo ..."

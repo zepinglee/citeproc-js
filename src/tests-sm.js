@@ -2,7 +2,6 @@
  * Retrieval methods for standard tests.
  */
 var StdRhinoTest = function(myname){
-	print(":do:");
 	this.xml = new CSL.System.Xml.E4X();
 	this.myname = myname;
 	eval( "this.test = "+testobjects[myname]);
@@ -181,7 +180,6 @@ StdRhinoTest.prototype._fixAllNames = function(){
 
 
 StdRhinoTest.prototype._buildStyle = function(){
-	print("makeXml: "+typeof this.style.sys.makeXml);
 	this.style = new CSL.Engine(this,this.test.csl);
 };
 
