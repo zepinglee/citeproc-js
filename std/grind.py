@@ -1,0 +1,150 @@
+#!/usr/bin/env python
+""" Grind human-readable CSL tests into machine-readable form
+
+    When invoked directly as a script, this module converts
+    a set of human-readable CSL test files into the JSON
+    format used for processor testing.
+"""
+import sys,os,re
+try:
+    import json
+except:
+    import simplejson as json
+
+class CslTestUtils:
+    """ Constants and utility methods
+
+    This provides a regular expression to identify data blocks within
+    the human-readable tests files, a list of the valid CSL author
+    field names, and a little utility method for building paths during
+    processing.  These are shared with CslTests and with CslTest.
+    """
+    def __init__(self):
+	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
+        self.CREATORS += ["composer","original-author","container-author","collection-editor"]
+        self.RE_ELEMENT = '(?sm)^.*>>=.*%s.*?\n(.*)\n<<=.*%s'
+
+    
+    def path(self,*elements):
+        return os.path.join( os.getcwd(), *elements )
+
+class CslTests(CslTestUtils):
+    """ Control class for processing a set of tests
+
+    Instantiates with a list of human-readable test names derived from
+    the filesystem.  Provides a method for clearing the content
+    of the machine-readable directory and processing the
+    human-readable files.
+    """
+    def __init__(self):
+        CslTestUtils.__init__(self)
+        self.tests = []
+        for filename in os.listdir( self.path( "humans" ) ):
+            testname = os.path.splitext(filename)[0]
+            self.tests.append(testname)
+
+    def clear(self):
+        for file in os.listdir( self.path("machines") ):
+            os.unlink( self.path("machines", file) )
+
+    def process(self):
+        self.clear()
+        for testname in self.tests:
+            test = CslTest(testname)
+            test.load()
+            test.parse()
+            test.fix_names()
+            test.dump()
+        sys.stdout.write("\n")
+
+class CslTest(CslTestUtils):
+    """ Handler for an individual test file
+
+    Instantiates with a single test name, and provides
+    methods for loading the raw data, parsing and massaging
+    the content, and dumping the result.
+    """
+    def __init__(self,testname):
+        CslTestUtils.__init__(self)
+        sys.stdout.write(".")
+        sys.stdout.flush()
+        self.testname = testname
+        self.data = {}
+
+    def load(self):
+        self.raw = open( "%s.txt" % (self.path("humans",self.testname),) ).read()
+
+    def parse(self):
+        for element in ["MODE","SCHEMA","CSL","RESULT"]:
+            self.extract(element,required=True,is_json=False)
+        self.extract("INPUT",required=True,is_json=True)
+        self.extract("CITATIONS",required=False,is_json=True)
+
+    def extract(self,tag,required=False,is_json=False):
+        m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
+        data = False
+        if m:
+            data = m.group(1).strip()
+        elif required:
+            print "Ooops, missing element: %s in test %s" %(tag,self.testname)
+            sys.exit()
+        if data:
+            if is_json:
+                data = json.loads(data)
+            self.data[tag.lower()] = data
+
+    def fix_names(self):
+        """ Mangle name fields
+
+        This method converts names from the shorthand format
+        used in the "name" field in the INPUT area of the human-readable 
+        test files to the more explicit format recognized by the processor
+        API.
+        """
+        for item in self.data["input"]:
+            for key in [unicode(i) for i in self.CREATORS]:
+                if item.has_key(key):
+                    for entry in item[key]:
+                        one_char = len(entry["name"])-1
+                        two_chars = one_char-1
+                        entry["sticky"] = False
+                        if entry["name"].endswith("!!"):
+                            entry["literal"] = entry["name"][0:-2].strip()
+                        else:
+                            parsed = entry["name"]
+                            if entry["name"].endswith("!"):
+                                entry["sticky"] = True
+                                parsed = entry["name"][0:-1].strip()
+                            parsed = re.split("\s*,\s*",parsed)
+                            if len(parsed) > 0:
+                                m = re.match("^\s*([a-z]+)\s+(.*)",parsed[0])
+                                if m:
+                                    entry["prefix"] = m.group(1)
+                                    entry["primary-key"] = m.group(2)
+                                else:
+                                    entry["primary-key"] = parsed[0]
+                            if len(parsed) > 1:
+                                entry["secondary-key"] = parsed[1];
+                            if len(parsed) > 2:
+                                m = re.match("\!\s*(.*)",parsed[2])
+                                if m:
+                                    entry["suffix"] = m.group(1)
+                                    entry["comma_suffix"] = True
+                                else:
+                                    entry["suffix"] = parsed[2]
+                        del entry["name"]
+
+    def dump(self):
+        if not os.path.exists( self.path("machines")):
+            os.makedirs( self.path("machines"))
+        tpath_out = "%s.json" % (self.path("machines", self.testname),)
+        json.dump(self.data, open(tpath_out,"w+"), indent=4, sort_keys=True )
+        
+
+if __name__ == "__main__":
+    mypath = os.path.split(sys.argv[0])[0]
+    os.chdir(mypath)
+    
+    tests = CslTests()
+    tests.process()
+

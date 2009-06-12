@@ -36,6 +36,6 @@ Only Me
     "type": "book",
     "issued": {"broken-entry": "bleah!"},
     "title": "Ignore me"
-  },
+  }
 ]
 <<===== INPUT =====<<

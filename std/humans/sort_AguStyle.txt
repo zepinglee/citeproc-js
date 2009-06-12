@@ -96,7 +96,7 @@ Smith, A., T. Jones, and L. Roberts (1997)
    "id":"item-1",
    "type": "book",
    "author": [
-        { "name":"Smith, Al" },
+        { "name":"Smith, Al" }
    ],
    "issued": {"year": "1989"},
    "title": "Book One"

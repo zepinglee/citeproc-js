@@ -66,7 +66,7 @@ Book Three
    "id":"item-1",
    "type": "book",
    "author": [
-        { "name":"Doe, John" },
+        { "name":"Doe, John" }
    ],
    "issued": {"year": "2000"},
    "title": "Book One"
@@ -87,7 +87,7 @@ Book Three
    "type": "book",
    "editor": [
         { "name":"Doe, John" },
-        { "name":"Roe, Jane" },
+        { "name":"Roe, Jane" }
    ],
    "issued": {"year": "2000"},
    "title": "Book Two"

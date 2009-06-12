@@ -1,9 +1,22 @@
 {
-  "name": "Western Articular Lowercase",
-  "category": "name",
-  "mode": "citation",
-  "schema":"0.8",
-  "result": "Jacques van Doe",
-  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <names variable=\"author\">\n <name />\n </names>\n </layout>\n </citation>\n</style>",
-  "input": [{ "id":"item-1", "type": "book", "author": [ { "name":"van Doe, Jacques" } ], "issued": "1645", "title": "A Book of Five Rings" }]
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <names variable=\"author\">\n                <name />\n            </names>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "prefix": "van", 
+                    "primary-key": "Doe", 
+                    "secondary-key": "Jacques", 
+                    "sticky": false
+                }
+            ], 
+            "id": "item-1", 
+            "issued": "1645", 
+            "title": "A Book of Five Rings", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Jacques van Doe", 
+    "schema": "0.8"
 }

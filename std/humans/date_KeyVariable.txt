@@ -41,25 +41,25 @@ Book D
     "id":"ITEM-1",
     "type": "book",
     "title": "Book C",
-    "issued": {"year": "2000", "month": "2", "day": "15" },
+    "issued": {"year": "2000", "month": "2", "day": "15" }
   },
   {
     "id":"ITEM-2",
     "type": "book",
     "title": "Book B",
-    "issued": {"year": "2000", "month": "12", "day": "15" },
+    "issued": {"year": "2000", "month": "12", "day": "15" }
   },
   {
     "id":"ITEM-3",
     "type": "book",
     "title": "Book A",
-    "issued": {"year": "2001"},
+    "issued": {"year": "2001"}
   },
   {
     "id":"ITEM-4",
     "type": "book",
     "title": "Book D",
-    "issued": {"year": "2000"},
+    "issued": {"year": "2000"}
   }
 ]
 <<===== INPUT =====<<

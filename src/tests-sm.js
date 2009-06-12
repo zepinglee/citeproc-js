@@ -13,7 +13,7 @@ var StdRhinoTest = function(myname){
 	if (this.test){
 		//this._readTest();
 		this.result = this.test.result;
-		this._fixAllNames();
+		//this._fixAllNames();
 		this._setCache();
 		this._fixInputSets();
 	}

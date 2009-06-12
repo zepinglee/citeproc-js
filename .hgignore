@@ -12,3 +12,4 @@ syntax: regexp
 ^MIGRATION.txt
 ^all-styles
 /test_load_all_styles.js$
+\.pyc$

@@ -1,9 +1,44 @@
 {
-  "name": "Key Variable",
-  "category": "date",
-  "mode": "bibliography",
-  "schema":"0.8",
-  "result": "Book A\nBook B\nBook C\nBook D",
-  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <text variable=\"title\"/>\n </layout>\n </citation>\n <bibliography>\n <sort>\n <key variable=\"issued\" sort=\"descending\"/>\n </sort>\n <layout>\n <text variable=\"title\"/>\n </layout>\n </bibliography>\n</style>",
-  "input": [ { "id":"ITEM-1", "type": "book", "title": "Book C", "issued": {"year": "2000", "month": "2", "day": "15" }, }, { "id":"ITEM-2", "type": "book", "title": "Book B", "issued": {"year": "2000", "month": "12", "day": "15" }, }, { "id":"ITEM-3", "type": "book", "title": "Book A", "issued": {"year": "2001"}, }, { "id":"ITEM-4", "type": "book", "title": "Book D", "issued": {"year": "2000"}, } ]
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n\t\t    <text variable=\"title\"/>\n        </layout>\n    </citation>\n    <bibliography>\n        <sort>\n            <key variable=\"issued\" sort=\"descending\"/>\n        </sort>\n        <layout>\n            <text variable=\"title\"/>\n        </layout>\n    </bibliography>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "issued": {
+                "day": "15", 
+                "month": "2", 
+                "year": "2000"
+            }, 
+            "title": "Book C", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-2", 
+            "issued": {
+                "day": "15", 
+                "month": "12", 
+                "year": "2000"
+            }, 
+            "title": "Book B", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-3", 
+            "issued": {
+                "year": "2001"
+            }, 
+            "title": "Book A", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-4", 
+            "issued": {
+                "year": "2000"
+            }, 
+            "title": "Book D", 
+            "type": "book"
+        }
+    ], 
+    "mode": "bibliography", 
+    "result": "Book A\nBook B\nBook C\nBook D", 
+    "schema": "0.8"
 }

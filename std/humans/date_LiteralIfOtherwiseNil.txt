@@ -35,6 +35,6 @@ citation
     "type": "book",
     "issued": {"literal": "maybe around 2000bc sometime?"},
     "title": "Ignore me"
-  },
+  }
 ]
 <<===== INPUT =====<<

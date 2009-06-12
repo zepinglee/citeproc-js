@@ -1,9 +1,21 @@
 {
-  "name": "Asian Glyphs",
-  "category": "name",
-  "mode": "citation",
-  "schema":"0.8",
-  "result": "我妻栄",
-  "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n <citation>\n <layout>\n <names variable=\"author\">\n <name/>\n </names>\n </layout>\n </citation>\n</style>",
-  "input": [{ "id": "item-1", "type": "book", "author": [ { "name":"我妻, 栄" } ], "issued": "1960", "title": "民法" }]
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <names variable=\"author\">\n                <name/>\n            </names>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "primary-key": "\u6211\u59bb", 
+                    "secondary-key": "\u6804", 
+                    "sticky": false
+                }
+            ], 
+            "id": "item-1", 
+            "issued": "1960", 
+            "title": "\u6c11\u6cd5", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "\u6211\u59bb\u6804", 
+    "schema": "0.8"
 }

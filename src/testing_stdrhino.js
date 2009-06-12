@@ -15,7 +15,7 @@ var StdRhinoTest = function(myname){
 		var test = readFile("./std/machines/" + myname + ".json", "UTF-8");
 		eval( "this.test = "+test);
 		this.result = this.test.result;
-		this._fixAllNames();
+		//this._fixAllNames();
 		this._setCache();
 		this._fixInputSets();
 	}
