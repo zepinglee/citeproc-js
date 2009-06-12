@@ -1,8 +1,0 @@
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
-    <citation>
-        <layout>
-            <text variable="title" prefix="Should print this: "/>
-            <text variable="title" prefix=" ... but should NOT print this: "/>
-        </layout>
-    </citation>
-</style>
