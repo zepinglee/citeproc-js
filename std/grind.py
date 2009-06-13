@@ -37,15 +37,18 @@ class CslTests(CslTestUtils):
     of the machine-readable directory and processing the
     human-readable files.
     """
-    def __init__(self, verbose=False):
+    def __init__(self, args, verbose=False):
         self.verbose = verbose
         CslTestUtils.__init__(self)
         self.tests = []
+        self.args = args
         for filename in os.listdir( self.path( "humans" ) ):
             p = self.path("humans", filename)
             if not os.path.stat.S_ISREG( os.stat(p).st_mode ) or not re.match(self.RE_FILENAME,filename):
                 continue
             testname = os.path.splitext(filename)[0]
+            if len(self.args) and not testname in self.args:
+                continue
             self.tests.append(testname)
         self.tests.sort()
 
@@ -56,7 +59,8 @@ class CslTests(CslTestUtils):
                 os.unlink( p )
 
     def process(self):
-        self.clear()
+        if not len(self.args):
+            self.clear()
         for testname in self.tests:
             test = CslTest(testname, verbose=self.verbose)
             test.load()
@@ -155,19 +159,36 @@ class CslTest(CslTestUtils):
 if __name__ == "__main__":
     from optparse import OptionParser
     usage = '''
-      %prog [options]
+      %prog [options] [[testname] ...]
 '''.rstrip()
-  
-    parser = OptionParser(usage=usage)
+
+    prefix = "%s%s" % (os.path.curdir, os.path.sep)
+    description=''' This script converts human-friendly test files for
+the CSL bibliography system into the machine-friendly JSON format.
+The script should be located in the top-level directory of the test
+suite, with an immediate subdirectory %shumans/ that contains the
+human-readable test files.  Machine-readable files will be written
+into the %smachines/ subdirectory.  When the script is run without
+options (or with the -v option only), the content of the %smachines/ 
+directory will be deleted, and all files in %shumans/ directory will
+be processed.  If the names of one or more tests are given as
+arguments, existing files in %smachines/ will not be deleted, and only
+the named test files will be processed.
+'''.strip() % (prefix,prefix,prefix,prefix,prefix)
+
+    parser = OptionParser(usage=usage,description=description,epilog="Happy testing!")
     parser.add_option("-v", "--verbose", dest="be_verbose",
                       default=False,
                       action="store_true", 
                       help='Display test names during processing.')
     (options, args) = parser.parse_args()
+
+    if len(args) > 0:
+        options.be_verbose = True
     
     mypath = os.path.split(sys.argv[0])[0]
     os.chdir(mypath)
     
-    tests = CslTests( verbose=options.be_verbose )
+    tests = CslTests( args, verbose=options.be_verbose )
     tests.process()
 
