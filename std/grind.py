@@ -23,6 +23,7 @@ class CslTestUtils:
 	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
         self.CREATORS += ["composer","original-author","container-author","collection-editor"]
         self.RE_ELEMENT = '(?sm)^.*>>=.*%s.*?\n(.*)\n<<=.*%s'
+        self.RE_FILENAME = '^[a-z]+_[a-zA-Z]+\.txt'
 
     
     def path(self,*elements):
@@ -36,21 +37,28 @@ class CslTests(CslTestUtils):
     of the machine-readable directory and processing the
     human-readable files.
     """
-    def __init__(self):
+    def __init__(self, verbose=False):
+        self.verbose = verbose
         CslTestUtils.__init__(self)
         self.tests = []
         for filename in os.listdir( self.path( "humans" ) ):
+            p = self.path("humans", filename)
+            if not os.path.stat.S_ISREG( os.stat(p).st_mode ) or not re.match(self.RE_FILENAME,filename):
+                continue
             testname = os.path.splitext(filename)[0]
             self.tests.append(testname)
+        self.tests.sort()
 
     def clear(self):
         for file in os.listdir( self.path("machines") ):
-            os.unlink( self.path("machines", file) )
+            p = self.path("machines", file)
+            if os.path.stat.S_ISREG( os.stat(p).st_mode ):
+                os.unlink( p )
 
     def process(self):
         self.clear()
         for testname in self.tests:
-            test = CslTest(testname)
+            test = CslTest(testname, verbose=self.verbose)
             test.load()
             test.parse()
             test.fix_names()
@@ -64,9 +72,12 @@ class CslTest(CslTestUtils):
     methods for loading the raw data, parsing and massaging
     the content, and dumping the result.
     """
-    def __init__(self,testname):
+    def __init__(self,testname, verbose=False):
         CslTestUtils.__init__(self)
-        sys.stdout.write(".")
+        if verbose:
+            sys.stdout.write( "%s\n" %testname)
+        else:
+            sys.stdout.write(".")
         sys.stdout.flush()
         self.testname = testname
         self.data = {}
@@ -142,9 +153,21 @@ class CslTest(CslTestUtils):
         
 
 if __name__ == "__main__":
+    from optparse import OptionParser
+    usage = '''
+      %prog [options]
+'''.rstrip()
+  
+    parser = OptionParser(usage=usage)
+    parser.add_option("-v", "--verbose", dest="be_verbose",
+                      default=False,
+                      action="store_true", 
+                      help='Display test names during processing.')
+    (options, args) = parser.parse_args()
+    
     mypath = os.path.split(sys.argv[0])[0]
     os.chdir(mypath)
     
-    tests = CslTests()
+    tests = CslTests( verbose=options.be_verbose )
     tests.process()
 
