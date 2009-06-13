@@ -7,10 +7,11 @@ This is a test source file for use in testing processors of the
 Citation Style Language (CSL)
 
 Test source files (like this one) are ground into valid JSON by
-the ./grind.sh script in the root directory of the test archive.
+the ./grind.py script in the root directory of the test archive.
 
 
-A test consists of four required blocks: MODE, RESULT, CSL and INPUT
+A test consists of four required blocks: MODE, RESULT, CSL and INPUT,
+and one optional block CITATIONS.
 
 Blocks of the test are delimited as show below.  Only the leading
 >>= or <<= and the block name (which must be in all caps) are
@@ -25,9 +26,9 @@ clarity.
 # (without quotes).  This specifies the type of output that the processor
 # should deliver for testing.
 
-                  >>===== MODE =====>>
+>>===== MODE =====>>
 citation
-                  <<===== MODE =====<<
+<<===== MODE =====<<
 
 
 # The RESULT block is a simple string.  If quotes are included in the
@@ -36,9 +37,9 @@ citation
 # output.
 
 
-                  >>===== RESULT =====>>
+>>===== RESULT =====>>
 Doe 2000a,b;2001
-                  <<===== RESULT =====<<
+<<===== RESULT =====<<
 
 
 # The CSL block should be a valid CSL style file.  These blocks
@@ -71,7 +72,7 @@ Doe 2000a,b;2001
 #
 # Note that names are written as a simple string that must
 # be parsed into the internal representation required by the
-# processor being tested.  The hinting syntax of name strings
+# processor being tested.  The shorthand syntax of name strings
 # is as follows:
 #
 # Literal name (for institutions and the like):
@@ -95,9 +96,44 @@ Doe 2000a,b;2001
 # Names fixed in sort ordering (common in East and Southeast Asia):
 #    name="Takeda, Shingen !"
 #
-# Names in non-Roman, non-Cyrillic fonts are to be combined
+# (Names in non-Roman, non-Cyrillic fonts are to be combined
 # to single joined-up strings in sort ordering, with no other
-# processing.
+# processing.)
+#
+# The shorthand syntax is parsed into a machine-friendly
+# form by the grind.py script.  That form, which should
+# be recognized by the processor API, looks like this:
+#
+# "author": [
+#     {
+#         "comma_suffix": true, 
+#         "primary-key": "Doe", 
+#         "secondary-key": "Jeffrey", 
+#         "sticky": false, 
+#         "suffix": "Jr."
+#     }
+# ] 
+#
+# For Western names, primary-key and secondary-key correspond
+# to surname and given name respectively, but these fields have
+# no fixed semantic meaning: names from other languages should be 
+# assigned to these fields according to the preferred sorting priority,
+# not according to whether the name is a "family" name.  For Chinese and
+# Japanese names, the field assignment will be the same as for
+# Western names (i.e. primary-key = surname).  For Icelandic names,
+# the primary-key field should contain the patronymic.  For
+# Mongolian names, it should contain the given name, with the
+# patronymic assigned to the secondary-key field.
+#
+# The comma_suffix flag indicates whether a suffix (such as Jr.
+# or III) should be preceded by a comma.  Ordinarily to comma
+# is used.
+#
+# The sticky flag may be set on transliterated Chinese, Japanese and 
+# other foreign names to indicate that they should always
+# be presented in sort order, rather than in given name - last name
+# order.  Such a name ordering convention is uncommon, but this
+# flag permits it to be supported.
 
 >>===== INPUT =====>>
 [
@@ -130,3 +166,24 @@ Doe 2000a,b;2001
   }
 ]
 <<===== INPUT =====<<
+
+#
+# A CITATIONS section may be included in a test that has
+# MODE set to "citation".  When used, this section permits
+# several separate citations to be rendered in the test,
+# with control over which input items are included in each
+# citation, and the options appended to each item.  Each
+# cite is a two-element list, with the first element the
+# ID of the input item to be used, and the second element
+# a hash object providing fields for "locator", "prefix",
+# et cetera.  This is wrapped in two layers of nesting, to
+# permit multiple citations with multiple cites in each.
+#
+
+>>===== CITATIONS ====>>
+[
+  [
+    ["ITEM-1",{"prefix":"As written in"}]
+  ]
+]
+<<===== CITATIONS ====<<
