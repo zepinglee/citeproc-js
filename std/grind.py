@@ -37,7 +37,7 @@ class CslTests(CslTestUtils):
     of the machine-readable directory and processing the
     human-readable files.
     """
-    def __init__(self, args, verbose=False):
+    def __init__(self, args=[], verbose=False):
         self.verbose = verbose
         CslTestUtils.__init__(self)
         self.tests = []
@@ -189,6 +189,6 @@ the named test files will be processed.
     mypath = os.path.split(sys.argv[0])[0]
     os.chdir(mypath)
     
-    tests = CslTests( args, verbose=options.be_verbose )
+    tests = CslTests( args=args, verbose=options.be_verbose )
     tests.process()
 
