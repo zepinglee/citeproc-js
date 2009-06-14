@@ -1,0 +1,66 @@
+>>== MODE ==>>
+bibliography
+<<== MODE ==<<
+
+>>== SCHEMA ==>>
+0.8
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+<ul class="csl-bib-body" style="line-height:150%">
+<li class="csl-bib-entry"><span class="csl-bib-first">John Smith, Book A (2000)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Robert Jones, Book B (2001)</span></li>
+</ul>
+<<== RESULT ==<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <text value="hello"/>
+        </layout>
+    </citation>
+    <bibliography>
+        <option name="line-spacing" value="1.5"/>
+        <layout>
+            <group delimiter=" ">
+                <group delimiter=", ">
+                    <names variable="author">
+                        <name/>
+                    </names>
+                    <text variable="title"/>
+                </group>
+                <date variable="issued" prefix="(" suffix=")">
+                    <date-part name="year"/>
+                </date>
+            </group>
+        </layout>
+    </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author":[
+      {"name":"Smith, John"}
+   ],
+   "title": "Book A",
+   "issued":{"year":"2000"}
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author":[
+      {"name":"Jones, Robert"}
+   ],
+   "title": "Book B",
+   "issued":{"year":"2001"}
+ }
+]
+<<===== INPUT =====<<

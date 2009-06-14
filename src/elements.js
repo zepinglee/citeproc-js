@@ -805,36 +805,44 @@ CSL.Lib.Elements.option = new function(){
 			// only one collapse value will be honoured.
 			if (this.strings.value){
 				state[state.tmp.area].opt.collapse = this.strings.value;
-			}
-		}
+			};
+		};
 		if (CSL.ET_AL_NAMES.indexOf(this.strings.name) > -1){
 			if (this.strings.value){
 				state[state.build.area].opt[this.strings.name] = parseInt(this.strings.value, 10);
-			}
-		}
-		if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){
-			state[state.tmp.area].opt[this.strings.name] = true;
-		}
+			};
+		};
 		if ("year-suffix-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["year-suffix-delimiter"] = this.strings.value;
-		}
+		};
 		if ("year-suffix-range-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["year-suffix-range-delimiter"] = this.strings.value;
-		}
+		};
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
-		}
+		};
 		if (this.strings.value == "true"){
+			if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){
+				state[state.tmp.area].opt[this.strings.name] = true;
+			};
 			if ("second-field-align" == this.strings.name){
 				state.bibliography.opt["csl-bib-body"].push("push-right");
 				state.bibliography.opt["csl-bib-entry"].push("be-relative");
 				state.bibliography.opt["csl-bib-first"].push("float-left");
-			}
+			};
 			if ("hanging-indent" == this.strings.name){
 				state.bibliography.opt["csl-bib-body"].push("push-right");
 				state.bibliography.opt["csl-bib-entry"].push("hanging-indent");
-			}
-		}
+			};
+		};
+		if (this.strings.value && this.strings.value.match(/^[.0-9]+$/)){
+			if ("line-spacing" == this.strings.name){
+				state.bibliography.opt["bib-line-spacing"] = parseFloat(this.strings.value,10);
+			};
+			if ("entry-spacing" == this.strings.name){
+				state.bibliography.opt["bib-entry-spacing"] = parseFloat(this.strings.value,10);
+			};
+		};
 		target.push(this);
 	};
 };

@@ -2,7 +2,19 @@ dojo.provide("tests.std_magic");
 
 doh.register("tests.std_magic", [
     function(){
+        var test = new StdRhinoTest("magic_EntrySpacingDouble");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("magic_HangingIndent");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("magic_LineSpacingDouble");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("magic_LineSpacingFiftyPercentStretch");
         doh.assertEqual(test.result, test.run());
     },
     function(){

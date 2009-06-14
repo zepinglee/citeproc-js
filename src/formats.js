@@ -47,11 +47,21 @@ CSL.Output.Formats.prototype.html = {
 	"@squotes/noop":"%%STRING%%",
 	"@bibliography/wrapper": function(state,str){
 		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");
-		return "<ul class=\""+cls+"\">\n"+str+"</ul>";
+		var line_height = "";
+		if (state.bibliography.opt["bib-line-spacing"]){
+			line_height = (100*state.bibliography.opt["bib-line-spacing"]);
+			line_height =  " style=\"line-height:"+line_height+"%\"";
+		};
+		return "<ul class=\""+cls+"\""+line_height+">\n"+str+"</ul>";
 	},
 	"@bibliography/entry": function(state,str){
 		var cls = ["csl-bib-entry"].concat(state.bibliography.opt["csl-bib-entry"]).join(" ");
-		return "<li class=\""+cls+"\">"+str+"</li>\n";
+		var margin_bottom = "";
+		if (state.bibliography.opt["bib-entry-spacing"] > 1){
+			margin_bottom = (1.1*(state.bibliography.opt["bib-entry-spacing"]-1));
+			margin_bottom = " style=\"margin-bottom:"+margin_bottom+"em\"";
+		};
+		return "<li class=\""+cls+"\""+margin_bottom+">"+str+"</li>\n";
 	},
 	"@bibliography/first": function(state,str){
 		//
