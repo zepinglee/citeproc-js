@@ -8,9 +8,11 @@ bibliography
 
 
 >>===== RESULT =====>>
-Book One
-Book Two
-Book Three
+<ul class="csl-bib-body">
+<li class="csl-bib-entry"><span class="csl-bib-first">Book One</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Book Two</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Book Three</span></li>
+</ul>
 <<===== RESULT =====<<
 
 

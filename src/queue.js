@@ -170,7 +170,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				var b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
-						b = state.fun.decorate[params[0]][params[1]](b);
+						b = state.fun.decorate[params[0]][params[1]](state,b);
 					}
 				}
 				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
@@ -205,7 +205,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
 		if (!state.tmp.suppress_decorations){
 			for each (var params in blob.decorations){
-				blobs_start = state.fun.decorate[params[0]][params[1]](blobs_start);
+				blobs_start = state.fun.decorate[params[0]][params[1]](state,blobs_start);
 			}
 		}
 		//
@@ -277,7 +277,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
 			var str = blob.formatter.format(blob.num);
 			if (!state.tmp.suppress_decorations){
 				for each (var params in blob.decorations){
-					str = state.fun.decorate[params[0]][params[1]](str);
+					str = state.fun.decorate[params[0]][params[1]](state,str);
 				}
 			}
 			//if (!suppress_decor){

@@ -7,7 +7,7 @@ cd $(dirname $0)
 #
 # Be sure the machine side of the test suite is up to date
 #
-std/grind.sh
+std/grind.py
 
 
 #

@@ -280,6 +280,10 @@ CSL.Engine.Citation = function (){
 CSL.Engine.Bibliography = function (){
 	this.opt = new Object();
 	this.tokens = new Array();
+	this.opt["csl-bib-body"] = new Array();
+	this.opt["csl-bib-entry"] = new Array();
+	this.opt["csl-bib-first"] = new Array();
+	this.opt["csl-bib-other"] = new Array();
 	this.opt["et-al-min"] = 0;
 	this.opt["et-al-use-first"] = 1;
 	this.opt["et-al-subsequent-min"] = 0;
@@ -452,30 +456,22 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
 	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
-	this.output.addToken("bibliography","\n");
-	this.output.openLevel("bibliography");
-	if (this.bibliography.opt["second-field-align"]){
-		var second_field_table = new CSL.Factory.Token("group",CSL.START);
-		second_field_table.decorations = [["@second-field-align","table"]];
-		this.output.startTag("second_field_table",second_field_table);
-	}
+	this.output.addToken("bibliography_joiner","\n");
+	this.output.openLevel("bibliography_joiner");
+	var bib_wrapper = new CSL.Factory.Token("group",CSL.START);
+	bib_wrapper.decorations = [["@bibliography","wrapper"]];
+	this.output.startTag("bib_wrapper",bib_wrapper);
 	for each (item in input){
 		if (false){
 			print("BIB: "+item.id);
 		}
-		if (this.bibliography.opt["second-field-align"]){
-			var second_field_entry = new CSL.Factory.Token("group",CSL.START);
-			second_field_entry.decorations = [["@second-field-align","entry"]];
-			this.output.startTag("second_field_entry",second_field_entry);
-		};
+		var bib_entry = new CSL.Factory.Token("group",CSL.START);
+		bib_entry.decorations = [["@bibliography","entry"]];
+		this.output.startTag("bib_entry",bib_entry);
 		this._cite.call(this,item);
-		if (this.bibliography.opt["second-field-align"]){
-			this.output.endTag(); // second_field_entry
-		};
+		this.output.endTag(); // closes bib_entry
 	}
-	if (this.bibliography.opt["second-field-align"]){
-		this.output.endTag(); // second_field_table
-	};
+	this.output.endTag(); // closes bib_wrapper
 	this.output.closeLevel();
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue);
@@ -520,7 +516,7 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
 	if (!this.tmp.suppress_decorations){
 		for each (var params in this.citation.opt.layout_decorations){
-			result = this.fun.decorate[params[0]][params[1]](result);
+			result = this.fun.decorate[params[0]][params[1]](this,result);
 		}
 	}
 	return result;
@@ -537,8 +533,8 @@ CSL.Engine.prototype._render = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
-		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area);
-		print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
+		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
+		//print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 	if (token.evaluator){
 	    next = token.evaluator.call(token,this,Item);
@@ -699,7 +695,7 @@ CSL.Lib.Elements.text = new function(){
 						// I guess, actually).
 						if (!state.tmp.term_predecessor){
 							//print("Capitalize");
-							term = CSL.Output.Formatters.capitalize_first(term);
+							term = CSL.Output.Formatters.capitalize_first(state,term);
 							state.tmp.term_predecessor = true;
 						};
 						state.output.append(term,this);
@@ -1142,8 +1138,8 @@ CSL.Lib.Elements.layout = new function(){
 				target.push(suffix_token);
 			}
 			var mergeoutput = function(state,Item){
-				if (state[state.tmp.area].opt["second-field-align"]){
-					state.output.endTag();  // second_field_other
+				if (state.tmp.area == "bibliography"){
+					state.output.endTag();  // closes bib_other
 				};
 				state.output.closeLevel();
 			};
@@ -1269,8 +1265,16 @@ CSL.Lib.Elements.option = new function(){
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		}
-		if ("second-field-align" == this.strings.name){
-			state[state.build.area].opt["second-field-align"] = this.strings.value;
+		if (this.strings.value == "true"){
+			if ("second-field-align" == this.strings.name){
+				state.bibliography.opt["csl-bib-body"].push("push-right");
+				state.bibliography.opt["csl-bib-entry"].push("be-relative");
+				state.bibliography.opt["csl-bib-first"].push("float-left");
+			}
+			if ("hanging-indent" == this.strings.name){
+				state.bibliography.opt["csl-bib-body"].push("push-right");
+				state.bibliography.opt["csl-bib-entry"].push("hanging-indent");
+			}
 		}
 		target.push(this);
 	};
@@ -2095,10 +2099,11 @@ CSL.Factory.renderDecorations = function(state){
 	this.decorations = ret;
 };
 CSL.Factory.substituteOne = function(template) {
-	return function(list) {
+	return function(state,list) {
 		if ("string" == typeof list){
 			return template.replace("%%STRING%%",list);
 		}
+		print("USING is_delimiter (1) ... WHY?");
 		var decor = template.split("%%STRING%%");
 		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
 		ret.push({"is_delimiter":true,"value":decor[1]});
@@ -2108,10 +2113,11 @@ CSL.Factory.substituteOne = function(template) {
 CSL.Factory.substituteTwo = function(template) {
 	return function(param) {
 		var template2 = template.replace("%%PARAM%%", param);
-		return function(list) {
+		return function(state,list) {
 			if ("string" == typeof list){
 				return template2.replace("%%STRING%%",list);
 			}
+			print("USING is_delimiter (2) ... WHY?");
 			var decor = template2.split("%%STRING");
 			var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
 			ret.push({"is_delimiter":true,"value":decor[1]});
@@ -2606,18 +2612,17 @@ CSL.Util.Sort.strip_prepositions = function(str){
 	return str;
 };
 CSL.Util.substituteStart = function(state,target){
-	if (state[state.build.area].opt["second-field-align"]){
-		if (state.build.render_nesting_level == 0 && !state.build.render_seen){
-			var field_start = new CSL.Factory.Token("group",CSL.START);
-			var field_decor_start = function(state,Item){
-				var second_field_first = new CSL.Factory.Token("group",CSL.START);
-				second_field_first.decorations = [["@second-field-align","first"]];
-				state.output.startTag("second_field_first",second_field_first);
-				// print("    -- first \"field\" start: "+this.name);
-				//state.output.append(state.fun.decorate["second-field-align-first-field-start"],"empty");
+	if (state.build.area == "bibliography"){
+		if (state.build.render_nesting_level == 0){
+			var bib_first = new CSL.Factory.Token("group",CSL.START);
+			bib_first.decorations = [["@bibliography","first"]];
+			var func = function(state,Item){
+				if (!state.tmp.render_seen){
+					state.output.startTag("bib_first",bib_first);
+				};
 			};
-			field_start.execs.push(field_decor_start);
-			target.push(field_start);
+			bib_first.execs.push(func);
+			target.push(bib_first);
 		}
 		state.build.render_nesting_level += 1;
 	}
@@ -2663,19 +2668,27 @@ CSL.Util.substituteStart = function(state,target){
 	};
 };
 CSL.Util.substituteEnd = function(state,target){
-	if (state[state.build.area].opt["second-field-align"]){
+	if (state.build.area == "bibliography"){
 		state.build.render_nesting_level += -1;
-		if (state.build.render_nesting_level == 0 && !state.build.render_seen){
-			state.build.render_seen = true;
-			var field_end = new CSL.Factory.Token("group",CSL.END);
-			var field_decor_end = function(state,Item){
-				state.output.endTag(); // second_field_first
-				var second_field_other = new CSL.Factory.Token("group",CSL.START);
-				second_field_other.decorations = [["@second-field-align","other"]];
-				state.output.startTag("second_field_other",second_field_other);
+		if (state.build.render_nesting_level == 0){
+			var bib_first_end = new CSL.Factory.Token("group",CSL.END);
+			var first_func_end = function(state,Item){
+				if (!state.tmp.render_seen){
+					state.output.endTag(); // closes bib_first
+				};
 			};
-			field_end.execs.push(field_decor_end);
-			target.push(field_end);
+			bib_first_end.execs.push(first_func_end);
+			target.push(bib_first_end);
+			var bib_other = new CSL.Factory.Token("group",CSL.START);
+			bib_other.decorations = [["@bibliography","other"]];
+			var other_func = function(state,Item){
+				if (!state.tmp.render_seen){
+					state.tmp.render_seen = true;
+					state.output.startTag("bib_other",bib_other);
+				};
+			};
+			bib_other.execs.push(other_func);
+			target.push(bib_other);
 		};
 	};
 	if (state.build.substitute_level.value() == 1){
@@ -3032,7 +3045,7 @@ CSL.Output.Number.prototype.checkNext = function(next){
 	};
 };
 CSL.Output.Formatters = new function(){};
-CSL.Output.Formatters.passthrough = function(string){
+CSL.Output.Formatters.passthrough = function(state,string){
 	return string;
 };
 //
@@ -3042,7 +3055,7 @@ CSL.Output.Formatters.passthrough = function(string){
 // in its scope, so it's applied last, AFTER they
 // are appended to the string.  I think it's the
 // only one that will need to work that way.
-CSL.Output.Formatters.lowercase = function(string) {
+CSL.Output.Formatters.lowercase = function(state,string) {
 	if ("object" == typeof string){
 		var ret = new Array();
 		for each (item in string){
@@ -3052,7 +3065,7 @@ CSL.Output.Formatters.lowercase = function(string) {
 	}
 	return string.LowerCase();
 };
-CSL.Output.Formatters.uppercase = function(string) {
+CSL.Output.Formatters.uppercase = function(state,string) {
 	if ("object" == typeof string){
 		var ret = new Array();
 		for each (item in string){
@@ -3062,13 +3075,13 @@ CSL.Output.Formatters.uppercase = function(string) {
 	}
 	return string.toUpperCase();
 };
-CSL.Output.Formatters.capitalize_first = function(string) {
+CSL.Output.Formatters.capitalize_first = function(state,string) {
 	return string[0].toUpperCase()+string.substr(1);
 };
-CSL.Output.Formatters.sentence_capitalization = function(string) {
+CSL.Output.Formatters.sentence_capitalization = function(state,string) {
 	return string[0].toUpperCase()+string.substr(1).toLowerCase();
 };
-CSL.Output.Formatters.capitalize_all = function(string) {
+CSL.Output.Formatters.capitalize_all = function(state,string) {
 	var strings = string.split(" ");
 	for(var i=0; i<strings.length; i++) {
 		if(strings[i].length > 1) {
@@ -3079,7 +3092,7 @@ CSL.Output.Formatters.capitalize_all = function(string) {
     }
 	return strings.join(" ");
 };
-CSL.Output.Formatters.title_capitalization = function(string) {
+CSL.Output.Formatters.title_capitalization = function(state,string) {
 	if (!string) {
 		return "";
 	}
@@ -3119,10 +3132,7 @@ CSL.Output.Formatters.title_capitalization = function(string) {
 };
 CSL.Output.Formats = function(){};
 CSL.Output.Formats.prototype.html = {
-	"@second-field-align/table":"<table style=\"border-collapse:collapse;line-height:1.1em;\">%%STRING%%\n</table>",
-	"@second-field-align/entry":"\n<tr style=\"vertical-align:top;\">\n%%STRING%%\n</tr>",
-	"@second-field-align/first":"<td>%%STRING%%</td>\n",
-	"@second-field-align/other":"<td style=\"padding-left:4pt;\">%%STRING%%</td>",
+	"@hanging-indent/bib":"<div style=\"line-height:2em;margin-left:0.5in;text-indent:-0.5in;\">\n%%STRING%%\n</div>",
 	"@font-family":"<span style=\"font-family:%%PARAM%%\">%%STRING%%</span>",
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
@@ -3150,7 +3160,45 @@ CSL.Output.Formats.prototype.html = {
 	"@squotes/true":"&lsquo;%%STRING%%&rsquo;",
 	"@squotes/left":"&lsquo;%%STRING%%",
 	"@squotes/right":"%%STRING%%&rsquo;",
-	"@squotes/noop":"%%STRING%%"
+	"@squotes/noop":"%%STRING%%",
+	"@bibliography/wrapper": function(state,str){
+		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");
+		return "<ul class=\""+cls+"\">\n"+str+"</ul>";
+	},
+	"@bibliography/entry": function(state,str){
+		var cls = ["csl-bib-entry"].concat(state.bibliography.opt["csl-bib-entry"]).join(" ");
+		return "<li class=\""+cls+"\">"+str+"</li>\n";
+	},
+	"@bibliography/first": function(state,str){
+		//
+		// The "first field" object could have a suffix ending
+		// in a space.  The space needs to be placed beyond the
+		// end of the span tag or it may vanish.
+		//
+		var start = str.length;
+		for (var c=str.length; c>-1; c += -1){
+			if (str[c] != " "){
+				start = c;
+				break;
+			};
+		};
+		var cls = ["csl-bib-first"].concat(state.bibliography.opt["csl-bib-first"]).join(" ");
+		return "<span class=\""+cls+"\">"+str.slice(0,start)+"</span>"+str.slice(start,str.length);
+	},
+	"@bibliography/other": function(state,str){
+		//
+		// See above.
+		//
+		var end = str.length;
+		for (var c=0; c<str.length; c += 1){
+			if (str[c] != " "){
+				end = c;
+				break;
+			};
+		};
+		var cls = ["csl-bib-other"].concat(state.bibliography.opt["csl-bib-other"]).join(" ");
+		return str.slice(0,end)+"<span class=\""+cls+"\">"+str.slice(end,str.length)+"</span>";
+	}
 };
 CSL.Output.Formats = new CSL.Output.Formats();CSL.Output.Queue = function(state){
 	this.state = state;
@@ -3293,7 +3341,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				var b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
-						b = state.fun.decorate[params[0]][params[1]](b);
+						b = state.fun.decorate[params[0]][params[1]](state,b);
 					}
 				}
 				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
@@ -3328,7 +3376,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
 		if (!state.tmp.suppress_decorations){
 			for each (var params in blob.decorations){
-				blobs_start = state.fun.decorate[params[0]][params[1]](blobs_start);
+				blobs_start = state.fun.decorate[params[0]][params[1]](state,blobs_start);
 			}
 		}
 		//
@@ -3395,7 +3443,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
 			var str = blob.formatter.format(blob.num);
 			if (!state.tmp.suppress_decorations){
 				for each (var params in blob.decorations){
-					str = state.fun.decorate[params[0]][params[1]](str);
+					str = state.fun.decorate[params[0]][params[1]](state,str);
 				}
 			}
 			//if (!suppress_decor){

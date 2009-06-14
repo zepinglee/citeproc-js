@@ -33,6 +33,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<table style=\"border-collapse:collapse;line-height:1.1em;\">\n<tr style=\"vertical-align:top;\">\n<td>[1]</td>\n<td style=\"padding-left:4pt;\">John Smith, Book A (2000)</td>\n</tr>\n<tr style=\"vertical-align:top;\">\n<td>[2]</td>\n<td style=\"padding-left:4pt;\">Robert Jones, Book B (2001)</td>\n</tr>\n</table>", 
+    "result": "<ul class=\"csl-bib-body push-right\">\n<li class=\"csl-bib-entry be-relative\"><span class=\"csl-bib-first float-left\">[1]</span><span class=\"csl-bib-other\">John Smith, Book A (2000)</span></li>\n<li class=\"csl-bib-entry be-relative\"><span class=\"csl-bib-first float-left\">[2]</span><span class=\"csl-bib-other\">Robert Jones, Book B (2001)</span></li>\n</ul>", 
     "schema": "0.8"
 }

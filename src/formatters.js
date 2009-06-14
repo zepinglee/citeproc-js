@@ -14,7 +14,7 @@ CSL.Output.Formatters = new function(){};
 /**
  * A noop that just delivers the string.
  */
-CSL.Output.Formatters.passthrough = function(string){
+CSL.Output.Formatters.passthrough = function(state,string){
 	return string;
 };
 
@@ -30,7 +30,7 @@ CSL.Output.Formatters.passthrough = function(string){
 /**
  * Force all letters in the string to lowercase.
  */
-CSL.Output.Formatters.lowercase = function(string) {
+CSL.Output.Formatters.lowercase = function(state,string) {
 	//
 	// XXXXX
 	// this listiness in lowercase and uppercase should
@@ -52,7 +52,7 @@ CSL.Output.Formatters.lowercase = function(string) {
 /**
  * Force all letters in the string to uppercase.
  */
-CSL.Output.Formatters.uppercase = function(string) {
+CSL.Output.Formatters.uppercase = function(state,string) {
 	if ("object" == typeof string){
 		var ret = new Array();
 		for each (item in string){
@@ -68,7 +68,7 @@ CSL.Output.Formatters.uppercase = function(string) {
  * Force capitalization of the first letter in the string, leave
  * the rest of the characters untouched.
  */
-CSL.Output.Formatters.capitalize_first = function(string) {
+CSL.Output.Formatters.capitalize_first = function(state,string) {
 	return string[0].toUpperCase()+string.substr(1);
 };
 
@@ -77,7 +77,7 @@ CSL.Output.Formatters.capitalize_first = function(string) {
  * Similar to <b>capitalize_first</b>, but force the
  * subsequent characters to lowercase.
  */
-CSL.Output.Formatters.sentence_capitalization = function(string) {
+CSL.Output.Formatters.sentence_capitalization = function(state,string) {
 	return string[0].toUpperCase()+string.substr(1).toLowerCase();
 };
 
@@ -88,7 +88,7 @@ CSL.Output.Formatters.sentence_capitalization = function(string) {
  * letters to lowercase.  Single characters are forced
  * to uppercase.
  */
-CSL.Output.Formatters.capitalize_all = function(string) {
+CSL.Output.Formatters.capitalize_all = function(state,string) {
 	var strings = string.split(" ");
 	for(var i=0; i<strings.length; i++) {
 		if(strings[i].length > 1) {
@@ -109,7 +109,7 @@ CSL.Output.Formatters.capitalize_all = function(string) {
  * to all uppercase or lowercase before passing it to
  * this function.
  */
-CSL.Output.Formatters.title_capitalization = function(string) {
+CSL.Output.Formatters.title_capitalization = function(state,string) {
 	if (!string) {
 		return "";
 	}

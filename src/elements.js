@@ -139,7 +139,7 @@ CSL.Lib.Elements.text = new function(){
 						// I guess, actually).
 						if (!state.tmp.term_predecessor){
 							//print("Capitalize");
-							term = CSL.Output.Formatters.capitalize_first(term);
+							term = CSL.Output.Formatters.capitalize_first(state,term);
 							state.tmp.term_predecessor = true;
 						};
 						state.output.append(term,this);
@@ -686,8 +686,8 @@ CSL.Lib.Elements.layout = new function(){
 				target.push(suffix_token);
 			}
 			var mergeoutput = function(state,Item){
-				if (state[state.tmp.area].opt["second-field-align"]){
-					state.output.endTag();  // second_field_other
+				if (state.tmp.area == "bibliography"){
+					state.output.endTag();  // closes bib_other
 				};
 				state.output.closeLevel();
 			};
@@ -824,8 +824,16 @@ CSL.Lib.Elements.option = new function(){
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		}
-		if ("second-field-align" == this.strings.name){
-			state[state.build.area].opt["second-field-align"] = this.strings.value;
+		if (this.strings.value == "true"){
+			if ("second-field-align" == this.strings.name){
+				state.bibliography.opt["csl-bib-body"].push("push-right");
+				state.bibliography.opt["csl-bib-entry"].push("be-relative");
+				state.bibliography.opt["csl-bib-first"].push("float-left");
+			}
+			if ("hanging-indent" == this.strings.name){
+				state.bibliography.opt["csl-bib-body"].push("push-right");
+				state.bibliography.opt["csl-bib-entry"].push("hanging-indent");
+			}
 		}
 		target.push(this);
 	};

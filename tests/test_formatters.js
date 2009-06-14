@@ -16,7 +16,7 @@ doh.register("tests.formatters", [
 	},
 
 	function testCaps() {
-		doh.assertEqual( 'CAPS', CSL.Output.Formatters.uppercase("caps") );
+		doh.assertEqual( 'CAPS', CSL.Output.Formatters.uppercase(undefined,"caps") );
 	},
 
 ]);

@@ -139,30 +139,22 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
 	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
-	this.output.addToken("bibliography","\n");
-	this.output.openLevel("bibliography");
-	if (this.bibliography.opt["second-field-align"]){
-		var second_field_table = new CSL.Factory.Token("group",CSL.START);
-		second_field_table.decorations = [["@second-field-align","table"]];
-		this.output.startTag("second_field_table",second_field_table);
-	}
+	this.output.addToken("bibliography_joiner","\n");
+	this.output.openLevel("bibliography_joiner");
+	var bib_wrapper = new CSL.Factory.Token("group",CSL.START);
+	bib_wrapper.decorations = [["@bibliography","wrapper"]];
+	this.output.startTag("bib_wrapper",bib_wrapper);
 	for each (item in input){
 		if (false){
 			print("BIB: "+item.id);
 		}
-		if (this.bibliography.opt["second-field-align"]){
-			var second_field_entry = new CSL.Factory.Token("group",CSL.START);
-			second_field_entry.decorations = [["@second-field-align","entry"]];
-			this.output.startTag("second_field_entry",second_field_entry);
-		};
+		var bib_entry = new CSL.Factory.Token("group",CSL.START);
+		bib_entry.decorations = [["@bibliography","entry"]];
+		this.output.startTag("bib_entry",bib_entry);
 		this._cite.call(this,item);
-		if (this.bibliography.opt["second-field-align"]){
-			this.output.endTag(); // second_field_entry
-		};
+		this.output.endTag(); // closes bib_entry
 	}
-	if (this.bibliography.opt["second-field-align"]){
-		this.output.endTag(); // second_field_table
-	};
+	this.output.endTag(); // closes bib_wrapper
 	this.output.closeLevel();
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue);
@@ -215,7 +207,7 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
 	if (!this.tmp.suppress_decorations){
 		for each (var params in this.citation.opt.layout_decorations){
-			result = this.fun.decorate[params[0]][params[1]](result);
+			result = this.fun.decorate[params[0]][params[1]](this,result);
 		}
 	}
 	return result;
@@ -254,8 +246,8 @@ CSL.Engine.prototype._render = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
-		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area);
-		print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
+		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
+		//print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 	if (token.evaluator){
 	    next = token.evaluator.call(token,this,Item);

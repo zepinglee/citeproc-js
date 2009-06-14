@@ -41,6 +41,8 @@ if __name__ == '__main__':
     #print "Loading tests ..."
     cx.eval_script("testobjects = new Object();")
     for filename in os.listdir("./std/machines"):
+        if not os.path.stat.S_ISREG( os.stat("./std/machines/%s" %filename).st_mode ):
+            continue
         testname = os.path.splitext(filename)[0]
         fh = open("./std/machines/%s" % (filename,))
         str = fh.read()

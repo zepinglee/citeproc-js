@@ -8,14 +8,16 @@ bibliography
 
 
 >>===== RESULT =====>>
-Smith, A., L. Roberts, and T. Jones (1993)
-Smith, A., T. Jones, and L. Roberts (1997)
-Smith, A. and C. Allen (2000)
-Smith, A. and B. Frank (1995)
-Smith, A. and B. Frank (1997)
-Smith, A. (1989a)
-Smith, A. (1989b)
-Smith, A. (1991)
+<ul class="csl-bib-body">
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A., L. Roberts, and T. Jones</span> <span class="csl-bib-other">(1993)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A., T. Jones, and L. Roberts</span> <span class="csl-bib-other">(1997)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A. and C. Allen</span> <span class="csl-bib-other">(2000)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A. and B. Frank</span> <span class="csl-bib-other">(1995)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A. and B. Frank</span> <span class="csl-bib-other">(1997)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A.</span> <span class="csl-bib-other">(1989a)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A.</span> <span class="csl-bib-other">(1989b)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Smith, A.</span> <span class="csl-bib-other">(1991)</span></li>
+</ul>
 <<===== RESULT =====<<
 
 

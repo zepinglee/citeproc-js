@@ -39,6 +39,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "Book A\nBook B\nBook C\nBook D", 
+    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book A</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book B</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book C</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book D</span></li>\n</ul>", 
     "schema": "0.8"
 }

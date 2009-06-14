@@ -10,7 +10,6 @@ if(true){
 	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.std_name");
 	dojo.require("tests.test_load_styles");
-	dojo.require("tests.std_condition");
 	dojo.require("tests.test_build");
 	dojo.require("tests.test_sys_rhino_load");
 	dojo.require("tests.test_sys_rhino_locale");
@@ -29,12 +28,12 @@ if(true){
 	dojo.require("tests.test_formats");
 	dojo.require("tests.test_output");
 	dojo.require("tests.test_registry");
-	dojo.require("tests.std_bibliography");
 	dojo.require("tests.std_affix");
 	dojo.require("tests.std_position");
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_sort");
+	dojo.require("tests.std_condition");
 } else {
 
 	// most of this stuff now needs to be refactored

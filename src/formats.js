@@ -16,10 +16,7 @@ CSL.Output.Formats = function(){};
  * output modes.</p>
  */
 CSL.Output.Formats.prototype.html = {
-	"@second-field-align/table":"<table style=\"border-collapse:collapse;line-height:1.1em;\">%%STRING%%\n</table>",
-	"@second-field-align/entry":"\n<tr style=\"vertical-align:top;\">\n%%STRING%%\n</tr>",
-	"@second-field-align/first":"<td>%%STRING%%</td>\n",
-	"@second-field-align/other":"<td style=\"padding-left:4pt;\">%%STRING%%</td>",
+	"@hanging-indent/bib":"<div style=\"line-height:2em;margin-left:0.5in;text-indent:-0.5in;\">\n%%STRING%%\n</div>",
 	"@font-family":"<span style=\"font-family:%%PARAM%%\">%%STRING%%</span>",
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
@@ -47,7 +44,45 @@ CSL.Output.Formats.prototype.html = {
 	"@squotes/true":"&lsquo;%%STRING%%&rsquo;",
 	"@squotes/left":"&lsquo;%%STRING%%",
 	"@squotes/right":"%%STRING%%&rsquo;",
-	"@squotes/noop":"%%STRING%%"
+	"@squotes/noop":"%%STRING%%",
+	"@bibliography/wrapper": function(state,str){
+		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");
+		return "<ul class=\""+cls+"\">\n"+str+"</ul>";
+	},
+	"@bibliography/entry": function(state,str){
+		var cls = ["csl-bib-entry"].concat(state.bibliography.opt["csl-bib-entry"]).join(" ");
+		return "<li class=\""+cls+"\">"+str+"</li>\n";
+	},
+	"@bibliography/first": function(state,str){
+		//
+		// The "first field" object could have a suffix ending
+		// in a space.  The space needs to be placed beyond the
+		// end of the span tag or it may vanish.
+		//
+		var start = str.length;
+		for (var c=str.length; c>-1; c += -1){
+			if (str[c] != " "){
+				start = c;
+				break;
+			};
+		};
+		var cls = ["csl-bib-first"].concat(state.bibliography.opt["csl-bib-first"]).join(" ");
+		return "<span class=\""+cls+"\">"+str.slice(0,start)+"</span>"+str.slice(start,str.length);
+	},
+	"@bibliography/other": function(state,str){
+		//
+		// See above.
+		//
+		var end = str.length;
+		for (var c=0; c<str.length; c += 1){
+			if (str[c] != " "){
+				end = c;
+				break;
+			};
+		};
+		var cls = ["csl-bib-other"].concat(state.bibliography.opt["csl-bib-other"]).join(" ");
+		return str.slice(0,end)+"<span class=\""+cls+"\">"+str.slice(end,str.length)+"</span>";
+	}
 };
 
 CSL.Output.Formats = new CSL.Output.Formats();

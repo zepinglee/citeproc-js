@@ -8,9 +8,11 @@ bibliography
 
 
 >>===== RESULT =====>>
-John Smith and Jane Roe, Book A (2000)
------, Book B (2001)
-John Smith, Book C (2002)
+<ul class="csl-bib-body">
+<li class="csl-bib-entry"><span class="csl-bib-first">John Smith and Jane Roe, Book A (2000)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">-----, Book B (2001)</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">John Smith, Book C (2002)</span></li>
+</ul>
 <<===== RESULT =====<<
 
 

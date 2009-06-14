@@ -131,10 +131,11 @@ CSL.Factory.renderDecorations = function(state){
  * {@link CSL.Output.Formats.html} for examples.
  */
 CSL.Factory.substituteOne = function(template) {
-	return function(list) {
+	return function(state,list) {
 		if ("string" == typeof list){
 			return template.replace("%%STRING%%",list);
 		}
+		print("USING is_delimiter (1) ... WHY?");
 		var decor = template.split("%%STRING%%");
 		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
 		ret.push({"is_delimiter":true,"value":decor[1]});
@@ -156,10 +157,11 @@ CSL.Factory.substituteOne = function(template) {
 CSL.Factory.substituteTwo = function(template) {
 	return function(param) {
 		var template2 = template.replace("%%PARAM%%", param);
-		return function(list) {
+		return function(state,list) {
 			if ("string" == typeof list){
 				return template2.replace("%%STRING%%",list);
 			}
+			print("USING is_delimiter (2) ... WHY?");
 			var decor = template2.split("%%STRING");
 			var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
 			ret.push({"is_delimiter":true,"value":decor[1]});

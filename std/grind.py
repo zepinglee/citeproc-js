@@ -46,6 +46,8 @@ class CslTests(CslTestUtils):
             p = self.path("humans", filename)
             if not os.path.stat.S_ISREG( os.stat(p).st_mode ) or not re.match(self.RE_FILENAME,filename):
                 continue
+            if p.endswith("~") or p.endswith(".orig"):
+                continue
             testname = os.path.splitext(filename)[0]
             if len(self.args) and not testname in self.args:
                 continue

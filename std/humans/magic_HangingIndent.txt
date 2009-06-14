@@ -9,8 +9,8 @@ bibliography
 
 >>== RESULT ==>>
 <ul class="csl-bib-body push-right">
-<li class="csl-bib-entry be-relative"><span class="csl-bib-first float-left">[1]</span><span class="csl-bib-other">John Smith, Book A (2000)</span></li>
-<li class="csl-bib-entry be-relative"><span class="csl-bib-first float-left">[2]</span><span class="csl-bib-other">Robert Jones, Book B (2001)</span></li>
+<li class="csl-bib-entry hanging-indent"><span class="csl-bib-first">John Smith, Book A: being a book with a very long and verbose title with lots of words that takes up excessive space on the page and leaves the reader more confused about the content rather than less (2000)</span></li>
+<li class="csl-bib-entry hanging-indent"><span class="csl-bib-first">Robert Jones, Book B: a work of great eloquence in which every word makes the reader eager for the next which is a good thing because it has a very long and ostensibly boring title (2001)</span></li>
 </ul>
 <<== RESULT ==<<
 
@@ -23,9 +23,8 @@ bibliography
         </layout>
     </citation>
     <bibliography>
-        <option name="second-field-align" value="true"/>
+        <option name="hanging-indent" value="true"/>
         <layout>
-            <text variable="citation-number" prefix="[" suffix="]"/>
             <group delimiter=" ">
                 <group delimiter=", ">
                     <names variable="author">
@@ -51,7 +50,7 @@ bibliography
    "author":[
       {"name":"Smith, John"}
    ],
-   "title": "Book A",
+   "title": "Book A: being a book with a very long and verbose title with lots of words that takes up excessive space on the page and leaves the reader more confused about the content rather than less",
    "issued":{"year":"2000"}
  },
  {
@@ -60,7 +59,7 @@ bibliography
    "author":[
       {"name":"Jones, Robert"}
    ],
-   "title": "Book B",
+   "title": "Book B: a work of great eloquence in which every word makes the reader eager for the next which is a good thing because it has a very long and ostensibly boring title",
    "issued":{"year":"2001"}
  }
 ]

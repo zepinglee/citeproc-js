@@ -9,11 +9,13 @@ bibliography
 
 
 >>===== RESULT =====>>
-Doe, John. 1990. <i>Book A</i>. Brobdingnag: Zardoz Press
-Doe, John, and Jane Roe. 1991. <i>Book B</i>
-Doe, John, Jane Roe, and Alvin Asthma. 1992. <i>Book C</i>
-Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. 1993. <i>Book D</i>
-Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. 1994. <i>Book E</i>
+<ul class="csl-bib-body push-right">
+<li class="csl-bib-entry hanging-indent"><span class="csl-bib-first">Doe, John. </span><span class="csl-bib-other">1990. <i>Book A</i>. Brobdingnag: Zardoz Press</span></li>
+<li class="csl-bib-entry hanging-indent"><span class="csl-bib-first">Doe, John, and Jane Roe. </span><span class="csl-bib-other">1991. <i>Book B</i></span></li>
+<li class="csl-bib-entry hanging-indent"><span class="csl-bib-first">Doe, John, Jane Roe, and Alvin Asthma. </span><span class="csl-bib-other">1992. <i>Book C</i></span></li>
+<li class="csl-bib-entry hanging-indent"><span class="csl-bib-first">Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. </span><span class="csl-bib-other">1993. <i>Book D</i></span></li>
+<li class="csl-bib-entry hanging-indent"><span class="csl-bib-first">Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. </span><span class="csl-bib-other">1994. <i>Book E</i></span></li>
+</ul>
 <<===== RESULT =====<<
 
 
