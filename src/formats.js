@@ -16,7 +16,6 @@ CSL.Output.Formats = function(){};
  * output modes.</p>
  */
 CSL.Output.Formats.prototype.html = {
-	"@hanging-indent/bib":"<div style=\"line-height:2em;margin-left:0.5in;text-indent:-0.5in;\">\n%%STRING%%\n</div>",
 	"@font-family":"<span style=\"font-family:%%PARAM%%\">%%STRING%%</span>",
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
@@ -45,6 +44,7 @@ CSL.Output.Formats.prototype.html = {
 	"@squotes/left":"&lsquo;%%STRING%%",
 	"@squotes/right":"%%STRING%%&rsquo;",
 	"@squotes/noop":"%%STRING%%",
+	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/wrapper": function(state,str){
 		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");
 		var line_height = "";

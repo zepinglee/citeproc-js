@@ -1,0 +1,68 @@
+>>== MODE ==>>
+bibliography
+<<== MODE ==<<
+
+>>== SCHEMA ==>>
+0.8
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+<ul class="csl-bib-body">
+<li class="csl-bib-entry"><span class="csl-bib-first">John Smith, Book A (2000)</span><span class="csl-bib-other"><span class="csl-bib-block">An interesting book by an interesting author.</span></span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">Robert Jones, Book B (2001)</span><span class="csl-bib-other"><span class="csl-bib-block">An old contribution to a new field.</span></span></li>
+</ul>
+<<== RESULT ==<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <text value="hello"/>
+        </layout>
+    </citation>
+    <bibliography>
+        <layout>
+            <group delimiter=" ">
+                <group delimiter=", ">
+                    <names variable="author">
+                        <name/>
+                    </names>
+                    <text variable="title"/>
+                </group>
+                <date variable="issued" prefix="(" suffix=")">
+                    <date-part name="year"/>
+                </date>
+            </group>
+            <text variable="abstract" display="block"/>
+        </layout>
+    </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author":[
+      {"name":"Smith, John"}
+   ],
+   "title": "Book A",
+   "issued":{"year":"2000"},
+   "abstract":"An interesting book by an interesting author."
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author":[
+      {"name":"Jones, Robert"}
+   ],
+   "title": "Book B",
+   "issued":{"year":"2001"},
+   "abstract":"An old contribution to a new field."
+ }
+]
+<<===== INPUT =====<<

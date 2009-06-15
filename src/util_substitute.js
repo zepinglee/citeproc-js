@@ -80,6 +80,7 @@ CSL.Util.substituteEnd = function(state,target){
 			var bib_other = new CSL.Factory.Token("group",CSL.START);
 			bib_other.decorations = [["@bibliography","other"]];
 			var other_func = function(state,Item){
+
 				if (!state.tmp.render_seen){
 					state.tmp.render_seen = true;
 					state.output.startTag("bib_other",bib_other);
