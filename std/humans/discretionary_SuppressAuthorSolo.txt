@@ -1,0 +1,72 @@
+>>== MODE ==>>
+citation
+<<== MODE ==<<
+
+
+>>== SCHEMA ==>>
+0.8
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+(2005)
+(Robert Jones 2000)
+<<== RESULT ==<<
+
+>>== CITATIONS ==>>
+[
+  [
+    ["ITEM-1",{"suppress-author":1}]
+  ],
+  [
+    ["ITEM-2",{}]
+  ]
+]
+<<== CITATIONS ==<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+    <layout prefix="(" suffix=")" delimiter="; ">
+      <group delimiter=" ">
+        <names variable="author">
+          <name/>
+          <substitute>
+            <text variable="title"/>
+          </substitute>
+        </names>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author":[
+      {"name":"Smith, John"}
+   ],
+   "title": "Book A",
+   "issued":{"year":"2005"},
+   "abstract":"An interesting book by an interesting author."
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author":[
+      {"name":"Jones, Robert"}
+   ],
+   "title": "Book B",
+   "issued":{"year":"2000"},
+   "abstract":"An old contribution to a new field."
+ }
+]
+<<===== INPUT =====<<
