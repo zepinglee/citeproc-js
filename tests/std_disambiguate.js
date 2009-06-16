@@ -22,11 +22,35 @@ doh.register("tests.std_disambiguate", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("disambiguate_GivennameNoShortFormInitializeWith");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("disambiguate_GivennameShortFormInitializeWith");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("disambiguate_GivennameShortFormNoInitializeWith");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_MinimalGivennameExpandMinimalNames");
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("disambiguate_NoShortFormInitializeWith");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_RetainNamesOnFailureIfYearSuffixNotAvailable");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("disambiguate_ShortFormInitializeWith");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("disambiguate_ShortFormNoInitializeWith");
         doh.assertEqual(test.result, test.run());
     },
     function(){

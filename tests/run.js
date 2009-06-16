@@ -2,10 +2,10 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_discretionary");
-} else {
-	dojo.require("tests.test_queue");
 	dojo.require("tests.std_disambiguate");
+} else {
+	dojo.require("tests.std_discretionary");
+	dojo.require("tests.test_queue");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");

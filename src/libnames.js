@@ -35,7 +35,6 @@ CSL.Lib.Elements.names = new function(){
 							state.tmp.names_used.push(state.tmp.value.slice());
 						}
 					};
-						print("OK4");
 				}
 			};
 			this["execs"].push(init_names);
@@ -217,7 +216,7 @@ CSL.Lib.Elements.names = new function(){
 							// can't do this in disambig, because the availability
 							// of initials is not a global parameter.
 							var val = state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i];
-							if (val == 1 && ! state.tmp["initialize-with"]){
+							if (val == 1 && "undefined" == typeof state.tmp["initialize-with"]){
 								val = 2;
 							}
 							var param = val;

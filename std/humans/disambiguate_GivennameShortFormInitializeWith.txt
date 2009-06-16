@@ -1,0 +1,90 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+Disambiguation by given name, when used with the short form and an 
+initialize-with attribute on the name, will add an initial as required.
+Disambiguation by full name expansion will not be attempted, and failed
+attempts at disambiguation will fall back to the short form.
+
+>>===== RESULT =====>>
+Roe
+J Doe; A Doe
+Smith; Smith
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <option name="disambiguate-add-givenname" value="true"/>
+        <layout delimiter="; ">
+            <names variable="author">
+                <name form="short" initialize-with=""/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== CITATIONS =====>>
+[
+  [
+    ["ITEM-1",{}]
+  ],
+  [
+    ["ITEM-2",{}],
+    ["ITEM-3",{}]
+  ],
+  [
+    ["ITEM-4",{}],
+    ["ITEM-5",{}]
+  ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== INPUT =====>>
+[
+{
+   "id":"ITEM-1",
+   "type": "book",
+   "author": [
+        { "name":"Roe, Jane" }
+   ]
+},
+{
+   "id":"ITEM-2",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" }
+   ]
+},
+{
+   "id":"ITEM-3",
+   "type": "book",
+   "author": [
+        { "name":"Doe, Aloysius" }
+   ]
+},
+{
+   "id":"ITEM-4",
+   "type": "book",
+   "author": [
+        { "name":"Smith, Thomas" }
+   ]
+},
+{
+   "id":"ITEM-5",
+   "type": "book",
+   "author": [
+        { "name":"Smith, Ted" }
+   ]
+}
+]
+<<===== INPUT =====<<
