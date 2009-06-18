@@ -85,10 +85,22 @@ CSL.Lib.Elements.text = new function(){
 					var func = function(state,Item){
 						var id = Item["id"];
 						if (!state.tmp.force_subsequent){
+							if (Item["author-only"]){
+								state.tmp.element_trace.replace("do-not-suppress-me");
+								var term = CSL.Output.Formatters.capitalize_first(state,state.getTerm("reference","long","singular"));
+								state.output.append(term+" ");
+								state.tmp.last_element_trace = true;
+							};
+							if (Item["suppress-author"]){
+								if (state.tmp.last_element_trace){
+									state.tmp.element_trace.replace("suppress-me");
+								};
+								state.tmp.last_element_trace = false;
+							};
 							var num = state.registry.registry[id].seq;
 							var number = new CSL.Output.Number(num,this);
 							state.output.append(number,"literal");
-						}
+						};
 					};
 					this["execs"].push(func);
 				} else if (variable == "year-suffix"){
@@ -839,7 +851,7 @@ CSL.Lib.Elements.option = new function(){
 			if ("line-spacing" == this.strings.name){
 				state.bibliography.opt["bib-line-spacing"] = parseFloat(this.strings.value,10);
 			};
-			if ("entry-spacing" == this.strings.name){
+		if ("entry-spacing" == this.strings.name){
 				state.bibliography.opt["bib-entry-spacing"] = parseFloat(this.strings.value,10);
 			};
 		};

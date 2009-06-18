@@ -10,7 +10,6 @@ doh.registerGroup("tests.queue",
 			var res = new CSL.Output.Queue(state);
 
 			res.addToken("newlevel",false,token);
-
 			res.append("one");
 			res.openLevel("newlevel");
 			res.append("two");
@@ -92,3 +91,4 @@ doh.registerGroup("tests.queue",
 
 	}
 );
+

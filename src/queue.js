@@ -101,7 +101,12 @@ CSL.Output.Queue.prototype.closeLevel = function(name){
 // and the current pointer is not moved after the push.
 
 CSL.Output.Queue.prototype.append = function(str,tokname){
-	//print("append: "+str);
+	if ("undefined" == typeof str){
+		return;
+	};
+	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() == "suppress-me"){
+		return;
+	}
 	var blob = false;
 	if (!tokname){
 		var token = this.formats.value()["empty"];
@@ -171,8 +176,8 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
 						b = state.fun.decorate[params[0]][params[1]](state,b);
-					}
-				}
+					};
+				};
 				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
 					b = blobjr.strings.prefix + b + blobjr.strings.suffix.slice(1);
 				} else {
@@ -252,6 +257,7 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 };
 
 CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
+	//print("blobs to render: "+blobs);
 	if (!delim){
 		delim = "";
 	}

@@ -19,7 +19,7 @@ CSL.Lib.Elements.names = new function(){
 			var init_names = function(state,Item){
 				//
 				// XXXXX: could be wrong here
-				if (state.tmp.value.length == 0 && !Item["suppress-author"]){
+				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
 						//
 						// If the item has been marked for quashing, skip it.
@@ -45,12 +45,7 @@ CSL.Lib.Elements.names = new function(){
 			state.build.names_flag = true;
 
 			var init_can_substitute = function(state,Item){
-				//if (state.tmp.can_substitute.value()){
-				if (Item["suppress-author"]){
-					state.tmp.can_substitute.push(false);
-				} else {
-					state.tmp.can_substitute.push(true);
-				};
+				state.tmp.can_substitute.push(true);
 			};
 			this.execs.push(init_can_substitute);
 

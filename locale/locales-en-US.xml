@@ -8,7 +8,10 @@
     <term name="retrieved">retrieved</term>
     <term name="from">from</term>
     <term name="forthcoming">forthcoming</term>
-    <term name="references">references</term>
+    <term name="reference">
+      <single>reference</single>
+      <multiple>references</multiple>
+    </term>
     <term name="no date">n.d.</term>
     <term name="and">and</term>
     <term name="et-al">et al.</term>

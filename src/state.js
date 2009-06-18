@@ -45,12 +45,17 @@ CSL.Engine.Tmp = function (){
 	// names end tag pops it.  Output value check in @variable
 	// function of attributes.js sets level to false.  closing names
 	// tag maps a false value to superior level.
-	this.can_substitute = new CSL.Factory.Stack( false, CSL.LITERAL);
+	this.can_substitute = new CSL.Factory.Stack( 0, CSL.LITERAL);
 	//
 	// notes whether the formatted elements of a date span
 	// rendered anything.  controls whether literal fallback
 	// is used.
 	this.element_rendered_ok = false;
+	//
+	// element_trace keeps a record of rendered elements.
+	// used to implement author-only.
+	//
+	this.element_trace = new CSL.Factory.Stack("style");
 	//
 	// counter for total namesets
 	this.nameset_counter = 0;

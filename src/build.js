@@ -27,6 +27,7 @@ CSL.Engine = function(sys,style,lang) {
 	} else {
 		lang = "en";
 	}
+	this.opt.lang = lang;
 	this.sys.setLocaleXml( this.cslXml, lang );
 	this.locale_terms = this.sys.locale_terms;
 	this._buildTokenLists("citation");

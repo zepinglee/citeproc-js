@@ -1,0 +1,50 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+"The Book Title,"
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en-US">
+
+    <macro name="title">
+       <text variable="title" quotes="true" suffix=","/>
+    </macro>
+
+    <citation>
+        <layout>
+            <text value="Ignore me"/>
+        </layout>
+    </citation>
+
+    <bibliography>
+        <layout>
+            <text macro="title"/>
+        </layout>        
+    </bibliography>
+
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"item-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "The Book Title"
+ }
+]
+<<===== INPUT =====<<

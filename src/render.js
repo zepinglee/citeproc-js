@@ -185,14 +185,24 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 		this.getSpliceDelimiter(last_collapsed);
 		//this.tmp.delimiter.replace(delimiter);
 		this.tmp.handle_ranges = true;
+		if (Item["author-only"]){
+			this.tmp.suppress_decorations = true;
+		}
 		var composite = this.output.string(this,this.output.queue);
+		this.tmp.suppress_decorations = false;
 		this.tmp.handle_ranges = false;
+		if (Item["author-only"]){
+			return composite;
+		}
 		if (objects.length && "string" == typeof composite[0]){
 			composite.reverse();
 			objects.push(this.tmp.splice_delimiter + composite.pop());
 		} else {
-		composite.reverse();
-			objects.push(composite.pop());
+			composite.reverse();
+			var compie = composite.pop();
+			if ("undefined" != typeof compie){
+				objects.push(compie);
+			};
 		}
 		composite.reverse();
 		for each (var obj in composite){
@@ -200,16 +210,21 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 				objects.push(this.tmp.splice_delimiter + obj);
 				continue;
 			}
-			objects.push(composite.pop());
-		}
-	}
+			var compie = composite.pop();
+			if ("undefined" != typeof compie){
+				objects.push(compie);
+			};
+		};
+	};
 	result += this.output.renderBlobs(objects);
-	result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
-	if (!this.tmp.suppress_decorations){
-		for each (var params in this.citation.opt.layout_decorations){
-			result = this.fun.decorate[params[0]][params[1]](this,result);
-		}
-	}
+	if (result){
+		result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
+		if (!this.tmp.suppress_decorations){
+			for each (var params in this.citation.opt.layout_decorations){
+				result = this.fun.decorate[params[0]][params[1]](this,result);
+			};
+		};
+	};
 	return result;
 };
 

@@ -1,0 +1,69 @@
+>>== MODE ==>>
+citation
+<<== MODE ==<<
+
+
+>>== SCHEMA ==>>
+0.8
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+Reference [1]
+
+<i>[2]</i>
+<<== RESULT ==<<
+
+>>== CITATIONS ==>>
+[
+  [
+    ["ITEM-1",{"author-only":1}]
+  ],
+  [
+    ["ITEM-1",{"suppress-author":1}]
+  ],
+  [
+    ["ITEM-2",{}]
+  ]
+]
+<<== CITATIONS ==<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+    <layout font-style="italic">
+      <text variable="citation-number" prefix="[" suffix="]"/>
+    </layout>
+  </citation>
+  <bibliography>
+    <layout>
+      <text variable="title"/>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author":[
+      {"name":"Smith, John"}
+   ],
+   "title": "Book A",
+   "issued":{"year":"2005"}
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author":[
+      {"name":"Jones, Robert"}
+   ],
+   "title": "Book B",
+   "issued":{"year":"2000"}
+ }
+]
+<<===== INPUT =====<<
