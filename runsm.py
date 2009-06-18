@@ -22,6 +22,9 @@ if __name__ == '__main__':
     rt = Runtime()
     cx = rt.new_context()
 
+    def path(*elements):
+        return os.path.join( os.getcwd(), *elements )
+
     print "Loading citeproc ..."
     cslcode = open("./citeproc.js").read()
     cx.eval_script(cslcode)
@@ -29,6 +32,11 @@ if __name__ == '__main__':
     #print "Loading locales ..."
     locales = {}
     for filename in os.listdir("./locale"):
+        p = path("locale", filename)
+        if not os.path.stat.S_ISREG( os.stat(p).st_mode ):
+            continue
+        if p.endswith("~") or p.endswith(".orig"):
+            continue
         lang = filename.split("-")[1]
         locale = open("./locale/%s" % (filename,)).read()
         #locale = re.sub("<\?[^>]*>\n*","",locale)

@@ -298,9 +298,17 @@ if __name__ == '__main__':
     cslcode = open("./src-js/citeproc-js.js").read()
     cx.eval_script(cslcode)
 
+    def path(*elements):
+        return os.path.join( os.getcwd(), *elements )
+
     print "Loading locales ..."
     cx.eval_script("locales = new Object();")
     for filename in os.listdir("../locale"):
+        p = path("..","locale", filename)
+        if not os.path.stat.S_ISREG( os.stat(p).st_mode ):
+            continue
+        if p.endswith("~") or p.endswith(".orig"):
+            continue
         lang = filename.split("-")[1]
         fh = open("../locale/%s" % (filename,))
         fh.readline()
