@@ -1,0 +1,26 @@
+{
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <names variable=\"translator\">\n                <name name-as-sort-order=\"all\" initialize-with=\".\" and=\"symbol\" delimiter=\", \" delimiter-precedes-last=\"always\" sort-separator=\", \"/>\n            </names>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "id": "item-1", 
+            "issued": "1952", 
+            "title": "Leonardo on the Human Body", 
+            "translator": [
+                {
+                    "primary-key": "O\u2019Malley", 
+                    "secondary-key": "Charles D.", 
+                    "sticky": false
+                }, 
+                {
+                    "primary-key": "Saunders", 
+                    "secondary-key": "John Bertrand de Cusance Morant", 
+                    "sticky": false
+                }
+            ], 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "O\u2019Malley, C.D., & Saunders, J.B. de C.M.", 
+    "schema": "0.8"
+}

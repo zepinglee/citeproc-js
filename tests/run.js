@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_name");
 	dojo.require("tests.test_queue");
 	dojo.require("tests.std_discretionary");
 	dojo.require("tests.std_disambiguate");
@@ -9,7 +10,6 @@ if(true){
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_fullstyles");
-	dojo.require("tests.std_name");
 	dojo.require("tests.test_load_styles");
 	dojo.require("tests.test_build");
 	dojo.require("tests.test_sys_rhino_load");

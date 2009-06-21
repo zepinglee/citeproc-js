@@ -1,0 +1,44 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+This example comes to us via a query to comp.text.tex:
+
+  http://groups.google.com/group/comp.text.tex/browse_thread/thread/4796d6a2f06952ad?hl=en
+
+
+
+>>===== RESULT =====>>
+O’Malley, C. D., & Saunders, J. B. de C. M.
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="translator">
+                <name name-as-sort-order="all" initialize-with=". " and="symbol" delimiter=", " delimiter-precedes-last="always" sort-separator=", "/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "translator": [
+        { "name":"O’Malley, Charles D." },
+        { "name":"Saunders, John Bertrand de Cusance Morant" }
+   ],
+   "issued": "1952",
+   "title": "Leonardo on the Human Body"
+}]
+<<===== INPUT =====<<

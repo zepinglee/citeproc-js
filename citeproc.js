@@ -2561,12 +2561,24 @@ CSL.Util.Names.initializeWith = function(name,terminator){
 				extra = m[2].toLocaleLowerCase();
 			}
 			nstring = nstring + m[1].toLocaleUpperCase() + extra + terminator;
+		} else if (n.match(/.*[a-zA-Z\u0400-\u052f].*/)){
+			nstring = CSL.Util.Names.stripRight(nstring) + " " +CSL.Util.Names.stripRight(n) + " ";
 		};
 	};
 	if (nstring){
-		return nstring;
+		return CSL.Util.Names.stripRight(nstring);
 	}
 	return name;
+};
+CSL.Util.Names.stripRight = function(str){
+	var end = 0;
+	for (var pos=(str.length-1); pos > -1; pos += -1){
+		if (str[pos] != " "){
+			end = (pos+1);
+			break;
+		};
+	};
+	return str.slice(0,end);
 };
 CSL.Util.Dates = new function(){};
 CSL.Util.Dates.year = new function(){};
