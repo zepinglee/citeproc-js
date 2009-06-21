@@ -14,9 +14,42 @@ CSL.Factory.Registry.prototype.Names = function(){
  * rapid delivery via an external query method.
  */
 CSL.Factory.Registry.prototype.Names.prototype.add = function(nameobj){
-	var key = nameobj["primary-key"];
-	if ("undefined" == typeof this.names_dat[key]){
-		this.names_dat[key] = new Array();
+	var pkey = nameobj["primary-key"];
+	var ikey = CSL.Util.Names.initializeWith(nameobj["secondary-key"],"");
+	var skey = nameobj["secondary-key"].replace(".","");
+	if (pkey){
+		if ("undefined" == typeof this.names_dat[pkey]){
+			this.names_dat[pkey] = new Object();
+		};
+		if (ikey){
+			if ("undefined" == typeof this.names_dat[pkey][ikey]){
+				this.names_dat[pkey][ikey] = new Object();
+			};
+			if (skey){
+				if ("undefined" == typeof this.names_dat[pkey][ikey][skey]){
+					this.names_dat[pkey][ikey][skey] = 1;
+				};
+			};
+		};
 	};
+	var num = 0;
+	for (var i in this.names_dat[pkey]){
+		num += 1;
+	};
+	//
+	// dammit, how is this supposed to work?
+	//
+	if (num == 1){
+		this.names_inf[pkey]["primary"];
+	};
+	num = 0;
+	for (var i in nameobj[pkey][ikey]){
+		num += 1;
+	}
+	if (num == 1){
+		initial_uniq = true;
+	}
+	if (primary_uniq){
 
-}
+	}
+};
