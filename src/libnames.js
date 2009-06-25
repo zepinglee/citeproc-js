@@ -216,13 +216,19 @@ CSL.Lib.Elements.names = new function(){
 							}
 							var param = val;
 						} else {
-							var param = 2;
-							if (state.output.getToken("name").strings.form == "short"){
-								param = 0;
-							} else if ("string" == typeof state.tmp["initialize-with"]){
-								param = 1;
-							}
-						}
+							//
+							// ZZZZZ: it clicks.  here is where we will put the
+							// call to the names register, to get the floor value
+							// for an individual name.
+							//
+							var param = state.registry.namesreg.eval(nameset.names[i]);
+							//var param = 2;
+							//if (state.output.getToken("name").strings.form == "short"){
+							//	param = 0;
+							//} else if ("string" == typeof state.tmp["initialize-with"]){
+							//	param = 1;
+							//};
+						};
 						state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i] = param;
 					}
 					//

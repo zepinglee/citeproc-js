@@ -1,10 +1,5 @@
 dojo.provide("csl.namereg");
 
-CSL.Factory.Registry.prototype.Names = function(){
-	this.names_dat = new Object();
-	this.names_inf = new Object();
-};
-
 /**
  * The idea here will be to store names in a nested hierarchy
  * of declining ambiguity (surname, initial, given name), with
@@ -12,44 +7,117 @@ CSL.Factory.Registry.prototype.Names = function(){
  * the surname.  Each time a name is added or deleted, the query
  * mechanism is run, and the result is stored in names_inf for
  * rapid delivery via an external query method.
+ *
+ * What should happen is that names are filed in a
+ * names registry when they are used.  so state.registry.names=(new something).
+ * then a call to a method of the registry object for that name will return the
+ * lowest acceptable value for the current configuration state.
+ * var lev = state.registry.names(state,name);, like.
+ *
+ * This could be extended later to a simplification of all names
+ * disambiguation, by returning both the minimum AND maximum
+ * name config values from this method.  That would put all the
+ * initialize-with etc jiggery-pokery in one place, and the
+ * disambiguation machinery would not need to be cluttered up with
+ * it; you would just increment and decrement name config values
+ * within the range.  But that's for later.  For now, we just
+ * set a floor value and use the existing machinery.
+ *
+ * No, the extension might as well happen now.  Setting the ceiling
+ * through this function will bring all of the names parameters into
+ * this space, where they can be easily seen and controlled.  Very
+ * hard adjustments in the disambiguation machinery, but small steps,
+ * man, small steps.
+ *
  */
-CSL.Factory.Registry.prototype.Names.prototype.add = function(nameobj){
-	var pkey = nameobj["primary-key"];
-	var ikey = CSL.Util.Names.initializeWith(nameobj["secondary-key"],"");
-	var skey = nameobj["secondary-key"].replace(".","");
-	if (pkey){
-		if ("undefined" == typeof this.names_dat[pkey]){
-			this.names_dat[pkey] = new Object();
-		};
-		if (ikey){
-			if ("undefined" == typeof this.names_dat[pkey][ikey]){
-				this.names_dat[pkey][ikey] = new Object();
-			};
-			if (skey){
-				if ("undefined" == typeof this.names_dat[pkey][ikey][skey]){
-					this.names_dat[pkey][ikey][skey] = 1;
-				};
-			};
-		};
-	};
-	var num = 0;
-	for (var i in this.names_dat[pkey]){
-		num += 1;
-	};
-	//
-	// dammit, how is this supposed to work?
-	//
-	if (num == 1){
-		this.names_inf[pkey]["primary"];
-	};
-	num = 0;
-	for (var i in nameobj[pkey][ikey]){
-		num += 1;
-	}
-	if (num == 1){
-		initial_uniq = true;
-	}
-	if (primary_uniq){
+CSL.Factory.Registry.prototype.Names = function(state){
+	this.state = state;
+	this.namereg = new Object();
+	var pkey;
+	var ikey;
+	var skey;
+	this.add = add;
+	this.del = del;
+	this.eval = eval;
 
-	}
+	var _set_keys = function(nameobj){
+		pkey = nameobj["primary-key"];
+		ikey = pkey+"::"+CSL.Util.Names.initializeWith(nameobj["secondary-key"],"");
+		skey = pkey+"::"+nameobj["secondary-key"].replace("."," ").replace(/\s+/," ");
+	};
+
+	var eval = function(nameobj,form,initials){
+		_set_keys(nameobj);
+		// keys
+		var pkey_is_unique = this.namereg[pkey] == 1;
+		var ikey_is_unique = this.namereg[ikey] == 1;
+		var skey_is_unique = this.namereg[skey] == 1;
+		// params
+		//
+		// possible options are:
+		//
+		// <option disambiguate-add-givenname value="true"/> (a)
+		// <option disambiguate-add-givenname value="all-names"/> (a)
+		// <option disambiguate-add-givenname value="all-names-with-initials"/> (b)
+		// <option disambiguate-add-givenname value="all-names-with-fullname"/> (c)
+		// <option disambiguate-add-givenname value="primary-name"/> (d)
+		// <option disambiguate-add-givenname value="primary-name-with-initials"/> (e)
+		// <option disambiguate-add-givenname value="primary-name-with-fullname"/> (f)
+		// <option disambiguate-add-givenname value="by-cite"/> (g)
+		//
+		var opt = state[state.tmp.area].opt["disambiguate-add-givenname"];
+		if ("true" == opt || "all-names" == opt){
+
+		}
+							//var param = 2;
+							//if (state.output.getToken("name").strings.form == "short"){
+							//	param = 0;
+							//} else if ("string" == typeof state.tmp["initialize-with"]){
+							//	param = 1;
+							//};
+
+		//
+		// get max value
+		//
+		//
+		if (){
+
+		}
+	};
+
+	var del = function(nameobj){
+		_set_keys(nameobj);
+		if (pkey){
+			this.namereg[skey] += -1;
+			if (this.namereg[skey] == 0){
+				delete this.namereg[skey];
+				this.namereg[pkey] += -1;
+				this.namereg[ikey] += -1;
+			};
+			if (this.namereg[ikey] == 0){
+				delete this.namereg[ikey];
+			};
+			if (this.namereg[pkey] == 0){
+				delete this.namereg[pkey];
+			};
+		};
+	};
+
+	var add = function(nameobj){
+		_set_keys(nameobj);
+		if (pkey){
+			if ("undefined" == typeof this.namereg[pkey]){
+				this.namereg[pkey] = 0;
+			};
+			if ("undefined" == typeof this.namereg[skey]){
+				this.namereg[skey] = 0;
+				if ("undefined" == typeof this.namereg[ikey]){
+					this.namereg[ikey] = 0;
+				};
+				this.namereg[pkey] += 1;
+				this.namereg[ikey] += 1;
+			};
+			this.namereg[skey] += 1;
+		};
+	};
 };
