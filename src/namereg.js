@@ -30,23 +30,28 @@ dojo.provide("csl.namereg");
  * man, small steps.
  *
  */
-CSL.Factory.Registry.prototype.Names = function(state){
+CSL.Factory.Registry.prototype.NameReg = function(state){
 	this.state = state;
 	this.namereg = new Object();
 	var pkey;
 	var ikey;
 	var skey;
-	this.add = add;
-	this.del = del;
-	this.eval = eval;
 
 	var _set_keys = function(nameobj){
 		pkey = nameobj["primary-key"];
-		ikey = pkey+"::"+CSL.Util.Names.initializeWith(nameobj["secondary-key"],"");
-		skey = pkey+"::"+nameobj["secondary-key"].replace("."," ").replace(/\s+/," ");
+		var secondary = nameobj["secondary-key"];
+		if (!secondary){
+			secondary = "";
+		}
+		ikey = pkey+"::"+CSL.Util.Names.initializeWith(secondary,"");
+		skey = pkey+"::"+secondary.replace("."," ").replace(/\s+/," ");
 	};
 
 	var eval = function(nameobj,form,initials){
+		// return vals
+		var floor;
+		var ceiling;
+
 		_set_keys(nameobj);
 		// keys
 		var pkey_is_unique = this.namereg[pkey] == 1;
@@ -65,24 +70,30 @@ CSL.Factory.Registry.prototype.Names = function(state){
 		// <option disambiguate-add-givenname value="primary-name-with-fullname"/> (f)
 		// <option disambiguate-add-givenname value="by-cite"/> (g)
 		//
+		var param = 2;
 		var opt = state[state.tmp.area].opt["disambiguate-add-givenname"];
-		if ("true" == opt || "all-names" == opt){
-
-		}
+		//print("OPT: "+opt+", OPT type: "+typeof opt);
+		if ("short" == form){
+			param = 0;
+		} else if ("string" == typeof initials){
+			param = 1;
+		};
+		//
+		// this is a noop; this option has effect only in libnames itself
+		// (it turns on the old "givens" option in the disambiguation
+		// routines)
+		//
+		// The other options need to be covered here, though.
+		//
+		//if ("by-cite" == opt || "true" == opt || true == opt){
+		//};
+		return param;
 							//var param = 2;
 							//if (state.output.getToken("name").strings.form == "short"){
 							//	param = 0;
 							//} else if ("string" == typeof state.tmp["initialize-with"]){
 							//	param = 1;
 							//};
-
-		//
-		// get max value
-		//
-		//
-		if (){
-
-		}
 	};
 
 	var del = function(nameobj){
@@ -120,4 +131,7 @@ CSL.Factory.Registry.prototype.Names = function(state){
 			this.namereg[skey] += 1;
 		};
 	};
+	this.add = add;
+	this.del = del;
+	this.eval = eval;
 };

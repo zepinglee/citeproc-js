@@ -187,6 +187,9 @@ if (!CSL.Output.Queue){
 if (!CSL.Factory.Registry){
 	load("./src/registry.js");
 }
+if (!CSL.Factory.Registry.prototype.NameReg){
+	load("./src/namereg.js");
+}
 if (!CSL.Factory.Registry.prototype.disambiguateCites){
 	load("./src/disambiguate.js");
 }

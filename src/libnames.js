@@ -221,7 +221,10 @@ CSL.Lib.Elements.names = new function(){
 							// call to the names register, to get the floor value
 							// for an individual name.
 							//
-							var param = state.registry.namesreg.eval(nameset.names[i]);
+							var myform = state.output.getToken("name").strings.form;
+							var myinitials = state.tmp["initialize-with"];
+							var param = state.registry.namereg.eval(nameset.names[i],myform,myinitials);
+							//print("MYFORM: "+myform+", PARAM: "+param);
 							//var param = 2;
 							//if (state.output.getToken("name").strings.form == "short"){
 							//	param = 0;

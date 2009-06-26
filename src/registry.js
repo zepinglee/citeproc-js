@@ -36,6 +36,7 @@ CSL.Factory.Registry = function(state){
 		print("---> Instantiate registry");
 	}
 	this.registry = new Object();
+	this.namereg = new this.NameReg(state);
 	//
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
