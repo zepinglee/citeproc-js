@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_namespaces");
 	dojo.require("tests.std_name");
 	dojo.require("tests.test_queue");
 	dojo.require("tests.std_discretionary");
@@ -30,12 +31,12 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.std_affix");
-	dojo.require("tests.std_position");
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_sort");
 	dojo.require("tests.std_condition");
 } else {
+	dojo.require("tests.std_position");
 
 	// most of this stuff now needs to be refactored
 	dojo.require("tests.test_build_internals");

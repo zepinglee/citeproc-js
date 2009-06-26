@@ -22,8 +22,8 @@ class CslTestUtils:
     def __init__(self):
 	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
         self.CREATORS += ["composer","original-author","container-author","collection-editor"]
-        self.RE_ELEMENT = '(?sm)^.*>>=.*%s.*?\n(.*)\n<<=.*%s'
-        self.RE_FILENAME = '^[a-z]+_[a-zA-Z]+\.txt'
+        self.RE_ELEMENT = '(?sm)^.*>>=.*%s[^\n]+(.*)\n<<=.*%s'
+        self.RE_FILENAME = '^[a-z]+_[a-zA-Z0-9]+\.txt'
 
     
     def path(self,*elements):
@@ -105,7 +105,7 @@ class CslTest(CslTestUtils):
         elif required:
             print "Ooops, missing element: %s in test %s" %(tag,self.testname)
             sys.exit()
-        if data:
+        if data != False:
             if is_json:
                 data = json.loads(data)
             self.data[tag.lower()] = data

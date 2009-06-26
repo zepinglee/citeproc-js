@@ -1,0 +1,13 @@
+{
+    "csl": "<citation>\n <layout>\n     <text variable=\"title\"/>\n </layout>\n</citation>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "Book A", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "", 
+    "schema": "0.8"
+}

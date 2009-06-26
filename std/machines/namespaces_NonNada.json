@@ -1,0 +1,13 @@
+{
+    "csl": "<x:citation xmlns:x=\"http://purl.org/net/xbiblio/csl\">\n <x:layout>\n     <x:text variable=\"title\"/>\n </x:layout>\n</x:citation>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "Book A", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Book A", 
+    "schema": "0.8"
+}
