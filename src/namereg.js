@@ -31,7 +31,7 @@ dojo.provide("csl.namereg");
  *
  */
 CSL.Factory.Registry.prototype.NameReg = function(state){
-	this.state = state;
+	//this.state = state;
 	this.namereg = new Object();
 	var pkey;
 	var ikey;
@@ -47,7 +47,7 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		skey = pkey+"::"+secondary.replace("."," ").replace(/\s+/," ");
 	};
 
-	var eval = function(nameobj,form,initials){
+	var eval = function(nameobj,namenum,form,initials){
 		// return vals
 		var floor;
 		var ceiling;
@@ -72,28 +72,19 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		//
 		var param = 2;
 		var opt = state[state.tmp.area].opt["disambiguate-add-givenname"];
-		//print("OPT: "+opt+", OPT type: "+typeof opt);
+		//
+		// set initial value
+		//
 		if ("short" == form){
 			param = 0;
 		} else if ("string" == typeof initials){
 			param = 1;
 		};
 		//
-		// this is a noop; this option has effect only in libnames itself
-		// (it turns on the old "givens" option in the disambiguation
-		// routines)
+		// adjust value upward if appropriate
 		//
-		// The other options need to be covered here, though.
-		//
-		//if ("by-cite" == opt || "true" == opt || true == opt){
-		//};
+
 		return param;
-							//var param = 2;
-							//if (state.output.getToken("name").strings.form == "short"){
-							//	param = 0;
-							//} else if ("string" == typeof state.tmp["initialize-with"]){
-							//	param = 1;
-							//};
 	};
 
 	var del = function(nameobj){

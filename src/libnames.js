@@ -223,7 +223,7 @@ CSL.Lib.Elements.names = new function(){
 							//
 							var myform = state.output.getToken("name").strings.form;
 							var myinitials = state.tmp["initialize-with"];
-							var param = state.registry.namereg.eval(nameset.names[i],myform,myinitials);
+							var param = state.registry.namereg.eval(nameset.names[i],i,myform,myinitials);
 							//print("MYFORM: "+myform+", PARAM: "+param);
 							//var param = 2;
 							//if (state.output.getToken("name").strings.form == "short"){
