@@ -122,7 +122,8 @@ CSL.Engine.prototype.getModes = function(){
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
 	}
-	if (this[this.tmp.area].opt["disambiguate-add-givenname"]){
+	var gopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	if (("boolean" == typeof gopt && gopt == true) || gopt == "by-cite"){
 		ret.push("givens");
 	}
 	return ret;

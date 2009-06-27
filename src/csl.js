@@ -57,6 +57,14 @@ CSL = new function () {
 
 	this.DISAMBIGUATE_OPTIONS = ["disambiguate-add-names","disambiguate-add-givenname"];
 	this.DISAMBIGUATE_OPTIONS.push("disambiguate-add-year-suffix");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES = [];
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names-with-initials");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names-with-fullname");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name-with-initials");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name-with-fullname");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("by-cite");
 
 	this.PREFIX_PUNCTUATION = /.*[.;:]\s*$/;
 	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)].*/;

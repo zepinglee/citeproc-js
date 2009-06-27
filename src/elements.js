@@ -833,7 +833,18 @@ CSL.Lib.Elements.option = new function(){
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		};
+		if ("disambiguate-add-givenname" == this.strings.name) {
+			if (CSL.DISAMBIGUATE_ADD_GIVENNAME_VALUES.indexOf(this.strings.value) > -1) {
+				state[state.tmp.area].opt[this.strings.name] = this.strings.value;
+			};
+		};
 		if (this.strings.value == "true"){
+			//
+			// This will pick up the "true" version of disambiguate-add-givenname,
+			// which will be equivalent in effect to disambiguate-add-givenname="all-names".
+			// That probably doesn't make any sense, but don't worry, it's just
+			// an implementation detail.
+			//
 			if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){
 				state[state.tmp.area].opt[this.strings.name] = true;
 			};

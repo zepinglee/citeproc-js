@@ -28,6 +28,3 @@ Book A
    "title": "Book A"
 }]
 <<===== INPUT =====<<
-
-
-
