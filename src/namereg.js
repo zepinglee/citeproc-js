@@ -83,7 +83,28 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		//
 		// adjust value upward if appropriate
 		//
-
+		if ("string" == typeof opt && opt.slice(0,12) == "primary-name" && namenum > 0){
+			return param;
+		};
+		//
+		// the last composite condition is for backward compatibility
+		//
+		if (opt == "all-names" || opt == "primary-name" || ("boolean" == typeof opt && opt == true)){
+			if (!pkey_is_unique){
+				param = 1;
+			};
+			if (!ikey_is_unique){
+				param = 2;
+			}
+		} else if (opt == "all-names-with-initials" || opt == "primary-name-with-initials"){
+			if (!pkey_is_unique){
+				param = 1;
+			}
+		} else if (opt == "all-names-with-fullname" || opt == "primary-name-with-fullname"){
+			if (!pkey_is_unique){
+				param = 2;
+			}
+		};
 		return param;
 	};
 
