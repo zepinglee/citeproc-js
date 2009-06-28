@@ -54,10 +54,15 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		var ceiling;
 
 		_set_keys(nameobj);
+		//
+		// give literals a pass
+		if ("undefined" == typeof this.namereg[skey]){
+			return 2;
+		}
 		// keys
 		var pkey_is_unique = this.namereg[pkey] == 1;
 		var ikey_is_unique = this.namereg[ikey] == 1;
-		print(skey);
+		//print(skey);
 		var skey_is_unique = this.namereg[skey].length == 1;
 		// params
 		//
