@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#-*- encoding: utf8 -*-
 """ Grind human-readable CSL tests into machine-readable form
 
     When invoked directly as a script, this module converts
@@ -189,7 +190,8 @@ the named test files will be processed.
         options.be_verbose = True
     
     mypath = os.path.split(sys.argv[0])[0]
-    os.chdir(mypath)
+    if len(mypath):
+        os.chdir(mypath)
     
     tests = CslTests( args=args, verbose=options.be_verbose )
     tests.process()
