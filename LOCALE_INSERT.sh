@@ -5,11 +5,15 @@ set -e
 if [ "$1" == "" ]; then
   echo Needs a first argument.  Should be a string, the last occurence of which will trigger the inserts.
   exit 1
+else
+  INSERT_TRIGGER_FRAG="$1"
 fi
 
 if [ "$2" == "" ]; then
   echo Needs a second argument.  Should be a string contained in the inserted chunk, that does not occur anywhere else in the locale files.
   exit 1
+else
+  ADDED_FRAG="$2"
 fi
 
 if [ "$3" == "" ]; then
@@ -17,26 +21,27 @@ if [ "$3" == "" ]; then
   exit 1
 fi
 
-if [ -f $2 ]; then
-  CHUNK_TO_ADD=$(cat $2)
+if [ -f $3 ]; then
+  echo found $3 go figure
+  CHUNK_TO_ADD=$3
 else
   echo Third argument must be a file with a chunk of XML to add to the locales
   exit 1
 fi
 
 cd $(dirname $0)
-cd ..
 
 for i in $(find ./locale -name "*.xml"); do
-  if [ "$(grep -c ${ADDED_FRAG} $i)" -gt 0 ]; then
+  if [ $(grep -c "${ADDED_FRAG}" $i) -gt 0 ]; then
     echo Skipping $i
     continue
   fi
+  #echo "Insert trigger frag: " $INSERT_TRIGGER_FRAG
   LINE=$(cat $i \
-     | sed "/.*${INSERT_TRIGGER_FRAG}.*/,/^$/{/^$/=;d;};d")
-  echo $i
+     | sed "0,/.*${INSERT_TRIGGER_FRAG}.*/{p;};d" | wc -l)
+   echo $i $LINE
   echo "  splitting at line: $LINE"
-  echo $((LINE--)) > /dev/null
+  #echo $((LINE--)) > /dev/null
   head -n ${LINE} $i > ${i}.head
   echo $((LINE++)) > /dev/null
   tail -n +${LINE} $i > ${i}.tail
