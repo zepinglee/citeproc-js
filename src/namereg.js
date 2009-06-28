@@ -33,6 +33,7 @@ dojo.provide("csl.namereg");
 CSL.Factory.Registry.prototype.NameReg = function(state){
 	//this.state = state;
 	this.namereg = new Object();
+	this.nameids = new Object();
 	var pkey;
 	var ikey;
 	var skey;
@@ -126,7 +127,32 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		};
 	};
 
-	var add = function(nameobj){
+	//
+	// Oooooooh, this is hard.  The problem is where to call
+	// this method from.  It can't be called on all names in an
+	// Item, because that will be overaggressive (there might be
+	// only one name actually visible in printed output).
+	//
+	// If it's called per-name at render time, that should work
+	// okay (I think), but also need to be careful to call
+	// del method if the name is unwound during disambiguation
+	// (disambiguate-add-names).
+	//
+	// There's a problem, though.  Suppose [Alex] Smith, Book A (2000).
+	// Then suppose a later cite to [Arnold] Smith, Book B (1990).  The
+	// two sources are not in the same disambig set.  A separate tracking
+	// registry is needed for names, so that a request for re-rendering
+	// can be issued when the name form changes.
+	//
+	// And this needs to play nice with the existing machinery.
+	// Swell.  Just swell.
+	//
+	var add = function(id,nameobj){
+		if (!this.nameids[id]){
+			this.nameids[id] = true;
+		} else {
+			return;
+		};
 		_set_keys(nameobj);
 		if (pkey){
 			if ("undefined" == typeof this.namereg[pkey]){
