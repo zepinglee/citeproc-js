@@ -2,6 +2,10 @@ dojo.provide("tests.std_disambiguate");
 
 doh.register("tests.std_disambiguate", [
     function(){
+        var test = new StdRhinoTest("disambiguate_AllNamesBaseNameCountOnFailureIfYearSuffixAvailable");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
         doh.assertEqual(test.result, test.run());
     },
@@ -10,35 +14,35 @@ doh.register("tests.std_disambiguate", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_BaseNameCountOnFailureIfYearSuffixAvailable");
+        var test = new StdRhinoTest("disambiguate_ByCiteBaseNameCountOnFailureIfYearSuffixAvailable");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_DisambiguateCondition");
+        var test = new StdRhinoTest("disambiguate_ByCiteDisambiguateCondition");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_GivennameExpandCrossNestedNames");
+        var test = new StdRhinoTest("disambiguate_ByCiteGivennameExpandCrossNestedNames");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_GivennameNoShortFormInitializeWith");
+        var test = new StdRhinoTest("disambiguate_ByCiteGivennameNoShortFormInitializeWith");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_GivennameShortFormInitializeWith");
+        var test = new StdRhinoTest("disambiguate_ByCiteGivennameShortFormInitializeWith");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_GivennameShortFormNoInitializeWith");
+        var test = new StdRhinoTest("disambiguate_ByCiteGivennameShortFormNoInitializeWith");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_MinimalGivennameExpandMinimalNames");
+        var test = new StdRhinoTest("disambiguate_ByCiteMinimalGivennameExpandMinimalNames");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_RetainNamesOnFailureIfYearSuffixNotAvailable");
+        var test = new StdRhinoTest("disambiguate_ByCiteRetainNamesOnFailureIfYearSuffixNotAvailable");
         doh.assertEqual(test.result, test.run());
     },
     function(){
