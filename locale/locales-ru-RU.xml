@@ -9,6 +9,10 @@
     <term name="from">от</term>
     <term name="forthcoming">грядущие</term>
     <term name="references">Ссылки</term>
+    <term name="reference item">
+      <single>source</single>
+      <multiple>sources</multiple>
+    </term>
     <term name="no date">нет даты</term>
     <term name="and">и</term>
     <term name="et-al">и др.</term>
