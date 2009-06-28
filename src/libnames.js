@@ -204,6 +204,10 @@ CSL.Lib.Elements.names = new function(){
 					state.output.formats.value()["name"].strings.delimiter = and_term;
 					for (var i in nameset.names){
 						//
+						// register the name in the global names disambiguation
+						// registry
+						state.registry.namereg.update(Item.id,nameset.names[i],i);
+						//
 						// set the display mode default for givennames if required
 						if (state.tmp.disambig_request){
 							//

@@ -33,6 +33,7 @@ dojo.provide("csl.namereg");
 CSL.Factory.Registry.prototype.NameReg = function(state){
 	//this.state = state;
 	this.namereg = new Object();
+	this.updateme = new Array();
 	var pkey;
 	var ikey;
 	var skey;
@@ -44,7 +45,7 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 			secondary = "";
 		}
 		ikey = pkey+"::"+CSL.Util.Names.initializeWith(secondary,"");
-		skey = pkey+"::"+secondary.replace("."," ").replace(/\s+/," ");
+		skey = pkey+"::::"+secondary.replace("."," ").replace(/\s+/," ");
 	};
 
 	var eval = function(nameobj,namenum,form,initials){
@@ -56,7 +57,8 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		// keys
 		var pkey_is_unique = this.namereg[pkey] == 1;
 		var ikey_is_unique = this.namereg[ikey] == 1;
-		var skey_is_unique = this.namereg[skey] == 1;
+		print(skey);
+		var skey_is_unique = this.namereg[skey].length == 1;
 		// params
 		//
 		// possible options are:
@@ -156,32 +158,23 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 	// initials are used or not, and whether full or short form is
 	// used, is specific to the names tag (not global across the
 	// style, nor even across citation or bibliography).
-	// So we're screwed there.  We can't cache at name level,
-	// nor even at Item level.  Cached values would have to
-	// be set by giving name tags themselves an id, in order
-	// to discriminate between different name tags within a
-	// citation.  The alternative is to force the rerendering
-	// of all cites that contain ambiguous names, every time
-	// another cite is added that uses the relevant name.  Potentially
-	// lots of wasted processing there, it's not acceptable.
 	//
-	// sigh.
+	// ... but disambiguation levels are set globally.  So I
+	// guess we can just blunder forward on this.  There are some
+	// option combinations that will break without fine-grained
+	// caching -- if one name element requests full form, that
+	// will force all instances of all names that it renders
+	// to full form -- but maybe that can be written off as
+	// CSL behavior, not an error in the program.
 	//
-	// so I guess we do need to register a serial
-	// number in names environments during the build
-	// phase.  That will catch all of them.  And this
-	// function should accept that serial number along
-	// with the item id.
-	//
-	// There's a potential gotcha here, with names that change
-	// the form in a substitute environment.  Wonder if that
-	// can be banned in the schema.  In any case, it's unlikely
-	// ever to be an issue.  I vote that we ignore it.  The
-	// ayes have it.  I just love pair programming, don't you?
-	var add = function(id,nameobj){
-	// NEW: var add = function(item_id,nametag_id,nameobj){
+	// okay, so this now works as an update method, and
+	// maintains a list of item ids requiring onward updates
+	// to keep them in sync with global names disambiguation
+	// status.
+	var update = function(item_id,nameobj,pos){
 		_set_keys(nameobj);
-		if (pkey && this.namereg[skey].indexOf(item_id) == -1){
+		var old_key = this.namereg[skey];
+		if (pkey){
 			if ("undefined" == typeof this.namereg[pkey]){
 				this.namereg[pkey] = 0;
 			};
@@ -195,8 +188,18 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 			};
 			this.namereg[skey].push(item_id);
 		};
+		if ("undefined" != typeof old_key && this.namereg[skey] != old_key){
+			for each (var id in this.namereg[skey]){
+				if (id == item_id){
+					continue;
+				}
+				if (this.updateme.indexOf(id) == -1){
+					this.updateme.push(id);
+				}
+			}
+		}
 	};
-	this.add = add;
+	this.update = update;
 	this.del = del;
 	this.eval = eval;
 };
