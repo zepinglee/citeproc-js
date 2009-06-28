@@ -4,12 +4,12 @@ citation
 
 
 >>== SCHEMA ==>>
-0.8
+none
 <<== SCHEMA ==<<
 
 
 >>== RESULT ==>>
-Reference [1]
+Source [1]
 
 <i>[2]</i>
 <<== RESULT ==<<

@@ -57,6 +57,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Reference [1]\n\n<i>[2]</i>", 
-    "schema": "0.8"
+    "result": "Source [1]\n\n<i>[2]</i>", 
+    "schema": "none"
 }
