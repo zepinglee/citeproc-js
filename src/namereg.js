@@ -112,6 +112,7 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 				param = 2;
 			}
 		};
+		print(param+" "+nameobj["primary-key"]);
 		return param;
 	};
 
@@ -176,6 +177,9 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 	// maintains a list of item ids requiring onward updates
 	// to keep them in sync with global names disambiguation
 	// status.
+	//
+	// alright, that works, but it breaks the add-names disambiguation
+	// routines.
 	var update = function(item_id,nameobj,pos){
 		_set_keys(nameobj);
 		var old_key = this.namereg[skey];

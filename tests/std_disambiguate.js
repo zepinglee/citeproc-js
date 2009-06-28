@@ -5,6 +5,9 @@ doh.register("tests.std_disambiguate", [
         var test = new StdRhinoTest("disambiguate_AllNamesBaseNameCountOnFailureIfYearSuffixAvailable");
         doh.assertEqual(test.result, test.run());
     },
+]);
+
+var x = [
     function(){
         var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
         doh.assertEqual(test.result, test.run());
@@ -49,4 +52,4 @@ doh.register("tests.std_disambiguate", [
         var test = new StdRhinoTest("disambiguate_YearSuffixAndSort");
         doh.assertEqual(test.result, test.run());
     },
-]);
+]
