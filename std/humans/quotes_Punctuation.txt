@@ -9,7 +9,7 @@ bibliography
 
 >>===== RESULT =====>>
 <ul class="csl-bib-body">
-<li class="csl-bib-entry"><span class="csl-bib-first">&ldquo;The Book Title&rdquo;,</span></li>
+<li class="csl-bib-entry"><span class="csl-bib-first">“The Book Title”,</span></li>
 </ul>
 <<===== RESULT =====<<
 

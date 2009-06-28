@@ -18,6 +18,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">&ldquo;The Book Title&rdquo;,</span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">\u201cThe Book Title\u201d,</span></li>\n</ul>", 
     "schema": "0.8"
 }
