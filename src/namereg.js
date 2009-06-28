@@ -33,7 +33,6 @@ dojo.provide("csl.namereg");
 CSL.Factory.Registry.prototype.NameReg = function(state){
 	//this.state = state;
 	this.namereg = new Object();
-	this.nameids = new Object();
 	var pkey;
 	var ikey;
 	var skey;
@@ -147,26 +146,54 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 	// And this needs to play nice with the existing machinery.
 	// Swell.  Just swell.
 	//
+	// Okay, maybe we can escape here.  skey is an array of
+	// item ids that contain the name.  we can tap into that
+	// later to request/trigger updates when the name changes.
+	//
+	// Uh-oh.  Need to cache the name param result for each name
+	// somewhere, though, so that we can tell when it's changed and
+	// when it hasn't ... except we can't, can we, since whether
+	// initials are used or not, and whether full or short form is
+	// used, is specific to the names tag (not global across the
+	// style, nor even across citation or bibliography).
+	// So we're screwed there.  We can't cache at name level,
+	// nor even at Item level.  Cached values would have to
+	// be set by giving name tags themselves an id, in order
+	// to discriminate between different name tags within a
+	// citation.  The alternative is to force the rerendering
+	// of all cites that contain ambiguous names, every time
+	// another cite is added that uses the relevant name.  Potentially
+	// lots of wasted processing there, it's not acceptable.
+	//
+	// sigh.
+	//
+	// so I guess we do need to register a serial
+	// number in names environments during the build
+	// phase.  That will catch all of them.  And this
+	// function should accept that serial number along
+	// with the item id.
+	//
+	// There's a potential gotcha here, with names that change
+	// the form in a substitute environment.  Wonder if that
+	// can be banned in the schema.  In any case, it's unlikely
+	// ever to be an issue.  I vote that we ignore it.  The
+	// ayes have it.  I just love pair programming, don't you?
 	var add = function(id,nameobj){
-		if (!this.nameids[id]){
-			this.nameids[id] = true;
-		} else {
-			return;
-		};
+	// NEW: var add = function(item_id,nametag_id,nameobj){
 		_set_keys(nameobj);
-		if (pkey){
+		if (pkey && this.namereg[skey].indexOf(item_id) == -1){
 			if ("undefined" == typeof this.namereg[pkey]){
 				this.namereg[pkey] = 0;
 			};
 			if ("undefined" == typeof this.namereg[skey]){
-				this.namereg[skey] = 0;
+				this.namereg[skey] = [];
 				if ("undefined" == typeof this.namereg[ikey]){
 					this.namereg[ikey] = 0;
 				};
 				this.namereg[pkey] += 1;
 				this.namereg[ikey] += 1;
 			};
-			this.namereg[skey] += 1;
+			this.namereg[skey].push(item_id);
 		};
 	};
 	this.add = add;
