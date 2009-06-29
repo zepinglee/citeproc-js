@@ -358,15 +358,15 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 			//	this.modepos = 0;
 			if (this.modes.length == 2){
 				this.mode = "givens";
-				this.modepos = 0;
+				this.mode1_counts[this.modepos] = 0;
+				// XXX this.modepos = 0;
 				//this.pos = 0;
 			} else {
 				this.pos += 1;
 				return true;
 			}
 		}
-	}
-	if (this.mode == "givens"){
+	} else if (this.mode == "givens"){
 		if (this.modepos == (this.mode1_counts.length-1) && this.mode1_counts[this.modepos] == (this.maxvals[this.modepos])){
 			if (debug){
 				print("-----  Item maxed out -----");

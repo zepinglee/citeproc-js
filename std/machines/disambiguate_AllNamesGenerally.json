@@ -1,0 +1,58 @@
+{
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <option name=\"disambiguate-add-givenname\" value=\"all-names\"/>\n        <option name=\"disambiguate-add-year-suffix\" value=\"true\"/>\n        <layout delimiter=\"; \">\n            <names variable=\"author\" delimiter=\", \">\n                <name and=\"text\" delimiter-precedes-last=\"never\" delimiter=\", \" form=\"short\" initialize-with=\".\"/>\n            </names>\n            <group prefix=\" (\" suffix=\")\">\n                <date variable=\"issued\">\n                    <date-part name=\"year\"/>\n                </date>\n                <text variable=\"year-suffix\"/>\n            </group>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "primary-key": "Asthma", 
+                    "secondary-key": "Albert", 
+                    "sticky": false
+                }, 
+                {
+                    "primary-key": "Bronchitis", 
+                    "secondary-key": "Bosworth", 
+                    "sticky": false
+                }, 
+                {
+                    "primary-key": "Cold", 
+                    "secondary-key": "Crispin", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-1", 
+            "issued": {
+                "year": "1980"
+            }, 
+            "title": "Book A", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Asthma", 
+                    "secondary-key": "Albert", 
+                    "sticky": false
+                }, 
+                {
+                    "primary-key": "Bronchitis", 
+                    "secondary-key": "Beauregarde", 
+                    "sticky": false
+                }, 
+                {
+                    "primary-key": "Cold", 
+                    "secondary-key": "Odeous", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-2", 
+            "issued": {
+                "year": "1995"
+            }, 
+            "title": "Book B", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Asthma, Bosworth Bronchitis and C. Cold (1980); Asthma, Beauregarde Bronchitis and O. Cold (1995)", 
+    "schema": "0.9"
+}

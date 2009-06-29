@@ -8,21 +8,18 @@ citation
 
 
 >>===== RESULT =====>>
-Asthma, et al. (1990a); Asthma, et al. (1990b); Dropsy, Edward Enteritis, X. Fever (2000); Dropsy, Ernie Enteritis, Y. Fever (2000)
+Asthma, Bosworth Bronchitis and C. Cold (1980); Asthma, Beauregarde Bronchitis and O. Cold (1995)
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
     <citation>
-        <option name="et-al-min" value="3"/>
-        <option name="et-al-use-first" value="1"/>
-        <option name="disambiguate-add-names" value="true"/>
         <option name="disambiguate-add-givenname" value="all-names"/>
         <option name="disambiguate-add-year-suffix" value="true"/>
         <layout delimiter="; ">
             <names variable="author" delimiter=", ">
-                <name delimiter=", " form="short" initialize-with="."/>
+                <name and="text" delimiter-precedes-last="never" delimiter=", " form="short" initialize-with="."/>
             </names>
             <group prefix=" (" suffix=")">
                 <date variable="issued">
@@ -46,7 +43,7 @@ Asthma, et al. (1990a); Asthma, et al. (1990b); Dropsy, Edward Enteritis, X. Fev
         { "name":"Bronchitis, Bosworth" },
         { "name":"Cold, Crispin" }
    ],
-   "issued": {"year": "1990"},
+   "issued": {"year": "1980"},
    "title": "Book A"
 },
 {
@@ -55,32 +52,10 @@ Asthma, et al. (1990a); Asthma, et al. (1990b); Dropsy, Edward Enteritis, X. Fev
    "author": [
         { "name":"Asthma, Albert" },
         { "name":"Bronchitis, Beauregarde" },
-        { "name":"Cold, Crispin" }
+        { "name":"Cold, Odeous" }
    ],
-   "issued": {"year": "1990"},
+   "issued": {"year": "1995"},
    "title": "Book B"
- },
-{
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-        { "name":"Dropsy, Devon" },
-        { "name":"Enteritis, Edward" },
-        { "name":"Fever, Xavier" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book C"
- },
-{
-   "id":"ITEM-4",
-   "type": "book",
-   "author": [
-        { "name":"Dropsy, Devon" },
-        { "name":"Enteritis, Ernie" },
-        { "name":"Fever, Yves" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book D"
  }
 ]
 <<===== INPUT =====<<

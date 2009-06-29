@@ -48,7 +48,7 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		skey = pkey+"::::"+secondary.replace("."," ").replace(/\s+/," ");
 	};
 
-	var eval = function(nameobj,namenum,form,initials){
+	var eval = function(nameobj,namenum,request_base,form,initials){
 		// return vals
 		var floor;
 		var ceiling;
@@ -88,7 +88,9 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 			param = 1;
 		};
 		if (state.tmp.force_subsequent){
-			print("WTF?");
+			if (param < request_base){
+				param = request_base;
+			}
 			return param;
 		};
 		//
@@ -116,7 +118,6 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 				param = 2;
 			}
 		};
-		print(param+" "+nameobj["primary-key"]);
 		return param;
 	};
 

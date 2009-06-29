@@ -218,10 +218,9 @@ CSL.Lib.Elements.names = new function(){
 							if (val == 1 && "undefined" == typeof state.tmp["initialize-with"]){
 								val = 2;
 							}
-							print("non-WTF: "+nameset.names[i]["primary-key"]);
 							var param = val;
-							if (!state[state.tmp.area].opt["disambiguate-add-givenname"] == "by-cite"){
-								var param = state.registry.namereg.eval(nameset.names[i],i,state.output.getToken("name").strings.form,state.tmp["initialize-with"]);
+							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["disambiguate-add-givenname"] != "by-cite"){
+								var param = state.registry.namereg.eval(nameset.names[i],i,param,state.output.getToken("name").strings.form,state.tmp["initialize-with"]);
 							};
 						} else {
 							//
@@ -231,7 +230,7 @@ CSL.Lib.Elements.names = new function(){
 							//
 							var myform = state.output.getToken("name").strings.form;
 							var myinitials = state.tmp["initialize-with"];
-							var param = state.registry.namereg.eval(nameset.names[i],i,myform,myinitials);
+							var param = state.registry.namereg.eval(nameset.names[i],i,0,myform,myinitials);
 							//print("MYFORM: "+myform+", PARAM: "+param);
 							//var param = 2;
 							//if (state.output.getToken("name").strings.form == "short"){
