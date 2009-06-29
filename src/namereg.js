@@ -84,18 +84,18 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		//
 		if ("short" == form){
 			param = 0;
-		} else if ("string" == typeof initials){
+		} else if ("string" == typeof initials || state.tmp.force_subsequent){
 			param = 1;
-		};
-		if (state.tmp.force_subsequent){
-			if (param < request_base){
-				param = request_base;
-			}
-			return param;
 		};
 		//
 		// adjust value upward if appropriate
 		//
+		if (param < request_base){
+			param = request_base;
+		}
+		if (state.tmp.force_subsequent){
+			return param;
+		};
 		if ("string" == typeof opt && opt.slice(0,12) == "primary-name" && namenum > 0){
 			return param;
 		};

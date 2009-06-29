@@ -264,6 +264,9 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
  * Initialize a name.
  */
 CSL.Util.Names.initializeWith = function(name,terminator){
+	if (!name){
+		return "";
+	};
 	var namelist = name.split(/\s+/);
 	var nstring = "";
 	for each (var n in namelist){
