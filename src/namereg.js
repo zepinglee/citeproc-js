@@ -180,6 +180,20 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 	//
 	// alright, that works, but it breaks the add-names disambiguation
 	// routines.
+	//
+	// The add-names routines break because the base form of the
+	// name changes during processing, as further names are added.
+	// This causes the ambig key to shift around, with the result
+	// that names are not properly expanded, and adding of names
+	// fails.  Seems to be the problem, anyway.
+	//
+	// Let's try switching the order of processing.  Run ALL
+	// renderings with disambiguate-add-givenname set to a value
+	// with the by-cite behaviour, and then set the names-based
+	// expanded form when the final makeCitationCluster rendering
+	// is output.  This could be done with a single var set on
+	// the state object in the execution wrappers that run the
+	// style.
 	var update = function(item_id,nameobj,pos){
 		_set_keys(nameobj);
 		var old_key = this.namereg[skey];
