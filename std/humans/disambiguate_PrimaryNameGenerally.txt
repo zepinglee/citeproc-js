@@ -1,0 +1,55 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.9
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Aloysius Asthma and Bronchitis (1980); Artemis Asthma and Bronchitis (1995)
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <option name="disambiguate-add-givenname" value="primary-name"/>
+        <layout delimiter="; ">
+            <names variable="author" delimiter=", ">
+                <name and="text" delimiter-precedes-last="never" form="short"/>
+            </names>
+            <group prefix=" (" suffix=")">
+                <date variable="issued">
+                    <date-part name="year"/>
+                </date>
+            </group>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Aloysius" },
+        { "name":"Bronchitis, Bosworth" }
+   ],
+   "issued": {"year": "1980"}
+},
+{
+   "id":"ITEM-2",
+   "type": "book",
+   "author": [
+        { "name":"Asthma, Artemis" },
+        { "name":"Bronchitis, Beauregarde" }
+   ],
+   "issued": {"year": "1995"}
+ }
+]
+<<===== INPUT =====<<

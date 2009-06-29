@@ -127,7 +127,10 @@ CSL.Engine.prototype.getModes = function(){
 	//
 	// what the heck.  whatever.  use by-cite disambiguation
 	// for everything, for starters.  why not.
-	if (gopt){
+	//
+	// hmm.  don't need any name expansion with the primary-name
+	// disambiguate-add-givenname, so no givens in that case.
+	if (gopt && ("boolean" == typeof gopt || ("string" == typeof gopt && "primary-name" != gopt.slice(0,12)))){
 		ret.push("givens");
 	}
 	return ret;
@@ -269,6 +272,7 @@ CSL.Engine.prototype._render = function(token,Item){
 		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
 		//print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
+
 	if (token.evaluator){
 	    next = token.evaluator.call(token,this,Item);
     };
