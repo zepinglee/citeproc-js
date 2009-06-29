@@ -218,7 +218,11 @@ CSL.Lib.Elements.names = new function(){
 							if (val == 1 && "undefined" == typeof state.tmp["initialize-with"]){
 								val = 2;
 							}
+							print("non-WTF: "+nameset.names[i]["primary-key"]);
 							var param = val;
+							if (!state[state.tmp.area].opt["disambiguate-add-givenname"] == "by-cite"){
+								var param = state.registry.namereg.eval(nameset.names[i],i,state.output.getToken("name").strings.form,state.tmp["initialize-with"]);
+							};
 						} else {
 							//
 							// ZZZZZ: it clicks.  here is where we will put the

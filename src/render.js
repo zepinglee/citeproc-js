@@ -123,7 +123,11 @@ CSL.Engine.prototype.getModes = function(){
 		ret.push("names");
 	}
 	var gopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
-	if (("boolean" == typeof gopt && gopt == true) || gopt == "by-cite"){
+//	if (("boolean" == typeof gopt && gopt == true) || gopt == "by-cite"){
+	//
+	// what the heck.  whatever.  use by-cite disambiguation
+	// for everything, for starters.  why not.
+	if (gopt){
 		ret.push("givens");
 	}
 	return ret;

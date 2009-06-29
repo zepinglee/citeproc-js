@@ -87,6 +87,10 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		} else if ("string" == typeof initials){
 			param = 1;
 		};
+		if (state.tmp.force_subsequent){
+			print("WTF?");
+			return param;
+		};
 		//
 		// adjust value upward if appropriate
 		//
