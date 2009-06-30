@@ -23,6 +23,14 @@ CSL = new function () {
 	this.ET_AL_NAMES = this.ET_AL_NAMES.concat( ["et-al-subsequent-min","et-al-subsequent-use-first"] );
 	this.DISAMBIGUATE_OPTIONS = ["disambiguate-add-names","disambiguate-add-givenname"];
 	this.DISAMBIGUATE_OPTIONS.push("disambiguate-add-year-suffix");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES = [];
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names-with-initials");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names-with-fullname");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name-with-initials");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name-with-fullname");
+	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("by-cite");
 	this.PREFIX_PUNCTUATION = /.*[.;:]\s*$/;
 	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)].*/;
 	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
@@ -451,7 +459,8 @@ CSL.Engine.prototype.getModes = function(){
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
 	}
-	if (this[this.tmp.area].opt["disambiguate-add-givenname"]){
+	var gopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	if (gopt && ("boolean" == typeof gopt || ("string" == typeof gopt && "primary-name" != gopt.slice(0,12)))){
 		ret.push("givens");
 	}
 	return ret;
@@ -663,7 +672,7 @@ CSL.Lib.Elements.text = new function(){
 						if (!state.tmp.force_subsequent){
 							if (Item["author-only"]){
 								state.tmp.element_trace.replace("do-not-suppress-me");
-								var term = CSL.Output.Formatters.capitalize_first(state,state.getTerm("reference","long","singular"));
+								var term = CSL.Output.Formatters.capitalize_first(state,state.getTerm("reference item","long","singular"));
 								state.output.append(term+" ");
 								state.tmp.last_element_trace = true;
 							};
@@ -1293,7 +1302,18 @@ CSL.Lib.Elements.option = new function(){
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		};
+		if ("disambiguate-add-givenname" == this.strings.name) {
+			if (CSL.DISAMBIGUATE_ADD_GIVENNAME_VALUES.indexOf(this.strings.value) > -1) {
+				state[state.tmp.area].opt[this.strings.name] = this.strings.value;
+			};
+		};
 		if (this.strings.value == "true"){
+			//
+			// This will pick up the "true" version of disambiguate-add-givenname,
+			// which will be equivalent in effect to disambiguate-add-givenname="all-names".
+			// That probably doesn't make any sense, but don't worry, it's just
+			// an implementation detail.
+			//
 			if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){
 				state[state.tmp.area].opt[this.strings.name] = true;
 			};
@@ -1610,6 +1630,10 @@ CSL.Lib.Elements.names = new function(){
 					state.output.formats.value()["name"].strings.delimiter = and_term;
 					for (var i in nameset.names){
 						//
+						// register the name in the global names disambiguation
+						// registry
+						state.registry.namereg.update(Item.id,nameset.names[i],i);
+						//
 						// set the display mode default for givennames if required
 						if (state.tmp.disambig_request){
 							//
@@ -1621,6 +1645,9 @@ CSL.Lib.Elements.names = new function(){
 								val = 2;
 							}
 							var param = val;
+							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["disambiguate-add-givenname"] != "by-cite"){
+								var param = state.registry.namereg.eval(nameset.names[i],i,param,state.output.getToken("name").strings.form,state.tmp["initialize-with"]);
+							};
 						} else {
 							//
 							// ZZZZZ: it clicks.  here is where we will put the
@@ -1629,7 +1656,7 @@ CSL.Lib.Elements.names = new function(){
 							//
 							var myform = state.output.getToken("name").strings.form;
 							var myinitials = state.tmp["initialize-with"];
-							var param = state.registry.namereg.eval(nameset.names[i],myform,myinitials);
+							var param = state.registry.namereg.eval(nameset.names[i],i,0,myform,myinitials);
 							//print("MYFORM: "+myform+", PARAM: "+param);
 							//var param = 2;
 							//if (state.output.getToken("name").strings.form == "short"){
@@ -2560,6 +2587,9 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
 	return true;
 };
 CSL.Util.Names.initializeWith = function(name,terminator){
+	if (!name){
+		return "";
+	};
 	var namelist = name.split(/\s+/);
 	var nstring = "";
 	for each (var n in namelist){
@@ -3812,6 +3842,141 @@ CSL.Factory.Registry.prototype.incrementSubsequentTokens = function (tok){
 	}
 	tok.seq += 1;
 };
+CSL.Factory.Registry.prototype.NameReg = function(state){
+	this.namereg = new Object();
+	this.updateme = new Array();
+	var pkey;
+	var ikey;
+	var skey;
+	var _set_keys = function(nameobj){
+		pkey = nameobj["primary-key"];
+		var secondary = nameobj["secondary-key"];
+		if (!secondary){
+			secondary = "";
+		}
+		ikey = pkey+"::"+CSL.Util.Names.initializeWith(secondary,"");
+		skey = pkey+"::::"+secondary.replace("."," ").replace(/\s+/," ");
+	};
+	var eval = function(nameobj,namenum,request_base,form,initials){
+		// return vals
+		var floor;
+		var ceiling;
+		_set_keys(nameobj);
+		//
+		// give literals a pass
+		if ("undefined" == typeof this.namereg[skey]){
+			return 2;
+		}
+		// keys
+		var pkey_is_unique = this.namereg[pkey] == 1;
+		var ikey_is_unique = this.namereg[ikey] == 1;
+		//print(skey);
+		var skey_is_unique = this.namereg[skey].length == 1;
+		// params
+		//
+		// possible options are:
+		//
+		// <option disambiguate-add-givenname value="true"/> (a)
+		// <option disambiguate-add-givenname value="all-names"/> (a)
+		// <option disambiguate-add-givenname value="all-names-with-initials"/> (b)
+		// <option disambiguate-add-givenname value="all-names-with-fullname"/> (c)
+		// <option disambiguate-add-givenname value="primary-name"/> (d)
+		// <option disambiguate-add-givenname value="primary-name-with-initials"/> (e)
+		// <option disambiguate-add-givenname value="primary-name-with-fullname"/> (f)
+		// <option disambiguate-add-givenname value="by-cite"/> (g)
+		//
+		var param = 2;
+		var opt = state[state.tmp.area].opt["disambiguate-add-givenname"];
+		//
+		// set initial value
+		//
+		if ("short" == form){
+			param = 0;
+		} else if ("string" == typeof initials || state.tmp.force_subsequent){
+			param = 1;
+		};
+		//
+		// adjust value upward if appropriate
+		//
+		if (param < request_base){
+			param = request_base;
+		}
+		if (state.tmp.force_subsequent){
+			return param;
+		};
+		if ("string" == typeof opt && opt.slice(0,12) == "primary-name" && namenum > 0){
+			return param;
+		};
+		//
+		// the last composite condition is for backward compatibility
+		//
+		if (opt == "all-names" || opt == "primary-name" || ("boolean" == typeof opt && opt == true)){
+			if (!pkey_is_unique){
+				param = 1;
+			};
+			if (!ikey_is_unique){
+				param = 2;
+			}
+		} else if (opt == "all-names-with-initials" || opt == "primary-name-with-initials"){
+			if (!pkey_is_unique){
+				param = 1;
+			}
+		} else if (opt == "all-names-with-fullname" || opt == "primary-name-with-fullname"){
+			if (!pkey_is_unique){
+				param = 2;
+			}
+		};
+		return param;
+	};
+	var del = function(nameobj){
+		_set_keys(nameobj);
+		if (pkey){
+			this.namereg[skey] += -1;
+			if (this.namereg[skey] == 0){
+				delete this.namereg[skey];
+				this.namereg[pkey] += -1;
+				this.namereg[ikey] += -1;
+			};
+			if (this.namereg[ikey] == 0){
+				delete this.namereg[ikey];
+			};
+			if (this.namereg[pkey] == 0){
+				delete this.namereg[pkey];
+			};
+		};
+	};
+	var update = function(item_id,nameobj,pos){
+		_set_keys(nameobj);
+		var old_key = this.namereg[skey];
+		if (pkey){
+			if ("undefined" == typeof this.namereg[pkey]){
+				this.namereg[pkey] = 0;
+			};
+			if ("undefined" == typeof this.namereg[skey]){
+				this.namereg[skey] = [];
+				if ("undefined" == typeof this.namereg[ikey]){
+					this.namereg[ikey] = 0;
+				};
+				this.namereg[pkey] += 1;
+				this.namereg[ikey] += 1;
+			};
+			this.namereg[skey].push(item_id);
+		};
+		if ("undefined" != typeof old_key && this.namereg[skey] != old_key){
+			for each (var id in this.namereg[skey]){
+				if (id == item_id){
+					continue;
+				}
+				if (this.updateme.indexOf(id) == -1){
+					this.updateme.push(id);
+				}
+			}
+		}
+	};
+	this.update = update;
+	this.del = del;
+	this.eval = eval;
+};
 var debug = false;
 CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
 	if ( ! candidate_list){
@@ -4098,15 +4263,15 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 			//	this.modepos = 0;
 			if (this.modes.length == 2){
 				this.mode = "givens";
-				this.modepos = 0;
+				this.mode1_counts[this.modepos] = 0;
+				// XXX this.modepos = 0;
 				//this.pos = 0;
 			} else {
 				this.pos += 1;
 				return true;
 			}
 		}
-	}
-	if (this.mode == "givens"){
+	} else if (this.mode == "givens"){
 		if (this.modepos == (this.mode1_counts.length-1) && this.mode1_counts[this.modepos] == (this.maxvals[this.modepos])){
 			if (debug){
 				print("-----  Item maxed out -----");

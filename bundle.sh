@@ -29,7 +29,7 @@ function makepaths (){
 
 
 
-files="csl build core state commands render lib elements libnames attributes system xml xmle4x factory stack token ambigconfig blob util util_names util_dates util_sort util_substitute util_mangle_number util_flipflop output range formatters formats queue registry disambiguate"
+files="csl build core state commands render lib elements libnames attributes system xml xmle4x factory stack token ambigconfig blob util util_names util_dates util_sort util_substitute util_mangle_number util_flipflop output range formatters formats queue registry namereg disambiguate"
 
 makepaths "${files}"
 
