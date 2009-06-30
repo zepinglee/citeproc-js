@@ -8,7 +8,7 @@ citation
 
 
 >>== RESULT ==>>
-&ldquo;My &lsquo;Amazing&rsquo; title&rdquo;
+“My ‘Amazing’ title”
 <<== RESULT ==<<
 
 
