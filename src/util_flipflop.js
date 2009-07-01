@@ -25,27 +25,34 @@ dojo.provide("csl.util_flipflop");
 //
 // (1) Iterate a function over the string, in a progressive
 // left-to-right scan for non-overlapping start elements.
-// For element found, push a two-element array onto a working stack.
-// The array holds the element start position and the element string
-// start text.
+// For each element found, push a two-element array onto a working stack.
+// The array holds the element start position and the string constituting
+// the start element tag.
 //
 // (2) Scan the string a second time, looking for the end element
 // corresponding to each start element.  If found, push a newly minted
 // array for the end element onto the working stack.  Iterate, but
 // protect against pushing duplicates.
 //
-// (3) Sort the working stack.
+// (3) Sort the working stack by the position of the elements.
 //
 // (4) Open an output object, and generate a nested representation
 // of the string by opening a new layer for each start element,
 // and a text object for each text string that does not contain
-// a start element.  Close each layer when the relevant closing
-// element is encountered.  Ignore opening tags for which no closing
-// partner match is found.  All of this stuff is the hard part, of
-// course.
+// a start element.  Close each layer when a matching closing
+// element is encountered.  Opening tags for which no closing
+// partner match is found are passed through verbatim.  All of this
+// stuff is the hard part, of course, but at least three other
+// refactorings have involved recursive processing of this kind.
+// Should be able to cope.
 //
-// (5) With appropriate decoration functions, should render
-// in flip-flop fashion automagically.
+// (5) With appropriate decoration functions, the resulting output
+// object should render in flip-flop fashion automagically, using
+// the methods already built.  Need to improve on current behavior,
+// though, by allowing an arbitrary number of "flops" in the flip-flop
+// (or, say, flip-flop-flap) set, round-robin style.  Should implement
+// cleanly, and would save some pain if it turns out to be needed
+// for quotes or something.
 
 
 //		if (this.flipflops){
