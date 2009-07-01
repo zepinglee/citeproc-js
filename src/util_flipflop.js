@@ -1,5 +1,53 @@
 dojo.provide("csl.util_flipflop");
 
+//
+// Gee wiz, Wally, how is this going to work?
+//
+// The threshold question is how to deal with quotation marks.
+// Could allow them only as semantic tags.  In that case, some
+// UI method of transforming quotes or raising an error when
+// quotes are entered as text would be needed.  Messy and expensive.
+//
+// Alternatively, quotes could be allowed, but treated as markup
+// rather than characters.  This would require recognition of wiki-style
+// symmetric markup (i.e. simple courier-font quotes), and of all
+// possible quote marks in the world.  Messy, friendly on user side,
+// but loses all semantic information.
+//
+// Or you could do the first option above, but allow quotes as
+// text and just leave them as they stand.  Would create chaos
+// in stored data, with different representations everywhere and
+// no means of normalizing data.  Not a good idea.
+//
+// Okay, here's a possible plan, which should work for recognition
+// of mixed tagged and wiki-markup text, with the possibility of
+// mismatch failures (like with apostrphes and stuff).
+//
+// (1) Iterate a function over the string, in a progressive
+// left-to-right scan for non-overlapping start elements.
+// For element found, push a two-element array onto a working stack.
+// The array holds the element start position and the element string
+// start text.
+//
+// (2) Scan the string a second time, looking for the end element
+// corresponding to each start element.  If found, push a newly minted
+// array for the end element onto the working stack.  Iterate, but
+// protect against pushing duplicates.
+//
+// (3) Sort the working stack.
+//
+// (4) Open an output object, and generate a nested representation
+// of the string by opening a new layer for each start element,
+// and a text object for each text string that does not contain
+// a start element.  Close each layer when the relevant closing
+// element is encountered.  Ignore opening tags for which no closing
+// partner match is found.  All of this stuff is the hard part, of
+// course.
+//
+// (5) With appropriate decoration functions, should render
+// in flip-flop fashion automagically.
+
+
 //		if (this.flipflops){
 //			for each (var ff in this.flipflops){
 //				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
