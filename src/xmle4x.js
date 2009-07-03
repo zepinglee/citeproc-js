@@ -24,6 +24,7 @@ CSL.System.Xml.E4X.prototype.clean = function(xml){
  */
 CSL.System.Xml.E4X.prototype.parse = function(myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	myxml = new XML( this.clean(myxml) );
 	return myxml;
 };

@@ -22,6 +22,7 @@ var StdRhinoTest = function(myname){
 StdRhinoTest.prototype.makeXml = function(str){
 	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var ret = new XML(str);
 	return ret;
 };
@@ -45,6 +46,7 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 		var myxml = arg;
 	}
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	var locale = new XML();
 	for each (var blob in myxml..locale){
@@ -56,6 +58,7 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 	for each (var term in locale.term){
 		var termname = term.@name.toString();
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		//default xml namespace = "http://purl.org/net/xbiblio/csl";
 		if ("undefined" == typeof this.locale_terms[termname]){
 			this.locale_terms[termname] = new Object();
 		};

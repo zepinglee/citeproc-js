@@ -245,6 +245,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	// led us here, but with a different queue.
 	//
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var macroxml = this.cslXml..macro.(@name == mkey);
 	if (!macroxml.toString()){
 		throw "CSL style error: undefined macro \""+mkey+"\"";

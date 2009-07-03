@@ -45,6 +45,7 @@ CSL.Engine = function(sys,style,lang) {
 
 CSL.Engine.prototype._buildTokenLists = function(area){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var area_nodes = this.cslXml[area];
 	if (!area_nodes.toString()){
 		//print("NO AREA NODES");
@@ -148,7 +149,7 @@ CSL.Engine.prototype.getTerm = function(term,form,plural){
 	}
 	forms = forms.concat(["long"]);
 	for each (var f in forms){
-		if (this.locale_terms[term][f]){
+		//if (this.locale_terms[term][f]){
 			if ("string" == typeof this.locale_terms[term][f]){
 				ret = this.locale_terms[term][f];
 			} else {
@@ -159,7 +160,7 @@ CSL.Engine.prototype.getTerm = function(term,form,plural){
 				}
 			}
 			break;
-		}
+		//}
 	}
 	return ret;
 }
