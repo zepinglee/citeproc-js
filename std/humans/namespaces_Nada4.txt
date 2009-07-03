@@ -1,0 +1,34 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http;//foo.org/bar">
+ <citation>
+  <layout>
+     <text variable="title"/>
+  </layout>
+ </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"simple-western-name-1",
+   "type": "book",
+   "title": "Book A"
+}]
+<<===== INPUT =====<<
+
+
+
