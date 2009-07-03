@@ -2,8 +2,10 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_disambiguate");
+	dojo.require("tests.test_sys_rhino_locale");
+	dojo.require("tests.std_terms");
 	dojo.require("tests.std_namespaces");
+	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_name");
 	dojo.require("tests.test_queue");
 	dojo.require("tests.std_discretionary");
@@ -14,7 +16,6 @@ if(true){
 	dojo.require("tests.test_load_styles");
 	dojo.require("tests.test_build");
 	dojo.require("tests.test_sys_rhino_load");
-	dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.test_sys_stdrhino_locale");
 	dojo.require("tests.test_sys_stdrhino_load");
 	dojo.require("tests.test_opt");
