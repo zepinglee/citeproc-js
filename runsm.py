@@ -39,22 +39,23 @@ if __name__ == '__main__':
             continue
         lang = filename.split("-")[1]
         locale = open("./locale/%s" % (filename,)).read()
-        #locale = re.sub("<\?[^>]*>\n*","",locale)
-        #print "setting locale: "+locale
-        #print "setting locale ..."
         locales[lang] = locale
-    localejson = json.dumps(locales)
+    localejson = json.dumps(locales,ensure_ascii=False)
     cx.eval_script("var locale = %s" % (localejson,) )
 
     #print "Loading tests ..."
     cx.eval_script("testobjects = new Object();")
     for filename in os.listdir("./std/machines"):
+        if not filename.endswith(".json"):
+            continue
+        if filename != "position_IbidWithLocator.json":
+            continue
         if not os.path.stat.S_ISREG( os.stat("./std/machines/%s" %filename).st_mode ):
             continue
         testname = os.path.splitext(filename)[0]
         fh = open("./std/machines/%s" % (filename,))
         str = fh.read()
-        str = json.dumps(str)
+        str = json.dumps(str,ensure_ascii=False)
         cx.eval_script("testobjects[\"%s\"] = %s" % (testname,str,))
 
     #print "Loading retrieval functions ..."
@@ -90,13 +91,13 @@ if __name__ == '__main__':
     for filename in os.listdir("./tests"):
         if not filename.startswith("std_") or not filename.endswith(".js"):
             continue
-        #if not filename == "std_fullstyles.js":
-        #    continue
+        if not filename == "std_position.js":
+            continue
         if filename == "std_decorations.js":
             continue
         if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
             continue
-        run = open("./tests/%s" % (filename,)).read()
+        run = unicode( open("./tests/%s" % (filename,)).read() )
         cx.eval_script(run)
 
     print "Running tests ..."

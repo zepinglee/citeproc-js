@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- encoding: utf8 -*-
+#-*- encoding: utf-8 -*-
 """ Grind human-readable CSL tests into machine-readable form
 
     When invoked directly as a script, this module converts
@@ -156,7 +156,7 @@ class CslTest(CslTestUtils):
         if not os.path.exists( self.path("machines")):
             os.makedirs( self.path("machines"))
         tpath_out = "%s.json" % (self.path("machines", self.testname),)
-        json.dump(self.data, open(tpath_out,"w+"), indent=4, sort_keys=True )
+        json.dump(self.data, open(tpath_out,"w+"), indent=4, sort_keys=True, ensure_ascii=False )
         
 
 if __name__ == "__main__":
