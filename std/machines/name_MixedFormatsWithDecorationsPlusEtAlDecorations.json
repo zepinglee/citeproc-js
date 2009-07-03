@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "\u0427\u0430\u0439\u043a\u043e\u0432\u0441\u043a\u0438\u0439", 
-                    "secondary-key": "\u041f\u0451\u0442\u0440 \u0418\u043b\u044c\u0438\u0447", 
+                    "primary-key": "Чайковский", 
+                    "secondary-key": "Пётр Ильич", 
                     "sticky": false
                 }, 
                 {
@@ -15,8 +15,8 @@
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "\u6211\u59bb", 
-                    "secondary-key": "\u6804", 
+                    "primary-key": "我妻", 
+                    "secondary-key": "栄", 
                     "sticky": false
                 }, 
                 {
@@ -46,6 +46,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "\u041f\u0451\u0442\u0440 \u0418\u043b\u044c\u0438\u0447 \u0427\u0410\u0419\u041a\u041e\u0412\u0421\u041a\u0418\u0419, Rip van WINKLE, \u6211\u59bb\u6804, Carl THUCYDIDES III, TOKUGAWA Ieyasu<i>et al.</i>", 
+    "result": "Пётр Ильич ЧАЙКОВСКИЙ, Rip van WINKLE, 我妻栄, Carl THUCYDIDES III, TOKUGAWA Ieyasu<i>et al.</i>", 
     "schema": "0.8"
 }

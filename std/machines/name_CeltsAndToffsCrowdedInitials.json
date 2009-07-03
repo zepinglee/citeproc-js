@@ -7,7 +7,7 @@
             "title": "Leonardo on the Human Body", 
             "translator": [
                 {
-                    "primary-key": "O\u2019Malley", 
+                    "primary-key": "O’Malley", 
                     "secondary-key": "Charles D.", 
                     "sticky": false
                 }, 
@@ -21,6 +21,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "O\u2019Malley, C.D., & Saunders, J.B. de C.M.", 
+    "result": "O’Malley, C.D., & Saunders, J.B. de C.M.", 
     "schema": "0.8"
 }

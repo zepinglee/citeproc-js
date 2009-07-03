@@ -8,6 +8,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "&ldquo;My &lsquo;Amazing&rsquo; title&rdquo;", 
+    "result": "“My ‘Amazing’ title”", 
     "schema": "0.8"
 }

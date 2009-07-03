@@ -9,7 +9,7 @@
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fr\u00f6berg", 
+                    "primary-key": "Fröberg", 
                     "secondary-key": "Lars", 
                     "sticky": false
                 }, 
@@ -87,6 +87,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "(Baur, Fr\u00f6berg, Baur, et al. 2000<i>a</i>; Baur, Schileyko & Baur 2000<i>b</i>; Doe 2000)", 
+    "result": "(Baur, Fröberg, Baur, et al. 2000<i>a</i>; Baur, Schileyko & Baur 2000<i>b</i>; Doe 2000)", 
     "schema": "0.9"
 }

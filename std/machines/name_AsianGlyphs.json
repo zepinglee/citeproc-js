@@ -4,18 +4,18 @@
         {
             "author": [
                 {
-                    "primary-key": "\u6211\u59bb", 
-                    "secondary-key": "\u6804", 
+                    "primary-key": "我妻", 
+                    "secondary-key": "栄", 
                     "sticky": false
                 }
             ], 
             "id": "item-1", 
             "issued": "1960", 
-            "title": "\u6c11\u6cd5", 
+            "title": "民法", 
             "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "\u6211\u59bb\u6804", 
+    "result": "我妻栄", 
     "schema": "0.8"
 }

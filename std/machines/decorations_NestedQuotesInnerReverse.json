@@ -8,6 +8,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "My &ldquo;&lsquo;Amazing&rsquo; <b>and</b> Bogus&rdquo; Title", 
+    "result": "My “‘Amazing’ <b>and</b> Bogus” Title", 
     "schema": "0.8"
 }
