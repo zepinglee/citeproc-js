@@ -69,7 +69,11 @@ CSL.Output.Formatters.uppercase = function(state,string) {
  * the rest of the characters untouched.
  */
 CSL.Output.Formatters.capitalize_first = function(state,string) {
-	return string[0].toUpperCase()+string.substr(1);
+	if (string.length){
+		return string[0].toUpperCase()+string.substr(1);
+	} else {
+		return "";
+	}
 };
 
 
