@@ -134,7 +134,7 @@ CSL.Engine.prototype.setOutputFormat = function(mode){
 CSL.Engine.prototype.getTerm = function(term,form,plural){
 	var ret = "";
 	if (!this.locale_terms[term]){
-		throw "Error in getTerm: term\""+term+"\" does not exist."
+		throw "Error in getTerm: term\""+term+"\" does not exist.";
 	}
 	if (!form){
 		throw "Error in getTerm: must provide a non-nil value as \"form\" argument";
@@ -149,7 +149,7 @@ CSL.Engine.prototype.getTerm = function(term,form,plural){
 	}
 	forms = forms.concat(["long"]);
 	for each (var f in forms){
-		//if (this.locale_terms[term][f]){
+		if ("undefined" != typeof this.locale_terms[term][f]){
 			if ("string" == typeof this.locale_terms[term][f]){
 				ret = this.locale_terms[term][f];
 			} else {
@@ -160,7 +160,7 @@ CSL.Engine.prototype.getTerm = function(term,form,plural){
 				}
 			}
 			break;
-		//}
+		}
 	}
 	return ret;
 }
