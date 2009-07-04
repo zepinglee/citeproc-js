@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<terms xmlns="http://purl.org/net/xbiblio/csl">
-  <locale xml:lang="en">
+<locale xml:lang="en" xmlns="http://purl.org/net/xbiblio/csl">
+  <terms>
     <term name="bogus">bogus</term>
     <term name="at">at</term>
     <term name="in">in</term>
@@ -228,5 +228,5 @@
     <term name="month-10" form="short">Oct</term>
     <term name="month-11" form="short">Nov</term>
     <term name="month-12" form="short">Dec</term>
-  </locale>
-</terms>
+  </terms>
+</locale>

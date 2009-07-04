@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<terms xmlns="http://purl.org/net/xbiblio/csl">
-  <locale xml:lang="zh">
+<locale xml:lang="zh" xmlns="http://purl.org/net/xbiblio/csl">
+  <terms>
     <term name="at">在</term>
     <term name="in">在</term>
     <term name="ibid">同上出處</term>
@@ -207,5 +207,5 @@
     <term name="month-10" form="short">10月</term>
     <term name="month-11" form="short">11月</term>
     <term name="month-12" form="short">12月</term>
-  </locale>
-</terms>
+  </terms>
+</locale>
