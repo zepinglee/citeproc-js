@@ -90,14 +90,17 @@ during development.
 Running tests
 -------------
 
-After checkout or update, be sure to run the script ./std/grind.sh.
-This will generate the machine-readable version of the standard
-test cases, required by the test runner.
+Tests are shipped in two subdirectories, ./std/humans and
+./std/machines.  New tests and editorial changes should be
+made in the ./std/humans directory, populating the changes to
+the ./std/machines directory using the ./std/grind.py Python
+script.  The test runners use the machine-readable form of
+the tests.
 
-The script that runs all the tests is ./runtests.sh in the top-level
-directory.  Rintze Zelle has very kindly provided a ./runtests.bat file
-as well, and the tests reportedly run (and we hope also break) equally 
-well on Windows boxes.
+The primary script that runs all the tests is ./runtests.sh, in the 
+top-level directory.  Rintze Zelle has very kindly provided a 
+./runtests.bat file as well, and the tests reportedly run (and we 
+hope also break) equally well on Windows boxes.
 
 If you have a Java interpreter installed and are on Linux (or possibly
 a Mac), you can run the tests in a checkout from a terminal by
