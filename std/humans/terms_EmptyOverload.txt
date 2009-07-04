@@ -14,11 +14,11 @@ citation
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
-  <terms>
-    <locale xml:lang="en">
+  <locale xml:lang="en">
+    <terms>
       <term name="bogus"></term>
-    </locale>
-  </terms>
+    </terms>
+  </locale>
   <citation>
 	<layout>
       <text term="bogus"/>
