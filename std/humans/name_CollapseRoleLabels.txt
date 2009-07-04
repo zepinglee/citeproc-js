@@ -14,14 +14,14 @@ Albert Asthma, et al. (eds. & trans.)
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
-    <terms>
-        <locale xml:lang="en">
+    <locale xml:lang="en">
+        <terms>
             <term name="editortranslator" form="short">
                 <single>ed. &amp; trans.</single>
                 <multiple>eds. &amp; trans.</multiple>
             </term>
-        </locale>
-    </terms>
+        </terms>
+    </locale>
     <citation>
         <option name="et-al-min" value="3"/>
         <option name="et-al-use-first" value="1"/>
