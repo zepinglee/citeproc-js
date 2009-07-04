@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+#-*- encoding: utf-8 -*-
 
 import sys, re
 reload(sys)
@@ -7,7 +8,7 @@ sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
 
 import os,os.path
 
-print os.environ["LANG"]
+#print os.environ["LANG"]
 
 from spidermonkey import Runtime
 from time import time,ctime
@@ -16,9 +17,6 @@ try:
     import json
 except:
     import simplejson as json
-
-
-
 
 import traceback
 
