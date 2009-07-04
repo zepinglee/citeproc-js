@@ -12,6 +12,25 @@ try:
 except:
     import simplejson as json
 
+#
+# Encoding non-ascii characters in the human readable test files 
+# as JSON ordinarily causes a UnicodeEncodeError, if the Python
+# default encoding is set to the (factory default) value of "ascii".
+# I was unable to find a means of enabling UTF-8 support in
+# simplejson, and have resorted to the Big Hammer Method, which
+# involves reloading the sys module (to restore the
+# setdefaultencoding method that Python ordinarily deletes on
+# startup), and clobbering the system default value, replacing
+# it with "utf-8".  This is said to be a hack, and is said to
+# run the risk of subtle incompatibilities with other libraries,
+# but it works here for Python versions > 2.1 or so.
+# 
+# For further details, see http://faassen.n--tree.net/blog/view/weblog/2005/08/02/0
+# and the posts linked in the first paragraph of that blog entry. 
+#
+reload(sys)
+sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
+    
 class CslTestUtils:
     """ Constants and utility methods
 
