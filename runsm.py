@@ -1,7 +1,14 @@
 #! /usr/bin/env python
 
 import sys, re
+reload(sys)
+sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
+
+
 import os,os.path
+
+print os.environ["LANG"]
+
 from spidermonkey import Runtime
 from time import time,ctime
 
@@ -9,6 +16,9 @@ try:
     import json
 except:
     import simplejson as json
+
+
+
 
 import traceback
 
@@ -48,14 +58,19 @@ if __name__ == '__main__':
     for filename in os.listdir("./std/machines"):
         if not filename.endswith(".json"):
             continue
-        if filename != "position_IbidWithLocator.json":
-            continue
+        #if filename != "position_IbidWithLocator.json":
+        #    continue
         if not os.path.stat.S_ISREG( os.stat("./std/machines/%s" %filename).st_mode ):
             continue
         testname = os.path.splitext(filename)[0]
         fh = open("./std/machines/%s" % (filename,))
         str = fh.read()
         str = json.dumps(str,ensure_ascii=False)
+        #
+        # Hmm.  This doesn't work to flag UTF-8 as the encoding.
+        #
+        # str = "%s%s" % ("\xef\xbb\xbf",str)
+        # 
         cx.eval_script("testobjects[\"%s\"] = %s" % (testname,str,))
 
     #print "Loading retrieval functions ..."
@@ -91,8 +106,8 @@ if __name__ == '__main__':
     for filename in os.listdir("./tests"):
         if not filename.startswith("std_") or not filename.endswith(".js"):
             continue
-        if not filename == "std_position.js":
-            continue
+        #if not filename == "std_position.js":
+        #    continue
         if filename == "std_decorations.js":
             continue
         if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):

@@ -167,7 +167,7 @@ CSL.Engine.prototype.setOutputFormat = function(mode){
 CSL.Engine.prototype.getTerm = function(term,form,plural){
 	var ret = "";
 	if (!this.locale_terms[term]){
-		throw "Error in getTerm: term\""+term+"\" does not exist."
+		throw "Error in getTerm: term\""+term+"\" does not exist.";
 	}
 	if (!form){
 		throw "Error in getTerm: must provide a non-nil value as \"form\" argument";
@@ -182,7 +182,7 @@ CSL.Engine.prototype.getTerm = function(term,form,plural){
 	}
 	forms = forms.concat(["long"]);
 	for each (var f in forms){
-		if (this.locale_terms[term][f]){
+		if ("undefined" != typeof this.locale_terms[term][f]){
 			if ("string" == typeof this.locale_terms[term][f]){
 				ret = this.locale_terms[term][f];
 			} else {
@@ -2890,6 +2890,65 @@ CSL.Util.Suffixator.prototype.incrementArray = function (array){
 	}
 	return array;
 };
+//
+// Gee wiz, Wally, how is this going to work?
+//
+// The threshold question is how to deal with quotation marks.
+// Could allow them only as semantic tags.  In that case, some
+// UI method of transforming quotes or raising an error when
+// quotes are entered as text would be needed.  Messy and expensive.
+//
+// Alternatively, quotes could be allowed, but treated as markup
+// rather than characters.  This would require recognition of wiki-style
+// symmetric markup (i.e. simple courier-font quotes), and of all
+// possible quote marks in the world.  Messy, friendly on user side,
+// but loses all semantic information.
+//
+// Or you could do the first option above, but allow quotes as
+// text and just leave them as they stand.  Would create chaos
+// in stored data, with different representations everywhere and
+// no means of normalizing data.  Not a good idea.
+//
+// Okay, here's a possible plan, which should work for recognition
+// of mixed tagged and wiki-markup text, with the possibility of
+// mismatch failures (like with apostrphes and stuff).
+//
+// (1) Iterate a function over the string, in a progressive
+// left-to-right scan for non-overlapping start elements.
+// For each element found, push a two-element array onto a working stack.
+// The array holds the element start position and the string constituting
+// the start element tag.
+//
+// (2) Scan the string a second time, looking for the end element
+// corresponding to each start element.  If found, push a newly minted
+// array for the end element onto the working stack.  Iterate, but
+// protect against pushing duplicates.
+//
+// (3) Sort the working stack by the position of the elements.
+//
+// (4) Open an output object, and generate a nested representation
+// of the string by opening a new layer for each start element,
+// and a text object for each text string that does not contain
+// a start element.  Close each layer when a matching closing
+// element is encountered.  Tags for which no
+// partner match is found are passed through verbatim.  All of this
+// stuff is the hard part, of course, but at least three other
+// refactorings have involved recursive processing of this kind.
+// Should be able to cope.
+//
+// (5) With appropriate decoration functions, the resulting output
+// object should render in flip-flop fashion automagically, using
+// the methods already built, if semantic markup is associated with
+// the visual markup tag(s) required by the style.  In that conversion
+// step, bare visual markup can also be set to passthrough, since,
+// if the plan in my imagination carries through to implementation,
+// it is illegal.
+//
+// Need to improve on current behavior,
+// though, by allowing an arbitrary number of "flops" in the flip-flop
+// (or, say, flip-flop-flap) set, round-robin style.  Should implement
+// cleanly, and would save some pain if it turns out to be needed
+// for quotes or something.
 //		if (this.flipflops){
 //			for each (var ff in this.flipflops){
 //				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
@@ -3199,7 +3258,11 @@ CSL.Output.Formatters.uppercase = function(state,string) {
 	return string.toUpperCase();
 };
 CSL.Output.Formatters.capitalize_first = function(state,string) {
-	return string[0].toUpperCase()+string.substr(1);
+	if (string.length){
+		return string[0].toUpperCase()+string.substr(1);
+	} else {
+		return "";
+	}
 };
 CSL.Output.Formatters.sentence_capitalization = function(state,string) {
 	return string[0].toUpperCase()+string.substr(1).toLowerCase();
@@ -3275,14 +3338,8 @@ CSL.Output.Formats.prototype.html = {
 	"@text-case/capitalize-all":CSL.Output.Formatters.capitalize_all,
 	"@text-case/title":CSL.Output.Formatters.title_capitalization,
 	"@text-case/sentence":CSL.Output.Formatters.sentence_capitalization,
-	"@quotes/true":"&ldquo;%%STRING%%&rdquo;",
-	"@quotes/left":"&ldquo;%%STRING%%",
-	"@quotes/right":"%%STRING%%&rdquo;",
-	"@quotes/noop":"%%STRING%%",
-	"@squotes/true":"&lsquo;%%STRING%%&rsquo;",
-	"@squotes/left":"&lsquo;%%STRING%%",
-	"@squotes/right":"%%STRING%%&rsquo;",
-	"@squotes/noop":"%%STRING%%",
+	"@quotes/true":"“%%STRING%%”",
+	"@squotes/true":"‘%%STRING%%’",
 	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/wrapper": function(state,str){
 		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");
