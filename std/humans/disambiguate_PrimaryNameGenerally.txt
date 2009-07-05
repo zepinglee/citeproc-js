@@ -15,7 +15,8 @@ Aloysius Asthma and Bronchitis (1980); Artemis Asthma and Bronchitis (1995)
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
     <citation>
-        <option name="disambiguate-add-givenname" value="primary-name"/>
+        <option name="disambiguate-add-givenname" value="true"/>
+        <option name="givenname-disambiguation-rule" value="primary-name"/>
         <layout delimiter="; ">
             <names variable="author" delimiter=", ">
                 <name and="text" delimiter-precedes-last="never" form="short"/>

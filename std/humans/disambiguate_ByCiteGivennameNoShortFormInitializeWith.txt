@@ -19,7 +19,8 @@ John Doe; Jack Doe
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
     <citation>
-        <option name="disambiguate-add-givenname" value="by-cite"/>
+        <option name="disambiguate-add-givenname" value="true"/>
+        <option name="givenname-disambiguation-rule" value="by-cite"/>
         <layout delimiter="; ">
             <names variable="author">
                 <name initialize-with=""/>

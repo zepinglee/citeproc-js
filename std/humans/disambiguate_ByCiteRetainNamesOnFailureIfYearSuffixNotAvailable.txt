@@ -18,7 +18,8 @@ Asthma, Bronchitis, Cold (1990); Asthma, Bronchitis, Cold (1990); Dropsy, Enteri
         <option name="et-al-min" value="3"/>
         <option name="et-al-use-first" value="1"/>
         <option name="disambiguate-add-names" value="true"/>
-        <option name="disambiguate-add-givenname" value="by-cite"/>
+        <option name="disambiguate-add-givenname" value="true"/>
+        <option name="givenname-disambiguation-rule" value="by-cite"/>
         <layout delimiter="; ">
             <names variable="author" delimiter=", ">
                 <name delimiter=", " form="short" initialize-with="."/>
