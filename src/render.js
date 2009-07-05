@@ -122,15 +122,18 @@ CSL.Engine.prototype.getModes = function(){
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
 	}
-	var gopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	var dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	var gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
 	//
 	// what the heck.  whatever.  use by-cite disambiguation
 	// for everything, for starters.  why not.
 	//
 	// hmm.  don't need any name expansion with the primary-name
 	// disambiguate-add-givenname, so no givens in that case.
-	if (gopt && ("boolean" == typeof gopt || ("string" == typeof gopt && "primary-name" != gopt.slice(0,12)))){
-		ret.push("givens");
+	if (dagopt){
+		if (!gdropt || ("string" == typeof gdropt && "primary-name" != gdropt.slice(0,12))){
+			ret.push("givens");
+		};
 	}
 	return ret;
 };

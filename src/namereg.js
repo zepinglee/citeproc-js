@@ -78,7 +78,8 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		// <option disambiguate-add-givenname value="by-cite"/> (g)
 		//
 		var param = 2;
-		var opt = state[state.tmp.area].opt["disambiguate-add-givenname"];
+		var dagopt = state[state.tmp.area].opt["disambiguate-add-givenname"];
+		var gdropt = state[state.tmp.area].opt["givenname-disambiguation-rule"];
 		//
 		// set initial value
 		//
@@ -93,27 +94,27 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		if (param < request_base){
 			param = request_base;
 		}
-		if (state.tmp.force_subsequent){
+		if (state.tmp.force_subsequent || !dagopt){
 			return param;
 		};
-		if ("string" == typeof opt && opt.slice(0,12) == "primary-name" && namenum > 0){
+		if ("string" == typeof gdropt && gdropt.slice(0,12) == "primary-name" && namenum > 0){
 			return param;
 		};
 		//
 		// the last composite condition is for backward compatibility
 		//
-		if (opt == "all-names" || opt == "primary-name" || ("boolean" == typeof opt && opt == true)){
+		if (!gdropt || gdropt == "all-names" || gdropt == "primary-name"){
 			if (!pkey_is_unique){
 				param = 1;
 			};
 			if (!ikey_is_unique){
 				param = 2;
 			}
-		} else if (opt == "all-names-with-initials" || opt == "primary-name-with-initials"){
+		} else if (gdropt == "all-names-with-initials" || gdropt == "primary-name-with-initials"){
 			if (!pkey_is_unique){
 				param = 1;
 			}
-		} else if (opt == "all-names-with-fullname" || opt == "primary-name-with-fullname"){
+		} else if (gdropt == "all-names-with-fullname" || gdropt == "primary-name-with-fullname"){
 			if (!pkey_is_unique){
 				param = 2;
 			}

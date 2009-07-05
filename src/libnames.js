@@ -219,7 +219,7 @@ CSL.Lib.Elements.names = new function(){
 								val = 2;
 							}
 							var param = val;
-							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["disambiguate-add-givenname"] != "by-cite"){
+							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
 								var param = state.registry.namereg.eval(nameset.names[i],i,param,state.output.getToken("name").strings.form,state.tmp["initialize-with"]);
 							};
 						} else {
