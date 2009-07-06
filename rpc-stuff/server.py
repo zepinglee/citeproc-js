@@ -108,6 +108,11 @@ from xmlrpclib import Fault
 import SocketServer
 import BaseHTTPServer
 import sys
+
+reload(sys)
+sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
+
+
 import os
 
 import SimpleXMLRPCServer

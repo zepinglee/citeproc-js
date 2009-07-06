@@ -17,7 +17,7 @@
         "author": [
           { "name":" Roe, Jane", "primary-key":"Roe", "secondary-key":"Jane" }
         ],
-        "title": "Book B: quiet reflections on anonymity",
+        "title": "Book B: <span class=\"subtitle\">quiet</span> reflections on anonymity",
         "issued": { "year": "2007" }
       },
       {

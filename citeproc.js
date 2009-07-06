@@ -23,14 +23,14 @@ CSL = new function () {
 	this.ET_AL_NAMES = this.ET_AL_NAMES.concat( ["et-al-subsequent-min","et-al-subsequent-use-first"] );
 	this.DISAMBIGUATE_OPTIONS = ["disambiguate-add-names","disambiguate-add-givenname"];
 	this.DISAMBIGUATE_OPTIONS.push("disambiguate-add-year-suffix");
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES = [];
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names");
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names-with-initials");
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("all-names-with-fullname");
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name");
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name-with-initials");
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("primary-name-with-fullname");
-	this.DISAMBIGUATE_ADD_GIVENNAME_VALUES.push("by-cite");
+	this.GIVENNAME_DISAMBIGUATION_RULES = [];
+	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names");
+	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names-with-initials");
+	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names-with-fullname");
+	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name");
+	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-initials");
+	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-fullname");
+	this.GIVENNAME_DISAMBIGUATION_RULES.push("by-cite");
 	this.PREFIX_PUNCTUATION = /.*[.;:]\s*$/;
 	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)].*/;
 	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
@@ -459,9 +459,12 @@ CSL.Engine.prototype.getModes = function(){
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
 	}
-	var gopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
-	if (gopt && ("boolean" == typeof gopt || ("string" == typeof gopt && "primary-name" != gopt.slice(0,12)))){
-		ret.push("givens");
+	var dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	var gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
+	if (dagopt){
+		if (!gdropt || ("string" == typeof gdropt && "primary-name" != gdropt.slice(0,12))){
+			ret.push("givens");
+		};
 	}
 	return ret;
 };
@@ -1302,18 +1305,12 @@ CSL.Lib.Elements.option = new function(){
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		};
-		if ("disambiguate-add-givenname" == this.strings.name) {
-			if (CSL.DISAMBIGUATE_ADD_GIVENNAME_VALUES.indexOf(this.strings.value) > -1) {
+		if ("givenname-disambiguation-rule" == this.strings.name) {
+			if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(this.strings.value) > -1) {
 				state[state.tmp.area].opt[this.strings.name] = this.strings.value;
 			};
 		};
 		if (this.strings.value == "true"){
-			//
-			// This will pick up the "true" version of disambiguate-add-givenname,
-			// which will be equivalent in effect to disambiguate-add-givenname="all-names".
-			// That probably doesn't make any sense, but don't worry, it's just
-			// an implementation detail.
-			//
 			if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){
 				state[state.tmp.area].opt[this.strings.name] = true;
 			};
@@ -1645,7 +1642,7 @@ CSL.Lib.Elements.names = new function(){
 								val = 2;
 							}
 							var param = val;
-							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["disambiguate-add-givenname"] != "by-cite"){
+							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
 								var param = state.registry.namereg.eval(nameset.names[i],i,param,state.output.getToken("name").strings.form,state.tmp["initialize-with"]);
 							};
 						} else {
@@ -3943,7 +3940,8 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		// <option disambiguate-add-givenname value="by-cite"/> (g)
 		//
 		var param = 2;
-		var opt = state[state.tmp.area].opt["disambiguate-add-givenname"];
+		var dagopt = state[state.tmp.area].opt["disambiguate-add-givenname"];
+		var gdropt = state[state.tmp.area].opt["givenname-disambiguation-rule"];
 		//
 		// set initial value
 		//
@@ -3958,27 +3956,27 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		if (param < request_base){
 			param = request_base;
 		}
-		if (state.tmp.force_subsequent){
+		if (state.tmp.force_subsequent || !dagopt){
 			return param;
 		};
-		if ("string" == typeof opt && opt.slice(0,12) == "primary-name" && namenum > 0){
+		if ("string" == typeof gdropt && gdropt.slice(0,12) == "primary-name" && namenum > 0){
 			return param;
 		};
 		//
 		// the last composite condition is for backward compatibility
 		//
-		if (opt == "all-names" || opt == "primary-name" || ("boolean" == typeof opt && opt == true)){
+		if (!gdropt || gdropt == "all-names" || gdropt == "primary-name"){
 			if (!pkey_is_unique){
 				param = 1;
 			};
 			if (!ikey_is_unique){
 				param = 2;
 			}
-		} else if (opt == "all-names-with-initials" || opt == "primary-name-with-initials"){
+		} else if (gdropt == "all-names-with-initials" || gdropt == "primary-name-with-initials"){
 			if (!pkey_is_unique){
 				param = 1;
 			}
-		} else if (opt == "all-names-with-fullname" || opt == "primary-name-with-fullname"){
+		} else if (gdropt == "all-names-with-fullname" || gdropt == "primary-name-with-fullname"){
 			if (!pkey_is_unique){
 				param = 2;
 			}

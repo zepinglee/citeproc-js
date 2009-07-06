@@ -53,13 +53,17 @@ Retriever.prototype.setLocaleXml = function(arg,lang){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	var locale = new XML();
-	for each (var blob in myxml..locale){
-		if (blob.@xml::lang == lang){
-			locale = blob;
-			break;
+	if (myxml.localName() && myxml.localName().toString() == "locale"){
+		locale = myxml;
+	} else {
+		for each (var blob in myxml..locale){
+			if (blob.@xml::lang == lang){
+				locale = blob;
+				break;
+			}
 		}
 	}
-	for each (var term in locale.term){
+	for each (var term in locale.terms.term){
 		var termname = term.@name.toString();
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 		if ("undefined" == typeof this.locale_terms[termname]){
