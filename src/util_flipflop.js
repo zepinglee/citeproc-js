@@ -3,56 +3,30 @@ dojo.provide("csl.util_flipflop");
 //
 // Gee wiz, Wally, how is this going to work?
 //
-// The threshold question is how to deal with quotation marks.
-// Could allow them only as semantic tags.  In that case, some
-// UI method of transforming quotes or raising an error when
-// quotes are entered as text would be needed.  Messy and expensive.
+// (A) be sure there is an output blob open.
 //
-// Alternatively, quotes could be allowed, but treated as markup
-// rather than characters.  This would require recognition of wiki-style
-// symmetric markup (i.e. simple courier-font quotes), and of all
-// possible quote marks in the world.  Messy, friendly on user side,
-// but loses all semantic information.
+// (1) scan the string for escape characters, marking the position of
+// the character immediately following the escape.
 //
-// Or you could do the first option above, but allow quotes as
-// text and just leave them as they stand.  Would create chaos
-// in stored data, with different representations everywhere and
-// no means of normalizing data.  Not a good idea.
+// (2) scan the string for non-overlapping open and close tags,
+// skipping escaped tags.
 //
-// Okay, here's a possible plan, which should work for recognition
-// of mixed tagged and wiki-markup text, with the possibility of
-// mismatch failures (like with apostrphes and stuff).
+// (a) For open tags, push the corresponding close tag onto a working
+// stack, append any text before the tag as a plain text blob object,
+// and open a level on the output queue.
 //
-// (1) Iterate a function over the string, in a progressive
-// left-to-right scan for non-overlapping start elements.
-// For each element found, push a two-element array onto a working stack.
-// The array holds the element start position and the string constituting
-// the start element tag.
+// (b) For close tags, check to see if it matches the current
+// top of the working stack.  If so, pop the stack, process
+// the text to the tag as an append to the output stack, and close the
+// output queue level.
 //
-// (2) Scan the string a second time, looking for the end element
-// corresponding to each start element.  If found, push a newly minted
-// array for the end element onto the working stack.  Iterate, but
-// protect against pushing duplicates.
+// (B) at the end of processing, append any remaining text to
+// the output queue and close the blob.
 //
-// (3) Sort the working stack by the position of the elements.
 //
-// (4) Open an output object, and generate a nested representation
-// of the string by opening a new layer for each start element,
-// and a text object for each text string that does not contain
-// a start element.  Close each layer when a matching closing
-// element is encountered.  Opening tags for which no closing
-// partner match is found are passed through verbatim.  All of this
-// stuff is the hard part, of course, but at least three other
-// refactorings have involved recursive processing of this kind.
-// Should be able to cope.
-//
-// (5) With appropriate decoration functions, the resulting output
-// object should render in flip-flop fashion automagically, using
-// the methods already built.  Need to improve on current behavior,
-// though, by allowing an arbitrary number of "flops" in the flip-flop
-// (or, say, flip-flop-flap) set, round-robin style.  Should implement
-// cleanly, and would save some pain if it turns out to be needed
-// for quotes or something.
+// And voila.  Should handle both wiki-style and tagged markup,
+// and be reasonably simple and reasonably fast.  Feed it a
+// set of config parameters, and we have inline processing.
 
 
 //		if (this.flipflops){
