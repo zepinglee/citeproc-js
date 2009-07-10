@@ -31,6 +31,8 @@ CSL = new function () {
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-initials");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-fullname");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("by-cite");
+	this.LOOSE = 0;
+	this.STRICT = 1;
 	this.PREFIX_PUNCTUATION = /.*[.;:]\s*$/;
 	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)].*/;
 	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
@@ -165,12 +167,19 @@ CSL.Engine.prototype.setOutputFormat = function(mode){
 	this.fun.decorate = CSL.Factory.Mode(mode);
 }
 CSL.Engine.prototype.getTerm = function(term,form,plural){
+	return CSL.Engine._getField(CSL.STRICT,this.locale_terms,term,form,plural);
+};
+CSL.Engine.prototype.getVariable = function(Item,varname,form,plural){
+	return CSL.Engine._getField(CSL.LOOSE,Item,varname,form,plural);
+};
+CSL.Engine._getField = function(mode,hash,term,form,plural){
 	var ret = "";
-	if (!this.locale_terms[term]){
-		throw "Error in getTerm: term\""+term+"\" does not exist.";
-	}
-	if (!form){
-		throw "Error in getTerm: must provide a non-nil value as \"form\" argument";
+	if (!hash[term]){
+		if (mode == CSL.STRICT){
+			throw "Error in _getField: term\""+term+"\" does not exist.";
+		} else {
+			return undefined;
+		}
 	}
 	var forms = [];
 	if (form == "symbol"){
@@ -182,14 +191,16 @@ CSL.Engine.prototype.getTerm = function(term,form,plural){
 	}
 	forms = forms.concat(["long"]);
 	for each (var f in forms){
-		if ("undefined" != typeof this.locale_terms[term][f]){
-			if ("string" == typeof this.locale_terms[term][f]){
-				ret = this.locale_terms[term][f];
+		if ("string" == typeof hash[term]){
+			ret = hash[term];
+		} else if ("undefined" != typeof hash[term][f]){
+			if ("string" == typeof hash[term][f]){
+				ret = hash[term][f];
 			} else {
 				if ("number" == typeof plural){
-					ret = this.locale_terms[term][f][plural];
+					ret = hash[term][f][plural];
 				} else {
-					ret = this.locale_terms[term][f][0];
+					ret = hash[term][f][0];
 				}
 			}
 			break;
@@ -652,6 +663,14 @@ CSL.Lib.Elements.text = new function(){
 			//
 			// Do non-macro stuff
 			var variable = this.variables[0];
+			var form = "long";
+			var plural = 0;
+			if (this.strings.form){
+				form = this.strings.form;
+			}
+			if (this.strings.plural){
+				plural = this.strings.plural;
+			}
 			if ("citation-number" == variable || "year-suffix" == variable){
 				//
 				// citation-number and year-suffix are super special,
@@ -722,14 +741,6 @@ CSL.Lib.Elements.text = new function(){
 			} else {
 				if (state.build.term){
 					var term = state.build.term;
-					var form = "long";
-					var plural = 0;
-					if (state.build.form){
-						form = state.build.form;
-					}
-					if (state.build.plural){
-						plural = state.build.plural;
-					}
 					term = state.getTerm(term,form,plural);
 					var printterm = function(state,Item){
 						// capitalize the first letter of a term, if it is the
@@ -749,7 +760,8 @@ CSL.Lib.Elements.text = new function(){
 					state.build.plural = false;
 				} else if (this.variables.length){
 					var func = function(state,Item){
-						state.output.append(Item[this.variables[0]],this);
+						var value = state.getVariable(Item,this.variables[0],form);
+						state.output.append(value,this);
 					};
 					this["execs"].push(func);
 				} else if (this.strings.value){
@@ -1220,6 +1232,8 @@ CSL.Lib.Elements.date = new function(){
 				state.tmp.element_rendered_ok = false;
 				if (this.variables.length && Item[this.variables[0]]){
 					state.tmp.date_object = Item[this.variables[0]];
+				} else {
+					state.tmp.date_object = false;
 				}
 			};
 			this["execs"].push(set_value);
@@ -1229,7 +1243,8 @@ CSL.Lib.Elements.date = new function(){
 			this["execs"].push(newoutput);
 		} else if (this.tokentype == CSL.END){
 			var mergeoutput = function(state,Item){
-				if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
+				//if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
+				if (state.tmp.date_object["literal"]){
 					state.output.append(state.tmp.date_object["literal"],"empty");
 				}
 				state.output.endTag();
@@ -2650,7 +2665,7 @@ CSL.Util.Dates.month["long"] = function(state,num){
 		num = "0"+num;
 	}
 	num = "month-"+num;
-	return state.opt.term[num]["long"][0];
+	return state.getTerm(num,"long",0);
 }
 CSL.Util.Dates.month["short"] = function(state,num){
 	num = num.toString();
@@ -2658,12 +2673,13 @@ CSL.Util.Dates.month["short"] = function(state,num){
 		num = "0"+num;
 	}
 	num = "month-"+num;
-	return state.opt.term[num]["short"][0];
+	return state.getTerm(num,"short",0);
 }
 CSL.Util.Dates["day"] = new function(){};
 CSL.Util.Dates.day["numeric"] = function(state,num){
 	return num.toString();
 }
+CSL.Util.Dates.day["long"] = CSL.Util.Dates.day["numeric"];
 CSL.Util.Dates.day["numeric-leading-zeros"] = function(state,num){
 	if (!num){
 		num = 0;
@@ -2890,62 +2906,30 @@ CSL.Util.Suffixator.prototype.incrementArray = function (array){
 //
 // Gee wiz, Wally, how is this going to work?
 //
-// The threshold question is how to deal with quotation marks.
-// Could allow them only as semantic tags.  In that case, some
-// UI method of transforming quotes or raising an error when
-// quotes are entered as text would be needed.  Messy and expensive.
+// (A) be sure there is an output blob open.
 //
-// Alternatively, quotes could be allowed, but treated as markup
-// rather than characters.  This would require recognition of wiki-style
-// symmetric markup (i.e. simple courier-font quotes), and of all
-// possible quote marks in the world.  Messy, friendly on user side,
-// but loses all semantic information.
+// (1) scan the string for escape characters, marking the position of
+// the character immediately following the escape.
 //
-// Or you could do the first option above, but allow quotes as
-// text and just leave them as they stand.  Would create chaos
-// in stored data, with different representations everywhere and
-// no means of normalizing data.  Not a good idea.
+// (2) scan the string for non-overlapping open and close tags,
+// skipping escaped tags.
 //
-// Okay, here's a possible plan, which should work for recognition
-// of mixed tagged and wiki-markup text, with the possibility of
-// mismatch failures (like with apostrphes and stuff).
+// (a) For open tags, push the corresponding close tag onto a working
+// stack, append any text before the tag as a plain text blob object,
+// and open a level on the output queue.
 //
-// (1) Iterate a function over the string, in a progressive
-// left-to-right scan for non-overlapping start elements.
-// For each element found, push a two-element array onto a working stack.
-// The array holds the element start position and the string constituting
-// the start element tag.
+// (b) For close tags, check to see if it matches the current
+// top of the working stack.  If so, pop the stack, process
+// the text to the tag as an append to the output stack, and close the
+// output queue level.
 //
-// (2) Scan the string a second time, looking for the end element
-// corresponding to each start element.  If found, push a newly minted
-// array for the end element onto the working stack.  Iterate, but
-// protect against pushing duplicates.
+// (B) at the end of processing, append any remaining text to
+// the output queue and close the blob.
 //
-// (3) Sort the working stack by the position of the elements.
 //
-// (4) Open an output object, and generate a nested representation
-// of the string by opening a new layer for each start element,
-// and a text object for each text string that does not contain
-// a start element.  Close each layer when a matching closing
-// element is encountered.  Tags for which no
-// partner match is found are passed through verbatim.  All of this
-// stuff is the hard part, of course, but at least three other
-// refactorings have involved recursive processing of this kind.
-// Should be able to cope.
-//
-// (5) With appropriate decoration functions, the resulting output
-// object should render in flip-flop fashion automagically, using
-// the methods already built, if semantic markup is associated with
-// the visual markup tag(s) required by the style.  In that conversion
-// step, bare visual markup can also be set to passthrough, since,
-// if the plan in my imagination carries through to implementation,
-// it is illegal.
-//
-// Need to improve on current behavior,
-// though, by allowing an arbitrary number of "flops" in the flip-flop
-// (or, say, flip-flop-flap) set, round-robin style.  Should implement
-// cleanly, and would save some pain if it turns out to be needed
-// for quotes or something.
+// And voila.  Should handle both wiki-style and tagged markup,
+// and be reasonably simple and reasonably fast.  Feed it a
+// set of config parameters, and we have inline processing.
 //		if (this.flipflops){
 //			for each (var ff in this.flipflops){
 //				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
