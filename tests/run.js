@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_date");
 	dojo.require("tests.std_variables");
 	dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_terms");
@@ -11,7 +12,6 @@ if(true){
 	dojo.require("tests.test_queue");
 	dojo.require("tests.std_discretionary");
 	dojo.require("tests.std_collapse");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.test_load_styles");

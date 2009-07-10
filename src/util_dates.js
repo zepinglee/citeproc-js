@@ -77,7 +77,7 @@ CSL.Util.Dates.month["long"] = function(state,num){
 		num = "0"+num;
 	}
 	num = "month-"+num;
-	return state.opt.term[num]["long"][0];
+	return state.getTerm(num,"long",0);
 }
 
 /**
@@ -90,7 +90,7 @@ CSL.Util.Dates.month["short"] = function(state,num){
 		num = "0"+num;
 	}
 	num = "month-"+num;
-	return state.opt.term[num]["short"][0];
+	return state.getTerm(num,"short",0);
 }
 
 
@@ -107,6 +107,7 @@ CSL.Util.Dates["day"] = new function(){};
 CSL.Util.Dates.day["numeric"] = function(state,num){
 	return num.toString();
 }
+CSL.Util.Dates.day["long"] = CSL.Util.Dates.day["numeric"];
 
 /**
  * Convert day to numeric-leading-zeros form

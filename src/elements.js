@@ -742,6 +742,8 @@ CSL.Lib.Elements.date = new function(){
 				state.tmp.element_rendered_ok = false;
 				if (this.variables.length && Item[this.variables[0]]){
 					state.tmp.date_object = Item[this.variables[0]];
+				} else {
+					state.tmp.date_object = false;
 				}
 			};
 			this["execs"].push(set_value);
@@ -753,7 +755,8 @@ CSL.Lib.Elements.date = new function(){
 
 		} else if (this.tokentype == CSL.END){
 			var mergeoutput = function(state,Item){
-				if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
+				//if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
+				if (state.tmp.date_object["literal"]){
 					state.output.append(state.tmp.date_object["literal"],"empty");
 				}
 				state.output.endTag();
