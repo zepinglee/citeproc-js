@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_variables");
 	dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_terms");
 	dojo.require("tests.std_namespaces");

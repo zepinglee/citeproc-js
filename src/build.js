@@ -132,13 +132,25 @@ CSL.Engine.prototype.setOutputFormat = function(mode){
 }
 
 CSL.Engine.prototype.getTerm = function(term,form,plural){
+	return CSL.Engine._getField(CSL.STRICT,this.locale_terms,term,form,plural);
+};
+
+CSL.Engine.prototype.getVariable = function(Item,varname,form,plural){
+	return CSL.Engine._getField(CSL.LOOSE,Item,varname,form,plural);
+};
+
+CSL.Engine._getField = function(mode,hash,term,form,plural){
 	var ret = "";
-	if (!this.locale_terms[term]){
-		throw "Error in getTerm: term\""+term+"\" does not exist.";
+	if (!hash[term]){
+		if (mode == CSL.STRICT){
+			throw "Error in _getField: term\""+term+"\" does not exist.";
+		} else {
+			return undefined;
+		}
 	}
-	if (!form){
-		throw "Error in getTerm: must provide a non-nil value as \"form\" argument";
-	}
+	//if (!form){
+	//	form = "long";
+	//}
 	var forms = [];
 	if (form == "symbol"){
 		forms = ["symbol","short"];
@@ -149,14 +161,16 @@ CSL.Engine.prototype.getTerm = function(term,form,plural){
 	}
 	forms = forms.concat(["long"]);
 	for each (var f in forms){
-		if ("undefined" != typeof this.locale_terms[term][f]){
-			if ("string" == typeof this.locale_terms[term][f]){
-				ret = this.locale_terms[term][f];
+		if ("string" == typeof hash[term]){
+			ret = hash[term];
+		} else if ("undefined" != typeof hash[term][f]){
+			if ("string" == typeof hash[term][f]){
+				ret = hash[term][f];
 			} else {
 				if ("number" == typeof plural){
-					ret = this.locale_terms[term][f][plural];
+					ret = hash[term][f][plural];
 				} else {
-					ret = this.locale_terms[term][f][0];
+					ret = hash[term][f][0];
 				}
 			}
 			break;

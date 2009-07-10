@@ -66,6 +66,9 @@ CSL = new function () {
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-fullname");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("by-cite");
 
+	this.LOOSE = 0;
+	this.STRICT = 1;
+
 	this.PREFIX_PUNCTUATION = /.*[.;:]\s*$/;
 	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)].*/;
 

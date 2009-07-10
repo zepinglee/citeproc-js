@@ -260,7 +260,6 @@ CSL.Engine.prototype._cite = function(Item){
 	this.end();
 };
 
-
 /*
  * Render one style token.
  *

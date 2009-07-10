@@ -64,6 +64,14 @@ CSL.Lib.Elements.text = new function(){
 			//
 			// Do non-macro stuff
 			var variable = this.variables[0];
+			var form = "long";
+			var plural = 0;
+			if (this.strings.form){
+				form = this.strings.form;
+			}
+			if (this.strings.plural){
+				plural = this.strings.plural;
+			}
 			if ("citation-number" == variable || "year-suffix" == variable){
 				//
 				// citation-number and year-suffix are super special,
@@ -135,14 +143,6 @@ CSL.Lib.Elements.text = new function(){
 			} else {
 				if (state.build.term){
 					var term = state.build.term;
-					var form = "long";
-					var plural = 0;
-					if (state.build.form){
-						form = state.build.form;
-					}
-					if (state.build.plural){
-						plural = state.build.plural;
-					}
 					term = state.getTerm(term,form,plural);
 					var printterm = function(state,Item){
 						// capitalize the first letter of a term, if it is the
@@ -162,7 +162,8 @@ CSL.Lib.Elements.text = new function(){
 					state.build.plural = false;
 				} else if (this.variables.length){
 					var func = function(state,Item){
-						state.output.append(Item[this.variables[0]],this);
+						var value = state.getVariable(Item,this.variables[0],form);
+						state.output.append(value,this);
 					};
 					this["execs"].push(func);
 				} else if (this.strings.value){

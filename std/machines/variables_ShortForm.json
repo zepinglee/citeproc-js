@@ -1,0 +1,50 @@
+{
+    "citations": [
+        [
+            [
+                "ITEM-1", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-3", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-2", 
+                {}
+            ]
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <choose>\n                <if type=\"article-journal\">\n                    <choose>\n                        <if variable=\"title\">\n\t\t                    <text variable=\"container-title\" form=\"long\"/>\n                        </if>\n                        <else>\n                            <text variable=\"container-title\" form=\"short\"/>\n                        </else>\n                    </choose>\n                </if>\n                <else>\n                    <text variable=\"container-title\"/>\n                </else>\n            </choose>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "container-title": "The Compleat and Utter History of the World", 
+            "id": "ITEM-1", 
+            "type": "book"
+        }, 
+        {
+            "container-title": {
+                "long": "Journal of Irreproducible Results", 
+                "short": "J. Irrep. Res."
+            }, 
+            "id": "ITEM-2", 
+            "type": "article-journal"
+        }, 
+        {
+            "container-title": {
+                "long": "Journal of Irreproducible Results", 
+                "short": "J. Irrep. Res."
+            }, 
+            "id": "ITEM-3", 
+            "title": "Sublimation Rates of Subatomic Particles", 
+            "type": "article-journal"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "The Compleat and Utter History of the World\nJournal of Irreproducible Results\nJ. Irrep. Res.", 
+    "schema": "0.8"
+}
