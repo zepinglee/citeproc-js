@@ -27,6 +27,12 @@ dojo.provide("csl.util_flipflop");
 // And voila.  Should handle both wiki-style and tagged markup,
 // and be reasonably simple and reasonably fast.  Feed it a
 // set of config parameters, and we have inline processing.
+//
+// For config parameters, we'll need:
+//
+// - A map of names to formatting functions, incorporating flipflop.
+// - A map of tags to names.
+// - Ditch semantic tags.  If needed, they can be patched in later.
 
 
 //		if (this.flipflops){
