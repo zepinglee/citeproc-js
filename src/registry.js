@@ -276,7 +276,24 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
 			//
 			// for ascending sort 1 uses 1, -1 uses -1.
 			// For descending sort, the values are reversed.
-			var cmp = a[i].toLocaleLowerCase().localeCompare(b[i].toLocaleLowerCase());
+			//
+			// XXXXX
+			//
+			// Need to handle undefined values.  No way around it.
+			// So have to screen .localeCompare (which is also
+			// needed) from undefined values.  Everywhere, in all
+			// compares.
+			//
+			var cmp = 0;
+			if ( !a[i].length || !b[i].length ){
+				if (a[i] < b[i]){
+					cmp = -1;
+				} else if (a[i] > b[i]){
+					cmp = 1;
+				}
+			} else {
+				cmp = a[i].toLocaleLowerCase().localeCompare(b[i].toLocaleLowerCase());
+			}
 			if (0 < cmp){
 				return sort_directions[i][1];
 			} else if (0 > cmp){
