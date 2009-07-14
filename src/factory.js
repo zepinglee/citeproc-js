@@ -147,8 +147,9 @@ CSL.Factory.substituteOne = function(template) {
 /**
  * Two-tiered substitutions gadget.
  * <p>This is used for
- * options like "font-family", where the option value
- * cannot be determined until the attribute is processed.</p>
+ * options like (now defunct) "font-family", where the option value
+ * cannot be determined until the attribute is processed.
+ * Need for this function might be reviewed at some point ...</p>
  * @param {String} template A template containing
  * <code>%%STRING%%</code> and <code>%%PARAM%%</code>
  * placeholders.  See {@link CSL.Output.Formats.html} for

@@ -26,10 +26,10 @@ doh.register("tests.factory", [
 	},
 
 	function testSubstituteTwo() {
-		var template = "<span style=\"font-family:%%PARAM%%\">%%STRING%%</span>";
+		var template = "<span style=\"font-fantastic:%%PARAM%%\">%%STRING%%</span>";
 		var func = CSL.Factory.substituteTwo(template);
 		var func2 = func("courier");
-		doh.assertEqual( "<span style=\"font-family:courier\">My Aunt Sally</span>", func2("My Aunt Sally"));
+		doh.assertEqual( "<span style=\"font-fantastic:courier\">My Aunt Sally</span>", func2("My Aunt Sally"));
 	},
 
 	function testOutputModeCompilerAttribute(){
