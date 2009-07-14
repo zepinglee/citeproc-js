@@ -139,6 +139,14 @@ CSL.Engine.prototype.getVariable = function(Item,varname,form,plural){
 	return CSL.Engine._getField(CSL.LOOSE,Item,varname,form,plural);
 };
 
+CSL.Engine.prototype.getDateNum = function(ItemField,partname){
+	if ("undefined" == typeof ItemField){
+		return 0;
+	} else {
+		return ItemField[partname];
+	};
+};
+
 CSL.Engine._getField = function(mode,hash,term,form,plural){
 	var ret = "";
 	if (!hash[term]){

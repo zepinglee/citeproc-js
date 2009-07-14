@@ -943,9 +943,9 @@ CSL.Lib.Elements.key = new function(){
 					if (variable == "citation-number"){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
 					} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-						state.output.append(CSL.Util.Dates.year["long"](state,Item[variable]["year"]));
-						state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable]["month"]));
-						state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable]["day"]));
+						state.output.append(CSL.Util.Dates.year["long"](state,state.getDateNum(Item[variable],"year")));
+						state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,state.getDateNum(Item[variable],"month")));
+						state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,state.getDateNum(Item[variable],"day")));
 					} else {
 						state.output.append(Item[variable],"empty");
 					}
