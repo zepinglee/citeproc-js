@@ -1,5 +1,5 @@
 {
-    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n    \t<sort>\n    \t\t<key variable=\"issued\" sort=\"descending\"/>\n    \t\t<key variable=\"title\"/>\n    \t</sort>\n        <layout delimiter=\"; \">\n            <text variable=\"title\"/>\n        </layout>\n    </citation>\n</style>", 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n    \t<sort>\n    \t\t<key variable=\"issued\" sort=\"ascending\"/>\n    \t\t<key variable=\"title\"/>\n    \t</sort>\n        <layout delimiter=\"; \">\n            <text variable=\"title\"/>\n        </layout>\n    </citation>\n</style>", 
     "input": [
         {
             "id": "ITEM-1", 
@@ -33,6 +33,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Item 4; Item 2; Item 1; Item 3", 
+    "result": "Item 1; Item 3; Item 2; Item 4", 
     "schema": "0.8"
 }
