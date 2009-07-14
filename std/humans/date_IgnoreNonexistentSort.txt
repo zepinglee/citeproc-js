@@ -1,0 +1,50 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Item 2; Item 1; Item 3
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+    	<sort>
+    		<key variable="issued"/>
+    		<key variable="title"/>
+    	</sort>
+        <layout delimiter="; ">
+            <text variable="title"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "title": "Item 1"
+  },
+  {
+    "id":"ITEM-2",
+    "type": "book",
+    "title": "Item 2",
+    "issued": {"year": "2000", "month": "2", "day": "15" }
+  },
+  {
+    "id":"ITEM-3",
+    "type": "book",
+    "title": "Item 3"
+  }
+]
+<<===== INPUT =====<<
