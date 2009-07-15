@@ -136,10 +136,12 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 		state.tmp.namepart_type = arg;
 	} else {
 		var func = function(state,Item){
-			if(Item.type == arg){
-				return true;
+			var types = arg.split(/\s+/);
+			var ret = [];
+			for each (var type in types){
+				ret.push(Item.type == type);
 			}
-			return false;
+			return ret;
 		};
 		this["tests"].push(func);
 	}
@@ -166,13 +168,17 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 		// conditionally in order to suppress repeat renderings of
 		// the same item variable.
 		//
+		// Do not suppress repeat renderings of dates.
+		//
 		var set_variable_names = function(state,Item){
 			var variables = this.variables.slice();
 			this.variables = [];
 			for each (var variable in variables){
 				if (state.tmp.done_vars.indexOf(variable) == -1){
 					this.variables.push(variable);
-					state.tmp.done_vars.push(variable);
+					if ("date" != this.name){
+						state.tmp.done_vars.push(variable);
+					};
 				};
 			};
 		};
@@ -212,22 +218,30 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 		this.execs.push(check_for_output);
 	} else if (["if", "else-if"].indexOf(this.name) > -1){
 		var check_for_variable_value = function(state,Item){
+			var ret = [];
 			for each(variable in this.variables){
+				var x = false;
 				if (Item[variable]){
 					if ("number" == typeof Item[variable] || "string" == typeof Item[variable]){
-						return true;
+						x = true;
 					} else if ("object" == typeof Item[variable]){
 						if (Item[variable].length){
-							return true;
+							x = true;
 						} else {
-							for (i in Item[variable]){
-								return true;
-							}
-						}
-					}
-				}
-				return false;
+							//
+							// this will turn true only for hash objects
+							// that have at least one attribute.
+							//
+							for (var i in Item[variable]){
+								x = true;
+								break;
+							};
+						};
+					};
+				};
+				ret.push(x);
 			};
+			return ret;
 		};
 		this.tests.push(check_for_variable_value);
 	};
@@ -294,44 +308,11 @@ CSL.Lib.Attributes["@delimiter"] = function(state,arg){
 CSL.Lib.Attributes["@match"] = function(state,arg){
 	if (this.tokentype == CSL.START){
 		if ("none" == arg){
-			var evaluator = function(state,Item){
-				var res = this.succeed;
-				state.tmp.jump.replace("succeed");
-				for each (var func in this.tests){
-					if (func.call(this,state,Item)){
-						res = this.fail;
-						state.tmp.jump.replace("fail");
-						break;
-					}
-				}
-				return res;
-			};
+			var evaluator = state.fun.match.none;
 		} else if ("any" == arg){
-			var evaluator = function(state,Item){
-				var res = this.fail;
-				state.tmp.jump.replace("fail");
-				for each (var func in this.tests){
-					if (func.call(this,state,Item)){
-						res = this.succeed;
-						state.tmp.jump.replace("succeed");
-						break;
-					}
-				}
-				return res;
-			};
+			var evaluator = state.fun.match.any;
 		} else if ("all" == arg){
-			var evaluator = function(state,Item){
-				var res = this.succeed;
-				state.tmp.jump.replace("succeed");
-				for each (var func in this.tests){
-					if (!func.call(this,state,Item)){
-						res = this.fail;
-						state.tmp.jump.replace("fail");
-						break;
-					}
-				}
-				return res;
-			};
+			var evaluator = state.fun.match.all;
 		} else {
 			throw "Unknown match condition \""+arg+"\" in @match";
 		}

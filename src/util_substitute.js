@@ -71,19 +71,7 @@ CSL.Util.substituteStart = function(state,target){
 		// function, from Attributes.  These functions
 		// should be defined in a namespace for reuse.
 		// Sometime.
-		var evaluator = function(state,Item){
-			var res = this.fail;
-			state.tmp.jump.replace("fail");
-			for each (var func in this.tests){
-				if (func.call(this,state,Item)){
-					res = this.succeed;
-					state.tmp.jump.replace("succeed");
-					break;
-				}
-			}
-			return res;
-		};
-		if_start.evaluator = evaluator;
+		if_start.evaluator = state.fun.match.any;
 		target.push(if_start);
 	};
 };

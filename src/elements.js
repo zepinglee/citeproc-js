@@ -313,15 +313,18 @@ CSL.Lib.Elements["if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-			for each (var variable in this.variables){
-				var func = function(state,Item){
-					if (Item[variable]){
-						return true;
-					}
-					return false;
-				};
-				this["tests"].push(func);
-			};
+			//for each (var variable in this.variables){
+			//	print("outside function: "+variable);
+			//	var func = function(state,Item){
+			//		print("inside function: "+variable);
+			//		if (Item[variable]){
+			//			print("found: "+variable);
+			//			return true;
+			//		}
+			//		return false;
+			//	};
+			//	this["tests"].push(func);
+			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item){
@@ -337,18 +340,7 @@ CSL.Lib.Elements["if"] = new function(){
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
-				this.evaluator = function(state,Item){
-					var res = this.fail;
-					state.tmp.jump.replace("fail");
-					for each (var func in this.tests){
-						if (func.call(this,state,Item)){
-							res = this.succeed;
-							state.tmp.jump.replace("succeed");
-							break;
-						}
-					}
-					return res;
-				};
+				this.evaluator = state.fun.match.any;
 			};
 		}
 		if (this.tokentype == CSL.END){
@@ -386,15 +378,15 @@ CSL.Lib.Elements["else-if"] = new function(){
 	// these function are the same as those in if, might just clone
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-			for each (var variable in this.variables){
-				var func = function(state,Item){
-					if (Item[variable]){
-						return true;
-					}
-					return false;
-				};
-				this["tests"].push(func);
-			};
+			//for each (var variable in this.variables){
+			//	var func = function(state,Item){
+			//		if (Item[variable]){
+			//			return true;
+			//		}
+			//		return false;
+			//	};
+			//	this["tests"].push(func);
+			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item){
@@ -410,18 +402,7 @@ CSL.Lib.Elements["else-if"] = new function(){
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
-				this.evaluator = function(state,Item){
-					var res = this.fail;
-					state.tmp.jump.replace("fail");
-					for each (var func in this.tests){
-						if (func.call(this,state,Item)){
-							res = this.succeed;
-							state.tmp.jump.replace("succeed");
-							break;
-						}
-					}
-					return res;
-				};
+				this.evaluator = state.fun.match.any;
 			};
 		}
 		if (this.tokentype == CSL.END){

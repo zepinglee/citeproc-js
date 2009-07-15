@@ -1,0 +1,40 @@
+{
+    "citations": [
+        [
+            [
+                "ITEM-1", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-2", 
+                {}
+            ]
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n  <citation>\n    <layout delimiter=\"; \">\n      <group prefix=\"(\" suffix=\").\">\n        <date variable=\"issued\">\n          <date-part name=\"year\"/>\n        </date>\n        <choose>\n          <if type=\"book chapter article-journal\" match=\"none\">\n            <date variable=\"issued\">\n              <date-part prefix=\", \" name=\"month\"/>\n              <date-part prefix=\" \" name=\"day\"/>\n            </date>\n          </if>\n        </choose>\n      </group>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "issued": {
+                "day": 20, 
+                "month": 1, 
+                "year": 2006
+            }, 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-2", 
+            "issued": {
+                "day": 15, 
+                "month": 2, 
+                "year": 2007
+            }, 
+            "type": "article-newspaper"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "(2006).\n(2007, February 15).", 
+    "schema": "0.8"
+}

@@ -275,7 +275,7 @@ CSL.Engine.prototype._render = function(token,Item){
 	}
 
 	if (token.evaluator){
-	    next = token.evaluator.call(token,this,Item);
+	    next = token.evaluator(token,this,Item);
     };
 	for each (var exec in token.execs){
 	    maybenext = exec.call(token,this,Item);

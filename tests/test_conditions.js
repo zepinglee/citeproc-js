@@ -21,48 +21,6 @@ doh.registerGroup("tests.conditions",
 			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Omote",cite);
 		},
-		function testAny(){
-			var xml = "<style>"
-					  + "<citation>"
-					  + "<layout>"
-					  + "<choose>"
-					  + "<if variable=\"title\" match=\"any\">"
-					  + "<text value=\"Omote\"/>"
-					  + "</if>"
-					  + "<else>"
-					  + "<text value=\"Ura\"/>"
-					  + "</else>"
-					  + "</choose>"
-					  + "</layout>"
-					  + "</citation>"
-				+ "</style>";
-
-			var Item = [{ "title":"Some value" }];
-			var cite = tests.test_conditions.makeCite(xml,Item);
-			doh.assertEqual("Omote",cite);
-		},
-		function testElseIf(){
-			var xml = "<style>"
-					  + "<citation>"
-					  + "<layout>"
-					  + "<choose>"
-					  + "<if variable=\"title\" match=\"any\">"
-					  + "<text value=\"Hyoumen\"/>"
-					  + "</if>"
-					  + "<else-if variable=\"title\" match=\"none\">"
-					  + "<text value=\"Omote\"/>"
-					  + "</else-if>"
-					  + "<else>"
-					  + "<text value=\"Ura\"/>"
-					  + "</else>"
-					  + "</choose>"
-					  + "</layout>"
-					  + "</citation>"
-				+ "</style>";
-
-			var cite = tests.test_conditions.makeCite(xml);
-			doh.assertEqual("Omote",cite);
-		},
 		function testMultipleElseIfFirstIsTrue(){
 			var xml = "<style>"
 					  + "<citation>"
@@ -86,6 +44,27 @@ doh.registerGroup("tests.conditions",
 				+ "</style>";
 			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Mikake",cite);
+		},
+		function testElseIf(){
+			var xml = "<style>"
+					  + "<citation>"
+					  + "<layout>"
+					  + "<choose>"
+					  + "<if variable=\"title\" match=\"any\">"
+					  + "<text value=\"Hyoumen\"/>"
+					  + "</if>"
+					  + "<else-if variable=\"title\" match=\"none\">"
+					  + "<text value=\"Omote\"/>"
+					  + "</else-if>"
+					  + "<else>"
+					  + "<text value=\"Ura\"/>"
+					  + "</else>"
+					  + "</choose>"
+					  + "</layout>"
+					  + "</citation>"
+				+ "</style>";
+			var cite = tests.test_conditions.makeCite(xml);
+			doh.assertEqual("Omote",cite);
 		},
 		function testMultipleElseIfSecondIsTrue(){
 			var xml = "<style>"
@@ -144,15 +123,35 @@ doh.registerGroup("tests.conditions",
 				+ "</style>";
 			var cite = tests.test_conditions.makeCite(xml);
 			doh.assertEqual("Ura",cite);
-		}
+		},
+		function testAny(){
+			var xml = "<style>"
+					  + "<citation>"
+					  + "<layout>"
+					  + "<choose>"
+					  + "<if variable=\"title\" match=\"any\">"
+					  + "<text value=\"Omote\"/>"
+					  + "</if>"
+					  + "<else>"
+					  + "<text value=\"Ura\"/>"
+					  + "</else>"
+					  + "</choose>"
+					  + "</layout>"
+					  + "</citation>"
+				+ "</style>";
+
+			var Item = { "id": "Item-1", "title":"Some value" };
+			var cite = tests.test_conditions.makeCite(xml,Item);
+			doh.assertEqual("Omote",cite);
+		},
 	],
 	function(){  //setup
-		tests.test_conditions.makeCite = function(xml,Item){
-			var sys = new RhinoTest(Item);
-			var builder = new CSL.Core.Build(xml);
-			var raw = builder.build(sys);
-			var configurator = new CSL.Core.Configure(raw);
-			var style = configurator.configure();
+		tests.test_conditions.makeCite = function(myxml,Item){
+			if ("undefined" == typeof Item){
+				Item = {"id": "Item-1"};
+			}
+			var sys = new RhinoTest([Item]);
+			var style = new CSL.Engine(sys,myxml);
 			return style.makeCitationCluster(sys.citations);
 		};
 	},
@@ -162,3 +161,5 @@ doh.registerGroup("tests.conditions",
 );
 
 
+var x = [
+]
