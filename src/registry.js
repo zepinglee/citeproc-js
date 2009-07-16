@@ -16,7 +16,17 @@ dojo.provide("csl.registry");
 // That's going to take some redesign, but it will simplify
 // things in the long run, so it might as well happen now.
 //
-
+// Here's the sequence of operations to be performed on
+// update:
+//
+// ( ) Receive list as function argument
+// ( ) Apply citation numbers to list
+// ( ) Add list items to hash as necessary
+// ( ) Rerun disambiguation on disambig sets as necessary
+// ( ) Reset sort keys stored in items
+// ( ) Resort list
+// ( ) Reset citation numbers on list items
+//
 
 //
 // should allow batched registration of items by

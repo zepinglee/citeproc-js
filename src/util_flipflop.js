@@ -3,10 +3,21 @@ dojo.provide("csl.util_flipflop");
 //
 // Gee wiz, Wally, how is this going to work?
 //
-// (A) be sure there is an output blob open.
+// (A) initialize flipflopper with an empty blob to receive output.
+// Text string in existing output queue blob will be replaced with
+// an array containing this blob.
+
+CSL.Util.FlipFlopper = function(str){
+	this.str = str;
+	this.blob = CSL.Factory.Blob();
+};
+
 //
 // (1) scan the string for escape characters, marking the position of
 // the character immediately following the escape.
+
+
+
 //
 // (2) scan the string for non-overlapping open and close tags,
 // skipping escaped tags.
