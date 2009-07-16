@@ -1,6 +1,24 @@
 dojo.provide("csl.registry");
 
 //
+// Time for a rewrite of this module.
+//
+// Simon has pointed out that list and hash behavior can
+// be obtained by ... just using a list and a hash.  This
+// is faster for batched operations, because sorting is
+// greatly optimized.  Since most of the interaction
+// with plugins at runtime will involve batches of
+// references, there will be solid gains if the current,
+// one-reference-at-a-time approach implemented here
+// can be replaced with something that leverages the native
+// sort method of the Array() type.
+//
+// That's going to take some redesign, but it will simplify
+// things in the long run, so it might as well happen now.
+//
+
+
+//
 // should allow batched registration of items by
 // key.  should behave as an update, with deletion
 // of items and the tainting of disambiguation
