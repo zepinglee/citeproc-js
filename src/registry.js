@@ -16,6 +16,11 @@ dojo.provide("csl.registry");
 // That's going to take some redesign, but it will simplify
 // things in the long run, so it might as well happen now.
 //
+// We'll keep makeCitationCluster and makeBibliography as
+// simple methods that return a string, and have no effect
+// on internal state.
+//
+//
 // Here's the sequence of operations to be performed on
 // update:
 //
