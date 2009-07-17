@@ -26,19 +26,7 @@ dojo.provide("csl.registry");
 // sequence of first reference in the document.
 //
 // The calling application should always invoke updateItems
-// before makeCitationCluster. ... Hmmm.
-//
-//
-// Here's the sequence of operations to be performed on
-// update:
-//
-// ( ) Receive list as function argument
-// ( ) Apply citation numbers to list
-// ( ) Add list items to hash as necessary
-// ( ) Rerun disambiguation on disambig sets as necessary
-// ( ) Reset sort keys stored in items
-// ( ) Resort list
-// ( ) Reset citation numbers on list items
+// before makeCitationCluster.
 //
 
 //
@@ -68,42 +56,65 @@ dojo.provide("csl.registry");
  * @class
  */
 CSL.Factory.Registry = function(state){
-	this.debug = false;
-	this.debug_sort = false;
-	//
-	// each entry has a sort key, navigation vectors,
-	// and a disambiguation config object
-	if (this.debug){
-		print("---> Instantiate registry");
-	}
 	this.registry = new Object();
+	this.reflist = new Array();
 	this.namereg = new this.NameReg(state);
 	//
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
 	this.ambigs = new Object();
-	this.start = false;
-	this.end = false;
-	this.initialized = false;
-	this.skip = false;
-	this.maxlength = 0;
+	//
+	// XXXXX: This could be a problem.  May not work to feed a method of
+	// this object to Array.sort().
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
-
-	this.getSortedIds = function(){
-		var step = "next";
-		var item_id = this.start;
-		var ret = new Array();
-		while (true){
-			ret.push(item_id);
-			item_id = this.registry[item_id][step];
-			if ( ! item_id){
-				break;
-			}
-		}
-		return ret;
-	};
 };
 
+//
+// Here's the sequence of operations to be performed on
+// update:
+//
+// ( ) Receive list as function argument
+// ( ) Reconcile list, extracting items for deletion and insertion
+// ( ) Delete deletion items from hash
+// ( ) Delete names in deletion items from names reg ...
+// ( ) ... and add affected items to disambig update list.
+// ( ) Add items for insert to hash ...
+// ( ) ... and add items inserted to disambig update list.
+// ( ) Add names in items for insert to names reg ...
+// ( ) ... and add items inserted to disambig update list.
+// ( ) Create "new" list of hash pointers ... append items to the list,
+//     and then apply a bespoke sort function that forces items into the order of
+//     the received list?  Assume a and b are in sequence, and return -1 or 1
+//     depending on whether or not a and b are in the same sequence in received list.
+//     This works like a charm.  Here's the code:
+//
+//     var sortme = function(a,b){
+//         if(origlist.indexOf(a) < origlist.indexOf(b)){
+//             return -1
+//         } else{
+//             return 1
+//         }
+//     }
+//
+//     var origlist = ["Item1","Item2"]
+//
+//     Usage: newlist.sort(sortme)
+//     (where newlist has the same elements as origlist, but possibly in a different order)
+//
+// ( ) Apply citation numbers to new list (can't avoid this)
+// ( ) Apply ambig keys to items in disambig update list.
+// ( ) Delete items in disambig update list from their old ambig key item list,
+//     deleting the key itself if the list has a length less than 2.
+// ( ) Rerun disambiguation once for each unique ambig key in disambig update list.
+// ( ) Reset sort keys stored in items
+// ( ) Resort list
+// ( ) Reset citation numbers on list items
+//
+
+
+//
+// This will disappear.
+//
 CSL.Factory.Registry.prototype.insert = function(state,Item){
 	//
 	// abort if we've already inserted
