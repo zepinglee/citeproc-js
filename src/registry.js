@@ -17,8 +17,16 @@ dojo.provide("csl.registry");
 // things in the long run, so it might as well happen now.
 //
 // We'll keep makeCitationCluster and makeBibliography as
-// simple methods that return a string, and have no effect
-// on internal state.
+// simple methods that return a string.  Neither should
+// have any effect on internal state.  This will be a change
+// in behavior for makeCitationCluster.
+//
+// A new updateItems command will be introduced, to replace
+// insertItems.  It will be a simple list of IDs, in the
+// sequence of first reference in the document.
+//
+// The calling application should always invoke updateItems
+// before makeCitationCluster. ... Hmmm.
 //
 //
 // Here's the sequence of operations to be performed on
