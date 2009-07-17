@@ -38,6 +38,10 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("magic_SubsequentAuthorSubstituteNotFooled");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("magic_SuppressDuplicateVariableRendering");
         doh.assertEqual(test.result, test.run());
     },
