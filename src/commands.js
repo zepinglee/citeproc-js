@@ -7,15 +7,7 @@ dojo.provide("csl.commands");
 CSL.makeStyle = function(sys,xml,lang){
 	var engine = new CSL.Engine(sys,xml,lang);
 	return engine;
-}
-
-
-CSL.Engine.prototype.registerFlipFlops = function(flist){
-	for each (ff in flist){
-		this.fun.flipflopper.register(ff["start"], ff["end"], ff["func"], ff["alt"]);
-	}
-	return true;
-}
+};
 
 /**
  * Compose a citation "cluster".
@@ -32,11 +24,13 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item[0]);
-		this.registry.insert(this,Item);
+		//
+		// This method is now only used for rendering.
+		// Assume that all items in rawList exist in registry.
+		// this.registry.insert(this,Item);
 		var newitem = this.composeItem([Item,item[1]]);
 		inputList.push(newitem);
 	}
-	//this.insertItems(inputList);
 	//
 	// don't bother sorting unless there is more than one item.
 	// this is really ugly and hackish.  uses a hashed reference
@@ -97,8 +91,8 @@ CSL.Engine.prototype.makeBibliography = function(){
 };
 
 
-CSL.Engine.prototype.insertItems = function(inputList){
-	for each (var item in inputList){
+CSL.Engine.prototype.updateItems = function(rawList){
+	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item);
 		this.registry.insert(this,Item);
 	};
