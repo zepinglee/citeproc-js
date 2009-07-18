@@ -58,7 +58,13 @@ dojo.provide("csl.registry");
 CSL.Factory.Registry = function(state){
 	this.registry = new Object();
 	this.reflist = new Array();
-	this.namereg = new this.NameReg(state);
+	this.namereg = new CSL.Factory.Registry.NameReg(state);
+	//
+	// shared scratch vars
+	this.worklist = new Array();
+	this.deletes = new Array();
+	this.inserts = new Array();
+	this.dbupdates = new Object();
 	//
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
@@ -73,20 +79,45 @@ CSL.Factory.Registry = function(state){
 // Here's the sequence of operations to be performed on
 // update:
 //
-// ( ) Receive list as function argument
-// ( ) Reconcile list, extracting items for deletion and insertion
-// ( ) Delete deletion items from hash
-// ( ) Delete names in deletion items from names reg ...
-// ( ) ... and add affected items to disambig update list.
-// ( ) Add items for insert to hash ...
-// ( ) ... and add items inserted to disambig update list.
-// ( ) Add names in items for insert to names reg ...
-// ( ) ... and add items inserted to disambig update list.
-// ( ) Create "new" list of hash pointers ... append items to the list,
-//     and then apply a bespoke sort function that forces items into the order of
-//     the received list?  Assume a and b are in sequence, and return -1 or 1
-//     depending on whether or not a and b are in the same sequence in received list.
-//     This works like a charm.  Here's the code:
+//  1. (o) Receive list as function argument and initialize vars.
+
+//  2. (o) Identify items for deletion, build list.
+//  3. (o) Complement delete and insert lists with items that have changed
+//         in the DB.
+//  4. ( ) Delete items to be deleted from their disambig pools.
+//  5. ( ) Delete items to be deleted from names reg.
+//  6. (o) Delete items in deletion list from hash.
+
+// *** From here, there's a hard problem.
+// *** Any deletion or insert could affect names
+// *** And changes to names could affect disambiguation pool assignments
+// *** How to identify the pools associated with a name?
+// *** Namereg needs also to hold a record of disambiguation pool keys, then.
+
+//  4. ( ) Identify disambiguation pools containing items to be deleted.
+//  9. (o) Delete names in deletion items from names reg ...
+
+//  6. ( ) Identify items for insertion, add to list.
+
+
+
+//  7. ( ) Retrieve entries for items to be inserted.
+//  8. ( ) Add names in items to be inserted to names reg.
+//  6. ( ) Add items to be inserted to disambig pools.
+//  7. ( )
+//  5. ( ) Add
+
+
+//  6. ( ) ... and add affected items to disambig update list.
+//  7. ( ) Add items for insert to hash ...
+//  8. ( ) ... and add items inserted to disambig update list.
+//  9. ( ) Add names in items for insert to names reg ...
+// 10. ( ) ... and add items inserted to disambig update list.
+// 11. ( ) Create "new" list of hash pointers ... append items to the list,
+//         and then apply a bespoke sort function that forces items into the order of
+//         the received list?  Assume a and b are in sequence, and return -1 or 1
+//         depending on whether or not a and b are in the same sequence in received list.
+//         This works like a charm.  Here's the code:
 //
 //     var sortme = function(a,b){
 //         if(origlist.indexOf(a) < origlist.indexOf(b)){
@@ -101,16 +132,72 @@ CSL.Factory.Registry = function(state){
 //     Usage: newlist.sort(sortme)
 //     (where newlist has the same elements as origlist, but possibly in a different order)
 //
-// ( ) Apply citation numbers to new list (can't avoid this)
-// ( ) Apply ambig keys to items in disambig update list.
-// ( ) Delete items in disambig update list from their old ambig key item list,
-//     deleting the key itself if the list has a length less than 2.
-// ( ) Rerun disambiguation once for each unique ambig key in disambig update list.
-// ( ) Reset sort keys stored in items
-// ( ) Resort list
-// ( ) Reset citation numbers on list items
+// 12. ( ) Apply citation numbers to new list (can't avoid this)
+// 13. ( ) Apply ambig keys to items in disambig update list.
+// 14. ( ) Delete items in disambig update list from their old ambig key item list,
+//         deleting the key itself if the list has a length less than 2.
+// 15. ( ) Rerun disambiguation once for each unique ambig key in disambig update list.
+// 16. ( ) Reset sort keys stored in items
+// 17. ( ) Resort list
+// 18. ( ) Reset citation numbers on list items
 //
 
+CSL.Factory.Registry.prototype.init = function(myitems){
+	this.worklist = myitems;
+	this.deletes = new Array();
+	this.inserts = new Array();
+
+};
+
+CSL.Factory.Registry.prototype.reconcile = function(){
+	var mylisthash = new Object();
+	//
+	// record insert IDs
+	for each (var item in this.worklist){
+		if (!this.registry[item]){
+			this.inserts.push(item);
+		} else {
+			mylisthash[item] = true;
+		};
+	};
+	//
+	// record refresh IDs (things in dbupdates that are
+	// not in inserts, and will not be in deletes.
+	for (var item in this.dbupdates){
+		if (mylisthash[item]){
+			this.deletes.push(item);
+			this.inserts.push(item);
+		};
+	};
+	//
+	// finish out mylisthash
+	for each (var item in this.inserts){
+		mylisthash[item] = true;
+	};
+	//
+	// record delete IDs
+	for each (var item in this.reflist){
+		if (!mylisthash[item]){
+			this.deletes.push(item);
+		}
+	};
+	//
+	// done with worklist
+	this.worklist = new Array();
+};
+
+CSL.Factory.Registry.prototype.delete = function(){
+	//
+	// delete from registry hash
+	for each (item in this.deletes){
+		delete this.registry[item];
+	};
+	//
+	// delete names associated with deleted items from names registry
+	for each (item in this.deletes){
+		this.namereg.del(item);
+	};
+};
 
 //
 // This will disappear.

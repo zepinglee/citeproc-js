@@ -30,13 +30,17 @@ dojo.provide("csl.namereg");
  * man, small steps.
  *
  */
-CSL.Factory.Registry.prototype.NameReg = function(state){
+CSL.Factory.Registry.NameReg = function(state){
 	//this.state = state;
 	this.namereg = new Object();
-	this.updateme = new Array();
+	//
+	// primary-key, initials form, fullname (with secondary-key stripped of periods)
 	var pkey;
 	var ikey;
 	var skey;
+	//
+	// keys registered, indexed by ID
+	var keyreg;
 
 	var _set_keys = function(nameobj){
 		pkey = nameobj["primary-key"];
@@ -122,21 +126,12 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		return param;
 	};
 
-	var del = function(nameobj){
-		_set_keys(nameobj);
-		if (pkey){
-			this.namereg[skey] += -1;
-			if (this.namereg[skey] == 0){
-				delete this.namereg[skey];
-				this.namereg[pkey] += -1;
-				this.namereg[ikey] += -1;
-			};
-			if (this.namereg[ikey] == 0){
-				delete this.namereg[ikey];
-			};
-			if (this.namereg[pkey] == 0){
-				delete this.namereg[pkey];
-			};
+	var del = function(id){
+		for (key in this.keyreg){
+			this.namereg[key] += -1;
+			if (this.namereg[key] == 0){
+				delete this.namereg[key];
+			}
 		};
 	};
 
@@ -216,17 +211,13 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 				this.namereg[ikey] += 1;
 			};
 			this.namereg[skey].push(item_id);
+			if (!this.keyreg[item_id]){
+				this.keyreg[item_id] = new Object();
+			};
+			this.keyreg[item_id][pkey] = true;
+			this.keyreg[item_id][ikey] = true;
+			this.keyreg[item_id][skey] = true;
 		};
-		if ("undefined" != typeof old_key && this.namereg[skey] != old_key){
-			for each (var id in this.namereg[skey]){
-				if (id == item_id){
-					continue;
-				}
-				if (this.updateme.indexOf(id) == -1){
-					this.updateme.push(id);
-				}
-			}
-		}
 	};
 	this.update = update;
 	this.del = del;
