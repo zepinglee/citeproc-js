@@ -80,39 +80,27 @@ CSL.Factory.Registry = function(state){
 // update:
 //
 //  1. (o) Receive list as function argument and initialize vars.
-
-//  2. (o) Identify items for deletion, build list.
 //  3. (o) Complement delete and insert lists with items that have changed
 //         in the DB.
-//  4. ( ) Delete items to be deleted from their disambig pools.
-//  5. ( ) Delete items to be deleted from names reg.
-//  6. (o) Delete items in deletion list from hash.
 
-// *** From here, there's a hard problem.
-// *** Any deletion or insert could affect names
-// *** And changes to names could affect disambiguation pool assignments
-// *** How to identify the pools associated with a name?
-// *** Namereg needs also to hold a record of disambiguation pool keys, then.
+//  2. (o) Identify items for deletion, add to list.
+//  4. ( ) Delete names in items to be deleted from names reg, and obtain IDs
+//         of other items this will affect.
+//  5. ( ) Complement delete and insert lists with items affected by
+//         possible name changes.
+//  6. ( ) Delete all items to be deleted from their disambig pools.
+//  7. (o) Delete all items in deletion list from hash.
 
-//  4. ( ) Identify disambiguation pools containing items to be deleted.
-//  9. (o) Delete names in deletion items from names reg ...
+//  8. ( ) Identify items for insertion, add to list.
+//  9. ( ) Retrieve entries for items to insert.
+// 10. ( ) Add names in items to be inserted to names reg.
+// 11. ( ) Add items to be inserted to their disambig pools.
+// 12. ( ) Add items for insert to hash.
 
-//  6. ( ) Identify items for insertion, add to list.
+// XXXX: still needs to be thought through below here.  1-12 above
+// seem to be okay, but stepping through the logic a few more times
+// wouldn't hurt.
 
-
-
-//  7. ( ) Retrieve entries for items to be inserted.
-//  8. ( ) Add names in items to be inserted to names reg.
-//  6. ( ) Add items to be inserted to disambig pools.
-//  7. ( )
-//  5. ( ) Add
-
-
-//  6. ( ) ... and add affected items to disambig update list.
-//  7. ( ) Add items for insert to hash ...
-//  8. ( ) ... and add items inserted to disambig update list.
-//  9. ( ) Add names in items for insert to names reg ...
-// 10. ( ) ... and add items inserted to disambig update list.
 // 11. ( ) Create "new" list of hash pointers ... append items to the list,
 //         and then apply a bespoke sort function that forces items into the order of
 //         the received list?  Assume a and b are in sequence, and return -1 or 1
@@ -132,10 +120,10 @@ CSL.Factory.Registry = function(state){
 //     Usage: newlist.sort(sortme)
 //     (where newlist has the same elements as origlist, but possibly in a different order)
 //
-// 12. ( ) Apply citation numbers to new list (can't avoid this)
+
+// 12. ( ) Apply citation numbers to new list.
 // 13. ( ) Apply ambig keys to items in disambig update list.
-// 14. ( ) Delete items in disambig update list from their old ambig key item list,
-//         deleting the key itself if the list has a length less than 2.
+
 // 15. ( ) Rerun disambiguation once for each unique ambig key in disambig update list.
 // 16. ( ) Reset sort keys stored in items
 // 17. ( ) Resort list
