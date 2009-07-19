@@ -40,7 +40,8 @@ CSL.Factory.Registry.NameReg = function(state){
 	var skey;
 	//
 	// keys registered, indexed by ID
-	var keyreg;
+	var itemkeyreg;
+	var primarykeyreg;
 
 	var _set_keys = function(nameobj){
 		pkey = nameobj["primary-key"];
@@ -126,8 +127,21 @@ CSL.Factory.Registry.NameReg = function(state){
 		return param;
 	};
 
-	var del = function(id){
-		for (key in this.keyreg){
+	var delitem = function(id){
+		for (key in this.itemkeyreg){
+			//
+			// this is wrong.  the data storage format is wrong, too.
+			// pkey, ikey and skey should be stored in separate cascading objects.
+			// there should also be a kkey, on each, which hold the item ids using
+			// that form of the name.
+			// then the counts are just lengths.
+			// when deleting, decrement starts with the kkeys. when one hits
+			// zero, its parent key (skey, ikey, pkey) is deleted.
+			//
+			// item ids themselves will need to be reported in itemkeyreg.
+			// cascading updates can then be run easily, by fetching the item
+			// ids from pkey and reporting them back for use in a loop that
+			// sets a delete/insert for the relevant items.
 			this.namereg[key] += -1;
 			if (this.namereg[key] == 0){
 				delete this.namereg[key];
@@ -220,6 +234,6 @@ CSL.Factory.Registry.NameReg = function(state){
 		};
 	};
 	this.update = update;
-	this.del = del;
+	this.delitem = delitem;
 	this.eval = eval;
 };

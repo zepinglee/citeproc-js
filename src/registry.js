@@ -61,7 +61,8 @@ CSL.Factory.Registry = function(state){
 	this.namereg = new CSL.Factory.Registry.NameReg(state);
 	//
 	// shared scratch vars
-	this.worklist = new Array();
+	this.mylist = new Array();
+	this.myhash = new Object();
 	this.deletes = new Array();
 	this.inserts = new Array();
 	this.dbupdates = new Object();
@@ -79,29 +80,27 @@ CSL.Factory.Registry = function(state){
 // Here's the sequence of operations to be performed on
 // update:
 //
-//  1. (o) Receive list as function argument.
-//  3. (o) Initialize delete and insert lists with items that have changed
+//  1. (o) [init] Receive list as function argument.
+//  2. (o) [init] Initialize delete and insert hash stores with items that have changed
 //         in the DB.
 
-//  2. (o) Identify items for deletion, add to list.
-//  4. ( ) Delete names in items to be deleted from names reg, and obtain IDs
+//  3. (o) [getdeletes] Identify items for deletion, add to deletes list.
+//  4. ( ) [delnames] Delete names in items to be deleted from names reg, and obtain IDs
 //         of other items that would be affected by changes around that surname.
-//  5. ( ) Complement delete and insert lists with items affected by
+//  5. ( ) [delnames] Complement delete and insert lists with items affected by
 //         possible name changes.
-//  6. ( ) Delete all items to be deleted from their disambig pools, adding
+//  6. ( ) [delambigs] Delete all items to be deleted from their disambig pools, adding
 //         an entry for each to a record of affected ambig pools.
-//  7. (o) Delete all items in deletion list from hash.  Do this will
+//  7. (o) [delhash] Delete all items in deletion list from hash.  Do this will
 //         a sort-and-slice, applying a sort function like that
 //         described under step 13, below.
 
-//  8. ( ) Identify items for explicit insertion, add to list.
+//  8. ( ) [getinserts] Identify items for explicit insertion, add to inserts list.
 //  9. ( ) Retrieve entries for items to insert.
 // 10. ( ) Add names in items to be inserted to names reg.
 // 11. ( ) Add items to be inserted to their disambig pools.
 // 12. ( ) Add items for insert to hash, with ambig keys, adding
 //         the ambig keys to the record of affected ambig pools./
-
-// XXXX: still needs to be thought through below here.
 
 // 13. ( ) Create "new" list of hash pointers ... append items to the list,
 //         and then apply a bespoke sort function that forces items into the order of
@@ -129,10 +128,47 @@ CSL.Factory.Registry = function(state){
 //
 
 CSL.Factory.Registry.prototype.init = function(myitems){
-	this.worklist = myitems;
-	this.deletes = new Array();
-	this.inserts = new Array();
+	//  1. Receive list as function argument.
+	this.mylist = myitems;
+	this.myhash = new Object();
+	for each (var item in myitems){
+		this.myhash[item] = true;
+	};
+	//
+	//  2. Initialize delete and insert hash stores with items that have changed
+	//    in the DB.
+	this.deletes = new Object();
+	this.inserts = new Object();
+	for (var item in this.dbupdates){
+		this.deletes[item] = true;
+		this.inserts[item] = true;
+	};
+};
 
+CSL.Factory.Registry.prototype.getdeletes = function(){
+	//
+	//  3. Identify items for deletion, add to deletes list.
+	//
+	for (var item in this.registry){
+		if (!this.myhash[item]){
+			this.deletes[item] = true;
+		};
+	};
+};
+
+CSL.Factory.Registry.prototype.delnames = function(){
+	//
+	//  4. Delete names in items to be deleted from names reg, and obtain IDs
+	//     of other items that would be affected by changes around that surname.
+	//
+	for (item in this.deletes){
+		var otheritems = new Object();
+		for (this.namereg.)
+	};
+	//
+	//  5. Complement delete and insert lists with items affected by
+	//     possible name changes.
+	//
 };
 
 CSL.Factory.Registry.prototype.reconcile = function(){
@@ -144,15 +180,6 @@ CSL.Factory.Registry.prototype.reconcile = function(){
 			this.inserts.push(item);
 		} else {
 			mylisthash[item] = true;
-		};
-	};
-	//
-	// record refresh IDs (things in dbupdates that are
-	// not in inserts, and will not be in deletes.
-	for (var item in this.dbupdates){
-		if (mylisthash[item]){
-			this.deletes.push(item);
-			this.inserts.push(item);
 		};
 	};
 	//
