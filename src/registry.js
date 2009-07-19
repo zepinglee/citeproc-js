@@ -79,33 +79,33 @@ CSL.Factory.Registry = function(state){
 // Here's the sequence of operations to be performed on
 // update:
 //
-//  1. (o) Receive list as function argument and initialize vars.
-//  3. (o) Complement delete and insert lists with items that have changed
+//  1. (o) Receive list as function argument.
+//  3. (o) Initialize delete and insert lists with items that have changed
 //         in the DB.
 
 //  2. (o) Identify items for deletion, add to list.
 //  4. ( ) Delete names in items to be deleted from names reg, and obtain IDs
-//         of other items this will affect.
+//         of other items that would be affected by changes around that surname.
 //  5. ( ) Complement delete and insert lists with items affected by
 //         possible name changes.
-//  6. ( ) Delete all items to be deleted from their disambig pools.
-//  7. (o) Delete all items in deletion list from hash.
+//  6. ( ) Delete all items to be deleted from their disambig pools, adding
+//         an entry for each to a record of affected ambig pools.
+//  7. (o) Delete all items in deletion list from hash.  Do this will
+//         a sort-and-slice, applying a sort function like that
+//         described under step 13, below.
 
-//  8. ( ) Identify items for insertion, add to list.
+//  8. ( ) Identify items for explicit insertion, add to list.
 //  9. ( ) Retrieve entries for items to insert.
 // 10. ( ) Add names in items to be inserted to names reg.
 // 11. ( ) Add items to be inserted to their disambig pools.
-// 12. ( ) Add items for insert to hash.
+// 12. ( ) Add items for insert to hash, with ambig keys, adding
+//         the ambig keys to the record of affected ambig pools./
 
-// XXXX: still needs to be thought through below here.  1-12 above
-// seem to be okay, but stepping through the logic a few more times
-// wouldn't hurt.
+// XXXX: still needs to be thought through below here.
 
-// 11. ( ) Create "new" list of hash pointers ... append items to the list,
+// 13. ( ) Create "new" list of hash pointers ... append items to the list,
 //         and then apply a bespoke sort function that forces items into the order of
-//         the received list?  Assume a and b are in sequence, and return -1 or 1
-//         depending on whether or not a and b are in the same sequence in received list.
-//         This works like a charm.  Here's the code:
+//         the received list.  Here's a sort function that will do that:
 //
 //     var sortme = function(a,b){
 //         if(origlist.indexOf(a) < origlist.indexOf(b)){
@@ -121,10 +121,8 @@ CSL.Factory.Registry = function(state){
 //     (where newlist has the same elements as origlist, but possibly in a different order)
 //
 
-// 12. ( ) Apply citation numbers to new list.
-// 13. ( ) Apply ambig keys to items in disambig update list.
-
-// 15. ( ) Rerun disambiguation once for each unique ambig key in disambig update list.
+// 14. ( ) Apply citation numbers to new list.
+// 15. ( ) Rerun disambiguation once for each affected disambig pool.
 // 16. ( ) Reset sort keys stored in items
 // 17. ( ) Resort list
 // 18. ( ) Reset citation numbers on list items
