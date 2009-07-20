@@ -70,10 +70,31 @@ CSL.Factory.Registry = function(state){
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
 	this.ambigs = new Object();
+	this.start = false;
+	this.end = false;
+	this.initialized = false;
+	this.skip = false;
+	this.maxlength = 0;
+
 	//
 	// XXXXX: This could be a problem.  May not work to feed a method of
 	// this object to Array.sort().
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
+
+	this.getSortedIds = function(){
+		var step = "next";
+		var item_id = this.start;
+		var ret = new Array();
+		while (true){
+			ret.push(item_id);
+			item_id = this.registry[item_id][step];
+			if ( ! item_id){
+				break;
+			}
+		}
+		return ret;
+	};
+
 };
 
 //
@@ -161,9 +182,9 @@ CSL.Factory.Registry.prototype.delnames = function(){
 	//  4. Delete names in items to be deleted from names reg, and obtain IDs
 	//     of other items that would be affected by changes around that surname.
 	//
-	for (item in this.deletes){
+	for (var item in this.deletes){
 		var otheritems = new Object();
-		for (this.namereg.)
+		//for (this.namereg.)
 	};
 	//
 	//  5. Complement delete and insert lists with items affected by
@@ -199,17 +220,17 @@ CSL.Factory.Registry.prototype.reconcile = function(){
 	this.worklist = new Array();
 };
 
-CSL.Factory.Registry.prototype.delete = function(){
+CSL.Factory.Registry.prototype.delitems = function(){
 	//
 	// delete from registry hash
-	for each (item in this.deletes){
-		delete this.registry[item];
-	};
+	//for each (var item in this.deletes){
+	//	delete this.registry[item];
+	//};
 	//
 	// delete names associated with deleted items from names registry
-	for each (item in this.deletes){
-		this.namereg.del(item);
-	};
+	//for each (var item in this.deletes){
+	//	this.namereg.del(item);
+	//};
 };
 
 //

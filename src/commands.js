@@ -24,8 +24,9 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item[0]);
+		this.registry.insert(this,Item);
 		//
-		// This method is now only used for rendering.
+		// This method will in future only be used for rendering.
 		// Assume that all items in rawList exist in registry.
 		// this.registry.insert(this,Item);
 		var newitem = this.composeItem([Item,item[1]]);
@@ -90,6 +91,13 @@ CSL.Engine.prototype.makeBibliography = function(){
 	return this._bibliography_entries.call(this);
 };
 
+
+CSL.Engine.prototype.insertItems = function(rawList){
+	for each (var item in rawList){
+		var Item = this.sys.retrieveItem(item);
+		this.registry.insert(this,Item);
+	};
+};
 
 CSL.Engine.prototype.updateItems = function(rawList){
 	for each (var item in rawList){

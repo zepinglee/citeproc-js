@@ -40,8 +40,7 @@ CSL.Factory.Registry.NameReg = function(state){
 	var skey;
 	//
 	// keys registered, indexed by ID
-	var itemkeyreg;
-	var primarykeyreg;
+	this.itemkeyreg = new Object();
 
 	var _set_keys = function(nameobj){
 		pkey = nameobj["primary-key"];
@@ -225,12 +224,12 @@ CSL.Factory.Registry.NameReg = function(state){
 				this.namereg[ikey] += 1;
 			};
 			this.namereg[skey].push(item_id);
-			if (!this.keyreg[item_id]){
-				this.keyreg[item_id] = new Object();
+			if (!this.itemkeyreg[item_id]){
+				this.itemkeyreg[item_id] = new Object();
 			};
-			this.keyreg[item_id][pkey] = true;
-			this.keyreg[item_id][ikey] = true;
-			this.keyreg[item_id][skey] = true;
+			this.itemkeyreg[item_id][pkey] = true;
+			this.itemkeyreg[item_id][ikey] = true;
+			this.itemkeyreg[item_id][skey] = true;
 		};
 	};
 	this.update = update;
