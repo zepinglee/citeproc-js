@@ -116,6 +116,7 @@ CSL.Factory.Registry.NameReg = function(state){
 			ids = [ids];
 		};
 		for (var item in ids){
+			var ret = {};
 			var key = this.nameind[item].split("::");
 			pkey = key[0];
 			ikey = key[1];
@@ -129,6 +130,11 @@ CSL.Factory.Registry.NameReg = function(state){
 				if (this.namereg[pkey].ikey[ikey].skey[skey].items.length == 0){
 					delete this.namereg[pkey].ikey[ikey].skey[skey];
 					this.namereg[pkey].ikey[ikey].count += -1;
+					if (this.namereg[pkey].ikey[ikey].count < 2){
+						for (var i in this.namereg[pkey].ikey[ikey].items){
+							ret[i] = true;
+						};
+					};
 				};
 			};
 			if (ikey){
@@ -138,11 +144,25 @@ CSL.Factory.Registry.NameReg = function(state){
 				if (this.namereg[pkey].ikey[ikey].items.length == 0){
 					delete this.namereg[pkey].ikey[ikey];
 					this.namereg[pkey].count += -1;
+					if (this.namereg[pkey].count < 2){
+						for (var i in this.namereg[pkey].items){
+							ret[i] = true;
+						};
+					};
 				};
 			};
+			if (pkey){
+				pos = this.namereg[pkey].items.indexOf(item);
+				items = this.namereg[pkey].items;
+				this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				if (this.namereg[pkey].items.length == 0){
+					delete this.namereg[pkey];
+				};
+			}
 			this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
 			delete this.nameid[item];
 		};
+		return ret;
 	};
 	//
 	// Run ALL
