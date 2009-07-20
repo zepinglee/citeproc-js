@@ -63,18 +63,9 @@ CSL.Factory.Registry.NameReg = function(state){
 		_set_keys(nameobj);
 		//
 		// give literals a pass
-//		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].skey[skey]){
-		return 2;
-		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].skey[skey]){
+		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].ikey[ikey]){
 			return 2;
 		}
-		// keys
-		var pkey_is_unique = false; // i.e. the number of ikeys
-		// XXXXX: fixme!
-		var ikey_is_unique = this.namereg[ikey] == 1;
-		var ikey_is_unique = this.namereg[pkey].ikey[ikey] == 1;
-		var skey_is_unique = this.namereg[skey].length == 1;
-		// params
 		//
 		// possible options are:
 		//
@@ -114,18 +105,18 @@ CSL.Factory.Registry.NameReg = function(state){
 		// the last composite condition is for backward compatibility
 		//
 		if (!gdropt || gdropt == "all-names" || gdropt == "primary-name"){
-			if (!pkey_is_unique){
+			if (this.namereg[pkey].count > 1){
 				param = 1;
 			};
-			if (!ikey_is_unique){
+			if (this.namereg[pkey].ikey && this.namereg[pkey].ikey[ikey].count > 1){
 				param = 2;
 			}
 		} else if (gdropt == "all-names-with-initials" || gdropt == "primary-name-with-initials"){
-			if (!pkey_is_unique){
+			if (this.namereg[pkey].count > 1){
 				param = 1;
 			}
 		} else if (gdropt == "all-names-with-fullname" || gdropt == "primary-name-with-fullname"){
-			if (!pkey_is_unique){
+			if (this.namereg[pkey].count > 1){
 				param = 2;
 			}
 		};
