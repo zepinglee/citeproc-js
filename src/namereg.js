@@ -160,7 +160,7 @@ CSL.Factory.Registry.NameReg = function(state){
 				};
 			}
 			this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
-			delete this.nameid[item];
+			delete this.nameind[item];
 		};
 		return ret;
 	};
