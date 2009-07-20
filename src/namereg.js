@@ -42,14 +42,17 @@ CSL.Factory.Registry.NameReg = function(state){
 	// keys registered, indexed by ID
 	this.itemkeyreg = new Object();
 
-	var _set_keys = function(nameobj){
-		pkey = nameobj["primary-key"];
-		var secondary = nameobj["secondary-key"];
-		if (!secondary){
-			secondary = "";
+	var _strip_periods = function(str){
+		if (!str){
+			str = "";
 		}
-		ikey = pkey+"::"+CSL.Util.Names.initializeWith(secondary,"");
-		skey = pkey+"::::"+secondary.replace("."," ").replace(/\s+/," ");
+		return str.replace("."," ").replace(/\s+/," ");
+	};
+
+	var _set_keys = function(nameobj){
+		pkey = _strip_periods(nameobj["primary-key"]);
+		skey = _strip_periods(nameobj["secondary-key"]);
+		ikey = CSL.Util.Names.initializeWith(skey,"");
 	};
 
 	var eval = function(nameobj,namenum,request_base,form,initials){
@@ -144,7 +147,7 @@ CSL.Factory.Registry.NameReg = function(state){
 			this.namereg[key] += -1;
 			if (this.namereg[key] == 0){
 				delete this.namereg[key];
-			}
+			};
 		};
 	};
 
@@ -208,28 +211,34 @@ CSL.Factory.Registry.NameReg = function(state){
 	// is output.  This could be done with a single var set on
 	// the state object in the execution wrappers that run the
 	// style.
+	//
+
 	var update = function(item_id,nameobj,pos){
 		_set_keys(nameobj);
-		var old_key = this.namereg[skey];
+		// pkey, ikey and skey should be stored in separate cascading objects.
+		// there should also be a kkey, on each, which holds the item ids using
+		// that form of the name.
 		if (pkey){
 			if ("undefined" == typeof this.namereg[pkey]){
-				this.namereg[pkey] = 0;
+				this.namereg[pkey] = new Object();
+				this.namereg[pkey]["ikey"] = new Object();
+				this.namereg[pkey]["items"] = new Object();
 			};
-			if ("undefined" == typeof this.namereg[skey]){
-				this.namereg[skey] = [];
-				if ("undefined" == typeof this.namereg[ikey]){
-					this.namereg[ikey] = 0;
-				};
-				this.namereg[pkey] += 1;
-				this.namereg[ikey] += 1;
+			this.namereg[pkey].items[item_id] = true;
+		};
+		if (pkey && ikey){
+			if ("undefined" == typeof this.namereg[pkey].ikey[ikey]){
+				this.namereg[pkey].ikey[ikey] = new Object();
+				this.namereg[pkey].ikey[ikey]["skey"] = new Object();
+				this.namereg[pkey].ikey[ikey]["items"] = new Object();
 			};
-			this.namereg[skey].push(item_id);
-			if (!this.itemkeyreg[item_id]){
-				this.itemkeyreg[item_id] = new Object();
+			this.namereg[pkey].ikey[ikey].items[item_id] = true;
+		};
+		if (pkey && ikey && skey){
+			if ("undefined" == typeof this.namereg[pkey].ikey[ikey].skey[skey]){
+				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = new Object();
 			};
-			this.itemkeyreg[item_id][pkey] = true;
-			this.itemkeyreg[item_id][ikey] = true;
-			this.itemkeyreg[item_id][skey] = true;
+			this.namereg[pkey].ikey[ikey].skey[skey].items[item_id] = true;
 		};
 	};
 	this.update = update;
