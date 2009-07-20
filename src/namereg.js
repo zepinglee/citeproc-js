@@ -33,6 +33,7 @@ dojo.provide("csl.namereg");
 CSL.Factory.Registry.NameReg = function(state){
 	//this.state = state;
 	this.namereg = new Object();
+	this.nameind = new Object();
 	//
 	// primary-key, initials form, fullname (with secondary-key stripped of periods)
 	var pkey;
@@ -123,25 +124,18 @@ CSL.Factory.Registry.NameReg = function(state){
 		return param;
 	};
 
-	var delitem = function(id){
-		for (key in this.itemkeyreg){
-			//
-			// this is wrong.  the data storage format is wrong, too.
-			// pkey, ikey and skey should be stored in separate cascading objects.
-			// there should also be a kkey, on each, which hold the item ids using
-			// that form of the name.
-			// then the counts are just lengths.
-			// when deleting, decrement starts with the kkeys. when one hits
-			// zero, its parent key (skey, ikey, pkey) is deleted.
-			//
-			// item ids themselves will need to be reported in itemkeyreg.
-			// cascading updates can then be run easily, by fetching the item
-			// ids from pkey and reporting them back for use in a loop that
-			// sets a delete/insert for the relevant items.
-			this.namereg[key] += -1;
-			if (this.namereg[key] == 0){
-				delete this.namereg[key];
-			};
+	var delitems = function(ids){
+		if ("string" == typeof ids){
+			ids = [ids];
+		};
+		for (var item in ids){
+			var key = this.nameind[item].split("::");
+			pkey = key[0];
+			ikey = key[1];
+			skey = key[2];
+			delete this.namereg[pkey].ikey[ikey].skey[skey].items[item];
+			delete this.namereg[pkey].ikey[ikey].items[item];
+			delete this.namereg[pkey].items[item];
 		};
 	};
 
@@ -207,7 +201,7 @@ CSL.Factory.Registry.NameReg = function(state){
 	// style.
 	//
 
-	var update = function(item_id,nameobj,pos){
+	var addname = function(item_id,nameobj,pos){
 		_set_keys(nameobj);
 		// pkey, ikey and skey should be stored in separate cascading objects.
 		// there should also be a kkey, on each, which holds the item ids using
@@ -217,30 +211,40 @@ CSL.Factory.Registry.NameReg = function(state){
 				this.namereg[pkey] = new Object();
 				this.namereg[pkey]["count"] = 0;
 				this.namereg[pkey]["ikey"] = new Object();
-				this.namereg[pkey]["items"] = new Object();
+				this.namereg[pkey]["items"] = new Array();
 			};
-			this.namereg[pkey].items[item_id] = true;
+			if (this.namereg[pkey].items.indexOf(item_id) == -1){
+				this.namereg[pkey].items.push(item_id);
+			};
 		};
 		if (pkey && ikey){
 			if ("undefined" == typeof this.namereg[pkey].ikey[ikey]){
 				this.namereg[pkey].ikey[ikey] = new Object();
 				this.namereg[pkey].ikey[ikey]["count"] = 0;
 				this.namereg[pkey].ikey[ikey]["skey"] = new Object();
-				this.namereg[pkey].ikey[ikey]["items"] = new Object();
+				this.namereg[pkey].ikey[ikey]["items"] = new Array();
 				this.namereg[pkey]["count"] += 1;
 			};
-			this.namereg[pkey].ikey[ikey].items[item_id] = true;
+			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) == -1){
+				this.namereg[pkey].ikey[ikey].items.push(item_id);
+			};
 		};
 		if (pkey && ikey && skey){
 			if ("undefined" == typeof this.namereg[pkey].ikey[ikey].skey[skey]){
 				this.namereg[pkey].ikey[ikey].skey[skey] = new Object();
-				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = new Object();
+				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = new Array();
 				this.namereg[pkey].ikey[ikey]["count"] += 1;
 			};
-			this.namereg[pkey].ikey[ikey].skey[skey].items[item_id] = true;
+			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) == -1){
+				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
+			};
 		};
+		if ("undefined" == typeof this.nameind[item_id]){
+			this.nameind[item_id] = new Object();
+		};
+		this.nameind[item_id][pkey+"::"+ikey+"::"+skey] = true;
 	};
-	this.update = update;
-	this.delitem = delitem;
+	this.addname = addname;
+	this.delitems = delitems;
 	this.eval = eval;
 };

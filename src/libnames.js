@@ -206,7 +206,7 @@ CSL.Lib.Elements.names = new function(){
 						//
 						// register the name in the global names disambiguation
 						// registry
-						state.registry.namereg.update(Item.id,nameset.names[i],i);
+						state.registry.namereg.addname(Item.id,nameset.names[i],i);
 						//
 						// set the display mode default for givennames if required
 						if (state.tmp.disambig_request){
