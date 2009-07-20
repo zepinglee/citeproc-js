@@ -236,6 +236,7 @@ CSL.Factory.Registry.NameReg = function(state){
 		};
 		if (pkey && ikey && skey){
 			if ("undefined" == typeof this.namereg[pkey].ikey[ikey].skey[skey]){
+				this.namereg[pkey].ikey[ikey].skey[skey] = new Object();
 				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = new Object();
 			};
 			this.namereg[pkey].ikey[ikey].skey[skey].items[item_id] = true;
