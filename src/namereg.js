@@ -63,13 +63,16 @@ CSL.Factory.Registry.NameReg = function(state){
 		_set_keys(nameobj);
 		//
 		// give literals a pass
-		if ("undefined" == typeof this.namereg[skey]){
+//		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].skey[skey]){
+		return 2;
+		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].skey[skey]){
 			return 2;
 		}
 		// keys
-		var pkey_is_unique = this.namereg[pkey] == 1;
+		var pkey_is_unique = false; // i.e. the number of ikeys
+		// XXXXX: fixme!
 		var ikey_is_unique = this.namereg[ikey] == 1;
-		//print(skey);
+		var ikey_is_unique = this.namereg[pkey].ikey[ikey] == 1;
 		var skey_is_unique = this.namereg[skey].length == 1;
 		// params
 		//
@@ -221,6 +224,7 @@ CSL.Factory.Registry.NameReg = function(state){
 		if (pkey){
 			if ("undefined" == typeof this.namereg[pkey]){
 				this.namereg[pkey] = new Object();
+				this.namereg[pkey]["count"] = 0;
 				this.namereg[pkey]["ikey"] = new Object();
 				this.namereg[pkey]["items"] = new Object();
 			};
@@ -229,8 +233,10 @@ CSL.Factory.Registry.NameReg = function(state){
 		if (pkey && ikey){
 			if ("undefined" == typeof this.namereg[pkey].ikey[ikey]){
 				this.namereg[pkey].ikey[ikey] = new Object();
+				this.namereg[pkey].ikey[ikey]["count"] = 0;
 				this.namereg[pkey].ikey[ikey]["skey"] = new Object();
 				this.namereg[pkey].ikey[ikey]["items"] = new Object();
+				this.namereg[pkey]["count"] += 1;
 			};
 			this.namereg[pkey].ikey[ikey].items[item_id] = true;
 		};
@@ -238,6 +244,7 @@ CSL.Factory.Registry.NameReg = function(state){
 			if ("undefined" == typeof this.namereg[pkey].ikey[ikey].skey[skey]){
 				this.namereg[pkey].ikey[ikey].skey[skey] = new Object();
 				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = new Object();
+				this.namereg[pkey].ikey[ikey]["count"] += 1;
 			};
 			this.namereg[pkey].ikey[ikey].skey[skey].items[item_id] = true;
 		};
