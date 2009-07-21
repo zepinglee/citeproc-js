@@ -125,8 +125,10 @@ CSL.Factory.Registry.NameReg = function(state){
 			var items = this.namereg[pkey].items;
 			if (skey){
 				pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item);
-				items = this.namereg[pkey].ikey[ikey].skey[skey].items;
-				this.namereg[pkey].ikey[ikey].skey[skey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				if (pos > -1){
+					items = this.namereg[pkey].ikey[ikey].skey[skey].items.slice();
+					this.namereg[pkey].ikey[ikey].skey[skey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				};
 				if (this.namereg[pkey].ikey[ikey].skey[skey].items.length == 0){
 					delete this.namereg[pkey].ikey[ikey].skey[skey];
 					this.namereg[pkey].ikey[ikey].count += -1;
@@ -139,8 +141,10 @@ CSL.Factory.Registry.NameReg = function(state){
 			};
 			if (ikey){
 				pos = this.namereg[pkey].ikey[ikey].items.indexOf(item);
-				items = this.namereg[pkey].ikey[ikey].items;
-				this.namereg[pkey].ikey[ikey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				if (pos > -1){
+					items = this.namereg[pkey].ikey[ikey].items.slice();
+					this.namereg[pkey].ikey[ikey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				};
 				if (this.namereg[pkey].ikey[ikey].items.length == 0){
 					delete this.namereg[pkey].ikey[ikey];
 					this.namereg[pkey].count += -1;
@@ -153,8 +157,10 @@ CSL.Factory.Registry.NameReg = function(state){
 			};
 			if (pkey){
 				pos = this.namereg[pkey].items.indexOf(item);
-				items = this.namereg[pkey].items;
-				this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				if (pos > -1){
+					items = this.namereg[pkey].items.slice();
+					this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				};
 				if (this.namereg[pkey].items.length == 0){
 					delete this.namereg[pkey];
 				};

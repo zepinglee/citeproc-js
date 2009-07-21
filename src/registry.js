@@ -110,12 +110,16 @@ CSL.Factory.Registry = function(state){
 //         of other items that would be affected by changes around that surname.
 //  5. (o) [delnames] Complement delete and insert lists with items affected by
 //         possible name changes.
-//  6. ( ) [delambigs] Delete all items to be deleted from their disambig pools.
-//  7. ( ) [delhash] Delete all items in deletion list from hash.  Do this will
+//  6. (o) [delambigs] Delete all items to be deleted from their disambig pools.
+
+//  7. ( ) [getinserts] Identify items for explicit insertion, add to inserts list.
+
+//  8. ( ) [delhash] Delete all items in deletion list from hash.  Do this will
 //         a sort-and-slice, applying a sort function like that
 //         described under step 13, below.
+//         XXXXX: this is mixed up.  there are two objects, hash and array.
+//         XXXXX: both of them need to be culled.
 
-//  8. ( ) [getinserts] Identify items for explicit insertion, add to inserts list.
 //  9. ( ) Retrieve entries for items to insert.
 // 10. ( ) Add names in items to be inserted to names reg.
 // 11. ( ) Add items to be inserted to their disambig pools.
@@ -196,6 +200,19 @@ CSL.Factory.Registry.prototype.delnames = function(){
 	};
 };
 
+CSL.Factory.Registry.prototype.delambigs = function(){
+	//
+	//  6. Delete all items to be deleted from their disambig pools.
+	//
+	for (var item in this.deletes){
+		var ambig = this.registry[item].ambig;
+		var pos = this.ambigs[ambig].indexOf(item);
+		if (pos > -1){
+			var items = this.ambigs[ambig].slice();
+			this.ambigs[ambig] = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+		}
+	};
+};
 
 CSL.Factory.Registry.prototype.reconcile = function(){
 	var mylisthash = new Object();
