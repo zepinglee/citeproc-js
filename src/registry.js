@@ -56,6 +56,7 @@ dojo.provide("csl.registry");
  * @class
  */
 CSL.Factory.Registry = function(state){
+	this.state = state;
 	this.registry = new Object();
 	this.reflist = new Array();
 	this.namereg = new CSL.Factory.Registry.NameReg(state);
@@ -130,11 +131,10 @@ CSL.Factory.Registry = function(state){
 //         under step 14, below.
 //  9. (o) [delhash] Delete all items in deletion list from hash.
 
-// 10. ( ) Retrieve entries for items to insert.
-// 11. ( ) Add names in items to be inserted to names reg.
-// 12. ( ) Add items to be inserted to their disambig pools.
-// 13. ( ) Add items for insert to hash, with ambig keys, adding
-//         the ambig keys to the record of affected ambig pools.
+// 10. (o) Retrieve entries for items to insert.
+// 11. (o) Add items to be inserted to their disambig pools.
+// 12. (o) Add names in items to be inserted to names reg (implicit in getAmbiguousCite).
+// 13. ( ) Add items for insert to hash, with ambig keys.
 
 // 14. ( ) Create "new" list of hash pointers ... append items to the list,
 //         and then apply a bespoke sort function that forces items into the order of
@@ -256,66 +256,38 @@ CSL.Factory.Registry.prototype.delhash = function(){
 	};
 };
 
-CSL.Factory.Registry.prototype.reconcile = function(){
-	var mylisthash = new Object();
+CSL.Factory.Registry.prototype.getitems = function(){
 	//
-	// record insert IDs
-	for each (var item in this.worklist){
-		if (!this.registry[item]){
-			this.inserts.push(item);
-		} else {
-			mylisthash[item] = true;
+	// 10. Retrieve entries for items to insert.
+	//
+	for (var item in this.inserts){
+		var Item = this.state.retrieveItem(item);
+		//
+		// 11. Add items to be inserted to their disambig pools.
+		//
+		var ambig = this.state.getAmbiguousCite(Item);
+		if (!this.ambigs[ambig]){
+			this.ambigs[ambig] = new Array();
 		};
+		if (this.ambigs[ambig].indexOf(item) == -1){
+			this.ambigs[ambig].push(item);
+		};
+		//
+		// 12. Add names in items to be inserted to names reg (implicit in getAmbiguousCite).
+		//
 	};
-	//
-	// finish out mylisthash
-	for each (var item in this.inserts){
-		mylisthash[item] = true;
-	};
-	//
-	// record delete IDs
-	for each (var item in this.reflist){
-		if (!mylisthash[item]){
-			this.deletes.push(item);
-		}
-	};
-	//
-	// done with worklist
-	this.worklist = new Array();
-};
-
-CSL.Factory.Registry.prototype.delitems = function(){
-	//
-	// delete from registry hash
-	//for each (var item in this.deletes){
-	//	delete this.registry[item];
-	//};
-	//
-	// delete names associated with deleted items from names registry
-	//for each (var item in this.deletes){
-	//	this.namereg.del(item);
-	//};
 };
 
 //
-// This will disappear.
+// The following will disappear, but we'll use some of its pieces in the new version.
 //
+
 CSL.Factory.Registry.prototype.insert = function(state,Item){
-	//
-	// abort if we've already inserted
-	if (this.debug){
-		print("---> Start of insert");
-	}
+
 	if (this.registry[Item.id]){
 		return;
 	}
-	//
-	// get the sort key (it's an array containing
-	// multiple key strings).
 	var sortkeys = state.getSortKeys(Item,"bibliography_sort");
-	//
-	// get the disambiguation key and register it
-	//
 	var akey = state.getAmbiguousCite(Item);
 	var abase = state.getAmbigConfig();
 	var modes = state.getModes();
@@ -331,131 +303,9 @@ CSL.Factory.Registry.prototype.insert = function(state,Item){
 		"dseq":0,
 		"sortkeys":sortkeys,
 		"disambig":abase,
-		"prev":false,
-		"next":false
 	};
-	//
-	// if the registry is empty, initialize it with
-	// this object.
-	if (this.debug){
-		print("---> Begin manipulating registry");
-	}
-	var breakme = false;
-	if (!this.initialized){
-		if (this.debug_sort){
-			print("-->initializing registry with "+newitem.id);
-		}
-		this.registry[newitem.id] = newitem;
-		this.start = newitem.id;
-		this.end = newitem.id;
-		this.initialized = true;
-		//
-		// XXXXX
-		//this.registerAmbigToken(state,akey,Item.id,abase.slice());
-		this.registerAmbigToken(state,akey,Item.id,abase);
-		return;
-	}
-	// if this object is less than the first one,
-	// insert it as the first.
-	if (-1 == this.sorter.compareKeys(newitem.sortkeys,this.registry[this.start].sortkeys)){
-		if (this.debug_sort){
-			print("-->inserting "+newitem.id+" before "+this.start+" as first entry");
-		}
-		newitem.next = this.registry[this.start].id;
-		this.registry[this.start].prev = newitem.id;
-		newitem.prev = false;
-		newitem.seq = 1;
-		var tok = this.registry[this.start];
-		this.incrementSubsequentTokens(tok);
-		this.start = newitem.id;
-		this.registry[newitem.id] = newitem;
-		breakme = true;
-	}
-	// if this object is greater than the
-	// last one, insert it as the last.
-	if (-1 == this.sorter.compareKeys(this.registry[this.end].sortkeys,newitem.sortkeys)  && !breakme){
-		if (this.debug_sort){
-			print("-->inserting "+newitem.id+" after "+this.end+" as last entry");
-		}
-		newitem.prev = this.registry[this.end].id;
-		this.registry[this.end].next = newitem.id;
-		newitem.next = false;
-		newitem.seq = (this.registry[this.end].seq + 1);
-		this.end = newitem.id;
-		this.registry[newitem.id] = newitem;
-		breakme = true;
-	}
-	//
-	// if we reach this, it's safe to iterate
-	var curr = this.registry[this.end];
-	while (true && !breakme){
-		// compare the new token to be added with
-		// the one we're thinking about placing it after.
-		var cmp = this.sorter.compareKeys(curr.sortkeys,newitem.sortkeys);
-		if (cmp == -1){
-			if (this.debug_sort){
-				print("-->inserting "+newitem.id+" after "+curr.id);
-			}
-			// insert mid-list, after the tested item
-			this.registry[curr.next].prev = newitem.id;
-			newitem.next = curr.next;
-			newitem.prev = curr.id;
-			curr.next = newitem.id;
-			newitem.seq = (curr.seq+1);
-			this.incrementSubsequentTokens(this.registry[newitem.next]);
-			this.registry[newitem.id] = newitem;
-			breakme = true;
-			break;
-		} else if (cmp == 2){
-			breakme = true;
-		} else if (cmp == 0) {
-			// insert _after_, but this one is equivalent
-			// to the comparison partner for sortkey purposes
-			// (so we needed to provide for cases where the
-			// inserted object ends up at the end of
-			// the virtual list.)
-			if (false == curr.next){
-				if (this.debug_sort){
-					print("-->inserting "+newitem.id+" after "+curr.id+" as last entry, although equal");
-				}
-				newitem.next = false;
-				newitem.prev = curr.id;
-				curr.next = newitem.id;
-				newitem.seq = (curr.seq+1);
-				//this.incrementSubsequentTokens(curr);
-				this.registry[newitem.id] = newitem;
-				this.end = newitem.id;
-				breakme = true;
-				break;
-			} else {
-				if (this.debug_sort){
-					print("-->inserting "+newitem.id+" after "+curr.id+", although equal");
-				}
-				this.registry[curr.next].prev = newitem.id;
-				newitem.next = curr.next;
-				newitem.prev = curr.id;
-				curr.next = newitem.id;
-				newitem.seq = curr.seq;
-				this.registry[newitem.id] = newitem;
-				this.incrementSubsequentTokens(newitem);
-				breakme = true;
-				break;
-			}
-		}
-		if (breakme){
-			break;
-		}
-		//
-		// we scan in reverse order, because working
-		// from the initial draft of the code, this
-		// makes it simpler to order cites in submission
-		// order, when no sort keys are available.
-		curr = this.registry[curr.prev];
-	};
-	if (this.debug){
-		print("---> End of registry insert");
-	}
-	//
+
+
 	// register the notional ambiguation config
 	this.registerAmbigToken(state,akey,Item.id,abase);
 	//
@@ -554,12 +404,4 @@ CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
 		return -1;
 	}
 	return 0;
-};
-
-CSL.Factory.Registry.prototype.incrementSubsequentTokens = function (tok){
-	while (tok.next){
-		tok.seq += 1;
-		tok = this.registry[tok.next];
-	}
-	tok.seq += 1;
 };
