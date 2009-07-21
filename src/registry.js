@@ -128,15 +128,18 @@ CSL.Factory.Registry = function(state){
 //  7. (o) [delambigs] Delete all items to be deleted from their disambig pools.
 //  8. (o) [dellist] Delete all items in deletion list from registry list.
 //         Do this with a sort-and-slice, applying a sort function like that described
-//         under step 14, below.
+//         under step 17, below.
 //  9. (o) [delhash] Delete all items in deletion list from hash.
 
 // 10. (o) Retrieve entries for items to insert.
 // 11. (o) Add items to be inserted to their disambig pools.
 // 12. (o) Add names in items to be inserted to names reg (implicit in getAmbiguousCite).
-// 13. ( ) Add items for insert to hash, with ambig keys.
+// 13. (o) Create registry token for each item to be inserted.
+// 14. (o) Set sort keys on each item token. (seems to be okay, but watch this: too early?)
+// 15. (o) Add items for insert to hash.
+// 16. ( ) Set disambiguation parameters on each item token.
 
-// 14. ( ) Create "new" list of hash pointers ... append items to the list,
+// 17. ( ) Create "new" list of hash pointers ... append items to the list,
 //         and then apply a bespoke sort function that forces items into the order of
 //         the received list.  Here's a sort function that will do that:
 //
@@ -154,11 +157,11 @@ CSL.Factory.Registry = function(state){
 //     (where newlist has the same elements as origlist, but possibly in a different order)
 //
 
-// 15. ( ) Apply citation numbers to new list.
-// 16. ( ) Rerun disambiguation once for each affected disambig pool.
-// 17. ( ) Reset sort keys stored in items
-// 18. ( ) Resort list
-// 19. ( ) Reset citation numbers on list items
+// 18. ( ) Apply citation numbers to new list.
+// 19. ( ) Rerun disambiguation once for each affected disambig pool.
+// 20. ( ) Reset sort keys stored in items
+// 21. ( ) Resort list
+// 22. ( ) Reset citation numbers on list items
 //
 
 CSL.Factory.Registry.prototype.init = function(myitems){
@@ -265,16 +268,35 @@ CSL.Factory.Registry.prototype.getitems = function(){
 		//
 		// 11. Add items to be inserted to their disambig pools.
 		//
-		var ambig = this.state.getAmbiguousCite(Item);
-		if (!this.ambigs[ambig]){
-			this.ambigs[ambig] = new Array();
+		var akey = this.state.getAmbiguousCite(Item);
+		var abase = this.state.getAmbigConfig();
+		var modes = this.state.getModes();
+
+		if (!this.ambigs[akey]){
+			this.ambigs[akey] = new Array();
 		};
-		if (this.ambigs[ambig].indexOf(item) == -1){
-			this.ambigs[ambig].push(item);
+		if (this.ambigs[akey].indexOf(item) == -1){
+			this.ambigs[akey].push(item);
 		};
 		//
 		// 12. Add names in items to be inserted to names reg (implicit in getAmbiguousCite).
 		//
+		// 13. Create registry token for each item to be inserted.
+		//
+		var newitem = {
+			"id":item,
+			"seq":0,
+			"sortkeys":undefined,
+			"disambig":undefined
+		};
+		//
+		// 15. Set sort keys on each item token. (seems to be okay, but watch this: too early?)
+		//
+		newitem.sortkeys = state.getSortKeys(Item,"bibliography_sort");
+		//
+		// 16. Add items for insert to hash.
+		//
+		this.registry[item] = newitem;
 	};
 };
 
@@ -292,6 +314,10 @@ CSL.Factory.Registry.prototype.insert = function(state,Item){
 	var abase = state.getAmbigConfig();
 	var modes = state.getModes();
 	//
+	// register the notional ambiguation config
+	this.registerAmbigToken(state,akey,Item.id,abase);
+
+	//
 	// registryItem instantiates an object with a copy of the
 	// sort key, and a list shared with
 	// disambiguation partners, if any, maintained
@@ -302,7 +328,7 @@ CSL.Factory.Registry.prototype.insert = function(state,Item){
 		"seq":1,
 		"dseq":0,
 		"sortkeys":sortkeys,
-		"disambig":abase,
+		"disambig":abase
 	};
 
 
@@ -341,10 +367,8 @@ CSL.Factory.Registry.prototype.insert = function(state,Item){
 	}
 
 	if ( leftovers && leftovers.length && state[state.tmp.area].opt["disambiguate-add-year-suffix"]){
-		//var suffixes = state.fun.suffixator.get_suffixes(leftovers.length);
 		for (var i in leftovers){
 			this.registry[ leftovers[i].id ].disambig[2] = i;
-			this.registry[ leftovers[i].id ].dseq = i;
 		}
 	}
 	if (this.debug) {
