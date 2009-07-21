@@ -76,6 +76,18 @@ CSL.Factory.Registry = function(state){
 	this.skip = false;
 	this.maxlength = 0;
 
+
+	this._make_sort_deletes = function(deletes){
+		return function(a,b){
+			if (deletes.indexOf(a.id) > -1){
+				return -1;
+			} else if (deletes.indexOf(b.id) > -1){
+				return 1;
+			};
+			return 0;
+		};
+	};
+
 	//
 	// XXXXX: This could be a problem.  May not work to feed a method of
 	// this object to Array.sort().
@@ -113,19 +125,18 @@ CSL.Factory.Registry = function(state){
 //  6. (o) [delnames] Complement delete and insert lists with items affected by
 //         possible name changes.
 //  7. (o) [delambigs] Delete all items to be deleted from their disambig pools.
-//  8. ( ) [delhash] Delete all items in deletion list from hash.  Do this will
-//         a sort-and-slice, applying a sort function like that
-//         described under step 13, below.
-//         XXXXX: this is mixed up.  there are two objects, hash and array.
-//         XXXXX: both of them need to be culled.
+//  8. (o) [dellist] Delete all items in deletion list from registry list.
+//         Do this with a sort-and-slice, applying a sort function like that described
+//         under step 14, below.
+//  9. (o) [delhash] Delete all items in deletion list from hash.
 
-//  9. ( ) Retrieve entries for items to insert.
-// 10. ( ) Add names in items to be inserted to names reg.
-// 11. ( ) Add items to be inserted to their disambig pools.
-// 12. ( ) Add items for insert to hash, with ambig keys, adding
+// 10. ( ) Retrieve entries for items to insert.
+// 11. ( ) Add names in items to be inserted to names reg.
+// 12. ( ) Add items to be inserted to their disambig pools.
+// 13. ( ) Add items for insert to hash, with ambig keys, adding
 //         the ambig keys to the record of affected ambig pools.
 
-// 13. ( ) Create "new" list of hash pointers ... append items to the list,
+// 14. ( ) Create "new" list of hash pointers ... append items to the list,
 //         and then apply a bespoke sort function that forces items into the order of
 //         the received list.  Here's a sort function that will do that:
 //
@@ -143,11 +154,11 @@ CSL.Factory.Registry = function(state){
 //     (where newlist has the same elements as origlist, but possibly in a different order)
 //
 
-// 14. ( ) Apply citation numbers to new list.
-// 15. ( ) Rerun disambiguation once for each affected disambig pool.
-// 16. ( ) Reset sort keys stored in items
-// 17. ( ) Resort list
-// 18. ( ) Reset citation numbers on list items
+// 15. ( ) Apply citation numbers to new list.
+// 16. ( ) Rerun disambiguation once for each affected disambig pool.
+// 17. ( ) Reset sort keys stored in items
+// 18. ( ) Resort list
+// 19. ( ) Reset citation numbers on list items
 //
 
 CSL.Factory.Registry.prototype.init = function(myitems){
@@ -221,6 +232,27 @@ CSL.Factory.Registry.prototype.delambigs = function(){
 			var items = this.ambigs[ambig].slice();
 			this.ambigs[ambig] = items.slice(0,pos).concat(items.slice([pos+1],items.length));
 		}
+	};
+};
+
+CSL.Factory.Registry.prototype.dellist = function(){
+	//
+	//  8. Delete all items in deletion list from registry list.
+	//     Do this with a sort-and-slice, applying a sort function like that described
+	//     under step 14, below.
+	//
+	var deletes = this.deletes;
+	var _sort_deletes = this._make_sort_deletes(this.deletes);
+	this.reflist.sort(_sort_deletes);
+	this.reflist = this.reflist.slice(deletes.length);
+};
+
+CSL.Factory.Registry.prototype.delhash = function(){
+	//
+	//  9. Delete all items in deletion list from hash.
+	//
+	for (var item in this.deletes){
+		delete this.registry[item];
 	};
 };
 
