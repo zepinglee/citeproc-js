@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.test_fixed_sort");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_variables");
