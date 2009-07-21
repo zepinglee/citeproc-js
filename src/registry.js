@@ -106,14 +106,13 @@ CSL.Factory.Registry = function(state){
 //         in the DB.
 
 //  3. (o) [getdeletes] Identify items for deletion, add to deletes list.
-//  4. (o) [delnames] Delete names in items to be deleted from names reg, and obtain IDs
+//  4. (o) [getinserts] Identify items for explicit insertion, add to inserts list.
+
+//  5. (o) [delnames] Delete names in items to be deleted from names reg, and obtain IDs
 //         of other items that would be affected by changes around that surname.
-//  5. (o) [delnames] Complement delete and insert lists with items affected by
+//  6. (o) [delnames] Complement delete and insert lists with items affected by
 //         possible name changes.
-//  6. (o) [delambigs] Delete all items to be deleted from their disambig pools.
-
-//  7. ( ) [getinserts] Identify items for explicit insertion, add to inserts list.
-
+//  7. (o) [delambigs] Delete all items to be deleted from their disambig pools.
 //  8. ( ) [delhash] Delete all items in deletion list from hash.  Do this will
 //         a sort-and-slice, applying a sort function like that
 //         described under step 13, below.
@@ -124,7 +123,7 @@ CSL.Factory.Registry = function(state){
 // 10. ( ) Add names in items to be inserted to names reg.
 // 11. ( ) Add items to be inserted to their disambig pools.
 // 12. ( ) Add items for insert to hash, with ambig keys, adding
-//         the ambig keys to the record of affected ambig pools./
+//         the ambig keys to the record of affected ambig pools.
 
 // 13. ( ) Create "new" list of hash pointers ... append items to the list,
 //         and then apply a bespoke sort function that forces items into the order of
@@ -180,15 +179,26 @@ CSL.Factory.Registry.prototype.getdeletes = function(){
 	};
 };
 
+CSL.Factory.Registry.prototype.getinserts = function(){
+	//
+	//  4. Identify items for explicit insertion, add to inserts list.
+	//
+	for (var item in this.myhash){
+		if (!this.registry[item]){
+			this.inserts[item] = true;
+		};
+	};
+};
+
 CSL.Factory.Registry.prototype.delnames = function(){
 	//
-	//  4. Delete names in items to be deleted from names reg, and obtain IDs
+	//  5. Delete names in items to be deleted from names reg, and obtain IDs
 	//     of other items that would be affected by changes around that surname.
 	//
 	for (var item in this.deletes){
 		var otheritems = this.namereg.delitems(this.deletes);
 		//
-		//  5. Complement delete and insert lists with items affected by
+		//  6. Complement delete and insert lists with items affected by
 		//     possible name changes.
 		//
 		for (var i in otheritems){
@@ -202,7 +212,7 @@ CSL.Factory.Registry.prototype.delnames = function(){
 
 CSL.Factory.Registry.prototype.delambigs = function(){
 	//
-	//  6. Delete all items to be deleted from their disambig pools.
+	//  7. Delete all items to be deleted from their disambig pools.
 	//
 	for (var item in this.deletes){
 		var ambig = this.registry[item].ambig;
