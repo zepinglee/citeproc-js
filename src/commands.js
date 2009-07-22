@@ -99,9 +99,18 @@ CSL.Engine.prototype.insertItems = function(rawList){
 	};
 };
 
-CSL.Engine.prototype.updateItems = function(rawList){
-	for each (var item in rawList){
-		var Item = this.sys.retrieveItem(item);
-		this.registry.insert(this,Item);
-	};
+CSL.Engine.prototype.updateItems = function(idList){
+	this.registry.init();
+	this.registry.getdeletes();
+	this.registry.getinserts();
+	this.registry.delnames();
+	this.registry.delambigs();
+	this.registry.delhash();
+	this.registry.addtohash();
+	this.registry.buildlist();
+	this.registry.renumber();
+	this.registry.setdisambigs();
+	this.registry.setsortkeys();
+	this.registry.setsorttokens();
+	this.registry.renumber();
 };

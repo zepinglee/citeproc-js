@@ -78,23 +78,10 @@ CSL.Factory.Registry = function(state){
 	this.skip = false;
 	this.maxlength = 0;
 
-	//
-	// XXXXX: This could be a problem.  May not work to feed a method of
-	// this object to Array.sort().
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
 
 	this.getSortedIds = function(){
-		var step = "next";
-		var item_id = this.start;
-		var ret = new Array();
-		while (true){
-			ret.push(item_id);
-			item_id = this.registry[item_id][step];
-			if ( ! item_id){
-				break;
-			}
-		}
-		return ret;
+		return this.reflist;
 	};
 
 };
@@ -115,26 +102,22 @@ CSL.Factory.Registry = function(state){
 //  6. (o) [delnames] Complement delete and insert lists with items affected by
 //         possible name changes.
 //  7. (o) [delambigs] Delete all items to be deleted from their disambig pools.
-//  8. (o) [dellist] Delete all items in deletion list from registry list.
-//  9. (o) [delhash] Delete all items in deletion list from hash.
+//  8. (o) [delhash] Delete all items in deletion list from hash.
 
-// 10. (o) [addtohash] Retrieve entries for items to insert.
-// 11. (o) [addtohash] Add items to be inserted to their disambig pools.
-// 12. (o) [addtohash] Add names in items to be inserted to names reg
+//  9. (o) [addtohash] Retrieve entries for items to insert.
+// 10. (o) [addtohash] Add items to be inserted to their disambig pools.
+// 11. (o) [addtohash] Add names in items to be inserted to names reg
 //         (implicit in getAmbiguousCite).
-// 13. (o) [addtohash] Create registry token for each item to be inserted.
-// 14. (o) [addtohash] Set sort keys on each item token.
-//         (seems to be okay, but watch this: too early?)
-// 15. (o) [addtohash] Add items for insert to hash.
-// 16. (o) [setdisambigs] Set disambiguation parameters on each inserted item token.
+// 12. (o) [addtohash] Create registry token for each item to be inserted.
+// 13. (o) [addtohash] Add items for insert to hash.
 
-// 17. ( ) Create "new" list of hash pointers, in the order given in the argument
+// 14. (o) [buildlist] Create "new" list of hash pointers, in the order given in the argument
 //         to the update function.
-// 18. ( ) Apply citation numbers to new list.
-// 19. ( ) Rerun disambiguation once for each affected disambig pool.
-// 20. ( ) Reset sort keys stored in items
-// 21. ( ) Resort list
-// 22. ( ) Reset citation numbers on list items
+// 15. (o) [renumber] Apply citation numbers to new list.
+// 16. (o) [setdisambigs] Set disambiguation parameters on each inserted item token.
+// 17. (o) [setsortkeys] Set sort keys on each item token.
+// 18. (o) [sorttokens] Resort token list
+// 19. ( ) [renumber] Reset citation numbers on list items
 //
 
 CSL.Factory.Registry.prototype.init = function(myitems){
@@ -211,20 +194,9 @@ CSL.Factory.Registry.prototype.delambigs = function(){
 	};
 };
 
-CSL.Factory.Registry.prototype.dellist = function(){
-	//
-	//  8. Delete all items in deletion list from registry list.
-	//
-	var lst = [];
-	for each (var token in this.reflist){
-		lst.push(token);
-	};
-	this.reflist = lst;
-};
-
 CSL.Factory.Registry.prototype.delhash = function(){
 	//
-	//  9. Delete all items in deletion list from hash.
+	//  8. Delete all items in deletion list from hash.
 	//
 	for (var item in this.deletes){
 		delete this.registry[item];
@@ -233,22 +205,22 @@ CSL.Factory.Registry.prototype.delhash = function(){
 
 CSL.Factory.Registry.prototype.addtohash = function(){
 	//
-	// 10. Retrieve entries for items to insert.
+	//  9. Retrieve entries for items to insert.
 	//
 	for (var item in this.inserts){
 		var Item = this.state.retrieveItem(item);
 		//
-		// 11. Add items to be inserted to their disambig pools.
+		// 10. Add items to be inserted to their disambig pools.
 		//
 		var akey = this.state.getAmbiguousCite(Item);
 		var abase = this.state.getAmbigConfig();
 		this.modes = this.state.getModes();
 		this.registerAmbigToken(akey,item,abase);
 		//
-		// 12. Add names in items to be inserted to names reg
+		// 11. Add names in items to be inserted to names reg
 		//     (implicit in getAmbiguousCite).
 		//
-		// 13. Create registry token for each item to be inserted.
+		// 12. Create registry token for each item to be inserted.
 		//
 		var newitem = {
 			"id":item,
@@ -257,18 +229,43 @@ CSL.Factory.Registry.prototype.addtohash = function(){
 			"disambig":undefined
 		};
 		//
-		// 15. Set sort keys on each item token.
-		//     (seems to be okay, but watch this: too early?)
-		//
-		newitem.sortkeys = state.getSortKeys(Item,"bibliography_sort");
-		//
-		// 16. Add items for insert to hash.
+		// 13. Add items for insert to hash.
 		//
 		this.registry[item] = newitem;
 	};
 };
 
+CSL.Factory.Registry.prototype.buildlist = function(){
+	//
+	// 14. Create "new" list of hash pointers, in the order given in the argument
+	//     to the update function.
+	//
+	var newlist = new Array();
+	for each (var item in this.mylist){
+		newlist.push(this.registry[item]);
+	};
+	this.reflist = newlist;
+};
+
+CSL.Factory.Registry.prototype.renumber = function(){
+	//
+	// 15. Apply citation numbers to new list.
+	//
+	// AND
+	//
+	// 19. Reset citation numbers on list items
+	//
+	var count = 1;
+	for each (var item in this.reflist){
+		item.seq = count;
+		count += 1;
+	};
+};
+
 CSL.Factory.Registry.prototype.setdisambigs = function(){
+	//
+	// 16. Set disambiguation parameters on each inserted item token.
+	//
 	for each (var akey in this.akeylist){
 		//
 		// if there are multiple ambigs, disambiguate them
@@ -313,6 +310,21 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 	this.akeylist = new Array();
 };
 
+CSL.Factory.Registry.prototype.setsortkeys = function(){
+	//
+	// 17. Set sort keys on each item token.
+	//
+	for each (var item in this.inserts){
+		this.registry[item].sortkeys = state.getSortKeys(Item,"bibliography_sort");
+	};
+};
+
+CSL.Factory.Registry.prototype.sorttokens = function(){
+	//
+	// 18. Resort token list.
+	//
+	this.reflist.sort(this.sorter.compareKeys);
+};
 
 //
 // The following will disappear, but we'll use some of its pieces in the new version.
