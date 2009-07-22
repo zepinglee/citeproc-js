@@ -2,6 +2,10 @@ dojo.provide("tests.std_disambiguate");
 
 doh.register("tests.std_disambiguate", [
     function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteRetainNamesOnFailureIfYearSuffixNotAvailable");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_AllNamesGenerally");
         doh.assertEqual(test.result, test.run());
     },
@@ -46,10 +50,6 @@ doh.register("tests.std_disambiguate", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteRetainNamesOnFailureIfYearSuffixNotAvailable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("disambiguate_PrimaryNameGenerally");
         doh.assertEqual(test.result, test.run());
     },
@@ -58,6 +58,3 @@ doh.register("tests.std_disambiguate", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
-
-var x = [
-]

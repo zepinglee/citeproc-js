@@ -138,7 +138,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		}
 		if (checkerator.evaluateClashes()){
 			var base_return = this.decrementNames(state,base);
-			this.registerAmbigToken(state,akey,token.id,base_return);
+			this.registerAmbigToken(akey,token.id,base_return);
 			checkerator.seen.push(token.id);
 			if (debug){
 				print("  ---> Evaluate: storing token config: "+base);
