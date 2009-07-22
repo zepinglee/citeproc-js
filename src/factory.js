@@ -283,10 +283,17 @@ CSL.Factory.cloneAmbigConfig = function(config){
 	for (var i in config["givens"]){
 		var param = new Array();
 		for (var j in config["givens"][i]){
-			param.push(config["givens"][i][j]);
-		}
+			//
+			// XXXX: Aha again!  Givens sublist is acquiring an item at position -1.
+			// Classic stab-in-the-back Javascript breakage.  A hacked-in fix for
+			// now, this should be properly cleaned up sometime, though.
+			//
+			if (j > -1){
+				param.push(config["givens"][i][j]);
+			};
+		};
 		ret["givens"].push(param);
-	}
+	};
 	ret["year_suffix"] = config["year_suffix"];
 	ret["disambiguate"] = config["disambiguate"];
 	return ret;

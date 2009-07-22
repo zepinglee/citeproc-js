@@ -1,5 +1,61 @@
 {
-    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <macro name=\"date\">\n        <date variable=\"issued\">\n            <date-part name=\"year\"/>\n        </date>\n        <text variable=\"year-suffix\" suffix=\"!\"/>\n    </macro>\n    <citation>\n        <option name=\"disambiguate-add-year-suffix\" value=\"true\"/>\n        <layout delimiter=\"; \">\n            <text macro=\"date\"/>\n        </layout>\n    </citation>\n    <bibliography>\n        <sort>\n            <key macro=\"date\"/>\n            <key variable=\"title\"/>\n        </sort>\n    </bibliography>\n</style>", 
+    "citations": [
+        [
+            [
+                "ambigs-1", 
+                {}
+            ], 
+            [
+                "ambigs-2", 
+                {}
+            ], 
+            [
+                "ambigs-3", 
+                {}
+            ], 
+            [
+                "ambigs-4", 
+                {}
+            ], 
+            [
+                "ambigs-5", 
+                {}
+            ], 
+            [
+                "ambigs-6", 
+                {}
+            ], 
+            [
+                "ambigs-7", 
+                {}
+            ], 
+            [
+                "ambigs-8", 
+                {}
+            ], 
+            [
+                "ambigs-9", 
+                {}
+            ], 
+            [
+                "ambigs-10", 
+                {}
+            ], 
+            [
+                "ambigs-11", 
+                {}
+            ], 
+            [
+                "ambigs-12", 
+                {}
+            ], 
+            [
+                "ambigs-13", 
+                {}
+            ]
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <macro name=\"date\">\n        <date variable=\"issued\">\n            <date-part name=\"year\"/>\n        </date>\n        <text variable=\"year-suffix\" suffix=\"!\"/>\n    </macro>\n    <citation>\n        <option name=\"disambiguate-add-year-suffix\" value=\"true\"/>\n        <layout delimiter=\"; \">\n            <text macro=\"date\"/>\n        </layout>\n    </citation>\n    <bibliography>\n        <sort>\n            <key variable=\"issued\"/>\n            <key variable=\"title\"/>\n        </sort>\n    </bibliography>\n</style>", 
     "input": [
         {
             "author": [

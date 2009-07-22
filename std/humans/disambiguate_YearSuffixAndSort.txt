@@ -6,6 +6,25 @@ citation
 0.8
 <<===== SCHEMA =====<<
 
+>>===== CITATIONS =====>>
+[ 
+  [
+    ["ambigs-1",{}],
+    ["ambigs-2",{}],
+    ["ambigs-3",{}],
+    ["ambigs-4",{}],
+    ["ambigs-5",{}],
+    ["ambigs-6",{}],
+    ["ambigs-7",{}],
+    ["ambigs-8",{}],
+    ["ambigs-9",{}],
+    ["ambigs-10",{}],
+    ["ambigs-11",{}],
+    ["ambigs-12",{}],
+    ["ambigs-13",{}]
+  ]
+]
+<<===== CITATIONS =====<<
 
 >>===== RESULT =====>>
 1990m!; 1990l!; 1990k!; 1990j!; 1990i!; 1990h!; 1990g!; 1990f!; 1990e!; 1990d!; 1990c!; 1990b!; 1990a!
@@ -28,7 +47,7 @@ citation
     </citation>
     <bibliography>
         <sort>
-            <key macro="date"/>
+            <key variable="issued"/>
             <key variable="title"/>
         </sort>
     </bibliography>

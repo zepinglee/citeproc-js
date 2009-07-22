@@ -4,7 +4,7 @@ dojo.provide("csl.disambiguate");
  * Disambiguate a list of cites
  */
 
-var debug = true;
+var debug = false;
 
 CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
 	if ( ! candidate_list){
@@ -97,6 +97,11 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			print("base in (givens):"+base["givens"]);
 		}
+		//
+		// XXXXX: Aha!  The processor is adding an empty given
+		// name entry to the config.  Check the debug output, it's
+		// clearly the processor.  Happens when the base value is 2.
+		//
 		var str = state.getAmbiguousCite(token,base);
 		var maxvals = state.getMaxVals();
 		var minval = state.getMinVal();
@@ -141,7 +146,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			this.registerAmbigToken(akey,token.id,base_return);
 			checkerator.seen.push(token.id);
 			if (debug){
-				print("  ---> Evaluate: storing token config: "+base);
+				print("  ---> Evaluate: storing token config");
+				print("          names: "+base["names"]);
+				print("         givens: "+base_return["givens"]);
 			}
 			continue;
 		}
@@ -407,12 +414,23 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 	if (this.mode == "givens"){
 		var val = (this.mode1_counts[this.modepos]);
 		if (val < this.maxvals[this.modepos]){
-			this.mode1_counts[this.modepos] += 1;
-			this.mode1_defaults = this.base["givens"][this.modepos].slice();
-			this.base["givens"][this.modepos][val] += 1;
-			if (debug){
-				print("   ---> (A) Set expanded givenname param with base: "+this.base["givens"]);
-			}
+			if (this.given_name_second_pass){
+				if (debug){
+					print(" ** second pass");
+				};
+				this.given_name_second_pass = false;
+				this.mode1_counts[this.modepos] += 1;
+				this.base["givens"][this.modepos][val] += 1;
+				if (debug){
+					print("   ---> (A) Setting expanded givenname param with base: "+this.base["givens"]);
+				};
+			} else {
+				this.mode1_defaults = this.base["givens"][this.modepos].slice();
+				if (debug){
+					print(" ** first pass");
+				};
+				this.given_name_second_pass = true;
+			};
 		} else if (this.modepos < (this.base["givens"].length-1)){
 			this.modepos +=1;
 			this.base["givens"][this.modepos][0] += 1;

@@ -2,12 +2,13 @@ dojo.provide("tests.std_disambiguate");
 
 doh.register("tests.std_disambiguate", [
     function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteMinimalGivennameExpandMinimalNames");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_ByCiteGivennameExpandCrossNestedNames");
         doh.assertEqual(test.result, test.run());
     },
-]);
-
-var x = [
     function(){
         var test = new StdRhinoTest("disambiguate_ByCiteRetainNamesOnFailureIfYearSuffixNotAvailable");
         doh.assertEqual(test.result, test.run());
@@ -49,10 +50,6 @@ var x = [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteMinimalGivennameExpandMinimalNames");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("disambiguate_PrimaryNameGenerally");
         doh.assertEqual(test.result, test.run());
     },
@@ -60,4 +57,7 @@ var x = [
         var test = new StdRhinoTest("disambiguate_YearSuffixAndSort");
         doh.assertEqual(test.result, test.run());
     },
+]);
+
+var x = [
 ]
