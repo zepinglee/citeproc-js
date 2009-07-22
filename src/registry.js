@@ -343,7 +343,7 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 CSL.Factory.Registry.Comparifier = function(state,keyset){
 	var sort_directions = state[keyset].opt.sort_directions.slice();
     this.compareKeys = function(a,b){
-		for (var i=0; i < a.length; i++){
+		for (var i=0; i < a.sortkeys.length; i++){
 			//
 			// for ascending sort 1 uses 1, -1 uses -1.
 			// For descending sort, the values are reversed.
@@ -356,14 +356,14 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
 			// compares.
 			//
 			var cmp = 0;
-			if ( !a[i].length || !b[i].length ){
-				if (a[i] < b[i]){
+			if ( !a.sortkeys[i].length || !b.sortkeys[i].length ){
+				if (a.sortkeys[i] < b.sortkeys[i]){
 					cmp = -1;
-				} else if (a[i] > b[i]){
+				} else if (a.sortkeys[i] > b.sortkeys[i]){
 					cmp = 1;
 				}
 			} else {
-				cmp = a[i].toLocaleLowerCase().localeCompare(b[i].toLocaleLowerCase());
+				cmp = a.sortkeys[i].toLocaleLowerCase().localeCompare(b.sortkeys[i].toLocaleLowerCase());
 			}
 			if (0 < cmp){
 				return sort_directions[i][1];

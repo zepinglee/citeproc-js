@@ -34,26 +34,15 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	}
 	//
 	// don't bother sorting unless there is more than one item.
-	// this is really ugly and hackish.  uses a hashed reference
-	// tacked onto the end of an array to squeeze the object
-	// ID into the sorted list.
+	// "sortkeys" will need to be changed if CSL decides to make
+	// it a variable name.
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		var newlist = new Array();
-		var keys_list = new Array();
-		for each (var Item in inputList){
-			var keys = this.getSortKeys(Item,"citation_sort");
-			keys["cheaters_hack"] = Item;
-			keys_list.push(keys);
-		}
 		var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
-		keys_list.sort(srt.compareKeys);
-		for each (key in keys_list){
-			newlist.push(key.cheaters_hack);
+		for (var k in inputList){
+			inputList[k].sortkeys = this.getSortKeys(inputList[k],"citation_sort");
 		}
-		//
-		// XXXXX this is all one-time, one-way, slice probably isn't needed here?
-		inputList = newlist;
-	}
+		inputList.sort(srt.compareKeys);
+	};
 
 	//
 	// sort thingie goes here

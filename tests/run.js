@@ -3,7 +3,6 @@ dojo.require("doh.runner");
 // requested tests go here
 if(true){
 	dojo.require("tests.std_date");
-} else {
 	dojo.require("tests.test_fixed_sort");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_magic");
@@ -41,6 +40,7 @@ if(true){
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 	dojo.require("tests.std_condition");
+} else {
 
 
 	dojo.require("tests.std_position");

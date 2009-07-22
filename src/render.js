@@ -148,7 +148,6 @@ CSL.Engine.prototype.getModes = function(){
 CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
 	var input = this.sys.retrieveItems(this.registry.getSortedIds());
-	print(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography_joiner","\n");
 	this.output.openLevel("bibliography_joiner");
@@ -162,9 +161,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 		var bib_entry = new CSL.Factory.Token("group",CSL.START);
 		bib_entry.decorations = [["@bibliography","entry"]];
 		this.output.startTag("bib_entry",bib_entry);
-	print("HIIIIIIIIIIIIIII: "+item);
 		this._cite.call(this,item);
-	print("BYEEEEEEEEEEEEEEE");
 		this.output.endTag(); // closes bib_entry
 	}
 	this.output.endTag(); // closes bib_wrapper

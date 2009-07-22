@@ -5,9 +5,6 @@ doh.register("tests.std_date", [
         var test = new StdRhinoTest("date_KeyVariable");
         doh.assertEqual(test.result, test.run());
     },
-]);
-
-var x = [
     function(){
         var test = new StdRhinoTest("date_YearSuffixDelimiter");
         doh.assertEqual(test.result, test.run());
@@ -36,4 +33,5 @@ var x = [
         var test = new StdRhinoTest("date_LongMonth");
         doh.assertEqual(test.result, test.run());
     },
-];
+]);
+
