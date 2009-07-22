@@ -208,14 +208,13 @@ CSL.Factory.Registry.prototype.addtohash = function(){
 	//  9. Retrieve entries for items to insert.
 	//
 	for (var item in this.inserts){
-		var Item = this.state.retrieveItem(item);
+		var Item = this.state.sys.retrieveItem(item);
 		//
 		// 10. Add items to be inserted to their disambig pools.
 		//
 		var akey = this.state.getAmbiguousCite(Item);
 		var abase = this.state.getAmbigConfig();
 		this.modes = this.state.getModes();
-		this.registerAmbigToken(akey,item,abase);
 		//
 		// 11. Add names in items to be inserted to names reg
 		//     (implicit in getAmbiguousCite).
@@ -232,6 +231,7 @@ CSL.Factory.Registry.prototype.addtohash = function(){
 		// 13. Add items for insert to hash.
 		//
 		this.registry[item] = newitem;
+		this.registerAmbigToken(akey,item,abase);
 	};
 };
 
@@ -315,7 +315,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	// 17. Set sort keys on each item token.
 	//
 	for each (var item in this.inserts){
-		this.registry[item].sortkeys = state.getSortKeys(Item,"bibliography_sort");
+		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
 	};
 };
 
@@ -324,82 +324,6 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 	// 18. Resort token list.
 	//
 	this.reflist.sort(this.sorter.compareKeys);
-};
-
-//
-// The following will disappear, but we'll use some of its pieces in the new version.
-//
-
-CSL.Factory.Registry.prototype.insert = function(state,Item){
-
-	if (this.registry[Item.id]){
-		return;
-	}
-	var sortkeys = state.getSortKeys(Item,"bibliography_sort");
-	var akey = state.getAmbiguousCite(Item);
-	var abase = state.getAmbigConfig();
-	var modes = state.getModes();
-	//
-	// register the notional ambiguation config
-	this.registerAmbigToken(state,akey,Item.id,abase);
-
-	//
-	// registryItem instantiates an object with a copy of the
-	// sort key, and a list shared with
-	// disambiguation partners, if any, maintained
-	// in sort key order.
-	// (after this, we're ready to roll for the insert)
-	var newitem = {
-		"id":Item.id,
-		"seq":1,
-		"dseq":0,
-		"sortkeys":sortkeys,
-		"disambig":abase
-	};
-
-
-	// register the notional ambiguation config
-	this.registerAmbigToken(state,akey,Item.id,abase);
-	//
-	// if there are multiple ambigs, disambiguate them
-	if (this.ambigs[akey].length > 1){
-		if (modes.length){
-			if (this.debug){
-				print("---> Names disambiguation begin");
-			}
-			var leftovers = this.disambiguateCites(state,akey,modes);
-			if (this.debug){
-				print("---> Names disambiguation done");
-			}
-			//
-			// leftovers is a list of registry tokens.  sort them.
-			leftovers.sort(this.compareRegistryTokens);
-		} else {
-			//
-			// if we didn't disambiguate with names, everything is
-			// a leftover.
-			var leftovers = new Array();
-			for each (var key in this.ambigs[akey]){
-				leftovers.push(this.registry[key]);
-				leftovers.sort(this.compareRegistryTokens);
-			}
-		}
-	}
-	//
-	// for anything left over, set disambiguate to true, and
-	// try again from the base.
-	if (leftovers && leftovers.length && state.opt.has_disambiguate){
-		var leftovers = this.disambiguateCites(state,akey,modes,leftovers);
-	}
-
-	if ( leftovers && leftovers.length && state[state.tmp.area].opt["disambiguate-add-year-suffix"]){
-		for (var i in leftovers){
-			this.registry[ leftovers[i].id ].disambig[2] = i;
-		}
-	}
-	if (this.debug) {
-		print("---> End of registry cleanup");
-	}
 };
 
 /**

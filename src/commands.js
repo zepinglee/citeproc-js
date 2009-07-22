@@ -23,8 +23,8 @@ CSL.makeStyle = function(sys,xml,lang){
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
-		var Item = this.sys.retrieveItem(item[0]);
-		this.registry.insert(this,Item);
+		//var Item = this.sys.retrieveItem(item[0]);
+		//this.registry.insert(this,Item);
 		//
 		// This method will in future only be used for rendering.
 		// Assume that all items in rawList exist in registry.
@@ -92,15 +92,9 @@ CSL.Engine.prototype.makeBibliography = function(){
 };
 
 
-CSL.Engine.prototype.insertItems = function(rawList){
-	for each (var item in rawList){
-		var Item = this.sys.retrieveItem(item);
-		this.registry.insert(this,Item);
-	};
-};
-
 CSL.Engine.prototype.updateItems = function(idList){
-	this.registry.init();
+	print("start");
+	this.registry.init(idList);
 	this.registry.getdeletes();
 	this.registry.getinserts();
 	this.registry.delnames();
@@ -111,6 +105,6 @@ CSL.Engine.prototype.updateItems = function(idList){
 	this.registry.renumber();
 	this.registry.setdisambigs();
 	this.registry.setsortkeys();
-	this.registry.setsorttokens();
+	this.registry.sorttokens();
 	this.registry.renumber();
 };

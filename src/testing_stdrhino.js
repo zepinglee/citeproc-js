@@ -272,7 +272,7 @@ StdRhinoTest.prototype._buildStyle = function(){
 
 StdRhinoTest.prototype.run = function(){
 	this._buildStyle();
-	this.style.insertItems(this._ids);
+	this.style.updateItems(this._ids);
 	if (this.test.mode == "citation"){
 		var citations = [];
 		for each (var citation in this.test.citations){
