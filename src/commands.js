@@ -23,7 +23,7 @@ CSL.makeStyle = function(sys,xml,lang){
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
-		//var Item = this.sys.retrieveItem(item[0]);
+		var Item = this.sys.retrieveItem(item[0]);
 		//this.registry.insert(this,Item);
 		//
 		// This method will in future only be used for rendering.
@@ -93,7 +93,6 @@ CSL.Engine.prototype.makeBibliography = function(){
 
 
 CSL.Engine.prototype.updateItems = function(idList){
-	print("start");
 	this.registry.init(idList);
 	this.registry.getdeletes();
 	this.registry.getinserts();

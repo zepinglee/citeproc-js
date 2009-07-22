@@ -314,7 +314,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	//
 	// 17. Set sort keys on each item token.
 	//
-	for each (var item in this.inserts){
+	for (var item in this.inserts){
 		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
 	};
 };
