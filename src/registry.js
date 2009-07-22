@@ -67,6 +67,7 @@ CSL.Factory.Registry = function(state){
 	this.deletes = new Array();
 	this.inserts = new Array();
 	this.dbupdates = new Object();
+	this.akeylist = new Array();
 	//
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
@@ -76,18 +77,6 @@ CSL.Factory.Registry = function(state){
 	this.initialized = false;
 	this.skip = false;
 	this.maxlength = 0;
-
-
-	this._make_sort_deletes = function(deletes){
-		return function(a,b){
-			if (deletes.indexOf(a.id) > -1){
-				return -1;
-			} else if (deletes.indexOf(b.id) > -1){
-				return 1;
-			};
-			return 0;
-		};
-	};
 
 	//
 	// XXXXX: This could be a problem.  May not work to feed a method of
@@ -127,36 +116,20 @@ CSL.Factory.Registry = function(state){
 //         possible name changes.
 //  7. (o) [delambigs] Delete all items to be deleted from their disambig pools.
 //  8. (o) [dellist] Delete all items in deletion list from registry list.
-//         Do this with a sort-and-slice, applying a sort function like that described
-//         under step 17, below.
 //  9. (o) [delhash] Delete all items in deletion list from hash.
 
-// 10. (o) Retrieve entries for items to insert.
-// 11. (o) Add items to be inserted to their disambig pools.
-// 12. (o) Add names in items to be inserted to names reg (implicit in getAmbiguousCite).
-// 13. (o) Create registry token for each item to be inserted.
-// 14. (o) Set sort keys on each item token. (seems to be okay, but watch this: too early?)
-// 15. (o) Add items for insert to hash.
-// 16. ( ) Set disambiguation parameters on each item token.
+// 10. (o) [addtohash] Retrieve entries for items to insert.
+// 11. (o) [addtohash] Add items to be inserted to their disambig pools.
+// 12. (o) [addtohash] Add names in items to be inserted to names reg
+//         (implicit in getAmbiguousCite).
+// 13. (o) [addtohash] Create registry token for each item to be inserted.
+// 14. (o) [addtohash] Set sort keys on each item token.
+//         (seems to be okay, but watch this: too early?)
+// 15. (o) [addtohash] Add items for insert to hash.
+// 16. (o) [setdisambigs] Set disambiguation parameters on each inserted item token.
 
-// 17. ( ) Create "new" list of hash pointers ... append items to the list,
-//         and then apply a bespoke sort function that forces items into the order of
-//         the received list.  Here's a sort function that will do that:
-//
-//     var sortme = function(a,b){
-//         if(origlist.indexOf(a) < origlist.indexOf(b)){
-//             return -1
-//         } else{
-//             return 1
-//         }
-//     }
-//
-//     var origlist = ["Item1","Item2"]
-//
-//     Usage: newlist.sort(sortme)
-//     (where newlist has the same elements as origlist, but possibly in a different order)
-//
-
+// 17. ( ) Create "new" list of hash pointers, in the order given in the argument
+//         to the update function.
 // 18. ( ) Apply citation numbers to new list.
 // 19. ( ) Rerun disambiguation once for each affected disambig pool.
 // 20. ( ) Reset sort keys stored in items
@@ -241,13 +214,12 @@ CSL.Factory.Registry.prototype.delambigs = function(){
 CSL.Factory.Registry.prototype.dellist = function(){
 	//
 	//  8. Delete all items in deletion list from registry list.
-	//     Do this with a sort-and-slice, applying a sort function like that described
-	//     under step 14, below.
 	//
-	var deletes = this.deletes;
-	var _sort_deletes = this._make_sort_deletes(this.deletes);
-	this.reflist.sort(_sort_deletes);
-	this.reflist = this.reflist.slice(deletes.length);
+	var lst = [];
+	for each (var token in this.reflist){
+		lst.push(token);
+	};
+	this.reflist = lst;
 };
 
 CSL.Factory.Registry.prototype.delhash = function(){
@@ -259,7 +231,7 @@ CSL.Factory.Registry.prototype.delhash = function(){
 	};
 };
 
-CSL.Factory.Registry.prototype.getitems = function(){
+CSL.Factory.Registry.prototype.addtohash = function(){
 	//
 	// 10. Retrieve entries for items to insert.
 	//
@@ -270,16 +242,11 @@ CSL.Factory.Registry.prototype.getitems = function(){
 		//
 		var akey = this.state.getAmbiguousCite(Item);
 		var abase = this.state.getAmbigConfig();
-		var modes = this.state.getModes();
-
-		if (!this.ambigs[akey]){
-			this.ambigs[akey] = new Array();
-		};
-		if (this.ambigs[akey].indexOf(item) == -1){
-			this.ambigs[akey].push(item);
-		};
+		this.modes = this.state.getModes();
+		this.registerAmbigToken(akey,item,abase);
 		//
-		// 12. Add names in items to be inserted to names reg (implicit in getAmbiguousCite).
+		// 12. Add names in items to be inserted to names reg
+		//     (implicit in getAmbiguousCite).
 		//
 		// 13. Create registry token for each item to be inserted.
 		//
@@ -290,7 +257,8 @@ CSL.Factory.Registry.prototype.getitems = function(){
 			"disambig":undefined
 		};
 		//
-		// 15. Set sort keys on each item token. (seems to be okay, but watch this: too early?)
+		// 15. Set sort keys on each item token.
+		//     (seems to be okay, but watch this: too early?)
 		//
 		newitem.sortkeys = state.getSortKeys(Item,"bibliography_sort");
 		//
@@ -299,6 +267,52 @@ CSL.Factory.Registry.prototype.getitems = function(){
 		this.registry[item] = newitem;
 	};
 };
+
+CSL.Factory.Registry.prototype.setdisambigs = function(){
+	for each (var akey in this.akeylist){
+		//
+		// if there are multiple ambigs, disambiguate them
+		if (this.ambigs[akey].length > 1){
+			if (this.modes.length){
+				if (this.debug){
+					print("---> Names disambiguation begin");
+				};
+				var leftovers = this.disambiguateCites(this.state,akey,this.modes);
+				if (this.debug){
+					print("---> Names disambiguation done");
+				}
+				//
+				// leftovers is a list of registry tokens.  sort them.
+				leftovers.sort(this.compareRegistryTokens);
+			} else {
+				//
+				// if we didn't disambiguate with names, everything is
+				// a leftover.
+				var leftovers = new Array();
+				for each (var key in this.ambigs[akey]){
+					leftovers.push(this.registry[key]);
+					leftovers.sort(this.compareRegistryTokens);
+				};
+			};
+		};
+		//
+		// for anything left over, set disambiguate to true, and
+		// try again from the base.
+		if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
+			var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
+		};
+		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
+			for (var i in leftovers){
+				this.registry[ leftovers[i].id ].disambig[2] = i;
+			};
+		};
+		if (this.debug) {
+			print("---> End of registry cleanup");
+		};
+	};
+	this.akeylist = new Array();
+};
+
 
 //
 // The following will disappear, but we'll use some of its pieces in the new version.
@@ -428,4 +442,20 @@ CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
 		return -1;
 	}
 	return 0;
+};
+
+CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
+	if ( ! this.ambigs[akey]){
+		this.ambigs[akey] = new Array();
+	};
+	var found = false;
+	for (var i in this.ambigs[akey]){
+		if (this.ambigs[akey].indexOf(id) > -1){
+			found = true;
+		}
+	}
+	if (!found){
+		this.ambigs[akey].push(id);
+	}
+	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };

@@ -427,22 +427,6 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 	}
 };
 
-CSL.Factory.Registry.prototype.registerAmbigToken = function (state,akey,id,ambig_config){
-	if ( ! this.ambigs[akey]){
-		this.ambigs[akey] = new Array();
-	};
-	var found = false;
-	for (var i in this.ambigs[akey]){
-		if (this.ambigs[akey].indexOf(id) > -1){
-			found = true;
-		}
-	}
-	if (!found){
-		this.ambigs[akey].push(id);
-	}
-	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
-};
-
 CSL.Factory.Registry.prototype.decrementNames = function(state,base){
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
