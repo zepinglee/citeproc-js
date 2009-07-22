@@ -81,7 +81,11 @@ CSL.Factory.Registry = function(state){
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
 
 	this.getSortedIds = function(){
-		return this.reflist;
+		var ret = [];
+		for each (var Item in this.reflist){
+			ret.push(Item.id);
+		};
+		return ret;
 	};
 
 };
@@ -213,6 +217,12 @@ CSL.Factory.Registry.prototype.addtohash = function(){
 		// 10. Add items to be inserted to their disambig pools.
 		//
 		var akey = this.state.getAmbiguousCite(Item);
+		//
+		// record ambig pool key on akey list, used for updating further down the chain.
+		//
+		if (this.akeylist.indexOf(akey) == -1){
+			this.akeylist.push(akey);
+		};
 		var abase = this.state.getAmbigConfig();
 		this.modes = this.state.getModes();
 		//
