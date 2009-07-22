@@ -4,7 +4,7 @@ dojo.provide("csl.disambiguate");
  * Disambiguate a list of cites
  */
 
-var debug = false;
+var debug = true;
 
 CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
 	if ( ! candidate_list){
