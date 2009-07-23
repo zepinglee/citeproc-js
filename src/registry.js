@@ -313,6 +313,7 @@ CSL.Factory.Registry.prototype.yearsuffix = function(){
 	for each (var leftovers in this.leftovers){
 		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
 			print("ORDER OF ASSIGNING YEAR SUFFIXES");
+			leftovers.sort(this.compareRegistryTokens);
 			for (var i in leftovers){
 				print("  "+leftovers[i].id);
 				this.registry[ leftovers[i].id ].disambig[2] = i;
