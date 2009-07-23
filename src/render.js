@@ -182,8 +182,10 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	var result = "";
 	var objects = [];
 
+	print("ORDER OF RENDERING");
 	for each (var Item in inputList){
 		var last_collapsed = this.tmp.have_collapsed;
+		print("  "+Item.id);
 		this._cite(Item);
 		//
 		// This will produce a stack with one

@@ -274,6 +274,9 @@ CSL.Factory.Registry.prototype.renumber = function(){
 
 CSL.Factory.Registry.prototype.setdisambigs = function(){
 	//
+	// we'll save a list of leftovers for each disambig pool.
+	this.leftovers = new Array();
+	//
 	// 16. Set disambiguation parameters on each inserted item token.
 	//
 	for each (var akey in this.akeylist){
@@ -285,12 +288,6 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 					print("---> Names disambiguation begin");
 				};
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes);
-				if (this.debug){
-					print("---> Names disambiguation done");
-				}
-				//
-				// leftovers is a list of registry tokens.  sort them.
-				leftovers.sort(this.compareRegistryTokens);
 			} else {
 				//
 				// if we didn't disambiguate with names, everything is
@@ -298,18 +295,26 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 				var leftovers = new Array();
 				for each (var key in this.ambigs[akey]){
 					leftovers.push(this.registry[key]);
-					leftovers.sort(this.compareRegistryTokens);
 				};
 			};
+			//
+			// for anything left over, set disambiguate to true, and
+			// try again from the base.
+			if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
+				var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
+			};
+			this.leftovers.push(leftovers);
 		};
-		//
-		// for anything left over, set disambiguate to true, and
-		// try again from the base.
-		if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
-			var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
-		};
+	};
+	this.akeylist = new Array();
+};
+
+CSL.Factory.Registry.prototype.yearsuffix = function(){
+	for each (var leftovers in this.leftovers){
 		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
+			print("ORDER OF ASSIGNING YEAR SUFFIXES");
 			for (var i in leftovers){
+				print("  "+leftovers[i].id);
 				this.registry[ leftovers[i].id ].disambig[2] = i;
 			};
 		};
@@ -317,7 +322,6 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 			print("---> End of registry cleanup");
 		};
 	};
-	this.akeylist = new Array();
 };
 
 CSL.Factory.Registry.prototype.setsortkeys = function(){

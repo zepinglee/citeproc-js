@@ -91,8 +91,14 @@ CSL.Engine.prototype.updateItems = function(idList){
 	this.registry.addtohash();
 	this.registry.buildlist();
 	this.registry.renumber();
+	//
+	// XXXXX: methinks year-suffix needs to be applied after the sort,
+	// while the other disambig parameters need to be fixed before the
+	// sort?
+	//
 	this.registry.setdisambigs();
 	this.registry.setsortkeys();
 	this.registry.sorttokens();
 	this.registry.renumber();
+	this.registry.yearsuffix();
 };
