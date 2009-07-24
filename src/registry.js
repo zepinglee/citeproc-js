@@ -449,7 +449,13 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
 				return sort_directions[i][0];
 			}
 		}
-		return 0;
+		if (a.seq > b.seq){
+			return 1;
+		} else if (a.seq < b.seq){
+			return -1;
+		} else {
+			return 0;
+		};
 	};
 };
 
