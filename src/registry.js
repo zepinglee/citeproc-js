@@ -216,7 +216,6 @@ CSL.Factory.Registry.prototype.doinserts = function(myhash){
 			//  4a. Retrieve entries for items to insert.
 			//
 			var Item = this.state.sys.retrieveItem(item);
-			print(item);
 			//
 			//  4b. Generate ambig key.
 			//
@@ -251,6 +250,12 @@ CSL.Factory.Registry.prototype.doinserts = function(myhash){
 			//
 			var abase = this.state.getAmbigConfig();
 			this.registerAmbigToken(akey,item,abase);
+			if (!this.ambigcites[akey]){
+				this.ambigcites[akey] = new Array();
+			}
+			if (this.ambigcites[akey].indexOf(item) == -1){
+				this.ambigcites[akey].push(item);
+			};
 		};
 	};
 };
@@ -319,12 +324,12 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 	for (var akey in this.akeys){
 		//
 		// if there are multiple ambigs, disambiguate them
-		print("YEEEEEEEEEEEEEEEEOW");
 		if (this.ambigcites[akey].length > 1){
 			if (this.modes.length){
 				if (this.debug){
 					print("---> Names disambiguation begin");
 				};
+				print("------------------> Okay, disambiguating already");
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes);
 			} else {
 				//
@@ -339,8 +344,10 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 			// for anything left over, set disambiguate to true, and
 			// try again from the base.
 			if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
+				print("TRY WITH DISAMBIGUATE=TRUE on "+akey+":"+leftovers);
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
 			};
+			//print(leftovers[0].id);
 			this.leftovers.push(leftovers);
 		};
 	};
@@ -450,14 +457,9 @@ CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_conf
 	};
 	var found = false;
 	for (var i in this.ambigcites[akey]){
-		if (this.ambigcites[akey].indexOf(id) > -1){
-			found = true;
+		if (this.ambigcites[akey].indexOf(id) == -1){
+			this.ambigcites[akey].push(id);
 		}
 	}
-	if (!found){
-		this.ambigcites[akey].push(id);
-	}
-	print(id);
-	print(this.registry[id]);
 	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };

@@ -11,10 +11,10 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		//
 		// We start with the state and an ambig key.
 		// We acquire a copy of the list of ambigs that relate to the key from state.
-		var ambigs = this.ambigs[akey].slice();
+		var ambigs = this.ambigcites[akey].slice();
 		//
 		// We clear the list of ambigs so it can be rebuilt
-		this.ambigs[akey] = new Array();
+		this.ambigcites[akey] = new Array();
 	} else {
 		//var ambigs = this.ambigs[akey].slice();
 		//this.ambigs[akey] = new Array();
@@ -30,9 +30,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		var ambigs = new Array();
 		for each (var reg_token in candidate_list){
 			ambigs.push(reg_token.id);
-			var keypos = this.ambigs[akey].indexOf(reg_token.id);
+			var keypos = this.ambigcites[akey].indexOf(reg_token.id);
 			if (keypos > -1){
-				this.ambigs[akey] = this.ambigs[akey].slice(0,keypos).concat(this.ambigs[akey].slice((keypos+1)));
+				this.ambigcites[akey] = this.ambigcites[akey].slice(0,keypos).concat(this.ambigcites[akey].slice((keypos+1)));
 			}
 		}
 	}
@@ -79,7 +79,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		}
 		//
 		// skip items that have been finally resolved.
-		if (this.ambigs[akey].indexOf(token.id) > -1){
+		if (this.ambigcites[akey].indexOf(token.id) > -1){
 			if (debug){
 				print("---> Skip registered token for: "+token.id);
 			}
@@ -324,6 +324,8 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 				print("   ---> No clashes, storing token config and going to next");
 			}
 			this.mode1_counts = false;
+			// XXXXX: try-and-see change 2009-07-24 during major code reorganization.
+			this.pos += 1;
 			ret = true;
 		}
 		this.lastclashes = this.clashes;
