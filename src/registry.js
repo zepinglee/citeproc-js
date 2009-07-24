@@ -204,7 +204,6 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 };
 
 CSL.Factory.Registry.prototype.doinserts = function(mylist){
-	print("RUN");
 	if ("string" == typeof mylist){
 		mylist = [mylist];
 	};
@@ -212,7 +211,6 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 	//  4. Insert loop.
 	//
 	for each (var item in mylist){
-		print("Start loop for: "+item);
 		if (!this.registry[item]){
 			//
 			//  4a. Retrieve entries for items to insert.
@@ -353,8 +351,12 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 			if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
 			};
-			//print(leftovers[0].id);
-			this.leftovers.push(leftovers);
+			//
+			// Throws single leftovers.
+			// Enough of this correctness shtuff already.  Using a band-aide on this.
+			if (leftovers.length > 1){
+				this.leftovers.push(leftovers);
+			};
 		};
 	};
 	this.akeys = new Object();
@@ -376,10 +378,10 @@ CSL.Factory.Registry.prototype.renumber = function(){
 CSL.Factory.Registry.prototype.yearsuffix = function(){
 	for each (var leftovers in this.leftovers){
 		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
-			print("ORDER OF ASSIGNING YEAR SUFFIXES");
+			//print("ORDER OF ASSIGNING YEAR SUFFIXES");
 			leftovers.sort(this.compareRegistryTokens);
 			for (var i in leftovers){
-				print("  "+leftovers[i].id);
+				//print("  "+leftovers[i].id);
 				this.registry[ leftovers[i].id ].disambig[2] = i;
 			};
 		};
@@ -395,7 +397,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	//
 	for (var item in this.touched){
 		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
-		print("touched: "+item+" ... "+this.registry[item].sortkeys);
+		//print("touched: "+item+" ... "+this.registry[item].sortkeys);
 	};
 };
 
@@ -403,15 +405,7 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 	//
 	// 18. Resort token list.
 	//
-	print("-- ORDER BEFORE");
-	for each (var i in this.reflist){
-		print("  "+i.id+"@"+i.seq);
-	};
 	this.reflist.sort(this.sorter.compareKeys);
-	print("-- ORDER AFTER");
-	for each (var i in this.reflist){
-		print("  "+i.id+"@"+i.seq);
-	};
 };
 
 /**
