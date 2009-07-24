@@ -5,9 +5,6 @@ doh.register("tests.std_disambiguate", [
         var test = new StdRhinoTest("disambiguate_YearSuffixAndSort");
         doh.assertEqual(test.result, test.run());
     },
-]);
-
-var x = [
     function(){
         var test = new StdRhinoTest("disambiguate_ByCiteMinimalGivennameExpandMinimalNames");
         doh.assertEqual(test.result, test.run());
@@ -60,4 +57,7 @@ var x = [
         var test = new StdRhinoTest("disambiguate_PrimaryNameGenerally");
         doh.assertEqual(test.result, test.run());
     },
+]);
+
+var x = [
 ]

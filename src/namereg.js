@@ -115,8 +115,8 @@ CSL.Factory.Registry.NameReg = function(state){
 		if ("string" == typeof ids){
 			ids = [ids];
 		};
+		var ret = {};
 		for (var item in ids){
-			var ret = {};
 			var key = this.nameind[item].split("::");
 			pkey = key[0];
 			ikey = key[1];
