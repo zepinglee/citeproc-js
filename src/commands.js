@@ -95,7 +95,11 @@ CSL.Engine.prototype.updateItems = function(idList){
 	print("f");
 	this.registry.setdisambigs();
 	print("g");
-	this.registry.renumber();
+	this.registry.setsortkeys();
 	print("h");
+	this.registry.sorttokens();
+	print("i");
+	this.registry.renumber();
+	print("j");
 	this.registry.yearsuffix();
 };

@@ -152,7 +152,7 @@ CSL.Factory.Registry.prototype.init = function(myitems){
 	//
 	//  1. Receive list as function argument, store as hash and as list.
 	//
-	this.myitems = myitems;
+	this.mylist = myitems;
 	this.myhash = new Object();
 	for each (var item in myitems){
 		this.myhash[item] = true;
@@ -161,7 +161,7 @@ CSL.Factory.Registry.prototype.init = function(myitems){
 	//  2. Initialize refresh list.  Never needs sorting, only hash required.
 	//
 	this.refreshes = new Object();
-
+	this.touched = new Object();
 };
 
 CSL.Factory.Registry.prototype.dodeletes = function(myhash){
@@ -256,6 +256,10 @@ CSL.Factory.Registry.prototype.doinserts = function(myhash){
 			if (this.ambigcites[akey].indexOf(item) == -1){
 				this.ambigcites[akey].push(item);
 			};
+			//
+			//  4h. Make a note that this item needs its sort keys refreshed.
+			//
+			this.touched[item] = true;
 		};
 	};
 };
@@ -272,7 +276,8 @@ CSL.Factory.Registry.prototype.rebuildlist = function(){
 	var count = 1;
 	for each (var item in this.mylist){
 		this.reflist.push(this.registry[item]);
-		item.seq = count;
+		this.registry[item].seq = count;
+		print(this.registry[item].id+":"+this.registry[item].seq);
 		count += 1;
 	};
 };
@@ -354,6 +359,8 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 	this.akeys = new Object();
 };
 
+
+
 CSL.Factory.Registry.prototype.renumber = function(){
 	//
 	// 19. Reset citation numbers on list items
@@ -385,7 +392,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	//
 	// 17. Set sort keys on each item token.
 	//
-	for (var item in this.inserts){
+	for (var item in this.touched){
 		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
 	};
 };
@@ -394,6 +401,7 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 	//
 	// 18. Resort token list.
 	//
+	print(this.reflist);
 	this.reflist.sort(this.sorter.compareKeys);
 };
 
