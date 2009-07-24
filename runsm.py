@@ -61,16 +61,20 @@ if __name__ == '__main__':
         if not os.path.stat.S_ISREG( os.stat("./std/machines/%s" %filename).st_mode ):
             continue
         testname = os.path.splitext(filename)[0]
+        #if not testname == "name_MixedFormatsWithDecorationsPlusEtAlDecorations":
+        #    continue
         fh = open("./std/machines/%s" % (filename,))
-        str = fh.read()
-        str = json.dumps(str,ensure_ascii=False)
+        #str = fh.read()
+        str = json.load(fh)
+        str = json.dumps(str,ensure_ascii=False).encode("utf-8")
         #
         # Hmm.  This doesn't work to flag UTF-8 as the encoding.
         #
         # str = "%s%s" % ("\xef\xbb\xbf",str)
         # 
+        #print "testobjects[\"%s\"] = %s" % (testname,str,)
         cx.eval_script("testobjects[\"%s\"] = %s" % (testname,str,))
-
+        
     #print "Loading retrieval functions ..."
     system = open("./src/tests-sm.js").read()
     print "Ehllo"
@@ -110,7 +114,8 @@ if __name__ == '__main__':
             continue
         if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
             continue
-        run = unicode( open("./tests/%s" % (filename,)).read() )
+        ##run = unicode( open("./tests/%s" % (filename,)).read() )
+        run = open("./tests/%s" % (filename,)).read()
         cx.eval_script(run)
 
     print "Running tests ..."

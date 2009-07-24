@@ -4,7 +4,8 @@
 var StdRhinoTest = function(myname){
 	this.xml = new CSL.System.Xml.E4X();
 	this.myname = myname;
-	eval( "this.test = "+testobjects[myname]);
+	//eval( "this.test = "+testobjects[myname]);
+	this.test = testobjects[myname];
 	this._cache = {};
 	this._ids = [];
 	//
