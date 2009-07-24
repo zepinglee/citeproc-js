@@ -203,14 +203,16 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 	};
 };
 
-CSL.Factory.Registry.prototype.doinserts = function(myhash){
-	if ("string" == typeof myhash){
-		myhash = {myhash:true};
+CSL.Factory.Registry.prototype.doinserts = function(mylist){
+	print("RUN");
+	if ("string" == typeof mylist){
+		mylist = [mylist];
 	};
 	//
 	//  4. Insert loop.
 	//
-	for (var item in myhash){
+	for each (var item in mylist){
+		print("Start loop for: "+item);
 		if (!this.registry[item]){
 			//
 			//  4a. Retrieve entries for items to insert.
@@ -250,12 +252,14 @@ CSL.Factory.Registry.prototype.doinserts = function(myhash){
 			//
 			var abase = this.state.getAmbigConfig();
 			this.registerAmbigToken(akey,item,abase);
-			if (!this.ambigcites[akey]){
-				this.ambigcites[akey] = new Array();
-			}
-			if (this.ambigcites[akey].indexOf(item) == -1){
-				this.ambigcites[akey].push(item);
-			};
+			//if (!this.ambigcites[akey]){
+			//	this.ambigcites[akey] = new Array();
+			//}
+			//print("Run: "+item+"("+this.ambigcites[akey]+")");
+			//if (this.ambigcites[akey].indexOf(item) == -1){
+			//	print("  Add: "+item);
+			//	this.ambigcites[akey].push(item);
+			//};
 			//
 			//  4h. Make a note that this item needs its sort keys refreshed.
 			//
@@ -277,7 +281,6 @@ CSL.Factory.Registry.prototype.rebuildlist = function(){
 	for each (var item in this.mylist){
 		this.reflist.push(this.registry[item]);
 		this.registry[item].seq = count;
-		print(this.registry[item].id+":"+this.registry[item].seq);
 		count += 1;
 	};
 };
@@ -334,7 +337,6 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 				if (this.debug){
 					print("---> Names disambiguation begin");
 				};
-				print("------------------> Okay, disambiguating already");
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes);
 			} else {
 				//
@@ -349,7 +351,6 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 			// for anything left over, set disambiguate to true, and
 			// try again from the base.
 			if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
-				print("TRY WITH DISAMBIGUATE=TRUE on "+akey+":"+leftovers);
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
 			};
 			//print(leftovers[0].id);
@@ -394,6 +395,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	//
 	for (var item in this.touched){
 		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
+		print("touched: "+item+" ... "+this.registry[item].sortkeys);
 	};
 };
 
@@ -401,8 +403,15 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 	//
 	// 18. Resort token list.
 	//
-	print(this.reflist);
+	print("-- ORDER BEFORE");
+	for each (var i in this.reflist){
+		print("  "+i.id+"@"+i.seq);
+	};
 	this.reflist.sort(this.sorter.compareKeys);
+	print("-- ORDER AFTER");
+	for each (var i in this.reflist){
+		print("  "+i.id+"@"+i.seq);
+	};
 };
 
 /**
@@ -463,11 +472,8 @@ CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_conf
 	if ( ! this.ambigcites[akey]){
 		this.ambigcites[akey] = new Array();
 	};
-	var found = false;
-	for (var i in this.ambigcites[akey]){
-		if (this.ambigcites[akey].indexOf(id) == -1){
-			this.ambigcites[akey].push(id);
-		}
-	}
+	if (this.ambigcites[akey].indexOf(id) == -1){
+		this.ambigcites[akey].push(id);
+	};
 	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };

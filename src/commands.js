@@ -82,24 +82,44 @@ CSL.Engine.prototype.makeBibliography = function(){
 
 
 CSL.Engine.prototype.updateItems = function(idList){
-	print("a");
+	if (debug){
+		print("a");
+	};
 	this.registry.init(idList);
-	print("b");
+	if (debug){
+		print("b");
+	};
 	this.registry.dodeletes(this.registry.myhash);
-	print("c");
-	this.registry.doinserts(this.registry.myhash);
-	print("d");
-	this.registry.rebuildlist();
-	print("e");
+	if (debug){
+		print("c");
+	};
+	this.registry.doinserts(this.registry.mylist);
+	if (debug){
+		print("d");
+	};
 	this.registry.dorefreshes();
-	print("f");
+	if (debug){
+		print("e");
+	};
+	this.registry.rebuildlist();
+	if (debug){
+		print("f");
+	};
 	this.registry.setdisambigs();
-	print("g");
+	if (debug){
+		print("g");
+	};
 	this.registry.setsortkeys();
-	print("h");
+	if (debug){
+		print("h");
+	};
 	this.registry.sorttokens();
-	print("i");
+	if (debug){
+		print("i");
+	};
 	this.registry.renumber();
-	print("j");
+	if (debug){
+		print("j");
+	};
 	this.registry.yearsuffix();
 };
