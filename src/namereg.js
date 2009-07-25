@@ -117,7 +117,12 @@ CSL.Factory.Registry.NameReg = function(state){
 		};
 		var ret = {};
 		for (var item in ids){
+			//print("DEL-A");
+			if (!this.nameind[item]){
+				continue;
+			};
 			var key = this.nameind[item].split("::");
+			//print("DEL-B");
 			pkey = key[0];
 			ikey = key[1];
 			skey = key[2];
@@ -180,6 +185,7 @@ CSL.Factory.Registry.NameReg = function(state){
 	// style.
 	//
 	var addname = function(item_id,nameobj,pos){
+		//print("INS");
 		_set_keys(nameobj);
 		// pkey, ikey and skey should be stored in separate cascading objects.
 		// there should also be a kkey, on each, which holds the item ids using
@@ -220,7 +226,9 @@ CSL.Factory.Registry.NameReg = function(state){
 		if ("undefined" == typeof this.nameind[item_id]){
 			this.nameind[item_id] = new Object();
 		};
+		//print("INS-A");
 		this.nameind[item_id][pkey+"::"+ikey+"::"+skey] = true;
+		//print("INS-B");
 	};
 	this.addname = addname;
 	this.delitems = delitems;

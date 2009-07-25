@@ -82,6 +82,7 @@ CSL.Engine.prototype.makeBibliography = function(){
 
 
 CSL.Engine.prototype.updateItems = function(idList){
+	var debug = false;
 	if (debug){
 		print("a");
 	};
@@ -122,4 +123,6 @@ CSL.Engine.prototype.updateItems = function(idList){
 		print("j");
 	};
 	this.registry.yearsuffix();
+
+	return this.registry.getSortedIds();
 };
