@@ -77,7 +77,8 @@ CSL.Engine.prototype.makeBibliography = function(){
 			print("bibsorttok: "+tok.name);
 		}
 	}
-	return this._bibliography_entries.call(this);
+	var ret = this._bibliography_entries.call(this);
+	return ret;
 };
 
 

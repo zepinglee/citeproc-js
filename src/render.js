@@ -140,10 +140,7 @@ CSL.Engine.prototype.getModes = function(){
 
 
 /*
- * Compose individual cites into a single string.  (This requires
- * further work to accomodate various adjustments to inter-cite
- * splicing.  There are lots of possibilities, which will require
- * careful planning.)
+ * Compose individual cites into a single string.
  */
 CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.area = "bibliography";
@@ -167,7 +164,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	this.output.endTag(); // closes bib_wrapper
 	this.output.closeLevel();
 	this.tmp.disambig_override = false;
-	return this.output.string(this,this.output.queue);
+	return this.output.string(this,this.output.queue)[0];
 };
 
 /*
