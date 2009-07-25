@@ -307,18 +307,10 @@ CSL.Factory.Registry.prototype.dorefreshes = function(){
 CSL.Factory.Registry.prototype.setdisambigs = function(){
 	//
 	// Okay, more changes.  Here is where we resolve all disambiguation
-	// issues for cites touched by the update.  There are (now) two
-	// ambig key hashes in registry, each containing lists of cites
-	// in an ambig pool.  The this.ambigcites set is based on the complete
-	// short form of citations, and is the basis on which names are
-	// added and minimal adding of initials or given names is performed.
-	//
-	// The this.ambigvars set is based in the short-form rendered form
-	// of the variables named in a disambiguate="..." attribute -- oh,
-	// shit.  There might be multiple uses of this attribute, so we need
-	// to affix each with an index number, and call for disambigs from
-	// the correct index.  Sucks, but there we are.  First get existing
-	// disambiguation working, then shoehorn in the new parameter.
+	// issues for cites touched by the update.  The this.ambigcites set is
+	// based on the complete short form of citations, and is the basis on
+	// which names are added and minimal adding of initials or given names
+	// is performed.
 	//
 
 	//
