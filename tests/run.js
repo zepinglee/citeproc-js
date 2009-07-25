@@ -2,9 +2,9 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_disambiguate");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_variables");
 
 	dojo.require("tests.std_number");

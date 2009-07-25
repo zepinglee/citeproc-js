@@ -1,0 +1,60 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Book D, 1999; Book B, 2000; Book A; Book C; Book E.
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="note" xml:lang="en"> 
+  <citation>
+    <sort>
+      <key variable="issued"/>
+      <key variable="title"/>
+    </sort>
+    <layout prefix="" suffix="." delimiter="; ">
+      <group delimiter=", ">
+        <text variable="title"/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+      </group>
+    </layout>
+  </citation> 
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  { 
+    "id": "ITEM-1",
+    "title": "Book A"
+  },
+  { 
+    "id": "ITEM-2",
+    "title": "Book B",
+    "issued":{ "year":2000}
+  },
+  { 
+    "id": "ITEM-3",
+    "title": "Book C"
+  },
+  { 
+    "id": "ITEM-4",
+    "title": "Book D",
+    "issued":{ "year":1999}
+  },
+  { 
+    "id": "ITEM-5",
+    "title": "Book E"
+  }
+]
+<<===== INPUT =====<<

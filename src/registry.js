@@ -420,12 +420,12 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
 			// compares.
 			//
 			var cmp = 0;
-			if ( !a.sortkeys[i].length || !b.sortkeys[i].length ){
-				if (a.sortkeys[i] < b.sortkeys[i]){
-					cmp = -1;
-				} else if (a.sortkeys[i] > b.sortkeys[i]){
-					cmp = 1;
-				}
+			if (a.sortkeys[i] == b.sortkeys[i]){
+				cmp = 0;
+			} else if ("undefined" == typeof a.sortkeys[i]){
+				cmp = sort_directions[i][1];;
+			} else if ("undefined" == typeof b.sortkeys[i]){
+				cmp = sort_directions[i][0];;
 			} else {
 				cmp = a.sortkeys[i].toLocaleLowerCase().localeCompare(b.sortkeys[i].toLocaleLowerCase());
 			}

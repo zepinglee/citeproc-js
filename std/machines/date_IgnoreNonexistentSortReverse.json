@@ -33,6 +33,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Item 1; Item 3; Item 2; Item 4", 
+    "result": "Item 2; Item 4; Item 1; Item 3", 
     "schema": "0.8"
 }

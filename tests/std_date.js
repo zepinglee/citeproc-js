@@ -2,14 +2,6 @@ dojo.provide("tests.std_date");
 
 doh.register("tests.std_date", [
     function(){
-        var test = new StdRhinoTest("date_KeyVariable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_YearSuffixDelimiter");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("date_IgnoreNonexistent");
         doh.assertEqual(test.result, test.run());
     },
@@ -19,6 +11,10 @@ doh.register("tests.std_date", [
     },
     function(){
         var test = new StdRhinoTest("date_IgnoreNonexistentSortReverse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_KeyVariable");
         doh.assertEqual(test.result, test.run());
     },
     function(){
@@ -33,5 +29,12 @@ doh.register("tests.std_date", [
         var test = new StdRhinoTest("date_LongMonth");
         doh.assertEqual(test.result, test.run());
     },
+    function(){
+        var test = new StdRhinoTest("date_SortEmptyDates");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_YearSuffixDelimiter");
+        doh.assertEqual(test.result, test.run());
+    },
 ]);
-

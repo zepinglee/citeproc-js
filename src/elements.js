@@ -756,11 +756,11 @@ CSL.Lib.Elements.date = new function(){
 CSL.Lib.Elements["date-part"] = new function(){
 	this.build = build;
 	function build(state,target){
-		var value = "";
 		if (!this.strings.form){
 			this.strings.form = "long";
 		}
 		var render_date_part = function(state,Item){
+			var value = "";
 			if (state.tmp.date_object){
 				value = state.tmp.date_object[this.strings.name];
 			};
@@ -951,7 +951,10 @@ CSL.Lib.Elements.key = new function(){
 		var store_key_for_use = function(state,Item){
 			var keystring = state.output.string(state,state.output.queue);
 			if (false){
-				print("keystring: "+keystring);
+				print("keystring: "+keystring+" "+typeof keystring);
+			}
+			if ("string" != typeof keystring){
+				keystring = undefined;
 			}
 			state[state.tmp.area].keys.push(keystring);
 			state.tmp.value = new Array();
