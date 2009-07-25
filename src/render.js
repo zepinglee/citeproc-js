@@ -228,7 +228,7 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 			};
 		};
 	};
-	result += this.output.renderBlobs(objects);
+	result += this.output.renderBlobs(objects)[0];
 	if (result){
 		result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
 		if (!this.tmp.suppress_decorations){

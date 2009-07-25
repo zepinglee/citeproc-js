@@ -167,7 +167,6 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	// be returned explicitly.  It will complicate the interfaces, but I think
 	// that's the only way this is ever going to work.
 	//
-	print("                                              NEW: output.string");
 
 	var blobs = myblobs.slice();
 	//var blobs = myblobs;
@@ -202,7 +201,6 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 			var last_str = "";
 			if (blobjr.strings.suffix){
 				last_str = blobjr.strings.suffix;
-				print("HEY!!!!!!!!!!!!!!!  Oy: "+last_str);
 			} else if (blobjr.blobs){
 				last_str = blobjr.blobs;
 			};
@@ -237,6 +235,8 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 			var addtoret = res[0];
 			ret = ret.concat(addtoret);
 			blob_last_chars = blob_last_chars.concat(res[1]);
+
+			//blob_last_chars = res[1];
 		} else {
 			continue;
 		}
@@ -258,12 +258,10 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	// ...
 	// Oh.  Yes, we can.  Good.
 	//
-	print("IN: "+ret.slice(0,span_split));
-	print("last_chars IN: ------>"+blob_last_chars);
-	print("tick0");
-	var blobs_start = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
-	print("   last_chars OUT: -->"+blob_last_chars);
-	print("   out --------------> "+blobs_start);
+	////////var blobs_start = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
+	var res = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
+	var blobs_start = res[0];
+	blob_last_chars = res[1].slice();
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
 		if (!state.tmp.suppress_decorations){
 			for each (var params in blob.decorations){
@@ -298,19 +296,20 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		this.current.mystack = new Array();
 		this.current.mystack.push( this.queue );
 		if (state.tmp.suppress_decorations){
-			print("tick1");
-			ret = state.output.renderBlobs(ret);
-		}
+			var res = state.output.renderBlobs(ret);
+			ret = res[0];
+			blob_last_chars = res[1].slice();
+		};
 	} else if ("boolean" == typeof blob){
-		print("tick2");
-		var ret = state.output.renderBlobs(ret);
-	}
-	print("<return>");
+		var res = state.output.renderBlobs(ret);
+		ret = res[0];
+		blob_last_chars = res[1].slice();
+	};
 	if (blob){
-		return [ret,blob_last_chars];
+		return [ret,blob_last_chars.slice()];
 	} else {
 		return ret;
-	}
+	};
 };
 
 CSL.Output.Queue.prototype.clearlevel = function(){
@@ -320,27 +319,43 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 	}
 };
 
-CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
-	print("                                              NEW: output.renderBlobs");
+CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 	if (!delim){
 		delim = "";
 	}
+	if (!blob_last_chars){
+		blob_last_chars = [];
+	};
 	var state = this.state;
 	var ret = "";
+	var ret_last_char = [];
 	var use_delim = "";
 	for (var i=0; i < blobs.length; i++){
 		if (blobs[i].checkNext){
 			blobs[i].checkNext(blobs[(i+1)]);
 		}
 	}
-	for each (var blob in blobs){
+	for (var i in blobs){
+		var blob = blobs[i];
 		if (ret){
 			use_delim = delim;
 		}
-		if ("string" == typeof blob){
+		if (blob && "string" == typeof blob){
 			//throw "Attempt to render string as rangeable blob"
-			ret += use_delim;
+			if (use_delim && blob_last_chars[(i-1)] == use_delim[0]) {
+				//
+				// Something for posterity, at the end of a remarkably
+				// unproductive day.
+				//
+				//print("  ####################################################");
+				//print("  ######################## EUREKA ####################");
+				//print("  ####################################################");
+				ret += use_delim.slice(1);
+			} else {
+				ret += use_delim;
+			};
 			ret += blob;
+			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 		} else if (blob.status != CSL.SUPPRESS){
 			// print("doing rangeable blob");
 			//var str = blob.blobs;
@@ -363,7 +378,9 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
 				ret += blob.splice_prefix;
 			}
 			ret += str;
+			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 		}
 	}
-	return ret;
+	return [ret,ret_last_char];
+	////////return ret;
 };

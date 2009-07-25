@@ -99,7 +99,7 @@ Chicago Author-Date.
   <macro name="translator">
     <names variable="translator">
       <name name-as-sort-order="first" and="text" sort-separator=", " delimiter=", " delimiter-precedes-last="always"/>
-      <label form="verb-short" prefix=", " suffix="X"/>
+      <label form="verb-short" prefix=", " suffix="."/>
     </names>
   </macro>
   <macro name="recipient-note">
