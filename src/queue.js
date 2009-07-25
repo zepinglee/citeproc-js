@@ -160,16 +160,57 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 //
 
 CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
+	//
+	// XXXXX: This is broken, and the cause of breakage seems to be in the way
+	// the blob_last_chars variable is being handled.  I think if a value needs
+	// to be updated from a nested invocation of the same function, it needs to
+	// be returned explicitly.  It will complicate the interfaces, but I think
+	// that's the only way this is ever going to work.
+	//
+	print("                                              NEW: output.string");
+
 	var blobs = myblobs.slice();
+	//var blobs = myblobs;
 	var ret = new Array();
+	//
+	// XXXXX: this seems promising, to maintain a parallel list of
+	// last characters to each object.  The problem is that objects
+	// can be merged (in renderBlobs, I think?), and the parallel list
+	// needs to track that.  Very hard.
+	//
 	if (blobs.length == 0){
 		return ret;
 	}
+
+	var blob_last_chars = new Array();
+	//
+	// Need to know the join delimiter before boiling blobs down
+	// to strings, so that we can cleanly clip out duplicate
+	// punctuation characters.
+	//
+	if (blob){
+		var blob_delimiter = blob.strings.delimiter;
+	} else {
+		var blob_delimiter = "";
+	};
+	//if (blob_delimiter.indexOf(".") > -1){
+	//	print("*** blob_delimiter: "+blob_delimiter);
+	//};
 	for (var i in blobs){
 		var blobjr = blobs[i];
 		if ("string" == typeof blobjr.blobs){
+			var last_str = "";
+			if (blobjr.strings.suffix){
+				last_str = blobjr.strings.suffix;
+				print("HEY!!!!!!!!!!!!!!!  Oy: "+last_str);
+			} else if (blobjr.blobs){
+				last_str = blobjr.blobs;
+			};
+			var last_char = last_str[(last_str.length-1)];
+
 			if ("number" == typeof blobjr.num){
 				ret.push(blobjr);
+				blob_last_chars.push(last_char);
 			} else if (blobjr.blobs){
 				// skip empty strings!!!!!!!!!!!!
 				var b = blobjr.blobs;
@@ -178,16 +219,24 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 						b = state.fun.decorate[params[0]][params[1]](state,b);
 					};
 				};
+				//
+				// XXXXX: this should really be matching whenever there is a suffix,
+				// and the last char in the string is the same as the first char in
+				// the suffix.
+				//
 				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
 					b = blobjr.strings.prefix + b + blobjr.strings.suffix.slice(1);
 				} else {
 					b = blobjr.strings.prefix + b + blobjr.strings.suffix;
 				}
 				ret.push(b);
+				blob_last_chars.push(last_char);
 			};
 		} else if (blobjr.blobs.length){
-			var addtoret = state.output.string(state,blobjr.blobs,blobjr);
+			var res = state.output.string(state,blobjr.blobs,blobjr);
+			var addtoret = res[0];
 			ret = ret.concat(addtoret);
+			blob_last_chars = blob_last_chars.concat(res[1]);
 		} else {
 			continue;
 		}
@@ -201,12 +250,20 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
 		span_split = ret.length;
 	}
-	if (blob){
-		var blob_delimiter = blob.strings.delimiter;
-	} else {
-		var blob_delimiter = "";
-	}
-	var blobs_start = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter );
+	//
+	// XXXXX: Darn.  Need to know the last char of every element in the list
+	// here, so that we can delete duplicates before the join.  But the elements
+	// are text strings, so there is noplace to store that info.  What to do?
+	// Can we know the delimiter at the point these strings are built?
+	// ...
+	// Oh.  Yes, we can.  Good.
+	//
+	print("IN: "+ret.slice(0,span_split));
+	print("last_chars IN: ------>"+blob_last_chars);
+	print("tick0");
+	var blobs_start = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
+	print("   last_chars OUT: -->"+blob_last_chars);
+	print("   out --------------> "+blobs_start);
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
 		if (!state.tmp.suppress_decorations){
 			for each (var params in blob.decorations){
@@ -241,12 +298,19 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		this.current.mystack = new Array();
 		this.current.mystack.push( this.queue );
 		if (state.tmp.suppress_decorations){
+			print("tick1");
 			ret = state.output.renderBlobs(ret);
 		}
 	} else if ("boolean" == typeof blob){
-		ret = state.output.renderBlobs(ret);
+		print("tick2");
+		var ret = state.output.renderBlobs(ret);
 	}
-	return ret;
+	print("<return>");
+	if (blob){
+		return [ret,blob_last_chars];
+	} else {
+		return ret;
+	}
 };
 
 CSL.Output.Queue.prototype.clearlevel = function(){
@@ -257,7 +321,7 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 };
 
 CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
-	//print("blobs to render: "+blobs);
+	print("                                              NEW: output.renderBlobs");
 	if (!delim){
 		delim = "";
 	}
