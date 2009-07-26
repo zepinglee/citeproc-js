@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_api");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");

@@ -1,0 +1,8 @@
+dojo.provide("tests.std_api");
+
+doh.register("tests.std_api", [
+    function(){
+        var test = new StdRhinoTest("api_UpdateItemsReshuffle");
+        doh.assertEqual(test.result, test.run());
+    },
+]);
