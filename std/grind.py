@@ -116,6 +116,7 @@ class CslTest(CslTestUtils):
             self.extract(element,required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
+        self.extract("BIBENTRIES",required=False,is_json=True)
 
     def extract(self,tag,required=False,is_json=False):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
