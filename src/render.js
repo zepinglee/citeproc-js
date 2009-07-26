@@ -183,9 +183,7 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	for each (var Item in inputList){
 		var last_collapsed = this.tmp.have_collapsed;
 		//print("  "+Item.id);
-		this.fun.decorate.bibentry_pre( this.output[this.opt.mode].tmp );
 		this._cite(Item);
-		this.fun.decorate.bibentry_post( this.output[this.opt.mode].tmp );
 		//
 		// This will produce a stack with one
 		// layer, and exactly one or two items.

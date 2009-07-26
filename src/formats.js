@@ -16,12 +16,36 @@ CSL.Output.Formats = function(){};
  * output modes.</p>
  */
 CSL.Output.Formats.prototype.html = {
+	//
+	// format_init:  Initialization hook.  Defined function is run
+	// when the format is selected, with the temporary scratch object
+	// as the sole argument.
+	//
 	"format_init": function(tmp){},
+	//
+	// items_add:  Formatting registry data insertion hook.  Hook to be
+	// used by output modes that must maintain information on a per-item
+	// basis.  Defined function is run once for each updateItems invocation
+	// on the processor API, with the temporary scratch object as the
+	// first argument, and an array of items to be inserted as the
+	// second.
+	//
 	"items_add": function(tmp,items_array){},
+	//
+	// items_delete: Formatting registry data deletion hook.  Hook to be
+	// used by output modes that must maintain information on a per-item
+	// basis.  Defined function is run once for each updateItems invocation
+	// on the processor API, iwth the temporary scratch object as the
+	// first argument, and a hash of item IDs to be deleted as the second.
+	//
 	"items_delete": function(tmp,items_hash){},
-	"bibentry_pre": function(tmp){},
-	"bibentry_post": function(tmp){},
-	"text_escape": function(text){return text;},
+	//
+	// text_escape: Format-specific function for escaping text destined
+	// for output.  Takes the temporary scratch object and the text to be
+	// escaped as arguments.  Function will be run only once across each
+	// portion of text to be escaped, it need not be idempotent.
+	//
+	"text_escape": function(tmp,text){return text;},
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/oblique":"<em>%%STRING%%</em>",
 	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
