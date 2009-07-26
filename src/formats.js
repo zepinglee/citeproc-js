@@ -16,6 +16,12 @@ CSL.Output.Formats = function(){};
  * output modes.</p>
  */
 CSL.Output.Formats.prototype.html = {
+	"format_init": function(tmp){},
+	"items_add": function(tmp,items_array){},
+	"items_delete": function(tmp,items_hash){},
+	"bibentry_pre": function(tmp){},
+	"bibentry_post": function(tmp){},
+	"text_escape": function(text){return text;},
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/oblique":"<em>%%STRING%%</em>",
 	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
@@ -36,13 +42,7 @@ CSL.Output.Formats.prototype.html = {
 	"@text-case/title":CSL.Output.Formatters.title_capitalization,
 	"@text-case/sentence":CSL.Output.Formatters.sentence_capitalization,
 	"@quotes/true":"“%%STRING%%”",
-	//"@quotes/left":"&ldquo;%%STRING%%",
-	//"@quotes/right":"%%STRING%%&rdquo;",
-	//"@quotes/noop":"%%STRING%%",
 	"@squotes/true":"‘%%STRING%%’",
-	//"@squotes/left":"&lsquo;%%STRING%%",
-	//"@squotes/right":"%%STRING%%&rsquo;",
-	//"@squotes/noop":"%%STRING%%",
 	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/wrapper": function(state,str){
 		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");

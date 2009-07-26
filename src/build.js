@@ -129,7 +129,12 @@ CSL.Engine.prototype._getNavi.prototype.getNodeListValue = function(){
 CSL.Engine.prototype.setOutputFormat = function(mode){
 	this.opt.mode = mode;
 	this.fun.decorate = CSL.Factory.Mode(mode);
-}
+	if (!this.output[mode]){
+		this.output[mode] = new Object();
+		this.output[mode].tmp = new Object();
+	};
+	this.fun.decorate.format_init(this.output[mode].tmp);
+};
 
 CSL.Engine.prototype.getTerm = function(term,form,plural){
 	return CSL.Engine._getField(CSL.STRICT,this.locale_terms,term,form,plural);
