@@ -1,0 +1,105 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Doe 1960; Brown 1990; Ichi 2000.
+<<===== RESULT =====<<
+
+
+>>===== BIBENTRIES =====>>
+[
+  [
+    "ITEM-1",
+    "ITEM-2",
+    "ITEM-3",
+    "ITEM-4",
+    "ITEM-5"
+  ],
+  [
+    "ITEM-1",
+    "ITEM-4",
+    "ITEM-5"
+  ]
+]
+<<===== BIBENTRIES =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout delimiter="; " suffix=".">
+            <group delimiter=" ">
+                <names variable="author">
+                    <name form="short"/>
+                </names>
+                <date variable="issued">
+                    <date-part name="year"/>
+                </date>
+            </group>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "title":"Book A",
+    "author": [
+      { "name": "Doe, John" }
+    ],
+    "issued": {
+      "year":1960
+    }
+  },
+  {
+    "id":"ITEM-2",
+    "title":"Book B",
+    "author": [
+      { "name": "Roe, Jane" }
+    ],
+    "issued": {
+      "year":1970
+    }
+  },
+  {
+    "id":"ITEM-3",
+    "title":"Book C",
+    "author": [
+      { "name": "Smith, John" }
+    ],
+    "issued": {
+      "year":1980
+    }
+  },
+  {
+    "id":"ITEM-4",
+    "title":"Book D",
+    "author": [
+      { "name": "Brown, Robert" }
+    ],
+    "issued": {
+      "year":1990
+    }
+  },
+  {
+    "id":"ITEM-5",
+    "title":"Book E",
+    "author": [
+      { "name": "Ichi, Taro" }
+    ],
+    "issued": {
+      "year":2000
+    }
+  }
+]
+<<===== INPUT =====<<

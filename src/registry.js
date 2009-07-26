@@ -175,9 +175,7 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 			//
 			//  3a. Delete names in items to be deleted from names reg.
 			//
-			print("A");
 			var otheritems = this.namereg.delitems(delitem);
-			print("B");
 			//
 			//  3b. Complement refreshes list with items affected by
 			//      possible name changes.  We'll actually perform the refresh once
@@ -238,6 +236,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 				"id":item,
 				"seq":0,
 				"sortkeys":undefined,
+				"ambig":undefined,
 				"disambig":undefined
 			};
 			//
@@ -468,5 +467,6 @@ CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_conf
 	if (this.ambigcites[akey].indexOf(id) == -1){
 		this.ambigcites[akey].push(id);
 	};
+	this.registry[id].ambig = akey;
 	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };
