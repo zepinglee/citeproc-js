@@ -14,6 +14,3 @@ doh.register("tests.std_api", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
-
-var x = [
-]

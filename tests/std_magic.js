@@ -30,6 +30,14 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("magic_PunctuationInQuoteFalse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("magic_PunctuationInQuoteTrue");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("magic_SecondFieldAlign");
         doh.assertEqual(test.result, test.run());
     },

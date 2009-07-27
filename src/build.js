@@ -30,6 +30,9 @@ CSL.Engine = function(sys,style,lang) {
 	this.opt.lang = lang;
 	this.sys.setLocaleXml( this.cslXml, lang );
 	this.locale_terms = this.sys.locale_terms;
+	for (var o in this.locale_opt){
+		this.opt[o] = this.locale_opt[o];
+	};
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
 

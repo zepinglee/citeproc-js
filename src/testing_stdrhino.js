@@ -70,6 +70,9 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 	if ("undefined" == typeof this.locale_terms){
 		this.locale_terms = new Object();
 	}
+	if ("undefined" == typeof this.locale_opt){
+		this.locale_opt = new Object();
+	}
 	if ("undefined" == typeof arg){
 		var myxml = new XML( this.getLang("en") );
 		lang = "en";
@@ -114,6 +117,17 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
 		} else {
 			this.locale_terms[term.@name.toString()][form] = term.toString();
+		}
+	}
+	for each (var option in locale.options.option){
+		var optionname = option.@name.toString();
+		var optionvalue = option.@value.toString();
+		//
+		// Only one of these so far, and it's a boolean.
+		//
+		//print("locale option value: "+optionvalue);
+		if ("true" == optionvalue){
+			this.locale_opt[optionname] = true;
 		}
 	}
 };

@@ -1,0 +1,53 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Doe, “Book A,” 1900.
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <locale xml:lang="en">
+        <options>
+            <option name="punctuation-in-quote" value="true"/>
+        </options>
+    </locale>
+    <citation>
+        <layout suffix=".">
+            <group delimiter=", ">
+                <names variable="author">
+                    <name form="short"/>
+                </names>
+                <text variable="title" quotes="true"/>
+                <date variable="issued">
+                    <date-part name="year"/>
+                </date>
+            </group>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "title":"Book A",
+    "author": [
+      { "name": "Doe, John" }
+    ],
+    "issued": {
+      "year":1900
+    }
+  }
+]
+<<===== INPUT =====<<

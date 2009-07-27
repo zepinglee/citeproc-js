@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locale xml:lang="en" xmlns="http://purl.org/net/xbiblio/csl">
+  <options>
+    <option name="punctuation-in-quote" value="false"/>
+  </options>
   <terms>
     <term name="bogus">bogus</term>
     <term name="at">at</term>
