@@ -30,8 +30,8 @@ CSL.Engine = function(sys,style,lang) {
 	this.opt.lang = lang;
 	this.sys.setLocaleXml( this.cslXml, lang );
 	this.locale_terms = this.sys.locale_terms;
-	for (var o in this.locale_opt){
-		this.opt[o] = this.locale_opt[o];
+	for (var o in this.sys.locale_opt){
+		this.opt[o] = this.sys.locale_opt[o];
 	};
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
@@ -42,9 +42,19 @@ CSL.Engine = function(sys,style,lang) {
 
 	this.splice_delimiter = false;
 
+	this.opt.close_quotes_array = this.getCloseQuotesArray();
+
 	this.setOutputFormat("html");
 };
 
+CSL.Engine.prototype.getCloseQuotesArray = function(){
+	var ret = [];
+	ret.push(this.getTerm("close-quote"));
+	ret.push(this.getTerm("close-inner-quote"));
+	ret.push('"');
+	ret.push("'");
+	return ret;
+};
 
 CSL.Engine.prototype._buildTokenLists = function(area){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});

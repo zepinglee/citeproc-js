@@ -350,10 +350,25 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				//print("  ####################################################");
 				//print("  ######################## EUREKA ####################");
 				//print("  ####################################################");
-				ret += use_delim.slice(1);
-			} else {
-				ret += use_delim;
+				use_delim = use_delim.slice(1);
 			};
+			//
+			// Handle punctuation/quote swapping for delimiter joins.
+			//
+			if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
+				if (use_delim){
+					var pos = use_delim.indexOf(" ");
+					if (pos > -1){
+						var pre_quote = use_delim.slice(0,pos);
+						use_delim = use_delim.slice(pos);
+					} else {
+						var pre_quote = use_delim;
+						use_delim = "";
+					}
+					ret = ret.slice(0,(ret.length-1)) + pre_quote + ret.slice((ret.length-1));
+				}
+			}
+			ret += use_delim;
 			ret += blob;
 			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 		} else if (blob.status != CSL.SUPPRESS){
