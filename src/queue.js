@@ -222,11 +222,17 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				// and the last char in the string is the same as the first char in
 				// the suffix.
 				//
-				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
-					b = blobjr.strings.prefix + b + blobjr.strings.suffix.slice(1);
-				} else {
-					b = blobjr.strings.prefix + b + blobjr.strings.suffix;
+				var use_suffix = blobjr.strings.suffix;
+				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
+				    use_suffix = use_suffix.slice(1);
 				}
+				//
+				// Handle punctuation/quote swapping for suffix.
+				//
+				var qres = this.swapQuotePunctuation(b,use_suffix);
+				b = qres[0];
+				use_suffix = qres[1];
+				b = blobjr.strings.prefix + b + use_suffix;
 				ret.push(b);
 				blob_last_chars.push(last_char);
 			};
@@ -273,11 +279,17 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		// code above as model
 		//
 		var b = blobs_start;
-		if (b[(b.length-1)] == "." && blob.strings.suffix && blob.strings.suffix[0] == "."){
-			b = blob.strings.prefix + b + blob.strings.suffix.slice(1);
-		} else {
-			b = blob.strings.prefix + b + blob.strings.suffix;
+		var use_suffix = blob.strings.suffix;
+		if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
+			use_suffix = use_suffix.slice(1);
 		}
+		//
+		// Handle punctuation/quote swapping for suffix.
+		//
+		var qres = this.swapQuotePunctuation(b,use_suffix);
+		b = qres[0];
+		use_suffix = qres[1];
+		b = blob.strings.prefix + b + use_suffix;
 		blobs_start = b;
 	}
 	var blobs_end = ret.slice(span_split,ret.length);
@@ -355,19 +367,9 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			//
 			// Handle punctuation/quote swapping for delimiter joins.
 			//
-			if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
-				if (use_delim){
-					var pos = use_delim.indexOf(" ");
-					if (pos > -1){
-						var pre_quote = use_delim.slice(0,pos);
-						use_delim = use_delim.slice(pos);
-					} else {
-						var pre_quote = use_delim;
-						use_delim = "";
-					}
-					ret = ret.slice(0,(ret.length-1)) + pre_quote + ret.slice((ret.length-1));
-				}
-			}
+			var res = this.swapQuotePunctuation(ret,use_delim);
+			ret = res[0];
+			use_delim = res[1];
 			ret += use_delim;
 			ret += blob;
 			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
@@ -398,4 +400,22 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 	}
 	return [ret,ret_last_char];
 	////////return ret;
+};
+
+
+CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
+	if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
+		if (use_delim){
+			var pos = use_delim.indexOf(" ");
+			if (pos > -1){
+				var pre_quote = use_delim.slice(0,pos);
+				use_delim = use_delim.slice(pos);
+			} else {
+				var pre_quote = use_delim;
+				use_delim = "";
+			};
+			ret = ret.slice(0,(ret.length-1)) + pre_quote + ret.slice((ret.length-1));
+		};
+	};
+	return [ret,use_delim];
 };
