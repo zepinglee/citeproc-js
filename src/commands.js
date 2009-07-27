@@ -85,43 +85,43 @@ CSL.Engine.prototype.makeBibliography = function(){
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
 	if (debug){
-		print("a");
+		print("--> init <--");
 	};
 	this.registry.init(idList);
 	if (debug){
-		print("b");
+		print("--> dodeletes <--");
 	};
 	this.registry.dodeletes(this.registry.myhash);
 	if (debug){
-		print("c");
+		print("--> doinserts <--");
 	};
 	this.registry.doinserts(this.registry.mylist);
 	if (debug){
-		print("d");
+		print("--> dorefreshes <--");
 	};
 	this.registry.dorefreshes();
 	if (debug){
-		print("e");
+		print("--> rebuildlist <--");
 	};
 	this.registry.rebuildlist();
 	if (debug){
-		print("f");
+		print("--> setdisambigs <--");
 	};
 	this.registry.setdisambigs();
 	if (debug){
-		print("g");
+		print("--> setsortkeys <--");
 	};
 	this.registry.setsortkeys();
 	if (debug){
-		print("h");
+		print("--> sorttokens <--");
 	};
 	this.registry.sorttokens();
 	if (debug){
-		print("i");
+		print("--> renumber <--");
 	};
 	this.registry.renumber();
 	if (debug){
-		print("j");
+		print("--> yearsuffix <--");
 	};
 	this.registry.yearsuffix();
 

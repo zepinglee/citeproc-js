@@ -66,7 +66,7 @@ CSL.Factory.Registry = function(state){
 	this.myhash = new Object();
 	this.deletes = new Array();
 	this.inserts = new Array();
-	this.dbupdates = new Object();
+	this.refreshes = new Object();
 	this.akeys = new Object();
 	//
 	// each ambig is a list of the ids of other objects
@@ -195,6 +195,15 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 				this.ambigcites[ambig] = items.slice(0,pos).concat(items.slice([pos+1],items.length));
 			}
 			//
+			// XX. What we've missed is to provide an update of all
+			// items sharing the same ambig -- the remaining items in
+			// ambigcites.  So let's do that here, just in case the
+			// names update above doesn't catch them all.
+			//
+			for each (var i in this.ambigcites[ambig]){
+				this.refreshes[i] = true;
+			};
+			//
 			//  3d. Delete all items in deletion list from hash.
 			//
 			delete this.registry[delitem];
@@ -296,10 +305,31 @@ CSL.Factory.Registry.prototype.dorefreshes = function(){
 	//
 	//  7. Refresh items requiring update.
 	//
-	for (var item in this.dbupdates){
-		this.dodeletes(item);
-		this.doinserts(item);
+	// It looks like we need to do four things on each cite for refresh:
+	// (1) Generate the akey for the cite.
+	// (2) Register it on the ambig token.
+	// (3) Register the akey in this.akeys
+	// (4) Register the item ID in this.touched
+	//
+	for (var item in this.refreshes){
+
+		var regtoken = this.registry[item];
+		delete this.registry[item];
+		regtoken.disambig = undefined;
+		regtoken.sortkeys = undefined;
+		regtoken.ambig = undefined;
+
+		var Item = this.state.sys.retrieveItem(item);
+		var akey = this.state.getAmbiguousCite(Item);
+		this.registry[item] = regtoken;
+
+		var abase = this.state.getAmbigConfig();
+		this.registerAmbigToken(akey,item,abase);
+
+		this.akeys[akey] = true;
+		this.touched[item] = true;
 	};
+
 };
 
 /*

@@ -9,7 +9,7 @@ citation
 
 
 >>===== RESULT =====>>
-Doe 1960; Brown 1990; Ichi 2000.
+J Doe 1960; R Brown 1990; T Ichi 2000.
 <<===== RESULT =====<<
 
 

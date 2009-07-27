@@ -87,6 +87,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Doe 1960; Brown 1990; Ichi 2000.", 
+    "result": "J Doe 1960; R Brown 1990; T Ichi 2000.", 
     "schema": "0.8"
 }
