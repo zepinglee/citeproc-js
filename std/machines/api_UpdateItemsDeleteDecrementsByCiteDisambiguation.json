@@ -1,0 +1,92 @@
+{
+    "bibentries": [
+        [
+            "ITEM-1", 
+            "ITEM-2", 
+            "ITEM-3", 
+            "ITEM-4", 
+            "ITEM-5"
+        ], 
+        [
+            "ITEM-1", 
+            "ITEM-4", 
+            "ITEM-5"
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <option name=\"disambiguate-add-givenname\" value=\"true\"/>\n        <option name=\"givenname-disambiguation-rule\" value=\"by-cite\"/>\n        <layout delimiter=\"; \" suffix=\".\">\n            <group delimiter=\" \">\n                <names variable=\"author\">\n                    <name initialize-with=\"\"/>\n                </names>\n                <date variable=\"issued\">\n                    <date-part name=\"year\"/>\n                </date>\n            </group>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "primary-key": "Doe", 
+                    "secondary-key": "John", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-1", 
+            "issued": {
+                "year": 1960
+            }, 
+            "title": "Book A"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Doe", 
+                    "secondary-key": "Jake", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-2", 
+            "issued": {
+                "year": 1960
+            }, 
+            "title": "Book B"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Smith", 
+                    "secondary-key": "John", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-3", 
+            "issued": {
+                "year": 1980
+            }, 
+            "title": "Book C"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Brown", 
+                    "secondary-key": "Robert", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-4", 
+            "issued": {
+                "year": 1990
+            }, 
+            "title": "Book D"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Ichi", 
+                    "secondary-key": "Taro", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-5", 
+            "issued": {
+                "year": 2000
+            }, 
+            "title": "Book E"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Doe 1960; Brown 1990; Ichi 2000.", 
+    "schema": "0.8"
+}

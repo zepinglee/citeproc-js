@@ -47,7 +47,7 @@ CSL = new function () {
 	this.NUMERIC_VARIABLES = x.slice();
 	this.DATE_VARIABLES = ["issued","event","accessed","container","original-date"];
 	var x = new Array();
-	x = x.concat(["@text-case","@font-family","@font-style","@font-variant"]);
+	x = x.concat(["@text-case","@font-style","@font-variant"]);
 	x = x.concat(["@font-weight","@text-decoration","@vertical-align"]);
 	x = x.concat(["@quotes","@display"]);
 	this.FORMAT_KEY_SEQUENCE = x.slice();
@@ -165,12 +165,24 @@ CSL.Engine.prototype._getNavi.prototype.getNodeListValue = function(){
 CSL.Engine.prototype.setOutputFormat = function(mode){
 	this.opt.mode = mode;
 	this.fun.decorate = CSL.Factory.Mode(mode);
-}
+	if (!this.output[mode]){
+		this.output[mode] = new Object();
+		this.output[mode].tmp = new Object();
+	};
+	this.fun.decorate.format_init(this.output[mode].tmp);
+};
 CSL.Engine.prototype.getTerm = function(term,form,plural){
 	return CSL.Engine._getField(CSL.STRICT,this.locale_terms,term,form,plural);
 };
 CSL.Engine.prototype.getVariable = function(Item,varname,form,plural){
 	return CSL.Engine._getField(CSL.LOOSE,Item,varname,form,plural);
+};
+CSL.Engine.prototype.getDateNum = function(ItemField,partname){
+	if ("undefined" == typeof ItemField){
+		return 0;
+	} else {
+		return ItemField[partname];
+	};
 };
 CSL.Engine._getField = function(mode,hash,term,form,plural){
 	var ret = "";
@@ -260,6 +272,7 @@ CSL.Engine.Tmp = function (){
 	this.delimiter = new CSL.Factory.Stack("",CSL.LITERAL);
 };
 CSL.Engine.Fun = function (){
+	this.match = new  CSL.Util.Match();
 	this.suffixator = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 	this.romanizer = new CSL.Util.Romanizer();
 	this.flipflopper = new CSL.Util.FlipFlopper();
@@ -330,38 +343,26 @@ CSL.Engine.CitationSort = function (){
 CSL.makeStyle = function(sys,xml,lang){
 	var engine = new CSL.Engine(sys,xml,lang);
 	return engine;
-}
-CSL.Engine.prototype.registerFlipFlops = function(flist){
-	for each (ff in flist){
-		this.fun.flipflopper.register(ff["start"], ff["end"], ff["func"], ff["alt"]);
-	}
-	return true;
-}
+};
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item[0]);
-		this.registry.insert(this,Item);
+		//this.registry.insert(this,Item);
+		//
+		// This method will in future only be used for rendering.
+		// Assume that all items in rawList exist in registry.
+		// this.registry.insert(this,Item);
 		var newitem = this.composeItem([Item,item[1]]);
 		inputList.push(newitem);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		var newlist = new Array();
-		var keys_list = new Array();
-		for each (var Item in inputList){
-			var keys = this.getSortKeys(Item,"citation_sort");
-			keys["cheaters_hack"] = Item;
-			keys_list.push(keys);
-		}
 		var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
-		keys_list.sort(srt.compareKeys);
-		for each (key in keys_list){
-			newlist.push(key.cheaters_hack);
+		for (var k in inputList){
+			inputList[k].sortkeys = this.getSortKeys(inputList[k],"citation_sort");
 		}
-		//
-		// XXXXX this is all one-time, one-way, slice probably isn't needed here?
-		inputList = newlist;
-	}
+		inputList.sort(srt.compareKeys);
+	};
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
@@ -383,13 +384,52 @@ CSL.Engine.prototype.makeBibliography = function(){
 			print("bibsorttok: "+tok.name);
 		}
 	}
-	return this._bibliography_entries.call(this);
+	var ret = this._bibliography_entries.call(this);
+	return ret;
 };
-CSL.Engine.prototype.insertItems = function(inputList){
-	for each (var item in inputList){
-		var Item = this.sys.retrieveItem(item);
-		this.registry.insert(this,Item);
+CSL.Engine.prototype.updateItems = function(idList){
+	var debug = false;
+	if (debug){
+		print("a");
 	};
+	this.registry.init(idList);
+	if (debug){
+		print("b");
+	};
+	this.registry.dodeletes(this.registry.myhash);
+	if (debug){
+		print("c");
+	};
+	this.registry.doinserts(this.registry.mylist);
+	if (debug){
+		print("d");
+	};
+	this.registry.dorefreshes();
+	if (debug){
+		print("e");
+	};
+	this.registry.rebuildlist();
+	if (debug){
+		print("f");
+	};
+	this.registry.setdisambigs();
+	if (debug){
+		print("g");
+	};
+	this.registry.setsortkeys();
+	if (debug){
+		print("h");
+	};
+	this.registry.sorttokens();
+	if (debug){
+		print("i");
+	};
+	this.registry.renumber();
+	if (debug){
+		print("j");
+	};
+	this.registry.yearsuffix();
+	return this.registry.getSortedIds();
 };
 CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	if (disambig){
@@ -488,7 +528,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	var bib_wrapper = new CSL.Factory.Token("group",CSL.START);
 	bib_wrapper.decorations = [["@bibliography","wrapper"]];
 	this.output.startTag("bib_wrapper",bib_wrapper);
-	for each (item in input){
+	for each (var item in input){
 		if (false){
 			print("BIB: "+item.id);
 		}
@@ -501,7 +541,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	this.output.endTag(); // closes bib_wrapper
 	this.output.closeLevel();
 	this.tmp.disambig_override = false;
-	return this.output.string(this,this.output.queue);
+	return this.output.string(this,this.output.queue)[0];
 };
 CSL.Engine.prototype._unit_of_reference = function (inputList){
 	this.tmp.area = "citation";
@@ -510,6 +550,7 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	var objects = [];
 	for each (var Item in inputList){
 		var last_collapsed = this.tmp.have_collapsed;
+		//print("  "+Item.id);
 		this._cite(Item);
 		//
 		// This will produce a stack with one
@@ -552,7 +593,7 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 			};
 		};
 	};
-	result += this.output.renderBlobs(objects);
+	result += this.output.renderBlobs(objects)[0];
 	if (result){
 		result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
 		if (!this.tmp.suppress_decorations){
@@ -579,7 +620,7 @@ CSL.Engine.prototype._render = function(token,Item){
 		//print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 	if (token.evaluator){
-	    next = token.evaluator.call(token,this,Item);
+	    next = token.evaluator(token,this,Item);
     };
 	for each (var exec in token.execs){
 	    maybenext = exec.call(token,this,Item);
@@ -884,15 +925,18 @@ CSL.Lib.Elements["if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-			for each (var variable in this.variables){
-				var func = function(state,Item){
-					if (Item[variable]){
-						return true;
-					}
-					return false;
-				};
-				this["tests"].push(func);
-			};
+			//for each (var variable in this.variables){
+			//	print("outside function: "+variable);
+			//	var func = function(state,Item){
+			//		print("inside function: "+variable);
+			//		if (Item[variable]){
+			//			print("found: "+variable);
+			//			return true;
+			//		}
+			//		return false;
+			//	};
+			//	this["tests"].push(func);
+			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item){
@@ -908,18 +952,7 @@ CSL.Lib.Elements["if"] = new function(){
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
-				this.evaluator = function(state,Item){
-					var res = this.fail;
-					state.tmp.jump.replace("fail");
-					for each (var func in this.tests){
-						if (func.call(this,state,Item)){
-							res = this.succeed;
-							state.tmp.jump.replace("succeed");
-							break;
-						}
-					}
-					return res;
-				};
+				this.evaluator = state.fun.match.any;
 			};
 		}
 		if (this.tokentype == CSL.END){
@@ -948,15 +981,15 @@ CSL.Lib.Elements["else-if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-			for each (var variable in this.variables){
-				var func = function(state,Item){
-					if (Item[variable]){
-						return true;
-					}
-					return false;
-				};
-				this["tests"].push(func);
-			};
+			//for each (var variable in this.variables){
+			//	var func = function(state,Item){
+			//		if (Item[variable]){
+			//			return true;
+			//		}
+			//		return false;
+			//	};
+			//	this["tests"].push(func);
+			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item){
@@ -972,18 +1005,7 @@ CSL.Lib.Elements["else-if"] = new function(){
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"
-				this.evaluator = function(state,Item){
-					var res = this.fail;
-					state.tmp.jump.replace("fail");
-					for each (var func in this.tests){
-						if (func.call(this,state,Item)){
-							res = this.succeed;
-							state.tmp.jump.replace("succeed");
-							break;
-						}
-					}
-					return res;
-				};
+				this.evaluator = state.fun.match.any;
 			};
 		}
 		if (this.tokentype == CSL.END){
@@ -1260,11 +1282,11 @@ CSL.Lib.Elements.date = new function(){
 CSL.Lib.Elements["date-part"] = new function(){
 	this.build = build;
 	function build(state,target){
-		var value = "";
 		if (!this.strings.form){
 			this.strings.form = "long";
 		}
 		var render_date_part = function(state,Item){
+			var value = "";
 			if (state.tmp.date_object){
 				value = state.tmp.date_object[this.strings.name];
 			};
@@ -1417,9 +1439,11 @@ CSL.Lib.Elements.key = new function(){
 					if (variable == "citation-number"){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
 					} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-						state.output.append(CSL.Util.Dates.year["long"](state,Item[variable]["year"]));
-						state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable]["month"]));
-						state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable]["day"]));
+						if (Item[variable]){
+							state.output.append(CSL.Util.Dates.year["long"](state,Item[variable].year));
+							state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable].month));
+							state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable].day));
+						}
 					} else {
 						state.output.append(Item[variable],"empty");
 					}
@@ -1442,7 +1466,10 @@ CSL.Lib.Elements.key = new function(){
 		var store_key_for_use = function(state,Item){
 			var keystring = state.output.string(state,state.output.queue);
 			if (false){
-				print("keystring: "+keystring);
+				print("keystring: "+keystring+" "+typeof keystring);
+			}
+			if ("string" != typeof keystring){
+				keystring = undefined;
 			}
 			state[state.tmp.area].keys.push(keystring);
 			state.tmp.value = new Array();
@@ -1644,7 +1671,7 @@ CSL.Lib.Elements.names = new function(){
 						//
 						// register the name in the global names disambiguation
 						// registry
-						state.registry.namereg.update(Item.id,nameset.names[i],i);
+						state.registry.namereg.addname(Item.id,nameset.names[i],i);
 						//
 						// set the display mode default for givennames if required
 						if (state.tmp.disambig_request){
@@ -1846,10 +1873,12 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 		state.tmp.namepart_type = arg;
 	} else {
 		var func = function(state,Item){
-			if(Item.type == arg){
-				return true;
+			var types = arg.split(/\s+/);
+			var ret = [];
+			for each (var type in types){
+				ret.push(Item.type == type);
 			}
-			return false;
+			return ret;
 		};
 		this["tests"].push(func);
 	}
@@ -1866,13 +1895,17 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 		// conditionally in order to suppress repeat renderings of
 		// the same item variable.
 		//
+		// Do not suppress repeat renderings of dates.
+		//
 		var set_variable_names = function(state,Item){
 			var variables = this.variables.slice();
 			this.variables = [];
 			for each (var variable in variables){
 				if (state.tmp.done_vars.indexOf(variable) == -1){
 					this.variables.push(variable);
-					state.tmp.done_vars.push(variable);
+					if ("date" != this.name){
+						state.tmp.done_vars.push(variable);
+					};
 				};
 			};
 		};
@@ -1911,22 +1944,30 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 		this.execs.push(check_for_output);
 	} else if (["if", "else-if"].indexOf(this.name) > -1){
 		var check_for_variable_value = function(state,Item){
+			var ret = [];
 			for each(variable in this.variables){
+				var x = false;
 				if (Item[variable]){
 					if ("number" == typeof Item[variable] || "string" == typeof Item[variable]){
-						return true;
+						x = true;
 					} else if ("object" == typeof Item[variable]){
 						if (Item[variable].length){
-							return true;
+							x = true;
 						} else {
-							for (i in Item[variable]){
-								return true;
-							}
-						}
-					}
-				}
-				return false;
+							//
+							// this will turn true only for hash objects
+							// that have at least one attribute.
+							//
+							for (var i in Item[variable]){
+								x = true;
+								break;
+							};
+						};
+					};
+				};
+				ret.push(x);
 			};
+			return ret;
 		};
 		this.tests.push(check_for_variable_value);
 	};
@@ -1954,44 +1995,11 @@ CSL.Lib.Attributes["@delimiter"] = function(state,arg){
 CSL.Lib.Attributes["@match"] = function(state,arg){
 	if (this.tokentype == CSL.START){
 		if ("none" == arg){
-			var evaluator = function(state,Item){
-				var res = this.succeed;
-				state.tmp.jump.replace("succeed");
-				for each (var func in this.tests){
-					if (func.call(this,state,Item)){
-						res = this.fail;
-						state.tmp.jump.replace("fail");
-						break;
-					}
-				}
-				return res;
-			};
+			var evaluator = state.fun.match.none;
 		} else if ("any" == arg){
-			var evaluator = function(state,Item){
-				var res = this.fail;
-				state.tmp.jump.replace("fail");
-				for each (var func in this.tests){
-					if (func.call(this,state,Item)){
-						res = this.succeed;
-						state.tmp.jump.replace("succeed");
-						break;
-					}
-				}
-				return res;
-			};
+			var evaluator = state.fun.match.any;
 		} else if ("all" == arg){
-			var evaluator = function(state,Item){
-				var res = this.succeed;
-				state.tmp.jump.replace("succeed");
-				for each (var func in this.tests){
-					if (!func.call(this,state,Item)){
-						res = this.fail;
-						state.tmp.jump.replace("fail");
-						break;
-					}
-				}
-				return res;
-			};
+			var evaluator = state.fun.match.all;
 		} else {
 			throw "Unknown match condition \""+arg+"\" in @match";
 		}
@@ -2299,10 +2307,17 @@ CSL.Factory.cloneAmbigConfig = function(config){
 	for (var i in config["givens"]){
 		var param = new Array();
 		for (var j in config["givens"][i]){
-			param.push(config["givens"][i][j]);
-		}
+			//
+			// XXXX: Aha again!  Givens sublist is acquiring an item at position -1.
+			// Classic stab-in-the-back Javascript breakage.  A hacked-in fix for
+			// now, this should be properly cleaned up sometime, though.
+			//
+			if (j > -1){
+				param.push(config["givens"][i][j]);
+			};
+		};
 		ret["givens"].push(param);
-	}
+	};
 	ret["year_suffix"] = config["year_suffix"];
 	ret["disambiguate"] = config["disambiguate"];
 	return ret;
@@ -2399,6 +2414,95 @@ CSL.Factory.Blob.prototype.push = function(blob){
 	}
 };
 CSL.Util = {};
+CSL.Util.Match = function(){
+	this.any = function(token,state,Item){
+		//
+		// assume false, return true on any single true hit
+		//
+		var ret = false;
+		for each (var func in token.tests){
+			var rawres = func.call(token,state,Item);
+			if ("object" != typeof rawres){
+				rawres = [rawres];
+			}
+			for each (var res in rawres){
+				if (res){
+					ret = true;
+					break;
+				}
+			};
+			if (ret){
+				break;
+			};
+		};
+		if (ret){
+			ret = token.succeed;
+			state.tmp.jump.replace("succeed");
+		} else {
+			ret = token.fail;
+			state.tmp.jump.replace("fail");
+		};
+		return ret;
+	};
+	this.none = function(token,state,Item){
+		//
+		// assume true, return false on any single true hit
+		//
+		var ret = true;
+		for each (var func in this.tests){
+			var rawres = func.call(token,state,Item);
+			if ("object" != typeof rawres){
+				rawres = [rawres];
+			}
+			for each (var res in rawres){
+				if (res){
+					ret = false;
+					break;
+				}
+			};
+			if (!ret){
+				break;
+			};
+		};
+		if (ret){
+			ret = token.succeed;
+			state.tmp.jump.replace("succeed");
+		} else {
+			ret = token.fail;
+			state.tmp.jump.replace("fail");
+		};
+		return ret;
+	};
+	this.all = function(token,state,Item){
+		//
+		// assume true, return false on any single false hit
+		//
+		var ret = true;
+		for each (var func in this.tests){
+			var rawres = func.call(token,state,Item);
+			if ("object" != typeof rawres){
+				rawres = [rawres];
+			}
+			for each (var res in rawres){
+				if (!res){
+					ret = false;
+					break;
+				}
+			};
+			if (!ret){
+				break;
+			};
+		};
+		if (ret){
+			ret = token.succeed;
+			state.tmp.jump.replace("succeed");
+		} else {
+			ret = token.fail;
+			state.tmp.jump.replace("fail");
+		};
+		return ret;
+	};
+};
 CSL.Util.Names = new function(){};
 CSL.Util.Names.outputNames = function(state,display_names){
 	var segments = new this.StartMiddleEnd(state,display_names);
@@ -2708,7 +2812,10 @@ CSL.Util.Dates.day["ordinal"] = function(state,num){
 }
 CSL.Util.Sort = new function(){};
 CSL.Util.Sort.strip_prepositions = function(str){
-	var m = str.toLocaleLowerCase().match(/((a|an|the)\s+)/);
+	if ("string" == typeof str){
+		var m = str.toLocaleLowerCase().match(/((a|an|the)\s+)/);
+		m = str.match(/((a|an|the)\s+)/);
+	}
 	if (m){
 		str = str.substr(m[1].length);
 	};
@@ -2780,19 +2887,7 @@ CSL.Util.substituteStart = function(state,target){
 		// function, from Attributes.  These functions
 		// should be defined in a namespace for reuse.
 		// Sometime.
-		var evaluator = function(state,Item){
-			var res = this.fail;
-			state.tmp.jump.replace("fail");
-			for each (var func in this.tests){
-				if (func.call(this,state,Item)){
-					res = this.succeed;
-					state.tmp.jump.replace("succeed");
-					break;
-				}
-			}
-			return res;
-		};
-		if_start.evaluator = evaluator;
+		if_start.evaluator = state.fun.match.any;
 		target.push(if_start);
 	};
 };
@@ -2906,7 +3001,13 @@ CSL.Util.Suffixator.prototype.incrementArray = function (array){
 //
 // Gee wiz, Wally, how is this going to work?
 //
-// (A) be sure there is an output blob open.
+// (A) initialize flipflopper with an empty blob to receive output.
+// Text string in existing output queue blob will be replaced with
+// an array containing this blob.
+CSL.Util.FlipFlopper = function(str){
+	this.str = str;
+	this.blob = CSL.Factory.Blob();
+};
 //
 // (1) scan the string for escape characters, marking the position of
 // the character immediately following the escape.
@@ -2930,6 +3031,12 @@ CSL.Util.Suffixator.prototype.incrementArray = function (array){
 // And voila.  Should handle both wiki-style and tagged markup,
 // and be reasonably simple and reasonably fast.  Feed it a
 // set of config parameters, and we have inline processing.
+//
+// For config parameters, we'll need:
+//
+// - A map of names to formatting functions, incorporating flipflop.
+// - A map of tags to names.
+// - Ditch semantic tags.  If needed, they can be patched in later.
 //		if (this.flipflops){
 //			for each (var ff in this.flipflops){
 //				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
@@ -3299,10 +3406,13 @@ CSL.Output.Formatters.title_capitalization = function(state,string) {
 };
 CSL.Output.Formats = function(){};
 CSL.Output.Formats.prototype.html = {
-	"@font-family":"<span style=\"font-family:%%PARAM%%\">%%STRING%%</span>",
+	"format_init": function(tmp){},
+	"items_add": function(tmp,items_array){},
+	"items_delete": function(tmp,items_hash){},
+	"text_escape": function(tmp,text){return text;},
 	"@font-style/italic":"<i>%%STRING%%</i>",
-	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
 	"@font-style/oblique":"<em>%%STRING%%</em>",
+	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
 	"@font-variant/small-caps":"<span style=\"font-variant:small-caps\">%%STRING%%</span>",
 	"@font-variant/normal":false,
 	"@font-weight/bold":"<b>%%STRING%%</b>",
@@ -3508,29 +3618,52 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	if (blobs.length == 0){
 		return ret;
 	}
+	var blob_last_chars = new Array();
+	if (blob){
+		var blob_delimiter = blob.strings.delimiter;
+	} else {
+		var blob_delimiter = "";
+	};
 	for (var i in blobs){
 		var blobjr = blobs[i];
 		if ("string" == typeof blobjr.blobs){
+			var last_str = "";
+			if (blobjr.strings.suffix){
+				last_str = blobjr.strings.suffix;
+			} else if (blobjr.blobs){
+				last_str = blobjr.blobs;
+			};
+			var last_char = last_str[(last_str.length-1)];
 			if ("number" == typeof blobjr.num){
 				ret.push(blobjr);
+				blob_last_chars.push(last_char);
 			} else if (blobjr.blobs){
 				// skip empty strings!!!!!!!!!!!!
-				var b = blobjr.blobs;
+				var b = state.fun.decorate.text_escape(state,blobjr.blobs);
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
 						b = state.fun.decorate[params[0]][params[1]](state,b);
 					};
 				};
+				//
+				// XXXXX: this should really be matching whenever there is a suffix,
+				// and the last char in the string is the same as the first char in
+				// the suffix.
+				//
 				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
 					b = blobjr.strings.prefix + b + blobjr.strings.suffix.slice(1);
 				} else {
 					b = blobjr.strings.prefix + b + blobjr.strings.suffix;
 				}
 				ret.push(b);
+				blob_last_chars.push(last_char);
 			};
 		} else if (blobjr.blobs.length){
-			var addtoret = state.output.string(state,blobjr.blobs,blobjr);
+			var res = state.output.string(state,blobjr.blobs,blobjr);
+			var addtoret = res[0];
 			ret = ret.concat(addtoret);
+			blob_last_chars = blob_last_chars.concat(res[1]);
+			//blob_last_chars = res[1];
 		} else {
 			continue;
 		}
@@ -3544,12 +3677,9 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
 		span_split = ret.length;
 	}
-	if (blob){
-		var blob_delimiter = blob.strings.delimiter;
-	} else {
-		var blob_delimiter = "";
-	}
-	var blobs_start = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter );
+	var res = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
+	var blobs_start = res[0];
+	blob_last_chars = res[1].slice();
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
 		if (!state.tmp.suppress_decorations){
 			for each (var params in blob.decorations){
@@ -3581,12 +3711,20 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		this.current.mystack = new Array();
 		this.current.mystack.push( this.queue );
 		if (state.tmp.suppress_decorations){
-			ret = state.output.renderBlobs(ret);
-		}
+			var res = state.output.renderBlobs(ret);
+			ret = res[0];
+			blob_last_chars = res[1].slice();
+		};
 	} else if ("boolean" == typeof blob){
-		ret = state.output.renderBlobs(ret);
-	}
-	return ret;
+		var res = state.output.renderBlobs(ret);
+		ret = res[0];
+		blob_last_chars = res[1].slice();
+	};
+	if (blob){
+		return [ret,blob_last_chars.slice()];
+	} else {
+		return ret;
+	};
 };
 CSL.Output.Queue.prototype.clearlevel = function(){
 	var blob = this.current.value();
@@ -3594,26 +3732,43 @@ CSL.Output.Queue.prototype.clearlevel = function(){
 		blob.blobs.pop();
 	}
 };
-CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
+CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 	if (!delim){
 		delim = "";
 	}
+	if (!blob_last_chars){
+		blob_last_chars = [];
+	};
 	var state = this.state;
 	var ret = "";
+	var ret_last_char = [];
 	var use_delim = "";
 	for (var i=0; i < blobs.length; i++){
 		if (blobs[i].checkNext){
 			blobs[i].checkNext(blobs[(i+1)]);
 		}
 	}
-	for each (var blob in blobs){
+	for (var i in blobs){
+		var blob = blobs[i];
 		if (ret){
 			use_delim = delim;
 		}
-		if ("string" == typeof blob){
+		if (blob && "string" == typeof blob){
 			//throw "Attempt to render string as rangeable blob"
-			ret += use_delim;
+			if (use_delim && blob_last_chars[(i-1)] == use_delim[0]) {
+				//
+				// Something for posterity, at the end of a remarkably
+				// unproductive day.
+				//
+				//print("  ####################################################");
+				//print("  ######################## EUREKA ####################");
+				//print("  ####################################################");
+				ret += use_delim.slice(1);
+			} else {
+				ret += use_delim;
+			};
 			ret += blob;
+			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 		} else if (blob.status != CSL.SUPPRESS){
 			// print("doing rangeable blob");
 			//var str = blob.blobs;
@@ -3636,10 +3791,39 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
 				ret += blob.splice_prefix;
 			}
 			ret += str;
+			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 		}
 	}
-	return ret;
+	return [ret,ret_last_char];
 };
+//
+// Time for a rewrite of this module.
+//
+// Simon has pointed out that list and hash behavior can
+// be obtained by ... just using a list and a hash.  This
+// is faster for batched operations, because sorting is
+// greatly optimized.  Since most of the interaction
+// with plugins at runtime will involve batches of
+// references, there will be solid gains if the current,
+// one-reference-at-a-time approach implemented here
+// can be replaced with something that leverages the native
+// sort method of the Array() type.
+//
+// That's going to take some redesign, but it will simplify
+// things in the long run, so it might as well happen now.
+//
+// We'll keep makeCitationCluster and makeBibliography as
+// simple methods that return a string.  Neither should
+// have any effect on internal state.  This will be a change
+// in behavior for makeCitationCluster.
+//
+// A new updateItems command will be introduced, to replace
+// insertItems.  It will be a simple list of IDs, in the
+// sequence of first reference in the document.
+//
+// The calling application should always invoke updateItems
+// before makeCitationCluster.
+//
 //
 // should allow batched registration of items by
 // key.  should behave as an update, with deletion
@@ -3650,219 +3834,302 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim){
 // we'll need a reset method, to clear the decks
 // in the citation area and start over.
 CSL.Factory.Registry = function(state){
-	this.debug = false;
-	this.debug_sort = false;
-	if (this.debug){
-		print("---> Instantiate registry");
-	}
+	this.state = state;
 	this.registry = new Object();
-	this.namereg = new this.NameReg(state);
-	this.ambigs = new Object();
-	this.start = false;
-	this.end = false;
-	this.initialized = false;
-	this.skip = false;
-	this.maxlength = 0;
+	this.reflist = new Array();
+	this.namereg = new CSL.Factory.Registry.NameReg(state);
+	this.mylist = new Array();
+	this.myhash = new Object();
+	this.deletes = new Array();
+	this.inserts = new Array();
+	this.dbupdates = new Object();
+	this.akeys = new Object();
+	this.ambigcites = new Object();
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
+	this.modes = this.state.getModes();
 	this.getSortedIds = function(){
-		var step = "next";
-		var item_id = this.start;
-		var ret = new Array();
-		while (true){
-			ret.push(item_id);
-			item_id = this.registry[item_id][step];
-			if ( ! item_id){
-				break;
-			}
-		}
+		var ret = [];
+		for each (var Item in this.reflist){
+			ret.push(Item.id);
+		};
 		return ret;
 	};
 };
-CSL.Factory.Registry.prototype.insert = function(state,Item){
-	if (this.debug){
-		print("---> Start of insert");
-	}
-	if (this.registry[Item.id]){
-		return;
-	}
-	var sortkeys = state.getSortKeys(Item,"bibliography_sort");
-	var akey = state.getAmbiguousCite(Item);
-	var abase = state.getAmbigConfig();
-	var modes = state.getModes();
-	var newitem = {
-		"id":Item.id,
-		"seq":1,
-		"dseq":0,
-		"sortkeys":sortkeys,
-		"disambig":abase,
-		"prev":false,
-		"next":false
+//
+// Here's the sequence of operations to be performed on
+// update:
+//
+//  1.  (o) [init] Receive list as function argument, store as hash and as list.
+//  2.  (o) [init] Initialize refresh list.  Never needs sorting, only hash required.
+//  3.  (o) [dodeletes] Delete loop.
+//  3a. (o) [dodeletes] Delete names in items to be deleted from names reg.
+//  3b. (o) [dodeletes] Complement refreshes list with items affected by
+//      possible name changes.  We'll actually perform the refresh once
+//      all of the necessary data and parameters have been established
+//      in the registry.
+//  3c. (o) [dodeletes] Delete all items to be deleted from their disambig pools.
+//  3d. (o) [dodeletes] Delete all items in deletion list from hash.
+//  4.  (o) [doinserts] Insert loop.
+//  4a. (o) [doinserts] Retrieve entries for items to insert.
+//  4b. (o) [doinserts] Generate ambig key.
+//  4c. (o) [doinserts] Add names in items to be inserted to names reg
+//      (implicit in getAmbiguousCite).
+//  4d. (o) [doinserts] Record ambig pool key on akey list (used for updating further
+//      down the chain).
+//  4e. (o) [doinserts] Create registry token.
+//  4f. (o) [doinserts] Add item ID to hash.
+//  4g. (o) [doinserts] Set and record the base token to hold disambiguation
+//      results ("disambig" in the object above).
+//  5.  (o) [rebuildlist] Create "new" list of hash pointers, in the order given
+//          in the argument to the update function.
+//  6.  (o) [rebuildlist] Apply citation numbers to new list.
+//  7.  (o) [dorefreshes] Refresh items requiring update.
+//  5. (o) [delnames] Delete names in items to be deleted from names reg, and obtain IDs
+//         of other items that would be affected by changes around that surname.
+//  6. (o) [delnames] Complement delete and insert lists with items affected by
+//         possible name changes.
+//  7. (o) [delambigs] Delete all items to be deleted from their disambig pools.
+//  8. (o) [delhash] Delete all items in deletion list from hash.
+//  9. (o) [addtohash] Retrieve entries for items to insert.
+// 10. (o) [addtohash] Add items to be inserted to their disambig pools.
+// 11. (o) [addtohash] Add names in items to be inserted to names reg
+//         (implicit in getAmbiguousCite).
+// 12. (o) [addtohash] Create registry token for each item to be inserted.
+// 13. (o) [addtohash] Add items for insert to hash.
+// 14. (o) [buildlist] Create "new" list of hash pointers, in the order given in the argument
+//         to the update function.
+// 15. (o) [renumber] Apply citation numbers to new list.
+// 16. (o) [setdisambigs] Set disambiguation parameters on each inserted item token.
+// 17. (o) [setsortkeys] Set sort keys on each item token.
+// 18. (o) [sorttokens] Resort token list
+// 19. ( ) [renumber] Reset citation numbers on list items
+//
+CSL.Factory.Registry.prototype.init = function(myitems){
+	this.mylist = myitems;
+	this.myhash = new Object();
+	for each (var item in myitems){
+		this.myhash[item] = true;
 	};
-	if (this.debug){
-		print("---> Begin manipulating registry");
-	}
-	var breakme = false;
-	if (!this.initialized){
-		if (this.debug_sort){
-			print("-->initializing registry with "+newitem.id);
-		}
-		this.registry[newitem.id] = newitem;
-		this.start = newitem.id;
-		this.end = newitem.id;
-		this.initialized = true;
-		//
-		// XXXXX
-		//this.registerAmbigToken(state,akey,Item.id,abase.slice());
-		this.registerAmbigToken(state,akey,Item.id,abase);
-		return;
-	}
-	if (-1 == this.sorter.compareKeys(newitem.sortkeys,this.registry[this.start].sortkeys)){
-		if (this.debug_sort){
-			print("-->inserting "+newitem.id+" before "+this.start+" as first entry");
-		}
-		newitem.next = this.registry[this.start].id;
-		this.registry[this.start].prev = newitem.id;
-		newitem.prev = false;
-		newitem.seq = 1;
-		var tok = this.registry[this.start];
-		this.incrementSubsequentTokens(tok);
-		this.start = newitem.id;
-		this.registry[newitem.id] = newitem;
-		breakme = true;
-	}
-	if (-1 == this.sorter.compareKeys(this.registry[this.end].sortkeys,newitem.sortkeys)  && !breakme){
-		if (this.debug_sort){
-			print("-->inserting "+newitem.id+" after "+this.end+" as last entry");
-		}
-		newitem.prev = this.registry[this.end].id;
-		this.registry[this.end].next = newitem.id;
-		newitem.next = false;
-		newitem.seq = (this.registry[this.end].seq + 1);
-		this.end = newitem.id;
-		this.registry[newitem.id] = newitem;
-		breakme = true;
-	}
-	var curr = this.registry[this.end];
-	while (true && !breakme){
-		// compare the new token to be added with
-		// the one we're thinking about placing it after.
-		var cmp = this.sorter.compareKeys(curr.sortkeys,newitem.sortkeys);
-		if (cmp == -1){
-			if (this.debug_sort){
-				print("-->inserting "+newitem.id+" after "+curr.id);
+	this.refreshes = new Object();
+	this.touched = new Object();
+};
+CSL.Factory.Registry.prototype.dodeletes = function(myhash){
+	if ("string" == typeof myhash){
+		myhash = {myhash:true};
+	};
+	for (var delitem in this.registry){
+		if (!myhash[delitem]){
+			//
+			//  3a. Delete names in items to be deleted from names reg.
+			//
+			var otheritems = this.namereg.delitems(delitem);
+			//
+			//  3b. Complement refreshes list with items affected by
+			//      possible name changes.  We'll actually perform the refresh once
+			//      all of the necessary data and parameters have been established
+			//      in the registry.
+			//
+			for (var i in otheritems){
+				this.refreshes[i] = true;
+			};
+			//
+			//  3c. Delete all items to be deleted from their disambig pools.
+			//
+			var ambig = this.registry[delitem].ambig;
+			var pos = this.ambigcites[ambig].indexOf(delitem);
+			if (pos > -1){
+				var items = this.ambigcites[ambig].slice();
+				this.ambigcites[ambig] = items.slice(0,pos).concat(items.slice([pos+1],items.length));
 			}
-			// insert mid-list, after the tested item
-			this.registry[curr.next].prev = newitem.id;
-			newitem.next = curr.next;
-			newitem.prev = curr.id;
-			curr.next = newitem.id;
-			newitem.seq = (curr.seq+1);
-			this.incrementSubsequentTokens(this.registry[newitem.next]);
-			this.registry[newitem.id] = newitem;
-			breakme = true;
-			break;
-		} else if (cmp == 2){
-			breakme = true;
-		} else if (cmp == 0) {
-			// insert _after_, but this one is equivalent
-			// to the comparison partner for sortkey purposes
-			// (so we needed to provide for cases where the
-			// inserted object ends up at the end of
-			// the virtual list.)
-			if (false == curr.next){
-				if (this.debug_sort){
-					print("-->inserting "+newitem.id+" after "+curr.id+" as last entry, although equal");
-				}
-				newitem.next = false;
-				newitem.prev = curr.id;
-				curr.next = newitem.id;
-				newitem.seq = (curr.seq+1);
-				//this.incrementSubsequentTokens(curr);
-				this.registry[newitem.id] = newitem;
-				this.end = newitem.id;
-				breakme = true;
-				break;
+			//
+			//  3d. Delete all items in deletion list from hash.
+			//
+			delete this.registry[delitem];
+		};
+	};
+	this.state.fun.decorate.items_delete( this.state.output[this.state.opt.mode].tmp, myhash );
+};
+CSL.Factory.Registry.prototype.doinserts = function(mylist){
+	if ("string" == typeof mylist){
+		mylist = [mylist];
+	};
+	for each (var item in mylist){
+		if (!this.registry[item]){
+			//
+			//  4a. Retrieve entries for items to insert.
+			//
+			var Item = this.state.sys.retrieveItem(item);
+			//
+			//  4b. Generate ambig key.
+			//
+			// AND
+			//
+			//  4c. Add names in items to be inserted to names reg
+			//      (implicit in getAmbiguousCite).
+			//
+			var akey = this.state.getAmbiguousCite(Item);
+			//
+			//  4d. Record ambig pool key on akey list (used for updating further
+			//      down the chain).
+			//
+			this.akeys[akey] = true;
+			//
+			//  4e. Create registry token.
+			//
+			var newitem = {
+				"id":item,
+				"seq":0,
+				"sortkeys":undefined,
+				"ambig":undefined,
+				"disambig":undefined
+			};
+			//
+			//
+			//  4f. Add item ID to hash.
+			//
+			this.registry[item] = newitem;
+			//
+			//  4g. Set and record the base token to hold disambiguation
+			//      results ("disambig" in the object above).
+			//
+			var abase = this.state.getAmbigConfig();
+			this.registerAmbigToken(akey,item,abase);
+			//if (!this.ambigcites[akey]){
+			//	this.ambigcites[akey] = new Array();
+			//}
+			//print("Run: "+item+"("+this.ambigcites[akey]+")");
+			//if (this.ambigcites[akey].indexOf(item) == -1){
+			//	print("  Add: "+item);
+			//	this.ambigcites[akey].push(item);
+			//};
+			//
+			//  4h. Make a note that this item needs its sort keys refreshed.
+			//
+			this.touched[item] = true;
+		};
+	};
+	this.state.fun.decorate.items_add( this.state.output[this.state.opt.mode].tmp, mylist );
+};
+CSL.Factory.Registry.prototype.rebuildlist = function(){
+	this.reflist = new Array();
+	var count = 1;
+	for each (var item in this.mylist){
+		this.reflist.push(this.registry[item]);
+		this.registry[item].seq = count;
+		count += 1;
+	};
+};
+CSL.Factory.Registry.prototype.dorefreshes = function(){
+	for (var item in this.dbupdates){
+		this.dodeletes(item);
+		this.doinserts(item);
+	};
+};
+CSL.Factory.Registry.prototype.setdisambigs = function(){
+	this.leftovers = new Array();
+	for (var akey in this.akeys){
+		//
+		// if there are multiple ambigs, disambiguate them
+		if (this.ambigcites[akey].length > 1){
+			if (this.modes.length){
+				if (this.debug){
+					print("---> Names disambiguation begin");
+				};
+				var leftovers = this.disambiguateCites(this.state,akey,this.modes);
 			} else {
-				if (this.debug_sort){
-					print("-->inserting "+newitem.id+" after "+curr.id+", although equal");
-				}
-				this.registry[curr.next].prev = newitem.id;
-				newitem.next = curr.next;
-				newitem.prev = curr.id;
-				curr.next = newitem.id;
-				newitem.seq = curr.seq;
-				this.registry[newitem.id] = newitem;
-				this.incrementSubsequentTokens(newitem);
-				breakme = true;
-				break;
-			}
-		}
-		if (breakme){
-			break;
-		}
-		//
-		// we scan in reverse order, because working
-		// from the initial draft of the code, this
-		// makes it simpler to order cites in submission
-		// order, when no sort keys are available.
-		curr = this.registry[curr.prev];
+				//
+				// if we didn't disambiguate with names, everything is
+				// a leftover.
+				var leftovers = new Array();
+				for each (var key in this.ambigcites[akey]){
+					leftovers.push(this.registry[key]);
+				};
+			};
+			//
+			// for anything left over, set disambiguate to true, and
+			// try again from the base.
+			if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
+				var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
+			};
+			//
+			// Throws single leftovers.
+			// Enough of this correctness shtuff already.  Using a band-aide on this.
+			if (leftovers.length > 1){
+				this.leftovers.push(leftovers);
+			};
+		};
 	};
-	if (this.debug){
-		print("---> End of registry insert");
-	}
-	this.registerAmbigToken(state,akey,Item.id,abase);
-	if (this.ambigs[akey].length > 1){
-		if (modes.length){
-			if (this.debug){
-				print("---> Names disambiguation begin");
-			}
-			var leftovers = this.disambiguateCites(state,akey,modes);
-			if (this.debug){
-				print("---> Names disambiguation done");
-			}
-			//
-			// leftovers is a list of registry tokens.  sort them.
+	this.akeys = new Object();
+};
+CSL.Factory.Registry.prototype.renumber = function(){
+	var count = 1;
+	for each (var item in this.reflist){
+		item.seq = count;
+		count += 1;
+	};
+};
+CSL.Factory.Registry.prototype.yearsuffix = function(){
+	for each (var leftovers in this.leftovers){
+		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
+			//print("ORDER OF ASSIGNING YEAR SUFFIXES");
 			leftovers.sort(this.compareRegistryTokens);
-		} else {
-			//
-			// if we didn't disambiguate with names, everything is
-			// a leftover.
-			var leftovers = new Array();
-			for each (var key in this.ambigs[akey]){
-				leftovers.push(this.registry[key]);
-				leftovers.sort(this.compareRegistryTokens);
-			}
-		}
-	}
-	if (leftovers && leftovers.length && state.opt.has_disambiguate){
-		var leftovers = this.disambiguateCites(state,akey,modes,leftovers);
-	}
-	if ( leftovers && leftovers.length && state[state.tmp.area].opt["disambiguate-add-year-suffix"]){
-		//var suffixes = state.fun.suffixator.get_suffixes(leftovers.length);
-		for (var i in leftovers){
-			this.registry[ leftovers[i].id ].disambig[2] = i;
-			this.registry[ leftovers[i].id ].dseq = i;
-		}
-	}
-	if (this.debug) {
-		print("---> End of registry cleanup");
-	}
+			for (var i in leftovers){
+				//print("  "+leftovers[i].id);
+				this.registry[ leftovers[i].id ].disambig[2] = i;
+			};
+		};
+		if (this.debug) {
+			print("---> End of registry cleanup");
+		};
+	};
+};
+CSL.Factory.Registry.prototype.setsortkeys = function(){
+	for (var item in this.touched){
+		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
+		//print("touched: "+item+" ... "+this.registry[item].sortkeys);
+	};
+};
+CSL.Factory.Registry.prototype.sorttokens = function(){
+	this.reflist.sort(this.sorter.compareKeys);
 };
 CSL.Factory.Registry.Comparifier = function(state,keyset){
 	var sort_directions = state[keyset].opt.sort_directions.slice();
     this.compareKeys = function(a,b){
-		for (var i=0; i < a.length; i++){
+		for (var i=0; i < a.sortkeys.length; i++){
 			//
 			// for ascending sort 1 uses 1, -1 uses -1.
 			// For descending sort, the values are reversed.
-			var cmp = a[i].toLocaleLowerCase().localeCompare(b[i].toLocaleLowerCase());
+			//
+			// XXXXX
+			//
+			// Need to handle undefined values.  No way around it.
+			// So have to screen .localeCompare (which is also
+			// needed) from undefined values.  Everywhere, in all
+			// compares.
+			//
+			var cmp = 0;
+			if (a.sortkeys[i] == b.sortkeys[i]){
+				cmp = 0;
+			} else if ("undefined" == typeof a.sortkeys[i]){
+				cmp = sort_directions[i][1];;
+			} else if ("undefined" == typeof b.sortkeys[i]){
+				cmp = sort_directions[i][0];;
+			} else {
+				cmp = a.sortkeys[i].toLocaleLowerCase().localeCompare(b.sortkeys[i].toLocaleLowerCase());
+			}
 			if (0 < cmp){
 				return sort_directions[i][1];
 			} else if (0 > cmp){
 				return sort_directions[i][0];
 			}
 		}
-		return 0;
+		if (a.seq > b.seq){
+			return 1;
+		} else if (a.seq < b.seq){
+			return -1;
+		} else {
+			return 0;
+		};
 	};
 };
 CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
@@ -3873,27 +4140,33 @@ CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
 	}
 	return 0;
 };
-CSL.Factory.Registry.prototype.incrementSubsequentTokens = function (tok){
-	while (tok.next){
-		tok.seq += 1;
-		tok = this.registry[tok.next];
-	}
-	tok.seq += 1;
+CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
+	if ( ! this.ambigcites[akey]){
+		this.ambigcites[akey] = new Array();
+	};
+	if (this.ambigcites[akey].indexOf(id) == -1){
+		this.ambigcites[akey].push(id);
+	};
+	this.registry[id].ambig = akey;
+	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };
-CSL.Factory.Registry.prototype.NameReg = function(state){
+CSL.Factory.Registry.NameReg = function(state){
 	this.namereg = new Object();
-	this.updateme = new Array();
+	this.nameind = new Object();
 	var pkey;
 	var ikey;
 	var skey;
-	var _set_keys = function(nameobj){
-		pkey = nameobj["primary-key"];
-		var secondary = nameobj["secondary-key"];
-		if (!secondary){
-			secondary = "";
+	this.itemkeyreg = new Object();
+	var _strip_periods = function(str){
+		if (!str){
+			str = "";
 		}
-		ikey = pkey+"::"+CSL.Util.Names.initializeWith(secondary,"");
-		skey = pkey+"::::"+secondary.replace("."," ").replace(/\s+/," ");
+		return str.replace("."," ").replace(/\s+/," ");
+	};
+	var _set_keys = function(nameobj){
+		pkey = _strip_periods(nameobj["primary-key"]);
+		skey = _strip_periods(nameobj["secondary-key"]);
+		ikey = CSL.Util.Names.initializeWith(skey,"");
 	};
 	var eval = function(nameobj,namenum,request_base,form,initials){
 		// return vals
@@ -3902,15 +4175,9 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		_set_keys(nameobj);
 		//
 		// give literals a pass
-		if ("undefined" == typeof this.namereg[skey]){
+		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].ikey[ikey]){
 			return 2;
 		}
-		// keys
-		var pkey_is_unique = this.namereg[pkey] == 1;
-		var ikey_is_unique = this.namereg[ikey] == 1;
-		//print(skey);
-		var skey_is_unique = this.namereg[skey].length == 1;
-		// params
 		//
 		// possible options are:
 		//
@@ -3950,70 +4217,140 @@ CSL.Factory.Registry.prototype.NameReg = function(state){
 		// the last composite condition is for backward compatibility
 		//
 		if (!gdropt || gdropt == "all-names" || gdropt == "primary-name"){
-			if (!pkey_is_unique){
+			if (this.namereg[pkey].count > 1){
 				param = 1;
 			};
-			if (!ikey_is_unique){
+			if (this.namereg[pkey].ikey && this.namereg[pkey].ikey[ikey].count > 1){
 				param = 2;
 			}
 		} else if (gdropt == "all-names-with-initials" || gdropt == "primary-name-with-initials"){
-			if (!pkey_is_unique){
+			if (this.namereg[pkey].count > 1){
 				param = 1;
 			}
 		} else if (gdropt == "all-names-with-fullname" || gdropt == "primary-name-with-fullname"){
-			if (!pkey_is_unique){
+			if (this.namereg[pkey].count > 1){
 				param = 2;
 			}
 		};
 		return param;
 	};
-	var del = function(nameobj){
-		_set_keys(nameobj);
-		if (pkey){
-			this.namereg[skey] += -1;
-			if (this.namereg[skey] == 0){
-				delete this.namereg[skey];
-				this.namereg[pkey] += -1;
-				this.namereg[ikey] += -1;
-			};
-			if (this.namereg[ikey] == 0){
-				delete this.namereg[ikey];
-			};
-			if (this.namereg[pkey] == 0){
-				delete this.namereg[pkey];
-			};
+	var delitems = function(ids){
+		//
+		// XXXX: Left something out, oops.  This function needs to return
+		// the IDs of all items that might be affected by the deletion of a
+		// name affected by this invocation.
+		//
+		if ("string" == typeof ids){
+			ids = [ids];
 		};
+		var ret = {};
+		for (var item in ids){
+			//print("DEL-A");
+			if (!this.nameind[item]){
+				continue;
+			};
+			var key = this.nameind[item].split("::");
+			//print("DEL-B");
+			pkey = key[0];
+			ikey = key[1];
+			skey = key[2];
+			var pos = this.namereg[pkey].items.indexOf(item);
+			var items = this.namereg[pkey].items;
+			if (skey){
+				pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item);
+				if (pos > -1){
+					items = this.namereg[pkey].ikey[ikey].skey[skey].items.slice();
+					this.namereg[pkey].ikey[ikey].skey[skey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				};
+				if (this.namereg[pkey].ikey[ikey].skey[skey].items.length == 0){
+					delete this.namereg[pkey].ikey[ikey].skey[skey];
+					this.namereg[pkey].ikey[ikey].count += -1;
+					if (this.namereg[pkey].ikey[ikey].count < 2){
+						for (var i in this.namereg[pkey].ikey[ikey].items){
+							ret[i] = true;
+						};
+					};
+				};
+			};
+			if (ikey){
+				pos = this.namereg[pkey].ikey[ikey].items.indexOf(item);
+				if (pos > -1){
+					items = this.namereg[pkey].ikey[ikey].items.slice();
+					this.namereg[pkey].ikey[ikey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				};
+				if (this.namereg[pkey].ikey[ikey].items.length == 0){
+					delete this.namereg[pkey].ikey[ikey];
+					this.namereg[pkey].count += -1;
+					if (this.namereg[pkey].count < 2){
+						for (var i in this.namereg[pkey].items){
+							ret[i] = true;
+						};
+					};
+				};
+			};
+			if (pkey){
+				pos = this.namereg[pkey].items.indexOf(item);
+				if (pos > -1){
+					items = this.namereg[pkey].items.slice();
+					this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+				};
+				if (this.namereg[pkey].items.length == 0){
+					delete this.namereg[pkey];
+				};
+			}
+			this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
+			delete this.nameind[item];
+		};
+		return ret;
 	};
-	var update = function(item_id,nameobj,pos){
+	var addname = function(item_id,nameobj,pos){
+		//print("INS");
 		_set_keys(nameobj);
-		var old_key = this.namereg[skey];
+		// pkey, ikey and skey should be stored in separate cascading objects.
+		// there should also be a kkey, on each, which holds the item ids using
+		// that form of the name.
 		if (pkey){
 			if ("undefined" == typeof this.namereg[pkey]){
-				this.namereg[pkey] = 0;
+				this.namereg[pkey] = new Object();
+				this.namereg[pkey]["count"] = 0;
+				this.namereg[pkey]["ikey"] = new Object();
+				this.namereg[pkey]["items"] = new Array();
 			};
-			if ("undefined" == typeof this.namereg[skey]){
-				this.namereg[skey] = [];
-				if ("undefined" == typeof this.namereg[ikey]){
-					this.namereg[ikey] = 0;
-				};
-				this.namereg[pkey] += 1;
-				this.namereg[ikey] += 1;
+			if (this.namereg[pkey].items.indexOf(item_id) == -1){
+				this.namereg[pkey].items.push(item_id);
 			};
-			this.namereg[skey].push(item_id);
 		};
-		if ("undefined" != typeof old_key && this.namereg[skey] != old_key){
-			for each (var id in this.namereg[skey]){
-				if (id == item_id){
-					continue;
-				}
-				if (this.updateme.indexOf(id) == -1){
-					this.updateme.push(id);
-				}
-			}
-		}
+		if (pkey && ikey){
+			if ("undefined" == typeof this.namereg[pkey].ikey[ikey]){
+				this.namereg[pkey].ikey[ikey] = new Object();
+				this.namereg[pkey].ikey[ikey]["count"] = 0;
+				this.namereg[pkey].ikey[ikey]["skey"] = new Object();
+				this.namereg[pkey].ikey[ikey]["items"] = new Array();
+				this.namereg[pkey]["count"] += 1;
+			};
+			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) == -1){
+				this.namereg[pkey].ikey[ikey].items.push(item_id);
+			};
+		};
+		if (pkey && ikey && skey){
+			if ("undefined" == typeof this.namereg[pkey].ikey[ikey].skey[skey]){
+				this.namereg[pkey].ikey[ikey].skey[skey] = new Object();
+				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = new Array();
+				this.namereg[pkey].ikey[ikey]["count"] += 1;
+			};
+			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) == -1){
+				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
+			};
+		};
+		if ("undefined" == typeof this.nameind[item_id]){
+			this.nameind[item_id] = new Object();
+		};
+		//print("INS-A");
+		this.nameind[item_id][pkey+"::"+ikey+"::"+skey] = true;
+		//print("INS-B");
 	};
-	this.update = update;
-	this.del = del;
+	this.addname = addname;
+	this.delitems = delitems;
 	this.eval = eval;
 };
 var debug = false;
@@ -4022,10 +4359,10 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		//
 		// We start with the state and an ambig key.
 		// We acquire a copy of the list of ambigs that relate to the key from state.
-		var ambigs = this.ambigs[akey].slice();
+		var ambigs = this.ambigcites[akey].slice();
 		//
 		// We clear the list of ambigs so it can be rebuilt
-		this.ambigs[akey] = new Array();
+		this.ambigcites[akey] = new Array();
 	} else {
 		//var ambigs = this.ambigs[akey].slice();
 		//this.ambigs[akey] = new Array();
@@ -4040,9 +4377,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		var ambigs = new Array();
 		for each (var reg_token in candidate_list){
 			ambigs.push(reg_token.id);
-			var keypos = this.ambigs[akey].indexOf(reg_token.id);
+			var keypos = this.ambigcites[akey].indexOf(reg_token.id);
 			if (keypos > -1){
-				this.ambigs[akey] = this.ambigs[akey].slice(0,keypos).concat(this.ambigs[akey].slice((keypos+1)));
+				this.ambigcites[akey] = this.ambigcites[akey].slice(0,keypos).concat(this.ambigcites[akey].slice((keypos+1)));
 			}
 		}
 	}
@@ -4065,7 +4402,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		}
 		//
 		// skip items that have been finally resolved.
-		if (this.ambigs[akey].indexOf(token.id) > -1){
+		if (this.ambigcites[akey].indexOf(token.id) > -1){
 			if (debug){
 				print("---> Skip registered token for: "+token.id);
 			}
@@ -4082,6 +4419,11 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			print("base in (givens):"+base["givens"]);
 		}
+		//
+		// XXXXX: Aha!  The processor is adding an empty given
+		// name entry to the config.  Check the debug output, it's
+		// clearly the processor.  Happens when the base value is 2.
+		//
 		var str = state.getAmbiguousCite(token,base);
 		var maxvals = state.getMaxVals();
 		var minval = state.getMinVal();
@@ -4120,10 +4462,12 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		}
 		if (checkerator.evaluateClashes()){
 			var base_return = this.decrementNames(state,base);
-			this.registerAmbigToken(state,akey,token.id,base_return);
+			this.registerAmbigToken(akey,token.id,base_return);
 			checkerator.seen.push(token.id);
 			if (debug){
-				print("  ---> Evaluate: storing token config: "+base);
+				print("  ---> Evaluate: storing token config");
+				print("          names: "+base["names"]);
+				print("         givens: "+base_return["givens"]);
 			}
 			continue;
 		}
@@ -4268,6 +4612,8 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 				print("   ---> No clashes, storing token config and going to next");
 			}
 			this.mode1_counts = false;
+			// XXXXX: try-and-see change 2009-07-24 during major code reorganization.
+			this.pos += 1;
 			ret = true;
 		}
 		this.lastclashes = this.clashes;
@@ -4340,12 +4686,23 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 	if (this.mode == "givens"){
 		var val = (this.mode1_counts[this.modepos]);
 		if (val < this.maxvals[this.modepos]){
-			this.mode1_counts[this.modepos] += 1;
-			this.mode1_defaults = this.base["givens"][this.modepos].slice();
-			this.base["givens"][this.modepos][val] += 1;
-			if (debug){
-				print("   ---> (A) Set expanded givenname param with base: "+this.base["givens"]);
-			}
+			if (this.given_name_second_pass){
+				if (debug){
+					print(" ** second pass");
+				};
+				this.given_name_second_pass = false;
+				this.mode1_counts[this.modepos] += 1;
+				this.base["givens"][this.modepos][val] += 1;
+				if (debug){
+					print("   ---> (A) Setting expanded givenname param with base: "+this.base["givens"]);
+				};
+			} else {
+				this.mode1_defaults = this.base["givens"][this.modepos].slice();
+				if (debug){
+					print(" ** first pass");
+				};
+				this.given_name_second_pass = true;
+			};
 		} else if (this.modepos < (this.base["givens"].length-1)){
 			this.modepos +=1;
 			this.base["givens"][this.modepos][0] += 1;
@@ -4358,21 +4715,6 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 			this.pos += 1;
 		}
 	}
-};
-CSL.Factory.Registry.prototype.registerAmbigToken = function (state,akey,id,ambig_config){
-	if ( ! this.ambigs[akey]){
-		this.ambigs[akey] = new Array();
-	};
-	var found = false;
-	for (var i in this.ambigs[akey]){
-		if (this.ambigs[akey].indexOf(id) > -1){
-			found = true;
-		}
-	}
-	if (!found){
-		this.ambigs[akey].push(id);
-	}
-	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };
 CSL.Factory.Registry.prototype.decrementNames = function(state,base){
 	var base_return = CSL.Factory.cloneAmbigConfig(base);
