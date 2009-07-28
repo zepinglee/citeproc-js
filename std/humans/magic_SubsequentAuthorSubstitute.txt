@@ -9,9 +9,9 @@ bibliography
 
 >>===== RESULT =====>>
 <ul class="csl-bib-body">
-<li class="csl-bib-entry"><span class="csl-bib-first">John Smith and Jane Roe, Book A (2000)</span></li>
-<li class="csl-bib-entry"><span class="csl-bib-first">-----, Book B (2001)</span></li>
-<li class="csl-bib-entry"><span class="csl-bib-first">John Smith, Book C (2002)</span></li>
+<li class="csl-bib-entry">John Smith and Jane Roe, Book A (2000)</li>
+<li class="csl-bib-entry">-----, Book B (2001)</li>
+<li class="csl-bib-entry">John Smith, Book C (2002)</li>
 </ul>
 <<===== RESULT =====<<
 

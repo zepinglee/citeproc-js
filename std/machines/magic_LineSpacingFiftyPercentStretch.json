@@ -33,6 +33,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\" style=\"line-height:150%\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">John Smith, Book A (2000)</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Robert Jones, Book B (2001)</span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body\" style=\"line-height:150%\">\n<li class=\"csl-bib-entry\">John Smith, Book A (2000)</li>\n<li class=\"csl-bib-entry\">Robert Jones, Book B (2001)</li>\n</ul>", 
     "schema": "0.8"
 }

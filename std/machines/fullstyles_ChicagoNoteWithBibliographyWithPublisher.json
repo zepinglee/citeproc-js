@@ -35,6 +35,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body push-right\">\n<li class=\"csl-bib-entry hanging-indent\"><span class=\"csl-bib-first\">Doe, John. <i>Book A</i></span><span class=\"csl-bib-other\">. Brobdingnag: Zardoz Press, 1990</span></li>\n<li class=\"csl-bib-entry hanging-indent\"><span class=\"csl-bib-first\">Roe, Jane. <i>Book B</i></span><span class=\"csl-bib-other\">, 1991</span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body push-right\">\n<li class=\"csl-bib-entry hanging-indent\">Doe, John. <i>Book A</i>. Brobdingnag: Zardoz Press, 1990</li>\n<li class=\"csl-bib-entry hanging-indent\">Roe, Jane. <i>Book B</i>, 1991</li>\n</ul>", 
     "schema": "0.9"
 }

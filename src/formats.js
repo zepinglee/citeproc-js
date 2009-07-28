@@ -99,22 +99,30 @@ CSL.Output.Formats.prototype.html = {
 				break;
 			};
 		};
-		var cls = ["csl-bib-first"].concat(state.bibliography.opt["csl-bib-first"]).join(" ");
-		return "<span class=\""+cls+"\">"+str.slice(0,start)+"</span>"+str.slice(start,str.length);
+		if (state.bibliography.opt["csl-bib-first"].length){
+			var cls = state.bibliography.opt["csl-bib-first"].join(" ");
+			return "<span class=\""+cls+"\">"+str.slice(0,start)+"</span>"+str.slice(start,str.length);
+		} else {
+			return str;
+		};
 	},
 	"@bibliography/other": function(state,str){
 		//
 		// See above.
 		//
 		var end = str.length;
-		for (var c=0; c<str.length; c += 1){
+		for (var c=0; c<(str.length-1); c += 1){
 			if (str[c] != " "){
-				end = c;
+				end = (c+1);
 				break;
 			};
 		};
-		var cls = ["csl-bib-other"].concat(state.bibliography.opt["csl-bib-other"]).join(" ");
-		return str.slice(0,end)+"<span class=\""+cls+"\">"+str.slice(end,str.length)+"</span>";
+		if (state.bibliography.opt["csl-bib-other"].length){
+			var cls = state.bibliography.opt["csl-bib-other"].join(" ");
+			return str.slice(0,end)+"<span class=\""+cls+"\">"+str.slice(end,str.length)+"</span>";
+		} else {
+			return str;
+		};
 	}
 };
 

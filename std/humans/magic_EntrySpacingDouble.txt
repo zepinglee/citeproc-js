@@ -8,9 +8,9 @@ bibliography
 
 
 >>== RESULT ==>>
-<ul class="csl-bib-body">
-<li class="csl-bib-entry" style="margin-bottom:1.1em"><span class="csl-bib-first">John Smith, Book A (2000)</span></li>
-<li class="csl-bib-entry" style="margin-bottom:1.1em"><span class="csl-bib-first">Robert Jones, Book B (2001)</span></li>
+	<ul class="csl-bib-body">
+<li class="csl-bib-entry" style="margin-bottom:1.1em">John Smith, Book A (2000)</li>
+<li class="csl-bib-entry" style="margin-bottom:1.1em">Robert Jones, Book B (2001)</li>
 </ul>
 <<== RESULT ==<<
 

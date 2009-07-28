@@ -63,6 +63,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book One</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book Two</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book Three</span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\">Book One</li>\n<li class=\"csl-bib-entry\">Book Two</li>\n<li class=\"csl-bib-entry\">Book Three</li>\n</ul>", 
     "schema": "0.9 experimental"
 }

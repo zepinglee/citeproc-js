@@ -39,6 +39,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book A</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book B</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book C</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Book D</span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\">Book A</li>\n<li class=\"csl-bib-entry\">Book B</li>\n<li class=\"csl-bib-entry\">Book C</li>\n<li class=\"csl-bib-entry\">Book D</li>\n</ul>", 
     "schema": "0.8"
 }

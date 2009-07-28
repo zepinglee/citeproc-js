@@ -58,6 +58,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">John Smith and Jane Roe, Book A (2000)</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">-----, Book B (2001)</span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">John Smith, Book C (2002)</span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\">John Smith and Jane Roe, Book A (2000)</li>\n<li class=\"csl-bib-entry\">-----, Book B (2001)</li>\n<li class=\"csl-bib-entry\">John Smith, Book C (2002)</li>\n</ul>", 
     "schema": "0.8"
 }

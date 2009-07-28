@@ -9,9 +9,9 @@ bibliography
 
 >>===== RESULT =====>>
 <ul class="csl-bib-body">
-<li class="csl-bib-entry"><span class="csl-bib-first">Book One</span></li>
-<li class="csl-bib-entry"><span class="csl-bib-first">Book Two</span></li>
-<li class="csl-bib-entry"><span class="csl-bib-first">Book Three</span></li>
+<li class="csl-bib-entry">Book One</li>
+<li class="csl-bib-entry">Book Two</li>
+<li class="csl-bib-entry">Book Three</li>
 </ul>
 <<===== RESULT =====<<
 

@@ -45,6 +45,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body push-right\">\n<li class=\"csl-bib-entry hanging-indent\"><span class=\"csl-bib-first\">Silverstein, Theodore, trans. “Sir Gawain and the Green Knight”</span><span class=\"csl-bib-other\">. Chicago: University of Chicago Press, 1974</span></li>\n<li class=\"csl-bib-entry hanging-indent\"><span class=\"csl-bib-first\">Soltes, Ori A., ed. “Georgia: Art and Civilization through the Ages”</span><span class=\"csl-bib-other\">. London: Philip Wilson, 1999</span></li>\n<li class=\"csl-bib-entry hanging-indent\"><span class=\"csl-bib-first\">“The Chicago Manual of Style”</span><span class=\"csl-bib-other\">. Chicago: University of Chicago Press, 1993</span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body push-right\">\n<li class=\"csl-bib-entry hanging-indent\">Silverstein, Theodore, trans. “Sir Gawain and the Green Knight”. Chicago: University of Chicago Press, 1974</li>\n<li class=\"csl-bib-entry hanging-indent\">Soltes, Ori A., ed. “Georgia: Art and Civilization through the Ages”. London: Philip Wilson, 1999</li>\n<li class=\"csl-bib-entry hanging-indent\">“The Chicago Manual of Style”. Chicago: University of Chicago Press, 1993</li>\n</ul>", 
     "schema": "0.8"
 }

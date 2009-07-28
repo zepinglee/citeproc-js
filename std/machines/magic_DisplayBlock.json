@@ -35,6 +35,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">John Smith, Book A (2000)</span><span class=\"csl-bib-other\"><span class=\"csl-bib-block\">An interesting book by an interesting author.</span></span></li>\n<li class=\"csl-bib-entry\"><span class=\"csl-bib-first\">Robert Jones, Book B (2001)</span><span class=\"csl-bib-other\"><span class=\"csl-bib-block\">An old contribution to a new field.</span></span></li>\n</ul>", 
+    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\">John Smith, Book A (2000)<span class=\"csl-bib-block\">An interesting book by an interesting author.</span></li>\n<li class=\"csl-bib-entry\">Robert Jones, Book B (2001)<span class=\"csl-bib-block\">An old contribution to a new field.</span></li>\n</ul>", 
     "schema": "0.8"
 }
