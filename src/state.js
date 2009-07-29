@@ -149,9 +149,6 @@ CSL.Engine.Fun = function (){
 	//
 	// utility to romanize a numeric value
 	this.romanizer = new CSL.Util.Romanizer();
-	//
-	// flip-flopper for inline markup
-	this.flipflopper = new CSL.Util.FlipFlopper();
 };
 
 

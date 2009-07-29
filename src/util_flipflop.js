@@ -7,28 +7,62 @@ dojo.provide("csl.util_flipflop");
 // Text string in existing output queue blob will be replaced with
 // an array containing this blob.
 
-CSL.Util.FlipFlopper = function(){
+CSL.Util.FlipFlopper = function(state){
+	//print("state: "+state);
 	this.str = false;
 	this.escapees = false;
 	this.blob = false;
 	var tagdefs = [
 		["<i>","</i>","italics","@font-style",["italic","normal"]],
 		["<b>","</b>","boldface","@font-weight",["bold","normal"]],
-		['"','"',"quotes","@quotes",["outer","inner"]]
+		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"]],
+		["<sub>","</sub>","subscript","@font-weight",["sub","sub"]],
+		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"]],
+		['"','"',"quotes","@quotes",["outer","inner"]],
+		["'","'","quotes","@quotes",["inner","outer"]]
 	];
+	//
+	// plus quote and parens defs from locale, if any
+	//
+	for each (var t in ["quote","paren"]){
+		for each (var p in ["-","-inner-"]){
+			var entry = new Array();
+			entry.push( state.getTerm( "open"+p+t ) );
+			entry.push( state.getTerm( "close"+p+t ) );
+			entry.push( t+"s" );
+			entry.push( "@"+t+"s" );
+			if ("-" == p){
+				entry.push( ["outer", "inner"] );
+			} else {
+				entry.push( ["inner", "outer"] );
+			};
+			//print(entry);
+			tagdefs.push(entry);
+		};
+	};
 	var allTags = function(tagdefs){
 		var ret = new Array();
 		for each (var def in tagdefs){
+			//print("def: "+def);
 			if (ret.indexOf(def[0]) == -1){
-				ret.push(def[0]);
+				var esc = "";
+				if (["(",")","[","]"].indexOf(def[0]) > -1){
+					esc = "\\";
+				}
+				ret.push(esc+def[0]);
 			};
 			if (ret.indexOf(def[1]) == -1){
-				ret.push(def[1]);
+				var esc = "";
+				if (["(",")","[","]"].indexOf(def[1]) > -1){
+					esc = "\\";
+				}
+				ret.push(esc+def[1]);
 			};
 		};
 		return ret;
 	};
 	this.allTagsRex = RegExp( "(" + allTags(tagdefs).join("|") + ")" );
+	//print(this.allTagsRex);
 	var openToClose = function(tagdefs){
 		var ret = new Object();
 		for (var i=0; i < tagdefs.length; i += 1){
@@ -53,6 +87,7 @@ CSL.Util.FlipFlopper = function(){
 		return ret;
 	};
 	this.openTagsHash = openTags(tagdefs);
+	//print("finished instantiating");
 };
 
 CSL.Util.FlipFlopper.prototype.init = function(str){

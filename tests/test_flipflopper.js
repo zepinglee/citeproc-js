@@ -2,7 +2,10 @@ dojo.provide("tests.test_flipflopper");
 
 doh.register("tests.flipflopper", [
 	function testGetOneEscapee(){
-		var ff = new CSL.Util.FlipFlopper();
+		var myxml = "<style></style>";
+		var sys = new RhinoTest();
+		var state = new CSL.Engine(sys,myxml);
+		var ff = new CSL.Util.FlipFlopper(state);
 		ff.init("hello\\Xhello");
 		ff.getEscapees();
 		doh.assertEqual(1, ff.escapees.length);
@@ -10,7 +13,10 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual("helloXhello",ff.str);
 	},
 	function testGetTwoEscapees(){
-		var ff = new CSL.Util.FlipFlopper();
+		var myxml = "<style></style>";
+		var sys = new RhinoTest();
+		var state = new CSL.Engine(sys,myxml);
+		var ff = new CSL.Util.FlipFlopper(state);
 		ff.init("hello\\Xhello\\Yagain");
 		ff.getEscapees();
 		doh.assertEqual(2, ff.escapees.length);
@@ -19,7 +25,10 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual("helloXhelloYagain",ff.str);
 	},
 	function testProcessTags(){
-		var ff = new CSL.Util.FlipFlopper();
+		var myxml = "<style></style>";
+		var sys = new RhinoTest();
+		var state = new CSL.Engine(sys,myxml);
+		var ff = new CSL.Util.FlipFlopper(state);
 		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote <b>XX\"hello</b>ZZ");
 		ff.getEscapees();
 		ff.processTags();
@@ -32,3 +41,6 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual(3, ff.blob.blobs[1].blobs.length);
 	}
 ]);
+
+var x = [
+]

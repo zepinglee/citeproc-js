@@ -42,6 +42,13 @@ CSL.Engine = function(sys,style,lang) {
 
 	this.splice_delimiter = false;
 
+	//
+	// flip-flopper for inline markup
+	//
+	this.fun.flipflopper = new CSL.Util.FlipFlopper(this);
+	//
+	// utility functions for quotes
+	//
 	this.opt.close_quotes_array = this.getCloseQuotesArray();
 
 	this.setOutputFormat("html");

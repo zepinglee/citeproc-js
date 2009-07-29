@@ -9,6 +9,10 @@
     <term name="close-quote">”</term>
     <term name="open-inner-quote">‘</term>
     <term name="close-inner-quote">’</term>
+    <term name="open-paren">(</term>
+    <term name="close-paren">)</term>
+    <term name="open-inner-paren">[</term>
+    <term name="close-inner-paren">]</term>
     <term name="at">at</term>
     <term name="in">in</term>
     <term name="ibid">ibid</term>
