@@ -65,8 +65,12 @@ CSL.Output.Formats.prototype.html = {
 	"@text-case/capitalize-all":CSL.Output.Formatters.capitalize_all,
 	"@text-case/title":CSL.Output.Formatters.title_capitalization,
 	"@text-case/sentence":CSL.Output.Formatters.sentence_capitalization,
-	"@quotes/true":"“%%STRING%%”",
-	"@squotes/true":"‘%%STRING%%’",
+	"@quotes/outer":function(state,str){
+		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
+	},
+	"@quotes/inner":function(state,str){
+		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+	},
 	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/wrapper": function(state,str){
 		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");

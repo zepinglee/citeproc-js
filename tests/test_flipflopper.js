@@ -1,229 +1,34 @@
 dojo.provide("tests.test_flipflopper");
 
 doh.register("tests.flipflopper", [
-	function testCrossNestedTagsFailWikiStyle(){
+	function testGetOneEscapee(){
 		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[A]", "[B]", "dummyfunc1", []);
-		ff.register( "[X]", "[Y]", "dummyfunc2", []);
-		try {
-			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [B] four [Y] five" );
-			var res = ff.compose( blob );
-			var ok = "Success";
-		} catch (e) {
-			var ok = "Oops: "+e;
-		}
-		doh.assertEqual( "Success", ok );
-		doh.assertEqual( "One ", res.blobs[0].blobs);
+		ff.init("hello\\Xhello");
+		ff.getEscapees();
+		doh.assertEqual(1, ff.escapees.length);
+		doh.assertEqual(5, ff.escapees[0]);
+		doh.assertEqual("helloXhello",ff.str);
+	},
+	function testGetTwoEscapees(){
+		var ff = new CSL.Util.FlipFlopper();
+		ff.init("hello\\Xhello\\Yagain");
+		ff.getEscapees();
+		doh.assertEqual(2, ff.escapees.length);
+		doh.assertEqual(5, ff.escapees[0]);
+		doh.assertEqual(11, ff.escapees[1]);
+		doh.assertEqual("helloXhelloYagain",ff.str);
+	},
+	function testProcessTags(){
+		var ff = new CSL.Util.FlipFlopper();
+		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote <b>XX\"hello</b>ZZ");
+		ff.getEscapees();
+		ff.processTags();
+		doh.assertEqual(6,ff.blob.blobs.length);
+		doh.assertEqual("ZZ",ff.blob.blobs[5].blobs);
+		doh.assertEqual("hello</b>",ff.blob.blobs[4].blobs);
 		//
-		// too deep!
-		doh.assertEqual( " two [X] three ", res.blobs[1].blobs);
-		doh.assertEqual( " four [Y] five", res.blobs[2].blobs);
-		doh.assertEqual( 0, res.blobs[0].decorations.length);
-		doh.assertEqual( 1, res.blobs[1].decorations.length);
-		doh.assertEqual( 0, res.blobs[2].decorations.length);
-		doh.assertEqual( "dummyfunc1", res.blobs[1].decorations[0]);
-	},
-	function testNestedCompositionObjectContent() {
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[A]", "[B]", ["fkey1","fattr1"], ["altkey1","altattr1"]);
-		ff.register( "[X]", "[Y]", ["fkey2","fattr2"], ["altkey2","altattr2"]);
-
-		try {
-			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
-			var res = ff.compose( blob );
-			var ok = "Success";
-		} catch (e) {
-			var ok = "Oops: "+e;
-		}
-		doh.assertEqual( "Success", ok );
-		doh.assertEqual( " three ", res.blobs[1].blobs[1].blobs );
-		doh.assertEqual( "fkey1", res.blobs[1].decorations[0][0] );
-		doh.assertEqual( "fattr1", res.blobs[1].decorations[0][1] );
-		doh.assertEqual( "fkey2", res.blobs[1].blobs[1].decorations[0][0] );
-		doh.assertEqual( "fattr2", res.blobs[1].blobs[1].decorations[0][1] );
-	},
-	function testSimpleCompositionEscape() {
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", "dummyfunc", []);
-		try {
-			var tok = CSL.Factory.Token("empty");
-			var blob = new CSL.Factory.Blob( tok, "One two \\[X] three [Y] four" );
-			var res = ff.compose( blob );
-			var ok = "Success";
-		} catch (e) {
-			var ok = "Oops: "+e;
-		}
-		doh.assertEqual( "Success", ok );
-		doh.assertEqual( "One two [X] three [Y] four", res.blobs);
-	},
-	function testSimpleCompositionWorksAtAll() {
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", "dummyfunc", []);
-		try {
-			var blob = new CSL.Factory.Blob( false, "One two [X] three [Y] four" );
-			ff.compose( blob );
-			var res = "Success";
-		} catch (e) {
-			var res = "Oops: "+e;
-		}
-		doh.assertEqual( res, "Success" );
-	},
-	function testNestedCompositionObjectContentReverseFunctionOrder() {
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", ["fkey2","fattr2"], ["altkey2","altattr2"]);
-		ff.register( "[A]", "[B]", ["fkey1","fattr1"], ["altkey1","altattr1"]);
-		try {
-			var blob = new CSL.Factory.Blob( false, "One [A] two [X] three [Y]  four [B] five" );
-			var res = ff.compose( blob );
-			var ok = "Success";
-		} catch (e) {
-			var ok = "Oops: "+e;
-		}
-		doh.assertEqual( "Success", ok );
-		doh.assertEqual( " three ", res.blobs[1].blobs[1].blobs );
-		doh.assertEqual( "fkey1", res.blobs[1].decorations[0][0] );
-		doh.assertEqual( "fattr1", res.blobs[1].decorations[0][1] );
-		doh.assertEqual( "fkey2", res.blobs[1].blobs[1].decorations[0][0] );
-		doh.assertEqual( "fattr2", res.blobs[1].blobs[1].decorations[0][1] );
-	},
-	function testSimpleCompositionObjectContent() {
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", "dummyfunc", []);
-		try {
-			var blob = new CSL.Factory.Blob( false, "One two [X] three [Y] four" );
-			var res = ff.compose( blob );
-			var ok = "Success";
-		} catch (e) {
-			var ok = "Oops: "+e;
-		}
-		doh.assertEqual( "Success", ok );
-		doh.assertEqual( "object", typeof res.blobs);
-		doh.assertEqual( 3, res.blobs.length);
-		doh.assertEqual( "string", typeof res.blobs[1].blobs);
-		doh.assertEqual( " three ", res.blobs[1].blobs);
-	},
-	function testInstantiation() {
-		try {
-			var dummyfunc = "dummyfunc";
-			var ff = new CSL.Util.FlipFlopper();
-			var ret = "Success";
-		} catch (e) {
-			var ret = "Oops: "+e;
-		}
-
-		doh.assertEqual( "Success", ret );
-	},
-	function testCompleteNonsenseFailsGracefully(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "One two [Y] three [X] four five [X]" );
-		doh.assertEqual( 1, res.length );
-		doh.assertEqual( "One two [Y] three [X] four five [X]", res[0] );
-	},
-	function testStartAndEndMarkersIdenticalOk(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "*", "*", dummyfunc, []);
-		var res = ff.split( 0, "One two *three* four five six" );
-		doh.assertEqual( 3, res.length );
-		doh.assertEqual( "One two ", res[0] );
-		doh.assertEqual( "three", res[1] );
-		doh.assertEqual( " four five six", res[2] );
-	},
-	function testMismatchIdenticalStartAndEndMarkersFailsGracefully(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "*", "*", dummyfunc, []);
-		var res = ff.split( 0, "One two *three* four *five six" );
-		doh.assertEqual( 3, res.length );
-		doh.assertEqual( "One two ", res[0] );
-		doh.assertEqual( "three", res[1] );
-		doh.assertEqual( " four *five six", res[2] );
-	},
-	function testMismatchExtraMidStartTagWithTagAttraction(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "One [X] two [Y] three [X] four [X] five [Y] six" );
-		doh.assertEqual( 5, res.length );
-		doh.assertEqual( "One ", res[0] );
-		doh.assertEqual( " two ", res[1] );
-		doh.assertEqual( " three [X] four ", res[2] );
-		doh.assertEqual( " five ", res[3] );
-		doh.assertEqual( " six", res[4] );
-	},
-	function testMismatchExtraStartTagWithTagAttraction(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "One two [X] three [X] four five [Y] six" );
-		doh.assertEqual( 3, res.length );
-		doh.assertEqual( "One two [X] three ", res[0] );
-		doh.assertEqual( " four five ", res[1] );
-		doh.assertEqual( " six", res[2] );
-	},
-	function testMismatchDoubleEndTagsIgnored(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "One two [X] three [Y] four five [Y] six [Y]" );
-		doh.assertEqual( 3, res.length );
-		doh.assertEqual( "One two ", res[0] );
-		doh.assertEqual( " three ", res[1] );
-		doh.assertEqual( " four five [Y] six [Y]", res[2] );
-	},
-	function testRegister() {
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "X", "Y", dummyfunc, ["preserve"]);
-		try {
-			var res = ff.flipflops[0].func;
-		} catch (e) {
-			var res = "Oops: "+e;
-		}
-		doh.assertEqual( "dummyfunc", res );
-	},
-	function testSplitSimpleOk(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "One two three [X] four five [Y] six" );
-		doh.assertEqual( 3, res.length );
-		doh.assertEqual( "One two three ", res[0] );
-		doh.assertEqual( " four five ", res[1] );
-		doh.assertEqual( " six", res[2] );
-	},
-	function testSplitStartAtStartOk(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "[X] four five [Y] six" );
-		doh.assertEqual( 3, res.length );
-		doh.assertEqual( "", res[0] );
-		doh.assertEqual( " four five ", res[1] );
-		doh.assertEqual( " six", res[2] );
-	},
-	function testSplitEndAtEndOk(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "One two three [X] four five [Y]" );
-		doh.assertEqual( 3, res.length );
-		doh.assertEqual( "One two three ", res[0] );
-		doh.assertEqual( " four five ", res[1] );
-		doh.assertEqual( "", res[2] );
-	},
-	function testSplitMultipleOk(){
-		var dummyfunc = "dummyfunc";
-		var ff = new CSL.Util.FlipFlopper();
-		ff.register( "[X]", "[Y]", dummyfunc, []);
-		var res = ff.split( 0, "One [X] two [Y] three [X] four five [Y]" );
-		doh.assertEqual( 5, res.length );
-		doh.assertEqual( "One ", res[0] );
-		doh.assertEqual( " two ", res[1] );
-		doh.assertEqual( " three ", res[2] );
-		doh.assertEqual( " four five ", res[3] );
-		doh.assertEqual( "", res[4] );
-	},
+		// i.e. [<blob.blobs:"italic ">,<blob>,<blob.blobs:" YY ">]
+		//
+		doh.assertEqual(3, ff.blob.blobs[1].blobs.length);
+	}
 ]);

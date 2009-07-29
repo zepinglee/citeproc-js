@@ -8,7 +8,7 @@ bibliography
 
 
 >>===== RESULT =====>>
-	<ul class="csl-bib-body">
+<ul class="csl-bib-body">
 <li class="csl-bib-entry"><i>Work 1</i> (John Doe), 2000.</li>
 <li class="csl-bib-entry">John Doe, 2000. Work 2.</li>
 <li class="csl-bib-entry">2000. Work 3, John Doe.</li>

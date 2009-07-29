@@ -2,6 +2,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.test_flipflopper");
+} else {
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_api");
 	dojo.require("tests.test_registry");
@@ -31,7 +33,6 @@ if(true){
 	dojo.require("tests.test_suffixator");
 	dojo.require("tests.test_romanizer");
 	dojo.require("tests.test_blob");
-	dojo.require("tests.test_flipflopper");
 	dojo.require("tests.test_fun");
 	dojo.require("tests.test_formatters");
 	dojo.require("tests.test_formats");
@@ -41,7 +42,6 @@ if(true){
 	dojo.require("tests.std_sort");
 	dojo.require("tests.std_condition");
 
-} else {
 
 	dojo.require("tests.std_position");
 
