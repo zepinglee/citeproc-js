@@ -1,6 +1,21 @@
 dojo.provide("tests.test_flipflopper");
 
 doh.register("tests.flipflopper", [
+	function testProcessTagsOpenEnded(){
+		var myxml = "<style></style>";
+		var sys = new RhinoTest();
+		var state = new CSL.Engine(sys,myxml);
+		var ff = new CSL.Util.FlipFlopper(state);
+		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote -- <i>important");
+		ff.getEscapees();
+		ff.processTags();
+		doh.assertEqual(5,ff.blob.blobs.length);
+		//
+		// i.e. [<blob.blobs:"italic ">,<blob>,<blob.blobs:" YY ">]
+		//
+		doh.assertEqual(3, ff.blob.blobs[1].blobs.length);
+		doh.assertEqual("“quote -- <i>important",ff.blob.blobs[4].blobs);
+	},
 	function testGetOneEscapee(){
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
@@ -24,7 +39,7 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual(11, ff.escapees[1]);
 		doh.assertEqual("helloXhelloYagain",ff.str);
 	},
-	function testProcessTags(){
+	function testProcessTagsCrossNesting(){
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
@@ -39,7 +54,7 @@ doh.register("tests.flipflopper", [
 		// i.e. [<blob.blobs:"italic ">,<blob>,<blob.blobs:" YY ">]
 		//
 		doh.assertEqual(3, ff.blob.blobs[1].blobs.length);
-	}
+	},
 ]);
 
 var x = [

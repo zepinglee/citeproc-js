@@ -4,9 +4,11 @@ doh.registerGroup("tests.queue",
 	[
 		function testListMerge () {
 			var token = tests.test_queue.token();
-			var state = new tests.test_queue.state();
-			state.fun = {};
-			state.fun.flipflopper = new CSL.Util.FlipFlopper();
+
+			var myxml = "<style></style>";
+			var sys = new RhinoTest();
+			var state = new CSL.Engine(sys,myxml);
+
 			var res = new CSL.Output.Queue(state);
 
 			res.addToken("newlevel",false,token);
@@ -19,9 +21,11 @@ doh.registerGroup("tests.queue",
 			doh.assertEqual("one", res.current.value()[0].blobs );
 		},
 		function testListAppend () {
-			var state = new tests.test_queue.state();
-			state.fun = {};
-			state.fun.flipflopper = new CSL.Util.FlipFlopper();
+
+			var myxml = "<style></style>";
+			var sys = new RhinoTest();
+			var state = new CSL.Engine(sys,myxml);
+
 			var res = new CSL.Output.Queue(state);
 
 			var token = CSL.Factory.Token("someelement",CSL.START);
@@ -31,9 +35,11 @@ doh.registerGroup("tests.queue",
 		},
 
 		function testListNewlevel () {
-			var state = new tests.test_queue.state();
-			state.fun = {};
-			state.fun.flipflopper = new CSL.Util.FlipFlopper();
+
+			var myxml = "<style></style>";
+			var sys = new RhinoTest();
+			var state = new CSL.Engine(sys,myxml);
+
 			var res = new CSL.Output.Queue(state);
 			var token = CSL.Factory.Token("someelement",CSL.START);
 
@@ -92,3 +98,5 @@ doh.registerGroup("tests.queue",
 	}
 );
 
+var x = [
+]

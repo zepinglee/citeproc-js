@@ -9,6 +9,7 @@ dojo.provide("csl.util_flipflop");
 
 CSL.Util.FlipFlopper = function(state){
 	//print("state: "+state);
+	this.state = state;
 	this.str = false;
 	this.escapees = false;
 	this.blob = false;
@@ -187,7 +188,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 					}
 				};
 				//print("  -- text --> "+prestr);
-				expected_closers.reverse();
+				//expected_closers.reverse();
 				var blob = this.blobstack.value();
 				var newblob = new CSL.Factory.Blob(false,prestr);
 				blob.push(newblob);
@@ -233,11 +234,52 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 // (B) at the end of processing, append any remaining text to
 // the output queue and close the blob.
 //
-		//print(str);
+	};
+	//
+	// First finish off the last hanging blob for symmetry.
+	//
+	if (expected_closers.length){
 		var blob = this.blobstack.value();
 		var newblob = new CSL.Factory.Blob(false,str);
 		blob.push(newblob);
+		blob.push( new CSL.Factory.Blob() );
+		str = "";
 	};
+	//
+	// Now unwind the queue.
+	//
+	for (var i in expected_closers.slice()){
+		if (debug){
+			print("#####################");
+			print(i);
+			print(expected_closers);
+			print(str);
+			print(this.blobstack.mystack.length);
+			print("---------------------");
+		};
+		expected_closers.pop();
+		var markup = expected_closers_openers.pop();
+		if (markup.slice(0,1) != "<"){
+			print("------------------------> Hi! Let's convert a character to its output form!");
+			print(markup);
+			//
+			// (1) Check for 
+			//
+		};
+		var blob = this.blobstack.value();
+		blob.blobs.pop();
+		var blobstr = blob.blobs.pop().blobs;
+		this.blobstack.pop();
+		str = blobstr + str;
+		str = markup + str;
+		if (debug){
+			print(str);
+			print("#####################");
+		};
+	};
+	var blob = this.blobstack.value();
+	var newblob = new CSL.Factory.Blob(false,str);
+	blob.push(newblob);
 	return this.blob;
 };
 
@@ -249,6 +291,5 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 //
 // For config parameters, we'll need:
 //
-// - A map of names to formatting functions, incorporating flipflop.
 // - A map of tags to names.
-// - Ditch semantic tags.  If needed, they can be patched in later.
+// - A map of names to formatting functions, incorporating flipflop.
