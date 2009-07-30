@@ -1,0 +1,38 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Doe and Roe eds
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="editor">
+                <name and="text" form="short" suffix=" "/>
+                <label form="short"/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"ITEM-1",
+   "type": "book",
+   "editor": [
+        { "name":"Doe, John" },
+        { "name":"Roe, Jane" }
+   ]
+}]
+<<===== INPUT =====<<

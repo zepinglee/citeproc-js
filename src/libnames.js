@@ -259,11 +259,14 @@ CSL.Lib.Elements.names = new function(){
 						} else {
 							var form = state.output.getToken("label").strings.form;
 						}
-						if (nameset.names.length > 1){
-							label = state.getTerm(termname,form,1);
+						if ("number" == typeof state.output.getToken("label").strings.plural){
+							var plural = state.output.getToken("label").strings.plural;
+						} else if (nameset.names.length > 1){
+							var plural = 1;
 						} else {
-							label = state.getTerm(termname,form,0);
+							var plural = 0;
 						}
+						label = state.getTerm(termname,form,plural);
 					};
 					//
 					// Nesting levels are opened to control joins with

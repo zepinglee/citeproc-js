@@ -124,7 +124,11 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if (!blob){
 		blob = new CSL.Factory.Blob(token,str);
 	}
-	var bloblist = this.state.fun.flipflopper.compose(blob);
+	//var bloblist = this.state.fun.flipflopper.compose(blob);
+	if ("boolean" == token){
+		blob = new CSL.Factory.Blob(false,blob);
+	};
+	var bloblist = [blob];
 	if (bloblist.length > 1){
 		this.openLevel("empty");
 		var curr = this.current.value();

@@ -1,0 +1,37 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Doe ed
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="editor">
+                <name form="short" suffix=" "/>
+                <label form="short" plural="contextual"/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"ITEM-1",
+   "type": "book",
+   "editor": [
+        { "name":"Doe, John" }
+   ]
+}]
+<<===== INPUT =====<<

@@ -3,7 +3,7 @@ dojo.provide("tests.test_formats");
 doh.register("tests.formats", [
 
 	function testStringyDefs() {
-		doh.assertEqual( '“%%STRING%%”', CSL.Output.Formats.html["@quotes/true"] );
+		doh.assertEqual( '<b>%%STRING%%</b>', CSL.Output.Formats.html["@font-weight/bold"] );
 	},
 
 	function testFunctionDefs() {

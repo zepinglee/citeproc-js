@@ -382,7 +382,11 @@ CSL.Lib.Attributes["@sort"] = function(state,arg){
 
 
 CSL.Lib.Attributes["@plural"] = function(state,arg){
-
+	if ("always" == arg){
+		this.strings.plural = 1;
+	} else if ("never" == arg){
+		this.strings.plural = 0;
+	};
 };
 
 

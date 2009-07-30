@@ -65,11 +65,17 @@ CSL.Output.Formats.prototype.html = {
 	"@text-case/capitalize-all":CSL.Output.Formatters.capitalize_all,
 	"@text-case/title":CSL.Output.Formatters.title_capitalization,
 	"@text-case/sentence":CSL.Output.Formatters.sentence_capitalization,
-	"@quotes/outer":function(state,str){
+	"@quotes/true":function(state,str){
 		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
 	},
 	"@quotes/inner":function(state,str){
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+	},
+	"@parens/true":function(state,str){
+		return state.getTerm("open-paren") + str + state.getTerm("close-paren");
+	},
+	"@parens/inner":function(state,str){
+		return state.getTerm("open-inner-paren") + str + state.getTerm("close-inner-paren");
 	},
 	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/wrapper": function(state,str){

@@ -531,9 +531,11 @@ CSL.Lib.Elements.label = new function(){
 			var form = this.strings.form;
 			//
 			// XXXXX: probably wrong.  needs a test.
+			// Gaaack.  Seems not to be connected anywhere.
 			//
-			if (state.build.plural){
-				plural = state.build.plural;
+			if ("number" == typeof this.strings.plural){
+				plural = this.strings.plural;
+				print("plural: "+this.strings.plural);
 			}
 			var output_label = function(state,Item){
 				if ("locator" == term){
