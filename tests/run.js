@@ -2,9 +2,11 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.test_flipflopper");
+} else {
+	dojo.require("tests.std_condition");
 	dojo.require("tests.std_plural");
 	dojo.require("tests.test_queue");
-	dojo.require("tests.test_flipflopper");
 
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_api");
@@ -41,9 +43,7 @@ if(true){
 	dojo.require("tests.std_affix");
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
-	dojo.require("tests.std_condition");
 
-} else {
 
 	dojo.require("tests.std_position");
 

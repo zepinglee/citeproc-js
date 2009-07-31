@@ -7,7 +7,6 @@ doh.register("tests.flipflopper", [
 		var state = new CSL.Engine(sys,myxml);
 		var ff = new CSL.Util.FlipFlopper(state);
 		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote -- <i>important");
-		ff.getEscapees();
 		ff.processTags();
 		doh.assertEqual(5,ff.blob.blobs.length);
 		//
@@ -16,36 +15,15 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual(3, ff.blob.blobs[1].blobs.length);
 		doh.assertEqual("“quote -- <i>important",ff.blob.blobs[4].blobs);
 	},
-	function testGetOneEscapee(){
-		var myxml = "<style></style>";
-		var sys = new RhinoTest();
-		var state = new CSL.Engine(sys,myxml);
-		var ff = new CSL.Util.FlipFlopper(state);
-		ff.init("hello\\Xhello");
-		ff.getEscapees();
-		doh.assertEqual(1, ff.escapees.length);
-		doh.assertEqual(5, ff.escapees[0]);
-		doh.assertEqual("helloXhello",ff.str);
-	},
-	function testGetTwoEscapees(){
-		var myxml = "<style></style>";
-		var sys = new RhinoTest();
-		var state = new CSL.Engine(sys,myxml);
-		var ff = new CSL.Util.FlipFlopper(state);
-		ff.init("hello\\Xhello\\Yagain");
-		ff.getEscapees();
-		doh.assertEqual(2, ff.escapees.length);
-		doh.assertEqual(5, ff.escapees[0]);
-		doh.assertEqual(11, ff.escapees[1]);
-		doh.assertEqual("helloXhelloYagain",ff.str);
-	},
+]);
+
+var x = [
 	function testProcessTagsCrossNesting(){
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
 		var ff = new CSL.Util.FlipFlopper(state);
 		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote <b>XX\"hello</b>ZZ");
-		ff.getEscapees();
 		ff.processTags();
 		doh.assertEqual(6,ff.blob.blobs.length);
 		doh.assertEqual("ZZ",ff.blob.blobs[5].blobs);
@@ -55,7 +33,25 @@ doh.register("tests.flipflopper", [
 		//
 		doh.assertEqual(3, ff.blob.blobs[1].blobs.length);
 	},
-]);
-
-var x = [
+	function testGetSplitStringsOne(){
+		var myxml = "<style></style>";
+		var sys = new RhinoTest();
+		var state = new CSL.Engine(sys,myxml);
+		var ff = new CSL.Util.FlipFlopper(state);
+		ff.init("hello\\<b>hello");
+		doh.assertEqual(1, ff.strs.length);
+		doh.assertEqual(14, ff.strs[0].length);
+		doh.assertEqual("hello\\<b>hello",ff.strs[0]);
+	},
+	function testGetSplitStringsTwo(){
+		var myxml = "<style></style>";
+		var sys = new RhinoTest();
+		var state = new CSL.Engine(sys,myxml);
+		var ff = new CSL.Util.FlipFlopper(state);
+		ff.init("hello\\<b>hello\\</b>again<i>ok</i>now");
+		doh.assertEqual(5, ff.strs.length);
+		doh.assertEqual("hello\\<b>hello\\</b>again", ff.strs[0]);
+		doh.assertEqual("ok", ff.strs[2]);
+		doh.assertEqual("</i>",ff.strs[3]);
+	},
 ]
