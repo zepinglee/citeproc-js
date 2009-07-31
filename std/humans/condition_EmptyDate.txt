@@ -1,0 +1,65 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+No date here
+Have date, will travel
+<<===== RESULT =====<<
+
+>>===== CITATIONS =====>>
+[
+  [
+    ["ITEM-1",{}]
+  ],
+  [
+    ["ITEM-2",{}]
+  ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" xml:lang="en" class="in-text" >
+  <citation>
+    <layout>
+      <choose>
+        <if variable="issued">
+          <text value="Have date, will travel"/>
+        </if>
+        <else>
+          <text value="No date here"/>
+        </else>
+      </choose>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "author": [
+      { "name":"Doe, John" }
+    ],
+    "title": "Work 1"
+  },
+  {
+    "id":"ITEM-2",
+    "type": "book",
+    "author": [
+      { "name":"Doe, John" }
+    ],
+    "title": "Work 2",
+    "issued":{"year":2000}
+  }
+]
+<<===== INPUT =====<<
