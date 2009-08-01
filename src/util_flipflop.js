@@ -84,8 +84,8 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Factory.Blob();
 	} else {
-		this.strs = this.blob.blobs;
 		this.blob = blob;
+		this.strs = this.getSplitStrings( this.blob.blobs );
 		this.blob.blobs = new Array();
 	}
 	this.blobstack = new CSL.Factory.Stack(this.blob);
@@ -149,8 +149,11 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				expected_closers.reverse();
 
 				if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
+					var ibeenrunned = false;
 					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
+						ibeenrunned = true;
 						var wanted_closer = expected_closers[posB];
+						//print("wanted_closer: "+wanted_closer);
 						if (tag == wanted_closer){
 							expected_closers.pop();
 							expected_openers.pop();
@@ -162,6 +165,9 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 						blob = this.blobstack.value();
 						blob.blobs[(blob.blobs.length-1)].blobs += tag;
 					};
+					if (!ibeenrunned){
+						blob.blobs[(blob.blobs.length-1)].blobs += tag;
+					}
 					continue;
 				};
 			};
@@ -170,6 +176,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 // stack, and open a level on the output queue.
 //
 			if (this.openToCloseHash[tag]){
+				//print("open:"+tag);
 				expected_closers.push( this.openToCloseHash[tag] );
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );
@@ -220,7 +227,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 			this.blobstack.pop();
 			blob = this.blobstack.value();
 			blob.blobs.pop();
-			blob.blobs[0].blobs += markup;
+			blob.blobs[(blob.blobs.length-1)].blobs += markup;
 		};
 		if (debug){
 			print("final content of lattermost blob: "+blob.blobs[(blob.blobs.length-1)].blobs);

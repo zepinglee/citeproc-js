@@ -3,7 +3,8 @@ dojo.require("doh.runner");
 // requested tests go here
 if(true){
 	dojo.require("tests.test_flipflopper");
-} else {
+	dojo.require("tests.std_name");
+	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_condition");
 	dojo.require("tests.std_plural");
 	dojo.require("tests.test_queue");
@@ -20,9 +21,7 @@ if(true){
 	dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_terms");
 	dojo.require("tests.std_namespaces");
-	dojo.require("tests.std_name");
 	dojo.require("tests.std_discretionary");
-	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.test_load_styles");
 	dojo.require("tests.test_build");
@@ -44,6 +43,7 @@ if(true){
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 
+} else {
 
 	dojo.require("tests.std_position");
 

@@ -112,7 +112,6 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		var token = this.formats.value()["empty"];
 	} else if (tokname == "literal"){
 		var token = true;
-		blob = str;
 	} else if ("string" == typeof tokname){
 		var token = this.formats.value()[tokname];
 	} else {
@@ -121,15 +120,13 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if (!token){
 		throw "CSL processor error: unknown format token name: "+tokname;
 	}
-	if (!blob){
-		blob = new CSL.Factory.Blob(token,str);
-	}
-	//var bloblist = this.state.fun.flipflopper.compose(blob);
-	if ("boolean" == token){
-		blob = new CSL.Factory.Blob(false,blob);
-	};
-	var bloblist = [blob];
-	if (bloblist.length > 1){
+	blob = new CSL.Factory.Blob(token,str);
+	//
+	//var bloblist = [blob];
+	//
+	// XXXXX: so this, like, never runs, does it?
+	//
+	if (false && bloblist.length > 1){
 		this.openLevel("empty");
 		var curr = this.current.value();
 		for each (var blobbie in bloblist){
@@ -144,7 +141,25 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		if ("string" == typeof blob.blobs){
 			this.state.tmp.term_predecessor = true;
 		}
-		curr.push( blob );
+		//
+		// XXXXX: Interface to this function needs cleaning up.
+		// The str variable is ignored if blob is given, and blob
+		// must contain the string to be processed.  Ugly.
+		//print("str:"+str.length);
+		//print("blob:"+blob);
+		//print("tokname:"+tokname);
+		//
+		// <Dennis Hopper impersonation>
+		// XXXXX: This is, like, too messed up for _words_, man.
+		// </Dennis Hopper impersonation>
+		//
+		if ("string" == typeof str){
+			curr.push( blob );
+			this.state.fun.flipflopper.init(str,blob);
+			this.state.fun.flipflopper.processTags();
+		} else {
+			curr.push( str );
+		}
 	}
 }
 
