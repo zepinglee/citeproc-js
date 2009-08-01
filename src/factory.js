@@ -132,9 +132,11 @@ CSL.Factory.renderDecorations = function(state){
  */
 CSL.Factory.substituteOne = function(template) {
 	return function(state,list) {
-		if ("string" == typeof list){
+		if (!list){
+			return "";
+		} else if ("string" == typeof list){
 			return template.replace("%%STRING%%",list);
-		}
+		};
 		print("USING is_delimiter (1) ... WHY?");
 		var decor = template.split("%%STRING%%");
 		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);

@@ -35,7 +35,7 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual("bold+italic",ff.blob.blobs[1].blobs[1].blobs[0].blobs);
 		doh.assertEqual(" YY ",ff.blob.blobs[1].blobs[2].blobs);
 		doh.assertEqual("ITALIC ",ff.blob.blobs[2].blobs);
-		doh.assertEqual("\"quote -- <i>",ff.blob.blobs[3].blobs);
+		doh.assertEqual("“quote -- <i>",ff.blob.blobs[3].blobs);
 		doh.assertEqual("important",ff.blob.blobs[4].blobs);
 	},
 	function testProcessTagsCrossNesting(){
@@ -46,7 +46,7 @@ doh.register("tests.flipflopper", [
 		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote <b>XXhello</b>ZZ");
 		ff.processTags();
 		doh.assertEqual(6,ff.blob.blobs.length);
-		doh.assertEqual("\"quote ",ff.blob.blobs[3].blobs);
+		doh.assertEqual("“quote ",ff.blob.blobs[3].blobs);
 		doh.assertEqual("ZZ",ff.blob.blobs[5].blobs);
 
 		//doh.assertEqual("ZZ",ff.blob.blobs[2].blobs);

@@ -1,32 +1,26 @@
 dojo.provide("csl.util_flipflop");
 
 //
-// Gee wiz, Wally, how is this going to work?
-//
 // (A) initialize flipflopper with an empty blob to receive output.
 // Text string in existing output queue blob will be replaced with
 // an array containing this blob.
 
 CSL.Util.FlipFlopper = function(state){
-	//print("state: "+state);
 	this.state = state;
-	this.str = false;
-	this.escapees = false;
 	this.blob = false;
 	var tagdefs = [
-		["<i>","</i>","italics","@font-style",["italic","normal"],false],
-		["<b>","</b>","boldface","@font-weight",["bold","normal"],false],
-		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],false],
-		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],false],
-		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],false],
-		['(',')',"parens","@parens",["true","inner"],false],
-		["[","]","parens","@parens",["inner","true"],false],
+		["<i>","</i>","italics","@font-style",["italic","normal"],true],
+		["<b>","</b>","boldface","@font-weight",["bold","normal"],true],
+		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
+		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],true],
+		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
+		['(',')',"parens","@parens",["true","inner"],true],
+		["[","]","parens","@parens",["inner","true"],true],
 		['"','"',"quotes","@quotes",["true","inner"],"'"],
 		["'","'","quotes","@quotes",["inner","true"],'"']
 	];
 	//
-	// plus quote and parens defs from locale, if any
-	// (parens localization not included in CSL spec)
+	// plus quote defs from locale, if any (parens localization not included in CSL spec)
 	//
 	for each (var t in ["quote"]){
 		for each (var p in ["-","-inner-"]){
@@ -40,14 +34,13 @@ CSL.Util.FlipFlopper = function(state){
 			} else {
 				entry.push( ["inner", "outer"] );
 			};
-			//print(entry);
+			entry.push(true);
 			tagdefs.push(entry);
 		};
 	};
 	var allTags = function(tagdefs){
 		var ret = new Array();
 		for each (var def in tagdefs){
-			//print("def: "+def);
 			if (ret.indexOf(def[0]) == -1){
 				var esc = "";
 				if (["(",")","[","]"].indexOf(def[0]) > -1){
@@ -66,30 +59,24 @@ CSL.Util.FlipFlopper = function(state){
 		return ret;
 	};
 	this.allTagsRex = RegExp( "(" + allTags(tagdefs).join("|") + ")" );
-	var closeTags = function(tagdefs){
-		var ret = new Object();
+	var makeHashes = function(tagdefs){
+		var closeTags = new Object();
+		var flipTags = new Object();
+		var openToClose = new Object();
+		var openToDecorations = new Object();
 		for (var i=0; i < tagdefs.length; i += 1){
-			ret[tagdefs[i][1]] = true;
+			closeTags[tagdefs[i][1]] = true;
+			flipTags[tagdefs[i][1]] = tagdefs[i][5];
+			openToClose[tagdefs[i][0]] = tagdefs[i][1];
+			openToDecorations[tagdefs[i][0]] = [tagdefs[i][3],tagdefs[i][4]];
 		};
-		return ret;
+		return [closeTags,flipTags,openToClose,openToDecorations];
 	};
-	this.closeTagsHash = closeTags(tagdefs);
-	var flipTags = function(tagdefs){
-		var ret = new Object();
-		for (var i=0; i < tagdefs.length; i += 1){
-			ret[tagdefs[i][1]] = tagdefs[i][5];
-		};
-		return ret;
-	};
-	this.flipTagsHash = flipTags(tagdefs);
-	var openTags = function(tagdefs){
-		var ret = new Object();
-		for (var i=0; i < tagdefs.length; i += 1){
-			ret[tagdefs[i][0]] = tagdefs[i][1];
-		};
-		return ret;
-	};
-	this.openTagsHash = openTags(tagdefs);
+	var hashes = makeHashes(tagdefs);
+	this.closeTagsHash = hashes[0];
+	this.flipTagsHash = hashes[1];
+	this.openToCloseHash = hashes[2];
+	this.openToDecorations = hashes[3];
 };
 
 CSL.Util.FlipFlopper.prototype.init = function(str,blob){
@@ -103,12 +90,11 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 	}
 	this.blobstack = new CSL.Factory.Stack(this.blob);
 };
-
 //
 // (1) scan the string for escape characters.  Split the
 // string on tag candidates, and rejoin the tags that
 // are preceded by an escape character.
-
+//
 CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	var strs = str.split( this.allTagsRex );
 	for (var i=(strs.length-2); i>0; i +=-2){
@@ -122,17 +108,16 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	};
 	return strs;
 };
-
 //
 // (2) scan the string for non-overlapping open and close tags,
 // skipping escaped tags.  During processing, a list of expected
 // closing tags will be maintained on a working stack.
 //
-
 CSL.Util.FlipFlopper.prototype.processTags = function(){
 	var expected_closers = new Array();
 	var expected_openers = new Array();
 	var expected_flips = new Array();
+	var expected_rendering = new Array();
 	var str = "";
 
 	if (this.strs.length == 1){
@@ -154,23 +139,23 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				//
 				// Gaack.  Conditions.  Allow if ...
 				// ... the close tag is not also an open tag, or ...
-				// ... there is no previous tag of this type, or ...
-				// ... the most recent tag of this type matches. XXXXX NEEDED!
+				// ... ... there is a possible open tag on our stacks, and ...
+				// ... ... there is no intervening flipped partner to it.
 				//
 				expected_closers.reverse();
-				var sameAsOpen = this.openTagsHash[tag];
+				var sameAsOpen = this.openToCloseHash[tag];
 				var openRev = expected_closers.indexOf(tag);
 				var flipRev = expected_flips.indexOf(tag);
 				expected_closers.reverse();
 
-				if ( !sameAsOpen || openRev > -1 || (flipRev > -1 && openRev > flipRev)){
-					// print("Close sesame: "+tag);
+				if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
 					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
 						var wanted_closer = expected_closers[posB];
 						if (tag == wanted_closer){
 							expected_closers.pop();
 							expected_openers.pop();
 							expected_flips.pop();
+							expected_rendering.pop();
 							this.blobstack.pop();
 							break;
 						};
@@ -184,47 +169,47 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 // (b) For open tags, push the corresponding close tag onto a working
 // stack, and open a level on the output queue.
 //
-			if (this.openTagsHash[tag]){
-				// print("Open sesame: "+tag);
-				expected_closers.push( this.openTagsHash[tag] );
+			if (this.openToCloseHash[tag]){
+				expected_closers.push( this.openToCloseHash[tag] );
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );
 				blob = this.blobstack.value();
 				var newblobnest = new CSL.Factory.Blob();
+				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
+				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				blob.push(newblobnest);
 				this.blobstack.push(newblobnest);
-				continue;
 			};
 		};
 	};
 //
-// (B) at the end of processing, append any remaining text to
-// the output queue and close the blob.
+// (B) at the end of processing, unwind any open tags, append any
+// remaining text to the output queue and return the blob.
 //
-	//
-	// But first, unwind the queue as necessary to reach top level
-	//
 	var debug = false;
-	//print(expected_closers[0]);
 	for (var i in expected_closers.slice()){
 		if (debug){
 			print("#####################");
-			print(i);
-			print(expected_closers);
+			print("iteration: "+i);
+			print("expected_closers: "+expected_closers);
+		}
+		expected_closers.pop();
+		expected_flips.pop();
+		var markup = expected_openers.pop();
+		var rendering = expected_rendering.pop();
+		if (debug){
+			print("markup to be restored: "+markup);
+			print("alldecor: "+blob.alldecor+" len: "+blob.alldecor.length);
 			print("---------------------");
 		};
-		expected_closers.pop();
-		var markup = expected_openers.pop();
+		if (markup.length && markup[0] != "<"){
+			markup = rendering;
+		}
 		var blob = this.blobstack.value();
 		//
-		// Madness here too.  Don't pull out the string,
-		// just move the blob.  There are two of them here, and
-		// they both need to be moved; it's the PARENT that has
-		// the formatting we need to reconstitute!
+		// Don't pull out the string just move the blob.
 		//
 		if (blob.blobs.length){
-			// print("Blobs to move: "+blob.blobs);
-			// print("Leading string blob to move: "+blob.blobs[0].blobs);
 			blob.blobs[0].blobs = markup+blob.blobs[0].blobs;
 			var blobbies = blob.blobs;
 			this.blobstack.pop();
@@ -238,7 +223,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 			blob.blobs[0].blobs += markup;
 		};
 		if (debug){
-			print("???");
+			print("final content of lattermost blob: "+blob.blobs[(blob.blobs.length-1)].blobs);
 			print("#####################");
 		};
 	};
@@ -253,4 +238,23 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 		blob.blobs.push(newblob);
 	};
 	return this.blob;
+};
+
+CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
+	var decorations = blob.alldecor[0];
+	var pos = 0;
+	for (var i=(decorations.length-1); i>-1; i+=-1){
+		var decor = decorations[i];
+		if (decor[0] == fun[0]){
+			if (decor[1] == fun[1][0]){
+				pos = 1;
+			};
+			break;
+		};
+	};
+	var newdecor = [fun[0],fun[1][pos]];
+	decorations.reverse();
+	decorations.push(newdecor);
+	decorations.reverse();
+	return newdecor;
 };
