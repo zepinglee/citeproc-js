@@ -8,7 +8,14 @@ citation
 
 
 >>===== RESULT =====>>
-A Morphology of Intersections
+One Two <i>Three Four</i> Five!
+<i>One Two</i> Three Four Five!
+One Two Three <i>Four Five!</i>
+<i>One Two</i> Three <i>Four Five!</i>
+<i>One Two <i>Three</i> Four Five!</i>
+One Two&lt;/i&gt; Three Four Five!
+One <i>Two</i> Three&lt;/i&gt; Four Five!
+One &lt;i&gt; Four Five!
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
@@ -30,6 +37,12 @@ A Morphology of Intersections
   ],
   [
     ["ITEM-6",{}]
+  ],
+  [
+    ["ITEM-7",{}]
+  ],
+  [
+    ["ITEM-8",{}]
   ]
 ]
 <<===== CITATIONS =====<<
@@ -81,12 +94,12 @@ A Morphology of Intersections
    "title": "One Two</i> Three Four Five!"
  },
  {
-   "id":"ITEM-6",
+   "id":"ITEM-7",
    "type": "book",
    "title": "One <i>Two</i> Three</i> Four Five!"
  },
  {
-   "id":"ITEM-6",
+   "id":"ITEM-8",
    "type": "book",
    "title": "One <i>Two<i> Three</i> Four Five!"
  }

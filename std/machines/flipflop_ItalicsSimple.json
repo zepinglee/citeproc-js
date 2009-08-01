@@ -35,6 +35,18 @@
                 "ITEM-6", 
                 {}
             ]
+        ], 
+        [
+            [
+                "ITEM-7", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-8", 
+                {}
+            ]
         ]
     ], 
     "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <text variable=\"title\"/>\n        </layout>\n    </citation>\n</style>", 
@@ -70,17 +82,17 @@
             "type": "book"
         }, 
         {
-            "id": "ITEM-6", 
+            "id": "ITEM-7", 
             "title": "One <i>Two</i> Three</i> Four Five!", 
             "type": "book"
         }, 
         {
-            "id": "ITEM-6", 
+            "id": "ITEM-8", 
             "title": "One <i>Two<i> Three</i> Four Five!", 
             "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "A Morphology of Intersections", 
+    "result": "One Two <i>Three Four</i> Five!\n<i>One Two</i> Three Four Five!\nOne Two Three <i>Four Five!</i>\n<i>One Two</i> Three <i>Four Five!</i>\n<i>One Two <i>Three</i> Four Five!</i>\nOne Two&lt;/i&gt; Three Four Five!\nOne <i>Two</i> Three&lt;/i&gt; Four Five!\nOne &lt;i&gt; Four Five!", 
     "schema": "0.8"
 }

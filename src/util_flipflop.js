@@ -106,6 +106,9 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 			strs = head.concat(tail);
 		};
 	};
+	for (var i=0; i<strs.length; i+=2){
+		strs[i] = this.escapeHtml( strs[i] );
+	};
 	return strs;
 };
 //
@@ -163,10 +166,10 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 							break;
 						};
 						blob = this.blobstack.value();
-						blob.blobs[(blob.blobs.length-1)].blobs += tag;
+						blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( tag );
 					};
 					if (!ibeenrunned){
-						blob.blobs[(blob.blobs.length-1)].blobs += tag;
+						blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( tag );
 					}
 					continue;
 				};
@@ -216,7 +219,11 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 		//
 		// Don't pull out the string just move the blob.
 		//
-		if (blob.blobs.length){
+		// The first option is unnecessary and all wrong.  We are not
+		// unwinding the tail of the structure.  We are unwinding specific
+		// opening tags located somewhere up the tree.
+		//
+		if (false && blob.blobs.length){
 			blob.blobs[0].blobs = markup+blob.blobs[0].blobs;
 			var blobbies = blob.blobs;
 			this.blobstack.pop();
@@ -227,9 +234,10 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 			this.blobstack.pop();
 			blob = this.blobstack.value();
 			blob.blobs.pop();
-			blob.blobs[(blob.blobs.length-1)].blobs += markup;
+			blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( markup );
 		};
 		if (debug){
+			print("UNWOUND MARKUP: "+this.escapeHtml( markup ));
 			print("final content of lattermost blob: "+blob.blobs[(blob.blobs.length-1)].blobs);
 			print("#####################");
 		};
@@ -264,4 +272,8 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	decorations.push(newdecor);
 	decorations.reverse();
 	return newdecor;
+};
+
+CSL.Util.FlipFlopper.prototype.escapeHtml = function(str){
+	return str.replace("<","&lt;").replace(">","&gt;");
 };
