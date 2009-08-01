@@ -14,15 +14,15 @@ CSL.Util.FlipFlopper = function(state){
 	this.escapees = false;
 	this.blob = false;
 	var tagdefs = [
-		["<i>","</i>","italics","@font-style",["italic","normal"]],
-		["<b>","</b>","boldface","@font-weight",["bold","normal"]],
-		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"]],
-		["<sub>","</sub>","subscript","@font-weight",["sub","sub"]],
-		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"]],
-		['(',')',"parens","@parens",["true","inner"]],
-		["[","]","parens","@parens",["inner","true"]],
-		['"','"',"quotes","@quotes",["true","inner"]],
-		["'","'","quotes","@quotes",["inner","true"]]
+		["<i>","</i>","italics","@font-style",["italic","normal"],false],
+		["<b>","</b>","boldface","@font-weight",["bold","normal"],false],
+		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],false],
+		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],false],
+		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],false],
+		['(',')',"parens","@parens",["true","inner"],false],
+		["[","]","parens","@parens",["inner","true"],false],
+		['"','"',"quotes","@quotes",["true","inner"],"'"],
+		["'","'","quotes","@quotes",["inner","true"],'"']
 	];
 	//
 	// plus quote and parens defs from locale, if any
@@ -66,15 +66,6 @@ CSL.Util.FlipFlopper = function(state){
 		return ret;
 	};
 	this.allTagsRex = RegExp( "(" + allTags(tagdefs).join("|") + ")" );
-	//print(this.allTagsRex);
-	var openToClose = function(tagdefs){
-		var ret = new Object();
-		for (var i=0; i < tagdefs.length; i += 1){
-			ret[tagdefs[i][0]] = tagdefs[i][1];
-		};
-		return ret;
-	};
-	this.openToCloseHash = openToClose(tagdefs);
 	var closeTags = function(tagdefs){
 		var ret = new Object();
 		for (var i=0; i < tagdefs.length; i += 1){
@@ -83,6 +74,14 @@ CSL.Util.FlipFlopper = function(state){
 		return ret;
 	};
 	this.closeTagsHash = closeTags(tagdefs);
+	var flipTags = function(tagdefs){
+		var ret = new Object();
+		for (var i=0; i < tagdefs.length; i += 1){
+			ret[tagdefs[i][1]] = tagdefs[i][5];
+		};
+		return ret;
+	};
+	this.flipTagsHash = flipTags(tagdefs);
 	var openTags = function(tagdefs){
 		var ret = new Object();
 		for (var i=0; i < tagdefs.length; i += 1){
@@ -91,7 +90,6 @@ CSL.Util.FlipFlopper = function(state){
 		return ret;
 	};
 	this.openTagsHash = openTags(tagdefs);
-	//print("finished instantiating");
 };
 
 CSL.Util.FlipFlopper.prototype.init = function(str,blob){
@@ -133,163 +131,126 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 
 CSL.Util.FlipFlopper.prototype.processTags = function(){
 	var expected_closers = new Array();
-	var expected_closers_openers = new Array();
+	var expected_openers = new Array();
+	var expected_flips = new Array();
 	var str = "";
 
 	if (this.strs.length == 1){
 		this.blob.blobs = this.strs[0];
-	} if (this.strs.length > 2){
+	} else if (this.strs.length > 2){
 		for (var posA=1; posA < (this.strs.length-1); posA+=2){
 			var tag = this.strs[posA];
 			var prestr = this.strs[(posA-1)];
-			str = this.strs[(posA+1)];
+			// start by pushing in the trailing text string
+			var newblob = new CSL.Factory.Blob(false,prestr);
+			var blob = this.blobstack.value();
+			blob.push(newblob);
 //
 // (a) For closing tags, check to see if it matches something
-// on the working stack.  If so, pop the stack, process
-// the text to the tag as an append to the output stack, and close the
+// on the working stack.  If so, pop the stack and close the
 // output queue level.
 //
 			if (this.closeTagsHash[tag]){
+				//
+				// Gaack.  Conditions.  Allow if ...
+				// ... the close tag is not also an open tag, or ...
+				// ... there is no previous tag of this type, or ...
+				// ... the most recent tag of this type matches. XXXXX NEEDED!
+				//
 				expected_closers.reverse();
-				var tpos = expected_closers.indexOf(tag);
+				var sameAsOpen = this.openTagsHash[tag];
+				var openRev = expected_closers.indexOf(tag);
+				var flipRev = expected_flips.indexOf(tag);
 				expected_closers.reverse();
-				if (tpos > -1){
-					//print("closing tag: "+tag);
-					//print("  expected_closers.length: "+expected_closers.length);
-					//print("  expected_closers: "+expected_closers);
-					//print("  tpos: "+tpos);
-					for (var i=(expected_closers.length-1); i>(expected_closers.length-tpos-2); i+=-1){
-						var poptag = expected_closers.pop();
-						var poptagopener = expected_closers_openers.pop();
-						if (poptag != tag){
-							//print("POPPED ??: "+poptag+", prestr="+prestr);
-							prestr = poptagopener+prestr;
+
+				if ( !sameAsOpen || openRev > -1 || (flipRev > -1 && openRev > flipRev)){
+					// print("Close sesame: "+tag);
+					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
+						var wanted_closer = expected_closers[posB];
+						if (tag == wanted_closer){
+							expected_closers.pop();
+							expected_openers.pop();
+							expected_flips.pop();
 							this.blobstack.pop();
-							var blob = this.blobstack.value();
-							//
-							// pop level for failed open tag environment
-							//
-							blob.blobs.pop();
-							//
-							// pop preceding text blob
-							//
-							var poppedblob = blob.blobs.pop();
-							prestr = poppedblob.blobs + prestr;
-						} else {
-							//print("POPPED !!: "+poptag);
 							break;
-						}
+						};
+						blob = this.blobstack.value();
+						blob.blobs[(blob.blobs.length-1)].blobs += tag;
 					};
-					//print("  -- text --> "+prestr);
-					//expected_closers.reverse();
-					var blob = this.blobstack.value();
-					var newblob = new CSL.Factory.Blob(false,prestr);
-					blob.push(newblob);
-					this.blobstack.pop();
 					continue;
 				};
 			};
 //
 // (b) For open tags, push the corresponding close tag onto a working
-// stack, append any text before the tag as a plain text blob object,
-// and open a level on the output queue.
+// stack, and open a level on the output queue.
 //
 			if (this.openTagsHash[tag]){
-				//print("pushed value for ["+tag+"]: "+this.openTagsHash[tag]+", text: "+prestr);
+				// print("Open sesame: "+tag);
 				expected_closers.push( this.openTagsHash[tag] );
-				expected_closers_openers.push( tag );
-				var newblob = new CSL.Factory.Blob(false,prestr);
-				var blob = this.blobstack.value();
-				blob.push(newblob);
+				expected_openers.push( tag );
+				expected_flips.push( this.flipTagsHash[tag] );
+				blob = this.blobstack.value();
 				var newblobnest = new CSL.Factory.Blob();
 				blob.push(newblobnest);
 				this.blobstack.push(newblobnest);
 				continue;
 			};
-//
-// (c) For mismatched tags, restore the content to
-// the string.
-//
-			if (this.closeTagsHash[tag]){
-				//print("(tag not a closer, do something else:"+tag);
-				prestr = prestr+tag;
-				//this.blobstack.pop();
-				var blob = this.blobstack.value();
-				var newblob = new CSL.Factory.Blob(false,prestr);
-				blob.push(newblob);
-				//var blob = this.blobstack.value();
-				//blob.blobs.pop();
-				//var poppedblob = blob.blobs.pop();
-				//prestr = poppedblob.blobs + prestr;
-				//print("  -----> text: "+prestr);
-			};
+		};
+	};
 //
 // (B) at the end of processing, append any remaining text to
 // the output queue and close the blob.
 //
-		};
-	}
-
 	//
-	// First finish off the last hanging blob for symmetry.
+	// But first, unwind the queue as necessary to reach top level
 	//
-	if (expected_closers.length){
-		var blob = this.blobstack.value();
-		var newblob = new CSL.Factory.Blob(false,str);
-		blob.push(newblob);
-		blob.push( new CSL.Factory.Blob() );
-		str = "";
-	};
-	//
-	// Now unwind the queue.
-	//
+	var debug = false;
+	//print(expected_closers[0]);
 	for (var i in expected_closers.slice()){
 		if (debug){
 			print("#####################");
 			print(i);
 			print(expected_closers);
-			print(str);
-			print(this.blobstack.mystack.length);
 			print("---------------------");
 		};
 		expected_closers.pop();
-		var markup = expected_closers_openers.pop();
+		var markup = expected_openers.pop();
 		var blob = this.blobstack.value();
-		if (markup.slice(0,1) != "<"){
-			print("------------------------> Hi! Let's convert a character to its output form!");
-			print(markup);
-			//
-			// (1) Check this.alldecor for the markup char.
-			//
-			// ... aha!  We're not decorating yet, so there's nothing there to find.
-			//
-			for (var taglevel in this.alldecor){
-				print(taglevel);
-			}
+		//
+		// Madness here too.  Don't pull out the string,
+		// just move the blob.  There are two of them here, and
+		// they both need to be moved; it's the PARENT that has
+		// the formatting we need to reconstitute!
+		//
+		if (blob.blobs.length){
+			// print("Blobs to move: "+blob.blobs);
+			// print("Leading string blob to move: "+blob.blobs[0].blobs);
+			blob.blobs[0].blobs = markup+blob.blobs[0].blobs;
+			var blobbies = blob.blobs;
+			this.blobstack.pop();
+			blob = this.blobstack.value();
+			blob.blobs.pop();
+			blob.blobs = blob.blobs.concat(blobbies);
+		} else {
+			this.blobstack.pop();
+			blob = this.blobstack.value();
+			blob.blobs.pop();
+			blob.blobs[0].blobs += markup;
 		};
-		blob.blobs.pop();
-		var blobstr = blob.blobs.pop().blobs;
-		this.blobstack.pop();
-		str = blobstr + str;
-		str = markup + str;
 		if (debug){
-			print(str);
+			print("???");
 			print("#####################");
 		};
 	};
-	var blob = this.blobstack.value();
-	var newblob = new CSL.Factory.Blob(false,str);
-	blob.push(newblob);
+	//
+	// The final str is stuck on the very end, after nesting levels
+	// are reconciled.  It never takes formatting.  Ever.
+	//
+	if (this.strs.length > 2){
+		str = this.strs[(this.strs.length-1)];
+		var blob = this.blobstack.value();
+		var newblob = new CSL.Factory.Blob(false,str);
+		blob.blobs.push(newblob);
+	};
 	return this.blob;
 };
-
-//
-//
-// And voila.  Should handle both wiki-style and tagged markup,
-// and be reasonably simple and reasonably fast.  Feed it a
-// set of config parameters, and we have inline processing.
-//
-// For config parameters, we'll need:
-//
-// - A map of tags to names.
-// - A map of names to formatting functions, incorporating flipflop.
