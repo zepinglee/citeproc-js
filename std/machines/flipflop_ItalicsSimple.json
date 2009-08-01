@@ -1,0 +1,86 @@
+{
+    "citations": [
+        [
+            [
+                "ITEM-1", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-2", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-3", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-4", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-5", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-6", 
+                {}
+            ]
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <text variable=\"title\"/>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "One Two <i>Three Four</i> Five!", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-2", 
+            "title": "<i>One Two</i> Three Four Five!", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-3", 
+            "title": "One Two Three <i>Four Five!</i>", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-4", 
+            "title": "<i>One Two</i> Three <i>Four Five!</i>", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-5", 
+            "title": "<i>One Two <i>Three</i> Four Five!</i>", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-6", 
+            "title": "One Two</i> Three Four Five!", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-6", 
+            "title": "One <i>Two</i> Three</i> Four Five!", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-6", 
+            "title": "One <i>Two<i> Three</i> Four Five!", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "A Morphology of Intersections", 
+    "schema": "0.8"
+}

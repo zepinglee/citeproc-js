@@ -2,6 +2,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_flipflop");
+} else {
 	dojo.require("tests.test_flipflopper");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_collapse");
@@ -43,7 +45,6 @@ if(true){
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 
-} else {
 
 	dojo.require("tests.std_position");
 
