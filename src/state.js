@@ -149,6 +149,12 @@ CSL.Engine.Fun = function (){
 	//
 	// utility to romanize a numeric value
 	this.romanizer = new CSL.Util.Romanizer();
+	//
+	// utility to make an ordinal form of a number
+	this.ordinalizer = new CSL.Util.Ordinalizer();
+	//
+	// utility to make the long ordinal form of a number, if possible
+	this.long_ordinalizer = new CSL.Util.LongOrdinalizer();
 };
 
 

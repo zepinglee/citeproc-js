@@ -1,0 +1,33 @@
+>>== MODE ==>>
+citation
+<<== MODE ==<<
+
+>>== SCHEMA ==>>
+0.8
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+42nd
+<<== RESULT ==<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <number variable="volume" form="ordinal"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[{
+   "id":"item-1",
+   "type": "book",
+   "title": "Ignore me",
+   "volume":"42"
+}]
+<<===== INPUT =====<<

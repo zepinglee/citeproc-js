@@ -131,18 +131,5 @@ CSL.Util.Dates.day["numeric-leading-zeros"] = function(state,num){
  * it just does what is most of the time right for English.</p>
  */
 CSL.Util.Dates.day["ordinal"] = function(state,num){
-	var suffixes = ["st","nd","rd","th"];
-	var str = num.toString();
-	if ( (num/10)%10 == 1){
-		str += suffixes[3];
-	} else if ( num%10 == 1) {
-		str += suffixes[0];
-	} else if ( num%10 == 2){
-		str += suffixes[1];
-	} else if ( num%10 == 3){
-		str += suffixes[2];
-	} else {
-		str += suffixes[3];
-	}
-	return str;
+	return state.fun.ordinalizer(num);
 }

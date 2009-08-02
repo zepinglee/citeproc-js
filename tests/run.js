@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_number");
 	dojo.require("tests.test_flipflopper");
 	dojo.require("tests.std_flipflop");
 	dojo.require("tests.std_name");
@@ -17,7 +18,6 @@ if(true){
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_variables");
 
-	dojo.require("tests.std_number");
 	dojo.require("tests.test_conditions");
 	dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_terms");

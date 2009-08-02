@@ -50,6 +50,10 @@ CSL.Engine = function(sys,style,lang) {
 	// utility functions for quotes
 	//
 	this.opt.close_quotes_array = this.getCloseQuotesArray();
+	//
+	// configure ordinal numbers generator
+	//
+	this.fun.ordinalizer.init(this);
 
 	this.setOutputFormat("html");
 };

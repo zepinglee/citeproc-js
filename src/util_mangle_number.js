@@ -7,6 +7,34 @@ if (!CSL) {
 // This will probably become CSL.Util.Numbers
 //
 
+CSL.Util.LongOrdinalizer = function(){};
+
+CSL.Util.Ordinalizer = function(){};
+
+CSL.Util.Ordinalizer.prototype.init = function(state){
+	this.suffixes = new Array();
+	for (var i=1; i<5; i+=1){
+		this.suffixes.push( state.getTerm("ordinal-0"+i) );
+	};
+};
+
+CSL.Util.Ordinalizer.prototype.format = function(num){
+	num = parseInt(num,10);
+	var str = num.toString();
+	if ( (num/10)%10 == 1){
+		str += this.suffixes[3];
+	} else if ( num%10 == 1) {
+		str += this.suffixes[0];
+	} else if ( num%10 == 2){
+		str += this.suffixes[1];
+	} else if ( num%10 == 3){
+		str += this.suffixes[2];
+	} else {
+		str += this.suffixes[3];
+	}
+	return str;
+};
+
 CSL.Util.Romanizer = function (){};
 
 CSL.Util.Romanizer.prototype.format = function(num){
