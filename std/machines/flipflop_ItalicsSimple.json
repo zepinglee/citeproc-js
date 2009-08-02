@@ -93,6 +93,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "One Two <i>Three Four</i> Five!\n<i>One Two</i> Three Four Five!\nOne Two Three <i>Four Five!</i>\n<i>One Two</i> Three <i>Four Five!</i>\n<i>One Two <i>Three</i> Four Five!</i>\nOne Two&lt;/i&gt; Three Four Five!\nOne <i>Two</i> Three&lt;/i&gt; Four Five!\nOne &lt;i&gt; Four Five!", 
+    "result": "One Two <i>Three Four</i> Five!\n<i>One Two</i> Three Four Five!\nOne Two Three <i>Four Five!</i>\n<i>One Two</i> Three <i>Four Five!</i>\n<i>One Two <i>Three</i> Four Five!</i>\nOne Two&lt;/i&gt; Three Four Five!\nOne <i>Two</i> Three&lt;/i&gt; Four Five!\nOne &lt;i&gt;Two<i> Three</i> Four Five!", 
     "schema": "0.8"
 }

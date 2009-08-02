@@ -99,7 +99,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	var strs = str.split( this.allTagsRex );
 	for (var i=(strs.length-2); i>0; i +=-2){
 		if (strs[(i-1)].slice((strs[(i-1)].length-1)) == "\\"){
-			var newstr = strs[(i-1)] + strs[i] + strs[(i+1)];
+			var newstr = strs[(i-1)].slice(0,(strs[(i-1)].length-1)) + strs[i] + strs[(i+1)];
 			var head = strs.slice(0,(i-1));
 			var tail = strs.slice((i+2));
 			head.push(newstr);
@@ -217,11 +217,8 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 		}
 		var blob = this.blobstack.value();
 		//
-		// Don't pull out the string just move the blob.
-		//
-		// The first option is unnecessary and all wrong.  We are not
-		// unwinding the tail of the structure.  We are unwinding specific
-		// opening tags located somewhere up the tree.
+		// To borrow a phrase from Bela Lugosi, don't pull out the string --
+		// just move the blob instead.
 		//
 		if (false && blob.blobs.length){
 			blob.blobs[0].blobs = markup+blob.blobs[0].blobs;
@@ -231,10 +228,17 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 			blob.blobs.pop();
 			blob.blobs = blob.blobs.concat(blobbies);
 		} else {
+			var blobbies = [];
+			if (blob.blobs.length){
+				blobbies = blob.blobs;
+			};
 			this.blobstack.pop();
 			blob = this.blobstack.value();
 			blob.blobs.pop();
 			blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( markup );
+			if (blobbies.length){
+				blob.blobs = blob.blobs.concat(blobbies);
+			};
 		};
 		if (debug){
 			print("UNWOUND MARKUP: "+this.escapeHtml( markup ));
