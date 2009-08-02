@@ -170,18 +170,12 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	//
 	// Resplice tags.
 	//
-	//
 	// Default sort algoritm in JS appears to be some string-based thing.  Go figure.
-	//
 	badTagStack.sort(function(a,b){if(a<b){return 1;}else if(a>b){return -1;};return 0;});
 	for each (var badTagPos in badTagStack){
 		var head = strs.slice(0,(badTagPos-1));
 		var tail = strs.slice((badTagPos+2));
 		var sep = strs[badTagPos];
-		//print("-------------------");
-		//print(strs);
-		//print(badTagPos);
-		//print(sep);
 		if (sep.length && sep[0] != "<" && this.openToDecorations[sep]){
 			var params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
@@ -236,11 +230,11 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				expected_closers.reverse();
 
 				if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
-					var ibeenrunned = false;
+					//
+					// XXXXX: Validated, so can take just the last tag, so?
+					//
 					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
-						ibeenrunned = true;
 						var wanted_closer = expected_closers[posB];
-						//print("wanted_closer: "+wanted_closer);
 						if (tag == wanted_closer){
 							expected_closers.pop();
 							expected_openers.pop();
@@ -249,12 +243,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 							this.blobstack.pop();
 							break;
 						};
-						blob = this.blobstack.value();
-						blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( tag );
 					};
-					if (!ibeenrunned){
-						blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( tag );
-					}
 					continue;
 				};
 			};
@@ -279,67 +268,6 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 // (B) at the end of processing, unwind any open tags, append any
 // remaining text to the output queue and return the blob.
 //
-	var debug = false;
-	for (var i in expected_closers.slice()){
-		if (debug){
-			print("#####################");
-			print("iteration: "+i);
-			print("expected_closers: "+expected_closers);
-		}
-		expected_closers.pop();
-		expected_flips.pop();
-		var markup = expected_openers.pop();
-		var rendering = expected_rendering.pop();
-		if (debug){
-			print("markup to be restored: "+markup);
-			print("alldecor: "+blob.alldecor+" len: "+blob.alldecor.length);
-			print("---------------------");
-		};
-		if (markup.length && markup[0] != "<"){
-			markup = rendering;
-		}
-		var blob = this.blobstack.value();
-		//
-		// To borrow a phrase from Bela Lugosi, don't pull out the string --
-		// just move the blob instead.
-		//
-		var blobbies = [];
-		if (blob.blobs.length){
-			blobbies = blob.blobs;
-		};
-		this.blobstack.pop();
-		blob = this.blobstack.value();
-		blob.blobs.pop();
-		blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( markup );
-		for each (var blobbie in blobbies){
-			//print("(blobbie blobs): "+blobbie.blobs+" (blobbie.alldecor): "+blobbie.alldecor);
-			//
-			// XXXX: To fully unwind, we would need to recalculate every
-			// declaration, recursing downward, after popping off
-			// the immediately senior decoration, and use a stored copy of
-			// the original tags requested to regenerate the final tag.
-			// But that would be insane.
-			//
-			// None of this unwinding jazzola will be necessary if we
-			// just validate the markup before building the hierarchy.
-			// So let's do that, and then pare down the code afterward.
-			//
-			print("===========");
-			blob.blobs.push(blobbie);
-		};
-		//if (blobbies.length){
-		//	blob.blobs = blob.blobs.concat(blobbies);
-		//};
-		if (debug){
-			print("UNWOUND MARKUP: "+this.escapeHtml( markup ));
-			print("final content of lattermost blob: "+blob.blobs[(blob.blobs.length-1)].blobs);
-			print("#####################");
-		};
-	};
-	//
-	// The final str is stuck on the very end, after nesting levels
-	// are reconciled.  It never takes formatting.  Ever.
-	//
 	if (this.strs.length > 2){
 		str = this.strs[(this.strs.length-1)];
 		var blob = this.blobstack.value();
@@ -373,7 +301,6 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	blob.decorations.reverse();
 	blob.decorations.push(newdecor);
 	blob.decorations.reverse();
-	//print("newly edited decorations: "+blob.decorations);
 	return newdecor;
 };
 
