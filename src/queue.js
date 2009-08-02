@@ -156,6 +156,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		if ("string" == typeof str){
 			curr.push( blob );
 			this.state.fun.flipflopper.init(str,blob);
+			//print("(queue.append blob decorations): "+blob.decorations);
 			this.state.fun.flipflopper.processTags();
 		} else {
 			curr.push( str );

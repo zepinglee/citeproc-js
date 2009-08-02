@@ -80,6 +80,8 @@ CSL.Util.FlipFlopper = function(state){
 };
 
 CSL.Util.FlipFlopper.prototype.init = function(str,blob){
+	//print("(flipflopper received blob decorations): "+blob.decorations);
+	//print("(blob alldecor): "+blob.alldecor);
 	if (!blob){
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Factory.Blob();
@@ -89,6 +91,7 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 		this.blob.blobs = new Array();
 	}
 	this.blobstack = new CSL.Factory.Stack(this.blob);
+	//print("(this.blobstack.value() alldecor): "+this.blobstack.value().alldecor);
 };
 //
 // (1) scan the string for escape characters.  Split the
@@ -185,13 +188,12 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				expected_flips.push( this.flipTagsHash[tag] );
 				blob = this.blobstack.value();
 				var newblobnest = new CSL.Factory.Blob();
+				blob.push(newblobnest);
 				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
 				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
-				blob.push(newblobnest);
 				this.blobstack.push(newblobnest);
 			};
 		};
-	};
 //
 // (B) at the end of processing, unwind any open tags, append any
 // remaining text to the output queue and return the blob.
@@ -254,27 +256,37 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 		str = this.strs[(this.strs.length-1)];
 		var blob = this.blobstack.value();
 		var newblob = new CSL.Factory.Blob(false,str);
-		blob.blobs.push(newblob);
+		blob.push(newblob);
+	};
 	};
 	return this.blob;
 };
 
 CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
-	var decorations = blob.alldecor[0];
-	var pos = 0;
-	for (var i=(decorations.length-1); i>-1; i+=-1){
-		var decor = decorations[i];
-		if (decor[0] == fun[0]){
-			if (decor[1] == fun[1][0]){
-				pos = 1;
+	var posB = 0;
+	for (var posA=0; posA<blob.alldecor.length; posA+=1){
+		//print("Scanning decor ("+posA+"): "+blob.alldecor[posA]);
+		var decorations = blob.alldecor[posA];
+		var breakme = false;
+		for (var posC=(decorations.length-1); posC>-1; posC+=-1){
+			var decor = decorations[posC];
+			if (decor[0] == fun[0]){
+				if (decor[1] == fun[1][0]){
+					posB = 1;
+				};
+				breakme = true;
+				break;
 			};
+		};
+		if (breakme){
 			break;
 		};
 	};
-	var newdecor = [fun[0],fun[1][pos]];
-	decorations.reverse();
-	decorations.push(newdecor);
-	decorations.reverse();
+	var newdecor = [fun[0],fun[1][posB]];
+	blob.decorations.reverse();
+	blob.decorations.push(newdecor);
+	blob.decorations.reverse();
+	//print("newly edited decorations: "+blob.decorations);
 	return newdecor;
 };
 
