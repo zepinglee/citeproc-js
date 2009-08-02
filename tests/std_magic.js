@@ -30,6 +30,14 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("magic_PunctuationInQuoteDefaultEnglishDelimiter");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("magic_PunctuationInQuoteDefaultEnglishSuffix");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("magic_PunctuationInQuoteDelimiterTrue");
         doh.assertEqual(test.result, test.run());
     },

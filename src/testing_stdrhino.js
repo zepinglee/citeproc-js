@@ -129,6 +129,9 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 		if ("true" == optionvalue){
 			this.locale_opt[optionname] = true;
 		}
+		if ("false" == optionvalue){
+			this.locale_opt[optionname] = false;
+		}
 	}
 };
 

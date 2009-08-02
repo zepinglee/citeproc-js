@@ -10,6 +10,3 @@ doh.register("tests.std_flipflop", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
-
-var x = [
-]

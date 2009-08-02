@@ -9,28 +9,21 @@ citation
 
 
 >>===== RESULT =====>>
-Doe, “Book A”, 1900.
+Doe, “Book A,” 1900.
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
-    <locale xml:lang="en">
-        <options>
-            <option name="punctuation-in-quote" value="false"/>
-        </options>
-    </locale>
     <citation>
         <layout suffix=".">
-            <group delimiter=", ">
-                <names variable="author">
-                    <name form="short"/>
-                </names>
-                <text variable="title" quotes="true"/>
-                <date variable="issued">
-                    <date-part name="year"/>
-                </date>
-            </group>
+            <names variable="author" suffix=", ">
+                <name form="short"/>
+            </names>
+            <text variable="title" quotes="true" suffix=", "/>
+            <date variable="issued">
+                <date-part name="year"/>
+            </date>
         </layout>
     </citation>
 </style>
