@@ -54,6 +54,10 @@ CSL.Engine = function(sys,style,lang) {
 	// configure ordinal numbers generator
 	//
 	this.fun.ordinalizer.init(this);
+	//
+	// configure long ordinal numbers generator
+	//
+	this.fun.long_ordinalizer.init(this);
 
 	this.setOutputFormat("html");
 };

@@ -709,9 +709,10 @@ CSL.Lib.Elements.number = new function(){
 		//
 		if (this.strings.form == "roman"){
 			this.formatter = state.fun.romanizer;
-		}
-		if (this.strings.form == "ordinal"){
+		} else if (this.strings.form == "ordinal"){
 			this.formatter = state.fun.ordinalizer;
+		} else if (this.strings.form == "long-ordinal"){
+			this.formatter = state.fun.long_ordinalizer;
 		}
 		var push_number = function(state,Item){
 			var num = parseInt(Item[this.variables[0]], 10);

@@ -6,6 +6,10 @@ doh.register("tests.std_number", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("number_SimpleNumberOrdinalLong");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("number_SimpleNumberOrdinalShort");
         doh.assertEqual(test.result, test.run());
     },

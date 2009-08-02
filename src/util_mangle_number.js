@@ -9,6 +9,25 @@ if (!CSL) {
 
 CSL.Util.LongOrdinalizer = function(){};
 
+CSL.Util.LongOrdinalizer.prototype.init = function(state){
+	this.state = state;
+	this.names = new Object();
+	for (var i=1; i<10; i+=1){
+		this.names[""+i] = state.getTerm("long-ordinal-0"+i);
+	};
+	this.names["10"] = state.getTerm("long-ordinal-10");
+
+};
+
+CSL.Util.LongOrdinalizer.prototype.format = function(num){
+	var ret = this.names[""+num];
+	if (!ret){
+		ret = this.state.fun.ordinalizer.format(num);
+	};
+	return ret;
+};
+
+
 CSL.Util.Ordinalizer = function(){};
 
 CSL.Util.Ordinalizer.prototype.init = function(state){

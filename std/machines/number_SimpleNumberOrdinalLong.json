@@ -1,0 +1,34 @@
+{
+    "citations": [
+        [
+            [
+                "item-1", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "item-2", 
+                {}
+            ]
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <number variable=\"volume\" form=\"long-ordinal\"/>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "id": "item-1", 
+            "title": "Ignore me", 
+            "type": "book", 
+            "volume": "42"
+        }, 
+        {
+            "id": "item-2", 
+            "title": "Ignore me too", 
+            "type": "book", 
+            "volume": "9"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "42nd\nninth", 
+    "schema": "0.8"
+}
