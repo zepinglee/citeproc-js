@@ -399,6 +399,10 @@ CSL.Lib.Attributes["@include-period"] = function(state,arg){
 	this.strings["include-period"] = arg;
 };
 
+CSL.Lib.Attributes["@strip-periods"] = function(state,arg){
+	this.strings["strip-periods"] = arg;
+};
+
 CSL.Lib.Attributes["@subsequent-author-substitute"] = function(state,arg){
 	state.bibliography.opt["subsequent-author-substitute"] = arg;
 };

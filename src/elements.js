@@ -144,6 +144,9 @@ CSL.Lib.Elements.text = new function(){
 				if (state.build.term){
 					var term = state.build.term;
 					term = state.getTerm(term,form,plural);
+					if (this.strings["strip-periods"]){
+						term = term.replace(/\./g,"");
+					};
 					var printterm = function(state,Item){
 						// capitalize the first letter of a term, if it is the
 						// first thing rendered in a citation (or if it is
@@ -163,6 +166,9 @@ CSL.Lib.Elements.text = new function(){
 				} else if (this.variables.length){
 					var func = function(state,Item){
 						var value = state.getVariable(Item,this.variables[0],form);
+						if (this.strings["strip-periods"]){
+							value = value.replace(/\./g,"");
+						};
 						state.output.append(value,this);
 					};
 					this["execs"].push(func);

@@ -54,6 +54,14 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("magic_StripPeriodsFalse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("magic_StripPeriodsTrue");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("magic_SubsequentAuthorSubstitute");
         doh.assertEqual(test.result, test.run());
     },

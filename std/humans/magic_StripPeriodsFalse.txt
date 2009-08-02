@@ -1,0 +1,37 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+“An Article,” Am. L.J.
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <text variable="title" quotes="true" suffix=", "/>
+            <text variable="container-title"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type":"book",
+    "title":"An Article",
+    "container-title":"Am. L.J."
+  }
+]
+<<===== INPUT =====<<
