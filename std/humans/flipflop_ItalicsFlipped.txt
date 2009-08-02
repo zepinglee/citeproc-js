@@ -1,0 +1,53 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+<i>One Two <span style="font-style:normal;">Three</span> Four Five!</i>
+<i>One <span style="font-style:normal;">Two <i>Three</i> Four</span> Five!</i>
+<<===== RESULT =====<<
+
+>>===== CITATIONS =====>>
+[
+  [
+    ["ITEM-1",{}]
+  ],
+  [
+    ["ITEM-2",{}]
+  ]
+]
+<<===== CITATIONS =====<<
+
+
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <text variable="title" font-style="italic"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "title": "One Two <i>Three</i> Four Five!"
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "title": "One <i>Two <i>Three</i> Four</i> Five!"
+ }
+]
+<<===== INPUT =====<<

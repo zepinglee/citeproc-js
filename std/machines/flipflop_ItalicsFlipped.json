@@ -1,0 +1,32 @@
+{
+    "citations": [
+        [
+            [
+                "ITEM-1", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-2", 
+                {}
+            ]
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <text variable=\"title\" font-style=\"italic\"/>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "One Two <i>Three</i> Four Five!", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-2", 
+            "title": "One <i>Two <i>Three</i> Four</i> Five!", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "<i>One Two <span style=\"font-style:normal;\">Three</span> Four Five!</i>\n<i>One <span style=\"font-style:normal;\">Two <i>Three</i> Four</span> Five!</i>", 
+    "schema": "0.8"
+}
