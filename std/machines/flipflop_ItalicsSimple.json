@@ -53,46 +53,46 @@
     "input": [
         {
             "id": "ITEM-1", 
-            "title": "One Two <i>Three Four</i> Five!", 
+            "title": "One TwoA <i>Three Four</i> Five!", 
             "type": "book"
         }, 
         {
             "id": "ITEM-2", 
-            "title": "<i>One Two</i> Three Four Five!", 
+            "title": "<i>One TwoB</i> Three Four Five!", 
             "type": "book"
         }, 
         {
             "id": "ITEM-3", 
-            "title": "One Two Three <i>Four Five!</i>", 
+            "title": "One TwoC Three <i>Four Five!</i>", 
             "type": "book"
         }, 
         {
             "id": "ITEM-4", 
-            "title": "<i>One Two</i> Three <i>Four Five!</i>", 
+            "title": "<i>One TwoD</i> Three <i>Four Five!</i>", 
             "type": "book"
         }, 
         {
             "id": "ITEM-5", 
-            "title": "<i>One Two <i>Three</i> Four Five!</i>", 
+            "title": "<i>One TwoE <i>Three</i> Four Five!</i>", 
             "type": "book"
         }, 
         {
             "id": "ITEM-6", 
-            "title": "One Two</i> Three Four Five!", 
+            "title": "One TwoF</i> Three Four Five!", 
             "type": "book"
         }, 
         {
             "id": "ITEM-7", 
-            "title": "One <i>Two</i> Three</i> Four Five!", 
+            "title": "One <i>TwoG</i> Three</i> Four Five!", 
             "type": "book"
         }, 
         {
             "id": "ITEM-8", 
-            "title": "One <i>Two<i> Three</i> Four Five!", 
+            "title": "One <i>TwoH<i> Three</i> Four Five!", 
             "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "One Two <i>Three Four</i> Five!\n<i>One Two</i> Three Four Five!\nOne Two Three <i>Four Five!</i>\n<i>One Two</i> Three <i>Four Five!</i>\n<i>One Two <i>Three</i> Four Five!</i>\nOne Two&lt;/i&gt; Three Four Five!\nOne <i>Two</i> Three&lt;/i&gt; Four Five!\nOne &lt;i&gt;Two<i> Three</i> Four Five!", 
+    "result": "One TwoA <i>Three Four</i> Five!\n<i>One TwoB</i> Three Four Five!\nOne TwoC Three <i>Four Five!</i>\n<i>One TwoD</i> Three <i>Four Five!</i>\n<i>One TwoE <span style=\"font-style:normal;\">Three</span> Four Five!</i>\nOne TwoF&lt;/i&gt; Three Four Five!\nOne <i>TwoG</i> Three&lt;/i&gt; Four Five!\nOne &lt;i&gt;TwoH<i> Three</i> Four Five!", 
     "schema": "0.8"
 }

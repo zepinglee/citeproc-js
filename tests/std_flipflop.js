@@ -5,11 +5,11 @@ doh.register("tests.std_flipflop", [
         var test = new StdRhinoTest("flipflop_ItalicsFlipped");
         doh.assertEqual(test.result, test.run());
     },
-]);
-
-var x = [
     function(){
         var test = new StdRhinoTest("flipflop_ItalicsSimple");
         doh.assertEqual(test.result, test.run());
     },
+]);
+
+var x = [
 ]

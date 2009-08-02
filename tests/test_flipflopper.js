@@ -1,21 +1,15 @@
 dojo.provide("tests.test_flipflopper");
 
 doh.register("tests.flipflopper", [
-	function testProcessTagsOpenEnded(){
+	function testProcessTagsUnopenedCloseTags(){
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
 		var ff = new CSL.Util.FlipFlopper(state);
-		ff.init("hello <i>italic <b>bold+italic</b> YY </i>ITALIC \"quote -- <i>important");
+		ff.init("head<i>italic</b>bold's");
 		ff.processTags();
-		doh.assertEqual(5,ff.blob.blobs.length);
-		doh.assertEqual("hello ",ff.blob.blobs[0].blobs);
-		doh.assertEqual("italic ",ff.blob.blobs[1].blobs[0].blobs);
-		doh.assertEqual("bold+italic",ff.blob.blobs[1].blobs[1].blobs[0].blobs);
-		doh.assertEqual(" YY ",ff.blob.blobs[1].blobs[2].blobs);
-		doh.assertEqual("ITALIC “",ff.blob.blobs[2].blobs);
-		doh.assertEqual("quote -- &lt;i&gt;",ff.blob.blobs[3].blobs);
-		doh.assertEqual("important",ff.blob.blobs[4].blobs);
+		doh.assertEqual(35,ff.blob.blobs.length);
+		doh.assertEqual("head&lt;i&gt;italic&lt;/b&gt;bold’s",ff.blob.blobs);
 	},
 	function testImmediateClosingSingleQuote(){
 		var myxml = "<style></style>";
@@ -24,22 +18,19 @@ doh.register("tests.flipflopper", [
 		var ff = new CSL.Util.FlipFlopper(state);
 		ff.init("O’Malley");
 		ff.processTags();
-		doh.assertEqual(2,ff.blob.blobs.length);
-		doh.assertEqual("O’",ff.blob.blobs[0].blobs);
-		doh.assertEqual("Malley",ff.blob.blobs[1].blobs);
+		doh.assertEqual(8,ff.blob.blobs.length);
+		doh.assertEqual("O’Malley",ff.blob.blobs);
 	},
-	function testProcessTagsUnopenedCloseTags(){
+	function testGetSplitStringsTwo(){
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
 		var ff = new CSL.Util.FlipFlopper(state);
-		ff.init("head<i>italic</b>bold's");
-		ff.processTags();
-		doh.assertEqual(4,ff.blob.blobs.length);
-		doh.assertEqual("head&lt;i&gt;",ff.blob.blobs[0].blobs);
-		doh.assertEqual("italic&lt;/b&gt;",ff.blob.blobs[1].blobs);
-		doh.assertEqual("bold’",ff.blob.blobs[2].blobs);
-		doh.assertEqual("s",ff.blob.blobs[3].blobs);
+		ff.init("hello\\<b>hello\\</b>again<i>ok</i>now");
+		doh.assertEqual(5, ff.strs.length);
+		doh.assertEqual("hello&lt;b&gt;hello&lt;/b&gt;again", ff.strs[0]);
+		doh.assertEqual("ok", ff.strs[2]);
+		doh.assertEqual("</i>",ff.strs[3]);
 	},
 	function testGetSplitStringsOne(){
 		var myxml = "<style></style>";
@@ -51,16 +42,19 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual(19, ff.strs[0].length);
 		doh.assertEqual("hello&lt;b&gt;hello",ff.strs[0]);
 	},
-	function testGetSplitStringsTwo(){
+	function testProcessTagsOpenEnded(){
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
 		var ff = new CSL.Util.FlipFlopper(state);
-		ff.init("hello\\<b>hello\\</b>again<i>ok</i>now");
-		doh.assertEqual(5, ff.strs.length);
-		doh.assertEqual("hello&lt;b&gt;hello</b>again", ff.strs[0]);
-		doh.assertEqual("ok", ff.strs[2]);
-		doh.assertEqual("</i>",ff.strs[3]);
+		ff.init("hello <i>italic <b>bold+italic</b> YY </i>ITALIC \"quote -- <i>important");
+		ff.processTags();
+		doh.assertEqual(3,ff.blob.blobs.length);
+		doh.assertEqual("hello ",ff.blob.blobs[0].blobs);
+		doh.assertEqual("italic ",ff.blob.blobs[1].blobs[0].blobs);
+		doh.assertEqual("bold+italic",ff.blob.blobs[1].blobs[1].blobs[0].blobs);
+		doh.assertEqual(" YY ",ff.blob.blobs[1].blobs[2].blobs);
+		doh.assertEqual("ITALIC “quote -- &lt;i&gt;important",ff.blob.blobs[2].blobs);
 	},
 	function testProcessTagsCrossNesting(){
 		var myxml = "<style></style>";
@@ -69,10 +63,10 @@ doh.register("tests.flipflopper", [
 		var ff = new CSL.Util.FlipFlopper(state);
 		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote <b>XXhello</b>ZZ");
 		ff.processTags();
-		doh.assertEqual(6,ff.blob.blobs.length);
-		doh.assertEqual("italic “",ff.blob.blobs[2].blobs);
-		doh.assertEqual("quote ",ff.blob.blobs[3].blobs);
-		doh.assertEqual("ZZ",ff.blob.blobs[5].blobs);
+		doh.assertEqual(5,ff.blob.blobs.length);
+		doh.assertEqual("italic “quote ",ff.blob.blobs[2].blobs);
+		doh.assertEqual("XXhello",ff.blob.blobs[3].blobs[0].blobs);
+		doh.assertEqual("ZZ",ff.blob.blobs[4].blobs);
 
 		//doh.assertEqual("ZZ",ff.blob.blobs[2].blobs);
 		//doh.assertEqual("hello</b>",ff.blob.blobs[4].blobs);
@@ -82,6 +76,7 @@ doh.register("tests.flipflopper", [
 		//doh.assertEqual(3, ff.blob.blobs[1].blobs.length);
 	},
 ]);
+
 
 var x = [
 ]

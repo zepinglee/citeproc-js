@@ -96,10 +96,17 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 //
 // (1) scan the string for escape characters.  Split the
 // string on tag candidates, and rejoin the tags that
-// are preceded by an escape character.
+// are preceded by an escape character.  Ignore broken
+// markup.
 //
 CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
+	//
+	// Do the split.
+	//
 	var strs = str.split( this.allTagsRex );
+	//
+	// Resplice tags preceded by an escape character.
+	//
 	for (var i=(strs.length-2); i>0; i +=-2){
 		if (strs[(i-1)].slice((strs[(i-1)].length-1)) == "\\"){
 			var newstr = strs[(i-1)].slice(0,(strs[(i-1)].length-1)) + strs[i] + strs[(i+1)];
@@ -108,6 +115,80 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 			head.push(newstr);
 			strs = head.concat(tail);
 		};
+	};
+	//
+	// Find tags that would break hierarchical symmetry.
+	//
+	var expected_closers = new Array();
+	var expected_openers = new Array();
+	var expected_flips = new Array();
+	var tagstack = new Array();
+	var badTagStack = new Array();
+	for (var posA=1; posA<(strs.length-1); posA +=2){
+		var tag = strs[posA];
+		if (this.closeTagsHash[tag]){
+			expected_closers.reverse();
+			var sameAsOpen = this.openToCloseHash[tag];
+			var openRev = expected_closers.indexOf(tag);
+			var flipRev = expected_flips.indexOf(tag);
+			expected_closers.reverse();
+			if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
+				var ibeenrunned = false;
+				for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
+					ibeenrunned = true;
+					var wanted_closer = expected_closers[posB];
+					if (tag == wanted_closer){
+						expected_closers.pop();
+						expected_openers.pop();
+						expected_flips.pop();
+						tagstack.pop();
+						break;
+					};
+					//print("badA:"+posA);
+					badTagStack.push( posA );
+				};
+				if (!ibeenrunned){
+					//print("badB:"+posA);
+					badTagStack.push( posA );
+				};
+				continue;
+			};
+		};
+		if (this.openToCloseHash[tag]){
+			expected_closers.push( this.openToCloseHash[tag] );
+			expected_openers.push( tag );
+			expected_flips.push( this.flipTagsHash[tag] );
+			tagstack.push(posA);
+		};
+	};
+	for (var posC in expected_closers.slice()){
+		expected_closers.pop();
+		expected_flips.pop();
+		expected_openers.pop();
+		badTagStack.push( tagstack.pop() );
+	};
+	//
+	// Resplice tags.
+	//
+	//
+	// Default sort algoritm in JS appears to be some string-based thing.  Go figure.
+	//
+	badTagStack.sort(function(a,b){if(a<b){return 1;}else if(a>b){return -1;};return 0;});
+	for each (var badTagPos in badTagStack){
+		var head = strs.slice(0,(badTagPos-1));
+		var tail = strs.slice((badTagPos+2));
+		var sep = strs[badTagPos];
+		//print("-------------------");
+		//print(strs);
+		//print(badTagPos);
+		//print(sep);
+		if (sep.length && sep[0] != "<" && this.openToDecorations[sep]){
+			var params = this.openToDecorations[sep];
+			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
+		}
+		var resplice = strs[(badTagPos-1)] + sep + strs[(badTagPos+1)];
+		head.push(resplice);
+		strs = head.concat(tail);
 	};
 	for (var i=0; i<strs.length; i+=2){
 		strs[i] = this.escapeHtml( strs[i] );
@@ -222,26 +303,33 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 		// To borrow a phrase from Bela Lugosi, don't pull out the string --
 		// just move the blob instead.
 		//
-		if (false && blob.blobs.length){
-			blob.blobs[0].blobs = markup+blob.blobs[0].blobs;
-			var blobbies = blob.blobs;
-			this.blobstack.pop();
-			blob = this.blobstack.value();
-			blob.blobs.pop();
-			blob.blobs = blob.blobs.concat(blobbies);
-		} else {
-			var blobbies = [];
-			if (blob.blobs.length){
-				blobbies = blob.blobs;
-			};
-			this.blobstack.pop();
-			blob = this.blobstack.value();
-			blob.blobs.pop();
-			blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( markup );
-			if (blobbies.length){
-				blob.blobs = blob.blobs.concat(blobbies);
-			};
+		var blobbies = [];
+		if (blob.blobs.length){
+			blobbies = blob.blobs;
 		};
+		this.blobstack.pop();
+		blob = this.blobstack.value();
+		blob.blobs.pop();
+		blob.blobs[(blob.blobs.length-1)].blobs += this.escapeHtml( markup );
+		for each (var blobbie in blobbies){
+			//print("(blobbie blobs): "+blobbie.blobs+" (blobbie.alldecor): "+blobbie.alldecor);
+			//
+			// XXXX: To fully unwind, we would need to recalculate every
+			// declaration, recursing downward, after popping off
+			// the immediately senior decoration, and use a stored copy of
+			// the original tags requested to regenerate the final tag.
+			// But that would be insane.
+			//
+			// None of this unwinding jazzola will be necessary if we
+			// just validate the markup before building the hierarchy.
+			// So let's do that, and then pare down the code afterward.
+			//
+			print("===========");
+			blob.blobs.push(blobbie);
+		};
+		//if (blobbies.length){
+		//	blob.blobs = blob.blobs.concat(blobbies);
+		//};
 		if (debug){
 			print("UNWOUND MARKUP: "+this.escapeHtml( markup ));
 			print("final content of lattermost blob: "+blob.blobs[(blob.blobs.length-1)].blobs);
@@ -265,7 +353,6 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	var posB = 0;
 	for (var posA=0; posA<blob.alldecor.length; posA+=1){
-		//print("Scanning decor ("+posA+"): "+blob.alldecor[posA]);
 		var decorations = blob.alldecor[posA];
 		var breakme = false;
 		for (var posC=(decorations.length-1); posC>-1; posC+=-1){
@@ -291,5 +378,5 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 };
 
 CSL.Util.FlipFlopper.prototype.escapeHtml = function(str){
-	return str.replace("<","&lt;").replace(">","&gt;");
+	return str.replace(/</g,"&lt;").replace(/>/g,"&gt;");
 };
