@@ -14,13 +14,11 @@ CSL.Util.FlipFlopper = function(state){
 		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
 		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],true],
 		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
-		['(',')',"parens","@parens",["true","inner"],true],
-		["[","]","parens","@parens",["inner","true"],true],
 		['"','"',"quotes","@quotes",["true","inner"],"'"],
 		["'","'","quotes","@quotes",["inner","true"],'"']
 	];
 	//
-	// plus quote defs from locale, if any (parens localization not included in CSL spec)
+	// plus quote defs from locale.
 	//
 	for each (var t in ["quote"]){
 		for each (var p in ["-","-inner-"]){
