@@ -183,7 +183,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 		strs = head.concat(tail);
 	};
 	for (var i=0; i<strs.length; i+=2){
-		strs[i] = this.escapeHtml( strs[i] );
+		strs[i] = CSL.Output.Formats[this.state.opt.mode].text_escape( strs[i] );
 	};
 	return strs;
 };
@@ -300,8 +300,4 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	blob.decorations.push(newdecor);
 	blob.decorations.reverse();
 	return newdecor;
-};
-
-CSL.Util.FlipFlopper.prototype.escapeHtml = function(str){
-	return str.replace(/</g,"&lt;").replace(/>/g,"&gt;");
 };

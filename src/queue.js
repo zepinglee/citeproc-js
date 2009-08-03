@@ -231,7 +231,11 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				blob_last_chars.push(last_char);
 			} else if (blobjr.blobs){
 				// skip empty strings!!!!!!!!!!!!
-				var b = state.fun.decorate.text_escape(state,blobjr.blobs);
+				//
+				// text_escape is applied by flipflopper.
+				//
+				//var b = state.fun.decorate.text_escape(blobjr.blobs);
+				var b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
 						b = state.fun.decorate[params[0]][params[1]](state,b);
