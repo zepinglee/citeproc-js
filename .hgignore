@@ -13,3 +13,4 @@ syntax: regexp
 ^all-styles
 /test_load_all_styles.js$
 \.pyc$
+/COUNTOPTS.sh
