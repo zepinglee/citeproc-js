@@ -267,24 +267,33 @@ CSL.Util.Names.initializeWith = function(name,terminator){
 	if (!name){
 		return "";
 	};
-	var namelist = name.split(/\s+/);
-	var nstring = "";
-	for each (var n in namelist){
+	var namelist = name.replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
+	for (var i=0; i<namelist.length; i+=2){
+		var n = namelist[i];
 		var m = n.match( CSL.NAME_INITIAL_REGEXP);
 		if (m){
 			var extra = "";
+			// extra upper-case characters also included
 			if (m[2]){
 				extra = m[2].toLocaleLowerCase();
 			}
-			nstring = nstring + m[1].toLocaleUpperCase() + extra + terminator;
+			namelist[i] = m[1].toLocaleUpperCase() + extra;
+			if (i < (namelist.length-1)){
+				if (namelist[(i+1)].indexOf("-") > -1){
+					namelist[(i+1)] = terminator + namelist[(i+1)];
+				} else {
+					namelist[(i+1)] = terminator;
+				}
+			} else {
+				namelist.push(terminator);
+			}
 		} else if (n.match(/.*[a-zA-Z\u0400-\u052f].*/)){
-			nstring = CSL.Util.Names.stripRight(nstring) + " " +CSL.Util.Names.stripRight(n) + " ";
+			// romanish things that began with lower-case characters don't get initialized ...
+			namelist[i] = " "+n;
 		};
 	};
-	if (nstring){
-		return CSL.Util.Names.stripRight(nstring);
-	}
-	return name;
+	var ret = CSL.Util.Names.stripRight( namelist.join("") );
+	return ret.replace(/\s*\-\s*/g,"-").replace(/\s+/g," ");
 };
 
 

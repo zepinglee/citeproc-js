@@ -1,0 +1,38 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+H.-X. L. Y. Liu
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+    <citation>
+        <layout>
+            <names variable="author">
+                <name initialize-with=". "/>
+            </names>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "author": [
+      { "name":"Liu, Hui-Xiao Li Yuan" }
+    ]
+  }
+]
+<<===== INPUT =====<<
