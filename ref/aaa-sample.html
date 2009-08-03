@@ -1,31 +1,38 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+<!-- 
+    The width and margin-left values of 5em in csl-label and csl-item
+     below, and the text-indent value of 1em in csl-label are derived
+     from the number of characters in the label strings.  This is the
+     same offset calculation required for similar bibliographies when
+     shipped to word processors in RTF.  In this example, the number of
+     characters in the string is 5.
+-->
 <style>
-
-div.csl-subheading {
-  display:block;
-  margin-top:0.5em;
-  font-weight:bold;
-  background:#eeeeee;
-}
-
-div.csl-label {
-  display:inline-block;
-  width:5em;
-  text-indent:1em;
-  border:solid red 2px;
-}
-
-div.csl-item {
-  display:inline-block;
-  width:80%;
-  vertical-align:top;
-  border:solid red 1px;
-}
 
 div.csl-entry {
   margin-top:0.5em;
+}
+
+div.csl-subheading {
+  margin-top:0.5em;
+  margin-bottom:0.5em;
+  font-weight:bold;
+  //background:#eeeeee;
+}
+
+div.csl-label {
+  width:5em;
+  float:left;
+  text-indent:1em;
+  //border:solid red 2px;
+}
+
+div.csl-item {
+  margin-left:5em;
+  vertical-align:top;
+  //border:solid red 1px;
 }
 
 </style>
