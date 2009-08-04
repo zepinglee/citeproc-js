@@ -1,0 +1,133 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
+
+An illustration of how the class attribute could be used to support
+the grouping of authors in the AAA style bibliography format.
+
+>>===== SCHEMA =====>>
+1.0
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+<div class="csl-bib-body">
+<div class="csl-entry">
+    <div class="csl-entry-heading">
+John Aloysius Doe
+    </div>
+    <div class="csl-left-label">
+1999
+    </div>
+    <div class="csl-item">
+Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa
+    </div></div>
+<div class="csl-entry">
+    <div class="csl-left-label">
+2000
+    </div>
+    <div class="csl-item">
+Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb
+    </div></div>
+<div class="csl-entry">
+    <div class="csl-entry-heading">
+Jane Henrietta Roe
+    </div>
+    <div class="csl-left-label">
+1999
+    </div>
+    <div class="csl-item">
+Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc
+    </div></div>
+<div class="csl-entry">
+    <div class="csl-left-label">
+1999
+    </div>
+    <div class="csl-item">
+Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd
+    </div></div>
+<div class="csl-entry">
+    <div class="csl-left-label">
+2000
+    </div>
+    <div class="csl-item">
+Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee
+    </div></div>
+</div>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <bibliography>
+    <option name="subsequent-author-substitute" value=""/>
+    <layout>
+      <group class="csl-entry-heading">
+        <names variable="author">
+          <name and="text"/>
+        </names>
+      </group>
+      <group class="csl-left-label">
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <text variable="year-suffix"/>
+      </group>
+      <group class="csl-item">        
+        <text variable="title"/>
+      </group>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+   "id":"ITEM-1",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John Aloysius" }
+   ],
+   "issued":{ "year":1999 },
+   "title":"Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa"
+  },
+  {
+   "id":"ITEM-2",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John Aloysius" }
+   ],
+   "issued":{ "year":2000 },
+   "title":"Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb"
+  },
+  {
+   "id":"ITEM-3",
+   "type": "book",
+   "author": [
+        { "name":"Roe, Jane Henrietta" }
+   ],
+   "issued":{ "year":1999 },
+   "title":"Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc"
+  },
+  {
+   "id":"ITEM-4",
+   "type": "book",
+   "author": [
+        { "name":"Roe, Jane Henrietta" }
+   ],
+   "issued":{ "year":1999 },
+   "title":"Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd"
+  },
+  {
+   "id":"ITEM-5",
+   "type": "book",
+   "author": [
+        { "name":"Roe, Jane Henrietta" }
+   ],
+   "issued":{ "year":2000 },
+   "title":"Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee"
+  }
+]
+<<===== INPUT =====<<

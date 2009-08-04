@@ -9,12 +9,12 @@ bibliography
 
 
 >>===== RESULT =====>>
-<ul class="csl-bib-body">
-<li class="csl-bib-entry">Book A</li>
-<li class="csl-bib-entry">Book B</li>
-<li class="csl-bib-entry">Book C</li>
-<li class="csl-bib-entry">Book D</li>
-</ul>
+<div class="csl-bib-body">
+<div class="csl-entry">Book A</div>
+<div class="csl-entry">Book B</div>
+<div class="csl-entry">Book C</div>
+<div class="csl-entry">Book D</div>
+</div>
 <<===== RESULT =====<<
 
 

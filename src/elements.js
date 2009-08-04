@@ -210,6 +210,10 @@ CSL.Lib.Elements.group = new function(){
 			if (state.build.substitute_level.value()){
 				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
 			}
+			if (CSL.GROUP_CLASSES.indexOf(this.strings.cls) > -1){
+				// push or concat???
+				this.decorations.push(["@class",this.strings.cls]);
+			};
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);
 			};
@@ -625,7 +629,7 @@ CSL.Lib.Elements.layout = new function(){
 			// rendering of variables
 			var initialize_done_vars = function(state,Item){
 				state.tmp.done_vars = new Array();
-				state.tmp.no_name_rendered = true;
+				//print("== init rendered_name ==");
 				state.tmp.rendered_name = false;
 			};
 			this.execs.push(initialize_done_vars);
@@ -830,6 +834,9 @@ CSL.Lib.Elements.option = new function(){
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		};
+		if ("subsequent-author-substitute" == this.strings.name){
+			state[state.build.area].opt["subsequent-author-substitute"] = this.strings.value;
+		};
 		if ("givenname-disambiguation-rule" == this.strings.name) {
 			if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(this.strings.value) > -1) {
 				state[state.tmp.area].opt[this.strings.name] = this.strings.value;
@@ -840,13 +847,11 @@ CSL.Lib.Elements.option = new function(){
 				state[state.tmp.area].opt[this.strings.name] = true;
 			};
 			if ("second-field-align" == this.strings.name){
-				state.bibliography.opt["csl-bib-body"].push("push-right");
-				state.bibliography.opt["csl-bib-entry"].push("be-relative");
+				state.bibliography.opt["csl-entry"].push("be-relative");
 				state.bibliography.opt["csl-bib-first"].push("float-left");
 			};
 			if ("hanging-indent" == this.strings.name){
-				state.bibliography.opt["csl-bib-body"].push("push-right");
-				state.bibliography.opt["csl-bib-entry"].push("hanging-indent");
+				state.bibliography.opt["csl-entry"].push("hanging-indent");
 			};
 		};
 		if (this.strings.value && this.strings.value.match(/^[.0-9]+$/)){

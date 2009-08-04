@@ -10,7 +10,7 @@ if (!CSL) {
  * experienced in working out the basics of the E4X XML
  * parser.  It is unnecessary where E4X is available,
  * but I've retained it as a demonstration of how the
- * wrapper code works.  It's not really meant for production
+ * body code works.  It's not really meant for production
  * use (it's slower than E4X, and one could probably construct
  * a valid CSL style file that would break it).</p>
  */

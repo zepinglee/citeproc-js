@@ -8,11 +8,11 @@ bibliography
 
 
 >>===== RESULT =====>>
-<ul class="csl-bib-body">
-<li class="csl-bib-entry">Book One</li>
-<li class="csl-bib-entry">Book Two</li>
-<li class="csl-bib-entry">Book Three</li>
-</ul>
+<div class="csl-bib-body">
+<div class="csl-entry">Book One</div>
+<div class="csl-entry">Book Two</div>
+<div class="csl-entry">Book Three</div>
+</div>
 <<===== RESULT =====<<
 
 

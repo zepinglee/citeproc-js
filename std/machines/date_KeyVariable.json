@@ -39,6 +39,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\">Book A</li>\n<li class=\"csl-bib-entry\">Book B</li>\n<li class=\"csl-bib-entry\">Book C</li>\n<li class=\"csl-bib-entry\">Book D</li>\n</ul>", 
+    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\">Book A</div>\n<div class=\"csl-entry\">Book B</div>\n<div class=\"csl-entry\">Book C</div>\n<div class=\"csl-entry\">Book D</div>\n</div>", 
     "schema": "0.8"
 }

@@ -3,7 +3,7 @@ dojo.provide("csl.util_substitute");
 
 CSL.Util.substituteStart = function(state,target){
 	//
-	// Contains wrapper code for both substitute and first-field/remaining-fields
+	// Contains body code for both substitute and first-field/remaining-fields
 	// formatting.
 	//
 	if (("text" == this.name && !this.postponed_macro) || ["number","date","names"].indexOf(this.name) > -1){
@@ -30,6 +30,11 @@ CSL.Util.substituteStart = function(state,target){
 			bib_first.decorations = [["@bibliography","first"]];
 			var func = function(state,Item){
 				if (!state.tmp.render_seen){
+					//
+					// XXXXX:
+					// the abort condition is in the output function.  shouldn't it be
+					// moved here?
+					//
 					state.output.startTag("bib_first",bib_first);
 				};
 			};
@@ -55,11 +60,6 @@ CSL.Util.substituteStart = function(state,target){
 		// Set a test of the shadow if token to skip this
 		// macro if we have acquired a name value.
 		var check_for_variable = function(state,Item){
-			//
-			// !!!!!: Just to make life a little more interesting,
-			// myval == 0 evaluates to "true" when myval is "false".
-			// Hence the explicit test of the type here.
-			//
 			if (state.tmp.can_substitute.value()){
 				return true;
 			}
@@ -110,10 +110,35 @@ CSL.Util.substituteEnd = function(state,target){
 		var choose_end = new CSL.Factory.Token("choose",CSL.END);
 		target.push(choose_end);
 	};
+
+	var toplevel = "names" == this.name && state.build.substitute_level.value() == 0;
+	var hasval = "string" == typeof state[state.build.area].opt["subsequent-author-substitute"];
+	if (toplevel && hasval){
+		var author_substitute = new CSL.Factory.Token("text",CSL.SINGLETON);
+		var func = function(state,Item){
+			var printing = !state.tmp.suppress_decorations;
+			if (printing){
+				if (!state.tmp.rendered_name){
+					state.tmp.rendered_name = state.output.string(state,state.tmp.name_node.blobs,false);
+					if (state.tmp.rendered_name){
+						//print("TRY! "+state.tmp.rendered_name);
+						if (state.tmp.rendered_name == state.tmp.last_rendered_name){
+							var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
+							state.tmp.name_node.blobs = [str];
+						};
+						state.tmp.last_rendered_name = state.tmp.rendered_name;
+					};
+				};
+			};
+		};
+		author_substitute.execs.push(func);
+		target.push(author_substitute);
+	};
+
 	if (("text" == this.name && !this.postponed_macro) || ["number","date","names"].indexOf(this.name) > -1){
 		var element_trace = function(state,Item){
 			state.tmp.element_trace.pop();
 		};
 		this.execs.push(element_trace);
-	};
+	}
 };

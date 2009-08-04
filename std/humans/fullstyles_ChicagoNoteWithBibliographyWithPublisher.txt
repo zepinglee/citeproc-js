@@ -9,10 +9,10 @@ bibliography
 
 
 >>===== RESULT =====>>
-	<ul class="csl-bib-body push-right">
-<li class="csl-bib-entry hanging-indent">Doe, John. <i>Book A</i>. Brobdingnag: Zardoz Press, 1990</li>
-<li class="csl-bib-entry hanging-indent">Roe, Jane. <i>Book B</i>, 1991</li>
-</ul>
+	<div class="csl-bib-body">
+<div class="csl-entry">Doe, John. <i>Book A</i>. Brobdingnag: Zardoz Press, 1990</div>
+<div class="csl-entry">Roe, Jane. <i>Book B</i>, 1991</div>
+</div>
 <<===== RESULT =====<<
 
 

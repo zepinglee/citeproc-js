@@ -1,0 +1,83 @@
+{
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n  <bibliography>\n    <option name=\"subsequent-author-substitute\" value=\"\"/>\n    <layout>\n      <group class=\"csl-entry-heading\">\n        <names variable=\"author\">\n          <name and=\"text\"/>\n        </names>\n      </group>\n      <group class=\"csl-left-label\">\n        <date variable=\"issued\">\n          <date-part name=\"year\"/>\n        </date>\n        <text variable=\"year-suffix\"/>\n      </group>\n      <group class=\"csl-item\">        \n        <text variable=\"title\"/>\n      </group>\n    </layout>\n  </bibliography>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "primary-key": "Doe", 
+                    "secondary-key": "John Aloysius", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-1", 
+            "issued": {
+                "year": 1999
+            }, 
+            "title": "Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Doe", 
+                    "secondary-key": "John Aloysius", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-2", 
+            "issued": {
+                "year": 2000
+            }, 
+            "title": "Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Roe", 
+                    "secondary-key": "Jane Henrietta", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-3", 
+            "issued": {
+                "year": 1999
+            }, 
+            "title": "Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Roe", 
+                    "secondary-key": "Jane Henrietta", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-4", 
+            "issued": {
+                "year": 1999
+            }, 
+            "title": "Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "primary-key": "Roe", 
+                    "secondary-key": "Jane Henrietta", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-5", 
+            "issued": {
+                "year": 2000
+            }, 
+            "title": "Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee", 
+            "type": "book"
+        }
+    ], 
+    "mode": "bibliography", 
+    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\">\n    <div class=\"csl-entry-heading\">\nJohn Aloysius Doe\n    </div>\n    <div class=\"csl-left-label\">\n1999\n    </div>\n    <div class=\"csl-item\">\nAaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa\n    </div></div>\n<div class=\"csl-entry\">\n    <div class=\"csl-left-label\">\n2000\n    </div>\n    <div class=\"csl-item\">\nBbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb\n    </div></div>\n<div class=\"csl-entry\">\n    <div class=\"csl-entry-heading\">\nJane Henrietta Roe\n    </div>\n    <div class=\"csl-left-label\">\n1999\n    </div>\n    <div class=\"csl-item\">\nCcccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc\n    </div></div>\n<div class=\"csl-entry\">\n    <div class=\"csl-left-label\">\n1999\n    </div>\n    <div class=\"csl-item\">\nDdddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd\n    </div></div>\n<div class=\"csl-entry\">\n    <div class=\"csl-left-label\">\n2000\n    </div>\n    <div class=\"csl-item\">\nEeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee\n    </div></div>\n</div>", 
+    "schema": "1.0"
+}

@@ -35,6 +35,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body push-right\">\n<li class=\"csl-bib-entry hanging-indent\">Doe, John. <i>Book A</i>. Brobdingnag: Zardoz Press, 1990</li>\n<li class=\"csl-bib-entry hanging-indent\">Roe, Jane. <i>Book B</i>, 1991</li>\n</ul>", 
+    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\">Doe, John. <i>Book A</i>. Brobdingnag: Zardoz Press, 1990</div>\n<div class=\"csl-entry\">Roe, Jane. <i>Book B</i>, 1991</div>\n</div>", 
     "schema": "0.9"
 }

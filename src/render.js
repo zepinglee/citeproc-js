@@ -148,9 +148,9 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography_joiner","\n");
 	this.output.openLevel("bibliography_joiner");
-	var bib_wrapper = new CSL.Factory.Token("group",CSL.START);
-	bib_wrapper.decorations = [["@bibliography","wrapper"]];
-	this.output.startTag("bib_wrapper",bib_wrapper);
+	var bib_body = new CSL.Factory.Token("group",CSL.START);
+	bib_body.decorations = [["@bibliography","body"]];
+	this.output.startTag("bib_body",bib_body);
 	for each (var item in input){
 		if (false){
 			print("BIB: "+item.id);
@@ -161,7 +161,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 		this._cite.call(this,item);
 		this.output.endTag(); // closes bib_entry
 	}
-	this.output.endTag(); // closes bib_wrapper
+	this.output.endTag(); // closes bib_body
 	this.output.closeLevel();
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue)[0];

@@ -17,7 +17,9 @@ dojo.provide("csl.attributes");
  */
 CSL.Lib.Attributes = {};
 
-CSL.Lib.Attributes["@class"] = function(state,arg){};
+CSL.Lib.Attributes["@class"] = function(state,arg){
+	this.strings.cls = arg;
+};
 
 /**
  * Store the value attribute on the token.
@@ -401,10 +403,6 @@ CSL.Lib.Attributes["@include-period"] = function(state,arg){
 
 CSL.Lib.Attributes["@strip-periods"] = function(state,arg){
 	this.strings["strip-periods"] = arg;
-};
-
-CSL.Lib.Attributes["@subsequent-author-substitute"] = function(state,arg){
-	state.bibliography.opt["subsequent-author-substitute"] = arg;
 };
 
 CSL.Lib.Attributes["@position"] = function(state,arg){

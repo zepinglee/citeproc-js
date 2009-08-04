@@ -8,10 +8,10 @@ bibliography
 
 
 >>== RESULT ==>>
-<ul class="csl-bib-body push-right">
-<li class="csl-bib-entry be-relative"><span class="float-left">[1]</span>John Smith, Book A (2000)</li>
-<li class="csl-bib-entry be-relative"><span class="float-left">[2]</span>Robert Jones, Book B (2001)</li>
-</ul>
+<div class="csl-bib-body">
+<div class="csl-entry"><span class="float-left">[1]</span>John Smith, Book A (2000)</div>
+<div class="csl-entry"><span class="float-left">[2]</span>Robert Jones, Book B (2001)</div>
+</div>
 <<== RESULT ==<<
 
 

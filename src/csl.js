@@ -15,7 +15,7 @@ dojo.provide("csl.csl");
  * points, in a single back-to-front scan of the token list.
  * This
  * yields a token list that can be executed front-to-back by
- * wrapper methods available on the
+ * body methods available on the
  * {@link CSL.Engine} class.</p>
  *
  * <p>This top-level {@link CSL} object itself carries
@@ -77,6 +77,8 @@ CSL = new function () {
 	//
 	// \u0400-\u042f are cyrillic and extended cyrillic capitals
 	this.NAME_INITIAL_REGEXP = /^([A-Z\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
+
+	this.GROUP_CLASSES = ["csl-entry-heading","csl-left-label","csl-item"];
 
 	var x = new Array();
 	x = x.concat(["edition","volume","number-of-volumes","number"]);

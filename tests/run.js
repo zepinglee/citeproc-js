@@ -2,6 +2,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_magic");
+	dojo.require("tests.std_class");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_number");
 	dojo.require("tests.test_flipflopper");
@@ -11,7 +13,6 @@ if(true){
 	dojo.require("tests.std_plural");
 	dojo.require("tests.test_queue");
 
-	dojo.require("tests.std_magic");
 	dojo.require("tests.std_api");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.std_date");

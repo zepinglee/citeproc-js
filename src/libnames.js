@@ -51,6 +51,7 @@ CSL.Lib.Elements.names = new function(){
 
 			var set_et_al_params = function(state,Item){
 				state.output.startTag("names",this);
+				state.tmp.name_node = state.output.current.value();
 				// No value or zero means a first reference,
 				// anything else is a subsequent reference.
 				if (Item.position || state.tmp.force_subsequent){
@@ -301,19 +302,6 @@ CSL.Lib.Elements.names = new function(){
 					state.output.closeLevel(); // term
 
 					state.tmp.nameset_counter += 1;
-					if (state.tmp.area == "bibliography" && !state.tmp.suppress_decorations){
-						if (state.tmp.no_name_rendered){
-							state.tmp.rendered_name = state.output.string(state,state.output.current.value().blobs,false);
-							if (state.tmp.rendered_name){
-								// print("Name to compare (1): "+rendered_name);
-								//
-								// XXXXX: can't no_name_rendered and rendered_name
-								// be merged?
-								//
-								state.tmp.no_name_rendered = false;
-							};
-						};
-					};
 				};
 				if (state.output.getToken("name").strings.form == "count"){
 					state.output.clearlevel();
@@ -354,25 +342,6 @@ CSL.Lib.Elements.names = new function(){
 				}
 				CSL.Util.Names.reinit(state,Item);
 				state.output.endTag(); // names
-				//
-				// !!!!!: per-element rendering works.  hurray.
-				//
-				if ("string" == typeof state[state.tmp.area].opt["subsequent-author-substitute"] && !state.tmp.suppress_decorations){
-					var rendered_name = state.tmp.rendered_name;
-					if (state.tmp.no_name_rendered){
-						rendered_name = state.output.string(state,state.output.current.value().blobs,false);
-						state.tmp.no_name_rendered = false;
-					};
-					if (rendered_name && rendered_name == state.tmp.last_rendered_name){
-						//state.output.current.value().blobs = "-----";
-						///state.output.current.value().blobs = [];
-						var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
-						state.output.current.value().blobs = [str];
-
-						//print("Name to compare (2): "+rendered_name);
-					}
-					state.tmp.last_rendered_name = rendered_name;
-				};
 			};
 			this["execs"].push(unsets);
 

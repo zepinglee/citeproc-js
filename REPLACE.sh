@@ -29,7 +29,7 @@ for i in tests/*.js src/*.js std/humans/*.txt; do
 	    echo "-----OLD-----"
 	    grep "$1" $i
 	    echo "-----NEW-----"
-	    grep "$1" $i | sed -e "s~$1~${ARG2}~"
+	    grep "$1" $i | sed -e "s~$1~${ARG2}~g"
 	fi
     fi
 done

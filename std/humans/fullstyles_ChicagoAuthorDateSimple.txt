@@ -9,13 +9,13 @@ bibliography
 
 
 >>===== RESULT =====>>
-	<ul class="csl-bib-body push-right">
-<li class="csl-bib-entry hanging-indent">Doe, John. 1990. <i>Book A</i>. Brobdingnag: Zardoz Press</li>
-<li class="csl-bib-entry hanging-indent">Doe, John, and Jane Roe. 1991. <i>Book B</i></li>
-<li class="csl-bib-entry hanging-indent">Doe, John, Jane Roe, and Alvin Asthma. 1992. <i>Book C</i></li>
-<li class="csl-bib-entry hanging-indent">Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. 1993. <i>Book D</i></li>
-<li class="csl-bib-entry hanging-indent">Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. 1994. <i>Book E</i></li>
-</ul>
+<div class="csl-bib-body">
+<div class="csl-entry">Doe, John. 1990. <i>Book A</i>. Brobdingnag: Zardoz Press</div>
+<div class="csl-entry">Doe, John, and Jane Roe. 1991. <i>Book B</i></div>
+<div class="csl-entry">Doe, John, Jane Roe, and Alvin Asthma. 1992. <i>Book C</i></div>
+<div class="csl-entry">Doe, John, Jane Roe, Alvin Asthma, Bob Bronchitis, Chris Cold, Don Dropsy, Ernie Enteritis, et al. 1993. <i>Book D</i></div>
+<div class="csl-entry">---. 1994. <i>Book E</i></div>
+</div>
 <<===== RESULT =====<<
 
 

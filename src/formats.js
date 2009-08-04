@@ -101,23 +101,11 @@ CSL.Output.Formats.prototype.html = {
 		return "[" + str + "]";
 	},
 	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
-	"@bibliography/wrapper": function(state,str){
-		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");
-		var line_height = "";
-		if (state.bibliography.opt["bib-line-spacing"]){
-			line_height = (100*state.bibliography.opt["bib-line-spacing"]);
-			line_height =  " style=\"line-height:"+line_height+"%\"";
-		};
-		return "<ul class=\""+cls+"\""+line_height+">\n"+str+"</ul>";
+	"@bibliography/body": function(state,str){
+		return "<div class=\"csl-bib-body\">"+str+"\n</div>";
 	},
 	"@bibliography/entry": function(state,str){
-		var cls = ["csl-bib-entry"].concat(state.bibliography.opt["csl-bib-entry"]).join(" ");
-		var margin_bottom = "";
-		if (state.bibliography.opt["bib-entry-spacing"] > 1){
-			margin_bottom = (1.1*(state.bibliography.opt["bib-entry-spacing"]-1));
-			margin_bottom = " style=\"margin-bottom:"+margin_bottom+"em\"";
-		};
-		return "<li class=\""+cls+"\""+margin_bottom+">"+str+"</li>\n";
+		return "\n<div class=\"csl-entry\">"+str+"</div>";
 	},
 	"@bibliography/first": function(state,str){
 		//
@@ -156,6 +144,15 @@ CSL.Output.Formats.prototype.html = {
 		} else {
 			return str;
 		};
+	},
+	"@class/csl-entry-heading": function(state,str){
+		return "\n    <div class=\"csl-entry-heading\">\n" + str + "\n    </div>";
+	},
+	"@class/csl-left-label": function(state,str){
+		return "\n    <div class=\"csl-left-label\">\n" + str + "\n    </div>";
+	},
+	"@class/csl-item": function(state,str){
+		return "\n    <div class=\"csl-item\">\n" + str + "\n    </div>";
 	}
 };
 

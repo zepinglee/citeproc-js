@@ -1,5 +1,5 @@
 {
-    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <names variable=\"author\">\n                <name/>\n            </names>\n        </layout>\n    </citation>\n    <bibliography>\n        <option subsequent-author-substitute=\"-----\"/>\n        <layout>\n            <group delimiter=\" \">\n                <group delimiter=\", \">\n                    <names variable=\"author\">\n                        <name and=\"text\" delimiter=\", \"/>\n                    </names>\n                    <text variable=\"title\"/>\n                </group>\n                <date variable=\"issued\" prefix=\"(\" suffix=\")\">\n                    <date-part name=\"year\"/>\n                </date>\n            </group>\n        </layout>\n    </bibliography>\n</style>", 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" class=\"in-text\" xml:lang=\"en\">\n    <citation>\n        <layout>\n            <names variable=\"author\">\n                <name/>\n            </names>\n        </layout>\n    </citation>\n    <bibliography>\n        <option name=\"subsequent-author-substitute\" value=\"-----\"/>\n        <layout>\n            <group delimiter=\" \">\n                <group delimiter=\", \">\n                    <names variable=\"author\">\n                        <name and=\"text\" delimiter=\", \"/>\n                    </names>\n                    <text variable=\"title\"/>\n                </group>\n                <date variable=\"issued\" prefix=\"(\" suffix=\")\">\n                    <date-part name=\"year\"/>\n                </date>\n            </group>\n        </layout>\n    </bibliography>\n</style>", 
     "input": [
         {
             "author": [
@@ -58,6 +58,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<ul class=\"csl-bib-body\">\n<li class=\"csl-bib-entry\">John Smith and Jane Roe, Book A (2000)</li>\n<li class=\"csl-bib-entry\">-----, Book B (2001)</li>\n<li class=\"csl-bib-entry\">John Smith, Book C (2002)</li>\n</ul>", 
+    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\">John Smith and Jane Roe, Book A (2000)</div>\n<div class=\"csl-entry\">-----, Book B (2001)</div>\n<div class=\"csl-entry\">John Smith, Book C (2002)</div>\n</div>", 
     "schema": "0.8"
 }

@@ -8,10 +8,10 @@ bibliography
 
 
 >>== RESULT ==>>
-	<ul class="csl-bib-body">
-<li class="csl-bib-entry">John Smith, Book A (2000)<span class="csl-bib-block">An interesting book by an interesting author.</span></li>
-<li class="csl-bib-entry">Robert Jones, Book B (2001)<span class="csl-bib-block">An old contribution to a new field.</span></li>
-</ul>
+	<div class="csl-bib-body">
+<div class="csl-entry">John Smith, Book A (2000)<span class="csl-bib-block">An interesting book by an interesting author.</span></div>
+<div class="csl-entry">Robert Jones, Book B (2001)<span class="csl-bib-block">An old contribution to a new field.</span></div>
+</div>
 <<== RESULT ==<<
 
 
