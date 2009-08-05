@@ -5,18 +5,20 @@ var StdRhinoTest = function(myname){
 	this.xml = new CSL.System.Xml.E4X();
 	this.myname = myname;
 	//eval( "this.test = "+testobjects[myname]);
-	this.test = testobjects[myname];
+	//this.test = testobjects[myname];
 	this._cache = {};
 	this._ids = [];
 	//
 	// Normalize input and build style.
 	//
-	if (this.test){
-		//this._readTest();
+	if (myname){
+		var test = testobjects[myname];
+		//eval( "this.test = "+test);
+		this.test = test;
 		this.result = this.test.result;
 		//this._fixAllNames();
 		this._setCache();
-		this._fixInputSets();
+		//this._fixInputSets();
 	}
 };
 
@@ -194,8 +196,21 @@ StdRhinoTest.prototype._buildStyle = function(){
 
 StdRhinoTest.prototype.run = function(){
 	this._buildStyle();
-	this.style.insertItems(this._ids);
+	if (this.test.bibentries){
+		for each (var id_set in this.test.bibentries){
+			this.style.updateItems(id_set);
+		}
+	} else {
+		this.style.updateItems(this._ids);
+	}
 	if (this.test.mode == "citation"){
+		if (!this.test.citations){
+			var citation = [];
+			for each (item in this.style.registry.reflist){
+				citation.push([item.id,{}]);
+			}
+			this.test.citations = [citation];
+		}
 		var citations = [];
 		for each (var citation in this.test.citations){
 			citations.push(this.style.makeCitationCluster(citation));

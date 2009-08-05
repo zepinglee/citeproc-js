@@ -38,6 +38,7 @@ CSL = new function () {
 	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
 	this.QUOTED_REGEXP = /^".+"$/;
 	this.NAME_INITIAL_REGEXP = /^([A-Z\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
+	this.GROUP_CLASSES = ["csl-entry-heading","csl-left-label","csl-item"];
 	var x = new Array();
 	x = x.concat(["edition","volume","number-of-volumes","number"]);
 	x = x.concat(["issue","title","container-title","issued","page"]);
@@ -88,12 +89,27 @@ CSL.Engine = function(sys,style,lang) {
 	this.opt.lang = lang;
 	this.sys.setLocaleXml( this.cslXml, lang );
 	this.locale_terms = this.sys.locale_terms;
+	for (var o in this.sys.locale_opt){
+		this.opt[o] = this.sys.locale_opt[o];
+	};
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
 	this.configureTokenLists(this.citation.tokens);
 	this.registry = new CSL.Factory.Registry(this);
 	this.splice_delimiter = false;
+	this.fun.flipflopper = new CSL.Util.FlipFlopper(this);
+	this.opt.close_quotes_array = this.getCloseQuotesArray();
+	this.fun.ordinalizer.init(this);
+	this.fun.long_ordinalizer.init(this);
 	this.setOutputFormat("html");
+};
+CSL.Engine.prototype.getCloseQuotesArray = function(){
+	var ret = [];
+	ret.push(this.getTerm("close-quote"));
+	ret.push(this.getTerm("close-inner-quote"));
+	ret.push('"');
+	ret.push("'");
+	return ret;
 };
 CSL.Engine.prototype._buildTokenLists = function(area){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
@@ -275,7 +291,8 @@ CSL.Engine.Fun = function (){
 	this.match = new  CSL.Util.Match();
 	this.suffixator = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 	this.romanizer = new CSL.Util.Romanizer();
-	this.flipflopper = new CSL.Util.FlipFlopper();
+	this.ordinalizer = new CSL.Util.Ordinalizer();
+	this.long_ordinalizer = new CSL.Util.LongOrdinalizer();
 };
 CSL.Engine.Build = function (){
 	this["alternate-term"] = false;
@@ -315,7 +332,7 @@ CSL.Engine.Bibliography = function (){
 	this.opt = new Object();
 	this.tokens = new Array();
 	this.opt["csl-bib-body"] = new Array();
-	this.opt["csl-bib-entry"] = new Array();
+	this.opt["csl-entry"] = new Array();
 	this.opt["csl-bib-first"] = new Array();
 	this.opt["csl-bib-other"] = new Array();
 	this.opt["bib-line-spacing"] = false;
@@ -390,43 +407,43 @@ CSL.Engine.prototype.makeBibliography = function(){
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
 	if (debug){
-		print("a");
+		print("--> init <--");
 	};
 	this.registry.init(idList);
 	if (debug){
-		print("b");
+		print("--> dodeletes <--");
 	};
 	this.registry.dodeletes(this.registry.myhash);
 	if (debug){
-		print("c");
+		print("--> doinserts <--");
 	};
 	this.registry.doinserts(this.registry.mylist);
 	if (debug){
-		print("d");
+		print("--> dorefreshes <--");
 	};
 	this.registry.dorefreshes();
 	if (debug){
-		print("e");
+		print("--> rebuildlist <--");
 	};
 	this.registry.rebuildlist();
 	if (debug){
-		print("f");
+		print("--> setdisambigs <--");
 	};
 	this.registry.setdisambigs();
 	if (debug){
-		print("g");
+		print("--> setsortkeys <--");
 	};
 	this.registry.setsortkeys();
 	if (debug){
-		print("h");
+		print("--> sorttokens <--");
 	};
 	this.registry.sorttokens();
 	if (debug){
-		print("i");
+		print("--> renumber <--");
 	};
 	this.registry.renumber();
 	if (debug){
-		print("j");
+		print("--> yearsuffix <--");
 	};
 	this.registry.yearsuffix();
 	return this.registry.getSortedIds();
@@ -525,9 +542,9 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	this.tmp.disambig_override = true;
 	this.output.addToken("bibliography_joiner","\n");
 	this.output.openLevel("bibliography_joiner");
-	var bib_wrapper = new CSL.Factory.Token("group",CSL.START);
-	bib_wrapper.decorations = [["@bibliography","wrapper"]];
-	this.output.startTag("bib_wrapper",bib_wrapper);
+	var bib_body = new CSL.Factory.Token("group",CSL.START);
+	bib_body.decorations = [["@bibliography","body"]];
+	this.output.startTag("bib_body",bib_body);
 	for each (var item in input){
 		if (false){
 			print("BIB: "+item.id);
@@ -538,7 +555,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 		this._cite.call(this,item);
 		this.output.endTag(); // closes bib_entry
 	}
-	this.output.endTag(); // closes bib_wrapper
+	this.output.endTag(); // closes bib_body
 	this.output.closeLevel();
 	this.tmp.disambig_override = false;
 	return this.output.string(this,this.output.queue)[0];
@@ -783,6 +800,9 @@ CSL.Lib.Elements.text = new function(){
 				if (state.build.term){
 					var term = state.build.term;
 					term = state.getTerm(term,form,plural);
+					if (this.strings["strip-periods"]){
+						term = term.replace(/\./g,"");
+					};
 					var printterm = function(state,Item){
 						// capitalize the first letter of a term, if it is the
 						// first thing rendered in a citation (or if it is
@@ -802,6 +822,9 @@ CSL.Lib.Elements.text = new function(){
 				} else if (this.variables.length){
 					var func = function(state,Item){
 						var value = state.getVariable(Item,this.variables[0],form);
+						if (this.strings["strip-periods"]){
+							value = value.replace(/\./g,"");
+						};
 						state.output.append(value,this);
 					};
 					this["execs"].push(func);
@@ -836,6 +859,10 @@ CSL.Lib.Elements.group = new function(){
 			if (state.build.substitute_level.value()){
 				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
 			}
+			if (CSL.GROUP_CLASSES.indexOf(this.strings.cls) > -1){
+				// push or concat???
+				this.decorations.push(["@class",this.strings.cls]);
+			};
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);
 			};
@@ -1097,9 +1124,11 @@ CSL.Lib.Elements.label = new function(){
 			var form = this.strings.form;
 			//
 			// XXXXX: probably wrong.  needs a test.
+			// Gaaack.  Seems not to be connected anywhere.
 			//
-			if (state.build.plural){
-				plural = state.build.plural;
+			if ("number" == typeof this.strings.plural){
+				plural = this.strings.plural;
+				print("plural: "+this.strings.plural);
 			}
 			var output_label = function(state,Item){
 				if ("locator" == term){
@@ -1156,7 +1185,7 @@ CSL.Lib.Elements.layout = new function(){
 			// rendering of variables
 			var initialize_done_vars = function(state,Item){
 				state.tmp.done_vars = new Array();
-				state.tmp.no_name_rendered = true;
+				//print("== init rendered_name ==");
 				state.tmp.rendered_name = false;
 			};
 			this.execs.push(initialize_done_vars);
@@ -1234,13 +1263,36 @@ CSL.Lib.Elements.number = new function(){
 		//
 		if (this.strings.form == "roman"){
 			this.formatter = state.fun.romanizer;
+		} else if (this.strings.form == "ordinal"){
+			this.formatter = state.fun.ordinalizer;
+		} else if (this.strings.form == "long-ordinal"){
+			this.formatter = state.fun.long_ordinalizer;
 		}
-		var push_number = function(state,Item){
-			var num = parseInt(Item[this.variables[0]], 10);
-			var number = new CSL.Output.Number(num,this);
-			state.output.append(number,"literal");
+		//
+		// Whether we actually stick a number object on
+		// the output queue depends on whether the field
+		// contains a pure number.
+		//
+		var push_number_or_text = function(state,Item){
+			var varname = this.variables[0];
+			if (varname == "page-range" || varname == "page-first"){
+				varname = "page";
+			};
+			var num = Item[varname];
+			if ("undefined" != typeof num) {
+				if (this.variables[0] == "page-first"){
+					var m = num.split(/\s*(&|,|-)\s*/);
+					num = m[0];
+				}
+				if (num.match(/^[0-9]+$/)){
+					var number = new CSL.Output.Number( parseInt(num,10), this );
+					state.output.append(number,"literal");
+				} else {
+					state.output.append(num, this);
+				};
+			};
 		};
-		this["execs"].push(push_number);
+		this["execs"].push(push_number_or_text);
 		target.push(this);
 		CSL.Util.substituteEnd.call(this,state,target);
 	};
@@ -1342,6 +1394,9 @@ CSL.Lib.Elements.option = new function(){
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
 		};
+		if ("subsequent-author-substitute" == this.strings.name){
+			state[state.build.area].opt["subsequent-author-substitute"] = this.strings.value;
+		};
 		if ("givenname-disambiguation-rule" == this.strings.name) {
 			if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(this.strings.value) > -1) {
 				state[state.tmp.area].opt[this.strings.name] = this.strings.value;
@@ -1352,13 +1407,11 @@ CSL.Lib.Elements.option = new function(){
 				state[state.tmp.area].opt[this.strings.name] = true;
 			};
 			if ("second-field-align" == this.strings.name){
-				state.bibliography.opt["csl-bib-body"].push("push-right");
-				state.bibliography.opt["csl-bib-entry"].push("be-relative");
+				state.bibliography.opt["csl-entry"].push("be-relative");
 				state.bibliography.opt["csl-bib-first"].push("float-left");
 			};
 			if ("hanging-indent" == this.strings.name){
-				state.bibliography.opt["csl-bib-body"].push("push-right");
-				state.bibliography.opt["csl-bib-entry"].push("hanging-indent");
+				state.bibliography.opt["csl-entry"].push("hanging-indent");
 			};
 		};
 		if (this.strings.value && this.strings.value.match(/^[.0-9]+$/)){
@@ -1522,6 +1575,7 @@ CSL.Lib.Elements.names = new function(){
 			this.execs.push(init_can_substitute);
 			var set_et_al_params = function(state,Item){
 				state.output.startTag("names",this);
+				state.tmp.name_node = state.output.current.value();
 				// No value or zero means a first reference,
 				// anything else is a subsequent reference.
 				if (Item.position || state.tmp.force_subsequent){
@@ -1724,11 +1778,14 @@ CSL.Lib.Elements.names = new function(){
 						} else {
 							var form = state.output.getToken("label").strings.form;
 						}
-						if (nameset.names.length > 1){
-							label = state.getTerm(termname,form,1);
+						if ("number" == typeof state.output.getToken("label").strings.plural){
+							var plural = state.output.getToken("label").strings.plural;
+						} else if (nameset.names.length > 1){
+							var plural = 1;
 						} else {
-							label = state.getTerm(termname,form,0);
+							var plural = 0;
 						}
+						label = state.getTerm(termname,form,plural);
 					};
 					//
 					// Nesting levels are opened to control joins with
@@ -1752,19 +1809,6 @@ CSL.Lib.Elements.names = new function(){
 					}
 					state.output.closeLevel(); // term
 					state.tmp.nameset_counter += 1;
-					if (state.tmp.area == "bibliography" && !state.tmp.suppress_decorations){
-						if (state.tmp.no_name_rendered){
-							state.tmp.rendered_name = state.output.string(state,state.output.current.value().blobs,false);
-							if (state.tmp.rendered_name){
-								// print("Name to compare (1): "+rendered_name);
-								//
-								// XXXXX: can't no_name_rendered and rendered_name
-								// be merged?
-								//
-								state.tmp.no_name_rendered = false;
-							};
-						};
-					};
 				};
 				if (state.output.getToken("name").strings.form == "count"){
 					state.output.clearlevel();
@@ -1802,24 +1846,6 @@ CSL.Lib.Elements.names = new function(){
 				}
 				CSL.Util.Names.reinit(state,Item);
 				state.output.endTag(); // names
-				//
-				// !!!!!: per-element rendering works.  hurray.
-				//
-				if ("string" == typeof state[state.tmp.area].opt["subsequent-author-substitute"] && !state.tmp.suppress_decorations){
-					var rendered_name = state.tmp.rendered_name;
-					if (state.tmp.no_name_rendered){
-						rendered_name = state.output.string(state,state.output.current.value().blobs,false);
-						state.tmp.no_name_rendered = false;
-					};
-					if (rendered_name && rendered_name == state.tmp.last_rendered_name){
-						//state.output.current.value().blobs = "-----";
-						///state.output.current.value().blobs = [];
-						var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
-						state.output.current.value().blobs = [str];
-						//print("Name to compare (2): "+rendered_name);
-					}
-					state.tmp.last_rendered_name = rendered_name;
-				};
 			};
 			this["execs"].push(unsets);
 			state.build.names_flag = false;
@@ -1833,7 +1859,9 @@ CSL.Lib.Elements.names = new function(){
 	}
 };
 CSL.Lib.Attributes = {};
-CSL.Lib.Attributes["@class"] = function(state,arg){};
+CSL.Lib.Attributes["@class"] = function(state,arg){
+	this.strings.cls = arg;
+};
 CSL.Lib.Attributes["@value"] = function(state,arg){
 	this.strings.value = arg;
 };
@@ -2055,14 +2083,19 @@ CSL.Lib.Attributes["@sort"] = function(state,arg){
 	}
 }
 CSL.Lib.Attributes["@plural"] = function(state,arg){
+	if ("always" == arg){
+		this.strings.plural = 1;
+	} else if ("never" == arg){
+		this.strings.plural = 0;
+	};
 };
 CSL.Lib.Attributes["@locator"] = function(state,arg){
 };
 CSL.Lib.Attributes["@include-period"] = function(state,arg){
 	this.strings["include-period"] = arg;
 };
-CSL.Lib.Attributes["@subsequent-author-substitute"] = function(state,arg){
-	state.bibliography.opt["subsequent-author-substitute"] = arg;
+CSL.Lib.Attributes["@strip-periods"] = function(state,arg){
+	this.strings["strip-periods"] = arg;
 };
 CSL.Lib.Attributes["@position"] = function(state,arg){
 	if (arg == "subsequent"){
@@ -2195,9 +2228,11 @@ CSL.Factory.renderDecorations = function(state){
 };
 CSL.Factory.substituteOne = function(template) {
 	return function(state,list) {
-		if ("string" == typeof list){
+		if (!list){
+			return "";
+		} else if ("string" == typeof list){
 			return template.replace("%%STRING%%",list);
-		}
+		};
 		print("USING is_delimiter (1) ... WHY?");
 		var decor = template.split("%%STRING%%");
 		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
@@ -2410,6 +2445,7 @@ CSL.Factory.Blob.prototype.push = function(blob){
 		throw "Attempt to push blob onto string object";
 	} else {
 		blob.alldecor = blob.alldecor.concat(this.alldecor);
+		//print("(blob.push alldecor): "+blob.alldecor);
 		this.blobs.push(blob);
 	}
 };
@@ -2706,24 +2742,33 @@ CSL.Util.Names.initializeWith = function(name,terminator){
 	if (!name){
 		return "";
 	};
-	var namelist = name.split(/\s+/);
-	var nstring = "";
-	for each (var n in namelist){
+	var namelist = name.replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
+	for (var i=0; i<namelist.length; i+=2){
+		var n = namelist[i];
 		var m = n.match( CSL.NAME_INITIAL_REGEXP);
 		if (m){
 			var extra = "";
+			// extra upper-case characters also included
 			if (m[2]){
 				extra = m[2].toLocaleLowerCase();
 			}
-			nstring = nstring + m[1].toLocaleUpperCase() + extra + terminator;
+			namelist[i] = m[1].toLocaleUpperCase() + extra;
+			if (i < (namelist.length-1)){
+				if (namelist[(i+1)].indexOf("-") > -1){
+					namelist[(i+1)] = terminator + namelist[(i+1)];
+				} else {
+					namelist[(i+1)] = terminator;
+				}
+			} else {
+				namelist.push(terminator);
+			}
 		} else if (n.match(/.*[a-zA-Z\u0400-\u052f].*/)){
-			nstring = CSL.Util.Names.stripRight(nstring) + " " +CSL.Util.Names.stripRight(n) + " ";
+			// romanish things that began with lower-case characters don't get initialized ...
+			namelist[i] = " "+n;
 		};
 	};
-	if (nstring){
-		return CSL.Util.Names.stripRight(nstring);
-	}
-	return name;
+	var ret = CSL.Util.Names.stripRight( namelist.join("") );
+	return ret.replace(/\s*\-\s*/g,"-").replace(/\s+/g," ");
 };
 CSL.Util.Names.stripRight = function(str){
 	var end = 0;
@@ -2795,20 +2840,7 @@ CSL.Util.Dates.day["numeric-leading-zeros"] = function(state,num){
 	return num.toString();
 }
 CSL.Util.Dates.day["ordinal"] = function(state,num){
-	var suffixes = ["st","nd","rd","th"];
-	var str = num.toString();
-	if ( (num/10)%10 == 1){
-		str += suffixes[3];
-	} else if ( num%10 == 1) {
-		str += suffixes[0];
-	} else if ( num%10 == 2){
-		str += suffixes[1];
-	} else if ( num%10 == 3){
-		str += suffixes[2];
-	} else {
-		str += suffixes[3];
-	}
-	return str;
+	return state.fun.ordinalizer(num);
 }
 CSL.Util.Sort = new function(){};
 CSL.Util.Sort.strip_prepositions = function(str){
@@ -2846,6 +2878,11 @@ CSL.Util.substituteStart = function(state,target){
 			bib_first.decorations = [["@bibliography","first"]];
 			var func = function(state,Item){
 				if (!state.tmp.render_seen){
+					//
+					// XXXXX:
+					// the abort condition is in the output function.  shouldn't it be
+					// moved here?
+					//
 					state.output.startTag("bib_first",bib_first);
 				};
 			};
@@ -2871,11 +2908,6 @@ CSL.Util.substituteStart = function(state,target){
 		// Set a test of the shadow if token to skip this
 		// macro if we have acquired a name value.
 		var check_for_variable = function(state,Item){
-			//
-			// !!!!!: Just to make life a little more interesting,
-			// myval == 0 evaluates to "true" when myval is "false".
-			// Hence the explicit test of the type here.
-			//
 			if (state.tmp.can_substitute.value()){
 				return true;
 			}
@@ -2922,16 +2954,78 @@ CSL.Util.substituteEnd = function(state,target){
 		var choose_end = new CSL.Factory.Token("choose",CSL.END);
 		target.push(choose_end);
 	};
+	var toplevel = "names" == this.name && state.build.substitute_level.value() == 0;
+	var hasval = "string" == typeof state[state.build.area].opt["subsequent-author-substitute"];
+	if (toplevel && hasval){
+		var author_substitute = new CSL.Factory.Token("text",CSL.SINGLETON);
+		var func = function(state,Item){
+			var printing = !state.tmp.suppress_decorations;
+			if (printing){
+				if (!state.tmp.rendered_name){
+					state.tmp.rendered_name = state.output.string(state,state.tmp.name_node.blobs,false);
+					if (state.tmp.rendered_name){
+						//print("TRY! "+state.tmp.rendered_name);
+						if (state.tmp.rendered_name == state.tmp.last_rendered_name){
+							var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
+							state.tmp.name_node.blobs = [str];
+						};
+						state.tmp.last_rendered_name = state.tmp.rendered_name;
+					};
+				};
+			};
+		};
+		author_substitute.execs.push(func);
+		target.push(author_substitute);
+	};
 	if (("text" == this.name && !this.postponed_macro) || ["number","date","names"].indexOf(this.name) > -1){
 		var element_trace = function(state,Item){
 			state.tmp.element_trace.pop();
 		};
 		this.execs.push(element_trace);
-	};
+	}
 };
 //
 // This will probably become CSL.Util.Numbers
 //
+CSL.Util.LongOrdinalizer = function(){};
+CSL.Util.LongOrdinalizer.prototype.init = function(state){
+	this.state = state;
+	this.names = new Object();
+	for (var i=1; i<10; i+=1){
+		this.names[""+i] = state.getTerm("long-ordinal-0"+i);
+	};
+	this.names["10"] = state.getTerm("long-ordinal-10");
+};
+CSL.Util.LongOrdinalizer.prototype.format = function(num){
+	var ret = this.names[""+num];
+	if (!ret){
+		ret = this.state.fun.ordinalizer.format(num);
+	};
+	return ret;
+};
+CSL.Util.Ordinalizer = function(){};
+CSL.Util.Ordinalizer.prototype.init = function(state){
+	this.suffixes = new Array();
+	for (var i=1; i<5; i+=1){
+		this.suffixes.push( state.getTerm("ordinal-0"+i) );
+	};
+};
+CSL.Util.Ordinalizer.prototype.format = function(num){
+	num = parseInt(num,10);
+	var str = num.toString();
+	if ( (num/10)%10 == 1){
+		str += this.suffixes[3];
+	} else if ( num%10 == 1) {
+		str += this.suffixes[0];
+	} else if ( num%10 == 2){
+		str += this.suffixes[1];
+	} else if ( num%10 == 3){
+		str += this.suffixes[2];
+	} else {
+		str += this.suffixes[3];
+	}
+	return str;
+};
 CSL.Util.Romanizer = function (){};
 CSL.Util.Romanizer.prototype.format = function(num){
 	var ret = "";
@@ -2999,249 +3093,282 @@ CSL.Util.Suffixator.prototype.incrementArray = function (array){
 	return array;
 };
 //
-// Gee wiz, Wally, how is this going to work?
-//
 // (A) initialize flipflopper with an empty blob to receive output.
 // Text string in existing output queue blob will be replaced with
 // an array containing this blob.
-CSL.Util.FlipFlopper = function(str){
-	this.str = str;
-	this.blob = CSL.Factory.Blob();
+CSL.Util.FlipFlopper = function(state){
+	this.state = state;
+	this.blob = false;
+	var tagdefs = [
+		["<i>","</i>","italics","@font-style",["italic","normal"],true],
+		["<b>","</b>","boldface","@font-weight",["bold","normal"],true],
+		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
+		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],true],
+		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
+		['"','"',"quotes","@quotes",["true","inner"],"'"],
+		["'","'","quotes","@quotes",["inner","true"],'"']
+	];
+	for each (var t in ["quote"]){
+		for each (var p in ["-","-inner-"]){
+			var entry = new Array();
+			entry.push( state.getTerm( "open"+p+t ) );
+			entry.push( state.getTerm( "close"+p+t ) );
+			entry.push( t+"s" );
+			entry.push( "@"+t+"s" );
+			if ("-" == p){
+				entry.push( ["outer", "inner"] );
+			} else {
+				entry.push( ["inner", "outer"] );
+			};
+			entry.push(true);
+			tagdefs.push(entry);
+		};
+	};
+	var allTags = function(tagdefs){
+		var ret = new Array();
+		for each (var def in tagdefs){
+			if (ret.indexOf(def[0]) == -1){
+				var esc = "";
+				if (["(",")","[","]"].indexOf(def[0]) > -1){
+					esc = "\\";
+				}
+				ret.push(esc+def[0]);
+			};
+			if (ret.indexOf(def[1]) == -1){
+				var esc = "";
+				if (["(",")","[","]"].indexOf(def[1]) > -1){
+					esc = "\\";
+				}
+				ret.push(esc+def[1]);
+			};
+		};
+		return ret;
+	};
+	this.allTagsRex = RegExp( "(" + allTags(tagdefs).join("|") + ")" );
+	var makeHashes = function(tagdefs){
+		var closeTags = new Object();
+		var flipTags = new Object();
+		var openToClose = new Object();
+		var openToDecorations = new Object();
+		for (var i=0; i < tagdefs.length; i += 1){
+			closeTags[tagdefs[i][1]] = true;
+			flipTags[tagdefs[i][1]] = tagdefs[i][5];
+			openToClose[tagdefs[i][0]] = tagdefs[i][1];
+			openToDecorations[tagdefs[i][0]] = [tagdefs[i][3],tagdefs[i][4]];
+		};
+		return [closeTags,flipTags,openToClose,openToDecorations];
+	};
+	var hashes = makeHashes(tagdefs);
+	this.closeTagsHash = hashes[0];
+	this.flipTagsHash = hashes[1];
+	this.openToCloseHash = hashes[2];
+	this.openToDecorations = hashes[3];
+};
+CSL.Util.FlipFlopper.prototype.init = function(str,blob){
+	if (!blob){
+		this.strs = this.getSplitStrings(str);
+		this.blob = new CSL.Factory.Blob();
+	} else {
+		this.blob = blob;
+		this.strs = this.getSplitStrings( this.blob.blobs );
+		this.blob.blobs = new Array();
+	}
+	this.blobstack = new CSL.Factory.Stack(this.blob);
 };
 //
-// (1) scan the string for escape characters, marking the position of
-// the character immediately following the escape.
+// (1) scan the string for escape characters.  Split the
+// string on tag candidates, and rejoin the tags that
+// are preceded by an escape character.  Ignore broken
+// markup.
+//
+CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
+	var strs = str.split( this.allTagsRex );
+	for (var i=(strs.length-2); i>0; i +=-2){
+		if (strs[(i-1)].slice((strs[(i-1)].length-1)) == "\\"){
+			var newstr = strs[(i-1)].slice(0,(strs[(i-1)].length-1)) + strs[i] + strs[(i+1)];
+			var head = strs.slice(0,(i-1));
+			var tail = strs.slice((i+2));
+			head.push(newstr);
+			strs = head.concat(tail);
+		};
+	};
+	var expected_closers = new Array();
+	var expected_openers = new Array();
+	var expected_flips = new Array();
+	var tagstack = new Array();
+	var badTagStack = new Array();
+	for (var posA=1; posA<(strs.length-1); posA +=2){
+		var tag = strs[posA];
+		if (this.closeTagsHash[tag]){
+			expected_closers.reverse();
+			var sameAsOpen = this.openToCloseHash[tag];
+			var openRev = expected_closers.indexOf(tag);
+			var flipRev = expected_flips.indexOf(tag);
+			expected_closers.reverse();
+			if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
+				var ibeenrunned = false;
+				for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
+					ibeenrunned = true;
+					var wanted_closer = expected_closers[posB];
+					if (tag == wanted_closer){
+						expected_closers.pop();
+						expected_openers.pop();
+						expected_flips.pop();
+						tagstack.pop();
+						break;
+					};
+					//print("badA:"+posA);
+					badTagStack.push( posA );
+				};
+				if (!ibeenrunned){
+					//print("badB:"+posA);
+					badTagStack.push( posA );
+				};
+				continue;
+			};
+		};
+		if (this.openToCloseHash[tag]){
+			expected_closers.push( this.openToCloseHash[tag] );
+			expected_openers.push( tag );
+			expected_flips.push( this.flipTagsHash[tag] );
+			tagstack.push(posA);
+		};
+	};
+	for (var posC in expected_closers.slice()){
+		expected_closers.pop();
+		expected_flips.pop();
+		expected_openers.pop();
+		badTagStack.push( tagstack.pop() );
+	};
+	badTagStack.sort(function(a,b){if(a<b){return 1;}else if(a>b){return -1;};return 0;});
+	for each (var badTagPos in badTagStack){
+		var head = strs.slice(0,(badTagPos-1));
+		var tail = strs.slice((badTagPos+2));
+		var sep = strs[badTagPos];
+		if (sep.length && sep[0] != "<" && this.openToDecorations[sep]){
+			var params = this.openToDecorations[sep];
+			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
+		}
+		var resplice = strs[(badTagPos-1)] + sep + strs[(badTagPos+1)];
+		head.push(resplice);
+		strs = head.concat(tail);
+	};
+	for (var i=0; i<strs.length; i+=2){
+		strs[i] = CSL.Output.Formats[this.state.opt.mode].text_escape( strs[i] );
+	};
+	return strs;
+};
 //
 // (2) scan the string for non-overlapping open and close tags,
-// skipping escaped tags.
+// skipping escaped tags.  During processing, a list of expected
+// closing tags will be maintained on a working stack.
 //
-// (a) For open tags, push the corresponding close tag onto a working
-// stack, append any text before the tag as a plain text blob object,
-// and open a level on the output queue.
+CSL.Util.FlipFlopper.prototype.processTags = function(){
+	var expected_closers = new Array();
+	var expected_openers = new Array();
+	var expected_flips = new Array();
+	var expected_rendering = new Array();
+	var str = "";
+	if (this.strs.length == 1){
+		this.blob.blobs = this.strs[0];
+	} else if (this.strs.length > 2){
+		for (var posA=1; posA < (this.strs.length-1); posA+=2){
+			var tag = this.strs[posA];
+			var prestr = this.strs[(posA-1)];
+			// start by pushing in the trailing text string
+			var newblob = new CSL.Factory.Blob(false,prestr);
+			var blob = this.blobstack.value();
+			blob.push(newblob);
 //
-// (b) For close tags, check to see if it matches the current
-// top of the working stack.  If so, pop the stack, process
-// the text to the tag as an append to the output stack, and close the
+// (a) For closing tags, check to see if it matches something
+// on the working stack.  If so, pop the stack and close the
 // output queue level.
 //
-// (B) at the end of processing, append any remaining text to
-// the output queue and close the blob.
+			if (this.closeTagsHash[tag]){
+				//
+				// Gaack.  Conditions.  Allow if ...
+				// ... the close tag is not also an open tag, or ...
+				// ... ... there is a possible open tag on our stacks, and ...
+				// ... ... there is no intervening flipped partner to it.
+				//
+				expected_closers.reverse();
+				var sameAsOpen = this.openToCloseHash[tag];
+				var openRev = expected_closers.indexOf(tag);
+				var flipRev = expected_flips.indexOf(tag);
+				expected_closers.reverse();
+				if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
+					//
+					// XXXXX: Validated, so can take just the last tag, so?
+					//
+					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
+						var wanted_closer = expected_closers[posB];
+						if (tag == wanted_closer){
+							expected_closers.pop();
+							expected_openers.pop();
+							expected_flips.pop();
+							expected_rendering.pop();
+							this.blobstack.pop();
+							break;
+						};
+					};
+					continue;
+				};
+			};
 //
+// (b) For open tags, push the corresponding close tag onto a working
+// stack, and open a level on the output queue.
 //
-// And voila.  Should handle both wiki-style and tagged markup,
-// and be reasonably simple and reasonably fast.  Feed it a
-// set of config parameters, and we have inline processing.
-//
-// For config parameters, we'll need:
-//
-// - A map of names to formatting functions, incorporating flipflop.
-// - A map of tags to names.
-// - Ditch semantic tags.  If needed, they can be patched in later.
-//		if (this.flipflops){
-//			for each (var ff in this.flipflops){
-//				style.fun.flipflopper.register( ff["start"], ff["end"], ff["func"], ff["alt"], ff["additive"] );
-//			}
-//		}
-//>>===== FLIPFLOPS =====>>
-//[
-//  {
-//    "start": "<span name=\"foreign-phrase\">",
-//    "end": "</span>",
-//    "func": ["@font-style", "italic"],
-//    "alt": ["@font-style", "normal"]
-//  }
-//]
-//<<===== FLIPFLOPS =====<<
-//>>===== FLIPFLOPS =====>>
-//[
-//  {
-//    "start":"'",
-//    "end":"'",
-//    "func":["@quotes","true"],
-//    "alt":["@squotes","true"],
-//    "additive":"true"
-//  }
-//]
-//<<===== FLIPFLOPS =====<<
-//>>===== FLIPFLOPS =====>>
-//[
-//    "start":"\"",
-//    "end":"\"",
-//    "func":["@quotes","true"],
-//    "alt":["@squotes","true"],
-//    "additive":"true"
-//  },
-//  {
-//    "start":"'",
-//    "end":"'",
-//    "func":["@quotes","true"],
-//    "alt":["@squotes","true"],
-//    "additive":"true"
-//  },
-//  {
-//    "start":"*",
-//    "end":"*",
-//    "func":["@font-weight","bold"],
-//    "alt":["@font-weight","normal"],
-//    "additive":"true"
-//  }
-//]
-//<<===== FLIPFLOPS =====<<
-CSL.Util.FlipFlopper = function(){
-	this.flipflops = [];
-	this.objlist = [];
-	this.cont = true;
-	this.stoplist = [];
-};
-CSL.Util.FlipFlopper.prototype.register = function(start, end, func, alt){
-	var flipflop = {
-		"start": start,
-		"end": end,
-		"func": func,
-		"alt": alt
-	};
-	this.flipflops.push(flipflop);
-};
-CSL.Util.FlipFlopper.prototype.compose = function(blob){
-	if (this.flipflops.length){
-		this.stoplist = [];
-		blob = this._compose(blob);
-	}
-	return blob;
-}
-CSL.Util.FlipFlopper.prototype._compose = function(blob){
-	if (this.find(blob.blobs)){
-		var str = blob.blobs;
-		var flipflop = this.flipflops[this.fpos];
-		var strlst = this.split(this.fpos, blob.blobs);
-		if (strlst.length > 1){
-			blob.blobs = new Array();
-			//
-			// Cast split items as unformatted objects for
-			// a start.
-			for (var j=0; j < strlst.length; j++){
-				var tok = new CSL.Factory.Token();
-				var newblob = new CSL.Factory.Blob(tok,strlst[j]);
-				blob.push(newblob);
-			}
-			//
-			// Apply registered formatting decorations to
-			// every other element of the split, starting
-			// with the second.
-			//
-			for (var j=1; j < blob.blobs.length; j += 2){
-				this.applyFlipFlop(blob.blobs[j],flipflop,blob);
-			}
-			//
-			// Install the bloblist and iterate over it
-			//
-			//blob.blobs = bloblist;
-			for (var i in blob.blobs){
-				blob.blobs[i] = this.compose(blob.blobs[i]);
-			}
-		} else {
-			blob.blobs = strlst;
-		}
-	} // if find flipflop string inside blob
-	return blob;
-}
-CSL.Util.FlipFlopper.prototype.find = function(str){
-	this.fpos = -1;
-	var min = [-1, -1];
-	var values = [];
-	var val = [];
-	for (var i in this.flipflops){
-		if (i in this.stoplist){
-			continue;
-		}
-		val = [ i, str.indexOf(this.flipflops[i]["start"]) ];
-		values.push(val.slice());
-	}
-	for each (var val in values){
-		if (val[1] > min[1]){
-			min = val;
+			if (this.openToCloseHash[tag]){
+				//print("open:"+tag);
+				expected_closers.push( this.openToCloseHash[tag] );
+				expected_openers.push( tag );
+				expected_flips.push( this.flipTagsHash[tag] );
+				blob = this.blobstack.value();
+				var newblobnest = new CSL.Factory.Blob();
+				blob.push(newblobnest);
+				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
+				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
+				this.blobstack.push(newblobnest);
+			};
 		};
-	}
-	for each (var val in values){
-		if (val[1] > -1 && val[1] < min[1]){
-			min = val;
-		}
-	}
-	this.fpos = min[0];
-	if (this.fpos > -1){
-		return true;
-	}
-	return false;
-}
-CSL.Util.FlipFlopper.prototype.applyFlipFlop = function(blob,flipflop){
-	var found = false;
-	var thing_to_add = flipflop.func;
-	var breakme = false;
-	for each (var blobdecorations in blob.alldecor){
-		for (var i in blobdecorations){
-			var decor = blobdecorations[i];
-			var func_match = decor[0] == flipflop.func[0] && decor[1] == flipflop.func[1];
-			var alt_match = decor[0] == flipflop.alt[0] && decor[1] == flipflop.alt[1];
-			if (flipflop.alt && func_match){
-				// replace with alt, mark as done
-				thing_to_add = flipflop.alt;
+//
+// (B) at the end of processing, unwind any open tags, append any
+// remaining text to the output queue and return the blob.
+//
+	if (this.strs.length > 2){
+		str = this.strs[(this.strs.length-1)];
+		var blob = this.blobstack.value();
+		var newblob = new CSL.Factory.Blob(false,str);
+		blob.push(newblob);
+	};
+	};
+	return this.blob;
+};
+CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
+	var posB = 0;
+	for (var posA=0; posA<blob.alldecor.length; posA+=1){
+		var decorations = blob.alldecor[posA];
+		var breakme = false;
+		for (var posC=(decorations.length-1); posC>-1; posC+=-1){
+			var decor = decorations[posC];
+			if (decor[0] == fun[0]){
+				if (decor[1] == fun[1][0]){
+					posB = 1;
+				};
 				breakme = true;
 				break;
-			}
-		}
+			};
+		};
 		if (breakme){
 			break;
-		}
-	}
+		};
+	};
+	var newdecor = [fun[0],fun[1][posB]];
 	blob.decorations.reverse();
-	blob.decorations.push( thing_to_add );
+	blob.decorations.push(newdecor);
 	blob.decorations.reverse();
+	return newdecor;
 };
-CSL.Util.FlipFlopper.prototype.split = function(idx,str){
-	var spec = this.flipflops[idx];
-	var lst1 = str.split(spec["start"]);
-	for (var i=(lst1.length-1); i > 0; i--){
-		var first = lst1[(i-1)];
-		var second = lst1[i];
-		if ("\\" == first[(first.length-1)]){
-			lst1[(i-1)] = first.slice(0,(first.length-1));
-			var start = lst1.slice(0,i);
-			start[(start.length-1)] += spec["start"];
-			start[(start.length-1)] += lst1[i];
-			var end = lst1.slice((i+1));
-			lst1 = start.concat(end);
-		}
-	}
-	if (lst1.length > 1){
-		if (spec["start"] != spec["end"]){
-			for (var i=(lst1.length-1); i > 0; i--){
-				var sublst = lst1[i].split(spec["end"]);
-				// reduce to a two-element list
-				for (var j=(sublst.length-1); j > 1; j--){
-					sublst[(j-1)] += spec["end"];
-					sublst[(j-1)] += sublst[j];
-					sublst.pop();
-				}
-				var start = lst1.slice(0,i);
-				var end = lst1.slice((i+1));
-				if (sublst.length == 1){
-					start[(start.length-1)] += spec["start"];
-					start[(start.length-1)] += sublst[0];
-					lst1 = start.concat(end);
-				} else {
-					lst1 = start.concat(sublst).concat(end);
-				}
-			}
-		} else {
-			if (lst1.length && (lst1.length % 2) == 0){
-				var buf = lst1.pop();
-				lst1[(lst1.length-1)] += spec["start"];
-				lst1[(lst1.length-1)] += buf;
-			}
-		}
-	}
-	return lst1;
-}
 CSL.Output = {};
 CSL.Output.Number = function(num,mother_token){
 	this.alldecor = new Array();
@@ -3406,20 +3533,25 @@ CSL.Output.Formatters.title_capitalization = function(state,string) {
 };
 CSL.Output.Formats = function(){};
 CSL.Output.Formats.prototype.html = {
-	"format_init": function(tmp){},
-	"items_add": function(tmp,items_array){},
-	"items_delete": function(tmp,items_hash){},
-	"text_escape": function(tmp,text){return text;},
+	"tmp": new Object(),
+	"format_init": function(){
+		this.tmp["hello"] = "Hello";
+	},
+	"items_add": function(items_array){},
+	"items_delete": function(items_hash){},
+	"text_escape": function(text){
+		return text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+	},
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/oblique":"<em>%%STRING%%</em>",
-	"@font-style/normal":"<span style=\"font-style:normal\">%%STRING%%</span>",
-	"@font-variant/small-caps":"<span style=\"font-variant:small-caps\">%%STRING%%</span>",
+	"@font-style/normal":"<span style=\"font-style:normal;\">%%STRING%%</span>",
+	"@font-variant/small-caps":"<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
 	"@font-variant/normal":false,
 	"@font-weight/bold":"<b>%%STRING%%</b>",
 	"@font-weight/normal":false,
 	"@font-weight/light":false,
 	"@text-decoration/none":false,
-	"@text-decoration/underline":"<span style=\"text-decoration:underline\">%%STRING%%</span>",
+	"@text-decoration/underline":"<span style=\"text-decoration:underline;\">%%STRING%%</span>",
 	"@vertical-align/baseline":false,
 	"@vertical-align/sup":"<sup>%%STRING%%</sup>",
 	"@vertical-align/sub":"<sub>%%STRING%%</sub>",
@@ -3429,26 +3561,39 @@ CSL.Output.Formats.prototype.html = {
 	"@text-case/capitalize-all":CSL.Output.Formatters.capitalize_all,
 	"@text-case/title":CSL.Output.Formatters.title_capitalization,
 	"@text-case/sentence":CSL.Output.Formatters.sentence_capitalization,
-	"@quotes/true":"“%%STRING%%”",
-	"@squotes/true":"‘%%STRING%%’",
-	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
-	"@bibliography/wrapper": function(state,str){
-		var cls = ["csl-bib-body"].concat(state.bibliography.opt["csl-bib-body"]).join(" ");
-		var line_height = "";
-		if (state.bibliography.opt["bib-line-spacing"]){
-			line_height = (100*state.bibliography.opt["bib-line-spacing"]);
-			line_height =  " style=\"line-height:"+line_height+"%\"";
+	"@quotes/true":function(state,str){
+		if ("undefined" == typeof str){
+			return state.getTerm("open-quote");
 		};
-		return "<ul class=\""+cls+"\""+line_height+">\n"+str+"</ul>";
+		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
+	},
+	"@quotes/inner":function(state,str){
+		if ("undefined" == typeof str){
+			//
+			// Most right by being wrong (for apostrophes)
+			//
+			return state.getTerm("close-inner-quote");
+		};
+		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+	},
+	"@parens/true":function(state,str){
+		if ("undefined" == typeof str){
+			return "(";
+		};
+		return "(" + str + ")";
+	},
+	"@parens/inner":function(state,str){
+		if ("undefined" == typeof str){
+			return "[";
+		};
+		return "[" + str + "]";
+	},
+	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
+	"@bibliography/body": function(state,str){
+		return "<div class=\"csl-bib-body\">"+str+"\n</div>";
 	},
 	"@bibliography/entry": function(state,str){
-		var cls = ["csl-bib-entry"].concat(state.bibliography.opt["csl-bib-entry"]).join(" ");
-		var margin_bottom = "";
-		if (state.bibliography.opt["bib-entry-spacing"] > 1){
-			margin_bottom = (1.1*(state.bibliography.opt["bib-entry-spacing"]-1));
-			margin_bottom = " style=\"margin-bottom:"+margin_bottom+"em\"";
-		};
-		return "<li class=\""+cls+"\""+margin_bottom+">"+str+"</li>\n";
+		return "\n<div class=\"csl-entry\">"+str+"</div>";
 	},
 	"@bibliography/first": function(state,str){
 		//
@@ -3463,22 +3608,39 @@ CSL.Output.Formats.prototype.html = {
 				break;
 			};
 		};
-		var cls = ["csl-bib-first"].concat(state.bibliography.opt["csl-bib-first"]).join(" ");
-		return "<span class=\""+cls+"\">"+str.slice(0,start)+"</span>"+str.slice(start,str.length);
+		if (state.bibliography.opt["csl-bib-first"].length){
+			var cls = state.bibliography.opt["csl-bib-first"].join(" ");
+			return "<span class=\""+cls+"\">"+str.slice(0,start)+"</span>"+str.slice(start,str.length);
+		} else {
+			return str;
+		};
 	},
 	"@bibliography/other": function(state,str){
 		//
 		// See above.
 		//
 		var end = str.length;
-		for (var c=0; c<str.length; c += 1){
+		for (var c=0; c<(str.length-1); c += 1){
 			if (str[c] != " "){
-				end = c;
+				end = (c+1);
 				break;
 			};
 		};
-		var cls = ["csl-bib-other"].concat(state.bibliography.opt["csl-bib-other"]).join(" ");
-		return str.slice(0,end)+"<span class=\""+cls+"\">"+str.slice(end,str.length)+"</span>";
+		if (state.bibliography.opt["csl-bib-other"].length){
+			var cls = state.bibliography.opt["csl-bib-other"].join(" ");
+			return str.slice(0,end)+"<span class=\""+cls+"\">"+str.slice(end,str.length)+"</span>";
+		} else {
+			return str;
+		};
+	},
+	"@class/csl-entry-heading": function(state,str){
+		return "\n    <div class=\"csl-entry-heading\">\n" + str + "\n    </div>";
+	},
+	"@class/csl-left-label": function(state,str){
+		return "\n    <div class=\"csl-left-label\">\n" + str + "\n    </div>";
+	},
+	"@class/csl-item": function(state,str){
+		return "\n    <div class=\"csl-item\">\n" + str + "\n    </div>";
 	}
 };
 CSL.Output.Formats = new CSL.Output.Formats();CSL.Output.Queue = function(state){
@@ -3567,7 +3729,6 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		var token = this.formats.value()["empty"];
 	} else if (tokname == "literal"){
 		var token = true;
-		blob = str;
 	} else if ("string" == typeof tokname){
 		var token = this.formats.value()[tokname];
 	} else {
@@ -3576,11 +3737,8 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if (!token){
 		throw "CSL processor error: unknown format token name: "+tokname;
 	}
-	if (!blob){
-		blob = new CSL.Factory.Blob(token,str);
-	}
-	var bloblist = this.state.fun.flipflopper.compose(blob);
-	if (bloblist.length > 1){
+	blob = new CSL.Factory.Blob(token,str);
+	if (false && bloblist.length > 1){
 		this.openLevel("empty");
 		var curr = this.current.value();
 		for each (var blobbie in bloblist){
@@ -3595,7 +3753,26 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		if ("string" == typeof blob.blobs){
 			this.state.tmp.term_predecessor = true;
 		}
-		curr.push( blob );
+		//
+		// XXXXX: Interface to this function needs cleaning up.
+		// The str variable is ignored if blob is given, and blob
+		// must contain the string to be processed.  Ugly.
+		//print("str:"+str.length);
+		//print("blob:"+blob);
+		//print("tokname:"+tokname);
+		//
+		// <Dennis Hopper impersonation>
+		// XXXXX: This is, like, too messed up for _words_, man.
+		// </Dennis Hopper impersonation>
+		//
+		if ("string" == typeof str){
+			curr.push( blob );
+			this.state.fun.flipflopper.init(str,blob);
+			//print("(queue.append blob decorations): "+blob.decorations);
+			this.state.fun.flipflopper.processTags();
+		} else {
+			curr.push( str );
+		}
 	}
 }
 //
@@ -3639,7 +3816,11 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				blob_last_chars.push(last_char);
 			} else if (blobjr.blobs){
 				// skip empty strings!!!!!!!!!!!!
-				var b = state.fun.decorate.text_escape(state,blobjr.blobs);
+				//
+				// text_escape is applied by flipflopper.
+				//
+				//var b = state.fun.decorate.text_escape(blobjr.blobs);
+				var b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
 						b = state.fun.decorate[params[0]][params[1]](state,b);
@@ -3650,11 +3831,17 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				// and the last char in the string is the same as the first char in
 				// the suffix.
 				//
-				if (b[(b.length-1)] == "." && blobjr.strings.suffix && blobjr.strings.suffix[0] == "."){
-					b = blobjr.strings.prefix + b + blobjr.strings.suffix.slice(1);
-				} else {
-					b = blobjr.strings.prefix + b + blobjr.strings.suffix;
+				var use_suffix = blobjr.strings.suffix;
+				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
+				    use_suffix = use_suffix.slice(1);
 				}
+				//
+				// Handle punctuation/quote swapping for suffix.
+				//
+				var qres = this.swapQuotePunctuation(b,use_suffix);
+				b = qres[0];
+				use_suffix = qres[1];
+				b = blobjr.strings.prefix + b + use_suffix;
 				ret.push(b);
 				blob_last_chars.push(last_char);
 			};
@@ -3691,11 +3878,17 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		// code above as model
 		//
 		var b = blobs_start;
-		if (b[(b.length-1)] == "." && blob.strings.suffix && blob.strings.suffix[0] == "."){
-			b = blob.strings.prefix + b + blob.strings.suffix.slice(1);
-		} else {
-			b = blob.strings.prefix + b + blob.strings.suffix;
+		var use_suffix = blob.strings.suffix;
+		if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
+			use_suffix = use_suffix.slice(1);
 		}
+		//
+		// Handle punctuation/quote swapping for suffix.
+		//
+		var qres = this.swapQuotePunctuation(b,use_suffix);
+		b = qres[0];
+		use_suffix = qres[1];
+		b = blob.strings.prefix + b + use_suffix;
 		blobs_start = b;
 	}
 	var blobs_end = ret.slice(span_split,ret.length);
@@ -3763,10 +3956,15 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				//print("  ####################################################");
 				//print("  ######################## EUREKA ####################");
 				//print("  ####################################################");
-				ret += use_delim.slice(1);
-			} else {
-				ret += use_delim;
+				use_delim = use_delim.slice(1);
 			};
+			//
+			// Handle punctuation/quote swapping for delimiter joins.
+			//
+			var res = this.swapQuotePunctuation(ret,use_delim);
+			ret = res[0];
+			use_delim = res[1];
+			ret += use_delim;
 			ret += blob;
 			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 		} else if (blob.status != CSL.SUPPRESS){
@@ -3795,6 +3993,22 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 		}
 	}
 	return [ret,ret_last_char];
+};
+CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
+	if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
+		if (use_delim){
+			var pos = use_delim.indexOf(" ");
+			if (pos > -1){
+				var pre_quote = use_delim.slice(0,pos);
+				use_delim = use_delim.slice(pos);
+			} else {
+				var pre_quote = use_delim;
+				use_delim = "";
+			};
+			ret = ret.slice(0,(ret.length-1)) + pre_quote + ret.slice((ret.length-1));
+		};
+	};
+	return [ret,use_delim];
 };
 //
 // Time for a rewrite of this module.
@@ -3842,7 +4056,7 @@ CSL.Factory.Registry = function(state){
 	this.myhash = new Object();
 	this.deletes = new Array();
 	this.inserts = new Array();
-	this.dbupdates = new Object();
+	this.refreshes = new Object();
 	this.akeys = new Object();
 	this.ambigcites = new Object();
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
@@ -3942,6 +4156,15 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 				this.ambigcites[ambig] = items.slice(0,pos).concat(items.slice([pos+1],items.length));
 			}
 			//
+			// XX. What we've missed is to provide an update of all
+			// items sharing the same ambig -- the remaining items in
+			// ambigcites.  So let's do that here, just in case the
+			// names update above doesn't catch them all.
+			//
+			for each (var i in this.ambigcites[ambig]){
+				this.refreshes[i] = true;
+			};
+			//
 			//  3d. Delete all items in deletion list from hash.
 			//
 			delete this.registry[delitem];
@@ -4020,9 +4243,19 @@ CSL.Factory.Registry.prototype.rebuildlist = function(){
 	};
 };
 CSL.Factory.Registry.prototype.dorefreshes = function(){
-	for (var item in this.dbupdates){
-		this.dodeletes(item);
-		this.doinserts(item);
+	for (var item in this.refreshes){
+		var regtoken = this.registry[item];
+		delete this.registry[item];
+		regtoken.disambig = undefined;
+		regtoken.sortkeys = undefined;
+		regtoken.ambig = undefined;
+		var Item = this.state.sys.retrieveItem(item);
+		var akey = this.state.getAmbiguousCite(Item);
+		this.registry[item] = regtoken;
+		var abase = this.state.getAmbigConfig();
+		this.registerAmbigToken(akey,item,abase);
+		this.akeys[akey] = true;
+		this.touched[item] = true;
 	};
 };
 CSL.Factory.Registry.prototype.setdisambigs = function(){
