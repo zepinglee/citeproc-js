@@ -2,9 +2,9 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_class");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_magic");
-	dojo.require("tests.std_class");
 	dojo.require("tests.std_name");
 	dojo.require("tests.test_flipflopper");
 	dojo.require("tests.std_flipflop");

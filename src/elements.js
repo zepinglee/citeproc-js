@@ -211,10 +211,12 @@ CSL.Lib.Elements.group = new function(){
 				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
 			}
 			if (CSL.GROUP_CLASSES.indexOf(this.strings.cls) > -1){
-				// push or concat???
 				this.decorations.push(["@class",this.strings.cls]);
 			};
 			var newoutput = function(state,Item){
+				if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
+					state.tmp.count_offset_characters = true;
+				}
 				state.output.startTag("group",this);
 			};
 			//
@@ -249,6 +251,9 @@ CSL.Lib.Elements.group = new function(){
 				// merge method, by applying decorations to
 				// each token to be merged.
 				state.output.endTag();
+				if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
+					state.tmp.count_offset_characters = false;
+				}
 			};
 			this["execs"].push(mergeoutput);
 		}

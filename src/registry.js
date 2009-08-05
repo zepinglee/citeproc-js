@@ -144,7 +144,7 @@ CSL.Factory.Registry = function(state){
 // 16. (o) [setdisambigs] Set disambiguation parameters on each inserted item token.
 // 17. (o) [setsortkeys] Set sort keys on each item token.
 // 18. (o) [sorttokens] Resort token list
-// 19. ( ) [renumber] Reset citation numbers on list items
+// 19. (o) [renumber] Reset citation numbers on list items
 //
 
 CSL.Factory.Registry.prototype.init = function(myitems){
@@ -245,6 +245,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			var newitem = {
 				"id":item,
 				"seq":0,
+				"offset":0,
 				"sortkeys":undefined,
 				"ambig":undefined,
 				"disambig":undefined

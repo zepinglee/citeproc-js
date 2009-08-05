@@ -256,7 +256,7 @@ CSL.Engine.prototype._cite = function(Item){
 	while(next < this[this.tmp.area].tokens.length){
 		next = this._render(this[this.tmp.area].tokens[next],Item);
     }
-	this.end();
+	this.end(Item);
 };
 
 /*
@@ -307,9 +307,18 @@ CSL.Engine.prototype.start = function(Item){
 
 	this["bibliography_sort"].keys = new Array();
 	this["citation_sort"].keys = new Array();
+
+	this.tmp.count_offset_characters = false;
+	this.tmp.offset_characters = 0;
+	//
+	// Oh ... shucks.  This is difficult.  We need to be able to
+	// unwind this thing, so the derived values should really go into
+	// registry, and the max be taken each time the data is delivered
+	// back to the client.  Sucks, but will be robust and amazing that
+	// way, so that's what we should do.
 };
 
-CSL.Engine.prototype.end = function(){
+CSL.Engine.prototype.end = function(Item){
 
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[-.,;:]$/)){
 		this.tmp.splice_delimiter = " ";
@@ -332,4 +341,8 @@ CSL.Engine.prototype.end = function(){
 	this.tmp.last_names_used = this.tmp.names_used.slice();
 
 	this.tmp.disambig_request = false;
+	if (!this.tmp.suppress_decorations && this.tmp.offset_characters){
+		print("cite id is: "+Item.id+" and has width "+this.tmp.offset_characters);
+		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
+	}
 };

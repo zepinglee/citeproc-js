@@ -81,6 +81,14 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 	//
 	// delimiter, prefix, suffix, decorations from token
 	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
+	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
+		// this.state.tmp.offset_characters += blob.strings.prefix.length;
+		this.state.tmp.offset_characters += blob.strings.prefix;
+	}
+	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length){
+		// this.state.tmp.offset_characters += blob.strings.suffix.length;
+		this.state.tmp.offset_characters += blob.strings.suffix;
+	}
 	var curr = this.current.value();
 	curr.push( blob );
 	this.current.push( blob );
@@ -121,6 +129,12 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		throw "CSL processor error: unknown format token name: "+tokname;
 	}
 	blob = new CSL.Factory.Blob(token,str);
+	if (this.state.tmp.count_offset_characters && blob.strings.prefix){
+		this.state.tmp.offset_characters += blob.strings.prefix.length;
+	}
+	if (this.state.tmp.count_offset_characters && blob.strings.suffix){
+		this.state.tmp.offset_characters += blob.strings.suffix.length;
+	}
 	//
 	//var bloblist = [blob];
 	//
@@ -153,6 +167,17 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		// XXXXX: This is, like, too messed up for _words_, man.
 		// </Dennis Hopper impersonation>
 		//
+		if (this.state.tmp.count_offset_characters){
+		 	if ("string" == typeof str){
+				this.state.tmp.offset_characters += blob.strings.prefix.length;
+				this.state.tmp.offset_characters += blob.strings.suffix.length;
+				this.state.tmp.offset_characters += blob.blobs.length;
+			} else if ("undefined" != str.num){
+				this.state.tmp.offset_characters += str.strings.prefix.length;
+				this.state.tmp.offset_characters += str.strings.suffix.length;
+				this.state.tmp.offset_characters += str.formatter.format(str.num).length;
+			}
+		}
 		if ("string" == typeof str){
 			curr.push( blob );
 			this.state.fun.flipflopper.init(str,blob);

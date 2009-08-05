@@ -34,14 +34,14 @@ Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bb
 Jane Henrietta Roe
     </div>
     <div class="csl-left-label">
-1999
+1999a
     </div>
     <div class="csl-item">
 Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc
     </div></div>
 <div class="csl-entry">
     <div class="csl-left-label">
-1999
+1999b
     </div>
     <div class="csl-item">
 Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd
@@ -59,8 +59,19 @@ Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Ee
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+  <citation>
+    <layout>
+      <names variable="author">
+        <name/>
+      </names>
+      <date variable="issued">
+        <date-part name="year"/>
+      </date>
+    </layout>
+  </citation>
   <bibliography>
     <option name="subsequent-author-substitute" value=""/>
+    <option name="disambiguate-add-year-suffix" value="true"/>
     <layout>
       <group class="csl-entry-heading">
         <names variable="author">
