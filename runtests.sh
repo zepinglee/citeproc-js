@@ -1,4 +1,11 @@
 #!/bin/sh
+
+if [ $(echo ${SHELL} | grep -c "bash")  -eq "1" ]; then
+  export LANG="en_US.UTF-8"
+else
+  setenv LANG "en_US.UTF-8"
+fi
+
 START="$(date) <--------------START"
 cd $(dirname $0)
 RHINO="${PWD}"/rhino/js-1.7R1.jar

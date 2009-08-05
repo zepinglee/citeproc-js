@@ -64,7 +64,7 @@ RhinoTest.prototype.retrieveItems = function(ids){
 
 
 RhinoTest.prototype.getLang = function(lang){
-	var ret = readFile( "./locale/"+this.localeRegistry()[lang]);
+	var ret = readFile( "./locale/"+this.localeRegistry()[lang], "UTF-8");
 	ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	return ret;
 };

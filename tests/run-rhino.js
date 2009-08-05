@@ -7,14 +7,6 @@ dojo.tests = {
 };
 =====*/
 
-load("./dojo/dojo/dojo.js");
-dojo.registerModulePath("dojo","./dojo/dojo");
-dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
-
 //
 // XXXXX rhino specific
 //
@@ -22,9 +14,18 @@ print("#####");
 print("Rhino file.encoding: "+environment["file.encoding"]);
 if ("UTF-8" != environment["file.encoding"]){
 	environment["file.encoding"] = "UTF-8";
+	environment["sun.jnu.encoding"] = "UTF-8";
 	print("Reset Rhino file.encoding to UTF-8");
 }
 print("#####");
+
+load("./dojo/dojo/dojo.js");
+dojo.registerModulePath("dojo","./dojo/dojo");
+dojo.registerModulePath("dojox","./dojo/dojox");
+dojo.registerModulePath("tests","./tests");
+dojo.registerModulePath("csl","./src");
+dojo.registerModulePath("csl.output","./src/output");
+dojo.registerModulePath("doh","./dojo/util/doh");
 
 dojo.require("csl.csl");
 dojo.require("csl.testing_rhino");
