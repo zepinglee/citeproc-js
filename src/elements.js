@@ -718,12 +718,32 @@ CSL.Lib.Elements.number = new function(){
 		} else if (this.strings.form == "long-ordinal"){
 			this.formatter = state.fun.long_ordinalizer;
 		}
-		var push_number = function(state,Item){
-			var num = parseInt(Item[this.variables[0]], 10);
-			var number = new CSL.Output.Number(num,this);
-			state.output.append(number,"literal");
+		//
+		// Whether we actually stick a number object on
+		// the output queue depends on whether the field
+		// contains a pure number.
+		//
+		var push_number_or_text = function(state,Item){
+			var varname = this.variables[0];
+			if (varname == "page-range" || varname == "page-first"){
+				varname = "page";
+			};
+			var num = Item[varname];
+			if ("undefined" != typeof num) {
+				if (this.variables[0] == "page-first"){
+					var m = num.split(/\s*(&|,|-)\s*/);
+					num = m[0];
+				}
+				if (num.match(/^[0-9]+$/)){
+					var number = new CSL.Output.Number( parseInt(num,10), this );
+					state.output.append(number,"literal");
+				} else {
+					state.output.append(num, this);
+				};
+			};
 		};
-		this["execs"].push(push_number);
+		this["execs"].push(push_number_or_text);
+
 		target.push(this);
 		CSL.Util.substituteEnd.call(this,state,target);
 	};

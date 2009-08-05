@@ -2,6 +2,14 @@ dojo.provide("tests.std_number");
 
 doh.register("tests.std_number", [
     function(){
+        var test = new StdRhinoTest("number_PageFirst");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("number_PageRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("number_SimpleNumberArabic");
         doh.assertEqual(test.result, test.run());
     },
