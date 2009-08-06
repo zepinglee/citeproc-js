@@ -78,6 +78,15 @@ CSL.Engine.prototype.makeBibliography = function(){
 		}
 	}
 	var ret = this._bibliography_entries.call(this);
+	var maxoffset = 0;
+	for each (var item in this.registry.reflist){
+		if (item.offset > maxoffset){
+			maxoffset = item.offset;
+		};
+	};
+	if (maxoffset){
+		print("Max char offset for second-field-align etc: "+maxoffset);
+	}
 	return ret;
 };
 

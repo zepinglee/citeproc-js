@@ -34,6 +34,7 @@ CSL.Util.substituteStart = function(state,target){
 				bib_first.decorations = [["@class","csl-left-label"]];
 				var func = function(state,Item){
 					if (!state.tmp.render_seen){
+						state.tmp.count_offset_characters = true;
 						state.output.startTag("bib_first",bib_first);
 					};
 				};
@@ -102,6 +103,7 @@ CSL.Util.substituteEnd = function(state,target){
 				var first_func_end = function(state,Item){
 					if (!state.tmp.render_seen){
 						state.output.endTag(); // closes bib_first
+						state.tmp.count_offset_characters = false;
 					};
 				};
 				bib_first_end.execs.push(first_func_end);

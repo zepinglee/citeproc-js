@@ -107,44 +107,6 @@ CSL.Output.Formats.prototype.html = {
 	"@bibliography/entry": function(state,str){
 		return "  <div class=\"csl-entry\">"+str+"</div>\n";
 	},
-	"@bibliography/first": function(state,str){
-		//
-		// The "first field" object could have a suffix ending
-		// in a space.  The space needs to be placed beyond the
-		// end of the span tag or it may vanish.
-		//
-		var start = str.length;
-		for (var c=str.length; c>-1; c += -1){
-			if (str[c] != " "){
-				start = c;
-				break;
-			};
-		};
-		if (state.bibliography.opt["csl-bib-first"].length){
-			var cls = state.bibliography.opt["csl-bib-first"].join(" ");
-			return "<span class=\""+cls+"\">"+str.slice(0,start)+"</span>"+str.slice(start,str.length);
-		} else {
-			return str;
-		};
-	},
-	"@bibliography/other": function(state,str){
-		//
-		// See above.
-		//
-		var end = str.length;
-		for (var c=0; c<(str.length-1); c += 1){
-			if (str[c] != " "){
-				end = (c+1);
-				break;
-			};
-		};
-		if (state.bibliography.opt["csl-bib-other"].length){
-			var cls = state.bibliography.opt["csl-bib-other"].join(" ");
-			return str.slice(0,end)+"<span class=\""+cls+"\">"+str.slice(end,str.length)+"</span>";
-		} else {
-			return str;
-		};
-	},
 	"@class/csl-entry-heading": function(state,str){
 		return "\n\n    <div class=\"csl-entry-heading\">" + str + "</div>\n";
 	},

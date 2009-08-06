@@ -342,7 +342,7 @@ CSL.Engine.prototype.end = function(Item){
 
 	this.tmp.disambig_request = false;
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters){
-		print("cite id is: "+Item.id+" and has width "+this.tmp.offset_characters);
+		// print("cite id is: "+Item.id+" and has width "+this.tmp.offset_characters);
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}
 };
