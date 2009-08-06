@@ -40,7 +40,7 @@ CSL.Util.substituteStart = function(state,target){
 				bib_first.execs.push(func);
 				target.push(bib_first);
 			};
-			if ("csl-left-label" == this.strings.cls){
+			if ("csl-left-label" == this.strings.cls && "bibliography" == state.build.area){
 				var func = function(state,Item){
 					if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
 						state.tmp.count_offset_characters = true;
@@ -89,7 +89,7 @@ CSL.Util.substituteEnd = function(state,target){
 	if (state.build.area == "bibliography"){
 		state.build.render_nesting_level += -1;
 		if (state.build.render_nesting_level == 0){
-			if ("csl-left-label" == this.strings.cls){
+			if ("csl-left-label" == this.strings.cls && state.build.area == "bibliography"){
 				var func = function(state,Item){
 					if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
 						state.tmp.count_offset_characters = false;
