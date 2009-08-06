@@ -214,9 +214,6 @@ CSL.Lib.Elements.group = new function(){
 				this.decorations.push(["@class",this.strings.cls]);
 			};
 			var newoutput = function(state,Item){
-				if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
-					state.tmp.count_offset_characters = true;
-				}
 				state.output.startTag("group",this);
 			};
 			//
@@ -251,9 +248,6 @@ CSL.Lib.Elements.group = new function(){
 				// merge method, by applying decorations to
 				// each token to be merged.
 				state.output.endTag();
-				if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
-					state.tmp.count_offset_characters = false;
-				}
 			};
 			this["execs"].push(mergeoutput);
 		}
@@ -698,7 +692,9 @@ CSL.Lib.Elements.layout = new function(){
 			}
 			var mergeoutput = function(state,Item){
 				if (state.tmp.area == "bibliography"){
-					state.output.endTag();  // closes bib_other
+					if (state.bibliography.opt["second-field-align"]){
+						state.output.endTag();  // closes bib_other
+					};
 				};
 				state.output.closeLevel();
 			};
@@ -872,8 +868,9 @@ CSL.Lib.Elements.option = new function(){
 				state[state.tmp.area].opt[this.strings.name] = true;
 			};
 			if ("second-field-align" == this.strings.name){
-				state.bibliography.opt["csl-entry"].push("be-relative");
-				state.bibliography.opt["csl-bib-first"].push("float-left");
+				state.bibliography.opt["second-field-align"] = true;
+			//	state.bibliography.opt["csl-entry"].push("be-relative");
+			//	state.bibliography.opt["csl-bib-first"].push("float-left");
 			};
 			if ("hanging-indent" == this.strings.name){
 				state.bibliography.opt["csl-entry"].push("hanging-indent");

@@ -33,6 +33,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\">John Smith, Book A (2000)</div>\n<div class=\"csl-entry\">Robert Jones, Book B (2001)</div>\n</div>", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Smith, Book A (2000)</div>\n  <div class=\"csl-entry\">Robert Jones, Book B (2001)</div>\n</div>", 
     "schema": "0.8"
 }

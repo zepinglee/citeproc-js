@@ -9,14 +9,14 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-<div class="csl-entry">Smith, A., L. Roberts, and T. Jones (1993)</div>
-<div class="csl-entry">Smith, A., T. Jones, and L. Roberts (1997)</div>
-<div class="csl-entry">Smith, A. and C. Allen (2000)</div>
-<div class="csl-entry">Smith, A. and B. Frank (1995)</div>
-<div class="csl-entry">Smith, A. and B. Frank (1997)</div>
-<div class="csl-entry">Smith, A. (1989a)</div>
-<div class="csl-entry">Smith, A. (1989b)</div>
-<div class="csl-entry">Smith, A. (1991)</div>
+  <div class="csl-entry">Smith, A., L. Roberts, and T. Jones (1993)</div>
+  <div class="csl-entry">Smith, A., T. Jones, and L. Roberts (1997)</div>
+  <div class="csl-entry">Smith, A. and C. Allen (2000)</div>
+  <div class="csl-entry">Smith, A. and B. Frank (1995)</div>
+  <div class="csl-entry">Smith, A. and B. Frank (1997)</div>
+  <div class="csl-entry">Smith, A. (1989a)</div>
+  <div class="csl-entry">Smith, A. (1989b)</div>
+  <div class="csl-entry">Smith, A. (1991)</div>
 </div>
 <<===== RESULT =====<<
 

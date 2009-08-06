@@ -158,6 +158,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\">Smith, A., L. Roberts, and T. Jones (1993)</div>\n<div class=\"csl-entry\">Smith, A., T. Jones, and L. Roberts (1997)</div>\n<div class=\"csl-entry\">Smith, A. and C. Allen (2000)</div>\n<div class=\"csl-entry\">Smith, A. and B. Frank (1995)</div>\n<div class=\"csl-entry\">Smith, A. and B. Frank (1997)</div>\n<div class=\"csl-entry\">Smith, A. (1989a)</div>\n<div class=\"csl-entry\">Smith, A. (1989b)</div>\n<div class=\"csl-entry\">Smith, A. (1991)</div>\n</div>", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Smith, A., L. Roberts, and T. Jones (1993)</div>\n  <div class=\"csl-entry\">Smith, A., T. Jones, and L. Roberts (1997)</div>\n  <div class=\"csl-entry\">Smith, A. and C. Allen (2000)</div>\n  <div class=\"csl-entry\">Smith, A. and B. Frank (1995)</div>\n  <div class=\"csl-entry\">Smith, A. and B. Frank (1997)</div>\n  <div class=\"csl-entry\">Smith, A. (1989a)</div>\n  <div class=\"csl-entry\">Smith, A. (1989b)</div>\n  <div class=\"csl-entry\">Smith, A. (1991)</div>\n</div>", 
     "schema": "0.9 experimental"
 }

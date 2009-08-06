@@ -12,47 +12,32 @@ the grouping of authors in the AAA style bibliography format.
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-<div class="csl-entry">
-    <div class="csl-entry-heading">
-John Aloysius Doe
-    </div>
-    <div class="csl-left-label">
-1999
-    </div>
-    <div class="csl-item">
-Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa
-    </div></div>
-<div class="csl-entry">
-    <div class="csl-left-label">
-2000
-    </div>
-    <div class="csl-item">
-Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb
-    </div></div>
-<div class="csl-entry">
-    <div class="csl-entry-heading">
-Jane Henrietta Roe
-    </div>
-    <div class="csl-left-label">
-1999a
-    </div>
-    <div class="csl-item">
-Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc
-    </div></div>
-<div class="csl-entry">
-    <div class="csl-left-label">
-1999b
-    </div>
-    <div class="csl-item">
-Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd
-    </div></div>
-<div class="csl-entry">
-    <div class="csl-left-label">
-2000
-    </div>
-    <div class="csl-item">
-Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee
-    </div></div>
+  <div class="csl-entry">
+
+    <div class="csl-entry-heading">John Aloysius Doe</div>
+
+    <div class="csl-left-label">1999</div>
+    <div class="csl-item">Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa</div>
+  </div>
+  <div class="csl-entry">
+    <div class="csl-left-label">2000</div>
+    <div class="csl-item">Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb</div>
+  </div>
+  <div class="csl-entry">
+
+    <div class="csl-entry-heading">Jane Henrietta Roe</div>
+
+    <div class="csl-left-label">1999a</div>
+    <div class="csl-item">Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc</div>
+  </div>
+  <div class="csl-entry">
+    <div class="csl-left-label">1999b</div>
+    <div class="csl-item">Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd</div>
+  </div>
+  <div class="csl-entry">
+    <div class="csl-left-label">2000</div>
+    <div class="csl-item">Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee</div>
+  </div>
 </div>
 <<===== RESULT =====<<
 

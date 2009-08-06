@@ -78,6 +78,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\"><i>Work 1</i> (John Doe), 2000.</div>\n<div class=\"csl-entry\">John Doe, 2000. Work 2.</div>\n<div class=\"csl-entry\">2000. Work 3, John Doe.</div>\n<div class=\"csl-entry\">Work 4 (2000), John Doe.</div>\n<div class=\"csl-entry\">Work 5, John Doe, 2000.</div>\n</div>", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\"><i>Work 1</i> (John Doe), 2000.</div>\n  <div class=\"csl-entry\">John Doe, 2000. Work 2.</div>\n  <div class=\"csl-entry\">2000. Work 3, John Doe.</div>\n  <div class=\"csl-entry\">Work 4 (2000), John Doe.</div>\n  <div class=\"csl-entry\">Work 5, John Doe, 2000.</div>\n</div>", 
     "schema": "0.8"
 }

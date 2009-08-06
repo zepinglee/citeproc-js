@@ -102,10 +102,10 @@ CSL.Output.Formats.prototype.html = {
 	},
 	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/body": function(state,str){
-		return "<div class=\"csl-bib-body\">"+str+"\n</div>";
+		return "<div class=\"csl-bib-body\">\n"+str+"</div>";
 	},
 	"@bibliography/entry": function(state,str){
-		return "\n<div class=\"csl-entry\">"+str+"</div>";
+		return "  <div class=\"csl-entry\">"+str+"</div>\n";
 	},
 	"@bibliography/first": function(state,str){
 		//
@@ -146,13 +146,13 @@ CSL.Output.Formats.prototype.html = {
 		};
 	},
 	"@class/csl-entry-heading": function(state,str){
-		return "\n    <div class=\"csl-entry-heading\">\n" + str + "\n    </div>";
+		return "\n\n    <div class=\"csl-entry-heading\">" + str + "</div>\n";
 	},
 	"@class/csl-left-label": function(state,str){
-		return "\n    <div class=\"csl-left-label\">\n" + str + "\n    </div>";
+		return "\n    <div class=\"csl-left-label\">" + str + "</div>\n";
 	},
 	"@class/csl-item": function(state,str){
-		return "\n    <div class=\"csl-item\">\n" + str + "\n    </div>";
+		return "    <div class=\"csl-item\">" + str + "</div>\n  ";
 	}
 };
 

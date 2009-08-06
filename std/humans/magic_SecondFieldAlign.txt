@@ -9,8 +9,14 @@ bibliography
 
 >>== RESULT ==>>
 <div class="csl-bib-body">
-<div class="csl-entry"><span class="float-left">[1]</span>John Smith, Book A (2000)</div>
-<div class="csl-entry"><span class="float-left">[2]</span>Robert Jones, Book B (2001)</div>
+  <div class="csl-entry">
+    <div class="csl-left-label">[1]</div>
+    <div class="csl-item">John Smith, Book A (2000)</div>
+  </div>
+  <div class="csl-entry">
+    <div class="csl-left-label">[2]</div>
+    <div class="csl-item">Robert Jones, Book B (2001)</div>
+  </div>
 </div>
 <<== RESULT ==<<
 

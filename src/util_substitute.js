@@ -26,20 +26,28 @@ CSL.Util.substituteStart = function(state,target){
 	};
 	if (state.build.area == "bibliography"){
 		if (state.build.render_nesting_level == 0){
-			var bib_first = new CSL.Factory.Token("group",CSL.START);
-			bib_first.decorations = [["@bibliography","first"]];
-			var func = function(state,Item){
-				if (!state.tmp.render_seen){
-					//
-					// XXXXX:
-					// the abort condition is in the output function.  shouldn't it be
-					// moved here?
-					//
-					state.output.startTag("bib_first",bib_first);
+			//
+			// The markup formerly known as @bibliography/first
+			//
+			if (state.bibliography.opt["second-field-align"]){
+				var bib_first = new CSL.Factory.Token("group",CSL.START);
+				bib_first.decorations = [["@class","csl-left-label"]];
+				var func = function(state,Item){
+					if (!state.tmp.render_seen){
+						state.output.startTag("bib_first",bib_first);
+					};
 				};
+				bib_first.execs.push(func);
+				target.push(bib_first);
 			};
-			bib_first.execs.push(func);
-			target.push(bib_first);
+			if ("csl-left-label" == this.strings.cls){
+				var func = function(state,Item){
+					if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
+						state.tmp.count_offset_characters = true;
+					};
+				};
+				this.execs.push(func);
+			}
 		}
 		state.build.render_nesting_level += 1;
 	}
@@ -81,26 +89,34 @@ CSL.Util.substituteEnd = function(state,target){
 	if (state.build.area == "bibliography"){
 		state.build.render_nesting_level += -1;
 		if (state.build.render_nesting_level == 0){
-			var bib_first_end = new CSL.Factory.Token("group",CSL.END);
-			var first_func_end = function(state,Item){
-				if (!state.tmp.render_seen){
-					state.output.endTag(); // closes bib_first
+			if ("csl-left-label" == this.strings.cls){
+				var func = function(state,Item){
+					if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
+						state.tmp.count_offset_characters = false;
+					};
 				};
+				this.execs.push(func);
 			};
-			bib_first_end.execs.push(first_func_end);
-			target.push(bib_first_end);
-
-			var bib_other = new CSL.Factory.Token("group",CSL.START);
-			bib_other.decorations = [["@bibliography","other"]];
-			var other_func = function(state,Item){
-
-				if (!state.tmp.render_seen){
-					state.tmp.render_seen = true;
-					state.output.startTag("bib_other",bib_other);
+			if (state.bibliography.opt["second-field-align"]){
+				var bib_first_end = new CSL.Factory.Token("group",CSL.END);
+				var first_func_end = function(state,Item){
+					if (!state.tmp.render_seen){
+						state.output.endTag(); // closes bib_first
+					};
 				};
+				bib_first_end.execs.push(first_func_end);
+				target.push(bib_first_end);
+				var bib_other = new CSL.Factory.Token("group",CSL.START);
+				bib_other.decorations = [["@class","csl-item"]];
+				var other_func = function(state,Item){
+					if (!state.tmp.render_seen){
+						state.tmp.render_seen = true;
+						state.output.startTag("bib_other",bib_other);
+					};
+				};
+				bib_other.execs.push(other_func);
+				target.push(bib_other);
 			};
-			bib_other.execs.push(other_func);
-			target.push(bib_other);
 		};
 	};
 //	if (state.build.substitute_level.value() <= 1 && this.name != "group"){

@@ -63,6 +63,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n<div class=\"csl-entry\">Book One</div>\n<div class=\"csl-entry\">Book Two</div>\n<div class=\"csl-entry\">Book Three</div>\n</div>", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Book One</div>\n  <div class=\"csl-entry\">Book Two</div>\n  <div class=\"csl-entry\">Book Three</div>\n</div>", 
     "schema": "0.9 experimental"
 }

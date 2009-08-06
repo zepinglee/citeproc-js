@@ -292,7 +292,7 @@ CSL.Engine.Bibliography = function (){
 	 */
 	this.opt["csl-bib-body"] = new Array();
 	this.opt["csl-entry"] = new Array();
-	this.opt["csl-bib-first"] = new Array();
+	// this.opt["csl-bib-first"] = new Array();
 	this.opt["csl-bib-other"] = new Array();
 	this.opt["bib-line-spacing"] = false;
 	this.opt["bib-entry-spacing"] = false;
