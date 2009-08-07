@@ -2,6 +2,7 @@ dojo.provide("tests.test_flipflopper");
 
 doh.register("tests.flipflopper", [
 	function testProcessTagsUnopenedCloseTags(){
+		var single_close_quote=readFile("./macosx_characters/single_close_quote.txt","UTF-8")[0];
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
@@ -9,17 +10,18 @@ doh.register("tests.flipflopper", [
 		ff.init("head<i>italic</b>bold's");
 		ff.processTags();
 		doh.assertEqual(35,ff.blob.blobs.length);
-		doh.assertEqual("head&lt;i&gt;italic&lt;/b&gt;bold’s",ff.blob.blobs);
+		doh.assertEqual("head&lt;i&gt;italic&lt;/b&gt;bold"+single_close_quote+"s",ff.blob.blobs);
 	},
 	function testImmediateClosingSingleQuote(){
+		var single_close_quote=readFile("macosx_characters/single_close_quote.txt","UTF-8")[0];
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
 		var ff = new CSL.Util.FlipFlopper(state);
-		ff.init("O’Malley");
+		ff.init("O"+single_close_quote+"Malley");
 		ff.processTags();
 		doh.assertEqual(8,ff.blob.blobs.length);
-		doh.assertEqual("O’Malley",ff.blob.blobs);
+		doh.assertEqual("O"+single_close_quote+"Malley",ff.blob.blobs);
 	},
 	function testGetSplitStringsTwo(){
 		var myxml = "<style></style>";
@@ -43,6 +45,7 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual("hello&lt;b&gt;hello",ff.strs[0]);
 	},
 	function testProcessTagsOpenEnded(){
+		var double_open_quote=readFile("macosx_characters/double_open_quote.txt","UTF-8")[0];
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
@@ -54,9 +57,10 @@ doh.register("tests.flipflopper", [
 		doh.assertEqual("italic ",ff.blob.blobs[1].blobs[0].blobs);
 		doh.assertEqual("bold+italic",ff.blob.blobs[1].blobs[1].blobs[0].blobs);
 		doh.assertEqual(" YY ",ff.blob.blobs[1].blobs[2].blobs);
-		doh.assertEqual("ITALIC “quote -- &lt;i&gt;important",ff.blob.blobs[2].blobs);
+		doh.assertEqual("ITALIC "+double_open_quote+"quote -- &lt;i&gt;important",ff.blob.blobs[2].blobs);
 	},
 	function testProcessTagsCrossNesting(){
+		var double_open_quote=readFile("macosx_characters/double_open_quote.txt","UTF-8")[0];
 		var myxml = "<style></style>";
 		var sys = new RhinoTest();
 		var state = new CSL.Engine(sys,myxml);
@@ -64,7 +68,7 @@ doh.register("tests.flipflopper", [
 		ff.init("hello <i>italic <b>bold+italic</b> YY </i>italic \"quote <b>XXhello</b>ZZ");
 		ff.processTags();
 		doh.assertEqual(5,ff.blob.blobs.length);
-		doh.assertEqual("italic “quote ",ff.blob.blobs[2].blobs);
+		doh.assertEqual("italic "+double_open_quote+"quote ",ff.blob.blobs[2].blobs);
 		doh.assertEqual("XXhello",ff.blob.blobs[3].blobs[0].blobs);
 		doh.assertEqual("ZZ",ff.blob.blobs[4].blobs);
 
