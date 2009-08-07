@@ -869,19 +869,17 @@ CSL.Lib.Elements.option = new function(){
 			};
 			if ("second-field-align" == this.strings.name){
 				state.bibliography.opt["second-field-align"] = true;
-			//	state.bibliography.opt["csl-entry"].push("be-relative");
-			//	state.bibliography.opt["csl-bib-first"].push("float-left");
 			};
 			if ("hanging-indent" == this.strings.name){
-				state.bibliography.opt["csl-entry"].push("hanging-indent");
+				state.bibliography.opt["hangingindent"] = 2;
 			};
 		};
 		if (this.strings.value && this.strings.value.match(/^[.0-9]+$/)){
 			if ("line-spacing" == this.strings.name){
-				state.bibliography.opt["bib-line-spacing"] = parseFloat(this.strings.value,10);
+				state.bibliography.opt["linespacing"] = parseFloat(this.strings.value,10);
 			};
 		if ("entry-spacing" == this.strings.name){
-				state.bibliography.opt["bib-entry-spacing"] = parseFloat(this.strings.value,10);
+				state.bibliography.opt["entryspacing"] = parseFloat(this.strings.value,10);
 			};
 		};
 		target.push(this);

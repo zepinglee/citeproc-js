@@ -290,12 +290,6 @@ CSL.Engine.Bibliography = function (){
 	 * tag at runtime, depending on whether the Item is a
 	 * first or a subsequent reference.</p>
 	 */
-	this.opt["csl-bib-body"] = new Array();
-	this.opt["csl-entry"] = new Array();
-	// this.opt["csl-bib-first"] = new Array();
-	this.opt["csl-bib-other"] = new Array();
-	this.opt["bib-line-spacing"] = false;
-	this.opt["bib-entry-spacing"] = false;
 	this.opt["et-al-min"] = 0;
 	this.opt["et-al-use-first"] = 1;
 	this.opt["et-al-subsequent-min"] = 0;

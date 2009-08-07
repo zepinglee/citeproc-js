@@ -95,6 +95,15 @@ CSL.Engine.prototype.makeBibliography = function(){
 		print("Max char offset for second-field-align etc: "+maxoffset);
 		params.maxoffset = maxoffset;
 	}
+	if (this.bibliography.opt.hangingindent){
+		params.hangingindent = this.bibliography.opt.hangingindent;
+	}
+	if (this.bibliography.opt.entryspacing){
+		params.entryspacing = this.bibliography.opt.entryspacing;
+	}
+	if (this.bibliography.opt.linespacing){
+		params.linespacing = this.bibliography.opt.linespacing;
+	}
 	return [params,ret];
 };
 
