@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ $(echo ${SHELL} | grep -c "bash")  -eq "1" ]; then
-  export LANG="en_US.UTF-8"
+  export LANG="C"
 else
   setenv LANG "en_US.UTF-8"
 fi
