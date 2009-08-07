@@ -143,14 +143,15 @@ CSL.Engine.prototype.getModes = function(){
  * Compose individual cites into a single string.
  */
 CSL.Engine.prototype._bibliography_entries = function (){
+	var ret = [];
 	this.tmp.area = "bibliography";
 	var input = this.sys.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
-	this.output.addToken("bibliography_joiner","\n");
-	this.output.openLevel("bibliography_joiner");
-	var bib_body = new CSL.Factory.Token("group",CSL.START);
-	bib_body.decorations = [["@bibliography","body"]];
-	this.output.startTag("bib_body",bib_body);
+	//this.output.addToken("bibliography_joiner","\n");
+	//this.output.openLevel("bibliography_joiner");
+	//var bib_body = new CSL.Factory.Token("group",CSL.START);
+	//bib_body.decorations = [["@bibliography","body"]];
+	//this.output.startTag("bib_body",bib_body);
 	for each (var item in input){
 		if (false){
 			print("BIB: "+item.id);
@@ -160,11 +161,12 @@ CSL.Engine.prototype._bibliography_entries = function (){
 		this.output.startTag("bib_entry",bib_entry);
 		this._cite.call(this,item);
 		this.output.endTag(); // closes bib_entry
+		ret.push(this.output.string(this,this.output.queue)[0]);
 	}
-	this.output.endTag(); // closes bib_body
-	this.output.closeLevel();
+	//this.output.endTag(); // closes bib_body
+	//this.output.closeLevel();
 	this.tmp.disambig_override = false;
-	return this.output.string(this,this.output.queue)[0];
+	return ret;
 };
 
 /*
