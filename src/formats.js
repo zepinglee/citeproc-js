@@ -88,18 +88,6 @@ CSL.Output.Formats.prototype.html = {
 		};
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
-	"@parens/true":function(state,str){
-		if ("undefined" == typeof str){
-			return "(";
-		};
-		return "(" + str + ")";
-	},
-	"@parens/inner":function(state,str){
-		if ("undefined" == typeof str){
-			return "[";
-		};
-		return "[" + str + "]";
-	},
 	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/body": function(state,str){
 		return "<div class=\"csl-bib-body\">\n"+str+"</div>";
