@@ -297,7 +297,7 @@ StdRhinoTest.prototype.run = function(){
 		}
 		var ret = citations.join("\n");
 	} else if (this.test.mode == "bibliography"){
-		var ret = this.style.makeBibliography();
+		var ret = this.style.makeBibliography()[1];
 	} else {
 		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
 	}

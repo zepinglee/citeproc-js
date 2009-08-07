@@ -78,6 +78,13 @@ CSL.Engine.prototype.makeBibliography = function(){
 		}
 	}
 	var ret = this._bibliography_entries.call(this);
+	var params = {
+		"maxoffset":0,
+		"blockindent":2,
+		"hangindent":0,
+		"entryspacing":1,
+		"linespacing":1
+	};
 	var maxoffset = 0;
 	for each (var item in this.registry.reflist){
 		if (item.offset > maxoffset){
@@ -86,8 +93,9 @@ CSL.Engine.prototype.makeBibliography = function(){
 	};
 	if (maxoffset){
 		print("Max char offset for second-field-align etc: "+maxoffset);
+		params.maxoffset = maxoffset;
 	}
-	return ret;
+	return [params,ret];
 };
 
 
