@@ -29,7 +29,7 @@ citation
         <names variable="author">
           <name form="short" />
         </names>
-        <date variable="issued" form="year">
+        <date variable="issued">
           <date-part name="year" />
         </date>
       </group>

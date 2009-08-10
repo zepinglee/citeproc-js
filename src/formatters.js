@@ -105,7 +105,7 @@ CSL.Output.Formatters.capitalize_all = function(state,string) {
 };
 
 CSL.Output.Formatters.strip_periods = function(state,string) {
-    return string.replace("."," ").replace(/\s*$/,"");
+    return string.replace(/\./g," ").replace(/\s*$/g,"").replace(/\s+/g," ");
 };
 
 /**

@@ -54,6 +54,6 @@ doh.register("tests.sys_rhino_locale", [
 		var obj = new RhinoTest();
 		obj.setLocaleXml();
 		var res = CSL.Engine.prototype.getTerm.call(obj,"edition","symbol");
-		doh.assertEqual("ed",res);
+		doh.assertEqual("ed.",res);
 	}
 ]);

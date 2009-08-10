@@ -90,8 +90,8 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	var locale = new XML();
-	if (myxml.localName().toString() == "terms"){
-		locale = myxml.locale;
+	if (myxml.localName().toString() == "locale"){
+		locale = myxml;
 	} else {
 		for each (var blob in myxml..locale){
 			if (blob.@xml::lang == lang){
@@ -100,7 +100,7 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 			}
 		}
 	}
-	for each (var term in locale.term){
+	for each (var term in locale.terms.term){
 		var termname = term.@name.toString();
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 		//default xml namespace = "http://purl.org/net/xbiblio/csl";

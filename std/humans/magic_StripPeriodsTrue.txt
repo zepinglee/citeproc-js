@@ -9,7 +9,7 @@ citation
 
 
 >>===== RESULT =====>>
-“An Article,” Am LJ.
+“An Article,” Am L J.
 <<===== RESULT =====<<
 
 

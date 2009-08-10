@@ -166,7 +166,14 @@ CSL.Lib.Elements.text = new function(){
 					state.build.plural = false;
 				} else if (this.variables.length){
 					var func = function(state,Item){
-						var value = state.getVariable(Item,this.variables[0],form);
+						var realvarname = this.variables[0];
+						if (realvarname == "page-first"){
+							realvarname = "page";
+						}
+						var value = state.getVariable(Item,realvarname,form);
+						if (value && this.variables[0] == "page-first"){
+							value = value.replace(/-.*/,"");
+						}
 						if (this.strings["strip-periods"]){
 							value = value.replace(/\./g,"");
 						};
