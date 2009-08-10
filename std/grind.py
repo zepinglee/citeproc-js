@@ -7,6 +7,8 @@
     format used for processor testing.
 """
 import sys,os,re
+import tempfile
+from cStringIO import StringIO
 try:
     import json
 except:
@@ -57,8 +59,8 @@ class CslTests(CslTestUtils):
     of the machine-readable directory and processing the
     human-readable files.
     """
-    def __init__(self, args=[], verbose=False):
-        self.verbose = verbose
+    def __init__(self, args=[], options={}):
+        self.options = options
         CslTestUtils.__init__(self)
         self.tests = []
         self.args = args
@@ -84,10 +86,11 @@ class CslTests(CslTestUtils):
         if not len(self.args):
             self.clear()
         for testname in self.tests:
-            test = CslTest(testname, verbose=self.verbose)
+            test = CslTest(testname, options=self.options)
             test.load()
             test.parse()
             test.fix_names()
+            test.validate(testname)
             test.dump()
         sys.stdout.write("\n")
 
@@ -98,13 +101,14 @@ class CslTest(CslTestUtils):
     methods for loading the raw data, parsing and massaging
     the content, and dumping the result.
     """
-    def __init__(self,testname, verbose=False):
+    def __init__(self,testname, options={}):
         CslTestUtils.__init__(self)
-        if verbose:
+        if options.be_verbose:
             sys.stdout.write( "%s\n" %testname)
         else:
             sys.stdout.write(".")
         sys.stdout.flush()
+        self.options = options
         self.testname = testname
         self.data = {}
 
@@ -172,6 +176,54 @@ class CslTest(CslTestUtils):
                                     entry["suffix"] = parsed[2]
                         del entry["name"]
 
+    def validate(self,testname):
+        if not self.options.be_cautious:
+            return
+        if not os.path.exists("../../jing"):
+            print "Error: jing not found as sibling of processor archive."
+            sys.exit()
+        if not os.path.exists("../csl/csl.rnc"):
+            print "Error: csl.rnc not found in csl subdirectory of archive"
+            sys.exit()
+        tfd,tfilename = tempfile.mkstemp(dir=".")
+        os.write(tfd,self.data["csl"])
+        os.close(tfd)
+        
+        jfh = os.popen("java -jar ../../jing/bin/jing.jar -c ../csl/csl.rnc %s" % tfilename)
+        success = True
+        plural = ""
+        while 1:
+            line = jfh.readline()
+            if not line: break
+            line = line.strip()
+            m = re.match(".*:([0-9]+):([0-9]+):  *error:(.*)",line)
+            if m:
+              if success:
+                  print "\n##"
+                  print "#### Error%s in CSL for test: %s" % (plural,testname)
+                  print "##\n"
+                  success = False
+              print "  %s @ line %s" %(m.group(3).upper(),m.group(1))
+              plural = "s"
+        jfh.close()
+        os.unlink(tfilename)
+        if not success:
+            print ""
+            io = StringIO()
+            io.write(self.data["csl"])
+            io.seek(0)
+            linepos = 1
+            while 1:
+                cslline = io.readline()
+                if not cslline: break
+                cslline = cslline.rstrip()
+                print "%3d  %s" % (linepos,cslline)
+                linepos += 1
+            sys.exit()
+        print "Would continue"
+        sys.exit()
+        
+
     def dump(self):
         if not os.path.exists( self.path("machines")):
             os.makedirs( self.path("machines"))
@@ -204,6 +256,10 @@ the named test files will be processed.
                       default=False,
                       action="store_true", 
                       help='Display test names during processing.')
+    parser.add_option("-c", "--cautious", dest="be_cautious",
+                      default=False,
+                      action="store_true", 
+                      help='Attempt to validate CSL files before processing.')
     (options, args) = parser.parse_args()
 
     if len(args) > 0:
@@ -213,6 +269,6 @@ the named test files will be processed.
     if len(mypath):
         os.chdir(mypath)
     
-    tests = CslTests( args=args, verbose=options.be_verbose )
+    tests = CslTests( args=args, options=options )
     tests.process()
 
