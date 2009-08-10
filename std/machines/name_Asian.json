@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Miyamoto", 
-                    "secondary-key": "Musashi", 
+                    "family": "Miyamoto", 
+                    "given": "Musashi", 
                     "sticky": true
                 }
             ], 

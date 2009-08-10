@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -21,13 +21,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }
             ], 
@@ -41,18 +41,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Alvin", 
+                    "family": "Asthma", 
+                    "given": "Alvin", 
                     "sticky": false
                 }
             ], 
@@ -66,58 +66,58 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Alvin", 
+                    "family": "Asthma", 
+                    "given": "Alvin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bob", 
+                    "family": "Bronchitis", 
+                    "given": "Bob", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Chris", 
+                    "family": "Cold", 
+                    "given": "Chris", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Dropsy", 
-                    "secondary-key": "Don", 
+                    "family": "Dropsy", 
+                    "given": "Don", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Enteritis", 
-                    "secondary-key": "Ernie", 
+                    "family": "Enteritis", 
+                    "given": "Ernie", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fever", 
-                    "secondary-key": "Frank", 
+                    "family": "Fever", 
+                    "given": "Frank", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Goiter", 
-                    "secondary-key": "George", 
+                    "family": "Goiter", 
+                    "given": "George", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Hiccup", 
-                    "secondary-key": "Herb", 
+                    "family": "Hiccup", 
+                    "given": "Herb", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Impetigo", 
-                    "secondary-key": "Irwin", 
+                    "family": "Impetigo", 
+                    "given": "Irwin", 
                     "sticky": false
                 }
             ], 
@@ -131,63 +131,63 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Alvin", 
+                    "family": "Asthma", 
+                    "given": "Alvin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bob", 
+                    "family": "Bronchitis", 
+                    "given": "Bob", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Chris", 
+                    "family": "Cold", 
+                    "given": "Chris", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Dropsy", 
-                    "secondary-key": "Don", 
+                    "family": "Dropsy", 
+                    "given": "Don", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Enteritis", 
-                    "secondary-key": "Ernie", 
+                    "family": "Enteritis", 
+                    "given": "Ernie", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fever", 
-                    "secondary-key": "Frank", 
+                    "family": "Fever", 
+                    "given": "Frank", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Goiter", 
-                    "secondary-key": "George", 
+                    "family": "Goiter", 
+                    "given": "George", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Hiccup", 
-                    "secondary-key": "Herb", 
+                    "family": "Hiccup", 
+                    "given": "Herb", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Impetigo", 
-                    "secondary-key": "Irwin", 
+                    "family": "Impetigo", 
+                    "given": "Irwin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Jaudice", 
-                    "secondary-key": "Jeff", 
+                    "family": "Jaudice", 
+                    "given": "Jeff", 
                     "sticky": false
                 }
             ], 

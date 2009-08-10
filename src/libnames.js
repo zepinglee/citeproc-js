@@ -110,7 +110,7 @@ CSL.Lib.Elements.names = new function(){
 					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al","long",0);
 				}
 				state.output.addToken("commasep",", ");
-				for each (namepart in ["secondary-key","primary-key","prefix","suffix"]){
+				for each (namepart in ["given","family","prefix","suffix"]){
 					if (!state.output.getToken(namepart)){
 						state.output.addToken(namepart);
 					}

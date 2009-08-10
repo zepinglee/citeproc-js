@@ -1,14 +1,14 @@
 dojo.provide("tests.test_util_names");
 
 var display_names = [
-	{ "primary-key":"Doe",
-	  "secondary-key":"John"
+	{ "family":"Doe",
+	  "given":"John"
 	},
-	{ "secondary-key":"Gwen",
-	  "primary-key":"Roe"
+	{ "given":"Gwen",
+	  "family":"Roe"
 	},
-	{ "secondary-key":"Tom",
-	  "primary-key":"Smith"
+	{ "given":"Tom",
+	  "family":"Smith"
 	}
 ];
 
@@ -72,17 +72,17 @@ state.output.addToken("middle",false,middle);
 var end = new CSL.Factory.Token("end");
 state.output.addToken("end",false,end);
 
-// token params of the optional "primary-key",
-// "secondary-key", "prefix" and "articular" elements
+// token params of the optional "family",
+// "given", "prefix" and "articular" elements
 //  token params are taken from the token
 // list, with no changes
-var primary = new CSL.Factory.Token("primary-key");
+var primary = new CSL.Factory.Token("family");
 primary.strings.prefix="(";
 primary.strings.suffix=")";
-state.output.addToken("primary-key",false,primary);
+state.output.addToken("family",false,primary);
 
-var secondary = new CSL.Factory.Token("secondary-key");
-state.output.addToken("secondary-key",false,secondary);
+var secondary = new CSL.Factory.Token("given");
+state.output.addToken("given",false,secondary);
 
 //
 // This should be changed to "articular" in the code

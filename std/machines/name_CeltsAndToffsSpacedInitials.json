@@ -7,13 +7,13 @@
             "title": "Leonardo on the Human Body", 
             "translator": [
                 {
-                    "primary-key": "O’Malley", 
-                    "secondary-key": "Charles D.", 
+                    "family": "O’Malley", 
+                    "given": "Charles D.", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Saunders", 
-                    "secondary-key": "John Bertrand de Cusance Morant", 
+                    "family": "Saunders", 
+                    "given": "John Bertrand de Cusance Morant", 
                     "sticky": false
                 }
             ], 

@@ -164,13 +164,13 @@ StdRhinoTest.prototype._fixAllNames = function(){
 							var m = parsed[0].match(/^\s*([a-z]+)\s+(.*)/);
 							if (m){
 								entry.prefix = m[1];
-								entry["primary-key"] = m[2];
+								entry["family"] = m[2];
 							} else {
-								entry["primary-key"] = parsed[0];
+								entry["family"] = parsed[0];
 							}
 						}
 						if (parsed.length > 1){
-							entry["secondary-key"] = parsed[1];
+							entry["given"] = parsed[1];
 						}
 						if (parsed.length > 2){
 							var m = parsed[2].match(/\!\s*(.*)/);

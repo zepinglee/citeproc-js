@@ -167,11 +167,11 @@ class CslTest(CslTestUtils):
                                 m = re.match("^\s*([a-z]+)\s+(.*)",parsed[0])
                                 if m:
                                     entry["prefix"] = m.group(1)
-                                    entry["primary-key"] = m.group(2)
+                                    entry["family"] = m.group(2)
                                 else:
-                                    entry["primary-key"] = parsed[0]
+                                    entry["family"] = parsed[0]
                             if len(parsed) > 1:
-                                entry["secondary-key"] = parsed[1];
+                                entry["given"] = parsed[1];
                             if len(parsed) > 2:
                                 m = re.match("\!\s*(.*)",parsed[2])
                                 if m:

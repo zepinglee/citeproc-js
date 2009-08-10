@@ -4,16 +4,16 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
             "edition": "5", 
             "editor": [
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }
             ], 

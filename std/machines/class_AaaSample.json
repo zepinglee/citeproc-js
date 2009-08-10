@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John Aloysius", 
+                    "family": "Doe", 
+                    "given": "John Aloysius", 
                     "sticky": false
                 }
             ], 
@@ -19,8 +19,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John Aloysius", 
+                    "family": "Doe", 
+                    "given": "John Aloysius", 
                     "sticky": false
                 }
             ], 
@@ -34,8 +34,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane Henrietta", 
+                    "family": "Roe", 
+                    "given": "Jane Henrietta", 
                     "sticky": false
                 }
             ], 
@@ -49,8 +49,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane Henrietta", 
+                    "family": "Roe", 
+                    "given": "Jane Henrietta", 
                     "sticky": false
                 }
             ], 
@@ -64,8 +64,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane Henrietta", 
+                    "family": "Roe", 
+                    "given": "Jane Henrietta", 
                     "sticky": false
                 }
             ], 

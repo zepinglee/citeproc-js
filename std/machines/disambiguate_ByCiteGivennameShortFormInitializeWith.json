@@ -32,8 +32,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }
             ], 
@@ -43,8 +43,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -54,8 +54,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "Aloysius", 
+                    "family": "Doe", 
+                    "given": "Aloysius", 
                     "sticky": false
                 }
             ], 
@@ -65,8 +65,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "Thomas", 
+                    "family": "Smith", 
+                    "given": "Thomas", 
                     "sticky": false
                 }
             ], 
@@ -76,8 +76,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "Ted", 
+                    "family": "Smith", 
+                    "given": "Ted", 
                     "sticky": false
                 }
             ], 

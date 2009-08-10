@@ -21,8 +21,8 @@
             "abstract": "An interesting book by an interesting author.", 
             "author": [
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "John", 
+                    "family": "Smith", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -37,8 +37,8 @@
             "abstract": "An old contribution to a new field.", 
             "author": [
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Robert", 
+                    "family": "Jones", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 

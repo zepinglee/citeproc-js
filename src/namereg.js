@@ -17,7 +17,7 @@ CSL.Factory.Registry.NameReg = function(state){
 	this.namereg = new Object();
 	this.nameind = new Object();
 	//
-	// primary-key, initials form, fullname (with secondary-key stripped of periods)
+	// family, initials form, fullname (with given stripped of periods)
 	var pkey;
 	var ikey;
 	var skey;
@@ -33,8 +33,8 @@ CSL.Factory.Registry.NameReg = function(state){
 	};
 
 	var _set_keys = function(nameobj){
-		pkey = _strip_periods(nameobj["primary-key"]);
-		skey = _strip_periods(nameobj["secondary-key"]);
+		pkey = _strip_periods(nameobj["family"]);
+		skey = _strip_periods(nameobj["given"]);
 		ikey = CSL.Util.Names.initializeWith(skey,"");
 	};
 

@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 

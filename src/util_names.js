@@ -132,7 +132,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 	var state = this.state;
 	for each (var key in subsequence){
 		var namepart = this.name[key];
-		if ("secondary-key" == key && !this.name.sticky){
+		if ("given" == key && !this.name.sticky){
 			if (0 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
 				continue;
 			} else if (1 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
@@ -154,15 +154,15 @@ CSL.Util.Names.getNamepartSequence = function(name,token){
 	} else {
 		var suffix_sep = "space";
 	}
-	var romanesque = name["primary-key"].match(/.*[a-zA-Z\u0400-\u052f].*/);
+	var romanesque = name["family"].match(/.*[a-zA-Z\u0400-\u052f].*/);
 	if (!romanesque ){ // neither roman nor Cyrillic characters
-		var sequence = [["empty","empty","empty"],["prefix", "primary-key"],["secondary-key"],[]];
+		var sequence = [["empty","empty","empty"],["prefix", "family"],["given"],[]];
 	} else if (name.sticky) { // entry likes sort order
-		var sequence = [["space","space","space"],["prefix", "primary-key"],["secondary-key"],[]];
+		var sequence = [["space","space","space"],["prefix", "family"],["given"],[]];
 	} else if (token && token.strings.name_as_sort_order){
-		var sequence = [["sortsep","sortsep","space"],["prefix", "primary-key"],["secondary-key"],["suffix"]];
+		var sequence = [["sortsep","sortsep","space"],["prefix", "family"],["given"],["suffix"]];
 	} else { // plain vanilla
-		var sequence = [[suffix_sep,"space","space"],["secondary-key"],["prefix","primary-key"],["suffix"]];
+		var sequence = [[suffix_sep,"space","space"],["given"],["prefix","family"],["suffix"]];
 	}
 	return sequence;
 };
@@ -250,7 +250,7 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
 	var name;
 	for (var n in nameset.names){
 		name = nameset.names[n];
-		for each (var part in ["primary-key","secondary-key","prefix","suffix"]){
+		for each (var part in ["family","given","prefix","suffix"]){
 			if (base_nameset.names[n][part] != name[part]){
 				return false;
 			}

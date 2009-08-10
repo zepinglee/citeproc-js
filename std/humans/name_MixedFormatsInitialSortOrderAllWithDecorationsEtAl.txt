@@ -28,7 +28,7 @@ citation
         <option name="et-al-use-first" value="5"/>
         <layout delimiter="; ">
             <names variable="author">
-                <name delimiter=", " initialize-with="." sort-separator=", " name-as-sort-order="all>
+                <name delimiter=", " initialize-with="." sort-separator=", " name-as-sort-order="all">
    		            <name-part name="family" text-case="uppercase"/>
                 </name>
             </names>

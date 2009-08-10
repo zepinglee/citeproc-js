@@ -5,8 +5,8 @@
             "author": [
                 {
                     "comma_suffix": true, 
-                    "primary-key": "Doe", 
-                    "secondary-key": "Jeffrey", 
+                    "family": "Doe", 
+                    "given": "Jeffrey", 
                     "sticky": false, 
                     "suffix": "Jr."
                 }

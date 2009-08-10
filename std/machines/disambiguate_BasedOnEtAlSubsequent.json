@@ -4,28 +4,28 @@
         {
             "author": [
                 {
-                    "primary-key": "Baur", 
-                    "secondary-key": "Bruno", 
+                    "family": "Baur", 
+                    "given": "Bruno", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fröberg", 
-                    "secondary-key": "Lars", 
+                    "family": "Fröberg", 
+                    "given": "Lars", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Baur", 
-                    "secondary-key": "Anette", 
+                    "family": "Baur", 
+                    "given": "Anette", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Guggenheim", 
-                    "secondary-key": "Richard", 
+                    "family": "Guggenheim", 
+                    "given": "Richard", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Haase", 
-                    "secondary-key": "Martin", 
+                    "family": "Haase", 
+                    "given": "Martin", 
                     "sticky": false
                 }
             ], 
@@ -42,18 +42,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Baur", 
-                    "secondary-key": "Bruno", 
+                    "family": "Baur", 
+                    "given": "Bruno", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Schileyko", 
-                    "secondary-key": "Anatoly A.", 
+                    "family": "Schileyko", 
+                    "given": "Anatoly A.", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Baur", 
-                    "secondary-key": "Anette", 
+                    "family": "Baur", 
+                    "given": "Anette", 
                     "sticky": false
                 }
             ], 
@@ -70,8 +70,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 

@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "我妻", 
-                    "secondary-key": "栄", 
+                    "family": "我妻", 
+                    "given": "栄", 
                     "sticky": false
                 }
             ], 

@@ -90,8 +90,8 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	var locale = new XML();
-	if (myxml.localName().toString() == "locale"){
-		locale = myxml;
+	if (myxml.localName().toString() == "terms"){
+		locale = myxml.locale;
 	} else {
 		for each (var blob in myxml..locale){
 			if (blob.@xml::lang == lang){
@@ -100,7 +100,7 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 			}
 		}
 	}
-	for each (var term in locale.terms.term){
+	for each (var term in locale.term){
 		var termname = term.@name.toString();
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 		//default xml namespace = "http://purl.org/net/xbiblio/csl";
@@ -119,7 +119,7 @@ StdRhinoTest.prototype.setLocaleXml = function(arg,lang){
 			this.locale_terms[term.@name.toString()][form] = term.toString();
 		}
 	}
-	for each (var option in locale.options.option){
+	for each (var option in locale.option){
 		var optionname = option.@name.toString();
 		var optionvalue = option.@value.toString();
 		//
@@ -216,13 +216,13 @@ StdRhinoTest.prototype._fixAllNames = function(){
 							var m = parsed[0].match(/^\s*([a-z]+)\s+(.*)/);
 							if (m){
 								entry.prefix = m[1];
-								entry["primary-key"] = m[2];
+								entry["family"] = m[2];
 							} else {
-								entry["primary-key"] = parsed[0];
+								entry["family"] = parsed[0];
 							}
 						}
 						if (parsed.length > 1){
-							entry["secondary-key"] = parsed[1];
+							entry["given"] = parsed[1];
 						}
 						if (parsed.length > 2){
 							var m = parsed[2].match(/\!\s*(.*)/);

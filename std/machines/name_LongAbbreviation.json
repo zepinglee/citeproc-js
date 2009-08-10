@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Tserendorj", 
-                    "secondary-key": "TSerendorjiin", 
+                    "family": "Tserendorj", 
+                    "given": "TSerendorjiin", 
                     "sticky": false
                 }
             ], 

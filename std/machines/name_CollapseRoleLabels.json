@@ -4,18 +4,18 @@
         {
             "editor": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }
             ], 
@@ -26,18 +26,18 @@
             "title": "Book One", 
             "translator": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }
             ], 

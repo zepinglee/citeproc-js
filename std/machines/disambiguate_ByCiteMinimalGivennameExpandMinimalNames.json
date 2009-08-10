@@ -4,18 +4,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Brandon", 
+                    "family": "Bronchitis", 
+                    "given": "Brandon", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Charles", 
+                    "family": "Cold", 
+                    "given": "Charles", 
                     "sticky": false
                 }
             ], 
@@ -29,18 +29,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Biff", 
+                    "family": "Bronchitis", 
+                    "given": "Biff", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Curtis", 
+                    "family": "Cold", 
+                    "given": "Curtis", 
                     "sticky": false
                 }
             ], 

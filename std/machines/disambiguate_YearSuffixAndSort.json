@@ -60,33 +60,33 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Dropsy", 
-                    "secondary-key": "David", 
+                    "family": "Dropsy", 
+                    "given": "David", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Ebola", 
-                    "secondary-key": "Elvin", 
+                    "family": "Ebola", 
+                    "given": "Elvin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fever", 
-                    "secondary-key": "Fergus", 
+                    "family": "Fever", 
+                    "given": "Fergus", 
                     "sticky": false
                 }
             ], 
@@ -100,33 +100,33 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Dropsy", 
-                    "secondary-key": "David", 
+                    "family": "Dropsy", 
+                    "given": "David", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Enteritis", 
-                    "secondary-key": "Ernie", 
+                    "family": "Enteritis", 
+                    "given": "Ernie", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fever", 
-                    "secondary-key": "Fergus", 
+                    "family": "Fever", 
+                    "given": "Fergus", 
                     "sticky": false
                 }
             ], 
@@ -140,33 +140,33 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Dropsy", 
-                    "secondary-key": "David", 
+                    "family": "Dropsy", 
+                    "given": "David", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Ebola", 
-                    "secondary-key": "Elvin", 
+                    "family": "Ebola", 
+                    "given": "Elvin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fever", 
-                    "secondary-key": "Fergus", 
+                    "family": "Fever", 
+                    "given": "Fergus", 
                     "sticky": false
                 }
             ], 
@@ -180,18 +180,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }
             ], 
@@ -205,18 +205,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Albert", 
+                    "family": "Asthma", 
+                    "given": "Albert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Beauregarde", 
+                    "family": "Bronchitis", 
+                    "given": "Beauregarde", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }
             ], 
@@ -230,33 +230,33 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Alan", 
+                    "family": "Asthma", 
+                    "given": "Alan", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Cold", 
-                    "secondary-key": "Crispin", 
+                    "family": "Cold", 
+                    "given": "Crispin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Dropsy", 
-                    "secondary-key": "David", 
+                    "family": "Dropsy", 
+                    "given": "David", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Ebola", 
-                    "secondary-key": "Elvin", 
+                    "family": "Ebola", 
+                    "given": "Elvin", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Fever", 
-                    "secondary-key": "Fergus", 
+                    "family": "Fever", 
+                    "given": "Fergus", 
                     "sticky": false
                 }
             ], 
@@ -270,13 +270,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Janet", 
+                    "family": "Roe", 
+                    "given": "Janet", 
                     "sticky": false
                 }
             ], 
@@ -290,13 +290,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }
             ], 
@@ -310,13 +310,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }
             ], 
@@ -330,13 +330,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Janet", 
+                    "family": "Roe", 
+                    "given": "Janet", 
                     "sticky": false
                 }
             ], 
@@ -350,18 +350,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Robert", 
+                    "family": "Jones", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 
@@ -375,18 +375,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Josephine", 
+                    "family": "Roe", 
+                    "given": "Josephine", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Robert", 
+                    "family": "Jones", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 
@@ -400,18 +400,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Richard", 
+                    "family": "Jones", 
+                    "given": "Richard", 
                     "sticky": false
                 }
             ], 

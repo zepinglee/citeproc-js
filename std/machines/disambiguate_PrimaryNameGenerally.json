@@ -4,13 +4,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Aloysius", 
+                    "family": "Asthma", 
+                    "given": "Aloysius", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Bosworth", 
+                    "family": "Bronchitis", 
+                    "given": "Bosworth", 
                     "sticky": false
                 }
             ], 
@@ -23,13 +23,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Asthma", 
-                    "secondary-key": "Artemis", 
+                    "family": "Asthma", 
+                    "given": "Artemis", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Bronchitis", 
-                    "secondary-key": "Beauregarde", 
+                    "family": "Bronchitis", 
+                    "given": "Beauregarde", 
                     "sticky": false
                 }
             ], 

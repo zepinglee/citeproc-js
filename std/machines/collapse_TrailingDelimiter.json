@@ -28,23 +28,23 @@
         {
             "author": [
                 {
-                    "primary-key": "Condit", 
-                    "secondary-key": "John", 
+                    "family": "Condit", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "John", 
+                    "family": "Smith", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -58,23 +58,23 @@
         {
             "author": [
                 {
-                    "primary-key": "Condit", 
-                    "secondary-key": "John", 
+                    "family": "Condit", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "John", 
+                    "family": "Smith", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -88,23 +88,23 @@
         {
             "author": [
                 {
-                    "primary-key": "Condit", 
-                    "secondary-key": "John", 
+                    "family": "Condit", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "John", 
+                    "family": "Smith", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -118,8 +118,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Connell", 
-                    "secondary-key": "John", 
+                    "family": "Connell", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -133,13 +133,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Cortes", 
-                    "secondary-key": "John", 
+                    "family": "Cortes", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Hunziker", 
-                    "secondary-key": "John", 
+                    "family": "Hunziker", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 

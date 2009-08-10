@@ -4,30 +4,30 @@
         {
             "author": [
                 {
-                    "primary-key": "Чайковский", 
-                    "secondary-key": "Пётр Ильич", 
+                    "family": "Чайковский", 
+                    "given": "Пётр Ильич", 
                     "sticky": false
                 }, 
                 {
+                    "family": "Winkle", 
+                    "given": "Rip", 
                     "prefix": "van", 
-                    "primary-key": "Winkle", 
-                    "secondary-key": "Rip", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "我妻", 
-                    "secondary-key": "栄", 
+                    "family": "我妻", 
+                    "given": "栄", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Thucydides", 
-                    "secondary-key": "Carl", 
+                    "family": "Thucydides", 
+                    "given": "Carl", 
                     "sticky": false, 
                     "suffix": "III"
                 }, 
                 {
-                    "primary-key": "Tokugawa", 
-                    "secondary-key": "Ieyasu", 
+                    "family": "Tokugawa", 
+                    "given": "Ieyasu", 
                     "sticky": true
                 }, 
                 {
@@ -35,7 +35,7 @@
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Prince", 
+                    "family": "Prince", 
                     "sticky": false
                 }
             ], 

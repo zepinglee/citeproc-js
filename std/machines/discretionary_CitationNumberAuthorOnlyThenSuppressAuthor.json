@@ -28,8 +28,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "John", 
+                    "family": "Smith", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -43,8 +43,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Robert", 
+                    "family": "Jones", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 

@@ -1,33 +1,33 @@
 {
-    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\"\n    class=\"in-text\"\n    xml:lang=\"en\"\n    version=\"1.0\">\n  <info>\n    <id></id>\n    <title></title>\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n\n    <citation>\n        <option name=\"et-al-min\" value=\"6\"/>\n        <option name=\"et-al-use-first\" value=\"5\"/>\n        <layout delimiter=\"; \">\n            <names variable=\"author\">\n                <name delimiter=\", \" initialize-with=\".\" sort-separator=\", \" name-as-sort-order=\"all>\n   \t\t            <name-part name=\"family\" text-case=\"uppercase\"/>\n                </name>\n            </names>\n        </layout>\n    </citation>\n</style>", 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\"\n    class=\"in-text\"\n    xml:lang=\"en\"\n    version=\"1.0\">\n  <info>\n    <id></id>\n    <title></title>\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n\n    <citation>\n        <option name=\"et-al-min\" value=\"6\"/>\n        <option name=\"et-al-use-first\" value=\"5\"/>\n        <layout delimiter=\"; \">\n            <names variable=\"author\">\n                <name delimiter=\", \" initialize-with=\".\" sort-separator=\", \" name-as-sort-order=\"all\">\n   \t\t            <name-part name=\"family\" text-case=\"uppercase\"/>\n                </name>\n            </names>\n        </layout>\n    </citation>\n</style>", 
     "input": [
         {
             "author": [
                 {
-                    "primary-key": "Чайковский", 
-                    "secondary-key": "Пётр Ильич", 
+                    "family": "Чайковский", 
+                    "given": "Пётр Ильич", 
                     "sticky": false
                 }, 
                 {
+                    "family": "Winkle", 
+                    "given": "Rip", 
                     "prefix": "van", 
-                    "primary-key": "Winkle", 
-                    "secondary-key": "Rip", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "我妻", 
-                    "secondary-key": "栄", 
+                    "family": "我妻", 
+                    "given": "栄", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Thucydides", 
-                    "secondary-key": "Carl", 
+                    "family": "Thucydides", 
+                    "given": "Carl", 
                     "sticky": false, 
                     "suffix": "III"
                 }, 
                 {
-                    "primary-key": "Tokugawa", 
-                    "secondary-key": "Ieyasu", 
+                    "family": "Tokugawa", 
+                    "given": "Ieyasu", 
                     "sticky": true
                 }, 
                 {
@@ -35,7 +35,7 @@
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Prince", 
+                    "family": "Prince", 
                     "sticky": false
                 }
             ], 

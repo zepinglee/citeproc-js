@@ -40,7 +40,17 @@ CSL.Lib.Attributes["@value"] = function(state,arg){
  * @function
  */
 CSL.Lib.Attributes["@name"] = function(state,arg){
-	this.strings.name = arg;
+	if (this.name == "name-part") {
+		//
+		// Note that there will be multiple name-part items,
+		// and they all need to be collected before doing anything.
+		// So this must be picked up when the <name-part/>
+		// element is processed, and used as a key on an
+		// object holding the formatting attribute functions.
+		state.tmp.namepart_type = arg;
+	} else {
+		this.strings.name = arg;
+	};
 };
 
 
@@ -128,15 +138,6 @@ CSL.Lib.Attributes["@lang"] = function(state,arg){
  * @function
  */
 CSL.Lib.Attributes["@type"] = function(state,arg){
-	if (this.name == "name-part") {
-		//
-		// Note that there will be multiple name-part items,
-		// and they all need to be collected before doing anything.
-		// So this must be picked up when the <name-part/>
-		// element is processed, and used as a key on an
-		// object holding the formatting attribute functions.
-		state.tmp.namepart_type = arg;
-	} else {
 		var func = function(state,Item){
 			var types = arg.split(/\s+/);
 			var ret = [];
@@ -146,8 +147,6 @@ CSL.Lib.Attributes["@type"] = function(state,arg){
 			return ret;
 		};
 		this["tests"].push(func);
-	}
-
 };
 
 

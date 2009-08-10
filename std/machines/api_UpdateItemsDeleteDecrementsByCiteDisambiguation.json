@@ -18,8 +18,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -32,8 +32,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "Jake", 
+                    "family": "Doe", 
+                    "given": "Jake", 
                     "sticky": false
                 }
             ], 
@@ -46,8 +46,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "John", 
+                    "family": "Smith", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -60,8 +60,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Brown", 
-                    "secondary-key": "Robert", 
+                    "family": "Brown", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 
@@ -74,8 +74,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Ichi", 
-                    "secondary-key": "Taro", 
+                    "family": "Ichi", 
+                    "given": "Taro", 
                     "sticky": false
                 }
             ], 

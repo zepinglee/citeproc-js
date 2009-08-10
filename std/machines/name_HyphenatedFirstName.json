@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Liu", 
-                    "secondary-key": "Hui-Xiao Li Yuan", 
+                    "family": "Liu", 
+                    "given": "Hui-Xiao Li Yuan", 
                     "sticky": false
                 }
             ], 

@@ -2,6 +2,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_affix");
+	dojo.require("tests.std_plural");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.test_flipflopper");
 	dojo.require("tests.std_class");
@@ -10,7 +12,6 @@ if(true){
 	dojo.require("tests.std_flipflop");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_condition");
-	dojo.require("tests.std_plural");
 	dojo.require("tests.test_queue");
 
 	dojo.require("tests.std_api");
@@ -21,7 +22,7 @@ if(true){
 
 	dojo.require("tests.test_conditions");
 	dojo.require("tests.test_sys_rhino_locale");
-	dojo.require("tests.std_terms");
+	//dojo.require("tests.std_terms");
 	dojo.require("tests.std_namespaces");
 	dojo.require("tests.std_discretionary");
 	dojo.require("tests.std_fullstyles");
@@ -41,7 +42,6 @@ if(true){
 	dojo.require("tests.test_formatters");
 	dojo.require("tests.test_formats");
 	dojo.require("tests.test_output");
-	dojo.require("tests.std_affix");
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 

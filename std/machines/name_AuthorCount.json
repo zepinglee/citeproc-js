@@ -4,23 +4,23 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Brown", 
-                    "secondary-key": "Robert", 
+                    "family": "Brown", 
+                    "given": "Robert", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Smith", 
-                    "secondary-key": "Tom", 
+                    "family": "Smith", 
+                    "given": "Tom", 
                     "sticky": false
                 }
             ], 
@@ -30,18 +30,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "Jake", 
+                    "family": "Doe", 
+                    "given": "Jake", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Brown", 
-                    "secondary-key": "Robert", 
+                    "family": "Brown", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 
@@ -51,13 +51,13 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "Jake", 
+                    "family": "Doe", 
+                    "given": "Jake", 
                     "sticky": false
                 }
             ], 
@@ -67,8 +67,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 
@@ -78,8 +78,8 @@
         {
             "editor": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }
             ], 

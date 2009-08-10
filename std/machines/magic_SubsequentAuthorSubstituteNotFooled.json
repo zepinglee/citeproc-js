@@ -11,8 +11,8 @@
             "title": "Sir Gawain and the Green Knight", 
             "translator": [
                 {
-                    "primary-key": "Silverstein", 
-                    "secondary-key": "Theodore", 
+                    "family": "Silverstein", 
+                    "given": "Theodore", 
                     "sticky": false
                 }
             ]
@@ -20,8 +20,8 @@
         {
             "editor": [
                 {
-                    "primary-key": "Soltes", 
-                    "secondary-key": "Ori A.", 
+                    "family": "Soltes", 
+                    "given": "Ori A.", 
                     "sticky": false
                 }
             ], 

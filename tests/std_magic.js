@@ -22,7 +22,7 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("magic_LineSpacingFiftyPercentStretch");
+        var test = new StdRhinoTest("magic_LineSpacingTripleStretch");
         doh.assertEqual(test.result, test.run());
     },
     function(){

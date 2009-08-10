@@ -4,9 +4,9 @@
         {
             "author": [
                 {
+                    "family": "Doe", 
+                    "given": "Jacques", 
                     "prefix": "van", 
-                    "primary-key": "Doe", 
-                    "secondary-key": "Jacques", 
                     "sticky": false
                 }
             ], 

@@ -22,8 +22,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Appleton", 
-                    "secondary-key": "Victor", 
+                    "family": "Appleton", 
+                    "given": "Victor", 
                     "sticky": false
                 }
             ], 

@@ -4,8 +4,8 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "James", 
+                    "family": "Doe", 
+                    "given": "James", 
                     "sticky": false, 
                     "suffix": "III"
                 }

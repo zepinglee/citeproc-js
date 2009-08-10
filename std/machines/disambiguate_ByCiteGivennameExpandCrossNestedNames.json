@@ -4,18 +4,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Robert", 
+                    "family": "Jones", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 
@@ -29,18 +29,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Josephine", 
+                    "family": "Roe", 
+                    "given": "Josephine", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Robert", 
+                    "family": "Jones", 
+                    "given": "Robert", 
                     "sticky": false
                 }
             ], 
@@ -54,18 +54,18 @@
         {
             "author": [
                 {
-                    "primary-key": "Doe", 
-                    "secondary-key": "John", 
+                    "family": "Doe", 
+                    "given": "John", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Roe", 
-                    "secondary-key": "Jane", 
+                    "family": "Roe", 
+                    "given": "Jane", 
                     "sticky": false
                 }, 
                 {
-                    "primary-key": "Jones", 
-                    "secondary-key": "Richard", 
+                    "family": "Jones", 
+                    "given": "Richard", 
                     "sticky": false
                 }
             ], 
