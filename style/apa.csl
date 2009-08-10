@@ -187,7 +187,7 @@
             <number variable="volume" form="numeric"/>
           </group>
           <group>
-            <label variable="page" form="short" include-period="true" suffix=" "/>
+            <label variable="page" form="short" strip-periods="false" suffix=" "/>
             <text variable="page"/>
           </group>
         </group>
@@ -196,7 +196,7 @@
   </macro>
   <macro name="citation-locator">
     <group>
-      <label variable="locator" include-period="true" form="short"/>
+      <label variable="locator" strip-periods="false" form="short"/>
       <text variable="locator" prefix=" "/>
     </group>
   </macro>

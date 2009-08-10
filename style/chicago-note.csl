@@ -275,7 +275,7 @@
     <group>
       <choose>
 	    <if locator="page" match="none">
-	  <label variable="locator" form="short" include-period="true" suffix=" "/>
+	  <label variable="locator" form="short" strip-periods="false" suffix=" "/>
 	    </if>
 	  </choose>
       <text variable="locator"/>

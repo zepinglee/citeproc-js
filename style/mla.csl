@@ -48,7 +48,7 @@
     <group delimiter=" ">
       <date variable="accessed">
         <date-part name="day" suffix=" "/>
-        <date-part name="month" form="short" include-period="true" suffix=" "/>
+        <date-part name="month" form="short" strip-periods="false" suffix=" "/>
         <date-part name="year"/>
       </date>
       <text variable="URL" prefix="&lt;" suffix="&gt;"/>
@@ -172,7 +172,7 @@
                 <else>
                   <date variable="issued">
                     <date-part name="day" suffix=" "/>
-                    <date-part name="month" form="short" include-period="true" suffix=" "/>
+                    <date-part name="month" form="short" strip-periods="false" suffix=" "/>
                     <date-part name="year"/>
                   </date>
                 </else>

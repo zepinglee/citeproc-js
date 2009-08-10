@@ -242,7 +242,7 @@
         <text variable="page" prefix=", "/>
       </if>
       <else-if type="chapter book article-newspaper thesis" match="any">
-        <label variable="page" form="short" include-period="true" prefix=", " suffix=" "/>
+        <label variable="page" form="short" strip-periods="false" prefix=", " suffix=" "/>
         <text variable="page"/>
       </else-if>
     </choose>
@@ -259,7 +259,7 @@
         <group prefix=", ">
           <choose>
 	    <if locator="page" match="none">
-	      <label variable="locator" form="short" include-period="true" suffix=" "/>
+	      <label variable="locator" form="short" strip-periods="false" suffix=" "/>
 	    </if>
 	  </choose>
           <text variable="locator"/>

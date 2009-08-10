@@ -101,7 +101,7 @@
   </macro>
   <macro name="pages">
     <group>
-        <label variable="page" form="short" include-period="true" suffix=" "/>
+        <label variable="page" form="short" strip-periods="false" suffix=" "/>
   	<text variable="page"/>
     </group>
   </macro>
