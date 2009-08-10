@@ -25,7 +25,7 @@ boo
 
 
     <macro name="bogus">
-        <text value="boo"/>
+        <text variable="volume"/>
     </macro>
 
     <citation>
@@ -54,6 +54,7 @@ boo
    "author": [
        { "name": "Doe, John" }
    ],
+   "volume":"boo",
    "issued": "2000",
    "title": "His Anonymous Life",
    "edition": "5"
