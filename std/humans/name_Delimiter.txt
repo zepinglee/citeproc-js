@@ -26,8 +26,9 @@ John Doe; Jane Roe
     <citation>
         <layout>
             <names variable="author">
-                <name delimiter="; "/>
-                <name-part type="primary-key"/>
+                <name delimiter="; ">
+                    <name-part name="family"/>
+                </name>
             </names>
         </layout>
     </citation>

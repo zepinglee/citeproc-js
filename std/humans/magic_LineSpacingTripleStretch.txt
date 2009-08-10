@@ -32,7 +32,7 @@ bibliography
         </layout>
     </citation>
     <bibliography>
-        <option name="line-spacing" value="1.5"/>
+        <option name="line-spacing" value="3"/>
         <layout>
             <group delimiter=" ">
                 <group delimiter=", ">

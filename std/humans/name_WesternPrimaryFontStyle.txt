@@ -26,8 +26,9 @@ John <i>Doe</i>
     <citation>
         <layout>
             <names variable="author">
-                <name />
-                <name-part type="primary-key" font-style="italic"/>
+                <name>
+                    <name-part name="family" font-style="italic"/>
+                </name>
             </names>
         </layout>
     </citation>

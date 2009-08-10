@@ -22,12 +22,6 @@ bibliography
     xml:lang="en"
     version="1.0">
   <info>
-    <id></id>
-    <title></title>
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
- 
-  <info>
     <title>Chicago Manual of Style (Full Note with Bibliography)</title>
     <id>http://www.zotero.org/styles/chicago-fullnote-bibliography</id>
     <link href="http://www.zotero.org/styles/chicago-fullnote-bibliography"/>
@@ -47,7 +41,7 @@ bibliography
     <summary>Chicago format with full notes and bibliography</summary>
     <category term="generic-base"/>
     <category term="numeric"/>
-    <updated></updated>
+    <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <macro name="editor-translator">
     <group delimiter=", ">
@@ -386,7 +380,7 @@ bibliography
             <if variable="locator" match="none">
           <group>
             <number variable="number-of-volumes" form="numeric"/>
-            <text term="volume" form="short" prefix=" " suffix="." plural="true"/>
+            <text term="volume" form="short" prefix=" " suffix="." plural="always"/>
           </group>
             </if>
           </choose>
@@ -409,7 +403,7 @@ bibliography
           </group>
           <group>
             <number variable="number-of-volumes" form="numeric"/>
-            <text term="volume" form="short" prefix=" " suffix="." plural="true"/>
+            <text term="volume" form="short" prefix=" " suffix="." plural="always"/>
           </group>
           <text macro="edition"/>
         </group>
@@ -471,7 +465,7 @@ bibliography
     <group>
       <choose>
 	    <if locator="page" match="none">
-	  <label variable="locator" form="short" include-period="true" suffix=" "/>
+	  <label variable="locator" form="short" suffix=" "/>
 	    </if>
 	  </choose>
       <text variable="locator"/>

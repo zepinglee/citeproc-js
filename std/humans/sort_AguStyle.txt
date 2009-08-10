@@ -79,13 +79,13 @@ bibliography
 
     <citation>
         <option name="disambiguate-add-year-suffix" value="true" />
+		<option name="collapse" value="year-suffix"/>
         <layout>
             <text macro="creators"/>
             <text macro="year"/>
         </layout>
     </citation>
     <bibliography>
-		<option name="collapse" value="year-suffix"/>
         <sort>
             <key macro="key-creators" names-min="1" names-use-first="1"/>
             <key macro="key-creators-count" names-min="3" names-use-first="3"/>

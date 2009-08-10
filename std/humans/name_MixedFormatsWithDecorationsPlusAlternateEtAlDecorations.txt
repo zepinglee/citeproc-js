@@ -28,8 +28,9 @@ citation
         <option name="et-al-use-first" value="5"/>
         <layout delimiter="; ">
             <names variable="author">
-                <name delimiter=", "/>
-		        <name-part type="primary-key" text-case="uppercase"/>
+                <name delimiter=", ">
+		            <name-part name="family" text-case="uppercase"/>
+                </name>
 		        <et-al term="and others" font-style="italic" prefix=" "/>
             </names>
         </layout>

@@ -27,7 +27,7 @@ John DoeJane Roeeditors
         <layout>
             <names variable="editor">
                 <name/>
-                <label/>
+                <label form="long"/>
             </names>
         </layout>
     </citation>

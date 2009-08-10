@@ -25,12 +25,6 @@ bibliography
     xml:lang="en"
     version="1.0">
   <info>
-    <id></id>
-    <title></title>
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
-
-  <info>
     <title>Chicago Manual of Style (Author-Date format)</title>
     <id>http://www.zotero.org/styles/chicago-author-date</id>
     <link href="http://www.zotero.org/styles/chicago-author-date"/>
@@ -40,7 +34,7 @@ bibliography
     </author>
     <category term="author-date"/>
     <category term="generic-base"/>
-    <updated/>
+    <updated>2009-08-10T04:49:00+09:00</updated>
     <summary>The author-date variant of the Chicago style</summary>
     <link href="http://www.chicagomanualofstyle.org/tools_citationguide.html" rel="documentation"/>
   </info>
@@ -227,7 +221,7 @@ bibliography
           </group>
           <group>
             <number variable="number-of-volumes" form="numeric"/>
-            <text term="volume" form="short" prefix=" " suffix="." plural="true"/>
+            <text term="volume" form="short" prefix=" " suffix="." plural="always"/>
           </group>
         </group>
       </else-if>
@@ -266,7 +260,7 @@ bibliography
     <group>
       <choose>
 	    <if locator="page" match="none">
-	  <label variable="locator" form="short" include-period="true" suffix=" "/>
+	  <label variable="locator" form="short" suffix=" "/>
 	    </if>
 	  </choose>
       <text variable="locator"/>

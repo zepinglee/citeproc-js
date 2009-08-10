@@ -13,7 +13,12 @@ Book A
 
 
 >>===== CSL =====>>
-<x:style xmlns:x="http://purl.org/net/xbiblio/csl">
+<x:style xmlns:x="http://purl.org/net/xbiblio/csl" xml:lang="en" class="in-text" version="1.0">
+  <x:info>
+    <x:id></x:id>
+    <x:title></x:title>
+    <x:updated>2009-08-10T04:49:00+09:00</x:updated>
+  </x:info>
  <x:citation>
   <x:layout>
      <x:text variable="title"/>

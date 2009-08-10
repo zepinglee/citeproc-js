@@ -9,6 +9,7 @@
 import sys,os,re
 import tempfile
 from cStringIO import StringIO
+from time import time
 try:
     import json
 except:
@@ -83,15 +84,17 @@ class CslTests(CslTestUtils):
                 os.unlink( p )
 
     def process(self):
-        if not len(self.args):
+        if not len(self.args) and not os.path.exists("ABORTED.txt"):
             self.clear()
+        if os.path.exists("ABORTED.txt"):
+            os.unlink("ABORTED.txt")
         for testname in self.tests:
             test = CslTest(testname, options=self.options)
-            test.load()
-            test.parse()
-            test.fix_names()
-            test.validate(testname)
-            test.dump()
+            if test.load():
+                test.parse()
+                test.fix_names()
+                test.validate(testname)
+                test.dump()
         sys.stdout.write("\n")
 
 class CslTest(CslTestUtils):
@@ -113,7 +116,9 @@ class CslTest(CslTestUtils):
         self.data = {}
 
     def load(self):
-        self.raw = open( "%s.txt" % (self.path("humans",self.testname),) ).read()
+        if not os.path.exists(self.path("machines","%s.json" % self.testname)):
+            self.raw = open( "%s.txt" % (self.path("humans",self.testname),) ).read()
+            return True
 
     def parse(self):
         for element in ["MODE","SCHEMA","CSL","RESULT"]:
@@ -176,6 +181,7 @@ class CslTest(CslTestUtils):
                                     entry["suffix"] = parsed[2]
                         del entry["name"]
 
+     
     def validate(self,testname):
         if not self.options.be_cranky:
             return
@@ -219,6 +225,7 @@ class CslTest(CslTestUtils):
                 cslline = cslline.rstrip()
                 print "%3d  %s" % (linepos,cslline)
                 linepos += 1
+            open("ABORTED.txt","w+").write("boo\n")
             sys.exit()
         
 
@@ -262,6 +269,10 @@ the named test files will be processed.
 
     if options.be_cranky:
         options.be_verbose = True
+        import time
+ 
+ 
+if __name__ == '__main__':
 
     #if len(args) > 0:
     #    options.be_verbose = True

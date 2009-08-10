@@ -42,7 +42,7 @@ Ibid p. 23.
       <choose>
         <if position="ibid-with-locator">
           <text term="ibid"/>
-          <label variable="locator" prefix=" " include-period="true" form="short"/>
+          <label variable="locator" prefix=" " strip-periods="false" form="short"/>
           <text variable="locator" prefix=" "/>
         </if>
         <else>

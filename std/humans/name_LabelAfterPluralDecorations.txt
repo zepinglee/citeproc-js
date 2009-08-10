@@ -29,7 +29,7 @@ John Doe, et al. (editors)
         <layout>
             <names variable="editor">
                 <name delimiter=", "/>
-                <label prefix=" (" suffix=")"/>
+                <label prefix=" (" suffix=")" form="long"/>
             </names>
         </layout>
     </citation>

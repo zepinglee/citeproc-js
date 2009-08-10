@@ -26,8 +26,9 @@ John <b>Doe</b>; Jane <b>Roe</b>
     <citation>
         <layout>
             <names variable="author">
-                <name delimiter="; "/>
-                <name-part type="primary-key" font-weight="bold"/>
+                <name delimiter="; ">
+                    <name-part name="family" font-weight="bold"/>
+                </name>
             </names>
         </layout>
     </citation>

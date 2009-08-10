@@ -45,7 +45,7 @@ Doe, Book A, 2000, p. 100; Roe, Book B, 2001, chap. 200.
           <date-part name="year"/>
         </date>
         <group delimiter=" ">
-          <label variable="locator" include-period="true" form="short"/>
+          <label variable="locator" strip-periods="false" form="short"/>
           <text variable="locator"/>
         </group>
       </group>

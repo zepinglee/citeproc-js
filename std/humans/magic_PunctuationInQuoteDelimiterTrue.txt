@@ -18,17 +18,16 @@ Doe, “Book A,” 1900.
     class="in-text"
     xml:lang="en"
     version="1.0">
-  <info>
-    <id></id>
-    <title></title>
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
-
-    <locale xml:lang="en">
-        <options>
-            <option name="punctuation-in-quote" value="true"/>
-        </options>
-    </locale>
+    <info>
+      <id></id>
+      <title></title>
+      <updated>2009-08-10T04:49:00+09:00</updated>
+    </info>
+    <terms>
+      <locale xml:lang="en">
+          <option name="punctuation-in-quote" value="true"/>
+      </locale>
+    </terms>
     <citation>
         <layout suffix=".">
             <group delimiter=", ">

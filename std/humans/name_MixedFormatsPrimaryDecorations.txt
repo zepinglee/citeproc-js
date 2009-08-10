@@ -26,8 +26,9 @@ citation
     <citation>
         <layout delimiter="; ">
             <names variable="author">
-                <name delimiter=", "/>
-		        <name-part type="primary-key" text-case="uppercase"/>
+                <name delimiter=", ">
+		            <name-part name="family" text-case="uppercase"/>
+                </name>
             </names>
         </layout>
     </citation>

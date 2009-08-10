@@ -78,6 +78,7 @@ bibliography
 
 
     <citation>
+		<option name="collapse" value="year-suffix"/>
         <option name="disambiguate-add-year-suffix" value="true" />
         <layout>
             <text macro="creators"/>
@@ -85,7 +86,6 @@ bibliography
         </layout>
     </citation>
     <bibliography>
-		<option name="collapse" value="year-suffix"/>
         <sort>
             <key macro="key-creators" names-min="1" names-use-first="1"/>
             <key macro="key-creators-count" names-min="3" names-use-first="3" sort="descending"/>
