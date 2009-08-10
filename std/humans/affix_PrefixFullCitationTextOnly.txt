@@ -14,7 +14,10 @@ citation
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+<style xmlns="http://purl.org/net/xbiblio/csl" 
+       class="in-text"
+       xml:lang="en"
+       version="1.0">
   <citation>
     <layout prefix="(" suffix=")" >
       <group delimiter=" ">
