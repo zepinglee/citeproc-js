@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<terms>
-  <locale xml:lang="uk" xmlns="http://purl.org/net/xbiblio/csl">
+<locale xml:lang="uk" xmlns="http://purl.org/net/xbiblio/csl">
+  <terms>
     <term name="at">на</term>
     <term name="in">в</term>
     <term name="ibid">ibid</term>
@@ -207,5 +207,5 @@
     <term name="month-10" form="short">Жов</term>
     <term name="month-11" form="short">Лис</term>
     <term name="month-12" form="short">Груд</term>
-  </locale>
-</terms>
+  </terms>
+</locale>

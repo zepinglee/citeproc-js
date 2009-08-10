@@ -3,7 +3,7 @@
 
 import re,os
 
-rex = re.compile("(.*\s*)(<locale [^>]+>)(\s*\n\s*)(<terms>)(.*)(</terms>)(\s*\n\s*)(</locale>)(.*)",re.M|re.S)
+rex = re.compile("(.*\s*)(<terms>)(\s*\n\s*)(<locale [^>]+>)(.*)(</locale>)(\s*\n\s*)(</terms>)(.*)",re.M|re.S)
 
 for filename in os.listdir("./locale"):
     if not filename.endswith(".xml"): continue

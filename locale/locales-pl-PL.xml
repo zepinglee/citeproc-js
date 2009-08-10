@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<terms>
-  <locale xml:lang="pl" xmlns="http://purl.org/net/xbiblio/csl">
+<locale xml:lang="pl" xmlns="http://purl.org/net/xbiblio/csl">
+  <terms>
     <term name="at">at</term>
     <term name="in">w</term>
     <term name="ibid">ibid</term>
@@ -207,5 +207,5 @@
     <term name="month-10" form="short">październik</term>
     <term name="month-11" form="short">listopad</term>
     <term name="month-12" form="short">grudzień</term>
-  </locale>
-</terms>
+  </terms>
+</locale>
