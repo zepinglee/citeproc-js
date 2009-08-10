@@ -17,10 +17,6 @@ dojo.provide("csl.attributes");
  */
 CSL.Lib.Attributes = {};
 
-CSL.Lib.Attributes["@class"] = function(state,arg){
-	this.strings.cls = arg;
-};
-
 /**
  * Store the value attribute on the token.
  * @name CSL.Lib.Attributes.@value

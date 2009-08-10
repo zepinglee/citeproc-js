@@ -219,7 +219,7 @@ CSL.Lib.Elements.group = new function(){
 				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
 			}
 			if (CSL.GROUP_CLASSES.indexOf(this.strings.cls) > -1){
-				this.decorations.push(["@class",this.strings.cls]);
+				this.decorations.push(["@display",this.strings.cls]);
 			};
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);

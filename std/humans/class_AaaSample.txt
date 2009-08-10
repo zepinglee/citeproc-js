@@ -67,18 +67,18 @@ the grouping of authors in the AAA style bibliography format.
   <bibliography>
     <option name="subsequent-author-substitute" value=""/>
     <layout>
-      <group class="csl-entry-heading">
+      <group display="block">
         <names variable="author">
           <name and="text"/>
         </names>
       </group>
-      <group class="csl-left-label">
+      <group display="left-margin">
         <date variable="issued">
           <date-part name="year"/>
         </date>
         <text variable="year-suffix"/>
       </group>
-      <group class="csl-item">        
+      <group display="body">        
         <text variable="title"/>
       </group>
     </layout>

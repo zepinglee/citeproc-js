@@ -144,7 +144,7 @@
           <text macro="publisher-year"  prefix=" " suffix="."/>
         </if>
         <else-if type="chapter">
-          <group class="container">
+          <group>
             <text variable="container-title" font-style="italic" prefix=" " suffix="."/>
             <text macro="edition" prefix=" " suffix="."/>
             <text macro="editor-translator" prefix=" " suffix="."/>
@@ -153,7 +153,7 @@
           <text variable="page" prefix=" " suffix="."/>
         </else-if>
         <else>
-          <group class="container" prefix=" " suffix="." delimiter=": ">
+          <group prefix=" " suffix="." delimiter=": ">
             <group delimiter=" ">
               <text macro="editor-translator" suffix="."/>
               <text variable="container-title" font-style="italic"/>

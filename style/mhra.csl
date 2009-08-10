@@ -123,7 +123,7 @@
 	    </group>
 	  </if>
 	  <else-if type="chapter">
-	    <group class="container" prefix=", ">
+	    <group prefix=", ">
 	      <text term="in" text-case="lowercase"/>
 	      <text variable="container-title" font-style="italic" prefix=" " suffix=","/>
 	      <text variable="collection-title" prefix=" " suffix=","/>
@@ -163,7 +163,7 @@
 	    </group>
 	  </else-if>
 	  <else-if type="article-journal">
-	    <group class="container" prefix=", " delimiter=", ">
+	    <group prefix=", " delimiter=", ">
 	      <text variable="container-title" font-style="italic"/>
 	      <text macro="publisher"/>
 	      <text variable="volume"  prefix=" "/>
@@ -217,7 +217,7 @@
 	</if>
 	<else-if type="chapter">
 	  <text macro="title" prefix=" "/>
-	  <group class="container" prefix=", ">
+	  <group prefix=", ">
 	    <text term="in" text-case="lowercase"/>
 	    <text variable="container-title" font-style="italic" prefix=" " suffix=","/>
 	    <text variable="collection-title" prefix=" " suffix=","/>
@@ -235,7 +235,7 @@
 	    <text macro="title" prefix=" "/>
 	    <text macro="editor-translator" prefix=" "/>
 	  </group>
-	  <group class="container" prefix=" " suffix="">
+	  <group prefix=" " suffix="">
 	    <text variable="container-title" font-style="italic" prefix=" "/>
 	    <text variable="volume"  prefix=" "/>
 	    <text variable="issue" prefix=", no. "/>
@@ -301,7 +301,7 @@
 	    <text macro="title" prefix=" "/>
 	    <text macro="editor-translator" prefix=" "/>
 	  </group>
-	  <group class="container" prefix=" " suffix="">
+	  <group prefix=" " suffix="">
 	    <text variable="container-title" font-style="italic"/>
 	    <group prefix=", ">
 	      <text variable="volume" font-style="italic"/>

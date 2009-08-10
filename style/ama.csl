@@ -140,7 +140,7 @@
 	</if>
 	<else-if type="chapter">
 	  <text macro="title" prefix=" " suffix="."/>
-	  <group class="container" prefix=" ">
+	  <group prefix=" ">
 	    <text term="in" text-case="capitalize-first" suffix=": "/>
 	    <text macro="editor"/>
 	    <text variable="container-title" font-style="italic" prefix=" " suffix="."/>
@@ -163,7 +163,7 @@
 	    <text macro="title" prefix=" " />
 	    <text macro="editor" prefix=" "/>
 	  </group>
-	  <group class="container" prefix=" " suffix=".">
+	  <group prefix=" " suffix=".">
 	    <text variable="container-title" font-style="italic" form="short" suffix="."/>
 	    <group delimiter=";" prefix=" ">
 	      <date variable="issued">

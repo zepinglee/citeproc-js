@@ -76,7 +76,7 @@ CSL = new function () {
 	// \u0400-\u042f are cyrillic and extended cyrillic capitals
 	this.NAME_INITIAL_REGEXP = /^([A-Z\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
 
-	this.GROUP_CLASSES = ["csl-entry-heading","csl-left-label","csl-item"];
+	this.GROUP_CLASSES = ["block","left-margin","body","indent"];
 
 	var x = new Array();
 	x = x.concat(["edition","volume","number-of-volumes","number"]);

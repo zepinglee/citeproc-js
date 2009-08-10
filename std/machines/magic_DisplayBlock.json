@@ -1,5 +1,5 @@
 {
-    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\"\n    class=\"in-text\"\n    xml:lang=\"en\"\n    version=\"1.0\">\n  <info>\n    <id></id>\n    <title></title>\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n\n    <citation>\n        <layout>\n            <text value=\"hello\"/>\n        </layout>\n    </citation>\n    <bibliography>\n        <layout>\n            <group delimiter=\" \">\n                <group delimiter=\", \">\n                    <names variable=\"author\">\n                        <name/>\n                    </names>\n                    <text variable=\"title\"/>\n                </group>\n                <date variable=\"issued\" prefix=\"(\" suffix=\")\">\n                    <date-part name=\"year\"/>\n                </date>\n            </group>\n            <text variable=\"abstract\" display=\"block\"/>\n        </layout>\n    </bibliography>\n</style>", 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\"\n    class=\"in-text\"\n    xml:lang=\"en\"\n    version=\"1.0\">\n  <info>\n    <id></id>\n    <title></title>\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n\n    <citation>\n        <layout>\n            <text value=\"hello\"/>\n        </layout>\n    </citation>\n    <bibliography>\n        <layout>\n            <group delimiter=\" \">\n                <group delimiter=\", \">\n                    <names variable=\"author\">\n                        <name/>\n                    </names>\n                    <text variable=\"title\"/>\n                </group>\n                <date variable=\"issued\" prefix=\"(\" suffix=\")\">\n                    <date-part name=\"year\"/>\n                </date>\n            </group>\n            <text variable=\"abstract\" display=\"indent\"/>\n        </layout>\n    </bibliography>\n</style>", 
     "input": [
         {
             "abstract": "An interesting book by an interesting author.", 
@@ -35,6 +35,6 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Smith, Book A (2000)<span class=\"csl-bib-block\">An interesting book by an interesting author.</span></div>\n  <div class=\"csl-entry\">Robert Jones, Book B (2001)<span class=\"csl-bib-block\">An old contribution to a new field.</span></div>\n</div>", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Smith, Book A (2000)    <div class=\"csl-block-indent\">An interesting book by an interesting author.</div>\n  </div>\n  <div class=\"csl-entry\">Robert Jones, Book B (2001)    <div class=\"csl-block-indent\">An old contribution to a new field.</div>\n  </div>\n</div>", 
     "schema": "0.8"
 }

@@ -31,7 +31,7 @@ CSL.Util.substituteStart = function(state,target){
 			//
 			if (state.bibliography.opt["second-field-align"]){
 				var bib_first = new CSL.Factory.Token("group",CSL.START);
-				bib_first.decorations = [["@class","csl-left-label"]];
+				bib_first.decorations = [["@display","left-margin"]];
 				var func = function(state,Item){
 					if (!state.tmp.render_seen){
 						state.tmp.count_offset_characters = true;
@@ -109,7 +109,7 @@ CSL.Util.substituteEnd = function(state,target){
 				bib_first_end.execs.push(first_func_end);
 				target.push(bib_first_end);
 				var bib_other = new CSL.Factory.Token("group",CSL.START);
-				bib_other.decorations = [["@class","csl-item"]];
+				bib_other.decorations = [["@display","body"]];
 				var other_func = function(state,Item){
 					if (!state.tmp.render_seen){
 						state.tmp.render_seen = true;

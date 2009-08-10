@@ -150,7 +150,7 @@
 	</if>
 	<else-if type="chapter">
 	  <text macro="title" prefix=" " suffix="."/>
-	  <group class="container" prefix=" " delimiter=" ">
+	  <group prefix=" " delimiter=" ">
 	    <text term="in" text-case="capitalize-first"/>
 	    <text macro="editor"/>
 	    <text variable="container-title" font-style="italic" suffix="."/>
@@ -173,7 +173,7 @@
 	    <text macro="title" prefix=" "/>
 	    <text macro="editor" prefix=" "/>
 	  </group>
-	  <group class="container" prefix=" " suffix=".">
+	  <group prefix=" " suffix=".">
 	    <text variable="container-title" font-style="italic"/>
 	    <group prefix=", ">
 	      <text variable="volume" />

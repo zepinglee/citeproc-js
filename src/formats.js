@@ -90,21 +90,24 @@ CSL.Output.Formats.prototype.html = {
 		};
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
-	"@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
+	// "@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/body": function(state,str){
 		return "<div class=\"csl-bib-body\">\n"+str+"</div>";
 	},
 	"@bibliography/entry": function(state,str){
 		return "  <div class=\"csl-entry\">"+str+"</div>\n";
 	},
-	"@class/csl-entry-heading": function(state,str){
+	"@display/block": function(state,str){
 		return "\n\n    <div class=\"csl-entry-heading\">" + str + "</div>\n";
 	},
-	"@class/csl-left-label": function(state,str){
+	"@display/left-margin": function(state,str){
 		return "\n    <div class=\"csl-left-label\">" + str + "</div>\n";
 	},
-	"@class/csl-item": function(state,str){
+	"@display/body": function(state,str){
 		return "    <div class=\"csl-item\">" + str + "</div>\n  ";
+	},
+	"@display/indent": function(state,str){
+		return "    <div class=\"csl-block-indent\">" + str + "</div>\n  ";
 	}
 };
 

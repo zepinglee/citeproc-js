@@ -9,8 +9,10 @@ bibliography
 
 >>== RESULT ==>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John Smith, Book A (2000)<span class="csl-bib-block">An interesting book by an interesting author.</span></div>
-  <div class="csl-entry">Robert Jones, Book B (2001)<span class="csl-bib-block">An old contribution to a new field.</span></div>
+  <div class="csl-entry">John Smith, Book A (2000)    <div class="csl-block-indent">An interesting book by an interesting author.</div>
+  </div>
+  <div class="csl-entry">Robert Jones, Book B (2001)    <div class="csl-block-indent">An old contribution to a new field.</div>
+  </div>
 </div>
 <<== RESULT ==<<
 
@@ -44,7 +46,7 @@ bibliography
                     <date-part name="year"/>
                 </date>
             </group>
-            <text variable="abstract" display="block"/>
+            <text variable="abstract" display="indent"/>
         </layout>
     </bibliography>
 </style>
