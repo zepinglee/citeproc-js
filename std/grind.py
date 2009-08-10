@@ -220,8 +220,6 @@ class CslTest(CslTestUtils):
                 print "%3d  %s" % (linepos,cslline)
                 linepos += 1
             sys.exit()
-        #print "Would continue"
-        #sys.exit()
         
 
     def dump(self):
@@ -262,8 +260,11 @@ the named test files will be processed.
                       help='Attempt to validate CSL files before processing.')
     (options, args) = parser.parse_args()
 
-    if len(args) > 0:
+    if options.be_cranky:
         options.be_verbose = True
+
+    #if len(args) > 0:
+    #    options.be_verbose = True
     
     mypath = os.path.split(sys.argv[0])[0]
     if len(mypath):
