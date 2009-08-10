@@ -55,10 +55,8 @@ CSL.Factory.Registry.NameReg = function(state){
 		// <option disambiguate-add-givenname value="true"/> (a)
 		// <option disambiguate-add-givenname value="all-names"/> (a)
 		// <option disambiguate-add-givenname value="all-names-with-initials"/> (b)
-		// <option disambiguate-add-givenname value="all-names-with-fullname"/> (c)
 		// <option disambiguate-add-givenname value="primary-name"/> (d)
 		// <option disambiguate-add-givenname value="primary-name-with-initials"/> (e)
-		// <option disambiguate-add-givenname value="primary-name-with-fullname"/> (f)
 		// <option disambiguate-add-givenname value="by-cite"/> (g)
 		//
 		var param = 2;
@@ -97,10 +95,6 @@ CSL.Factory.Registry.NameReg = function(state){
 		} else if (gdropt == "all-names-with-initials" || gdropt == "primary-name-with-initials"){
 			if (this.namereg[pkey].count > 1){
 				param = 1;
-			}
-		} else if (gdropt == "all-names-with-fullname" || gdropt == "primary-name-with-fullname"){
-			if (this.namereg[pkey].count > 1){
-				param = 2;
 			}
 		};
 		return param;

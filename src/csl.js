@@ -60,10 +60,8 @@ CSL = new function () {
 	this.GIVENNAME_DISAMBIGUATION_RULES = [];
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names-with-initials");
-	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names-with-fullname");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-initials");
-	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-fullname");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("by-cite");
 
 	this.LOOSE = 0;
