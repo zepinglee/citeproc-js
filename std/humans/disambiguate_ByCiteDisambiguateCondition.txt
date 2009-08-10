@@ -14,7 +14,16 @@ Doe, et al., <i>Book A</i> (2000); Doe, et al., <i>Book B</i> (2000)
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" xml:lang="en">
+<style xmlns="http://purl.org/net/xbiblio/csl"
+    class="in-text"
+    xml:lang="en"
+    version="1.0">
+  <info>
+    <id></id>
+    <title></title>
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+
     <citation>
         <option name="disambiguate-add-names" value="true"/>
         <option name="disambiguate-add-givenname" value="true"/>

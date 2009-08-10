@@ -177,7 +177,7 @@ class CslTest(CslTestUtils):
                         del entry["name"]
 
     def validate(self,testname):
-        if not self.options.be_cautious:
+        if not self.options.be_cranky:
             return
         if not os.path.exists("../../jing"):
             print "Error: jing not found as sibling of processor archive."
@@ -220,8 +220,8 @@ class CslTest(CslTestUtils):
                 print "%3d  %s" % (linepos,cslline)
                 linepos += 1
             sys.exit()
-        print "Would continue"
-        sys.exit()
+        #print "Would continue"
+        #sys.exit()
         
 
     def dump(self):
@@ -256,7 +256,7 @@ the named test files will be processed.
                       default=False,
                       action="store_true", 
                       help='Display test names during processing.')
-    parser.add_option("-c", "--cautious", dest="be_cautious",
+    parser.add_option("-c", "--cranky", dest="be_cranky",
                       default=False,
                       action="store_true", 
                       help='Attempt to validate CSL files before processing.')

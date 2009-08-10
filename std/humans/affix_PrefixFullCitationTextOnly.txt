@@ -18,13 +18,18 @@ citation
        class="in-text"
        xml:lang="en"
        version="1.0">
+  <info>
+    <id></id>
+    <title></title>
+    <updated>2007-10-26T21:32:52+02:00</updated>
+  </info>
   <citation>
     <layout prefix="(" suffix=")" >
       <group delimiter=" ">
         <names variable="author">
           <name form="short" />
         </names>
-        <date variable="issued" >
+        <date variable="issued" form="year">
           <date-part name="year" />
         </date>
       </group>

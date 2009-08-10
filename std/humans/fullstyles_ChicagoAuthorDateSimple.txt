@@ -20,7 +20,16 @@ bibliography
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl" xml:lang="en" class="in-text" >
+<style xmlns="http://purl.org/net/xbiblio/csl"
+    class="in-text"
+    xml:lang="en"
+    version="1.0">
+  <info>
+    <id></id>
+    <title></title>
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+
   <info>
     <title>Chicago Manual of Style (Author-Date format)</title>
     <id>http://www.zotero.org/styles/chicago-author-date</id>
