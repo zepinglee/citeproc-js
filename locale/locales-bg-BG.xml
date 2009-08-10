@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<locale xml:lang="bg" xmlns="http://purl.org/net/xbiblio/csl">
-  <terms>
+<terms>
+  <locale xml:lang="bg" xmlns="http://purl.org/net/xbiblio/csl">
     <term name="at">в</term>
     <term name="in">в</term>
     <term name="ibid">пак там</term>
@@ -207,5 +207,5 @@
     <term name="month-10" form="short">Окт</term>
     <term name="month-11" form="short">Ное</term>
     <term name="month-12" form="short">Дек</term>
-  </terms>
-</locale>
+  </locale>
+</terms>

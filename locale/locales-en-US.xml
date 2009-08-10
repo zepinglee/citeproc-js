@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<locale xml:lang="en" xmlns="http://purl.org/net/xbiblio/csl">
-  <options>
+<terms>
+  <locale xml:lang="en" xmlns="http://purl.org/net/xbiblio/csl">
     <option name="punctuation-in-quote" value="true"/>
-  </options>
-  <terms>
-    <term name="bogus">bogus</term>
     <term name="open-quote">“</term>
     <term name="close-quote">”</term>
     <term name="open-inner-quote">‘</term>
@@ -249,5 +246,5 @@
     <term name="month-10" form="short">Oct</term>
     <term name="month-11" form="short">Nov</term>
     <term name="month-12" form="short">Dec</term>
-  </terms>
-</locale>
+  </locale>
+</terms>
