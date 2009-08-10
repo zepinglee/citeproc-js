@@ -23,7 +23,7 @@
             ]
         ]
     ], 
-    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\"\n    class=\"in-text\"\n    xml:lang=\"en\"\n    version=\"1.0\">\n  <info>\n    <id></id>\n    <title></title>\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n\n  <citation>\n\t<option name=\"collapse\" value=\"year-suffix\"/>\n    <option name=\"disambiguate-add-year-suffix\" value=\"true\"/>\n    <option name=\"year-suffix-delimiter\" value=\",\"/>\n    <option name=\"year-suffix-range-delimiter\" value=\"-\"/>\n\t<layout delimiter=\", \">\n      <group delimiter=\" \">\n        <names variable=\"author\">\n          <name form=\"short\"/>\n        </names>\n        <date variable=\"issued\">\n          <date-part name=\"year\"/>\n        </date>\n      </group>\n      <text variable=\"year-suffix\"/>\n\t</layout>\n  </citation>\n</style>", 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\"\n    class=\"in-text\"\n    xml:lang=\"en\"\n    version=\"1.0\">\n  <info>\n    <id></id>\n    <title></title>\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n\n  <citation>\n\t<option name=\"collapse\" value=\"year-suffix-ranged\"/>\n    <option name=\"disambiguate-add-year-suffix\" value=\"true\"/>\n    <option name=\"year-suffix-delimiter\" value=\",\"/>\n\t<layout delimiter=\", \">\n      <group delimiter=\" \">\n        <names variable=\"author\">\n          <name form=\"short\"/>\n        </names>\n        <date variable=\"issued\">\n          <date-part name=\"year\"/>\n        </date>\n      </group>\n      <text variable=\"year-suffix\"/>\n\t</layout>\n  </citation>\n</style>", 
     "input": [
         {
             "author": [

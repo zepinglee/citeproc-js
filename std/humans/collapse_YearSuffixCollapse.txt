@@ -41,10 +41,9 @@ Smith 2000a,c-e, 2001
   </info>
 
   <citation>
-	<option name="collapse" value="year-suffix"/>
+	<option name="collapse" value="year-suffix-ranged"/>
     <option name="disambiguate-add-year-suffix" value="true"/>
     <option name="year-suffix-delimiter" value=","/>
-    <option name="year-suffix-range-delimiter" value="-"/>
 	<layout delimiter=", ">
       <group delimiter=" ">
         <names variable="author">

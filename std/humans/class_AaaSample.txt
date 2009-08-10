@@ -54,6 +54,7 @@ the grouping of authors in the AAA style bibliography format.
   </info>
 
   <citation>
+    <option name="disambiguate-add-year-suffix" value="true"/>
     <layout>
       <names variable="author">
         <name/>
@@ -65,7 +66,6 @@ the grouping of authors in the AAA style bibliography format.
   </citation>
   <bibliography>
     <option name="subsequent-author-substitute" value=""/>
-    <option name="disambiguate-add-year-suffix" value="true"/>
     <layout>
       <group class="csl-entry-heading">
         <names variable="author">

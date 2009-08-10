@@ -59,6 +59,9 @@ citation
             <key variable="issued"/>
             <key variable="title"/>
         </sort>
+        <layout>
+            <text value="Ignore me"/>
+        </layout>
     </bibliography>
 </style>
 <<===== CSL =====<<

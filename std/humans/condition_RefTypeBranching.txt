@@ -93,7 +93,7 @@ bibliography
             <text macro="title" />
           </group>
         </else-if>
-        <else-if type="section-book">
+        <else-if type="report">
           <group delimiter=" " suffix=".">
             <date variable="issued" suffix=".">
               <date-part name="year"/>
@@ -149,7 +149,7 @@ bibliography
   },
   {
     "id":"ITEM-3",
-    "type": "section-book",
+    "type": "report",
     "author": [
       { "name":"Doe, John" }
     ],

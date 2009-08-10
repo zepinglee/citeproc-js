@@ -28,10 +28,10 @@ Doe 2000a,b;2001
   </info>
 
     <citation>
+		<option name="year-suffix-delimiter" value=","/>
+        <option name="disambiguate-add-year-suffix" value="true"/>
+        <option name="collapse" value="year-suffix"/>
         <layout delimiter=";">
-            <option name="year-suffix-delimiter" value=","/>
-            <option name="disambiguate-add-year-suffix" value="true"/>
-            <option name="collapse" value="year-suffix"/>
             <group delimiter=" ">
                 <names variable="author">
                     <name form="short"/>
