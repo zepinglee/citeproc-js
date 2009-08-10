@@ -12,7 +12,7 @@ citation
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
+<style xmlns="http://purl.org/net/xbiblio/cslXXXXXXXXXXX"
     class="in-text"
     xml:lang="en"
     version="1.0">
