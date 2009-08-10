@@ -112,8 +112,9 @@ CSL.Lib.Elements.text = new function(){
 					};
 					this["execs"].push(func);
 				} else if (variable == "year-suffix"){
-					if (state[state.tmp.area].opt["year-suffix-range-delimiter"]){
-						this.range_prefix = state[state.tmp.area].opt["year-suffix-range-delimiter"];
+
+					if (state[state.tmp.area].opt.collapse == "year-suffix-ranged"){
+						this.range_prefix = "-";
 					}
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]){
 						this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
@@ -803,7 +804,7 @@ CSL.Lib.Elements["date-part"] = new function(){
 			};
 			var real = !state.tmp.suppress_decorations;
 			var have_collapsed = state.tmp.have_collapsed;
-			var invoked = state[state.tmp.area].opt.collapse == "year-suffix";
+			var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
 			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
 			//
 			// XXXXX: need a condition for year as well?
@@ -841,6 +842,7 @@ CSL.Lib.Elements.option = new function(){
 				state[state.tmp.area].opt.collapse = this.strings.value;
 			};
 		};
+
 		if (CSL.ET_AL_NAMES.indexOf(this.strings.name) > -1){
 			if (this.strings.value){
 				state[state.build.area].opt[this.strings.name] = parseInt(this.strings.value, 10);
@@ -848,9 +850,6 @@ CSL.Lib.Elements.option = new function(){
 		};
 		if ("year-suffix-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["year-suffix-delimiter"] = this.strings.value;
-		};
-		if ("year-suffix-range-delimiter" == this.strings.name){
-			state[state.tmp.area].opt["year-suffix-range-delimiter"] = this.strings.value;
 		};
 		if ("after-collapse-delimiter" == this.strings.name){
 			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;

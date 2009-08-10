@@ -104,6 +104,9 @@ CSL.Output.Formatters.capitalize_all = function(state,string) {
 	return strings.join(" ");
 };
 
+CSL.Output.Formatters.strip_periods = function(state,string) {
+    return string.replace("."," ").replace(/\s*$/,"");
+};
 
 /**
  * A complex function that attempts to produce a pattern

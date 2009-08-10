@@ -27,7 +27,7 @@ Doe eds
         <layout>
             <names variable="editor">
                 <name form="short" suffix=" "/>
-                <label form="short" plural="always"/>
+                <label form="short" plural="always" strip-periods="true"/>
             </names>
         </layout>
     </citation>

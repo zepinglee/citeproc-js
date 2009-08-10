@@ -2,16 +2,16 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_plural");
+	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_namespaces");
 	dojo.require("tests.std_affix");
-	dojo.require("tests.std_plural");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.test_flipflopper");
 	dojo.require("tests.std_class");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_flipflop");
-	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_condition");
 	dojo.require("tests.test_queue");
 

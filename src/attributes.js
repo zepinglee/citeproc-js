@@ -396,14 +396,6 @@ CSL.Lib.Attributes["@locator"] = function(state,arg){
 };
 
 
-CSL.Lib.Attributes["@include-period"] = function(state,arg){
-	this.strings["include-period"] = arg;
-};
-
-CSL.Lib.Attributes["@strip-periods"] = function(state,arg){
-	this.strings["strip-periods"] = arg;
-};
-
 CSL.Lib.Attributes["@position"] = function(state,arg){
 	if (arg == "subsequent"){
 		this.strings.position = CSL.POSITION_SUBSEQUENT;

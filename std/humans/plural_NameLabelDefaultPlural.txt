@@ -27,7 +27,7 @@ Doe and Roe eds
         <layout>
             <names variable="editor">
                 <name and="text" form="short" suffix=" "/>
-                <label form="short"/>
+                <label form="short" strip-periods="true"/>
             </names>
         </layout>
     </citation>

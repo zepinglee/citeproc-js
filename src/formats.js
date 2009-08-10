@@ -73,6 +73,8 @@ CSL.Output.Formats.prototype.html = {
 	"@text-case/capitalize-all":CSL.Output.Formatters.capitalize_all,
 	"@text-case/title":CSL.Output.Formatters.title_capitalization,
 	"@text-case/sentence":CSL.Output.Formatters.sentence_capitalization,
+	"@strip-periods/true":CSL.Output.Formatters.strip_periods,
+	"@strip-periods/false":function(state,string){return string;},
 	"@quotes/true":function(state,str){
 		if ("undefined" == typeof str){
 			return state.getTerm("open-quote");

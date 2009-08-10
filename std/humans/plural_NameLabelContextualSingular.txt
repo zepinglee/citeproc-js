@@ -27,7 +27,7 @@ Doe ed
         <layout>
             <names variable="editor">
                 <name form="short" suffix=" "/>
-                <label form="short" plural="contextual"/>
+                <label form="short" plural="contextual" strip-periods="true"/>
             </names>
         </layout>
     </citation>

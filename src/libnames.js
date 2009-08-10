@@ -117,7 +117,7 @@ CSL.Lib.Elements.names = new function(){
 				}
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
-					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix")){
+					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
 						//
 						// XXXX: This looks all messed up.  Apparently I'm using
 						// last_names_used for two purposes -- to compare namesets

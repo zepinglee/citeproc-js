@@ -90,7 +90,7 @@ CSL = new function () {
 	this.DATE_VARIABLES = ["issued","event","accessed","container","original-date"];
 
 	var x = new Array();
-	x = x.concat(["@text-case","@font-style","@font-variant"]);
+	x = x.concat(["@text-case","@strip-periods","@font-style","@font-variant"]);
 	x = x.concat(["@font-weight","@text-decoration","@vertical-align"]);
 	x = x.concat(["@quotes","@display"]);
 	this.FORMAT_KEY_SEQUENCE = x.slice();
