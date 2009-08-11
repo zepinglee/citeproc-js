@@ -71,3 +71,23 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
 
+CSL.System.Xml.E4X.prototype.makeXml = function(str){
+	// this is where this should happen
+	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//default xml namespace = "http://purl.org/net/xbiblio/csl";
+	var ret = new XML(str);
+	return ret;
+};
+
+//
+// Retrieve locale object from filesystem
+// (Deployments must provide an instance object with
+// this method.)
+//
+CSL.System.Xml.E4X.prototype.getLang = function(lang){
+	var ret = readFile( "./locale/"+CSL.localeRegistry[lang], "UTF-8");
+	ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+	return ret;
+};
+

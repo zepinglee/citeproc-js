@@ -50,8 +50,9 @@ doh.registerGroup("tests.queue",
 		},
 
 		function testString () {
+			var myxml = "<style></style>";
 			var sys = new RhinoTest();
-			var state = new CSL.Engine(sys);
+			var state = new CSL.Engine(sys,myxml);
 			var res = state.output;
 
 			var token1 = new CSL.Factory.Token("sometype",CSL.START);

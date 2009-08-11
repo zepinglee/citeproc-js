@@ -103,6 +103,49 @@ CSL = new function () {
 	this.CREATORS = this.CREATORS.concat(["composer"]);
 	this.CREATORS = this.CREATORS.concat(["original-author"]);
 	this.CREATORS = this.CREATORS.concat(["container-author","collection-editor"]);
+
+
+    this.localeRegistry = {
+		"af":"locales-af-AZ.xml",
+		"af":"locales-af-ZA.xml",
+		"ar":"locales-ar-AR.xml",
+		"bg":"locales-bg-BG.xml",
+		"ca":"locales-ca-AD.xml",
+		"cs":"locales-cs-CZ.xml",
+		"da":"locales-da-DK.xml",
+		"de":"locales-de-AT.xml",
+		"de":"locales-de-CH.xml",
+		"de":"locales-de-DE.xml",
+		"el":"locales-el-GR.xml",
+		"en":"locales-en-US.xml",
+		"es":"locales-es-ES.xml",
+		"et":"locales-et-EE.xml",
+		"fr":"locales-fr-FR.xml",
+		"he":"locales-he-IL.xml",
+		"hu":"locales-hu-HU.xml",
+		"is":"locales-is-IS.xml",
+		"it":"locales-it-IT.xml",
+		"ja":"locales-ja-JP.xml",
+		"ko":"locales-ko-KR.xml",
+		"mn":"locales-mn-MN.xml",
+		"nb":"locales-nb-NO.xml",
+		"nl":"locales-nl-NL.xml",
+		"pl":"locales-pl-PL.xml",
+		"pt":"locales-pt-BR.xml",
+		"pt":"locales-pt-PT.xml",
+		"ro":"locales-ro-RO.xml",
+		"ru":"locales-ru-RU.xml",
+		"sk":"locales-sk-SK.xml",
+		"sl":"locales-sl-SI.xml",
+		"sr":"locales-sr-RS.xml",
+		"sv":"locales-sv-SE.xml",
+		"th":"locales-th-TH.xml",
+		"tr":"locales-tr-TR.xml",
+		"uk":"locales-uk-UA.xml",
+		"vi":"locales-vi-VN.xml",
+		"zh":"locales-zh-CN.xml",
+		"zh":"locales-zh-TW.xml"
+	};
 };
 
 //SNIP-START

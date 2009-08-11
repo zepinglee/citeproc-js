@@ -2,9 +2,13 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_class");
-	dojo.require("tests.std_magic");
+	dojo.require("tests.test_sys_rhino_locale");
+	dojo.require("tests.test_registry");
 	dojo.require("tests.test_load_styles");
+	dojo.require("tests.test_sys_stdrhino_locale");
+	dojo.require("tests.std_class");
+	dojo.require("tests.test_queue");
+	dojo.require("tests.std_magic");
 	dojo.require("tests.std_plural");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_namespaces");
@@ -14,22 +18,18 @@ if(true){
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_flipflop");
 	dojo.require("tests.std_condition");
-	dojo.require("tests.test_queue");
 
 	dojo.require("tests.std_api");
-	dojo.require("tests.test_registry");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_variables");
 
 	dojo.require("tests.test_conditions");
-	dojo.require("tests.test_sys_rhino_locale");
 	//dojo.require("tests.std_terms");
 	dojo.require("tests.std_discretionary");
 	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.test_build");
 	dojo.require("tests.test_sys_rhino_load");
-	dojo.require("tests.test_sys_stdrhino_locale");
 	dojo.require("tests.test_sys_stdrhino_load");
 	dojo.require("tests.test_opt");
 	dojo.require("tests.test_stack");

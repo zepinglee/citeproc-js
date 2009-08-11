@@ -63,74 +63,6 @@ RhinoTest.prototype.retrieveItems = function(ids){
 };
 
 
-RhinoTest.prototype.getLang = function(lang){
-	var ret = readFile( "./locale/"+this.localeRegistry()[lang], "UTF-8");
-	ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
-	return ret;
-};
-
-
-RhinoTest.prototype.makeXml = function(str){
-	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	//default xml namespace = "http://purl.org/net/xbiblio/csl";
-	return XML(str);
-};
-
-
-RhinoTest.prototype.setLocaleXml = function(arg,lang){
-	if ("undefined" == typeof this.locale_terms){
-		this.locale_terms = new Object();
-	}
-	if ("undefined" == typeof arg){
-		var myxml = new XML( this.getLang("en") );
-		lang = "en";
-	} else if ("string" == typeof arg){
-		var myxml = new XML( this.getLang(arg) );
-		lang = arg;
-	} else if ("xml" != typeof arg){
-		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
-	} else if ("string" != typeof lang) {
-		throw "Error in setLocaleXml: Must provide lang string with XML locale object";
-	} else {
-		var myxml = arg;
-	}
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	//default xml namespace = "http://purl.org/net/xbiblio/csl";
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-	var locale = new XML();
-	if (myxml.localName() && myxml.localName().toString() == "locale"){
-		locale = myxml;
-	} else {
-		for each (var blob in myxml..locale){
-			if (blob.@xml::lang == lang){
-				locale = blob;
-				break;
-			}
-		}
-	}
-	for each (var term in locale.terms.term){
-		var termname = term.@name.toString();
-		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-		//default xml namespace = "http://purl.org/net/xbiblio/csl";
-		if ("undefined" == typeof this.locale_terms[termname]){
-			this.locale_terms[termname] = new Object();
-		};
-		var form = "long";
-		if (term.@form.toString()){
-			form = term.@form.toString();
-		}
-		if (term.multiple.length()){
-			this.locale_terms[termname][form] = new Array();
-			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
-			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
-		} else {
-			this.locale_terms[term.@name.toString()][form] = term.toString();
-		}
-	}
-};
-
-
 RhinoTest.prototype._getInput = function(name){
 	this.myname = name;
 	var ret = new Array();
@@ -161,50 +93,6 @@ RhinoTest.prototype._getInput = function(name){
 	}
 	return ret;
 }
-
-RhinoTest.prototype.localeRegistry =	function (){
-	return {
-		"af":"locales-af-AZ.xml",
-		"af":"locales-af-ZA.xml",
-		"ar":"locales-ar-AR.xml",
-		"bg":"locales-bg-BG.xml",
-		"ca":"locales-ca-AD.xml",
-		"cs":"locales-cs-CZ.xml",
-		"da":"locales-da-DK.xml",
-		"de":"locales-de-AT.xml",
-		"de":"locales-de-CH.xml",
-		"de":"locales-de-DE.xml",
-		"el":"locales-el-GR.xml",
-		"en":"locales-en-US.xml",
-		"es":"locales-es-ES.xml",
-		"et":"locales-et-EE.xml",
-		"fr":"locales-fr-FR.xml",
-		"he":"locales-he-IL.xml",
-		"hu":"locales-hu-HU.xml",
-		"is":"locales-is-IS.xml",
-		"it":"locales-it-IT.xml",
-		"ja":"locales-ja-JP.xml",
-		"ko":"locales-ko-KR.xml",
-		"mn":"locales-mn-MN.xml",
-		"nb":"locales-nb-NO.xml",
-		"nl":"locales-nl-NL.xml",
-		"pl":"locales-pl-PL.xml",
-		"pt":"locales-pt-BR.xml",
-		"pt":"locales-pt-PT.xml",
-		"ro":"locales-ro-RO.xml",
-		"ru":"locales-ru-RU.xml",
-		"sk":"locales-sk-SK.xml",
-		"sl":"locales-sl-SI.xml",
-		"sr":"locales-sr-RS.xml",
-		"sv":"locales-sv-SE.xml",
-		"th":"locales-th-TH.xml",
-		"tr":"locales-tr-TR.xml",
-		"uk":"locales-uk-UA.xml",
-		"vi":"locales-vi-VN.xml",
-		"zh":"locales-zh-CN.xml",
-		"zh":"locales-zh-TW.xml"
-	};
-};
 
 RhinoTest.prototype._fixAllNames = function(input){
 	for each (obj in input){

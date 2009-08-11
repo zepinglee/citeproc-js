@@ -3,7 +3,7 @@ dojo.provide("csl.build");
 
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
-	if ("string" != typeof style){
+				   if ("string" != typeof style){
 		style = "";
 	}
 	this.opt = new CSL.Engine.Opt();
@@ -18,21 +18,17 @@ CSL.Engine = function(sys,style,lang) {
 
 	this.output = new CSL.Output.Queue(this);
 
-	this.cslXml = this.sys.makeXml(style);
+	this.cslXml = this.sys.xml.makeXml(style);
 	//
 	// implicit default, "en"
-	this.sys.setLocaleXml();
+	this.setLocaleXml();
 	if (lang){
-		this.sys.setLocaleXml(lang);
+		this.setLocaleXml(lang);
 	} else {
 		lang = "en";
 	}
 	this.opt.lang = lang;
-	this.sys.setLocaleXml( this.cslXml, lang );
-	this.locale_terms = this.sys.locale_terms;
-	for (var o in this.sys.locale_opt){
-		this.opt[o] = this.sys.locale_opt[o];
-	};
+	this.setLocaleXml( this.cslXml, lang );
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
 
@@ -235,3 +231,75 @@ CSL.Engine.prototype.configureTokenLists = function(){
 	this.version = CSL.Factory.version;
 	return this.state;
 };
+
+
+CSL.Engine.prototype.setLocaleXml = function(arg,lang){
+
+	if ("undefined" == typeof this.locale_terms){
+		this.locale_terms = new Object();
+	}
+	if ("undefined" == typeof this.locale_opt){
+		this.locale_opt = new Object();
+	}
+	if ("undefined" == typeof arg){
+		var myxml = new XML( this.sys.xml.getLang("en") );
+		lang = "en";
+	} else if ("string" == typeof arg){
+		var myxml = new XML( this.sys.xml.getLang(arg) );
+		lang = arg;
+	} else if ("xml" != typeof arg){
+		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
+	} else if ("string" != typeof lang) {
+		throw "Error in setLocaleXml: Must provide lang string with XML locale object";
+	} else {
+		var myxml = arg;
+	}
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	//default xml namespace = "http://purl.org/net/xbiblio/csl";
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	var locale = new XML();
+	if (myxml.localName().toString() == "locale"){
+		locale = myxml;
+	} else {
+		for each (var blob in myxml..locale){
+			if (blob.@xml::lang == lang){
+				locale = blob;
+				break;
+			}
+		}
+	}
+	for each (var term in locale.terms.term){
+		var termname = term.@name.toString();
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		//default xml namespace = "http://purl.org/net/xbiblio/csl";
+		if ("undefined" == typeof this.locale_terms[termname]){
+			this.locale_terms[termname] = new Object();
+		};
+		var form = "long";
+		if (term.@form.toString()){
+			form = term.@form.toString();
+		}
+		if (term.multiple.length()){
+			this.locale_terms[termname][form] = new Array();
+			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
+			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
+		} else {
+			this.locale_terms[term.@name.toString()][form] = term.toString();
+		}
+	}
+	for each (var option in locale.option){
+		var optionname = option.@name.toString();
+		var optionvalue = option.@value.toString();
+		//
+		// Only one of these so far, and it's a boolean.
+		//
+		//print("locale option value: "+optionvalue);
+		if ("true" == optionvalue){
+			this.opt[optionname] = true;
+		}
+		if ("false" == optionvalue){
+			this.opt[optionname] = false;
+		}
+	}
+};
+
