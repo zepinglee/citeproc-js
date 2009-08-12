@@ -399,6 +399,8 @@ CSL.Lib.Attributes["@position"] = function(state,arg){
 		this.strings.position = CSL.POSITION_IBID;
 	} else if (arg == "ibid-with-locator"){
 		this.strings.position = CSL.POSITION_IBID_WITH_LOCATOR;
+	} else if (arg == "near-note"){
+		this.strings["near-note-distance"] = state[state.tmp.area].opt["near-note-distance"];
 	};
 };
 

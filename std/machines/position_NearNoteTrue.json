@@ -1,0 +1,23 @@
+{
+    "citations": [
+        [
+            [
+                "ITEM-1", 
+                {
+                    "note_distance": 4
+                }
+            ]
+        ]
+    ], 
+    "csl": "<style xmlns=\"http://purl.org/net/xbiblio/csl\"\n    class=\"in-text\"\n    xml:lang=\"en\"\n    version=\"1.0\">\n  <info>\n    <id></id>\n    <title></title>\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n\n    <citation>\n        <layout>\n            <choose>\n              <if position=\"near-note\">\n                  <text value=\"Note is near!\"/>\n              </if>\n              <else>\n                  <text value=\"Note is not near.\"/>\n              </else>\n            </choose>\n        </layout>\n    </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "Book A", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Note is near!", 
+    "schema": "1.0"
+}

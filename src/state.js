@@ -271,6 +271,7 @@ CSL.Engine.Citation = function (){
 	// disambiguate options
 	this.opt["disambiguate-add-names"] = false;
 	this.opt["disambiguate-add-givenname"] = false;
+	this.opt["near-note-distance"] = 5;
 };
 
 

@@ -72,8 +72,11 @@ class CslTests(CslTestUtils):
             if p.endswith("~") or p.endswith(".orig"):
                 continue
             testname = os.path.splitext(filename)[0]
-            if len(self.args) and not testname in self.args:
-                continue
+            if len(self.args):
+                if not testname in self.args:
+                    continue
+                elif os.path.exists( self.path( "machines", "%s.json"%testname)):
+                    os.unlink( self.path( "machines", "%s.json"%testname ))
             self.tests.append(testname)
         self.tests.sort()
 
@@ -272,15 +275,13 @@ the named test files will be processed.
         import time
  
  
-if __name__ == '__main__':
-
     #if len(args) > 0:
     #    options.be_verbose = True
     
     mypath = os.path.split(sys.argv[0])[0]
     if len(mypath):
         os.chdir(mypath)
-    
+
     tests = CslTests( args=args, options=options )
     tests.process()
 

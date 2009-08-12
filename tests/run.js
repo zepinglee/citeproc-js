@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_position");
 	dojo.require("tests.std_date");
     dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.test_registry");
@@ -45,9 +46,7 @@ if(true){
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 
-
 } else {
-	dojo.require("tests.std_position");
 
 	// most of this stuff now needs to be refactored
 	dojo.require("tests.test_build_internals");

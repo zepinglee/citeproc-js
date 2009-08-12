@@ -354,6 +354,22 @@ CSL.Lib.Elements["if"] = new function(){
 				};
 				this.tests.push(func);
 			}
+			if (this.strings["near-note-distance"]){
+				var func = function (state,Item){
+					if (state.tmp.force_subsequent){
+						return true;
+					} else if (!Item["note_distance"]){
+						return false;
+					} else {
+						if (Item["note_distance"] > this.strings["near-note-distance"]){
+							return false;
+						} else {
+							return true;
+						};
+					};
+				};
+				this.tests.push(func);
+			};
 			if (! this.evaluator){
 				//
 				// cut and paste of "any"

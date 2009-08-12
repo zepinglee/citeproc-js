@@ -5,4 +5,16 @@ doh.register("tests.std_position", [
         var test = new StdRhinoTest("position_IbidWithLocator");
         doh.assertEqual(test.result, test.run());
     },
+    function(){
+        var test = new StdRhinoTest("position_NearNoteFalse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("position_NearNoteTrue");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("position_NearNoteUnsupported");
+        doh.assertEqual(test.result, test.run());
+    },
 ]);
