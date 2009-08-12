@@ -1,15 +1,15 @@
-@>>===== MODE =====>>
+>>===== MODE =====>>
 citation
 <<===== MODE =====<<
 
 
 >>===== SCHEMA =====>>
-0.8
+1.0
 <<===== SCHEMA =====<<
 
 
 >>===== RESULT =====>>
-(December 15, 2005)
+Dec.
 <<===== RESULT =====<<
 
 
@@ -26,11 +26,7 @@ citation
 
     <citation>
         <layout>
-            <date variable="issued" prefix="(" suffix=")">
-                <date-part name="month" form="long" suffix=" "/>
-                <date-part name="day" suffix=", "/>
-                <date-part name="year"/>
-            </date>
+            <date variable="issued" form="month-day"/>
         </layout>
     </citation>
 </style>
@@ -42,7 +38,7 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"month":12, "day":15, "year":2005},
+    "issued": {"month":12, "year":2005},
     "title": "Ignore me"
   }
 ]

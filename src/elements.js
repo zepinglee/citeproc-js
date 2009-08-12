@@ -762,7 +762,29 @@ CSL.Lib.Elements.number = new function(){
 CSL.Lib.Elements.date = new function(){
 	this.build = build;
 	function build(state,target){
-		if (this.tokentype == CSL.START){
+		if (this.tokentype == CSL.SINGLETON){
+			if (this.variables.length){
+				if (!this.strings.form){
+					this.strings.form = "full";
+				}
+				var datexml = state.opt.dates[this.strings.form].copy();
+				datexml["@variable"] = this.variables[0];
+				if (this.strings.prefix){
+					datexml["@prefix"] = this.strings.prefix;
+				}
+				if (this.strings.suffix){
+					datexml["@suffix"] = this.strings.suffix;
+				}
+				delete datexml["@form"];
+				//
+				// Apparently this is all that is required to compile
+				// the XML chunk into the style.  Same as for macros.
+				//
+				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+				var navi = new state._getNavi( state, datexml );
+				state._build(navi);
+			};
+		} else if (this.tokentype == CSL.START){
 			CSL.Util.substituteStart.call(this,state,target);
 			var set_value = function(state,Item){
 				state.tmp.element_rendered_ok = false;

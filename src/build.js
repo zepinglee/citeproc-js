@@ -301,5 +301,8 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			this.opt[optionname] = false;
 		}
 	}
+	for each (var date in locale.date){
+		this.opt.dates[ date["@form"] ] = date;
+	};
 };
 

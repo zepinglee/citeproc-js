@@ -2,7 +2,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.test_sys_rhino_locale");
+	dojo.require("tests.std_date");
+    dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.test_load_styles");
 	dojo.require("tests.test_sys_stdrhino_locale");
@@ -20,7 +21,6 @@ if(true){
 	dojo.require("tests.std_condition");
 
 	dojo.require("tests.std_api");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_variables");
 
@@ -45,8 +45,8 @@ if(true){
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 
-} else {
 
+} else {
 	dojo.require("tests.std_position");
 
 	// most of this stuff now needs to be refactored

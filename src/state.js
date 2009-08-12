@@ -4,6 +4,7 @@ dojo.provide("csl.state");
 CSL.Engine.Opt = function (){
 	this.has_disambiguate = false;
 	this.mode = "html";
+	this.dates = new Object();
 };
 
 

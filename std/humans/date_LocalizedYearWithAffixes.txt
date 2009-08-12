@@ -1,15 +1,15 @@
-@>>===== MODE =====>>
+>>===== MODE =====>>
 citation
 <<===== MODE =====<<
 
 
 >>===== SCHEMA =====>>
-0.8
+1.0
 <<===== SCHEMA =====<<
 
 
 >>===== RESULT =====>>
-(December 15, 2005)
+(2005)
 <<===== RESULT =====<<
 
 
@@ -26,11 +26,7 @@ citation
 
     <citation>
         <layout>
-            <date variable="issued" prefix="(" suffix=")">
-                <date-part name="month" form="long" suffix=" "/>
-                <date-part name="day" suffix=", "/>
-                <date-part name="year"/>
-            </date>
+            <date variable="issued" form="year" prefix="(" suffix=")"/>
         </layout>
     </citation>
 </style>

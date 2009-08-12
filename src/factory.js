@@ -54,6 +54,9 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	var decorations = CSL.Factory.setDecorations.call(this,state,attributes);
 	var token = new CSL.Factory.Token(name,tokentype);
 	for (var key in attributes){
+		if (key.slice(0,5) == "@e4x_"){
+			continue;
+		}
 		try {
 			var attrfunc = CSL.Lib.Attributes[key].call(token,state,attributes[key]);
 		} catch (e) {
