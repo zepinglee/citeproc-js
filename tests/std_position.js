@@ -10,6 +10,10 @@ doh.register("tests.std_position", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("position_NearNoteOptionMakesFalse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("position_NearNoteTrue");
         doh.assertEqual(test.result, test.run());
     },
