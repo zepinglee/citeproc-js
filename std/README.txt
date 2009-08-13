@@ -107,6 +107,7 @@ Doe 2000a,b;2001
 # "author": [
 #     {
 #         "comma_suffix": true, 
+#         "prefix": "van", 
 #         "primary-key": "Doe", 
 #         "secondary-key": "Jeffrey", 
 #         "sticky": false, 
