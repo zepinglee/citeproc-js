@@ -1,0 +1,45 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== SCHEMA =====>>
+1.0
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+2005-12
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl"
+    class="in-text"
+    xml:lang="en"
+    version="1.0">
+  <info>
+    <id></id>
+    <title></title>
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+
+    <citation>
+        <layout>
+            <date variable="issued" form="numeric"/>
+        </layout>
+    </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+  {
+    "id":"ITEM-1",
+    "type": "book",
+    "issued": {"month":12, "year":2005},
+    "title": "Ignore me"
+  }
+]
+<<===== INPUT =====<<

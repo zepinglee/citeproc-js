@@ -380,7 +380,7 @@ bibliography
             <if variable="locator" match="none">
           <group>
             <number variable="number-of-volumes" form="numeric"/>
-            <text term="volume" form="short" prefix=" " suffix="." plural="always"/>
+            <text term="volume" form="short" prefix=" " suffix="." plural="true"/>
           </group>
             </if>
           </choose>
@@ -403,7 +403,7 @@ bibliography
           </group>
           <group>
             <number variable="number-of-volumes" form="numeric"/>
-            <text term="volume" form="short" prefix=" " suffix="." plural="always"/>
+            <text term="volume" form="short" prefix=" " suffix="." plural="true"/>
           </group>
           <text macro="edition"/>
         </group>

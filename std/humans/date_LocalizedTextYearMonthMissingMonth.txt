@@ -26,7 +26,7 @@ citation
 
     <citation>
         <layout>
-            <date variable="issued" form="year"/>
+            <date variable="issued" form="text" date-parts="year-month"/>
         </layout>
     </citation>
 </style>
@@ -38,7 +38,7 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"month":12, "day":15, "year":2005},
+    "issued": {"day":15, "year":2005},
     "title": "Ignore me"
   }
 ]

@@ -359,7 +359,7 @@ CSL.Lib.Elements["if"] = new function(){
 					if (state.tmp.force_subsequent){
 						return true;
 					} else if (!Item["note_distance"]){
-						return false;
+					return false;
 					} else {
 						if (Item["note_distance"] > this.strings["near-note-distance"]){
 							return false;
@@ -781,24 +781,32 @@ CSL.Lib.Elements.date = new function(){
 		if (this.tokentype == CSL.SINGLETON){
 			if (this.variables.length){
 				if (!this.strings.form){
-					this.strings.form = "full";
+					this.strings.form = "text";
 				}
-				var datexml = state.opt.dates[this.strings.form].copy();
-				datexml["@variable"] = this.variables[0];
-				if (this.strings.prefix){
-					datexml["@prefix"] = this.strings.prefix;
-				}
-				if (this.strings.suffix){
-					datexml["@suffix"] = this.strings.suffix;
-				}
-				delete datexml["@form"];
-				//
-				// Apparently this is all that is required to compile
-				// the XML chunk into the style.  Same as for macros.
-				//
-				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-				var navi = new state._getNavi( state, datexml );
-				state._build(navi);
+				if (state.opt.dates[this.strings.form]){
+					var datexml = state.opt.dates[this.strings.form].copy();
+					datexml["@variable"] = this.variables[0];
+					if (this.strings.prefix){
+						datexml["@prefix"] = this.strings.prefix;
+					}
+					if (this.strings.suffix){
+						datexml["@suffix"] = this.strings.suffix;
+					}
+					delete datexml["@form"];
+					if (this.strings["date-parts"] == "year"){
+						delete datexml.*.(@name=="month")[0];
+						delete datexml.*.(@name=="day")[0];
+					} else if (this.strings["date-parts"] == "year-month"){
+						delete datexml.*.(@name=="day")[0];
+					}
+					//
+					// Apparently this is all that is required to compile
+					// the XML chunk into the style.  Same as for macros.
+					//
+					default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+					var navi = new state._getNavi( state, datexml );
+					state._build(navi);
+				};
 			};
 		} else if (this.tokentype == CSL.START){
 			CSL.Util.substituteStart.call(this,state,target);

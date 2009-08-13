@@ -58,13 +58,11 @@ CSL.Lib.Attributes["@name"] = function(state,arg){
  * @function
  */
 CSL.Lib.Attributes["@form"] = function(state,arg){
-	//
-	// This looks meaningless
-	//
-	//if (!arg){
-	//	arg = "long";
-	//}
 	this.strings.form = arg;
+};
+
+CSL.Lib.Attributes["@date-parts"] = function(state,arg){
+	this.strings["date-parts"] = arg;
 };
 
 /**

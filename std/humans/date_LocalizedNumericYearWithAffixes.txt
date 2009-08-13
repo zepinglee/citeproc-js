@@ -9,7 +9,7 @@ citation
 
 
 >>===== RESULT =====>>
-Dec.
+(2005-12-15)
 <<===== RESULT =====<<
 
 
@@ -26,7 +26,7 @@ Dec.
 
     <citation>
         <layout>
-            <date variable="issued" form="month-day"/>
+            <date variable="issued" form="numeric" prefix="(" suffix=")"/>
         </layout>
     </citation>
 </style>
@@ -38,7 +38,7 @@ Dec.
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"month":12, "year":2005},
+    "issued": {"month":12, "day":15, "year":2005},
     "title": "Ignore me"
   }
 ]

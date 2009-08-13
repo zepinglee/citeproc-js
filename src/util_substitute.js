@@ -109,7 +109,7 @@ CSL.Util.substituteEnd = function(state,target){
 				bib_first_end.execs.push(first_func_end);
 				target.push(bib_first_end);
 				var bib_other = new CSL.Factory.Token("group",CSL.START);
-				bib_other.decorations = [["@display","body"]];
+				bib_other.decorations = [["@display","right-inline"]];
 				var other_func = function(state,Item){
 					if (!state.tmp.render_seen){
 						state.tmp.render_seen = true;

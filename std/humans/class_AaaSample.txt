@@ -78,7 +78,7 @@ the grouping of authors in the AAA style bibliography format.
         </date>
         <text variable="year-suffix"/>
       </group>
-      <group display="body">        
+      <group display="right-inline">
         <text variable="title"/>
       </group>
     </layout>

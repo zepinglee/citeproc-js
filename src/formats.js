@@ -103,7 +103,7 @@ CSL.Output.Formats.prototype.html = {
 	"@display/left-margin": function(state,str){
 		return "\n    <div class=\"csl-left-label\">" + str + "</div>\n";
 	},
-	"@display/body": function(state,str){
+	"@display/right-inline": function(state,str){
 		return "    <div class=\"csl-item\">" + str + "</div>\n  ";
 	},
 	"@display/indent": function(state,str){

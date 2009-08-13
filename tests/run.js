@@ -2,8 +2,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_position");
 	dojo.require("tests.std_date");
+	dojo.require("tests.std_position");
     dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.test_load_styles");

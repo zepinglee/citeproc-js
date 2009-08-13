@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locale xml:lang="en" xmlns="http://purl.org/net/xbiblio/csl">
   <option name="punctuation-in-quote" value="true"/>
-  <date form="full">
+  <date form="text">
     <date-part name="month" form="short" suffix=" "/>
     <date-part name="day" suffix=", "/>
     <date-part name="year"/>
   </date>
-  <date form="month-day">
-    <date-part name="month" form="short"/>
-    <date-part name="day" prefix=" "/>
-  </date>
-  <date form="year">
+  <date form="numeric">
     <date-part name="year"/>
+    <date-part name="month" form="numeric" prefix="-"/>
+    <date-part name="day" prefix="-"/>
   </date>
   <terms>
     <term name="open-quote">“</term>
