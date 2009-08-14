@@ -58,7 +58,8 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 			continue;
 		}
 		try {
-			var attrfunc = CSL.Lib.Attributes[key].call(token,state,attributes[key]);
+//			var attrfunc = CSL.Lib.Attributes[key].call(token,state,attributes[key]);
+			CSL.Lib.Attributes[key].call(token,state,attributes[key]);
 		} catch (e) {
 			if (e == "TypeError: Cannot call method \"call\" of undefined"){
 				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
@@ -66,9 +67,9 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 				throw "CSL processor error, "+key+" attribute: "+e;
 			}
 		}
-		if (attrfunc){
-			attrfuncs.push(attrfunc);
-		}
+		//if (attrfunc){
+		//	attrfuncs.push(attrfunc);
+		//}
 	}
 	token.decorations = decorations;
 	//

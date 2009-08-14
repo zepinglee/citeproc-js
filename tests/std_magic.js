@@ -2,6 +2,10 @@ dojo.provide("tests.std_magic");
 
 doh.register("tests.std_magic", [
     function(){
+        var test = new StdRhinoTest("magic_PunctuationInQuoteDelimiterTrue");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("magic_AllowRepeatDateRenderings");
         doh.assertEqual(test.result, test.run());
     },
@@ -38,10 +42,6 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("magic_PunctuationInQuoteDelimiterTrue");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("magic_PunctuationInQuoteFalse");
         doh.assertEqual(test.result, test.run());
     },
@@ -74,3 +74,6 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
+
+var x = [
+]

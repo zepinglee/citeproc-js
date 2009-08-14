@@ -25,7 +25,7 @@ Doe, “Book A,” 1900.
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <locale xml:lang="en">
-    <option name="punctuation-in-quote" value="true" />
+    <style-options punctuation-in-quote="true" />
   </locale>
   <citation>
     <layout suffix=".">

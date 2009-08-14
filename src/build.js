@@ -287,20 +287,15 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			this.locale_terms[term.@name.toString()][form] = term.toString();
 		}
 	}
-	for each (var option in locale.option){
-		var optionname = option.@name.toString();
-		var optionvalue = option.@value.toString();
-		//
-		// Only one of these so far, and it's a boolean.
-		//
-		//print("locale option value: "+optionvalue);
-		if ("true" == optionvalue){
-			this.opt[optionname] = true;
-		}
-		if ("false" == optionvalue){
-			this.opt[optionname] = false;
-		}
-	}
+	for each (var styleopts in locale["style-options"]){
+		for each (var attr in styleopts.attributes()) {
+			if (attr.toString() == "true"){
+				this.opt[attr.localName()] = true;
+			} else {
+				this.opt[attr.localName()] = false;
+			};
+		};
+	};
 	for each (var date in locale.date){
 		this.opt.dates[ date["@form"] ] = date;
 	};
