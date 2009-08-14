@@ -13,36 +13,34 @@ boo
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-
-    <macro name="bogus">
-        <text variable="volume"/>
-    </macro>
-
-    <citation>
-        <layout>
-            <names variable="translator">
-                <name/>
-                <substitute>
-                    <text macro="bogus"/>
-                    <names variable="author"/>
-                    <group>
-                        <text variable="title"/>
-                        <text value="... this should NOT appear" prefix=", "/>
-                    </group>
-                </substitute>
-            </names>
-        </layout>
-    </citation>
+  <macro name="bogus">
+    <text variable="volume" />
+  </macro>
+  <citation>
+    <layout>
+      <names variable="translator">
+        <name />
+        <substitute>
+          <text macro="bogus" />
+          <names variable="author" />
+          <group>
+            <text variable="title" />
+            <text prefix=", " value="... this should NOT appear" />
+          </group>
+        </substitute>
+      </names>
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 

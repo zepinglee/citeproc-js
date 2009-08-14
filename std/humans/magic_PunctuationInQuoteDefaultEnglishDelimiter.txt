@@ -14,29 +14,29 @@ Doe, “Book A,” 1900.
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-        <layout suffix=".">
-            <group delimiter=", ">
-                <names variable="author">
-                    <name form="short"/>
-                </names>
-                <text variable="title" quotes="true"/>
-                <date variable="issued">
-                    <date-part name="year"/>
-                </date>
-            </group>
-        </layout>
-    </citation>
+  <citation>
+    <layout suffix=".">
+      <group delimiter=", ">
+        <names variable="author">
+          <name form="short" />
+        </names>
+        <text quotes="true" variable="title" />
+        <date variable="issued">
+          <date-part name="year" />
+        </date>
+      </group>
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 

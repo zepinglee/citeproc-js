@@ -17,32 +17,32 @@ Doe 2000a,b;2001
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-		<option name="year-suffix-delimiter" value=","/>
-        <option name="disambiguate-add-year-suffix" value="true"/>
-        <option name="collapse" value="year-suffix"/>
-        <layout delimiter=";">
-            <group delimiter=" ">
-                <names variable="author">
-                    <name form="short"/>
-                </names>
-                <date variable="issued">
-                    <date-part name="year"/>
-                </date>
-            </group>
-            <text variable="year-suffix"/>
-        </layout>
-    </citation>
+  <citation 
+         collapse="year-suffix"
+         disambiguate-add-year-suffix="true"
+         year-suffix-delimiter=",">
+    <layout delimiter=";">
+      <group delimiter=" ">
+        <names variable="author">
+          <name form="short" />
+        </names>
+        <date variable="issued">
+          <date-part name="year" />
+        </date>
+      </group>
+      <text variable="year-suffix" />
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 

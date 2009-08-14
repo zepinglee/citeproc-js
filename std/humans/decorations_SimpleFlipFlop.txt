@@ -13,21 +13,21 @@ citation
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-        <layout>
-            <text value="My <span name="foreign-phrase">Amazing</span> Title" font-style="italic"/>
-        </layout>
-    </citation>
+  <citation>
+    <layout>
+      <text font-style="italic" variable="title" />
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 
@@ -36,6 +36,6 @@ citation
 [{
    "id":"item-1",
    "type": "book",
-   "title": "Ignore me"
+   "title": "My <span name=\"foreign-phrase\">Amazing</span> Title"
 }]
 <<===== INPUT =====<<

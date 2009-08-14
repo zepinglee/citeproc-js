@@ -398,7 +398,7 @@ CSL.Lib.Attributes["@position"] = function(state,arg){
 	} else if (arg == "ibid-with-locator"){
 		this.strings.position = CSL.POSITION_IBID_WITH_LOCATOR;
 	} else if (arg == "near-note"){
-		this.strings["near-note-distance"] = state[state.tmp.area].opt["near-note-distance"];
+		this.strings["near-note-distance-check"] = true;
 	};
 };
 
@@ -416,4 +416,105 @@ CSL.Lib.Attributes["@disambiguate"] = function(state,arg){
 			this["tests"].push(func);
 		};
 	};
+};
+
+CSL.Lib.Attributes["@givenname-disambiguation-rule"] = function(state,arg){
+	if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(arg) > -1) {
+		state[this.name].opt["givenname-disambiguation-rule"] = arg;
+	};
+};
+
+CSL.Lib.Attributes["@collapse"] = function(state,arg){
+	// only one collapse value will be honoured.
+	if (arg){
+		state[this.name].opt.collapse = arg;
+	};
+};
+
+
+CSL.Lib.Attributes["@et-al-min"] = function(state,arg){
+	if (arg){
+		state[this.name].opt["et-al-min"] = parseInt(arg, 10);
+	};
+};
+
+CSL.Lib.Attributes["@et-al-use-first"] = function(state,arg){
+	if (arg){
+		state[this.name].opt["et-al-use-first"] = parseInt(arg, 10);
+	};
+};
+
+CSL.Lib.Attributes["@et-al-subsequent-min"] = function(state,arg){
+	if (arg){
+		state[this.name].opt["et-al-subsequent-min"] = parseInt(arg, 10);
+	};
+};
+
+CSL.Lib.Attributes["@et-al-subsequent-use-first"] = function(state,arg){
+	if (arg){
+		state[this.name].opt["et-al-subsequent-use-first"] = parseInt(arg, 10);
+	};
+};
+
+CSL.Lib.Attributes["@year-suffix-delimiter"] = function(state,arg){
+	state[this.name].opt["year-suffix-delimiter"] = arg;
+};
+
+CSL.Lib.Attributes["@after-collapse-delimiter"] = function(state,arg){
+	state[this.name].opt["after-collapse-delimiter"] = arg;
+};
+
+CSL.Lib.Attributes["@subsequent-author-substitute"] = function(state,arg){
+	state[this.name].opt["subsequent-author-substitute"] = arg;
+};
+
+CSL.Lib.Attributes["@disambiguate-add-names"] = function(state,arg){
+	if (arg == "true"){
+		state[this.name].opt["disambiguate-add-names"] = true;
+	};
+};
+
+CSL.Lib.Attributes["@disambiguate-add-givenname"] = function(state,arg){
+	if (arg == "true"){
+		state[this.name].opt["disambiguate-add-givenname"] = true;
+	};
+};
+
+CSL.Lib.Attributes["@disambiguate-add-year-suffix"] = function(state,arg){
+	if (arg == "true"){
+		state[this.name].opt["disambiguate-add-year-suffix"] = true;
+	};
+};
+
+
+CSL.Lib.Attributes["@second-field-align"] = function(state,arg){
+	if (arg == "true"){
+		state[this.name].opt["second-field-align"] = true;
+	};
+};
+
+
+CSL.Lib.Attributes["@hanging-indent"] = function(state,arg){
+	if (arg == "true"){
+		state[this.name].opt["hangingindent"] = 2;
+	};
+};
+
+
+CSL.Lib.Attributes["@line-spacing"] = function(state,arg){
+	if (arg && arg.match(/^[.0-9]+$/)){
+			state[this.name].opt["linespacing"] = parseFloat(arg,10);
+	};
+};
+
+
+CSL.Lib.Attributes["@entry-spacing"] = function(state,arg){
+	if (arg && arg.match(/^[.0-9]+$/)){
+			state[this.name].opt["entryspacing"] = parseFloat(arg,10);
+	};
+};
+
+
+CSL.Lib.Attributes["@near-note-distance"] = function(state,arg){
+	state[this.name].opt["near-note-distance"] = parseInt(arg,10);
 };

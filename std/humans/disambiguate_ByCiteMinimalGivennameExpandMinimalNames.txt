@@ -13,36 +13,36 @@ A. Asthma, Brandon Bronchitis, et al.; A. Asthma, Biff Bronchitis, et al.
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-        <option name="disambiguate-add-givenname" value="true"/>
-        <option name="givenname-disambiguation-rule" value="by-cite"/>
-        <option name="disambiguate-add-names" value="true"/>
-        <option name="et-al-use-first" value="1"/>
-        <option name="et-al-min" value="3"/>
-        <layout delimiter="; ">
-            <names variable="author">
-                <name delimiter=", "  initialize-with="."/>
-            </names>
-        </layout>
-    </citation>
-    <bibliography>
-        <sort>
-            <key variable="title"/>
-        </sort>
-        <layout>
-            <text value="Ignore me"/>
-        </layout>
-    </bibliography>
+  <citation 
+         disambiguate-add-givenname="true"
+         disambiguate-add-names="true"
+         et-al-min="3"
+         et-al-use-first="1"
+         givenname-disambiguation-rule="by-cite">
+    <layout delimiter="; ">
+      <names variable="author">
+        <name delimiter=", " initialize-with="." />
+      </names>
+    </layout>
+  </citation>
+  <bibliography>
+    <sort>
+      <key variable="title" />
+    </sort>
+    <layout>
+      <text value="Ignore me" />
+    </layout>
+  </bibliography>
 </style>
 <<===== CSL =====<<
 

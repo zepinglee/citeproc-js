@@ -27,43 +27,43 @@ citation
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
   <macro name="creator-key">
     <names variable="author">
-      <name sort-separator=", " name-as-sort-order="all"/>
+      <name name-as-sort-order="all" sort-separator=", " />
     </names>
   </macro>
-  <citation>
-    <option name="et-al-min" value="3"/>
-    <option name="et-al-use-first" value="1"/>
-	<option name="collapse" value="year-suffix"/>
-    <option name="disambiguate-add-year-suffix" value="true"/>
-    <option name="year-suffix-delimiter" value=", "/>
-    <option name="after-collapse-delimiter" value="; "/>
+  <citation 
+         after-collapse-delimiter="; "
+         collapse="year-suffix"
+         disambiguate-add-year-suffix="true"
+         et-al-min="3"
+         et-al-use-first="1"
+         year-suffix-delimiter=", ">
     <sort>
-      <key macro="creator-key"/>
+      <key macro="creator-key" />
     </sort>
-	<layout delimiter=", " prefix="(" suffix=")">
+    <layout delimiter=", " prefix="(" suffix=")">
       <group delimiter=" ">
         <names variable="author">
-          <name form="short" and="symbol" delimiter=", "/>
-          <et-al prefix=" "/>
+          <name and="symbol" delimiter=", " form="short" />
+          <et-al prefix=" " />
         </names>
         <date variable="issued">
-          <date-part name="year"/>
+          <date-part name="year" />
         </date>
       </group>
-      <text variable="year-suffix"/>
-	</layout>
+      <text variable="year-suffix" />
+    </layout>
   </citation>
 </style>
 <<===== CSL =====<<

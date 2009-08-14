@@ -1,5 +1,5 @@
 {
-    "csl": "<x:style xmlns:x=\"http://purl.org/net/xbiblio/csl\" xml:lang=\"en\" class=\"in-text\" version=\"1.0\">\n  <x:info>\n    <x:id></x:id>\n    <x:title></x:title>\n    <x:updated>2009-08-10T04:49:00+09:00</x:updated>\n  </x:info>\n <x:citation>\n  <x:layout>\n     <x:text variable=\"title\"/>\n  </x:layout>\n </x:citation>\n</x:style>", 
+    "csl": "<ns0:style class=\"in-text\" version=\"1.0\" xml:lang=\"en\" xmlns:ns0=\"http://purl.org/net/xbiblio/csl\">\n  <ns0:info>\n    <ns0:id />\n    <ns0:title />\n    <ns0:updated>2009-08-10T04:49:00+09:00</ns0:updated>\n  </ns0:info>\n  <ns0:citation>\n    <ns0:layout>\n      <ns0:text variable=\"title\" />\n    </ns0:layout>\n  </ns0:citation>\n</ns0:style>", 
     "input": [
         {
             "id": "ITEM-1", 

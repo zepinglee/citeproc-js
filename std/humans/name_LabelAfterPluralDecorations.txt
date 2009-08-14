@@ -13,26 +13,26 @@ John Doe, et al. (editors)
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-        <option name="et-al-min" value="2"/>
-        <option name="et-al-use-first" value="1"/>
-        <layout>
-            <names variable="editor">
-                <name delimiter=", "/>
-                <label prefix=" (" suffix=")" form="long"/>
-            </names>
-        </layout>
-    </citation>
+  <citation 
+         et-al-min="2"
+         et-al-use-first="1">
+    <layout>
+      <names variable="editor">
+        <name delimiter=", " />
+        <label form="long" prefix=" (" suffix=")" />
+      </names>
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 

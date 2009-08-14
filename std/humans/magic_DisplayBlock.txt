@@ -18,37 +18,37 @@ bibliography
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-        <layout>
-            <text value="hello"/>
-        </layout>
-    </citation>
-    <bibliography>
-        <layout>
-            <group delimiter=" ">
-                <group delimiter=", ">
-                    <names variable="author">
-                        <name/>
-                    </names>
-                    <text variable="title"/>
-                </group>
-                <date variable="issued" prefix="(" suffix=")">
-                    <date-part name="year"/>
-                </date>
-            </group>
-            <text variable="abstract" display="indent"/>
-        </layout>
-    </bibliography>
+  <citation>
+    <layout>
+      <text value="hello" />
+    </layout>
+  </citation>
+  <bibliography>
+    <layout>
+      <group delimiter=" ">
+        <group delimiter=", ">
+          <names variable="author">
+            <name />
+          </names>
+          <text variable="title" />
+        </group>
+        <date prefix="(" suffix=")" variable="issued">
+          <date-part name="year" />
+        </date>
+      </group>
+      <text display="indent" variable="abstract" />
+    </layout>
+  </bibliography>
 </style>
 <<===== CSL =====<<
 

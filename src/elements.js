@@ -354,14 +354,14 @@ CSL.Lib.Elements["if"] = new function(){
 				};
 				this.tests.push(func);
 			}
-			if (this.strings["near-note-distance"]){
+			if (this.strings["near-note-distance-check"]){
 				var func = function (state,Item){
 					if (state.tmp.force_subsequent){
 						return true;
 					} else if (!Item["note_distance"]){
 					return false;
 					} else {
-						if (Item["note_distance"] > this.strings["near-note-distance"]){
+						if (Item["note_distance"] > state.citation.opt["near-note-distance"]){
 							return false;
 						} else {
 							return true;
@@ -907,59 +907,6 @@ CSL.Lib.Elements["date-part"] = new function(){
 			this["execs"].push(render_date_part);
 			target.push(this);
 		};
-	};
-};
-
-
-CSL.Lib.Elements.option = new function(){
-	this.build = build;
-	function build(state,target){
-		if (this.strings.name == "collapse"){
-			// only one collapse value will be honoured.
-			if (this.strings.value){
-				state[state.tmp.area].opt.collapse = this.strings.value;
-			};
-		};
-
-		if (CSL.ET_AL_NAMES.indexOf(this.strings.name) > -1){
-			if (this.strings.value){
-				state[state.build.area].opt[this.strings.name] = parseInt(this.strings.value, 10);
-			};
-		};
-		if ("year-suffix-delimiter" == this.strings.name){
-			state[state.tmp.area].opt["year-suffix-delimiter"] = this.strings.value;
-		};
-		if ("after-collapse-delimiter" == this.strings.name){
-			state[state.tmp.area].opt["after-collapse-delimiter"] = this.strings.value;
-		};
-		if ("subsequent-author-substitute" == this.strings.name){
-			state[state.build.area].opt["subsequent-author-substitute"] = this.strings.value;
-		};
-		if ("givenname-disambiguation-rule" == this.strings.name) {
-			if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(this.strings.value) > -1) {
-				state[state.tmp.area].opt[this.strings.name] = this.strings.value;
-			};
-		};
-		if (this.strings.value == "true"){
-			if (CSL.DISAMBIGUATE_OPTIONS.indexOf(this.strings.name) > -1){
-				state[state.tmp.area].opt[this.strings.name] = true;
-			};
-			if ("second-field-align" == this.strings.name){
-				state.bibliography.opt["second-field-align"] = true;
-			};
-			if ("hanging-indent" == this.strings.name){
-				state.bibliography.opt["hangingindent"] = 2;
-			};
-		};
-		if (this.strings.value && this.strings.value.match(/^[.0-9]+$/)){
-			if ("line-spacing" == this.strings.name){
-				state.bibliography.opt["linespacing"] = parseFloat(this.strings.value,10);
-			};
-		if ("entry-spacing" == this.strings.name){
-				state.bibliography.opt["entryspacing"] = parseFloat(this.strings.value,10);
-			};
-		};
-		target.push(this);
 	};
 };
 

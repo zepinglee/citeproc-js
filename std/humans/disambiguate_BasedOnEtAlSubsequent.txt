@@ -49,32 +49,32 @@ citation
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-        <option name="et-al-min" value="3"/>
-        <option name="et-al-use-first" value="3"/>
-        <option name="et-al-subsequent-min" value="1"/>
-        <option name="et-al-subsequent-use-first" value="1"/>
-        <option name="disambiguate-add-year-suffix" value="true"/>
-        <layout delimiter="; " prefix="(" suffix=")">
-            <names variable="author">
-                <name and="symbol" form="short" delimiter=", " delimiter-precedes-last="never"/>
-            </names>
-            <date variable="issued" prefix=" ">
-                <date-part name="year"/>
-            </date>
-            <text variable="year-suffix" font-style="italic"/>
-        </layout>
-    </citation>
+  <citation 
+         disambiguate-add-year-suffix="true"
+         et-al-min="3"
+         et-al-subsequent-min="1"
+         et-al-subsequent-use-first="1"
+         et-al-use-first="3">
+    <layout delimiter="; " prefix="(" suffix=")">
+      <names variable="author">
+        <name and="symbol" delimiter=", " delimiter-precedes-last="never" form="short" />
+      </names>
+      <date prefix=" " variable="issued">
+        <date-part name="year" />
+      </date>
+      <text font-style="italic" variable="year-suffix" />
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 

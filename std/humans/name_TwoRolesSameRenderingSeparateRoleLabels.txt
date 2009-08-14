@@ -13,34 +13,34 @@ Albert Asthma, et al. (eds.), Albert Asthma, et al. (trans.)
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <locale xml:lang="en">
-        <terms>
-            <term name="editortranslator" form="short">
-                <single>ed. &amp; trans.</single>
-                <multiple>eds. &amp; trans.</multiple>
-            </term>
-        </terms>
-    </locale>
-    <citation>
-        <option name="et-al-min" value="3"/>
-        <option name="et-al-use-first" value="1"/>
-        <layout delimiter="; ">
-            <names variable="editor translator" delimiter=", ">
-                <name delimiter=", "/>
-                <label form="short" prefix=" (" suffix=".)"/>
-            </names>
-        </layout>
-    </citation>
+  <locale xml:lang="en">
+    <terms>
+      <term form="short" name="editortranslator">
+        <single>ed. &amp; trans.</single>
+        <multiple>eds. &amp; trans.</multiple>
+      </term>
+    </terms>
+  </locale>
+  <citation 
+         et-al-min="3"
+         et-al-use-first="1">
+    <layout delimiter="; ">
+      <names delimiter=", " variable="editor translator">
+        <name delimiter=", " />
+        <label form="short" prefix=" (" suffix=".)" />
+      </names>
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 

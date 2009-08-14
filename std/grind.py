@@ -14,6 +14,25 @@ try:
     import json
 except:
     import simplejson as json
+from xml.etree import ElementTree
+
+
+namespace = 'xmlns="http://purl.org/net/xbiblio/csl"'
+
+def indent(elem, level=0):
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
 
 #
 # Encoding non-ascii characters in the human readable test files 
@@ -45,9 +64,8 @@ class CslTestUtils:
     def __init__(self):
 	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
         self.CREATORS += ["composer","original-author","container-author","collection-editor"]
-        self.RE_ELEMENT = '(?sm)^.*>>=.*%s[^\n]+(.*)\n<<=.*%s'
+        self.RE_ELEMENT = '(?sm)^(.*>>=.*%s[^\n]+)(.*)(\n<<=.*%s.*)'
         self.RE_FILENAME = '^[a-z]+_[a-zA-Z0-9]+\.txt'
-
     
     def path(self,*elements):
         return os.path.join( os.getcwd(), *elements )
@@ -95,6 +113,7 @@ class CslTests(CslTestUtils):
             test = CslTest(testname, options=self.options)
             if test.load():
                 test.parse()
+                ## test.fix_source()
                 test.fix_names()
                 test.validate(testname)
                 test.dump()
@@ -134,7 +153,7 @@ class CslTest(CslTestUtils):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
         data = False
         if m:
-            data = m.group(1).strip()
+            data = m.group(2).strip()
         elif required:
             print "Ooops, missing element: %s in test %s" %(tag,self.testname)
             sys.exit()
@@ -142,6 +161,45 @@ class CslTest(CslTestUtils):
             if is_json:
                 data = json.loads(data)
             self.data[tag.lower()] = data
+
+    def fix_source(self):
+        """ Convert options to attributes, write back to source file.
+        """
+        mycsl = self.data["csl"].replace(namespace,'')
+        et = ElementTree.fromstring(mycsl)
+        for tagname in ["citation", "bibliography"]:
+            opts = et.findall(".//%s/option" % tagname)
+            tag = et.findall(".//%s" % tagname)
+            if tag and len(tag):
+                tag = tag[0]
+                for opt in opts:
+                    tag.attrib[opt.attrib["name"]] = opt.attrib["value"]
+                    tag.remove(opt)
+        indent(et)
+        str = ElementTree.tostring(et).strip()
+        for tagname in ["style", "citation", "bibliography"]:
+            str = self.format_attributes(tagname,str)
+        m = re.match(self.RE_ELEMENT % ("CSL", "CSL"),self.raw)
+        newraw = m.group(1) + "\n" + str + m.group(3)
+        open( "%s.txt" % (self.path("humans",self.testname),), "w+" ).write(newraw)
+
+    def format_attributes(self,tag,str):
+        #print "before: "+tag
+        m = re.match("(?m)(?s).*?(\s+|)<%s\s+([^>]*)>.*" % tag,str)
+        #print "after"
+        if m:
+            #print "----------------->Found style: %s" % m.group(2)
+            #print len(m.group(1))
+            attribs = re.split("\s+", m.group(2))
+            #print attribs
+            j = "\n      " + " " * len(m.group(1))                
+            attribs = j + j.join(attribs)
+            if tag == "style":
+                attribs = j + namespace + attribs
+            str = re.sub("(<"+tag+"\s+)[^>]*(>)","\\1"+attribs+"\\2",str)
+        #style = re.sub("<style[^>]*>",citationtag,style)
+        #style = re.sub("<style[^>]*>",bibliographytag,style)
+        return str
 
     def fix_names(self):
         """ Mangle name fields

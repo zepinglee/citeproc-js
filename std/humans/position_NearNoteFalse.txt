@@ -23,28 +23,28 @@ Note is not near.
 
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl"
-    class="in-text"
-    xml:lang="en"
-    version="1.0">
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
   <info>
-    <id></id>
-    <title></title>
+    <id />
+    <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-
-    <citation>
-        <layout>
-            <choose>
-              <if position="near-note">
-                  <text value="Note is near!"/>
-              </if>
-              <else>
-                  <text value="Note is not near."/>
-              </else>
-            </choose>
-        </layout>
-    </citation>
+  <citation>
+    <layout>
+      <choose>
+        <if position="near-note">
+          <text value="Note is near!" />
+        </if>
+        <else>
+          <text value="Note is not near." />
+        </else>
+      </choose>
+    </layout>
+  </citation>
 </style>
 <<===== CSL =====<<
 
