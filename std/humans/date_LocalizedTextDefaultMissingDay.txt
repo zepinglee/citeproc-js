@@ -9,7 +9,7 @@ citation
 
 
 >>===== RESULT =====>>
-Dec. 2005
+December 2005
 <<===== RESULT =====<<
 
 
@@ -26,7 +26,7 @@ Dec. 2005
 
     <citation>
         <layout>
-            <date variable="issued"/>
+            <date variable="issued" form="text"/>
         </layout>
     </citation>
 </style>

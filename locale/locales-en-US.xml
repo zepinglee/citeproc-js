@@ -2,7 +2,7 @@
 <locale xml:lang="en" xmlns="http://purl.org/net/xbiblio/csl">
   <option name="punctuation-in-quote" value="true"/>
   <date form="text">
-    <date-part name="month" form="short" suffix=" "/>
+    <date-part name="month" suffix=" "/>
     <date-part name="day" suffix=", "/>
     <date-part name="year"/>
   </date>

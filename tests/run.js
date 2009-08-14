@@ -46,7 +46,9 @@ if(true){
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 
+
 } else {
+
 
 	// most of this stuff now needs to be refactored
 	dojo.require("tests.test_build_internals");

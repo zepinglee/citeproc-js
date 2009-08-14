@@ -40,8 +40,20 @@ for filename in os.listdir("./all-styles/csl"):
             if kid.attrib["name"] == "month":
                 if kid.attrib.has_key("form") and kid.attrib["form"] == "long":
                     del kid.attrib["form"]
+            if kid.attrib["name"] == "year":
+                if kid.attrib.has_key("form") and kid.attrib["form"] == "long":
+                    del kid.attrib["form"]
+            if kid.attrib["name"] == "day":
+                if kid.attrib.has_key("form") and kid.attrib["form"] == "numeric":
+                    del kid.attrib["form"]
+        if date.attrib.has_key("font-weight"):
+            del date.attrib["font-weight"]
+        if date.attrib.has_key("font-style"):
+            del date.attrib["font-style"]
         if date.attrib.has_key("variable"):
             del date.attrib["variable"]
+        if date.attrib.has_key("delimiter"):
+            del date.attrib["delimiter"]
         if date.attrib.has_key("prefix"):
             del date.attrib["prefix"]
         if date.attrib.has_key("suffix"):

@@ -778,11 +778,12 @@ CSL.Lib.Elements.number = new function(){
 CSL.Lib.Elements.date = new function(){
 	this.build = build;
 	function build(state,target){
-		if (this.tokentype == CSL.SINGLETON){
-			if (this.variables.length){
-				if (!this.strings.form){
-					this.strings.form = "text";
-				}
+		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+			//
+			// If form is set, the date form comes from the locale, and date-part
+			// will just tinker with the formatting.
+			//
+			if (this.strings.form){
 				if (state.opt.dates[this.strings.form]){
 					var datexml = state.opt.dates[this.strings.form].copy();
 					datexml["@variable"] = this.variables[0];
@@ -800,40 +801,51 @@ CSL.Lib.Elements.date = new function(){
 						delete datexml.*.(@name=="day")[0];
 					}
 					//
-					// Apparently this is all that is required to compile
-					// the XML chunk into the style.  Same as for macros.
+					// XXXXXXXXXXXXXX: pass this xml object through to state.build for
+					// post processing by date-part and in END or at the finish of
+					// SINGLETON.  Delete after processing.
 					//
-					default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-					var navi = new state._getNavi( state, datexml );
-					state._build(navi);
+					state.build.datexml = datexml;
 				};
-			};
-		} else if (this.tokentype == CSL.START){
-			CSL.Util.substituteStart.call(this,state,target);
-			var set_value = function(state,Item){
-				state.tmp.element_rendered_ok = false;
-				if (this.variables.length && Item[this.variables[0]]){
-					state.tmp.date_object = Item[this.variables[0]];
-				} else {
-					state.tmp.date_object = false;
-				}
-			};
-			this["execs"].push(set_value);
+			} else {
+				CSL.Util.substituteStart.call(this,state,target);
+				var set_value = function(state,Item){
+					state.tmp.element_rendered_ok = false;
+					if (this.variables.length && Item[this.variables[0]]){
+						state.tmp.date_object = Item[this.variables[0]];
+					} else {
+						state.tmp.date_object = false;
+					}
+				};
+				this["execs"].push(set_value);
 
-			var newoutput = function(state,Item){
-				state.output.startTag("date",this);
+				var newoutput = function(state,Item){
+					state.output.startTag("date",this);
+				};
+				this["execs"].push(newoutput);
 			};
-			this["execs"].push(newoutput);
 
-		} else if (this.tokentype == CSL.END){
-			var mergeoutput = function(state,Item){
-				//if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
-				if (state.tmp.date_object["literal"]){
-					state.output.append(state.tmp.date_object["literal"],"empty");
-				}
-				state.output.endTag();
+		}
+		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
+			if (this.strings.form && state.build.datexml){
+				// Apparently this is all that is required to compile
+				// the XML chunk into the style.  Same as for macros.
+				//
+				var datexml = state.build.datexml;
+				delete state.build.datexml;
+				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+				var navi = new state._getNavi( state, datexml );
+				state._build(navi);
+			} else {
+				var mergeoutput = function(state,Item){
+					//if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
+					if (state.tmp.date_object["literal"]){
+						state.output.append(state.tmp.date_object["literal"],"empty");
+					};
+					state.output.endTag();
+				};
+				this["execs"].push(mergeoutput);
 			};
-			this["execs"].push(mergeoutput);
 		}
 		target.push(this);
 
@@ -850,38 +862,51 @@ CSL.Lib.Elements["date-part"] = new function(){
 		if (!this.strings.form){
 			this.strings.form = "long";
 		}
-		var render_date_part = function(state,Item){
-			var value = "";
-			if (state.tmp.date_object){
-				value = state.tmp.date_object[this.strings.name];
-			};
-			var real = !state.tmp.suppress_decorations;
-			var have_collapsed = state.tmp.have_collapsed;
-			var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
-			var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
-			//
-			// XXXXX: need a condition for year as well?
-			if (real && precondition && invoked){
-				state.tmp.years_used.push(value);
-				var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
-				if (known_year && have_collapsed){
-					if (state.tmp.last_years_used[(state.tmp.years_used.length-1)] == value){
-						value = false;
-					}
-				}
+		if (state.build.datexml){
+			// print("DO SOMETHING!");
+			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+			for (var attr in this.strings){
+				if (attr == "name" || attr == "prefix" || attr == "suffix"){
+					continue;
+				};
+				// print(attr+": "+this.strings[attr]);
+				// print( state.build.datexml["date-part"].(@name == this.strings.name).length() );
+				state.build.datexml["date-part"].(@name == this.strings.name)[0]["@"+attr] = this.strings[attr];
 			}
-			if (value){
-				if (this.strings.form){
-					value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);
-				}
-				//state.output.startTag(this.strings.name,this);
-				state.output.append(value,this);
-				//state.output.endTag();
+		} else {
+			var render_date_part = function(state,Item){
+				var value = "";
+				if (state.tmp.date_object){
+					value = state.tmp.date_object[this.strings.name];
+				};
+				var real = !state.tmp.suppress_decorations;
+				var have_collapsed = state.tmp.have_collapsed;
+				var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
+				var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
+				//
+				// XXXXX: need a condition for year as well?
+				if (real && precondition && invoked){
+					state.tmp.years_used.push(value);
+					var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
+					if (known_year && have_collapsed){
+						if (state.tmp.last_years_used[(state.tmp.years_used.length-1)] == value){
+							value = false;
+						};
+					};
+				};
+				if (value){
+					if (this.strings.form){
+						value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);
+					};
+					//state.output.startTag(this.strings.name,this);
+					state.output.append(value,this);
+					//state.output.endTag();
+				};
+				state.tmp.value = new Array();
 			};
-			state.tmp.value = new Array();
+			this["execs"].push(render_date_part);
+			target.push(this);
 		};
-		this["execs"].push(render_date_part);
-		target.push(this);
 	};
 };
 
