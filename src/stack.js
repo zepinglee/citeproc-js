@@ -73,7 +73,7 @@ CSL.Factory.Stack.prototype.pop = function(){
  * the main code.</p>
  */
 CSL.Factory.Stack.prototype.value = function(){
-	return this.mystack[(this.mystack.length-1)];
+	return this.mystack.slice(-1)[0];
 };
 
 

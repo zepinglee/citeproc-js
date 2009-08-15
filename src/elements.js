@@ -388,11 +388,11 @@ CSL.Lib.Elements["if"] = new function(){
 	function configure(state,pos){
 		if (this.tokentype == CSL.START){
 			// jump index on failure
-			this["fail"] = state.configure["fail"][(state.configure["fail"].length-1)];
+			this["fail"] = state.configure["fail"].slice(-1)[0];
 			this["succeed"] = this["next"];
 		} else {
 			// jump index on success
-			this["succeed"] = state.configure["succeed"][(state.configure["succeed"].length-1)];
+			this["succeed"] = state.configure["succeed"].slice(-1)[0];
 			this["fail"] = this["next"];
 		}
 	}
@@ -450,12 +450,12 @@ CSL.Lib.Elements["else-if"] = new function(){
 	function configure(state,pos){
 		if (this.tokentype == CSL.START){
 			// jump index on failure
-			this["fail"] = state.configure["fail"][(state.configure["fail"].length-1)];
+			this["fail"] = state.configure["fail"].slice(-1)[0];
 			this["succeed"] = this["next"];
 			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
 		} else {
 			// jump index on success
-			this["succeed"] = state.configure["succeed"][(state.configure["succeed"].length-1)];
+			this["succeed"] = state.configure["succeed"].slice(-1)[0];
 			this["fail"] = this["next"];
 		}
 	}

@@ -249,7 +249,8 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 			} else if (blobjr.blobs){
 				last_str = blobjr.blobs;
 			};
-			var last_char = last_str[(last_str.length-1)];
+			//var last_char = last_str[(last_str.length-1)];
+			var last_char = last_str.slice(-1);
 
 			if ("number" == typeof blobjr.num){
 				ret.push(blobjr);
