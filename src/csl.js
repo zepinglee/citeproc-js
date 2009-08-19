@@ -57,6 +57,11 @@ dojo.provide("csl.csl");
  * @namespace A CSL citation formatter.
  */
 CSL = new function () {
+
+	this.debug = function(str){
+		print(str);
+	};
+
 	this.START = 0;
 	this.END = 1;
 	this.SINGLETON = 2;
@@ -180,6 +185,7 @@ CSL = new function () {
 		"zh":"locales-zh-CN.xml",
 		"zh":"locales-zh-TW.xml"
 	};
+
 };
 
 //SNIP-START

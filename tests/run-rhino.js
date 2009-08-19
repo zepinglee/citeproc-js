@@ -44,15 +44,6 @@ dojo.tests = {
 //
 // XXXXX rhino specific
 //
-CSL.debug("#####");
-CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
-if ("UTF-8" != environment["file.encoding"]){
-	environment["file.encoding"] = "UTF-8";
-	environment["sun.jnu.encoding"] = "UTF-8";
-	CSL.debug("Reset Rhino file.encoding to UTF-8");
-}
-CSL.debug("#####");
-
 load("./dojo/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo/dojo");
 dojo.registerModulePath("dojox","./dojo/dojox");
@@ -62,6 +53,16 @@ dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo/util/doh");
 
 dojo.require("csl.csl");
+
+CSL.debug("#####");
+CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
+if ("UTF-8" != environment["file.encoding"]){
+	environment["file.encoding"] = "UTF-8";
+	environment["sun.jnu.encoding"] = "UTF-8";
+	CSL.debug("Reset Rhino file.encoding to UTF-8");
+}
+CSL.debug("#####");
+
 dojo.require("csl.testing_rhino");
 dojo.require("csl.testing_stdrhino");
 
