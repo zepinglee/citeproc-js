@@ -298,9 +298,9 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			//if (!this.ambigcites[akey]){
 			//	this.ambigcites[akey] = new Array();
 			//}
-			//print("Run: "+item+"("+this.ambigcites[akey]+")");
+			//CSL.debug("Run: "+item+"("+this.ambigcites[akey]+")");
 			//if (this.ambigcites[akey].indexOf(item) == -1){
-			//	print("  Add: "+item);
+			//	CSL.debug("  Add: "+item);
 			//	this.ambigcites[akey].push(item);
 			//};
 			//
@@ -392,7 +392,7 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 		if (this.ambigcites[akey].length > 1){
 			if (this.modes.length){
 				if (this.debug){
-					print("---> Names disambiguation begin");
+					CSL.debug("---> Names disambiguation begin");
 				};
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes);
 			} else {
@@ -437,15 +437,15 @@ CSL.Factory.Registry.prototype.renumber = function(){
 CSL.Factory.Registry.prototype.yearsuffix = function(){
 	for each (var leftovers in this.leftovers){
 		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
-			//print("ORDER OF ASSIGNING YEAR SUFFIXES");
+			//CSL.debug("ORDER OF ASSIGNING YEAR SUFFIXES");
 			leftovers.sort(this.compareRegistryTokens);
 			for (var i in leftovers){
-				//print("  "+leftovers[i].id);
+				//CSL.debug("  "+leftovers[i].id);
 				this.registry[ leftovers[i].id ].disambig[2] = i;
 			};
 		};
 		if (this.debug) {
-			print("---> End of registry cleanup");
+			CSL.debug("---> End of registry cleanup");
 		};
 	};
 };
@@ -456,7 +456,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	//
 	for (var item in this.touched){
 		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
-		//print("touched: "+item+" ... "+this.registry[item].sortkeys);
+		//CSL.debug("touched: "+item+" ... "+this.registry[item].sortkeys);
 	};
 };
 

@@ -86,7 +86,7 @@ CSL.System.Xml.E4X.prototype.attributes = function(myxml){
 	}
 	if (myxml.localName() == "style" || myxml.localName() == "locale"){
 		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-		//print("my language: "+this.@xml::lang.toString());
+		//CSL.debug("my language: "+this.@xml::lang.toString());
 		var lang = myxml.@xml::lang.toString();
 		if (lang){
 			ret["@lang"] = lang;

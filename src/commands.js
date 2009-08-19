@@ -100,15 +100,15 @@ CSL.Engine.prototype.makeBibliography = function(){
 	var debug = false;
 	if (debug){
 		for each (tok in this.bibliography.tokens){
-			print("bibtok: "+tok.name);
+			CSL.debug("bibtok: "+tok.name);
 		}
-		print("---");
+		CSL.debug("---");
 		for each (tok in this.citation.tokens){
-			print("cittok: "+tok.name);
+			CSL.debug("cittok: "+tok.name);
 		}
-		print("---");
+		CSL.debug("---");
 		for each (tok in this.bibliography_sort.tokens){
-			print("bibsorttok: "+tok.name);
+			CSL.debug("bibsorttok: "+tok.name);
 		}
 	}
 	var ret = this._bibliography_entries.call(this);
@@ -126,7 +126,7 @@ CSL.Engine.prototype.makeBibliography = function(){
 		};
 	};
 	if (maxoffset){
-		print("Max char offset for second-field-align etc: "+maxoffset);
+		CSL.debug("Max char offset for second-field-align etc: "+maxoffset);
 		params.maxoffset = maxoffset;
 	}
 	if (this.bibliography.opt.hangingindent){
@@ -145,43 +145,43 @@ CSL.Engine.prototype.makeBibliography = function(){
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
 	if (debug){
-		print("--> init <--");
+		CSL.debug("--> init <--");
 	};
 	this.registry.init(idList);
 	if (debug){
-		print("--> dodeletes <--");
+		CSL.debug("--> dodeletes <--");
 	};
 	this.registry.dodeletes(this.registry.myhash);
 	if (debug){
-		print("--> doinserts <--");
+		CSL.debug("--> doinserts <--");
 	};
 	this.registry.doinserts(this.registry.mylist);
 	if (debug){
-		print("--> dorefreshes <--");
+		CSL.debug("--> dorefreshes <--");
 	};
 	this.registry.dorefreshes();
 	if (debug){
-		print("--> rebuildlist <--");
+		CSL.debug("--> rebuildlist <--");
 	};
 	this.registry.rebuildlist();
 	if (debug){
-		print("--> setdisambigs <--");
+		CSL.debug("--> setdisambigs <--");
 	};
 	this.registry.setdisambigs();
 	if (debug){
-		print("--> setsortkeys <--");
+		CSL.debug("--> setsortkeys <--");
 	};
 	this.registry.setsortkeys();
 	if (debug){
-		print("--> sorttokens <--");
+		CSL.debug("--> sorttokens <--");
 	};
 	this.registry.sorttokens();
 	if (debug){
-		print("--> renumber <--");
+		CSL.debug("--> renumber <--");
 	};
 	this.registry.renumber();
 	if (debug){
-		print("--> yearsuffix <--");
+		CSL.debug("--> yearsuffix <--");
 	};
 	this.registry.yearsuffix();
 

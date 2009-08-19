@@ -95,7 +95,7 @@ doh.register("tests.stack", [
 			var res = e;
 		}
 		doh.assertEqual("Internal CSL processor error: attempt to replace nonexistent stack item with hello", res);
-		print(res + " (this error is correct)");
+		CSL.debug(res + " (this error is correct)");
 	},
 	function testReplaceWithValue(){
 		var obj = new CSL.Factory.Stack();

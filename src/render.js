@@ -53,7 +53,7 @@ CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
 	if (false){
-		print("ok");
+		CSL.debug("ok");
 	}
 	return ret;
 }
@@ -76,7 +76,7 @@ CSL.Engine.prototype.composeItem = function(item){
  */
 CSL.Engine.prototype.getSortKeys = function(Item,key_type){
 	if (false){
-		print("KEY TYPE: "+key_type);
+		CSL.debug("KEY TYPE: "+key_type);
 	}
 	var area = this.tmp.area;
 	var strip_prepositions = CSL.Util.Sort.strip_prepositions;
@@ -91,7 +91,7 @@ CSL.Engine.prototype.getSortKeys = function(Item,key_type){
 		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);
 	}
 	if (false){
-		print("sort keys ("+key_type+"): "+this[key_type].keys);
+		CSL.debug("sort keys ("+key_type+"): "+this[key_type].keys);
 	}
 	this.tmp.area = area;
 	return this[key_type].keys;
@@ -188,7 +188,7 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	//this.output.startTag("bib_body",bib_body);
 	for each (var item in input){
 		if (false){
-			print("BIB: "+item.id);
+			CSL.debug("BIB: "+item.id);
 		}
 		var bib_entry = new CSL.Factory.Token("group",CSL.START);
 		bib_entry.decorations = [["@bibliography","entry"]];
@@ -215,10 +215,10 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	var result = "";
 	var objects = [];
 
-	//print("ORDER OF RENDERING");
+	//CSL.debug("ORDER OF RENDERING");
 	for each (var Item in inputList){
 		var last_collapsed = this.tmp.have_collapsed;
-		//print("  "+Item.id);
+		//CSL.debug("  "+Item.id);
 		this._cite(Item);
 		//
 		// This will produce a stack with one
@@ -305,8 +305,8 @@ CSL.Engine.prototype._render = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
-		print("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
-		//print("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
+		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
+		//CSL.debug("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 
 	if (token.evaluator){
@@ -319,7 +319,7 @@ CSL.Engine.prototype._render = function(token,Item){
 		};
 	};
 	if (false){
-		print(token.name+" ("+token.tokentype+") ---> done");
+		CSL.debug(token.name+" ("+token.tokentype+") ---> done");
 	}
 	return next;
 };
@@ -378,7 +378,7 @@ CSL.Engine.prototype.end = function(Item){
 
 	this.tmp.disambig_request = false;
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters){
-		// print("cite id is: "+Item.id+" and has width "+this.tmp.offset_characters);
+		// CSL.debug("cite id is: "+Item.id+" and has width "+this.tmp.offset_characters);
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}
 };

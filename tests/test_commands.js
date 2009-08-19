@@ -41,7 +41,7 @@ doh.register("tests.commands", [
 			var sys = new RhinoTest();
 			var ret = CSL.makeStyle(sys,"<style><citation></citation></style>");
 		} catch (e) {
-			print(e);
+			CSL.debug(e);
 			var ret = false;
 		};
 		doh.assertTrue(ret);

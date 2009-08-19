@@ -129,7 +129,7 @@ doh.register("tests.builder_internals", [
 			var builder = new CSL.Core.Build(t);
 			var res = builder.build(sys);
 		} catch(e){
-			print(e+" (this error is correct)");
+			CSL.debug(e+" (this error is correct)");
 		}
 		doh.assertFalse( res );
 	},

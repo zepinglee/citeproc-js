@@ -47,14 +47,14 @@ dojo.require("csl.csl");
 doh.registerGroup("tests.speed",
 	[
 		function testSpeed(){
-			print("iterate over sorted list and print");
+			CSL.debug("iterate over sorted list and print");
 			tests.test_speed.registry.iterate();
 		}
 
 	],
 	function(){ //setup
 
-		print ("loading functions");
+		CSL.debug("loading functions");
 
 		var Registry = function(){
 			this.registry = new Object();
@@ -79,7 +79,7 @@ doh.registerGroup("tests.speed",
 				// if this object is less than the first one,
 				// insert it as the first.
 				if (-1 == this.compareStrings(newitem.phoneytitle,this.registry[this.start].phoneytitle)){
-					//print("Sequence at the beginning: "+newitem.phoneytitle+", "+this.registry[this.start].phoneytitle);
+					//CSL.debug("Sequence at the beginning: "+newitem.phoneytitle+", "+this.registry[this.start].phoneytitle);
 					newitem.next = this.registry[this.start].id;
 					this.registry[this.start].prev = newitem.id;
 					newitem.prev = false;
@@ -90,7 +90,7 @@ doh.registerGroup("tests.speed",
 				// if this object is greater than the
 				// last one, insert it as the last.
 				if (-1 == this.compareStrings(this.registry[this.end].phoneytitle,newitem.phoneytitle)){
-					//print("Sequence at the end: "+this.registry[this.end].phoneytitle+", "+newitem.phoneytitle);
+					//CSL.debug("Sequence at the end: "+this.registry[this.end].phoneytitle+", "+newitem.phoneytitle);
 					newitem.prev = this.registry[this.end].id;
 					this.registry[this.end].next = newitem.id;
 					newitem.next = false;
@@ -107,7 +107,7 @@ doh.registerGroup("tests.speed",
 					var cmp = this.compareStrings(curr.phoneytitle,newitem.phoneytitle);
 					if (cmp > 0){
 						// insert mid-list, before the tested item
-						//print("Inserting mid-list: "+newitem.phoneytitle+", next is "+curr.phoneytitle);
+						//CSL.debug("Inserting mid-list: "+newitem.phoneytitle+", next is "+curr.phoneytitle);
 						this.registry[curr.prev].next = newitem.id;
 						newitem.prev = curr.prev;
 						newitem.next = curr.id;
@@ -120,7 +120,7 @@ doh.registerGroup("tests.speed",
 						// inserted object ends up at the beginning of
 						// the virtual list.
 						//
-						//print("I'm a dupe: "+curr.phoneytitle);
+						//CSL.debug("I'm a dupe: "+curr.phoneytitle);
 						// (disambiguation handling would slot in here)
 						//
 						if (false == curr.prev){
@@ -148,13 +148,13 @@ doh.registerGroup("tests.speed",
 
 			this.iterate = function(){
 				var curr = this.registry[this.start];
-				//print("starting iterate at: "+printme);
+				//CSL.debug("starting iterate at: "+printme);
 				while(curr.next != false){
 					var printme = curr.phoneytitle;
 					while (printme.length < this.maxlength){
 						printme = " "+printme;
 					}
-					print(printme);
+					CSL.debug(printme);
 					curr = this.registry[curr.next];
 				}
 			};
@@ -184,10 +184,10 @@ doh.registerGroup("tests.speed",
 
 		}
 
-		print("instantiating registry object");
+		CSL.debug("instantiating registry object");
 		tests.test_speed.registry = new Registry();
 
-		print("loading items to registry");
+		CSL.debug("loading items to registry");
 		for (var i=0; i<1000; i++){
 			var key = "item"+i;
 			var phoneytitle = makePhoneyTitle();

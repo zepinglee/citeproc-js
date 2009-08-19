@@ -173,7 +173,7 @@ CSL.Util.substituteEnd = function(state,target){
 				if (!state.tmp.rendered_name){
 					state.tmp.rendered_name = state.output.string(state,state.tmp.name_node.blobs,false);
 					if (state.tmp.rendered_name){
-						//print("TRY! "+state.tmp.rendered_name);
+						//CSL.debug("TRY! "+state.tmp.rendered_name);
 						if (state.tmp.rendered_name == state.tmp.last_rendered_name){
 							var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
 							state.tmp.name_node.blobs = [str];

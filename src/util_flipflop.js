@@ -112,8 +112,8 @@ CSL.Util.FlipFlopper = function(state){
 };
 
 CSL.Util.FlipFlopper.prototype.init = function(str,blob){
-	//print("(flipflopper received blob decorations): "+blob.decorations);
-	//print("(blob alldecor): "+blob.alldecor);
+	//CSL.debug("(flipflopper received blob decorations): "+blob.decorations);
+	//CSL.debug("(blob alldecor): "+blob.alldecor);
 	if (!blob){
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Factory.Blob();
@@ -123,7 +123,7 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 		this.blob.blobs = new Array();
 	}
 	this.blobstack = new CSL.Factory.Stack(this.blob);
-	//print("(this.blobstack.value() alldecor): "+this.blobstack.value().alldecor);
+	//CSL.debug("(this.blobstack.value() alldecor): "+this.blobstack.value().alldecor);
 };
 //
 // (1) scan the string for escape characters.  Split the
@@ -176,11 +176,11 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 						tagstack.pop();
 						break;
 					};
-					//print("badA:"+posA);
+					//CSL.debug("badA:"+posA);
 					badTagStack.push( posA );
 				};
 				if (!ibeenrunned){
-					//print("badB:"+posA);
+					//CSL.debug("badB:"+posA);
 					badTagStack.push( posA );
 				};
 				continue;
@@ -284,7 +284,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 // stack, and open a level on the output queue.
 //
 			if (this.openToCloseHash[tag]){
-				//print("open:"+tag);
+				//CSL.debug("open:"+tag);
 				expected_closers.push( this.openToCloseHash[tag] );
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );

@@ -65,7 +65,7 @@ CSL.Factory.Blob.prototype.push = function(blob){
 		throw "Attempt to push blob onto string object";
 	} else {
 		blob.alldecor = blob.alldecor.concat(this.alldecor);
-		//print("(blob.push alldecor): "+blob.alldecor);
+		//CSL.debug("(blob.push alldecor): "+blob.alldecor);
 		this.blobs.push(blob);
 	}
 };

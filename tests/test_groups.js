@@ -53,7 +53,7 @@ doh.registerGroup("tests.groups",
 				+ "</style>";
 			var cite = tests.test_groups.makeCite(xml);
 			for (i in cite[0]){
-				print(i+":"+cite[0][i]);
+				CSL.debug(i+":"+cite[0][i]);
 			}
 			doh.assertEqual("@<i>HelloGoodbye</i>@",cite);
 		},

@@ -44,14 +44,14 @@ dojo.tests = {
 //
 // XXXXX rhino specific
 //
-print("#####");
-print("Rhino file.encoding: "+environment["file.encoding"]);
+CSL.debug("#####");
+CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
 if ("UTF-8" != environment["file.encoding"]){
 	environment["file.encoding"] = "UTF-8";
 	environment["sun.jnu.encoding"] = "UTF-8";
-	print("Reset Rhino file.encoding to UTF-8");
+	CSL.debug("Reset Rhino file.encoding to UTF-8");
 }
-print("#####");
+CSL.debug("#####");
 
 load("./dojo/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo/dojo");

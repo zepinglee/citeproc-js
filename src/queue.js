@@ -107,11 +107,11 @@ CSL.Output.Queue.prototype.endTag = function(){
 // appends are made to blob list of the new object.
 
 CSL.Output.Queue.prototype.openLevel = function(token){
-	//print("openLevel");
+	//CSL.debug("openLevel");
 	if (!this.formats.value()[token]){
 		throw "CSL processor error: call to nonexistent format token \""+token+"\"";
 	}
-	//print("newlevel: "+token);
+	//CSL.debug("newlevel: "+token);
 	//
 	// delimiter, prefix, suffix, decorations from token
 	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
@@ -132,8 +132,8 @@ CSL.Output.Queue.prototype.openLevel = function(token){
  * "merge" used to be real complicated, now it's real simple.
  */
 CSL.Output.Queue.prototype.closeLevel = function(name){
-	//print("closeLevel");
-	//print("merge");
+	//CSL.debug("closeLevel");
+	//CSL.debug("merge");
 	this.current.pop();
 }
 
@@ -193,9 +193,9 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		// XXXXX: Interface to this function needs cleaning up.
 		// The str variable is ignored if blob is given, and blob
 		// must contain the string to be processed.  Ugly.
-		//print("str:"+str.length);
-		//print("blob:"+blob);
-		//print("tokname:"+tokname);
+		//CSL.debug("str:"+str.length);
+		//CSL.debug("blob:"+blob);
+		//CSL.debug("tokname:"+tokname);
 		//
 		// <Dennis Hopper impersonation>
 		// XXXXX: This is, like, too messed up for _words_, man.
@@ -215,7 +215,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		if ("string" == typeof str){
 			curr.push( blob );
 			this.state.fun.flipflopper.init(str,blob);
-			//print("(queue.append blob decorations): "+blob.decorations);
+			//CSL.debug("(queue.append blob decorations): "+blob.decorations);
 			this.state.fun.flipflopper.processTags();
 		} else {
 			curr.push( str );
@@ -272,7 +272,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		var blob_delimiter = "";
 	};
 	//if (blob_delimiter.indexOf(".") > -1){
-	//	print("*** blob_delimiter: "+blob_delimiter);
+	//	CSL.debug("*** blob_delimiter: "+blob_delimiter);
 	//};
 	for (var i in blobs){
 		var blobjr = blobs[i];
@@ -443,9 +443,9 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				// Something for posterity, at the end of a remarkably
 				// unproductive day.
 				//
-				//print("  ####################################################");
-				//print("  ######################## EUREKA ####################");
-				//print("  ####################################################");
+				//CSL.debug("  ####################################################");
+				//CSL.debug("  ######################## EUREKA ####################");
+				//CSL.debug("  ####################################################");
 				use_delim = use_delim.slice(1);
 			};
 			//
@@ -458,7 +458,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			ret += blob;
 			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 		} else if (blob.status != CSL.SUPPRESS){
-			// print("doing rangeable blob");
+			// CSL.debug("doing rangeable blob");
 			//var str = blob.blobs;
 			var str = blob.formatter.format(blob.num);
 			if (!state.tmp.suppress_decorations){

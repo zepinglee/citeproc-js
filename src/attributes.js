@@ -239,9 +239,9 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 				};
 			};
 			//if (output){
-			//	print("Output! "+this.variables);
+			//	CSL.debug("Output! "+this.variables);
 			//} else {
-			//	print("No output! "+this.variables);
+			//	CSL.debug("No output! "+this.variables);
 			//}
 		};
 		this.execs.push(check_for_output);

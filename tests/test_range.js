@@ -73,7 +73,7 @@ doh.registerGroup("tests.range", [
 			CSL.Output.Number(2);
 			var res = true;
 		} catch (e){
-			print(e);
+			CSL.debug(e);
 			var res = false;
 		}
 		doh.assertTrue( res );

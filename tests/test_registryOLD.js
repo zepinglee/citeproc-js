@@ -57,7 +57,7 @@ doh.register("tests.registry", [
 		style.registry.insert(style,input[0]);
 		style.registry.insert(style,input[1]);
 		style.registry.insert(style,input[0]);
-		//print(style.registry.registry["simple-western-name-2"].sortkeys);
+		//CSL.debug(style.registry.registry["simple-western-name-2"].sortkeys);
 		doh.assertEqual( "simple-western-name-1", style.registry.registry["simple-western-name-2"].next );
 		doh.assertEqual( "simple-western-name-2", style.registry.registry["simple-western-name-1"].prev );
 		doh.assertEqual( false, style.registry.registry["simple-western-name-2"].prev );
@@ -336,14 +336,14 @@ var x = [
 		var style = configurator.configure();
 		var getter = new CSL.System.Retrieval.GetInput();
 		var input = getter.getInput(["ambigs-9","ambigs-10"]);
-		//print("input[0] (ambigs-9) ================= ");
+		//CSL.debug("input[0] (ambigs-9) ================= ");
 		style.registry.insert(style,input[0]);
-		//print("input[1] (ambigs-10) =================");
+		//CSL.debug("input[1] (ambigs-10) =================");
 		style.registry.insert(style,input[1]);
-		//print("end =================");
+		//CSL.debug("end =================");
 		var res0 = style.getAmbiguousCite(input[0]);
 		doh.assertEqual("John Doe, Jane Roe",res0);
-		//print("t0 passed");
+		//CSL.debug("t0 passed");
 	},
 	function testGetUndecoratedCite(){
 		var xml = "<text value=\"hello\" font-style=\"italic\"/>";
@@ -460,22 +460,22 @@ var x = [
 		var style = configurator.configure();
 		var getter = new CSL.System.Retrieval.GetInput();
 		var input = getter.getInput(["ambigs-1","ambigs-2","ambigs-3"]);
-		//print("input[0] (ambigs-1) =================");
+		//CSL.debug("input[0] (ambigs-1) =================");
 		style.registry.insert(style,input[0]);
-		//print("input[1] (ambigs-2) =================");
+		//CSL.debug("input[1] (ambigs-2) =================");
 		style.registry.insert(style,input[1]);
-		//print("input[2] (ambigs-3) =================");
+		//CSL.debug("input[2] (ambigs-3) =================");
 		style.registry.insert(style,input[2]);
-		//print("end =================");
+		//CSL.debug("end =================");
 		var res0 = style.getAmbiguousCite(input[0]);
 		var res1 = style.getAmbiguousCite(input[1]);
 		var res2 = style.getAmbiguousCite(input[2]);
 		doh.assertEqual("Albert Asthma, Bosworth Bronchitis, Crispin Cold, David Dropsy, Elvin Ebola, Fergus Fever",res0);
-		//print("t0 passed");
+		//CSL.debug("t0 passed");
 		doh.assertEqual("Albert Asthma, Bosworth Bronchitis, Crispin Cold, David Dropsy, Ernie Enteritis, et al.",res1);
-		//print("t1 passed");
+		//CSL.debug("t1 passed");
 		doh.assertEqual("Albert Asthma, Bosworth Bronchitis, Crispin Cold, David Dropsy, Elvin Ebola, Fergus Fever",res2);
-		//print("t2 passed");
+		//CSL.debug("t2 passed");
 	},
 
 

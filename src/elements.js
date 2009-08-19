@@ -188,7 +188,7 @@ CSL.Lib.Elements.text = new function(){
 						// being rendered immediately after terminal punctuation,
 						// I guess, actually).
 						if (!state.tmp.term_predecessor){
-							//print("Capitalize");
+							//CSL.debug("Capitalize");
 							term = CSL.Output.Formatters.capitalize_first(state,term);
 							state.tmp.term_predecessor = true;
 						};
@@ -222,7 +222,7 @@ CSL.Lib.Elements.text = new function(){
 				} else {
 					var weird_output_function = function(state,Item){
 						if (state.tmp.value.length){
-							print("Weird output pattern.  Can this be revised?");
+							CSL.debug("Weird output pattern.  Can this be revised?");
 							for each (var val in state.tmp.value){
 								state.output.append(val,this);
 							}
@@ -365,11 +365,11 @@ CSL.Lib.Elements["if"] = new function(){
 	function build (state,target){
 		if (this.tokentype == CSL.START){
 			//for each (var variable in this.variables){
-			//	print("outside function: "+variable);
+			//	CSL.debug("outside function: "+variable);
 			//	var func = function(state,Item){
-			//		print("inside function: "+variable);
+			//		CSL.debug("inside function: "+variable);
 			//		if (Item[variable]){
-			//			print("found: "+variable);
+			//			CSL.debug("found: "+variable);
 			//			return true;
 			//		}
 			//		return false;
@@ -602,7 +602,7 @@ CSL.Lib.Elements.label = new function(){
 			//
 			if ("number" == typeof this.strings.plural){
 				plural = this.strings.plural;
-				print("plural: "+this.strings.plural);
+				CSL.debug("plural: "+this.strings.plural);
 			}
 			var output_label = function(state,Item){
 				if ("locator" == term){
@@ -686,7 +686,7 @@ CSL.Lib.Elements.layout = new function(){
 			// rendering of variables
 			var initialize_done_vars = function(state,Item){
 				state.tmp.done_vars = new Array();
-				//print("== init rendered_name ==");
+				//CSL.debug("== init rendered_name ==");
 				state.tmp.rendered_name = false;
 			};
 			this.execs.push(initialize_done_vars);
@@ -897,14 +897,14 @@ CSL.Lib.Elements["date-part"] = new function(){
 			this.strings.form = "long";
 		}
 		if (state.build.datexml){
-			// print("DO SOMETHING!");
+			// CSL.debug("DO SOMETHING!");
 			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 			for (var attr in this.strings){
 				if (attr == "name" || attr == "prefix" || attr == "suffix"){
 					continue;
 				};
-				// print(attr+": "+this.strings[attr]);
-				// print( state.build.datexml["date-part"].(@name == this.strings.name).length() );
+				// CSL.debug(attr+": "+this.strings[attr]);
+				// CSL.debug( state.build.datexml["date-part"].(@name == this.strings.name).length() );
 				state.build.datexml["date-part"].(@name == this.strings.name)[0]["@"+attr] = this.strings[attr];
 			}
 		} else {
@@ -1046,7 +1046,7 @@ CSL.Lib.Elements.key = new function(){
 		var store_key_for_use = function(state,Item){
 			var keystring = state.output.string(state,state.output.queue);
 			if (false){
-				print("keystring: "+keystring+" "+typeof keystring);
+				CSL.debug("keystring: "+keystring+" "+typeof keystring);
 			}
 			if ("string" != typeof keystring){
 				keystring = undefined;

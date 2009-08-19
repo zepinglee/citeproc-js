@@ -50,7 +50,7 @@ doh.registerGroup("tests.xml", [
 				var res = CSL.System.Xml.JunkyardJavascript.parse(tag);
 				return res;
 			} catch(e) {
-				print (e);
+				CSL.debug(e);
 				return e;
 			}
 		}
@@ -70,7 +70,7 @@ doh.registerGroup("tests.xml", [
 				var res = CSL.System.Xml.JunkyardJavascript.parse(tag);
 				return res;
 			} catch(e) {
-				print (e);
+				CSL.debug(e);
 				return e;
 			}
 		}
@@ -88,7 +88,7 @@ doh.registerGroup("tests.xml", [
 				var res = CSL.System.Xml.JunkyardJavascript.parse(tag);
 				return res;
 			} catch(e) {
-				print (e);
+				CSL.debug(e);
 				return e;
 			}
 		}
@@ -105,7 +105,7 @@ doh.registerGroup("tests.xml", [
 				var res = CSL.System.Xml.JunkyardJavascript.parse(tag);
 				return res;
 			} catch(e) {
-				print (e);
+				CSL.debug(e);
 				return e;
 			}
 		}
@@ -120,7 +120,7 @@ doh.registerGroup("tests.xml", [
 				var res = CSL.System.Xml.JunkyardJavascript.parse(tag);
 				return res;
 			} catch(e) {
-				print (e);
+				CSL.debug(e);
 				return e;
 			}
 		}
@@ -206,7 +206,7 @@ doh.registerGroup("tests.xml", [
 				var res = CSL.System.Xml.JunkyardJavascript.parse(tag);
 				return res;
 			} catch(e) {
-				print (e);
+				CSL.debug(e);
 				return e;
 			}
 		}
@@ -222,7 +222,7 @@ doh.registerGroup("tests.xml", [
 				var res = CSL.System.Xml.JunkyardJavascript.parse(tag);
 				return res;
 			} catch(e) {
-				print (e);
+				CSL.debug(e);
 				return e;
 			}
 		}

@@ -106,7 +106,7 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var area_nodes = this.cslXml[area];
 	if (!area_nodes.toString()){
-		//print("NO AREA NODES");
+		//CSL.debug("NO AREA NODES");
 		return;
 	};
 	var navi = new this._getNavi( this, area_nodes );
@@ -256,7 +256,7 @@ CSL.Engine.prototype.configureTokenLists = function(){
 		for (var pos=(this[area].tokens.length-1); pos>-1; pos--){
 			var token = this[area].tokens[pos];
 			token["next"] = (pos+1);
-			//print("setting: "+(pos+1)+" ("+token.name+")");
+			//CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
 			if (token.name && CSL.Lib.Elements[token.name].configure){
 				CSL.Lib.Elements[token.name].configure.call(token,this,pos);
 			}

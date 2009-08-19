@@ -115,7 +115,7 @@ if(true){
 	dojo.require("tests.std_decorations");
 	dojo.require("tests.test_speed");
 
-	print("Nothing here");
+	CSL.debug("Nothing here");
 }
 
 tests.run();

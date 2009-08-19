@@ -44,7 +44,7 @@ var tryStyle = function(style){
 		var sys = new RhinoTest();
 		var res = new CSL.Engine(sys,sty);
 	} catch(e) {
-		print("oops: "+e);
+		CSL.debug("oops: "+e);
 	}
 	return res;
 }

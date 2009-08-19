@@ -109,13 +109,13 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 	while (checkerator.run()){
 		var token = tokens[checkerator.pos];
 		if (debug){
-			print("<<<<<<<<<<<<<<<<<<<<<<<<< "+ token.id +" >>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			CSL.debug("<<<<<<<<<<<<<<<<<<<<<<<<< "+ token.id +" >>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		}
 		//
 		// skip items that have been finally resolved.
 		if (this.ambigcites[akey].indexOf(token.id) > -1){
 			if (debug){
-				print("---> Skip registered token for: "+token.id);
+				CSL.debug("---> Skip registered token for: "+token.id);
 			}
 			checkerator.pos += 1;
 			continue;
@@ -126,10 +126,10 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			checkerator.mode = modes[0];
 		}
 		if (debug){
-			print ("  ---> Mode: "+checkerator.mode);
+			CSL.debug("  ---> Mode: "+checkerator.mode);
 		}
 		if (debug){
-			print("base in (givens):"+base["givens"]);
+			CSL.debug("base in (givens):"+base["givens"]);
 		}
 		//
 		// XXXXX: Aha!  The processor is adding an empty given
@@ -141,7 +141,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		var minval = state.getMinVal();
 		base = state.getAmbigConfig();
 		if (debug){
-			print("base out (givens):"+base["givens"]);
+			CSL.debug("base out (givens):"+base["givens"]);
 		}
 		//
 		// XXXXX: scrap this?
@@ -150,7 +150,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			base["disambiguate"] = true;
 		}
 		//if (disambiguate_true){
-		//	print("D TRUE");
+		//	CSL.debug("D TRUE");
 		//	base["disambiguate"] = true;
 		//}
 		checkerator.setBase(base);
@@ -164,11 +164,11 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			}
 			var otherstr = state.getAmbiguousCite(testpartner,base);
 			if (debug){
-				print("  ---> last clashes: "+checkerator.lastclashes);
-				print("  ---> master:    "+token.id);
-				print("  ---> master:    "+str);
-				print("  ---> partner: "+testpartner.id);
-				print("  ---> partner: "+otherstr);
+				CSL.debug("  ---> last clashes: "+checkerator.lastclashes);
+				CSL.debug("  ---> master:    "+token.id);
+				CSL.debug("  ---> master:    "+str);
+				CSL.debug("  ---> partner: "+testpartner.id);
+				CSL.debug("  ---> partner: "+otherstr);
 			}
 
 			if(checkerator.checkForClash(str,otherstr)){
@@ -180,9 +180,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			this.registerAmbigToken(akey,token.id,base_return);
 			checkerator.seen.push(token.id);
 			if (debug){
-				print("  ---> Evaluate: storing token config");
-				print("          names: "+base["names"]);
-				print("         givens: "+base_return["givens"]);
+				CSL.debug("  ---> Evaluate: storing token config");
+				CSL.debug("          names: "+base["names"]);
+				CSL.debug("         givens: "+base_return["givens"]);
 			}
 			continue;
 		}
@@ -192,13 +192,13 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 				checkerator.mode1_counts = false;
 				checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
 				if (debug){
-					print("  ---> Max out: remembering token config for: "+token.id);
-					print("       ("+base["names"]+":"+base["givens"]+")");
+					CSL.debug("  ---> Max out: remembering token config for: "+token.id);
+					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
 				}
 			} else {
 				if (debug){
-					print("  ---> Max out: NOT storing token config for: "+token.id);
-					print("       ("+base["names"]+":"+base["givens"]+")");
+					CSL.debug("  ---> Max out: NOT storing token config for: "+token.id);
+					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
 				}
 			}
 			checkerator.seen.push(token.id);
@@ -206,7 +206,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			continue;
 		}
 		if (debug){
-			print("  ---> Incrementing");
+			CSL.debug("  ---> Incrementing");
 		}
 		checkerator.incrementAmbigLevel();
 	}
@@ -290,14 +290,14 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.checkForClash = function(st
 		if (this.mode == "names" || this.mode == "disambiguate_true"){
 			this.clashes += 1;
 			if (debug){
-				print("   (mode 0 clash, returning true)");
+				CSL.debug("   (mode 0 clash, returning true)");
 			}
 			return true;
 		}
 		if (this.mode == "givens"){
 			this.clashes += 1;
 			if (debug){
-				print("   (mode 1 clash, returning false)");
+				CSL.debug("   (mode 1 clash, returning false)");
 			}
 		}
 		return false;
@@ -333,29 +333,29 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 	if (this.mode == "givens"){
 		var ret = true;
 		if (debug){
-			print("  ---> Comparing in mode 1: clashes="+this.clashes+"; lastclashes="+this.lastclashes);
+			CSL.debug("  ---> Comparing in mode 1: clashes="+this.clashes+"; lastclashes="+this.lastclashes);
 		}
 		var namepos = this.mode1_counts[this.modepos];
 		if (this.clashes && this.clashes == this.lastclashes){
 			if (debug){
-				print("   ---> Applying mode 1 defaults: "+this.mode1_defaults);
+				CSL.debug("   ---> Applying mode 1 defaults: "+this.mode1_defaults);
 			}
 			if (this.mode1_defaults){
 				var old = this.mode1_defaults[(namepos-1)];
 				if (debug){
-					print("   ---> Resetting to default: ("+old+")");
+					CSL.debug("   ---> Resetting to default: ("+old+")");
 				}
 				this.base["givens"][this.modepos][(namepos-1)] = old;
 			}
 			ret = false;
 		} else if (this.clashes) {
 			if (debug){
-				print("   ---> Expanding given name helped a little, retaining it");
+				CSL.debug("   ---> Expanding given name helped a little, retaining it");
 			}
 			ret = false;
 		} else { // only non-clash should be possible
 			if (debug){
-				print("   ---> No clashes, storing token config and going to next");
+				CSL.debug("   ---> No clashes, storing token config and going to next");
 			}
 			this.mode1_counts = false;
 			// XXXXX: try-and-see change 2009-07-24 during major code reorganization.
@@ -391,7 +391,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 	}
 
 	if (this.mode == "names"){
-		//print(this.modepos+" : "+this.base[0].length+" : "+this.base[0][this.modepos]);
+		//CSL.debug(this.modepos+" : "+this.base[0].length+" : "+this.base[0][this.modepos]);
 		if (this.modepos == (this.base["names"].length-1) && this.base["names"][this.modepos] == this.maxvals[this.modepos]){
 			//
 			// XXXXX: needs to be smarter?
@@ -412,7 +412,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 	} else if (this.mode == "givens"){
 		if (this.modepos == (this.mode1_counts.length-1) && this.mode1_counts[this.modepos] == (this.maxvals[this.modepos])){
 			if (debug){
-				print("-----  Item maxed out -----");
+				CSL.debug("-----  Item maxed out -----");
 			}
 			if (this.modes.length == 2){
 				this.mode = "givens";
@@ -452,18 +452,18 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 		if (val < this.maxvals[this.modepos]){
 			if (this.given_name_second_pass){
 				if (debug){
-					print(" ** second pass");
+					CSL.debug(" ** second pass");
 				};
 				this.given_name_second_pass = false;
 				this.mode1_counts[this.modepos] += 1;
 				this.base["givens"][this.modepos][val] += 1;
 				if (debug){
-					print("   ---> (A) Setting expanded givenname param with base: "+this.base["givens"]);
+					CSL.debug("   ---> (A) Setting expanded givenname param with base: "+this.base["givens"]);
 				};
 			} else {
 				this.mode1_defaults = this.base["givens"][this.modepos].slice();
 				if (debug){
-					print(" ** first pass");
+					CSL.debug(" ** first pass");
 				};
 				this.given_name_second_pass = true;
 			};
@@ -472,7 +472,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 			this.base["givens"][this.modepos][0] += 1;
 			this.mode1_defaults = this.base["givens"][this.modepos].slice();
 			if (debug){
-				print("   ---> (B) Set expanded givenname param with base: "+this.base["givens"]);
+				CSL.debug("   ---> (B) Set expanded givenname param with base: "+this.base["givens"]);
 			}
 		} else {
 			this.mode = "names";

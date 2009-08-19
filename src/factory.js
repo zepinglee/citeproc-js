@@ -47,7 +47,7 @@ CSL.Factory = {};
 
 CSL.Factory.version = function(){
 	var msg = "\"Entropy\" citation processor (a.k.a. citeproc-js) ver.0.01";
-	print(msg);
+	CSL.debug(msg);
 	return msg;
 };
 
@@ -69,7 +69,7 @@ CSL.Factory.version = function(){
  */
 CSL.Factory.XmlToToken = function(state,tokentype){
 	var name = state.sys.xml.nodename(this);
-	// print(tokentype + " : " + name);
+	// CSL.debug(tokentype + " : " + name);
 	if (state.build.skip && state.build.skip != name){
 		return;
 	}
@@ -175,7 +175,7 @@ CSL.Factory.substituteOne = function(template) {
 		} else if ("string" == typeof list){
 			return template.replace("%%STRING%%",list);
 		};
-		print("USING is_delimiter (1) ... WHY?");
+		CSL.debug("USING is_delimiter (1) ... WHY?");
 		var decor = template.split("%%STRING%%");
 		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
 		ret.push({"is_delimiter":true,"value":decor[1]});
@@ -202,7 +202,7 @@ CSL.Factory.substituteTwo = function(template) {
 			if ("string" == typeof list){
 				return template2.replace("%%STRING%%",list);
 			}
-			print("USING is_delimiter (2) ... WHY?");
+			CSL.debug("USING is_delimiter (2) ... WHY?");
 			var decor = template2.split("%%STRING");
 			var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
 			ret.push({"is_delimiter":true,"value":decor[1]});
