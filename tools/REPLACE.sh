@@ -1,5 +1,9 @@
 #!/bin/bash
 
+cd $(dirname $0)
+
+cd ..
+
 
 if [ "$1" == "--action" ]; then
     ACTION="1"
@@ -20,7 +24,7 @@ if [ "$2" == "NOTHING" ]; then
 else
     ARG2="$2"
 fi
-for i in tests/*.js src/*.js std/humans/*.txt; do
+for i in tests/*.js src/*.js; do
     if [ $(grep -c "$1" $i) -gt 0 ]; then
         if [ "$ACTION" == "1" ]; then
             cat $i | sed -e "s~$1~${ARG2}~g" > $i.NEW
