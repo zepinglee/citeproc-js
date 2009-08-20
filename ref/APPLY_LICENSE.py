@@ -2,9 +2,12 @@
 
 import re,os,sys
 
+mypath = os.path.split(sys.argv[0])[0]
+os.chdir(mypath)
+
 REX = "(?ms)^^(/\*.*?\n\s*\*/)(.*)"
 
-m = re.match(REX, open("./src/csl.js").read())
+m = re.match(REX, open("../src/csl.js").read())
 
 
 if m:
@@ -14,7 +17,7 @@ else:
     sys.exit()
 
 
-for path in ["./src", "./std", "./std/humans","./tests"]:
+for path in ["../src", "../std", "../std/humans","../tests"]:
     for file in os.listdir( path ):
         if not file.endswith(".js") and not file.endswith(".txt"): continue
         if file == "README.txt": continue

@@ -3,7 +3,7 @@
 set -e
 
 cd $(dirname $0)
-
+cd ..
 #
 # Be sure the machine side of the test suite is up to date
 #
