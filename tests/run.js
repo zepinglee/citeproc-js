@@ -81,7 +81,7 @@ if(true){
 	dojo.require("tests.std_locators");
 	dojo.require("tests.std_sort");
 
-
+	
 } else {
 
 
