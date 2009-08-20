@@ -276,10 +276,10 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		this.locale_opt = new Object();
 	}
 	if ("undefined" == typeof arg){
-		var myxml = new XML( this.sys.xml.getLang("en") );
+		var myxml = new XML( this.sys.getLang("en") );
 		lang = "en";
 	} else if ("string" == typeof arg){
-		var myxml = new XML( this.sys.xml.getLang(arg) );
+		var myxml = new XML( this.sys.getLang(arg) );
 		lang = arg;
 	} else if ("xml" != typeof arg){
 		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";

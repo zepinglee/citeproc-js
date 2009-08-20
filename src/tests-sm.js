@@ -252,6 +252,7 @@ StdRhinoTest.prototype.run = function(){
 		var ret = citations.join("\n");
 	} else if (this.test.mode == "bibliography"){
 		var ret = this.style.makeBibliography();
+		ret = "<div class=\"csl-bib-body\">\n" + ret[1].join("") + "</div>";
 	} else {
 		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
 	}

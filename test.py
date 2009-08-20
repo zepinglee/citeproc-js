@@ -75,18 +75,16 @@ if __name__ == "__main__":
     cx.add_global("locale", locales)
 
     #print "Loading tests ..."
-    testobjects = {}
+    cx.execute("var testobjects = new Object();")
     for filename in os.listdir("./std/machines"):
         if not filename.endswith(".json"):
             continue
         if not os.path.stat.S_ISREG( os.stat("./std/machines/%s" %filename).st_mode ):
             continue
         testname = os.path.splitext(filename)[0]
-        fh = open("./std/machines/%s" % (filename,))
-        testobj = json.load(fh)
-        testobjects[testname] = testobj
-    cx.add_global("testobjects", testobjects)
-
+        tstr = open("./std/machines/%s" % (filename,)).read()
+        cx.execute('testobjects["%s"] = %s;' %(testname,tstr))
+    
     ## XXXXX: Just need retrieval functions, and we'll be all set.
     system = open("./src/tests-sm.js").read()
     cx.execute(system)
@@ -97,7 +95,6 @@ if __name__ == "__main__":
     cx.execute( re.sub("(?sm)//SNIP-START.*","",rootfile) )
     if len(m) > 1:
         for pos in range(1,len(m),2):
-            # print m[pos]
             str = open( m[pos] ).read()
             cx.execute( str )
 

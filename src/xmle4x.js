@@ -114,14 +114,3 @@ CSL.System.Xml.E4X.prototype.makeXml = function(str){
 	return ret;
 };
 
-//
-// Retrieve locale object from filesystem
-// (Deployments must provide an instance object with
-// this method.)
-//
-CSL.System.Xml.E4X.prototype.getLang = function(lang){
-	var ret = readFile( "./locale/"+CSL.localeRegistry[lang], "UTF-8");
-	ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
-	return ret;
-};
-

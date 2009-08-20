@@ -211,10 +211,6 @@ if (!CSL.Lib.Elements){
 if (!CSL.Lib.Elements.names){
 	load("./src/libnames.js");
 }
-if (!CSL.Lib.Elements){
-	load("./src/elements.js");
-}
-
 if (!CSL.Lib.Attributes){
 	load("./src/attributes.js");
 }

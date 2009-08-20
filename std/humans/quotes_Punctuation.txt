@@ -43,7 +43,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-<div class="csl-entry"><span class="csl-bib-first">“The Book Title”,</span></div>
+  <div class="csl-entry">“The Book Title,”</div>
 </div>
 <<===== RESULT =====<<
 
