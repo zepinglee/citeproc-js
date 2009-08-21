@@ -62,9 +62,9 @@ CSL.Util.FlipFlopper = function(state){
 			entry.push( t+"s" );
 			entry.push( "@"+t+"s" );
 			if ("-" == p){
-				entry.push( ["outer", "inner"] );
+				entry.push( ["true", "inner"] );
 			} else {
-				entry.push( ["inner", "outer"] );
+				entry.push( ["inner", "true"] );
 			};
 			entry.push(true);
 			tagdefs.push(entry);

@@ -42,7 +42,7 @@ citation
 
 
 >>== RESULT ==>>
-My “‘Amazing’ <b>and</b> Bogus” Title
+“My ‘“Amazing” <b>and</b> Bogus’ Title”
 <<== RESULT ==<<
 
 
@@ -59,7 +59,7 @@ My “‘Amazing’ <b>and</b> Bogus” Title
   </info>
   <citation>
     <layout>
-      <text variable="title" />
+      <text variable="title" quotes="true"/>
     </layout>
   </citation>
 </style>
@@ -70,6 +70,6 @@ My “‘Amazing’ <b>and</b> Bogus” Title
 [{
    "id":"item-1",
    "type": "book",
-   "title": "My '\"Amazing\" <span name=\"foreign-word\">and</span> Bogus' Title"
+   "title": "My “‘Amazing’ <b>and</b> Bogus” Title"
 }]
 <<===== INPUT =====<<

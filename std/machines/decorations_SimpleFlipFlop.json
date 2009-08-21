@@ -3,11 +3,11 @@
     "input": [
         {
             "id": "item-1", 
-            "title": "My <span name=\"foreign-phrase\">Amazing</span> Title", 
+            "title": "My <i>Amazing</i> Title", 
             "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "<i>My <span style=\"font-style:normal\">Amazing</span> Title</i>", 
+    "result": "<i>My <span style=\"font-style:normal;\">Amazing</span> Title</i>", 
     "schema": "0.8"
 }

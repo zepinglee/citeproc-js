@@ -42,7 +42,7 @@ citation
 
 
 >>== RESULT ==>>
-“My ‘Amazing’ title”
+“My ‘Amazing’ Title”
 <<== RESULT ==<<
 
 
@@ -59,7 +59,7 @@ citation
   </info>
   <citation>
     <layout>
-      <text quotes="true" value="My &apos;Amazing&apos; title" />
+      <text quotes="true" variable="title" />
     </layout>
   </citation>
 </style>
@@ -70,6 +70,6 @@ citation
 [{
    "id":"item-1",
    "type": "book",
-   "title": "Ignore me"
+   "title": "My “Amazing” Title"
 }]
 <<===== INPUT =====<<

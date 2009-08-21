@@ -30,6 +30,8 @@ if __name__ == "__main__":
         if type(str) == type(("tuple",)):
             ret = ""
             for s in str:
+                if type(s) == type(None):
+                    s = "undefined"
                 if type(s) != type("string") and type(s) != type(0) and type(s) != type(u'x'):
                     s = s.toString()
                 ret = "%s %s" % (ret,s)
@@ -38,7 +40,7 @@ if __name__ == "__main__":
 
     # Dummy readFile function
     def myReadFile(filename,encoding="UTF-8"):
-        return open(filename.decode(encoding)
+        return open(filename.decode(encoding))
     cx.add_global("readFile",myReadFile)
 
     # Load the Dojo
@@ -106,8 +108,8 @@ if __name__ == "__main__":
     for filename in os.listdir("./tests"):
         if not filename.startswith("std_") or not filename.endswith(".js"):
             continue
-        if filename == "std_decorations.js":
-            continue
+        #if filename == "std_decorations.js":
+        #    continue
         if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
             continue
         mytest = open("./tests/%s" % (filename,)).read()
