@@ -36,6 +36,11 @@ if __name__ == "__main__":
         print ret.strip()
     cx.add_global("print",myprint)
 
+    # Dummy readFile function
+    def myReadFile(filename,encoding="UTF-8"):
+        return open(filename.decode(encoding)
+    cx.add_global("readFile",myReadFile)
+
     # Load the Dojo
     #  dojo ...
     dojo = open("./dojo-sm/dojo/dojo.js").read()
