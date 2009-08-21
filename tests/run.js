@@ -62,7 +62,6 @@ if(true){
 	dojo.require("tests.std_variables");
 
 	dojo.require("tests.test_conditions");
-	//dojo.require("tests.std_terms");
 	dojo.require("tests.std_discretionary");
 	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.test_build");
@@ -84,7 +83,7 @@ if(true){
 
 } else {
 
-
+//SNIP-START
 	// most of this stuff now needs to be refactored
 	dojo.require("tests.test_build_internals");
 	dojo.require("tests.test_build_integration");

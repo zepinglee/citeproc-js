@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     # Dummy readFile function
     def myReadFile(filename,encoding="UTF-8"):
-        return open(filename.decode(encoding))
+        return open(filename).read().decode(encoding)
     cx.add_global("readFile",myReadFile)
 
     # Load the Dojo
@@ -96,6 +96,15 @@ if __name__ == "__main__":
     system = open("./src/tests-sm.js").read()
     cx.execute(system)
 
+    # Load rhino test runner framework, for internal tests
+    rhinotester = open("./src/testing_rhino.js").read()
+    cx.execute(rhinotester)
+
+    # Load stdrhino test runner framework, for standard tests without special
+    # Spidermonkey framework code
+    stdrhinotester = open("./src/testing_stdrhino.js").read()
+    cx.execute(stdrhinotester)
+
     # Load the Code
     rootfile = open("./src/csl.js").read()
     m = re.split('load\("([^"]+)"\)',rootfile)
@@ -105,15 +114,28 @@ if __name__ == "__main__":
             str = open( m[pos] ).read()
             cx.execute( str )
 
-    for filename in os.listdir("./tests"):
-        if not filename.startswith("std_") or not filename.endswith(".js"):
-            continue
-        #if filename == "std_decorations.js":
-        #    continue
-        if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
-            continue
-        mytest = open("./tests/%s" % (filename,)).read()
-        cx.execute(mytest)
+    # Load standard tests (dropped in favor of running tests through the
+    # same frameworks as under Rhino -- which works, amazingly enough)
+    if False:
+        for filename in os.listdir("./tests"):
+            if not filename.startswith("std_") or not filename.endswith(".js"):
+                continue
+            #if filename == "std_decorations.js":
+            #    continue
+            if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
+                continue
+            mytest = open("./tests/%s" % (filename,)).read()
+            cx.execute(mytest)
+
+    runfile = open("./tests/run.js").read()
+    runfile = re.sub("(?sm)//SNIP-START.*","",runfile)
+    m = re.split('require\("tests\.([^"]+)"\)',runfile)
+    if len(m) > 1:
+        for pos in range(1,len(m),2):
+            print m[pos]
+            str = open( "./tests/%s.js" % m[pos] ).read()
+            cx.execute( str )
+        
 
     print "Running tests ..."
     cx.execute("tests.run();")
