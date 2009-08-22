@@ -1,43 +1,4 @@
 # TODO
 
-## Completion of feature set
-
-- Get locators working in test suite and via RPC demo.
-
-- Provide HTML validation for inline markup.  Return the
-  string with stray markers in HTML-escaped form.  This
-  will display the field in the form it will appear in
-  the document.
-
-- Provide a "divide" method that splits a string into 
-  "mutable" and "preserve" forks, with index hints to
-  be used in recombine the two forks using a "conquer"
-  method.  Or something.  This recombinant stuff will be
-  slick when implemented, but there are lots of sharp
-  objects in our path.
-
-- Provide discrete handling for "function" and "tag" types
-  of decoration.  The latter work as at present, with
-  simple nested application.  The former will require
-  the divide and conquer mechanism described above,
-  and will apply only to the "mutable" fork of the
-  string.
-
-- For inline markup, do not recognize purely presentational
-  elements at top level; require semantic markup tags around
-  everything that is to be specially formatted.  Stray
-  presentational tags to be rendered as tag literals.
-
-- Tidy up and finish out API, provide examples and
-  an overview readme doc.
-    (pending. fbennett 2009-05-21)
-
-- Various options and special formatting attributes need to be
-  implemented, none of which seem particularly scarey.
-    (a very short list of these remain.  fbennett 2009-04-11)
-
-
-## Possible proposals for CSL
-
-- Localized date formatting?
-    (pending.  fbennett 2009-04-11)
+Field manglers (things like capitalize-all) are almost certainly broken
+when used with in-field markup.  Test and repair.
