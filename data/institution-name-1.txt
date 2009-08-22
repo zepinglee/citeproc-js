@@ -1,9 +1,0 @@
-{
-   "id":"institution-name-1",
-   "type": "book",
-   "author": [
-        { "name":"Ministry of Education, Sports, Culture, Science and Technology !!" }
-   ],
-   "issued": "2006",
-   "title": "White Paper on Education, Sports, Culture, Science and Technology"
-}

@@ -1,9 +1,0 @@
-{
-   "id":"simple-sticky-name-1",
-   "type": "book",
-   "author": [
-        { "name":"Miyamoto, Musashi !" }
-   ],
-   "issued": {"year": "1645", "month":"12", "day":"27"},
-   "title": "A Book of Five Rings"
-}

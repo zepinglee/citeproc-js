@@ -1,9 +1,0 @@
-{
-   "id":"year-suffixes-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Paper 1"
-}

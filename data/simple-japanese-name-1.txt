@@ -1,8 +1,0 @@
-{
-   "type": "book",
-   "author": [
-        { "name":"我妻, 栄" }
-   ],
-   "issued": "1960",
-   "title": "民法"
-}

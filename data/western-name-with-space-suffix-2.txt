@@ -1,9 +1,0 @@
-{
-   "id":"western-name-with-space-suffix-2",
-   "type": "book",
-   "author": [
-        { "name":"Doe, Jeffrey, Jr." }
-   ],
-   "issued": "2001",
-   "title": "My Life as an Anonymous Heir"
-}
