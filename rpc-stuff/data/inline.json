@@ -1,9 +1,0 @@
-{
-  "method": "registerFlipFlops",
-  "params": [[
-    {"start":"*", "end":"*", "func":["@font-style","italic"], "alt":["@font-style","normal"] },
-    {"start":"<span class=\"subtitle\">", "end":"</span>", "func":["@font-weight","bold"], "alt":["@font-weight","normal"] },
-    {"start":"\"", "end":"\"", "func":["@quotes","true"], "alt": ["@squotes","true"]  },
-    {"start":"'", "end":"'", "func":["@quotes","true"], "alt": ["@squotes","true"] }
-]]
-}

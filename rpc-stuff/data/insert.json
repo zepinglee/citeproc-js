@@ -1,6 +1,0 @@
-{
-  "method": "insertItems",
-  "params": [
-    ["ITEM-1","ITEM-2"]
-  ]
-}

@@ -112,7 +112,6 @@ if(true){
 
 	// this stuff is either burdensome or broken
 	dojo.require("tests.test_load_all_styles");
-	dojo.require("tests.std_decorations");
 	dojo.require("tests.test_speed");
 
 	CSL.debug("Nothing here");

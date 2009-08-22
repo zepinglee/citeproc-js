@@ -1,7 +1,0 @@
- s = 'one*two \\*three\\*four five* six'
- one*two \*three\*four five* six
- js> ss = s.split(/*/); var ret = []; var buf = []; for each (str in
-ss) { if (str[(str.length-1)] == '\\'){ buf.push(str); } else {
-buf.push(""); var addstr = buf.join("*")+ str; buf = [];
-ret.push(addstr); } }; print(ret);
-

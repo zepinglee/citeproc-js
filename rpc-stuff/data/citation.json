@@ -1,9 +1,0 @@
-{
-  "method": "makeCitationCluster",
-  "params": [ 
-    [
-      ["ITEM-3",{}], 
-      ["ITEM-4",{}]
-    ]
-  ]
-}

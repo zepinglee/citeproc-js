@@ -2,6 +2,9 @@
 bibliography
 <<===== MODE =====<<
 
+An alternative means of counting authors, from CSL 1.0 design
+discussions.
+
 >>===== SCHEMA =====>>
 0.9 experimental
 <<===== SCHEMA =====<<
