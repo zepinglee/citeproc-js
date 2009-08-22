@@ -139,15 +139,13 @@ required commenting out one line of the DOH code.  That change is
 incorporated in the configured instance of DOH included in these
 sources.
 
-The ./test.py script attempts to run the standard tests using a
-standalone Spidermonkey interpreter similar to that used in Firefox.
-The kit used for this purpose is the python-spidermonkey bridge done
-by Paul Davis, which is available, with install instructions, here:
+The ./test.py script runs the tests using a standalone Spidermonkey
+interpreter similar to that used in Firefox. The  kit used for this purpose
+is the python-spidermonkey bridge done by Paul Davis, which is available, 
+with install instructions, here:
 
   http://github.com/davisp/python-spidermonkey/tree/master
 
-The script is currently broken, but when repaired, it may be extended
-to serve as the primary test runner for both Rhino and Spidermonkey.
-More news later as the situation develops ...
+
 
 Enjoy!
