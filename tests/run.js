@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_sort");
 	dojo.require("tests.std_decorations");
 	dojo.require("tests.std_quotes");
 	dojo.require("tests.std_magic");
@@ -79,9 +80,8 @@ if(true){
 	dojo.require("tests.test_formats");
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
-	dojo.require("tests.std_sort");
-
 } else {
+
 
 //SNIP-START
 	// most of this stuff now needs to be refactored

@@ -256,6 +256,9 @@ if (!CSL.Util.substituteStart){
 if (!CSL.Util.Suffixator){
 	load("./src/util_mangle_number.js");
 }
+if (!CSL.Util.PageRangeMangler){
+	load("./src/util_mangle_page.js");
+}
 if (!CSL.Util.FlipFlopper){
 	load("./src/util_flipflop.js");
 }

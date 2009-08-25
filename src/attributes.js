@@ -552,3 +552,7 @@ CSL.Lib.Attributes["@entry-spacing"] = function(state,arg){
 CSL.Lib.Attributes["@near-note-distance"] = function(state,arg){
 	state[this.name].opt["near-note-distance"] = parseInt(arg,10);
 };
+
+CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
+	state.opt["page-range-format"] = arg;
+};

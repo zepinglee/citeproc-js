@@ -32,31 +32,68 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_sort");
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
 
-doh.register("tests.std_sort", [
-    function(){
-        var test = new StdRhinoTest("sort_AguStyle");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_AguStyleReverseGroups");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_CitationEdit");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_Citation");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_NameVariable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_NumberOfAuthorsAsKey");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+>>===== SCHEMA =====>>
+1.0
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+<div class="csl-bib-body">
+  <div class="csl-entry">John Doe</div>
+  <div class="csl-entry">Jane Roe</div>
+</div>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+        <text value="Ignore me"/>
+    </layout>
+  </citation>
+  <bibliography>
+    <sort>
+      <key variable="author"/>
+    </sort>
+    <layout>
+      <names variable="author">
+        <name/>
+      </names>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "author": [
+        { "name":"Roe, Jane" }
+   ]
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author": [
+        { "name":"Doe, John" }
+   ]
+ }
+]
+<<===== INPUT =====<<

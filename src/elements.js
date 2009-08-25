@@ -1011,26 +1011,55 @@ CSL.Lib.Elements.key = new function(){
 		//
 		// ops to initialize the key's output structures
 		if (this.variables.length){
-			var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
-			single_text.variables = this.variables.slice();
-
-			var output_variables = function(state,Item){
-				for each(var variable in single_text.variables){
-					if (variable == "citation-number"){
+			var variable = this.variables[0];
+			if (CSL.CREATORS.indexOf(variable) > -1) {
+				//
+				// XXXXX: Doesn't do anything yet.  Tokens need execs,
+				// which I think means we need to run the CLS.Lib.Elements
+				// methods.  Yuck.  This is painful.
+				//
+				// Start tag
+				var names_start_token = new CSL.Factory.Token("names",CSL.START);
+				names_start_token.tokentype = CSL.START;
+				names_start_token.variables = this.variables;
+				CSL.Lib.Elements.names.build.call(names_start_token,state,target);
+				//target.push(names_start_token);
+				//
+				// Middle tag
+				var name_token = new CSL.Factory.Token("name",CSL.SINGLETON);
+				name_token.tokentype = CSL.SINGLETON;
+				name_token.strings["name-as-sort-order"] = "all";
+				CSL.Lib.Elements.name.build.call(name_token,state,target);
+				//target.push(name_token);
+				//
+				// End tag
+				var names_end_token = new CSL.Factory.Token("names",CSL.END);
+				names_end_token.tokentype = CSL.END;
+				CSL.Lib.Elements.names.build.call(names_end_token,state,target);
+				//var names_end_token = new CSL.Factory.Token("names",CSL.END);
+				//target.push(names_end_token);
+			} else {
+				var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
+				if (variable == "citation-number"){
+					var output_func = function(state,Item){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
-					} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
+					};
+				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
+					var output_func = function(state,Item){
 						if (Item[variable]){
 							state.output.append(CSL.Util.Dates.year["long"](state,Item[variable].year));
 							state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable].month));
 							state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable].day));
-						}
-					} else {
+						};
+					};
+				} else {
+					var output_func = function(state,Item){
 						state.output.append(Item[variable],"empty");
-					}
-				}
+					};
+				};
+				single_text["execs"].push(output_func);
+				target.push(single_text);
 			};
-			single_text["execs"].push(output_variables);
-			target.push(single_text);
 		} else {
 			//
 			// if it's not a variable, it's a macro
