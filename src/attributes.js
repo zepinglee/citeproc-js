@@ -556,3 +556,9 @@ CSL.Lib.Attributes["@near-note-distance"] = function(state,arg){
 CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
 	state.opt["page-range-format"] = arg;
 };
+
+CSL.Lib.Attributes["@particle-in-name-sort"] = function(state,arg){
+	if (arg == "true"){
+		state.opt["particle-in-name-sort"] = arg;
+	};
+};
