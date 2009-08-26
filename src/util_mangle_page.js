@@ -36,23 +36,52 @@ if (!CSL) {
 	load("./src/csl.js");
 }
 
-CSL.Util.PageRangeMangler = function(state){
-	this.state = state;
-};
+CSL.Util.PageRangeMangler = new Object();
 
-CSL.Util.PageRangeMangler.prototype = function(){
+
+CSL.Util.PageRangeMangler.getFunction = function(state){
 	if (!state.opt["page-range-format"]){
-
+		var ret_func = function(str){
+			return str;
+		};
 	} else if (state.opt["page-range-format"] == "expanded"){
-
+		var ret_func = function(str){
+			return expand(str);
+		};
 	} else if (state.opt["page-range-format"] == "minimal") {
-
-	}
+		var ret_func = function(str){
+			str = expand(str);
+			return minimize(str);
+		};
+	} else if (state.opt["page-range-format"] == "chicago"){
+		var ret_func = function(str){
+			str = expand(str);
+			return chicago(str);
+		};
+	};
 	var expand = function(str){
 		print("do something to expand page ranges");
 	};
-
 };
+
+CSL.Util.PageRangeMangler.expand = function(str){
+};
+
+CSL.Util.PageRangeMangler._expand = function(str){
+};
+
+CSL.Util.PageRangeMangler.minimize = function(str){
+};
+
+CSL.Util.PageRangeMangler._minimize = function(str){
+};
+
+CSL.Util.PageRangeMangler.chicago = function(str){
+};
+
+CSL.Util.PageRangeMangler._chicago = function(str){
+};
+
 
 /*
  * #!/usr/bin/python
