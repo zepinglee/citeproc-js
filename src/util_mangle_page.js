@@ -46,37 +46,41 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 		};
 	} else if (state.opt["page-range-format"] == "expanded"){
 		var ret_func = function(str){
-			return expand(str);
+			return CSL.Util.PageRangeMangler.expand(str);
 		};
 	} else if (state.opt["page-range-format"] == "minimal") {
 		var ret_func = function(str){
-			str = expand(str);
-			return minimize(str);
+			str = CSL.Util.PageRangeMangler.expand(str);
+			return CSL.Util.PageRangeMangler.minimize(str);
 		};
 	} else if (state.opt["page-range-format"] == "chicago"){
 		var ret_func = function(str){
-			str = expand(str);
-			return chicago(str);
+			str = CSL.Util.PageRangeMangler.expand(str);
+			return CSL.Util.PageRangeMangler.chicago(str);
 		};
 	};
-	var expand = function(str){
-		print("do something to expand page ranges");
-	};
+	return ret_func;
 };
 
 CSL.Util.PageRangeMangler.expand = function(str){
+	print("expand page-range");
+	return str;
 };
 
 CSL.Util.PageRangeMangler._expand = function(str){
 };
 
 CSL.Util.PageRangeMangler.minimize = function(str){
+	print("minimize page-range");
+	return str;
 };
 
 CSL.Util.PageRangeMangler._minimize = function(str){
 };
 
 CSL.Util.PageRangeMangler.chicago = function(str){
+	print("chicagoize page-range");
+	return str;
 };
 
 CSL.Util.PageRangeMangler._chicago = function(str){

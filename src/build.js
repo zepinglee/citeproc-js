@@ -56,6 +56,9 @@ CSL.Engine = function(sys,style,lang) {
 	if (this.cslXml["@particle-in-name-sort"].toString() == "true"){
 		this.opt["particle-in-name-sort"] = true;
 	}
+	if (this.cslXml["@page-range-format"].toString()){
+		this.opt["page-range-format"] = this.cslXml["@page-range-format"].toString();
+	}
 	//
 	// implicit default, "en"
 	this.setLocaleXml();
@@ -91,6 +94,10 @@ CSL.Engine = function(sys,style,lang) {
 	// configure long ordinal numbers generator
 	//
 	this.fun.long_ordinalizer.init(this);
+	//
+	// set up page mangler
+	//
+	this.fun.page_mangler = CSL.Util.PageRangeMangler.getFunction(this);
 
 	this.setOutputFormat("html");
 };

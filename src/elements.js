@@ -207,6 +207,8 @@ CSL.Lib.Elements.text = new function(){
 						var value = state.getVariable(Item,realvarname,form);
 						if (value && this.variables[0] == "page-first"){
 							value = value.replace(/-.*/,"");
+						} else if (value && this.variables[0] == "page"){
+							value = state.fun.page_mangler(value);
 						}
 						if (this.strings["strip-periods"]){
 							value = value.replace(/\./g,"");
