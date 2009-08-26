@@ -80,8 +80,8 @@ if(true){
 	dojo.require("tests.test_formats");
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
-} else {
 
+} else {
 
 //SNIP-START
 	// most of this stuff now needs to be refactored

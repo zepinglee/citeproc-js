@@ -1,0 +1,44 @@
+{
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      xml:lang=\"en\"\n      particle-in-name-sort=\"true\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n        <text value=\"Ignore me\"/>\n    </layout>\n  </citation>\n  <bibliography>\n    <sort>\n      <key variable=\"author\"/>\n    </sort>\n    <layout>\n      <names variable=\"author\">\n        <name/>\n      </names>\n    </layout>\n  </bibliography>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "family": "Roe", 
+                    "given": "Jane", 
+                    "prefix": "van", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-1", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "family": "Noakes", 
+                    "given": "John", 
+                    "prefix": "di", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-2", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "family": "Doe", 
+                    "given": "John", 
+                    "prefix": "von", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-3", 
+            "type": "book"
+        }
+    ], 
+    "mode": "bibliography", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John di Noakes</div>\n  <div class=\"csl-entry\">Jane van Roe</div>\n  <div class=\"csl-entry\">John von Doe</div>\n</div>", 
+    "schema": "1.0"
+}
