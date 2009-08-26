@@ -244,7 +244,9 @@ CSL.Lib.Elements.names = new function(){
 						state.registry.namereg.addname(Item.id,nameset.names[i],i);
 						//
 						// set the display mode default for givennames if required
-						if (state.tmp.disambig_request){
+						if (state.tmp.sort_key_flag){
+							state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i] = 2;
+						} else if (state.tmp.disambig_request){
 							//
 							// fix a request for initials that makes no sense.
 							// can't do this in disambig, because the availability

@@ -48,11 +48,11 @@ CSL.Util.Names.outputNames = function(state,display_names){
 
 	var segments = new this.StartMiddleEnd(state,display_names);
 	var sort_order = state.output.getToken("name").strings["name-as-sort-order"];
-	if (sort_order == "first"){
+	if (sort_order == "first" && !state.tmp.sort_key_flag){
 		state.output.addToken("start");
 			state.output.getToken("start").strings.name_as_sort_order = true;
 			state.output.getToken("start").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
-	} else if (sort_order == "all"){
+	} else if (sort_order == "all" || state.tmp.sort_key_flag){
 		state.output.addToken("start");
 		state.output.getToken("start").strings.name_as_sort_order = true;
 		state.output.getToken("start").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
