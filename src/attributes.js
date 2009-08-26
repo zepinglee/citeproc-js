@@ -558,7 +558,12 @@ CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
 };
 
 CSL.Lib.Attributes["@particle-in-name-sort"] = function(state,arg){
+	//
+	// This actually doesn't do anything, it's just here as a reminder
+	// that the option exists.  This goes on the style node, and is
+	// picked up in build.js.
+	//
 	if (arg == "true"){
-		state.opt["particle-in-name-sort"] = arg;
+		state.opt["particle-in-name-sort"] = true;
 	};
 };

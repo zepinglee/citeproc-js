@@ -52,7 +52,11 @@ doh.register("tests.std_sort", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("sort_NameParticleInNameSort");
+        var test = new StdRhinoTest("sort_NameParticleInNameSortFalse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("sort_NameParticleInNameSortTrue");
         doh.assertEqual(test.result, test.run());
     },
     function(){

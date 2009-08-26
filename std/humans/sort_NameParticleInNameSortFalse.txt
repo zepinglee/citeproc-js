@@ -33,16 +33,20 @@
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
 >>===== MODE =====>>
-citation
+bibliography
 <<===== MODE =====<<
 
 >>===== SCHEMA =====>>
-0.8
+1.0
 <<===== SCHEMA =====<<
 
 
 >>===== RESULT =====>>
-ЧАЙКОВСКИЙ, П.И., WINKLE, R. van, 我妻栄, THUCYDIDES, C., III, TOKUGAWA Ieyasu, et al.
+<div class="csl-bib-body">
+  <div class="csl-entry">John von Doe</div>
+  <div class="csl-entry">John di Noakes</div>
+  <div class="csl-entry">Jane van Roe</div>
+</div>
 <<===== RESULT =====<<
 
 
@@ -57,35 +61,47 @@ citation
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation 
-         et-al-min="6"
-         et-al-use-first="5">
-    <layout delimiter="; ">
-      <names variable="author">
-        <name delimiter=", " initialize-with="." name-as-sort-order="all" sort-separator=", ">
-          <name-part name="family" text-case="uppercase" />
-        </name>
-      </names>
+  <citation>
+    <layout>
+        <text value="Ignore me"/>
     </layout>
   </citation>
+  <bibliography>
+    <sort>
+      <key variable="author"/>
+    </sort>
+    <layout>
+      <names variable="author">
+        <name/>
+      </names>
+    </layout>
+  </bibliography>
 </style>
 <<===== CSL =====<<
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
+[
+ {
+   "id":"ITEM-1",
    "type": "book",
    "author": [
-        { "name": "Чайковский, Пётр Ильич" },
-        { "name": "van Winkle, Rip" },
-        { "name": "我妻, 栄" },
-        { "name": "Thucydides, Carl, III" },
-        { "name": "Tokugawa, Ieyasu !" },
-        { "name": "Ministry of Fear, Loathing and Error !!" },
-        { "name": "Prince" }
-   ],
-   "issued": "2000",
-   "title": "Our Story"
-}]
+        { "name":"van Roe, Jane" }
+   ]
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "author": [
+        { "name":"di Noakes, John" }
+   ]
+ },
+ {
+   "id":"ITEM-3",
+   "type": "book",
+   "author": [
+        { "name":"von Doe, John" }
+   ]
+ }
+]
 <<===== INPUT =====<<

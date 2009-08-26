@@ -50,14 +50,18 @@ CSL.Util.Names.outputNames = function(state,display_names){
 	var sort_order = state.output.getToken("name").strings["name-as-sort-order"];
 	if (sort_order == "first"){
 		state.output.addToken("start");
-		state.output.getToken("start").strings.name_as_sort_order = true;
+			state.output.getToken("start").strings.name_as_sort_order = true;
+			state.output.getToken("start").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
 	} else if (sort_order == "all"){
 		state.output.addToken("start");
 		state.output.getToken("start").strings.name_as_sort_order = true;
+		state.output.getToken("start").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
 		state.output.addToken("middle");
 		state.output.getToken("middle").strings.name_as_sort_order = true;
+		state.output.getToken("middle").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
 		state.output.addToken("end");
 		state.output.getToken("end").strings.name_as_sort_order = true;
+		state.output.getToken("end").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
 	}
 	var and = state.output.getToken("name").strings.delimiter;
 	if (state.output.getToken("name").strings["delimiter-precedes-last"] == "always"){
@@ -194,7 +198,11 @@ CSL.Util.Names.getNamepartSequence = function(name,token){
 	} else if (name.sticky) { // entry likes sort order
 		var sequence = [["space","space","space"],["prefix", "family"],["given"],[]];
 	} else if (token && token.strings.name_as_sort_order){
-		var sequence = [["sortsep","sortsep","space"],["prefix", "family"],["given"],["suffix"]];
+		if (token.strings.particle_in_name_sort){
+			var sequence = [["sortsep","sortsep","space"],["prefix", "family"],["given"],["suffix"]];
+		} else {
+			var sequence = [["sortsep","sortsep","space"],["family"],["given","prefix"],["suffix"]];
+		}
 	} else { // plain vanilla
 		var sequence = [[suffix_sep,"space","space"],["given"],["prefix","family"],["suffix"]];
 	}
