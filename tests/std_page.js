@@ -44,6 +44,10 @@ doh.register("tests.std_page", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("page_Minimal");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("page_NoOption");
         doh.assertEqual(test.result, test.run());
     },

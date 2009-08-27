@@ -121,7 +121,7 @@
             ]
         ]
     ], 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      xml:lang=\"en\"\n      page-range-format=\"chicago\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text variable=\"title\"/>\n      <text variable=\"page\" prefix=\", at \"/>\n    </layout>\n  </citation>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      xml:lang=\"en\"\n      page-range-format=\"minimal\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text variable=\"title\"/>\n      <text variable=\"page\" prefix=\", at \"/>\n    </layout>\n  </citation>\n</style>", 
     "input": [
         {
             "id": "ITEM-1", 
@@ -245,6 +245,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Example A, at 101-8\nExample B, at 3-10\nExample C, at 71-72\nExample D, at 96-117\nExample E, at 100-104\nExample F, at 600-613\nExample G, at 1100-1123\nExample H, at 107-8\nExample I, at 505-17\nExample J, at 1002-6\nExample K, at 321-25\nExample L, at 415-532\nExample M, at 1536-38\nExample N, at 11564-68\nExample O, at 11564-78\nExample P, at 13792-803\nExample Q, at 1496-1504\nExample R, at 2787-2816\nExample S, at n11564-68\nExample T, at n11564-68", 
+    "result": "Example A, at 101-8\nExample B, at 3-10\nExample C, at 71-2\nExample D, at 96-117\nExample E, at 100-4\nExample F, at 600-13\nExample G, at 1100-23\nExample H, at 107-8\nExample I, at 505-17\nExample J, at 1002-6\nExample K, at 321-5\nExample L, at 415-532\nExample M, at 1536-8\nExample N, at 11564-8\nExample O, at 11564-78\nExample P, at 13792-803\nExample Q, at 1496-504\nExample R, at 2787-816\nExample S, at n11564-8\nExample T, at n11564-8", 
     "schema": "0.8"
 }

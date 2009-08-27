@@ -76,12 +76,17 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 		return lst;
 	};
 
-	var minimize = function(str){
-		print("minimize page-range");
-		return str;
+	var minimize = function(lst){
+		for (var pos=1; pos<lst.length; pos += 2){
+			lst[pos][3] = _minimize(lst[pos][1], lst[pos][3]);
+			if (lst[pos][2].slice(1) == lst[pos][0]){
+				lst[pos][2] = "-";
+			}
+		};
+		return stringify(lst);
 	};
 
-	var _chicago = function(begin, end){
+	var _minimize = function(begin, end){
 		var b = (""+begin).split("");
 		var e = (""+end).split("");
 		var ret = e.slice();
@@ -91,14 +96,12 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 				if (b[pos] == e[pos]){
 					ret.pop();
 				} else {
-					ret.reverse();
 					break;
 				}
 			}
 		}
+		ret.reverse();
 		return ret.join("");
-
-
 	};
 
 	var chicago = function(lst){
@@ -110,8 +113,11 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 				if (begin > 100 && begin % 100 && parseInt((begin/100),10) == parseInt((end/100),10)){
 					m[3] = ""+(end % 100);
 				} else if (begin >= 10000){
-					m[3] = _chicago(m[1], m[3]);
+					m[3] = _minimize(m[1], m[3]);
 				}
+			}
+			if (m[2].slice(1) == m[0]){
+				m[2] = "-";
 			}
 		}
 		return stringify(lst);
@@ -120,7 +126,6 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	//
 	// The top-level option handlers.
 	//
-
 	if (!state.opt["page-range-format"]){
 		var ret_func = function(str){
 			return str;
