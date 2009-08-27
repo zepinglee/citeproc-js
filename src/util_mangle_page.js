@@ -40,50 +40,64 @@ CSL.Util.PageRangeMangler = new Object();
 
 
 CSL.Util.PageRangeMangler.getFunction = function(state){
+
+	var stringify = function(lst){
+
+		return lst.join("");
+	};
+
+	var listify = function(str){
+		var lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
+		return lst;
+	};
+
+	var expand = function(str){
+		var lst = listify(str);
+		print("expand page-range: "+lst);
+		return lst;
+	};
+
+	var minimize = function(str){
+		print("minimize page-range");
+		return str;
+	};
+
+	var _minimize = function(str){
+	};
+
+	var chicago = function(str){
+		print("chicagoize page-range");
+		return str;
+	};
+
+	var _chicago = function(str){
+	};
+
+	//
+	// The top-level option handlers.
+	//
+
 	if (!state.opt["page-range-format"]){
 		var ret_func = function(str){
 			return str;
 		};
 	} else if (state.opt["page-range-format"] == "expanded"){
 		var ret_func = function(str){
-			return CSL.Util.PageRangeMangler.expand(str);
+			var lst = expand( str );
+			return stringify(lst);
 		};
 	} else if (state.opt["page-range-format"] == "minimal") {
 		var ret_func = function(str){
-			str = CSL.Util.PageRangeMangler.expand(str);
-			return CSL.Util.PageRangeMangler.minimize(str);
+			var lst = expand(str);
+			return minimize(lst);
 		};
 	} else if (state.opt["page-range-format"] == "chicago"){
 		var ret_func = function(str){
-			str = CSL.Util.PageRangeMangler.expand(str);
-			return CSL.Util.PageRangeMangler.chicago(str);
+			var lst = expand(str);
+			return chicago(lst);
 		};
 	};
 	return ret_func;
-};
-
-CSL.Util.PageRangeMangler.expand = function(str){
-	print("expand page-range");
-	return str;
-};
-
-CSL.Util.PageRangeMangler._expand = function(str){
-};
-
-CSL.Util.PageRangeMangler.minimize = function(str){
-	print("minimize page-range");
-	return str;
-};
-
-CSL.Util.PageRangeMangler._minimize = function(str){
-};
-
-CSL.Util.PageRangeMangler.chicago = function(str){
-	print("chicagoize page-range");
-	return str;
-};
-
-CSL.Util.PageRangeMangler._chicago = function(str){
 };
 
 
