@@ -36,6 +36,10 @@ dojo.provide("tests.std_page");
 
 doh.register("tests.std_page", [
     function(){
+        var test = new StdRhinoTest("page_Chicago");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("page_Expand");
         doh.assertEqual(test.result, test.run());
     },

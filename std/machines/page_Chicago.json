@@ -1,0 +1,226 @@
+{
+    "citations": [
+        [
+            [
+                "ITEM-1", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-2", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-3", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-4", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-5", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-6", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-7", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-8", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-9", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-10", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-11", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-12", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-13", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-14", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-15", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-16", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-17", 
+                {}
+            ]
+        ], 
+        [
+            [
+                "ITEM-18", 
+                {}
+            ]
+        ]
+    ], 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      xml:lang=\"en\"\n      page-range-format=\"chicago\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text variable=\"title\"/>\n      <text variable=\"page\" prefix=\", at \"/>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "page": "101-108", 
+            "title": "Example A", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-2", 
+            "page": "3-10", 
+            "title": "Example B", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-3", 
+            "page": "71-72", 
+            "title": "Example C", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-4", 
+            "page": "96-117", 
+            "title": "Example D", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-5", 
+            "page": "100-4", 
+            "title": "Example E", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-6", 
+            "page": "600-13", 
+            "title": "Example F", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-7", 
+            "page": "1100-23", 
+            "title": "Example G", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-8", 
+            "page": "107-108", 
+            "title": "Example H", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-9", 
+            "page": "505-17", 
+            "title": "Example I", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-10", 
+            "page": "1002-1006", 
+            "title": "Example J", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-11", 
+            "page": "321-325", 
+            "title": "Example K", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-12", 
+            "page": "415-532", 
+            "title": "Example L", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-13", 
+            "page": "1536-538", 
+            "title": "Example M", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-14", 
+            "page": "11564-11568", 
+            "title": "Example N", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-15", 
+            "page": "11564-11578", 
+            "title": "Example O", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-16", 
+            "page": "13792-13803", 
+            "title": "Example P", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-17", 
+            "page": "1496-504", 
+            "title": "Example Q", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-18", 
+            "page": "2787-816", 
+            "title": "Example R", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Example A, at 101-8\nExample B, at 3-10\nExample C, at 71-72\nExample D, at 96-117\nExample E, at 100-104\nExample F, at 600-613\nExample G, at 1100-1123\nExample H, at 107-8\nExample I, at 505-17\nExample J, at 1002-6\nExample K, at 321-25\nExample L, at 415-532\nExample M, at 1536-38\nExample N, at 11564-68\nExample O, at 11564-78\nExample P, at 13792-803\nExample Q, at 1496-1504\nExample R, at 2787-2816", 
+    "schema": "0.8"
+}

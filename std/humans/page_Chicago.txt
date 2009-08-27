@@ -1,0 +1,263 @@
+/*
+ * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
+ *
+ * The contents of this file are subject to the Common Public
+ * Attribution License Version 1.0 (the “License”); you may not use
+ * this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ *
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./std subdirectory of the distribution archive.
+ *
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ *
+ * The Initial Developer of the Original Code is Frank G. Bennett,
+ * Jr. All portions of the code written by Frank G. Bennett, Jr. are
+ * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
+ */
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+>>===== RESULT =====>>
+Example A, at 101-8
+Example B, at 3-10
+Example C, at 71-72
+Example D, at 96-117
+Example E, at 100-104
+Example F, at 600-613
+Example G, at 1100-1123
+Example H, at 107-8
+Example I, at 505-17
+Example J, at 1002-6
+Example K, at 321-25
+Example L, at 415-532
+Example M, at 1536-38
+Example N, at 11564-68
+Example O, at 11564-78
+Example P, at 13792-803
+Example Q, at 1496-1504
+Example R, at 2787-2816
+<<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+  [
+    ["ITEM-1",{}]
+  ],
+  [
+    ["ITEM-2",{}]
+  ],
+  [
+    ["ITEM-3",{}]
+  ],
+  [
+    ["ITEM-4",{}]
+  ],
+  [
+    ["ITEM-5",{}]
+  ],
+  [
+    ["ITEM-6",{}]
+  ],
+  [
+    ["ITEM-7",{}]
+  ],
+  [
+    ["ITEM-8",{}]
+  ],
+  [
+    ["ITEM-9",{}]
+  ],
+  [
+    ["ITEM-10",{}]
+  ],
+  [
+    ["ITEM-11",{}]
+  ],
+  [
+    ["ITEM-12",{}]
+  ],
+  [
+    ["ITEM-13",{}]
+  ],
+  [
+    ["ITEM-14",{}]
+  ],
+  [
+    ["ITEM-15",{}]
+  ],
+  [
+    ["ITEM-16",{}]
+  ],
+  [
+    ["ITEM-17",{}]
+  ],
+  [
+    ["ITEM-18",{}]
+  ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      xml:lang="en"
+      page-range-format="chicago">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <text variable="title"/>
+      <text variable="page" prefix=", at "/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+ * collapse(101, 108, "101-8")
+ *
+ * collapse(3,10, "3-10")
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "title": "Example A",
+   "page": "101-108"
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "title": "Example B",
+   "page": "3-10"
+ },
+ {
+   "id":"ITEM-3",
+   "type": "book",
+   "title": "Example C",
+   "page": "71-72"
+ },
+ {
+   "id":"ITEM-4",
+   "type": "book",
+   "title": "Example D",
+   "page": "96-117"
+ },
+ {
+   "id":"ITEM-5",
+   "type": "book",
+   "title": "Example E",
+   "page": "100-4"
+ },
+ {
+   "id":"ITEM-6",
+   "type": "book",
+   "title": "Example F",
+   "page": "600-13"
+ },
+ {
+   "id":"ITEM-7",
+   "type": "book",
+   "title": "Example G",
+   "page": "1100-23"
+ },
+ {
+   "id":"ITEM-8",
+   "type": "book",
+   "title": "Example H",
+   "page": "107-108"
+ },
+ {
+   "id":"ITEM-9",
+   "type": "book",
+   "title": "Example I",
+   "page": "505-17"
+ },
+ {
+   "id":"ITEM-10",
+   "type": "book",
+   "title": "Example J",
+   "page": "1002-1006"
+ },
+ {
+   "id":"ITEM-11",
+   "type": "book",
+   "title": "Example K",
+   "page": "321-325"
+ },
+ {
+   "id":"ITEM-12",
+   "type": "book",
+   "title": "Example L",
+   "page": "415-532"
+ },
+ {
+   "id":"ITEM-13",
+   "type": "book",
+   "title": "Example M",
+   "page": "1536-538"
+ },
+ {
+   "id":"ITEM-14",
+   "type": "book",
+   "title": "Example N",
+   "page": "11564-11568"
+ },
+ {
+   "id":"ITEM-15",
+   "type": "book",
+   "title": "Example O",
+   "page": "11564-11578"
+ },
+ {
+   "id":"ITEM-16",
+   "type": "book",
+   "title": "Example P",
+   "page": "13792-13803"
+ },
+ {
+   "id":"ITEM-17",
+   "type": "book",
+   "title": "Example Q",
+   "page": "1496-504"
+ },
+ {
+   "id":"ITEM-18",
+   "type": "book",
+   "title": "Example R",
+   "page": "2787-816"
+ }
+]
+<<===== INPUT =====<<
