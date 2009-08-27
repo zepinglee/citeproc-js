@@ -35,6 +35,12 @@
                 "ITEM-6", 
                 {}
             ]
+        ], 
+        [
+            [
+                "ITEM-7", 
+                {}
+            ]
         ]
     ], 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      xml:lang=\"en\"\n      page-range-format=\"expanded\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text variable=\"title\"/>\n      <text variable=\"page\" prefix=\", at \"/>\n    </layout>\n  </citation>\n</style>", 
@@ -74,9 +80,15 @@
             "page": "123N110-N5, 456K200-99", 
             "title": "Example: multiple ranges", 
             "type": "book"
+        }, 
+        {
+            "id": "ITEM-7", 
+            "page": "123N110-N5, 000c23-22", 
+            "title": "Example: first less than second", 
+            "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "Example: minimal, at 110-115\nExample: prefix on one number only, at N110-N115\nExample: same prefix on both numbers, at N110-N115\nExample: different prefixes on each number, at N110-P5\nExample: leading number before prefix, at 123N110-N115\nExample: multiple ranges, at 123N110-N115, 456K200-K299", 
+    "result": "Example: minimal, at 110-115\nExample: prefix on one number only, at N110-N115\nExample: same prefix on both numbers, at N110-N115\nExample: different prefixes on both numbers, at N110-P5\nExample: leading number before prefix, at 123N110-N115\nExample: multiple ranges, at 123N110-N115, 456K200-K299\nExample: first less than second, at 123N110-N115, 000c23-22", 
     "schema": "0.8"
 }

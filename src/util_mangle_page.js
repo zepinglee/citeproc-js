@@ -41,6 +41,8 @@ CSL.Util.PageRangeMangler = new Object();
 
 CSL.Util.PageRangeMangler.getFunction = function(state){
 
+	var rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
+
 	var stringify = function(lst){
 
 		return lst.join("");
@@ -53,7 +55,18 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 
 	var expand = function(str){
 		var lst = listify(str);
-		print("expand page-range: "+lst);
+		for (var pos=1; pos<lst.length; pos += 2){
+			var m = lst[pos].match(rangerex);
+			if (m){
+				if (!m[3] || m[1] == m[3]){
+					m[4] = m[2].slice(0,(m[2].length-m[4].length)) + m[4];
+					if (parseInt(m[2],10) < parseInt(m[4],10)){
+						m[3] = "-"+m[1];
+						lst[pos] = m.slice(1).join("");
+					}
+				}
+			}
+		};
 		return lst;
 	};
 

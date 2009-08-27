@@ -84,7 +84,6 @@ if(true){
 
 } else {
 
-
 //SNIP-START
 	// most of this stuff now needs to be refactored
 	dojo.require("tests.test_build_internals");
