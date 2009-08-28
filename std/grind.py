@@ -200,6 +200,7 @@ class CslTest(CslTestUtils):
 
     def fix_source(self):
         """ Convert options to attributes, write back to source file.
+            (should be disabled)
         """
         mycsl = self.data["csl"].replace(namespace,'')
         et = ElementTree.fromstring(mycsl)
@@ -249,6 +250,8 @@ class CslTest(CslTestUtils):
             for key in [unicode(i) for i in self.CREATORS]:
                 if item.has_key(key):
                     for entry in item[key]:
+                        if not entry.has_key("name"):
+                            continue
                         one_char = len(entry["name"])-1
                         two_chars = one_char-1
                         entry["sticky"] = False
