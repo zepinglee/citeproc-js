@@ -32,43 +32,11 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_sort");
+dojo.provide("tests.std_multilingual");
 
-doh.register("tests.std_sort", [
+doh.register("tests.std_multilingual", [
     function(){
-        var test = new StdRhinoTest("sort_AguStyle");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_AguStyleReverseGroups");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_CitationEdit");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_Citation");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_NameImplicitSortOrderAndForm");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_NameParticleInNameSortFalse");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_NameParticleInNameSortTrue");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_NameVariable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_NumberOfAuthorsAsKey");
+        var test = new StdRhinoTest("multilingual_AlternativeSort");
         doh.assertEqual(test.result, test.run());
     },
 ]);
