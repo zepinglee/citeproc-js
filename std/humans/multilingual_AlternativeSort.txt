@@ -52,7 +52,7 @@ Aardvaark
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US--sort-en-custom">
+      default-locale="en-US-sort-eng-custom">
   <info>
     <id />
     <title />

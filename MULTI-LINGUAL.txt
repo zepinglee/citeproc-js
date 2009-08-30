@@ -24,19 +24,20 @@ end up with conflicts when sharing or combining records.
 
 For scripts, we'll have to settle for something internal to the
 project, as there doesn't seem to be a uniform set of standards on how
-to transliterate things for sorting.  For example, in Japanese you
-might use any of several forms of romanization, or Japanese syllabic
-sort ordering.  For Japanese, I would suggest "eng-hepburn" for Revised
-Hepburn, "jpn-katakana" for Japanese phonetic, and "eng-roman" for romanization
-stripped of macrons.  See below for the meaning of the prefixes.
+to specify the glyphs and conventions used to transliterate things.
+For example, in Japanese you might use any of several forms of
+romanization, or Japanese syllabic sort ordering.  For Japanese, I
+would suggest "eng-hepburn" for Revised Hepburn, "jpn-katakana" for
+Japanese phonetic, and "eng-roman" for Hepburn romanization stripped
+of macrons.  See below for the meaning of the prefixes.
 
 ## Default locale string
 
 The default-locale attribute of CSL styles validates successfully with
 roman letters and hyphens.  Rendering options are fashioned out of
 this limited set of characters.  Elements in the default-locale may
-consist of several elements.  Elements are separated by two hyphens
-("--") as delimiter.
+consist of several elements, each (except the first) beginning with one
+of the reserved words "primary", "secondary" or "sort".
 
 ### Global default locale 
 
@@ -56,15 +57,15 @@ The following specifier is *not* valid:
 Subsidiary default locales can be used to set preferences for the
 sub-field to be used for primary content.  Each subsidiary default
 locale specifier consists of a key label, followed by a hyphen,
-followed by the specifier string.  As stated above, a double hyphen
-is used to separate the elements of the overall default-locale string.
+followed by the specifier string.  As stated above, a reserved word,
+or "key label", is the first word in a subsidiary default locale.
 
 #### The `primary` key label
 
 The primary content preference is set using the "primary" key label.
 For example:
 
-    en-US--primary-eng
+    en-US-primary-eng
 
 The above string would declare English as the language of the style,
 and use entries with the :eng: tag as the primary content sub-field,
@@ -97,7 +98,7 @@ braces.  For example, if we have the following entry:
     :eng-hepburn: Nihongo no Midashi
     :eng: Japanese Title
 
-With a default-locale setting of `en-US--secondary-eng`, the title
+With a default-locale setting of `en-US-secondary-eng`, the title
 field would appear as: "日本語の見出し [Japanese Title]".
 
 #### The `sort` key label
@@ -111,7 +112,7 @@ sorting the string.  For example, if we have the following entry:
     :eng-hepburn: Nihongo no Midashi
     :eng: Japanese Title
 
-With a default-locale setting of `ja-JP--sort-jpn-katakana`, the entries
+With a default-locale setting of `ja-JP-sort-jpn-katakana`, the entries
 would be sorted using the jpn-katakana sub-field, if available, falling
 back to the default field content otherwise.
 
