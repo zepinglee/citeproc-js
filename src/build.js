@@ -358,3 +358,15 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	};
 };
 
+CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
+	var lst = value.split(/\s*:([-a-z]+):\s*/);
+	var opt = this.opt[locale_type];
+	if (opt && lst.indexOf(opt) > -1 && lst.indexOf(opt) % 2){
+		value = lst[(lst.indexOf(opt)+1)];
+	} else if (use_default){
+		value = lst[0];
+	} else {
+		value = undefined;
+	};
+	return value;
+};

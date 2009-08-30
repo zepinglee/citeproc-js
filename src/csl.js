@@ -185,7 +185,6 @@ CSL = new function () {
 		"zh":"locales-zh-CN.xml",
 		"zh":"locales-zh-TW.xml"
 	};
-
 };
 
 //SNIP-START

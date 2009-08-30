@@ -32,23 +32,54 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_multilingual");
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
 
-doh.register("tests.std_multilingual", [
-    function(){
-        var test = new StdRhinoTest("multilingual_TextPrimaryExists");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextPrimaryNonexistent");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextSortMacroExists");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextSortVariableExists");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Aardvaark; Zzzzzzzzz
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      default-locale="en-US-primary-eng-custom">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <sort>
+      <key variable="title"/>
+    </sort>
+    <layout delimiter="; ">
+      <text variable="title"/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "title": "Aardvaark"
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "title": "Zzzzzzzzz"
+ }
+]
+<<===== INPUT =====<<

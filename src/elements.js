@@ -204,13 +204,7 @@ CSL.Lib.Elements.text = new function(){
 							var func = function(state,Item){
 								var value = Item[this.variables[0]];
 								if (value){
-									var lst = value.split(/\s*:([-a-z]+):\s*/);
-									var opt = state.opt["locale-sort"];
-									if (opt && lst.indexOf(opt) > -1){
-										value = lst[(lst.indexOf(opt)+1)];
-									} else {
-										value = lst[0];
-									}
+									value = state.getTextSubField(value,"locale-sort",true);
 									state.output.append(value,this);
 								};
 							};
@@ -218,13 +212,7 @@ CSL.Lib.Elements.text = new function(){
 							var func = function(state,Item){
 								var value = Item[this.variables[0]];
 								if (value){
-									var lst = value.split(/\s*:([-a-z]+):\s*/);
-									var opt = state.opt["locale-primary"];
-									if (opt && lst.indexOf(opt) > -1){
-										value = lst[(lst.indexOf(opt)+1)];
-									} else {
-										value = lst[0];
-									}
+									value = state.getTextSubField(value,"locale-primary",true);
 									state.output.append(value,this);
 								};
 							};
@@ -1090,13 +1078,7 @@ CSL.Lib.Elements.key = new function(){
 					var output_func = function(state,Item){
 						var value = Item[variable];
 						if (value){
-							var lst = value.split(/\s*:([-a-z]+):\s*/);
-							var opt = state.opt["locale-sort"];
-							if (opt && lst.indexOf(opt) > -1){
-								value = lst[(lst.indexOf(opt)+1)];
-							} else {
-								value = lst[0];
-							};
+							value = state.getTextSubField(value,"locale-sort",true);
 							state.output.append(value,"empty");
 						};
 					};
