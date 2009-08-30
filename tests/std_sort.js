@@ -36,6 +36,13 @@ dojo.provide("tests.std_sort");
 
 doh.register("tests.std_sort", [
     function(){
+        var test = new StdRhinoTest("sort_NameParticleInNameSortTrue");
+        doh.assertEqual(test.result, test.run());
+    },
+]);
+
+var x = [
+    function(){
         var test = new StdRhinoTest("sort_AguStyle");
         doh.assertEqual(test.result, test.run());
     },
@@ -60,10 +67,6 @@ doh.register("tests.std_sort", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("sort_NameParticleInNameSortTrue");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("sort_NameVariable");
         doh.assertEqual(test.result, test.run());
     },
@@ -71,4 +74,4 @@ doh.register("tests.std_sort", [
         var test = new StdRhinoTest("sort_NumberOfAuthorsAsKey");
         doh.assertEqual(test.result, test.run());
     },
-]);
+]

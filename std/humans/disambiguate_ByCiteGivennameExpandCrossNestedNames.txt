@@ -50,8 +50,7 @@ J. Doe, Jane Roe, Robert Jones; J. Doe, Josephine Roe, Robert Jones; J. Doe, Jan
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0"
-      xml:lang="en">
+      version="1.0">
   <info>
     <id />
     <title />

@@ -51,17 +51,17 @@ CSL.Util.Names.outputNames = function(state,display_names){
 	if (sort_order == "first" && !state.tmp.sort_key_flag){
 		state.output.addToken("start");
 			state.output.getToken("start").strings.name_as_sort_order = true;
-			state.output.getToken("start").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
+			state.output.getToken("start").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
 	} else if (sort_order == "all" || state.tmp.sort_key_flag){
 		state.output.addToken("start");
 		state.output.getToken("start").strings.name_as_sort_order = true;
-		state.output.getToken("start").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
+		state.output.getToken("start").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
 		state.output.addToken("middle");
 		state.output.getToken("middle").strings.name_as_sort_order = true;
-		state.output.getToken("middle").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
+		state.output.getToken("middle").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
 		state.output.addToken("end");
 		state.output.getToken("end").strings.name_as_sort_order = true;
-		state.output.getToken("end").strings.particle_in_name_sort = state.opt["particle-in-name-sort"];
+		state.output.getToken("end").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
 	}
 	var and = state.output.getToken("name").strings.delimiter;
 	if (state.output.getToken("name").strings["delimiter-precedes-last"] == "always"){

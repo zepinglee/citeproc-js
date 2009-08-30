@@ -135,7 +135,6 @@ Example T, at n11564-68
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      xml:lang="en"
       page-range-format="chicago">
   <info>
     <id />

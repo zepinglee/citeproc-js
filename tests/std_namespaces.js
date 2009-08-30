@@ -39,8 +39,4 @@ doh.register("tests.std_namespaces", [
         var test = new StdRhinoTest("namespaces_NonNada3");
         doh.assertEqual(test.result, test.run());
     },
-    function(){
-        var test = new StdRhinoTest("namespaces_NonNada4");
-        doh.assertEqual(test.result, test.run());
-    },
 ]);

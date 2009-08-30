@@ -53,9 +53,6 @@ CSL.Engine = function(sys,style,lang) {
 	this.output = new CSL.Output.Queue(this);
 
 	this.cslXml = this.sys.xml.makeXml(style);
-	if (this.cslXml["@particle-in-name-sort"].toString() == "true"){
-		this.opt["particle-in-name-sort"] = true;
-	}
 	if (this.cslXml["@page-range-format"].toString()){
 		this.opt["page-range-format"] = this.cslXml["@page-range-format"].toString();
 	}

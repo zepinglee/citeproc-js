@@ -47,7 +47,7 @@ Book A
 
 
 >>===== CSL =====>>
-<ns0:style class="in-text" version="1.0" xml:lang="en" xmlns:ns0="http://purl.org/net/xbiblio/csl">
+<ns0:style class="in-text" version="1.0"> xml:lang="en" xmlns:ns0="http://purl.org/net/xbiblio/csl">
   <ns0:info>
     <ns0:id />
     <ns0:title />

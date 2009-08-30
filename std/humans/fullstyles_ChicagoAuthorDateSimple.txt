@@ -57,8 +57,7 @@ bibliography
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0"
-      xml:lang="en">
+      version="1.0">
   <info>
     <title>Chicago Manual of Style (Author-Date format)</title>
     <id>http://www.zotero.org/styles/chicago-author-date</id>

@@ -15,7 +15,7 @@
             ]
         ]
     ], 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      xml:lang=\"en\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout font-style=\"italic\">\n      <text prefix=\"[\" suffix=\"]\" variable=\"citation-number\" />\n    </layout>\n  </citation>\n  <bibliography>\n    <layout>\n      <text variable=\"title\" />\n    </layout>\n  </bibliography>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout font-style=\"italic\">\n      <text prefix=\"[\" suffix=\"]\" variable=\"citation-number\" />\n    </layout>\n  </citation>\n  <bibliography>\n    <layout>\n      <text variable=\"title\" />\n    </layout>\n  </bibliography>\n</style>", 
     "input": [
         {
             "author": [

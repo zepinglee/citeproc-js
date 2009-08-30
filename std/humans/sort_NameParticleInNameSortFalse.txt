@@ -54,8 +54,7 @@ bibliography
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0"
-      xml:lang="en">
+      version="1.0">
   <info>
     <id />
     <title />
@@ -66,7 +65,7 @@ bibliography
         <text value="Ignore me"/>
     </layout>
   </citation>
-  <bibliography>
+  <bibliography particle-in-name-sort="false">
     <sort>
       <key variable="author"/>
     </sort>

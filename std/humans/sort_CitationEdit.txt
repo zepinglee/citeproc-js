@@ -59,8 +59,7 @@ citation
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0"
-      xml:lang="en">
+      version="1.0">
   <info>
     <id />
     <title />
@@ -79,7 +78,7 @@ citation
       <key variable="citation-number"/>
     </sort>
     <layout>
-      <number variable="citation-number"/>
+      <text variable="citation-number"/>
       <text variable="title"/>
     </layout>
   </bibliography>

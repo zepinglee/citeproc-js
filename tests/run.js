@@ -36,8 +36,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_page");
 	dojo.require("tests.std_sort");
+	dojo.require("tests.std_page");
 	dojo.require("tests.std_decorations");
 	dojo.require("tests.std_quotes");
 	dojo.require("tests.std_magic");

@@ -84,7 +84,6 @@ Example: first less than second, at 123N110-N115, 000c23-22
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      xml:lang="en"
       page-range-format="expanded">
   <info>
     <id />
