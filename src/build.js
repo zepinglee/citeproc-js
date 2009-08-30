@@ -56,6 +56,22 @@ CSL.Engine = function(sys,style,lang) {
 	if (this.cslXml["@page-range-format"].toString()){
 		this.opt["page-range-format"] = this.cslXml["@page-range-format"].toString();
 	}
+	if (this.cslXml["@default-locale"].toString()){
+		var lst = this.cslXml["@default-locale"].toString();
+		lst = lst.split(/-(sort|primary|secondary)-/);
+		var pos = lst.indexOf("sort");
+		if (pos > -1){
+			this.opt["locale-sort"] = lst[(pos+1)];
+		}
+		var pos = lst.indexOf("primary");
+		if (pos > -1){
+			this.opt["locale-primary"] = lst[(pos+1)];
+		}
+		var pos = lst.indexOf("secondary");
+		if (pos > -1){
+			this.opt["locale-secondary"] = lst[(pos+1)];
+		}
+	}
 	//
 	// implicit default, "en"
 	this.setLocaleXml();

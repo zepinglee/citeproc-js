@@ -37,6 +37,7 @@ dojo.require("doh.runner");
 // requested tests go here
 if(true){
 	dojo.require("tests.std_multilingual");
+} else {
 	dojo.require("tests.std_sort");
 	dojo.require("tests.std_page");
 	dojo.require("tests.std_decorations");
@@ -83,7 +84,6 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
 
-} else {
 
 //SNIP-START
 	// most of this stuff now needs to be refactored

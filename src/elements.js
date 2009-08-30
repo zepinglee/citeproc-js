@@ -200,17 +200,33 @@ CSL.Lib.Elements.text = new function(){
 					state.build.plural = false;
 				} else if (this.variables.length){
 					if (this.variables[0] == "title"){
-						var func = function(state,Item){
-							var value = Item[this.variables[0]];
-							if (value){
-								var lst = value.split(/\s*:([-a-z]+):\s*/);
-								var pos = lst.indexOf(state.opt["locale-sort"]);
-								if (pos > -1){
-									value = lst[(pos+1)];
-								} else {
-									value = lst[0];
-								}
-								state.output.append(value,this);
+						if (state.build.area.slice(-5) == "_sort"){
+							var func = function(state,Item){
+								var value = Item[this.variables[0]];
+								if (value){
+									var lst = value.split(/\s*:([-a-z]+):\s*/);
+									var opt = state.opt["locale-sort"];
+									if (opt && lst.indexOf(opt) > -1){
+										value = lst[(lst.indexOf(opt)+1)];
+									} else {
+										value = lst[0];
+									}
+									state.output.append(value,this);
+								};
+							};
+						} else {
+							var func = function(state,Item){
+								var value = Item[this.variables[0]];
+								if (value){
+									var lst = value.split(/\s*:([-a-z]+):\s*/);
+									var opt = state.opt["locale-primary"];
+									if (opt && lst.indexOf(opt) > -1){
+										value = lst[(lst.indexOf(opt)+1)];
+									} else {
+										value = lst[0];
+									}
+									state.output.append(value,this);
+								};
 							};
 						};
 					} else if (this.variables[0] == "page-first"){
@@ -1068,6 +1084,20 @@ CSL.Lib.Elements.key = new function(){
 							state.output.append(CSL.Util.Dates.year["long"](state,Item[variable].year));
 							state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable].month));
 							state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable].day));
+						};
+					};
+				} else if ("title" == variable) {
+					var output_func = function(state,Item){
+						var value = Item[variable];
+						if (value){
+							var lst = value.split(/\s*:([-a-z]+):\s*/);
+							var opt = state.opt["locale-sort"];
+							if (opt && lst.indexOf(opt) > -1){
+								value = lst[(lst.indexOf(opt)+1)];
+							} else {
+								value = lst[0];
+							};
+							state.output.append(value,"empty");
 						};
 					};
 				} else {
