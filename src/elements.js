@@ -199,21 +199,37 @@ CSL.Lib.Elements.text = new function(){
 					state.build.form = false;
 					state.build.plural = false;
 				} else if (this.variables.length){
-					var func = function(state,Item){
-						var realvarname = this.variables[0];
-						if (realvarname == "page-first"){
-							realvarname = "page";
-						}
-						var value = state.getVariable(Item,realvarname,form);
-						if (value && this.variables[0] == "page-first"){
-							value = value.replace(/-.*/,"");
-						} else if (value && this.variables[0] == "page"){
-							value = state.fun.page_mangler(value);
-						}
-						if (this.strings["strip-periods"]){
-							value = value.replace(/\./g,"");
+					if (this.variables[0] == "title"){
+						var func = function(state,Item){
+							var value = Item[this.variables[0]];
+							if (value){
+								var lst = value.split(/\s*:([-a-z]+):\s*/);
+								var pos = lst.indexOf(state.opt["locale-sort"]);
+								if (pos > -1){
+									value = lst[(pos+1)];
+								} else {
+									value = lst[0];
+								}
+								state.output.append(value,this);
+							};
 						};
-						state.output.append(value,this);
+					} else if (this.variables[0] == "page-first"){
+						var func = function(state,Item){
+							var value = state.getVariable(Item,"page",form);
+							value = value.replace(/-.*/,"");
+							state.output.append(value,this);
+						};
+					} else if (this.variables[0] == "page"){
+						var func = function(state,Item){
+							var value = state.getVariable(Item,"page",form);
+							value = state.fun.page_mangler(value);
+							state.output.append(value,this);
+						};
+					} else {
+						var func = function(state,Item){
+							var value = state.getVariable(Item,this.variables[0],form);
+							state.output.append(value,this);
+						};
 					};
 					this["execs"].push(func);
 				} else if (this.strings.value){

@@ -42,8 +42,7 @@ citation
 
 
 >>===== RESULT =====>>
-Zzzzzzzzz
-Aardvaark
+Zzzzzzzzz; Aardvaark
 <<===== RESULT =====<<
 
 
@@ -62,7 +61,7 @@ Aardvaark
     <sort>
       <key variable="title"/>
     </sort>
-    <layout>
+    <layout delimiter="; ">
       <text variable="title"/>
     </layout>
   </citation>

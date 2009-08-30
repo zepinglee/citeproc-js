@@ -115,4 +115,3 @@ sorting the string.  For example, if we have the following entry:
 With a default-locale setting of `ja-JP-sort-jpn-katakana`, the entries
 would be sorted using the jpn-katakana sub-field, if available, falling
 back to the default field content otherwise.
-
