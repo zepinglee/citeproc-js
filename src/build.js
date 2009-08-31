@@ -378,6 +378,10 @@ CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
 CSL.Engine.prototype.getNameSubFields = function(names){
 	var pos = -1;
 	var ret = new Array();
+	var mode = "locale-name";
+	if (this.tmp.area.slice(-5) == "_sort"){
+		mode = "locale-sort";
+	}
 	for (var name in names){
 		//
 		// clone the name object so we can trample on the content.
@@ -401,11 +405,11 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 				var m = p.match(/^:([-a-z]+):\s+(.*)/);
 				if (m){
 					addme = false;
-					if (m[1] == this.opt["locale-name"]){
+					if (m[1] == this.opt[mode]){
 						updateme = true;
 						newname[part] = m[2];
-					} else if (this.opt["locale-name"].indexOf("-") > -1) {
-						var newopt = this.opt["locale-name"].slice(0,this.opt["locale-name"].indexOf("-"));
+					} else if (this.opt[mode] && this.opt[mode].indexOf("-") > -1) {
+						var newopt = this.opt[mode].slice(0,this.opt[mode].indexOf("-"));
 						if (m[1] == newopt){
 							updateme = true;
 							newname[part] = m[2];

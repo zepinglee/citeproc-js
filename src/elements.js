@@ -1054,30 +1054,22 @@ CSL.Lib.Elements.key = new function(){
 			var variable = this.variables[0];
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
-				// XXXXX: Doesn't do anything yet.  Tokens need execs,
-				// which I think means we need to run the CLS.Lib.Elements
-				// methods.  Yuck.  This is painful.
-				//
 				// Start tag
 				var names_start_token = new CSL.Factory.Token("names",CSL.START);
 				names_start_token.tokentype = CSL.START;
 				names_start_token.variables = this.variables;
 				CSL.Lib.Elements.names.build.call(names_start_token,state,target);
-				//target.push(names_start_token);
 				//
 				// Middle tag
 				var name_token = new CSL.Factory.Token("name",CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
 				CSL.Lib.Elements.name.build.call(name_token,state,target);
-				//target.push(name_token);
 				//
 				// End tag
 				var names_end_token = new CSL.Factory.Token("names",CSL.END);
 				names_end_token.tokentype = CSL.END;
 				CSL.Lib.Elements.names.build.call(names_end_token,state,target);
-				//var names_end_token = new CSL.Factory.Token("names",CSL.END);
-				//target.push(names_end_token);
 			} else {
 				var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
 				if (variable == "citation-number"){
