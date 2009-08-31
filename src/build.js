@@ -58,7 +58,7 @@ CSL.Engine = function(sys,style,lang) {
 	}
 	if (this.cslXml["@default-locale"].toString()){
 		var lst = this.cslXml["@default-locale"].toString();
-		lst = lst.split(/-(sort|primary|secondary)-/);
+		lst = lst.split(/-(sort|primary|secondary|name)-/);
 		var pos = lst.indexOf("sort");
 		if (pos > -1){
 			this.opt["locale-sort"] = lst[(pos+1)];
@@ -70,6 +70,10 @@ CSL.Engine = function(sys,style,lang) {
 		var pos = lst.indexOf("secondary");
 		if (pos > -1){
 			this.opt["locale-secondary"] = lst[(pos+1)];
+		}
+		var pos = lst.indexOf("name");
+		if (pos > -1){
+			this.opt["locale-name"] = lst[(pos+1)];
 		}
 	}
 	//
@@ -369,4 +373,62 @@ CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
 		value = undefined;
 	};
 	return value;
+};
+
+CSL.Engine.prototype.getNameSubFields = function(names){
+	var pos = -1;
+	var ret = new Array();
+	for (var name in names){
+		//
+		// clone the name object so we can trample on the content.
+		//
+		var newname = new Object();
+		for (var i in names[name]){
+			newname[i] = names[name][i];
+		}
+		var addme = true;
+		var updateme = false;
+		for each (var part in ["literal", "family"]){
+			var p = newname[part];
+			if (p){
+				//
+				// Add a sticky toggle for non-roman, non-Cyrillic
+				// names.
+				//
+				if (!newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
+					newname["sticky"] = true;
+				}
+				var m = p.match(/^:([-a-z]+):\s+(.*)/);
+				if (m){
+					addme = false;
+					if (m[1] == this.opt["locale-name"]){
+						updateme = true;
+						newname[part] = m[2];
+					} else if (this.opt["locale-name"].indexOf("-") > -1) {
+						var newopt = this.opt["locale-name"].slice(0,this.opt["locale-name"].indexOf("-"));
+						if (m[1] == newopt){
+							updateme = true;
+							newname[part] = m[2];
+							if (newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
+								newname["sticky"] = false;
+							};
+						};
+					};
+				};
+			};
+		};
+		if (addme){
+			ret.push(newname);
+			pos += 1;
+		} else if (updateme){
+			//
+			// A true update rather than an overwrite
+			// of the pointer.
+			//
+			for (var i in newname){
+				ret[pos][i] = newname[i];
+			}
+		}
+	};
+	return ret;
 };

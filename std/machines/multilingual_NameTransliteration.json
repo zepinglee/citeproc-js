@@ -1,0 +1,39 @@
+{
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      default-locale=\"en-US-name-eng-hepburn\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout delimiter=\"; \">\n      <names variable=\"author\">\n        <name initialize-with=\". \" delimiter=\", \"/>\n      </names>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "family": "ビート", 
+                    "given": "たけし", 
+                    "sticky": false
+                }, 
+                {
+                    "family": ":eng-hepburn:   Beato", 
+                    "given": "Takeshi", 
+                    "sticky": false
+                }, 
+                {
+                    "family": "北野", 
+                    "given": "武", 
+                    "sticky": false
+                }, 
+                {
+                    "family": ":eng:   Kitano", 
+                    "given": "Takeshi", 
+                    "sticky": false
+                }, 
+                {
+                    "family": "Atkinson", 
+                    "given": "Rowan", 
+                    "sticky": false
+                }
+            ], 
+            "id": "ITEM-1", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Beato Takeshi, T. Kitano, R. Atkinson", 
+    "schema": "1.0"
+}

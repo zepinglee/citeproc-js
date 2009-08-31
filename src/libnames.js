@@ -62,8 +62,9 @@ CSL.Lib.Elements.names = new function(){
 						//
 						// if (Item[variable] && ! state.tmp.name_quash[variable]){
 						if (Item[variable]){
-							state.tmp.names_max.push(Item[variable].length);
-							state.tmp.value.push({"type":variable,"names":Item[variable]});
+							var filtered_names = state.getNameSubFields(Item[variable]);
+							state.tmp.names_max.push(filtered_names.length);
+							state.tmp.value.push({"type":variable,"names":filtered_names});
 							// saving relevant names separately, for reference
 							// in splice collapse and in subsequent-author-substitute
 							state.tmp.names_used.push(state.tmp.value.slice());
