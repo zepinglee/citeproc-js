@@ -74,3 +74,5 @@ for i in tests/std_*.js; do
     echo $(footer) >> ${i}
     IFS=$OLDIFS
 done
+
+ref/APPLY_LICENSE.py

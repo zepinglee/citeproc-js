@@ -212,8 +212,26 @@ CSL.Lib.Elements.text = new function(){
 							var func = function(state,Item){
 								var value = Item[this.variables[0]];
 								if (value){
-									value = state.getTextSubField(value,"locale-primary",true);
-									state.output.append(value,this);
+									var primary = state.getTextSubField(value,"locale-primary",true);
+									var secondary = state.getTextSubField(value,"locale-secondary");
+									if (secondary){
+										var primary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
+										var secondary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
+										for (var i in this.strings){
+											secondary_tok.strings[i] = this.strings[i];
+											if (i == "suffix"){
+												secondary_tok.strings.suffix = "]"+secondary_tok.strings.suffix;
+												continue;
+											} else if (i == "prefix"){
+												secondary_tok.strings.prefix = " ["+secondary_tok.strings.prefix;
+											}
+											primary_tok.strings[i] = this.strings[i];
+										}
+										state.output.append(primary,primary_tok);
+										state.output.append(secondary,secondary_tok);
+									} else {
+										state.output.append(primary,this);
+									}
 								};
 							};
 						};

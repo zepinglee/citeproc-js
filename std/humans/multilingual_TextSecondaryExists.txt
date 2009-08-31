@@ -32,31 +32,51 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_multilingual");
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
 
-doh.register("tests.std_multilingual", [
-    function(){
-        var test = new StdRhinoTest("multilingual_TextPrimaryExists");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextPrimaryNonexistent");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextSecondaryExists");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextSecondaryNonexistent");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextSortMacroExists");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("multilingual_TextSortVariableExists");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+民法 [Minpō]; 刑法 [Keihō]
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      default-locale="en-US-secondary-eng-hepburn">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout delimiter="; ">
+      <text variable="title"/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "book",
+   "title": "民法 :eng-hepburn: Minpō"
+ },
+ {
+   "id":"ITEM-2",
+   "type": "book",
+   "title": "刑法 :eng-hepburn: Keihō"
+ }
+]
+<<===== INPUT =====<<
