@@ -56,10 +56,6 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("date_LiteralIfOtherwiseNil");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("date_LocalizedNumericDefault");
         doh.assertEqual(test.result, test.run());
     },
@@ -121,6 +117,14 @@ doh.register("tests.std_date", [
     },
     function(){
         var test = new StdRhinoTest("date_LongMonth");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_OtherAlone");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_OtherWithDate");
         doh.assertEqual(test.result, test.run());
     },
     function(){

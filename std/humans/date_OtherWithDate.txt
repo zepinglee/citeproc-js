@@ -43,7 +43,7 @@ citation
 
 
 >>===== RESULT =====>>
-(maybe around 2000bc sometime?)
+(Fall 2000)
 <<===== RESULT =====<<
 
 
@@ -75,7 +75,7 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"literal": "maybe around 2000bc sometime?"},
+    "issued": {"year": 2000, "other": "Fall"},
     "title": "Ignore me"
   }
 ]

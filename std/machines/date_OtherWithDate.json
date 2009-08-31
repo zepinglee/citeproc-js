@@ -4,13 +4,14 @@
         {
             "id": "ITEM-1", 
             "issued": {
-                "literal": "maybe around 2000bc sometime?"
+                "other": "Fall", 
+                "year": 2000
             }, 
             "title": "Ignore me", 
             "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "(maybe around 2000bc sometime?)", 
+    "result": "(Fall 2000)", 
     "schema": "0.8"
 }

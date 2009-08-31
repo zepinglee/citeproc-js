@@ -895,11 +895,20 @@ CSL.Lib.Elements.date = new function(){
 
 				var newoutput = function(state,Item){
 					state.output.startTag("date",this);
+					//
+					// XXXXX
+					// Here's where we can splice in "other".  We can
+					// rewind on the output queue at the end, and snip
+					// out any trailing suffix, i guess.
+					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
+					tok.strings.suffix = " ";
+					if (state.tmp.date_object["other"]){
+						state.output.append(state.tmp.date_object["other"],tok);
+					};
 				};
 				this["execs"].push(newoutput);
 			};
-
-		}
+		};
 		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
 			if (this.strings.form && state.build.datexml){
 				// Apparently this is all that is required to compile
@@ -912,17 +921,16 @@ CSL.Lib.Elements.date = new function(){
 				state._build(navi);
 			} else {
 				var mergeoutput = function(state,Item){
-					//if (!state.tmp.element_rendered_ok || state.tmp.date_object["literal"]){
-					if (state.tmp.date_object["literal"]){
-						state.output.append(state.tmp.date_object["literal"],"empty");
+					var blobs = state.output.current.value().blobs;
+					if ("object" == typeof blobs && blobs.length){
+						blobs.slice(-1)[0].strings.suffix = "";
 					};
 					state.output.endTag();
 				};
 				this["execs"].push(mergeoutput);
 			};
-		}
+		};
 		target.push(this);
-
 		if (this.tokentype == CSL.END){
 			CSL.Util.substituteEnd.call(this,state,target);
 		};
