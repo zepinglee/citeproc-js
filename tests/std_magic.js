@@ -64,6 +64,18 @@ doh.register("tests.std_magic", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("magic_NameParticle");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("magic_NameSuffixNoComma");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("magic_NameSuffixWithComma");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("magic_PunctuationInQuoteDefaultEnglishDelimiter");
         doh.assertEqual(test.result, test.run());
     },

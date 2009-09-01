@@ -63,6 +63,7 @@ CSL.Lib.Elements.names = new function(){
 						// if (Item[variable] && ! state.tmp.name_quash[variable]){
 						if (Item[variable]){
 							var filtered_names = state.getNameSubFields(Item[variable]);
+							filtered_names = CSL.Util.Names.rescueNameElements(filtered_names);
 							state.tmp.names_max.push(filtered_names.length);
 							state.tmp.value.push({"type":variable,"names":filtered_names});
 							// saving relevant names separately, for reference
