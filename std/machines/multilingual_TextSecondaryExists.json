@@ -1,14 +1,14 @@
 {
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      default-locale=\"en-US-secondary-eng-hepburn\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout delimiter=\"; \">\n      <text variable=\"title\"/>\n    </layout>\n  </citation>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      default-locale=\"en-US-secondary-ja-hpbn\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout delimiter=\"; \">\n      <text variable=\"title\"/>\n    </layout>\n  </citation>\n</style>", 
     "input": [
         {
             "id": "ITEM-1", 
-            "title": "民法 :eng-hepburn: Minpō", 
+            "title": "民法 :ja-hpbn: Minpō", 
             "type": "book"
         }, 
         {
             "id": "ITEM-2", 
-            "title": "刑法 :eng-hepburn: Keihō", 
+            "title": "刑法 :ja-hpbn: Keihō", 
             "type": "book"
         }
     ], 

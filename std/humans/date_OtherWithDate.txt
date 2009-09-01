@@ -75,7 +75,7 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"year": 2000, "other": "Fall"},
+    "issued": {"year": 2000, "date_prefix": "Fall"},
     "title": "Ignore me"
   }
 ]

@@ -51,7 +51,7 @@ Beato Takeshi, T. Kitano, R. Atkinson
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-name-eng-hepburn">
+      default-locale="en-US-name-ja-hpbn">
   <info>
     <id />
     <title />
@@ -75,9 +75,9 @@ Beato Takeshi, T. Kitano, R. Atkinson
    "type": "book",
    "author": [
      { "name": "ビート, たけし" },
-     { "name": ":eng-hepburn:   Beato, Takeshi" },
+     { "name": ":ja-hpbn:   Beato, Takeshi" },
      { "name": "北野, 武" },
-     { "name": ":eng:   Kitano, Takeshi" },
+     { "name": ":en:   Kitano, Takeshi" },
      { "name": "Atkinson, Rowan" }
    ]
  }

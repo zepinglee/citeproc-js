@@ -4,7 +4,7 @@
         {
             "id": "ITEM-1", 
             "issued": {
-                "other": "Fall", 
+                "date_prefix": "Fall", 
                 "year": 2000
             }, 
             "title": "Ignore me", 

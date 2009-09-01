@@ -51,7 +51,7 @@ Zzzzzzzzz; Aardvaark
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-sort-eng-custom">
+      default-locale="en-US-sort-ja-Hrkt">
   <info>
     <id />
     <title />
@@ -74,12 +74,12 @@ Zzzzzzzzz; Aardvaark
  {
    "id":"ITEM-1",
    "type": "book",
-   "title": "Aardvaark :eng-custom: Zed"
+   "title": "Aardvaark :ja-Hrkt:  お"
  },
  {
    "id":"ITEM-2",
    "type": "book",
-   "title": "Zzzzzzzzz :eng-custom: Ay"
+   "title": "Zzzzzzzzz :ja-Hrkt: あ"
  }
 ]
 <<===== INPUT =====<<

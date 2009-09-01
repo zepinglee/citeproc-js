@@ -51,7 +51,7 @@ R. Atkinson; 北野武; ビートたけし
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-sort-jpn-katakana">
+      default-locale="en-US-sort-ja-Hrkt">
   <info>
     <id />
     <title />
@@ -78,7 +78,7 @@ R. Atkinson; 北野武; ビートたけし
    "type": "book",
    "author": [
      { "name": "ビート, たけし" },
-     { "name": ":jpn-katakana: ビートタケシ" }
+     { "name": ":ja-Hrkt: ビートタケシ" }
    ]
  },
  {
@@ -86,7 +86,7 @@ R. Atkinson; 北野武; ビートたけし
    "type": "book",
    "author": [
      { "name": "北野, 武" },
-     { "name": ":jpn-katakana: キタノタケシ" }
+     { "name": ":ja-Hrkt: キタノタケシ" }
    ]
  },
  {

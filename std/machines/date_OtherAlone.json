@@ -4,7 +4,7 @@
         {
             "id": "ITEM-1", 
             "issued": {
-                "other": "maybe around 2000bc sometime?"
+                "date_suffix": "maybe around 2000bc sometime?"
             }, 
             "title": "Ignore me", 
             "type": "book"

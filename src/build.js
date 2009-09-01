@@ -363,7 +363,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 };
 
 CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
-	var lst = value.split(/\s*:([-a-z]+):\s*/);
+	var lst = value.split(/\s*:([-a-zA-Z]+):\s*/);
 	var opt = this.opt[locale_type];
 	if (opt && lst.indexOf(opt) > -1 && lst.indexOf(opt) % 2){
 		value = lst[(lst.indexOf(opt)+1)];
@@ -402,14 +402,21 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 				if (!newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
 					newname["sticky"] = true;
 				}
-				var m = p.match(/^:([-a-z]+):\s+(.*)/);
+				var m = p.match(/^:([-a-zA-Z]+):\s+(.*)/);
 				if (m){
 					addme = false;
 					if (m[1] == this.opt[mode]){
 						updateme = true;
 						newname[part] = m[2];
-					} else if (this.opt[mode] && this.opt[mode].indexOf("-") > -1) {
-						var newopt = this.opt[mode].slice(0,this.opt[mode].indexOf("-"));
+					} else if (this.opt.lang){
+						//
+						// Fallback to style default language.
+						//
+						if (this.opt.lang.indexOf("-") > -1) {
+							var newopt = this.opt.lang.slice(0,this.opt.lang.indexOf("-"));
+						} else {
+							var newopt = this.opt.lang;
+						}
 						if (m[1] == newopt){
 							updateme = true;
 							newname[part] = m[2];

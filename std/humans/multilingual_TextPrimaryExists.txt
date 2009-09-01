@@ -42,7 +42,7 @@ citation
 
 
 >>===== RESULT =====>>
-Zed; Aye
+お; あ
 <<===== RESULT =====<<
 
 
@@ -51,7 +51,7 @@ Zed; Aye
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-primary-eng-custom">
+      default-locale="en-US-primary-ja-Hrkt">
   <info>
     <id />
     <title />
@@ -74,12 +74,12 @@ Zed; Aye
  {
    "id":"ITEM-1",
    "type": "book",
-   "title": "Aardvaark :eng-custom: Zed"
+   "title": "Aardvaark :ja-Hrkt: お"
  },
  {
    "id":"ITEM-2",
    "type": "book",
-   "title": "Zzzzzzzzz :eng-custom: Aye"
+   "title": "Zzzzzzzzz :ja-Hrkt: あ"
  }
 ]
 <<===== INPUT =====<<

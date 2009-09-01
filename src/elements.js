@@ -902,8 +902,8 @@ CSL.Lib.Elements.date = new function(){
 					// out any trailing suffix, i guess.
 					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
 					tok.strings.suffix = " ";
-					if (state.tmp.date_object["other"]){
-						state.output.append(state.tmp.date_object["other"],tok);
+					if (state.tmp.date_object["date_prefix"]){
+						state.output.append(state.tmp.date_object["date_prefix"],tok);
 					};
 				};
 				this["execs"].push(newoutput);
@@ -921,9 +921,8 @@ CSL.Lib.Elements.date = new function(){
 				state._build(navi);
 			} else {
 				var mergeoutput = function(state,Item){
-					var blobs = state.output.current.value().blobs;
-					if ("object" == typeof blobs && blobs.length){
-						blobs.slice(-1)[0].strings.suffix = "";
+					if (state.tmp.date_object["date_suffix"]){
+						state.output.append(state.tmp.date_object["date_suffix"],"empty");
 					};
 					state.output.endTag();
 				};
