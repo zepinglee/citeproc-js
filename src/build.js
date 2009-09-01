@@ -58,7 +58,7 @@ CSL.Engine = function(sys,style,lang) {
 	}
 	if (this.cslXml["@default-locale"].toString()){
 		var lst = this.cslXml["@default-locale"].toString();
-		lst = lst.split(/-(sort|primary|secondary|name)-/);
+		lst = lst.split(/-x-(sort|primary|secondary|name)-/);
 		var pos = lst.indexOf("sort");
 		if (pos > -1){
 			this.opt["locale-sort"] = lst[(pos+1)];

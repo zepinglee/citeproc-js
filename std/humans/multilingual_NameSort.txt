@@ -51,7 +51,7 @@ R. Atkinson; 北野武; ビートたけし
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-sort-ja-Hrkt">
+      default-locale="en-US-x-sort-ja-Hrkt">
   <info>
     <id />
     <title />

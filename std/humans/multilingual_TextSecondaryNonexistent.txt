@@ -51,7 +51,7 @@ citation
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-secondary-ja-hpbn">
+      default-locale="en-US-x-secondary-ja-Latn-hepburn">
   <info>
     <id />
     <title />

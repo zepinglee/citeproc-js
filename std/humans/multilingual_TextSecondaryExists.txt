@@ -51,7 +51,7 @@ citation
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-secondary-ja-hpbn">
+      default-locale="en-US-x-secondary-ja-Latn-hepburn">
   <info>
     <id />
     <title />
@@ -71,12 +71,12 @@ citation
  {
    "id":"ITEM-1",
    "type": "book",
-   "title": "民法 :ja-hpbn: Minpō"
+   "title": "民法 :ja-Latn-hepburn: Minpō"
  },
  {
    "id":"ITEM-2",
    "type": "book",
-   "title": "刑法 :ja-hpbn: Keihō"
+   "title": "刑法 :ja-Latn-hepburn: Keihō"
  }
 ]
 <<===== INPUT =====<<
