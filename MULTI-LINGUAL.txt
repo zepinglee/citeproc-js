@@ -2,34 +2,23 @@
 
 ## Virtual fields
 
-The title and name fields will have special markup for testing purposes.
-For title fields, tags are used as delimiters.  The first content in the
-field is the default.  Subsequent tags indicate the language or script
-of subsequent content until the next tag or the end of the field, whichever
+The title and name entries will have special markup for testing purposes.
+For title entries, tags are used as delimiters.  The first content in the
+entry is the default.  Subsequent tags indicate the language or script
+of subsequent content until the next tag or the end of the entry, whichever
 comes first.
 
-For name fields, tags are used as prefix on the literal or the family
-name field.  The first set of names have no tag, and serve as the
-default.  Each tag indicates the language or script of the tagged
-name and subsequent names, until the next tag is encountered or the
-names are exhausted.
+For creator entries, tags are used as prefix on the literal or the family
+name element.  The first set of names has no tag, and serves as the
+default.  In subsequent tagged entries, the tag indicates the language or 
+script of the entry, to be used as a replacement for the nearest preceding
+untagged entry.
 
 ## Language tag
 
-For compatibility with other multi-lingual stores, please use ISO-639-2
-codes.  That standard provides wide coverage, so we're less likely to 
-end up with conflicts when sharing or combining records.
-
-  http://www.loc.gov/standards/iso639-2/php/code_list.php
-
-For scripts, we'll have to settle for something internal to the
-project, as there doesn't seem to be a uniform set of standards on how
-to specify the glyphs and conventions used to transliterate things.
-For example, in Japanese you might use any of several forms of
-romanization, or Japanese syllabic sort ordering.  For Japanese, I
-would suggest "eng-hepburn" for Revised Hepburn, "jpn-katakana" for
-Japanese phonetic, and "eng-roman" for Hepburn romanization stripped
-of macrons.  See below for the meaning of the prefixes.
+For compatibility with other multi-lingual stores, please refer to
+RFC 4646, and the IANA registry of language names when setting
+the tag for a translation, transliteration, or alternate form.
 
 ## Default locale string
 
@@ -37,7 +26,11 @@ The default-locale attribute of CSL styles validates successfully with
 roman letters and hyphens.  Rendering options are fashioned out of
 this limited set of characters.  Elements in the default-locale may
 consist of several elements, each (except the first) beginning with one
-of the reserved words "primary", "secondary" or "sort".
+of the reserved words "x-primary", "x-secondary", "x-sort".  For setting
+discrete content locale values for the creator elements, overriding the
+default, use "-name" as an extension (as, for example, "x-primary-name").
+The special value "none" may be used to indicate that a default
+value should be ignored for names.
 
 ### Global default locale 
 
