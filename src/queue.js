@@ -162,6 +162,9 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if (!token){
 		throw "CSL processor error: unknown format token name: "+tokname;
 	}
+	if ("string" == typeof str && str.length){
+		this.last_char_rendered = str.slice(-1);
+	}
 	blob = new CSL.Factory.Blob(token,str);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix){
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
@@ -250,17 +253,19 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	var blobs = myblobs.slice();
 	//var blobs = myblobs;
 	var ret = new Array();
+
+	if (blobs.length == 0){
+		return ret;
+	}
+
 	//
 	// XXXXX: this seems promising, to maintain a parallel list of
 	// last characters to each object.  The problem is that objects
 	// can be merged (in renderBlobs, I think?), and the parallel list
 	// needs to track that.  Very hard.
 	//
-	if (blobs.length == 0){
-		return ret;
-	}
-
 	var blob_last_chars = new Array();
+
 	//
 	// Need to know the join delimiter before boiling blobs down
 	// to strings, so that we can cleanly clip out duplicate
@@ -306,6 +311,32 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				// and the last char in the string is the same as the first char in
 				// the suffix.
 				//
+				// Well, OKAY NOW.  Chicago appends a period by setting
+				// prefix=". " on a number of possibly-render-possibly-not
+				// subsequent elements.  Lovely.  That means that this
+				// approach is unfixably broken.  We need a better way of
+				// handling this issue.  And yes, it does also need to cope
+				// with question marks and exclamation points.
+				//
+				// Need a method of tracking "the last character
+				// appended out of a string field or an affix", using
+				// a global variable.  It should toggle deletion of
+				// leading punctuation on a suffix OR a prefix,
+				// anywhere.
+				//
+				// So ... that can happen each time there is an append,
+				// huh?  So the variable can be stashed on the queue,
+				// huh?  And that means that this should be done on
+				// the way INTO the queue, not on the way out, as here.
+				//
+				// Uh ... no, that's not going to work, because only
+				// content strings are inserted with append.  This MUST
+				// be handled here in the stringifier.  So we need to
+				// figure out how to track the last character of the
+				// most recent string.  Everywhere.
+				//
+				//
+				// Can this variable assignment be dropped?
 				var use_suffix = blobjr.strings.suffix;
 				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
 				    use_suffix = use_suffix.slice(1);
@@ -456,7 +487,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			use_delim = res[1];
 			ret += use_delim;
 			ret += blob;
-			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
+			ret_last_char = blob_last_chars.slice(-1);
 		} else if (blob.status != CSL.SUPPRESS){
 			// CSL.debug("doing rangeable blob");
 			//var str = blob.blobs;
@@ -479,9 +510,10 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				ret += blob.splice_prefix;
 			}
 			ret += str;
-			ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
-		}
-	}
+			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
+			ret_last_char = blob_last_chars.slice(-1);
+		};
+	};
 	return [ret,ret_last_char];
 	////////return ret;
 };
