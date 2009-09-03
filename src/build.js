@@ -58,16 +58,16 @@ CSL.Engine = function(sys,style,lang) {
 	}
 	if (this.cslXml["@default-locale"].toString()){
 		var lst = this.cslXml["@default-locale"].toString();
-		lst = lst.split(/-x-(sort|primary|secondary|name)-/);
+		lst = lst.split(/-x-(sort|pri|sec|name)-/);
 		var pos = lst.indexOf("sort");
 		if (pos > -1){
 			this.opt["locale-sort"] = lst[(pos+1)];
 		}
-		var pos = lst.indexOf("primary");
+		var pos = lst.indexOf("pri");
 		if (pos > -1){
 			this.opt["locale-primary"] = lst[(pos+1)];
 		}
-		var pos = lst.indexOf("secondary");
+		var pos = lst.indexOf("sec");
 		if (pos > -1){
 			this.opt["locale-secondary"] = lst[(pos+1)];
 		}
