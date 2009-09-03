@@ -47,7 +47,7 @@ CSL.Util.Names = new function(){};
 CSL.Util.Names.outputNames = function(state,display_names){
 
 	var segments = new this.StartMiddleEnd(state,display_names);
-	var sort_order = state.output.getToken("name").strings["invert-name"];
+	//var sort_order = state.output.getToken("name").strings["invert-name"];
 	//
 	// XXXXX: needs refactoring.  The outer condition is whether
 	// we are in sort area or not.  If in a sort area, use sort ordering.
@@ -119,7 +119,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 			//
 			state.output.append(this.name.literal);
 		} else {
-			var sequence = CSL.Util.Names.getNamepartSequence(state,namenum,this.name,state.output.getToken(seg));
+			var sequence = CSL.Util.Names.getNamepartSequence(state,namenum,this.name);
 
 			state.output.openLevel(sequence[0][0]);
 			state.output.openLevel(sequence[0][1]);
@@ -175,7 +175,8 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 	}
 }
 
-CSL.Util.Names.getNamepartSequence = function(state,pos,name,token){
+CSL.Util.Names.getNamepartSequence = function(state,pos,name){
+	var token = state.output.getToken("name");
 	// Set the rendering order and separators of the core nameparts
 	// sequence[0][0] separates elements inside each of the the two lists
 	// sequence[0][1] separates the two lists
