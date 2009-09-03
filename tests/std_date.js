@@ -116,6 +116,10 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("date_LocalizedWithInStyleFormatting");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("date_LongMonth");
         doh.assertEqual(test.result, test.run());
     },

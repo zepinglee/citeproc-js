@@ -258,6 +258,10 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		return ret;
 	}
 
+	if (!blob){
+		CSL.Output.Queue.normalizePrefixPunctuation(blobs);
+	}
+
 	//
 	// XXXXX: this seems promising, to maintain a parallel list of
 	// last characters to each object.  The problem is that objects
@@ -534,4 +538,33 @@ CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
 		};
 	};
 	return [ret,use_delim];
+};
+
+
+CSL.Output.Queue.normalizePrefixPunctuation = function(blobs){
+	//
+	// Move leading punctuation on prefixes to preceding
+	// element's suffix.
+	//
+	var punct = "";
+	if ("object" == typeof blobs[0] && blobs[0].blobs.length){
+		CSL.Output.Queue.normalizePrefixPunctuation(blobs[0].blobs);
+	}
+	if ("object" == typeof blobs){
+		for (var pos=(blobs.length-1); pos > 0; pos += -1){
+			if (!blobs[pos].blobs){
+				continue;
+			}
+			var m = blobs[pos].strings.prefix.match(/^([!.?])(.*)/);
+			if (m){
+				blobs[pos].strings.prefix = m[2];
+				if (["!",".","?"].indexOf(blobs[(pos-1)].strings.suffix.slice(-1)) > -1){
+					blobs[(pos-1)].strings.suffix += m[1];
+				}
+			};
+			if ("object" == typeof blobs[pos] && blobs[pos].blobs.length){
+				CSL.Output.Queue.normalizePrefixPunctuation(blobs[pos].blobs);
+			}
+		};
+	};
 };

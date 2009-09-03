@@ -16,12 +16,12 @@
                 "year": "1994"
             }, 
             "page": "5", 
-            "title": "An article is it.", 
+            "title": "An article is it?", 
             "type": "article-journal", 
             "volume": "10"
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Doe, John.</div>\n</div>", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Doe, John. 1994. An article is it? <i>New Thinker</i> 10: 5</div>\n</div>", 
     "schema": "0.9"
 }

@@ -879,7 +879,7 @@ CSL.Lib.Elements.date = new function(){
 					// post processing by date-part and in END or at the finish of
 					// SINGLETON.  Delete after processing.
 					//
-					state.build.datexml = datexml;
+					state.build.datexml = datexml.copy();
 				};
 			} else {
 				CSL.Util.substituteStart.call(this,state,target);
@@ -946,6 +946,9 @@ CSL.Lib.Elements["date-part"] = new function(){
 		if (state.build.datexml){
 			// CSL.debug("DO SOMETHING!");
 			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+			for each (var decor in this.decorations){
+				state.build.datexml["date-part"].(@name == this.strings.name)[0][decor[0]] = decor[1];
+			};
 			for (var attr in this.strings){
 				if (attr == "name" || attr == "prefix" || attr == "suffix"){
 					continue;

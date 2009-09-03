@@ -44,7 +44,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">Doe, John.</div>
+  <div class="csl-entry">Doe, John. 1994. An article is it? <i>New Thinker</i> 10: 5</div>
 </div>
 <<===== RESULT =====<<
 
@@ -431,7 +431,7 @@ bibliography
     "author": [
       {"name":"Doe, John"}
     ],
-    "title": "An article is it.",
+    "title": "An article is it?",
     "container-title": "New Thinker",
     "volume": "10",
     "page" : "5",
