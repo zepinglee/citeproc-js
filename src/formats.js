@@ -86,12 +86,13 @@ CSL.Output.Formats.prototype.html = {
 	// portion of text to be escaped, it need not be idempotent.
 	//
 	"text_escape": function(text){
-		return text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+		return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 	},
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/oblique":"<em>%%STRING%%</em>",
 	"@font-style/normal":"<span style=\"font-style:normal;\">%%STRING%%</span>",
 	"@font-variant/small-caps":"<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
+	"@no-change/true":CSL.Output.Formatters.no_change,
 	"@font-variant/normal":false,
 	"@font-weight/bold":"<b>%%STRING%%</b>",
 	"@font-weight/normal":false,

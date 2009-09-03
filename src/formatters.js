@@ -45,6 +45,11 @@ if (!CSL) {
  */
 CSL.Output.Formatters = new function(){};
 
+
+CSL.Output.Formatters.no_change = function(state,string){
+	return string;
+};
+
 /**
  * A noop that just delivers the string.
  */

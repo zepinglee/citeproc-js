@@ -45,6 +45,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Albert Asthma, et al. (eds. & trans.)", 
+    "result": "Albert Asthma, et al. (eds. &amp; trans.)", 
     "schema": "0.9"
 }

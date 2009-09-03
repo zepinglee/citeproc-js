@@ -42,7 +42,7 @@ citation
 
 
 >>===== RESULT =====>>
-Albert Asthma, et al. (eds. & trans.)
+Albert Asthma, et al. (eds. &amp; trans.)
 <<===== RESULT =====<<
 
 
