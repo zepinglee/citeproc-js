@@ -72,7 +72,7 @@ var name = new CSL.Factory.Token("name");
 name.strings.delimiter = "and";
 name.strings.prefix ="[";
 name.strings.suffix ="]";
-name.strings["name-as-sort-order"] = "first";
+name.strings["invert-name"] = "first";
 state.output.addToken("name",false,name);
 
 // the delimiter value of the "name" element
@@ -93,7 +93,7 @@ var sortsep = new CSL.Factory.Token("sortsep");
 sortsep.strings.delimiter = ", ";
 state.output.addToken("sortsep",false,sortsep);
 
-// the name-as-sort-order param from the
+// the invert-name param from the
 // name element is set on an otherwise
 // empty token for "start", "middle" and
 // "end", as appropriate to its value.

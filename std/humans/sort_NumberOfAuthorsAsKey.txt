@@ -62,7 +62,7 @@ bibliography
   </info>
   <macro name="author-one">
     <names variable="author">
-      <name name-as-sort-order="first" />
+      <name invert-name="first" />
       <substitute>
         <names variable="editor" />
       </substitute>

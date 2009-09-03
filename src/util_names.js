@@ -47,7 +47,7 @@ CSL.Util.Names = new function(){};
 CSL.Util.Names.outputNames = function(state,display_names){
 
 	var segments = new this.StartMiddleEnd(state,display_names);
-	var sort_order = state.output.getToken("name").strings["name-as-sort-order"];
+	var sort_order = state.output.getToken("name").strings["invert-name"];
 	if (sort_order == "first" && !state.tmp.sort_key_flag){
 		state.output.addToken("start");
 			state.output.getToken("start").strings.name_as_sort_order = true;
@@ -249,7 +249,7 @@ CSL.Util.Names.reinit = function(state,Item){
 	state.tmp["et-al-min"] = false;
 	state.tmp["et-al-use-first"] = false;
 	state.tmp["initialize-with"] = false;
-	state.tmp["name-as-sort-order"] = false;
+	state.tmp["invert-name"] = false;
 	state.tmp.et_al_prefix = false;
 };
 

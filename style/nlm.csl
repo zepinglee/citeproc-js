@@ -16,12 +16,12 @@
   </info>
   <macro name="author">
     <names suffix=". " variable="author">
-      <name delimiter=", " delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" " />
+      <name delimiter=", " delimiter-precedes-last="always" initialize-with="" invert-name="all" sort-separator=" " />
     </names>
   </macro>
   <macro name="editor">
     <names suffix=", editor(s). " variable="editor">
-      <name delimiter=", " delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" " />
+      <name delimiter=", " delimiter-precedes-last="always" initialize-with="" invert-name="all" sort-separator=" " />
     </names>
   </macro>
   <macro name="publisher">

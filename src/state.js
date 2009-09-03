@@ -150,7 +150,7 @@ CSL.Engine.Tmp = function (){
 	// scratch variable to toggle an attempt to set a
 	// name in sort order rather than display
 	// order.
-	this["name-as-sort-order"] = false;
+	this["invert-name"] = false;
 	//
 	// suppress decorations (used for generating
 	// sort keys and disambiguation keys)

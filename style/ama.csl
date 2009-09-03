@@ -18,7 +18,7 @@
   </info>
   <macro name="editor">
     <names variable="editor">
-      <name delimiter=", " delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" " />
+      <name delimiter=", " delimiter-precedes-last="always" initialize-with="" invert-name="all" sort-separator=" " />
       <label form="short" prefix=", " suffix="." text-case="lowercase" />
     </names>
   </macro>
@@ -28,7 +28,7 @@
   <macro name="author">
     <group suffix=".">
       <names variable="author">
-        <name delimiter=", " delimiter-precedes-last="always" initialize-with="" name-as-sort-order="all" sort-separator=" " />
+        <name delimiter=", " delimiter-precedes-last="always" initialize-with="" invert-name="all" sort-separator=" " />
         <label form="short" prefix=" " suffix="" text-case="lowercase" />
         <substitute>
           <names variable="editor" />

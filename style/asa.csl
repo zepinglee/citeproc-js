@@ -33,7 +33,7 @@
   </macro>
   <macro name="author">
     <names variable="author">
-      <name and="text" delimiter=", " delimiter-precedes-last="always" name-as-sort-order="first" sort-separator=", " />
+      <name and="text" delimiter=", " delimiter-precedes-last="always" invert-name="first" sort-separator=", " />
       <label form="short" prefix=", " suffix="." text-case="lowercase" />
       <substitute>
         <names variable="editor" />

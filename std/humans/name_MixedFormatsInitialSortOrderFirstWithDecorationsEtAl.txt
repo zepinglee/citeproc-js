@@ -61,7 +61,7 @@ citation
          et-al-use-first="5">
     <layout delimiter="; ">
       <names variable="author">
-        <name delimiter=", " initialize-with="." name-as-sort-order="first" sort-separator=", ">
+        <name delimiter=", " initialize-with="." invert-name="first" sort-separator=", ">
           <name-part name="family" text-case="uppercase" />
         </name>
       </names>
