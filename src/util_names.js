@@ -119,7 +119,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 			//
 			state.output.append(this.name.literal);
 		} else {
-			var sequence = CSL.Util.Names.getNamepartSequence(state,namenum,this.name);
+			var sequence = CSL.Util.Names.getNamepartSequence(state,seg,this.name);
 
 			state.output.openLevel(sequence[0][0]);
 			state.output.openLevel(sequence[0][1]);
@@ -175,7 +175,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 	}
 }
 
-CSL.Util.Names.getNamepartSequence = function(state,pos,name){
+CSL.Util.Names.getNamepartSequence = function(state,seg,name){
 	var token = state.output.getToken("name");
 	// Set the rendering order and separators of the core nameparts
 	// sequence[0][0] separates elements inside each of the the two lists
@@ -196,7 +196,7 @@ CSL.Util.Names.getNamepartSequence = function(state,pos,name){
 		} else {
 			var sequence = [["sortsep","sortsep","space"],["family", "prefix"],["given"],["suffix"]];
 		};
-	} else if (token && ( token.strings["invert-name"] == "all" || (token.strings["invert-name"] == "first" && pos == 0))){
+	} else if (token && ( token.strings["invert-name"] == "all" || (token.strings["invert-name"] == "first" && seg == "start"))){
 		//
 		// Discretionary sort ordering and inversions
 		//
