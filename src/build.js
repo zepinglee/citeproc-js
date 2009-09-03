@@ -76,6 +76,12 @@ CSL.Engine = function(sys,style,lang) {
 			this.opt["locale-name"] = lst[(pos+1)];
 		}
 	}
+	if (this.cslXml["@name-sort-order"].toString()){
+		this.opt["name-sort-order"] = this.cslXml["@name-sort-order"].toString();
+	}
+	if (this.cslXml["@inverted-name-display-order"].toString()){
+		this.opt["inverted-name-display-order"] = this.cslXml["@inverted-name-display-order"].toString();
+	}
 	//
 	// implicit default, "en"
 	this.setLocaleXml();
