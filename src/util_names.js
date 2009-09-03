@@ -48,21 +48,13 @@ CSL.Util.Names.outputNames = function(state,display_names){
 
 	var segments = new this.StartMiddleEnd(state,display_names);
 	var sort_order = state.output.getToken("name").strings["invert-name"];
-	if (sort_order == "first" && !state.tmp.sort_key_flag){
-		state.output.addToken("start");
-			state.output.getToken("start").strings.name_as_sort_order = true;
-			state.output.getToken("start").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
-	} else if (sort_order == "all" || state.tmp.sort_key_flag){
-		state.output.addToken("start");
-		state.output.getToken("start").strings.name_as_sort_order = true;
-		state.output.getToken("start").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
-		state.output.addToken("middle");
-		state.output.getToken("middle").strings.name_as_sort_order = true;
-		state.output.getToken("middle").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
-		state.output.addToken("end");
-		state.output.getToken("end").strings.name_as_sort_order = true;
-		state.output.getToken("end").strings.particle_in_name_sort = state[state.tmp.area].opt["particle-in-name-sort"];
-	}
+	//
+	// XXXXX: needs refactoring.  The outer condition is whether
+	// we are in sort area or not.  If in a sort area, use sort ordering.
+	// If not, discriminate first and all, and follow inverted-name-display-order
+	// or default to set appropriate inversion form where required.
+	//
+	// (simplified things, and eliminated the code that was here)
 	var and = state.output.getToken("name").strings.delimiter;
 	if (state.output.getToken("name").strings["delimiter-precedes-last"] == "always"){
 		and = state.output.getToken("inner").strings.delimiter+and;
@@ -127,7 +119,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 			//
 			state.output.append(this.name.literal);
 		} else {
-			var sequence = CSL.Util.Names.getNamepartSequence(this.name,state.output.getToken(seg));
+			var sequence = CSL.Util.Names.getNamepartSequence(state,namenum,this.name,state.output.getToken(seg));
 
 			state.output.openLevel(sequence[0][0]);
 			state.output.openLevel(sequence[0][1]);
@@ -183,7 +175,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 	}
 }
 
-CSL.Util.Names.getNamepartSequence = function(name,token){
+CSL.Util.Names.getNamepartSequence = function(state,pos,name,token){
 	// Set the rendering order and separators of the core nameparts
 	// sequence[0][0] separates elements inside each of the the two lists
 	// sequence[0][1] separates the two lists
@@ -197,12 +189,21 @@ CSL.Util.Names.getNamepartSequence = function(name,token){
 		var sequence = [["empty","empty","empty"],["prefix", "family"],["given"],[]];
 	} else if (name.sticky) { // entry likes sort order
 		var sequence = [["space","space","space"],["prefix", "family"],["given"],[]];
-	} else if (token && token.strings.name_as_sort_order){
-		if (token.strings.particle_in_name_sort){
+	} else if (state.tmp.sort_key_flag){
+		if (state.opt["name-sort-order"] == "particle-family-given"){
 			var sequence = [["sortsep","sortsep","space"],["prefix", "family"],["given"],["suffix"]];
 		} else {
+			var sequence = [["sortsep","sortsep","space"],["family", "prefix"],["given"],["suffix"]];
+		};
+	} else if (token && ( token.strings["invert-name"] == "all" || (token.strings["invert-name"] == "first" && pos == 0))){
+		//
+		// Discretionary sort ordering and inversions
+		//
+		if (state.opt["inverted-name-display-order"] == "family-given-particle"){
 			var sequence = [["sortsep","sortsep","space"],["family"],["given","prefix"],["suffix"]];
-		}
+		} else {
+			var sequence = [["sortsep","sortsep","space"],["prefix", "family"],["given"],["suffix"]];
+		};
 	} else { // plain vanilla
 		var sequence = [[suffix_sep,"space","space"],["given"],["prefix","family"],["suffix"]];
 	}

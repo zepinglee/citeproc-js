@@ -557,9 +557,3 @@ CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
 	state.opt["page-range-format"] = arg;
 };
 
-CSL.Lib.Attributes["@particle-in-name-sort"] = function(state,arg){
-	if (arg == "true"){
-		state[state.build.area].opt["particle-in-name-sort"] = true;
-		state[(state.build.area+"_sort")].opt["particle-in-name-sort"] = true;
-	};
-};
