@@ -189,11 +189,23 @@ CSL.Output.Formatters.title_capitalization = function(state,string) {
 
 CSL.Output.Formatters.doppelString = function(string){
 	var ret = new Object();
-	ret["string"] = string;
+	ret.array = string.split(/(<ok>.*?<\/ok>)|<[^>]+>/);
+	ret.string = "";
+	for (var i=0; i<ret.array.length; i += 2){
+		ret.string += ret.array[i];
+	};
 	return ret;
 };
 
 CSL.Output.Formatters.undoppelString = function(str){
-	return str.string;
+	var ret = "";
+	for (var i=0; i<str.array.length; i += 1){
+		if ((i%2)){
+			ret += str.array[i];
+		} else {
+			ret += str.string.slice(0,str.array[i].length);
+			str.string = str.string.slice(str.array[i].length);
+		};
+	};
+	return ret;
 };
-
