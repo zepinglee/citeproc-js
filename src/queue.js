@@ -303,7 +303,6 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				//
 				// text_escape is applied by flipflopper.
 				//
-				//var b = state.fun.decorate.text_escape(blobjr.blobs);
 				var b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
@@ -499,8 +498,8 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			if (!state.tmp.suppress_decorations){
 				for each (var params in blob.decorations){
 					str = state.fun.decorate[params[0]][params[1]](state,str);
-				}
-			}
+				};
+			};
 			//if (!suppress_decor){
 				str = blob.strings.prefix + str + blob.strings.suffix;
 			//}
@@ -512,7 +511,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				ret += blob.successor_prefix;
 			} else if (blob.status == CSL.START){
 				ret += blob.splice_prefix;
-			}
+			};
 			ret += str;
 			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 			ret_last_char = blob_last_chars.slice(-1);

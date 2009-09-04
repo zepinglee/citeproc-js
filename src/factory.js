@@ -141,25 +141,6 @@ CSL.Factory.setDecorations = function(state,attributes){
 };
 
 /**
- * Generate string formatting functions.
- * <p>This function is executed in the context of a token
- * by {@link CSL.Core.Configure}.
- * The list of formatting attributes stored on the token
- * is replaced with a list of compiled functions.
- * This is applied by {@link CSL.Core.Configure}.
- * @param {Array} state The state object returned by
- * {@link CSL.Engine}.
- */
-CSL.Factory.renderDecorations = function(state){
-	var ret = new Array();
-	for each (hint in this.decorations){
-		ret.push(state.fun.decorate[hint[0]][hint[1]]);
-	}
-	this.decorations = ret;
-};
-
-
-/**
  * Substitution gadget.
  * <p>Creates a function for
  * delivering a string merged to a pre-defined template

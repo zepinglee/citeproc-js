@@ -46,10 +46,6 @@ if (!CSL) {
 CSL.Output.Formatters = new function(){};
 
 
-CSL.Output.Formatters.no_change = function(state,string){
-	return string;
-};
-
 /**
  * A noop that just delivers the string.
  */
@@ -70,21 +66,9 @@ CSL.Output.Formatters.passthrough = function(state,string){
  * Force all letters in the string to lowercase.
  */
 CSL.Output.Formatters.lowercase = function(state,string) {
-	//
-	// XXXXX
-	// this listiness in lowercase and uppercase should
-	// be handled when decorations are applied; these
-	// functions should not have to worry about it.
-	// XXXXX
-	// the listiness stuff can go away now.
-	if ("object" == typeof string){
-		var ret = new Array();
-		for each (item in string){
-			ret.push(item.LowerCase());
-		}
-		return ret;
-	}
-	return string.LowerCase();
+	var str = CSL.Output.Formatters.doppelString(string);
+	str.string = str.string.toLowerCase();
+	return CSL.Output.Formatters.undoppelString(str);
 };
 
 
@@ -92,14 +76,9 @@ CSL.Output.Formatters.lowercase = function(state,string) {
  * Force all letters in the string to uppercase.
  */
 CSL.Output.Formatters.uppercase = function(state,string) {
-	if ("object" == typeof string){
-		var ret = new Array();
-		for each (item in string){
-			ret.push(item.toUpperCase());
-		}
-		return ret;
-	}
-	return string.toUpperCase();
+	var str = CSL.Output.Formatters.doppelString(string);
+	str.string = str.string.toUpperCase();
+	return CSL.Output.Formatters.undoppelString(str);
 };
 
 
@@ -108,8 +87,10 @@ CSL.Output.Formatters.uppercase = function(state,string) {
  * the rest of the characters untouched.
  */
 CSL.Output.Formatters.capitalize_first = function(state,string) {
-	if (string.length){
-		return string[0].toUpperCase()+string.substr(1);
+	var str = CSL.Output.Formatters.doppelString(string);
+	if (str.string.length){
+		str.string = str.string[0].toUpperCase()+str.string.substr(1);
+		return CSL.Output.Formatters.undoppelString(str);
 	} else {
 		return "";
 	}
@@ -121,7 +102,9 @@ CSL.Output.Formatters.capitalize_first = function(state,string) {
  * subsequent characters to lowercase.
  */
 CSL.Output.Formatters.sentence_capitalization = function(state,string) {
-	return string[0].toUpperCase()+string.substr(1).toLowerCase();
+	var str = CSL.Output.Formatters.doppelString(string);
+	str.string = str.string[0].toUpperCase()+str.string.substr(1).toLowerCase();
+	return CSL.Output.Formatters.undoppelString(str);
 };
 
 
@@ -132,7 +115,8 @@ CSL.Output.Formatters.sentence_capitalization = function(state,string) {
  * to uppercase.
  */
 CSL.Output.Formatters.capitalize_all = function(state,string) {
-	var strings = string.split(" ");
+	var str = CSL.Output.Formatters.doppelString(string);
+	var strings = str.string.split(" ");
 	for(var i=0; i<strings.length; i++) {
 		if(strings[i].length > 1) {
             strings[i] = strings[i][0].toUpperCase()+strings[i].substr(1).toLowerCase();
@@ -140,7 +124,8 @@ CSL.Output.Formatters.capitalize_all = function(state,string) {
             strings[i] = strings[i].toUpperCase();
         }
     }
-	return strings.join(" ");
+	str.string = strings.join(" ");
+	return CSL.Output.Formatters.undoppelString(str);
 };
 
 CSL.Output.Formatters.strip_periods = function(state,string) {
@@ -156,6 +141,7 @@ CSL.Output.Formatters.strip_periods = function(state,string) {
  * this function.
  */
 CSL.Output.Formatters.title_capitalization = function(state,string) {
+	var str = CSL.Output.Formatters.doppelString(string);
 	if (!string) {
 		return "";
 	}
@@ -199,4 +185,15 @@ CSL.Output.Formatters.title_capitalization = function(state,string) {
 	return newString;
 };
 
+
+
+CSL.Output.Formatters.doppelString = function(string){
+	var ret = new Object();
+	ret["string"] = string;
+	return ret;
+};
+
+CSL.Output.Formatters.undoppelString = function(str){
+	return str.string;
+};
 
