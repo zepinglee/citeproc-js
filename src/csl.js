@@ -126,6 +126,9 @@ CSL = new function () {
 	this.NUMERIC_VARIABLES = x.slice();
 	this.DATE_VARIABLES = ["issued","event","accessed","container","original-date"];
 
+	this.TAG_ESCAPE = /(<ok>.*?<\/ok>|<[^>]+>)/;
+	this.TAG_USEALL = /(<[^>]+>)/;
+
 	var x = new Array();
 	x = x.concat(["@text-case","@strip-periods","@font-style","@font-variant"]);
 	x = x.concat(["@font-weight","@text-decoration","@vertical-align"]);

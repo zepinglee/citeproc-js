@@ -66,7 +66,7 @@ CSL.Output.Formatters.passthrough = function(state,string){
  * Force all letters in the string to lowercase.
  */
 CSL.Output.Formatters.lowercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string);
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
 	str.string = str.string.toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
@@ -76,7 +76,7 @@ CSL.Output.Formatters.lowercase = function(state,string) {
  * Force all letters in the string to uppercase.
  */
 CSL.Output.Formatters.uppercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string);
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
 	str.string = str.string.toUpperCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
@@ -87,7 +87,7 @@ CSL.Output.Formatters.uppercase = function(state,string) {
  * the rest of the characters untouched.
  */
 CSL.Output.Formatters.capitalize_first = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string);
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	if (str.string.length){
 		str.string = str.string[0].toUpperCase()+str.string.substr(1);
 		return CSL.Output.Formatters.undoppelString(str);
@@ -102,7 +102,7 @@ CSL.Output.Formatters.capitalize_first = function(state,string) {
  * subsequent characters to lowercase.
  */
 CSL.Output.Formatters.sentence_capitalization = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string);
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	str.string = str.string[0].toUpperCase()+str.string.substr(1).toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
@@ -115,7 +115,7 @@ CSL.Output.Formatters.sentence_capitalization = function(state,string) {
  * to uppercase.
  */
 CSL.Output.Formatters.capitalize_all = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string);
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	var strings = str.string.split(" ");
 	for(var i=0; i<strings.length; i++) {
 		if(strings[i].length > 1) {
@@ -141,7 +141,7 @@ CSL.Output.Formatters.strip_periods = function(state,string) {
  * this function.
  */
 CSL.Output.Formatters.title_capitalization = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string);
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
 	}
@@ -185,17 +185,16 @@ CSL.Output.Formatters.title_capitalization = function(state,string) {
 	return newString;
 };
 
-
-
-CSL.Output.Formatters.doppelString = function(string){
+CSL.Output.Formatters.doppelString = function(string,rex){
 	var ret = new Object();
-	ret.array = string.split(/(<ok>.*?<\/ok>)|<[^>]+>/);
+	ret.array = string.split(rex);
 	ret.string = "";
 	for (var i=0; i<ret.array.length; i += 2){
 		ret.string += ret.array[i];
 	};
 	return ret;
 };
+
 
 CSL.Output.Formatters.undoppelString = function(str){
 	var ret = "";
