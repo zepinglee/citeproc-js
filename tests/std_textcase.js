@@ -32,15 +32,31 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.test_formats");
+dojo.provide("tests.std_textcase");
 
-doh.register("tests.formats", [
-
-	function testStringyDefs() {
-		doh.assertEqual( '<b>%%STRING%%</b>', CSL.Output.Formats.html["@font-weight/bold"] );
-	},
-
-	function testFunctionDefs() {
-		doh.assertEqual( "function", typeof CSL.Output.Formats.html["@passthrough/true"] );
-	}
+doh.register("tests.std_textcase", [
+    function(){
+        var test = new StdRhinoTest("textcase_CapitalizeAll");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("textcase_CapitalizeFirst");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("textcase_Lowercase");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("textcase_SentenceCapitalization");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("textcase_TitleCapitalization");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("textcase_Uppercase");
+        doh.assertEqual(test.result, test.run());
+    },
 ]);

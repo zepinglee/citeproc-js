@@ -557,3 +557,7 @@ CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
 	state.opt["page-range-format"] = arg;
 };
 
+CSL.Lib.Attributes["@text-case"] = function(state,arg){
+	this.strings["text-case"] = arg;
+};
+

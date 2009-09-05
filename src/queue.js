@@ -217,6 +217,17 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 		}
 		if ("string" == typeof str){
 			curr.push( blob );
+			if (blob.strings["text-case"]){
+				//
+				// This one is _particularly_ hard to follow.  It's not obvious,
+				// but the blob already contains the input string at this
+				// point, as blob.blobs -- it's a terminal node, as it were.
+				// The str variable also contains the input string, but
+				// that copy is not used for onward processing.  We have to
+				// apply our changes to the blob copy.
+				//
+				blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
+			};
 			this.state.fun.flipflopper.init(str,blob);
 			//CSL.debug("(queue.append blob decorations): "+blob.decorations);
 			this.state.fun.flipflopper.processTags();

@@ -46,6 +46,11 @@ if (!CSL) {
 CSL.Output.Formatters = new function(){};
 
 
+CSL.Output.Formatters.strip_periods = function(state,string) {
+    return string.replace(/\./g," ").replace(/\s*$/g,"").replace(/\s+/g," ");
+};
+
+
 /**
  * A noop that just delivers the string.
  */
@@ -78,7 +83,8 @@ CSL.Output.Formatters.lowercase = function(state,string) {
 CSL.Output.Formatters.uppercase = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
 	str.string = str.string.toUpperCase();
-	return CSL.Output.Formatters.undoppelString(str);
+	var ret = CSL.Output.Formatters.undoppelString(str);
+	return ret;
 };
 
 
@@ -86,7 +92,7 @@ CSL.Output.Formatters.uppercase = function(state,string) {
  * Force capitalization of the first letter in the string, leave
  * the rest of the characters untouched.
  */
-CSL.Output.Formatters.capitalize_first = function(state,string) {
+CSL.Output.Formatters["capitalize-first"] = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	if (str.string.length){
 		str.string = str.string[0].toUpperCase()+str.string.substr(1);
@@ -101,7 +107,7 @@ CSL.Output.Formatters.capitalize_first = function(state,string) {
  * Similar to <b>capitalize_first</b>, but force the
  * subsequent characters to lowercase.
  */
-CSL.Output.Formatters.sentence_capitalization = function(state,string) {
+CSL.Output.Formatters["sentence"] = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	str.string = str.string[0].toUpperCase()+str.string.substr(1).toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
@@ -114,7 +120,7 @@ CSL.Output.Formatters.sentence_capitalization = function(state,string) {
  * letters to lowercase.  Single characters are forced
  * to uppercase.
  */
-CSL.Output.Formatters.capitalize_all = function(state,string) {
+CSL.Output.Formatters["capitalize-all"] = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	var strings = str.string.split(" ");
 	for(var i=0; i<strings.length; i++) {
@@ -128,35 +134,29 @@ CSL.Output.Formatters.capitalize_all = function(state,string) {
 	return CSL.Output.Formatters.undoppelString(str);
 };
 
-CSL.Output.Formatters.strip_periods = function(state,string) {
-    return string.replace(/\./g," ").replace(/\s*$/g,"").replace(/\s+/g," ");
-};
-
 /**
  * A complex function that attempts to produce a pattern
  * of capitalization appropriate for use in a title.
  * Will not touch words that have some capitalization
- * already; to force reformatting, convert the string
- * to all uppercase or lowercase before passing it to
- * this function.
+ * already.
  */
-CSL.Output.Formatters.title_capitalization = function(state,string) {
+CSL.Output.Formatters["title"] = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
 	}
 
 	// split words
-	var words = string.split(delimiterRegexp);
-	var isUpperCase = string.toUpperCase() == string;
+	var words = str.string.split(/(\s+)/);
+	var isUpperCase = str.string.toUpperCase() == string;
 
 	var newString = "";
 	var delimiterOffset = words[0].length;
 	var lastWordIndex = words.length-1;
 	var previousWordIndex = -1;
-	for(var i=0; i<=lastWordIndex; i++) {
+	for(var i=0; i<=lastWordIndex;  i += 2) {
 		// only do manipulation if not a delimiter character
-		if(words[i].length != 0 && (words[i].length != 1 || !delimiterRegexp.test(words[i]))) {
+		if(words[i].length != 0 && (words[i].length != 1 || !/\s+/.test(words[i]))) {
 			var upperCaseVariant = words[i].toUpperCase();
 			var lowerCaseVariant = words[i].toLowerCase();
 
@@ -164,7 +164,7 @@ CSL.Output.Formatters.title_capitalization = function(state,string) {
 				if(isUpperCase || words[i] == lowerCaseVariant) {
 					if(
 						// a skip word
-						skipWords.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) != -1
+						CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) != -1
 						// not first or last word
 						&& i != 0 && i != lastWordIndex
 						// does not follow a colon
@@ -179,10 +179,9 @@ CSL.Output.Formatters.title_capitalization = function(state,string) {
 				}
 				previousWordIndex = i;
 		}
-
-		newString += words[i];
 	}
-	return newString;
+	str.string = words.join("");
+	return CSL.Output.Formatters.undoppelString(str);
 };
 
 CSL.Output.Formatters.doppelString = function(string,rex){

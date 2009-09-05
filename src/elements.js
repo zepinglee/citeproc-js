@@ -129,7 +129,7 @@ CSL.Lib.Elements.text = new function(){
 						if (!state.tmp.force_subsequent){
 							if (Item["author-only"]){
 								state.tmp.element_trace.replace("do-not-suppress-me");
-								var term = CSL.Output.Formatters.capitalize_first(state,state.getTerm("reference item","long","singular"));
+								var term = CSL.Output.Formatters["capitalize-first"](state,state.getTerm("reference item","long","singular"));
 								state.output.append(term+" ");
 								state.tmp.last_element_trace = true;
 							};
@@ -189,7 +189,7 @@ CSL.Lib.Elements.text = new function(){
 						// I guess, actually).
 						if (!state.tmp.term_predecessor){
 							//CSL.debug("Capitalize");
-							term = CSL.Output.Formatters.capitalize_first(state,term);
+							term = CSL.Output.Formatters["capitalize-first"](state,term);
 							state.tmp.term_predecessor = true;
 						};
 						state.output.append(term,this);
@@ -214,6 +214,7 @@ CSL.Lib.Elements.text = new function(){
 								if (value){
 									var primary = state.getTextSubField(value,"locale-primary",true);
 									var secondary = state.getTextSubField(value,"locale-secondary");
+
 									if (secondary){
 										var primary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
 										var secondary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
