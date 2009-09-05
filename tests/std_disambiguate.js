@@ -84,6 +84,10 @@ doh.register("tests.std_disambiguate", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteTwoAuthorsSameFamilyName");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_PrimaryNameGenerally");
         doh.assertEqual(test.result, test.run());
     },

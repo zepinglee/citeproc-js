@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_sort");
 	dojo.require("tests.std_textcase");
 	dojo.require("tests.std_date");
@@ -62,7 +63,6 @@ if(true){
 	dojo.require("tests.std_condition");
 
 	dojo.require("tests.std_api");
-	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_variables");
 
 	dojo.require("tests.test_conditions");
