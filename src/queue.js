@@ -506,6 +506,9 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			// CSL.debug("doing rangeable blob");
 			//var str = blob.blobs;
 			var str = blob.formatter.format(blob.num);
+			if (blob.strings["text-case"]){
+				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
+			}
 			if (!state.tmp.suppress_decorations){
 				for each (var params in blob.decorations){
 					str = state.fun.decorate[params[0]][params[1]](state,str);

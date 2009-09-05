@@ -59,6 +59,7 @@ CSL.Output.Number = function(num,mother_token){
 		this.decorations = mother_token.decorations;
 		this.strings.prefix = mother_token.strings.prefix;
 		this.strings.suffix = mother_token.strings.suffix;
+		this.strings["text-case"] = mother_token.strings["text-case"];
 		this.successor_prefix = mother_token.successor_prefix;
 		this.range_prefix = mother_token.range_prefix;
 		this.splice_prefix = "";
