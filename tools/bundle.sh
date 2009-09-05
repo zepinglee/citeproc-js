@@ -3,6 +3,7 @@
 set -e
 
 cd $(dirname $0)
+cd ..
 
 if [ ! -d jsdoc ]; then
     echo This script requires jsdoc, which is available here:
@@ -53,7 +54,7 @@ rm ../tmp/NEW*
 cd ..
 echo $(cat citeproc.js | wc -l) lines in product
 
-cp citeproc.js rpc-stuff/src-js/citeproc-js.js
+#cp citeproc.js rpc-stuff/src-js/citeproc-js.js
 
 #cd rpc-stuff
 #./citeproc-js-rpc.py

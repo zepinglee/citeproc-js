@@ -128,7 +128,7 @@ if __name__ == "__main__":
             cx.execute(mytest)
 
     runfile = open("./tests/run.js").read()
-    runfile = re.sub("(?sm)//SNIP-START.*","",runfile)
+    runfile = re.sub("(?sm)(//SNIP-START|}\s*else\s*{).*","",runfile)
     m = re.split('require\("tests\.([^"]+)"\)',runfile)
     if len(m) > 1:
         for pos in range(1,len(m),2):
