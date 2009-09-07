@@ -302,6 +302,10 @@ class CslTest(CslTestUtils):
             line = jfh.readline()
             if not line: break
             line = line.strip()
+            e = re.match("^fatal:",line)
+            if e:
+                print line
+            sys.exit()
             m = re.match(".*:([0-9]+):([0-9]+):  *error:(.*)",line)
             if m:
               if success:
