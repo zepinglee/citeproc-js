@@ -39,9 +39,10 @@ CSL.Engine.Opt = function (){
 	this.has_disambiguate = false;
 	this.mode = "html";
 	this.dates = new Object();
-	this["locale-sort"] = false;
-	this["locale-primary"] = false;
-	this["locale-secondary"] = false;
+	this["locale-sort"] = [];
+	this["locale-pri"] = [];
+	this["locale-sec"] = [];
+	this["locale-name"] = [];
 };
 
 

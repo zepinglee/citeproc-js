@@ -212,8 +212,8 @@ CSL.Lib.Elements.text = new function(){
 							var func = function(state,Item){
 								var value = Item[this.variables[0]];
 								if (value){
-									var primary = state.getTextSubField(value,"locale-primary",true);
-									var secondary = state.getTextSubField(value,"locale-secondary");
+									var primary = state.getTextSubField(value,"locale-pri",true);
+									var secondary = state.getTextSubField(value,"locale-sec");
 
 									if (secondary){
 										var primary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);

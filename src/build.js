@@ -59,21 +59,8 @@ CSL.Engine = function(sys,style,lang) {
 	if (this.cslXml["@default-locale"].toString()){
 		var lst = this.cslXml["@default-locale"].toString();
 		lst = lst.split(/-x-(sort|pri|sec|name)-/);
-		var pos = lst.indexOf("sort");
-		if (pos > -1){
-			this.opt["locale-sort"] = lst[(pos+1)];
-		}
-		var pos = lst.indexOf("pri");
-		if (pos > -1){
-			this.opt["locale-primary"] = lst[(pos+1)];
-		}
-		var pos = lst.indexOf("sec");
-		if (pos > -1){
-			this.opt["locale-secondary"] = lst[(pos+1)];
-		}
-		var pos = lst.indexOf("name");
-		if (pos > -1){
-			this.opt["locale-name"] = lst[(pos+1)];
+		for (var pos=1; pos<lst.length; pos += 2){
+			this.opt[("locale-"+lst[pos])].push(lst[(pos+1)]);
 		}
 	}
 	if (this.cslXml["@name-sort-order"].toString()){
@@ -370,14 +357,17 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 
 CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
 	var lst = value.split(/\s*:([-a-zA-Z]+):\s*/);
+	value = undefined;
 	var opt = this.opt[locale_type];
-	if (opt && lst.indexOf(opt) > -1 && lst.indexOf(opt) % 2){
-		value = lst[(lst.indexOf(opt)+1)];
-	} else if (use_default){
+	for each (var o in opt){
+		if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2){
+			value = lst[(lst.indexOf(o)+1)];
+			break;
+		}
+	}
+	if (!value && use_default){
 		value = lst[0];
-	} else {
-		value = undefined;
-	};
+	}
 	return value;
 };
 
@@ -411,23 +401,29 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 				var m = p.match(/^:([-a-zA-Z]+):\s+(.*)/);
 				if (m){
 					addme = false;
-					if (m[1] == this.opt[mode]){
-						updateme = true;
-						newname[part] = m[2];
-					} else if (this.opt.lang){
-						//
-						// Fallback to style default language.
-						//
-						if (this.opt.lang.indexOf("-") > -1) {
-							var newopt = this.opt.lang.slice(0,this.opt.lang.indexOf("-"));
-						} else {
-							var newopt = this.opt.lang;
-						}
-						if (m[1] == newopt){
+					for each (var o in this.opt[mode]){
+						if (m[1] == o){
 							updateme = true;
 							newname[part] = m[2];
-							if (newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
-								newname["sticky"] = false;
+							break;
+						};
+					};
+					if (!updateme){
+						if (this.opt.lang){
+							//
+							// Fallback to style default language.
+							//
+							if (this.opt.lang.indexOf("-") > -1) {
+								var newopt = this.opt.lang.slice(0,this.opt.lang.indexOf("-"));
+							} else {
+								var newopt = this.opt.lang;
+							}
+							if (m[1] == newopt){
+								updateme = true;
+								newname[part] = m[2];
+								if (newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
+									newname["sticky"] = false;
+								};
 							};
 						};
 					};
