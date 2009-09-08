@@ -95,7 +95,7 @@ CSL.Engine = function(sys,style,lang) {
 	//
 	// utility functions for quotes
 	//
-	this.opt.close_quotes_array = this.getCloseQuotesArray();
+	this.setCloseQuotesArray();
 	//
 	// configure ordinal numbers generator
 	//
@@ -112,13 +112,13 @@ CSL.Engine = function(sys,style,lang) {
 	this.setOutputFormat("html");
 };
 
-CSL.Engine.prototype.getCloseQuotesArray = function(){
+CSL.Engine.prototype.setCloseQuotesArray = function(){
 	var ret = [];
 	ret.push(this.getTerm("close-quote"));
 	ret.push(this.getTerm("close-inner-quote"));
 	ret.push('"');
 	ret.push("'");
-	return ret;
+	this.opt.close_quotes_array = ret;
 };
 
 CSL.Engine.prototype._buildTokenLists = function(area){
