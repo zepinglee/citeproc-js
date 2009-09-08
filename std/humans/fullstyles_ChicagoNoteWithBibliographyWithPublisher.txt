@@ -58,7 +58,7 @@ bibliography
   <info>
     <title>Chicago Manual of Style (Full Note with Bibliography)</title>
     <id>http://www.zotero.org/styles/chicago-fullnote-bibliography</id>
-    <link href="http://www.zotero.org/styles/chicago-fullnote-bibliography" />
+    <link rel="self" href="http://www.zotero.org/styles/chicago-fullnote-bibliography" />
     <link href="http://www.chicagomanualofstyle.org/tools_citationguide.html" rel="documentation" />
     <author>
       <name>Julian Onions</name>
@@ -73,8 +73,8 @@ bibliography
       <email>elena.razlogova@gmail.com</email>
     </contributor>
     <summary>Chicago format with full notes and bibliography</summary>
-    <category term="generic-base" />
-    <category term="numeric" />
+    <category field="generic-base" />
+    <category citation-format="numeric" />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <macro name="editor-translator">

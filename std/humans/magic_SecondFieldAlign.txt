@@ -71,7 +71,7 @@ bibliography
     </layout>
   </citation>
   <bibliography 
-         second-field-align="true">
+         second-field-align="flush">
     <layout>
       <text prefix="[" suffix="]" variable="citation-number" />
       <group delimiter=" ">
