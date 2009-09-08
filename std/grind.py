@@ -305,7 +305,7 @@ class CslTest(CslTestUtils):
             e = re.match("^fatal:",line)
             if e:
                 print line
-            sys.exit()
+                sys.exit()
             m = re.match(".*:([0-9]+):([0-9]+):  *error:(.*)",line)
             if m:
               if success:
