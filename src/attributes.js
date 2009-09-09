@@ -522,8 +522,12 @@ CSL.Lib.Attributes["@disambiguate-add-year-suffix"] = function(state,arg){
 
 
 CSL.Lib.Attributes["@second-field-align"] = function(state,arg){
-	if (arg == "true"){
-		state[this.name].opt["second-field-align"] = true;
+	//
+	// XXXXX: This needs to do something to set a CSS value, similar
+	// to hanging indent or the offset parameter.
+	//
+	if (arg == "flush" || arg == "margin"){
+		state[this.name].opt["second-field-align"] = arg;
 	};
 };
 

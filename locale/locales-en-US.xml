@@ -42,6 +42,10 @@
       <single>source</single>
       <multiple>sources</multiple>
     </term>
+    <term name="reference item" form="short">
+      <single>ref</single>
+      <multiple>refs</multiple>
+    </term>
     <term name="no date">n.d.</term>
     <term name="and">and</term>
     <term name="et-al">et al.</term>

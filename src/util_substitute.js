@@ -76,6 +76,7 @@ CSL.Util.substituteStart = function(state,target){
 				target.push(bib_first);
 			};
 			if ("csl-left-label" == this.strings.cls && "bibliography" == state.build.area){
+				print("OOOOOOOOOOOOOOOOOOKAY!");
 				var func = function(state,Item){
 					if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
 						state.tmp.count_offset_characters = true;

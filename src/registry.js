@@ -280,6 +280,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 				"id":item,
 				"seq":0,
 				"offset":0,
+				"bibkey":this.state.getBibKey(),
 				"sortkeys":undefined,
 				"ambig":undefined,
 				"disambig":undefined

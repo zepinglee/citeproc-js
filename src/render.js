@@ -110,6 +110,18 @@ CSL.Engine.prototype.getAmbigConfig = function(){
 };
 
 
+/*
+ * Set and return a credible bibkey for the current item
+ */
+CSL.Engine.prototype.setBibKey = function(Item){
+	// XXXXX: Do something here!
+};
+
+CSL.Engine.prototype.getBibKey = function(){
+	return "BibKeyGoesHere";
+};
+
+
 /**
  * Return max values for disambiguation
  */
