@@ -147,6 +147,8 @@ CSL.Lib.Elements.text = new function(){
 					this["execs"].push(func);
 				} else if (variable == "year-suffix"){
 
+					state.opt.has_year_suffix = true;
+
 					if (state[state.tmp.area].opt.collapse == "year-suffix-ranged"){
 						this.range_prefix = "-";
 					}
@@ -988,6 +990,15 @@ CSL.Lib.Elements["date-part"] = new function(){
 					//state.output.endTag();
 				};
 				state.tmp.value = new Array();
+				if (!state.opt.has_year_suffix && "year" == this.strings.name){
+					if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
+						var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+						var number = new CSL.Output.Number(num,this);
+						var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
+						number.setFormatter(formatter);
+						state.output.append(number,"literal");
+					};
+				};
 			};
 			this["execs"].push(render_date_part);
 			target.push(this);
