@@ -280,7 +280,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 				"id":item,
 				"seq":0,
 				"offset":0,
-				"bibkey":this.state.getBibKey(),
+				"bibkey":undefined,
 				"sortkeys":undefined,
 				"ambig":undefined,
 				"disambig":undefined
@@ -296,6 +296,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			//
 			var abase = this.state.getAmbigConfig();
 			this.registerAmbigToken(akey,item,abase);
+
 			//if (!this.ambigcites[akey]){
 			//	this.ambigcites[akey] = new Array();
 			//}
@@ -443,6 +444,7 @@ CSL.Factory.Registry.prototype.yearsuffix = function(){
 			for (var i in leftovers){
 				//CSL.debug("  "+leftovers[i].id);
 				this.registry[ leftovers[i].id ].disambig[2] = i;
+				this.registry[ leftovers[i].id ].bibkey = this.state.makeBibKey(leftovers[i].id);
 			};
 		};
 		if (this.debug) {

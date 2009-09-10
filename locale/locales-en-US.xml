@@ -37,12 +37,11 @@
     <term name="retrieved">retrieved</term>
     <term name="from">from</term>
     <term name="forthcoming">forthcoming</term>
-    <term name="references">references</term>
-    <term name="reference item">
-      <single>source</single>
-      <multiple>sources</multiple>
+    <term name="references">
+      <single>reference</single>
+      <multiple>references</multiple>
     </term>
-    <term name="reference item" form="short">
+    <term name="references" form="short">
       <single>ref</single>
       <multiple>refs</multiple>
     </term>

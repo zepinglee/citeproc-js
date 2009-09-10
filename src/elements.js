@@ -129,7 +129,7 @@ CSL.Lib.Elements.text = new function(){
 						if (!state.tmp.force_subsequent){
 							if (Item["author-only"]){
 								state.tmp.element_trace.replace("do-not-suppress-me");
-								var term = CSL.Output.Formatters["capitalize-first"](state,state.getTerm("reference item","long","singular"));
+								var term = CSL.Output.Formatters["capitalize-first"](state,state.getTerm("references","long","singular"));
 								state.output.append(term+" ");
 								state.tmp.last_element_trace = true;
 							};
