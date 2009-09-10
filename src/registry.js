@@ -280,7 +280,6 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 				"id":item,
 				"seq":0,
 				"offset":0,
-				"bibkey":undefined,
 				"sortkeys":undefined,
 				"ambig":undefined,
 				"disambig":undefined
@@ -444,7 +443,6 @@ CSL.Factory.Registry.prototype.yearsuffix = function(){
 			for (var i in leftovers){
 				//CSL.debug("  "+leftovers[i].id);
 				this.registry[ leftovers[i].id ].disambig[2] = i;
-				this.registry[ leftovers[i].id ].bibkey = this.state.makeBibKey(leftovers[i].id);
 			};
 		};
 		if (this.debug) {

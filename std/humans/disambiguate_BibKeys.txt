@@ -32,35 +32,18 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
->>== MODE ==>>
+>>===== MODE =====>>
 citation
-<<== MODE ==<<
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+1.0
+<<===== SCHEMA =====<<
 
 
->>== SCHEMA ==>>
-none
-<<== SCHEMA ==<<
-
-
->>== RESULT ==>>
-Reference [1]
-
-<i>[2]</i>
-<<== RESULT ==<<
-
->>== CITATIONS ==>>
-[
-  [
-    ["ITEM-1",{"author-only":1}]
-  ],
-  [
-    ["ITEM-1",{"suppress-author":1}]
-  ],
-  [
-    ["ITEM-2",{}]
-  ]
-]
-<<== CITATIONS ==<<
+>>===== RESULT =====>>
+Asthma1900a; Asthma1900b; Bronchitis2000
+<<===== RESULT =====<<
 
 
 >>===== CSL =====>>
@@ -73,16 +56,12 @@ Reference [1]
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
-    <layout font-style="italic">
-      <text prefix="[" suffix="]" variable="citation-number" />
+  <citation 
+         disambiguate-add-year-suffix="true">
+    <layout delimiter="; ">
+        <text variable="citation-label"/>
     </layout>
   </citation>
-  <bibliography>
-    <layout>
-      <text variable="title" />
-    </layout>
-  </bibliography>
 </style>
 <<===== CSL =====<<
 
@@ -92,20 +71,29 @@ Reference [1]
  {
    "id":"ITEM-1",
    "type": "book",
-   "author":[
-      {"name":"Smith, John"}
+   "author": [
+        { "name":"Asthma, Albert" }
    ],
-   "title": "Book A",
-   "issued":{"year":"2005"}
- },
- {
+   "issued": {"year": "1900"},
+   "title": "Book A"
+},
+{
    "id":"ITEM-2",
    "type": "book",
-   "author":[
-      {"name":"Jones, Robert"}
+   "author": [
+        { "name":"Asthma, Zeppo" }
    ],
-   "title": "Book B",
-   "issued":{"year":"2000"}
+   "issued": {"year": "1900"},
+   "title": "Book B"
+ },
+{
+   "id":"ITEM-3",
+   "type": "book",
+   "author": [
+        { "name":"Bronchitis, Buffy" }
+   ],
+   "issued": {"year": "2000"},
+   "title": "Book C"
  }
 ]
 <<===== INPUT =====<<
