@@ -52,10 +52,6 @@ doh.register("tests.std_disambiguate", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("disambiguate_BibKeys");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("disambiguate_ByCiteBaseNameCountOnFailureIfYearSuffixAvailable");
         doh.assertEqual(test.result, test.run());
     },
@@ -89,6 +85,14 @@ doh.register("tests.std_disambiguate", [
     },
     function(){
         var test = new StdRhinoTest("disambiguate_ByCiteTwoAuthorsSameFamilyName");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("disambiguate_CitationLabelDefault");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("disambiguate_CitationLabelInData");
         doh.assertEqual(test.result, test.run());
     },
     function(){

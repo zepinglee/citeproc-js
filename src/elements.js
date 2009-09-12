@@ -178,37 +178,41 @@ CSL.Lib.Elements.text = new function(){
 				} else if (variable == "citation-label"){
 					state.opt.has_year_suffix = true;
 					var func = function(state,Item){
-						//
-						// A shot in the dark
-						//
-						var myname = state.getTerm("references","short",0);
-						for each (var n in CSL.CREATORS){
-							if (Item[n]){
-								var names = Item[n];
-								if (names && names.length){
-									var name = names[0];
-								}
-								if (name && name.family){
-									myname = name.family.replace(/\s+/,"");
-								} else if (name && name.literal){
-									myname = name.literal;
-									var m = myname.toLowerCase().match(/^(a|the|an)(.*)/,"");
-									if (m){
-										myname = m[2];
+						var label = Item["citation-label"];
+						if (!label){
+							//
+							// A shot in the dark
+							//
+							var myname = state.getTerm("references","short",0);
+							for each (var n in CSL.CREATORS){
+								if (Item[n]){
+									var names = Item[n];
+									if (names && names.length){
+										var name = names[0];
+									}
+									if (name && name.family){
+										myname = name.family.replace(/\s+/,"");
+									} else if (name && name.literal){
+										myname = name.literal;
+										var m = myname.toLowerCase().match(/^(a|the|an)(.*)/,"");
+										if (m){
+											myname = m[2];
+										}
 									}
 								}
 							}
-						}
-						var year = "0000";
-						if (Item.issued && Item.issued.year){
-							year = ""+Item.issued.year;
-						}
+							var year = "0000";
+							if (Item.issued && Item.issued.year){
+								year = ""+Item.issued.year;
+							}
+							label = myname + year;
+						};
 						var suffix = "";
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
 							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
 							suffix = state.fun.suffixator.format(num);
 						};
-						var label = myname + year + suffix;
+						label += suffix;
 						state.output.append(label,this);
 					};
 					this["execs"].push(func);
