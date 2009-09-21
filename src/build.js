@@ -214,6 +214,10 @@ CSL.Engine.prototype.setOutputFormat = function(mode){
 	this.fun.decorate.format_init(this.output[mode].tmp);
 };
 
+CSL.Engine.prototype.setContainerTitleAbbreviations = function(abbrevs){
+	this.opt["container-title-abbreviations"] = abbrevs;
+};
+
 CSL.Engine.prototype.getTerm = function(term,form,plural){
 	return CSL.Engine._getField(CSL.STRICT,this.locale_terms,term,form,plural);
 };

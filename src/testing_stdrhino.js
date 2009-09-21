@@ -112,6 +112,7 @@ StdRhinoTest.prototype._readTest = function(){
 
 StdRhinoTest.prototype.run = function(){
 	this.style = new CSL.Engine(this,this.test.csl);
+	this.style.setContainerTitleAbbreviations(this.test.abbreviations);
 	if (this.test.bibentries){
 		for each (var id_set in this.test.bibentries){
 			this.style.updateItems(id_set);
