@@ -1,0 +1,54 @@
+# Text dates
+--> month=8,day=31,year=2000
+Aug 31, 2000
+31 Aug 2000
+
+# Numeric dates (English locale)
+--> month=8,day=31,year=2000
+08-31-2000
+
+# Seasons
+--> season="summer",year=2000
+Sum 2000
+
+# Fuzzy
+--> fuzzy=true,month=8,day=31,year=2000
+circa 08-31-2000
+circa 2000-31-08
+circa Aug 31, 2000
+Aug 31 2000 ?
+[31 Aug 2000?]
+
+# BC
+--> year=-200
+200BC
+200bc
+200 b.c.
+
+# AD
+--> year=250
+250AD
+250ad
+250 a.d.
+
+# Other
+
+Trinity 2001
+
+# Garbage
+Wednesday
+
+# Ranged year
+2000-2001
+
+# Ranged month
+Aug - Sep 2000
+
+# Ranged day
+Aug 15-20 2000
+
+# Ranged month-year
+Aug 2000-Sep 2000
+
+# Ranged day-month-year
+Aug 15 2000 - Aug 20 2000
