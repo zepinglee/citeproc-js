@@ -43,12 +43,12 @@ citation
 
 
 >>== RESULT ==>>
-Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
+Doe, <i>Mango Chutney Souffle</i>, 10 Journal of Irreproducible Results 235 (1988).
 <<== RESULT ==<<
 
 >>== ABBREVIATIONS ==>>
 {
-  "Journal of Irreproducible Results":"J. Irrep. Res."
+  "Journal of Irreproducible Results OOPS!!!":"J. Irrep. Res."
 }
 <<== ABBREVIATIONS ==<<
 
@@ -69,7 +69,7 @@ Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
       </names>
       <text variable="title" font-style="italic" suffix=", "/>
       <number variable="volume" suffix=" "/>
-      <text variable="container-title"/>
+      <text variable="container-title" form="short"/>
       <text variable="page-first" prefix=" "/>
       <date variable="issued" prefix=" (" suffix=")">
         <date-part name="year"/>

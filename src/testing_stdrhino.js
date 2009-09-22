@@ -136,6 +136,8 @@ StdRhinoTest.prototype.run = function(){
 	} else if (this.test.mode == "bibliography"){
 		var ret = this.style.makeBibliography()[1].join("");
         ret = "<div class=\"csl-bib-body\">\n" + ret + "</div>";
+	} else if (this.test.mode == "bibliography-header"){
+		var ret = this.style.makeBibliography()[0];
 	} else {
 		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
 	}

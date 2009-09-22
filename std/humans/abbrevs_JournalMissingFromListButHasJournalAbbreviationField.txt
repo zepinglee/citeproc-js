@@ -32,19 +32,68 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_abbrevs");
+>>== MODE ==>>
+citation
+<<== MODE ==<<
 
-doh.register("tests.std_abbrevs", [
-    function(){
-        var test = new StdRhinoTest("abbrevs_JournalExistsInList");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("abbrevs_JournalMissingFromListAndJournalAbbreviationFieldAlsoMissing");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("abbrevs_JournalMissingFromListButHasJournalAbbreviationField");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+
+>>== SCHEMA ==>>
+1.0
+<<== SCHEMA ==<<
+
+
+>>== RESULT ==>>
+Doe, <i>Mango Chutney Souffle</i>, 10 JIR 235 (1988).
+<<== RESULT ==<<
+
+>>== ABBREVIATIONS ==>>
+{
+  "Journal of Irreproducible Results OOPS!!!":"J. Irrep. Res."
+}
+<<== ABBREVIATIONS ==<<
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout suffix=".">
+      <names variable="author" suffix=", ">
+        <name form="short"/>
+      </names>
+      <text variable="title" font-style="italic" suffix=", "/>
+      <number variable="volume" suffix=" "/>
+      <text variable="container-title" form="short"/>
+      <text variable="page-first" prefix=" "/>
+      <date variable="issued" prefix=" (" suffix=")">
+        <date-part name="year"/>
+      </date>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+ {
+   "id":"ITEM-1",
+   "type": "article-journal",
+   "author":[
+      {"name":"Doe, John"}
+   ],
+   "title":"Mango Chutney Souffle",
+   "container-title": "Journal of Irreproducible Results",
+   "journalAbbreviation": "JIR",
+   "issued":{"year":"1988"},
+   "volume":"10",
+   "page":"235"
+ }
+]
+<<===== INPUT =====<<

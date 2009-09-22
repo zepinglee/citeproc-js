@@ -241,14 +241,20 @@ CSL.Lib.Elements.text = new function(){
 					state.build.form = false;
 					state.build.plural = false;
 				} else if (this.variables.length){
-					if (this.variables[0] == "container-title"){
+					if (this.variables[0] == "container-title" && form == "short"){
 						// Define function to check container title
-						print("INSTALLING");
 						var func = function(state,Item){
-							var value = state.getVariable(Item,this.variables[0],form);
-							if (state.opt["container-title-abbreviations"] && state.opt["container-title-abbreviations"][value]){
-								value = state.opt["container-title-abbreviations"][value];
+							var defaultval = state.getVariable(Item,this.variables[0],form);
+							var value = "";
+							if (state.opt["container-title-abbreviations"]){
+								value = state.opt["container-title-abbreviations"][defaultval];
 							};
+							if (!value){
+								value = Item["journalAbbreviation"];
+							}
+							if (!value){
+								value = defaultval;
+							}
 							state.output.append(value,this);
 						};
 					} else if (this.variables[0] == "title"){
