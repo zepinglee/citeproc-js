@@ -96,3 +96,5 @@ description = ('Generates (X)HTML documents from standalone reStructuredText '
 # Command line
 publish_cmdline(writer_name='html', description=description)
 
+#from pygments.formatters import HtmlFormatter
+#print HtmlFormatter().get_style_defs()

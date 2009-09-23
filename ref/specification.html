@@ -1,0 +1,4506 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><title
+    ></title
+    ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><meta name="generator" content="pandoc"
+     /><style type="text/css"
+    >
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+pre.sourceCode { }
+pre.sourceCode span.Normal { }
+pre.sourceCode span.Keyword { color: #007020; font-weight: bold; } 
+pre.sourceCode span.DataType { color: #902000; }
+pre.sourceCode span.DecVal { color: #40a070; }
+pre.sourceCode span.BaseN { color: #40a070; }
+pre.sourceCode span.Float { color: #40a070; }
+pre.sourceCode span.Char { color: #4070a0; }
+pre.sourceCode span.String { color: #4070a0; }
+pre.sourceCode span.Comment { color: #60a0b0; font-style: italic; }
+pre.sourceCode span.Others { color: #007020; }
+pre.sourceCode span.Alert { color: red; font-weight: bold; }
+pre.sourceCode span.Function { color: #06287e; }
+pre.sourceCode span.RegionMarker { }
+pre.sourceCode span.Error { color: red; font-weight: bold; }
+</style
+    ><link rel="stylesheet" href="screen.css" type="text/css" media="all" />
+<h1 class="title">Citation Style Language Syntax Specification</h1>
+
+<div class="version-info">
+<h2>version 1.0</h3>
+<h3>September, 2009</h3>
+</div>
+
+<div class="contributors">
+<dl>
+  <dt>Editors</dt>
+   <dd>
+	<ul>
+	<li>Frank Bennett</li>
+	<li>Bruce D'Arcus</li>
+	<li>Rintze Zelle</li>
+	</ul>
+   </dd>
+  <dt>Contributors</dt>
+   <dd>
+	<ul> 
+    	<li>Simon Kornblith</li>
+    	<li>Julian Onions</li>
+    	<li>Elena Razlogova</li>
+   		<li>Andrea Rossato</li>
+	</ul>
+</dd>
+</dl>
+</div>
+
+</head
+  ><body
+  ><div id="TOC"
+    ><ul
+      ><li
+	><a href="#introduction"
+	  >Introduction</a
+	  ></li
+	><li
+	><a href="#csl-styles---basic-structure"
+	  >CSL Styles - Basic Structure</a
+	  ><ul
+	  ><li
+	    ><a href="#namespacing"
+	      >Namespacing</a
+	      ></li
+	    ><li
+	    ><a href="#xml-declaration"
+	      >XML Declaration</a
+	      ></li
+	    ><li
+	    ><a href="#the-root-element---cs:style"
+	      >The Root Element - <code
+		>cs:style</code
+		></a
+	      ></li
+	    ><li
+	    ><a href="#child-elements-of-cs:style"
+	      >Child Elements of <code
+		>cs:style</code
+		></a
+	      ><ul
+	      ><li
+		><a href="#info"
+		  >Info</a
+		  ></li
+		><li
+		><a href="#citation"
+		  >Citation</a
+		  ></li
+		><li
+		><a href="#bibliography"
+		  >Bibliography</a
+		  ></li
+		><li
+		><a href="#macro"
+		  >Macro</a
+		  ></li
+		><li
+		><a href="#locale"
+		  >Locale</a
+		  ></li
+		></ul
+	      ></li
+	    ><li
+	    ><a href="#dependent-styles"
+	      >Dependent Styles</a
+	      ></li
+	    ></ul
+	  ></li
+	><li
+	><a href="#locale-files---basic-structure"
+	  >Locale Files - Basic Structure</a
+	  ><ul
+	  ><li
+	    ><a href="#localized-terms"
+	      >Localized Terms</a
+	      ></li
+	    ><li
+	    ><a href="#localized-dates"
+	      >Localized Dates</a
+	      ></li
+	    ><li
+	    ><a href="#localized-options"
+	      >Localized Options</a
+	      ></li
+	    ></ul
+	  ></li
+	><li
+	><a href="#rendering-elements"
+	  >Rendering Elements</a
+	  ><ul
+	  ><li
+	    ><a href="#layout"
+	      >Layout</a
+	      ></li
+	    ><li
+	    ><a href="#text"
+	      >Text</a
+	      ></li
+	    ><li
+	    ><a href="#date"
+	      >Date</a
+	      ><ul
+	      ><li
+		><a href="#date-part"
+		  >Date-part</a
+		  ></li
+		></ul
+	      ></li
+	    ><li
+	    ><a href="#number"
+	      >Number</a
+	      ></li
+	    ><li
+	    ><a href="#names"
+	      >Names</a
+	      ><ul
+	      ><li
+		><a href="#name"
+		  >Name</a
+		  ></li
+		><li
+		><a href="#et-al"
+		  >Et-al</a
+		  ></li
+		><li
+		><a href="#substitute"
+		  >Substitute</a
+		  ></li
+		><li
+		><a href="#label-in-cs:names"
+		  >Label in <code
+		    >cs:names</code
+		    ></a
+		  ></li
+		></ul
+	      ></li
+	    ><li
+	    ><a href="#label"
+	      >Label</a
+	      ></li
+	    ><li
+	    ><a href="#group"
+	      >Group</a
+	      ></li
+	    ></ul
+	  ></li
+	><li
+	><a href="#style-behavior"
+	  >Style Behavior</a
+	  ><ul
+	  ><li
+	    ><a href="#options"
+	      >Options</a
+	      ><ul
+	      ><li
+		><a href="#citation-specific-options"
+		  >Citation-specific Options</a
+		  ><ul
+		  ><li
+		    ><a href="#et-al-abbrevation"
+		      >Et al. Abbrevation</a
+		      ></li
+		    ><li
+		    ><a href="#disambiguation"
+		      >Disambiguation</a
+		      ></li
+		    ><li
+		    ><a href="#collapsing"
+		      >Collapsing</a
+		      ></li
+		    ><li
+		    ><a href="#positioning"
+		      >Positioning</a
+		      ></li
+		    ></ul
+		  ></li
+		><li
+		><a href="#bibliography-specific-options"
+		  >Bibliography-specific Options</a
+		  ><ul
+		  ><li
+		    ><a href="#et-al-abbrevation-1"
+		      >Et al. Abbrevation</a
+		      ></li
+		    ><li
+		    ><a href="#white-spacing"
+		      >White-spacing</a
+		      ></li
+		    ><li
+		    ><a href="#reference-grouping"
+		      >Reference Grouping</a
+		      ></li
+		    ><li
+		    ><a href="#todo-unfinished-business"
+		      >TODO: Unfinished Business</a
+		      ></li
+		    ></ul
+		  ></li
+		><li
+		><a href="#global-options"
+		  >Global Options</a
+		  ></li
+		><li
+		><a href="#localized-options-1"
+		  >Localized Options</a
+		  ></li
+		></ul
+	      ></li
+	    ><li
+	    ><a href="#sorting"
+	      >Sorting</a
+	      ><ul
+	      ><li
+		><a href="#sorting-variables"
+		  >Sorting Variables</a
+		  ></li
+		><li
+		><a href="#sorting-macros"
+		  >Sorting Macros</a
+		  ></li
+		></ul
+	      ></li
+	    ><li
+	    ><a href="#conditionals"
+	      >Conditionals</a
+	      ></li
+	    ><li
+	    ><a href="#formatting"
+	      >Formatting</a
+	      ></li
+	    ><li
+	    ><a href="#affixes"
+	      >Affixes</a
+	      ></li
+	    ><li
+	    ><a href="#delimiter"
+	      >Delimiter</a
+	      ></li
+	    ><li
+	    ><a href="#text-case"
+	      >Text-case</a
+	      ></li
+	    ><li
+	    ><a href="#strip-periods"
+	      >Strip-periods</a
+	      ></li
+	    ></ul
+	  ></li
+	><li
+	><a href="#appendices"
+	  >Appendices</a
+	  ><ul
+	  ><li
+	    ><a href="#appendix-i---variables"
+	      >Appendix I - Variables</a
+	      ><ul
+	      ><li
+		><a href="#source-variables"
+		  >Source Variables</a
+		  ><ul
+		  ><li
+		    ><a href="#date-variables"
+		      >Date variables</a
+		      ></li
+		    ><li
+		    ><a href="#name-variables"
+		      >Name variables</a
+		      ></li
+		    ></ul
+		  ></li
+		><li
+		><a href="#citation-variables"
+		  >Citation Variables</a
+		  ></li
+		></ul
+	      ></li
+	    ><li
+	    ><a href="#appendix-ii---types"
+	      >Appendix II - Types</a
+	      ></li
+	    ><li
+	    ><a href="#appendix-iii---terms"
+	      >Appendix III - Terms</a
+	      ></li
+	    ><li
+	    ><a href="#appendix-iv---page-abbreviation-rules"
+	      >Appendix IV - Page Abbreviation Rules</a
+	      ></li
+	    ></ul
+	  ></li
+	></ul
+      ></div
+    ><div id="introduction"
+    ><h2
+      ><a href="#TOC"
+	>Introduction</a
+	></h2
+      ><p
+      >The Citation Style Language (CSL) is an <a href="http://en.wikipedia.org/wiki/XML"
+	>XML</a
+	> format for describing the formatting of in-text citations, notes and bibliographies. CSL offers:</p
+      ><ul
+      ><li
+	>An open format that may be used by any application</li
+	><li
+	>The ability to write compact and robust styles</li
+	><li
+	>Extensive support for style requirements</li
+	><li
+	>(Automated) localization of styles</li
+	><li
+	>Easy distribution and updating of styles</li
+	><li
+	>A large and fast growing library of freely available styles</li
+	></ul
+      ><p
+      >This document is meant as a complete and accurate specification of CSL 1.0. Additional documentation, such as the CSL schema, CSL styles, and information on how to add support for CSL to applications, can be found at the official home of CSL, <a href="www.citationstyles.org"
+	>www.citationstyles.org</a
+	>.</p
+      ></div
+    ><div id="csl-styles---basic-structure"
+    ><h2
+      ><a href="#TOC"
+	>CSL Styles - Basic Structure</a
+	></h2
+      ><div id="namespacing"
+      ><h3
+	><a href="#TOC"
+	  >Namespacing</a
+	  ></h3
+	><p
+	>All the elements in CSL are <a href="http://en.wikipedia.org/wiki/XML_Namespace"
+	  >namespaced</a
+	  >. The recommended prefix <code
+	  >cs</code
+	  > is attached to element names throughout this specification, but is usually omitted from CSL styles and locale files when the default namespace is declared in the root element.</p
+	><dl
+	><dt
+	  >The CSL namespace</dt
+	  ><dd
+	  >&quot;http://purl.org/net/xbiblio/csl&quot;</dd
+	  ></dl
+	></div
+      ><div id="xml-declaration"
+      ><h3
+	><a href="#TOC"
+	  >XML Declaration</a
+	  ></h3
+	><p
+	>It is highly recommended to initalize each CSL style with an XML declaration, specifying the version of XML used as well as the character encoding. In most cases, the declaration will be:</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword ProcessingInstruction"
+	    >&lt;?xml</span
+	    ><span class="Normal NormalText"
+	    > version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;</span
+	    ><span class="Keyword ProcessingInstruction"
+	    >?&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	></div
+      ><div id="the-root-element---cs:style"
+      ><h3
+	><a href="#TOC"
+	  >The Root Element - <code
+	    >cs:style</code
+	    ></a
+	  ></h3
+	><p
+	>The root element of CSL styles is <code
+	  >cs:style</code
+	  >. This element carries the following arguments:</p
+	><dl
+	><dt
+	  ><code
+	    >xmlns</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >The namespace declaration that binds the elements in the style to the given namespace URI. CSL elements in the style don't need individual namespace declarations if this attribute is set to &quot;http://purl.org/net/xbiblio/csl&quot;.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >version</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >The version of the CSL schema. Should have a value of &quot;1.0&quot; for CSL 1.0-compatible styles.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >class</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Specifies whether the style is note-based (value &quot;note&quot;) or uses in-text citations (&quot;in-text&quot;).</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >default-locale</code
+	    > (optional)</dt
+	  ><dd
+	  ><p
+	    >Implementations of CSL can automatically localize styles based on the user's locale. This can be prevented by setting the value of <code
+	      >default-locale</code
+	      > to a <a href="http://books.xmlschemata.org/relaxng/ch19-77191.html"
+	      >locale code</a
+	      >, which fixes the style localization to that particular locale. This is generally desired for journal-specific styles.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >page-range-format</code
+	    > (optional)</dt
+	  ><dd
+	  ><p
+	    >This global formatting option sets the abbreviation format of page ranges. A full description of this option is given in the <a href="#global-options"
+	      >Global Options</a
+	      > section.</p
+	    ></dd
+	  ></dl
+	><p
+	>An example of a style preamble:</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword ProcessingInstruction"
+	    >&lt;?xml</span
+	    ><span class="Normal NormalText"
+	    > version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;</span
+	    ><span class="Keyword ProcessingInstruction"
+	    >?&gt;</span
+	    ><br
+	     /><span class="Keyword Element"
+	    >&lt;style</span
+	    ><span class="Others Attribute"
+	    > xmlns=</span
+	    ><span class="String Value"
+	    >&quot;http://purl.org/net/xbiblio/csl&quot;</span
+	    ><span class="Others Attribute"
+	    > version=</span
+	    ><span class="String Value"
+	    >&quot;1.0&quot;</span
+	    ><span class="Others Attribute"
+	    > class=</span
+	    ><span class="String Value"
+	    >&quot;in-text&quot;</span
+	    ><span class="Others Attribute"
+	    > default-locale=</span
+	    ><span class="String Value"
+	    >&quot;fr-FR&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	></div
+      ><div id="child-elements-of-cs:style"
+      ><h3
+	><a href="#TOC"
+	  >Child Elements of <code
+	    >cs:style</code
+	    ></a
+	  ></h3
+	><p
+	>All (independent) CSL styles share the same basic structure, with five possible types of child elements in the <code
+	  >cs:style</code
+	  > root element. The roles of each of these elements (which will be described in more detail later) are:</p
+	><dl
+	><dt
+	  ><code
+	    >cs:info</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >The <code
+	      >cs:info</code
+	      > element must be included as the first child element of <code
+	      >cs:style</code
+	      >. It contains the metadata that describes the style, e.g. the name of the style, an unique style identifier, the style authors, etc.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >cs:citation</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >This required element describes the formatting instructions of in-text citations.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >cs:bibliography</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >This optional element describes the formatting instructions of bibliographies, or, for note-type styles, the notes.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >cs:macro</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Styles may include one or more <code
+	      >cs:macro</code
+	      > elements. The role of macros is to allow for easy reuse of formatting instructions, which helps keeping styles compact and maintainable.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >cs:locale</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Styles may include one or more <code
+	      >cs:locale</code
+	      > elements. These elements allow styles to override the default localization data (term-strings, date formats and formatting options) on a per-locale basis.</p
+	    ></dd
+	  ></dl
+	><div id="info"
+	><h4
+	  ><a href="#TOC"
+	    >Info</a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:info</code
+	    > element contains all the style's metadata, many elements of which are borrowed from the <a href="http://tools.ietf.org/html/rfc4287"
+	    >Atom Syndication Format</a
+	    >. Although it has no influence on how citations are formatted, complete and correct metadata is especially important if styles are shared in style repositories and should be automatically pushed to CSL-capable applications (such as Zotero) when updated. Below is an example of a filled-in <code
+	    >cs:info</code
+	    > element, followed by a description of all possible elements.</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;info&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;title&gt;</span
+	      ><span class="Normal NormalText"
+	      >Style Title</span
+	      ><span class="Keyword Element"
+	      >&lt;/title&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;id&gt;</span
+	      ><span class="Normal NormalText"
+	      >http://www.zotero.org/styles/style-title</span
+	      ><span class="Keyword Element"
+	      >&lt;/id&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;author&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;name&gt;</span
+	      ><span class="Normal NormalText"
+	      >Author Name</span
+	      ><span class="Keyword Element"
+	      >&lt;/name&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;email&gt;</span
+	      ><span class="Normal NormalText"
+	      >name@domain.com</span
+	      ><span class="Keyword Element"
+	      >&lt;/email&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;uri&gt;</span
+	      ><span class="Normal NormalText"
+	      >http://www.domain.com/</span
+	      ><span class="Keyword Element"
+	      >&lt;/uri&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;/author&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;category</span
+	      ><span class="Others Attribute"
+	      > term=</span
+	      ><span class="String Value"
+	      >&quot;author-date&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;category</span
+	      ><span class="Others Attribute"
+	      > term=</span
+	      ><span class="String Value"
+	      >&quot;zoology&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;updated&gt;</span
+	      ><span class="Normal NormalText"
+	      >2008-10-29T21:01:24+00:00</span
+	      ><span class="Keyword Element"
+	      >&lt;/updated&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;summary&gt;</span
+	      ><span class="Normal NormalText"
+	      >Style for Some Journal</span
+	      ><span class="Keyword Element"
+	      >&lt;/summary&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      > </span
+	      ><span class="Keyword Element"
+	      >&lt;rights&gt;</span
+	      ><span class="Normal NormalText"
+	      >This work is licensed under a Creative Commons</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >         Attribution-Share Alike 3.0 Unported License</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >         http://creativecommons.org/licenses/by-sa/3.0/</span
+	      ><span class="Keyword Element"
+	      >&lt;/rights&gt;</span
+	      ><br
+	       /><span class="Keyword Element"
+	      >&lt;/info&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ><dl
+	  ><dt
+	    ><code
+	      >cs:author</code
+	      >/<code
+	      >cs:contributor</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >These optional elements may be used for acknowledgment of style authors and contributors. Each element may occur multiple times. Authorship is generally limited to those who have written a new style, or have made significant changes to existing styles, while contributorship can be assigned to those who have made smaller changes. Both elements require one child element, cs:name, and allow for two others, cs:email, and cs:uri, indicating respectively the name, email address and URI of the author or contributor in question.</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:category</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >Styles may be assigned one or more categories. This information can be used to ease browsing of large style repositories and could allow users to subscribe to styles within particular content areas. Each element requires the <code
+		>term</code
+		> attribute, and allows for the <code
+		>scheme</code
+		> and <code
+		>label</code
+		> attributes (as inherited from the Atom Syndication Format). The possible values of <code
+		>term</code
+		> fall themselves in two categories. The first is the style's class, which describes how in-text citations are rendered, with values:</p
+	      ><ul
+	      ><li
+		>&quot;author-date&quot;: e.g. &quot;... (Doe, 1999)&quot;</li
+		><li
+		>&quot;numeric&quot;: e.g. &quot;... [1]&quot;</li
+		><li
+		>&quot;label&quot;: &quot; ... [doe99]&quot;</li
+		><li
+		>&quot;note&quot;: the citation appears as a footnote or endnote</li
+		><li
+		>&quot;in-text&quot;: the full citation appears in-line (TODO: this will probably be removed in favor of <code
+		  >author</code
+		  >)</li
+		></ul
+	      ><p
+	      >The second category is the field(s) the style applies to. Allowed values are ''anthropology'', ''astronomy'', ''biology'', ''botany'', ''chemistry'', ''communications'', ''engineering'', ''generic-base'', ''geography'', ''geology'', ''history'', ''humanities'', ''law'', ''literature'', ''math'', ''medicine'', ''philosophy'', ''physics'', ''psychology'', ''sociology'', ''science'', ''political_science'', ''social_science'', ''theology'' and ''zoology''. The ''generic-base'' category is meant for generic styles like Harvard and APA.</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:id</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >This required element should contain a URI. A valid, stable, and unique URL to resolves to the style is desired if the style is made publicly available. This identifier establishes the identity of the style, on which applications may rely for features such as automatic style updating.</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:issn</code
+	      >/<code
+	      >cs:issnl</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >Journal-specific styles may include one or more <code
+		>cs:issn</code
+		> elements, containing the journal's ISSN identifiers (multiple ISSNs can be assigned to a single journal, e.g. for the print and online editions). In addition, the <code
+		>cs:issnl</code
+		> element may be used for the newly established <a href="http://www.issn.org/2-22637-What-is-an-ISSN-L.php"
+		>ISSN-L identifier</a
+		>.</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:link</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >??? (TODO)</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:published</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >The contents of this optional element must be a <a href="http://books.xmlschemata.org/relaxng/ch19-77049.html"
+		>timestamp</a
+		>. The element can be used to indicate when the style was initially created or made available.</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:rights</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >This optional element can be included to specify the license under which the the style file is released. See, e.g. the <a href="http://creativecommons.org/license/"
+		>Creative Commons</a
+		>. The element may include the <code
+		>xml:lang</code
+		> attribute to specify the language of the content (the value should be a <a href="http://books.xmlschemata.org/relaxng/ch19-77191.html"
+		>xsd:language locale code</a
+		>).</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:source</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >??? (TODO)</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:summary</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >This optional element can be used to give a summary of the style.The element may include the <code
+		>xml:lang</code
+		> attribute to specify the language of the content (the value should be a <a href="http://books.xmlschemata.org/relaxng/ch19-77191.html"
+		>xsd:language locale code</a
+		>).</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:title</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >The contents of this required element should be the name of the style as it should be shown to users. The element may include the <code
+		>xml:lang</code
+		> attribute to specify the language of the content (the value should be a <a href="http://books.xmlschemata.org/relaxng/ch19-77191.html"
+		>xsd:language locale code</a
+		>).</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >cs:updated</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >The contents of this required element must be a <a href="http://books.xmlschemata.org/relaxng/ch19-77049.html"
+		>timestamp</a
+		>, so it is possible to assess whether the style has changed since the last time it has been accessed or cached.</p
+	      ></dd
+	    ></dl
+	  ></div
+	><div id="citation"
+	><h4
+	  ><a href="#TOC"
+	    >Citation</a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:citation</code
+	    > element describes the formatting of citations, which can consist of one or multiple references to bibliographic sources, and may appear in the form of either in-text citations (generally formatted as label [doe99], number [1], author [Doe] or author-date descriptors [Doe 1999]) or notes. The required <code
+	    >cs:layout</code
+	    > child element describe what, and how, bibliographic data should be included in the citations (see the chapter on the <a href="#layout"
+	    >Layout element</a
+	    >). Additional citation-specific formatting options may be set as attributes on <code
+	    >cs:citation</code
+	    > (see the <a href="#citation-specific-options"
+	    >Citation-specific Options</a
+	    > section). Finally, the optional <code
+	    >cs:sort</code
+	    > element, which should precede the <code
+	    >cs:layout</code
+	    > element, specifies how citations consisting of multiple references should be sorted (see the chapter on <a href="#sorting"
+	    >Sorting</a
+	    >. Thus, the basic structure of the <code
+	    >cs:citation</code
+	    > element is:</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;citation</span
+	      ><span class="Others Attribute"
+	      > option=</span
+	      ><span class="String Value"
+	      >&quot;value&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;sort&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Comment"
+	      >&lt;!-- sort keys --&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/sort&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;layout&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Comment"
+	      >&lt;!-- rendering elements --&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/layout&gt;</span
+	      ><br
+	       /><span class="Keyword Element"
+	      >&lt;/citation&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ><p
+	  ><strong
+	    >A note to CSL implementers</strong
+	    > Note-based styles are unique in that citations may effectively become full sentences. This requires consideration during the formatting of citations. For example, if a citation is footnoted without any additional text, the first character of the output should be uppercased. By contrast, if the citation occurs within a pre-existing footnote, and preceded by non-citation text, then it should be printed as is.</p
+	  ></div
+	><div id="bibliography"
+	><h4
+	  ><a href="#TOC"
+	    >Bibliography</a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:bibliography</code
+	    > element describes the formatting of bibliographies, and highly analogous to <code
+	    >cs:citation</code
+	    >: the required <code
+	    >cs:layout</code
+	    > child element describes how each reference should be formatted in the bibliography, the optional <code
+	    >cs:sort</code
+	    > element specifies the sorting order of all the references in the bibliography, and bibliography-specific formatting options may be set as attributes on <code
+	    >cs:bibliography</code
+	    > (see the <a href="#bibliography-specific-options"
+	    >Bibliography-specific Options</a
+	    > section).</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;bibliography</span
+	      ><span class="Others Attribute"
+	      > option=</span
+	      ><span class="String Value"
+	      >&quot;value&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;sort&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Comment"
+	      >&lt;!-- sort keys --&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/sort&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;layout&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Comment"
+	      >&lt;!-- rendering elements --&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/layout&gt;</span
+	      ><br
+	       /><span class="Keyword Element"
+	      >&lt;/bibliography&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ></div
+	><div id="macro"
+	><h4
+	  ><a href="#TOC"
+	    >Macro</a
+	    ></h4
+	  ><p
+	  >Macros, containing (reusable) formatting instructions, can be called from within <code
+	    >cs:citation</code
+	    >, <code
+	    >cs:bibliography</code
+	    > and other <code
+	    >cs:macro</code
+	    > elements. The use of macros can greatly improve the quality of styles by increasing their readability, compactness and maintainability. Ideally, the contents of <code
+	    >cs:citation</code
+	    > and <code
+	    >cs:bibliography</code
+	    > should be kept compact and agnostic of resource types (i.e. books, journal articles, etc.), depending mainly on macro calls.</p
+	  ><p
+	  >By convention the (optional) <code
+	    >cs:macro</code
+	    > elements are included directly before the <code
+	    >cs:citation</code
+	    > element. Macros are identified by the value of the (required) <code
+	    >name</code
+	    > attribute, and contain one or more <a href="#rendering-elements"
+	    >rendering elements</a
+	    >. The following example macro displays the &quot;title&quot; variable, and applies italics when the resource type is &quot;book&quot;:</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;macro</span
+	      ><span class="Others Attribute"
+	      > name=</span
+	      ><span class="String Value"
+	      >&quot;title&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;choose&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;if</span
+	      ><span class="Others Attribute"
+	      > type=</span
+	      ><span class="String Value"
+	      >&quot;book&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >        </span
+	      ><span class="Keyword Element"
+	      >&lt;text</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;title&quot;</span
+	      ><span class="Others Attribute"
+	      > font-style=</span
+	      ><span class="String Value"
+	      >&quot;italic&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;/if&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;else&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >        </span
+	      ><span class="Keyword Element"
+	      >&lt;text</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;title&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;/else&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;/choose&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/macro&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ><p
+	  >Macros can, in potential, also be reused in other styles (whether authored by hand or generated by software tools). Therefore, it is recommended to use common macro names as much as possible. The macro names that are most abundant in the Zotero Style Repository at the time of writing:</p
+	  ><ul
+	  ><li
+	    >title</li
+	    ><li
+	    >author</li
+	    ><li
+	    >author-short (used to format author names in citations)</li
+	    ><li
+	    >editor-translator</li
+	    ><li
+	    >publisher (publisher and publisher-place)</li
+	    ><li
+	    >access (for URLs and archival locations)</li
+	    ><li
+	    >event (for conference, hearings, etc.)</li
+	    ><li
+	    >issued (date of issue)</li
+	    ><li
+	    >issued-year (year of issue)</li
+	    ><li
+	    >pages</li
+	    ><li
+	    >citation-locator (for cited pages and such)</li
+	    ><li
+	    >locators (volume and issue, for example)</li
+	    ><li
+	    >container-prefix (for the &quot;In&quot; and such that often preceded container info)</li
+	    ><li
+	    >edition (edition or version)</li
+	    ></ul
+	  ><p
+	  >(TODO: cleanup the list above to only include the preferred macros?)</p
+	  ></div
+	><div id="locale"
+	><h4
+	  ><a href="#TOC"
+	    >Locale</a
+	    ></h4
+	  ><p
+	  >CSL supports localization of terms (text strings such as &quot;edited by&quot;), date formats and formatting options (e.g. the way punctuation is applied around quotes). CSL ships with a large number of &quot;locales-xx-XX.xml&quot; files that contain preset localization data (the &quot;xx-XX&quot; is the locale code, e.g. &quot;en-US&quot; for US English). However, any content of these &quot;locales-xx-XX.xml&quot; files can be overridden in-style by using one or more (optional) <code
+	    >cs:locale</code
+	    > elements (these are generally included directly following the <code
+	    >cs:info</code
+	    > element).</p
+	  ><p
+	  >The use of <code
+	    >cs:locale</code
+	    > in CSL styles and in the &quot;locales-xx-XX.xml&quot; files is very similar. There are however three differences. First, in CSL styles, <code
+	    >cs:locale</code
+	    > is a child element of <code
+	    >cs:style</code
+	    >, and as such typically doesn't carry the CSL namespace declaration (which is usually already set on <code
+	    >cs:style</code
+	    >). Secondly, CSL styles may contain more than one <code
+	    >cs:locale</code
+	    > element (each specific to one locale). Finally, <code
+	    >cs:locale</code
+	    > in &quot;locales-xx-XX.xml&quot; files must contain the <code
+	    >cs:terms</code
+	    >, <code
+	    >cs:date</code
+	    > and <code
+	    >cs:style-options</code
+	    > elements. In CSL styles, these elements are all optional. It is sufficient to include only those elements for which overriding localization data is provided. For further details on <code
+	    >cs:locale</code
+	    >, see the paragraph on <a href="#locale-files---basic-structure"
+	    >locale files</a
+	    >.</p
+	  ><p
+	  >An example of <code
+	    >cs:locale</code
+	    > used in a CSL style:</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;style&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;locale</span
+	      ><span class="Others Attribute"
+	      > xml:lang=</span
+	      ><span class="String Value"
+	      >&quot;en&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;terms&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;term</span
+	      ><span class="Others Attribute"
+	      > name=</span
+	      ><span class="String Value"
+	      >&quot;editortranslator&quot;</span
+	      ><span class="Others Attribute"
+	      > form=</span
+	      ><span class="String Value"
+	      >&quot;short&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >        </span
+	      ><span class="Keyword Element"
+	      >&lt;single&gt;</span
+	      ><span class="Normal NormalText"
+	      >ed. </span
+	      ><span class="DecVal EntityRef"
+	      >&amp;amp;</span
+	      ><span class="Normal NormalText"
+	      > trans.</span
+	      ><span class="Keyword Element"
+	      >&lt;/single&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >        </span
+	      ><span class="Keyword Element"
+	      >&lt;multiple&gt;</span
+	      ><span class="Normal NormalText"
+	      >eds. </span
+	      ><span class="DecVal EntityRef"
+	      >&amp;amp;</span
+	      ><span class="Normal NormalText"
+	      > trans.</span
+	      ><span class="Keyword Element"
+	      >&lt;/multiple&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;/term&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;/terms&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/locale&gt;</span
+	      ><br
+	       /><span class="Keyword Element"
+	      >&lt;/style&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ><p
+	  >(TODO: make sure all CSL examples validate as standalone CSL fragments? (I wrote in the upgrade notes that this would be the case). The alternative would be to a) change the text in the other document :), or b) link to Frank's unit tests, which might offer an easy way to manage CSL fragments, while stimulating expansion of the test suite. RZ: I think at this point a) makes the most sense)</p
+	  ></div
+	></div
+      ><div id="dependent-styles"
+      ><h3
+	><a href="#TOC"
+	  >Dependent Styles</a
+	  ></h3
+	><p
+	>In addition to independent styles, which are self-contained, CSL also supports dependent styles, which function similar to aliases or shortcuts. Dependent styles are generally used when multiple journals share the same style format. In such a case, there would be a single independent master style to describe the format (e.g. &quot;Nature Journals&quot;). Then, dependent styles could be created for all journals that use this format (e.g. &quot;Nature Biotechnology&quot;, &quot;Nature Nanotechnology&quot;, etc.). These styles only contain the <code
+	  >cs:info</code
+	  > element (containing a <code
+	  >cs:link</code
+	  > element to link to the independent master style) to provide the journal's metadata. In this way, style repositories can show entries for the individual journals, without the need to duplicate formatting instructions. And if the common format has to be modified, it is sufficient to change just the independent master style.</p
+	><p
+	>Note that dependent styles cannot be used to indicate changes compared to the independent master style. If there is any difference in formatting between two styles, however small, two separate CSL styles have to be created.</p
+	></div
+      ></div
+    ><div id="locale-files---basic-structure"
+    ><h2
+      ><a href="#TOC"
+	>Locale Files - Basic Structure</a
+	></h2
+      ><p
+      >CSL ships with &quot;locales-xx-XX.xml&quot; files (the &quot;xx-XX&quot; is the locale code, e.g. &quot;en-US&quot; for US English) that contain preset localization data of terms, dates and formatting options. The collection of available locale files can be found <a href="http://xbiblio.svn.sourceforge.net/viewvc/xbiblio/csl/locales"
+	>here</a
+	>. For details on in-style overriding of localization data, see the <a href="#locale"
+	>Locale</a
+	> section.</p
+      ><p
+      >Each &quot;locales-xx-XX.xml&quot; file contains the localization data for a single locale. Like CSL styles, these files are written in XML, and contain an <a href="#xml-declaration"
+	>XML declaration</a
+	>. The <code
+	>cs:locale</code
+	> root element requires the <code
+	>xml:lang</code
+	> attribute to specify the locale of the data, and typically carries a <code
+	>xmlns</code
+	> namespace declaration. There are three (required) child elements, <code
+	>cs:terms</code
+	>, <code
+	>cs:date</code
+	> and <code
+	>cs:style-options</code
+	>. An example of the (strongly reduced) contents of a locale file:</p
+      ><pre class="sourceCode xml"
+      ><code
+	><span class="Keyword ProcessingInstruction"
+	  >&lt;?xml</span
+	  ><span class="Normal NormalText"
+	  > version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;</span
+	  ><span class="Keyword ProcessingInstruction"
+	  >?&gt;</span
+	  ><br
+	   /><span class="Keyword Element"
+	  >&lt;locale</span
+	  ><span class="Others Attribute"
+	  > xml:lang=</span
+	  ><span class="String Value"
+	  >&quot;en&quot;</span
+	  ><span class="Others Attribute"
+	  > xmlns=</span
+	  ><span class="String Value"
+	  >&quot;http://purl.org/net/xbiblio/csl&quot;</span
+	  ><span class="Keyword Element"
+	  >&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >  </span
+	  ><span class="Keyword Element"
+	  >&lt;terms&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;term</span
+	  ><span class="Others Attribute"
+	  > name=</span
+	  ><span class="String Value"
+	  >&quot;no date&quot;</span
+	  ><span class="Keyword Element"
+	  >&gt;</span
+	  ><span class="Normal NormalText"
+	  >n.d.</span
+	  ><span class="Keyword Element"
+	  >&lt;/term&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;term</span
+	  ><span class="Others Attribute"
+	  > name=</span
+	  ><span class="String Value"
+	  >&quot;et-al&quot;</span
+	  ><span class="Keyword Element"
+	  >&gt;</span
+	  ><span class="Normal NormalText"
+	  >et al.</span
+	  ><span class="Keyword Element"
+	  >&lt;/term&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;term</span
+	  ><span class="Others Attribute"
+	  > name=</span
+	  ><span class="String Value"
+	  >&quot;page&quot;</span
+	  ><span class="Keyword Element"
+	  >&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >      </span
+	  ><span class="Keyword Element"
+	  >&lt;single&gt;</span
+	  ><span class="Normal NormalText"
+	  >page</span
+	  ><span class="Keyword Element"
+	  >&lt;/single&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >      </span
+	  ><span class="Keyword Element"
+	  >&lt;multiple&gt;</span
+	  ><span class="Normal NormalText"
+	  >pages</span
+	  ><span class="Keyword Element"
+	  >&lt;/multiple&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;/term&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;term</span
+	  ><span class="Others Attribute"
+	  > name=</span
+	  ><span class="String Value"
+	  >&quot;page&quot;</span
+	  ><span class="Others Attribute"
+	  > form=</span
+	  ><span class="String Value"
+	  >&quot;short&quot;</span
+	  ><span class="Keyword Element"
+	  >&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >      </span
+	  ><span class="Keyword Element"
+	  >&lt;single&gt;</span
+	  ><span class="Normal NormalText"
+	  >p.</span
+	  ><span class="Keyword Element"
+	  >&lt;/single&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >      </span
+	  ><span class="Keyword Element"
+	  >&lt;multiple&gt;</span
+	  ><span class="Normal NormalText"
+	  >pp.</span
+	  ><span class="Keyword Element"
+	  >&lt;/multiple&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;/term&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >  </span
+	  ><span class="Keyword Element"
+	  >&lt;/terms&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >  </span
+	  ><span class="Keyword Element"
+	  >&lt;date</span
+	  ><span class="Others Attribute"
+	  > form=</span
+	  ><span class="String Value"
+	  >&quot;numeric&quot;</span
+	  ><span class="Keyword Element"
+	  >&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;date-part</span
+	  ><span class="Others Attribute"
+	  > name=</span
+	  ><span class="String Value"
+	  >&quot;month&quot;</span
+	  ><span class="Others Attribute"
+	  > form=</span
+	  ><span class="String Value"
+	  >&quot;numeric&quot;</span
+	  ><span class="Others Attribute"
+	  > suffix=</span
+	  ><span class="String Value"
+	  >&quot;-&quot;</span
+	  ><span class="Keyword Element"
+	  >/&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;date-part</span
+	  ><span class="Others Attribute"
+	  > name=</span
+	  ><span class="String Value"
+	  >&quot;day&quot;</span
+	  ><span class="Others Attribute"
+	  > suffix=</span
+	  ><span class="String Value"
+	  >&quot;-&quot;</span
+	  ><span class="Keyword Element"
+	  >/&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >    </span
+	  ><span class="Keyword Element"
+	  >&lt;date-part</span
+	  ><span class="Others Attribute"
+	  > name=</span
+	  ><span class="String Value"
+	  >&quot;year&quot;</span
+	  ><span class="Keyword Element"
+	  >/&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >  </span
+	  ><span class="Keyword Element"
+	  >&lt;/date&gt;</span
+	  ><br
+	   /><span class="Normal NormalText"
+	  >  </span
+	  ><span class="Keyword Element"
+	  >&lt;style-options</span
+	  ><span class="Others Attribute"
+	  > punctuation-in-quote=</span
+	  ><span class="String Value"
+	  >&quot;true&quot;</span
+	  ><span class="Keyword Element"
+	  >/&gt;</span
+	  ><br
+	   /><span class="Keyword Element"
+	  >&lt;/locale&gt;</span
+	  ><br
+	   /></code
+	></pre
+      ><div id="localized-terms"
+      ><h3
+	><a href="#TOC"
+	  >Localized Terms</a
+	  ></h3
+	><p
+	>Terms are localized strings. For example, a style could specify that the term &quot;and&quot; should be used. The exact string that appears in the style output then depends on the locale, e.g. &quot;and&quot; for English, or &quot;und&quot; for German. The terms in &quot;locales-xx-XX.xml&quot; files are defined using <code
+	  >cs:term</code
+	  > elements, child elements of <code
+	  >cs:terms</code
+	  >, itself a child element of <code
+	  >cs:locale</code
+	  >. Terms are identified by the value of the <code
+	  >name</code
+	  > attribute of <code
+	  >cs:term</code
+	  >. In addition to the so called 'simple terms', for which the element contents consists only of the translated string, there are also 'compound terms', which contain both singular and plural variants of a term (e.g. &quot;page&quot; and &quot;pages&quot;) using the child elements <code
+	  >cs:single</code
+	  > and <code
+	  >cs:multiple</code
+	  >, respectively. For some terms, multiple forms are available (the form is indicated by the value of the <code
+	  >form</code
+	  > attribute on <code
+	  >cs:term</code
+	  >). The different forms are:</p
+	><ul
+	><li
+	  >&quot;long&quot; - the default, e.g. &quot;editor&quot;/&quot;editors&quot; for the term &quot;editor&quot;</li
+	  ><li
+	  >&quot;verb&quot; - e.g. &quot;edited by&quot; for the term &quot;editor&quot;</li
+	  ><li
+	  >&quot;short&quot; - e.g. &quot;ed&quot;/&quot;eds&quot; for the term &quot;editor&quot;</li
+	  ><li
+	  >&quot;verb-short&quot; - e.g. &quot;ed&quot; for the term &quot;editor&quot;</li
+	  ><li
+	  >&quot;symbol&quot; - e.g. &quot;§&quot; for the term &quot;section&quot;</li
+	  ></ul
+	><p
+	>Examples of how terms are defined have been given above in <a href="#locale-files---basic-structure"
+	  >Locale Files - Basic Structure</a
+	  >.</p
+	><p
+	>The complete list of supported terms can be found in <a href="#appendix-iii---terms"
+	  >appendix III</a
+	  >.</p
+	><p
+	>TODO: explain role of cs-terms.extension (in csl-terms.rnc).</p
+	></div
+      ><div id="localized-dates"
+      ><h3
+	><a href="#TOC"
+	  >Localized Dates</a
+	  ></h3
+	><p
+	>Dates can be either localized or non-localized. The default localized date formats are defined in the &quot;locales-xx-XX.xml&quot; files using the <code
+	  >cs:date</code
+	  > element as child element of <code
+	  >cs:locale</code
+	  >. Each locale file contains two date formats, which are distinguished by the value of the <code
+	  >form</code
+	  > attribute on <code
+	  >cs:date</code
+	  >: &quot;numeric&quot; (e.g. &quot;12-15-2005&quot; for the English locale), and &quot;text&quot; (e.g. &quot;December 15, 2005&quot;). The date format is derived from the order of the <code
+	  >cs:date-part</code
+	  > elements (with <code
+	  >name</code
+	  >-values of <code
+	  >day</code
+	  >, <code
+	  >month</code
+	  >, <code
+	  >year</code
+	  > and <code
+	  >other</code
+	  >), which are child elements of <code
+	  >cs:date</code
+	  > and from any <a href="#formatting"
+	  >formatting attributes</a
+	  > on the <code
+	  >cs:date</code
+	  > and <code
+	  >cs:date-part</code
+	  > elements. In addition, a <a href="#delimiter"
+	  >delimiter</a
+	  > may be set on <code
+	  >cs:date</code
+	  > (delimiting the <code
+	  >cs:date-part</code
+	  > elements), and <a href="#affixes"
+	  >affixes</a
+	  > may be applied to the <code
+	  >cs:date-part</code
+	  > elements.</p
+	><p
+	>N.B. The reason affixes are not allowed on <code
+	  >cs:date</code
+	  > when used as a child element of <code
+	  >cs:locale</code
+	  > is to allow localized dates to be used in combination with custom affixes such as parentheses. E.g. a macro could specify:</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;macro</span
+	    ><span class="Others Attribute"
+	    > name=</span
+	    ><span class="String Value"
+	    >&quot;issued&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >   </span
+	    ><span class="Keyword Element"
+	    >&lt;date</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;issued&quot;</span
+	    ><span class="Others Attribute"
+	    > form=</span
+	    ><span class="String Value"
+	    >&quot;numeric&quot;</span
+	    ><span class="Others Attribute"
+	    > prefix=</span
+	    ><span class="String Value"
+	    >&quot;(&quot;</span
+	    ><span class="Others Attribute"
+	    > suffix=</span
+	    ><span class="String Value"
+	    >&quot;)&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;/macro&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	></div
+      ><div id="localized-options"
+      ><h3
+	><a href="#TOC"
+	  >Localized Options</a
+	  ></h3
+	><p
+	>CSL currently includes a single localized global option (affecting both citations and the bibliography), <code
+	  >punctuation-in-quote</code
+	  >. This option is set in the &quot;locales-xx-XX.xml&quot; files as an attribute on <code
+	  >cs:style-options</code
+	  >, a child element of <code
+	  >cs:locale</code
+	  >.</p
+	></div
+      ></div
+    ><div id="rendering-elements"
+    ><h2
+      ><a href="#TOC"
+	>Rendering Elements</a
+	></h2
+      ><p
+      >Rendering elements are used to specify what bibliographic data should be shown in citations and bibliographies, the order of the data, and, and to a certain extent, how the data should be decorated.</p
+      ><div id="layout"
+      ><h3
+	><a href="#TOC"
+	  >Layout</a
+	  ></h3
+	><p
+	>As discussed in the <a href="#citation"
+	  >citation</a
+	  > and <a href="#bibliography"
+	  >bibliography</a
+	  > sections, <code
+	  >cs:layout</code
+	  > is a required child element of both <code
+	  >cs:citation</code
+	  > and <code
+	  >cs:bibliography</code
+	  >. All the rendering elements (with the exception of <code
+	  >cs:layout</code
+	  > itself) that should appear in the citations and bibliography should be nested inside the <code
+	  >cs:layout</code
+	  > element. The <code
+	  >cs:layout</code
+	  > element accepts both <a href="#affixes"
+	  >affixes</a
+	  > and <a href="#formatting"
+	  >formatting</a
+	  > attributes. When used in the <code
+	  >cs:citation</code
+	  > element, a <a href="#delimiter"
+	  >delimiter</a
+	  > can be set to separate multiple items in a single citation. For example,</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword Element"
+	    >&lt;layout</span
+	    ><span class="Others Attribute"
+	    > prefix=</span
+	    ><span class="String Value"
+	    >&quot;(&quot;</span
+	    ><span class="Others Attribute"
+	    > suffix=</span
+	    ><span class="String Value"
+	    >&quot;)&quot;</span
+	    ><span class="Others Attribute"
+	    > delimiter=</span
+	    ><span class="String Value"
+	    >&quot;, &quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;citation-number&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Keyword Element"
+	    >&lt;/layout&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	><p
+	>would result in citations like &quot;(1, 2)&quot;.</p
+	></div
+      ><div id="text"
+      ><h3
+	><a href="#TOC"
+	  >Text</a
+	  ></h3
+	><p
+	>The <code
+	  >cs:text</code
+	  > element is used to output text. This text can originate from different sources. For each instance of the <code
+	  >cs:text</code
+	  > element, the source-type is indicated as an attribute. The attribute value acts as an identifier. For example,</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;title&quot;</span
+	    ><span class="Others Attribute"
+	    > prefix=</span
+	    ><span class="String Value"
+	    >&quot;Title: &quot;</span
+	    ><span class="Others Attribute"
+	    > form=</span
+	    ><span class="String Value"
+	    >&quot;short&quot;</span
+	    ><span class="Others Attribute"
+	    > font-style=</span
+	    ><span class="String Value"
+	    >&quot;italic&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	><p
+	>indicates that the source is a <code
+	  >variable</code
+	  >, and that the <code
+	  >variable</code
+	  > that should be displayed is short form of &quot;title&quot; (in italics). The different sources are:</p
+	><ul
+	><li
+	  ><code
+	    >variable</code
+	    > - the text contents of a variable. The optional <code
+	    >form</code
+	    > attribute can be set to either &quot;long&quot; (the default) or &quot;short&quot; to select the long or short forms of variables, e.g. the full and short title.</li
+	  ><li
+	  ><code
+	    >macro</code
+	    > - the text contents generated by a macro. The value of <code
+	    >macro</code
+	    > should correspond to the value of the <code
+	    >name</code
+	    > attribute of the desired <code
+	    >cs:macro</code
+	    > element.</li
+	  ><li
+	  ><code
+	    >term</code
+	    > - the text of a (localized) term. The complete list of supported terms can be found in <a href="#appendix-iii---terms"
+	    >appendix III</a
+	    >. The <code
+	    >plural</code
+	    > attribute can be set for <code
+	    >cs:text</code
+	    > to choose either the singular (value &quot;false&quot;, the default) or plural variant (value &quot;true&quot;) of a term. In addition, the <code
+	    >form</code
+	    > attribute can be set for those terms for which multiple forms are available, with values:<ul
+	    ><li
+	      >&quot;long&quot; - e.g. &quot;editor&quot;/&quot;editors&quot; for the term editor</li
+	      ><li
+	      >&quot;verb&quot; - e.g. &quot;edited by&quot; for the term editor</li
+	      ><li
+	      >&quot;short&quot; - e.g. &quot;ed&quot;/&quot;eds&quot; for the term editor</li
+	      ><li
+	      >&quot;verb-short&quot; - e.g. &quot;ed&quot; for the term editor</li
+	      ><li
+	      >&quot;symbol&quot; - e.g. &quot;§&quot; for the term section</li
+	      ></ul
+	    ></li
+	  ><li
+	  ><code
+	    >value</code
+	    > - used to output verbatim text, which is set via the value of <code
+	    >value</code
+	    > (e.g. value=&quot;some text&quot;)</li
+	  ></ul
+	><p
+	>In all cases the <a href="#affixes"
+	  >affixes</a
+	  >, <a href="#formatting"
+	  >formatting</a
+	  > and <a href="#strip-periods"
+	  >strip-periods</a
+	  > attributes may be applied to <code
+	  >cs:text</code
+	  >.</p
+	></div
+      ><div id="date"
+      ><h3
+	><a href="#TOC"
+	  >Date</a
+	  ></h3
+	><p
+	>The <code
+	  >cs:date</code
+	  > element is used to output the dates of the <a href="#date-variables"
+	  >date variables</a
+	  >, in either a localized or non-localized format.</p
+	><p
+	>To use a localized date format, use <code
+	  >cs:date</code
+	  > with the <code
+	  >form</code
+	  > attribute. The value of this attribute can be set either to &quot;numeric&quot; (for a numeric date format, e.g. &quot;12-15-2005&quot;), or to &quot;text&quot; (e.g. &quot;December 15, 2005&quot;). Localized date formats can be customized in two ways. First, the <code
+	  >date-parts</code
+	  > attribute may be included on <code
+	  >cs:date</code
+	  >. The value of this attribute determines which <code
+	  >cs:date-part</code
+	  > elements are shown. The possible values:</p
+	><ul
+	><li
+	  >&quot;year-month-day&quot; - default, displays year, month and day</li
+	  ><li
+	  >&quot;year-month&quot; - displays year and month</li
+	  ><li
+	  >&quot;year&quot; - displays year only</li
+	  ></ul
+	><p
+	>Secondly, any of the <a href="#date-part"
+	  ><code
+	    >cs:date-part</code
+	    ></a
+	  > elements may be included as child elements of <code
+	  >cs:date</code
+	  >. The included elements do not affect which, and in which order, the <code
+	  >cs:date-part</code
+	  > elements are included in the rendered date. Instead, overriding values can be set for any of the attributes of the individual <code
+	  >cs:date-part</code
+	  > elements. For example, the <code
+	  >form</code
+	  > attribute of the month-<code
+	  >cs:date-part</code
+	  > element can be set to &quot;short&quot; to get abbreviated month names in all locales.</p
+	><p
+	>For non-localized date formats, the <code
+	  >form</code
+	  > attribute on <code
+	  >cs:date</code
+	  > is not set (the <code
+	  >date-parts</code
+	  > attribute is unavailable as well). Instead, the date format is entirely controlled by <code
+	  >cs:date</code
+	  > and its (one or more) <a href="#date-part"
+	  ><code
+	    >cs:date-part</code
+	    ></a
+	  > children. In contrast to localized dates, only the included <code
+	  >cs:date-part</code
+	  > elements will be rendered, in the order in which they are specified. The <code
+	  >cs:date-part</code
+	  > elements may carry any of the <a href="#affixes"
+	  >affix</a
+	  > and <a href="#formatting"
+	  >formatting</a
+	  > attributes, while <code
+	  >cs:date</code
+	  > may carry a <a href="#delimiter"
+	  >delimiter</a
+	  > (delimiting the various <code
+	  >cs:date-part</code
+	  > elements).</p
+	><p
+	>For both localized and non-localized dates, <a href="#affixes"
+	  >affixes</a
+	  > and <a href="#formatting"
+	  >formatting attributes</a
+	  > may be specified for the <code
+	  >cs:date</code
+	  > element.</p
+	><div id="date-part"
+	><h4
+	  ><a href="#TOC"
+	    >Date-part</a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:date-part</code
+	    > element is used to control how the different date parts of the date variable specified in the parent <code
+	    >cs:date</code
+	    > element are rendered. The date parts are identified by the <code
+	    >name</code
+	    > attribute, with possible values:</p
+	  ><dl
+	  ><dt
+	    ><code
+	      >day</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >For <code
+		>day</code
+		> the <code
+		>form</code
+		> attribute may be set on <code
+		>cs:date-part</code
+		>, with values:</p
+	      ><ul
+	      ><li
+		>&quot;numeric&quot; - default, e.g. &quot;1&quot;</li
+		><li
+		>&quot;numeric-leading-zeros&quot; - e.g. &quot;01&quot;</li
+		><li
+		>&quot;ordinal&quot; - e.g. &quot;1st&quot;</li
+		></ul
+	      ></dd
+	    ><dt
+	    ><code
+	      >month</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >For <code
+		>month</code
+		> the <a href="#strip-periods"
+		><code
+		  >strip-periods</code
+		  ></a
+		> and <code
+		>form</code
+		> attributes may be set on <code
+		>cs:date-part</code
+		>. The abbreviated (&quot;short&quot;-form) month names are <a href="#localized-terms"
+		>localized terms</a
+		>, which by default include periods. These periods can be stripped by setting the value of <a href="#strip-periods"
+		><code
+		  >strip-periods</code
+		  ></a
+		> to &quot;true&quot; (&quot;false&quot; is the default). The possible values of <code
+		>form</code
+		>:</p
+	      ><ul
+	      ><li
+		>&quot;long&quot; - default, e.g. &quot;January&quot;</li
+		><li
+		>&quot;short&quot; - e.g. &quot;Jan.&quot;</li
+		><li
+		>&quot;numeric&quot; - e.g. &quot;1&quot;</li
+		><li
+		>&quot;numeric-leading-zeros&quot; - e.g. &quot;01&quot;</li
+		></ul
+	      ></dd
+	    ><dt
+	    ><code
+	      >year</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >For <code
+		>year</code
+		> the <code
+		>form</code
+		> attribute may be set on <code
+		>cs:date-part</code
+		>, with values:</p
+	      ><ul
+	      ><li
+		>&quot;long&quot; - default, e.g. &quot;2005&quot;</li
+		><li
+		>&quot;short&quot; - e.g. &quot;05&quot;</li
+		></ul
+	      ></dd
+	    ></dl
+	  ><p
+	  >The <code
+	    >cs:date-part</code
+	    > elements may carry any of the <a href="#affixes"
+	    >affix</a
+	    > and <a href="#formatting"
+	    >formatting</a
+	    > attributes when used for non-localized dates.</p
+	  ><p
+	  >An example (which would yield dates like &quot;(May 4, 2004)&quot;):</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;date</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;accessed&quot;</span
+	      ><span class="Others Attribute"
+	      > prefix=</span
+	      ><span class="String Value"
+	      >&quot;(&quot;</span
+	      ><span class="Others Attribute"
+	      > suffix=</span
+	      ><span class="String Value"
+	      >&quot;)&quot;</span
+	      ><span class="Others Attribute"
+	      > delimiter=</span
+	      ><span class="String Value"
+	      >&quot; &quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;date-part</span
+	      ><span class="Others Attribute"
+	      > name=</span
+	      ><span class="String Value"
+	      >&quot;month&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;date-part</span
+	      ><span class="Others Attribute"
+	      > name=</span
+	      ><span class="String Value"
+	      >&quot;day&quot;</span
+	      ><span class="Others Attribute"
+	      > suffix=</span
+	      ><span class="String Value"
+	      >&quot;,&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;date-part</span
+	      ><span class="Others Attribute"
+	      > name=</span
+	      ><span class="String Value"
+	      >&quot;year&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Keyword Element"
+	      >&lt;/date&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ><p
+	  >TODO: didn't include &quot;other&quot; yet (see how the discussion pans out)</p
+	  ></div
+	></div
+      ><div id="number"
+      ><h3
+	><a href="#TOC"
+	  >Number</a
+	  ></h3
+	><p
+	>The <code
+	  >cs:number</code
+	  > element can be used to output any of the following variables:</p
+	><ul
+	><li
+	  >&quot;edition&quot;</li
+	  ><li
+	  >&quot;volume&quot;</li
+	  ><li
+	  >&quot;issue&quot;</li
+	  ><li
+	  >&quot;number&quot;</li
+	  ><li
+	  >&quot;number-of-volumes&quot;</li
+	  ></ul
+	><p
+	>Although these variables can also be rendered with <code
+	  >cs:text</code
+	  >, <code
+	  >cs:number</code
+	  > has the benefit of offering number-specific formatting via the <code
+	  >form</code
+	  > attribute, with values:</p
+	><ul
+	><li
+	  >&quot;numeric&quot; (default) - e.g. &quot;1&quot;, &quot;2&quot;, &quot;3&quot;</li
+	  ><li
+	  >&quot;ordinal&quot; - e.g. &quot;1st&quot;, &quot;2nd&quot;, &quot;3rd&quot;</li
+	  ><li
+	  >&quot;long-ordinal&quot; - e.g. &quot;first&quot;, &quot;second&quot;, &quot;third&quot;</li
+	  ><li
+	  >&quot;roman&quot; - &quot;i&quot;, &quot;ii&quot;, &quot;iii&quot;</li
+	  ></ul
+	><p
+	>When variables are displayed with <code
+	  >cs:number</code
+	  >, only the numeric content in used in the rendering (e.g. &quot;12&quot; when the entire string is &quot;12th edition&quot;). Fields can be tested for non-numeric content with the <code
+	  >is-numeric</code
+	  > <a href="#conditionals"
+	  >conditional</a
+	  > (returning &quot;false&quot; for e.g. &quot;12th edition&quot;, and &quot;true&quot; for &quot;35&quot;).</p
+	><p
+	>(TODO: what happens if the field contents is &quot;Volume 3, part 2&quot;. Will only the &quot;3&quot; be extracted? What about &quot;Volume 2.5&quot;?)</p
+	><p
+	>The <code
+	  >cs:number</code
+	  > element may carry any of the <a href="#affixes"
+	  >affix</a
+	  > and <a href="#formatting"
+	  >formatting</a
+	  > attributes.</p
+	></div
+      ><div id="names"
+      ><h3
+	><a href="#TOC"
+	  >Names</a
+	  ></h3
+	><p
+	>The <code
+	  >cs:names</code
+	  > element is used to display <a href="#name-variables"
+	  >name variables</a
+	  >, such as &quot;author&quot; (which contains all the authors of an item). The <code
+	  >variable</code
+	  > attribute determines which variable(s) are rendered. Multiple variables (separated by single spaces, see example below) are rendered in the order in which they are specified. The <a href="#delimiter"
+	  ><code
+	    >delimiter</code
+	    ></a
+	  > attribute can be set to delimite the contributors groups of the different variables.</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword Element"
+	    >&lt;names</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;editor translator&quot;</span
+	    ><span class="Others Attribute"
+	    > delimiter=</span
+	    ><span class="String Value"
+	    >&quot;, &quot;</span
+	    ><span class="Others Attribute"
+	    > suffix=</span
+	    ><span class="String Value"
+	    >&quot;, &quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;name</span
+	    ><span class="Others Attribute"
+	    > and=</span
+	    ><span class="String Value"
+	    >&quot;symbol&quot;</span
+	    ><span class="Others Attribute"
+	    > initialize-with=</span
+	    ><span class="String Value"
+	    >&quot;. &quot;</span
+	    ><span class="Others Attribute"
+	    > delimiter=</span
+	    ><span class="String Value"
+	    >&quot;, &quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;label</span
+	    ><span class="Others Attribute"
+	    > prefix=</span
+	    ><span class="String Value"
+	    >&quot; (&quot;</span
+	    ><span class="Others Attribute"
+	    > text-case=</span
+	    ><span class="String Value"
+	    >&quot;capitalize-first&quot;</span
+	    ><span class="Others Attribute"
+	    > suffix=</span
+	    ><span class="String Value"
+	    >&quot;)&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Keyword Element"
+	    >&lt;/names&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	><p
+	>There are four child elements associated with the <code
+	  >cs:names</code
+	  > element: <code
+	  >cs:name</code
+	  >, <code
+	  >cs:et-al</code
+	  >, <code
+	  >cs:substitute</code
+	  > and <code
+	  >cs:label</code
+	  > (all discussed below). In addition, the <code
+	  >cs:names</code
+	  > element may carry any of the <a href="#affixes"
+	  >affix</a
+	  > and <a href="#formatting"
+	  >formatting</a
+	  > attributes.</p
+	><div id="name"
+	><h4
+	  ><a href="#TOC"
+	    >Name</a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:name</code
+	    > element is a required child element of <code
+	    >cs:names</code
+	    >, and describes how individual names are formatted. The attributes (all of which are optional) that may be used on <code
+	    >cs:name</code
+	    > are:</p
+	  ><dl
+	  ><dt
+	    ><code
+	      >form</code
+	      ></dt
+	    ><dd
+	    >Sets the form of Western names to &quot;long&quot; (first name + last name, default) or &quot;short&quot; (last name only). A third value, &quot;count&quot;, useful for advanced <a href="#sorting"
+	      >sorting</a
+	      >, returns the number of contributors in the variable(s) specified in the parent <code
+	      >cs:names</code
+	      > element.</dd
+	    ></dl
+	  ><p
+	  >(TODO: I presume that, when multiple names are specified for cs:names, the total number of contributors is returned? (e.g. the number of editors + the number of translators))</p
+	  ><dl
+	  ><dt
+	    ><code
+	      >and</code
+	      ></dt
+	    ><dd
+	    >If a value is set for this attribute, the second from last and the last contributor in name lists are separated by either the localized &quot;and&quot; <a href="#appendix-iii---terms"
+	      >term</a
+	      > (with value &quot;text&quot;) or an ampersand (value &quot;symbol&quot;).</dd
+	    ></dl
+	  ><p
+	  >(TODO: again, I'm not entirely clear what happens if you specify multiple variables in cs:names. Is the &quot;and&quot;-term applied at the end of the names-list of each name variable?)</p
+	  ><dl
+	  ><dt
+	    ><code
+	      >delimiter</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >Can be used to set a text string to separate names of a name variable (e.g. &quot;, &quot; to yield &quot;J. Doe, S. Smith.&quot;)</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >delimiter-precedes-last</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >Determines whether the delimiter is used to separate the second from last and the last contributor in name lists. The possible values are:</p
+	      ><ul
+	      ><li
+		>&quot;contextual&quot; (default): the delimiter is only included for name lists of length three or more<br
+		   /> 2 authors: &quot;J. Doe and T. Williams,&quot;<br
+		   /> 3 authors: &quot;J. Doe<strong
+		  >,</strong
+		  > S. Smith<strong
+		  >,</strong
+		  > and T. Williams&quot; (note comma preceding 'and').</li
+		><li
+		>&quot;always&quot;: the delimiter is always included<br
+		   /> 2 authors: &quot;J. Doe<strong
+		  >,</strong
+		  > and T. Williams&quot;<br
+		   /> 3 authors: &quot;J. Doe<strong
+		  >,</strong
+		  > S. Smith<strong
+		  >,</strong
+		  > and T. Williams&quot; (note comma preceding 'and').</li
+		><li
+		>&quot;never&quot;: the delimiter is never included<br
+		   /> 2 authors: &quot;J. Doe and T. Williams,&quot;<br
+		   /> 3 authors: &quot;J. Doe<strong
+		  >,</strong
+		  > S. Smith and T. Williams&quot;</li
+		></ul
+	      ></dd
+	    ><dt
+	    ><code
+	      >name-as-sort-order</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >Sets the name order to correspond to the sort order of the bibliography; e.g. &quot;Doe, John&quot; (name-as-sort-order) vs. &quot;John Doe&quot; (w/o attribute). The possible values are:</p
+	      ><ul
+	      ><li
+		>&quot;first&quot;: applies name-as-sort-order to first author only</li
+		><li
+		>&quot;all&quot;: applies name-as-sort-order to all authors</li
+		></ul
+	      ></dd
+	    ></dl
+	  ><p
+	  >(TODO: again, I'm not entirely clear what happens if you specify multiple variables in cs:names. Does name-as-sort-order=&quot;first&quot; act on the first name of the name-list of each name variable?)</p
+	  ><dl
+	  ><dt
+	    ><code
+	      >sort-separator</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >Sets the delimiter for personal name parts affected by <code
+		>name-as-sort-order</code
+		>. E.g. the &quot;, &quot; in &quot;Doe, John&quot;</p
+	      ></dd
+	    ><dt
+	    ><code
+	      >initialize-with</code
+	      ></dt
+	    ><dd
+	    ><p
+	      >If this attribute is included, names are shown with initials instead of full given names (e.g. &quot;J. Doe&quot; instead of &quot;John Doe&quot;). The attribute value also specifies the suffix that is included after each initial (the &quot;. &quot; in &quot;J. Doe&quot;).</p
+	      ></dd
+	    ></dl
+	  ><p
+	  >The <code
+	    >cs:name</code
+	    > element may also carry any of the <a href="#affixes"
+	    >affix</a
+	    > and <a href="#formatting"
+	    >formatting</a
+	    > attributes. Finally, in addition to these attributes, the <code
+	    >cs:name</code
+	    > element may also include one or more <code
+	    >cs:name-part</code
+	    > child elements. These child elements accept any of the <a href="#formatting"
+	    >formatting</a
+	    > attributes, which allows for separate formatting of the different name parts (e.g. &quot;Jane DOE&quot;). The name-part for which formatting instructions are specified is set with the required <code
+	    >name</code
+	    > attribute on <code
+	    >cs:name-part</code
+	    >, with values &quot;family&quot; (family name) or &quot;given&quot; (given name). The order of the <code
+	    >cs:name-part</code
+	    > elements has no effect on how names are displayed.</p
+	  ><p
+	  >An example:</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;names</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;author&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;name</span
+	      ><span class="Others Attribute"
+	      > form=</span
+	      ><span class="String Value"
+	      >&quot;short&quot;</span
+	      ><span class="Others Attribute"
+	      > and=</span
+	      ><span class="String Value"
+	      >&quot;symbol&quot;</span
+	      ><span class="Others Attribute"
+	      > delimiter=</span
+	      ><span class="String Value"
+	      >&quot;, &quot;</span
+	      ><span class="Others Attribute"
+	      > initialize-with=</span
+	      ><span class="String Value"
+	      >&quot;. &quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;name-part</span
+	      ><span class="Others Attribute"
+	      > name=</span
+	      ><span class="String Value"
+	      >&quot;family&quot;</span
+	      ><span class="Others Attribute"
+	      > text-case=</span
+	      ><span class="String Value"
+	      >&quot;uppercase&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/name</span
+	      ><br
+	       /><span class="Error"
+	      >&lt;/names</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ></div
+	><div id="et-al"
+	><h4
+	  ><a href="#TOC"
+	    >Et-al</a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:et-al</code
+	    > element can be used to customize the &quot;et al.&quot;-type name list abbreviation (note that this abbreviation is controlled via the et-al <a href="#options"
+	    >options</a
+	    >). First, the 'term' attribute of the element can be set to either &quot;et-al&quot; (default) or &quot;and others&quot; to use either <a href="#appendix-iii---terms"
+	    >term</a
+	    >, so that different et-al terms can be used in citations and the bibliography. Secondly, any of the <a href="#affixes"
+	    >affix</a
+	    > and <a href="#formatting"
+	    >formatting</a
+	    > attributes can be applied to <code
+	    >cs:et-al</code
+	    >, e.g. to italicize the &quot;et-al&quot; term.</p
+	  ><p
+	  >An example:</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;names</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;author&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;name/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;et-al</span
+	      ><span class="Others Attribute"
+	      > term=</span
+	      ><span class="String Value"
+	      >&quot;and others&quot;</span
+	      ><span class="Others Attribute"
+	      > font-style=</span
+	      ><span class="String Value"
+	      >&quot;italic&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Keyword Element"
+	      >&lt;/names&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ></div
+	><div id="substitute"
+	><h4
+	  ><a href="#TOC"
+	    >Substitute</a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:substitute</code
+	    > element can be used to specify one of more substitutions in case the <a href="#name-variables"
+	    >name variable(s)</a
+	    > specified in the parent <code
+	    >cs:names</code
+	    > element is/are empty. The substitutions are specified as child elements of <code
+	    >cs:substitute</code
+	    >, and can consist of any of the standard <a href="#rendering-elements"
+	    >rendering elements</a
+	    > (with the exception of <code
+	    >cs:layout</code
+	    >), or of a short-hand version of <code
+	    >cs:names</code
+	    > without any child elements (in the latter case formatting instructions are inherited from the <code
+	    >cs:name</code
+	    > and <code
+	    >cs:et-al</code
+	    > elements in the same <code
+	    >cs:names</code
+	    > element (TODO: verify that this is what's supposed to happen)). The specified elements are tested in order until an element returns a non-empty result.</p
+	  ><p
+	  >An example (which substitutes the editor, translator or the title, in that order):</p
+	  ><pre class="sourceCode xml"
+	  ><code
+	    ><span class="Keyword Element"
+	      >&lt;macro</span
+	      ><span class="Others Attribute"
+	      > name=</span
+	      ><span class="String Value"
+	      >&quot;author&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;names</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;author&quot;</span
+	      ><span class="Keyword Element"
+	      >&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;name</span
+	      ><span class="Others Attribute"
+	      > name-as-sort-order=</span
+	      ><span class="String Value"
+	      >&quot;all&quot;</span
+	      ><span class="Normal NormalText"
+	      > </span
+	      ><br
+	       /><span class="Others Attribute"
+	      >          and=</span
+	      ><span class="String Value"
+	      >&quot;symbol&quot;</span
+	      ><span class="Normal NormalText"
+	      > </span
+	      ><br
+	       /><span class="Others Attribute"
+	      >          sort-separator=</span
+	      ><span class="String Value"
+	      >&quot;, &quot;</span
+	      ><span class="Normal NormalText"
+	      > </span
+	      ><br
+	       /><span class="Others Attribute"
+	      >          initialize-with=</span
+	      ><span class="String Value"
+	      >&quot;. &quot;</span
+	      ><br
+	       /><span class="Others Attribute"
+	      >          delimiter=</span
+	      ><span class="String Value"
+	      >&quot;, &quot;</span
+	      ><span class="Normal NormalText"
+	      > </span
+	      ><br
+	       /><span class="Others Attribute"
+	      >          delimiter-precedes-last=</span
+	      ><span class="String Value"
+	      >&quot;always&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;label</span
+	      ><span class="Others Attribute"
+	      > form=</span
+	      ><span class="String Value"
+	      >&quot;short&quot;</span
+	      ><span class="Others Attribute"
+	      > prefix=</span
+	      ><span class="String Value"
+	      >&quot; (&quot;</span
+	      ><span class="Others Attribute"
+	      > suffix=</span
+	      ><span class="String Value"
+	      >&quot;.)&quot;</span
+	      ><span class="Others Attribute"
+	      > text-transform=</span
+	      ><span class="String Value"
+	      >&quot;capitalize&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;substitute&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;names</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;editor&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;names</span
+	      ><span class="Others Attribute"
+	      > variable=</span
+	      ><span class="String Value"
+	      >&quot;translator&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >      </span
+	      ><span class="Keyword Element"
+	      >&lt;text</span
+	      ><span class="Others Attribute"
+	      > macro=</span
+	      ><span class="String Value"
+	      >&quot;title&quot;</span
+	      ><span class="Keyword Element"
+	      >/&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >    </span
+	      ><span class="Keyword Element"
+	      >&lt;/substitute&gt;</span
+	      ><br
+	       /><span class="Normal NormalText"
+	      >  </span
+	      ><span class="Keyword Element"
+	      >&lt;/names&gt;</span
+	      ><br
+	       /><span class="Keyword Element"
+	      >&lt;/macro&gt;</span
+	      ><br
+	       /></code
+	    ></pre
+	  ></div
+	><div id="label-in-cs:names"
+	><h4
+	  ><a href="#TOC"
+	    >Label in <code
+	      >cs:names</code
+	      ></a
+	    ></h4
+	  ><p
+	  >The <code
+	    >cs:label</code
+	    > element, used to output text terms whose pluralization depends on the contents of another variable (e.g. &quot;(editors)&quot; in &quot;Doe and Smith (editors)&quot;), is discussed in detail in the <a href="#label"
+	    >label</a
+	    > section. When used within <code
+	    >cs:names</code
+	    >, the <code
+	    >variable</code
+	    > attribute should be omitted, as this is inherited from the parent <code
+	    >cs:names</code
+	    > element.</p
+	  ></div
+	></div
+      ><div id="label"
+      ><h3
+	><a href="#TOC"
+	  >Label</a
+	  ></h3
+	><p
+	>The <code
+	  >cs:label</code
+	  > element is used to output text terms whose pluralization depends on the contents of another variable. An example is the label for pages, which can be either singular (&quot;page 5&quot;) or plural (&quot;pages 5-7&quot;). This output could be written in CSL as:</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword Element"
+	    >&lt;group</span
+	    ><span class="Others Attribute"
+	    > delimiter=</span
+	    ><span class="String Value"
+	    >&quot; &quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;label</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;page&quot;</span
+	    ><span class="Others Attribute"
+	    > form=</span
+	    ><span class="String Value"
+	    >&quot;long&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;page&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Keyword Element"
+	    >&lt;/group&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	><p
+	>The <code
+	  >variable</code
+	  > attribute of <code
+	  >cs:label</code
+	  > must be set (possible values are &quot;page&quot; and &quot;locator&quot;), unless <code
+	  >cs:label</code
+	  > is used within <code
+	  >cs:names</code
+	  >, in which case <code
+	  >cs:label</code
+	  > inherits the variable(s) from the <code
+	  >cs:names</code
+	  > element. The value of the <code
+	  >variable</code
+	  > attribute both selects the accompanying text term (the &quot;page&quot; and &quot;locator&quot; terms for the &quot;page&quot; and &quot;locator&quot; variables, respectively), and uses the variable content to determine the pluralization of the text term.</p
+	><p
+	>The <code
+	  >cs:label</code
+	  > element may carry any of the <a href="#affixes"
+	  >affix</a
+	  > and <a href="#formatting"
+	  >formatting</a
+	  > attributes. In addition, the following attributes are applicable for <code
+	  >cs:label</code
+	  >:</p
+	><dl
+	><dt
+	  ><code
+	    >form</code
+	    > (required)</dt
+	  ><dd
+	  ><p
+	    >The form of the label-term, with values:</p
+	    ><ul
+	    ><li
+	      >&quot;long&quot;: e.g. &quot;editor&quot;/&quot;editors&quot; for the term editor</li
+	      ><li
+	      >&quot;verb&quot;: e.g. &quot;edited by&quot; for the term editor</li
+	      ><li
+	      >&quot;short&quot;: e.g. &quot;ed&quot;/&quot;eds&quot; for the term editor</li
+	      ><li
+	      >&quot;verb-short&quot;: e.g. &quot;ed&quot; for the term editor</li
+	      ><li
+	      >&quot;symbol&quot;: e.g. &quot;§&quot; for the term section</li
+	      ></ul
+	    ></dd
+	  ><dt
+	  ><code
+	    >strip-periods</code
+	    > (optional)</dt
+	  ><dd
+	  ><p
+	    >If set to &quot;true&quot; (default is &quot;false), periods are stripped from the term used by <code
+	      >cs:label</code
+	      ></p
+	    ></dd
+	  ><dt
+	  ><code
+	    >plural</code
+	    > (optional)</dt
+	  ><dd
+	  ><p
+	    >Sets pluralization of the term, with values:</p
+	    ><ul
+	    ><li
+	      >&quot;contextual&quot;: default, pluralization is dependent on the variable contents, e.g. &quot;p. 1&quot;, &quot;pp. 1-3&quot;</li
+	      ><li
+	      >&quot;always&quot;: - always use the plural form, e.g. &quot;pp. 1&quot;, &quot;pp. 1-3&quot;</li
+	      ><li
+	      >&quot;never&quot;: - always use the singular form, e.g. &quot;p. 1&quot;, &quot;p. 1-3&quot;</li
+	      ></ul
+	    ></dd
+	  ></dl
+	><p
+	>(TODO: <code
+	  >form</code
+	  > seems required for <code
+	  >cs:label</code
+	  >. Can't it just default to &quot;long&quot;? That seems more consistent as <code
+	  >form</code
+	  > is generally optional, e.g. for cs:name, cs:date-part, cs:text and cs:number.)</p
+	></div
+      ><div id="group"
+      ><h3
+	><a href="#TOC"
+	  >Group</a
+	  ></h3
+	><p
+	>The <code
+	  >cs:group</code
+	  > element must contain one or more <a href="#rendering-elements"
+	  >rendering elements</a
+	  > (not <code
+	  >cs:layout</code
+	  >). It has multiple uses: <code
+	  >cs:group</code
+	  > can carry a <a href="#delimiter"
+	  >delimiter</a
+	  >, which is used to separate the enclosed elements. It can provide <a href="#affixes"
+	  >affixes</a
+	  > for the entire group of elements, and may carry <a href="#formatting"
+	  >formatting</a
+	  > attributes (any except for &quot;text-case&quot;), which are transmitted to the enclosed elements. In addition, <code
+	  >cs:group</code
+	  > acts as an conditional: if none of the enclosed elements reference a non-empty variable or macro, 'decorating' <code
+	  >cs:text</code
+	  > elements that output verbatim text or terms (e.g. <code
+	  >&lt;text value=&quot;some text&quot;&gt;</code
+	  > and <code
+	  >&lt;text term=&quot;editor&quot;&gt;</code
+	  >) are ignored.</p
+	><p
+	>(TODO: Are only text-terms ignored if they are the sole output, or would <text value="some text"> be ignored as well?)</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword Element"
+	    >&lt;group</span
+	    ><span class="Others Attribute"
+	    > delimiter=</span
+	    ><span class="String Value"
+	    >&quot;: &quot;</span
+	    ><span class="Others Attribute"
+	    > font-weight=</span
+	    ><span class="String Value"
+	    >&quot;bold&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;publisher-place&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;publisher&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Keyword Element"
+	    >&lt;/group&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	></div
+      ></div
+    ><div id="style-behavior"
+    ><h2
+      ><a href="#TOC"
+	>Style Behavior</a
+	></h2
+      ><div id="options"
+      ><h3
+	><a href="#TOC"
+	  >Options</a
+	  ></h3
+	><p
+	>Styles can be extensively configured with options. Options specific to the formatting of citations or notes are set as attributes on <code
+	  >cs:citation</code
+	  >, while those specific to the bibliography are set on <code
+	  >cs:bibliography</code
+	  >. Global options, affecting both citations and the bibliography, are set as attributes on <code
+	  >cs:style</code
+	  >. Finally, options that have locale-specific values are specified in the &quot;locales-xx-XX.xml&quot; files. The default values can be overridden using <a href="#locale"
+	  ><code
+	    >cs:locale</code
+	    ></a
+	  >.</p
+	><div id="citation-specific-options"
+	><h4
+	  ><a href="#TOC"
+	    >Citation-specific Options</a
+	    ></h4
+	  ><div id="et-al-abbrevation"
+	  ><h5
+	    ><a href="#TOC"
+	      >Et al. Abbrevation</a
+	      ></h5
+	    ><dl
+	    ><dt
+	      ><code
+		>et-al-min</code
+		></dt
+	      ><dd
+	      ><p
+		>Specifies the minimum number of contributors (e.g. authors, editors, etc.) in a name list for activation of et-al abbreviation.</p
+		></dd
+	      ><dt
+	      ><code
+		>et-al-use-first</code
+		></dt
+	      ><dd
+	      ><p
+		>The number of contributor names to display when et-al abbreviation is used. <code
+		  >et-al-subsequent-min</code
+		  ></p
+		></dd
+	      ><dt
+	      ><code
+		>et-al-subsequent-min</code
+		></dt
+	      ><dd
+	      ><p
+		>Similar to et-al-min, this allows subsequent references to use a different contributor limit for activation of et-al abbreviation.</p
+		></dd
+	      ><dt
+	      ><code
+		>et-al-subsequent-use-first</code
+		></dt
+	      ><dd
+	      ><p
+		>Similar to et-al-use-first, this allows subsequent references to display a different number of contributors when et-al abbreviation is used.</p
+		></dd
+	      ></dl
+	    ></div
+	  ><div id="disambiguation"
+	  ><h5
+	    ><a href="#TOC"
+	      >Disambiguation</a
+	      ></h5
+	    ><p
+	    >Disambiguation of short-form cites (TODO: when is a cite a short-form cite?) can be achieved in four ways:</p
+	    ><ol style="list-style-type: decimal;"
+	    ><li
+	      >The number of names shown can be increased.</li
+	      ><li
+	      >The names can be expanded.</li
+	      ><li
+	      >A year-suffix can be included</li
+	      ><li
+	      >The cite can be rendered with the <code
+		>disambiguate</code
+		> attribute of <code
+		>cs:condition</code
+		> testing &quot;true&quot;</li
+	      ></ol
+	    ><p
+	    >These different approaches are activated with the attributes described in this section, and are always performed in this order.</p
+	    ><dl
+	    ><dt
+	      ><code
+		>disambiguate-add-names</code
+		></dt
+	      ><dd
+	      ><p
+		>If set to &quot;true&quot; (&quot;false&quot; is the default), names that would otherwise be hidden as a result of et-al abbreviation are added if this uniquely identifies the target source, incrementally relaxing the constraints imposed by <code
+		  >et-al-subsequent-min</code
+		  > and <code
+		  >et-al-subsequent-use-first</code
+		  > (if a source has been cited multiple times) or by <code
+		  >et-al-min</code
+		  > and <code
+		  >et-al-use-first</code
+		  > (if a source is cited only once, or if the et-al-subsequent attributes aren't set). The exact rendering of added names is determined by applying, in order: the <code
+		  >form</code
+		  > attribute (&quot;long&quot; or &quot;short&quot;) on <code
+		  >cs:name</code
+		  >; the <code
+		  >initialize-with</code
+		  > attribute on <code
+		  >cs:name</code
+		  > (if present); the value of <code
+		  >givenname-disambiguation-rule</code
+		  >, if <code
+		  >disambiguate-add-givenname</code
+		  > is set to &quot;true&quot;.</p
+		></dd
+	      ><dt
+	      ><code
+		>disambiguate-add-givenname</code
+		></dt
+	      ><dd
+	      ><p
+		>If set to &quot;true&quot; (&quot;false&quot; is the default), names are expanded (e.g. changing &quot;Doe, 2005; Doe 2005&quot; to &quot;John Doe, 2005; Mary Doe, 2005&quot;). The precise method of name expansion is specified by <code
+		  >givenname-disambiguation-rule</code
+		  > (if this attribute is not set, the default &quot;all-names&quot; value is used). Note that except for the &quot;by-cite&quot; value of <code
+		  >givenname-disambiguation-rule</code
+		  >, name expansion will affect the way the name is rendered in all the references with that name in the document, even when the expansion is not required to uniquely identify the target resource. This is because the purpose of the given name disambiguation rules (excepting the &quot;by-cite&quot; rule) is global disambiguation of <em
+		  >names</em
+		  >, not cites.</p
+		></dd
+	      ><dt
+	      ><code
+		>disambiguate-add-year-suffix</code
+		></dt
+	      ><dd
+	      ><p
+		>If set to &quot;true&quot; (&quot;false&quot; is the default), a suffix is added to the year when multiple works by the same author(s) published in the same year are included in one bibliography (e.g. &quot;Doe 2007a, 2007b&quot;).</p
+		></dd
+	      ><dt
+	      ><code
+		>givenname-disambiguation-rule</code
+		></dt
+	      ><dd
+	      ><p
+		>This option can have the following values:</p
+		><ul
+		><li
+		  >&quot;all-names&quot;<br
+		     /> The default value. A given name is first formatted as specified by the attributes set on <code
+		    >cs:name</code
+		    > (<code
+		    >form</code
+		    >, <code
+		    >initialize-with</code
+		    >). If the resulting name does not uniquely identify the full name of the individual, it is progressively transformed in the following progression, until disambiguation succeeds:<ol style="list-style-type: decimal;"
+		    ><li
+		      >&quot;short&quot; becomes &quot;long&quot; + <code
+			>initialize-with</code
+			> if the latter is defined (e.g. &quot;Doe&quot; becomes &quot;J. Doe&quot;) (TODO: what does &quot;if the latter is defined&quot; mean?)</li
+		      ><li
+		      >&quot;long&quot; + <code
+			>initialize-with</code
+			> becomes &quot;long&quot; if the former is defined (e.g. &quot;J. Doe&quot; becomes &quot;John Doe&quot;) (TODO: what does &quot;if the former is defined&quot; mean?)</li
+		      ><li
+		      >&quot;short&quot; becomes &quot;long&quot; (e.g. &quot;Doe&quot; becomes &quot;John Doe&quot;) (TODO: don't get this step, how does this add anything to steps 1 and 2?) Note that if the name begins in &quot;long&quot; <code
+			>form</code
+			> with the given name as initials, step 1 in this list will be skipped. Likewise, if the name begins in &quot;short&quot; <code
+			>form</code
+			> and the <code
+			>initialize-with</code
+			> attribute is not set, steps 1 and 2 will be skipped. If the name begins in &quot;long&quot; <code
+			>form</code
+			>, this option will have no effect.</li
+		      ></ol
+		    ></li
+		  ><li
+		  >&quot;all-names-with-initials&quot;<br
+		     /> Same as the &quot;all-names&quot; rule above, but omitting steps 2 and 3 of that rule.</li
+		  ><li
+		  >&quot;primary-name&quot;<br
+		     /> Same as the &quot;all-names&quot; rule above, but ambiguity is only checked for the first-listed name source, and only first-listed names are affected by the transformation.</li
+		  ><li
+		  >&quot;primary-name-with-initials&quot;<br
+		     /> Same as the &quot;primary-name&quot; rule above, but omitting steps 2 and 3 of that rule.</li
+		  ><li
+		  >&quot;by-cite&quot;<br
+		     /> Applies the transformation described under the &quot;all-names&quot; rule above, but limits the transformation to the current source. The appearance of the name in other references will not be affected.</li
+		  ></ul
+		></dd
+	      ></dl
+	    ></div
+	  ><div id="collapsing"
+	  ><h5
+	    ><a href="#TOC"
+	      >Collapsing</a
+	      ></h5
+	    ><dl
+	    ><dt
+	      ><code
+		>collapse</code
+		></dt
+	      ><dd
+	      ><p
+		>The collapse option provides several ways for the collapsing of citations. The possible values are:</p
+		><ul
+		><li
+		  >&quot;citation-number&quot;: collapses numeric citation ranges (e.g. from &quot;[1, 2, 3]&quot; to &quot;[1-3]&quot;). Note that only increasing ranges are collapsed, e.g. &quot;[3, 2, 1]&quot; will not collapse, so that it is often desirable to <a href="#sorting"
+		    >sort</a
+		    > by the <code
+		    >citation-number</code
+		    > variable.</li
+		  ><li
+		  >&quot;year&quot;: collapses subsequent cites with the same author(s), e.g. from &quot;(Doe 2000, Doe 2001)&quot; to &quot;(Doe 2000, 2001)&quot;</li
+		  ><li
+		  >&quot;year-suffix&quot;: collapses as &quot;year&quot;, but also collapses identical years, e.g. from &quot;(Doe 2000a, Doe 2000b)&quot; to &quot;(Doe 2000a, b)&quot;. Note that the &quot;year-suffix&quot; option falls back to &quot;year&quot; if the <code
+		    >disambiguate-add-year-suffix</code
+		    > attribute is not set to &quot;true&quot;.</li
+		  ><li
+		  >&quot;year-suffix-ranged&quot;: collapses as &quot;year-suffix&quot;, but also collapses ranges of year-suffix markers, giving &quot;(Doe 2000a-c)&quot; instead of &quot;(Doe 2000a, b, c)&quot;. Note that the &quot;year-suffix-ranged&quot; option falls back to &quot;year&quot; if the <code
+		    >disambiguate-add-year-suffix</code
+		    > attribute is not set to &quot;true&quot;.</li
+		  ></ul
+		></dd
+	      ><dt
+	      ><code
+		>year-suffix-delimiter</code
+		></dt
+	      ><dd
+	      ><p
+		>Specifies the delimiter between subsequent year-suffix elements. E.g., if the <code
+		  >collapse</code
+		  > option is set to &quot;year-suffix&quot;, the <code
+		  >delimiter</code
+		  > on <code
+		  >cs:layout</code
+		  > in <code
+		  >cs:citation</code
+		  > is set to &quot;; &quot;, and if the value of <code
+		  >year-suffix-delimiter</code
+		  > is &quot;,&quot;, cites to &quot;Smith 1999a&quot;, &quot;Smith 1999b&quot;, &quot;Smith 2000&quot; and &quot;Jones 2001&quot; would be collapsed to &quot;(Smith 1999a,b; 2000; Jones 2001)&quot;. If this attribute is not set, the delimiter defaults to the one specified for the citation <code
+		  >cs:layout</code
+		  > element.</p
+		></dd
+	      ><dt
+	      ><code
+		>after-collapse-delimiter</code
+		></dt
+	      ><dd
+	      ><p
+		>Specifies the delimiter that should <em
+		  >follow</em
+		  > a group of collapsed cites, when the next cite in the citation is not collapsed. For example, with the <code
+		  >collapse</code
+		  > attribute set to &quot;year-suffix&quot;, the <code
+		  >delimiter</code
+		  > on <code
+		  >cs:layout</code
+		  > in <code
+		  >cs:citation</code
+		  > set to &quot;, &quot; and <code
+		  >after-collapse-delimiter</code
+		  > set to &quot;; &quot;, cites to &quot;Smith 1999a&quot;, &quot;Smith 1999b&quot;, &quot;Smith 2000&quot;, &quot;Jones 2001&quot; and &quot;Brown 2007&quot; would collapse to: &quot;(Smith 1999a, b, 2000; Jones 2001, Brown 2007)&quot;.</p
+		></dd
+	      ></dl
+	    ></div
+	  ><div id="positioning"
+	  ><h5
+	    ><a href="#TOC"
+	      >Positioning</a
+	      ></h5
+	    ><dl
+	    ><dt
+	      ><code
+		>near-note-distance</code
+		></dt
+	      ><dd
+	      >The &quot;near-note&quot; <a href="#conditionals"
+		>position</a
+		> is true when the distance (measured in number of footnotes or endnotes) between the current cite and the most recent preceding cite to the same source is no more than the value of <code
+		>near-note-distance</code
+		>. If this attribute is not set, a default value of &quot;5&quot; is used.</dd
+	      ></dl
+	    ></div
+	  ></div
+	><div id="bibliography-specific-options"
+	><h4
+	  ><a href="#TOC"
+	    >Bibliography-specific Options</a
+	    ></h4
+	  ><div id="et-al-abbrevation-1"
+	  ><h5
+	    ><a href="#TOC"
+	      >Et al. Abbrevation</a
+	      ></h5
+	    ><dl
+	    ><dt
+	      ><code
+		>et-al-min</code
+		></dt
+	      ><dd
+	      ><p
+		>Specifies the minimum number of contributors (e.g. authors, editors, etc.) in a name list for activation of et-al abbreviation.</p
+		></dd
+	      ><dt
+	      ><code
+		>et-al-use-first</code
+		></dt
+	      ><dd
+	      ><p
+		>The number of contributor names to display when et-al abbreviation is used.</p
+		></dd
+	      ></dl
+	    ></div
+	  ><div id="white-spacing"
+	  ><h5
+	    ><a href="#TOC"
+	      >White-spacing</a
+	      ></h5
+	    ><p
+	    >(TODO: I would have called this section &quot;Layout&quot;, if it wasn't for the cs:layout element, which might cause confusion)</p
+	    ><dl
+	    ><dt
+	      ><code
+		>hanging-indent</code
+		></dt
+	      ><dd
+	      ><p
+		>If set to &quot;true&quot; (&quot;false&quot; is the default), bibliographic entries are rendered with hanging-indents</p
+		></dd
+	      ><dt
+	      ><code
+		>second-field-align</code
+		></dt
+	      ><dd
+	      ><p
+		>If set to &quot;flush&quot;, subsequent lines of each bibliography entry are aligned with the beginning of the second field. If set to &quot;margin&quot;, the first field is put in the margin and all subsequent lines of text are aligned with the margin (as in the IEEE style). An example showing the alignment, if the first field is <code
+		  >&lt;text   variable=&quot;citation-number&quot; suffix=&quot;. &quot;/&gt;</code
+		  >:</p
+		></dd
+	      ></dl
+	    ><pre
+	    ><code
+	      >1. Adams, D. (2002). The Ultimate Hitchhiker's Guide to the
+   Galaxy (1st ed.).
+</code
+	      ></pre
+	    ><dl
+	    ><dt
+	      ><code
+		>line-spacing</code
+		></dt
+	      ><dd
+	      ><p
+		>Sets the spacing of lines (in units of lines, default is &quot;1&quot;)</p
+		></dd
+	      ><dt
+	      ><code
+		>entry-spacing</code
+		></dt
+	      ><dd
+	      ><p
+		>Sets the spacing of lines (in units of line-spacing, default is &quot;1&quot;)</p
+		></dd
+	      ></dl
+	    ></div
+	  ><div id="reference-grouping"
+	  ><h5
+	    ><a href="#TOC"
+	      >Reference Grouping</a
+	      ></h5
+	    ><dl
+	    ><dt
+	      ><code
+		>subsequent-author-substitute</code
+		></dt
+	      ><dd
+	      >Substitutes subsequent recurrences of an author with the attribute value (which can be any string), e.g.:</dd
+	      ></dl
+	    ><pre class="sourceCode xml"
+	    ><code
+	      ><span class="Normal NormalText"
+		>Asimov. Foundation, 1951.</span
+		><br
+		 /><span class="Normal NormalText"
+		>---. Foundation and Empire, 1952.</span
+		><br
+		 /><span class="Normal NormalText"
+		>---. Second Foundation, 1953.</span
+		><br
+		 /></code
+	      ></pre
+	    ></div
+	  ><div id="todo-unfinished-business"
+	  ><h5
+	    ><a href="#TOC"
+	      >TODO: Unfinished Business</a
+	      ></h5
+	    ><p
+	    >TODO: figure out particle support</p
+	    ><p
+	    >what's in the spec right now:</p
+	    ><pre
+	    ><code
+	      >        name-particle-opt
+
+    ## determines whether name particles (such as &quot;van&quot;) should
+    ## be included in the family name when sorting and when rendering.
+    ## When false (the default), the particle is placed after the given name.
+    name-particle-opt =
+        attribute particle-in-name-sort { xsd:boolean }?
+</code
+	      ></pre
+	    ></div
+	  ></div
+	><div id="global-options"
+	><h4
+	  ><a href="#TOC"
+	    >Global Options</a
+	    ></h4
+	  ><dl
+	  ><dt
+	    ><code
+	      >page-range-format</code
+	      ></dt
+	    ><dd
+	    >The value of this attribute determines how page ranges are formatted. Available values: &quot;expanded&quot; (e.g. &quot;321-328&quot;), &quot;minimal&quot; (&quot;321-8&quot;), and &quot;chicago&quot; (&quot;321-28&quot;, see <a href="#appendix-iv---page-abbreviation-rules"
+	      >appendix IV</a
+	      > for an elaboration on the page abbreviation rules). If the attribute is not specified, the content of the page-field is left unchanged.</dd
+	    ></dl
+	  ></div
+	><div id="localized-options-1"
+	><h4
+	  ><a href="#TOC"
+	    >Localized Options</a
+	    ></h4
+	  ><dl
+	  ><dt
+	    ><code
+	      >punctuation-in-quote</code
+	      ></dt
+	    ><dd
+	    >Determines whether punctuation (commas and periods) is placed within (value &quot;true&quot;) or outside (default, value &quot;false&quot;) quotation marks added with the <code
+	      >quotes</code
+	      > attribute.</dd
+	    ></dl
+	  ></div
+	></div
+      ><div id="sorting"
+      ><h3
+	><a href="#TOC"
+	  >Sorting</a
+	  ></h3
+	><p
+	>The sort order for citations and the bibliography can be set with the <code
+	  >cs:sort</code
+	  > element in <code
+	  >cs:citation</code
+	  > and <code
+	  >cs:bibliography</code
+	  >. If a style does not include sorting instructions, references are listed in the order cited.</p
+	><p
+	>The <code
+	  >cs:sort</code
+	  > which must contain one or more <code
+	  >cs:key</code
+	  > child elements. The sort key, set as an attribute on <code
+	  >cs:key</code
+	  >, can be a <code
+	  >variable</code
+	  > (with possible values of any of the <a href="#name-variables"
+	  >name variables</a
+	  >, <a href="#date-variables"
+	  >date variables</a
+	  > or <a href="#source%20-variables"
+	  >source variables</a
+	  > or a <code
+	  >macro</code
+	  >. The <code
+	  >cs:key</code
+	  > element may carry the <code
+	  >sort</code
+	  > attribute, with possible values of &quot;ascending&quot; (default) or &quot;descending&quot;, to indicate the sort order. The <code
+	  >names-min</code
+	  > and <code
+	  >names-use-first</code
+	  > attributes (which affect all names generated by macros called by <code
+	  >cs:key</code
+	  >) can be used to (further) constrain the number of names used in the sort, overriding the values of the corresponding <code
+	  >et-al-min</code
+	  > and <code
+	  >et-al-use-first</code
+	  > options.</p
+	><p
+	>An example, where citations are first sorted by the output of the author macro with overriding values of <code
+	  >et-al-min</code
+	  > and <code
+	  >et-al-use-first</code
+	  >. Entries that share the same author macro output are further sorted in reverse order by date of issue.</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword Element"
+	    >&lt;citation&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;sort&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >    </span
+	    ><span class="Keyword Element"
+	    >&lt;key</span
+	    ><span class="Others Attribute"
+	    > macro=</span
+	    ><span class="String Value"
+	    >&quot;author&quot;</span
+	    ><span class="Others Attribute"
+	    > names-min=</span
+	    ><span class="String Value"
+	    >&quot;3&quot;</span
+	    ><span class="Others Attribute"
+	    > names-use-first=</span
+	    ><span class="String Value"
+	    >&quot;3&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >    </span
+	    ><span class="Keyword Element"
+	    >&lt;key</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;issued&quot;</span
+	    ><span class="Others Attribute"
+	    > sort=</span
+	    ><span class="String Value"
+	    >&quot;descending&quot;</span
+	    ><span class="Keyword Element"
+	    >/&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;/sort&gt;</span
+	    ><br
+	     /><span class="Keyword Element"
+	    >&lt;/citation&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	><p
+	>The values returned for variables and macros called in <code
+	  >cs:sort</code
+	  > may differ from the &quot;ordinary&quot; rendered values. These differences are detailed below:</p
+	><div id="sorting-variables"
+	><h4
+	  ><a href="#TOC"
+	    >Sorting Variables</a
+	    ></h4
+	  ><p
+	  >When ordinary variables are referenced in <code
+	    >cs:key</code
+	    > via the <code
+	    >variable</code
+	    > attribute, the string value is returned, without formatting decorations. Name, date and numeric variables are returned in a default format, as follows:</p
+	  ><p
+	  ><strong
+	    >names:</strong
+	    > <a href="#name-variables"
+	    >Name variables</a
+	    > can be set directly on <code
+	    >cs:key</code
+	    > using the <code
+	    >variable</code
+	    > attribute (e.g. <code
+	    >&lt;key variable=&quot;author&quot;/&gt;</code
+	    >). In this case, the name-list from the variable will be returned as a string in the &quot;long&quot; <code
+	    >form</code
+	    > of <code
+	    >cs:name</code
+	    >, formatted with <code
+	    >name-as-sort-order</code
+	    > set to &quot;all&quot;. However, using the <code
+	    >variable</code
+	    > attribute for calling name variables is often undesirable; it is usually more robust to use a <code
+	    >macro</code
+	    > call to the same macro used to render contributor names in the context (<code
+	    >cs:citation</code
+	    > or <code
+	    >cs:bibliography</code
+	    >) to which the sort applies. One of the benefits of using macros is that substitution logic becomes available (e.g. in the <code
+	    >editor</code
+	    > variable might substitutes for an empty <code
+	    >author</code
+	    > variable).</p
+	  ><p
+	  ><strong
+	    >dates:</strong
+	    > <a href="#date-variables"
+	    >Date variables</a
+	    > are returned to <code
+	    >cs:key</code
+	    > in the format YYYY-MM-DD, with zeros substituted for missing elements. If a style should sort by the complete date, it is often more reliable to set sort keys for dates with the <code
+	    >variable</code
+	    > attribute, rather than calling a macro. Macros should however be used if the sort key should consist of incomplete dates (e.g. only the year).</p
+	  ><p
+	  ><strong
+	    >numbers:</strong
+	    > Variables that carry numeric values are returned as integer values. As a form transformation (i.e. to roman, year-suffix or ordinal) is usually undesired for sorting, numeric variables should ordinarily be referenced via the <code
+	    >variable</code
+	    > attribute, rather than via <code
+	    >macro</code
+	    >.</p
+	  ></div
+	><div id="sorting-macros"
+	><h4
+	  ><a href="#TOC"
+	    >Sorting Macros</a
+	    ></h4
+	  ><p
+	  >When a macro is called via <code
+	    >cs:key</code
+	    >, it returns whatever string value the macro would ordinarily generate, but stripped of any formatting decorations. As indicated above, it is generally preferable to use <code
+	    >macro</code
+	    > to sort by name. There are two special considerations for name variables: first, keys for sorting a list of names may be obtained from any macro that generates names of form &quot;short&quot; or &quot;long&quot;. The only exception to ordinary rendering is that &quot;et al.&quot; is not appended to names used in sort keys. Secondly, it is possible to sort by the number of names in a names-list (i.e. the number of authors of a source), by calling a macro in which the <code
+	    >form</code
+	    > attribute of <code
+	    >cs:name</code
+	    > is set to &quot;count&quot;. In this case a count value of &quot;3&quot; would be obtained for a name variable that would otherwise return &quot;Jones, Smith, Doe&quot;.</p
+	  ></div
+	></div
+      ><div id="conditionals"
+      ><h3
+	><a href="#TOC"
+	  >Conditionals</a
+	  ></h3
+	><p
+	>The <code
+	  >cs:choose</code
+	  > element allows for the expression of conditional statements. The element should always contain a single <code
+	  >cs:if</code
+	  > child element. In addition, any number of <code
+	  >cs:else-if</code
+	  > child elements may be included, as well as a closing <code
+	  >cs:else</code
+	  > element. The contents of the <code
+	  >cs:if</code
+	  > and <code
+	  >cs:else-if</code
+	  > elements may consist of any number of <a href="#rendering-elements"
+	  >rendering elements</a
+	  > (with the exception of <code
+	  >cs:layout</code
+	  >). For <code
+	  >cs:else</code
+	  >, at least one rendering element must be specified. An example of a conditional:</p
+	><pre class="sourceCode xml"
+	><code
+	  ><span class="Keyword Element"
+	    >&lt;choose&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;if</span
+	    ><span class="Others Attribute"
+	    > type=</span
+	    ><span class="String Value"
+	    >&quot;book thesis&quot;</span
+	    ><span class="Others Attribute"
+	    > match=</span
+	    ><span class="String Value"
+	    >&quot;any&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >    </span
+	    ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;title&quot;</span
+	    ><span class="Others Attribute"
+	    > font-style=</span
+	    ><span class="String Value"
+	    >&quot;italic&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;/if&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;else-if</span
+	    ><span class="Others Attribute"
+	    > type=</span
+	    ><span class="String Value"
+	    >&quot;chapter&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >    </span
+	    ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;title&quot;</span
+	    ><span class="Others Attribute"
+	    > quotes=</span
+	    ><span class="String Value"
+	    >&quot;true&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;/else-if&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;else&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >    </span
+	    ><span class="Keyword Element"
+	    >&lt;text</span
+	    ><span class="Others Attribute"
+	    > variable=</span
+	    ><span class="String Value"
+	    >&quot;title&quot;</span
+	    ><span class="Keyword Element"
+	    >&gt;</span
+	    ><br
+	     /><span class="Normal NormalText"
+	    >  </span
+	    ><span class="Keyword Element"
+	    >&lt;/else&gt;</span
+	    ><br
+	     /><span class="Keyword Element"
+	    >&lt;/choose&gt;</span
+	    ><br
+	     /></code
+	  ></pre
+	><p
+	>Every <code
+	  >cs:if</code
+	  > and <code
+	  >cs:else-if</code
+	  > element must contain a condition. The different types of conditions, expressed as attributes, are:</p
+	><dl
+	><dt
+	  ><code
+	    >type</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Tests true if the item is of the given <a href="#appendix-ii---types"
+	      >type</a
+	      >.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >variable</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Tests true if the <a href="#appendix-i---variables"
+	      >variable</a
+	      > has a non-empty value.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >is-numeric</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Tests true if the <a href="#appendix-i---variables"
+	      >variable</a
+	      > contains numeric data.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >locator</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Tests true if the locator type of the item (<code
+	      >page</code
+	      >, <code
+	      >chapter</code
+	      >, <code
+	      >verse</code
+	      >, etc.) is equal to the condition value. ## A conditional on the locator for this specific entry attribute locator { list { cs-terms.locator+ } }?,</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >position</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Tests true if the relative position of the item cite in a document is equal to the condition value. The different positions are:</p
+	    ><ul
+	    ><li
+	      >&quot;first&quot;: the position of a cite that is the first to reference an item</li
+	      ><li
+	      >&quot;ibid&quot;: the position of a cite directly following another cite referencing the same item</li
+	      ><li
+	      >&quot;ibid-with-locator&quot;: as ibid. As an additional requirement, the cite has to display the locator variable.</li
+	      ><li
+	      >&quot;subsequent&quot;: the position of a cite that references an earlier referenced item.</li
+	      ><li
+	      >&quot;near-note&quot;: the position of a cite that is not too far away (as measured in number of foot or endnotes) from a previous cite (TODO: does the previous cite has to be a full cite?) to the same item. The maximal distance is set with the <a href="#positioning"
+		><code
+		  >near-note-distance</code
+		  >-option</a
+		>. Cites that are not located in a foot or endnote will never be in the &quot;near-note&quot; position.</li
+	      ></ul
+	    ></dd
+	  ></dl
+	><p
+	>Note that each cite can have multiple position values. Whenever position=&quot;ibid-with-locator&quot; is true, position=&quot;ibid&quot; is also true. And whenever position=&quot;ibid&quot; or position=&quot;near-note&quot; is true, position=&quot;subsequent&quot; is also true.</p
+	><dl
+	><dt
+	  ><code
+	    >disambiguate</code
+	    ></dt
+	  ><dd
+	  >Can be tested against &quot;true&quot; or &quot;false&quot;. If disambiguate is tested against &quot;true&quot;, the rendering elements inside the conditional will be displayed if they will differentiate two otherwise identical citations. If the citations remain identical after its addition, it will not be added. Note that disambiguation via the <code
+	    >disambiguate</code
+	    > conditional has the lowest priority of the different <a href="#disambiguation"
+	    >disambiguation</a
+	    > options. (TODO: should we make a note here that <code
+	    >disambiguate</code
+	    > should only be used within <code
+	    >cs:citation</code
+	    >? What is the expected behavior when this attribute is test against &quot;false&quot;? Would the content only be included when it does <em
+	    >not</em
+	    > disambiguate ambiguous cites?)</dd
+	  ></dl
+	><p
+	>With the exception of <code
+	  >disambiguate</code
+	  >, all the conditions may specify more than one test value (variables, types, etc.), separated with spaces (e.g. &quot;book chapter&quot;). In such cases the <code
+	  >match</code
+	  > attribute can be used as a logical operator. The attribute can have the following values:</p
+	><ul
+	><li
+	  >&quot;all&quot; (default): the condition only tests true if all test values test true (TODO: the schema should indicate the default value. I gathered this should be &quot;all&quot;, see Andrea Rossato's mail from April 18th)</li
+	  ><li
+	  >&quot;any&quot;: the condition only tests true if any of test values tests true</li
+	  ><li
+	  >&quot;none&quot;: the condition only tests true if none of test values test true</li
+	  ></ul
+	></div
+      ><div id="formatting"
+      ><h3
+	><a href="#TOC"
+	  >Formatting</a
+	  ></h3
+	><p
+	>The following formatting attributes may be set on <code
+	  >cs:date</code
+	  >, <code
+	  >cs:date-part</code
+	  >, <code
+	  >cs:names</code
+	  >, <code
+	  >cs:name</code
+	  >, <code
+	  >cs:name-part</code
+	  >, <code
+	  >cs:et-al</code
+	  >, <code
+	  >cs:text</code
+	  >, <code
+	  >cs:number</code
+	  >, <code
+	  >cs:label</code
+	  >, <code
+	  >cs:group</code
+	  > and <code
+	  >cs:layout</code
+	  >:</p
+	><dl
+	><dt
+	  ><code
+	    >font-style</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Sets the font style, with values:</p
+	    ><ul
+	    ><li
+	      >&quot;normal&quot; (default)</li
+	      ><li
+	      >&quot;italic&quot;</li
+	      ><li
+	      >&quot;oblique&quot; (i.e. slanted)</li
+	      ></ul
+	    ></dd
+	  ><dt
+	  ><code
+	    >font-variant</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Allows for the use of small capitals, with values:</p
+	    ><ul
+	    ><li
+	      >&quot;normal&quot; (default)</li
+	      ><li
+	      >&quot;small-caps&quot;</li
+	      ></ul
+	    ></dd
+	  ><dt
+	  ><code
+	    >font-weight</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Sets the font weight, with values:</p
+	    ><ul
+	    ><li
+	      >&quot;normal&quot; (default)</li
+	      ><li
+	      >&quot;bold&quot;</li
+	      ><li
+	      >&quot;light&quot;</li
+	      ></ul
+	    ></dd
+	  ><dt
+	  ><code
+	    >text-decoration</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Allows for the use of underlining, with values:</p
+	    ><ul
+	    ><li
+	      >&quot;none&quot; (default)</li
+	      ><li
+	      >&quot;underline&quot;</li
+	      ></ul
+	    ></dd
+	  ><dt
+	  ><code
+	    >vertical-align</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >Sets the vertical alignment, with values:</p
+	    ><ul
+	    ><li
+	      >&quot;baseline&quot; (default)</li
+	      ><li
+	      >&quot;sup&quot; (superscript)</li
+	      ><li
+	      >&quot;sup&quot; (subscript)</li
+	      ></ul
+	    ></dd
+	  ><dt
+	  ><code
+	    >quotes</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >When set &quot;true&quot; (&quot;false&quot; is default), the rendered text is wrapped in quotes. The quote-symbols are defined as terms in the &quot;locales-xx-XX.xml&quot; files, and thus are localized. Whether punctuation appears inside or outside the quotes depends on the setting of the global <a href="#localized-options"
+	      ><code
+		>punctuation-in-quote</code
+		></a
+	      > option.</p
+	    ></dd
+	  ><dt
+	  ><code
+	    >display</code
+	    ></dt
+	  ><dd
+	  ><p
+	    >By default, the text of each individual cite is formatted as a single continuous run of text. The <code
+	      >display</code
+	      > attribute allows for special positioning of portions of the cite text, which can be desirable for notes and bibliography entries. The attribute can carry the following values:</p
+	    ><ul
+	    ><li
+	      >&quot;block&quot;: Places the content in a block stretching from margin to margin.</li
+	      ><li
+	      >&quot;left-margin&quot;: Places the content in a block of fixed width starting at the left margin. All &quot;left-margin&quot; blocks in a bibliography share the same width, set according to the maximum number of characters appearing in any one such block.</li
+	      ><li
+	      >&quot;right-inline&quot;: Places the content in a block directly to the right of any immediately preceding &quot;left-margin&quot; block, and extending to the right margin.</li
+	      ><li
+	      >&quot;indent&quot;: Block-indents the content to the right by a standard amount.</li
+	      ></ul
+	    ></dd
+	  ></dl
+	></div
+      ><div id="affixes"
+      ><h3
+	><a href="#TOC"
+	  >Affixes</a
+	  ></h3
+	><p
+	>The affixes attributes <code
+	  >prefix</code
+	  > and <code
+	  >suffix</code
+	  > may be set on <code
+	  >cs:date-part</code
+	  >, <code
+	  >cs:names</code
+	  >, <code
+	  >cs:name</code
+	  >, <code
+	  >cs:et-al</code
+	  >, <code
+	  >cs:date</code
+	  > (except when <code
+	  >cs:date</code
+	  > is used within <code
+	  >cs:locale</code
+	  >), <code
+	  >cs:text</code
+	  >, <code
+	  >cs:number</code
+	  >, <code
+	  >cs:label</code
+	  >, <code
+	  >cs:group</code
+	  > and <code
+	  >cs:layout</code
+	  >. The string value will be included either before (<code
+	  >prefix</code
+	  >) or after (<code
+	  >suffix</code
+	  >) the displayed text. Affixes are generally insensitive to the formatting attributes acting on the calling element: the only exception to this rule are affixes set on <code
+	  >cs:layout</code
+	  >. In cases where formatting of affixes is desired, separate <code
+	  >cs:text</code
+	  > elements can be used instead, with a <code
+	  >value</code
+	  > attribute to output verbatim text.</p
+	></div
+      ><div id="delimiter"
+      ><h3
+	><a href="#TOC"
+	  >Delimiter</a
+	  ></h3
+	><p
+	>The <code
+	  >delimiter</code
+	  > attribute can be used to specify a delimiting string for <code
+	  >cs:date</code
+	  > (delimiting the <code
+	  >cs:date-part</code
+	  > elements), <code
+	  >cs:names</code
+	  > (delimiting multiple <a href="#name-variables"
+	  >name variables</a
+	  >), <code
+	  >cs:name</code
+	  > (delimiting names in name lists), and <code
+	  >cs:group</code
+	  > &amp; <code
+	  >cs:layout</code
+	  > (both delimiting the direct child elements).</p
+	></div
+      ><div id="text-case"
+      ><h3
+	><a href="#TOC"
+	  >Text-case</a
+	  ></h3
+	><p
+	>The <code
+	  >text-case</code
+	  > attribute may be set on <code
+	  >cs:text</code
+	  >, <code
+	  >cs:number</code
+	  >, <code
+	  >cs:label</code
+	  >, <code
+	  >cs:name-part</code
+	  > and <code
+	  >cs:date-part</code
+	  >, and can be used to control the text case of the rendered text. The possible values are:</p
+	><ul
+	><li
+	  >&quot;lowercase&quot;: displays all text in lowercase</li
+	  ><li
+	  >&quot;uppercase&quot;: displays all text in uppercase</li
+	  ><li
+	  >&quot;capitalize-first&quot;: capitalizes the first character; the case of other characters is not affected</li
+	  ><li
+	  >&quot;capitalize-all&quot;: capitalizes the first character of every word; other characters are displayed lowercase</li
+	  ><li
+	  >&quot;title&quot;: displays text in title case (the <em
+	    >Chicago Manual of Style</em
+	    > calls this &quot;headline style&quot;)</li
+	  ><li
+	  >&quot;sentence&quot;: displays text in sentence case (&quot;sentence style&quot;)</li
+	  ></ul
+	></div
+      ><div id="strip-periods"
+      ><h3
+	><a href="#TOC"
+	  >Strip-periods</a
+	  ></h3
+	><p
+	>The <code
+	  >strip-periods</code
+	  > attribute may be set on <code
+	  >cs:date-part</code
+	  > (but only is <code
+	  >name</code
+	  > is set to &quot;month&quot;), <code
+	  >cs:text</code
+	  > and <code
+	  >cs:label</code
+	  >. When set to &quot;true&quot; (&quot;false&quot; is the default), any periods in the rendered text are removed.</p
+	></div
+      ></div
+    ><div id="appendices"
+    ><h2
+      ><a href="#TOC"
+	>Appendices</a
+	></h2
+      ><div id="appendix-i---variables"
+      ><h3
+	><a href="#TOC"
+	  >Appendix I - Variables</a
+	  ></h3
+	><div id="source-variables"
+	><h4
+	  ><a href="#TOC"
+	    >Source Variables</a
+	    ></h4
+	  ><p
+	  >Source variables contain the properties of the cited items, and have no relation to the text in which the items are cited.</p
+	  ><ul
+	  ><li
+	    >title</li
+	    ><li
+	    >container-title</li
+	    ><li
+	    >collection-title</li
+	    ><li
+	    >original-title</li
+	    ><li
+	    >publisher</li
+	    ><li
+	    >publisher-place</li
+	    ><li
+	    >event</li
+	    ><li
+	    >event-place</li
+	    ><li
+	    >page</li
+	    ><li
+	    >locator</li
+	    ><li
+	    >version</li
+	    ><li
+	    >volume</li
+	    ><li
+	    >number-of-volumes</li
+	    ><li
+	    >issue</li
+	    ><li
+	    >medium</li
+	    ><li
+	    >status</li
+	    ><li
+	    >edition</li
+	    ><li
+	    >genre</li
+	    ><li
+	    >note</li
+	    ><li
+	    >annote</li
+	    ><li
+	    >abstract</li
+	    ><li
+	    >keyword</li
+	    ><li
+	    >number</li
+	    ><li
+	    >archive</li
+	    ><li
+	    >archive_location</li
+	    ><li
+	    >archive-place</li
+	    ><li
+	    >URL</li
+	    ><li
+	    >DOI</li
+	    ><li
+	    >ISBN</li
+	    ></ul
+	  ><div id="date-variables"
+	  ><h5
+	    ><a href="#TOC"
+	      >Date variables</a
+	      ></h5
+	    ><ul
+	    ><li
+	      >issued</li
+	      ><li
+	      >event</li
+	      ><li
+	      >accessed</li
+	      ><li
+	      >container</li
+	      ><li
+	      >original-date</li
+	      ></ul
+	    ></div
+	  ><div id="name-variables"
+	  ><h5
+	    ><a href="#TOC"
+	      >Name variables</a
+	      ></h5
+	    ><ul
+	    ><li
+	      >author</li
+	      ><li
+	      >editor</li
+	      ><li
+	      >translator</li
+	      ><li
+	      >recipient</li
+	      ><li
+	      >interviewer</li
+	      ><li
+	      >publisher</li
+	      ><li
+	      >composer</li
+	      ><li
+	      >original-publisher</li
+	      ><li
+	      >original-author</li
+	      ><li
+	      >container-author (to be used when citing a section of a book, for example, to distinguish the author proper from the author of the containing work)</li
+	      ><li
+	      >collection-editor (use for series editor)</li
+	      ></ul
+	    ></div
+	  ></div
+	><div id="citation-variables"
+	><h4
+	  ><a href="#TOC"
+	    >Citation Variables</a
+	    ></h4
+	  ><p
+	  >Citation variables are assigned by the CSL processor. Their value can be dependent on the position of the cited items (for citation-number), or on the disambiguation logic and formatting of the selected CSL style (for citation-label) (TODO: not sure this is true).</p
+	  ><ul
+	  ><li
+	    >citation-number</li
+	    ><li
+	    >citation-label (TODO: this variable might not belong here, as citeproc-js doesn't yet generate label-values. Also, it is still undocumented that a citation-label can be supplied in the input data)</li
+	    ></ul
+	  ></div
+	></div
+      ><div id="appendix-ii---types"
+      ><h3
+	><a href="#TOC"
+	  >Appendix II - Types</a
+	  ></h3
+	><p
+	>These are the different item types available within CSL:</p
+	><ul
+	><li
+	  >article</li
+	  ><li
+	  >article-magazine</li
+	  ><li
+	  >article-newspaper</li
+	  ><li
+	  >article-journal</li
+	  ><li
+	  >bill</li
+	  ><li
+	  >book</li
+	  ><li
+	  >broadcast</li
+	  ><li
+	  >chapter</li
+	  ><li
+	  >entry</li
+	  ><li
+	  >entry-dictionary</li
+	  ><li
+	  >entry-encyclopedia</li
+	  ><li
+	  >figure</li
+	  ><li
+	  >graphic</li
+	  ><li
+	  >interview</li
+	  ><li
+	  >legislation</li
+	  ><li
+	  >legal_case</li
+	  ><li
+	  >manuscript</li
+	  ><li
+	  >map</li
+	  ><li
+	  >motion_picture</li
+	  ><li
+	  >musical_score</li
+	  ><li
+	  >pamphlet</li
+	  ><li
+	  >paper-conference</li
+	  ><li
+	  >patent</li
+	  ><li
+	  >post</li
+	  ><li
+	  >post-weblog</li
+	  ><li
+	  >personal_communication</li
+	  ><li
+	  >report</li
+	  ><li
+	  >review</li
+	  ><li
+	  >review-book</li
+	  ><li
+	  >song</li
+	  ><li
+	  >speech</li
+	  ><li
+	  >thesis</li
+	  ><li
+	  >treaty</li
+	  ><li
+	  >webpage</li
+	  ></ul
+	></div
+      ><div id="appendix-iii---terms"
+      ><h3
+	><a href="#TOC"
+	  >Appendix III - Terms</a
+	  ></h3
+	><p
+	>These are the different terms available within CSL:</p
+	><ul
+	><li
+	  >Miscellaneous Terms<ul
+	    ><li
+	      >accessed</li
+	      ><li
+	      >anonymous</li
+	      ><li
+	      >and</li
+	      ><li
+	      >and others</li
+	      ><li
+	      >at</li
+	      ><li
+	      >et-al</li
+	      ><li
+	      >forthcoming</li
+	      ><li
+	      >from</li
+	      ><li
+	      >in press</li
+	      ><li
+	      >ibid</li
+	      ><li
+	      >in</li
+	      ><li
+	      >no date</li
+	      ><li
+	      >references</li
+	      ><li
+	      >retrieved</li
+	      ><li
+	      >letter</li
+	      ><li
+	      >interview</li
+	      ><li
+	      >online</li
+	      ><li
+	      >cited</li
+	      ><li
+	      >edition</li
+	      ><li
+	      >internet</li
+	      ><li
+	      >presented at</li
+	      ></ul
+	    ></li
+	  ><li
+	  >Roles<ul
+	    ><li
+	      >editor</li
+	      ><li
+	      >translator</li
+	      ><li
+	      >interviewer</li
+	      ><li
+	      >recipient</li
+	      ></ul
+	    ></li
+	  ><li
+	  >Months<ul
+	    ><li
+	      >month-01</li
+	      ><li
+	      >month-02</li
+	      ><li
+	      >month-03</li
+	      ><li
+	      >month-04</li
+	      ><li
+	      >month-05</li
+	      ><li
+	      >month-06</li
+	      ><li
+	      >month-07</li
+	      ><li
+	      >month-08</li
+	      ><li
+	      >month-09</li
+	      ><li
+	      >month-10</li
+	      ><li
+	      >month-11</li
+	      ><li
+	      >month-12</li
+	      ></ul
+	    ></li
+	  ><li
+	  >Other<ul
+	    ><li
+	      >cs-terms.locator (locators)</li
+	      ><li
+	      >book</li
+	      ><li
+	      >chapter</li
+	      ><li
+	      >column</li
+	      ><li
+	      >figure</li
+	      ><li
+	      >folio</li
+	      ><li
+	      >issue</li
+	      ><li
+	      >line</li
+	      ><li
+	      >note</li
+	      ><li
+	      >opus</li
+	      ><li
+	      >page</li
+	      ><li
+	      >page-range (a synonym for &quot;page&quot;, to be deprecated)</li
+	      ><li
+	      >page-first</li
+	      ><li
+	      >paragraph</li
+	      ><li
+	      >part</li
+	      ><li
+	      >section</li
+	      ><li
+	      >sub verbo</li
+	      ><li
+	      >volume</li
+	      ><li
+	      >verse</li
+	      ><li
+	      >cs-terms.extension</li
+	      ><li
+	      >info-fields</li
+	      ></ul
+	    ></li
+	  ></ul
+	></div
+      ><div id="appendix-iv---page-abbreviation-rules"
+      ><h3
+	><a href="#TOC"
+	  >Appendix IV - Page Abbreviation Rules</a
+	  ></h3
+	><p
+	>The exact page abbreviation rules behind the different values of the <code
+	  >page-range-format</code
+	  > attribute on <code
+	  >cs:style</code
+	  > are:</p
+	><dl
+	><dt
+	  >&quot;minimum&quot;</dt
+	  ><dd
+	  ><p
+	    >All digits repeated in the second number are left out: 42-5, 321-8, 2787-816</p
+	    ></dd
+	  ><dt
+	  >&quot;expanded&quot;</dt
+	  ><dd
+	  ><p
+	    >Abbreviated page ranges are expanded to their non-abbreviated form: 42-45, 321-328, 2787-2816</p
+	    ></dd
+	  ><dt
+	  >&quot;chicago&quot;</dt
+	  ><dd
+	  ><p
+	    >Page ranges are abbreviated according to the <a href="http://www.aahn.org/guidelines.html"
+	      >Chicago Manual of Style-rules</a
+	      >:</p
+	    ></dd
+	  ></dl
+	><table
+	><caption
+	  ><strong
+	    >Chicago Manual of Style page range abbreviation rules</strong
+	    ></caption
+	  ><tr class="header"
+	  ><th align="left" style="width: 28%;"
+	    >First number</th
+	    ><th align="left" style="width: 31%;"
+	    >Second number</th
+	    ><th align="left" style="width: 18%;"
+	    >Examples</th
+	    ></tr
+	  ><tr class="odd"
+	  ><td align="left"
+	    >Less than 100</td
+	    ><td align="left"
+	    >Use all digits</td
+	    ><td align="left"
+	    >3-10; 71-72</td
+	    ></tr
+	  ><tr class="even"
+	  ><td align="left"
+	    >100 or multiple of 100</td
+	    ><td align="left"
+	    >Use all digits</td
+	    ><td align="left"
+	    >100-104; 600-613; 1100-1123</td
+	    ></tr
+	  ><tr class="odd"
+	  ><td align="left"
+	    >101 through 109 (in multiples of 100)</td
+	    ><td align="left"
+	    >Use changed part only, omitting unneeded zeros</td
+	    ><td align="left"
+	    >107-8; 505-17; 1002-6</td
+	    ></tr
+	  ><tr class="even"
+	  ><td align="left"
+	    >110 through 199 (in multiples of 100)</td
+	    ><td align="left"
+	    >Use two digits, or more as needed.</td
+	    ><td align="left"
+	    >321-25; 415-532; 11564-68; 13792-803</td
+	    ></tr
+	  ><tr class="odd"
+	  ><td align="left"
+	    >4 digits</td
+	    ><td align="left"
+	    >If numbers are four digits long and three digits change, use all digits</td
+	    ><td align="left"
+	    >1496-1504; 2787-2816</td
+	    ></tr
+	  ></table
+	></div
+      ></div
+    ></body
+  ></html
+>
+
