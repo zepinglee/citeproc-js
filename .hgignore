@@ -16,3 +16,4 @@ syntax: regexp
 /COUNTOPTS.sh
 ^csl$
 ^csl-doc$
+^tmp.html$
