@@ -39,7 +39,7 @@ def get_highlighter(language):
     except util.ClassNotFound:
         return None
 
-    formatter = formatters.get_formatter_by_name('html')
+    formatter = formatters.get_formatter_by_name('html',linenos=True)
     def _highlighter(code):
         outfile = StringIO.StringIO()
         highlight(code, lexer, formatter, outfile)
