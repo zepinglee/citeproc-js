@@ -300,10 +300,10 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		this.locale_opt = new Object();
 	}
 	if ("undefined" == typeof arg){
-		var myxml = new XML( this.sys.getLang("en") );
+		var myxml = new XML( this.sys.retrieveLocale("en").replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = "en";
 	} else if ("string" == typeof arg){
-		var myxml = new XML( this.sys.getLang(arg) );
+		var myxml = new XML( this.sys.retrieveLocale(arg).replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = arg;
 	} else if ("xml" != typeof arg){
 		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
@@ -451,3 +451,10 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 };
 
 
+CSL.Engine.prototype.retrieveItems = function(ids){
+	var ret = [];
+	for each (var id in ids){
+		ret.push(this.sys.retrieveItem(id));
+	}
+	return ret;
+};

@@ -114,8 +114,6 @@ CSL.Engine.prototype.makeBibliography = function(){
 	var ret = this._bibliography_entries.call(this);
 	var params = {
 		"maxoffset":0,
-		"blockindent":2,
-		"hangindent":0,
 		"entryspacing":1,
 		"linespacing":1
 	};

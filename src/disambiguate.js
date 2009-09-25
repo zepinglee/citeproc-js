@@ -80,7 +80,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 	}
 	//
 	// We get the tokens of the partners
-	var tokens = state.sys.retrieveItems(id_vals);
+	var tokens = state.retrieveItems(id_vals);
 
 	// The processing sequence is the same for all modes,
 	// but there are important differences at the decision

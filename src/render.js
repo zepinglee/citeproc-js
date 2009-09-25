@@ -179,7 +179,7 @@ CSL.Engine.prototype.getModes = function(){
 CSL.Engine.prototype._bibliography_entries = function (){
 	var ret = [];
 	this.tmp.area = "bibliography";
-	var input = this.sys.retrieveItems(this.registry.getSortedIds());
+	var input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	//this.output.addToken("bibliography_joiner","\n");
 	//this.output.openLevel("bibliography_joiner");

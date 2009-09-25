@@ -64,13 +64,13 @@ StdRhinoTest.prototype.retrieveItem = function(id){
 // (Deployments must provide an instance object with
 // this method.)
 //
-StdRhinoTest.prototype.retrieveItems = function(ids){
-	var ret = [];
-	for each (var id in ids){
-		ret.push(this.retrieveItem(id));
-	}
-	return ret;
-};
+//StdRhinoTest.prototype.retrieveItems = function(ids){
+//	var ret = [];
+//	for each (var id in ids){
+//		ret.push(this.retrieveItem(id));
+//	}
+//	return ret;
+//};
 
 
 //
@@ -149,8 +149,8 @@ StdRhinoTest.prototype.run = function(){
 // (Deployments must provide an instance object with
 // this method.)
 //
-StdRhinoTest.prototype.getLang = function(lang){
+StdRhinoTest.prototype.retrieveLocale = function(lang){
 	var ret = readFile( "./locale/"+CSL.localeRegistry[lang], "UTF-8");
-	ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+	// ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	return ret;
 };

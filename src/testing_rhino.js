@@ -88,13 +88,13 @@ RhinoTest.prototype.retrieveItem = function(id){
 };
 
 
-RhinoTest.prototype.retrieveItems = function(ids){
-	var ret = [];
-	for each (var id in ids){
-		ret.push(this.retrieveItem(id));
-	}
-	return ret;
-};
+//RhinoTest.prototype.retrieveItems = function(ids){
+//	var ret = [];
+//	for each (var id in ids){
+//		ret.push(this.retrieveItem(id));
+//	}
+//	return ret;
+//};
 
 
 RhinoTest.prototype._getInput = function(name){
@@ -182,8 +182,8 @@ RhinoTest.prototype._fixAllNames = function(input){
 // (Deployments must provide an instance object with
 // this method.)
 //
-RhinoTest.prototype.getLang = function(lang){
+RhinoTest.prototype.retrieveLocale = function(lang){
 	var ret = readFile( "./locale/"+CSL.localeRegistry[lang], "UTF-8");
-	ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+	//ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	return ret;
 };
