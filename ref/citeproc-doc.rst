@@ -5,6 +5,8 @@ Citation Style Language
 Manual for the ``citeproc-js`` Processor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. |link| image:: link.png
+
 .. class:: info-version
 
    version X.XX
@@ -52,7 +54,8 @@ is `biercenator@gmail.com`_
 
 
 .. [#] For further details on required infrastructure, see the sections 
-       `Locally Defined System Functions`_ and `Data Input`_ below.
+       |link| `Locally Defined System Functions`_ 
+       and |link| `Data Input`_ below.
 
 .. _biercenator@gmail.com: mailto:biercenator@gmail.com
 
@@ -74,9 +77,9 @@ A working instance of the processor can (well, must) be created using the
 ``CSL.Engine()`` command, as shown in the code illustration below.  
 This command takes two required and one optional argument:
 
-.. admonition:: Hint
+.. admonition:: Important
 
-   See the section `Locally Defined System Functions`_ below for guidance
+   See the section |link| `Locally Defined System Functions`_ below for guidance
    on the definition of the functions contained in the ``sys``
    object.
 
@@ -192,8 +195,10 @@ a simple Javascript object containing (optional) supplementary data.
 
 .. admonition:: Hint
    
-   See the `Bundle formats`_ section below for more information
+   See the |link| `Data Input → Citations`__ section below for more information
    on the structure of input to the ``makeCitationCluster()`` command.
+
+__ `Citation fields`_
 
 .. code-block:: js
 
@@ -209,14 +214,14 @@ a simple Javascript object containing (optional) supplementary data.
 Locally Defined System Functions
 --------------------------------
 
-As mentioned above in the section on `CSL.Engine()`_, three functions
+As mentioned above in the section on |link| `CSL.Engine()`_, two functions
 must be defined separately and supplied to the processor upon
 instantiation.  These functions are used by the processor to obtain
 locale and item data from the surrounding environment.  The exact
-definition of these functions may vary from one system to another.
-The definitions given below assume the existence of a global ``DATA``
-object in the context of the processor instance, and are are provided
-only for the purpose of illustration.
+definition of each may vary from one system to another; those given below
+assume the existence of a global ``DATA`` object in the context of the
+processor instance, and are provided only for the purpose of
+illustration.
 
 ####################
 ``retrieveLocale()``
@@ -258,61 +263,265 @@ fetch individual items from storage.
 Data Input
 ----------
 
-##############
-Bundle formats
-##############
+###########
+Item fields
+###########
 
-Hello.
+The locally defined ``retrieveItem()`` function must return data
+for the target item as a simple Javascript array containing recognized
+CSL fields. [#]_  The layout of the three field types is described below.
 
-^^^^^^^^^^^^^^^^^^
-Bibliography items
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Text and numeric variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hello.
+Text and numeric variables are not distinguished in the data layer; both
+should be presented as simple strings.
 
-^^^^^^^^^
-Citations
-^^^^^^^^^
+.. code-block:: js
 
-Hello.
+   { "title" : "My Anonymous Life",
+     "volume" : "10"
+   }
 
-
-#############
-Field formats
-#############
-
-Hello.
-
-^^^^^^^^^^^^^^
-Text variables
-^^^^^^^^^^^^^^
-
-Hello.
-
-^^^^^^^^^^^^^^^^^
-Numeric variables
-^^^^^^^^^^^^^^^^^
-
-Hello.
 
 ^^^^^
 Names
 ^^^^^
 
-Hello.
+When present in the item data, CSL name variables must
+be delivered as a list of Javascript arrays, with one
+array for each name represented by the variable.
+Simple personal names are composed of ``family`` and ``given`` elements,
+containing respectively the family and given name of the individual.
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "Doe", "given" : "Jonathan" },
+       { "family" : "Roe", "given" : "Jane" },
+     ],
+     "editor" : [
+       { "family" : "Noakes", "given" : "John" }
+     ]
+   }
+
+Institutional and other names that should always be presented
+literally (such as "The Artist Formerly Known as Prince",
+"Banksy", or "Ramses IV") should be delivered as a single
+``literal`` element in the name array:
+
+.. code-block:: js
+
+   { "author" : [
+       { "literal" : "Society for Putting Things on Top of Other Things" }
+     ]
+   }
+
+!!!!!!!!!!!!!!!!!!!!
+Names with particles
+!!!!!!!!!!!!!!!!!!!!
+
+Name particles, such as the "von" in "Werner von Braun", can
+be delivered separately from the family and given name,
+as ``dropping-particle`` and ``non-dropping-particle`` elements.
+Name suffixes such as the "Jr." in "Frank Bennett Jr." can be 
+delivered as a ``suffix`` element.
+
+.. admonition:: Important
+
+   A simplified format for delivering particles and name suffixes
+   to the processor is described below in the section 
+   |link| `Dirty Tricks → Input data rescue → Names`__.
+
+__ `dirty-names`_
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "Humboldt",
+         "given" : "Alexander",
+         "dropping-particle" : "von"
+       },
+       { "family" : "Gogh",
+         "given" : "Vincent",
+         "non-dropping-particle" : "van"
+       },
+       { "family" : "Stephens",
+         "given" : "James",
+         "suffix" : "Jr."
+     ]
+   }
+
+!!!!!!!!!!!!!!!!!!!
+"Non-Western" names
+!!!!!!!!!!!!!!!!!!!
+
+Names written in non-Western scripts are always displayed
+with the family name first.  No special hint is needed in
+the input data; the processor is sensitive to the character
+set used in the name elements, and will handle such names
+appropriately.
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "村上",
+         "given" : "春樹"
+       }
+     ]
+   }
+
+.. admonition:: Hint
+
+   When the romanized transliteration is selected from a multi-lingual
+   name field, the ``sticky`` flag is not required.  See the section
+   |link| `Dirty Tricks → Multi-lingual content`__ below for further details.
+
+__ `Multi-lingual content`_
+
+Sometimes it might be desired to handle a name written in roman or 
+Cyrillic script as a non-Western name.  This behavior can be
+prompted by including a ``sticky`` element in the name array.
+The actual value of the element is irrelevant, so long as it
+returns true when tested by the Javascript interpreter.
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "Murakami",
+         "given" : "Haruki",
+         "sticky" : "true"
+       }
+     ]
+   }
+
 
 ^^^^^
 Dates
 ^^^^^
 
-Hello.
+Date fields are Javascript arrays, and may contain ``year``, ``month``
+and ``day`` elements.
+
+.. code-block:: js
+
+   { "year" : "2000",
+     "month" : "1",
+     "day" : "15"
+   }
+
+Date elements may be expressed either as numeric strings or as
+numbers.
+
+.. code-block:: js
+   
+   { "year" : 1895,
+     "month" : 11
+   }
+
+The ``year`` element may be negative, but never zero.
+
+.. code-block:: js
+
+   { "year" : -200
+   }
+
+A ``season`` element may
+also be included.  If present, string or number values between ``1`` and ``4``
+will be interpreted to correspond to Spring, Summer, Fall, and Winter, 
+respectively.
+
+.. code-block:: js
+
+   { "year" : 1950,
+     "season" : "1"
+   }
+
+Other string values are permitted in the ``season`` element, 
+but note that these will appear in the output
+as literal strings, without localization:
+
+.. code-block:: js
+
+   { "year" : 1975,
+     "season" : "Trinity"
+   }
+
+For approximate dates, a ``circa`` element should be included,
+with a non-nil value:
+
+.. code-block:: js
+
+   { "year" : -225,
+     "circa" : 1
+   }
+
+###############
+Citation fields
+###############
+
+As noted above under |link| `makeCitationCluster()`_, that function takes
+at its single argument a list item IDs, each paired with a Javascript
+array containing supplementary data.  The supplementary array must be present,
+but may be empty:
+
+.. code-block:: js
+
+   var my_ids = [
+       ["ID-1", {}],
+       ["ID-2", {}]
+   ]
+
 
 ^^^^^^^
 Locator
 ^^^^^^^
 
-Hello.
+To include pinpoint locator information in a cite, include a ``locator`` element
+with the string data describing the cited location, and a ``label`` element
+with a valid CSL label string. [#]_
 
+.. code-block:: js
+
+   var my_ids = [
+       ["ID-1", { "locator": "21", "label": "paragraph" }],
+       ["ID-2", {}]
+   ]
+
+If the ``label`` element in not included, a value of "page" will
+be assumed.
+
+.. code-block:: js
+
+   var my_ids = [
+       ["ID-1", { "locator": "21" }],
+       ["ID-2", {}]
+   ]
+
+
+
+^^^^^^^^^^^^^^^^^^^
+``suppress-author``
+^^^^^^^^^^^^^^^^^^^
+
+To suppress the rendering of names in a cite, include a ``suppress-author``
+element with a non-nil value in the supplementary data:
+
+.. code-block:: js
+
+   var my_ids = [
+       ["ID-1", { "locator": "21", "suppress-author": 1 }]
+   ]
+
+
+.. class:: first
+
+   .. [#] For information on valid CSL variable names, please
+           refer to the CSL specification, available via http://citationstyles.org/.
+
+.. [#] For a list of valid CSL locator label strings, see the
+       CSL specification, available via  http://citationstyles.org/.
 
 ------------
 Dirty tricks
@@ -323,12 +532,6 @@ Hello.
 #################
 Processor control
 #################
-
-Hello.
-
-^^^^^^^^^^^^^^^^^^^
-``suppress-author``
-^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
@@ -343,6 +546,8 @@ Input data rescue
 #################
 
 Hello.
+
+.. _dirty-names:
 
 ^^^^^
 Names
@@ -427,7 +632,7 @@ Running the Processor
 Hello.
 
 ########################################
-Under python via ``python-spidermonkey``
+Under Python via ``python-spidermonkey``
 ########################################
 
 Hello.

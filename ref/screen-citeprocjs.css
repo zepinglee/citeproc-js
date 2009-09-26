@@ -29,16 +29,15 @@ tt.literal .pre {
 }
 
 a { 
-    border-bottom: dotted 1px #aaa; 
-    color: black;
+    border-bottom: dotted 1px #999; 
     text-decoration: none;
 }
 
 
-a:link { color: #434343; text-decoration: none; } 
-a:visited { color: #434343; text-decoration: none; }
-a:active { color: #434343; text-decoration: none; }
-a:hover { color: #a30826; text-decoration: none; }
+a:link { color: #838383; font-weight: bold;}
+a:visited { color: #838383; font-weight: bold; }
+a:active { color: #838383; font-weight: bold; }
+a:hover { color: #a30826; font-weight: bold; }
 
 a.toc-backref:link { color: black; } 
 a.toc-backref:visited { color: black; } 
@@ -47,7 +46,7 @@ a.toc-backref:hover { color: #a30826; }
 
 
 div.admonition {
-  border: 3px solid #cccccc;
+  border: 3px solid #c0c0c0;
   float: right;
   width: 33%;
   padding: 0px 5px 0px 5px;
@@ -78,6 +77,41 @@ div.admonition p.admonition-title {
   margin-bottom: 0px;
   padding-top: 3px;
   padding-bottom: 3px;
+}
+
+table.footnote {
+  background: #ffffdd;
+  padding: 5px 0px 5px 0px;
+  border: 1px solid #cccccc;
+  margin: 0.3em 0px 0.3em 0px;
+}
+
+table.first {
+  margin: 2.3em 0px 0.3em 0px;
+}
+
+table.footnote td.label {
+  white-space: nowrap;
+  padding-right: 0.3em;
+}
+
+a.fn-backref:before {
+  content: url("2uparrow.png");
+  padding-right: 2px;
+}
+
+a.footnote-reference {
+  background: #ffffdd;
+  padding: 5px 2px 0px 2px;
+}
+
+a.footnote-reference:before {
+  content: url("2downarrow.png");
+  padding-right: 2px;
+}
+
+a.fn-backref {
+  vertical-align: top;
 }
 
 /* .nx { color: red; font-weight: bold } */ /* Function name */
