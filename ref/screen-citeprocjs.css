@@ -39,6 +39,11 @@ a:visited { color: #838383; font-weight: bold; }
 a:active { color: #838383; font-weight: bold; }
 a:hover { color: #a30826; font-weight: bold; }
 
+.contents a:link { color: #434343; font-weight: normal; }
+.contents a:visited { color: #434343; font-weight: normal; }
+.contents a:active { color: #434343; font-weight: normal; }
+.contents a:hover { color: #a30826; }
+
 a.toc-backref:link { color: black; } 
 a.toc-backref:visited { color: black; } 
 a.toc-backref:active { color: black; } 
@@ -103,6 +108,7 @@ a.fn-backref:before {
 a.footnote-reference {
   background: #ffffdd;
   padding: 5px 2px 0px 2px;
+  white-space: nowrap;
 }
 
 a.footnote-reference:before {

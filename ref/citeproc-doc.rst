@@ -52,10 +52,11 @@ Comments and complaints relating to this document and to the processor itself
 will be gladly received and eventually despatched with.  My email address
 is `biercenator@gmail.com`_
 
+.. class:: first
 
-.. [#] For further details on required infrastructure, see the sections 
-       |link| `Locally Defined System Functions`_ 
-       and |link| `Data Input`_ below.
+   .. [#] For further details on required infrastructure, see the sections 
+          |link| `Local Environment`_ 
+          and |link| `Data Input`_ below.
 
 .. _biercenator@gmail.com: mailto:biercenator@gmail.com
 
@@ -79,9 +80,11 @@ This command takes two required and one optional argument:
 
 .. admonition:: Important
 
-   See the section |link| `Locally Defined System Functions`_ below for guidance
+   See the section |link| `Local Environment → System Functions`__ below for guidance
    on the definition of the functions contained in the ``sys``
    object.
+
+__  _`System Functions`
 
 .. code-block:: js
 
@@ -195,8 +198,9 @@ a simple Javascript object containing (optional) supplementary data.
 
 .. admonition:: Hint
    
-   See the |link| `Data Input → Citations`__ section below for more information
-   on the structure of input to the ``makeCitationCluster()`` command.
+   See the |link| `Data Input → Citations`__ section below concerning
+   the elements recognized as supplementary data, and their
+   usage.
 
 __ `Citation fields`_
 
@@ -210,9 +214,49 @@ __ `Citation fields`_
    var mycite = makeCitationCluster( my_ids );
 
 
---------------------------------
-Locally Defined System Functions
---------------------------------
+-----------------
+Local Environment
+-----------------
+
+While ``citeproc-js`` does a great deal of the heavy lifting needed
+for correct formatting of citations and bibliographies, a certain
+amount of programming is required to prepare the environment for its
+correct operation.
+
+
+############################
+State-aware data preparation
+############################
+
+The CSL 1.0 specification anticipates the availability of several
+dynamic variables whose value depends upon the sequence and context
+of references generated with the ``makeCitationCluster()`` command:
+
+   =============================== =======
+   Variable                        Type
+   =============================== =======
+   ``position``                    numeric
+   ``first-reference-note-number`` numeric
+   ``near-note``                   boolean
+   =============================== =======
+
+Correct calculation of these values demands client-specific awareness
+of transaction details, such as the identity and position of a
+particular footnote within a word processing program or typesetting
+system, that is beyond the generic capabilities of the ``citeproc-js``
+processor.  It is therefore the responsibility of the calling
+application, when invoking ``makeCitationCluster()``, to supply
+correct values for these three variables.
+
+A detailed explanation of the role and expected values of these
+variables under various processing scenarios is beyond the scope of
+this document.  For further information on the role each plays in citation
+formatting, please refer to the CSL specification, available via
+http://citationstyles.org/.
+
+################
+System functions
+################
 
 As mentioned above in the section on |link| `CSL.Engine()`_, two functions
 must be defined separately and supplied to the processor upon
@@ -223,9 +267,9 @@ assume the existence of a global ``DATA`` object in the context of the
 processor instance, and are provided only for the purpose of
 illustration.
 
-####################
+^^^^^^^^^^^^^^^^^^^^
 ``retrieveLocale()``
-####################
+^^^^^^^^^^^^^^^^^^^^
 
 The ``retrieveLocale()`` function is used internally by the processor to
 retrieve the serialized XML of a given locale.  It takes a single RFC
@@ -246,9 +290,9 @@ only.
 
 
 
-##################
+^^^^^^^^^^^^^^^^^^
 ``retrieveItem()``
-##################
+^^^^^^^^^^^^^^^^^^
 
 The ``retrieveItem()`` function is used by the processor to
 fetch individual items from storage.
@@ -258,6 +302,9 @@ fetch individual items from storage.
    sys.retrieveItem = function(id){
 	   return DATA._items[id];
    };
+
+
+
 
 ----------
 Data Input
@@ -299,10 +346,11 @@ containing respectively the family and given name of the individual.
 
    { "author" : [
        { "family" : "Doe", "given" : "Jonathan" },
-       { "family" : "Roe", "given" : "Jane" },
+       { "family" : "Roe", "given" : "Jane" }
      ],
      "editor" : [
-       { "family" : "Noakes", "given" : "John" }
+       { "family" : "Saunders", 
+         "given" : "John Bertrand de Cusance Morant" }
      ]
    }
 
@@ -343,13 +391,17 @@ __ `dirty-names`_
          "given" : "Alexander",
          "dropping-particle" : "von"
        },
-       { "family" : "Gogh",
+       { "family" : "Gough",
          "given" : "Vincent",
          "non-dropping-particle" : "van"
        },
        { "family" : "Stephens",
          "given" : "James",
          "suffix" : "Jr."
+       },
+       { "family" : "van der Vlist",
+         "given" : "Eric"
+       }
      ]
    }
 
@@ -375,14 +427,14 @@ appropriately.
 .. admonition:: Hint
 
    When the romanized transliteration is selected from a multi-lingual
-   name field, the ``sticky`` flag is not required.  See the section
+   name field, the ``static-ordering`` flag is not required.  See the section
    |link| `Dirty Tricks → Multi-lingual content`__ below for further details.
 
 __ `Multi-lingual content`_
 
 Sometimes it might be desired to handle a name written in roman or 
 Cyrillic script as a non-Western name.  This behavior can be
-prompted by including a ``sticky`` element in the name array.
+prompted by including a ``static-ordering`` element in the name array.
 The actual value of the element is irrelevant, so long as it
 returns true when tested by the Javascript interpreter.
 
@@ -391,7 +443,7 @@ returns true when tested by the Javascript interpreter.
    { "author" : [
        { "family" : "Murakami",
          "given" : "Haruki",
-         "sticky" : "true"
+         "static-ordering" : 1
        }
      ]
    }
@@ -499,6 +551,30 @@ be assumed.
        ["ID-2", {}]
    ]
 
+.. class:: first
+
+   .. [#] For information on valid CSL variable names, please
+           refer to the CSL specification, available via http://citationstyles.org/.
+
+.. [#] For a list of valid CSL locator label strings, see the
+       CSL specification, available via  http://citationstyles.org/.
+
+------------
+Dirty Tricks
+------------
+
+This section presents features of the ``citeproc-js`` processor that
+are not properly speaking a part of the CSL specification.  Some of
+the functionality described here may or may not be found in other CSL
+1.0 compliant processors when they arrive on the scene.
+
+#################
+Processor control
+#################
+
+In the ordinary operation of the ``makeCitationCluster()`` command,
+the processor generates citation strings suitable for a given position
+in the document.
 
 
 ^^^^^^^^^^^^^^^^^^^
@@ -515,131 +591,133 @@ element with a non-nil value in the supplementary data:
    ]
 
 
-.. class:: first
-
-   .. [#] For information on valid CSL variable names, please
-           refer to the CSL specification, available via http://citationstyles.org/.
-
-.. [#] For a list of valid CSL locator label strings, see the
-       CSL specification, available via  http://citationstyles.org/.
-
-------------
-Dirty tricks
-------------
-
-Hello.
-
-#################
-Processor control
-#################
-
-Hello.
-
 ^^^^^^^^^^^^^^^
 ``author-only``
 ^^^^^^^^^^^^^^^
 
-Hello.
+This is a special-purpose companion to the ``suppress-author``
+element.  Used together, these two elements can be used by a
+calling application to produce automatically generated "smart 
+text references" that play nicely across the full range of
+bibliography styles supported by CSL.
 
-#################
-Input data rescue
-#################
+To illustrate the use case for which this is intended, suppose
+that we wish to insert a reference to the book *My Life*, written by
+John Noakes and published in 1745.  Suppose also that the CSL style we
+are planning to apply in the document controlled by the application
+is an "author-date" style, and that we wish to enter a reference to
+this work in the following form: "According to Noakes (1745), the land
+was illegally occupied by Smith".
+
+Within author-date style, we can simply cause the application to include
+a ``suppress-author`` element in the supplementary data for this citation,
+and write in the author's name by hand.
+
+
+
+
+
+###############################
+Input data rescue [forthcoming]
+###############################
 
 Hello.
 
 .. _dirty-names:
 
-^^^^^
-Names
-^^^^^
+^^^^^^^^^^^^^^^^^^^
+Names [forthcoming]
+^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
-^^^^^
-Dates
-^^^^^
+^^^^^^^^^^^^^^^^^^^
+Dates [forthcoming]
+^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
-#####################
-Multi-lingual content
-#####################
+.. _`Multi-lingual content`:
+
+###################################
+Multi-lingual content [forthcoming]
+###################################
 
 Hello.
 
-^^^^^
-Names
-^^^^^
+^^^^^^^^^^^^^^^^^^^
+Names [forthcoming]
+^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
-^^^^^
-Title
-^^^^^
+^^^^^^^^^^^^^^^^^^^
+Title [forthcoming]
+^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
-----------
-Test Suite
-----------
+------------------------
+Test Suite [forthcoming]
+------------------------
 
-##############
-Fixture layout
-##############
-
-Hello.
-
-#############
-Preprocessors
-#############
+############################
+Fixture layout [forthcoming]
+############################
 
 Hello.
 
-^^^^^^^^^^^^^^^^^^
-``./std/grind.py``
-^^^^^^^^^^^^^^^^^^
+###########################
+Preprocessors [forthcoming]
+###########################
 
 Hello.
 
-^^^^^^^^^^^^^^^^^^^^^^^^
-``./tools/MAKETESTS.sh``
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``./std/grind.py`` [forthcoming]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
-############
-Test runners
-############
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``./tools/MAKETESTS.sh`` [forthcoming]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
-^^^^^^^^^^^^^^^^^
-``./runtests.sh``
-^^^^^^^^^^^^^^^^^
+##########################
+Test runners [forthcoming]
+##########################
 
 Hello.
 
-^^^^^^^^^^^^^
-``./test.py``
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``./runtests.sh`` [forthcoming]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
----------------------
-Running the Processor
----------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``./test.py`` [forthcoming]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hello.
 
-########################################
-Under Python via ``python-spidermonkey``
-########################################
+-----------------------------------
+Running the Processor [forthcoming]
+-----------------------------------
 
 Hello.
 
-########################
-Under Java via ``rhino``
-########################
+######################################################
+Under Python via ``python-spidermonkey`` [forthcoming]
+######################################################
+
+Hello.
+
+######################################
+Under Java via ``rhino`` [forthcoming]
+######################################
 
 Hello.
 
