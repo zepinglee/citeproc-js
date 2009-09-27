@@ -231,14 +231,16 @@ State-aware data preparation
 The CSL 1.0 specification anticipates the availability of several
 dynamic variables whose value depends upon the sequence and context
 of references generated with the ``makeCitationCluster()`` command:
+   
+   .. class:: hello
 
-   =============================== =======
-   Variable                        Type
-   =============================== =======
-   ``position``                    numeric
-   ``first-reference-note-number`` numeric
-   ``near-note``                   boolean
-   =============================== =======
+      =============================== =======
+      Variable                        Type
+      =============================== =======
+      ``position``                    numeric
+      ``first-reference-note-number`` numeric
+      ``near-note``                   boolean
+      =============================== =======
 
 Correct calculation of these values demands client-specific awareness
 of transaction details, such as the identity and position of a
@@ -514,7 +516,7 @@ Citation fields
 ###############
 
 As noted above under |link| `makeCitationCluster()`_, that function takes
-at its single argument a list item IDs, each paired with a Javascript
+as its single argument a list item IDs, each paired with a Javascript
 array containing supplementary data.  The supplementary array must be present,
 but may be empty:
 
@@ -577,6 +579,26 @@ the processor generates citation strings suitable for a given position
 in the document.
 
 
+^^^^^^^^^^^^^^^
+``author-only``
+^^^^^^^^^^^^^^^
+
+When ``makeCitationCluster()`` is invoked with a non-nil ``author-only``
+element, everything but the author name in a cite is suppressed.
+The name is returned without decorative markup (italics, superscript, and
+so forth).
+
+.. code-block:: js
+
+   var my_ids = { 
+     ["ID-1", {"author-only": 1}]
+   }
+
+You might think that printing the author of a cited work,
+without printing the cite itself, is a useless thing to do.
+And if that were the end of the story, you would be right ...
+
+
 ^^^^^^^^^^^^^^^^^^^
 ``suppress-author``
 ^^^^^^^^^^^^^^^^^^^
@@ -590,28 +612,50 @@ element with a non-nil value in the supplementary data:
        ["ID-1", { "locator": "21", "suppress-author": 1 }]
    ]
 
+This option is useful on its own.  It can also be used in
+combination with the ``author-only`` element, as described below.
 
-^^^^^^^^^^^^^^^
-``author-only``
-^^^^^^^^^^^^^^^
 
-This is a special-purpose companion to the ``suppress-author``
-element.  Used together, these two elements can be used by a
-calling application to produce automatically generated "smart 
-text references" that play nicely across the full range of
-bibliography styles supported by CSL.
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Automating text insertions
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To illustrate the use case for which this is intended, suppose
-that we wish to insert a reference to the book *My Life*, written by
-John Noakes and published in 1745.  Suppose also that the CSL style we
-are planning to apply in the document controlled by the application
-is an "author-date" style, and that we wish to enter a reference to
-this work in the following form: "According to Noakes (1745), the land
-was illegally occupied by Smith".
+Calls to the ``makeCitationCluster()`` command with the ``author-only`` 
+and ``suppress-author`` control elements can be used to produce
+cites that divide their content into two parts.  This permits the
+support of styles such as the Chinese national standard style GB7714-87,
+which requires formatting like the following:
 
-Within author-date style, we can simply cause the application to include
-a ``suppress-author`` element in the supplementary data for this citation,
-and write in the author's name by hand.
+   **The Discovery of Wetness**
+
+   While it has long been known that rocks are dry :superscript:`[1]`  
+   and that air is moist :superscript:`[2]` it has been suggested by Source [3] that 
+   water is wet.
+
+   **Bibliography**
+
+   [1] John Noakes, *The Dryness of Rocks* (1952).
+
+   [2] Richard Snoakes, *The Moistness of Air* (1967).
+
+   [3] Jane Roe, *The Wetness of Water* (2000).
+
+In an author-date style, the same passage should be rendered more or
+less as follows:
+
+   **The Discovery of Wetness**
+
+   While it has long been known that rocks are dry (Noakes 1952)  
+   and that air is moist (Snoakes 1967) it has been suggested by Roe (2000)
+   that water is wet.
+
+   **Bibliography**
+
+   John Noakes, *The Dryness of Rocks* (1952).
+
+   Richard Snoakes, *The Moistness of Air* (1967).
+
+   Jane Roe, *The Wetness of Water* (2000).
 
 
 

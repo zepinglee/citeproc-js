@@ -5,12 +5,15 @@ body {
     font-family: 'Lucida Sans', Verdana, sans-serif; 
     font-size: 10.5pt; 
     color: #434343;
+    line-height: 130%; !important
 }
-.xml { padding: 1em; border: silver 1px solid; background: #FFF68F; }
+
+.xml { padding: 1em; border: silver 1px solid; background: #EAFABC; }
 .relaxngcompact { padding: 1em; border: silver 1px solid; background: #F6F9ED; }
+
 /* .js { padding: 1em; border: silver 1px solid; background: #FFF68F; } */
-.js { padding: 1em; border: silver 1px solid; background: #F6F9ED; }
-dl { background: #ECF1EF; padding:1em; border: silver 1px solid;}
+.js { padding: 1em; border: silver 1px solid; background: #EAFABC; }
+dl { background: #B7FCE1; padding:1em; border: silver 1px solid;}
 dt { font-weight: bold; margin-top: 0.5em; }
 .info-version { text-align: center; font-size: 130%; font-weight: bold; }
 .info-date { text-align: center; font-size: 110%; font-weight: bold; }
@@ -24,8 +27,10 @@ dl.contributors { background: white; border: none; }
 .contributors dt { margin: 1em; }
 
 tt.literal .pre {
-  font-family: courier, monospace;
-  font-size: 105%;
+  font-family: monospace;
+  color: #232323;
+  background: #d0d0d0;
+  padding: 1px 2px 0px 2px;
 }
 
 a { 
@@ -33,11 +38,30 @@ a {
     text-decoration: none;
 }
 
+blockquote {
+    background: #B7FCE1; 
+    margin-left: 4em;
+    padding:1em; 
+    border: silver 1px solid;
+}
 
-a:link { color: #838383; font-weight: bold;}
-a:visited { color: #838383; font-weight: bold; }
-a:active { color: #838383; font-weight: bold; }
+.superscript {
+  margin-bottom: 1em;
+}
+
+a.toc-backref tt.literal .pre {
+    background: white;
+}
+
+a:link { color: #636363; font-weight: bold;}
+a:visited { color: #636363; font-weight: bold; }
+a:active { color: #636363; font-weight: bold; }
 a:hover { color: #a30826; font-weight: bold; }
+
+a tt.literal .pre:link { color: #131313; }
+a tt.literal .pre:visited { color: #131313; }
+a tt.literal .pre:active { color: #131313; }
+a tt.literal .pre:hover { color: #a30826; }
 
 .contents a:link { color: #434343; font-weight: normal; }
 .contents a:visited { color: #434343; font-weight: normal; }
@@ -93,6 +117,10 @@ table.footnote {
 
 table.first {
   margin: 2.3em 0px 0.3em 0px;
+}
+
+table.hello {
+  border: none;
 }
 
 table.footnote td.label {
