@@ -255,13 +255,13 @@ class CslTest(CslTestUtils):
                             continue
                         one_char = len(entry["name"])-1
                         two_chars = one_char-1
-                        entry["sticky"] = False
+                        entry["static-ordering"] = False
                         if entry["name"].endswith("!!"):
                             entry["literal"] = entry["name"][0:-2].strip()
                         else:
                             parsed = entry["name"]
                             if entry["name"].endswith("!"):
-                                entry["sticky"] = True
+                                entry["static-ordering"] = True
                                 parsed = entry["name"][0:-1].strip()
                             parsed = re.split("\s*,\s*",parsed)
                             if len(parsed) > 0:

@@ -396,11 +396,11 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 			var p = newname[part];
 			if (p){
 				//
-				// Add a sticky toggle for non-roman, non-Cyrillic
+				// Add a static-ordering toggle for non-roman, non-Cyrillic
 				// names.
 				//
 				if (!newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
-					newname["sticky"] = true;
+					newname["static-ordering"] = true;
 				}
 				var m = p.match(/^:([-a-zA-Z]+):\s+(.*)/);
 				if (m){
@@ -426,7 +426,7 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 								updateme = true;
 								newname[part] = m[2];
 								if (newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
-									newname["sticky"] = false;
+									newname["static-ordering"] = false;
 								};
 							};
 						};

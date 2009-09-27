@@ -183,13 +183,13 @@ StdRhinoTest.prototype._fixAllNames = function(){
 				for each (var entry in obj[key]){
 					var one_char = entry.name.length-1;
 					var two_chars = one_char-1;
-					entry.sticky = false;
+					entry["static-ordering"] = false;
 					if ("!!" == entry.name.substr(two_chars)){
 						entry.literal = entry.name.substr(0,two_chars).replace(/\s+$/,"");
 					} else {
 						var parsed = entry.name;
 						if ("!" == entry.name.substr(one_char)){
-							entry.sticky = true;
+							entry["static-ordering"] = true;
 							parsed = entry.name.substr(0,one_char).replace(/\s+$/,"");
 						}
 						parsed = parsed.split(/\s*,\s*/);

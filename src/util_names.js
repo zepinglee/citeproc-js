@@ -162,7 +162,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 	var state = this.state;
 	for each (var key in subsequence){
 		var namepart = this.name[key];
-		if ("given" == key && !this.name.sticky){
+		if ("given" == key && !this.name["static-ordering"]){
 			if (0 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
 				continue;
 			} else if (1 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
@@ -188,7 +188,7 @@ CSL.Util.Names.getNamepartSequence = function(state,seg,name){
 	var romanesque = name["family"].match(/.*[a-zA-Z\u0400-\u052f].*/);
 	if (!romanesque ){ // neither roman nor Cyrillic characters
 		var sequence = [["empty","empty","empty"],["prefix", "family"],["given"],[]];
-	} else if (name.sticky) { // entry likes sort order
+	} else if (name["static-ordering"]) { // entry likes sort order
 		var sequence = [["space","space","space"],["prefix", "family"],["given"],[]];
 	} else if (state.tmp.sort_key_flag){
 		if (state.opt["name-sort-order"] == "particle-family-given"){
