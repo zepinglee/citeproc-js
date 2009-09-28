@@ -13,6 +13,9 @@ tests = []
 template1 = '''
 dojo.provide("tests.test_dateparse");
 
+var sys = new RhinoTest();
+var citeproc = new CSL.Engine(sys,"<style></style>");
+
 doh.register("tests.dateparse", [%s
 ]);
 
@@ -24,7 +27,7 @@ template2 = '''
 
 template3 = '''
     function test_dateparse%0.3d() {
-        var res = CSL.dateParse("%s");%s
+        var res = citeproc.dateParse("%s");%s
     }
 '''.strip()
 
@@ -37,7 +40,7 @@ for line in datalst:
         line = line.split(",")
         m = {}
         for chunk in line:
-            print "(%s)" %chunk
+            #print "(%s)" %chunk
             t = chunk.split("=")
             t[1] = t[1].strip('"')
             m[t[0]] = t[1]
@@ -59,3 +62,5 @@ for pos in range(0, len(tests), 1):
 final = template1 % (',\n    '.join( results3 ),)
 
 open("../tests/test_dateparse.js","w+").write(final)
+
+print "Done!"

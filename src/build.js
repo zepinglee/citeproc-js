@@ -458,3 +458,7 @@ CSL.Engine.prototype.retrieveItems = function(ids){
 	}
 	return ret;
 };
+
+CSL.Engine.prototype.dateParse = function(txt){
+	return {"year_end": "WOW!"};
+};
