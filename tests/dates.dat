@@ -38,16 +38,21 @@ Aug 31 2000 ?
 250 a.d.
 
 # Ranged year
+--> year=2000,year_end=2001
 2000-2001
 
 # Ranged month
+--> year=2000,month=8,year_end=2000,month_end=9
 Aug - Sep 2000
 
 # Ranged day
+--> year=2000,month=8,day=15,year_end=2000,month_end=8,day_end=20
 Aug 15-20 2000
 
 # Ranged month-year
+--> year=2000,month=8,year_end=2000,month_end=9
 Aug 2000-Sep 2000
 
 # Ranged day-month-year
+--> year=2000,month=8,day=15,year_end=2000,month_end=8,day_end=20
 Aug 15 2000 - Aug 20 2000

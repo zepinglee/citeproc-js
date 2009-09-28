@@ -10,6 +10,24 @@ datalst = open("../tests/dates.dat").read().split('\n')
 
 tests = []
 
+template1 = '''
+dojo.provide("tests.test_dateparse");
+
+doh.register("tests.dateparse", [%s
+]);
+
+'''
+
+template2 = '''
+        doh.assertEqual("%s", res["%s"]);
+'''.rstrip()
+
+template3 = '''
+    function test_dateparse%0.3d() {
+        var res = CSL.dateParse("%s");%s
+    }
+'''.strip()
+
 for line in datalst:
     line = line.strip()
     if not line: continue
@@ -28,6 +46,16 @@ for line in datalst:
     test["input"] = line
     test["result"] = m
     tests.append(test)
-    
-print tests
-    
+
+results3 = []
+
+for pos in range(0, len(tests), 1):
+    test = tests[pos]
+    results2 = ''
+    for key in test["result"].keys():
+        results2 += template2 % (test["result"][key], key)
+    results3.append( template3 % ((pos+1),test["input"],results2) )
+
+final = template1 % (',\n    '.join( results3 ),)
+
+open("../tests/test_dateparse.js","w+").write(final)
