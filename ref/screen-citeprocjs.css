@@ -40,7 +40,7 @@ a {
 
 blockquote {
     background: #B7FCE1; 
-    margin-left: 4em;
+    margin-left: 3em;
     padding:1em; 
     border: silver 1px solid;
 }
@@ -119,9 +119,9 @@ table.first {
   margin: 2.3em 0px 0.3em 0px;
 }
 
-table.hello {
-  border: none;
-}
+table.hello { margin-left: 3em; }
+table.hello td { padding: 3px; }
+table.hello th { padding: 3px; background: #dddddd; }
 
 table.footnote td.label {
   white-space: nowrap;

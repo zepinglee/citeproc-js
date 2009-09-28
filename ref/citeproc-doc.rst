@@ -18,7 +18,11 @@ Manual for the ``citeproc-js`` Processor
 .. class:: contributors
 
    Author
-       * Frank G. Bennett Jr.
+       * Frank G. Bennett, Jr.
+
+   Contributors
+       * Bruce D'Arcus
+       * Rintze Zelle
 
 ========
 
@@ -232,15 +236,15 @@ The CSL 1.0 specification anticipates the availability of several
 dynamic variables whose value depends upon the sequence and context
 of references generated with the ``makeCitationCluster()`` command:
    
-   .. class:: hello
+.. class:: hello
 
-      =============================== =======
-      Variable                        Type
-      =============================== =======
-      ``position``                    numeric
-      ``first-reference-note-number`` numeric
-      ``near-note``                   boolean
-      =============================== =======
+   =============================== =======
+   Variable                        Type
+   =============================== =======
+   ``position``                    numeric
+   ``first-reference-note-number`` numeric
+   ``near-note``                   boolean
+   =============================== =======
 
 Correct calculation of these values demands client-specific awareness
 of transaction details, such as the identity and position of a
@@ -543,7 +547,7 @@ with a valid CSL label string. [#]_
        ["ID-2", {}]
    ]
 
-If the ``label`` element in not included, a value of "page" will
+If the ``label`` element is not included, a value of "page" will
 be assumed.
 
 .. code-block:: js
@@ -657,7 +661,49 @@ less as follows:
 
    Jane Roe, *The Wetness of Water* (2000).
 
+In both of the example passages above, the cites to Noakes and Snoakes
+can be obtained with ordinary calls to ``makeCitationCluster()``.  The
+cite to Roe must be obtained in two parts: the first with a call
+controlled by the ``author-only`` element; and the second with
+a call controlled by the ``suppress-author`` element, *in that order*:
 
+.. code-block:: js
+
+   var my_ids = { 
+     ["ID-3", {"author-only": 1}]
+   }
+
+   var result = citeproc.makeCitationCluster( my_ids );
+
+... and then ...
+   
+.. code-block:: js
+
+   var my_ids = { 
+     ["ID-3", {"suppress-author": 1}]
+   }
+
+   var result = citeproc.makeCitationCluster( my_ids );
+
+In the first call, the processor will automatically suppress decorations (superscripting).
+Also in the first call, if a numeric style is used, the processor will provide a localized 
+label in lieu of the author name, and include the numeric source identifier, free of decorations.
+In the second call, if a numeric style is used, the processor will suppress output, since
+the numeric identifier was included in the return to the first call.
+
+Detailed illustrations of the interaction of these two control
+elements are in the processor test fixtures in the
+"discretionary" category: 
+
+* `AuthorOnly`__
+* `CitationNumberAuthorOnlyThenSuppressAuthor`__
+* `CitationNumberSuppressAuthor`__
+* `SuppressAuthorSolo`__
+
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_AuthorOnly.txt
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_CitationNumberAuthorOnlyThenSuppressAuthor.txt
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_CitationNumberSuppressAuthor.txt
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_SuppressAuthorSolo.txt
 
 
 
