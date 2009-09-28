@@ -460,5 +460,16 @@ CSL.Engine.prototype.retrieveItems = function(ids){
 };
 
 CSL.Engine.prototype.dateParse = function(txt){
+	txt = txt.toLocaleLowerCase();
+	txt = txt.replace(/\.$/,"");
+	txt = txt.replace(/\.(?! )/,"");
+	var lst = txt.split(/((?:[0-9]{1,2}-)*[0-9]{4}(?:-[0-9]{1,2})*(?![-0-9])|[0-9]+|[-]|\?|[a-z]+)/);
+	var ret = [];
+	for each (item in lst) {
+		if (item.match(/^\s*(?:[a-z]+|[-?0-9]+)\s*$/)) {
+			ret.push(item);
+		}
+	}
+	print(ret);
 	return {"year_end": "WOW!"};
 };
