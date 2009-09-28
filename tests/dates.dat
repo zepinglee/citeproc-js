@@ -7,12 +7,18 @@ Aug 31, 2000
 --> month=8,day=31,year=2000
 08-31-2000
 
+# Numeric dates (big-endian)
+--> month=8,day=31,year=2000
+2000-8-31
+
 # Seasons
 --> season="summer",year=2000
 Sum 2000
+--> season="Trinity",year=2001
+Trinity 2001
 
 # Fuzzy
---> fuzzy=true,month=8,day=31,year=2000
+--> fuzzy=1,month=8,day=31,year=2000
 circa 08-31-2000
 circa 2000-31-08
 circa Aug 31, 2000
@@ -30,13 +36,6 @@ Aug 31 2000 ?
 250AD
 250ad
 250 a.d.
-
-# Other
-
-Trinity 2001
-
-# Garbage
-Wednesday
 
 # Ranged year
 2000-2001
