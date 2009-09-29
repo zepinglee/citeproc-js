@@ -545,7 +545,7 @@ CSL.Engine.prototype.dateParse = function(txt){
 			var breakme = false;
 			for (pos in daterexes){
 				if (element.toLocaleLowerCase().match(daterexes[pos])){
-					thedate["month"+suff] = (pos+1);
+					thedate["month"+suff] = ""+(parseInt(pos,10)+1);
 					breakme = true;
 					break;
 				};
@@ -566,12 +566,12 @@ CSL.Engine.prototype.dateParse = function(txt){
 			// if it's BC.
 			//
 			if (element.toLocaleLowerCase().match(/^bc.*/) && number){
-				thedate["year"+suff] = (number*-1);
+				thedate["year"+suff] = ""+(number*-1);
 				number = "";
 				continue;
 			}
 			if (element.toLocaleLowerCase().match(/^ad.*/) && number){
-				thedate["year"+suff] = number;
+				thedate["year"+suff] = ""+number;
 				number = "";
 				continue;
 			}
@@ -581,7 +581,7 @@ CSL.Engine.prototype.dateParse = function(txt){
 			var breakme = false;
 			for (pos in seasonrexes){
 				if (element.toLocaleLowerCase().match(seasonrexes[pos])){
-					thedate["season"+suff] = (pos+1);
+					thedate["season"+suff] = ""+(parseInt(pos,10)+1);
 					breakme = true;
 					break;
 				};
@@ -593,7 +593,7 @@ CSL.Engine.prototype.dateParse = function(txt){
 			// If it's a fuzzy marker, record it.
 			//
 			if (element == "?" || element == "c" || element.match(/cir.*/)){
-				thedate.fuzzy = 1;
+				thedate.fuzzy = ""+1;
 				continue;
 			}
 			//
@@ -667,14 +667,14 @@ CSL.Engine.prototype.parseNumericDate = function(ret,delim,suff,txt){
 	// XXXXX: Needs month and day parse
 	//
 	if (lst.length == 1){
-		ret["month"+suff] = lst[0];
+		ret["month"+suff] = ""+lst[0];
 	} else if (lst.length == 2){
 		if (lst[0] > 12){
-			ret["month"+suff] = lst[1];
-			ret["day"+suff] = lst[0];
+			ret["month"+suff] = ""+lst[1];
+			ret["day"+suff] = ""+lst[0];
 		} else {
-			ret["month"+suff] = lst[0];
-			ret["day"+suff] = lst[1];
+			ret["month"+suff] = ""+lst[0];
+			ret["day"+suff] = ""+lst[1];
 		};
 	};
 };
