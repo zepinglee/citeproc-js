@@ -6,7 +6,7 @@ mypath = os.path.split(sys.argv[0])[0]
 if len(mypath):
     os.chdir(mypath)
 
-datalst = open("../tests/dates.dat").read().split('\n')
+datalst = open("../ref/dates.txt").read().split('\n')
 
 tests = []
 
@@ -25,11 +25,17 @@ template2 = '''
         // doh.assertEqual("%s", res["%s"]);
 '''.rstrip()
 
+template4 = '''
+        // doh.assertEqual(%d, (var c=0;for(pos in res){c+=1;}) );
+'''.rstrip()
+
 template3 = '''
     function test_dateparse%0.3d() {
         var res = citeproc.dateParse("%s");%s
     }
 '''.strip()
+
+asserts = 0
 
 for line in datalst:
     line = line.strip()
@@ -55,8 +61,11 @@ results3 = []
 for pos in range(0, len(tests), 1):
     test = tests[pos]
     results2 = ''
+    asserts = 0
     for key in test["result"].keys():
+        asserts += 1
         results2 += template2 % (test["result"][key], key)
+    results2 += template4 % asserts
     results3.append( template3 % ((pos+1),test["input"],results2) )
 
 final = template1 % (',\n    '.join( results3 ),)

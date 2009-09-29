@@ -462,6 +462,14 @@ Dates
 Date fields are Javascript arrays, and may contain ``year``, ``month``
 and ``day`` elements.
 
+.. admonition:: Important
+
+   A simplified format for providing date input
+   is described below in the section 
+   |link| `Dirty Tricks → Input data rescue → Dates`__.
+
+__ `dirty-dates`_
+
 .. code-block:: js
 
    { "year" : "2000",
@@ -514,6 +522,27 @@ with a non-nil value:
    { "year" : -225,
      "circa" : 1
    }
+
+To input a date range, add an element with a ``_end`` suffix
+to correspond with each ``year``, ``month`` and ``day`` in
+the field data:
+
+.. admonition:: Important
+
+   As shown in this example, in ranged input, 
+   *all* date elements in the input data must have an explicit corresponding
+   ``_end`` counterpart, even when the values are identical.
+
+.. code-block:: js
+
+   { "year" : 2000,
+     "month" : 11,
+     "year_end" : 2000
+     "month_end" : 12
+   }
+
+
+
 
 ###############
 Citation fields
@@ -720,6 +749,8 @@ Names [forthcoming]
 ^^^^^^^^^^^^^^^^^^^
 
 Hello.
+
+.. _dirty-dates:
 
 ^^^^^^^^^^^^^^^^^^^
 Dates [forthcoming]
