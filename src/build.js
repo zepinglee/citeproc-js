@@ -464,17 +464,35 @@ CSL.Engine.prototype.dateParse = function(txt){
 	txt = txt.replace(/\.(?! )/,"");
 	var slash = txt.indexOf("/");
 	var dash = txt.indexOf("-");
+	var seasonstrs = "spr sum fal win";
+	seasonstrs = seasonstrs.split(" ");
+	var seasonrexes = [];
+	for each (var seasonstr in seasonstrs){
+		seasonrexes.push( RegExp(seasonstr+".*") );
+	}
+	var datestrs = "jan feb mar apr may jun jul aug sep oct nov dec";
+	datestrs = datestrs.split(" ");
+	var daterexes = [];
+	for each (var datestr in datestrs){
+		daterexes.push( RegExp(datestr+".*") );
+	}
+	var number = "";
+	var note = "";
+	var thedate = {};
 	if (slash > -1 && dash > -1){
 		if (slash > 1){
 			var range_delim = "-";
+			var date_delim = "/";
 			var lst = txt.split(/((?:[0-9]{1,2}\/)*[0-9]{4}(?:\/[0-9]{1,2})*(?![\/0-9])|[0-9]+|[-]|\?|[a-zA-Z]+)/);
 		} else {
 			var range_delim = "/";
+			var date_delim = "-";
 			var lst = txt.split(/((?:[0-9]{1,2}-)*[0-9]{4}(?:-[0-9]{1,2})*(?![-0-9])|[0-9]+|[\/]|\?|[a-zA-Z]+)/);
 		}
 	} else {
 		txt = txt.replace("/","-");
 		var range_delim = "-";
+		var date_delim = "-";
 		var lst = txt.split(/((?:[0-9]{1,2}[-])*[0-9]{4}(?:[-][0-9]{1,2})*(?![-0-9])|[0-9]+|[-]|\?|[a-zA-Z]+)/);
 	};
 	var ret = [];
@@ -488,50 +506,175 @@ CSL.Engine.prototype.dateParse = function(txt){
 	// Phase 2
 	//
 	var delim_pos = ret.indexOf(range_delim);
-	if (delim_pos == -1){
-		delim_pos = ret.length;
+	var delims = [];
+	var isrange = false;
+	if (delim_pos > -1){
+		delims.push( [0,delim_pos] );
+		delims.push( [(delim_pos+1),ret.length] );
+		isrange = true;
+	} else {
+		delims.push([0,ret.length]);
 	}
 	//
 	// For each side of a range divide ...
 	//
+	var suff = "";
+	for each (delim in delims){
+		//
+		// Process each element ...
+		//
+		var date = ret.slice(delim[0],delim[1]);
+		for each (element in date){
+			//
+			// If it's a numeric date, process it.
+			//
+			if (element.indexOf(date_delim) > -1) {
+				this.parseNumericDate(thedate,date_delim,suff,element);
+				continue;
+			}
+			//
+			// If it's an obvious year, record it.
+			//
+			if (element.match(/[0-9]{4}/)){
+				thedate["year"+suff] = element.replace(/^0*/,"");
+				continue;
+			}
+			//
+			// If it's a month, record it.
+			//
+			var breakme = false;
+			for (pos in daterexes){
+				if (element.toLocaleLowerCase().match(daterexes[pos])){
+					thedate["month"+suff] = (pos+1);
+					breakme = true;
+					break;
+				};
+			};
+			if (breakme){
+				continue;
+			}
+			//
+			// If it's a number, make a note of it
+			//
+			if (element.match(/^[0-9]+$/)){
+				number = parseInt(element,10);
+			}
+
+			//
+			// If it's a BC or AD marker, make a year of
+			// any note.  Separate, reverse the sign of the year
+			// if it's BC.
+			//
+			if (element.toLocaleLowerCase().match(/^bc.*/) && number){
+				thedate["year"+suff] = (number*-1);
+				number = "";
+				continue;
+			}
+			if (element.toLocaleLowerCase().match(/^ad.*/) && number){
+				thedate["year"+suff] = number;
+				number = "";
+				continue;
+			}
+			//
+			// If it's a season, record it.
+			//
+			var breakme = false;
+			for (pos in seasonrexes){
+				if (element.toLocaleLowerCase().match(seasonrexes[pos])){
+					thedate["season"+suff] = (pos+1);
+					breakme = true;
+					break;
+				};
+			};
+			if (breakme){
+				continue;
+			}
+			//
+			// If it's a fuzzy marker, record it.
+			//
+			if (element == "?" || element == "c" || element.match(/cir.*/)){
+				thedate.fuzzy = 1;
+				continue;
+			}
+			//
+			// If it's cruft, make a note of it.
+			//
+			//
+			// If it's cruft, make a note of it
+			//
+			if (element.match(/[a-zA-Z]/) && !thedate["season"+suff]){
+				thedate["season"+suff] = element;
+				continue;
+			}
+
+		}
+		//
+		// If at the end of the string there's still a note
+		// hanging around, make a day of it.
+		//
+		if (number){
+			thedate["day"+suff] = number;
+			number = "";
+		}
+		//
+		// If at the end of the string there's cruft lying
+		// around, and the season field is empty, put the
+		// cruft there.
+		//
+		if (note && !thedate["season"+suff]){
+			thedate["season"+suff] = note;
+			note = "";
+		}
+		suff = "_end";
+	}
+
+	// #################### when that's done ##################
 
 	//
-	// Process each element ...
+	// update any missing elements on each side of the divide
+	// from the other
 	//
+	if (isrange){
+		for each (var item in ["year", "month", "day", "season"]){
+			if (thedate[item] && !thedate[item+"_end"]){
+				thedate[item+"_end"] = thedate[item];
+			} else if (!thedate[item] && thedate[item+"_end"]){
+				thedate[item] = thedate[item+"_end"];
+			};
+		};
+	};
+	return thedate;
+};
 
-	//
-	// If it's a numeric date, process it.
-	//
 
+CSL.Engine.prototype.parseNumericDate = function(ret,delim,suff,txt){
+	var lst = txt.split(delim);
+	for each (var pos in [0,(lst.length-1)]){
+		if (lst.length && lst[pos].length == 4){
+			ret["year"+suff] = lst[pos].replace(/^0*/,"");
+			if (!pos){
+				lst = lst.slice(1);
+			} else {
+				lst = lst.slice(0,pos);
+			}
+			break;
+		}
+	}
+	for (pos in lst){
+		lst[pos] = parseInt(lst[pos],10);
+	}
 	//
-	// If it's a month, record it.
+	// XXXXX: Needs month and day parse
 	//
-
-	//
-	// If it's a number, make a note of it
-	//
-
-	//
-	// If it's a BC or AD marker, make a year of
-	// any note.  Separate, reverse the sign of the year
-	// if it's BC.
-	//
-
-	//
-	// If it's a season, record it.
-	//
-
-	//
-	// If it's a fuzzy marker, record it.
-	//
-
-	//
-	// If it's cruft, record it.
-	//
-
-	//
-	// If at the end of the string there's still a note
-	// hanging around, make a day of it.
-	//
-	return ret;
+	if (lst.length == 1){
+		ret["month"+suff] = lst[0];
+	} else if (lst.length == 2){
+		if (lst[0] > 12){
+			ret["month"+suff] = lst[1];
+			ret["day"+suff] = lst[0];
+		} else {
+			ret["month"+suff] = lst[0];
+			ret["day"+suff] = lst[1];
+		};
+	};
 };
