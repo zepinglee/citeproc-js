@@ -16,6 +16,14 @@ dojo.provide("tests.test_dateparse");
 var sys = new RhinoTest();
 var citeproc = new CSL.Engine(sys,"<style></style>");
 
+var keycount = function(obj){
+    var c=0;
+    for (pos in obj) {
+      c+=1;
+    }
+    return c;
+};
+
 doh.register("tests.dateparse", [%s
 ]);
 
@@ -26,7 +34,7 @@ template2 = '''
 '''.rstrip()
 
 template4 = '''
-        // doh.assertEqual(%d, (var c=0;for(pos in res){c+=1;}) );
+        doh.assertEqual(%d, keycount(res) );
 '''.rstrip()
 
 template3 = '''

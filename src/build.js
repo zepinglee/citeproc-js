@@ -460,16 +460,78 @@ CSL.Engine.prototype.retrieveItems = function(ids){
 };
 
 CSL.Engine.prototype.dateParse = function(txt){
-	txt = txt.toLocaleLowerCase();
-	txt = txt.replace(/\.$/,"");
+	txt = txt.replace(/\.\s*$/,"");
 	txt = txt.replace(/\.(?! )/,"");
-	var lst = txt.split(/((?:[0-9]{1,2}-)*[0-9]{4}(?:-[0-9]{1,2})*(?![-0-9])|[0-9]+|[-]|\?|[a-z]+)/);
+	var slash = txt.indexOf("/");
+	var dash = txt.indexOf("-");
+	if (slash > -1 && dash > -1){
+		if (slash > 1){
+			var range_delim = "-";
+			var lst = txt.split(/((?:[0-9]{1,2}\/)*[0-9]{4}(?:\/[0-9]{1,2})*(?![\/0-9])|[0-9]+|[-]|\?|[a-zA-Z]+)/);
+		} else {
+			var range_delim = "/";
+			var lst = txt.split(/((?:[0-9]{1,2}-)*[0-9]{4}(?:-[0-9]{1,2})*(?![-0-9])|[0-9]+|[\/]|\?|[a-zA-Z]+)/);
+		}
+	} else {
+		txt = txt.replace("/","-");
+		var range_delim = "-";
+		var lst = txt.split(/((?:[0-9]{1,2}[-])*[0-9]{4}(?:[-][0-9]{1,2})*(?![-0-9])|[0-9]+|[-]|\?|[a-zA-Z]+)/);
+	};
 	var ret = [];
 	for each (item in lst) {
-		if (item.match(/^\s*(?:[a-z]+|[-?0-9]+)\s*$/)) {
-			ret.push(item);
+		var m = item.match(/^\s*([a-zA-Z]+|[-?0-9]+)\s*$/);
+	    if (m) {
+			ret.push(m[1]);
 		}
 	}
-	print(ret);
-	return {"year_end": "WOW!"};
+	//
+	// Phase 2
+	//
+	var delim_pos = ret.indexOf(range_delim);
+	if (delim_pos == -1){
+		delim_pos = ret.length;
+	}
+	//
+	// For each side of a range divide ...
+	//
+
+	//
+	// Process each element ...
+	//
+
+	//
+	// If it's a numeric date, process it.
+	//
+
+	//
+	// If it's a month, record it.
+	//
+
+	//
+	// If it's a number, make a note of it
+	//
+
+	//
+	// If it's a BC or AD marker, make a year of
+	// any note.  Separate, reverse the sign of the year
+	// if it's BC.
+	//
+
+	//
+	// If it's a season, record it.
+	//
+
+	//
+	// If it's a fuzzy marker, record it.
+	//
+
+	//
+	// If it's cruft, record it.
+	//
+
+	//
+	// If at the end of the string there's still a note
+	// hanging around, make a day of it.
+	//
+	return ret;
 };
