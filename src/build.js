@@ -53,6 +53,15 @@ CSL.Engine = function(sys,style,lang) {
 	this.output = new CSL.Output.Queue(this);
 
 	this.cslXml = this.sys.xml.makeXml(style);
+	//
+	// Note for posterity: tried manipulating the XML here to insert
+	// a list of the upcoming date-part names.  The object is apparently
+	// read-only.  Don't know why, can't find any reference to this
+	// problem on the Net (other than casual mentions that it works,
+	// which it doesn't, at least in Rhino).  Turning to add this info
+	// in the compile phase, in the flattened version of the style,
+	// which should be simpler anyway.
+	//
 	if (this.cslXml["@page-range-format"].toString()){
 		this.opt["page-range-format"] = this.cslXml["@page-range-format"].toString();
 	}
@@ -279,6 +288,16 @@ CSL.Engine.prototype.configureTokenLists = function(){
 	for each (var area in ["citation","citation_sort","bibliography","bibliography_sort"]){
 		for (var pos=(this[area].tokens.length-1); pos>-1; pos--){
 			var token = this[area].tokens[pos];
+			if ("date" == token.name && CSL.END == token.tokentype){
+				var dateparts = [];
+			}
+			if ("date-part" == token.name && token.strings.name){
+				dateparts.push(token.strings.name);
+			}
+			if ("date" == token.name && CSL.START == token.tokentype){
+				dateparts.reverse();
+				token.dateparts = dateparts;
+			}
 			token["next"] = (pos+1);
 			//CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
 			if (token.name && CSL.Lib.Elements[token.name].configure){
