@@ -460,6 +460,16 @@ CSL.Engine.prototype.retrieveItems = function(ids){
 };
 
 CSL.Engine.prototype.dateParse = function(txt){
+	var yearlast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
+	var yearfirst = "[?0-9]{4}(?:%%NUMD%%[?0-9]{1,2}){0,2}(?![0-9])";
+	var number = "[?0-9]{1,3}";
+	var rangesep = "[%%DATED%%]";
+	var fuzzychar = "[?~]";
+	var chars = "[a-zA-Z]+";
+	var rex = "("+yearfirst+"|"+yearlast+"|"+number+"|"+rangesep+"|"+fuzzychar+"|"+chars+")";
+	var rexdash = RegExp( rex.replace(/%%NUMD%%/g,"-").replace(/%%DATED%%/g,"-") );
+	var rexdashslash = RegExp( rex.replace(/%%NUMD%%/g,"-").replace(/%%DATED%%/g,"\/") );
+	var rexslashdash = RegExp( rex.replace(/%%NUMD%%/g,"\/").replace(/%%DATED%%/g,"-") );
 	txt = txt.replace(/\.\s*$/,"");
 	txt = txt.replace(/\.(?! )/,"");
 	var slash = txt.indexOf("/");
@@ -483,21 +493,21 @@ CSL.Engine.prototype.dateParse = function(txt){
 		if (slash > 1){
 			var range_delim = "-";
 			var date_delim = "/";
-			var lst = txt.split(/((?:[0-9]{1,2}\/)*[0-9]{4}(?:\/[0-9]{1,2})*(?![\/0-9])|[0-9]+|[-]|\?|[a-zA-Z]+)/);
+			var lst = txt.split( rexslashdash );
 		} else {
 			var range_delim = "/";
 			var date_delim = "-";
-			var lst = txt.split(/((?:[0-9]{1,2}-)*[0-9]{4}(?:-[0-9]{1,2})*(?![-0-9])|[0-9]+|[\/]|\?|[a-zA-Z]+)/);
+			var lst = txt.split( rexdashslash );
 		}
 	} else {
 		txt = txt.replace("/","-");
 		var range_delim = "-";
 		var date_delim = "-";
-		var lst = txt.split(/((?:[0-9]{1,2}[-])*[0-9]{4}(?:[-][0-9]{1,2})*(?![-0-9])|[0-9]+|[-]|\?|[a-zA-Z]+)/);
+		var lst = txt.split( rexdash );
 	};
 	var ret = [];
 	for each (item in lst) {
-		var m = item.match(/^\s*([a-zA-Z]+|[-?0-9]+)\s*$/);
+		var m = item.match(/^\s*([a-zA-Z]+|[-~?0-9]+)\s*$/);
 	    if (m) {
 			ret.push(m[1]);
 		}
@@ -592,7 +602,7 @@ CSL.Engine.prototype.dateParse = function(txt){
 			//
 			// If it's a fuzzy marker, record it.
 			//
-			if (element == "?" || element == "c" || element.match(/cir.*/)){
+			if (element == "~" || element == "?" || element == "c" || element.match(/cir.*/)){
 				thedate.fuzzy = ""+1;
 				continue;
 			}
@@ -602,8 +612,8 @@ CSL.Engine.prototype.dateParse = function(txt){
 			//
 			// If it's cruft, make a note of it
 			//
-			if (element.match(/[a-zA-Z]/) && !thedate["season"+suff]){
-				thedate["season"+suff] = element;
+			if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate["season"+suff]){
+				note = element;
 				continue;
 			}
 
@@ -643,6 +653,12 @@ CSL.Engine.prototype.dateParse = function(txt){
 			};
 		};
 	};
+	//
+	// If there's no year, it's a failure; pass through the literal
+	//
+	if (!thedate.year){
+		thedate = { "literal": txt };
+	}
 	return thedate;
 };
 

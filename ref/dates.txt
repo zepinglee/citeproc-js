@@ -12,6 +12,19 @@
 # for details on valid field content.
 #
 
+# With days of the week
+--> year=2000,month=10,day=24
+Wed 24 Oct 2000
+
+
+# Uncertain dates
+--> year=19??,month=10
+19??-10
+
+# Literals
+--> literal=myauntsally 23
+myauntsally 23
+
 
 # Text dates
 --> month=8,day=31,year=2000

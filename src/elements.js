@@ -956,13 +956,12 @@ CSL.Lib.Elements.date = new function(){
 					state.output.startTag("date",this);
 					//
 					// XXXXX
-					// Here's where we can splice in "other".  We can
-					// rewind on the output queue at the end, and snip
-					// out any trailing suffix, i guess.
+					// Here's where "circa" belongs
+					//
 					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
 					tok.strings.suffix = " ";
-					if (state.tmp.date_object["date_prefix"]){
-						state.output.append(state.tmp.date_object["date_prefix"],tok);
+					if (state.tmp.date_object["circa"]){
+						state.output.append(state.tmp.date_object["circa"],tok);
 					};
 				};
 				this["execs"].push(newoutput);
@@ -978,14 +977,6 @@ CSL.Lib.Elements.date = new function(){
 				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 				var navi = new state._getNavi( state, datexml );
 				state._build(navi);
-			} else {
-				var mergeoutput = function(state,Item){
-					if (state.tmp.date_object["date_suffix"]){
-						state.output.append(state.tmp.date_object["date_suffix"],"empty");
-					};
-					state.output.endTag();
-				};
-				this["execs"].push(mergeoutput);
 			};
 		};
 		target.push(this);
