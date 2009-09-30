@@ -26,6 +26,12 @@
     <term name="cited">وثِّقَ</term>
     <term name="internet">الإنترنت</term>
     <term name="presented at">قُدَّم في</term>
+    <term name="ad">AD</term>
+    <term name="bc">BC</term>
+    <term name="season-01">Spring</term>
+    <term name="season-02">Summer</term>
+    <term name="season-03">Autumn</term>
+    <term name="season-04">Winter</term>
     <term name="anthropology">علم الإنسان</term>
     <term name="astronomy">علم الفلك</term>
     <term name="biology">علم الأحياء</term>

@@ -75,7 +75,7 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"date_suffix": "maybe around 2000bc sometime?"},
+    "issued": {"literal": "maybe around 2000bc sometime?"},
     "title": "Ignore me"
   }
 ]

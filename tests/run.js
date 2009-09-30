@@ -36,20 +36,19 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+    dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.test_dateparse");
-} else {
+	dojo.require("tests.std_date");
 	dojo.require("tests.std_abbrevs");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_multilingual");
 	dojo.require("tests.std_sort");
 	dojo.require("tests.std_textcase");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_page");
 	dojo.require("tests.std_decorations");
 	dojo.require("tests.std_quotes");
 	dojo.require("tests.std_position");
-    dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.test_load_styles");
 	dojo.require("tests.test_sys_stdrhino_locale");
@@ -87,6 +86,7 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
 
+} else {
 
 //SNIP-START
 	// most of this stuff now needs to be refactored

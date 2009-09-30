@@ -26,6 +26,12 @@
     <term name="cited">被引用</term>
     <term name="internet">網際網路</term>
     <term name="presented at">簡報於</term>
+    <term name="ad">AD</term>
+    <term name="bc">BC</term>
+    <term name="season-01">Spring</term>
+    <term name="season-02">Summer</term>
+    <term name="season-03">Autumn</term>
+    <term name="season-04">Winter</term>
     <term name="anthropology">人類學</term>
     <term name="astronomy">天文學</term>
     <term name="biology">生物學</term>

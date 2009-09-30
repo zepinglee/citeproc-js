@@ -2,6 +2,10 @@
 
 set -e
 
+cd $(dirname $0)
+cd ..
+
+
 if [ "$1" == "" ]; then
   echo Needs a first argument.  Should be a string, the last occurence of which will trigger the inserts.
   exit 1
@@ -21,15 +25,13 @@ if [ "$3" == "" ]; then
   exit 1
 fi
 
-if [ -f $3 ]; then
+if [ -f ./ref/$3 ]; then
   echo found $3 go figure
-  CHUNK_TO_ADD=$3
+  CHUNK_TO_ADD=./ref/$3
 else
   echo Third argument must be a file with a chunk of XML to add to the locales
   exit 1
 fi
-
-cd $(dirname $0)
 
 for i in $(find ./locale -name "*.xml"); do
   if [ $(grep -c "${ADDED_FRAG}" $i) -gt 0 ]; then

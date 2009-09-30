@@ -39,6 +39,12 @@ dojo.require("csl.testing_rhino");
 
 doh.register("tests.sys_rhino_locale", [
 
+	function testSetLocaleStringValue(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style></style>");
+		obj.setLocaleXml("de");
+		doh.assertEqual("und", obj.locale_terms["and"]["long"]);
+	},
 	function testSetLocaleWorksAtAll(){
 		try {
 			var sys = new RhinoTest();
@@ -56,12 +62,6 @@ doh.register("tests.sys_rhino_locale", [
 		var obj = new CSL.Engine(sys,"<style></style>");
 		obj.setLocaleXml();
 		doh.assertEqual("books", obj.locale_terms["book"]["long"][1]);
-	},
-	function testSetLocaleStringValue(){
-		var sys = new RhinoTest();
-		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml("de");
-		doh.assertEqual("und", obj.locale_terms["and"]["long"]);
 	},
 	function testSetAccess(){
 		var sys = new RhinoTest();

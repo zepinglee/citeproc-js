@@ -959,6 +959,14 @@ CSL.Lib.Elements.date = new function(){
 					// Here's where "circa" belongs
 					//
 					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
+					//
+					// sneak in a literal if present, and quash the remainder
+					// of output from this date.
+					//
+					if (state.tmp.date_object["literal"]){
+						state.output.append(state.tmp.date_object["literal"],tok);
+						state.tmp.date_object = {};
+					}
 					tok.strings.suffix = " ";
 					if (state.tmp.date_object["circa"]){
 						state.output.append(state.tmp.date_object["circa"],tok);
@@ -977,7 +985,12 @@ CSL.Lib.Elements.date = new function(){
 				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 				var navi = new state._getNavi( state, datexml );
 				state._build(navi);
-			};
+			} else {
+				var mergeoutput = function(state,Item){
+					state.output.endTag();
+				};
+				this["execs"].push(mergeoutput);
+			}
 		};
 		target.push(this);
 		if (this.tokentype == CSL.END){
@@ -1029,12 +1042,42 @@ CSL.Lib.Elements["date-part"] = new function(){
 					};
 				};
 				if (value){
+					var bc = false;
+					var ad = false;
+					if ("year" == this.strings.name && parseInt(value,10) < 500 && parseInt(value,10) > 0){
+						ad = state.getTerm("ad");
+					};
+					if ("year" == this.strings.name && parseInt(value,10) < 0){
+						bc = state.getTerm("bc");
+						value = (parseInt(value,10) * -1);
+					};
+
 					if (this.strings.form){
 						value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);
 					};
 					//state.output.startTag(this.strings.name,this);
+
 					state.output.append(value,this);
+
+					if (bc){
+						state.output.append(bc);
+					}
+					if (ad){
+						state.output.append(ad);
+					}
 					//state.output.endTag();
+				} else if ("month" == this.strings.name) {
+					//
+					// No value for this target variable
+					//
+					if (state.tmp.date_object["season"]){
+						value = ""+state.tmp.date_object["season"];
+						if (value && value.match(/^[1-4]$/)){
+							state.output.append(state.getTerm(("season-0"+value)),this);
+						} else if (value){
+							state.output.append(value,this);
+						};
+					};
 				};
 				state.tmp.value = new Array();
 				if (!state.opt.has_year_suffix && "year" == this.strings.name){

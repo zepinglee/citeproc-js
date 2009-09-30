@@ -26,6 +26,12 @@
     <term name="cited">цитиран</term>
     <term name="internet">интернет</term>
     <term name="presented at">представен на</term>
+    <term name="ad">AD</term>
+    <term name="bc">BC</term>
+    <term name="season-01">Spring</term>
+    <term name="season-02">Summer</term>
+    <term name="season-03">Autumn</term>
+    <term name="season-04">Winter</term>
     <term name="anthropology">антропология</term>
     <term name="astronomy">астрономия</term>
     <term name="biology">биология</term>

@@ -43,7 +43,7 @@ citation
 
 
 >>===== RESULT =====>>
-(Fall 2000)
+(Autumn 2000)
 <<===== RESULT =====<<
 
 
@@ -60,7 +60,7 @@ citation
   <citation>
     <layout>
       <date prefix="(" suffix=")" variable="issued">
-        <date-part form="long" name="month" />
+        <date-part form="long" name="month" suffix=" "/>
         <date-part name="day" suffix=", " />
         <date-part name="year" />
       </date>
@@ -75,7 +75,7 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"year": 2000, "date_prefix": "Fall"},
+    "issued": {"year": 2000, "season": 3},
     "title": "Ignore me"
   }
 ]

@@ -17,3 +17,4 @@ syntax: regexp
 ^csl$
 ^csl-doc$
 ^tmp.html$
+/LOCALE_INSERT.txt$

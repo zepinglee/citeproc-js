@@ -541,7 +541,13 @@ the field data:
      "month_end" : 12
    }
 
+When date parsing fails, the literal string should be passed through
+as a ``literal`` element:
 
+.. code-block:: js
+
+   { "literal" : "My Aunt Sally 23"
+   }
 
 
 ###############
