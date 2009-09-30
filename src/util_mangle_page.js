@@ -113,7 +113,7 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 				if (begin > 100 && begin % 100 && parseInt((begin/100),10) == parseInt((end/100),10)){
 					m[3] = ""+(end % 100);
 				} else if (begin >= 10000){
-					m[3] = _minimize(m[1], m[3]);
+					m[3] = ""+(end % 1000);
 				}
 			}
 			if (m[2].slice(1) == m[0]){
