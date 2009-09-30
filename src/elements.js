@@ -946,6 +946,33 @@ CSL.Lib.Elements.date = new function(){
 					state.tmp.element_rendered_ok = false;
 					if (this.variables.length && Item[this.variables[0]]){
 						state.tmp.date_object = Item[this.variables[0]];
+						//
+						// XXXXX: Call a function here to analyze the
+						// data and set the name of the date-part that
+						// should collapse for this range, if any.
+						// (1) build a filtered list, in y-s-m-d order,
+						// consisting only of items that are (a) in the
+						// date-parts and (b) in the *_end data.
+						// (2) Step through the list in order, popping
+						// each item if the primary and *_end data
+						// match.
+						// (3) When finished, the first item in the
+						// list, if any, is the date-part where
+						// the collapse should occur.
+						//
+						// The collapse itself will be done by appending
+						// string output for the date, less suffix,
+						// placing a delimiter on output, then then
+						// doing the *_end of the range, dropping only
+						// the prefix.  That should give us concise expressions
+						// of ranges.
+						//
+						// Numeric dates should not collapse, though,
+						// and should probably use a slash delimiter.
+						// Scope for configurability will remain (all over
+						// the place), but this will do to get this feature
+						// started.
+						//
 					} else {
 						state.tmp.date_object = false;
 					}
@@ -968,6 +995,10 @@ CSL.Lib.Elements.date = new function(){
 						state.tmp.date_object = {};
 					}
 					tok.strings.suffix = " ";
+					//
+					// XXXXX: Needs to be extended to recognize a circa="term|braces"
+					// option.
+					//
 					if (state.tmp.date_object["circa"]){
 						state.output.append(state.tmp.date_object["circa"],tok);
 					};
