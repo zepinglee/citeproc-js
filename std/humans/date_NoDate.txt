@@ -43,7 +43,7 @@ citation
 
 
 >>===== RESULT =====>>
-(n.d.)
+Some Book or Other (n.d.)
 <<===== RESULT =====<<
 
 
@@ -59,11 +59,19 @@ citation
   </info>
   <citation>
     <layout>
-      <date prefix="(" suffix=")" variable="issued">
-        <date-part form="long" name="month" />
-        <date-part name="day" suffix=", " />
-        <date-part name="year" />
-      </date>
+      <text variable="title" suffix=" "/>
+      <choose>
+        <if variable="issued">
+          <date prefix="(" suffix=")" variable="issued">
+            <date-part form="long" name="month" />
+            <date-part name="day" suffix=", " />
+            <date-part name="year" />
+          </date>
+        </if>
+        <else>
+          <text term="no date" prefix="(" suffix=")"/>
+        </else>
+      </choose>
     </layout>
   </citation>
 </style>
@@ -75,7 +83,7 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "title": "Ignore me"
+    "title": "Some Book or Other"
   }
 ]
 <<===== INPUT =====<<

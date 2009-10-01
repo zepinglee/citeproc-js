@@ -83,7 +83,8 @@ CSL.Util.Dates["month"] = new function(){};
  * <p>This just passes the number back as a string.</p>
  */
 CSL.Util.Dates.month["numeric"] = function(state,num){
-	return num.toString();
+	var ret = num.toString();
+	return ret;
 }
 
 /**

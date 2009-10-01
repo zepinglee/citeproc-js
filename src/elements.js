@@ -972,21 +972,21 @@ CSL.Lib.Elements.date = new function(){
 						// (2) Reverse the list and step through in
 						// reverse order, popping each item if the
 						// primary and *_end data match.
-						dp.reverse()
+						var mypos = -1;
 						for (var pos=(dp.length-1); pos>-1; pos += -1){
 							var part = dp[pos];
 							var start = state.tmp.date_object[part];
 							var end = state.tmp.date_object[(part+"_end")];
 							if (start != end){
+								mypos = pos;
 								break;
 							};
-							dp = dp.slice(0,dp[pos]).concat(dp.slice((pos+1),dp.length));
 						};
 						//
 						// (3) When finished, the first item in the
 						// list, if any, is the date-part where
 						// the collapse should occur.
-						state.tmp.date_collapse_at = dp;
+						state.tmp.date_collapse_at = dp.slice(0,(mypos+1));
 						//
 						// The collapse itself will be done by appending
 						// string output for the date, less suffix,
@@ -1001,9 +1001,6 @@ CSL.Lib.Elements.date = new function(){
 						// the place), but this will do to get this feature
 						// started.
 						//
-					} else if (this.variables.length && "issued" == this.variables[0] && !Item[this.variables[0]]) {
-						state.output.append(state.getTerm("no date"),this);
-						state.tmp.date_object = false;
 					} else {
 						state.tmp.date_object = false;
 					}
@@ -1011,7 +1008,7 @@ CSL.Lib.Elements.date = new function(){
 				this["execs"].push(set_value);
 
 				var newoutput = function(state,Item){
-					state.output.startTag("date",this);
+				state.output.startTag("date",this);
 					//
 					// XXXXX
 					// Here's where "circa" belongs
@@ -1085,8 +1082,10 @@ CSL.Lib.Elements["date-part"] = new function(){
 		} else {
 			var render_date_part = function(state,Item){
 				var value = "";
+				var value_end = "";
 				if (state.tmp.date_object){
 					value = state.tmp.date_object[this.strings.name];
+					value_end = state.tmp.date_object[(this.strings.name+"_end")];
 				};
 				var real = !state.tmp.suppress_decorations;
 				var have_collapsed = state.tmp.have_collapsed;
@@ -1116,11 +1115,21 @@ CSL.Lib.Elements["date-part"] = new function(){
 
 					if (this.strings.form){
 						value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);
+						if (value_end){
+							value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state,value_end);
+						}
 					};
 					//state.output.startTag(this.strings.name,this);
 
-					if (state.tmp.date_collapse_at && this.strings.name == state.tmp.date_collapse_at[0]){
-						print("--> Want to collapse date here.");
+					if (state.tmp.date_collapse_at.length && this.strings.name == state.tmp.date_collapse_at[0]){
+						state.dateput.append(value_end,this);
+						var toprint = state.dateput.string(state,state.dateput.queue);
+						print("--> Want to collapse date here with: "+toprint);
+					} else if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
+						//
+						// Use ghost dateput queue
+						//
+						state.dateput.append(value_end,this);
 					}
 
 					state.output.append(value,this);

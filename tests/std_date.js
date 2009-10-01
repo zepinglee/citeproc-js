@@ -160,4 +160,3 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
-

@@ -146,6 +146,9 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if ("undefined" == typeof str){
 		return;
 	};
+	if ("number" == typeof str){
+		str = ""+str;
+	}
 	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() == "suppress-me"){
 		return;
 	}
@@ -260,6 +263,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	// be returned explicitly.  It will complicate the interfaces, but I think
 	// that's the only way this is ever going to work.
 	//
+
 
 	var blobs = myblobs.slice();
 	//var blobs = myblobs;

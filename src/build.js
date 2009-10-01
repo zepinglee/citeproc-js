@@ -51,6 +51,11 @@ CSL.Engine = function(sys,style,lang) {
 	this.bibliography_sort = new CSL.Engine.BibliographySort();
 
 	this.output = new CSL.Output.Queue(this);
+	//
+	// This latter queue is used for formatting date chunks
+	// before they are folded back into the main queue.
+	//
+	this.dateput = new CSL.Output.Queue(this);
 
 	this.cslXml = this.sys.xml.makeXml(style);
 	//
