@@ -22,6 +22,7 @@ Manual for the ``citeproc-js`` Processor
 
    Contributors
        * Bruce D'Arcus
+       * Dan Stillman
        * Rintze Zelle
 
 ========
