@@ -758,11 +758,25 @@ Hello.
 
 .. _dirty-dates:
 
-^^^^^^^^^^^^^^^^^^^
-Dates [forthcoming]
-^^^^^^^^^^^^^^^^^^^
+^^^^^
+Dates
+^^^^^
 
-Hello.
+The ``citeproc-js`` implementation of CSL 1.0 contains its own internal
+parsing code for raw date strings.  Clients may take advantage of the
+processor's internal parser by supplying date strings as a single
+``raw`` element:
+
+.. code-block:: js
+
+   { "raw" : "25 Dec 2004"
+   }
+
+Note that the parsing of raw strings is not supported in the CSL 1.0
+standard.  Clients that need to interoperate with multiple CSL
+processors via a uniform API should be capable of preparing input in
+the form shown in the section on `Data Input`_.
+
 
 .. _`Multi-lingual content`:
 

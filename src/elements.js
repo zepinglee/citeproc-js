@@ -944,21 +944,45 @@ CSL.Lib.Elements.date = new function(){
 				CSL.Util.substituteStart.call(this,state,target);
 				var set_value = function(state,Item){
 					state.tmp.element_rendered_ok = false;
+					state.tmp.dateparts = [];
+					var dp = [];
 					if (this.variables.length && Item[this.variables[0]]){
 						state.tmp.date_object = Item[this.variables[0]];
+						if (state.tmp.date_object.raw){
+							state.tmp.date_object = state.dateParse( state.tmp.date_object.raw );
+						};
 						//
 						// XXXXX: Call a function here to analyze the
 						// data and set the name of the date-part that
 						// should collapse for this range, if any.
-						// (1) build a filtered list, in y-s-m-d order,
+						//
+						// (1) build a filtered list, in y-m-d order,
 						// consisting only of items that are (a) in the
 						// date-parts and (b) in the *_end data.
+						// (note to self: remember that season is a
+						// fallback var when month and day are empty)
+						for each (var part in this.dateparts){
+							if (state.tmp.date_object[(part+"_end")]){
+								dp.push(part);
+							} else if (part == "month" && state.tmp.date_object["season_end"]) {
+								dp.push(part);
+							};
+						};
+						//
 						// (2) Step through the list in order, popping
 						// each item if the primary and *_end data
 						// match.
+						for (var pos in dp){
+							var start = state.tmp.date_object[dp[pos]];
+							var end = state.tmp.date_object[(dp[pos]+"_end")];
+							if (start != end){
+								state.tmp.dateparts = dp.slice( dp.indexOf(dp[pos]) );
+							};
+						};
+						//
 						// (3) When finished, the first item in the
 						// list, if any, is the date-part where
-						// the collapse should occur.
+						// the collapse should occur.  (done by the code above)
 						//
 						// The collapse itself will be done by appending
 						// string output for the date, less suffix,

@@ -285,7 +285,7 @@ CSL.Engine._getField = function(mode,hash,term,form,plural){
 
 CSL.Engine.prototype.configureTokenLists = function(){
 	//for each (var area in ["citation", "citation_sort", "bibliography","bibliography_sort"]){
-	var dateparts_master = ["year","season","month","day"];
+	var dateparts_master = ["year","month","day"];
 	for each (var area in ["citation","citation_sort","bibliography","bibliography_sort"]){
 		for (var pos=(this[area].tokens.length-1); pos>-1; pos--){
 			var token = this[area].tokens[pos];
