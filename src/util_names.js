@@ -47,7 +47,7 @@ CSL.Util.Names = new function(){};
 CSL.Util.Names.outputNames = function(state,display_names){
 
 	var segments = new this.StartMiddleEnd(state,display_names);
-	//var sort_order = state.output.getToken("name").strings["invert-name"];
+	//var sort_order = state.output.getToken("name").strings["name-as-sort-order"];
 	//
 	// XXXXX: needs refactoring.  The outer condition is whether
 	// we are in sort area or not.  If in a sort area, use sort ordering.
@@ -196,7 +196,7 @@ CSL.Util.Names.getNamepartSequence = function(state,seg,name){
 		} else {
 			var sequence = [["sortsep","sortsep","space"],["family", "prefix"],["given"],["suffix"]];
 		};
-	} else if (token && ( token.strings["invert-name"] == "all" || (token.strings["invert-name"] == "first" && seg == "start"))){
+	} else if (token && ( token.strings["name-as-sort-order"] == "all" || (token.strings["name-as-sort-order"] == "first" && seg == "start"))){
 		//
 		// Discretionary sort ordering and inversions
 		//
@@ -251,7 +251,7 @@ CSL.Util.Names.reinit = function(state,Item){
 	state.tmp["et-al-min"] = false;
 	state.tmp["et-al-use-first"] = false;
 	state.tmp["initialize-with"] = false;
-	state.tmp["invert-name"] = false;
+	state.tmp["name-as-sort-order"] = false;
 	state.tmp.et_al_prefix = false;
 };
 

@@ -359,8 +359,8 @@ CSL.Lib.Attributes["@delimiter-precedes-last"] = function(state,arg){
 };
 
 
-CSL.Lib.Attributes["@invert-name"] = function(state,arg){
-	this.strings["invert-name"] = arg;
+CSL.Lib.Attributes["@name-as-sort-order"] = function(state,arg){
+	this.strings["name-as-sort-order"] = arg;
 };
 
 

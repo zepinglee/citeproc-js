@@ -1274,7 +1274,7 @@ CSL.Lib.Elements.key = new function(){
 				// Middle tag
 				var name_token = new CSL.Factory.Token("name",CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
-				name_token.strings["invert-name"] = "all";
+				name_token.strings["name-as-sort-order"] = "all";
 				CSL.Lib.Elements.name.build.call(name_token,state,target);
 				//
 				// End tag

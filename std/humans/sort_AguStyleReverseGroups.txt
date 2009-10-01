@@ -67,7 +67,7 @@ bibliography
   </info>
   <macro name="key-creators">
     <names variable="author">
-      <name invert-name="all" />
+      <name name-as-sort-order="all" />
       <substitute>
         <names variable="editor" />
       </substitute>
@@ -88,7 +88,7 @@ bibliography
   </macro>
   <macro name="creators">
     <names variable="author">
-      <name and="text" delimiter=", " initialize-with="." invert-name="first" sort-separator=", " />
+      <name and="text" delimiter=", " initialize-with="." name-as-sort-order="first" sort-separator=", " />
       <substitute>
         <names variable="editor" />
       </substitute>

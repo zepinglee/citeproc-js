@@ -64,7 +64,7 @@ O’Malley, C. D., & Saunders, J. B. de C. M.
   <citation>
     <layout>
       <names variable="translator">
-        <name and="symbol" delimiter=", " delimiter-precedes-last="always" initialize-with=". " invert-name="all" sort-separator=", " />
+        <name and="symbol" delimiter=", " delimiter-precedes-last="always" initialize-with=". " name-as-sort-order="all" sort-separator=", " />
       </names>
     </layout>
   </citation>

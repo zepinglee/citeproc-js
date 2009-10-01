@@ -72,7 +72,7 @@ citation
   </info>
   <macro name="creator-key">
     <names variable="author">
-      <name invert-name="all" sort-separator=", " />
+      <name name-as-sort-order="all" sort-separator=", " />
     </names>
   </macro>
   <citation 

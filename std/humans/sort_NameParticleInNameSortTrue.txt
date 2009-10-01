@@ -55,7 +55,7 @@ bibliography
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      name-sort-order="particle-family-given">
+      demote-non-dropping-particle="never">
   <info>
     <id />
     <title />
