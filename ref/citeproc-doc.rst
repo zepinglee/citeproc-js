@@ -455,6 +455,8 @@ returns true when tested by the Javascript interpreter.
    }
 
 
+.. _`input-dates`:
+
 ^^^^^
 Dates
 ^^^^^
@@ -462,7 +464,7 @@ Dates
 Date fields are Javascript arrays, and may contain ``year``, ``month``
 and ``day`` elements.
 
-.. admonition:: Important
+.. admonition:: Hint
 
    A simplified format for providing date input
    is described below in the section 
@@ -523,7 +525,7 @@ with a non-nil value:
      "circa" : 1
    }
 
-To input a date range, add an element with a ``_end`` suffix
+To input a date range, add an element with an ``_end`` suffix
 to correspond with each ``year``, ``month`` and ``day`` in
 the field data:
 
@@ -541,7 +543,7 @@ the field data:
      "month_end" : 12
    }
 
-To specify an open-ended range, pass nil values for the ``*_end`` elements:
+To specify an open-ended range, pass nil values for the ``_end`` elements:
 
 .. code-block:: js
 
@@ -553,8 +555,7 @@ To specify an open-ended range, pass nil values for the ``*_end`` elements:
 
 
 
-When date parsing fails, the literal string should be passed through
-as a ``literal`` element:
+A literal string may be passed through as a ``literal`` element:
 
 .. code-block:: js
 
@@ -754,19 +755,48 @@ __ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_Su
 
 
 
-###############################
-Input data rescue [forthcoming]
-###############################
+#################
+Input data rescue
+#################
 
-Hello.
+
 
 .. _dirty-names:
 
-^^^^^^^^^^^^^^^^^^^
-Names [forthcoming]
-^^^^^^^^^^^^^^^^^^^
+^^^^^
+Names
+^^^^^
 
-Hello.
+Systems that use a simple two-field entry format can encode
+``non-dropping-particle`` and ``dropping-particle``
+elements on a name by including them in the ``family``
+or ``given`` fields, respectively:
+
+.. code-block:: js
+
+   { "author" : [ 
+       { "family" : "von Humboldt",
+          "given" : "Alexander"
+       },
+       { "family" : "Gough",
+         "given" : "Vincent van"
+       }
+     ]
+   }
+
+The extraction of particles is done by scanning for leading terms that
+consist entirely of lowercase letters.  For some names, leading lowercase
+terms should be treated as part of the name itself, and not as floating particles.
+Such names should (always) be passed to the processor wrapped in quotation marks:
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "\"van der Vlist\"",
+          "given" : "Eric"
+       }
+     ]
+   }
 
 .. _dirty-dates:
 
@@ -774,7 +804,7 @@ Hello.
 Dates
 ^^^^^
 
-The ``citeproc-js`` implementation of CSL 1.0 contains its own internal
+The ``citeproc-js`` processor contains its own internal
 parsing code for raw date strings.  Clients may take advantage of the
 processor's internal parser by supplying date strings as a single
 ``raw`` element:
@@ -784,12 +814,12 @@ processor's internal parser by supplying date strings as a single
    { "raw" : "25 Dec 2004"
    }
 
-Note that the parsing of raw strings is not supported in the CSL 1.0
-standard.  Clients that need to interoperate with multiple CSL
-processors via a uniform API should be capable of preparing input in
-the form shown in the section on `Data Input`_.
+Note that the parsing of raw date strings is not part of the CSL 1.0
+standard.  Clients that need to interoperate with other CSL
+processors should be capable of preparing input in the form described
+above under `Data Input → Dates`__.
 
-
+__ `input-dates`_
 
 
 .. _`Multi-lingual content`:
