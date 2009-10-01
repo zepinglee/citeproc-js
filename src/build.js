@@ -285,6 +285,7 @@ CSL.Engine._getField = function(mode,hash,term,form,plural){
 
 CSL.Engine.prototype.configureTokenLists = function(){
 	//for each (var area in ["citation", "citation_sort", "bibliography","bibliography_sort"]){
+	var dateparts_master = ["year","season","month","day"];
 	for each (var area in ["citation","citation_sort","bibliography","bibliography_sort"]){
 		for (var pos=(this[area].tokens.length-1); pos>-1; pos--){
 			var token = this[area].tokens[pos];
@@ -292,7 +293,11 @@ CSL.Engine.prototype.configureTokenLists = function(){
 				var dateparts = [];
 			}
 			if ("date-part" == token.name && token.strings.name){
-				dateparts.push(token.strings.name);
+				for (var part in dateparts_master){
+					if (part == token.strings.name){
+						dateparts.push(token.strings.name);
+					};
+				};
 			}
 			if ("date" == token.name && CSL.START == token.tokentype){
 				dateparts.reverse();
