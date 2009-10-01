@@ -1123,16 +1123,23 @@ CSL.Lib.Elements["date-part"] = new function(){
 
 					if (state.tmp.date_collapse_at.length && this.strings.name == state.tmp.date_collapse_at[0]){
 						state.dateput.append(value_end,this);
-						var toprint = state.dateput.string(state,state.dateput.queue);
-						print("--> Want to collapse date here with: "+toprint);
-					} else if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
-						//
-						// Use ghost dateput queue
-						//
-						state.dateput.append(value_end,this);
+						state.output.append(value,this);
+						var curr = state.output.current.value();
+						curr.blobs[(curr.blobs.length-1)].strings.suffix="";
+						state.output.append("-","empty");
+						var dcurr = state.dateput.current.value();
+						curr.blobs = curr.blobs.concat(dcurr);
+						state.dateput.string(state,state.dateput.queue);
+					} else {
+						if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
+							//
+							// Use ghost dateput queue
+							//
+							state.dateput.append(value_end,this);
+						}
+						state.output.append(value,this);
 					}
 
-					state.output.append(value,this);
 
 					if (bc){
 						state.output.append(bc);
