@@ -969,20 +969,24 @@ CSL.Lib.Elements.date = new function(){
 							};
 						};
 						//
-						// (2) Step through the list in order, popping
-						// each item if the primary and *_end data
-						// match.
-						for (var pos in dp){
-							var start = state.tmp.date_object[dp[pos]];
-							var end = state.tmp.date_object[(dp[pos]+"_end")];
+						// (2) Reverse the list and step through in
+						// reverse order, popping each item if the
+						// primary and *_end data match.
+						dp.reverse()
+						for (var pos=(dp.length-1); pos>-1; pos += -1){
+							var part = dp[pos];
+							var start = state.tmp.date_object[part];
+							var end = state.tmp.date_object[(part+"_end")];
 							if (start != end){
-								state.tmp.dateparts = dp.slice( dp.indexOf(dp[pos]) );
+								break;
 							};
+							dp = ret.slice(0,dp[pos]).concat(ret.slice((pos+1),dp.length));
 						};
 						//
 						// (3) When finished, the first item in the
 						// list, if any, is the date-part where
-						// the collapse should occur.  (done by the code above)
+						// the collapse should occur.
+						state.tmp.date_collapse_at = dp;
 						//
 						// The collapse itself will be done by appending
 						// string output for the date, less suffix,
