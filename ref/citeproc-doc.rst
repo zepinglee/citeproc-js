@@ -537,9 +537,21 @@ the field data:
 
    { "year" : 2000,
      "month" : 11,
-     "year_end" : 2000
+     "year_end" : 2000,
      "month_end" : 12
    }
+
+To specify an open-ended range, pass nil values for the ``*_end`` elements:
+
+.. code-block:: js
+
+   { "year" : 2008,
+     "month" : 11,
+     "year_end" : 0,
+     "month_end" : 0
+   }
+
+
 
 When date parsing fails, the literal string should be passed through
 as a ``literal`` element:
@@ -776,6 +788,8 @@ Note that the parsing of raw strings is not supported in the CSL 1.0
 standard.  Clients that need to interoperate with multiple CSL
 processors via a uniform API should be capable of preparing input in
 the form shown in the section on `Data Input`_.
+
+
 
 
 .. _`Multi-lingual content`:

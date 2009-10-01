@@ -36,10 +36,6 @@ dojo.provide("tests.std_date");
 
 doh.register("tests.std_date", [
     function(){
-        var test = new StdRhinoTest("date_DateRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("date_DateAD");
         doh.assertEqual(test.result, test.run());
     },
@@ -153,6 +149,34 @@ doh.register("tests.std_date", [
     },
     function(){
         var test = new StdRhinoTest("date_SortEmptyDates");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_TextFormFulldateDayRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_TextFormFulldateMonthRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_TextFormFulldateYearRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_TextFormMonthdateMonthRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_TextFormMonthdateYearRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_TextFormYeardateYearRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_TextFormYeardateYearRangeOpen");
         doh.assertEqual(test.result, test.run());
     },
     function(){

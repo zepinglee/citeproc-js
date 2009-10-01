@@ -86,7 +86,6 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
 
-
 } else {
 
 	//SNIP-START

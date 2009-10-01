@@ -944,6 +944,7 @@ CSL.Lib.Elements.date = new function(){
 				CSL.Util.substituteStart.call(this,state,target);
 				var set_value = function(state,Item){
 					state.tmp.element_rendered_ok = false;
+					state.tmp.donesies = [];
 					state.tmp.dateparts = [];
 					var dp = [];
 					if (this.variables.length && Item[this.variables[0]]){
@@ -962,9 +963,9 @@ CSL.Lib.Elements.date = new function(){
 						// (note to self: remember that season is a
 						// fallback var when month and day are empty)
 						for each (var part in this.dateparts){
-							if (state.tmp.date_object[(part+"_end")]){
+							if ("undefined" != typeof state.tmp.date_object[(part+"_end")]){
 								dp.push(part);
-							} else if (part == "month" && state.tmp.date_object["season_end"]) {
+							} else if (part == "month" && "undefined" != typeof state.tmp.date_object["season_end"]) {
 								dp.push(part);
 							};
 						};
@@ -1083,6 +1084,7 @@ CSL.Lib.Elements["date-part"] = new function(){
 			var render_date_part = function(state,Item){
 				var value = "";
 				var value_end = "";
+				state.tmp.donesies.push(this.strings.name);
 				if (state.tmp.date_object){
 					value = state.tmp.date_object[this.strings.name];
 					value_end = state.tmp.date_object[(this.strings.name+"_end")];
@@ -1119,24 +1121,39 @@ CSL.Lib.Elements["date-part"] = new function(){
 							value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state,value_end);
 						}
 					};
-					//state.output.startTag(this.strings.name,this);
-
-					if (state.tmp.date_collapse_at.length && this.strings.name == state.tmp.date_collapse_at[0]){
-						state.dateput.append(value_end,this);
-						state.output.append(value,this);
-						var curr = state.output.current.value();
-						curr.blobs[(curr.blobs.length-1)].strings.suffix="";
-						state.output.append("-","empty");
-						var dcurr = state.dateput.current.value();
-						curr.blobs = curr.blobs.concat(dcurr);
-						state.dateput.string(state,state.dateput.queue);
-					} else {
-						if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
-							//
-							// Use ghost dateput queue
-							//
-							state.dateput.append(value_end,this);
+					if (state.tmp.date_collapse_at.length){
+						//state.output.startTag(this.strings.name,this);
+						var ready = true;
+						for each (var item in state.tmp.date_collapse_at){
+							if (state.tmp.donesies.indexOf(item) == -1){
+								ready = false;
+								break;
+							}
 						}
+						if (ready){
+							if (value_end != "0"){
+								state.dateput.append(value_end,this);
+							}
+							state.output.append(value,this);
+							var curr = state.output.current.value();
+							curr.blobs[(curr.blobs.length-1)].strings.suffix="";
+							state.output.append("-","empty");
+							var dcurr = state.dateput.current.value();
+							curr.blobs = curr.blobs.concat(dcurr);
+							state.dateput.string(state,state.dateput.queue);
+							state.tmp.date_collapse_at = [];
+						} else {
+							state.output.append(value,this);
+							if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
+								//
+								// Use ghost dateput queue
+								//
+								if (value_end != "0"){
+									state.dateput.append(value_end,this);
+								}
+							}
+						}
+					} else {
 						state.output.append(value,this);
 					}
 

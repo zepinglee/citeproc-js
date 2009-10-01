@@ -311,7 +311,7 @@ CSL.Util.Names.initializeWith = function(name,terminator){
 	if (!name){
 		return "";
 	};
-	var namelist = name.replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
+	var namelist = name.replace(/\./g," ").replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
 	for (var i=0; i<namelist.length; i+=2){
 		var n = namelist[i];
 		var m = n.match( CSL.NAME_INITIAL_REGEXP);

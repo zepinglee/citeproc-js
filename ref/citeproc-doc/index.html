@@ -886,8 +886,22 @@ the field data:</p>
 4
 5</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;year&quot;</span> <span class="o">:</span> <span class="mi">2000</span><span class="o">,</span>
   <span class="s2">&quot;month&quot;</span> <span class="o">:</span> <span class="mi">11</span><span class="o">,</span>
-  <span class="s2">&quot;year_end&quot;</span> <span class="o">:</span> <span class="mi">2000</span>
+  <span class="s2">&quot;year_end&quot;</span> <span class="o">:</span> <span class="mi">2000</span><span class="o">,</span>
   <span class="s2">&quot;month_end&quot;</span> <span class="o">:</span> <span class="mi">12</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+</div>
+<p>To specify an open-ended range, pass nil values for the <tt class="docutils literal"><span class="pre">*_end</span></tt> elements:</p>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre>1
+2
+3
+4
+5</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;year&quot;</span> <span class="o">:</span> <span class="mi">2008</span><span class="o">,</span>
+  <span class="s2">&quot;month&quot;</span> <span class="o">:</span> <span class="mi">11</span><span class="o">,</span>
+  <span class="s2">&quot;year_end&quot;</span> <span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
+  <span class="s2">&quot;month_end&quot;</span> <span class="o">:</span> <span class="mi">0</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table>

@@ -43,7 +43,7 @@ citation
 
 
 >>===== RESULT =====>>
-(10-23 August 2003)
+(3 August-23 October 2003)
 <<===== RESULT =====<<
 
 
@@ -75,7 +75,14 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"raw": "10-23 Aug 2003"},
+    "issued": {
+      "day": 3,
+      "month": 8,
+      "year": 2003,
+      "day_end": 23,
+      "month_end": 10,
+      "year_end": 2003
+    },
     "title": "Ignore me"
   }
 ]
