@@ -33,36 +33,15 @@
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
 {
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <sort>\n      <key variable=\"issued\" />\n      <key variable=\"title\" />\n    </sort>\n    <layout delimiter=\"; \" prefix=\"\" suffix=\".\">\n      <group delimiter=\", \">\n        <text variable=\"title\" />\n        <choose>\n          <if variable=\"issued\">\n            <date variable=\"issued\">\n              <date-part name=\"year\" />\n            </date>\n          </if>\n        </choose>\n      </group>\n    </layout>\n  </citation>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <date prefix=\"(\" suffix=\")\" variable=\"issued\">\n        <date-part form=\"long\" name=\"month\" />\n        <date-part name=\"day\" suffix=\", \" />\n        <date-part name=\"year\" />\n      </date>\n    </layout>\n  </citation>\n</style>", 
     "input": [
         {
             "id": "ITEM-1", 
-            "title": "Book A"
-        }, 
-        {
-            "id": "ITEM-2", 
-            "issued": {
-                "year": 2000
-            }, 
-            "title": "Book B"
-        }, 
-        {
-            "id": "ITEM-3", 
-            "title": "Book C"
-        }, 
-        {
-            "id": "ITEM-4", 
-            "issued": {
-                "year": 1999
-            }, 
-            "title": "Book D"
-        }, 
-        {
-            "id": "ITEM-5", 
-            "title": "Book E"
+            "title": "Ignore me", 
+            "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "Book D, 1999; Book B, 2000; Book A; Book C; Book E.", 
+    "result": "(n.d.)", 
     "schema": "0.8"
 }

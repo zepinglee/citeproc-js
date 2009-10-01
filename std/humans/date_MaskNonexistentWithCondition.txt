@@ -43,7 +43,6 @@ citation
 
 
 >>===== RESULT =====>>
-(28 October 1958)
 <<===== RESULT =====<<
 
 
@@ -59,11 +58,15 @@ citation
   </info>
   <citation>
     <layout>
-      <date prefix="(" suffix=")" variable="issued">
-        <date-part name="day" suffix=" " />
-        <date-part form="long" name="month" suffix=" " />
-        <date-part name="year" />
-      </date>
+      <choose>
+        <if variable="issued">
+          <date prefix="(" suffix=")" variable="issued">
+            <date-part form="long" name="month" />
+            <date-part name="day" suffix=", " />
+            <date-part name="year" />
+          </date>
+        </if>
+      </choose>
     </layout>
   </citation>
 </style>
@@ -75,7 +78,6 @@ citation
   {
     "id":"ITEM-1",
     "type": "book",
-    "issued": {"raw": "28 Oct 1958"},
     "title": "Ignore me"
   }
 ]

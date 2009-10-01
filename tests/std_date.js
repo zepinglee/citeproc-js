@@ -44,15 +44,7 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("date_IgnoreNonexistent");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
         var test = new StdRhinoTest("date_IgnoreNonexistentSort");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_IgnoreNonexistentSortReverse");
         doh.assertEqual(test.result, test.run());
     },
     function(){
@@ -132,6 +124,18 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("date_MaskNonexistentWithCondition");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_NoDate");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_NonexistentSortReverse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("date_OtherAlone");
         doh.assertEqual(test.result, test.run());
     },
@@ -140,7 +144,7 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("date_RawParseDutchDate");
+        var test = new StdRhinoTest("date_RawParseSimpleDate");
         doh.assertEqual(test.result, test.run());
     },
     function(){

@@ -997,6 +997,9 @@ CSL.Lib.Elements.date = new function(){
 						// the place), but this will do to get this feature
 						// started.
 						//
+					} else if (this.variables.length && "issued" == this.variables[0] && !Item[this.variables[0]]) {
+						state.output.append(state.getTerm("no date"),this);
+						state.tmp.date_object = false;
 					} else {
 						state.tmp.date_object = false;
 					}
