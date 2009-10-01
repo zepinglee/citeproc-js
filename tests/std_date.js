@@ -36,6 +36,10 @@ dojo.provide("tests.std_date");
 
 doh.register("tests.std_date", [
     function(){
+        var test = new StdRhinoTest("date_DateRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("date_DateAD");
         doh.assertEqual(test.result, test.run());
     },
@@ -156,3 +160,4 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
+

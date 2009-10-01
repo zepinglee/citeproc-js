@@ -980,7 +980,7 @@ CSL.Lib.Elements.date = new function(){
 							if (start != end){
 								break;
 							};
-							dp = ret.slice(0,dp[pos]).concat(ret.slice((pos+1),dp.length));
+							dp = dp.slice(0,dp[pos]).concat(dp.slice((pos+1),dp.length));
 						};
 						//
 						// (3) When finished, the first item in the
@@ -1118,6 +1118,10 @@ CSL.Lib.Elements["date-part"] = new function(){
 						value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);
 					};
 					//state.output.startTag(this.strings.name,this);
+
+					if (state.tmp.date_collapse_at && this.strings.name == state.tmp.date_collapse_at[0]){
+						print("--> Want to collapse date here.");
+					}
 
 					state.output.append(value,this);
 

@@ -293,12 +293,12 @@ CSL.Engine.prototype.configureTokenLists = function(){
 				var dateparts = [];
 			}
 			if ("date-part" == token.name && token.strings.name){
-				for (var part in dateparts_master){
+				for each (var part in dateparts_master){
 					if (part == token.strings.name){
 						dateparts.push(token.strings.name);
 					};
 				};
-			}
+			};
 			if ("date" == token.name && CSL.START == token.tokentype){
 				dateparts.reverse();
 				token.dateparts = dateparts;
