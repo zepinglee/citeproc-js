@@ -148,18 +148,35 @@ actual item data.
 ######################
 
 The ``makeBibliography()`` command does what its name implies.  The
-command takes no arguments, and dumps a formatted bibliography
-containing all items currently registered in the processor:
+command takes one optional argument.  If invoked without an argument,
+it dumps a formatted bibliography containing all items currently
+registered in the processor:
 
 .. code-block:: js
 
    var mybibliography = citeproc.makeBibliography();
 
-The value returned is a two-element list, composed of a Javascript
-array containing certain formatting parameters, and a rendered
-string representing the bibliography itself.  The first element—the 
-array of formatting parameters—contains the key/value pairs shown
-below (the values shown are the processor defaults):
+The optional argument is an arbitrary category name, used to obtain a
+bibliography containing only items loaded to the processor with a
+matching ``category`` element.
+
+.. code-block:: js
+
+   var mybibliography = citeproc.makeBibliography("pre-1990");
+
+To print items that are not associated with any category, use
+the reserved category name ``none``:
+
+.. code-block:: js
+
+   var mybibliography = citeproc.makeBibliography("none");
+
+The value returned by either form of this command is a two-element
+list, composed of a Javascript array containing certain formatting
+parameters, and a rendered string representing the bibliography
+itself.  The first element—the array of formatting parameters—contains
+the key/value pairs shown below (the values shown are the processor
+defaults):
 
 .. code-block:: js
 
@@ -562,6 +579,26 @@ A literal string may be passed through as a ``literal`` element:
 
    { "literal" : "My Aunt Sally 23"
    }
+
+^^^^^^^^^^
+Categories
+^^^^^^^^^^
+
+If bibliographic output must be divided into sections, the category or
+categories with which an item should be associated can be indicated by
+including a ``category`` element.  If present, this element must be a
+Javascript array containing a list of category names:
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "Derby", "given" : "George" }
+     ],
+     "title" : "Phoenixiana",
+     "issued" : { "year" : 1873 },
+     "category" : [ "humor", "satire" ]
+   }
+
 
 
 ###############

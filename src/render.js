@@ -176,7 +176,7 @@ CSL.Engine.prototype.getModes = function(){
 /*
  * Compose individual cites into a single string.
  */
-CSL.Engine.prototype._bibliography_entries = function (){
+CSL.Engine.prototype._bibliography_entries = function (category){
 	var ret = [];
 	this.tmp.area = "bibliography";
 	var input = this.retrieveItems(this.registry.getSortedIds());
@@ -187,6 +187,9 @@ CSL.Engine.prototype._bibliography_entries = function (){
 	//bib_body.decorations = [["@bibliography","body"]];
 	//this.output.startTag("bib_body",bib_body);
 	for each (var item in input){
+		if (category && item.category.indexOf(category) == -1){
+			continue;
+		}
 		if (false){
 			CSL.debug("BIB: "+item.id);
 		}
