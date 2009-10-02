@@ -187,26 +187,26 @@ CSL.Util.Names.getNamepartSequence = function(state,seg,name){
 	}
 	var romanesque = name["family"].match(/.*[a-zA-Z\u0400-\u052f].*/);
 	if (!romanesque ){ // neither roman nor Cyrillic characters
-		var sequence = [["empty","empty","empty"],["prefix", "family"],["given"],[]];
+		var sequence = [["empty","empty","empty"],["non-dropping-particle", "family"],["given"],[]];
 	} else if (name["static-ordering"]) { // entry likes sort order
-		var sequence = [["space","space","space"],["prefix", "family"],["given"],[]];
+		var sequence = [["space","space","space"],["non-dropping-particle", "family"],["given"],[]];
 	} else if (state.tmp.sort_key_flag){
-		if (state.opt["name-sort-order"] == "particle-family-given"){
-			var sequence = [["sortsep","sortsep","space"],["prefix", "family"],["given"],["suffix"]];
+		if (state.opt["demote-non-dropping-particle"] == "never"){
+			var sequence = [["space","sortsep","space"],["non-dropping-particle","family","dropping-particle"],["given"],["suffix"]];
 		} else {
-			var sequence = [["sortsep","sortsep","space"],["family", "prefix"],["given"],["suffix"]];
+			var sequence = [["space","sortsep","space"],["family"],["given","dropping-particle","non-dropping-particle"],["suffix"]];
 		};
 	} else if (token && ( token.strings["name-as-sort-order"] == "all" || (token.strings["name-as-sort-order"] == "first" && seg == "start"))){
 		//
 		// Discretionary sort ordering and inversions
 		//
-		if (state.opt["inverted-name-display-order"] == "family-given-particle"){
-			var sequence = [["sortsep","sortsep","space"],["family"],["given","prefix"],["suffix"]];
+		if (state.opt["demote-non-dropping-particle"] == "always"){
+			var sequence = [["sortsep","sortsep","space"],["family"],["given","dropping-particle","non-dropping-particle"],["suffix"]];
 		} else {
-			var sequence = [["sortsep","sortsep","space"],["prefix", "family"],["given"],["suffix"]];
+			var sequence = [["sortsep","sortsep","space"],["non-dropping-particle","family"],["given","dropping-particle"],["suffix"]];
 		};
 	} else { // plain vanilla
-		var sequence = [[suffix_sep,"space","space"],["given"],["prefix","family"],["suffix"]];
+		var sequence = [[suffix_sep,"space","space"],["given"],["dropping-particle","non-dropping-particle","family"],["suffix"]];
 	}
 	return sequence;
 };
@@ -294,7 +294,7 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
 	var name;
 	for (var n in nameset.names){
 		name = nameset.names[n];
-		for each (var part in ["family","given","prefix","suffix"]){
+		for each (var part in ["family","given","dropping-particle","non-dropping-particle","suffix"]){
 			if (base_nameset.names[n][part] != name[part]){
 				return false;
 			}

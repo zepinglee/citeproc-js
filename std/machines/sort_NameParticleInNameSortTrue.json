@@ -40,7 +40,7 @@
                 {
                     "family": "Roe", 
                     "given": "Jane", 
-                    "prefix": "van", 
+                    "non-dropping-particle": "van", 
                     "static-ordering": false
                 }
             ], 
@@ -52,7 +52,7 @@
                 {
                     "family": "Noakes", 
                     "given": "John", 
-                    "prefix": "di", 
+                    "non-dropping-particle": "di", 
                     "static-ordering": false
                 }
             ], 
@@ -64,7 +64,7 @@
                 {
                     "family": "Doe", 
                     "given": "John", 
-                    "prefix": "von", 
+                    "non-dropping-particle": "von", 
                     "static-ordering": false
                 }
             ], 

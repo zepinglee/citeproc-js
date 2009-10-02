@@ -45,7 +45,7 @@
                 {
                     "family": "Winkle", 
                     "given": "Rip", 
-                    "prefix": "van", 
+                    "non-dropping-particle": "van", 
                     "static-ordering": false
                 }, 
                 {

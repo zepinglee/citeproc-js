@@ -77,11 +77,8 @@ CSL.Engine = function(sys,style,lang) {
 			this.opt[("locale-"+lst[pos])].push(lst[(pos+1)]);
 		}
 	}
-	if (this.cslXml["@name-sort-order"].toString()){
-		this.opt["name-sort-order"] = this.cslXml["@name-sort-order"].toString();
-	}
-	if (this.cslXml["@inverted-name-display-order"].toString()){
-		this.opt["inverted-name-display-order"] = this.cslXml["@inverted-name-display-order"].toString();
+	if (this.cslXml["@demote-non-dropping-particle"].toString()){
+		this.opt["demote-non-dropping-particle"] = this.cslXml["@demote-non-dropping-particle"].toString();
 	}
 	//
 	// implicit default, "en"

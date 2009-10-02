@@ -42,7 +42,7 @@ citation
 
 
 >>===== RESULT =====>>
-von Doe
+Doe, John von
 <<===== RESULT =====<<
 
 
@@ -59,7 +59,7 @@ von Doe
   <citation>
     <layout>
       <names variable="author">
-        <name form="short"/>
+        <name name-as-sort-order="all" sort-separator=", "/>
       </names>
     </layout>
   </citation>
@@ -73,7 +73,8 @@ von Doe
    "type": "book",
    "author": [
         { "family":"Doe", 
-          "given": "John von"
+          "given": "John",
+          "dropping-particle": "von"
         }
    ]
 }]

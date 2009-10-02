@@ -264,15 +264,21 @@ class CslTest(CslTestUtils):
                                 entry["static-ordering"] = True
                                 parsed = entry["name"][0:-1].strip()
                             parsed = re.split("\s*,\s*",parsed)
+
                             if len(parsed) > 0:
                                 m = re.match("^\s*([a-z]+)\s+(.*)",parsed[0])
                                 if m:
-                                    entry["prefix"] = m.group(1)
+                                    entry["non-dropping-particle"] = m.group(1)
                                     entry["family"] = m.group(2)
                                 else:
                                     entry["family"] = parsed[0]
                             if len(parsed) > 1:
-                                entry["given"] = parsed[1];
+                                m = re.match("(.*?)\s+([a-z]+)\s*$",parsed[1])
+                                if m:
+                                    entry["dropping-particle"] = m.group(2)
+                                    entry["given"] = m.group(1)
+                                else:
+                                    entry["given"] = parsed[1];
                             if len(parsed) > 2:
                                 m = re.match("\!\s*(.*)",parsed[2])
                                 if m:
