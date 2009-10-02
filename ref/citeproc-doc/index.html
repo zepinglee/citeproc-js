@@ -43,7 +43,7 @@ span.sc {
 tt.literal .pre {
   font-family: monospace;
   color: #232323;
-  background: #d0d0d0;
+  background: #d9d9d9;
   padding: 1px 2px 0px 2px;
 }
 
@@ -91,7 +91,7 @@ a.toc-backref:hover { color: #a30826; }
 div.admonition {
   border: 3px solid #c0c0c0;
   float: right;
-  width: 33%;
+  width: 37%;
   padding: 0px 5px 0px 5px;
   background: white;
   margin: -1em -1em 0px 5px;
@@ -286,85 +286,85 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div class="contents topic">
 <p class="topic-title first"><a id="table-of-contents" name="table-of-contents">Table of Contents</a></p>
 <ul class="simple">
-<li><a class="reference" href="#introduction" id="id20" name="id20">Introduction</a></li>
-<li><a class="reference" href="#commands" id="id21" name="id21">Commands</a><ul>
-<li><a class="reference" href="#csl-engine" id="id22" name="id22"><tt class="docutils literal"><span class="pre">CSL.Engine()</span></tt></a></li>
-<li><a class="reference" href="#updateitems" id="id23" name="id23"><tt class="docutils literal"><span class="pre">updateItems()</span></tt></a></li>
-<li><a class="reference" href="#makebibliography" id="id24" name="id24"><tt class="docutils literal"><span class="pre">makeBibliography()</span></tt></a></li>
-<li><a class="reference" href="#makecitationcluster" id="id25" name="id25"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></li>
+<li><a class="reference" href="#introduction" id="id26" name="id26">Introduction</a></li>
+<li><a class="reference" href="#commands" id="id27" name="id27">Commands</a><ul>
+<li><a class="reference" href="#csl-engine" id="id28" name="id28"><tt class="docutils literal"><span class="pre">CSL.Engine()</span></tt></a></li>
+<li><a class="reference" href="#updateitems" id="id29" name="id29"><tt class="docutils literal"><span class="pre">updateItems()</span></tt></a></li>
+<li><a class="reference" href="#makebibliography" id="id30" name="id30"><tt class="docutils literal"><span class="pre">makeBibliography()</span></tt></a></li>
+<li><a class="reference" href="#makecitationcluster" id="id31" name="id31"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></li>
 </ul>
 </li>
-<li><a class="reference" href="#local-environment" id="id26" name="id26">Local Environment</a><ul>
-<li><a class="reference" href="#state-aware-data-preparation" id="id27" name="id27">State-aware data preparation</a></li>
-<li><a class="reference" href="#system-functions" id="id28" name="id28">System functions</a><ul>
-<li><a class="reference" href="#retrievelocale" id="id29" name="id29"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></li>
-<li><a class="reference" href="#retrieveitem" id="id30" name="id30"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference" href="#data-input" id="id31" name="id31">Data Input</a><ul>
-<li><a class="reference" href="#item-fields" id="id32" name="id32">Item fields</a><ul>
-<li><a class="reference" href="#text-and-numeric-variables" id="id33" name="id33">Text and numeric variables</a></li>
-<li><a class="reference" href="#names" id="id34" name="id34">Names</a><ul>
-<li><a class="reference" href="#names-with-particles" id="id35" name="id35">Names with particles</a></li>
-<li><a class="reference" href="#non-western-names" id="id36" name="id36">&quot;Non-Western&quot; names</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#dates" id="id37" name="id37">Dates</a></li>
-<li><a class="reference" href="#categories" id="id38" name="id38">Categories</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#citation-fields" id="id39" name="id39">Citation fields</a><ul>
-<li><a class="reference" href="#locator" id="id40" name="id40">Locator</a></li>
+<li><a class="reference" href="#local-environment" id="id32" name="id32">Local Environment</a><ul>
+<li><a class="reference" href="#state-aware-data-preparation" id="id33" name="id33">State-aware data preparation</a></li>
+<li><a class="reference" href="#system-functions" id="id34" name="id34">System functions</a><ul>
+<li><a class="reference" href="#retrievelocale" id="id35" name="id35"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></li>
+<li><a class="reference" href="#retrieveitem" id="id36" name="id36"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference" href="#dirty-tricks" id="id41" name="id41">Dirty Tricks</a><ul>
-<li><a class="reference" href="#processor-control" id="id42" name="id42">Processor control</a><ul>
-<li><a class="reference" href="#author-only" id="id43" name="id43"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
-<li><a class="reference" href="#suppress-author" id="id44" name="id44"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
-<li><a class="reference" href="#automating-text-insertions" id="id45" name="id45">Automating text insertions</a></li>
+<li><a class="reference" href="#data-input" id="id37" name="id37">Data Input</a><ul>
+<li><a class="reference" href="#item-fields" id="id38" name="id38">Item fields</a><ul>
+<li><a class="reference" href="#text-and-numeric-variables" id="id39" name="id39">Text and numeric variables</a></li>
+<li><a class="reference" href="#names" id="id40" name="id40">Names</a><ul>
+<li><a class="reference" href="#names-with-particles" id="id41" name="id41">Names with particles</a></li>
+<li><a class="reference" href="#non-byzantine-names" id="id42" name="id42">&quot;non-Byzantine&quot; names</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#input-data-rescue" id="id46" name="id46">Input data rescue</a><ul>
-<li><a class="reference" href="#id16" id="id47" name="id47">Names</a></li>
-<li><a class="reference" href="#id17" id="id48" name="id48">Dates</a></li>
+<li><a class="reference" href="#dates" id="id43" name="id43">Dates</a></li>
+<li><a class="reference" href="#categories" id="id44" name="id44">Categories</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#id19" id="id49" name="id49">Multi-lingual content</a><ul>
-<li><a class="reference" href="#the-lang-declaration" id="id50" name="id50">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></li>
-<li><a class="reference" href="#names-forthcoming" id="id51" name="id51">Names [forthcoming]</a></li>
-<li><a class="reference" href="#title-forthcoming" id="id52" name="id52">Title [forthcoming]</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference" href="#test-suite-forthcoming" id="id53" name="id53">Test Suite [forthcoming]</a><ul>
-<li><a class="reference" href="#fixture-layout-forthcoming" id="id54" name="id54">Fixture layout [forthcoming]</a></li>
-<li><a class="reference" href="#preprocessors-forthcoming" id="id55" name="id55">Preprocessors [forthcoming]</a><ul>
-<li><a class="reference" href="#std-grind-py-forthcoming" id="id56" name="id56"><tt class="docutils literal"><span class="pre">./std/grind.py</span></tt> [forthcoming]</a></li>
-<li><a class="reference" href="#tools-maketests-sh-forthcoming" id="id57" name="id57"><tt class="docutils literal"><span class="pre">./tools/MAKETESTS.sh</span></tt> [forthcoming]</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#test-runners-forthcoming" id="id58" name="id58">Test runners [forthcoming]</a><ul>
-<li><a class="reference" href="#runtests-sh-forthcoming" id="id59" name="id59"><tt class="docutils literal"><span class="pre">./runtests.sh</span></tt> [forthcoming]</a></li>
-<li><a class="reference" href="#test-py-forthcoming" id="id60" name="id60"><tt class="docutils literal"><span class="pre">./test.py</span></tt> [forthcoming]</a></li>
+<li><a class="reference" href="#citation-fields" id="id45" name="id45">Citation fields</a><ul>
+<li><a class="reference" href="#locator" id="id46" name="id46">Locator</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference" href="#running-the-processor-forthcoming" id="id61" name="id61">Running the Processor [forthcoming]</a><ul>
-<li><a class="reference" href="#under-python-via-python-spidermonkey-forthcoming" id="id62" name="id62">Under Python via <tt class="docutils literal"><span class="pre">python-spidermonkey</span></tt> [forthcoming]</a></li>
-<li><a class="reference" href="#under-java-via-rhino-forthcoming" id="id63" name="id63">Under Java via <tt class="docutils literal"><span class="pre">rhino</span></tt> [forthcoming]</a></li>
+<li><a class="reference" href="#dirty-tricks" id="id47" name="id47">Dirty Tricks</a><ul>
+<li><a class="reference" href="#processor-control" id="id48" name="id48">Processor control</a><ul>
+<li><a class="reference" href="#author-only" id="id49" name="id49"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
+<li><a class="reference" href="#suppress-author" id="id50" name="id50"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
+<li><a class="reference" href="#automating-text-insertions" id="id51" name="id51">Automating text insertions</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#input-data-rescue" id="id52" name="id52">Input data rescue</a><ul>
+<li><a class="reference" href="#id18" id="id53" name="id53">Names</a></li>
+<li><a class="reference" href="#id19" id="id54" name="id54">Dates</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#id21" id="id55" name="id55">Multi-lingual content</a><ul>
+<li><a class="reference" href="#the-lang-declaration" id="id56" name="id56">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></li>
+<li><a class="reference" href="#title" id="id57" name="id57">Title</a></li>
+<li><a class="reference" href="#id24" id="id58" name="id58">Names</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference" href="#test-suite-forthcoming" id="id59" name="id59">Test Suite [forthcoming]</a><ul>
+<li><a class="reference" href="#fixture-layout-forthcoming" id="id60" name="id60">Fixture layout [forthcoming]</a></li>
+<li><a class="reference" href="#preprocessors-forthcoming" id="id61" name="id61">Preprocessors [forthcoming]</a><ul>
+<li><a class="reference" href="#std-grind-py-forthcoming" id="id62" name="id62"><tt class="docutils literal"><span class="pre">./std/grind.py</span></tt> [forthcoming]</a></li>
+<li><a class="reference" href="#tools-maketests-sh-forthcoming" id="id63" name="id63"><tt class="docutils literal"><span class="pre">./tools/MAKETESTS.sh</span></tt> [forthcoming]</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#test-runners-forthcoming" id="id64" name="id64">Test runners [forthcoming]</a><ul>
+<li><a class="reference" href="#runtests-sh-forthcoming" id="id65" name="id65"><tt class="docutils literal"><span class="pre">./runtests.sh</span></tt> [forthcoming]</a></li>
+<li><a class="reference" href="#test-py-forthcoming" id="id66" name="id66"><tt class="docutils literal"><span class="pre">./test.py</span></tt> [forthcoming]</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference" href="#running-the-processor-forthcoming" id="id67" name="id67">Running the Processor [forthcoming]</a><ul>
+<li><a class="reference" href="#under-python-via-python-spidermonkey-forthcoming" id="id68" name="id68">Under Python via <tt class="docutils literal"><span class="pre">python-spidermonkey</span></tt> [forthcoming]</a></li>
+<li><a class="reference" href="#under-java-via-rhino-forthcoming" id="id69" name="id69">Under Java via <tt class="docutils literal"><span class="pre">rhino</span></tt> [forthcoming]</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <hr class="docutils" />
 <div class="section">
-<h1><a class="toc-backref" href="#id20" id="introduction" name="introduction">Introduction</a></h1>
+<h1><a class="toc-backref" href="#id26" id="introduction" name="introduction">Introduction</a></h1>
 <p>This is the site administrator's manual for <tt class="docutils literal"><span class="pre">citeproc-js</span></tt>, a
 Javascript implementation of the Citation Style Language (CSL) used by
 Zotero, Mendeley and other popular reference managers.  The processor
@@ -393,13 +393,13 @@ and <img alt="link" src="link.png" /> <a class="reference" href="#data-input">Da
 </table>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id21" id="commands" name="commands">Commands</a></h1>
+<h1><a class="toc-backref" href="#id27" id="commands" name="commands">Commands</a></h1>
 <p>The command set will be a grave disappointment to those well versed in
 the tormented intricacies of reference management and bibliography
 formatting.  The processor is instantiated with a single command, and
 controlled with three others.</p>
 <div class="section">
-<h2><a class="toc-backref" href="#id22" id="csl-engine" name="csl-engine"><tt class="docutils literal"><span class="pre">CSL.Engine()</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id28" id="csl-engine" name="csl-engine"><tt class="docutils literal"><span class="pre">CSL.Engine()</span></tt></a></h2>
 <p>A working instance of the processor can (well, must) be created using the
 <tt class="docutils literal"><span class="pre">CSL.Engine()</span></tt> command, as shown in the code illustration below.
 This command takes two required and one optional argument:</p>
@@ -425,7 +425,7 @@ object.</p>
 </dl>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id23" id="updateitems" name="updateitems"><tt class="docutils literal"><span class="pre">updateItems()</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id29" id="updateitems" name="updateitems"><tt class="docutils literal"><span class="pre">updateItems()</span></tt></a></h2>
 <p>Before citations or a bibliography can be generated, an ordered
 list of reference items must be loaded into the processor using
 the <tt class="docutils literal"><span class="pre">updateItems()</span></tt> command, as shown below.  This command
@@ -464,7 +464,7 @@ arbitrary, system-dependent identifier, used by the locally customized
 actual item data.</p>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id24" id="makebibliography" name="makebibliography"><tt class="docutils literal"><span class="pre">makeBibliography()</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id30" id="makebibliography" name="makebibliography"><tt class="docutils literal"><span class="pre">makeBibliography()</span></tt></a></h2>
 <p>The <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt> command does what its name implies.  The
 command takes one optional argument.  If invoked without an argument,
 it dumps a formatted bibliography containing all items currently
@@ -527,7 +527,7 @@ each bibliography entry.</dd>
 </dl>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id25" id="makecitationcluster" name="makecitationcluster"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id31" id="makecitationcluster" name="makecitationcluster"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command to generate the text
 of citations containing one or more references, for insertion into
 footnotes or the main text of the document.  This command takes a
@@ -557,13 +557,13 @@ usage.</p>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id26" id="local-environment" name="local-environment">Local Environment</a></h1>
+<h1><a class="toc-backref" href="#id32" id="local-environment" name="local-environment">Local Environment</a></h1>
 <p>While <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> does a great deal of the heavy lifting needed
 for correct formatting of citations and bibliographies, a certain
 amount of programming is required to prepare the environment for its
 correct operation.</p>
 <div class="section">
-<h2><a class="toc-backref" href="#id27" id="state-aware-data-preparation" name="state-aware-data-preparation">State-aware data preparation</a></h2>
+<h2><a class="toc-backref" href="#id33" id="state-aware-data-preparation" name="state-aware-data-preparation">State-aware data preparation</a></h2>
 <p>The CSL 1.0 specification anticipates the availability of several
 dynamic variables whose value depends upon the sequence and context
 of references generated with the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command:</p>
@@ -603,7 +603,7 @@ formatting, please refer to the CSL specification, available via
 <a class="reference" href="http://citationstyles.org/">http://citationstyles.org/</a>.</p>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id28" id="system-functions" name="system-functions">System functions</a></h2>
+<h2><a class="toc-backref" href="#id34" id="system-functions" name="system-functions">System functions</a></h2>
 <p>As mentioned above in the section on <img alt="link" src="link.png" /> <a class="reference" href="#csl-engine">CSL.Engine()</a>, two functions
 must be defined separately and supplied to the processor upon
 instantiation.  These functions are used by the processor to obtain
@@ -613,7 +613,7 @@ assume the existence of a global <tt class="docutils literal"><span class="pre">
 processor instance, and are provided only for the purpose of
 illustration.</p>
 <div class="section">
-<h3><a class="toc-backref" href="#id29" id="retrievelocale" name="retrievelocale"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id35" id="retrievelocale" name="retrievelocale"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></h3>
 <p>The <tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt> function is used internally by the processor to
 retrieve the serialized XML of a given locale.  It takes a single RFC
 4646 compliant language tag as argument, composed of a single language
@@ -635,7 +635,7 @@ only.</p>
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id30" id="retrieveitem" name="retrieveitem"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id36" id="retrieveitem" name="retrieveitem"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></h3>
 <p>The <tt class="docutils literal"><span class="pre">retrieveItem()</span></tt> function is used by the processor to
 fetch individual items from storage.</p>
 <div class="codeblock js">
@@ -651,14 +651,14 @@ fetch individual items from storage.</p>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id31" id="data-input" name="data-input">Data Input</a></h1>
+<h1><a class="toc-backref" href="#id37" id="data-input" name="data-input">Data Input</a></h1>
 <div class="section">
-<h2><a class="toc-backref" href="#id32" id="item-fields" name="item-fields">Item fields</a></h2>
+<h2><a class="toc-backref" href="#id38" id="item-fields" name="item-fields">Item fields</a></h2>
 <p>The locally defined <tt class="docutils literal"><span class="pre">retrieveItem()</span></tt> function must return data
 for the target item as a simple Javascript array containing recognized
-CSL fields. <a class="footnote-reference" href="#id10" id="id5" name="id5">[2]</a>  The layout of the three field types is described below.</p>
+CSL fields. <a class="footnote-reference" href="#id11" id="id5" name="id5">[2]</a>  The layout of the three field types is described below.</p>
 <div class="section">
-<h3><a class="toc-backref" href="#id33" id="text-and-numeric-variables" name="text-and-numeric-variables">Text and numeric variables</a></h3>
+<h3><a class="toc-backref" href="#id39" id="text-and-numeric-variables" name="text-and-numeric-variables">Text and numeric variables</a></h3>
 <p>Text and numeric variables are not distinguished in the data layer; both
 should be presented as simple strings.</p>
 <div class="codeblock js">
@@ -672,7 +672,7 @@ should be presented as simple strings.</p>
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id34" id="names" name="names">Names</a></h3>
+<h3><a class="toc-backref" href="#id40" id="names" name="names">Names</a></h3>
 <p>When present in the item data, CSL name variables must
 be delivered as a list of Javascript arrays, with one
 array for each name represented by the variable.
@@ -715,7 +715,7 @@ literally (such as &quot;The Artist Formerly Known as Prince&quot;,
 </td></tr></table>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id35" id="names-with-particles" name="names-with-particles">Names with particles</a></h4>
+<h4><a class="toc-backref" href="#id41" id="names-with-particles" name="names-with-particles">Names with particles</a></h4>
 <p>Name particles, such as the &quot;von&quot; in &quot;Werner von Braun&quot;, can
 be delivered separately from the family and given name,
 as <tt class="docutils literal"><span class="pre">dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt> elements.
@@ -768,8 +768,9 @@ to the processor is described below in the section
 </div>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id36" id="non-western-names" name="non-western-names">&quot;Non-Western&quot; names</a></h4>
-<p>Names written in non-Western scripts are always displayed
+<h4><a class="toc-backref" href="#id42" id="non-byzantine-names" name="non-byzantine-names"><span id="input-byzantine"></span>&quot;non-Byzantine&quot; names</a></h4>
+<p>Names not written in the Latin, Greek, Arabic or Cyrillic
+scripts <a class="footnote-reference" href="#id12" id="id7" name="id7">[3]</a> are always displayed
 with the family name first.  No special hint is needed in
 the input data; the processor is sensitive to the character
 set used in the name elements, and will handle such names
@@ -795,11 +796,11 @@ appropriately.</p>
 name field, the <tt class="docutils literal"><span class="pre">static-ordering</span></tt> flag is not required.  See the section
 <img alt="link" src="link.png" /> <a class="reference" href="#multi-lingual-content">Dirty Tricks → Multi-lingual content</a> below for further details.</p>
 </div>
-<p>Sometimes it might be desired to handle a name written in roman or
-Cyrillic script as a non-Western name.  This behavior can be
-prompted by including a <tt class="docutils literal"><span class="pre">static-ordering</span></tt> element in the name array.
-The actual value of the element is irrelevant, so long as it
-returns true when tested by the Javascript interpreter.</p>
+<p>Sometimes it might be desired to handle a Latin or Cyrillic
+transliteration as if it were a fixed (non-Byzantine) name.  This
+behavior can be prompted by including a <tt class="docutils literal"><span class="pre">static-ordering</span></tt> element in
+the name array.  The actual value of the element is irrelevant, so
+long as it returns true when tested by the Javascript interpreter.</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
@@ -820,7 +821,7 @@ returns true when tested by the Javascript interpreter.</p>
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id37" id="dates" name="dates"><span id="input-dates"></span>Dates</a></h3>
+<h3><a class="toc-backref" href="#id43" id="dates" name="dates"><span id="input-dates"></span>Dates</a></h3>
 <p>Date fields are Javascript arrays, and may contain <tt class="docutils literal"><span class="pre">year</span></tt>, <tt class="docutils literal"><span class="pre">month</span></tt>
 and <tt class="docutils literal"><span class="pre">day</span></tt> elements.</p>
 <div class="admonition-hint admonition">
@@ -941,7 +942,7 @@ the field data:</p>
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id38" id="categories" name="categories">Categories</a></h3>
+<h3><a class="toc-backref" href="#id44" id="categories" name="categories">Categories</a></h3>
 <p>If bibliographic output must be divided into sections, the category or
 categories with which an item should be associated can be indicated by
 including a <tt class="docutils literal"><span class="pre">category</span></tt> element.  If present, this element must be a
@@ -966,7 +967,7 @@ Javascript array containing a list of category names:</p>
 </div>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id39" id="citation-fields" name="citation-fields">Citation fields</a></h2>
+<h2><a class="toc-backref" href="#id45" id="citation-fields" name="citation-fields">Citation fields</a></h2>
 <p>As noted above under <img alt="link" src="link.png" /> <a class="reference" href="#makecitationcluster">makeCitationCluster()</a>, that function takes
 as its single argument a list item IDs, each paired with a Javascript
 array containing supplementary data.  The supplementary array must be present,
@@ -983,10 +984,10 @@ but may be empty:</p>
 </td></tr></table>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id40" id="locator" name="locator">Locator</a></h3>
+<h3><a class="toc-backref" href="#id46" id="locator" name="locator">Locator</a></h3>
 <p>To include pinpoint locator information in a cite, include a <tt class="docutils literal"><span class="pre">locator</span></tt> element
 with the string data describing the cited location, and a <tt class="docutils literal"><span class="pre">label</span></tt> element
-with a valid CSL label string. <a class="footnote-reference" href="#id11" id="id9" name="id9">[3]</a></p>
+with a valid CSL label string. <a class="footnote-reference" href="#id13" id="id10" name="id10">[4]</a></p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
@@ -1011,17 +1012,25 @@ be assumed.</p>
 </pre></div>
 </td></tr></table>
 </div>
-<table class="first docutils footnote" frame="void" id="id10" rules="none">
+<table class="first docutils footnote" frame="void" id="id11" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5" name="id10">[2]</a></td><td>For information on valid CSL variable names, please
+<tr><td class="label"><a class="fn-backref" href="#id5" name="id11">[2]</a></td><td>For information on valid CSL variable names, please
 refer to the CSL specification, available via <a class="reference" href="http://citationstyles.org/">http://citationstyles.org/</a>.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id11" rules="none">
+<table class="docutils footnote" frame="void" id="id12" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id9" name="id11">[3]</a></td><td>For a list of valid CSL locator label strings, see the
+<tr><td class="label"><a class="fn-backref" href="#id7" name="id12">[3]</a></td><td>The Latin, Greek, Arabic and Cyrillic scripts are referred to here collectively
+as &quot;Byzantine scripts&quot;, after the confluence of cultures in the first
+millenium associated with all four.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id13" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id10" name="id13">[4]</a></td><td>For a list of valid CSL locator label strings, see the
 CSL specification, available via  <a class="reference" href="http://citationstyles.org/">http://citationstyles.org/</a>.</td></tr>
 </tbody>
 </table>
@@ -1029,18 +1038,18 @@ CSL specification, available via  <a class="reference" href="http://citationstyl
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id41" id="dirty-tricks" name="dirty-tricks">Dirty Tricks</a></h1>
+<h1><a class="toc-backref" href="#id47" id="dirty-tricks" name="dirty-tricks">Dirty Tricks</a></h1>
 <p>This section presents features of the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor that
 are not properly speaking a part of the CSL specification.  Some of
 the functionality described here may or may not be found in other CSL
 1.0 compliant processors when they arrive on the scene.</p>
 <div class="section">
-<h2><a class="toc-backref" href="#id42" id="processor-control" name="processor-control">Processor control</a></h2>
+<h2><a class="toc-backref" href="#id48" id="processor-control" name="processor-control">Processor control</a></h2>
 <p>In the ordinary operation of the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command,
 the processor generates citation strings suitable for a given position
 in the document.</p>
 <div class="section">
-<h3><a class="toc-backref" href="#id43" id="author-only" name="author-only"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id49" id="author-only" name="author-only"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
 <p>When <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> is invoked with a non-nil <tt class="docutils literal"><span class="pre">author-only</span></tt>
 element, everything but the author name in a cite is suppressed.
 The name is returned without decorative markup (italics, superscript, and
@@ -1059,7 +1068,7 @@ without printing the cite itself, is a useless thing to do.
 And if that were the end of the story, you would be right ...</p>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id44" id="suppress-author" name="suppress-author"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id50" id="suppress-author" name="suppress-author"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
 <p>To suppress the rendering of names in a cite, include a <tt class="docutils literal"><span class="pre">suppress-author</span></tt>
 element with a non-nil value in the supplementary data:</p>
 <div class="codeblock js">
@@ -1075,7 +1084,7 @@ element with a non-nil value in the supplementary data:</p>
 combination with the <tt class="docutils literal"><span class="pre">author-only</span></tt> element, as described below.</p>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id45" id="automating-text-insertions" name="automating-text-insertions">Automating text insertions</a></h3>
+<h3><a class="toc-backref" href="#id51" id="automating-text-insertions" name="automating-text-insertions">Automating text insertions</a></h3>
 <p>Calls to the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command with the <tt class="docutils literal"><span class="pre">author-only</span></tt>
 and <tt class="docutils literal"><span class="pre">suppress-author</span></tt> control elements can be used to produce
 cites that divide their content into two parts.  This permits the
@@ -1152,9 +1161,9 @@ elements are in the processor test fixtures in the
 </div>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id46" id="input-data-rescue" name="input-data-rescue">Input data rescue</a></h2>
+<h2><a class="toc-backref" href="#id52" id="input-data-rescue" name="input-data-rescue">Input data rescue</a></h2>
 <div class="section">
-<h3><a class="toc-backref" href="#id47" id="id16" name="id16"><span id="dirty-names"></span>Names</a></h3>
+<h3><a class="toc-backref" href="#id53" id="id18" name="id18"><span id="dirty-names"></span>Names</a></h3>
 <p>Systems that use a simple two-field entry format can encode
 <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">dropping-particle</span></tt>
 elements on a name by including them in the <tt class="docutils literal"><span class="pre">family</span></tt>
@@ -1201,7 +1210,7 @@ Such names should (always) be passed to the processor wrapped in quotation marks
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id48" id="id17" name="id17"><span id="dirty-dates"></span>Dates</a></h3>
+<h3><a class="toc-backref" href="#id54" id="id19" name="id19"><span id="dirty-dates"></span>Dates</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor contains its own internal
 parsing code for raw date strings.  Clients may take advantage of the
 processor's internal parser by supplying date strings as a single
@@ -1220,7 +1229,7 @@ above under <a class="reference" href="#input-dates">Data Input → Dates</a>.</
 </div>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id49" id="id19" name="id19"><span id="multi-lingual-content"></span>Multi-lingual content</a></h2>
+<h2><a class="toc-backref" href="#id55" id="id21" name="id21"><span id="multi-lingual-content"></span>Multi-lingual content</a></h2>
 <p>The version of <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> described by this manual incorporates
 an experimental mechanism for supporting cross-lingual and
 mixed-language citation styles, such as 我妻栄 [Wagatsuma Sakae],
@@ -1231,7 +1240,7 @@ citation management, it provides a platform for proof of concept, and
 for the development of styles to support more robust multilingual support
 when it arrives.</p>
 <div class="section">
-<h3><a class="toc-backref" href="#id50" id="the-lang-declaration" name="the-lang-declaration">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></h3>
+<h3><a class="toc-backref" href="#id56" id="the-lang-declaration" name="the-lang-declaration">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">style</span></tt> tag in a CSL style may contain a <tt class="docutils literal"><span class="pre">default-locale</span></tt> attribute.</p>
 <div class="admonition-hint admonition">
 <p class="first admonition-title">Hint</p>
@@ -1279,8 +1288,26 @@ the default language is set to <tt class="docutils literal"><span class="pre">en
 </div>
 <p>For multi-lingual operation, a style may be set to request alternative
 versions and translations of the <tt class="docutils literal"><span class="pre">title</span></tt> field, and of the author
-and other name fields.  There are three ...</p>
-<p>(there are always three)</p>
+and other name fields, using an extension to the <tt class="docutils literal"><span class="pre">default-locale</span></tt>
+attribute.  Extensions consist of an extension tag, followed by
+a language setting that conforms to <a class="reference" href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a> (typically constructed
+from components listed in the <a class="reference" href="http://www.iana.org/assignments/language-subtag-registry">IANA Language Subtag Registry</a>).  Recognized extension
+tags are as follows:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-x-pri-</span></tt></dt>
+<dd>Sets a preferred language or translitertion for the title field.</dd>
+<dt><tt class="docutils literal"><span class="pre">-x-sec-</span></tt></dt>
+<dd>Sets an optional secondary translation for the title field.
+If this tag is present, a translation in the target language
+will (if available) be placed in square braces immediately  after the title text.</dd>
+<dt><tt class="docutils literal"><span class="pre">-x-sort-</span></tt></dt>
+<dd>Sets the preferred language or transliteration to be used for both the
+title field and for names.</dd>
+<dt><tt class="docutils literal"><span class="pre">-x-name-</span></tt></dt>
+<dd>Sets the preferred language or transliteration for names.</dd>
+</dl>
+<p>The tags are applied to a style by appending them to the language
+string in the <tt class="docutils literal"><span class="pre">default-locale</span></tt> element:</p>
 <div class="codeblock xml">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
@@ -1294,102 +1321,141 @@ and other name fields.  There are three ...</p>
 </pre></div>
 </td></tr></table>
 </div>
+<p>Multiple tags may be specified, and tags are cumulative, and for
+readability, individual tags may be separated by newlines within the
+attribute.  The following will attempt to render titles in either
+Pinyin transliteration (for Chinese titles) or Hepburn romanization
+(for Japanese titles), sorting by the transliteration.</p>
 <div class="codeblock xml">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
 3
 4
-5</pre></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;style</span>
+5
+6
+7
+8
+9</pre></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;style</span>
       <span class="na">xmlns=</span><span class="s">&quot;http://purl.org/net/xbiblio/csl&quot;</span>
       <span class="na">class=</span><span class="s">&quot;in-text&quot;</span>
       <span class="na">version=</span><span class="s">&quot;1.0&quot;</span>
-      <span class="na">default-locale=</span><span class="s">&quot;en-US-x-sec-ja-Latn-hepburn&quot;</span><span class="nt">&gt;</span>
+      <span class="na">default-locale=</span><span class="s">&quot;en-US</span>
+<span class="s">        -x-pri-zh-Latn-pinyin</span>
+<span class="s">        -x-pri-ja-Latn-hepburn</span>
+<span class="s">        -x-sort-zh-Latn-pinyin</span>
+<span class="s">        -x-pri-ja-Latn-hepburn&quot;</span><span class="nt">&gt;</span>
 </pre></div>
 </td></tr></table>
 </div>
-<div class="codeblock xml">
+<p>Multi-lingual operation depends upon the presence of alternative
+representations of field content embedded in the item data.  When
+alternative field content is not availaable, the &quot;real&quot; field content
+is used as a fallback.  As a result, configuration of language and
+script selection parameters will have no effect when only a single
+language is available (as will normally be the case for an ordinary
+Zotero data store).</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id57" id="title" name="title">Title</a></h3>
+<p>For titles, alternative representations are appended
+directly to the field content, separated by the appropriate
+language tag with a leading and trailing colon:</p>
+<div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
-2
-3
-4
-5</pre></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;style</span>
-      <span class="na">xmlns=</span><span class="s">&quot;http://purl.org/net/xbiblio/csl&quot;</span>
-      <span class="na">class=</span><span class="s">&quot;in-text&quot;</span>
-      <span class="na">version=</span><span class="s">&quot;1.0&quot;</span>
-      <span class="na">default-locale=</span><span class="s">&quot;en-US-x-name-ja-Latn-hepburn&quot;</span><span class="nt">&gt;</span>
+2</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;title&quot;</span> <span class="o">:</span> <span class="s2">&quot;民法 :ja-Latn-hepburn-heploc: Minpō :en: Civil Code&quot;</span>
+<span class="p">}</span>
 </pre></div>
 </td></tr></table>
 </div>
-<div class="codeblock xml">
-<table class="highlighttable"><tr><td class="linenos"><pre>1
-2
-3
-4
-5</pre></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;style</span>
-      <span class="na">xmlns=</span><span class="s">&quot;http://purl.org/net/xbiblio/csl&quot;</span>
-      <span class="na">class=</span><span class="s">&quot;in-text&quot;</span>
-      <span class="na">version=</span><span class="s">&quot;1.0&quot;</span>
-      <span class="na">default-locale=</span><span class="s">&quot;en-US-x-sort-ja-Hrkt&quot;</span><span class="nt">&gt;</span>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id58" id="id24" name="id24">Names</a></h3>
+<p>For personal names, alternative representations should be presented
+as separate &quot;name&quot; entries, immediately following the original
+for the name element to which they apply.  For example:</p>
+<div class="admonition-hint admonition">
+<p class="first admonition-title">Hint</p>
+<p class="last">As described above, fixed ordering is used for
+<img alt="link" src="link.png" /> <a class="reference" href="#input-byzantine">non-Byzantine names</a>.  When such
+names are transliterated, the <tt class="docutils literal"><span class="pre">static-ordering</span></tt> element is
+set on them, to preserve their original formatting behavior.</p>
+</div>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;author&quot;</span> <span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;穂積&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;陳重&quot;</span>
+    <span class="p">}</span><span class="o">,</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;:ja-Latn: Hozumi&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Nobushige&quot;</span>
+    <span class="p">}</span><span class="o">,</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;中川&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;善之助&quot;</span>
+    <span class="p">}</span><span class="o">,</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;:ja-Latn: Nakagawa&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Zennosuke&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
 </pre></div>
 </td></tr></table>
 </div>
-<p>Multi-lingual operation depends upon alternative representations of
-field content embedded in the item data.  When alternative field
-content is not availaable, the &quot;real&quot; field content is used as a
-fallback.  As a result, configuration of language and script selection
-parameters will have no effect when only a single language is available
-(as will normally be the case for an ordinary Zotero data store).</p>
+</div>
+</div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id51" id="names-forthcoming" name="names-forthcoming">Names [forthcoming]</a></h3>
+<h1><a class="toc-backref" href="#id59" id="test-suite-forthcoming" name="test-suite-forthcoming">Test Suite [forthcoming]</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id60" id="fixture-layout-forthcoming" name="fixture-layout-forthcoming">Fixture layout [forthcoming]</a></h2>
 <p>Hello.</p>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id52" id="title-forthcoming" name="title-forthcoming">Title [forthcoming]</a></h3>
+<h2><a class="toc-backref" href="#id61" id="preprocessors-forthcoming" name="preprocessors-forthcoming">Preprocessors [forthcoming]</a></h2>
 <p>Hello.</p>
-</div>
-</div>
-</div>
 <div class="section">
-<h1><a class="toc-backref" href="#id53" id="test-suite-forthcoming" name="test-suite-forthcoming">Test Suite [forthcoming]</a></h1>
-<div class="section">
-<h2><a class="toc-backref" href="#id54" id="fixture-layout-forthcoming" name="fixture-layout-forthcoming">Fixture layout [forthcoming]</a></h2>
+<h3><a class="toc-backref" href="#id62" id="std-grind-py-forthcoming" name="std-grind-py-forthcoming"><tt class="docutils literal"><span class="pre">./std/grind.py</span></tt> [forthcoming]</a></h3>
 <p>Hello.</p>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id55" id="preprocessors-forthcoming" name="preprocessors-forthcoming">Preprocessors [forthcoming]</a></h2>
-<p>Hello.</p>
-<div class="section">
-<h3><a class="toc-backref" href="#id56" id="std-grind-py-forthcoming" name="std-grind-py-forthcoming"><tt class="docutils literal"><span class="pre">./std/grind.py</span></tt> [forthcoming]</a></h3>
-<p>Hello.</p>
-</div>
-<div class="section">
-<h3><a class="toc-backref" href="#id57" id="tools-maketests-sh-forthcoming" name="tools-maketests-sh-forthcoming"><tt class="docutils literal"><span class="pre">./tools/MAKETESTS.sh</span></tt> [forthcoming]</a></h3>
+<h3><a class="toc-backref" href="#id63" id="tools-maketests-sh-forthcoming" name="tools-maketests-sh-forthcoming"><tt class="docutils literal"><span class="pre">./tools/MAKETESTS.sh</span></tt> [forthcoming]</a></h3>
 <p>Hello.</p>
 </div>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id58" id="test-runners-forthcoming" name="test-runners-forthcoming">Test runners [forthcoming]</a></h2>
+<h2><a class="toc-backref" href="#id64" id="test-runners-forthcoming" name="test-runners-forthcoming">Test runners [forthcoming]</a></h2>
 <p>Hello.</p>
 <div class="section">
-<h3><a class="toc-backref" href="#id59" id="runtests-sh-forthcoming" name="runtests-sh-forthcoming"><tt class="docutils literal"><span class="pre">./runtests.sh</span></tt> [forthcoming]</a></h3>
+<h3><a class="toc-backref" href="#id65" id="runtests-sh-forthcoming" name="runtests-sh-forthcoming"><tt class="docutils literal"><span class="pre">./runtests.sh</span></tt> [forthcoming]</a></h3>
 <p>Hello.</p>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id60" id="test-py-forthcoming" name="test-py-forthcoming"><tt class="docutils literal"><span class="pre">./test.py</span></tt> [forthcoming]</a></h3>
+<h3><a class="toc-backref" href="#id66" id="test-py-forthcoming" name="test-py-forthcoming"><tt class="docutils literal"><span class="pre">./test.py</span></tt> [forthcoming]</a></h3>
 <p>Hello.</p>
 </div>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id61" id="running-the-processor-forthcoming" name="running-the-processor-forthcoming">Running the Processor [forthcoming]</a></h1>
+<h1><a class="toc-backref" href="#id67" id="running-the-processor-forthcoming" name="running-the-processor-forthcoming">Running the Processor [forthcoming]</a></h1>
 <p>Hello.</p>
 <div class="section">
-<h2><a class="toc-backref" href="#id62" id="under-python-via-python-spidermonkey-forthcoming" name="under-python-via-python-spidermonkey-forthcoming">Under Python via <tt class="docutils literal"><span class="pre">python-spidermonkey</span></tt> [forthcoming]</a></h2>
+<h2><a class="toc-backref" href="#id68" id="under-python-via-python-spidermonkey-forthcoming" name="under-python-via-python-spidermonkey-forthcoming">Under Python via <tt class="docutils literal"><span class="pre">python-spidermonkey</span></tt> [forthcoming]</a></h2>
 <p>Hello.</p>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id63" id="under-java-via-rhino-forthcoming" name="under-java-via-rhino-forthcoming">Under Java via <tt class="docutils literal"><span class="pre">rhino</span></tt> [forthcoming]</a></h2>
+<h2><a class="toc-backref" href="#id69" id="under-java-via-rhino-forthcoming" name="under-java-via-rhino-forthcoming">Under Java via <tt class="docutils literal"><span class="pre">rhino</span></tt> [forthcoming]</a></h2>
 <p>Hello.</p>
 </div>
 </div>

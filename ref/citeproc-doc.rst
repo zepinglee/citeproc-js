@@ -355,7 +355,6 @@ should be presented as simple strings.
      "volume" : "10"
    }
 
-
 ^^^^^
 Names
 ^^^^^
@@ -429,11 +428,14 @@ __ `dirty-names`_
      ]
    }
 
-!!!!!!!!!!!!!!!!!!!
-"Non-Western" names
-!!!!!!!!!!!!!!!!!!!
+.. _`input-byzantine`:
 
-Names written in non-Western scripts are always displayed
+!!!!!!!!!!!!!!!!!!!!!
+"non-Byzantine" names
+!!!!!!!!!!!!!!!!!!!!!
+
+Names not written in the Latin, Greek, Arabic or Cyrillic 
+scripts [#]_ are always displayed
 with the family name first.  No special hint is needed in
 the input data; the processor is sensitive to the character
 set used in the name elements, and will handle such names
@@ -456,11 +458,11 @@ appropriately.
 
 __ `Multi-lingual content`_
 
-Sometimes it might be desired to handle a name written in roman or 
-Cyrillic script as a non-Western name.  This behavior can be
-prompted by including a ``static-ordering`` element in the name array.
-The actual value of the element is irrelevant, so long as it
-returns true when tested by the Javascript interpreter.
+Sometimes it might be desired to handle a Latin or Cyrillic
+transliteration as if it were a fixed (non-Byzantine) name.  This
+behavior can be prompted by including a ``static-ordering`` element in
+the name array.  The actual value of the element is irrelevant, so
+long as it returns true when tested by the Javascript interpreter.
 
 .. code-block:: js
 
@@ -646,10 +648,15 @@ be assumed.
 .. class:: first
 
    .. [#] For information on valid CSL variable names, please
-           refer to the CSL specification, available via http://citationstyles.org/.
+          refer to the CSL specification, available via http://citationstyles.org/.
+
+.. [#] The Latin, Greek, Arabic and Cyrillic scripts are referred to here collectively
+       as "Byzantine scripts", after the confluence of cultures in the first
+       millenium associated with all four.
 
 .. [#] For a list of valid CSL locator label strings, see the
        CSL specification, available via  http://citationstyles.org/.
+
 
 ------------
 Dirty Tricks
@@ -914,9 +921,34 @@ The ``style`` tag in a CSL style may contain a ``default-locale`` attribute.
 
 For multi-lingual operation, a style may be set to request alternative
 versions and translations of the ``title`` field, and of the author
-and other name fields.  There are three ...
+and other name fields, using an extension to the ``default-locale``
+attribute.  Extensions consist of an extension tag, followed by
+a language setting that conforms to `RFC 4646`__ (typically constructed
+from components listed in the `IANA Language Subtag Registry`__).  Recognized extension
+tags are as follows:
 
-(there are always three)
+__ http://www.ietf.org/rfc/rfc4646.txt
+
+__ http://www.iana.org/assignments/language-subtag-registry
+
+
+``-x-pri-``
+   Sets a preferred language or translitertion for the title field.
+
+``-x-sec-``
+   Sets an optional secondary translation for the title field. 
+   If this tag is present, a translation in the target language 
+   will (if available) be placed in square braces immediately  after the title text.
+
+``-x-sort-``
+   Sets the preferred language or transliteration to be used for both the 
+   title field and for names.
+
+``-x-name-``
+   Sets the preferred language or transliteration for names.
+
+The tags are applied to a style by appending them to the language
+string in the ``default-locale`` element:
 
 .. code-block:: xml
 
@@ -926,6 +958,11 @@ and other name fields.  There are three ...
          version="1.0"
          default-locale="en-US-x-pri-ja-Hrkt">
 
+Multiple tags may be specified, and tags are cumulative, and for
+readability, individual tags may be separated by newlines within the
+attribute.  The following will attempt to render titles in either
+Pinyin transliteration (for Chinese titles) or Hepburn romanization
+(for Japanese titles), sorting by the transliteration.
 
 .. code-block:: xml
 
@@ -933,46 +970,72 @@ and other name fields.  There are three ...
          xmlns="http://purl.org/net/xbiblio/csl"
          class="in-text"
          version="1.0"
-         default-locale="en-US-x-sec-ja-Latn-hepburn">
+         default-locale="en-US
+           -x-pri-zh-Latn-pinyin
+           -x-pri-ja-Latn-hepburn
+           -x-sort-zh-Latn-pinyin
+           -x-pri-ja-Latn-hepburn">
 
-.. code-block:: xml
-
-   <style 
-         xmlns="http://purl.org/net/xbiblio/csl"
-         class="in-text"
-         version="1.0"
-         default-locale="en-US-x-name-ja-Latn-hepburn">
-
-.. code-block:: xml
-
-   <style 
-         xmlns="http://purl.org/net/xbiblio/csl"
-         class="in-text"
-         version="1.0"
-         default-locale="en-US-x-sort-ja-Hrkt">
+Multi-lingual operation depends upon the presence of alternative
+representations of field content embedded in the item data.  When
+alternative field content is not availaable, the "real" field content
+is used as a fallback.  As a result, configuration of language and
+script selection parameters will have no effect when only a single
+language is available (as will normally be the case for an ordinary
+Zotero data store).
 
 
-Multi-lingual operation depends upon alternative representations of
-field content embedded in the item data.  When alternative field
-content is not availaable, the "real" field content is used as a
-fallback.  As a result, configuration of language and script selection
-parameters will have no effect when only a single language is available
-(as will normally be the case for an ordinary Zotero data store).
+^^^^^
+Title
+^^^^^
+
+For titles, alternative representations are appended
+directly to the field content, separated by the appropriate
+language tag with a leading and trailing colon:
+
+.. code-block:: js
+
+   { "title" : "民法 :ja-Latn-hepburn-heploc: Minpō :en: Civil Code"
+   }
+
+^^^^^
+Names
+^^^^^
+
+For personal names, alternative representations should be presented
+as separate "name" entries, immediately following the original
+for the name element to which they apply.  For example:
+
+.. admonition:: Hint
+
+   As described above, fixed ordering is used for
+   |link| `non-Byzantine names`__.  When such
+   names are transliterated, the ``static-ordering`` element is
+   set on them, to preserve their original formatting behavior.
+
+__ `input-byzantine`_
 
 
-^^^^^^^^^^^^^^^^^^^
-Names [forthcoming]
-^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "穂積",
+         "given" : "陳重"
+       },
+       { "family" : ":ja-Latn: Hozumi",
+         "given" : "Nobushige"
+       },
+       { "family" : "中川",
+         "given" : "善之助"
+       },
+       { "family" : ":ja-Latn: Nakagawa",
+         "given" : "Zennosuke"
+       }
+     ]
+   }
 
 
-
-Hello.
-
-^^^^^^^^^^^^^^^^^^^
-Title [forthcoming]
-^^^^^^^^^^^^^^^^^^^
-
-Hello.
 
 ------------------------
 Test Suite [forthcoming]

@@ -74,7 +74,7 @@ CSL.Engine = function(sys,style,lang) {
 		var lst = this.cslXml["@default-locale"].toString();
 		lst = lst.split(/-x-(sort|pri|sec|name)-/);
 		for (var pos=1; pos<lst.length; pos += 2){
-			this.opt[("locale-"+lst[pos])].push(lst[(pos+1)]);
+			this.opt[("locale-"+lst[pos])].push(lst[(pos+1)].replace(/^\s*/g,"").replace(/\s*$/g,""));
 		}
 	}
 	if (this.cslXml["@demote-non-dropping-particle"].toString()){

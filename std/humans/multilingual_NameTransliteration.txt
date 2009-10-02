@@ -51,7 +51,8 @@ Beato Takeshi, T. Kitano, R. Atkinson
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US-x-name-ja-Latn-hepburn">
+      default-locale="en-US
+                      -x-name-ja-Latn-hepburn">
   <info>
     <id />
     <title />
