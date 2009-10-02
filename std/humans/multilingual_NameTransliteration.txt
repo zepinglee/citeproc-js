@@ -58,6 +58,9 @@ Beato Takeshi, T. Kitano, R. Atkinson
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
+    <sort>
+      <key variable="author"/>
+    </sort>
     <layout delimiter="; ">
       <names variable="author">
         <name initialize-with=". " delimiter=", "/>

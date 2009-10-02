@@ -26,6 +26,11 @@ dt { font-weight: bold; margin-top: 0.5em; }
 dl.contributors { background: white; border: none; }
 .contributors dt { margin: 1em; }
 
+span.sc {
+  font-variant: small-caps;
+  color: black;
+}
+
 tt.literal .pre {
   font-family: monospace;
   color: #232323;

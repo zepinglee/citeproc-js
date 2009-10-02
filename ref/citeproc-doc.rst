@@ -862,15 +862,109 @@ __ `input-dates`_
 
 .. _`Multi-lingual content`:
 
-###################################
-Multi-lingual content [forthcoming]
-###################################
+#####################
+Multi-lingual content
+#####################
 
-Hello.
+.. role:: sc
+
+The version of ``citeproc-js`` described by this manual incorporates
+an experimental mechanism for supporting cross-lingual and
+mixed-language citation styles, such as 我妻栄 [Wagatsuma Sakae], 
+:sc:`債権各論 [Obligations in Detail]` (1969).  While the scheme
+described below cannot be considered
+a permanent and stable solution to the problem of multi-lingual
+citation management, it provides a platform for proof of concept, and
+for the development of styles to support more robust multilingual support
+when it arrives.
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^
+The ``lang`` declaration
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``style`` tag in a CSL style may contain a ``default-locale`` attribute.
+
+
+.. admonition:: Hint
+
+   When the ``default-locale`` attribute is omitted, 
+   the default language is set to ``en-US``.
+
+.. code-block:: xml
+   
+   <style 
+         xmlns="http://purl.org/net/xbiblio/csl"
+         class="in-text"
+         version="1.0"
+         default-locale="de">
+     <info>
+       <id />
+       <title />
+       <updated>2009-08-10T04:49:00+09:00</updated>
+     </info>
+     <citation>
+       <layout>
+         <names variable="author">
+           <name />
+         </names>
+       </layout>
+     </citation>
+   </style>
+
+For multi-lingual operation, a style may be set to request alternative
+versions and translations of the ``title`` field, and of the author
+and other name fields.  There are three ...
+
+(there are always three)
+
+.. code-block:: xml
+
+   <style 
+         xmlns="http://purl.org/net/xbiblio/csl"
+         class="in-text"
+         version="1.0"
+         default-locale="en-US-x-pri-ja-Hrkt">
+
+
+.. code-block:: xml
+
+   <style 
+         xmlns="http://purl.org/net/xbiblio/csl"
+         class="in-text"
+         version="1.0"
+         default-locale="en-US-x-sec-ja-Latn-hepburn">
+
+.. code-block:: xml
+
+   <style 
+         xmlns="http://purl.org/net/xbiblio/csl"
+         class="in-text"
+         version="1.0"
+         default-locale="en-US-x-name-ja-Latn-hepburn">
+
+.. code-block:: xml
+
+   <style 
+         xmlns="http://purl.org/net/xbiblio/csl"
+         class="in-text"
+         version="1.0"
+         default-locale="en-US-x-sort-ja-Hrkt">
+
+
+Multi-lingual operation depends upon alternative representations of
+field content embedded in the item data.  When alternative field
+content is not availaable, the "real" field content is used as a
+fallback.  As a result, configuration of language and script selection
+parameters will have no effect when only a single language is available
+(as will normally be the case for an ordinary Zotero data store).
+
 
 ^^^^^^^^^^^^^^^^^^^
 Names [forthcoming]
 ^^^^^^^^^^^^^^^^^^^
+
+
 
 Hello.
 
