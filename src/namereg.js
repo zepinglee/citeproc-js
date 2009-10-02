@@ -70,7 +70,7 @@ CSL.Factory.Registry.NameReg = function(state){
 	var _set_keys = function(state,itemid,nameobj){
 		pkey = _strip_periods(nameobj["family"]);
 		skey = _strip_periods(nameobj["given"]);
-		ikey = CSL.Util.Names.initializeWith(skey,"");
+		ikey = CSL.Util.Names.initializeWith(state,skey,"");
 		if (state[state.tmp.area].opt["givenname-disambiguation-rule"] == "by-cite"){
 			pkey = itemid + pkey;
 		};

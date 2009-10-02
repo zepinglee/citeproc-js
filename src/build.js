@@ -80,6 +80,9 @@ CSL.Engine = function(sys,style,lang) {
 	if (this.cslXml["@demote-non-dropping-particle"].toString()){
 		this.opt["demote-non-dropping-particle"] = this.cslXml["@demote-non-dropping-particle"].toString();
 	}
+	if (this.cslXml["@initialize-without-hyphen"].toString() == "true"){
+		this.opt["initialize-without-hyphen"] = true;
+	}
 	//
 	// implicit default, "en"
 	this.setLocaleXml();

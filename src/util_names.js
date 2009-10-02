@@ -166,7 +166,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 			if (0 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
 				continue;
 			} else if (1 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
-				namepart = CSL.Util.Names.initializeWith(namepart,state.tmp["initialize-with"]);
+				namepart = CSL.Util.Names.initializeWith(state,namepart,state.tmp["initialize-with"]);
 			}
 		}
 		//state.output.openLevel(key);
@@ -307,11 +307,15 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
 /**
  * Initialize a name.
  */
-CSL.Util.Names.initializeWith = function(name,terminator){
+CSL.Util.Names.initializeWith = function(state,name,terminator){
 	if (!name){
 		return "";
 	};
-	var namelist = name.replace(/\./g," ").replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
+	var namelist = name;
+	if (state.opt["initialize-without-hyphen"]){
+		namelist = namelist.replace(/\-/g," ");
+	}
+	namelist = namelist.replace(/\./g," ").replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
 	for (var i=0; i<namelist.length; i+=2){
 		var n = namelist[i];
 		var m = n.match( CSL.NAME_INITIAL_REGEXP);
