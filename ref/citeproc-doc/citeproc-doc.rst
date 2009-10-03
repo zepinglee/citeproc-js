@@ -14,7 +14,7 @@ Manual for the ``citeproc-js`` Processor
 
 .. class:: info-date
 
-   $$4 October 2009$$
+   =D=October, 2009=D=
 
 .. class:: contributors
 
