@@ -220,7 +220,7 @@ a simple Javascript object containing (optional) supplementary data.
 
 .. admonition:: Hint
    
-   See the |link| `Data Input → Citations`__ section below concerning
+   See the |link| `Data Input → Citation fields`__ section below concerning
    the elements recognized as supplementary data, and their
    usage.
 
@@ -652,7 +652,7 @@ be assumed.
 
 .. [#] The Latin, Greek, Arabic and Cyrillic scripts are referred to here collectively
        as "Byzantine scripts", after the confluence of cultures in the first
-       millenium associated with all four.
+       millenium that spanned all four.
 
 .. [#] For a list of valid CSL locator label strings, see the
        CSL specification, available via  http://citationstyles.org/.
@@ -666,6 +666,102 @@ This section presents features of the ``citeproc-js`` processor that
 are not properly speaking a part of the CSL specification.  Some of
 the functionality described here may or may not be found in other CSL
 1.0 compliant processors when they arrive on the scene.
+
+#################
+Input data rescue
+#################
+
+
+
+.. _dirty-names:
+
+^^^^^
+Names
+^^^^^
+
+Systems that use a simple two-field entry format can encode
+``non-dropping-particle`` and ``dropping-particle``
+elements on a name by including them in the ``family``
+or ``given`` fields, respectively:
+
+.. code-block:: js
+
+   { "author" : [ 
+       { "family" : "von Humboldt",
+          "given" : "Alexander"
+       },
+       { "family" : "Gough",
+         "given" : "Vincent van"
+       }
+     ]
+   }
+
+The extraction of particles is done by scanning for leading terms that
+consist entirely of lowercase letters.  For some names, leading lowercase
+terms should be treated as part of the name itself, and not as floating particles.
+Such names should (always) be passed to the processor wrapped in quotation marks:
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "\"van der Vlist\"",
+          "given" : "Eric"
+       }
+     ]
+   }
+
+.. _dirty-dates:
+
+^^^^^
+Dates
+^^^^^
+
+The ``citeproc-js`` processor contains its own internal
+parsing code for raw date strings.  Clients may take advantage of the
+processor's internal parser by supplying date strings as a single
+``raw`` element:
+
+.. code-block:: js
+
+   { "raw" : "25 Dec 2004"
+   }
+
+Note that the parsing of raw date strings is not part of the CSL 1.0
+standard.  Clients that need to interoperate with other CSL
+processors should be capable of preparing input in the form described
+above under `Data Input → Dates`__.
+
+__ `input-dates`_
+
+
+##########################
+Journal Abbreviation Lists
+##########################
+
+To enable automatic abbreviation of journal titles, a set
+of Javascript key/value pairs composed of full titles and their 
+abbreviations may be installed using the ``setContainerTitleAbbreviations``
+command, after instantiating the processor.
+
+.. code-block:: js
+   
+   var abbreviations = {
+       "Pacific Rim Law &amp; Policy Journal" 
+           : "Pac. Rim L. &amp; Pol'y J.",
+       "Temple Journal of International &amp; Comparative Law" 
+           : "Temple J. Int'l &amp; Comp. L."
+   };
+   
+   var citeproc = new CSL.Engine(sys,style);
+   
+   citeproc.setContainerTitleAbbreviations(abbreviations);
+
+A latter version of the CSL specification may provide for
+selecting an appropriate list of abbreviations through
+a declaration in the CSL style file itself.  For the present,
+this facility is available as a non-standard extension to
+the processor.
+
 
 #################
 Processor control
@@ -800,73 +896,6 @@ __ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_Su
 
 
 
-#################
-Input data rescue
-#################
-
-
-
-.. _dirty-names:
-
-^^^^^
-Names
-^^^^^
-
-Systems that use a simple two-field entry format can encode
-``non-dropping-particle`` and ``dropping-particle``
-elements on a name by including them in the ``family``
-or ``given`` fields, respectively:
-
-.. code-block:: js
-
-   { "author" : [ 
-       { "family" : "von Humboldt",
-          "given" : "Alexander"
-       },
-       { "family" : "Gough",
-         "given" : "Vincent van"
-       }
-     ]
-   }
-
-The extraction of particles is done by scanning for leading terms that
-consist entirely of lowercase letters.  For some names, leading lowercase
-terms should be treated as part of the name itself, and not as floating particles.
-Such names should (always) be passed to the processor wrapped in quotation marks:
-
-.. code-block:: js
-
-   { "author" : [
-       { "family" : "\"van der Vlist\"",
-          "given" : "Eric"
-       }
-     ]
-   }
-
-.. _dirty-dates:
-
-^^^^^
-Dates
-^^^^^
-
-The ``citeproc-js`` processor contains its own internal
-parsing code for raw date strings.  Clients may take advantage of the
-processor's internal parser by supplying date strings as a single
-``raw`` element:
-
-.. code-block:: js
-
-   { "raw" : "25 Dec 2004"
-   }
-
-Note that the parsing of raw date strings is not part of the CSL 1.0
-standard.  Clients that need to interoperate with other CSL
-processors should be capable of preparing input in the form described
-above under `Data Input → Dates`__.
-
-__ `input-dates`_
-
-
 .. _`Multi-lingual content`:
 
 #####################
@@ -893,18 +922,27 @@ The ``lang`` declaration
 The ``style`` tag in a CSL style may contain a ``default-locale`` attribute.
 
 
-.. admonition:: Hint
+.. The clothesline construct below removes the hint box from the
+   normal flow, so that it overlays the code block below.  This
+   is necessary wherever the edge of the table containing the
+   code block might extend to the edge of a hint/important box.
 
-   When the ``default-locale`` attribute is omitted, 
-   the default language is set to ``en-US``.
+.. class:: clothesline
 
-.. code-block:: xml
+   ..
+
+      .. admonition:: Hint
    
+         When the ``default-locale`` attribute is omitted, 
+         the default language is set to ``en-US``.
+   
+.. code-block:: xml
+      
    <style 
-         xmlns="http://purl.org/net/xbiblio/csl"
-         class="in-text"
-         version="1.0"
-         default-locale="de">
+       xmlns="http://purl.org/net/xbiblio/csl"
+       class="in-text"
+       version="1.0"
+       default-locale="de">
      <info>
        <id />
        <title />
@@ -953,10 +991,10 @@ string in the ``default-locale`` element:
 .. code-block:: xml
 
    <style 
-         xmlns="http://purl.org/net/xbiblio/csl"
-         class="in-text"
-         version="1.0"
-         default-locale="en-US-x-pri-ja-Hrkt">
+       xmlns="http://purl.org/net/xbiblio/csl"
+       class="in-text"
+       version="1.0"
+       default-locale="en-US-x-pri-ja-Hrkt">
 
 Multiple tags may be specified, and tags are cumulative, and for
 readability, individual tags may be separated by newlines within the
@@ -967,10 +1005,10 @@ Pinyin transliteration (for Chinese titles) or Hepburn romanization
 .. code-block:: xml
 
    <style 
-         xmlns="http://purl.org/net/xbiblio/csl"
-         class="in-text"
-         version="1.0"
-         default-locale="en-US
+       xmlns="http://purl.org/net/xbiblio/csl"
+       class="in-text"
+       version="1.0"
+       default-locale="en-US
            -x-pri-zh-Latn-pinyin
            -x-pri-ja-Latn-hepburn
            -x-sort-zh-Latn-pinyin
@@ -1037,15 +1075,95 @@ __ `input-byzantine`_
 
 
 
-------------------------
-Test Suite [forthcoming]
-------------------------
+----------
+Test Suite
+----------
 
-############################
-Fixture layout [forthcoming]
-############################
+``Citeproc-js`` ships with a large bundle of test data and a set of
+scripts to run the tests against the processor.  The test framework
+should be used to confirm that the system performs correctly after
+installation.  This section describes the arrangement of the files,
+the internal layout of the human-readable version of the text fixtures,
+the scripts used to manage the text fixture bundle, and the commands
+used to actually run the tests.
 
-Hello.
+
+##############
+Fixture layout
+##############
+
+The human-readable version of each test fixture is composed in
+the format below.  The five sections ``MODE``, ``SCHEMA``,
+``RESULT``, ``CSL`` and ``INPUT`` are required.  The sections
+may be arranged in any order within the fixture file.  As the
+sample below illustrates, text that appears between the section
+delimiters is ignored.
+
+.. class:: clothesline
+
+   ..
+
+      .. admonition:: Hint
+   
+         Three additional sections are available for special
+         purposes.  The optional sections ``ABBREVIATIONS``, ``BIBENTRIES``, 
+         and ``CITATIONS`` are also explained
+         below.
+
+.. code-block:: text
+
+   >>===== MODE =====>>
+   citation
+   <<===== MODE =====<<
+   
+   >>===== SCHEMA =====>>
+   0.8
+   <<===== SCHEMA =====<<
+
+
+   # Everything between the section blocks is
+   # ignored.  Comment markup can be used for clarity,
+   but it is not required.
+
+      
+   >>===== RESULT =====>>
+   John Doe
+   <<===== RESULT =====<<
+   
+   
+   >>===== CSL =====>>
+   <style 
+         xmlns="http://purl.org/net/xbiblio/csl"
+         class="in-text"
+         version="1.0">
+     <info>
+       <id />
+       <title />
+       <updated>2009-08-10T04:49:00+09:00</updated>
+     </info>
+     <citation>
+       <layout>
+         <names variable="author">
+           <name />
+         </names>
+       </layout>
+     </citation>
+   </style>
+   <<===== CSL =====<<
+   
+   
+   >>===== INPUT =====>>
+   [{
+      "id":"ID-1",
+      "type": "book",
+      "author": [
+           { "name":"Doe, John" }
+      ],
+      "issued": {"year": "1965", "month":"6", "day":"1"},
+      "title": "His Anonymous Life"
+   }]
+   <<===== INPUT =====<<
+
 
 ###########################
 Preprocessors [forthcoming]
