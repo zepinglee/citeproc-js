@@ -5,7 +5,7 @@ body {
     font-family: 'Lucida Sans', Verdana, sans-serif; 
     font-size: 10.5pt; 
     color: #434343;
-    line-height: 130%; !important
+    line-height: 135%; !important
 }
 
 .xml { padding: 1em; border: silver 1px solid; background: #EAFABC; }
@@ -13,6 +13,11 @@ body {
 
 .clothesline {
   position: relative;
+}
+
+h4 a {
+  padding: 4px;
+  border: 1px solid black;
 }
 
 /* .js { padding: 1em; border: silver 1px solid; background: #FFF68F; } */
@@ -41,7 +46,7 @@ tt.literal .pre {
   font-family: monospace;
   color: #232323;
   background: #d9d9d9;
-  padding: 1px 2px 0px 2px;
+  padding: 0px 2px 0px 2px;
 }
 
 a { 
@@ -64,6 +69,7 @@ a.toc-backref tt.literal .pre {
     background: white;
 }
 
+
 a:link { color: #636363; font-weight: bold;}
 a:visited { color: #636363; font-weight: bold; }
 a:active { color: #636363; font-weight: bold; }
@@ -82,7 +88,7 @@ a tt.literal .pre:hover { color: #a30826; }
 a.toc-backref:link { color: black; } 
 a.toc-backref:visited { color: black; } 
 a.toc-backref:active { color: black; } 
-a.toc-backref:hover { color: #a30826; } 
+a.toc-backref:hover { color: #a30826; }
 
 blockquote.clothesline {
   position: relative;
@@ -97,7 +103,7 @@ div.admonition {
   width: 37%;
   padding: 0px 5px 0px 5px;
   background: white;
-  margin: -1em -1em 0px 5px;
+  margin: -0.5em -0.5em 0px 5px;
 }
 
 blockquote.clothesline div.admonition {

@@ -7,9 +7,10 @@ Manual for the ``citeproc-js`` Processor
 
 .. |link| image:: link.png
 
+
 .. class:: info-version
 
-   version X.XX
+   version 1.00a1
 
 .. class:: info-date
 
@@ -37,14 +38,16 @@ Introduction
 ------------
 
 This is the site administrator's manual for ``citeproc-js``, a
-Javascript implementation of the Citation Style Language (CSL) used by
-Zotero, Mendeley and other popular reference managers.  The processor
-complies with version 1.0 of the CSL specification, has been written
-and tested as an independent module, and can be run by any
-ECMAscript-compliant interpreter.  With an appropriate supporting
-environment, [#]_ it can be deployed in a browser plugin, as part of a
-desktop application, or as a formatting backend for a website or web
-service.
+Javascript implementation of the |link| `Citation Style Language
+(CSL)`__ used by Zotero, Mendeley and other popular reference
+managers.  The processor complies with version 1.0 of the CSL
+specification, has been written and tested as an independent module,
+and can be run by any ECMAscript-compliant interpreter.  With an
+appropriate supporting environment, [#]_ it can be deployed in a
+browser plugin, as part of a desktop application, or as a formatting
+backend for a website or web service.
+
+__ http://citationstyles.org/
 
 This manual covers the basic operation of the processor, including the
 command set, the local system code that must be supplied by the integrator, and the
@@ -65,11 +68,91 @@ is `biercenator@gmail.com`_
 
 .. _biercenator@gmail.com: mailto:biercenator@gmail.com
 
---------
-Commands
---------
+-------------------
+System requirements
+-------------------
 
-The command set will be a grave disappointment to those well versed in
+The processor and its test framework can be run in two commonly
+available Javascript environments, using the scripts ``test.py`` or
+``runtest.sh``.  This manual does not cover the nitty-gritty of
+setting up the environment for these scripts, but the basic system
+requirements are described below.  If you get stuck and want advice,
+or if you find something in this manual that is out of date or just
+wrong, please feel free to drop me a line.
+
+###################################
+Getting the ``citeproc-js`` sources
+###################################
+
+The ``citeproc-js`` sources are hosted |link| `on a BitBucket account`__.
+To obtain the sources, install the |link| `Mercurial version control system`__
+on a computer within your control (if you're on a Linux distro or a Mac,
+just do a package install), and run the following command:
+
+__ http://bitbucket.org/fbennett/citeproc-js/
+
+__ http://mercurial.selenic.com/wiki/
+
+
+   ::
+
+      hg clone http://bitbucket.org/fbennett/citeproc-js/
+
+
+##########################
+``runtest.sh`` + ``rhino``
+##########################
+
+The simplest configuration for running tests is to use the ``runtest.sh``
+script (or ``runtest.bat`` on Windows systems).  If your OS has Java installed
+(which most desktop and laptop systems nowadays seem to do), this will run
+the full set of processor tests using a copy of the ``rhino`` Javascript interpreter
+that ships with the ``citeproc-js`` sources.
+
+#####################################
+``test.py`` + ``python-spidermonkey``
+#####################################
+
+It is also possible to run the processor tests in the ``spidermonkey``
+interpreter using the ``test.py`` script.  This exciting alternative
+displays exactly the same console trace through a *totally different
+set of underlying libraries*.  Playstation\ |reg|\ 3, you say?  Ha!
+Wii\ |trade|?  Tame stuff!  Xbox 360 :superscript:`©2004 Microsoft
+Corporation and/or its suppliers`?  Give me a break!  You can set
+aside those mere toys now, my friends, because *this* is *real adventure*,
+the kind of challenge that comes but once in a product cycle,
+demanding strong coffee, and sturdy fingers.
+
+.. |reg| unicode:: U+00AE
+.. |trade| unicode:: U+02122
+.. |copy| unicode:: U+00A9
+
+Whatever.
+
+To use the ``test.py`` script, you will need to install the following items
+on your computer:
+
+Python 2.5 or higher
+      (Available as a package install in most Linux distributions.)
+
+Python-spidermonkey bridge by Paul Davis
+      http://github.com/davisp/python-spidermonkey
+
+Spidermonkey system library
+      (Available as a package install in most Linux distributions.
+      You may also be able to use the Spidermonkey sources that ship
+      with the ``python-spidermonkey`` bridge.)
+
+If your Python is version 2.5, you will also need to install a
+JSON package, such as ``simplejson`` or ``cjson``.  Python 2.6
+ships with a bundled JSON module, so there is no need to install
+one separately if that's your version.
+
+------------------
+Processor Commands
+------------------
+
+The processor command set will be a grave disappointment to those well versed in
 the tormented intricacies of reference management and bibliography
 formatting.  The processor is instantiated with a single command, and
 controlled with three others.
@@ -89,7 +172,7 @@ This command takes two required and one optional argument:
    on the definition of the functions contained in the ``sys``
    object.
 
-__  _`System Functions`
+__  `System Functions`_
 
 .. code-block:: js
 
@@ -1080,12 +1163,19 @@ Test Suite
 ----------
 
 ``Citeproc-js`` ships with a large bundle of test data and a set of
-scripts to run the tests against the processor.  The test framework
-should be used to confirm that the system performs correctly after
-installation.  This section describes the arrangement of the files,
-the internal layout of the human-readable version of the text fixtures,
-the scripts used to manage the text fixture bundle, and the commands
-used to actually run the tests.
+scripts that can be used to confirm that the system performs correctly
+after installation.  The tests begin as individual human-friendly
+fixtures written in a special format, shown in the sample file
+immediately below.  In prepare the tests for use, each is ground into
+a machine-friendly form (JSON), and a Javascript execution wrapper for
+each fixture is registered in the processor test framework.  The tests
+are then processed in a separate operation by invoking one of the
+top-level test runner commands.  
+
+This section describes the arrangement of the files, the internal
+layout of the human-readable version of the text fixtures, the scripts
+used to manage the text fixture bundle, and the commands used to
+actually run the tests.
 
 
 ##############
@@ -1094,10 +1184,13 @@ Fixture layout
 
 The human-readable version of each test fixture is composed in
 the format below.  The five sections ``MODE``, ``SCHEMA``,
-``RESULT``, ``CSL`` and ``INPUT`` are required.  The sections
-may be arranged in any order within the fixture file.  As the
-sample below illustrates, text that appears between the section
-delimiters is ignored.
+``RESULT``, ``CSL`` and ``INPUT`` are required, and may be 
+arranged in any order within the fixture file.  As the
+sample below illustrates, text outside of the section
+delimiters is ignored.  The sample file below shows the
+layout of a typical fixture.  See the explanations of
+the individual sections further below for information on
+the usage of each.
 
 .. class:: clothesline
 
@@ -1117,7 +1210,7 @@ delimiters is ignored.
    <<===== MODE =====<<
    
    >>===== SCHEMA =====>>
-   0.8
+   1.0
    <<===== SCHEMA =====<<
 
 
@@ -1165,57 +1258,319 @@ delimiters is ignored.
    <<===== INPUT =====<<
 
 
-###########################
-Preprocessors [forthcoming]
-###########################
+^^^^^^^^^^^^^^^^^
+Required sections
+^^^^^^^^^^^^^^^^^
 
-Hello.
+The following five sections are required in all test fixtures.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``./std/grind.py`` [forthcoming]
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!!!!
+MODE
+!!!!
 
-Hello.
+A single string tells whether to test ``citation`` or ``bibliography``
+output, using the ``makeCitationCluster()`` and ``makeBibliography()``
+processor commands, respectively:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``./tools/MAKETESTS.sh`` [forthcoming]
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: text
 
-Hello.
+   >>===== MODE =====>>
+   citation
+   <<===== MODE =====<<
 
-##########################
-Test runners [forthcoming]
-##########################
+!!!!!!
+SCHEMA
+!!!!!!
 
-Hello.
+A string indicates the version of the CSL schema against
+which the test should be run.  All tests currently are for
+CSL 1.0:
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``./runtests.sh`` [forthcoming]
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: text
 
-Hello.
+   >>===== SCHEMA =====>>
+   1.0
+   <<===== SCHEMA =====<<
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``./test.py`` [forthcoming]
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!!!
+CSL
+!!!
 
-Hello.
+The code to be used in the test must be valid
+as a complete, if minimal, CSL style:
 
------------------------------------
-Running the Processor [forthcoming]
------------------------------------
+.. code-block:: text
 
-Hello.
+   >>===== CSL =====>>
+   <style 
+         xmlns="http://purl.org/net/xbiblio/csl"
+         class="in-text"
+         version="1.0">
+     <info>
+       <id />
+       <title />
+       <updated>2009-08-10T04:49:00+09:00</updated>
+     </info>
+     <citation
+       et-al-min="3"
+       et-al-use-first="1">
+       <layout delimiter="; ">
+         <group delimiter=" ">
+           <names>
+             <name form="short"/>
+           </names>
+           <date 
+               variable="issued" 
+               date-parts="year" 
+               form="text"
+               prefix="("
+               suffix=")"/>
+         </group>
+       </layout>
+     </citation>
+     <bibliography>
+       <layout>
+         <group delimiter=" ">
+           <names variable="author">
+             <name delimiter=" " initialize-with="."/>
+           </names>
+           <date 
+               variable="issued" 
+               date-parts="year" 
+               form="text"
+               prefix="("
+               suffix=")"/>
+         </group>
+       </layout>
+     </bibliography>
+   </style>
+   <<===== CSL =====<<
 
-######################################################
-Under Python via ``python-spidermonkey`` [forthcoming]
-######################################################
 
-Hello.
+!!!!!
+INPUT
+!!!!!
 
-######################################
-Under Java via ``rhino`` [forthcoming]
-######################################
+The ``INPUT`` section provides the item data to be registered
+in the processor.  In a simple test fixture that contains
+neither a ``BIBENTRIES`` nor a ``CITATIONS`` section,
+a citation or bibligraphy is requested for *all* of the
+items in the ``INPUT`` section (where one of those two
+optional sections is included, the testing behavior is slightly
+different; see the discussion of the relevant sections below
+for details):
 
-Hello.
+.. code-block:: text
+
+   >>===== INPUT =====>>
+   [
+    {
+      "id":"ID-1",
+      "author": [
+           { "name":"Noakes, John" },
+           { "name":"Doe, John" },
+           { "name":"Roe, Jane" }
+      ],
+      "issued": { "year" : 2005 }
+    },
+    {
+      "id":"ID-2",
+      "author": [
+           { "name":"Stoakes, Richard" }
+      ],
+      "issued": { "year" : 1898 }
+    }
+   ]
+   <<===== INPUT =====<<
+
+!!!!!!
+RESULT
+!!!!!!
+
+A string to compare with the citation or bibliography output
+received from the processor.
+
+.. code-block:: text
+
+   >>===== RESULT =====>>
+   (Noakes, et al. 2005; Stoakes 1898)
+   <<===== RESULT =====<<
+
+Note that in ``bibliography`` mode, the HTML string output 
+used for testing will be affixed with a standard set of 
+wrapper tags, which must be written into the result string
+used for comparison:
+
+.. code-block:: text
+
+   >>===== RESULT =====>>
+   <div class="csl-bib-body">
+     <div class="csl-entry">J. Noakes, J. Doe, J. Roe (2005)</div>
+     <div class="csl-entry">R. Stoakes (1898)</div>
+   </div>
+   <<===== RESULT =====<<
+
+
+^^^^^^^^^^^^^^^^^
+Optional sections
+^^^^^^^^^^^^^^^^^
+
+Three optional sections may be included in a fixture
+to exercise special aspects of processor behavior.
+
+!!!!!!!!!!!!!
+ABBREVIATIONS
+!!!!!!!!!!!!!
+
+To test the operation of journal-title abbreviation lists,
+add an ``ABBREVIATIONS`` section:
+
+.. class:: clothesline
+
+   ..
+
+      .. admonition:: Hint
+
+         To be meaningful, such a test must naturally include the relevant 
+         journal title in its ``INPUT`` data, and render the title
+         via the CSL written into the fixture.
+
+.. code-block:: text
+
+   >>== ABBREVIATIONS ==>>
+   {
+     "Journal of Irreproducible Results" : "J. Irrep. Res."
+   }
+   <<== ABBREVIATIONS ==<<
+
+
+!!!!!!!!!!
+BIBENTRIES
+!!!!!!!!!!
+
+The ``citeproc-js`` processor maintains a persistent internal 
+registry of citation data, and permits the addition, deletion
+and rearrangement of registered items.  This correct operation
+of this functionality is quite important, because interaction 
+with word processors and other authoring systems depends upon it.
+The behavior of the processor across a series of update transactions
+can be tested by including ``BIBENTRIES`` section.  
+When included, the section should
+consist of a two-tier list, consisting of discrete lists of IDs,
+which must 
+correspond to items registered in the ``INPUT`` section:
+
+.. class:: clothesline
+
+   ..
+
+      .. admonition:: Hint
+
+         The test of output will be run after first updating the
+         processor's internal registry to reflect each of the
+         requested citation sets, and should correctly reflect the
+         last in the series.
+
+.. code-block:: text
+
+   >>===== BIBENTRIES =====>>
+   [
+     [
+       "ITEM-1",
+       "ITEM-2",
+       "ITEM-3",
+       "ITEM-4",
+       "ITEM-5"
+     ],
+     [
+       "ITEM-1",
+       "ITEM-4",
+       "ITEM-5"
+     ]
+   ]
+   <<===== BIBENTRIES =====<<
+
+
+!!!!!!!!!
+CITATIONS
+!!!!!!!!!
+
+When testing in ``citation`` mode, the data items to be
+processed are ordinarily rendered as a single citation.
+To test operations that depend upon or may be affected
+by the internal state of the processor across a session,
+a ``CITATIONS`` section may be included in the test fixture.
+Each cite consists of a two-element array containing an
+item ID and a Javascript object with supplementary data.
+A single citation is composed of a list of cites, and
+the full entry consists of a list of such citations:
+
+.. code-block:: text
+
+   >>===== CITATIONS =====>>
+   [
+     [
+       ["ITEM-1",{"note_distance":4}]
+     ],
+     [
+       ["ITEM-2",{"label": "page", "locator": "23"}]
+       ["ITEM-3",{}]
+     ]
+   ]
+   <<===== CITATIONS =====<<
+
+
+
+###############################
+Preparing and running the tests
+###############################
+
+The following commands are used to process and run
+the tests.  For further information, see the source
+code of the relevant scripts, or drop me a line.
+
+**Test preparation**
+
+.. admonition:: Important
+
+   Any broken JSON syntax in the ``INPUT`` section,
+   or in the optional sections ``ABBREVIATIONS``, 
+   ``BIBENTRIES`` or ``CITATIONS`` 
+   will raise an error during
+   this phase of processing.
+
+..
+
+   ::
+   
+       ./tools/MAKETESTS.sh
+
+The command above performs two tasks: (a) it writes Javascript
+wrappers for each fixture to an appropriate file in the ``./tests/``
+directory; and (b) it invokes the ``./std/grind.py`` command to
+processs the human-readable test fixtures under ``./std/humans/``
+into the machine-friendly JSON format, storing the resulting files
+under ``./std/machines/``.  After this command is run successfully,
+the tests are ready to go.
+
+**Running the tests**
+
+.. admonition:: Hint
+
+   Under Windows, the ``./runtests.bat`` command has the same effect.
+
+..
+
+   ::
+
+      ./runtests.sh
+
+The command above will run the full set of tests using the
+Java-based Rhino interpreter.  To run the tests using the
+Spidermonkey interpreter, use the following command:
+
+   ::
+
+      ./tests.py
+
 

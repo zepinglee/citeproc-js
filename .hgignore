@@ -18,3 +18,4 @@ syntax: regexp
 ^csl-doc$
 ^tmp.html$
 /LOCALE_INSERT.txt$
+/citeproc-doc.tar.gz$
