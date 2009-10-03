@@ -10,11 +10,11 @@ Manual for the ``citeproc-js`` Processor
 
 .. class:: info-version
 
-   version 1.00a1
+   version 1.00a##1##
 
 .. class:: info-date
 
-   October, 2009
+   $$4 October 2009$$
 
 .. class:: contributors
 
