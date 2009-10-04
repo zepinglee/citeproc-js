@@ -1,13 +1,20 @@
-=======================
-Citation Style Language
-=======================
+===========================
+`Citation Style Language`__
+===========================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Manual for the ``citeproc-js`` Processor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+__ `Table of Contents`_
+
+.. class:: double-border
+   
+   .. image:: counter.gif
+      :align: center
+
 .. class:: info-version
 
-   version 1.00##a6##
+   version 1.00##a11##
 
 .. class:: info-date
 
@@ -238,22 +245,31 @@ registered in the processor:
 
 .. code-block:: js
 
-   var mybibliography = citeproc.makeBibliography();
+   var mybib = citeproc.makeBibliography();
+
+.. _`commands-categories`:
 
 The optional argument is an arbitrary category name, used to obtain a
 bibliography containing only items loaded to the processor with a
 matching ``category`` element.
 
+.. admonition:: Hint
+
+   The format of the ``category`` field is described below under
+   `Dirty Tricks → Bibliography Categories`__
+
+__ `bib-categories`_
+
 .. code-block:: js
 
-   var mybibliography = citeproc.makeBibliography("pre-1990");
+   var mybib = cp.makeBibliography("1990s");
 
 To print items that are not associated with any category, use
 the reserved category name ``none``:
 
 .. code-block:: js
 
-   var mybibliography = citeproc.makeBibliography("none");
+   var mybib = cp.makeBibliography("none");
 
 The value returned by either form of this command is a two-element
 list, composed of a Javascript array containing certain formatting
@@ -672,27 +688,6 @@ A literal string may be passed through as a ``literal`` element:
    { "literal" : "13th century"
    }
 
-^^^^^^^^^^
-Categories
-^^^^^^^^^^
-
-If bibliographic output must be divided into sections, the category or
-categories with which an item should be associated can be indicated by
-including a ``category`` element.  If present, this element must be a
-Javascript array containing a list of category names:
-
-.. code-block:: js
-
-   { "author" : [
-       { "family" : "Derby", "given" : "George" }
-     ],
-     "title" : "Phoenixiana",
-     "issued" : { "year" : 1873 },
-     "category" : [ "humor", "satire" ]
-   }
-
-
-
 ###############
 Citation fields
 ###############
@@ -753,9 +748,9 @@ Dirty Tricks
 ------------
 
 This section presents features of the ``citeproc-js`` processor that
-are not properly speaking a part of the CSL specification.  Some of
-the functionality described here may or may not be found in other CSL
-1.0 compliant processors when they arrive on the scene.
+are not properly speaking a part of the CSL specification.  The
+functionality described here may or may not be found in other CSL 1.0
+compliant processors, when they arrive on the scene.
 
 #################
 Input data rescue
@@ -829,8 +824,39 @@ above under `Data Input → Dates`__.
 __ `input-dates`_
 
 
+.. _`bib-categories`:
+
+#######################
+Bibliography categories
+#######################
+
+Bibliographic output can be divided into sections by including a
+``category`` element in each item.  A bibliography of items associated
+with a particular category can then be produced by calling the
+``makeBibliography()`` command with the category label as an argument,
+as described above under `Processor Commands → makeBibliography()`__.
+When a ``category`` element is present in item data, it must be a
+Javascript array containing a list of strings:
+
+__ `commands-categories`_
+
+.. code-block:: js
+
+   { "author" : [
+       { "family" : "Derby", "given" : "George" }
+     ],
+     "title" : "Phoenixiana",
+     "issued" : { "year" : 1873 },
+     "category" : [ "humor", "satire" ]
+   }
+
+Note that the ``category`` field is not part of the CSL
+specification, and like the other Dirty Tricks described here, may not
+be available in other processors.
+
+
 ##########################
-Journal Abbreviation Lists
+Journal abbreviation lists
 ##########################
 
 To enable automatic abbreviation of journal titles, a set
