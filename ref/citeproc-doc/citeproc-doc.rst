@@ -7,7 +7,7 @@ Manual for the ``citeproc-js`` Processor
 
 .. class:: info-version
 
-   version 1.00a##3##
+   version 1.00a##4##
 
 .. class:: info-date
 
@@ -859,7 +859,8 @@ Processor control
 
 In the ordinary operation of the ``makeCitationCluster()`` command,
 the processor generates citation strings suitable for a given position
-in the document.
+in the document.  To support some use cases, the processor is
+capable of delivering special-purpose fragments of a citation.
 
 
 ^^^^^^^^^^^^^^^
@@ -1102,7 +1103,7 @@ Pinyin transliteration (for Chinese titles) or Hepburn romanization
            -x-pri-zh-Latn-pinyin
            -x-pri-ja-Latn-hepburn
            -x-sort-zh-Latn-pinyin
-           -x-pri-ja-Latn-hepburn">
+           -x-sort-ja-Latn-hepburn">
 
 Multi-lingual operation depends upon the presence of alternative
 representations of field content embedded in the item data.  When

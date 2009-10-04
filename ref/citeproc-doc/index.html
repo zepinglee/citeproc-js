@@ -292,7 +292,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div class="document" id="citation-style-language">
 <h1 class="title">Citation Style Language</h1>
 <h2 class="subtitle" id="manual-for-the-citeproc-js-processor">Manual for the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> Processor</h2>
-<p class="info-version">version 1.00a3</p>
+<p class="info-version">version 1.00a4</p>
 <p class="info-date">4 October 2009</p>
 <dl class="contributors docutils">
 <dt>Author</dt>
@@ -1250,7 +1250,8 @@ the processor.</p>
 <h2><a class="toc-backref" href="#id59" id="processor-control" name="processor-control">Processor control</a></h2>
 <p>In the ordinary operation of the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command,
 the processor generates citation strings suitable for a given position
-in the document.</p>
+in the document.  To support some use cases, the processor is
+capable of delivering special-purpose fragments of a citation.</p>
 <div class="section">
 <h3><a class="toc-backref" href="#id60" id="author-only" name="author-only"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
 <p>When <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> is invoked with a non-nil <tt class="docutils literal"><span class="pre">author-only</span></tt>
@@ -1485,7 +1486,7 @@ Pinyin transliteration (for Chinese titles) or Hepburn romanization
 <span class="s">        -x-pri-zh-Latn-pinyin</span>
 <span class="s">        -x-pri-ja-Latn-hepburn</span>
 <span class="s">        -x-sort-zh-Latn-pinyin</span>
-<span class="s">        -x-pri-ja-Latn-hepburn&quot;</span><span class="nt">&gt;</span>
+<span class="s">        -x-sort-ja-Latn-hepburn&quot;</span><span class="nt">&gt;</span>
 </pre></div>
 </td></tr></table>
 </div>
@@ -1951,7 +1952,7 @@ via the CSL written into the fixture.</p>
 <h4><a class="toc-backref" href="#id77" id="bibentries" name="bibentries">BIBENTRIES</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor maintains a persistent internal
 registry of citation data, and permits the addition, deletion
-and rearrangement of registered items.  This correct operation
+and rearrangement of registered items.  The correct operation
 of this functionality is quite important, because interaction
 with word processors and other authoring systems depends upon it.
 The behavior of the processor across a series of update transactions
