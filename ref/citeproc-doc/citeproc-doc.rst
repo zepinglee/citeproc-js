@@ -7,11 +7,11 @@ Manual for the ``citeproc-js`` Processor
 
 .. class:: info-version
 
-   version 1.00a##4##
+   version 1.00##a6##
 
 .. class:: info-date
 
-   =D=4 October 2009=D=
+   =D=5 October 2009=D=
 
 .. class:: contributors
 
@@ -128,7 +128,7 @@ demanding strong coffee, and sturdy fingers.
 .. |trade| unicode:: U+02122
 .. |copy| unicode:: U+00A9
 
-Whatever.
+Ahem.
 
 To use the ``test.py`` script, you will need to install the following items
 on your computer:
@@ -504,7 +504,7 @@ __ `dirty-names`_
          "given" : "Alexander",
          "dropping-particle" : "von"
        },
-       { "family" : "Gough",
+       { "family" : "Gogh",
          "given" : "Vincent",
          "non-dropping-particle" : "van"
        },
@@ -669,7 +669,7 @@ A literal string may be passed through as a ``literal`` element:
 
 .. code-block:: js
 
-   { "literal" : "My Aunt Sally 23"
+   { "literal" : "13th century"
    }
 
 ^^^^^^^^^^
@@ -777,19 +777,24 @@ or ``given`` fields, respectively:
 .. code-block:: js
 
    { "author" : [ 
-       { "family" : "von Humboldt",
-          "given" : "Alexander"
+       { "family" : "Humboldt",
+          "given" : "Alexander von"
        },
-       { "family" : "Gough",
-         "given" : "Vincent van"
+       { "family" : "van Gogh",
+         "given" : "Vincent"
        }
      ]
    }
 
-The extraction of particles is done by scanning for leading terms that
-consist entirely of lowercase letters.  For some names, leading lowercase
-terms should be treated as part of the name itself, and not as floating particles.
-Such names should (always) be passed to the processor wrapped in quotation marks:
+The extraction of "non-dropping" particles is done by scanning the
+``family`` field for leading terms that contain no uppercase letters.
+The extraction of "dropping" particles is done by scanning the
+``given`` field for trailing terms that contain no uppercase letters.
+
+For some names, leading lowercase terms in the ``family`` field should
+be treated as part of the name itself, and not as particles.  Such
+names should (always) be passed to the processor wrapped in quotation
+marks:
 
 .. code-block:: js
 
@@ -846,7 +851,7 @@ command, after instantiating the processor.
    
    citeproc.setContainerTitleAbbreviations(abbreviations);
 
-A latter version of the CSL specification may provide for
+A later version of the CSL specification may provide for
 selecting an appropriate list of abbreviations through
 a declaration in the CSL style file itself.  For the present,
 this facility is available as a non-standard extension to

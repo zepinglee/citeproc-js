@@ -292,8 +292,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div class="document" id="citation-style-language">
 <h1 class="title">Citation Style Language</h1>
 <h2 class="subtitle" id="manual-for-the-citeproc-js-processor">Manual for the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> Processor</h2>
-<p class="info-version">version 1.00a4</p>
-<p class="info-date">4 October 2009</p>
+<p class="info-version">version 1.00<sub>a6</sub></p>
+<p class="info-date">5 October 2009</p>
 <dl class="contributors docutils">
 <dt>Author</dt>
 <dd><ul class="first last simple">
@@ -467,7 +467,7 @@ Corporation and/or its suppliers</sup>?  Give me a break!  You can set
 aside those mere toys now, my friends, because <em>this</em> is <em>real adventure</em>,
 the kind of challenge that comes but once in a product cycle,
 demanding strong coffee, and sturdy fingers.</p>
-<p>Whatever.</p>
+<p>Ahem.</p>
 <p>To use the <tt class="docutils literal"><span class="pre">test.py</span></tt> script, you will need to install the following items
 on your computer:</p>
 <dl class="docutils">
@@ -850,7 +850,7 @@ under the link above.</p>
       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Alexander&quot;</span><span class="o">,</span>
       <span class="s2">&quot;dropping-particle&quot;</span> <span class="o">:</span> <span class="s2">&quot;von&quot;</span>
     <span class="p">}</span><span class="o">,</span>
-    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;Gough&quot;</span><span class="o">,</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;Gogh&quot;</span><span class="o">,</span>
       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Vincent&quot;</span><span class="o">,</span>
       <span class="s2">&quot;non-dropping-particle&quot;</span> <span class="o">:</span> <span class="s2">&quot;van&quot;</span>
     <span class="p">}</span><span class="o">,</span>
@@ -1035,7 +1035,7 @@ the field data:</p>
 <p>A literal string may be passed through as a <tt class="docutils literal"><span class="pre">literal</span></tt> element:</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
-2</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;literal&quot;</span> <span class="o">:</span> <span class="s2">&quot;My Aunt Sally 23&quot;</span>
+2</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;literal&quot;</span> <span class="o">:</span> <span class="s2">&quot;13th century&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table>
@@ -1161,21 +1161,25 @@ or <tt class="docutils literal"><span class="pre">given</span></tt> fields, resp
 7
 8
 9</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;author&quot;</span> <span class="o">:</span> <span class="p">[</span>
-    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;von Humboldt&quot;</span><span class="o">,</span>
-       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Alexander&quot;</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;Humboldt&quot;</span><span class="o">,</span>
+       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Alexander von&quot;</span>
     <span class="p">}</span><span class="o">,</span>
-    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;Gough&quot;</span><span class="o">,</span>
-      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Vincent van&quot;</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;van Gogh&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Vincent&quot;</span>
     <span class="p">}</span>
   <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table>
 </div>
-<p>The extraction of particles is done by scanning for leading terms that
-consist entirely of lowercase letters.  For some names, leading lowercase
-terms should be treated as part of the name itself, and not as floating particles.
-Such names should (always) be passed to the processor wrapped in quotation marks:</p>
+<p>The extraction of &quot;non-dropping&quot; particles is done by scanning the
+<tt class="docutils literal"><span class="pre">family</span></tt> field for leading terms that contain no uppercase letters.
+The extraction of &quot;dropping&quot; particles is done by scanning the
+<tt class="docutils literal"><span class="pre">given</span></tt> field for trailing terms that contain no uppercase letters.</p>
+<p>For some names, leading lowercase terms in the <tt class="docutils literal"><span class="pre">family</span></tt> field should
+be treated as part of the name itself, and not as particles.  Such
+names should (always) be passed to the processor wrapped in quotation
+marks:</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
@@ -1240,7 +1244,7 @@ command, after instantiating the processor.</p>
 </pre></div>
 </td></tr></table>
 </div>
-<p>A latter version of the CSL specification may provide for
+<p>A later version of the CSL specification may provide for
 selecting an appropriate list of abbreviations through
 a declaration in the CSL style file itself.  For the present,
 this facility is available as a non-standard extension to
