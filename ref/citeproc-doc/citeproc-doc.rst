@@ -1,20 +1,17 @@
 =======================
 Citation Style Language
 =======================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Manual for the ``citeproc-js`` Processor
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. |link| image:: link.png
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: info-version
 
-   version 1.00a##1##
+   version 1.00a##3##
 
 .. class:: info-date
 
-   =D=October, 2009=D=
+   =D=4 October 2009=D=
 
 .. class:: contributors
 
@@ -25,6 +22,10 @@ Manual for the ``citeproc-js`` Processor
        * Bruce D'Arcus
        * Dan Stillman
        * Rintze Zelle
+
+
+.. |link| image:: link.png
+
 
 ========
 
@@ -482,13 +483,19 @@ as ``dropping-particle`` and ``non-dropping-particle`` elements.
 Name suffixes such as the "Jr." in "Frank Bennett Jr." can be 
 delivered as a ``suffix`` element.
 
-.. admonition:: Important
+.. admonition:: Hint
 
    A simplified format for delivering particles and name suffixes
    to the processor is described below in the section 
    |link| `Dirty Tricks → Input data rescue → Names`__.
 
 __ `dirty-names`_
+
+.. admonition:: Important
+
+   Note the escaped quotation marks around the last example.
+   This is a side effect of the dirty trickery described
+   under the link above.
 
 .. code-block:: js
 
@@ -505,7 +512,7 @@ __ `dirty-names`_
          "given" : "James",
          "suffix" : "Jr."
        },
-       { "family" : "van der Vlist",
+       { "family" : "\"van der Vlist\"",
          "given" : "Eric"
        }
      ]
@@ -1450,7 +1457,7 @@ BIBENTRIES
 
 The ``citeproc-js`` processor maintains a persistent internal 
 registry of citation data, and permits the addition, deletion
-and rearrangement of registered items.  This correct operation
+and rearrangement of registered items.  The correct operation
 of this functionality is quite important, because interaction 
 with word processors and other authoring systems depends upon it.
 The behavior of the processor across a series of update transactions

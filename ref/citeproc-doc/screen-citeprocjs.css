@@ -98,12 +98,13 @@ blockquote.clothesline {
 }
 
 div.admonition {
+  clear: both;
   border: 3px solid #c0c0c0;
   float: right;
   width: 37%;
   padding: 0px 5px 0px 5px;
   background: white;
-  margin: -0.5em -0.5em 0px 5px;
+  margin: -0.5em -0.5em 1em 5px;
 }
 
 blockquote.clothesline div.admonition {
