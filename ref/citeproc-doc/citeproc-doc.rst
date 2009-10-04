@@ -14,7 +14,7 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a11##
+   version 1.00##a12##
 
 .. class:: info-date
 
@@ -540,7 +540,7 @@ __ `dirty-names`_
 "non-Byzantine" names
 !!!!!!!!!!!!!!!!!!!!!
 
-Names not written in the Latin, Greek, Arabic or Cyrillic 
+Names not written in the Latin or Cyrillic 
 scripts [#]_ are always displayed
 with the family name first.  No special hint is needed in
 the input data; the processor is sensitive to the character
@@ -735,9 +735,9 @@ be assumed.
    .. [#] For information on valid CSL variable names, please
           refer to the CSL specification, available via http://citationstyles.org/.
 
-.. [#] The Latin, Greek, Arabic and Cyrillic scripts are referred to here collectively
+.. [#] The Latin and Cyrillic scripts are referred to here collectively
        as "Byzantine scripts", after the confluence of cultures in the first
-       millenium that spanned all four.
+       millenium that spanned both.
 
 .. [#] For a list of valid CSL locator label strings, see the
        CSL specification, available via  http://citationstyles.org/.
