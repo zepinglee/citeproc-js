@@ -14,7 +14,7 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a16##
+   version 1.00##a17##
 
 .. class:: info-date
 
@@ -335,9 +335,9 @@ __ `Citation fields`_
 
    var mycite = makeCitationCluster( my_ids );
 
-#################
-setOutputFormat()
-#################
+#####################
+``setOutputFormat()``
+#####################
 
 The output format of the processor can be changed after instantiation
 using the ``setOutputFormat()`` command.  This command is specific
@@ -356,9 +356,9 @@ __ _`Output Formatting`
 
 
 
-################################
-setContainerTitleAbbreviations()
-################################
+####################################
+``setContainerTitleAbbreviations()``
+####################################
 
 A list of journal title abbreviations can be set on the processor
 using the ``setContainerTitleAbbreviations()`` command.
