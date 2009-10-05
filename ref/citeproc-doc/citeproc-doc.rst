@@ -14,7 +14,7 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a17##
+   version 1.00##a18##
 
 .. class:: info-date
 
@@ -348,7 +348,7 @@ to the ``citeproc-js`` processor.
    See the section `Output Formatting`__ below for notes
    on defining new output formats.
 
-__ _`Output Formatting`
+__ `Output Formatting`_
 
 .. code-block:: js
 
@@ -364,17 +364,21 @@ A list of journal title abbreviations can be set on the processor
 using the ``setContainerTitleAbbreviations()`` command.
 This command is also specfic to ``citeproc-js``:
 
-.. admonition:: Hint
+.. class:: clothesline
 
-   See the section `Dirty Tricks → Journal abbreviation lists`__ below
-   for further details.
+   ..
+
+      .. admonition:: Hint
+
+         See the section `Dirty Tricks → Journal abbreviation lists`__ below
+         for further details.
 
 .. code-block:: js
 
-   citeproc.setContainerTitleAbbreviations( abbrevs );
+   cp.setContainerTitleAbbreviations( abbr );
 
 
-__ _`Journal abbreviation lists`
+__ `Journal abbreviation lists`_
 
 -----------------
 Local Environment

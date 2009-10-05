@@ -297,7 +297,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h1 class="title"><a class="reference" href="#table-of-contents">Citation Style Language</a></h1>
 <h2 class="subtitle" id="manual-for-the-citeproc-js-processor">Manual for the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> Processor</h2>
 <div align="center" class="align-center"><img alt="counter.gif" class="double-border align-center" src="counter.gif" /></div>
-<p class="info-version">version 1.00<sub>a17</sub></p>
+<p class="info-version">version 1.00<sub>a18</sub></p>
 <p class="info-date">6 October 2009</p>
 <dl class="contributors docutils">
 <dt>Author</dt>
@@ -669,7 +669,7 @@ using the <tt class="docutils literal"><span class="pre">setOutputFormat()</span
 to the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor.</p>
 <div class="admonition-hint admonition">
 <p class="first admonition-title">Hint</p>
-<p class="last">See the section <a class="reference" href="_`OutputFormatting`">Output Formatting</a> below for notes
+<p class="last">See the section <a class="reference" href="#output-formatting">Output Formatting</a> below for notes
 on defining new output formats.</p>
 </div>
 <div class="codeblock js">
@@ -683,13 +683,16 @@ on defining new output formats.</p>
 <p>A list of journal title abbreviations can be set on the processor
 using the <tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations()</span></tt> command.
 This command is also specfic to <tt class="docutils literal"><span class="pre">citeproc-js</span></tt>:</p>
+<!--  -->
+<blockquote class="clothesline">
 <div class="admonition-hint admonition">
 <p class="first admonition-title">Hint</p>
-<p class="last">See the section <a class="reference" href="_`Journalabbreviationlists`">Dirty Tricks → Journal abbreviation lists</a> below
+<p class="last">See the section <a class="reference" href="#journal-abbreviation-lists">Dirty Tricks → Journal abbreviation lists</a> below
 for further details.</p>
 </div>
+</blockquote>
 <div class="codeblock js">
-<table class="highlighttable"><tr><td class="linenos"><pre>1</pre></td><td class="code"><div class="highlight"><pre><span class="nx">citeproc</span><span class="p">.</span><span class="nx">setContainerTitleAbbreviations</span><span class="p">(</span> <span class="nx">abbrevs</span> <span class="p">);</span>
+<table class="highlighttable"><tr><td class="linenos"><pre>1</pre></td><td class="code"><div class="highlight"><pre><span class="nx">cp</span><span class="p">.</span><span class="nx">setContainerTitleAbbreviations</span><span class="p">(</span> <span class="nx">abbr</span> <span class="p">);</span>
 </pre></div>
 </td></tr></table>
 </div>
