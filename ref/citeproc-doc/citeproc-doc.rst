@@ -14,11 +14,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a14##
+   version 1.00##a15##
 
 .. class:: info-date
 
-   =D=5 October 2009=D=
+   =D=6 October 2009=D=
 
 .. class:: contributors
 
@@ -742,6 +742,15 @@ be assumed.
 .. [#] For a list of valid CSL locator label strings, see the
        CSL specification, available via  http://citationstyles.org/.
 
+-----------------
+Output Formatting
+-----------------
+
+The test fixtures assume HTML output, which the processor supports out
+of the box as its default mode.  It is currently the only mode
+supported in the distributed version of the code, but additional modes
+can be created by adding definitions for them to the source file ``./src/formats.js``.
+See that file for details; it's pretty straightforward.
 
 ------------
 Dirty Tricks

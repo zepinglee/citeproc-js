@@ -297,8 +297,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h1 class="title"><a class="reference" href="#table-of-contents">Citation Style Language</a></h1>
 <h2 class="subtitle" id="manual-for-the-citeproc-js-processor">Manual for the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> Processor</h2>
 <div align="center" class="align-center"><img alt="counter.gif" class="double-border align-center" src="counter.gif" /></div>
-<p class="info-version">version 1.00<sub>a14</sub></p>
-<p class="info-date">5 October 2009</p>
+<p class="info-version">version 1.00<sub>a15</sub></p>
+<p class="info-date">6 October 2009</p>
 <dl class="contributors docutils">
 <dt>Author</dt>
 <dd><ul class="first last simple">
@@ -357,47 +357,48 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 </li>
 </ul>
 </li>
-<li><a class="reference" href="#dirty-tricks" id="id56" name="id56">Dirty Tricks</a><ul>
-<li><a class="reference" href="#input-data-rescue" id="id57" name="id57">Input data rescue</a><ul>
-<li><a class="reference" href="#id19" id="id58" name="id58">Names</a></li>
-<li><a class="reference" href="#id20" id="id59" name="id59">Dates</a></li>
+<li><a class="reference" href="#output-formatting" id="id56" name="id56">Output Formatting</a></li>
+<li><a class="reference" href="#dirty-tricks" id="id57" name="id57">Dirty Tricks</a><ul>
+<li><a class="reference" href="#input-data-rescue" id="id58" name="id58">Input data rescue</a><ul>
+<li><a class="reference" href="#id19" id="id59" name="id59">Names</a></li>
+<li><a class="reference" href="#id20" id="id60" name="id60">Dates</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#bibliography-categories" id="id60" name="id60">Bibliography categories</a></li>
-<li><a class="reference" href="#journal-abbreviation-lists" id="id61" name="id61">Journal abbreviation lists</a></li>
-<li><a class="reference" href="#processor-control" id="id62" name="id62">Processor control</a><ul>
-<li><a class="reference" href="#author-only" id="id63" name="id63"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
-<li><a class="reference" href="#suppress-author" id="id64" name="id64"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
-<li><a class="reference" href="#automating-text-insertions" id="id65" name="id65">Automating text insertions</a></li>
+<li><a class="reference" href="#bibliography-categories" id="id61" name="id61">Bibliography categories</a></li>
+<li><a class="reference" href="#journal-abbreviation-lists" id="id62" name="id62">Journal abbreviation lists</a></li>
+<li><a class="reference" href="#processor-control" id="id63" name="id63">Processor control</a><ul>
+<li><a class="reference" href="#author-only" id="id64" name="id64"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
+<li><a class="reference" href="#suppress-author" id="id65" name="id65"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
+<li><a class="reference" href="#automating-text-insertions" id="id66" name="id66">Automating text insertions</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#id27" id="id66" name="id66">Multi-lingual content</a><ul>
-<li><a class="reference" href="#the-lang-declaration" id="id67" name="id67">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></li>
-<li><a class="reference" href="#title" id="id68" name="id68">Title</a></li>
-<li><a class="reference" href="#id30" id="id69" name="id69">Names</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference" href="#test-suite" id="id70" name="id70">Test Suite</a><ul>
-<li><a class="reference" href="#fixture-layout" id="id71" name="id71">Fixture layout</a><ul>
-<li><a class="reference" href="#required-sections" id="id72" name="id72">Required sections</a><ul>
-<li><a class="reference" href="#mode" id="id73" name="id73">MODE</a></li>
-<li><a class="reference" href="#schema" id="id74" name="id74">SCHEMA</a></li>
-<li><a class="reference" href="#csl" id="id75" name="id75">CSL</a></li>
-<li><a class="reference" href="#input" id="id76" name="id76">INPUT</a></li>
-<li><a class="reference" href="#result" id="id77" name="id77">RESULT</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#optional-sections" id="id78" name="id78">Optional sections</a><ul>
-<li><a class="reference" href="#abbreviations" id="id79" name="id79">ABBREVIATIONS</a></li>
-<li><a class="reference" href="#bibentries" id="id80" name="id80">BIBENTRIES</a></li>
-<li><a class="reference" href="#citations" id="id81" name="id81">CITATIONS</a></li>
+<li><a class="reference" href="#id27" id="id67" name="id67">Multi-lingual content</a><ul>
+<li><a class="reference" href="#the-lang-declaration" id="id68" name="id68">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></li>
+<li><a class="reference" href="#title" id="id69" name="id69">Title</a></li>
+<li><a class="reference" href="#id30" id="id70" name="id70">Names</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference" href="#preparing-and-running-the-tests" id="id82" name="id82">Preparing and running the tests</a></li>
+<li><a class="reference" href="#test-suite" id="id71" name="id71">Test Suite</a><ul>
+<li><a class="reference" href="#fixture-layout" id="id72" name="id72">Fixture layout</a><ul>
+<li><a class="reference" href="#required-sections" id="id73" name="id73">Required sections</a><ul>
+<li><a class="reference" href="#mode" id="id74" name="id74">MODE</a></li>
+<li><a class="reference" href="#schema" id="id75" name="id75">SCHEMA</a></li>
+<li><a class="reference" href="#csl" id="id76" name="id76">CSL</a></li>
+<li><a class="reference" href="#input" id="id77" name="id77">INPUT</a></li>
+<li><a class="reference" href="#result" id="id78" name="id78">RESULT</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#optional-sections" id="id79" name="id79">Optional sections</a><ul>
+<li><a class="reference" href="#abbreviations" id="id80" name="id80">ABBREVIATIONS</a></li>
+<li><a class="reference" href="#bibentries" id="id81" name="id81">BIBENTRIES</a></li>
+<li><a class="reference" href="#citations" id="id82" name="id82">CITATIONS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference" href="#preparing-and-running-the-tests" id="id83" name="id83">Preparing and running the tests</a></li>
 </ul>
 </li>
 </ul>
@@ -1124,15 +1125,23 @@ CSL specification, available via  <a class="reference" href="http://citationstyl
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id56" id="dirty-tricks" name="dirty-tricks">Dirty Tricks</a></h1>
+<h1><a class="toc-backref" href="#id56" id="output-formatting" name="output-formatting">Output Formatting</a></h1>
+<p>The test fixtures assume HTML output, which the processor supports out
+of the box as its default mode.  It is currently the only mode
+supported in the distributed version of the code, but additional modes
+can be created by adding definitions for them to the source file <tt class="docutils literal"><span class="pre">./src/formats.js</span></tt>.
+See that file for details; it's pretty straightforward.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id57" id="dirty-tricks" name="dirty-tricks">Dirty Tricks</a></h1>
 <p>This section presents features of the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor that
 are not properly speaking a part of the CSL specification.  The
 functionality described here may or may not be found in other CSL 1.0
 compliant processors, when they arrive on the scene.</p>
 <div class="section">
-<h2><a class="toc-backref" href="#id57" id="input-data-rescue" name="input-data-rescue">Input data rescue</a></h2>
+<h2><a class="toc-backref" href="#id58" id="input-data-rescue" name="input-data-rescue">Input data rescue</a></h2>
 <div class="section">
-<h3><a class="toc-backref" href="#id58" id="id19" name="id19"><span id="dirty-names"></span>Names</a></h3>
+<h3><a class="toc-backref" href="#id59" id="id19" name="id19"><span id="dirty-names"></span>Names</a></h3>
 <p>Systems that use a simple two-field entry format can encode
 <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">dropping-particle</span></tt>
 elements on a name by including them in the <tt class="docutils literal"><span class="pre">family</span></tt>
@@ -1183,7 +1192,7 @@ marks:</p>
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id59" id="id20" name="id20"><span id="dirty-dates"></span>Dates</a></h3>
+<h3><a class="toc-backref" href="#id60" id="id20" name="id20"><span id="dirty-dates"></span>Dates</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor contains its own internal
 parsing code for raw date strings.  Clients may take advantage of the
 processor's internal parser by supplying date strings as a single
@@ -1202,7 +1211,7 @@ above under <a class="reference" href="#input-dates">Data Input → Dates</a>.</
 </div>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id60" id="bibliography-categories" name="bibliography-categories"><span id="bib-categories"></span>Bibliography categories</a></h2>
+<h2><a class="toc-backref" href="#id61" id="bibliography-categories" name="bibliography-categories"><span id="bib-categories"></span>Bibliography categories</a></h2>
 <p>Bibliographic output can be divided into sections by including a
 <tt class="docutils literal"><span class="pre">category</span></tt> element in each item.  A bibliography of items associated
 with a particular category can then be produced by calling the
@@ -1232,7 +1241,7 @@ specification, and like the other Dirty Tricks described here, may not
 be available in other processors.</p>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id61" id="journal-abbreviation-lists" name="journal-abbreviation-lists">Journal abbreviation lists</a></h2>
+<h2><a class="toc-backref" href="#id62" id="journal-abbreviation-lists" name="journal-abbreviation-lists">Journal abbreviation lists</a></h2>
 <p>To enable automatic abbreviation of journal titles, a set
 of Javascript key/value pairs composed of full titles and their
 abbreviations may be installed using the <tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations</span></tt>
@@ -1267,13 +1276,13 @@ this facility is available as a non-standard extension to
 the processor.</p>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id62" id="processor-control" name="processor-control">Processor control</a></h2>
+<h2><a class="toc-backref" href="#id63" id="processor-control" name="processor-control">Processor control</a></h2>
 <p>In the ordinary operation of the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command,
 the processor generates citation strings suitable for a given position
 in the document.  To support some use cases, the processor is
 capable of delivering special-purpose fragments of a citation.</p>
 <div class="section">
-<h3><a class="toc-backref" href="#id63" id="author-only" name="author-only"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id64" id="author-only" name="author-only"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
 <p>When <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> is invoked with a non-nil <tt class="docutils literal"><span class="pre">author-only</span></tt>
 element, everything but the author name in a cite is suppressed.
 The name is returned without decorative markup (italics, superscript, and
@@ -1292,7 +1301,7 @@ without printing the cite itself, is a useless thing to do.
 And if that were the end of the story, you would be right ...</p>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id64" id="suppress-author" name="suppress-author"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id65" id="suppress-author" name="suppress-author"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
 <p>To suppress the rendering of names in a cite, include a <tt class="docutils literal"><span class="pre">suppress-author</span></tt>
 element with a non-nil value in the supplementary data:</p>
 <div class="codeblock js">
@@ -1308,7 +1317,7 @@ element with a non-nil value in the supplementary data:</p>
 combination with the <tt class="docutils literal"><span class="pre">author-only</span></tt> element, as described below.</p>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id65" id="automating-text-insertions" name="automating-text-insertions">Automating text insertions</a></h3>
+<h3><a class="toc-backref" href="#id66" id="automating-text-insertions" name="automating-text-insertions">Automating text insertions</a></h3>
 <p>Calls to the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command with the <tt class="docutils literal"><span class="pre">author-only</span></tt>
 and <tt class="docutils literal"><span class="pre">suppress-author</span></tt> control elements can be used to produce
 cites that divide their content into two parts.  This permits the
@@ -1385,7 +1394,7 @@ elements are in the processor test fixtures in the
 </div>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id66" id="id27" name="id27"><span id="multi-lingual-content"></span>Multi-lingual content</a></h2>
+<h2><a class="toc-backref" href="#id67" id="id27" name="id27"><span id="multi-lingual-content"></span>Multi-lingual content</a></h2>
 <p>The version of <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> described by this manual incorporates
 an experimental mechanism for supporting cross-lingual and
 mixed-language citation styles, such as 我妻栄 [Wagatsuma Sakae],
@@ -1396,7 +1405,7 @@ citation management, it provides a platform for proof of concept, and
 for the development of styles to support more robust multilingual support
 when it arrives.</p>
 <div class="section">
-<h3><a class="toc-backref" href="#id67" id="the-lang-declaration" name="the-lang-declaration">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></h3>
+<h3><a class="toc-backref" href="#id68" id="the-lang-declaration" name="the-lang-declaration">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">style</span></tt> tag in a CSL style may contain a <tt class="docutils literal"><span class="pre">default-locale</span></tt> attribute.</p>
 <!-- The clothesline construct below removes the hint box from the
 normal flow, so that it overlays the code block below.  This
@@ -1519,7 +1528,7 @@ language is available (as will normally be the case for an ordinary
 Zotero data store).</p>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id68" id="title" name="title">Title</a></h3>
+<h3><a class="toc-backref" href="#id69" id="title" name="title">Title</a></h3>
 <p>For titles, alternative representations are appended
 directly to the field content, separated by the appropriate
 language tag with a leading and trailing colon:</p>
@@ -1532,7 +1541,7 @@ language tag with a leading and trailing colon:</p>
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id69" id="id30" name="id30">Names</a></h3>
+<h3><a class="toc-backref" href="#id70" id="id30" name="id30">Names</a></h3>
 <p>For personal names, alternative representations should be presented
 as separate &quot;name&quot; entries, immediately following the original
 for the name element to which they apply.  For example:</p>
@@ -1580,7 +1589,7 @@ set on them, to preserve their original formatting behavior.</p>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id70" id="test-suite" name="test-suite">Test Suite</a></h1>
+<h1><a class="toc-backref" href="#id71" id="test-suite" name="test-suite">Test Suite</a></h1>
 <p><tt class="docutils literal"><span class="pre">Citeproc-js</span></tt> ships with a large bundle of test data and a set of
 scripts that can be used to confirm that the system performs correctly
 after installation.  The tests begin as individual human-friendly
@@ -1595,7 +1604,7 @@ layout of the human-readable version of the text fixtures, the scripts
 used to manage the text fixture bundle, and the commands used to
 actually run the tests.</p>
 <div class="section">
-<h2><a class="toc-backref" href="#id71" id="fixture-layout" name="fixture-layout">Fixture layout</a></h2>
+<h2><a class="toc-backref" href="#id72" id="fixture-layout" name="fixture-layout">Fixture layout</a></h2>
 <p>The human-readable version of each test fixture is composed in
 the format below.  The five sections <tt class="docutils literal"><span class="pre">MODE</span></tt>, <tt class="docutils literal"><span class="pre">SCHEMA</span></tt>,
 <tt class="docutils literal"><span class="pre">RESULT</span></tt>, <tt class="docutils literal"><span class="pre">CSL</span></tt> and <tt class="docutils literal"><span class="pre">INPUT</span></tt> are required, and may be
@@ -1721,10 +1730,10 @@ John Doe
 </td></tr></table>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id72" id="required-sections" name="required-sections">Required sections</a></h3>
+<h3><a class="toc-backref" href="#id73" id="required-sections" name="required-sections">Required sections</a></h3>
 <p>The following five sections are required in all test fixtures.</p>
 <div class="section">
-<h4><a class="toc-backref" href="#id73" id="mode" name="mode">MODE</a></h4>
+<h4><a class="toc-backref" href="#id74" id="mode" name="mode">MODE</a></h4>
 <p>A single string tells whether to test <tt class="docutils literal"><span class="pre">citation</span></tt> or <tt class="docutils literal"><span class="pre">bibliography</span></tt>
 output, using the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> and <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt>
 processor commands, respectively:</p>
@@ -1739,7 +1748,7 @@ citation
 </div>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id74" id="schema" name="schema">SCHEMA</a></h4>
+<h4><a class="toc-backref" href="#id75" id="schema" name="schema">SCHEMA</a></h4>
 <p>A string indicates the version of the CSL schema against
 which the test should be run.  All tests currently are for
 CSL 1.0:</p>
@@ -1754,7 +1763,7 @@ CSL 1.0:</p>
 </div>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id75" id="csl" name="csl">CSL</a></h4>
+<h4><a class="toc-backref" href="#id76" id="csl" name="csl">CSL</a></h4>
 <p>The code to be used in the test must be valid
 as a complete, if minimal, CSL style:</p>
 <div class="codeblock text">
@@ -1850,7 +1859,7 @@ as a complete, if minimal, CSL style:</p>
 </div>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id76" id="input" name="input">INPUT</a></h4>
+<h4><a class="toc-backref" href="#id77" id="input" name="input">INPUT</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">INPUT</span></tt> section provides the item data to be registered
 in the processor.  In a simple test fixture that contains
 neither a <tt class="docutils literal"><span class="pre">BIBENTRIES</span></tt> nor a <tt class="docutils literal"><span class="pre">CITATIONS</span></tt> section,
@@ -1904,7 +1913,7 @@ for details):</p>
 </div>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id77" id="result" name="result">RESULT</a></h4>
+<h4><a class="toc-backref" href="#id78" id="result" name="result">RESULT</a></h4>
 <p>A string to compare with the citation or bibliography output
 received from the processor.</p>
 <div class="codeblock text">
@@ -1938,11 +1947,11 @@ used for comparison:</p>
 </div>
 </div>
 <div class="section">
-<h3><a class="toc-backref" href="#id78" id="optional-sections" name="optional-sections">Optional sections</a></h3>
+<h3><a class="toc-backref" href="#id79" id="optional-sections" name="optional-sections">Optional sections</a></h3>
 <p>Three optional sections may be included in a fixture
 to exercise special aspects of processor behavior.</p>
 <div class="section">
-<h4><a class="toc-backref" href="#id79" id="abbreviations" name="abbreviations">ABBREVIATIONS</a></h4>
+<h4><a class="toc-backref" href="#id80" id="abbreviations" name="abbreviations">ABBREVIATIONS</a></h4>
 <p>To test the operation of journal-title abbreviation lists,
 add an <tt class="docutils literal"><span class="pre">ABBREVIATIONS</span></tt> section:</p>
 <!--  -->
@@ -1969,7 +1978,7 @@ via the CSL written into the fixture.</p>
 </div>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id80" id="bibentries" name="bibentries">BIBENTRIES</a></h4>
+<h4><a class="toc-backref" href="#id81" id="bibentries" name="bibentries">BIBENTRIES</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor maintains a persistent internal
 registry of citation data, and permits the addition, deletion
 and rearrangement of registered items.  The correct operation
@@ -2028,7 +2037,7 @@ last in the series.</p>
 </div>
 </div>
 <div class="section">
-<h4><a class="toc-backref" href="#id81" id="citations" name="citations">CITATIONS</a></h4>
+<h4><a class="toc-backref" href="#id82" id="citations" name="citations">CITATIONS</a></h4>
 <p>When testing in <tt class="docutils literal"><span class="pre">citation</span></tt> mode, the data items to be
 processed are ordinarily rendered as a single citation.
 To test operations that depend upon or may be affected
@@ -2067,7 +2076,7 @@ the full entry consists of a list of such citations:</p>
 </div>
 </div>
 <div class="section">
-<h2><a class="toc-backref" href="#id82" id="preparing-and-running-the-tests" name="preparing-and-running-the-tests">Preparing and running the tests</a></h2>
+<h2><a class="toc-backref" href="#id83" id="preparing-and-running-the-tests" name="preparing-and-running-the-tests">Preparing and running the tests</a></h2>
 <p>The following commands are used to process and run
 the tests.  For further information, see the source
 code of the relevant scripts, or drop me a line.</p>
