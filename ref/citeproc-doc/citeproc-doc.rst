@@ -14,7 +14,7 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a15##
+   version 1.00##a16##
 
 .. class:: info-date
 
@@ -335,6 +335,46 @@ __ `Citation fields`_
 
    var mycite = makeCitationCluster( my_ids );
 
+#################
+setOutputFormat()
+#################
+
+The output format of the processor can be changed after instantiation
+using the ``setOutputFormat()`` command.  This command is specific
+to the ``citeproc-js`` processor.
+
+.. admonition:: Hint
+
+   See the section `Output Formatting`__ below for notes
+   on defining new output formats.
+
+__ _`Output Formatting`
+
+.. code-block:: js
+
+   citeproc.setOutputFormat("rtf");
+
+
+
+################################
+setContainerTitleAbbreviations()
+################################
+
+A list of journal title abbreviations can be set on the processor
+using the ``setContainerTitleAbbreviations()`` command.
+This command is also specfic to ``citeproc-js``:
+
+.. admonition:: Hint
+
+   See the section `Dirty Tricks → Journal abbreviation lists`__ below
+   for further details.
+
+.. code-block:: js
+
+   citeproc.setContainerTitleAbbreviations( abbrevs );
+
+
+__ _`Journal abbreviation lists`
 
 -----------------
 Local Environment
@@ -750,7 +790,9 @@ The test fixtures assume HTML output, which the processor supports out
 of the box as its default mode.  It is currently the only mode
 supported in the distributed version of the code, but additional modes
 can be created by adding definitions for them to the source file ``./src/formats.js``.
-See that file for details; it's pretty straightforward.
+See `the file itself`__ for details; it's pretty straightforward.
+
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/src/formats.js
 
 ------------
 Dirty Tricks
