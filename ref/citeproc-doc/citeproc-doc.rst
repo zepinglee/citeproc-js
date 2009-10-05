@@ -14,7 +14,7 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a12##
+   version 1.00##a14##
 
 .. class:: info-date
 
@@ -126,10 +126,10 @@ interpreter using the ``test.py`` script.  This exciting alternative
 displays exactly the same console trace through a *totally different
 set of underlying libraries*.  Playstation\ |reg|\ 3, you say?  Ha!
 Wii\ |trade|?  Tame stuff!  Xbox 360 :superscript:`©2004 Microsoft
-Corporation and/or its suppliers`?  Give me a break!  You can set
-aside those mere toys now, my friends, because *this* is *real adventure*,
-the kind of challenge that comes but once in a product cycle,
-demanding strong coffee, and sturdy fingers.
+Corporation and/or its suppliers`?  Hardly.  You can set these mere
+toys aside, ladies and gentlemen.  *This* is *the real adventure*.  A
+challenge that comes but once in a product cycle.  A task that demands
+sturdy fingers, strong coffee and ...
 
 .. |reg| unicode:: U+00AE
 .. |trade| unicode:: U+02122
@@ -176,11 +176,11 @@ This command takes two required and one optional argument:
 
 .. admonition:: Important
 
-   See the section |link| `Local Environment → System Functions`__ below for guidance
+   See the section |link| `Local Environment → System functions`__ below for guidance
    on the definition of the functions contained in the ``sys``
    object.
 
-__  `System Functions`_
+__  `System functions`_
 
 .. code-block:: js
 
@@ -256,7 +256,7 @@ matching ``category`` element.
 .. admonition:: Hint
 
    The format of the ``category`` field is described below under
-   `Dirty Tricks → Bibliography Categories`__
+   `Dirty Tricks → Bibliography categories`__
 
 __ `bib-categories`_
 
