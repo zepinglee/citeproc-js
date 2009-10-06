@@ -243,7 +243,8 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 			delete this.registry[delitem];
 		};
 	};
-	this.state.fun.decorate.items_delete( this.state.output[this.state.opt.mode].tmp, myhash );
+	// Disabled.  See formats.js for code.
+	// this.state.fun.decorate.items_delete( this.state.output[this.state.opt.mode].tmp, myhash );
 };
 
 CSL.Factory.Registry.prototype.doinserts = function(mylist){
@@ -310,7 +311,8 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			this.touched[item] = true;
 		};
 	};
-	this.state.fun.decorate.items_add( this.state.output[this.state.opt.mode].tmp, mylist );
+	// Disabled.  See formats.js for code.
+	// this.state.fun.decorate.items_add( this.state.output[this.state.opt.mode].tmp, mylist );
 };
 
 CSL.Factory.Registry.prototype.rebuildlist = function(){

@@ -225,7 +225,8 @@ CSL.Engine.prototype.setOutputFormat = function(mode){
 		this.output[mode] = new Object();
 		this.output[mode].tmp = new Object();
 	};
-	this.fun.decorate.format_init(this.output[mode].tmp);
+	// Disabled.  See formats.js for code.
+	// this.fun.decorate.format_init(this.output[mode].tmp);
 };
 
 CSL.Engine.prototype.setContainerTitleAbbreviations = function(abbrevs){
