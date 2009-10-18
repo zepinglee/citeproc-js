@@ -490,6 +490,31 @@ CSL.Engine.prototype.retrieveItems = function(ids){
 };
 
 CSL.Engine.prototype.dateParse = function(txt){
+
+	// XXXXX: With all these constants, this parser should really
+	// be a separate, standalone module that is instantiated in
+	// its own right during build.  This is nuts.
+
+
+	//
+	// Normalize the format and the year if it's a Japanese date
+	//
+	var years = {};
+	years["明治"] = 1867;
+	years["大正"] = 1911;
+	years["昭和"] = 1925;
+	years["平成"] = 1988;
+	var m = txt.match(/(月|年)/g,"-");
+	if (m){
+		txt = txt.replace(/日$/,"");
+		txt = txt.replace(/(月|年)/g,"-");
+
+		var n = txt.match(/^(平成|昭和|大正|明治)([0-9]+)(.*)/);
+		if (n && years[n[1]]){
+			txt = (years[n[1]] + parseInt(n[2],10)) + n[3];
+		}
+	}
+
 	var yearlast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
 	var yearfirst = "[?0-9]{4}(?:%%NUMD%%[?0-9]{1,2}){0,2}(?![0-9])";
 	var number = "[?0-9]{1,3}";
