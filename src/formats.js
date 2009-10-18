@@ -52,9 +52,9 @@ CSL.Output.Formats = function(){};
 CSL.Output.Formats.prototype.html = {
 	//
 	// text_escape: Format-specific function for escaping text destined
-	// for output.  Takes the temporary scratch object and the text to be
-	// escaped as arguments.  Function will be run only once across each
-	// portion of text to be escaped, it need not be idempotent.
+	// for output.  Takes the text to be escaped as sole argument.  Function
+	// will be run only once across each portion of text to be escaped, it
+	// need not be idempotent.
 	//
 	"text_escape": function(text){
 		return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -90,7 +90,6 @@ CSL.Output.Formats.prototype.html = {
 		};
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
-	// "@display/block":"<span class=\"csl-bib-block\">%%STRING%%</span>",
 	"@bibliography/body": function(state,str){
 		return "<div class=\"csl-bib-body\">\n"+str+"</div>";
 	},
@@ -109,6 +108,8 @@ CSL.Output.Formats.prototype.html = {
 	"@display/indent": function(state,str){
 		return "    <div class=\"csl-block-indent\">" + str + "</div>\n  ";
 	}
+	//
+	// ### Nothing below this line is used ###
 	//
 	// tmp: Scratch area for this output format.
 	//
