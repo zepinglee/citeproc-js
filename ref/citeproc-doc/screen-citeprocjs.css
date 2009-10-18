@@ -30,6 +30,7 @@ h4 a {
 
 dl { background: #B7FCE1; padding:1em; border: silver 1px solid;}
 dt { font-weight: bold; margin-top: 0.5em; }
+
 .info-version { text-align: center; font-size: 130%; font-weight: bold; }
 .info-date { text-align: center; font-size: 110%; font-weight: bold; }
 .title { text-align: center; margin: 4em 4em 1em 4em; }
@@ -63,6 +64,23 @@ blockquote {
     margin-left: 3em;
     padding:1em; 
     border: silver 1px solid;
+}
+
+blockquote.inline-wrapper {
+    background: white;
+    margin: 0px;
+    padding: 0px;
+    border: 1px none black;
+    text-align: center;
+}
+
+blockquote.inline-wrapper div {
+    display: inline;
+}
+
+blockquote.inline-wrapper p {
+    vertical-align: top;
+    display: inline;
 }
 
 .superscript {

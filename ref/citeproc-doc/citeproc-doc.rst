@@ -7,18 +7,25 @@ Manual for the ``citeproc-js`` Processor
 
 __ `Table of Contents`_
 
-.. class:: double-border
+.. class:: inline-wrapper
+
+   ..
+
+      .. class:: double-border
    
-   .. image:: counter.gif
-      :align: center
+         .. image:: counter.gif
+            :align: center
+
+      [#]_
+
 
 .. class:: info-version
 
-   version 1.00##a18##
+   version 1.00##a19##
 
 .. class:: info-date
 
-   =D=6 October 2009=D=
+   =D=16 October 2009=D=
 
 .. class:: contributors
 
@@ -70,9 +77,15 @@ is `biercenator@gmail.com`_
 
 .. class:: first
 
-   .. [#] For further details on required infrastructure, see the sections 
-          |link| `Local Environment`_ 
-          and |link| `Data Input`_ below.
+   .. [#] The counter graphic that appears on the title page was gleaned
+          from the Internet in the 1990s, and I do not have a record of its
+          original author.  If anyone can identify him or her, I will be
+          very happy to properly attribute this clever piece 
+          of work.
+
+.. [#] For further details on required infrastructure, see the sections 
+       |link| `Local Environment`_ 
+       and |link| `Data Input`_ below.
 
 .. _biercenator@gmail.com: mailto:biercenator@gmail.com
 
