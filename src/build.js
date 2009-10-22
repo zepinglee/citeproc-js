@@ -505,6 +505,7 @@ CSL.Engine.prototype.dateParse = function(txt){
 	years["昭和"] = 1925;
 	years["平成"] = 1988;
 	var m = txt.match(/(月|年)/g,"-");
+	//print(txt);
 	if (m){
 		txt = txt.replace(/日$/,"");
 		txt = txt.replace(/(月|年)/g,"-");
@@ -514,6 +515,7 @@ CSL.Engine.prototype.dateParse = function(txt){
 			txt = (years[n[1]] + parseInt(n[2],10)) + n[3];
 		}
 	}
+	//print(txt);
 
 	var yearlast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
 	var yearfirst = "[?0-9]{4}(?:%%NUMD%%[?0-9]{1,2}){0,2}(?![0-9])";

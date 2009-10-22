@@ -24,6 +24,9 @@ var keycount = function(obj){
     return c;
 };
 
+print("Note: some tests in this bundle that fail under Rhino because of coding issues");
+print("::::: will pass under python+spidermonkey.");
+
 doh.register("tests.dateparse", [%s
 ]);
 
