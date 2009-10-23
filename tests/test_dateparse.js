@@ -183,6 +183,14 @@ doh.register("tests.dateparse", [function test_dateparse001() {
         doh.assertEqual(4, keycount(res) );
     },
     function test_dateparse026() {
+        var res = citeproc.dateParse("平成12年8月〜平成12年9月");
+        doh.assertEqual("9", res["month_end"]);
+        doh.assertEqual("8", res["month"]);
+        doh.assertEqual("2000", res["year_end"]);
+        doh.assertEqual("2000", res["year"]);
+        doh.assertEqual(4, keycount(res) );
+    },
+    function test_dateparse027() {
         var res = citeproc.dateParse("Aug 15 2000 - Aug 20 2000");
         doh.assertEqual("2000", res["year_end"]);
         doh.assertEqual("8", res["month"]);

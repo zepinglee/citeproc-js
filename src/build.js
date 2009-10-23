@@ -505,17 +505,19 @@ CSL.Engine.prototype.dateParse = function(txt){
 	years["昭和"] = 1925;
 	years["平成"] = 1988;
 	var m = txt.match(/(月|年)/g,"-");
-	//print(txt);
 	if (m){
 		txt = txt.replace(/日$/,"");
 		txt = txt.replace(/(月|年)/g,"-");
+		txt = txt.replace(/〜/g,"/");
 
-		var n = txt.match(/^(平成|昭和|大正|明治)([0-9]+)(.*)/);
-		if (n && years[n[1]]){
-			txt = (years[n[1]] + parseInt(n[2],10)) + n[3];
+		var lst = txt.split(/(平成|昭和|大正|明治)([0-9]+)/);
+		for	(var pos=1; pos<lst.length; pos+=3){
+			lst[(pos+1)] = years[lst[(pos)]] + parseInt(lst[(pos+1)]);
+			lst[pos] = "";
 		}
+		txt = lst.join("");
+		txt = txt.replace(/\s*-\s*$/,"").replace(/\s*-\s*\//,"/");
 	}
-	//print(txt);
 
 	var yearlast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
 	var yearfirst = "[?0-9]{4}(?:%%NUMD%%[?0-9]{1,2}){0,2}(?![0-9])";
@@ -547,7 +549,8 @@ CSL.Engine.prototype.dateParse = function(txt){
 	var note = "";
 	var thedate = {};
 	if (slash > -1 && dash > -1){
-		if (slash > 1){
+		var slashcount = txt.split("/");
+		if (slashcount.length > 3){
 			var range_delim = "-";
 			var date_delim = "/";
 			var lst = txt.split( rexslashdash );
@@ -564,7 +567,7 @@ CSL.Engine.prototype.dateParse = function(txt){
 	};
 	var ret = [];
 	for each (item in lst) {
-		var m = item.match(/^\s*([a-zA-Z]+|[-~?0-9]+)\s*$/);
+		var m = item.match(/^\s*([-\/]|[a-zA-Z]+|[-~?0-9]+)\s*$/);
 	    if (m) {
 			ret.push(m[1]);
 		}
