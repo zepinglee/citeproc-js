@@ -68,32 +68,62 @@ Asthma1900a; Asthma1900b; Bronchitis2000
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" }
-   ],
-   "issued": {"year": "1900"},
-   "title": "Book A"
-},
-{
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Zeppo" }
-   ],
-   "issued": {"year": "1900"},
-   "title": "Book B"
- },
-{
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-        { "name":"Bronchitis, Buffy" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book C"
- }
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1900"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Zeppo", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1900"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Bronchitis", 
+                "given": "Buffy", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

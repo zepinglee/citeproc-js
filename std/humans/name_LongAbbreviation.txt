@@ -68,13 +68,27 @@ Ts. Tserendorj
 
 
 >>===== INPUT =====>>
-[{
-   "id":"simple-mongolian-name-1",
-   "type": "book",
-   "author": [
-        { "name":"Tserendorj, TSerendorjiin" }
-   ],
-   "issued": {"year": "1925", "month":"3", "day":"4"},
-   "title": "An Altogether Unknown History of Soviet-Mongolian Relations"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Tserendorj", 
+                "given": "TSerendorjiin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "simple-mongolian-name-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1925", 
+                    "3", 
+                    "4"
+                ]
+            ]
+        }, 
+        "title": "An Altogether Unknown History of Soviet-Mongolian Relations", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

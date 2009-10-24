@@ -85,29 +85,41 @@ bibliography
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Roe, Jane" }
-   ],
-   "title":"Book A"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" }
-   ],
-   "title":"Book B"
- },
- {
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-        { "name":"Doe, James" }
-   ],
-   "title":"Book C"
- }
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "James", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "title": "Book C", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

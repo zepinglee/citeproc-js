@@ -158,125 +158,125 @@ Example T, at n11564-68
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "Example A",
-   "page": "101-108"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "Example B",
-   "page": "3-10"
- },
- {
-   "id":"ITEM-3",
-   "type": "book",
-   "title": "Example C",
-   "page": "71-72"
- },
- {
-   "id":"ITEM-4",
-   "type": "book",
-   "title": "Example D",
-   "page": "96-117"
- },
- {
-   "id":"ITEM-5",
-   "type": "book",
-   "title": "Example E",
-   "page": "100-4"
- },
- {
-   "id":"ITEM-6",
-   "type": "book",
-   "title": "Example F",
-   "page": "600-13"
- },
- {
-   "id":"ITEM-7",
-   "type": "book",
-   "title": "Example G",
-   "page": "1100-23"
- },
- {
-   "id":"ITEM-8",
-   "type": "book",
-   "title": "Example H",
-   "page": "107-108"
- },
- {
-   "id":"ITEM-9",
-   "type": "book",
-   "title": "Example I",
-   "page": "505-17"
- },
- {
-   "id":"ITEM-10",
-   "type": "book",
-   "title": "Example J",
-   "page": "1002-1006"
- },
- {
-   "id":"ITEM-11",
-   "type": "book",
-   "title": "Example K",
-   "page": "321-325"
- },
- {
-   "id":"ITEM-12",
-   "type": "book",
-   "title": "Example L",
-   "page": "415-532"
- },
- {
-   "id":"ITEM-13",
-   "type": "book",
-   "title": "Example M",
-   "page": "1536-538"
- },
- {
-   "id":"ITEM-14",
-   "type": "book",
-   "title": "Example N",
-   "page": "11564-11568"
- },
- {
-   "id":"ITEM-15",
-   "type": "book",
-   "title": "Example O",
-   "page": "11564-11578"
- },
- {
-   "id":"ITEM-16",
-   "type": "book",
-   "title": "Example P",
-   "page": "13792-13803"
- },
- {
-   "id":"ITEM-17",
-   "type": "book",
-   "title": "Example Q",
-   "page": "1496-504"
- },
- {
-   "id":"ITEM-18",
-   "type": "book",
-   "title": "Example R",
-   "page": "2787-816"
- },
- {
-   "id":"ITEM-19",
-   "type": "book",
-   "title": "Example S",
-   "page": "n11564-n1568"
- },
- {
-   "id":"ITEM-20",
-   "type": "book",
-   "title": "Example T",
-   "page": "n11564-1568"
- }
+    {
+        "id": "ITEM-1", 
+        "page": "101-108", 
+        "title": "Example A", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "page": "3-10", 
+        "title": "Example B", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-3", 
+        "page": "71-72", 
+        "title": "Example C", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-4", 
+        "page": "96-117", 
+        "title": "Example D", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-5", 
+        "page": "100-4", 
+        "title": "Example E", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-6", 
+        "page": "600-13", 
+        "title": "Example F", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-7", 
+        "page": "1100-23", 
+        "title": "Example G", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-8", 
+        "page": "107-108", 
+        "title": "Example H", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-9", 
+        "page": "505-17", 
+        "title": "Example I", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-10", 
+        "page": "1002-1006", 
+        "title": "Example J", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-11", 
+        "page": "321-325", 
+        "title": "Example K", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-12", 
+        "page": "415-532", 
+        "title": "Example L", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-13", 
+        "page": "1536-538", 
+        "title": "Example M", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-14", 
+        "page": "11564-11568", 
+        "title": "Example N", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-15", 
+        "page": "11564-11578", 
+        "title": "Example O", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-16", 
+        "page": "13792-13803", 
+        "title": "Example P", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-17", 
+        "page": "1496-504", 
+        "title": "Example Q", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-18", 
+        "page": "2787-816", 
+        "title": "Example R", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-19", 
+        "page": "n11564-n1568", 
+        "title": "Example S", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-20", 
+        "page": "n11564-1568", 
+        "title": "Example T", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

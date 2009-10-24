@@ -68,15 +68,15 @@ citation
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "民法 :eng: Civil Code"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "刑法 :eng: Criminal Code"
- }
+    {
+        "id": "ITEM-1", 
+        "title": "民法 :eng: Civil Code", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "title": "刑法 :eng: Criminal Code", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

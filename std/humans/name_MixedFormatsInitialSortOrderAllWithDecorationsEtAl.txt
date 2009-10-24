@@ -72,19 +72,55 @@ citation
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name": "Чайковский, Пётр Ильич" },
-        { "name": "van Winkle, Rip" },
-        { "name": "我妻, 栄" },
-        { "name": "Thucydides, Carl, III" },
-        { "name": "Tokugawa, Ieyasu !" },
-        { "name": "Ministry of Fear, Loathing and Error !!" },
-        { "name": "Prince" }
-   ],
-   "issued": "2000",
-   "title": "Our Story"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Чайковский", 
+                "given": "Пётр Ильич", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Winkle", 
+                "given": "Rip", 
+                "non-dropping-particle": "van", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "我妻", 
+                "given": "栄", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Thucydides", 
+                "given": "Carl", 
+                "static-ordering": false, 
+                "suffix": "III"
+            }, 
+            {
+                "family": "Tokugawa", 
+                "given": "Ieyasu", 
+                "static-ordering": true
+            }, 
+            {
+                "literal": "Ministry of Fear, Loathing and Error", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Prince", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Our Story", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

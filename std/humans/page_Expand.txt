@@ -102,47 +102,47 @@ Example: first less than second, at 123N110-N115, 000c23-22
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "Example: minimal",
-   "page": "110-5"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "Example: prefix on one number only",
-   "page": "N110-5"
- },
- {
-   "id":"ITEM-3",
-   "type": "book",
-   "title": "Example: same prefix on both numbers",
-   "page": "N110-N5"
- },
- {
-   "id":"ITEM-4",
-   "type": "book",
-   "title": "Example: different prefixes on both numbers",
-   "page": "N110-P5"
- },
- {
-   "id":"ITEM-5",
-   "type": "book",
-   "title": "Example: leading number before prefix",
-   "page": "123N110-N5"
- },
- {
-   "id":"ITEM-6",
-   "type": "book",
-   "title": "Example: multiple ranges",
-   "page": "123N110-N5, 456K200-99"
- },
- {
-   "id":"ITEM-7",
-   "type": "book",
-   "title": "Example: first less than second",
-   "page": "123N110-N5, 000c23-22"
- }
+    {
+        "id": "ITEM-1", 
+        "page": "110-5", 
+        "title": "Example: minimal", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "page": "N110-5", 
+        "title": "Example: prefix on one number only", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-3", 
+        "page": "N110-N5", 
+        "title": "Example: same prefix on both numbers", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-4", 
+        "page": "N110-P5", 
+        "title": "Example: different prefixes on both numbers", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-5", 
+        "page": "123N110-N5", 
+        "title": "Example: leading number before prefix", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-6", 
+        "page": "123N110-N5, 456K200-99", 
+        "title": "Example: multiple ranges", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-7", 
+        "page": "123N110-N5, 000c23-22", 
+        "title": "Example: first less than second", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

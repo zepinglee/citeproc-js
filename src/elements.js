@@ -202,8 +202,11 @@ CSL.Lib.Elements.text = new function(){
 								}
 							}
 							var year = "0000";
-							if (Item.issued && Item.issued.year){
-								year = ""+Item.issued.year;
+							if (Item.issued){
+								var dp = Item.issued["date-parts"];
+								if (dp && dp[0] && dp[0][0]){
+									year = ""+dp[0][0];
+								}
 							}
 							label = myname + year;
 						};
@@ -948,10 +951,12 @@ CSL.Lib.Elements.date = new function(){
 					state.tmp.dateparts = [];
 					var dp = [];
 					if (this.variables.length && Item[this.variables[0]]){
-						state.tmp.date_object = Item[this.variables[0]];
-						if (state.tmp.date_object.raw){
-							state.tmp.date_object = state.dateParse( state.tmp.date_object.raw );
-						};
+						var date_obj = Item[this.variables[0]];
+						if (date_obj.raw){
+							state.tmp.date_object = state.dateParseRaw( date_obj.raw );
+						} else if (date_obj["date-parts"]) {
+							state.tmp.date_object = state.dateParseArray( date_obj );
+						}
 						//
 						// XXXXX: Call a function here to analyze the
 						// data and set the name of the date-part that
@@ -1290,9 +1295,19 @@ CSL.Lib.Elements.key = new function(){
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					var output_func = function(state,Item){
 						if (Item[variable]){
-							state.output.append(CSL.Util.Dates.year["long"](state,Item[variable].year));
-							state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,Item[variable].month));
-							state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,Item[variable].day));
+							var dp = Item[variable]["date-parts"];
+							if (dp && dp[0]){
+								if (dp[0].length >0){
+									state.output.append(CSL.Util.Dates.year["long"](state,dp[0][0]));
+								}
+								if (dp[0].length >1){
+									state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[0][1]));
+								}
+								if (dp[0].length >2){
+									state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[0][2]));
+								}
+							}
+
 						};
 					};
 				} else if ("title" == variable) {

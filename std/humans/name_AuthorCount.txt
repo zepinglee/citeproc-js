@@ -71,46 +71,90 @@ citation
 
 >>===== INPUT =====>>
 [
- {
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" },
-        { "name":"Brown, Robert" },
-        { "name":"Smith, Tom" }
-   ]
- },
- {
-   "id":"item-2",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Doe, Jake" },
-        { "name":"Brown, Robert" }
-   ]
- },
- {
-   "id":"item-3",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Doe, Jake" }
-   ]
- },
- {
-   "id":"item-4",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" }
-   ]
- },
- {
-   "id":"item-5",
-   "type": "book",
-   "editor": [
-        { "name":"Doe, John" }
-   ]
- }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Brown", 
+                "given": "Robert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Smith", 
+                "given": "Tom", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-1", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Doe", 
+                "given": "Jake", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Brown", 
+                "given": "Robert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-2", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Doe", 
+                "given": "Jake", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-3", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-4", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-5", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

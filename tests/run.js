@@ -37,7 +37,6 @@ dojo.require("doh.runner");
 // requested tests go here
 if(true){
 	dojo.require("tests.test_dateparse");
-} else {
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
     dojo.require("tests.test_sys_rhino_locale");
@@ -87,6 +86,7 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
 
+} else {
 
 
 	//SNIP-START

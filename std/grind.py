@@ -109,7 +109,7 @@ class CslTestUtils:
 class CslTests(CslTestUtils):
     """ Control class for processing a set of tests
 
-    Instantiates with a list of human-readable test names derived from
+    Instantiates a list of human-readable test names derived from
     the filesystem.  Provides a method for clearing the content
     of the machine-readable directory and processing the
     human-readable files.
@@ -152,15 +152,17 @@ class CslTests(CslTestUtils):
                 ## test.fix_source()
                 test.fix_names()
                 test.validate(testname)
-                test.dump()
+                test.dump_machines()
+                test.dump_humans()
         sys.stdout.write("\n")
 
 class CslTest(CslTestUtils):
     """ Handler for an individual test file
 
-    Instantiates with a single test name, and provides
-    methods for loading the raw data, parsing and massaging
-    the content, and dumping the result.
+    Instantiates a single test, and provides
+    methods for loading its raw data, parsing and massaging
+    the content, and dumping the result, both in a reformatted
+    human-readable and in a machine-readable form.
     """
     def __init__(self,testname, options={}):
         CslTestUtils.__init__(self)
@@ -201,7 +203,7 @@ class CslTest(CslTestUtils):
 
     def fix_source(self):
         """ Convert options to attributes, write back to source file.
-            (should be disabled)
+            (now disabled)
         """
         mycsl = self.data["csl"].replace(namespace,'')
         et = ElementTree.fromstring(mycsl)
@@ -288,6 +290,32 @@ class CslTest(CslTestUtils):
                                     entry["suffix"] = parsed[2]
                         del entry["name"]
 
+
+    def fix_dates(self):
+        for pos in range(0, len(self.data["input"]),1):
+            for k in ["issued", "event", "accessed", "container", "original-date"]:
+                if self.data["input"][pos].has_key(k):
+                    newdate = []
+                    if not self.data["input"][pos][k].has_key("date-parts"):
+                        start = []
+                        for e in ["year","month","day"]:
+                            if self.data["input"][pos][k].has_key(e):
+                                start.append( self.data["input"][pos][k][e] )
+                                self.data["input"][pos][k].pop(e)
+                            else:
+                                break
+                        if start:
+                            newdate.append(start)
+                        end = []
+                        for e in ["year_end","month_end","day_end"]:
+                            if self.data["input"][pos][k].has_key(e):
+                                end.append( self.data["input"][pos][k][e] )
+                                self.data["input"][pos][k].pop(e)
+                            else:
+                                break
+                        if end:
+                            newdate.append(end)
+                        self.data["input"][pos][k]["date-parts"] = newdate
      
     def validate(self,testname):
         if not self.options.be_cranky:
@@ -338,14 +366,20 @@ class CslTest(CslTestUtils):
                 linepos += 1
             open("ABORTED.txt","w+").write("boo\n")
             sys.exit()
-        
 
-    def dump(self):
+    def dump_machines(self):
         if not os.path.exists( self.path("machines")):
             os.makedirs( self.path("machines"))
         tpath_out = "%s.json" % (self.path("machines", self.testname),)
         json.dump(self.data, open(tpath_out,"w+"), indent=4, sort_keys=True, ensure_ascii=False )
         
+    def dump_humans(self):
+        self.fix_dates()
+        str = json.dumps(self.data["input"],indent=4,sort_keys=True,ensure_ascii=False)
+        m = re.match(self.RE_ELEMENT % ("INPUT", "INPUT"),self.raw)
+        newraw = m.group(1) + "\n" + str + m.group(3)
+        tpath_out = "%s.txt" % (self.path("humans", self.testname),)
+        open(tpath_out,"w+").write(newraw)
 
 if __name__ == "__main__":
     from optparse import OptionParser

@@ -78,33 +78,67 @@ A. Asthma and B. Asthma (1980); Bronchitis (1995); Asthma (1885)
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Asthma, Bridget" }
-   ],
-   "issued": {"year": "1980"},
-   "title": "Book A"
-},
-{
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"Bronchitis, Beauregarde" }
-   ],
-   "issued": {"year": "1995"},
-   "title": "Book B"
- },
-{
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" }
-   ],
-   "issued": {"year": "1885"},
-   "title": "Book C"
- }
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Asthma", 
+                "given": "Bridget", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1980"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Bronchitis", 
+                "given": "Beauregarde", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1995"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1885"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

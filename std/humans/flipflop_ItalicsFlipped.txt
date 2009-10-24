@@ -79,15 +79,15 @@ citation
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "One Two <i>Three</i> Four Five!"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "One <i>Two <i>Three</i> Four</i> Five!"
- }
+    {
+        "id": "ITEM-1", 
+        "title": "One Two <i>Three</i> Four Five!", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "title": "One <i>Two <i>Three</i> Four</i> Five!", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

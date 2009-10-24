@@ -72,11 +72,14 @@ citation
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "issued": {"raw": "Oct 28, 1958"},
-    "title": "Ignore me"
-  }
+    {
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [], 
+            "raw": "Oct 28, 1958"
+        }, 
+        "title": "Ignore me", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

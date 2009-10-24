@@ -82,18 +82,28 @@ Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "article-journal",
-   "author":[
-      {"name":"Doe, John"}
-   ],
-   "title":"Mango Chutney Souffle",
-   "container-title": "Journal of Irreproducible Results",
-   "journalAbbreviation":"JIR",
-   "issued":{"year":"1988"},
-   "volume":"10",
-   "page":"235"
- }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "container-title": "Journal of Irreproducible Results", 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1988"
+                ]
+            ]
+        }, 
+        "journalAbbreviation": "JIR", 
+        "page": "235", 
+        "title": "Mango Chutney Souffle", 
+        "type": "article-journal", 
+        "volume": "10"
+    }
 ]
 <<===== INPUT =====<<

@@ -73,28 +73,46 @@ R. Atkinson; 北野武; ビートたけし
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-     { "name": "ビート, たけし" },
-     { "name": ":ja-Hrkt: ビートタケシ" }
-   ]
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-     { "name": "北野, 武" },
-     { "name": ":ja-Hrkt: キタノタケシ" }
-   ]
- },
- {
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-     { "name": "Atkinson, Rowan" }
-   ]
- }
+    {
+        "author": [
+            {
+                "family": "ビート", 
+                "given": "たけし", 
+                "static-ordering": false
+            }, 
+            {
+                "family": ":ja-Hrkt: ビートタケシ", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "北野", 
+                "given": "武", 
+                "static-ordering": false
+            }, 
+            {
+                "family": ":ja-Hrkt: キタノタケシ", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Atkinson", 
+                "given": "Rowan", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

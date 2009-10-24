@@ -89,34 +89,72 @@ bibliography
 
 >>===== INPUT =====>>
 [
- {
-   "id":"item-1",
-   "type": "book",
-   "author": [
-       { "name": "Smith, John" },
-       { "name": "Roe, Jane" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book A"
- },
- {
-   "id":"item-2",
-   "type": "book",
-   "author": [
-       { "name": "Smith, John" },
-       { "name": "Roe, Jane" }
-   ],
-   "issued": {"year":"2001"},
-   "title": "Book B"
- },
- {
-   "id":"item-3",
-   "type": "book",
-   "author": [
-       { "name": "Smith, John" }
-   ],
-   "issued": {"year": "2002"},
-   "title": "Book C"
- }
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2001"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2002"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

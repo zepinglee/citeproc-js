@@ -71,15 +71,15 @@ Aardvaark; Zzzzzzzzz
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "Aardvaark"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "Zzzzzzzzz"
- }
+    {
+        "id": "ITEM-1", 
+        "title": "Aardvaark", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "title": "Zzzzzzzzz", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

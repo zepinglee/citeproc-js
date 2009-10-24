@@ -122,50 +122,100 @@ the grouping of authors in the AAA style bibliography format.
 
 >>===== INPUT =====>>
 [
-  {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John Aloysius" }
-   ],
-   "issued":{ "year":1999 },
-   "title":"Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa"
-  },
-  {
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John Aloysius" }
-   ],
-   "issued":{ "year":2000 },
-   "title":"Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb"
-  },
-  {
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-        { "name":"Roe, Jane Henrietta" }
-   ],
-   "issued":{ "year":1999 },
-   "title":"Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc"
-  },
-  {
-   "id":"ITEM-4",
-   "type": "book",
-   "author": [
-        { "name":"Roe, Jane Henrietta" }
-   ],
-   "issued":{ "year":1999 },
-   "title":"Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd"
-  },
-  {
-   "id":"ITEM-5",
-   "type": "book",
-   "author": [
-        { "name":"Roe, Jane Henrietta" }
-   ],
-   "issued":{ "year":2000 },
-   "title":"Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee"
-  }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John Aloysius", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    1999
+                ]
+            ]
+        }, 
+        "title": "Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa Aaaaa", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John Aloysius", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    2000
+                ]
+            ]
+        }, 
+        "title": "Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb Bbbbb", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane Henrietta", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    1999
+                ]
+            ]
+        }, 
+        "title": "Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc Ccccc", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane Henrietta", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    1999
+                ]
+            ]
+        }, 
+        "title": "Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd Ddddd", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane Henrietta", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    2000
+                ]
+            ]
+        }, 
+        "title": "Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee Eeeee", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

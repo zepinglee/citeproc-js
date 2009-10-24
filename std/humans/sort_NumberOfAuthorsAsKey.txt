@@ -102,35 +102,77 @@ bibliography
 
 >>===== INPUT =====>>
 [
- {
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book One"
- },
- {
-   "id":"item-2",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Doe, Jake" },
-        { "name":"Jones, Robert" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book Three"
- },
- {
-   "id":"item-3",
-   "type": "book",
-   "editor": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book Two"
- }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book One", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Doe", 
+                "given": "Jake", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Robert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book Three", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book Two", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

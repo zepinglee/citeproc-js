@@ -429,67 +429,222 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "author": [{"name":"Doe, John"}],
-    "title": "Book A",
-    "issued": {"year":"1990"},
-    "publisher": "Zardoz Press",
-    "publisher-place": "Brobdingnag"
-  },
-  {
-    "id":"ITEM-2",
-    "type": "book",
-    "author": [{"name":"Doe, John"},{"name":"Roe, Jane"}],
-    "title": "Book B",
-    "issued": {"year":"1991"}
-  },
-  {
-    "id":"ITEM-3",
-    "type": "book",
-    "author": [{"name":"Doe, John"},{"name":"Roe, Jane"},{"name":"Asthma, Alvin"}],
-    "title": "Book C",
-    "issued": {"year":"1992"}
-  },
-  {
-    "id":"ITEM-4",
-    "author": [
-      {"name":"Doe, John"},
-      {"name":"Roe, Jane"},
-      {"name":"Asthma, Alvin"},
-      {"name":"Bronchitis, Bob"},
-      {"name":"Cold, Chris"},
-      {"name":"Dropsy, Don"},
-      {"name":"Enteritis, Ernie"},
-      {"name":"Fever, Frank"},
-      {"name":"Goiter, George"},
-      {"name":"Hiccup, Herb"},
-      {"name":"Impetigo, Irwin"}
-    ],
-    "type": "book",
-    "title": "Book D",
-    "issued": {"year":"1993"}
-  },
-  {
-    "id":"ITEM-5",
-    "author": [
-      {"name":"Doe, John"},
-      {"name":"Roe, Jane"},
-      {"name":"Asthma, Alvin"},
-      {"name":"Bronchitis, Bob"},
-      {"name":"Cold, Chris"},
-      {"name":"Dropsy, Don"},
-      {"name":"Enteritis, Ernie"},
-      {"name":"Fever, Frank"},
-      {"name":"Goiter, George"},
-      {"name":"Hiccup, Herb"},
-      {"name":"Impetigo, Irwin"},
-      {"name":"Jaudice, Jeff"}
-    ],
-    "type": "book",
-    "title": "Book E",
-    "issued": {"year":"1994"}
-  }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "publisher": "Zardoz Press", 
+        "publisher-place": "Brobdingnag", 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1991"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Asthma", 
+                "given": "Alvin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1992"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Asthma", 
+                "given": "Alvin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bob", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Chris", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Dropsy", 
+                "given": "Don", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Enteritis", 
+                "given": "Ernie", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Frank", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Goiter", 
+                "given": "George", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Hiccup", 
+                "given": "Herb", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Impetigo", 
+                "given": "Irwin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1993"
+                ]
+            ]
+        }, 
+        "title": "Book D", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Asthma", 
+                "given": "Alvin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bob", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Chris", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Dropsy", 
+                "given": "Don", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Enteritis", 
+                "given": "Ernie", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Frank", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Goiter", 
+                "given": "George", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Hiccup", 
+                "given": "Herb", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Impetigo", 
+                "given": "Irwin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jaudice", 
+                "given": "Jeff", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1994"
+                ]
+            ]
+        }, 
+        "title": "Book E", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

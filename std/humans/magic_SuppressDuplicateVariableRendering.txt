@@ -67,9 +67,11 @@ Should print this: Book A
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "title": "Book A"
-}]
+[
+    {
+        "id": "item-1", 
+        "title": "Book A", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

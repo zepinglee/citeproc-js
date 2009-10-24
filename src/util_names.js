@@ -312,7 +312,7 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 		return "";
 	};
 	var namelist = name;
-	if (state.opt["initialize-without-hyphen"]){
+	if (state.opt["initialize-with-hyphen"] == false){
 		namelist = namelist.replace(/\-/g," ");
 	}
 	namelist = namelist.replace(/\./g," ").replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);

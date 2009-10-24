@@ -73,37 +73,93 @@ J. Doe, Jane Roe, Robert Jones; J. Doe, Josephine Roe, Robert Jones; J. Doe, Jan
 
 
 >>===== INPUT =====>>
-[{
-   "id":"ambigs-12",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" },
-        { "name":"Jones, Robert" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book C"
-},
-{
-   "id":"ambigs-13",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Josephine" },
-        { "name":"Jones, Robert" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book B"
-},
-{
-   "id":"ambigs-14",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" },
-        { "name":"Jones, Richard" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book A"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Robert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-12", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Josephine", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Robert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-13", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Richard", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-14", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

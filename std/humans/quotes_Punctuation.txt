@@ -77,14 +77,24 @@ bibliography
 
 >>===== INPUT =====>>
 [
- {
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "The Book Title"
- }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "The Book Title", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

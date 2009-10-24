@@ -73,11 +73,14 @@ Only Me
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "issued": {"broken-entry": "bleah!"},
-    "title": "Ignore me"
-  }
+    {
+        "id": "ITEM-1", 
+        "issued": {
+            "broken-entry": "bleah!", 
+            "date-parts": []
+        }, 
+        "title": "Ignore me", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

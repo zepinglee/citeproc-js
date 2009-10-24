@@ -97,27 +97,27 @@ J. Irrep. Res.
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "container-title": "The Compleat and Utter History of the World"
- },
- {
-   "id":"ITEM-2",
-   "type": "article-journal",
-   "container-title": {
-                        "long": "Journal of Irreproducible Results",
-                        "short": "J. Irrep. Res."
-                      }
- },
- {
-   "id":"ITEM-3",
-   "type": "article-journal",
-   "title": "Sublimation Rates of Subatomic Particles",
-   "container-title": {
-                        "long": "Journal of Irreproducible Results",
-                        "short": "J. Irrep. Res."
-                      }
- }
+    {
+        "container-title": "The Compleat and Utter History of the World", 
+        "id": "ITEM-1", 
+        "type": "book"
+    }, 
+    {
+        "container-title": {
+            "long": "Journal of Irreproducible Results", 
+            "short": "J. Irrep. Res."
+        }, 
+        "id": "ITEM-2", 
+        "type": "article-journal"
+    }, 
+    {
+        "container-title": {
+            "long": "Journal of Irreproducible Results", 
+            "short": "J. Irrep. Res."
+        }, 
+        "id": "ITEM-3", 
+        "title": "Sublimation Rates of Subatomic Particles", 
+        "type": "article-journal"
+    }
 ]
 <<===== INPUT =====<<

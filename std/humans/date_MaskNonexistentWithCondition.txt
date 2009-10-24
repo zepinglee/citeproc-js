@@ -75,10 +75,10 @@ citation
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "title": "Ignore me"
-  }
+    {
+        "id": "ITEM-1", 
+        "title": "Ignore me", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

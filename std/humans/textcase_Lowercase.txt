@@ -66,9 +66,11 @@ this is a pen that is a smith pencil
 
 
 >>===== INPUT =====>>
-[{
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "This is a pen that is a <ok>Smith</ok> pencil"
-}]
+[
+    {
+        "id": "ITEM-1", 
+        "title": "This is a pen that is a <ok>Smith</ok> pencil", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

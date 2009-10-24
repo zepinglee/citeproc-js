@@ -84,14 +84,26 @@ citation
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "title": "Book C",
-    "author":[
-      {"name":"Smith, John"}
-    ],
-    "issued": {"year": "2000", "month": "2", "day": "15" }
-  }
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000", 
+                    "2", 
+                    "15"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

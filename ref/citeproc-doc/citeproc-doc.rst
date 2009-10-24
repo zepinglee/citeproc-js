@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a19##
+   version 1.00##a20##
 
 .. class:: info-date
 
-   =D=16 October 2009=D=
+   =D=24 October 2009=D=
 
 .. class:: contributors
 
@@ -644,8 +644,10 @@ long as it returns true when tested by the Javascript interpreter.
 Dates
 ^^^^^
 
-Date fields are Javascript arrays, and may contain ``year``, ``month``
-and ``day`` elements.
+Date fields are Javascript objects, within which the "date" element
+is a nested Javascript array containing a start
+date and optional end date, each of which consists of a year,
+an optional month and an optional day, in that order if present.
 
 .. admonition:: Hint
 
@@ -657,9 +659,10 @@ __ `dirty-dates`_
 
 .. code-block:: js
 
-   { "year" : "2000",
-     "month" : "1",
-     "day" : "15"
+   {
+      "date-parts" : [
+         [ "2000", "1", "15" ]
+      ]
    }
 
 Date elements may be expressed either as numeric strings or as
@@ -667,15 +670,20 @@ numbers.
 
 .. code-block:: js
    
-   { "year" : 1895,
-     "month" : 11
+   {
+      "date-parts" : [ 
+         [ 1895, 11 ]
+      ]
    }
 
 The ``year`` element may be negative, but never zero.
 
 .. code-block:: js
 
-   { "year" : -200
+   {
+      "date-parts" : [ 
+         [ -200 ]
+      ]
    }
 
 A ``season`` element may
@@ -685,7 +693,10 @@ respectively.
 
 .. code-block:: js
 
-   { "year" : 1950,
+   { 
+     "date-parts" : [ 
+        [ 1950 ]
+     ],
      "season" : "1"
    }
 
@@ -695,7 +706,10 @@ as literal strings, without localization:
 
 .. code-block:: js
 
-   { "year" : 1975,
+   { 
+     "date-parts" : [
+        [ 1975 ]
+     ],
      "season" : "Trinity"
    }
 
@@ -704,36 +718,34 @@ with a non-nil value:
 
 .. code-block:: js
 
-   { "year" : -225,
+   { 
+     "date-parts" : [
+        [ -225 ]
+     ],
      "circa" : 1
    }
 
-To input a date range, add an element with an ``_end`` suffix
-to correspond with each ``year``, ``month`` and ``day`` in
-the field data:
-
-.. admonition:: Important
-
-   As shown in this example, in ranged input, 
-   *all* date elements in the input data must have an explicit corresponding
-   ``_end`` counterpart, even when the values are identical.
+To input a date range, add an array representing the end date,
+with corresponding elements:
 
 .. code-block:: js
 
-   { "year" : 2000,
-     "month" : 11,
-     "year_end" : 2000,
-     "month_end" : 12
+   {
+      "date-parts" : [
+         [ 2000, 11 ],
+         [ 2000, 12 ]
+      ]
    }
 
-To specify an open-ended range, pass nil values for the ``_end`` elements:
+To specify an open-ended range, pass nil values for the end elements:
 
 .. code-block:: js
 
-   { "year" : 2008,
-     "month" : 11,
-     "year_end" : 0,
-     "month_end" : 0
+   {
+     "date-parts" : [
+        [ 2008, 11 ],
+        [ 0, 0 ]
+     ]
    }
 
 
@@ -742,7 +754,8 @@ A literal string may be passed through as a ``literal`` element:
 
 .. code-block:: js
 
-   { "literal" : "13th century"
+   { 
+      "literal" : "13th century"
    }
 
 ###############

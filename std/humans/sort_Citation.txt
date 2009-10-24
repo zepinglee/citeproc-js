@@ -75,19 +75,27 @@ Doe; Roe
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Roe, Jane" }
-   ]
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" }
-   ]
- }
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

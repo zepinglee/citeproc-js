@@ -71,13 +71,26 @@ John Doe
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "editor": [
-        { "name":"Doe, John", "uri":"http://people.org/doej" }
-   ],
-   "issued": "2000",
-   "title": "His Anonymous Life"
-}]
+[
+    {
+        "editor": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false, 
+                "uri": "http://people.org/doej"
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "His Anonymous Life", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

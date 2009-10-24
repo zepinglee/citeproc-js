@@ -81,49 +81,121 @@ Asthma, et al. (1990a); Asthma, et al. (1990b); Dropsy, Enteritis, X. Fever (200
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book A"
-},
-{
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Beauregarde" },
-        { "name":"Cold, Crispin" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book B"
- },
-{
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-        { "name":"Dropsy, Devon" },
-        { "name":"Enteritis, Edward" },
-        { "name":"Fever, Xavier" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book C"
- },
-{
-   "id":"ITEM-4",
-   "type": "book",
-   "author": [
-        { "name":"Dropsy, Devon" },
-        { "name":"Enteritis, Ernie" },
-        { "name":"Fever, Yves" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book D"
- }
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Beauregarde", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Dropsy", 
+                "given": "Devon", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Enteritis", 
+                "given": "Edward", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Xavier", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Dropsy", 
+                "given": "Devon", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Enteritis", 
+                "given": "Ernie", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Yves", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book D", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

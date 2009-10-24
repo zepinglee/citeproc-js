@@ -68,11 +68,19 @@ December 2005
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "issued": {"month":12, "day":15, "year":2005},
-    "title": "Ignore me"
-  }
+    {
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    2005, 
+                    12, 
+                    15
+                ]
+            ]
+        }, 
+        "title": "Ignore me", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

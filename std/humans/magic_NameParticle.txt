@@ -68,14 +68,17 @@ Doe, John von
 
 
 >>===== INPUT =====>>
-[{
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "family":"Doe", 
-          "given": "John",
-          "dropping-particle": "von"
-        }
-   ]
-}]
+[
+    {
+        "author": [
+            {
+                "dropping-particle": "von", 
+                "family": "Doe", 
+                "given": "John"
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

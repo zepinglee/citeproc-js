@@ -68,13 +68,26 @@ James Doe III
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, James, III" }
-   ],
-   "issued": "2001",
-   "title": "My Anonymous Heritage"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "James", 
+                "static-ordering": false, 
+                "suffix": "III"
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2001"
+                ]
+            ]
+        }, 
+        "title": "My Anonymous Heritage", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

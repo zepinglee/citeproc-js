@@ -101,155 +101,423 @@ citation
 
 
 >>===== INPUT =====>>
-[{
-   "id":"ambigs-1",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" },
-        { "name":"Dropsy, David" },
-        { "name":"Ebola, Elvin" },
-        { "name":"Fever, Fergus" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book M"
-},
-{
-   "id":"ambigs-2",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" },
-        { "name":"Dropsy, David" },
-        { "name":"Enteritis, Ernie" },
-        { "name":"Fever, Fergus" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book L"
-},
-{
-   "id":"ambigs-3",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" },
-        { "name":"Dropsy, David" },
-        { "name":"Ebola, Elvin" },
-        { "name":"Fever, Fergus" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book K"
-},
-{
-   "id":"ambigs-4",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book J"
-},
-{
-   "id":"ambigs-5",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Beauregarde" },
-        { "name":"Cold, Crispin" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book I"
-},
-{
-   "id":"ambigs-6",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Alan" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" },
-        { "name":"Dropsy, David" },
-        { "name":"Ebola, Elvin" },
-        { "name":"Fever, Fergus" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book H"
-},
-{
-   "id":"ambigs-7",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Janet" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book G"
-},
-{
-   "id":"ambigs-8",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book F"
-},
-{
-   "id":"ambigs-9",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book E"
-},
-{
-   "id":"ambigs-10",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Janet" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book D"
-},
-{
-   "id":"ambigs-11",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" },
-        { "name":"Jones, Robert" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book C"
-},
-{
-   "id":"ambigs-12",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Josephine" },
-        { "name":"Jones, Robert" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book B"
-},
-{
-   "id":"ambigs-13",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" },
-        { "name":"Jones, Richard" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book A"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Dropsy", 
+                "given": "David", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Ebola", 
+                "given": "Elvin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Fergus", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book M", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Dropsy", 
+                "given": "David", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Enteritis", 
+                "given": "Ernie", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Fergus", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book L", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Dropsy", 
+                "given": "David", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Ebola", 
+                "given": "Elvin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Fergus", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book K", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book J", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Beauregarde", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book I", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Alan", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Dropsy", 
+                "given": "David", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Ebola", 
+                "given": "Elvin", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fever", 
+                "given": "Fergus", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-6", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book H", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Janet", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-7", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book G", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-8", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book F", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-9", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book E", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Janet", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-10", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book D", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Robert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-11", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Josephine", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Robert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-12", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Richard", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-13", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

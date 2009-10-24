@@ -66,10 +66,12 @@ xlii
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "title": "Ignore me",
-   "volume":"42"
-}]
+[
+    {
+        "id": "item-1", 
+        "title": "Ignore me", 
+        "type": "book", 
+        "volume": "42"
+    }
+]
 <<===== INPUT =====<<

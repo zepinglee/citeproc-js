@@ -79,14 +79,26 @@ His Anonymous Life (this should appear)
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "author": [
-       { "name": "Doe, John" }
-   ],
-   "issued": "2000",
-   "title": "His Anonymous Life",
-   "edition": "5"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "edition": "5", 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "His Anonymous Life", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

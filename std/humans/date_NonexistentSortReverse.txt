@@ -72,27 +72,43 @@ Item 2; Item 4; Item 1; Item 3
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "title": "Item 1"
-  },
-  {
-    "id":"ITEM-2",
-    "type": "book",
-    "title": "Item 2",
-    "issued": {"year": "1999", "month": "2", "day": "15" }
-  },
-  {
-    "id":"ITEM-3",
-    "type": "book",
-    "title": "Item 3"
-  },
-  {
-    "id":"ITEM-4",
-    "type": "book",
-    "title": "Item 4",
-    "issued": {"year": "2000", "month": "2", "day": "15" }
-  }
+    {
+        "id": "ITEM-1", 
+        "title": "Item 1", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1999", 
+                    "2", 
+                    "15"
+                ]
+            ]
+        }, 
+        "title": "Item 2", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-3", 
+        "title": "Item 3", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000", 
+                    "2", 
+                    "15"
+                ]
+            ]
+        }, 
+        "title": "Item 4", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

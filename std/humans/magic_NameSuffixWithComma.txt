@@ -68,13 +68,16 @@ John Doe, Jr.
 
 
 >>===== INPUT =====>>
-[{
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "family":"Doe", 
-          "given": "John,! Jr."
-        }
-   ]
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John,! Jr."
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

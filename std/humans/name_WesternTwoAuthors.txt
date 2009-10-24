@@ -68,14 +68,32 @@ John DoeJane Roe
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John", "uri":"http://people.org/doej" },
-        { "name":"Roe, Jane", "uri":"http://people.org/roej" }
-   ],
-   "issued": "2000",
-   "title": "Our Anonymous Lives"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false, 
+                "uri": "http://people.org/doej"
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false, 
+                "uri": "http://people.org/roej"
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Our Anonymous Lives", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

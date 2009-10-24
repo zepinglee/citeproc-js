@@ -128,84 +128,192 @@ bibliography
 
 >>===== INPUT =====>>
 [
- {
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name":"Smith, Al" }
-   ],
-   "issued": {"year": "1989"},
-   "title": "Book One"
- },
- {
-   "id":"item-3",
-   "type": "book",
-   "editor": [
-        { "name":"Smith, Al" }
-   ],
-   "issued": {"year": "1991"},
-   "title": "Book Three"
- },
- {
-   "id":"item-4",
-   "type": "book",
-   "editor": [
-        { "name":"Smith, Al" },
-        { "name":"Allen, Carl" }
-   ],
-   "issued": {"year": "1992"},
-   "title": "Book Four"
- },
- {
-   "id":"item-6",
-   "type": "book",
-   "editor": [
-        { "name":"Smith, Al" },
-        { "name":"Frank, Beauregarde" }
-   ],
-   "issued": {"year": "1997"},
-   "title": "Book Six"
- },
- {
-   "id":"item-2",
-   "type": "book",
-   "author": [
-        { "name":"Smith, Al" }
-   ],
-   "issued": {"year": "1989"},
-   "title": "Book Two"
- },
- {
-   "id":"item-5",
-   "type": "book",
-   "editor": [
-        { "name":"Smith, Al" },
-        { "name":"Frank, Beauregarde" }
-   ],
-   "issued": {"year": "1995"},
-   "title": "Book Five"
- },
- {
-   "id":"item-7",
-   "type": "book",
-   "editor": [
-        { "name":"Smith, Al" },
-        { "name":"Roberts, Lionel" },
-        { "name":"Jones, Theresa" }
-   ],
-   "issued": {"year": "1993"},
-   "title": "Book Seven"
- },
- {
-   "id":"item-8",
-   "type": "book",
-   "editor": [
-        { "name":"Smith, Al" },
-        { "name":"Jones, Theresa" },
-        { "name":"Roberts, Lionel" }
-   ],
-   "issued": {"year": "1997"},
-   "title": "Book Eight"
- }
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "title": "Book One", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1991"
+                ]
+            ]
+        }, 
+        "title": "Book Three", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Allen", 
+                "given": "Carl", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1992"
+                ]
+            ]
+        }, 
+        "title": "Book Four", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Frank", 
+                "given": "Beauregarde", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-6", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1997"
+                ]
+            ]
+        }, 
+        "title": "Book Six", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "title": "Book Two", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Frank", 
+                "given": "Beauregarde", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1995"
+                ]
+            ]
+        }, 
+        "title": "Book Five", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roberts", 
+                "given": "Lionel", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Theresa", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-7", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1993"
+                ]
+            ]
+        }, 
+        "title": "Book Seven", 
+        "type": "book"
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Smith", 
+                "given": "Al", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Jones", 
+                "given": "Theresa", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roberts", 
+                "given": "Lionel", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-8", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1997"
+                ]
+            ]
+        }, 
+        "title": "Book Eight", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

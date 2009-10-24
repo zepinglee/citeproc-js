@@ -105,45 +105,45 @@ One &lt;i&gt;TwoH<i> Three</i> Four Five!
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "One TwoA <i>Three Four</i> Five!"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "<i>One TwoB</i> Three Four Five!"
- },
- {
-   "id":"ITEM-3",
-   "type": "book",
-   "title": "One TwoC Three <i>Four Five!</i>"
- },
- {
-   "id":"ITEM-4",
-   "type": "book",
-   "title": "<i>One TwoD</i> Three <i>Four Five!</i>"
- },
- {
-   "id":"ITEM-5",
-   "type": "book",
-   "title": "<i>One TwoE <i>Three</i> Four Five!</i>"
- },
- {
-   "id":"ITEM-6",
-   "type": "book",
-   "title": "One TwoF</i> Three Four Five!"
- },
- {
-   "id":"ITEM-7",
-   "type": "book",
-   "title": "One <i>TwoG</i> Three</i> Four Five!"
- },
- {
-   "id":"ITEM-8",
-   "type": "book",
-   "title": "One <i>TwoH<i> Three</i> Four Five!"
- }
+    {
+        "id": "ITEM-1", 
+        "title": "One TwoA <i>Three Four</i> Five!", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "title": "<i>One TwoB</i> Three Four Five!", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-3", 
+        "title": "One TwoC Three <i>Four Five!</i>", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-4", 
+        "title": "<i>One TwoD</i> Three <i>Four Five!</i>", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-5", 
+        "title": "<i>One TwoE <i>Three</i> Four Five!</i>", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-6", 
+        "title": "One TwoF</i> Three Four Five!", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-7", 
+        "title": "One <i>TwoG</i> Three</i> Four Five!", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-8", 
+        "title": "One <i>TwoH<i> Three</i> Four Five!", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

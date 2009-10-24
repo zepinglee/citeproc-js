@@ -81,26 +81,64 @@ A. Asthma, Brandon Bronchitis, et al.; A. Asthma, Biff Bronchitis, et al.
 
 
 >>===== INPUT =====>>
-[{
-   "id":"ambigs-16",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Brandon" },
-        { "name":"Cold, Charles" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book M"
-},
-{
-   "id":"ambigs-17",
-   "type": "book",
-   "author": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Biff" },
-        { "name":"Cold, Curtis" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book M"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Brandon", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Charles", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-16", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book M", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Biff", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Curtis", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ambigs-17", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book M", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

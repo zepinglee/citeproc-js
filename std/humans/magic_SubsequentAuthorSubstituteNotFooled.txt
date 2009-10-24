@@ -533,31 +533,59 @@ Chicago Author-Date.
 
 >>===== INPUT =====>>
 [
-  { 
-    "id": "ITEM-1",
-    "translator": [
-      { "name":"Silverstein, Theodore" }
-    ],
-    "title": "Sir Gawain and the Green Knight",
-    "publisher-place": "Chicago",
-    "publisher": "University of Chicago Press",
-    "issued": { "year": "1974" }
-  },
-  {  "id": "ITEM-2",
-     "editor": [
-       {"name": "Soltes, Ori A." }
-     ],
-     "title": "Georgia: Art and Civilization through the Ages",
-     "publisher-place": "London",
-     "publisher":"Philip Wilson",
-     "issued":{"year":1999}
-  },
-  {  "id": "ITEM-3",
-     "title": "The Chicago Manual of Style",
-     "edition": "14",
-     "publisher-place": "Chicago",
-     "publisher": "University of Chicago Press",
-     "issued": {"year":1993}
-  }
+    {
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1974"
+                ]
+            ]
+        }, 
+        "publisher": "University of Chicago Press", 
+        "publisher-place": "Chicago", 
+        "title": "Sir Gawain and the Green Knight", 
+        "translator": [
+            {
+                "family": "Silverstein", 
+                "given": "Theodore", 
+                "static-ordering": false
+            }
+        ]
+    }, 
+    {
+        "editor": [
+            {
+                "family": "Soltes", 
+                "given": "Ori A.", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    1999
+                ]
+            ]
+        }, 
+        "publisher": "Philip Wilson", 
+        "publisher-place": "London", 
+        "title": "Georgia: Art and Civilization through the Ages"
+    }, 
+    {
+        "edition": "14", 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    1993
+                ]
+            ]
+        }, 
+        "publisher": "University of Chicago Press", 
+        "publisher-place": "Chicago", 
+        "title": "The Chicago Manual of Style"
+    }
 ]
 <<===== INPUT =====<<

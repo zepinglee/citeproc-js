@@ -114,41 +114,81 @@ Roe, Her Book, supra note 2.
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" }
-   ],
-   "issued": { "year": "2000" },
-   "title": "His Book"
- },
- {
-    "id":"ITEM-2",
-    "type":"book",
-    "author": [
-        { "name": "Doe, John" }
-    ],
-   "title": "His Other Book",
-   "issued": { "year": "2001" }
- },
- {
-    "id":"ITEM-3",
-    "type":"book",
-    "author": [
-        { "name": "Roe, Jane" }
-    ],
-   "issued": { "year": "1998" },
-   "title": "Her Book"
- },
- {
-    "id":"ITEM-4",
-    "type":"book",
-    "author": [
-        { "name": "Roe, Jane" }
-    ],
-   "issued": { "year": "1999" },
-   "title": "Her Other Book"
- }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "His Book", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2001"
+                ]
+            ]
+        }, 
+        "title": "His Other Book", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1998"
+                ]
+            ]
+        }, 
+        "title": "Her Book", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1999"
+                ]
+            ]
+        }, 
+        "title": "Her Other Book", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

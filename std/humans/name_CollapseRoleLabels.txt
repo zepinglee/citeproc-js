@@ -79,20 +79,52 @@ Albert Asthma, et al. (eds. &amp; trans.)
 
 
 >>===== INPUT =====>>
-[{
-   "id":"editor-translator-1",
-   "type": "book",
-   "editor": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" }
-   ],
-   "translator": [
-        { "name":"Asthma, Albert" },
-        { "name":"Bronchitis, Bosworth" },
-        { "name":"Cold, Crispin" }
-   ],
-   "issued": {"year": "1990"},
-   "title": "Book One"
-}]
+[
+    {
+        "editor": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "editor-translator-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "Book One", 
+        "translator": [
+            {
+                "family": "Asthma", 
+                "given": "Albert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Bronchitis", 
+                "given": "Bosworth", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Cold", 
+                "given": "Crispin", 
+                "static-ordering": false
+            }
+        ], 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

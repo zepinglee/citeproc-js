@@ -51,8 +51,7 @@ Beato Takeshi, T. Kitano, R. Atkinson
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en-US
-                      -x-name-ja-Latn-hepburn">
+      default-locale="en-US-x-name-ja-Latn-hepburn">
   <info>
     <id />
     <title />
@@ -74,16 +73,36 @@ Beato Takeshi, T. Kitano, R. Atkinson
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-     { "name": "ビート, たけし" },
-     { "name": ":ja-Latn-hepburn:   Beato, Takeshi" },
-     { "name": "北野, 武" },
-     { "name": ":en:   Kitano, Takeshi" },
-     { "name": "Atkinson, Rowan" }
-   ]
- }
+    {
+        "author": [
+            {
+                "family": "ビート", 
+                "given": "たけし", 
+                "static-ordering": false
+            }, 
+            {
+                "family": ":ja-Latn-hepburn:   Beato", 
+                "given": "Takeshi", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "北野", 
+                "given": "武", 
+                "static-ordering": false
+            }, 
+            {
+                "family": ":en:   Kitano", 
+                "given": "Takeshi", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Atkinson", 
+                "given": "Rowan", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

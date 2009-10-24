@@ -72,18 +72,24 @@ citation
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "issued": {
-      "day": 10,
-      "month": 8,
-      "year": 2003,
-      "day_end": 23,
-      "month_end": 8,
-      "year_end":  2003
-    },
-    "title": "Ignore me"
-  }
+    {
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    2003, 
+                    8, 
+                    10
+                ], 
+                [
+                    2003, 
+                    8, 
+                    23
+                ]
+            ]
+        }, 
+        "title": "Ignore me", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

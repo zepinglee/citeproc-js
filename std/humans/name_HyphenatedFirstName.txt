@@ -69,12 +69,16 @@ H.-X. L. Y. Liu
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "author": [
-      { "name":"Liu, Hui-Xiao Li Yuan" }
-    ]
-  }
+    {
+        "author": [
+            {
+                "family": "Liu", 
+                "given": "Hui-Xiao Li Yuan", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

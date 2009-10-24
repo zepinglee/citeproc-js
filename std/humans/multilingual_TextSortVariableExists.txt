@@ -71,15 +71,15 @@ Zzzzzzzzz; Aardvaark
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "Aardvaark :ja-Hrkt:  お"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "Zzzzzzzzz :ja-Hrkt: あ"
- }
+    {
+        "id": "ITEM-1", 
+        "title": "Aardvaark :ja-Hrkt:  お", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "title": "Zzzzzzzzz :ja-Hrkt: あ", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

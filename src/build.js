@@ -80,8 +80,9 @@ CSL.Engine = function(sys,style,lang) {
 	if (this.cslXml["@demote-non-dropping-particle"].toString()){
 		this.opt["demote-non-dropping-particle"] = this.cslXml["@demote-non-dropping-particle"].toString();
 	}
-	if (this.cslXml["@initialize-without-hyphen"].toString() == "true"){
-		this.opt["initialize-without-hyphen"] = true;
+	this.opt["initialize-with-hyphen"] = true;
+	if (this.cslXml["@initialize-with-hyphen"].toString() == "false"){
+		this.opt["initialize-with-hyphen"] = false;
 	}
 	//
 	// implicit default, "en"
@@ -489,7 +490,31 @@ CSL.Engine.prototype.retrieveItems = function(ids){
 	return ret;
 };
 
-CSL.Engine.prototype.dateParse = function(txt){
+CSL.Engine.prototype.dateParseArray = function( date_obj ){
+	var ret = new Object();
+	for (var field in date_obj){
+		if (field == "date-parts"){
+			var dp = date_obj["date-parts"];
+			if ( dp.length > 1 ){
+				if ( dp[0].length != dp[1].length){
+					print("CSL data error: element mismatch in date range input.");
+				}
+			}
+			var parts = ["year", "month", "day"];
+			var exts = ["","_end"];
+			for (var dpos in dp){
+				for (var ppos in parts){
+					ret[(parts[ppos]+exts[dpos])] = dp[dpos][ppos];
+				}
+			}
+		} else {
+			ret[field] = date_obj[field];
+		}
+	}
+	return ret;
+}
+
+CSL.Engine.prototype.dateParseRaw = function(txt){
 
 	// XXXXX: With all these constants, this parser should really
 	// be a separate, standalone module that is instantiated in
@@ -697,9 +722,6 @@ CSL.Engine.prototype.dateParse = function(txt){
 		}
 		suff = "_end";
 	}
-
-	// #################### when that's done ##################
-
 	//
 	// update any missing elements on each side of the divide
 	// from the other
@@ -740,7 +762,7 @@ CSL.Engine.prototype.parseNumericDate = function(ret,delim,suff,txt){
 		lst[pos] = parseInt(lst[pos],10);
 	}
 	//
-	// XXXXX: Needs month and day parse
+	// month and day parse
 	//
 	if (lst.length == 1){
 		ret["month"+suff] = ""+lst[0];

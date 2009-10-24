@@ -104,40 +104,150 @@ citation
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "author": [{"name":"Condit, John"},{"name":"Doe, John"},{"name":"Roe, Jane"},{"name":"Smith, John"}],
-    "title": "Book A",
-    "issued": {"year":"2000"}
-  },
-  {
-    "id":"ITEM-2",
-    "type": "book",
-    "author": [{"name":"Condit, John"},{"name":"Doe, John"},{"name":"Roe, Jane"},{"name":"Smith, John"}],
-    "title": "Book B",
-    "issued": {"year":"1995"}
-  },
-  {
-    "id":"ITEM-3",
-    "type": "book",
-    "author": [{"name":"Condit, John"},{"name":"Doe, John"},{"name":"Roe, Jane"},{"name":"Smith, John"}],
-    "title": "Book C",
-    "issued": {"year":"1998"}
-  },
-  {
-    "id":"ITEM-4",
-    "type": "book",
-    "author": [{"name":"Connell, John"}],
-    "title": "Book D",
-    "issued": {"year":"1971"}
-  },
-  {
-    "id":"ITEM-5",
-    "type": "book",
-    "author": [{"name":"Cortes, John"},{"name":"Hunziker, John"}],
-    "title": "Book E",
-    "issued": {"year":"1971"}
-  }
+    {
+        "author": [
+            {
+                "family": "Condit", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Condit", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1995"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Condit", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1998"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Connell", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1971"
+                ]
+            ]
+        }, 
+        "title": "Book D", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Cortes", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Hunziker", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1971"
+                ]
+            ]
+        }, 
+        "title": "Book E", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

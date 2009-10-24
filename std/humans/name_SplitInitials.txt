@@ -68,13 +68,27 @@ JJ Doe
 
 
 >>===== INPUT =====>>
-[{
-   "id":"simple-western-name-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, J.J." }
-   ],
-   "issued": {"year": "1965", "month":"6", "day":"1"},
-   "title": "His Anonymous Life"
-}]
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "J.J.", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "simple-western-name-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965", 
+                    "6", 
+                    "1"
+                ]
+            ]
+        }, 
+        "title": "His Anonymous Life", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

@@ -71,19 +71,43 @@ citation
 
 >>===== INPUT =====>>
 [
- {
-   "id":"item-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" },
-        { "name":"Brown, Robert" },
-        { "name":"Smith, Tom" }
-   ],
-   "editor": [
-        { "name":"Noakes, John" },
-        { "name":"Stoakes, Richard" }
-   ]
- }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Brown", 
+                "given": "Robert", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Smith", 
+                "given": "Tom", 
+                "static-ordering": false
+            }
+        ], 
+        "editor": [
+            {
+                "family": "Noakes", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Stoakes", 
+                "given": "Richard", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "item-1", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

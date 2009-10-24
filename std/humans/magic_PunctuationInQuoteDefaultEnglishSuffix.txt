@@ -74,15 +74,23 @@ Doe, “Book A,” 1900.
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "title":"Book A",
-    "author": [
-      { "name": "Doe, John" }
-    ],
-    "issued": {
-      "year":1900
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    1900
+                ]
+            ]
+        }, 
+        "title": "Book A"
     }
-  }
 ]
 <<===== INPUT =====<<

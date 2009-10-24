@@ -80,10 +80,10 @@ Some Book or Other (n.d.)
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type": "book",
-    "title": "Some Book or Other"
-  }
+    {
+        "id": "ITEM-1", 
+        "title": "Some Book or Other", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

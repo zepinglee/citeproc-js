@@ -114,47 +114,101 @@ citation
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "article-journal",
-   "author": [
-        { "name":"Baur, Bruno" },
-        { "name": "Fröberg, Lars" },
-        { "name": "Baur, Anette" },
-        { "name": "Guggenheim, Richard" },
-        { "name": "Haase, Martin" }
-   ],
-   "issued": { "year": "2000" },
-   "title": "Ultrastructure of snail grazing damage to calcicolous lichens",
-   "container-title": "Nordic Journal of Botany",
-   "volume": "20",
-   "page-range": "119-128"
- },
- {
-    "id":"ITEM-2",
-    "type":"article-journal",
-    "author": [
-        { "name": "Baur, Bruno" },
-        { "name": "Schileyko, Anatoly A." },
-        { "name": "Baur, Anette" }
-    ],
-   "issued": { "year": "2000" },
-   "title": "Ecological observations on _Arianta aethiops aethiops_ (Helicidae), a land snail endemic to the South Carpathian mountains, Romania",
-   "container-title": "Journal of Molluscan Studies",
-   "volume": "66",
-   "page-range": "285-289"
- },
- {
-    "id":"ITEM-3",
-    "type":"article-journal",
-    "author": [
-        { "name": "Doe, John" }
-    ],
-   "issued": { "year": "2000" },
-   "title": "Some bogus title",
-   "container-title": "Journal of Irreproducible Results",
-   "volume": "666",
-   "page-range": "000-1"
- }
+    {
+        "author": [
+            {
+                "family": "Baur", 
+                "given": "Bruno", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Fröberg", 
+                "given": "Lars", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Baur", 
+                "given": "Anette", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Guggenheim", 
+                "given": "Richard", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Haase", 
+                "given": "Martin", 
+                "static-ordering": false
+            }
+        ], 
+        "container-title": "Nordic Journal of Botany", 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "page-range": "119-128", 
+        "title": "Ultrastructure of snail grazing damage to calcicolous lichens", 
+        "type": "article-journal", 
+        "volume": "20"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Baur", 
+                "given": "Bruno", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Schileyko", 
+                "given": "Anatoly A.", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Baur", 
+                "given": "Anette", 
+                "static-ordering": false
+            }
+        ], 
+        "container-title": "Journal of Molluscan Studies", 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "page-range": "285-289", 
+        "title": "Ecological observations on _Arianta aethiops aethiops_ (Helicidae), a land snail endemic to the South Carpathian mountains, Romania", 
+        "type": "article-journal", 
+        "volume": "66"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "container-title": "Journal of Irreproducible Results", 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "page-range": "000-1", 
+        "title": "Some bogus title", 
+        "type": "article-journal", 
+        "volume": "666"
+    }
 ]
 <<===== INPUT =====<<

@@ -99,55 +99,95 @@ initial.
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "title":"Book A",
-    "author": [
-      { "name": "Doe, John" }
-    ],
-    "issued": {
-      "year":1960
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    1960
+                ]
+            ]
+        }, 
+        "title": "Book A"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "Jake", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    1960
+                ]
+            ]
+        }, 
+        "title": "Book B"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    1980
+                ]
+            ]
+        }, 
+        "title": "Book C"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Brown", 
+                "given": "Robert", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-4", 
+        "issued": {
+            "date-parts": [
+                [
+                    1990
+                ]
+            ]
+        }, 
+        "title": "Book D"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Ichi", 
+                "given": "Taro", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    2000
+                ]
+            ]
+        }, 
+        "title": "Book E"
     }
-  },
-  {
-    "id":"ITEM-2",
-    "title":"Book B",
-    "author": [
-      { "name": "Doe, Jake" }
-    ],
-    "issued": {
-      "year":1960
-    }
-  },
-  {
-    "id":"ITEM-3",
-    "title":"Book C",
-    "author": [
-      { "name": "Smith, John" }
-    ],
-    "issued": {
-      "year":1980
-    }
-  },
-  {
-    "id":"ITEM-4",
-    "title":"Book D",
-    "author": [
-      { "name": "Brown, Robert" }
-    ],
-    "issued": {
-      "year":1990
-    }
-  },
-  {
-    "id":"ITEM-5",
-    "title":"Book E",
-    "author": [
-      { "name": "Ichi, Taro" }
-    ],
-    "issued": {
-      "year":2000
-    }
-  }
 ]
 <<===== INPUT =====<<

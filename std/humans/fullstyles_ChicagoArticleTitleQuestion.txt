@@ -425,18 +425,28 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-5",
-    "type":"article-journal",
-    "author": [
-      {"name":"Doe, John"}
-    ],
-    "title": "An article is it?",
-    "container-title": "New Thinker",
-    "volume": "10",
-    "page" : "5",
-    "description":"Pretty good article",
-    "issued": {"year":"1994"}
-  }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "container-title": "New Thinker", 
+        "description": "Pretty good article", 
+        "id": "ITEM-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1994"
+                ]
+            ]
+        }, 
+        "page": "5", 
+        "title": "An article is it?", 
+        "type": "article-journal", 
+        "volume": "10"
+    }
 ]
 <<===== INPUT =====<<

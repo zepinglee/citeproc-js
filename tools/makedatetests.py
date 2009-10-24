@@ -42,7 +42,7 @@ template4 = '''
 
 template3 = '''
     function test_dateparse%0.3d() {
-        var res = citeproc.dateParse("%s");%s
+        var res = citeproc.dateParseRaw("%s");%s
     }
 '''.strip()
 

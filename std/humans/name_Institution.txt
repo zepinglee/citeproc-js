@@ -68,13 +68,24 @@ Ministry of Education, Sports, Culture, Science and Technology
 
 
 >>===== INPUT =====>>
-[{
-   "id":"institution-name-1",
-   "type": "book",
-   "author": [
-        { "name":"Ministry of Education, Sports, Culture, Science and Technology !!" }
-   ],
-   "issued": "2006",
-   "title": "White Paper on Education, Sports, Culture, Science and Technology"
-}]
+[
+    {
+        "author": [
+            {
+                "literal": "Ministry of Education, Sports, Culture, Science and Technology", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "institution-name-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2006"
+                ]
+            ]
+        }, 
+        "title": "White Paper on Education, Sports, Culture, Science and Technology", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

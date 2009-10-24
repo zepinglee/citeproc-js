@@ -68,15 +68,15 @@ citation
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "title": "民法 :ja-Latn-hepburn: Minpō"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "title": "刑法 :ja-Latn-hepburn: Keihō"
- }
+    {
+        "id": "ITEM-1", 
+        "title": "民法 :ja-Latn-hepburn: Minpō", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-2", 
+        "title": "刑法 :ja-Latn-hepburn: Keihō", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

@@ -51,7 +51,7 @@ Chen, H.L.
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      initialize-without-hyphen="true">
+      initialize-with-hyphen="false">
   <info>
     <id />
     <title />
@@ -69,13 +69,25 @@ Chen, H.L.
 
 
 >>===== INPUT =====>>
-[{
-   "id":"item-1",
-   "type": "book",
-   "translator": [
-        { "name": "Chen, Hsien-Li" }
-   ],
-   "issued": "1933",
-   "title": "Book A"
-}]
+[
+    {
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1933"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "translator": [
+            {
+                "family": "Chen", 
+                "given": "Hsien-Li", 
+                "static-ordering": false
+            }
+        ], 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

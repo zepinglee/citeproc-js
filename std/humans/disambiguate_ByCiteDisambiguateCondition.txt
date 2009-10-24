@@ -89,25 +89,53 @@ Doe, et al., <i>Book A</i> (2000); Doe, et al., <i>Book B</i> (2000)
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book A"
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"Doe, John" },
-        { "name":"Roe, Jane" }
-   ],
-   "issued": {"year": "2000"},
-   "title": "Book B"
- }
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book A", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2000"
+                ]
+            ]
+        }, 
+        "title": "Book B", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

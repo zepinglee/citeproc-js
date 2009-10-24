@@ -68,13 +68,27 @@ Jeffrey Doe, Jr.
 
 
 >>===== INPUT =====>>
-[{
-   "id": "item-1",
-   "type": "book",
-   "author": [
-        { "name":"Doe, Jeffrey,! Jr." }
-   ],
-   "issued": "2001",
-   "title": "My Life as an Anonymous Heir"
-}]
+[
+    {
+        "author": [
+            {
+                "comma_suffix": true, 
+                "family": "Doe", 
+                "given": "Jeffrey", 
+                "static-ordering": false, 
+                "suffix": "Jr."
+            }
+        ], 
+        "id": "item-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2001"
+                ]
+            ]
+        }, 
+        "title": "My Life as an Anonymous Heir", 
+        "type": "book"
+    }
+]
 <<===== INPUT =====<<

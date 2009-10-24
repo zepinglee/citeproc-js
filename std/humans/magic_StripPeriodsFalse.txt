@@ -69,11 +69,11 @@ citation
 
 >>===== INPUT =====>>
 [
-  {
-    "id":"ITEM-1",
-    "type":"book",
-    "title":"An Article",
-    "container-title":"Am. L.J."
-  }
+    {
+        "container-title": "Am. L.J.", 
+        "id": "ITEM-1", 
+        "title": "An Article", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

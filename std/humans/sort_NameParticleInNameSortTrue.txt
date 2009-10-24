@@ -82,26 +82,41 @@ bibliography
 
 >>===== INPUT =====>>
 [
- {
-   "id":"ITEM-1",
-   "type": "book",
-   "author": [
-        { "name":"van Roe, Jane" }
-   ]
- },
- {
-   "id":"ITEM-2",
-   "type": "book",
-   "author": [
-        { "name":"di Noakes, John" }
-   ]
- },
- {
-   "id":"ITEM-3",
-   "type": "book",
-   "author": [
-        { "name":"von Doe, John" }
-   ]
- }
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "non-dropping-particle": "van", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Noakes", 
+                "given": "John", 
+                "non-dropping-particle": "di", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "non-dropping-particle": "von", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<
