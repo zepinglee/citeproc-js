@@ -332,6 +332,19 @@ CSL.Lib.Attributes["@match"] = function(state,arg){
 	};
 };
 
+CSL.Lib.Attributes["@uncertain-date"] = function(state,arg){
+	var variables = arg.split(/\s+/);
+	for each (var variable in variables){
+		var func = function(state,Item){
+			if (Item[variable] && Item[variable].circa){
+				return true;
+			}
+			return false;
+		};
+		this["tests"].push(func);
+	};
+};
+
 CSL.Lib.Attributes["@is-numeric"] = function(state,arg){
 	var variables = arg.split(/\s+/);
 	for each (var variable in variables){

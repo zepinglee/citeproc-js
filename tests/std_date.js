@@ -180,6 +180,10 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("date_Uncertain");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("date_YearSuffixDelimiter");
         doh.assertEqual(test.result, test.run());
     },

@@ -1069,13 +1069,6 @@ CSL.Lib.Elements.date = new function(){
 						state.tmp.date_object = {};
 					}
 					tok.strings.suffix = " ";
-					//
-					// XXXXX: Needs to be extended to recognize a circa="term|braces"
-					// option.
-					//
-					if (state.tmp.date_object["circa"]){
-						state.output.append(state.tmp.date_object["circa"],tok);
-					};
 				};
 				this["execs"].push(newoutput);
 			};
