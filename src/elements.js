@@ -634,8 +634,40 @@ CSL.Lib.Elements.name = new function(){
 		state.fixOpt(this,"name-as-sort-order","name-as-sort-order");
 		state.fixOpt(this,"sort-separator","sort-separator");
 
+		state.fixOpt(this,"et-al-min","et-al-min");
+		state.fixOpt(this,"et-al-use-first","et-al-use-first");
+		state.fixOpt(this,"et-al-subsequent-min","et-al-subsequent-min");
+		state.fixOpt(this,"et-al-subsequent-use-first","et-al-subsequent-use-first");
+
 		state.build.form = this.strings.form;
 		state.build.name_flag = true;
+
+			var set_et_al_params = function(state,Item){
+				if (Item.position || state.tmp.force_subsequent){
+						if (! state.tmp["et-al-min"]){
+							if (this.strings["et-al-subsequent-min"]){
+								state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
+							} else {
+								state.tmp["et-al-min"] = this.strings["et-al-min"];
+							}
+						}
+						if (! state.tmp["et-al-use-first"]){
+							if (this.strings["et-al-subsequent-use-first"]){
+								state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
+							} else {
+								state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
+							}
+						}
+				} else {
+						if (! state.tmp["et-al-min"]){
+							state.tmp["et-al-min"] = this.strings["et-al-min"];
+						}
+						if (! state.tmp["et-al-use-first"]){
+							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
+						}
+				}
+			};
+			this["execs"].push(set_et_al_params);
 
 		var func = function(state,Item){
 			state.output.addToken("name",false,this);
