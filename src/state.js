@@ -43,6 +43,17 @@ CSL.Engine.Opt = function (){
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
+	/**
+	 * Default values.
+	 * <p>The various et-al values are set globally,
+	 * and the appropriate value is set by the names start
+	 * tag at runtime, depending on whether the Item is a
+	 * first or a subsequent reference.</p>
+	 */
+	this["et-al-min"] = 0;
+	this["et-al-use-first"] = 1;
+	this["et-al-subsequent-min"] = false;
+	this["et-al-subsequent-use-first"] = false;
 };
 
 
@@ -290,17 +301,6 @@ CSL.Engine.Citation = function (){
 	 */
 	this.opt = new Object();
 	this.tokens = new Array();
-	/**
-	 * Default values.
-	 * <p>The various et-al values are set globally,
-	 * and the appropriate value is set by the names start
-	 * tag at runtime, depending on whether the Item is a
-	 * first or a subsequent reference.</p>
-	 */
-	this.opt["et-al-min"] = 0;
-	this.opt["et-al-use-first"] = 1;
-	this.opt["et-al-subsequent-min"] = false;
-	this.opt["et-al-subsequent-use-first"] = false;
 	//
 	// configuration array to hold the collapse
 	// options, if any.
@@ -322,18 +322,6 @@ CSL.Engine.Bibliography = function (){
 	 */
 	this.opt = new Object();
 	this.tokens = new Array();
-
-	/**
-	 * Default values.
-	 * <p>The various et-al values are set globally,
-	 * and the appropriate value is set by the names start
-	 * tag at runtime, depending on whether the Item is a
-	 * first or a subsequent reference.</p>
-	 */
-	this.opt["et-al-min"] = 0;
-	this.opt["et-al-use-first"] = 1;
-	this.opt["et-al-subsequent-min"] = 0;
-	this.opt["et-al-subsequent-use-first"] = 1;
 
 	this.opt.collapse = new Array();
 	this.opt["disambiguate-add-names"] = false;

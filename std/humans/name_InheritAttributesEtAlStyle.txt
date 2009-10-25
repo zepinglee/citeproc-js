@@ -32,19 +32,62 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_fullstyles");
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
 
-doh.register("tests.std_fullstyles", [
-    function(){
-        var test = new StdRhinoTest("fullstyles_ChicagoAuthorDateSimple");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("fullstyles_ChicagoArticleTitleQuestion");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("fullstyles_ChicagoNoteWithBibliographyWithPublisher");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+>>===== SCHEMA =====>>
+1.0
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Doe, Roe, et al.
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      et-al-min="3"
+      et-al-use-first="2">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <names variable="author">
+        <name delimiter=", "/>
+      </names>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "literal": "Doe"
+            }, 
+            {
+                "literal": "Roe"
+            }, 
+            {
+                "literal": "Noakes"
+            }, 
+            {
+                "literal": "Stoakes"
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

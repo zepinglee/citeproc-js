@@ -51,6 +51,14 @@ dojo.provide("csl.attributes");
  */
 CSL.Lib.Attributes = {};
 
+CSL.Lib.Attributes["@class"] = function(state,arg){
+	state.opt["class"] = arg;
+};
+
+CSL.Lib.Attributes["@version"] = function(state,arg){
+	state.opt["version"] = arg;
+}
+
 /**
  * Store the value attribute on the token.
  * @name CSL.Lib.Attributes.@value
@@ -276,31 +284,6 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 	};
 };
 
-
-/**
- * Store "and" flag on the token
- * @name CSL.Lib.Attributes.@and
- * @function
- */
-CSL.Lib.Attributes["@and"] = function(state,arg){
-	if ("symbol" == arg){
-		this.strings["and"] = "&";
-	} else {
-		var and = state.getTerm("and","long",0);
-		this.strings["and"] = and;
-	}
-};
-
-/**
- * Store "initialize-with" string in build object
- * @name CSL.Lib.Attributes.@initialize_with
- * @function
- */
-CSL.Lib.Attributes["@initialize-with"] = function(state,arg){
-	this.strings["initialize-with"] = arg;
-};
-
-
 /*
  * Store suffix string on token.
  * @name CSL.Lib.Attributes.@suffix
@@ -348,21 +331,6 @@ CSL.Lib.Attributes["@match"] = function(state,arg){
 		this.evaluator = evaluator;
 	};
 };
-
-CSL.Lib.Attributes["@sort-separator"] = function(state,arg){
-	this.strings["sort-separator"] = arg;
-};
-
-
-CSL.Lib.Attributes["@delimiter-precedes-last"] = function(state,arg){
-	this.strings["delimiter-precedes-last"] = arg;
-};
-
-
-CSL.Lib.Attributes["@name-as-sort-order"] = function(state,arg){
-	this.strings["name-as-sort-order"] = arg;
-};
-
 
 CSL.Lib.Attributes["@is-numeric"] = function(state,arg){
 	var variables = arg.split(/\s+/);
@@ -466,29 +434,61 @@ CSL.Lib.Attributes["@collapse"] = function(state,arg){
 };
 
 
+
+CSL.Lib.Attributes["@names-delimiter"] = function(state,arg){
+	state.setOpt(this,"names-delimiter", arg);
+}
+
+CSL.Lib.Attributes["@name-form"] = function(state,arg){
+	state.setOpt(this,"name-form", arg);
+}
+
+CSL.Lib.Attributes["@name-delimiter"] = function(state,arg){
+	state.setOpt(this,"name-delimiter", arg);
+}
+
 CSL.Lib.Attributes["@et-al-min"] = function(state,arg){
-	if (arg){
-		state[this.name].opt["et-al-min"] = parseInt(arg, 10);
-	};
+	state.setOpt(this,"et-al-min", parseInt(arg, 10));
 };
 
 CSL.Lib.Attributes["@et-al-use-first"] = function(state,arg){
-	if (arg){
-		state[this.name].opt["et-al-use-first"] = parseInt(arg, 10);
-	};
+	state.setOpt(this,"et-al-use-first", parseInt(arg, 10));
 };
 
 CSL.Lib.Attributes["@et-al-subsequent-min"] = function(state,arg){
-	if (arg){
-		state[this.name].opt["et-al-subsequent-min"] = parseInt(arg, 10);
-	};
+	state.setOpt(this,"et-al-subsequent-min", parseInt(arg, 10));
 };
 
 CSL.Lib.Attributes["@et-al-subsequent-use-first"] = function(state,arg){
-	if (arg){
-		state[this.name].opt["et-al-subsequent-use-first"] = parseInt(arg, 10);
-	};
+	state.setOpt(this,"et-al-subsequent-use-first", parseInt(arg, 10));
 };
+
+CSL.Lib.Attributes["@and"] = function(state,arg){
+	var myarg = "&";
+	if ( "text" == arg) {
+		var and = state.getTerm("and","long",0);
+		myarg = and;
+	}
+	state.setOpt(this,"and",myarg);
+};
+
+CSL.Lib.Attributes["@delimiter-precedes-last"] = function(state,arg){
+	state.setOpt(this,"delimiter-precedes-last",arg);
+};
+
+CSL.Lib.Attributes["@initialize-with"] = function(state,arg){
+	state.setOpt(this,"initialize-with",arg);
+};
+
+CSL.Lib.Attributes["@name-as-sort-order"] = function(state,arg){
+	state.setOpt(this,"name-as-sort-order",arg);
+};
+
+CSL.Lib.Attributes["@sort-separator"] = function(state,arg){
+	state.setOpt(this,"sort-separator",arg);
+};
+
+
 
 CSL.Lib.Attributes["@year-suffix-delimiter"] = function(state,arg){
 	state[this.name].opt["year-suffix-delimiter"] = arg;
@@ -565,3 +565,26 @@ CSL.Lib.Attributes["@text-case"] = function(state,arg){
 	this.strings["text-case"] = arg;
 };
 
+
+CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
+	state.opt["page-range-format"] = arg;
+}
+
+
+CSL.Lib.Attributes["@default-locale"] = function(state,arg){
+	var lst = arg;
+	lst = lst.split(/-x-(sort|pri|sec|name)-/);
+	for (var pos=1; pos<lst.length; pos += 2){
+		state.opt[("locale-"+lst[pos])].push(lst[(pos+1)].replace(/^\s*/g,"").replace(/\s*$/g,""));
+	};
+}
+
+CSL.Lib.Attributes["@demote-non-dropping-particle"] = function(state,arg){
+	state.opt["demote-non-dropping-particle"] = arg;
+}
+
+CSL.Lib.Attributes["@initialize-with-hyphen"] = function(state,arg){
+	if (arg == "false"){
+		state.opt["initialize-with-hyphen"] = false;
+	}
+}

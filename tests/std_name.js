@@ -36,6 +36,10 @@ dojo.provide("tests.std_name");
 
 doh.register("tests.std_name", [
     function(){
+        var test = new StdRhinoTest("name_InheritAttributesEtAlStyle");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("name_ArticularPlain");
         doh.assertEqual(test.result, test.run());
     },

@@ -38,7 +38,7 @@ bibliography
 
 
 >>===== SCHEMA =====>>
-0.9
+1.0
 <<===== SCHEMA =====<<
 
 

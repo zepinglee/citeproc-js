@@ -50,6 +50,12 @@ CSL.Lib.Elements.names = new function(){
 			CSL.Util.substituteStart.call(this,state,target);
 			state.build.substitute_level.push(1);
 
+			state.fixOpt(this,"names-delimiter","delimiter");
+			state.fixOpt(this,"et-al-min","et-al-min");
+			state.fixOpt(this,"et-al-use-first","et-al-use-first");
+			state.fixOpt(this,"et-al-subsequent-min","et-al-subsequent-min");
+			state.fixOpt(this,"et-al-subsequent-use-first","et-al-subsequent-use-first");
+
 			var init_names = function(state,Item){
 				//
 				// XXXXX: could be wrong here
@@ -88,29 +94,27 @@ CSL.Lib.Elements.names = new function(){
 			var set_et_al_params = function(state,Item){
 				state.output.startTag("names",this);
 				state.tmp.name_node = state.output.current.value();
-				// No value or zero means a first reference,
-				// anything else is a subsequent reference.
 				if (Item.position || state.tmp.force_subsequent){
 						if (! state.tmp["et-al-min"]){
-							if (state[state.tmp.area].opt["et-al-subsequent-min"]){
-								state.tmp["et-al-min"] = state[state.tmp.area].opt["et-al-subsequent-min"];
+							if (this.strings["et-al-subsequent-min"]){
+								state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
 							} else {
-								state.tmp["et-al-min"] = state[state.tmp.area].opt["et-al-min"];
+								state.tmp["et-al-min"] = this.strings["et-al-min"];
 							}
 						}
 						if (! state.tmp["et-al-use-first"]){
-							if (state[state.tmp.area].opt["et-al-subsequent-use-first"]){
-								state.tmp["et-al-use-first"] = state[state.tmp.area].opt["et-al-subsequent-use-first"];
+							if (this.strings["et-al-subsequent-use-first"]){
+								state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
 							} else {
-								state.tmp["et-al-use-first"] = state[state.tmp.area].opt["et-al-use-first"];
+								state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 							}
 						}
 				} else {
 						if (! state.tmp["et-al-min"]){
-							state.tmp["et-al-min"] = state[state.tmp.area].opt["et-al-min"];
+							state.tmp["et-al-min"] = this.strings["et-al-min"];
 						}
 						if (! state.tmp["et-al-use-first"]){
-							state.tmp["et-al-use-first"] = state[state.tmp.area].opt["et-al-use-first"];
+							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 						}
 				}
 			};

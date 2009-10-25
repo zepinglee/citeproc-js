@@ -626,6 +626,14 @@ CSL.Lib.Elements.name = new function(){
 	this.build = build;
 	function build(state,target){
 
+		state.fixOpt(this,"name-delimiter","delimiter");
+		state.fixOpt(this,"name-form","form");
+		state.fixOpt(this,"and","and");
+		state.fixOpt(this,"delimiter-precedes-last","delimiter-precedes-last");
+		state.fixOpt(this,"initialize-with","initialize-with");
+		state.fixOpt(this,"name-as-sort-order","name-as-sort-order");
+		state.fixOpt(this,"sort-separator","sort-separator");
+
 		state.build.form = this.strings.form;
 		state.build.name_flag = true;
 

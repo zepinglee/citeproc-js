@@ -67,23 +67,9 @@ CSL.Engine = function(sys,style,lang) {
 	// in the compile phase, in the flattened version of the style,
 	// which should be simpler anyway.
 	//
-	if (this.cslXml["@page-range-format"].toString()){
-		this.opt["page-range-format"] = this.cslXml["@page-range-format"].toString();
-	}
-	if (this.cslXml["@default-locale"].toString()){
-		var lst = this.cslXml["@default-locale"].toString();
-		lst = lst.split(/-x-(sort|pri|sec|name)-/);
-		for (var pos=1; pos<lst.length; pos += 2){
-			this.opt[("locale-"+lst[pos])].push(lst[(pos+1)].replace(/^\s*/g,"").replace(/\s*$/g,""));
-		}
-	}
-	if (this.cslXml["@demote-non-dropping-particle"].toString()){
-		this.opt["demote-non-dropping-particle"] = this.cslXml["@demote-non-dropping-particle"].toString();
-	}
+
 	this.opt["initialize-with-hyphen"] = true;
-	if (this.cslXml["@initialize-with-hyphen"].toString() == "false"){
-		this.opt["initialize-with-hyphen"] = false;
-	}
+
 	//
 	// implicit default, "en"
 	this.setLocaleXml();
@@ -94,6 +80,7 @@ CSL.Engine = function(sys,style,lang) {
 	}
 	this.opt.lang = lang;
 	this.setLocaleXml( this.cslXml, lang );
+	this.setStyleAttributes();
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
 
@@ -149,6 +136,14 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	this._build(navi);
 };
 
+CSL.Engine.prototype.setStyleAttributes = function(){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var dummy = new Object();
+	dummy["name"] = this.cslXml.localName();
+	for each (var attr in this.cslXml.attributes()){
+		CSL.Lib.Attributes[("@"+attr.localName())].call(dummy,this,attr.toString());
+	}
+}
 
 CSL.Engine.prototype._build  = function(navi){
 	if (navi.getkids()){
@@ -776,3 +771,24 @@ CSL.Engine.prototype.parseNumericDate = function(ret,delim,suff,txt){
 		};
 	};
 };
+
+
+CSL.Engine.prototype.setOpt = function(token, name, value){
+	if ( token.name == "style" ){
+		this.opt[name] = value;
+	} else if ( ["citation","bibliography"].indexOf(token.name) > -1){
+		this[token.name].opt[name] = value;
+	} else {
+		token.strings[name] = value;
+	}
+}
+
+CSL.Engine.prototype.fixOpt = function(token, name, localname){
+	if ("undefined" == typeof token.strings[name]){
+		if ("undefined" != typeof this[this.build.area].opt[name]){
+			token.strings[name] = this[this.build.area].opt[name];
+		} else if ("undefined" != typeof this.opt[name]){
+			token.strings[name] = this.opt[name];
+		}
+	}
+}

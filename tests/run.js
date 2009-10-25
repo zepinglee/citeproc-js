@@ -36,6 +36,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_fullstyles");
+	dojo.require("tests.std_name");
 	dojo.require("tests.test_dateparse");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
@@ -60,7 +62,6 @@ if(true){
 	dojo.require("tests.std_affix");
 	dojo.require("tests.test_flipflopper");
 	dojo.require("tests.std_number");
-	dojo.require("tests.std_name");
 	dojo.require("tests.std_flipflop");
 	dojo.require("tests.std_condition");
 
@@ -69,7 +70,6 @@ if(true){
 
 	dojo.require("tests.test_conditions");
 	dojo.require("tests.std_discretionary");
-	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.test_build");
 	dojo.require("tests.test_sys_rhino_load");
 	dojo.require("tests.test_sys_stdrhino_load");
