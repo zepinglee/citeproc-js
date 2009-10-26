@@ -32,39 +32,61 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_nameattr");
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
 
-doh.register("tests.std_nameattr", [
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnBibliographyInBibliography");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnBibliographyInCitation");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnCitationInBibliography");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnCitationInCitation");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnNamesInBibliography");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnNamesInCitation");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnStyleInBibliography");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("nameattr_NamesDelimiterOnStyleInCitation");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+>>===== SCHEMA =====>>
+1.0
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+<div class="csl-bib-body">
+  <div class="csl-entry">John Doe AND ALSO THE EDITOR Jane Roe</div>
+</div>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <bibliography
+    names-delimiter=" AND ALSO THE EDITOR ">
+    <layout>
+      <names variable="author editor">
+        <name />
+      </names>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John"
+            }
+        ], 
+        "editor": [
+            {
+                "family": "Roe", 
+                "given": "Jane"
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

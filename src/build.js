@@ -793,7 +793,9 @@ CSL.Engine.prototype.fixOpt = function(token, name, localname){
 		if ("undefined" == typeof token.strings[name]){
 			token.strings[name] = this[this.build.area].opt[name];
 		}
-		token.strings[localname] = token.strings[name];
+		if (!token.strings[localname]){
+			token.strings[localname] = token.strings[name];
+		}
 	}
 }
 
