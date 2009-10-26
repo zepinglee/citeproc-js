@@ -36,8 +36,8 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.std_name");
+	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.test_dateparse");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
@@ -86,8 +86,8 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
 
-} else {
 
+} else {
 
 	//SNIP-START
 	// most of this stuff now needs to be refactored

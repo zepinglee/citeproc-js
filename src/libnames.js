@@ -65,7 +65,7 @@ CSL.Lib.Elements.names = new function(){
 						// if (Item[variable] && ! state.tmp.name_quash[variable]){
 						if (Item[variable]){
 							var filtered_names = state.getNameSubFields(Item[variable]);
-							filtered_names = CSL.Util.Names.rescueNameElements(filtered_names);
+							// filtered_names = CSL.Util.Names.rescueNameElements(filtered_names);
 							state.tmp.names_max.push(filtered_names.length);
 							state.tmp.value.push({"type":variable,"names":filtered_names});
 							// saving relevant names separately, for reference
@@ -104,6 +104,16 @@ CSL.Lib.Elements.names = new function(){
 				} else {
 					namesets = state.tmp.value;
 				}
+				//
+				// Normalize names for which it is requested
+				//
+				for each (var nameset in namesets){
+					for each (var name in nameset.names){
+						if (name["parse-names"]){
+							state.parseName(name);
+						}
+					}
+				}
 				var local_count = 0;
 				var nameset = new Object();
 
@@ -131,7 +141,6 @@ CSL.Lib.Elements.names = new function(){
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
-						//
 						// XXXX: This looks all messed up.  Apparently I'm using
 						// last_names_used for two purposes -- to compare namesets
 						// in a listing of nameset variables (which is what the code

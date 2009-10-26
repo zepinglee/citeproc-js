@@ -792,3 +792,31 @@ CSL.Engine.prototype.fixOpt = function(token, name, localname){
 		}
 	}
 }
+
+
+CSL.Engine.prototype.parseName = function(name){
+	if (! name["non-dropping-particle"]){
+		var m = name["family"].match(/^([ a-z]+)\s+(.*)/);
+		if (m){
+			name["non-dropping-particle"] = m[1];
+			name["family"] = m[2];
+		}
+	}
+	if (! name["suffix"]){
+		var m = name["given"].match(/(.*)\s*,!*\s*(.*)$/);
+		if (m){
+			name["given"] = m[1];
+			name["suffix"] = m[2];
+			if (m[2].match(/.*[a-z].*/)){
+				name["comma_suffix"] = true;
+			}
+		}
+	}
+	if (! name["dropping-particle"]){
+		var m = name["given"].match(/^(.*?)\s+([ a-z]+)$/);
+		if (m){
+			name["given"] = m[1];
+			name["dropping-particle"] = m[2];
+		}
+	}
+}

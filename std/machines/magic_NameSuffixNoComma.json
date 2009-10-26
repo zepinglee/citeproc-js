@@ -5,7 +5,8 @@
             "author": [
                 {
                     "family": "Doe", 
-                    "given": "John, III"
+                    "given": "John, III", 
+                    "parse-names": true
                 }
             ], 
             "id": "ITEM-1", 

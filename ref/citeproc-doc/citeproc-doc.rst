@@ -508,8 +508,8 @@ should be presented as simple strings.
 
 .. code-block:: js
 
-   { "title" : "My Anonymous Life",
-     "volume" : "10"
+   {  "title" : "My Anonymous Life",
+      "volume" : "10"
    }
 
 ^^^^^
@@ -564,12 +564,6 @@ delivered as a ``suffix`` element.
 
 __ `dirty-names`_
 
-.. admonition:: Important
-
-   Note the escaped quotation marks around the last example.
-   This is a side effect of the dirty trickery described
-   under the link above.
-
 .. code-block:: js
 
    { "author" : [
@@ -585,7 +579,7 @@ __ `dirty-names`_
          "given" : "James",
          "suffix" : "Jr."
        },
-       { "family" : "\"van der Vlist\"",
+       { "family" : "van der Vlist",
          "given" : "Eric"
        }
      ]
@@ -644,7 +638,7 @@ long as it returns true when tested by the Javascript interpreter.
 Dates
 ^^^^^
 
-Date fields are Javascript objects, within which the "date" element
+Date fields are Javascript objects, within which the "date-parts" element
 is a nested Javascript array containing a start
 date and optional end date, each of which consists of a year,
 an optional month and an optional day, in that order if present.
@@ -659,10 +653,11 @@ __ `dirty-dates`_
 
 .. code-block:: js
 
-   {
-      "date-parts" : [
-         [ "2000", "1", "15" ]
-      ]
+   {  "issued" : {
+         "date-parts" : [
+            [ "2000", "1", "15" ]
+         ]
+      }
    }
 
 Date elements may be expressed either as numeric strings or as
@@ -670,20 +665,22 @@ numbers.
 
 .. code-block:: js
    
-   {
-      "date-parts" : [ 
-         [ 1895, 11 ]
-      ]
+   {  "issued" : {
+         "date-parts" : [ 
+            [ 1895, 11 ]
+         ]
+      }
    }
 
 The ``year`` element may be negative, but never zero.
 
 .. code-block:: js
 
-   {
-      "date-parts" : [ 
-         [ -200 ]
-      ]
+   {  "issued" : {
+         "date-parts" : [ 
+            [ -200 ]
+         ]
+      }
    }
 
 A ``season`` element may
@@ -693,11 +690,12 @@ respectively.
 
 .. code-block:: js
 
-   { 
-     "date-parts" : [ 
-        [ 1950 ]
-     ],
-     "season" : "1"
+   {  "issued" : {
+         "date-parts" : [ 
+            [ 1950 ]
+         ],
+         "season" : "1"
+      }
    }
 
 Other string values are permitted in the ``season`` element, 
@@ -706,11 +704,12 @@ as literal strings, without localization:
 
 .. code-block:: js
 
-   { 
-     "date-parts" : [
-        [ 1975 ]
-     ],
-     "season" : "Trinity"
+   {  "issued" : {
+         "date-parts" : [
+            [ 1975 ]
+         ],
+         "season" : "Trinity"
+      }
    }
 
 For approximate dates, a ``circa`` element should be included,
@@ -718,11 +717,12 @@ with a non-nil value:
 
 .. code-block:: js
 
-   { 
-     "date-parts" : [
-        [ -225 ]
-     ],
-     "circa" : 1
+   {  "issued" : {
+         "date-parts" : [
+            [ -225 ]
+         ],
+         "circa" : 1
+      }
    }
 
 To input a date range, add an array representing the end date,
@@ -730,22 +730,24 @@ with corresponding elements:
 
 .. code-block:: js
 
-   {
-      "date-parts" : [
-         [ 2000, 11 ],
-         [ 2000, 12 ]
-      ]
+   {  "issued" : {
+         "date-parts" : [
+            [ 2000, 11 ],
+            [ 2000, 12 ]
+         ]
+      }
    }
 
 To specify an open-ended range, pass nil values for the end elements:
 
 .. code-block:: js
 
-   {
-     "date-parts" : [
-        [ 2008, 11 ],
-        [ 0, 0 ]
-     ]
+   {  "issued" : {
+         "date-parts" : [
+            [ 2008, 11 ],
+            [ 0, 0 ]
+         ]
+      }
    }
 
 
@@ -754,8 +756,9 @@ A literal string may be passed through as a ``literal`` element:
 
 .. code-block:: js
 
-   { 
-      "literal" : "13th century"
+   {  "issued" : {
+         "literal" : "13th century"
+      }
    }
 
 ###############
@@ -848,16 +851,20 @@ Names
 Systems that use a simple two-field entry format can encode
 ``non-dropping-particle`` and ``dropping-particle``
 elements on a name by including them in the ``family``
-or ``given`` fields, respectively:
+or ``given`` fields, respectively, setting the ``parse-names``
+flag on the name object to indicate that the processor should
+perform particle extraction on these fields:
 
 .. code-block:: js
 
    { "author" : [ 
        { "family" : "Humboldt",
-          "given" : "Alexander von"
+          "given" : "Alexander von",
+          "parse-names" : true
        },
        { "family" : "van Gogh",
-         "given" : "Vincent"
+         "given" : "Vincent",
+         "parse-names" : true
        }
      ]
    }
@@ -868,14 +875,14 @@ The extraction of "dropping" particles is done by scanning the
 ``given`` field for trailing terms that contain no uppercase letters.
 
 For some names, leading lowercase terms in the ``family`` field should
-be treated as part of the name itself, and not as particles.  Such
-names should (always) be passed to the processor wrapped in quotation
+be treated as part of the name itself, and not as particles.  The
+``parse-names`` flag should not be set on such names:
 marks:
 
 .. code-block:: js
 
    { "author" : [
-       { "family" : "\"van der Vlist\"",
+       { "family" : "van der Vlist",
           "given" : "Eric"
        }
      ]
@@ -894,7 +901,9 @@ processor's internal parser by supplying date strings as a single
 
 .. code-block:: js
 
-   { "raw" : "25 Dec 2004"
+   {  "issued" : {
+         "raw" : "25 Dec 2004"
+      }
    }
 
 Note that the parsing of raw date strings is not part of the CSL 1.0
@@ -923,12 +932,16 @@ __ `commands-categories`_
 
 .. code-block:: js
 
-   { "author" : [
-       { "family" : "Derby", "given" : "George" }
-     ],
-     "title" : "Phoenixiana",
-     "issued" : { "year" : 1873 },
-     "category" : [ "humor", "satire" ]
+   {  "author" : [
+        { "family" : "Derby", "given" : "George" }
+      ],
+      "title" : "Phoenixiana",
+      "issued" : {
+         "date-parts" : [
+            [ 1873 ]
+         ]
+      },
+      "category" : [ "humor", "satire" ]
    }
 
 Note that the ``category`` field is not part of the CSL
