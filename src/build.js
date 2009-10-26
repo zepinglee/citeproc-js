@@ -784,12 +784,16 @@ CSL.Engine.prototype.setOpt = function(token, name, value){
 }
 
 CSL.Engine.prototype.fixOpt = function(token, name, localname){
-	if ("undefined" == typeof token.strings[name]){
-		if ("undefined" != typeof this[this.build.area].opt[name]){
-			token.strings[name] = this[this.build.area].opt[name];
-		} else if ("undefined" != typeof this.opt[name]){
-			token.strings[name] = this.opt[name];
+	if ("citation" == token.name || "bibliography" == token.name){
+		if ("undefined" == typeof this[token.name].opt[name]){
+			this[token.name].opt[name] = this.opt[name];
 		}
+	}
+	if ("name" == token.name || "names" == token.name){
+		if ("undefined" == typeof token.strings[name]){
+			token.strings[name] = this[this.build.area].opt[name];
+		}
+		token.strings[localname] = token.strings[name];
 	}
 }
 

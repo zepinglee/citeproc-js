@@ -901,12 +901,6 @@ delivered as a <tt class="docutils literal"><span class="pre">suffix</span></tt>
 to the processor is described below in the section
 <img alt="link" src="link.png" /> <a class="reference" href="#dirty-names">Dirty Tricks → Input data rescue → Names</a>.</p>
 </div>
-<div class="admonition-important admonition">
-<p class="first admonition-title">Important</p>
-<p class="last">Note the escaped quotation marks around the last example.
-This is a side effect of the dirty trickery described
-under the link above.</p>
-</div>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre> 1
  2
@@ -938,7 +932,7 @@ under the link above.</p>
       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;James&quot;</span><span class="o">,</span>
       <span class="s2">&quot;suffix&quot;</span> <span class="o">:</span> <span class="s2">&quot;Jr.&quot;</span>
     <span class="p">}</span><span class="o">,</span>
-    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;\&quot;van der Vlist\&quot;&quot;</span><span class="o">,</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;van der Vlist&quot;</span><span class="o">,</span>
       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Eric&quot;</span>
     <span class="p">}</span>
   <span class="p">]</span>
@@ -1263,22 +1257,28 @@ compliant processors, when they arrive on the scene.</p>
 <p>Systems that use a simple two-field entry format can encode
 <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">dropping-particle</span></tt>
 elements on a name by including them in the <tt class="docutils literal"><span class="pre">family</span></tt>
-or <tt class="docutils literal"><span class="pre">given</span></tt> fields, respectively:</p>
+or <tt class="docutils literal"><span class="pre">given</span></tt> fields, respectively, setting the <tt class="docutils literal"><span class="pre">parse-names</span></tt>
+flag on the name object to indicate that the processor should
+perform particle extraction on these fields:</p>
 <div class="codeblock js">
-<table class="highlighttable"><tr><td class="linenos"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;author&quot;</span> <span class="o">:</span> <span class="p">[</span>
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;author&quot;</span> <span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;Humboldt&quot;</span><span class="o">,</span>
-       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Alexander von&quot;</span>
+       <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Alexander von&quot;</span><span class="o">,</span>
+       <span class="s2">&quot;parse-names&quot;</span> <span class="o">:</span> <span class="kc">true</span>
     <span class="p">}</span><span class="o">,</span>
     <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;van Gogh&quot;</span><span class="o">,</span>
-      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Vincent&quot;</span>
+      <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Vincent&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;parse-names&quot;</span> <span class="o">:</span> <span class="kc">true</span>
     <span class="p">}</span>
   <span class="p">]</span>
 <span class="p">}</span>
@@ -1290,8 +1290,8 @@ or <tt class="docutils literal"><span class="pre">given</span></tt> fields, resp
 The extraction of &quot;dropping&quot; particles is done by scanning the
 <tt class="docutils literal"><span class="pre">given</span></tt> field for trailing terms that contain no uppercase letters.</p>
 <p>For some names, leading lowercase terms in the <tt class="docutils literal"><span class="pre">family</span></tt> field should
-be treated as part of the name itself, and not as particles.  Such
-names should (always) be passed to the processor wrapped in quotation
+be treated as part of the name itself, and not as particles.  The
+<tt class="docutils literal"><span class="pre">parse-names</span></tt> flag should not be set on such names:
 marks:</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
@@ -1300,7 +1300,7 @@ marks:</p>
 4
 5
 6</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;author&quot;</span> <span class="o">:</span> <span class="p">[</span>
-    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;\&quot;van der Vlist\&quot;&quot;</span><span class="o">,</span>
+    <span class="p">{</span> <span class="s2">&quot;family&quot;</span> <span class="o">:</span> <span class="s2">&quot;van der Vlist&quot;</span><span class="o">,</span>
        <span class="s2">&quot;given&quot;</span> <span class="o">:</span> <span class="s2">&quot;Eric&quot;</span>
     <span class="p">}</span>
   <span class="p">]</span>
