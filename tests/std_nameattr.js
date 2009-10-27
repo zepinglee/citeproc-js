@@ -100,6 +100,38 @@ doh.register("tests.std_nameattr", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnBibliographyInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnBibliographyInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnCitationInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnCitationInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnNamesInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnNamesInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnStyleInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_InitializeWithOnStyleInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("nameattr_NameDelimiterOnBibliographyInBibliography");
         doh.assertEqual(test.result, test.run());
     },

@@ -416,7 +416,6 @@ CSL.Lib.Elements.citation = new function(){
 		if (this.tokentype == CSL.START) {
 
 			state.fixOpt(this,"names-delimiter","delimiter");
-
 			state.fixOpt(this,"name-delimiter","delimiter");
 			state.fixOpt(this,"name-form","form");
 			state.fixOpt(this,"and","and");
