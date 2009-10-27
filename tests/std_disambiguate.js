@@ -36,15 +36,15 @@ dojo.provide("tests.std_disambiguate");
 
 doh.register("tests.std_disambiguate", [
     function(){
+        var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_AllNamesBaseNameCountOnFailureIfYearSuffixAvailable");
         doh.assertEqual(test.result, test.run());
     },
     function(){
         var test = new StdRhinoTest("disambiguate_AllNamesGenerally");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
         doh.assertEqual(test.result, test.run());
     },
     function(){

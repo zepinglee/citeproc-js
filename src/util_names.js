@@ -166,7 +166,8 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 			if (0 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
 				continue;
 			} else if (1 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
-				namepart = CSL.Util.Names.initializeWith(state,namepart,state.tmp["initialize-with"]);
+				var initialize_with = state.output.getToken("name").strings["initialize-with"];
+				namepart = CSL.Util.Names.initializeWith(state,namepart,initialize_with);
 			}
 		}
 		//state.output.openLevel(key);
@@ -248,10 +249,10 @@ CSL.Util.Names.reinit = function(state,Item){
 
 
 	state.tmp.name_et_al_form = "long";
-	state.tmp["et-al-min"] = false;
-	state.tmp["et-al-use-first"] = false;
-	state.tmp["initialize-with"] = false;
-	state.tmp["name-as-sort-order"] = false;
+	//state.tmp["et-al-min"] = false;
+	//state.tmp["et-al-use-first"] = false;
+	//state.tmp["initialize-with"] = false;
+	//state.tmp["name-as-sort-order"] = false;
 	state.tmp.et_al_prefix = false;
 };
 
@@ -341,7 +342,8 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 		};
 	};
 	var ret = CSL.Util.Names.stripRight( namelist.join("") );
-	return ret.replace(/\s*\-\s*/g,"-").replace(/\s+/g," ");
+	ret = ret.replace(/\s*\-\s*/g,"-").replace(/\s+/g," ");
+	return ret;
 };
 
 

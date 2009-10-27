@@ -778,23 +778,20 @@ CSL.Engine.prototype.setOpt = function(token, name, value){
 		this.opt[name] = value;
 	} else if ( ["citation","bibliography"].indexOf(token.name) > -1){
 		this[token.name].opt[name] = value;
-	} else {
+	} else if (["name-form","name-delimiter","names-delimiter"].indexOf(name) == -1){
 		token.strings[name] = value;
 	}
 }
 
 CSL.Engine.prototype.fixOpt = function(token, name, localname){
 	if ("citation" == token.name || "bibliography" == token.name){
-		if ("undefined" == typeof this[token.name].opt[name]){
+		if (! this[token.name].opt[name] && "undefined" != this.opt[name]){
 			this[token.name].opt[name] = this.opt[name];
 		}
 	}
 	if ("name" == token.name || "names" == token.name){
-		if ("undefined" == typeof token.strings[name]){
-			token.strings[name] = this[this.build.area].opt[name];
-		}
-		if (!token.strings[localname]){
-			token.strings[localname] = token.strings[name];
+		if (! token.strings[localname] && "undefined" != typeof this[this.build.area].opt[name]){
+			token.strings[localname] = this[this.build.area].opt[name];
 		}
 	}
 }

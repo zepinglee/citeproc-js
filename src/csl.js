@@ -103,6 +103,17 @@ CSL = new function () {
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-initials");
 	this.GIVENNAME_DISAMBIGUATION_RULES.push("by-cite");
 
+	this.NAME_ATTRIBUTES = [];
+	this.NAME_ATTRIBUTES.push("and");
+    this.NAME_ATTRIBUTES.push("delimiter-precedes-last");
+	this.NAME_ATTRIBUTES.push("initialize-with");
+	this.NAME_ATTRIBUTES.push("name-as-sort-order");
+	this.NAME_ATTRIBUTES.push("sort-separator");
+	this.NAME_ATTRIBUTES.push("et-al-min");
+	this.NAME_ATTRIBUTES.push("et-al-use-first");
+    this.NAME_ATTRIBUTES.push("et-al-subsequent-min");
+    this.NAME_ATTRIBUTES.push("et-al-subsequent-use-first");
+
 	this.LOOSE = 0;
 	this.STRICT = 1;
 

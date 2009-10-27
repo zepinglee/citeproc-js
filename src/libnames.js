@@ -96,6 +96,16 @@ CSL.Lib.Elements.names = new function(){
 
 		if (this.tokentype == CSL.END){
 
+			for each (attrname in CSL.NAME_ATTRIBUTES){
+				if (attrname.slice(0,5) == "et-al"){
+					continue;
+				}
+				if ("undefined" != typeof state.build.nameattrs[attrname]){
+					this.strings[attrname] = state.build.nameattrs[attrname];
+					delete state.build.nameattrs[attrname];
+				}
+			}
+
 			var handle_names = function(state,Item){
 				var namesets = new Array();
 				var common_term = CSL.Util.Names.getCommonTerm(state,state.tmp.value);
@@ -240,13 +250,13 @@ CSL.Lib.Elements.names = new function(){
 							// can't do this in disambig, because the availability
 							// of initials is not a global parameter.
 							var val = state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i];
-							if (val == 1 && "undefined" == typeof state.tmp["initialize-with"]){
+							if (val == 1 && "undefined" == typeof this.strings["initialize-with"]){
 								val = 2;
 							}
 							var param = val;
 //							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
 							if (state[state.tmp.area].opt["disambiguate-add-givenname"]){
-								var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,param,state.output.getToken("name").strings.form,state.tmp["initialize-with"]);
+								var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,param,state.output.getToken("name").strings.form,this.strings["initialize-with"]);
 							};
 						} else {
 							//
@@ -255,7 +265,7 @@ CSL.Lib.Elements.names = new function(){
 							// for an individual name.
 							//
 							var myform = state.output.getToken("name").strings.form;
-							var myinitials = state.tmp["initialize-with"];
+							var myinitials = this.strings["initialize-with"];
 							var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,0,myform,myinitials);
 							//CSL.debug("MYFORM: "+myform+", PARAM: "+param);
 							//var param = 2;
@@ -367,6 +377,9 @@ CSL.Lib.Elements.names = new function(){
 				}
 				CSL.Util.Names.reinit(state,Item);
 				state.output.endTag(); // names
+
+				state.tmp["et-al-min"] = false;
+				state.tmp["et-al-use-first"] = false;
 			};
 			this["execs"].push(unsets);
 
@@ -379,6 +392,7 @@ CSL.Lib.Elements.names = new function(){
 		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
 			state.build.substitute_level.pop();
 			CSL.Util.substituteEnd.call(this,state,target);
+
 		}
 	}
 };

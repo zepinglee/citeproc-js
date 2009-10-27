@@ -56,10 +56,9 @@ John Doe AND ALSO THE EDITOR Jane Roe
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation
-      names-delimiter=" AND ALSO THE EDITOR ">
+  <citation>
     <layout>
-      <names variable="author editor">
+      <names variable="author editor" delimiter=" AND ALSO THE EDITOR ">
         <name />
       </names>
     </layout>
