@@ -61,7 +61,7 @@ bibliography
       name-delimiter="; ">
     <layout>
       <names variable="author">
-        <name />
+        <name/>
       </names>
     </layout>
   </bibliography>
