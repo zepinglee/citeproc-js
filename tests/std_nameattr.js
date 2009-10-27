@@ -132,6 +132,38 @@ doh.register("tests.std_nameattr", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnBibliographyInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnBibliographyInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnCitationInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnCitationInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnNamesInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnNamesInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnStyleInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_EtAlUseFirstOnStyleInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("nameattr_InitializeWithOnBibliographyInBibliography");
         doh.assertEqual(test.result, test.run());
     },
