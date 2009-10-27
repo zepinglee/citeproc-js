@@ -132,6 +132,38 @@ doh.register("tests.std_nameattr", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnBibliographyInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnBibliographyInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnCitationInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnCitationInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnNamesInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnNamesInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnStyleInBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("nameattr_NameAsSortOrderOnStyleInCitation");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("nameattr_NameDelimiterOnBibliographyInBibliography");
         doh.assertEqual(test.result, test.run());
     },
