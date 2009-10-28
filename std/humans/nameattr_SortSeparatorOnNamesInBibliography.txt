@@ -33,7 +33,7 @@
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
 >>===== MODE =====>>
-bibliography
+citation
 <<===== MODE =====<<
 
 >>===== SCHEMA =====>>
@@ -41,9 +41,7 @@ bibliography
 <<===== SCHEMA =====<<
 
 >>===== RESULT =====>>
-<div class="csl-bib-body">
-  <div class="csl-entry">Doe, John</div>
-</div>
+Doe, John
 <<===== RESULT =====<<
 
 
@@ -57,6 +55,11 @@ bibliography
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <citation>
+    <layout>
+      <text value="Oops"/>
+    </layout>
+  </citation>
   <bibliography>
     <layout>
       <names variable="author">

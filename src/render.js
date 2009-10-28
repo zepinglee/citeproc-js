@@ -176,7 +176,7 @@ CSL.Engine.prototype.getModes = function(){
 /*
  * Compose individual cites into a single string.
  */
-CSL.Engine.prototype._bibliography_entries = function (category){
+CSL.Engine.prototype._bibliography_entries = function (bibsection){
 	var ret = [];
 	this.tmp.area = "bibliography";
 	var input = this.retrieveItems(this.registry.getSortedIds());
@@ -187,8 +187,47 @@ CSL.Engine.prototype._bibliography_entries = function (category){
 	//bib_body.decorations = [["@bibliography","body"]];
 	//this.output.startTag("bib_body",bib_body);
 	for each (var item in input){
-		if (category && item.category.indexOf(category) == -1){
-			continue;
+		if (bibsection){
+			if (bibsection.exclude){
+				for each (spec in bibsection.exclude){
+					var continueme = false;
+					if ("string" == typeof item[spec.field]){
+						if (item[spec.field] == spec.value){
+							continueme = true;
+						}
+					} else if (item[spec.field].length){
+						for each (element in item[spec.field]){
+							if (item[spec.field] == spec.value){
+								var continueme = true;
+								break;
+							}
+						}
+					}
+					if (continueme){
+						continue;
+					}
+				}
+			}
+			if (bibsection.include){
+				var include = false;
+				for each (spec in bibsection.include){
+					if ("string" == typeof item[spec.field]){
+						if (item[spec.field] == spec.value){
+							include = true;
+						}
+					} else if (item[spec,field].length){
+						for each (element in item[spec.field]){
+							if (item[spec.field] == spec.value){
+								include = true;
+								break;
+							}
+						}
+					}
+				}
+				if ( !include ){
+					continue;
+				}
+			}
 		}
 		if (false){
 			CSL.debug("BIB: "+item.id);

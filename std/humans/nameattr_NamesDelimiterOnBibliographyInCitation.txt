@@ -63,7 +63,7 @@ John DoeJane Roe
       </names>
     </layout>
   </citation>
-  <bibliography>
+  <bibliography
       names-delimiter=" AND ALSO THE EDITOR ">
     <layout>
       <names variable="author editor">

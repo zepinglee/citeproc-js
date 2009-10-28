@@ -275,21 +275,22 @@ __ `bib-categories`_
 
 .. code-block:: js
 
-   var mybib = cp.makeBibliography("1990s");
+   var select = {
+      "include" : [
+         {
+            "field" : "category",
+            "value" : "1990s"
+         }
+      ]
+   }
 
-To print items that are not associated with any category, use
-the reserved category name ``none``:
+   var mybib = cp.makeBibliography(select);
 
-.. code-block:: js
-
-   var mybib = cp.makeBibliography("none");
-
-The value returned by either form of this command is a two-element
-list, composed of a Javascript array containing certain formatting
-parameters, and a rendered string representing the bibliography
-itself.  The first element—the array of formatting parameters—contains
-the key/value pairs shown below (the values shown are the processor
-defaults):
+The value returned by this command is a two-element list, composed of
+a Javascript array containing certain formatting parameters, and a
+rendered string representing the bibliography itself.  The first
+element—the array of formatting parameters—contains the key/value
+pairs shown below (the values shown are the processor defaults):
 
 .. code-block:: js
 
@@ -916,23 +917,26 @@ __ `input-dates`_
 
 .. _`bib-categories`:
 
-#######################
-Bibliography categories
-#######################
+#############################
+Selective bibliography output
+#############################
 
-Bibliographic output can be divided into sections by including a
-``category`` element in each item.  A bibliography of items associated
-with a particular category can then be produced by calling the
-``makeBibliography()`` command with the category label as an argument,
-as described above under `Processor Commands → makeBibliography()`__.
-When a ``category`` element is present in item data, it must be a
-Javascript array containing a list of strings:
+Ordinarily, the ``makeBibliography()`` command returns a bibliography
+containing all items registered in the processor.  For classified
+bibliographies, selective output is also possible, by specifying
+field content to exclude or to include, using the command syntax
+described above under  `Processor Commands → makeBibliography()`__.
+Fields that may be used for selection are limited to plain text
+fields (such as ``type``), and simple arrays (such as a
+``category`` field containing tags associated with the item
+in the environment of the calling application):
 
 __ `commands-categories`_
 
 .. code-block:: js
 
-   {  "author" : [
+   {  "type" : "book",
+      "author" : [
         { "family" : "Derby", "given" : "George" }
       ],
       "title" : "Phoenixiana",

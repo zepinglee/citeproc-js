@@ -96,7 +96,7 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
  * sorted according to the system locale, with
  * disambiguation adjustments requested by the style.</p>
  */
-CSL.Engine.prototype.makeBibliography = function(category){
+CSL.Engine.prototype.makeBibliography = function(bibsection){
 	var debug = false;
 	if (debug){
 		for each (tok in this.bibliography.tokens){
@@ -111,7 +111,7 @@ CSL.Engine.prototype.makeBibliography = function(category){
 			CSL.debug("bibsorttok: "+tok.name);
 		}
 	}
-	var ret = this._bibliography_entries.call(this,category);
+	var ret = this._bibliography_entries.call(this,bibsection);
 	var params = {
 		"maxoffset":0,
 		"entryspacing":1,

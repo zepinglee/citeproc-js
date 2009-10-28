@@ -57,6 +57,11 @@ bibliography
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <citation>
+    <layout>
+      <text value="Oops"/>
+    </layout>
+  </citation>
   <bibliography
       delimiter-precedes-last="always">
     <layout>

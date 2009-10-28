@@ -32,25 +32,11 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-{
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      name-delimiter=\"; \">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text value=\"Oops\"/>\n    </layout>\n  </citation>\n  <bibliography>\n    <layout>\n      <names variable=\"author\">\n        <name />\n      </names>\n    </layout>\n  </bibliography>\n</style>", 
-    "input": [
-        {
-            "author": [
-                {
-                    "family": "Doe", 
-                    "given": "John"
-                }, 
-                {
-                    "family": "Roe", 
-                    "given": "Jane"
-                }
-            ], 
-            "id": "ITEM-1", 
-            "type": "book"
-        }
-    ], 
-    "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Doe; Jane Roe</div>\n</div>", 
-    "schema": "1.0"
-}
+dojo.provide("tests.std_bibsections");
+
+doh.register("tests.std_bibsections", [
+    function(){
+        var test = new StdRhinoTest("bibsections_Type");
+        doh.assertEqual(test.result, test.run());
+    },
+]);

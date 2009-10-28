@@ -134,7 +134,11 @@ StdRhinoTest.prototype.run = function(){
 		}
 		var ret = citations.join("\n");
 	} else if (this.test.mode == "bibliography"){
-		var ret = this.style.makeBibliography()[1].join("");
+		if (this.test.bibsections){
+			var ret = this.style.makeBibliography(this.test.bibsections)[1].join("");
+		} else {
+			var ret = this.style.makeBibliography()[1].join("");
+		}
         ret = "<div class=\"csl-bib-body\">\n" + ret + "</div>";
 	} else if (this.test.mode == "bibliography-header"){
 		var ret = this.style.makeBibliography()[0];

@@ -101,7 +101,7 @@ class CslTestUtils:
 	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
         self.CREATORS += ["composer","original-author","container-author","collection-editor"]
         self.RE_ELEMENT = '(?sm)^(.*>>=.*%s[^\n]+)(.*)(\n<<=.*%s.*)'
-        self.RE_FILENAME = '^[a-z]+_[a-zA-Z0-9]+\.txt'
+        self.RE_FILENAME = '^[a-z]+_[a-zA-Z0-9]+\.txt$'
     
     def path(self,*elements):
         return os.path.join( os.getcwd(), *elements )
@@ -187,6 +187,7 @@ class CslTest(CslTestUtils):
         self.extract("ABBREVIATIONS",required=False,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
         self.extract("BIBENTRIES",required=False,is_json=True)
+        self.extract("BIBSECTION",required=False,is_json=True)
 
     def extract(self,tag,required=False,is_json=False):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
