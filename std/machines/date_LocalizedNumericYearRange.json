@@ -32,58 +32,29 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
->>===== MODE =====>>
-bibliography
-<<===== MODE =====<<
-
->>===== SCHEMA =====>>
-1.0
-<<===== SCHEMA =====<<
-
->>===== RESULT =====>>
-<div class="csl-bib-body">
-  <div class="csl-entry">Doe, John</div>
-</div>
-<<===== RESULT =====<<
-
-
->>===== CSL =====>>
-<style 
-      xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
-      version="1.0">
-  <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
-  <citation>
-    <layout>
-      <text value="Oops"/>
-    </layout>
-  </citation>
-  <bibliography>
-    <layout>
-      <names variable="author">
-        <name sort-separator=", " name-as-sort-order="all"/>
-      </names>
-    </layout>
-  </bibliography>
-</style>
-<<===== CSL =====<<
-
-
->>===== INPUT =====>>
-[
-    {
-        "author": [
-            {
-                "family": "Doe", 
-                "given": "John"
-            }
-        ], 
-        "id": "ITEM-1", 
-        "type": "book"
-    }
-]
-<<===== INPUT =====<<
+{
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <date date-parts=\"year-month\" form=\"numeric\" variable=\"issued\" />\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "issued": {
+                "date-parts": [
+                    [
+                        2005, 
+                        11, 
+                        15
+                    ], 
+                    [
+                        2006, 
+                        12, 
+                        20
+                    ]
+                ]
+            }, 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "2005-11/2006-12", 
+    "schema": "1.0"
+}

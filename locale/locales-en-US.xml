@@ -8,8 +8,8 @@
   </date>
   <date form="numeric">
     <date-part name="year"/>
-    <date-part name="month" form="numeric" prefix="-"/>
-    <date-part name="day" prefix="-"/>
+    <date-part name="month" form="numeric" prefix="-" range-delimiter="/"/>
+    <date-part name="day" prefix="-" range-delimiter="/"/>
   </date>
   <terms>
     <term name="open-quote">“</term>

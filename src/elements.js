@@ -997,6 +997,7 @@ CSL.Lib.Elements.date = new function(){
 			//
 			if (this.strings.form){
 				if (state.opt.dates[this.strings.form]){
+
 					var datexml = state.opt.dates[this.strings.form].copy();
 					datexml["@variable"] = this.variables[0];
 					if (this.strings.prefix){
@@ -1020,6 +1021,7 @@ CSL.Lib.Elements.date = new function(){
 					state.build.datexml = datexml.copy();
 				};
 			} else {
+
 				CSL.Util.substituteStart.call(this,state,target);
 				var set_value = function(state,Item){
 					state.tmp.element_rendered_ok = false;
@@ -1090,7 +1092,7 @@ CSL.Lib.Elements.date = new function(){
 				this["execs"].push(set_value);
 
 				var newoutput = function(state,Item){
-				state.output.startTag("date",this);
+					state.output.startTag("date",this);
 					//
 					// XXXXX
 					// Here's where "circa" belongs
@@ -1141,7 +1143,6 @@ CSL.Lib.Elements["date-part"] = new function(){
 			this.strings.form = "long";
 		}
 		if (state.build.datexml){
-			// CSL.debug("DO SOMETHING!");
 			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 			for each (var decor in this.decorations){
 				state.build.datexml["date-part"].(@name == this.strings.name)[0][decor[0]] = decor[1];
@@ -1155,6 +1156,9 @@ CSL.Lib.Elements["date-part"] = new function(){
 				state.build.datexml["date-part"].(@name == this.strings.name)[0]["@"+attr] = this.strings[attr];
 			}
 		} else {
+			//
+			// Set delimiter here, if poss.
+			//
 			var render_date_part = function(state,Item){
 				var value = "";
 				var value_end = "";
@@ -1211,7 +1215,7 @@ CSL.Lib.Elements["date-part"] = new function(){
 							state.output.append(value,this);
 							var curr = state.output.current.value();
 							curr.blobs[(curr.blobs.length-1)].strings.suffix="";
-							state.output.append("-","empty");
+							state.output.append(this.strings["range-delimiter"],"empty");
 							var dcurr = state.dateput.current.value();
 							curr.blobs = curr.blobs.concat(dcurr);
 							state.dateput.string(state,state.dateput.queue);
@@ -1263,6 +1267,9 @@ CSL.Lib.Elements["date-part"] = new function(){
 					};
 				};
 			};
+			if ("undefined" == typeof this.strings["range-delimiter"]){
+				this.strings["range-delimiter"] = "-";
+			}
 			this["execs"].push(render_date_part);
 			target.push(this);
 		};

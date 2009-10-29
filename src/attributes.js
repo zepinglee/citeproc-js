@@ -107,6 +107,10 @@ CSL.Lib.Attributes["@date-parts"] = function(state,arg){
 	this.strings["date-parts"] = arg;
 };
 
+CSL.Lib.Attributes["@range-delimiter"] = function(state,arg){
+	this.strings["range-delimiter"] = arg;
+};
+
 /**
  * Store macro tokens in a buffer on the state object.
  * <p>For reference when the enclosing text token is

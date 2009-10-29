@@ -36,14 +36,13 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_bibsections");
-} else {
+	dojo.require("tests.std_date");
+	dojo.require("tests.test_dateparse");
+	dojo.require("tests.std_bibsection");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_nameattr");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_fullstyles");
-	dojo.require("tests.test_dateparse");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_magic");
     dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_abbrevs");
@@ -89,6 +88,7 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
 
+} else {
 
 
 	//SNIP-START

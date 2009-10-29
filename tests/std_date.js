@@ -80,6 +80,10 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("date_LocalizedNumericYearRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("date_LocalizedNumericYearWithAffixes");
         doh.assertEqual(test.result, test.run());
     },

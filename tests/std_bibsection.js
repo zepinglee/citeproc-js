@@ -32,11 +32,11 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_bibsections");
+dojo.provide("tests.std_bibsection");
 
-doh.register("tests.std_bibsections", [
+doh.register("tests.std_bibsection", [
     function(){
-        var test = new StdRhinoTest("bibsections_Type");
+        var test = new StdRhinoTest("bibsection_Type");
         doh.assertEqual(test.result, test.run());
     },
 ]);

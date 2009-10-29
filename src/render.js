@@ -214,6 +214,7 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 					if ("string" == typeof item[spec.field]){
 						if (item[spec.field] == spec.value){
 							include = true;
+							break;
 						}
 					} else if (item[spec,field].length){
 						for each (element in item[spec.field]){

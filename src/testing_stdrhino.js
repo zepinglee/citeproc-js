@@ -134,8 +134,8 @@ StdRhinoTest.prototype.run = function(){
 		}
 		var ret = citations.join("\n");
 	} else if (this.test.mode == "bibliography"){
-		if (this.test.bibsections){
-			var ret = this.style.makeBibliography(this.test.bibsections)[1].join("");
+		if (this.test.bibsection){
+			var ret = this.style.makeBibliography(this.test.bibsection)[1].join("");
 		} else {
 			var ret = this.style.makeBibliography()[1].join("");
 		}

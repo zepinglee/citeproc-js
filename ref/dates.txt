@@ -26,6 +26,9 @@ Wed 24 Oct 2000
 --> literal=myauntsally 23
 myauntsally 23
 
+# More literals
+--> literal=[Dec 23\, 2009]
+\"[Dec 23, 2009]\"
 
 # Text dates
 --> month=8,day=31,year=2000

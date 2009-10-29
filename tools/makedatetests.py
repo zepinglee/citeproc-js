@@ -55,10 +55,15 @@ for line in datalst:
     if line.startswith("-->"):
         line = line[3:].strip()
         line = line.split(",")
+        for pos in range(len(line)-1,0,-1):
+            if line[pos-1].endswith("\\"):
+                line[pos-1] = "%s,%s" % (line[pos-1][:-1],line[pos])
+                line.pop(pos)
         m = {}
         for chunk in line:
             #print "(%s)" %chunk
             t = chunk.split("=")
+            print chunk
             t[1] = t[1].strip('"')
             m[t[0]] = t[1]
         continue

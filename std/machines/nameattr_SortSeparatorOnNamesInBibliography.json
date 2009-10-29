@@ -46,7 +46,7 @@
             "type": "book"
         }
     ], 
-    "mode": "citation", 
-    "result": "Doe, John", 
+    "mode": "bibliography", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Doe, John</div>\n</div>", 
     "schema": "1.0"
 }

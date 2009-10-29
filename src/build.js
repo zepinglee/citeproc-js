@@ -553,8 +553,7 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 	txt = txt.replace(/\.(?! )/,"");
 	var slash = txt.indexOf("/");
 	var dash = txt.indexOf("-");
-	var seasonstrs = "spr sum fal win";
-	seasonstrs = seasonstrs.split(" ");
+	var seasonstrs = ["spr","sum","fal","win"];
 	var seasonrexes = [];
 	for each (var seasonstr in seasonstrs){
 		seasonrexes.push( RegExp(seasonstr+".*") );
@@ -568,6 +567,10 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 	var number = "";
 	var note = "";
 	var thedate = {};
+	if (txt.match(/^".*"$/)){
+		thedate["literal"] = txt.slice(1,-1);
+		return thedate;
+	}
 	if (slash > -1 && dash > -1){
 		var slashcount = txt.split("/");
 		if (slashcount.length > 3){
