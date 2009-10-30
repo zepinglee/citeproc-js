@@ -1,4 +1,3 @@
 # TODO
 
-Field manglers (things like capitalize-all) are almost certainly broken
-when used with in-field markup.  Test and repair.
+Fix bugs as they arise.
