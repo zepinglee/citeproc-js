@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a22##
+   version 1.00##a23##
 
 .. class:: info-date
 
-   =D=28 October 2009=D=
+   =D=30 October 2009=D=
 
 .. class:: contributors
 
@@ -262,16 +262,24 @@ registered in the processor:
 
 .. _`commands-categories`:
 
-The optional argument is an arbitrary category name, used to obtain a
-bibliography containing only items loaded to the processor with a
-matching ``category`` element.
+The optional argument is a nested Javascript object that may contain
+an ``include`` array with one or more match objects, a similarly
+structure ``exclude`` array, or both.  Where both are present, the
+``exclude`` array is evaluated first and takes precedence.  In the
+match objects, the ``value`` associated a field must be a simple
+string.
 
 .. admonition:: Hint
 
-   The format of the ``category`` field is described below under
-   `Dirty Tricks → Bibliography categories`__
+   The target field in the data items registered in the processor
+   may either be a string or an array.  In the latter case,
+   an array containing a value identical to the
+   relevant value is treated as a match.
 
-__ `bib-categories`_
+.. admonition:: Important
+   
+   Note that matches are not possible
+   against name or date variables.
 
 .. code-block:: js
 
@@ -913,44 +921,6 @@ processors should be capable of preparing input in the form described
 above under `Data Input → Dates`__.
 
 __ `input-dates`_
-
-
-.. _`bib-categories`:
-
-#############################
-Selective bibliography output
-#############################
-
-Ordinarily, the ``makeBibliography()`` command returns a bibliography
-containing all items registered in the processor.  For classified
-bibliographies, selective output is also possible, by specifying
-field content to exclude or to include, using the command syntax
-described above under  `Processor Commands → makeBibliography()`__.
-Fields that may be used for selection are limited to plain text
-fields (such as ``type``), and simple arrays (such as a
-``category`` field containing tags associated with the item
-in the environment of the calling application):
-
-__ `commands-categories`_
-
-.. code-block:: js
-
-   {  "type" : "book",
-      "author" : [
-        { "family" : "Derby", "given" : "George" }
-      ],
-      "title" : "Phoenixiana",
-      "issued" : {
-         "date-parts" : [
-            [ 1873 ]
-         ]
-      },
-      "category" : [ "humor", "satire" ]
-   }
-
-Note that the ``category`` field is not part of the CSL
-specification, and like the other Dirty Tricks described here, may not
-be available in other processors.
 
 
 ##########################
