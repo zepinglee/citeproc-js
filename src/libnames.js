@@ -197,11 +197,11 @@ CSL.Lib.Elements.names = new function(){
 					//
 					// the names constraint
 					//
-					var max_name = state.output.getToken("name").strings["max-name"];
-					var end_name = state.output.getToken("name").strings["end-name"];
-					var max_condition = max_name && display_names.length > max_name;
-					var end_condition = end_name && display_names.length > end_name;
-					if (end_name || max_condition ){
+					var suppress_min = state.output.getToken("name").strings["suppress-min"];
+					var truncate_min = state.output.getToken("name").strings["truncate-min"];
+					var suppress_condition = suppress_min && display_names.length >= suppress_min;
+					var truncate_condition = truncate_min && display_names.length > truncate_min;
+					if (truncate_min || suppress_condition ){
 						//
 						// Permit re-rendering of the name variable in these cases
 						//
@@ -212,11 +212,11 @@ CSL.Lib.Elements.names = new function(){
 							state.tmp.done_vars = start.concat(end);
 						}
 					}
-					if (max_condition){
+					if (suppress_condition){
 						continue;
 					}
-					if (end_condition){
-						display_names = display_names.slice(0,end_name);
+					if (truncate_condition){
+						display_names = display_names.slice(0,truncate_min);
 					}
 					//
 					// if rendering for display, do not honor a disambig_request

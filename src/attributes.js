@@ -480,12 +480,12 @@ CSL.Lib.Attributes["@et-al-subsequent-use-first"] = function(state,arg){
 	state.setOpt(this,"et-al-subsequent-use-first", parseInt(arg, 10));
 };
 
-CSL.Lib.Attributes["@end-name"] = function(state,arg){
-	this.strings["end-name"] = parseInt(arg,10);
+CSL.Lib.Attributes["@truncate-min"] = function(state,arg){
+	this.strings["truncate-min"] = parseInt(arg,10);
 };
 
-CSL.Lib.Attributes["@max-name"] = function(state,arg){
-	this.strings["max-name"] = parseInt(arg,10);
+CSL.Lib.Attributes["@suppress-min"] = function(state,arg){
+	this.strings["suppress-min"] = parseInt(arg,10);
 };
 
 

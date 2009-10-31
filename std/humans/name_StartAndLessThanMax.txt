@@ -73,7 +73,7 @@ Stamou, A.I. Title of the Article / A.I. Stamou, I. Katsiris, A. Schaelin
   </info>
   <macro name="first-position-author">
     <names variable="author">
-      <name end-name="1" max-name="3" name-as-sort-order="first" sort-separator=", "/>
+      <name truncate-min="1" suppress-min="4" name-as-sort-order="first" sort-separator=", "/>
     </names>
   </macro>
   <macro name="second-position-author">
