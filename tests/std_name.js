@@ -144,6 +144,14 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("name_StartAndAtOrMoreThanMax");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("name_StartAndLessThanMax");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("name_SubstituteInheritLabel");
         doh.assertEqual(test.result, test.run());
     },

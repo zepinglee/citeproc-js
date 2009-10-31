@@ -185,7 +185,7 @@ CSL.Lib.Elements.names = new function(){
 					}
 					//
 					// Here is where we maybe truncate the list of
-					// names, to satisfy the et-al constraints.
+					// names, to satisfy name-count and et-al constraints.
 					var display_names = nameset.names.slice();
 					var sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
 					//
@@ -194,6 +194,30 @@ CSL.Lib.Elements.names = new function(){
 					// by the function calling the renderer.
 					var discretionary_names_length = state.tmp["et-al-min"];
 
+					//
+					// the names constraint
+					//
+					var max_name = state.output.getToken("name").strings["max-name"];
+					var end_name = state.output.getToken("name").strings["end-name"];
+					var max_condition = max_name && display_names.length > max_name;
+					var end_condition = end_name && display_names.length > end_name;
+					if (end_name || max_condition ){
+						//
+						// Permit re-rendering of the name variable in these cases
+						//
+						var varpos = state.tmp.done_vars.indexOf(nameset.type);
+						if (varpos > -1){
+							var start = state.tmp.done_vars.slice(0,varpos);
+							var end = state.tmp.done_vars.slice((varpos+1));
+							state.tmp.done_vars = start.concat(end);
+						}
+					}
+					if (max_condition){
+						continue;
+					}
+					if (end_condition){
+						display_names = display_names.slice(0,end_name);
+					}
 					//
 					// if rendering for display, do not honor a disambig_request
 					// to set names length below et-al-use-first

@@ -480,6 +480,15 @@ CSL.Lib.Attributes["@et-al-subsequent-use-first"] = function(state,arg){
 	state.setOpt(this,"et-al-subsequent-use-first", parseInt(arg, 10));
 };
 
+CSL.Lib.Attributes["@end-name"] = function(state,arg){
+	this.strings["end-name"] = parseInt(arg,10);
+};
+
+CSL.Lib.Attributes["@max-name"] = function(state,arg){
+	this.strings["max-name"] = parseInt(arg,10);
+};
+
+
 CSL.Lib.Attributes["@and"] = function(state,arg){
 	var myarg = "&";
 	if ( "text" == arg) {
