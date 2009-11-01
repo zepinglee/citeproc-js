@@ -32,7 +32,9 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("csl.state");
+if(dojo){ 
+    dojo.provide("csl.state");
+};
 
 
 CSL.Engine.Opt = function (){
