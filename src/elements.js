@@ -32,7 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-if(dojo){ 
+if(dojo){
     dojo.provide("csl.elements");
 };
 
@@ -819,13 +819,14 @@ CSL.Lib.Elements.substitute = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			var set_conditional = function(state,Item){
+				state.tmp.can_block_substitute = true;
 				if (state.tmp.value.length){
 					state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}
 			};
 			this.execs.push(set_conditional);
-			target.push(this);
-		}
+		};
+		target.push(this);
 	};
 };
 

@@ -42,7 +42,7 @@ citation
 
 
 >>== RESULT ==>>
-Should print this: Book A
+Should print this: Book A ... and this: Book A ... but this only once: Bloggs
 <<== RESULT ==<<
 
 
@@ -59,7 +59,16 @@ Should print this: Book A
   <citation>
     <layout>
       <text prefix="Should print this: " variable="title" />
-      <text prefix=" ... but should NOT print this: " variable="title" />
+      <text prefix=" ... and this: " variable="title" />
+      <names variable="author" prefix=" ... but this only once: ">
+        <name/>
+        <substitute>
+          <names variable="editor"/>
+        </substitute>
+      </names>
+      <names variable="editor">
+        <name/>
+      </names>
     </layout>
   </citation>
 </style>
@@ -69,6 +78,11 @@ Should print this: Book A
 >>===== INPUT =====>>
 [
     {
+        "editor": [
+            {
+                "literal": "Bloggs"
+            }
+        ], 
         "id": "item-1", 
         "title": "Book A", 
         "type": "book"

@@ -32,7 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-if(dojo){ 
+if(dojo){
     dojo.provide("csl.attributes");
 };
 
@@ -144,8 +144,9 @@ CSL.Lib.Attributes["@term"] = function(state,arg){
 		} else {
 			this.strings.et_al_term = arg;
 		}
+	} else {
+		state.build.term = arg;
 	}
-	state.build.term = arg;
 };
 
 
@@ -219,9 +220,6 @@ CSL.Lib.Attributes["@variable"] = function(state,arg){
 			for each (var variable in variables){
 				if (state.tmp.done_vars.indexOf(variable) == -1){
 					this.variables.push(variable);
-					if ("date" != this.name){
-						state.tmp.done_vars.push(variable);
-					};
 				};
 			};
 		};

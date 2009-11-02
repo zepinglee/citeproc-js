@@ -32,7 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-if(dojo){ 
+if(dojo){
     dojo.provide("csl.libnames");
 };
 if (!CSL) {
@@ -141,7 +141,7 @@ CSL.Lib.Elements.names = new function(){
 				if (!state.output.getToken("label")){
 					state.output.addToken("label");
 				}
-				if (!state.output.getToken("etal").strings.et_al_term){
+				if ("undefined" == typeof state.output.getToken("etal").strings.et_al_term){
 					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al","long",0);
 				}
 				state.output.addToken("commasep",", ");
@@ -152,6 +152,10 @@ CSL.Lib.Elements.names = new function(){
 				}
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
+					if (!nameset.names.length){
+						continue;
+					};
+
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
 						// XXXX: This looks all messed up.  Apparently I'm using
 						// last_names_used for two purposes -- to compare namesets
@@ -200,12 +204,10 @@ CSL.Lib.Elements.names = new function(){
 					// the names constraint
 					//
 					var suppress_min = state.output.getToken("name").strings["suppress-min"];
-					var truncate_min = state.output.getToken("name").strings["truncate-min"];
 					var suppress_condition = suppress_min && display_names.length >= suppress_min;
-					var truncate_condition = truncate_min && display_names.length > truncate_min;
-					if (truncate_min || suppress_condition ){
+					if ( suppress_condition ){
 						//
-						// Permit re-rendering of the name variable in these cases
+						// Specially permit re-rendering of the name variable in these cases
 						//
 						var varpos = state.tmp.done_vars.indexOf(nameset.type);
 						if (varpos > -1){
@@ -217,9 +219,17 @@ CSL.Lib.Elements.names = new function(){
 					if (suppress_condition){
 						continue;
 					}
-					if (truncate_condition){
-						display_names = display_names.slice(0,truncate_min);
-					}
+
+					//print("CAN SUBSTITUTE: "+state.tmp.can_substitute.value());
+					//
+					// XXXXX: For some reason this doesn't give effect to
+					// suppression.  I'm missing something somehow.
+					//
+					if (state.tmp.can_block_substitute){
+						//print(nameset.type);
+						state.tmp.done_vars.push(nameset.type);
+					};
+
 					//
 					// if rendering for display, do not honor a disambig_request
 					// to set names length below et-al-use-first
@@ -406,6 +416,8 @@ CSL.Lib.Elements.names = new function(){
 
 				state.tmp["et-al-min"] = false;
 				state.tmp["et-al-use-first"] = false;
+
+				state.tmp.can_block_substitute = false;
 			};
 			this["execs"].push(unsets);
 
