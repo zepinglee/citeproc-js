@@ -32,7 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-if(dojo){ 
+if(dojo){
     dojo.provide("csl.build");
 };
 
@@ -81,6 +81,7 @@ CSL.Engine = function(sys,style,lang) {
 		lang = "en";
 	}
 	this.opt.lang = lang;
+	this.setLocaleXml( this.cslXml, "" );
 	this.setLocaleXml( this.cslXml, lang );
 	this.setStyleAttributes();
 	this._buildTokenLists("citation");
@@ -330,13 +331,14 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	if ("undefined" == typeof arg){
 		var myxml = new XML( this.sys.retrieveLocale("en").replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = "en";
-	} else if ("string" == typeof arg){
+	} else if (arg && "string" == typeof arg){
 		var myxml = new XML( this.sys.retrieveLocale(arg).replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = arg;
 	} else if ("xml" != typeof arg){
 		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
 	} else if ("string" != typeof lang) {
-		throw "Error in setLocaleXml: Must provide lang string with XML locale object";
+		//throw "Error in setLocaleXml: Must provide lang string with XML locale object";
+		lang = "";
 	} else {
 		var myxml = arg;
 	}
@@ -348,7 +350,9 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		locale = myxml;
 	} else {
 		for each (var blob in myxml..locale){
-			if (blob.@xml::lang == lang){
+			//print("typeof blob.@xml::lang: "+typeof blob.@xml::lang);
+			//print("typeof lang: "+typeof lang);
+			if (blob.@xml::lang.toString() == lang){
 				locale = blob;
 				break;
 			}
