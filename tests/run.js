@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_locale");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_date");
@@ -87,6 +88,7 @@ if(true){
 	dojo.require("tests.test_formats");
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
+
 
 } else {
 
