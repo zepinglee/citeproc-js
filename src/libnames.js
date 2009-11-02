@@ -205,17 +205,6 @@ CSL.Lib.Elements.names = new function(){
 					//
 					var suppress_min = state.output.getToken("name").strings["suppress-min"];
 					var suppress_condition = suppress_min && display_names.length >= suppress_min;
-					if ( suppress_condition ){
-						//
-						// Specially permit re-rendering of the name variable in these cases
-						//
-						var varpos = state.tmp.done_vars.indexOf(nameset.type);
-						if (varpos > -1){
-							var start = state.tmp.done_vars.slice(0,varpos);
-							var end = state.tmp.done_vars.slice((varpos+1));
-							state.tmp.done_vars = start.concat(end);
-						}
-					}
 					if (suppress_condition){
 						continue;
 					}

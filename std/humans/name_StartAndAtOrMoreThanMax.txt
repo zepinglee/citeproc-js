@@ -71,9 +71,15 @@ Title of the Article / A.I. Stamou, et al.
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale xml:lang="en">
+    <terms>
+      <term name="and others"></term>
+    </terms>
+  </locale>
   <macro name="first-position-author">
     <names variable="author">
-      <name truncate-min="1" suppress-min="4" name-as-sort-order="first" sort-separator=", "/>
+      <name et-al-min="3" et-al-use-first="1" suppress-min="4" name-as-sort-order="first" sort-separator=", "/>
+      <et-al term="and others"/>
     </names>
   </macro>
   <macro name="second-position-author">
