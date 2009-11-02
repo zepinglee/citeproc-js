@@ -46,16 +46,6 @@
                     "family": "Katsiris", 
                     "given": "I.", 
                     "static-ordering": false
-                }, 
-                {
-                    "family": "Schaelin", 
-                    "given": "A.", 
-                    "static-ordering": false
-                }, 
-                {
-                    "family": "Stoakes", 
-                    "given": "R.", 
-                    "static-ordering": false
                 }
             ], 
             "id": "ITEM-1", 
@@ -64,6 +54,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Title of the Article / A.I. Stamou, et al.", 
+    "result": "Stamou, A.I. Title of the Article / A.I. Stamou, I. Katsiris", 
     "schema": "0.8"
 }

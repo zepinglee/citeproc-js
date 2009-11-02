@@ -57,7 +57,7 @@ Stamou, A.I. Evaluation of thermal comfort in Galatsi Arena of the Olympics “A
 
 
 >>===== RESULT =====>>
-Title of the Article / A.I. Stamou, et al.
+Stamou, A.I. Title of the Article / A.I. Stamou, I. Katsiris
 <<===== RESULT =====<<
 
 
@@ -114,16 +114,6 @@ Title of the Article / A.I. Stamou, et al.
             {
                 "family": "Katsiris", 
                 "given": "I.", 
-                "static-ordering": false
-            }, 
-            {
-                "family": "Schaelin", 
-                "given": "A.", 
-                "static-ordering": false
-            }, 
-            {
-                "family": "Stoakes", 
-                "given": "R.", 
                 "static-ordering": false
             }
         ], 
