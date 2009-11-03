@@ -32,9 +32,11 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-if(dojo){ 
-    dojo.provide("csl.csl");
+if ("undefined" == typeof dojo){
+	var dojo = new Object();
+	dojo.provide = function(ignoreme){};
 };
+dojo.provide("csl.csl");
 
 
 /**

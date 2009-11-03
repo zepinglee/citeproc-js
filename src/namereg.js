@@ -32,9 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-if(dojo){ 
-    dojo.provide("csl.namereg");
-};
+dojo.provide("csl.namereg");
 
 /**
  * The idea here will be to store names in a nested hierarchy

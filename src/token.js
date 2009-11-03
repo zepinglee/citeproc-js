@@ -32,9 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-if(dojo){ 
-    dojo.provide("csl.token");
-};
+dojo.provide("csl.token");
 if (!CSL) {
    load("./src/csl.js");
 }
