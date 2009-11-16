@@ -536,7 +536,8 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 		txt = txt.replace(/(月|年)/g,"-");
 		txt = txt.replace(/〜/g,"/");
 		var lst = txt.split(/(平成|昭和|大正|明治)([0-9]+)/);
-		for	(var pos=1; pos<lst.length; pos+=3){
+		var l = lst.length;
+		for	(var pos=1; pos<l; pos+=3){
 			lst[(pos+1)] = years[lst[(pos)]] + parseInt(lst[(pos+1)]);
 			lst[pos] = "";
 		}
@@ -3283,7 +3284,8 @@ CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
 CSL.Lib.Attributes["@default-locale"] = function(state,arg){
 	var lst = arg;
 	lst = lst.split(/-x-(sort|pri|sec|name)-/);
-	for (var pos=1; pos<lst.length; pos += 2){
+	var l = lst.length;
+	for (var pos=1; pos<l; pos += 2){
 		state.opt[("locale-"+lst[pos])].push(lst[(pos+1)].replace(/^\s*/g,"").replace(/\s*$/g,""));
 	};
 }
@@ -3948,7 +3950,8 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 		namelist = namelist.replace(/\-/g," ");
 	}
 	namelist = namelist.replace(/\./g," ").replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
-	for (var i=0; i<namelist.length; i+=2){
+	var l = namelist.length;
+	for (var i=0; i<l; i+=2){
 		var n = namelist[i];
 		var m = n.match( CSL.NAME_INITIAL_REGEXP);
 		if (m){
@@ -3978,7 +3981,7 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 };
 CSL.Util.Names.stripRight = function(str){
 	var end = 0;
-	for (var pos=(str.length-1); pos > -1; pos += -1){
+	for (var pos=(str.length-1); pos > -1; pos--){
 		if (str[pos] != " "){
 			end = (pos+1);
 			break;
@@ -4356,7 +4359,8 @@ CSL.Util.PageRangeMangler = new Object();
 CSL.Util.PageRangeMangler.getFunction = function(state){
 	var rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
 	var stringify = function(lst){
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			if ("object" == typeof lst[pos]){
 				lst[pos] = lst[pos].join("");
 			};
@@ -4369,7 +4373,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	};
 	var expand = function(str){
 		var lst = listify(str);
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			var m = lst[pos].match(rangerex);
 			if (m){
 				if (!m[3] || m[1] == m[3]){
@@ -4386,7 +4391,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 		return lst;
 	};
 	var minimize = function(lst){
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			lst[pos][3] = _minimize(lst[pos][1], lst[pos][3]);
 			if (lst[pos][2].slice(1) == lst[pos][0]){
 				lst[pos][2] = "-";
@@ -4400,7 +4406,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 		var ret = e.slice();
 		ret.reverse();
 		if (b.length == e.length){
-			for (var pos=0; pos<b.length; pos += 1){
+			var l = b.length;
+			for (var pos=0; pos<l; pos += 1){
 				if (b[pos] == e[pos]){
 					ret.pop();
 				} else {
@@ -4412,7 +4419,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 		return ret.join("");
 	};
 	var chicago = function(lst){
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			if ("object" == typeof lst[pos]){
 				var m = lst[pos];
 				var begin = parseInt(m[1],10);
@@ -4511,7 +4519,8 @@ CSL.Util.FlipFlopper = function(state){
 		var flipTags = new Object();
 		var openToClose = new Object();
 		var openToDecorations = new Object();
-		for (var i=0; i < tagdefs.length; i += 1){
+		var l = tagdefs.length;
+		for (var i=0; i < l; i += 1){
 			closeTags[tagdefs[i][1]] = true;
 			flipTags[tagdefs[i][1]] = tagdefs[i][5];
 			openToClose[tagdefs[i][0]] = tagdefs[i][1];
@@ -4558,7 +4567,8 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	var expected_flips = new Array();
 	var tagstack = new Array();
 	var badTagStack = new Array();
-	for (var posA=1; posA<(strs.length-1); posA +=2){
+	var l = (strs.length-1);
+	for (var posA=1; posA<l; posA +=2){
 		var tag = strs[posA];
 		if (this.closeTagsHash[tag]){
 			expected_closers.reverse();
@@ -4614,7 +4624,8 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 		head.push(resplice);
 		strs = head.concat(tail);
 	};
-	for (var i=0; i<strs.length; i+=2){
+	var l = strs.length;
+	for (var i=0; i<l; i+=2){
 		strs[i] = CSL.Output.Formats[this.state.opt.mode].text_escape( strs[i] );
 	};
 	return strs;
@@ -4633,7 +4644,8 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 	if (this.strs.length == 1){
 		this.blob.blobs = this.strs[0];
 	} else if (this.strs.length > 2){
-		for (var posA=1; posA < (this.strs.length-1); posA+=2){
+		var l = (this.strs.length-1);
+		for (var posA=1; posA <l; posA+=2){
 			var tag = this.strs[posA];
 			var prestr = this.strs[(posA-1)];
 			// start by pushing in the trailing text string
@@ -4707,7 +4719,8 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 };
 CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	var posB = 0;
-	for (var posA=0; posA<blob.alldecor.length; posA+=1){
+	var l = blob.alldecor.length;
+	for (var posA=0; posA<l; posA+=1){
 		var decorations = blob.alldecor[posA];
 		var breakme = false;
 		for (var posC=(decorations.length-1); posC>-1; posC+=-1){
@@ -4854,7 +4867,8 @@ CSL.Output.Formatters["sentence"] = function(state,string) {
 CSL.Output.Formatters["capitalize-all"] = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	var strings = str.string.split(" ");
-	for(var i=0; i<strings.length; i++) {
+	var l = strings.length;
+	for(var i=0; i<l; i++) {
 		if(strings[i].length > 1) {
             strings[i] = strings[i][0].toUpperCase()+strings[i].substr(1).toLowerCase();
         } else if(strings[i].length == 1) {
@@ -4907,14 +4921,16 @@ CSL.Output.Formatters.doppelString = function(string,rex){
 	var ret = new Object();
 	ret.array = string.split(rex);
 	ret.string = "";
-	for (var i=0; i<ret.array.length; i += 2){
+	var l = ret.array.length;
+	for (var i=0; i<l; i += 2){
 		ret.string += ret.array[i];
 	};
 	return ret;
 };
 CSL.Output.Formatters.undoppelString = function(str){
 	var ret = "";
-	for (var i=0; i<str.array.length; i += 1){
+	var l = str.array.length;
+	for (var i=0; i<l; i += 1){
 		if ((i%2)){
 			ret += str.array[i];
 		} else {
@@ -5348,7 +5364,8 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 	var ret = "";
 	var ret_last_char = [];
 	var use_delim = "";
-	for (var i=0; i < blobs.length; i++){
+	var l = blobs.length;
+	for (var i=0; i < l; i++){
 		if (blobs[i].checkNext){
 			blobs[i].checkNext(blobs[(i+1)]);
 		}
@@ -5767,7 +5784,8 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 CSL.Factory.Registry.Comparifier = function(state,keyset){
 	var sort_directions = state[keyset].opt.sort_directions.slice();
     this.compareKeys = function(a,b){
-		for (var i=0; i < a.sortkeys.length; i++){
+		var l = a.sortkeys.length;
+		for (var i=0; i < l; i++){
 			//
 			// for ascending sort 1 uses 1, -1 uses -1.
 			// For descending sort, the values are reversed.

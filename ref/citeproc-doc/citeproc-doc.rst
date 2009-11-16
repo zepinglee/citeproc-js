@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a23##
+   version 1.00##a24##
 
 .. class:: info-date
 
-   =D=30 October 2009=D=
+   =D=17 November 2009=D=
 
 .. class:: contributors
 
@@ -197,7 +197,7 @@ __  `System functions`_
 
 .. code-block:: js
 
-   var citeproc = CSL.Engine(sys, style, lang)
+   var citeproc = new CSL.Engine(sys, style, lang)
 
 *sys*
     A Javascript object containing the functions
