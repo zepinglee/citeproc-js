@@ -97,7 +97,8 @@ CSL.Util.FlipFlopper = function(state){
 		var flipTags = new Object();
 		var openToClose = new Object();
 		var openToDecorations = new Object();
-		for (var i=0; i < tagdefs.length; i += 1){
+		var l = tagdefs.length;
+		for (var i=0; i < l; i += 1){
 			closeTags[tagdefs[i][1]] = true;
 			flipTags[tagdefs[i][1]] = tagdefs[i][5];
 			openToClose[tagdefs[i][0]] = tagdefs[i][1];
@@ -157,7 +158,8 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	var expected_flips = new Array();
 	var tagstack = new Array();
 	var badTagStack = new Array();
-	for (var posA=1; posA<(strs.length-1); posA +=2){
+	var l = (strs.length-1);
+	for (var posA=1; posA<l; posA +=2){
 		var tag = strs[posA];
 		if (this.closeTagsHash[tag]){
 			expected_closers.reverse();
@@ -217,7 +219,8 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 		head.push(resplice);
 		strs = head.concat(tail);
 	};
-	for (var i=0; i<strs.length; i+=2){
+	var l = strs.length;
+	for (var i=0; i<l; i+=2){
 		strs[i] = CSL.Output.Formats[this.state.opt.mode].text_escape( strs[i] );
 	};
 	return strs;
@@ -237,7 +240,8 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 	if (this.strs.length == 1){
 		this.blob.blobs = this.strs[0];
 	} else if (this.strs.length > 2){
-		for (var posA=1; posA < (this.strs.length-1); posA+=2){
+		var l = (this.strs.length-1);
+		for (var posA=1; posA <l; posA+=2){
 			var tag = this.strs[posA];
 			var prestr = this.strs[(posA-1)];
 			// start by pushing in the trailing text string
@@ -313,7 +317,8 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 
 CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	var posB = 0;
-	for (var posA=0; posA<blob.alldecor.length; posA+=1){
+	var l = blob.alldecor.length;
+	for (var posA=0; posA<l; posA+=1){
 		var decorations = blob.alldecor[posA];
 		var breakme = false;
 		for (var posC=(decorations.length-1); posC>-1; posC+=-1){

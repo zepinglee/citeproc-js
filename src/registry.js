@@ -477,7 +477,8 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 CSL.Factory.Registry.Comparifier = function(state,keyset){
 	var sort_directions = state[keyset].opt.sort_directions.slice();
     this.compareKeys = function(a,b){
-		for (var i=0; i < a.sortkeys.length; i++){
+		var l = a.sortkeys.length;
+		for (var i=0; i < l; i++){
 			//
 			// for ascending sort 1 uses 1, -1 uses -1.
 			// For descending sort, the values are reversed.

@@ -475,7 +475,8 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 	var ret = "";
 	var ret_last_char = [];
 	var use_delim = "";
-	for (var i=0; i < blobs.length; i++){
+	var l = blobs.length;
+	for (var i=0; i < l; i++){
 		if (blobs[i].checkNext){
 			blobs[i].checkNext(blobs[(i+1)]);
 		}

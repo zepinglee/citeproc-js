@@ -95,7 +95,8 @@ CSL.Util.Positioner.prototype.getPosition = function(citation, update) {
     //
     // For Case 2
 	// step through remaining cites in this citation
-	for ( i = 1; i < citation.citationItems.length; i++) {
+    var l = citation.citationItems.length;
+	for ( var i = 1; i < l; i++) {
 		// step through possible preceding cites within same note, from back to front
 		var curr = citation.citationItems[i];
 		var prev = citation.citationItems[i-1];

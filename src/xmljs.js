@@ -66,14 +66,16 @@ CSL.System.Xml.JunkyardJavascript.prototype.clean = function(xml) {
 	var i;
 	var tag = false;
 	var tagname = false;
-	for (i=0; i<xmllist.length; i++) {
+	var l = xmllist.length;
+	for (i=0; i<l; i++) {
 		if (xmllist[i]) {
 			newlist.push(xmllist[i]);
 		}
 	}
 	xmllist = newlist;
 	newlist = new Array();
-	for (i=0; i<xmllist.length; i++){
+	l = xmllist.length;
+	for (i=0; i<l; i++){
 		tag = xmllist[i];
 		if (tag[0] == "<" && (tag[1] == "?" || tag[1] == "!")){
 			continue;
@@ -155,7 +157,8 @@ CSL.System.Xml.JunkyardJavascript.prototype.commandInterface = new function(){
 CSL.System.Xml.JunkyardJavascript.prototype._makeToken = function(token,xml){
 	xml = xml.slice(1,(xml.length-1));
 	var pos = 0;
-	while (pos <xml.length){
+	var l = xml.length;
+	while (pos <l){
 		if (this.isEndtag(xml[pos])){
 			pos += 1;
 			continue;
@@ -236,7 +239,8 @@ CSL.System.Xml.JunkyardJavascript.prototype.getSpan =	function(xml){
 	if (this.isSingleton(xml[0])){
 		return new Array();
 	}
-	for (i=0; i<xml.length; i++){
+	var l = xml.length;
+	for (i=0; i<l; i++){
 		if (firsttag == this.getName(xml[i])){
 			if (this.isEndtag(xml[i])){
 				depth += -1;

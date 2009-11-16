@@ -598,7 +598,8 @@ CSL.Lib.Attributes["@page-range-format"] = function(state,arg){
 CSL.Lib.Attributes["@default-locale"] = function(state,arg){
 	var lst = arg;
 	lst = lst.split(/-x-(sort|pri|sec|name)-/);
-	for (var pos=1; pos<lst.length; pos += 2){
+	var l = lst.length;
+	for (var pos=1; pos<l; pos += 2){
 		state.opt[("locale-"+lst[pos])].push(lst[(pos+1)].replace(/^\s*/g,"").replace(/\s*$/g,""));
 	};
 }

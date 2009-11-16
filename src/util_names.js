@@ -317,7 +317,8 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 		namelist = namelist.replace(/\-/g," ");
 	}
 	namelist = namelist.replace(/\./g," ").replace(/\s*\-\s*/g,"-").replace(/\s+/g," ").split(/(\-|\s+)/);
-	for (var i=0; i<namelist.length; i+=2){
+	var l = namelist.length;
+	for (var i=0; i<l; i+=2){
 		var n = namelist[i];
 		var m = n.match( CSL.NAME_INITIAL_REGEXP);
 		if (m){
@@ -349,7 +350,7 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 
 CSL.Util.Names.stripRight = function(str){
 	var end = 0;
-	for (var pos=(str.length-1); pos > -1; pos += -1){
+	for (var pos=(str.length-1); pos > -1; pos--){
 		if (str[pos] != " "){
 			end = (pos+1);
 			break;

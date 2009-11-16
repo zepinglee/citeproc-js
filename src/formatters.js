@@ -123,7 +123,8 @@ CSL.Output.Formatters["sentence"] = function(state,string) {
 CSL.Output.Formatters["capitalize-all"] = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
 	var strings = str.string.split(" ");
-	for(var i=0; i<strings.length; i++) {
+	var l = strings.length;
+	for(var i=0; i<l; i++) {
 		if(strings[i].length > 1) {
             strings[i] = strings[i][0].toUpperCase()+strings[i].substr(1).toLowerCase();
         } else if(strings[i].length == 1) {
@@ -188,7 +189,8 @@ CSL.Output.Formatters.doppelString = function(string,rex){
 	var ret = new Object();
 	ret.array = string.split(rex);
 	ret.string = "";
-	for (var i=0; i<ret.array.length; i += 2){
+	var l = ret.array.length;
+	for (var i=0; i<l; i += 2){
 		ret.string += ret.array[i];
 	};
 	return ret;
@@ -197,7 +199,8 @@ CSL.Output.Formatters.doppelString = function(string,rex){
 
 CSL.Output.Formatters.undoppelString = function(str){
 	var ret = "";
-	for (var i=0; i<str.array.length; i += 1){
+	var l = str.array.length;
+	for (var i=0; i<l; i += 1){
 		if ((i%2)){
 			ret += str.array[i];
 		} else {

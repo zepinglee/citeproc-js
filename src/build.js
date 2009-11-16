@@ -535,7 +535,8 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 		txt = txt.replace(/〜/g,"/");
 
 		var lst = txt.split(/(平成|昭和|大正|明治)([0-9]+)/);
-		for	(var pos=1; pos<lst.length; pos+=3){
+		var l = lst.length;
+		for	(var pos=1; pos<l; pos+=3){
 			lst[(pos+1)] = years[lst[(pos)]] + parseInt(lst[(pos+1)]);
 			lst[pos] = "";
 		}

@@ -44,7 +44,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	var rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
 
 	var stringify = function(lst){
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			if ("object" == typeof lst[pos]){
 				lst[pos] = lst[pos].join("");
 			};
@@ -59,7 +60,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 
 	var expand = function(str){
 		var lst = listify(str);
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			var m = lst[pos].match(rangerex);
 			if (m){
 				if (!m[3] || m[1] == m[3]){
@@ -77,7 +79,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	};
 
 	var minimize = function(lst){
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			lst[pos][3] = _minimize(lst[pos][1], lst[pos][3]);
 			if (lst[pos][2].slice(1) == lst[pos][0]){
 				lst[pos][2] = "-";
@@ -92,7 +95,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 		var ret = e.slice();
 		ret.reverse();
 		if (b.length == e.length){
-			for (var pos=0; pos<b.length; pos += 1){
+			var l = b.length;
+			for (var pos=0; pos<l; pos += 1){
 				if (b[pos] == e[pos]){
 					ret.pop();
 				} else {
@@ -105,7 +109,8 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	};
 
 	var chicago = function(lst){
-		for (var pos=1; pos<lst.length; pos += 2){
+		var l = lst.length;
+		for (var pos=1; pos<l; pos += 2){
 			if ("object" == typeof lst[pos]){
 				var m = lst[pos];
 				var begin = parseInt(m[1],10);
