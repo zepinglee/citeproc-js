@@ -35,7 +35,6 @@
 dojo.provide("csl.testing_rhino");
 
 RhinoTest = function(name){
-	this.xml = new CSL.System.Xml.E4X();
 	this.dummy = [["dummy",{}]];
 	this.citations = [];
 	this.input = name;

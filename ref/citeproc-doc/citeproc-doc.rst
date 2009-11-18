@@ -21,19 +21,22 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a24##
+   version 1.00##a25##
 
 .. class:: info-date
 
-   =D=17 November 2009=D=
+   =D=19 November 2009=D=
 
 .. class:: contributors
 
-   Author
+   Author of this manual
        * Frank G. Bennett, Jr.
 
-   Contributors
+   With important feedback from
        * Bruce D'Arcus
+       * Lennard Fuller
+       * Fergus Gallagher
+       * Simon Kornblith
        * Dan Stillman
        * Rintze Zelle
 
@@ -72,8 +75,8 @@ environments, and on extended functionality that is available to address certain
 special requirements.
 
 Comments and complaints relating to this document and to the processor itself
-will be gladly received and eventually despatched with.  My email address
-is `biercenator@gmail.com`_
+will be gladly received and eventually despatched with.  The best channel
+for providing feedback and getting help is the `project mailing list`_.
 
 .. class:: first
 
@@ -87,7 +90,7 @@ is `biercenator@gmail.com`_
        |link| `Local Environment`_ 
        and |link| `Data Input`_ below.
 
-.. _biercenator@gmail.com: mailto:biercenator@gmail.com
+.. _`project mailing list`: http://groups.google.com/group/citeproc-js
 
 -------------------
 System requirements

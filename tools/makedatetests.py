@@ -88,10 +88,13 @@ for pos in range(0, len(tests), 1):
     newinput = test["input"]
     #newinput = ""
     #for c in test["input"]:
-    #    num = hex(ord(c))[2:]
-    #    if len(num) < 4:
-    #        num = '%s%s' % ('0'*(4-len(num)),num)
-    #    newinput += '\u%s' % (num,)
+    #    if ord(c) > 128:
+    #        num = hex(ord(c))[2:]
+    #        if len(num) < 4:
+    #            num = '%s%s' % ('0'*(4-len(num)),num)
+    #            newinput += '\u%s' % (num,)
+    #    else:
+    #        newinput += c
     results3.append( template3 % ((pos+1),newinput,results2) )
 
 final = template1 % (',\n    '.join( results3 ),)
