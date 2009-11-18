@@ -209,13 +209,22 @@ CSL = new function () {
 
 //SNIP-START
 
+if (!CSL.System){
+	load("./src/system.js");
+}
+if (!CSL.System.Xml){
+	load("./src/xml.js");
+}
+if (!CSL.System.Xml.E4X){
+	load("./src/xmle4x.js");
+}
 if (!CSL.Engine){
 	load("./src/build.js");
 }
 if (!CSL.Engine.Opt){
 	load("./src/state.js");
 }
-if (!CSL.makeStyle){
+if (!CSL.makeCitationCluster){
 	load("./src/commands.js");
 }
 if (!CSL.Engine.prototype.getAmbiguousCite){
@@ -232,15 +241,6 @@ if (!CSL.Lib.Elements.names){
 }
 if (!CSL.Lib.Attributes){
 	load("./src/attributes.js");
-}
-if (!CSL.System){
-	load("./src/system.js");
-}
-if (!CSL.System.Xml){
-	load("./src/xml.js");
-}
-if (!CSL.System.Xml.E4X){
-	load("./src/xmle4x.js");
 }
 if (!CSL.Factory){
 	load("./src/factory.js");

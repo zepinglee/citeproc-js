@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#-*- encoding: utf-8 -*-
 
 import os,sys
 
@@ -51,6 +52,8 @@ asserts = 0
 for line in datalst:
     line = line.strip()
     if not line: continue
+    newline = "";
+    #line = line.decode("utf-8")
     if line.startswith("#"): continue
     if line.startswith("-->"):
         line = line[3:].strip()
@@ -63,7 +66,7 @@ for line in datalst:
         for chunk in line:
             #print "(%s)" %chunk
             t = chunk.split("=")
-            print chunk
+            #print chunk
             t[1] = t[1].strip('"')
             m[t[0]] = t[1]
         continue
@@ -82,7 +85,14 @@ for pos in range(0, len(tests), 1):
         asserts += 1
         results2 += template2 % (test["result"][key], key)
     results2 += template4 % asserts
-    results3.append( template3 % ((pos+1),test["input"],results2) )
+    newinput = test["input"]
+    #newinput = ""
+    #for c in test["input"]:
+    #    num = hex(ord(c))[2:]
+    #    if len(num) < 4:
+    #        num = '%s%s' % ('0'*(4-len(num)),num)
+    #    newinput += '\u%s' % (num,)
+    results3.append( template3 % ((pos+1),newinput,results2) )
 
 final = template1 % (',\n    '.join( results3 ),)
 

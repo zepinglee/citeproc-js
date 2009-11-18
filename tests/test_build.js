@@ -53,12 +53,12 @@ doh.register("tests.build", [
 		var res = testme();
 		doh.assertEqual( "Success", res );
 	},
-]);
-
-var x = [
 	function testValue() {
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,myxml);
 		doh.assertEqual("object", typeof obj.build.macro_stack);
 	}
+]);
+
+var x = [
 ]

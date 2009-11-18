@@ -92,10 +92,6 @@ if __name__ == "__main__":
         tstr = open("./std/machines/%s" % (filename,)).read()
         cx.execute('testobjects["%s"] = %s;' %(testname,tstr))
     
-    ## XXXXX: Just need retrieval functions, and we'll be all set.
-    system = open("./src/tests-sm.js").read()
-    cx.execute(system)
-
     # Load rhino test runner framework, for internal tests
     rhinotester = open("./src/testing_rhino.js").read()
     cx.execute(rhinotester)
@@ -106,13 +102,14 @@ if __name__ == "__main__":
     cx.execute(stdrhinotester)
 
     # Load the Code
-    rootfile = open("./src/csl.js").read()
-    m = re.split('load\("([^"]+)"\)',rootfile)
+    rootfile = open("./citeproc.js").read()
+    #rootfile = open("./src/csl.js").read()
+    #m = re.split('load\("([^"]+)"\)',rootfile)
     cx.execute( re.sub("(?sm)//SNIP-START.*","",rootfile) )
-    if len(m) > 1:
-        for pos in range(1,len(m),2):
-            str = open( m[pos] ).read()
-            cx.execute( str )
+    #if len(m) > 1:
+    #    for pos in range(1,len(m),2):
+    #        str = open( m[pos] ).read()
+    #        cx.execute( str )
 
     # Load standard tests (dropped in favor of running tests through the
     # same frameworks as under Rhino -- which works, amazingly enough)

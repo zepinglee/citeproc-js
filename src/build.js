@@ -37,9 +37,10 @@ dojo.provide("csl.build");
 
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
-				   if ("string" != typeof style){
+	this.sys.xml = new CSL.System.Xml.E4X();
+	if ("string" != typeof style){
 		style = "";
-	}
+	};
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
 	this.build = new CSL.Engine.Build();

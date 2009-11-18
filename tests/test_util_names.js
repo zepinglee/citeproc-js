@@ -47,7 +47,7 @@ var display_names = [
 ];
 
 var sys = new RhinoTest();
-var state = CSL.makeStyle(sys,"<style></style>");
+var state = new CSL.Engine(sys,"<style></style>");
 
 //
 // Delimiters and formatting decorations are
@@ -144,6 +144,6 @@ state.tmp.nameset_counter = 0;
 doh.register("tests.util_names", [
 	function testBuildNames (){
 		CSL.Util.Names.outputNames(state,display_names);
-		doh.assertEqual("[(Doe), J., G. (Roe), and T. (Smith)]", state.output.string(state,state.output.queue));
+		doh.assertEqual("[(Doe), J, G (Roe), and T (Smith)]", state.output.string(state,state.output.queue));
 	}
 ]);

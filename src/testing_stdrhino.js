@@ -38,7 +38,7 @@ dojo.provide("csl.testing_stdrhino");
  * Retrieval methods for standard tests.
  */
 var StdRhinoTest = function(myname){
-	this.xml = new CSL.System.Xml.E4X();
+	//this.xml = new CSL.System.Xml.E4X();
 	this.myname = myname;
 	this._cache = {};
 	this._ids = [];

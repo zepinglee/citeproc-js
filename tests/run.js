@@ -36,11 +36,12 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.test_util_names");
 	dojo.require("tests.std_locale");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_date");
-	dojo.require("tests.test_dateparse");
+	// dojo.require("tests.test_dateparse");
 	dojo.require("tests.std_bibsection");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_nameattr");
@@ -94,35 +95,10 @@ if(true){
 
 
 	//SNIP-START
-	// most of this stuff now needs to be refactored
-	dojo.require("tests.test_build_internals");
-	dojo.require("tests.test_build_integration");
-	dojo.require("tests.test_build");
-	dojo.require("tests.test_commands");
-	dojo.require("tests.test_configure");
-	dojo.require("tests.test_csl");
-	dojo.require("tests.test_dates");
-	dojo.require("tests.test_factory");
-	dojo.require("tests.test_failing");
-	dojo.require("tests.test_groups");
-	dojo.require("tests.test_list");
-	dojo.require("tests.test_locale");
-	dojo.require("tests.test_names_import");
-	dojo.require("tests.test_range");
-	dojo.require("tests.test_render");
-	dojo.require("tests.test_retrieval");
-	dojo.require("tests.test_sequence");
-	dojo.require("tests.test_sort");
-	dojo.require("tests.test_term");
-	dojo.require("tests.test_util_names");
-	dojo.require("tests.test_xmle4x");
-	dojo.require("tests.test_xmljs");
-
-	// the final challenge
 
 	// this stuff is either burdensome or broken
-	dojo.require("tests.test_load_all_styles");
-	dojo.require("tests.test_speed");
+	//dojo.require("tests.test_load_all_styles");
+	//dojo.require("tests.test_speed");
 
 	CSL.debug("Nothing here");
 }

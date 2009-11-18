@@ -127,9 +127,10 @@ CSL = new function () {
 dojo.provide("csl.build");
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
-				   if ("string" != typeof style){
+	this.sys.xml = new CSL.System.Xml.E4X();
+	if ("string" != typeof style){
 		style = "";
-	}
+	};
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
 	this.build = new CSL.Engine.Build();
@@ -914,10 +915,6 @@ CSL.Engine.CitationSort = function (){
 	this.keys = new Array();
 };
 dojo.provide("csl.commands");
-CSL.makeStyle = function(sys,xml,lang){
-	var engine = new CSL.Engine(sys,xml,lang);
-	return engine;
-};
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){

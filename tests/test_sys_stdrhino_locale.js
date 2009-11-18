@@ -57,8 +57,9 @@ doh.register("tests.sys_stdrhino_locale", [
 		doh.assertEqual("and", obj.locale_terms["and"]["long"]);
 	},
 	function testMakeXml(){
-		var obj = new StdRhinoTest();
-		var res = obj.xml.makeXml('<style><citation><text/></citation></style>');
+		var sys = new StdRhinoTest();
+		var obj = new CSL.Engine(sys,'<style></style>');
+		var res = obj.sys.xml.makeXml('<style><citation><text/></citation></style>');
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 		doh.assertEqual("text", res..text.localName());
 	},

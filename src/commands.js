@@ -35,15 +35,6 @@
 dojo.provide("csl.commands");
 
 /**
- * This module provides the commands used to instantiate
- * and control the processor.
- */
-CSL.makeStyle = function(sys,xml,lang){
-	var engine = new CSL.Engine(sys,xml,lang);
-	return engine;
-};
-
-/**
  * Compose a citation "cluster".
  * <p>Accepts an Item object or a list of Item objects as a
  * single argument.  Citation clusters are typically used in the
