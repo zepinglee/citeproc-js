@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a25##
+   version 1.00##a27##
 
 .. class:: info-date
 
-   =D=19 November 2009=D=
+   =D=21 November 2009=D=
 
 .. class:: contributors
 
@@ -92,9 +92,9 @@ for providing feedback and getting help is the `project mailing list`_.
 
 .. _`project mailing list`: http://groups.google.com/group/citeproc-js
 
--------------------
-System requirements
--------------------
+-----------------------------
+Setup and System Requirements
+-----------------------------
 
 The processor and its test framework can be run in two commonly
 available Javascript environments, using the scripts ``test.py`` or
@@ -131,30 +131,16 @@ The simplest configuration for running tests is to use the ``runtest.sh``
 script (or ``runtest.bat`` on Windows systems).  If your OS has Java installed
 (which most desktop and laptop systems nowadays seem to do), this will run
 the full set of processor tests using a copy of the ``rhino`` Javascript interpreter
-that ships with the ``citeproc-js`` sources.
+that ships with the ``citeproc-js`` sources. [#]_
+
 
 #####################################
 ``test.py`` + ``python-spidermonkey``
 #####################################
 
 It is also possible to run the processor tests in the ``spidermonkey``
-interpreter using the ``test.py`` script.  This exciting alternative
-displays exactly the same console trace through a *totally different
-set of underlying libraries*.  Playstation\ |reg|\ 3, you say?  Ha!
-Wii\ |trade|?  Tame stuff!  Xbox 360 :superscript:`©2004 Microsoft
-Corporation and/or its suppliers`?  Hardly.  You can set these mere
-toys aside, ladies and gentlemen.  *This* is *the real adventure*.  A
-challenge that comes but once in a product cycle.  A task that demands
-sturdy fingers, strong coffee and ...
-
-.. |reg| unicode:: U+00AE
-.. |trade| unicode:: U+02122
-.. |copy| unicode:: U+00A9
-
-Ahem.
-
-To use the ``test.py`` script, you will need to install the following items
-on your computer:
+interpreter using the ``test.py`` script.  To use the ``test.py``
+script, you will need to install the following items on your computer:
 
 Python 2.5 or higher
       (Available as a package install in most Linux distributions.)
@@ -171,6 +157,23 @@ If your Python is version 2.5, you will also need to install a
 JSON package, such as ``simplejson`` or ``cjson``.  Python 2.6
 ships with a bundled JSON module, so there is no need to install
 one separately if that's your version.
+
+####################
+Loading runtime code
+####################
+
+The primary source code of the processor is located under ``./src``,
+for ease of maintenance.  The files necessary for use in a runtime
+environment are catenated, in the appropriate sequence, in the
+``citeproc.js`` file, located in the root of the source archive.  This
+file can be regenerated using the ``./tools/bundle.sh`` shell script.
+
+To build the processor, this file must be loaded into the Javascript
+interpreter context, together with a ``sys`` object provided by the
+integrator (see below), and the desired CSL style (as a string). 
+
+.. [#] Note that two tests in the
+      current test suite will fail under ``rhino``, due to string encoding issues.
 
 ------------------
 Processor Commands
@@ -200,7 +203,9 @@ __  `System functions`_
 
 .. code-block:: js
 
-   var citeproc = new CSL.Engine(sys, style, lang)
+   var citeproc = new CSL.Engine(sys, 
+                                 style, 
+                                 lang)
 
 *sys*
     A Javascript object containing the functions
