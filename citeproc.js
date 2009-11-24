@@ -2105,8 +2105,10 @@ CSL.Lib.Elements.number = new function(){
 					var m = num.split(/\s*(&|,|-)\s*/);
 					num = m[0];
 				}
-				if (num.match(/^[0-9]+$/)){
-					var number = new CSL.Output.Number( parseInt(num,10), this );
+				var m = num.match(/\s*([0-9]+).*/);
+				if (m){
+					num = parseInt( m[1], 10);
+					var number = new CSL.Output.Number( num, this );
 					state.output.append(number,"literal");
 				} else {
 					state.output.append(num, this);
