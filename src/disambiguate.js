@@ -34,10 +34,6 @@
  */
 dojo.provide("csl.disambiguate");
 
-/**
- * Disambiguate a list of cites
- */
-
 var debug = false;
 
 CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
@@ -50,16 +46,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		// We clear the list of ambigs so it can be rebuilt
 		this.ambigcites[akey] = new Array();
 	} else {
-		//var ambigs = this.ambigs[akey].slice();
-		//this.ambigs[akey] = new Array();
-
-		// candidate list consists of registry tokens.
-		// extract the ids and build an ambigs list.
-		// This is roundabout -- we already collected
-		// these once for the first-phase disambiguation.
-		// Maybe it can be cleaned up later.
 		//
-		// XXXXX: ??? same as above?
+		// If candidate_list is true, we are running one final time with
+		// disambiguate="true"
 		//
 		var ambigs = new Array();
 		for each (var reg_token in candidate_list){
@@ -88,9 +77,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 	if (candidate_list && candidate_list.length){
 		modes = ["disambiguate_true"].concat(modes);
 	}
-	//if (disambiguate_true){
-	//	modes = ["disambiguate_true"].concat(modes);
-	//}
 	var checkerator = new this.Checkerator(tokens,modes);
 
 	checkerator.lastclashes = (ambigs.length-1);
@@ -101,11 +87,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 	var base = false;
 	checkerator.pos = 0;
 
-	//
-	// OKAY!  It's now all working right, but the loop isn't
-	// exiting.  We need to know which items we have seen,
-	// and exit when we've seen them all.
-	//
 	while (checkerator.run()){
 		var token = tokens[checkerator.pos];
 		if (debug){
@@ -131,11 +112,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			CSL.debug("base in (givens):"+base["givens"]);
 		}
-		//
-		// XXXXX: Aha!  The processor is adding an empty given
-		// name entry to the config.  Check the debug output, it's
-		// clearly the processor.  Happens when the base value is 2.
-		//
 		var str = state.getAmbiguousCite(token,base);
 		var maxvals = state.getMaxVals();
 		var minval = state.getMinVal();
@@ -143,16 +119,10 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			CSL.debug("base out (givens):"+base["givens"]);
 		}
-		//
-		// XXXXX: scrap this?
-		//
 		if (candidate_list && candidate_list.length){
 			base["disambiguate"] = true;
 		}
-		//if (disambiguate_true){
-		//	CSL.debug("D TRUE");
-		//	base["disambiguate"] = true;
-		//}
+
 		checkerator.setBase(base);
 		checkerator.setMaxVals(maxvals);
 		checkerator.setMinVal(minval);
@@ -188,7 +158,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		}
 		if (checkerator.maxAmbigLevel()){
 			if ( ! state["citation"].opt["disambiguate-add-year-suffix"]){
-				//this.registerAmbigToken(state,akey,token.id,base);
 				checkerator.mode1_counts = false;
 				checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
 				if (debug){
@@ -340,7 +309,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 			if (debug){
 				CSL.debug("   ---> Applying mode 1 defaults: "+this.mode1_defaults);
 			}
-			if (this.mode1_defaults){
+			if (this.mode1_defaults && namepos > 0){
 				var old = this.mode1_defaults[(namepos-1)];
 				if (debug){
 					CSL.debug("   ---> Resetting to default: ("+old+")");
@@ -358,7 +327,6 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 				CSL.debug("   ---> No clashes, storing token config and going to next");
 			}
 			this.mode1_counts = false;
-			// XXXXX: try-and-see change 2009-07-24 during major code reorganization.
 			this.pos += 1;
 			ret = true;
 		}
@@ -391,19 +359,10 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 	}
 
 	if (this.mode == "names"){
-		//CSL.debug(this.modepos+" : "+this.base[0].length+" : "+this.base[0][this.modepos]);
 		if (this.modepos == (this.base["names"].length-1) && this.base["names"][this.modepos] == this.maxvals[this.modepos]){
-			//
-			// XXXXX: needs to be smarter?
-			//
-			//if (this.modes.indexOf("names") < (this.modes.length-1)){
-			//	this.mode = this.modes[(this.modes.indexOf("names")+1)];
-			//	this.modepos = 0;
 			if (this.modes.length == 2){
 				this.mode = "givens";
 				this.mode1_counts[this.modepos] = 0;
-				// XXX this.modepos = 0;
-				//this.pos = 0;
 			} else {
 				this.pos += 1;
 				return true;

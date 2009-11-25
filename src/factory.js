@@ -45,13 +45,6 @@ if (!CSL) {
 CSL.Factory = {};
 
 
-CSL.Factory.version = function(){
-	var msg = "\"Entropy\" citation processor (a.k.a. citeproc-js) ver.0.01";
-	CSL.debug(msg);
-	return msg;
-};
-
-
 /**
  * Convert XML node to token.
  * <p>This is called on an XML node.  After extracting the name and attribute
@@ -304,14 +297,9 @@ CSL.Factory.cloneAmbigConfig = function(config){
 	for (var i in config["givens"]){
 		var param = new Array();
 		for (var j in config["givens"][i]){
-			//
-			// XXXX: Aha again!  Givens sublist is acquiring an item at position -1.
-			// Classic stab-in-the-back Javascript breakage.  A hacked-in fix for
-			// now, this should be properly cleaned up sometime, though.
-			//
-			if (j > -1){
-				param.push(config["givens"][i][j]);
-			};
+			// condition at line 312 of disambiguate.js protects against negative
+			// values of j
+			param.push(config["givens"][i][j]);
 		};
 		ret["givens"].push(param);
 	};

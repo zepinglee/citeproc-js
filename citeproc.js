@@ -670,7 +670,7 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 			//
 			// If it's a season, record it.
 			//
-			var breakme = false;
+			breakme = false;
 			for (pos in seasonrexes){
 				if (element.toLocaleLowerCase().match(seasonrexes[pos])){
 					thedate["season"+suff] = ""+(parseInt(pos,10)+1);
@@ -688,9 +688,6 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 				thedate.fuzzy = ""+1;
 				continue;
 			}
-			//
-			// If it's cruft, make a note of it.
-			//
 			//
 			// If it's cruft, make a note of it
 			//
@@ -1317,10 +1314,6 @@ if (!CSL) {
 }
 CSL.Lib = {};
 dojo.provide("csl.elements");
-//
-// XXXXX Fix initialization of given name count.
-// Should this be removed from the base?  not sure.
-//
 CSL.Lib.Elements = {};
 CSL.Lib.Elements.info = new function(){
 	this.build = build;
@@ -1367,12 +1360,6 @@ CSL.Lib.Elements.text = new function(){
 					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
 						this.range_prefix = "-";
 					}
-					//
-					// XXXXX: where to get the delimiter for this?  The
-					// layout delimiter is appropriate, where is it?
-					// Is it even safe to set it at this stage of processing?
-					// Guess so.
-					//
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					var func = function(state,Item){
 						var id = Item["id"];
@@ -1906,11 +1893,6 @@ CSL.Lib.Elements.name = new function(){
 CSL.Lib.Elements["name-part"] = new function(){
 	this.build = build;
 	function build(state,target){
-		// XXXXX problem.  can't be global.  don't want to remint
-		// for every rendering.  somehow get tokens stored on
-		// closing names tag static.  always safe, b/c
-		// no conditional branching inside names.
-		// same treatment for etal styling element.
 		var set_namepart_format = function(state,Item){
 			state.output.addToken(state.tmp.namepart_type,false,this);
 		};
@@ -1927,9 +1909,6 @@ CSL.Lib.Elements.label = new function(){
 			this.strings.label_position = CSL.BEFORE;
 		}
 		var set_label_info = function(state,Item){
-		//	if (!this.strings.form){
-		//		this.strings.form = "long";
-		//	}
 			state.output.addToken("label",false,this);
 		};
 		this["execs"].push(set_label_info);
@@ -1940,10 +1919,6 @@ CSL.Lib.Elements.label = new function(){
 				this.strings.form = "long";
 			}
 			var form = this.strings.form;
-			//
-			// XXXXX: probably wrong.  needs a test.
-			// Gaaack.  Seems not to be connected anywhere.
-			//
 			if ("number" == typeof this.strings.plural){
 				plural = this.strings.plural;
 				CSL.debug("plural: "+this.strings.plural);
@@ -2146,7 +2121,7 @@ CSL.Lib.Elements.date = new function(){
 						delete datexml.*.(@name=="day")[0];
 					}
 					//
-					// XXXXXXXXXXXXXX: pass this xml object through to state.build for
+					// pass this xml object through to state.build for
 					// post processing by date-part and in END or at the finish of
 					// SINGLETON.  Delete after processing.
 					//
@@ -2167,7 +2142,7 @@ CSL.Lib.Elements.date = new function(){
 							state.tmp.date_object = state.dateParseArray( date_obj );
 						}
 						//
-						// XXXXX: Call a function here to analyze the
+						// Call a function here to analyze the
 						// data and set the name of the date-part that
 						// should collapse for this range, if any.
 						//
@@ -2223,13 +2198,9 @@ CSL.Lib.Elements.date = new function(){
 				this["execs"].push(set_value);
 				var newoutput = function(state,Item){
 					state.output.startTag("date",this);
-					//
-					// XXXXX
-					// Here's where "circa" belongs
-					//
 					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
 					//
-					// sneak in a literal if present, and quash the remainder
+					// if present, sneak in a literal here and quash the remainder
 					// of output from this date.
 					//
 					if (state.tmp.date_object["literal"]){
@@ -2299,8 +2270,6 @@ CSL.Lib.Elements["date-part"] = new function(){
 				var have_collapsed = state.tmp.have_collapsed;
 				var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
 				var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
-				//
-				// XXXXX: need a condition for year as well?
 				if (real && precondition && invoked){
 					state.tmp.years_used.push(value);
 					var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
@@ -2575,16 +2544,8 @@ CSL.Lib.Elements.names = new function(){
 			state.build.substitute_level.push(1);
 			state.fixOpt(this,"names-delimiter","delimiter");
 			var init_names = function(state,Item){
-				//
-				// XXXXX: could be wrong here
 				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
-						//
-						// If the item has been marked for quashing, skip it.
-						//
-						// XXXXX: name_quash superceded.
-						//
-						// if (Item[variable] && ! state.tmp.name_quash[variable]){
 						if (Item[variable]){
 							var filtered_names = state.getNameSubFields(Item[variable]);
 							// filtered_names = CSL.Util.Names.rescueNameElements(filtered_names);
@@ -2667,18 +2628,8 @@ CSL.Lib.Elements.names = new function(){
 						continue;
 					};
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
-						// XXXX: This looks all messed up.  Apparently I'm using
-						// last_names_used for two purposes -- to compare namesets
-						// in a listing of nameset variables (which is what the code
-						// below does), and to compare the actual name rendered
-						// between cites (which is why the var gets reset before
-						// _unit_of_reference is called from makeCitationCluster.
 						//
-						// Or so it seems on a quick look.  Might not need to touch
-						// this, though; for bug #12, it will be enough to check
-						// whether something has been rendered in the current cite.
-						//
-						// Ah, no.  This is fine, but the naming of the comparison
+						// This is fine, but the naming of the comparison
 						// function is confusing.  This is just checking whether the
 						// current name is the same as the last name rendered
 						// in the last cite, and it works.  Set a toggle if the
@@ -2717,13 +2668,7 @@ CSL.Lib.Elements.names = new function(){
 					if (suppress_condition){
 						continue;
 					}
-					//print("CAN SUBSTITUTE: "+state.tmp.can_substitute.value());
-					//
-					// XXXXX: For some reason this doesn't give effect to
-					// suppression.  I'm missing something somehow.
-					//
 					if (state.tmp.can_block_substitute){
-						//print(nameset.type);
 						state.tmp.done_vars.push(nameset.type);
 					};
 					//
@@ -2885,10 +2830,6 @@ CSL.Lib.Elements.names = new function(){
 		};
 		if (this.tokentype == CSL.END){
 			var unsets = function(state,Item){
-				//
-				// XXXXX: why not just use a simple var for can_substitute,
-				// and set it to true when we reach the top level again?
-				//
 				if (!state.tmp.can_substitute.pop()){
 					state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}
@@ -3359,11 +3300,6 @@ dojo.provide("csl.factory");
 if (!CSL) {
 }
 CSL.Factory = {};
-CSL.Factory.version = function(){
-	var msg = "\"Entropy\" citation processor (a.k.a. citeproc-js) ver.0.01";
-	CSL.debug(msg);
-	return msg;
-};
 CSL.Factory.XmlToToken = function(state,tokentype){
 	var name = state.sys.xml.nodename(this);
 	if (state.build.skip && state.build.skip != name){
@@ -3531,14 +3467,9 @@ CSL.Factory.cloneAmbigConfig = function(config){
 	for (var i in config["givens"]){
 		var param = new Array();
 		for (var j in config["givens"][i]){
-			//
-			// XXXX: Aha again!  Givens sublist is acquiring an item at position -1.
-			// Classic stab-in-the-back Javascript breakage.  A hacked-in fix for
-			// now, this should be properly cleaned up sometime, though.
-			//
-			if (j > -1){
-				param.push(config["givens"][i][j]);
-			};
+			// condition at line 312 of disambiguate.js protects against negative
+			// values of j
+			param.push(config["givens"][i][j]);
 		};
 		ret["givens"].push(param);
 	};
@@ -4831,13 +4762,6 @@ CSL.Output.Formatters.strip_periods = function(state,string) {
 CSL.Output.Formatters.passthrough = function(state,string){
 	return string;
 };
-//
-// XXXXX
-// A bit of interest coming up with vertical-align.
-// This needs to include the prefixes and suffixes
-// in its scope, so it's applied last, AFTER they
-// are appended to the string.  I think it's the
-// only one that will need to work that way.
 CSL.Output.Formatters.lowercase = function(state,string) {
 	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
 	str.string = str.string.toLowerCase();
@@ -5114,63 +5038,39 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix){
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
-	if (false && bloblist.length > 1){
-		this.openLevel("empty");
-		var curr = this.current.value();
-		for each (var blobbie in bloblist){
-			if ("string" == typeof blobbie.blobs){
-				this.state.tmp.term_predecessor = true;
-			}
-			curr.push( blobbie );
-		}
-		this.closeLevel();
-	} else {
-		var curr = this.current.value();
-		if ("string" == typeof blob.blobs){
-			this.state.tmp.term_predecessor = true;
-		}
-		//
-		// XXXXX: Interface to this function needs cleaning up.
-		// The str variable is ignored if blob is given, and blob
-		// must contain the string to be processed.  Ugly.
-		//CSL.debug("str:"+str.length);
-		//CSL.debug("blob:"+blob);
-		//CSL.debug("tokname:"+tokname);
-		//
-		// <Dennis Hopper impersonation>
-		// XXXXX: This is, like, too messed up for _words_, man.
-		// </Dennis Hopper impersonation>
-		//
-		if (this.state.tmp.count_offset_characters){
-		 	if ("string" == typeof str){
-				this.state.tmp.offset_characters += blob.strings.prefix.length;
-				this.state.tmp.offset_characters += blob.strings.suffix.length;
-				this.state.tmp.offset_characters += blob.blobs.length;
-			} else if ("undefined" != str.num){
-				this.state.tmp.offset_characters += str.strings.prefix.length;
-				this.state.tmp.offset_characters += str.strings.suffix.length;
-				this.state.tmp.offset_characters += str.formatter.format(str.num).length;
-			}
-		}
+	var curr = this.current.value();
+	if ("string" == typeof blob.blobs){
+		this.state.tmp.term_predecessor = true;
+	}
+	if (this.state.tmp.count_offset_characters){
 		if ("string" == typeof str){
-			curr.push( blob );
-			if (blob.strings["text-case"]){
-				//
-				// This one is _particularly_ hard to follow.  It's not obvious,
-				// but the blob already contains the input string at this
-				// point, as blob.blobs -- it's a terminal node, as it were.
-				// The str variable also contains the input string, but
-				// that copy is not used for onward processing.  We have to
-				// apply our changes to the blob copy.
-				//
-				blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
-			};
-			this.state.fun.flipflopper.init(str,blob);
-			//CSL.debug("(queue.append blob decorations): "+blob.decorations);
-			this.state.fun.flipflopper.processTags();
-		} else {
-			curr.push( str );
+			this.state.tmp.offset_characters += blob.strings.prefix.length;
+			this.state.tmp.offset_characters += blob.strings.suffix.length;
+			this.state.tmp.offset_characters += blob.blobs.length;
+		} else if ("undefined" != str.num){
+			this.state.tmp.offset_characters += str.strings.prefix.length;
+			this.state.tmp.offset_characters += str.strings.suffix.length;
+			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
 		}
+	}
+	if ("string" == typeof str){
+		curr.push( blob );
+		if (blob.strings["text-case"]){
+			//
+			// This one is _particularly_ hard to follow.  It's not obvious,
+			// but the blob already contains the input string at this
+			// point, as blob.blobs -- it's a terminal node, as it were.
+			// The str variable also contains the input string, but
+			// that copy is not used for onward processing.  We have to
+			// apply our changes to the blob copy.
+			//
+			blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
+		};
+		this.state.fun.flipflopper.init(str,blob);
+		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
+		this.state.fun.flipflopper.processTags();
+	} else {
+		curr.push( str );
 	}
 }
 //
@@ -5227,37 +5127,6 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 						b = state.fun.decorate[params[0]][params[1]](state,b);
 					};
 				};
-				//
-				// XXXXX: this should really be matching whenever there is a suffix,
-				// and the last char in the string is the same as the first char in
-				// the suffix.
-				//
-				// Well, OKAY NOW.  Chicago appends a period by setting
-				// prefix=". " on a number of possibly-render-possibly-not
-				// subsequent elements.  Lovely.  That means that this
-				// approach is unfixably broken.  We need a better way of
-				// handling this issue.  And yes, it does also need to cope
-				// with question marks and exclamation points.
-				//
-				// Need a method of tracking "the last character
-				// appended out of a string field or an affix", using
-				// a global variable.  It should toggle deletion of
-				// leading punctuation on a suffix OR a prefix,
-				// anywhere.
-				//
-				// So ... that can happen each time there is an append,
-				// huh?  So the variable can be stashed on the queue,
-				// huh?  And that means that this should be done on
-				// the way INTO the queue, not on the way out, as here.
-				//
-				// Uh ... no, that's not going to work, because only
-				// content strings are inserted with append.  This MUST
-				// be handled here in the stringifier.  So we need to
-				// figure out how to track the last character of the
-				// most recent string.  Everywhere.
-				//
-				//
-				// Can this variable assignment be dropped?
 				var use_suffix = blobjr.strings.suffix;
 				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
 				    use_suffix = use_suffix.slice(1);
@@ -5301,8 +5170,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 			}
 		}
 		//
-		// XXXX: this is same as a code block above, factor out with
-		// code above as model
+		// XXXX: cut-and-paste warning.  same as a code block above.
 		//
 		var b = blobs_start;
 		var use_suffix = blob.strings.suffix;
@@ -5411,8 +5279,6 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				str = blob.strings.prefix + str + blob.strings.suffix;
 			//}
 			if (blob.status == CSL.END){
-				//
-				// XXXXX needs to be drawn from the object
 				ret += blob.range_prefix;
 			} else if (blob.status == CSL.SUCCESSOR){
 				ret += blob.successor_prefix;
@@ -5789,8 +5655,6 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
 			// for ascending sort 1 uses 1, -1 uses -1.
 			// For descending sort, the values are reversed.
 			//
-			// XXXXX
-			//
 			// Need to handle undefined values.  No way around it.
 			// So have to screen .localeCompare (which is also
 			// needed) from undefined values.  Everywhere, in all
@@ -5926,11 +5790,6 @@ CSL.Factory.Registry.NameReg = function(state){
 		return param;
 	};
 	var delitems = function(ids){
-		//
-		// XXXX: Left something out, oops.  This function needs to return
-		// the IDs of all items that might be affected by the deletion of a
-		// name affected by this invocation.
-		//
 		if ("string" == typeof ids){
 			ids = [ids];
 		};
@@ -6056,15 +5915,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		// We clear the list of ambigs so it can be rebuilt
 		this.ambigcites[akey] = new Array();
 	} else {
-		//var ambigs = this.ambigs[akey].slice();
-		//this.ambigs[akey] = new Array();
-		// candidate list consists of registry tokens.
-		// extract the ids and build an ambigs list.
-		// This is roundabout -- we already collected
-		// these once for the first-phase disambiguation.
-		// Maybe it can be cleaned up later.
 		//
-		// XXXXX: ??? same as above?
+		// If candidate_list is true, we are running one final time with
+		// disambiguate="true"
 		//
 		var ambigs = new Array();
 		for each (var reg_token in candidate_list){
@@ -6111,11 +5964,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			CSL.debug("base in (givens):"+base["givens"]);
 		}
-		//
-		// XXXXX: Aha!  The processor is adding an empty given
-		// name entry to the config.  Check the debug output, it's
-		// clearly the processor.  Happens when the base value is 2.
-		//
 		var str = state.getAmbiguousCite(token,base);
 		var maxvals = state.getMaxVals();
 		var minval = state.getMinVal();
@@ -6123,16 +5971,9 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			CSL.debug("base out (givens):"+base["givens"]);
 		}
-		//
-		// XXXXX: scrap this?
-		//
 		if (candidate_list && candidate_list.length){
 			base["disambiguate"] = true;
 		}
-		//if (disambiguate_true){
-		//	CSL.debug("D TRUE");
-		//	base["disambiguate"] = true;
-		//}
 		checkerator.setBase(base);
 		checkerator.setMaxVals(maxvals);
 		checkerator.setMinVal(minval);
@@ -6165,7 +6006,6 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		}
 		if (checkerator.maxAmbigLevel()){
 			if ( ! state["citation"].opt["disambiguate-add-year-suffix"]){
-				//this.registerAmbigToken(state,akey,token.id,base);
 				checkerator.mode1_counts = false;
 				checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
 				if (debug){
@@ -6286,7 +6126,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 			if (debug){
 				CSL.debug("   ---> Applying mode 1 defaults: "+this.mode1_defaults);
 			}
-			if (this.mode1_defaults){
+			if (this.mode1_defaults && namepos > 0){
 				var old = this.mode1_defaults[(namepos-1)];
 				if (debug){
 					CSL.debug("   ---> Resetting to default: ("+old+")");
@@ -6304,7 +6144,6 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 				CSL.debug("   ---> No clashes, storing token config and going to next");
 			}
 			this.mode1_counts = false;
-			// XXXXX: try-and-see change 2009-07-24 during major code reorganization.
 			this.pos += 1;
 			ret = true;
 		}
@@ -6330,19 +6169,10 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 		}
 	}
 	if (this.mode == "names"){
-		//CSL.debug(this.modepos+" : "+this.base[0].length+" : "+this.base[0][this.modepos]);
 		if (this.modepos == (this.base["names"].length-1) && this.base["names"][this.modepos] == this.maxvals[this.modepos]){
-			//
-			// XXXXX: needs to be smarter?
-			//
-			//if (this.modes.indexOf("names") < (this.modes.length-1)){
-			//	this.mode = this.modes[(this.modes.indexOf("names")+1)];
-			//	this.modepos = 0;
 			if (this.modes.length == 2){
 				this.mode = "givens";
 				this.mode1_counts[this.modepos] = 0;
-				// XXX this.modepos = 0;
-				//this.pos = 0;
 			} else {
 				this.pos += 1;
 				return true;

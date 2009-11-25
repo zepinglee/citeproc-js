@@ -53,16 +53,8 @@ CSL.Lib.Elements.names = new function(){
 			state.fixOpt(this,"names-delimiter","delimiter");
 
 			var init_names = function(state,Item){
-				//
-				// XXXXX: could be wrong here
 				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
-						//
-						// If the item has been marked for quashing, skip it.
-						//
-						// XXXXX: name_quash superceded.
-						//
-						// if (Item[variable] && ! state.tmp.name_quash[variable]){
 						if (Item[variable]){
 							var filtered_names = state.getNameSubFields(Item[variable]);
 							// filtered_names = CSL.Util.Names.rescueNameElements(filtered_names);
@@ -155,18 +147,8 @@ CSL.Lib.Elements.names = new function(){
 					};
 
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
-						// XXXX: This looks all messed up.  Apparently I'm using
-						// last_names_used for two purposes -- to compare namesets
-						// in a listing of nameset variables (which is what the code
-						// below does), and to compare the actual name rendered
-						// between cites (which is why the var gets reset before
-						// _unit_of_reference is called from makeCitationCluster.
 						//
-						// Or so it seems on a quick look.  Might not need to touch
-						// this, though; for bug #12, it will be enough to check
-						// whether something has been rendered in the current cite.
-						//
-						// Ah, no.  This is fine, but the naming of the comparison
+						// This is fine, but the naming of the comparison
 						// function is confusing.  This is just checking whether the
 						// current name is the same as the last name rendered
 						// in the last cite, and it works.  Set a toggle if the
@@ -207,13 +189,7 @@ CSL.Lib.Elements.names = new function(){
 						continue;
 					}
 
-					//print("CAN SUBSTITUTE: "+state.tmp.can_substitute.value());
-					//
-					// XXXXX: For some reason this doesn't give effect to
-					// suppression.  I'm missing something somehow.
-					//
 					if (state.tmp.can_block_substitute){
-						//print(nameset.type);
 						state.tmp.done_vars.push(nameset.type);
 					};
 
@@ -391,10 +367,6 @@ CSL.Lib.Elements.names = new function(){
 
 		if (this.tokentype == CSL.END){
 			var unsets = function(state,Item){
-				//
-				// XXXXX: why not just use a simple var for can_substitute,
-				// and set it to true when we reach the top level again?
-				//
 				if (!state.tmp.can_substitute.pop()){
 					state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}

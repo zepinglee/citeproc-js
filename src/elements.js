@@ -35,12 +35,6 @@
 dojo.provide("csl.elements");
 
 
-//
-// XXXXX Fix initialization of given name count.
-// Should this be removed from the base?  not sure.
-//
-
-
 /**
  * Functions corresponding to CSL element names.
  * <p>These are static function used during build and
@@ -117,12 +111,6 @@ CSL.Lib.Elements.text = new function(){
 					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
 						this.range_prefix = "-";
 					}
-					//
-					// XXXXX: where to get the delimiter for this?  The
-					// layout delimiter is appropriate, where is it?
-					// Is it even safe to set it at this stage of processing?
-					// Guess so.
-					//
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					var func = function(state,Item){
 						var id = Item["id"];
@@ -729,11 +717,6 @@ CSL.Lib.Elements.name = new function(){
 CSL.Lib.Elements["name-part"] = new function(){
 	this.build = build;
 	function build(state,target){
-		// XXXXX problem.  can't be global.  don't want to remint
-		// for every rendering.  somehow get tokens stored on
-		// closing names tag static.  always safe, b/c
-		// no conditional branching inside names.
-		// same treatment for etal styling element.
 		var set_namepart_format = function(state,Item){
 			state.output.addToken(state.tmp.namepart_type,false,this);
 		};
@@ -761,9 +744,6 @@ CSL.Lib.Elements.label = new function(){
 			this.strings.label_position = CSL.BEFORE;
 		}
 		var set_label_info = function(state,Item){
-		//	if (!this.strings.form){
-		//		this.strings.form = "long";
-		//	}
 			state.output.addToken("label",false,this);
 		};
 		this["execs"].push(set_label_info);
@@ -774,10 +754,6 @@ CSL.Lib.Elements.label = new function(){
 				this.strings.form = "long";
 			}
 			var form = this.strings.form;
-			//
-			// XXXXX: probably wrong.  needs a test.
-			// Gaaack.  Seems not to be connected anywhere.
-			//
 			if ("number" == typeof this.strings.plural){
 				plural = this.strings.plural;
 				CSL.debug("plural: "+this.strings.plural);
@@ -1017,7 +993,7 @@ CSL.Lib.Elements.date = new function(){
 						delete datexml.*.(@name=="day")[0];
 					}
 					//
-					// XXXXXXXXXXXXXX: pass this xml object through to state.build for
+					// pass this xml object through to state.build for
 					// post processing by date-part and in END or at the finish of
 					// SINGLETON.  Delete after processing.
 					//
@@ -1039,7 +1015,7 @@ CSL.Lib.Elements.date = new function(){
 							state.tmp.date_object = state.dateParseArray( date_obj );
 						}
 						//
-						// XXXXX: Call a function here to analyze the
+						// Call a function here to analyze the
 						// data and set the name of the date-part that
 						// should collapse for this range, if any.
 						//
@@ -1096,13 +1072,9 @@ CSL.Lib.Elements.date = new function(){
 
 				var newoutput = function(state,Item){
 					state.output.startTag("date",this);
-					//
-					// XXXXX
-					// Here's where "circa" belongs
-					//
 					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
 					//
-					// sneak in a literal if present, and quash the remainder
+					// if present, sneak in a literal here and quash the remainder
 					// of output from this date.
 					//
 					if (state.tmp.date_object["literal"]){
@@ -1174,8 +1146,6 @@ CSL.Lib.Elements["date-part"] = new function(){
 				var have_collapsed = state.tmp.have_collapsed;
 				var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
 				var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
-				//
-				// XXXXX: need a condition for year as well?
 				if (real && precondition && invoked){
 					state.tmp.years_used.push(value);
 					var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;

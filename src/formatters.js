@@ -58,15 +58,6 @@ CSL.Output.Formatters.passthrough = function(state,string){
 	return string;
 };
 
-//
-// XXXXX
-// A bit of interest coming up with vertical-align.
-// This needs to include the prefixes and suffixes
-// in its scope, so it's applied last, AFTER they
-// are appended to the string.  I think it's the
-// only one that will need to work that way.
-
-
 /**
  * Force all letters in the string to lowercase.
  */

@@ -520,7 +520,6 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 	// be a separate, standalone module that is instantiated in
 	// its own right during build.  This is nuts.
 
-
 	//
 	// Normalize the format and the year if it's a Japanese date
 	//
@@ -677,7 +676,7 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 			//
 			// If it's a season, record it.
 			//
-			var breakme = false;
+			breakme = false;
 			for (pos in seasonrexes){
 				if (element.toLocaleLowerCase().match(seasonrexes[pos])){
 					thedate["season"+suff] = ""+(parseInt(pos,10)+1);
@@ -695,9 +694,6 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 				thedate.fuzzy = ""+1;
 				continue;
 			}
-			//
-			// If it's cruft, make a note of it.
-			//
 			//
 			// If it's cruft, make a note of it
 			//

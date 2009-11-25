@@ -123,18 +123,6 @@ CSL.Lib.Attributes["@macro"] = function(state,arg){
 };
 
 
-/*
- * Store the term tokens on the singleton buffer.
- * <p>This works the same as a macro</p>
- * XXXXX Terms have to be
- * carried in a hash object anyway, to account for
- * singular and plural forms.  This should be a function
- * that ends up in execs, the same as value and
- * variable.  the string content should come from
- * state.getTerm(key,key,0or1).
- * @name CSL.Lib.Attributes.@suffix
- * @function
- */
 CSL.Lib.Attributes["@term"] = function(state,arg){
 	if (this.name == "et-al"){
 		if (state.locale_terms[arg]){
@@ -546,10 +534,6 @@ CSL.Lib.Attributes["@disambiguate-add-year-suffix"] = function(state,arg){
 
 
 CSL.Lib.Attributes["@second-field-align"] = function(state,arg){
-	//
-	// XXXXX: This needs to do something to set a CSS value, similar
-	// to hanging indent or the offset parameter.
-	//
 	if (arg == "flush" || arg == "margin"){
 		state[this.name].opt["second-field-align"] = arg;
 	};

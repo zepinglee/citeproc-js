@@ -483,8 +483,6 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
 			// for ascending sort 1 uses 1, -1 uses -1.
 			// For descending sort, the values are reversed.
 			//
-			// XXXXX
-			//
 			// Need to handle undefined values.  No way around it.
 			// So have to screen .localeCompare (which is also
 			// needed) from undefined values.  Everywhere, in all

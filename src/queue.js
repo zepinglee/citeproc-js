@@ -175,68 +175,51 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix){
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
+	var curr = this.current.value();
+	if ("string" == typeof blob.blobs){
+		this.state.tmp.term_predecessor = true;
+	}
 	//
-	//var bloblist = [blob];
+	// XXXXX: Interface to this function needs cleaning up.
+	// The str variable is ignored if blob is given, and blob
+	// must contain the string to be processed.  Ugly.
+	//CSL.debug("str:"+str.length);
+	//CSL.debug("blob:"+blob);
+	//CSL.debug("tokname:"+tokname);
 	//
-	// XXXXX: so this, like, never runs, does it?
+	// <Dennis Hopper impersonation>
+	// XXXXX: This is, like, too messed up for _words_, man.
+	// </Dennis Hopper impersonation>
 	//
-	if (false && bloblist.length > 1){
-		this.openLevel("empty");
-		var curr = this.current.value();
-		for each (var blobbie in bloblist){
-			if ("string" == typeof blobbie.blobs){
-				this.state.tmp.term_predecessor = true;
-			}
-			curr.push( blobbie );
-		}
-		this.closeLevel();
-	} else {
-		var curr = this.current.value();
-		if ("string" == typeof blob.blobs){
-			this.state.tmp.term_predecessor = true;
-		}
-		//
-		// XXXXX: Interface to this function needs cleaning up.
-		// The str variable is ignored if blob is given, and blob
-		// must contain the string to be processed.  Ugly.
-		//CSL.debug("str:"+str.length);
-		//CSL.debug("blob:"+blob);
-		//CSL.debug("tokname:"+tokname);
-		//
-		// <Dennis Hopper impersonation>
-		// XXXXX: This is, like, too messed up for _words_, man.
-		// </Dennis Hopper impersonation>
-		//
-		if (this.state.tmp.count_offset_characters){
-		 	if ("string" == typeof str){
-				this.state.tmp.offset_characters += blob.strings.prefix.length;
-				this.state.tmp.offset_characters += blob.strings.suffix.length;
-				this.state.tmp.offset_characters += blob.blobs.length;
-			} else if ("undefined" != str.num){
-				this.state.tmp.offset_characters += str.strings.prefix.length;
-				this.state.tmp.offset_characters += str.strings.suffix.length;
-				this.state.tmp.offset_characters += str.formatter.format(str.num).length;
-			}
-		}
+	if (this.state.tmp.count_offset_characters){
 		if ("string" == typeof str){
-			curr.push( blob );
-			if (blob.strings["text-case"]){
-				//
-				// This one is _particularly_ hard to follow.  It's not obvious,
-				// but the blob already contains the input string at this
-				// point, as blob.blobs -- it's a terminal node, as it were.
-				// The str variable also contains the input string, but
-				// that copy is not used for onward processing.  We have to
-				// apply our changes to the blob copy.
-				//
-				blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
-			};
-			this.state.fun.flipflopper.init(str,blob);
-			//CSL.debug("(queue.append blob decorations): "+blob.decorations);
-			this.state.fun.flipflopper.processTags();
-		} else {
-			curr.push( str );
+			this.state.tmp.offset_characters += blob.strings.prefix.length;
+			this.state.tmp.offset_characters += blob.strings.suffix.length;
+			this.state.tmp.offset_characters += blob.blobs.length;
+		} else if ("undefined" != str.num){
+			this.state.tmp.offset_characters += str.strings.prefix.length;
+			this.state.tmp.offset_characters += str.strings.suffix.length;
+			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
 		}
+	}
+	if ("string" == typeof str){
+		curr.push( blob );
+		if (blob.strings["text-case"]){
+			//
+			// This one is _particularly_ hard to follow.  It's not obvious,
+			// but the blob already contains the input string at this
+			// point, as blob.blobs -- it's a terminal node, as it were.
+			// The str variable also contains the input string, but
+			// that copy is not used for onward processing.  We have to
+			// apply our changes to the blob copy.
+			//
+			blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
+		};
+		this.state.fun.flipflopper.init(str,blob);
+		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
+		this.state.fun.flipflopper.processTags();
+	} else {
+		curr.push( str );
 	}
 }
 
@@ -256,17 +239,8 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 //
 
 CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
-	//
-	// XXXXX: This is broken, and the cause of breakage seems to be in the way
-	// the blob_last_chars variable is being handled.  I think if a value needs
-	// to be updated from a nested invocation of the same function, it needs to
-	// be returned explicitly.  It will complicate the interfaces, but I think
-	// that's the only way this is ever going to work.
-	//
-
 
 	var blobs = myblobs.slice();
-	//var blobs = myblobs;
 	var ret = new Array();
 
 	if (blobs.length == 0){
@@ -277,12 +251,6 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		CSL.Output.Queue.normalizePrefixPunctuation(blobs);
 	}
 
-	//
-	// XXXXX: this seems promising, to maintain a parallel list of
-	// last characters to each object.  The problem is that objects
-	// can be merged (in renderBlobs, I think?), and the parallel list
-	// needs to track that.  Very hard.
-	//
 	var blob_last_chars = new Array();
 
 	//
@@ -324,37 +292,6 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 						b = state.fun.decorate[params[0]][params[1]](state,b);
 					};
 				};
-				//
-				// XXXXX: this should really be matching whenever there is a suffix,
-				// and the last char in the string is the same as the first char in
-				// the suffix.
-				//
-				// Well, OKAY NOW.  Chicago appends a period by setting
-				// prefix=". " on a number of possibly-render-possibly-not
-				// subsequent elements.  Lovely.  That means that this
-				// approach is unfixably broken.  We need a better way of
-				// handling this issue.  And yes, it does also need to cope
-				// with question marks and exclamation points.
-				//
-				// Need a method of tracking "the last character
-				// appended out of a string field or an affix", using
-				// a global variable.  It should toggle deletion of
-				// leading punctuation on a suffix OR a prefix,
-				// anywhere.
-				//
-				// So ... that can happen each time there is an append,
-				// huh?  So the variable can be stashed on the queue,
-				// huh?  And that means that this should be done on
-				// the way INTO the queue, not on the way out, as here.
-				//
-				// Uh ... no, that's not going to work, because only
-				// content strings are inserted with append.  This MUST
-				// be handled here in the stringifier.  So we need to
-				// figure out how to track the last character of the
-				// most recent string.  Everywhere.
-				//
-				//
-				// Can this variable assignment be dropped?
 				var use_suffix = blobjr.strings.suffix;
 				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
 				    use_suffix = use_suffix.slice(1);
@@ -390,14 +327,13 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		span_split = ret.length;
 	}
 	//
-	// XXXXX: Darn.  Need to know the last char of every element in the list
+	// Need to know the last char of every element in the list
 	// here, so that we can delete duplicates before the join.  But the elements
 	// are text strings, so there is noplace to store that info.  What to do?
 	// Can we know the delimiter at the point these strings are built?
 	// ...
 	// Oh.  Yes, we can.  Good.
 	//
-	////////var blobs_start = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
 	var res = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
 	var blobs_start = res[0];
 	blob_last_chars = res[1].slice();
@@ -408,8 +344,7 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 			}
 		}
 		//
-		// XXXX: this is same as a code block above, factor out with
-		// code above as model
+		// XXXX: cut-and-paste warning.  same as a code block above.
 		//
 		var b = blobs_start;
 		var use_suffix = blob.strings.suffix;
@@ -523,8 +458,6 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				str = blob.strings.prefix + str + blob.strings.suffix;
 			//}
 			if (blob.status == CSL.END){
-				//
-				// XXXXX needs to be drawn from the object
 				ret += blob.range_prefix;
 			} else if (blob.status == CSL.SUCCESSOR){
 				ret += blob.successor_prefix;

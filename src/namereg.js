@@ -142,11 +142,6 @@ CSL.Factory.Registry.NameReg = function(state){
 	};
 
 	var delitems = function(ids){
-		//
-		// XXXX: Left something out, oops.  This function needs to return
-		// the IDs of all items that might be affected by the deletion of a
-		// name affected by this invocation.
-		//
 		if ("string" == typeof ids){
 			ids = [ids];
 		};
