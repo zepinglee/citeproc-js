@@ -267,9 +267,6 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				expected_closers.reverse();
 
 				if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
-					//
-					// XXXXX: Validated, so can take just the last tag, so?
-					//
 					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
 						var wanted_closer = expected_closers[posB];
 						if (tag == wanted_closer){

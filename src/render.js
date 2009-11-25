@@ -137,10 +137,7 @@ CSL.Engine.prototype.getMinVal = function(){
  * and are cleared by the processor on
  * completion of the run.</p>
  */
-//
-// XXXXX: The handling of delimiters needs cleanup.
-// Is the tmp.delimiter stack used for *anything*?
-//
+
 CSL.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
 	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
 		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
@@ -159,8 +156,7 @@ CSL.Engine.prototype.getModes = function(){
 	var dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
 	var gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
 	//
-	// what the heck.  whatever.  use by-cite disambiguation
-	// for everything, for starters.  why not.
+	// Use by-cite disambiguation for everything, for starters.
 	//
 	// hmm.  don't need any name expansion with the primary-name
 	// disambiguate-add-givenname, so no givens in that case.
@@ -181,11 +177,6 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 	this.tmp.area = "bibliography";
 	var input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
-	//this.output.addToken("bibliography_joiner","\n");
-	//this.output.openLevel("bibliography_joiner");
-	//var bib_body = new CSL.Factory.Token("group",CSL.START);
-	//bib_body.decorations = [["@bibliography","body"]];
-	//this.output.startTag("bib_body",bib_body);
 	for each (var item in input){
 		if (bibsection){
 			if (bibsection.exclude){
@@ -240,8 +231,6 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 		this.output.endTag(); // closes bib_entry
 		ret.push(this.output.string(this,this.output.queue)[0]);
 	}
-	//this.output.endTag(); // closes bib_body
-	//this.output.closeLevel();
 	this.tmp.disambig_override = false;
 	return ret;
 };
@@ -258,20 +247,11 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	var result = "";
 	var objects = [];
 
-	//CSL.debug("ORDER OF RENDERING");
 	for each (var Item in inputList){
 		var last_collapsed = this.tmp.have_collapsed;
 		//CSL.debug("  "+Item.id);
 		this._cite(Item);
-		//
-		// This will produce a stack with one
-		// layer, and exactly one or two items.
-		// We merge these as we go along, to get
-		// the joins right for the pairs.
-		//delimiter = this.getSpliceDelimiter(last_collapsed);
-		//this.tmp.delimiter.replace(delimiter);
 		this.getSpliceDelimiter(last_collapsed);
-		//this.tmp.delimiter.replace(delimiter);
 		this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
@@ -403,16 +383,6 @@ CSL.Engine.prototype.end = function(Item){
 		this.tmp.splice_delimiter = " ";
 	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[,,:;a-z].*/)){
 		this.tmp.splice_delimiter = " ";
-	} else if (this.tmp.last_suffix_used || this.tmp.prefix.value()){
-			//
-			// forcing the delimiter back to normal if a
-			// suffix or prefix touch the join, even if
-			// a year-suffix is the only output.
-			//
-			// XXXX: This should not be necessary.  Any cite matching
-			// this condition should be forced to full form anyway.
-			//
-		this.tmp.splice_delimiter = state[this.tmp.area].opt.delimiter;
 	}
 
 	this.tmp.last_suffix_used = this.tmp.suffix.value();

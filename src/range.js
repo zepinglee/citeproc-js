@@ -93,13 +93,6 @@ CSL.Output.DefaultFormatter.prototype.format = function (num){
 	return num.toString();
 };
 
-//
-// XXXXX: This needs a little attention.  Non-sequential numbers
-// that follow other numbers should be marked SUCCESSOR.  They are
-// currently marked START (i.e. they are ignored).  It looks like
-// there are more combinations than can be expressed or handled
-// with the three state flags in place at the moment.
-//
 CSL.Output.Number.prototype.checkNext = function(next){
 	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
 		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){

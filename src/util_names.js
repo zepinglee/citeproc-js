@@ -47,14 +47,6 @@ CSL.Util.Names = new function(){};
 CSL.Util.Names.outputNames = function(state,display_names){
 
 	var segments = new this.StartMiddleEnd(state,display_names);
-	//var sort_order = state.output.getToken("name").strings["name-as-sort-order"];
-	//
-	// XXXXX: needs refactoring.  The outer condition is whether
-	// we are in sort area or not.  If in a sort area, use sort ordering.
-	// If not, discriminate first and all, and follow inverted-name-display-order
-	// or default to set appropriate inversion form where required.
-	//
-	// (simplified things, and eliminated the code that was here)
 	var and = state.output.getToken("name").strings.delimiter;
 	if (state.output.getToken("name").strings["delimiter-precedes-last"] == "always"){
 		and = state.output.getToken("inner").strings.delimiter+and;
@@ -113,10 +105,6 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 		this.namenum = parseInt(namenum,10);
 		this.name = this.segments[seg][namenum];
 		if (this.name.literal){
-			//
-			// XXXXX Separate formatting for institution names?
-			// XXXXX This needs to be firmly settled in xbib.
-			//
 			state.output.append(this.name.literal);
 		} else {
 			var sequence = CSL.Util.Names.getNamepartSequence(state,seg,this.name);
@@ -129,7 +117,6 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 			state.output.closeLevel();
 			state.output.openLevel(sequence[0][2]);
 
-			// XXX cloned code!  make this a function.
 			this.outputNameParts(sequence[2]);
 
 			state.output.closeLevel();
@@ -233,26 +220,12 @@ CSL.Util.Names.deep_copy = function(nameset){
 // XXXX to be eliminated.  :)
 //
 CSL.Util.Names.reinit = function(state,Item){
-	//
-	// Author vars should render only once.  This flag
-	// can be used to quash unwanted renderings.
-	//
-	// XXXXX: Replaced by more general mechanism for
-	// quashing repeat variable renderings.
-	//
-	//for each (namevar in state.tmp.value){
-	//	state.tmp.name_quash[namevar.type] = true;
-	//}
 	state.tmp.value = new Array();
 	state.tmp.name_et_al_term = false;
 	state.tmp.name_et_al_decorations = false;
 
 
 	state.tmp.name_et_al_form = "long";
-	//state.tmp["et-al-min"] = false;
-	//state.tmp["et-al-use-first"] = false;
-	//state.tmp["initialize-with"] = false;
-	//state.tmp["name-as-sort-order"] = false;
 	state.tmp.et_al_prefix = false;
 };
 

@@ -1088,10 +1088,6 @@ CSL.Engine.prototype.getMaxVals = function(){
 CSL.Engine.prototype.getMinVal = function(){
 	return this.tmp["et-al-min"];
 };
-//
-// XXXXX: The handling of delimiters needs cleanup.
-// Is the tmp.delimiter stack used for *anything*?
-//
 CSL.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
 	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
 		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
@@ -1183,15 +1179,7 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 		var last_collapsed = this.tmp.have_collapsed;
 		//CSL.debug("  "+Item.id);
 		this._cite(Item);
-		//
-		// This will produce a stack with one
-		// layer, and exactly one or two items.
-		// We merge these as we go along, to get
-		// the joins right for the pairs.
-		//delimiter = this.getSpliceDelimiter(last_collapsed);
-		//this.tmp.delimiter.replace(delimiter);
 		this.getSpliceDelimiter(last_collapsed);
-		//this.tmp.delimiter.replace(delimiter);
 		this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
@@ -1289,16 +1277,6 @@ CSL.Engine.prototype.end = function(Item){
 		this.tmp.splice_delimiter = " ";
 	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[,,:;a-z].*/)){
 		this.tmp.splice_delimiter = " ";
-	} else if (this.tmp.last_suffix_used || this.tmp.prefix.value()){
-			//
-			// forcing the delimiter back to normal if a
-			// suffix or prefix touch the join, even if
-			// a year-suffix is the only output.
-			//
-			// XXXX: This should not be necessary.  Any cite matching
-			// this condition should be forced to full form anyway.
-			//
-		this.tmp.splice_delimiter = state[this.tmp.area].opt.delimiter;
 	}
 	this.tmp.last_suffix_used = this.tmp.suffix.value();
 	this.tmp.last_years_used = this.tmp.years_used.slice();
@@ -3727,10 +3705,6 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 		this.namenum = parseInt(namenum,10);
 		this.name = this.segments[seg][namenum];
 		if (this.name.literal){
-			//
-			// XXXXX Separate formatting for institution names?
-			// XXXXX This needs to be firmly settled in xbib.
-			//
 			state.output.append(this.name.literal);
 		} else {
 			var sequence = CSL.Util.Names.getNamepartSequence(state,seg,this.name);
@@ -3740,7 +3714,6 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 			this.outputNameParts(sequence[1]);
 			state.output.closeLevel();
 			state.output.openLevel(sequence[0][2]);
-			// XXX cloned code!  make this a function.
 			this.outputNameParts(sequence[2]);
 			state.output.closeLevel();
 			state.output.closeLevel();
@@ -4600,9 +4573,6 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				var flipRev = expected_flips.indexOf(tag);
 				expected_closers.reverse();
 				if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
-					//
-					// XXXXX: Validated, so can take just the last tag, so?
-					//
 					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
 						var wanted_closer = expected_closers[posB];
 						if (tag == wanted_closer){
@@ -4719,13 +4689,6 @@ CSL.Output.DefaultFormatter = function (){};
 CSL.Output.DefaultFormatter.prototype.format = function (num){
 	return num.toString();
 };
-//
-// XXXXX: This needs a little attention.  Non-sequential numbers
-// that follow other numbers should be marked SUCCESSOR.  They are
-// currently marked START (i.e. they are ignored).  It looks like
-// there are more combinations than can be expressed or handled
-// with the three state flags in place at the moment.
-//
 CSL.Output.Number.prototype.checkNext = function(next){
 	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
 		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){

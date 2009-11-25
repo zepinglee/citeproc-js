@@ -134,9 +134,6 @@ CSL.Engine.Tmp = function (){
 	// token store stack.
 	this.tokenstore_stack = new CSL.Factory.Stack();
 
-	// XXXXX: superceded
-	// this.name_quash = new Object();
-	//
 	// for collapsing
 	this.last_suffix_used = "";
 	this.last_names_used = new Array();
