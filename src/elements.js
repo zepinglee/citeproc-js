@@ -977,25 +977,52 @@ CSL.Lib.Elements.date = new function(){
 			if (this.strings.form){
 				if (state.opt.dates[this.strings.form]){
 
+					//
+					// Copy a node
+					//
 					var datexml = state.opt.dates[this.strings.form].copy();
+					//
+					// Set attribute
+					//
 					datexml["@variable"] = this.variables[0];
 					if (this.strings.prefix){
+						//
+						// Set attribute
+						//
 						datexml["@prefix"] = this.strings.prefix;
 					}
 					if (this.strings.suffix){
+						//
+						// Set attribute
+						//
 						datexml["@suffix"] = this.strings.suffix;
 					}
+					//
+					// Delete attribute
+					//
 					delete datexml["@form"];
 					if (this.strings["date-parts"] == "year"){
+						//
+						// Find one node by attribute and delete
+						//
 						delete datexml.*.(@name=="month")[0];
+						//
+						// Find one node by attribute and delete
+						//
 						delete datexml.*.(@name=="day")[0];
 					} else if (this.strings["date-parts"] == "year-month"){
+						//
+						// Find one node by attribute and delete
+						//
 						delete datexml.*.(@name=="day")[0];
 					}
 					//
 					// pass this xml object through to state.build for
 					// post processing by date-part and in END or at the finish of
 					// SINGLETON.  Delete after processing.
+					//
+					//
+					// Copy node
 					//
 					state.build.datexml = datexml.copy();
 				};

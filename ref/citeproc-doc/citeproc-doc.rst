@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a27##
+   version 1.00##a28##
 
 .. class:: info-date
 
-   =D=21 November 2009=D=
+   =D=26 November 2009=D=
 
 .. class:: contributors
 
@@ -292,6 +292,12 @@ string.
 .. code-block:: js
 
    var select = {
+      "exclude" : [
+         {
+            "field" : "category",
+            "value" : "classical"
+         }
+      ],
       "include" : [
          {
             "field" : "category",

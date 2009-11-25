@@ -328,9 +328,15 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		this.locale_opt = new Object();
 	}
 	if ("undefined" == typeof arg){
+		//
+		// xml: Instantiate xml
+		//
 		var myxml = new XML( this.sys.retrieveLocale("en").replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = "en";
 	} else if (arg && "string" == typeof arg){
+		//
+		// xml: Instantiate xml
+		//
 		var myxml = new XML( this.sys.retrieveLocale(arg).replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = arg;
 	} else if ("xml" != typeof arg){
@@ -344,38 +350,74 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	//
+	// xml: Create empty xml object
+	//
 	var locale = new XML();
+	//
+	// xml: Test if node is "locale"
+	//
 	if (myxml.localName().toString() == "locale"){
 		locale = myxml;
 	} else {
+		//
+		// xml: get a list of all "locale" nodes
+		//
 		for each (var blob in myxml..locale){
-			//print("typeof blob.@xml::lang: "+typeof blob.@xml::lang);
-			//print("typeof lang: "+typeof lang);
+			//
+			// xml: get locale xml:lang
+			//
 			if (blob.@xml::lang.toString() == lang){
 				locale = blob;
 				break;
 			}
 		}
 	}
+	//
+	// xml: get a list of term nodes within locale
+	//
 	for each (var term in locale.terms.term){
+		//
+		// xml: get string value of attribute
+		//
 		var termname = term.@name.toString();
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-		//default xml namespace = "http://purl.org/net/xbiblio/csl";
 		if ("undefined" == typeof this.locale_terms[termname]){
 			this.locale_terms[termname] = new Object();
 		};
 		var form = "long";
+		//
+		// xml: get string value of attribute
+		//
 		if (term.@form.toString()){
 			form = term.@form.toString();
 		}
+		//
+		// xml: test of existence of node
+		//
 		if (term.multiple.length()){
 			this.locale_terms[termname][form] = new Array();
+			//
+			// xml: get string value of attribute, plus
+			// xml: get string value of node content
+			//
 			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
+			//
+			// xml: get string value of attribute, plus
+			// xml: get string value of node content
+			//
 			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
 		} else {
+			//
+			// xml: get string value of attribute, plus
+			// xml: get string value of node content
+			//
 			this.locale_terms[term.@name.toString()][form] = term.toString();
 		}
 	}
+	//
+	// XXXXX: to be continued
+	//
 	for each (var styleopts in locale["style-options"]){
 		for each (var attr in styleopts.attributes()) {
 			if (attr.toString() == "true"){

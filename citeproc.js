@@ -346,9 +346,15 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		this.locale_opt = new Object();
 	}
 	if ("undefined" == typeof arg){
+		//
+		// xml: Instantiate xml
+		//
 		var myxml = new XML( this.sys.retrieveLocale("en").replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = "en";
 	} else if (arg && "string" == typeof arg){
+		//
+		// xml: Instantiate xml
+		//
 		var myxml = new XML( this.sys.retrieveLocale(arg).replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
 		lang = arg;
 	} else if ("xml" != typeof arg){
@@ -365,9 +371,13 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	if (myxml.localName().toString() == "locale"){
 		locale = myxml;
 	} else {
+		//
+		// xml: get a list of all "locale" nodes
+		//
 		for each (var blob in myxml..locale){
-			//print("typeof blob.@xml::lang: "+typeof blob.@xml::lang);
-			//print("typeof lang: "+typeof lang);
+			//
+			// xml: get locale xml:lang
+			//
 			if (blob.@xml::lang.toString() == lang){
 				locale = blob;
 				break;
@@ -375,21 +385,41 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		}
 	}
 	for each (var term in locale.terms.term){
+		//
+		// xml: get string value of attribute
+		//
 		var termname = term.@name.toString();
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-		//default xml namespace = "http://purl.org/net/xbiblio/csl";
 		if ("undefined" == typeof this.locale_terms[termname]){
 			this.locale_terms[termname] = new Object();
 		};
 		var form = "long";
+		//
+		// xml: get string value of attribute
+		//
 		if (term.@form.toString()){
 			form = term.@form.toString();
 		}
+		//
+		// xml: test of existence of node
+		//
 		if (term.multiple.length()){
 			this.locale_terms[termname][form] = new Array();
+			//
+			// xml: get string value of attribute, plus
+			// xml: get string value of node content
+			//
 			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
+			//
+			// xml: get string value of attribute, plus
+			// xml: get string value of node content
+			//
 			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
 		} else {
+			//
+			// xml: get string value of attribute, plus
+			// xml: get string value of node content
+			//
 			this.locale_terms[term.@name.toString()][form] = term.toString();
 		}
 	}
@@ -2083,25 +2113,52 @@ CSL.Lib.Elements.date = new function(){
 			//
 			if (this.strings.form){
 				if (state.opt.dates[this.strings.form]){
+					//
+					// Copy a node
+					//
 					var datexml = state.opt.dates[this.strings.form].copy();
+					//
+					// Set attribute
+					//
 					datexml["@variable"] = this.variables[0];
 					if (this.strings.prefix){
+						//
+						// Set attribute
+						//
 						datexml["@prefix"] = this.strings.prefix;
 					}
 					if (this.strings.suffix){
+						//
+						// Set attribute
+						//
 						datexml["@suffix"] = this.strings.suffix;
 					}
+					//
+					// Delete attribute
+					//
 					delete datexml["@form"];
 					if (this.strings["date-parts"] == "year"){
+						//
+						// Find one node by attribute and delete
+						//
 						delete datexml.*.(@name=="month")[0];
+						//
+						// Find one node by attribute and delete
+						//
 						delete datexml.*.(@name=="day")[0];
 					} else if (this.strings["date-parts"] == "year-month"){
+						//
+						// Find one node by attribute and delete
+						//
 						delete datexml.*.(@name=="day")[0];
 					}
 					//
 					// pass this xml object through to state.build for
 					// post processing by date-part and in END or at the finish of
 					// SINGLETON.  Delete after processing.
+					//
+					//
+					// Copy node
 					//
 					state.build.datexml = datexml.copy();
 				};

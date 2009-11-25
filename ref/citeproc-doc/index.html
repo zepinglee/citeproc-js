@@ -320,8 +320,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div align="center" class="align-center"><img alt="counter.gif" class="double-border align-center" src="counter.gif" /></div>
 <p><a class="footnote-reference" href="#id5" id="id2">[1]</a></p>
 </blockquote>
-<p class="info-version">version 1.00<sub>a27</sub></p>
-<p class="info-date">21 November 2009</p>
+<p class="info-version">version 1.00<sub>a28</sub></p>
+<p class="info-date">26 November 2009</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
 <dd><ul class="first last simple">
@@ -653,7 +653,19 @@ against name or date variables.</p>
  7
  8
  9
-10</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">select</span> <span class="o">=</span> <span class="p">{</span>
+10
+11
+12
+13
+14
+15
+16</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">select</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;exclude&quot;</span> <span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;category&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;classical&quot;</span>
+      <span class="p">}</span>
+   <span class="p">]</span><span class="o">,</span>
    <span class="s2">&quot;include&quot;</span> <span class="o">:</span> <span class="p">[</span>
       <span class="p">{</span>
          <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;category&quot;</span><span class="o">,</span>
