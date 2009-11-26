@@ -38,6 +38,8 @@ dojo.require("doh.runner");
 if(true){
 	// (will run nonetheless under test.py)
 	// dojo.require("tests.test_dateparse");
+	dojo.require("tests.test_sys_stdrhino_locale");
+    dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_condition");
 	dojo.require("tests.test_util_names");
@@ -49,7 +51,6 @@ if(true){
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_nameattr");
 	dojo.require("tests.std_fullstyles");
-    dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_abbrevs");
 	dojo.require("tests.std_multilingual");
 	dojo.require("tests.std_sort");
@@ -60,7 +61,6 @@ if(true){
 	dojo.require("tests.std_position");
 	dojo.require("tests.test_registry");
 	dojo.require("tests.test_load_styles");
-	dojo.require("tests.test_sys_stdrhino_locale");
 	dojo.require("tests.std_class");
 	dojo.require("tests.test_queue");
 	dojo.require("tests.std_plural");

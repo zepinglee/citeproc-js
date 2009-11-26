@@ -365,15 +365,15 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	} else {
 		var myxml = arg;
 	}
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-	var locale = new XML();
-	if (myxml.localName().toString() == "locale"){
+	var locale = this.sys.xml.makeXml();
+	if (this.sys.xml.nodeNameIs("locale",myxml)){
 		locale = myxml;
 	} else {
 		//
 		// xml: get a list of all "locale" nodes
 		//
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 		for each (var blob in myxml..locale){
 			//
 			// xml: get locale xml:lang
@@ -384,6 +384,8 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			}
 		}
 	}
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	for each (var term in locale.terms.term){
 		//
 		// xml: get string value of attribute
@@ -3337,10 +3339,25 @@ CSL.System.Xml.E4X.prototype.content = function(myxml){
 CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
-CSL.System.Xml.E4X.prototype.makeXml = function(str){
-	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+CSL.System.Xml.E4X.prototype.nodeNameIs = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ret = new XML(str);
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	if (myxml.localName().toString() == name){
+		return true;
+	}
+	return false;
+}
+CSL.System.Xml.E4X.prototype.makeXml = function(str){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	if (str){
+		str = str.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
+		//print("has xml content");
+		var ret = new XML(str);
+	} else {
+		//print("no xml content");
+		var ret = new XML();
+	}
 	return ret;
 };
 dojo.provide("csl.factory");

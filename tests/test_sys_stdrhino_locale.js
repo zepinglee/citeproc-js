@@ -37,6 +37,17 @@ dojo.provide("tests.test_sys_stdrhino_locale");
 dojo.require("csl.testing_stdrhino");
 
 doh.register("tests.sys_stdrhino_locale", [
+	function testMakeXml(){
+		var sys = new StdRhinoTest();
+		var obj = new CSL.Engine(sys,'<style></style>');
+		var res = obj.sys.xml.makeXml('<style><citation><text/></citation></style>');
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		doh.assertEqual("text", res..text.localName());
+	},
+]);
+
+
+var x = [
 	function testSetAccess(){
 		var sys = new StdRhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
@@ -56,13 +67,6 @@ doh.register("tests.sys_stdrhino_locale", [
 		obj.setLocaleXml();
 		doh.assertEqual("and", obj.locale_terms["and"]["long"]);
 	},
-	function testMakeXml(){
-		var sys = new StdRhinoTest();
-		var obj = new CSL.Engine(sys,'<style></style>');
-		var res = obj.sys.xml.makeXml('<style><citation><text/></citation></style>');
-		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-		doh.assertEqual("text", res..text.localName());
-	},
 	function testLocaleGlobalWorksAtAll(){
 		try {
 			var sys = new RhinoTest();
@@ -75,8 +79,4 @@ doh.register("tests.sys_stdrhino_locale", [
 		doh.assertEqual("Success", res);
 		doh.assertNotEqual("undefined", typeof obj.locale_terms);
 	},
-]);
-
-
-var x = [
 ]

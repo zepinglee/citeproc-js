@@ -91,9 +91,25 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
 
-CSL.System.Xml.E4X.prototype.makeXml = function(str){
-	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+CSL.System.Xml.E4X.prototype.nodeNameIs = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ret = new XML(str);
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	if (myxml.localName().toString() == name){
+		return true;
+	}
+	return false;
+}
+
+CSL.System.Xml.E4X.prototype.makeXml = function(str){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	if (str){
+		str = str.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
+		//print("has xml content");
+		var ret = new XML(str);
+	} else {
+		//print("no xml content");
+		var ret = new XML();
+	}
 	return ret;
 };

@@ -347,22 +347,22 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	} else {
 		var myxml = arg;
 	}
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	//default xml namespace = "http://purl.org/net/xbiblio/csl";
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	//
-	// xml: Create empty xml object
+	// xml: Instantiate xml (empty)
 	//
-	var locale = new XML();
+	var locale = this.sys.xml.makeXml();
 	//
-	// xml: Test if node is "locale"
+	// xml: Test if node is "locale" (nb: ns declarations need to be invoked
+	// on every access to the xml object; bundle this with the functions
 	//
-	if (myxml.localName().toString() == "locale"){
+	if (this.sys.xml.nodeNameIs("locale",myxml)){
 		locale = myxml;
 	} else {
 		//
 		// xml: get a list of all "locale" nodes
 		//
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 		for each (var blob in myxml..locale){
 			//
 			// xml: get locale xml:lang
@@ -376,6 +376,8 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	//
 	// xml: get a list of term nodes within locale
 	//
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	for each (var term in locale.terms.term){
 		//
 		// xml: get string value of attribute
