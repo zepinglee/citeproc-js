@@ -261,7 +261,13 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	//
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	//default xml namespace = "http://purl.org/net/xbiblio/csl";
+	//
+	// xml: get list of nodes by attribute match
+	//
 	var macroxml = this.cslXml..macro.(@name == mkey);
+	//
+	// xml: test for node existence
+	//
 	if (!macroxml.toString()){
 		throw "CSL style error: undefined macro \""+mkey+"\"";
 	}

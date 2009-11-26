@@ -416,19 +416,34 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		}
 	}
 	//
-	// XXXXX: to be continued
+	// xml: get list of nodes by node type
 	//
 	for each (var styleopts in locale["style-options"]){
+		//
+		// xml: get list of attributes on a node
+		//
 		for each (var attr in styleopts.attributes()) {
+			//
+			// xml: get string value of attribute
+			//
 			if (attr.toString() == "true"){
+				//
+				// xml:	get local name of attribute
+				//
 				this.opt[attr.localName()] = true;
 			} else {
 				this.opt[attr.localName()] = false;
 			};
 		};
 	};
+	//
+	// xml: get list of nodes by type
+	//
 	for each (var date in locale.date){
-		this.opt.dates[ date["@form"] ] = date;
+		//
+		// xml: get string value of attribute
+		//
+		this.opt.dates[ date["@form"].toString() ] = date;
 	};
 };
 
