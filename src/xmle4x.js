@@ -91,6 +91,12 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
 
+CSL.System.Xml.E4X.prototype.getNodesByName = function(name,myxml){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	return myxml.descendants(name);
+}
+
 CSL.System.Xml.E4X.prototype.nodeNameIs = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");

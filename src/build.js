@@ -361,12 +361,12 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		//
 		// xml: get a list of all "locale" nodes
 		//
-		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-		for each (var blob in myxml..locale){
+		for each (var blob in this.sys.xml.getNodesByName("locale",myxml)){
 			//
 			// xml: get locale xml:lang
 			//
+			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+			var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 			if (blob.@xml::lang.toString() == lang){
 				locale = blob;
 				break;
