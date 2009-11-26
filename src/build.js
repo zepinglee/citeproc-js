@@ -329,15 +329,15 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	}
 	if ("undefined" == typeof arg){
 		//
-		// xml: Instantiate xml
+		// Xml: Instantiate xml
 		//
-		var myxml = new XML( this.sys.retrieveLocale("en").replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
+		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale("en") );
 		lang = "en";
 	} else if (arg && "string" == typeof arg){
 		//
-		// xml: Instantiate xml
+		//Xml: Instantiate xml
 		//
-		var myxml = new XML( this.sys.retrieveLocale(arg).replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
+		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale(arg) );
 		lang = arg;
 	} else if ("xml" != typeof arg){
 		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";

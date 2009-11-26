@@ -347,15 +347,15 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	}
 	if ("undefined" == typeof arg){
 		//
-		// xml: Instantiate xml
+		// Xml: Instantiate xml
 		//
-		var myxml = new XML( this.sys.retrieveLocale("en").replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
+		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale("en") );
 		lang = "en";
 	} else if (arg && "string" == typeof arg){
 		//
-		// xml: Instantiate xml
+		//Xml: Instantiate xml
 		//
-		var myxml = new XML( this.sys.retrieveLocale(arg).replace(/\s*<\?[^>]*\?>\s*\n/g, "") );
+		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale(arg) );
 		lang = arg;
 	} else if ("xml" != typeof arg){
 		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
@@ -3307,11 +3307,6 @@ CSL.System.Xml.E4X.prototype.clean = function(xml){
 	xml = xml.replace(/\s+$/g,"");
 	return xml;
 };
-CSL.System.Xml.E4X.prototype.parse = function(myxml){
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	myxml = new XML( this.clean(myxml) );
-	return myxml;
-};
 CSL.System.Xml.E4X.prototype.children = function(myxml){
 	var ret = myxml.children();
 	return ret;
@@ -3329,7 +3324,6 @@ CSL.System.Xml.E4X.prototype.attributes = function(myxml){
 	}
 	if (myxml.localName() == "style" || myxml.localName() == "locale"){
 		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-		//CSL.debug("my language: "+this.@xml::lang.toString());
 		var lang = myxml.@xml::lang.toString();
 		if (lang){
 			ret["@lang"] = lang;

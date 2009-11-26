@@ -39,8 +39,6 @@ dojo.provide("csl.xmle4x");
  */
 CSL.System.Xml.E4X = function(){};
 
-
-
 /**
  * E4X can't handle XML declarations, so we lose them here.
  */
@@ -50,17 +48,6 @@ CSL.System.Xml.E4X.prototype.clean = function(xml){
 	xml = xml.replace(/^\s+/g,"");
 	xml = xml.replace(/\s+$/g,"");
 	return xml;
-};
-
-
-/**
- * Make an E4X object from a style.
- */
-CSL.System.Xml.E4X.prototype.parse = function(myxml){
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	//default xml namespace = "http://purl.org/net/xbiblio/csl";
-	myxml = new XML( this.clean(myxml) );
-	return myxml;
 };
 
 
@@ -86,7 +73,6 @@ CSL.System.Xml.E4X.prototype.attributes = function(myxml){
 	}
 	if (myxml.localName() == "style" || myxml.localName() == "locale"){
 		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-		//CSL.debug("my language: "+this.@xml::lang.toString());
 		var lang = myxml.@xml::lang.toString();
 		if (lang){
 			ret["@lang"] = lang;
@@ -106,11 +92,8 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 };
 
 CSL.System.Xml.E4X.prototype.makeXml = function(str){
-	// this is where this should happen
 	str = str.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	//default xml namespace = "http://purl.org/net/xbiblio/csl";
 	var ret = new XML(str);
 	return ret;
 };
-
