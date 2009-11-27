@@ -424,7 +424,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		// Xml: get list of attributes on a node
 		//
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-		for each (var attr in styleopts.attributes()) {
+		for each (var attr in this.sys.xml.attributes(styleopts) ) {
 			//
 			// xml: get string value of attribute
 			//
