@@ -175,10 +175,8 @@ CSL.Engine.prototype.setCloseQuotesArray = function(){
 	this.opt.close_quotes_array = ret;
 };
 CSL.Engine.prototype._buildTokenLists = function(area){
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var area_nodes = this.cslXml[area];
-	if (!area_nodes.toString()){
-		//CSL.debug("NO AREA NODES");
+	var area_nodes = this.sys.xml.getNodesByName(area, this.cslXml);
+	if (!this.sys.xml.getNodeValue( area_nodes)){
 		return;
 	};
 	var navi = new this._getNavi( this, area_nodes );
@@ -188,9 +186,9 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 CSL.Engine.prototype.setStyleAttributes = function(){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var dummy = new Object();
-	dummy["name"] = this.cslXml.localName();
-	for each (var attr in this.cslXml.attributes()){
-		CSL.Lib.Attributes[("@"+attr.localName())].call(dummy,this,attr.toString());
+	dummy["name"] = this.sys.xml.nodename( this.cslXml );
+	for each (var attr in this.sys.xml.attributes( this.cslXml) ){
+		CSL.Lib.Attributes[("@"+this.sys.xml.getAttributeName(attr))].call(dummy,this,this.sys.xml.getAttributeValue(attr));
 	}
 }
 CSL.Engine.prototype._build  = function(navi){
@@ -376,7 +374,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			//
 			// Xml: get locale xml:lang
 			//
-			if (this.sys.xml.getAttributeValue('lang',blob,'xml') == lang){
+			if (this.sys.xml.getAttributeValue(blob,'lang','xml') == lang){
 				locale = blob;
 				break;
 			}
@@ -386,7 +384,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		//
 		// Xml: get string value of attribute
 		//
-		var termname = this.sys.xml.getAttributeValue('name',term);
+		var termname = this.sys.xml.getAttributeValue(term,'name');
 		if ("undefined" == typeof this.locale_terms[termname]){
 			this.locale_terms[termname] = new Object();
 		};
@@ -394,8 +392,8 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		//
 		// Xml: get string value of attribute
 		//
-		if (this.sys.xml.getAttributeValue('form',term)){
-			form = this.sys.xml.getAttributeValue('form',term);
+		if (this.sys.xml.getAttributeValue(term,'form')){
+			form = this.sys.xml.getAttributeValue(term,'form');
 		}
 		//
 		// Xml: test of existence of node
@@ -406,46 +404,43 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			// Xml: get string value of attribute, plus
 			// Xml: get string value of node content
 			//
-			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form][0] = this.sys.xml.getNodeValue(term,'single');
+			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form][0] = this.sys.xml.getNodeValue(term,'single');
 			//
 			// Xml: get string value of attribute, plus
 			// Xml: get string value of node content
 			//
-			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form][1] = this.sys.xml.getNodeValue(term,'multiple');
+			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form][1] = this.sys.xml.getNodeValue(term,'multiple');
 		} else {
 			//
 			// Xml: get string value of attribute, plus
 			// Xml: get string value of node content
 			//
-			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form] = this.sys.xml.getNodeValue(term);
+			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form] = this.sys.xml.getNodeValue(term);
 		}
 	}
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	for each (var styleopts in this.sys.xml.getNodesByName("style-options",locale)){
 		//
 		// Xml: get list of attributes on a node
 		//
-		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-		for each (var attr in styleopts.attributes()) {
+		for each (var attr in this.sys.xml.attributes(styleopts) ) {
 			//
-			// xml: get string value of attribute
+			// Xml: get string value of attribute
 			//
-			if (attr.toString() == "true"){
+			if (this.sys.xml.getNodeValue(attr) == "true"){
 				//
-				// xml:	get local name of attribute
+				// Xml:	get local name of attribute
 				//
-				this.opt[attr.localName()] = true;
+				this.opt[this.sys.xml.nodename(attr)] = true;
 			} else {
-				this.opt[attr.localName()] = false;
+				this.opt[this.sys.xml.nodename(attr)] = false;
 			};
 		};
 	};
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	for each (var date in locale.date){
+	for each (var date in this.sys.xml.getNodesByName('date',locale)){
 		//
-		// xml: get string value of attribute
+		// Xml: get string value of attribute
 		//
-		this.opt.dates[ date["@form"].toString() ] = date;
+		this.opt.dates[ this.sys.xml.getAttributeValue( date, "form") ] = date;
 	};
 };
 CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
@@ -3337,13 +3332,20 @@ CSL.System.Xml.E4X.prototype.namespace = {
 CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
-CSL.System.Xml.E4X.prototype.getAttributeValue = function(name,myxml,namespace){
+CSL.System.Xml.E4X.prototype.getAttributeName = function(attr){
+	return attr.localName();
+}
+CSL.System.Xml.E4X.prototype.getAttributeValue = function(myxml,name,namespace){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (namespace){
 		var ns = new Namespace(this.namespace[namespace]);
 		var ret = myxml.@ns::[name].toString();
 	} else {
-		var ret = myxml.attribute(name).toString();
+		if (name){
+			var ret = myxml.attribute(name).toString();
+		} else {
+			var ret = myxml.toString();
+		}
 	}
 	return ret;
 }

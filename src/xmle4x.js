@@ -92,7 +92,11 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
 
-CSL.System.Xml.E4X.prototype.getAttributeValue = function(name,myxml,namespace){
+CSL.System.Xml.E4X.prototype.getAttributeName = function(attr){
+	return attr.localName();
+}
+
+CSL.System.Xml.E4X.prototype.getAttributeValue = function(myxml,name,namespace){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	//
 	// Oh, okay, I get it.  The syntax does not lend itself to parameterization,
@@ -103,7 +107,11 @@ CSL.System.Xml.E4X.prototype.getAttributeValue = function(name,myxml,namespace){
 		var ns = new Namespace(this.namespace[namespace]);
 		var ret = myxml.@ns::[name].toString();
 	} else {
-		var ret = myxml.attribute(name).toString();
+		if (name){
+			var ret = myxml.attribute(name).toString();
+		} else {
+			var ret = myxml.toString();
+		}
 	}
 	return ret;
 }
