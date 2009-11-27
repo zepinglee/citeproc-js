@@ -64,19 +64,16 @@ CSL.System.Xml.E4X.prototype.nodename = function(myxml){
 };
 
 CSL.System.Xml.E4X.prototype.attributes = function(myxml){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var ret = new Object();
 	var attrs = myxml.attributes();
 	for (var idx in attrs){
-		var key = "@"+attrs[idx].localName();
-		var value = attrs[idx].toString();
-		ret[key] = value;
-	}
-	if (myxml.localName() == "style" || myxml.localName() == "locale"){
-		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-		var lang = myxml.@xml::lang.toString();
-		if (lang){
-			ret["@lang"] = lang;
+		if (idx.slice(0,5) == "@e4x_"){
+			continue;
 		}
+		var key = "@"+attrs[idx].localName();
+		var value = attrs[idx];
+		ret[key] = value;
 	}
 	return ret;
 };
@@ -87,20 +84,37 @@ CSL.System.Xml.E4X.prototype.content = function(myxml){
 };
 
 
+CSL.System.Xml.E4X.prototype.namespace = {
+	"xml":"http://www.w3.org/XML/1998/namespace"
+}
+
 CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
 
 CSL.System.Xml.E4X.prototype.getAttributeValue = function(name,myxml,namespace){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ns = new Namespace(namespace);
 	//
 	// Oh, okay, I get it.  The syntax does not lend itself to parameterization,
 	// but one of the elements is a variable, so it can be set before
 	// the call.  Jeez but this feels ugly.  Does work, though.
 	//
-	var ret = myxml.@ns::lang.toString();
+	if (namespace){
+		var ns = new Namespace(this.namespace[namespace]);
+		var ret = myxml.@ns::[name].toString();
+	} else {
+		var ret = myxml.attribute(name).toString();
+	}
 	return ret;
+}
+
+CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	if (name){
+		return myxml[name].toString();
+	} else {
+		return myxml.toString();
+	}
 }
 
 CSL.System.Xml.E4X.prototype.getNodesByName = function(name,myxml){

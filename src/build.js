@@ -142,6 +142,9 @@ CSL.Engine.prototype.setStyleAttributes = function(){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var dummy = new Object();
 	dummy["name"] = this.cslXml.localName();
+	//
+	// xml: more of it
+	//
 	for each (var attr in this.cslXml.attributes()){
 		CSL.Lib.Attributes[("@"+attr.localName())].call(dummy,this,attr.toString());
 	}
@@ -363,65 +366,64 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		//
 		for each (var blob in this.sys.xml.getNodesByName("locale",myxml)){
 			//
-			// xml: get locale xml:lang
+			// Xml: get locale xml:lang
 			//
-			if (this.sys.xml.getAttributeValue('xml::lang',blob,"http://www.w3.org/XML/1998/namespace") == lang){
+			if (this.sys.xml.getAttributeValue('lang',blob,'xml') == lang){
 				locale = blob;
 				break;
 			}
 		}
 	}
 	//
-	// xml: get a list of term nodes within locale
+	// Xml: get a list of term nodes within locale
 	//
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-	for each (var term in locale.terms.term){
+	for each (var term in this.sys.xml.getNodesByName('term',locale)){
 		//
-		// xml: get string value of attribute
+		// Xml: get string value of attribute
 		//
-		var termname = term.@name.toString();
-		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		var termname = this.sys.xml.getAttributeValue('name',term);
 		if ("undefined" == typeof this.locale_terms[termname]){
 			this.locale_terms[termname] = new Object();
 		};
 		var form = "long";
 		//
-		// xml: get string value of attribute
+		// Xml: get string value of attribute
 		//
-		if (term.@form.toString()){
-			form = term.@form.toString();
+		if (this.sys.xml.getAttributeValue('form',term)){
+			form = this.sys.xml.getAttributeValue('form',term);
 		}
 		//
-		// xml: test of existence of node
+		// Xml: test of existence of node
 		//
-		if (term.multiple.length()){
+		if (this.sys.xml.getNodesByName('multiple',term).length()){
 			this.locale_terms[termname][form] = new Array();
 			//
-			// xml: get string value of attribute, plus
-			// xml: get string value of node content
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
+			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form][0] = this.sys.xml.getNodeValue(term,'single');
 			//
-			// xml: get string value of attribute, plus
-			// xml: get string value of node content
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
+			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form][1] = this.sys.xml.getNodeValue(term,'multiple');
 		} else {
 			//
-			// xml: get string value of attribute, plus
-			// xml: get string value of node content
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			this.locale_terms[term.@name.toString()][form] = term.toString();
+			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form] = this.sys.xml.getNodeValue(term);
 		}
 	}
 	//
-	// xml: get list of nodes by node type
+	// Xml: get list of nodes by node type
 	//
-	for each (var styleopts in locale["style-options"]){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	for each (var styleopts in this.sys.xml.getNodesByName("style-options",locale)){
 		//
-		// xml: get list of attributes on a node
+		// Xml: get list of attributes on a node
 		//
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 		for each (var attr in styleopts.attributes()) {
 			//
 			// xml: get string value of attribute
@@ -439,6 +441,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	//
 	// xml: get list of nodes by type
 	//
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	for each (var date in locale.date){
 		//
 		// xml: get string value of attribute

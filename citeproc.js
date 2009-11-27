@@ -374,59 +374,58 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		//
 		for each (var blob in this.sys.xml.getNodesByName("locale",myxml)){
 			//
-			// xml: get locale xml:lang
+			// Xml: get locale xml:lang
 			//
-			if (this.sys.xml.getAttributeValue('xml::lang',blob,"http://www.w3.org/XML/1998/namespace") == lang){
+			if (this.sys.xml.getAttributeValue('lang',blob,'xml') == lang){
 				locale = blob;
 				break;
 			}
 		}
 	}
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-	for each (var term in locale.terms.term){
+	for each (var term in this.sys.xml.getNodesByName('term',locale)){
 		//
-		// xml: get string value of attribute
+		// Xml: get string value of attribute
 		//
-		var termname = term.@name.toString();
-		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		var termname = this.sys.xml.getAttributeValue('name',term);
 		if ("undefined" == typeof this.locale_terms[termname]){
 			this.locale_terms[termname] = new Object();
 		};
 		var form = "long";
 		//
-		// xml: get string value of attribute
+		// Xml: get string value of attribute
 		//
-		if (term.@form.toString()){
-			form = term.@form.toString();
+		if (this.sys.xml.getAttributeValue('form',term)){
+			form = this.sys.xml.getAttributeValue('form',term);
 		}
 		//
-		// xml: test of existence of node
+		// Xml: test of existence of node
 		//
-		if (term.multiple.length()){
+		if (this.sys.xml.getNodesByName('multiple',term).length()){
 			this.locale_terms[termname][form] = new Array();
 			//
-			// xml: get string value of attribute, plus
-			// xml: get string value of node content
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			this.locale_terms[term.@name.toString()][form][0] = term.single.toString();
+			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form][0] = this.sys.xml.getNodeValue(term,'single');
 			//
-			// xml: get string value of attribute, plus
-			// xml: get string value of node content
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			this.locale_terms[term.@name.toString()][form][1] = term.multiple.toString();
+			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form][1] = this.sys.xml.getNodeValue(term,'multiple');
 		} else {
 			//
-			// xml: get string value of attribute, plus
-			// xml: get string value of node content
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			this.locale_terms[term.@name.toString()][form] = term.toString();
+			this.locale_terms[this.sys.xml.getAttributeValue('name',term)][form] = this.sys.xml.getNodeValue(term);
 		}
 	}
-	for each (var styleopts in locale["style-options"]){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	for each (var styleopts in this.sys.xml.getNodesByName("style-options",locale)){
 		//
-		// xml: get list of attributes on a node
+		// Xml: get list of attributes on a node
 		//
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 		for each (var attr in styleopts.attributes()) {
 			//
 			// xml: get string value of attribute
@@ -441,6 +440,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			};
 		};
 	};
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	for each (var date in locale.date){
 		//
 		// xml: get string value of attribute
@@ -3315,33 +3315,45 @@ CSL.System.Xml.E4X.prototype.nodename = function(myxml){
 	return myxml.localName();
 };
 CSL.System.Xml.E4X.prototype.attributes = function(myxml){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var ret = new Object();
 	var attrs = myxml.attributes();
 	for (var idx in attrs){
-		var key = "@"+attrs[idx].localName();
-		var value = attrs[idx].toString();
-		ret[key] = value;
-	}
-	if (myxml.localName() == "style" || myxml.localName() == "locale"){
-		var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-		var lang = myxml.@xml::lang.toString();
-		if (lang){
-			ret["@lang"] = lang;
+		if (idx.slice(0,5) == "@e4x_"){
+			continue;
 		}
+		var key = "@"+attrs[idx].localName();
+		var value = attrs[idx];
+		ret[key] = value;
 	}
 	return ret;
 };
 CSL.System.Xml.E4X.prototype.content = function(myxml){
 	return myxml.toString();
 };
+CSL.System.Xml.E4X.prototype.namespace = {
+	"xml":"http://www.w3.org/XML/1998/namespace"
+}
 CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
 CSL.System.Xml.E4X.prototype.getAttributeValue = function(name,myxml,namespace){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ns = new Namespace(namespace);
-	var ret = myxml.@ns::lang.toString();
+	if (namespace){
+		var ns = new Namespace(this.namespace[namespace]);
+		var ret = myxml.@ns::[name].toString();
+	} else {
+		var ret = myxml.attribute(name).toString();
+	}
 	return ret;
+}
+CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	if (name){
+		return myxml[name].toString();
+	} else {
+		return myxml.toString();
+	}
 }
 CSL.System.Xml.E4X.prototype.getNodesByName = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
@@ -3391,12 +3403,8 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	var decorations = CSL.Factory.setDecorations.call(this,state,attributes);
 	var token = new CSL.Factory.Token(name,tokentype);
 	for (var key in attributes){
-		if (key.slice(0,5) == "@e4x_"){
-			continue;
-		}
 		try {
-//			var attrfunc = CSL.Lib.Attributes[key].call(token,state,attributes[key]);
-			CSL.Lib.Attributes[key].call(token,state,attributes[key]);
+			CSL.Lib.Attributes[key].call(token,state,""+attributes[key]);
 		} catch (e) {
 			if (e == "TypeError: Cannot call method \"call\" of undefined"){
 				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
@@ -3404,9 +3412,6 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 				throw "CSL processor error, "+key+" attribute: "+e;
 			}
 		}
-		//if (attrfunc){
-		//	attrfuncs.push(attrfunc);
-		//}
 	}
 	token.decorations = decorations;
 	var target = state[state.build.area].tokens;

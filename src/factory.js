@@ -80,13 +80,12 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	var attributes = state.sys.xml.attributes(this);
 	var decorations = CSL.Factory.setDecorations.call(this,state,attributes);
 	var token = new CSL.Factory.Token(name,tokentype);
+	//
+	// xml: more xml stuff
+	//
 	for (var key in attributes){
-		if (key.slice(0,5) == "@e4x_"){
-			continue;
-		}
 		try {
-//			var attrfunc = CSL.Lib.Attributes[key].call(token,state,attributes[key]);
-			CSL.Lib.Attributes[key].call(token,state,attributes[key]);
+			CSL.Lib.Attributes[key].call(token,state,""+attributes[key]);
 		} catch (e) {
 			if (e == "TypeError: Cannot call method \"call\" of undefined"){
 				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
@@ -94,9 +93,6 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 				throw "CSL processor error, "+key+" attribute: "+e;
 			}
 		}
-		//if (attrfunc){
-		//	attrfuncs.push(attrfunc);
-		//}
 	}
 	token.decorations = decorations;
 	//
