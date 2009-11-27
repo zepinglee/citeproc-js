@@ -38,12 +38,12 @@ dojo.require("doh.runner");
 if(true){
 	// (will run nonetheless under test.py)
 	// dojo.require("tests.test_dateparse");
+	dojo.require("tests.std_locale");
 	dojo.require("tests.test_sys_stdrhino_locale");
     dojo.require("tests.test_sys_rhino_locale");
 	dojo.require("tests.std_number");
 	dojo.require("tests.std_condition");
 	dojo.require("tests.test_util_names");
-	dojo.require("tests.std_locale");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_date");

@@ -91,15 +91,25 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
 
+CSL.System.Xml.E4X.prototype.getAttributeValue = function(name,myxml,namespace){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var ns = new Namespace(namespace);
+	//
+	// Oh, okay, I get it.  The syntax does not lend itself to parameterization,
+	// but one of the elements is a variable, so it can be set before
+	// the call.  Jeez but this feels ugly.  Does work, though.
+	//
+	var ret = myxml.@ns::lang.toString();
+	return ret;
+}
+
 CSL.System.Xml.E4X.prototype.getNodesByName = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	return myxml.descendants(name);
 }
 
 CSL.System.Xml.E4X.prototype.nodeNameIs = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	if (myxml.localName().toString() == name){
 		return true;
 	}

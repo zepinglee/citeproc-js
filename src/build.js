@@ -348,26 +348,24 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		var myxml = arg;
 	}
 	//
-	// xml: Instantiate xml (empty)
+	// Xml: Instantiate xml (empty)
 	//
 	var locale = this.sys.xml.makeXml();
 	//
-	// xml: Test if node is "locale" (nb: ns declarations need to be invoked
+	// Xml: Test if node is "locale" (nb: ns declarations need to be invoked
 	// on every access to the xml object; bundle this with the functions
 	//
 	if (this.sys.xml.nodeNameIs("locale",myxml)){
 		locale = myxml;
 	} else {
 		//
-		// xml: get a list of all "locale" nodes
+		// Xml: get a list of all "locale" nodes
 		//
 		for each (var blob in this.sys.xml.getNodesByName("locale",myxml)){
 			//
 			// xml: get locale xml:lang
 			//
-			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-			var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-			if (blob.@xml::lang.toString() == lang){
+			if (this.sys.xml.getAttributeValue('xml::lang',blob,"http://www.w3.org/XML/1998/namespace") == lang){
 				locale = blob;
 				break;
 			}

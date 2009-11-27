@@ -370,15 +370,13 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		locale = myxml;
 	} else {
 		//
-		// xml: get a list of all "locale" nodes
+		// Xml: get a list of all "locale" nodes
 		//
 		for each (var blob in this.sys.xml.getNodesByName("locale",myxml)){
 			//
 			// xml: get locale xml:lang
 			//
-			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-			var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-			if (blob['@xml::lang'].toString() == lang){
+			if (this.sys.xml.getAttributeValue('xml::lang',blob,"http://www.w3.org/XML/1998/namespace") == lang){
 				locale = blob;
 				break;
 			}
@@ -3339,14 +3337,18 @@ CSL.System.Xml.E4X.prototype.content = function(myxml){
 CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
 	return myxml.length();
 };
+CSL.System.Xml.E4X.prototype.getAttributeValue = function(name,myxml,namespace){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var ns = new Namespace(namespace);
+	var ret = myxml.@ns::lang.toString();
+	return ret;
+}
 CSL.System.Xml.E4X.prototype.getNodesByName = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	return myxml.descendants(name);
 }
 CSL.System.Xml.E4X.prototype.nodeNameIs = function(name,myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	if (myxml.localName().toString() == name){
 		return true;
 	}
