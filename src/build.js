@@ -126,7 +126,7 @@ CSL.Engine.prototype.setCloseQuotesArray = function(){
 };
 
 CSL.Engine.prototype._buildTokenLists = function(area){
-	var area_nodes = this.sys.xml.getNodesByName(area, this.cslXml);
+	var area_nodes = this.sys.xml.getNodesByName(this.cslXml, area);
 	if (!this.sys.xml.getNodeValue( area_nodes)){
 		return;
 	};
@@ -354,13 +354,13 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	// Xml: Test if node is "locale" (nb: ns declarations need to be invoked
 	// on every access to the xml object; bundle this with the functions
 	//
-	if (this.sys.xml.nodeNameIs("locale",myxml)){
+	if (this.sys.xml.nodeNameIs(myxml,'locale')){
 		locale = myxml;
 	} else {
 		//
 		// Xml: get a list of all "locale" nodes
 		//
-		for each (var blob in this.sys.xml.getNodesByName("locale",myxml)){
+		for each (var blob in this.sys.xml.getNodesByName(myxml,"locale")){
 			//
 			// Xml: get locale xml:lang
 			//
@@ -373,7 +373,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	//
 	// Xml: get a list of term nodes within locale
 	//
-	for each (var term in this.sys.xml.getNodesByName('term',locale)){
+	for each (var term in this.sys.xml.getNodesByName(locale,'term')){
 		//
 		// Xml: get string value of attribute
 		//
@@ -391,7 +391,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		//
 		// Xml: test of existence of node
 		//
-		if (this.sys.xml.getNodesByName('multiple',term).length()){
+		if (this.sys.xml.getNodesByName(term,'multiple').length()){
 			this.locale_terms[termname][form] = new Array();
 			//
 			// Xml: get string value of attribute, plus
@@ -414,7 +414,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	//
 	// Xml: get list of nodes by node type
 	//
-	for each (var styleopts in this.sys.xml.getNodesByName("style-options",locale)){
+	for each (var styleopts in this.sys.xml.getNodesByName(locale,'style-options')){
 		//
 		// Xml: get list of attributes on a node
 		//
@@ -435,7 +435,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 	//
 	// Xml: get list of nodes by type
 	//
-	for each (var date in this.sys.xml.getNodesByName('date',locale)){
+	for each (var date in this.sys.xml.getNodesByName(locale,'date')){
 		//
 		// Xml: get string value of attribute
 		//

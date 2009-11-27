@@ -255,16 +255,13 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	// same combination of tree walker and tag processor that
 	// led us here, but with a different queue.
 	//
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	//default xml namespace = "http://purl.org/net/xbiblio/csl";
+	// Xml: get list of nodes by attribute match
 	//
-	// xml: get list of nodes by attribute match
+	var macroxml = this.sys.xml.getNodesByName( this.cslXml, 'macro', mkey);
 	//
-	var macroxml = this.cslXml..macro.(@name == mkey);
+	// Xml: test for node existence
 	//
-	// xml: test for node existence
-	//
-	if (!macroxml.toString()){
+	if (!this.sys.xml.getNodeValue( macroxml) ){
 		throw "CSL style error: undefined macro \""+mkey+"\"";
 	}
 	var navi = new this._getNavi( this, macroxml );

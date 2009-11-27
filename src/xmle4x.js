@@ -125,12 +125,40 @@ CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
 	}
 }
 
-CSL.System.Xml.E4X.prototype.getNodesByName = function(name,myxml){
+CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function(myxml,nodename,attrname,attr,val){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	return myxml.descendants(name);
+	if (attr[0] != '@'){
+		attr = '@'+attr;
+	}
+	myxml[nodename].(@name == attrname)[0][attr] = val;
 }
 
-CSL.System.Xml.E4X.prototype.nodeNameIs = function(name,myxml){
+CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function(myxml,val){
+	delete myxml.*.(@name==val)[0];
+}
+
+CSL.System.Xml.E4X.prototype.deleteAttribute = function(myxml,attr){
+	delete myxml["@"+attr];
+}
+
+CSL.System.Xml.E4X.prototype.setAttribute = function(myxml,attr,val){
+	myxml['@'+attr] = val;
+}
+
+CSL.System.Xml.E4X.prototype.nodeCopy = function(myxml){
+	return myxml.copy();
+}
+
+CSL.System.Xml.E4X.prototype.getNodesByName = function(myxml,name,nameattrval){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var ret = myxml.descendants(name);
+	if (nameattrval){
+		ret = ret.(@name == nameattrval);
+	}
+	return ret;
+}
+
+CSL.System.Xml.E4X.prototype.nodeNameIs = function(myxml,name){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (myxml.localName().toString() == name){
 		return true;

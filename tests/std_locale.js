@@ -36,11 +36,11 @@ dojo.provide("tests.std_locale");
 
 doh.register("tests.std_locale", [
     function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
+        var test = new StdRhinoTest("locale_EmptyDate");
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("locale_EmptyDate");
+        var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
         doh.assertEqual(test.result, test.run());
     },
     function(){
@@ -72,6 +72,3 @@ doh.register("tests.std_locale", [
         doh.assertEqual(test.result, test.run());
     },
 ]);
-
-var x = [
-]

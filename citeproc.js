@@ -175,7 +175,7 @@ CSL.Engine.prototype.setCloseQuotesArray = function(){
 	this.opt.close_quotes_array = ret;
 };
 CSL.Engine.prototype._buildTokenLists = function(area){
-	var area_nodes = this.sys.xml.getNodesByName(area, this.cslXml);
+	var area_nodes = this.sys.xml.getNodesByName(this.cslXml, area);
 	if (!this.sys.xml.getNodeValue( area_nodes)){
 		return;
 	};
@@ -184,7 +184,6 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	this._build(navi);
 };
 CSL.Engine.prototype.setStyleAttributes = function(){
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var dummy = new Object();
 	dummy["name"] = this.sys.xml.nodename( this.cslXml );
 	for each (var attr in this.sys.xml.attributes( this.cslXml) ){
@@ -364,13 +363,13 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		var myxml = arg;
 	}
 	var locale = this.sys.xml.makeXml();
-	if (this.sys.xml.nodeNameIs("locale",myxml)){
+	if (this.sys.xml.nodeNameIs(myxml,'locale')){
 		locale = myxml;
 	} else {
 		//
 		// Xml: get a list of all "locale" nodes
 		//
-		for each (var blob in this.sys.xml.getNodesByName("locale",myxml)){
+		for each (var blob in this.sys.xml.getNodesByName(myxml,"locale")){
 			//
 			// Xml: get locale xml:lang
 			//
@@ -380,7 +379,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			}
 		}
 	}
-	for each (var term in this.sys.xml.getNodesByName('term',locale)){
+	for each (var term in this.sys.xml.getNodesByName(locale,'term')){
 		//
 		// Xml: get string value of attribute
 		//
@@ -398,7 +397,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 		//
 		// Xml: test of existence of node
 		//
-		if (this.sys.xml.getNodesByName('multiple',term).length()){
+		if (this.sys.xml.getNodesByName(term,'multiple').length()){
 			this.locale_terms[termname][form] = new Array();
 			//
 			// Xml: get string value of attribute, plus
@@ -418,7 +417,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form] = this.sys.xml.getNodeValue(term);
 		}
 	}
-	for each (var styleopts in this.sys.xml.getNodesByName("style-options",locale)){
+	for each (var styleopts in this.sys.xml.getNodesByName(locale,'style-options')){
 		//
 		// Xml: get list of attributes on a node
 		//
@@ -436,7 +435,7 @@ CSL.Engine.prototype.setLocaleXml = function(arg,lang){
 			};
 		};
 	};
-	for each (var date in this.sys.xml.getNodesByName('date',locale)){
+	for each (var date in this.sys.xml.getNodesByName(locale,'date')){
 		//
 		// Xml: get string value of attribute
 		//
@@ -2121,43 +2120,43 @@ CSL.Lib.Elements.date = new function(){
 			if (this.strings.form){
 				if (state.opt.dates[this.strings.form]){
 					//
-					// xml: Copy a node
+					// Xml: Copy a node
 					//
-					var datexml = state.opt.dates[this.strings.form].copy();
+					var datexml = state.sys.xml.nodeCopy( state.opt.dates[this.strings.form] );
 					//
-					// xml: Set attribute
+					// Xml: Set attribute
 					//
-					datexml["@variable"] = this.variables[0];
+					state.sys.xml.setAttribute( datexml, 'variable', this.variables[0] );
 					if (this.strings.prefix){
 						//
-						// xml: Set attribute
+						// Xml: Set attribute
 						//
-						datexml["@prefix"] = this.strings.prefix;
+						state.sys.xml.setAttribute( datexml, "prefix", this.strings.prefix);
 					}
 					if (this.strings.suffix){
 						//
-						// xml: Set attribute
+						// Xml: Set attribute
 						//
-						datexml["@suffix"] = this.strings.suffix;
+						state.sys.xml.setAttribute( datexml, "suffix", this.strings.suffix);
 					}
 					//
-					// xml: Delete attribute
+					// Xml: Delete attribute
 					//
-					delete datexml["@form"];
+					state.sys.xml.deleteAttribute(datexml,'form');
 					if (this.strings["date-parts"] == "year"){
 						//
-						// xml: Find one node by attribute and delete
+						// Xml: Find one node by attribute and delete
 						//
-						delete datexml.*.(@name=="month")[0];
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'month');
 						//
-						// xml: Find one node by attribute and delete
+						// Xml: Find one node by attribute and delete
 						//
-						delete datexml.*.(@name=="day")[0];
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
 					} else if (this.strings["date-parts"] == "year-month"){
 						//
-						// xml: Find one node by attribute and delete
+						// Xml: Find one node by attribute and delete
 						//
-						delete datexml.*.(@name=="day")[0];
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
 					}
 					//
 					// pass this xml object through to state.build for
@@ -2165,9 +2164,9 @@ CSL.Lib.Elements.date = new function(){
 					// SINGLETON.  Delete after processing.
 					//
 					//
-					// xml: Copy node
+					// Xml: Copy node
 					//
-					state.build.datexml = datexml.copy();
+					state.build.datexml = state.sys.xml.nodeCopy( datexml );
 				};
 			} else {
 				CSL.Util.substituteStart.call(this,state,target);
@@ -2261,7 +2260,6 @@ CSL.Lib.Elements.date = new function(){
 				//
 				var datexml = state.build.datexml;
 				delete state.build.datexml;
-				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 				var navi = new state._getNavi( state, datexml );
 				state._build(navi);
 			} else {
@@ -2284,23 +2282,20 @@ CSL.Lib.Elements["date-part"] = new function(){
 			this.strings.form = "long";
 		}
 		if (state.build.datexml){
-			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 			for each (var decor in this.decorations){
 				//
-				// xml: find one node by attribute value and set attribute value
+				// Xml: find one node by attribute value and set attribute value
 				//
-				state.build.datexml["date-part"].(@name == this.strings.name)[0][decor[0]] = decor[1];
+				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,decor[0],decor[1]);
 			};
 			for (var attr in this.strings){
 				if (attr == "name" || attr == "prefix" || attr == "suffix"){
 					continue;
 				};
-				// CSL.debug(attr+": "+this.strings[attr]);
-				// CSL.debug( state.build.datexml["date-part"].(@name == this.strings.name).length() );
 				//
-				// xml: find one node by attribute value and set attribute value
+				// Xml: find one node by attribute value and set attribute value
 				//
-				state.build.datexml["date-part"].(@name == this.strings.name)[0]["@"+attr] = this.strings[attr];
+				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,attr,this.strings[attr]);
 			}
 		} else {
 			//
@@ -3357,11 +3352,34 @@ CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
 		return myxml.toString();
 	}
 }
-CSL.System.Xml.E4X.prototype.getNodesByName = function(name,myxml){
+CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function(myxml,nodename,attrname,attr,val){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	return myxml.descendants(name);
+	if (attr[0] != '@'){
+		attr = '@'+attr;
+	}
+	myxml[nodename].(@name == attrname)[0][attr] = val;
 }
-CSL.System.Xml.E4X.prototype.nodeNameIs = function(name,myxml){
+CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function(myxml,val){
+	delete myxml.*.(@name==val)[0];
+}
+CSL.System.Xml.E4X.prototype.deleteAttribute = function(myxml,attr){
+	delete myxml["@"+attr];
+}
+CSL.System.Xml.E4X.prototype.setAttribute = function(myxml,attr,val){
+	myxml['@'+attr] = val;
+}
+CSL.System.Xml.E4X.prototype.nodeCopy = function(myxml){
+	return myxml.copy();
+}
+CSL.System.Xml.E4X.prototype.getNodesByName = function(myxml,name,nameattrval){
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var ret = myxml.descendants(name);
+	if (nameattrval){
+		ret = ret.(@name == nameattrval);
+	}
+	return ret;
+}
+CSL.System.Xml.E4X.prototype.nodeNameIs = function(myxml,name){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (myxml.localName().toString() == name){
 		return true;
@@ -3512,9 +3530,8 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	};
 	start_token["execs"].push(newoutput);
 	this[this.build.area].tokens.push(start_token);
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var macroxml = this.cslXml..macro.(@name == mkey);
-	if (!macroxml.toString()){
+	var macroxml = this.sys.xml.getNodesByName( this.cslXml, 'macro', mkey);
+	if (!this.sys.xml.getNodeValue( macroxml) ){
 		throw "CSL style error: undefined macro \""+mkey+"\"";
 	}
 	var navi = new this._getNavi( this, macroxml );

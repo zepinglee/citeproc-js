@@ -977,43 +977,43 @@ CSL.Lib.Elements.date = new function(){
 			if (this.strings.form){
 				if (state.opt.dates[this.strings.form]){
 					//
-					// xml: Copy a node
+					// Xml: Copy a node
 					//
-					var datexml = state.opt.dates[this.strings.form].copy();
+					var datexml = state.sys.xml.nodeCopy( state.opt.dates[this.strings.form] );
 					//
-					// xml: Set attribute
+					// Xml: Set attribute
 					//
-					datexml["@variable"] = this.variables[0];
+					state.sys.xml.setAttribute( datexml, 'variable', this.variables[0] );
 					if (this.strings.prefix){
 						//
-						// xml: Set attribute
+						// Xml: Set attribute
 						//
-						datexml["@prefix"] = this.strings.prefix;
+						state.sys.xml.setAttribute( datexml, "prefix", this.strings.prefix);
 					}
 					if (this.strings.suffix){
 						//
-						// xml: Set attribute
+						// Xml: Set attribute
 						//
-						datexml["@suffix"] = this.strings.suffix;
+						state.sys.xml.setAttribute( datexml, "suffix", this.strings.suffix);
 					}
 					//
-					// xml: Delete attribute
+					// Xml: Delete attribute
 					//
-					delete datexml["@form"];
+					state.sys.xml.deleteAttribute(datexml,'form');
 					if (this.strings["date-parts"] == "year"){
 						//
-						// xml: Find one node by attribute and delete
+						// Xml: Find one node by attribute and delete
 						//
-						delete datexml.*.(@name=="month")[0];
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'month');
 						//
-						// xml: Find one node by attribute and delete
+						// Xml: Find one node by attribute and delete
 						//
-						delete datexml.*.(@name=="day")[0];
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
 					} else if (this.strings["date-parts"] == "year-month"){
 						//
-						// xml: Find one node by attribute and delete
+						// Xml: Find one node by attribute and delete
 						//
-						delete datexml.*.(@name=="day")[0];
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
 					}
 					//
 					// pass this xml object through to state.build for
@@ -1021,9 +1021,9 @@ CSL.Lib.Elements.date = new function(){
 					// SINGLETON.  Delete after processing.
 					//
 					//
-					// xml: Copy node
+					// Xml: Copy node
 					//
-					state.build.datexml = datexml.copy();
+					state.build.datexml = state.sys.xml.nodeCopy( datexml );
 				};
 			} else {
 
@@ -1119,7 +1119,6 @@ CSL.Lib.Elements.date = new function(){
 				//
 				var datexml = state.build.datexml;
 				delete state.build.datexml;
-				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 				var navi = new state._getNavi( state, datexml );
 				state._build(navi);
 			} else {
@@ -1144,23 +1143,20 @@ CSL.Lib.Elements["date-part"] = new function(){
 			this.strings.form = "long";
 		}
 		if (state.build.datexml){
-			default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 			for each (var decor in this.decorations){
 				//
-				// xml: find one node by attribute value and set attribute value
+				// Xml: find one node by attribute value and set attribute value
 				//
-				state.build.datexml["date-part"].(@name == this.strings.name)[0][decor[0]] = decor[1];
+				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,decor[0],decor[1]);
 			};
 			for (var attr in this.strings){
 				if (attr == "name" || attr == "prefix" || attr == "suffix"){
 					continue;
 				};
-				// CSL.debug(attr+": "+this.strings[attr]);
-				// CSL.debug( state.build.datexml["date-part"].(@name == this.strings.name).length() );
 				//
-				// xml: find one node by attribute value and set attribute value
+				// Xml: find one node by attribute value and set attribute value
 				//
-				state.build.datexml["date-part"].(@name == this.strings.name)[0]["@"+attr] = this.strings[attr];
+				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,attr,this.strings[attr]);
 			}
 		} else {
 			//

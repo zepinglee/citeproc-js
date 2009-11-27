@@ -44,10 +44,6 @@ doh.register("tests.sys_stdrhino_locale", [
 		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 		doh.assertEqual("text", res..text.localName());
 	},
-]);
-
-
-var x = [
 	function testSetAccess(){
 		var sys = new StdRhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
@@ -79,4 +75,8 @@ var x = [
 		doh.assertEqual("Success", res);
 		doh.assertNotEqual("undefined", typeof obj.locale_terms);
 	},
+]);
+
+
+var x = [
 ]
