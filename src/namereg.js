@@ -76,7 +76,7 @@ CSL.Factory.Registry.NameReg = function(state){
 		};
 	};
 
-	var eval = function(item_id,nameobj,namenum,request_base,form,initials){
+	var evalname = function(item_id,nameobj,namenum,request_base,form,initials){
 		// return vals
 		var floor;
 		var ceiling;
@@ -262,5 +262,5 @@ CSL.Factory.Registry.NameReg = function(state){
 	};
 	this.addname = addname;
 	this.delitems = delitems;
-	this.eval = eval;
+	this.eval = evalname;
 };

@@ -3308,12 +3308,15 @@ CSL.System.Xml.E4X.prototype.attributes = function(myxml){
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var ret = new Object();
 	var attrs = myxml.attributes();
-	for (var idx in attrs){
-		if (idx.slice(0,5) == "@e4x_"){
+	for each (var attr in attrs){
+		var key = "@"+attr.localName();
+		//
+		// Needed in rhino
+		//
+		if (key.slice(0,5) == "@e4x_"){
 			continue;
 		}
-		var key = "@"+attrs[idx].localName();
-		var value = attrs[idx];
+		var value = attr;
 		ret[key] = value;
 	}
 	return ret;
@@ -5806,7 +5809,7 @@ CSL.Factory.Registry.NameReg = function(state){
 			pkey = itemid + pkey;
 		};
 	};
-	var eval = function(item_id,nameobj,namenum,request_base,form,initials){
+	var evalname = function(item_id,nameobj,namenum,request_base,form,initials){
 		// return vals
 		var floor;
 		var ceiling;
@@ -5981,7 +5984,7 @@ CSL.Factory.Registry.NameReg = function(state){
 	};
 	this.addname = addname;
 	this.delitems = delitems;
-	this.eval = eval;
+	this.eval = evalname;
 };
 dojo.provide("csl.disambiguate");
 var debug = false;

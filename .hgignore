@@ -19,3 +19,4 @@ syntax: regexp
 ^tmp.html$
 /LOCALE_INSERT.txt$
 /citeproc-doc.tar.gz$
+.*\.jsxdr$
