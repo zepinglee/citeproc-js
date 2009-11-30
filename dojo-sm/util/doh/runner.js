@@ -324,7 +324,7 @@ doh._init = function(){
 	this._currentTest = null;
 	this._errorCount = 0;
 	this._failureCount = 0;
-	this.debug(this._testCount, "tests to run in", this._groupCount, "groups");
+	this.debug(this._testCount + " tests to run in " + this._groupCount + " groups");
 }
 
 // doh._urls = [];
@@ -494,7 +494,7 @@ doh.register = doh.add = function(groupOrNs, testOrNull){
 		}
 	}
 	if(arguments.length == 1){
-		this.debug("invalid args passed to doh.register():", groupOrNs, ",", testOrNull);
+		this.debug("invalid args passed to doh.register(): " + groupOrNs + ", " + testOrNull);
 		return;
 	}
 	if(typeof testOrNull == "string"){
@@ -515,7 +515,7 @@ doh.register = doh.add = function(groupOrNs, testOrNull){
 
 doh.registerDocTests = function(module){
 	// no-op for when Dojo isn't loaded into the page
-	this.debug("registerDocTests() requires dojo to be loaded into the environment. Skipping doctest set for module:", module);
+	this.debug("registerDocTests() requires dojo to be loaded into the environment. Skipping doctest set for module: " + module);
 };
 (function(){
 	if(typeof dojo != "undefined"){
@@ -716,7 +716,7 @@ doh._isArray = function(it){
 doh._setupGroupForRun = function(/*String*/ groupName, /*Integer*/ idx){
 	var tg = this._groups[groupName];
 	this.debug(this._line);
-	this.debug("GROUP", "\""+groupName+"\"", "has", tg.length, "test"+((tg.length > 1) ? "s" : "")+" to run");
+	this.debug("GROUP " + "\""+groupName+"\"" + " has " + tg.length + " test"+((tg.length > 1) ? "s" : "")+" to run");
 }
 
 doh._handleFailure = function(groupName, fixture, e){
@@ -729,16 +729,16 @@ doh._handleFailure = function(groupName, fixture, e){
 		if(e["fileName"]){ out += e.fileName + ':'; }
 		if(e["lineNumber"]){ out += e.lineNumber + ' '; }
 		out += e+": "+e.message;
-		this.debug("\t_AssertFailure:", out);
+		this.debug("\t_AssertFailure: " + out);
 	}else{
 		this._errorCount++;
 	}
 	this.debug(e);
 	if(fixture.runTest["toSource"]){
 		var ss = fixture.runTest.toSource();
-		this.debug("\tERROR IN:\n\t\t", ss);
+		this.debug("\tERROR IN:\n\t\t" + ss);
 	}else{
-		this.debug("\tERROR IN:\n\t\t", fixture.runTest);
+		this.debug("\tERROR IN:\n\t\t" + fixture.runTest);
 	}
 
 	if(e.rhinoException){
@@ -751,7 +751,7 @@ doh._handleFailure = function(groupName, fixture, e){
 try{
 	setTimeout(function(){}, 0);
 }catch(e){
-	setTimeout = function(func){
+	var setTimeout = function(func){
 		return func();
 	}
 }
@@ -919,9 +919,9 @@ doh._report = function(){
 	this.debug(this._line);
 	this.debug("| TEST SUMMARY:");
 	this.debug(this._line);
-	this.debug("\t", this._testCount, "tests in", this._groupCount, "groups");
-	this.debug("\t", this._errorCount, "errors");
-	this.debug("\t", this._failureCount, "failures");
+	this.debug("\t" + this._testCount + " tests in " + this._groupCount + " groups");
+	this.debug("\t" + this._errorCount + " errors");
+	this.debug("\t" + this._failureCount + " failures");
 }
 
 doh.togglePaused = function(){
@@ -971,7 +971,7 @@ doh.run = function(){
 	this._report();
 }
 
-tests = doh;
+var tests = doh;
 
 (function(){
 	// scope protection
@@ -1033,7 +1033,7 @@ tests = doh;
 		print("\n"+doh._line);
 		print("The Dojo Unit Test Harness, $Rev: 16659 $");
 		print("Copyright (c) 2009, The Dojo Foundation, All Rights Reserved");
-		print(doh._line, "\n");
+		print(doh._line + "\n");
 
 		load("_rhinoRunner.js");
 
