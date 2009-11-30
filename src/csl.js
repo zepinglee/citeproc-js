@@ -60,7 +60,7 @@ dojo.provide("csl.csl");
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-CSL = new function () {
+var CSL = new function () {
 
 	this.debug = function(str){
 		print(str);
