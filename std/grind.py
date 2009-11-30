@@ -201,6 +201,8 @@ class CslTest(CslTestUtils):
             if is_json:
                 data = json.loads(data)
             self.data[tag.lower()] = data
+        else:
+            self.data[tag.lower()] = False
 
     def fix_source(self):
         """ Convert options to attributes, write back to source file.
