@@ -577,17 +577,17 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 	// Normalize the format and the year if it's a Japanese date
 	//
 	var years = {};
-	years["明治"] = 1867;
-	years["大正"] = 1911;
-	years["昭和"] = 1925;
-	years["平成"] = 1988;
-	var m = txt.match(/(月|年)/g,"-");
+	years["\u660E\u6CBB"] = 1867;
+	years["\u5927\u6B63"] = 1911;
+	years["\u662D\u548C"] = 1925;
+	years["\u5E73\u6210"] = 1988;
+	var m = txt.match(/(\u6708|\u5E74)/g,"-");
 	if (m){
-		txt = txt.replace(/日$/,"");
-		txt = txt.replace(/(月|年)/g,"-");
+		txt = txt.replace(/\u65E5$/,"");
+		txt = txt.replace(/(\u6708|\u5E74)/g,"-");
 		txt = txt.replace(/〜/g,"/");
 
-		var lst = txt.split(/(平成|昭和|大正|明治)([0-9]+)/);
+		var lst = txt.split(/(\u5E73\u6210|\u662D\u548C|\u5927\u6B63|\u660E\u6CBB)([0-9]+)/);
 		var l = lst.length;
 		for	(var pos=1; pos<l; pos+=3){
 			lst[(pos+1)] = years[lst[(pos)]] + parseInt(lst[(pos+1)]);

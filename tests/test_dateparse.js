@@ -46,9 +46,6 @@ var keycount = function(obj){
     return c;
 };
 
-print("Note: some tests in this bundle that fail under Rhino because of coding issues");
-print("::::: will pass under python+spidermonkey.");
-
 doh.register("tests.dateparse", [function test_dateparse001() {
         var res = citeproc.dateParseRaw("Wed 24 Oct 2000");
         doh.assertEqual("10", res["month"]);
@@ -57,7 +54,8 @@ doh.register("tests.dateparse", [function test_dateparse001() {
         doh.assertEqual(3, keycount(res) );
     },
     function test_dateparse002() {
-        var res = citeproc.dateParseRaw("平成12年10月24日");
+        //var res = citeproc.dateParseRaw("平成12年10月24日");
+        var res = citeproc.dateParseRaw("\u5E73\u621012\u5E7410\u670824\u65E5");
         doh.assertEqual("10", res["month"]);
         doh.assertEqual("24", res["day"]);
         doh.assertEqual("2000", res["year"]);
@@ -222,7 +220,8 @@ doh.register("tests.dateparse", [function test_dateparse001() {
         doh.assertEqual(4, keycount(res) );
     },
     function test_dateparse027() {
-        var res = citeproc.dateParseRaw("平成12年8月〜平成12年9月");
+        // var res = citeproc.dateParseRaw("平成12年8月〜平成12年9月");
+        var res = citeproc.dateParseRaw("\u5E73\u621012\u5E748\u6708\u301C\u5E73\u621012\u5E749\u6708");
         doh.assertEqual("9", res["month_end"]);
         doh.assertEqual("8", res["month"]);
         doh.assertEqual("2000", res["year_end"]);
