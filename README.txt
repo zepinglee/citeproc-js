@@ -1,16 +1,25 @@
+++++++++++
+README.txt
+++++++++++
+=========================================
 citeproc-js: Yet Another CSL Processor
-
-Frank Bennett
-Graduate School of Law, Nagoya University
-2009.08.20
 =========================================
 
-This is an effort to implement a fast and robust CSL processor in
-Javascript, for use by the Zotero project.
+Frank Bennett
+
+*Graduate School of Law, Nagoya University*
+
+2009.08.20
+
+--------------------
+
+This is an effort to implement a full-featured standalone CSL
+processor in Javascript, for use by the Zotero project, and by other
+sites and platforms that can benefit from a standard method of
+formatting citation data.
 
 
-----------------
-The architecture
+The Architecture
 ----------------
 
 The following link has (dated but to be maintained) JsDoc documentation 
@@ -33,7 +42,6 @@ scenario is built as a nested hierarchy which is then collapsed into a
 formatted string for output.
 
 
---------------------
 Testing, testing ...
 --------------------
 
@@ -58,8 +66,7 @@ contributions are welcome!), be sure to complement your changes with
 tests.  It's the right thing to do.
 
 
---------------
-Archive layout
+Archive Layout
 --------------
 
 The sources of the program are under ./src.  The ./locale and ./style
@@ -80,20 +87,22 @@ contains a grab-bag of documents and files stashed or shoved aside
 during development.
 
 
--------------
-Running tests
--------------
+Standard tests and test scripts
+-------------------------------
 
-Standard tests are shipped in two subdirectories, ./std/humans and
-./std/machines.  New tests and editorial changes should be made in the
-./std/humans directory, populating the changes to the ./std/machines
-directory using the ./std/grind.py Python script (grind.py can also be
-used for validation -- run it with the --help option for more info).
+Standard tests are shipped in two subdirectories, ``./std/humans`` and
+``./std/machines``.  New tests and editorial changes should be made in the
+``./std/humans`` directory, populating the changes to the ``./std/machines``
+directory using the ``./std/grind.py`` Python script (``grind.py`` can also be
+used for validation -- run it with the ``--help`` option for more info).
 The actual test runners use the machine-readable form of the tests.
 
-The primary script that runs all the tests is ./runtests.sh, in the 
+Running in ``rhino``: ``runtests.sh``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The primary script that runs all the tests is ``./run-rhino.sh``, in the 
 top-level directory.  Rintze Zelle has very kindly provided a 
-./runtests.bat file as well, and the tests reportedly run (and we 
+``./run-rhino.bat`` file as well, and the tests reportedly run (and we 
 hope also break) equally well on Windows boxes.
 
 If you have a Java interpreter installed and are on Linux (or possibly
@@ -101,24 +110,59 @@ a Mac), you can run the tests in a checkout from a terminal by
 entering the top directory and just typing the runtests script
 appropriate for your system.
 
-On Windows, the ./runtests.bat file can be run from the command prompt, 
+On Windows, the ``./run-rhino.bat`` file can be run from the command prompt, 
 the only caveat being that the command prompt should be set to the drive 
-harboring the SVN working copy, e.g. "D:\>D:\xbiblio\citeproc-js\
-trunk\runtests.bat" works whereas "C:\>D:\xbiblio\citeproc-js\
-trunk\runtests.bat" gives an error when executed.
+harboring the SVN working copy, e.g. 
+``D:\>D:\xbiblio\citeproc-js\trunk\runtests.bat`` works whereas 
+``C:\>D:\xbiblio\citeproc-js\trunk\runtests.bat`` 
+gives an error when executed.
+
+Running in ``spidermonkey``: ``test.py``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``./run-spidermonkey.py`` script runs the tests using a standalone Spidermonkey
+interpreter similar to that used in Firefox. The  kit used for this purpose
+is the ``python-spidermonkey`` bridge done by Paul Davis, which is available, 
+with install instructions, here:
+
+  http://github.com/davisp/python-spidermonkey/tree/master
 
 
--------------------
-Running the program
--------------------
+Running in ``tracemonkey``: ``runtracem.sh``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-While development is mainly aimed at supporting Zotero, the processor
-contains no Zotero dependencies, and should work as a standalone
-formatting engine.  A sample is contained in the ./rpc-stuff directory.
+The ``tracemonkey`` Javascript engine is significantly faster than either
+``spidermonkey`` or ``rhino``, and is used by the ``run-tracemonkey.sh``
+script.  To run it you will need to do the following on a Linux system:
 
+1. Download the sources of `the jslibs development environment`__. 
 
-----------
-Other info
+2. Compile the sources with ``make all; make copy`` (under Linux)
+   or by whatever means is appropriate to your operating system.
+
+3. Enter the directory ``./libs/js/src`` in the ``jslibs`` source
+   archive, and compile the js interpreter as well.  This will generate
+   the ``libmozjs.so`` shared library.
+
+4. Make a note of the path to the ``jshost`` binary, and of the path
+   to the ``libmozjs.so`` library.
+
+5. Register ``libmozjs.so`` in the operating system's dynamic linker.
+   This is normally done by placing a file containing the relevant path
+   (less the actual name of the library) under ``/etc/ld.so.conf.d/``,
+   in a file with a ``.conf`` extension.
+
+6. Run the command ``ldconfig`` to complete registration of the library
+   path.
+
+7. Return to the ``citeproc-js`` archive, and edit the paths as necessary in the file 
+   ``./tests/runner_tracemonkey.js``.
+
+8. Try running the ``./run-tracemonkey.sh`` script and see if it works.
+
+__ http://code.google.com/p/jslibs/source/checkout
+
+Other Info
 ----------
 
 Information on writing tests using the DOH framework can be found here:
@@ -126,7 +170,7 @@ Information on writing tests using the DOH framework can be found here:
   http://www.ibm.com/developerworks/web/library/wa-aj-doh/index.html
 
 The DOH testing framework is part of the Dojo project.  The dojo
-framework files under ./dojo are from a release instance of the
+framework files under ``./dojo`` are from a release instance of the
 product compiled from the original source.  (Compiling from scratch
 was necessary in order to run DOH from the command line as we do
 here.) If you want to use DOH for your own projects, the sources for
@@ -134,18 +178,9 @@ Dojo are available here:
 
   http://download.dojotoolkit.org/
 
-I had a small problem with timeouts on my (slow) machine, which
-required commenting out one line of the DOH code.  That change is
-incorporated in the configured instance of DOH included in these
-sources.
-
-The ./test.py script runs the tests using a standalone Spidermonkey
-interpreter similar to that used in Firefox. The  kit used for this purpose
-is the python-spidermonkey bridge done by Paul Davis, which is available, 
-with install instructions, here:
-
-  http://github.com/davisp/python-spidermonkey/tree/master
-
-
+Note that various small changes have been made to the DOH code that
+ships with ``citeproc-js``, including the deletion of one line of the code
+in order to avoid a timeout issue on my very small and rather slow
+laptop.
 
 Enjoy!

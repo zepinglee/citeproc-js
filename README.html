@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>README.txt</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 5196 2007-06-03 20:25:28Z wiemann $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="readme-txt">
+<h1 class="title">README.txt</h1>
+<h2 class="subtitle" id="citeproc-js-yet-another-csl-processor">citeproc-js: Yet Another CSL Processor</h2>
+
+<p>Frank Bennett</p>
+<p><em>Graduate School of Law, Nagoya University</em></p>
+<p>2009.08.20</p>
+<hr class="docutils" />
+<p>This is an effort to implement a full-featured standalone CSL
+processor in Javascript, for use by the Zotero project, and by other
+sites and platforms that can benefit from a standard method of
+formatting citation data.</p>
+<div class="section" id="the-architecture">
+<h1>The Architecture</h1>
+<p>The following link has (dated but to be maintained) JsDoc documentation
+that will eventually provide some guidance re how things fit together:</p>
+<blockquote>
+<a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-js-doc/index.html">http://gsl-nagoya-u.net/http/pub/citeproc-js-doc/index.html</a></blockquote>
+<p>In rough outline, there is a two-stage compiler (Build and Configure)
+that can be used to construct an object with a few methods useful for
+loading CSL styles and rendering citations and bibliographies.</p>
+<p>The object has several sub-objects, the most important of which are
+&quot;registry&quot;, &quot;citation&quot;, &quot;bibliography&quot;, &quot;citation_sort&quot; and
+&quot;bibliography_sort&quot;.  The top-level methods on the main object apply
+execution wrappers to token lists contained in &quot;citation&quot; and
+&quot;bibliography&quot;, to produce string or list-of-string output.  The
+&quot;registry&quot; object provides a persistent store for managing
+bibliography sort order and disambiguation.  The output queue in this
+scenario is built as a nested hierarchy which is then collapsed into a
+formatted string for output.</p>
+</div>
+<div class="section" id="testing-testing">
+<h1>Testing, testing ...</h1>
+<p>As you can see from the sources, tests are kind of important here.
+Javascript is notoriously unfriendly when it comes to debugging, the
+processor is charged with an extremely complex formatting task, and
+the target community (us) is unforgiving.  Things have to work
+correctly, and the only way to assure that they do is to test the code
+thoroughly.</p>
+<p>Test suites are useful to us in all sorts of ways.  Standard tests
+(housed under ./std) help to assure that the various CSL
+implementations produce identical results.  The internal tests
+specific to citeproc-js provide insurance against unexpected
+side-effects in the event of wholesale refactoring (of which there has
+been more than I would like to remember).  Tests are not just about
+QA; they help to keep complexity from running out of control, by
+forcing the programmer (me) to confront it regularly when changes are
+made to the codebase.  The suites are an integral part of the
+development process; if you modify or add code to the processor (and
+contributions are welcome!), be sure to complement your changes with
+tests.  It's the right thing to do.</p>
+</div>
+<div class="section" id="archive-layout">
+<h1>Archive Layout</h1>
+<p>The sources of the program are under ./src.  The ./locale and ./style
+directories contain standard files from the CSL distribution, for
+use in testing.  The tests are located under ./tests (for those
+specific to citeproc-js) and ./std (for the standard CSL test
+fixtures).</p>
+<p>The basic testing framework we use is DOH, from the Dojo project.
+If your machine has Java installed, the ./dojo and ./rhino directories
+provide the remaining infrastructure needed to run the tests via the
+./runtests.sh or ./runtests.bat scripts.</p>
+<p>The ./data directory contains input files for running tests.  Over
+time, this material will be moved into the standard test suite
+area, and this directory will eventually go away.  The ./ref directory
+contains a grab-bag of documents and files stashed or shoved aside
+during development.</p>
+</div>
+<div class="section" id="standard-tests-and-test-scripts">
+<h1>Standard tests and test scripts</h1>
+<p>Standard tests are shipped in two subdirectories, <tt class="docutils literal"><span class="pre">./std/humans</span></tt> and
+<tt class="docutils literal"><span class="pre">./std/machines</span></tt>.  New tests and editorial changes should be made in the
+<tt class="docutils literal"><span class="pre">./std/humans</span></tt> directory, populating the changes to the <tt class="docutils literal"><span class="pre">./std/machines</span></tt>
+directory using the <tt class="docutils literal"><span class="pre">./std/grind.py</span></tt> Python script (<tt class="docutils literal"><span class="pre">grind.py</span></tt> can also be
+used for validation -- run it with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more info).
+The actual test runners use the machine-readable form of the tests.</p>
+<div class="section" id="running-in-rhino-runtests-sh">
+<h2>Running in <tt class="docutils literal"><span class="pre">rhino</span></tt>: <tt class="docutils literal"><span class="pre">runtests.sh</span></tt></h2>
+<p>The primary script that runs all the tests is <tt class="docutils literal"><span class="pre">./run-rhino.sh</span></tt>, in the
+top-level directory.  Rintze Zelle has very kindly provided a
+<tt class="docutils literal"><span class="pre">./run-rhino.bat</span></tt> file as well, and the tests reportedly run (and we
+hope also break) equally well on Windows boxes.</p>
+<p>If you have a Java interpreter installed and are on Linux (or possibly
+a Mac), you can run the tests in a checkout from a terminal by
+entering the top directory and just typing the runtests script
+appropriate for your system.</p>
+<p>On Windows, the <tt class="docutils literal"><span class="pre">./run-rhino.bat</span></tt> file can be run from the command prompt,
+the only caveat being that the command prompt should be set to the drive
+harboring the SVN working copy, e.g.
+<tt class="docutils literal"><span class="pre">D:\&gt;D:\xbiblio\citeproc-js\trunk\runtests.bat</span></tt> works whereas
+<tt class="docutils literal"><span class="pre">C:\&gt;D:\xbiblio\citeproc-js\trunk\runtests.bat</span></tt>
+gives an error when executed.</p>
+</div>
+<div class="section" id="running-in-spidermonkey-test-py">
+<h2>Running in <tt class="docutils literal"><span class="pre">spidermonkey</span></tt>: <tt class="docutils literal"><span class="pre">test.py</span></tt></h2>
+<p>The <tt class="docutils literal"><span class="pre">./run-spidermonkey.py</span></tt> script runs the tests using a standalone Spidermonkey
+interpreter similar to that used in Firefox. The  kit used for this purpose
+is the <tt class="docutils literal"><span class="pre">python-spidermonkey</span></tt> bridge done by Paul Davis, which is available,
+with install instructions, here:</p>
+<blockquote>
+<a class="reference external" href="http://github.com/davisp/python-spidermonkey/tree/master">http://github.com/davisp/python-spidermonkey/tree/master</a></blockquote>
+</div>
+<div class="section" id="running-in-tracemonkey-runtracem-sh">
+<h2>Running in <tt class="docutils literal"><span class="pre">tracemonkey</span></tt>: <tt class="docutils literal"><span class="pre">runtracem.sh</span></tt></h2>
+<p>The <tt class="docutils literal"><span class="pre">tracemonkey</span></tt> Javascript engine is significantly faster than either
+<tt class="docutils literal"><span class="pre">spidermonkey</span></tt> or <tt class="docutils literal"><span class="pre">rhino</span></tt>, and is used by the <tt class="docutils literal"><span class="pre">run-tracemonkey.sh</span></tt>
+script.  To run it you will need to do the following on a Linux system:</p>
+<ol class="arabic simple">
+<li>Download the sources of <a class="reference external" href="http://code.google.com/p/jslibs/source/checkout">the jslibs development environment</a>.</li>
+<li>Compile the sources with <tt class="docutils literal"><span class="pre">make</span> <span class="pre">all;</span> <span class="pre">make</span> <span class="pre">copy</span></tt> (under Linux)
+or by whatever means is appropriate to your operating system.</li>
+<li>Enter the directory <tt class="docutils literal"><span class="pre">./libs/js/src</span></tt> in the <tt class="docutils literal"><span class="pre">jslibs</span></tt> source
+archive, and compile the js interpreter as well.  This will generate
+the <tt class="docutils literal"><span class="pre">libmozjs.so</span></tt> shared library.</li>
+<li>Make a note of the path to the <tt class="docutils literal"><span class="pre">jshost</span></tt> binary, and of the path
+to the <tt class="docutils literal"><span class="pre">libmozjs.so</span></tt> library.</li>
+<li>Register <tt class="docutils literal"><span class="pre">libmozjs.so</span></tt> in the operating system's dynamic linker.
+This is normally done by placing a file containing the relevant path
+(less the actual name of the library) under <tt class="docutils literal"><span class="pre">/etc/ld.so.conf.d/</span></tt>,
+in a file with a <tt class="docutils literal"><span class="pre">.conf</span></tt> extension.</li>
+<li>Run the command <tt class="docutils literal"><span class="pre">ldconfig</span></tt> to complete registration of the library
+path.</li>
+<li>Return to the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> archive, and edit the paths as necessary in the file
+<tt class="docutils literal"><span class="pre">./tests/runner_tracemonkey.js</span></tt>.</li>
+<li>Try running the <tt class="docutils literal"><span class="pre">./run-tracemonkey.sh</span></tt> script and see if it works.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="other-info">
+<h1>Other Info</h1>
+<p>Information on writing tests using the DOH framework can be found here:</p>
+<blockquote>
+<a class="reference external" href="http://www.ibm.com/developerworks/web/library/wa-aj-doh/index.html">http://www.ibm.com/developerworks/web/library/wa-aj-doh/index.html</a></blockquote>
+<p>The DOH testing framework is part of the Dojo project.  The dojo
+framework files under <tt class="docutils literal"><span class="pre">./dojo</span></tt> are from a release instance of the
+product compiled from the original source.  (Compiling from scratch
+was necessary in order to run DOH from the command line as we do
+here.) If you want to use DOH for your own projects, the sources for
+Dojo are available here:</p>
+<blockquote>
+<a class="reference external" href="http://download.dojotoolkit.org/">http://download.dojotoolkit.org/</a></blockquote>
+<p>Note that various small changes have been made to the DOH code that
+ships with <tt class="docutils literal"><span class="pre">citeproc-js</span></tt>, including the deletion of one line of the code
+in order to avoid a timeout issue on my very small and rather slow
+laptop.</p>
+<p>Enjoy!</p>
+</div>
+</div>
+</body>
+</html>
