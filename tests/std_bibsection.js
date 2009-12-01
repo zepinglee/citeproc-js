@@ -36,6 +36,10 @@ dojo.provide("tests.std_bibsection");
 
 doh.register("tests.std_bibsection", [
     function(){
+        var test = new StdRhinoTest("bibsection_NoUndatedType");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("bibsection_Type");
         doh.assertEqual(test.result, test.run());
     },

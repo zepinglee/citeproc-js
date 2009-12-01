@@ -3,7 +3,7 @@ if ("undefined" == typeof dojo){
 	dojo.provide = function(ignoreme){};
 };
 dojo.provide("csl.csl");
-CSL = new function () {
+var CSL = new function () {
 	this.debug = function(str){
 		print(str);
 	};
@@ -563,16 +563,16 @@ CSL.Engine.prototype.dateParseArray = function( date_obj ){
 }
 CSL.Engine.prototype.dateParseRaw = function(txt){
 	var years = {};
-	years["明治"] = 1867;
-	years["大正"] = 1911;
-	years["昭和"] = 1925;
-	years["平成"] = 1988;
-	var m = txt.match(/(月|年)/g,"-");
+	years["\u660E\u6CBB"] = 1867;
+	years["\u5927\u6B63"] = 1911;
+	years["\u662D\u548C"] = 1925;
+	years["\u5E73\u6210"] = 1988;
+	var m = txt.match(/(\u6708|\u5E74)/g,"-");
 	if (m){
-		txt = txt.replace(/日$/,"");
-		txt = txt.replace(/(月|年)/g,"-");
+		txt = txt.replace(/\u65E5$/,"");
+		txt = txt.replace(/(\u6708|\u5E74)/g,"-");
 		txt = txt.replace(/〜/g,"/");
-		var lst = txt.split(/(平成|昭和|大正|明治)([0-9]+)/);
+		var lst = txt.split(/(\u5E73\u6210|\u662D\u548C|\u5927\u6B63|\u660E\u6CBB)([0-9]+)/);
 		var l = lst.length;
 		for	(var pos=1; pos<l; pos+=3){
 			lst[(pos+1)] = years[lst[(pos)]] + parseInt(lst[(pos+1)]);
@@ -1149,48 +1149,67 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 	this.tmp.area = "bibliography";
 	var input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
+	function eval_string(a,b){
+		if (a == b){
+			return true;
+		}
+		return false;
+	}
+	function eval_list(a,lst){
+		for (var b in lst){
+			if (eval_string(a,b)){
+				return true;
+			}
+		}
+		return false;
+	}
+	function eval_spec(a,b){
+		if ((a == "none" || !a) && !b){
+			return true;
+		}
+		if ("string" == typeof b){
+			return eval_string(a,b);
+		} else {
+			return eval_list(a,b);
+		}
+	}
 	for each (var item in input){
 		if (bibsection){
-			if (bibsection.exclude){
-				for each (spec in bibsection.exclude){
-					var continueme = false;
-					if ("string" == typeof item[spec.field]){
-						if (item[spec.field] == spec.value){
-							continueme = true;
-						}
-					} else if (item[spec.field].length){
-						for each (element in item[spec.field]){
-							if (item[spec.field] == spec.value){
-								var continueme = true;
-								break;
-							}
-						}
-					}
-					if (continueme){
-						continue;
+			var include = true;
+			if (bibsection.include){
+				include = false;
+				for each (spec in bibsection.include){
+					if (eval_spec(spec.value,item[spec.field])){
+						include = true;
+						break;
 					}
 				}
 			}
-			if (bibsection.include){
-				var include = false;
-				for each (spec in bibsection.include){
-					if ("string" == typeof item[spec.field]){
-						if (item[spec.field] == spec.value){
-							include = true;
-							break;
-						}
-					} else if (item[spec,field].length){
-						for each (element in item[spec.field]){
-							if (item[spec.field] == spec.value){
-								include = true;
-								break;
-							}
-						}
+			if (bibsection.exclude){
+				var anymatch = false;
+				for each (spec in bibsection.exclude){
+					if (eval_spec(spec.value,item[spec.field])){
+						anymatch = true;
+						break;
 					}
 				}
-				if ( !include ){
-					continue;
+				if (anymatch){
+					include = false;
 				}
+			}
+			if (bibsection.quash){
+				var allmatch = true;
+				for each (spec in bibsection.quash){
+					if (!eval_spec(spec.value,item[spec.field])){
+						allmatch = false;
+					}
+				}
+				if (allmatch){
+					include = false;
+				}
+			}
+			if ( !include ){
+				continue;
 			}
 		}
 		if (false){

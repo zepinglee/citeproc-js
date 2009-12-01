@@ -4,7 +4,7 @@ set -e
 
 cd $(dirname $0)
 
-cd ../ref/citeproc-doc
+cd ../manual
 
 function increment() {
   echo Incrementing ...
@@ -42,19 +42,19 @@ cat tmp-with-markup.txt \
 
 cd ..
 if [ "$1" == "--increment" ]; then
-  scp ./citeproc-doc/index.html gsl-nagoya-u.net:/http/pub/citeproc-doc.html
-  mv ./citeproc-doc/tmp-with-markup.txt ./citeproc-doc/citeproc-doc.rst
+  scp ./manual/index.html gsl-nagoya-u.net:/http/pub/citeproc-doc.html
+  mv ./manual/tmp-with-markup.txt ./citeproc-doc/citeproc-doc.rst
 fi
 
 tar --create \
     --gzip \
     --exclude="tmp-*" \
     --file ./citeproc-doc.tar.gz \
-    ./citeproc-doc/
+    ./manual/
 
 if [ "$1" == "--increment" ]; then
   scp ./citeproc-doc.tar.gz gsl-nagoya-u.net:/http/pub/citeproc-doc.tar.gz
 fi
 
-rm -f ./citeproc-doc/tmp-with-markup.txt
-rm ./citeproc-doc/tmp-without-markup.txt
+rm -f ./manual/tmp-with-markup.txt
+rm ./manual/tmp-without-markup.txt

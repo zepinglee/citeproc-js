@@ -75,4 +75,4 @@ for i in tests/std_*.js; do
     IFS=$OLDIFS
 done
 
-ref/APPLY_LICENSE.py
+tools/APPLY_LICENSE.py

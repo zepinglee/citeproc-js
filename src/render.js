@@ -177,48 +177,67 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 	this.tmp.area = "bibliography";
 	var input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
+	function eval_string(a,b){
+		if (a == b){
+			return true;
+		}
+		return false;
+	}
+	function eval_list(a,lst){
+		for (var b in lst){
+			if (eval_string(a,b)){
+				return true;
+			}
+		}
+		return false;
+	}
+	function eval_spec(a,b){
+		if ((a == "none" || !a) && !b){
+			return true;
+		}
+		if ("string" == typeof b){
+			return eval_string(a,b);
+		} else {
+			return eval_list(a,b);
+		}
+	}
 	for each (var item in input){
 		if (bibsection){
-			if (bibsection.exclude){
-				for each (spec in bibsection.exclude){
-					var continueme = false;
-					if ("string" == typeof item[spec.field]){
-						if (item[spec.field] == spec.value){
-							continueme = true;
-						}
-					} else if (item[spec.field].length){
-						for each (element in item[spec.field]){
-							if (item[spec.field] == spec.value){
-								var continueme = true;
-								break;
-							}
-						}
-					}
-					if (continueme){
-						continue;
+			var include = true;
+			if (bibsection.include){
+				include = false;
+				for each (spec in bibsection.include){
+					if (eval_spec(spec.value,item[spec.field])){
+						include = true;
+						break;
 					}
 				}
 			}
-			if (bibsection.include){
-				var include = false;
-				for each (spec in bibsection.include){
-					if ("string" == typeof item[spec.field]){
-						if (item[spec.field] == spec.value){
-							include = true;
-							break;
-						}
-					} else if (item[spec,field].length){
-						for each (element in item[spec.field]){
-							if (item[spec.field] == spec.value){
-								include = true;
-								break;
-							}
-						}
+			if (bibsection.exclude){
+				var anymatch = false;
+				for each (spec in bibsection.exclude){
+					if (eval_spec(spec.value,item[spec.field])){
+						anymatch = true;
+						break;
 					}
 				}
-				if ( !include ){
-					continue;
+				if (anymatch){
+					include = false;
 				}
+			}
+			if (bibsection.quash){
+				var allmatch = true;
+				for each (spec in bibsection.quash){
+					if (!eval_spec(spec.value,item[spec.field])){
+						allmatch = false;
+					}
+				}
+				if (allmatch){
+					include = false;
+				}
+			}
+			if ( !include ){
+				continue;
 			}
 		}
 		if (false){
