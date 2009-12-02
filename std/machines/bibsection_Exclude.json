@@ -32,23 +32,37 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_bibsection");
-
-doh.register("tests.std_bibsection", [
-    function(){
-        var test = new StdRhinoTest("bibsection_Exclude");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("bibsection_Include");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("bibsection_Quash");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("bibsection_Select");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+{
+    "abbreviations": false, 
+    "bibentries": false, 
+    "bibsection": {
+        "exclude": [
+            {
+                "field": "type", 
+                "value": "article-journal"
+            }
+        ]
+    }, 
+    "citations": false, 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text value=\"Oops\"/>\n    </layout>\n  </citation>\n  <bibliography>\n    <sort>\n      <key variable=\"title\" />\n    </sort>\n    <layout>\n      <text variable=\"title\" />\n    </layout>\n  </bibliography>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "Book C", 
+            "type": "book"
+        }, 
+        {
+            "id": "ITEM-2", 
+            "title": "Article B", 
+            "type": "article-journal"
+        }, 
+        {
+            "id": "ITEM-3", 
+            "title": "Book A", 
+            "type": "book"
+        }
+    ], 
+    "mode": "bibliography", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Book A</div>\n  <div class=\"csl-entry\">Book C</div>\n</div>", 
+    "schema": "1.0"
+}
