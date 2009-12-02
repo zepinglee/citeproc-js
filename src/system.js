@@ -45,3 +45,4 @@ if (!CSL){
  * @namespace System wrappers
  */
 CSL.System = {};
+CSL.System.Xml = {};

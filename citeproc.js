@@ -840,10 +840,6 @@ CSL.Engine.prototype.parseName = function(name){
 		}
 	}
 }
-dojo.provide("csl.core");
-if (!CSL) {
-}
-CSL.Core = {};
 dojo.provide("csl.state");
 CSL.Engine.Opt = function (){
 	this.has_disambiguate = false;
@@ -1156,7 +1152,7 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 		return false;
 	}
 	function eval_list(a,lst){
-		for (var b in lst){
+		for each (var b in lst){
 			if (eval_string(a,b)){
 				return true;
 			}
@@ -1177,6 +1173,9 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 		if (bibsection){
 			var include = true;
 			if (bibsection.include){
+				//
+				// Opt-in: these are OR-ed.
+				//
 				include = false;
 				for each (spec in bibsection.include){
 					if (eval_spec(spec.value,item[spec.field])){
@@ -1184,8 +1183,10 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 						break;
 					}
 				}
-			}
-			if (bibsection.exclude){
+			} else if (bibsection.exclude){
+				//
+				// Opt-out: these are also OR-ed.
+				//
 				var anymatch = false;
 				for each (spec in bibsection.exclude){
 					if (eval_spec(spec.value,item[spec.field])){
@@ -1196,8 +1197,25 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 				if (anymatch){
 					include = false;
 				}
+			} else if (bibsection.select){
+				//
+				// Multiple condition opt-in: these are AND-ed.
+				//
+				include = false;
+				var allmatch = true;
+				for each (spec in bibsection.select){
+					if (!eval_spec(spec.value,item[spec.field])){
+						allmatch = false;
+					}
+				}
+				if (allmatch){
+					include = true;
+				}
 			}
 			if (bibsection.quash){
+				//
+				// Stop criteria: These are AND-ed.
+				//
 				var allmatch = true;
 				for each (spec in bibsection.quash){
 					if (!eval_spec(spec.value,item[spec.field])){
@@ -3303,9 +3321,6 @@ dojo.provide("csl.retrieval");
 if (!CSL){
 }
 CSL.System = {};
-dojo.provide("csl.xml");
-if (!CSL) {
-}
 CSL.System.Xml = {};
 dojo.provide("csl.xmle4x");
 CSL.System.Xml.E4X = function(){};
