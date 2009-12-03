@@ -48,12 +48,16 @@ ninth
 
 >>== CITATIONS ==>>
 [
-  [
-    ["item-1",{}]
-  ],
-  [
-    ["item-2",{}]
-  ]
+    [
+        {
+            "id": "item-1"
+        }
+    ], 
+    [
+        {
+            "id": "item-2"
+        }
+    ]
 ]
 <<== CITATIONS ==<<
 

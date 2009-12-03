@@ -947,13 +947,8 @@ dojo.provide("csl.commands");
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
-		var Item = this.sys.retrieveItem(item[0]);
-		//this.registry.insert(this,Item);
-		//
-		// This method will in future only be used for rendering.
-		// Assume that all items in rawList exist in registry.
-		// this.registry.insert(this,Item);
-		var newitem = this.composeItem([Item,item[1]]);
+		var Item = this.sys.retrieveItem(item.id);
+		var newitem = this.composeItem(Item,item);
 		inputList.push(newitem);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
@@ -1074,13 +1069,13 @@ CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	}
 	return ret;
 }
-CSL.Engine.prototype.composeItem = function(item){
+CSL.Engine.prototype.composeItem = function(Item,params){
 	var newItem = {};
-	for (var i in item[0]){
-		newItem[i] = item[0][i];
+	for (var i in Item){
+		newItem[i] = Item[i];
 	}
-	for (var i in item[1]){
-		newItem[i] = item[1][i];
+	for (var i in params){
+		newItem[i] = params[i];
 	}
 	return newItem;
 };

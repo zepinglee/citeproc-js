@@ -49,9 +49,12 @@ Note is near!
 
 >>===== CITATIONS =====>>
 [
-  [
-    ["ITEM-1",{"note_distance":4}]
-  ]
+    [
+        {
+            "id": "ITEM-1", 
+            "note_distance": 4
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 

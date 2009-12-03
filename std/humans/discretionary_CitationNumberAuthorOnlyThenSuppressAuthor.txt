@@ -50,15 +50,23 @@ Reference [1]
 
 >>== CITATIONS ==>>
 [
-  [
-    ["ITEM-1",{"author-only":1}]
-  ],
-  [
-    ["ITEM-1",{"suppress-author":1}]
-  ],
-  [
-    ["ITEM-2",{}]
-  ]
+    [
+        {
+            "author-only": 1, 
+            "id": "ITEM-1"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-1", 
+            "suppress-author": 1
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-2"
+        }
+    ]
 ]
 <<== CITATIONS ==<<
 

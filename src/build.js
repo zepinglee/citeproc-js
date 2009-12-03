@@ -34,7 +34,10 @@
  */
 dojo.provide("csl.build");
 
-
+/**
+ * Core instantiation functionality.
+ * @namespace
+ */
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.E4X();

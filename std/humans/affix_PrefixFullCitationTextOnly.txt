@@ -74,9 +74,12 @@ citation
 
 >>===== CITATIONS ====>>
 [
-  [
-    ["ITEM-1",{"prefix":"As written in"}]
-  ]
+    [
+        {
+            "id": "ITEM-1", 
+            "prefix": "As written in"
+        }
+    ]
 ]
 <<===== CITATIONS ====<<
 

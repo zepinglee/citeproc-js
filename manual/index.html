@@ -46,6 +46,9 @@ dt { font-weight: bold; margin-top: 0.5em; }
 .subtitle { text-align: center; margin: 1em 4em 4em 4em; }
 .topic-title { font-weight: bold; font-size: 130%; }
 .contents { margin-bottom: 1em; }
+.center { text-align: center }
+
+
 
 .contributors { margin-left: 250px; margin-top: 2em; margin-bottom: 2em; }
 dl.contributors { background: white; border: none; }
@@ -837,8 +840,9 @@ each bibliography entry.</dd>
 <p>Use the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command to generate the text
 of citations containing one or more references, for insertion into
 footnotes or the main text of the document.  This command takes a
-single argument, composed of a list of IDs, each accompanied by
-a simple Javascript object containing (optional) supplementary data.</p>
+single list argument.  The list is composed of Javascript objects
+containing the id of a data item retrievable via <tt class="docutils literal"><span class="pre">sys.retrieveItem()</span></tt>,
+and (optional) supplementary data fields.</p>
 <div class="admonition-hint admonition">
 <p class="first admonition-title">Hint</p>
 <p class="last">See the <img alt="link" src="link.png" /> <a class="reference internal" href="#citation-fields">Data Input → Citation fields</a> section below concerning
@@ -852,8 +856,8 @@ usage.</p>
 4
 5
 6</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">my_ids</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="s2">&quot;ID-1&quot;</span><span class="o">,</span> <span class="p">{}]</span><span class="o">,</span>
-    <span class="p">[</span><span class="s2">&quot;ID-2&quot;</span><span class="o">,</span> <span class="p">{}]</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-1&quot;</span> <span class="p">}</span><span class="o">,</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-2&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 
 <span class="k">var</span> <span class="nx">mycite</span> <span class="o">=</span> <span class="nx">makeCitationCluster</span><span class="p">(</span> <span class="nx">my_ids</span> <span class="p">);</span>
@@ -1335,16 +1339,15 @@ with corresponding elements:</p>
 <div class="section" id="citation-fields">
 <h2><a class="toc-backref" href="#id62">Citation fields</a></h2>
 <p>As noted above under <img alt="link" src="link.png" /> <a class="reference internal" href="#makecitationcluster">makeCitationCluster()</a>, that function takes
-as its single argument a list item IDs, each paired with a Javascript
-array containing supplementary data.  The supplementary array must be present,
-but may be empty:</p>
+as its single argument a list of Javascript objects, each containing
+an item <tt class="docutils literal"><span class="pre">id</span></tt> and optional supplementary data.</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
 3
 4</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">my_ids</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="s2">&quot;ID-1&quot;</span><span class="o">,</span> <span class="p">{}]</span><span class="o">,</span>
-    <span class="p">[</span><span class="s2">&quot;ID-2&quot;</span><span class="o">,</span> <span class="p">{}]</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-1&quot;</span><span class="p">}</span><span class="o">,</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-2&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
 </td></tr></table>
@@ -1359,8 +1362,8 @@ with a valid CSL label string. <a class="footnote-reference" href="#id23" id="id
 2
 3
 4</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">my_ids</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="s2">&quot;ID-1&quot;</span><span class="o">,</span> <span class="p">{</span> <span class="s2">&quot;locator&quot;</span><span class="o">:</span> <span class="s2">&quot;21&quot;</span><span class="o">,</span> <span class="s2">&quot;label&quot;</span><span class="o">:</span> <span class="s2">&quot;paragraph&quot;</span> <span class="p">}]</span><span class="o">,</span>
-    <span class="p">[</span><span class="s2">&quot;ID-2&quot;</span><span class="o">,</span> <span class="p">{}]</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-1&quot;</span><span class="o">,</span> <span class="s2">&quot;locator&quot;</span><span class="o">:</span> <span class="s2">&quot;21&quot;</span><span class="o">,</span> <span class="s2">&quot;label&quot;</span><span class="o">:</span> <span class="s2">&quot;paragraph&quot;</span><span class="p">}</span><span class="o">,</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-2&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
 </td></tr></table>
@@ -1372,8 +1375,8 @@ be assumed.</p>
 2
 3
 4</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">my_ids</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="s2">&quot;ID-1&quot;</span><span class="o">,</span> <span class="p">{</span> <span class="s2">&quot;locator&quot;</span><span class="o">:</span> <span class="s2">&quot;21&quot;</span> <span class="p">}]</span><span class="o">,</span>
-    <span class="p">[</span><span class="s2">&quot;ID-2&quot;</span><span class="o">,</span> <span class="p">{}]</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-1&quot;</span><span class="o">,</span> <span class="s2">&quot;locator&quot;</span><span class="o">:</span> <span class="s2">&quot;21&quot;</span> <span class="p">}</span><span class="o">,</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ID-2&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
 </td></tr></table>

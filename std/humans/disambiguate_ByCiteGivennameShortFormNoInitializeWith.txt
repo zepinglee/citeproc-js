@@ -75,13 +75,19 @@ John Doe; Aloysius Doe
 
 >>===== CITATIONS =====>>
 [
-  [
-    ["ITEM-1",{}]
-  ],
-  [
-    ["ITEM-2",{}],
-    ["ITEM-3",{}]
-  ]
+    [
+        {
+            "id": "ITEM-1"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-2"
+        }, 
+        {
+            "id": "ITEM-3"
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 

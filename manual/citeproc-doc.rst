@@ -425,8 +425,9 @@ pairs shown below (the values shown are the processor defaults):
 Use the ``makeCitationCluster()`` command to generate the text
 of citations containing one or more references, for insertion into
 footnotes or the main text of the document.  This command takes a 
-single argument, composed of a list of IDs, each accompanied by
-a simple Javascript object containing (optional) supplementary data.
+single list argument.  The list is composed of Javascript objects
+containing the id of a data item retrievable via ``sys.retrieveItem()``,
+and (optional) supplementary data fields.
 
 .. admonition:: Hint
    
@@ -439,8 +440,8 @@ __ `Citation fields`_
 .. code-block:: js
 
    var my_ids = [
-       ["ID-1", {}],
-       ["ID-2", {}]
+       {"id": "ID-1" },
+       {"id": "ID-2"}
    ]
 
    var mycite = makeCitationCluster( my_ids );
@@ -863,15 +864,14 @@ Citation fields
 ###############
 
 As noted above under |link| `makeCitationCluster()`_, that function takes
-as its single argument a list item IDs, each paired with a Javascript
-array containing supplementary data.  The supplementary array must be present,
-but may be empty:
+as its single argument a list of Javascript objects, each containing
+an item ``id`` and optional supplementary data.
 
 .. code-block:: js
 
    var my_ids = [
-       ["ID-1", {}],
-       ["ID-2", {}]
+       {"id": "ID-1"},
+       {"id": "ID-2"}
    ]
 
 
@@ -886,8 +886,8 @@ with a valid CSL label string. [#]_
 .. code-block:: js
 
    var my_ids = [
-       ["ID-1", { "locator": "21", "label": "paragraph" }],
-       ["ID-2", {}]
+       {"id": "ID-1", "locator": "21", "label": "paragraph"},
+       {"id": "ID-2"}
    ]
 
 If the ``label`` element is not included, a value of "page" will
@@ -896,8 +896,8 @@ be assumed.
 .. code-block:: js
 
    var my_ids = [
-       ["ID-1", { "locator": "21" }],
-       ["ID-2", {}]
+       {"id": "ID-1", "locator": "21" },
+       {"id": "ID-2"}
    ]
 
 .. class:: first

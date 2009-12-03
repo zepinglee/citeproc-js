@@ -38,54 +38,42 @@
     "bibsection": false, 
     "citations": [
         [
-            [
-                "ITEM-1", 
-                {
-                    "note-number": "1"
-                }
-            ], 
-            [
-                "ITEM-2", 
-                {
-                    "note-number": "1"
-                }
-            ]
+            {
+                "id": "ITEM-1", 
+                "note-number": "1"
+            }, 
+            {
+                "id": "ITEM-2", 
+                "note-number": "1"
+            }
         ], 
         [
-            [
-                "ITEM-3", 
-                {
-                    "note-number": "2"
-                }
-            ]
+            {
+                "id": "ITEM-3", 
+                "note-number": "2"
+            }
         ], 
         [
-            [
-                "ITEM-4", 
-                {
-                    "note-number": "3"
-                }
-            ]
+            {
+                "id": "ITEM-4", 
+                "note-number": "3"
+            }
         ], 
         [
-            [
-                "ITEM-1", 
-                {
-                    "first-reference-note-number": "1", 
-                    "note-number": "4", 
-                    "position": 1
-                }
-            ]
+            {
+                "first-reference-note-number": "1", 
+                "id": "ITEM-1", 
+                "note-number": "4", 
+                "position": 1
+            }
         ], 
         [
-            [
-                "ITEM-3", 
-                {
-                    "first-reference-note-number": "2", 
-                    "note-number": "5", 
-                    "position": 1
-                }
-            ]
+            {
+                "first-reference-note-number": "2", 
+                "id": "ITEM-3", 
+                "note-number": "5", 
+                "position": 1
+            }
         ]
     ], 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout delimiter=\"; \" suffix=\".\">\n      <choose>\n        <if position=\"subsequent\">\n          <names variable=\"author\">\n            <name form=\"short\" />\n          </names>\n          <choose>\n            <if disambiguate=\"true\">\n              <text prefix=\", \" variable=\"title\" />\n            </if>\n          </choose>\n          <text prefix=\", \" suffix=\" \" value=\"supra note\" />\n          <text variable=\"first-reference-note-number\" />\n        </if>\n        <else>\n          <names variable=\"author\">\n            <name />\n          </names>\n          <text prefix=\", \" variable=\"title\" />\n          <date variable=\"issued\">\n            <date-part name=\"year\" prefix=\" (\" suffix=\")\" />\n          </date>\n        </else>\n      </choose>\n    </layout>\n  </citation>\n</style>", 

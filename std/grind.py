@@ -151,6 +151,7 @@ class CslTests(CslTestUtils):
                 test.parse()
                 ## test.fix_source()
                 test.fix_names()
+                test.fix_citations()
                 test.validate(testname)
                 test.dump_machines()
                 test.dump_humans()
@@ -244,6 +245,18 @@ class CslTest(CslTestUtils):
         #style = re.sub("<style[^>]*>",bibliographytag,style)
         return str
 
+    def fix_citations(self):
+        if self.data["citations"]:
+            for x in range(0,len(self.data["citations"]),1):
+                cite = self.data["citations"][x]
+                for y in range(0,len(cite),1):
+                    item = cite[y]
+                    if type(item) == type([]) and len(item) == 2:
+                        print "Fixing"
+                        item[1]["id"] = item[0]
+                        self.data["citations"][x][y] = item[1]
+                        print self.data["citations"]
+    
     def fix_names(self):
         """ Mangle name fields
 
@@ -378,9 +391,13 @@ class CslTest(CslTestUtils):
         
     def dump_humans(self):
         self.fix_dates()
-        str = json.dumps(self.data["input"],indent=4,sort_keys=True,ensure_ascii=False)
+        input_str = json.dumps(self.data["input"],indent=4,sort_keys=True,ensure_ascii=False)
         m = re.match(self.RE_ELEMENT % ("INPUT", "INPUT"),self.raw)
-        newraw = m.group(1) + "\n" + str + m.group(3)
+        newraw = m.group(1) + "\n" + input_str + m.group(3)
+        if self.data["citations"]:
+            citations_str = json.dumps(self.data["citations"],indent=4,sort_keys=True,ensure_ascii=False)
+            m = re.match(self.RE_ELEMENT % ("CITATIONS", "CITATIONS"),self.raw)
+            newraw = m.group(1) + "\n" + citations_str + m.group(3)
         tpath_out = "%s.txt" % (self.path("humans", self.testname),)
         open(tpath_out,"w+").write(newraw)
 

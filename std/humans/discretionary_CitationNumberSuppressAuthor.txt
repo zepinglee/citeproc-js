@@ -49,12 +49,17 @@ citation
 
 >>== CITATIONS ==>>
 [
-  [
-    ["ITEM-1",{"suppress-author":1}]
-  ],
-  [
-    ["ITEM-2",{}]
-  ]
+    [
+        {
+            "id": "ITEM-1", 
+            "suppress-author": 1
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-2"
+        }
+    ]
 ]
 <<== CITATIONS ==<<
 

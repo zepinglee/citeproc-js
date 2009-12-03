@@ -36,31 +36,26 @@ dojo.provide("csl.commands");
 
 /**
  * Compose a citation "cluster".
- * <p>Accepts an Item object or a list of Item objects as a
- * single argument.  Citation clusters are typically used in the
- * body of a document.  Because locator information may be
- * needed to correctly render cites within a cluster, the
- * argument should be a list of actual objects, rather
- * than item keys.  (The code in {@link CSL.System.Retrieval}
- * does recognize keys, but this is intended only for testing
- * purposes.)</p>
+ * <p>Accepts a list of Item references as a single argument.
+ * Item references within the rawList array may be composed of the
+ * following sub-elements, of which only id is required.</p>
+ * @param {String} id The item ID, to be fed to the integrator-defined
+ * sys.retrieveItem() in order to obtain the Item data.  This is
+ * required.
+ * @param {String} locator The page or other location identifier for the cite.
+ * @param {String} label The label to be applied to the locator.
+ * @param {Boolean} author-only Suppress everything but the author if true.
+ * @param {Boolean} suppress-author Suppress the author in the cite if true.
+ * @param {String} prefix A string to print before the cite.
+ * @param {String} suffix A string to print after the cite.
  */
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
-		var Item = this.sys.retrieveItem(item[0]);
-		//this.registry.insert(this,Item);
-		//
-		// This method will in future only be used for rendering.
-		// Assume that all items in rawList exist in registry.
-		// this.registry.insert(this,Item);
-		var newitem = this.composeItem([Item,item[1]]);
+		var Item = this.sys.retrieveItem(item.id);
+		var newitem = this.composeItem(Item,item);
 		inputList.push(newitem);
 	}
-	//
-	// don't bother sorting unless there is more than one item.
-	// "sortkeys" will need to be changed if CSL decides to make
-	// it a variable name.
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
 		var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
 		for (var k in inputList){
@@ -68,10 +63,6 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		}
 		inputList.sort(srt.compareKeys);
 	};
-
-	//
-	// sort thingie goes here
-	//
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();

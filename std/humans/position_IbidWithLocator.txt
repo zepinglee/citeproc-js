@@ -50,12 +50,19 @@ Ibid p. 23.
 
 >>===== CITATIONS =====>>
 [
-  [
-    ["ITEM-1",{}]
-  ],
-  [
-    ["ITEM-1",{"position":3, "label":"page", "locator":"23"}]
-  ]
+    [
+        {
+            "id": "ITEM-1"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-1", 
+            "label": "page", 
+            "locator": "23", 
+            "position": 3
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 

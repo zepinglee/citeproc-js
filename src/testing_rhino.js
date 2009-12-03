@@ -42,7 +42,7 @@ RhinoTest = function(name){
 	this._ids = [];
 	this._cache = {};
 	if (name){
-		if ("string" == typeof name[0]){
+		if ("string" == typeof name){
 			var input = this._getInput(name);
 		} else {
 			var input = name;
@@ -75,7 +75,7 @@ RhinoTest.prototype.fixData = function(Item){
 			}
 			this._ids.push(realitem.id);
 			this._cache[realitem.id] = realitem;
-			this.citations.push([realitem.id,{}]);
+			this.citations.push({"id":realitem.id});
 			this.items.push(realitem);
 		}
 	}

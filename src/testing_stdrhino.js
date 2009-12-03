@@ -123,7 +123,7 @@ StdRhinoTest.prototype.run = function(){
 		if (!this.test.citations){
 			var citation = [];
 			for each (item in this.style.registry.reflist){
-				citation.push([item.id,{}]);
+				citation.push({"id":item.id});
 			}
 			this.test.citations = [citation];
 		}

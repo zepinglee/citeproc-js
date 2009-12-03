@@ -41,22 +41,48 @@ citation
 <<===== SCHEMA =====<<
 
 >>===== CITATIONS =====>>
-[ 
-  [
-    ["ambigs-1",{}],
-    ["ambigs-2",{}],
-    ["ambigs-3",{}],
-    ["ambigs-4",{}],
-    ["ambigs-5",{}],
-    ["ambigs-6",{}],
-    ["ambigs-7",{}],
-    ["ambigs-8",{}],
-    ["ambigs-9",{}],
-    ["ambigs-10",{}],
-    ["ambigs-11",{}],
-    ["ambigs-12",{}],
-    ["ambigs-13",{}]
-  ]
+[
+    [
+        {
+            "id": "ambigs-1"
+        }, 
+        {
+            "id": "ambigs-2"
+        }, 
+        {
+            "id": "ambigs-3"
+        }, 
+        {
+            "id": "ambigs-4"
+        }, 
+        {
+            "id": "ambigs-5"
+        }, 
+        {
+            "id": "ambigs-6"
+        }, 
+        {
+            "id": "ambigs-7"
+        }, 
+        {
+            "id": "ambigs-8"
+        }, 
+        {
+            "id": "ambigs-9"
+        }, 
+        {
+            "id": "ambigs-10"
+        }, 
+        {
+            "id": "ambigs-11"
+        }, 
+        {
+            "id": "ambigs-12"
+        }, 
+        {
+            "id": "ambigs-13"
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 
