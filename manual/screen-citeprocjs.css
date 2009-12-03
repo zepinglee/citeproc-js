@@ -37,6 +37,9 @@ dt { font-weight: bold; margin-top: 0.5em; }
 .subtitle { text-align: center; margin: 1em 4em 4em 4em; }
 .topic-title { font-weight: bold; font-size: 130%; }
 .contents { margin-bottom: 1em; }
+.center { text-align: center }
+
+
 
 .contributors { margin-left: 250px; margin-top: 2em; margin-bottom: 2em; }
 dl.contributors { background: white; border: none; }

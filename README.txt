@@ -1,15 +1,17 @@
 ++++++++++
 README.txt
 ++++++++++
-=========================================
-citeproc-js: Yet Another CSL Processor
-=========================================
+===============
+``citeproc-js``
+===============
 
-Frank Bennett
+.. container:: center
+   
+   Frank Bennett
 
-*Graduate School of Law, Nagoya University*
+   *Graduate School of Law, Nagoya University*
 
-2009.08.20
+   2009.08.20
 
 --------------------
 
