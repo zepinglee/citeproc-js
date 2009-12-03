@@ -320,8 +320,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div align="center" class="align-center"><img alt="counter.gif" class="double-border align-center" src="counter.gif" /></div>
 <p><a class="footnote-reference" href="#id5" id="id2">[1]</a></p>
 </blockquote>
-<p class="info-version">version 1.00<sub>a29</sub></p>
-<p class="info-date">26 November 2009</p>
+<p class="info-version">version 1.00<sub>a30</sub></p>
+<p class="info-date">3 December 2009</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
 <dd><ul class="first last simple">
@@ -625,12 +625,25 @@ registered in the processor:</p>
 </pre></div>
 </td></tr></table>
 </div>
-<p id="commands-categories">The optional argument is a nested Javascript object that may contain
-an <tt class="docutils literal"><span class="pre">include</span></tt> array with one or more match objects, a similarly
-structure <tt class="docutils literal"><span class="pre">exclude</span></tt> array, or both.  Where both are present, the
-<tt class="docutils literal"><span class="pre">exclude</span></tt> array is evaluated first and takes precedence.  In the
-match objects, the <tt class="docutils literal"><span class="pre">value</span></tt> associated a field must be a simple
-string.</p>
+<div class="admonition-important admonition" id="commands-categories">
+<p class="first admonition-title">Important</p>
+<p class="last">Matches against the content of name and date variables
+are not possible, but empty fields can be matched for all
+variable types.  See the <tt class="docutils literal"><span class="pre">quash</span></tt> example below
+for details.</p>
+</div>
+<p>The optional argument is a nested Javascript object that may contain
+<em>one of</em> the objects <tt class="docutils literal"><span class="pre">select</span></tt>, <tt class="docutils literal"><span class="pre">include</span></tt> or <tt class="docutils literal"><span class="pre">exclude</span></tt>, and
+optionally an additional  <tt class="docutils literal"><span class="pre">quash</span></tt> object.  Each of these four objects
+is an array containing one or more objects with <tt class="docutils literal"><span class="pre">field</span></tt> and <tt class="docutils literal"><span class="pre">value</span></tt>
+attributes, each with a simple string value (see the examples below).
+The matching behavior for each of the four object types, with accompanying
+input examples, are as follows:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">select</span></tt></dt>
+<dd>For each item in the bibliography, try every match object in the array against
+the item, and include the item if, and only if, <em>all</em> of the objects match.</dd>
+</dl>
 <div class="admonition-hint admonition">
 <p class="first admonition-title">Hint</p>
 <p class="last">The target field in the data items registered in the processor
@@ -638,10 +651,107 @@ may either be a string or an array.  In the latter case,
 an array containing a value identical to the
 relevant value is treated as a match.</p>
 </div>
-<div class="admonition-important admonition">
-<p class="first admonition-title">Important</p>
-<p class="last">Note that matches are not possible
-against name or date variables.</p>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">myarg</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;select&quot;</span> <span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;type&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;book&quot;</span>
+      <span class="p">}</span><span class="o">,</span>
+      <span class="p">{</span>  <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;categories&quot;</span><span class="o">,</span>
+          <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;1990s&quot;</span>
+      <span class="p">}</span>
+   <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nx">mybib</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">makeBibliography</span><span class="p">(</span><span class="nx">myarg</span><span class="p">);</span>
+</pre></div>
+</td></tr></table>
+</div>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">include</span></tt></dt>
+<dd>Try every match object in the array against the item, and include the
+item if <em>any</em> of the objects match.</dd>
+</dl>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">myarg</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;include&quot;</span> <span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;type&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;book&quot;</span>
+      <span class="p">}</span>
+   <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nx">mybib</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">makeBibliography</span><span class="p">(</span><span class="nx">myarg</span><span class="p">);</span>
+</pre></div>
+</td></tr></table>
+</div>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">exclude</span></tt></dt>
+<dd>Include the item if <em>none</em> of the objects match.</dd>
+</dl>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">myarg</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;exclude&quot;</span> <span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;type&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;legal_case&quot;</span>
+      <span class="p">}</span><span class="o">,</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;type&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;legislation&quot;</span>
+      <span class="p">}</span>
+   <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nx">mybib</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">makeBibliography</span><span class="p">(</span><span class="nx">myarg</span><span class="p">);</span>
+</pre></div>
+</td></tr></table>
+</div>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">quash</span></tt></dt>
+<dd>Regardless of the result from <tt class="docutils literal"><span class="pre">select</span></tt>, <tt class="docutils literal"><span class="pre">include</span></tt> or <tt class="docutils literal"><span class="pre">exclude</span></tt>,
+skip the item if <em>all</em> of the objects match.</dd>
+</dl>
+<div class="admonition-hint admonition">
+<p class="first admonition-title">Hint</p>
+<p class="last">An empty string given as the field value will match items
+for which that field is missing or has a nil value.</p>
 </div>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre> 1
@@ -659,22 +769,30 @@ against name or date variables.</p>
 13
 14
 15
-16</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">select</span> <span class="o">=</span> <span class="p">{</span>
-   <span class="s2">&quot;exclude&quot;</span> <span class="o">:</span> <span class="p">[</span>
+16
+17
+18
+19
+20</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">myarg</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;include&quot;</span> <span class="o">:</span> <span class="p">[</span>
       <span class="p">{</span>
-         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;category&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;categories&quot;</span><span class="o">,</span>
          <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;classical&quot;</span>
       <span class="p">}</span>
    <span class="p">]</span><span class="o">,</span>
-   <span class="s2">&quot;include&quot;</span> <span class="o">:</span> <span class="p">[</span>
+   <span class="s2">&quot;quash&quot;</span> <span class="o">:</span> <span class="p">[</span>
       <span class="p">{</span>
-         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;category&quot;</span><span class="o">,</span>
-         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;1990s&quot;</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;type&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;manuscript&quot;</span>
+      <span class="p">}</span><span class="o">,</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;issued&quot;</span><span class="o">,</span>
+         <span class="s2">&quot;value&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span>
       <span class="p">}</span>
    <span class="p">]</span>
 <span class="p">}</span>
 
-<span class="k">var</span> <span class="nx">mybib</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">makeBibliography</span><span class="p">(</span><span class="nx">select</span><span class="p">);</span>
+<span class="k">var</span> <span class="nx">mybib</span> <span class="o">=</span> <span class="nx">cp</span><span class="p">.</span><span class="nx">makeBibliography</span><span class="p">(</span><span class="nx">myarg</span><span class="p">);</span>
 </pre></div>
 </td></tr></table>
 </div>

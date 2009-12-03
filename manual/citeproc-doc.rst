@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a29##
+   version 1.00##a30##
 
 .. class:: info-date
 
-   =D=26 November 2009=D=
+   =D=3 December 2009=D=
 
 .. class:: contributors
 
@@ -270,12 +270,24 @@ registered in the processor:
 
 .. _`commands-categories`:
 
+.. admonition:: Important
+   
+   Matches against the content of name and date variables
+   are not possible, but empty fields can be matched for all
+   variable types.  See the ``quash`` example below
+   for details.
+
 The optional argument is a nested Javascript object that may contain
-an ``include`` array with one or more match objects, a similarly
-structure ``exclude`` array, or both.  Where both are present, the
-``exclude`` array is evaluated first and takes precedence.  In the
-match objects, the ``value`` associated a field must be a simple
-string.
+*one of* the objects ``select``, ``include`` or ``exclude``, and
+optionally an additional  ``quash`` object.  Each of these four objects
+is an array containing one or more objects with ``field`` and ``value``
+attributes, each with a simple string value (see the examples below).
+The matching behavior for each of the four object types, with accompanying
+input examples, are as follows:
+
+``select``
+   For each item in the bibliography, try every match object in the array against
+   the item, and include the item if, and only if, *all* of the objects match.
 
 .. admonition:: Hint
 
@@ -284,29 +296,91 @@ string.
    an array containing a value identical to the
    relevant value is treated as a match.
 
-.. admonition:: Important
-   
-   Note that matches are not possible
-   against name or date variables.
-
 .. code-block:: js
 
-   var select = {
-      "exclude" : [
+   var myarg = {
+      "select" : [
          {
-            "field" : "category",
-            "value" : "classical"
-         }
-      ],
-      "include" : [
-         {
-            "field" : "category",
-            "value" : "1990s"
+            "field" : "type",
+            "value" : "book"
+         },
+         {  "field" : "categories",
+             "value" : "1990s"
          }
       ]
    }
 
-   var mybib = cp.makeBibliography(select);
+   var mybib = cp.makeBibliography(myarg);
+
+``include``
+   Try every match object in the array against the item, and include the
+   item if *any* of the objects match.
+
+.. code-block:: js
+
+   var myarg = {
+      "include" : [
+         {
+            "field" : "type",
+            "value" : "book"
+         }
+      ]
+   }
+
+   var mybib = cp.makeBibliography(myarg);
+
+``exclude``
+   Include the item if *none* of the objects match.
+
+.. code-block:: js
+
+   var myarg = {
+      "exclude" : [
+         {
+            "field" : "type",
+            "value" : "legal_case"
+         },
+         {
+            "field" : "type",
+            "value" : "legislation"
+         }
+      ]
+   }
+
+   var mybib = cp.makeBibliography(myarg);
+
+``quash``
+   Regardless of the result from ``select``, ``include`` or ``exclude``,
+   skip the item if *all* of the objects match.
+
+
+.. admonition:: Hint
+
+   An empty string given as the field value will match items
+   for which that field is missing or has a nil value.
+
+.. code-block:: js
+
+   var myarg = {
+      "include" : [
+         {
+            "field" : "categories",
+            "value" : "classical"
+         }
+      ],
+      "quash" : [
+         {
+            "field" : "type",
+            "value" : "manuscript"
+         },
+         {
+            "field" : "issued",
+            "value" : ""
+         }
+      ]
+   }
+
+   var mybib = cp.makeBibliography(myarg);
 
 The value returned by this command is a two-element list, composed of
 a Javascript array containing certain formatting parameters, and a

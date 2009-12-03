@@ -43,7 +43,7 @@ cat tmp-with-markup.txt \
 cd ..
 if [ "$1" == "--increment" ]; then
   scp ./manual/index.html gsl-nagoya-u.net:/http/pub/citeproc-doc.html
-  mv ./manual/tmp-with-markup.txt ./citeproc-doc/citeproc-doc.rst
+  mv ./manual/tmp-with-markup.txt ./manual/citeproc-doc.rst
 fi
 
 tar --create \
