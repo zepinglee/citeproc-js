@@ -20,3 +20,4 @@ syntax: regexp
 /LOCALE_INSERT.txt$
 /citeproc-doc.tar.gz$
 .*\.jsxdr$
+^citeproc-doc.tar.gz$
