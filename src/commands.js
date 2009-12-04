@@ -36,18 +36,12 @@ dojo.provide("csl.commands");
 
 /**
  * Compose a citation "cluster".
- * <p>Accepts a list of Item references as a single argument.
- * Item references within the rawList array may be composed of the
- * following sub-elements, of which only id is required.</p>
- * @param {String} id The item ID, to be fed to the integrator-defined
- * sys.retrieveItem() in order to obtain the Item data.  This is
- * required.
- * @param {String} locator The page or other location identifier for the cite.
- * @param {String} label The label to be applied to the locator.
- * @param {Boolean} author-only Suppress everything but the author if true.
- * @param {Boolean} suppress-author Suppress the author in the cite if true.
- * @param {String} prefix A string to print before the cite.
- * @param {String} suffix A string to print after the cite.
+ * Accepts a list of cite data objects as a single argument.
+ * Objects in the list contain a mandatory "id" field
+ * and optional supplementary fields.  See
+ * <a href="http://gsl-nagoya-u.net/http/pub/citeproc-doc.html">the
+ * processor manual</a> for details.
+ * @param {Array} rawList
  */
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
@@ -57,11 +51,11 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		inputList.push(newitem);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
+		//var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
 		for (var k in inputList){
 			inputList[k].sortkeys = this.getSortKeys(inputList[k],"citation_sort");
 		}
-		inputList.sort(srt.compareKeys);
+		inputList.sort(this.citation.srt.compareKeys);
 	};
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();

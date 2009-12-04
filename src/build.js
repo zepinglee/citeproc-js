@@ -49,10 +49,10 @@ CSL.Engine = function(sys,style,lang) {
 	this.build = new CSL.Engine.Build();
 	this.fun = new CSL.Engine.Fun();
 	this.configure = new CSL.Engine.Configure();
-	this.citation = new CSL.Engine.Citation();
 	this.citation_sort = new CSL.Engine.CitationSort();
-	this.bibliography = new CSL.Engine.Bibliography();
 	this.bibliography_sort = new CSL.Engine.BibliographySort();
+	this.citation = new CSL.Engine.Citation(this);
+	this.bibliography = new CSL.Engine.Bibliography();
 
 	this.output = new CSL.Output.Queue(this);
 	//

@@ -289,7 +289,7 @@ CSL.Engine.Configure = function (){
 };
 
 
-CSL.Engine.Citation = function (){
+CSL.Engine.Citation = function (state){
 	/**
 	 * Citation options area.
 	 * <p>Holds a mixture of persistent and ephemeral
@@ -297,7 +297,9 @@ CSL.Engine.Citation = function (){
 	 * a citation.</p>
 	 */
 	this.opt = new Object();
+
 	this.tokens = new Array();
+	this.srt = new CSL.Factory.Registry.Comparifier(state,"citation_sort");
 	//
 	// configuration array to hold the collapse
 	// options, if any.

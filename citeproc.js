@@ -136,10 +136,10 @@ CSL.Engine = function(sys,style,lang) {
 	this.build = new CSL.Engine.Build();
 	this.fun = new CSL.Engine.Fun();
 	this.configure = new CSL.Engine.Configure();
-	this.citation = new CSL.Engine.Citation();
 	this.citation_sort = new CSL.Engine.CitationSort();
-	this.bibliography = new CSL.Engine.Bibliography();
 	this.bibliography_sort = new CSL.Engine.BibliographySort();
+	this.citation = new CSL.Engine.Citation(this);
+	this.bibliography = new CSL.Engine.Bibliography();
 	this.output = new CSL.Output.Queue(this);
 	this.dateput = new CSL.Output.Queue(this);
 	this.cslXml = this.sys.xml.makeXml(style);
@@ -916,9 +916,10 @@ CSL.Engine.Configure = function (){
 	this.fail = new Array();
 	this.succeed = new Array();
 };
-CSL.Engine.Citation = function (){
+CSL.Engine.Citation = function (state){
 	this.opt = new Object();
 	this.tokens = new Array();
+	this.srt = new CSL.Factory.Registry.Comparifier(state,"citation_sort");
 	this.opt.collapse = new Array();
 	this.opt["disambiguate-add-names"] = false;
 	this.opt["disambiguate-add-givenname"] = false;
@@ -952,11 +953,11 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		inputList.push(newitem);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
+		//var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
 		for (var k in inputList){
 			inputList[k].sortkeys = this.getSortKeys(inputList[k],"citation_sort");
 		}
-		inputList.sort(srt.compareKeys);
+		inputList.sort(this.citation.srt.compareKeys);
 	};
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
@@ -5759,7 +5760,7 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
 	this.reflist.sort(this.sorter.compareKeys);
 };
 CSL.Factory.Registry.Comparifier = function(state,keyset){
-	var sort_directions = state[keyset].opt.sort_directions.slice();
+	var sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function(a,b){
 		var l = a.sortkeys.length;
 		for (var i=0; i < l; i++){

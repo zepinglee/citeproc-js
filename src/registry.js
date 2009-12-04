@@ -475,7 +475,7 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
  * <p>Nested, because keys are an array.</p>
  */
 CSL.Factory.Registry.Comparifier = function(state,keyset){
-	var sort_directions = state[keyset].opt.sort_directions.slice();
+	var sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function(a,b){
 		var l = a.sortkeys.length;
 		for (var i=0; i < l; i++){
