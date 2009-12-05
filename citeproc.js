@@ -4737,249 +4737,8 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	blob.decorations.reverse();
 	return newdecor;
 };
-dojo.provide("csl.output");
-if (!CSL){
-}
-CSL.Output = {};
-dojo.provide("csl.range");
-if (!CSL) {
-}
-CSL.Output.Number = function(num,mother_token){
-	this.alldecor = new Array();
-	this.num = num;
-	this.blobs = num.toString();
-	this.status = CSL.START;
-	this.strings = new Object();
-	if (mother_token){
-		this.decorations = mother_token.decorations;
-		this.strings.prefix = mother_token.strings.prefix;
-		this.strings.suffix = mother_token.strings.suffix;
-		this.strings["text-case"] = mother_token.strings["text-case"];
-		this.successor_prefix = mother_token.successor_prefix;
-		this.range_prefix = mother_token.range_prefix;
-		this.splice_prefix = "";
-		this.formatter = mother_token.formatter;
-		if (!this.formatter){
-			this.formatter =  new CSL.Output.DefaultFormatter();
-		}
-		if (this.formatter){
-			this.type = this.formatter.format(1);
-		}
-	} else {
-		this.decorations = new Array();
-		this.strings.prefix = "";
-		this.strings.suffix = "";
-		this.successor_prefix = "";
-		this.range_prefix = "";
-		this.splice_prefix = "";
-		this.formatter = new CSL.Output.DefaultFormatter();
-	}
-};
-CSL.Output.Number.prototype.setFormatter = function(formatter){
-	this.formatter = formatter;
-	this.type = this.formatter.format(1);
-};
-CSL.Output.DefaultFormatter = function (){};
-CSL.Output.DefaultFormatter.prototype.format = function (num){
-	return num.toString();
-};
-CSL.Output.Number.prototype.checkNext = function(next){
-	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
-		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
-			this.status = CSL.END;
-		}
-		if ("object" == typeof next){
-			next.status = CSL.SEEN;
-		}
-	} else { // next number is in the sequence
-		if (this.status == CSL.START || this.status == CSL.SEEN){
-			next.status = CSL.SUCCESSOR;
-		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
-			if (this.range_prefix){
-				next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
-				this.status = CSL.SUPPRESS;
-			} else {
-				next.status = CSL.SUCCESSOR;
-			}
-		}
-		// won't see this again, so no effect of processing, but this
-		// wakes up the correct delimiter.
-		if (this.status == CSL.SEEN){
-			this.status = CSL.SUCCESSOR;
-		}
-	};
-};
-dojo.provide("csl.formatters");
-if (!CSL) {
-}
-CSL.Output.Formatters = new function(){};
-CSL.Output.Formatters.strip_periods = function(state,string) {
-    return string.replace(/\./g," ").replace(/\s*$/g,"").replace(/\s+/g," ");
-};
-CSL.Output.Formatters.passthrough = function(state,string){
-	return string;
-};
-CSL.Output.Formatters.lowercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
-	str.string = str.string.toLowerCase();
-	return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters.uppercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
-	str.string = str.string.toUpperCase();
-	var ret = CSL.Output.Formatters.undoppelString(str);
-	return ret;
-};
-CSL.Output.Formatters["capitalize-first"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	if (str.string.length){
-		str.string = str.string[0].toUpperCase()+str.string.substr(1);
-		return CSL.Output.Formatters.undoppelString(str);
-	} else {
-		return "";
-	}
-};
-CSL.Output.Formatters["sentence"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	str.string = str.string[0].toUpperCase()+str.string.substr(1).toLowerCase();
-	return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters["capitalize-all"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	var strings = str.string.split(" ");
-	var l = strings.length;
-	for(var i=0; i<l; i++) {
-		if(strings[i].length > 1) {
-            strings[i] = strings[i][0].toUpperCase()+strings[i].substr(1).toLowerCase();
-        } else if(strings[i].length == 1) {
-            strings[i] = strings[i].toUpperCase();
-        }
-    }
-	str.string = strings.join(" ");
-	return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters["title"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	if (!string) {
-		return "";
-	}
-	var words = str.string.split(/(\s+)/);
-	var isUpperCase = str.string.toUpperCase() == string;
-	var newString = "";
-	var delimiterOffset = words[0].length;
-	var lastWordIndex = words.length-1;
-	var previousWordIndex = -1;
-	for(var i=0; i<=lastWordIndex;  i += 2) {
-		// only do manipulation if not a delimiter character
-		if(words[i].length != 0 && (words[i].length != 1 || !/\s+/.test(words[i]))) {
-			var upperCaseVariant = words[i].toUpperCase();
-			var lowerCaseVariant = words[i].toLowerCase();
-				// only use if word does not already possess some capitalization
-				if(isUpperCase || words[i] == lowerCaseVariant) {
-					if(
-						// a skip word
-						CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) != -1
-						// not first or last word
-						&& i != 0 && i != lastWordIndex
-						// does not follow a colon
-						&& (previousWordIndex == -1 || words[previousWordIndex][words[previousWordIndex].length-1] != ":")
-					) {
-							words[i] = lowerCaseVariant;
-					} else {
-						// this is not a skip word or comes after a colon;
-						// we must capitalize
-						words[i] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
-					}
-				}
-				previousWordIndex = i;
-		}
-	}
-	str.string = words.join("");
-	return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters.doppelString = function(string,rex){
-	var ret = new Object();
-	ret.array = string.split(rex);
-	ret.string = "";
-	var l = ret.array.length;
-	for (var i=0; i<l; i += 2){
-		ret.string += ret.array[i];
-	};
-	return ret;
-};
-CSL.Output.Formatters.undoppelString = function(str){
-	var ret = "";
-	var l = str.array.length;
-	for (var i=0; i<l; i += 1){
-		if ((i%2)){
-			ret += str.array[i];
-		} else {
-			ret += str.string.slice(0,str.array[i].length);
-			str.string = str.string.slice(str.array[i].length);
-		};
-	};
-	return ret;
-};
-dojo.provide("csl.formats");
-if (!CSL) {
-}
-CSL.Output.Formats = function(){};
-CSL.Output.Formats.prototype.html = {
-	"text_escape": function(text){
-		return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-	},
-	"@font-style/italic":"<i>%%STRING%%</i>",
-	"@font-style/oblique":"<em>%%STRING%%</em>",
-	"@font-style/normal":"<span style=\"font-style:normal;\">%%STRING%%</span>",
-	"@font-variant/small-caps":"<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
-	"@passthrough/true":CSL.Output.Formatters.passthrough,
-	"@font-variant/normal":false,
-	"@font-weight/bold":"<b>%%STRING%%</b>",
-	"@font-weight/normal":false,
-	"@font-weight/light":false,
-	"@text-decoration/none":false,
-	"@text-decoration/underline":"<span style=\"text-decoration:underline;\">%%STRING%%</span>",
-	"@vertical-align/baseline":false,
-	"@vertical-align/sup":"<sup>%%STRING%%</sup>",
-	"@vertical-align/sub":"<sub>%%STRING%%</sub>",
-	"@strip-periods/true":CSL.Output.Formatters.strip_periods,
-	"@strip-periods/false":function(state,string){return string;},
-	"@quotes/true":function(state,str){
-		if ("undefined" == typeof str){
-			return state.getTerm("open-quote");
-		};
-		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
-	},
-	"@quotes/inner":function(state,str){
-		if ("undefined" == typeof str){
-			//
-			// Most right by being wrong (for apostrophes)
-			//
-			return state.getTerm("close-inner-quote");
-		};
-		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
-	},
-	"@bibliography/body": function(state,str){
-		return "<div class=\"csl-bib-body\">\n"+str+"</div>";
-	},
-	"@bibliography/entry": function(state,str){
-		return "  <div class=\"csl-entry\">"+str+"</div>\n";
-	},
-	"@display/block": function(state,str){
-		return "\n\n    <div class=\"csl-entry-heading\">" + str + "</div>\n";
-	},
-	"@display/left-margin": function(state,str){
-		return "\n    <div class=\"csl-left-label\">" + str + "</div>\n";
-	},
-	"@display/right-inline": function(state,str){
-		return "    <div class=\"csl-item\">" + str + "</div>\n  ";
-	},
-	"@display/indent": function(state,str){
-		return "    <div class=\"csl-block-indent\">" + str + "</div>\n  ";
-	}
-};
-CSL.Output.Formats = new CSL.Output.Formats();
 dojo.provide("csl.queue");
+CSL.Output = {};
 CSL.Output.Queue = function(state){
 	this.state = state;
 	this.queue = new Array();
@@ -5388,6 +5147,244 @@ CSL.Output.Queue.normalizePrefixPunctuation = function(blobs){
 		};
 	};
 };
+dojo.provide("csl.range");
+if (!CSL) {
+}
+CSL.Output.Number = function(num,mother_token){
+	this.alldecor = new Array();
+	this.num = num;
+	this.blobs = num.toString();
+	this.status = CSL.START;
+	this.strings = new Object();
+	if (mother_token){
+		this.decorations = mother_token.decorations;
+		this.strings.prefix = mother_token.strings.prefix;
+		this.strings.suffix = mother_token.strings.suffix;
+		this.strings["text-case"] = mother_token.strings["text-case"];
+		this.successor_prefix = mother_token.successor_prefix;
+		this.range_prefix = mother_token.range_prefix;
+		this.splice_prefix = "";
+		this.formatter = mother_token.formatter;
+		if (!this.formatter){
+			this.formatter =  new CSL.Output.DefaultFormatter();
+		}
+		if (this.formatter){
+			this.type = this.formatter.format(1);
+		}
+	} else {
+		this.decorations = new Array();
+		this.strings.prefix = "";
+		this.strings.suffix = "";
+		this.successor_prefix = "";
+		this.range_prefix = "";
+		this.splice_prefix = "";
+		this.formatter = new CSL.Output.DefaultFormatter();
+	}
+};
+CSL.Output.Number.prototype.setFormatter = function(formatter){
+	this.formatter = formatter;
+	this.type = this.formatter.format(1);
+};
+CSL.Output.DefaultFormatter = function (){};
+CSL.Output.DefaultFormatter.prototype.format = function (num){
+	return num.toString();
+};
+CSL.Output.Number.prototype.checkNext = function(next){
+	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
+		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
+			this.status = CSL.END;
+		}
+		if ("object" == typeof next){
+			next.status = CSL.SEEN;
+		}
+	} else { // next number is in the sequence
+		if (this.status == CSL.START || this.status == CSL.SEEN){
+			next.status = CSL.SUCCESSOR;
+		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
+			if (this.range_prefix){
+				next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
+				this.status = CSL.SUPPRESS;
+			} else {
+				next.status = CSL.SUCCESSOR;
+			}
+		}
+		// won't see this again, so no effect of processing, but this
+		// wakes up the correct delimiter.
+		if (this.status == CSL.SEEN){
+			this.status = CSL.SUCCESSOR;
+		}
+	};
+};
+dojo.provide("csl.formatters");
+if (!CSL) {
+}
+CSL.Output.Formatters = new function(){};
+CSL.Output.Formatters.strip_periods = function(state,string) {
+    return string.replace(/\./g," ").replace(/\s*$/g,"").replace(/\s+/g," ");
+};
+CSL.Output.Formatters.passthrough = function(state,string){
+	return string;
+};
+CSL.Output.Formatters.lowercase = function(state,string) {
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
+	str.string = str.string.toLowerCase();
+	return CSL.Output.Formatters.undoppelString(str);
+};
+CSL.Output.Formatters.uppercase = function(state,string) {
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
+	str.string = str.string.toUpperCase();
+	var ret = CSL.Output.Formatters.undoppelString(str);
+	return ret;
+};
+CSL.Output.Formatters["capitalize-first"] = function(state,string) {
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
+	if (str.string.length){
+		str.string = str.string[0].toUpperCase()+str.string.substr(1);
+		return CSL.Output.Formatters.undoppelString(str);
+	} else {
+		return "";
+	}
+};
+CSL.Output.Formatters["sentence"] = function(state,string) {
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
+	str.string = str.string[0].toUpperCase()+str.string.substr(1).toLowerCase();
+	return CSL.Output.Formatters.undoppelString(str);
+};
+CSL.Output.Formatters["capitalize-all"] = function(state,string) {
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
+	var strings = str.string.split(" ");
+	var l = strings.length;
+	for(var i=0; i<l; i++) {
+		if(strings[i].length > 1) {
+            strings[i] = strings[i][0].toUpperCase()+strings[i].substr(1).toLowerCase();
+        } else if(strings[i].length == 1) {
+            strings[i] = strings[i].toUpperCase();
+        }
+    }
+	str.string = strings.join(" ");
+	return CSL.Output.Formatters.undoppelString(str);
+};
+CSL.Output.Formatters["title"] = function(state,string) {
+	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
+	if (!string) {
+		return "";
+	}
+	var words = str.string.split(/(\s+)/);
+	var isUpperCase = str.string.toUpperCase() == string;
+	var newString = "";
+	var delimiterOffset = words[0].length;
+	var lastWordIndex = words.length-1;
+	var previousWordIndex = -1;
+	for(var i=0; i<=lastWordIndex;  i += 2) {
+		// only do manipulation if not a delimiter character
+		if(words[i].length != 0 && (words[i].length != 1 || !/\s+/.test(words[i]))) {
+			var upperCaseVariant = words[i].toUpperCase();
+			var lowerCaseVariant = words[i].toLowerCase();
+				// only use if word does not already possess some capitalization
+				if(isUpperCase || words[i] == lowerCaseVariant) {
+					if(
+						// a skip word
+						CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) != -1
+						// not first or last word
+						&& i != 0 && i != lastWordIndex
+						// does not follow a colon
+						&& (previousWordIndex == -1 || words[previousWordIndex][words[previousWordIndex].length-1] != ":")
+					) {
+							words[i] = lowerCaseVariant;
+					} else {
+						// this is not a skip word or comes after a colon;
+						// we must capitalize
+						words[i] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
+					}
+				}
+				previousWordIndex = i;
+		}
+	}
+	str.string = words.join("");
+	return CSL.Output.Formatters.undoppelString(str);
+};
+CSL.Output.Formatters.doppelString = function(string,rex){
+	var ret = new Object();
+	ret.array = string.split(rex);
+	ret.string = "";
+	var l = ret.array.length;
+	for (var i=0; i<l; i += 2){
+		ret.string += ret.array[i];
+	};
+	return ret;
+};
+CSL.Output.Formatters.undoppelString = function(str){
+	var ret = "";
+	var l = str.array.length;
+	for (var i=0; i<l; i += 1){
+		if ((i%2)){
+			ret += str.array[i];
+		} else {
+			ret += str.string.slice(0,str.array[i].length);
+			str.string = str.string.slice(str.array[i].length);
+		};
+	};
+	return ret;
+};
+dojo.provide("csl.formats");
+if (!CSL) {
+}
+CSL.Output.Formats = function(){};
+CSL.Output.Formats.prototype.html = {
+	"text_escape": function(text){
+		return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+	},
+	"@font-style/italic":"<i>%%STRING%%</i>",
+	"@font-style/oblique":"<em>%%STRING%%</em>",
+	"@font-style/normal":"<span style=\"font-style:normal;\">%%STRING%%</span>",
+	"@font-variant/small-caps":"<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
+	"@passthrough/true":CSL.Output.Formatters.passthrough,
+	"@font-variant/normal":false,
+	"@font-weight/bold":"<b>%%STRING%%</b>",
+	"@font-weight/normal":false,
+	"@font-weight/light":false,
+	"@text-decoration/none":false,
+	"@text-decoration/underline":"<span style=\"text-decoration:underline;\">%%STRING%%</span>",
+	"@vertical-align/baseline":false,
+	"@vertical-align/sup":"<sup>%%STRING%%</sup>",
+	"@vertical-align/sub":"<sub>%%STRING%%</sub>",
+	"@strip-periods/true":CSL.Output.Formatters.strip_periods,
+	"@strip-periods/false":function(state,string){return string;},
+	"@quotes/true":function(state,str){
+		if ("undefined" == typeof str){
+			return state.getTerm("open-quote");
+		};
+		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
+	},
+	"@quotes/inner":function(state,str){
+		if ("undefined" == typeof str){
+			//
+			// Most right by being wrong (for apostrophes)
+			//
+			return state.getTerm("close-inner-quote");
+		};
+		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+	},
+	"@bibliography/body": function(state,str){
+		return "<div class=\"csl-bib-body\">\n"+str+"</div>";
+	},
+	"@bibliography/entry": function(state,str){
+		return "  <div class=\"csl-entry\">"+str+"</div>\n";
+	},
+	"@display/block": function(state,str){
+		return "\n\n    <div class=\"csl-entry-heading\">" + str + "</div>\n";
+	},
+	"@display/left-margin": function(state,str){
+		return "\n    <div class=\"csl-left-label\">" + str + "</div>\n";
+	},
+	"@display/right-inline": function(state,str){
+		return "    <div class=\"csl-item\">" + str + "</div>\n  ";
+	},
+	"@display/indent": function(state,str){
+		return "    <div class=\"csl-block-indent\">" + str + "</div>\n  ";
+	}
+};
+CSL.Output.Formats = new CSL.Output.Formats();
 dojo.provide("csl.registry");
 //
 // Time for a rewrite of this module.

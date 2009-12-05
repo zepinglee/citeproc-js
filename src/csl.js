@@ -285,7 +285,7 @@ if (!CSL.Util.FlipFlopper){
 	load("./src/util_flipflop.js");
 }
 if (!CSL.Output){
-	load("./src/output.js");
+	load("./src/queue.js");
 }
 if (!CSL.Output.Number){
 	load("./src/range.js");
@@ -295,9 +295,6 @@ if (!CSL.Output.Formatters){
 }
 if (!CSL.Output.Formats){
 	load("./src/formats.js");
-}
-if (!CSL.Output.Queue){
-	load("./src/queue.js");
 }
 if (!CSL.Factory.Registry){
 	load("./src/registry.js");

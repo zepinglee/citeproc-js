@@ -34,6 +34,7 @@
  */
 dojo.provide("csl.queue");
 
+CSL.Output = {};
 /**
  * Output queue object.
  * @class
