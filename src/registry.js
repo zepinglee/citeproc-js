@@ -533,3 +533,32 @@ CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_conf
 	this.registry[id].ambig = akey;
 	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
 };
+
+
+/**
+ * Get the sort key of an item, without decorations
+ * <p>This is used internally by the Registry.</p>
+ */
+CSL.getSortKeys = function(Item,key_type){
+	if (false){
+		CSL.debug("KEY TYPE: "+key_type);
+	}
+	var area = this.tmp.area;
+	var strip_prepositions = CSL.Util.Sort.strip_prepositions;
+	this.tmp.area = key_type;
+	this.tmp.disambig_override = true;
+	this.tmp.disambig_request = false;
+	this.tmp.suppress_decorations = true;
+	CSL.getCite.call(this,Item);
+	this.tmp.suppress_decorations = false;
+	this.tmp.disambig_override = false;
+	for (var i in this[key_type].keys){
+		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);
+	}
+	if (false){
+		CSL.debug("sort keys ("+key_type+"): "+this[key_type].keys);
+	}
+	this.tmp.area = area;
+	return this[key_type].keys;
+};
+

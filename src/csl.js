@@ -225,10 +225,13 @@ if (!CSL.Engine.Opt){
 	load("./src/state.js");
 }
 if (!CSL.makeCitationCluster){
-	load("./src/commands.js");
+	load("./src/cmd_cite.js");
 }
-if (!CSL.getAmbiguousCite){
-	load("./src/render.js");
+if (!CSL.makeBibliography){
+	load("./src/cmd_bibliography.js");
+}
+if (!CSL.updateItems){
+	load("./src/cmd_update.js");
 }
 if (!CSL.Lib){
 	load("./src/lib.js");

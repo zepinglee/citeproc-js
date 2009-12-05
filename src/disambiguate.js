@@ -466,3 +466,53 @@ CSL.Factory.Registry.prototype.decrementNames = function(state,base){
 	}
 	return base_return;
 };
+
+/**
+ * Return current base configuration for disambiguation
+ */
+CSL.getAmbigConfig = function(){
+	var config = this.tmp.disambig_request;
+	if (!config){
+		config = this.tmp.disambig_settings;
+	}
+	var ret = CSL.Factory.cloneAmbigConfig(config);
+	return ret;
+};
+
+/**
+ * Return max values for disambiguation
+ */
+CSL.getMaxVals = function(){
+	return this.tmp.names_max.mystack.slice();
+};
+
+/**
+ * Return min value for disambiguation
+ */
+CSL.getMinVal = function(){
+	return this.tmp["et-al-min"];
+};
+
+/**
+ * Return available modes for disambiguation
+ */
+CSL.getModes = function(){
+	var ret = new Array();
+	if (this[this.tmp.area].opt["disambiguate-add-names"]){
+		ret.push("names");
+	}
+	var dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	var gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
+	//
+	// Use by-cite disambiguation for everything, for starters.
+	//
+	// hmm.  don't need any name expansion with the primary-name
+	// disambiguate-add-givenname, so no givens in that case.
+	if (dagopt){
+		if (!gdropt || ("string" == typeof gdropt && "primary-name" != gdropt.slice(0,12))){
+			ret.push("givens");
+		};
+	}
+	return ret;
+};
+

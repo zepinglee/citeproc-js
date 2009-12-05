@@ -308,3 +308,33 @@ CSL.Factory.cloneAmbigConfig = function(config){
 };
 
 
+
+
+/*
+ * Render one style token.
+ *
+ * This is called on a token, with the state object
+ * and an Item object as arguments.
+ */
+CSL.tokenExec = function(token,Item){
+    var next = token.next;
+	var maybenext = false;
+	if (false){
+		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
+	}
+
+	if (token.evaluator){
+	    next = token.evaluator(token,this,Item);
+    };
+	for each (var exec in token.execs){
+	    maybenext = exec.call(token,this,Item);
+		if (maybenext){
+			next = maybenext;
+		};
+	};
+	if (false){
+		CSL.debug(token.name+" ("+token.tokentype+") ---> done");
+	}
+	return next;
+};
+
