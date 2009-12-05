@@ -43,12 +43,12 @@ CSL.Engine.Opt = function (){
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
-	/**
+	/*
 	 * Default values.
-	 * <p>The various et-al values are set globally,
+	 * The various et-al values are set globally,
 	 * and the appropriate value is set by the names start
 	 * tag at runtime, depending on whether the Item is a
-	 * first or a subsequent reference.</p>
+	 * first or a subsequent reference.
 	 */
 	this["et-al-min"] = 0;
 	this["et-al-use-first"] = 1;
@@ -206,13 +206,11 @@ CSL.Engine.Fun = function (){
 
 
 CSL.Engine.Build = function (){
-	/**
-	 * Alternate et-al term
-	 * <p>Holds the localization key of the alternative term
-	 * to be used for et-al in a names environment.  Reduced
-	 * to a term object when the element tag is processed during
-	 * Build.</p>
-	 */
+	// Alternate et-al term
+	// Holds the localization key of the alternative term
+	// to be used for et-al in a names environment.  Reduced
+	// to a term object when the element tag is processed during
+	// Build.
 	this["alternate-term"] = false;
 	//
 	// flags that we are in the bibliography area.
@@ -290,12 +288,10 @@ CSL.Engine.Configure = function (){
 
 
 CSL.Engine.Citation = function (state){
-	/**
-	 * Citation options area.
-	 * <p>Holds a mixture of persistent and ephemeral
-	 * options and scratch data used during processing of
-	 * a citation.</p>
-	 */
+	 // Citation options area.
+	 // Holds a mixture of persistent and ephemeral
+	 // options and scratch data used during processing of
+	 // a citation.</p>
 	this.opt = new Object();
 
 	this.tokens = new Array();
@@ -313,12 +309,6 @@ CSL.Engine.Citation = function (state){
 
 
 CSL.Engine.Bibliography = function (){
-	/**
-	 * Bibliography options area.
-	 * <p>Holds a mixture of persistent and ephemeral
-	 * options and scratch data used during processing of
-	 * a bibliography.</p>
-	 */
 	this.opt = new Object();
 	this.tokens = new Array();
 

@@ -106,14 +106,8 @@ CSL.Factory.Registry = function(state){
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
 	this.ambigcites = new Object();
-	//this.start = false;
-	//this.end = false;
-	//this.initialized = false;
-	//this.skip = false;
-	//this.maxlength = 0;
-
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
-	this.modes = this.state.getModes();
+	this.modes = CSL.getModes.call(this.state);
 
 	this.getSortedIds = function(){
 		var ret = [];
@@ -268,7 +262,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			//  4c. Add names in items to be inserted to names reg
 			//      (implicit in getAmbiguousCite).
 			//
-			var akey = this.state.getAmbiguousCite(Item);
+			var akey = CSL.getAmbiguousCite.call(this.state,Item);
 			//
 			//  4d. Record ambig pool key on akey list (used for updating further
 			//      down the chain).
@@ -294,7 +288,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			//  4g. Set and record the base token to hold disambiguation
 			//      results ("disambig" in the object above).
 			//
-			var abase = this.state.getAmbigConfig();
+			var abase = CSL.getAmbigConfig.call(this.state);
 			this.registerAmbigToken(akey,item,abase);
 
 			//if (!this.ambigcites[akey]){
@@ -358,10 +352,10 @@ CSL.Factory.Registry.prototype.dorefreshes = function(){
 		regtoken.ambig = undefined;
 
 		var Item = this.state.sys.retrieveItem(item);
-		var akey = this.state.getAmbiguousCite(Item);
+		var akey = CSL.getAmbiguousCite.call(this.state,Item);
 		this.registry[item] = regtoken;
 
-		var abase = this.state.getAmbigConfig();
+		var abase = CSL.getAmbigConfig.call(this.state);
 		this.registerAmbigToken(akey,item,abase);
 
 		this.akeys[akey] = true;
@@ -458,7 +452,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	// 17. Set sort keys on each item token.
 	//
 	for (var item in this.touched){
-		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
+		this.registry[item].sortkeys = CSL.getSortKeys.call(this.state,this.state.sys.retrieveItem(item),"bibliography_sort");
 		//CSL.debug("touched: "+item+" ... "+this.registry[item].sortkeys);
 	};
 };

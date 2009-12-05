@@ -35,11 +35,12 @@
 dojo.provide("csl.commands");
 
 /**
- * Compose a citation "cluster".
+ * Return a citation "cluster" as a string.
  * Accepts a list of cite data objects as a single argument.
  * Objects in the list contain a mandatory "id" field
- * and optional supplementary fields.  See
- * <a href="http://gsl-nagoya-u.net/http/pub/citeproc-doc.html">the
+ * and optional supplementary fields.
+ * See
+ * <a href="http://gsl-nagoya-u.net/http/pub/citeproc-doc.html#makecitationcluster">the
  * processor manual</a> for details.
  * @param {Array} rawList
  */
@@ -47,30 +48,34 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
-		var newitem = this.composeItem(Item,item);
+		var newitem = CSL.composeItem(Item,item);
 		inputList.push(newitem);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		//var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
 		for (var k in inputList){
-			inputList[k].sortkeys = this.getSortKeys(inputList[k],"citation_sort");
+			inputList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
 		}
 		inputList.sort(this.citation.srt.compareKeys);
 	};
-	this.tmp.last_suffix_used = "";
-	this.tmp.last_names_used = new Array();
-	this.tmp.last_years_used = new Array();
-	var str = this._unit_of_reference.call(this,inputList);
+	var str = CSL.getCitationCluster.call(this,inputList);
 	return str;
 };
 
 
 /**
- * Compose a bibliography.
- * <p>Returns the bibliography for the session as
- * a single string.  Entries in the bibliography are
- * sorted according to the system locale, with
- * disambiguation adjustments requested by the style.</p>
+ * Return an array of two elements, consisting of an object
+ * containing formatting
+ * parameters, and a bibliography string.
+ * Accepts a JSON object containing
+ * one of the three optional fields "select", "include"
+ * or "exclude", and possibly also a "quash" field.
+ * Each of these optional fields is composed as
+ * an array of match objects.
+ * See
+ * <a href="http://gsl-nagoya-u.net/http/pub/citeproc-doc.html#makebibliography">the
+ * processor manual</a> for details.
+ * @param {Object} bibsection
+ *
  */
 CSL.Engine.prototype.makeBibliography = function(bibsection){
 	var debug = false;
@@ -87,7 +92,7 @@ CSL.Engine.prototype.makeBibliography = function(bibsection){
 			CSL.debug("bibsorttok: "+tok.name);
 		}
 	}
-	var ret = this._bibliography_entries.call(this,bibsection);
+	var ret = CSL.getBibliographyEntries.call(this,bibsection);
 	var params = {
 		"maxoffset":0,
 		"entryspacing":1,
@@ -95,14 +100,10 @@ CSL.Engine.prototype.makeBibliography = function(bibsection){
 	};
 	var maxoffset = 0;
 	for each (var item in this.registry.reflist){
-		if (item.offset > maxoffset){
-			maxoffset = item.offset;
+		if (item.offset > params.maxoffset){
+			params.maxoffset = item.offset;
 		};
 	};
-	if (maxoffset){
-		CSL.debug("Max char offset for second-field-align etc: "+maxoffset);
-		params.maxoffset = maxoffset;
-	}
 	if (this.bibliography.opt.hangingindent){
 		params.hangingindent = this.bibliography.opt.hangingindent;
 	}
@@ -115,7 +116,16 @@ CSL.Engine.prototype.makeBibliography = function(bibsection){
 	return [params,ret];
 };
 
-
+/**
+ * Register a sequence of items in the processor.
+ * Accepts a list of item IDs that uniquely
+ * identify items available in the processor
+ * environment.  IDs in the list are strings.
+ * See
+ * <a href="http://gsl-nagoya-u.net/http/pub/citeproc-doc.html#updateitems">the
+ * processor manual</a> for details.
+ * @param {Array} idList
+ */
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
 	if (debug){

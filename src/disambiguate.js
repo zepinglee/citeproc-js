@@ -112,10 +112,10 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			CSL.debug("base in (givens):"+base["givens"]);
 		}
-		var str = state.getAmbiguousCite(token,base);
-		var maxvals = state.getMaxVals();
-		var minval = state.getMinVal();
-		base = state.getAmbigConfig();
+		var str = CSL.getAmbiguousCite.call(state,token,base);
+		var maxvals = CSL.getMaxVals.call(state);
+		var minval = CSL.getMinVal.call(state);
+		base = CSL.getAmbigConfig.call(state);
 		if (debug){
 			CSL.debug("base out (givens):"+base["givens"]);
 		}
@@ -132,7 +132,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			if (token.id == testpartner.id){
 				continue;
 			}
-			var otherstr = state.getAmbiguousCite(testpartner,base);
+			var otherstr = CSL.getAmbiguousCite.call(state,testpartner,base);
 			if (debug){
 				CSL.debug("  ---> last clashes: "+checkerator.lastclashes);
 				CSL.debug("  ---> master:    "+token.id);

@@ -227,7 +227,7 @@ if (!CSL.Engine.Opt){
 if (!CSL.makeCitationCluster){
 	load("./src/commands.js");
 }
-if (!CSL.Engine.prototype.getAmbiguousCite){
+if (!CSL.getAmbiguousCite){
 	load("./src/render.js");
 }
 if (!CSL.Lib){

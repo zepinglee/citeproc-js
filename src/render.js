@@ -39,7 +39,7 @@ dojo.provide("csl.render");
  * Get the undisambiguated version of a cite, without decorations
  * <p>This is used internally by the Registry.</p>
  */
-CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
+CSL.getAmbiguousCite = function(Item,disambig){
 	if (disambig){
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -48,7 +48,7 @@ CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	this.tmp.area = "citation";
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
-	this._cite.call(this,Item);
+	CSL.getCite.call(this,Item);
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
@@ -58,7 +58,7 @@ CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	return ret;
 }
 
-CSL.Engine.prototype.composeItem = function(Item,params){
+CSL.composeItem = function(Item,params){
 	var newItem = {};
 	for (var i in Item){
 		newItem[i] = Item[i];
@@ -73,7 +73,7 @@ CSL.Engine.prototype.composeItem = function(Item,params){
  * Get the sort key of an item, without decorations
  * <p>This is used internally by the Registry.</p>
  */
-CSL.Engine.prototype.getSortKeys = function(Item,key_type){
+CSL.getSortKeys = function(Item,key_type){
 	if (false){
 		CSL.debug("KEY TYPE: "+key_type);
 	}
@@ -83,7 +83,7 @@ CSL.Engine.prototype.getSortKeys = function(Item,key_type){
 	this.tmp.disambig_override = true;
 	this.tmp.disambig_request = false;
 	this.tmp.suppress_decorations = true;
-	this._cite.call(this,Item);
+	CSL.getCite.call(this,Item);
 	this.tmp.suppress_decorations = false;
 	this.tmp.disambig_override = false;
 	for (var i in this[key_type].keys){
@@ -99,7 +99,7 @@ CSL.Engine.prototype.getSortKeys = function(Item,key_type){
 /**
  * Return current base configuration for disambiguation
  */
-CSL.Engine.prototype.getAmbigConfig = function(){
+CSL.getAmbigConfig = function(){
 	var config = this.tmp.disambig_request;
 	if (!config){
 		config = this.tmp.disambig_settings;
@@ -112,14 +112,14 @@ CSL.Engine.prototype.getAmbigConfig = function(){
 /**
  * Return max values for disambiguation
  */
-CSL.Engine.prototype.getMaxVals = function(){
+CSL.getMaxVals = function(){
 	return this.tmp.names_max.mystack.slice();
 };
 
 /**
  * Return min value for disambiguation
  */
-CSL.Engine.prototype.getMinVal = function(){
+CSL.getMinVal = function(){
 	return this.tmp["et-al-min"];
 };
 
@@ -137,7 +137,7 @@ CSL.Engine.prototype.getMinVal = function(){
  * completion of the run.</p>
  */
 
-CSL.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
+CSL.getSpliceDelimiter = function(last_collapsed){
 	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
 		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
 	}
@@ -147,7 +147,7 @@ CSL.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
 /**
  * Return available modes for disambiguation
  */
-CSL.Engine.prototype.getModes = function(){
+CSL.getModes = function(){
 	var ret = new Array();
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
@@ -171,7 +171,7 @@ CSL.Engine.prototype.getModes = function(){
 /*
  * Compose individual cites into a single string.
  */
-CSL.Engine.prototype._bibliography_entries = function (bibsection){
+CSL.getBibliographyEntries = function (bibsection){
 	var ret = [];
 	this.tmp.area = "bibliography";
 	var input = this.retrieveItems(this.registry.getSortedIds());
@@ -267,7 +267,7 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 		var bib_entry = new CSL.Factory.Token("group",CSL.START);
 		bib_entry.decorations = [["@bibliography","entry"]];
 		this.output.startTag("bib_entry",bib_entry);
-		this._cite.call(this,item);
+		CSL.getCite.call(this,item);
 		this.output.endTag(); // closes bib_entry
 		ret.push(this.output.string(this,this.output.queue)[0]);
 	}
@@ -276,22 +276,22 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 };
 
 /*
- * Compose individual cites into a single string.  (This requires
- * further work to accomodate various adjustments to inter-cite
- * splicing.  There are lots of possibilities, which will require
- * careful planning.)
+ * Compose individual cites into a single string, with
+ * flexible inter-cite splicing.
  */
-CSL.Engine.prototype._unit_of_reference = function (inputList){
+CSL.getCitationCluster = function (inputList){
 	this.tmp.area = "citation";
 	var delimiter = "";
 	var result = "";
 	var objects = [];
+	this.tmp.last_suffix_used = "";
+	this.tmp.last_names_used = new Array();
+	this.tmp.last_years_used = new Array();
 
 	for each (var Item in inputList){
 		var last_collapsed = this.tmp.have_collapsed;
-		//CSL.debug("  "+Item.id);
-		this._cite(Item);
-		this.getSpliceDelimiter(last_collapsed);
+		CSL.getCite.call(this,Item);
+		CSL.getSpliceDelimiter.call(this,last_collapsed);
 		this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
@@ -349,13 +349,13 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
  * (This might be dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.Engine.prototype._cite = function(Item){
-	this.start(Item);
+CSL.getCite = function(Item){
+	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
-		next = this._render(this[this.tmp.area].tokens[next],Item);
+		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item);
     }
-	this.end(Item);
+	CSL.citeEnd.call(this,Item);
 };
 
 /*
@@ -364,12 +364,11 @@ CSL.Engine.prototype._cite = function(Item){
  * This is called on a token, with the state object
  * and an Item object as arguments.
  */
-CSL.Engine.prototype._render = function(token,Item){
+CSL.tokenExec = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
 		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
-		//CSL.debug("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 
 	if (token.evaluator){
@@ -387,7 +386,7 @@ CSL.Engine.prototype._render = function(token,Item){
 	return next;
 };
 
-CSL.Engine.prototype.start = function(Item){
+CSL.citeStart = function(Item){
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override){
@@ -417,7 +416,7 @@ CSL.Engine.prototype.start = function(Item){
 	// way, so that's what we should do.
 };
 
-CSL.Engine.prototype.end = function(Item){
+CSL.citeEnd = function(Item){
 
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[-.,;:]$/)){
 		this.tmp.splice_delimiter = " ";
@@ -431,7 +430,6 @@ CSL.Engine.prototype.end = function(Item){
 
 	this.tmp.disambig_request = false;
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters){
-		// CSL.debug("cite id is: "+Item.id+" and has width "+this.tmp.offset_characters);
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}
 };

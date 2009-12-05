@@ -917,6 +917,10 @@ CSL.Engine.Configure = function (){
 	this.succeed = new Array();
 };
 CSL.Engine.Citation = function (state){
+	 // Citation options area.
+	 // Holds a mixture of persistent and ephemeral
+	 // options and scratch data used during processing of
+	 // a citation.</p>
 	this.opt = new Object();
 	this.tokens = new Array();
 	this.srt = new CSL.Factory.Registry.Comparifier(state,"citation_sort");
@@ -949,20 +953,16 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
-		var newitem = this.composeItem(Item,item);
+		var newitem = CSL.composeItem(Item,item);
 		inputList.push(newitem);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		//var srt = new CSL.Factory.Registry.Comparifier(this,"citation_sort");
 		for (var k in inputList){
-			inputList[k].sortkeys = this.getSortKeys(inputList[k],"citation_sort");
+			inputList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
 		}
 		inputList.sort(this.citation.srt.compareKeys);
 	};
-	this.tmp.last_suffix_used = "";
-	this.tmp.last_names_used = new Array();
-	this.tmp.last_years_used = new Array();
-	var str = this._unit_of_reference.call(this,inputList);
+	var str = CSL.getCitationCluster.call(this,inputList);
 	return str;
 };
 CSL.Engine.prototype.makeBibliography = function(bibsection){
@@ -980,7 +980,7 @@ CSL.Engine.prototype.makeBibliography = function(bibsection){
 			CSL.debug("bibsorttok: "+tok.name);
 		}
 	}
-	var ret = this._bibliography_entries.call(this,bibsection);
+	var ret = CSL.getBibliographyEntries.call(this,bibsection);
 	var params = {
 		"maxoffset":0,
 		"entryspacing":1,
@@ -988,14 +988,10 @@ CSL.Engine.prototype.makeBibliography = function(bibsection){
 	};
 	var maxoffset = 0;
 	for each (var item in this.registry.reflist){
-		if (item.offset > maxoffset){
-			maxoffset = item.offset;
+		if (item.offset > params.maxoffset){
+			params.maxoffset = item.offset;
 		};
 	};
-	if (maxoffset){
-		CSL.debug("Max char offset for second-field-align etc: "+maxoffset);
-		params.maxoffset = maxoffset;
-	}
 	if (this.bibliography.opt.hangingindent){
 		params.hangingindent = this.bibliography.opt.hangingindent;
 	}
@@ -1052,7 +1048,7 @@ CSL.Engine.prototype.updateItems = function(idList){
 	return this.registry.getSortedIds();
 };
 dojo.provide("csl.render");
-CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
+CSL.getAmbiguousCite = function(Item,disambig){
 	if (disambig){
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -1061,7 +1057,7 @@ CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	this.tmp.area = "citation";
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
-	this._cite.call(this,Item);
+	CSL.getCite.call(this,Item);
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
@@ -1070,7 +1066,7 @@ CSL.Engine.prototype.getAmbiguousCite = function(Item,disambig){
 	}
 	return ret;
 }
-CSL.Engine.prototype.composeItem = function(Item,params){
+CSL.composeItem = function(Item,params){
 	var newItem = {};
 	for (var i in Item){
 		newItem[i] = Item[i];
@@ -1080,7 +1076,7 @@ CSL.Engine.prototype.composeItem = function(Item,params){
 	}
 	return newItem;
 };
-CSL.Engine.prototype.getSortKeys = function(Item,key_type){
+CSL.getSortKeys = function(Item,key_type){
 	if (false){
 		CSL.debug("KEY TYPE: "+key_type);
 	}
@@ -1090,7 +1086,7 @@ CSL.Engine.prototype.getSortKeys = function(Item,key_type){
 	this.tmp.disambig_override = true;
 	this.tmp.disambig_request = false;
 	this.tmp.suppress_decorations = true;
-	this._cite.call(this,Item);
+	CSL.getCite.call(this,Item);
 	this.tmp.suppress_decorations = false;
 	this.tmp.disambig_override = false;
 	for (var i in this[key_type].keys){
@@ -1102,7 +1098,7 @@ CSL.Engine.prototype.getSortKeys = function(Item,key_type){
 	this.tmp.area = area;
 	return this[key_type].keys;
 };
-CSL.Engine.prototype.getAmbigConfig = function(){
+CSL.getAmbigConfig = function(){
 	var config = this.tmp.disambig_request;
 	if (!config){
 		config = this.tmp.disambig_settings;
@@ -1110,19 +1106,19 @@ CSL.Engine.prototype.getAmbigConfig = function(){
 	var ret = CSL.Factory.cloneAmbigConfig(config);
 	return ret;
 };
-CSL.Engine.prototype.getMaxVals = function(){
+CSL.getMaxVals = function(){
 	return this.tmp.names_max.mystack.slice();
 };
-CSL.Engine.prototype.getMinVal = function(){
+CSL.getMinVal = function(){
 	return this.tmp["et-al-min"];
 };
-CSL.Engine.prototype.getSpliceDelimiter = function(last_collapsed){
+CSL.getSpliceDelimiter = function(last_collapsed){
 	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
 		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
 	}
 	return this.tmp.splice_delimiter;
 };
-CSL.Engine.prototype.getModes = function(){
+CSL.getModes = function(){
 	var ret = new Array();
 	if (this[this.tmp.area].opt["disambiguate-add-names"]){
 		ret.push("names");
@@ -1136,7 +1132,7 @@ CSL.Engine.prototype.getModes = function(){
 	}
 	return ret;
 };
-CSL.Engine.prototype._bibliography_entries = function (bibsection){
+CSL.getBibliographyEntries = function (bibsection){
 	var ret = [];
 	this.tmp.area = "bibliography";
 	var input = this.retrieveItems(this.registry.getSortedIds());
@@ -1232,23 +1228,25 @@ CSL.Engine.prototype._bibliography_entries = function (bibsection){
 		var bib_entry = new CSL.Factory.Token("group",CSL.START);
 		bib_entry.decorations = [["@bibliography","entry"]];
 		this.output.startTag("bib_entry",bib_entry);
-		this._cite.call(this,item);
+		CSL.getCite.call(this,item);
 		this.output.endTag(); // closes bib_entry
 		ret.push(this.output.string(this,this.output.queue)[0]);
 	}
 	this.tmp.disambig_override = false;
 	return ret;
 };
-CSL.Engine.prototype._unit_of_reference = function (inputList){
+CSL.getCitationCluster = function (inputList){
 	this.tmp.area = "citation";
 	var delimiter = "";
 	var result = "";
 	var objects = [];
+	this.tmp.last_suffix_used = "";
+	this.tmp.last_names_used = new Array();
+	this.tmp.last_years_used = new Array();
 	for each (var Item in inputList){
 		var last_collapsed = this.tmp.have_collapsed;
-		//CSL.debug("  "+Item.id);
-		this._cite(Item);
-		this.getSpliceDelimiter(last_collapsed);
+		CSL.getCite.call(this,Item);
+		CSL.getSpliceDelimiter.call(this,last_collapsed);
 		this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
@@ -1292,20 +1290,19 @@ CSL.Engine.prototype._unit_of_reference = function (inputList){
 	};
 	return result;
 };
-CSL.Engine.prototype._cite = function(Item){
-	this.start(Item);
+CSL.getCite = function(Item){
+	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
-		next = this._render(this[this.tmp.area].tokens[next],Item);
+		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item);
     }
-	this.end(Item);
+	CSL.citeEnd.call(this,Item);
 };
-CSL.Engine.prototype._render = function(token,Item){
+CSL.tokenExec = function(token,Item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
 		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
-		//CSL.debug("       next is: "+next+", success is: "+token.succeed+", fail is: "+token.fail);
 	}
 	if (token.evaluator){
 	    next = token.evaluator(token,this,Item);
@@ -1321,7 +1318,7 @@ CSL.Engine.prototype._render = function(token,Item){
 	}
 	return next;
 };
-CSL.Engine.prototype.start = function(Item){
+CSL.citeStart = function(Item){
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override){
@@ -1341,7 +1338,7 @@ CSL.Engine.prototype.start = function(Item){
 	this.tmp.count_offset_characters = false;
 	this.tmp.offset_characters = 0;
 };
-CSL.Engine.prototype.end = function(Item){
+CSL.citeEnd = function(Item){
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[-.,;:]$/)){
 		this.tmp.splice_delimiter = " ";
 	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[,,:;a-z].*/)){
@@ -1352,7 +1349,6 @@ CSL.Engine.prototype.end = function(Item){
 	this.tmp.last_names_used = this.tmp.names_used.slice();
 	this.tmp.disambig_request = false;
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters){
-		// CSL.debug("cite id is: "+Item.id+" and has width "+this.tmp.offset_characters);
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}
 };
@@ -5495,7 +5491,7 @@ CSL.Factory.Registry = function(state){
 	this.akeys = new Object();
 	this.ambigcites = new Object();
 	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
-	this.modes = this.state.getModes();
+	this.modes = CSL.getModes.call(this.state);
 	this.getSortedIds = function(){
 		var ret = [];
 		for each (var Item in this.reflist){
@@ -5624,7 +5620,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			//  4c. Add names in items to be inserted to names reg
 			//      (implicit in getAmbiguousCite).
 			//
-			var akey = this.state.getAmbiguousCite(Item);
+			var akey = CSL.getAmbiguousCite.call(this.state,Item);
 			//
 			//  4d. Record ambig pool key on akey list (used for updating further
 			//      down the chain).
@@ -5650,7 +5646,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 			//  4g. Set and record the base token to hold disambiguation
 			//      results ("disambig" in the object above).
 			//
-			var abase = this.state.getAmbigConfig();
+			var abase = CSL.getAmbigConfig.call(this.state);
 			this.registerAmbigToken(akey,item,abase);
 			//if (!this.ambigcites[akey]){
 			//	this.ambigcites[akey] = new Array();
@@ -5684,9 +5680,9 @@ CSL.Factory.Registry.prototype.dorefreshes = function(){
 		regtoken.sortkeys = undefined;
 		regtoken.ambig = undefined;
 		var Item = this.state.sys.retrieveItem(item);
-		var akey = this.state.getAmbiguousCite(Item);
+		var akey = CSL.getAmbiguousCite.call(this.state,Item);
 		this.registry[item] = regtoken;
-		var abase = this.state.getAmbigConfig();
+		var abase = CSL.getAmbigConfig.call(this.state);
 		this.registerAmbigToken(akey,item,abase);
 		this.akeys[akey] = true;
 		this.touched[item] = true;
@@ -5752,7 +5748,7 @@ CSL.Factory.Registry.prototype.yearsuffix = function(){
 };
 CSL.Factory.Registry.prototype.setsortkeys = function(){
 	for (var item in this.touched){
-		this.registry[item].sortkeys = this.state.getSortKeys(this.state.sys.retrieveItem(item),"bibliography_sort");
+		this.registry[item].sortkeys = CSL.getSortKeys.call(this.state,this.state.sys.retrieveItem(item),"bibliography_sort");
 		//CSL.debug("touched: "+item+" ... "+this.registry[item].sortkeys);
 	};
 };
@@ -6077,10 +6073,10 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 		if (debug){
 			CSL.debug("base in (givens):"+base["givens"]);
 		}
-		var str = state.getAmbiguousCite(token,base);
-		var maxvals = state.getMaxVals();
-		var minval = state.getMinVal();
-		base = state.getAmbigConfig();
+		var str = CSL.getAmbiguousCite.call(state,token,base);
+		var maxvals = CSL.getMaxVals.call(state);
+		var minval = CSL.getMinVal.call(state);
+		base = CSL.getAmbigConfig.call(state);
 		if (debug){
 			CSL.debug("base out (givens):"+base["givens"]);
 		}
@@ -6094,7 +6090,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 			if (token.id == testpartner.id){
 				continue;
 			}
-			var otherstr = state.getAmbiguousCite(testpartner,base);
+			var otherstr = CSL.getAmbiguousCite.call(state,testpartner,base);
 			if (debug){
 				CSL.debug("  ---> last clashes: "+checkerator.lastclashes);
 				CSL.debug("  ---> master:    "+token.id);
