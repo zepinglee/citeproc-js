@@ -1358,6 +1358,7 @@ CSL.Engine.CitationSort = function (){
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
 };
+dojo.provide("csl.cmd_update");
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
 	if (debug){
@@ -1402,6 +1403,7 @@ CSL.Engine.prototype.updateItems = function(idList){
 	this.registry.yearsuffix();
 	return this.registry.getSortedIds();
 };
+dojo.provide("csl.cmd_bibliography");
 CSL.Engine.prototype.makeBibliography = function(bibsection){
 	var debug = false;
 	if (debug){
@@ -1543,6 +1545,7 @@ CSL.getBibliographyEntries = function (bibsection){
 	this.tmp.disambig_override = false;
 	return ret;
 };
+dojo.provide("csl.commands");
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
@@ -5161,7 +5164,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 // stack, and open a level on the output queue.
 //
 			if (this.openToCloseHash[tag]){
-				//CSL.debug("open:"+tag);
+				// CSL.debug("open:"+tag);
 				expected_closers.push( this.openToCloseHash[tag] );
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );
@@ -5169,6 +5172,26 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				var newblobnest = new CSL.Factory.Blob();
 				blob.push(newblobnest);
 				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
+				//
+				// No.  This can just impose the reverse of all normal decorations.
+				//
+				// CSL.debug(this.okReverseTagsHash[this.blob.alldecor[0][0].join("-is-")]);
+				//
+				if (tag == "<ok>"){
+					for each (var level in this.blob.alldecor){
+						for each (var decor in level){
+							if (["@font-style"].indexOf(decor[0]) > -1){
+								print(decor[0]);
+								// This will be the @name of the decor, plus the
+								// pairing.  How do we derive the pairing without
+								// the tag?  Do we need an okReverse hash for that?
+								var param = this.addFlipFlop(newblobnest,[decor[0],["normal","normal"]]);
+								// ZZZZZZZZZ
+							}
+						}
+					}
+				}
+				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				this.blobstack.push(newblobnest);
 			};

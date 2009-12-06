@@ -32,50 +32,65 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("csl.cmd_update");
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
 
-CSL.Engine.prototype.updateItems = function(idList){
-	var debug = false;
-	if (debug){
-		CSL.debug("--> init <--");
-	};
-	this.registry.init(idList);
-	if (debug){
-		CSL.debug("--> dodeletes <--");
-	};
-	this.registry.dodeletes(this.registry.myhash);
-	if (debug){
-		CSL.debug("--> doinserts <--");
-	};
-	this.registry.doinserts(this.registry.mylist);
-	if (debug){
-		CSL.debug("--> dorefreshes <--");
-	};
-	this.registry.dorefreshes();
-	if (debug){
-		CSL.debug("--> rebuildlist <--");
-	};
-	this.registry.rebuildlist();
-	if (debug){
-		CSL.debug("--> setdisambigs <--");
-	};
-	this.registry.setdisambigs();
-	if (debug){
-		CSL.debug("--> setsortkeys <--");
-	};
-	this.registry.setsortkeys();
-	if (debug){
-		CSL.debug("--> sorttokens <--");
-	};
-	this.registry.sorttokens();
-	if (debug){
-		CSL.debug("--> renumber <--");
-	};
-	this.registry.renumber();
-	if (debug){
-		CSL.debug("--> yearsuffix <--");
-	};
-	this.registry.yearsuffix();
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
 
-	return this.registry.getSortedIds();
-};
+
+>>===== RESULT =====>>
+<div class="csl-bib-body">
+  <div class="csl-entry"><i>Lessard <span style="font-style:normal;">v.</span> Schmidt</i>. 1972. 349 F. Supp. 1078 (E.D. Wisc.).</div>
+</div>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <bibliography>
+    <layout>
+      <group suffix=".">
+        <text variable="title" suffix=". " font-style="italic"/>
+        <date variable="issued" date-parts="year" form="text" suffix=". "/>
+        <text variable="volume" suffix=" "/>
+        <text variable="container-title"/>
+        <text variable="page-first" prefix=" "/>
+        <text variable="court" prefix=" (" suffix=")"/>
+      </group>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "container-title": "F. Supp.", 
+        "court": "E.D. Wisc.", 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    1972
+                ]
+            ]
+        }, 
+        "page": "1078-1100", 
+        "title": "Lessard <ok>v.</ok> Schmidt", 
+        "type": "legal_case", 
+        "volume": "349"
+    }
+]
+<<===== INPUT =====<<

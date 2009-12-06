@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_flipflop");
 	dojo.require("tests.std_locale");
 
 	// (will run nonetheless under test.py)
@@ -70,7 +71,6 @@ if(true){
 	dojo.require("tests.std_namespaces");
 	dojo.require("tests.std_affix");
 	dojo.require("tests.test_flipflopper");
-	dojo.require("tests.std_flipflop");
 
 	dojo.require("tests.std_api");
 	dojo.require("tests.std_variables");

@@ -114,8 +114,8 @@ CSL.Util.FlipFlopper = function(state){
 };
 
 CSL.Util.FlipFlopper.prototype.init = function(str,blob){
-	//CSL.debug("(flipflopper received blob decorations): "+blob.decorations);
-	//CSL.debug("(blob alldecor): "+blob.alldecor);
+	// CSL.debug("(flipflopper received blob decorations): "+blob.decorations);
+	// CSL.debug("(blob alldecor): "+blob.alldecor);
 	if (!blob){
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Factory.Blob();
@@ -125,7 +125,7 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 		this.blob.blobs = new Array();
 	}
 	this.blobstack = new CSL.Factory.Stack(this.blob);
-	//CSL.debug("(this.blobstack.value() alldecor): "+this.blobstack.value().alldecor);
+	// CSL.debug("(this.blobstack.value() alldecor): "+this.blobstack.value().alldecor);
 };
 //
 // (1) scan the string for escape characters.  Split the
@@ -286,7 +286,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 // stack, and open a level on the output queue.
 //
 			if (this.openToCloseHash[tag]){
-				//CSL.debug("open:"+tag);
+				// CSL.debug("open:"+tag);
 				expected_closers.push( this.openToCloseHash[tag] );
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );
@@ -294,6 +294,26 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				var newblobnest = new CSL.Factory.Blob();
 				blob.push(newblobnest);
 				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
+				//
+				// No.  This can just impose the reverse of all normal decorations.
+				//
+				// CSL.debug(this.okReverseTagsHash[this.blob.alldecor[0][0].join("-is-")]);
+				//
+				if (tag == "<ok>"){
+					for each (var level in this.blob.alldecor){
+						for each (var decor in level){
+							if (["@font-style"].indexOf(decor[0]) > -1){
+								print(decor[0]);
+								// This will be the @name of the decor, plus the
+								// pairing.  How do we derive the pairing without
+								// the tag?  Do we need an okReverse hash for that?
+								var param = this.addFlipFlop(newblobnest,[decor[0],["normal","normal"]]);
+								// ZZZZZZZZZ
+							}
+						}
+					}
+				}
+				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				this.blobstack.push(newblobnest);
 			};
