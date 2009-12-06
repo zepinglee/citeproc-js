@@ -3647,12 +3647,9 @@ CSL.Lib.Attributes["@initialize-with-hyphen"] = function(state,arg){
 		state.opt["initialize-with-hyphen"] = false;
 	}
 }
-dojo.provide("csl.retrieval");
-if (!CSL){
-}
+dojo.provide("csl.xmle4x");
 CSL.System = {};
 CSL.System.Xml = {};
-dojo.provide("csl.xmle4x");
 CSL.System.Xml.E4X = function(){};
 CSL.System.Xml.E4X.prototype.clean = function(xml){
 	xml = xml.replace(/<\?[^?]+\?>/g,"");

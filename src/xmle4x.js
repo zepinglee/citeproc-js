@@ -34,6 +34,8 @@
  */
 dojo.provide("csl.xmle4x");
 
+CSL.System = {};
+CSL.System.Xml = {};
 /**
  * Functions for parsing an XML object using E4X.
  */

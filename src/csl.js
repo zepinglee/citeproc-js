@@ -210,16 +210,14 @@ var CSL = new function () {
 //SNIP-START
 
 if (!CSL.System){
-	load("./src/system.js");
-}
-if (!CSL.System.Xml){
-	load("./src/xml.js");
-}
-if (!CSL.System.Xml.E4X){
 	load("./src/xmle4x.js");
 }
 if (!CSL.Engine){
 	load("./src/build.js");
+}
+print("------------------------------------------> HELLO");
+if (!CSL.Output){
+	load("./src/queue.js");
 }
 if (!CSL.Engine.Opt){
 	load("./src/state.js");
@@ -252,13 +250,16 @@ if (!CSL.Factory.Stack){
 	load("./src/stack.js");
 }
 if (!CSL.Factory.Token){
-	load("./src/token.js");
+	load("./src/obj_token.js");
 }
 if (!CSL.Factory.AmbigConfig){
-	load("./src/ambigconfig.js");
+	load("./src/obj_ambigconfig.js");
 }
 if (!CSL.Factory.Blob){
-	load("./src/blob.js");
+	load("./src/obj_blob.js");
+}
+if (!CSL.NumericBlob){
+	load("./src/obj_number.js");
 }
 if (!CSL.Util){
 	load("./src/util.js");
@@ -283,12 +284,6 @@ if (!CSL.Util.PageRangeMangler){
 }
 if (!CSL.Util.FlipFlopper){
 	load("./src/util_flipflop.js");
-}
-if (!CSL.Output){
-	load("./src/queue.js");
-}
-if (!CSL.NumericBlob){
-	load("./src/blob_numeric.js");
 }
 if (!CSL.Output.Formatters){
 	load("./src/formatters.js");
