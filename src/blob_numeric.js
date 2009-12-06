@@ -49,7 +49,7 @@ if (!CSL) {
  * @namespace Range object and friends.
  */
 
-CSL.Output.Number = function(num,mother_token){
+CSL.NumericBlob = function(num,mother_token){
 	this.alldecor = new Array();
 	this.num = num;
 	this.blobs = num.toString();
@@ -82,7 +82,7 @@ CSL.Output.Number = function(num,mother_token){
 };
 
 
-CSL.Output.Number.prototype.setFormatter = function(formatter){
+CSL.NumericBlob.prototype.setFormatter = function(formatter){
 	this.formatter = formatter;
 	this.type = this.formatter.format(1);
 };
@@ -93,7 +93,7 @@ CSL.Output.DefaultFormatter.prototype.format = function (num){
 	return num.toString();
 };
 
-CSL.Output.Number.prototype.checkNext = function(next){
+CSL.NumericBlob.prototype.checkNext = function(next){
 	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
 		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
 			this.status = CSL.END;

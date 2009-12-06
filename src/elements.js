@@ -128,7 +128,7 @@ CSL.Lib.Elements.text = new function(){
 								state.tmp.last_element_trace = false;
 							};
 							var num = state.registry.registry[id].seq;
-							var number = new CSL.Output.Number(num,this);
+							var number = new CSL.NumericBlob(num,this);
 							state.output.append(number,"literal");
 						};
 					};
@@ -147,7 +147,7 @@ CSL.Lib.Elements.text = new function(){
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
 							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
 							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
-							var number = new CSL.Output.Number(num,this);
+							var number = new CSL.NumericBlob(num,this);
 							var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
 							state.output.append(number,"literal");
@@ -951,7 +951,7 @@ CSL.Lib.Elements.number = new function(){
 				var m = num.match(/\s*([0-9]+).*/);
 				if (m){
 					num = parseInt( m[1], 10);
-					var number = new CSL.Output.Number( num, this );
+					var number = new CSL.NumericBlob( num, this );
 					state.output.append(number,"literal");
 				} else {
 					state.output.append(num, this);
@@ -1261,7 +1261,7 @@ CSL.Lib.Elements["date-part"] = new function(){
 				if (!state.opt.has_year_suffix && "year" == this.strings.name){
 					if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
 						var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
-						var number = new CSL.Output.Number(num,this);
+						var number = new CSL.NumericBlob(num,this);
 						var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 						number.setFormatter(formatter);
 						state.output.append(number,"literal");

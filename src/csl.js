@@ -287,8 +287,8 @@ if (!CSL.Util.FlipFlopper){
 if (!CSL.Output){
 	load("./src/queue.js");
 }
-if (!CSL.Output.Number){
-	load("./src/range.js");
+if (!CSL.NumericBlob){
+	load("./src/blob_numeric.js");
 }
 if (!CSL.Output.Formatters){
 	load("./src/formatters.js");

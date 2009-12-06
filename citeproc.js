@@ -124,6 +124,416 @@ var CSL = new function () {
 		"zh":"locales-zh-TW.xml"
 	};
 };
+dojo.provide("csl.queue");
+CSL.Output = {};
+CSL.Output.Queue = function(state){
+	this.state = state;
+	this.queue = new Array();
+	this.empty = new CSL.Factory.Token("empty");
+	var tokenstore = {};
+	tokenstore["empty"] = this.empty;
+	this.formats = new CSL.Factory.Stack( tokenstore );
+	this.current = new CSL.Factory.Stack( this.queue );
+	this.suppress_join_punctuation = false;
+};
+CSL.Output.Queue.prototype.getToken = function(name){
+	var ret = this.formats.value()[name];
+	return ret;
+};
+// Store a new output format token based on another
+CSL.Output.Queue.prototype.addToken = function(name,modifier,token){
+	var newtok = new CSL.Factory.Token("output");
+	if ("string" == typeof token){
+		token = this.formats.value()[token];
+	}
+	if (token && token.strings){
+		for (attr in token.strings){
+			newtok.strings[attr] = token.strings[attr];
+		}
+		newtok.decorations = token.decorations;
+	}
+	if ("string" == typeof modifier){
+		newtok.strings.delimiter = modifier;
+	}
+	this.formats.value()[name] = newtok;
+};
+//
+// newFormat adds a new bundle of formatting tokens to
+// the queue's internal stack of such bundles
+CSL.Output.Queue.prototype.pushFormats = function(tokenstore){
+	if (!tokenstore){
+		tokenstore = new Object();
+	}
+	tokenstore["empty"] = this.empty;
+	this.formats.push(tokenstore);
+};
+CSL.Output.Queue.prototype.popFormats = function(tokenstore){
+	this.formats.pop();
+};
+CSL.Output.Queue.prototype.startTag = function(name,token){
+	var tokenstore = new Object();
+	tokenstore[name] = token;
+	this.pushFormats( tokenstore );
+	this.openLevel(name);
+}
+CSL.Output.Queue.prototype.endTag = function(){
+	this.closeLevel();
+	this.popFormats();
+}
+//
+// newlevel adds a new blob object to the end of the current
+// list, and adjusts the current pointer so that subsequent
+// appends are made to blob list of the new object.
+CSL.Output.Queue.prototype.openLevel = function(token){
+	if (!this.formats.value()[token]){
+		throw "CSL processor error: call to nonexistent format token \""+token+"\"";
+	}
+	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
+	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
+		// this.state.tmp.offset_characters += blob.strings.prefix.length;
+		this.state.tmp.offset_characters += blob.strings.prefix;
+	}
+	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length){
+		// this.state.tmp.offset_characters += blob.strings.suffix.length;
+		this.state.tmp.offset_characters += blob.strings.suffix;
+	}
+	var curr = this.current.value();
+	curr.push( blob );
+	this.current.push( blob );
+};
+CSL.Output.Queue.prototype.closeLevel = function(name){
+	this.current.pop();
+}
+//
+// append does the same thing as newlevel, except
+// that the blob it pushes has text content,
+// and the current pointer is not moved after the push.
+CSL.Output.Queue.prototype.append = function(str,tokname){
+	if ("undefined" == typeof str){
+		return;
+	};
+	if ("number" == typeof str){
+		str = ""+str;
+	}
+	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() == "suppress-me"){
+		return;
+	}
+	var blob = false;
+	if (!tokname){
+		var token = this.formats.value()["empty"];
+	} else if (tokname == "literal"){
+		var token = true;
+	} else if ("string" == typeof tokname){
+		var token = this.formats.value()[tokname];
+	} else {
+		var token = tokname;
+	}
+	if (!token){
+		throw "CSL processor error: unknown format token name: "+tokname;
+	}
+	if ("string" == typeof str && str.length){
+		this.last_char_rendered = str.slice(-1);
+	}
+	blob = new CSL.Factory.Blob(token,str);
+	if (this.state.tmp.count_offset_characters && blob.strings.prefix){
+		this.state.tmp.offset_characters += blob.strings.prefix.length;
+	}
+	if (this.state.tmp.count_offset_characters && blob.strings.suffix){
+		this.state.tmp.offset_characters += blob.strings.suffix.length;
+	}
+	var curr = this.current.value();
+	if ("string" == typeof blob.blobs){
+		this.state.tmp.term_predecessor = true;
+	}
+	if (this.state.tmp.count_offset_characters){
+		if ("string" == typeof str){
+			this.state.tmp.offset_characters += blob.strings.prefix.length;
+			this.state.tmp.offset_characters += blob.strings.suffix.length;
+			this.state.tmp.offset_characters += blob.blobs.length;
+		} else if ("undefined" != str.num){
+			this.state.tmp.offset_characters += str.strings.prefix.length;
+			this.state.tmp.offset_characters += str.strings.suffix.length;
+			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
+		}
+	}
+	if ("string" == typeof str){
+		curr.push( blob );
+		if (blob.strings["text-case"]){
+			//
+			// This one is _particularly_ hard to follow.  It's not obvious,
+			// but the blob already contains the input string at this
+			// point, as blob.blobs -- it's a terminal node, as it were.
+			// The str variable also contains the input string, but
+			// that copy is not used for onward processing.  We have to
+			// apply our changes to the blob copy.
+			//
+			blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
+		};
+		this.state.fun.flipflopper.init(str,blob);
+		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
+		this.state.fun.flipflopper.processTags();
+	} else {
+		curr.push( str );
+	}
+}
+//
+// Maybe the way to do this is to take it by layers, and
+// analyze a FLAT list of blobs returned during recursive
+// execution.  If the list is all numbers and there is no
+// group decor, don't touch it.  If it ends in numbers,
+// set the group delimiter on the first in the series,
+// and join the strings with the group delimiter.  If it
+// has numbers followed by strings, render each number
+// in place, and join with the group delimiter.  Return
+// the mixed flat list, and recurse upward.
+//
+// That sort of cascade should work, and should be more
+// easily comprehensible than this mess.
+//
+CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
+	var blobs = myblobs.slice();
+	var ret = new Array();
+	if (blobs.length == 0){
+		return ret;
+	}
+	if (!blob){
+		CSL.Output.Queue.normalizePrefixPunctuation(blobs);
+	}
+	var blob_last_chars = new Array();
+	if (blob){
+		var blob_delimiter = blob.strings.delimiter;
+	} else {
+		var blob_delimiter = "";
+	};
+	for (var i in blobs){
+		var blobjr = blobs[i];
+		if ("string" == typeof blobjr.blobs){
+			var last_str = "";
+			if (blobjr.strings.suffix){
+				last_str = blobjr.strings.suffix;
+			} else if (blobjr.blobs){
+				last_str = blobjr.blobs;
+			};
+			//var last_char = last_str[(last_str.length-1)];
+			var last_char = last_str.slice(-1);
+			if ("number" == typeof blobjr.num){
+				ret.push(blobjr);
+				blob_last_chars.push(last_char);
+			} else if (blobjr.blobs){
+				// skip empty strings!!!!!!!!!!!!
+				//
+				// text_escape is applied by flipflopper.
+				//
+				var b = blobjr.blobs;
+				if (!state.tmp.suppress_decorations){
+					for each (var params in blobjr.decorations){
+						b = state.fun.decorate[params[0]][params[1]](state,b);
+					};
+				};
+				var use_suffix = blobjr.strings.suffix;
+				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
+				    use_suffix = use_suffix.slice(1);
+				}
+				//
+				// Handle punctuation/quote swapping for suffix.
+				//
+				var qres = this.swapQuotePunctuation(b,use_suffix);
+				b = qres[0];
+				use_suffix = qres[1];
+				b = blobjr.strings.prefix + b + use_suffix;
+				ret.push(b);
+				blob_last_chars.push(last_char);
+			};
+		} else if (blobjr.blobs.length){
+			var res = state.output.string(state,blobjr.blobs,blobjr);
+			var addtoret = res[0];
+			ret = ret.concat(addtoret);
+			blob_last_chars = blob_last_chars.concat(res[1]);
+			//blob_last_chars = res[1];
+		} else {
+			continue;
+		}
+	};
+	var span_split = 0;
+	for (var j in ret){
+		if ("string" == typeof ret[j]){
+			span_split = (parseInt(j,10)+1);
+		}
+	}
+	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
+		span_split = ret.length;
+	}
+	var res = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
+	var blobs_start = res[0];
+	blob_last_chars = res[1].slice();
+	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
+		if (!state.tmp.suppress_decorations){
+			for each (var params in blob.decorations){
+				blobs_start = state.fun.decorate[params[0]][params[1]](state,blobs_start);
+			}
+		}
+		//
+		// XXXX: cut-and-paste warning.  same as a code block above.
+		//
+		var b = blobs_start;
+		var use_suffix = blob.strings.suffix;
+		if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
+			use_suffix = use_suffix.slice(1);
+		}
+		//
+		// Handle punctuation/quote swapping for suffix.
+		//
+		var qres = this.swapQuotePunctuation(b,use_suffix);
+		b = qres[0];
+		use_suffix = qres[1];
+		b = blob.strings.prefix + b + use_suffix;
+		blobs_start = b;
+	}
+	var blobs_end = ret.slice(span_split,ret.length);
+	if (!blobs_end.length && blobs_start){
+		ret = [blobs_start];
+	} else if (blobs_end.length && !blobs_start) {
+		ret = blobs_end;
+	} else if (blobs_start && blobs_end.length) {
+		ret = [blobs_start].concat(blobs_end);
+	}
+	if ("undefined" == typeof blob){
+		this.queue = new Array();
+		this.current.mystack = new Array();
+		this.current.mystack.push( this.queue );
+		if (state.tmp.suppress_decorations){
+			var res = state.output.renderBlobs(ret);
+			ret = res[0];
+			blob_last_chars = res[1].slice();
+		};
+	} else if ("boolean" == typeof blob){
+		var res = state.output.renderBlobs(ret);
+		ret = res[0];
+		blob_last_chars = res[1].slice();
+	};
+	if (blob){
+		return [ret,blob_last_chars.slice()];
+	} else {
+		return ret;
+	};
+};
+CSL.Output.Queue.prototype.clearlevel = function(){
+	var blob = this.current.value();
+	for (var i=(blob.blobs.length-1); i > -1; i--){
+		blob.blobs.pop();
+	}
+};
+CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
+	if (!delim){
+		delim = "";
+	}
+	if (!blob_last_chars){
+		blob_last_chars = [];
+	};
+	var state = this.state;
+	var ret = "";
+	var ret_last_char = [];
+	var use_delim = "";
+	var l = blobs.length;
+	for (var i=0; i < l; i++){
+		if (blobs[i].checkNext){
+			blobs[i].checkNext(blobs[(i+1)]);
+		}
+	}
+	for (var i in blobs){
+		var blob = blobs[i];
+		if (ret){
+			use_delim = delim;
+		}
+		if (blob && "string" == typeof blob){
+			//throw "Attempt to render string as rangeable blob"
+			if (use_delim && blob_last_chars[(i-1)] == use_delim[0]) {
+				//
+				// Something for posterity, at the end of a remarkably
+				// unproductive day.
+				//
+				//CSL.debug("  ####################################################");
+				//CSL.debug("  ######################## EUREKA ####################");
+				//CSL.debug("  ####################################################");
+				use_delim = use_delim.slice(1);
+			};
+			//
+			// Handle punctuation/quote swapping for delimiter joins.
+			//
+			var res = this.swapQuotePunctuation(ret,use_delim);
+			ret = res[0];
+			use_delim = res[1];
+			ret += use_delim;
+			ret += blob;
+			ret_last_char = blob_last_chars.slice(-1);
+		} else if (blob.status != CSL.SUPPRESS){
+			// CSL.debug("doing rangeable blob");
+			//var str = blob.blobs;
+			var str = blob.formatter.format(blob.num);
+			if (blob.strings["text-case"]){
+				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
+			}
+			if (!state.tmp.suppress_decorations){
+				for each (var params in blob.decorations){
+					str = state.fun.decorate[params[0]][params[1]](state,str);
+				};
+			};
+			//if (!suppress_decor){
+				str = blob.strings.prefix + str + blob.strings.suffix;
+			//}
+			if (blob.status == CSL.END){
+				ret += blob.range_prefix;
+			} else if (blob.status == CSL.SUCCESSOR){
+				ret += blob.successor_prefix;
+			} else if (blob.status == CSL.START){
+				ret += blob.splice_prefix;
+			};
+			ret += str;
+			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
+			ret_last_char = blob_last_chars.slice(-1);
+		};
+	};
+	return [ret,ret_last_char];
+};
+CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
+	if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
+		if (use_delim){
+			var pos = use_delim.indexOf(" ");
+			if (pos > -1){
+				var pre_quote = use_delim.slice(0,pos);
+				use_delim = use_delim.slice(pos);
+			} else {
+				var pre_quote = use_delim;
+				use_delim = "";
+			};
+			ret = ret.slice(0,(ret.length-1)) + pre_quote + ret.slice((ret.length-1));
+		};
+	};
+	return [ret,use_delim];
+};
+CSL.Output.Queue.normalizePrefixPunctuation = function(blobs){
+	var punct = "";
+	if ("object" == typeof blobs[0] && blobs[0].blobs.length){
+		CSL.Output.Queue.normalizePrefixPunctuation(blobs[0].blobs);
+	}
+	if ("object" == typeof blobs){
+		for (var pos=(blobs.length-1); pos > 0; pos += -1){
+			if (!blobs[pos].blobs){
+				continue;
+			}
+			var m = blobs[pos].strings.prefix.match(/^([!.?])(.*)/);
+			if (m){
+				blobs[pos].strings.prefix = m[2];
+				if (["!",".","?"].indexOf(blobs[(pos-1)].strings.suffix.slice(-1)) > -1){
+					blobs[(pos-1)].strings.suffix += m[1];
+				}
+			};
+			if ("object" == typeof blobs[pos] && blobs[pos].blobs.length){
+				CSL.Output.Queue.normalizePrefixPunctuation(blobs[pos].blobs);
+			}
+		};
+	};
+};
 dojo.provide("csl.build");
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
@@ -157,7 +567,7 @@ CSL.Engine = function(sys,style,lang) {
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
 	this.configureTokenLists();
-	this.registry = new CSL.Factory.Registry(this);
+	this.registry = new CSL.Registry(this);
 	this.splice_delimiter = false;
 	this.fun.flipflopper = new CSL.Util.FlipFlopper(this);
 	this.setCloseQuotesArray();
@@ -923,7 +1333,7 @@ CSL.Engine.Citation = function (state){
 	 // a citation.</p>
 	this.opt = new Object();
 	this.tokens = new Array();
-	this.srt = new CSL.Factory.Registry.Comparifier(state,"citation_sort");
+	this.srt = new CSL.Registry.Comparifier(state,"citation_sort");
 	this.opt.collapse = new Array();
 	this.opt["disambiguate-add-names"] = false;
 	this.opt["disambiguate-add-givenname"] = false;
@@ -1348,7 +1758,7 @@ CSL.Lib.Elements.text = new function(){
 								state.tmp.last_element_trace = false;
 							};
 							var num = state.registry.registry[id].seq;
-							var number = new CSL.Output.Number(num,this);
+							var number = new CSL.NumericBlob(num,this);
 							state.output.append(number,"literal");
 						};
 					};
@@ -1365,7 +1775,7 @@ CSL.Lib.Elements.text = new function(){
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
 							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
 							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
-							var number = new CSL.Output.Number(num,this);
+							var number = new CSL.NumericBlob(num,this);
 							var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
 							state.output.append(number,"literal");
@@ -2054,7 +2464,7 @@ CSL.Lib.Elements.number = new function(){
 				var m = num.match(/\s*([0-9]+).*/);
 				if (m){
 					num = parseInt( m[1], 10);
-					var number = new CSL.Output.Number( num, this );
+					var number = new CSL.NumericBlob( num, this );
 					state.output.append(number,"literal");
 				} else {
 					state.output.append(num, this);
@@ -2354,7 +2764,7 @@ CSL.Lib.Elements["date-part"] = new function(){
 				if (!state.opt.has_year_suffix && "year" == this.strings.name){
 					if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
 						var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
-						var number = new CSL.Output.Number(num,this);
+						var number = new CSL.NumericBlob(num,this);
 						var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 						number.setFormatter(formatter);
 						state.output.append(number,"literal");
@@ -3651,6 +4061,74 @@ CSL.Factory.Blob.prototype.push = function(blob){
 		this.blobs.push(blob);
 	}
 };
+dojo.provide("csl.range");
+if (!CSL) {
+}
+CSL.NumericBlob = function(num,mother_token){
+	this.alldecor = new Array();
+	this.num = num;
+	this.blobs = num.toString();
+	this.status = CSL.START;
+	this.strings = new Object();
+	if (mother_token){
+		this.decorations = mother_token.decorations;
+		this.strings.prefix = mother_token.strings.prefix;
+		this.strings.suffix = mother_token.strings.suffix;
+		this.strings["text-case"] = mother_token.strings["text-case"];
+		this.successor_prefix = mother_token.successor_prefix;
+		this.range_prefix = mother_token.range_prefix;
+		this.splice_prefix = "";
+		this.formatter = mother_token.formatter;
+		if (!this.formatter){
+			this.formatter =  new CSL.Output.DefaultFormatter();
+		}
+		if (this.formatter){
+			this.type = this.formatter.format(1);
+		}
+	} else {
+		this.decorations = new Array();
+		this.strings.prefix = "";
+		this.strings.suffix = "";
+		this.successor_prefix = "";
+		this.range_prefix = "";
+		this.splice_prefix = "";
+		this.formatter = new CSL.Output.DefaultFormatter();
+	}
+};
+CSL.NumericBlob.prototype.setFormatter = function(formatter){
+	this.formatter = formatter;
+	this.type = this.formatter.format(1);
+};
+CSL.Output.DefaultFormatter = function (){};
+CSL.Output.DefaultFormatter.prototype.format = function (num){
+	return num.toString();
+};
+CSL.NumericBlob.prototype.checkNext = function(next){
+	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
+		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
+			this.status = CSL.END;
+		}
+		if ("object" == typeof next){
+			next.status = CSL.SEEN;
+		}
+	} else { // next number is in the sequence
+		if (this.status == CSL.START || this.status == CSL.SEEN){
+			next.status = CSL.SUCCESSOR;
+		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
+			if (this.range_prefix){
+				next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
+				this.status = CSL.SUPPRESS;
+			} else {
+				next.status = CSL.SUCCESSOR;
+			}
+		}
+		// won't see this again, so no effect of processing, but this
+		// wakes up the correct delimiter.
+		if (this.status == CSL.SEEN){
+			this.status = CSL.SUCCESSOR;
+		}
+	};
+};
 dojo.provide("csl.util");
 if (!CSL){
 }
@@ -4737,484 +5215,6 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	blob.decorations.reverse();
 	return newdecor;
 };
-dojo.provide("csl.queue");
-CSL.Output = {};
-CSL.Output.Queue = function(state){
-	this.state = state;
-	this.queue = new Array();
-	this.empty = new CSL.Factory.Token("empty");
-	var tokenstore = {};
-	tokenstore["empty"] = this.empty;
-	this.formats = new CSL.Factory.Stack( tokenstore );
-	this.current = new CSL.Factory.Stack( this.queue );
-	this.suppress_join_punctuation = false;
-};
-CSL.Output.Queue.prototype.getToken = function(name){
-	var ret = this.formats.value()[name];
-	return ret;
-};
-// Store a new output format token based on another
-CSL.Output.Queue.prototype.addToken = function(name,modifier,token){
-	var newtok = new CSL.Factory.Token("output");
-	if ("string" == typeof token){
-		token = this.formats.value()[token];
-	}
-	if (token && token.strings){
-		for (attr in token.strings){
-			newtok.strings[attr] = token.strings[attr];
-		}
-		newtok.decorations = token.decorations;
-	}
-	if ("string" == typeof modifier){
-		newtok.strings.delimiter = modifier;
-	}
-	this.formats.value()[name] = newtok;
-};
-//
-// newFormat adds a new bundle of formatting tokens to
-// the queue's internal stack of such bundles
-CSL.Output.Queue.prototype.pushFormats = function(tokenstore){
-	if (!tokenstore){
-		tokenstore = new Object();
-	}
-	tokenstore["empty"] = this.empty;
-	this.formats.push(tokenstore);
-};
-CSL.Output.Queue.prototype.popFormats = function(tokenstore){
-	this.formats.pop();
-};
-CSL.Output.Queue.prototype.startTag = function(name,token){
-	var tokenstore = new Object();
-	tokenstore[name] = token;
-	this.pushFormats( tokenstore );
-	this.openLevel(name);
-}
-CSL.Output.Queue.prototype.endTag = function(){
-	this.closeLevel();
-	this.popFormats();
-}
-//
-// newlevel adds a new blob object to the end of the current
-// list, and adjusts the current pointer so that subsequent
-// appends are made to blob list of the new object.
-CSL.Output.Queue.prototype.openLevel = function(token){
-	if (!this.formats.value()[token]){
-		throw "CSL processor error: call to nonexistent format token \""+token+"\"";
-	}
-	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
-	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
-		// this.state.tmp.offset_characters += blob.strings.prefix.length;
-		this.state.tmp.offset_characters += blob.strings.prefix;
-	}
-	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length){
-		// this.state.tmp.offset_characters += blob.strings.suffix.length;
-		this.state.tmp.offset_characters += blob.strings.suffix;
-	}
-	var curr = this.current.value();
-	curr.push( blob );
-	this.current.push( blob );
-};
-CSL.Output.Queue.prototype.closeLevel = function(name){
-	this.current.pop();
-}
-//
-// append does the same thing as newlevel, except
-// that the blob it pushes has text content,
-// and the current pointer is not moved after the push.
-CSL.Output.Queue.prototype.append = function(str,tokname){
-	if ("undefined" == typeof str){
-		return;
-	};
-	if ("number" == typeof str){
-		str = ""+str;
-	}
-	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() == "suppress-me"){
-		return;
-	}
-	var blob = false;
-	if (!tokname){
-		var token = this.formats.value()["empty"];
-	} else if (tokname == "literal"){
-		var token = true;
-	} else if ("string" == typeof tokname){
-		var token = this.formats.value()[tokname];
-	} else {
-		var token = tokname;
-	}
-	if (!token){
-		throw "CSL processor error: unknown format token name: "+tokname;
-	}
-	if ("string" == typeof str && str.length){
-		this.last_char_rendered = str.slice(-1);
-	}
-	blob = new CSL.Factory.Blob(token,str);
-	if (this.state.tmp.count_offset_characters && blob.strings.prefix){
-		this.state.tmp.offset_characters += blob.strings.prefix.length;
-	}
-	if (this.state.tmp.count_offset_characters && blob.strings.suffix){
-		this.state.tmp.offset_characters += blob.strings.suffix.length;
-	}
-	var curr = this.current.value();
-	if ("string" == typeof blob.blobs){
-		this.state.tmp.term_predecessor = true;
-	}
-	if (this.state.tmp.count_offset_characters){
-		if ("string" == typeof str){
-			this.state.tmp.offset_characters += blob.strings.prefix.length;
-			this.state.tmp.offset_characters += blob.strings.suffix.length;
-			this.state.tmp.offset_characters += blob.blobs.length;
-		} else if ("undefined" != str.num){
-			this.state.tmp.offset_characters += str.strings.prefix.length;
-			this.state.tmp.offset_characters += str.strings.suffix.length;
-			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
-		}
-	}
-	if ("string" == typeof str){
-		curr.push( blob );
-		if (blob.strings["text-case"]){
-			//
-			// This one is _particularly_ hard to follow.  It's not obvious,
-			// but the blob already contains the input string at this
-			// point, as blob.blobs -- it's a terminal node, as it were.
-			// The str variable also contains the input string, but
-			// that copy is not used for onward processing.  We have to
-			// apply our changes to the blob copy.
-			//
-			blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
-		};
-		this.state.fun.flipflopper.init(str,blob);
-		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
-		this.state.fun.flipflopper.processTags();
-	} else {
-		curr.push( str );
-	}
-}
-//
-// Maybe the way to do this is to take it by layers, and
-// analyze a FLAT list of blobs returned during recursive
-// execution.  If the list is all numbers and there is no
-// group decor, don't touch it.  If it ends in numbers,
-// set the group delimiter on the first in the series,
-// and join the strings with the group delimiter.  If it
-// has numbers followed by strings, render each number
-// in place, and join with the group delimiter.  Return
-// the mixed flat list, and recurse upward.
-//
-// That sort of cascade should work, and should be more
-// easily comprehensible than this mess.
-//
-CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
-	var blobs = myblobs.slice();
-	var ret = new Array();
-	if (blobs.length == 0){
-		return ret;
-	}
-	if (!blob){
-		CSL.Output.Queue.normalizePrefixPunctuation(blobs);
-	}
-	var blob_last_chars = new Array();
-	if (blob){
-		var blob_delimiter = blob.strings.delimiter;
-	} else {
-		var blob_delimiter = "";
-	};
-	for (var i in blobs){
-		var blobjr = blobs[i];
-		if ("string" == typeof blobjr.blobs){
-			var last_str = "";
-			if (blobjr.strings.suffix){
-				last_str = blobjr.strings.suffix;
-			} else if (blobjr.blobs){
-				last_str = blobjr.blobs;
-			};
-			//var last_char = last_str[(last_str.length-1)];
-			var last_char = last_str.slice(-1);
-			if ("number" == typeof blobjr.num){
-				ret.push(blobjr);
-				blob_last_chars.push(last_char);
-			} else if (blobjr.blobs){
-				// skip empty strings!!!!!!!!!!!!
-				//
-				// text_escape is applied by flipflopper.
-				//
-				var b = blobjr.blobs;
-				if (!state.tmp.suppress_decorations){
-					for each (var params in blobjr.decorations){
-						b = state.fun.decorate[params[0]][params[1]](state,b);
-					};
-				};
-				var use_suffix = blobjr.strings.suffix;
-				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
-				    use_suffix = use_suffix.slice(1);
-				}
-				//
-				// Handle punctuation/quote swapping for suffix.
-				//
-				var qres = this.swapQuotePunctuation(b,use_suffix);
-				b = qres[0];
-				use_suffix = qres[1];
-				b = blobjr.strings.prefix + b + use_suffix;
-				ret.push(b);
-				blob_last_chars.push(last_char);
-			};
-		} else if (blobjr.blobs.length){
-			var res = state.output.string(state,blobjr.blobs,blobjr);
-			var addtoret = res[0];
-			ret = ret.concat(addtoret);
-			blob_last_chars = blob_last_chars.concat(res[1]);
-			//blob_last_chars = res[1];
-		} else {
-			continue;
-		}
-	};
-	var span_split = 0;
-	for (var j in ret){
-		if ("string" == typeof ret[j]){
-			span_split = (parseInt(j,10)+1);
-		}
-	}
-	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
-		span_split = ret.length;
-	}
-	var res = state.output.renderBlobs( ret.slice(0,span_split), blob_delimiter, blob_last_chars);
-	var blobs_start = res[0];
-	blob_last_chars = res[1].slice();
-	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)){
-		if (!state.tmp.suppress_decorations){
-			for each (var params in blob.decorations){
-				blobs_start = state.fun.decorate[params[0]][params[1]](state,blobs_start);
-			}
-		}
-		//
-		// XXXX: cut-and-paste warning.  same as a code block above.
-		//
-		var b = blobs_start;
-		var use_suffix = blob.strings.suffix;
-		if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
-			use_suffix = use_suffix.slice(1);
-		}
-		//
-		// Handle punctuation/quote swapping for suffix.
-		//
-		var qres = this.swapQuotePunctuation(b,use_suffix);
-		b = qres[0];
-		use_suffix = qres[1];
-		b = blob.strings.prefix + b + use_suffix;
-		blobs_start = b;
-	}
-	var blobs_end = ret.slice(span_split,ret.length);
-	if (!blobs_end.length && blobs_start){
-		ret = [blobs_start];
-	} else if (blobs_end.length && !blobs_start) {
-		ret = blobs_end;
-	} else if (blobs_start && blobs_end.length) {
-		ret = [blobs_start].concat(blobs_end);
-	}
-	if ("undefined" == typeof blob){
-		this.queue = new Array();
-		this.current.mystack = new Array();
-		this.current.mystack.push( this.queue );
-		if (state.tmp.suppress_decorations){
-			var res = state.output.renderBlobs(ret);
-			ret = res[0];
-			blob_last_chars = res[1].slice();
-		};
-	} else if ("boolean" == typeof blob){
-		var res = state.output.renderBlobs(ret);
-		ret = res[0];
-		blob_last_chars = res[1].slice();
-	};
-	if (blob){
-		return [ret,blob_last_chars.slice()];
-	} else {
-		return ret;
-	};
-};
-CSL.Output.Queue.prototype.clearlevel = function(){
-	var blob = this.current.value();
-	for (var i=(blob.blobs.length-1); i > -1; i--){
-		blob.blobs.pop();
-	}
-};
-CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
-	if (!delim){
-		delim = "";
-	}
-	if (!blob_last_chars){
-		blob_last_chars = [];
-	};
-	var state = this.state;
-	var ret = "";
-	var ret_last_char = [];
-	var use_delim = "";
-	var l = blobs.length;
-	for (var i=0; i < l; i++){
-		if (blobs[i].checkNext){
-			blobs[i].checkNext(blobs[(i+1)]);
-		}
-	}
-	for (var i in blobs){
-		var blob = blobs[i];
-		if (ret){
-			use_delim = delim;
-		}
-		if (blob && "string" == typeof blob){
-			//throw "Attempt to render string as rangeable blob"
-			if (use_delim && blob_last_chars[(i-1)] == use_delim[0]) {
-				//
-				// Something for posterity, at the end of a remarkably
-				// unproductive day.
-				//
-				//CSL.debug("  ####################################################");
-				//CSL.debug("  ######################## EUREKA ####################");
-				//CSL.debug("  ####################################################");
-				use_delim = use_delim.slice(1);
-			};
-			//
-			// Handle punctuation/quote swapping for delimiter joins.
-			//
-			var res = this.swapQuotePunctuation(ret,use_delim);
-			ret = res[0];
-			use_delim = res[1];
-			ret += use_delim;
-			ret += blob;
-			ret_last_char = blob_last_chars.slice(-1);
-		} else if (blob.status != CSL.SUPPRESS){
-			// CSL.debug("doing rangeable blob");
-			//var str = blob.blobs;
-			var str = blob.formatter.format(blob.num);
-			if (blob.strings["text-case"]){
-				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
-			}
-			if (!state.tmp.suppress_decorations){
-				for each (var params in blob.decorations){
-					str = state.fun.decorate[params[0]][params[1]](state,str);
-				};
-			};
-			//if (!suppress_decor){
-				str = blob.strings.prefix + str + blob.strings.suffix;
-			//}
-			if (blob.status == CSL.END){
-				ret += blob.range_prefix;
-			} else if (blob.status == CSL.SUCCESSOR){
-				ret += blob.successor_prefix;
-			} else if (blob.status == CSL.START){
-				ret += blob.splice_prefix;
-			};
-			ret += str;
-			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
-			ret_last_char = blob_last_chars.slice(-1);
-		};
-	};
-	return [ret,ret_last_char];
-};
-CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
-	if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
-		if (use_delim){
-			var pos = use_delim.indexOf(" ");
-			if (pos > -1){
-				var pre_quote = use_delim.slice(0,pos);
-				use_delim = use_delim.slice(pos);
-			} else {
-				var pre_quote = use_delim;
-				use_delim = "";
-			};
-			ret = ret.slice(0,(ret.length-1)) + pre_quote + ret.slice((ret.length-1));
-		};
-	};
-	return [ret,use_delim];
-};
-CSL.Output.Queue.normalizePrefixPunctuation = function(blobs){
-	var punct = "";
-	if ("object" == typeof blobs[0] && blobs[0].blobs.length){
-		CSL.Output.Queue.normalizePrefixPunctuation(blobs[0].blobs);
-	}
-	if ("object" == typeof blobs){
-		for (var pos=(blobs.length-1); pos > 0; pos += -1){
-			if (!blobs[pos].blobs){
-				continue;
-			}
-			var m = blobs[pos].strings.prefix.match(/^([!.?])(.*)/);
-			if (m){
-				blobs[pos].strings.prefix = m[2];
-				if (["!",".","?"].indexOf(blobs[(pos-1)].strings.suffix.slice(-1)) > -1){
-					blobs[(pos-1)].strings.suffix += m[1];
-				}
-			};
-			if ("object" == typeof blobs[pos] && blobs[pos].blobs.length){
-				CSL.Output.Queue.normalizePrefixPunctuation(blobs[pos].blobs);
-			}
-		};
-	};
-};
-dojo.provide("csl.range");
-if (!CSL) {
-}
-CSL.Output.Number = function(num,mother_token){
-	this.alldecor = new Array();
-	this.num = num;
-	this.blobs = num.toString();
-	this.status = CSL.START;
-	this.strings = new Object();
-	if (mother_token){
-		this.decorations = mother_token.decorations;
-		this.strings.prefix = mother_token.strings.prefix;
-		this.strings.suffix = mother_token.strings.suffix;
-		this.strings["text-case"] = mother_token.strings["text-case"];
-		this.successor_prefix = mother_token.successor_prefix;
-		this.range_prefix = mother_token.range_prefix;
-		this.splice_prefix = "";
-		this.formatter = mother_token.formatter;
-		if (!this.formatter){
-			this.formatter =  new CSL.Output.DefaultFormatter();
-		}
-		if (this.formatter){
-			this.type = this.formatter.format(1);
-		}
-	} else {
-		this.decorations = new Array();
-		this.strings.prefix = "";
-		this.strings.suffix = "";
-		this.successor_prefix = "";
-		this.range_prefix = "";
-		this.splice_prefix = "";
-		this.formatter = new CSL.Output.DefaultFormatter();
-	}
-};
-CSL.Output.Number.prototype.setFormatter = function(formatter){
-	this.formatter = formatter;
-	this.type = this.formatter.format(1);
-};
-CSL.Output.DefaultFormatter = function (){};
-CSL.Output.DefaultFormatter.prototype.format = function (num){
-	return num.toString();
-};
-CSL.Output.Number.prototype.checkNext = function(next){
-	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
-		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
-			this.status = CSL.END;
-		}
-		if ("object" == typeof next){
-			next.status = CSL.SEEN;
-		}
-	} else { // next number is in the sequence
-		if (this.status == CSL.START || this.status == CSL.SEEN){
-			next.status = CSL.SUCCESSOR;
-		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
-			if (this.range_prefix){
-				next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
-				this.status = CSL.SUPPRESS;
-			} else {
-				next.status = CSL.SUCCESSOR;
-			}
-		}
-		// won't see this again, so no effect of processing, but this
-		// wakes up the correct delimiter.
-		if (this.status == CSL.SEEN){
-			this.status = CSL.SUCCESSOR;
-		}
-	};
-};
 dojo.provide("csl.formatters");
 if (!CSL) {
 }
@@ -5423,11 +5423,11 @@ dojo.provide("csl.registry");
 //
 // we'll need a reset method, to clear the decks
 // in the citation area and start over.
-CSL.Factory.Registry = function(state){
+CSL.Registry = function(state){
 	this.state = state;
 	this.registry = new Object();
 	this.reflist = new Array();
-	this.namereg = new CSL.Factory.Registry.NameReg(state);
+	this.namereg = new CSL.Registry.NameReg(state);
 	this.mylist = new Array();
 	this.myhash = new Object();
 	this.deletes = new Array();
@@ -5435,7 +5435,7 @@ CSL.Factory.Registry = function(state){
 	this.refreshes = new Object();
 	this.akeys = new Object();
 	this.ambigcites = new Object();
-	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
+	this.sorter = new CSL.Registry.Comparifier(state,"bibliography_sort");
 	this.modes = CSL.getModes.call(this.state);
 	this.getSortedIds = function(){
 		var ret = [];
@@ -5494,7 +5494,7 @@ CSL.Factory.Registry = function(state){
 // 18. (o) [sorttokens] Resort token list
 // 19. (o) [renumber] Reset citation numbers on list items
 //
-CSL.Factory.Registry.prototype.init = function(myitems){
+CSL.Registry.prototype.init = function(myitems){
 	this.mylist = myitems;
 	this.myhash = new Object();
 	for each (var item in myitems){
@@ -5503,7 +5503,7 @@ CSL.Factory.Registry.prototype.init = function(myitems){
 	this.refreshes = new Object();
 	this.touched = new Object();
 };
-CSL.Factory.Registry.prototype.dodeletes = function(myhash){
+CSL.Registry.prototype.dodeletes = function(myhash){
 	if ("string" == typeof myhash){
 		myhash = {myhash:true};
 	};
@@ -5547,7 +5547,7 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 		};
 	};
 };
-CSL.Factory.Registry.prototype.doinserts = function(mylist){
+CSL.Registry.prototype.doinserts = function(mylist){
 	if ("string" == typeof mylist){
 		mylist = [mylist];
 	};
@@ -5608,7 +5608,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 		};
 	};
 };
-CSL.Factory.Registry.prototype.rebuildlist = function(){
+CSL.Registry.prototype.rebuildlist = function(){
 	this.reflist = new Array();
 	var count = 1;
 	for each (var item in this.mylist){
@@ -5617,7 +5617,7 @@ CSL.Factory.Registry.prototype.rebuildlist = function(){
 		count += 1;
 	};
 };
-CSL.Factory.Registry.prototype.dorefreshes = function(){
+CSL.Registry.prototype.dorefreshes = function(){
 	for (var item in this.refreshes){
 		var regtoken = this.registry[item];
 		delete this.registry[item];
@@ -5633,7 +5633,7 @@ CSL.Factory.Registry.prototype.dorefreshes = function(){
 		this.touched[item] = true;
 	};
 };
-CSL.Factory.Registry.prototype.setdisambigs = function(){
+CSL.Registry.prototype.setdisambigs = function(){
 	this.leftovers = new Array();
 	for (var akey in this.akeys){
 		//
@@ -5669,14 +5669,14 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 	};
 	this.akeys = new Object();
 };
-CSL.Factory.Registry.prototype.renumber = function(){
+CSL.Registry.prototype.renumber = function(){
 	var count = 1;
 	for each (var item in this.reflist){
 		item.seq = count;
 		count += 1;
 	};
 };
-CSL.Factory.Registry.prototype.yearsuffix = function(){
+CSL.Registry.prototype.yearsuffix = function(){
 	for each (var leftovers in this.leftovers){
 		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
 			//CSL.debug("ORDER OF ASSIGNING YEAR SUFFIXES");
@@ -5691,16 +5691,16 @@ CSL.Factory.Registry.prototype.yearsuffix = function(){
 		};
 	};
 };
-CSL.Factory.Registry.prototype.setsortkeys = function(){
+CSL.Registry.prototype.setsortkeys = function(){
 	for (var item in this.touched){
 		this.registry[item].sortkeys = CSL.getSortKeys.call(this.state,this.state.sys.retrieveItem(item),"bibliography_sort");
 		//CSL.debug("touched: "+item+" ... "+this.registry[item].sortkeys);
 	};
 };
-CSL.Factory.Registry.prototype.sorttokens = function(){
+CSL.Registry.prototype.sorttokens = function(){
 	this.reflist.sort(this.sorter.compareKeys);
 };
-CSL.Factory.Registry.Comparifier = function(state,keyset){
+CSL.Registry.Comparifier = function(state,keyset){
 	var sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function(a,b){
 		var l = a.sortkeys.length;
@@ -5739,7 +5739,7 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
 		};
 	};
 };
-CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
+CSL.Registry.prototype.compareRegistryTokens = function(a,b){
 	if (a.seq > b.seq){
 		return 1;
 	} else if (a.seq < b.seq){
@@ -5747,7 +5747,7 @@ CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
 	}
 	return 0;
 };
-CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
+CSL.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
 	if ( ! this.ambigcites[akey]){
 		this.ambigcites[akey] = new Array();
 	};
@@ -5780,7 +5780,7 @@ CSL.getSortKeys = function(Item,key_type){
 	return this[key_type].keys;
 };
 dojo.provide("csl.namereg");
-CSL.Factory.Registry.NameReg = function(state){
+CSL.Registry.NameReg = function(state){
 	this.state = state;
 	this.namereg = new Object();
 	this.nameind = new Object();
@@ -5981,7 +5981,7 @@ CSL.Factory.Registry.NameReg = function(state){
 };
 dojo.provide("csl.disambiguate");
 var debug = false;
-CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
+CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
 	if ( ! candidate_list){
 		//
 		// We start with the state and an ambig key.
@@ -6114,7 +6114,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 	}
 	return ret;
 };
-CSL.Factory.Registry.prototype.Checkerator = function(tokens,modes){
+CSL.Registry.prototype.Checkerator = function(tokens,modes){
 	this.seen = new Array();
 	this.modes = modes;
 	this.mode = this.modes[0];
@@ -6133,19 +6133,19 @@ CSL.Factory.Registry.prototype.Checkerator = function(tokens,modes){
 	this.modepos = 0;
 	this.mode1_counts = false;
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.run = function(){
+CSL.Registry.prototype.Checkerator.prototype.run = function(){
 	if (this.seen.length < this.tokens_length){
 		return true;
 	}
 	return false;
 }
-CSL.Factory.Registry.prototype.Checkerator.prototype.setMaxVals = function(maxvals){
+CSL.Registry.prototype.Checkerator.prototype.setMaxVals = function(maxvals){
 	this.maxvals = maxvals;
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.setMinVal = function(minval){
+CSL.Registry.prototype.Checkerator.prototype.setMinVal = function(minval){
 	this.minval = minval;
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.setBase = function(base){
+CSL.Registry.prototype.Checkerator.prototype.setBase = function(base){
 	this.base = base;
 	if (! this.mode1_counts){
 		this.mode1_counts = new Array();
@@ -6154,10 +6154,10 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.setBase = function(base){
 		}
 	}
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.setMode = function(mode){
+CSL.Registry.prototype.Checkerator.prototype.setMode = function(mode){
 	this.mode = mode;
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.checkForClash = function(str,otherstr){
+CSL.Registry.prototype.Checkerator.prototype.checkForClash = function(str,otherstr){
 	if (str == otherstr){
 		if (this.mode == "names" || this.mode == "disambiguate_true"){
 			this.clashes += 1;
@@ -6175,7 +6175,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.checkForClash = function(st
 		return false;
 	}
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(){
+CSL.Registry.prototype.Checkerator.prototype.evaluateClashes = function(){
 	if (!this.maxvals.length){
 		return false;
 	}
@@ -6231,7 +6231,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 		return ret;
 	}
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function (){
+CSL.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function (){
 	if (!this.maxvals.length){
 		return true;
 	}
@@ -6271,7 +6271,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 	}
 	return false;
 };
-CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = function (){
+CSL.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = function (){
 	if (this.mode == "names"){
 		var val = this.base["names"][this.modepos];
 		if (val < this.maxvals[this.modepos]){
@@ -6314,7 +6314,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 		}
 	}
 };
-CSL.Factory.Registry.prototype.decrementNames = function(state,base){
+CSL.Registry.prototype.decrementNames = function(state,base){
 	var base_return = CSL.Factory.cloneAmbigConfig(base);
 	var do_me = false;
 	for (var i=(base_return["givens"].length-1); i > -1; i--){

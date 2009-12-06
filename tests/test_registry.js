@@ -39,7 +39,7 @@ doh.register("tests.registry", [
 		try {
 			var sys = new RhinoTest();
 			var engine = new CSL.Engine(sys,"<style></style>");
-			var obj = new CSL.Factory.Registry(engine);
+			var obj = new CSL.Registry(engine);
 			var res = "Success";
 		} catch (e){
 			var res = e;
@@ -49,7 +49,6 @@ doh.register("tests.registry", [
 	function testItemReshuffle(){
 		var sys = new RhinoTest();
 		var engine = new CSL.Engine(sys,"<style></style>");
-		//var registry = new CSL.Factory.Registry(engine);
 		sys._cache["ITEM-1"] = { id:"ITEM-1", title:"Book A"};
 		sys._cache["ITEM-2"] = { id:"ITEM-1", title:"Book B"};
 		sys._cache["ITEM-3"] = { id:"ITEM-1", title:"Book C"};
