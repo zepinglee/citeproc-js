@@ -3916,7 +3916,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	this[this.build.area].tokens.push(end_token);
 	this.build.macro_stack.pop();
 };
-CSL.Factory.cloneAmbigConfig = function(config){
+CSL.cloneAmbigConfig = function(config){
 	var ret = new Object();
 	ret["names"] = new Array();
 	ret["givens"] = new Array();
@@ -5756,7 +5756,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
 		this.ambigcites[akey].push(id);
 	};
 	this.registry[id].ambig = akey;
-	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
+	this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
 };
 CSL.getSortKeys = function(Item,key_type){
 	if (false){
@@ -6084,7 +6084,7 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)){
 			if ( ! state["citation"].opt["disambiguate-add-year-suffix"]){
 				this.checkerator.mode1_counts = false;
-				this.checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
+				this.checkerator.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(base);
 				if (debug){
 					CSL.debug("  ---> Max out: remembering token config for: "+token.id);
 					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
@@ -6317,7 +6317,7 @@ CSL.incrementCheckeratorAmbigLevel = function (){
 	}
 };
 CSL.decrementCheckeratorNames = function(state,base){
-	var base_return = CSL.Factory.cloneAmbigConfig(base);
+	var base_return = CSL.cloneAmbigConfig(base);
 	var do_me = false;
 	for (var i=(base_return["givens"].length-1); i > -1; i--){
 		for (var j=(base_return["givens"][i].length-1); j > -1; j--){
@@ -6344,7 +6344,7 @@ CSL.getAmbigConfig = function(){
 	if (!config){
 		config = this.tmp.disambig_settings;
 	}
-	var ret = CSL.Factory.cloneAmbigConfig(config);
+	var ret = CSL.cloneAmbigConfig(config);
 	return ret;
 };
 CSL.getMaxVals = function(){

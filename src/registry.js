@@ -532,7 +532,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
 		this.ambigcites[akey].push(id);
 	};
 	this.registry[id].ambig = akey;
-	this.registry[id].disambig = CSL.Factory.cloneAmbigConfig(ambig_config);
+	this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
 };
 
 

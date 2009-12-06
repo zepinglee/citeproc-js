@@ -159,7 +159,7 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)){
 			if ( ! state["citation"].opt["disambiguate-add-year-suffix"]){
 				this.checkerator.mode1_counts = false;
-				this.checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
+				this.checkerator.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(base);
 				if (debug){
 					CSL.debug("  ---> Max out: remembering token config for: "+token.id);
 					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
@@ -446,7 +446,7 @@ CSL.decrementCheckeratorNames = function(state,base){
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
 	// unwind
-	var base_return = CSL.Factory.cloneAmbigConfig(base);
+	var base_return = CSL.cloneAmbigConfig(base);
 	var do_me = false;
 	for (var i=(base_return["givens"].length-1); i > -1; i--){
 		for (var j=(base_return["givens"][i].length-1); j > -1; j--){
@@ -477,7 +477,7 @@ CSL.getAmbigConfig = function(){
 	if (!config){
 		config = this.tmp.disambig_settings;
 	}
-	var ret = CSL.Factory.cloneAmbigConfig(config);
+	var ret = CSL.cloneAmbigConfig(config);
 	return ret;
 };
 

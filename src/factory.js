@@ -283,7 +283,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 };
 
 
-CSL.Factory.cloneAmbigConfig = function(config){
+CSL.cloneAmbigConfig = function(config){
 	var ret = new Object();
 	ret["names"] = new Array();
 	ret["givens"] = new Array();
