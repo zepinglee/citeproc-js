@@ -89,11 +89,11 @@ dojo.provide("csl.registry");
  * through the registry item.</p>
  * @class
  */
-CSL.Factory.Registry = function(state){
+CSL.Registry = function(state){
 	this.state = state;
 	this.registry = new Object();
 	this.reflist = new Array();
-	this.namereg = new CSL.Factory.Registry.NameReg(state);
+	this.namereg = new CSL.Registry.NameReg(state);
 	//
 	// shared scratch vars
 	this.mylist = new Array();
@@ -106,7 +106,7 @@ CSL.Factory.Registry = function(state){
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
 	this.ambigcites = new Object();
-	this.sorter = new CSL.Factory.Registry.Comparifier(state,"bibliography_sort");
+	this.sorter = new CSL.Registry.Comparifier(state,"bibliography_sort");
 	this.modes = CSL.getModes.call(this.state);
 
 	this.getSortedIds = function(){
@@ -175,7 +175,7 @@ CSL.Factory.Registry = function(state){
 // 19. (o) [renumber] Reset citation numbers on list items
 //
 
-CSL.Factory.Registry.prototype.init = function(myitems){
+CSL.Registry.prototype.init = function(myitems){
 	//
 	//  1. Receive list as function argument, store as hash and as list.
 	//
@@ -191,7 +191,7 @@ CSL.Factory.Registry.prototype.init = function(myitems){
 	this.touched = new Object();
 };
 
-CSL.Factory.Registry.prototype.dodeletes = function(myhash){
+CSL.Registry.prototype.dodeletes = function(myhash){
 	if ("string" == typeof myhash){
 		myhash = {myhash:true};
 	};
@@ -241,7 +241,7 @@ CSL.Factory.Registry.prototype.dodeletes = function(myhash){
 	// this.state.fun.decorate.items_delete( this.state.output[this.state.opt.mode].tmp, myhash );
 };
 
-CSL.Factory.Registry.prototype.doinserts = function(mylist){
+CSL.Registry.prototype.doinserts = function(mylist){
 	if ("string" == typeof mylist){
 		mylist = [mylist];
 	};
@@ -309,7 +309,7 @@ CSL.Factory.Registry.prototype.doinserts = function(mylist){
 	// this.state.fun.decorate.items_add( this.state.output[this.state.opt.mode].tmp, mylist );
 };
 
-CSL.Factory.Registry.prototype.rebuildlist = function(){
+CSL.Registry.prototype.rebuildlist = function(){
 	//
 	//  5. Create "new" list of hash pointers, in the order given in the argument
 	//     to the update function.
@@ -333,7 +333,7 @@ CSL.Factory.Registry.prototype.rebuildlist = function(){
  * if the list is remangled.  So far so good.
  */
 
-CSL.Factory.Registry.prototype.dorefreshes = function(){
+CSL.Registry.prototype.dorefreshes = function(){
 	//
 	//  7. Refresh items requiring update.
 	//
@@ -368,7 +368,7 @@ CSL.Factory.Registry.prototype.dorefreshes = function(){
  * Main disambiguation -- can everything for disambiguation be
  * crunched into this function?
  */
-CSL.Factory.Registry.prototype.setdisambigs = function(){
+CSL.Registry.prototype.setdisambigs = function(){
 	//
 	// Okay, more changes.  Here is where we resolve all disambiguation
 	// issues for cites touched by the update.  The this.ambigcites set is
@@ -420,7 +420,7 @@ CSL.Factory.Registry.prototype.setdisambigs = function(){
 
 
 
-CSL.Factory.Registry.prototype.renumber = function(){
+CSL.Registry.prototype.renumber = function(){
 	//
 	// 19. Reset citation numbers on list items
 	//
@@ -431,7 +431,7 @@ CSL.Factory.Registry.prototype.renumber = function(){
 	};
 };
 
-CSL.Factory.Registry.prototype.yearsuffix = function(){
+CSL.Registry.prototype.yearsuffix = function(){
 	for each (var leftovers in this.leftovers){
 		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
 			//CSL.debug("ORDER OF ASSIGNING YEAR SUFFIXES");
@@ -447,7 +447,7 @@ CSL.Factory.Registry.prototype.yearsuffix = function(){
 	};
 };
 
-CSL.Factory.Registry.prototype.setsortkeys = function(){
+CSL.Registry.prototype.setsortkeys = function(){
 	//
 	// 17. Set sort keys on each item token.
 	//
@@ -457,7 +457,7 @@ CSL.Factory.Registry.prototype.setsortkeys = function(){
 	};
 };
 
-CSL.Factory.Registry.prototype.sorttokens = function(){
+CSL.Registry.prototype.sorttokens = function(){
 	//
 	// 18. Resort token list.
 	//
@@ -468,7 +468,7 @@ CSL.Factory.Registry.prototype.sorttokens = function(){
  * Compare two sort keys
  * <p>Nested, because keys are an array.</p>
  */
-CSL.Factory.Registry.Comparifier = function(state,keyset){
+CSL.Registry.Comparifier = function(state,keyset){
 	var sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function(a,b){
 		var l = a.sortkeys.length;
@@ -514,7 +514,7 @@ CSL.Factory.Registry.Comparifier = function(state,keyset){
  * <p>Disambiguation lists need to be sorted this way, to
  * obtain the correct year-suffix when that's used.</p>
  */
-CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
+CSL.Registry.prototype.compareRegistryTokens = function(a,b){
 	if (a.seq > b.seq){
 		return 1;
 	} else if (a.seq < b.seq){
@@ -523,7 +523,7 @@ CSL.Factory.Registry.prototype.compareRegistryTokens = function(a,b){
 	return 0;
 };
 
-CSL.Factory.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
+CSL.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
 	if ( ! this.ambigcites[akey]){
 		this.ambigcites[akey] = new Array();
 	};

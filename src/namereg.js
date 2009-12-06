@@ -47,7 +47,7 @@ dojo.provide("csl.namereg");
  * var lev = state.registry.names(state,name);, like.
  *
  */
-CSL.Factory.Registry.NameReg = function(state){
+CSL.Registry.NameReg = function(state){
 	this.state = state;
 	this.namereg = new Object();
 	this.nameind = new Object();

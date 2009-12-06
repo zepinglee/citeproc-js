@@ -295,7 +295,7 @@ CSL.Engine.Citation = function (state){
 	this.opt = new Object();
 
 	this.tokens = new Array();
-	this.srt = new CSL.Factory.Registry.Comparifier(state,"citation_sort");
+	this.srt = new CSL.Registry.Comparifier(state,"citation_sort");
 	//
 	// configuration array to hold the collapse
 	// options, if any.

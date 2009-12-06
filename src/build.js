@@ -91,7 +91,7 @@ CSL.Engine = function(sys,style,lang) {
 
 	this.configureTokenLists();
 
-	this.registry = new CSL.Factory.Registry(this);
+	this.registry = new CSL.Registry(this);
 
 	this.splice_delimiter = false;
 

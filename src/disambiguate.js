@@ -36,7 +36,7 @@ dojo.provide("csl.disambiguate");
 
 var debug = false;
 
-CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
+CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
 	if ( ! candidate_list){
 		//
 		// We start with the state and an ambig key.
@@ -199,7 +199,7 @@ CSL.Factory.Registry.prototype.disambiguateCites = function (state,akey,modes,ca
 /**
  * Management object to support the disambiguation control loop.
  */
-CSL.Factory.Registry.prototype.Checkerator = function(tokens,modes){
+CSL.Registry.prototype.Checkerator = function(tokens,modes){
 	this.seen = new Array();
 	this.modes = modes;
 	this.mode = this.modes[0];
@@ -223,23 +223,23 @@ CSL.Factory.Registry.prototype.Checkerator = function(tokens,modes){
 	this.mode1_counts = false;
 };
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.run = function(){
+CSL.Registry.prototype.Checkerator.prototype.run = function(){
 	if (this.seen.length < this.tokens_length){
 		return true;
 	}
 	return false;
 }
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.setMaxVals = function(maxvals){
+CSL.Registry.prototype.Checkerator.prototype.setMaxVals = function(maxvals){
 	this.maxvals = maxvals;
 };
 
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.setMinVal = function(minval){
+CSL.Registry.prototype.Checkerator.prototype.setMinVal = function(minval){
 	this.minval = minval;
 };
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.setBase = function(base){
+CSL.Registry.prototype.Checkerator.prototype.setBase = function(base){
 	this.base = base;
 	if (! this.mode1_counts){
 		this.mode1_counts = new Array();
@@ -250,11 +250,11 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.setBase = function(base){
 };
 
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.setMode = function(mode){
+CSL.Registry.prototype.Checkerator.prototype.setMode = function(mode){
 	this.mode = mode;
 };
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.checkForClash = function(str,otherstr){
+CSL.Registry.prototype.Checkerator.prototype.checkForClash = function(str,otherstr){
 	if (str == otherstr){
 		if (this.mode == "names" || this.mode == "disambiguate_true"){
 			this.clashes += 1;
@@ -273,7 +273,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.checkForClash = function(st
 	}
 };
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(){
+CSL.Registry.prototype.Checkerator.prototype.evaluateClashes = function(){
 	//
 	// necessary for the odd case of static cites with no authors
 	if (!this.maxvals.length){
@@ -339,7 +339,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.evaluateClashes = function(
 	}
 };
 
-CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function (){
+CSL.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function (){
 	//
 	// like the above, necessary for the odd case of static cites with no authors
 	if (!this.maxvals.length){
@@ -390,7 +390,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function ()
 /**
  * Increment disambiguation level
  */
-CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = function (){
+CSL.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = function (){
 	//
 	// this is a little tricky.  the counters are arrays.
 	// ... and for mode 1, this only gives us the position,
@@ -440,7 +440,7 @@ CSL.Factory.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = funct
 	}
 };
 
-CSL.Factory.Registry.prototype.decrementNames = function(state,base){
+CSL.Registry.prototype.decrementNames = function(state,base){
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
 	// unwind

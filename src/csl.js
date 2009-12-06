@@ -296,13 +296,13 @@ if (!CSL.Output.Formatters){
 if (!CSL.Output.Formats){
 	load("./src/formats.js");
 }
-if (!CSL.Factory.Registry){
+if (!CSL.Registry){
 	load("./src/registry.js");
 }
-if (!CSL.Factory.Registry.prototype.NameReg){
+if (!CSL.Registry.prototype.NameReg){
 	load("./src/namereg.js");
 }
-if (!CSL.Factory.Registry.prototype.disambiguateCites){
+if (!CSL.Registry.prototype.disambiguateCites){
 	load("./src/disambiguate.js");
 }
 
