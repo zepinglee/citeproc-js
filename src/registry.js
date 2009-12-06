@@ -108,6 +108,7 @@ CSL.Registry = function(state){
 	this.ambigcites = new Object();
 	this.sorter = new CSL.Registry.Comparifier(state,"bibliography_sort");
 	this.modes = CSL.getModes.call(this.state);
+	this.checkerator = new CSL.Checkerator();
 
 	this.getSortedIds = function(){
 		var ret = [];

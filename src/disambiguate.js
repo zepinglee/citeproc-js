@@ -77,18 +77,18 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 	if (candidate_list && candidate_list.length){
 		modes = ["disambiguate_true"].concat(modes);
 	}
-	var checkerator = new this.Checkerator(tokens,modes);
+	CSL.initCheckerator.call(this.checkerator,tokens,modes);
 
-	checkerator.lastclashes = (ambigs.length-1);
+	this.checkerator.lastclashes = (ambigs.length-1);
 
 	// We iterate through every cite in the list, front to back.
 	// But we use a while loop, because repeated renderings
 	// of the same cite might be needed.
 	var base = false;
-	checkerator.pos = 0;
+	this.checkerator.pos = 0;
 
-	while (checkerator.run()){
-		var token = tokens[checkerator.pos];
+	while (CSL.runCheckerator.call(this.checkerator)){
+		var token = tokens[this.checkerator.pos];
 		if (debug){
 			CSL.debug("<<<<<<<<<<<<<<<<<<<<<<<<< "+ token.id +" >>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		}
@@ -98,16 +98,16 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 			if (debug){
 				CSL.debug("---> Skip registered token for: "+token.id);
 			}
-			checkerator.pos += 1;
+			this.checkerator.pos += 1;
 			continue;
 		}
-		checkerator.candidate = token.id;
+		this.checkerator.candidate = token.id;
 
 		if (base == false){
-			checkerator.mode = modes[0];
+			this.checkerator.mode = modes[0];
 		}
 		if (debug){
-			CSL.debug("  ---> Mode: "+checkerator.mode);
+			CSL.debug("  ---> Mode: "+this.checkerator.mode);
 		}
 		if (debug){
 			CSL.debug("base in (givens):"+base["givens"]);
@@ -123,9 +123,9 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 			base["disambiguate"] = true;
 		}
 
-		checkerator.setBase(base);
-		checkerator.setMaxVals(maxvals);
-		checkerator.setMinVal(minval);
+		CSL.setCheckeratorBase.call(this.checkerator,base);
+		CSL.setMaxVals.call(this.checkerator,maxvals);
+		CSL.setMinVal.call(this.checkerator,minval);
 
 		for each (testpartner in tokens){
 
@@ -134,21 +134,21 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 			}
 			var otherstr = CSL.getAmbiguousCite.call(state,testpartner,base);
 			if (debug){
-				CSL.debug("  ---> last clashes: "+checkerator.lastclashes);
+				CSL.debug("  ---> last clashes: "+this.checkerator.lastclashes);
 				CSL.debug("  ---> master:    "+token.id);
 				CSL.debug("  ---> master:    "+str);
 				CSL.debug("  ---> partner: "+testpartner.id);
 				CSL.debug("  ---> partner: "+otherstr);
 			}
 
-			if(checkerator.checkForClash(str,otherstr)){
+			if(CSL.checkCheckeratorForClash.call(this.checkerator,str,otherstr)){
 				break;
 			}
 		}
-		if (checkerator.evaluateClashes()){
-			var base_return = this.decrementNames(state,base);
+		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)){
+			var base_return = CSL.decrementCheckeratorNames.call(this,state,base);
 			this.registerAmbigToken(akey,token.id,base_return);
-			checkerator.seen.push(token.id);
+			this.checkerator.seen.push(token.id);
 			if (debug){
 				CSL.debug("  ---> Evaluate: storing token config");
 				CSL.debug("          names: "+base["names"]);
@@ -156,10 +156,10 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 			}
 			continue;
 		}
-		if (checkerator.maxAmbigLevel()){
+		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)){
 			if ( ! state["citation"].opt["disambiguate-add-year-suffix"]){
-				checkerator.mode1_counts = false;
-				checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
+				this.checkerator.mode1_counts = false;
+				this.checkerator.maxed_out_bases[token.id] = CSL.Factory.cloneAmbigConfig(base);
 				if (debug){
 					CSL.debug("  ---> Max out: remembering token config for: "+token.id);
 					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
@@ -170,28 +170,28 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
 				}
 			}
-			checkerator.seen.push(token.id);
+			this.checkerator.seen.push(token.id);
 			base = false;
 			continue;
 		}
 		if (debug){
 			CSL.debug("  ---> Incrementing");
 		}
-		checkerator.incrementAmbigLevel();
+		CSL.incrementCheckeratorAmbigLevel.call(this.checkerator);
 	}
 	// return tuples of registry tokens and item tokens.
 	// the former are useful for second-run disambiguation,
 	// the latter for sorting.
 	var ret = new Array();
-	for each (id in checkerator.ids){
+	for each (id in this.checkerator.ids){
 		if (id){
 			ret.push(this.registry[id]);
 		}
 	}
 	// if we don't have year-suffix available, we may
 	// have maxed out bases lying around
-	for (i in checkerator.maxed_out_bases){
-		this.registry[i].disambig = checkerator.maxed_out_bases[i];
+	for (i in this.checkerator.maxed_out_bases){
+		this.registry[i].disambig = this.checkerator.maxed_out_bases[i];
 	}
 	return ret;
 };
@@ -199,7 +199,9 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 /**
  * Management object to support the disambiguation control loop.
  */
-CSL.Registry.prototype.Checkerator = function(tokens,modes){
+CSL.Checkerator = function(){};
+
+CSL.initCheckerator = function(tokens,modes){
 	this.seen = new Array();
 	this.modes = modes;
 	this.mode = this.modes[0];
@@ -223,23 +225,23 @@ CSL.Registry.prototype.Checkerator = function(tokens,modes){
 	this.mode1_counts = false;
 };
 
-CSL.Registry.prototype.Checkerator.prototype.run = function(){
+CSL.runCheckerator = function(){
 	if (this.seen.length < this.tokens_length){
 		return true;
 	}
 	return false;
 }
 
-CSL.Registry.prototype.Checkerator.prototype.setMaxVals = function(maxvals){
+CSL.setMaxVals = function(maxvals){
 	this.maxvals = maxvals;
 };
 
 
-CSL.Registry.prototype.Checkerator.prototype.setMinVal = function(minval){
+CSL.setMinVal = function(minval){
 	this.minval = minval;
 };
 
-CSL.Registry.prototype.Checkerator.prototype.setBase = function(base){
+CSL.setCheckeratorBase = function(base){
 	this.base = base;
 	if (! this.mode1_counts){
 		this.mode1_counts = new Array();
@@ -250,11 +252,11 @@ CSL.Registry.prototype.Checkerator.prototype.setBase = function(base){
 };
 
 
-CSL.Registry.prototype.Checkerator.prototype.setMode = function(mode){
+CSL.setCheckeratorMode = function(mode){
 	this.mode = mode;
 };
 
-CSL.Registry.prototype.Checkerator.prototype.checkForClash = function(str,otherstr){
+CSL.checkCheckeratorForClash = function(str,otherstr){
 	if (str == otherstr){
 		if (this.mode == "names" || this.mode == "disambiguate_true"){
 			this.clashes += 1;
@@ -273,7 +275,7 @@ CSL.Registry.prototype.Checkerator.prototype.checkForClash = function(str,others
 	}
 };
 
-CSL.Registry.prototype.Checkerator.prototype.evaluateClashes = function(){
+CSL.evaluateCheckeratorClashes = function(){
 	//
 	// necessary for the odd case of static cites with no authors
 	if (!this.maxvals.length){
@@ -339,7 +341,7 @@ CSL.Registry.prototype.Checkerator.prototype.evaluateClashes = function(){
 	}
 };
 
-CSL.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function (){
+CSL.maxCheckeratorAmbigLevel = function (){
 	//
 	// like the above, necessary for the odd case of static cites with no authors
 	if (!this.maxvals.length){
@@ -390,7 +392,7 @@ CSL.Registry.prototype.Checkerator.prototype.maxAmbigLevel = function (){
 /**
  * Increment disambiguation level
  */
-CSL.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = function (){
+CSL.incrementCheckeratorAmbigLevel = function (){
 	//
 	// this is a little tricky.  the counters are arrays.
 	// ... and for mode 1, this only gives us the position,
@@ -440,7 +442,7 @@ CSL.Registry.prototype.Checkerator.prototype.incrementAmbigLevel = function (){
 	}
 };
 
-CSL.Registry.prototype.decrementNames = function(state,base){
+CSL.decrementCheckeratorNames = function(state,base){
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
 	// unwind
