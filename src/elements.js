@@ -1120,7 +1120,7 @@ CSL.Lib.Elements.date = new function(){
 				var datexml = state.build.datexml;
 				delete state.build.datexml;
 				var navi = new state._getNavi( state, datexml );
-				state._build(navi);
+				CSL.buildStyle.call(state,navi);
 			} else {
 				var mergeoutput = function(state,Item){
 					state.output.endTag();

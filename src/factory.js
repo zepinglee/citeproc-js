@@ -265,7 +265,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 		throw "CSL style error: undefined macro \""+mkey+"\"";
 	}
 	var navi = new this._getNavi( this, macroxml );
-	this._build(navi);
+	CSL.buildStyle.call(this,navi);
 
 	var end_token = new CSL.Factory.Token("group",CSL.END);
 	var mergeoutput = function(state,Item){

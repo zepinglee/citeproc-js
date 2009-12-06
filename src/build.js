@@ -135,7 +135,7 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	};
 	var navi = new this._getNavi( this, area_nodes );
 	this.build.area = area;
-	this._build(navi);
+	CSL.buildStyle.call(this,navi);
 };
 
 CSL.Engine.prototype.setStyleAttributes = function(){
@@ -149,16 +149,16 @@ CSL.Engine.prototype.setStyleAttributes = function(){
 	}
 }
 
-CSL.Engine.prototype._build  = function(navi){
+CSL.buildStyle  = function(navi){
 	if (navi.getkids()){
-		this._build(navi);
+		CSL.buildStyle.call(this,navi);
 	} else {
 		if (navi.getbro()){
-			this._build(navi);
+			CSL.buildStyle.call(this,navi);
 		} else {
 			while (navi.nodeList.length > 1) {
 				if (navi.remember()){
-					this._build(navi);
+					CSL.buildStyle.call(this,navi);
 				}
 			}
 		}

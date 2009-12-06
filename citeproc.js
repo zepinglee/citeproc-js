@@ -591,7 +591,7 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	};
 	var navi = new this._getNavi( this, area_nodes );
 	this.build.area = area;
-	this._build(navi);
+	CSL.buildStyle.call(this,navi);
 };
 CSL.Engine.prototype.setStyleAttributes = function(){
 	var dummy = new Object();
@@ -600,16 +600,16 @@ CSL.Engine.prototype.setStyleAttributes = function(){
 		CSL.Lib.Attributes[("@"+this.sys.xml.getAttributeName(attr))].call(dummy,this,this.sys.xml.getAttributeValue(attr));
 	}
 }
-CSL.Engine.prototype._build  = function(navi){
+CSL.buildStyle  = function(navi){
 	if (navi.getkids()){
-		this._build(navi);
+		CSL.buildStyle.call(this,navi);
 	} else {
 		if (navi.getbro()){
-			this._build(navi);
+			CSL.buildStyle.call(this,navi);
 		} else {
 			while (navi.nodeList.length > 1) {
 				if (navi.remember()){
-					this._build(navi);
+					CSL.buildStyle.call(this,navi);
 				}
 			}
 		}
@@ -2628,7 +2628,7 @@ CSL.Lib.Elements.date = new function(){
 				var datexml = state.build.datexml;
 				delete state.build.datexml;
 				var navi = new state._getNavi( state, datexml );
-				state._build(navi);
+				CSL.buildStyle.call(state,navi);
 			} else {
 				var mergeoutput = function(state,Item){
 					state.output.endTag();
@@ -3899,7 +3899,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 		throw "CSL style error: undefined macro \""+mkey+"\"";
 	}
 	var navi = new this._getNavi( this, macroxml );
-	this._build(navi);
+	CSL.buildStyle.call(this,navi);
 	var end_token = new CSL.Factory.Token("group",CSL.END);
 	var mergeoutput = function(state,Item){
 		//
