@@ -48,7 +48,8 @@ CSL.Util.FlipFlopper = function(state){
 		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
 		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],true],
 		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
-		["<ok>","</ok>","passthrough","@passthrough",["true","true"],true],
+		["<span class=\"nocase\">","</span>","passthrough","@passthrough",["true","true"],true],
+		["<span class=\"nodecor\">","</span>","passthrough","@passthrough",["true","true"],true],
 		['"','"',"quotes","@quotes",["true","inner"],"'"],
 		["'","'","quotes","@quotes",["inner","true"],'"']
 	];
@@ -302,7 +303,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				//
 				// CSL.debug(this.okReverseTagsHash[this.blob.alldecor[0][0].join("-is-")]);
 				//
-				if (tag == "<ok>"){
+				if (tag == "<span class=\"nodecor\">"){
 					for each (var level in this.blob.alldecor){
 						for each (var decor in level){
 							if (["@font-style"].indexOf(decor[0]) > -1){
@@ -310,7 +311,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 								// pairing composed of two copies of the "undo" side
 								// of the decor's format parameter.  The effect
 								// is to undo all decor at the top level of
-								// an <ok> span.
+								// an <span class="nocase"> span.
 								param = this.addFlipFlop(newblobnest,this.okReverseHash[decor[0]]);
 							}
 						}

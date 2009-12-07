@@ -69,7 +69,7 @@ This IS a Pen That Is a smith Pencil
 [
     {
         "id": "ITEM-1", 
-        "title": "This IS a pen that is a <ok>smith</ok> pencil", 
+        "title": "This IS a pen that is a <span class=\"nocase\">smith</span> pencil", 
         "type": "book"
     }
 ]

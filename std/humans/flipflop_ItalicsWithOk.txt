@@ -88,7 +88,7 @@ bibliography
             ]
         }, 
         "page": "1078-1100", 
-        "title": "Lessard <ok>v.</ok> Schmidt", 
+        "title": "Lessard <span class=\"nodecor\">v.</span> Schmidt", 
         "type": "legal_case", 
         "volume": "349"
     }

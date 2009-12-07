@@ -63,7 +63,7 @@ var CSL = new function () {
 	x = x.concat(["revision-date"]);
 	this.NUMERIC_VARIABLES = x.slice();
 	this.DATE_VARIABLES = ["issued","event","accessed","container","original-date"];
-	this.TAG_ESCAPE = /(<ok>.*?<\/ok>)/;
+	this.TAG_ESCAPE = /(<span class=\"no(?:case|decor)\">.*?<\/span>)/;
 	this.TAG_USEALL = /(<[^>]+>)/;
 	this.SKIP_WORDS = ["a","the","an"];
 	var x = new Array();
@@ -4948,7 +4948,8 @@ CSL.Util.FlipFlopper = function(state){
 		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
 		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],true],
 		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
-		["<ok>","</ok>","passthrough","@passthrough",["true","true"],true],
+		["<span class=\"nocase\">","</span>","passthrough","@passthrough",["true","true"],true],
+		["<span class=\"nodecor\">","</span>","passthrough","@passthrough",["true","true"],true],
 		['"','"',"quotes","@quotes",["true","inner"],"'"],
 		["'","'","quotes","@quotes",["inner","true"],'"']
 	];
@@ -5180,7 +5181,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				//
 				// CSL.debug(this.okReverseTagsHash[this.blob.alldecor[0][0].join("-is-")]);
 				//
-				if (tag == "<ok>"){
+				if (tag == "<span class=\"nodecor\">"){
 					for each (var level in this.blob.alldecor){
 						for each (var decor in level){
 							if (["@font-style"].indexOf(decor[0]) > -1){
@@ -5188,13 +5189,12 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 								// pairing composed of two copies of the "undo" side
 								// of the decor's format parameter.  The effect
 								// is to undo all decor at the top level of
-								// an <ok> span.
+								// an <span class="nocase"> span.
 								param = this.addFlipFlop(newblobnest,this.okReverseHash[decor[0]]);
 							}
 						}
 					}
 				}
-				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				this.blobstack.push(newblobnest);
 			};

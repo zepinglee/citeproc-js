@@ -141,7 +141,7 @@ var CSL = new function () {
 	this.NUMERIC_VARIABLES = x.slice();
 	this.DATE_VARIABLES = ["issued","event","accessed","container","original-date"];
 
-	this.TAG_ESCAPE = /(<ok>.*?<\/ok>)/;
+	this.TAG_ESCAPE = /(<span class=\"no(?:case|decor)\">.*?<\/span>)/;
 	this.TAG_USEALL = /(<[^>]+>)/;
 
 	this.SKIP_WORDS = ["a","the","an"];
