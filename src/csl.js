@@ -294,10 +294,10 @@ if (!CSL.Registry){
 	load("./src/registry.js");
 }
 if (!CSL.Registry.prototype.NameReg){
-	load("./src/namereg.js");
+	load("./src/disambig_names.js");
 }
 if (!CSL.Registry.prototype.disambiguateCites){
-	load("./src/disambiguate.js");
+	load("./src/disambig_cites.js");
 }
 
 //SNIP-END
