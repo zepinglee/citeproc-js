@@ -35,7 +35,7 @@
 dojo.provide("tests.std_flipflop");
 
 doh.register("tests.std_flipflop", [
-    function(){
+	function(){
         var test = new StdRhinoTest("flipflop_ItalicsFlipped");
         doh.assertEqual(test.result, test.run());
     },

@@ -97,20 +97,23 @@ CSL.Util.FlipFlopper = function(state){
 		var flipTags = new Object();
 		var openToClose = new Object();
 		var openToDecorations = new Object();
+		var okReverse = new Object();
 		var l = tagdefs.length;
 		for (var i=0; i < l; i += 1){
 			closeTags[tagdefs[i][1]] = true;
 			flipTags[tagdefs[i][1]] = tagdefs[i][5];
 			openToClose[tagdefs[i][0]] = tagdefs[i][1];
 			openToDecorations[tagdefs[i][0]] = [tagdefs[i][3],tagdefs[i][4]];
+			okReverse[tagdefs[i][3]] = [tagdefs[i][3],[tagdefs[i][4][1],tagdefs[i][1]]];
 		};
-		return [closeTags,flipTags,openToClose,openToDecorations];
+		return [closeTags,flipTags,openToClose,openToDecorations,okReverse];
 	};
 	var hashes = makeHashes(tagdefs);
 	this.closeTagsHash = hashes[0];
 	this.flipTagsHash = hashes[1];
 	this.openToCloseHash = hashes[2];
 	this.openToDecorations = hashes[3];
+	this.okReverseHash = hashes[4];
 };
 
 CSL.Util.FlipFlopper.prototype.init = function(str,blob){
@@ -303,17 +306,16 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 					for each (var level in this.blob.alldecor){
 						for each (var decor in level){
 							if (["@font-style"].indexOf(decor[0]) > -1){
-								print(decor[0]);
-								// This will be the @name of the decor, plus the
-								// pairing.  How do we derive the pairing without
-								// the tag?  Do we need an okReverse hash for that?
-								var param = this.addFlipFlop(newblobnest,[decor[0],["normal","normal"]]);
-								// ZZZZZZZZZ
+								// This is be the @name of the decor, plus a
+								// pairing composed of two copies of the "undo" side
+								// of the decor's format parameter.  The effect
+								// is to undo all decor at the top level of
+								// an <ok> span.
+								param = this.addFlipFlop(newblobnest,this.okReverseHash[decor[0]]);
 							}
 						}
 					}
 				}
-				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
 				this.blobstack.push(newblobnest);
 			};
