@@ -52,7 +52,7 @@ dojo.registerModulePath("csl","./src");
 dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo/util/doh");
 
-dojo.require("csl.csl");
+dojo.require("csl.constants");
 
 CSL.debug("#####");
 CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);

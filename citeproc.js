@@ -2,7 +2,7 @@ if ("undefined" == typeof dojo){
 	var dojo = new Object();
 	dojo.provide = function(ignoreme){};
 };
-dojo.provide("csl.csl");
+dojo.provide("csl.constants");
 var CSL = new function () {
 	this.debug = function(str){
 		print(str);
