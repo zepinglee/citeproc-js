@@ -74,7 +74,7 @@ dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo-sm/util/doh");
 
 
-dojo.require("csl.constants");
+dojo.require("csl.load");
 
 CSL.debug("#####");
 // CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);

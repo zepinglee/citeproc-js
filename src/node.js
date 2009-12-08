@@ -32,38 +32,22 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-//This file is the command-line entry point for running the tests in
-//Rhino
+dojo.provide("csl.elements");
+/**
+ * Functions corresponding to CSL element names.
+ * <p>These are static function used during build and
+ * configuration.  The <code>build</code> method is called
+ * on a token generated from the XML node at build time, and
+ * may manipulate either the content of the state object or that
+ * of the token.</p>
+ * <p>The <code>configure</code> method is invoked on the
+ * node during a back-to-front pass through the tokens,
+ * and sets skip positions for conditionals.</p>
+ * <p>Tokens that do not affect citation rendering in any
+ * way can be discarded by not pushing them to the target.
+ * In this case, the <code>configure</code> method need
+ * not be defined.</p>
+ * @class
+ */
+CSL.Node = {};
 
-/*=====
-dojo.tests = {
-	// summary: D.O.H. Test files for Dojo unit testing.
-};
-=====*/
-
-//
-// XXXXX rhino specific
-//
-load("./dojo/dojo/dojo.js");
-dojo.registerModulePath("dojo","./dojo/dojo");
-dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
-
-dojo.require("csl.load");
-
-CSL.debug("#####");
-CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
-if ("UTF-8" != environment["file.encoding"]){
-	environment["file.encoding"] = "UTF-8";
-	environment["sun.jnu.encoding"] = "UTF-8";
-	CSL.debug("Reset Rhino file.encoding to UTF-8");
-}
-CSL.debug("#####");
-
-dojo.require("csl.testing_rhino");
-dojo.require("csl.testing_stdrhino");
-
-load("./tests/run.js");

@@ -32,38 +32,51 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-//This file is the command-line entry point for running the tests in
-//Rhino
+CSL.Node.number = new function(){
+	this.build = build;
+	function build(state,target){
+		CSL.Util.substituteStart.call(this,state,target);
+		//
+		// This should push a rangeable object to the queue.
+		//
+		if (this.strings.form == "roman"){
+			this.formatter = state.fun.romanizer;
+		} else if (this.strings.form == "ordinal"){
+			this.formatter = state.fun.ordinalizer;
+		} else if (this.strings.form == "long-ordinal"){
+			this.formatter = state.fun.long_ordinalizer;
+		}
+		//
+		// Whether we actually stick a number object on
+		// the output queue depends on whether the field
+		// contains a pure number.
+		//
+		var push_number_or_text = function(state,Item){
+			var varname = this.variables[0];
+			if (varname == "page-range" || varname == "page-first"){
+				varname = "page";
+			};
+			var num = Item[varname];
+			if ("undefined" != typeof num) {
+				if (this.variables[0] == "page-first"){
+					var m = num.split(/\s*(&|,|-)\s*/);
+					num = m[0];
+				}
+				var m = num.match(/\s*([0-9]+).*/);
+				if (m){
+					num = parseInt( m[1], 10);
+					var number = new CSL.NumericBlob( num, this );
+					state.output.append(number,"literal");
+				} else {
+					state.output.append(num, this);
+				};
+			};
+		};
+		this["execs"].push(push_number_or_text);
 
-/*=====
-dojo.tests = {
-	// summary: D.O.H. Test files for Dojo unit testing.
+		target.push(this);
+		CSL.Util.substituteEnd.call(this,state,target);
+	};
 };
-=====*/
 
-//
-// XXXXX rhino specific
-//
-load("./dojo/dojo/dojo.js");
-dojo.registerModulePath("dojo","./dojo/dojo");
-dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
 
-dojo.require("csl.load");
-
-CSL.debug("#####");
-CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
-if ("UTF-8" != environment["file.encoding"]){
-	environment["file.encoding"] = "UTF-8";
-	environment["sun.jnu.encoding"] = "UTF-8";
-	CSL.debug("Reset Rhino file.encoding to UTF-8");
-}
-CSL.debug("#####");
-
-dojo.require("csl.testing_rhino");
-dojo.require("csl.testing_stdrhino");
-
-load("./tests/run.js");

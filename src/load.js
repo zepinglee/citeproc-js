@@ -37,7 +37,7 @@ if ("undefined" == typeof dojo){
 	dojo.provide = function(ignoreme){};
 };
 
-dojo.provide("csl.constants");
+dojo.provide("csl.load");
 
 
 /**
@@ -231,16 +231,34 @@ if (!CSL.makeBibliography){
 if (!CSL.updateItems){
 	load("./src/cmd_update.js");
 }
-if (!CSL.Lib){
-	load("./src/lib.js");
+if (!CSL.Node){
+	load("./src/node_bibliography.js");
+    load("./src/node_choose.js");
+    load("./src/node_citation.js");
+    load("./src/node_date.js");
+    load("./src/node_datepart.js");
+    load("./src/node_elseif.js");
+    load("./src/node_else.js");
+    load("./src/node_etal.js");
+    load("./src/node_group.js");
+    load("./src/node_if.js");
+    load("./src/node_info.js");
+    load("./src/node_key.js");
+    load("./src/node_label.js");
+    load("./src/node_layout.js");
+    load("./src/node_macro.js");
+    load("./src/node_name.js");
+    load("./src/node_namepart.js");
+    load("./src/node_names.js");
+    load("./src/node_number.js");
+    load("./src/node_sort.js");
+    load("./src/node_substitute.js");
+    load("./src/node_text.js");
 }
-if (!CSL.Lib.Elements){
-	load("./src/elements.js");
-}
-if (!CSL.Lib.Elements.names){
+if (!CSL.Node.names){
 	load("./src/libnames.js");
 }
-if (!CSL.Lib.Attributes){
+if (!CSL.Attributes){
 	load("./src/attributes.js");
 }
 if (!CSL.Factory){

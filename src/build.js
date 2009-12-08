@@ -145,7 +145,7 @@ CSL.Engine.prototype.setStyleAttributes = function(){
 	// Xml: more of it
 	//
 	for each (var attr in this.sys.xml.attributes( this.cslXml) ){
-		CSL.Lib.Attributes[("@"+this.sys.xml.getAttributeName(attr))].call(dummy,this,this.sys.xml.getAttributeValue(attr));
+		CSL.Attributes[("@"+this.sys.xml.getAttributeName(attr))].call(dummy,this,this.sys.xml.getAttributeValue(attr));
 	}
 }
 
@@ -311,8 +311,8 @@ CSL.Engine.prototype.configureTokenLists = function(){
 			}
 			token["next"] = (pos+1);
 			//CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
-			if (token.name && CSL.Lib.Elements[token.name].configure){
-				CSL.Lib.Elements[token.name].configure.call(token,this,pos);
+			if (token.name && CSL.Node[token.name].configure){
+				CSL.Node[token.name].configure.call(token,this,pos);
 			}
 		}
 	}

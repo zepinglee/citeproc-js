@@ -55,7 +55,7 @@ CSL.Factory = {};
  * to functions, and is pushed into an array on the token in no particular
  * order, for later execution.  The element name is used as a key to
  * invoke the relevant <code>build</code> method of the target element.
- * Element methods are defined in {@link CSL.Lib.Elements}.</p>
+ * Element methods are defined in {@link CSL.Node}.</p>
  * @param {Object} state  The state object returned by {@link CSL.Engine}.
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
@@ -73,7 +73,7 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 		}
 		return;
 	}
-	if ( ! CSL.Lib.Elements[state.sys.xml.nodename(this)]){
+	if ( ! CSL.Node[state.sys.xml.nodename(this)]){
 		throw "Undefined node name \""+name+"\".";
 	}
 	var attrfuncs = new Array();
@@ -85,7 +85,7 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	//
 	for (var key in attributes){
 		try {
-			CSL.Lib.Attributes[key].call(token,state,""+attributes[key]);
+			CSL.Attributes[key].call(token,state,""+attributes[key]);
 		} catch (e) {
 			if (e == "TypeError: Cannot call method \"call\" of undefined"){
 				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
@@ -101,7 +101,7 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	// and terms).
 	//
 	var target = state[state.build.area].tokens;
-	CSL.Lib.Elements[name].build.call(token,state,target);
+	CSL.Node[name].build.call(token,state,target);
 };
 
 /**

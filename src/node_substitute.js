@@ -32,38 +32,20 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-//This file is the command-line entry point for running the tests in
-//Rhino
-
-/*=====
-dojo.tests = {
-	// summary: D.O.H. Test files for Dojo unit testing.
+CSL.Node.substitute = new function(){
+	this.build = build;
+	function build(state,target){
+		if (this.tokentype == CSL.START){
+			var set_conditional = function(state,Item){
+				state.tmp.can_block_substitute = true;
+				if (state.tmp.value.length){
+					state.tmp.can_substitute.replace(false, CSL.LITERAL);
+				}
+			};
+			this.execs.push(set_conditional);
+		};
+		target.push(this);
+	};
 };
-=====*/
 
-//
-// XXXXX rhino specific
-//
-load("./dojo/dojo/dojo.js");
-dojo.registerModulePath("dojo","./dojo/dojo");
-dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
 
-dojo.require("csl.load");
-
-CSL.debug("#####");
-CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
-if ("UTF-8" != environment["file.encoding"]){
-	environment["file.encoding"] = "UTF-8";
-	environment["sun.jnu.encoding"] = "UTF-8";
-	CSL.debug("Reset Rhino file.encoding to UTF-8");
-}
-CSL.debug("#####");
-
-dojo.require("csl.testing_rhino");
-dojo.require("csl.testing_stdrhino");
-
-load("./tests/run.js");

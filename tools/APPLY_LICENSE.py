@@ -7,7 +7,7 @@ os.chdir(mypath)
 
 REX = "(?ms)^^(/\*.*?\n\s*\*/)(.*)"
 
-m = re.match(REX, open("../src/csl.js").read())
+m = re.match(REX, open("../src/load.js").read())
 
 
 if m:

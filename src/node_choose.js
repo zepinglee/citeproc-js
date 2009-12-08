@@ -32,38 +32,32 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-//This file is the command-line entry point for running the tests in
-//Rhino
-
-/*=====
-dojo.tests = {
-	// summary: D.O.H. Test files for Dojo unit testing.
+CSL.Node.choose = new function(){
+	this.build = build;
+	this.configure = configure;
+	function build (state,target){
+		if (this.tokentype == CSL.START){
+			var func = function(state,Item){ //open condition
+				state.tmp.jump.push(undefined, CSL.LITERAL);
+			};
+		}
+		if (this.tokentype == CSL.END){
+			var func = function(state,Item){ //close condition
+				state.tmp.jump.pop();
+			};
+		}
+		this["execs"].push(func);
+		target.push(this);
+	}
+	function configure(state,pos){
+		if (this.tokentype == CSL.END){
+			state.configure["fail"].push((pos));
+			state.configure["succeed"].push((pos));
+		} else {
+			state.configure["fail"].pop();
+			state.configure["succeed"].pop();
+		}
+	}
 };
-=====*/
 
-//
-// XXXXX rhino specific
-//
-load("./dojo/dojo/dojo.js");
-dojo.registerModulePath("dojo","./dojo/dojo");
-dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
 
-dojo.require("csl.load");
-
-CSL.debug("#####");
-CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
-if ("UTF-8" != environment["file.encoding"]){
-	environment["file.encoding"] = "UTF-8";
-	environment["sun.jnu.encoding"] = "UTF-8";
-	CSL.debug("Reset Rhino file.encoding to UTF-8");
-}
-CSL.debug("#####");
-
-dojo.require("csl.testing_rhino");
-dojo.require("csl.testing_stdrhino");
-
-load("./tests/run.js");

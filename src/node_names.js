@@ -32,18 +32,14 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("csl.libnames");
-if (!CSL) {
-   load("./src/csl.js");
-}
 
 /**
  * The names node, start and end.
  * <p>Name handling happens here.  It's ... complicated.</p>
- * @name CSL.Lib.Elements.names
+ * @name CSL.Node.names
  * @function
  */
-CSL.Lib.Elements.names = new function(){
+CSL.Node.names = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){

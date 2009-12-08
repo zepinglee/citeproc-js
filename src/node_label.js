@@ -32,38 +32,52 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-//This file is the command-line entry point for running the tests in
-//Rhino
-
-/*=====
-dojo.tests = {
-	// summary: D.O.H. Test files for Dojo unit testing.
+CSL.Node.label = new function(){
+	this.build = build;
+	/*
+	 * Account for form option.
+	 */
+	function build(state,target){
+		if (state.build.name_flag){
+			this.strings.label_position = CSL.AFTER;
+		} else {
+			this.strings.label_position = CSL.BEFORE;
+		}
+		var set_label_info = function(state,Item){
+			state.output.addToken("label",false,this);
+		};
+		this["execs"].push(set_label_info);
+		if (state.build.term){
+			var term = state.build.term;
+			var plural = 0;
+			if (!this.strings.form){
+				this.strings.form = "long";
+			}
+			var form = this.strings.form;
+			if ("number" == typeof this.strings.plural){
+				plural = this.strings.plural;
+				CSL.debug("plural: "+this.strings.plural);
+			}
+			var output_label = function(state,Item){
+				if ("locator" == term){
+					myterm = Item["label"];
+				}
+				if (!myterm){
+					myterm = "page";
+				}
+				var myterm = state.getTerm(myterm,form,plural);
+				if (this.strings["include-period"]){
+					myterm += ".";
+				}
+				state.output.append(myterm,this);
+			};
+			this.execs.push(output_label);
+			state.build.plural = false;
+			state.build.term = false;
+			state.build.form = false;
+		}
+		target.push(this);
+	};
 };
-=====*/
 
-//
-// XXXXX rhino specific
-//
-load("./dojo/dojo/dojo.js");
-dojo.registerModulePath("dojo","./dojo/dojo");
-dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
 
-dojo.require("csl.load");
-
-CSL.debug("#####");
-CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
-if ("UTF-8" != environment["file.encoding"]){
-	environment["file.encoding"] = "UTF-8";
-	environment["sun.jnu.encoding"] = "UTF-8";
-	CSL.debug("Reset Rhino file.encoding to UTF-8");
-}
-CSL.debug("#####");
-
-dojo.require("csl.testing_rhino");
-dojo.require("csl.testing_stdrhino");
-
-load("./tests/run.js");

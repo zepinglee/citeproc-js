@@ -32,15 +32,22 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("csl.lib");
-if (!CSL) {
-    load("./src/csl.js");
-}
+
 /**
- * Functions for processing CSL node elements and attributes.
- * <p>Function names correspond to CSL element
- * and attribute names.</p>
- * @namespace Functions corresponding CSL elements and attributes.
+ * The else node, start and end.
+ * @name CSL.Node.else
+ * @function
  */
-CSL.Lib = {};
+CSL.Node["else"] = new function(){
+	this.build = build;
+	this.configure = configure;
+	function build (state,target){
+		target.push(this);
+	}
+	function configure(state,pos){
+		if (this.tokentype == CSL.START){
+			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
+		}
+	}
+};
 
