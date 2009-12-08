@@ -2624,9 +2624,6 @@ CSL.Node["name-part"] = new function(){
 		target.push(this);
 	};
 };
-dojo.provide("csl.libnames");
-if (!CSL) {
-}
 CSL.Node.names = new function(){
 	this.build = build;
 	function build(state,target){
