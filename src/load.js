@@ -265,6 +265,15 @@ if (!CSL.System){
 if (!CSL.localeResolve){
 	load("./src/util_locale.js");
 }
+if (!CSL.localeResolve){
+	load("./src/util_processor.js");
+}
+if (!CSL.localeResolve){
+	load("./src/util_disambig.js");
+}
+if (!CSL.localeResolve){
+	load("./src/util_nodes.js");
+}
 if (!CSL.Engine){
 	load("./src/build.js");
 }
