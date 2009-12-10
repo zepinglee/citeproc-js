@@ -476,7 +476,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 
 
 CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
-	if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
+	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
 		if (use_delim){
 			var pos = use_delim.indexOf(" ");
 			if (pos > -1){

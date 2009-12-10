@@ -41,11 +41,11 @@ CSL.Node.date = new function(){
 			// will just tinker with the formatting.
 			//
 			if (this.strings.form){
-				if (state.opt.dates[this.strings.form]){
+				if (state.getDate(this.strings.form)){
 					//
 					// Xml: Copy a node
 					//
-					var datexml = state.sys.xml.nodeCopy( state.opt.dates[this.strings.form] );
+					var datexml = state.sys.xml.nodeCopy( state.getDate(this.strings.form) );
 					//
 					// Xml: Set attribute
 					//

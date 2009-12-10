@@ -39,63 +39,79 @@ dojo.require("csl.testing_rhino");
 
 doh.register("tests.sys_rhino_locale", [
 
-	function testSetLocaleStringValue(){
+	function testGetTermSymbolFallbackToShort(){
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml("de");
-		doh.assertEqual("und", obj.locale_terms["and"]["long"]);
+		var res = CSL.Engine.prototype.getTerm.call(obj,"edition","symbol");
+		doh.assertEqual("ed.",res);
 	},
-	function testSetLocaleWorksAtAll(){
+	function testGetTermNoPluralSpecifiedFallbackToSingular(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style></style>");
+		var res = CSL.Engine.prototype.getTerm.call(obj,"book","long");
+		doh.assertEqual("book",res);
+	},
+	function testGetTermSingularExists(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style></style>");
+		var res = CSL.Engine.prototype.getTerm.call(obj,"book","long",0);
+		doh.assertEqual("book",res);
+	},
+	function testGetTermPluralExists(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style></style>");
+		var res = CSL.Engine.prototype.getTerm.call(obj,"book","long",1);
+		doh.assertEqual("books",res);
+	},
+	function testSetAccess(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style></style>");
+		var myxml = sys.xml.makeXml( sys.retrieveLocale("af-ZA") );
+		CSL.localeSet.call(obj,sys,myxml,"af-ZA","af-ZA");
+		var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
+		CSL.localeSet.call(obj,sys,myxml,"de-DE","de-DE");
+		doh.assertEqual("und", obj.locale["de-DE"].terms["and"]["long"]);
+	},
+	function testSetLocaleEmptyValue(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style></style>");
+		doh.assertEqual("books", CSL.locale["en-US"].terms["book"]["long"][1]);
+	},
+	function testLocalSetLocaleWorksAtAll(){
 		try {
 			var sys = new RhinoTest();
 			var obj = new CSL.Engine(sys,"<style></style>");
-			obj.setLocaleXml();
+			var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
+			CSL.localeSet.call(obj,sys,myxml,"de-DE","de-DE");
 			var res = "Success";
 		} catch (e){
 			var res = e;
 		}
 		doh.assertEqual("Success", res);
-		doh.assertEqual("object", typeof obj.locale_terms);
+		doh.assertEqual("object", typeof obj.locale["de-DE"].terms);
 	},
-	function testSetLocaleEmptyValue(){
-		var sys = new RhinoTest();
-		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml();
-		doh.assertEqual("books", obj.locale_terms["book"]["long"][1]);
+	function testGlobalSetLocaleWorksAtAll(){
+		try {
+			var sys = new RhinoTest();
+			var obj = new CSL.Engine(sys,"<style></style>");
+			var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
+			CSL.localeSet.call(CSL,sys,myxml,"de-DE","de-DE");
+			var res = "Success";
+		} catch (e){
+			var res = e;
+		}
+		doh.assertEqual("Success", res);
+		doh.assertEqual("object", typeof CSL.locale["de-DE"].terms);
 	},
-	function testSetAccess(){
+	function testSetGlobalLocaleStringValue(){
 		var sys = new RhinoTest();
-		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml();
-		obj.setLocaleXml("de");
-		doh.assertEqual("und", obj.locale_terms["and"]["long"]);
+		var citeproc = new CSL.Engine(sys,"<style></style>");
+		var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
+		CSL.localeSet.call(CSL,sys,myxml,"de-DE","de-DE");
+		doh.assertEqual("und", CSL.locale["de-DE"].terms["and"]["long"]);
 	},
-	function testGetTermPluralExists(){
-		var sys = new RhinoTest();
-		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml();
-		var res = CSL.Engine.prototype.getTerm.call(obj,"book","long",1);
-		doh.assertEqual("books",res);
-	},
-	function testGetTermSingularExists(){
-		var sys = new RhinoTest();
-		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml();
-		var res = CSL.Engine.prototype.getTerm.call(obj,"book","long",0);
-		doh.assertEqual("book",res);
-	},
-	function testGetTermNoPluralSpecifiedFallbackToSingular(){
-		var sys = new RhinoTest();
-		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml();
-		var res = CSL.Engine.prototype.getTerm.call(obj,"book","long");
-		doh.assertEqual("book",res);
-	},
-	function testGetTermSymbolFallbackToShort(){
-		var sys = new RhinoTest();
-		var obj = new CSL.Engine(sys,"<style></style>");
-		obj.setLocaleXml();
-		var res = CSL.Engine.prototype.getTerm.call(obj,"edition","symbol");
-		doh.assertEqual("ed.",res);
-	}
 ]);
+
+var x = [
+
+]

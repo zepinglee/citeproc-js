@@ -76,15 +76,54 @@ CSL.Engine = function(sys,style,lang) {
 
 	//
 	// implicit default, "en"
-	this.setLocaleXml();
-	if (lang){
-		this.setLocaleXml(lang);
-	} else {
-		lang = "en";
+	//
+	// We need to take this in layered functions.  This function goes
+	// once, right here, with the lang argument.  It calls a function
+	// that resolves the lang argument into a full two-part language
+	// entry.  It calls a function that (1) checks to see if
+	// the two-part target language is available on the CSL.locale
+	// branch, and (2) if not, sets from ultimate default, then (3) from
+	// single-term language (if available), then (4) from two-term language.
+	// It does this all twice, once for locale files, then for locales inside
+	// the style file.
+	//
+	// So functions needed are ... ?
+	//
+	// setLocale(rawLang) [top-level]
+	//   localeResolve(rawLang)
+	//   [function below is not run for external locales
+	//   if two-part lang exists in CSL.locale; it is always
+	//   run for in-CSL locale data, if it exists.]
+	//   localeSetFromXml(lang,localeHandler)
+	//
+	// (getHandler arg is a function with two methods, one to
+	// get XML from disk file, or from CSL, and another to store
+	// locale data on CSL.locale or on state.locale, depending
+	// on its source.)
+	//
+	// (note that getLocale must fail gracefully
+	// if no locale of the exact lang in the first
+	// arg is available.)
+	//
+	// (note that this will require that the hard-coded locale
+	// be recorded on CSL.locale, and that ephemeral locale
+	// overlay data bet recorded on state.locale, and that
+	// getTerm implement overlay behavior.)
+	//
+	var langspec = CSL.localeResolve(lang);
+	this.opt.lang = langspec.best;
+	if (!CSL.locale[langspec.best]){
+		var localexml = sys.xml.makeXml( sys.retrieveLocale(langspec.best) );
+		CSL.localeSet.call(CSL,sys,localexml,langspec.best,langspec.best);
 	}
-	this.opt.lang = lang;
-	this.setLocaleXml( this.cslXml, "" );
-	this.setLocaleXml( this.cslXml, lang );
+	this.locale = new Object();
+	var locale = sys.xml.makeXml();
+	if (!this.locale[langspec.best]){
+		CSL.localeSet.call(this,sys,this.cslXml,"",langspec.best);
+		CSL.localeSet.call(this,sys,this.cslXml,langspec.base,langspec.best);
+		CSL.localeSet.call(this,sys,this.cslXml,langspec.bare,langspec.best);
+		CSL.localeSet.call(this,sys,this.cslXml,langspec.best,langspec.best);
+	}
 	this.setStyleAttributes();
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
@@ -234,8 +273,30 @@ CSL.Engine.prototype.setContainerTitleAbbreviations = function(abbrevs){
 };
 
 CSL.Engine.prototype.getTerm = function(term,form,plural){
-	return CSL.Engine._getField(CSL.STRICT,this.locale_terms,term,form,plural);
+	var ret = CSL.Engine._getField(CSL.LOOSE,this.locale[this.opt.lang].terms,term,form,plural);
+	if (typeof ret == "undefined"){
+		ret = CSL.Engine._getField(CSL.STRICT,CSL.locale[this.opt.lang].terms,term,form,plural);
+	};
+	return ret;
 };
+
+CSL.Engine.prototype.getDate = function(form){
+	if (this.locale[this.opt.lang].dates[form]){
+		return this.locale[this.opt.lang].dates[form];
+	} else {
+		return CSL.locale[this.opt.lang].dates[form];
+	}
+};
+
+CSL.Engine.prototype.getOpt = function(arg){
+	if ("undefined" != typeof this.locale[this.opt.lang].opts[arg]){
+		return this.locale[this.opt.lang].opts[arg];
+	} else {
+		return CSL.locale[this.opt.lang].opts[arg];
+	}
+};
+
+
 
 CSL.Engine.prototype.getVariable = function(Item,varname,form,plural){
 	return CSL.Engine._getField(CSL.LOOSE,Item,varname,form,plural);
@@ -258,9 +319,6 @@ CSL.Engine._getField = function(mode,hash,term,form,plural){
 			return undefined;
 		}
 	}
-	//if (!form){
-	//	form = "long";
-	//}
 	var forms = [];
 	if (form == "symbol"){
 		forms = ["symbol","short"];
@@ -320,131 +378,6 @@ CSL.Engine.prototype.configureTokenLists = function(){
 	return this.state;
 };
 
-
-CSL.Engine.prototype.setLocaleXml = function(arg,lang){
-
-	if ("undefined" == typeof this.locale_terms){
-		this.locale_terms = new Object();
-	}
-	if ("undefined" == typeof this.locale_opt){
-		this.locale_opt = new Object();
-	}
-	if ("undefined" == typeof arg){
-		//
-		// Xml: Instantiate xml
-		//
-		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale("en") );
-		lang = "en";
-	} else if (arg && "string" == typeof arg){
-		//
-		//Xml: Instantiate xml
-		//
-		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale(arg) );
-		lang = arg;
-	} else if ("xml" != typeof arg){
-		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
-	} else if ("string" != typeof lang) {
-		//throw "Error in setLocaleXml: Must provide lang string with XML locale object";
-		lang = "";
-	} else {
-		var myxml = arg;
-	}
-	//
-	// Xml: Instantiate xml (empty)
-	//
-	var locale = this.sys.xml.makeXml();
-	//
-	// Xml: Test if node is "locale" (nb: ns declarations need to be invoked
-	// on every access to the xml object; bundle this with the functions
-	//
-	if (this.sys.xml.nodeNameIs(myxml,'locale')){
-		locale = myxml;
-	} else {
-		//
-		// Xml: get a list of all "locale" nodes
-		//
-		for each (var blob in this.sys.xml.getNodesByName(myxml,"locale")){
-			//
-			// Xml: get locale xml:lang
-			//
-			if (this.sys.xml.getAttributeValue(blob,'lang','xml') == lang){
-				locale = blob;
-				break;
-			}
-		}
-	}
-	//
-	// Xml: get a list of term nodes within locale
-	//
-	for each (var term in this.sys.xml.getNodesByName(locale,'term')){
-		//
-		// Xml: get string value of attribute
-		//
-		var termname = this.sys.xml.getAttributeValue(term,'name');
-		if ("undefined" == typeof this.locale_terms[termname]){
-			this.locale_terms[termname] = new Object();
-		};
-		var form = "long";
-		//
-		// Xml: get string value of attribute
-		//
-		if (this.sys.xml.getAttributeValue(term,'form')){
-			form = this.sys.xml.getAttributeValue(term,'form');
-		}
-		//
-		// Xml: test of existence of node
-		//
-		if (this.sys.xml.getNodesByName(term,'multiple').length()){
-			this.locale_terms[termname][form] = new Array();
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form][0] = this.sys.xml.getNodeValue(term,'single');
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form][1] = this.sys.xml.getNodeValue(term,'multiple');
-		} else {
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form] = this.sys.xml.getNodeValue(term);
-		}
-	}
-	//
-	// Xml: get list of nodes by node type
-	//
-	for each (var styleopts in this.sys.xml.getNodesByName(locale,'style-options')){
-		//
-		// Xml: get list of attributes on a node
-		//
-		for each (var attr in this.sys.xml.attributes(styleopts) ) {
-			//
-			// Xml: get string value of attribute
-			//
-			if (this.sys.xml.getNodeValue(attr) == "true"){
-				//
-				// Xml:	get local name of attribute
-				//
-				this.opt[this.sys.xml.nodename(attr)] = true;
-			} else {
-				this.opt[this.sys.xml.nodename(attr)] = false;
-			};
-		};
-	};
-	//
-	// Xml: get list of nodes by type
-	//
-	for each (var date in this.sys.xml.getNodesByName(locale,'date')){
-		//
-		// Xml: get string value of attribute
-		//
-		this.opt.dates[ this.sys.xml.getAttributeValue( date, "form") ] = date;
-	};
-};
 
 CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
 	var lst = value.split(/\s*:([-a-zA-Z]+):\s*/);

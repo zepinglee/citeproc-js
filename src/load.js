@@ -39,7 +39,6 @@ if ("undefined" == typeof dojo){
 
 dojo.provide("csl.load");
 
-
 /**
  * A Javascript implementation of the CSL citation formatting language.
  *
@@ -164,6 +163,56 @@ var CSL = new function () {
 	this.CREATORS = this.CREATORS.concat(["original-author"]);
 	this.CREATORS = this.CREATORS.concat(["container-author","collection-editor"]);
 
+	this.LANG_BASES = new Object();
+	this.LANG_BASES["af"] = "af_ZA";
+	this.LANG_BASES["ar"] = "ar_AR";
+	this.LANG_BASES["bg"] = "bg_BG";
+	this.LANG_BASES["ca"] = "ca_AD";
+	this.LANG_BASES["cs"] = "cs_CZ";
+	this.LANG_BASES["da"] = "da_DK";
+	this.LANG_BASES["de"] = "de_DE";
+	this.LANG_BASES["el"] = "el_GR";
+	this.LANG_BASES["en"] = "en_US";
+	this.LANG_BASES["es"] = "es_ES";
+	this.LANG_BASES["et"] = "et_EE";
+	this.LANG_BASES["fr"] = "fr_FR";
+	this.LANG_BASES["he"] = "he_IL";
+	this.LANG_BASES["hu"] = "hu_HU";
+	this.LANG_BASES["is"] = "is_IS";
+	this.LANG_BASES["it"] = "it_IT";
+	this.LANG_BASES["ja"] = "ja_JP";
+	this.LANG_BASES["ko"] = "ko_KR";
+	this.LANG_BASES["mn"] = "mn_MN";
+	this.LANG_BASES["nb"] = "nb_NO";
+	this.LANG_BASES["nl"] = "nl_NL";
+	this.LANG_BASES["pl"] = "pl_PL";
+	this.LANG_BASES["pt"] = "pt_PT";
+	this.LANG_BASES["ro"] = "ro_RO";
+	this.LANG_BASES["ru"] = "ru_RU";
+	this.LANG_BASES["sk"] = "sk_SK";
+	this.LANG_BASES["sl"] = "sl_SI";
+	this.LANG_BASES["sr"] = "sr_RS";
+	this.LANG_BASES["sv"] = "sv_SE";
+	this.LANG_BASES["th"] = "th_TH";
+	this.LANG_BASES["tr"] = "tr_TR";
+	this.LANG_BASES["uk"] = "uk_UA";
+	this.LANG_BASES["vi"] = "vi_VN";
+	this.LANG_BASES["zh"] = "zh_CN";
+
+	this.locale = new Object();
+
+	//
+	// Well, that's interesting.  We're going to need fallbacks for
+	// these too.  Like terms, a session-persistent record of the
+	// locale data is made on CSL, and an ephemeral override record
+	// is recorded in the style.  When the locale object is called,
+	// the ephemeral record is checked first, and failing that we
+	// fall back to the record on CSL before blowing up.
+	//
+	// So need functions getOpt() and getDate()?
+	//
+	this.locale_opts = new Object();
+	this.locale_dates = new Object();
 
     this.localeRegistry = {
 		"af":"locales-af-AZ.xml",
@@ -212,6 +261,9 @@ var CSL = new function () {
 
 if (!CSL.System){
 	load("./src/xmle4x.js");
+}
+if (!CSL.localeResolve){
+	load("./src/util_locale.js");
 }
 if (!CSL.Engine){
 	load("./src/build.js");

@@ -182,7 +182,7 @@ RhinoTest.prototype._fixAllNames = function(input){
 // this method.)
 //
 RhinoTest.prototype.retrieveLocale = function(lang){
-	var ret = readFile( "./locale/"+CSL.localeRegistry[lang], "UTF-8");
+	var ret = readFile( "./locale/locales-"+lang+".xml", "UTF-8");
 	//ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
 	return ret;
 };

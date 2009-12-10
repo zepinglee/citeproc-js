@@ -40,6 +40,10 @@ doh.register("tests.std_locale", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("locale_EmptyTerm");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
         doh.assertEqual(test.result, test.run());
     },
@@ -53,10 +57,6 @@ doh.register("tests.std_locale", [
     },
     function(){
         var test = new StdRhinoTest("locale_EmptyStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyTerm");
         doh.assertEqual(test.result, test.run());
     },
     function(){

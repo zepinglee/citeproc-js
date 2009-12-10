@@ -82,6 +82,44 @@ var CSL = new function () {
 	this.CREATORS = this.CREATORS.concat(["composer"]);
 	this.CREATORS = this.CREATORS.concat(["original-author"]);
 	this.CREATORS = this.CREATORS.concat(["container-author","collection-editor"]);
+	this.LANG_BASES = new Object();
+	this.LANG_BASES["af"] = "af_ZA";
+	this.LANG_BASES["ar"] = "ar_AR";
+	this.LANG_BASES["bg"] = "bg_BG";
+	this.LANG_BASES["ca"] = "ca_AD";
+	this.LANG_BASES["cs"] = "cs_CZ";
+	this.LANG_BASES["da"] = "da_DK";
+	this.LANG_BASES["de"] = "de_DE";
+	this.LANG_BASES["el"] = "el_GR";
+	this.LANG_BASES["en"] = "en_US";
+	this.LANG_BASES["es"] = "es_ES";
+	this.LANG_BASES["et"] = "et_EE";
+	this.LANG_BASES["fr"] = "fr_FR";
+	this.LANG_BASES["he"] = "he_IL";
+	this.LANG_BASES["hu"] = "hu_HU";
+	this.LANG_BASES["is"] = "is_IS";
+	this.LANG_BASES["it"] = "it_IT";
+	this.LANG_BASES["ja"] = "ja_JP";
+	this.LANG_BASES["ko"] = "ko_KR";
+	this.LANG_BASES["mn"] = "mn_MN";
+	this.LANG_BASES["nb"] = "nb_NO";
+	this.LANG_BASES["nl"] = "nl_NL";
+	this.LANG_BASES["pl"] = "pl_PL";
+	this.LANG_BASES["pt"] = "pt_PT";
+	this.LANG_BASES["ro"] = "ro_RO";
+	this.LANG_BASES["ru"] = "ru_RU";
+	this.LANG_BASES["sk"] = "sk_SK";
+	this.LANG_BASES["sl"] = "sl_SI";
+	this.LANG_BASES["sr"] = "sr_RS";
+	this.LANG_BASES["sv"] = "sv_SE";
+	this.LANG_BASES["th"] = "th_TH";
+	this.LANG_BASES["tr"] = "tr_TR";
+	this.LANG_BASES["uk"] = "uk_UA";
+	this.LANG_BASES["vi"] = "vi_VN";
+	this.LANG_BASES["zh"] = "zh_CN";
+	this.locale = new Object();
+	this.locale_opts = new Object();
+	this.locale_dates = new Object();
     this.localeRegistry = {
 		"af":"locales-af-AZ.xml",
 		"af":"locales-af-ZA.xml",
@@ -496,7 +534,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 	return [ret,ret_last_char];
 };
 CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
-	if (ret.length && this.state.opt["punctuation-in-quote"] && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
+	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
 		if (use_delim){
 			var pos = use_delim.indexOf(" ");
 			if (pos > -1){
@@ -534,6 +572,115 @@ CSL.Output.Queue.normalizePrefixPunctuation = function(blobs){
 		};
 	};
 };
+CSL.localeResolve = function(langstr){
+	var ret = new Object();
+	if ("undefined" == typeof langstr){
+		langstr = "en_US";
+	};
+	var langlst = langstr.split(/[-_]/);
+	ret.base = CSL.LANG_BASES[langlst[0]];
+	if (langlst.length == 1 || langlst[1] == "x"){
+		ret.best = ret.base;
+	} else {
+		ret.best = langlst.slice(0,2).join("-");
+	};
+	ret.bare = langlst[0];
+	return ret;
+};
+//
+// XXXXX: Got it.  The locales objects need to be reorganized,
+// with a top-level local specifier, and terms, opts, dates
+// below.
+//
+CSL.localeSet = function(sys,myxml,lang_in,lang_out){
+	lang_in = lang_in.replace("_","-");
+	lang_out = lang_out.replace("_","-");
+	if (!this.locale[lang_out]){
+		this.locale[lang_out] = new Object();
+		this.locale[lang_out].terms = new Object();
+		this.locale[lang_out].opts = new Object();
+		this.locale[lang_out].dates = new Object();
+	}
+	var locale = sys.xml.makeXml();
+	if (sys.xml.nodeNameIs(myxml,'locale')){
+		locale = myxml;
+	} else {
+		//
+		// Xml: get a list of all "locale" nodes
+		//
+		for each (var blob in sys.xml.getNodesByName(myxml,"locale")){
+			//
+			// Xml: get locale xml:lang
+			//
+			if (sys.xml.getAttributeValue(blob,'lang','xml') == lang_in){
+				locale = blob;
+				break;
+			}
+		}
+	}
+	for each (var term in sys.xml.getNodesByName(locale,'term')){
+		//
+		// Xml: get string value of attribute
+		//
+		var termname = sys.xml.getAttributeValue(term,'name');
+		if ("undefined" == typeof this.locale[lang_out].terms[termname]){
+			this.locale[lang_out].terms[termname] = new Object();
+		};
+		var form = "long";
+		//
+		// Xml: get string value of attribute
+		//
+		if (sys.xml.getAttributeValue(term,'form')){
+			form = sys.xml.getAttributeValue(term,'form');
+		}
+		//
+		// Xml: test of existence of node
+		//
+		if (sys.xml.getNodesByName(term,'multiple').length()){
+			this.locale[lang_out].terms[termname][form] = new Array();
+			//
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
+			//
+			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][0] = sys.xml.getNodeValue(term,'single');
+			//
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
+			//
+			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][1] = sys.xml.getNodeValue(term,'multiple');
+		} else {
+			//
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
+			//
+			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form] = sys.xml.getNodeValue(term);
+		}
+	}
+	for each (var styleopts in sys.xml.getNodesByName(locale,'style-options')){
+		//
+		// Xml: get list of attributes on a node
+		//
+		for each (var attr in sys.xml.attributes(styleopts) ) {
+			//
+			// Xml: get string value of attribute
+			//
+			if (sys.xml.getNodeValue(attr) == "true"){
+				//
+				// Xml:	get local name of attribute
+				//
+				this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
+			} else {
+				this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
+			};
+		};
+	};
+	for each (var date in sys.xml.getNodesByName(locale,'date')){
+		//
+		// Xml: get string value of attribute
+		//
+		this.locale[lang_out].dates[ sys.xml.getAttributeValue( date, "form") ] = date;
+	};
+};
 dojo.provide("csl.build");
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
@@ -554,15 +701,20 @@ CSL.Engine = function(sys,style,lang) {
 	this.dateput = new CSL.Output.Queue(this);
 	this.cslXml = this.sys.xml.makeXml(style);
 	this.opt["initialize-with-hyphen"] = true;
-	this.setLocaleXml();
-	if (lang){
-		this.setLocaleXml(lang);
-	} else {
-		lang = "en";
+	var langspec = CSL.localeResolve(lang);
+	this.opt.lang = langspec.best;
+	if (!CSL.locale[langspec.best]){
+		var localexml = sys.xml.makeXml( sys.retrieveLocale(langspec.best) );
+		CSL.localeSet.call(CSL,sys,localexml,langspec.best,langspec.best);
 	}
-	this.opt.lang = lang;
-	this.setLocaleXml( this.cslXml, "" );
-	this.setLocaleXml( this.cslXml, lang );
+	this.locale = new Object();
+	var locale = sys.xml.makeXml();
+	if (!this.locale[langspec.best]){
+		CSL.localeSet.call(this,sys,this.cslXml,"",langspec.best);
+		CSL.localeSet.call(this,sys,this.cslXml,langspec.base,langspec.best);
+		CSL.localeSet.call(this,sys,this.cslXml,langspec.bare,langspec.best);
+		CSL.localeSet.call(this,sys,this.cslXml,langspec.best,langspec.best);
+	}
 	this.setStyleAttributes();
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
@@ -668,7 +820,25 @@ CSL.Engine.prototype.setContainerTitleAbbreviations = function(abbrevs){
 	this.opt["container-title-abbreviations"] = abbrevs;
 };
 CSL.Engine.prototype.getTerm = function(term,form,plural){
-	return CSL.Engine._getField(CSL.STRICT,this.locale_terms,term,form,plural);
+	var ret = CSL.Engine._getField(CSL.LOOSE,this.locale[this.opt.lang].terms,term,form,plural);
+	if (typeof ret == "undefined"){
+		ret = CSL.Engine._getField(CSL.STRICT,CSL.locale[this.opt.lang].terms,term,form,plural);
+	};
+	return ret;
+};
+CSL.Engine.prototype.getDate = function(form){
+	if (this.locale[this.opt.lang].dates[form]){
+		return this.locale[this.opt.lang].dates[form];
+	} else {
+		return CSL.locale[this.opt.lang].dates[form];
+	}
+};
+CSL.Engine.prototype.getOpt = function(arg){
+	if ("undefined" != typeof this.locale[this.opt.lang].opts[arg]){
+		return this.locale[this.opt.lang].opts[arg];
+	} else {
+		return CSL.locale[this.opt.lang].opts[arg];
+	}
 };
 CSL.Engine.prototype.getVariable = function(Item,varname,form,plural){
 	return CSL.Engine._getField(CSL.LOOSE,Item,varname,form,plural);
@@ -744,113 +914,6 @@ CSL.Engine.prototype.configureTokenLists = function(){
 	}
 	this.version = CSL.Factory.version;
 	return this.state;
-};
-CSL.Engine.prototype.setLocaleXml = function(arg,lang){
-	if ("undefined" == typeof this.locale_terms){
-		this.locale_terms = new Object();
-	}
-	if ("undefined" == typeof this.locale_opt){
-		this.locale_opt = new Object();
-	}
-	if ("undefined" == typeof arg){
-		//
-		// Xml: Instantiate xml
-		//
-		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale("en") );
-		lang = "en";
-	} else if (arg && "string" == typeof arg){
-		//
-		//Xml: Instantiate xml
-		//
-		var myxml = this.sys.xml.makeXml( this.sys.retrieveLocale(arg) );
-		lang = arg;
-	} else if ("xml" != typeof arg){
-		throw "Argument to setLocaleXml must nil, a lang string, or an XML object";
-	} else if ("string" != typeof lang) {
-		//throw "Error in setLocaleXml: Must provide lang string with XML locale object";
-		lang = "";
-	} else {
-		var myxml = arg;
-	}
-	var locale = this.sys.xml.makeXml();
-	if (this.sys.xml.nodeNameIs(myxml,'locale')){
-		locale = myxml;
-	} else {
-		//
-		// Xml: get a list of all "locale" nodes
-		//
-		for each (var blob in this.sys.xml.getNodesByName(myxml,"locale")){
-			//
-			// Xml: get locale xml:lang
-			//
-			if (this.sys.xml.getAttributeValue(blob,'lang','xml') == lang){
-				locale = blob;
-				break;
-			}
-		}
-	}
-	for each (var term in this.sys.xml.getNodesByName(locale,'term')){
-		//
-		// Xml: get string value of attribute
-		//
-		var termname = this.sys.xml.getAttributeValue(term,'name');
-		if ("undefined" == typeof this.locale_terms[termname]){
-			this.locale_terms[termname] = new Object();
-		};
-		var form = "long";
-		//
-		// Xml: get string value of attribute
-		//
-		if (this.sys.xml.getAttributeValue(term,'form')){
-			form = this.sys.xml.getAttributeValue(term,'form');
-		}
-		//
-		// Xml: test of existence of node
-		//
-		if (this.sys.xml.getNodesByName(term,'multiple').length()){
-			this.locale_terms[termname][form] = new Array();
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form][0] = this.sys.xml.getNodeValue(term,'single');
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form][1] = this.sys.xml.getNodeValue(term,'multiple');
-		} else {
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			this.locale_terms[this.sys.xml.getAttributeValue(term,'name')][form] = this.sys.xml.getNodeValue(term);
-		}
-	}
-	for each (var styleopts in this.sys.xml.getNodesByName(locale,'style-options')){
-		//
-		// Xml: get list of attributes on a node
-		//
-		for each (var attr in this.sys.xml.attributes(styleopts) ) {
-			//
-			// Xml: get string value of attribute
-			//
-			if (this.sys.xml.getNodeValue(attr) == "true"){
-				//
-				// Xml:	get local name of attribute
-				//
-				this.opt[this.sys.xml.nodename(attr)] = true;
-			} else {
-				this.opt[this.sys.xml.nodename(attr)] = false;
-			};
-		};
-	};
-	for each (var date in this.sys.xml.getNodesByName(locale,'date')){
-		//
-		// Xml: get string value of attribute
-		//
-		this.opt.dates[ this.sys.xml.getAttributeValue( date, "form") ] = date;
-	};
 };
 CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
 	var lst = value.split(/\s*:([-a-zA-Z]+):\s*/);
@@ -1779,11 +1842,11 @@ CSL.Node.date = new function(){
 			// will just tinker with the formatting.
 			//
 			if (this.strings.form){
-				if (state.opt.dates[this.strings.form]){
+				if (state.getDate(this.strings.form)){
 					//
 					// Xml: Copy a node
 					//
-					var datexml = state.sys.xml.nodeCopy( state.opt.dates[this.strings.form] );
+					var datexml = state.sys.xml.nodeCopy( state.getDate(this.strings.form) );
 					//
 					// Xml: Set attribute
 					//
@@ -3293,7 +3356,7 @@ CSL.Attributes["@macro"] = function(state,arg){
 };
 CSL.Attributes["@term"] = function(state,arg){
 	if (this.name == "et-al"){
-		if (state.locale_terms[arg]){
+		if (CSL.locale[state.opt.lang].terms[arg]){
 			this.strings.et_al_term = state.getTerm(arg,"long",0);
 		} else {
 			this.strings.et_al_term = arg;
