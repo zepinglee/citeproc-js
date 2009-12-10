@@ -41,7 +41,7 @@ if (!CSL) {
  * Ambiguous Cite Configuration Object
  * @class
  */
-CSL.Factory.AmbigConfig = function(){
+CSL.AmbigConfig = function(){
 	this.maxvals = new Array();
 	this.minval = 1;
 	this.names = new Array();

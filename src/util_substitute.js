@@ -64,7 +64,7 @@ CSL.Util.substituteStart = function(state,target){
 			// The markup formerly known as @bibliography/first
 			//
 			if (state.bibliography.opt["second-field-align"]){
-				var bib_first = new CSL.Factory.Token("group",CSL.START);
+				var bib_first = new CSL.Token("group",CSL.START);
 				bib_first.decorations = [["@display","left-margin"]];
 				var func = function(state,Item){
 					if (!state.tmp.render_seen){
@@ -97,9 +97,9 @@ CSL.Util.substituteStart = function(state,target){
 		//
 		// (okay, we use conditionals a lot more than that.
 		// we slot them in for author-only as well...)
-		var choose_start = new CSL.Factory.Token("choose",CSL.START);
+		var choose_start = new CSL.Token("choose",CSL.START);
 		target.push(choose_start);
-		var if_start = new CSL.Factory.Token("if",CSL.START);
+		var if_start = new CSL.Token("if",CSL.START);
 		//
 		// Set a test of the shadow if token to skip this
 		// macro if we have acquired a name value.
@@ -134,7 +134,7 @@ CSL.Util.substituteEnd = function(state,target){
 				this.execs.push(func);
 			};
 			if (state.bibliography.opt["second-field-align"]){
-				var bib_first_end = new CSL.Factory.Token("group",CSL.END);
+				var bib_first_end = new CSL.Token("group",CSL.END);
 				var first_func_end = function(state,Item){
 					if (!state.tmp.render_seen){
 						state.output.endTag(); // closes bib_first
@@ -143,7 +143,7 @@ CSL.Util.substituteEnd = function(state,target){
 				};
 				bib_first_end.execs.push(first_func_end);
 				target.push(bib_first_end);
-				var bib_other = new CSL.Factory.Token("group",CSL.START);
+				var bib_other = new CSL.Token("group",CSL.START);
 				bib_other.decorations = [["@display","right-inline"]];
 				var other_func = function(state,Item){
 					if (!state.tmp.render_seen){
@@ -158,16 +158,16 @@ CSL.Util.substituteEnd = function(state,target){
 	};
 //	if (state.build.substitute_level.value() <= 1 && this.name != "group"){
 	if (state.build.substitute_level.value() == 1){
-		var if_end = new CSL.Factory.Token("if",CSL.END);
+		var if_end = new CSL.Token("if",CSL.END);
 		target.push(if_end);
-		var choose_end = new CSL.Factory.Token("choose",CSL.END);
+		var choose_end = new CSL.Token("choose",CSL.END);
 		target.push(choose_end);
 	};
 
 	var toplevel = "names" == this.name && state.build.substitute_level.value() == 0;
 	var hasval = "string" == typeof state[state.build.area].opt["subsequent-author-substitute"];
 	if (toplevel && hasval){
-		var author_substitute = new CSL.Factory.Token("text",CSL.SINGLETON);
+		var author_substitute = new CSL.Token("text",CSL.SINGLETON);
 		var func = function(state,Item){
 			var printing = !state.tmp.suppress_decorations;
 			if (printing){
@@ -176,7 +176,7 @@ CSL.Util.substituteEnd = function(state,target){
 					if (state.tmp.rendered_name){
 						//CSL.debug("TRY! "+state.tmp.rendered_name);
 						if (state.tmp.rendered_name == state.tmp.last_rendered_name){
-							var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
+							var str = new CSL.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
 							state.tmp.name_node.blobs = [str];
 						};
 						state.tmp.last_rendered_name = state.tmp.rendered_name;

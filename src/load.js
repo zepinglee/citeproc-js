@@ -265,13 +265,13 @@ if (!CSL.System){
 if (!CSL.localeResolve){
 	load("./src/util_locale.js");
 }
-if (!CSL.localeResolve){
+if (!CSL.Mode){
 	load("./src/util_processor.js");
 }
-if (!CSL.localeResolve){
+if (!CSL.cloneAmbigConfig){
 	load("./src/util_disambig.js");
 }
-if (!CSL.localeResolve){
+if (!CSL.XmlToToken){
 	load("./src/util_nodes.js");
 }
 if (!CSL.Engine){
@@ -322,19 +322,16 @@ if (!CSL.Node.names){
 if (!CSL.Attributes){
 	load("./src/attributes.js");
 }
-if (!CSL.Factory){
-	load("./src/factory.js");
-}
-if (!CSL.Factory.Stack){
+if (!CSL.Stack){
 	load("./src/stack.js");
 }
-if (!CSL.Factory.Token){
+if (!CSL.Token){
 	load("./src/obj_token.js");
 }
-if (!CSL.Factory.AmbigConfig){
+if (!CSL.AmbigConfig){
 	load("./src/obj_ambigconfig.js");
 }
-if (!CSL.Factory.Blob){
+if (!CSL.Blob){
 	load("./src/obj_blob.js");
 }
 if (!CSL.NumericBlob){

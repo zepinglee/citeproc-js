@@ -169,7 +169,7 @@ CSL.getBibliographyEntries = function (bibsection){
 		if (false){
 			CSL.debug("BIB: "+item.id);
 		}
-		var bib_entry = new CSL.Factory.Token("group",CSL.START);
+		var bib_entry = new CSL.Token("group",CSL.START);
 		bib_entry.decorations = [["@bibliography","entry"]];
 		this.output.startTag("bib_entry",bib_entry);
 		CSL.getCite.call(this,item);

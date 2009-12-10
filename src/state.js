@@ -64,9 +64,9 @@ CSL.Engine.Tmp = function (){
 	// in a cite.  initialized to zero by the
 	// citation element, incremented by each
 	// name variable actually rendered
-	this.names_max = new CSL.Factory.Stack();
-	this.names_base = new CSL.Factory.Stack();
-	this.givens_base = new CSL.Factory.Stack();
+	this.names_max = new CSL.Stack();
+	this.names_base = new CSL.Stack();
+	this.givens_base = new CSL.Stack();
 	//
 	// this holds the field values collected by the @value
 	// and @variable attributes, for processing by the
@@ -95,7 +95,7 @@ CSL.Engine.Tmp = function (){
 	// names end tag pops it.  Output value check in @variable
 	// function of attributes.js sets level to false.  closing names
 	// tag maps a false value to superior level.
-	this.can_substitute = new CSL.Factory.Stack( 0, CSL.LITERAL);
+	this.can_substitute = new CSL.Stack( 0, CSL.LITERAL);
 	//
 	// notes whether the formatted elements of a date span
 	// rendered anything.  controls whether literal fallback
@@ -105,17 +105,17 @@ CSL.Engine.Tmp = function (){
 	// element_trace keeps a record of rendered elements.
 	// used to implement author-only.
 	//
-	this.element_trace = new CSL.Factory.Stack("style");
+	this.element_trace = new CSL.Stack("style");
 	//
 	// counter for total namesets
 	this.nameset_counter = 0;
 	//
-	/////  this.fun.check_for_output = CSL.Factory.check_for_output;
+	/////  this.fun.check_for_output = CSL.check_for_output;
 	//
 	// stack flag used for term handling.  Set to true
 	// if at least one variable has tried to render, and
 	// no variables had content.
-	this.term_sibling = new CSL.Factory.Stack( undefined, CSL.LITERAL);
+	this.term_sibling = new CSL.Stack( undefined, CSL.LITERAL);
 	//
 	// boolean flag used to control first-letter capitalization
 	// of terms.  Set to true if any item preceding the term
@@ -125,14 +125,14 @@ CSL.Engine.Tmp = function (){
 	//
 	// stack flag used to control jumps in the closing
 	// token of a conditional.
-	this.jump = new CSL.Factory.Stack(0,CSL.LITERAL);
+	this.jump = new CSL.Stack(0,CSL.LITERAL);
 	//
 	// holds string parameters for group formatting, between
 	// the start of a group and the closing token.
-	this.decorations = new CSL.Factory.Stack();
+	this.decorations = new CSL.Stack();
 	//
 	// token store stack.
-	this.tokenstore_stack = new CSL.Factory.Stack();
+	this.tokenstore_stack = new CSL.Stack();
 
 	// for collapsing
 	this.last_suffix_used = "";
@@ -142,7 +142,7 @@ CSL.Engine.Tmp = function (){
 	this.names_used = new Array();
 	//
 	// scratch stack containing initialize-with strings or null values
-	this.initialize_with = new CSL.Factory.Stack();
+	this.initialize_with = new CSL.Stack();
 	//
 	// this is used to set a requested set of
 	// disambiguation parameters in the output.
@@ -167,22 +167,22 @@ CSL.Engine.Tmp = function (){
 	//
 	// empty settings array, used to report settings used
 	// if disambig_request is not set at runtime
-	this.disambig_settings = new CSL.Factory.AmbigConfig();
+	this.disambig_settings = new CSL.AmbigConfig();
 	//
 	// sort key array
 	this.bib_sort_keys = new Array();
 	//
 	// holds the prefix between the start of a group
 	// and the closing token.
-	this.prefix = new CSL.Factory.Stack("",CSL.LITERAL);
+	this.prefix = new CSL.Stack("",CSL.LITERAL);
 	//
 	// holds the suffix between the start of a group
 	// and the closing token.
-	this.suffix = new CSL.Factory.Stack("",CSL.LITERAL);
+	this.suffix = new CSL.Stack("",CSL.LITERAL);
 	//
 	// holds the group delimiter between the start of a group
 	// and the closing token.
-	this.delimiter = new CSL.Factory.Stack("",CSL.LITERAL);
+	this.delimiter = new CSL.Stack("",CSL.LITERAL);
 };
 
 
@@ -272,7 +272,7 @@ CSL.Engine.Build = function (){
 	// new level with value 1.  group start tag increments by 1,
 	// group end tag decrements by 1.  conditional wrappers are
 	// only applied if value is exactly 1.
-	this.substitute_level = new CSL.Factory.Stack( 0, CSL.LITERAL);
+	this.substitute_level = new CSL.Stack( 0, CSL.LITERAL);
 	this.render_nesting_level = 0;
 	this.render_seen = false;
 };

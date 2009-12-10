@@ -42,11 +42,11 @@ CSL.Output = {};
 CSL.Output.Queue = function(state){
 	this.state = state;
 	this.queue = new Array();
-	this.empty = new CSL.Factory.Token("empty");
+	this.empty = new CSL.Token("empty");
 	var tokenstore = {};
 	tokenstore["empty"] = this.empty;
-	this.formats = new CSL.Factory.Stack( tokenstore );
-	this.current = new CSL.Factory.Stack( this.queue );
+	this.formats = new CSL.Stack( tokenstore );
+	this.current = new CSL.Stack( this.queue );
 	this.suppress_join_punctuation = false;
 };
 
@@ -57,7 +57,7 @@ CSL.Output.Queue.prototype.getToken = function(name){
 
 // Store a new output format token based on another
 CSL.Output.Queue.prototype.addToken = function(name,modifier,token){
-	var newtok = new CSL.Factory.Token("output");
+	var newtok = new CSL.Token("output");
 	if ("string" == typeof token){
 		token = this.formats.value()[token];
 	}
@@ -115,7 +115,7 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 	//CSL.debug("newlevel: "+token);
 	//
 	// delimiter, prefix, suffix, decorations from token
-	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
+	var blob = new CSL.Blob(this.formats.value()[token]);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
 		// this.state.tmp.offset_characters += blob.strings.prefix.length;
 		this.state.tmp.offset_characters += blob.strings.prefix;
@@ -169,7 +169,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if ("string" == typeof str && str.length){
 		this.last_char_rendered = str.slice(-1);
 	}
-	blob = new CSL.Factory.Blob(token,str);
+	blob = new CSL.Blob(token,str);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix){
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}

@@ -228,7 +228,7 @@ CSL.Node.names = new function(){
 					// joining all but the last name in the set together.
 					var delim = state.output.getToken("name").strings.delimiter;
 					state.output.addToken("inner",delim);
-					//state.tmp.tokenstore["and"] = new CSL.Factory.Token("and");
+					//state.tmp.tokenstore["and"] = new CSL.Token("and");
 					state.output.formats.value()["name"].strings.delimiter = and_term;
 					for (var i in nameset.names){
 						//

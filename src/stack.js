@@ -46,7 +46,7 @@ if (!CSL) {
  * them.</p>
  * @class
  */
-CSL.Factory.Stack = function(val,literal){
+CSL.Stack = function(val,literal){
 	this.mystack = new Array();
 	if (literal || val){
 		this.mystack.push(val);
@@ -57,7 +57,7 @@ CSL.Factory.Stack = function(val,literal){
  * Push a value onto the stack.
  * <p>This just does what it says.</p>
  */
-CSL.Factory.Stack.prototype.push = function(val,literal){
+CSL.Stack.prototype.push = function(val,literal){
 	if (literal || val){
 		this.mystack.push(val);
 	} else {
@@ -68,7 +68,7 @@ CSL.Factory.Stack.prototype.push = function(val,literal){
 /**
  * Clear the stack
  */
-CSL.Factory.Stack.prototype.clear = function(){
+CSL.Stack.prototype.clear = function(){
 	this.mystack = new Array();
 };
 
@@ -77,7 +77,7 @@ CSL.Factory.Stack.prototype.clear = function(){
  * <p>This removes some ugly syntax from the
  * main code.</p>
  */
-CSL.Factory.Stack.prototype.replace = function(val,literal){
+CSL.Stack.prototype.replace = function(val,literal){
 	//
 	// safety fix after a bug was chased down.  Rhino
 	// JS will process a negative index without error (!).
@@ -96,7 +96,7 @@ CSL.Factory.Stack.prototype.replace = function(val,literal){
  * Remove the top value from the stack.
  * <p>Just does what it says.</p>
  */
-CSL.Factory.Stack.prototype.pop = function(){
+CSL.Stack.prototype.pop = function(){
 	return this.mystack.pop();
 };
 
@@ -106,7 +106,7 @@ CSL.Factory.Stack.prototype.pop = function(){
  * <p>Removes a little hideous complication from
  * the main code.</p>
  */
-CSL.Factory.Stack.prototype.value = function(){
+CSL.Stack.prototype.value = function(){
 	return this.mystack.slice(-1)[0];
 };
 
@@ -116,6 +116,6 @@ CSL.Factory.Stack.prototype.value = function(){
  * <p>Used to identify if there is content to
  * be handled on the stack</p>
  */
-CSL.Factory.Stack.prototype.length = function(){
+CSL.Stack.prototype.length = function(){
 	return this.mystack.length;
 };

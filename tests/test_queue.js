@@ -62,7 +62,7 @@ doh.registerGroup("tests.queue",
 
 			var res = new CSL.Output.Queue(state);
 
-			var token = CSL.Factory.Token("someelement",CSL.START);
+			var token = CSL.Token("someelement",CSL.START);
 
 			res.append("one",token);
 			doh.assertEqual("one", res.queue[0].blobs );
@@ -75,7 +75,7 @@ doh.registerGroup("tests.queue",
 			var state = new CSL.Engine(sys,myxml);
 
 			var res = new CSL.Output.Queue(state);
-			var token = CSL.Factory.Token("someelement",CSL.START);
+			var token = CSL.Token("someelement",CSL.START);
 
 			res.addToken("myformatbundle",false,token);
 			res.openLevel("myformatbundle");
@@ -89,10 +89,10 @@ doh.registerGroup("tests.queue",
 			var state = new CSL.Engine(sys,myxml);
 			var res = state.output;
 
-			var token1 = new CSL.Factory.Token("sometype",CSL.START);
+			var token1 = new CSL.Token("sometype",CSL.START);
 			token1.strings.delimiter = " [X] ";
 
-			var token2 = new CSL.Factory.Token("someothertype",CSL.START);
+			var token2 = new CSL.Token("someothertype",CSL.START);
 			token2.strings.delimiter = " [Y] ";
 
 			res.addToken("withtokenone",false,token1);
@@ -122,10 +122,10 @@ doh.registerGroup("tests.queue",
 		};
 		tests.test_queue.state = function(){
 			this.tmp = new Object();
-			this.tmp.delimiter = new CSL.Factory.Stack();
-			this.tmp.prefix = new CSL.Factory.Stack();
-			this.tmp.suffix = new CSL.Factory.Stack();
-			this.tmp.decorations = new CSL.Factory.Stack();
+			this.tmp.delimiter = new CSL.Stack();
+			this.tmp.prefix = new CSL.Stack();
+			this.tmp.suffix = new CSL.Stack();
+			this.tmp.decorations = new CSL.Stack();
 		};
 	},
 	function(){

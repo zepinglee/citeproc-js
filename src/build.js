@@ -38,6 +38,7 @@ dojo.provide("csl.build");
  * Core instantiation functionality.
  * @namespace
  */
+
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.E4X();
@@ -218,7 +219,7 @@ CSL.Engine.prototype._getNavi.prototype.remember = function(){
 	this.nodeList.pop();
 	// closing node, process result of children
 	var node = this.nodeList[this.depth][1][(this.nodeList[this.depth][0])];
-	CSL.Factory.XmlToToken.call(node,this.state,CSL.END);
+	CSL.XmlToToken.call(node,this.state,CSL.END);
 	return this.getbro();
 };
 
@@ -240,11 +241,11 @@ CSL.Engine.prototype._getNavi.prototype.getkids = function(){
 	//var sneakpeek = currnode.children();
 	if (this.sys.xml.numberofnodes(sneakpeek) == 0){
 		// singleton, process immediately
-		CSL.Factory.XmlToToken.call(currnode,this.state,CSL.SINGLETON);
+		CSL.XmlToToken.call(currnode,this.state,CSL.SINGLETON);
 		return false;
 	} else {
 		// if first node of a span, process it, then descend
-		CSL.Factory.XmlToToken.call(currnode,this.state,CSL.START);
+		CSL.XmlToToken.call(currnode,this.state,CSL.START);
 		this.depth += 1;
 		this.nodeList.push([0,sneakpeek]);
 		return true;
@@ -258,7 +259,7 @@ CSL.Engine.prototype._getNavi.prototype.getNodeListValue = function(){
 
 CSL.Engine.prototype.setOutputFormat = function(mode){
 	this.opt.mode = mode;
-	this.fun.decorate = CSL.Factory.Mode(mode);
+	this.fun.decorate = CSL.Mode(mode);
 	if (!this.output[mode]){
 		this.output[mode] = new Object();
 		this.output[mode].tmp = new Object();
@@ -373,7 +374,7 @@ CSL.Engine.prototype.configureTokenLists = function(){
 			}
 		}
 	}
-	this.version = CSL.Factory.version;
+	this.version = CSL.version;
 	return this.state;
 };
 

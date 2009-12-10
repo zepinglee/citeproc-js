@@ -30,14 +30,14 @@ CSL.tokenExec = function(token,Item){
  * Macro expander.
  * <p>Called on the state object.</p>
  */
-CSL.Factory.expandMacro = function(macro_key_token){
+CSL.expandMacro = function(macro_key_token){
 	var mkey = macro_key_token.postponed_macro;
 	if (this.build.macro_stack.indexOf(mkey) > -1){
 		throw "CSL processor error: call to macro \""+mkey+"\" would cause an infinite loop";
 	} else {
 		this.build.macro_stack.push(mkey);
 	}
-	var start_token = new CSL.Factory.Token("group",CSL.START);
+	var start_token = new CSL.Token("group",CSL.START);
 	start_token.decorations = this.decorations;
 	for (var i in macro_key_token.strings){
 		start_token.strings[i] = macro_key_token.strings[i];
@@ -67,7 +67,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
 	var navi = new this._getNavi( this, macroxml );
 	CSL.buildStyle.call(this,navi);
 
-	var end_token = new CSL.Factory.Token("group",CSL.END);
+	var end_token = new CSL.Token("group",CSL.END);
 	var mergeoutput = function(state,Item){
 		//
 		// rendering happens inside the
@@ -99,7 +99,7 @@ CSL.Factory.expandMacro = function(macro_key_token){
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
  */
-CSL.Factory.XmlToToken = function(state,tokentype){
+CSL.XmlToToken = function(state,tokentype){
 	var name = state.sys.xml.nodename(this);
 	// CSL.debug(tokentype + " : " + name);
 	if (state.build.skip && state.build.skip != name){
@@ -117,8 +117,8 @@ CSL.Factory.XmlToToken = function(state,tokentype){
 	}
 	var attrfuncs = new Array();
 	var attributes = state.sys.xml.attributes(this);
-	var decorations = CSL.Factory.setDecorations.call(this,state,attributes);
-	var token = new CSL.Factory.Token(name,tokentype);
+	var decorations = CSL.setDecorations.call(this,state,attributes);
+	var token = new CSL.Token(name,tokentype);
 	//
 	// xml: more xml stuff
 	//

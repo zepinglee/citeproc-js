@@ -164,7 +164,7 @@ CSL.Node.date = new function(){
 
 				var newoutput = function(state,Item){
 					state.output.startTag("date",this);
-					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
+					var tok = new CSL.Token("date-part",CSL.SINGLETON);
 					//
 					// if present, sneak in a literal here and quash the remainder
 					// of output from this date.

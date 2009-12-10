@@ -35,7 +35,7 @@
 CSL.Node.key = new function(){
 	this.build = build;
 	function build(state,target){
-		var start_key = new CSL.Factory.Token("key",CSL.START);
+		var start_key = new CSL.Token("key",CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
 		var initialize_done_vars = function(state,Item){
@@ -71,23 +71,23 @@ CSL.Node.key = new function(){
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
 				// Start tag
-				var names_start_token = new CSL.Factory.Token("names",CSL.START);
+				var names_start_token = new CSL.Token("names",CSL.START);
 				names_start_token.tokentype = CSL.START;
 				names_start_token.variables = this.variables;
 				CSL.Node.names.build.call(names_start_token,state,target);
 				//
 				// Middle tag
-				var name_token = new CSL.Factory.Token("name",CSL.SINGLETON);
+				var name_token = new CSL.Token("name",CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
 				CSL.Node.name.build.call(name_token,state,target);
 				//
 				// End tag
-				var names_end_token = new CSL.Factory.Token("names",CSL.END);
+				var names_end_token = new CSL.Token("names",CSL.END);
 				names_end_token.tokentype = CSL.END;
 				CSL.Node.names.build.call(names_end_token,state,target);
 			} else {
-				var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var single_text = new CSL.Token("text",CSL.SINGLETON);
 				if (variable == "citation-number"){
 					var output_func = function(state,Item){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
@@ -129,15 +129,15 @@ CSL.Node.key = new function(){
 		} else {
 			//
 			// if it's not a variable, it's a macro
-			var token = new CSL.Factory.Token("text",CSL.SINGLETON);
+			var token = new CSL.Token("text",CSL.SINGLETON);
 			token.postponed_macro = this.postponed_macro;
-			CSL.Factory.expandMacro.call(state,token);
+			CSL.expandMacro.call(state,token);
 		}
 		//
 		// ops to output the key string result to an array go
 		// on the closing "key" tag before it is pushed.
 		// Do not close the level.
-		var end_key = new CSL.Factory.Token("key",CSL.END);
+		var end_key = new CSL.Token("key",CSL.END);
 		var store_key_for_use = function(state,Item){
 			var keystring = state.output.string(state,state.output.queue);
 			if (false){

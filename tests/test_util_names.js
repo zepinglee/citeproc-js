@@ -68,7 +68,7 @@ var state = new CSL.Engine(sys,"<style></style>");
 // its delimiter is either that of the "name"
 // element or, if the @and attribute is set
 // on it, the string appropriate to its value.
-var name = new CSL.Factory.Token("name");
+var name = new CSL.Token("name");
 name.strings.delimiter = "and";
 name.strings.prefix ="[";
 name.strings.suffix ="]";
@@ -79,7 +79,7 @@ state.output.addToken("name",false,name);
 // from the compiler's token list.  the formatting
 // decorations and affixes are copied to
 // the "and" token.
-var inner = new CSL.Factory.Token("inner");
+var inner = new CSL.Token("inner");
 //inner.strings.prefix ="<";
 //inner.strings.suffix =">";
 inner.strings.delimiter = ", ";
@@ -89,7 +89,7 @@ state.output.addToken("inner",false,inner);
 // value of the "name" element @sort-separator
 // attribute as its delimiter.  it is otherwise
 // empty.
-var sortsep = new CSL.Factory.Token("sortsep");
+var sortsep = new CSL.Token("sortsep");
 sortsep.strings.delimiter = ", ";
 state.output.addToken("sortsep",false,sortsep);
 
@@ -97,42 +97,42 @@ state.output.addToken("sortsep",false,sortsep);
 // name element is set on an otherwise
 // empty token for "start", "middle" and
 // "end", as appropriate to its value.
-var start = new CSL.Factory.Token("start");
+var start = new CSL.Token("start");
 state.output.addToken("start",false,start);
 
-var middle = new CSL.Factory.Token("middle");
+var middle = new CSL.Token("middle");
 state.output.addToken("middle",false,middle);
 
-var end = new CSL.Factory.Token("end");
+var end = new CSL.Token("end");
 state.output.addToken("end",false,end);
 
 // token params of the optional "family",
 // "given", "prefix" and "articular" elements
 //  token params are taken from the token
 // list, with no changes
-var primary = new CSL.Factory.Token("family");
+var primary = new CSL.Token("family");
 primary.strings.prefix="(";
 primary.strings.suffix=")";
 state.output.addToken("family",false,primary);
 
-var secondary = new CSL.Factory.Token("given");
+var secondary = new CSL.Token("given");
 state.output.addToken("given",false,secondary);
 
 //
 // This should be changed to "articular" in the code
-var suffix = new CSL.Factory.Token("suffix");
+var suffix = new CSL.Token("suffix");
 state.output.addToken("suffix",false,suffix);
 
-var prefix = new CSL.Factory.Token("prefix");
+var prefix = new CSL.Token("prefix");
 state.output.addToken("prefix",false,prefix);
 
 // the "empty" and "space" tokens are standard
 // pre-defined tokens that provide standard
 // delimiters without other formatting.
-var empty = new CSL.Factory.Token("empty");
+var empty = new CSL.Token("empty");
 state.output.addToken("empty",false,empty);
 
-var space = new CSL.Factory.Token("space");
+var space = new CSL.Token("space");
 space.strings.delimiter = " ";
 state.output.addToken("space",false,space);
 

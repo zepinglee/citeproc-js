@@ -208,7 +208,7 @@ CSL.citeStart = function(Item){
 		this.tmp.disambig_request = this.registry.registry[Item.id].disambig;
 		this.tmp.disambig_settings = this.registry.registry[Item.id].disambig;
 	} else {
-		this.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
+		this.tmp.disambig_settings = new CSL.AmbigConfig();
 	}
 	this.tmp.names_used = new Array();
 	this.tmp.nameset_counter = 0;

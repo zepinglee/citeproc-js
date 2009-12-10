@@ -34,7 +34,7 @@
  */
 dojo.provide("csl.blob");
 
-CSL.Factory.Blob = function(token,str){
+CSL.Blob = function(token,str){
 	if (token){
 		this.strings = new Object();
 		for (key in token.strings){
@@ -60,7 +60,7 @@ CSL.Factory.Blob = function(token,str){
 };
 
 
-CSL.Factory.Blob.prototype.push = function(blob){
+CSL.Blob.prototype.push = function(blob){
 	if ("string" == typeof this.blobs){
 		throw "Attempt to push blob onto string object";
 	} else {

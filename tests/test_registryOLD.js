@@ -356,7 +356,7 @@ var x = [
 	},
 	function testInstantiation(){
 		var state = new CSL.Engine();
-		var obj = new CSL.Factory.Registry(state);
+		var obj = new CSL.Registry(state);
 		doh.assertTrue(obj);
 	},
 	function testDisambiguateAddGivensSimple(){

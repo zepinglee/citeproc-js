@@ -74,7 +74,7 @@ CSL.Node.layout = new function(){
 			this["execs"].push(declare_thyself);
 			target.push(this);
 			if (state.build.area == "citation"){
-				var prefix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var prefix_token = new CSL.Token("text",CSL.SINGLETON);
 				var func = function(state,Item){
 					if (Item["prefix"]){
 						var sp = "";
@@ -91,7 +91,7 @@ CSL.Node.layout = new function(){
 		if (this.tokentype == CSL.END){
 			state.build.layout_flag = false;
 			if (state.build.area == "citation"){
-				var suffix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var suffix_token = new CSL.Token("text",CSL.SINGLETON);
 				var func = function(state,Item){
 					if (Item["suffix"]){
 						var sp = "";

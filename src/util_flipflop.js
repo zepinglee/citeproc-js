@@ -122,13 +122,13 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 	// CSL.debug("(blob alldecor): "+blob.alldecor);
 	if (!blob){
 		this.strs = this.getSplitStrings(str);
-		this.blob = new CSL.Factory.Blob();
+		this.blob = new CSL.Blob();
 	} else {
 		this.blob = blob;
 		this.strs = this.getSplitStrings( this.blob.blobs );
 		this.blob.blobs = new Array();
 	}
-	this.blobstack = new CSL.Factory.Stack(this.blob);
+	this.blobstack = new CSL.Stack(this.blob);
 	// CSL.debug("(this.blobstack.value() alldecor): "+this.blobstack.value().alldecor);
 };
 //
@@ -249,7 +249,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 			var tag = this.strs[posA];
 			var prestr = this.strs[(posA-1)];
 			// start by pushing in the trailing text string
-			var newblob = new CSL.Factory.Blob(false,prestr);
+			var newblob = new CSL.Blob(false,prestr);
 			var blob = this.blobstack.value();
 			blob.push(newblob);
 //
@@ -295,7 +295,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );
 				blob = this.blobstack.value();
-				var newblobnest = new CSL.Factory.Blob();
+				var newblobnest = new CSL.Blob();
 				blob.push(newblobnest);
 				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
 				//
@@ -328,7 +328,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 	if (this.strs.length > 2){
 		str = this.strs[(this.strs.length-1)];
 		var blob = this.blobstack.value();
-		var newblob = new CSL.Factory.Blob(false,str);
+		var newblob = new CSL.Blob(false,str);
 		blob.push(newblob);
 	};
 	};

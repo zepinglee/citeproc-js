@@ -167,11 +167,11 @@ CSL.Output = {};
 CSL.Output.Queue = function(state){
 	this.state = state;
 	this.queue = new Array();
-	this.empty = new CSL.Factory.Token("empty");
+	this.empty = new CSL.Token("empty");
 	var tokenstore = {};
 	tokenstore["empty"] = this.empty;
-	this.formats = new CSL.Factory.Stack( tokenstore );
-	this.current = new CSL.Factory.Stack( this.queue );
+	this.formats = new CSL.Stack( tokenstore );
+	this.current = new CSL.Stack( this.queue );
 	this.suppress_join_punctuation = false;
 };
 CSL.Output.Queue.prototype.getToken = function(name){
@@ -180,7 +180,7 @@ CSL.Output.Queue.prototype.getToken = function(name){
 };
 // Store a new output format token based on another
 CSL.Output.Queue.prototype.addToken = function(name,modifier,token){
-	var newtok = new CSL.Factory.Token("output");
+	var newtok = new CSL.Token("output");
 	if ("string" == typeof token){
 		token = this.formats.value()[token];
 	}
@@ -226,7 +226,7 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 	if (!this.formats.value()[token]){
 		throw "CSL processor error: call to nonexistent format token \""+token+"\"";
 	}
-	var blob = new CSL.Factory.Blob(this.formats.value()[token]);
+	var blob = new CSL.Blob(this.formats.value()[token]);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
 		// this.state.tmp.offset_characters += blob.strings.prefix.length;
 		this.state.tmp.offset_characters += blob.strings.prefix;
@@ -272,7 +272,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if ("string" == typeof str && str.length){
 		this.last_char_rendered = str.slice(-1);
 	}
-	blob = new CSL.Factory.Blob(token,str);
+	blob = new CSL.Blob(token,str);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix){
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
@@ -681,6 +681,195 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 		this.locale[lang_out].dates[ sys.xml.getAttributeValue( date, "form") ] = date;
 	};
 };
+CSL.substituteOne = function(template) {
+	return function(state,list) {
+		if (!list){
+			return "";
+		} else if ("string" == typeof list){
+			return template.replace("%%STRING%%",list);
+		};
+		CSL.debug("USING is_delimiter (1) ... WHY?");
+		var decor = template.split("%%STRING%%");
+		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
+		ret.push({"is_delimiter":true,"value":decor[1]});
+		return ret;
+	};
+};
+CSL.substituteTwo = function(template) {
+	return function(param) {
+		var template2 = template.replace("%%PARAM%%", param);
+		return function(state,list) {
+			if ("string" == typeof list){
+				return template2.replace("%%STRING%%",list);
+			}
+			CSL.debug("USING is_delimiter (2) ... WHY?");
+			var decor = template2.split("%%STRING");
+			var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
+			ret.push({"is_delimiter":true,"value":decor[1]});
+			return ret;
+		};
+	};
+};
+CSL.Mode = function(mode){
+	var decorations = new Object();
+	var params = CSL.Output.Formats[mode];
+	for (var param in params) {
+		if ("@" != param[0]){
+			decorations[param] = params[param];
+			continue;
+		}
+		var func = false;
+		var val = params[param];
+		var args = param.split('/');
+		if (typeof val == "string" && val.indexOf("%%STRING%%") > -1)  {
+			if (val.indexOf("%%PARAM%%") > -1) {
+				func = CSL.substituteTwo(val);
+			} else {
+				func = CSL.substituteOne(val);
+			}
+		} else if (typeof val == "boolean" && !val) {
+			func = CSL.Output.Formatters.passthrough;
+		} else if (typeof val == "function") {
+			func = val;
+		} else {
+			throw "CSL.Compiler: Bad "+mode+" config entry for "+param+": "+val;
+		}
+		if (args.length == 1) {
+			decorations[args[0]] = func;
+		} else if (args.length == 2) {
+			if (!decorations[args[0]]) {
+				decorations[args[0]] = new Object();
+			}
+			decorations[args[0]][args[1]] = func;
+		}
+	}
+	return decorations;
+};
+CSL.setDecorations = function(state,attributes){
+	var ret = new Array();
+	for each (var key in CSL.FORMAT_KEY_SEQUENCE){
+		if (attributes[key]){
+			ret.push([key,attributes[key]]);
+			delete attributes[key];
+		}
+	}
+	return ret;
+};
+CSL.cloneAmbigConfig = function(config){
+	var ret = new Object();
+	ret["names"] = new Array();
+	ret["givens"] = new Array();
+	ret["year_suffix"] = false;
+	ret["disambiguate"] = false;
+	for (var i in config["names"]){
+		var param = config["names"][i];
+		ret["names"][i] = param;
+	}
+	for (var i in config["givens"]){
+		var param = new Array();
+		for (var j in config["givens"][i]){
+			// condition at line 312 of disambiguate.js protects against negative
+			// values of j
+			param.push(config["givens"][i][j]);
+		};
+		ret["givens"].push(param);
+	};
+	ret["year_suffix"] = config["year_suffix"];
+	ret["disambiguate"] = config["disambiguate"];
+	return ret;
+};
+CSL.tokenExec = function(token,Item){
+    var next = token.next;
+	var maybenext = false;
+	if (false){
+		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
+	}
+	if (token.evaluator){
+	    next = token.evaluator(token,this,Item);
+    };
+	for each (var exec in token.execs){
+	    maybenext = exec.call(token,this,Item);
+		if (maybenext){
+			next = maybenext;
+		};
+	};
+	if (false){
+		CSL.debug(token.name+" ("+token.tokentype+") ---> done");
+	}
+	return next;
+};
+CSL.expandMacro = function(macro_key_token){
+	var mkey = macro_key_token.postponed_macro;
+	if (this.build.macro_stack.indexOf(mkey) > -1){
+		throw "CSL processor error: call to macro \""+mkey+"\" would cause an infinite loop";
+	} else {
+		this.build.macro_stack.push(mkey);
+	}
+	var start_token = new CSL.Token("group",CSL.START);
+	start_token.decorations = this.decorations;
+	for (var i in macro_key_token.strings){
+		start_token.strings[i] = macro_key_token.strings[i];
+	}
+	var newoutput = function(state,Item){
+		//state.output.openLevel(this);
+		state.output.startTag("group",this);
+		//state.tmp.decorations.push(this.decorations);
+	};
+	start_token["execs"].push(newoutput);
+	this[this.build.area].tokens.push(start_token);
+	var macroxml = this.sys.xml.getNodesByName( this.cslXml, 'macro', mkey);
+	if (!this.sys.xml.getNodeValue( macroxml) ){
+		throw "CSL style error: undefined macro \""+mkey+"\"";
+	}
+	var navi = new this._getNavi( this, macroxml );
+	CSL.buildStyle.call(this,navi);
+	var end_token = new CSL.Token("group",CSL.END);
+	var mergeoutput = function(state,Item){
+		//
+		// rendering happens inside the
+		// merge method, by applying decorations to
+		// each token to be merged.
+		state.output.endTag();
+		//state.output.closeLevel();
+	};
+	end_token["execs"].push(mergeoutput);
+	this[this.build.area].tokens.push(end_token);
+	this.build.macro_stack.pop();
+};
+CSL.XmlToToken = function(state,tokentype){
+	var name = state.sys.xml.nodename(this);
+	if (state.build.skip && state.build.skip != name){
+		return;
+	}
+	if (!name){
+		var txt = state.sys.xml.content(this);
+		if (txt){
+			state.build.text = txt;
+		}
+		return;
+	}
+	if ( ! CSL.Node[state.sys.xml.nodename(this)]){
+		throw "Undefined node name \""+name+"\".";
+	}
+	var attrfuncs = new Array();
+	var attributes = state.sys.xml.attributes(this);
+	var decorations = CSL.setDecorations.call(this,state,attributes);
+	var token = new CSL.Token(name,tokentype);
+	for (var key in attributes){
+		try {
+			CSL.Attributes[key].call(token,state,""+attributes[key]);
+		} catch (e) {
+			if (e == "TypeError: Cannot call method \"call\" of undefined"){
+				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
+			} else {
+				throw "CSL processor error, "+key+" attribute: "+e;
+			}
+		}
+	}
+	token.decorations = decorations;
+	var target = state[state.build.area].tokens;
+	CSL.Node[name].build.call(token,state,target);
+};
 dojo.provide("csl.build");
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
@@ -777,7 +966,7 @@ CSL.Engine.prototype._getNavi.prototype.remember = function(){
 	this.depth += -1;
 	this.nodeList.pop();
 	var node = this.nodeList[this.depth][1][(this.nodeList[this.depth][0])];
-	CSL.Factory.XmlToToken.call(node,this.state,CSL.END);
+	CSL.XmlToToken.call(node,this.state,CSL.END);
 	return this.getbro();
 };
 CSL.Engine.prototype._getNavi.prototype.getbro = function(){
@@ -794,11 +983,11 @@ CSL.Engine.prototype._getNavi.prototype.getkids = function(){
 	var sneakpeek = this.sys.xml.children(currnode);
 	if (this.sys.xml.numberofnodes(sneakpeek) == 0){
 		// singleton, process immediately
-		CSL.Factory.XmlToToken.call(currnode,this.state,CSL.SINGLETON);
+		CSL.XmlToToken.call(currnode,this.state,CSL.SINGLETON);
 		return false;
 	} else {
 		// if first node of a span, process it, then descend
-		CSL.Factory.XmlToToken.call(currnode,this.state,CSL.START);
+		CSL.XmlToToken.call(currnode,this.state,CSL.START);
 		this.depth += 1;
 		this.nodeList.push([0,sneakpeek]);
 		return true;
@@ -809,7 +998,7 @@ CSL.Engine.prototype._getNavi.prototype.getNodeListValue = function(){
 };
 CSL.Engine.prototype.setOutputFormat = function(mode){
 	this.opt.mode = mode;
-	this.fun.decorate = CSL.Factory.Mode(mode);
+	this.fun.decorate = CSL.Mode(mode);
 	if (!this.output[mode]){
 		this.output[mode] = new Object();
 		this.output[mode].tmp = new Object();
@@ -911,7 +1100,7 @@ CSL.Engine.prototype.configureTokenLists = function(){
 			}
 		}
 	}
-	this.version = CSL.Factory.version;
+	this.version = CSL.version;
 	return this.state;
 };
 CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
@@ -1327,36 +1516,36 @@ CSL.Engine.Opt = function (){
 	this["et-al-subsequent-use-first"] = false;
 };
 CSL.Engine.Tmp = function (){
-	this.names_max = new CSL.Factory.Stack();
-	this.names_base = new CSL.Factory.Stack();
-	this.givens_base = new CSL.Factory.Stack();
+	this.names_max = new CSL.Stack();
+	this.names_base = new CSL.Stack();
+	this.givens_base = new CSL.Stack();
 	this.value = new Array();
 	this.namepart_decorations = new Object();
 	this.namepart_type = false;
 	this.area = "citation";
-	this.can_substitute = new CSL.Factory.Stack( 0, CSL.LITERAL);
+	this.can_substitute = new CSL.Stack( 0, CSL.LITERAL);
 	this.element_rendered_ok = false;
-	this.element_trace = new CSL.Factory.Stack("style");
+	this.element_trace = new CSL.Stack("style");
 	this.nameset_counter = 0;
-	this.term_sibling = new CSL.Factory.Stack( undefined, CSL.LITERAL);
+	this.term_sibling = new CSL.Stack( undefined, CSL.LITERAL);
 	this.term_predecessor = false;
-	this.jump = new CSL.Factory.Stack(0,CSL.LITERAL);
-	this.decorations = new CSL.Factory.Stack();
-	this.tokenstore_stack = new CSL.Factory.Stack();
+	this.jump = new CSL.Stack(0,CSL.LITERAL);
+	this.decorations = new CSL.Stack();
+	this.tokenstore_stack = new CSL.Stack();
 	this.last_suffix_used = "";
 	this.last_names_used = new Array();
 	this.last_years_used = new Array();
 	this.years_used = new Array();
 	this.names_used = new Array();
-	this.initialize_with = new CSL.Factory.Stack();
+	this.initialize_with = new CSL.Stack();
 	this.disambig_request = false;
 	this["name-as-sort-order"] = false;
 	this.suppress_decorations = false;
-	this.disambig_settings = new CSL.Factory.AmbigConfig();
+	this.disambig_settings = new CSL.AmbigConfig();
 	this.bib_sort_keys = new Array();
-	this.prefix = new CSL.Factory.Stack("",CSL.LITERAL);
-	this.suffix = new CSL.Factory.Stack("",CSL.LITERAL);
-	this.delimiter = new CSL.Factory.Stack("",CSL.LITERAL);
+	this.prefix = new CSL.Stack("",CSL.LITERAL);
+	this.suffix = new CSL.Stack("",CSL.LITERAL);
+	this.delimiter = new CSL.Stack("",CSL.LITERAL);
 };
 CSL.Engine.Fun = function (){
 	this.match = new  CSL.Util.Match();
@@ -1380,7 +1569,7 @@ CSL.Engine.Build = function (){
 	this.text = false;
 	this.lang = false;
 	this.area = "citation";
-	this.substitute_level = new CSL.Factory.Stack( 0, CSL.LITERAL);
+	this.substitute_level = new CSL.Stack( 0, CSL.LITERAL);
 	this.render_nesting_level = 0;
 	this.render_seen = false;
 };
@@ -1597,7 +1786,7 @@ CSL.getBibliographyEntries = function (bibsection){
 		if (false){
 			CSL.debug("BIB: "+item.id);
 		}
-		var bib_entry = new CSL.Factory.Token("group",CSL.START);
+		var bib_entry = new CSL.Token("group",CSL.START);
 		bib_entry.decorations = [["@bibliography","entry"]];
 		this.output.startTag("bib_entry",bib_entry);
 		CSL.getCite.call(this,item);
@@ -1730,7 +1919,7 @@ CSL.citeStart = function(Item){
 		this.tmp.disambig_request = this.registry.registry[Item.id].disambig;
 		this.tmp.disambig_settings = this.registry.registry[Item.id].disambig;
 	} else {
-		this.tmp.disambig_settings = new CSL.Factory.AmbigConfig();
+		this.tmp.disambig_settings = new CSL.AmbigConfig();
 	}
 	this.tmp.names_used = new Array();
 	this.tmp.nameset_counter = 0;
@@ -1962,7 +2151,7 @@ CSL.Node.date = new function(){
 				this["execs"].push(set_value);
 				var newoutput = function(state,Item){
 					state.output.startTag("date",this);
-					var tok = new CSL.Factory.Token("date-part",CSL.SINGLETON);
+					var tok = new CSL.Token("date-part",CSL.SINGLETON);
 					//
 					// if present, sneak in a literal here and quash the remainder
 					// of output from this date.
@@ -2352,7 +2541,7 @@ CSL.Node.info = new function(){
 CSL.Node.key = new function(){
 	this.build = build;
 	function build(state,target){
-		var start_key = new CSL.Factory.Token("key",CSL.START);
+		var start_key = new CSL.Token("key",CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
 		var initialize_done_vars = function(state,Item){
@@ -2386,23 +2575,23 @@ CSL.Node.key = new function(){
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
 				// Start tag
-				var names_start_token = new CSL.Factory.Token("names",CSL.START);
+				var names_start_token = new CSL.Token("names",CSL.START);
 				names_start_token.tokentype = CSL.START;
 				names_start_token.variables = this.variables;
 				CSL.Node.names.build.call(names_start_token,state,target);
 				//
 				// Middle tag
-				var name_token = new CSL.Factory.Token("name",CSL.SINGLETON);
+				var name_token = new CSL.Token("name",CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
 				CSL.Node.name.build.call(name_token,state,target);
 				//
 				// End tag
-				var names_end_token = new CSL.Factory.Token("names",CSL.END);
+				var names_end_token = new CSL.Token("names",CSL.END);
 				names_end_token.tokentype = CSL.END;
 				CSL.Node.names.build.call(names_end_token,state,target);
 			} else {
-				var single_text = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var single_text = new CSL.Token("text",CSL.SINGLETON);
 				if (variable == "citation-number"){
 					var output_func = function(state,Item){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
@@ -2443,15 +2632,15 @@ CSL.Node.key = new function(){
 		} else {
 			//
 			// if it's not a variable, it's a macro
-			var token = new CSL.Factory.Token("text",CSL.SINGLETON);
+			var token = new CSL.Token("text",CSL.SINGLETON);
 			token.postponed_macro = this.postponed_macro;
-			CSL.Factory.expandMacro.call(state,token);
+			CSL.expandMacro.call(state,token);
 		}
 		//
 		// ops to output the key string result to an array go
 		// on the closing "key" tag before it is pushed.
 		// Do not close the level.
-		var end_key = new CSL.Factory.Token("key",CSL.END);
+		var end_key = new CSL.Token("key",CSL.END);
 		var store_key_for_use = function(state,Item){
 			var keystring = state.output.string(state,state.output.queue);
 			if (false){
@@ -2556,7 +2745,7 @@ CSL.Node.layout = new function(){
 			this["execs"].push(declare_thyself);
 			target.push(this);
 			if (state.build.area == "citation"){
-				var prefix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var prefix_token = new CSL.Token("text",CSL.SINGLETON);
 				var func = function(state,Item){
 					if (Item["prefix"]){
 						var sp = "";
@@ -2573,7 +2762,7 @@ CSL.Node.layout = new function(){
 		if (this.tokentype == CSL.END){
 			state.build.layout_flag = false;
 			if (state.build.area == "citation"){
-				var suffix_token = new CSL.Factory.Token("text",CSL.SINGLETON);
+				var suffix_token = new CSL.Token("text",CSL.SINGLETON);
 				var func = function(state,Item){
 					if (Item["suffix"]){
 						var sp = "";
@@ -2859,7 +3048,7 @@ CSL.Node.names = new function(){
 					// joining all but the last name in the set together.
 					var delim = state.output.getToken("name").strings.delimiter;
 					state.output.addToken("inner",delim);
-					//state.tmp.tokenstore["and"] = new CSL.Factory.Token("and");
+					//state.tmp.tokenstore["and"] = new CSL.Token("and");
 					state.output.formats.value()["name"].strings.delimiter = and_term;
 					for (var i in nameset.names){
 						//
@@ -3079,7 +3268,7 @@ CSL.Node.text = new function(){
 	function build (state,target){
 		CSL.Util.substituteStart.call(this,state,target);
 		if (this.postponed_macro){
-			CSL.Factory.expandMacro.call(state,this);
+			CSL.expandMacro.call(state,this);
 		} else {
 			// ...
 			//
@@ -3255,8 +3444,8 @@ CSL.Node.text = new function(){
 									var primary = state.getTextSubField(value,"locale-pri",true);
 									var secondary = state.getTextSubField(value,"locale-sec");
 									if (secondary){
-										var primary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
-										var secondary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
+										var primary_tok = new CSL.Token("text",CSL.SINGLETON);
+										var secondary_tok = new CSL.Token("text",CSL.SINGLETON);
 										for (var i in this.strings){
 											secondary_tok.strings[i] = this.strings[i];
 											if (i == "suffix"){
@@ -3820,219 +4009,26 @@ CSL.System.Xml.E4X.prototype.makeXml = function(str){
 	}
 	return ret;
 };
-dojo.provide("csl.factory");
-if (!CSL) {
-}
-CSL.Factory = {};
-CSL.Factory.XmlToToken = function(state,tokentype){
-	var name = state.sys.xml.nodename(this);
-	if (state.build.skip && state.build.skip != name){
-		return;
-	}
-	if (!name){
-		var txt = state.sys.xml.content(this);
-		if (txt){
-			state.build.text = txt;
-		}
-		return;
-	}
-	if ( ! CSL.Node[state.sys.xml.nodename(this)]){
-		throw "Undefined node name \""+name+"\".";
-	}
-	var attrfuncs = new Array();
-	var attributes = state.sys.xml.attributes(this);
-	var decorations = CSL.Factory.setDecorations.call(this,state,attributes);
-	var token = new CSL.Factory.Token(name,tokentype);
-	for (var key in attributes){
-		try {
-			CSL.Attributes[key].call(token,state,""+attributes[key]);
-		} catch (e) {
-			if (e == "TypeError: Cannot call method \"call\" of undefined"){
-				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
-			} else {
-				throw "CSL processor error, "+key+" attribute: "+e;
-			}
-		}
-	}
-	token.decorations = decorations;
-	var target = state[state.build.area].tokens;
-	CSL.Node[name].build.call(token,state,target);
-};
-CSL.Factory.setDecorations = function(state,attributes){
-	var ret = new Array();
-	for each (var key in CSL.FORMAT_KEY_SEQUENCE){
-		if (attributes[key]){
-			ret.push([key,attributes[key]]);
-			delete attributes[key];
-		}
-	}
-	return ret;
-};
-CSL.Factory.substituteOne = function(template) {
-	return function(state,list) {
-		if (!list){
-			return "";
-		} else if ("string" == typeof list){
-			return template.replace("%%STRING%%",list);
-		};
-		CSL.debug("USING is_delimiter (1) ... WHY?");
-		var decor = template.split("%%STRING%%");
-		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
-		ret.push({"is_delimiter":true,"value":decor[1]});
-		return ret;
-	};
-};
-CSL.Factory.substituteTwo = function(template) {
-	return function(param) {
-		var template2 = template.replace("%%PARAM%%", param);
-		return function(state,list) {
-			if ("string" == typeof list){
-				return template2.replace("%%STRING%%",list);
-			}
-			CSL.debug("USING is_delimiter (2) ... WHY?");
-			var decor = template2.split("%%STRING");
-			var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
-			ret.push({"is_delimiter":true,"value":decor[1]});
-			return ret;
-		};
-	};
-};
-CSL.Factory.Mode = function(mode){
-	var decorations = new Object();
-	var params = CSL.Output.Formats[mode];
-	for (var param in params) {
-		if ("@" != param[0]){
-			decorations[param] = params[param];
-			continue;
-		}
-		var func = false;
-		var val = params[param];
-		var args = param.split('/');
-		if (typeof val == "string" && val.indexOf("%%STRING%%") > -1)  {
-			if (val.indexOf("%%PARAM%%") > -1) {
-				func = CSL.Factory.substituteTwo(val);
-			} else {
-				func = CSL.Factory.substituteOne(val);
-			}
-		} else if (typeof val == "boolean" && !val) {
-			func = CSL.Output.Formatters.passthrough;
-		} else if (typeof val == "function") {
-			func = val;
-		} else {
-			throw "CSL.Compiler: Bad "+mode+" config entry for "+param+": "+val;
-		}
-		if (args.length == 1) {
-			decorations[args[0]] = func;
-		} else if (args.length == 2) {
-			if (!decorations[args[0]]) {
-				decorations[args[0]] = new Object();
-			}
-			decorations[args[0]][args[1]] = func;
-		}
-	}
-	return decorations;
-};
-CSL.Factory.expandMacro = function(macro_key_token){
-	var mkey = macro_key_token.postponed_macro;
-	if (this.build.macro_stack.indexOf(mkey) > -1){
-		throw "CSL processor error: call to macro \""+mkey+"\" would cause an infinite loop";
-	} else {
-		this.build.macro_stack.push(mkey);
-	}
-	var start_token = new CSL.Factory.Token("group",CSL.START);
-	start_token.decorations = this.decorations;
-	for (var i in macro_key_token.strings){
-		start_token.strings[i] = macro_key_token.strings[i];
-	}
-	var newoutput = function(state,Item){
-		//state.output.openLevel(this);
-		state.output.startTag("group",this);
-		//state.tmp.decorations.push(this.decorations);
-	};
-	start_token["execs"].push(newoutput);
-	this[this.build.area].tokens.push(start_token);
-	var macroxml = this.sys.xml.getNodesByName( this.cslXml, 'macro', mkey);
-	if (!this.sys.xml.getNodeValue( macroxml) ){
-		throw "CSL style error: undefined macro \""+mkey+"\"";
-	}
-	var navi = new this._getNavi( this, macroxml );
-	CSL.buildStyle.call(this,navi);
-	var end_token = new CSL.Factory.Token("group",CSL.END);
-	var mergeoutput = function(state,Item){
-		//
-		// rendering happens inside the
-		// merge method, by applying decorations to
-		// each token to be merged.
-		state.output.endTag();
-		//state.output.closeLevel();
-	};
-	end_token["execs"].push(mergeoutput);
-	this[this.build.area].tokens.push(end_token);
-	this.build.macro_stack.pop();
-};
-CSL.cloneAmbigConfig = function(config){
-	var ret = new Object();
-	ret["names"] = new Array();
-	ret["givens"] = new Array();
-	ret["year_suffix"] = false;
-	ret["disambiguate"] = false;
-	for (var i in config["names"]){
-		var param = config["names"][i];
-		ret["names"][i] = param;
-	}
-	for (var i in config["givens"]){
-		var param = new Array();
-		for (var j in config["givens"][i]){
-			// condition at line 312 of disambiguate.js protects against negative
-			// values of j
-			param.push(config["givens"][i][j]);
-		};
-		ret["givens"].push(param);
-	};
-	ret["year_suffix"] = config["year_suffix"];
-	ret["disambiguate"] = config["disambiguate"];
-	return ret;
-};
-CSL.tokenExec = function(token,Item){
-    var next = token.next;
-	var maybenext = false;
-	if (false){
-		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
-	}
-	if (token.evaluator){
-	    next = token.evaluator(token,this,Item);
-    };
-	for each (var exec in token.execs){
-	    maybenext = exec.call(token,this,Item);
-		if (maybenext){
-			next = maybenext;
-		};
-	};
-	if (false){
-		CSL.debug(token.name+" ("+token.tokentype+") ---> done");
-	}
-	return next;
-};
 dojo.provide("csl.stack");
 if (!CSL) {
 }
-CSL.Factory.Stack = function(val,literal){
+CSL.Stack = function(val,literal){
 	this.mystack = new Array();
 	if (literal || val){
 		this.mystack.push(val);
 	};
 };
-CSL.Factory.Stack.prototype.push = function(val,literal){
+CSL.Stack.prototype.push = function(val,literal){
 	if (literal || val){
 		this.mystack.push(val);
 	} else {
 		this.mystack.push("");
 	}
 };
-CSL.Factory.Stack.prototype.clear = function(){
+CSL.Stack.prototype.clear = function(){
 	this.mystack = new Array();
 };
-CSL.Factory.Stack.prototype.replace = function(val,literal){
+CSL.Stack.prototype.replace = function(val,literal){
 	if (this.mystack.length == 0){
 		throw "Internal CSL processor error: attempt to replace nonexistent stack item with "+val;
 	}
@@ -4042,19 +4038,19 @@ CSL.Factory.Stack.prototype.replace = function(val,literal){
 		this.mystack[(this.mystack.length-1)] = "";
 	}
 };
-CSL.Factory.Stack.prototype.pop = function(){
+CSL.Stack.prototype.pop = function(){
 	return this.mystack.pop();
 };
-CSL.Factory.Stack.prototype.value = function(){
+CSL.Stack.prototype.value = function(){
 	return this.mystack.slice(-1)[0];
 };
-CSL.Factory.Stack.prototype.length = function(){
+CSL.Stack.prototype.length = function(){
 	return this.mystack.length;
 };
 dojo.provide("csl.token");
 if (!CSL) {
 }
-CSL.Factory.Token = function(name,tokentype){
+CSL.Token = function(name,tokentype){
 	this.name = name;
 	this.strings = new Object();
 	this.strings.delimiter = "";
@@ -4073,7 +4069,7 @@ CSL.Factory.Token = function(name,tokentype){
 dojo.provide("csl.ambigconfig");
 if (!CSL) {
 }
-CSL.Factory.AmbigConfig = function(){
+CSL.AmbigConfig = function(){
 	this.maxvals = new Array();
 	this.minval = 1;
 	this.names = new Array();
@@ -4082,7 +4078,7 @@ CSL.Factory.AmbigConfig = function(){
 	this.disambiguate = 0;
 };
 dojo.provide("csl.blob");
-CSL.Factory.Blob = function(token,str){
+CSL.Blob = function(token,str){
 	if (token){
 		this.strings = new Object();
 		for (key in token.strings){
@@ -4106,7 +4102,7 @@ CSL.Factory.Blob = function(token,str){
 	};
 	this.alldecor = [ this.decorations ];
 };
-CSL.Factory.Blob.prototype.push = function(blob){
+CSL.Blob.prototype.push = function(blob){
 	if ("string" == typeof this.blobs){
 		throw "Attempt to push blob onto string object";
 	} else {
@@ -4644,7 +4640,7 @@ CSL.Util.substituteStart = function(state,target){
 			// The markup formerly known as @bibliography/first
 			//
 			if (state.bibliography.opt["second-field-align"]){
-				var bib_first = new CSL.Factory.Token("group",CSL.START);
+				var bib_first = new CSL.Token("group",CSL.START);
 				bib_first.decorations = [["@display","left-margin"]];
 				var func = function(state,Item){
 					if (!state.tmp.render_seen){
@@ -4677,9 +4673,9 @@ CSL.Util.substituteStart = function(state,target){
 		//
 		// (okay, we use conditionals a lot more than that.
 		// we slot them in for author-only as well...)
-		var choose_start = new CSL.Factory.Token("choose",CSL.START);
+		var choose_start = new CSL.Token("choose",CSL.START);
 		target.push(choose_start);
-		var if_start = new CSL.Factory.Token("if",CSL.START);
+		var if_start = new CSL.Token("if",CSL.START);
 		//
 		// Set a test of the shadow if token to skip this
 		// macro if we have acquired a name value.
@@ -4712,7 +4708,7 @@ CSL.Util.substituteEnd = function(state,target){
 				this.execs.push(func);
 			};
 			if (state.bibliography.opt["second-field-align"]){
-				var bib_first_end = new CSL.Factory.Token("group",CSL.END);
+				var bib_first_end = new CSL.Token("group",CSL.END);
 				var first_func_end = function(state,Item){
 					if (!state.tmp.render_seen){
 						state.output.endTag(); // closes bib_first
@@ -4721,7 +4717,7 @@ CSL.Util.substituteEnd = function(state,target){
 				};
 				bib_first_end.execs.push(first_func_end);
 				target.push(bib_first_end);
-				var bib_other = new CSL.Factory.Token("group",CSL.START);
+				var bib_other = new CSL.Token("group",CSL.START);
 				bib_other.decorations = [["@display","right-inline"]];
 				var other_func = function(state,Item){
 					if (!state.tmp.render_seen){
@@ -4736,15 +4732,15 @@ CSL.Util.substituteEnd = function(state,target){
 	};
 //	if (state.build.substitute_level.value() <= 1 && this.name != "group"){
 	if (state.build.substitute_level.value() == 1){
-		var if_end = new CSL.Factory.Token("if",CSL.END);
+		var if_end = new CSL.Token("if",CSL.END);
 		target.push(if_end);
-		var choose_end = new CSL.Factory.Token("choose",CSL.END);
+		var choose_end = new CSL.Token("choose",CSL.END);
 		target.push(choose_end);
 	};
 	var toplevel = "names" == this.name && state.build.substitute_level.value() == 0;
 	var hasval = "string" == typeof state[state.build.area].opt["subsequent-author-substitute"];
 	if (toplevel && hasval){
-		var author_substitute = new CSL.Factory.Token("text",CSL.SINGLETON);
+		var author_substitute = new CSL.Token("text",CSL.SINGLETON);
 		var func = function(state,Item){
 			var printing = !state.tmp.suppress_decorations;
 			if (printing){
@@ -4753,7 +4749,7 @@ CSL.Util.substituteEnd = function(state,target){
 					if (state.tmp.rendered_name){
 						//CSL.debug("TRY! "+state.tmp.rendered_name);
 						if (state.tmp.rendered_name == state.tmp.last_rendered_name){
-							var str = new CSL.Factory.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
+							var str = new CSL.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
 							state.tmp.name_node.blobs = [str];
 						};
 						state.tmp.last_rendered_name = state.tmp.rendered_name;
@@ -5070,13 +5066,13 @@ CSL.Util.FlipFlopper = function(state){
 CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 	if (!blob){
 		this.strs = this.getSplitStrings(str);
-		this.blob = new CSL.Factory.Blob();
+		this.blob = new CSL.Blob();
 	} else {
 		this.blob = blob;
 		this.strs = this.getSplitStrings( this.blob.blobs );
 		this.blob.blobs = new Array();
 	}
-	this.blobstack = new CSL.Factory.Stack(this.blob);
+	this.blobstack = new CSL.Stack(this.blob);
 };
 //
 // (1) scan the string for escape characters.  Split the
@@ -5182,7 +5178,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 			var tag = this.strs[posA];
 			var prestr = this.strs[(posA-1)];
 			// start by pushing in the trailing text string
-			var newblob = new CSL.Factory.Blob(false,prestr);
+			var newblob = new CSL.Blob(false,prestr);
 			var blob = this.blobstack.value();
 			blob.push(newblob);
 //
@@ -5227,7 +5223,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );
 				blob = this.blobstack.value();
-				var newblobnest = new CSL.Factory.Blob();
+				var newblobnest = new CSL.Blob();
 				blob.push(newblobnest);
 				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
 				//
@@ -5260,7 +5256,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 	if (this.strs.length > 2){
 		str = this.strs[(this.strs.length-1)];
 		var blob = this.blobstack.value();
-		var newblob = new CSL.Factory.Blob(false,str);
+		var newblob = new CSL.Blob(false,str);
 		blob.push(newblob);
 	};
 	};

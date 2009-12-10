@@ -7,7 +7,7 @@
  * a <code>%%STRING%%</code> placeholder.  See
  * {@link CSL.Output.Formats.html} for examples.
  */
-CSL.Factory.substituteOne = function(template) {
+CSL.substituteOne = function(template) {
 	return function(state,list) {
 		if (!list){
 			return "";
@@ -34,7 +34,7 @@ CSL.Factory.substituteOne = function(template) {
  * placeholders.  See {@link CSL.Output.Formats.html} for
  * examples.
  */
-CSL.Factory.substituteTwo = function(template) {
+CSL.substituteTwo = function(template) {
 	return function(param) {
 		var template2 = template.replace("%%PARAM%%", param);
 		return function(state,list) {
@@ -55,7 +55,7 @@ CSL.Factory.substituteTwo = function(template) {
  * <p>Only "html" (the default) is supported at present.</p>
  * @param {String} mode Either "html" or "rtf", eventually.
  */
-CSL.Factory.Mode = function(mode){
+CSL.Mode = function(mode){
 	var decorations = new Object();
 
 	var params = CSL.Output.Formats[mode];
@@ -70,9 +70,9 @@ CSL.Factory.Mode = function(mode){
 
 		if (typeof val == "string" && val.indexOf("%%STRING%%") > -1)  {
 			if (val.indexOf("%%PARAM%%") > -1) {
-				func = CSL.Factory.substituteTwo(val);
+				func = CSL.substituteTwo(val);
 			} else {
-				func = CSL.Factory.substituteOne(val);
+				func = CSL.substituteOne(val);
 			}
 		} else if (typeof val == "boolean" && !val) {
 			func = CSL.Output.Formatters.passthrough;
@@ -108,7 +108,7 @@ CSL.Factory.Mode = function(mode){
  * @param {Object} attributes The hash object containing
  * the attributes and values extracted from an XML node.
  */
-CSL.Factory.setDecorations = function(state,attributes){
+CSL.setDecorations = function(state,attributes){
 	// This applies a fixed processing sequence
 	var ret = new Array();
 	for each (var key in CSL.FORMAT_KEY_SEQUENCE){

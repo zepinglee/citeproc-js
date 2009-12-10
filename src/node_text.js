@@ -37,7 +37,7 @@ CSL.Node.text = new function(){
 	function build (state,target){
 		CSL.Util.substituteStart.call(this,state,target);
 		if (this.postponed_macro){
-			CSL.Factory.expandMacro.call(state,this);
+			CSL.expandMacro.call(state,this);
 		} else {
 			// ...
 			//
@@ -216,8 +216,8 @@ CSL.Node.text = new function(){
 									var secondary = state.getTextSubField(value,"locale-sec");
 
 									if (secondary){
-										var primary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
-										var secondary_tok = new CSL.Factory.Token("text",CSL.SINGLETON);
+										var primary_tok = new CSL.Token("text",CSL.SINGLETON);
+										var secondary_tok = new CSL.Token("text",CSL.SINGLETON);
 										for (var i in this.strings){
 											secondary_tok.strings[i] = this.strings[i];
 											if (i == "suffix"){

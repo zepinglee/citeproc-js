@@ -50,7 +50,7 @@ if (!CSL) {
  * marks the start of a node, the end of a node, or is a singleton.
  * @class
  */
-CSL.Factory.Token = function(name,tokentype){
+CSL.Token = function(name,tokentype){
 	/**
 	 * Name of the element.
 	 * <p>This corresponds to the element name of the
@@ -67,9 +67,9 @@ CSL.Factory.Token = function(name,tokentype){
 	/**
 	 * Formatting parameters.
 	 * <p>This is a placeholder at instantiation.  It is
-	 * replaced by the result of {@link CSL.Factory.setDecorations}
+	 * replaced by the result of {@link CSL.setDecorations}
 	 * when the tag is created and configured during {@link CSL.Core.Build}
-	 * by {@link CSL.Factory.XmlToToken}.  The parameters for particular
+	 * by {@link CSL.XmlToToken}.  The parameters for particular
 	 * formatting attributes are stored as string arrays, which
 	 * map to formatting functions at runtime,
 	 * when the output format is known.  Note that the order in which
