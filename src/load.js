@@ -347,10 +347,10 @@ if (!CSL.Util.substituteStart){
 	load("./src/util_substitute.js");
 }
 if (!CSL.Util.Suffixator){
-	load("./src/util_mangle_number.js");
+	load("./src/util_number.js");
 }
 if (!CSL.Util.PageRangeMangler){
-	load("./src/util_mangle_page.js");
+	load("./src/util_page.js");
 }
 if (!CSL.Util.FlipFlopper){
 	load("./src/util_flipflop.js");

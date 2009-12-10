@@ -30,7 +30,7 @@ function makepaths (){
 
 
 
-files="load queue util_locale build state cmd_update cmd_bibliography cmd_cite node_bibliography node_choose node_citation node_date node_datepart node_elseif node_else node_etal node_group node_if node_info node_key node_label node_layout node_macro node_name node_namepart node_names node_number node_sort node_substitute node_text attributes xmle4x factory stack obj_token obj_ambigconfig obj_blob obj_number util util_names util_dates util_sort util_substitute util_mangle_number util_mangle_page util_flipflop formatters formats registry disambig_names disambig_cites"
+files="load queue util_locale build state cmd_update cmd_bibliography cmd_cite node_bibliography node_choose node_citation node_date node_datepart node_elseif node_else node_etal node_group node_if node_info node_key node_label node_layout node_macro node_name node_namepart node_names node_number node_sort node_substitute node_text attributes xmle4x factory stack obj_token obj_ambigconfig obj_blob obj_number util util_names util_dates util_sort util_substitute util_number util_page util_flipflop formatters formats registry disambig_names disambig_cites"
 
 makepaths "${files}"
 
