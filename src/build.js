@@ -120,7 +120,6 @@ CSL.Engine = function(sys,style,lang) {
 	var locale = sys.xml.makeXml();
 	if (!this.locale[langspec.best]){
 		CSL.localeSet.call(this,sys,this.cslXml,"",langspec.best);
-		CSL.localeSet.call(this,sys,this.cslXml,langspec.base,langspec.best);
 		CSL.localeSet.call(this,sys,this.cslXml,langspec.bare,langspec.best);
 		CSL.localeSet.call(this,sys,this.cslXml,langspec.best,langspec.best);
 	}
