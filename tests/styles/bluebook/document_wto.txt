@@ -1,0 +1,11 @@
+>>>=== result ===>>>
+John Smith
+<<<=== result ===<<<
+
+
+>>>=== csl ===>>>
+<style>
+%%author-long.csl%%
+<citation
+
+</style>
