@@ -104,6 +104,7 @@ RhinoTest.prototype._getInput = function(name){
 			if (this.input[filename]){
 				ret.push(this.input[filename]);
 			} else {
+			       print("Huh?");
 				var datastring = readFile("data/" + filename + ".txt", "UTF-8");
 				eval( "obj = " + datastring );
 				this._fixAllNames([obj]);
@@ -115,6 +116,7 @@ RhinoTest.prototype._getInput = function(name){
 		if (this.input[filename]){
 			ret.push(this.input[filename]);
 		} else {
+		print("Say what?");
 			var datastring = readFile("data/" + filename + ".txt", "UTF-8");
 			this.input[filename] = obj;
 			eval( "obj = " + datastring );

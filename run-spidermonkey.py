@@ -83,13 +83,13 @@ if __name__ == "__main__":
 
     #print "Loading tests ..."
     cx.execute("var testobjects = new Object();")
-    for filename in os.listdir("./std/machines"):
+    for filename in os.listdir("./tests/std/machines"):
         if not filename.endswith(".json"):
             continue
-        if not os.path.stat.S_ISREG( os.stat("./std/machines/%s" %filename).st_mode ):
+        if not os.path.stat.S_ISREG( os.stat("./tests/std/machines/%s" %filename).st_mode ):
             continue
         testname = os.path.splitext(filename)[0]
-        tstr = open("./std/machines/%s" % (filename,)).read()
+        tstr = open("./tests/std/machines/%s" % (filename,)).read()
         cx.execute('testobjects["%s"] = %s;' %(testname,tstr))
     
     # Load rhino test runner framework, for internal tests
@@ -114,23 +114,23 @@ if __name__ == "__main__":
     # Load standard tests (dropped in favor of running tests through the
     # same frameworks as under Rhino -- which works, amazingly enough)
     if False:
-        for filename in os.listdir("./tests"):
+        for filename in os.listdir("./tests/javascript"):
             if not filename.startswith("std_") or not filename.endswith(".js"):
                 continue
             #if filename == "std_decorations.js":
             #    continue
             if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
                 continue
-            mytest = open("./tests/%s" % (filename,)).read()
+            mytest = open("./tests/javascript/%s" % (filename,)).read()
             cx.execute(mytest)
 
-    runfile = open("./tests/run.js").read()
+    runfile = open("./tests/javascript/run.js").read()
     runfile = re.sub("(?sm)(//SNIP-START|}\s*else\s*{).*","",runfile)
     m = re.split('require\("tests\.([^"]+)"\)',runfile)
     if len(m) > 1:
         for pos in range(1,len(m),2):
             print m[pos]
-            str = open( "./tests/%s.js" % m[pos] ).read()
+            str = open( "./tests/javascript/%s.js" % m[pos] ).read()
             cx.execute( str )
         
 

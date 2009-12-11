@@ -68,7 +68,7 @@ var readFile = function(filename){
 load("./dojo-sm/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo-sm/dojo");
 dojo.registerModulePath("dojox","./dojo-sm/dojox");
-dojo.registerModulePath("tests","./tests");
+dojo.registerModulePath("tests","./tests/javascript");
 dojo.registerModulePath("csl","./src");
 dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo-sm/util/doh");
@@ -88,4 +88,4 @@ CSL.debug("#####");
 dojo.require("csl.testing_rhino");
 dojo.require("csl.testing_stdrhino");
 
-load("./tests/run.js");
+load("./tests/javascript/run.js");

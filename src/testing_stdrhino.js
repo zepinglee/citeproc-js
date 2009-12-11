@@ -42,7 +42,7 @@ var StdRhinoTest = function(myname){
 	this._cache = {};
 	this._ids = [];
 	if (myname){
-		var test = readFile("./std/machines/" + myname + ".json", "UTF-8");
+		var test = readFile("./tests/std/machines/" + myname + ".json", "UTF-8");
 		eval( "this.test = "+test);
 		this.result = this.test.result;
 		this._setCache();

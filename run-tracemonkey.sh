@@ -14,7 +14,7 @@ TRACEMONKEY=/home/bennett/src/jslibs/Linux_32_opt/jshost
 DOJO="${PWD}"/dojo-sm/dojo/dojo.js
 DOH="${PWD}"/dojo-sm/util/doh/
 
-TARGET="${PWD}"/tests/runner_tracemonkey.js
+TARGET="${PWD}"/tests/javascript/runner_tracemonkey.js
 
 "${TRACEMONKEY}" -u "${TARGET}" 
 

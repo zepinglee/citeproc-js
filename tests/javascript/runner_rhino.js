@@ -47,7 +47,7 @@ dojo.tests = {
 load("./dojo/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo/dojo");
 dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("tests","./tests");
+dojo.registerModulePath("tests","./tests/javascript");
 dojo.registerModulePath("csl","./src");
 dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo/util/doh");
@@ -66,4 +66,4 @@ CSL.debug("#####");
 dojo.require("csl.testing_rhino");
 dojo.require("csl.testing_stdrhino");
 
-load("./tests/run.js");
+load("./tests/javascript/run.js");
