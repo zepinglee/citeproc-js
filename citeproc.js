@@ -1555,8 +1555,8 @@ CSL.Engine.Tmp = function (){
 	this.prefix = new CSL.Stack("",CSL.LITERAL);
 	this.suffix = new CSL.Stack("",CSL.LITERAL);
 	this.delimiter = new CSL.Stack("",CSL.LITERAL);
-	this.parallel_flags = new Array();
-	this.parallels = new Array();
+	this.parallel_variable_sets = new Array();
+	this.parallel_blob_sets = new Array();
 };
 CSL.Engine.Fun = function (){
 	this.match = new  CSL.Util.Match();
@@ -4058,6 +4058,14 @@ CSL.Stack.prototype.value = function(){
 CSL.Stack.prototype.length = function(){
 	return this.mystack.length;
 };
+//
+// This should use stack.  In fact, it should be an
+// extension of stack.
+//
+CSL.parallelStartCitation = function(){};
+CSL.parallelStartCite = function(){};
+CSL.parallelProcessVariable = function (){};
+CSL.parallelEndCitation = function(){};
 dojo.provide("csl.token");
 if (!CSL) {
 }

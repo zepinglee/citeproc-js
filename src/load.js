@@ -325,6 +325,9 @@ if (!CSL.Attributes){
 if (!CSL.Stack){
 	load("./src/stack.js");
 }
+if (!CSL.parallelStartCitation){
+	load("./src/util_parallel.js");
+}
 if (!CSL.Token){
 	load("./src/obj_token.js");
 }

@@ -185,8 +185,17 @@ CSL.Engine.Tmp = function (){
 	this.delimiter = new CSL.Stack("",CSL.LITERAL);
 	//
 	// scratch variables for handling parallel citations
-	this.parallel_flags = new Array();
-	this.parallels = new Array();
+	// (1) an array of JS objects, one object per cite,
+	// one field per variable.  This array is used for
+	// identifying parallel sets.
+	this.parallel_variable_sets = new Array();
+	// (2) an array of arrays containing blob pointers, one
+	// array per cite; blobs each have a "deleteme" list
+	// of index/toggle pairs, the toggle half of which is
+	// an instance of "nametitle_tog" or "other_tog".  The
+	// value of the instances are set when the sets are
+	// evaluated after queue composition and before rendering.
+	this.parallel_blob_sets = new Array();
 };
 
 
