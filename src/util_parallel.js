@@ -36,12 +36,23 @@ CSL.parallelStartCite = function(Item){
  * variables tracking array, and a blob pointer to the
  * current cite array in the blobs tracking array.
  */
-CSL.parallelProcessVariable = function (blob,variable,value){
-	var mydata = new Object();
-	mydata.value = value;
-	mydata.blob = blob;
-	mydata.pos = (blob.blobs.length-1);
-	this.tmp.parallel_variable_set.value()[variable] = mydata;
+CSL.parallelStartVariable = function (variable){
+	if (this.tmp.parallel_try_cite){
+		var mydata = new Object();
+		mydata.blob = this.output.current.mystack[(this.output.current.mystack.length-2)];
+		mydata.pos = (mydata.blob.blobs.length-1);
+		this.tmp.parallel_data = mydata;
+		this.tmp.parallel_variable = variable;
+	};
+};
+
+CSL.parallelSetVariable = function(){
+	if (this.tmp.parallel_try_cite){
+		var res = this.tmp.parallel_data.blob.blobs[this.tmp.parallel_data.pos];
+		if (res.blobs && res.blobs.length){
+			this.tmp.parallel_variable_set.value()[this.tmp.parallel_variable] = this.tmp.parallel_data;
+		};
+	};
 };
 
 /**

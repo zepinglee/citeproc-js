@@ -21,6 +21,9 @@ var CSL = new function () {
 	this.AFTER = 2;
 	this.DESCENDING = 1;
 	this.ASCENDING = 2;
+	this.ONLY_FIRST = 1;
+	this.ALWAYS = 2;
+	this.ONLY_LAST = 3;
 	this.FINISH = 1;
 	this.POSITION_FIRST = 0;
 	this.POSITION_SUBSEQUENT = 1;
@@ -1558,6 +1561,7 @@ CSL.Engine.Tmp = function (){
 	this.parallel_variable_set = new CSL.Stack();
 	this.parallel_variable_sets = new CSL.Stack();
 	this.parallel_try_cite = true;
+	this.parallel_first_name_done = false;
 };
 CSL.Engine.Fun = function (){
 	this.match = new  CSL.Util.Match();
@@ -1871,7 +1875,6 @@ CSL.getCitationCluster = function (inputList){
 	for (var pos in inputList){
 		var Item = inputList[pos];
 		var last_collapsed = this.tmp.have_collapsed;
-		CSL.parallelStartCite.call(this,Item);
 		CSL.getCite.call(this,Item);
 		if (pos == (inputList.length-1)){
 			CSL.parallelComposeSet.call(this);
@@ -1922,6 +1925,7 @@ CSL.getCitationCluster = function (inputList){
 	return result;
 };
 CSL.getCite = function(Item){
+	CSL.parallelStartCite.call(this,Item);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
@@ -2927,6 +2931,9 @@ CSL.Node.names = new function(){
 			var init_names = function(state,Item){
 				state.output.startTag("names",this);
 				state.tmp.name_node = state.output.current.value();
+				// for the purposes of evaluating parallels, we don't really
+				// care what the actual variable name of "names" is.
+				CSL.parallelStartVariable.call(state,"names");
 			};
 			this["execs"].push(init_names);
 		};
@@ -3193,6 +3200,7 @@ CSL.Node.names = new function(){
 				}
 				CSL.Util.Names.reinit(state,Item);
 				state.output.endTag(); // names
+				CSL.parallelSetVariable.call(state);
 				state.tmp["et-al-min"] = false;
 				state.tmp["et-al-use-first"] = false;
 				state.tmp.can_block_substitute = false;
@@ -4089,12 +4097,22 @@ CSL.parallelStartCite = function(Item){
 		CSL.parallelComposeSet.call(this);
 	};
 };
-CSL.parallelProcessVariable = function (blob,variable,value){
-	var mydata = new Object();
-	mydata.value = value;
-	mydata.blob = blob;
-	mydata.pos = (blob.blobs.length-1);
-	this.tmp.parallel_variable_set.value()[variable] = mydata;
+CSL.parallelStartVariable = function (variable){
+	if (this.tmp.parallel_try_cite){
+		var mydata = new Object();
+		mydata.blob = this.output.current.mystack[(this.output.current.mystack.length-2)];
+		mydata.pos = (mydata.blob.blobs.length-1);
+		this.tmp.parallel_data = mydata;
+		this.tmp.parallel_variable = variable;
+	};
+};
+CSL.parallelSetVariable = function(){
+	if (this.tmp.parallel_try_cite){
+		var res = this.tmp.parallel_data.blob.blobs[this.tmp.parallel_data.pos];
+		if (res.blobs && res.blobs.length){
+			this.tmp.parallel_variable_set.value()[this.tmp.parallel_variable] = this.tmp.parallel_data;
+		};
+	};
 };
 CSL.parallelComposeSet = function(){
 	if (this.tmp.parallel_variable_set.mystack.length > 1){

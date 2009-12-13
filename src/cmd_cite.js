@@ -136,8 +136,6 @@ CSL.getCitationCluster = function (inputList){
 		var Item = inputList[pos];
 		var last_collapsed = this.tmp.have_collapsed;
 
-		CSL.parallelStartCite.call(this,Item);
-
 		CSL.getCite.call(this,Item);
 
 		if (pos == (inputList.length-1)){
@@ -202,6 +200,7 @@ CSL.getCitationCluster = function (inputList){
  * entries in a bibliography.)
  */
 CSL.getCite = function(Item){
+	CSL.parallelStartCite.call(this,Item);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){

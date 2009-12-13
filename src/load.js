@@ -86,6 +86,10 @@ var CSL = new function () {
 	this.DESCENDING = 1;
 	this.ASCENDING = 2;
 
+	this.ONLY_FIRST = 1;
+	this.ALWAYS = 2;
+	this.ONLY_LAST = 3;
+
 	this.FINISH = 1;
 
 	this.POSITION_FIRST = 0;

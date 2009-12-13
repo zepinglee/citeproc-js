@@ -78,6 +78,9 @@ CSL.Node.names = new function(){
 			var init_names = function(state,Item){
 				state.output.startTag("names",this);
 				state.tmp.name_node = state.output.current.value();
+				// for the purposes of evaluating parallels, we don't really
+				// care what the actual variable name of "names" is.
+				CSL.parallelStartVariable.call(state,"names");
 			};
 			this["execs"].push(init_names);
 		};
@@ -368,6 +371,8 @@ CSL.Node.names = new function(){
 				}
 				CSL.Util.Names.reinit(state,Item);
 				state.output.endTag(); // names
+
+				CSL.parallelSetVariable.call(state);
 
 				state.tmp["et-al-min"] = false;
 				state.tmp["et-al-use-first"] = false;
