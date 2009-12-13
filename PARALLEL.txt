@@ -1,0 +1,24 @@
+Implementing parallel citations
+
+Not sure if this will be a permanent feature of the processor, or a
+workaround that goes away when Hierarchical Item References (HIRs?)
+become available.  Try to do it neatly, it might be here for awhile.
+
+This is a collapsing mechanism governed by the following rules:
+
+(1) It does not depend on anything in CSL, and is always active;
+
+(2) All cites in a series must have and attempt to render, at least,
+a title, volume, container-title, and page;
+
+(3) All cites in a series must have no discrepancies in rendered
+variables other than volume, container-title, issue, and page;
+
+(4) For all cites in a series except the first and the last, suppress 
+all fields except volume, container-title, issue and page.  For the
+first cite in a series, suppress all fields except initial creator, 
+title, volume, container-title, issue and page.  For the last cite in 
+a series, suppress initial creators and title.
+
+A tall order, but clear enough to work.  Big step forward for legal
+materials if we can do this.

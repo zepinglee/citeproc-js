@@ -183,6 +183,10 @@ CSL.Engine.Tmp = function (){
 	// holds the group delimiter between the start of a group
 	// and the closing token.
 	this.delimiter = new CSL.Stack("",CSL.LITERAL);
+	//
+	// scratch variables for handling parallel citations
+	this.parallel_flags = new Array();
+	this.parallels = new Array();
 };
 
 

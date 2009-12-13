@@ -378,9 +378,16 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				var qres = this.swapQuotePunctuation(b,use_suffix);
 				b = qres[0];
 				use_suffix = qres[1];
-				b = blobjr.strings.prefix + b + use_suffix;
-				ret.push(b);
-				blob_last_chars.push(last_char);
+				//
+				// because we will rip out portions of the output
+				// queue before rendering, group wrappers need
+				// to produce no output if they are found to be
+				// empty.
+				if(b && b.length){
+					b = blobjr.strings.prefix + b + use_suffix;
+					ret.push(b);
+					blob_last_chars.push(last_char);
+				}
 			};
 		} else if (blobjr.blobs.length){
 			var res = state.output.string(state,blobjr.blobs,blobjr);
@@ -423,8 +430,10 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 		//
 		var qres = this.swapQuotePunctuation(b,use_suffix);
 		b = qres[0];
-		use_suffix = qres[1];
-		b = blob.strings.prefix + b + use_suffix;
+		if(b && b.length){
+			use_suffix = qres[1];
+			b = blob.strings.prefix + b + use_suffix;
+		}
 		blobs_start = b;
 	}
 	var blobs_end = ret.slice(span_split,ret.length);
@@ -1546,6 +1555,8 @@ CSL.Engine.Tmp = function (){
 	this.prefix = new CSL.Stack("",CSL.LITERAL);
 	this.suffix = new CSL.Stack("",CSL.LITERAL);
 	this.delimiter = new CSL.Stack("",CSL.LITERAL);
+	this.parallel_flags = new Array();
+	this.parallels = new Array();
 };
 CSL.Engine.Fun = function (){
 	this.match = new  CSL.Util.Match();
