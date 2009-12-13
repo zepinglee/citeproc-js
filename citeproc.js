@@ -1555,8 +1555,11 @@ CSL.Engine.Tmp = function (){
 	this.prefix = new CSL.Stack("",CSL.LITERAL);
 	this.suffix = new CSL.Stack("",CSL.LITERAL);
 	this.delimiter = new CSL.Stack("",CSL.LITERAL);
-	this.parallel_variable_sets = new Array();
-	this.parallel_blob_sets = new Array();
+	this.parallel_variable_set = new CSL.Stack();
+	this.parallel_variable_sets = new CSL.Stack();
+	this.parallel_blob_set = new CSL.Stack();
+	this.parallel_blob_sets = new CSL.Stack();
+	this.parallel_try_cite = true;
 };
 CSL.Engine.Fun = function (){
 	this.match = new  CSL.Util.Match();
@@ -1866,9 +1869,16 @@ CSL.getCitationCluster = function (inputList){
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
-	for each (var Item in inputList){
+	CSL.parallelStartCitation.call(this);
+	for (var pos in inputList){
+		var Item = inputList[pos];
 		var last_collapsed = this.tmp.have_collapsed;
+		CSL.parallelStartCite.call(this,Item);
 		CSL.getCite.call(this,Item);
+		if (pos == (inputList.length-1)){
+			CSL.parallelComposeSet.call(this);
+			// XXXXX: function to prune output queue goes here
+		}
 		CSL.getSpliceDelimiter.call(this,last_collapsed);
 		this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
@@ -4062,10 +4072,39 @@ CSL.Stack.prototype.length = function(){
 // This should use stack.  In fact, it should be an
 // extension of stack.
 //
-CSL.parallelStartCitation = function(){};
-CSL.parallelStartCite = function(){};
+CSL.parallelStartCitation = function(){
+	this.tmp.parallel_variable_sets.clear();
+	this.tmp.parallel_blob_sets.clear();
+	this.tmp.parallel_variable_set.clear();
+	this.tmp.parallel_blob_set.clear();
+};
+CSL.parallelStartCite = function(Item){
+	this.tmp.parallel_try_cite = true;
+	for each (var x in ["container-title","title","volume","page"]){
+		if (!Item[x]){
+			this.tmp.parallel_try_cite = false;
+			break;
+		};
+	};
+	if (this.tmp.parallel_try_cite){
+		var myvars = new Object();
+		this.tmp.parallel_variable_set.push(myvars);
+		var myblobs = new Array();
+		this.tmp.parallel_blob_set.push(myblobs);
+	} else {
+		CSL.parallelComposeSet.call(this);
+	};
+};
 CSL.parallelProcessVariable = function (){};
-CSL.parallelEndCitation = function(){};
+CSL.parallelComposeSet = function(){
+	if (this.tmp.parallel_variable_set.mystack.length > 1){
+		this.tmp.parallel_variable_sets.push( this.tmp.parallel_variable_set.mystack.slice() );
+		this.tmp.parallel_blob_sets.push( this.tmp.parallel_blob_set.mystack.slice() );
+		this.tmp.parallel_variable_set.clear();
+		this.tmp.parallel_blob_set.clear();
+	};
+};
+CSL.parallelPruneOutputQueue = function(){};
 dojo.provide("csl.token");
 if (!CSL) {
 }

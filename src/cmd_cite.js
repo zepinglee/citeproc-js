@@ -130,9 +130,20 @@ CSL.getCitationCluster = function (inputList){
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
 
-	for each (var Item in inputList){
+	CSL.parallelStartCitation.call(this);
+
+	for (var pos in inputList){
+		var Item = inputList[pos];
 		var last_collapsed = this.tmp.have_collapsed;
+
+		CSL.parallelStartCite.call(this,Item);
+
 		CSL.getCite.call(this,Item);
+
+		if (pos == (inputList.length-1)){
+			CSL.parallelComposeSet.call(this);
+			// XXXXX: function to prune output queue goes here
+		}
 		CSL.getSpliceDelimiter.call(this,last_collapsed);
 		this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
