@@ -8,9 +8,7 @@
  */
 CSL.parallelStartCitation = function(){
 	this.tmp.parallel_variable_sets.clear();
-	this.tmp.parallel_blob_sets.clear();
 	this.tmp.parallel_variable_set.clear();
-	this.tmp.parallel_blob_set.clear();
 };
 
 /**
@@ -28,8 +26,6 @@ CSL.parallelStartCite = function(Item){
 	if (this.tmp.parallel_try_cite){
 		var myvars = new Object();
 		this.tmp.parallel_variable_set.push(myvars);
-		var myblobs = new Array();
-		this.tmp.parallel_blob_set.push(myblobs);
 	} else {
 		CSL.parallelComposeSet.call(this);
 	};
@@ -40,7 +36,13 @@ CSL.parallelStartCite = function(Item){
  * variables tracking array, and a blob pointer to the
  * current cite array in the blobs tracking array.
  */
-CSL.parallelProcessVariable = function (){};
+CSL.parallelProcessVariable = function (blob,variable,value){
+	var mydata = new Object();
+	mydata.value = value;
+	mydata.blob = blob;
+	mydata.pos = (blob.blobs.length-1);
+	this.tmp.parallel_variable_set.value()[variable] = mydata;
+};
 
 /**
  * Move working data to composed sets, for analysis
@@ -49,9 +51,7 @@ CSL.parallelProcessVariable = function (){};
 CSL.parallelComposeSet = function(){
 	if (this.tmp.parallel_variable_set.mystack.length > 1){
 		this.tmp.parallel_variable_sets.push( this.tmp.parallel_variable_set.mystack.slice() );
-		this.tmp.parallel_blob_sets.push( this.tmp.parallel_blob_set.mystack.slice() );
 		this.tmp.parallel_variable_set.clear();
-		this.tmp.parallel_blob_set.clear();
 	};
 };
 

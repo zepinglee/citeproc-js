@@ -186,20 +186,13 @@ CSL.Engine.Tmp = function (){
 	//
 	// scratch variables for handling parallel citations
 	// (1) an array of JS objects, one object per cite,
-	// one field per variable.  This array is used for
-	// identifying parallel sets.
+	// one field per variable.  Fields are a JS object
+	// with a value string and a blob.  This array is used for
+	// identifying parallel sets, and for culling blobs
+	// in confirmed parallel cites.
 	// (working stack and confirmed stack)
 	this.parallel_variable_set = new CSL.Stack();
 	this.parallel_variable_sets = new CSL.Stack();
-	// (2) an array of arrays containing blob pointers, one
-	// array per cite; blobs each have a "deleteme" list
-	// of index/toggle pairs, the toggle half of which is
-	// an instance of "nametitle_tog" or "other_tog".  The
-	// value of the instances are set when the sets are
-	// evaluated after queue composition and before rendering.
-	// (working stack and confirmed stack)
-	this.parallel_blob_set = new CSL.Stack();
-	this.parallel_blob_sets = new CSL.Stack();
 	// (3) toggle to avoid fruitless efforts to find parallel
 	// cites.
 	this.parallel_try_cite = true;

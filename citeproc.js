@@ -1557,8 +1557,6 @@ CSL.Engine.Tmp = function (){
 	this.delimiter = new CSL.Stack("",CSL.LITERAL);
 	this.parallel_variable_set = new CSL.Stack();
 	this.parallel_variable_sets = new CSL.Stack();
-	this.parallel_blob_set = new CSL.Stack();
-	this.parallel_blob_sets = new CSL.Stack();
 	this.parallel_try_cite = true;
 };
 CSL.Engine.Fun = function (){
@@ -4074,9 +4072,7 @@ CSL.Stack.prototype.length = function(){
 //
 CSL.parallelStartCitation = function(){
 	this.tmp.parallel_variable_sets.clear();
-	this.tmp.parallel_blob_sets.clear();
 	this.tmp.parallel_variable_set.clear();
-	this.tmp.parallel_blob_set.clear();
 };
 CSL.parallelStartCite = function(Item){
 	this.tmp.parallel_try_cite = true;
@@ -4089,19 +4085,21 @@ CSL.parallelStartCite = function(Item){
 	if (this.tmp.parallel_try_cite){
 		var myvars = new Object();
 		this.tmp.parallel_variable_set.push(myvars);
-		var myblobs = new Array();
-		this.tmp.parallel_blob_set.push(myblobs);
 	} else {
 		CSL.parallelComposeSet.call(this);
 	};
 };
-CSL.parallelProcessVariable = function (){};
+CSL.parallelProcessVariable = function (blob,variable,value){
+	var mydata = new Object();
+	mydata.value = value;
+	mydata.blob = blob;
+	mydata.pos = (blob.blobs.length-1);
+	this.tmp.parallel_variable_set.value()[variable] = mydata;
+};
 CSL.parallelComposeSet = function(){
 	if (this.tmp.parallel_variable_set.mystack.length > 1){
 		this.tmp.parallel_variable_sets.push( this.tmp.parallel_variable_set.mystack.slice() );
-		this.tmp.parallel_blob_sets.push( this.tmp.parallel_blob_set.mystack.slice() );
 		this.tmp.parallel_variable_set.clear();
-		this.tmp.parallel_blob_set.clear();
 	};
 };
 CSL.parallelPruneOutputQueue = function(){};
