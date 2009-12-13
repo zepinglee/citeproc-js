@@ -2929,11 +2929,11 @@ CSL.Node.names = new function(){
 			};
 			this.execs.push(init_can_substitute);
 			var init_names = function(state,Item){
-				state.output.startTag("names",this);
-				state.tmp.name_node = state.output.current.value();
 				// for the purposes of evaluating parallels, we don't really
 				// care what the actual variable name of "names" is.
 				CSL.parallelStartVariable.call(state,"names");
+				state.output.startTag("names",this);
+				state.tmp.name_node = state.output.current.value();
 			};
 			this["execs"].push(init_names);
 		};
@@ -3301,6 +3301,19 @@ CSL.Node.text = new function(){
 			//
 			// Do non-macro stuff
 			var variable = this.variables[0];
+			if (variable){
+				var func = function(state,Item){
+					// XXXXX: needs to be fixed.
+					// we need a single blob that encloses the entire output of
+					// the node, apart from its affixes.  The names node uses
+					// a startTag() declaration to get that.  Is only one
+					// node possible for text?  If it will never produce more
+					// than one below, better off without a tag, it might mess
+					// up collapsing.
+					CSL.parallelStartVariable.call(state,this.variables[0]);
+				};
+				this["execs"].push(func);
+			};
 			var form = "long";
 			var plural = 0;
 			if (this.strings.form){
@@ -3528,6 +3541,11 @@ CSL.Node.text = new function(){
 					this["execs"].push(weird_output_function);
 				}
 			}
+			var func = function(state,Item){
+				// XXXXX: needs to be fixed.
+				CSL.parallelSetVariable.call(state);
+			};
+			this["execs"].push(func);
 			target.push(this);
 		};
 		CSL.Util.substituteEnd.call(this,state,target);
@@ -4100,8 +4118,8 @@ CSL.parallelStartCite = function(Item){
 CSL.parallelStartVariable = function (variable){
 	if (this.tmp.parallel_try_cite){
 		var mydata = new Object();
-		mydata.blob = this.output.current.mystack[(this.output.current.mystack.length-2)];
-		mydata.pos = (mydata.blob.blobs.length-1);
+		mydata.blob = this.output.current.mystack[(this.output.current.mystack.length-1)];
+		mydata.pos = mydata.blob.blobs.length;
 		this.tmp.parallel_data = mydata;
 		this.tmp.parallel_variable = variable;
 	};
@@ -4109,7 +4127,7 @@ CSL.parallelStartVariable = function (variable){
 CSL.parallelSetVariable = function(){
 	if (this.tmp.parallel_try_cite){
 		var res = this.tmp.parallel_data.blob.blobs[this.tmp.parallel_data.pos];
-		if (res.blobs && res.blobs.length){
+		if (res && res.blobs && res.blobs.length){
 			this.tmp.parallel_variable_set.value()[this.tmp.parallel_variable] = this.tmp.parallel_data;
 		};
 	};

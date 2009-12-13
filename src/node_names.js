@@ -76,11 +76,11 @@ CSL.Node.names = new function(){
 			this.execs.push(init_can_substitute);
 
 			var init_names = function(state,Item){
-				state.output.startTag("names",this);
-				state.tmp.name_node = state.output.current.value();
 				// for the purposes of evaluating parallels, we don't really
 				// care what the actual variable name of "names" is.
 				CSL.parallelStartVariable.call(state,"names");
+				state.output.startTag("names",this);
+				state.tmp.name_node = state.output.current.value();
 			};
 			this["execs"].push(init_names);
 		};

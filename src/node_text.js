@@ -43,6 +43,19 @@ CSL.Node.text = new function(){
 			//
 			// Do non-macro stuff
 			var variable = this.variables[0];
+			if (variable){
+				var func = function(state,Item){
+					// XXXXX: needs to be fixed.
+					// we need a single blob that encloses the entire output of
+					// the node, apart from its affixes.  The names node uses
+					// a startTag() declaration to get that.  Is only one
+					// node possible for text?  If it will never produce more
+					// than one below, better off without a tag, it might mess
+					// up collapsing.
+					CSL.parallelStartVariable.call(state,this.variables[0]);
+				};
+				this["execs"].push(func);
+			};
 			var form = "long";
 			var plural = 0;
 			if (this.strings.form){
@@ -273,6 +286,11 @@ CSL.Node.text = new function(){
 					this["execs"].push(weird_output_function);
 				}
 			}
+			var func = function(state,Item){
+				// XXXXX: needs to be fixed.
+				CSL.parallelSetVariable.call(state);
+			};
+			this["execs"].push(func);
 			target.push(this);
 		};
 		CSL.Util.substituteEnd.call(this,state,target);

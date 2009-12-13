@@ -39,8 +39,8 @@ CSL.parallelStartCite = function(Item){
 CSL.parallelStartVariable = function (variable){
 	if (this.tmp.parallel_try_cite){
 		var mydata = new Object();
-		mydata.blob = this.output.current.mystack[(this.output.current.mystack.length-2)];
-		mydata.pos = (mydata.blob.blobs.length-1);
+		mydata.blob = this.output.current.mystack[(this.output.current.mystack.length-1)];
+		mydata.pos = mydata.blob.blobs.length;
 		this.tmp.parallel_data = mydata;
 		this.tmp.parallel_variable = variable;
 	};
@@ -49,7 +49,7 @@ CSL.parallelStartVariable = function (variable){
 CSL.parallelSetVariable = function(){
 	if (this.tmp.parallel_try_cite){
 		var res = this.tmp.parallel_data.blob.blobs[this.tmp.parallel_data.pos];
-		if (res.blobs && res.blobs.length){
+		if (res && res.blobs && res.blobs.length){
 			this.tmp.parallel_variable_set.value()[this.tmp.parallel_variable] = this.tmp.parallel_data;
 		};
 	};
