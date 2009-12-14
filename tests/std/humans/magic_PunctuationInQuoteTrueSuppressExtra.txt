@@ -32,43 +32,50 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_locale");
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
 
-doh.register("tests.std_locale", [
-    function(){
-        var test = new StdRhinoTest("locale_EmptyDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideTerm");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyTerm");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_SpecificDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_SpecificStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_SpecificTerm");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+“Article A?” Journal B
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <locale xml:lang="en">
+    <style-options punctuation-in-quote="true" />
+  </locale>
+  <citation>
+    <layout>
+      <text quotes="true" variable="title" />
+      <text variable="container-title" prefix=". "/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "container-title": "Journal B", 
+        "id": "ITEM-1", 
+        "title": "Article A?"
+    }
+]
+<<===== INPUT =====<<

@@ -32,43 +32,20 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_locale");
-
-doh.register("tests.std_locale", [
-    function(){
-        var test = new StdRhinoTest("locale_EmptyDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideTerm");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyTerm");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_SpecificDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_SpecificStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_SpecificTerm");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+{
+    "abbreviations": false, 
+    "bibentries": false, 
+    "bibsection": false, 
+    "citations": false, 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <locale xml:lang=\"en\">\n    <style-options punctuation-in-quote=\"true\" />\n  </locale>\n  <citation>\n    <layout>\n      <text quotes=\"true\" variable=\"title\" />\n      <text variable=\"container-title\" prefix=\". \"/>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "container-title": "Journal B", 
+            "id": "ITEM-1", 
+            "title": "Article A?"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "“Article A?” Journal B", 
+    "schema": "0.8"
+}

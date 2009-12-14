@@ -19,7 +19,7 @@ else:
 
 print license
     
-for path in ["../src", "../std", "../std/humans","../tests", "../std/machines"]:
+for path in ["../src", "../tests/std", "../tests/std/humans","../tests/javascript", "../tests/std/machines"]:
     for file in os.listdir( path ):
         if not file.endswith(".js") and not file.endswith(".txt") and not file.endswith(".json"): continue
         if file == "README.txt": continue
