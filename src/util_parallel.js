@@ -72,4 +72,12 @@ CSL.parallelComposeSet = function(){
  * the queue as appropropriate in a back-to-front pass over the
  * blobs array.
  */
-CSL.parallelPruneOutputQueue = function(){};
+CSL.parallelPruneOutputQueue = function(){
+	for each (var cite in this.tmp.parallel_variable_sets.mystack){
+		for each (var varname in ["title","container-title"]){
+			if (cite[varname] && cite[varname].blob.blobs){
+				print(varname+" ok");
+			};
+		};
+	};
+};

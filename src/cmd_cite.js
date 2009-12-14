@@ -132,24 +132,72 @@ CSL.getCitationCluster = function (inputList){
 
 	CSL.parallelStartCitation.call(this);
 
+	var myparams = new Array();
+
 	for (var pos in inputList){
 		var Item = inputList[pos];
 		var last_collapsed = this.tmp.have_collapsed;
+		var params = new Object();
 
 		CSL.getCite.call(this,Item);
 
 		if (pos == (inputList.length-1)){
 			CSL.parallelComposeSet.call(this);
 			// XXXXX: function to prune output queue goes here
+			//
+			// uh-oh.
+			// We flatten individual cites as we go along here,
+			// but the pruning logic assumes that everything
+			// will be in tree form until the full citation
+			// is output.  Bad.
+			//
+			// Either need to make things work that way,
+			// or figure out how to do a lookahead
+			// operation.  This sucks.
 		}
-		CSL.getSpliceDelimiter.call(this,last_collapsed);
-		this.tmp.handle_ranges = true;
+		//
+		// XXXXX: capture these parameters to an array, which
+		// will be of the same length as this.output.queue,
+		// corresponding to each element.
+		//
+		params.splice_delimiter = CSL.getSpliceDelimiter.call(this,last_collapsed);
+		// meaningless assignment, I think.
+		// this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
 		}
+		//
+		// for parallel citation detection, we need to
+		// build the entire cite on the output queue for analysis,
+		// before beginning the collapse.  save params from each
+		// cite build for reuse.
+		//
+		params.suppress_decorations = this.tmp.suppress_decorations;
+		params.have_collapsed = this.tmp.have_collapsed;
+		myparams.push(params);
+	};
+	//
+	// XXXXX: purge of elements for parallel cites can happen here.
+	//
+
+	//
+	// output.queue is a simple array.  do a slice
+	// of it to get each cite item, setting params from
+	// the array that was built in the preceding loop.
+	//
+	var myblobs = this.output.queue.slice();
+	for (var qpos in myblobs){
+
+		this.output.queue = [myblobs[qpos]];
+
+		this.tmp.suppress_decorations = myparams[qpos].suppress_decorations;
+		this.tmp.splice_delimiter = myparams[qpos].splice_delimiter;
+		this.tmp.have_collapsed = myparams[qpos].have_collapsed;
+
 		var composite = this.output.string(this,this.output.queue);
 		this.tmp.suppress_decorations = false;
-		this.tmp.handle_ranges = false;
+		// meaningless assignment
+		// this.tmp.handle_ranges = false;
 		if (Item["author-only"]){
 			return composite;
 		}
@@ -237,6 +285,7 @@ CSL.citeStart = function(Item){
 	// registry, and the max be taken each time the data is delivered
 	// back to the client.  Sucks, but will be robust and amazing that
 	// way, so that's what we should do.
+	//
 };
 
 CSL.citeEnd = function(Item){
