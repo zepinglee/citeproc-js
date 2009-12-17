@@ -196,6 +196,7 @@ CSL.Engine.Tmp = function (){
 	// (3) toggle to avoid fruitless efforts to find parallel
 	// cites.
 	this.parallel_try_cite = true;
+	this.parallel_in_progress = false;
 	// (4) tell me if this is the first name used
 	this.parallel_first_name_done = false;
 };

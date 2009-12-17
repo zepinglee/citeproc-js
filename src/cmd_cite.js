@@ -44,7 +44,7 @@ dojo.provide("csl.commands");
  * processor manual</a> for details.
  * @param {Array} rawList
  */
-CSL.Engine.prototype.makeCitationCluster = function(rawList){
+CSL.Engine.prototype.makeCitationCluster = function(rawList,citation){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
@@ -57,7 +57,7 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		}
 		inputList.sort(this.citation.srt.compareKeys);
 	};
-	var str = CSL.getCitationCluster.call(this,inputList);
+	var str = CSL.getCitationCluster.call(this,inputList,citation);
 	return str;
 };
 
@@ -121,7 +121,7 @@ CSL.getSpliceDelimiter = function(last_collapsed){
  * Compose individual cites into a single string, with
  * flexible inter-cite splicing.
  */
-CSL.getCitationCluster = function (inputList){
+CSL.getCitationCluster = function (inputList,citation){
 	this.tmp.area = "citation";
 	var delimiter = "";
 	var result = "";
@@ -176,10 +176,17 @@ CSL.getCitationCluster = function (inputList){
 		params.have_collapsed = this.tmp.have_collapsed;
 		myparams.push(params);
 	};
+
+	//
+	// XXXXX: this reports parallel citation subordinate
+	// siblings to the external position evaluation machinery.
+	// Such entries are forced to "full form", with all but the
+	// core reporter reference elements stripped.
+	//
 	//
 	// XXXXX: purge of elements for parallel cites can happen here.
 	//
-
+	CSL.parallelPruneOutputQueue.call(this,citation);
 	//
 	// output.queue is a simple array.  do a slice
 	// of it to get each cite item, setting params from

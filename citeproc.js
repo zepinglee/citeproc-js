@@ -1561,6 +1561,7 @@ CSL.Engine.Tmp = function (){
 	this.parallel_variable_set = new CSL.Stack();
 	this.parallel_variable_sets = new CSL.Stack();
 	this.parallel_try_cite = true;
+	this.parallel_in_progress = false;
 	this.parallel_first_name_done = false;
 };
 CSL.Engine.Fun = function (){
@@ -1813,7 +1814,7 @@ CSL.getBibliographyEntries = function (bibsection){
 	return ret;
 };
 dojo.provide("csl.commands");
-CSL.Engine.prototype.makeCitationCluster = function(rawList){
+CSL.Engine.prototype.makeCitationCluster = function(rawList,citation){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
@@ -1826,7 +1827,7 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		}
 		inputList.sort(this.citation.srt.compareKeys);
 	};
-	var str = CSL.getCitationCluster.call(this,inputList);
+	var str = CSL.getCitationCluster.call(this,inputList,citation);
 	return str;
 };
 CSL.getAmbiguousCite = function(Item,disambig){
@@ -1863,7 +1864,7 @@ CSL.getSpliceDelimiter = function(last_collapsed){
 	}
 	return this.tmp.splice_delimiter;
 };
-CSL.getCitationCluster = function (inputList){
+CSL.getCitationCluster = function (inputList,citation){
 	this.tmp.area = "citation";
 	var delimiter = "";
 	var result = "";
@@ -1913,6 +1914,7 @@ CSL.getCitationCluster = function (inputList){
 		params.have_collapsed = this.tmp.have_collapsed;
 		myparams.push(params);
 	};
+	CSL.parallelPruneOutputQueue.call(this,citation);
 	var myblobs = this.output.queue.slice();
 	for (var qpos in myblobs){
 		this.output.queue = [myblobs[qpos]];
@@ -4135,9 +4137,28 @@ CSL.parallelStartCitation = function(){
 	this.tmp.parallel_variable_sets.clear();
 	this.tmp.parallel_variable_set.clear();
 };
+//
+// XXXXX: thinking forward a bit, we're going to need a means
+// of snooping and mangling delimiters.  Inter-cite delimiters
+// can be easily applied; it's just a matter of adjusting
+// this.tmp.splice_delimiter (?) on the list of attribute
+// bundles after a cite or set of cites is completed.
+// That happens in cmd_cite.js.  We also need to do two
+// things: (1) assure that volume, number, journal and
+// page are contiguous within the cite, with no intervening
+// rendered variables; and (2) strip affixes to the series,
+// so that the sole splice string is the delimiter.  This
+// latter will need a walk of the output tree, but it's
+// doable.
+//
+// The advantage of doing things this way is that
+// the parallels machinery is encapsulated in a set of
+// separate functions that do not interact with cite
+// composition.
+//
 CSL.parallelStartCite = function(Item){
 	this.tmp.parallel_try_cite = true;
-	for each (var x in ["container-title","title","volume","page"]){
+	for each (var x in ["title", "container-title","volume","page"]){
 		if (!Item[x]){
 			this.tmp.parallel_try_cite = false;
 			break;
@@ -4145,15 +4166,14 @@ CSL.parallelStartCite = function(Item){
 	};
 	if (this.tmp.parallel_try_cite){
 		var myvars = new Object();
+		// this new object is tentative.
 		this.tmp.parallel_variable_set.push(myvars);
-	} else {
-		CSL.parallelComposeSet.call(this);
 	};
 };
 CSL.parallelStartVariable = function (variable){
 	if (this.tmp.parallel_try_cite){
 		var mydata = new Object();
-		mydata.blob = this.output.current.mystack[(this.output.current.mystack.length-1)];
+		mydata.blob = this.output.current.value();
 		mydata.pos = mydata.blob.blobs.length;
 		this.tmp.parallel_data = mydata;
 		this.tmp.parallel_variable = variable;
@@ -4167,16 +4187,21 @@ CSL.parallelSetVariable = function(){
 		};
 	};
 };
+CSL.parallelCloseCite = function(){
+	if (!this.tmp.parallel_try_cite){
+		CSL.parallelComposeSet.call(this);
+	};
+};
 CSL.parallelComposeSet = function(){
 	if (this.tmp.parallel_variable_set.mystack.length > 1){
 		this.tmp.parallel_variable_sets.push( this.tmp.parallel_variable_set.mystack.slice() );
 		this.tmp.parallel_variable_set.clear();
 	};
 };
-CSL.parallelPruneOutputQueue = function(){
+CSL.parallelPruneOutputQueue = function(citation){
 	for each (var cite in this.tmp.parallel_variable_sets.mystack){
-		for each (var varname in ["title","container-title"]){
-			if (cite[varname] && cite[varname].blob.blobs){
+		for (var varname in ["title","container-title"]){
+			if (cite[varname] && cite[varname].blob){
 				print(varname+" ok");
 			};
 		};
