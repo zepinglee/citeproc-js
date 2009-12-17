@@ -95,8 +95,9 @@ if(true){
 
 } else {
 
-
 	//SNIP-START
+
+	// dojo.require("tests.std_parallel");
 
 	//dojo.require("tests.test_load_all_styles");
 	//dojo.require("tests.test_speed");
