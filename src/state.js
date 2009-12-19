@@ -184,21 +184,6 @@ CSL.Engine.Tmp = function (){
 	// and the closing token.
 	this.delimiter = new CSL.Stack("",CSL.LITERAL);
 	//
-	// scratch variables for handling parallel citations
-	// (1) an array of JS objects, one object per cite,
-	// one field per variable.  Fields are a JS object
-	// with a value string and a blob.  This array is used for
-	// identifying parallel sets, and for culling blobs
-	// in confirmed parallel cites.
-	// (working stack and confirmed stack)
-	this.parallel_variable_set = new CSL.Stack();
-	this.parallel_variable_sets = new CSL.Stack();
-	// (3) toggle to avoid fruitless efforts to find parallel
-	// cites.
-	this.parallel_try_cite = true;
-	this.parallel_in_progress = false;
-	// (4) tell me if this is the first name used
-	this.parallel_first_name_done = false;
 };
 
 

@@ -37,13 +37,37 @@
 // extension of stack.
 //
 
+//
+// XXXXX: note to self, the parallels machinery should be completely
+// disabled when sorting of citations is requested.
+//
+
 /**
  * Initializes the parallel cite tracking arrays
  */
-CSL.parallelStartCitation = function(){
+CSL.parallel = function(){
+	// scratch variables for handling parallel citations
+	// (1) an array of JS objects, one object per cite,
+	// one field per variable.  Fields are a JS object
+	// with a value string and a blob.  This array is used for
+	// identifying parallel sets, and for culling blobs
+	// in confirmed parallel cites.
+	// (working stack and confirmed stack)
+	this.one_set = new CSL.Stack();
+	this.all_sets = new CSL.Stack();
+	// (3) toggle to avoid fruitless efforts to find parallel
+	// cites.
+	this.try_cite = true;
+	this.in_progress = false;
+};
+
+CSL.parallel.prototype.StartCitation = function(){
 	// %%: definitely right
-	this.tmp.parallel_variable_sets.clear();
-	this.tmp.parallel_variable_set.clear();
+	// %%: installed
+	// %%: shouldn't this be an instance object, with these vars internal in it?
+	this.all_sets.clear();
+	this.one_set.clear();
+	this.in_series = false;
 };
 
 //
@@ -67,82 +91,106 @@ CSL.parallelStartCitation = function(){
 //
 
 /**
- * Adds an empty JS data object to the variables tracking array,
- * and adds an empty array to the blobs tracking array.
+ * Sets up an empty variables tracking object.
+ *
  */
-CSL.parallelStartCite = function(Item){
-	// %%: seems ok
-	this.tmp.parallel_try_cite = true;
+CSL.parallel.prototype.StartCite = function(Item){
+	// %%: pretty much settled
+	this.try_cite = true;
 	for each (var x in ["title", "container-title","volume","page"]){
 		if (!Item[x]){
-			this.tmp.parallel_try_cite = false;
+			this.try_cite = false;
+			if (this.in_series){
+				this.all_sets.push(this.one_set.value());
+				this.one_set.clear();
+				this.in_series = false;
+			};
 			break;
 		};
 	};
-	if (this.tmp.parallel_try_cite){
-		var myvars = new Object();
-		// this new object is tentative.
-		this.tmp.parallel_variable_set.push(myvars);
+	var myvars = new Object();
+	this.one_set.push(myvars);
+};
+
+/**
+ * Adds a variable entry on the variables
+ * tracking object.
+ */
+
+//
+// XXXXX: no, no.  need to start with a string
+// for the varname and an object for the two values,
+// and add them as an entry on the variable tracking
+// object when variable is complete.  So three stages
+// up to the full series list, not two.
+//
+
+CSL.parallel.prototype.StartVariable = function (variable){
+	// %%: very simple, this one
+	if (this.try_cite){
+		this.variable = variable;
+		this.data = new Object();
+		this.data.value = "";
+	};
+};
+
+CSL.parallel.prototype.AddBlobPointer = function (blob){
+	this.data.pos = blob.blobs.length;
+	this.data.blob = blob;
+}
+
+/**
+ * Adds string data to the current variable
+ * in the variables tracking object.
+ */
+CSL.parallel.prototype.AppendToVariable = function(str){
+	if (this.try_cite){
+		this.data.value += " "+str;
 	};
 };
 
 /**
- * Adds a field entry on the current JS data object in the
- * variables tracking array.
+ * Checks variable content, and possibly deletes the
+ * variables tracking object to abandon parallel cite processing
+ * for this cite.  [??? careful with the logic here, current
+ * item can't necessarily be discarded; it might be the first
+ * member of an upcoming sequence ???]
  */
-CSL.parallelStartVariable = function (variable){
-	// can we do any further filtering here?
-	// actually, this is where _all_ of the filtering
-	// happens, isn't it; we can filter as we go along.
-	if (this.tmp.parallel_try_cite){
-		var mydata = new Object();
-		mydata.blob = this.output.current.value();
-		mydata.pos = mydata.blob.blobs.length;
-		this.tmp.parallel_data = mydata;
-		this.tmp.parallel_variable = variable;
-	};
-};
+CSL.parallel.prototype.CloseVariable = function(){
+}
 
-CSL.parallelSetVariable = function(){
-	if (this.tmp.parallel_try_cite){
-		var res = this.tmp.parallel_data.blob.blobs[this.tmp.parallel_data.pos];
-		if (res && res.blobs && res.blobs.length){
-			this.tmp.parallel_variable_set.value()[this.tmp.parallel_variable] = this.tmp.parallel_data;
-		};
-	};
-};
-
-CSL.parallelCloseCite = function(){
+/**
+ * Merges a variables tracking object to the variables
+ * tracking array.
+ */
+CSL.parallel.prototype.CloseCite = function(){
 	// %%: compose the set only when the series fails.
 	// (also run at the end of the citation cluster.)
 	if (!this.tmp.parallel_try_cite){
-		CSL.parallelComposeSet.call(this);
+		this.ComposeSet();
 	};
 };
 
 /**
- * Move working data to composed sets, for analysis
- * after the full citation has been composed.
+ * Move variables tracking array into the array of
+ * composed sets.
  */
-CSL.parallelComposeSet = function(){
-	if (this.tmp.parallel_variable_set.mystack.length > 1){
-		this.tmp.parallel_variable_sets.push( this.tmp.parallel_variable_set.mystack.slice() );
-		this.tmp.parallel_variable_set.clear();
+CSL.parallel.prototype.ComposeSet = function(){
+	if (this.one_set.mystack.length > 1){
+		this.all_sets.push( this.one_set.mystack.slice() );
+		this.one_set.clear();
 	};
 };
 
 /**
- * Analyze variables and values to identify parallel series'
- * in a front-to-back pass over the variables array, then mangle
- * the queue as appropropriate in a back-to-front pass over the
- * blobs array.
+ * Mangle the queue as appropropriate.
  */
-CSL.parallelPruneOutputQueue = function(citation){
+CSL.parallel.prototype.PruneOutputQueue = function(queue,citation){
 	//
 	// XXXXX: also mark the entry as "parallel" on the citation
 	// object.
 	//
-	for each (var cite in this.tmp.parallel_variable_sets.mystack){
+	for each (var cite in this.all_sets.mystack){
 		for (var varname in ["title","container-title"]){
 			if (cite[varname] && cite[varname].blob){
 				print(varname+" ok");
@@ -150,3 +198,5 @@ CSL.parallelPruneOutputQueue = function(citation){
 		};
 	};
 };
+
+CSL.parallel = new CSL.parallel();

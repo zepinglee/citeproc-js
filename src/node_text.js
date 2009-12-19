@@ -52,7 +52,7 @@ CSL.Node.text = new function(){
 					// node possible for text?  If it will never produce more
 					// than one below, better off without a tag, it might mess
 					// up collapsing.
-					CSL.parallelStartVariable.call(state,this.variables[0]);
+					CSL.parallel.StartVariable(this.variables[0]);
 				};
 				this["execs"].push(func);
 			};
@@ -288,7 +288,7 @@ CSL.Node.text = new function(){
 			}
 			var func = function(state,Item){
 				// XXXXX: needs to be fixed.
-				CSL.parallelSetVariable.call(state);
+				CSL.parallel.CloseVariable();
 			};
 			this["execs"].push(func);
 			target.push(this);

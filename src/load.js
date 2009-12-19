@@ -329,7 +329,7 @@ if (!CSL.Attributes){
 if (!CSL.Stack){
 	load("./src/stack.js");
 }
-if (!CSL.parallelStartCitation){
+if (!CSL.parallel){
 	load("./src/util_parallel.js");
 }
 if (!CSL.Token){
