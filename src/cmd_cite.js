@@ -262,6 +262,7 @@ CSL.getCite = function(Item){
 		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item);
     }
 	CSL.citeEnd.call(this,Item);
+	CSL.parallel.CloseCite();
 };
 
 CSL.citeStart = function(Item){

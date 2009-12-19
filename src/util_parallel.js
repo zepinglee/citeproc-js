@@ -33,13 +33,27 @@
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
 //
-// This should use stack.  In fact, it should be an
-// extension of stack.
-//
-
-//
 // XXXXX: note to self, the parallels machinery should be completely
 // disabled when sorting of citations is requested.
+//
+//
+// XXXXX: thinking forward a bit, we're going to need a means
+// of snooping and mangling delimiters.  Inter-cite delimiters
+// can be easily applied; it's just a matter of adjusting
+// this.tmp.splice_delimiter (?) on the list of attribute
+// bundles after a cite or set of cites is completed.
+// That happens in cmd_cite.js.  We also need to do two
+// things: (1) assure that volume, number, journal and
+// page are contiguous within the cite, with no intervening
+// rendered variables; and (2) strip affixes to the series,
+// so that the sole splice string is the delimiter.  This
+// latter will need a walk of the output tree, but it's
+// doable.
+//
+// The advantage of doing things this way is that
+// the parallels machinery is encapsulated in a set of
+// separate functions that do not interact with cite
+// composition.
 //
 
 /**
@@ -62,40 +76,16 @@ CSL.parallel = function(){
 };
 
 CSL.parallel.prototype.StartCitation = function(){
-	// %%: definitely right
-	// %%: installed
-	// %%: shouldn't this be an instance object, with these vars internal in it?
 	this.all_sets.clear();
 	this.one_set.clear();
 	this.in_series = false;
 };
-
-//
-// XXXXX: thinking forward a bit, we're going to need a means
-// of snooping and mangling delimiters.  Inter-cite delimiters
-// can be easily applied; it's just a matter of adjusting
-// this.tmp.splice_delimiter (?) on the list of attribute
-// bundles after a cite or set of cites is completed.
-// That happens in cmd_cite.js.  We also need to do two
-// things: (1) assure that volume, number, journal and
-// page are contiguous within the cite, with no intervening
-// rendered variables; and (2) strip affixes to the series,
-// so that the sole splice string is the delimiter.  This
-// latter will need a walk of the output tree, but it's
-// doable.
-//
-// The advantage of doing things this way is that
-// the parallels machinery is encapsulated in a set of
-// separate functions that do not interact with cite
-// composition.
-//
 
 /**
  * Sets up an empty variables tracking object.
  *
  */
 CSL.parallel.prototype.StartCite = function(Item){
-	// %%: pretty much settled
 	this.try_cite = true;
 	for each (var x in ["title", "container-title","volume","page"]){
 		if (!Item[x]){
@@ -108,25 +98,14 @@ CSL.parallel.prototype.StartCite = function(Item){
 			break;
 		};
 	};
-	var myvars = new Object();
-	this.one_set.push(myvars);
+	this.cite = new Object();
 };
 
 /**
- * Adds a variable entry on the variables
- * tracking object.
+ * Initializes scratch object and variable name string
+ * for tracking a single variable.
  */
-
-//
-// XXXXX: no, no.  need to start with a string
-// for the varname and an object for the two values,
-// and add them as an entry on the variable tracking
-// object when variable is complete.  So three stages
-// up to the full series list, not two.
-//
-
 CSL.parallel.prototype.StartVariable = function (variable){
-	// %%: very simple, this one
 	if (this.try_cite){
 		this.variable = variable;
 		this.data = new Object();
@@ -134,9 +113,15 @@ CSL.parallel.prototype.StartVariable = function (variable){
 	};
 };
 
+/**
+ * Adds a blob to the the scratch object.
+ */
 CSL.parallel.prototype.AddBlobPointer = function (blob){
-	this.data.pos = blob.blobs.length;
-	this.data.blob = blob;
+	if (this.try_cite){
+		print("adding blob");
+		this.data.pos = blob.blobs.length;
+		this.data.blob = blob;
+	}
 }
 
 /**
@@ -145,28 +130,45 @@ CSL.parallel.prototype.AddBlobPointer = function (blob){
  */
 CSL.parallel.prototype.AppendToVariable = function(str){
 	if (this.try_cite){
-		this.data.value += " "+str;
+		this.data.value += "::"+str;
 	};
 };
 
 /**
+ * Merges scratch object to the current cite object.
  * Checks variable content, and possibly deletes the
  * variables tracking object to abandon parallel cite processing
  * for this cite.  [??? careful with the logic here, current
  * item can't necessarily be discarded; it might be the first
  * member of an upcoming sequence ???]
  */
+//
+// XXXXX: this also needs to assure that the persistent
+// cite elements are contiguous.
+//
 CSL.parallel.prototype.CloseVariable = function(){
-}
+	this.cite[this.variable] = this.data;
+		if (this.one_set.mystack.length > 1){
+			//
+			// this will be repetitive.  shouldn't this be set in
+			// another context, when the one_set stack is extended?
+			//
+			var prev = this.one_set.mystack[(this.one_set.mystack.length-2)];
+			if (this.data.value != prev[this.data.variable]){
+				// evaluation takes place later, at close of cite.
+				this.try_cite = false;
+				this.in_series = false;
+			};
+		};
+};
 
 /**
- * Merges a variables tracking object to the variables
- * tracking array.
+ * Merges current cite object to the
+ * tracking array, and evaluate maybe.
  */
 CSL.parallel.prototype.CloseCite = function(){
-	// %%: compose the set only when the series fails.
-	// (also run at the end of the citation cluster.)
-	if (!this.tmp.parallel_try_cite){
+	this.one_set.push(this.cite);
+	if (!this.try_cite){
 		this.ComposeSet();
 	};
 };
@@ -178,24 +180,33 @@ CSL.parallel.prototype.CloseCite = function(){
 CSL.parallel.prototype.ComposeSet = function(){
 	if (this.one_set.mystack.length > 1){
 		this.all_sets.push( this.one_set.mystack.slice() );
-		this.one_set.clear();
 	};
+	this.one_set.clear();
 };
 
 /**
  * Mangle the queue as appropropriate.
  */
 CSL.parallel.prototype.PruneOutputQueue = function(queue,citation){
+	return;
 	//
 	// XXXXX: also mark the entry as "parallel" on the citation
 	// object.
 	//
-	for each (var cite in this.all_sets.mystack){
-		for (var varname in ["title","container-title"]){
-			if (cite[varname] && cite[varname].blob){
-				print(varname+" ok");
+	for each (var series in this.all_sets.mystack){
+		for each (var cite in series){
+			print("got a set: "+cite);
+			for each (var varname in ["title","container-title"]){
+				print("checking "+cite[varname].blob);
+				//
+				// By golly, it really does work.  How about that.
+				//
+				if (cite[varname] && cite[varname].blob){
+					cite[varname].blob.blobs = cite[varname].blob.blobs.slice(0,cite[varname].pos).concat(cite[varname].blob.blobs.slice((cite[varname].pos+1)));
+					print(varname+" ok");
+				};
 			};
-		};
+		}
 	};
 };
 

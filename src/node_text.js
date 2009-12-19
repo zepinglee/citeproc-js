@@ -244,6 +244,10 @@ CSL.Node.text = new function(){
 										state.output.append(primary,primary_tok);
 										state.output.append(secondary,secondary_tok);
 									} else {
+										//
+										// XXXX: By gosh, it works.
+										//
+										CSL.parallel.AddBlobPointer(state.output.current.value());
 										state.output.append(primary,this);
 									}
 								};
