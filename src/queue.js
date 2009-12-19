@@ -203,6 +203,11 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
 		}
 	}
+	//
+	// Caution: The parallel detection machinery will blow up if tracking
+	// variables are not properly initialized elsewhere.
+	//
+	CSL.parallel.AppendBlobPointer(curr);
 	if ("string" == typeof str){
 		curr.push( blob );
 		if (blob.strings["text-case"]){

@@ -297,6 +297,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
 		}
 	}
+	CSL.parallel.AppendBlobPointer(curr);
 	if ("string" == typeof str){
 		curr.push( blob );
 		if (blob.strings["text-case"]){
@@ -1876,17 +1877,6 @@ CSL.getCitationCluster = function (inputList,citation){
 		CSL.getCite.call(this,Item);
 		if (pos == (inputList.length-1)){
 			CSL.parallel.ComposeSet();
-			// XXXXX: function to prune output queue goes here
-			//
-			// uh-oh.
-			// We flatten individual cites as we go along here,
-			// but the pruning logic assumes that everything
-			// will be in tree form until the full citation
-			// is output.  Bad.
-			//
-			// Either need to make things work that way,
-			// or figure out how to do a lookahead
-			// operation.  This sucks.
 		}
 		//
 		// XXXXX: capture these parameters to an array, which
@@ -1894,17 +1884,9 @@ CSL.getCitationCluster = function (inputList,citation){
 		// corresponding to each element.
 		//
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this,last_collapsed);
-		// meaningless assignment, I think.
-		// this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
 		}
-		//
-		// for parallel citation detection, we need to
-		// build the entire cite on the output queue for analysis,
-		// before beginning the collapse.  save params from each
-		// cite build for reuse.
-		//
 		params.suppress_decorations = this.tmp.suppress_decorations;
 		params.have_collapsed = this.tmp.have_collapsed;
 		myparams.push(params);
@@ -1964,6 +1946,7 @@ CSL.getCite = function(Item){
 		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item);
     }
 	CSL.citeEnd.call(this,Item);
+	CSL.parallel.CloseCite(this);
 };
 CSL.citeStart = function(Item){
 	this.tmp.have_collapsed = true;
@@ -2004,6 +1987,7 @@ CSL.Node.bibliography = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
+			CSL.parallel.use_parallels = false;
 			state.fixOpt(this,"names-delimiter","delimiter");
 			state.fixOpt(this,"name-delimiter","delimiter");
 			state.fixOpt(this,"name-form","form");
@@ -2143,6 +2127,7 @@ CSL.Node.date = new function(){
 					state.tmp.dateparts = [];
 					var dp = [];
 					if (this.variables.length && Item[this.variables[0]]){
+						CSL.parallel.StartVariable(this.variables[0]);
 						var date_obj = Item[this.variables[0]];
 						if (date_obj.raw){
 							state.tmp.date_object = state.dateParseRaw( date_obj.raw );
@@ -2212,6 +2197,7 @@ CSL.Node.date = new function(){
 					// of output from this date.
 					//
 					if (state.tmp.date_object["literal"]){
+						CSL.parallel.AppendToVariable(state.tmp.date_object["literal"]);
 						state.output.append(state.tmp.date_object["literal"],tok);
 						state.tmp.date_object = {};
 					}
@@ -2232,6 +2218,7 @@ CSL.Node.date = new function(){
 			} else {
 				var mergeoutput = function(state,Item){
 					state.output.endTag();
+					CSL.parallel.CloseVariable();
 				};
 				this["execs"].push(mergeoutput);
 			}
@@ -2299,6 +2286,7 @@ CSL.Node["date-part"] = new function(){
 						bc = state.getTerm("bc");
 						value = (parseInt(value,10) * -1);
 					};
+					CSL.parallel.AppendToVariable(value);
 					if (this.strings.form){
 						value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);
 						if (value_end){
@@ -2938,6 +2926,7 @@ CSL.Node.names = new function(){
 			state.build.substitute_level.push(1);
 			state.fixOpt(this,"names-delimiter","delimiter");
 			var init_names = function(state,Item){
+				CSL.parallel.StartVariable("names");
 				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
 						if (Item[variable]){
@@ -2963,7 +2952,7 @@ CSL.Node.names = new function(){
 			var init_names = function(state,Item){
 				// for the purposes of evaluating parallels, we don't really
 				// care what the actual variable name of "names" is.
-				CSL.parallel.StartVariable("names");
+				CSL.parallel.AppendBlobPointer(state.output.current.value());
 				state.output.startTag("names",this);
 				state.tmp.name_node = state.output.current.value();
 			};
@@ -3269,6 +3258,8 @@ CSL.Node.number = new function(){
 		//
 		var push_number_or_text = function(state,Item){
 			var varname = this.variables[0];
+			CSL.parallel.StartVariable(this.variables[0]);
+			CSL.parallel.AppendToVariable(Item[this.variables[0]]);
 			if (varname == "page-range" || varname == "page-first"){
 				varname = "page";
 			};
@@ -3287,6 +3278,7 @@ CSL.Node.number = new function(){
 					state.output.append(num, this);
 				};
 			};
+			CSL.parallel.CloseVariable();
 		};
 		this["execs"].push(push_number_or_text);
 		target.push(this);
@@ -3297,6 +3289,9 @@ CSL.Node.sort = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START){
+			if (state.build.area == "citation"){
+				CSL.parallel.use_parallels = false;
+			}
 			state.build.sort_flag  = true;
 			state.build.area_return = state.build.area;
 			state.build.area = state.build.area+"_sort";
@@ -3335,14 +3330,8 @@ CSL.Node.text = new function(){
 			var variable = this.variables[0];
 			if (variable){
 				var func = function(state,Item){
-					// XXXXX: needs to be fixed.
-					// we need a single blob that encloses the entire output of
-					// the node, apart from its affixes.  The names node uses
-					// a startTag() declaration to get that.  Is only one
-					// node possible for text?  If it will never produce more
-					// than one below, better off without a tag, it might mess
-					// up collapsing.
 					CSL.parallel.StartVariable(this.variables[0]);
+					CSL.parallel.AppendToVariable(Item[this.variables[0]]);
 				};
 				this["execs"].push(func);
 			};
@@ -3574,7 +3563,6 @@ CSL.Node.text = new function(){
 				}
 			}
 			var func = function(state,Item){
-				// XXXXX: needs to be fixed.
 				CSL.parallel.CloseVariable();
 			};
 			this["execs"].push(func);
@@ -4125,24 +4113,13 @@ CSL.Stack.prototype.length = function(){
 	return this.mystack.length;
 };
 //
-// This should use stack.  In fact, it should be an
-// extension of stack.
-//
-//
 // XXXXX: note to self, the parallels machinery should be completely
 // disabled when sorting of citations is requested.
 //
-CSL.parallel = function(){
-	this.one_set = new CSL.Stack();
-	this.all_sets = new CSL.Stack();
-	this.try_cite = true;
-	this.in_progress = false;
-};
-CSL.parallel.prototype.StartCitation = function(){
-	this.all_sets.clear();
-	this.one_set.clear();
-	this.in_series = false;
-};
+//
+// XXXXX: also mark the entry as "parallel" on the citation
+// object.
+//
 //
 // XXXXX: thinking forward a bit, we're going to need a means
 // of snooping and mangling delimiters.  Inter-cite delimiters
@@ -4152,7 +4129,7 @@ CSL.parallel.prototype.StartCitation = function(){
 // That happens in cmd_cite.js.  We also need to do two
 // things: (1) assure that volume, number, journal and
 // page are contiguous within the cite, with no intervening
-// rendered variables; and (2) strip affixes to the series,
+// rendered variables [done]; and (2) strip affixes to the series,
 // so that the sole splice string is the delimiter.  This
 // latter will need a walk of the output tree, but it's
 // doable.
@@ -4162,63 +4139,127 @@ CSL.parallel.prototype.StartCitation = function(){
 // separate functions that do not interact with cite
 // composition.
 //
-CSL.parallel.prototype.StartCite = function(Item){
+CSL.parallel = function(){
+	this.one_set = new CSL.Stack();
+	this.all_sets = new CSL.Stack();
 	this.try_cite = true;
-	for each (var x in ["title", "container-title","volume","page"]){
-		if (!Item[x]){
-			this.try_cite = false;
-			if (this.in_series){
-				this.all_sets.push(this.one_set.value());
-				this.one_set.clear();
-				this.in_series = false;
-			};
-			break;
-		};
-	};
-	var myvars = new Object();
-	this.one_set.push(myvars);
+	this.use_parallels = true;
 };
-//
-// XXXXX: no, no.  need to start with a string
-// for the varname and an object for the two values,
-// and add them as an entry on the variable tracking
-// object when variable is complete.  So three stages
-// up to the full series list, not two.
-//
+CSL.parallel.prototype.isMid = function(variable){
+	return ["volume","container-title","issue","page"].indexOf(variable) > -1;
+}
+CSL.parallel.prototype.StartCitation = function(){
+	if (this.use_parallels){
+		this.all_sets.clear();
+		this.one_set.clear();
+		this.in_series = false;
+	};
+};
+CSL.parallel.prototype.StartCite = function(Item){
+	if (this.use_parallels){
+		this.try_cite = true;
+		for each (var x in ["title", "container-title","volume","page"]){
+			if (!Item[x]){
+				this.try_cite = false;
+				if (this.in_series){
+					this.all_sets.push(this.one_set.value());
+					this.one_set.clear();
+					this.in_series = false;
+				};
+				break;
+			};
+		};
+		this.cite = new Object();
+		this.cite.top = new Array();
+		this.cite.mid = new Array();
+		this.cite.end = new Array();
+		this.target = "top";
+	};
+};
 CSL.parallel.prototype.StartVariable = function (variable){
-	if (this.try_cite){
+	if (this.use_parallels && this.try_cite){
 		this.variable = variable;
 		this.data = new Object();
 		this.data.value = "";
+		this.data.blobs = new Array();
+		var is_mid = this.isMid(variable);
+		if (this.target == "top" && is_mid){
+			this.target = "mid";
+		} else if (this.target == "mid" && !is_mid){
+			this.target = "end";
+		} else if (this.target == "end" && is_mid){
+			this.try_cite = false;
+			this.in_series = false;
+		};
+		this.cite[this.target].push(variable);
 	};
 };
-CSL.parallel.prototype.AddBlobPointer = function (blob){
-	this.data.pos = blob.blobs.length;
-	this.data.blob = blob;
-}
+CSL.parallel.prototype.AppendBlobPointer = function (blob){
+	if (this.use_parallels && this.try_cite && blob && blob.blobs){
+		this.data.blobs.push([blob,blob.blobs.length]);
+	};
+};
 CSL.parallel.prototype.AppendToVariable = function(str){
-	if (this.try_cite){
-		this.data.value += " "+str;
+	if (this.use_parallels && this.try_cite){
+		this.data.value += "::"+str;
 	};
 };
 CSL.parallel.prototype.CloseVariable = function(){
-}
-CSL.parallel.prototype.CloseCite = function(){
-	if (!this.tmp.parallel_try_cite){
-		this.ComposeSet();
+	if (this.use_parallels && this.try_cite){
+		this.cite[this.variable] = this.data;
+		if (this.one_set.mystack.length > 0){
+			var prev = this.one_set.mystack[(this.one_set.mystack.length-1)];
+			if (!this.isMid(this.variable) && this.data.value != prev[this.variable].value){
+				// evaluation takes place later, at close of cite.
+				this.try_cite = false;
+				this.in_series = false;
+			};
+		};
+	};
+};
+CSL.parallel.prototype.CloseCite = function(state){
+	if (this.use_parallels){
+		if (this.try_cite){
+			if (this.one_set.mystack.length && state[state.tmp.area].opt["year-suffix-delimiter"]){
+				state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
+			}
+		} else {
+			this.ComposeSet();
+		};
+		this.one_set.push(this.cite);
 	};
 };
 CSL.parallel.prototype.ComposeSet = function(){
-	if (this.one_set.mystack.length > 1){
-		this.all_sets.push( this.one_set.mystack.slice() );
+	if (this.use_parallels){
+		if (this.one_set.mystack.length > 1){
+			this.all_sets.push( this.one_set.mystack.slice() );
+		};
 		this.one_set.clear();
 	};
 };
-CSL.parallel.prototype.PruneOutputQueue = function(queue,citation){
-	for each (var cite in this.all_sets.mystack){
-		for (var varname in ["title","container-title"]){
-			if (cite[varname] && cite[varname].blob){
-				print(varname+" ok");
+CSL.parallel.prototype.PruneOutputQueue = function(){
+	if (this.use_parallels){
+		for each (var series in this.all_sets.mystack){
+			for (var pos=0; pos<series.length; pos++){
+				var cite = series[pos];
+				if (pos == 0){
+					this.purgeVariableBlobs(cite,cite.end);
+				} else if (pos == (series.length-1) && series.length > 2){
+					this.purgeVariableBlobs(cite,cite.top.concat(cite.end));
+				} else {
+					this.purgeVariableBlobs(cite,cite.top);
+				};
+			};
+		};
+	};
+};
+CSL.parallel.prototype.purgeVariableBlobs = function(cite,varnames){
+	if (this.use_parallels){
+		for each (var varname in varnames){
+			if (cite[varname]){
+				for each (var b in cite[varname].blobs){
+					b[0].blobs = b[0].blobs.slice(0,b[1]).concat(b[0].blobs.slice((b[1]+1)));
+				};
 			};
 		};
 	};

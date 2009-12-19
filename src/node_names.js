@@ -49,6 +49,7 @@ CSL.Node.names = new function(){
 			state.fixOpt(this,"names-delimiter","delimiter");
 
 			var init_names = function(state,Item){
+				CSL.parallel.StartVariable("names");
 				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
 						if (Item[variable]){
@@ -78,7 +79,7 @@ CSL.Node.names = new function(){
 			var init_names = function(state,Item){
 				// for the purposes of evaluating parallels, we don't really
 				// care what the actual variable name of "names" is.
-				CSL.parallel.StartVariable("names");
+				CSL.parallel.AppendBlobPointer(state.output.current.value());
 				state.output.startTag("names",this);
 				state.tmp.name_node = state.output.current.value();
 			};

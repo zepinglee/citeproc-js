@@ -143,17 +143,6 @@ CSL.getCitationCluster = function (inputList,citation){
 
 		if (pos == (inputList.length-1)){
 			CSL.parallel.ComposeSet();
-			// XXXXX: function to prune output queue goes here
-			//
-			// uh-oh.
-			// We flatten individual cites as we go along here,
-			// but the pruning logic assumes that everything
-			// will be in tree form until the full citation
-			// is output.  Bad.
-			//
-			// Either need to make things work that way,
-			// or figure out how to do a lookahead
-			// operation.  This sucks.
 		}
 		//
 		// XXXXX: capture these parameters to an array, which
@@ -161,17 +150,9 @@ CSL.getCitationCluster = function (inputList,citation){
 		// corresponding to each element.
 		//
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this,last_collapsed);
-		// meaningless assignment, I think.
-		// this.tmp.handle_ranges = true;
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
 		}
-		//
-		// for parallel citation detection, we need to
-		// build the entire cite on the output queue for analysis,
-		// before beginning the collapse.  save params from each
-		// cite build for reuse.
-		//
 		params.suppress_decorations = this.tmp.suppress_decorations;
 		params.have_collapsed = this.tmp.have_collapsed;
 		myparams.push(params);
@@ -262,7 +243,7 @@ CSL.getCite = function(Item){
 		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item);
     }
 	CSL.citeEnd.call(this,Item);
-	CSL.parallel.CloseCite();
+	CSL.parallel.CloseCite(this);
 };
 
 CSL.citeStart = function(Item){

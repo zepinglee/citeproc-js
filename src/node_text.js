@@ -45,14 +45,8 @@ CSL.Node.text = new function(){
 			var variable = this.variables[0];
 			if (variable){
 				var func = function(state,Item){
-					// XXXXX: needs to be fixed.
-					// we need a single blob that encloses the entire output of
-					// the node, apart from its affixes.  The names node uses
-					// a startTag() declaration to get that.  Is only one
-					// node possible for text?  If it will never produce more
-					// than one below, better off without a tag, it might mess
-					// up collapsing.
 					CSL.parallel.StartVariable(this.variables[0]);
+					CSL.parallel.AppendToVariable(Item[this.variables[0]]);
 				};
 				this["execs"].push(func);
 			};
@@ -244,10 +238,6 @@ CSL.Node.text = new function(){
 										state.output.append(primary,primary_tok);
 										state.output.append(secondary,secondary_tok);
 									} else {
-										//
-										// XXXX: By gosh, it works.
-										//
-										CSL.parallel.AddBlobPointer(state.output.current.value());
 										state.output.append(primary,this);
 									}
 								};
@@ -291,7 +281,6 @@ CSL.Node.text = new function(){
 				}
 			}
 			var func = function(state,Item){
-				// XXXXX: needs to be fixed.
 				CSL.parallel.CloseVariable();
 			};
 			this["execs"].push(func);

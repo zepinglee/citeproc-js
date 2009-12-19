@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_parallel");
 	dojo.require("tests.std_locale");
 	dojo.require("tests.std_flipflop");
     dojo.require("tests.test_sys_rhino_locale");
@@ -97,7 +98,6 @@ if(true){
 
 	//SNIP-START
 
-	// dojo.require("tests.std_parallel");
 
 	//dojo.require("tests.test_load_all_styles");
 	//dojo.require("tests.test_speed");

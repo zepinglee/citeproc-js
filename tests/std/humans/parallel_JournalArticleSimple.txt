@@ -48,13 +48,16 @@ citation
         }, 
         {
             "id": "ITEM-2"
+        }, 
+        {
+            "id": "ITEM-3"
         }
     ]
 ]
 <<===== CITATIONS =====<<
 
 >>===== RESULT =====>>
-wurble wurble
+Smith v. Noakes, 222 U.S. 200, 333 L.Ed. 300 (1965); Jim v. Bob, 444 U.S. 400 (1965)
 <<===== RESULT =====<<
 
 
@@ -68,7 +71,7 @@ wurble wurble
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
+  <citation year-suffix-delimiter=", ">
     <layout delimiter="; ">
       <group delimiter=", ">
         <text variable="title"/>
@@ -97,9 +100,9 @@ wurble wurble
             ]
         }, 
         "volume" : "222",
-        "page" : "500",
-        "title": "Case C1", 
-        "container-title": "Reporter R1", 
+        "page" : "200",
+        "title": "Smith v. Noakes", 
+        "container-title": "U.S.", 
         "type": "legal_case"
     },
     {
@@ -112,9 +115,24 @@ wurble wurble
             ]
         }, 
         "volume" : "333",
-        "page" : "600",
-        "title": "Case C1", 
-        "container-title": "Reporter R2", 
+        "page" : "300",
+        "title": "Smith v. Noakes", 
+        "container-title": "L.Ed.", 
+        "type": "legal_case"
+    },
+    {
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965"
+                ]
+            ]
+        }, 
+        "volume" : "444",
+        "page" : "400",
+        "title": "Jim v. Bob", 
+        "container-title": "U.S.", 
         "type": "legal_case"
     }
 ]
