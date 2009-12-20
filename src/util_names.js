@@ -298,7 +298,17 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 			var extra = "";
 			// extra upper-case characters also included
 			if (m[2]){
-				extra = m[2].toLocaleLowerCase();
+				var s = "";
+				for each (var c in m[2].split("")){
+					if (c == c.toUpperCase()){
+						s += c;
+					} else {
+						break;
+					}
+				}
+				if (s.length < m[2].length){
+					extra = s.toLocaleLowerCase();
+				};
 			}
 			namelist[i] = m[1].toLocaleUpperCase() + extra;
 			if (i < (namelist.length-1)){

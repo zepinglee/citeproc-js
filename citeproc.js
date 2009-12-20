@@ -56,7 +56,7 @@ var CSL = new function () {
 	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)].*/;
 	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
 	this.QUOTED_REGEXP = /^".+"$/;
-	this.NAME_INITIAL_REGEXP = /^([A-Z\u0080-\u017f\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
+	this.NAME_INITIAL_REGEXP = /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|).*/;
 	this.ROMANESQUE_REGEXP = /.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
 	this.STARTSWITH_ROMANESQUE_REGEXP = /^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
 	this.ENDSWITH_ROMANESQUE_REGEXP = /.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
@@ -4714,7 +4714,17 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 			var extra = "";
 			// extra upper-case characters also included
 			if (m[2]){
-				extra = m[2].toLocaleLowerCase();
+				var s = "";
+				for each (var c in m[2].split("")){
+					if (c == c.toUpperCase()){
+						s += c;
+					} else {
+						break;
+					}
+				}
+				if (s.length < m[2].length){
+					extra = s.toLocaleLowerCase();
+				};
 			}
 			namelist[i] = m[1].toLocaleUpperCase() + extra;
 			if (i < (namelist.length-1)){
