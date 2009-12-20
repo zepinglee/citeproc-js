@@ -1,11 +1,12 @@
->>>=== result ===>>>
+[style]
+
+
+[citation]
+macros: author-long
+
+[bibliography]
+
+[input]
+
+[result]
 John Smith
-<<<=== result ===<<<
-
-
->>>=== csl ===>>>
-<style>
-%%author-long.csl%%
-<citation
-
-</style>

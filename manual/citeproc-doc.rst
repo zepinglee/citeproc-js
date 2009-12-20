@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a30##
+   version 1.00##a31##
 
 .. class:: info-date
 
-   =D=3 December 2009=D=
+   =D=20 December 2009=D=
 
 .. class:: contributors
 

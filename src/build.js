@@ -45,6 +45,8 @@ CSL.Engine = function(sys,style,lang) {
 	if ("string" != typeof style){
 		style = "";
 	};
+	CSL.parallel.use_parallels = true;
+
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
 	this.build = new CSL.Engine.Build();
@@ -399,6 +401,7 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 	var pos = -1;
 	var ret = new Array();
 	var mode = "locale-name";
+	var use_static_ordering = false;
 	if (this.tmp.area.slice(-5) == "_sort"){
 		mode = "locale-sort";
 	}
@@ -417,11 +420,19 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 			if (p){
 				//
 				// Add a static-ordering toggle for non-roman, non-Cyrillic
-				// names.
+				// names.  Operate only on primary names (those that do not
+				// have a language subtag).
 				//
-				if (!newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
-					newname["static-ordering"] = true;
-				}
+				if (newname[part].length && newname[part][0] != ":"){
+					if (newname["static-ordering"]){
+						use_static_ordering = true;
+					} else if (!newname[part].match(/^[a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+						use_static_ordering = true;
+					} else {
+						use_static_ordering = false;
+					};
+				};
+				newname["static-ordering"] = use_static_ordering;
 				var m = p.match(/^:([-a-zA-Z]+):\s+(.*)/);
 				if (m){
 					addme = false;
@@ -445,7 +456,7 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 							if (m[1] == newopt){
 								updateme = true;
 								newname[part] = m[2];
-								if (newname[part].match(/^[&a-zA-Z\u0400-\u052f].*/)){
+								if (newname[part].match(/^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
 									newname["static-ordering"] = false;
 								};
 							};

@@ -45,6 +45,8 @@ doh.registerGroup("tests.queue",
 
 			var res = new CSL.Output.Queue(state);
 
+			CSL.parallel.use_parallels = false;
+
 			res.addToken("newlevel",false,token);
 			res.append("one");
 			res.openLevel("newlevel");
@@ -77,6 +79,8 @@ doh.registerGroup("tests.queue",
 			var res = new CSL.Output.Queue(state);
 			var token = CSL.Token("someelement",CSL.START);
 
+			CSL.parallel.use_parallels = false;
+
 			res.addToken("myformatbundle",false,token);
 			res.openLevel("myformatbundle");
 			res.append("one");
@@ -97,6 +101,8 @@ doh.registerGroup("tests.queue",
 
 			res.addToken("withtokenone",false,token1);
 			res.addToken("withtokentwo",false,token2);
+
+			CSL.parallel.use_parallels = false;
 
 			res.openLevel("withtokenone"); // provides delimiter for group
 			res.append("one");

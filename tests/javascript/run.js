@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.test_queue");
 	dojo.require("tests.std_parallel");
 	dojo.require("tests.std_locale");
 	dojo.require("tests.std_flipflop");
@@ -66,7 +67,6 @@ if(true){
 	dojo.require("tests.test_registry");
 	dojo.require("tests.test_load_styles");
 	dojo.require("tests.std_class");
-	dojo.require("tests.test_queue");
 	dojo.require("tests.std_plural");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_namespaces");

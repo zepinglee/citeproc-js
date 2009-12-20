@@ -42,7 +42,7 @@ citation
 
 
 >>===== RESULT =====>>
-ЧАЙКОВСКИЙ, П.И., R. van WINKLE, 我妻栄, C. THUCYDIDES III, TOKUGAWA Ieyasu, et al.
+ЧАЙКОВСКИЙ, П.И., R. van WINKLE, 我妻栄, C. THUCYDIDES III, Š. ČESNEK, A. MALÍKOVÁ, TOKUGAWA Ieyasu, et al.
 <<===== RESULT =====<<
 
 
@@ -57,8 +57,8 @@ citation
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation 
-         et-al-min="6"
-         et-al-use-first="5">
+         et-al-min="8"
+         et-al-use-first="7">
     <layout delimiter="; ">
       <names variable="author">
         <name delimiter=", " initialize-with="." name-as-sort-order="first" sort-separator=", ">
@@ -96,6 +96,16 @@ citation
                 "given": "Carl", 
                 "static-ordering": false, 
                 "suffix": "III"
+            }, 
+            {
+                "family": "Česnek", 
+                "given": "Šťěpán", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Malíková", 
+                "given": "Andrea", 
+                "static-ordering": false
             }, 
             {
                 "family": "Tokugawa", 

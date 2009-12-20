@@ -132,7 +132,12 @@ var CSL = new function () {
 	this.QUOTED_REGEXP = /^".+"$/;
 	//
 	// \u0400-\u042f are cyrillic and extended cyrillic capitals
-	this.NAME_INITIAL_REGEXP = /^([A-Z\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
+	// this is not fully smart yet.  can't do what this was trying to do
+	// with regexps, actually; we want to identify strings with a leading
+	// capital letter, and any subsequent capital letters.  Have to compare
+	// locale caps version with existing version, character by character.
+	// hard stuff, but if it breaks, that's what to do.
+	this.NAME_INITIAL_REGEXP = /^([A-Z\u0080-\u017f\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
 
 	this.GROUP_CLASSES = ["block","left-margin","right-inline","indent"];
 

@@ -38,6 +38,9 @@ var myxml = '<style><citation><text/></citation></style>';
 
 dojo.require("csl.testing_rhino");
 
+// var s = dec("Šťěpán ČESNEK");
+// print(escape(s));
+
 doh.register("tests.build", [
 
 	function testInstantiation() {
