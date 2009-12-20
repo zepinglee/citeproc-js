@@ -138,7 +138,9 @@ var CSL = new function () {
 	// locale caps version with existing version, character by character.
 	// hard stuff, but if it breaks, that's what to do.
 	this.NAME_INITIAL_REGEXP = /^([A-Z\u0080-\u017f\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
-
+	this.ROMANESQUE_REGEXP = /.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
+	this.STARTSWITH_ROMANESQUE_REGEXP = /^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
+	this.ENDSWITH_ROMANESQUE_REGEXP = /.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
 	this.GROUP_CLASSES = ["block","left-margin","right-inline","indent"];
 
 	var x = new Array();

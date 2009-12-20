@@ -57,6 +57,9 @@ var CSL = new function () {
 	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
 	this.QUOTED_REGEXP = /^".+"$/;
 	this.NAME_INITIAL_REGEXP = /^([A-Z\u0080-\u017f\u0400-\u042f])([A-Z\u0400-\u042f])*.*$/;
+	this.ROMANESQUE_REGEXP = /.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
+	this.STARTSWITH_ROMANESQUE_REGEXP = /^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
+	this.ENDSWITH_ROMANESQUE_REGEXP = /.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
 	this.GROUP_CLASSES = ["block","left-margin","right-inline","indent"];
 	var x = new Array();
 	x = x.concat(["edition","volume","number-of-volumes","number"]);
@@ -1161,7 +1164,7 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 				if (newname[part].length && newname[part][0] != ":"){
 					if (newname["static-ordering"]){
 						use_static_ordering = true;
-					} else if (!newname[part].match(/^[a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+					} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)){
 						use_static_ordering = true;
 					} else {
 						use_static_ordering = false;
@@ -1191,7 +1194,7 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 							if (m[1] == newopt){
 								updateme = true;
 								newname[part] = m[2];
-								if (newname[part].match(/^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+								if (newname[part].match(CSL.ROMANESQUE_REGEXP)){
 									newname["static-ordering"] = false;
 								};
 							};
@@ -2802,7 +2805,7 @@ CSL.Node.layout = new function(){
 				var func = function(state,Item){
 					if (Item["prefix"]){
 						var sp = "";
-						if (Item["prefix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
+						if (Item["prefix"].match(CSL.ROMANESQUE_REGEXP)){
 							var sp = " ";
 						}
 						state.output.append((Item["prefix"]+sp),this);
@@ -2819,7 +2822,7 @@ CSL.Node.layout = new function(){
 				var func = function(state,Item){
 					if (Item["suffix"]){
 						var sp = "";
-						if (Item["suffix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
+						if (Item["suffix"].match(CSL.ROMANESQUE_REGEXP)){
 							var sp = " ";
 						}
 						state.output.append((sp+Item["suffix"]),this);
@@ -4518,10 +4521,10 @@ CSL.Util.Names.outputNames = function(state,display_names){
 			and = state.output.getToken("inner").strings.delimiter;
 		}
 	}
-	if (and.match(/^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+	if (and.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)){
 		and = " "+and;
 	}
-	if (and.match(/.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/)){
+	if (and.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)){
 		and = and+" ";
 	}
 	state.output.getToken("name").strings.delimiter = and;
@@ -4612,7 +4615,7 @@ CSL.Util.Names.getNamepartSequence = function(state,seg,name){
 	} else {
 		var suffix_sep = "space";
 	}
-	var romanesque = name["family"].match(/.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/);
+	var romanesque = name["family"].match(CSL.ROMANESQUE_REGEXP);
 	if (!romanesque ){ // neither roman nor Cyrillic characters
 		var sequence = [["empty","empty","empty"],["non-dropping-particle", "family"],["given"],[]];
 	} else if (name["static-ordering"]) { // entry likes sort order
@@ -4723,7 +4726,7 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 			} else {
 				namelist.push(terminator);
 			}
-		} else if (n.match(/.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+		} else if (n.match(CSL.ROMANESQUE_REGEXP)){
 			// romanish things that began with lower-case characters don't get initialized ...
 			namelist[i] = " "+n;
 		};

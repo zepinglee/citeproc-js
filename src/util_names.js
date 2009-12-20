@@ -61,10 +61,10 @@ CSL.Util.Names.outputNames = function(state,display_names){
 			and = state.output.getToken("inner").strings.delimiter;
 		}
 	}
-	if (and.match(/^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+	if (and.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)){
 		and = " "+and;
 	}
-	if (and.match(/.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/)){
+	if (and.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)){
 		and = and+" ";
 	}
 	state.output.getToken("name").strings.delimiter = and;
@@ -173,7 +173,7 @@ CSL.Util.Names.getNamepartSequence = function(state,seg,name){
 	} else {
 		var suffix_sep = "space";
 	}
-	var romanesque = name["family"].match(/.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/);
+	var romanesque = name["family"].match(CSL.ROMANESQUE_REGEXP);
 	if (!romanesque ){ // neither roman nor Cyrillic characters
 		var sequence = [["empty","empty","empty"],["non-dropping-particle", "family"],["given"],[]];
 	} else if (name["static-ordering"]) { // entry likes sort order
@@ -310,7 +310,7 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 			} else {
 				namelist.push(terminator);
 			}
-		} else if (n.match(/.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+		} else if (n.match(CSL.ROMANESQUE_REGEXP)){
 			// romanish things that began with lower-case characters don't get initialized ...
 			namelist[i] = " "+n;
 		};

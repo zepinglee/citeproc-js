@@ -426,7 +426,7 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 				if (newname[part].length && newname[part][0] != ":"){
 					if (newname["static-ordering"]){
 						use_static_ordering = true;
-					} else if (!newname[part].match(/^[a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+					} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)){
 						use_static_ordering = true;
 					} else {
 						use_static_ordering = false;
@@ -456,7 +456,7 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 							if (m[1] == newopt){
 								updateme = true;
 								newname[part] = m[2];
-								if (newname[part].match(/^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/)){
+								if (newname[part].match(CSL.ROMANESQUE_REGEXP)){
 									newname["static-ordering"] = false;
 								};
 							};

@@ -78,7 +78,7 @@ CSL.Node.layout = new function(){
 				var func = function(state,Item){
 					if (Item["prefix"]){
 						var sp = "";
-						if (Item["prefix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
+						if (Item["prefix"].match(CSL.ROMANESQUE_REGEXP)){
 							var sp = " ";
 						}
 						state.output.append((Item["prefix"]+sp),this);
@@ -95,7 +95,7 @@ CSL.Node.layout = new function(){
 				var func = function(state,Item){
 					if (Item["suffix"]){
 						var sp = "";
-						if (Item["suffix"].match(/.*[a-zA-Z\u0400-\u052f].*/)){
+						if (Item["suffix"].match(CSL.ROMANESQUE_REGEXP)){
 							var sp = " ";
 						}
 						state.output.append((sp+Item["suffix"]),this);
