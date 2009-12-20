@@ -4575,18 +4575,6 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 			//
 			this.outputNameParts(sequence[3]);
 			state.output.closeLevel();
-			//
-			// the articular goes in at a different level, but
-			// is nonetheless part of the name, so it goes into
-			// this function to avoid repetition.
-			// (special handling when comma is to be included)
-			//if (name.suffix){
-			//	state.output.squeeze();
-			//	if (name.comma_suffix){
-			//		state.tmp.delimiter.replace(", ");
-			//	}
-			//	state.output.append(name.suffix);
-			//}
 		}
 	};
 	this.nameoffset += this.segments[seg].length;
@@ -4603,9 +4591,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 				namepart = CSL.Util.Names.initializeWith(state,namepart,initialize_with);
 			}
 		}
-		//state.output.openLevel(key);
 		state.output.append(namepart,key);
-		//state.output.closeLevel();
 	}
 }
 CSL.Util.Names.getNamepartSequence = function(state,seg,name){
