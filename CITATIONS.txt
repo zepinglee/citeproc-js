@@ -1,0 +1,29 @@
+==============================
+Structure of a Zotero citation
+==============================
+
+citation = {
+  "sort" : function(){},    // To reside in the processor.
+  "clone" : function(){},
+  "properties" : {
+    "field" : {},           // The citation data, in serialized JSON or as a string.
+    "index" : 0,            // Position of citation in array, I guess.
+    "noteIndex" : 0,        // Note number
+    "sort" : false,
+    "delete" : false,
+    "custom" : false        // Using the style editor on one cite taints whole citation.
+  },
+  "citationItems" : [
+    {
+      "itemID" : "",
+      "key" : "",           // To change; citeproc-js keys are in an array.
+      "item" : "",          // ??? Same as itemID maybe?
+      "locator" : "",
+      "locatorType" : "",
+      "position": "",
+      "suppressAuthor" : "",
+      "prefix" : "",
+      "suffix" : ""
+    }
+  ]
+}
