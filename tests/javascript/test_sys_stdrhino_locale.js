@@ -37,6 +37,14 @@ dojo.provide("tests.test_sys_stdrhino_locale");
 dojo.require("csl.testing_stdrhino");
 
 doh.register("tests.sys_stdrhino_locale", [
+	function testMakeXmlFromPlainXml(){
+		var sys = new StdRhinoTest();
+		var obj = new CSL.Engine(sys,'<style></style>');
+		var alreadyxml = new XML('<style><citation><text/></citation></style>');
+		var res = obj.sys.xml.makeXml(alreadyxml);
+		default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+		doh.assertEqual("text", res..text.localName());
+	},
 	function testMakeXml(){
 		var sys = new StdRhinoTest();
 		var obj = new CSL.Engine(sys,'<style></style>');

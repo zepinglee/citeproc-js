@@ -173,16 +173,17 @@ CSL.System.Xml.E4X.prototype.nodeNameIs = function(myxml,name){
 
 CSL.System.Xml.E4X.prototype.makeXml = function(myxml){
 	if ("xml" == typeof myxml){
-		//print("forcing serialization of xml.  namespace issues?");
+		// print("forcing serialization of xml to fix up namespacing");
 		myxml = myxml.toXMLString();
 	};
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	if (myxml){
+		// print("deserializing xml");
 		myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
 		myxml = new XML(myxml);
 	} else {
-		//print("no xml");
+		// print("no xml");
 		myxml = new XML();
 	}
 	return myxml;
