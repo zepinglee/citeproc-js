@@ -1,0 +1,24 @@
+For integration, there will be two problems (at least).
+
+(1) Sorting of citations.  The processor does not maintain state for
+citations, and depends on the integration layer for position hints. It
+currently performs sorting of citations immediately before rendering,
+but this will break any positioning logic done in the integration
+layer, which obviously needs to be done before cites are rendered.
+
+Probably the simplest for Simon would be to separate sorting from
+rendering, and have the integration layer call the processor first
+with one interface (when updating the integration state entries), and
+again with the other (when rendering citations).  This is close to
+what the integration layer seems to do now (I guess that the sort
+method on the citation objects in integration.js is in some way
+delegated from the CSL processor).
+
+(2) Parallel cites.  To get ibid working correctly with parallel
+cites, the rendering method of the processor needs to be passed a
+citation object from the integration layer, and modify the cite entry
+for each cite processed to add a "parallel" flag on the second and
+subsequent cites in any parallel series.  The positioning code in the
+integration layer then needs to use this flag to set a "subsequent"
+position on such cites, and otherwise skip over them for position
+evaluation purposes.
