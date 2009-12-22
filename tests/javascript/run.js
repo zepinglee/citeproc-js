@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_eclac");
 	dojo.require("tests.test_sys_stdrhino_locale");
 	dojo.require("tests.test_queue");
 	dojo.require("tests.std_parallel");

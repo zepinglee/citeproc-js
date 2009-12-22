@@ -13,6 +13,7 @@
       <single>source</single>
       <multiple>sources</multiple>
     </term>
+    <term name="collection-label">No.</term>
     <term name="no date">s.d.</term>
     <term name="and">y</term>
     <term name="et-al">et al.</term>

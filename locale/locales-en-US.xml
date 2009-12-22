@@ -12,6 +12,8 @@
     <date-part name="day" prefix="-" range-delimiter="/"/>
   </date>
   <terms>
+    <term name="un-sales-number-label">U.N. Sales No.</term>
+    <term name="collection-label">No.</term>
     <term name="open-quote">“</term>
     <term name="close-quote">”</term>
     <term name="open-inner-quote">‘</term>

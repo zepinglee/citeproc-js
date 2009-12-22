@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
+ *
+ * The contents of this file are subject to the Common Public
+ * Attribution License Version 1.0 (the “License”); you may not use
+ * this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ *
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./std subdirectory of the distribution archive.
+ *
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ *
+ * The Initial Developer of the Original Code is Frank G. Bennett,
+ * Jr. All portions of the code written by Frank G. Bennett, Jr. are
+ * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
+ */
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>===== SCHEMA =====>>
+0.8
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india: hacia una nueva alianza de comercio e inversión,” Serie de Comercio Internacional, N° 81 (LC/L.2656-P), Santiago, United Nations - ECLAC, January. United Nations Publication, sales N°: S.07.II.G.6. 
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <locale xml:lang="en">
+    <style-options punctuation-in-quote="true"/>
+    <terms>
+      <term name="un-sales-number-label">United Nations Publication, sales N°</term>
+      <term name="collection-label">N°</term>
+    </terms>
+  </locale>
+  <macro name="un-sales-number-identifier">
+    <group delimiter=": ">
+      <text term="un-sales-number-label"/>
+      <text variable="un-sales-number"/>
+    </group>
+  </macro>
+  <macro name="issued-month">
+    <date variable="issued">
+      <date-part name="month"/>
+    </date>
+  </macro>
+  <macro name="publisher">
+    <text variable="publisher"/>
+  </macro>
+  <macro name="publisher-place">
+    <text variable="publisher-place"/>
+  </macro>
+  <macro name="document-number-parens">
+    <text variable="number" prefix="(" suffix=")"/>
+  </macro>
+  <macro name="collection-identifier">
+    <group delimiter=", ">
+      <text variable="collection-title"/>
+      <group delimiter=" ">
+        <text term="collection-label" />
+        <text variable="collection-number"/>
+      </group>
+    </group>
+  </macro>
+  <macro name="title-quotes">
+    <text variable="title" quotes="true"/>
+  </macro>
+  <macro name="issued-year-parens">
+    <date variable="issued" form="text" date-parts="year" prefix="(" suffix=")"/>
+  </macro>
+  <macro name="author-full-sofirst">
+    <names variable="author">
+      <name name-as-sort-order="first" sort-separator=", " and="text"/>
+    </names>
+  </macro>
+  <citation>
+    <layout>
+      <group delimiter=" " suffix=".">
+        <group suffix=".">
+          <group delimiter=", ">
+            <group delimiter=" ">
+              <text macro="author-full-sofirst"/>
+              <text macro="issued-year-parens"/>
+            </group>
+            <text macro="title-quotes"/>
+            <group delimiter=" ">
+              <text macro="collection-identifier"/>
+              <text macro="document-number-parens"/>
+            </group>
+            <text macro="publisher-place"/>
+            <text macro="publisher"/>
+            <text macro="issued-month"/>
+          </group>
+        </group>
+        <text macro="un-sales-number-identifier"/>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Rosales", 
+                "given": "Osvaldo", 
+                "static-ordering": false
+            }, 
+            {
+                "family": "Kuwayama", 
+                "given": "Mikio", 
+                "static-ordering": false
+            }
+        ], 
+        "collection-number": "81", 
+        "collection-title": "Serie de Comercio Internacional", 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2007", 
+                    "1"
+                ]
+            ]
+        }, 
+        "number": "LC/L.2656-P", 
+        "publisher": "United Nations - ECLAC", 
+        "publisher-place": "Santiago", 
+        "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
+        "type": "book", 
+        "un-sales-number": "S.07.II.G.6"
+    }
+]
+<<===== INPUT =====<<
