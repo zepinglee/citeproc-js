@@ -758,6 +758,7 @@ CSL.Engine.prototype.parseNumericDate = function(ret,delim,suff,txt){
 			break;
 		}
 	}
+	// comment
 	for (pos in lst){
 		lst[pos] = parseInt(lst[pos],10);
 	}

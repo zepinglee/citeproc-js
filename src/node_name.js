@@ -32,12 +32,6 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-
-/**
- * The name node.
- * @name CSL.Node.name
- * @function
- */
 CSL.Node.name = new function(){
 	this.build = build;
 	function build(state,target){

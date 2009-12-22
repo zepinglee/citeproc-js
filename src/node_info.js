@@ -32,13 +32,6 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-
-/**
- * The info element.
- * <p>Everything in this scope is a total
- * <code>noop</code>.</p>
- * @name CSL.Node.info
- */
 CSL.Node.info = new function(){
 	this.build = build;
 	function build (state,target){

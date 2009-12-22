@@ -32,12 +32,6 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-
-/**
- * The else node, start and end.
- * @name CSL.Node.else
- * @function
- */
 CSL.Node["else"] = new function(){
 	this.build = build;
 	this.configure = configure;

@@ -32,7 +32,6 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-
 dojo.provide("tests.test_dateparse");
 
 var sys = new RhinoTest();
