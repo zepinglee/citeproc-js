@@ -2123,10 +2123,6 @@ CSL.Node.date = new function(){
 						// Xml: Find one node by attribute and delete
 						//
 						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
-					} else if (this.strings["date-parts"] == "month"){
-						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
-						state.sys.xml.deleteNodeByNameAttribute(datexml,'year');
-						state.sys.xml.clobberAffixesByNameAttribute(datexml,'month');
 					}
 					//
 					// pass this xml object through to state.build for
@@ -4068,10 +4064,6 @@ CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = funct
 }
 CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function(myxml,val){
 	delete myxml.*.(@name==val)[0];
-}
-CSL.System.Xml.E4X.prototype.clobberAffixesByNameAttribute = function(myxml,val){
-	myxml.*.(@name==val)[0].@["prefix"] = "";
-	myxml.*.(@name==val)[0].@["suffix"] = "";
 }
 CSL.System.Xml.E4X.prototype.deleteAttribute = function(myxml,attr){
 	delete myxml["@"+attr];

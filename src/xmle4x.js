@@ -142,11 +142,6 @@ CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function(myxml,val){
 	delete myxml.*.(@name==val)[0];
 }
 
-CSL.System.Xml.E4X.prototype.clobberAffixesByNameAttribute = function(myxml,val){
-	myxml.*.(@name==val)[0].@["prefix"] = "";
-	myxml.*.(@name==val)[0].@["suffix"] = "";
-}
-
 CSL.System.Xml.E4X.prototype.deleteAttribute = function(myxml,attr){
 	delete myxml["@"+attr];
 }
