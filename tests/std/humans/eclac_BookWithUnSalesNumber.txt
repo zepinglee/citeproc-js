@@ -87,7 +87,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
     <group delimiter=", ">
       <text variable="collection-title"/>
       <group delimiter=" ">
-        <text term="collection-label" />
+        <text term="collection-number-label" />
         <text variable="collection-number"/>
       </group>
     </group>

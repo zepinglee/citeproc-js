@@ -37,12 +37,12 @@ citation
 <<===== MODE =====<<
 
 >>===== SCHEMA =====>>
-0.8
+1.0
 <<===== SCHEMA =====<<
 
 
 >>===== RESULT =====>>
-Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india: hacia una nueva alianza de comercio e inversión,” Serie de Comercio Internacional, N° 81 (LC/L.2656-P), Santiago, United Nations - ECLAC, January. United Nations Publication, sales N°: S.07.II.G.6. 
+<span style="font-variant:small-caps;">Osvaldo Rosales & Mikio Kuwayama</span>, <span style="font-variant:small-caps;">América latina y china e india: hacia una nueva alianza de comercio e inversión</span>, U.N. Doc. LC/L.2656-P, U.N. Sales No. S.07.II.G.6 (United Nations - ECLAC, Santiago, Serie de Comercio Internacional No. 81, Jan. 2007).
 <<===== RESULT =====<<
 
 
@@ -56,23 +56,28 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <locale xml:lang="en">
-    <style-options punctuation-in-quote="true"/>
-    <terms>
-      <term name="un-sales-number-label">United Nations Publication, sales N°</term>
-      <term name="collection-label">N°</term>
-    </terms>
-  </locale>
   <macro name="un-sales-number-identifier">
-    <group delimiter=": ">
+    <group delimiter=" ">
       <text term="un-sales-number-label"/>
       <text variable="un-sales-number"/>
     </group>
   </macro>
-  <macro name="issued-month">
-    <date variable="issued">
-      <date-part name="month"/>
-    </date>
+  <macro name="document-number-identifier">
+    <choose>
+      <if variable="document-number-authority">
+        <group delimiter=" ">
+          <text variable="document-number-authority"/>
+          <text term="document-number-authority-suffix"/>
+          <text variable="number"/>
+        </group>
+      </if>
+      <else>
+        <group delimiter=" ">
+          <text term="document-number-label"/>
+          <text variable="number"/>
+        </group>
+      </else>
+    </choose>
   </macro>
   <macro name="publisher">
     <text variable="publisher"/>
@@ -80,49 +85,43 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   <macro name="publisher-place">
     <text variable="publisher-place"/>
   </macro>
-  <macro name="document-number-parens">
-    <text variable="number" prefix="(" suffix=")"/>
-  </macro>
   <macro name="collection-identifier">
-    <group delimiter=", ">
+    <group delimiter=" ">
       <text variable="collection-title"/>
-      <group delimiter=" ">
-        <text term="collection-label" />
-        <text variable="collection-number"/>
-      </group>
+      <text term="collection-number-label" />
+      <text variable="collection-number"/>
     </group>
   </macro>
-  <macro name="title-quotes">
-    <text variable="title" quotes="true"/>
+  <macro name="title-smallcaps">
+    <text variable="title" font-variant="small-caps"/>
   </macro>
-  <macro name="issued-year-parens">
-    <date variable="issued" form="text" date-parts="year" prefix="(" suffix=")"/>
+  <macro name="issued-yearmonth">
+    <date variable="issued" form="text" date-parts="year-month">
+      <date-part name="month" form="short"/>
+    </date>
   </macro>
-  <macro name="author-full-sofirst">
+  <macro name="author-full-smallcaps-symboland">
     <names variable="author">
-      <name name-as-sort-order="first" sort-separator=", " and="text"/>
+      <name and="symbol" delimiter-precedes-last="never" font-variant="small-caps"/>
     </names>
   </macro>
   <citation>
     <layout>
-      <group delimiter=" " suffix=".">
-        <group suffix=".">
+      <group delimiter=", " suffix=".">
+        <group delimiter=" ">
           <group delimiter=", ">
-            <group delimiter=" ">
-              <text macro="author-full-sofirst"/>
-              <text macro="issued-year-parens"/>
-            </group>
-            <text macro="title-quotes"/>
-            <group delimiter=" ">
-              <text macro="collection-identifier"/>
-              <text macro="document-number-parens"/>
-            </group>
-            <text macro="publisher-place"/>
+            <text macro="author-full-smallcaps-symboland"/>
+            <text macro="title-smallcaps"/>
+            <text macro="document-number-identifier"/>
+            <text macro="un-sales-number-identifier"/>
+          </group>
+          <group delimiter=", " prefix="(" suffix=")">
             <text macro="publisher"/>
-            <text macro="issued-month"/>
+            <text macro="publisher-place"/>
+            <text macro="collection-identifier"/>
+            <text macro="issued-yearmonth"/>
           </group>
         </group>
-        <text macro="un-sales-number-identifier"/>
       </group>
     </layout>
   </citation>
@@ -147,6 +146,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
         ], 
         "collection-number": "81", 
         "collection-title": "Serie de Comercio Internacional", 
+        "document-number-authority": "U.N.", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [
