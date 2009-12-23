@@ -224,8 +224,9 @@ class CslTest(CslTestUtils):
         for tagname in ["style", "citation", "bibliography"]:
             str = self.format_attributes(tagname,str)
         m = re.match(self.RE_ELEMENT % ("CSL", "CSL"),self.raw)
-        newraw = m.group(1) + "\n" + str + m.group(3)
-        open( "%s.txt" % (self.path("humans",self.testname),), "w+" ).write(newraw)
+        if str != mycsl:
+            newraw = m.group(1) + "\n" + str + m.group(3)
+            open( "%s.txt" % (self.path("humans",self.testname),), "w+" ).write(newraw)
 
     def format_attributes(self,tag,str):
         #print "before: "+tag
@@ -398,8 +399,9 @@ class CslTest(CslTestUtils):
             citations_str = json.dumps(self.data["citations"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("CITATIONS", "CITATIONS"),self.raw)
             newraw = m.group(1) + "\n" + citations_str + m.group(3)
-        tpath_out = "%s.txt" % (self.path("humans", self.testname),)
-        open(tpath_out,"w+").write(newraw)
+        if self.raw != newraw:
+            tpath_out = "%s.txt" % (self.path("humans", self.testname),)
+            open(tpath_out,"w+").write(newraw)
 
 if __name__ == "__main__":
     from optparse import OptionParser
