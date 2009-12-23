@@ -40,7 +40,7 @@ CSL.localeResolve = function(langstr){
 	var langlst = langstr.split(/[-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if (langlst.length == 1 || langlst[1] == "x"){
-		ret.best = ret.base;
+		ret.best = ret.base.replace("_","-");
 	} else {
 		ret.best = langlst.slice(0,2).join("-");
 	};

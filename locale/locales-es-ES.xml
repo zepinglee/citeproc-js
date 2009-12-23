@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locale xml:lang="es" xmlns="http://purl.org/net/xbiblio/csl">
+  <date form="text">
+    <date-part name="month" text-case="lowercase" suffix=" "/>
+    <date-part name="day" suffix=", "/>
+    <date-part name="year"/>
+  </date>
+  <date form="numeric">
+    <date-part name="year"/>
+    <date-part name="month" form="numeric" prefix="-" range-delimiter="/"/>
+    <date-part name="day" prefix="-" range-delimiter="/"/>
+  </date>
   <terms>
+    <term name="open-quote">“</term>
+    <term name="close-quote">”</term>
+    <term name="open-inner-quote">‘</term>
+    <term name="close-inner-quote">’</term>
+    <term name="ordinal-01">st</term>
+    <term name="ordinal-02">nd</term>
+    <term name="ordinal-03">rd</term>
+    <term name="ordinal-04">th</term>
+    <term name="long-ordinal-01">first</term>
+    <term name="long-ordinal-02">second</term>
+    <term name="long-ordinal-03">third</term>
+    <term name="long-ordinal-04">fourth</term>
+    <term name="long-ordinal-05">fifth</term>
+    <term name="long-ordinal-06">sixth</term>
+    <term name="long-ordinal-07">seventh</term>
+    <term name="long-ordinal-08">eighth</term>
+    <term name="long-ordinal-09">ninth</term>
+    <term name="long-ordinal-10">tenth</term>
     <term name="at">en</term>
     <term name="in">en</term>
     <term name="ibid">ibid</term>

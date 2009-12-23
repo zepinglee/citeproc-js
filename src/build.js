@@ -113,6 +113,10 @@ CSL.Engine = function(sys,style,lang) {
 	// overlay data bet recorded on state.locale, and that
 	// getTerm implement overlay behavior.)
 	//
+
+	this.setStyleAttributes();
+
+	lang = this.opt["default-locale"][0];
 	var langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
 	if (!CSL.locale[langspec.best]){
@@ -126,10 +130,9 @@ CSL.Engine = function(sys,style,lang) {
 		CSL.localeSet.call(this,sys,this.cslXml,langspec.bare,langspec.best);
 		CSL.localeSet.call(this,sys,this.cslXml,langspec.best,langspec.best);
 	}
-	this.setStyleAttributes();
+
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
-
 	this.configureTokenLists();
 
 	this.registry = new CSL.Registry(this);

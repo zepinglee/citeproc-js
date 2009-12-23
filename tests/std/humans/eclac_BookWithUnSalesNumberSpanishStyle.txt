@@ -37,12 +37,12 @@ citation
 <<===== MODE =====<<
 
 >>===== SCHEMA =====>>
-1.0
+0.8
 <<===== SCHEMA =====<<
 
 
 >>===== RESULT =====>>
-<span style="font-variant:small-caps;">Osvaldo Rosales & Mikio Kuwayama</span>, <span style="font-variant:small-caps;">América latina y china e india: hacia una nueva alianza de comercio e inversión</span>, U.N. Doc. LC/L.2656-P, U.N. Sales No. S.07.II.G.6 (United Nations - ECLAC, Santiago, Serie de Comercio Internacional No. 81, Jan. 2007).
+Rosales, Osvaldo y Mikio Kuwayama (2007), “América latina y china e india: hacia una nueva alianza de comercio e inversión,” Serie de Comercio Internacional, N° 81 (LC/L.2656-P), Santiago de Chile, Naciones Unidas - ECLAC, enero. Publicación de las Naciones Unidas, Nº de venta: S.07.II.G.6.
 <<===== RESULT =====<<
 
 
@@ -51,34 +51,34 @@ citation
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
       version="1.0"
-      default-locale="en">
+      default-locale="es">
   <info>
     <id />
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale xml:lang="en">
+    <style-options punctuation-in-quote="true"/>
+    <terms>
+      <term name="un-sales-number-label">United Nations Publication, sales N°</term>
+      <term name="collection-number-label">N°</term>
+    </terms>
+  </locale>
+  <locale xml:lang="es">
+    <style-options punctuation-in-quote="true"/>
+    <terms>
+      <term name="un-sales-number-label">Publicación de las Naciones Unidas, Nº de venta</term>
+      <term name="collection-number-label">N°</term>
+    </terms>
+  </locale>
   <macro name="un-sales-number-identifier">
-    <group delimiter=" ">
+    <group delimiter=": ">
       <text term="un-sales-number-label"/>
       <text variable="un-sales-number"/>
     </group>
   </macro>
-  <macro name="document-number-identifier">
-    <choose>
-      <if variable="document-number-authority">
-        <group delimiter=" ">
-          <text variable="document-number-authority"/>
-          <text term="document-number-authority-suffix"/>
-          <text variable="number"/>
-        </group>
-      </if>
-      <else>
-        <group delimiter=" ">
-          <text term="document-number-label"/>
-          <text variable="number"/>
-        </group>
-      </else>
-    </choose>
+  <macro name="issued-month">
+    <date variable="issued" form="text" date-parts="month"/>
   </macro>
   <macro name="publisher">
     <text variable="publisher"/>
@@ -86,43 +86,49 @@ citation
   <macro name="publisher-place">
     <text variable="publisher-place"/>
   </macro>
+  <macro name="document-number-parens">
+    <text variable="number" prefix="(" suffix=")"/>
+  </macro>
   <macro name="collection-identifier">
-    <group delimiter=" ">
+    <group delimiter=", ">
       <text variable="collection-title"/>
-      <text term="collection-number-label" />
-      <text variable="collection-number"/>
+      <group delimiter=" ">
+        <text term="collection-number-label" />
+        <text variable="collection-number"/>
+      </group>
     </group>
   </macro>
-  <macro name="title-smallcaps">
-    <text variable="title" font-variant="small-caps"/>
+  <macro name="title-quotes">
+    <text variable="title" quotes="true"/>
   </macro>
-  <macro name="issued-yearmonth">
-    <date variable="issued" form="text" date-parts="year-month">
-      <date-part name="month" form="short"/>
-    </date>
+  <macro name="issued-year-parens">
+    <date variable="issued" form="text" date-parts="year" prefix="(" suffix=")"/>
   </macro>
-  <macro name="author-full-smallcaps-symboland">
+  <macro name="author-full-sofirst">
     <names variable="author">
-      <name and="symbol" delimiter-precedes-last="never" font-variant="small-caps"/>
+      <name name-as-sort-order="first" sort-separator=", " and="text"/>
     </names>
   </macro>
   <citation>
     <layout>
-      <group delimiter=", " suffix=".">
-        <group delimiter=" ">
+      <group delimiter=" " suffix=".">
+        <group suffix=".">
           <group delimiter=", ">
-            <text macro="author-full-smallcaps-symboland"/>
-            <text macro="title-smallcaps"/>
-            <text macro="document-number-identifier"/>
-            <text macro="un-sales-number-identifier"/>
-          </group>
-          <group delimiter=", " prefix="(" suffix=")">
-            <text macro="publisher"/>
+            <group delimiter=" ">
+              <text macro="author-full-sofirst"/>
+              <text macro="issued-year-parens"/>
+            </group>
+            <text macro="title-quotes"/>
+            <group delimiter=" ">
+              <text macro="collection-identifier"/>
+              <text macro="document-number-parens"/>
+            </group>
             <text macro="publisher-place"/>
-            <text macro="collection-identifier"/>
-            <text macro="issued-yearmonth"/>
+            <text macro="publisher"/>
+            <text macro="issued-month"/>
           </group>
         </group>
+        <text macro="un-sales-number-identifier"/>
       </group>
     </layout>
   </citation>
@@ -147,7 +153,6 @@ citation
         ], 
         "collection-number": "81", 
         "collection-title": "Serie de Comercio Internacional", 
-        "document-number-authority": "U.N.", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [
@@ -158,7 +163,7 @@ citation
             ]
         }, 
         "number": "LC/L.2656-P", 
-        "publisher": "United Nations - ECLAC", 
+        "publisher": "United Nations - ECLAC :es:Naciones Unidas - ECLAC", 
         "publisher-place": "Santiago de Chile :en:Santiago", 
         "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
         "type": "book", 

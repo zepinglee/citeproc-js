@@ -43,6 +43,7 @@ CSL.Engine.Opt = function (){
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
+	this["default-locale"] = ["en"];
 	/*
 	 * Default values.
 	 * The various et-al values are set globally,

@@ -255,6 +255,14 @@ CSL.Node.text = new function(){
 							value = state.fun.page_mangler(value);
 							state.output.append(value,this);
 						};
+					} else if (["publisher","publisher-place"].indexOf( this.variables[0] > -1)){
+						var func = function(state,Item){
+							var value = state.getVariable(Item,this.variables[0]);
+							if (value){
+								value = state.getTextSubField(value,"default-locale",true);
+								state.output.append(value,this);
+							}
+						};
 					} else {
 						var func = function(state,Item){
 							var value = state.getVariable(Item,this.variables[0],form);

@@ -596,7 +596,7 @@ CSL.localeResolve = function(langstr){
 	var langlst = langstr.split(/[-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if (langlst.length == 1 || langlst[1] == "x"){
-		ret.best = ret.base;
+		ret.best = ret.base.replace("_","-");
 	} else {
 		ret.best = langlst.slice(0,2).join("-");
 	};
@@ -907,6 +907,8 @@ CSL.Engine = function(sys,style,lang) {
 	this.dateput = new CSL.Output.Queue(this);
 	this.cslXml = this.sys.xml.makeXml(style);
 	this.opt["initialize-with-hyphen"] = true;
+	this.setStyleAttributes();
+	lang = this.opt["default-locale"][0];
 	var langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
 	if (!CSL.locale[langspec.best]){
@@ -920,7 +922,6 @@ CSL.Engine = function(sys,style,lang) {
 		CSL.localeSet.call(this,sys,this.cslXml,langspec.bare,langspec.best);
 		CSL.localeSet.call(this,sys,this.cslXml,langspec.best,langspec.best);
 	}
-	this.setStyleAttributes();
 	this._buildTokenLists("citation");
 	this._buildTokenLists("bibliography");
 	this.configureTokenLists();
@@ -1536,6 +1537,7 @@ CSL.Engine.Opt = function (){
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
+	this["default-locale"] = ["en"];
 	this["et-al-min"] = 0;
 	this["et-al-use-first"] = 1;
 	this["et-al-subsequent-min"] = false;
@@ -2121,6 +2123,10 @@ CSL.Node.date = new function(){
 						// Xml: Find one node by attribute and delete
 						//
 						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
+					} else if (this.strings["date-parts"] == "month"){
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'year');
+						state.sys.xml.clobberAffixesByNameAttribute(datexml,'month');
 					}
 					//
 					// pass this xml object through to state.build for
@@ -3550,6 +3556,14 @@ CSL.Node.text = new function(){
 							value = state.fun.page_mangler(value);
 							state.output.append(value,this);
 						};
+					} else if (["publisher","publisher-place"].indexOf( this.variables[0] > -1)){
+						var func = function(state,Item){
+							var value = state.getVariable(Item,this.variables[0]);
+							if (value){
+								value = state.getTextSubField(value,"default-locale",true);
+								state.output.append(value,this);
+							}
+						};
 					} else {
 						var func = function(state,Item){
 							var value = state.getVariable(Item,this.variables[0],form);
@@ -3962,6 +3976,11 @@ CSL.Attributes["@default-locale"] = function(state,arg){
 	for (var pos=1; pos<l; pos += 2){
 		state.opt[("locale-"+lst[pos])].push(lst[(pos+1)].replace(/^\s*/g,"").replace(/\s*$/g,""));
 	};
+	if (l){
+		state.opt["default-locale"] = lst.slice(0,1);
+	} else {
+		state.opt["default-locale"] = ["en"];
+	}
 }
 CSL.Attributes["@demote-non-dropping-particle"] = function(state,arg){
 	state.opt["demote-non-dropping-particle"] = arg;
@@ -4049,6 +4068,10 @@ CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = funct
 }
 CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function(myxml,val){
 	delete myxml.*.(@name==val)[0];
+}
+CSL.System.Xml.E4X.prototype.clobberAffixesByNameAttribute = function(myxml,val){
+	myxml.*.(@name==val)[0].@["prefix"] = "";
+	myxml.*.(@name==val)[0].@["suffix"] = "";
 }
 CSL.System.Xml.E4X.prototype.deleteAttribute = function(myxml,attr){
 	delete myxml["@"+attr];

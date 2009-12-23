@@ -586,6 +586,11 @@ CSL.Attributes["@default-locale"] = function(state,arg){
 	for (var pos=1; pos<l; pos += 2){
 		state.opt[("locale-"+lst[pos])].push(lst[(pos+1)].replace(/^\s*/g,"").replace(/\s*$/g,""));
 	};
+	if (l){
+		state.opt["default-locale"] = lst.slice(0,1);
+	} else {
+		state.opt["default-locale"] = ["en"];
+	}
 }
 
 CSL.Attributes["@demote-non-dropping-particle"] = function(state,arg){

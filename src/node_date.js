@@ -80,6 +80,10 @@ CSL.Node.date = new function(){
 						// Xml: Find one node by attribute and delete
 						//
 						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
+					} else if (this.strings["date-parts"] == "month"){
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
+						state.sys.xml.deleteNodeByNameAttribute(datexml,'year');
+						state.sys.xml.clobberAffixesByNameAttribute(datexml,'month');
 					}
 					//
 					// pass this xml object through to state.build for

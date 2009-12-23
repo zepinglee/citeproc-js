@@ -39,4 +39,8 @@ doh.register("tests.std_eclac", [
         var test = new StdRhinoTest("eclac_BookWithUnSalesNumber");
         doh.assertEqual(test.result, test.run());
     },
+    function(){
+        var test = new StdRhinoTest("eclac_BookWithUnSalesNumberSpanishStyle");
+        doh.assertEqual(test.result, test.run());
+    },
 ]);
