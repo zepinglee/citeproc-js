@@ -60,7 +60,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
     <style-options punctuation-in-quote="true"/>
     <terms>
       <term name="un-sales-number-label">United Nations Publication, sales N°</term>
-      <term name="collection-label">N°</term>
+      <term name="collection-number-label">N°</term>
     </terms>
   </locale>
   <macro name="un-sales-number-identifier">
