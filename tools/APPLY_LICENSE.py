@@ -29,7 +29,6 @@ def process_file(path,file):
     else:
         text = "%s%s" % (license, text)
     if text.strip() != oldtext.strip():
-        open("%s.OLD" %(filepath),"w+").write(oldtext)
         open("%s" %(filepath),"w+").write(text)
 
 for path in [".", "../src", "../tests/std", "../tests/std/humans","../tests/javascript", "../tests/std/machines"]:
