@@ -340,14 +340,14 @@ class CslTest(CslTestUtils):
         if not os.path.exists("../../jing"):
             print "Error: jing not found as sibling of processor archive."
             sys.exit()
-        if not os.path.exists("../csl/csl.rnc"):
+        if not os.path.exists("../../csl/csl.rnc"):
             print "Error: csl.rnc not found in csl subdirectory of archive"
             sys.exit()
         tfd,tfilename = tempfile.mkstemp(dir=".")
         os.write(tfd,self.data["csl"])
         os.close(tfd)
         
-        jfh = os.popen("java -jar ../../jing/bin/jing.jar -c ../csl/csl.rnc %s" % tfilename)
+        jfh = os.popen("java -jar ../../jing/bin/jing.jar -c ../../csl/csl.rnc %s" % tfilename)
         success = True
         plural = ""
         while 1:
