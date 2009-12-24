@@ -65,9 +65,9 @@ citation
   </macro>
   <macro name="document-number-identifier">
     <choose>
-      <if variable="document-number-authority">
+      <if variable="authority">
         <group delimiter=" ">
-          <text variable="document-number-authority"/>
+          <text variable="authority" form="short"/>
           <text term="document-number-authority-suffix"/>
           <text variable="number"/>
         </group>
@@ -145,9 +145,9 @@ citation
                 "static-ordering": false
             }
         ], 
+        "authority": "United Nations", 
         "collection-number": "81", 
         "collection-title": "Serie de Comercio Internacional", 
-        "document-number-authority": "U.N.", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [

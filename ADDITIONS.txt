@@ -26,19 +26,26 @@ only useful for identifying documents within an institution
 aspiration to be global.  (Bruce is never going to buy this,
 though.)
 
-<names variable="author">
+Need to build an abbreviations substitution mechanism to test this.
+ECLAC examples need localized content for abbreviations as well.
+
+<names variable="author" delimiter=", ">
   <name delimiter=", " 
         form="short"
-        * institution-form="short-long"
         et-al-min="3"
         et-al-use-first="2">
-    <name-part name="institution" 
-               * if-has-short="true" 
-               prefix=" (" suffix=")"
-               * use-last="1"
-               * use-first="1"
-    />
   </name>
+  <institution first-max="1" 
+               append-last="1" 
+               institution-parts="short-long">
+    <institution-part name="long"
+                      if-has-short="true" 
+                      prefix=" ("
+                      suffix=")"/>
+  </institution>
+  <substitute>
+    <text variable="publisher"/>
+  </substitute>
 </names>
 
 Brown.
