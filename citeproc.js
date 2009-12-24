@@ -3069,9 +3069,6 @@ CSL.Node.names = new function(){
 					if (suppress_condition){
 						continue;
 					}
-					if (state.tmp.can_block_substitute){
-						state.tmp.done_vars.push(nameset.type);
-					};
 					//
 					// if rendering for display, do not honor a disambig_request
 					// to set names length below et-al-use-first
@@ -3670,14 +3667,15 @@ CSL.Attributes["@variable"] = function(state,arg){
 		// conditionally in order to suppress repeat renderings of
 		// the same item variable.
 		//
-		// Do not suppress repeat renderings of dates.
-		//
 		var set_variable_names = function(state,Item){
 			var variables = this.variables.slice();
 			this.variables = [];
 			for each (var variable in variables){
 				if (state.tmp.done_vars.indexOf(variable) == -1){
 					this.variables.push(variable);
+				};
+				if (state.tmp.can_block_substitute){
+					state.tmp.done_vars.push(variable);
 				};
 			};
 		};
@@ -3986,6 +3984,19 @@ CSL.Attributes["@initialize-with-hyphen"] = function(state,arg){
 		state.opt["initialize-with-hyphen"] = false;
 	}
 }
+CSL.Attributes["@acronym"] = function(state,arg){
+	var arg = CSL.ACRONYM_OPTIONS.indexOf(arg);
+	if (arg == 0){
+		state.opt["acronym"] = [""];
+	};
+};
+CSL.Attributes["@if-has-acronym"] = function(state,arg){
+	if (arg == "true"){
+		state.opt["acronym-test-result"] = true;
+	} else if (arg == "false"){
+		state.opt["acronym-test-result"] = false;
+	};
+};
 dojo.provide("csl.xmle4x");
 CSL.System = {};
 CSL.System.Xml = {};

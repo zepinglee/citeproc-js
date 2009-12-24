@@ -36,6 +36,10 @@ dojo.provide("tests.std_eclac");
 
 doh.register("tests.std_eclac", [
     function(){
+        var test = new StdRhinoTest("eclac_BookFromImf");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("eclac_BookWithUnSalesNumber");
         doh.assertEqual(test.result, test.run());
     },

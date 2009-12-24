@@ -58,6 +58,11 @@ bibliography
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <citation>
+    <layout>
+      <text value="BOGUS"/>
+    </layout>
+  </citation>
   <bibliography>
     <layout>
       <group suffix=".">
@@ -66,7 +71,7 @@ bibliography
         <text variable="volume" suffix=" "/>
         <text variable="container-title"/>
         <text variable="page-first" prefix=" "/>
-        <text variable="court" prefix=" (" suffix=")"/>
+        <text variable="authority" prefix=" (" suffix=")"/>
       </group>
     </layout>
   </bibliography>
@@ -77,8 +82,8 @@ bibliography
 >>===== INPUT =====>>
 [
     {
+        "authority": "E.D. Wisc.", 
         "container-title": "F. Supp.", 
-        "court": "E.D. Wisc.", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [

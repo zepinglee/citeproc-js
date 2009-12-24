@@ -40,13 +40,9 @@ citation
 0.8
 <<===== SCHEMA =====<<
 
-# Note: The only difference between this test and the corresponding
-# test in English is that this test has the default-locale attribute
-# of the CSL style node set to "es".  Both the item data and the body
-# of the CSL code are otherwise identical.
 
 >>===== RESULT =====>>
-Rosales, Osvaldo y Mikio Kuwayama (2007), “América latina y china e india: hacia una nueva alianza de comercio e inversión,” Serie de Comercio Internacional, N° 81 (LC/L.2656-P), Santiago de Chile, Naciones Unidas - ECLAC, enero. Publicación de las Naciones Unidas, Nº de venta: S.07.II.G.6.
+IMF (International Monetary Fund) (2009), “Regional economic outlook : asia and pacific. world economic and financial surveys,” Washington, DC, May. 
 <<===== RESULT =====<<
 
 
@@ -54,8 +50,7 @@ Rosales, Osvaldo y Mikio Kuwayama (2007), “América latina y china e india: h
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0"
-      default-locale="es">
+      version="1.0">
   <info>
     <id />
     <title />
@@ -116,8 +111,12 @@ Rosales, Osvaldo y Mikio Kuwayama (2007), “América latina y china e india: h
   <macro name="publisher-place">
     <text variable="publisher-place"/>
   </macro>
-  <macro name="document-number-parens">
-    <text variable="number" prefix="(" suffix=")"/>
+  <macro name="document-number-parens-un-only">
+    <choose>
+      <if variable="un-sales-number">
+        <text variable="number" prefix="(" suffix=")"/>
+      </if>
+    </choose>
   </macro>
   <macro name="collection-identifier">
     <group delimiter=", ">
@@ -154,7 +153,7 @@ Rosales, Osvaldo y Mikio Kuwayama (2007), “América latina y china e india: h
             <text macro="title-quotes"/>
             <group delimiter=" ">
               <text macro="collection-identifier"/>
-              <text macro="document-number-parens"/>
+              <text macro="document-number-parens-un-only"/>
             </group>
             <text macro="publisher-place"/>
             <text macro="publisher"/>
@@ -172,35 +171,20 @@ Rosales, Osvaldo y Mikio Kuwayama (2007), “América latina y china e india: h
 >>===== INPUT =====>>
 [
     {
-        "author": [
-            {
-                "family": "Rosales", 
-                "given": "Osvaldo", 
-                "static-ordering": false
-            }, 
-            {
-                "family": "Kuwayama", 
-                "given": "Mikio", 
-                "static-ordering": false
-            }
-        ], 
-        "collection-number": "81", 
-        "collection-title": "Serie de Comercio Internacional", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [
                 [
-                    "2007", 
-                    "1"
+                    "2009", 
+                    "5"
                 ]
             ]
         }, 
-        "number": "LC/L.2656-P", 
-        "publisher": "Naciones Unidas - ECLAC :en:United Nations - ECLAC", 
-        "publisher-place": "Santiago de Chile :en:Santiago", 
-        "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
-        "type": "book", 
-        "un-sales-number": "S.07.II.G.6"
+        "number": "1,000,000", 
+        "publisher": "IMF (International Monetary Fund)", 
+        "publisher-place": "Washington, DC", 
+        "title": "Regional economic outlook : asia and pacific. world economic and financial surveys", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<
