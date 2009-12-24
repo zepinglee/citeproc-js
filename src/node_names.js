@@ -182,10 +182,6 @@ CSL.Node.names = new function(){
 						continue;
 					}
 
-					if (state.tmp.can_block_substitute){
-						state.tmp.done_vars.push(nameset.type);
-					};
-
 					//
 					// if rendering for display, do not honor a disambig_request
 					// to set names length below et-al-use-first
