@@ -1,0 +1,52 @@
+For abbreviation infrastructure, would need to be able to report out
+three categories of variable, each in two parts (known abbreviation
+vars and unknown abbreviation vars).
+
+Would also need to be able to snarf a nickname for an abbreviation
+set, and would need a function in sys for retrieving items
+from the set, with a well defined interface.
+
+terms:
+  un-sales-number-label
+  collection-number-label
+  document-number-label
+  document-number-authority-suffix
+
+variables:
+  un-sales-number
+  document-number-authority
+
+Question is whether document-number-authority belongs in there.
+I think it probably does; it would be extremely awkward to
+call on the acronym of an institutional author -- is there only
+one author, do they have an acronym, are they listed as something
+other than author, etc.  To be used only for identifiers that are
+only useful for identifying documents within an institution
+(like a specific court, or a company).  Numbers without an
+aspiration to be global.  (Bruce is never going to buy this,
+though.)
+
+<names variable="author">
+  <name delimiter=", " 
+        form="short"
+        * institution-form="short-long"
+        et-al-min="3"
+        et-al-use-first="2">
+    <name-part name="institution" 
+               * if-has-short="true" 
+               prefix=" (" suffix=")"
+               * use-last="1"
+               * use-first="1"
+    />
+  </name>
+</names>
+
+Brown.
+Brown & Smith.
+Brown, Smith et al.
+
+(BC) Big Co.
+Tiny Subcommittee, (BC) Big Co.
+Brown, (BC) Big Co.
+Brown & Smith, (BC) Big Co.
+Brown, Smith et al., (BC) Big Co.
