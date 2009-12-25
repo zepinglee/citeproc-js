@@ -37,7 +37,7 @@ CSL.Node.sort = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			if (state.build.area == "citation"){
-				CSL.parallel.use_parallels = false;
+				state.parallel.use_parallels = false;
 			}
 			state.build.sort_flag  = true;
 			state.build.area_return = state.build.area;

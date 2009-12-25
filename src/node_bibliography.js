@@ -38,7 +38,7 @@ CSL.Node.bibliography = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 
-			CSL.parallel.use_parallels = false;
+			state.parallel.use_parallels = false;
 
 			state.fixOpt(this,"names-delimiter","delimiter");
 

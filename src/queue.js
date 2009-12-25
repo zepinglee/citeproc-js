@@ -207,7 +207,7 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	// Caution: The parallel detection machinery will blow up if tracking
 	// variables are not properly initialized elsewhere.
 	//
-	CSL.parallel.AppendBlobPointer(curr);
+	this.state.parallel.AppendBlobPointer(curr);
 	if ("string" == typeof str){
 		curr.push( blob );
 		if (blob.strings["text-case"]){

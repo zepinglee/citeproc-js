@@ -100,7 +100,7 @@ CSL.Node.date = new function(){
 					state.tmp.dateparts = [];
 					var dp = [];
 					if (this.variables.length && Item[this.variables[0]]){
-						CSL.parallel.StartVariable(this.variables[0]);
+						state.parallel.StartVariable(this.variables[0]);
 						var date_obj = Item[this.variables[0]];
 						if (date_obj.raw){
 							state.tmp.date_object = state.dateParseRaw( date_obj.raw );
@@ -171,7 +171,7 @@ CSL.Node.date = new function(){
 					// of output from this date.
 					//
 					if (state.tmp.date_object["literal"]){
-						CSL.parallel.AppendToVariable(state.tmp.date_object["literal"]);
+						state.parallel.AppendToVariable(state.tmp.date_object["literal"]);
 						state.output.append(state.tmp.date_object["literal"],tok);
 						state.tmp.date_object = {};
 					}
@@ -192,7 +192,7 @@ CSL.Node.date = new function(){
 			} else {
 				var mergeoutput = function(state,Item){
 					state.output.endTag();
-					CSL.parallel.CloseVariable();
+					state.parallel.CloseVariable();
 				};
 				this["execs"].push(mergeoutput);
 			}

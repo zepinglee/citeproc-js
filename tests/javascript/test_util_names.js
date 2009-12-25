@@ -48,6 +48,7 @@ var display_names = [
 
 var sys = new RhinoTest();
 var state = new CSL.Engine(sys,"<style></style>");
+state.parallel.use_parallels = false;
 
 //
 // Delimiters and formatting decorations are

@@ -90,7 +90,7 @@ CSL.Node["date-part"] = new function(){
 						value = (parseInt(value,10) * -1);
 					};
 
-					CSL.parallel.AppendToVariable(value);
+					state.parallel.AppendToVariable(value);
 
 					if (this.strings.form){
 						value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);

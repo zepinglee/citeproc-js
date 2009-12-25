@@ -130,7 +130,7 @@ CSL.getCitationCluster = function (inputList,citation){
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
 
-	CSL.parallel.StartCitation();
+	this.parallel.StartCitation();
 
 	var myparams = new Array();
 
@@ -142,7 +142,7 @@ CSL.getCitationCluster = function (inputList,citation){
 		CSL.getCite.call(this,Item);
 
 		if (pos == (inputList.length-1)){
-			CSL.parallel.ComposeSet();
+			this.parallel.ComposeSet();
 		}
 		//
 		// XXXXX: capture these parameters to an array, which
@@ -167,7 +167,7 @@ CSL.getCitationCluster = function (inputList,citation){
 	//
 	// XXXXX: purge of elements for parallel cites can happen here.
 	//
-	CSL.parallel.PruneOutputQueue(this.output.queue,citation);
+	this.parallel.PruneOutputQueue(this.output.queue,citation);
 	//
 	// output.queue is a simple array.  do a slice
 	// of it to get each cite item, setting params from
@@ -236,14 +236,14 @@ CSL.getCitationCluster = function (inputList,citation){
  * entries in a bibliography.)
  */
 CSL.getCite = function(Item){
-	CSL.parallel.StartCite(Item);
+	this.parallel.StartCite(Item);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
 		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item);
     }
 	CSL.citeEnd.call(this,Item);
-	CSL.parallel.CloseCite(this);
+	this.parallel.CloseCite(this);
 };
 
 CSL.citeStart = function(Item){

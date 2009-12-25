@@ -237,4 +237,3 @@ CSL.parallel.prototype.purgeVariableBlobs = function(cite,varnames){
 	};
 };
 
-CSL.parallel = new CSL.parallel();

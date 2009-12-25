@@ -45,8 +45,8 @@ CSL.Node.text = new function(){
 			var variable = this.variables[0];
 			if (variable){
 				var func = function(state,Item){
-					CSL.parallel.StartVariable(this.variables[0]);
-					CSL.parallel.AppendToVariable(Item[this.variables[0]]);
+					state.parallel.StartVariable(this.variables[0]);
+					state.parallel.AppendToVariable(Item[this.variables[0]]);
 				};
 				this["execs"].push(func);
 			};
@@ -289,7 +289,7 @@ CSL.Node.text = new function(){
 				}
 			}
 			var func = function(state,Item){
-				CSL.parallel.CloseVariable();
+				state.parallel.CloseVariable();
 			};
 			this["execs"].push(func);
 			target.push(this);

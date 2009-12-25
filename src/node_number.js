@@ -53,8 +53,8 @@ CSL.Node.number = new function(){
 		//
 		var push_number_or_text = function(state,Item){
 			var varname = this.variables[0];
-			CSL.parallel.StartVariable(this.variables[0]);
-			CSL.parallel.AppendToVariable(Item[this.variables[0]]);
+			state.parallel.StartVariable(this.variables[0]);
+			state.parallel.AppendToVariable(Item[this.variables[0]]);
 
 			if (varname == "page-range" || varname == "page-first"){
 				varname = "page";
@@ -74,7 +74,7 @@ CSL.Node.number = new function(){
 					state.output.append(num, this);
 				};
 			};
-			CSL.parallel.CloseVariable();
+			state.parallel.CloseVariable();
 		};
 		this["execs"].push(push_number_or_text);
 

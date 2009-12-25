@@ -45,7 +45,8 @@ CSL.Engine = function(sys,style,lang) {
 	if ("string" != typeof style){
 		style = "";
 	};
-	CSL.parallel.use_parallels = true;
+	this.parallel = new CSL.parallel();
+	this.parallel.use_parallels = true;
 
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();

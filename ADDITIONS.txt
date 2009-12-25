@@ -14,18 +14,9 @@ terms:
 
 variables:
   un-sales-number
-  document-number-authority
 
 Need to build an abbreviations substitution mechanism to test this.
 ECLAC examples need localized content for abbreviations as well.
-
-Publisher should be digestible by names, so that we can properly
-format cites to documents published by a subunit of a larger
-organization.  Publisher is already in cs-names within the schema --
-interesting, it would have blown up if used.  The only needed change
-is in node_names.js, to convert plain string publisher data into the
-form expected by names, so that the machinery will play well with
-Zotero until publisher is promoted to a full and proper name field.
 
 <names variable="author" delimiter=", ">
   <name delimiter=", " 
@@ -34,10 +25,11 @@ Zotero until publisher is promoted to a full and proper name field.
         et-al-use-first="2">
   </name>
   <institution first-max="1" 
-               append-last="1" 
+               append-last="1"
+               order="normal"
                institution-parts="short-long">
     <institution-part name="long"
-                      if-has-short="true" 
+                      has-short-is="true" 
                       prefix=" ("
                       suffix=")"/>
   </institution>
