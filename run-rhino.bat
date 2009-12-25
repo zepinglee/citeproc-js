@@ -6,11 +6,11 @@ set starttime=%time%
 
 cd %~dp0
 
-set RHINO=%~dp0\rhino\js-1.7R1.jar
-set DOJO=%~dp0\dojo\dojo\dojo.js
-set DOH=%~dp0\dojo\util\doh\
+set RHINO=%~dp0rhino\js-1.7R1.jar
+set DOJO=%~dp0dojo\dojo\dojo.js
+set DOH=%~dp0dojo\util\doh\
 
-set TARGET=%~dp0\tests\run.js
+set TARGET=%~dp0tests\javascript\runner_rhino.js
 
 java -client -jar %RHINO% %TARGET% dojoUrl=%DOJO%  testModule=""
 
