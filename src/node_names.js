@@ -46,7 +46,11 @@ CSL.Node.names = new function(){
 				if (state.tmp.value.length == 0){
 					for each (var variable in this.variables){
 						if (Item[variable]){
-							var filtered_names = state.getNameSubFields(Item[variable]);
+							var rawvar = Item[variable];
+							if ("string" == typeof Item[variable]){
+								rawvar = [{"literal":Item[variable]}];
+							}
+							var filtered_names = state.getNameSubFields(rawvar);
 							// filtered_names = CSL.Util.Names.rescueNameElements(filtered_names);
 							state.tmp.names_max.push(filtered_names.length);
 							state.tmp.value.push({"type":variable,"names":filtered_names});

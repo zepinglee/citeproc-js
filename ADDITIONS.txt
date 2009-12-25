@@ -16,18 +16,16 @@ variables:
   un-sales-number
   document-number-authority
 
-Question is whether document-number-authority belongs in there.
-I think it probably does; it would be extremely awkward to
-call on the acronym of an institutional author -- is there only
-one author, do they have an acronym, are they listed as something
-other than author, etc.  To be used only for identifiers that are
-only useful for identifying documents within an institution
-(like a specific court, or a company).  Numbers without an
-aspiration to be global.  (Bruce is never going to buy this,
-though.)
-
 Need to build an abbreviations substitution mechanism to test this.
 ECLAC examples need localized content for abbreviations as well.
+
+Publisher should be digestible by names, so that we can properly
+format cites to documents published by a subunit of a larger
+organization.  Publisher is already in cs-names within the schema --
+interesting, it would have blown up if used.  The only needed change
+is in node_names.js, to convert plain string publisher data into the
+form expected by names, so that the machinery will play well with
+Zotero until publisher is promoted to a full and proper name field.
 
 <names variable="author" delimiter=", ">
   <name delimiter=", " 
