@@ -32,23 +32,62 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-dojo.provide("tests.std_institutions");
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
 
-doh.register("tests.std_institutions", [
-    function(){
-        var test = new StdRhinoTest("institutions_FirstAndLast");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsAlwaysUseFirst");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsMaybeUseFirst");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("institutions_SimpleShortLong");
-        doh.assertEqual(test.result, test.run());
-    },
-]);
+>>===== SCHEMA =====>>
+1.0
+<<===== SCHEMA =====<<
+
+
+>>===== RESULT =====>>
+Tiny Subcommittee, Big Ministry
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0"
+      default-locale="en">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <names variable="author">
+        <name/>
+        <institution 
+          institution-parts="long" 
+          delimiter=", "
+          always-use-first="1"
+          append-last="1"/>
+      </names>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "literal": "Tiny Subcommittee"
+            }, 
+            {
+                "literal": "Busy Committee"
+            }, 
+            {
+                "literal": "Big Ministry"
+            }
+        ], 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

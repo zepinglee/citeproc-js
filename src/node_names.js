@@ -195,52 +195,77 @@ CSL.Node.names = new function(){
 					// Here is where we maybe truncate the list of
 					// names, to satisfy name-count and et-al constraints.
 					var display_names = nameset.names.slice();
-					var sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
-					//
-					// if there is anything on name request, we assume that
-					// it was configured correctly via state.names_request
-					// by the function calling the renderer.
-					var discretionary_names_length = state.tmp["et-al-min"];
+					if ("people" == nameset.species){
+						var sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
+						//
+						// if there is anything on name request, we assume that
+						// it was configured correctly via state.names_request
+						// by the function calling the renderer.
+						var discretionary_names_length = state.tmp["et-al-min"];
 
-					//
-					// the names constraint
-					//
-					var suppress_min = state.output.getToken("name").strings["suppress-min"];
-					var suppress_condition = suppress_min && display_names.length >= suppress_min;
-					if (suppress_condition){
-						continue;
-					}
+						//
+						// the names constraint
+						//
+						var suppress_min = state.output.getToken("name").strings["suppress-min"];
+						var suppress_condition = suppress_min && display_names.length >= suppress_min;
+						if (suppress_condition){
+							continue;
+						};
 
-					//
-					// if rendering for display, do not honor a disambig_request
-					// to set names length below et-al-use-first
-					//
-					if (state.tmp.suppress_decorations){
-						if (state.tmp.disambig_request){
-							discretionary_names_length = state.tmp.disambig_request["names"][state.tmp.nameset_counter];
-						} else if (display_names.length >= state.tmp["et-al-min"]){
-							discretionary_names_length = state.tmp["et-al-use-first"];
+						//
+						// if rendering for display, do not honor a disambig_request
+						// to set names length below et-al-use-first
+						//
+						if (state.tmp.suppress_decorations){
+							if (state.tmp.disambig_request){
+								discretionary_names_length = state.tmp.disambig_request["names"][state.tmp.nameset_counter];
+							} else if (display_names.length >= state.tmp["et-al-min"]){
+								discretionary_names_length = state.tmp["et-al-use-first"];
+							};
+						} else {
+							if (state.tmp.disambig_request && state.tmp["et-al-use-first"] < state.tmp.disambig_request["names"][state.tmp.nameset_counter]){
+								discretionary_names_length = state.tmp.disambig_request["names"][state.tmp.nameset_counter];
+							} else if (display_names.length >= state.tmp["et-al-min"]){
+								discretionary_names_length = state.tmp["et-al-use-first"];
+							};
+						};
+						var overlength = display_names.length > discretionary_names_length;
+						var et_al = false;
+						var and_term = "";
+						if (sane && overlength){
+							if (! state.tmp.sort_key_flag){
+								et_al = state.output.getToken("etal").strings.et_al_term;
+							};
+							display_names = display_names.slice(0,discretionary_names_length);
+						} else {
+							if (state.output.getToken("name").strings["and"] && ! state.tmp.sort_key_flag && display_names.length > 1){
+								and_term = state.output.getToken("name").strings["and"];
+							};
+						};
+					} else { // not if ("people" == nameset.species), must be "organizations"
+						var use_first = state.output.getToken("institution").strings["always-use-first"];
+						if (!use_first && namesetIndex == 0){
+							use_first = state.output.getToken("institution").strings["maybe-use-first"];
+						};
+						if (!use_first){
+							use_first = 0;
 						}
-					} else {
-						if (state.tmp.disambig_request && state.tmp["et-al-use-first"] < state.tmp.disambig_request["names"][state.tmp.nameset_counter]){
-							discretionary_names_length = state.tmp.disambig_request["names"][state.tmp.nameset_counter];
-						} else if (display_names.length >= state.tmp["et-al-min"]){
-							discretionary_names_length = state.tmp["et-al-use-first"];
-						}
-					}
-					var overlength = display_names.length > discretionary_names_length;
-					var et_al = false;
-					var and_term = "";
-					if (sane && overlength){
-						if (! state.tmp.sort_key_flag){
-							et_al = state.output.getToken("etal").strings.et_al_term;
-						}
-						display_names = display_names.slice(0,discretionary_names_length);
-					} else {
-						if (state.output.getToken("name").strings["and"] && ! state.tmp.sort_key_flag && display_names.length > 1){
-							and_term = state.output.getToken("name").strings["and"];
-						}
-					}
+						var append_last = state.output.getToken("institution").strings["append-last"];
+						if (use_first || append_last){
+							var s = display_names.slice();
+							display_names = new Array();
+							display_names = s.slice(0,use_first);
+							s = s.slice(use_first);
+							if (append_last){
+								if (append_last > s.length){
+									append_last = s.length;
+								};
+								if (append_last){
+									display_names = display_names.concat(s.slice((s.length-append_last)));
+								};
+							};
+						};
+					};
 					state.tmp.disambig_settings["names"][state.tmp.nameset_counter] = display_names.length;
 					local_count += display_names.length;
 
@@ -330,21 +355,16 @@ CSL.Node.names = new function(){
 						state.output.append(label,"label");
 					}
 
-
-					state.output.openLevel("etal-join"); // join for etal
-
 					if ("people" == nameset.species){
+						state.output.openLevel("etal-join"); // join for etal
 						CSL.Util.Names.outputNames(state,display_names);
+						if (et_al){
+							state.output.append(et_al,"etal");
+						}
+						state.output.closeLevel(); // etal
 					} else {
-						print("instiutions");
 						CSL.Util.Institutions.outputInstitutions(state,display_names);
 					}
-
-					if (et_al){
-						state.output.append(et_al,"etal");
-					}
-
-					state.output.closeLevel(); // etal
 
 					if (label && state.tmp.name_label_position != CSL.BEFORE){
 						state.output.append(label,"label");

@@ -614,9 +614,15 @@ CSL.Attributes["@if-short"] = function(state,arg){
 	};
 };
 
-CSL.Attributes["@first-max"] = function(state,arg){
+CSL.Attributes["@maybe-use-first"] = function(state,arg){
 	if (arg.match(/^[0-9]+$/)){
-		this.strings["first-max"] = parseInt(arg,10);
+		this.strings["maybe-use-first"] = parseInt(arg,10);
+	};
+};
+
+CSL.Attributes["@always-use-first"] = function(state,arg){
+	if (arg.match(/^[0-9]+$/)){
+		this.strings["always-use-first"] = parseInt(arg,10);
 	};
 };
 
