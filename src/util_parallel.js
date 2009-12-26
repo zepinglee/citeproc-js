@@ -63,18 +63,18 @@
 /**
  * Initializes the parallel cite tracking arrays
  */
-CSL.parallel = function(){
+CSL.Parallel = function(){
 	this.one_set = new CSL.Stack();
 	this.all_sets = new CSL.Stack();
 	this.try_cite = true;
 	this.use_parallels = true;
 };
 
-CSL.parallel.prototype.isMid = function(variable){
+CSL.Parallel.prototype.isMid = function(variable){
 	return ["volume","container-title","issue","page"].indexOf(variable) > -1;
 }
 
-CSL.parallel.prototype.StartCitation = function(){
+CSL.Parallel.prototype.StartCitation = function(){
 	if (this.use_parallels){
 		this.all_sets.clear();
 		this.one_set.clear();
@@ -86,7 +86,7 @@ CSL.parallel.prototype.StartCitation = function(){
  * Sets up an empty variables tracking object.
  *
  */
-CSL.parallel.prototype.StartCite = function(Item){
+CSL.Parallel.prototype.StartCite = function(Item){
 	if (this.use_parallels){
 		this.try_cite = true;
 		for each (var x in ["title", "container-title","volume","page"]){
@@ -112,7 +112,7 @@ CSL.parallel.prototype.StartCite = function(Item){
  * Initializes scratch object and variable name string
  * for tracking a single variable.
  */
-CSL.parallel.prototype.StartVariable = function (variable){
+CSL.Parallel.prototype.StartVariable = function (variable){
 	if (this.use_parallels && this.try_cite){
 		this.variable = variable;
 		this.data = new Object();
@@ -137,7 +137,7 @@ CSL.parallel.prototype.StartVariable = function (variable){
  * the target blob out of the output queue if appropriate,
  * after parallels detection is complete.
  */
-CSL.parallel.prototype.AppendBlobPointer = function (blob){
+CSL.Parallel.prototype.AppendBlobPointer = function (blob){
 	if (this.use_parallels && this.try_cite && blob && blob.blobs){
 		this.data.blobs.push([blob,blob.blobs.length]);
 	};
@@ -147,7 +147,7 @@ CSL.parallel.prototype.AppendBlobPointer = function (blob){
  * Adds string data to the current variable
  * in the variables tracking object.
  */
-CSL.parallel.prototype.AppendToVariable = function(str){
+CSL.Parallel.prototype.AppendToVariable = function(str){
 	if (this.use_parallels && this.try_cite){
 		this.data.value += "::"+str;
 	};
@@ -161,7 +161,7 @@ CSL.parallel.prototype.AppendToVariable = function(str){
  * item can't necessarily be discarded; it might be the first
  * member of an upcoming sequence ???]
  */
-CSL.parallel.prototype.CloseVariable = function(){
+CSL.Parallel.prototype.CloseVariable = function(){
 	if (this.use_parallels && this.try_cite){
 		this.cite[this.variable] = this.data;
 		if (this.one_set.mystack.length > 0){
@@ -179,7 +179,7 @@ CSL.parallel.prototype.CloseVariable = function(){
  * Merges current cite object to the
  * tracking array, and evaluate maybe.
  */
-CSL.parallel.prototype.CloseCite = function(state){
+CSL.Parallel.prototype.CloseCite = function(state){
 	if (this.use_parallels){
 		if (this.try_cite){
 			if (this.one_set.mystack.length && state[state.tmp.area].opt["year-suffix-delimiter"]){
@@ -196,7 +196,7 @@ CSL.parallel.prototype.CloseCite = function(state){
  * Move variables tracking array into the array of
  * composed sets.
  */
-CSL.parallel.prototype.ComposeSet = function(){
+CSL.Parallel.prototype.ComposeSet = function(){
 	if (this.use_parallels){
 		if (this.one_set.mystack.length > 1){
 			this.all_sets.push( this.one_set.mystack.slice() );
@@ -208,7 +208,7 @@ CSL.parallel.prototype.ComposeSet = function(){
 /**
  * Mangle the queue as appropropriate.
  */
-CSL.parallel.prototype.PruneOutputQueue = function(){
+CSL.Parallel.prototype.PruneOutputQueue = function(){
 	if (this.use_parallels){
 		for each (var series in this.all_sets.mystack){
 			for (var pos=0; pos<series.length; pos++){
@@ -225,7 +225,7 @@ CSL.parallel.prototype.PruneOutputQueue = function(){
 	};
 };
 
-CSL.parallel.prototype.purgeVariableBlobs = function(cite,varnames){
+CSL.Parallel.prototype.purgeVariableBlobs = function(cite,varnames){
 	if (this.use_parallels){
 		for each (var varname in varnames){
 			if (cite[varname]){

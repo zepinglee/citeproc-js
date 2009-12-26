@@ -46,12 +46,6 @@ citation
 Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
 <<== RESULT ==<<
 
->>== ABBREVIATIONS ==>>
-{
-  "Journal of Irreproducible Results":"J. Irrep. Res."
-}
-<<== ABBREVIATIONS ==<<
-
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"

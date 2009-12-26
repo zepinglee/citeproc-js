@@ -51,15 +51,38 @@ CSL.Node.names = new function(){
 								rawvar = [{"literal":Item[variable]}];
 							}
 							var filtered_names = state.getNameSubFields(rawvar);
-							// filtered_names = CSL.Util.Names.rescueNameElements(filtered_names);
-							state.tmp.names_max.push(filtered_names.length);
-							state.tmp.value.push({"type":variable,"names":filtered_names});
-							// saving relevant names separately, for reference
-							// in splice collapse and in subsequent-author-substitute
-							state.tmp.names_used.push(state.tmp.value.slice());
-						}
+							//
+							// Split a nameset into persons and organizations,
+							// if the institutions element is present.
+							// No idea why this was so hard to set up.
+							// Insufficient sleep, maybe.
+							//
+							var specs = new Array();
+							specs.push(["people","bogus","undefined"]);
+							if (this.strings["has-institution"]){
+								specs.pop();
+								specs.push(["people","literal", "undefined"]);
+								specs.push(["organizations","literal","string"]);
+							};
+							for each (var spec in specs){
+								var mynames = new Object();
+								mynames.type = variable;
+								mynames.species = spec[0];
+								mynames.names = new Array();
+								for each (var name in filtered_names){
+									if (spec[2] == typeof name[spec[1]]){
+										mynames.names.push(name);
+									};
+								};
+								if (mynames.names.length){
+									state.tmp.names_max.push(mynames.names.length);
+									state.tmp.value.push(mynames);
+									state.tmp.names_used.push(state.tmp.value.slice());
+								}
+							};
+						};
 					};
-				}
+				};
 			};
 			this["execs"].push(init_names);
 		};
@@ -74,13 +97,11 @@ CSL.Node.names = new function(){
 			this.execs.push(init_can_substitute);
 
 			var init_names = function(state,Item){
-				// for the purposes of evaluating parallels, we don't really
-				// care what the actual variable name of "names" is.
-				state.parallel.AppendBlobPointer(state.output.current.value());
 				state.output.startTag("names",this);
 				state.tmp.name_node = state.output.current.value();
 			};
 			this["execs"].push(init_names);
+
 		};
 
 		if (this.tokentype == CSL.END){
@@ -107,14 +128,19 @@ CSL.Node.names = new function(){
 				// Normalize names for which it is requested
 				//
 				for each (var nameset in namesets){
+					if ("organizations" == nameset.species){
+						if (state.output.getToken("institution").strings.reverse){
+							nameset.names.reverse();
+						};
+					};
 					for each (var name in nameset.names){
 						if (name["parse-names"]){
 							state.parseName(name);
-						}
-					}
-				}
+						};
+					};
+				};
 				var local_count = 0;
-				var nameset = new Object();
+				nameset = new Object();
 
 				state.output.addToken("space"," ");
 				state.output.addToken("sortsep",state.output.getToken("name").strings["sort-separator"]);
@@ -142,7 +168,6 @@ CSL.Node.names = new function(){
 					if (!nameset.names.length){
 						continue;
 					};
-
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
 						//
 						// This is fine, but the naming of the comparison
@@ -227,6 +252,7 @@ CSL.Node.names = new function(){
 					state.output.addToken("inner",delim);
 					//state.tmp.tokenstore["and"] = new CSL.Token("and");
 					state.output.formats.value()["name"].strings.delimiter = and_term;
+
 					for (var i in nameset.names){
 						//
 						// register the name in the global names disambiguation
@@ -259,13 +285,6 @@ CSL.Node.names = new function(){
 							var myform = state.output.getToken("name").strings.form;
 							var myinitials = this.strings["initialize-with"];
 							var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,0,myform,myinitials);
-							//CSL.debug("MYFORM: "+myform+", PARAM: "+param);
-							//var param = 2;
-							//if (state.output.getToken("name").strings.form == "short"){
-							//	param = 0;
-							//} else if ("string" == typeof state.tmp["initialize-with"]){
-							//	param = 1;
-							//};
 						};
 						state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i] = param;
 					}
@@ -314,7 +333,12 @@ CSL.Node.names = new function(){
 
 					state.output.openLevel("etal-join"); // join for etal
 
-					CSL.Util.Names.outputNames(state,display_names);
+					if ("people" == nameset.species){
+						CSL.Util.Names.outputNames(state,display_names);
+					} else {
+						print("instiutions");
+						CSL.Util.Institutions.outputInstitutions(state,display_names);
+					}
 
 					if (et_al){
 						state.output.append(et_al,"etal");
@@ -329,13 +353,13 @@ CSL.Node.names = new function(){
 					state.output.closeLevel(); // term
 
 					state.tmp.nameset_counter += 1;
-				};
+				}; // end of nameset loop
 				if (state.output.getToken("name").strings.form == "count"){
 					state.output.clearlevel();
 					state.output.append(local_count.toString());
 					state.tmp["et-al-min"] = false;
 					state.tmp["et-al-use-first"] = false;
-				}
+				};
 			};
 			this["execs"].push(handle_names);
 		};
@@ -387,4 +411,20 @@ CSL.Node.names = new function(){
 
 		}
 	}
+
+	//
+	// XXXXX: in configure phase, set a flag if this node contains an
+	// institution node.  If it does, then each nameset will be filtered into an
+	 // array containing two lists, to be run separately and joined
+	// in the end.  If we don't, the array will contain only one list.
+	//
+	this.configure = configure;
+	function configure(state,pos){
+		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
+			if (state.build.has_institution){
+				this.strings["has-institution"] = true;
+				state.build.has_institution = false;
+			};
+		};
+	};
 };

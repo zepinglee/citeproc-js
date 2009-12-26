@@ -604,17 +604,31 @@ CSL.Attributes["@initialize-with-hyphen"] = function(state,arg){
 	}
 }
 
-CSL.Attributes["@acronym"] = function(state,arg){
-	var arg = CSL.ACRONYM_OPTIONS.indexOf(arg);
-	if (arg == 0){
-		state.opt["acronym"] = [""];
+CSL.Attributes["@institution-parts"] = function(state,arg){
+	this.strings["institution-parts"] = arg;
+};
+
+CSL.Attributes["@if-short"] = function(state,arg){
+	if (arg == "true"){
+		this.strings["if-short"] = true;
 	};
 };
 
-CSL.Attributes["@if-has-acronym"] = function(state,arg){
-	if (arg == "true"){
-		state.opt["acronym-test-result"] = true;
-	} else if (arg == "false"){
-		state.opt["acronym-test-result"] = false;
+CSL.Attributes["@first-max"] = function(state,arg){
+	if (arg.match(/^[0-9]+$/)){
+		this.strings["first-max"] = parseInt(arg,10);
+	};
+};
+
+CSL.Attributes["@append-last"] = function(state,arg){
+	if (arg.match(/^[0-9]+$/)){
+		this.strings["append-last"] = parseInt(arg,10);
+	};
+};
+
+
+CSL.Attributes["@reverse"] = function(state,arg){
+	if ("true" == arg){
+		this.strings["reverse"] = true;
 	};
 };

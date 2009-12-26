@@ -105,7 +105,8 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 		this.namenum = parseInt(namenum,10);
 		this.name = this.segments[seg][namenum];
 		if (this.name.literal){
-			state.output.append(this.name.literal);
+			var value = this.name.literal;
+			state.output.append(this.name.literal,"empty");
 		} else {
 			var sequence = CSL.Util.Names.getNamepartSequence(state,seg,this.name);
 

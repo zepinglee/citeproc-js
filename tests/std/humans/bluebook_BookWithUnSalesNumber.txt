@@ -81,7 +81,12 @@ citation
     </choose>
   </macro>
   <macro name="publisher">
-    <text variable="publisher"/>
+    <names variable="publisher">
+      <name/>
+      <institution delimiter=" - " reverse="true" institution-parts="short">
+        <institution-part name="long"/>
+      </institution>
+    </names>
   </macro>
   <macro name="publisher-place">
     <text variable="publisher-place"/>
@@ -158,7 +163,14 @@ citation
             ]
         }, 
         "number": "LC/L.2656-P", 
-        "publisher": "United Nations - ECLAC", 
+        "publisher": [
+            {
+                "literal": "Economic Commission for Latin America and the Carribean"
+            }, 
+            {
+                "literal": "United Nations"
+            }
+        ], 
         "publisher-place": "Santiago de Chile :en:Santiago", 
         "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
         "type": "book", 

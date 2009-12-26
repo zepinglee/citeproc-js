@@ -43,14 +43,8 @@ citation
 
 
 >>== RESULT ==>>
-Doe, <i>Mango Chutney Souffle</i>, 10 Journal of Irreproducible Results 235 (1988).
+Doe, <i>Mango Chutney Souffle</i>, 10 Journal of Irreproducible ResultsX 235 (1988).
 <<== RESULT ==<<
-
->>== ABBREVIATIONS ==>>
-{
-  "Journal of Irreproducible Results OOPS!!!":"J. Irrep. Res."
-}
-<<== ABBREVIATIONS ==<<
 
 >>===== CSL =====>>
 <style 
@@ -90,7 +84,7 @@ Doe, <i>Mango Chutney Souffle</i>, 10 Journal of Irreproducible Results 235 (198
                 "static-ordering": false
             }
         ], 
-        "container-title": "Journal of Irreproducible Results", 
+        "container-title": "Journal of Irreproducible ResultsX", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [

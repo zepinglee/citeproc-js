@@ -33,9 +33,6 @@
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
 {
-    "abbreviations": {
-        "Journal of Irreproducible Results OOPS!!!": "J. Irrep. Res."
-    }, 
     "bibentries": false, 
     "bibsection": false, 
     "citations": false, 
@@ -49,7 +46,7 @@
                     "static-ordering": false
                 }
             ], 
-            "container-title": "Journal of Irreproducible Results", 
+            "container-title": "Journal of Irreproducible ResultsX", 
             "id": "ITEM-1", 
             "issued": {
                 "date-parts": [

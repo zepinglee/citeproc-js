@@ -315,6 +315,8 @@ if (!CSL.Node){
     load("./src/node_group.js");
     load("./src/node_if.js");
     load("./src/node_info.js");
+    load("./src/node_institution.js");
+    load("./src/node_institutionpart.js");
     load("./src/node_key.js");
     load("./src/node_label.js");
     load("./src/node_layout.js");
@@ -336,8 +338,11 @@ if (!CSL.Attributes){
 if (!CSL.Stack){
 	load("./src/stack.js");
 }
-if (!CSL.parallel){
+if (!CSL.Parallel){
 	load("./src/util_parallel.js");
+}
+if (!CSL.Abbrev){
+	load("./src/util_abbrev.js");
 }
 if (!CSL.Token){
 	load("./src/obj_token.js");
@@ -356,6 +361,9 @@ if (!CSL.Util){
 }
 if (!CSL.Util.Names){
 	load("./src/util_names.js");
+}
+if (!CSL.Util.Institutions){
+	load("./src/util_institutions.js");
 }
 if (!CSL.Util.Dates){
 	load("./src/util_dates.js");

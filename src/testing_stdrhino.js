@@ -40,6 +40,22 @@ dojo.provide("csl.testing_stdrhino");
 var StdRhinoTest = function(myname){
 	this.myname = myname;
 	this._cache = {};
+	this._acache = { "default": {
+						 "journal":{
+							 "Journal of Irreproducible Results":"J. Irrep. Res."
+						 },
+						 "series":{
+							 "International Rescue Wildlife Series":"I.R. Wildlife Series"
+						 },
+						 "authority":{
+							 "United Nations": "U.N."
+						 },
+						 "institution":{
+							 "Bureau of Gaseous Unformed Stuff":"BoGUS",
+							 "Economic Commission for Latin America and the Carribean":"ECLAC"
+						 }
+					 }
+				   };
 	this._ids = [];
 	if (myname){
 		var test = readFile("./tests/std/machines/" + myname + ".json", "UTF-8");
@@ -58,19 +74,13 @@ StdRhinoTest.prototype.retrieveItem = function(id){
 	return this._cache[id];
 };
 
-//
-// Retrieve properly composed items from phoney database.
-// (Deployments must provide an instance object with
-// this method.)
-//
-//StdRhinoTest.prototype.retrieveItems = function(ids){
-//	var ret = [];
-//	for each (var id in ids){
-//		ret.push(this.retrieveItem(id));
-//	}
-//	return ret;
-//};
+StdRhinoTest.prototype.getAbbreviations = function(name,vartype){
+	return this._acache[name][vartype];
+};
 
+StdRhinoTest.prototype.addAbbreviation = function(name,vartype){
+	this._acache[name][vartype] = "";
+};
 
 //
 // Build phoney database.
@@ -111,7 +121,7 @@ StdRhinoTest.prototype._readTest = function(){
 
 StdRhinoTest.prototype.run = function(){
 	this.style = new CSL.Engine(this,this.test.csl);
-	this.style.setContainerTitleAbbreviations(this.test.abbreviations);
+	this.style.setAbbreviations("default");
 	if (this.test.bibentries){
 		for each (var id_set in this.test.bibentries){
 			this.style.updateItems(id_set);

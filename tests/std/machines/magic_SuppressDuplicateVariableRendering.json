@@ -33,7 +33,6 @@
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
 {
-    "abbreviations": false, 
     "bibentries": false, 
     "bibsection": false, 
     "citations": false, 
@@ -42,7 +41,7 @@
         {
             "editor": [
                 {
-                    "literal": "Bloggs"
+                    "literal": "Blob"
                 }
             ], 
             "id": "item-1", 
@@ -51,6 +50,6 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Should print this: Book A ... and this: Book A ... but this only once: Bloggs", 
+    "result": "Should print this: Book A ... and this: Book A ... but this only once: Blob", 
     "schema": "0.8"
 }

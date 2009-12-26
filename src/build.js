@@ -45,8 +45,10 @@ CSL.Engine = function(sys,style,lang) {
 	if ("string" != typeof style){
 		style = "";
 	};
-	this.parallel = new CSL.parallel();
+	this.parallel = new CSL.Parallel();
 	this.parallel.use_parallels = true;
+
+	this.abbrev = new CSL.Abbrev();
 
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
@@ -274,10 +276,6 @@ CSL.Engine.prototype.setOutputFormat = function(mode){
 	// this.fun.decorate.format_init(this.output[mode].tmp);
 };
 
-CSL.Engine.prototype.setContainerTitleAbbreviations = function(abbrevs){
-	this.opt["container-title-abbreviations"] = abbrevs;
-};
-
 CSL.Engine.prototype.getTerm = function(term,form,plural){
 	var ret = CSL.Engine._getField(CSL.LOOSE,this.locale[this.opt.lang].terms,term,form,plural);
 	if (typeof ret == "undefined"){
@@ -384,6 +382,14 @@ CSL.Engine.prototype.configureTokenLists = function(){
 	return this.state;
 };
 
+CSL.Engine.prototype.setAbbreviations = function(name){
+	if (name){
+		this.abbrev.abbreviations = name;
+	};
+	for each (var vartype in ["journal","series","institution","authority"]){
+		this.abbrev[vartype] = this.sys.getAbbreviations(this.abbrev.abbreviations,vartype);
+	};
+};
 
 CSL.Engine.prototype.getTextSubField = function(value,locale_type,use_default){
 	var lst = value.split(/\s*:([-a-zA-Z]+):\s*/);

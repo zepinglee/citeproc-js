@@ -191,21 +191,14 @@ CSL.Node.text = new function(){
 					state.build.plural = false;
 				} else if (this.variables.length){
 					if (this.variables[0] == "container-title" && form == "short"){
-						// Define function to check container title
-						var func = function(state,Item){
-							var defaultval = state.getVariable(Item,this.variables[0],form);
-							var value = "";
-							if (state.opt["container-title-abbreviations"]){
-								value = state.opt["container-title-abbreviations"][defaultval];
-							};
-							if (!value){
-								value = Item["journalAbbreviation"];
-							}
-							if (!value){
-								value = defaultval;
-							}
-							state.output.append(value,this);
-						};
+						// Use tracking function
+						var func = state.abbrev.getOutputFunc(this,this.variables[0],"journal","journalAbbreviation");
+					} else if (this.variables[0] == "collection-title" && form == "short"){
+						// Use tracking function
+						var func = state.abbrev.getOutputFunc(this,this.variables[0],"series");
+					} else if (this.variables[0] == "authority" && form == "short"){
+						// Use tracking function
+						var func = state.abbrev.getOutputFunc(this,this.variables[0],"authority");
 					} else if (this.variables[0] == "title"){
 						if (state.build.area.slice(-5) == "_sort"){
 							var func = function(state,Item){

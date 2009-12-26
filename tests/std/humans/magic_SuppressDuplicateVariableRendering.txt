@@ -42,7 +42,7 @@ citation
 
 
 >>== RESULT ==>>
-Should print this: Book A ... and this: Book A ... but this only once: Bloggs
+Should print this: Book A ... and this: Book A ... but this only once: Blob
 <<== RESULT ==<<
 
 
@@ -80,7 +80,7 @@ Should print this: Book A ... and this: Book A ... but this only once: Bloggs
     {
         "editor": [
             {
-                "literal": "Bloggs"
+                "literal": "Blob"
             }
         ], 
         "id": "item-1", 

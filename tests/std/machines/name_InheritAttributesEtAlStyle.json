@@ -33,7 +33,6 @@
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
 {
-    "abbreviations": false, 
     "bibentries": false, 
     "bibsection": false, 
     "citations": false, 
@@ -42,16 +41,16 @@
         {
             "author": [
                 {
-                    "literal": "Doe"
+                    "family": "Doe"
                 }, 
                 {
-                    "literal": "Roe"
+                    "family": "Roe"
                 }, 
                 {
-                    "literal": "Noakes"
+                    "family": "Noakes"
                 }, 
                 {
-                    "literal": "Stoakes"
+                    "family": "Stoakes"
                 }
             ], 
             "id": "ITEM-1", 

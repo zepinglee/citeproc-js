@@ -109,18 +109,12 @@ J. Irrep. Res.
         "type": "book"
     }, 
     {
-        "container-title": {
-            "long": "Journal of Irreproducible Results", 
-            "short": "J. Irrep. Res."
-        }, 
+        "container-title": "Journal of Irreproducible Results", 
         "id": "ITEM-2", 
         "type": "article-journal"
     }, 
     {
-        "container-title": {
-            "long": "Journal of Irreproducible Results", 
-            "short": "J. Irrep. Res."
-        }, 
+        "container-title": "Journal of Irreproducible Results", 
         "id": "ITEM-3", 
         "title": "Sublimation Rates of Subatomic Particles", 
         "type": "article-journal"

@@ -185,7 +185,6 @@ class CslTest(CslTestUtils):
         for element in ["MODE","SCHEMA","CSL","RESULT"]:
             self.extract(element,required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
-        self.extract("ABBREVIATIONS",required=False,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
         self.extract("BIBENTRIES",required=False,is_json=True)
         self.extract("BIBSECTION",required=False,is_json=True)

@@ -36,8 +36,10 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
-	dojo.require("tests.std_eclac");
+	dojo.require("tests.std_institutions");
 	dojo.require("tests.std_bluebook");
+	dojo.require("tests.std_abbrevs");
+	dojo.require("tests.std_eclac");
 	dojo.require("tests.test_sys_stdrhino_locale");
 	dojo.require("tests.test_queue");
 	dojo.require("tests.std_parallel");
@@ -58,7 +60,6 @@ if(true){
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_nameattr");
 	dojo.require("tests.std_fullstyles");
-	dojo.require("tests.std_abbrevs");
 	dojo.require("tests.std_multilingual");
 	dojo.require("tests.std_sort");
 	dojo.require("tests.std_textcase");

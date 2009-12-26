@@ -46,12 +46,6 @@ citation
 Doe, <i>Mango Chutney Souffle</i>, 10 JIR 235 (1988).
 <<== RESULT ==<<
 
->>== ABBREVIATIONS ==>>
-{
-  "Journal of Irreproducible Results OOPS!!!":"J. Irrep. Res."
-}
-<<== ABBREVIATIONS ==<<
-
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
@@ -90,7 +84,7 @@ Doe, <i>Mango Chutney Souffle</i>, 10 JIR 235 (1988).
                 "static-ordering": false
             }
         ], 
-        "container-title": "Journal of Irreproducible Results", 
+        "container-title": "Journal of Irreproducible ResultsX", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [

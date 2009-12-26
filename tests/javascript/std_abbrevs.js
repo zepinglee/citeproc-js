@@ -47,4 +47,8 @@ doh.register("tests.std_abbrevs", [
         var test = new StdRhinoTest("abbrevs_JournalMissingFromListButHasJournalAbbreviationField");
         doh.assertEqual(test.result, test.run());
     },
+    function(){
+        var test = new StdRhinoTest("abbrevs_SeriesExistsInList");
+        doh.assertEqual(test.result, test.run());
+    },
 ]);

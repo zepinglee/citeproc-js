@@ -74,16 +74,16 @@ Doe, Roe, et al.
     {
         "author": [
             {
-                "literal": "Doe"
+                "family": "Doe"
             }, 
             {
-                "literal": "Roe"
+                "family": "Roe"
             }, 
             {
-                "literal": "Noakes"
+                "family": "Noakes"
             }, 
             {
-                "literal": "Stoakes"
+                "family": "Stoakes"
             }
         ], 
         "id": "ITEM-1", 

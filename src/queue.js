@@ -55,6 +55,28 @@ CSL.Output.Queue.prototype.getToken = function(name){
 	return ret;
 };
 
+CSL.Output.Queue.prototype.mergeTokenStrings = function(base,modifier){
+	var base_token = this.formats.value()[base];
+	var modifier_token = this.formats.value()[modifier];
+	var ret = base_token;
+	if (modifier_token){
+		if (!base_token){
+			base_token = new CSL.Token(base,CSL.SINGLETON);
+			base_token.decorations = [];
+		};
+		ret = new CSL.Token(base,CSL.SINGLETON);
+		var key = "";
+		for (key in base_token.strings){
+			ret.strings[key] = base_token.strings[key];
+		};
+		for (key in modifier_token.strings){
+			ret.strings[key] = modifier_token.strings[key];
+		};
+		ret.decorations = base_token.decorations.concat(modifier_token.decorations);
+	};
+	return ret;
+}
+
 // Store a new output format token based on another
 CSL.Output.Queue.prototype.addToken = function(name,modifier,token){
 	var newtok = new CSL.Token("output");
