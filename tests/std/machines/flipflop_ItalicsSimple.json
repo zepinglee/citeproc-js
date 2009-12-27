@@ -23,46 +23,70 @@
     "bibentries": false, 
     "bibsection": false, 
     "citations": [
-        [
-            {
-                "id": "ITEM-1"
-            }
-        ], 
-        [
-            {
-                "id": "ITEM-2"
-            }
-        ], 
-        [
-            {
-                "id": "ITEM-3"
-            }
-        ], 
-        [
-            {
-                "id": "ITEM-4"
-            }
-        ], 
-        [
-            {
-                "id": "ITEM-5"
-            }
-        ], 
-        [
-            {
-                "id": "ITEM-6"
-            }
-        ], 
-        [
-            {
-                "id": "ITEM-7"
-            }
-        ], 
-        [
-            {
-                "id": "ITEM-8"
-            }
-        ]
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-1"
+                }
+            ], 
+            "properties": {}
+        }, 
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-2"
+                }
+            ], 
+            "properties": {}
+        }, 
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-3"
+                }
+            ], 
+            "properties": {}
+        }, 
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-4"
+                }
+            ], 
+            "properties": {}
+        }, 
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-5"
+                }
+            ], 
+            "properties": {}
+        }, 
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-6"
+                }
+            ], 
+            "properties": {}
+        }, 
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-7"
+                }
+            ], 
+            "properties": {}
+        }, 
+        {
+            "citationItems": [
+                {
+                    "id": "ITEM-8"
+                }
+            ], 
+            "properties": {}
+        }
     ], 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text variable=\"title\" />\n    </layout>\n  </citation>\n</style>", 
     "input": [

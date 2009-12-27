@@ -151,7 +151,7 @@ class CslTests(CslTestUtils):
                 test.parse()
                 ## test.fix_source()
                 test.fix_names()
-                test.fix_citations()
+                ## test.fix_citations()
                 test.validate(testname)
                 test.dump_machines()
                 test.dump_humans()
@@ -204,6 +204,24 @@ class CslTest(CslTestUtils):
         else:
             self.data[tag.lower()] = False
 
+    def fix_citations(self):
+        """ Convert old citation specifiers to the form used
+            by Zotero
+        """
+        mycitations = self.data["citations"];
+        if mycitations != False:
+            for i in range(0,len(mycitations),1):
+                mymap = {}
+                mymap["properties"] = {}
+                mymap["citationItems"] = mycitations[i][:]
+                for j in range(0,len(mycitations[i]),1):
+                    if mycitations[i][j].has_key("note-number"):
+                        mymap["properties"]["noteIndex"] = mycitations[i][j]["note-number"]
+                        print mycitations[i][j]["note-number"]
+                        mycitations[i][j].pop("note-number")
+                mycitations[i] = mymap
+                
+
     def fix_source(self):
         """ Convert options to attributes, write back to source file.
             (now disabled)
@@ -245,7 +263,11 @@ class CslTest(CslTestUtils):
         #style = re.sub("<style[^>]*>",bibliographytag,style)
         return str
 
-    def fix_citations(self):
+    def fix_citationsX(self):
+        """ Move ItemID inside the citation map, and use the
+            map on its own, eliminating the list wrapper.
+            (now disabled)
+        """
         if self.data["citations"]:
             for x in range(0,len(self.data["citations"]),1):
                 cite = self.data["citations"][x]

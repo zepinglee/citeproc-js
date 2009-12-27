@@ -33,23 +33,26 @@ Smith 2000a,c,d,e, 2001
 
 >>===== CITATIONS =====>>
 [
-    [
-        {
-            "id": "ITEM-1"
-        }, 
-        {
-            "id": "ITEM-3"
-        }, 
-        {
-            "id": "ITEM-4"
-        }, 
-        {
-            "id": "ITEM-5"
-        }, 
-        {
-            "id": "ITEM-6"
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1"
+            }, 
+            {
+                "id": "ITEM-3"
+            }, 
+            {
+                "id": "ITEM-4"
+            }, 
+            {
+                "id": "ITEM-5"
+            }, 
+            {
+                "id": "ITEM-6"
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<===== CITATIONS =====<<
 

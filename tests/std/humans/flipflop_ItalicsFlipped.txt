@@ -32,16 +32,22 @@ citation
 
 >>===== CITATIONS =====>>
 [
-    [
-        {
-            "id": "ITEM-1"
-        }
-    ], 
-    [
-        {
-            "id": "ITEM-2"
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1"
+            }
+        ], 
+        "properties": {}
+    }, 
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-2"
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<===== CITATIONS =====<<
 

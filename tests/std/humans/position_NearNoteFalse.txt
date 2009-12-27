@@ -33,12 +33,15 @@ Note is not near.
 
 >>===== CITATIONS =====>>
 [
-    [
-        {
-            "id": "ITEM-1", 
-            "note_distance": 10
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1", 
+                "note_distance": 10
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<===== CITATIONS =====<<
 

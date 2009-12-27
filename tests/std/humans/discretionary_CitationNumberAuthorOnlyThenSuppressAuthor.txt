@@ -34,23 +34,32 @@ Reference [1]
 
 >>== CITATIONS ==>>
 [
-    [
-        {
-            "author-only": 1, 
-            "id": "ITEM-1"
-        }
-    ], 
-    [
-        {
-            "id": "ITEM-1", 
-            "suppress-author": 1
-        }
-    ], 
-    [
-        {
-            "id": "ITEM-2"
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "author-only": 1, 
+                "id": "ITEM-1"
+            }
+        ], 
+        "properties": {}
+    }, 
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1", 
+                "suppress-author": 1
+            }
+        ], 
+        "properties": {}
+    }, 
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-2"
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<== CITATIONS ==<<
 

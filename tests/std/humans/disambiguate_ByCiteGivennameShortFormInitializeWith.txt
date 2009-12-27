@@ -61,27 +61,36 @@ Smith; Smith
 
 >>===== CITATIONS =====>>
 [
-    [
-        {
-            "id": "ITEM-1"
-        }
-    ], 
-    [
-        {
-            "id": "ITEM-2"
-        }, 
-        {
-            "id": "ITEM-3"
-        }
-    ], 
-    [
-        {
-            "id": "ITEM-4"
-        }, 
-        {
-            "id": "ITEM-5"
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1"
+            }
+        ], 
+        "properties": {}
+    }, 
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-2"
+            }, 
+            {
+                "id": "ITEM-3"
+            }
+        ], 
+        "properties": {}
+    }, 
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-4"
+            }, 
+            {
+                "id": "ITEM-5"
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<===== CITATIONS =====<<
 

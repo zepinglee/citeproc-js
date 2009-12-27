@@ -23,47 +23,50 @@
     "bibentries": false, 
     "bibsection": false, 
     "citations": [
-        [
-            {
-                "id": "ambigs-1"
-            }, 
-            {
-                "id": "ambigs-2"
-            }, 
-            {
-                "id": "ambigs-3"
-            }, 
-            {
-                "id": "ambigs-4"
-            }, 
-            {
-                "id": "ambigs-5"
-            }, 
-            {
-                "id": "ambigs-6"
-            }, 
-            {
-                "id": "ambigs-7"
-            }, 
-            {
-                "id": "ambigs-8"
-            }, 
-            {
-                "id": "ambigs-9"
-            }, 
-            {
-                "id": "ambigs-10"
-            }, 
-            {
-                "id": "ambigs-11"
-            }, 
-            {
-                "id": "ambigs-12"
-            }, 
-            {
-                "id": "ambigs-13"
-            }
-        ]
+        {
+            "citationItems": [
+                {
+                    "id": "ambigs-1"
+                }, 
+                {
+                    "id": "ambigs-2"
+                }, 
+                {
+                    "id": "ambigs-3"
+                }, 
+                {
+                    "id": "ambigs-4"
+                }, 
+                {
+                    "id": "ambigs-5"
+                }, 
+                {
+                    "id": "ambigs-6"
+                }, 
+                {
+                    "id": "ambigs-7"
+                }, 
+                {
+                    "id": "ambigs-8"
+                }, 
+                {
+                    "id": "ambigs-9"
+                }, 
+                {
+                    "id": "ambigs-10"
+                }, 
+                {
+                    "id": "ambigs-11"
+                }, 
+                {
+                    "id": "ambigs-12"
+                }, 
+                {
+                    "id": "ambigs-13"
+                }
+            ], 
+            "properties": {}
+        }
     ], 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <macro name=\"date\">\n    <date variable=\"issued\">\n      <date-part name=\"year\" />\n    </date>\n    <text suffix=\"!\" variable=\"year-suffix\" />\n  </macro>\n  <citation \n         disambiguate-add-year-suffix=\"true\">\n    <layout delimiter=\"; \">\n      <text macro=\"date\" />\n    </layout>\n  </citation>\n  <bibliography>\n    <sort>\n      <key variable=\"issued\" />\n      <key variable=\"title\" />\n    </sort>\n    <layout>\n      <text value=\"Ignore me\" />\n    </layout>\n  </bibliography>\n</style>", 
     "input": [

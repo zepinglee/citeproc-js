@@ -32,16 +32,22 @@ ninth
 
 >>== CITATIONS ==>>
 [
-    [
-        {
-            "id": "item-1"
-        }
-    ], 
-    [
-        {
-            "id": "item-2"
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "id": "item-1"
+            }
+        ], 
+        "properties": {}
+    }, 
+    {
+        "citationItems": [
+            {
+                "id": "item-2"
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<== CITATIONS ==<<
 

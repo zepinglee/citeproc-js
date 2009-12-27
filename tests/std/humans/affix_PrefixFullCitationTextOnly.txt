@@ -58,12 +58,15 @@ citation
 
 >>===== CITATIONS ====>>
 [
-    [
-        {
-            "id": "ITEM-1", 
-            "prefix": "As written in"
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1", 
+                "prefix": "As written in"
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<===== CITATIONS ====<<
 

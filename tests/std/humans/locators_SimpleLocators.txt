@@ -33,18 +33,21 @@ Doe, Book A, 2000, p. 100; Roe, Book B, 2001, chap. 200.
 
 >>===== CITATIONS =====>>
 [
-    [
-        {
-            "id": "ITEM-1", 
-            "label": "page", 
-            "locator": "100"
-        }, 
-        {
-            "id": "ITEM-2", 
-            "label": "chapter", 
-            "locator": "200"
-        }
-    ]
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1", 
+                "label": "page", 
+                "locator": "100"
+            }, 
+            {
+                "id": "ITEM-2", 
+                "label": "chapter", 
+                "locator": "200"
+            }
+        ], 
+        "properties": {}
+    }
 ]
 <<===== CITATIONS =====<<
 
