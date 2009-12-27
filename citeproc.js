@@ -199,7 +199,6 @@ CSL.Output.Queue.prototype.mergeTokenStrings = function(base,modifier){
 	};
 	return ret;
 }
-// Store a new output format token based on another
 CSL.Output.Queue.prototype.addToken = function(name,modifier,token){
 	var newtok = new CSL.Token("output");
 	if ("string" == typeof token){
@@ -216,9 +215,6 @@ CSL.Output.Queue.prototype.addToken = function(name,modifier,token){
 	}
 	this.formats.value()[name] = newtok;
 };
-//
-// newFormat adds a new bundle of formatting tokens to
-// the queue's internal stack of such bundles
 CSL.Output.Queue.prototype.pushFormats = function(tokenstore){
 	if (!tokenstore){
 		tokenstore = new Object();
@@ -239,21 +235,15 @@ CSL.Output.Queue.prototype.endTag = function(){
 	this.closeLevel();
 	this.popFormats();
 }
-//
-// newlevel adds a new blob object to the end of the current
-// list, and adjusts the current pointer so that subsequent
-// appends are made to blob list of the new object.
 CSL.Output.Queue.prototype.openLevel = function(token){
 	if (!this.formats.value()[token]){
 		throw "CSL processor error: call to nonexistent format token \""+token+"\"";
 	}
 	var blob = new CSL.Blob(this.formats.value()[token]);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
-		// this.state.tmp.offset_characters += blob.strings.prefix.length;
 		this.state.tmp.offset_characters += blob.strings.prefix;
 	}
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length){
-		// this.state.tmp.offset_characters += blob.strings.suffix.length;
 		this.state.tmp.offset_characters += blob.strings.suffix;
 	}
 	var curr = this.current.value();
@@ -263,10 +253,6 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 CSL.Output.Queue.prototype.closeLevel = function(name){
 	this.current.pop();
 }
-//
-// append does the same thing as newlevel, except
-// that the blob it pushes has text content,
-// and the current pointer is not moved after the push.
 CSL.Output.Queue.prototype.append = function(str,tokname){
 	if ("undefined" == typeof str){
 		return;
@@ -319,37 +305,14 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	if ("string" == typeof str){
 		curr.push( blob );
 		if (blob.strings["text-case"]){
-			//
-			// This one is _particularly_ hard to follow.  It's not obvious,
-			// but the blob already contains the input string at this
-			// point, as blob.blobs -- it's a terminal node, as it were.
-			// The str variable also contains the input string, but
-			// that copy is not used for onward processing.  We have to
-			// apply our changes to the blob copy.
-			//
 			blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
 		};
 		this.state.fun.flipflopper.init(str,blob);
-		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
 		this.state.fun.flipflopper.processTags();
 	} else {
 		curr.push( str );
 	}
 }
-//
-// Maybe the way to do this is to take it by layers, and
-// analyze a FLAT list of blobs returned during recursive
-// execution.  If the list is all numbers and there is no
-// group decor, don't touch it.  If it ends in numbers,
-// set the group delimiter on the first in the series,
-// and join the strings with the group delimiter.  If it
-// has numbers followed by strings, render each number
-// in place, and join with the group delimiter.  Return
-// the mixed flat list, and recurse upward.
-//
-// That sort of cascade should work, and should be more
-// easily comprehensible than this mess.
-//
 CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 	var blobs = myblobs.slice();
 	var ret = new Array();
@@ -374,16 +337,11 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 			} else if (blobjr.blobs){
 				last_str = blobjr.blobs;
 			};
-			//var last_char = last_str[(last_str.length-1)];
 			var last_char = last_str.slice(-1);
 			if ("number" == typeof blobjr.num){
 				ret.push(blobjr);
 				blob_last_chars.push(last_char);
 			} else if (blobjr.blobs){
-				// skip empty strings!!!!!!!!!!!!
-				//
-				// text_escape is applied by flipflopper.
-				//
 				var b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations){
 					for each (var params in blobjr.decorations){
@@ -394,17 +352,9 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
 				    use_suffix = use_suffix.slice(1);
 				}
-				//
-				// Handle punctuation/quote swapping for suffix.
-				//
 				var qres = this.swapQuotePunctuation(b,use_suffix);
 				b = qres[0];
 				use_suffix = qres[1];
-				//
-				// because we will rip out portions of the output
-				// queue before rendering, group wrappers need
-				// to produce no output if they are found to be
-				// empty.
 				if(b && b.length){
 					b = blobjr.strings.prefix + b + use_suffix;
 					ret.push(b);
@@ -416,7 +366,6 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 			var addtoret = res[0];
 			ret = ret.concat(addtoret);
 			blob_last_chars = blob_last_chars.concat(res[1]);
-			//blob_last_chars = res[1];
 		} else {
 			continue;
 		}
@@ -439,17 +388,11 @@ CSL.Output.Queue.prototype.string = function(state,myblobs,blob){
 				blobs_start = state.fun.decorate[params[0]][params[1]](state,blobs_start);
 			}
 		}
-		//
-		// XXXX: cut-and-paste warning.  same as a code block above.
-		//
 		var b = blobs_start;
 		var use_suffix = blob.strings.suffix;
 		if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == "."){
 			use_suffix = use_suffix.slice(1);
 		}
-		//
-		// Handle punctuation/quote swapping for suffix.
-		//
 		var qres = this.swapQuotePunctuation(b,use_suffix);
 		b = qres[0];
 		if(b && b.length){
@@ -515,20 +458,9 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			use_delim = delim;
 		}
 		if (blob && "string" == typeof blob){
-			//throw "Attempt to render string as rangeable blob"
 			if (use_delim && blob_last_chars[(i-1)] == use_delim[0]) {
-				//
-				// Something for posterity, at the end of a remarkably
-				// unproductive day.
-				//
-				//CSL.debug("  ####################################################");
-				//CSL.debug("  ######################## EUREKA ####################");
-				//CSL.debug("  ####################################################");
 				use_delim = use_delim.slice(1);
 			};
-			//
-			// Handle punctuation/quote swapping for delimiter joins.
-			//
 			var res = this.swapQuotePunctuation(ret,use_delim);
 			ret = res[0];
 			use_delim = res[1];
@@ -536,8 +468,6 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			ret += blob;
 			ret_last_char = blob_last_chars.slice(-1);
 		} else if (blob.status != CSL.SUPPRESS){
-			// CSL.debug("doing rangeable blob");
-			//var str = blob.blobs;
 			var str = blob.formatter.format(blob.num);
 			if (blob.strings["text-case"]){
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state,str);
@@ -547,9 +477,7 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 					str = state.fun.decorate[params[0]][params[1]](state,str);
 				};
 			};
-			//if (!suppress_decor){
 				str = blob.strings.prefix + str + blob.strings.suffix;
-			//}
 			if (blob.status == CSL.END){
 				ret += blob.range_prefix;
 			} else if (blob.status == CSL.SUCCESSOR){
@@ -558,7 +486,6 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 				ret += blob.splice_prefix;
 			};
 			ret += str;
-			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 			ret_last_char = blob_last_chars.slice(-1);
 		};
 	};
@@ -618,11 +545,6 @@ CSL.localeResolve = function(langstr){
 	ret.bare = langlst[0];
 	return ret;
 };
-//
-// XXXXX: Got it.  The locales objects need to be reorganized,
-// with a top-level local specifier, and terms, opts, dates
-// below.
-//
 CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 	lang_in = lang_in.replace("_","-");
 	lang_out = lang_out.replace("_","-");
@@ -636,13 +558,7 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 	if (sys.xml.nodeNameIs(myxml,'locale')){
 		locale = myxml;
 	} else {
-		//
-		// Xml: get a list of all "locale" nodes
-		//
 		for each (var blob in sys.xml.getNodesByName(myxml,"locale")){
-			//
-			// Xml: get locale xml:lang
-			//
 			if (sys.xml.getAttributeValue(blob,'lang','xml') == lang_in){
 				locale = blob;
 				break;
@@ -650,55 +566,25 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 		}
 	}
 	for each (var term in sys.xml.getNodesByName(locale,'term')){
-		//
-		// Xml: get string value of attribute
-		//
 		var termname = sys.xml.getAttributeValue(term,'name');
 		if ("undefined" == typeof this.locale[lang_out].terms[termname]){
 			this.locale[lang_out].terms[termname] = new Object();
 		};
 		var form = "long";
-		//
-		// Xml: get string value of attribute
-		//
 		if (sys.xml.getAttributeValue(term,'form')){
 			form = sys.xml.getAttributeValue(term,'form');
 		}
-		//
-		// Xml: test of existence of node
-		//
 		if (sys.xml.getNodesByName(term,'multiple').length()){
 			this.locale[lang_out].terms[termname][form] = new Array();
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
 			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][0] = sys.xml.getNodeValue(term,'single');
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
 			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][1] = sys.xml.getNodeValue(term,'multiple');
 		} else {
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
 			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form] = sys.xml.getNodeValue(term);
 		}
 	}
 	for each (var styleopts in sys.xml.getNodesByName(locale,'style-options')){
-		//
-		// Xml: get list of attributes on a node
-		//
 		for each (var attr in sys.xml.attributes(styleopts) ) {
-			//
-			// Xml: get string value of attribute
-			//
 			if (sys.xml.getNodeValue(attr) == "true"){
-				//
-				// Xml:	get local name of attribute
-				//
 				this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
 			} else {
 				this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
@@ -706,9 +592,6 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 		};
 	};
 	for each (var date in sys.xml.getNodesByName(locale,'date')){
-		//
-		// Xml: get string value of attribute
-		//
 		this.locale[lang_out].dates[ sys.xml.getAttributeValue( date, "form") ] = date;
 	};
 };
@@ -799,8 +682,6 @@ CSL.cloneAmbigConfig = function(config){
 	for (var i in config["givens"]){
 		var param = new Array();
 		for (var j in config["givens"][i]){
-			// condition at line 312 of disambiguate.js protects against negative
-			// values of j
 			param.push(config["givens"][i][j]);
 		};
 		ret["givens"].push(param);
@@ -842,9 +723,7 @@ CSL.expandMacro = function(macro_key_token){
 		start_token.strings[i] = macro_key_token.strings[i];
 	}
 	var newoutput = function(state,Item){
-		//state.output.openLevel(this);
 		state.output.startTag("group",this);
-		//state.tmp.decorations.push(this.decorations);
 	};
 	start_token["execs"].push(newoutput);
 	this[this.build.area].tokens.push(start_token);
@@ -856,12 +735,7 @@ CSL.expandMacro = function(macro_key_token){
 	CSL.buildStyle.call(this,navi);
 	var end_token = new CSL.Token("group",CSL.END);
 	var mergeoutput = function(state,Item){
-		//
-		// rendering happens inside the
-		// merge method, by applying decorations to
-		// each token to be merged.
 		state.output.endTag();
-		//state.output.closeLevel();
 	};
 	end_token["execs"].push(mergeoutput);
 	this[this.build.area].tokens.push(end_token);
@@ -1016,11 +890,9 @@ CSL.Engine.prototype._getNavi.prototype.getkids = function(){
 	var currnode = this.nodeList[this.depth][1][this.nodeList[this.depth][0]];
 	var sneakpeek = this.sys.xml.children(currnode);
 	if (this.sys.xml.numberofnodes(sneakpeek) == 0){
-		// singleton, process immediately
 		CSL.XmlToToken.call(currnode,this.state,CSL.SINGLETON);
 		return false;
 	} else {
-		// if first node of a span, process it, then descend
 		CSL.XmlToToken.call(currnode,this.state,CSL.START);
 		this.depth += 1;
 		this.nodeList.push([0,sneakpeek]);
@@ -1125,7 +997,6 @@ CSL.Engine.prototype.configureTokenLists = function(){
 				token.dateparts = dateparts;
 			}
 			token["next"] = (pos+1);
-			//CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
 			if (token.name && CSL.Node[token.name].configure){
 				CSL.Node[token.name].configure.call(token,this,pos);
 			}
@@ -1166,9 +1037,6 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 		mode = "locale-sort";
 	}
 	for (var name in names){
-		//
-		// clone the name object so we can trample on the content.
-		//
 		var newname = new Object();
 		for (var i in names[name]){
 			newname[i] = names[name][i];
@@ -1178,11 +1046,6 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 		for each (var part in ["literal", "family"]){
 			var p = newname[part];
 			if (p){
-				//
-				// Add a static-ordering toggle for non-roman, non-Cyrillic
-				// names.  Operate only on primary names (those that do not
-				// have a language subtag).
-				//
 				if (newname[part].length && newname[part][0] != ":"){
 					if (newname["static-ordering"]){
 						use_static_ordering = true;
@@ -1205,9 +1068,6 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 					};
 					if (!updateme){
 						if (this.opt.lang){
-							//
-							// Fallback to style default language.
-							//
 							if (this.opt.lang.indexOf("-") > -1) {
 								var newopt = this.opt.lang.slice(0,this.opt.lang.indexOf("-"));
 							} else {
@@ -1229,10 +1089,6 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 			ret.push(newname);
 			pos += 1;
 		} else if (updateme){
-			//
-			// A true update rather than an overwrite
-			// of the pointer.
-			//
 			for (var i in newname){
 				ret[pos][i] = newname[i];
 			}
@@ -1358,28 +1214,16 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 	}
 	var suff = "";
 	for each (delim in delims){
-		//
-		// Process each element ...
-		//
 		var date = ret.slice(delim[0],delim[1]);
 		for each (element in date){
-			//
-			// If it's a numeric date, process it.
-			//
 			if (element.indexOf(date_delim) > -1) {
 				this.parseNumericDate(thedate,date_delim,suff,element);
 				continue;
 			}
-			//
-			// If it's an obvious year, record it.
-			//
 			if (element.match(/[0-9]{4}/)){
 				thedate["year"+suff] = element.replace(/^0*/,"");
 				continue;
 			}
-			//
-			// If it's a month, record it.
-			//
 			var breakme = false;
 			for (pos in daterexes){
 				if (element.toLocaleLowerCase().match(daterexes[pos])){
@@ -1391,17 +1235,9 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 			if (breakme){
 				continue;
 			}
-			//
-			// If it's a number, make a note of it
-			//
 			if (element.match(/^[0-9]+$/)){
 				number = parseInt(element,10);
 			}
-			//
-			// If it's a BC or AD marker, make a year of
-			// any note.  Separate, reverse the sign of the year
-			// if it's BC.
-			//
 			if (element.toLocaleLowerCase().match(/^bc.*/) && number){
 				thedate["year"+suff] = ""+(number*-1);
 				number = "";
@@ -1412,9 +1248,6 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 				number = "";
 				continue;
 			}
-			//
-			// If it's a season, record it.
-			//
 			breakme = false;
 			for (pos in seasonrexes){
 				if (element.toLocaleLowerCase().match(seasonrexes[pos])){
@@ -1426,34 +1259,19 @@ CSL.Engine.prototype.dateParseRaw = function(txt){
 			if (breakme){
 				continue;
 			}
-			//
-			// If it's a fuzzy marker, record it.
-			//
 			if (element == "~" || element == "?" || element == "c" || element.match(/cir.*/)){
 				thedate.fuzzy = ""+1;
 				continue;
 			}
-			//
-			// If it's cruft, make a note of it
-			//
 			if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate["season"+suff]){
 				note = element;
 				continue;
 			}
 		}
-		//
-		// If at the end of the string there's still a note
-		// hanging around, make a day of it.
-		//
 		if (number){
 			thedate["day"+suff] = number;
 			number = "";
 		}
-		//
-		// If at the end of the string there's cruft lying
-		// around, and the season field is empty, put the
-		// cruft there.
-		//
 		if (note && !thedate["season"+suff]){
 			thedate["season"+suff] = note;
 			note = "";
@@ -1626,10 +1444,6 @@ CSL.Engine.Configure = function (){
 	this.succeed = new Array();
 };
 CSL.Engine.Citation = function (state){
-	 // Citation options area.
-	 // Holds a mixture of persistent and ephemeral
-	 // options and scratch data used during processing of
-	 // a citation.</p>
 	this.opt = new Object();
 	this.tokens = new Array();
 	this.srt = new CSL.Registry.Comparifier(state,"citation_sort");
@@ -1772,9 +1586,6 @@ CSL.getBibliographyEntries = function (bibsection){
 		if (bibsection){
 			var include = true;
 			if (bibsection.include){
-				//
-				// Opt-in: these are OR-ed.
-				//
 				include = false;
 				for each (spec in bibsection.include){
 					if (eval_spec(spec.value,item[spec.field])){
@@ -1783,9 +1594,6 @@ CSL.getBibliographyEntries = function (bibsection){
 					}
 				}
 			} else if (bibsection.exclude){
-				//
-				// Opt-out: these are also OR-ed.
-				//
 				var anymatch = false;
 				for each (spec in bibsection.exclude){
 					if (eval_spec(spec.value,item[spec.field])){
@@ -1797,9 +1605,6 @@ CSL.getBibliographyEntries = function (bibsection){
 					include = false;
 				}
 			} else if (bibsection.select){
-				//
-				// Multiple condition opt-in: these are AND-ed.
-				//
 				include = false;
 				var allmatch = true;
 				for each (spec in bibsection.select){
@@ -1812,9 +1617,6 @@ CSL.getBibliographyEntries = function (bibsection){
 				}
 			}
 			if (bibsection.quash){
-				//
-				// Stop criteria: These are AND-ed.
-				//
 				var allmatch = true;
 				for each (spec in bibsection.quash){
 					if (!eval_spec(spec.value,item[spec.field])){
@@ -1910,11 +1712,6 @@ CSL.getCitationCluster = function (inputList,citation){
 		if (pos == (inputList.length-1)){
 			this.parallel.ComposeSet();
 		}
-		//
-		// XXXXX: capture these parameters to an array, which
-		// will be of the same length as this.output.queue,
-		// corresponding to each element.
-		//
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this,last_collapsed);
 		if (Item["author-only"]){
 			this.tmp.suppress_decorations = true;
@@ -1932,8 +1729,6 @@ CSL.getCitationCluster = function (inputList,citation){
 		this.tmp.have_collapsed = myparams[qpos].have_collapsed;
 		var composite = this.output.string(this,this.output.queue);
 		this.tmp.suppress_decorations = false;
-		// meaningless assignment
-		// this.tmp.handle_ranges = false;
 		if (Item["author-only"]){
 			return composite;
 		}
@@ -2096,59 +1891,23 @@ CSL.Node.date = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
-			//
-			// If form is set, the date form comes from the locale, and date-part
-			// will just tinker with the formatting.
-			//
 			if (this.strings.form){
 				if (state.getDate(this.strings.form)){
-					//
-					// Xml: Copy a node
-					//
 					var datexml = state.sys.xml.nodeCopy( state.getDate(this.strings.form) );
-					//
-					// Xml: Set attribute
-					//
 					state.sys.xml.setAttribute( datexml, 'variable', this.variables[0] );
 					if (this.strings.prefix){
-						//
-						// Xml: Set attribute
-						//
 						state.sys.xml.setAttribute( datexml, "prefix", this.strings.prefix);
 					}
 					if (this.strings.suffix){
-						//
-						// Xml: Set attribute
-						//
 						state.sys.xml.setAttribute( datexml, "suffix", this.strings.suffix);
 					}
-					//
-					// Xml: Delete attribute
-					//
 					state.sys.xml.deleteAttribute(datexml,'form');
 					if (this.strings["date-parts"] == "year"){
-						//
-						// Xml: Find one node by attribute and delete
-						//
 						state.sys.xml.deleteNodeByNameAttribute(datexml,'month');
-						//
-						// Xml: Find one node by attribute and delete
-						//
 						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
 					} else if (this.strings["date-parts"] == "year-month"){
-						//
-						// Xml: Find one node by attribute and delete
-						//
 						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
 					}
-					//
-					// pass this xml object through to state.build for
-					// post processing by date-part and in END or at the finish of
-					// SINGLETON.  Delete after processing.
-					//
-					//
-					// Xml: Copy node
-					//
 					state.build.datexml = state.sys.xml.nodeCopy( datexml );
 				};
 			} else {
@@ -2166,16 +1925,6 @@ CSL.Node.date = new function(){
 						} else if (date_obj["date-parts"]) {
 							state.tmp.date_object = state.dateParseArray( date_obj );
 						}
-						//
-						// Call a function here to analyze the
-						// data and set the name of the date-part that
-						// should collapse for this range, if any.
-						//
-						// (1) build a filtered list, in y-m-d order,
-						// consisting only of items that are (a) in the
-						// date-parts and (b) in the *_end data.
-						// (note to self: remember that season is a
-						// fallback var when month and day are empty)
 						for each (var part in this.dateparts){
 							if ("undefined" != typeof state.tmp.date_object[(part+"_end")]){
 								dp.push(part);
@@ -2183,10 +1932,6 @@ CSL.Node.date = new function(){
 								dp.push(part);
 							};
 						};
-						//
-						// (2) Reverse the list and step through in
-						// reverse order, popping each item if the
-						// primary and *_end data match.
 						var mypos = -1;
 						for (var pos=(dp.length-1); pos>-1; pos += -1){
 							var part = dp[pos];
@@ -2197,25 +1942,7 @@ CSL.Node.date = new function(){
 								break;
 							};
 						};
-						//
-						// (3) When finished, the first item in the
-						// list, if any, is the date-part where
-						// the collapse should occur.
 						state.tmp.date_collapse_at = dp.slice(0,(mypos+1));
-						//
-						// The collapse itself will be done by appending
-						// string output for the date, less suffix,
-						// placing a delimiter on output, then then
-						// doing the *_end of the range, dropping only
-						// the prefix.  That should give us concise expressions
-						// of ranges.
-						//
-						// Numeric dates should not collapse, though,
-						// and should probably use a slash delimiter.
-						// Scope for configurability will remain (all over
-						// the place), but this will do to get this feature
-						// started.
-						//
 					} else {
 						state.tmp.date_object = false;
 					}
@@ -2224,10 +1951,6 @@ CSL.Node.date = new function(){
 				var newoutput = function(state,Item){
 					state.output.startTag("date",this);
 					var tok = new CSL.Token("date-part",CSL.SINGLETON);
-					//
-					// if present, sneak in a literal here and quash the remainder
-					// of output from this date.
-					//
 					if (state.tmp.date_object["literal"]){
 						state.parallel.AppendToVariable(state.tmp.date_object["literal"]);
 						state.output.append(state.tmp.date_object["literal"],tok);
@@ -2240,9 +1963,6 @@ CSL.Node.date = new function(){
 		};
 		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
 			if (this.strings.form && state.build.datexml){
-				// Apparently this is all that is required to compile
-				// the XML chunk into the style.  Same as for macros.
-				//
 				var datexml = state.build.datexml;
 				delete state.build.datexml;
 				var navi = new state._getNavi( state, datexml );
@@ -2269,24 +1989,15 @@ CSL.Node["date-part"] = new function(){
 		}
 		if (state.build.datexml){
 			for each (var decor in this.decorations){
-				//
-				// Xml: find one node by attribute value and set attribute value
-				//
 				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,decor[0],decor[1]);
 			};
 			for (var attr in this.strings){
 				if (attr == "name" || attr == "prefix" || attr == "suffix"){
 					continue;
 				};
-				//
-				// Xml: find one node by attribute value and set attribute value
-				//
 				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,attr,this.strings[attr]);
 			}
 		} else {
-			//
-			// Set delimiter here, if poss.
-			//
 			var render_date_part = function(state,Item){
 				var value = "";
 				var value_end = "";
@@ -2326,7 +2037,6 @@ CSL.Node["date-part"] = new function(){
 						}
 					};
 					if (state.tmp.date_collapse_at.length){
-						//state.output.startTag(this.strings.name,this);
 						var ready = true;
 						for each (var item in state.tmp.date_collapse_at){
 							if (state.tmp.donesies.indexOf(item) == -1){
@@ -2349,9 +2059,6 @@ CSL.Node["date-part"] = new function(){
 						} else {
 							state.output.append(value,this);
 							if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
-								//
-								// Use ghost dateput queue
-								//
 								if (value_end != "0"){
 									state.dateput.append(value_end,this);
 								}
@@ -2366,11 +2073,7 @@ CSL.Node["date-part"] = new function(){
 					if (ad){
 						state.output.append(ad);
 					}
-					//state.output.endTag();
 				} else if ("month" == this.strings.name) {
-					//
-					// No value for this target variable
-					//
 					if (state.tmp.date_object["season"]){
 						value = ""+state.tmp.date_object["season"];
 						if (value && value.match(/^[1-4]$/)){
@@ -2404,15 +2107,6 @@ CSL.Node["else-if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-			//for each (var variable in this.variables){
-			//	var func = function(state,Item){
-			//		if (Item[variable]){
-			//			return true;
-			//		}
-			//		return false;
-			//	};
-			//	this["tests"].push(func);
-			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item){
@@ -2426,8 +2120,6 @@ CSL.Node["else-if"] = new function(){
 				this.tests.push(func);
 			}
 			if (! this.evaluator){
-				//
-				// cut and paste of "any"
 				this.evaluator = state.fun.match.any;
 			};
 		}
@@ -2442,12 +2134,10 @@ CSL.Node["else-if"] = new function(){
 	}
 	function configure(state,pos){
 		if (this.tokentype == CSL.START){
-			// jump index on failure
 			this["fail"] = state.configure["fail"].slice(-1)[0];
 			this["succeed"] = this["next"];
 			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
 		} else {
-			// jump index on success
 			this["succeed"] = state.configure["succeed"].slice(-1)[0];
 			this["fail"] = this["next"];
 		}
@@ -2489,8 +2179,6 @@ CSL.Node.group = new function(){
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);
 			};
-			//
-			// Paranoia.  Assure that this init function is the first executed.
 			var execs = new Array();
 			execs.push(newoutput);
 			this.execs = execs.concat(this.execs);
@@ -2505,19 +2193,12 @@ CSL.Node.group = new function(){
 					state.output.clearlevel();
 				}
 				state.tmp.term_sibling.pop();
-				//
-				// Heals group quashing glitch with nested groups.
-				//
 				if (flag && state.tmp.term_sibling.mystack.length > 1){
 					state.tmp.term_sibling.replace(true);
 				}
 			};
 			this["execs"].push(quashnonfields);
 			var mergeoutput = function(state,Item){
-				//
-				// rendering happens inside the
-				// merge method, by applying decorations to
-				// each token to be merged.
 				state.output.endTag();
 			};
 			this["execs"].push(mergeoutput);
@@ -2536,18 +2217,6 @@ CSL.Node["if"] = new function(){
 	this.configure = configure;
 	function build (state,target){
 		if (this.tokentype == CSL.START){
-			//for each (var variable in this.variables){
-			//	CSL.debug("outside function: "+variable);
-			//	var func = function(state,Item){
-			//		CSL.debug("inside function: "+variable);
-			//		if (Item[variable]){
-			//			CSL.debug("found: "+variable);
-			//			return true;
-			//		}
-			//		return false;
-			//	};
-			//	this["tests"].push(func);
-			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item){
@@ -2577,8 +2246,6 @@ CSL.Node["if"] = new function(){
 				this.tests.push(func);
 			};
 			if (! this.evaluator){
-				//
-				// cut and paste of "any"
 				this.evaluator = state.fun.match.any;
 			};
 		}
@@ -2593,11 +2260,9 @@ CSL.Node["if"] = new function(){
 	}
 	function configure(state,pos){
 		if (this.tokentype == CSL.START){
-			// jump index on failure
 			this["fail"] = state.configure["fail"].slice(-1)[0];
 			this["succeed"] = this["next"];
 		} else {
-			// jump index on success
 			this["succeed"] = state.configure["succeed"].slice(-1)[0];
 			this["fail"] = this["next"];
 		}
@@ -2683,25 +2348,17 @@ CSL.Node.key = new function(){
 		};
 		start_key["execs"].push(et_al_init);
 		target.push(start_key);
-		//
-		// ops to initialize the key's output structures
 		if (this.variables.length){
 			var variable = this.variables[0];
 			if (CSL.CREATORS.indexOf(variable) > -1) {
-				//
-				// Start tag
 				var names_start_token = new CSL.Token("names",CSL.START);
 				names_start_token.tokentype = CSL.START;
 				names_start_token.variables = this.variables;
 				CSL.Node.names.build.call(names_start_token,state,target);
-				//
-				// Middle tag
 				var name_token = new CSL.Token("name",CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
 				CSL.Node.name.build.call(name_token,state,target);
-				//
-				// End tag
 				var names_end_token = new CSL.Token("names",CSL.END);
 				names_end_token.tokentype = CSL.END;
 				CSL.Node.names.build.call(names_end_token,state,target);
@@ -2745,16 +2402,10 @@ CSL.Node.key = new function(){
 				target.push(single_text);
 			};
 		} else {
-			//
-			// if it's not a variable, it's a macro
 			var token = new CSL.Token("text",CSL.SINGLETON);
 			token.postponed_macro = this.postponed_macro;
 			CSL.expandMacro.call(state,token);
 		}
-		//
-		// ops to output the key string result to an array go
-		// on the closing "key" tag before it is pushed.
-		// Do not close the level.
 		var end_key = new CSL.Token("key",CSL.END);
 		var store_key_for_use = function(state,Item){
 			var keystring = state.output.string(state,state.output.queue);
@@ -2769,7 +2420,6 @@ CSL.Node.key = new function(){
 		};
 		end_key["execs"].push(store_key_for_use);
 		var reset_key_params = function(state,Item){
-			// state.tmp.name_quash = new Object();
 			state.tmp["et-al-min"] = false;
 			state.tmp["et-al-use-first"] = false;
 			state.tmp.sort_key_flag = false;
@@ -2827,17 +2477,12 @@ CSL.Node.layout = new function(){
 	function build(state,target){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
-			//
-			// done_vars is used to prevent the repeated
-			// rendering of variables
 			var initialize_done_vars = function(state,Item){
 				state.tmp.done_vars = new Array();
-				//CSL.debug("== init rendered_name ==");
 				state.tmp.rendered_name = false;
 			};
 			this.execs.push(initialize_done_vars);
 			var set_opt_delimiter = function(state,Item){
-				// just in case
 				state.tmp.sort_key_flag = false;
 				state[state.tmp.area].opt.delimiter = "";
 				if (this.strings.delimiter){
@@ -2914,21 +2559,6 @@ CSL.Node.name = new function(){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			state.fixOpt(this,"name-delimiter","delimiter");
 			state.fixOpt(this,"name-form","form");
-			//
-			// Okay, there's a problem with these.  Each of these is set
-			// on the name object, but must be accessible at the closing of
-			// the enclosing names object.  How did I do this before?
-			//
-			// Boosting to tmp seems to be the current strategy, and although
-			// that's very messy, it does work.  It would be simple enough
-			// to extend the function applied to initialize-with below (which
-			// tests okay) to the others.  Probably that's the best short-term
-			// solution.
-			//
-			// The boost to tmp could be a boost to build, instead.  That would
-			// limit the jiggery-pokery and overhead to the compile phase.
-			// Might save a few trees, in aggregate.
-			//
 			state.fixOpt(this,"and","and");
 			state.fixOpt(this,"delimiter-precedes-last","delimiter-precedes-last");
 			state.fixOpt(this,"initialize-with","initialize-with");
@@ -2974,10 +2604,6 @@ CSL.Node.name = new function(){
 				state.output.addToken("name",false,this);
 			};
 			this["execs"].push(func);
-			//var set_initialize_with = function(state,Item){
-			//	state.tmp["initialize-with"] = this.strings["initialize-with"];
-			//};
-			//this["execs"].push(set_initialize_with);
 		}
 		target.push(this);
 	};
@@ -3009,12 +2635,6 @@ CSL.Node.names = new function(){
 								rawvar = [{"literal":Item[variable]}];
 							}
 							var filtered_names = state.getNameSubFields(rawvar);
-							//
-							// Split a nameset into persons and organizations,
-							// if the institutions element is present.
-							// No idea why this was so hard to set up.
-							// Insufficient sleep, maybe.
-							//
 							var specs = new Array();
 							specs.push(["people","bogus","undefined"]);
 							if (this.strings["has-institution"]){
@@ -3074,9 +2694,6 @@ CSL.Node.names = new function(){
 				} else {
 					namesets = state.tmp.value;
 				}
-				//
-				// Normalize names for which it is requested
-				//
 				for each (var nameset in namesets){
 					if ("organizations" == nameset.species){
 						if (state.output.getToken("institution").strings.reverse){
@@ -3117,14 +2734,6 @@ CSL.Node.names = new function(){
 						continue;
 					};
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
-						//
-						// This is fine, but the naming of the comparison
-						// function is confusing.  This is just checking whether the
-						// current name is the same as the last name rendered
-						// in the last cite, and it works.  Set a toggle if the
-						// test fails, so we can avoid further suppression in the
-						// cite.
-						//
 						if (state.tmp.last_names_used.length == state.tmp.names_used.length){
 							var lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
 							var currentones = state.tmp.names_used[state.tmp.nameset_counter];
@@ -3139,29 +2748,15 @@ CSL.Node.names = new function(){
 					if (!state.tmp.disambig_request){
 						state.tmp.disambig_settings["givens"][state.tmp.nameset_counter] = new Array();
 					}
-					//
-					// Here is where we maybe truncate the list of
-					// names, to satisfy name-count and et-al constraints.
 					var display_names = nameset.names.slice();
 					if ("people" == nameset.species){
 						var sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
-						//
-						// if there is anything on name request, we assume that
-						// it was configured correctly via state.names_request
-						// by the function calling the renderer.
 						var discretionary_names_length = state.tmp["et-al-min"];
-						//
-						// the names constraint
-						//
 						var suppress_min = state.output.getToken("name").strings["suppress-min"];
 						var suppress_condition = suppress_min && display_names.length >= suppress_min;
 						if (suppress_condition){
 							continue;
 						};
-						//
-						// if rendering for display, do not honor a disambig_request
-						// to set names length below et-al-use-first
-						//
 						if (state.tmp.suppress_decorations){
 							if (state.tmp.disambig_request){
 								discretionary_names_length = state.tmp.disambig_request["names"][state.tmp.nameset_counter];
@@ -3214,51 +2809,29 @@ CSL.Node.names = new function(){
 					};
 					state.tmp.disambig_settings["names"][state.tmp.nameset_counter] = display_names.length;
 					local_count += display_names.length;
-					//
-					// "name" is the format for the outermost nesting of a nameset
-					// "inner" is a format consisting only of a delimiter, used for
-					// joining all but the last name in the set together.
 					var delim = state.output.getToken("name").strings.delimiter;
 					state.output.addToken("inner",delim);
-					//state.tmp.tokenstore["and"] = new CSL.Token("and");
 					state.output.formats.value()["name"].strings.delimiter = and_term;
 					for (var i in nameset.names){
-						//
-						// register the name in the global names disambiguation
-						// registry
 						state.registry.namereg.addname(Item.id,nameset.names[i],i);
-						//
-						// set the display mode default for givennames if required
 						if (state.tmp.sort_key_flag){
 							state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i] = 2;
 						} else if (state.tmp.disambig_request){
-							//
-							// fix a request for initials that makes no sense.
-							// can't do this in disambig, because the availability
-							// of initials is not a global parameter.
 							var val = state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i];
 							if (val == 1 && "undefined" == typeof this.strings["initialize-with"]){
 								val = 2;
 							}
 							var param = val;
-//							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
 							if (state[state.tmp.area].opt["disambiguate-add-givenname"]){
 								var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,param,state.output.getToken("name").strings.form,this.strings["initialize-with"]);
 							};
 						} else {
-							//
-							// ZZZZZ: it clicks.  here is where we will put the
-							// call to the names register, to get the floor value
-							// for an individual name.
-							//
 							var myform = state.output.getToken("name").strings.form;
 							var myinitials = this.strings["initialize-with"];
 							var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,0,myform,myinitials);
 						};
 						state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i] = param;
 					}
-					//
-					// configure label if poss
 					var label = false;
 					if (state.output.getToken("label").strings.label_position){
 						var termname;
@@ -3267,9 +2840,6 @@ CSL.Node.names = new function(){
 						} else {
 							termname = nameset.type;
 						}
-						//
-						// XXXXX: quick hack.  This should be fixed earlier.
-						//
 						if (!state.output.getToken("label").strings.form){
 							var form = "long";
 						} else {
@@ -3284,13 +2854,6 @@ CSL.Node.names = new function(){
 						}
 						label = state.getTerm(termname,form,plural);
 					};
-					//
-					// Nesting levels are opened to control joins with
-					// content at the end of the names block
-					//
-					// Gotcha.  Don't want to use startTag here, it pushes
-					// a fresh format token namespace, and we lose our pointer.]
-					// Use openLevel (and possibly addToken) instead.
 					state.output.openLevel("empty"); // for term join
 					if (label && state.output.getToken("label").strings.label_position == CSL.BEFORE){
 						state.output.append(label,"label");
@@ -3320,9 +2883,6 @@ CSL.Node.names = new function(){
 			};
 			this["execs"].push(handle_names);
 		};
-		//
-		// Looks disabled.  Delete, I guess.
-		//
 		if (this.tokentype == CSL.END && state.build.form == "count" && false){
 			state.build.form = false;
 			var output_name_count = function(state,Item){
@@ -3358,7 +2918,6 @@ CSL.Node.names = new function(){
 			CSL.Util.substituteEnd.call(this,state,target);
 		}
 	}
-	 // array containing two lists, to be run separately and joined
 	this.configure = configure;
 	function configure(state,pos){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
@@ -3373,9 +2932,6 @@ CSL.Node.number = new function(){
 	this.build = build;
 	function build(state,target){
 		CSL.Util.substituteStart.call(this,state,target);
-		//
-		// This should push a rangeable object to the queue.
-		//
 		if (this.strings.form == "roman"){
 			this.formatter = state.fun.romanizer;
 		} else if (this.strings.form == "ordinal"){
@@ -3383,11 +2939,6 @@ CSL.Node.number = new function(){
 		} else if (this.strings.form == "long-ordinal"){
 			this.formatter = state.fun.long_ordinalizer;
 		}
-		//
-		// Whether we actually stick a number object on
-		// the output queue depends on whether the field
-		// contains a pure number.
-		//
 		var push_number_or_text = function(state,Item){
 			var varname = this.variables[0];
 			state.parallel.StartVariable(this.variables[0]);
@@ -3456,9 +3007,6 @@ CSL.Node.text = new function(){
 		if (this.postponed_macro){
 			CSL.expandMacro.call(state,this);
 		} else {
-			// ...
-			//
-			// Do non-macro stuff
 			var variable = this.variables[0];
 			if (variable){
 				var func = function(state,Item){
@@ -3476,13 +3024,7 @@ CSL.Node.text = new function(){
 				plural = this.strings.plural;
 			}
 			if ("citation-number" == variable || "year-suffix" == variable || "citation-label" == variable){
-				//
-				// citation-number and year-suffix are super special,
-				// because they are rangeables, and require a completely
-				// different set of formatting parameters on the output
-				// queue.
 				if (variable == "citation-number"){
-					//this.strings.is_rangeable = true;
 					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
 						this.range_prefix = "-";
 					}
@@ -3518,16 +3060,11 @@ CSL.Node.text = new function(){
 					}
 					var func = function(state,Item){
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
-							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
 							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
 							var number = new CSL.NumericBlob(num,this);
 							var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
 							state.output.append(number,"literal");
-							//
-							// don't ask :)
-							// obviously the variable naming scheme needs
-							// a little touching up
 							var firstoutput = state.tmp.term_sibling.mystack.indexOf(true) == -1;
 							var specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
 							if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag){
@@ -3541,9 +3078,6 @@ CSL.Node.text = new function(){
 					var func = function(state,Item){
 						var label = Item["citation-label"];
 						if (!label){
-							//
-							// A shot in the dark
-							//
 							var myname = state.getTerm("references","short",0);
 							for each (var n in CSL.CREATORS){
 								if (Item[n]){
@@ -3589,12 +3123,7 @@ CSL.Node.text = new function(){
 						term = term.replace(/\./g,"");
 					};
 					var printterm = function(state,Item){
-						// capitalize the first letter of a term, if it is the
-						// first thing rendered in a citation (or if it is
-						// being rendered immediately after terminal punctuation,
-						// I guess, actually).
 						if (!state.tmp.term_predecessor){
-							//CSL.debug("Capitalize");
 							term = CSL.Output.Formatters["capitalize-first"](state,term);
 							state.tmp.term_predecessor = true;
 						};
@@ -3606,13 +3135,10 @@ CSL.Node.text = new function(){
 					state.build.plural = false;
 				} else if (this.variables.length){
 					if (this.variables[0] == "container-title" && form == "short"){
-						// Use tracking function
 						var func = state.abbrev.getOutputFunc(this,this.variables[0],"journal","journalAbbreviation");
 					} else if (this.variables[0] == "collection-title" && form == "short"){
-						// Use tracking function
 						var func = state.abbrev.getOutputFunc(this,this.variables[0],"series");
 					} else if (this.variables[0] == "authority" && form == "short"){
-						// Use tracking function
 						var func = state.abbrev.getOutputFunc(this,this.variables[0],"authority");
 					} else if (this.variables[0] == "title"){
 						if (state.build.area.slice(-5) == "_sort"){
@@ -3716,12 +3242,6 @@ CSL.Attributes["@value"] = function(state,arg){
 };
 CSL.Attributes["@name"] = function(state,arg){
 	if (this.name == "name-part") {
-		//
-		// Note that there will be multiple name-part items,
-		// and they all need to be collected before doing anything.
-		// So this must be picked up when the <name-part/>
-		// element is processed, and used as a key on an
-		// object holding the formatting attribute functions.
 		state.tmp.namepart_type = arg;
 	} else {
 		this.strings.name = arg;
@@ -3772,13 +3292,6 @@ CSL.Attributes["@variable"] = function(state,arg){
 	if ("label" == this.name && this.variables[0]){
 		state.build.term = this.variables[0];
 	} else if (["names","date","text","number"].indexOf(this.name) > -1) {
-		//
-		// An oddity of variable handling is that this.variables
-		// is actually ephemeral; the full list of variables is
-		// held in the inner var, and pushed into this.variables
-		// conditionally in order to suppress repeat renderings of
-		// the same item variable.
-		//
 		var set_variable_names = function(state,Item){
 			var variables = this.variables.slice();
 			this.variables = [];
@@ -3817,11 +3330,6 @@ CSL.Attributes["@variable"] = function(state,arg){
 					state.tmp.term_sibling.replace( false, CSL.LITERAL );
 				};
 			};
-			//if (output){
-			//	CSL.debug("Output! "+this.variables);
-			//} else {
-			//	CSL.debug("No output! "+this.variables);
-			//}
 		};
 		this.execs.push(check_for_output);
 	} else if (["if", "else-if"].indexOf(this.name) > -1){
@@ -3836,10 +3344,6 @@ CSL.Attributes["@variable"] = function(state,arg){
 						if (Item[variable].length){
 							x = true;
 						} else {
-							//
-							// this will turn true only for hash objects
-							// that have at least one attribute.
-							//
 							for (var i in Item[variable]){
 								x = true;
 								break;
@@ -4147,9 +3651,6 @@ CSL.System.Xml.E4X.prototype.attributes = function(myxml){
 	var attrs = myxml.attributes();
 	for each (var attr in attrs){
 		var key = "@"+attr.localName();
-		//
-		// Needed in rhino
-		//
 		if (key.slice(0,5) == "@e4x_"){
 			continue;
 		}
@@ -4228,17 +3729,14 @@ CSL.System.Xml.E4X.prototype.nodeNameIs = function(myxml,name){
 }
 CSL.System.Xml.E4X.prototype.makeXml = function(myxml){
 	if ("xml" == typeof myxml){
-		// print("forcing serialization of xml to fix up namespacing");
 		myxml = myxml.toXMLString();
 	};
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	if (myxml){
-		// print("deserializing xml");
 		myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
 		myxml = new XML(myxml);
 	} else {
-		// print("no xml");
 		myxml = new XML();
 	}
 	return myxml;
@@ -4319,33 +3817,6 @@ CSL.Abbrev.prototype.getOutputFunc = function(token,varname,vartype,altvar){
 		state.output.append(value,token);
 	};
 };
-//
-// XXXXX: note to self, the parallels machinery should be completely
-// disabled when sorting of citations is requested.
-//
-//
-// XXXXX: also mark the entry as "parallel" on the citation
-// object.
-//
-//
-// XXXXX: thinking forward a bit, we're going to need a means
-// of snooping and mangling delimiters.  Inter-cite delimiters
-// can be easily applied; it's just a matter of adjusting
-// this.tmp.splice_delimiter (?) on the list of attribute
-// bundles after a cite or set of cites is completed.
-// That happens in cmd_cite.js.  We also need to do two
-// things: (1) assure that volume, number, journal and
-// page are contiguous within the cite, with no intervening
-// rendered variables [done]; and (2) strip affixes to the series,
-// so that the sole splice string is the delimiter.  This
-// latter will need a walk of the output tree, but it's
-// doable.
-//
-// The advantage of doing things this way is that
-// the parallels machinery is encapsulated in a set of
-// separate functions that do not interact with cite
-// composition.
-//
 CSL.Parallel = function(){
 	this.one_set = new CSL.Stack();
 	this.all_sets = new CSL.Stack();
@@ -4417,7 +3888,6 @@ CSL.Parallel.prototype.CloseVariable = function(){
 		if (this.one_set.mystack.length > 0){
 			var prev = this.one_set.mystack[(this.one_set.mystack.length-1)];
 			if (!this.isMid(this.variable) && this.data.value != prev[this.variable].value){
-				// evaluation takes place later, at close of cite.
 				this.try_cite = false;
 				this.in_series = false;
 			};
@@ -4528,7 +3998,6 @@ CSL.Blob.prototype.push = function(blob){
 		throw "Attempt to push blob onto string object";
 	} else {
 		blob.alldecor = blob.alldecor.concat(this.alldecor);
-		//CSL.debug("(blob.push alldecor): "+blob.alldecor);
 		this.blobs.push(blob);
 	}
 };
@@ -4592,8 +4061,6 @@ CSL.NumericBlob.prototype.checkNext = function(next){
 				next.status = CSL.SUCCESSOR;
 			}
 		}
-		// won't see this again, so no effect of processing, but this
-		// wakes up the correct delimiter.
 		if (this.status == CSL.SEEN){
 			this.status = CSL.SUCCESSOR;
 		}
@@ -4604,9 +4071,6 @@ if (!CSL){
 CSL.Util = {};
 CSL.Util.Match = function(){
 	this.any = function(token,state,Item){
-		//
-		// assume false, return true on any single true hit
-		//
 		var ret = false;
 		for each (var func in token.tests){
 			var rawres = func.call(token,state,Item);
@@ -4633,9 +4097,6 @@ CSL.Util.Match = function(){
 		return ret;
 	};
 	this.none = function(token,state,Item){
-		//
-		// assume true, return false on any single true hit
-		//
 		var ret = true;
 		for each (var func in this.tests){
 			var rawres = func.call(token,state,Item);
@@ -4662,9 +4123,6 @@ CSL.Util.Match = function(){
 		return ret;
 	};
 	this.all = function(token,state,Item){
-		//
-		// assume true, return false on any single false hit
-		//
 		var ret = true;
 		for each (var func in this.tests){
 			var rawres = func.call(token,state,Item);
@@ -4785,9 +4243,6 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function(seg){
 			this.outputNameParts(sequence[2]);
 			state.output.closeLevel();
 			state.output.closeLevel();
-			//
-			// articular goes here  //
-			//
 			this.outputNameParts(sequence[3]);
 			state.output.closeLevel();
 		}
@@ -4828,9 +4283,6 @@ CSL.Util.Names.getNamepartSequence = function(state,seg,name){
 			var sequence = [["space","sortsep","space"],["family"],["given","dropping-particle","non-dropping-particle"],["suffix"]];
 		};
 	} else if (token && ( token.strings["name-as-sort-order"] == "all" || (token.strings["name-as-sort-order"] == "first" && seg == "start"))){
-		//
-		// Discretionary sort ordering and inversions
-		//
 		if (state.opt["demote-non-dropping-particle"] == "always"){
 			var sequence = [["sortsep","sortsep","space"],["family"],["given","dropping-particle","non-dropping-particle"],["suffix"]];
 		} else {
@@ -4852,10 +4304,6 @@ CSL.Util.Names.deep_copy = function(nameset){
 	}
 	return nameset2;
 }
-//
-// XXXX A handy guide to variable assignments that need
-// XXXX to be eliminated.  :)
-//
 CSL.Util.Names.reinit = function(state,Item){
 	state.tmp.value = new Array();
 	state.tmp.name_et_al_term = false;
@@ -4913,7 +4361,6 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 		var m = n.match( CSL.NAME_INITIAL_REGEXP);
 		if (m && m[1] == m[1].toUpperCase()){
 			var extra = "";
-			// extra upper-case characters also included
 			if (m[2]){
 				var s = "";
 				for each (var c in m[2].split("")){
@@ -4938,7 +4385,6 @@ CSL.Util.Names.initializeWith = function(state,name,terminator){
 				namelist.push(terminator);
 			}
 		} else if (n.match(CSL.ROMANESQUE_REGEXP)){
-			// romanish things that began with lower-case characters don't get initialized ...
 			namelist[i] = " "+n;
 		};
 	};
@@ -5075,9 +4521,6 @@ CSL.Util.substituteStart = function(state,target){
 	};
 	if (state.build.area == "bibliography"){
 		if (state.build.render_nesting_level == 0){
-			//
-			// The markup formerly known as @bibliography/first
-			//
 			if (state.bibliography.opt["second-field-align"]){
 				var bib_first = new CSL.Token("group",CSL.START);
 				bib_first.decorations = [["@display","left-margin"]];
@@ -5103,21 +4546,9 @@ CSL.Util.substituteStart = function(state,target){
 		state.build.render_nesting_level += 1;
 	}
 	if (state.build.substitute_level.value() == 1){
-		//
-		// All top-level elements in a substitute environment get
-		// wrapped in conditionals.  The substitute_level variable
-		// is a stack, because spanned names elements (with their
-		// own substitute environments) can be nested inside
-		// a substitute environment.
-		//
-		// (okay, we use conditionals a lot more than that.
-		// we slot them in for author-only as well...)
 		var choose_start = new CSL.Token("choose",CSL.START);
 		target.push(choose_start);
 		var if_start = new CSL.Token("if",CSL.START);
-		//
-		// Set a test of the shadow if token to skip this
-		// macro if we have acquired a name value.
 		var check_for_variable = function(state,Item){
 			if (state.tmp.can_substitute.value()){
 				return true;
@@ -5125,11 +4556,6 @@ CSL.Util.substituteStart = function(state,target){
 			return false;
 		};
 		if_start.tests.push(check_for_variable);
-		//
-		// this is cut-and-paste of the "any" evaluator
-		// function, from Attributes.  These functions
-		// should be defined in a namespace for reuse.
-		// Sometime.
 		if_start.evaluator = state.fun.match.any;
 		target.push(if_start);
 	};
@@ -5169,7 +4595,6 @@ CSL.Util.substituteEnd = function(state,target){
 			};
 		};
 	};
-//	if (state.build.substitute_level.value() <= 1 && this.name != "group"){
 	if (state.build.substitute_level.value() == 1){
 		var if_end = new CSL.Token("if",CSL.END);
 		target.push(if_end);
@@ -5186,7 +4611,6 @@ CSL.Util.substituteEnd = function(state,target){
 				if (!state.tmp.rendered_name){
 					state.tmp.rendered_name = state.output.string(state,state.tmp.name_node.blobs,false);
 					if (state.tmp.rendered_name){
-						//CSL.debug("TRY! "+state.tmp.rendered_name);
 						if (state.tmp.rendered_name == state.tmp.last_rendered_name){
 							var str = new CSL.Blob(false,state[state.tmp.area].opt["subsequent-author-substitute"]);
 							state.tmp.name_node.blobs = [str];
@@ -5208,9 +4632,6 @@ CSL.Util.substituteEnd = function(state,target){
 };
 if (!CSL) {
 }
-//
-// This will probably become CSL.Util.Numbers
-//
 CSL.Util.LongOrdinalizer = function(){};
 CSL.Util.LongOrdinalizer.prototype.init = function(state){
 	this.state = state;
@@ -5422,10 +4843,6 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	};
 	return ret_func;
 };
-//
-// (A) initialize flipflopper with an empty blob to receive output.
-// Text string in existing output queue blob will be replaced with
-// an array containing this blob.
 CSL.Util.FlipFlopper = function(state){
 	this.state = state;
 	this.blob = false;
@@ -5511,12 +4928,6 @@ CSL.Util.FlipFlopper.prototype.init = function(str,blob){
 	}
 	this.blobstack = new CSL.Stack(this.blob);
 };
-//
-// (1) scan the string for escape characters.  Split the
-// string on tag candidates, and rejoin the tags that
-// are preceded by an escape character.  Ignore broken
-// markup.
-//
 CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	var strs = str.split( this.allTagsRex );
 	for (var i=(strs.length-2); i>0; i +=-2){
@@ -5554,11 +4965,9 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 						tagstack.pop();
 						break;
 					};
-					//CSL.debug("badA:"+posA);
 					badTagStack.push( posA );
 				};
 				if (!ibeenrunned){
-					//CSL.debug("badB:"+posA);
 					badTagStack.push( posA );
 				};
 				continue;
@@ -5596,11 +5005,6 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 	};
 	return strs;
 };
-//
-// (2) scan the string for non-overlapping open and close tags,
-// skipping escaped tags.  During processing, a list of expected
-// closing tags will be maintained on a working stack.
-//
 CSL.Util.FlipFlopper.prototype.processTags = function(){
 	var expected_closers = new Array();
 	var expected_openers = new Array();
@@ -5614,22 +5018,10 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 		for (var posA=1; posA <l; posA+=2){
 			var tag = this.strs[posA];
 			var prestr = this.strs[(posA-1)];
-			// start by pushing in the trailing text string
 			var newblob = new CSL.Blob(false,prestr);
 			var blob = this.blobstack.value();
 			blob.push(newblob);
-//
-// (a) For closing tags, check to see if it matches something
-// on the working stack.  If so, pop the stack and close the
-// output queue level.
-//
 			if (this.closeTagsHash[tag]){
-				//
-				// Gaack.  Conditions.  Allow if ...
-				// ... the close tag is not also an open tag, or ...
-				// ... ... there is a possible open tag on our stacks, and ...
-				// ... ... there is no intervening flipped partner to it.
-				//
 				expected_closers.reverse();
 				var sameAsOpen = this.openToCloseHash[tag];
 				var openRev = expected_closers.indexOf(tag);
@@ -5650,12 +5042,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 					continue;
 				};
 			};
-//
-// (b) For open tags, push the corresponding close tag onto a working
-// stack, and open a level on the output queue.
-//
 			if (this.openToCloseHash[tag]){
-				// CSL.debug("open:"+tag);
 				expected_closers.push( this.openToCloseHash[tag] );
 				expected_openers.push( tag );
 				expected_flips.push( this.flipTagsHash[tag] );
@@ -5663,20 +5050,10 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				var newblobnest = new CSL.Blob();
 				blob.push(newblobnest);
 				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
-				//
-				// No.  This can just impose the reverse of all normal decorations.
-				//
-				// CSL.debug(this.okReverseTagsHash[this.blob.alldecor[0][0].join("-is-")]);
-				//
 				if (tag == "<span class=\"nodecor\">"){
 					for each (var level in this.blob.alldecor){
 						for each (var decor in level){
 							if (["@font-style"].indexOf(decor[0]) > -1){
-								// This is be the @name of the decor, plus a
-								// pairing composed of two copies of the "undo" side
-								// of the decor's format parameter.  The effect
-								// is to undo all decor at the top level of
-								// an <span class="nocase"> span.
 								param = this.addFlipFlop(newblobnest,this.okReverseHash[decor[0]]);
 							}
 						}
@@ -5686,10 +5063,6 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				this.blobstack.push(newblobnest);
 			};
 		};
-//
-// (B) at the end of processing, unwind any open tags, append any
-// remaining text to the output queue and return the blob.
-//
 	if (this.strs.length > 2){
 		str = this.strs[(this.strs.length-1)];
 		var blob = this.blobstack.value();
@@ -5785,24 +5158,17 @@ CSL.Output.Formatters["title"] = function(state,string) {
 	var lastWordIndex = words.length-1;
 	var previousWordIndex = -1;
 	for(var i=0; i<=lastWordIndex;  i += 2) {
-		// only do manipulation if not a delimiter character
 		if(words[i].length != 0 && (words[i].length != 1 || !/\s+/.test(words[i]))) {
 			var upperCaseVariant = words[i].toUpperCase();
 			var lowerCaseVariant = words[i].toLowerCase();
-				// only use if word does not already possess some capitalization
 				if(isUpperCase || words[i] == lowerCaseVariant) {
 					if(
-						// a skip word
 						CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) != -1
-						// not first or last word
 						&& i != 0 && i != lastWordIndex
-						// does not follow a colon
 						&& (previousWordIndex == -1 || words[previousWordIndex][words[previousWordIndex].length-1] != ":")
 					) {
 							words[i] = lowerCaseVariant;
 					} else {
-						// this is not a skip word or comes after a colon;
-						// we must capitalize
 						words[i] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
 					}
 				}
@@ -5866,9 +5232,6 @@ CSL.Output.Formats.prototype.html = {
 	},
 	"@quotes/inner":function(state,str){
 		if ("undefined" == typeof str){
-			//
-			// Most right by being wrong (for apostrophes)
-			//
 			return state.getTerm("close-inner-quote");
 		};
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
@@ -5893,43 +5256,6 @@ CSL.Output.Formats.prototype.html = {
 	}
 };
 CSL.Output.Formats = new CSL.Output.Formats();
-//
-// Time for a rewrite of this module.
-//
-// Simon has pointed out that list and hash behavior can
-// be obtained by ... just using a list and a hash.  This
-// is faster for batched operations, because sorting is
-// greatly optimized.  Since most of the interaction
-// with plugins at runtime will involve batches of
-// references, there will be solid gains if the current,
-// one-reference-at-a-time approach implemented here
-// can be replaced with something that leverages the native
-// sort method of the Array() type.
-//
-// That's going to take some redesign, but it will simplify
-// things in the long run, so it might as well happen now.
-//
-// We'll keep makeCitationCluster and makeBibliography as
-// simple methods that return a string.  Neither should
-// have any effect on internal state.  This will be a change
-// in behavior for makeCitationCluster.
-//
-// A new updateItems command will be introduced, to replace
-// insertItems.  It will be a simple list of IDs, in the
-// sequence of first reference in the document.
-//
-// The calling application should always invoke updateItems
-// before makeCitationCluster.
-//
-//
-// should allow batched registration of items by
-// key.  should behave as an update, with deletion
-// of items and the tainting of disambiguation
-// partner sets affected by a deletes and additions.
-//
-//
-// we'll need a reset method, to clear the decks
-// in the citation area and start over.
 CSL.Registry = function(state){
 	this.state = state;
 	this.registry = new Object();
@@ -5953,55 +5279,6 @@ CSL.Registry = function(state){
 		return ret;
 	};
 };
-//
-// Here's the sequence of operations to be performed on
-// update:
-//
-//  1.  (o) [init] Receive list as function argument, store as hash and as list.
-//  2.  (o) [init] Initialize refresh list.  Never needs sorting, only hash required.
-//  3.  (o) [dodeletes] Delete loop.
-//  3a. (o) [dodeletes] Delete names in items to be deleted from names reg.
-//  3b. (o) [dodeletes] Complement refreshes list with items affected by
-//      possible name changes.  We'll actually perform the refresh once
-//      all of the necessary data and parameters have been established
-//      in the registry.
-//  3c. (o) [dodeletes] Delete all items to be deleted from their disambig pools.
-//  3d. (o) [dodeletes] Delete all items in deletion list from hash.
-//  4.  (o) [doinserts] Insert loop.
-//  4a. (o) [doinserts] Retrieve entries for items to insert.
-//  4b. (o) [doinserts] Generate ambig key.
-//  4c. (o) [doinserts] Add names in items to be inserted to names reg
-//      (implicit in getAmbiguousCite).
-//  4d. (o) [doinserts] Record ambig pool key on akey list (used for updating further
-//      down the chain).
-//  4e. (o) [doinserts] Create registry token.
-//  4f. (o) [doinserts] Add item ID to hash.
-//  4g. (o) [doinserts] Set and record the base token to hold disambiguation
-//      results ("disambig" in the object above).
-//  5.  (o) [rebuildlist] Create "new" list of hash pointers, in the order given
-//          in the argument to the update function.
-//  6.  (o) [rebuildlist] Apply citation numbers to new list.
-//  7.  (o) [dorefreshes] Refresh items requiring update.
-//  5. (o) [delnames] Delete names in items to be deleted from names reg, and obtain IDs
-//         of other items that would be affected by changes around that surname.
-//  6. (o) [delnames] Complement delete and insert lists with items affected by
-//         possible name changes.
-//  7. (o) [delambigs] Delete all items to be deleted from their disambig pools.
-//  8. (o) [delhash] Delete all items in deletion list from hash.
-//  9. (o) [addtohash] Retrieve entries for items to insert.
-// 10. (o) [addtohash] Add items to be inserted to their disambig pools.
-// 11. (o) [addtohash] Add names in items to be inserted to names reg
-//         (implicit in getAmbiguousCite).
-// 12. (o) [addtohash] Create registry token for each item to be inserted.
-// 13. (o) [addtohash] Add items for insert to hash.
-// 14. (o) [buildlist] Create "new" list of hash pointers, in the order given in the argument
-//         to the update function.
-// 15. (o) [renumber] Apply citation numbers to new list.
-// 16. (o) [setdisambigs] Set disambiguation parameters on each inserted item token.
-// 17. (o) [setsortkeys] Set sort keys on each item token.
-// 18. (o) [sorttokens] Resort token list
-// 19. (o) [renumber] Reset citation numbers on list items
-//
 CSL.Registry.prototype.init = function(myitems){
 	this.mylist = myitems;
 	this.myhash = new Object();
@@ -6017,40 +5294,19 @@ CSL.Registry.prototype.dodeletes = function(myhash){
 	};
 	for (var delitem in this.registry){
 		if (!myhash[delitem]){
-			//
-			//  3a. Delete names in items to be deleted from names reg.
-			//
 			var otheritems = this.namereg.delitems(delitem);
-			//
-			//  3b. Complement refreshes list with items affected by
-			//      possible name changes.  We'll actually perform the refresh once
-			//      all of the necessary data and parameters have been established
-			//      in the registry.
-			//
 			for (var i in otheritems){
 				this.refreshes[i] = true;
 			};
-			//
-			//  3c. Delete all items to be deleted from their disambig pools.
-			//
 			var ambig = this.registry[delitem].ambig;
 			var pos = this.ambigcites[ambig].indexOf(delitem);
 			if (pos > -1){
 				var items = this.ambigcites[ambig].slice();
 				this.ambigcites[ambig] = items.slice(0,pos).concat(items.slice([pos+1],items.length));
 			}
-			//
-			// XX. What we've missed is to provide an update of all
-			// items sharing the same ambig -- the remaining items in
-			// ambigcites.  So let's do that here, just in case the
-			// names update above doesn't catch them all.
-			//
 			for each (var i in this.ambigcites[ambig]){
 				this.refreshes[i] = true;
 			};
-			//
-			//  3d. Delete all items in deletion list from hash.
-			//
 			delete this.registry[delitem];
 		};
 	};
@@ -6061,27 +5317,9 @@ CSL.Registry.prototype.doinserts = function(mylist){
 	};
 	for each (var item in mylist){
 		if (!this.registry[item]){
-			//
-			//  4a. Retrieve entries for items to insert.
-			//
 			var Item = this.state.sys.retrieveItem(item);
-			//
-			//  4b. Generate ambig key.
-			//
-			// AND
-			//
-			//  4c. Add names in items to be inserted to names reg
-			//      (implicit in getAmbiguousCite).
-			//
 			var akey = CSL.getAmbiguousCite.call(this.state,Item);
-			//
-			//  4d. Record ambig pool key on akey list (used for updating further
-			//      down the chain).
-			//
 			this.akeys[akey] = true;
-			//
-			//  4e. Create registry token.
-			//
 			var newitem = {
 				"id":item,
 				"seq":0,
@@ -6090,28 +5328,9 @@ CSL.Registry.prototype.doinserts = function(mylist){
 				"ambig":undefined,
 				"disambig":undefined
 			};
-			//
-			//
-			//  4f. Add item ID to hash.
-			//
 			this.registry[item] = newitem;
-			//
-			//  4g. Set and record the base token to hold disambiguation
-			//      results ("disambig" in the object above).
-			//
 			var abase = CSL.getAmbigConfig.call(this.state);
 			this.registerAmbigToken(akey,item,abase);
-			//if (!this.ambigcites[akey]){
-			//	this.ambigcites[akey] = new Array();
-			//}
-			//CSL.debug("Run: "+item+"("+this.ambigcites[akey]+")");
-			//if (this.ambigcites[akey].indexOf(item) == -1){
-			//	CSL.debug("  Add: "+item);
-			//	this.ambigcites[akey].push(item);
-			//};
-			//
-			//  4h. Make a note that this item needs its sort keys refreshed.
-			//
 			this.touched[item] = true;
 		};
 	};
@@ -6144,8 +5363,6 @@ CSL.Registry.prototype.dorefreshes = function(){
 CSL.Registry.prototype.setdisambigs = function(){
 	this.leftovers = new Array();
 	for (var akey in this.akeys){
-		//
-		// if there are multiple ambigs, disambiguate them
 		if (this.ambigcites[akey].length > 1){
 			if (this.modes.length){
 				if (this.debug){
@@ -6153,23 +5370,14 @@ CSL.Registry.prototype.setdisambigs = function(){
 				};
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes);
 			} else {
-				//
-				// if we didn't disambiguate with names, everything is
-				// a leftover.
 				var leftovers = new Array();
 				for each (var key in this.ambigcites[akey]){
 					leftovers.push(this.registry[key]);
 				};
 			};
-			//
-			// for anything left over, set disambiguate to true, and
-			// try again from the base.
 			if (leftovers && leftovers.length && this.state.opt.has_disambiguate){
 				var leftovers = this.disambiguateCites(this.state,akey,this.modes,leftovers);
 			};
-			//
-			// Throws single leftovers.
-			// Enough of this correctness shtuff already.  Using a band-aide on this.
 			if (leftovers.length > 1){
 				this.leftovers.push(leftovers);
 			};
@@ -6187,10 +5395,8 @@ CSL.Registry.prototype.renumber = function(){
 CSL.Registry.prototype.yearsuffix = function(){
 	for each (var leftovers in this.leftovers){
 		if ( leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]){
-			//CSL.debug("ORDER OF ASSIGNING YEAR SUFFIXES");
 			leftovers.sort(this.compareRegistryTokens);
 			for (var i in leftovers){
-				//CSL.debug("  "+leftovers[i].id);
 				this.registry[ leftovers[i].id ].disambig[2] = i;
 			};
 		};
@@ -6202,7 +5408,6 @@ CSL.Registry.prototype.yearsuffix = function(){
 CSL.Registry.prototype.setsortkeys = function(){
 	for (var item in this.touched){
 		this.registry[item].sortkeys = CSL.getSortKeys.call(this.state,this.state.sys.retrieveItem(item),"bibliography_sort");
-		//CSL.debug("touched: "+item+" ... "+this.registry[item].sortkeys);
 	};
 };
 CSL.Registry.prototype.sorttokens = function(){
@@ -6213,15 +5418,6 @@ CSL.Registry.Comparifier = function(state,keyset){
     this.compareKeys = function(a,b){
 		var l = a.sortkeys.length;
 		for (var i=0; i < l; i++){
-			//
-			// for ascending sort 1 uses 1, -1 uses -1.
-			// For descending sort, the values are reversed.
-			//
-			// Need to handle undefined values.  No way around it.
-			// So have to screen .localeCompare (which is also
-			// needed) from undefined values.  Everywhere, in all
-			// compares.
-			//
 			var cmp = 0;
 			if (a.sortkeys[i] == b.sortkeys[i]){
 				cmp = 0;
@@ -6310,42 +5506,23 @@ CSL.Registry.NameReg = function(state){
 		};
 	};
 	var evalname = function(item_id,nameobj,namenum,request_base,form,initials){
-		// return vals
 		var floor;
 		var ceiling;
 		_set_keys(this.state,item_id,nameobj);
-		//
-		// give literals a pass
 		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].ikey[ikey]){
 			return 2;
 		}
-		//
-		// possible options are:
-		//
-		// <option disambiguate-add-givenname value="true"/> (a)
-		// <option disambiguate-add-givenname value="all-names"/> (a)
-		// <option disambiguate-add-givenname value="all-names-with-initials"/> (b)
-		// <option disambiguate-add-givenname value="primary-name"/> (d)
-		// <option disambiguate-add-givenname value="primary-name-with-initials"/> (e)
-		// <option disambiguate-add-givenname value="by-cite"/> (g)
-		//
 		var param = 2;
 		var dagopt = state[state.tmp.area].opt["disambiguate-add-givenname"];
 		var gdropt = state[state.tmp.area].opt["givenname-disambiguation-rule"];
 		if (gdropt == "by-cite"){
 			gdropt = "all-names";
 		};
-		//
-		// set initial value
-		//
 		if ("short" == form){
 			param = 0;
 		} else if ("string" == typeof initials || state.tmp.force_subsequent){
 			param = 1;
 		};
-		//
-		// adjust value upward if appropriate
-		//
 		if (param < request_base){
 			param = request_base;
 		}
@@ -6355,9 +5532,6 @@ CSL.Registry.NameReg = function(state){
 		if ("string" == typeof gdropt && gdropt.slice(0,12) == "primary-name" && namenum > 0){
 			return param;
 		};
-		//
-		// the last composite condition is for backward compatibility
-		//
 		if (!gdropt || gdropt == "all-names" || gdropt == "primary-name"){
 			if (this.namereg[pkey].count > 1){
 				param = 1;
@@ -6378,12 +5552,10 @@ CSL.Registry.NameReg = function(state){
 		};
 		var ret = {};
 		for (var item in ids){
-			//CSL.debug("DEL-A");
 			if (!this.nameind[item]){
 				continue;
 			};
 			var key = this.nameind[item].split("::");
-			//CSL.debug("DEL-B");
 			pkey = key[0];
 			ikey = key[1];
 			skey = key[2];
@@ -6437,11 +5609,7 @@ CSL.Registry.NameReg = function(state){
 		return ret;
 	};
 	var addname = function(item_id,nameobj,pos){
-		//CSL.debug("INS");
 		_set_keys(this.state,item_id,nameobj);
-		// pkey, ikey and skey should be stored in separate cascading objects.
-		// there should also be a kkey, on each, which holds the item ids using
-		// that form of the name.
 		if (pkey){
 			if ("undefined" == typeof this.namereg[pkey]){
 				this.namereg[pkey] = new Object();
@@ -6478,9 +5646,7 @@ CSL.Registry.NameReg = function(state){
 		if ("undefined" == typeof this.nameind[item_id]){
 			this.nameind[item_id] = new Object();
 		};
-		//CSL.debug("INS-A");
 		this.nameind[item_id][pkey+"::"+ikey+"::"+skey] = true;
-		//CSL.debug("INS-B");
 	};
 	this.addname = addname;
 	this.delitems = delitems;
@@ -6489,18 +5655,9 @@ CSL.Registry.NameReg = function(state){
 var debug = false;
 CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
 	if ( ! candidate_list){
-		//
-		// We start with the state and an ambig key.
-		// We acquire a copy of the list of ambigs that relate to the key from state.
 		var ambigs = this.ambigcites[akey].slice();
-		//
-		// We clear the list of ambigs so it can be rebuilt
 		this.ambigcites[akey] = new Array();
 	} else {
-		//
-		// If candidate_list is true, we are running one final time with
-		// disambiguate="true"
-		//
 		var ambigs = new Array();
 		for each (var reg_token in candidate_list){
 			ambigs.push(reg_token.id);
@@ -6527,8 +5684,6 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 		if (debug){
 			CSL.debug("<<<<<<<<<<<<<<<<<<<<<<<<< "+ token.id +" >>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		}
-		//
-		// skip items that have been finally resolved.
 		if (this.ambigcites[akey].indexOf(token.id) > -1){
 			if (debug){
 				CSL.debug("---> Skip registered token for: "+token.id);
@@ -6692,7 +5847,6 @@ CSL.evaluateCheckeratorClashes = function(){
 			this.clashes = 0;
 			return false;
 		} else {
-			// cleared, so increment.  also quash the id as done.
 			this.ids[this.pos] = false;
 			this.pos += 1;
 			this.lastclashes = this.clashes;
@@ -6772,7 +5926,6 @@ CSL.maxCheckeratorAmbigLevel = function (){
 			} else {
 				this.pos += 1;
 			}
-			//this.ids[this.pos] = false;
 			return true;
 		}
 	}

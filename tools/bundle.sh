@@ -43,9 +43,9 @@ for i in $files; do
 	mv ../tmp/NEW ../tmp/NEW.js
 	cat ../tmp/NEW.js | sed -e "/^[[:space:]]*$/d"  > ../tmp/NEW
 	mv ../tmp/NEW ../tmp/NEW.js
-	cat ../tmp/NEW.js | sed -e "/^[[:space:]]\/\/.*$/d"  > ../tmp/NEW
-	mv ../tmp/NEW ../tmp/NEW.js
 	cat ../tmp/NEW.js | sed -e "/^\/\/SNIP-START/,/^\/\/SNIP-END/d"  > ../tmp/NEW
+	mv ../tmp/NEW ../tmp/NEW.js
+	cat ../tmp/NEW.js | sed -e "/^[[:space:]]*\/\/.*$/d"  > ../tmp/NEW
 	mv ../tmp/NEW ../tmp/NEW.js
 	cat ../tmp/NEW.js >> ../citeproc.js
 done
