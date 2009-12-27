@@ -1,8 +1,3 @@
-if ("undefined" == typeof dojo){
-	var dojo = new Object();
-	dojo.provide = function(ignoreme){};
-};
-dojo.provide("csl.load");
 var CSL = new function () {
 	this.debug = function(str){
 		print(str);
@@ -168,7 +163,6 @@ var CSL = new function () {
 		"zh":"locales-zh-TW.xml"
 	};
 };
-dojo.provide("csl.queue");
 CSL.Output = {};
 CSL.Output.Queue = function(state){
 	this.state = state;
@@ -907,7 +901,6 @@ CSL.XmlToToken = function(state,tokentype){
 	var target = state[state.build.area].tokens;
 	CSL.Node[name].build.call(token,state,target);
 };
-dojo.provide("csl.build");
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.E4X();
@@ -1556,7 +1549,6 @@ CSL.Engine.prototype.parseName = function(name){
 		}
 	}
 }
-dojo.provide("csl.state");
 CSL.Engine.Opt = function (){
 	this.has_disambiguate = false;
 	this.mode = "html";
@@ -1665,7 +1657,6 @@ CSL.Engine.CitationSort = function (){
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
 };
-dojo.provide("csl.cmd_update");
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
 	if (debug){
@@ -1710,7 +1701,6 @@ CSL.Engine.prototype.updateItems = function(idList){
 	this.registry.yearsuffix();
 	return this.registry.getSortedIds();
 };
-dojo.provide("csl.cmd_bibliography");
 CSL.Engine.prototype.makeBibliography = function(bibsection){
 	var debug = false;
 	if (debug){
@@ -1852,7 +1842,6 @@ CSL.getBibliographyEntries = function (bibsection){
 	this.tmp.disambig_override = false;
 	return ret;
 };
-dojo.provide("csl.commands");
 CSL.Engine.prototype.makeCitationCluster = function(rawList,citation){
 	var inputList = [];
 	for each (var item in rawList){
@@ -3715,7 +3704,6 @@ CSL.Node.text = new function(){
 		CSL.Util.substituteEnd.call(this,state,target);
 	};
 };
-dojo.provide("csl.attributes");
 CSL.Attributes = {};
 CSL.Attributes["@class"] = function(state,arg){
 	state.opt["class"] = arg;
@@ -4136,7 +4124,6 @@ CSL.Attributes["@reverse"] = function(state,arg){
 		this.strings["reverse"] = true;
 	};
 };
-dojo.provide("csl.xmle4x");
 CSL.System = {};
 CSL.System.Xml = {};
 CSL.System.Xml.E4X = function(){};
@@ -4256,7 +4243,6 @@ CSL.System.Xml.E4X.prototype.makeXml = function(myxml){
 	}
 	return myxml;
 };
-dojo.provide("csl.stack");
 if (!CSL) {
 }
 CSL.Stack = function(val,literal){
@@ -4485,7 +4471,6 @@ CSL.Parallel.prototype.purgeVariableBlobs = function(cite,varnames){
 		};
 	};
 };
-dojo.provide("csl.token");
 if (!CSL) {
 }
 CSL.Token = function(name,tokentype){
@@ -4504,7 +4489,6 @@ CSL.Token = function(name,tokentype){
 	this.fail = false;
 	this.next = false;
 };
-dojo.provide("csl.ambigconfig");
 if (!CSL) {
 }
 CSL.AmbigConfig = function(){
@@ -4515,7 +4499,6 @@ CSL.AmbigConfig = function(){
 	this.year_suffix = 0;
 	this.disambiguate = 0;
 };
-dojo.provide("csl.blob");
 CSL.Blob = function(token,str){
 	if (token){
 		this.strings = new Object();
@@ -4549,7 +4532,6 @@ CSL.Blob.prototype.push = function(blob){
 		this.blobs.push(blob);
 	}
 };
-dojo.provide("csl.range");
 if (!CSL) {
 }
 CSL.NumericBlob = function(num,mother_token){
@@ -4617,7 +4599,6 @@ CSL.NumericBlob.prototype.checkNext = function(next){
 		}
 	};
 };
-dojo.provide("csl.util");
 if (!CSL){
 }
 CSL.Util = {};
@@ -4710,7 +4691,6 @@ CSL.Util.Match = function(){
 		return ret;
 	};
 };
-dojo.provide("csl.util_names");
 CSL.Util.Institutions = new function(){};
 CSL.Util.Institutions.outputInstitutions = function(state,display_names){
 	state.output.openLevel("institution");
@@ -4738,7 +4718,6 @@ CSL.Util.Institutions.outputInstitutions = function(state,display_names){
 	};
 	state.output.closeLevel(); // institution
 };
-dojo.provide("csl.util_names");
 CSL.Util.Names = new function(){};
 CSL.Util.Names.outputNames = function(state,display_names){
 	var segments = new this.StartMiddleEnd(state,display_names);
@@ -4997,7 +4976,6 @@ CSL.Util.Names.rescueNameElements = function(names){
 	};
 	return names;
 };
-dojo.provide("csl.util_dates");
 if (!CSL) {
 }
 CSL.Util.Dates = new function(){};
@@ -5063,7 +5041,6 @@ CSL.Util.Dates.day["numeric-leading-zeros"] = function(state,num){
 CSL.Util.Dates.day["ordinal"] = function(state,num){
 	return state.fun.ordinalizer(num);
 }
-dojo.provide("csl.util_sort");
 if (!CSL) {
 }
 CSL.Util.Sort = new function(){};
@@ -5077,7 +5054,6 @@ CSL.Util.Sort.strip_prepositions = function(str){
 	};
 	return str;
 };
-dojo.provide("csl.util_substitute");
 CSL.Util.substituteStart = function(state,target){
 	if (("text" == this.name && !this.postponed_macro) || ["number","date","names"].indexOf(this.name) > -1){
 		var element_trace = function(state,Item){
@@ -5230,7 +5206,6 @@ CSL.Util.substituteEnd = function(state,target){
 		this.execs.push(element_trace);
 	}
 };
-dojo.provide("csl.util_disambiguate");
 if (!CSL) {
 }
 //
@@ -5447,7 +5422,6 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	};
 	return ret_func;
 };
-dojo.provide("csl.util_flipflop");
 //
 // (A) initialize flipflopper with an empty blob to receive output.
 // Text string in existing output queue blob will be replaced with
@@ -5751,7 +5725,6 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	blob.decorations.reverse();
 	return newdecor;
 };
-dojo.provide("csl.formatters");
 if (!CSL) {
 }
 CSL.Output.Formatters = new function(){};
@@ -5862,7 +5835,6 @@ CSL.Output.Formatters.undoppelString = function(str){
 	};
 	return ret;
 };
-dojo.provide("csl.formats");
 if (!CSL) {
 }
 CSL.Output.Formats = function(){};
@@ -5921,7 +5893,6 @@ CSL.Output.Formats.prototype.html = {
 	}
 };
 CSL.Output.Formats = new CSL.Output.Formats();
-dojo.provide("csl.registry");
 //
 // Time for a rewrite of this module.
 //
@@ -6316,7 +6287,6 @@ CSL.getSortKeys = function(Item,key_type){
 	this.tmp.area = area;
 	return this[key_type].keys;
 };
-dojo.provide("csl.namereg");
 CSL.Registry.NameReg = function(state){
 	this.state = state;
 	this.namereg = new Object();
@@ -6516,7 +6486,6 @@ CSL.Registry.NameReg = function(state){
 	this.delitems = delitems;
 	this.eval = evalname;
 };
-dojo.provide("csl.disambiguate");
 var debug = false;
 CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
 	if ( ! candidate_list){

@@ -19,21 +19,23 @@ if [ "$3" != "" ]; then
     exit 1
 fi
 
+
 if [ "$2" == "NOTHING" ]; then
     ARG2=""
 else
     ARG2="$2"
 fi
 for i in src/*.js std/humans/*.txt tests/*.js; do
-    if [ $(grep -c "$1" $i) -gt 0 ]; then
+    if [ $(grep -c "${1}" $i) -gt 0 ]; then
         if [ "$ACTION" == "1" ]; then
-            cat $i | sed -e "s~$1~${ARG2}~g" > $i.NEW
+            #cat $i | sed -e "s~$1~${ARG2}~g" > $i.NEW
+            cat $i | sed -e "s~${1}~${ARG2}~g" > $i.NEW
 	    mv $i.NEW $i
         else
 	    echo "-----OLD-----"
-	    grep "$1" $i
+	    grep "${1}" $i
 	    echo "-----NEW-----"
-	    grep "$1" $i | sed -e "s~$1~${ARG2}~g"
+	    grep "${1}" $i | sed -e "s~${1}~${ARG2}~g"
 	fi
     fi
 done

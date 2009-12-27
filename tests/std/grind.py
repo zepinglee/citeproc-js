@@ -182,7 +182,7 @@ class CslTest(CslTestUtils):
             return True
 
     def parse(self):
-        for element in ["MODE","SCHEMA","CSL","RESULT"]:
+        for element in ["MODE","CSL","RESULT"]:
             self.extract(element,required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
