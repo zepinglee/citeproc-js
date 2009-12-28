@@ -48,8 +48,8 @@ Tiny Subcommittee, Big Ministry
         <institution 
           institution-parts="long" 
           delimiter=", "
-          always-use-first="1"
-          append-last="1"/>
+          use-first="1"
+          use-last="1"/>
       </names>
     </layout>
   </citation>

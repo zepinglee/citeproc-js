@@ -591,27 +591,27 @@ CSL.Attributes["@if-short"] = function(state,arg){
 	};
 };
 
-CSL.Attributes["@maybe-use-first"] = function(state,arg){
+CSL.Attributes["@substitute-use-first"] = function(state,arg){
 	if (arg.match(/^[0-9]+$/)){
-		this.strings["maybe-use-first"] = parseInt(arg,10);
+		this.strings["substitute-use-first"] = parseInt(arg,10);
 	};
 };
 
-CSL.Attributes["@always-use-first"] = function(state,arg){
+CSL.Attributes["@use-first"] = function(state,arg){
 	if (arg.match(/^[0-9]+$/)){
-		this.strings["always-use-first"] = parseInt(arg,10);
+		this.strings["use-first"] = parseInt(arg,10);
 	};
 };
 
-CSL.Attributes["@append-last"] = function(state,arg){
+CSL.Attributes["@use-last"] = function(state,arg){
 	if (arg.match(/^[0-9]+$/)){
-		this.strings["append-last"] = parseInt(arg,10);
+		this.strings["use-last"] = parseInt(arg,10);
 	};
 };
 
 
-CSL.Attributes["@reverse"] = function(state,arg){
+CSL.Attributes["@reverse-order"] = function(state,arg){
 	if ("true" == arg){
-		this.strings["reverse"] = true;
+		this.strings["reverse-order"] = true;
 	};
 };

@@ -23,7 +23,7 @@
     "bibentries": false, 
     "bibsection": false, 
     "citations": false, 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      default-locale=\"en\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation\n    et-al-min=\"3\"\n    et-al-use-first=\"1\">\n    <layout>\n      <names variable=\"author\" delimiter=\", \">\n        <name form=\"short\"/>\n        <institution \n          institution-parts=\"long\" \n          delimiter=\", \"\n          always-use-first=\"1\"\n          append-last=\"1\"/>\n      </names>\n    </layout>\n  </citation>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      default-locale=\"en\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation\n    et-al-min=\"3\"\n    et-al-use-first=\"1\">\n    <layout>\n      <names variable=\"author\" delimiter=\", \">\n        <name form=\"short\"/>\n        <institution \n          institution-parts=\"long\" \n          delimiter=\", \"\n          use-first=\"1\"\n          use-last=\"1\"/>\n      </names>\n    </layout>\n  </citation>\n</style>", 
     "input": [
         {
             "author": [

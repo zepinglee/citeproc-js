@@ -1650,10 +1650,14 @@ CSL.Engine.prototype.sortCitationCluster = function(rawList){
 		var Item = this.sys.retrieveItem(item.id);
 		inputList.push(Item);
 	}
+	this.parallel.StartCitation();
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
 		for (var k in inputList){
 			rawList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
-		}
+				if (pos == (inputList.length-1)){
+				this.parallel.ComposeSet();
+				};
+		};
 		rawList.sort(this.citation.srt.compareKeys);
 	};
 };
@@ -1664,6 +1668,7 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		var newitem = [Item,item];
 		inputList.push(newitem);
 	}
+	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,inputList);
 	return str;
 };
@@ -1699,7 +1704,6 @@ CSL.getCitationCluster = function (inputList){
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
-	this.parallel.StartCitation();
 	var myparams = new Array();
 	for (var pos in inputList){
 		var Item = inputList[pos][0];
@@ -2696,7 +2700,7 @@ CSL.Node.names = new function(){
 				}
 				for each (var nameset in namesets){
 					if ("organizations" == nameset.species){
-						if (state.output.getToken("institution").strings.reverse){
+						if (state.output.getToken("institution").strings["reverse-order"]){
 							nameset.names.reverse();
 						};
 					};
@@ -2784,14 +2788,14 @@ CSL.Node.names = new function(){
 							};
 						};
 					} else { // not if ("people" == nameset.species), must be "organizations"
-						var use_first = state.output.getToken("institution").strings["always-use-first"];
+						var use_first = state.output.getToken("institution").strings["use-first"];
 						if (!use_first && namesetIndex == 0){
-							use_first = state.output.getToken("institution").strings["maybe-use-first"];
+							use_first = state.output.getToken("institution").strings["substitute-use-first"];
 						};
 						if (!use_first){
 							use_first = 0;
 						}
-						var append_last = state.output.getToken("institution").strings["append-last"];
+						var append_last = state.output.getToken("institution").strings["use-last"];
 						if (use_first || append_last){
 							var s = display_names.slice();
 							display_names = new Array();
@@ -3621,24 +3625,24 @@ CSL.Attributes["@if-short"] = function(state,arg){
 		this.strings["if-short"] = true;
 	};
 };
-CSL.Attributes["@maybe-use-first"] = function(state,arg){
+CSL.Attributes["@substitute-use-first"] = function(state,arg){
 	if (arg.match(/^[0-9]+$/)){
-		this.strings["maybe-use-first"] = parseInt(arg,10);
+		this.strings["substitute-use-first"] = parseInt(arg,10);
 	};
 };
-CSL.Attributes["@always-use-first"] = function(state,arg){
+CSL.Attributes["@use-first"] = function(state,arg){
 	if (arg.match(/^[0-9]+$/)){
-		this.strings["always-use-first"] = parseInt(arg,10);
+		this.strings["use-first"] = parseInt(arg,10);
 	};
 };
-CSL.Attributes["@append-last"] = function(state,arg){
+CSL.Attributes["@use-last"] = function(state,arg){
 	if (arg.match(/^[0-9]+$/)){
-		this.strings["append-last"] = parseInt(arg,10);
+		this.strings["use-last"] = parseInt(arg,10);
 	};
 };
-CSL.Attributes["@reverse"] = function(state,arg){
+CSL.Attributes["@reverse-order"] = function(state,arg){
 	if ("true" == arg){
-		this.strings["reverse"] = true;
+		this.strings["reverse-order"] = true;
 	};
 };
 CSL.System = {};

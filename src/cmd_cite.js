@@ -25,10 +25,14 @@ CSL.Engine.prototype.sortCitationCluster = function(rawList){
 		var Item = this.sys.retrieveItem(item.id);
 		inputList.push(Item);
 	}
+	this.parallel.StartCitation();
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
 		for (var k in inputList){
 			rawList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
-		}
+				if (pos == (inputList.length-1)){
+				this.parallel.ComposeSet();
+				};
+		};
 		rawList.sort(this.citation.srt.compareKeys);
 	};
 };
@@ -40,6 +44,7 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		var newitem = [Item,item];
 		inputList.push(newitem);
 	}
+	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,inputList);
 	return str;
 };
@@ -102,7 +107,6 @@ CSL.getCitationCluster = function (inputList){
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
 
-	this.parallel.StartCitation();
 
 	var myparams = new Array();
 

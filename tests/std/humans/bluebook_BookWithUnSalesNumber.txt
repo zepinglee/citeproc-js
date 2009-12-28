@@ -67,7 +67,7 @@ citation
   <macro name="publisher">
     <names variable="publisher">
       <name/>
-      <institution delimiter=" - " reverse="true" institution-parts="short">
+      <institution delimiter=" - " reverse-order="true" institution-parts="short">
         <institution-part name="long"/>
       </institution>
     </names>

@@ -1,1 +1,9 @@
 <if locator="chapter"/> etc may not be implemented.  Needs a test.
+
+Parallel snooping is probably not working on getSortKeys, and it needs
+to do.  Where there is a second ibid backreference to a source within
+the same cite, backreferencing will break, at least when the site is
+first created.  The flagging of parallels to the external positioning
+machinery has to be done in the sort, not in the rendering function.
+No need to mangle the output in that case; but it needs to be snooped
+and flagged.

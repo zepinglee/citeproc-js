@@ -116,7 +116,7 @@ CSL.Node.names = new function(){
 				//
 				for each (var nameset in namesets){
 					if ("organizations" == nameset.species){
-						if (state.output.getToken("institution").strings.reverse){
+						if (state.output.getToken("institution").strings["reverse-order"]){
 							nameset.names.reverse();
 						};
 					};
@@ -230,14 +230,14 @@ CSL.Node.names = new function(){
 							};
 						};
 					} else { // not if ("people" == nameset.species), must be "organizations"
-						var use_first = state.output.getToken("institution").strings["always-use-first"];
+						var use_first = state.output.getToken("institution").strings["use-first"];
 						if (!use_first && namesetIndex == 0){
-							use_first = state.output.getToken("institution").strings["maybe-use-first"];
+							use_first = state.output.getToken("institution").strings["substitute-use-first"];
 						};
 						if (!use_first){
 							use_first = 0;
 						}
-						var append_last = state.output.getToken("institution").strings["append-last"];
+						var append_last = state.output.getToken("institution").strings["use-last"];
 						if (use_first || append_last){
 							var s = display_names.slice();
 							display_names = new Array();
