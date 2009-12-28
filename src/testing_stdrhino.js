@@ -121,7 +121,8 @@ StdRhinoTest.prototype.run = function(){
 		}
 		var citations = [];
 		for each (var citation in this.test.citations){
-			this.style.sortCitationCluster(citation);
+			// sortCitationCluster(), we hardly knew ya
+			// this.style.sortCitationCluster(citation);
 			citations.push(this.style.makeCitationCluster(citation));
 		}
 		var ret = citations.join("\n");

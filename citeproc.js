@@ -1646,28 +1646,20 @@ CSL.getBibliographyEntries = function (bibsection){
 };
 CSL.Engine.prototype.sortCitationCluster = function(rawList){
 	var inputList = [];
-	for each (var item in rawList){
-		var Item = this.sys.retrieveItem(item.id);
-		inputList.push(Item);
-	}
-	this.parallel.StartCitation();
-	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		for (var k in inputList){
-			rawList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
-				if (pos == (inputList.length-1)){
-				this.parallel.ComposeSet();
-				};
-		};
-		rawList.sort(this.citation.srt.compareKeys);
-	};
 };
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
-		var newitem = [Item,item];
+	    var newitem = [Item,item];
 		inputList.push(newitem);
-	}
+	};
+	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
+		for (var k in inputList){
+			rawList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
+		};
+		inputList.sort(this.citation.srt.compareCompositeKeys);
+	};
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,inputList);
 	return str;
@@ -5468,6 +5460,8 @@ CSL.Registry.Comparifier = function(state,keyset){
 			return 0;
 		};
 	};
+	var compareKeys = this.compareKeys;
+	this.compareCompositeKeys = function(a,b){return compareKeys(a[1],b[1]);};
 };
 CSL.Registry.prototype.compareRegistryTokens = function(a,b){
 	if (a.seq > b.seq){
