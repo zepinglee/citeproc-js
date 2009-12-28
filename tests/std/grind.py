@@ -211,16 +211,11 @@ class CslTest(CslTestUtils):
         mycitations = self.data["citations"];
         if mycitations != False:
             for i in range(0,len(mycitations),1):
-                mymap = {}
-                mymap["properties"] = {}
-                mymap["citationItems"] = mycitations[i][:]
-                for j in range(0,len(mycitations[i]),1):
-                    if mycitations[i][j].has_key("note-number"):
-                        mymap["properties"]["noteIndex"] = mycitations[i][j]["note-number"]
-                        print mycitations[i][j]["note-number"]
-                        mycitations[i][j].pop("note-number")
-                mycitations[i] = mymap
-                
+                if mycitations[i].has_key("properties"):
+                    if mycitations[i]["properties"].has_key("noteIndex"):
+                        for j in range(0,len(mycitations[i]["citationItems"]),1):
+                            mycitations[i]["citationItems"][j]["note-number"] = mycitations[i]["properties"]["noteIndex"]
+                mycitations[i] = mycitations[i]["citationItems"]
 
     def fix_source(self):
         """ Convert options to attributes, write back to source file.

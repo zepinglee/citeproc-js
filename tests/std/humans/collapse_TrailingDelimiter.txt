@@ -33,26 +33,23 @@ citation
 
 >>===== CITATIONS =====>>
 [
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-1"
-            }, 
-            {
-                "id": "ITEM-2"
-            }, 
-            {
-                "id": "ITEM-4"
-            }, 
-            {
-                "id": "ITEM-3"
-            }, 
-            {
-                "id": "ITEM-5"
-            }
-        ], 
-        "properties": {}
-    }
+    [
+        {
+            "id": "ITEM-1"
+        }, 
+        {
+            "id": "ITEM-2"
+        }, 
+        {
+            "id": "ITEM-4"
+        }, 
+        {
+            "id": "ITEM-3"
+        }, 
+        {
+            "id": "ITEM-5"
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 

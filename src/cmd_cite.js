@@ -19,17 +19,17 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-CSL.Engine.prototype.sortCitationCluster = function(citation){
+CSL.Engine.prototype.sortCitationCluster = function(rawList){
 	var inputList = [];
-	for each (var item in citation.citationItems){
+	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
 		inputList.push(Item);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
 		for (var k in inputList){
-			citation.citationItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
+			rawList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
 		}
-		citation.citationItems.sort(this.citation.srt.compareKeys);
+		rawList.sort(this.citation.srt.compareKeys);
 	};
 };
 

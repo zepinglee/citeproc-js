@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a31##
+   version 1.00##a32##
 
 .. class:: info-date
 
-   =D=20 December 2009=D=
+   =D=28 December 2009=D=
 
 .. class:: contributors
 
@@ -216,6 +216,8 @@ __  `System functions`_
 
 *lang* (optional)
     A language tag compliant with RFC 4646.  Defaults to ``en``.
+    Styles that contain a ``default-locale`` declaration
+    on the ``style`` node will ignore this option.
 
 
 #################
@@ -416,6 +418,37 @@ pairs shown below (the values shown are the processor defaults):
    each bibliography entry.
 
    
+#########################
+``sortCitationCluster()``
+#########################
+
+The ``sortCitationCluster()`` command should be run on a citation
+before it is rendered with ``makeCitationCluster()``.  For styles
+that require the sorting of citations, it sorts the cites to be
+rendered into the correct order in preparation for position
+evaluation by the calling system.  The form of the command
+is as follows, where only ``id`` is required in each input item:
+
+.. code-block:: js
+
+   my_citation = [
+      {
+         "id" : "ITEM-1",
+         "locator" : "100",
+         "label" : "page",
+         "position": 0,
+         "prefix" : "",
+         "suffix" : "",
+         "author-only": false,
+         "suppress-author": false
+       }
+   ]
+
+   var mycite = makeCitationCluster( my_ids );
+
+The ``id`` in each data item is used to fetch the main bibliographic
+data of the source, using the user-supplied ``sys.retrieveItem()``
+function.
 
 
 #########################
@@ -425,8 +458,9 @@ pairs shown below (the values shown are the processor defaults):
 Use the ``makeCitationCluster()`` command to generate the text
 of citations containing one or more references, for insertion into
 footnotes or the main text of the document.  This command takes a 
-single list argument.  The list is composed of Javascript objects
-containing the id of a data item retrievable via ``sys.retrieveItem()``,
+single list argument.  As with ``sortCitationCluster()``, 
+the list is composed of Javascript objects
+containing the ``id`` of a data item retrievable via ``sys.retrieveItem()``,
 and (optional) supplementary data fields.
 
 .. admonition:: Hint

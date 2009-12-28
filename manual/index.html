@@ -323,8 +323,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div align="center" class="align-center"><img alt="counter.gif" class="double-border align-center" src="counter.gif" /></div>
 <p><a class="footnote-reference" href="#id5" id="id2">[1]</a></p>
 </blockquote>
-<p class="info-version">version 1.00<sub>a31</sub></p>
-<p class="info-date">20 December 2009</p>
+<p class="info-version">version 1.00<sub>a32</sub></p>
+<p class="info-date">28 December 2009</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
 <dd><ul class="first last simple">
@@ -358,78 +358,79 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <li><a class="reference internal" href="#csl-engine" id="id44"><tt class="docutils literal"><span class="pre">CSL.Engine()</span></tt></a></li>
 <li><a class="reference internal" href="#updateitems" id="id45"><tt class="docutils literal"><span class="pre">updateItems()</span></tt></a></li>
 <li><a class="reference internal" href="#makebibliography" id="id46"><tt class="docutils literal"><span class="pre">makeBibliography()</span></tt></a></li>
-<li><a class="reference internal" href="#makecitationcluster" id="id47"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></li>
-<li><a class="reference internal" href="#setoutputformat" id="id48"><tt class="docutils literal"><span class="pre">setOutputFormat()</span></tt></a></li>
-<li><a class="reference internal" href="#setcontainertitleabbreviations" id="id49"><tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations()</span></tt></a></li>
+<li><a class="reference internal" href="#sortcitationcluster" id="id47"><tt class="docutils literal"><span class="pre">sortCitationCluster()</span></tt></a></li>
+<li><a class="reference internal" href="#makecitationcluster" id="id48"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></li>
+<li><a class="reference internal" href="#setoutputformat" id="id49"><tt class="docutils literal"><span class="pre">setOutputFormat()</span></tt></a></li>
+<li><a class="reference internal" href="#setcontainertitleabbreviations" id="id50"><tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations()</span></tt></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#local-environment" id="id50">Local Environment</a><ul>
-<li><a class="reference internal" href="#state-aware-data-preparation" id="id51">State-aware data preparation</a></li>
-<li><a class="reference internal" href="#system-functions" id="id52">System functions</a><ul>
-<li><a class="reference internal" href="#retrievelocale" id="id53"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></li>
-<li><a class="reference internal" href="#retrieveitem" id="id54"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#data-input" id="id55">Data Input</a><ul>
-<li><a class="reference internal" href="#item-fields" id="id56">Item fields</a><ul>
-<li><a class="reference internal" href="#text-and-numeric-variables" id="id57">Text and numeric variables</a></li>
-<li><a class="reference internal" href="#names" id="id58">Names</a><ul>
-<li><a class="reference internal" href="#names-with-particles" id="id59">Names with particles</a></li>
-<li><a class="reference internal" href="#non-byzantine-names" id="id60">&quot;non-Byzantine&quot; names</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dates" id="id61">Dates</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#citation-fields" id="id62">Citation fields</a><ul>
-<li><a class="reference internal" href="#locator" id="id63">Locator</a></li>
+<li><a class="reference internal" href="#local-environment" id="id51">Local Environment</a><ul>
+<li><a class="reference internal" href="#state-aware-data-preparation" id="id52">State-aware data preparation</a></li>
+<li><a class="reference internal" href="#system-functions" id="id53">System functions</a><ul>
+<li><a class="reference internal" href="#retrievelocale" id="id54"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></li>
+<li><a class="reference internal" href="#retrieveitem" id="id55"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#output-formatting" id="id64">Output Formatting</a></li>
-<li><a class="reference internal" href="#dirty-tricks" id="id65">Dirty Tricks</a><ul>
-<li><a class="reference internal" href="#input-data-rescue" id="id66">Input data rescue</a><ul>
-<li><a class="reference internal" href="#id25" id="id67">Names</a></li>
-<li><a class="reference internal" href="#id26" id="id68">Dates</a></li>
+<li><a class="reference internal" href="#data-input" id="id56">Data Input</a><ul>
+<li><a class="reference internal" href="#item-fields" id="id57">Item fields</a><ul>
+<li><a class="reference internal" href="#text-and-numeric-variables" id="id58">Text and numeric variables</a></li>
+<li><a class="reference internal" href="#names" id="id59">Names</a><ul>
+<li><a class="reference internal" href="#names-with-particles" id="id60">Names with particles</a></li>
+<li><a class="reference internal" href="#non-byzantine-names" id="id61">&quot;non-Byzantine&quot; names</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#journal-abbreviation-lists" id="id69">Journal abbreviation lists</a></li>
-<li><a class="reference internal" href="#processor-control" id="id70">Processor control</a><ul>
-<li><a class="reference internal" href="#author-only" id="id71"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
-<li><a class="reference internal" href="#suppress-author" id="id72"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
-<li><a class="reference internal" href="#automating-text-insertions" id="id73">Automating text insertions</a></li>
+<li><a class="reference internal" href="#dates" id="id62">Dates</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id32" id="id74">Multi-lingual content</a><ul>
-<li><a class="reference internal" href="#the-lang-declaration" id="id75">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></li>
-<li><a class="reference internal" href="#title" id="id76">Title</a></li>
-<li><a class="reference internal" href="#id35" id="id77">Names</a></li>
+<li><a class="reference internal" href="#citation-fields" id="id63">Citation fields</a><ul>
+<li><a class="reference internal" href="#locator" id="id64">Locator</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#test-suite" id="id78">Test Suite</a><ul>
-<li><a class="reference internal" href="#fixture-layout" id="id79">Fixture layout</a><ul>
-<li><a class="reference internal" href="#required-sections" id="id80">Required sections</a><ul>
-<li><a class="reference internal" href="#mode" id="id81">MODE</a></li>
-<li><a class="reference internal" href="#schema" id="id82">SCHEMA</a></li>
-<li><a class="reference internal" href="#csl" id="id83">CSL</a></li>
-<li><a class="reference internal" href="#input" id="id84">INPUT</a></li>
-<li><a class="reference internal" href="#result" id="id85">RESULT</a></li>
+<li><a class="reference internal" href="#output-formatting" id="id65">Output Formatting</a></li>
+<li><a class="reference internal" href="#dirty-tricks" id="id66">Dirty Tricks</a><ul>
+<li><a class="reference internal" href="#input-data-rescue" id="id67">Input data rescue</a><ul>
+<li><a class="reference internal" href="#id25" id="id68">Names</a></li>
+<li><a class="reference internal" href="#id26" id="id69">Dates</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#optional-sections" id="id86">Optional sections</a><ul>
-<li><a class="reference internal" href="#abbreviations" id="id87">ABBREVIATIONS</a></li>
-<li><a class="reference internal" href="#bibentries" id="id88">BIBENTRIES</a></li>
-<li><a class="reference internal" href="#citations" id="id89">CITATIONS</a></li>
+<li><a class="reference internal" href="#journal-abbreviation-lists" id="id70">Journal abbreviation lists</a></li>
+<li><a class="reference internal" href="#processor-control" id="id71">Processor control</a><ul>
+<li><a class="reference internal" href="#author-only" id="id72"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
+<li><a class="reference internal" href="#suppress-author" id="id73"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
+<li><a class="reference internal" href="#automating-text-insertions" id="id74">Automating text insertions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id32" id="id75">Multi-lingual content</a><ul>
+<li><a class="reference internal" href="#the-lang-declaration" id="id76">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></li>
+<li><a class="reference internal" href="#title" id="id77">Title</a></li>
+<li><a class="reference internal" href="#id35" id="id78">Names</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#preparing-and-running-the-tests" id="id90">Preparing and running the tests</a></li>
+<li><a class="reference internal" href="#test-suite" id="id79">Test Suite</a><ul>
+<li><a class="reference internal" href="#fixture-layout" id="id80">Fixture layout</a><ul>
+<li><a class="reference internal" href="#required-sections" id="id81">Required sections</a><ul>
+<li><a class="reference internal" href="#mode" id="id82">MODE</a></li>
+<li><a class="reference internal" href="#schema" id="id83">SCHEMA</a></li>
+<li><a class="reference internal" href="#csl" id="id84">CSL</a></li>
+<li><a class="reference internal" href="#input" id="id85">INPUT</a></li>
+<li><a class="reference internal" href="#result" id="id86">RESULT</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optional-sections" id="id87">Optional sections</a><ul>
+<li><a class="reference internal" href="#abbreviations" id="id88">ABBREVIATIONS</a></li>
+<li><a class="reference internal" href="#bibentries" id="id89">BIBENTRIES</a></li>
+<li><a class="reference internal" href="#citations" id="id90">CITATIONS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#preparing-and-running-the-tests" id="id91">Preparing and running the tests</a></li>
 </ul>
 </li>
 </ul>
@@ -575,7 +576,9 @@ object.</p>
 <dt><em>style</em></dt>
 <dd>A CSL style in serialized (string) form.</dd>
 <dt><em>lang</em> (optional)</dt>
-<dd>A language tag compliant with RFC 4646.  Defaults to <tt class="docutils literal"><span class="pre">en</span></tt>.</dd>
+<dd>A language tag compliant with RFC 4646.  Defaults to <tt class="docutils literal"><span class="pre">en</span></tt>.
+Styles that contain a <tt class="docutils literal"><span class="pre">default-locale</span></tt> declaration
+on the <tt class="docutils literal"><span class="pre">style</span></tt> node will ignore this option.</dd>
 </dl>
 </div>
 <div class="section" id="updateitems">
@@ -835,13 +838,57 @@ this value to calculate and apply a suitable indentation length.</dd>
 each bibliography entry.</dd>
 </dl>
 </div>
+<div class="section" id="sortcitationcluster">
+<h2><a class="toc-backref" href="#id47"><tt class="docutils literal"><span class="pre">sortCitationCluster()</span></tt></a></h2>
+<p>The <tt class="docutils literal"><span class="pre">sortCitationCluster()</span></tt> command should be run on a citation
+before it is rendered with <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt>.  For styles
+that require the sorting of citations, it sorts the cites to be
+rendered into the correct order in preparation for position
+evaluation by the calling system.  The form of the command
+is as follows, where only <tt class="docutils literal"><span class="pre">id</span></tt> is required in each input item:</p>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td class="code"><div class="highlight"><pre><span class="nx">my_citation</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="p">{</span>
+      <span class="s2">&quot;id&quot;</span> <span class="o">:</span> <span class="s2">&quot;ITEM-1&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;locator&quot;</span> <span class="o">:</span> <span class="s2">&quot;100&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;label&quot;</span> <span class="o">:</span> <span class="s2">&quot;page&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;position&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
+      <span class="s2">&quot;prefix&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;suffix&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;author-only&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="o">,</span>
+      <span class="s2">&quot;suppress-author&quot;</span><span class="o">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="k">var</span> <span class="nx">mycite</span> <span class="o">=</span> <span class="nx">makeCitationCluster</span><span class="p">(</span> <span class="nx">my_ids</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">id</span></tt> in each data item is used to fetch the main bibliographic
+data of the source, using the user-supplied <tt class="docutils literal"><span class="pre">sys.retrieveItem()</span></tt>
+function.</p>
+</div>
 <div class="section" id="makecitationcluster">
-<h2><a class="toc-backref" href="#id47"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id48"><tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt></a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command to generate the text
 of citations containing one or more references, for insertion into
 footnotes or the main text of the document.  This command takes a
-single list argument.  The list is composed of Javascript objects
-containing the id of a data item retrievable via <tt class="docutils literal"><span class="pre">sys.retrieveItem()</span></tt>,
+single list argument.  As with <tt class="docutils literal"><span class="pre">sortCitationCluster()</span></tt>,
+the list is composed of Javascript objects
+containing the <tt class="docutils literal"><span class="pre">id</span></tt> of a data item retrievable via <tt class="docutils literal"><span class="pre">sys.retrieveItem()</span></tt>,
 and (optional) supplementary data fields.</p>
 <div class="admonition-hint admonition">
 <p class="first admonition-title">Hint</p>
@@ -866,7 +913,7 @@ usage.</p>
 </div>
 </div>
 <div class="section" id="setoutputformat">
-<h2><a class="toc-backref" href="#id48"><tt class="docutils literal"><span class="pre">setOutputFormat()</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id49"><tt class="docutils literal"><span class="pre">setOutputFormat()</span></tt></a></h2>
 <p>The output format of the processor can be changed after instantiation
 using the <tt class="docutils literal"><span class="pre">setOutputFormat()</span></tt> command.  This command is specific
 to the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor.</p>
@@ -882,7 +929,7 @@ on defining new output formats.</p>
 </div>
 </div>
 <div class="section" id="setcontainertitleabbreviations">
-<h2><a class="toc-backref" href="#id49"><tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations()</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id50"><tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations()</span></tt></a></h2>
 <p>A list of journal title abbreviations can be set on the processor
 using the <tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations()</span></tt> command.
 This command is also specfic to <tt class="docutils literal"><span class="pre">citeproc-js</span></tt>:</p>
@@ -902,13 +949,13 @@ for further details.</p>
 </div>
 </div>
 <div class="section" id="local-environment">
-<h1><a class="toc-backref" href="#id50">Local Environment</a></h1>
+<h1><a class="toc-backref" href="#id51">Local Environment</a></h1>
 <p>While <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> does a great deal of the heavy lifting needed
 for correct formatting of citations and bibliographies, a certain
 amount of programming is required to prepare the environment for its
 correct operation.</p>
 <div class="section" id="state-aware-data-preparation">
-<h2><a class="toc-backref" href="#id51">State-aware data preparation</a></h2>
+<h2><a class="toc-backref" href="#id52">State-aware data preparation</a></h2>
 <p>The CSL 1.0 specification anticipates the availability of several
 dynamic variables whose value depends upon the sequence and context
 of references generated with the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command:</p>
@@ -948,7 +995,7 @@ formatting, please refer to the CSL specification, available via
 <a class="reference external" href="http://citationstyles.org/">http://citationstyles.org/</a>.</p>
 </div>
 <div class="section" id="system-functions">
-<h2><a class="toc-backref" href="#id52">System functions</a></h2>
+<h2><a class="toc-backref" href="#id53">System functions</a></h2>
 <p>As mentioned above in the section on <img alt="link" src="link.png" /> <a class="reference internal" href="#csl-engine">CSL.Engine()</a>, two functions
 must be defined separately and supplied to the processor upon
 instantiation.  These functions are used by the processor to obtain
@@ -958,7 +1005,7 @@ assume the existence of a global <tt class="docutils literal"><span class="pre">
 processor instance, and are provided only for the purpose of
 illustration.</p>
 <div class="section" id="retrievelocale">
-<h3><a class="toc-backref" href="#id53"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id54"><tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt></a></h3>
 <p>The <tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt> function is used internally by the processor to
 retrieve the serialized XML of a given locale.  It takes a single RFC
 4646 compliant language tag as argument, composed of a single language
@@ -980,7 +1027,7 @@ only.</p>
 </div>
 </div>
 <div class="section" id="retrieveitem">
-<h3><a class="toc-backref" href="#id54"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id55"><tt class="docutils literal"><span class="pre">retrieveItem()</span></tt></a></h3>
 <p>The <tt class="docutils literal"><span class="pre">retrieveItem()</span></tt> function is used by the processor to
 fetch individual items from storage.</p>
 <div class="codeblock js">
@@ -996,14 +1043,14 @@ fetch individual items from storage.</p>
 </div>
 </div>
 <div class="section" id="data-input">
-<h1><a class="toc-backref" href="#id55">Data Input</a></h1>
+<h1><a class="toc-backref" href="#id56">Data Input</a></h1>
 <div class="section" id="item-fields">
-<h2><a class="toc-backref" href="#id56">Item fields</a></h2>
+<h2><a class="toc-backref" href="#id57">Item fields</a></h2>
 <p>The locally defined <tt class="docutils literal"><span class="pre">retrieveItem()</span></tt> function must return data
 for the target item as a simple Javascript array containing recognized
 CSL fields. <a class="footnote-reference" href="#id21" id="id15">[4]</a>  The layout of the three field types is described below.</p>
 <div class="section" id="text-and-numeric-variables">
-<h3><a class="toc-backref" href="#id57">Text and numeric variables</a></h3>
+<h3><a class="toc-backref" href="#id58">Text and numeric variables</a></h3>
 <p>Text and numeric variables are not distinguished in the data layer; both
 should be presented as simple strings.</p>
 <div class="codeblock js">
@@ -1017,7 +1064,7 @@ should be presented as simple strings.</p>
 </div>
 </div>
 <div class="section" id="names">
-<h3><a class="toc-backref" href="#id58">Names</a></h3>
+<h3><a class="toc-backref" href="#id59">Names</a></h3>
 <p>When present in the item data, CSL name variables must
 be delivered as a list of Javascript arrays, with one
 array for each name represented by the variable.
@@ -1060,7 +1107,7 @@ literally (such as &quot;The Artist Formerly Known as Prince&quot;,
 </td></tr></table>
 </div>
 <div class="section" id="names-with-particles">
-<h4><a class="toc-backref" href="#id59">Names with particles</a></h4>
+<h4><a class="toc-backref" href="#id60">Names with particles</a></h4>
 <p>Name particles, such as the &quot;von&quot; in &quot;Werner von Braun&quot;, can
 be delivered separately from the family and given name,
 as <tt class="docutils literal"><span class="pre">dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt> elements.
@@ -1113,7 +1160,7 @@ to the processor is described below in the section
 </div>
 </div>
 <div class="section" id="non-byzantine-names">
-<span id="input-byzantine"></span><h4><a class="toc-backref" href="#id60">&quot;non-Byzantine&quot; names</a></h4>
+<span id="input-byzantine"></span><h4><a class="toc-backref" href="#id61">&quot;non-Byzantine&quot; names</a></h4>
 <p>Names not written in the Latin or Cyrillic
 scripts <a class="footnote-reference" href="#id22" id="id17">[5]</a> are always displayed
 with the family name first.  No special hint is needed in
@@ -1166,7 +1213,7 @@ long as it returns true when tested by the Javascript interpreter.</p>
 </div>
 </div>
 <div class="section" id="dates">
-<span id="input-dates"></span><h3><a class="toc-backref" href="#id61">Dates</a></h3>
+<span id="input-dates"></span><h3><a class="toc-backref" href="#id62">Dates</a></h3>
 <p>Date fields are Javascript objects, within which the &quot;date-parts&quot; element
 is a nested Javascript array containing a start
 date and optional end date, each of which consists of a year,
@@ -1337,7 +1384,7 @@ with corresponding elements:</p>
 </div>
 </div>
 <div class="section" id="citation-fields">
-<h2><a class="toc-backref" href="#id62">Citation fields</a></h2>
+<h2><a class="toc-backref" href="#id63">Citation fields</a></h2>
 <p>As noted above under <img alt="link" src="link.png" /> <a class="reference internal" href="#makecitationcluster">makeCitationCluster()</a>, that function takes
 as its single argument a list of Javascript objects, each containing
 an item <tt class="docutils literal"><span class="pre">id</span></tt> and optional supplementary data.</p>
@@ -1353,7 +1400,7 @@ an item <tt class="docutils literal"><span class="pre">id</span></tt> and option
 </td></tr></table>
 </div>
 <div class="section" id="locator">
-<h3><a class="toc-backref" href="#id63">Locator</a></h3>
+<h3><a class="toc-backref" href="#id64">Locator</a></h3>
 <p>To include pinpoint locator information in a cite, include a <tt class="docutils literal"><span class="pre">locator</span></tt> element
 with the string data describing the cited location, and a <tt class="docutils literal"><span class="pre">label</span></tt> element
 with a valid CSL label string. <a class="footnote-reference" href="#id23" id="id20">[6]</a></p>
@@ -1407,7 +1454,7 @@ CSL specification, available via  <a class="reference external" href="http://cit
 </div>
 </div>
 <div class="section" id="output-formatting">
-<h1><a class="toc-backref" href="#id64">Output Formatting</a></h1>
+<h1><a class="toc-backref" href="#id65">Output Formatting</a></h1>
 <p>The test fixtures assume HTML output, which the processor supports out
 of the box as its default mode.  It is currently the only mode
 supported in the distributed version of the code, but additional modes
@@ -1415,15 +1462,15 @@ can be created by adding definitions for them to the source file <tt class="docu
 See <a class="reference external" href="http://bitbucket.org/fbennett/citeproc-js/src/tip/src/formats.js">the file itself</a> for details; it's pretty straightforward.</p>
 </div>
 <div class="section" id="dirty-tricks">
-<h1><a class="toc-backref" href="#id65">Dirty Tricks</a></h1>
+<h1><a class="toc-backref" href="#id66">Dirty Tricks</a></h1>
 <p>This section presents features of the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor that
 are not properly speaking a part of the CSL specification.  The
 functionality described here may or may not be found in other CSL 1.0
 compliant processors, when they arrive on the scene.</p>
 <div class="section" id="input-data-rescue">
-<h2><a class="toc-backref" href="#id66">Input data rescue</a></h2>
+<h2><a class="toc-backref" href="#id67">Input data rescue</a></h2>
 <div class="section" id="id25">
-<span id="dirty-names"></span><h3><a class="toc-backref" href="#id67">Names</a></h3>
+<span id="dirty-names"></span><h3><a class="toc-backref" href="#id68">Names</a></h3>
 <p>Systems that use a simple two-field entry format can encode
 <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">dropping-particle</span></tt>
 elements on a name by including them in the <tt class="docutils literal"><span class="pre">family</span></tt>
@@ -1480,7 +1527,7 @@ marks:</p>
 </div>
 </div>
 <div class="section" id="id26">
-<span id="dirty-dates"></span><h3><a class="toc-backref" href="#id68">Dates</a></h3>
+<span id="dirty-dates"></span><h3><a class="toc-backref" href="#id69">Dates</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor contains its own internal
 parsing code for raw date strings.  Clients may take advantage of the
 processor's internal parser by supplying date strings as a single
@@ -1503,7 +1550,7 @@ above under <a class="reference internal" href="#input-dates">Data Input → Dat
 </div>
 </div>
 <div class="section" id="journal-abbreviation-lists">
-<h2><a class="toc-backref" href="#id69">Journal abbreviation lists</a></h2>
+<h2><a class="toc-backref" href="#id70">Journal abbreviation lists</a></h2>
 <p>To enable automatic abbreviation of journal titles, a set
 of Javascript key/value pairs composed of full titles and their
 abbreviations may be installed using the <tt class="docutils literal"><span class="pre">setContainerTitleAbbreviations</span></tt>
@@ -1538,13 +1585,13 @@ this facility is available as a non-standard extension to
 the processor.</p>
 </div>
 <div class="section" id="processor-control">
-<h2><a class="toc-backref" href="#id70">Processor control</a></h2>
+<h2><a class="toc-backref" href="#id71">Processor control</a></h2>
 <p>In the ordinary operation of the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command,
 the processor generates citation strings suitable for a given position
 in the document.  To support some use cases, the processor is
 capable of delivering special-purpose fragments of a citation.</p>
 <div class="section" id="author-only">
-<h3><a class="toc-backref" href="#id71"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id72"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
 <p>When <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> is invoked with a non-nil <tt class="docutils literal"><span class="pre">author-only</span></tt>
 element, everything but the author name in a cite is suppressed.
 The name is returned without decorative markup (italics, superscript, and
@@ -1563,7 +1610,7 @@ without printing the cite itself, is a useless thing to do.
 And if that were the end of the story, you would be right ...</p>
 </div>
 <div class="section" id="suppress-author">
-<h3><a class="toc-backref" href="#id72"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id73"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
 <p>To suppress the rendering of names in a cite, include a <tt class="docutils literal"><span class="pre">suppress-author</span></tt>
 element with a non-nil value in the supplementary data:</p>
 <div class="codeblock js">
@@ -1579,7 +1626,7 @@ element with a non-nil value in the supplementary data:</p>
 combination with the <tt class="docutils literal"><span class="pre">author-only</span></tt> element, as described below.</p>
 </div>
 <div class="section" id="automating-text-insertions">
-<h3><a class="toc-backref" href="#id73">Automating text insertions</a></h3>
+<h3><a class="toc-backref" href="#id74">Automating text insertions</a></h3>
 <p>Calls to the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command with the <tt class="docutils literal"><span class="pre">author-only</span></tt>
 and <tt class="docutils literal"><span class="pre">suppress-author</span></tt> control elements can be used to produce
 cites that divide their content into two parts.  This permits the
@@ -1656,7 +1703,7 @@ elements are in the processor test fixtures in the
 </div>
 </div>
 <div class="section" id="id32">
-<span id="multi-lingual-content"></span><h2><a class="toc-backref" href="#id74">Multi-lingual content</a></h2>
+<span id="multi-lingual-content"></span><h2><a class="toc-backref" href="#id75">Multi-lingual content</a></h2>
 <p>The version of <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> described by this manual incorporates
 an experimental mechanism for supporting cross-lingual and
 mixed-language citation styles, such as 我妻栄 [Wagatsuma Sakae],
@@ -1667,7 +1714,7 @@ citation management, it provides a platform for proof of concept, and
 for the development of styles to support more robust multilingual support
 when it arrives.</p>
 <div class="section" id="the-lang-declaration">
-<h3><a class="toc-backref" href="#id75">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></h3>
+<h3><a class="toc-backref" href="#id76">The <tt class="docutils literal"><span class="pre">lang</span></tt> declaration</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">style</span></tt> tag in a CSL style may contain a <tt class="docutils literal"><span class="pre">default-locale</span></tt> attribute.</p>
 <!-- The clothesline construct below removes the hint box from the
 normal flow, so that it overlays the code block below.  This
@@ -1790,7 +1837,7 @@ language is available (as will normally be the case for an ordinary
 Zotero data store).</p>
 </div>
 <div class="section" id="title">
-<h3><a class="toc-backref" href="#id76">Title</a></h3>
+<h3><a class="toc-backref" href="#id77">Title</a></h3>
 <p>For titles, alternative representations are appended
 directly to the field content, separated by the appropriate
 language tag with a leading and trailing colon:</p>
@@ -1803,7 +1850,7 @@ language tag with a leading and trailing colon:</p>
 </div>
 </div>
 <div class="section" id="id35">
-<h3><a class="toc-backref" href="#id77">Names</a></h3>
+<h3><a class="toc-backref" href="#id78">Names</a></h3>
 <p>For personal names, alternative representations should be presented
 as separate &quot;name&quot; entries, immediately following the original
 for the name element to which they apply.  For example:</p>
@@ -1851,7 +1898,7 @@ set on them, to preserve their original formatting behavior.</p>
 </div>
 </div>
 <div class="section" id="test-suite">
-<h1><a class="toc-backref" href="#id78">Test Suite</a></h1>
+<h1><a class="toc-backref" href="#id79">Test Suite</a></h1>
 <p><tt class="docutils literal"><span class="pre">Citeproc-js</span></tt> ships with a large bundle of test data and a set of
 scripts that can be used to confirm that the system performs correctly
 after installation.  The tests begin as individual human-friendly
@@ -1866,7 +1913,7 @@ layout of the human-readable version of the text fixtures, the scripts
 used to manage the text fixture bundle, and the commands used to
 actually run the tests.</p>
 <div class="section" id="fixture-layout">
-<h2><a class="toc-backref" href="#id79">Fixture layout</a></h2>
+<h2><a class="toc-backref" href="#id80">Fixture layout</a></h2>
 <p>The human-readable version of each test fixture is composed in
 the format below.  The five sections <tt class="docutils literal"><span class="pre">MODE</span></tt>, <tt class="docutils literal"><span class="pre">SCHEMA</span></tt>,
 <tt class="docutils literal"><span class="pre">RESULT</span></tt>, <tt class="docutils literal"><span class="pre">CSL</span></tt> and <tt class="docutils literal"><span class="pre">INPUT</span></tt> are required, and may be
@@ -1992,10 +2039,10 @@ John Doe
 </td></tr></table>
 </div>
 <div class="section" id="required-sections">
-<h3><a class="toc-backref" href="#id80">Required sections</a></h3>
+<h3><a class="toc-backref" href="#id81">Required sections</a></h3>
 <p>The following five sections are required in all test fixtures.</p>
 <div class="section" id="mode">
-<h4><a class="toc-backref" href="#id81">MODE</a></h4>
+<h4><a class="toc-backref" href="#id82">MODE</a></h4>
 <p>A single string tells whether to test <tt class="docutils literal"><span class="pre">citation</span></tt> or <tt class="docutils literal"><span class="pre">bibliography</span></tt>
 output, using the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> and <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt>
 processor commands, respectively:</p>
@@ -2010,7 +2057,7 @@ citation
 </div>
 </div>
 <div class="section" id="schema">
-<h4><a class="toc-backref" href="#id82">SCHEMA</a></h4>
+<h4><a class="toc-backref" href="#id83">SCHEMA</a></h4>
 <p>A string indicates the version of the CSL schema against
 which the test should be run.  All tests currently are for
 CSL 1.0:</p>
@@ -2025,7 +2072,7 @@ CSL 1.0:</p>
 </div>
 </div>
 <div class="section" id="csl">
-<h4><a class="toc-backref" href="#id83">CSL</a></h4>
+<h4><a class="toc-backref" href="#id84">CSL</a></h4>
 <p>The code to be used in the test must be valid
 as a complete, if minimal, CSL style:</p>
 <div class="codeblock text">
@@ -2121,7 +2168,7 @@ as a complete, if minimal, CSL style:</p>
 </div>
 </div>
 <div class="section" id="input">
-<h4><a class="toc-backref" href="#id84">INPUT</a></h4>
+<h4><a class="toc-backref" href="#id85">INPUT</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">INPUT</span></tt> section provides the item data to be registered
 in the processor.  In a simple test fixture that contains
 neither a <tt class="docutils literal"><span class="pre">BIBENTRIES</span></tt> nor a <tt class="docutils literal"><span class="pre">CITATIONS</span></tt> section,
@@ -2175,7 +2222,7 @@ for details):</p>
 </div>
 </div>
 <div class="section" id="result">
-<h4><a class="toc-backref" href="#id85">RESULT</a></h4>
+<h4><a class="toc-backref" href="#id86">RESULT</a></h4>
 <p>A string to compare with the citation or bibliography output
 received from the processor.</p>
 <div class="codeblock text">
@@ -2209,11 +2256,11 @@ used for comparison:</p>
 </div>
 </div>
 <div class="section" id="optional-sections">
-<h3><a class="toc-backref" href="#id86">Optional sections</a></h3>
+<h3><a class="toc-backref" href="#id87">Optional sections</a></h3>
 <p>Three optional sections may be included in a fixture
 to exercise special aspects of processor behavior.</p>
 <div class="section" id="abbreviations">
-<h4><a class="toc-backref" href="#id87">ABBREVIATIONS</a></h4>
+<h4><a class="toc-backref" href="#id88">ABBREVIATIONS</a></h4>
 <p>To test the operation of journal-title abbreviation lists,
 add an <tt class="docutils literal"><span class="pre">ABBREVIATIONS</span></tt> section:</p>
 <!--  -->
@@ -2240,7 +2287,7 @@ via the CSL written into the fixture.</p>
 </div>
 </div>
 <div class="section" id="bibentries">
-<h4><a class="toc-backref" href="#id88">BIBENTRIES</a></h4>
+<h4><a class="toc-backref" href="#id89">BIBENTRIES</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor maintains a persistent internal
 registry of citation data, and permits the addition, deletion
 and rearrangement of registered items.  The correct operation
@@ -2299,7 +2346,7 @@ last in the series.</p>
 </div>
 </div>
 <div class="section" id="citations">
-<h4><a class="toc-backref" href="#id89">CITATIONS</a></h4>
+<h4><a class="toc-backref" href="#id90">CITATIONS</a></h4>
 <p>When testing in <tt class="docutils literal"><span class="pre">citation</span></tt> mode, the data items to be
 processed are ordinarily rendered as a single citation.
 To test operations that depend upon or may be affected
@@ -2338,7 +2385,7 @@ the full entry consists of a list of such citations:</p>
 </div>
 </div>
 <div class="section" id="preparing-and-running-the-tests">
-<h2><a class="toc-backref" href="#id90">Preparing and running the tests</a></h2>
+<h2><a class="toc-backref" href="#id91">Preparing and running the tests</a></h2>
 <p>The following commands are used to process and run
 the tests.  For further information, see the source
 code of the relevant scripts, or drop me a line.</p>

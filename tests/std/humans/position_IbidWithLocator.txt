@@ -34,25 +34,19 @@ Ibid p. 23.
 
 >>===== CITATIONS =====>>
 [
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-1"
-            }
-        ], 
-        "properties": {}
-    }, 
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-1", 
-                "label": "page", 
-                "locator": "23", 
-                "position": 3
-            }
-        ], 
-        "properties": {}
-    }
+    [
+        {
+            "id": "ITEM-1"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-1", 
+            "label": "page", 
+            "locator": "23", 
+            "position": 3
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 

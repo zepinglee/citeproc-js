@@ -32,22 +32,16 @@ Have date, will travel
 
 >>===== CITATIONS =====>>
 [
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-1"
-            }
-        ], 
-        "properties": {}
-    }, 
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-2"
-            }
-        ], 
-        "properties": {}
-    }
+    [
+        {
+            "id": "ITEM-1"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-2"
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 

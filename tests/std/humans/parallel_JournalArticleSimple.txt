@@ -26,20 +26,17 @@ citation
 
 >>===== CITATIONS =====>>
 [
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-1"
-            }, 
-            {
-                "id": "ITEM-2"
-            }, 
-            {
-                "id": "ITEM-3"
-            }
-        ], 
-        "properties": {}
-    }
+    [
+        {
+            "id": "ITEM-1"
+        }, 
+        {
+            "id": "ITEM-2"
+        }, 
+        {
+            "id": "ITEM-3"
+        }
+    ]
 ]
 <<===== CITATIONS =====<<
 
