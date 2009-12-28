@@ -34,13 +34,13 @@ CSL.Util = {};
  */
 CSL.Util.Match = function(){
 
-	this.any = function(token,state,Item){
+	this.any = function(token,state,Item,item){
 		//
 		// assume false, return true on any single true hit
 		//
 		var ret = false;
 		for each (var func in token.tests){
-			var rawres = func.call(token,state,Item);
+			var rawres = func.call(token,state,Item,item);
 			if ("object" != typeof rawres){
 				rawres = [rawres];
 			}
@@ -64,13 +64,13 @@ CSL.Util.Match = function(){
 		return ret;
 	};
 
-	this.none = function(token,state,Item){
+	this.none = function(token,state,Item,item){
 		//
 		// assume true, return false on any single true hit
 		//
 		var ret = true;
 		for each (var func in this.tests){
-			var rawres = func.call(token,state,Item);
+			var rawres = func.call(token,state,Item,item);
 			if ("object" != typeof rawres){
 				rawres = [rawres];
 			}
@@ -94,13 +94,13 @@ CSL.Util.Match = function(){
 		return ret;
 	};
 
-	this.all = function(token,state,Item){
+	this.all = function(token,state,Item,item){
 		//
 		// assume true, return false on any single false hit
 		//
 		var ret = true;
 		for each (var func in this.tests){
-			var rawres = func.call(token,state,Item);
+			var rawres = func.call(token,state,Item,item);
 			if ("object" != typeof rawres){
 				rawres = [rawres];
 			}

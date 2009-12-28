@@ -45,9 +45,11 @@ CSL.Node.label = new function(){
 				plural = this.strings.plural;
 				CSL.debug("plural: "+this.strings.plural);
 			}
-			var output_label = function(state,Item){
+			var output_label = function(state,Item,item){
 				if ("locator" == term){
-					myterm = Item["label"];
+					if (item && item.label){
+						myterm = item.label;
+					}
 				}
 				if (!myterm){
 					myterm = "page";

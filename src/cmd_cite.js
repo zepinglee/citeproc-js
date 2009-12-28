@@ -19,17 +19,17 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-CSL.Engine.prototype.sortCitationCluster = function(rawList){
+CSL.Engine.prototype.sortCitationCluster = function(citation){
 	var inputList = [];
-	for each (var item in rawList){
+	for each (var item in citation.citationItems){
 		var Item = this.sys.retrieveItem(item.id);
-		inputList.push(newitem);
+		inputList.push(Item);
 	}
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
 		for (var k in inputList){
-			inputList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
+			citation.citationItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
 		}
-		inputList.sort(this.citation.srt.compareKeys);
+		citation.citationItems.sort(this.citation.srt.compareKeys);
 	};
 };
 
@@ -37,16 +37,10 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
-		var newitem = CSL.composeItem(Item,item);
+		var newitem = [Item,item];
 		inputList.push(newitem);
 	}
-	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		for (var k in inputList){
-			inputList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k],"citation_sort");
-		}
-		inputList.sort(this.citation.srt.compareKeys);
-	};
-	var str = CSL.getCitationCluster.call(this,inputList,citation);
+	var str = CSL.getCitationCluster.call(this,inputList);
 	return str;
 };
 
@@ -74,17 +68,6 @@ CSL.getAmbiguousCite = function(Item,disambig){
 	return ret;
 }
 
-CSL.composeItem = function(Item,params){
-	var newItem = {};
-	for (var i in Item){
-		newItem[i] = Item[i];
-	}
-	for (var i in params){
-		newItem[i] = params[i];
-	}
-	return newItem;
-};
-
 /**
  * Return delimiter for use in join
  * <p>Splice evaluation is done during cite
@@ -110,7 +93,7 @@ CSL.getSpliceDelimiter = function(last_collapsed){
  * Compose individual cites into a single string, with
  * flexible inter-cite splicing.
  */
-CSL.getCitationCluster = function (inputList,citation){
+CSL.getCitationCluster = function (inputList){
 	this.tmp.area = "citation";
 	var delimiter = "";
 	var result = "";
@@ -124,11 +107,12 @@ CSL.getCitationCluster = function (inputList,citation){
 	var myparams = new Array();
 
 	for (var pos in inputList){
-		var Item = inputList[pos];
+		var Item = inputList[pos][0];
+		var item = inputList[pos][1];
 		var last_collapsed = this.tmp.have_collapsed;
 		var params = new Object();
 
-		CSL.getCite.call(this,Item);
+		CSL.getCite.call(this,Item,item);
 
 		if (pos == (inputList.length-1)){
 			this.parallel.ComposeSet();
@@ -139,7 +123,7 @@ CSL.getCitationCluster = function (inputList,citation){
 		// corresponding to each element.
 		//
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this,last_collapsed);
-		if (Item["author-only"]){
+		if (item && item["author-only"]){
 			this.tmp.suppress_decorations = true;
 		}
 		params.suppress_decorations = this.tmp.suppress_decorations;
@@ -156,7 +140,10 @@ CSL.getCitationCluster = function (inputList,citation){
 	//
 	// XXXXX: purge of elements for parallel cites can happen here.
 	//
-	this.parallel.PruneOutputQueue(this.output.queue,citation);
+
+	// XXXX: need to provide a means of touching rawList element,
+	// to set parallel flag
+	this.parallel.PruneOutputQueue(this.output.queue,item);
 	//
 	// output.queue is a simple array.  do a slice
 	// of it to get each cite item, setting params from
@@ -175,7 +162,7 @@ CSL.getCitationCluster = function (inputList,citation){
 		this.tmp.suppress_decorations = false;
 		// meaningless assignment
 		// this.tmp.handle_ranges = false;
-		if (Item["author-only"]){
+		if (item && item["author-only"]){
 			return composite;
 		}
 		if (objects.length && "string" == typeof composite[0]){
@@ -224,12 +211,12 @@ CSL.getCitationCluster = function (inputList,citation){
  * (This might be dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.getCite = function(Item){
+CSL.getCite = function(Item,item){
 	this.parallel.StartCite(Item);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
-		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item);
+		next = CSL.tokenExec.call(this,this[this.tmp.area].tokens[next],Item,item);
     }
 	CSL.citeEnd.call(this,Item);
 	this.parallel.CloseCite(this);

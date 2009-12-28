@@ -19,7 +19,7 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-CSL.tokenExec = function(token,Item){
+CSL.tokenExec = function(token,Item,item){
     var next = token.next;
 	var maybenext = false;
 	if (false){
@@ -27,10 +27,10 @@ CSL.tokenExec = function(token,Item){
 	}
 
 	if (token.evaluator){
-	    next = token.evaluator(token,this,Item);
+	    next = token.evaluator(token,this,Item,item);
     };
 	for each (var exec in token.execs){
-	    maybenext = exec.call(token,this,Item);
+	    maybenext = exec.call(token,this,Item,item);
 		if (maybenext){
 			next = maybenext;
 		};

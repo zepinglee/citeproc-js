@@ -37,10 +37,10 @@ CSL.Node["else-if"] = new function(){
 			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
-				var func = function(state,Item){
+				var func = function(state,Item,item){
 					if (state.tmp.force_subsequent && tryposition < 2){
 						return true;
-					} else if (Item["position"] && Item["position"] >= tryposition){
+					} else if (item && item.position && item.position >= tryposition){
 						return true;
 					};
 					return false;

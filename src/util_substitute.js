@@ -25,17 +25,17 @@ CSL.Util.substituteStart = function(state,target){
 	// formatting.
 	//
 	if (("text" == this.name && !this.postponed_macro) || ["number","date","names"].indexOf(this.name) > -1){
-		var element_trace = function(state,Item){
+		var element_trace = function(state,Item,item){
 			if (state.tmp.element_trace.value() == "author" || "names" == this.name){
-				if (Item["author-only"]){
+				if (item && item["author-only"]){
 					state.tmp.element_trace.push("do-not-suppress-me");
-				} else if (Item["suppress-author"]){
+				} else if (item && item["suppress-author"]){
 					state.tmp.element_trace.push("suppress-me");
 				};
 			} else {
-				if (Item["author-only"]){
+				if (item && item["author-only"]){
 					state.tmp.element_trace.push("suppress-me");
-				} else if (Item["suppress-author"]){
+				} else if (item && item["suppress-author"]){
 					state.tmp.element_trace.push("do-not-suppress-me");
 				};
 			};

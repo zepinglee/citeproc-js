@@ -38,10 +38,10 @@ CSL.Node["if"] = new function(){
 			//};
 			if (this.strings.position){
 				var tryposition = this.strings.position;
-				var func = function(state,Item){
+				var func = function(state,Item,item){
 					if (state.tmp.force_subsequent && tryposition < 2){
 						return true;
-					} else if (Item["position"] && Item["position"] >= tryposition){
+					} else if (item && item.position && item.position >= tryposition){
 						return true;
 					};
 					return false;
@@ -49,13 +49,13 @@ CSL.Node["if"] = new function(){
 				this.tests.push(func);
 			}
 			if (this.strings["near-note-distance-check"]){
-				var func = function (state,Item){
+				var func = function (state,Item,item){
 					if (state.tmp.force_subsequent){
 						return true;
-					} else if (!Item["note_distance"]){
-					return false;
+					} else if (!item || !item["note_distance"]){
+						return false;
 					} else {
-						if (Item["note_distance"] > state.citation.opt["near-note-distance"]){
+						if (item && item["note_distance"] > state.citation.opt["near-note-distance"]){
 							return false;
 						} else {
 							return true;

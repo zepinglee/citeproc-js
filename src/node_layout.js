@@ -62,13 +62,13 @@ CSL.Node.layout = new function(){
 			target.push(this);
 			if (state.build.area == "citation"){
 				var prefix_token = new CSL.Token("text",CSL.SINGLETON);
-				var func = function(state,Item){
-					if (Item["prefix"]){
+				var func = function(state,Item,item){
+					if (item && item["prefix"]){
 						var sp = "";
-						if (Item["prefix"].match(CSL.ROMANESQUE_REGEXP)){
+						if (item["prefix"].match(CSL.ROMANESQUE_REGEXP)){
 							var sp = " ";
 						}
-						state.output.append((Item["prefix"]+sp),this);
+						state.output.append((item["prefix"]+sp),this);
 					};
 				};
 				prefix_token["execs"].push(func);
@@ -79,13 +79,13 @@ CSL.Node.layout = new function(){
 			state.build.layout_flag = false;
 			if (state.build.area == "citation"){
 				var suffix_token = new CSL.Token("text",CSL.SINGLETON);
-				var func = function(state,Item){
-					if (Item["suffix"]){
+				var func = function(state,Item,item){
+					if (item && item["suffix"]){
 						var sp = "";
-						if (Item["suffix"].match(CSL.ROMANESQUE_REGEXP)){
+						if (item["suffix"].match(CSL.ROMANESQUE_REGEXP)){
 							var sp = " ";
 						}
-						state.output.append((sp+Item["suffix"]),this);
+						state.output.append((sp+item["suffix"]),this);
 					};
 				};
 				suffix_token["execs"].push(func);

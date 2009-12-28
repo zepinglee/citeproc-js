@@ -113,15 +113,18 @@ StdRhinoTest.prototype.run = function(){
 	}
 	if (this.test.mode == "citation"){
 		if (!this.test.citations){
-			var citation = [];
+			var citation = {};
+			citation.properties = {};
+			citation.citationItems = [];
 			for each (item in this.style.registry.reflist){
-				citation.push({"id":item.id});
+				citation.citationItems.push({"id":item.id});
 			}
 			this.test.citations = [citation];
 		}
 		var citations = [];
 		for each (var citation in this.test.citations){
-			citations.push(this.style.makeCitationCluster(citation));
+			this.style.sortCitationCluster(citation);
+			citations.push(this.style.makeCitationCluster(citation.citationItems));
 		}
 		var ret = citations.join("\n");
 	} else if (this.test.mode == "bibliography"){

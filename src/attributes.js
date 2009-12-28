@@ -182,18 +182,25 @@ CSL.Attributes["@variable"] = function(state,arg){
 		};
 		this.execs.push(set_variable_names);
 
-		var check_for_output = function(state,Item){
+		var check_for_output = function(state,Item,item){
 			var output = false;
 			for each (var variable in this.variables){
-				if ("object" == typeof Item[variable]){
+				if ("locator" == variable){
+					if (item && item.locator){
+						output = true;
+						break;
+					};
+				} else if ("object" == typeof Item[variable]){
 					for (i in Item[variable]){
 						output = true;
 						break;
 					}
 				} else if ("string" == typeof Item[variable] && Item[variable]){
 					output = true;
+					break;
 				} else if ("number" == typeof Item[variable]){
 					output = true;
+					break;
 				}
 				if (output){
 					break;

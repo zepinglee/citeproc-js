@@ -57,16 +57,16 @@ CSL.Node.text = new function(){
 						this.range_prefix = "-";
 					}
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
-					var func = function(state,Item){
+					var func = function(state,Item,item){
 						var id = Item["id"];
 						if (!state.tmp.force_subsequent){
-							if (Item["author-only"]){
+							if (item && item["author-only"]){
 								state.tmp.element_trace.replace("do-not-suppress-me");
 								var term = CSL.Output.Formatters["capitalize-first"](state,state.getTerm("references","long","singular"));
 								state.output.append(term+" ");
 								state.tmp.last_element_trace = true;
 							};
-							if (Item["suppress-author"]){
+							if (item && item["suppress-author"]){
 								if (state.tmp.last_element_trace){
 									state.tmp.element_trace.replace("suppress-me");
 								};
@@ -177,7 +177,13 @@ CSL.Node.text = new function(){
 					state.build.form = false;
 					state.build.plural = false;
 				} else if (this.variables.length){
-					if (this.variables[0] == "container-title" && form == "short"){
+					if (["first-reference-note-number","locator"].indexOf(this.variables[0]) > -1){
+						var func = function(state,Item,item){
+							if (item && item[this.variables[0]]){
+								state.output.append(item[this.variables[0]],this);
+							};
+						};
+					} else if (this.variables[0] == "container-title" && form == "short"){
 						// Use tracking function
 						var func = state.abbrev.getOutputFunc(this,this.variables[0],"journal","journalAbbreviation");
 					} else if (this.variables[0] == "collection-title" && form == "short"){
