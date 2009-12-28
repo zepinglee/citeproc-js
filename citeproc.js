@@ -1718,7 +1718,7 @@ CSL.getCitationCluster = function (inputList){
 		params.have_collapsed = this.tmp.have_collapsed;
 		myparams.push(params);
 	};
-	this.parallel.PruneOutputQueue(this.output.queue,item);
+	this.parallel.PruneOutputQueue();
 	var myblobs = this.output.queue.slice();
 	for (var qpos in myblobs){
 		this.output.queue = [myblobs[qpos]];
@@ -1764,7 +1764,7 @@ CSL.getCitationCluster = function (inputList){
 	return result;
 };
 CSL.getCite = function(Item,item){
-	this.parallel.StartCite(Item);
+	this.parallel.StartCite(Item,item);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
@@ -3846,8 +3846,11 @@ CSL.Parallel.prototype.StartCitation = function(){
 		this.in_series = false;
 	};
 };
-CSL.Parallel.prototype.StartCite = function(Item){
+CSL.Parallel.prototype.StartCite = function(Item,item){
 	if (this.use_parallels){
+		if (item){
+			item.parallel = false;
+		};
 		this.try_cite = true;
 		for each (var x in ["title", "container-title","volume","page"]){
 			if (!Item[x]){
@@ -3864,6 +3867,7 @@ CSL.Parallel.prototype.StartCite = function(Item){
 		this.cite.top = new Array();
 		this.cite.mid = new Array();
 		this.cite.end = new Array();
+		this.cite.item = item;
 		this.target = "top";
 	};
 };
@@ -3927,17 +3931,22 @@ CSL.Parallel.prototype.ComposeSet = function(){
 		this.one_set.clear();
 	};
 };
-CSL.Parallel.prototype.PruneOutputQueue = function(){
+CSL.Parallel.prototype.PruneOutputQueue = function(item){
 	if (this.use_parallels){
 		for each (var series in this.all_sets.mystack){
 			for (var pos=0; pos<series.length; pos++){
 				var cite = series[pos];
 				if (pos == 0){
 					this.purgeVariableBlobs(cite,cite.end);
-				} else if (pos == (series.length-1) && series.length > 2){
-					this.purgeVariableBlobs(cite,cite.top.concat(cite.end));
 				} else {
-					this.purgeVariableBlobs(cite,cite.top);
+					if ("object" == typeof this.cite.item){
+						this.cite.item.parallel = true;
+					}
+					if (pos == (series.length-1) && series.length > 2){
+						this.purgeVariableBlobs(cite,cite.top.concat(cite.end));
+					} else {
+						this.purgeVariableBlobs(cite,cite.top);
+					};
 				};
 			};
 		};

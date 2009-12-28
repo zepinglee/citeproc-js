@@ -131,19 +131,7 @@ CSL.getCitationCluster = function (inputList){
 		myparams.push(params);
 	};
 
-	//
-	// XXXXX: this reports parallel citation subordinate
-	// siblings to the external position evaluation machinery.
-	// Such entries are forced to "full form", with all but the
-	// core reporter reference elements stripped.
-	//
-	//
-	// XXXXX: purge of elements for parallel cites can happen here.
-	//
-
-	// XXXX: need to provide a means of touching rawList element,
-	// to set parallel flag
-	this.parallel.PruneOutputQueue(this.output.queue,item);
+	this.parallel.PruneOutputQueue();
 	//
 	// output.queue is a simple array.  do a slice
 	// of it to get each cite item, setting params from
@@ -212,7 +200,7 @@ CSL.getCitationCluster = function (inputList){
  * entries in a bibliography.)
  */
 CSL.getCite = function(Item,item){
-	this.parallel.StartCite(Item);
+	this.parallel.StartCite(Item,item);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){
