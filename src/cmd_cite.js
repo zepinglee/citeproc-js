@@ -19,27 +19,72 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-CSL.Engine.prototype.sortCitationCluster = function(rawList){
-	var inputList = [];
-};
-
 CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
-	this.setCitationId(citation);
-	var inputList = [];
-	for each (var item in citation.citationItems){
+	var sortedItems = [];
+	// make sure this citation has a unique ID, and register it in citationById.
+	// The ID will be accessible to the calling application when generating
+	// the next call to this function.
+	var new_citation = this.setCitationId(citation);
+
+	// retrieve item data and compose items for use in rendering
+	// attach pointer to item data to shared copy as well
+	for (var pos in citation.citationItems){
+		var item = citation.citationItems[pos];
 		var Item = this.sys.retrieveItem(item.id);
 	    var newitem = [Item,item];
-		inputList.push(newitem);
+		sortedItems.push(newitem);
+		citation.citationItems[pos].item = Item;
 	};
-	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		for (var k in inputList){
-			citation.citationItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
+	// sort the list to be used in rendering
+	if (sortedItems && sortedItems.length > 1 && this["citation_sort"].tokens.length > 0){
+		for (var k in sortedItems){
+			sortedItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
 		};
-		inputList.sort(this.citation.srt.compareCompositeKeys);
+		sortedItems.sort(this.citation.srt.compareCompositeKeys);
 	};
+	// attach the sorted list to the citation item
+	citation.sortedItems = sortedItems;
+
+	// build reconstituted citations list in current document order
+	var citationByIndex = new Array();
+	for each (var c in citationsPre){
+		citationByIndex.push(this.registry.citationreg.citationById[c]);
+	};
+	citationByIndex.push(citation);
+	for each (var c in citationsPost){
+		citationByIndex.push(this.registry.citationreg.citationById[c]);
+	};
+
+	// set positions in reconstituted list, noting taints
+	var index = 0;
+	var tainted = new Array();
+	//
+	// tainting is of two types.  if this is a numbered style,
+	// we check registry for the sequence number, and taint
+	// only by that.  otherwise, we check newly construed position
+	// info against the existing copy of the citation, and taint
+	// at two levels (backreference only, or full re-rendering)
+	// by that.
+	//
+	// in  the case of a numbered style, we do two passes;
+	// one to pick up first references before a bib purge,
+	// and another to run the taints.  otherwise we can do
+	// everything in one pass, followed by a purge.
+	//
+	// Hmm.  The purge might produce taints as well, where
+	// names change.  Hmm.  So we need citationByItemID, to
+	// pick those up.  Plus a reporting-back mechanism in
+	// the bib registry, of course.
+	//
+	for (var cpos in citationByIndex){
+		//
+		// wonder what happens here ...
+		//
+	}
+
 	// XXXXX: something additional will need to happen around here.
 	this.parallel.StartCitation();
-	var str = CSL.getCitationCluster.call(this,inputList);
+	var str = CSL.getCitationCluster.call(this,sortedItems);
 	return str;
 }
 

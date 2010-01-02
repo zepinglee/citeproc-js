@@ -20,7 +20,9 @@
  * @namespace A CSL citation formatter.
  */
 CSL.Engine.prototype.setCitationId = function(citation){
+	var ret = false;
 	if (!citation.citationID){
+		ret = true;
 		var id = Math.floor(Math.random()*100000000000000);
 		while (true){
 			var direction = 0;
@@ -40,4 +42,5 @@ CSL.Engine.prototype.setCitationId = function(citation){
 			};
 		};
 	};
+	return ret;
 };

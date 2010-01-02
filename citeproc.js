@@ -1493,7 +1493,9 @@ CSL.Engine.CitationSort = function (){
 	this.keys = new Array();
 };
 CSL.Engine.prototype.setCitationId = function(citation){
+	var ret = false;
 	if (!citation.citationID){
+		ret = true;
 		var id = Math.floor(Math.random()*100000000000000);
 		while (true){
 			var direction = 0;
@@ -1513,6 +1515,7 @@ CSL.Engine.prototype.setCitationId = function(citation){
 			};
 		};
 	};
+	return ret;
 };
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
@@ -1687,25 +1690,37 @@ CSL.getBibliographyEntries = function (bibsection){
 	this.tmp.disambig_override = false;
 	return ret;
 };
-CSL.Engine.prototype.sortCitationCluster = function(rawList){
-	var inputList = [];
-};
 CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
-	this.setCitationId(citation);
-	var inputList = [];
-	for each (var item in citation.citationItems){
+	var sortedItems = [];
+	var new_citation = this.setCitationId(citation);
+	for (var pos in citation.citationItems){
+		var item = citation.citationItems[pos];
 		var Item = this.sys.retrieveItem(item.id);
 	    var newitem = [Item,item];
-		inputList.push(newitem);
+		sortedItems.push(newitem);
+		citation.citationItems[pos].item = Item;
 	};
-	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		for (var k in inputList){
-			citation.citationItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
+	if (sortedItems && sortedItems.length > 1 && this["citation_sort"].tokens.length > 0){
+		for (var k in sortedItems){
+			sortedItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
 		};
-		inputList.sort(this.citation.srt.compareCompositeKeys);
+		sortedItems.sort(this.citation.srt.compareCompositeKeys);
 	};
+	citation.sortedItems = sortedItems;
+	var citationByIndex = new Array();
+	for each (var c in citationsPre){
+		citationByIndex.push(this.registry.citationreg.citationById[c]);
+	};
+	citationByIndex.push(citation);
+	for each (var c in citationsPost){
+		citationByIndex.push(this.registry.citationreg.citationById[c]);
+	};
+	var index = 0;
+	var tainted = new Array();
+	for (var cpos in citationByIndex){
+	}
 	this.parallel.StartCitation();
-	var str = CSL.getCitationCluster.call(this,inputList);
+	var str = CSL.getCitationCluster.call(this,sortedItems);
 	return str;
 }
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
@@ -6109,4 +6124,5 @@ CSL.getModes = function(){
 };
 CSL.Registry.CitationReg = function(state){
 	this.citationById = new Object();
+	this.citationByIndex = new Array();
 };

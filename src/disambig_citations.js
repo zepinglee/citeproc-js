@@ -21,4 +21,5 @@
  */
 CSL.Registry.CitationReg = function(state){
 	this.citationById = new Object();
+	this.citationByIndex = new Array();
 };

@@ -128,7 +128,7 @@ StdRhinoTest.prototype.run = function(){
 			}
 		} else if (this.test.citations){
 			for each (var citation in this.test.citations){
-				citations.push(this.style.processCitationCluster(citation));
+				citations.push(this.style.processCitationCluster(citation,this.style.registry.citationreg.citationByIndex,[]));
 			}
 		}
 		var ret = citations.join("\n");
