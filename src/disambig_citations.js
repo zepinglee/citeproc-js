@@ -19,25 +19,6 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-CSL.Engine.prototype.setCitationId = function(citation){
-	if (!citation.citationID){
-		var id = Math.floor(Math.random()*100000000000000);
-		while (true){
-			var direction = 0;
-			if (!this.registry.citationreg.citationById[id]){
-				citation.citationID = id.toString(32);
-				this.registry.citationreg.citationById[citation.citationID] = citation;
-				break;
-			} else if (!direction && id < 50000000000000){
-				direction = 1;
-			} else {
-				direction = -1;
-			}
-			if (direction == 1){
-				id++;
-			} else {
-				id--;
-			};
-		};
-	};
+CSL.Registry.CitationReg = function(state){
+	this.citationById = new Object();
 };

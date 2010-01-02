@@ -354,8 +354,11 @@ if (!CSL.Output.Formats){
 if (!CSL.Registry){
 	load("./src/registry.js");
 }
-if (!CSL.Registry.prototype.NameReg){
+if (!CSL.Registry.NameReg){
 	load("./src/disambig_names.js");
+}
+if (!CSL.Registry.CitationReg){
+	load("./src/disambig_citations.js");
 }
 if (!CSL.Registry.prototype.disambiguateCites){
 	load("./src/disambig_cites.js");

@@ -1492,14 +1492,14 @@ CSL.Engine.CitationSort = function (){
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
 };
-CSL.setCitationId = function(citation,citationsById){
+CSL.Engine.prototype.setCitationId = function(citation){
 	if (!citation.citationID){
 		var id = Math.floor(Math.random()*100000000000000);
 		while (true){
 			var direction = 0;
-			if (!citationsById[id]){
+			if (!this.registry.citationreg.citationById[id]){
 				citation.citationID = id.toString(32);
-				citationsById[citation.citationID] = citation;
+				this.registry.citationreg.citationById[citation.citationID] = citation;
 				break;
 			} else if (!direction && id < 50000000000000){
 				direction = 1;
@@ -1691,8 +1691,7 @@ CSL.Engine.prototype.sortCitationCluster = function(rawList){
 	var inputList = [];
 };
 CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
-	var citations = {};
-	CSL.setCitationId(citation,citations);
+	this.setCitationId(citation);
 	var inputList = [];
 	for each (var item in citation.citationItems){
 		var Item = this.sys.retrieveItem(item.id);
@@ -5341,6 +5340,7 @@ CSL.Registry = function(state){
 	this.registry = new Object();
 	this.reflist = new Array();
 	this.namereg = new CSL.Registry.NameReg(state);
+	this.citationreg = new CSL.Registry.CitationReg(state);
 	this.mylist = new Array();
 	this.myhash = new Object();
 	this.deletes = new Array();
@@ -6106,4 +6106,7 @@ CSL.getModes = function(){
 		};
 	}
 	return ret;
+};
+CSL.Registry.CitationReg = function(state){
+	this.citationById = new Object();
 };
