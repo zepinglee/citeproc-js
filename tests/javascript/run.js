@@ -23,6 +23,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_institutions");
 	dojo.require("tests.std_bluebook");
 	dojo.require("tests.std_abbrevs");
@@ -44,7 +45,6 @@ if(true){
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_bibsection");
-	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_nameattr");
 	dojo.require("tests.std_fullstyles");
 	dojo.require("tests.std_multilingual");

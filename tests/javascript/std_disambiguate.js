@@ -39,6 +39,10 @@ doh.register("tests.std_disambiguate", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("disambiguate_BasedOnSubsequentFormWithLocator");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("disambiguate_ByCiteBaseNameCountOnFailureIfYearSuffixAvailable");
         doh.assertEqual(test.result, test.run());
     },
