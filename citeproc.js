@@ -1492,6 +1492,28 @@ CSL.Engine.CitationSort = function (){
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
 };
+CSL.setCitationId = function(citation,citationsById){
+	if (!citation.citationID){
+		var id = Math.floor(Math.random()*100000000000000);
+		while (true){
+			var direction = 0;
+			if (!citationsById[id]){
+				citation.citationID = id.toString(32);
+				citationsById[citation.citationID] = citation;
+				break;
+			} else if (!direction && id < 50000000000000){
+				direction = 1;
+			} else {
+				direction = -1;
+			}
+			if (direction == 1){
+				id++;
+			} else {
+				id--;
+			};
+		};
+	};
+};
 CSL.Engine.prototype.updateItems = function(idList){
 	var debug = false;
 	if (debug){
@@ -1668,7 +1690,9 @@ CSL.getBibliographyEntries = function (bibsection){
 CSL.Engine.prototype.sortCitationCluster = function(rawList){
 	var inputList = [];
 };
-CSL.Engine.prototype.processCitationCluster = function(citation){
+CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
+	var citations = {};
+	CSL.setCitationId(citation,citations);
 	var inputList = [];
 	for each (var item in citation.citationItems){
 		var Item = this.sys.retrieveItem(item.id);

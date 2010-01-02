@@ -23,7 +23,9 @@ CSL.Engine.prototype.sortCitationCluster = function(rawList){
 	var inputList = [];
 };
 
-CSL.Engine.prototype.processCitationCluster = function(citation){
+CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
+	var citations = {};
+	CSL.setCitationId(citation,citations);
 	var inputList = [];
 	for each (var item in citation.citationItems){
 		var Item = this.sys.retrieveItem(item.id);

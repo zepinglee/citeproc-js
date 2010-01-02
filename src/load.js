@@ -259,6 +259,9 @@ if (!CSL.makeCitationCluster){
 if (!CSL.makeBibliography){
 	load("./src/cmd_bibliography.js");
 }
+if (!CSL.setCitationId){
+	load("./src/util_integration.js");
+}
 if (!CSL.updateItems){
 	load("./src/cmd_update.js");
 }
