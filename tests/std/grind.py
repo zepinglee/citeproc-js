@@ -186,6 +186,7 @@ class CslTest(CslTestUtils):
             self.extract(element,required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
+        self.extract("CITATIONS",required=False,is_json=True)
         self.extract("BIBENTRIES",required=False,is_json=True)
         self.extract("BIBSECTION",required=False,is_json=True)
 
@@ -362,6 +363,10 @@ class CslTest(CslTestUtils):
         if self.data["citation_items"]:
             citations_str = json.dumps(self.data["citation_items"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("CITATION-ITEMS", "CITATION-ITEMS"),self.raw)
+            newraw = m.group(1) + "\n" + citations_str + m.group(3)
+        if self.data["citations"]:
+            citations_str = json.dumps(self.data["citations"],indent=4,sort_keys=True,ensure_ascii=False)
+            m = re.match(self.RE_ELEMENT % ("CITATIONS", "CITATIONS"),self.raw)
             newraw = m.group(1) + "\n" + citations_str + m.group(3)
         if self.raw != newraw:
             tpath_out = "%s.txt" % (self.path("humans", self.testname),)

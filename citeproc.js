@@ -1668,6 +1668,23 @@ CSL.getBibliographyEntries = function (bibsection){
 CSL.Engine.prototype.sortCitationCluster = function(rawList){
 	var inputList = [];
 };
+CSL.Engine.prototype.processCitationCluster = function(citation){
+	var inputList = [];
+	for each (var item in citation.citationItems){
+		var Item = this.sys.retrieveItem(item.id);
+	    var newitem = [Item,item];
+		inputList.push(newitem);
+	};
+	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
+		for (var k in inputList){
+			citation.citationItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
+		};
+		inputList.sort(this.citation.srt.compareCompositeKeys);
+	};
+	this.parallel.StartCitation();
+	var str = CSL.getCitationCluster.call(this,inputList);
+	return str;
+}
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){

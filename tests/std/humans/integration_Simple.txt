@@ -1,0 +1,143 @@
+/**
+ * A Javascript implementation of the CSL citation formatting language.
+ *
+ * <p>A configured instance of the process is built in two stages,
+ * using {@link CSL.Core.Build} and {@link CSL.Core.Configure}.
+ * The former sets up hash-accessible locale data and imports the CSL format file
+ * to be applied to the citations,
+ * transforming it into a one-dimensional token list, and
+ * registering functions and parameters on each token as appropriate.
+ * The latter sets jump-point information
+ * on tokens that constitute potential branch
+ * points, in a single back-to-front scan of the token list.
+ * This
+ * yields a token list that can be executed front-to-back by
+ * body methods available on the
+ * {@link CSL.Engine} class.</p>
+ *
+ * <p>This top-level {@link CSL} object itself carries
+ * constants that are needed during processing.</p>
+ * @namespace A CSL citation formatter.
+ */
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+>>=====  CITATIONS =====>>
+[
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-1", 
+                "locator": "12"
+            }, 
+            {
+                "id": "ITEM-2", 
+                "locator": "23"
+            }
+        ], 
+        "properties": {
+            "index": 0, 
+            "noteIndex": 0
+        }
+    }, 
+    {
+        "citationItems": [
+            {
+                "id": "ITEM-3", 
+                "locator": "34"
+            }, 
+            {
+                "id": "ITEM-4", 
+                "locator": "45"
+            }
+        ], 
+        "properties": {
+            "index": 1, 
+            "noteIndex": 1
+        }
+    }
+]
+<<=====  CITATIONS =====<<
+
+
+
+>>===== RESULT =====>>
+(Doe p. 12; Roe p. 23)
+(Noakes p. 34; Snoakes p. 45)
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout delimiter="; " prefix="(" suffix=")">
+      <names variable="author">
+        <name form="short"/>
+      </names>
+      <group prefix=" ">
+        <label variable="locator" form="short" suffix=" "/>
+        <text variable="locator"/>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-2", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Noakes", 
+                "given": "John", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-3", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Snoakes", 
+                "given": "Richard", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-4", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

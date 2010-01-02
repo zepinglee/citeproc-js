@@ -23,6 +23,7 @@
     "bibentries": false, 
     "bibsection": false, 
     "citation_items": false, 
+    "citations": false, 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\"\n      initialize-with-hyphen=\"false\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <names variable=\"translator\">\n        <name and=\"symbol\" delimiter=\", \" delimiter-precedes-last=\"always\" initialize-with=\".\" name-as-sort-order=\"all\" sort-separator=\", \" />\n      </names>\n    </layout>\n  </citation>\n</style>", 
     "input": [
         {

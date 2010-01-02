@@ -23,6 +23,25 @@ CSL.Engine.prototype.sortCitationCluster = function(rawList){
 	var inputList = [];
 };
 
+CSL.Engine.prototype.processCitationCluster = function(citation){
+	var inputList = [];
+	for each (var item in citation.citationItems){
+		var Item = this.sys.retrieveItem(item.id);
+	    var newitem = [Item,item];
+		inputList.push(newitem);
+	};
+	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
+		for (var k in inputList){
+			citation.citationItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
+		};
+		inputList.sort(this.citation.srt.compareCompositeKeys);
+	};
+	// XXXXX: something additional will need to happen around here.
+	this.parallel.StartCitation();
+	var str = CSL.getCitationCluster.call(this,inputList);
+	return str;
+}
+
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
@@ -36,13 +55,6 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
 		};
 		inputList.sort(this.citation.srt.compareCompositeKeys);
 	};
-	//
-	// XXXXX: There is a problem here.  Position evaluation needs to
-	// be performed after sorting, and before cites are rendered.
-	// Either makeCitationCluster() needs to be split into two pieces,
-	// or a position evaluation function from the integration layer
-	// needs to be invoked at this point.
-	//
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,inputList);
 	return str;
