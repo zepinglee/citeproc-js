@@ -36,7 +36,7 @@ One <i>TwoG</i> Three&lt;/i&gt; Four Five!
 One &lt;i&gt;TwoH<i> Three</i> Four Five!
 <<===== RESULT =====<<
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -79,7 +79,7 @@ One &lt;i&gt;TwoH<i> Three</i> Four Five!
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 

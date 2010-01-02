@@ -22,7 +22,7 @@
 {
     "bibentries": false, 
     "bibsection": false, 
-    "citations": false, 
+    "citation_items": false, 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation \n         disambiguate-add-givenname=\"true\"\n         disambiguate-add-names=\"true\"\n         et-al-min=\"3\"\n         et-al-use-first=\"1\"\n         givenname-disambiguation-rule=\"by-cite\">\n    <layout delimiter=\"; \">\n      <names variable=\"author\">\n        <name delimiter=\", \" initialize-with=\".\" />\n      </names>\n    </layout>\n  </citation>\n  <bibliography>\n    <sort>\n      <key variable=\"title\" />\n    </sort>\n    <layout>\n      <text value=\"Ignore me\" />\n    </layout>\n  </bibliography>\n</style>", 
     "input": [
         {

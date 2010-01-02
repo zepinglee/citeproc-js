@@ -75,4 +75,8 @@ for i in tests/javascript/std_*.js; do
     IFS=$OLDIFS
 done
 
+echo Bundling ./citeproc.js
+tools/bundle.sh
+
+echo Applying license text all over the place
 tools/APPLY_LICENSE.py

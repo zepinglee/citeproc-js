@@ -22,7 +22,7 @@
 {
     "bibentries": false, 
     "bibsection": false, 
-    "citations": false, 
+    "citation_items": false, 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text value=\"Oops\"/>\n    </layout>\n  </citation>\n  <bibliography\n      name-as-sort-order=\"all\">\n    <layout>\n      <names variable=\"author\">\n        <name sort-separator=\", \" delimiter=\"; \"/>\n      </names>\n    </layout>\n  </bibliography>\n</style>", 
     "input": [
         {

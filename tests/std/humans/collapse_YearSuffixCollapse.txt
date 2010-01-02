@@ -34,7 +34,7 @@ Smith 2000a,c-e, 2001
 <<===== RESULT =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -54,7 +54,7 @@ Smith 2000a,c-e, 2001
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== CSL =====>>

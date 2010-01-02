@@ -36,7 +36,7 @@ Example: first less than second, at 123N110-N115, 000c23-22
 <<===== RESULT =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -74,7 +74,7 @@ Example: first less than second, at 123N110-N115, 000c23-22
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== CSL =====>>

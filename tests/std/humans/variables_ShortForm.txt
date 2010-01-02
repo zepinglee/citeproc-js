@@ -31,7 +31,7 @@ Journal of Irreproducible Results
 J. Irrep. Res.
 <<===== RESULT =====<<
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -49,7 +49,7 @@ J. Irrep. Res.
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== CSL =====>>

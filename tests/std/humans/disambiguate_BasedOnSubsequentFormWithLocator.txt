@@ -35,7 +35,7 @@ Roe, Her Book, supra note 3, at 78.
 Noakes, supra note 2, at 89.
 <<===== RESULT =====<<
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -98,7 +98,7 @@ Noakes, supra note 2, at 89.
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 

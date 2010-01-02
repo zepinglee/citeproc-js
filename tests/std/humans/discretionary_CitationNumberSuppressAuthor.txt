@@ -31,7 +31,7 @@ citation
 <i>[2]</i>
 <<== RESULT ==<<
 
->>== CITATIONS ==>>
+>>== CITATION-ITEMS ==>>
 [
     [
         {
@@ -45,7 +45,7 @@ citation
         }
     ]
 ]
-<<== CITATIONS ==<<
+<<== CITATION-ITEMS ==<<
 
 
 >>===== CSL =====>>

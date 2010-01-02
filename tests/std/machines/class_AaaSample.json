@@ -22,7 +22,7 @@
 {
     "bibentries": false, 
     "bibsection": false, 
-    "citations": false, 
+    "citation_items": false, 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation \n         disambiguate-add-year-suffix=\"true\">\n    <layout>\n      <names variable=\"author\">\n        <name />\n      </names>\n      <date variable=\"issued\">\n        <date-part name=\"year\" />\n      </date>\n    </layout>\n  </citation>\n  <bibliography \n         subsequent-author-substitute=\"\">\n    <layout>\n      <group display=\"block\">\n        <names variable=\"author\">\n          <name and=\"text\" />\n        </names>\n      </group>\n      <group display=\"left-margin\">\n        <date variable=\"issued\">\n          <date-part name=\"year\" />\n        </date>\n        <text variable=\"year-suffix\" />\n      </group>\n      <group display=\"right-inline\">\n        <text variable=\"title\" />\n      </group>\n    </layout>\n  </bibliography>\n</style>", 
     "input": [
         {

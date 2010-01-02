@@ -32,7 +32,7 @@ Ibid p. 23.
 <<===== RESULT =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -48,7 +48,7 @@ Ibid p. 23.
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== CSL =====>>

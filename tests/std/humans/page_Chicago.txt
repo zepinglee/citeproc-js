@@ -48,7 +48,7 @@ Example T, at n11564-68
 <<===== RESULT =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -151,7 +151,7 @@ Example T, at n11564-68
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== CSL =====>>

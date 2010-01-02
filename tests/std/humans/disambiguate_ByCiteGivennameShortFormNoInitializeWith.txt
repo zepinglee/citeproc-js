@@ -57,7 +57,7 @@ John Doe; Aloysius Doe
 <<===== CSL =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -73,7 +73,7 @@ John Doe; Aloysius Doe
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== INPUT =====>>

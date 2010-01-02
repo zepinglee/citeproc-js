@@ -33,7 +33,7 @@ Doe, His Book, supra note 1.
 Roe, Her Book, supra note 2.
 <<===== RESULT =====<<
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -74,7 +74,7 @@ Roe, Her Book, supra note 2.
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 

@@ -24,7 +24,7 @@ citation
 <<===== MODE =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -38,7 +38,7 @@ citation
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 >>===== RESULT =====>>
 Smith v. Noakes, 222 U.S. 200, 333 L.Ed. 300 (1965); Jim v. Bob, 444 U.S. 400 (1965)

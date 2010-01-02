@@ -151,7 +151,7 @@ class CslTests(CslTestUtils):
                 test.parse()
                 ## test.fix_source()
                 test.fix_names()
-                ## test.fix_citations()
+                ## test.fix_citation_items()
                 test.validate(testname)
                 test.dump_machines()
                 test.dump_humans()
@@ -185,7 +185,7 @@ class CslTest(CslTestUtils):
         for element in ["MODE","CSL","RESULT"]:
             self.extract(element,required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
-        self.extract("CITATIONS",required=False,is_json=True)
+        self.extract("CITATION-ITEMS",required=False,is_json=True)
         self.extract("BIBENTRIES",required=False,is_json=True)
         self.extract("BIBSECTION",required=False,is_json=True)
 
@@ -200,45 +200,9 @@ class CslTest(CslTestUtils):
         if data != False:
             if is_json:
                 data = json.loads(data)
-            self.data[tag.lower()] = data
+            self.data[tag.lower().replace('-','_')] = data
         else:
-            self.data[tag.lower()] = False
-
-    def fix_citations(self):
-        """ Convert old citation specifiers to the form used
-            by Zotero
-        """
-        mycitations = self.data["citations"];
-        if mycitations != False:
-            for i in range(0,len(mycitations),1):
-                if mycitations[i].has_key("properties"):
-                    if mycitations[i]["properties"].has_key("noteIndex"):
-                        for j in range(0,len(mycitations[i]["citationItems"]),1):
-                            mycitations[i]["citationItems"][j]["note-number"] = mycitations[i]["properties"]["noteIndex"]
-                mycitations[i] = mycitations[i]["citationItems"]
-
-    def fix_source(self):
-        """ Convert options to attributes, write back to source file.
-            (now disabled)
-        """
-        mycsl = self.data["csl"].replace(namespace,'')
-        et = ElementTree.fromstring(mycsl)
-        for tagname in ["citation", "bibliography"]:
-            opts = et.findall(".//%s/option" % tagname)
-            tag = et.findall(".//%s" % tagname)
-            if tag and len(tag):
-                tag = tag[0]
-                for opt in opts:
-                    tag.attrib[opt.attrib["name"]] = opt.attrib["value"]
-                    tag.remove(opt)
-        indent(et)
-        str = ElementTree.tostring(et).strip()
-        for tagname in ["style", "citation", "bibliography"]:
-            str = self.format_attributes(tagname,str)
-        m = re.match(self.RE_ELEMENT % ("CSL", "CSL"),self.raw)
-        if str != mycsl:
-            newraw = m.group(1) + "\n" + str + m.group(3)
-            open( "%s.txt" % (self.path("humans",self.testname),), "w+" ).write(newraw)
+            self.data[tag.lower().replace('-','_')] = False
 
     def format_attributes(self,tag,str):
         #print "before: "+tag
@@ -258,22 +222,6 @@ class CslTest(CslTestUtils):
         #style = re.sub("<style[^>]*>",bibliographytag,style)
         return str
 
-    def fix_citationsX(self):
-        """ Move ItemID inside the citation map, and use the
-            map on its own, eliminating the list wrapper.
-            (now disabled)
-        """
-        if self.data["citations"]:
-            for x in range(0,len(self.data["citations"]),1):
-                cite = self.data["citations"][x]
-                for y in range(0,len(cite),1):
-                    item = cite[y]
-                    if type(item) == type([]) and len(item) == 2:
-                        print "Fixing"
-                        item[1]["id"] = item[0]
-                        self.data["citations"][x][y] = item[1]
-                        print self.data["citations"]
-    
     def fix_names(self):
         """ Mangle name fields
 
@@ -411,9 +359,9 @@ class CslTest(CslTestUtils):
         input_str = json.dumps(self.data["input"],indent=4,sort_keys=True,ensure_ascii=False)
         m = re.match(self.RE_ELEMENT % ("INPUT", "INPUT"),self.raw)
         newraw = m.group(1) + "\n" + input_str + m.group(3)
-        if self.data["citations"]:
-            citations_str = json.dumps(self.data["citations"],indent=4,sort_keys=True,ensure_ascii=False)
-            m = re.match(self.RE_ELEMENT % ("CITATIONS", "CITATIONS"),self.raw)
+        if self.data["citation_items"]:
+            citations_str = json.dumps(self.data["citation_items"],indent=4,sort_keys=True,ensure_ascii=False)
+            m = re.match(self.RE_ELEMENT % ("CITATION-ITEMS", "CITATION-ITEMS"),self.raw)
             newraw = m.group(1) + "\n" + citations_str + m.group(3)
         if self.raw != newraw:
             tpath_out = "%s.txt" % (self.path("humans", self.testname),)

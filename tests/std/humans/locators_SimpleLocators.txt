@@ -31,7 +31,7 @@ Doe, Book A, 2000, p. 100; Roe, Book B, 2001, chap. 200.
 <<===== RESULT =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -46,7 +46,7 @@ Doe, Book A, 2000, p. 100; Roe, Book B, 2001, chap. 200.
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== CSL =====>>

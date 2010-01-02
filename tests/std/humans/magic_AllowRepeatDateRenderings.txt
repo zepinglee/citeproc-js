@@ -31,7 +31,7 @@ citation
 (2007, February 15).
 <<===== RESULT =====<<
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -44,7 +44,7 @@ citation
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 >>===== CSL =====>>
 <style 

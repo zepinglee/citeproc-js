@@ -112,15 +112,15 @@ StdRhinoTest.prototype.run = function(){
 		this.style.updateItems(this._ids);
 	}
 	if (this.test.mode == "citation"){
-		if (!this.test.citations){
+		if (!this.test.citation_items){
 			var citation = [];
 			for each (item in this.style.registry.reflist){
 				citation.push({"id":item.id});
 			}
-			this.test.citations = [citation];
+			this.test.citation_items = [citation];
 		}
 		var citations = [];
-		for each (var citation in this.test.citations){
+		for each (var citation in this.test.citation_items){
 			// sortCitationCluster(), we hardly knew ya
 			// this.style.sortCitationCluster(citation);
 			citations.push(this.style.makeCitationCluster(citation));

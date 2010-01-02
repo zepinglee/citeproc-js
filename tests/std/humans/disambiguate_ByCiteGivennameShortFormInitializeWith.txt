@@ -59,7 +59,7 @@ Smith; Smith
 <<===== CSL =====<<
 
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -83,7 +83,7 @@ Smith; Smith
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== INPUT =====>>

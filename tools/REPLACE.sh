@@ -25,7 +25,7 @@ if [ "$2" == "NOTHING" ]; then
 else
     ARG2="$2"
 fi
-for i in src/*.js std/humans/*.txt tests/*.js; do
+for i in src/*.js tests/std/humans/*.txt tests/javascript/*.js; do
     if [ $(grep -c "${1}" $i) -gt 0 ]; then
         if [ "$ACTION" == "1" ]; then
             #cat $i | sed -e "s~$1~${ARG2}~g" > $i.NEW

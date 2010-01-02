@@ -56,7 +56,7 @@ citation
 </style>
 <<===== CSL =====<<
 
->>===== CITATIONS ====>>
+>>===== CITATION-ITEMS ====>>
 [
     [
         {
@@ -65,7 +65,7 @@ citation
         }
     ]
 ]
-<<===== CITATIONS ====<<
+<<===== CITATION-ITEMS ====<<
 
 
 

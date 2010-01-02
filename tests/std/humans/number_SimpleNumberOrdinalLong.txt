@@ -30,7 +30,7 @@ citation
 ninth
 <<== RESULT ==<<
 
->>== CITATIONS ==>>
+>>== CITATION-ITEMS ==>>
 [
     [
         {
@@ -43,7 +43,7 @@ ninth
         }
     ]
 ]
-<<== CITATIONS ==<<
+<<== CITATION-ITEMS ==<<
 
 
 >>===== CSL =====>>

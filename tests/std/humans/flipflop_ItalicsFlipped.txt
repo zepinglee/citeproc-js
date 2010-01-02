@@ -30,7 +30,7 @@ citation
 <i>One <span style="font-style:normal;">Two <i>Three</i> Four</span> Five!</i>
 <<===== RESULT =====<<
 
->>===== CITATIONS =====>>
+>>===== CITATION-ITEMS =====>>
 [
     [
         {
@@ -43,7 +43,7 @@ citation
         }
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 >>===== CSL =====>>
