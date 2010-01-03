@@ -52,6 +52,7 @@ CSL.Node.text = new function(){
 				// different set of formatting parameters on the output
 				// queue.
 				if (variable == "citation-number"){
+					state.opt.update_mode = CSL.NUMERIC;
 					//this.strings.is_rangeable = true;
 					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
 						this.range_prefix = "-";
@@ -180,7 +181,14 @@ CSL.Node.text = new function(){
 					if (["first-reference-note-number","locator"].indexOf(this.variables[0]) > -1){
 						var func = function(state,Item,item){
 							if (item && item[this.variables[0]]){
-								state.output.append(item[this.variables[0]],this);
+								//
+								// XXXXX: wrap in a marker here, and raise a flag
+								// to capture the cite before stripping and
+								// outputting finished content.
+								//
+								state.tmp.backref_index.push(Item.id);
+								var wrapped = "(csl:backref)" + item[this.variables[0]] + "(/csl:backref)";
+								state.output.append(wrapped,this);
 							};
 						};
 					} else if (this.variables[0] == "container-title" && form == "short"){

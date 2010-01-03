@@ -28,6 +28,7 @@ CSL.Engine.Opt = function (){
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
 	this["default-locale"] = ["en"];
+	this["update_mode"] = CSL.NONE;
 	/*
 	 * Default values.
 	 * The various et-al values are set globally,
@@ -125,6 +126,9 @@ CSL.Engine.Tmp = function (){
 	this.last_years_used = new Array();
 	this.years_used = new Array();
 	this.names_used = new Array();
+
+	this.taintedItemIDs = false;
+	this.taintedCitationIDs = false;
 	//
 	// scratch stack containing initialize-with strings or null values
 	this.initialize_with = new CSL.Stack();

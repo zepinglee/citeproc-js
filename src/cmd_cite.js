@@ -20,6 +20,8 @@
  * @namespace A CSL citation formatter.
  */
 CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
+	this.tmp.taintedItemIDs = new Array();
+	this.tmp.taintedCitationIDs = new Array();
 	var sortedItems = [];
 	// make sure this citation has a unique ID, and register it in citationById.
 	// The ID will be accessible to the calling application when generating
@@ -57,49 +59,67 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 
 	// set positions in reconstituted list, noting taints
 	var index = 0;
-	var tainted = new Array();
 	//
-	// tainting is of two types.  if this is a numbered style,
+	// Okay.  The processor needs three extensions to get this working
+	//
+	// (1) The updateItems() function needs to report back on tainted
+	// items. [DONE]
+	// (2) The processor needs to memo the type of style referencing as numbered,
+	 // position, or none. [DONE]
+	// (3) Cites with backreference note numbers need to be held in rendered
+	// string form, with a placeholder, and reference indexes for these cites need to be
+	// memoed on the citation object. [DONE]
+	//
+	// With the above changes in place, the rest of this becomes pretty
+	// easy.
+	//
+	// The hard part will be in the testing, as usual.
+	//
+	// tainting is of two types. if this is a numbered style,
 	// we check registry for the sequence number, and taint
-	// only by that.  otherwise, we check newly construed position
+	// only by that. otherwise, we check newly construed position
 	// info against the existing copy of the citation, and taint
 	// at two levels (backreference only, or full re-rendering)
 	// by that.
 	//
-	// in  the case of a numbered style, we do two passes;
+	// in the case of a numbered style, we do two passes;
 	// one to pick up first references before a bib purge,
-	// and another to run the taints.  otherwise we can do
+	// and another to run the taints. otherwise we can do
 	// everything in one pass, followed by a purge.
 	//
-	// Hmm.  The purge might produce taints as well, where
-	// names change.  Hmm.  So we need citationByItemID, to
-	// pick those up.  Plus a reporting-back mechanism in
+	// Hmm. The purge might produce taints as well, where
+	// names change. Hmm. So we need citationByItemID, to
+	// pick those up. Plus a reporting-back mechanism in
 	// the bib registry, of course.
 	//
 	for (var cpos in citationByIndex){
-		//
-		// wonder what happens here ...
-		//
+ //
+ // wonder what happens here ...
+ //
 	}
 
 	// XXXXX: something additional will need to happen around here.
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,sortedItems);
+
+	this.tmp.taintedItemIDs = false;
+	this.tmp.taintedCitationIDs = false;
+
 	return str;
 }
 
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
-		var Item = this.sys.retrieveItem(item.id);
-	    var newitem = [Item,item];
-		inputList.push(newitem);
+ var Item = this.sys.retrieveItem(item.id);
+ var newitem = [Item,item];
+ inputList.push(newitem);
 	};
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
-		for (var k in inputList){
-			rawList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
-		};
-		inputList.sort(this.citation.srt.compareCompositeKeys);
+ for (var k in inputList){
+ rawList[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
+ };
+ inputList.sort(this.citation.srt.compareCompositeKeys);
 	};
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,inputList);
@@ -155,7 +175,7 @@ CSL.getSpliceDelimiter = function(last_collapsed){
  * Compose individual cites into a single string, with
  * flexible inter-cite splicing.
  */
-CSL.getCitationCluster = function (inputList){
+CSL.getCitationCluster = function (inputList,citationID){
 	this.tmp.area = "citation";
 	var delimiter = "";
 	var result = "";
@@ -163,7 +183,11 @@ CSL.getCitationCluster = function (inputList){
 	this.tmp.last_suffix_used = "";
 	this.tmp.last_names_used = new Array();
 	this.tmp.last_years_used = new Array();
-
+	this.tmp.backref_index = new Array();
+	if (citationID){
+		this.registry.citationreg.citationById[citationID].properties.backref_index = false;
+		this.registry.citationreg.citationById[citationID].properties.backref_citation = false;
+	};
 
 	var myparams = new Array();
 
@@ -245,7 +269,11 @@ CSL.getCitationCluster = function (inputList){
 			};
 		};
 	};
-	return result;
+	if (citationID && this.tmp.backref_index.length){
+		this.registry.citationreg.citationById[citationID].properties.backref_index = this.tmp.backref_index;
+		this.registry.citationreg.citationById[citationID].properties.backref_citation = this.tmp.backref_citation;
+	}
+	return result.replace("(csl:backref)","","g").replace("(/csl:backref)","","g");
 };
 
 /*

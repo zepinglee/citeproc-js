@@ -19,7 +19,7 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-CSL.cloneAmbigConfig = function(config){
+CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
 	var ret = new Object();
 	ret["names"] = new Array();
 	ret["givens"] = new Array();
@@ -27,18 +27,38 @@ CSL.cloneAmbigConfig = function(config){
 	ret["disambiguate"] = false;
 	for (var i in config["names"]){
 		var param = config["names"][i];
+		if (oldconfig && oldconfig["names"][i] != param){
+			// print("hello "+i);
+			this.tmp.taintedItemIDs.push(itemID);
+			oldconfig = false;
+		};
 		ret["names"][i] = param;
-	}
+	};
 	for (var i in config["givens"]){
 		var param = new Array();
 		for (var j in config["givens"][i]){
 			// condition at line 312 of disambiguate.js protects against negative
 			// values of j
+			if (oldconfig && oldconfig["givens"][i] && oldconfig["givens"][i][j] != config["givens"][i][j]){
+				// print("hello "+i+":"+j);
+				this.tmp.taintedItemIDs.push(itemID);
+				oldconfig = false;
+			};
 			param.push(config["givens"][i][j]);
 		};
 		ret["givens"].push(param);
 	};
+	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
+		// print("hello year_suffix");
+		this.tmp.taintedItemIDs.push(itemID);
+		oldconfig = false;
+	}
 	ret["year_suffix"] = config["year_suffix"];
+	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
+		// print("hello disambiguate");
+		this.tmp.taintedItemIDs.push(itemID);
+		oldconfig = false;
+	}
 	ret["disambiguate"] = config["disambiguate"];
 	return ret;
 };

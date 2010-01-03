@@ -44,6 +44,7 @@ CSL.Engine.prototype.updateItems = function(idList){
 	if (debug){
 		CSL.debug("--> setdisambigs <--");
 	};
+	// taints always
 	this.registry.setdisambigs();
 	if (debug){
 		CSL.debug("--> setsortkeys <--");
@@ -56,10 +57,12 @@ CSL.Engine.prototype.updateItems = function(idList){
 	if (debug){
 		CSL.debug("--> renumber <--");
 	};
+	// taints if numbered style
 	this.registry.renumber();
 	if (debug){
 		CSL.debug("--> yearsuffix <--");
 	};
+	// taints always
 	this.registry.yearsuffix();
 
 	return this.registry.getSortedIds();

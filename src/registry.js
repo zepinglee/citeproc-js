@@ -339,7 +339,11 @@ CSL.Registry.prototype.dorefreshes = function(){
 		regtoken.ambig = undefined;
 
 		var Item = this.state.sys.retrieveItem(item);
+		var old_akey = akey;
 		var akey = CSL.getAmbiguousCite.call(this.state,Item);
+		if (this.state.tmp.taintedItemIDs && this.state.opt.update_mode != CSL.NUMERIC && old_akey != akey){
+			this.state.tmp.taintedItemIDs.push(item);
+		}
 		this.registry[item] = regtoken;
 
 		var abase = CSL.getAmbigConfig.call(this.state);
@@ -413,6 +417,9 @@ CSL.Registry.prototype.renumber = function(){
 	//
 	var count = 1;
 	for each (var item in this.reflist){
+		if (this.state.tmp.taintedItemIDs && item.seq != count){
+			this.state.tmp.taintedItemIDs.push(item.id);
+		};
 		item.seq = count;
 		count += 1;
 	};
@@ -520,7 +527,12 @@ CSL.Registry.prototype.registerAmbigToken = function (akey,id,ambig_config){
 		this.ambigcites[akey].push(id);
 	};
 	this.registry[id].ambig = akey;
-	this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
+	var dome = false;
+	if (this.state.tmp.taintedItemIDs){
+		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state,ambig_config,this.registry[id].disambig,id);
+	} else {
+		this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
+	}
 };
 
 

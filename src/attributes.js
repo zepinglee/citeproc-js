@@ -374,6 +374,7 @@ CSL.Attributes["@locator"] = function(state,arg){
 
 
 CSL.Attributes["@position"] = function(state,arg){
+	state.opt.update_mode = CSL.POSITION;
 	if (arg == "subsequent"){
 		this.strings.position = CSL.POSITION_SUBSEQUENT;
 	} else if (arg == "ibid") {

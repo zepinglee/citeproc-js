@@ -56,6 +56,11 @@ var CSL = new function () {
 	this.POSITION_IBID = 2;
 	this.POSITION_IBID_WITH_LOCATOR = 3;
 
+	// update modes
+	this.NONE = 0;
+	this.NUMERIC = 1;
+	this.POSITION = 2;
+
 	this.COLLAPSE_VALUES = ["citation-number","year","year-suffix"];
 
 	this.ET_AL_NAMES = ["et-al-min","et-al-use-first"];
