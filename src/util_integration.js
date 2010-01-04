@@ -28,7 +28,6 @@ CSL.Engine.prototype.setCitationId = function(citation){
 			var direction = 0;
 			if (!this.registry.citationreg.citationById[id]){
 				citation.citationID = id.toString(32);
-				this.registry.citationreg.citationById[citation.citationID] = citation;
 				break;
 			} else if (!direction && id < 50000000000000){
 				direction = 1;
@@ -42,5 +41,6 @@ CSL.Engine.prototype.setCitationId = function(citation){
 			};
 		};
 	};
+	this.registry.citationreg.citationById[citation.citationID] = citation;
 	return ret;
 };

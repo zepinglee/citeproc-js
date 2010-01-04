@@ -25,42 +25,54 @@ citation
 
 >>=====  CITATIONS =====>>
 [
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-1", 
-                "locator": "12"
-            }, 
-            {
-                "id": "ITEM-2", 
-                "locator": "23"
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1", 
+                    "locator": "12"
+                }, 
+                {
+                    "id": "ITEM-2", 
+                    "locator": "23"
+                }
+            ], 
+            "properties": {
+                "index": 0, 
+                "noteIndex": 1
             }
-        ], 
-        "properties": {
-            "index": 0, 
-            "noteIndex": 1
-        }
-    }, 
-    {
-        "citationItems": [
-            {
-                "id": "ITEM-3", 
-                "locator": "34"
-            }, 
-            {
-                "id": "ITEM-3", 
-                "locator": "34"
-            }, 
-            {
-                "id": "ITEM-4", 
-                "locator": "45"
+        }, 
+        [], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-2", 
+            "citationItems": [
+                {
+                    "id": "ITEM-3", 
+                    "locator": "34"
+                }, 
+                {
+                    "id": "ITEM-3", 
+                    "locator": "34"
+                }, 
+                {
+                    "id": "ITEM-4", 
+                    "locator": "45"
+                }
+            ], 
+            "properties": {
+                "index": 1, 
+                "noteIndex": 2
             }
+        }, 
+        [
+            "CITATION-1"
         ], 
-        "properties": {
-            "index": 1, 
-            "noteIndex": 2
-        }
-    }
+        []
+    ]
 ]
 <<=====  CITATIONS =====<<
 

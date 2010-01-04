@@ -25,15 +25,15 @@ if [ "$3" == "" ]; then
   exit 1
 fi
 
-if [ -f ./ref/$3 ]; then
+if [ -f ./tools/$3 ]; then
   echo found $3 go figure
-  CHUNK_TO_ADD=./ref/$3
+  CHUNK_TO_ADD=./tools/$3
 else
   echo Third argument must be a file with a chunk of XML to add to the locales
   exit 1
 fi
 
-for i in $(find ./locale -name "*.xml"); do
+for i in $(find ../csl-locales -name "*.xml"); do
   if [ $(grep -c "${ADDED_FRAG}" $i) -gt 0 ]; then
     echo Skipping $i
     continue
@@ -41,7 +41,7 @@ for i in $(find ./locale -name "*.xml"); do
   #echo "Insert trigger frag: " $INSERT_TRIGGER_FRAG
   LINE=$(cat $i \
      | sed "0,/.*${INSERT_TRIGGER_FRAG}.*/{p;};d" | wc -l)
-   echo $i $LINE
+  echo $i $LINE
   echo "  splitting at line: $LINE"
   #echo $((LINE--)) > /dev/null
   head -n ${LINE} $i > ${i}.head
