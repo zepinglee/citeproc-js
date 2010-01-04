@@ -31,14 +31,9 @@
                     {
                         "id": "ITEM-1", 
                         "locator": "12"
-                    }, 
-                    {
-                        "id": "ITEM-2", 
-                        "locator": "23"
                     }
                 ], 
                 "properties": {
-                    "index": 0, 
                     "noteIndex": 1
                 }
             }, 
@@ -52,18 +47,9 @@
                     {
                         "id": "ITEM-3", 
                         "locator": "34"
-                    }, 
-                    {
-                        "id": "ITEM-3", 
-                        "locator": "34"
-                    }, 
-                    {
-                        "id": "ITEM-4", 
-                        "locator": "45"
                     }
                 ], 
                 "properties": {
-                    "index": 1, 
                     "noteIndex": 2
                 }
             }, 
@@ -74,6 +60,61 @@
                 ]
             ], 
             []
+        ], 
+        [
+            {
+                "citationID": "CITATION-3", 
+                "citationItems": [
+                    {
+                        "id": "ITEM-4", 
+                        "locator": "45"
+                    }
+                ], 
+                "properties": {
+                    "noteIndex": 3
+                }
+            }, 
+            [
+                [
+                    "CITATION-1", 
+                    1
+                ], 
+                [
+                    "CITATION-2", 
+                    2
+                ]
+            ], 
+            []
+        ], 
+        [
+            {
+                "citationID": "CITATION-4", 
+                "citationItems": [
+                    {
+                        "id": "ITEM-3", 
+                        "locator": "34"
+                    }
+                ], 
+                "properties": {
+                    "noteIndex": 2
+                }
+            }, 
+            [
+                [
+                    "CITATION-1", 
+                    1
+                ]
+            ], 
+            [
+                [
+                    "CITATION-2", 
+                    3
+                ], 
+                [
+                    "CITATION-3", 
+                    4
+                ]
+            ]
         ]
     ], 
     "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout delimiter=\"; \" prefix=\"(\" suffix=\")\">\n      <choose>\n        <if position=\"ibid\">\n          <text term=\"ibid\"/>\n        </if>\n        <else>\n          <names variable=\"author\">\n            <name form=\"short\"/>\n          </names>\n          <group prefix=\" \">\n            <label variable=\"locator\" form=\"short\" suffix=\" \"/>\n            <text variable=\"locator\"/>\n          </group>\n        </else>\n      </choose>\n    </layout>\n  </citation>\n</style>", 
@@ -124,5 +165,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "..[0] (Doe p. 12; Roe p. 23)\n>>[1] (Noakes p. 34; Ibid; Snoakes p. 45)"
+    "result": "..[0] (Doe p. 12)\n>>[1] (Noakes p. 34)\n>>[2] (Ibid)\n..[3] (Snoakes p. 45)"
 }

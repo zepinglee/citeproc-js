@@ -102,6 +102,7 @@ StdRhinoTest.prototype._readTest = function(){
 
 
 StdRhinoTest.prototype.run = function(){
+	var ret = new Array();
 	this.style = new CSL.Engine(this,this.test.csl);
 	this.style.setAbbreviations("default");
 	if (this.test.bibentries){
@@ -127,11 +128,25 @@ StdRhinoTest.prototype.run = function(){
 				citations.push(this.style.makeCitationCluster(citation));
 			}
 		} else if (this.test.citations){
-			for each (var citation in this.test.citations){
-				citations.push(this.style.processCitationCluster(citation[0],citation[1],citation[2]));
+			for each (var citation in this.test.citations.slice(0,-1)){
+				this.style.processCitationCluster(citation[0],citation[1],citation[2]);
+			};
+			var citation = this.test.citations.slice(-1)[0];
+			var result = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
+		};
+		var indexMap = new Object();
+		for (var pos in result){
+			indexMap[""+result[pos][0]] = pos;
+		};
+		for (var cpos in this.style.registry.citationreg.citationByIndex){
+			var citation = this.style.registry.citationreg.citationByIndex[cpos];
+			if (indexMap[""+cpos]){
+				citations.push(">>["+cpos+"] "+result[indexMap[cpos]][1]);
+			} else {
+				citations.push("..["+cpos+"] "+this.style._processCitationCluster.call(this.style,this.style.registry.citationreg.citationByIndex[cpos].sortedItems));
 			}
-		}
-		var ret = citations.join("\n");
+		};
+		ret = citations.join("\n");
 	} else if (this.test.mode == "bibliography"){
 		if (this.test.bibsection){
 			var ret = this.style.makeBibliography(this.test.bibsection)[1].join("");

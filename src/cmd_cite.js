@@ -29,7 +29,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	var new_citation = this.setCitationId(citation);
 
 	// retrieve item data and compose items for use in rendering
-	// attach pointer to item data to shared copy as well
+	// attach pointer to item data to shared copy for good measure
 	for (var pos in citation.citationItems){
 		var item = citation.citationItems[pos];
 		var Item = this.sys.retrieveItem(item.id);
@@ -50,12 +50,15 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	// build reconstituted citations list in current document order
 	var citationByIndex = new Array();
 	for each (var c in citationsPre){
-		citationByIndex.push(this.registry.citationreg.citationById[c]);
+		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
+		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	};
 	citationByIndex.push(citation);
 	for each (var c in citationsPost){
-		citationByIndex.push(this.registry.citationreg.citationById[c]);
+		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
+		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	};
+	this.registry.citationreg.citationByIndex = citationByIndex;
 
 	//
 	// The processor provides three facilities to support
@@ -121,7 +124,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 					var oldvalue = new Object();
 					oldvalue["position"] = item[1].position;
 					oldvalue["first-reference-note-number"] = item[1]["first-reference-note-number"];
-					oldvalue["near_note"] = item[1]["near-note"];
+					oldvalue["near-note"] = item[1]["near-note"];
 					item[1]["first-reference-note-number"] = 0;
 					item[1]["near-note"] = false;
 					if ("number" != typeof first_ref[item[1].id]){
@@ -157,8 +160,14 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							suprame = true;
 						}
 						// conditions
-						var prev_locator = citation.sortedItems[(ipos-1)][1].locator;
-						var curr_locator = item[1].locator;
+						if (ibidme){
+							if (ipos > 0){
+								var prev_locator = citation.sortedItems[(ipos-1)][1].locator;
+							} else {
+								var prev_locator = citations[(cpos-1)].sortedItems[0][1].locator;
+							}
+							var curr_locator = item[1].locator;
+						};
 						// triage
 						if (ibidme && prev_locator && !curr_locator){
 							ibidme = false;
@@ -205,7 +214,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							item[1]["near-note"] = true;
 						};
 					};
-					for (var param in ["position","first-reference-note-number","near-note"]){
+					for each (var param in ["position","first-reference-note-number","near-note"]){
 						if (item[1][param] != oldvalue[param]){
 							this.tmp.taintedCitationIDs[citation.citationID] = true;
 						};
@@ -214,7 +223,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 			};
 		};
 	};
-	for (var key in this.tmp.taintedCitationIDs){
+	for (var key in this.tmp.taintedItemIDs){
 		this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
 	};
 	// XXXXX: note to self: provide for half-taints (backreferences)
@@ -224,14 +233,45 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	//
 	// The hard part will be in the testing, as usual.
 	//
+	var ret = new Array();
+	//
+	// Push taints to the return object
+	//
+	for (var key in this.tmp.taintedCitationIDs){
+		obj = new Array();
+		var citation = this.registry.citationreg.citationById[key];
+		obj.push(citation.properties.index);
+		obj.push(this._processCitationCluster.call(this,citation.sortedItems));
+		ret.push(obj);
+	};
+	this.tmp.taintedItemIDs = false;
+	this.tmp.taintedCitationIDs = false;
+	var obj = new Array();
+	obj.push(citationsPre.length);
+	obj.push(this._processCitationCluster.call(this,sortedItems));
+	ret.push(obj);
+	ret.sort(function(a,b){
+		if(a[0]>b[0]){
+			return 1;
+		} else if (a[0]<b[0]){
+			return -1;
+		} else {
+			return 0;
+		}
+	});
+	//
+	// Return is a list of two-part arrays, with the first element
+	// a citation index number, and the second the text to be inserted.
+	//
+	return ret;
+};
+
+CSL.Engine.prototype._processCitationCluster = function(sortedItems){
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,sortedItems);
 
-	this.tmp.taintedItemIDs = false;
-	this.tmp.taintedCitationIDs = false;
-
 	return str;
-}
+};
 
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];

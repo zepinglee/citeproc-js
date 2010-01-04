@@ -25,8 +25,10 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] (Doe p. 12; Roe p. 23)
->>[1] (Noakes p. 34; Ibid; Snoakes p. 45)
+..[0] (Doe p. 12)
+>>[1] (Noakes p. 34)
+>>[2] (Ibid)
+..[3] (Snoakes p. 45)
 <<===== RESULT =====<<
 
 
@@ -39,14 +41,9 @@ citation
                 {
                     "id": "ITEM-1", 
                     "locator": "12"
-                }, 
-                {
-                    "id": "ITEM-2", 
-                    "locator": "23"
                 }
             ], 
             "properties": {
-                "index": 0, 
                 "noteIndex": 1
             }
         }, 
@@ -60,18 +57,9 @@ citation
                 {
                     "id": "ITEM-3", 
                     "locator": "34"
-                }, 
-                {
-                    "id": "ITEM-3", 
-                    "locator": "34"
-                }, 
-                {
-                    "id": "ITEM-4", 
-                    "locator": "45"
                 }
             ], 
             "properties": {
-                "index": 1, 
                 "noteIndex": 2
             }
         }, 
@@ -82,6 +70,61 @@ citation
             ]
         ], 
         []
+    ], 
+    [
+        {
+            "citationID": "CITATION-3", 
+            "citationItems": [
+                {
+                    "id": "ITEM-4", 
+                    "locator": "45"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 3
+            }
+        }, 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ]
+        ], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-4", 
+            "citationItems": [
+                {
+                    "id": "ITEM-3", 
+                    "locator": "34"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 2
+            }
+        }, 
+        [
+            [
+                "CITATION-1", 
+                1
+            ]
+        ], 
+        [
+            [
+                "CITATION-2", 
+                3
+            ], 
+            [
+                "CITATION-3", 
+                4
+            ]
+        ]
     ]
 ]
 <<=====  CITATIONS =====<<
