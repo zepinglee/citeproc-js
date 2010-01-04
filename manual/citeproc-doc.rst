@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a33##
+   version 1.00##a34##
 
 .. class:: info-date
 
-   =D=29 December 2009=D=
+   =D=4 January 2010=D=
 
 .. class:: contributors
 
@@ -418,14 +418,54 @@ pairs shown below (the values shown are the processor defaults):
    each bibliography entry.
 
    
+############################
+``processCitationCluster()``
+############################
+
+The ``processCitationCluster()`` command is used to generate and
+maintain citations in the text of a document.  It takes three
+arguments: a citation object, a list of citation ID/note index pairs
+representing existing citations that precede the target citation, and
+a similar list of pairs for citations coming after the target.  The format
+of a citation object is as follows:
+
+.. code-block:: js
+
+   var citation = {
+      "citationItems": [
+         {
+            "id": "ITEM-1", 
+            "label": "page",
+            "locator": "12"
+         }, 
+         {
+            "id": "ITEM-2", 
+            "label": "page",
+            "locator": "23"
+         }
+      ], 
+      "properties": {
+         "noteIndex": 1
+      }
+   }
+
+(more later -- meanwhile, please see the `processor tests`__ and the
+`source code`__ for guidance on input and output of this command)
+
+__ http://bitbucket.org/fbennett/citeproc-js/src/ebc0a8d47b41/tests/std/humans/integration_IbidOnInsert.txt
+
+__ http://bitbucket.org/fbennett/citeproc-js/src/ebc0a8d47b41/src/cmd_cite.js
+
+
 #########################
 ``makeCitationCluster()``
 #########################
 
-Use the ``makeCitationCluster()`` command to generate the text
-of citations containing one or more references, for insertion into
-footnotes or the main text of the document.  This command takes a 
-single list argument.  The list is composed of Javascript objects
+The ``makeCitationCluster()`` command can be used to generate the text
+of citations containing one or more references.  Its primary utility
+is for testing of the processor's formatting capabilities; in production,
+the ``processCitationCluster()`` command should be used instead.
+The command takes a  single list as argument, composed of Javascript objects
 containing the ``id`` of a data item retrievable via ``sys.retrieveItem()``,
 and (optional) supplementary data fields.
 
