@@ -5987,6 +5987,9 @@ CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_
 		var maxvals = CSL.getMaxVals.call(state);
 		var minval = CSL.getMinVal.call(state);
 		base = CSL.getAmbigConfig.call(state);
+		if (!base["names"].length){
+			maxvals = 0;
+		}
 		if (debug){
 			CSL.debug("base out (givens):"+base["givens"]);
 		}

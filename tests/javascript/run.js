@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_bugreports");
 	dojo.require("tests.std_integration");
 	dojo.require("tests.std_disambiguate");
 	dojo.require("tests.std_institutions");
