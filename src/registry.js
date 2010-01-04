@@ -342,7 +342,7 @@ CSL.Registry.prototype.dorefreshes = function(){
 		var old_akey = akey;
 		var akey = CSL.getAmbiguousCite.call(this.state,Item);
 		if (this.state.tmp.taintedItemIDs && this.state.opt.update_mode != CSL.NUMERIC && old_akey != akey){
-			this.state.tmp.taintedItemIDs.push(item);
+			this.state.tmp.taintedItemIDs[item] = true;
 		}
 		this.registry[item] = regtoken;
 
@@ -418,7 +418,7 @@ CSL.Registry.prototype.renumber = function(){
 	var count = 1;
 	for each (var item in this.reflist){
 		if (this.state.tmp.taintedItemIDs && item.seq != count){
-			this.state.tmp.taintedItemIDs.push(item.id);
+			this.state.tmp.taintedItemIDs[item.id] = true;
 		};
 		item.seq = count;
 		count += 1;

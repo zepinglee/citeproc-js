@@ -23,7 +23,7 @@ dojo.provide("tests.std_integration");
 
 doh.register("tests.std_integration", [
     function(){
-        var test = new StdRhinoTest("integration_Simple");
+        var test = new StdRhinoTest("integration_SimpleIbid");
         doh.assertEqual(test.result, test.run());
     },
 ]);

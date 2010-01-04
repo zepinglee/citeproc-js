@@ -20,8 +20,8 @@
  * @namespace A CSL citation formatter.
  */
 CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
-	this.tmp.taintedItemIDs = new Array();
-	this.tmp.taintedCitationIDs = new Array();
+	this.tmp.taintedItemIDs = new Object();
+	this.tmp.taintedCitationIDs = new Object();
 	var sortedItems = [];
 	// make sure this citation has a unique ID, and register it in citationById.
 	// The ID will be accessible to the calling application when generating
@@ -87,7 +87,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	for (var c in citationByIndex){
 		citationByIndex[c].properties.index = c;
 		for each (var item in citationByIndex[c].sortedItems){
-			this.registry.citationreg.citationByItemId[item.id] = citationByIndex[c];
+			this.registry.citationreg.citationByItemId[item[1].id] = citationByIndex[c];
 		};
 		if (this.opt.update_mode == CSL.POSITION){
 			if (citationByIndex[c].properties.noteIndex){
@@ -118,13 +118,19 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 				//
 				for (var ipos in citations[cpos].sortedItems){
 					var item = citations[cpos].sortedItems[ipos];
-					if ("number" != typeof first_ref[item.id]){
+					var oldvalue = new Object();
+					oldvalue["position"] = item[1].position;
+					oldvalue["first-reference-note-number"] = item[1]["first-reference-note-number"];
+					oldvalue["near_note"] = item[1]["near-note"];
+					item[1]["first-reference-note-number"] = 0;
+					item[1]["near-note"] = false;
+					if ("number" != typeof first_ref[item[1].id]){
 						if (!citation.properties.noteIndex){
 							citation.properties.noteIndex = 0;
 						}
-						first_ref[item.id] = citation.properties.noteIndex;
-						last_ref[item.id] = citation.properties.noteIndex;
-						item.position = CSL.POSITION_FIRST;
+						first_ref[item[1].id] = citation.properties.noteIndex;
+						last_ref[item[1].id] = citation.properties.noteIndex;
+						item[1].position = CSL.POSITION_FIRST;
 					} else {
 						//
 						// backward-looking position evaluation happens here.
@@ -132,7 +138,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						//
 						var ibidme = false;
 						var suprame = false;
-						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0].id == item.id){
+						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0][1].id == item[1].id){
 							// Case 1: source in previous citation
 							// (1) Threshold conditions
 							//     (a) there must be a previous citation with one item
@@ -140,7 +146,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							//     (c) the previous citation must contain a reference
 							//         to the same item ...
 							ibidme = true;
-						} else if (ipos > 0 && citation.sortedItems[(ipos-1)].id == item.id){
+						} else if (ipos > 0 && citation.sortedItems[(ipos-1)][1].id == item[1].id){
 							// Case 2: immediately preceding source in this citation
 							// (1) Threshold conditions
 							//     (a) there must be an imediately preceding reference to  the
@@ -151,8 +157,8 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							suprame = true;
 						}
 						// conditions
-						var prev_locator = citation.sortedItems[ipos].locator;
-						var curr_locator = item.locator;
+						var prev_locator = citation.sortedItems[(ipos-1)][1].locator;
+						var curr_locator = item[1].locator;
 						// triage
 						if (ibidme && prev_locator && !curr_locator){
 							ibidme = false;
@@ -163,21 +169,21 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							if (!prev_locator && curr_locator){
 								//     (a) if the previous citation had no locator
 								//         and this citation has one, use ibid+pages
-								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+								item[1].position = CSL.POSITION_IBID_WITH_LOCATOR;
 							} else if (!prev_locator && !curr_locator){
 								//     (b) if the previous citation had no locator
 								//         and this citation also has none, use ibid
-								item.position = CSL.POSITION_IBID;
+								item[1].position = CSL.POSITION_IBID;
 							} else if (prev_locator && curr_locator == prev_locator){
 								//     (c) if the previous citation had a locator
 								//         (page number, etc.) and this citation has
 								//         a locator that is identical, use ibid
-								item.position = CSL.POSITION_IBID;
+								item[1].position = CSL.POSITION_IBID;
 							} else if (prev_locator && curr_locator && curr_locator != prev_locator){
 								//     (d) if the previous citation had a locator,
 								//         and this citation has one that differs,
 								//         use ibid+pages
-								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+								item[1].position = CSL.POSITION_IBID_WITH_LOCATOR;
 							} else {
 								//     (e) if the previous citation had a locator
 								//         and this citation has none, use subsequent
@@ -188,25 +194,33 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							}
 						}
 						if (suprame){
-							item.position = CSL.POSITION_SUBSEQUENT;
-							if (first_ref[item.id] == citation.properties.noteIndex){
-								item["first-reference-note-number"] = 0;
-							} else {
-								item["first-reference-note-number"] = first_ref[item.id];
+							item[1].position = CSL.POSITION_SUBSEQUENT;
+							if (first_ref[item[1].id] != citation.properties.noteIndex){
+								item[1]["first-reference-note-number"] = first_ref[item[1].id];
 							};
 						};
 					};
 					if (citation.properties.noteIndex){
 						if ((citation.properties.noteIndex-this.opt["near-note-distance"]) < citation.properties.noteIndex){
-							item["near-note"] = true;
-						} else {
-							item["near-note"] = false;
-						}
+							item[1]["near-note"] = true;
+						};
+					};
+					for (var param in ["position","first-reference-note-number","near-note"]){
+						if (item[1][param] != oldvalue[param]){
+							this.tmp.taintedCitationIDs[citation.citationID] = true;
+						};
 					};
 				};
 			};
 		};
 	};
+	for (var key in this.tmp.taintedCitationIDs){
+		this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
+	};
+	// XXXXX: note to self: provide for half-taints (backreferences)
+	//for (var key in this.tmp.taintedCitationIDs){
+	//	print(key);
+	//};
 	//
 	// The hard part will be in the testing, as usual.
 	//

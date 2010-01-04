@@ -29,7 +29,7 @@ CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
 		var param = config["names"][i];
 		if (oldconfig && oldconfig["names"][i] != param){
 			// print("hello "+i);
-			this.tmp.taintedItemIDs.push(itemID);
+			this.tmp.taintedItemIDs[itemID] = true;
 			oldconfig = false;
 		};
 		ret["names"][i] = param;
@@ -41,7 +41,7 @@ CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
 			// values of j
 			if (oldconfig && oldconfig["givens"][i] && oldconfig["givens"][i][j] != config["givens"][i][j]){
 				// print("hello "+i+":"+j);
-				this.tmp.taintedItemIDs.push(itemID);
+				this.tmp.taintedItemIDs[itemID] = true;
 				oldconfig = false;
 			};
 			param.push(config["givens"][i][j]);
@@ -50,13 +50,13 @@ CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
 	};
 	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
 		// print("hello year_suffix");
-		this.tmp.taintedItemIDs.push(itemID);
+		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
 	ret["year_suffix"] = config["year_suffix"];
 	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
 		// print("hello disambiguate");
-		this.tmp.taintedItemIDs.push(itemID);
+		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
 	ret["disambiguate"] = config["disambiguate"];

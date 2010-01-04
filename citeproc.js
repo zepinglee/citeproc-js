@@ -702,7 +702,7 @@ CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
 	for (var i in config["names"]){
 		var param = config["names"][i];
 		if (oldconfig && oldconfig["names"][i] != param){
-			this.tmp.taintedItemIDs.push(itemID);
+			this.tmp.taintedItemIDs[itemID] = true;
 			oldconfig = false;
 		};
 		ret["names"][i] = param;
@@ -711,7 +711,7 @@ CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
 		var param = new Array();
 		for (var j in config["givens"][i]){
 			if (oldconfig && oldconfig["givens"][i] && oldconfig["givens"][i][j] != config["givens"][i][j]){
-				this.tmp.taintedItemIDs.push(itemID);
+				this.tmp.taintedItemIDs[itemID] = true;
 				oldconfig = false;
 			};
 			param.push(config["givens"][i][j]);
@@ -719,12 +719,12 @@ CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
 		ret["givens"].push(param);
 	};
 	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
-		this.tmp.taintedItemIDs.push(itemID);
+		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
 	ret["year_suffix"] = config["year_suffix"];
 	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
-		this.tmp.taintedItemIDs.push(itemID);
+		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
 	ret["disambiguate"] = config["disambiguate"];
@@ -1713,8 +1713,8 @@ CSL.getBibliographyEntries = function (bibsection){
 	return ret;
 };
 CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
-	this.tmp.taintedItemIDs = new Array();
-	this.tmp.taintedCitationIDs = new Array();
+	this.tmp.taintedItemIDs = new Object();
+	this.tmp.taintedCitationIDs = new Object();
 	var sortedItems = [];
 	var new_citation = this.setCitationId(citation);
 	for (var pos in citation.citationItems){
@@ -1747,7 +1747,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	for (var c in citationByIndex){
 		citationByIndex[c].properties.index = c;
 		for each (var item in citationByIndex[c].sortedItems){
-			this.registry.citationreg.citationByItemId[item.id] = citationByIndex[c];
+			this.registry.citationreg.citationByItemId[item[1].id] = citationByIndex[c];
 		};
 		if (this.opt.update_mode == CSL.POSITION){
 			if (citationByIndex[c].properties.noteIndex){
@@ -1765,62 +1765,72 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 				var citation = citations[cpos];
 				for (var ipos in citations[cpos].sortedItems){
 					var item = citations[cpos].sortedItems[ipos];
-					if ("number" != typeof first_ref[item.id]){
+					var oldvalue = new Object();
+					oldvalue["position"] = item[1].position;
+					oldvalue["first-reference-note-number"] = item[1]["first-reference-note-number"];
+					oldvalue["near_note"] = item[1]["near-note"];
+					item[1]["first-reference-note-number"] = 0;
+					item[1]["near-note"] = false;
+					if ("number" != typeof first_ref[item[1].id]){
 						if (!citation.properties.noteIndex){
 							citation.properties.noteIndex = 0;
 						}
-						first_ref[item.id] = citation.properties.noteIndex;
-						last_ref[item.id] = citation.properties.noteIndex;
-						item.position = CSL.POSITION_FIRST;
+						first_ref[item[1].id] = citation.properties.noteIndex;
+						last_ref[item[1].id] = citation.properties.noteIndex;
+						item[1].position = CSL.POSITION_FIRST;
 					} else {
 						var ibidme = false;
 						var suprame = false;
-						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0].id == item.id){
+						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0][1].id == item[1].id){
 							ibidme = true;
-						} else if (ipos > 0 && citation.sortedItems[(ipos-1)].id == item.id){
+						} else if (ipos > 0 && citation.sortedItems[(ipos-1)][1].id == item[1].id){
 							ibidme = true;
 						} else {
 							suprame = true;
 						}
-						var prev_locator = citation.sortedItems[ipos].locator;
-						var curr_locator = item.locator;
+						var prev_locator = citation.sortedItems[(ipos-1)][1].locator;
+						var curr_locator = item[1].locator;
 						if (ibidme && prev_locator && !curr_locator){
 							ibidme = false;
 							suprame = true;
 						}
 						if (ibidme){
 							if (!prev_locator && curr_locator){
-								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+								item[1].position = CSL.POSITION_IBID_WITH_LOCATOR;
 							} else if (!prev_locator && !curr_locator){
-								item.position = CSL.POSITION_IBID;
+								item[1].position = CSL.POSITION_IBID;
 							} else if (prev_locator && curr_locator == prev_locator){
-								item.position = CSL.POSITION_IBID;
+								item[1].position = CSL.POSITION_IBID;
 							} else if (prev_locator && curr_locator && curr_locator != prev_locator){
-								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+								item[1].position = CSL.POSITION_IBID_WITH_LOCATOR;
 							} else {
 								ibidme = false; // just to be clear
 								suprame = true;
 							}
 						}
 						if (suprame){
-							item.position = CSL.POSITION_SUBSEQUENT;
-							if (first_ref[item.id] == citation.properties.noteIndex){
-								item["first-reference-note-number"] = 0;
-							} else {
-								item["first-reference-note-number"] = first_ref[item.id];
+							item[1].position = CSL.POSITION_SUBSEQUENT;
+							if (first_ref[item[1].id] != citation.properties.noteIndex){
+								item[1]["first-reference-note-number"] = first_ref[item[1].id];
 							};
 						};
 					};
 					if (citation.properties.noteIndex){
 						if ((citation.properties.noteIndex-this.opt["near-note-distance"]) < citation.properties.noteIndex){
-							item["near-note"] = true;
-						} else {
-							item["near-note"] = false;
-						}
+							item[1]["near-note"] = true;
+						};
+					};
+					for (var param in ["position","first-reference-note-number","near-note"]){
+						if (item[1][param] != oldvalue[param]){
+							this.tmp.taintedCitationIDs[citation.citationID] = true;
+						};
 					};
 				};
 			};
 		};
+	};
+	for (var key in this.tmp.taintedCitationIDs){
+		this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
 	};
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,sortedItems);
@@ -5568,7 +5578,7 @@ CSL.Registry.prototype.dorefreshes = function(){
 		var old_akey = akey;
 		var akey = CSL.getAmbiguousCite.call(this.state,Item);
 		if (this.state.tmp.taintedItemIDs && this.state.opt.update_mode != CSL.NUMERIC && old_akey != akey){
-			this.state.tmp.taintedItemIDs.push(item);
+			this.state.tmp.taintedItemIDs[item] = true;
 		}
 		this.registry[item] = regtoken;
 		var abase = CSL.getAmbigConfig.call(this.state);
@@ -5606,7 +5616,7 @@ CSL.Registry.prototype.renumber = function(){
 	var count = 1;
 	for each (var item in this.reflist){
 		if (this.state.tmp.taintedItemIDs && item.seq != count){
-			this.state.tmp.taintedItemIDs.push(item.id);
+			this.state.tmp.taintedItemIDs[item.id] = true;
 		};
 		item.seq = count;
 		count += 1;

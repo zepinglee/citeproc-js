@@ -38,11 +38,15 @@ citation
         ], 
         "properties": {
             "index": 0, 
-            "noteIndex": 0
+            "noteIndex": 1
         }
     }, 
     {
         "citationItems": [
+            {
+                "id": "ITEM-3", 
+                "locator": "34"
+            }, 
             {
                 "id": "ITEM-3", 
                 "locator": "34"
@@ -54,7 +58,7 @@ citation
         ], 
         "properties": {
             "index": 1, 
-            "noteIndex": 1
+            "noteIndex": 2
         }
     }
 ]
@@ -64,7 +68,7 @@ citation
 
 >>===== RESULT =====>>
 (Doe p. 12; Roe p. 23)
-(Noakes p. 34; Snoakes p. 45)
+(Noakes p. 34; Ibid; Snoakes p. 45)
 <<===== RESULT =====<<
 
 
@@ -80,13 +84,20 @@ citation
   </info>
   <citation>
     <layout delimiter="; " prefix="(" suffix=")">
-      <names variable="author">
-        <name form="short"/>
-      </names>
-      <group prefix=" ">
-        <label variable="locator" form="short" suffix=" "/>
-        <text variable="locator"/>
-      </group>
+      <choose>
+        <if position="ibid">
+          <text term="ibid"/>
+        </if>
+        <else>
+          <names variable="author">
+            <name form="short"/>
+          </names>
+          <group prefix=" ">
+            <label variable="locator" form="short" suffix=" "/>
+            <text variable="locator"/>
+          </group>
+        </else>
+      </choose>
     </layout>
   </citation>
 </style>
