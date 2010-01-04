@@ -1739,9 +1739,89 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	for each (var c in citationsPost){
 		citationByIndex.push(this.registry.citationreg.citationById[c]);
 	};
-	var index = 0;
-	for (var cpos in citationByIndex){
-	}
+	this.registry.citationreg.citationByItemId = new Object();
+	if (this.opt.update_mode == CSL.POSITION){
+		var textCitations = new Array();
+		var noteCitations = new Array();
+	};
+	for (var c in citationByIndex){
+		citationByIndex[c].properties.index = c;
+		for each (var item in citationByIndex[c].sortedItems){
+			this.registry.citationreg.citationByItemId[item.id] = citationByIndex[c];
+		};
+		if (this.opt.update_mode == CSL.POSITION){
+			if (citationByIndex[c].properties.noteIndex){
+				noteCitations.push(citationByIndex[c]);
+			} else {
+				textCitations.push(citationByIndex[c]);
+			};
+		};
+	};
+	if (this.opt.update_mode == CSL.POSITION){
+		for each (var citations in [textCitations,noteCitations]){
+			var first_ref = new Object();
+			var last_ref = new Object();
+			for (var cpos in citations){
+				var citation = citations[cpos];
+				for (var ipos in citations[cpos].sortedItems){
+					var item = citations[cpos].sortedItems[ipos];
+					if ("number" != typeof first_ref[item.id]){
+						if (!citation.properties.noteIndex){
+							citation.properties.noteIndex = 0;
+						}
+						first_ref[item.id] = citation.properties.noteIndex;
+						last_ref[item.id] = citation.properties.noteIndex;
+						item.position = CSL.POSITION_FIRST;
+					} else {
+						var ibidme = false;
+						var suprame = false;
+						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0].id == item.id){
+							ibidme = true;
+						} else if (ipos > 0 && citation.sortedItems[(ipos-1)].id == item.id){
+							ibidme = true;
+						} else {
+							suprame = true;
+						}
+						var prev_locator = citation.sortedItems[ipos].locator;
+						var curr_locator = item.locator;
+						if (ibidme && prev_locator && !curr_locator){
+							ibidme = false;
+							suprame = true;
+						}
+						if (ibidme){
+							if (!prev_locator && curr_locator){
+								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+							} else if (!prev_locator && !curr_locator){
+								item.position = CSL.POSITION_IBID;
+							} else if (prev_locator && curr_locator == prev_locator){
+								item.position = CSL.POSITION_IBID;
+							} else if (prev_locator && curr_locator && curr_locator != prev_locator){
+								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+							} else {
+								ibidme = false; // just to be clear
+								suprame = true;
+							}
+						}
+						if (suprame){
+							item.position = CSL.POSITION_SUBSEQUENT;
+							if (first_ref[item.id] == citation.properties.noteIndex){
+								item["first-reference-note-number"] = 0;
+							} else {
+								item["first-reference-note-number"] = first_ref[item.id];
+							};
+						};
+					};
+					if (citation.properties.noteIndex){
+						if ((citation.properties.noteIndex-this.opt["near-note-distance"]) < citation.properties.noteIndex){
+							item["near-note"] = true;
+						} else {
+							item["near-note"] = false;
+						}
+					};
+				};
+			};
+		};
+	};
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,sortedItems);
 	this.tmp.taintedItemIDs = false;

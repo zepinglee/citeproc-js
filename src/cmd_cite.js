@@ -57,48 +57,159 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 		citationByIndex.push(this.registry.citationreg.citationById[c]);
 	};
 
+	//
+	// The processor provides three facilities to support
+	// updates following position reevaluation.
+	//
+	// (1) The updateItems() function reports tainted ItemIDs
+	// to state.tmp.taintedItemIDs.
+	//
+	// (2) The processor memos the type of style referencing as
+	// CSL.NONE, CSL.NUMERIC or CSL.POSITION in state.opt.update_mode.
+	//
+	// (3) For citations containing cites with backreference note numbers,
+	// a string image of the rendered citation is held in
+	// citation.properties.backref_citation, and a list of
+	// ItemIDs to be used to update the backreference note numbers
+	// is memoed at citation.properties.backref_index.  When such
+	// citations change position, they can be updated with a
+	// series of simple find and replace operations, without
+	// need for rerendering.
+	//
+	// Position evaluation!
+	//
 	// set positions in reconstituted list, noting taints
-	var index = 0;
-	//
-	// Okay.  The processor needs three extensions to get this working
-	//
-	// (1) The updateItems() function needs to report back on tainted
-	// items. [DONE]
-	// (2) The processor needs to memo the type of style referencing as numbered,
-	 // position, or none. [DONE]
-	// (3) Cites with backreference note numbers need to be held in rendered
-	// string form, with a placeholder, and reference indexes for these cites need to be
-	// memoed on the citation object. [DONE]
-	//
-	// With the above changes in place, the rest of this becomes pretty
-	// easy.
+	this.registry.citationreg.citationByItemId = new Object();
+	if (this.opt.update_mode == CSL.POSITION){
+		var textCitations = new Array();
+		var noteCitations = new Array();
+	};
+	for (var c in citationByIndex){
+		citationByIndex[c].properties.index = c;
+		for each (var item in citationByIndex[c].sortedItems){
+			this.registry.citationreg.citationByItemId[item.id] = citationByIndex[c];
+		};
+		if (this.opt.update_mode == CSL.POSITION){
+			if (citationByIndex[c].properties.noteIndex){
+				noteCitations.push(citationByIndex[c]);
+			} else {
+				textCitations.push(citationByIndex[c]);
+			};
+		};
+	};
+	if (this.opt.update_mode == CSL.POSITION){
+		for each (var citations in [textCitations,noteCitations]){
+			var first_ref = new Object();
+			var last_ref = new Object();
+			for (var cpos in citations){
+				var citation = citations[cpos];
+				// Set the following:
+				//
+				// (1) position as required (as per current Zotero)
+				// (2) first-reference-note-number as required (on citation item)
+				// (3) near-note as required (on citation item, according to
+				//     state.opt["near-note-distance"] parameter)
+				// (4) state.registry.citationreg.citationByItemId.
+				//
+				// Any state changes caused by unsetting or resetting should
+				// trigger a single entry for the citations in
+				// state.tmp.taintedCitationIDs (can block on presence of
+				// state.registry.citationreg.citationByItemId).
+				//
+				for (var ipos in citations[cpos].sortedItems){
+					var item = citations[cpos].sortedItems[ipos];
+					if ("number" != typeof first_ref[item.id]){
+						if (!citation.properties.noteIndex){
+							citation.properties.noteIndex = 0;
+						}
+						first_ref[item.id] = citation.properties.noteIndex;
+						last_ref[item.id] = citation.properties.noteIndex;
+						item.position = CSL.POSITION_FIRST;
+					} else {
+						//
+						// backward-looking position evaluation happens here.
+						//
+						//
+						var ibidme = false;
+						var suprame = false;
+						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0].id == item.id){
+							// Case 1: source in previous citation
+							// (1) Threshold conditions
+							//     (a) there must be a previous citation with one item
+							//     (b) this item must be the first in this citation
+							//     (c) the previous citation must contain a reference
+							//         to the same item ...
+							ibidme = true;
+						} else if (ipos > 0 && citation.sortedItems[(ipos-1)].id == item.id){
+							// Case 2: immediately preceding source in this citation
+							// (1) Threshold conditions
+							//     (a) there must be an imediately preceding reference to  the
+							//         same item in this citation
+							ibidme = true;
+						} else {
+							// everything else is definitely subsequent
+							suprame = true;
+						}
+						// conditions
+						var prev_locator = citation.sortedItems[ipos].locator;
+						var curr_locator = item.locator;
+						// triage
+						if (ibidme && prev_locator && !curr_locator){
+							ibidme = false;
+							suprame = true;
+
+						}
+						if (ibidme){
+							if (!prev_locator && curr_locator){
+								//     (a) if the previous citation had no locator
+								//         and this citation has one, use ibid+pages
+								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+							} else if (!prev_locator && !curr_locator){
+								//     (b) if the previous citation had no locator
+								//         and this citation also has none, use ibid
+								item.position = CSL.POSITION_IBID;
+							} else if (prev_locator && curr_locator == prev_locator){
+								//     (c) if the previous citation had a locator
+								//         (page number, etc.) and this citation has
+								//         a locator that is identical, use ibid
+								item.position = CSL.POSITION_IBID;
+							} else if (prev_locator && curr_locator && curr_locator != prev_locator){
+								//     (d) if the previous citation had a locator,
+								//         and this citation has one that differs,
+								//         use ibid+pages
+								item.position = CSL.POSITION_IBID_WITH_LOCATOR;
+							} else {
+								//     (e) if the previous citation had a locator
+								//         and this citation has none, use subsequent
+								//
+								//     ... and everything else would be subsequent also
+								ibidme = false; // just to be clear
+								suprame = true;
+							}
+						}
+						if (suprame){
+							item.position = CSL.POSITION_SUBSEQUENT;
+							if (first_ref[item.id] == citation.properties.noteIndex){
+								item["first-reference-note-number"] = 0;
+							} else {
+								item["first-reference-note-number"] = first_ref[item.id];
+							};
+						};
+					};
+					if (citation.properties.noteIndex){
+						if ((citation.properties.noteIndex-this.opt["near-note-distance"]) < citation.properties.noteIndex){
+							item["near-note"] = true;
+						} else {
+							item["near-note"] = false;
+						}
+					};
+				};
+			};
+		};
+	};
 	//
 	// The hard part will be in the testing, as usual.
 	//
-	// tainting is of two types. if this is a numbered style,
-	// we check registry for the sequence number, and taint
-	// only by that. otherwise, we check newly construed position
-	// info against the existing copy of the citation, and taint
-	// at two levels (backreference only, or full re-rendering)
-	// by that.
-	//
-	// in the case of a numbered style, we do two passes;
-	// one to pick up first references before a bib purge,
-	// and another to run the taints. otherwise we can do
-	// everything in one pass, followed by a purge.
-	//
-	// Hmm. The purge might produce taints as well, where
-	// names change. Hmm. So we need citationByItemID, to
-	// pick those up. Plus a reporting-back mechanism in
-	// the bib registry, of course.
-	//
-	for (var cpos in citationByIndex){
- //
- // wonder what happens here ...
- //
-	}
-
-	// XXXXX: something additional will need to happen around here.
 	this.parallel.StartCitation();
 	var str = CSL.getCitationCluster.call(this,sortedItems);
 
