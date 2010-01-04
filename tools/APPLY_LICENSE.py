@@ -5,7 +5,7 @@ import re,os,sys
 mypath = os.path.split(sys.argv[0])[0]
 os.chdir(mypath)
 
-REX = "(?ms)^^(/\*.*?\n\s*\*/\n*)*(.*)"
+REX = "(?s)^^(/\*.*?\n\s*\*/\n*)(.*)"
 
 m = re.match(REX, open("../src/load.js").read())
 
@@ -16,8 +16,9 @@ else:
     sys.exit()
 
 
-# print license
-    
+print license
+
+
 def process_file(path,file):
     filepath = "%s/%s" % (path,file)
     if not filepath.endswith(".js") and not filepath.endswith(".txt") and not filepath.endswith(".json") and not filepath.endswith("README.txt"): return
