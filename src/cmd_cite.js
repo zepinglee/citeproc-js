@@ -32,7 +32,15 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
  */
-CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost){
+CSL.Engine.prototype.appendCitationCluster = function(citation,has_bibliography){
+	var citationsPre = new Array();
+	for each (var c in this.registry.citationreg.citationByIndex){
+		citationsPre.push([c.id,c.properties.noteIndex]);
+	};
+	return this.processCitationCluster(citations,citationsPre,[]);
+};
+
+CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost,has_bibliography){
 	this.tmp.taintedItemIDs = new Object();
 	this.tmp.taintedCitationIDs = new Object();
 	var sortedItems = [];
@@ -92,6 +100,8 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	// series of simple find and replace operations, without
 	// need for rerendering.
 	//
+
+	//
 	// Position evaluation!
 	//
 	// set positions in reconstituted list, noting taints
@@ -100,10 +110,18 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 		var textCitations = new Array();
 		var noteCitations = new Array();
 	};
+	var update_items = new Array();
 	for (var c in citationByIndex){
 		citationByIndex[c].properties.index = c;
 		for each (var item in citationByIndex[c].sortedItems){
-			this.registry.citationreg.citationByItemId[item[1].id] = citationByIndex[c];
+			if (!this.registry.citationreg.citationByItemId[item[1].id]){
+				this.registry.citationreg.citationByItemId[item[1].id] = new Array();
+				update_items.push(item[1].id);
+			};
+			if (this.registry.citationreg.citationByItemId[item[1].id].indexOf(citationByIndex[c]) == -1){
+				this.registry.citationreg.citationByItemId[item[1].id].push(citationByIndex[c]);
+			};
+
 		};
 		if (this.opt.update_mode == CSL.POSITION){
 			if (citationByIndex[c].properties.noteIndex){
@@ -112,6 +130,12 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 				textCitations.push(citationByIndex[c]);
 			};
 		};
+	};
+	//
+	// update bibliography items here
+	//
+	if (!has_bibliography){
+		this.updateItems(update_items);
 	};
 	if (this.opt.update_mode == CSL.POSITION){
 		for each (var citations in [textCitations,noteCitations]){

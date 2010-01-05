@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a34##
+   version 1.00##a35##
 
 .. class:: info-date
 
-   =D=4 January 2010=D=
+   =D=5 January 2010=D=
 
 .. class:: contributors
 
@@ -418,30 +418,39 @@ pairs shown below (the values shown are the processor defaults):
    each bibliography entry.
 
    
-############################
-``processCitationCluster()``
-############################
+#################
+Citation commands
+#################
 
-The ``processCitationCluster()`` command is used to generate and
-maintain citations in the text of a document.  It takes three
-arguments: a citation object, a list of citation ID/note index pairs
-representing existing citations that precede the target citation, and
-a similar list of pairs for citations coming after the target.  The format
-of a citation object is as follows:
+Citation commands generate strings for insertion into the text of a
+target document.  Citations can be added to a document in one of two
+ways: as a batch process (BibTeX, for example, works in this way) or
+interactively (Endnote, Mendeley and Zotero work in this way, through
+a connection to the user's word processing software).  These two modes
+of operation are supported in ``citeproc-js`` by two separate
+commands, respectively ``appendCitationCluster()``, and
+``processCitationCluster()``.  A third, simpler command
+(``makeCitationCluster()``), is not covered by this manual, as it
+lacks any facility for position evaluation, which is needed in
+production environments.
+
+The ``appendCitationCluster()`` and
+``processCitationCluster()`` commands use a similar input format
+for citation data.  This is described first below, followed by
+a description of the specifics of the two commands.
+
+^^^^^^^^^^^^^^^^^^^^^^^^
+The citation data object
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+A minimal citation data object has the following form:
 
 .. code-block:: js
 
-   var citation = {
+   {
       "citationItems": [
          {
-            "id": "ITEM-1", 
-            "label": "page",
-            "locator": "12"
-         }, 
-         {
-            "id": "ITEM-2", 
-            "label": "page",
-            "locator": "23"
+            "id": "ITEM-1"
          }
       ], 
       "properties": {
@@ -449,42 +458,150 @@ of a citation object is as follows:
       }
    }
 
-(more later -- meanwhile, please see the `processor tests`__ and the
-`source code`__ for guidance on input and output of this command)
+The ``citationItems`` array is a list of one or more citation item
+objects, each containing an ``id`` used to retrieve the bibliographic
+details of the target resource.  A citation item object may contain
+one or more additional optional values:
 
-__ http://bitbucket.org/fbennett/citeproc-js/src/ebc0a8d47b41/tests/std/humans/integration_IbidOnInsert.txt
+* ``locator``: a string identifying a page number or other pinpoint
+  location or range within the resource; 
+* ``label``: a label type, indicating whether the locator is to a
+  page, a chapter, or other subdivision of the target resource.  Valid
+  labels are defined in the `CSL specification`__.
+* ``suppress-author``: if true, author names will not be included in the
+  citation output for this cite;
+* ``author-only``: if true, only the author name will be included
+  in the citation output for this cite -- this optional parameter
+  provides a means for certain demanding styles that require the
+  processor output to be divided between the main text and a footnote.
+  (See the section `Processor control`__, in the Dirty Tricks section
+  below for more details.)
+* ``prefix``: a string to print before this cite item;
+* ``suffix``: a string to print after this cite item.
 
-__ http://bitbucket.org/fbennett/citeproc-js/src/ebc0a8d47b41/src/cmd_cite.js
+__ http://citationstyles.org/
 
+__ `Processor control`_
 
-#########################
-``makeCitationCluster()``
-#########################
+In the ``properties`` portion of a citation, the ``noteIndex``
+value indicates the footnote number in which the citation is located
+within the document.  Citations within the main text of the document
+have a ``noteIndex`` of zero.
 
-The ``makeCitationCluster()`` command can be used to generate the text
-of citations containing one or more references.  Its primary utility
-is for testing of the processor's formatting capabilities; in production,
-the ``processCitationCluster()`` command should be used instead.
-The command takes a  single list as argument, composed of Javascript objects
-containing the ``id`` of a data item retrievable via ``sys.retrieveItem()``,
-and (optional) supplementary data fields.
+The processor will add a number of data items to a citation
+during processing.  Values added at the top level of the citation
+structure include:
 
-.. admonition:: Hint
-   
-   See the |link| `Data Input → Citation fields`__ section below concerning
-   the elements recognized as supplementary data, and their
-   usage.
+* ``citationID``: A unique ID assigned to the citation, for
+  internal use by the processor.  This ID may be assigned by the
+  calling application, but it must uniquely identify the citation,
+  and it must not be changed during processing or during an
+  editing session.
+* ``sortedItems``: This is an array of citation objects and accompanying
+  bibliographic data objects, sorted as required by the configured
+  style.  Calling applications should not need to access the data
+  in this array directly.
 
-__ `Citation fields`_
+Values added to individual citation item objects may include:
+
+* ``sortkeys``: an array of sort keys used by the processor to produce
+  the sorted list in ``sortedItems``.  Calling applications should not
+  need to touch this array directly.
+* ``position``: an integer flag that indicates whether the cite item
+  should be rendered as a first reference, an immediately-following
+  reference (i.e. *ibid*), an immediately-following reference with locator
+  information, or a subsequent reference.
+* ``first-reference-note-number``: the number of the ``noteIndex`` of
+  the first reference to this resource in the document.
+* ``near-note``: a boolean flag indicating whether another reference
+  to this resource can be found within a specific number of notes,
+  counting back from the current position.  What is "near" in
+  this sense is style-dependent.
+
+Citations are registered and accessed by the processor internally
+in arrays and Javascript objects.  Calling applications should
+not need to access this data directly, but it is available in
+the processor registry, at the following locations:
 
 .. code-block:: js
 
-   var my_ids = [
-       {"id": "ID-1" },
-       {"id": "ID-2"}
+   citeproc.registry.citationreg.citationById
+
+   citeproc.registry.citationreg.citationByIndex
+
+   citeproc.registry.citationreg.citationByItemId
+
+We now turn to the two commands available for generating
+citations for placement in the text of a document.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``appendCitationCluster()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``appendCitationCluster()`` command takes a single citation
+object as argument, and an optional flag to indicate whether
+a full list of bibliography items has already been registered
+in the processor with the ``updateItems()`` command.  If the flag
+is true, the command should return an array containing exactly
+one two-element array, consisting of the current index position
+as the first element, and a string for insertion into the document
+as the second.  To wit:
+
+.. code-block:: js
+
+   citeproc.appendCitationCluster(mycitation,true);
+
+   [
+      [ 5, "(J. Doe 2000)" ]
    ]
 
-   var mycite = makeCitationCluster( my_ids );
+If the flag is false, invocations of the command may return
+multiple elements in the list, when the processor sense that
+the additional bibliography items added by the citation require 
+changes to other citations to achieve disambiguation.  In this
+case, a typical return value might look like this:
+
+.. code-block:: js
+
+   citeproc.appendCitationCluster(mycitation);
+
+   [
+      [ 2, "(Jake Doe 2000)" ],
+      [ 5, "(John Doe 2000)" ]
+   ]
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``processCitationCluster()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``processCitationCluster()`` command is used to generate and
+maintain citations dynamically in the text of a document.  It takes three
+arguments: a citation object, a list of citation ID/note index pairs
+representing existing citations that precede the target citation, and
+a similar list of pairs for citations coming after the target.  Like
+the ``appendCitationCluster()`` command run without a flag, its
+return array may contain multiple elements, where the edit or
+addition of a citation triggers changes to other citations:
+
+.. code-block:: js
+
+   var citationsPre = [ ["citation-abc",1], ["citation-def",2] ];
+
+   var citationsPost = [ ["citation-ghi",4] ];
+
+   citeproc.processCitationCluster(citation,citationsPre,citationsPost);
+
+   [
+      [ 1,"(Ronald Snoakes 1950)" ],
+      [ 3,"(Richard Snoakes 1950)" ]
+   ]
+
+A worked example showing the result of multiple transactions can be
+found in the `processor test suite`__.
+
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/integration_IbidOnInsert.txt
+
 
 #####################
 ``setOutputFormat()``
@@ -540,38 +657,6 @@ for correct formatting of citations and bibliographies, a certain
 amount of programming is required to prepare the environment for its
 correct operation.
 
-
-############################
-State-aware data preparation
-############################
-
-The CSL 1.0 specification anticipates the availability of several
-dynamic variables whose value depends upon the sequence and context
-of references generated with the ``makeCitationCluster()`` command:
-   
-.. class:: hello
-
-   =============================== =======
-   Variable                        Type
-   =============================== =======
-   ``position``                    numeric
-   ``first-reference-note-number`` numeric
-   ``near-note``                   boolean
-   =============================== =======
-
-Correct calculation of these values demands client-specific awareness
-of transaction details, such as the identity and position of a
-particular footnote within a word processing program or typesetting
-system, that is beyond the generic capabilities of the ``citeproc-js``
-processor.  It is therefore the responsibility of the calling
-application, when invoking ``makeCitationCluster()``, to supply
-correct values for these three variables.
-
-A detailed explanation of the role and expected values of these
-variables under various processing scenarios is beyond the scope of
-this document.  For further information on the role each plays in citation
-formatting, please refer to the CSL specification, available via
-http://citationstyles.org/.
 
 ################
 System functions
@@ -903,42 +988,8 @@ A literal string may be passed through as a ``literal`` element:
 Citation fields
 ###############
 
-As noted above under |link| `makeCitationCluster()`_, that function takes
-as its single argument a list of Javascript objects, each containing
-an item ``id`` and optional supplementary data.
 
-.. code-block:: js
-
-   var my_ids = [
-       {"id": "ID-1"},
-       {"id": "ID-2"}
-   ]
-
-
-^^^^^^^
-Locator
-^^^^^^^
-
-To include pinpoint locator information in a cite, include a ``locator`` element
-with the string data describing the cited location, and a ``label`` element
-with a valid CSL label string. [#]_
-
-.. code-block:: js
-
-   var my_ids = [
-       {"id": "ID-1", "locator": "21", "label": "paragraph"},
-       {"id": "ID-2"}
-   ]
-
-If the ``label`` element is not included, a value of "page" will
-be assumed.
-
-.. code-block:: js
-
-   var my_ids = [
-       {"id": "ID-1", "locator": "21" },
-       {"id": "ID-2"}
-   ]
+Concerning citation fields, please see |link| `Citation commands`_, above.
 
 .. class:: first
 
@@ -949,8 +1000,6 @@ be assumed.
        as "Byzantine scripts", after the confluence of cultures in the first
        millenium that spanned both.
 
-.. [#] For a list of valid CSL locator label strings, see the
-       CSL specification, available via  http://citationstyles.org/.
 
 -----------------
 Output Formatting
@@ -1084,20 +1133,20 @@ the processor.
 Processor control
 #################
 
-In the ordinary operation of the ``makeCitationCluster()`` command,
-the processor generates citation strings suitable for a given position
-in the document.  To support some use cases, the processor is
-capable of delivering special-purpose fragments of a citation.
+In ordinary operation, the processor generates citation strings
+suitable for a given position in the document.  To support some use
+cases, the processor is capable of delivering special-purpose
+fragments of a citation.
 
 
 ^^^^^^^^^^^^^^^
 ``author-only``
 ^^^^^^^^^^^^^^^
 
-When ``makeCitationCluster()`` is invoked with a non-nil ``author-only``
-element, everything but the author name in a cite is suppressed.
-The name is returned without decorative markup (italics, superscript, and
-so forth).
+When the ``makeCitationCluster()`` command (not documented here) is
+invoked with a non-nil ``author-only`` element, everything but the
+author name in a cite is suppressed.  The name is returned without
+decorative markup (italics, superscript, and so forth).
 
 .. code-block:: js
 
@@ -1132,7 +1181,8 @@ Automating text insertions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Calls to the ``makeCitationCluster()`` command with the ``author-only`` 
-and ``suppress-author`` control elements can be used to produce
+and to ``processCitationCluster()`` or ``appendCitationCluster()`` with the
+``suppress-author`` control elements can be used to produce
 cites that divide their content into two parts.  This permits the
 support of styles such as the Chinese national standard style GB7714-87,
 which requires formatting like the following:
@@ -1169,7 +1219,7 @@ less as follows:
    Jane Roe, *The Wetness of Water* (2000).
 
 In both of the example passages above, the cites to Noakes and Snoakes
-can be obtained with ordinary calls to ``makeCitationCluster()``.  The
+can be obtained with ordinary calls to citation processing commands.  The
 cite to Roe must be obtained in two parts: the first with a call
 controlled by the ``author-only`` element; and the second with
 a call controlled by the ``suppress-author`` element, *in that order*:
@@ -1186,11 +1236,12 @@ a call controlled by the ``suppress-author`` element, *in that order*:
    
 .. code-block:: js
 
-   var my_ids = { 
-     ["ID-3", {"suppress-author": 1}]
+   var citation = { 
+     "citationItems": ["ID-3", {"suppress-author": 1}],
+     "properties": { "noteIndex": 5 }
    }
 
-   var result = citeproc.makeCitationCluster( my_ids );
+   var result = citeproc.processCitationCluster( citation );
 
 In the first call, the processor will automatically suppress decorations (superscripting).
 Also in the first call, if a numeric style is used, the processor will provide a localized 
