@@ -164,7 +164,9 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 					oldvalue["near-note"] = item[1]["near-note"];
 					item[1]["first-reference-note-number"] = 0;
 					item[1]["near-note"] = false;
-					if ("number" != typeof first_ref[item[1].id]){
+					if (item[1].parallel){
+						item[1].position = CSL.POSITION_SUBSEQUENT;
+					} else if ("number" != typeof first_ref[item[1].id]){
 						if (!citation.properties.noteIndex){
 							citation.properties.noteIndex = 0;
 						}

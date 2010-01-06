@@ -222,7 +222,7 @@ CSL.Parallel.prototype.PruneOutputQueue = function(item){
 				} else {
 					if ("object" == typeof this.cite.item){
 						this.cite.item.parallel = true;
-					}
+					};
 					if (pos == (series.length-1) && series.length > 2){
 						this.purgeVariableBlobs(cite,cite.top.concat(cite.end));
 					} else {
