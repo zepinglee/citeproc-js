@@ -238,7 +238,7 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
 	for (var n in nameset.names){
 		name = nameset.names[n];
 		for each (var part in ["family","given","dropping-particle","non-dropping-particle","suffix"]){
-			if (base_nameset.names[n][part] != name[part]){
+			if (!base_nameset.names[n] || base_nameset.names[n][part] != name[part]){
 				return false;
 			}
 		}

@@ -36,11 +36,11 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_institutions");
+	dojo.require("tests.std_bluebook");
 	dojo.require("tests.std_bugreports");
 	dojo.require("tests.std_integration");
 	dojo.require("tests.std_disambiguate");
-	dojo.require("tests.std_institutions");
-	dojo.require("tests.std_bluebook");
 	dojo.require("tests.std_abbrevs");
 	dojo.require("tests.std_eclac");
 	dojo.require("tests.test_sys_stdrhino_locale");

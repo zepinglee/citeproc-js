@@ -2893,28 +2893,76 @@ CSL.Node.names = new function(){
 								rawvar = [{"literal":Item[variable]}];
 							}
 							var filtered_names = state.getNameSubFields(rawvar);
-							var specs = new Array();
-							specs.push(["people","bogus","undefined"]);
 							if (this.strings["has-institution"]){
-								specs.pop();
-								specs.push(["people","literal", "undefined"]);
-								specs.push(["organizations","literal","string"]);
-							};
-							for each (var spec in specs){
-								var mynames = new Object();
-								mynames.type = variable;
-								mynames.species = spec[0];
-								mynames.names = new Array();
-								for each (var name in filtered_names){
-									if (spec[2] == typeof name[spec[1]]){
-										mynames.names.push(name);
+								state.tmp["has-institution"] = true;
+								var namesets = new Array();
+								var names = new Array();
+								var last = undefined;
+								for each (var n in filtered_names){
+									if ("undefined" == typeof last){
+										var last = true;
+										if (n.literal){
+											last = false;
+										};
+									};
+									if (last == !n.literal){
+										names.push(n);
+									} else {
+										last = !n.literal;
+										namesets.push(names);
+										names = new Array();
+										names.push(n);
 									};
 								};
-								if (mynames.names.length){
+								namesets.push(names);
+								if (namesets.length && !namesets[0][0].literal){
+									namesets = [[]].concat(namesets);
+								} else if (namesets.length){
+									namesets = [[],[]].concat(namesets);
+								}
+								if (namesets.length && namesets.slice(-1)[0][0].literal){
+									namesets = namesets.concat([[]]);
+								};
+								while (namesets.length < 4){
+									namesets = namesets.concat([[]]);
+								}
+								for (var i=0; i<namesets.length; i+=2){
+									var mynames = new Object();
+									mynames.type = variable;
+									mynames.species = "people";
+									if (i == 0){
+										mynames.grouping = "first-person";
+										if (namesets[(i+1)].length){
+											state.tmp["has-first-person"] = true;
+										}
+									} else if (i == 2){
+										mynames.grouping = "first-organization";
+									} else if (i == (namesets.length-2)){
+										mynames.grouping = "last-organization";
+									};
+									mynames.names = namesets[(i+1)];
 									state.tmp.names_max.push(mynames.names.length);
 									state.tmp.value.push(mynames);
 									state.tmp.names_used.push(state.tmp.value.slice());
-								}
+									var mynames = new Object();
+									mynames.type = variable;
+									mynames.species = "organizations";
+									if (i == (namesets.length-2)){
+										mynames.grouping = "last";
+									}
+									mynames.names = namesets[i];
+									state.tmp.names_max.push(mynames.names.length);
+									state.tmp.value.push(mynames);
+									state.tmp.names_used.push(state.tmp.value.slice());
+								};
+							} else {  // end if institution
+								var mynames = new Object();
+								mynames.type = variable;
+								mynames.species = "people";
+								mynames.names = filtered_names;
+								state.tmp.names_max.push(mynames.names.length);
+								state.tmp.value.push(mynames);
+								state.tmp.names_used.push(state.tmp.value.slice());
 							};
 						};
 					};
@@ -2974,11 +3022,20 @@ CSL.Node.names = new function(){
 				} else {
 					state.output.addToken("etal-join","");
 				}
+				if (!state.output.getToken("with")){
+					var withtoken = new CSL.Token("with",CSL.SINGLETON);
+					withtoken.strings.prefix = " ";
+					withtoken.strings.suffix = " ";
+					state.output.addToken("with",withtoken);
+				}
 				if (!state.output.getToken("label")){
 					state.output.addToken("label");
 				}
 				if ("undefined" == typeof state.output.getToken("etal").strings.et_al_term){
 					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al","long",0);
+				}
+				if ("undefined" == typeof state.output.getToken("with").strings.with_term){
+					state.output.getToken("with").strings.with_term = state.getTerm("with","long",0);
 				}
 				state.output.addToken("commasep",", ");
 				for each (namepart in ["given","family","dropping-particle","non-dropping-particle","suffix"]){
@@ -2988,9 +3045,6 @@ CSL.Node.names = new function(){
 				}
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
-					if (!nameset.names.length){
-						continue;
-					};
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){
 						if (state.tmp.last_names_used.length == state.tmp.names_used.length){
 							var lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
@@ -3031,6 +3085,7 @@ CSL.Node.names = new function(){
 						var overlength = display_names.length > discretionary_names_length;
 						var et_al = false;
 						var and_term = "";
+						var outer_and_term = " "+state.output.getToken("name").strings["and"]+" ";
 						if (sane && overlength){
 							if (! state.tmp.sort_key_flag){
 								et_al = state.output.getToken("etal").strings.et_al_term;
@@ -3068,8 +3123,11 @@ CSL.Node.names = new function(){
 					state.tmp.disambig_settings["names"][state.tmp.nameset_counter] = display_names.length;
 					local_count += display_names.length;
 					var delim = state.output.getToken("name").strings.delimiter;
-					state.output.addToken("inner",delim);
+					if (!state.output.getToken("inner")){
+						state.output.addToken("inner",delim);
+					}
 					state.output.formats.value()["name"].strings.delimiter = and_term;
+					state.output.addToken("outer-and",outer_and_term);
 					for (var i in nameset.names){
 						state.registry.namereg.addname(Item.id,nameset.names[i],i);
 						if (state.tmp.sort_key_flag){
@@ -3112,9 +3170,26 @@ CSL.Node.names = new function(){
 						}
 						label = state.getTerm(termname,form,plural);
 					};
-					state.output.openLevel("empty"); // for term join
-					if (label && state.output.getToken("label").strings.label_position == CSL.BEFORE){
-						state.output.append(label,"label");
+					if (!state.tmp["has-institution"]){
+						state.output.openLevel("empty"); // for term join
+						if (label && state.output.getToken("label").strings.label_position == CSL.BEFORE){
+							state.output.append(label,"label");
+						}
+					} else if (nameset.grouping == "first-person"){
+						state.output.openLevel("empty"); // for term join
+						if (label && state.output.getToken("label").strings.label_position == CSL.BEFORE){
+							state.output.append(label,"label");
+						}
+						state.output.openLevel("with");
+					} else if (nameset.grouping == "first-organization"){
+						if (state.tmp["has-first-person"]){
+							state.output.append(" with ","empty");
+						}
+						state.output.openLevel("outer-and");
+						state.output.openLevel("inner");
+					} else if (nameset.grouping == "last-organization"){
+						state.output.closeLevel(); // closes inner
+						state.output.openLevel("inner"); // open fresh inner
 					}
 					if ("people" == nameset.species){
 						state.output.openLevel("etal-join"); // join for etal
@@ -3126,10 +3201,20 @@ CSL.Node.names = new function(){
 					} else {
 						CSL.Util.Institutions.outputInstitutions(state,display_names);
 					}
-					if (label && state.tmp.name_label_position != CSL.BEFORE){
-						state.output.append(label,"label");
+					if (!state.tmp["has-institution"]){
+						if (label && state.tmp.name_label_position != CSL.BEFORE){
+							state.output.append(label,"label");
+						}
+						state.output.closeLevel(); // term
+					} else if (nameset.grouping == "last"){
+						state.output.closeLevel(); // trial token (inner)
+						state.output.closeLevel(); // trial token (inner)
+						state.output.closeLevel(); // trial token (with)
+						if (label && state.tmp.name_label_position != CSL.BEFORE){
+							state.output.append(label,"label");
+						}
+						state.output.closeLevel(); // term
 					}
-					state.output.closeLevel(); // term
 					state.tmp.nameset_counter += 1;
 				}; // end of nameset loop
 				if (state.output.getToken("name").strings.form == "count"){
@@ -3162,6 +3247,8 @@ CSL.Node.names = new function(){
 				CSL.Util.Names.reinit(state,Item);
 				state.output.endTag(); // names
 				state.parallel.CloseVariable();
+				state.tmp["has-institution"] = false;
+				state.tmp["has-first-person"] = false;
 				state.tmp["et-al-min"] = false;
 				state.tmp["et-al-use-first"] = false;
 				state.tmp.can_block_substitute = false;
@@ -4623,7 +4710,7 @@ CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
 	for (var n in nameset.names){
 		name = nameset.names[n];
 		for each (var part in ["family","given","dropping-particle","non-dropping-particle","suffix"]){
-			if (base_nameset.names[n][part] != name[part]){
+			if (!base_nameset.names[n] || base_nameset.names[n][part] != name[part]){
 				return false;
 			}
 		}

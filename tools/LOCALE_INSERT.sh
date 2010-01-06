@@ -18,6 +18,7 @@ if [ "$2" == "" ]; then
   exit 1
 else
   ADDED_FRAG="$2"
+  echo frag: "${ADDED_FRAG}"
 fi
 
 if [ "$3" == "" ]; then
@@ -33,7 +34,7 @@ else
   exit 1
 fi
 
-for i in $(find ../csl-locales -name "*.xml"); do
+for i in $(find ./locale -name "*.xml"); do
   if [ $(grep -c "${ADDED_FRAG}" $i) -gt 0 ]; then
     echo Skipping $i
     continue

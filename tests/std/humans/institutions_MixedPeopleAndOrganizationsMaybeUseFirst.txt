@@ -59,7 +59,7 @@ Doe, et al., Big Ministry
     et-al-use-first="1">
     <layout>
       <names variable="author" delimiter=", ">
-        <name form="short" and="symbol" delimiter-precedes-last="never"/>
+        <name form="short" and="symbol" delimiter-precedes-last="never" delimiter=", "/>
         <institution 
           institution-parts="long" 
           delimiter=", "
