@@ -157,10 +157,7 @@ citation
   <citation>
     <layout delimiter="; " prefix="(" suffix=")">
       <choose>
-        <if position="ibid">
-          <text term="ibid"/>
-        </if>
-        <else>
+        <if position="first">
           <names variable="author">
             <name form="short"/>
           </names>
@@ -168,6 +165,9 @@ citation
             <label variable="locator" form="short" suffix=" "/>
             <text variable="locator"/>
           </group>
+        </if>
+        <else>
+          <text term="ibid"/>
         </else>
       </choose>
     </layout>

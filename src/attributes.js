@@ -388,7 +388,9 @@ CSL.Attributes["@locator"] = function(state,arg){
 
 CSL.Attributes["@position"] = function(state,arg){
 	state.opt.update_mode = CSL.POSITION;
-	if (arg == "subsequent"){
+	if (arg == "first"){
+		this.strings.position = CSL.POSITION_FIRST;
+	} else if (arg == "subsequent"){
 		this.strings.position = CSL.POSITION_SUBSEQUENT;
 	} else if (arg == "ibid") {
 		this.strings.position = CSL.POSITION_IBID;

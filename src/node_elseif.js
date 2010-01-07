@@ -48,12 +48,12 @@ CSL.Node["else-if"] = new function(){
 			//	};
 			//	this["tests"].push(func);
 			//};
-			if (this.strings.position){
+			if ("number" == typeof this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item,item){
 					if (state.tmp.force_subsequent && tryposition < 2){
 						return true;
-					} else if (item && item.position && item.position >= tryposition){
+					} else if (item && ("number" == typeof item.position) && item.position <= tryposition){
 						return true;
 					};
 					return false;

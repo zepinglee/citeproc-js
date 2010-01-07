@@ -186,6 +186,7 @@ doh.registerGroup("tests.conditions",
 			}
 			var sys = new RhinoTest([Item]);
 			var style = new CSL.Engine(sys,myxml);
+			style.updateItems(["Item-1"]);
 			return style.makeCitationCluster(sys.citations);
 		};
 	},

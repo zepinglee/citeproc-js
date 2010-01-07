@@ -106,7 +106,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	//
 	// set positions in reconstituted list, noting taints
 	this.registry.citationreg.citationByItemId = new Object();
-	if (this.opt.update_mode == CSL.POSITION){
+	if (this.opt.update_mode == CSL.POSITION || true){
 		var textCitations = new Array();
 		var noteCitations = new Array();
 	};
@@ -123,7 +123,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 			};
 
 		};
-		if (this.opt.update_mode == CSL.POSITION){
+		if (this.opt.update_mode == CSL.POSITION || true){
 			if (citationByIndex[c].properties.noteIndex){
 				noteCitations.push(citationByIndex[c]);
 			} else {
@@ -137,7 +137,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	if (!has_bibliography){
 		this.updateItems(update_items);
 	};
-	if (this.opt.update_mode == CSL.POSITION){
+	if (this.opt.update_mode == CSL.POSITION || true){
 		for each (var citations in [textCitations,noteCitations]){
 			var first_ref = new Object();
 			var last_ref = new Object();
@@ -164,9 +164,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 					oldvalue["near-note"] = item[1]["near-note"];
 					item[1]["first-reference-note-number"] = 0;
 					item[1]["near-note"] = false;
-					if (item[1].parallel){
-						item[1].position = CSL.POSITION_SUBSEQUENT;
-					} else if ("number" != typeof first_ref[item[1].id]){
+					if ("number" != typeof first_ref[item[1].id]){
 						if (!citation.properties.noteIndex){
 							citation.properties.noteIndex = 0;
 						}
@@ -197,7 +195,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						} else {
 							// everything else is definitely subsequent
 							suprame = true;
-						}
+						};
 						// conditions
 						if (ibidme){
 							if (ipos > 0){
@@ -306,7 +304,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 };
 
 CSL.Engine.prototype._processCitationCluster = function(sortedItems){
-	this.parallel.StartCitation();
+	this.parallel.StartCitation(sortedItems);
 	var str = CSL.getCitationCluster.call(this,sortedItems);
 
 	return str;
@@ -344,7 +342,10 @@ CSL.getAmbiguousCite = function(Item,disambig){
 	this.tmp.area = "citation";
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
+	var use_parallels = this.parallel.use_parallels;
+	this.parallel.use_parallels = false;
 	CSL.getCite.call(this,Item);
+	this.parallel.use_parallels = use_parallels;
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
@@ -401,7 +402,11 @@ CSL.getCitationCluster = function (inputList,citationID){
 		var last_collapsed = this.tmp.have_collapsed;
 		var params = new Object();
 
-		CSL.getCite.call(this,Item,item);
+		if (pos > 0){
+			CSL.getCite.call(this,Item,item,inputList[(pos-1)][1].id);
+		} else {
+			CSL.getCite.call(this,Item,item);
+		}
 
 		if (pos == (inputList.length-1)){
 			this.parallel.ComposeSet();
@@ -420,7 +425,7 @@ CSL.getCitationCluster = function (inputList,citationID){
 		myparams.push(params);
 	};
 
-	this.parallel.PruneOutputQueue();
+	this.parallel.PruneOutputQueue(this);
 	//
 	// output.queue is a simple array.  do a slice
 	// of it to get each cite item, setting params from
@@ -492,8 +497,8 @@ CSL.getCitationCluster = function (inputList,citationID){
  * (This might be dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.getCite = function(Item,item){
-	this.parallel.StartCite(Item,item);
+CSL.getCite = function(Item,item,prevItemID){
+	this.parallel.StartCite(Item,item,prevItemID);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
 	while(next < this[this.tmp.area].tokens.length){

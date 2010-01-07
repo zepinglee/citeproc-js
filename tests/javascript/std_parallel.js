@@ -38,4 +38,8 @@ doh.register("tests.std_parallel", [
         var test = new StdRhinoTest("parallel_JournalArticleSimple");
         doh.assertEqual(test.result, test.run());
     },
+    function(){
+        var test = new StdRhinoTest("parallel_TrailingIbid");
+        doh.assertEqual(test.result, test.run());
+    },
 ]);

@@ -63,7 +63,8 @@
 /**
  * Initializes the parallel cite tracking arrays
  */
-CSL.Parallel = function(){
+CSL.Parallel = function(state){
+	this.state = state;
 	this.one_set = new CSL.Stack();
 	this.all_sets = new CSL.Stack();
 	this.try_cite = true;
@@ -71,11 +72,13 @@ CSL.Parallel = function(){
 };
 
 CSL.Parallel.prototype.isMid = function(variable){
-	return ["volume","container-title","issue","page"].indexOf(variable) > -1;
+	return ["volume","container-title","issue","page","locator"].indexOf(variable) > -1;
 }
 
-CSL.Parallel.prototype.StartCitation = function(){
+CSL.Parallel.prototype.StartCitation = function(sortedItems){
 	if (this.use_parallels){
+		this.sortedItems = sortedItems;
+		this.sortedItemsPos = -1;
 		this.all_sets.clear();
 		this.one_set.clear();
 		this.in_series = false;
@@ -86,11 +89,20 @@ CSL.Parallel.prototype.StartCitation = function(){
  * Sets up an empty variables tracking object.
  *
  */
-CSL.Parallel.prototype.StartCite = function(Item,item){
+CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 	if (this.use_parallels){
+		this.sortedItemsPos++;
+		var position = undefined;
 		if (item){
-			item.parallel = false;
-		};
+			position = item.position;
+		}
+		//
+		// XXXXX: Parallel items are tracked in the registry
+		// against each reference item, on first references
+		// only.  The parallel value is the ID of the reference
+		// item first in the list of parallels, otherwise it
+		// is false.
+		//
 		this.try_cite = true;
 		for each (var x in ["title", "container-title","volume","page"]){
 			if (!Item[x]){
@@ -107,8 +119,39 @@ CSL.Parallel.prototype.StartCite = function(Item,item){
 		this.cite.top = new Array();
 		this.cite.mid = new Array();
 		this.cite.end = new Array();
-		this.cite.item = item;
+		this.cite.position = position;
+		this.cite.itemId = Item.id;
+		this.cite.prevItemID = prevItemID;
 		this.target = "top";
+		//
+		// Reevaluate position of next cite, if any, in case it
+		// is a lurking ibid reference.
+		//
+		if (this.sortedItems && this.sortedItemsPos > 0 && this.sortedItemsPos < this.sortedItems.length){
+			var curr = this.sortedItems[this.sortedItemsPos][1];
+			var last_id = this.sortedItems[(this.sortedItemsPos-1)][1].id;
+			var master = this.state.registry.registry[last_id].parallel;
+			if (master == curr.id){
+				for (var i=(this.sortedItemsPos-1); i>-1; i--){
+					if (this.sortedItems[i][1].id == Item.id){
+						var prev_locator = this.sortedItems[i][1].locator;
+						break;
+					};
+				};
+				var curr_locator = this.sortedItems[this.sortedItemsPos][1].locator;
+				if (!prev_locator && curr_locator){
+					curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
+				} else if (curr_locator == prev_locator){
+					curr.position = CSL.POSITION_IBID;
+				} else {
+					curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
+				};
+			};
+		};
+		this.force_collapse = false;
+		if (this.state.registry.registry[Item.id].parallel && this.state.registry.registry[Item.id].parallel != Item.id){
+			this.force_collapse = true;
+		}
 	};
 };
 
@@ -117,7 +160,7 @@ CSL.Parallel.prototype.StartCite = function(Item,item){
  * for tracking a single variable.
  */
 CSL.Parallel.prototype.StartVariable = function (variable){
-	if (this.use_parallels && this.try_cite){
+	if (this.use_parallels && (this.try_cite || this.force_collapse)){
 		this.variable = variable;
 		this.data = new Object();
 		this.data.value = "";
@@ -142,7 +185,7 @@ CSL.Parallel.prototype.StartVariable = function (variable){
  * after parallels detection is complete.
  */
 CSL.Parallel.prototype.AppendBlobPointer = function (blob){
-	if (this.use_parallels && this.try_cite && blob && blob.blobs){
+	if (this.use_parallels && (this.try_cite || this.force_collapse) && blob && blob.blobs){
 		this.data.blobs.push([blob,blob.blobs.length]);
 	};
 };
@@ -152,7 +195,7 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob){
  * in the variables tracking object.
  */
 CSL.Parallel.prototype.AppendToVariable = function(str){
-	if (this.use_parallels && this.try_cite){
+	if (this.use_parallels && (this.try_cite || this.force_collapse)){
 		this.data.value += "::"+str;
 	};
 };
@@ -166,11 +209,11 @@ CSL.Parallel.prototype.AppendToVariable = function(str){
  * member of an upcoming sequence ???]
  */
 CSL.Parallel.prototype.CloseVariable = function(){
-	if (this.use_parallels && this.try_cite){
+	if (this.use_parallels && (this.try_cite || this.force_collapse)){
 		this.cite[this.variable] = this.data;
 		if (this.one_set.mystack.length > 0){
 			var prev = this.one_set.mystack[(this.one_set.mystack.length-1)];
-			if (!this.isMid(this.variable) && this.data.value != prev[this.variable].value){
+			if (!this.isMid(this.variable) && (!prev[this.variable] || this.data.value != prev[this.variable].value)){
 				// evaluation takes place later, at close of cite.
 				this.try_cite = false;
 				this.in_series = false;
@@ -183,11 +226,11 @@ CSL.Parallel.prototype.CloseVariable = function(){
  * Merges current cite object to the
  * tracking array, and evaluate maybe.
  */
-CSL.Parallel.prototype.CloseCite = function(state){
+CSL.Parallel.prototype.CloseCite = function(){
 	if (this.use_parallels){
-		if (this.try_cite){
-			if (this.one_set.mystack.length && state[state.tmp.area].opt["year-suffix-delimiter"]){
-				state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
+		if ((this.try_cite || this.force_collapse) && this.state.registry.registry[this.cite.itemId].parallel != this.cite.itemId){
+			if (this.one_set.mystack.length && this.state[this.state.tmp.area].opt["year-suffix-delimiter"]){
+				this.state.tmp.splice_delimiter = this.state[this.state.tmp.area].opt["year-suffix-delimiter"];
 			}
 		} else {
 			this.ComposeSet();
@@ -203,6 +246,18 @@ CSL.Parallel.prototype.CloseCite = function(state){
 CSL.Parallel.prototype.ComposeSet = function(){
 	if (this.use_parallels){
 		if (this.one_set.mystack.length > 1){
+			for each (var cite in this.one_set.mystack){
+				if (CSL.POSITION_FIRST == cite.position){
+					var master = cite.itemId;
+					if (cite.prevItemID){
+						master = this.state.registry.registry[cite.prevItemID].parallel;
+						if (!master){
+							master = cite.prevItemID;
+						};
+					}
+					this.state.registry.registry[cite.itemId].parallel = master;
+				};
+			}
 			this.all_sets.push( this.one_set.mystack.slice() );
 		};
 		this.one_set.clear();
@@ -212,7 +267,7 @@ CSL.Parallel.prototype.ComposeSet = function(){
 /**
  * Mangle the queue as appropropriate.
  */
-CSL.Parallel.prototype.PruneOutputQueue = function(item){
+CSL.Parallel.prototype.PruneOutputQueue = function(){
 	if (this.use_parallels){
 		for each (var series in this.all_sets.mystack){
 			for (var pos=0; pos<series.length; pos++){
@@ -220,9 +275,6 @@ CSL.Parallel.prototype.PruneOutputQueue = function(item){
 				if (pos == 0){
 					this.purgeVariableBlobs(cite,cite.end);
 				} else {
-					if ("object" == typeof this.cite.item){
-						this.cite.item.parallel = true;
-					};
 					if (pos == (series.length-1) && series.length > 2){
 						this.purgeVariableBlobs(cite,cite.top.concat(cite.end));
 					} else {

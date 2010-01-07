@@ -37,13 +37,7 @@ citation
 <<===== MODE =====<<
 
 
->>===== RESULT =====>>
-..[0] (Doe p. 12; Roe p. 23)
->>[1] (Noakes p. 34; Ibid; Snoakes p. 45)
-<<===== RESULT =====<<
-
-
->>=====  CITATIONS =====>>
+>>===== CITATIONS =====>>
 [
     [
         {
@@ -51,11 +45,23 @@ citation
             "citationItems": [
                 {
                     "id": "ITEM-1", 
-                    "locator": "12"
+                    "locator": 201
                 }, 
                 {
                     "id": "ITEM-2", 
-                    "locator": "23"
+                    "locator": 301
+                }, 
+                {
+                    "id": "ITEM-1", 
+                    "locator": 201
+                }, 
+                {
+                    "id": "ITEM-2", 
+                    "locator": 301
+                }, 
+                {
+                    "id": "ITEM-3", 
+                    "locator": 401
                 }
             ], 
             "properties": {
@@ -65,40 +71,13 @@ citation
         }, 
         [], 
         []
-    ], 
-    [
-        {
-            "citationID": "CITATION-2", 
-            "citationItems": [
-                {
-                    "id": "ITEM-3", 
-                    "locator": "34"
-                }, 
-                {
-                    "id": "ITEM-3", 
-                    "locator": "34"
-                }, 
-                {
-                    "id": "ITEM-4", 
-                    "locator": "45"
-                }
-            ], 
-            "properties": {
-                "index": 1, 
-                "noteIndex": 2
-            }
-        }, 
-        [
-            [
-                "CITATION-1", 
-                1
-            ]
-        ], 
-        []
     ]
 ]
-<<=====  CITATIONS =====<<
+<<===== CITATIONS =====<<
 
+>>===== RESULT =====>>
+>>[0] Smith v. Noakes, 222 U.S. 200, 201, 333 L.Ed. 300, 301 (1965); Ibid, 333 L.Ed. 301; Jim v. Bob, 444 U.S. 400, 401 (1965).
+<<===== RESULT =====<<
 
 
 >>===== CSL =====>>
@@ -111,21 +90,40 @@ citation
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
-    <layout delimiter="; " prefix="(" suffix=")">
+  <citation year-suffix-delimiter=", ">
+    <layout delimiter="; " suffix=".">
       <choose>
-        <if position="first">
-          <names variable="author">
-            <name form="short"/>
-          </names>
-          <group prefix=" ">
-            <label variable="locator" form="short" suffix=" "/>
+      <if position="first">
+        <group delimiter=", ">
+          <text variable="title"/>
+          <group delimiter=" ">
+            <text variable="volume"/>
+            <text variable="container-title"/>
+            <group>
+              <text variable="page"/>
+              <text variable="locator" prefix=", "/>
+            </group>
+            <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
+          </group>
+        </group>
+      </if>
+      <else-if position="subsequent">
+        <group delimiter=", ">
+          <text variable="title"/>
+          <group delimiter=" ">
+            <text variable="volume"/>
+            <text variable="container-title"/>
             <text variable="locator"/>
           </group>
-        </if>
-        <else>
-          <text term="ibid"/>
-        </else>
+        </group>
+      </else-if>
+      <else-if position="ibid">
+        <text term="ibid"/>
+      </else-if>
+      <else>
+        <text term="ibid"/>
+        <text variable="locator" prefix=" at "/>
+      </else>
       </choose>
     </layout>
   </citation>
@@ -136,48 +134,49 @@ citation
 >>===== INPUT =====>>
 [
     {
-        "author": [
-            {
-                "family": "Doe", 
-                "given": "John", 
-                "static-ordering": false
-            }
-        ], 
         "id": "ITEM-1", 
-        "type": "book"
-    }, 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965"
+                ]
+            ]
+        }, 
+        "volume" : "222",
+        "page" : "200",
+        "title": "Smith v. Noakes", 
+        "container-title": "U.S.", 
+        "type": "legal_case"
+    },
     {
-        "author": [
-            {
-                "family": "Roe", 
-                "given": "Jane", 
-                "static-ordering": false
-            }
-        ], 
         "id": "ITEM-2", 
-        "type": "book"
-    }, 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965"
+                ]
+            ]
+        }, 
+        "volume" : "333",
+        "page" : "300",
+        "title": "Smith v. Noakes", 
+        "container-title": "L.Ed.", 
+        "type": "legal_case"
+    },
     {
-        "author": [
-            {
-                "family": "Noakes", 
-                "given": "John", 
-                "static-ordering": false
-            }
-        ], 
         "id": "ITEM-3", 
-        "type": "book"
-    }, 
-    {
-        "author": [
-            {
-                "family": "Snoakes", 
-                "given": "Richard", 
-                "static-ordering": false
-            }
-        ], 
-        "id": "ITEM-4", 
-        "type": "book"
+        "issued": {
+            "date-parts": [
+                [
+                    "1965"
+                ]
+            ]
+        }, 
+        "volume" : "444",
+        "page" : "400",
+        "title": "Jim v. Bob", 
+        "container-title": "U.S.", 
+        "type": "legal_case"
     }
 ]
 <<===== INPUT =====<<
