@@ -178,14 +178,26 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						//
 						var ibidme = false;
 						var suprame = false;
-						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0][1].id == item[1].id){
+						if (cpos > 0 && ipos == 0){
 							// Case 1: source in previous citation
 							// (1) Threshold conditions
 							//     (a) there must be a previous citation with one item
 							//     (b) this item must be the first in this citation
 							//     (c) the previous citation must contain a reference
 							//         to the same item ...
-							ibidme = true;
+							// (this has some jiggery-pokery in it for parallels)
+							var items = citations[(cpos-1)].sortedItems;
+							var useme = true;
+							for each (var i in items.slice(1)){
+								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1]].id.parallel == this.registry.registry[i[1].id]){
+									useme = false;
+								}
+							};
+							if (useme){
+								ibidme = true;
+							} else {
+								suprame = true;
+							}
 						} else if (ipos > 0 && citation.sortedItems[(ipos-1)][1].id == item[1].id){
 							// Case 2: immediately preceding source in this citation
 							// (1) Threshold conditions
@@ -263,7 +275,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	for (var key in this.tmp.taintedItemIDs){
 		this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
 	};
-	// XXXXX: note to self: provide for half-taints (backreferences)
+	// XXXXX: note to self: maybe provide for half-taints (backreferences)
 	//for (var key in this.tmp.taintedCitationIDs){
 	//	print(key);
 	//};
