@@ -214,6 +214,10 @@ CSL.Output.Queue.prototype.append = function(str,tokname){
 	//
 	if (this.state.tmp.count_offset_characters){
 		if ("string" == typeof str){
+			//
+			// XXXXX: for all this offset stuff, need to strip affixes
+			// before measuring; they may contain markup tags.
+			//
 			this.state.tmp.offset_characters += blob.strings.prefix.length;
 			this.state.tmp.offset_characters += blob.strings.suffix.length;
 			this.state.tmp.offset_characters += blob.blobs.length;

@@ -451,6 +451,7 @@ CSL.getCitationCluster = function (inputList,citationID){
 	// of it to get each cite item, setting params from
 	// the array that was built in the preceding loop.
 	//
+	var empties = 0;
 	var myblobs = this.output.queue.slice();
 	for (var qpos in myblobs){
 
@@ -488,6 +489,27 @@ CSL.getCitationCluster = function (inputList,citationID){
 				objects.push(compie);
 			};
 		};
+		if (objects.length == 0 && !inputList[qpos][1]["suppress-author"]){
+			empties++;
+		}
+	};
+	//
+	// Don't ask.  :(
+	//
+	if (empties){
+		if (objects.length){
+			if (typeof objects[0] == "string"){
+				objects[0] = this.tmp.splice_delimiter + objects[0];
+			} else {
+				objects.push(this.tmp.splice_delimiter);
+			};
+		};
+		objects.reverse();
+		for (var x=1; x<empties; x++){
+			objects.push(this.tmp.splice_delimiter + "[CSL STYLE ERROR: reference with no printed form.]");
+		};
+		objects.push("[CSL STYLE ERROR: reference with no printed form.]");
+		objects.reverse();
 	};
 	result += this.output.renderBlobs(objects)[0];
 	if (result){
@@ -501,7 +523,7 @@ CSL.getCitationCluster = function (inputList,citationID){
 	if (citationID && this.tmp.backref_index.length){
 		this.registry.citationreg.citationById[citationID].properties.backref_index = this.tmp.backref_index;
 		this.registry.citationreg.citationById[citationID].properties.backref_citation = this.tmp.backref_citation;
-	}
+	};
 	return result.replace("(csl:backref)","","g").replace("(/csl:backref)","","g");
 };
 

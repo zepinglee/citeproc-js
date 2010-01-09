@@ -39,7 +39,7 @@ citation
 
 
 >>===== RESULT =====>>
-(Manstein 1982; Anon.; Anon.)
+([CSL STYLE ERROR: reference with no printed form.]; [CSL STYLE ERROR: reference with no printed form.]; Manstein 1982)
 <<===== RESULT =====<<
 
 

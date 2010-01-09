@@ -1719,7 +1719,12 @@ CSL.getBibliographyEntries = function (bibsection){
 		this.output.startTag("bib_entry",bib_entry);
 		CSL.getCite.call(this,item);
 		this.output.endTag(); // closes bib_entry
-		ret.push(this.output.string(this,this.output.queue)[0]);
+		var res = this.output.string(this,this.output.queue)[0];
+		if (!res){
+			res = "[CSL STYLE ERROR: reference with no printed form.]";
+		} else {
+			ret.push(res);
+		}
 	}
 	this.tmp.disambig_override = false;
 	return ret;
@@ -1993,6 +1998,7 @@ CSL.getCitationCluster = function (inputList,citationID){
 		myparams.push(params);
 	};
 	this.parallel.PruneOutputQueue(this);
+	var empties = 0;
 	var myblobs = this.output.queue.slice();
 	for (var qpos in myblobs){
 		this.output.queue = [myblobs[qpos]];
@@ -2025,6 +2031,24 @@ CSL.getCitationCluster = function (inputList,citationID){
 				objects.push(compie);
 			};
 		};
+		if (objects.length == 0 && !inputList[qpos][1]["suppress-author"]){
+			empties++;
+		}
+	};
+	if (empties){
+		if (objects.length){
+			if (typeof objects[0] == "string"){
+				objects[0] = this.tmp.splice_delimiter + objects[0];
+			} else {
+				objects.push(this.tmp.splice_delimiter);
+			};
+		};
+		objects.reverse();
+		for (var x=1; x<empties; x++){
+			objects.push(this.tmp.splice_delimiter + "[CSL STYLE ERROR: reference with no printed form.]");
+		};
+		objects.push("[CSL STYLE ERROR: reference with no printed form.]");
+		objects.reverse();
 	};
 	result += this.output.renderBlobs(objects)[0];
 	if (result){
@@ -2038,7 +2062,7 @@ CSL.getCitationCluster = function (inputList,citationID){
 	if (citationID && this.tmp.backref_index.length){
 		this.registry.citationreg.citationById[citationID].properties.backref_index = this.tmp.backref_index;
 		this.registry.citationreg.citationById[citationID].properties.backref_citation = this.tmp.backref_citation;
-	}
+	};
 	return result.replace("(csl:backref)","","g").replace("(/csl:backref)","","g");
 };
 CSL.getCite = function(Item,item,prevItemID){

@@ -38,4 +38,8 @@ doh.register("tests.std_affix", [
         var test = new StdRhinoTest("affix_PrefixFullCitationTextOnly");
         doh.assertEqual(test.result, test.run());
     },
+    function(){
+        var test = new StdRhinoTest("affix_PrefixWithDecorations");
+        doh.assertEqual(test.result, test.run());
+    },
 ]);

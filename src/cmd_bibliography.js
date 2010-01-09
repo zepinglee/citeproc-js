@@ -172,7 +172,12 @@ CSL.getBibliographyEntries = function (bibsection){
 		this.output.startTag("bib_entry",bib_entry);
 		CSL.getCite.call(this,item);
 		this.output.endTag(); // closes bib_entry
-		ret.push(this.output.string(this,this.output.queue)[0]);
+		var res = this.output.string(this,this.output.queue)[0];
+		if (!res){
+			res = "[CSL STYLE ERROR: reference with no printed form.]";
+		} else {
+			ret.push(res);
+		}
 	}
 	this.tmp.disambig_override = false;
 	return ret;
