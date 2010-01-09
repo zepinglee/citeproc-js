@@ -4203,8 +4203,8 @@ CSL.Abbrev.prototype.getOutputFunc = function(token,varname,vartype,altvar){
 };
 CSL.Parallel = function(state){
 	this.state = state;
-	this.one_set = new CSL.Stack();
-	this.all_sets = new CSL.Stack();
+	this.sets = new CSL.Stack();
+	this.sets.push([]);
 	this.try_cite = true;
 	this.use_parallels = true;
 };
@@ -4215,14 +4215,14 @@ CSL.Parallel.prototype.StartCitation = function(sortedItems){
 	if (this.use_parallels){
 		this.sortedItems = sortedItems;
 		this.sortedItemsPos = -1;
-		this.all_sets.clear();
-		this.one_set.clear();
+		this.sets.clear();
+		this.sets.push([]);
 		this.in_series = false;
 	};
 };
 CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 	if (this.use_parallels){
-		if (this.one_set.length() && this.one_set.mystack[0].itemId == Item.id){
+		if (this.sets.value().length && this.sets.value()[0].itemId == Item.id){
 			this.ComposeSet();
 		};
 		this.sortedItemsPos++;
@@ -4235,8 +4235,7 @@ CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 			if (!Item[x]){
 				this.try_cite = false;
 				if (this.in_series){
-					this.all_sets.push(this.one_set.value());
-					this.one_set.clear();
+					this.sets.push([]);
 					this.in_series = false;
 				};
 				break;
@@ -4309,8 +4308,8 @@ CSL.Parallel.prototype.AppendToVariable = function(str){
 CSL.Parallel.prototype.CloseVariable = function(){
 	if (this.use_parallels && (this.try_cite || this.force_collapse)){
 		this.cite[this.variable] = this.data;
-		if (this.one_set.mystack.length > 0){
-			var prev = this.one_set.mystack[(this.one_set.mystack.length-1)];
+		if (this.sets.value().length > 0){
+			var prev = this.sets.value()[(this.sets.value().length-1)];
 			if (!this.isMid(this.variable) && (!prev[this.variable] || this.data.value != prev[this.variable].value)){
 				this.try_cite = false;
 				this.in_series = false;
@@ -4321,19 +4320,19 @@ CSL.Parallel.prototype.CloseVariable = function(){
 CSL.Parallel.prototype.CloseCite = function(){
 	if (this.use_parallels){
 		if ((this.try_cite || this.force_collapse) && this.state.registry.registry[this.cite.itemId].parallel != this.cite.itemId){
-			if (this.one_set.mystack.length && this.state[this.state.tmp.area].opt["year-suffix-delimiter"]){
+			if (this.sets.value().length && this.state[this.state.tmp.area].opt["year-suffix-delimiter"]){
 				this.state.tmp.splice_delimiter = this.state[this.state.tmp.area].opt["year-suffix-delimiter"];
 			}
 		} else {
 			this.ComposeSet();
 		};
-		this.one_set.push(this.cite);
+		this.sets.value().push(this.cite);
 	};
 };
 CSL.Parallel.prototype.ComposeSet = function(){
 	if (this.use_parallels){
-		if (this.one_set.mystack.length > 1){
-			for each (var cite in this.one_set.mystack){
+		if (this.sets.value().length > 1){
+			for each (var cite in this.sets.value()){
 				if (CSL.POSITION_FIRST == cite.position){
 					var master = cite.itemId;
 					if (cite.prevItemID){
@@ -4345,14 +4344,15 @@ CSL.Parallel.prototype.ComposeSet = function(){
 					this.state.registry.registry[cite.itemId].parallel = master;
 				};
 			}
-			this.all_sets.push( this.one_set.mystack.slice() );
-		};
-		this.one_set.clear();
+		} else {
+			this.sets.pop();
+		}
+		this.sets.push([]);
 	};
 };
 CSL.Parallel.prototype.PruneOutputQueue = function(){
 	if (this.use_parallels){
-		for each (var series in this.all_sets.mystack){
+		for each (var series in this.sets.mystack){
 			for (var pos=0; pos<series.length; pos++){
 				var cite = series[pos];
 				if (pos == 0){
