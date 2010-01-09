@@ -45,26 +45,14 @@
                     "given": "John"
                 }, 
                 {
-                    "literal": "Tiny Subcommittee"
-                }, 
-                {
-                    "literal": "Busy Committee"
-                }, 
-                {
-                    "literal": "Big Ministry"
+                    "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
                 }, 
                 {
                     "family": "Roe", 
                     "given": "Jane"
                 }, 
                 {
-                    "literal": "Trivial Working Group"
-                }, 
-                {
-                    "literal": "Evil Division"
-                }, 
-                {
-                    "literal": "Wasteful Enterprise"
+                    "literal": "Trivial Working Group, Evil Division, Wasteful Enterprise"
                 }, 
                 {
                     "family": "Doe", 

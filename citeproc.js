@@ -1793,8 +1793,8 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 		for each (var citations in [textCitations,noteCitations]){
 			var first_ref = new Object();
 			var last_ref = new Object();
-			for (var cpos in citations){
-				var citation = citations[cpos];
+							   for (var cpos in citations){
+				var onecitation = citations[cpos];
 				for (var ipos in citations[cpos].sortedItems){
 					var item = citations[cpos].sortedItems[ipos];
 					var oldvalue = new Object();
@@ -1804,25 +1804,36 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 					item[1]["first-reference-note-number"] = 0;
 					item[1]["near-note"] = false;
 					if ("number" != typeof first_ref[item[1].id]){
-						if (!citation.properties.noteIndex){
-							citation.properties.noteIndex = 0;
+						if (!onecitation.properties.noteIndex){
+							onecitation.properties.noteIndex = 0;
 						}
-						first_ref[item[1].id] = citation.properties.noteIndex;
-						last_ref[item[1].id] = citation.properties.noteIndex;
+						first_ref[item[1].id] = onecitation.properties.noteIndex;
+						last_ref[item[1].id] = onecitation.properties.noteIndex;
 						item[1].position = CSL.POSITION_FIRST;
 					} else {
 						var ibidme = false;
 						var suprame = false;
-						if (cpos > 0 && ipos == 0 && citations[(cpos-1)].sortedItems.length == 1 && citations[(cpos-1)].sortedItems[0][1].id == item[1].id){
-							ibidme = true;
-						} else if (ipos > 0 && citation.sortedItems[(ipos-1)][1].id == item[1].id){
+						if (cpos > 0 && ipos == 0){
+							var items = citations[(cpos-1)].sortedItems;
+							var useme = true;
+							for each (var i in items.slice(1)){
+								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1]].id.parallel == this.registry.registry[i[1].id]){
+									useme = false;
+								}
+							};
+							if (useme){
+								ibidme = true;
+							} else {
+								suprame = true;
+							}
+						} else if (ipos > 0 && onecitation.sortedItems[(ipos-1)][1].id == item[1].id){
 							ibidme = true;
 						} else {
 							suprame = true;
 						};
 						if (ibidme){
 							if (ipos > 0){
-								var prev_locator = citation.sortedItems[(ipos-1)][1].locator;
+								var prev_locator = onecitation.sortedItems[(ipos-1)][1].locator;
 							} else {
 								var prev_locator = citations[(cpos-1)].sortedItems[0][1].locator;
 							}
@@ -1848,19 +1859,21 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						}
 						if (suprame){
 							item[1].position = CSL.POSITION_SUBSEQUENT;
-							if (first_ref[item[1].id] != citation.properties.noteIndex){
+							if (first_ref[item[1].id] != onecitation.properties.noteIndex){
 								item[1]["first-reference-note-number"] = first_ref[item[1].id];
 							};
 						};
 					};
-					if (citation.properties.noteIndex){
-						if ((citation.properties.noteIndex-this.opt["near-note-distance"]) < citation.properties.noteIndex){
+					if (onecitation.properties.noteIndex){
+						if ((onecitation.properties.noteIndex-this.opt["near-note-distance"]) < onecitation.properties.noteIndex){
 							item[1]["near-note"] = true;
 						};
 					};
-					for each (var param in ["position","first-reference-note-number","near-note"]){
-						if (item[1][param] != oldvalue[param]){
-							this.tmp.taintedCitationIDs[citation.citationID] = true;
+					if (onecitation.citationID != citation.citationID){
+						for each (var param in ["position","first-reference-note-number","near-note"]){
+							if (item[1][param] != oldvalue[param]){
+								this.tmp.taintedCitationIDs[onecitation.citationID] = true;
+							};
 						};
 					};
 				};
@@ -2904,33 +2917,33 @@ CSL.Node.names = new function(){
 								state.tmp["has-institution"] = true;
 								var namesets = new Array();
 								var names = new Array();
-								var last = undefined;
+								var people = false;
 								for each (var n in filtered_names){
-									if ("undefined" == typeof last){
-										var last = true;
-										if (n.literal){
-											last = false;
-										};
-									};
-									if (last == !n.literal){
+									if (!n.literal){
 										names.push(n);
+										people = true;
 									} else {
-										last = !n.literal;
 										namesets.push(names);
 										names = new Array();
-										names.push(n);
+										var nn = n.literal.split(/,\s+/);
+										for each (n in nn){
+											names.push({"literal":n});
+										}
+										namesets.push(names);
+										names = new Array();
+										people = false;
 									};
 								};
-								namesets.push(names);
-								if (namesets.length && !namesets[0][0].literal){
-									namesets = [[]].concat(namesets);
-								} else if (namesets.length){
-									namesets = [[],[]].concat(namesets);
-								}
-								if (namesets.length && namesets.slice(-1)[0][0].literal){
-									namesets = namesets.concat([[]]);
+								if (people){
+									namesets.push(names);
+									names = new Array();
+									namesets.push(names);
 								};
-								while (namesets.length < 4){
+								namesets = [[]].concat(namesets);
+								if (!namesets.slice(-1)[0].length){
+									namesets = namesets.slice(0,-1);
+								}
+								while (namesets.length < 4 || namesets.length % 2){
 									namesets = namesets.concat([[]]);
 								}
 								for (var i=0; i<namesets.length; i+=2){
@@ -4209,6 +4222,9 @@ CSL.Parallel.prototype.StartCitation = function(sortedItems){
 };
 CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 	if (this.use_parallels){
+		if (this.one_set.length() && this.one_set.mystack[0].itemId == Item.id){
+			this.ComposeSet();
+		};
 		this.sortedItemsPos++;
 		var position = undefined;
 		if (item){
@@ -4234,14 +4250,15 @@ CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 		this.cite.itemId = Item.id;
 		this.cite.prevItemID = prevItemID;
 		this.target = "top";
-		if (false && this.sortedItems && this.sortedItemsPos > 0 && this.sortedItemsPos < this.sortedItems.length){
+		if (this.sortedItems && this.sortedItemsPos > 0 && this.sortedItemsPos < this.sortedItems.length){
 			var curr = this.sortedItems[this.sortedItemsPos][1];
 			var last_id = this.sortedItems[(this.sortedItemsPos-1)][1].id;
 			var master = this.state.registry.registry[last_id].parallel;
+			var prev_locator = false;
 			if (master == curr.id){
 				for (var i=(this.sortedItemsPos-1); i>-1; i--){
 					if (this.sortedItems[i][1].id == Item.id){
-						var prev_locator = this.sortedItems[i][1].locator;
+						prev_locator = this.sortedItems[i][1].locator;
 						break;
 					};
 				};

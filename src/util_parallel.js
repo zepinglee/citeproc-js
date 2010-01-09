@@ -91,13 +91,16 @@ CSL.Parallel.prototype.StartCitation = function(sortedItems){
  */
 CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 	if (this.use_parallels){
+		if (this.one_set.length() && this.one_set.mystack[0].itemId == Item.id){
+			this.ComposeSet();
+		};
 		this.sortedItemsPos++;
 		var position = undefined;
 		if (item){
 			position = item.position;
 		}
 		//
-		// XXXXX: Parallel items are tracked in the registry
+		// Parallel items are tracked in the registry
 		// against each reference item, on first references
 		// only.  The parallel value is the ID of the reference
 		// item first in the list of parallels, otherwise it
@@ -124,17 +127,18 @@ CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 		this.cite.prevItemID = prevItemID;
 		this.target = "top";
 		//
-		// Reevaluate position of next cite, if any, in case it
+		// Reevaluate position of this cite, if it follows another, in case it
 		// is a lurking ibid reference.
 		//
 		if (this.sortedItems && this.sortedItemsPos > 0 && this.sortedItemsPos < this.sortedItems.length){
 			var curr = this.sortedItems[this.sortedItemsPos][1];
 			var last_id = this.sortedItems[(this.sortedItemsPos-1)][1].id;
 			var master = this.state.registry.registry[last_id].parallel;
+			var prev_locator = false;
 			if (master == curr.id){
 				for (var i=(this.sortedItemsPos-1); i>-1; i--){
 					if (this.sortedItems[i][1].id == Item.id){
-						var prev_locator = this.sortedItems[i][1].locator;
+						prev_locator = this.sortedItems[i][1].locator;
 						break;
 					};
 				};

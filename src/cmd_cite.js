@@ -141,13 +141,13 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 		for each (var citations in [textCitations,noteCitations]){
 			var first_ref = new Object();
 			var last_ref = new Object();
-			for (var cpos in citations){
-				var citation = citations[cpos];
+							   for (var cpos in citations){
+				var onecitation = citations[cpos];
 				// Set the following:
 				//
 				// (1) position as required (as per current Zotero)
-				// (2) first-reference-note-number as required (on citation item)
-				// (3) near-note as required (on citation item, according to
+				// (2) first-reference-note-number as required (on onecitation item)
+				// (3) near-note as required (on onecitation item, according to
 				//     state.opt["near-note-distance"] parameter)
 				// (4) state.registry.citationreg.citationByItemId.
 				//
@@ -165,11 +165,11 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 					item[1]["first-reference-note-number"] = 0;
 					item[1]["near-note"] = false;
 					if ("number" != typeof first_ref[item[1].id]){
-						if (!citation.properties.noteIndex){
-							citation.properties.noteIndex = 0;
+						if (!onecitation.properties.noteIndex){
+							onecitation.properties.noteIndex = 0;
 						}
-						first_ref[item[1].id] = citation.properties.noteIndex;
-						last_ref[item[1].id] = citation.properties.noteIndex;
+						first_ref[item[1].id] = onecitation.properties.noteIndex;
+						last_ref[item[1].id] = onecitation.properties.noteIndex;
 						item[1].position = CSL.POSITION_FIRST;
 					} else {
 						//
@@ -179,11 +179,11 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						var ibidme = false;
 						var suprame = false;
 						if (cpos > 0 && ipos == 0){
-							// Case 1: source in previous citation
+							// Case 1: source in previous onecitation
 							// (1) Threshold conditions
-							//     (a) there must be a previous citation with one item
-							//     (b) this item must be the first in this citation
-							//     (c) the previous citation must contain a reference
+							//     (a) there must be a previous onecitation with one item
+							//     (b) this item must be the first in this onecitation
+							//     (c) the previous onecitation must contain a reference
 							//         to the same item ...
 							// (this has some jiggery-pokery in it for parallels)
 							var items = citations[(cpos-1)].sortedItems;
@@ -198,11 +198,11 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							} else {
 								suprame = true;
 							}
-						} else if (ipos > 0 && citation.sortedItems[(ipos-1)][1].id == item[1].id){
-							// Case 2: immediately preceding source in this citation
+						} else if (ipos > 0 && onecitation.sortedItems[(ipos-1)][1].id == item[1].id){
+							// Case 2: immediately preceding source in this onecitation
 							// (1) Threshold conditions
 							//     (a) there must be an imediately preceding reference to  the
-							//         same item in this citation
+							//         same item in this onecitation
 							ibidme = true;
 						} else {
 							// everything else is definitely subsequent
@@ -211,7 +211,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						// conditions
 						if (ibidme){
 							if (ipos > 0){
-								var prev_locator = citation.sortedItems[(ipos-1)][1].locator;
+								var prev_locator = onecitation.sortedItems[(ipos-1)][1].locator;
 							} else {
 								var prev_locator = citations[(cpos-1)].sortedItems[0][1].locator;
 							}
@@ -225,26 +225,26 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						}
 						if (ibidme){
 							if (!prev_locator && curr_locator){
-								//     (a) if the previous citation had no locator
-								//         and this citation has one, use ibid+pages
+								//     (a) if the previous onecitation had no locator
+								//         and this onecitation has one, use ibid+pages
 								item[1].position = CSL.POSITION_IBID_WITH_LOCATOR;
 							} else if (!prev_locator && !curr_locator){
-								//     (b) if the previous citation had no locator
-								//         and this citation also has none, use ibid
+								//     (b) if the previous onecitation had no locator
+								//         and this onecitation also has none, use ibid
 								item[1].position = CSL.POSITION_IBID;
 							} else if (prev_locator && curr_locator == prev_locator){
-								//     (c) if the previous citation had a locator
-								//         (page number, etc.) and this citation has
+								//     (c) if the previous onecitation had a locator
+								//         (page number, etc.) and this onecitation has
 								//         a locator that is identical, use ibid
 								item[1].position = CSL.POSITION_IBID;
 							} else if (prev_locator && curr_locator && curr_locator != prev_locator){
-								//     (d) if the previous citation had a locator,
-								//         and this citation has one that differs,
+								//     (d) if the previous onecitation had a locator,
+								//         and this onecitation has one that differs,
 								//         use ibid+pages
 								item[1].position = CSL.POSITION_IBID_WITH_LOCATOR;
 							} else {
-								//     (e) if the previous citation had a locator
-								//         and this citation has none, use subsequent
+								//     (e) if the previous onecitation had a locator
+								//         and this onecitation has none, use subsequent
 								//
 								//     ... and everything else would be subsequent also
 								ibidme = false; // just to be clear
@@ -253,19 +253,21 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						}
 						if (suprame){
 							item[1].position = CSL.POSITION_SUBSEQUENT;
-							if (first_ref[item[1].id] != citation.properties.noteIndex){
+							if (first_ref[item[1].id] != onecitation.properties.noteIndex){
 								item[1]["first-reference-note-number"] = first_ref[item[1].id];
 							};
 						};
 					};
-					if (citation.properties.noteIndex){
-						if ((citation.properties.noteIndex-this.opt["near-note-distance"]) < citation.properties.noteIndex){
+					if (onecitation.properties.noteIndex){
+						if ((onecitation.properties.noteIndex-this.opt["near-note-distance"]) < onecitation.properties.noteIndex){
 							item[1]["near-note"] = true;
 						};
 					};
-					for each (var param in ["position","first-reference-note-number","near-note"]){
-						if (item[1][param] != oldvalue[param]){
-							this.tmp.taintedCitationIDs[citation.citationID] = true;
+					if (onecitation.citationID != citation.citationID){
+						for each (var param in ["position","first-reference-note-number","near-note"]){
+							if (item[1][param] != oldvalue[param]){
+								this.tmp.taintedCitationIDs[onecitation.citationID] = true;
+							};
 						};
 					};
 				};
@@ -299,6 +301,12 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	obj.push(citationsPre.length);
 	obj.push(this._processCitationCluster.call(this,sortedItems));
 	ret.push(obj);
+	//
+	// note for posterity: Rhino and Spidermonkey produce different
+	// sort results for items with matching keys.  That discrepancy
+	// turned up a subtle bug in the parallel detection code, trapped
+	// at line 266, above, and in line 94 of util_parallel.js.
+	//
 	ret.sort(function(a,b){
 		if(a[0]>b[0]){
 			return 1;
@@ -423,17 +431,17 @@ CSL.getCitationCluster = function (inputList,citationID){
 		if (pos == (inputList.length-1)){
 			this.parallel.ComposeSet();
 		}
-		//
-		// XXXXX: capture these parameters to an array, which
-		// will be of the same length as this.output.queue,
-		// corresponding to each element.
-		//
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this,last_collapsed);
 		if (item && item["author-only"]){
 			this.tmp.suppress_decorations = true;
 		}
 		params.suppress_decorations = this.tmp.suppress_decorations;
 		params.have_collapsed = this.tmp.have_collapsed;
+		//
+		// XXXXX: capture parameters to an array, which
+		// will be of the same length as this.output.queue,
+		// corresponding to each element.
+		//
 		myparams.push(params);
 	};
 
@@ -542,13 +550,6 @@ CSL.citeStart = function(Item){
 
 	this.tmp.count_offset_characters = false;
 	this.tmp.offset_characters = 0;
-	//
-	// Oh ... shucks.  This is difficult.  We need to be able to
-	// unwind this thing, so the derived values should really go into
-	// registry, and the max be taken each time the data is delivered
-	// back to the client.  Sucks, but will be robust and amazing that
-	// way, so that's what we should do.
-	//
 };
 
 CSL.citeEnd = function(Item){

@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a35##
+   version 1.00##a41##
 
 .. class:: info-date
 
-   =D=5 January 2010=D=
+   =D=8 January 2010=D=
 
 .. class:: contributors
 
@@ -76,7 +76,7 @@ special requirements.
 
 Comments and complaints relating to this document and to the processor itself
 will be gladly received and eventually despatched with.  The best channel
-for providing feedback and getting help is the `project mailing list`_.
+for providing feedback and getting help is the |link| `project mailing list`_.
 
 .. class:: first
 
@@ -102,13 +102,15 @@ available Javascript environments, using the scripts ``test.py`` or
 setting up the environment for these scripts, but the basic system
 requirements are described below.  If you get stuck and want advice,
 or if you find something in this manual that is out of date or just
-wrong, please feel free to drop me a line.
+wrong, please feel free to drop a line to the |link| `project list`_.
+
+.. _`project list`: http://groups.google.com/group/citeproc-js
 
 ###################################
 Getting the ``citeproc-js`` sources
 ###################################
 
-The ``citeproc-js`` sources are hosted |link| `on a BitBucket account`__.
+The ``citeproc-js`` sources are hosted on |link| `BitBucket`__.
 To obtain the sources, install the |link| `Mercurial version control system`__
 on a computer within your control (if you're on a Linux distro or a Mac,
 just do a package install), and run the following command:
@@ -123,23 +125,23 @@ __ http://mercurial.selenic.com/wiki/
       hg clone http://bitbucket.org/fbennett/citeproc-js/
 
 
-##########################
-``runtest.sh`` + ``rhino``
-##########################
+################
+``run-rhino.sh``
+################
 
-The simplest configuration for running tests is to use the ``runtest.sh``
-script (or ``runtest.bat`` on Windows systems).  If your OS has Java installed
+The simplest configuration for running tests is to use the ``run-rhino.sh``
+script (or ``run-rhino.bat`` on Windows systems).  If your OS has Java installed
 (which most desktop and laptop systems nowadays seem to do), this will run
 the full set of processor tests using a copy of the ``rhino`` Javascript interpreter
 that ships with the ``citeproc-js`` sources. [#]_
 
 
-#####################################
-``test.py`` + ``python-spidermonkey``
-#####################################
+#######################
+``run-spidermonkey.py``
+#######################
 
 It is also possible to run the processor tests in the ``spidermonkey``
-interpreter using the ``test.py`` script.  To use the ``test.py``
+interpreter using the ``run-spidermonkey.py`` script.  To use the
 script, you will need to install the following items on your computer:
 
 Python 2.5 or higher
@@ -158,6 +160,30 @@ JSON package, such as ``simplejson`` or ``cjson``.  Python 2.6
 ships with a bundled JSON module, so there is no need to install
 one separately if that's your version.
 
+######################
+``run-tracemonkey.sh``
+######################
+
+The fastest configuration for testing uses the ``run-tracemonkey.py``
+script.  This is based on the ``jslibs`` development environment,
+the sources for which can be obtained from |link| `Google Code`_.
+(In the current version of the script, you will need to adjust
+the ``TRACEMONKEY`` variable to point at the location of the
+``jshost`` binary installed on your system.)
+
+.. _`Google Code`: http://code.google.com/p/jslibs/
+
+As a rough speed comparison, on the netbook I have used for
+``citeproc-js`` development, run-rhino.sh currently completes the test
+suite in about one minute, run-spidermonkey.py runs in about 30
+seconds, and run-tracemonkey.sh finishes in about 15 seconds.
+(These times are not really reflective of runtime performance,
+since the test suite builds the processor from scratch hundreds
+of times, while at runtime, citation rendering through a preconfigured
+processor will be the dominant mode of operation.)
+
+
+
 ####################
 Loading runtime code
 ####################
@@ -166,11 +192,13 @@ The primary source code of the processor is located under ``./src``,
 for ease of maintenance.  The files necessary for use in a runtime
 environment are catenated, in the appropriate sequence, in the
 ``citeproc.js`` file, located in the root of the source archive.  This
-file can be regenerated using the ``./tools/bundle.sh`` shell script.
+file and the test fixtures can be refreshed using the 
+``./tools/MAKETESTS.sh`` shell script.
 
-To build the processor, this file must be loaded into the Javascript
-interpreter context, together with a ``sys`` object provided by the
-integrator (see below), and the desired CSL style (as a string). 
+To build the processor, the ``citeproc.js`` source code should be
+loaded into the Javascript interpreter context, together with a
+``sys`` object provided by the integrator (see below), and the desired
+CSL style (as a string).
 
 .. [#] Note that two tests in the
       current test suite will fail under ``rhino``, due to string encoding issues.
@@ -181,8 +209,9 @@ Processor Commands
 
 The processor command set will be a grave disappointment to those well versed in
 the tormented intricacies of reference management and bibliography
-formatting.  The processor is instantiated with a single command, and
-controlled with three others.
+formatting.  The processor is instantiated with a single command,
+controlled with three others, and has just two commands for adjustments
+to its runtime configuration.
 
 
 ################
@@ -224,14 +253,14 @@ __  `System functions`_
 ``updateItems()``
 #################
 
-Before citations or a bibliography can be generated, an ordered
-list of reference items must be loaded into the processor using
-the ``updateItems()`` command, as shown below.  This command
-takes a list of item IDs as its sole argument, and will reconcile
-the internal state of the processor to the provided list of
-items, making any necessary insertions and deletions, and making
-any necessary adjustments to internal registers related to
-disambiguation and so forth.
+Before citations or a bibliography can be generated, an ordered list
+of reference items must ordinarily be loaded into the processor using
+the ``updateItems()`` command, as shown below.  This command takes a
+list of item IDs as its sole argument, and will reconcile the internal
+state of the processor to the provided list of items, making any
+necessary insertions and deletions, and making any necessary
+adjustments to internal registers related to disambiguation and so
+forth.
 
 .. admonition:: Hint
 
@@ -394,7 +423,8 @@ pairs shown below (the values shown are the processor defaults):
 
 	{ "maxoffset": 0,
 	  "entryspacing": 1,
-	  "linespacing": 1
+	  "linespacing": 1,
+      "hangingindent": 2
 	};
 
 *maxoffset*
@@ -417,7 +447,11 @@ pairs shown below (the values shown are the processor defaults):
    An integer representing the spacing between the lines within
    each bibliography entry.
 
+*hangingindent*
+   The number of em-spaces to apply in hanging indents within the
+   bibliography.
    
+
 #################
 Citation commands
 #################
@@ -430,109 +464,15 @@ a connection to the user's word processing software).  These two modes
 of operation are supported in ``citeproc-js`` by two separate
 commands, respectively ``appendCitationCluster()``, and
 ``processCitationCluster()``.  A third, simpler command
-(``makeCitationCluster()``), is not covered by this manual, as it
+(``makeCitationCluster()``), is not covered by this manual.
+It is primarily useful as a tool for testing the processor, as it
 lacks any facility for position evaluation, which is needed in
 production environments.
 
 The ``appendCitationCluster()`` and
 ``processCitationCluster()`` commands use a similar input format
-for citation data.  This is described first below, followed by
-a description of the specifics of the two commands.
-
-^^^^^^^^^^^^^^^^^^^^^^^^
-The citation data object
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-A minimal citation data object has the following form:
-
-.. code-block:: js
-
-   {
-      "citationItems": [
-         {
-            "id": "ITEM-1"
-         }
-      ], 
-      "properties": {
-         "noteIndex": 1
-      }
-   }
-
-The ``citationItems`` array is a list of one or more citation item
-objects, each containing an ``id`` used to retrieve the bibliographic
-details of the target resource.  A citation item object may contain
-one or more additional optional values:
-
-* ``locator``: a string identifying a page number or other pinpoint
-  location or range within the resource; 
-* ``label``: a label type, indicating whether the locator is to a
-  page, a chapter, or other subdivision of the target resource.  Valid
-  labels are defined in the `CSL specification`__.
-* ``suppress-author``: if true, author names will not be included in the
-  citation output for this cite;
-* ``author-only``: if true, only the author name will be included
-  in the citation output for this cite -- this optional parameter
-  provides a means for certain demanding styles that require the
-  processor output to be divided between the main text and a footnote.
-  (See the section `Processor control`__, in the Dirty Tricks section
-  below for more details.)
-* ``prefix``: a string to print before this cite item;
-* ``suffix``: a string to print after this cite item.
-
-__ http://citationstyles.org/
-
-__ `Processor control`_
-
-In the ``properties`` portion of a citation, the ``noteIndex``
-value indicates the footnote number in which the citation is located
-within the document.  Citations within the main text of the document
-have a ``noteIndex`` of zero.
-
-The processor will add a number of data items to a citation
-during processing.  Values added at the top level of the citation
-structure include:
-
-* ``citationID``: A unique ID assigned to the citation, for
-  internal use by the processor.  This ID may be assigned by the
-  calling application, but it must uniquely identify the citation,
-  and it must not be changed during processing or during an
-  editing session.
-* ``sortedItems``: This is an array of citation objects and accompanying
-  bibliographic data objects, sorted as required by the configured
-  style.  Calling applications should not need to access the data
-  in this array directly.
-
-Values added to individual citation item objects may include:
-
-* ``sortkeys``: an array of sort keys used by the processor to produce
-  the sorted list in ``sortedItems``.  Calling applications should not
-  need to touch this array directly.
-* ``position``: an integer flag that indicates whether the cite item
-  should be rendered as a first reference, an immediately-following
-  reference (i.e. *ibid*), an immediately-following reference with locator
-  information, or a subsequent reference.
-* ``first-reference-note-number``: the number of the ``noteIndex`` of
-  the first reference to this resource in the document.
-* ``near-note``: a boolean flag indicating whether another reference
-  to this resource can be found within a specific number of notes,
-  counting back from the current position.  What is "near" in
-  this sense is style-dependent.
-
-Citations are registered and accessed by the processor internally
-in arrays and Javascript objects.  Calling applications should
-not need to access this data directly, but it is available in
-the processor registry, at the following locations:
-
-.. code-block:: js
-
-   citeproc.registry.citationreg.citationById
-
-   citeproc.registry.citationreg.citationByIndex
-
-   citeproc.registry.citationreg.citationByItemId
-
-We now turn to the two commands available for generating
-citations for placement in the text of a document.
+for citation data, which is described below in the |link| `Data Input`_ 
+section below.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``appendCitationCluster()``
@@ -624,29 +564,22 @@ __ `Output Formatting`_
 
 
 
-####################################
-``setContainerTitleAbbreviations()``
-####################################
+######################
+``setAbbreviations()``
+######################
 
-A list of journal title abbreviations can be set on the processor
-using the ``setContainerTitleAbbreviations()`` command.
-This command is also specfic to ``citeproc-js``:
-
-.. class:: clothesline
-
-   ..
-
-      .. admonition:: Hint
-
-         See the section `Dirty Tricks → Journal abbreviation lists`__ below
-         for further details.
+The processor recognizes abbreviation lists for journal titles, series
+titles, authorities (such as the Supreme Court of New York), and
+institution names (such as International Business Machines).  A list
+can be set in the processor using the ``setAbbreviations()`` command,
+with the name of the list as sole argument.  The named list is fetched
+and installed by the ``sys.getAbbreviations()`` command, documented
+below under `Local Environment`_ → `System Functions`_.
 
 .. code-block:: js
 
-   cp.setContainerTitleAbbreviations( abbr );
+   citeproc.setAbbreviations( "default" );
 
-
-__ `Journal abbreviation lists`_
 
 -----------------
 Local Environment
@@ -707,12 +640,49 @@ fetch individual items from storage.
 	   return DATA._items[id];
    };
 
+^^^^^^^^^^^^^^^^^^^^^^
+``getAbbreviations()``
+^^^^^^^^^^^^^^^^^^^^^^
 
+The ``getAbbreviations()`` command is invoked by the processor
+at startup, and when the ``setAbbreviations()`` command is
+invoked on the instantiated processor.  The abbreviation list
+retrieved by the processor should have the following structure:
+
+.. code-block:: js
+
+   ABBREVS = { 
+      "default": {
+         "journal":{
+            "Journal of Irreproducible Results":"J. Irrep. Res."
+         },
+         "series":{
+            "International Rescue Wildlife Series":"I.R. Wildlife Series"
+         },
+         "authority":{
+            "United States Patent and Trademark Office": "USPTO"
+		 },
+         "institution":{
+            "Bureau of Gaseous Unformed Stuff":"BoGUS"
+         };
+      };
+   };
+
+If the object above provides the abbreviation store for the system,
+an appropriate ``sys.getAbbreviations()`` function might look
+like this:
+
+.. code-block:: js
+
+   sys.getAbbreviations = function(name){
+      return ABBREVS[name];
+   };
 
 
 ----------
 Data Input
 ----------
+
 
 ###########
 Item fields
@@ -984,12 +954,99 @@ A literal string may be passed through as a ``literal`` element:
       }
    }
 
-###############
-Citation fields
-###############
+####################
+Citation data object
+####################
 
+A minimal citation data object, used as input by both the ``processCitationCluster()``
+and ``appendCitationCluster()`` command, has the following form:
 
-Concerning citation fields, please see |link| `Citation commands`_, above.
+.. code-block:: js
+
+   {
+      "citationItems": [
+         {
+            "id": "ITEM-1"
+         }
+      ], 
+      "properties": {
+         "noteIndex": 1
+      }
+   }
+
+The ``citationItems`` array is a list of one or more citation item
+objects, each containing an ``id`` used to retrieve the bibliographic
+details of the target resource.  A citation item object may contain
+one or more additional optional values:
+
+* ``locator``: a string identifying a page number or other pinpoint
+  location or range within the resource; 
+* ``label``: a label type, indicating whether the locator is to a
+  page, a chapter, or other subdivision of the target resource.  Valid
+  labels are defined in the `CSL specification`__.
+* ``suppress-author``: if true, author names will not be included in the
+  citation output for this cite;
+* ``author-only``: if true, only the author name will be included
+  in the citation output for this cite -- this optional parameter
+  provides a means for certain demanding styles that require the
+  processor output to be divided between the main text and a footnote.
+  (See the section `Processor control`__, in the Dirty Tricks section
+  below for more details.)
+* ``prefix``: a string to print before this cite item;
+* ``suffix``: a string to print after this cite item.
+
+__ http://citationstyles.org/
+
+__ `Processor control`_
+
+In the ``properties`` portion of a citation, the ``noteIndex``
+value indicates the footnote number in which the citation is located
+within the document.  Citations within the main text of the document
+have a ``noteIndex`` of zero.
+
+The processor will add a number of data items to a citation
+during processing.  Values added at the top level of the citation
+structure include:
+
+* ``citationID``: A unique ID assigned to the citation, for
+  internal use by the processor.  This ID may be assigned by the
+  calling application, but it must uniquely identify the citation,
+  and it must not be changed during processing or during an
+  editing session.
+* ``sortedItems``: This is an array of citation objects and accompanying
+  bibliographic data objects, sorted as required by the configured
+  style.  Calling applications should not need to access the data
+  in this array directly.
+
+Values added to individual citation item objects may include:
+
+* ``sortkeys``: an array of sort keys used by the processor to produce
+  the sorted list in ``sortedItems``.  Calling applications should not
+  need to touch this array directly.
+* ``position``: an integer flag that indicates whether the cite item
+  should be rendered as a first reference, an immediately-following
+  reference (i.e. *ibid*), an immediately-following reference with locator
+  information, or a subsequent reference.
+* ``first-reference-note-number``: the number of the ``noteIndex`` of
+  the first reference to this resource in the document.
+* ``near-note``: a boolean flag indicating whether another reference
+  to this resource can be found within a specific number of notes,
+  counting back from the current position.  What is "near" in
+  this sense is style-dependent.
+
+Citations are registered and accessed by the processor internally
+in arrays and Javascript objects.  Calling applications should
+not need to access this data directly, but it is available in
+the processor registry, at the following locations:
+
+.. code-block:: js
+
+   citeproc.registry.citationreg.citationById
+
+   citeproc.registry.citationreg.citationByIndex
+
+   citeproc.registry.citationreg.citationByItemId
+
 
 .. class:: first
 
@@ -1098,35 +1155,6 @@ processors should be capable of preparing input in the form described
 above under `Data Input → Dates`__.
 
 __ `input-dates`_
-
-
-##########################
-Journal abbreviation lists
-##########################
-
-To enable automatic abbreviation of journal titles, a set
-of Javascript key/value pairs composed of full titles and their 
-abbreviations may be installed using the ``setContainerTitleAbbreviations``
-command, after instantiating the processor.
-
-.. code-block:: js
-   
-   var abbreviations = {
-       "Pacific Rim Law &amp; Policy Journal" 
-           : "Pac. Rim L. &amp; Pol'y J.",
-       "Temple Journal of International &amp; Comparative Law" 
-           : "Temple J. Int'l &amp; Comp. L."
-   };
-   
-   var citeproc = new CSL.Engine(sys,style);
-   
-   citeproc.setContainerTitleAbbreviations(abbreviations);
-
-A later version of the CSL specification may provide for
-selecting an appropriate list of abbreviations through
-a declaration in the CSL style file itself.  For the present,
-this facility is available as a non-standard extension to
-the processor.
 
 
 #################
@@ -1469,7 +1497,7 @@ Fixture layout
 ##############
 
 The human-readable version of each test fixture is composed in
-the format below.  The five sections ``MODE``, ``SCHEMA``,
+the format below.  The five sections ``MODE``,
 ``RESULT``, ``CSL`` and ``INPUT`` are required, and may be 
 arranged in any order within the fixture file.  As the
 sample below illustrates, text outside of the section
@@ -1485,9 +1513,9 @@ the usage of each.
       .. admonition:: Hint
    
          Three additional sections are available for special
-         purposes.  The optional sections ``ABBREVIATIONS``, ``BIBENTRIES``, 
-         and ``CITATIONS`` are also explained
-         below.
+         purposes.  The optional sections ``ABBREVIATIONS``, 
+         ``BIBENTRIES``, ``CITATIONS`` and ``CITATION-ITEMS``
+         are also explained below.
 
 .. code-block:: text
 
@@ -1495,14 +1523,9 @@ the usage of each.
    citation
    <<===== MODE =====<<
    
-   >>===== SCHEMA =====>>
-   1.0
-   <<===== SCHEMA =====<<
-
-
    # Everything between the section blocks is
-   # ignored.  Comment markup can be used for clarity,
-   but it is not required.
+   # ignored.  Comment markup can be used for 
+   # clarity, but it is not required.
 
       
    >>===== RESULT =====>>
@@ -1532,15 +1555,24 @@ the usage of each.
    
    
    >>===== INPUT =====>>
-   [{
-      "id":"ID-1",
-      "type": "book",
-      "author": [
-           { "name":"Doe, John" }
-      ],
-      "issued": {"year": "1965", "month":"6", "day":"1"},
-      "title": "His Anonymous Life"
-   }]
+   [
+      {
+         "id":"ID-1",
+         "type": "book",
+         "author": [
+            { "name":"Doe, John" }
+         ],
+         "issued": {
+            "date-parts": [
+               [
+                  "1965", 
+                  "6", 
+                  "1"
+               ]
+            ]
+         }
+      }
+   ]
    <<===== INPUT =====<<
 
 
@@ -1563,20 +1595,6 @@ processor commands, respectively:
    >>===== MODE =====>>
    citation
    <<===== MODE =====<<
-
-!!!!!!
-SCHEMA
-!!!!!!
-
-A string indicates the version of the CSL schema against
-which the test should be run.  All tests currently are for
-CSL 1.0:
-
-.. code-block:: text
-
-   >>===== SCHEMA =====>>
-   1.0
-   <<===== SCHEMA =====<<
 
 !!!
 CSL
@@ -1657,14 +1675,26 @@ for details):
            { "name":"Doe, John" },
            { "name":"Roe, Jane" }
       ],
-      "issued": { "year" : 2005 }
+      "issued": {
+         "date-parts": [
+            [
+               2005
+            ]
+         ]
+      }
     },
     {
       "id":"ID-2",
       "author": [
            { "name":"Stoakes, Richard" }
       ],
-      "issued": { "year" : 1898 }
+      "issued": {
+         "date-parts": [
+            [
+               1898
+            ]
+         ]
+      }
     }
    ]
    <<===== INPUT =====<<
@@ -1703,32 +1733,6 @@ Optional sections
 
 Three optional sections may be included in a fixture
 to exercise special aspects of processor behavior.
-
-!!!!!!!!!!!!!
-ABBREVIATIONS
-!!!!!!!!!!!!!
-
-To test the operation of journal-title abbreviation lists,
-add an ``ABBREVIATIONS`` section:
-
-.. class:: clothesline
-
-   ..
-
-      .. admonition:: Hint
-
-         To be meaningful, such a test must naturally include the relevant 
-         journal title in its ``INPUT`` data, and render the title
-         via the CSL written into the fixture.
-
-.. code-block:: text
-
-   >>== ABBREVIATIONS ==>>
-   {
-     "Journal of Irreproducible Results" : "J. Irrep. Res."
-   }
-   <<== ABBREVIATIONS ==<<
-
 
 !!!!!!!!!!
 BIBENTRIES
@@ -1777,31 +1781,88 @@ correspond to items registered in the ``INPUT`` section:
    <<===== BIBENTRIES =====<<
 
 
-!!!!!!!!!
-CITATIONS
-!!!!!!!!!
+!!!!!!!!!!!!!!
+CITATION-ITEMS
+!!!!!!!!!!!!!!
 
 When testing in ``citation`` mode, the data items to be
 processed are ordinarily rendered as a single citation.
 To test operations that depend upon or may be affected
 by the internal state of the processor across a session,
-a ``CITATIONS`` section may be included in the test fixture.
-Each cite consists of a two-element array containing an
-item ID and a Javascript object with supplementary data.
+either a ``CITATION-ITEMS`` or a ``CITATIONS`` section
+may be included in the test fixture.  
+
+``CITATION-ITEMS`` is the simpler of the two, used in
+most of the standard processor formatting test fixtures.
+The data input in this area should consist of a list array
+of cite data, where each cite consists of a Javascript object
+containing, at least, item ID.
 A single citation is composed of a list of cites, and
 the full entry consists of a list of such citations:
 
 .. code-block:: text
 
-   >>===== CITATIONS =====>>
+   >>===== CITATION-ITEMS =====>>
    [
      [
-       ["ITEM-1",{"note_distance":4}]
+       [{"id": "ITEM-1"}]
      ],
      [
-       ["ITEM-2",{"label": "page", "locator": "23"}]
-       ["ITEM-3",{}]
+       [{"id": "ITEM-2", "label": "page", "locator": "23"}]
+       [{"id":"ITEM-3"}]
      ]
+   ]
+   <<===== CITATION-ITEMS =====<<
+
+!!!!!!!!!
+CITATIONS
+!!!!!!!!!
+
+A ``CITATIONS`` area can be used (instead of ``CITATION-ITEMS``)
+to mimic a series of interactions with a word processor plugin.
+In this case, the area should contain a list array of citation
+data objects with explict ``citationID`` values and ID list values
+for subsequent invocations of the ``processCitationCluster()`` command,
+like the following:
+
+.. code-block:: text
+
+   >>===== CITATIONS =====>>
+   [
+      [
+         {
+            "citationID": "CITATION-1",
+            "citationItems": [
+               {
+                  "id": "ITEM-1"
+               }
+            ], 
+            "properties": {
+               "noteIndex": 1
+            }
+         },
+         [],
+         []
+      ],
+      [
+         {
+            "citationID": "CITATION-2",
+            "citationItems": [
+               {
+                  "id": "ITEM-2",
+                  "locator": 15
+               },
+               {
+                  "id": "ITEM-3"
+               }
+            ], 
+            "properties": {
+               "noteIndex": 1
+            }
+         }
+      ],
+      ["CITATION-1"],
+      []
    ]
    <<===== CITATIONS =====<<
 
@@ -1841,22 +1902,6 @@ the tests are ready to go.
 
 **Running the tests**
 
-.. admonition:: Hint
-
-   Under Windows, the ``./runtests.bat`` command has the same effect.
-
-..
-
-   ::
-
-      ./runtests.sh
-
-The command above will run the full set of tests using the
-Java-based Rhino interpreter.  To run the tests using the
-Spidermonkey interpreter, use the following command:
-
-   ::
-
-      ./tests.py
-
-
+For information of the three test runners bundled with
+``citeproc-js``, see the section `Setup and System Requirements`_, 
+above.

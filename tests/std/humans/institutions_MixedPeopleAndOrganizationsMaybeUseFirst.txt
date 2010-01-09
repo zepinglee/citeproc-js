@@ -77,13 +77,7 @@ Doe, et al., Big Ministry
     {
         "author": [
             {
-                "literal": "Tiny Subcommittee"
-            }, 
-            {
-                "literal": "Busy Committee"
-            }, 
-            {
-                "literal": "Big Ministry"
+                "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
             }, 
             {
                 "family": "Doe", 

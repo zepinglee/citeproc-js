@@ -162,10 +162,7 @@ citation
         "number": "LC/L.2656-P", 
         "publisher": [
             {
-                "literal": "Economic Commission for Latin America and the Carribean"
-            }, 
-            {
-                "literal": "United Nations"
+                "literal": "Economic Commission for Latin America and the Carribean, United Nations"
             }
         ], 
         "publisher-place": "Santiago de Chile :en:Santiago", 

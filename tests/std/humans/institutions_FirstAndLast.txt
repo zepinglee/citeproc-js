@@ -57,7 +57,7 @@ Tiny Subcommittee, Big Ministry
   <citation>
     <layout>
       <names variable="author">
-        <name/>
+        <name delimiter="[X]"/>
         <institution 
           institution-parts="long" 
           delimiter=", "
@@ -75,13 +75,7 @@ Tiny Subcommittee, Big Ministry
     {
         "author": [
             {
-                "literal": "Tiny Subcommittee"
-            }, 
-            {
-                "literal": "Busy Committee"
-            }, 
-            {
-                "literal": "Big Ministry"
+                "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
             }
         ], 
         "type": "book"

@@ -60,37 +60,39 @@ CSL.Node.names = new function(){
 								//
 								var namesets = new Array();
 								var names = new Array();
-								var last = undefined;
+								var people = false;
+								//
+								// there are always two pairs, even
+								// if empty.  ordering is [organization,people,
+								// organization,people].  for first pair,
+								// organization is always empty.
+								//
 								for each (var n in filtered_names){
-									if ("undefined" == typeof last){
-										var last = true;
-										if (n.literal){
-											last = false;
-										};
-									};
-									if (last == !n.literal){
+									if (!n.literal){
 										names.push(n);
+										people = true;
 									} else {
-										last = !n.literal;
 										namesets.push(names);
 										names = new Array();
-										names.push(n);
+										var nn = n.literal.split(/,\s+/);
+										for each (n in nn){
+											names.push({"literal":n});
+										}
+										namesets.push(names);
+										names = new Array();
+										people = false;
 									};
 								};
-								namesets.push(names);
-								//
-								// assure that there are always two pairs, even
-								// if empty
-								//
-								if (namesets.length && !namesets[0][0].literal){
-									namesets = [[]].concat(namesets);
-								} else if (namesets.length){
-									namesets = [[],[]].concat(namesets);
-								}
-								if (namesets.length && namesets.slice(-1)[0][0].literal){
-									namesets = namesets.concat([[]]);
+								if (people){
+									namesets.push(names);
+									names = new Array();
+									namesets.push(names);
 								};
-								while (namesets.length < 4){
+								namesets = [[]].concat(namesets);
+								if (!namesets.slice(-1)[0].length){
+									namesets = namesets.slice(0,-1);
+								}
+								while (namesets.length < 4 || namesets.length % 2){
 									namesets = namesets.concat([[]]);
 								}
 								for (var i=0; i<namesets.length; i+=2){
