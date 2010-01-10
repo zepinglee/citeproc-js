@@ -39,7 +39,7 @@ CSL.Engine = function(sys,style,lang) {
 		style = "";
 	};
 	this.parallel = new CSL.Parallel(this);
-	this.parallel.use_parallels = true;
+	//this.parallel.use_parallels = true;
 
 	this.abbrev = new CSL.Abbrev();
 

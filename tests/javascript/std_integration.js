@@ -35,6 +35,10 @@
 
 doh.register("tests.std_integration", [
     function(){
+        var test = new StdRhinoTest("integration_CrossCitationIbidOnInsert");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("integration_IbidOnInsert");
         doh.assertEqual(test.result, test.run());
     },

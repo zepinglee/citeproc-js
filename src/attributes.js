@@ -235,22 +235,26 @@ CSL.Attributes["@variable"] = function(state,arg){
 		};
 		this.execs.push(check_for_output);
 	} else if (["if", "else-if"].indexOf(this.name) > -1){
-		var check_for_variable_value = function(state,Item){
+		var check_for_variable_value = function(state,Item,item){
 			var ret = [];
 			for each(variable in this.variables){
 				var x = false;
-				if (Item[variable]){
-					if ("number" == typeof Item[variable] || "string" == typeof Item[variable]){
+				var myitem = Item;
+				if (item && variable == "locator"){
+					myitem = item;
+				}
+				if (myitem[variable]){
+					if ("number" == typeof myitem[variable] || "string" == typeof myitem[variable]){
 						x = true;
-					} else if ("object" == typeof Item[variable]){
-						if (Item[variable].length){
+					} else if ("object" == typeof myitem[variable]){
+						if (myitem[variable].length){
 							x = true;
 						} else {
 							//
 							// this will turn true only for hash objects
 							// that have at least one attribute.
 							//
-							for (var i in Item[variable]){
+							for (var i in myitem[variable]){
 								x = true;
 								break;
 							};

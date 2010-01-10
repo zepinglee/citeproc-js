@@ -189,7 +189,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							var items = citations[(cpos-1)].sortedItems;
 							var useme = true;
 							for each (var i in items.slice(1)){
-								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1]].id.parallel == this.registry.registry[i[1].id]){
+								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1].id].parallel == this.registry.registry[i[1].id]){
 									useme = false;
 								}
 							};
@@ -360,15 +360,15 @@ CSL.getAmbiguousCite = function(Item,disambig){
 		this.tmp.disambig_request = false;
 	}
 	this.tmp.area = "citation";
-	this.tmp.suppress_decorations = true;
-	this.tmp.force_subsequent = true;
 	var use_parallels = this.parallel.use_parallels;
 	this.parallel.use_parallels = false;
+	this.tmp.suppress_decorations = true;
+	this.tmp.force_subsequent = true;
 	CSL.getCite.call(this,Item);
-	this.parallel.use_parallels = use_parallels;
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
+	this.parallel.use_parallels = use_parallels;
 	if (false){
 		CSL.debug("ok");
 	}
@@ -459,6 +459,12 @@ CSL.getCitationCluster = function (inputList,citationID){
 
 		this.tmp.suppress_decorations = myparams[qpos].suppress_decorations;
 		this.tmp.splice_delimiter = myparams[qpos].splice_delimiter;
+		//
+		// oh, one last second thought on delimiters ...
+		//
+		if (myblobs[qpos].parallel_delimiter){
+			this.tmp.splice_delimiter = myblobs[qpos].parallel_delimiter;
+		}
 		this.tmp.have_collapsed = myparams[qpos].have_collapsed;
 
 		var composite = this.output.string(this,this.output.queue);

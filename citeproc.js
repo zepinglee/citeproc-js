@@ -834,7 +834,6 @@ CSL.Engine = function(sys,style,lang) {
 		style = "";
 	};
 	this.parallel = new CSL.Parallel(this);
-	this.parallel.use_parallels = true;
 	this.abbrev = new CSL.Abbrev();
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
@@ -1822,7 +1821,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 							var items = citations[(cpos-1)].sortedItems;
 							var useme = true;
 							for each (var i in items.slice(1)){
-								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1]].id.parallel == this.registry.registry[i[1].id]){
+								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1].id].parallel == this.registry.registry[i[1].id]){
 									useme = false;
 								}
 							};
@@ -1942,15 +1941,15 @@ CSL.getAmbiguousCite = function(Item,disambig){
 		this.tmp.disambig_request = false;
 	}
 	this.tmp.area = "citation";
-	this.tmp.suppress_decorations = true;
-	this.tmp.force_subsequent = true;
 	var use_parallels = this.parallel.use_parallels;
 	this.parallel.use_parallels = false;
+	this.tmp.suppress_decorations = true;
+	this.tmp.force_subsequent = true;
 	CSL.getCite.call(this,Item);
-	this.parallel.use_parallels = use_parallels;
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
+	this.parallel.use_parallels = use_parallels;
 	if (false){
 		CSL.debug("ok");
 	}
@@ -2004,6 +2003,9 @@ CSL.getCitationCluster = function (inputList,citationID){
 		this.output.queue = [myblobs[qpos]];
 		this.tmp.suppress_decorations = myparams[qpos].suppress_decorations;
 		this.tmp.splice_delimiter = myparams[qpos].splice_delimiter;
+		if (myblobs[qpos].parallel_delimiter){
+			this.tmp.splice_delimiter = myblobs[qpos].parallel_delimiter;
+		}
 		this.tmp.have_collapsed = myparams[qpos].have_collapsed;
 		var composite = this.output.string(this,this.output.queue);
 		this.tmp.suppress_decorations = false;
@@ -3738,18 +3740,22 @@ CSL.Attributes["@variable"] = function(state,arg){
 		};
 		this.execs.push(check_for_output);
 	} else if (["if", "else-if"].indexOf(this.name) > -1){
-		var check_for_variable_value = function(state,Item){
+		var check_for_variable_value = function(state,Item,item){
 			var ret = [];
 			for each(variable in this.variables){
 				var x = false;
-				if (Item[variable]){
-					if ("number" == typeof Item[variable] || "string" == typeof Item[variable]){
+				var myitem = Item;
+				if (item && variable == "locator"){
+					myitem = item;
+				}
+				if (myitem[variable]){
+					if ("number" == typeof myitem[variable] || "string" == typeof myitem[variable]){
 						x = true;
-					} else if ("object" == typeof Item[variable]){
-						if (Item[variable].length){
+					} else if ("object" == typeof myitem[variable]){
+						if (myitem[variable].length){
 							x = true;
 						} else {
-							for (var i in Item[variable]){
+							for (var i in myitem[variable]){
 								x = true;
 								break;
 							};
@@ -4294,7 +4300,7 @@ CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 					curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
 				};
 			};
-		};
+		}
 		this.force_collapse = false;
 		if (this.state.registry.registry[Item.id].parallel && this.state.registry.registry[Item.id].parallel != Item.id){
 			this.force_collapse = true;
@@ -4348,14 +4354,22 @@ CSL.Parallel.prototype.CloseCite = function(){
 				this.state.tmp.splice_delimiter = this.state[this.state.tmp.area].opt["year-suffix-delimiter"];
 			}
 		} else {
-			this.ComposeSet();
+			this.ComposeSet(true);
 		};
 		this.sets.value().push(this.cite);
-	};
+	}
 };
-CSL.Parallel.prototype.ComposeSet = function(){
+CSL.Parallel.prototype.ComposeSet = function(next_output_in_progress){
 	if (this.use_parallels){
 		if (this.sets.value().length > 1){
+			var start = this.state.output.queue.length - (this.sets.value().length-1);
+			var end = this.state.output.queue.length;
+			if (next_output_in_progress){
+				end--;
+			}
+			for (var pos=start; pos<end; pos++){
+				this.state.output.queue[pos].parallel_delimiter = ", ";
+			}
 			for each (var cite in this.sets.value()){
 				if (CSL.POSITION_FIRST == cite.position){
 					var master = cite.itemId;
@@ -5947,9 +5961,12 @@ CSL.getSortKeys = function(Item,key_type){
 	this.tmp.area = key_type;
 	this.tmp.disambig_override = true;
 	this.tmp.disambig_request = false;
+	var use_parallels = this.parallel.use_parallels;
+	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	CSL.getCite.call(this,Item);
 	this.tmp.suppress_decorations = false;
+	this.parallel.use_parallels = use_parallels;
 	this.tmp.disambig_override = false;
 	for (var i in this[key_type].keys){
 		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);

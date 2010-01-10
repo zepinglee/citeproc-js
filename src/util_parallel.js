@@ -150,7 +150,7 @@ CSL.Parallel.prototype.StartCite = function(Item,item,prevItemID){
 					curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
 				};
 			};
-		};
+		}
 		this.force_collapse = false;
 		if (this.state.registry.registry[Item.id].parallel && this.state.registry.registry[Item.id].parallel != Item.id){
 			this.force_collapse = true;
@@ -236,19 +236,27 @@ CSL.Parallel.prototype.CloseCite = function(){
 				this.state.tmp.splice_delimiter = this.state[this.state.tmp.area].opt["year-suffix-delimiter"];
 			}
 		} else {
-			this.ComposeSet();
+			this.ComposeSet(true);
 		};
 		this.sets.value().push(this.cite);
-	};
+	}
 };
 
 /**
  * Move variables tracking array into the array of
  * composed sets.
  */
-CSL.Parallel.prototype.ComposeSet = function(){
+CSL.Parallel.prototype.ComposeSet = function(next_output_in_progress){
 	if (this.use_parallels){
 		if (this.sets.value().length > 1){
+			var start = this.state.output.queue.length - (this.sets.value().length-1);
+			var end = this.state.output.queue.length;
+			if (next_output_in_progress){
+				end--;
+			}
+			for (var pos=start; pos<end; pos++){
+				this.state.output.queue[pos].parallel_delimiter = ", ";
+			}
 			for each (var cite in this.sets.value()){
 				if (CSL.POSITION_FIRST == cite.position){
 					var master = cite.itemId;

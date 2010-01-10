@@ -562,9 +562,12 @@ CSL.getSortKeys = function(Item,key_type){
 	this.tmp.area = key_type;
 	this.tmp.disambig_override = true;
 	this.tmp.disambig_request = false;
+	var use_parallels = this.parallel.use_parallels;
+	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	CSL.getCite.call(this,Item);
 	this.tmp.suppress_decorations = false;
+	this.parallel.use_parallels = use_parallels;
 	this.tmp.disambig_override = false;
 	for (var i in this[key_type].keys){
 		this[key_type].keys[i] = strip_prepositions(this[key_type].keys[i]);
