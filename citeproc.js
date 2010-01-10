@@ -3792,7 +3792,7 @@ CSL.Attributes["@match"] = function(state,arg){
 		this.evaluator = evaluator;
 	};
 };
-CSL.Attributes["@uncertain-date"] = function(state,arg){
+CSL.Attributes["@is-uncertain-date"] = function(state,arg){
 	var variables = arg.split(/\s+/);
 	for each (var variable in variables){
 		var func = function(state,Item){

@@ -51,7 +51,7 @@ Rosales, Osvaldo y Mikio Kuwayama (2007), “América latina y china e india: h
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0"
+      version="1.1x"
       default-locale="es">
   <info>
     <id />

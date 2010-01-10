@@ -305,14 +305,19 @@ class CslTest(CslTestUtils):
         if not os.path.exists("../../jing"):
             print "Error: jing not found as sibling of processor archive."
             sys.exit()
-        if not os.path.exists("../../csl/csl.rnc"):
-            print "Error: csl.rnc not found in csl subdirectory of archive"
+        rnc_path = "NO_PATH"
+        m = re.match("(?sm).*version=\"([.0-9a-z]+)\".*",self.data["csl"])
+        if m:
+            rnc_path = "../../csl/%s/csl.rnc" % m.group(1)
+        if not os.path.exists(rnc_path):
+            print "Error: CSL schema not found at %s" %rnc_path
+            open("ABORTED.txt","w+").write("boo\n")
             sys.exit()
         tfd,tfilename = tempfile.mkstemp(dir=".")
         os.write(tfd,self.data["csl"])
         os.close(tfd)
         
-        jfh = os.popen("java -jar ../../jing/bin/jing.jar -c ../../csl/csl.rnc %s" % tfilename)
+        jfh = os.popen("java -jar ../../jing/bin/jing.jar -c %s %s" % (rnc_path,tfilename))
         success = True
         plural = ""
         while 1:

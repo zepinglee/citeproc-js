@@ -56,7 +56,7 @@ circa 15 December 2005; 20 December 2005
   <citation>
     <layout delimiter="; ">
       <choose>
-        <if uncertain-date="issued">
+        <if is-uncertain-date="issued">
           <text value="circa" suffix=" "/>
         </if>
       </choose>

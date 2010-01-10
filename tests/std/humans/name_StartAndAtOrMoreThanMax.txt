@@ -62,7 +62,7 @@ Title of the Article / A.I. Stamou, et al.
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0">
+      version="1.1x">
   <info>
     <id />
     <title />

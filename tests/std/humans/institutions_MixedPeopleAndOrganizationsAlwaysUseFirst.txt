@@ -47,7 +47,7 @@ Noakes with Roe, Tiny Subcommittee, Big Ministry and Doe, et al., Trivial Workin
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0"
+      version="1.1x"
       default-locale="en">
   <info>
     <id />

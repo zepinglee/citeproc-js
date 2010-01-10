@@ -128,7 +128,7 @@ citation
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <locale lang="en">
+  <locale xml:lang="en">
     <terms>
       <term name="ibid">id.</term>
     </terms>
