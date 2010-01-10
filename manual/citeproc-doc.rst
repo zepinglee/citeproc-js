@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a41##
+   version 1.00##a45##
 
 .. class:: info-date
 
-   =D=8 January 2010=D=
+   =D=10 January 2010=D=
 
 .. class:: contributors
 
@@ -471,8 +471,8 @@ production environments.
 
 The ``appendCitationCluster()`` and
 ``processCitationCluster()`` commands use a similar input format
-for citation data, which is described below in the |link| `Data Input`_ 
-section below.
+for citation data, which is described below in the `Data Input`_
+→ `Citation data object`_ section below.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``appendCitationCluster()``
@@ -1286,10 +1286,10 @@ elements are in the processor test fixtures in the
 * `CitationNumberSuppressAuthor`__
 * `SuppressAuthorSolo`__
 
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_AuthorOnly.txt
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_CitationNumberAuthorOnlyThenSuppressAuthor.txt
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_CitationNumberSuppressAuthor.txt
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/std/humans/discretionary_SuppressAuthorSolo.txt
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_AuthorOnly.txt
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_CitationNumberAuthorOnlyThenSuppressAuthor.txt
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_CitationNumberSuppressAuthor.txt
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_SuppressAuthorSolo.txt
 
 
 
@@ -1512,9 +1512,9 @@ the usage of each.
 
       .. admonition:: Hint
    
-         Three additional sections are available for special
-         purposes.  The optional sections ``ABBREVIATIONS``, 
-         ``BIBENTRIES``, ``CITATIONS`` and ``CITATION-ITEMS``
+         Four additional sections are available for special
+         purposes.  The optional sections 
+         ``BIBENTRIES``, ``BIBSECTION``, ``CITATIONS`` and ``CITATION-ITEMS``
          are also explained below.
 
 .. code-block:: text
@@ -1587,8 +1587,14 @@ MODE
 !!!!
 
 A single string tells whether to test ``citation`` or ``bibliography``
-output, using the ``makeCitationCluster()`` and ``makeBibliography()``
-processor commands, respectively:
+output.  In the former case, the test will be performed using 
+the ``makeCitationCluster()`` command if a ``CITATION-ITEMS`` area is 
+included in the test fixture, or if neither that nor a ``CITATIONS`` 
+area is included.  If a ``CITATION-ITEMS`` area is included,
+``citation`` mode uses the ``processCitationCluster`` command.
+In the case of ``bibliography`` mode, the ``makeBibliography()``
+command is used, with output possibly filtered by the conditions
+specified in a ``BIBSECTION`` area:
 
 .. code-block:: text
 
@@ -1657,7 +1663,8 @@ INPUT
 
 The ``INPUT`` section provides the item data to be registered
 in the processor.  In a simple test fixture that contains
-neither a ``BIBENTRIES`` nor a ``CITATIONS`` section,
+none of the optional areas ``BIBENTRIES``, ``BIBSECTION`` ``CITATIONS``
+or ``CITATION-ITEMS``,
 a citation or bibligraphy is requested for *all* of the
 items in the ``INPUT`` section (where one of those two
 optional sections is included, the testing behavior is slightly
@@ -1731,7 +1738,7 @@ used for comparison:
 Optional sections
 ^^^^^^^^^^^^^^^^^
 
-Three optional sections may be included in a fixture
+Four optional sections are available for use in a fixture
 to exercise special aspects of processor behavior.
 
 !!!!!!!!!!
@@ -1780,6 +1787,38 @@ correspond to items registered in the ``INPUT`` section:
    ]
    <<===== BIBENTRIES =====<<
 
+!!!!!!!!!!
+BIBSECTION
+!!!!!!!!!!
+
+When ``bibliography`` mode is used, a ``BIBSECTION`` area
+can be used to limit the output of the bibligraphy, through
+the interface described above under the `makeBibliography()`_
+command:
+
+.. code-block:: text
+
+   >>===== BIBSECTION =====>>
+   {
+      "include" : [
+         {
+            "field" : "categories",
+            "value" : "classical"
+         }
+      ],
+      "quash" : [
+         {
+            "field" : "type",
+            "value" : "manuscript"
+         },
+         {
+            "field" : "issued",
+            "value" : ""
+         }
+      ]
+   }
+   <<===== BIBSECTION =====<<
+
 
 !!!!!!!!!!!!!!
 CITATION-ITEMS
@@ -1790,7 +1829,8 @@ processed are ordinarily rendered as a single citation.
 To test operations that depend upon or may be affected
 by the internal state of the processor across a session,
 either a ``CITATION-ITEMS`` or a ``CITATIONS`` section
-may be included in the test fixture.  
+may be included in the test fixture (only one may be used
+in a single test fixture).
 
 ``CITATION-ITEMS`` is the simpler of the two, used in
 most of the standard processor formatting test fixtures.
@@ -1874,15 +1914,18 @@ Preparing and running the tests
 
 The following commands are used to process and run
 the tests.  For further information, see the source
-code of the relevant scripts, or drop me a line.
+code of the relevant scripts, or drop a line to the
+`citeproc-js integrators group`__.
+
+__ http://groups.google.com/group/citeproc-js
 
 **Test preparation**
 
 .. admonition:: Important
 
    Any broken JSON syntax in the ``INPUT`` section,
-   or in the optional sections ``ABBREVIATIONS``, 
-   ``BIBENTRIES`` or ``CITATIONS`` 
+   or in the optional sections 
+   ``BIBENTRIES``, ``CITATIONS`` or ``CITATION-ITEMS``  
    will raise an error during
    this phase of processing.
 
@@ -1892,16 +1935,18 @@ code of the relevant scripts, or drop me a line.
    
        ./tools/MAKETESTS.sh
 
-The command above performs two tasks: (a) it writes Javascript
-wrappers for each fixture to an appropriate file in the ``./tests/``
-directory; and (b) it invokes the ``./std/grind.py`` command to
-processs the human-readable test fixtures under ``./std/humans/``
+The command above performs three tasks: (a) it writes Javascript
+wrappers for each fixture to an appropriate file in the ``./tests/javascript``
+directory; (b) it invokes the ``./tests/std/grind.py`` command to
+processs the human-readable test fixtures under ``./tests/std/humans/``
 into the machine-friendly JSON format, storing the resulting files
-under ``./std/machines/``.  After this command is run successfully,
+under ``./tests/std/machines/``, and (c) it promiscuously applies
+the license terms at the top of ``./src/load.js`` to files throughout
+the archive.  After this command is run successfully,
 the tests are ready to go.
 
 **Running the tests**
 
-For information of the three test runners bundled with
+For information on the three test runners bundled with
 ``citeproc-js``, see the section `Setup and System Requirements`_, 
 above.
