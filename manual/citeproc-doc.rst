@@ -21,7 +21,7 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a51##
+   version 1.00##a52##
 
 .. class:: info-date
 
@@ -133,7 +133,7 @@ The simplest configuration for running tests is to use the ``run-rhino.sh``
 script (or ``run-rhino.bat`` on Windows systems).  If your OS has Java installed
 (which most desktop and laptop systems nowadays seem to do), this will run
 the full set of processor tests using a copy of the ``rhino`` Javascript interpreter
-that ships with the ``citeproc-js`` sources. [#]_
+that ships with the ``citeproc-js`` sources.
 
 
 #######################
@@ -199,9 +199,6 @@ To build the processor, the ``citeproc.js`` source code should be
 loaded into the Javascript interpreter context, together with a
 ``sys`` object provided by the integrator (see below), and the desired
 CSL style (as a string).
-
-.. [#] Note that two tests in the
-      current test suite will fail under ``rhino``, due to string encoding issues.
 
 ------------------
 Processor Commands
