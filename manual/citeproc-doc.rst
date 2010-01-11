@@ -21,7 +21,7 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a50##
+   version 1.00##a51##
 
 .. class:: info-date
 
@@ -784,7 +784,7 @@ delivered as a ``suffix`` element.
 
    A simplified format for delivering particles and name suffixes
    to the processor is described below in the section 
-   `Dirty Tricks`_ → Input data rescue`_ → `Names`__.
+   `Dirty Tricks`_ → `Input data rescue`_ → `Names`__.
 
 __ `dirty-names`_
 
@@ -869,7 +869,7 @@ an optional month and an optional day, in that order if present.
 
    A simplified format for providing date input
    is described below in the section 
-   |link| `Dirty Tricks`_ → Input data rescue`_ → `Dates`__.
+   |link| `Dirty Tricks`_ → `Input data rescue`_ → `Dates`__.
 
 __ `dirty-dates`_
 

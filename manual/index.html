@@ -323,7 +323,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div align="center" class="align-center"><img alt="counter.gif" class="double-border align-center" src="counter.gif" /></div>
 <p><a class="footnote-reference" href="#id5" id="id2">[1]</a></p>
 </blockquote>
-<p class="info-version">version 1.00<sub>a50</sub></p>
+<p class="info-version">version 1.00<sub>a51</sub></p>
 <p class="info-date">11 January 2010</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
@@ -835,9 +835,12 @@ for which that field is missing or has a nil value.</p>
 <h3><a class="toc-backref" href="#id46">Return value</a></h3>
 <p>The value returned by this command is a two-element list, composed of
 a Javascript array containing certain formatting parameters, and a
-rendered string representing the bibliography itself.  The first
-element—the array of formatting parameters—contains the key/value
-pairs shown below (the values shown are the processor defaults):</p>
+list of strings representing bibliography entries.  It is the responsibility
+of the calling application to compose the list into a finish string
+for insertion into the document.  The first
+element —- the array of formatting parameters —- contains the key/value
+pairs shown below (the values shown are the processor defaults in the
+HTML output mode):</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre> 1
  2
@@ -850,17 +853,21 @@ pairs shown below (the values shown are the processor defaults):</p>
  9
 10
 11
-12</pre></td><td class="code"><div class="highlight"><pre><span class="p">[</span>
+12
+13
+14</pre></td><td class="code"><div class="highlight"><pre><span class="p">[</span>
    <span class="p">{</span>
       <span class="s2">&quot;maxoffset&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
       <span class="s2">&quot;entryspacing&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="o">,</span>
       <span class="s2">&quot;linespacing&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="o">,</span>
-      <span class="s2">&quot;hangingindent&quot;</span><span class="o">:</span> <span class="mi">2</span>
+      <span class="s2">&quot;hangingindent&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="o">,</span>
+      <span class="s2">&quot;bibstart&quot;</span><span class="o">:</span> <span class="s2">&quot;&lt;div class=\&quot;csl-bib-body\&quot;&gt;\n&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;bibend&quot;</span><span class="o">:</span> <span class="s2">&quot;&lt;/div&gt;&quot;</span>
    <span class="p">}</span><span class="o">,</span>
-   <span class="s2">&quot;&lt;div class=\&quot;csl-bib-body\&quot;&gt;</span>
-<span class="s2">      &lt;div class=\&quot;csl-entry\&quot;&gt;Book A&lt;/div&gt;</span>
-<span class="s2">      &lt;div class=\&quot;csl-entry\&quot;&gt;Book C&lt;/div&gt;</span>
-<span class="s2">   &lt;/div&gt;&quot;</span>
+   <span class="p">[</span>
+      <span class="s2">&quot;&lt;div class=\&quot;csl-entry\&quot;&gt;Book A&lt;/div&gt;&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;&lt;div class=\&quot;csl-entry\&quot;&gt;Book C&lt;/div&gt;&quot;</span>
+   <span class="p">]</span>
 <span class="p">]</span>
 </pre></div>
 </td></tr></table>
@@ -886,6 +893,12 @@ each bibliography entry.</dd>
 <dt><em>hangingindent</em></dt>
 <dd>The number of em-spaces to apply in hanging indents within the
 bibliography.</dd>
+<dt><em>bibstart</em></dt>
+<dd>A string to be appended to the front of the finished bibliography
+string.</dd>
+<dt><em>bibend</em></dt>
+<dd>A string to be appended to the end of the finished bibliography
+string.</dd>
 </dl>
 </div>
 </div>
@@ -1213,7 +1226,7 @@ delivered as a <tt class="docutils literal"><span class="pre">suffix</span></tt>
 <p class="first admonition-title">Hint</p>
 <p class="last">A simplified format for delivering particles and name suffixes
 to the processor is described below in the section
-<a class="reference internal" href="#dirty-tricks">Dirty Tricks</a> → Input data rescue`_ → <a class="reference internal" href="#dirty-names">Names</a>.</p>
+<a class="reference internal" href="#dirty-tricks">Dirty Tricks</a> → <a class="reference internal" href="#input-data-rescue">Input data rescue</a> → <a class="reference internal" href="#dirty-names">Names</a>.</p>
 </div>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre> 1
@@ -1318,7 +1331,7 @@ an optional month and an optional day, in that order if present.</p>
 <p class="first admonition-title">Hint</p>
 <p class="last">A simplified format for providing date input
 is described below in the section
-<img alt="link" src="link.png" /> <a class="reference internal" href="#dirty-tricks">Dirty Tricks</a> → Input data rescue`_ → <a class="reference internal" href="#dirty-dates">Dates</a>.</p>
+<img alt="link" src="link.png" /> <a class="reference internal" href="#dirty-tricks">Dirty Tricks</a> → <a class="reference internal" href="#input-data-rescue">Input data rescue</a> → <a class="reference internal" href="#dirty-dates">Dates</a>.</p>
 </div>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
