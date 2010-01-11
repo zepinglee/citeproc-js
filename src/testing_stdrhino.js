@@ -162,11 +162,11 @@ StdRhinoTest.prototype.run = function(){
 		ret = citations.join("\n");
 	} else if (this.test.mode == "bibliography"){
 		if (this.test.bibsection){
-			var ret = this.style.makeBibliography(this.test.bibsection)[1].join("");
+			var ret = this.style.makeBibliography(this.test.bibsection);
 		} else {
-			var ret = this.style.makeBibliography()[1].join("");
+			var ret = this.style.makeBibliography();
 		}
-        ret = "<div class=\"csl-bib-body\">\n" + ret + "</div>";
+        ret = ret[0]["bibstart"] + ret[1].join("") + ret[0]["bibend"];
 	} else if (this.test.mode == "bibliography-header"){
 		var ret = this.style.makeBibliography()[0];
 	} else {

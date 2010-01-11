@@ -1630,6 +1630,8 @@ CSL.Engine.prototype.makeBibliography = function(bibsection){
 	if (this.bibliography.opt.linespacing){
 		params.linespacing = this.bibliography.opt.linespacing;
 	}
+	params.bibstart = this.fun.decorate.bibstart;
+	params.bibend = this.fun.decorate.bibend;
 	return [params,ret];
 };
 CSL.getBibliographyEntries = function (bibsection){
@@ -5684,6 +5686,8 @@ CSL.Output.Formats.prototype.html = {
 	"text_escape": function(text){
 		return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 	},
+	"bibstart": "<div class=\"csl-bib-body\">\n",
+	"bibend": "</div>",
 	"@font-style/italic":"<i>%%STRING%%</i>",
 	"@font-style/oblique":"<em>%%STRING%%</em>",
 	"@font-style/normal":"<span style=\"font-style:normal;\">%%STRING%%</span>",
@@ -5711,9 +5715,6 @@ CSL.Output.Formats.prototype.html = {
 			return state.getTerm("close-inner-quote");
 		};
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
-	},
-	"@bibliography/body": function(state,str){
-		return "<div class=\"csl-bib-body\">\n"+str+"</div>";
 	},
 	"@bibliography/entry": function(state,str){
 		return "  <div class=\"csl-entry\">"+str+"</div>\n";

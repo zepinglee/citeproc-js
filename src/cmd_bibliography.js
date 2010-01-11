@@ -68,6 +68,8 @@ CSL.Engine.prototype.makeBibliography = function(bibsection){
 	if (this.bibliography.opt.linespacing){
 		params.linespacing = this.bibliography.opt.linespacing;
 	}
+	params.bibstart = this.fun.decorate.bibstart;
+	params.bibend = this.fun.decorate.bibend;
 	return [params,ret];
 };
 

@@ -21,11 +21,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a45##
+   version 1.00##a50##
 
 .. class:: info-date
 
-   =D=10 January 2010=D=
+   =D=11 January 2010=D=
 
 .. class:: contributors
 
@@ -87,8 +87,8 @@ for providing feedback and getting help is the |link| `project mailing list`_.
           of work.
 
 .. [#] For further details on required infrastructure, see the sections 
-       |link| `Local Environment`_ 
-       and |link| `Data Input`_ below.
+       `Local Environment`_ 
+       and `Data Input`_ below.
 
 .. _`project mailing list`: http://groups.google.com/group/citeproc-js
 
@@ -96,7 +96,7 @@ for providing feedback and getting help is the |link| `project mailing list`_.
 Setup and System Requirements
 -----------------------------
 
-The processor and its test framework can be run in two commonly
+The processor and its test framework can be run in three commonly
 available Javascript environments, using the scripts ``test.py`` or
 ``runtest.sh``.  This manual does not cover the nitty-gritty of
 setting up the environment for these scripts, but the basic system
@@ -220,15 +220,14 @@ to its runtime configuration.
 
 A working instance of the processor can (well, must) be created using the
 ``CSL.Engine()`` command, as shown in the code illustration below.  
-This command takes two required and one optional argument:
+This command takes up to three arguments, two of them required, and 
+one of them optional:
 
 .. admonition:: Important
 
-   See the section |link| `Local Environment → System functions`__ below for guidance
+   See the section `Local Environment`_ → `System functions`_ below for guidance
    on the definition of the functions contained in the ``sys``
    object.
-
-__  `System functions`_
 
 .. code-block:: js
 
@@ -281,7 +280,7 @@ forth.
 
 Note that only IDs may be used to identify items.  The ID is an
 arbitrary, system-dependent identifier, used by the locally customized
-``retrieveItem()`` and ``retrieveItems()`` methods to retrieve
+``retrieveItem()`` method to retrieve
 actual item data.  
 
 
@@ -290,8 +289,8 @@ actual item data.
 ``makeBibliography()``
 ######################
 
-The ``makeBibliography()`` command does what its name implies.  The
-command takes one optional argument.  If invoked without an argument,
+The ``makeBibliography()`` command does what its name implies.  
+If invoked without an argument,
 it dumps a formatted bibliography containing all items currently
 registered in the processor:
 
@@ -308,13 +307,18 @@ registered in the processor:
    variable types.  See the ``quash`` example below
    for details.
 
-The optional argument is a nested Javascript object that may contain
+^^^^^^^^^^^^^^^^
+Selective output
+^^^^^^^^^^^^^^^^
+
+The ``makeBibliography()`` command accepts one optional argument,
+which is a nested Javascript object that may contain
 *one of* the objects ``select``, ``include`` or ``exclude``, and
 optionally an additional  ``quash`` object.  Each of these four objects
 is an array containing one or more objects with ``field`` and ``value``
 attributes, each with a simple string value (see the examples below).
 The matching behavior for each of the four object types, with accompanying
-input examples, are as follows:
+input examples, is as follows:
 
 ``select``
    For each item in the bibliography, try every match object in the array against
@@ -413,19 +417,35 @@ input examples, are as follows:
 
    var mybib = cp.makeBibliography(myarg);
 
+^^^^^^^^^^^^
+Return value
+^^^^^^^^^^^^
+
 The value returned by this command is a two-element list, composed of
 a Javascript array containing certain formatting parameters, and a
-rendered string representing the bibliography itself.  The first
-element—the array of formatting parameters—contains the key/value
-pairs shown below (the values shown are the processor defaults):
+list of strings representing bibliography entries.  It is the responsibility
+of the calling application to compose the list into a finish string
+for insertion into the document.  The first
+element —- the array of formatting parameters —- contains the key/value
+pairs shown below (the values shown are the processor defaults in the
+HTML output mode):
 
 .. code-block:: js
 
-	{ "maxoffset": 0,
-	  "entryspacing": 1,
-	  "linespacing": 1,
-      "hangingindent": 2
-	};
+   [
+      { 
+         "maxoffset": 0,
+         "entryspacing": 1,
+         "linespacing": 1,
+         "hangingindent": 2,
+         "bibstart": "<div class=\"csl-bib-body\">\n",
+         "bibend": "</div>"
+      },
+      [
+         "<div class=\"csl-entry\">Book A</div>",
+         "<div class=\"csl-entry\">Book C</div>"
+      ]
+   ]
 
 *maxoffset*
    Some citation styles apply a label (either a number or an
@@ -450,7 +470,14 @@ pairs shown below (the values shown are the processor defaults):
 *hangingindent*
    The number of em-spaces to apply in hanging indents within the
    bibliography.
+
+*bibstart*
+   A string to be appended to the front of the finished bibliography
+   string.
    
+*bibend*
+   A string to be appended to the end of the finished bibliography
+   string.
 
 #################
 Citation commands
@@ -467,7 +494,7 @@ commands, respectively ``appendCitationCluster()``, and
 (``makeCitationCluster()``), is not covered by this manual.
 It is primarily useful as a tool for testing the processor, as it
 lacks any facility for position evaluation, which is needed in
-production environments.
+production environments.[#]_
 
 The ``appendCitationCluster()`` and
 ``processCitationCluster()`` commands use a similar input format
@@ -538,7 +565,7 @@ addition of a citation triggers changes to other citations:
    ]
 
 A worked example showing the result of multiple transactions can be
-found in the `processor test suite`__.
+found in the |link| `processor test suite`__.
 
 __ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/integration_IbidOnInsert.txt
 
@@ -553,10 +580,8 @@ to the ``citeproc-js`` processor.
 
 .. admonition:: Hint
 
-   See the section `Output Formatting`__ below for notes
+   See the section `Output Formatting`_ below for notes
    on defining new output formats.
-
-__ `Output Formatting`_
 
 .. code-block:: js
 
@@ -580,6 +605,12 @@ below under `Local Environment`_ → `System Functions`_.
 
    citeproc.setAbbreviations( "default" );
 
+.. [#] For illustrations of the input syntax for the ``makeBibliography()``
+       command, see any test in the test suite that uses the
+       ``CITATION-ITEMS`` environment -- it accepts a bare
+       array of ``citationItems`` objects, as described under
+       `Data Input`_ → `Citation data object`_, below.
+
 
 -----------------
 Local Environment
@@ -595,7 +626,7 @@ correct operation.
 System functions
 ################
 
-As mentioned above in the section on |link| `CSL.Engine()`_, two functions
+As mentioned above in the section on `CSL.Engine()`_, two functions
 must be defined separately and supplied to the processor upon
 instantiation.  These functions are used by the processor to obtain
 locale and item data from the surrounding environment.  The exact
@@ -753,7 +784,7 @@ delivered as a ``suffix`` element.
 
    A simplified format for delivering particles and name suffixes
    to the processor is described below in the section 
-   |link| `Dirty Tricks → Input data rescue → Names`__.
+   `Dirty Tricks`_ → Input data rescue`_ → `Names`__.
 
 __ `dirty-names`_
 
@@ -804,9 +835,7 @@ appropriately.
 
    When the romanized transliteration is selected from a multi-lingual
    name field, the ``static-ordering`` flag is not required.  See the section
-   |link| `Dirty Tricks → Multi-lingual content`__ below for further details.
-
-__ `Multi-lingual content`_
+   `Dirty Tricks`_ → `Multi-lingual content`_ below for further details.
 
 Sometimes it might be desired to handle a Latin or Cyrillic
 transliteration as if it were a fixed (non-Byzantine) name.  This
@@ -840,7 +869,7 @@ an optional month and an optional day, in that order if present.
 
    A simplified format for providing date input
    is described below in the section 
-   |link| `Dirty Tricks → Input data rescue → Dates`__.
+   |link| `Dirty Tricks`_ → Input data rescue`_ → `Dates`__.
 
 __ `dirty-dates`_
 
@@ -983,21 +1012,19 @@ one or more additional optional values:
   location or range within the resource; 
 * ``label``: a label type, indicating whether the locator is to a
   page, a chapter, or other subdivision of the target resource.  Valid
-  labels are defined in the `CSL specification`__.
+  labels are defined in the |link| `CSL specification`__.
 * ``suppress-author``: if true, author names will not be included in the
   citation output for this cite;
 * ``author-only``: if true, only the author name will be included
   in the citation output for this cite -- this optional parameter
   provides a means for certain demanding styles that require the
   processor output to be divided between the main text and a footnote.
-  (See the section `Processor control`__, in the Dirty Tricks section
+  (See the section `Processor control`_, in the `Dirty Tricks`_ section
   below for more details.)
 * ``prefix``: a string to print before this cite item;
 * ``suffix``: a string to print after this cite item.
 
 __ http://citationstyles.org/
-
-__ `Processor control`_
 
 In the ``properties`` portion of a citation, the ``noteIndex``
 value indicates the footnote number in which the citation is located
@@ -1066,7 +1093,7 @@ The test fixtures assume HTML output, which the processor supports out
 of the box as its default mode.  It is currently the only mode
 supported in the distributed version of the code, but additional modes
 can be created by adding definitions for them to the source file ``./src/formats.js``.
-See `the file itself`__ for details; it's pretty straightforward.
+See |link| `the file itself`__ for details; it's pretty straightforward.
 
 __ http://bitbucket.org/fbennett/citeproc-js/src/tip/src/formats.js
 
@@ -1152,7 +1179,7 @@ processor's internal parser by supplying date strings as a single
 Note that the parsing of raw date strings is not part of the CSL 1.0
 standard.  Clients that need to interoperate with other CSL
 processors should be capable of preparing input in the form described
-above under `Data Input → Dates`__.
+above under `Data Input`_ → `Dates`__.
 
 __ `input-dates`_
 
@@ -1281,10 +1308,10 @@ Detailed illustrations of the interaction of these two control
 elements are in the processor test fixtures in the
 "discretionary" category: 
 
-* `AuthorOnly`__
-* `CitationNumberAuthorOnlyThenSuppressAuthor`__
-* `CitationNumberSuppressAuthor`__
-* `SuppressAuthorSolo`__
+* |link| `AuthorOnly`__
+* |link| `CitationNumberAuthorOnlyThenSuppressAuthor`__
+* |link| `CitationNumberSuppressAuthor`__
+* |link| `SuppressAuthorSolo`__
 
 __ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_AuthorOnly.txt
 __ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_CitationNumberAuthorOnlyThenSuppressAuthor.txt
@@ -1358,8 +1385,8 @@ For multi-lingual operation, a style may be set to request alternative
 versions and translations of the ``title`` field, and of the author
 and other name fields, using an extension to the ``default-locale``
 attribute.  Extensions consist of an extension tag, followed by
-a language setting that conforms to `RFC 4646`__ (typically constructed
-from components listed in the `IANA Language Subtag Registry`__).  Recognized extension
+a language setting that conforms to |link| `RFC 4646`__ (typically constructed
+from components listed in the |link| `IANA Language Subtag Registry`__).  Recognized extension
 tags are as follows:
 
 __ http://www.ietf.org/rfc/rfc4646.txt
@@ -1444,7 +1471,7 @@ for the name element to which they apply.  For example:
 .. admonition:: Hint
 
    As described above, fixed ordering is used for
-   |link| `non-Byzantine names`__.  When such
+   `non-Byzantine names`__.  When such
    names are transliterated, the ``static-ordering`` element is
    set on them, to preserve their original formatting behavior.
 
@@ -1915,7 +1942,7 @@ Preparing and running the tests
 The following commands are used to process and run
 the tests.  For further information, see the source
 code of the relevant scripts, or drop a line to the
-`citeproc-js integrators group`__.
+|link| `citeproc-js integrators group`__.
 
 __ http://groups.google.com/group/citeproc-js
 
