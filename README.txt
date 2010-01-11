@@ -58,17 +58,18 @@ formatting citation data.
 The Architecture
 ----------------
 
-The following link has (dated but to be maintained) JsDoc documentation 
-that will eventually provide some guidance re how things fit together:
+The processor manual is included in this source archive.  A
+nicely formatted version is available online:
 
-  http://gsl-nagoya-u.net/http/pub/citeproc-js-doc/index.html
+   http://gsl-nagoya-u.net/http/pub/citeproc-doc.html
 
-In rough outline, there is a two-stage compiler (Build and Configure)
-that can be used to construct an object with a few methods useful for
-loading CSL styles and rendering citations and bibliographies.
+In rough outline, there is a two-stage instantiation and build process
+(Build and Configure) that constructs an object with a few methods
+useful for loading CSL styles and rendering citations and
+bibliographies.
 
-The object has several sub-objects, the most important of which are
-"registry", "citation", "bibliography", "citation_sort" and
+The processor object has several sub-objects, the most important of
+which are "registry", "citation", "bibliography", "citation_sort" and
 "bibliography_sort".  The top-level methods on the main object apply
 execution wrappers to token lists contained in "citation" and
 "bibliography", to produce string or list-of-string output.  The
