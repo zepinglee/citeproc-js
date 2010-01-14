@@ -36,10 +36,14 @@
 citation
 <<===== MODE =====<<
 
+This is a little weird, but it's what the style wants, I think.
 
+Was planned as: ([CSL STYLE ERROR: reference with no printed form.]; [CSL STYLE ERROR: reference with no printed form.]; Manstein 1982)
+
+But comes out as: 
 
 >>===== RESULT =====>>
-([CSL STYLE ERROR: reference with no printed form.]; [CSL STYLE ERROR: reference with no printed form.]; Manstein 1982)
+(Anon. n.d.a; Anon. n.d.b; Manstein 1982)
 <<===== RESULT =====<<
 
 
@@ -113,7 +117,6 @@ citation
   <macro name="anon">
     <choose>
       <if match="none" variable="author editor translator">
-        <text value="HEY!"/>
         <text form="short" term="anonymous" text-case="capitalize-first" />
       </if>
     </choose>

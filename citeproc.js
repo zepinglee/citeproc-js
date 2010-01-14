@@ -2221,9 +2221,12 @@ CSL.Node.date = new function(){
 					state.tmp.donesies = [];
 					state.tmp.dateparts = [];
 					var dp = [];
-					if (this.variables.length && Item[this.variables[0]]){
+					if (this.variables.length){
 						state.parallel.StartVariable(this.variables[0]);
 						var date_obj = Item[this.variables[0]];
+						if ("undefined" == typeof date_obj){
+							date_obj = {"date-parts": [[0]] };
+						}
 						if (date_obj.raw){
 							state.tmp.date_object = state.dateParseRaw( date_obj.raw );
 						} else if (date_obj["date-parts"]) {
@@ -2310,6 +2313,9 @@ CSL.Node["date-part"] = new function(){
 					value = state.tmp.date_object[this.strings.name];
 					value_end = state.tmp.date_object[(this.strings.name+"_end")];
 				};
+				if ("year" == this.strings.name && value == 0){
+					value = state.getTerm("no date");
+				}
 				var real = !state.tmp.suppress_decorations;
 				var have_collapsed = state.tmp.have_collapsed;
 				var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
@@ -2323,15 +2329,17 @@ CSL.Node["date-part"] = new function(){
 						};
 					};
 				};
-				if (value){
+				if ("undefined" != typeof value){
 					var bc = false;
 					var ad = false;
-					if ("year" == this.strings.name && parseInt(value,10) < 500 && parseInt(value,10) > 0){
-						ad = state.getTerm("ad");
-					};
-					if ("year" == this.strings.name && parseInt(value,10) < 0){
-						bc = state.getTerm("bc");
-						value = (parseInt(value,10) * -1);
+					if ("year" == this.strings.name){
+						if (parseInt(value,10) < 500 && parseInt(value,10) > 0){
+							ad = state.getTerm("ad");
+						};
+						if (parseInt(value,10) < 0){
+							bc = state.getTerm("bc");
+							value = (parseInt(value,10) * -1);
+						};
 					};
 					state.parallel.AppendToVariable(value);
 					if (this.strings.form){
@@ -3710,7 +3718,10 @@ CSL.Attributes["@variable"] = function(state,arg){
 		var check_for_output = function(state,Item,item){
 			var output = false;
 			for each (var variable in this.variables){
-				if ("locator" == variable){
+				if (CSL.DATE_VARIABLES.indexOf(variable) > -1){
+					output = true;
+					break;
+				} else if ("locator" == variable){
 					if (item && item.locator){
 						output = true;
 						break;
@@ -4906,7 +4917,11 @@ CSL.Util.Dates = new function(){};
 CSL.Util.Dates.year = new function(){};
 CSL.Util.Dates.year["long"] = function(state,num){
 	if (!num){
-		num = 0;
+		if ("boolean" == typeof num){
+			num = "";
+		} else {
+			num = 0;
+		}
 	}
 	return num.toString();
 }

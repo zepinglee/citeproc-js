@@ -179,7 +179,7 @@ CSL.Attributes["@variable"] = function(state,arg){
 		// is actually ephemeral; the full list of variables is
 		// held in the inner var, and pushed into this.variables
 		// conditionally in order to suppress repeat renderings of
-		// the same item variable.
+		// the same item variable.  [STILL FUNCTIONAL? 2010.01.15]
 		//
 		var set_variable_names = function(state,Item){
 			var variables = this.variables.slice();
@@ -198,7 +198,10 @@ CSL.Attributes["@variable"] = function(state,arg){
 		var check_for_output = function(state,Item,item){
 			var output = false;
 			for each (var variable in this.variables){
-				if ("locator" == variable){
+				if (CSL.DATE_VARIABLES.indexOf(variable) > -1){
+					output = true;
+					break;
+				} else if ("locator" == variable){
 					if (item && item.locator){
 						output = true;
 						break;

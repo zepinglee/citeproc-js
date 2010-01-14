@@ -54,7 +54,11 @@ CSL.Util.Dates.year = new function(){};
  */
 CSL.Util.Dates.year["long"] = function(state,num){
 	if (!num){
-		num = 0;
+		if ("boolean" == typeof num){
+			num = "";
+		} else {
+			num = 0;
+		}
 	}
 	return num.toString();
 }

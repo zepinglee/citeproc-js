@@ -9,11 +9,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a53##
+   version 1.00##a59##
 
 .. class:: info-date
 
-   =D=11 January 2010=D=
+   =D=12 January 2010=D=
 
 .. class:: contributors
 
@@ -34,10 +34,11 @@ __ `Table of Contents`_
 
 ========
 
-.. contents:: Table of Contents
+.. contents:: `Table of Contents`__
 
 ========
 
+__ `Citation Style Language`_
 
 ------------
 Introduction
@@ -46,7 +47,8 @@ Introduction
 This is the site administrator's manual for ``citeproc-js``, a
 Javascript implementation of the |link| `Citation Style Language
 (CSL)`__ used by Zotero, Mendeley and other popular reference
-managers.  The processor complies with version 1.0 of the CSL
+tools to format citations in any of the hundreds of styles
+supplied by the .  The processor complies with version 1.0 of the CSL
 specification, has been written and tested as an independent module,
 and can be run by any ECMAscript-compliant interpreter.  With an
 appropriate supporting environment, [#]_ it can be deployed in a
@@ -416,7 +418,7 @@ HTML output mode):
          "maxoffset": 0,
          "entryspacing": 1,
          "linespacing": 1,
-         "hangingindent": 2,
+         "hangingindent": 0,
          "bibstart": "<div class=\"csl-bib-body\">\n",
          "bibend": "</div>"
       },
@@ -473,7 +475,7 @@ commands, respectively ``appendCitationCluster()``, and
 (``makeCitationCluster()``), is not covered by this manual.
 It is primarily useful as a tool for testing the processor, as it
 lacks any facility for position evaluation, which is needed in
-production environments.[#]_
+production environments. [#]_
 
 The ``appendCitationCluster()`` and
 ``processCitationCluster()`` commands use a similar input format
@@ -585,8 +587,8 @@ below under `Local Environment`_ → `System Functions`_.
    citeproc.setAbbreviations( "default" );
 
 .. [#] For illustrations of the input syntax for the ``makeBibliography()``
-       command, see any test in the test suite that uses the
-       ``CITATION-ITEMS`` environment -- it accepts a bare
+       command, see any test in the `test suite`_ that uses the
+       `CITATION-ITEMS`_ environment -- it accepts a bare
        array of ``citationItems`` objects, as described under
        `Data Input`_ → `Citation data object`_, below.
 
@@ -1054,9 +1056,7 @@ the processor registry, at the following locations:
    citeproc.registry.citationreg.citationByItemId
 
 
-.. class:: first
-
-   .. [#] For information on valid CSL variable names, please
+.. [#] For information on valid CSL variable names, please
           refer to the CSL specification, available via http://citationstyles.org/.
 
 .. [#] The Latin and Cyrillic scripts are referred to here collectively
@@ -1318,9 +1318,9 @@ for the development of styles to support more robust multilingual support
 when it arrives.
 
 
-^^^^^^^^^^^^^^^^^^^^^^^^
-The ``lang`` declaration
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The ``default-locale`` declaration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``style`` tag in a CSL style may contain a ``default-locale`` attribute.
 
@@ -1851,11 +1851,11 @@ the full entry consists of a list of such citations:
    >>===== CITATION-ITEMS =====>>
    [
      [
-       [{"id": "ITEM-1"}]
+       {"id": "ITEM-1"}
      ],
      [
-       [{"id": "ITEM-2", "label": "page", "locator": "23"}]
-       [{"id":"ITEM-3"}]
+       {"id": "ITEM-2", "label": "page", "locator": "23"},
+       {"id":"ITEM-3"}
      ]
    ]
    <<===== CITATION-ITEMS =====<<

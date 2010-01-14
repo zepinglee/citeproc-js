@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_date");
 	dojo.require("tests.std_integration");
 	dojo.require("tests.std_bugreports");
 	dojo.require("tests.std_affix");
@@ -60,7 +61,6 @@ if(true){
 	dojo.require("tests.test_util_names");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_name");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_bibsection");
 	dojo.require("tests.std_nameattr");
 	dojo.require("tests.std_fullstyles");

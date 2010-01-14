@@ -99,9 +99,13 @@ CSL.Node.date = new function(){
 					state.tmp.donesies = [];
 					state.tmp.dateparts = [];
 					var dp = [];
-					if (this.variables.length && Item[this.variables[0]]){
+					//if (this.variables.length && Item[this.variables[0]]){
+					if (this.variables.length){
 						state.parallel.StartVariable(this.variables[0]);
 						var date_obj = Item[this.variables[0]];
+						if ("undefined" == typeof date_obj){
+							date_obj = {"date-parts": [[0]] };
+						}
 						if (date_obj.raw){
 							state.tmp.date_object = state.dateParseRaw( date_obj.raw );
 						} else if (date_obj["date-parts"]) {
