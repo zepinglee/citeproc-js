@@ -1092,6 +1092,11 @@ CSL.Engine.prototype.getNameSubFields = function(names){
 		for (var i in names[name]){
 			newname[i] = names[name][i];
 		}
+		if (newname.given && !newname.family){
+			newname.family = "";
+		} else if (newname.family && ! newname.given){
+			newname.given = "";
+		}
 		var addme = true;
 		var updateme = false;
 		for each (var part in ["literal", "family"]){
