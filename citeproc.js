@@ -2313,9 +2313,9 @@ CSL.Node["date-part"] = new function(){
 					value = state.tmp.date_object[this.strings.name];
 					value_end = state.tmp.date_object[(this.strings.name+"_end")];
 				};
-				if ("year" == this.strings.name && value == 0){
+				if ("year" == this.strings.name && value == 0 && !state.tmp.suppress_decorations){
 					value = state.getTerm("no date");
-				}
+				};
 				var real = !state.tmp.suppress_decorations;
 				var have_collapsed = state.tmp.have_collapsed;
 				var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
@@ -2682,20 +2682,25 @@ CSL.Node.key = new function(){
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					var output_func = function(state,Item){
-						if (Item[variable]){
-							var dp = Item[variable]["date-parts"];
-							if (dp && dp[0]){
-								if (dp[0].length >0){
-									state.output.append(CSL.Util.Dates.year["long"](state,dp[0][0]));
+						var value = Item[variable];
+						if ("undefined" == typeof value){
+							value = { "date-parts": [[0]] };
+						}
+						var dp = value["date-parts"];
+						if (dp && dp[0]){
+							if (dp[0].length >0){
+								if (dp[0][0] == 0 && state.tmp.area == "bibliography_sort"){
+									state.tmp.empty_date = true;
 								}
-								if (dp[0].length >1){
-									state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[0][1]));
-								}
-								if (dp[0].length >2){
-									state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[0][2]));
-								}
+								state.output.append(CSL.Util.Dates.year["numeric"](state,dp[0][0]));
 							}
-						};
+							if (dp[0].length >1){
+								state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[0][1]));
+							}
+							if (dp[0].length >2){
+								state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[0][2]));
+							}
+						}
 					};
 				} else if ("title" == variable) {
 					var output_func = function(state,Item){
@@ -2724,8 +2729,9 @@ CSL.Node.key = new function(){
 			if (false){
 				CSL.debug("keystring: "+keystring+" "+typeof keystring);
 			}
-			if ("string" != typeof keystring){
+			if ("string" != typeof keystring || state.tmp.empty_date){
 				keystring = undefined;
+				state.tmp.empty_date = false;
 			}
 			state[state.tmp.area].keys.push(keystring);
 			state.tmp.value = new Array();
@@ -4931,6 +4937,16 @@ CSL.Util.Dates.year["short"] = function(state,num){
 		return num.substr(2);
 	}
 }
+CSL.Util.Dates.year["numeric"] = function(state,num){
+	num = ""+num;
+	var m = num.match(/^(.*?)([0-9]*)$/);
+	var pre = m[1];
+	num = m[2];
+	while (num.length < 4){
+		num = "0"+num;
+	}
+	return (pre+num);
+}
 CSL.Util.Dates["month"] = new function(){};
 CSL.Util.Dates.month["numeric"] = function(state,num){
 	var ret = num.toString();
@@ -5938,9 +5954,8 @@ CSL.Registry.Comparifier = function(state,keyset){
 			return 1;
 		} else if (a.seq < b.seq){
 			return -1;
-		} else {
-			return 0;
-		};
+		}
+		return 0;
 	};
 	var compareKeys = this.compareKeys;
 	this.compareCompositeKeys = function(a,b){return compareKeys(a[1],b[1]);};

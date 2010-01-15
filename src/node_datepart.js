@@ -66,9 +66,9 @@ CSL.Node["date-part"] = new function(){
 					value = state.tmp.date_object[this.strings.name];
 					value_end = state.tmp.date_object[(this.strings.name+"_end")];
 				};
-				if ("year" == this.strings.name && value == 0){
+				if ("year" == this.strings.name && value == 0 && !state.tmp.suppress_decorations){
 					value = state.getTerm("no date");
-				}
+				};
 				var real = !state.tmp.suppress_decorations;
 				var have_collapsed = state.tmp.have_collapsed;
 				var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";

@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-Item 1; Item 3; Item 2; Item 4
+(Smith n.d., 1900, 2000)
 <<===== RESULT =====<<
 
 
@@ -54,13 +54,17 @@ Item 1; Item 3; Item 2; Item 4
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
-    <sort>
-      <key sort="ascending" variable="issued" />
-      <key variable="title" />
-    </sort>
-    <layout delimiter="; ">
-      <text variable="title" />
+  <citation
+    collapse="year">
+    <layout prefix="(" suffix=")" delimiter=", ">
+      <group delimiter=" ">
+        <names variable="author">
+          <name form="short"/>
+        </names>
+        <date variable="issued">
+          <date-part name="year" />
+        </date>
+      </group>
     </layout>
   </citation>
 </style>
@@ -70,41 +74,50 @@ Item 1; Item 3; Item 2; Item 4
 >>===== INPUT =====>>
 [
     {
-        "id": "ITEM-1", 
-        "title": "Item 1", 
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John"
+            }
+        ], 
+        "id": "ITEM-3", 
+        "title": "Ignore me 3", 
         "type": "book"
     }, 
     {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John"
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    1900
+                ]
+            ]
+        }, 
+        "title": "Ignore me 1", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John"
+            }
+        ], 
         "id": "ITEM-2", 
         "issued": {
             "date-parts": [
                 [
-                    "1999", 
-                    "2", 
-                    "15"
+                    2000
                 ]
             ]
         }, 
-        "title": "Item 2", 
-        "type": "book"
-    }, 
-    {
-        "id": "ITEM-3", 
-        "title": "Item 3", 
-        "type": "book"
-    }, 
-    {
-        "id": "ITEM-4", 
-        "issued": {
-            "date-parts": [
-                [
-                    "2000", 
-                    "2", 
-                    "15"
-                ]
-            ]
-        }, 
-        "title": "Item 4", 
+        "title": "Ignore me 2", 
         "type": "book"
     }
 ]

@@ -37,6 +37,7 @@ dojo.require("doh.runner");
 // requested tests go here
 if(true){
 	dojo.require("tests.std_date");
+	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_integration");
 	dojo.require("tests.std_bugreports");
 	dojo.require("tests.std_affix");
@@ -75,7 +76,6 @@ if(true){
 	dojo.require("tests.test_load_styles");
 	dojo.require("tests.std_class");
 	dojo.require("tests.std_plural");
-	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_namespaces");
 	dojo.require("tests.test_flipflopper");
 

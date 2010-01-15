@@ -94,21 +94,25 @@ CSL.Node.key = new function(){
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					var output_func = function(state,Item){
-						if (Item[variable]){
-							var dp = Item[variable]["date-parts"];
-							if (dp && dp[0]){
-								if (dp[0].length >0){
-									state.output.append(CSL.Util.Dates.year["long"](state,dp[0][0]));
+						var value = Item[variable];
+						if ("undefined" == typeof value){
+							value = { "date-parts": [[0]] };
+						}
+						var dp = value["date-parts"];
+						if (dp && dp[0]){
+							if (dp[0].length >0){
+								if (dp[0][0] == 0 && state.tmp.area == "bibliography_sort"){
+									state.tmp.empty_date = true;
 								}
-								if (dp[0].length >1){
-									state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[0][1]));
-								}
-								if (dp[0].length >2){
-									state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[0][2]));
-								}
+								state.output.append(CSL.Util.Dates.year["numeric"](state,dp[0][0]));
 							}
-
-						};
+							if (dp[0].length >1){
+								state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[0][1]));
+							}
+							if (dp[0].length >2){
+								state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[0][2]));
+							}
+						}
 					};
 				} else if ("title" == variable) {
 					var output_func = function(state,Item){
@@ -143,8 +147,9 @@ CSL.Node.key = new function(){
 			if (false){
 				CSL.debug("keystring: "+keystring+" "+typeof keystring);
 			}
-			if ("string" != typeof keystring){
+			if ("string" != typeof keystring || state.tmp.empty_date){
 				keystring = undefined;
+				state.tmp.empty_date = false;
 			}
 			state[state.tmp.area].keys.push(keystring);
 			state.tmp.value = new Array();

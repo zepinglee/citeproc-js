@@ -155,7 +155,11 @@ doh.register("tests.std_date", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
-        var test = new StdRhinoTest("date_SortEmptyDates");
+        var test = new StdRhinoTest("date_SortEmptyDatesBibliography");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("date_SortEmptyDatesCitation");
         doh.assertEqual(test.result, test.run());
     },
     function(){

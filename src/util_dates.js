@@ -75,6 +75,22 @@ CSL.Util.Dates.year["short"] = function(state,num){
 }
 
 
+/**
+ * Convert year to short form
+ * <p>Just crops any 4-digit year to the last two digits.</p>
+ */
+CSL.Util.Dates.year["numeric"] = function(state,num){
+	num = ""+num;
+	var m = num.match(/^(.*?)([0-9]*)$/);
+	var pre = m[1];
+	num = m[2];
+	while (num.length < 4){
+		num = "0"+num;
+	}
+	return (pre+num);
+}
+
+
 /*
  * MONTH manglers
  * long, short, numeric, numeric-leading-zeros

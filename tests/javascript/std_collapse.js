@@ -35,6 +35,18 @@
 
 doh.register("tests.std_collapse", [
     function(){
+        var test = new StdRhinoTest("collapse_AuthorCollapse");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("collapse_AuthorCollapseNoDate");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("collapse_AuthorCollapseNoDateSorted");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixes");
         doh.assertEqual(test.result, test.run());
     },

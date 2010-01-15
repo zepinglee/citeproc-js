@@ -509,9 +509,8 @@ CSL.Registry.Comparifier = function(state,keyset){
 			return 1;
 		} else if (a.seq < b.seq){
 			return -1;
-		} else {
-			return 0;
-		};
+		}
+		return 0;
 	};
 	var compareKeys = this.compareKeys;
 	this.compareCompositeKeys = function(a,b){return compareKeys(a[1],b[1]);};

@@ -38,8 +38,9 @@ citation
 
 
 
+
 >>===== RESULT =====>>
-Book D, 1999; Book B, 2000; Book A; Book C; Book E.
+(Smith 1900, 2000)
 <<===== RESULT =====<<
 
 
@@ -53,21 +54,16 @@ Book D, 1999; Book B, 2000; Book A; Book C; Book E.
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
-    <sort>
-      <key variable="issued" />
-      <key variable="title" />
-    </sort>
-    <layout delimiter="; " prefix="" suffix=".">
-      <group delimiter=", ">
-        <text variable="title" />
-        <choose>
-          <if variable="issued">
-            <date variable="issued">
-              <date-part name="year" />
-            </date>
-          </if>
-        </choose>
+  <citation
+    collapse="year">
+    <layout prefix="(" suffix=")" delimiter=", ">
+      <group delimiter=" ">
+        <names variable="author">
+          <name form="short"/>
+        </names>
+        <date variable="issued">
+          <date-part name="year" />
+        </date>
       </group>
     </layout>
   </citation>
@@ -78,10 +74,30 @@ Book D, 1999; Book B, 2000; Book A; Book C; Book E.
 >>===== INPUT =====>>
 [
     {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John"
+            }
+        ], 
         "id": "ITEM-1", 
-        "title": "Book A"
+        "issued": {
+            "date-parts": [
+                [
+                    1900
+                ]
+            ]
+        }, 
+        "title": "Ignore me 1", 
+        "type": "book"
     }, 
     {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John"
+            }
+        ], 
         "id": "ITEM-2", 
         "issued": {
             "date-parts": [
@@ -90,26 +106,8 @@ Book D, 1999; Book B, 2000; Book A; Book C; Book E.
                 ]
             ]
         }, 
-        "title": "Book B"
-    }, 
-    {
-        "id": "ITEM-3", 
-        "title": "Book C"
-    }, 
-    {
-        "id": "ITEM-4", 
-        "issued": {
-            "date-parts": [
-                [
-                    1999
-                ]
-            ]
-        }, 
-        "title": "Book D"
-    }, 
-    {
-        "id": "ITEM-5", 
-        "title": "Book E"
+        "title": "Ignore me 2", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<
