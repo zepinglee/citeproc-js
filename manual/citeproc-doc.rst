@@ -9,11 +9,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a59##
+   version 1.00##a60##
 
 .. class:: info-date
 
-   =D=12 January 2010=D=
+   =D=16 January 2010=D=
 
 .. class:: contributors
 
@@ -148,7 +148,7 @@ one separately if that's your version.
 ``run-tracemonkey.sh``
 ######################
 
-The fastest configuration for testing uses the ``run-tracemonkey.py``
+The fastest configuration for testing uses the ``run-tracemonkey.sh``
 script.  This is based on the ``jslibs`` development environment,
 the sources for which can be obtained from |link| `Google Code`_.
 (In the current version of the script, you will need to adjust
@@ -1486,11 +1486,12 @@ Test Suite
 scripts that can be used to confirm that the system performs correctly
 after installation.  The tests begin as individual human-friendly
 fixtures written in a special format, shown in the sample file
-immediately below.  In prepare the tests for use, each is ground into
-a machine-friendly form (JSON), and a Javascript execution wrapper for
-each fixture is registered in the processor test framework.  The tests
-are then processed in a separate operation by invoking one of the
-top-level test runner commands.  
+immediately below.  Tests for use by grinding them into a
+machine-friendly form (JSON), and by writing a Javascript execution
+wrapper for each fixture to disk (under ``./tests/javascript/``) for
+use in the processor test framework.  The tests are then processed in
+a separate operation by invoking one of the top-level test runner
+commands.
 
 This section describes the arrangement of the files, the internal
 layout of the human-readable version of the text fixtures, the scripts
@@ -1586,7 +1587,8 @@ the usage of each.
 Required sections
 ^^^^^^^^^^^^^^^^^
 
-The following five sections are required in all test fixtures.
+The following four sections (``MODE``, ``CSL``, ``INPUT``, ``RESULT``)
+are required in all test fixtures.
 
 !!!!
 MODE
@@ -1596,8 +1598,9 @@ A single string tells whether to test ``citation`` or ``bibliography``
 output.  In the former case, the test will be performed using 
 the ``makeCitationCluster()`` command if a ``CITATION-ITEMS`` area is 
 included in the test fixture, or if neither that nor a ``CITATIONS`` 
-area is included.  If a ``CITATION-ITEMS`` area is included,
+area is included.  If a ``CITATIONS`` area is included,
 ``citation`` mode uses the ``processCitationCluster`` command.
+
 In the case of ``bibliography`` mode, the ``makeBibliography()``
 command is used, with output possibly filtered by the conditions
 specified in a ``BIBSECTION`` area:
@@ -1751,17 +1754,13 @@ to exercise special aspects of processor behavior.
 BIBENTRIES
 !!!!!!!!!!
 
-The ``citeproc-js`` processor maintains a persistent internal 
-registry of citation data, and permits the addition, deletion
-and rearrangement of registered items.  The correct operation
-of this functionality is quite important, because interaction 
-with word processors and other authoring systems depends upon it.
-The behavior of the processor across a series of update transactions
-can be tested by including ``BIBENTRIES`` section.  
-When included, the section should
-consist of a two-tier list, consisting of discrete lists of IDs,
-which must 
-correspond to items registered in the ``INPUT`` section:
+The ``citeproc-js`` processor maintains a persistent internal registry
+of citation data, and permits the addition, deletion and rearrangement
+of registered items.  The behavior of the processor across a series of
+update transactions can be tested by including ``BIBENTRIES`` section.
+When included, the section should consist of a two-tier list,
+consisting of discrete lists of IDs, which must correspond to items
+registered in the ``INPUT`` section:
 
 .. class:: clothesline
 

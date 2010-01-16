@@ -43,6 +43,10 @@ doh.register("tests.std_integration", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("integration_SimpleFirstReferenceNoteNumber");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("integration_SimpleIbid");
         doh.assertEqual(test.result, test.run());
     },

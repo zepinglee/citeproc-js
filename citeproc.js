@@ -1826,7 +1826,10 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 						var suprame = false;
 						if (cpos > 0 && ipos == 0){
 							var items = citations[(cpos-1)].sortedItems;
-							var useme = true;
+							var useme = false;
+							if (citations[(cpos-1)].sortedItems[0][1].id == item[1].id || citations[(cpos-1)].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel){
+								useme = true;
+							}
 							for each (var i in items.slice(1)){
 								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1].id].parallel == this.registry.registry[i[1].id]){
 									useme = false;

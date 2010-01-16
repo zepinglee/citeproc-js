@@ -36,10 +36,10 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_integration");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_collapse");
-	dojo.require("tests.std_integration");
 	dojo.require("tests.std_bugreports");
 	dojo.require("tests.std_affix");
 	dojo.require("tests.std_abbrevs");
