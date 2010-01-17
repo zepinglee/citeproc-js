@@ -3104,9 +3104,6 @@ CSL.Node.names = new function(){
 				if ("undefined" == typeof state.output.getToken("etal").strings.et_al_term){
 					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al","long",0);
 				}
-				if ("undefined" == typeof state.output.getToken("with").strings.with_term){
-					state.output.getToken("with").strings.with_term = state.getTerm("with","long",0);
-				}
 				state.output.addToken("commasep",", ");
 				for each (namepart in ["given","family","dropping-particle","non-dropping-particle","suffix"]){
 					if (!state.output.getToken(namepart)){
