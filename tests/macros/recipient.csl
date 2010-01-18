@@ -1,0 +1,18 @@
+  <macro name="recipient">
+    <choose>
+      <if type="personal_communication">
+        <choose>
+          <if variable="genre">
+            <text text-case="capitalize-first" variable="genre" />
+          </if>
+          <else>
+            <text term="letter" text-case="capitalize-first" />
+          </else>
+        </choose>
+      </if>
+    </choose>
+    <names delimiter=", " variable="recipient">
+      <label form="verb" prefix=" " suffix=" " text-case="lowercase" />
+      <name and="text" delimiter=", " />
+    </names>
+  </macro>

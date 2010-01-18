@@ -1,0 +1,8 @@
+  <macro name="container-title">
+    <choose>
+      <if type="chapter">
+        <text macro="container-prefix" suffix=" " />
+      </if>
+    </choose>
+    <text font-style="italic" variable="container-title" />
+  </macro>

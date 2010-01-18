@@ -1,0 +1,13 @@
+  <macro name="description">
+    <group delimiter=". ">
+      <text macro="interviewer" />
+      <text text-case="capitalize-first" variable="medium" />
+    </group>
+    <choose>
+      <if match="none" variable="title"> </if>
+      <else-if type="thesis"> </else-if>
+      <else>
+        <text prefix=". " text-case="capitalize-first" variable="genre" />
+      </else>
+    </choose>
+  </macro>

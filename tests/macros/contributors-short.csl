@@ -1,0 +1,10 @@
+  <macro name="contributors-short">
+    <names variable="author">
+      <name and="text" delimiter=", " form="short" />
+      <substitute>
+        <names variable="editor" />
+        <names variable="translator" />
+      </substitute>
+    </names>
+    <text macro="anon" />
+  </macro>

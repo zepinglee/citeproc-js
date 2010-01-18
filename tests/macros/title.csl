@@ -1,0 +1,17 @@
+  <macro name="title">
+    <choose>
+      <if match="none" variable="title">
+        <choose>
+          <if match="none" type="personal_communication">
+            <text text-case="capitalize-first" variable="genre" />
+          </if>
+        </choose>
+      </if>
+      <else-if type="book">
+        <text font-style="italic" variable="title" />
+      </else-if>
+      <else>
+        <text variable="title" />
+      </else>
+    </choose>
+  </macro>

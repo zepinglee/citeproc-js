@@ -1,0 +1,6 @@
+  <macro name="event">
+    <group>
+      <text suffix=" " term="presented at" />
+      <text variable="event" />
+    </group>
+  </macro>

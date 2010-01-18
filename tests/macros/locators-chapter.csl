@@ -1,0 +1,10 @@
+  <macro name="locators-chapter">
+    <choose>
+      <if type="chapter">
+        <group prefix=", ">
+          <text suffix=":" variable="volume" />
+          <text variable="page" />
+        </group>
+      </if>
+    </choose>
+  </macro>

@@ -1,0 +1,24 @@
+  <macro name="container-contributors">
+    <choose>
+      <if type="chapter">
+        <group delimiter=", " prefix=",">
+          <choose>
+            <if variable="author">
+              <names variable="editor">
+                <label form="verb-short" prefix=" " suffix=". " text-case="lowercase" />
+                <name and="text" delimiter=", " />
+              </names>
+            </if>
+          </choose>
+          <choose>
+            <if match="any" variable="author editor">
+              <names variable="translator">
+                <label form="verb-short" prefix=" " suffix=". " text-case="lowercase" />
+                <name and="text" delimiter=", " />
+              </names>
+            </if>
+          </choose>
+        </group>
+      </if>
+    </choose>
+  </macro>

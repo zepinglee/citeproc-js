@@ -1,0 +1,7 @@
+  <macro name="archive">
+    <group delimiter=". ">
+      <text text-case="capitalize-first" variable="archive_location" />
+      <text variable="archive" />
+      <text variable="archive-place" />
+    </group>
+  </macro>

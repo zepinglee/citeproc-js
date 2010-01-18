@@ -1,0 +1,14 @@
+  <macro name="access">
+    <group delimiter=". ">
+      <choose>
+        <if match="any" type="graphic report">
+          <text macro="archive" />
+        </if>
+        <else-if match="none" type="book thesis chapter article-journal article-newspaper article-magazine">
+          <text macro="archive" />
+        </else-if>
+      </choose>
+      <text prefix="doi:" variable="DOI" />
+      <text variable="URL" />
+    </group>
+  </macro>

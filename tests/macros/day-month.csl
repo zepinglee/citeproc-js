@@ -1,0 +1,6 @@
+  <macro name="day-month">
+    <date variable="issued">
+      <date-part name="month" />
+      <date-part name="day" prefix=" " />
+    </date>
+  </macro>
