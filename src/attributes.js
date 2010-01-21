@@ -206,6 +206,9 @@ CSL.Attributes["@variable"] = function(state,arg){
 						output = true;
 						break;
 					};
+				} else if ("citation-number" == variable) {
+					output = true;
+					break;
 				} else if ("object" == typeof Item[variable]){
 					for (i in Item[variable]){
 						output = true;
@@ -638,3 +641,8 @@ CSL.Attributes["@reverse-order"] = function(state,arg){
 		this.strings["reverse-order"] = true;
 	};
 };
+
+CSL.Attributes["@display"] = function(state,arg){
+	this.strings.cls = arg;
+}
+

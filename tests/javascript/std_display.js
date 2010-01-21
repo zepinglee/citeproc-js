@@ -31,11 +31,15 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("tests.std_class");
+ */dojo.provide("tests.std_display");
 
-doh.register("tests.std_class", [
+doh.register("tests.std_display", [
     function(){
-        var test = new StdRhinoTest("class_AaaSample");
+        var test = new StdRhinoTest("display_AuthorAsHeading");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("display_SecondFieldAlignClone");
         doh.assertEqual(test.result, test.run());
     },
 ]);

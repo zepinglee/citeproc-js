@@ -138,11 +138,11 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 	var blob = new CSL.Blob(this.formats.value()[token]);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
 		// this.state.tmp.offset_characters += blob.strings.prefix.length;
-		this.state.tmp.offset_characters += blob.strings.prefix;
+		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length){
 		// this.state.tmp.offset_characters += blob.strings.suffix.length;
-		this.state.tmp.offset_characters += blob.strings.suffix;
+		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
 	var curr = this.current.value();
 	curr.push( blob );

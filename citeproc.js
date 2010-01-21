@@ -91,7 +91,7 @@
 	this.ROMANESQUE_REGEXP = /.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
 	this.STARTSWITH_ROMANESQUE_REGEXP = /^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
 	this.ENDSWITH_ROMANESQUE_REGEXP = /.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
-	this.GROUP_CLASSES = ["block","left-margin","right-inline","indent"];
+	this.DISPLAY_CLASSES = ["block","left-margin","right-inline","indent"];
 	var x = new Array();
 	x = x.concat(["edition","volume","number-of-volumes","number"]);
 	x = x.concat(["issue","title","container-title","issued","page"]);
@@ -106,7 +106,7 @@
 	var x = new Array();
 	x = x.concat(["@strip-periods","@font-style","@font-variant"]);
 	x = x.concat(["@font-weight","@text-decoration","@vertical-align"]);
-	x = x.concat(["@quotes","@display"]);
+	x = x.concat(["@quotes"]);
 	this.FORMAT_KEY_SEQUENCE = x.slice();
 	this.SUFFIX_CHARS = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
 	this.ROMAN_NUMERALS = [
@@ -277,10 +277,10 @@ CSL.Output.Queue.prototype.openLevel = function(token){
 	}
 	var blob = new CSL.Blob(this.formats.value()[token]);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length){
-		this.state.tmp.offset_characters += blob.strings.prefix;
+		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length){
-		this.state.tmp.offset_characters += blob.strings.suffix;
+		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
 	var curr = this.current.value();
 	curr.push( blob );
@@ -2493,9 +2493,6 @@ CSL.Node.group = new function(){
 			if (state.build.substitute_level.value()){
 				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
 			}
-			if (CSL.GROUP_CLASSES.indexOf(this.strings.cls) > -1){
-				this.decorations.push(["@display",this.strings.cls]);
-			};
 			var newoutput = function(state,Item){
 				state.output.startTag("group",this);
 			};
@@ -3737,6 +3734,9 @@ CSL.Attributes["@variable"] = function(state,arg){
 						output = true;
 						break;
 					};
+				} else if ("citation-number" == variable) {
+					output = true;
+					break;
 				} else if ("object" == typeof Item[variable]){
 					for (i in Item[variable]){
 						output = true;
@@ -4066,6 +4066,9 @@ CSL.Attributes["@reverse-order"] = function(state,arg){
 		this.strings["reverse-order"] = true;
 	};
 };
+CSL.Attributes["@display"] = function(state,arg){
+	this.strings.cls = arg;
+}
 CSL.System = {};
 CSL.System.Xml = {};
 CSL.System.Xml.E4X = function(){};
@@ -5034,28 +5037,33 @@ CSL.Util.substituteStart = function(state,target){
 		this.execs.push(element_trace);
 	};
 	if (state.build.area == "bibliography"){
+		var display = this.strings.cls;
+		this.strings.cls = false;
 		if (state.build.render_nesting_level == 0){
 			if (state.bibliography.opt["second-field-align"]){
 				var bib_first = new CSL.Token("group",CSL.START);
 				bib_first.decorations = [["@display","left-margin"]];
 				var func = function(state,Item){
 					if (!state.tmp.render_seen){
-						state.tmp.count_offset_characters = true;
 						state.output.startTag("bib_first",bib_first);
+						state.tmp.count_offset_characters = true;
+					};
+				};
+				bib_first.execs.push(func);
+				target.push(bib_first);
+			} else if (CSL.DISPLAY_CLASSES.indexOf(display) > -1){
+				var bib_first = new CSL.Token("group",CSL.START);
+				bib_first.decorations = [["@display",display]];
+				var func = function(state,Item){
+					state.output.startTag("bib_first",bib_first);
+					if (bib_first.strings.cls == "left-margin"){
+						state.tmp.count_offset_characters = true;
 					};
 				};
 				bib_first.execs.push(func);
 				target.push(bib_first);
 			};
-			if ("csl-left-label" == this.strings.cls && "bibliography" == state.build.area){
-				print("OOOOOOOOOOOOOOOOOOKAY!");
-				var func = function(state,Item){
-					if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
-						state.tmp.count_offset_characters = true;
-					};
-				};
-				this.execs.push(func);
-			}
+			state.build.cls = display;
 		}
 		state.build.render_nesting_level += 1;
 	}
@@ -5078,13 +5086,13 @@ CSL.Util.substituteEnd = function(state,target){
 	if (state.build.area == "bibliography"){
 		state.build.render_nesting_level += -1;
 		if (state.build.render_nesting_level == 0){
-			if ("csl-left-label" == this.strings.cls && state.build.area == "bibliography"){
+			if (state.build.cls && state.build.area == "bibliography"){
 				var func = function(state,Item){
-					if ("csl-left-label" == this.strings.cls && !state.tmp.suppress_decorations){
+					state.output.endTag();
 						state.tmp.count_offset_characters = false;
-					};
 				};
 				this.execs.push(func);
+				state.build.cls = false;
 			};
 			if (state.bibliography.opt["second-field-align"]){
 				var bib_first_end = new CSL.Token("group",CSL.END);
@@ -5106,7 +5114,7 @@ CSL.Util.substituteEnd = function(state,target){
 				};
 				bib_other.execs.push(other_func);
 				target.push(bib_other);
-			};
+			}
 		};
 	};
 	if (state.build.substitute_level.value() == 1){
@@ -5756,16 +5764,16 @@ CSL.Output.Formats.prototype.html = {
 		return "  <div class=\"csl-entry\">"+str+"</div>\n";
 	},
 	"@display/block": function(state,str){
-		return "\n\n    <div class=\"csl-entry-heading\">" + str + "</div>\n";
+		return "\n\n    <div class=\"csl-block\">" + str + "</div>\n";
 	},
 	"@display/left-margin": function(state,str){
-		return "\n    <div class=\"csl-left-label\">" + str + "</div>\n";
+		return "\n    <div class=\"csl-left-margin\">" + str + "</div>";
 	},
 	"@display/right-inline": function(state,str){
-		return "    <div class=\"csl-item\">" + str + "</div>\n  ";
+		return "<div class=\"csl-right-inline\">" + str + "</div>\n  ";
 	},
 	"@display/indent": function(state,str){
-		return "    <div class=\"csl-block-indent\">" + str + "</div>\n  ";
+		return "<div class=\"csl-indent\">" + str + "</div>\n  ";
 	}
 };
 CSL.Output.Formats = new CSL.Output.Formats();

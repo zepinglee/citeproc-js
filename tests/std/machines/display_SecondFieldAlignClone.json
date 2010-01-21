@@ -36,14 +36,13 @@
     "bibsection": false, 
     "citation_items": false, 
     "citations": false, 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text value=\"hello\" />\n    </layout>\n  </citation>\n  <bibliography>\n    <layout>\n      <group delimiter=\" \">\n        <group delimiter=\", \">\n          <names variable=\"author\">\n            <name />\n          </names>\n          <text variable=\"title\" />\n        </group>\n        <date prefix=\"(\" suffix=\")\" variable=\"issued\">\n          <date-part name=\"year\" />\n        </date>\n      </group>\n      <text display=\"indent\" variable=\"abstract\" />\n    </layout>\n  </bibliography>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <macro name=\"author\">\n    <names variable=\"author\">\n      <name and=\"text\" />\n    </names>\n  </macro>\n  <macro name=\"date\">\n    <date variable=\"issued\">\n      <date-part name=\"year\" />\n    </date>\n    <text variable=\"year-suffix\" />\n  </macro>\n  <citation \n         disambiguate-add-year-suffix=\"true\">\n    <layout>\n      <text variable=\"citation-number\"/>\n    </layout>\n  </citation>\n  <bibliography \n         subsequent-author-substitute=\"\">\n    <layout>\n      <text variable=\"citation-number\" prefix=\"[\" suffix=\"]\" display=\"left-margin\"/>\n      <group delimiter=\" \" prefix=\" \" display=\"right-inline\">\n       <group delimiter=\", \">\n          <text macro=\"author\"/>\n          <text variable=\"title\" quotes=\"true\"/>\n        </group>\n        <text macro=\"date\" prefix=\"(\" suffix=\")\"/>\n      </group>\n    </layout>\n  </bibliography>\n</style>", 
     "input": [
         {
-            "abstract": "An interesting book by an interesting author.", 
             "author": [
                 {
-                    "family": "Smith", 
-                    "given": "John", 
+                    "family": "Doe", 
+                    "given": "John Aloysius", 
                     "static-ordering": false
                 }
             ], 
@@ -51,19 +50,18 @@
             "issued": {
                 "date-parts": [
                     [
-                        "2000"
+                        1999
                     ]
                 ]
             }, 
-            "title": "Book A", 
+            "title": "John's Book", 
             "type": "book"
         }, 
         {
-            "abstract": "An old contribution to a new field.", 
             "author": [
                 {
-                    "family": "Jones", 
-                    "given": "Robert", 
+                    "family": "Roe", 
+                    "given": "Jane Henrietta", 
                     "static-ordering": false
                 }
             ], 
@@ -71,14 +69,14 @@
             "issued": {
                 "date-parts": [
                     [
-                        "2001"
+                        2000
                     ]
                 ]
             }, 
-            "title": "Book B", 
+            "title": "Jane's Book", 
             "type": "book"
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Smith, Book A (2000)<div class=\"csl-indent\">An interesting book by an interesting author.</div>\n  </div>\n  <div class=\"csl-entry\">Robert Jones, Book B (2001)<div class=\"csl-indent\">An old contribution to a new field.</div>\n  </div>\n</div>"
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">[1]</div><div class=\"csl-right-inline\"> John Aloysius Doe, “John’s Book” (1999a)</div>\n  </div>\n  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">[2]</div><div class=\"csl-right-inline\"> Jane Henrietta Roe, “Jane’s Book” (2000b)</div>\n  </div>\n</div>"
 }

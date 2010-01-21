@@ -40,9 +40,9 @@ bibliography
 
 >>== RESULT ==>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John Smith, Book A (2000)    <div class="csl-block-indent">An interesting book by an interesting author.</div>
+  <div class="csl-entry">John Smith, Book A (2000)<div class="csl-indent">An interesting book by an interesting author.</div>
   </div>
-  <div class="csl-entry">Robert Jones, Book B (2001)    <div class="csl-block-indent">An old contribution to a new field.</div>
+  <div class="csl-entry">Robert Jones, Book B (2001)<div class="csl-indent">An old contribution to a new field.</div>
   </div>
 </div>
 <<== RESULT ==<<

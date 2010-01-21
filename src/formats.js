@@ -98,16 +98,16 @@ CSL.Output.Formats.prototype.html = {
 		return "  <div class=\"csl-entry\">"+str+"</div>\n";
 	},
 	"@display/block": function(state,str){
-		return "\n\n    <div class=\"csl-entry-heading\">" + str + "</div>\n";
+		return "\n\n    <div class=\"csl-block\">" + str + "</div>\n";
 	},
 	"@display/left-margin": function(state,str){
-		return "\n    <div class=\"csl-left-label\">" + str + "</div>\n";
+		return "\n    <div class=\"csl-left-margin\">" + str + "</div>";
 	},
 	"@display/right-inline": function(state,str){
-		return "    <div class=\"csl-item\">" + str + "</div>\n  ";
+		return "<div class=\"csl-right-inline\">" + str + "</div>\n  ";
 	},
 	"@display/indent": function(state,str){
-		return "    <div class=\"csl-block-indent\">" + str + "</div>\n  ";
+		return "<div class=\"csl-indent\">" + str + "</div>\n  ";
 	}
 };
 

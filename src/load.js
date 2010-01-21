@@ -139,7 +139,7 @@ var CSL = new function () {
 	this.ROMANESQUE_REGEXP = /.*[a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
 	this.STARTSWITH_ROMANESQUE_REGEXP = /^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
 	this.ENDSWITH_ROMANESQUE_REGEXP = /.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
-	this.GROUP_CLASSES = ["block","left-margin","right-inline","indent"];
+	this.DISPLAY_CLASSES = ["block","left-margin","right-inline","indent"];
 
 	var x = new Array();
 	x = x.concat(["edition","volume","number-of-volumes","number"]);
@@ -158,7 +158,7 @@ var CSL = new function () {
 	var x = new Array();
 	x = x.concat(["@strip-periods","@font-style","@font-variant"]);
 	x = x.concat(["@font-weight","@text-decoration","@vertical-align"]);
-	x = x.concat(["@quotes","@display"]);
+	x = x.concat(["@quotes"]);
 	this.FORMAT_KEY_SEQUENCE = x.slice();
 	this.SUFFIX_CHARS = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
 	this.ROMAN_NUMERALS = [
