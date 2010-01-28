@@ -36,6 +36,7 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_unicode");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_display");
 	dojo.require("tests.std_integration");

@@ -1,6 +1,0 @@
-  <macro name="interviewer">
-    <names delimiter=", " variable="interviewer">
-      <label form="verb" prefix=" " suffix=" " text-case="capitalize-first" />
-      <name and="text" delimiter=", " />
-    </names>
-  </macro>

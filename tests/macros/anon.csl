@@ -1,7 +1,0 @@
-  <macro name="anon">
-    <choose>
-      <if match="none" variable="author editor translator">
-        <text form="short" term="anonymous" text-case="capitalize-first" />
-      </if>
-    </choose>
-  </macro>

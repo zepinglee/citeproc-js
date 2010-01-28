@@ -1,6 +1,0 @@
-  <macro name="editor">
-    <names variable="editor">
-      <name and="text" delimiter=", " delimiter-precedes-last="always" name-as-sort-order="first" sort-separator=", " />
-      <label form="short" prefix=", " suffix="." />
-    </names>
-  </macro>

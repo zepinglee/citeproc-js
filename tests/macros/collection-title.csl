@@ -1,4 +1,0 @@
-  <macro name="collection-title">
-    <text variable="collection-title" />
-    <text prefix=" " variable="collection-number" />
-  </macro>
