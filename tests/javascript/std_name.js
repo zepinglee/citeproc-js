@@ -63,6 +63,10 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("name_AuthorEditorCount");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("name_CeltsAndToffsCrowdedInitials");
         doh.assertEqual(test.result, test.run());
     },
@@ -80,6 +84,10 @@ doh.register("tests.std_name", [
     },
     function(){
         var test = new StdRhinoTest("name_Delimiter");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("name_HierarchicalDelimiter");
         doh.assertEqual(test.result, test.run());
     },
     function(){
@@ -140,6 +148,10 @@ doh.register("tests.std_name", [
     },
     function(){
         var test = new StdRhinoTest("name_OnlyGivenname");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("name_OverridingHierarchicalDelimiter");
         doh.assertEqual(test.result, test.run());
     },
     function(){

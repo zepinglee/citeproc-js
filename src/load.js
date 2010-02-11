@@ -127,6 +127,7 @@ var CSL = new function () {
 	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)].*/;
 
 	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
+                                                 // Afterthought: um ... why?
 	this.QUOTED_REGEXP = /^".+"$/;
 	//
 	// \u0400-\u042f are cyrillic and extended cyrillic capitals

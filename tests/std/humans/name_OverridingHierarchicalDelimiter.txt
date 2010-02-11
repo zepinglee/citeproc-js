@@ -43,7 +43,7 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe; Jane Roe
+John Doe///Jane Roe
 <<===== RESULT =====<<
 
 
@@ -51,18 +51,17 @@ John Doe; Jane Roe
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0">
+      version="1.0"
+      name-delimiter="/">
   <info>
     <id />
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
+  <citation name-delimiter="//">
     <layout>
       <names variable="author">
-        <name delimiter="; ">
-          <name-part name="family" />
-        </name>
+        <name delimiter="///"/>
       </names>
     </layout>
   </citation>
@@ -76,25 +75,14 @@ John Doe; Jane Roe
         "author": [
             {
                 "family": "Doe", 
-                "given": "John", 
-                "static-ordering": false, 
-                "uri": "http://people.org/doej"
+                "given": "John"
             }, 
             {
                 "family": "Roe", 
-                "given": "Jane", 
-                "static-ordering": false, 
-                "uri": "http://people.org/roej"
+                "given": "Jane"
             }
         ], 
         "id": "item-1", 
-        "issued": {
-            "date-parts": [
-                [
-                    "2000"
-                ]
-            ]
-        }, 
         "title": "Our Anonymous Lives", 
         "type": "book"
     }

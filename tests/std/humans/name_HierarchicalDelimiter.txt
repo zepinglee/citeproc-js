@@ -32,9 +32,6 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-/*
- * This test contributed by Rintze Zelle, 2010.
- */
 
 >>===== MODE =====>>
 citation
@@ -57,12 +54,10 @@ John Doe; Jane Roe
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
+  <citation name-delimiter="; ">
     <layout>
       <names variable="author">
-        <name delimiter="; ">
-          <name-part name="family" />
-        </name>
+        <name/>
       </names>
     </layout>
   </citation>
@@ -76,25 +71,14 @@ John Doe; Jane Roe
         "author": [
             {
                 "family": "Doe", 
-                "given": "John", 
-                "static-ordering": false, 
-                "uri": "http://people.org/doej"
+                "given": "John"
             }, 
             {
                 "family": "Roe", 
-                "given": "Jane", 
-                "static-ordering": false, 
-                "uri": "http://people.org/roej"
+                "given": "Jane"
             }
         ], 
         "id": "item-1", 
-        "issued": {
-            "date-parts": [
-                [
-                    "2000"
-                ]
-            ]
-        }, 
         "title": "Our Anonymous Lives", 
         "type": "book"
     }
