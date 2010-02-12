@@ -31,15 +31,11 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */
-CSL.Node["name-part"] = new function(){
-	this.build = build;
-	function build(state,target){
-		var set_namepart_format = function(state,Item){
-			state.output.addToken(this.strings.name,false,this);
-		};
-		this["execs"].push(set_namepart_format);
-		target.push(this);
-	};
-};
+ */dojo.provide("tests.std_group");
 
+doh.register("tests.std_group", [
+    function(){
+        var test = new StdRhinoTest("group_SuppressTermWhenNoOutputFromPartialDate");
+        doh.assertEqual(test.result, test.run());
+    },
+]);

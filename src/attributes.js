@@ -61,17 +61,7 @@ CSL.Attributes["@value"] = function(state,arg){
  * @function
  */
 CSL.Attributes["@name"] = function(state,arg){
-	if (this.name == "name-part") {
-		//
-		// Note that there will be multiple name-part items,
-		// and they all need to be collected before doing anything.
-		// So this must be picked up when the <name-part/>
-		// element is processed, and used as a key on an
-		// object holding the formatting attribute functions.
-		state.tmp.namepart_type = arg;
-	} else {
-		this.strings.name = arg;
-	};
+	this.strings.name = arg;
 };
 
 

@@ -87,6 +87,10 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("name_FormattingOfParticles");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("name_HierarchicalDelimiter");
         doh.assertEqual(test.result, test.run());
     },

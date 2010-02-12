@@ -2937,7 +2937,7 @@ CSL.Node["name-part"] = new function(){
 	this.build = build;
 	function build(state,target){
 		var set_namepart_format = function(state,Item){
-			state.output.addToken(state.tmp.namepart_type,false,this);
+			state.output.addToken(this.strings.name,false,this);
 		};
 		this["execs"].push(set_namepart_format);
 		target.push(this);
@@ -3659,11 +3659,7 @@ CSL.Attributes["@value"] = function(state,arg){
 	this.strings.value = arg;
 };
 CSL.Attributes["@name"] = function(state,arg){
-	if (this.name == "name-part") {
-		state.tmp.namepart_type = arg;
-	} else {
-		this.strings.name = arg;
-	};
+	this.strings.name = arg;
 };
 CSL.Attributes["@form"] = function(state,arg){
 	this.strings.form = arg;
