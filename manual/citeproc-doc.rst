@@ -9,11 +9,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a60##
+   version 1.00##a61##
 
 .. class:: info-date
 
-   =D=16 January 2010=D=
+   =D=11 February 2010=D=
 
 .. class:: contributors
 
@@ -221,7 +221,8 @@ one of them optional:
     ``retrieveLocale()`` and ``retrieveItem()``.
 
 *style*
-    A CSL style in serialized (string) form.
+    The CSL code for a style, as XML in serialized (string) form
+    (not a filename or style name, but the code itself).
 
 *lang* (optional)
     A language tag compliant with RFC 4646.  Defaults to ``en``.
