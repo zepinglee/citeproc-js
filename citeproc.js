@@ -812,6 +812,7 @@ CSL.XmlToToken = function(state,tokentype){
 	var attributes = state.sys.xml.attributes(this);
 	var decorations = CSL.setDecorations.call(this,state,attributes);
 	var token = new CSL.Token(name,tokentype);
+	if (tokentype != CSL.END){
 	for (var key in attributes){
 		try {
 			CSL.Attributes[key].call(token,state,""+attributes[key]);
@@ -824,6 +825,7 @@ CSL.XmlToToken = function(state,tokentype){
 		}
 	}
 	token.decorations = decorations;
+	}
 	var target = state[state.build.area].tokens;
 	CSL.Node[name].build.call(token,state,target);
 };
@@ -944,6 +946,14 @@ CSL.Engine.prototype._getNavi.prototype.getkids = function(){
 		CSL.XmlToToken.call(currnode,this.state,CSL.SINGLETON);
 		return false;
 	} else {
+		for (var pos in sneakpeek){
+			var node = sneakpeek[pos];
+			if ("date" == this.sys.xml.nodename(node)){
+				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+				currnode = CSL.Util.fixDateNode.call(this,currnode,pos,node);
+				sneakpeek = this.sys.xml.children(currnode);
+			}
+		}
 		CSL.XmlToToken.call(currnode,this.state,CSL.START);
 		this.depth += 1;
 		this.nodeList.push([0,sneakpeek]);
@@ -2203,92 +2213,64 @@ CSL.Node.date = new function(){
 	this.build = build;
 	function build(state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
-			if (this.strings.form){
-				if (state.getDate(this.strings.form)){
-					var datexml = state.sys.xml.nodeCopy( state.getDate(this.strings.form) );
-					state.sys.xml.setAttribute( datexml, 'variable', this.variables[0] );
-					if (this.strings.prefix){
-						state.sys.xml.setAttribute( datexml, "prefix", this.strings.prefix);
+			CSL.Util.substituteStart.call(this,state,target);
+			var set_value = function(state,Item){
+				state.tmp.element_rendered_ok = false;
+				state.tmp.donesies = [];
+				state.tmp.dateparts = [];
+				var dp = [];
+				if (this.variables.length){
+					state.parallel.StartVariable(this.variables[0]);
+					var date_obj = Item[this.variables[0]];
+					if ("undefined" == typeof date_obj){
+						date_obj = {"date-parts": [[0]] };
 					}
-					if (this.strings.suffix){
-						state.sys.xml.setAttribute( datexml, "suffix", this.strings.suffix);
+					if (date_obj.raw){
+						state.tmp.date_object = state.dateParseRaw( date_obj.raw );
+					} else if (date_obj["date-parts"]) {
+						state.tmp.date_object = state.dateParseArray( date_obj );
 					}
-					state.sys.xml.deleteAttribute(datexml,'form');
-					if (this.strings["date-parts"] == "year"){
-						state.sys.xml.deleteNodeByNameAttribute(datexml,'month');
-						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
-					} else if (this.strings["date-parts"] == "year-month"){
-						state.sys.xml.deleteNodeByNameAttribute(datexml,'day');
-					}
-					state.build.datexml = state.sys.xml.nodeCopy( datexml );
-				};
-			} else {
-				CSL.Util.substituteStart.call(this,state,target);
-				var set_value = function(state,Item){
-					state.tmp.element_rendered_ok = false;
-					state.tmp.donesies = [];
-					state.tmp.dateparts = [];
-					var dp = [];
-					if (this.variables.length){
-						state.parallel.StartVariable(this.variables[0]);
-						var date_obj = Item[this.variables[0]];
-						if ("undefined" == typeof date_obj){
-							date_obj = {"date-parts": [[0]] };
-						}
-						if (date_obj.raw){
-							state.tmp.date_object = state.dateParseRaw( date_obj.raw );
-						} else if (date_obj["date-parts"]) {
-							state.tmp.date_object = state.dateParseArray( date_obj );
-						}
-						for each (var part in this.dateparts){
-							if ("undefined" != typeof state.tmp.date_object[(part+"_end")]){
-								dp.push(part);
-							} else if (part == "month" && "undefined" != typeof state.tmp.date_object["season_end"]) {
-								dp.push(part);
-							};
+					for each (var part in this.dateparts){
+						if ("undefined" != typeof state.tmp.date_object[(part+"_end")]){
+							dp.push(part);
+						} else if (part == "month" && "undefined" != typeof state.tmp.date_object["season_end"]) {
+							dp.push(part);
 						};
-						var mypos = -1;
-						for (var pos=(dp.length-1); pos>-1; pos += -1){
-							var part = dp[pos];
-							var start = state.tmp.date_object[part];
-							var end = state.tmp.date_object[(part+"_end")];
-							if (start != end){
-								mypos = pos;
-								break;
-							};
+					};
+					var mypos = -1;
+					for (var pos=(dp.length-1); pos>-1; pos += -1){
+						var part = dp[pos];
+						var start = state.tmp.date_object[part];
+						var end = state.tmp.date_object[(part+"_end")];
+						if (start != end){
+							mypos = pos;
+							break;
 						};
-						state.tmp.date_collapse_at = dp.slice(0,(mypos+1));
-					} else {
-						state.tmp.date_object = false;
-					}
-				};
-				this["execs"].push(set_value);
-				var newoutput = function(state,Item){
-					state.output.startTag("date",this);
-					var tok = new CSL.Token("date-part",CSL.SINGLETON);
-					if (state.tmp.date_object["literal"]){
-						state.parallel.AppendToVariable(state.tmp.date_object["literal"]);
-						state.output.append(state.tmp.date_object["literal"],tok);
-						state.tmp.date_object = {};
-					}
-					tok.strings.suffix = " ";
-				};
-				this["execs"].push(newoutput);
+					};
+					state.tmp.date_collapse_at = dp.slice(0,(mypos+1));
+				} else {
+					state.tmp.date_object = false;
+				}
 			};
-		};
+			this["execs"].push(set_value);
+			var newoutput = function(state,Item){
+				state.output.startTag("date",this);
+				var tok = new CSL.Token("date-part",CSL.SINGLETON);
+				if (state.tmp.date_object["literal"]){
+					state.parallel.AppendToVariable(state.tmp.date_object["literal"]);
+					state.output.append(state.tmp.date_object["literal"],tok);
+					state.tmp.date_object = {};
+				}
+				tok.strings.suffix = " ";
+			};
+			this["execs"].push(newoutput);
+		}
 		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
-			if (this.strings.form && state.build.datexml){
-				var datexml = state.build.datexml;
-				delete state.build.datexml;
-				var navi = new state._getNavi( state, datexml );
-				CSL.buildStyle.call(state,navi);
-			} else {
-				var mergeoutput = function(state,Item){
-					state.output.endTag();
-					state.parallel.CloseVariable();
-				};
-				this["execs"].push(mergeoutput);
-			}
+			var mergeoutput = function(state,Item){
+				state.output.endTag();
+				state.parallel.CloseVariable();
+			};
+			this["execs"].push(mergeoutput);
 		};
 		target.push(this);
 		if (this.tokentype == CSL.END){
@@ -2299,6 +2281,7 @@ CSL.Node.date = new function(){
 CSL.Node["date-part"] = new function(){
 	this.build = build;
 	function build(state,target){
+		if (!state.tmp.skipdate){
 		if (!this.strings.form){
 			this.strings.form = "long";
 		}
@@ -2419,6 +2402,7 @@ CSL.Node["date-part"] = new function(){
 			}
 			this["execs"].push(render_date_part);
 			target.push(this);
+		};
 		};
 	};
 };
@@ -3723,8 +3707,24 @@ CSL.Attributes["@variable"] = function(state,arg){
 			var output = false;
 			for each (var variable in this.variables){
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1){
-					output = true;
-					break;
+					if (!Item[variable] || !Item[variable]['date-parts']){
+						output = true;
+						break;
+					} else if (this.dateparts && this.dateparts.length){
+						var varlen = Item[variable]['date-parts'].length;
+						var needlen = 4;
+						if (this.dateparts.indexOf('day') > -1){
+							needlen = 3;
+						} else if (this.dateparts.indexOf("month") > -1){
+							needlen = 2;
+						} else if (this.dateparts.indexOf("year") > -1){
+							needlen = 1;
+						}
+						if (varlen >= needlen){
+							output = true;
+							break;
+						}
+					}
 				} else if ("locator" == variable){
 					if (item && item.locator){
 						output = true;
@@ -3871,6 +3871,8 @@ CSL.Attributes["@plural"] = function(state,arg){
 	};
 };
 CSL.Attributes["@locator"] = function(state,arg){
+};
+CSL.Attributes["@newdate"] = function(state,arg){
 };
 CSL.Attributes["@position"] = function(state,arg){
 	state.opt.update_mode = CSL.POSITION;
@@ -4647,6 +4649,45 @@ CSL.Util.Match = function(){
 		};
 		return ret;
 	};
+};
+CSL.Util.fixDateNode = function(parent,pos,node) {
+	var form = this.sys.xml.getAttributeValue( node, "form");
+	if (!form){
+		return parent;
+	}
+	var variable = this.sys.xml.getAttributeValue( node, "variable");
+	var prefix = this.sys.xml.getAttributeValue( node, "prefix");
+	var suffix = this.sys.xml.getAttributeValue( node, "suffix");
+	var datexml = this.sys.xml.nodeCopy( this.state.getDate( form ));
+	this.sys.xml.setAttribute( datexml, 'variable', variable );
+	if (prefix){
+		this.sys.xml.setAttribute( datexml, "prefix", prefix);
+	}
+	if (suffix){
+		this.sys.xml.setAttribute( datexml, "suffix", suffix);
+	}
+	for each (var subnode in this.sys.xml.children(node)){
+		if ("date-part" == this.sys.xml.nodename(subnode)){
+			var partname = this.sys.xml.getAttributeValue(subnode,"name");
+			for each (var attr in this.sys.xml.attributes(subnode)){
+				var attrname = this.sys.xml.getAttributeName(attr);
+				var attrval = this.sys.xml.getAttributeValue(attr);
+				this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml,"date-part",partname,attrname,attrval);
+			}
+		}
+	}
+	this.sys.xml.deleteAttribute(datexml,'form');
+	if ("year" == this.sys.xml.getAttributeValue(node,"date-parts")){
+		this.sys.xml.deleteNodeByNameAttribute(datexml,'month');
+		this.sys.xml.deleteNodeByNameAttribute(datexml,'day');
+	} else if ("year-month" == this.sys.xml.getAttributeValue(node,"date-parts")){
+		this.sys.xml.deleteNodeByNameAttribute(datexml,'day');
+	}
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	var myxml = XML(datexml.toXMLString());
+	parent.insertChildAfter(node,myxml);
+	delete parent.*[pos];
+	return parent;
 };
 CSL.Util.Institutions = new function(){};
 CSL.Util.Institutions.outputInstitutions = function(state,display_names){

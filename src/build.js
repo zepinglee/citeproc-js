@@ -245,6 +245,21 @@ CSL.Engine.prototype._getNavi.prototype.getkids = function(){
 		CSL.XmlToToken.call(currnode,this.state,CSL.SINGLETON);
 		return false;
 	} else {
+		// if there are children, check for date nodes and
+		// convert if appropriate
+		for (var pos in sneakpeek){
+			var node = sneakpeek[pos];
+			if ("date" == this.sys.xml.nodename(node)){
+				//
+				// This ugly stuff is needed to work around the broken
+				// shards of the Rhino E4X implementation.
+				//
+				default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+				currnode = CSL.Util.fixDateNode.call(this,currnode,pos,node);
+				sneakpeek = this.sys.xml.children(currnode);
+			}
+		}
+		//
 		// if first node of a span, process it, then descend
 		CSL.XmlToToken.call(currnode,this.state,CSL.START);
 		this.depth += 1;

@@ -36,17 +36,18 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_group");
+	dojo.require("tests.std_date");
+	dojo.require("tests.std_parallel");
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_unicode");
 	dojo.require("tests.std_magic");
 	dojo.require("tests.std_display");
 	dojo.require("tests.std_integration");
-	dojo.require("tests.std_date");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_bugreports");
 	dojo.require("tests.std_affix");
 	dojo.require("tests.std_abbrevs");
-	dojo.require("tests.std_parallel");
 	dojo.require("tests.std_institutions");
 	dojo.require("tests.test_conditions");
 	dojo.require("tests.std_condition");
@@ -106,7 +107,6 @@ if(true){
 
 
 	// FAILS, needs refactoring of group output tracking stuff
-	//dojo.require("tests.std_group");
 
 
 	//dojo.require("tests.test_load_all_styles");

@@ -147,6 +147,7 @@ CSL.XmlToToken = function(state,tokentype){
 	var attributes = state.sys.xml.attributes(this);
 	var decorations = CSL.setDecorations.call(this,state,attributes);
 	var token = new CSL.Token(name,tokentype);
+	if (tokentype != CSL.END){
 	//
 	// xml: more xml stuff
 	//
@@ -162,6 +163,7 @@ CSL.XmlToToken = function(state,tokentype){
 		}
 	}
 	token.decorations = decorations;
+	}
 	//
 	// !!!!!: eliminate diversion of tokens to separate
 	// token list (formerly used for reading in macros

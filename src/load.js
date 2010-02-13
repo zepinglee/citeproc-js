@@ -361,6 +361,9 @@ if (!CSL.NumericBlob){
 if (!CSL.Util){
 	load("./src/util.js");
 }
+if (!CSL.Util.fixDateNode){
+	load("./src/util_datenode.js");
+}
 if (!CSL.Util.Names){
 	load("./src/util_names.js");
 }

@@ -35,6 +35,7 @@
 CSL.Node["date-part"] = new function(){
 	this.build = build;
 	function build(state,target){
+		if (!state.tmp.skipdate){
 		if (!this.strings.form){
 			this.strings.form = "long";
 		}
@@ -176,6 +177,7 @@ CSL.Node["date-part"] = new function(){
 			}
 			this["execs"].push(render_date_part);
 			target.push(this);
+		};
 		};
 	};
 };
