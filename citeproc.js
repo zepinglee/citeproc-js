@@ -3707,11 +3707,11 @@ CSL.Attributes["@variable"] = function(state,arg){
 			var output = false;
 			for each (var variable in this.variables){
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1){
-					if (!Item[variable] || !Item[variable]['date-parts']){
+					if (!Item[variable] || !Item[variable]['date-parts'] || !Item[variable]['date-parts'].length){
 						output = true;
 						break;
 					} else if (this.dateparts && this.dateparts.length){
-						var varlen = Item[variable]['date-parts'].length;
+						var varlen = Item[variable]['date-parts'][0].length;
 						var needlen = 4;
 						if (this.dateparts.indexOf('day') > -1){
 							needlen = 3;
