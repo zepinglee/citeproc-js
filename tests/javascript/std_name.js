@@ -39,6 +39,10 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("name_ArticularShortForm");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("name_ArticularWithComma");
         doh.assertEqual(test.result, test.run());
     },

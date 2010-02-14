@@ -130,10 +130,10 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function(subsequence){
 	var state = this.state;
 	for each (var key in subsequence){
 		var namepart = this.name[key];
-		if ("given" == key && !this.name["static-ordering"]){
+		if (("given" == key || "suffix" == key) && !this.name["static-ordering"]){
 			if (0 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
 				continue;
-			} else if (1 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
+			} else if ("given" == key && 1 == state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][(this.namenum+this.nameoffset)]){
 				var initialize_with = state.output.getToken("name").strings["initialize-with"];
 				namepart = CSL.Util.Names.initializeWith(state,namepart,initialize_with);
 			}
