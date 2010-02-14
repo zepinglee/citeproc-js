@@ -4872,7 +4872,7 @@ CSL.Util.Names.getCommonTerm = function(state,namesets){
 	return varnames.join("");
 };
 CSL.Util.Names.compareNamesets = function(base_nameset,nameset){
-	if (base_nameset.length != nameset.length){
+	if (!base_nameset.names || !nameset.names || base_nameset.names.length != nameset.names.length){
 		return false;
 	}
 	var name;
