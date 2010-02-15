@@ -37,7 +37,6 @@ dojo.require("doh.runner");
 // requested tests go here
 if(true){
 	dojo.require("tests.std_sort");
-} else {
 	dojo.require("tests.std_name");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_magic");
@@ -103,6 +102,7 @@ if(true){
 	dojo.require("tests.test_output");
 	dojo.require("tests.std_locators");
 
+} else {
 
 	//SNIP-START
 
