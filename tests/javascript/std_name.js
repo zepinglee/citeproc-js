@@ -167,6 +167,10 @@ doh.register("tests.std_name", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("name_ParticleFormatting");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("name_SplitInitials");
         doh.assertEqual(test.result, test.run());
     },

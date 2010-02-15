@@ -3086,11 +3086,13 @@ CSL.Node.names = new function(){
 					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al","long",0);
 				}
 				state.output.addToken("commasep",", ");
-				for each (namepart in ["given","family","dropping-particle","non-dropping-particle","suffix"]){
+				for each (namepart in ["given","family","suffix"]){
 					if (!state.output.getToken(namepart)){
 						state.output.addToken(namepart);
 					}
 				}
+				state.output.addToken("dropping-particle",false,state.output.getToken("family"));
+				state.output.addToken("non-dropping-particle",false,state.output.getToken("family"));
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse == "year" || state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged")){

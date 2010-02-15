@@ -224,11 +224,13 @@ CSL.Node.names = new function(){
 				// 	state.output.getToken("with").strings.with_term = state.getTerm("with","long",0);
 				// }
 				state.output.addToken("commasep",", ");
-				for each (namepart in ["given","family","dropping-particle","non-dropping-particle","suffix"]){
+				for each (namepart in ["given","family","suffix"]){
 					if (!state.output.getToken(namepart)){
 						state.output.addToken(namepart);
 					}
 				}
+				state.output.addToken("dropping-particle",false,state.output.getToken("family"));
+				state.output.addToken("non-dropping-particle",false,state.output.getToken("family"));
 				for  (var namesetIndex in namesets){
 					nameset = namesets[namesetIndex];
 					//

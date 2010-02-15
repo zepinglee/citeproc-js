@@ -36,9 +36,9 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if(true){
+	dojo.require("tests.std_name");
 	dojo.require("tests.std_collapse");
 	dojo.require("tests.std_magic");
-	dojo.require("tests.std_name");
 	dojo.require("tests.std_date");
 	dojo.require("tests.std_group");
 	dojo.require("tests.std_label");
