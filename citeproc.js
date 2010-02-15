@@ -2676,20 +2676,26 @@ CSL.Node.key = new function(){
 							value = { "date-parts": [[0]] };
 						}
 						var dp = value["date-parts"];
-						if (dp && dp[0]){
-							if (dp[0].length >0){
-								if (dp[0][0] == 0 && state.tmp.area == "bibliography_sort"){
+						if (dp){
+							for (var pos in dp){
+							if (dp[pos].length >0){
+								if (dp[pos][0] == 0 && state.tmp.area == "bibliography_sort"){
 									state.tmp.empty_date = true;
 								}
-								state.output.append(CSL.Util.Dates.year["numeric"](state,dp[0][0]));
+								state.output.append(CSL.Util.Dates.year["numeric"](state,dp[pos][0]));
 							}
-							if (dp[0].length >1){
-								state.output.append(CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[0][1]));
+							var monthnum = '00';
+							if (dp[pos].length >1){
+								monthnum = CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[pos][1]);
 							}
-							if (dp[0].length >2){
-								state.output.append(CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[0][2]));
+							state.output.append(monthnum);
+							var daynum = '00';
+							if (dp[pos].length >2){
+								daynum = CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[pos][2]);
 							}
-						}
+						    state.output.append(daynum);
+							}
+						};
 					};
 				} else if ("title" == variable) {
 					var output_func = function(state,Item){

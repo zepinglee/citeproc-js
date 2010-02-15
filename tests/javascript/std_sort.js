@@ -51,6 +51,34 @@ doh.register("tests.std_sort", [
         doh.assertEqual(test.result, test.run());
     },
     function(){
+        var test = new StdRhinoTest("sort_DateVariable");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsAscendingA");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsAscendingB");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsDescendingA");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsDescendingB");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableRange");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableRangeMixed");
+        doh.assertEqual(test.result, test.run());
+    },
+    function(){
         var test = new StdRhinoTest("sort_NameImplicitSortOrderAndForm");
         doh.assertEqual(test.result, test.run());
     },
