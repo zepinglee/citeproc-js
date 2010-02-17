@@ -50,11 +50,21 @@ CSL.Node["else-if"] = new function(){
 			//};
 			if ("number" == typeof this.strings.position){
 				var tryposition = this.strings.position;
+				//
+				// c&p from node_if
+				//
 				var func = function(state,Item,item){
+					if (item && "undefined" == typeof item.position){
+						item.position = 0;
+					}
 					if (state.tmp.force_subsequent && tryposition < 2){
 						return true;
-					} else if (item && ("number" == typeof item.position) && item.position <= tryposition){
-						return true;
+					} else if (item && typeof item.position == "number" || "undefined" == typeof item.position){
+						if (item.position == 0 && tryposition == 0){
+							return true;
+						} else if (tryposition > 0 && item.position >= tryposition){
+							return true;
+						};
 					};
 					return false;
 				};

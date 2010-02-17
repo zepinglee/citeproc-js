@@ -48,6 +48,7 @@ if ("undefined" != typeof CSL_OPTIONS){
 
 } else if(true){
 	dojo.require("std.magic");
+	dojo.require("std.position");
 	dojo.require("std.sort");
 	dojo.require("std.name");
 	dojo.require("std.collapse");
@@ -86,7 +87,6 @@ if ("undefined" != typeof CSL_OPTIONS){
 	dojo.require("std.page");
 	dojo.require("std.decorations");
 	dojo.require("std.quotes");
-	dojo.require("std.position");
 	dojo.require("citeproc_js.registry");
 	dojo.require("citeproc_js.load_styles");
 	dojo.require("std.plural");

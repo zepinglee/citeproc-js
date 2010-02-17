@@ -336,9 +336,9 @@ CSL.Engine.prototype._processCitationCluster = function(sortedItems){
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
- var Item = this.sys.retrieveItem(item.id);
- var newitem = [Item,item];
- inputList.push(newitem);
+		var Item = this.sys.retrieveItem(item.id);
+		var newitem = [Item,item];
+		inputList.push(newitem);
 	};
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
  for (var k in inputList){
@@ -367,7 +367,7 @@ CSL.getAmbiguousCite = function(Item,disambig){
 	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
-	CSL.getCite.call(this,Item);
+	CSL.getCite.call(this,Item,{});
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;

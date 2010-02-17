@@ -1940,9 +1940,9 @@ CSL.Engine.prototype._processCitationCluster = function(sortedItems){
 CSL.Engine.prototype.makeCitationCluster = function(rawList){
 	var inputList = [];
 	for each (var item in rawList){
- var Item = this.sys.retrieveItem(item.id);
- var newitem = [Item,item];
- inputList.push(newitem);
+		var Item = this.sys.retrieveItem(item.id);
+		var newitem = [Item,item];
+		inputList.push(newitem);
 	};
 	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0){
  for (var k in inputList){
@@ -1965,7 +1965,7 @@ CSL.getAmbiguousCite = function(Item,disambig){
 	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
-	CSL.getCite.call(this,Item);
+	CSL.getCite.call(this,Item,{});
 	this.tmp.force_subsequent = false;
 	var ret = this.output.string(this,this.output.queue);
 	this.tmp.suppress_decorations = false;
@@ -2414,10 +2414,17 @@ CSL.Node["else-if"] = new function(){
 			if ("number" == typeof this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item,item){
+					if (item && "undefined" == typeof item.position){
+						item.position = 0;
+					}
 					if (state.tmp.force_subsequent && tryposition < 2){
 						return true;
-					} else if (item && ("number" == typeof item.position) && item.position <= tryposition){
-						return true;
+					} else if (item && typeof item.position == "number" || "undefined" == typeof item.position){
+						if (item.position == 0 && tryposition == 0){
+							return true;
+						} else if (tryposition > 0 && item.position >= tryposition){
+							return true;
+						};
 					};
 					return false;
 				};
@@ -2521,10 +2528,17 @@ CSL.Node["if"] = new function(){
 			if ("number" == typeof this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item,item){
+					if (item && "undefined" == typeof item.position){
+						item.position = 0;
+					}
 					if (state.tmp.force_subsequent && tryposition < 2){
 						return true;
-					} else if (item && typeof item.position == "number" && item.position <= tryposition){
-						return true;
+					} else if (item && typeof item.position == "number"){
+						if (item.position == 0 && tryposition == 0){
+							return true;
+						} else if (tryposition > 0 && item.position >= tryposition){
+							return true;
+						};
 					};
 					return false;
 				};

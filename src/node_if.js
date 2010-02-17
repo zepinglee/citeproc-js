@@ -52,10 +52,17 @@ CSL.Node["if"] = new function(){
 			if ("number" == typeof this.strings.position){
 				var tryposition = this.strings.position;
 				var func = function(state,Item,item){
+					if (item && "undefined" == typeof item.position){
+						item.position = 0;
+					}
 					if (state.tmp.force_subsequent && tryposition < 2){
 						return true;
-					} else if (item && typeof item.position == "number" && item.position <= tryposition){
-						return true;
+					} else if (item && typeof item.position == "number"){
+						if (item.position == 0 && tryposition == 0){
+							return true;
+						} else if (tryposition > 0 && item.position >= tryposition){
+							return true;
+						};
 					};
 					return false;
 				};
