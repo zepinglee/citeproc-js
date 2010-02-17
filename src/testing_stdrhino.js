@@ -32,7 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-var StdRhinoTest = function(myname){
+var StdRhinoTest = function(myname,custom){
 	this.myname = myname;
 	this._cache = {};
 	this._acache = { "default": {
@@ -53,7 +53,12 @@ var StdRhinoTest = function(myname){
 				   };
 	this._ids = [];
 	if (myname){
-		var test = readFile("./tests/std/machines/" + myname + ".json", "UTF-8");
+		var test;
+		if ("undefined" != typeof custom){
+			test = readFile("./tests/custom/machines/" + myname + ".json", "UTF-8");
+		} else {
+			test = readFile("./tests/std/machines/" + myname + ".json", "UTF-8");
+		}
 		eval( "this.test = "+test);
 		this.result = this.test.result;
 		this._setCache();

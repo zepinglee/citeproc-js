@@ -7,7 +7,7 @@ cd ..
 #
 # Be sure the machine side of the test suite is up to date
 #
-tests/std/grind.py
+tests/grind.py
 
 
 #

@@ -67,4 +67,6 @@ CSL.debug("#####");
 load("./src/testing_rhino.js");
 load("./src/testing_stdrhino.js");
 
+load("./run-opt.js");
+
 load("./tests/runners/run.js");

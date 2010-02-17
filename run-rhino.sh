@@ -14,11 +14,16 @@ DOH="${PWD}"/dojo/util/doh/
 
 TARGET="${PWD}"/tests/runners/rhino.js
 
-OPT="CSL_OPTIONS={fixture:\"$1\"}"
 if [ "$1" != "" ]; then
-    echo $OPT  run-opt.js
+  if [ "$2" != "" ]; then
+    OPT="CSL_OPTIONS={set:\"$1\", fixture:\"$2\"}"
+    echo $OPT > run-opt.js
+  else
+    echo USAGE: $0 '[<"std"|"custom"> <test_name>]'
+    exit 1
+  fi
 else
-    echo "" > run-opt.js
+  echo "" > run-opt.js
 fi
 
 java -client -jar "${RHINO}" -opt 8 "${TARGET}" dojoUrl="${DOJO}"  testModule=""

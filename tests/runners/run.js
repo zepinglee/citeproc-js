@@ -36,8 +36,16 @@ dojo.require("doh.runner");
 //
 // requested tests go here
 if ("undefined" != typeof CSL_OPTIONS){
-   print(CSL_OPTIONS);
-	print("Do custom test");
+
+	print(CSL_OPTIONS);
+	print("Run "+CSL_OPTIONS.set+" test: "+CSL_OPTIONS.fixture);
+	doh.register(CSL_OPTIONS.set+"."+CSL_OPTIONS.fixture, [
+		function(){
+			var test = new StdRhinoTest(CSL_OPTIONS.fixture);
+			doh.assertEqual(test.result, test.run());
+		}
+	]);
+
 } else if(true){
 	dojo.require("std.magic");
 	dojo.require("std.sort");

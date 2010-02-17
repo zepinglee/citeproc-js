@@ -88,6 +88,9 @@ def indent(elem, level=0):
 #
 reload(sys)
 sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
+
+class CslTestError(Exception):
+    pass
     
 class CslTestUtils:
     """ Constants and utility methods
@@ -119,8 +122,8 @@ class CslTests(CslTestUtils):
         CslTestUtils.__init__(self)
         self.tests = []
         self.args = args
-        for filename in os.listdir( self.path( "humans" ) ):
-            p = self.path("humans", filename)
+        for filename in os.listdir( self.path( "std", "humans" ) ):
+            p = self.path("std", "humans", filename)
             if not os.path.stat.S_ISREG( os.stat(p).st_mode ) or not re.match(self.RE_FILENAME,filename):
                 continue
             if p.endswith("~") or p.endswith(".orig"):
@@ -129,14 +132,14 @@ class CslTests(CslTestUtils):
             if len(self.args):
                 if not testname in self.args:
                     continue
-                elif os.path.exists( self.path( "machines", "%s.json"%testname)):
-                    os.unlink( self.path( "machines", "%s.json"%testname ))
+                elif os.path.exists( self.path( "std", "machines", "%s.json"%testname)):
+                    os.unlink( self.path( "std", "machines", "%s.json"%testname ))
             self.tests.append(testname)
         self.tests.sort()
 
     def clear(self):
-        for file in os.listdir( self.path("machines") ):
-            p = self.path("machines", file)
+        for file in os.listdir( self.path("std", "machines") ):
+            p = self.path("std", "machines", file)
             if os.path.stat.S_ISREG( os.stat(p).st_mode ):
                 os.unlink( p )
 
@@ -177,13 +180,15 @@ class CslTest(CslTestUtils):
         self.data = {}
 
     def load(self):
-        if not os.path.exists(self.path("machines","%s.json" % self.testname)):
-            self.raw = open( "%s.txt" % (self.path("humans",self.testname),) ).read()
+        if not os.path.exists(self.path("std", "machines","%s.json" % self.testname)):
+            self.raw = open( "%s.txt" % (self.path("std", "humans",self.testname),) ).read()
             return True
 
     def parse(self):
         for element in ["MODE","CSL","RESULT"]:
             self.extract(element,required=True,is_json=False)
+            if element == "CSL" and self.data['csl'].endswith('.csl'):
+                self.data['csl'] = open(self.path("styles", self.data['csl'])).read()
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
@@ -196,8 +201,7 @@ class CslTest(CslTestUtils):
         if m:
             data = m.group(2).strip()
         elif required:
-            print "Ooops, missing element: %s in test %s" %(tag,self.testname)
-            sys.exit()
+            raise CslTestError(tag,self.testname)
         if data != False:
             if is_json:
                 data = json.loads(data)
@@ -355,9 +359,9 @@ class CslTest(CslTestUtils):
             sys.exit()
 
     def dump_machines(self):
-        if not os.path.exists( self.path("machines")):
-            os.makedirs( self.path("machines"))
-        tpath_out = "%s.json" % (self.path("machines", self.testname),)
+        if not os.path.exists( self.path("std", "machines")):
+            os.makedirs( self.path("std", "machines"))
+        tpath_out = "%s.json" % (self.path("std", "machines", self.testname),)
         json.dump(self.data, open(tpath_out,"w+"), indent=4, sort_keys=True, ensure_ascii=False )
         
     def dump_humans(self):
@@ -374,7 +378,7 @@ class CslTest(CslTestUtils):
             m = re.match(self.RE_ELEMENT % ("CITATIONS", "CITATIONS"),self.raw)
             newraw = m.group(1) + "\n" + citations_str + m.group(3)
         if self.raw != newraw:
-            tpath_out = "%s.txt" % (self.path("humans", self.testname),)
+            tpath_out = "%s.txt" % (self.path("std", "humans", self.testname),)
             open(tpath_out,"w+").write(newraw)
 
 if __name__ == "__main__":
@@ -421,5 +425,10 @@ the named test files will be processed.
         os.chdir(mypath)
 
     tests = CslTests( args=args, options=options )
-    tests.process()
+    try:
+        tests.process()
+    except CslTestError as error:
+        print "\nOoops, missing element: %s in test %s" %(error[0],error[1])
+        sys.exit(1)
+
 
