@@ -1914,9 +1914,22 @@ like the following:
 
 
 
-###############################
-Preparing and running the tests
-###############################
+##################################
+Running your own tests: a tutorial
+##################################
+
+Suppose that you are designing a CSL style, and you would like
+to be very certain that it performs correctly with various
+combinations of data.  You can do this, with a bit of work,
+by building a special-purpose test runner.  The steps for
+doing so are explained below.
+
+^^^^^^^^
+Uhmz ...
+^^^^^^^^
+
+Can all three scripts take an option?
+
 
 The following commands are used to process and run
 the tests.  For further information, see the source

@@ -111,26 +111,21 @@ if __name__ == "__main__":
     #        str = open( m[pos] ).read()
     #        cx.execute( str )
 
-    # Load standard tests (dropped in favor of running tests through the
-    # same frameworks as under Rhino -- which works, amazingly enough)
-    if False:
-        for filename in os.listdir("./tests/javascript"):
-            if not filename.startswith("std_") or not filename.endswith(".js"):
-                continue
-            #if filename == "std_decorations.js":
-            #    continue
-            if len(sys.argv) > 1 and not filename.startswith(sys.argv[1]):
-                continue
-            mytest = open("./tests/javascript/%s" % (filename,)).read()
-            cx.execute(mytest)
-
-    runfile = open("./tests/javascript/run.js").read()
+    # Run tests through the same frameworks as under Rhino -- which works, amazingly enough
+    runfile = open("./tests/runners/run.js").read()
     runfile = re.sub("(?sm)(//SNIP-START|}\s*else\s*{).*","",runfile)
-    m = re.split('require\("tests\.([^"]+)"\)',runfile)
+    m = re.split('require\("citeproc_js\.([^"]+)"\)',runfile)
     if len(m) > 1:
         for pos in range(1,len(m),2):
             print m[pos]
-            str = open( "./tests/javascript/%s.js" % m[pos] ).read()
+            str = open( "./tests/citeproc-js/%s.js" % m[pos] ).read()
+            cx.execute( str )
+        
+    m = re.split('require\("std\.([^"]+)"\)',runfile)
+    if len(m) > 1:
+        for pos in range(1,len(m),2):
+            print m[pos]
+            str = open( "./tests/std/bundled/%s.js" % m[pos] ).read()
             cx.execute( str )
         
 

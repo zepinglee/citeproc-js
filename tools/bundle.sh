@@ -5,12 +5,6 @@ set -e
 cd $(dirname $0)
 cd ..
 
-if [ ! -d jsdoc ]; then
-    echo This script requires jsdoc, which is available here:
-	echo "  http://code.google.com/p/jsdoc-toolkit/w/list"
-    exit 1
-fi
-
 if [ -d tmp ]; then
   rm -fR tmp
 fi

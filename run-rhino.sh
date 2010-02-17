@@ -12,9 +12,17 @@ RHINO="${PWD}"/rhino/js-1.7R2.jar
 DOJO="${PWD}"/dojo/dojo/dojo.js
 DOH="${PWD}"/dojo/util/doh/
 
-TARGET="${PWD}"/tests/javascript/runner_rhino.js
+TARGET="${PWD}"/tests/runners/rhino.js
 
-java -client -jar "${RHINO}" -opt 1 "${TARGET}" dojoUrl="${DOJO}"  testModule="" 
+OPT="CSL_OPTIONS={fixture:\"$1\"}"
+
+if [ "$1" != "" ]; then
+    echo $OPT  run-opt.js
+else
+    echo "" > run-opt.js
+fi
+
+java -client -jar "${RHINO}" -opt 8 "${TARGET}" dojoUrl="${DOJO}"  testModule=""
 
 echo $START
 echo $(date) \<--------------END

@@ -32,7 +32,7 @@ def process_file(path,file):
     if text.strip() != oldtext.strip():
         open("%s" %(filepath),"w+").write(text)
 
-for path in ["..", "../src", "../tests/std", "../tests/std/humans","../tests/javascript", "../tests/std/machines"]:
+for path in ["..", "../src", "../tests/std", "../tests/std/humans","../tests/std/bundled", "../tests/std/machines","../tests/citeproc-js"]:
     for file in os.listdir( path ):
         process_file(path,file)
 

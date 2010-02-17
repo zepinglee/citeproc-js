@@ -16,9 +16,9 @@ tests/std/grind.py
 OLDIFS=$IFS
 IFS=""
 HEADER=`cat<<EOF
-dojo.provide("tests.std_::CATEGORY::");
+dojo.provide("std.::CATEGORY::");
 
-doh.register("tests.std_::CATEGORY::", [
+doh.register("std.::CATEGORY::", [
 EOF
 `
 FOOTER=`cat<<EOF
@@ -47,14 +47,14 @@ footer (){
 #
 # Initialize files
 #
-rm -f tests/javascript/std_*.js
+rm -f tests/std/bundled/*.js
 for i in tests/std/machines/*.json; do
     BASE=$(basename $i .json)
     CATEGORY=$(echo ${BASE} | sed -e "s/^\([^_]\+\)_.*/\\1/")
-    if [ ! -f "tests/javascript/std_"${CATEGORY}".js" ]; then
+    if [ ! -f "tests/std/bundled/"${CATEGORY}".js" ]; then
         OLDIFS=$IFS
         IFS=""
-        echo $(header) | sed -e "s/::CATEGORY::/${CATEGORY}/" > "tests/javascript/std_"${CATEGORY}".js"
+        echo $(header) | sed -e "s/::CATEGORY::/${CATEGORY}/" > "tests/std/bundled/"${CATEGORY}".js"
         IFS=$OLDIFS
     fi
 done
@@ -62,13 +62,13 @@ done
 for i in tests/std/machines/*.json; do
     BASE=$(basename $i .json)
     CATEGORY=$(echo ${BASE} | sed -e "s/^\([^_]\+\)_.*/\\1/")
-	echo '    function(){' >> "tests/javascript/std_"${CATEGORY}".js"
-    echo '        var test = new StdRhinoTest("'${BASE}'");' >> "tests/javascript/std_"${CATEGORY}".js"
-    echo '        doh.assertEqual(test.result, test.run());' >> "tests/javascript/std_"${CATEGORY}".js"
-	echo '    },' >> "tests/javascript/std_"${CATEGORY}".js"
+	echo '    function(){' >> "tests/std/bundled/"${CATEGORY}".js"
+    echo '        var test = new StdRhinoTest("'${BASE}'");' >> "tests/std/bundled/"${CATEGORY}".js"
+    echo '        doh.assertEqual(test.result, test.run());' >> "tests/std/bundled/"${CATEGORY}".js"
+	echo '    },' >> "tests/std/bundled/"${CATEGORY}".js"
 done
 
-for i in tests/javascript/std_*.js; do
+for i in tests/std/bundled/*.js; do
     OLDIFS=$IFS
     IFS=""
     echo $(footer) >> ${i}

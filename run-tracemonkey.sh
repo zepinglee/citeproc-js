@@ -1,3 +1,4 @@
+
 #!/bin/sh
 
 if [ $(echo ${SHELL} | grep -c "bash")  -eq "1" ]; then
@@ -14,9 +15,13 @@ TRACEMONKEY=/home/bennett/src/jslibs/Linux_32_opt/jshost
 DOJO="${PWD}"/dojo-sm/dojo/dojo.js
 DOH="${PWD}"/dojo-sm/util/doh/
 
-TARGET="${PWD}"/tests/javascript/runner_tracemonkey.js
+TARGET="${PWD}"/tests/runners/tracemonkey.js
+
+OPT="CSL_OPTIONS={fixture:\"$1\"}"
 
 "${TRACEMONKEY}" -u "${TARGET}" 
+
+#rm run-tracemonkey.opt
 
 echo $START
 echo $(date) \<--------------END
