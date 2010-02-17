@@ -16,6 +16,7 @@ except:
 
 mypath = os.path.split(sys.argv[0])[0]
 os.chdir(mypath)
+print mypath
 
 if __name__ == "__main__":
 
@@ -113,7 +114,9 @@ if __name__ == "__main__":
 
     # Run tests through the same frameworks as under Rhino -- which works, amazingly enough
     runfile = open("./tests/runners/run.js").read()
-    runfile = re.sub("(?sm)(//SNIP-START|}\s*else\s*{).*","",runfile)
+    runfile = re.sub("(?sm)}\s*else\s*{.*","",runfile)
+    runfile = re.sub("(?sm).*}\s*else\s+if\s*\(true\)\s*{","",runfile)
+    runfile = re.sub("\s*//.*\n","",runfile)
     m = re.split('require\("citeproc_js\.([^"]+)"\)',runfile)
     if len(m) > 1:
         for pos in range(1,len(m),2):
