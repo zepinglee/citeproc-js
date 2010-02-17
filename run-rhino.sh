@@ -15,7 +15,6 @@ DOH="${PWD}"/dojo/util/doh/
 TARGET="${PWD}"/tests/runners/rhino.js
 
 OPT="CSL_OPTIONS={fixture:\"$1\"}"
-
 if [ "$1" != "" ]; then
     echo $OPT  run-opt.js
 else
@@ -23,6 +22,9 @@ else
 fi
 
 java -client -jar "${RHINO}" -opt 8 "${TARGET}" dojoUrl="${DOJO}"  testModule=""
+
+rm -f run-opt.js
+rm -f run-opt.jsxdr
 
 echo $START
 echo $(date) \<--------------END

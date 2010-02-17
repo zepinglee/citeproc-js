@@ -18,10 +18,16 @@ DOH="${PWD}"/dojo-sm/util/doh/
 TARGET="${PWD}"/tests/runners/tracemonkey.js
 
 OPT="CSL_OPTIONS={fixture:\"$1\"}"
+if [ "$1" != "" ]; then
+    echo $OPT  run-opt.js
+else
+    echo "" > run-opt.js
+fi
 
 "${TRACEMONKEY}" -u "${TARGET}" 
 
-#rm run-tracemonkey.opt
+rm -f run-opt.js
+rm -f run-opt.jsxdr
 
 echo $START
 echo $(date) \<--------------END
