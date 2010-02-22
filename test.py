@@ -157,6 +157,16 @@ class Params:
                         if not self.files['humans'].has_key(filename):
                             self.files['humans'][filename] = (path,os.path.join("humans",filename))
     
+    def clearSource(self):
+        mstd = os.path.join( "tests", "std", "machines")
+        mcustom = os.path.join( "tests", "custom", "machines")
+        for file in os.listdir(mstd):
+            if not file.endswith(".json"): continue
+            os.unlink( os.path.join(mstd, file) )
+        for file in os.listdir(mcustom):
+            if not file.endswith(".json"): continue
+            os.unlink( os.path.join(mcustom, file) )
+
     def refreshSource(self,force=False):
         groups = {}
         for filename in self.files['humans'].keys():
@@ -164,18 +174,18 @@ class Params:
             mpath = os.path.join( self.files['humans'][filename][0], "machines", "%s.json" % filename[:-4] )
             hp = os.path.sep.join( hpath )
             mp = os.path.join( mpath )
-            if force:
-                self.grindFile(hpath,filename,mp)
+            #if force:
+            #    self.grindFile(hpath,filename,mp)
             if not os.path.exists( mp ):
                 self.grindFile(hpath,filename,mp)
-                print "Created: %s" % mp
-            else:
-                hmod = os.stat(hp)[ST_MTIME]
-                mmod = os.stat(mp)[ST_MTIME]
-                if hmod > mmod:
-                    if self.opt.verbose:
-                        print "Old: %s" % mp
-                    self.grindFile(hpath,filename,mp)
+                if self.opt.verbose:
+                    print "Created: %s" % mp
+            hmod = os.stat(hp)[ST_MTIME]
+            mmod = os.stat(mp)[ST_MTIME]
+            if hmod > mmod:
+                if self.opt.verbose:
+                    print "Old: %s" % mp
+                self.grindFile(hpath,filename,mp)
             if not self.opt.processor:
                 m = re.match("([a-z]*)_.*",filename)
                 if m:
@@ -192,7 +202,8 @@ class Params:
                 if os.path.exists( gp ):
                     needs_gp = False
                     gt = os.stat(gp)[ST_MTIME]
-                if force or needs_gp or groups[group]["mtime"] > gt:
+                # if force or needs_gp or groups[group]["mtime"] > gt:
+                if needs_gp or groups[group]["mtime"] > gt:
                     if self.opt.verbose:
                         sys.stdout.write("!")
                     ofh = open( os.path.join("tests","std", "bundled","%s.js" % group), "w+" )
@@ -222,11 +233,26 @@ doh.register("std.%s", [
         else:
             testpath = os.path.join("tests","std","bundled")
             nick = "std"
-        for file in [x[:-3] for x in os.listdir(testpath)]:
-            if not file.endswith('.js'): continue
-            if len(self.args) and not file.startswith('%s.'%args[0]): continue
-            has_files = True
-            ofh.write('dojo.require("%s.%s");\n' % (nick,file[:-3]))
+        if len(args) == 2:
+            keys = self.files['humans'].keys()
+            if len(keys):
+                file = keys[0]
+                body = '''doh.register("%s.%s", [
+    function(){
+        var test = new StdRhinoTest("%s");
+        doh.assertEqual(test.result, test.run());
+    },
+])
+''' % ("DUMMY",file[:-4],file[:-4])
+                ofh.write(body)
+                print "wrote the fucking test"
+                has_files = True
+        else:
+            for file in [x[:-3] for x in os.listdir(testpath)]:
+                if not file.endswith('.js'): continue
+                if len(self.args) and not file.startswith('%s.'%args[0]): continue
+                has_files = True
+                ofh.write('dojo.require("%s.%s");\n' % (nick,file[:-3]))
         ofh.write("tests.run();")
         if not has_files:
             raise NoFilesError
@@ -544,6 +570,7 @@ if __name__ == "__main__":
         if opt.cranky or opt.grind or opt.testrun:
             params.getSourcePaths()
             if opt.grind:
+                params.clearSource()
                 params.refreshSource(force=True)
                 print ""
             else:

@@ -47,6 +47,10 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("date_NonexistentSortReverseCitation");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("date_YearSuffixDelimiter");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -171,7 +175,7 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("date_NonexistentSortReverse");
+        var test = new StdRhinoTest("date_NonexistentSortReverseBibliography");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

@@ -34,16 +34,20 @@
  */
 
 >>===== MODE =====>>
-citation
+bibliography
 <<===== MODE =====<<
 
-Sort position of empty dates differs in citations and bibliographies.
-In citations, empty dates have a value equivalent to zero.  In
-bibliographies, they are always placed at the end of the sort
-(whether ascending or descending).
+Note that in citation sorts, an empty date is treated as zero,
+while in a bibliography sort, empty-date items come at the end,
+in both ascending and descending sorts.
 
 >>===== RESULT =====>>
-BookA n.d.; BookC n.d.; BookE n.d.; BookD 1999; BookB 2000.
+<div class="csl-bib-body">
+  <div class="csl-entry">Item 2</div>
+  <div class="csl-entry">Item 4</div>
+  <div class="csl-entry">Item 1</div>
+  <div class="csl-entry">Item 3</div>
+</div>
 <<===== RESULT =====<<
 
 
@@ -58,19 +62,19 @@ BookA n.d.; BookC n.d.; BookE n.d.; BookD 1999; BookB 2000.
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <sort>
-      <key variable="issued"/>
-      <key variable="title"/>
-    </sort>
-    <layout delimiter="; " prefix="" suffix=".">
-      <group delimiter=" ">
-        <text variable="title" />
-        <date variable="issued">
-          <date-part name="year" />
-        </date>
-      </group>
-    </layout>
+    <layout>
+	  <text value="Dummy"/>
+	</layout>
   </citation>
+  <bibliography>
+    <sort>
+      <key sort="ascending" variable="issued" />
+      <key variable="title" />
+    </sort>
+    <layout delimiter="; ">
+      <text variable="title" />
+    </layout>
+  </bibliography>
 </style>
 <<===== CSL =====<<
 
@@ -79,37 +83,41 @@ BookA n.d.; BookC n.d.; BookE n.d.; BookD 1999; BookB 2000.
 [
     {
         "id": "ITEM-1", 
-        "title": "BookA"
+        "title": "Item 1", 
+        "type": "book"
     }, 
     {
         "id": "ITEM-2", 
         "issued": {
             "date-parts": [
                 [
-                    2000
+                    "1999", 
+                    "2", 
+                    "15"
                 ]
             ]
         }, 
-        "title": "BookB"
+        "title": "Item 2", 
+        "type": "book"
     }, 
     {
         "id": "ITEM-3", 
-        "title": "BookC"
+        "title": "Item 3", 
+        "type": "book"
     }, 
     {
         "id": "ITEM-4", 
         "issued": {
             "date-parts": [
                 [
-                    1999
+                    "2000", 
+                    "2", 
+                    "15"
                 ]
             ]
         }, 
-        "title": "BookD"
-    }, 
-    {
-        "id": "ITEM-5", 
-        "title": "BookE"
+        "title": "Item 4", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<
