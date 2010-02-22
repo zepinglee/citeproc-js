@@ -245,7 +245,6 @@ doh.register("std.%s", [
 ])
 ''' % ("DUMMY",file[:-4],file[:-4])
                 ofh.write(body)
-                print "wrote the fucking test"
                 has_files = True
         else:
             for file in [x[:-3] for x in os.listdir(testpath)]:
