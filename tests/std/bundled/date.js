@@ -31,175 +31,175 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.date");
-
+ */
+dojo.provide("std.date");
 doh.register("std.date", [
-    function(){
-        var test = new StdRhinoTest("date_DateAD");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_DateBC");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_DateNoDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_IgnoreNonexistentSort");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_KeyVariable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LiteralFailGracefullyIfNoValue");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedNumericDefault");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedNumericDefaultMissingDay");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("date_LocalizedNumericDefaultWithAffixes");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedNumericYear");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedNumericYearMonth");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedNumericYearMonthMissingMonth");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedNumericYearRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedNumericYearWithAffixes");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextDefault");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextDefaultMissingDay");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextDefaultWithAffixes");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextInStyleLocaleWithTextCase");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextMonthFormOverride");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextYear");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextYearMonth");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextYearMonthMissingMonth");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextYearWithAffixes");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LocalizedWithInStyleFormatting");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_LongMonth");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_MaskNonexistentWithCondition");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_NoDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_NonexistentSortReverse");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_OtherAlone");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_OtherWithDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_RawParseSimpleDate");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("date_SortEmptyDatesBibliography");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
-        var test = new StdRhinoTest("date_SortEmptyDatesCitation");
+        var test = new StdRhinoTest("date_LocalizedNumericYear");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_TextFormFulldateDayRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_TextFormFulldateMonthRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_TextFormFulldateYearRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_TextFormMonthdateMonthRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_TextFormMonthdateYearRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_TextFormYeardateYearRange");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_TextFormYeardateYearRangeOpen");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("date_Uncertain");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("date_YearSuffixDelimiter");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextMonthFormOverride");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormFulldateMonthRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextDefault");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_SortEmptyDatesCitation");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_DateBC");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_IgnoreNonexistentSort");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedNumericDefault");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_NoDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextYearWithAffixes");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_KeyVariable");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_DateNoDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormFulldateDayRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextDefaultMissingDay");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextYearMonth");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormYeardateYearRangeOpen");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormMonthdateYearRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextInStyleLocaleWithTextCase");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextYear");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedNumericYearRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_MaskNonexistentWithCondition");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedWithInStyleFormatting");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormFulldateYearRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LongMonth");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_RawParseSimpleDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormMonthdateMonthRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedNumericYearMonthMissingMonth");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextYearMonthMissingMonth");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_Uncertain");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LiteralFailGracefullyIfNoValue");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextDefaultWithAffixes");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_NonexistentSortReverse");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_OtherAlone");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormYeardateYearRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedNumericDefaultMissingDay");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedNumericYearWithAffixes");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_OtherWithDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_DateAD");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedNumericYearMonth");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

@@ -31,11 +31,11 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.quotes");
-
+ */
+dojo.provide("std.quotes");
 doh.register("std.quotes", [
     function(){
         var test = new StdRhinoTest("quotes_Punctuation");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
 ]);

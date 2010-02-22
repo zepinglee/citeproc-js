@@ -31,43 +31,43 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.collapse");
-
+ */
+dojo.provide("std.collapse");
 doh.register("std.collapse", [
-    function(){
-        var test = new StdRhinoTest("collapse_AuthorCollapseDifferentAuthorsOneWithEtAl");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("collapse_AuthorCollapse");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("collapse_AuthorCollapseNoDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("collapse_AuthorCollapseNoDateSorted");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixes");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixesNoCollapse");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("collapse_TrailingDelimiter");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("collapse_YearSuffixCollapse");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("collapse_YearSuffixCollapseNoRange");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixesNoCollapse");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_AuthorCollapseDifferentAuthorsOneWithEtAl");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_AuthorCollapseNoDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixes");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_YearSuffixCollapse");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_AuthorCollapseNoDateSorted");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

@@ -31,43 +31,43 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.locale");
-
+ */
+dojo.provide("std.locale");
 doh.register("std.locale", [
-    function(){
-        var test = new StdRhinoTest("locale_EmptyDate");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("locale_EmptyPlusOverrideStyleOpt");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("locale_EmptyPlusOverrideTerm");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("locale_EmptyDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
     function(){
         var test = new StdRhinoTest("locale_EmptyStyleOpt");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("locale_EmptyTerm");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("locale_SpecificDate");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
-        var test = new StdRhinoTest("locale_SpecificStyleOpt");
+        var test = new StdRhinoTest("locale_EmptyTerm");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("locale_SpecificTerm");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("locale_SpecificStyleOpt");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

@@ -31,23 +31,23 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.abbrevs");
-
+ */
+dojo.provide("std.abbrevs");
 doh.register("std.abbrevs", [
-    function(){
-        var test = new StdRhinoTest("abbrevs_JournalExistsInList");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("abbrevs_JournalMissingFromListAndJournalAbbreviationFieldAlsoMissing");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("abbrevs_JournalMissingFromListButHasJournalAbbreviationField");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("abbrevs_SeriesExistsInList");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("abbrevs_JournalExistsInList");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("abbrevs_JournalMissingFromListButHasJournalAbbreviationField");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

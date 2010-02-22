@@ -74,22 +74,13 @@ dojo.registerModulePath("csl","./src");
 dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo-sm/util/doh");
 
-
-
 load("./src/load.js");
 
 CSL.debug("#####");
-// CSL.debug("Rhino file.encoding: "+environment["file.encoding"]);
-// if ("UTF-8" != environment["file.encoding"]){
-// 	environment["file.encoding"] = "UTF-8";
-// 	environment["sun.jnu.encoding"] = "UTF-8";
-// 	CSL.debug("Reset Rhino file.encoding to UTF-8");
-// }
+CSL.debug("Testing with tracemonkey");
 CSL.debug("#####");
 
 load("./src/testing_rhino.js");
 load("./src/testing_stdrhino.js");
-
-load("./run-opt.js");
 
 load("./tests/runners/run.js");

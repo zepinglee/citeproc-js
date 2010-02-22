@@ -31,19 +31,19 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.fullstyles");
-
+ */
+dojo.provide("std.fullstyles");
 doh.register("std.fullstyles", [
-    function(){
-        var test = new StdRhinoTest("fullstyles_ChicagoArticleTitleQuestion");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("fullstyles_ChicagoAuthorDateSimple");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("fullstyles_ChicagoNoteWithBibliographyWithPublisher");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("fullstyles_ChicagoArticleTitleQuestion");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("fullstyles_ChicagoAuthorDateSimple");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

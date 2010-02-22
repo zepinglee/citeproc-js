@@ -32,6 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
+
 CSL.Util.fixDateNode = function(parent,pos,node) {
 	var form = this.sys.xml.getAttributeValue( node, "form");
 	if (!form){

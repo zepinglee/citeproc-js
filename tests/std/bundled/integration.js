@@ -31,27 +31,27 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.integration");
-
+ */
+dojo.provide("std.integration");
 doh.register("std.integration", [
-    function(){
-        var test = new StdRhinoTest("integration_CrossCitationIbidOnInsert");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("integration_FirstReferenceNoteNumberPositionChange");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("integration_IbidOnInsert");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("integration_SimpleFirstReferenceNoteNumber");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("integration_SimpleIbid");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("integration_CrossCitationIbidOnInsert");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("integration_IbidOnInsert");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

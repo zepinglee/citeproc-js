@@ -31,19 +31,19 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.api");
-
+ */
+dojo.provide("std.api");
 doh.register("std.api", [
-    function(){
-        var test = new StdRhinoTest("api_UpdateItemsDeleteDecrementsByCiteDisambiguation");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("api_UpdateItemsDelete");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("api_UpdateItemsReshuffle");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("api_UpdateItemsDeleteDecrementsByCiteDisambiguation");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("api_UpdateItemsDelete");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

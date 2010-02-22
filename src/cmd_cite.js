@@ -32,6 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
+
 CSL.Engine.prototype.appendCitationCluster = function(citation,has_bibliography){
 	var citationsPre = new Array();
 	for each (var c in this.registry.citationreg.citationByIndex){

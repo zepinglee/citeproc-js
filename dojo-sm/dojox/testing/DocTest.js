@@ -289,5 +289,5 @@ dojo.declare(
 // Putting a print statement here prevents a segmentation fault.
 // No idea why.
 //
-print("(gratuitous print statement)");
+//print("(gratuitous print statement)");
 }

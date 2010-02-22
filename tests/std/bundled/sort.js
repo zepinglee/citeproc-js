@@ -31,71 +31,71 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.sort");
-
+ */
+dojo.provide("std.sort");
 doh.register("std.sort", [
-    function(){
-        var test = new StdRhinoTest("sort_AguStyle");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_AguStyleReverseGroups");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_CitationEdit");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_Citation");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_DateVariable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_DateVariableMixedElementsAscendingA");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_DateVariableMixedElementsAscendingB");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_DateVariableMixedElementsDescendingA");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_DateVariableMixedElementsDescendingB");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("sort_DateVariableRange");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("sort_DateVariableRangeMixed");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("sort_NameImplicitSortOrderAndForm");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
-        var test = new StdRhinoTest("sort_NameParticleInNameSortFalse");
+        var test = new StdRhinoTest("sort_AguStyleReverseGroups");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
-        var test = new StdRhinoTest("sort_NameParticleInNameSortTrue");
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsAscendingB");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
-        var test = new StdRhinoTest("sort_NameVariable");
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsAscendingA");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("sort_NumberOfAuthorsAsKey");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableRange");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsDescendingB");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_CitationEdit");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_NameVariable");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_DateVariable");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_DateVariableMixedElementsDescendingA");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_NameParticleInNameSortTrue");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_AguStyle");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_NameParticleInNameSortFalse");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_Citation");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

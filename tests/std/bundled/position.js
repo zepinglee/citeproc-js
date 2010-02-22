@@ -31,39 +31,39 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.position");
-
+ */
+dojo.provide("std.position");
 doh.register("std.position", [
-    function(){
-        var test = new StdRhinoTest("position_FirstTrueOnlyOnce");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("position_IbidWithLocator");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("position_IfIbidIsTrueThenSubsequentIsTrue");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
-        var test = new StdRhinoTest("position_IfIbidWithLocatorIsTrueThenIbidIsTrue");
+        var test = new StdRhinoTest("position_IbidWithLocator");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("position_NearNoteFalse");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("position_NearNoteOptionMakesFalse");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("position_NearNoteTrue");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("position_NearNoteOptionMakesFalse");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("position_NearNoteFalse");
+        doh.assertEqual(test.result, test.run());
+    }, 
     function(){
         var test = new StdRhinoTest("position_NearNoteUnsupported");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("position_IfIbidWithLocatorIsTrueThenIbidIsTrue");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("position_FirstTrueOnlyOnce");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

@@ -31,19 +31,19 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.flipflop");
-
+ */
+dojo.provide("std.flipflop");
 doh.register("std.flipflop", [
-    function(){
-        var test = new StdRhinoTest("flipflop_ItalicsFlipped");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("flipflop_ItalicsSimple");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("flipflop_ItalicsFlipped");
+        doh.assertEqual(test.result, test.run());
+    }, 
     function(){
         var test = new StdRhinoTest("flipflop_ItalicsWithOk");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
 ]);

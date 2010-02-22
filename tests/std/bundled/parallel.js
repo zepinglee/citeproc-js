@@ -31,15 +31,15 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.parallel");
-
+ */
+dojo.provide("std.parallel");
 doh.register("std.parallel", [
     function(){
         var test = new StdRhinoTest("parallel_JournalArticleSimple");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("parallel_TrailingIbid");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
 ]);

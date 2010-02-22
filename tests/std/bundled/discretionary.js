@@ -31,23 +31,23 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.discretionary");
-
+ */
+dojo.provide("std.discretionary");
 doh.register("std.discretionary", [
     function(){
         var test = new StdRhinoTest("discretionary_AuthorOnly");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("discretionary_CitationNumberAuthorOnlyThenSuppressAuthor");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("discretionary_CitationNumberSuppressAuthor");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("discretionary_SuppressAuthorSolo");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("discretionary_CitationNumberSuppressAuthor");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("discretionary_CitationNumberAuthorOnlyThenSuppressAuthor");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

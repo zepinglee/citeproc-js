@@ -32,6 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
+
 >>===== MODE =====>>
 bibliography
 <<===== MODE =====<<
@@ -63,12 +64,17 @@ bibliographies, they are always placed at the end of the sort
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <citation>
+    <layout>
+      <text value="Hello"/>
+    </layout>
+  </citation>
   <bibliography>
     <sort>
       <key variable="issued"/>
       <key variable="title"/>
     </sort>
-    <layout delimiter="; " prefix="" suffix=".">
+    <layout prefix="" suffix=".">
       <group delimiter=" ">
         <text variable="title" />
         <date variable="issued">

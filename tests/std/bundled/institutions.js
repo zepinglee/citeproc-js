@@ -31,23 +31,23 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.institutions");
-
+ */
+dojo.provide("std.institutions");
 doh.register("std.institutions", [
-    function(){
-        var test = new StdRhinoTest("institutions_FirstAndLast");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsAlwaysUseFirst");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsMaybeUseFirst");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("institutions_SimpleShortLong");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("institutions_FirstAndLast");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsAlwaysUseFirst");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

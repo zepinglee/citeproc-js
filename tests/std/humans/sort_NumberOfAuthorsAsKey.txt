@@ -32,6 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
+
 >>===== MODE =====>>
 bibliography
 <<===== MODE =====<<
@@ -59,7 +60,7 @@ bibliography
   </info>
   <macro name="author-one">
     <names variable="author">
-      <name name-as-sort-order="first" />
+      <name name-as-sort-order="first" sort-separator=" "/>
       <substitute>
         <names variable="editor" />
       </substitute>

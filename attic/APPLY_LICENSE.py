@@ -5,7 +5,7 @@ import re,os,sys
 mypath = os.path.split(sys.argv[0])[0]
 os.chdir(mypath)
 
-REX = "(?s)^^(/\*.*?\n\s*\*/\n*)(.*)"
+REX = "(?sm)^^(/\*.*?^\s*\*/\n*)(.*)"
 
 m = re.match(REX, open("../src/load.js").read())
 
@@ -15,9 +15,7 @@ else:
     print "Oops, no license in csl.js"
     sys.exit()
 
-
 print license
-
 
 def process_file(path,file):
     filepath = "%s/%s" % (path,file)

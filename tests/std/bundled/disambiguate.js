@@ -31,83 +31,83 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.disambiguate");
-
+ */
+dojo.provide("std.disambiguate");
 doh.register("std.disambiguate", [
-    function(){
-        var test = new StdRhinoTest("disambiguate_AllNamesBaseNameCountOnFailureIfYearSuffixAvailable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_AllNamesGenerally");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_BasedOnSubsequentFormWithBackref");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_BasedOnSubsequentFormWithLocator");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteBaseNameCountOnFailureIfYearSuffixAvailable");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteDisambiguateCondition");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteGivennameExpandCrossNestedNames");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteGivennameNoShortFormInitializeWith");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteGivennameShortFormInitializeWith");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("disambiguate_ByCiteGivennameShortFormNoInitializeWith");
         doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("disambiguate_ByCiteMinimalGivennameExpandMinimalNames");
-        doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("disambiguate_ByCiteRetainNamesOnFailureIfYearSuffixNotAvailable");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_AllNamesGenerally");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteGivennameNoShortFormInitializeWith");
+        doh.assertEqual(test.result, test.run());
+    }, 
     function(){
         var test = new StdRhinoTest("disambiguate_ByCiteTwoAuthorsSameFamilyName");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
-        var test = new StdRhinoTest("disambiguate_CitationLabelDefault");
+        var test = new StdRhinoTest("disambiguate_BasedOnSubsequentFormWithBackref");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("disambiguate_CitationLabelInData");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteGivennameExpandCrossNestedNames");
+        doh.assertEqual(test.result, test.run());
+    }, 
     function(){
         var test = new StdRhinoTest("disambiguate_NoTextElementUsesYearSuffixVariable");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("disambiguate_PrimaryNameGenerally");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("disambiguate_YearSuffixAndSort");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_BasedOnSubsequentFormWithLocator");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteBaseNameCountOnFailureIfYearSuffixAvailable");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteDisambiguateCondition");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_CitationLabelDefault");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteGivennameShortFormInitializeWith");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_ByCiteMinimalGivennameExpandMinimalNames");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_AllNamesBaseNameCountOnFailureIfYearSuffixAvailable");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

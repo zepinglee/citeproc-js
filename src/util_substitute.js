@@ -32,6 +32,7 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
+
 CSL.Util.substituteStart = function(state,target){
 	//
 	// Contains body code for both substitute and first-field/remaining-fields

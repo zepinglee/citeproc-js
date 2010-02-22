@@ -31,23 +31,23 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- */dojo.provide("std.decorations");
-
+ */
+dojo.provide("std.decorations");
 doh.register("std.decorations", [
-    function(){
-        var test = new StdRhinoTest("decorations_NestedQuotesInnerReverse");
-        doh.assertEqual(test.result, test.run());
-    },
-    function(){
-        var test = new StdRhinoTest("decorations_NestedQuotes");
-        doh.assertEqual(test.result, test.run());
-    },
     function(){
         var test = new StdRhinoTest("decorations_SimpleFlipFlop");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
     function(){
         var test = new StdRhinoTest("decorations_SimpleQuotes");
         doh.assertEqual(test.result, test.run());
-    },
+    }, 
+    function(){
+        var test = new StdRhinoTest("decorations_NestedQuotesInnerReverse");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("decorations_NestedQuotes");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);
