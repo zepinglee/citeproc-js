@@ -55,7 +55,7 @@ var StdRhinoTest = function(myname,custom){
 	this._ids = [];
 	if (myname){
 		var test;
-		if ("undefined" != typeof custom){
+		if ("undefined" != typeof custom && custom == "custom"){
 			test = readFile("./tests/custom/machines/" + myname + ".json", "UTF-8");
 		} else {
 			test = readFile("./tests/std/machines/" + myname + ".json", "UTF-8");

@@ -2238,8 +2238,16 @@ CSL.Node.date = new function(){
 							dp.push(part);
 						};
 					};
-					var mypos = -1;
-					for (var pos=(dp.length-1); pos>-1; pos += -1){
+					var dpx = [];
+					var parts = ["year","month","day"];
+					for (var p in parts){
+						if (dp.indexOf(parts[p]) > -1){
+							dpx.push(parts[p]);
+						}
+					}
+					dp = dpx.slice();
+					var mypos = 2;
+					for (var pos=0;pos<dp.length; pos++){
 						var part = dp[pos];
 						var start = state.tmp.date_object[part];
 						var end = state.tmp.date_object[(part+"_end")];
@@ -2248,7 +2256,7 @@ CSL.Node.date = new function(){
 							break;
 						};
 					};
-					state.tmp.date_collapse_at = dp.slice(0,(mypos+1));
+					state.tmp.date_collapse_at = dp.slice(mypos);
 				} else {
 					state.tmp.date_object = false;
 				}
@@ -2298,6 +2306,7 @@ CSL.Node["date-part"] = new function(){
 			}
 		} else {
 			var render_date_part = function(state,Item){
+				var first_date = true;
 				var value = "";
 				var value_end = "";
 				state.tmp.donesies.push(this.strings.name);
@@ -2324,6 +2333,8 @@ CSL.Node["date-part"] = new function(){
 				if ("undefined" != typeof value){
 					var bc = false;
 					var ad = false;
+					var bc_end = false;
+					var ad_end = false;
 					if ("year" == this.strings.name){
 						if (parseInt(value,10) < 500 && parseInt(value,10) > 0){
 							ad = state.getTerm("ad");
@@ -2331,6 +2342,15 @@ CSL.Node["date-part"] = new function(){
 						if (parseInt(value,10) < 0){
 							bc = state.getTerm("bc");
 							value = (parseInt(value,10) * -1);
+						};
+						if (value_end){
+							if (parseInt(value_end,10) < 500 && parseInt(value_end,10) > 0){
+								ad_end = state.getTerm("ad");
+							};
+							if (parseInt(value_end,10) < 0){
+								bc_end = state.getTerm("bc");
+								value_end = (parseInt(value_end,10) * -1);
+							};
 						};
 					};
 					state.parallel.AppendToVariable(value);
@@ -2351,7 +2371,13 @@ CSL.Node["date-part"] = new function(){
 						}
 						if (ready){
 							if (value_end != "0"){
+								if (state.dateput.queue.length == 0){
+									first_date = true;
+								}
 								state.dateput.append(value_end,this);
+								if (first_date){
+									state.dateput.current.value()[0].strings.prefix = "";
+								}
 							}
 							state.output.append(value,this);
 							var curr = state.output.current.value();
@@ -2365,7 +2391,21 @@ CSL.Node["date-part"] = new function(){
 							state.output.append(value,this);
 							if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
 								if (value_end != "0"){
+									if (state.dateput.queue.length == 0){
+										first_date = true;
+									}
+									state.dateput.openLevel("empty");
 									state.dateput.append(value_end,this);
+									if (first_date){
+										state.dateput.current.value().blobs[0].strings.prefix = "";
+									}
+									if (bc){
+										state.dateput.append(bc);
+									}
+									if (ad){
+										state.dateput.append(ad);
+									}
+									state.dateput.closeLevel();
 								}
 							}
 						}

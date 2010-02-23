@@ -39,6 +39,7 @@ CSL.Node.date = new function(){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			CSL.Util.substituteStart.call(this,state,target);
 			var set_value = function(state,Item){
+
 				state.tmp.element_rendered_ok = false;
 				state.tmp.donesies = [];
 				state.tmp.dateparts = [];
@@ -72,12 +73,20 @@ CSL.Node.date = new function(){
 							dp.push(part);
 						};
 					};
+					var dpx = [];
+					var parts = ["year","month","day"];
+					for (var p in parts){
+						if (dp.indexOf(parts[p]) > -1){
+							dpx.push(parts[p]);
+						}
+					}
+					dp = dpx.slice();
 					//
 					// (2) Reverse the list and step through in
 					// reverse order, popping each item if the
 					// primary and *_end data match.
-					var mypos = -1;
-					for (var pos=(dp.length-1); pos>-1; pos += -1){
+					var mypos = 2;
+					for (var pos=0;pos<dp.length; pos++){
 						var part = dp[pos];
 						var start = state.tmp.date_object[part];
 						var end = state.tmp.date_object[(part+"_end")];
@@ -90,7 +99,9 @@ CSL.Node.date = new function(){
 					// (3) When finished, the first item in the
 					// list, if any, is the date-part where
 					// the collapse should occur.
-					state.tmp.date_collapse_at = dp.slice(0,(mypos+1));
+
+					// XXXXX: was that it?
+					state.tmp.date_collapse_at = dp.slice(mypos);
 					//
 					// The collapse itself will be done by appending
 					// string output for the date, less suffix,

@@ -61,6 +61,7 @@ CSL.Node["date-part"] = new function(){
 			// Set delimiter here, if poss.
 			//
 			var render_date_part = function(state,Item){
+				var first_date = true;
 				var value = "";
 				var value_end = "";
 				state.tmp.donesies.push(this.strings.name);
@@ -87,6 +88,8 @@ CSL.Node["date-part"] = new function(){
 				if ("undefined" != typeof value){
 					var bc = false;
 					var ad = false;
+					var bc_end = false;
+					var ad_end = false;
 					if ("year" == this.strings.name){
 						if (parseInt(value,10) < 500 && parseInt(value,10) > 0){
 							ad = state.getTerm("ad");
@@ -94,6 +97,15 @@ CSL.Node["date-part"] = new function(){
 						if (parseInt(value,10) < 0){
 							bc = state.getTerm("bc");
 							value = (parseInt(value,10) * -1);
+						};
+						if (value_end){
+							if (parseInt(value_end,10) < 500 && parseInt(value_end,10) > 0){
+								ad_end = state.getTerm("ad");
+							};
+							if (parseInt(value_end,10) < 0){
+								bc_end = state.getTerm("bc");
+								value_end = (parseInt(value_end,10) * -1);
+							};
 						};
 					};
 
@@ -117,31 +129,58 @@ CSL.Node["date-part"] = new function(){
 						}
 						if (ready){
 							if (value_end != "0"){
+								if (state.dateput.queue.length == 0){
+									first_date = true;
+								}
 								state.dateput.append(value_end,this);
+								if (first_date){
+									state.dateput.current.value()[0].strings.prefix = "";
+								}
 							}
 							state.output.append(value,this);
 							var curr = state.output.current.value();
 							curr.blobs[(curr.blobs.length-1)].strings.suffix="";
 							state.output.append(this.strings["range-delimiter"],"empty");
 							var dcurr = state.dateput.current.value();
+							// if (dcurr.length){
+							// 	print("prefix: "+dcurr[0].blobs[0].strings.prefix);
+							// }
 							curr.blobs = curr.blobs.concat(dcurr);
 							state.dateput.string(state,state.dateput.queue);
 							state.tmp.date_collapse_at = [];
 						} else {
 							state.output.append(value,this);
+							// print("collapse_at: "+state.tmp.date_collapse_at);
 							if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
 								//
 								// Use ghost dateput queue
 								//
 								if (value_end != "0"){
+									//
+									// XXXXX: It's a workaround.  It's ugly.
+									// There's another one above.
+									//
+									if (state.dateput.queue.length == 0){
+										first_date = true;
+									}
+									state.dateput.openLevel("empty");
 									state.dateput.append(value_end,this);
+									if (first_date){
+										state.dateput.current.value().blobs[0].strings.prefix = "";
+									}
+									if (bc){
+										state.dateput.append(bc);
+									}
+									if (ad){
+										state.dateput.append(ad);
+									}
+									state.dateput.closeLevel();
 								}
 							}
 						}
 					} else {
 						state.output.append(value,this);
 					}
-
 
 					if (bc){
 						state.output.append(bc);
@@ -174,6 +213,7 @@ CSL.Node["date-part"] = new function(){
 						state.output.append(number,"literal");
 					};
 				};
+
 			};
 			if ("undefined" == typeof this.strings["range-delimiter"]){
 				this.strings["range-delimiter"] = "-";

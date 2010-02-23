@@ -240,11 +240,11 @@ doh.register("std.%s", [
                 set = os.path.split( self.files['humans'][file][0] )[-1]
                 body = '''doh.register("%s.%s", [
     function(){
-        var test = new StdRhinoTest("%s",true);
+        var test = new StdRhinoTest("%s","%s");
         doh.assertEqual(test.result, test.run());
     },
 ])
-''' % (set,file[:-4],file[:-4])
+''' % (set,file[:-4],file[:-4],set)
                 ofh.write(body)
                 has_files = True
         else:
