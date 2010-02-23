@@ -237,13 +237,14 @@ doh.register("std.%s", [
             keys = self.files['humans'].keys()
             if len(keys):
                 file = keys[0]
+                set = os.path.split( self.files['humans'][file][0] )[-1]
                 body = '''doh.register("%s.%s", [
     function(){
-        var test = new StdRhinoTest("%s");
+        var test = new StdRhinoTest("%s",true);
         doh.assertEqual(test.result, test.run());
     },
 ])
-''' % ("DUMMY",file[:-4],file[:-4])
+''' % (set,file[:-4],file[:-4])
                 ofh.write(body)
                 has_files = True
         else:
@@ -377,8 +378,7 @@ class CslTest:
             m = re.match(self.RE_ELEMENT % ("CITATIONS", "CITATIONS"),self.raw)
             newraw = m.group(1) + "\n" + citations_str + m.group(3)
         if self.raw != newraw:
-            tpath_out = "%s.txt" % (self.path("humans", self.testname),)
-            open(hpath,"w+").write(newraw)
+            open(self.hp,"w+").write(newraw)
 
     def fix_dates(self):
         for pos in range(0, len(self.data["input"]),1):
@@ -463,7 +463,6 @@ class CslTest:
             pickler = Pickler( pfh )
 
             pickler.dump( (opt, self.pos) )
-            open("ABORTED.txt","w+").write("boo\n")
             sys.exit()
         
  

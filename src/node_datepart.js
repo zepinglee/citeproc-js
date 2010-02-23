@@ -105,6 +105,7 @@ CSL.Node["date-part"] = new function(){
 							value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state,value_end);
 						}
 					};
+					state.output.openLevel("empty");
 					if (state.tmp.date_collapse_at.length){
 						//state.output.startTag(this.strings.name,this);
 						var ready = true;
@@ -148,6 +149,7 @@ CSL.Node["date-part"] = new function(){
 					if (ad){
 						state.output.append(ad);
 					}
+					state.output.closeLevel();
 					//state.output.endTag();
 				} else if ("month" == this.strings.name) {
 					//

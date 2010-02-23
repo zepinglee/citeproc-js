@@ -147,6 +147,10 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("date_NegativeDateSort");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("date_RawParseSimpleDate");
         doh.assertEqual(test.result, test.run());
     }, 

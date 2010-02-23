@@ -2340,6 +2340,7 @@ CSL.Node["date-part"] = new function(){
 							value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state,value_end);
 						}
 					};
+					state.output.openLevel("empty");
 					if (state.tmp.date_collapse_at.length){
 						var ready = true;
 						for each (var item in state.tmp.date_collapse_at){
@@ -2377,6 +2378,7 @@ CSL.Node["date-part"] = new function(){
 					if (ad){
 						state.output.append(ad);
 					}
+					state.output.closeLevel();
 				} else if ("month" == this.strings.name) {
 					if (state.tmp.date_object["season"]){
 						value = ""+state.tmp.date_object["season"];
@@ -6015,7 +6017,32 @@ CSL.Registry.Comparifier = function(state,keyset){
 			} else if ("undefined" == typeof b.sortkeys[i]){
 				cmp = sort_directions[i][0];;
 			} else {
-				cmp = a.sortkeys[i].toLocaleLowerCase().localeCompare(b.sortkeys[i].toLocaleLowerCase());
+				var akey = a.sortkeys[i].toLocaleLowerCase();
+				var bkey = b.sortkeys[i].toLocaleLowerCase();
+				if (akey && akey[0] == "-" && bkey && bkey[0] == "-"){
+					var x = akey;
+					akey = bkey;
+					bkey = x;
+				} else if (akey && akey[0] == "-"){
+					if (akey.slice(1).localeCompare(bkey) == 1){
+						var x = akey;
+						akey = bkey;
+						bkey = x;
+					}
+				} else if (bkey && bkey[0] == "-"){
+					if (bkey.slice(1).localeCompare(akey) == 1){
+						var x = akey;
+						akey = bkey;
+						bkey = x;
+					}
+				}
+				if (akey && akey[0] == "-"){
+					akey = akey.slice(1);
+				}
+				if (bkey && bkey[0] == "-"){
+					bkey = bkey.slice(1);
+				}
+				cmp = akey.localeCompare(bkey);
 			}
 			if (0 < cmp){
 				return sort_directions[i][1];
