@@ -2213,12 +2213,9 @@ CSL.Node.citation = new function(){
 CSL.Node.date = new function(){
 	this.build = build;
 	function build(state,target){
-		if (state.build.sort_flag){
-			var tok = new CSL.Token("key",CSL.SINGLETON);
-			tok.variables = this.variables.slice();
-			CSL.Node.key.build.call(tok,state,target);
-			state.build.sort_flag = false;
-		 } else if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+			state.build.date_parts = [];
+			state.build.date_variables = this.variables;
 			CSL.Util.substituteStart.call(this,state,target);
 			var set_value = function(state,Item){
 				state.tmp.element_rendered_ok = false;
@@ -2279,6 +2276,13 @@ CSL.Node.date = new function(){
 			};
 			this["execs"].push(newoutput);
 		}
+		if (state.build.sort_flag && this.tokentype == CSL.END){
+			var tok = new CSL.Token("key",CSL.SINGLETON);
+			tok.dateparts = state.build.date_parts.slice();
+			tok.variables = state.build.date_variables;
+			CSL.Node.key.build.call(tok,state,target);
+			state.build.sort_flag = false;
+		}
 		if (!state.build.sort_flag && (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON)){
 			var mergeoutput = function(state,Item){
 				state.output.endTag();
@@ -2310,6 +2314,7 @@ CSL.Node["date-part"] = new function(){
 				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,attr,this.strings[attr]);
 			}
 		} else {
+			state.build.date_parts.push(this.strings.name);
 			var render_date_part = function(state,Item){
 				var first_date = true;
 				var value = "";
@@ -2727,37 +2732,45 @@ CSL.Node.key = new function(){
 				CSL.Node.names.build.call(names_end_token,state,target);
 			} else {
 				var single_text = new CSL.Token("text",CSL.SINGLETON);
-				single_text.dateparts = true;
+				single_text.dateparts = this.dateparts;
 				if (variable == "citation-number"){
 					var output_func = function(state,Item){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					var output_func = function(state,Item){
-						var value = Item[variable];
-						if ("undefined" == typeof value){
-							value = { "date-parts": [[0]] };
-						}
-						var dp = value["date-parts"];
-						if (dp){
-							for (var pos in dp){
-							if (dp[pos].length >0){
-								if (dp[pos][0] == 0 && state.tmp.area == "bibliography_sort"){
-									state.tmp.empty_date = true;
+						var dp = Item[variable];
+						if ("undefined" == typeof dp){
+							dp = {"date-parts": [[0]] };
+							if (!dp["year"] && state.tmp.area == "bibliography_sort"){
+								state.tmp.empty_date = true;
+							};
+						};
+						if (dp.raw){
+							dp = state.dateParseRaw( dp.raw );
+						} else if (dp["date-parts"]) {
+							dp = state.dateParseArray( dp );
+						};
+						if ("undefined" == typeof dp){
+							dp = {};
+						};
+						for each (var elem in ["year","month","day","year_end","month_end","day_end"]){
+							var value = 0;
+							if (dp[elem]){
+								value = dp[elem];
+							};
+							if (elem.slice(0,4) == "year"){
+								var yr = CSL.Util.Dates[elem.slice(0,4)]["numeric"](state,value);
+								var prefix = "Y";
+								if (yr[0] == "-"){
+									prefix = "X";
+									yr = yr.slice(1);
+									yr = 9999-parseInt(yr,10);
 								}
-								state.output.append(CSL.Util.Dates.year["numeric"](state,dp[pos][0]));
-							}
-							var monthnum = '00';
-							if (dp[pos].length >1){
-								monthnum = CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[pos][1]);
-							}
-							state.output.append(monthnum);
-							var daynum = '00';
-							if (dp[pos].length >2){
-								daynum = CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[pos][2]);
-							}
-						    state.output.append(daynum);
-							}
+								state.output.append(CSL.Util.Dates[elem.slice(0,4)]["numeric"](state,(prefix+yr)));
+							} else {
+								state.output.append(CSL.Util.Dates["day"]["numeric-leading-zeros"](state,value));
+							};
 						};
 					};
 				} else if ("title" == variable) {
@@ -6081,32 +6094,7 @@ CSL.Registry.Comparifier = function(state,keyset){
 			} else if ("undefined" == typeof b.sortkeys[i]){
 				cmp = sort_directions[i][0];;
 			} else {
-				var akey = a.sortkeys[i].toLocaleLowerCase();
-				var bkey = b.sortkeys[i].toLocaleLowerCase();
-				if (akey && akey[0] == "-" && bkey && bkey[0] == "-"){
-					var x = akey;
-					akey = bkey;
-					bkey = x;
-				} else if (akey && akey[0] == "-"){
-					if (akey.slice(1).localeCompare(bkey) == 1){
-						var x = akey;
-						akey = bkey;
-						bkey = x;
-					}
-				} else if (bkey && bkey[0] == "-"){
-					if (bkey.slice(1).localeCompare(akey) == 1){
-						var x = akey;
-						akey = bkey;
-						bkey = x;
-					}
-				}
-				if (akey && akey[0] == "-"){
-					akey = akey.slice(1);
-				}
-				if (bkey && bkey[0] == "-"){
-					bkey = bkey.slice(1);
-				}
-				cmp = akey.localeCompare(bkey);
+				cmp = a.sortkeys[i].toLocaleLowerCase().localeCompare(b.sortkeys[i].toLocaleLowerCase());
 			}
 			if (0 < cmp){
 				return sort_directions[i][1];

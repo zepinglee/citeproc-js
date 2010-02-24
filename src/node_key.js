@@ -89,59 +89,46 @@ CSL.Node.key = new function(){
 				CSL.Node.names.build.call(names_end_token,state,target);
 			} else {
 				var single_text = new CSL.Token("text",CSL.SINGLETON);
-				single_text.dateparts = true;
+				single_text.dateparts = this.dateparts;
 				if (variable == "citation-number"){
 					var output_func = function(state,Item){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-					//
-					// XXXXX!!!!!: Okay, no frigging idea what's going
-					// on here.  Simple task: always place exactly
-					// one set of sort-form tokens in target when
-					// a date turns up for output in a sort key.
-					//
-					// Can't seem to get it right.
-					//
-					// Think it's coming into focus at last.  Key is
-					// a simple text singleton.  Quash the queue here,
-					// and then strip the key at the end of processing
-					// to leave only the one item on the queue.  Should
-					// work.
-					//
-
-					//
-					// XXXXX: Need some means of controlling which elements of the
-					// date variable are included in the key.  This currently
-					// inserts everything.  Use a global var on state.build?
-					// Or a runtime global on state.tmp?  Or a variable sucked
-					// in by closure?  In any case, it's going to be ugly.
-					//
 					var output_func = function(state,Item){
-						var value = Item[variable];
-						if ("undefined" == typeof value){
-							value = { "date-parts": [[0]] };
-						}
-						var dp = value["date-parts"];
-						if (dp){
-							for (var pos in dp){
-							if (dp[pos].length >0){
-								if (dp[pos][0] == 0 && state.tmp.area == "bibliography_sort"){
-									state.tmp.empty_date = true;
+						var dp = Item[variable];
+						if ("undefined" == typeof dp){
+							dp = {"date-parts": [[0]] };
+							if (!dp["year"] && state.tmp.area == "bibliography_sort"){
+								state.tmp.empty_date = true;
+							};
+						};
+						if (dp.raw){
+							dp = state.dateParseRaw( dp.raw );
+						} else if (dp["date-parts"]) {
+							dp = state.dateParseArray( dp );
+						};
+						if ("undefined" == typeof dp){
+							dp = {};
+						};
+						for each (var elem in ["year","month","day","year_end","month_end","day_end"]){
+							var value = 0;
+							if (dp[elem]){
+								value = dp[elem];
+							};
+							if (elem.slice(0,4) == "year"){
+								var yr = CSL.Util.Dates[elem.slice(0,4)]["numeric"](state,value);
+								var prefix = "Y";
+								if (yr[0] == "-"){
+									prefix = "X";
+									yr = yr.slice(1);
+									yr = 9999-parseInt(yr,10);
 								}
-								state.output.append(CSL.Util.Dates.year["numeric"](state,dp[pos][0]));
-							}
-							var monthnum = '00';
-							if (dp[pos].length >1){
-								monthnum = CSL.Util.Dates.month["numeric-leading-zeros"](state,dp[pos][1]);
-							}
-							state.output.append(monthnum);
-							var daynum = '00';
-							if (dp[pos].length >2){
-								daynum = CSL.Util.Dates.day["numeric-leading-zeros"](state,dp[pos][2]);
-							}
-						    state.output.append(daynum);
-							}
+								state.output.append(CSL.Util.Dates[elem.slice(0,4)]["numeric"](state,(prefix+yr)));
+							} else {
+								// used for both day and month
+								state.output.append(CSL.Util.Dates["day"]["numeric-leading-zeros"](state,value));
+							};
 						};
 					};
 				} else if ("title" == variable) {

@@ -498,34 +498,7 @@ CSL.Registry.Comparifier = function(state,keyset){
 			} else if ("undefined" == typeof b.sortkeys[i]){
 				cmp = sort_directions[i][0];;
 			} else {
-				var akey = a.sortkeys[i].toLocaleLowerCase();
-				var bkey = b.sortkeys[i].toLocaleLowerCase();
-				// print("akey: "+akey[0]);
-				// print("bkey: "+bkey[0]);
-				if (akey && akey[0] == "-" && bkey && bkey[0] == "-"){
-					var x = akey;
-					akey = bkey;
-					bkey = x;
-				} else if (akey && akey[0] == "-"){
-					if (akey.slice(1).localeCompare(bkey) == 1){
-						var x = akey;
-						akey = bkey;
-						bkey = x;
-					}
-				} else if (bkey && bkey[0] == "-"){
-					if (bkey.slice(1).localeCompare(akey) == 1){
-						var x = akey;
-						akey = bkey;
-						bkey = x;
-					}
-				}
-				if (akey && akey[0] == "-"){
-					akey = akey.slice(1);
-				}
-				if (bkey && bkey[0] == "-"){
-					bkey = bkey.slice(1);
-				}
-				cmp = akey.localeCompare(bkey);
+				cmp = a.sortkeys[i].toLocaleLowerCase().localeCompare(b.sortkeys[i].toLocaleLowerCase());
 			}
 			if (0 < cmp){
 				return sort_directions[i][1];

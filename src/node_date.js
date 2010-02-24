@@ -36,18 +36,14 @@
 CSL.Node.date = new function(){
 	this.build = build;
 	function build(state,target){
-		//
-		// XXXXXX: Call back to key if date is in macro
-		//
-		if (state.build.sort_flag){
-			var tok = new CSL.Token("key",CSL.SINGLETON);
-			tok.variables = this.variables.slice();
-			CSL.Node.key.build.call(tok,state,target);
-			state.build.sort_flag = false;
-		 } else if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+			// used to collect rendered date part names in node_datepart,
+			// for passing through to node_key, for use in dates embedded
+			// in macros
+			state.build.date_parts = [];
+			state.build.date_variables = this.variables;
 			CSL.Util.substituteStart.call(this,state,target);
 			var set_value = function(state,Item){
-
 				state.tmp.element_rendered_ok = false;
 				state.tmp.donesies = [];
 				state.tmp.dateparts = [];
@@ -145,6 +141,21 @@ CSL.Node.date = new function(){
 				tok.strings.suffix = " ";
 			};
 			this["execs"].push(newoutput);
+		}
+
+		//
+		// XXXXXX: Call back to key if date is in macro
+		//
+		if (state.build.sort_flag && this.tokentype == CSL.END){
+			var tok = new CSL.Token("key",CSL.SINGLETON);
+			//tok.date_object = state.tmp.date_object;
+			tok.dateparts = state.build.date_parts.slice();
+			// any date variable name will do here; it just triggers
+			// construction of a date key, using the state.tmp.date_object
+			// data constructed in the start tag.
+			tok.variables = state.build.date_variables;
+			CSL.Node.key.build.call(tok,state,target);
+			state.build.sort_flag = false;
 		}
 
 		if (!state.build.sort_flag && (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON)){

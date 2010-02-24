@@ -57,6 +57,9 @@ CSL.Node["date-part"] = new function(){
 				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,attr,this.strings[attr]);
 			}
 		} else {
+			// used in node_date, to send a list of rendering date parts
+			// to node_key, for dates embedded in macros.
+			state.build.date_parts.push(this.strings.name);
 			//
 			// Set delimiter here, if poss.
 			//
