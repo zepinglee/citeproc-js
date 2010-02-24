@@ -2213,7 +2213,12 @@ CSL.Node.citation = new function(){
 CSL.Node.date = new function(){
 	this.build = build;
 	function build(state,target){
-		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+		if (state.build.sort_flag){
+			var tok = new CSL.Token("key",CSL.SINGLETON);
+			tok.variables = this.variables.slice();
+			CSL.Node.key.build.call(tok,state,target);
+			state.build.sort_flag = false;
+		 } else if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			CSL.Util.substituteStart.call(this,state,target);
 			var set_value = function(state,Item){
 				state.tmp.element_rendered_ok = false;
@@ -2274,7 +2279,7 @@ CSL.Node.date = new function(){
 			};
 			this["execs"].push(newoutput);
 		}
-		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
+		if (!state.build.sort_flag && (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON)){
 			var mergeoutput = function(state,Item){
 				state.output.endTag();
 				state.parallel.CloseVariable();
@@ -2282,7 +2287,7 @@ CSL.Node.date = new function(){
 			this["execs"].push(mergeoutput);
 		};
 		target.push(this);
-		if (this.tokentype == CSL.END){
+		if (this.tokentype == CSL.END && !state.build.sort_flag){
 			CSL.Util.substituteEnd.call(this,state,target);
 		};
 	};
@@ -2722,6 +2727,7 @@ CSL.Node.key = new function(){
 				CSL.Node.names.build.call(names_end_token,state,target);
 			} else {
 				var single_text = new CSL.Token("text",CSL.SINGLETON);
+				single_text.dateparts = true;
 				if (variable == "citation-number"){
 					var output_func = function(state,Item){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
@@ -2770,10 +2776,28 @@ CSL.Node.key = new function(){
 				single_text["execs"].push(output_func);
 				target.push(single_text);
 			};
-		} else {
+		} else { // macro
 			var token = new CSL.Token("text",CSL.SINGLETON);
 			token.postponed_macro = this.postponed_macro;
+			var pos = target.length;
+			var keypos = false;
 			CSL.expandMacro.call(state,token);
+			for (var ppos in target.slice(pos)){
+				var tok = target.slice(pos)[ppos];
+				if (tok && tok.name == "text" && tok.dateparts){
+					keypos = ppos;
+					break;
+				};
+			}
+			if (keypos){
+				var saveme = target[(parseInt(keypos,10)+parseInt(pos,10))];
+				for (var xpos=(target.length-1);xpos > pos; xpos--){
+					target.pop();
+				}
+				target.push(saveme);
+				var gtok = new CSL.Token("group",CSL.END);
+				target.push(gtok);
+			}
 		}
 		var end_key = new CSL.Token("key",CSL.END);
 		var store_key_for_use = function(state,Item){

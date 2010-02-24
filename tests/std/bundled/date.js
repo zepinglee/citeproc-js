@@ -51,6 +51,10 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("date_NegativeDateSortViaMacro");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("date_YearSuffixDelimiter");
         doh.assertEqual(test.result, test.run());
     }, 

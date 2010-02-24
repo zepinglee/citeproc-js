@@ -36,7 +36,15 @@
 CSL.Node.date = new function(){
 	this.build = build;
 	function build(state,target){
-		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+		//
+		// XXXXXX: Call back to key if date is in macro
+		//
+		if (state.build.sort_flag){
+			var tok = new CSL.Token("key",CSL.SINGLETON);
+			tok.variables = this.variables.slice();
+			CSL.Node.key.build.call(tok,state,target);
+			state.build.sort_flag = false;
+		 } else if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			CSL.Util.substituteStart.call(this,state,target);
 			var set_value = function(state,Item){
 
@@ -139,7 +147,7 @@ CSL.Node.date = new function(){
 			this["execs"].push(newoutput);
 		}
 
-		if (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON){
+		if (!state.build.sort_flag && (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON)){
 			var mergeoutput = function(state,Item){
 				state.output.endTag();
 				state.parallel.CloseVariable();
@@ -148,7 +156,7 @@ CSL.Node.date = new function(){
 		};
 		target.push(this);
 
-		if (this.tokentype == CSL.END){
+		if (this.tokentype == CSL.END && !state.build.sort_flag){
 			CSL.Util.substituteEnd.call(this,state,target);
 		};
 	};

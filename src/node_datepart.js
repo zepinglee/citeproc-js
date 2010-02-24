@@ -68,6 +68,9 @@ CSL.Node["date-part"] = new function(){
 				if (state.tmp.date_object){
 					value = state.tmp.date_object[this.strings.name];
 					value_end = state.tmp.date_object[(this.strings.name+"_end")];
+					//if ("undefined" == typeof value_end && state.tmp.area.slice(-5) == "_sort"){
+					//	print("sorting it");
+					//}
 				};
 				if ("year" == this.strings.name && value == 0 && !state.tmp.suppress_decorations){
 					value = state.getTerm("no date");

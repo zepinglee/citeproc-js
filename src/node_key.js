@@ -89,11 +89,34 @@ CSL.Node.key = new function(){
 				CSL.Node.names.build.call(names_end_token,state,target);
 			} else {
 				var single_text = new CSL.Token("text",CSL.SINGLETON);
+				single_text.dateparts = true;
 				if (variable == "citation-number"){
 					var output_func = function(state,Item){
 						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
+					//
+					// XXXXX!!!!!: Okay, no frigging idea what's going
+					// on here.  Simple task: always place exactly
+					// one set of sort-form tokens in target when
+					// a date turns up for output in a sort key.
+					//
+					// Can't seem to get it right.
+					//
+					// Think it's coming into focus at last.  Key is
+					// a simple text singleton.  Quash the queue here,
+					// and then strip the key at the end of processing
+					// to leave only the one item on the queue.  Should
+					// work.
+					//
+
+					//
+					// XXXXX: Need some means of controlling which elements of the
+					// date variable are included in the key.  This currently
+					// inserts everything.  Use a global var on state.build?
+					// Or a runtime global on state.tmp?  Or a variable sucked
+					// in by closure?  In any case, it's going to be ugly.
+					//
 					var output_func = function(state,Item){
 						var value = Item[variable];
 						if ("undefined" == typeof value){
@@ -137,12 +160,30 @@ CSL.Node.key = new function(){
 				single_text["execs"].push(output_func);
 				target.push(single_text);
 			};
-		} else {
+		} else { // macro
 			//
 			// if it's not a variable, it's a macro
 			var token = new CSL.Token("text",CSL.SINGLETON);
 			token.postponed_macro = this.postponed_macro;
+			var pos = target.length;
+			var keypos = false;
 			CSL.expandMacro.call(state,token);
+			for (var ppos in target.slice(pos)){
+				var tok = target.slice(pos)[ppos];
+				if (tok && tok.name == "text" && tok.dateparts){
+					keypos = ppos;
+					break;
+				};
+			}
+			if (keypos){
+				var saveme = target[(parseInt(keypos,10)+parseInt(pos,10))];
+				for (var xpos=(target.length-1);xpos > pos; xpos--){
+					target.pop();
+				}
+				target.push(saveme);
+				var gtok = new CSL.Token("group",CSL.END);
+				target.push(gtok);
+			}
 		}
 		//
 		// ops to output the key string result to an array go
