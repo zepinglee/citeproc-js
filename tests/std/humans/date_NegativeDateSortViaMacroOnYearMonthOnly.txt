@@ -34,20 +34,17 @@
  */
 
 >>===== MODE =====>>
-bibliography
+citation
 <<===== MODE =====<<
 
-Note that in citation sorts, an empty date is treated as zero,
-while in a bibliography sort, empty-date items come at the end,
-in both ascending and descending sorts.
+
+Sort position of empty dates differs in citations and bibliographies.
+In citations, empty dates have a value equivalent to zero.  In
+bibliographies, they are always placed at the end of the sort
+(whether ascending or descending).
 
 >>===== RESULT =====>>
-<div class="csl-bib-body">
-  <div class="csl-entry">Item 2</div>
-  <div class="csl-entry">Item 4</div>
-  <div class="csl-entry">Item 1</div>
-  <div class="csl-entry">Item 3</div>
-</div>
+BookX (100BC-7-14), BookY (100BC-7-13), BookA (68AD-3-16), BookB (68AD-3-15)
 <<===== RESULT =====<<
 
 
@@ -61,20 +58,31 @@ in both ascending and descending sorts.
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <macro name="shortdate">
+      <date variable="issued" delimiter="-">
+        <date-part name="year"/>
+        <date-part name="month" form="numeric"/>
+      </date>
+  </macro>
+  <macro name="longdate">
+      <date variable="issued" delimiter="-">
+        <date-part name="year"/>
+        <date-part name="month" form="numeric"/>
+        <date-part name="day" form="numeric"/>
+      </date>
+  </macro>
   <citation>
-    <layout>
-	  <text value="Dummy"/>
-	</layout>
-  </citation>
-  <bibliography>
     <sort>
-      <key sort="ascending" variable="issued" />
-      <key variable="title" />
+      <key macro="shortdate"/>
+      <key variable="title"/>
     </sort>
-    <layout>
-      <text variable="title" />
+    <layout delimiter=", ">
+      <group delimiter=" ">
+        <text variable="title"/>
+        <text macro="longdate" prefix="(" suffix=")"/>
+      </group>
     </layout>
-  </bibliography>
+  </citation>
 </style>
 <<===== CSL =====<<
 
@@ -83,41 +91,55 @@ in both ascending and descending sorts.
 [
     {
         "id": "ITEM-1", 
-        "title": "Item 1", 
-        "type": "book"
+        "issued": {
+            "date-parts": [
+                [
+                    -100, 
+                    7, 
+                    13
+                ]
+            ]
+        }, 
+        "title": "BookY"
     }, 
     {
         "id": "ITEM-2", 
         "issued": {
             "date-parts": [
                 [
-                    "1999", 
-                    "2", 
-                    "15"
+                    -100, 
+                    7, 
+                    14
                 ]
             ]
         }, 
-        "title": "Item 2", 
-        "type": "book"
+        "title": "BookX"
     }, 
     {
         "id": "ITEM-3", 
-        "title": "Item 3", 
-        "type": "book"
+        "issued": {
+            "date-parts": [
+                [
+                    68, 
+                    3, 
+                    15
+                ]
+            ]
+        }, 
+        "title": "BookB"
     }, 
     {
         "id": "ITEM-4", 
         "issued": {
             "date-parts": [
                 [
-                    "2000", 
-                    "2", 
-                    "15"
+                    68, 
+                    3, 
+                    16
                 ]
             ]
         }, 
-        "title": "Item 4", 
-        "type": "book"
+        "title": "BookA"
     }
 ]
 <<===== INPUT =====<<

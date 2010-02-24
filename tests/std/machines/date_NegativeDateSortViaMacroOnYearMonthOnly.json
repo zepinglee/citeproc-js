@@ -37,47 +37,61 @@
     "bibsection": false, 
     "citation_items": false, 
     "citations": false, 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n\t  <text value=\"Dummy\"/>\n\t</layout>\n  </citation>\n  <bibliography>\n    <sort>\n      <key sort=\"ascending\" variable=\"issued\" />\n      <key variable=\"title\" />\n    </sort>\n    <layout>\n      <text variable=\"title\" />\n    </layout>\n  </bibliography>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <macro name=\"shortdate\">\n      <date variable=\"issued\" delimiter=\"-\">\n        <date-part name=\"year\"/>\n        <date-part name=\"month\" form=\"numeric\"/>\n      </date>\n  </macro>\n  <macro name=\"longdate\">\n      <date variable=\"issued\" delimiter=\"-\">\n        <date-part name=\"year\"/>\n        <date-part name=\"month\" form=\"numeric\"/>\n        <date-part name=\"day\" form=\"numeric\"/>\n      </date>\n  </macro>\n  <citation>\n    <sort>\n      <key macro=\"shortdate\"/>\n      <key variable=\"title\"/>\n    </sort>\n    <layout delimiter=\", \">\n      <group delimiter=\" \">\n        <text variable=\"title\"/>\n        <text macro=\"longdate\" prefix=\"(\" suffix=\")\"/>\n      </group>\n    </layout>\n  </citation>\n</style>", 
     "input": [
         {
             "id": "ITEM-1", 
-            "title": "Item 1", 
-            "type": "book"
+            "issued": {
+                "date-parts": [
+                    [
+                        -100, 
+                        7, 
+                        13
+                    ]
+                ]
+            }, 
+            "title": "BookY"
         }, 
         {
             "id": "ITEM-2", 
             "issued": {
                 "date-parts": [
                     [
-                        "1999", 
-                        "2", 
-                        "15"
+                        -100, 
+                        7, 
+                        14
                     ]
                 ]
             }, 
-            "title": "Item 2", 
-            "type": "book"
+            "title": "BookX"
         }, 
         {
             "id": "ITEM-3", 
-            "title": "Item 3", 
-            "type": "book"
+            "issued": {
+                "date-parts": [
+                    [
+                        68, 
+                        3, 
+                        15
+                    ]
+                ]
+            }, 
+            "title": "BookB"
         }, 
         {
             "id": "ITEM-4", 
             "issued": {
                 "date-parts": [
                     [
-                        "2000", 
-                        "2", 
-                        "15"
+                        68, 
+                        3, 
+                        16
                     ]
                 ]
             }, 
-            "title": "Item 4", 
-            "type": "book"
+            "title": "BookA"
         }
     ], 
-    "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Item 2</div>\n  <div class=\"csl-entry\">Item 4</div>\n  <div class=\"csl-entry\">Item 1</div>\n  <div class=\"csl-entry\">Item 3</div>\n</div>"
+    "mode": "citation", 
+    "result": "BookX (100BC-7-14), BookY (100BC-7-13), BookA (68AD-3-16), BookB (68AD-3-15)"
 }

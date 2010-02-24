@@ -2746,6 +2746,9 @@ CSL.Node.key = new function(){
 								state.tmp.empty_date = true;
 							};
 						};
+						if ("undefined" == typeof this.dateparts){
+							this.dateparts = ["year","month","day"];
+						}
 						if (dp.raw){
 							dp = state.dateParseRaw( dp.raw );
 						} else if (dp["date-parts"]) {
@@ -2756,11 +2759,15 @@ CSL.Node.key = new function(){
 						};
 						for each (var elem in ["year","month","day","year_end","month_end","day_end"]){
 							var value = 0;
-							if (dp[elem]){
+							var e = elem;
+							if (e.slice(-4) == "_end"){
+								e = e.slice(0,-4);
+							}
+							if (dp[elem] && this.dateparts.indexOf(e) > -1){
 								value = dp[elem];
 							};
 							if (elem.slice(0,4) == "year"){
-								var yr = CSL.Util.Dates[elem.slice(0,4)]["numeric"](state,value);
+								var yr = CSL.Util.Dates[e]["numeric"](state,value);
 								var prefix = "Y";
 								if (yr[0] == "-"){
 									prefix = "X";
@@ -2769,7 +2776,7 @@ CSL.Node.key = new function(){
 								}
 								state.output.append(CSL.Util.Dates[elem.slice(0,4)]["numeric"](state,(prefix+yr)));
 							} else {
-								state.output.append(CSL.Util.Dates["day"]["numeric-leading-zeros"](state,value));
+								state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state,value));
 							};
 						};
 					};
