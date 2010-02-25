@@ -59,14 +59,7 @@ first, second, third, special edition
       <key variable="edition"/>
     </sort>
     <layout delimiter=", ">
-      <choose>
-        <if is-numeric="edition">
-          <number variable="edition" form="long-ordinal"/>
-        </if>
-        <else>
-          <text variable="edition"/>
-        </else>
-      </choose>
+      <number variable="edition" form="long-ordinal"/>
     </layout>
   </citation>
 </style>
@@ -76,28 +69,28 @@ first, second, third, special edition
 >>===== INPUT =====>>
 [
     {
+        "edition": "2nd edition", 
         "id": "ITEM-1", 
         "title": "Item 1", 
-        "type": "book",
-        "edition": "2nd edition"
+        "type": "book"
     }, 
     {
+        "edition": "3", 
         "id": "ITEM-2", 
         "title": "Item 2", 
-        "type": "book",
-        "edition": "3"
+        "type": "book"
     }, 
     {
+        "edition": "special edition", 
         "id": "ITEM-3", 
         "title": "Item 3", 
-        "type": "book",
-        "edition": "special edition"
+        "type": "book"
     }, 
     {
+        "edition": "1", 
         "id": "ITEM-4", 
         "title": "Item 4", 
-        "type": "book",
-        "edition": "1"
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<
