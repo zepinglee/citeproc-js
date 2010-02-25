@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-John DoeJane Roeeditors
+John Doe, Jane Roeeditors
 <<===== RESULT =====<<
 
 

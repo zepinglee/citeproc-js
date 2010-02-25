@@ -71,6 +71,13 @@ CSL.Engine = function(sys,style,lang) {
 	// in the compile phase, in the flattened version of the style,
 	// which should be simpler anyway.
 	//
+	var attrs = this.sys.xml.attributes(this.cslXml);
+	if ("undefined" == typeof attrs["@sort-separator"]){
+		this.sys.xml.setAttribute(this.cslXml,"sort-separator",", ");
+	}
+	if ("undefined" == typeof attrs["@name-delimiter"]){
+		this.sys.xml.setAttribute(this.cslXml,"name-delimiter",", ");
+	}
 
 	this.opt["initialize-with-hyphen"] = true;
 

@@ -40,7 +40,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">DoeJohn</div>
+  <div class="csl-entry">Doe, John</div>
 </div>
 <<===== RESULT =====<<
 
@@ -56,7 +56,7 @@ bibliography
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation
-      sort-separator=", ">
+      sort-separator="; ">
     <layout>
       <names variable="author">
         <name />

@@ -40,7 +40,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John DoeJane Roe</div>
+  <div class="csl-entry">John Doe, Jane Roe</div>
 </div>
 <<===== RESULT =====<<
 

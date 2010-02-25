@@ -850,6 +850,13 @@ CSL.Engine = function(sys,style,lang) {
 	this.output = new CSL.Output.Queue(this);
 	this.dateput = new CSL.Output.Queue(this);
 	this.cslXml = this.sys.xml.makeXml(style);
+	var attrs = this.sys.xml.attributes(this.cslXml);
+	if ("undefined" == typeof attrs["@sort-separator"]){
+		this.sys.xml.setAttribute(this.cslXml,"sort-separator",", ");
+	}
+	if ("undefined" == typeof attrs["@name-delimiter"]){
+		this.sys.xml.setAttribute(this.cslXml,"name-delimiter",", ");
+	}
 	this.opt["initialize-with-hyphen"] = true;
 	this.setStyleAttributes();
 	lang = this.opt["default-locale"][0];
