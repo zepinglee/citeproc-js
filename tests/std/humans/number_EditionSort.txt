@@ -32,38 +32,73 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.number");
-doh.register("std.number", [
-    function(){
-        var test = new StdRhinoTest("number_SimpleNumberArabic");
-        doh.assertEqual(test.result, test.run());
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+
+>>===== RESULT =====>>
+first, second, third, special edition
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <sort>
+      <key variable="edition"/>
+    </sort>
+    <layout delimiter=", ">
+      <choose>
+        <if is-numeric="edition">
+          <number variable="edition" form="long-ordinal"/>
+        </if>
+        <else>
+          <text variable="edition"/>
+        </else>
+      </choose>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "edition": "2nd edition", 
+        "id": "ITEM-1", 
+        "title": "Item 1", 
+        "type": "book"
     }, 
-    function(){
-        var test = new StdRhinoTest("number_MixedText");
-        doh.assertEqual(test.result, test.run());
+    {
+        "edition": "3", 
+        "id": "ITEM-2", 
+        "title": "Item 2", 
+        "type": "book"
     }, 
-    function(){
-        var test = new StdRhinoTest("number_PageFirst");
-        doh.assertEqual(test.result, test.run());
+    {
+        "edition": "special edition", 
+        "id": "ITEM-3", 
+        "title": "Item 3", 
+        "type": "book"
     }, 
-    function(){
-        var test = new StdRhinoTest("number_SimpleNumberOrdinalLong");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("number_SimpleNumberRoman");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("number_PageRange");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("number_EditionSort");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("number_SimpleNumberOrdinalShort");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+    {
+        "edition": "1", 
+        "id": "ITEM-4", 
+        "title": "Item 4", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

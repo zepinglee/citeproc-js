@@ -3448,6 +3448,9 @@ CSL.Node.number = new function(){
 		} else if (this.strings.form == "long-ordinal"){
 			this.formatter = state.fun.long_ordinalizer;
 		}
+		if ("undefined" == typeof this.successor_prefix){
+			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
+		}
 		var push_number_or_text = function(state,Item){
 			var varname = this.variables[0];
 			state.parallel.StartVariable(this.variables[0]);

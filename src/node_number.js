@@ -47,6 +47,9 @@ CSL.Node.number = new function(){
 		} else if (this.strings.form == "long-ordinal"){
 			this.formatter = state.fun.long_ordinalizer;
 		}
+		if ("undefined" == typeof this.successor_prefix){
+			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
+		}
 		//
 		// Whether we actually stick a number object on
 		// the output queue depends on whether the field
