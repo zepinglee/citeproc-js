@@ -50,6 +50,10 @@ CSL.Node.number = new function(){
 		if ("undefined" == typeof this.successor_prefix){
 			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 		}
+		// is this needed?
+		//if ("undefined" == typeof this.splice_prefix){
+		//	this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
+		//}
 		//
 		// Whether we actually stick a number object on
 		// the output queue depends on whether the field

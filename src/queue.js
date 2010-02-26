@@ -502,8 +502,14 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			} else if (blob.status == CSL.SUCCESSOR){
 				ret += blob.successor_prefix;
 			} else if (blob.status == CSL.START){
-				ret += blob.splice_prefix;
-			};
+				//
+				// didn't need this.  don't really know how this works.
+				// pure empirical fingerpainting for these joins.
+				//
+				ret += "";
+			} else if (blob.status == CSL.SEEN){
+				ret += blob.successor_prefix;
+			}
 			ret += str;
 			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 			ret_last_char = blob_last_chars.slice(-1);

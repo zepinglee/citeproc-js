@@ -47,6 +47,14 @@ doh.register("std.collapse", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("collapse_CitationNumberRangesMixed");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_CitationNumberRangesMixed3");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixesNoCollapse");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -56,6 +64,10 @@ doh.register("std.collapse", [
     }, 
     function(){
         var test = new StdRhinoTest("collapse_AuthorCollapseNoDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("collapse_CitationNumberRangesMixed2");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

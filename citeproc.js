@@ -93,13 +93,7 @@ var CSL = new function () {
 	this.STARTSWITH_ROMANESQUE_REGEXP = /^[&a-zA-Z\u0080-\u017f\u0400-\u052f].*/;
 	this.ENDSWITH_ROMANESQUE_REGEXP = /.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
 	this.DISPLAY_CLASSES = ["block","left-margin","right-inline","indent"];
-	var x = new Array();
-	x = x.concat(["edition","volume","number-of-volumes","number"]);
-	x = x.concat(["issue","title","container-title","issued","page"]);
-	x = x.concat(["locator","collection-number","original-date"]);
-	x = x.concat(["reporting-date","decision-date","filing-date"]);
-	x = x.concat(["revision-date"]);
-	this.NUMERIC_VARIABLES = x.slice();
+	this.NUMERIC_VARIABLES = ["edition","volume","number-of-volumes","number","issue","citation-number"];
 	this.DATE_VARIABLES = ["issued","event","accessed","container","original-date"];
 	this.TAG_ESCAPE = /(<span class=\"no(?:case|decor)\">.*?<\/span>)/;
 	this.TAG_USEALL = /(<[^>]+>)/;
@@ -520,8 +514,10 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 			} else if (blob.status == CSL.SUCCESSOR){
 				ret += blob.successor_prefix;
 			} else if (blob.status == CSL.START){
-				ret += blob.splice_prefix;
-			};
+				ret += "";
+			} else if (blob.status == CSL.SEEN){
+				ret += blob.successor_prefix;
+			}
 			ret += str;
 			ret_last_char = blob_last_chars.slice(-1);
 		};
@@ -2740,9 +2736,28 @@ CSL.Node.key = new function(){
 			} else {
 				var single_text = new CSL.Token("text",CSL.SINGLETON);
 				single_text.dateparts = this.dateparts;
-				if (variable == "citation-number"){
+				if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1){
 					var output_func = function(state,Item){
-						state.output.append(state.registry.registry[Item["id"]].seq.toString(),"empty");
+						var num = false;
+						if ("citation-number" == variable){
+							num = state.registry.registry[Item["id"]].seq.toString();
+						} else {
+							num = Item[variable];
+						};
+						if (num){
+							var m = num.match(/\s*(-{0,1}[0-9]+).*/);
+							if (m){
+								num = parseInt(m[1],10);
+								if (num < 0){
+									num = 99999999999999999999+num;
+								}
+								num = ""+num;
+								while (num.length < 20){
+									num = "0"+num;
+								};
+							};
+						};
+						state.output.append(num, this);
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					var output_func = function(state,Item){

@@ -143,13 +143,13 @@ var CSL = new function () {
 	this.ENDSWITH_ROMANESQUE_REGEXP = /.*[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
 	this.DISPLAY_CLASSES = ["block","left-margin","right-inline","indent"];
 
-	var x = new Array();
-	x = x.concat(["edition","volume","number-of-volumes","number"]);
-	x = x.concat(["issue","title","container-title","issued","page"]);
-	x = x.concat(["locator","collection-number","original-date"]);
-	x = x.concat(["reporting-date","decision-date","filing-date"]);
-	x = x.concat(["revision-date"]);
-	this.NUMERIC_VARIABLES = x.slice();
+	this.NUMERIC_VARIABLES = ["edition","volume","number-of-volumes","number","issue","citation-number"];
+	//var x = new Array();
+	//x = x.concat(["title","container-title","issued","page"]);
+	//x = x.concat(["locator","collection-number","original-date"]);
+	//x = x.concat(["reporting-date","decision-date","filing-date"]);
+	//x = x.concat(["revision-date"]);
+	//this.NUMERIC_VARIABLES = x.slice();
 	this.DATE_VARIABLES = ["issued","event","accessed","container","original-date"];
 
 	this.TAG_ESCAPE = /(<span class=\"no(?:case|decor)\">.*?<\/span>)/;
