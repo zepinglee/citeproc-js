@@ -42,4 +42,8 @@ doh.register("std.display", [
         var test = new StdRhinoTest("display_AuthorAsHeading");
         doh.assertEqual(test.result, test.run());
     }, 
+    function(){
+        var test = new StdRhinoTest("display_DisplayBlock");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

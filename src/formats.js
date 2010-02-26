@@ -70,7 +70,7 @@ CSL.Output.Formats.prototype.html = {
 	"@font-weight/bold":"<b>%%STRING%%</b>",
 	"@font-weight/normal":"<span style=\"font-weight:normal;\">%%STRING%%</span>",
 	"@font-weight/light":false,
-	"@text-decoration/none":false,
+	"@text-decoration/none":"<span style=\"text-decoration:none;\">%%STRING%%</span>",
 	"@text-decoration/underline":"<span style=\"text-decoration:underline;\">%%STRING%%</span>",
 	"@vertical-align/baseline":false,
 	"@vertical-align/sup":"<sup>%%STRING%%</sup>",

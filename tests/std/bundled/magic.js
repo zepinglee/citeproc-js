@@ -95,10 +95,6 @@ doh.register("std.magic", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("magic_DisplayBlock");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("magic_StripPeriodsTrue");
         doh.assertEqual(test.result, test.run());
     }, 
