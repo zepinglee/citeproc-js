@@ -39,6 +39,10 @@ CSL.Node.layout = new function(){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
 			//
+			// save out decorations for flipflop processing
+			//
+			state[state.tmp.area].opt.topdecor = [this.decorations];
+			//
 			// done_vars is used to prevent the repeated
 			// rendering of variables
 			var initialize_done_vars = function(state,Item){

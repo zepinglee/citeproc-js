@@ -50,10 +50,10 @@ def get_highlighter(language):
 def code_block(name, arguments, options, content, lineno,
                content_offset, block_text, state, state_machine):
     """
-    The code-block directive provides syntax highlighting for blocks
+    The sourcecode directive provides syntax highlighting for blocks
     of code.  It is used with the the following syntax::
 
-    .. code-block:: python
+    .. sourcecode:: python
 
        import sys
        def main():
@@ -87,7 +87,7 @@ code_block.options = {'language' : parsers.rst.directives.unchanged }
 code_block.content = 1
 
 # Register
-directives.register_directive( 'code-block', code_block )
+directives.register_directive( 'sourcecode', code_block )
 
 
 description = ('Generates (X)HTML documents from standalone reStructuredText '

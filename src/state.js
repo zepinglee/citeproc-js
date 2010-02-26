@@ -309,6 +309,8 @@ CSL.Engine.Citation = function (state){
 	this.opt["disambiguate-add-names"] = false;
 	this.opt["disambiguate-add-givenname"] = false;
 	this.opt["near-note-distance"] = 5;
+
+	this.opt.topdecor = [];
 };
 
 
@@ -319,6 +321,8 @@ CSL.Engine.Bibliography = function (){
 	this.opt.collapse = new Array();
 	this.opt["disambiguate-add-names"] = false;
 	this.opt["disambiguate-add-givenname"] = false;
+
+	this.opt.topdecor = [];
 };
 
 

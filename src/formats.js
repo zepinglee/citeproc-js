@@ -68,7 +68,7 @@ CSL.Output.Formats.prototype.html = {
 	"@passthrough/true":CSL.Output.Formatters.passthrough,
 	"@font-variant/normal":false,
 	"@font-weight/bold":"<b>%%STRING%%</b>",
-	"@font-weight/normal":false,
+	"@font-weight/normal":"<span style=\"font-weight:normal;\">%%STRING%%</span>",
 	"@font-weight/light":false,
 	"@text-decoration/none":false,
 	"@text-decoration/underline":"<span style=\"text-decoration:underline;\">%%STRING%%</span>",

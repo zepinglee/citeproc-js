@@ -43,7 +43,7 @@ CSL.Util.FlipFlopper = function(state){
 	this.blob = false;
 	var tagdefs = [
 		["<i>","</i>","italics","@font-style",["italic","normal"],true],
-		["<b>","</b>","boldface","@font-weight",["bold","normal"],true],
+		["<b>","</b>","bold","@font-weight",["bold","normal"],true],
 		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
 		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],true],
 		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
@@ -303,9 +303,10 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				// CSL.debug(this.okReverseTagsHash[this.blob.alldecor[0][0].join("-is-")]);
 				//
 				if (tag == "<span class=\"nodecor\">"){
-					for each (var level in this.blob.alldecor){
+					var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor);
+					for each (var level in fulldecor){
 						for each (var decor in level){
-							if (["@font-style"].indexOf(decor[0]) > -1){
+							if (["@font-style","@font-weight","@font-variant"].indexOf(decor[0]) > -1){
 								// This is be the @name of the decor, plus a
 								// pairing composed of two copies of the "undo" side
 								// of the decor's format parameter.  The effect
@@ -336,9 +337,11 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 
 CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	var posB = 0;
-	var l = blob.alldecor.length;
+	var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor);
+	//var l = blob.alldecor.length;
+	var l = fulldecor.length;
 	for (var posA=0; posA<l; posA+=1){
-		var decorations = blob.alldecor[posA];
+		var decorations = fulldecor[posA];
 		var breakme = false;
 		for (var posC=(decorations.length-1); posC>-1; posC+=-1){
 			var decor = decorations[posC];

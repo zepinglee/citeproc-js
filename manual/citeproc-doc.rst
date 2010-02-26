@@ -9,11 +9,11 @@ __ `Table of Contents`_
 
 .. class:: info-version
 
-   version 1.00##a61##
+   version 1.00##a62##
 
 .. class:: info-date
 
-   =D=11 February 2010=D=
+   =D=26 February 2010=D=
 
 .. class:: contributors
 
@@ -108,63 +108,23 @@ __ http://mercurial.selenic.com/wiki/
 
       hg clone http://bitbucket.org/fbennett/citeproc-js/
 
-
-################
-``run-rhino.sh``
-################
-
-The simplest configuration for running tests is to use the ``run-rhino.sh``
-script (or ``run-rhino.bat`` on Windows systems).  If your OS has Java installed
-(which most desktop and laptop systems nowadays seem to do), this will run
-the full set of processor tests using a copy of the ``rhino`` Javascript interpreter
-that ships with the ``citeproc-js`` sources.
-
-
 #######################
-``run-spidermonkey.py``
+Javascript interpreters
 #######################
 
-It is also possible to run the processor tests in the ``spidermonkey``
-interpreter using the ``run-spidermonkey.py`` script.  To use the
-script, you will need to install the following items on your computer:
+A ECMAscript interpreter with E4X support is required to run the
+processor.  The Rhino, Spidermonkey and Tracemonkey Javascript
+interpreters all satisfy this requirement. The V8 interpreter used by
+Google Chrome and Node does not.  The task of tying a Javascript
+interpreter into a given web framework or application is beyond
+the scope of this manual; but in Python-based environments, the
+`python-spidermonkey bridge module`__ by Paul Davis may be worth a
+look.
 
-Python 2.5 or higher
-      (Available as a package install in most Linux distributions.)
+__ http://github.com/davisp/python-spidermonkey
 
-Python-spidermonkey bridge by Paul Davis
-      http://github.com/davisp/python-spidermonkey
-
-Spidermonkey system library
-      (Available as a package install in most Linux distributions.
-      You may also be able to use the Spidermonkey sources that ship
-      with the ``python-spidermonkey`` bridge.)
-
-If your Python is version 2.5, you will also need to install a
-JSON package, such as ``simplejson`` or ``cjson``.  Python 2.6
-ships with a bundled JSON module, so there is no need to install
-one separately if that's your version.
-
-######################
-``run-tracemonkey.sh``
-######################
-
-The fastest configuration for testing uses the ``run-tracemonkey.sh``
-script.  This is based on the ``jslibs`` development environment,
-the sources for which can be obtained from |link| `Google Code`_.
-(In the current version of the script, you will need to adjust
-the ``TRACEMONKEY`` variable to point at the location of the
-``jshost`` binary installed on your system.)
-
-.. _`Google Code`: http://code.google.com/p/jslibs/
-
-As a rough speed comparison, on the netbook I have used for
-``citeproc-js`` development, run-rhino.sh currently completes the test
-suite in about one minute, run-spidermonkey.py runs in about 30
-seconds, and run-tracemonkey.sh finishes in about 15 seconds.
-(These times are not really reflective of runtime performance,
-since the test suite builds the processor from scratch hundreds
-of times, while at runtime, citation rendering through a preconfigured
-processor will be the dominant mode of operation.)
+Instructions on running the processor test suite can be found
+in the section `Running the test suite`_ at the end of this manual.
 
 
 
@@ -210,7 +170,7 @@ one of them optional:
    on the definition of the functions contained in the ``sys``
    object.
 
-.. code-block:: js
+.. sourcecode:: js
 
    var citeproc = new CSL.Engine(sys, 
                                  style, 
@@ -250,7 +210,7 @@ forth.
    of bibliographies only if the style installed in the processor
    does not impose its own sort order.
 
-.. code-block:: js
+.. sourcecode:: js
 
    var my_ids = [
        "ID-1",
@@ -276,7 +236,7 @@ If invoked without an argument,
 it dumps a formatted bibliography containing all items currently
 registered in the processor:
 
-.. code-block:: js
+.. sourcecode:: js
 
    var mybib = citeproc.makeBibliography();
 
@@ -313,7 +273,7 @@ input examples, is as follows:
    an array containing a value identical to the
    relevant value is treated as a match.
 
-.. code-block:: js
+.. sourcecode:: js
 
    var myarg = {
       "select" : [
@@ -333,7 +293,7 @@ input examples, is as follows:
    Try every match object in the array against the item, and include the
    item if *any* of the objects match.
 
-.. code-block:: js
+.. sourcecode:: js
 
    var myarg = {
       "include" : [
@@ -349,7 +309,7 @@ input examples, is as follows:
 ``exclude``
    Include the item if *none* of the objects match.
 
-.. code-block:: js
+.. sourcecode:: js
 
    var myarg = {
       "exclude" : [
@@ -376,7 +336,7 @@ input examples, is as follows:
    An empty string given as the field value will match items
    for which that field is missing or has a nil value.
 
-.. code-block:: js
+.. sourcecode:: js
 
    var myarg = {
       "include" : [
@@ -412,7 +372,7 @@ element —- the array of formatting parameters —- contains the key/value
 pairs shown below (the values shown are the processor defaults in the
 HTML output mode):
 
-.. code-block:: js
+.. sourcecode:: js
 
    [
       { 
@@ -496,7 +456,7 @@ one two-element array, consisting of the current index position
 as the first element, and a string for insertion into the document
 as the second.  To wit:
 
-.. code-block:: js
+.. sourcecode:: js
 
    citeproc.appendCitationCluster(mycitation,true);
 
@@ -510,7 +470,7 @@ the additional bibliography items added by the citation require
 changes to other citations to achieve disambiguation.  In this
 case, a typical return value might look like this:
 
-.. code-block:: js
+.. sourcecode:: js
 
    citeproc.appendCitationCluster(mycitation);
 
@@ -533,7 +493,7 @@ the ``appendCitationCluster()`` command run without a flag, its
 return array may contain multiple elements, where the edit or
 addition of a citation triggers changes to other citations:
 
-.. code-block:: js
+.. sourcecode:: js
 
    var citationsPre = [ ["citation-abc",1], ["citation-def",2] ];
 
@@ -565,7 +525,7 @@ to the ``citeproc-js`` processor.
    See the section `Output Formatting`_ below for notes
    on defining new output formats.
 
-.. code-block:: js
+.. sourcecode:: js
 
    citeproc.setOutputFormat("rtf");
 
@@ -583,7 +543,7 @@ with the name of the list as sole argument.  The named list is fetched
 and installed by the ``sys.getAbbreviations()`` command, documented
 below under `Local Environment`_ → `System Functions`_.
 
-.. code-block:: js
+.. sourcecode:: js
 
    citeproc.setAbbreviations( "default" );
 
@@ -631,7 +591,7 @@ array.  The sample function below is provided for reference
 only.
 
 
-.. code-block:: js
+.. sourcecode:: js
 
    sys.retrieveLocale = function(lang){
 	   var ret = DATA._locales[ CSL.localeRegistry[lang] ];
@@ -647,7 +607,7 @@ only.
 The ``retrieveItem()`` function is used by the processor to
 fetch individual items from storage.
 
-.. code-block:: js
+.. sourcecode:: js
 
    sys.retrieveItem = function(id){
 	   return DATA._items[id];
@@ -662,7 +622,7 @@ at startup, and when the ``setAbbreviations()`` command is
 invoked on the instantiated processor.  The abbreviation list
 retrieved by the processor should have the following structure:
 
-.. code-block:: js
+.. sourcecode:: js
 
    ABBREVS = { 
       "default": {
@@ -685,7 +645,7 @@ If the object above provides the abbreviation store for the system,
 an appropriate ``sys.getAbbreviations()`` function might look
 like this:
 
-.. code-block:: js
+.. sourcecode:: js
 
    sys.getAbbreviations = function(name){
       return ABBREVS[name];
@@ -712,7 +672,7 @@ Text and numeric variables
 Text and numeric variables are not distinguished in the data layer; both
 should be presented as simple strings.
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "title" : "My Anonymous Life",
       "volume" : "10"
@@ -728,7 +688,7 @@ array for each name represented by the variable.
 Simple personal names are composed of ``family`` and ``given`` elements,
 containing respectively the family and given name of the individual.
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [
        { "family" : "Doe", "given" : "Jonathan" },
@@ -745,7 +705,7 @@ literally (such as "The Artist Formerly Known as Prince",
 "Banksy", or "Ramses IV") should be delivered as a single
 ``literal`` element in the name array:
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [
        { "literal" : "Society for Putting Things on Top of Other Things" }
@@ -770,7 +730,7 @@ delivered as a ``suffix`` element.
 
 __ `dirty-names`_
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [
        { "family" : "Humboldt",
@@ -804,7 +764,7 @@ the input data; the processor is sensitive to the character
 set used in the name elements, and will handle such names
 appropriately.
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [
        { "family" : "村上",
@@ -825,7 +785,7 @@ behavior can be prompted by including a ``static-ordering`` element in
 the name array.  The actual value of the element is irrelevant, so
 long as it returns true when tested by the Javascript interpreter.
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [
        { "family" : "Murakami",
@@ -855,7 +815,7 @@ an optional month and an optional day, in that order if present.
 
 __ `dirty-dates`_
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "date-parts" : [
@@ -867,7 +827,7 @@ __ `dirty-dates`_
 Date elements may be expressed either as numeric strings or as
 numbers.
 
-.. code-block:: js
+.. sourcecode:: js
    
    {  "issued" : {
          "date-parts" : [ 
@@ -878,7 +838,7 @@ numbers.
 
 The ``year`` element may be negative, but never zero.
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "date-parts" : [ 
@@ -892,7 +852,7 @@ also be included.  If present, string or number values between ``1`` and ``4``
 will be interpreted to correspond to Spring, Summer, Fall, and Winter, 
 respectively.
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "date-parts" : [ 
@@ -906,7 +866,7 @@ Other string values are permitted in the ``season`` element,
 but note that these will appear in the output
 as literal strings, without localization:
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "date-parts" : [
@@ -919,7 +879,7 @@ as literal strings, without localization:
 For approximate dates, a ``circa`` element should be included,
 with a non-nil value:
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "date-parts" : [
@@ -932,7 +892,7 @@ with a non-nil value:
 To input a date range, add an array representing the end date,
 with corresponding elements:
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "date-parts" : [
@@ -944,7 +904,7 @@ with corresponding elements:
 
 To specify an open-ended range, pass nil values for the end elements:
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "date-parts" : [
@@ -958,7 +918,7 @@ To specify an open-ended range, pass nil values for the end elements:
 
 A literal string may be passed through as a ``literal`` element:
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "literal" : "13th century"
@@ -972,7 +932,7 @@ Citation data object
 A minimal citation data object, used as input by both the ``processCitationCluster()``
 and ``appendCitationCluster()`` command, has the following form:
 
-.. code-block:: js
+.. sourcecode:: js
 
    {
       "citationItems": [
@@ -1048,7 +1008,7 @@ in arrays and Javascript objects.  Calling applications should
 not need to access this data directly, but it is available in
 the processor registry, at the following locations:
 
-.. code-block:: js
+.. sourcecode:: js
 
    citeproc.registry.citationreg.citationById
 
@@ -1105,7 +1065,7 @@ or ``given`` fields, respectively, setting the ``parse-names``
 flag on the name object to indicate that the processor should
 perform particle extraction on these fields:
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [ 
        { "family" : "Humboldt",
@@ -1129,7 +1089,7 @@ be treated as part of the name itself, and not as particles.  The
 ``parse-names`` flag should not be set on such names:
 marks:
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [
        { "family" : "van der Vlist",
@@ -1149,7 +1109,7 @@ parsing code for raw date strings.  Clients may take advantage of the
 processor's internal parser by supplying date strings as a single
 ``raw`` element:
 
-.. code-block:: js
+.. sourcecode:: js
 
    {  "issued" : {
          "raw" : "25 Dec 2004"
@@ -1183,7 +1143,7 @@ invoked with a non-nil ``author-only`` element, everything but the
 author name in a cite is suppressed.  The name is returned without
 decorative markup (italics, superscript, and so forth).
 
-.. code-block:: js
+.. sourcecode:: js
 
    var my_ids = { 
      ["ID-1", {"author-only": 1}]
@@ -1201,7 +1161,7 @@ And if that were the end of the story, you would be right ...
 To suppress the rendering of names in a cite, include a ``suppress-author``
 element with a non-nil value in the supplementary data:
 
-.. code-block:: js
+.. sourcecode:: js
 
    var my_ids = [
        ["ID-1", { "locator": "21", "suppress-author": 1 }]
@@ -1259,7 +1219,7 @@ cite to Roe must be obtained in two parts: the first with a call
 controlled by the ``author-only`` element; and the second with
 a call controlled by the ``suppress-author`` element, *in that order*:
 
-.. code-block:: js
+.. sourcecode:: js
 
    var my_ids = { 
      ["ID-3", {"author-only": 1}]
@@ -1269,7 +1229,7 @@ a call controlled by the ``suppress-author`` element, *in that order*:
 
 ... and then ...
    
-.. code-block:: js
+.. sourcecode:: js
 
    var citation = { 
      "citationItems": ["ID-3", {"suppress-author": 1}],
@@ -1340,7 +1300,7 @@ The ``style`` tag in a CSL style may contain a ``default-locale`` attribute.
          When the ``default-locale`` attribute is omitted, 
          the default language is set to ``en-US``.
    
-.. code-block:: xml
+.. sourcecode:: xml
       
    <style 
        xmlns="http://purl.org/net/xbiblio/csl"
@@ -1392,7 +1352,7 @@ __ http://www.iana.org/assignments/language-subtag-registry
 The tags are applied to a style by appending them to the language
 string in the ``default-locale`` element:
 
-.. code-block:: xml
+.. sourcecode:: xml
 
    <style 
        xmlns="http://purl.org/net/xbiblio/csl"
@@ -1406,7 +1366,7 @@ attribute.  The following will attempt to render titles in either
 Pinyin transliteration (for Chinese titles) or Hepburn romanization
 (for Japanese titles), sorting by the transliteration.
 
-.. code-block:: xml
+.. sourcecode:: xml
 
    <style 
        xmlns="http://purl.org/net/xbiblio/csl"
@@ -1435,7 +1395,7 @@ For titles, alternative representations are appended
 directly to the field content, separated by the appropriate
 language tag with a leading and trailing colon:
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "title" : "民法 :ja-Latn-hepburn-heploc: Minpō :en: Civil Code"
    }
@@ -1459,7 +1419,7 @@ __ `input-byzantine`_
 
 
 
-.. code-block:: js
+.. sourcecode:: js
 
    { "author" : [
        { "family" : "穂積",
@@ -1487,18 +1447,56 @@ Test Suite
 scripts that can be used to confirm that the system performs correctly
 after installation.  The tests begin as individual human-friendly
 fixtures written in a special format, shown in the sample file
-immediately below.  Tests for use by grinding them into a
-machine-friendly form (JSON), and by writing a Javascript execution
-wrapper for each fixture to disk (under ``./tests/javascript/``) for
-use in the processor test framework.  The tests are then processed in
-a separate operation by invoking one of the top-level test runner
-commands.
+immediately below.  Tests are prepared for use by grinding them into a
+machine-friendly form (JSON), and by preparing an appropriate Javascript
+execution wrapper for each.  These operations are performed automatically
+by the top-level test runner script that ships with the sources.
 
-This section describes the arrangement of the files, the internal
-layout of the human-readable version of the text fixtures, the scripts
-used to manage the text fixture bundle, and the commands used to
-actually run the tests.
 
+######################
+Running the test suite
+######################
+
+Tests are controlled by the ``./test.py`` script in the root
+directory of the archive.  To run all standard tests in the suite using
+the ``rhino`` interpreted shipped with the processor, use
+the following command::
+
+    ./test.py -s
+
+Options and arguments can be used to select an alternative
+Javascript interpreter, or  to change or limit the set of tests
+run.  The script options are as follows:
+
+``--help``: 
+     List the script options with a brief description
+     of each and exit
+``--tracemonkey``
+     Use the tracemonkey JS engine, rather than the Rhino
+     default.
+``--cranky``
+     validate style code for testing against the
+     CSL schema using the ``jing`` XML tool.
+``--grind``
+     Force grinding of human-readable test code into machine-
+     readable form.
+``--standard``
+     Run standard tests.
+``--release``
+     Bundle processor, apply license to files, and test with
+     bundled code.
+``--processor``
+     Run processor tests (cannot be used with the ``-c``, ``-g`` or ``-s``
+     opts, takes only test name as single argument).
+``--verbose``      
+     Display test names during processing.
+
+The ``--tracemonkey`` option requires the ``jslibs`` Javascript
+development environment.  The sources for ``jslibs`` can be obtained from |link| `Google Code`_.
+After installation, adjust the path to the ``jshost`` utility in ``./tests/config/test.cnf``.
+
+
+.. _`Google Code`: http://code.google.com/p/jslibs/
 
 ##############
 Fixture layout
@@ -1525,7 +1523,7 @@ the usage of each.
          ``BIBENTRIES``, ``BIBSECTION``, ``CITATIONS`` and ``CITATION-ITEMS``
          are also explained below.
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== MODE =====>>
    citation
@@ -1606,7 +1604,7 @@ In the case of ``bibliography`` mode, the ``makeBibliography()``
 command is used, with output possibly filtered by the conditions
 specified in a ``BIBSECTION`` area:
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== MODE =====>>
    citation
@@ -1619,7 +1617,7 @@ CSL
 The code to be used in the test must be valid
 as a complete, if minimal, CSL style:
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== CSL =====>>
    <style 
@@ -1681,7 +1679,7 @@ optional sections is included, the testing behavior is slightly
 different; see the discussion of the relevant sections below
 for details):
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== INPUT =====>>
    [
@@ -1723,7 +1721,7 @@ RESULT
 A string to compare with the citation or bibliography output
 received from the processor.
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== RESULT =====>>
    (Noakes, et al. 2005; Stoakes 1898)
@@ -1734,7 +1732,7 @@ used for testing will be affixed with a standard set of
 wrapper tags, which must be written into the result string
 used for comparison:
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== RESULT =====>>
    <div class="csl-bib-body">
@@ -1774,7 +1772,7 @@ registered in the ``INPUT`` section:
          requested citation sets, and should correctly reflect the
          last in the series.
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== BIBENTRIES =====>>
    [
@@ -1802,7 +1800,7 @@ can be used to limit the output of the bibligraphy, through
 the interface described above under the `makeBibliography()`_
 command:
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== BIBSECTION =====>>
    {
@@ -1846,7 +1844,7 @@ containing, at least, item ID.
 A single citation is composed of a list of cites, and
 the full entry consists of a list of such citations:
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== CITATION-ITEMS =====>>
    [
@@ -1871,7 +1869,7 @@ data objects with explict ``citationID`` values and ID list values
 for subsequent invocations of the ``processCitationCluster()`` command,
 like the following:
 
-.. code-block:: text
+.. sourcecode:: text
 
    >>===== CITATIONS =====>>
    [
@@ -1914,58 +1912,3 @@ like the following:
 
 
 
-##################################
-Running your own tests: a tutorial
-##################################
-
-Suppose that you are designing a CSL style, and you would like
-to be very certain that it performs correctly with various
-combinations of data.  You can do this, with a bit of work,
-by building a special-purpose test runner.  The steps for
-doing so are explained below.
-
-^^^^^^^^
-Uhmz ...
-^^^^^^^^
-
-Can all three scripts take an option?
-
-
-The following commands are used to process and run
-the tests.  For further information, see the source
-code of the relevant scripts, or drop a line to the
-|link| `citeproc-js integrators group`__.
-
-__ http://groups.google.com/group/citeproc-js
-
-**Test preparation**
-
-.. admonition:: Important
-
-   Any broken JSON syntax in the ``INPUT`` section,
-   or in the optional sections 
-   ``BIBENTRIES``, ``CITATIONS`` or ``CITATION-ITEMS``  
-   will raise an error during
-   this phase of processing.
-
-..
-
-   ::
-   
-       ./tools/MAKETESTS.sh
-
-The command above performs three tasks: (a) it writes Javascript
-wrappers for each fixture to an appropriate file in the ``./tests/javascript``
-directory; (b) it invokes the ``./tests/std/grind.py`` command to
-processs the human-readable test fixtures under ``./tests/std/humans/``
-into the machine-friendly JSON format, storing the resulting files
-under ``./tests/std/machines/``, and (c) it promiscuously applies
-the license terms at the top of ``./src/load.js`` to files throughout
-the archive.  After this command is run successfully,
-the tests are ready to go.
-
-**Running the tests**
-
-For information on the three test runners bundled with
-``citeproc-js``, see the section `Setup and System Requirements`_, 
-above.
