@@ -54,83 +54,93 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-var CSL = new function () {
+var CSL = {
 
-	this.debug = function (str) {
+	debug: function (str) {
 		print(str);
-	};
+	},
 
-	this.START = 0;
-	this.END = 1;
-	this.SINGLETON = 2;
-	this.SEEN = 6;
+	START: 0,
+	END: 1,
+	SINGLETON: 2,
 
-	this.SUCCESSOR = 3;
-	this.SUCCESSOR_OF_SUCCESSOR = 4;
-	this.SUPPRESS = 5;
+	SEEN: 6,
+	SUCCESSOR: 3,
+	SUCCESSOR_OF_SUCCESSOR: 4,
+	SUPPRESS: 5,
 
-	this.SINGULAR = 0;
-	this.PLURAL = 1;
+	SINGULAR: 0,
+	PLURAL: 1,
 
-	this.LITERAL = true;
+	LITERAL: true,
 
-	this.BEFORE = 1;
-	this.AFTER = 2;
+	BEFORE: 1,
+	AFTER: 2,
 
-	this.DESCENDING = 1;
-	this.ASCENDING = 2;
+	DESCENDING: 1,
+	ASCENDING: 2,
 
-	this.ONLY_FIRST = 1;
-	this.ALWAYS = 2;
-	this.ONLY_LAST = 3;
+	ONLY_FIRST: 1,
+	ALWAYS: 2,
+	ONLY_LAST: 3,
 
-	this.FINISH = 1;
+	FINISH: 1,
 
-	this.POSITION_FIRST = 0;
-	this.POSITION_SUBSEQUENT = 1;
-	this.POSITION_IBID = 2;
-	this.POSITION_IBID_WITH_LOCATOR = 3;
+	POSITION_FIRST: 0,
+	POSITION_SUBSEQUENT: 1,
+	POSITION_IBID: 2,
+	POSITION_IBID_WITH_LOCATOR: 3,
 
 	// update modes
-	this.NONE = 0;
-	this.NUMERIC = 1;
-	this.POSITION = 2;
+	NONE: 0,
+	NUMERIC: 1,
+	POSITION: 2,
 
-	this.COLLAPSE_VALUES = ["citation-number", "year", "year-suffix"];
+	COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
 
-	this.ET_AL_NAMES = ["et-al-min", "et-al-use-first"];
-	this.ET_AL_NAMES = this.ET_AL_NAMES.concat(["et-al-subsequent-min", "et-al-subsequent-use-first"]);
+	ET_AL_NAMES: [
+		"et-al-min",
+		"et-al-use-first",
+		"et-al-subsequent-min",
+		"et-al-subsequent-use-first"
+	],
 
-	this.DISAMBIGUATE_OPTIONS = ["disambiguate-add-names", "disambiguate-add-givenname"];
-	this.DISAMBIGUATE_OPTIONS.push("disambiguate-add-year-suffix");
-	this.GIVENNAME_DISAMBIGUATION_RULES = [];
-	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names");
-	this.GIVENNAME_DISAMBIGUATION_RULES.push("all-names-with-initials");
-	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name");
-	this.GIVENNAME_DISAMBIGUATION_RULES.push("primary-name-with-initials");
-	this.GIVENNAME_DISAMBIGUATION_RULES.push("by-cite");
+	DISAMBIGUATE_OPTIONS: [
+		"disambiguate-add-names",
+		"disambiguate-add-givenname",
+		"disambiguate-add-year-suffix"
+	],
 
-	this.NAME_ATTRIBUTES = [];
-	this.NAME_ATTRIBUTES.push("and");
-    this.NAME_ATTRIBUTES.push("delimiter-precedes-last");
-	this.NAME_ATTRIBUTES.push("initialize-with");
-	this.NAME_ATTRIBUTES.push("name-as-sort-order");
-	this.NAME_ATTRIBUTES.push("sort-separator");
-	this.NAME_ATTRIBUTES.push("et-al-min");
-	this.NAME_ATTRIBUTES.push("et-al-use-first");
-    this.NAME_ATTRIBUTES.push("et-al-subsequent-min");
-    this.NAME_ATTRIBUTES.push("et-al-subsequent-use-first");
+	GIVENNAME_DISAMBIGUATION_RULES: [
+		"all-names",
+		"all-names-with-initials",
+		"primary-name",
+		"primary-name-with-initials",
+		"by-cite"
+	],
 
-	this.LOOSE = 0;
-	this.STRICT = 1;
+	NAME_ATTRIBUTES: [
+		"and",
+		"delimiter-precedes-last",
+		"initialize-with",
+		"name-as-sort-order",
+		"sort-separator",
+		"et-al-min",
+		"et-al-use-first",
+		"et-al-subsequent-min",
+		"et-al-subsequent-use-first"
+	],
 
-	this.PREFIX_PUNCTUATION = /[.;:]\s*$/;
-	this.SUFFIX_PUNCTUATION = /^\s*[.;:,\(\)]/;
+	LOOSE: 0,
+	STRICT: 1,
 
-	this.NUMBER_REGEXP = /(?:^\d+|\d+$|\d{3,})/; // avoid evaluating "F.2d" as numeric
+	PREFIX_PUNCTUATION: /[.;:]\s*$/,
+	SUFFIX_PUNCTUATION: /^\s*[.;:,\(\)]/,
+
+	NUMBER_REGEXP: /(?:^\d+|\d+$|\d{3,})/, // avoid evaluating "F.2d" as numeric
                                                  // Afterthought: um ... why?
-	this.QUOTED_REGEXP_START = /^"/;
-	this.QUOTED_REGEXP_END = /^"$/;
+	QUOTED_REGEXP_START: /^"/,
+	QUOTED_REGEXP_END: /^"$/,
 	//
 	// \u0400-\u042f are cyrillic and extended cyrillic capitals
 	// this is not fully smart yet.  can't do what this was trying to do
@@ -138,80 +148,93 @@ var CSL = new function () {
 	// capital letter, and any subsequent capital letters.  Have to compare
 	// locale caps version with existing version, character by character.
 	// hard stuff, but if it breaks, that's what to do.
-	this.NAME_INITIAL_REGEXP = /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/;
-	this.ROMANESQUE_REGEXP = /[a-zA-Z\u0080-\u017f\u0400-\u052f]/;
-	this.STARTSWITH_ROMANESQUE_REGEXP = /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/;
-	this.ENDSWITH_ROMANESQUE_REGEXP = /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/;
-	this.DISPLAY_CLASSES = ["block", "left-margin", "right-inline", "indent"];
+	NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/,
+	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f]/,
+	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
+	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
+	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 
-	this.NUMERIC_VARIABLES = ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"];
+	NUMERIC_VARIABLES: ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"],
 	//var x = new Array();
 	//x = x.concat(["title","container-title","issued","page"]);
 	//x = x.concat(["locator","collection-number","original-date"]);
 	//x = x.concat(["reporting-date","decision-date","filing-date"]);
 	//x = x.concat(["revision-date"]);
-	//this.NUMERIC_VARIABLES = x.slice();
-	this.DATE_VARIABLES = ["issued", "event", "accessed", "container", "original-date"];
+	//NUMERIC_VARIABLES = x.slice();
+	DATE_VARIABLES: ["issued", "event", "accessed", "container", "original-date"],
 
-	this.TAG_ESCAPE = /(<span class=\"no(?:case|decor)\">.*?<\/span>)/;
-	this.TAG_USEALL = /(<[^>]+>)/;
+	TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
+	TAG_USEALL: /(<[^>]+>)/,
 
-	this.SKIP_WORDS = ["a", "the", "an"];
+	SKIP_WORDS: ["a", "the", "an"],
 
-	var x = [];
-	x = x.concat(["@strip-periods", "@font-style", "@font-variant"]);
-	x = x.concat(["@font-weight", "@text-decoration", "@vertical-align"]);
-	x = x.concat(["@quotes"]);
-	this.FORMAT_KEY_SEQUENCE = x.slice();
-	this.SUFFIX_CHARS = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
-	this.ROMAN_NUMERALS = [
+	FORMAT_KEY_SEQUENCE: [
+		"@strip-periods",
+		"@font-style",
+		"@font-variant",
+		"@font-weight",
+		"@text-decoration",
+		"@vertical-align",
+		"@quotes"
+	],
+
+	SUFFIX_CHARS: "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z",
+	ROMAN_NUMERALS: [
 		[ "", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix" ],
 		[ "", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc" ],
 		[ "", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm" ],
 		[ "", "m", "mm", "mmm", "mmmm", "mmmmm"]
-	];
-	this.CREATORS = ["author", "editor", "translator", "recipient", "interviewer"];
-	this.CREATORS = this.CREATORS.concat(["composer"]);
-	this.CREATORS = this.CREATORS.concat(["original-author"]);
-	this.CREATORS = this.CREATORS.concat(["container-author", "collection-editor"]);
+	],
+	CREATORS: [
+		"author",
+		"editor",
+		"translator",
+		"recipient",
+		"interviewer",
+		"composer",
+		"original-author",
+		"container-author",
+		"collection-editor"
+	],
 
-	this.LANG_BASES = {};
-	this.LANG_BASES.af = "af_ZA";
-	this.LANG_BASES.ar = "ar_AR";
-	this.LANG_BASES.bg = "bg_BG";
-	this.LANG_BASES.ca = "ca_AD";
-	this.LANG_BASES.cs = "cs_CZ";
-	this.LANG_BASES.da = "da_DK";
-	this.LANG_BASES.de = "de_DE";
-	this.LANG_BASES.el = "el_GR";
-	this.LANG_BASES.en = "en_US";
-	this.LANG_BASES.es = "es_ES";
-	this.LANG_BASES.et = "et_EE";
-	this.LANG_BASES.fr = "fr_FR";
-	this.LANG_BASES.he = "he_IL";
-	this.LANG_BASES.hu = "hu_HU";
-	this.LANG_BASES.is = "is_IS";
-	this.LANG_BASES.it = "it_IT";
-	this.LANG_BASES.ja = "ja_JP";
-	this.LANG_BASES.ko = "ko_KR";
-	this.LANG_BASES.mn = "mn_MN";
-	this.LANG_BASES.nb = "nb_NO";
-	this.LANG_BASES.nl = "nl_NL";
-	this.LANG_BASES.pl = "pl_PL";
-	this.LANG_BASES.pt = "pt_PT";
-	this.LANG_BASES.ro = "ro_RO";
-	this.LANG_BASES.ru = "ru_RU";
-	this.LANG_BASES.sk = "sk_SK";
-	this.LANG_BASES.sl = "sl_SI";
-	this.LANG_BASES.sr = "sr_RS";
-	this.LANG_BASES.sv = "sv_SE";
-	this.LANG_BASES.th = "th_TH";
-	this.LANG_BASES.tr = "tr_TR";
-	this.LANG_BASES.uk = "uk_UA";
-	this.LANG_BASES.vi = "vi_VN";
-	this.LANG_BASES.zh = "zh_CN";
+	LANG_BASES: {
+		af: "af_ZA",
+		ar: "ar_AR",
+		bg: "bg_BG",
+		ca: "ca_AD",
+		cs: "cs_CZ",
+		da: "da_DK",
+		de: "de_DE",
+		el: "el_GR",
+		en: "en_US",
+		es: "es_ES",
+		et: "et_EE",
+		fr: "fr_FR",
+		he: "he_IL",
+		hu: "hu_HU",
+		is: "is_IS",
+		it: "it_IT",
+		ja: "ja_JP",
+		ko: "ko_KR",
+		mn: "mn_MN",
+		nb: "nb_NO",
+		nl: "nl_NL",
+		pl: "pl_PL",
+		pt: "pt_PT",
+		ro: "ro_RO",
+		ru: "ru_RU",
+		sk: "sk_SK",
+		sl: "sl_SI",
+		sr: "sr_RS",
+		sv: "sv_SE",
+		th: "th_TH",
+		tr: "tr_TR",
+		uk: "uk_UA",
+		vi: "vi_VN",
+		zh: "zh_CN"
+	},
 
-	this.locale = {};
+	locale: {},
 
 	//
 	// Well, that's interesting.  We're going to need fallbacks for
@@ -223,8 +246,8 @@ var CSL = new function () {
 	//
 	// So need functions getOpt() and getDate()?
 	//
-	this.locale_opts = {};
-	this.locale_dates = {};
+	locale_opts: {},
+	locale_dates: {}
 
 };
 
