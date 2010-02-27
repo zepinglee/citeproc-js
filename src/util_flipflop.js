@@ -45,7 +45,7 @@ CSL.Util.FlipFlopper = function(state){
 		["<i>","</i>","italics","@font-style",["italic","normal"],true],
 		["<b>","</b>","bold","@font-weight",["bold","normal"],true],
 		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
-		["<sub>","</sub>","subscript","@font-weight",["sub","sub"],true],
+		["<sub>","</sub>","subscript","@vertical-align",["sub","sub"],true],
 		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
 		["<span class=\"nocase\">","</span>","passthrough","@passthrough",["true","true"],true],
 		["<span class=\"nodecor\">","</span>","passthrough","@passthrough",["true","true"],true],
