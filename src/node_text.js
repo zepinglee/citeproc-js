@@ -77,7 +77,7 @@ CSL.Node.text = new function(){
 						if (!state.tmp.force_subsequent){
 							if (item && item["author-only"]){
 								state.tmp.element_trace.replace("do-not-suppress-me");
-								var term = CSL.Output.Formatters["capitalize-first"](state,state.getTerm("references","long","singular"));
+								var term = CSL.Output.Formatters["capitalize-first"](state,state.getTerm("reference","long","singular"));
 								state.output.append(term+" ");
 								state.tmp.last_element_trace = true;
 							};
@@ -131,7 +131,7 @@ CSL.Node.text = new function(){
 							//
 							// A shot in the dark
 							//
-							var myname = state.getTerm("references","short",0);
+							var myname = state.getTerm("reference","short",0);
 							for each (var n in CSL.CREATORS){
 								if (Item[n]){
 									var names = Item[n];
