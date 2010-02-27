@@ -363,7 +363,7 @@ CSL.Attributes["@is-numeric"] = function(state,arg){
 			if (typeof val != "string"){
 				return false;
 			}
-			if (val.match(CSL.QUOTED_REGEXP)){
+			if (val.match(CSL.QUOTED_REGEXP_START) && val.match(CSL.QUOTED_REGEXP_END)){
 				return false;
 			}
 			if (val.match(CSL.NUMBER_REGEXP)){

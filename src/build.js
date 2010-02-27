@@ -38,7 +38,7 @@ CSL.Engine = function(sys,style,lang) {
 	this.sys.xml = new CSL.System.Xml.E4X();
 	if ("string" != typeof style){
 		style = "";
-	};
+	}
 	this.parallel = new CSL.Parallel(this);
 	//this.parallel.use_parallels = true;
 
@@ -180,7 +180,7 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	var area_nodes = this.sys.xml.getNodesByName(this.cslXml, area);
 	if (!this.sys.xml.getNodeValue( area_nodes)){
 		return;
-	};
+	}
 	var navi = new this._getNavi( this, area_nodes );
 	this.build.area = area;
 	CSL.buildStyle.call(this,navi);
