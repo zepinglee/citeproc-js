@@ -47,6 +47,10 @@ doh.register("std.disambiguate", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("disambiguate_AddNamesFailureWithAddGivenname");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("disambiguate_ByCiteGivennameNoShortFormInitializeWith");
         doh.assertEqual(test.result, test.run());
     }, 
