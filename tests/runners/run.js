@@ -33,7 +33,6 @@ dojo.require("std.name");
 dojo.require("std.magic");
 dojo.require("std.display");
 dojo.require("std.variables");
-dojo.require("std.bluebook");
 dojo.require("std.number");
 dojo.require("std.label");
 tests.run();
