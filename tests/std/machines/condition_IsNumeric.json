@@ -32,34 +32,48 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.condition");
-doh.register("std.condition", [
-    function(){
-        var test = new StdRhinoTest("condition_RefTypeBranching");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("condition_IsNumeric");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("condition_NumeralWithTextIsNumeric");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("condition_TextIsNotNumeric");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("condition_NumeralIsNumeric");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("condition_NumberIsNumeric");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("condition_EmptyDate");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+{
+    "bibentries": false, 
+    "bibsection": false, 
+    "citation_items": [
+        [
+            {
+                "id": "ITEM-1"
+            }
+        ], 
+        [
+            {
+                "id": "ITEM-2"
+            }
+        ], 
+        [
+            {
+                "id": "ITEM-3"
+            }
+        ]
+    ], 
+    "citations": false, 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <choose>\n        <if is-numeric=\"volume\">\n          <text value=\"Numeric true:\" suffix=\" \"/>\n          <number variable=\"volume\"/>\n        </if>\n        <else>\n          <text value=\"Numeric false:\" suffix=\" \"/>\n          <number variable=\"volume\"/>\n        </else>\n      </choose>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "Work 1", 
+            "type": "book", 
+            "volume": "Volume 2"
+        }, 
+        {
+            "id": "ITEM-2", 
+            "title": "Work 2", 
+            "type": "book", 
+            "volume": "2nd volume"
+        }, 
+        {
+            "id": "ITEM-3", 
+            "title": "Work 3", 
+            "type": "book", 
+            "volume": "Second volume"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Numeric true: 2\nNumeric true: 2\nNumeric false: Second volume"
+}
