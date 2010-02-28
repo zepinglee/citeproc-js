@@ -544,68 +544,70 @@ CSL.Output.Queue.normalizePrefixPunctuation = function(blobs){
 		};
 	};
 };
-CSL.localeResolve = function(langstr){
-	var ret = new Object();
-	if ("undefined" == typeof langstr){
+CSL.localeResolve = function (langstr) {
+	var ret, langlst;
+	ret = {};
+	if ("undefined" === typeof langstr) {
 		langstr = "en_US";
-	};
-	var langlst = langstr.split(/[-_]/);
+	}
+	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
-	if (langlst.length == 1 || langlst[1] == "x"){
-		ret.best = ret.base.replace("_","-");
+	if (langlst.length === 1 || langlst[1] === "x") {
+		ret.best = ret.base.replace("_", "-");
 	} else {
-		ret.best = langlst.slice(0,2).join("-");
-	};
+		ret.best = langlst.slice(0, 2).join("-");
+	}
 	ret.bare = langlst[0];
 	return ret;
 };
-CSL.localeSet = function(sys,myxml,lang_in,lang_out){
-	lang_in = lang_in.replace("_","-");
-	lang_out = lang_out.replace("_","-");
-	if (!this.locale[lang_out]){
-		this.locale[lang_out] = new Object();
-		this.locale[lang_out].terms = new Object();
-		this.locale[lang_out].opts = new Object();
-		this.locale[lang_out].dates = new Object();
+CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
+	var blob, locale;
+	lang_in = lang_in.replace("_", "-");
+	lang_out = lang_out.replace("_", "-");
+	if (!this.locale[lang_out]) {
+		this.locale[lang_out] = {};
+		this.locale[lang_out].terms = {};
+		this.locale[lang_out].opts = {};
+		this.locale[lang_out].dates = {};
 	}
-	var locale = sys.xml.makeXml();
-	if (sys.xml.nodeNameIs(myxml,'locale')){
+	locale = sys.xml.makeXml();
+	if (sys.xml.nodeNameIs(myxml, 'locale')) {
 		locale = myxml;
 	} else {
-		for each (var blob in sys.xml.getNodesByName(myxml,"locale")){
-			if (sys.xml.getAttributeValue(blob,'lang','xml') == lang_in){
+		for each (blob in sys.xml.getNodesByName(myxml, "locale")) {
+			if (sys.xml.getAttributeValue(blob,'lang', 'xml') === lang_in) {
 				locale = blob;
 				break;
 			}
 		}
 	}
-	for each (var term in sys.xml.getNodesByName(locale,'term')){
-		var termname = sys.xml.getAttributeValue(term,'name');
-		if ("undefined" == typeof this.locale[lang_out].terms[termname]){
+	for each (var term in sys.xml.getNodesByName(locale, 'term')) {
+		var termname = sys.xml.getAttributeValue(term, 'name');
+		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
 			this.locale[lang_out].terms[termname] = new Object();
 		};
 		var form = "long";
-		if (sys.xml.getAttributeValue(term,'form')){
-			form = sys.xml.getAttributeValue(term,'form');
+		if (sys.xml.getAttributeValue(term, 'form')) {
+			form = sys.xml.getAttributeValue(term, 'form');
 		}
-		if (sys.xml.getNodesByName(term,'multiple').length()){
+		if (sys.xml.getNodesByName(term, 'multiple').length()) {
 			this.locale[lang_out].terms[termname][form] = new Array();
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][0] = sys.xml.getNodeValue(term,'single');
+			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
 			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][1] = sys.xml.getNodeValue(term,'multiple');
 		} else {
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form] = sys.xml.getNodeValue(term);
+			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
 		}
 	}
-	for each (var styleopts in sys.xml.getNodesByName(locale,'style-options')){
+	for each (var styleopts in sys.xml.getNodesByName(locale, 'style-options')) {
 		for each (var attr in sys.xml.attributes(styleopts) ) {
-			if (sys.xml.getNodeValue(attr) == "true"){
+			if (sys.xml.getNodeValue(attr) === "true") {
 				this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
 			} else {
 				this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
 			};
 		};
 	};
-	for each (var date in sys.xml.getNodesByName(locale,'date')){
+	for each (var date in sys.xml.getNodesByName(locale,'date')) {
 		this.locale[lang_out].dates[ sys.xml.getAttributeValue( date, "form") ] = date;
 	};
 };
@@ -4187,54 +4189,53 @@ CSL.Attributes["@display"] = function(state,arg){
 }
 CSL.System = {};
 CSL.System.Xml = {};
-CSL.System.Xml.E4X = function(){};
-CSL.System.Xml.E4X.prototype.clean = function(xml){
-	xml = xml.replace(/<\?[^?]+\?>/g,"");
-	xml = xml.replace(/<![^>]+>/g,"");
-	xml = xml.replace(/^\s+/g,"");
-	xml = xml.replace(/\s+$/g,"");
+CSL.System.Xml.E4X = function () {};
+CSL.System.Xml.E4X.prototype.clean = function (xml) {
+	xml = xml.replace(/<\?[^?]+\?>/g, "");
+	xml = xml.replace(/<![^>]+>/g, "");
+	xml = xml.replace(/^\s+/g, "");
+	xml = xml.replace(/\s+$/g, "");
 	return xml;
 };
-CSL.System.Xml.E4X.prototype.children = function(myxml){
-	var ret = myxml.children();
-	return ret;
+CSL.System.Xml.E4X.prototype.children = function (myxml) {
+	return myxml.children();
 };
-CSL.System.Xml.E4X.prototype.nodename = function(myxml){
+CSL.System.Xml.E4X.prototype.nodename = function (myxml) {
 	return myxml.localName();
 };
-CSL.System.Xml.E4X.prototype.attributes = function(myxml){
+CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
+	var ret, attrs, attr, key;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ret = new Object();
-	var attrs = myxml.attributes();
-	for each (var attr in attrs){
-		var key = "@"+attr.localName();
-		if (key.slice(0,5) == "@e4x_"){
+	ret = new Object();
+	attrs = myxml.attributes();
+	for each (attr in attrs) {
+		key = "@" + attr.localName();
+		if (key.slice(0,5) == "@e4x_") {
 			continue;
 		}
-		var value = attr;
-		ret[key] = value;
+		ret[key] = attr;
 	}
 	return ret;
 };
-CSL.System.Xml.E4X.prototype.content = function(myxml){
+CSL.System.Xml.E4X.prototype.content = function (myxml) {
 	return myxml.toString();
 };
 CSL.System.Xml.E4X.prototype.namespace = {
 	"xml":"http://www.w3.org/XML/1998/namespace"
 }
-CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
+CSL.System.Xml.E4X.prototype.numberofnodes = function (myxml) {
 	return myxml.length();
 };
-CSL.System.Xml.E4X.prototype.getAttributeName = function(attr){
+CSL.System.Xml.E4X.prototype.getAttributeName = function (attr) {
 	return attr.localName();
 }
-CSL.System.Xml.E4X.prototype.getAttributeValue = function(myxml,name,namespace){
+CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	if (namespace){
+	if (namespace) {
 		var ns = new Namespace(this.namespace[namespace]);
 		var ret = myxml.@ns::[name].toString();
 	} else {
-		if (name){
+		if (name) {
 			var ret = myxml.attribute(name).toString();
 		} else {
 			var ret = myxml.toString();
@@ -4242,7 +4243,7 @@ CSL.System.Xml.E4X.prototype.getAttributeValue = function(myxml,name,namespace){
 	}
 	return ret;
 }
-CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
+CSL.System.Xml.E4X.prototype.getNodeValue = function (myxml,name) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (name){
 		return myxml[name].toString();
@@ -4250,26 +4251,26 @@ CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
 		return myxml.toString();
 	}
 }
-CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function(myxml,nodename,attrname,attr,val){
+CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,attrname,attr,val) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (attr[0] != '@'){
 		attr = '@'+attr;
 	}
 	myxml[nodename].(@name == attrname)[0][attr] = val;
 }
-CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function(myxml,val){
+CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function (myxml,val) {
 	delete myxml.*.(@name==val)[0];
 }
-CSL.System.Xml.E4X.prototype.deleteAttribute = function(myxml,attr){
+CSL.System.Xml.E4X.prototype.deleteAttribute = function (myxml,attr) {
 	delete myxml["@"+attr];
 }
-CSL.System.Xml.E4X.prototype.setAttribute = function(myxml,attr,val){
+CSL.System.Xml.E4X.prototype.setAttribute = function (myxml,attr,val) {
 	myxml['@'+attr] = val;
 }
-CSL.System.Xml.E4X.prototype.nodeCopy = function(myxml){
+CSL.System.Xml.E4X.prototype.nodeCopy = function (myxml) {
 	return myxml.copy();
 }
-CSL.System.Xml.E4X.prototype.getNodesByName = function(myxml,name,nameattrval){
+CSL.System.Xml.E4X.prototype.getNodesByName = function (myxml,name,nameattrval) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var ret = myxml.descendants(name);
 	if (nameattrval){
@@ -4277,14 +4278,14 @@ CSL.System.Xml.E4X.prototype.getNodesByName = function(myxml,name,nameattrval){
 	}
 	return ret;
 }
-CSL.System.Xml.E4X.prototype.nodeNameIs = function(myxml,name){
+CSL.System.Xml.E4X.prototype.nodeNameIs = function (myxml,name) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (myxml.localName().toString() == name){
 		return true;
 	}
 	return false;
 }
-CSL.System.Xml.E4X.prototype.makeXml = function(myxml){
+CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
 	if ("xml" == typeof myxml){
 		myxml = myxml.toXMLString();
 	};

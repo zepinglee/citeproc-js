@@ -33,18 +33,19 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.localeResolve = function(langstr){
-	var ret = new Object();
-	if ("undefined" == typeof langstr){
+CSL.localeResolve = function (langstr) {
+	var ret, langlst;
+	ret = {};
+	if ("undefined" === typeof langstr) {
 		langstr = "en_US";
-	};
-	var langlst = langstr.split(/[-_]/);
+	}
+	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
-	if (langlst.length == 1 || langlst[1] == "x"){
-		ret.best = ret.base.replace("_","-");
+	if (langlst.length === 1 || langlst[1] === "x") {
+		ret.best = ret.base.replace("_", "-");
 	} else {
-		ret.best = langlst.slice(0,2).join("-");
-	};
+		ret.best = langlst.slice(0, 2).join("-");
+	}
 	ret.bare = langlst[0];
 	return ret;
 };
@@ -54,33 +55,34 @@ CSL.localeResolve = function(langstr){
 // with a top-level local specifier, and terms, opts, dates
 // below.
 //
-CSL.localeSet = function(sys,myxml,lang_in,lang_out){
+CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
+	var blob, locale;
 
-	lang_in = lang_in.replace("_","-");
-	lang_out = lang_out.replace("_","-");
+	lang_in = lang_in.replace("_", "-");
+	lang_out = lang_out.replace("_", "-");
 
-	if (!this.locale[lang_out]){
-		this.locale[lang_out] = new Object();
-		this.locale[lang_out].terms = new Object();
-		this.locale[lang_out].opts = new Object();
-		this.locale[lang_out].dates = new Object();
+	if (!this.locale[lang_out]) {
+		this.locale[lang_out] = {};
+		this.locale[lang_out].terms = {};
+		this.locale[lang_out].opts = {};
+		this.locale[lang_out].dates = {};
 	}
 	//
 	// Xml: Test if node is "locale" (nb: ns declarations need to be invoked
 	// on every access to the xml object; bundle this with the functions
 	//
-	var locale = sys.xml.makeXml();
-	if (sys.xml.nodeNameIs(myxml,'locale')){
+	locale = sys.xml.makeXml();
+	if (sys.xml.nodeNameIs(myxml, 'locale')) {
 		locale = myxml;
 	} else {
 		//
 		// Xml: get a list of all "locale" nodes
 		//
-		for each (var blob in sys.xml.getNodesByName(myxml,"locale")){
+		for each (blob in sys.xml.getNodesByName(myxml, "locale")) {
 			//
 			// Xml: get locale xml:lang
 			//
-			if (sys.xml.getAttributeValue(blob,'lang','xml') == lang_in){
+			if (sys.xml.getAttributeValue(blob,'lang', 'xml') === lang_in) {
 				locale = blob;
 				break;
 			}
@@ -90,31 +92,31 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 	// Xml: get a list of term nodes within locale
 	//
 
-	for each (var term in sys.xml.getNodesByName(locale,'term')){
+	for each (var term in sys.xml.getNodesByName(locale, 'term')) {
 		//
 		// Xml: get string value of attribute
 		//
-		var termname = sys.xml.getAttributeValue(term,'name');
-		if ("undefined" == typeof this.locale[lang_out].terms[termname]){
+		var termname = sys.xml.getAttributeValue(term, 'name');
+		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
 			this.locale[lang_out].terms[termname] = new Object();
 		};
 		var form = "long";
 		//
 		// Xml: get string value of attribute
 		//
-		if (sys.xml.getAttributeValue(term,'form')){
-			form = sys.xml.getAttributeValue(term,'form');
+		if (sys.xml.getAttributeValue(term, 'form')) {
+			form = sys.xml.getAttributeValue(term, 'form');
 		}
 		//
 		// Xml: test of existence of node
 		//
-		if (sys.xml.getNodesByName(term,'multiple').length()){
+		if (sys.xml.getNodesByName(term, 'multiple').length()) {
 			this.locale[lang_out].terms[termname][form] = new Array();
 			//
 			// Xml: get string value of attribute, plus
 			// Xml: get string value of node content
 			//
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][0] = sys.xml.getNodeValue(term,'single');
+			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
 			//
 			// Xml: get string value of attribute, plus
 			// Xml: get string value of node content
@@ -125,13 +127,13 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 			// Xml: get string value of attribute, plus
 			// Xml: get string value of node content
 			//
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form] = sys.xml.getNodeValue(term);
+			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
 		}
 	}
 	//
 	// Xml: get list of nodes by node type
 	//
-	for each (var styleopts in sys.xml.getNodesByName(locale,'style-options')){
+	for each (var styleopts in sys.xml.getNodesByName(locale, 'style-options')) {
 		//
 		// Xml: get list of attributes on a node
 		//
@@ -139,7 +141,7 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 			//
 			// Xml: get string value of attribute
 			//
-			if (sys.xml.getNodeValue(attr) == "true"){
+			if (sys.xml.getNodeValue(attr) === "true") {
 				//
 				// Xml:	get local name of attribute
 				//
@@ -152,7 +154,7 @@ CSL.localeSet = function(sys,myxml,lang_in,lang_out){
 	//
 	// Xml: get list of nodes by type
 	//
-	for each (var date in sys.xml.getNodesByName(locale,'date')){
+	for each (var date in sys.xml.getNodesByName(locale,'date')) {
 		//
 		// Xml: get string value of attribute
 		//

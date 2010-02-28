@@ -1,4 +1,4 @@
 #!/bin/bash
 
-java -client -jar ./rhino/js-1.7R2.jar jslint.js $1
+java -client -jar ./rhino/js-1.7R2.jar jslint.js $@
 

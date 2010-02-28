@@ -38,16 +38,16 @@ CSL.System.Xml = {};
 /**
  * Functions for parsing an XML object using E4X.
  */
-CSL.System.Xml.E4X = function(){};
+CSL.System.Xml.E4X = function () {};
 
 /**
  * E4X can't handle XML declarations, so we lose them here.
  */
-CSL.System.Xml.E4X.prototype.clean = function(xml){
-	xml = xml.replace(/<\?[^?]+\?>/g,"");
-	xml = xml.replace(/<![^>]+>/g,"");
-	xml = xml.replace(/^\s+/g,"");
-	xml = xml.replace(/\s+$/g,"");
+CSL.System.Xml.E4X.prototype.clean = function (xml) {
+	xml = xml.replace(/<\?[^?]+\?>/g, "");
+	xml = xml.replace(/<![^>]+>/g, "");
+	xml = xml.replace(/^\s+/g, "");
+	xml = xml.replace(/\s+$/g, "");
 	return xml;
 };
 
@@ -55,35 +55,35 @@ CSL.System.Xml.E4X.prototype.clean = function(xml){
 /**
  * Methods to call on a node.
  */
-CSL.System.Xml.E4X.prototype.children = function(myxml){
-	var ret = myxml.children();
-	return ret;
+CSL.System.Xml.E4X.prototype.children = function (myxml) {
+	return myxml.children();
 };
 
-CSL.System.Xml.E4X.prototype.nodename = function(myxml){
+CSL.System.Xml.E4X.prototype.nodename = function (myxml) {
 	return myxml.localName();
 };
 
-CSL.System.Xml.E4X.prototype.attributes = function(myxml){
+CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
+	var ret, attrs, attr, key;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ret = new Object();
-	var attrs = myxml.attributes();
-	for each (var attr in attrs){
-		var key = "@"+attr.localName();
+	ret = new Object();
+	attrs = myxml.attributes();
+	for each (attr in attrs) {
+		key = "@" + attr.localName();
 		//
 		// Needed in rhino
 		//
-		if (key.slice(0,5) == "@e4x_"){
+		if (key.slice(0,5) == "@e4x_") {
 			continue;
 		}
-		var value = attr;
-		ret[key] = value;
+		//var value = attr;
+		ret[key] = attr;
 	}
 	return ret;
 };
 
 
-CSL.System.Xml.E4X.prototype.content = function(myxml){
+CSL.System.Xml.E4X.prototype.content = function (myxml) {
 	return myxml.toString();
 };
 
@@ -92,26 +92,26 @@ CSL.System.Xml.E4X.prototype.namespace = {
 	"xml":"http://www.w3.org/XML/1998/namespace"
 }
 
-CSL.System.Xml.E4X.prototype.numberofnodes = function(myxml){
+CSL.System.Xml.E4X.prototype.numberofnodes = function (myxml) {
 	return myxml.length();
 };
 
-CSL.System.Xml.E4X.prototype.getAttributeName = function(attr){
+CSL.System.Xml.E4X.prototype.getAttributeName = function (attr) {
 	return attr.localName();
 }
 
-CSL.System.Xml.E4X.prototype.getAttributeValue = function(myxml,name,namespace){
+CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	//
 	// Oh, okay, I get it.  The syntax does not lend itself to parameterization,
 	// but one of the elements is a variable, so it can be set before
 	// the call.  Jeez but this feels ugly.  Does work, though.
 	//
-	if (namespace){
+	if (namespace) {
 		var ns = new Namespace(this.namespace[namespace]);
 		var ret = myxml.@ns::[name].toString();
 	} else {
-		if (name){
+		if (name) {
 			var ret = myxml.attribute(name).toString();
 		} else {
 			var ret = myxml.toString();
@@ -120,7 +120,7 @@ CSL.System.Xml.E4X.prototype.getAttributeValue = function(myxml,name,namespace){
 	return ret;
 }
 
-CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
+CSL.System.Xml.E4X.prototype.getNodeValue = function (myxml,name) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (name){
 		return myxml[name].toString();
@@ -129,7 +129,7 @@ CSL.System.Xml.E4X.prototype.getNodeValue = function(myxml,name){
 	}
 }
 
-CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function(myxml,nodename,attrname,attr,val){
+CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,attrname,attr,val) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (attr[0] != '@'){
 		attr = '@'+attr;
@@ -137,23 +137,23 @@ CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = funct
 	myxml[nodename].(@name == attrname)[0][attr] = val;
 }
 
-CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function(myxml,val){
+CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function (myxml,val) {
 	delete myxml.*.(@name==val)[0];
 }
 
-CSL.System.Xml.E4X.prototype.deleteAttribute = function(myxml,attr){
+CSL.System.Xml.E4X.prototype.deleteAttribute = function (myxml,attr) {
 	delete myxml["@"+attr];
 }
 
-CSL.System.Xml.E4X.prototype.setAttribute = function(myxml,attr,val){
+CSL.System.Xml.E4X.prototype.setAttribute = function (myxml,attr,val) {
 	myxml['@'+attr] = val;
 }
 
-CSL.System.Xml.E4X.prototype.nodeCopy = function(myxml){
+CSL.System.Xml.E4X.prototype.nodeCopy = function (myxml) {
 	return myxml.copy();
 }
 
-CSL.System.Xml.E4X.prototype.getNodesByName = function(myxml,name,nameattrval){
+CSL.System.Xml.E4X.prototype.getNodesByName = function (myxml,name,nameattrval) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	var ret = myxml.descendants(name);
 	if (nameattrval){
@@ -162,7 +162,7 @@ CSL.System.Xml.E4X.prototype.getNodesByName = function(myxml,name,nameattrval){
 	return ret;
 }
 
-CSL.System.Xml.E4X.prototype.nodeNameIs = function(myxml,name){
+CSL.System.Xml.E4X.prototype.nodeNameIs = function (myxml,name) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (myxml.localName().toString() == name){
 		return true;
@@ -170,7 +170,7 @@ CSL.System.Xml.E4X.prototype.nodeNameIs = function(myxml,name){
 	return false;
 }
 
-CSL.System.Xml.E4X.prototype.makeXml = function(myxml){
+CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
 	if ("xml" == typeof myxml){
 		// print("forcing serialization of xml to fix up namespacing");
 		myxml = myxml.toXMLString();
