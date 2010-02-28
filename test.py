@@ -247,8 +247,11 @@ doh.register("std.%s", [
                 ofh.write(body)
                 has_files = True
         else:
+            count = 0
+            print("PATH: %s" % testpath)
             for file in [x[:-3] for x in os.listdir(testpath)]:
-                sys.stdout.write("Hello ")
+                count += 1
+                sys.stdout.write("[%s:%d] " % (file,count))
                 if not file.endswith('.js'): continue
                 if len(self.args) and not file.startswith('%s.'%args[0]): continue
                 has_files = True
