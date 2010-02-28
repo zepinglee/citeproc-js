@@ -203,6 +203,10 @@ doh.register("std.nameattr", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("nameattr_AndOnNamesInBibliography");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("nameattr_NameAsSortOrderOnNamesInCitation");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -248,10 +252,6 @@ doh.register("std.nameattr", [
     }, 
     function(){
         var test = new StdRhinoTest("nameattr_NameDelimiterOnCitationInBibliography");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("nameattr_AndOnNamesInBibliography");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

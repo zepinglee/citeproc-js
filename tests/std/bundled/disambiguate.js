@@ -79,6 +79,10 @@ doh.register("std.disambiguate", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("disambiguate_AllNamesWithInitialsGenerally");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("disambiguate_YearSuffixAndSort");
         doh.assertEqual(test.result, test.run());
     }, 
