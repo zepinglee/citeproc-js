@@ -59,6 +59,10 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("date_LocalizedTextYearWithAffixes");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("date_LocalizedTextMonthFormOverride");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -88,10 +92,6 @@ doh.register("std.date", [
     }, 
     function(){
         var test = new StdRhinoTest("date_NoDate");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextYearWithAffixes");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

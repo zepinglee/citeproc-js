@@ -331,6 +331,7 @@ CSL.Engine.BibliographySort = function (){
 	this.opt = new Object();
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
+	this.opt.topdecor = [];
 };
 
 
@@ -339,4 +340,5 @@ CSL.Engine.CitationSort = function (){
 	this.opt = new Object();
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
+	this.opt.topdecor = [];
 };

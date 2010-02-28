@@ -71,6 +71,10 @@ doh.register("std.sort", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("sort_StripMarkup");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("sort_CitationEdit");
         doh.assertEqual(test.result, test.run());
     }, 

@@ -42,6 +42,7 @@ CSL.Node.layout = new function(){
 			// save out decorations for flipflop processing
 			//
 			state[state.tmp.area].opt.topdecor = [this.decorations];
+			state[(state.tmp.area + "_sort")].opt.topdecor = [this.decorations];
 			//
 			// done_vars is used to prevent the repeated
 			// rendering of variables

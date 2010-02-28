@@ -1541,12 +1541,14 @@ CSL.Engine.BibliographySort = function (){
 	this.opt = new Object();
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
+	this.opt.topdecor = [];
 };
 CSL.Engine.CitationSort = function (){
 	this.tokens = new Array();
 	this.opt = new Object();
 	this.opt.sort_directions = new Array();
 	this.keys = new Array();
+	this.opt.topdecor = [];
 };
 CSL.Engine.prototype.setCitationId = function(citation){
 	var ret = false;
@@ -2920,6 +2922,7 @@ CSL.Node.layout = new function(){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
 			state[state.tmp.area].opt.topdecor = [this.decorations];
+			state[(state.tmp.area + "_sort")].opt.topdecor = [this.decorations];
 			var initialize_done_vars = function(state,Item){
 				state.tmp.done_vars = new Array();
 				state.tmp.rendered_name = false;
@@ -5933,7 +5936,7 @@ CSL.Output.Formats.prototype.html = {
 	},
 	"@quotes/inner":function(state,str){
 		if ("undefined" == typeof str){
-			return state.getTerm("close-inner-quote");
+			return "\u2019";
 		};
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
