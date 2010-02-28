@@ -253,12 +253,15 @@ var CSL = {
 
 //SNIP-START
 
+// skip jslint
 if (!CSL.System) {
 	load("./src/xmle4x.js");
 }
+// jslint OK
 if (!CSL.localeResolve) {
 	load("./src/util_locale.js");
 }
+// jslint OK
 if (!CSL.Mode) {
 	load("./src/util_processor.js");
 }

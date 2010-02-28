@@ -561,7 +561,7 @@ CSL.localeResolve = function (langstr) {
 	return ret;
 };
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale;
+	var blob, locale, nodes, nnodes, pos, ppos, term, form, termname, styleopts, attr, date;
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
 	if (!this.locale[lang_out]) {
@@ -574,113 +574,132 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 	if (sys.xml.nodeNameIs(myxml, 'locale')) {
 		locale = myxml;
 	} else {
-		for each (blob in sys.xml.getNodesByName(myxml, "locale")) {
-			if (sys.xml.getAttributeValue(blob,'lang', 'xml') === lang_in) {
-				locale = blob;
-				break;
+		nodes = sys.xml.getNodesByName(myxml, "locale");
+		for (pos in nodes) {
+			if (true) {
+				blob = nodes[pos];
+				if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
+					locale = blob;
+					break;
+				}
 			}
 		}
 	}
-	for each (var term in sys.xml.getNodesByName(locale, 'term')) {
-		var termname = sys.xml.getAttributeValue(term, 'name');
-		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
-			this.locale[lang_out].terms[termname] = new Object();
-		};
-		var form = "long";
-		if (sys.xml.getAttributeValue(term, 'form')) {
-			form = sys.xml.getAttributeValue(term, 'form');
-		}
-		if (sys.xml.getNodesByName(term, 'multiple').length()) {
-			this.locale[lang_out].terms[termname][form] = new Array();
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][1] = sys.xml.getNodeValue(term,'multiple');
-		} else {
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
+	nodes = sys.xml.getNodesByName(locale, 'term');
+	for (pos in nodes) {
+		if (true) {
+			term = nodes[pos];
+			termname = sys.xml.getAttributeValue(term, 'name');
+			if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
+				this.locale[lang_out].terms[termname] = {};
+			}
+			form = "long";
+			if (sys.xml.getAttributeValue(term, 'form')) {
+				form = sys.xml.getAttributeValue(term, 'form');
+			}
+			if (sys.xml.getNodesByName(term, 'multiple').length()) {
+				this.locale[lang_out].terms[termname][form] = [];
+				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
+				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][1] = sys.xml.getNodeValue(term, 'multiple');
+			} else {
+				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
+			}
 		}
 	}
-	for each (var styleopts in sys.xml.getNodesByName(locale, 'style-options')) {
-		for each (var attr in sys.xml.attributes(styleopts) ) {
-			if (sys.xml.getNodeValue(attr) === "true") {
-				this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
-			} else {
-				this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
-			};
-		};
-	};
-	for each (var date in sys.xml.getNodesByName(locale,'date')) {
-		this.locale[lang_out].dates[ sys.xml.getAttributeValue( date, "form") ] = date;
-	};
+	nodes = sys.xml.getNodesByName(locale, 'style-options');
+	for (pos in nodes) {
+		if (true) {
+			styleopts = nodes[pos];
+			nnodes = sys.xml.attributes(styleopts);
+			for (ppos in nnodes) {
+				if (true) {
+					attr = nnodes[ppos];
+					if (sys.xml.getNodeValue(attr) === "true") {
+						this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
+					} else {
+						this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
+					}
+				}
+			}
+		}
+	}
+	nodes = sys.xml.getNodesByName(locale, 'date');
+	for (pos in nodes) {
+		if (true) {
+			date = nodes[pos];
+			this.locale[lang_out].dates[sys.xml.getAttributeValue(date, "form")] = date;
+		}
+	}
 };
-CSL.substituteOne = function(template) {
-	return function(state,list) {
-		if (!list){
+CSL.substituteOne = function (template) {
+	return function (state, list) {
+		if (!list) {
 			return "";
-		} else if ("string" == typeof list){
-			return template.replace("%%STRING%%",list);
-		};
-		CSL.debug("USING is_delimiter (1) ... WHY?");
-		var decor = template.split("%%STRING%%");
-		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
-		ret.push({"is_delimiter":true,"value":decor[1]});
-		return ret;
-	};
-};
-CSL.substituteTwo = function(template) {
-	return function(param) {
-		var template2 = template.replace("%%PARAM%%", param);
-		return function(state,list) {
-			if ("string" == typeof list){
-				return template2.replace("%%STRING%%",list);
-			}
-			CSL.debug("USING is_delimiter (2) ... WHY?");
-			var decor = template2.split("%%STRING");
-			var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
-			ret.push({"is_delimiter":true,"value":decor[1]});
-			return ret;
-		};
-	};
-};
-CSL.Mode = function(mode){
-	var decorations = new Object();
-	var params = CSL.Output.Formats[mode];
-	for (var param in params) {
-		if ("@" != param[0]){
-			decorations[param] = params[param];
-			continue;
-		}
-		var func = false;
-		var val = params[param];
-		var args = param.split('/');
-		if (typeof val == "string" && val.indexOf("%%STRING%%") > -1)  {
-			if (val.indexOf("%%PARAM%%") > -1) {
-				func = CSL.substituteTwo(val);
-			} else {
-				func = CSL.substituteOne(val);
-			}
-		} else if (typeof val == "boolean" && !val) {
-			func = CSL.Output.Formatters.passthrough;
-		} else if (typeof val == "function") {
-			func = val;
 		} else {
-			throw "CSL.Compiler: Bad "+mode+" config entry for "+param+": "+val;
+			return template.replace("%%STRING%%", list);
 		}
-		if (args.length == 1) {
-			decorations[args[0]] = func;
-		} else if (args.length == 2) {
-			if (!decorations[args[0]]) {
-				decorations[args[0]] = new Object();
+	};
+};
+CSL.substituteTwo = function (template) {
+	return function (param) {
+		var template2 = template.replace("%%PARAM%%", param);
+		return function (state, list) {
+			if (!list) {
+				return "";
+			} else {
+				return template2.replace("%%STRING%%", list);
 			}
-			decorations[args[0]][args[1]] = func;
+		};
+	};
+};
+CSL.Mode = function (mode) {
+	var decorations, params, param, func, val, args;
+	decorations = {};
+	params = CSL.Output.Formats[mode];
+	for (param in params) {
+		if (true) {
+			if ("@" !== param[0]) {
+				decorations[param] = params[param];
+				continue;
+			}
+			func = false;
+			val = params[param];
+			args = param.split('/');
+			if (typeof val === "string" && val.indexOf("%%STRING%%") > -1)  {
+				if (val.indexOf("%%PARAM%%") > -1) {
+					func = CSL.substituteTwo(val);
+				} else {
+					func = CSL.substituteOne(val);
+				}
+			} else if (typeof val === "boolean" && !val) {
+				func = CSL.Output.Formatters.passthrough;
+			} else if (typeof val === "function") {
+				func = val;
+			} else {
+				throw "CSL.Compiler: Bad " + mode + " config entry for " + param + ": " + val;
+			}
+			if (args.length === 1) {
+				decorations[args[0]] = func;
+			} else if (args.length === 2) {
+				if (!decorations[args[0]]) {
+					decorations[args[0]] = {};
+				}
+				decorations[args[0]][args[1]] = func;
+			}
 		}
 	}
 	return decorations;
 };
-CSL.setDecorations = function(state,attributes){
-	var ret = new Array();
-	for each (var key in CSL.FORMAT_KEY_SEQUENCE){
-		if (attributes[key]){
-			ret.push([key,attributes[key]]);
-			delete attributes[key];
+CSL.setDecorations = function (state, attributes) {
+	var ret, key, pos;
+	ret = [];
+	for (pos in CSL.FORMAT_KEY_SEQUENCE) {
+		if (true) {
+			key = CSL.FORMAT_KEY_SEQUENCE[pos];
+			if (attributes[key]) {
+				ret.push([key, attributes[key]]);
+				delete attributes[key];
+			}
 		}
 	}
 	return ret;

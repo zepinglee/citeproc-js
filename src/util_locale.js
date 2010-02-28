@@ -56,7 +56,7 @@ CSL.localeResolve = function (langstr) {
 // below.
 //
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale;
+	var blob, locale, nodes, nnodes, pos, ppos, term, form, termname, styleopts, attr, date;
 
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
@@ -78,87 +78,106 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 		//
 		// Xml: get a list of all "locale" nodes
 		//
-		for each (blob in sys.xml.getNodesByName(myxml, "locale")) {
-			//
-			// Xml: get locale xml:lang
-			//
-			if (sys.xml.getAttributeValue(blob,'lang', 'xml') === lang_in) {
-				locale = blob;
-				break;
+		nodes = sys.xml.getNodesByName(myxml, "locale");
+		for (pos in nodes) {
+			if (true) {
+				blob = nodes[pos];
+				//
+				// Xml: get locale xml:lang
+				//
+				if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
+					locale = blob;
+					break;
+				}
 			}
 		}
 	}
 	//
 	// Xml: get a list of term nodes within locale
 	//
-
-	for each (var term in sys.xml.getNodesByName(locale, 'term')) {
-		//
-		// Xml: get string value of attribute
-		//
-		var termname = sys.xml.getAttributeValue(term, 'name');
-		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
-			this.locale[lang_out].terms[termname] = new Object();
-		};
-		var form = "long";
-		//
-		// Xml: get string value of attribute
-		//
-		if (sys.xml.getAttributeValue(term, 'form')) {
-			form = sys.xml.getAttributeValue(term, 'form');
-		}
-		//
-		// Xml: test of existence of node
-		//
-		if (sys.xml.getNodesByName(term, 'multiple').length()) {
-			this.locale[lang_out].terms[termname][form] = new Array();
+	nodes = sys.xml.getNodesByName(locale, 'term');
+	for (pos in nodes) {
+		if (true) {
+			term = nodes[pos];
 			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
+			// Xml: get string value of attribute
 			//
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
+			termname = sys.xml.getAttributeValue(term, 'name');
+			if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
+				this.locale[lang_out].terms[termname] = {};
+			}
+			form = "long";
 			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
+			// Xml: get string value of attribute
 			//
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term,'name')][form][1] = sys.xml.getNodeValue(term,'multiple');
-		} else {
+			if (sys.xml.getAttributeValue(term, 'form')) {
+				form = sys.xml.getAttributeValue(term, 'form');
+			}
 			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
+			// Xml: test of existence of node
 			//
-			this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
+			if (sys.xml.getNodesByName(term, 'multiple').length()) {
+				this.locale[lang_out].terms[termname][form] = [];
+				//
+				// Xml: get string value of attribute, plus
+				// Xml: get string value of node content
+				//
+				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
+				//
+				// Xml: get string value of attribute, plus
+				// Xml: get string value of node content
+				//
+				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][1] = sys.xml.getNodeValue(term, 'multiple');
+			} else {
+				//
+				// Xml: get string value of attribute, plus
+				// Xml: get string value of node content
+				//
+				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
+			}
 		}
 	}
 	//
 	// Xml: get list of nodes by node type
 	//
-	for each (var styleopts in sys.xml.getNodesByName(locale, 'style-options')) {
-		//
-		// Xml: get list of attributes on a node
-		//
-		for each (var attr in sys.xml.attributes(styleopts) ) {
+	nodes = sys.xml.getNodesByName(locale, 'style-options');
+	for (pos in nodes) {
+		if (true) {
+			styleopts = nodes[pos];
 			//
-			// Xml: get string value of attribute
+			// Xml: get list of attributes on a node
 			//
-			if (sys.xml.getNodeValue(attr) === "true") {
-				//
-				// Xml:	get local name of attribute
-				//
-				this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
-			} else {
-				this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
-			};
-		};
-	};
+			nnodes = sys.xml.attributes(styleopts);
+			for (ppos in nnodes) {
+				if (true) {
+					attr = nnodes[ppos];
+					//
+					// Xml: get string value of attribute
+					//
+					if (sys.xml.getNodeValue(attr) === "true") {
+						//
+						// Xml:	get local name of attribute
+						//
+						this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
+					} else {
+						this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
+					}
+				}
+			}
+		}
+	}
 	//
 	// Xml: get list of nodes by type
 	//
-	for each (var date in sys.xml.getNodesByName(locale,'date')) {
-		//
-		// Xml: get string value of attribute
-		//
-		this.locale[lang_out].dates[ sys.xml.getAttributeValue( date, "form") ] = date;
-	};
+	nodes = sys.xml.getNodesByName(locale, 'date');
+	for (pos in nodes) {
+		if (true) {
+			date = nodes[pos];
+			//
+			// Xml: get string value of attribute
+			//
+			this.locale[lang_out].dates[sys.xml.getAttributeValue(date, "form")] = date;
+		}
+	}
 };
 

@@ -33,18 +33,14 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.substituteOne = function(template) {
-	return function(state,list) {
-		if (!list){
+CSL.substituteOne = function (template) {
+	return function (state, list) {
+		if (!list) {
 			return "";
-		} else if ("string" == typeof list){
-			return template.replace("%%STRING%%",list);
-		};
-		CSL.debug("USING is_delimiter (1) ... WHY?");
-		var decor = template.split("%%STRING%%");
-		var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
-		ret.push({"is_delimiter":true,"value":decor[1]});
-		return ret;
+		} else {
+			// ("string" === typeof list)
+			return template.replace("%%STRING%%", list);
+		}
 	};
 };
 
@@ -60,18 +56,16 @@ CSL.substituteOne = function(template) {
  * placeholders.  See {@link CSL.Output.Formats.html} for
  * examples.
  */
-CSL.substituteTwo = function(template) {
-	return function(param) {
+CSL.substituteTwo = function (template) {
+	return function (param) {
 		var template2 = template.replace("%%PARAM%%", param);
-		return function(state,list) {
-			if ("string" == typeof list){
-				return template2.replace("%%STRING%%",list);
+		return function (state, list) {
+			if (!list) {
+				return "";
+			} else {
+				//("string" === typeof list){
+				return template2.replace("%%STRING%%", list);
 			}
-			CSL.debug("USING is_delimiter (2) ... WHY?");
-			var decor = template2.split("%%STRING");
-			var ret = [{"is_delimiter":true,"value":decor[0]}].concat(list);
-			ret.push({"is_delimiter":true,"value":decor[1]});
-			return ret;
 		};
 	};
 };
@@ -81,40 +75,42 @@ CSL.substituteTwo = function(template) {
  * <p>Only "html" (the default) is supported at present.</p>
  * @param {String} mode Either "html" or "rtf", eventually.
  */
-CSL.Mode = function(mode){
-	var decorations = new Object();
+CSL.Mode = function (mode) {
+	var decorations, params, param, func, val, args;
+	decorations = {};
+	params = CSL.Output.Formats[mode];
+	for (param in params) {
+		if (true) {
+			if ("@" !== param[0]) {
+				decorations[param] = params[param];
+				continue;
+			}
+			func = false;
+			val = params[param];
+			args = param.split('/');
 
-	var params = CSL.Output.Formats[mode];
-	for (var param in params) {
-		if ("@" != param[0]){
-			decorations[param] = params[param];
-			continue;
-		}
-		var func = false;
-		var val = params[param];
-		var args = param.split('/');
-
-		if (typeof val == "string" && val.indexOf("%%STRING%%") > -1)  {
-			if (val.indexOf("%%PARAM%%") > -1) {
-				func = CSL.substituteTwo(val);
+			if (typeof val === "string" && val.indexOf("%%STRING%%") > -1)  {
+				if (val.indexOf("%%PARAM%%") > -1) {
+					func = CSL.substituteTwo(val);
+				} else {
+					func = CSL.substituteOne(val);
+				}
+			} else if (typeof val === "boolean" && !val) {
+				func = CSL.Output.Formatters.passthrough;
+			} else if (typeof val === "function") {
+				func = val;
 			} else {
-				func = CSL.substituteOne(val);
+				throw "CSL.Compiler: Bad " + mode + " config entry for " + param + ": " + val;
 			}
-		} else if (typeof val == "boolean" && !val) {
-			func = CSL.Output.Formatters.passthrough;
-		} else if (typeof val == "function") {
-			func = val;
-		} else {
-			throw "CSL.Compiler: Bad "+mode+" config entry for "+param+": "+val;
-		}
 
-		if (args.length == 1) {
-			decorations[args[0]] = func;
-		} else if (args.length == 2) {
-			if (!decorations[args[0]]) {
-				decorations[args[0]] = new Object();
+			if (args.length === 1) {
+				decorations[args[0]] = func;
+			} else if (args.length === 2) {
+				if (!decorations[args[0]]) {
+					decorations[args[0]] = {};
+				}
+				decorations[args[0]][args[1]] = func;
 			}
-			decorations[args[0]][args[1]] = func;
 		}
 	}
 	return decorations;
@@ -134,13 +130,17 @@ CSL.Mode = function(mode){
  * @param {Object} attributes The hash object containing
  * the attributes and values extracted from an XML node.
  */
-CSL.setDecorations = function(state,attributes){
+CSL.setDecorations = function (state, attributes) {
+	var ret, key, pos;
 	// This applies a fixed processing sequence
-	var ret = new Array();
-	for each (var key in CSL.FORMAT_KEY_SEQUENCE){
-		if (attributes[key]){
-			ret.push([key,attributes[key]]);
-			delete attributes[key];
+	ret = [];
+	for (pos in CSL.FORMAT_KEY_SEQUENCE) {
+		if (true) {
+			key = CSL.FORMAT_KEY_SEQUENCE[pos];
+			if (attributes[key]) {
+				ret.push([key, attributes[key]]);
+				delete attributes[key];
+			}
 		}
 	}
 	return ret;
