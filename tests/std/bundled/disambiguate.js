@@ -103,6 +103,10 @@ doh.register("std.disambiguate", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("disambiguate_PrimaryNameWithInitialsLimitedToPrimary");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("disambiguate_BasedOnEtAlSubsequent");
         doh.assertEqual(test.result, test.run());
     }, 

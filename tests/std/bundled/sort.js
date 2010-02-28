@@ -35,6 +35,10 @@
 dojo.provide("std.sort");
 doh.register("std.sort", [
     function(){
+        var test = new StdRhinoTest("sort_LocalizedDateLimitedParts");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("sort_DateVariableRangeMixed");
         doh.assertEqual(test.result, test.run());
     }, 
