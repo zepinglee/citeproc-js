@@ -170,7 +170,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 			var openRev = expected_closers.indexOf(tag);
 			var flipRev = expected_flips.indexOf(tag);
 			expected_closers.reverse();
-			if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
+			if ( !sameAsOpen || (openRev > -1 && openRev > flipRev)){
 				var ibeenrunned = false;
 				for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
 					ibeenrunned = true;
@@ -182,11 +182,11 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 						tagstack.pop();
 						break;
 					};
-					//CSL.debug("badA:"+posA);
+					// CSL.debug("badA:"+posA);
 					badTagStack.push( posA );
 				};
 				if (!ibeenrunned){
-					//CSL.debug("badB:"+posA);
+					// CSL.debug("badB:"+posA);
 					badTagStack.push( posA );
 				};
 				continue;
@@ -203,6 +203,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 		expected_closers.pop();
 		expected_flips.pop();
 		expected_openers.pop();
+		// CSL.debug("badC:"+tagstack[(tagstack.length-1)]);
 		badTagStack.push( tagstack.pop() );
 	};
 	//

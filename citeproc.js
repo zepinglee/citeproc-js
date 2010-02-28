@@ -5650,7 +5650,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 			var openRev = expected_closers.indexOf(tag);
 			var flipRev = expected_flips.indexOf(tag);
 			expected_closers.reverse();
-			if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
+			if ( !sameAsOpen || (openRev > -1 && openRev > flipRev)){
 				var ibeenrunned = false;
 				for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
 					ibeenrunned = true;
