@@ -170,7 +170,12 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
 			var openRev = expected_closers.indexOf(tag);
 			var flipRev = expected_flips.indexOf(tag);
 			expected_closers.reverse();
-			if ( !sameAsOpen || (openRev > -1 && openRev > flipRev)){
+			//
+			// If I understand this correctly, we can cope with exactly
+			// one level of nesting of inner and outer quotes inside
+			// of the field.
+			//
+			if ( !sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))){
 				var ibeenrunned = false;
 				for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
 					ibeenrunned = true;
@@ -270,7 +275,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				var flipRev = expected_flips.indexOf(tag);
 				expected_closers.reverse();
 
-				if ( !sameAsOpen || (openRev > -1 && openRev < flipRev)){
+				if ( !sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))){
 					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
 						var wanted_closer = expected_closers[posB];
 						if (tag == wanted_closer){
