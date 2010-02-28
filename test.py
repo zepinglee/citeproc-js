@@ -1,7 +1,6 @@
 #!/usr/bin/python -u
 
 import sys,os,re
-sys.path.append('./tests/python')
 from datetime import datetime
 from stat import *
 import tempfile
@@ -44,7 +43,7 @@ class ApplyLicense:
         print self.license
 
     def apply(self):
-        for path in [".", "src", "tests/std", "tests/std/humans","tests/std/bundled", "tests/std/machines","tests/citeproc-js"]:
+        for path in [".", "src", os.path.join("tests", "std"), os.path.join("tests","std","humans"),os.path.join("tests","std","bundled"), os.path.join("tests","std","machines"),os.path.join("tests","citeproc-js")]:
             for file in os.listdir( path ):
                 self.process_file(path,file)
 
@@ -417,7 +416,7 @@ class CslTest:
             sys.exit()
         m = re.match("(?sm).*version=\"([.0-9a-z]+)\".*",self.data["csl"])
         if m:
-            rnc_path = os.path.join("csl","%s/csl.rnc" % m.group(1))
+            rnc_path = os.path.join("csl","%s" % m.group(1), "csl.rnc")
         else:
             print "Error: Unable to find CSL version in %s" % self.hp
             sys.exit()
