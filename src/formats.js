@@ -86,9 +86,9 @@ CSL.Output.Formats.prototype.html = {
 	"@quotes/inner":function(state,str){
 		if ("undefined" == typeof str){
 			//
-			// Most right by being wrong (for apostrophes)
+			// Mostly right by being wrong (for apostrophes)
 			//
-			return state.getTerm("close-inner-quote");
+			return "\u2019";
 		};
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
