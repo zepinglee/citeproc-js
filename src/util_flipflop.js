@@ -309,7 +309,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				// CSL.debug(this.okReverseTagsHash[this.blob.alldecor[0][0].join("-is-")]);
 				//
 				if (tag == "<span class=\"nodecor\">"){
-					var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor);
+					var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor).concat([[["@quotes","inner"]]]);
 					for each (var level in fulldecor){
 						for each (var decor in level){
 							if (["@font-style","@font-weight","@font-variant"].indexOf(decor[0]) > -1){
@@ -343,7 +343,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 
 CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	var posB = 0;
-	var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor);
+	var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor).concat([[["@quotes","inner"]]]);
 	//var l = blob.alldecor.length;
 	var l = fulldecor.length;
 	for (var posA=0; posA<l; posA+=1){

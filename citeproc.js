@@ -5748,7 +5748,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 				blob.push(newblobnest);
 				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
 				if (tag == "<span class=\"nodecor\">"){
-					var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor);
+					var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor).concat([[["@quotes","inner"]]]);
 					for each (var level in fulldecor){
 						for each (var decor in level){
 							if (["@font-style","@font-weight","@font-variant"].indexOf(decor[0]) > -1){
@@ -5772,7 +5772,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function(){
 };
 CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
 	var posB = 0;
-	var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor);
+	var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor).concat([[["@quotes","inner"]]]);
 	var l = fulldecor.length;
 	for (var posA=0; posA<l; posA+=1){
 		var decorations = fulldecor[posA];
