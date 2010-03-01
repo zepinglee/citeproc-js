@@ -33,47 +33,54 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
-	var ret = new Object();
-	ret["names"] = new Array();
-	ret["givens"] = new Array();
-	ret["year_suffix"] = false;
-	ret["disambiguate"] = false;
-	for (var i in config["names"]){
-		var param = config["names"][i];
-		if (oldconfig && oldconfig["names"][i] != param){
-			// print("hello "+i);
-			this.tmp.taintedItemIDs[itemID] = true;
-			oldconfig = false;
-		};
-		ret["names"][i] = param;
-	};
-	for (var i in config["givens"]){
-		var param = new Array();
-		for (var j in config["givens"][i]){
-			// condition at line 312 of disambiguate.js protects against negative
-			// values of j
-			if (oldconfig && oldconfig["givens"][i] && oldconfig["givens"][i][j] != config["givens"][i][j]){
-				// print("hello "+i+":"+j);
+CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
+	var ret, param, pos, ppos;
+	ret = {};
+	ret.names = [];
+	ret.givens = [];
+	ret.year_suffix = false;
+	ret.disambiguate = false;
+	for (pos in config.names) {
+		if (true) {
+			param = config.names[pos];
+			if (oldconfig && oldconfig.names[pos] !== param) {
+				// print("hello "+i);
 				this.tmp.taintedItemIDs[itemID] = true;
 				oldconfig = false;
-			};
-			param.push(config["givens"][i][j]);
-		};
-		ret["givens"].push(param);
-	};
-	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
+			}
+			ret.names[pos] = param;
+		}
+	}
+	for (pos in config.givens) {
+		if (true) {
+			param = [];
+			for (ppos in config.givens[pos]) {
+				if (true) {
+					// condition at line 312 of disambiguate.js protects against negative
+					// values of j
+					if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
+						// print("hello "+i+":"+j);
+						this.tmp.taintedItemIDs[itemID] = true;
+						oldconfig = false;
+					}
+					param.push(config.givens[pos][ppos]);
+				}
+			}
+			ret.givens.push(param);
+		}
+	}
+	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
 		// print("hello year_suffix");
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
-	ret["year_suffix"] = config["year_suffix"];
-	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
+	ret.year_suffix = config.year_suffix;
+	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
 		// print("hello disambiguate");
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
-	ret["disambiguate"] = config["disambiguate"];
+	ret.disambiguate = config.disambiguate;
 	return ret;
 };
 

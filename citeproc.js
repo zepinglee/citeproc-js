@@ -704,41 +704,48 @@ CSL.setDecorations = function (state, attributes) {
 	}
 	return ret;
 };
-CSL.cloneAmbigConfig = function(config,oldconfig,itemID){
-	var ret = new Object();
-	ret["names"] = new Array();
-	ret["givens"] = new Array();
-	ret["year_suffix"] = false;
-	ret["disambiguate"] = false;
-	for (var i in config["names"]){
-		var param = config["names"][i];
-		if (oldconfig && oldconfig["names"][i] != param){
-			this.tmp.taintedItemIDs[itemID] = true;
-			oldconfig = false;
-		};
-		ret["names"][i] = param;
-	};
-	for (var i in config["givens"]){
-		var param = new Array();
-		for (var j in config["givens"][i]){
-			if (oldconfig && oldconfig["givens"][i] && oldconfig["givens"][i][j] != config["givens"][i][j]){
+CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
+	var ret, param, pos, ppos;
+	ret = {};
+	ret.names = [];
+	ret.givens = [];
+	ret.year_suffix = false;
+	ret.disambiguate = false;
+	for (pos in config.names) {
+		if (true) {
+			param = config.names[pos];
+			if (oldconfig && oldconfig.names[pos] !== param) {
 				this.tmp.taintedItemIDs[itemID] = true;
 				oldconfig = false;
-			};
-			param.push(config["givens"][i][j]);
-		};
-		ret["givens"].push(param);
-	};
-	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
+			}
+			ret.names[pos] = param;
+		}
+	}
+	for (pos in config.givens) {
+		if (true) {
+			param = [];
+			for (ppos in config.givens[pos]) {
+				if (true) {
+					if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
+						this.tmp.taintedItemIDs[itemID] = true;
+						oldconfig = false;
+					}
+					param.push(config.givens[pos][ppos]);
+				}
+			}
+			ret.givens.push(param);
+		}
+	}
+	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
-	ret["year_suffix"] = config["year_suffix"];
-	if (oldconfig && oldconfig["year_suffix"] != config["year_suffix"]){
+	ret.year_suffix = config.year_suffix;
+	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
-	ret["disambiguate"] = config["disambiguate"];
+	ret.disambiguate = config.disambiguate;
 	return ret;
 };
 CSL.tokenExec = function(token,Item,item){
