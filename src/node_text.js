@@ -195,14 +195,8 @@ CSL.Node.text = new function(){
 					if (["first-reference-note-number","locator"].indexOf(this.variables[0]) > -1){
 						var func = function(state,Item,item){
 							if (item && item[this.variables[0]]){
-								//
-								// XXXXX: wrap in a marker here, and raise a flag
-								// to capture the cite before stripping and
-								// outputting finished content.
-								//
-								state.tmp.backref_index.push(Item.id);
-								var wrapped = "(csl:backref)" + item[this.variables[0]] + "(/csl:backref)";
-								state.output.append(wrapped,this);
+								//state.tmp.backref_index.push(Item.id);
+								state.output.append(item[this.variables[0]],this);
 							};
 						};
 					} else if (this.variables[0] == "container-title" && form == "short"){

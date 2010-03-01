@@ -41,7 +41,7 @@ citation
 
 
 >>===== RESULT =====>>
-(Smith n.d., 325AD, 2000)
+(Smith 325AD, 2000, n.d.)
 <<===== RESULT =====<<
 
 >>===== CITATION-ITEMS =====>>

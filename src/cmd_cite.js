@@ -523,6 +523,9 @@ CSL.getCitationCluster = function (inputList,citationID){
 	};
 	result += this.output.renderBlobs(objects)[0];
 	if (result){
+		if (result.slice(-1) === this.citation.opt.layout_suffix.slice(0)){
+			result = result.slice(0,-1);
+		}
 		result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
 		if (!this.tmp.suppress_decorations){
 			for each (var params in this.citation.opt.layout_decorations){
@@ -530,11 +533,12 @@ CSL.getCitationCluster = function (inputList,citationID){
 			};
 		};
 	};
-	if (citationID && this.tmp.backref_index.length){
-		this.registry.citationreg.citationById[citationID].properties.backref_index = this.tmp.backref_index;
-		this.registry.citationreg.citationById[citationID].properties.backref_citation = this.tmp.backref_citation;
-	};
-	return result.replace("(csl:backref)","","g").replace("(/csl:backref)","","g");
+	return result;
+	//if (citationID && this.tmp.backref_index.length){
+	//	this.registry.citationreg.citationById[citationID].properties.backref_index = this.tmp.backref_index;
+	//	this.registry.citationreg.citationById[citationID].properties.backref_citation = this.tmp.backref_citation;
+	//};
+	//return result.replace("(csl:backref)","","g").replace("(/csl:backref)","","g");
 };
 
 /*

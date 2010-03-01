@@ -100,5 +100,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "(Smith n.d., 325AD, 2000)"
+    "result": "(Smith 325AD, 2000, n.d.)"
 }

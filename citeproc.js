@@ -2084,6 +2084,9 @@ CSL.getCitationCluster = function (inputList,citationID){
 	};
 	result += this.output.renderBlobs(objects)[0];
 	if (result){
+		if (result.slice(-1) === this.citation.opt.layout_suffix.slice(0)){
+			result = result.slice(0,-1);
+		}
 		result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
 		if (!this.tmp.suppress_decorations){
 			for each (var params in this.citation.opt.layout_decorations){
@@ -2091,11 +2094,7 @@ CSL.getCitationCluster = function (inputList,citationID){
 			};
 		};
 	};
-	if (citationID && this.tmp.backref_index.length){
-		this.registry.citationreg.citationById[citationID].properties.backref_index = this.tmp.backref_index;
-		this.registry.citationreg.citationById[citationID].properties.backref_citation = this.tmp.backref_citation;
-	};
-	return result.replace("(csl:backref)","","g").replace("(/csl:backref)","","g");
+	return result;
 };
 CSL.getCite = function(Item,item,prevItemID){
 	this.parallel.StartCite(Item,item,prevItemID);
@@ -2770,7 +2769,7 @@ CSL.Node.key = new function(){
 						var dp = Item[variable];
 						if ("undefined" == typeof dp){
 							dp = {"date-parts": [[0]] };
-							if (!dp["year"] && state.tmp.area == "bibliography_sort"){
+							if (!dp["year"]){
 								state.tmp.empty_date = true;
 							};
 						};
@@ -3673,9 +3672,7 @@ CSL.Node.text = new function(){
 					if (["first-reference-note-number","locator"].indexOf(this.variables[0]) > -1){
 						var func = function(state,Item,item){
 							if (item && item[this.variables[0]]){
-								state.tmp.backref_index.push(Item.id);
-								var wrapped = "(csl:backref)" + item[this.variables[0]] + "(/csl:backref)";
-								state.output.append(wrapped,this);
+								state.output.append(item[this.variables[0]],this);
 							};
 						};
 					} else if (this.variables[0] == "container-title" && form == "short"){

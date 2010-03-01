@@ -75,5 +75,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "BookA n.d.; BookC n.d.; BookE n.d.; BookD 1999; BookB 2000."
+    "result": "BookD 1999; BookB 2000; BookA n.d.; BookC n.d.; BookE n.d."
 }

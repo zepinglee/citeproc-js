@@ -118,7 +118,7 @@ CSL.Node.key = new function(){
 						var dp = Item[variable];
 						if ("undefined" == typeof dp){
 							dp = {"date-parts": [[0]] };
-							if (!dp["year"] && state.tmp.area == "bibliography_sort"){
+							if (!dp["year"]){
 								state.tmp.empty_date = true;
 							};
 						};

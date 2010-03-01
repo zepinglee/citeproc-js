@@ -32,52 +32,65 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-{
-    "bibentries": false, 
-    "bibsection": false, 
-    "citation_items": false, 
-    "citations": false, 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <sort>\n      <key sort=\"ascending\" variable=\"issued\" />\n      <key variable=\"title\" />\n    </sort>\n    <layout delimiter=\"; \">\n      <text variable=\"title\" />\n    </layout>\n  </citation>\n</style>", 
-    "input": [
-        {
-            "id": "ITEM-1", 
-            "title": "Item 1", 
-            "type": "book"
-        }, 
-        {
-            "id": "ITEM-2", 
-            "issued": {
-                "date-parts": [
-                    [
-                        "1999", 
-                        "2", 
-                        "15"
-                    ]
-                ]
-            }, 
-            "title": "Item 2", 
-            "type": "book"
-        }, 
-        {
-            "id": "ITEM-3", 
-            "title": "Item 3", 
-            "type": "book"
-        }, 
-        {
-            "id": "ITEM-4", 
-            "issued": {
-                "date-parts": [
-                    [
-                        "2000", 
-                        "2", 
-                        "15"
-                    ]
-                ]
-            }, 
-            "title": "Item 4", 
-            "type": "book"
-        }
-    ], 
-    "mode": "citation", 
-    "result": "Item 2; Item 4; Item 1; Item 3"
-}
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+Doe, Roe
+<<===== RESULT =====<<
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <sort>
+      <key variable="title"/>
+      <key variable="author"/>
+    </sort>
+    <layout delimiter=", ">
+      <names variable="author">
+        <name form="short"/>
+      </names>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John"
+            }
+        ], 
+        "id": "ITEM-1", 
+        "title": "A Full Anonymous Life", 
+        "type": "book"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Roe", 
+                "given": "Jane"
+            }
+        ], 
+        "id": "ITEM-2", 
+        "title": "A Full <i>Anonymous</i> Life", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<
