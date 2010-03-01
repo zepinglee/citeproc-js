@@ -265,6 +265,7 @@ if (!CSL.localeResolve) {
 if (!CSL.Mode) {
 	load("./src/util_processor.js");
 }
+// jslint OK
 if (!CSL.cloneAmbigConfig) {
 	load("./src/util_disambig.js");
 }

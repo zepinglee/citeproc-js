@@ -181,7 +181,7 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	if (!this.sys.xml.getNodeValue( area_nodes)){
 		return;
 	}
-	var navi = new this._getNavi( this, area_nodes );
+	var navi = new this.getNavi( this, area_nodes );
 	this.build.area = area;
 	CSL.buildStyle.call(this,navi);
 };
@@ -214,7 +214,7 @@ CSL.buildStyle  = function(navi){
 };
 
 
-CSL.Engine.prototype._getNavi = function(state,myxml){
+CSL.Engine.prototype.getNavi = function(state,myxml){
 	this.sys = state.sys;
 	this.state = state;
 	this.nodeList = new Array();
@@ -223,7 +223,7 @@ CSL.Engine.prototype._getNavi = function(state,myxml){
 };
 
 
-CSL.Engine.prototype._getNavi.prototype.remember = function(){
+CSL.Engine.prototype.getNavi.prototype.remember = function(){
 	this.depth += -1;
 	this.nodeList.pop();
 	// closing node, process result of children
@@ -233,7 +233,7 @@ CSL.Engine.prototype._getNavi.prototype.remember = function(){
 };
 
 
-CSL.Engine.prototype._getNavi.prototype.getbro = function(){
+CSL.Engine.prototype.getNavi.prototype.getbro = function(){
 	var sneakpeek = this.nodeList[this.depth][1][(this.nodeList[this.depth][0]+1)];
 	if (sneakpeek){
 		this.nodeList[this.depth][0] += 1;
@@ -244,7 +244,7 @@ CSL.Engine.prototype._getNavi.prototype.getbro = function(){
 };
 
 
-CSL.Engine.prototype._getNavi.prototype.getkids = function(){
+CSL.Engine.prototype.getNavi.prototype.getkids = function(){
 	var currnode = this.nodeList[this.depth][1][this.nodeList[this.depth][0]];
 	var sneakpeek = this.sys.xml.children(currnode);
 	//var sneakpeek = currnode.children();
@@ -277,7 +277,7 @@ CSL.Engine.prototype._getNavi.prototype.getkids = function(){
 };
 
 
-CSL.Engine.prototype._getNavi.prototype.getNodeListValue = function(){
+CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function(){
 	return this.nodeList[this.depth][1];
 };
 

@@ -712,7 +712,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	ret.year_suffix = false;
 	ret.disambiguate = false;
 	for (pos in config.names) {
-		if (true) {
+		if (config.names.hasOwnProperty(pos)) {
 			param = config.names[pos];
 			if (oldconfig && oldconfig.names[pos] !== param) {
 				this.tmp.taintedItemIDs[itemID] = true;
@@ -722,10 +722,10 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		}
 	}
 	for (pos in config.givens) {
-		if (true) {
+		if (config.givens.hasOwnProperty(pos)) {
 			param = [];
 			for (ppos in config.givens[pos]) {
-				if (true) {
+				if (config.givens[pos].hasOwnProperty(ppos)) {
 					if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
 						this.tmp.taintedItemIDs[itemID] = true;
 						oldconfig = false;
@@ -748,92 +748,102 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	ret.disambiguate = config.disambiguate;
 	return ret;
 };
-CSL.tokenExec = function(token,Item,item){
-    var next = token.next;
-	var maybenext = false;
-	if (false){
-		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
+CSL.tokenExec = function (token, Item, item) {
+	var next, maybenext, exec, pos;
+    next = token.next;
+	maybenext = false;
+	if (false) {
+		CSL.debug("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
 	}
-	if (token.evaluator){
-	    next = token.evaluator(token,this,Item,item);
-    };
-	for each (var exec in token.execs){
-	    maybenext = exec.call(token,this,Item,item);
-		if (maybenext){
-			next = maybenext;
-		};
-	};
-	if (false){
-		CSL.debug(token.name+" ("+token.tokentype+") ---> done");
+	if (token.evaluator) {
+	    next = token.evaluator(token, this, Item, item);
+    }
+	for (pos in token.execs) {
+		if (token.execs.hasOwnProperty(pos)) {
+			exec = token.execs[pos];
+			maybenext = exec.call(token, this, Item, item);
+			if (maybenext) {
+				next = maybenext;
+			}
+		}
+	}
+	if (false) {
+		CSL.debug(token.name + " (" + token.tokentype + ") ---> done");
 	}
 	return next;
 };
-CSL.expandMacro = function(macro_key_token){
-	var mkey = macro_key_token.postponed_macro;
-	if (this.build.macro_stack.indexOf(mkey) > -1){
-		throw "CSL processor error: call to macro \""+mkey+"\" would cause an infinite loop";
+CSL.expandMacro = function (macro_key_token) {
+	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput;
+	mkey = macro_key_token.postponed_macro;
+	if (this.build.macro_stack.indexOf(mkey) > -1) {
+		throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
 	} else {
 		this.build.macro_stack.push(mkey);
 	}
-	var start_token = new CSL.Token("group",CSL.START);
+	start_token = new CSL.Token("group", CSL.START);
 	start_token.decorations = this.decorations;
-	for (var i in macro_key_token.strings){
-		start_token.strings[i] = macro_key_token.strings[i];
+	for (key in macro_key_token.strings) {
+		if (macro_key_token.strings.hasOwnProperty(key)) {
+			start_token.strings[key] = macro_key_token.strings[key];
+		}
 	}
-	var newoutput = function(state,Item){
-		state.output.startTag("group",this);
+	newoutput = function (state, Item) {
+		state.output.startTag("group", this);
 	};
-	start_token["execs"].push(newoutput);
+	start_token.execs.push(newoutput);
 	this[this.build.area].tokens.push(start_token);
-	var macroxml = this.sys.xml.getNodesByName( this.cslXml, 'macro', mkey);
-	if (!this.sys.xml.getNodeValue( macroxml) ){
-		throw "CSL style error: undefined macro \""+mkey+"\"";
+	macroxml = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
+	if (!this.sys.xml.getNodeValue(macroxml)) {
+		throw "CSL style error: undefined macro \"" + mkey + "\"";
 	}
-	var navi = new this._getNavi( this, macroxml );
-	CSL.buildStyle.call(this,navi);
-	var end_token = new CSL.Token("group",CSL.END);
-	var mergeoutput = function(state,Item){
+	navi = new this.getNavi(this, macroxml);
+	CSL.buildStyle.call(this, navi);
+	end_token = new CSL.Token("group", CSL.END);
+	mergeoutput = function (state, Item) {
 		state.output.endTag();
 	};
-	end_token["execs"].push(mergeoutput);
+	end_token.execs.push(mergeoutput);
 	this[this.build.area].tokens.push(end_token);
 	this.build.macro_stack.pop();
 };
-CSL.XmlToToken = function(state,tokentype){
-	var name = state.sys.xml.nodename(this);
-	if (state.build.skip && state.build.skip != name){
+CSL.XmlToToken = function (state, tokentype) {
+	var name, txt, attrfuncs, attributes, decorations, token, key, target;
+	name = state.sys.xml.nodename(this);
+	if (state.build.skip && state.build.skip !== name) {
 		return;
 	}
-	if (!name){
-		var txt = state.sys.xml.content(this);
-		if (txt){
+	if (!name) {
+		txt = state.sys.xml.content(this);
+		if (txt) {
 			state.build.text = txt;
 		}
 		return;
 	}
-	if ( ! CSL.Node[state.sys.xml.nodename(this)]){
-		throw "Undefined node name \""+name+"\".";
+	if (!CSL.Node[state.sys.xml.nodename(this)]) {
+		throw "Undefined node name \"" + name + "\".";
 	}
-	var attrfuncs = new Array();
-	var attributes = state.sys.xml.attributes(this);
-	var decorations = CSL.setDecorations.call(this,state,attributes);
-	var token = new CSL.Token(name,tokentype);
-	if (tokentype != CSL.END){
-	for (var key in attributes){
-		try {
-			CSL.Attributes[key].call(token,state,""+attributes[key]);
-		} catch (e) {
-			if (e == "TypeError: Cannot call method \"call\" of undefined"){
-				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
-			} else {
-				throw "CSL processor error, "+key+" attribute: "+e;
+	attrfuncs = [];
+	attributes = state.sys.xml.attributes(this);
+	decorations = CSL.setDecorations.call(this, state, attributes);
+	token = new CSL.Token(name, tokentype);
+	if (tokentype !== CSL.END) {
+		for (key in attributes) {
+			if (attributes.hasOwnProperty(key)) {
+				try {
+					CSL.Attributes[key].call(token, state, "" + attributes[key]);
+				} catch (e) {
+					if (e === "TypeError: Cannot call method \"call\" of undefined") {
+						throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
+					} else {
+						throw "CSL processor error, " + key + " attribute: " + e;
+					}
+				}
 			}
 		}
+		token.decorations = decorations;
 	}
-	token.decorations = decorations;
-	}
-	var target = state[state.build.area].tokens;
-	CSL.Node[name].build.call(token,state,target);
+	target = state[state.build.area].tokens;
+	CSL.Node[name].build.call(token, state, target);
 };
 CSL.Engine = function(sys,style,lang) {
 	this.sys = sys;
@@ -903,7 +913,7 @@ CSL.Engine.prototype._buildTokenLists = function(area){
 	if (!this.sys.xml.getNodeValue( area_nodes)){
 		return;
 	}
-	var navi = new this._getNavi( this, area_nodes );
+	var navi = new this.getNavi( this, area_nodes );
 	this.build.area = area;
 	CSL.buildStyle.call(this,navi);
 };
@@ -929,21 +939,21 @@ CSL.buildStyle  = function(navi){
 		}
 	}
 };
-CSL.Engine.prototype._getNavi = function(state,myxml){
+CSL.Engine.prototype.getNavi = function(state,myxml){
 	this.sys = state.sys;
 	this.state = state;
 	this.nodeList = new Array();
 	this.nodeList.push([0, myxml]);
 	this.depth = 0;
 };
-CSL.Engine.prototype._getNavi.prototype.remember = function(){
+CSL.Engine.prototype.getNavi.prototype.remember = function(){
 	this.depth += -1;
 	this.nodeList.pop();
 	var node = this.nodeList[this.depth][1][(this.nodeList[this.depth][0])];
 	CSL.XmlToToken.call(node,this.state,CSL.END);
 	return this.getbro();
 };
-CSL.Engine.prototype._getNavi.prototype.getbro = function(){
+CSL.Engine.prototype.getNavi.prototype.getbro = function(){
 	var sneakpeek = this.nodeList[this.depth][1][(this.nodeList[this.depth][0]+1)];
 	if (sneakpeek){
 		this.nodeList[this.depth][0] += 1;
@@ -952,7 +962,7 @@ CSL.Engine.prototype._getNavi.prototype.getbro = function(){
 		return false;
 	}
 };
-CSL.Engine.prototype._getNavi.prototype.getkids = function(){
+CSL.Engine.prototype.getNavi.prototype.getkids = function(){
 	var currnode = this.nodeList[this.depth][1][this.nodeList[this.depth][0]];
 	var sneakpeek = this.sys.xml.children(currnode);
 	if (this.sys.xml.numberofnodes(sneakpeek) == 0){
@@ -973,7 +983,7 @@ CSL.Engine.prototype._getNavi.prototype.getkids = function(){
 		return true;
 	}
 };
-CSL.Engine.prototype._getNavi.prototype.getNodeListValue = function(){
+CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function(){
 	return this.nodeList[this.depth][1];
 };
 CSL.Engine.prototype.setOutputFormat = function(mode){

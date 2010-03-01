@@ -33,24 +33,28 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.tokenExec = function(token,Item,item){
-    var next = token.next;
-	var maybenext = false;
-	if (false){
-		CSL.debug("---> Token: "+token.name+" ("+token.tokentype+") in "+this.tmp.area+", "+this.output.current.mystack.length);
+CSL.tokenExec = function (token, Item, item) {
+	var next, maybenext, exec, pos;
+    next = token.next;
+	maybenext = false;
+	if (false) {
+		CSL.debug("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
 	}
 
-	if (token.evaluator){
-	    next = token.evaluator(token,this,Item,item);
-    };
-	for each (var exec in token.execs){
-	    maybenext = exec.call(token,this,Item,item);
-		if (maybenext){
-			next = maybenext;
-		};
-	};
-	if (false){
-		CSL.debug(token.name+" ("+token.tokentype+") ---> done");
+	if (token.evaluator) {
+	    next = token.evaluator(token, this, Item, item);
+    }
+	for (pos in token.execs) {
+		if (token.execs.hasOwnProperty(pos)) {
+			exec = token.execs[pos];
+			maybenext = exec.call(token, this, Item, item);
+			if (maybenext) {
+				next = maybenext;
+			}
+		}
+	}
+	if (false) {
+		CSL.debug(token.name + " (" + token.tokentype + ") ---> done");
 	}
 	return next;
 };
@@ -59,24 +63,27 @@ CSL.tokenExec = function(token,Item,item){
  * Macro expander.
  * <p>Called on the state object.</p>
  */
-CSL.expandMacro = function(macro_key_token){
-	var mkey = macro_key_token.postponed_macro;
-	if (this.build.macro_stack.indexOf(mkey) > -1){
-		throw "CSL processor error: call to macro \""+mkey+"\" would cause an infinite loop";
+CSL.expandMacro = function (macro_key_token) {
+	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput;
+	mkey = macro_key_token.postponed_macro;
+	if (this.build.macro_stack.indexOf(mkey) > -1) {
+		throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
 	} else {
 		this.build.macro_stack.push(mkey);
 	}
-	var start_token = new CSL.Token("group",CSL.START);
+	start_token = new CSL.Token("group", CSL.START);
 	start_token.decorations = this.decorations;
-	for (var i in macro_key_token.strings){
-		start_token.strings[i] = macro_key_token.strings[i];
+	for (key in macro_key_token.strings) {
+		if (macro_key_token.strings.hasOwnProperty(key)) {
+			start_token.strings[key] = macro_key_token.strings[key];
+		}
 	}
-	var newoutput = function(state,Item){
+	newoutput = function (state, Item) {
 		//state.output.openLevel(this);
-		state.output.startTag("group",this);
+		state.output.startTag("group", this);
 		//state.tmp.decorations.push(this.decorations);
 	};
-	start_token["execs"].push(newoutput);
+	start_token.execs.push(newoutput);
 	this[this.build.area].tokens.push(start_token);
 	//
 	// Here's where things change pretty dramatically.  We pull
@@ -86,18 +93,18 @@ CSL.expandMacro = function(macro_key_token){
 	//
 	// Xml: get list of nodes by attribute match
 	//
-	var macroxml = this.sys.xml.getNodesByName( this.cslXml, 'macro', mkey);
+	macroxml = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
 	//
 	// Xml: test for node existence
 	//
-	if (!this.sys.xml.getNodeValue( macroxml) ){
-		throw "CSL style error: undefined macro \""+mkey+"\"";
+	if (!this.sys.xml.getNodeValue(macroxml)) {
+		throw "CSL style error: undefined macro \"" + mkey + "\"";
 	}
-	var navi = new this._getNavi( this, macroxml );
-	CSL.buildStyle.call(this,navi);
+	navi = new this.getNavi(this, macroxml);
+	CSL.buildStyle.call(this, navi);
 
-	var end_token = new CSL.Token("group",CSL.END);
-	var mergeoutput = function(state,Item){
+	end_token = new CSL.Token("group", CSL.END);
+	mergeoutput = function (state, Item) {
 		//
 		// rendering happens inside the
 		// merge method, by applying decorations to
@@ -105,7 +112,7 @@ CSL.expandMacro = function(macro_key_token){
 		state.output.endTag();
 		//state.output.closeLevel();
 	};
-	end_token["execs"].push(mergeoutput);
+	end_token.execs.push(mergeoutput);
 	this[this.build.area].tokens.push(end_token);
 
 	this.build.macro_stack.pop();
@@ -128,50 +135,53 @@ CSL.expandMacro = function(macro_key_token){
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
  */
-CSL.XmlToToken = function(state,tokentype){
-	var name = state.sys.xml.nodename(this);
+CSL.XmlToToken = function (state, tokentype) {
+	var name, txt, attrfuncs, attributes, decorations, token, key, target;
+	name = state.sys.xml.nodename(this);
 	// CSL.debug(tokentype + " : " + name);
-	if (state.build.skip && state.build.skip != name){
+	if (state.build.skip && state.build.skip !== name) {
 		return;
 	}
-	if (!name){
-		var txt = state.sys.xml.content(this);
-		if (txt){
+	if (!name) {
+		txt = state.sys.xml.content(this);
+		if (txt) {
 			state.build.text = txt;
 		}
 		return;
 	}
-	if ( ! CSL.Node[state.sys.xml.nodename(this)]){
-		throw "Undefined node name \""+name+"\".";
+	if (!CSL.Node[state.sys.xml.nodename(this)]) {
+		throw "Undefined node name \"" + name + "\".";
 	}
-	var attrfuncs = new Array();
-	var attributes = state.sys.xml.attributes(this);
-	var decorations = CSL.setDecorations.call(this,state,attributes);
-	var token = new CSL.Token(name,tokentype);
-	if (tokentype != CSL.END){
-	//
-	// xml: more xml stuff
-	//
-	for (var key in attributes){
-		try {
-			CSL.Attributes[key].call(token,state,""+attributes[key]);
-		} catch (e) {
-			if (e == "TypeError: Cannot call method \"call\" of undefined"){
-				throw "Unknown attribute \""+key+"\" in node \""+name+"\" while processing CSL file";
-			} else {
-				throw "CSL processor error, "+key+" attribute: "+e;
+	attrfuncs = [];
+	attributes = state.sys.xml.attributes(this);
+	decorations = CSL.setDecorations.call(this, state, attributes);
+	token = new CSL.Token(name, tokentype);
+	if (tokentype !== CSL.END) {
+		//
+		// xml: more xml stuff
+		//
+		for (key in attributes) {
+			if (attributes.hasOwnProperty(key)) {
+				try {
+					CSL.Attributes[key].call(token, state, "" + attributes[key]);
+				} catch (e) {
+					if (e === "TypeError: Cannot call method \"call\" of undefined") {
+						throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
+					} else {
+						throw "CSL processor error, " + key + " attribute: " + e;
+					}
+				}
 			}
 		}
-	}
-	token.decorations = decorations;
+		token.decorations = decorations;
 	}
 	//
 	// !!!!!: eliminate diversion of tokens to separate
 	// token list (formerly used for reading in macros
 	// and terms).
 	//
-	var target = state[state.build.area].tokens;
-	CSL.Node[name].build.call(token,state,target);
+	target = state[state.build.area].tokens;
+	CSL.Node[name].build.call(token, state, target);
 };
 
 
