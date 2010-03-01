@@ -94,7 +94,9 @@ var CSL = {
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
 	ABBREVIATE_FIELDS: ["journal", "series", "institution", "authority"],
-	
+
+	MINIMAL_NAME_FIELDS: ["literal", "family"],
+
 	// update modes
 	NONE: 0,
 	NUMERIC: 1,

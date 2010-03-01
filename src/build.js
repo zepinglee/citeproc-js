@@ -451,123 +451,134 @@ CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default
 };
 
 CSL.Engine.prototype.getNameSubFields = function (names) {
-	var pos, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, i, newopt;
-	pos = -1;
+	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, i, newopt;
+	count = -1;
 	ret = [];
 	mode = "locale-name";
 	use_static_ordering = false;
 	if (this.tmp.area.slice(-5) === "_sort") {
 		mode = "locale-sort";
 	}
-	for (name in names) {
-		//
-		// clone the name object so we can trample on the content.
-		//
-		newname = {};
-		for (i in names[name]) {
-			if (names[name].hasOwnProperty(i)){
-				newname[i] = names[name][i];
+	for (pos in names) {
+		if (names.hasOwnProperty(pos)) {
+			//
+			// clone the name object so we can trample on the content.
+			//
+			newname = {};
+			for (i in names[pos]) {
+				if (names[pos].hasOwnProperty(i)) {
+					newname[i] = names[pos][i];
+				}
 			}
-		}
-		if (newname.given && !newname.family) {
-			newname.family = "";
-		} else if (newname.family && ! newname.given) {
-			newname.given = "";
-		}
-		addme = true;
-		updateme = false;
-		for each (part in ["literal", "family"]) {
-			p = newname[part];
-			if (p) {
-				//
-				// Add a static-ordering toggle for non-roman, non-Cyrillic
-				// names.  Operate only on primary names (those that do not
-				// have a language subtag).
-				//
-				if (newname[part].length && newname[part][0] !== ":") {
-					if (newname["static-ordering"]) {
-						use_static_ordering = true;
-					} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-						use_static_ordering = true;
-					} else {
-						use_static_ordering = false;
-					};
-				};
-				newname["static-ordering"] = use_static_ordering;
-				m = p.match(/^:([-a-zA-Z]+):\s+(.*)/);
-				if (m) {
-					addme = false;
-					for each (o in this.opt[mode]) {
-						if (m[1] === o) {
-							updateme = true;
-							newname[part] = m[2];
-							break;
-						};
-					};
-					if (!updateme) {
-						if (this.opt.lang) {
-							//
-							// Fallback to style default language.
-							//
-							if (this.opt.lang.indexOf("-") > -1) {
-								newopt = this.opt.lang.slice(0, this.opt.lang.indexOf("-"));
+			if (newname.given && !newname.family) {
+				newname.family = "";
+			} else if (newname.family && ! newname.given) {
+				newname.given = "";
+			}
+			addme = true;
+			updateme = false;
+			for (ppos in CSL.MINIMAL_NAME_FIELDS) {
+				if (CSL.MINIMAL_NAME_FIELDS.hasOwnProperty(ppos)) {
+					part = CSL.MINIMAL_NAME_FIELDS[ppos];
+					p = newname[part];
+					if (p) {
+						//
+						// Add a static-ordering toggle for non-roman, non-Cyrillic
+						// names.  Operate only on primary names (those that do not
+						// have a language subtag).
+						//
+						if (newname[part].length && newname[part][0] !== ":") {
+							if (newname["static-ordering"]) {
+								use_static_ordering = true;
+							} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)) {
+								use_static_ordering = true;
 							} else {
-								newopt = this.opt.lang;
+								use_static_ordering = false;
 							}
-							if (m[1] === newopt) {
-								updateme = true;
-								newname[part] = m[2];
-								if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-									newname["static-ordering"] = false;
-								};
-							};
-						};
-					};
-				};
-			};
-		};
-		if (addme) {
-			ret.push(newname);
-			pos += 1;
-		} else if (updateme) {
-			//
-			// A true update rather than an overwrite
-			// of the pointer.
-			//
-			for (i in newname) {
-				ret[pos][i] = newname[i];
+						}
+						newname["static-ordering"] = use_static_ordering;
+						m = p.match(/^:([\-a-zA-Z]+):\s+(.*)/);
+						if (m) {
+							addme = false;
+							for (pppos in this.opt[mode]) {
+								if (this.opt[mode].hasOwnProperty(pppos)) {
+									o = this.opt[mode][pppos];
+									if (m[1] === o) {
+										updateme = true;
+										newname[part] = m[2];
+										break;
+									}
+								}
+							}
+							if (!updateme) {
+								if (this.opt.lang) {
+									//
+									// Fallback to style default language.
+									//
+									if (this.opt.lang.indexOf("-") > -1) {
+										newopt = this.opt.lang.slice(0, this.opt.lang.indexOf("-"));
+									} else {
+										newopt = this.opt.lang;
+									}
+									if (m[1] === newopt) {
+										updateme = true;
+										newname[part] = m[2];
+										if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
+											newname["static-ordering"] = false;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			if (addme) {
+				ret.push(newname);
+				count += 1;
+			} else if (updateme) {
+				//
+				// A true update rather than an overwrite
+				// of the pointer.
+				//
+				for (i in newname) {
+					if (newname.hasOwnProperty(i)) {
+						ret[count][i] = newname[i];
+					}
+				}
 			}
 		}
-	};
+	}
 	return ret;
 };
 
 
 CSL.Engine.prototype.retrieveItems = function (ids) {
-	var ret, id;
+	var ret, pos;
 	ret = [];
-	for each (id in ids) {
-		ret.push(this.sys.retrieveItem(id));
+	for (pos in ids) {
+		if (ids.hasOwnProperty(pos)) {
+			ret.push(this.sys.retrieveItem(ids[pos]));
+		}
 	}
 	return ret;
 };
 
-// ZZZZZ: done to here
-
-CSL.Engine.prototype.dateParseArray = function ( date_obj ) {
-	var ret = new Object();
-	for (var field in date_obj) {
+CSL.Engine.prototype.dateParseArray = function (date_obj) {
+	var ret, field, dpos, ppos, dp, parts, exts;
+	ret = {};
+	for (field in date_obj) {
 		if (field === "date-parts") {
-			var dp = date_obj["date-parts"];
+			dp = date_obj["date-parts"];
 			if ( dp.length > 1 ) {
 				if ( dp[0].length !== dp[1].length) {
 					CSL.debug("CSL data error: element mismatch in date range input.");
 				}
 			}
-			var parts = ["year", "month", "day"];
-			var exts = ["", "_end"];
-			for (var dpos in dp) {
-				for (var ppos in parts) {
+			parts = ["year", "month", "day"];
+			exts = ["", "_end"];
+			for (dpos in dp) {
+				for (ppos in parts) {
 					ret[(parts[ppos]+exts[dpos])] = dp[dpos][ppos];
 				}
 			}
