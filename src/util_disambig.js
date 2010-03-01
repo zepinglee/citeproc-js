@@ -41,7 +41,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	ret.year_suffix = false;
 	ret.disambiguate = false;
 	for (pos in config.names) {
-		if (true) {
+		if (config.names.hasOwnProperty(pos)) {
 			param = config.names[pos];
 			if (oldconfig && oldconfig.names[pos] !== param) {
 				// print("hello "+i);
@@ -52,10 +52,10 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		}
 	}
 	for (pos in config.givens) {
-		if (true) {
+		if (config.givens.hasOwnProperty(pos)) {
 			param = [];
 			for (ppos in config.givens[pos]) {
-				if (true) {
+				if (config.givens[pos].hasOwnProperty(ppos)) {
 					// condition at line 312 of disambiguate.js protects against negative
 					// values of j
 					if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
