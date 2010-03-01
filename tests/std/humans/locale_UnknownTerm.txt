@@ -32,46 +32,44 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.locale");
-doh.register("std.locale", [
-    function(){
-        var test = new StdRhinoTest("locale_UnknownTerm");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideTerm");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_EmptyDate");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_EmptyStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_SpecificDate");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_EmptyTerm");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_SpecificTerm");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideDate");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("locale_SpecificStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+Sample Title: (interview by)
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <text variable="title" suffix=": "/>
+      <text term="interviewer" form="verb" prefix="(" suffix=")"/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "id": "ITEM-1", 
+        "title": "Sample Title", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

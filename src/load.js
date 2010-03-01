@@ -91,6 +91,10 @@ var CSL = {
 	POSITION_IBID: 2,
 	POSITION_IBID_WITH_LOCATOR: 3,
 
+	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
+
+	ABBREVIATE_FIELDS: ["journal", "series", "institution", "authority"],
+	
 	// update modes
 	NONE: 0,
 	NUMERIC: 1,
@@ -269,6 +273,7 @@ if (!CSL.Mode) {
 if (!CSL.cloneAmbigConfig) {
 	load("./src/util_disambig.js");
 }
+// jslint OK
 if (!CSL.XmlToToken) {
 	load("./src/util_nodes.js");
 }

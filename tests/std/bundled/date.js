@@ -103,10 +103,6 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("date_LocalizedTextDefaultMissingDay");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("date_LocalizedTextYearMonth");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -176,6 +172,10 @@ doh.register("std.date", [
     }, 
     function(){
         var test = new StdRhinoTest("date_LiteralFailGracefullyIfNoValue");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedTextDefaultMissingDay");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

@@ -211,6 +211,10 @@ doh.register("std.nameattr", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("nameattr_DelimiterPrecedesLastOnCitationInCitation");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("nameattr_DelimiterPrecedesLastOnStyleInBibliography");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -312,10 +316,6 @@ doh.register("std.nameattr", [
     }, 
     function(){
         var test = new StdRhinoTest("nameattr_AndOnStyleInBibliography");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("nameattr_DelimiterPrecedesLastOnCitationInCitation");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
