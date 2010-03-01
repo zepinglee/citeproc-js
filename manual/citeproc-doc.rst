@@ -1,11 +1,9 @@
-===========================
-`Citation Style Language`__
-===========================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Manual for the ``citeproc-js`` Processor
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-__ `Table of Contents`_
+======================================
+The ``citeproc-js`` Citation Processor
+======================================
+~~~~~~~~~~~~~~~~~~~
+Integrator's Manual
+~~~~~~~~~~~~~~~~~~~
 
 .. class:: info-version
 
@@ -31,14 +29,11 @@ __ `Table of Contents`_
 
 .. |link| image:: link.png
 
-
 ========
 
-.. contents:: `Table of Contents`__
+.. contents:: Table of Contents
 
 ========
-
-__ `Citation Style Language`_
 
 ------------
 Introduction
@@ -118,7 +113,7 @@ interpreters all satisfy this requirement. The V8 interpreter used by
 Google Chrome and Node does not.  The task of tying a Javascript
 interpreter into a given web framework or application is beyond
 the scope of this manual; but in Python-based environments, the
-`python-spidermonkey bridge module`__ by Paul Davis may be worth a
+|link| `python-spidermonkey bridge module`__ by Paul Davis may be worth a
 look.
 
 __ http://github.com/davisp/python-spidermonkey
@@ -548,7 +543,7 @@ below under `Local Environment`_ → `System Functions`_.
    citeproc.setAbbreviations( "default" );
 
 .. [#] For illustrations of the input syntax for the ``makeBibliography()``
-       command, see any test in the `test suite`_ that uses the
+       command, see any test in the |link| `test suite`_ that uses the
        `CITATION-ITEMS`_ environment -- it accepts a bare
        array of ``citationItems`` objects, as described under
        `Data Input`_ → `Citation data object`_, below.
@@ -1910,5 +1905,17 @@ like the following:
    ]
    <<===== CITATIONS =====<<
 
+---------
+Live Demo
+---------
 
+When accessed using a Javascript-enabled browser with E4X support
+(such as |link| `Firefox`__), the ``./demo/demo.html`` file in the source archive
+(or |link| `online`__) will invoke the processor to render a few citations.  The Javascript
+files accompanying the page in the ``./demo`` directory show the basic
+steps required to load and run the processor, whether in the browser
+or server-side.
 
+__ http://www.mozilla.com/
+
+__ http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html

@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
-<title>Citation Style Language</title>
+<title>The citeproc-js Citation Processor</title>
 <style type="text/css">
 
 body { 
@@ -314,9 +314,9 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 </style>
 </head>
 <body>
-<div class="document" id="citation-style-language">
-<h1 class="title"><a class="reference internal" href="#table-of-contents">Citation Style Language</a></h1>
-<h2 class="subtitle" id="manual-for-the-citeproc-js-processor">Manual for the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> Processor</h2>
+<div class="document" id="the-citeproc-js-citation-processor">
+<h1 class="title">The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> Citation Processor</h1>
+<h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
 <p class="info-version">version 1.00<sub>a62</sub></p>
 <p class="info-date">26 February 2010</p>
@@ -339,7 +339,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 </dl>
 <hr class="docutils" />
 <div class="contents topic" id="table-of-contents">
-<p class="topic-title first"><a class="reference internal" href="#citation-style-language">Table of Contents</a></p>
+<p class="topic-title first">Table of Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id32">Introduction</a></li>
 <li><a class="reference internal" href="#setup-and-system-requirements" id="id33">Setup and System Requirements</a><ul>
@@ -391,8 +391,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <li><a class="reference internal" href="#output-formatting" id="id61">Output Formatting</a></li>
 <li><a class="reference internal" href="#dirty-tricks" id="id62">Dirty Tricks</a><ul>
 <li><a class="reference internal" href="#input-data-rescue" id="id63">Input data rescue</a><ul>
-<li><a class="reference internal" href="#id20" id="id64">Names</a></li>
-<li><a class="reference internal" href="#id21" id="id65">Dates</a></li>
+<li><a class="reference internal" href="#id18" id="id64">Names</a></li>
+<li><a class="reference internal" href="#id19" id="id65">Dates</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#processor-control" id="id66">Processor control</a><ul>
@@ -401,10 +401,10 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <li><a class="reference internal" href="#automating-text-insertions" id="id69">Automating text insertions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id27" id="id70">Multi-lingual content</a><ul>
+<li><a class="reference internal" href="#id25" id="id70">Multi-lingual content</a><ul>
 <li><a class="reference internal" href="#the-default-locale-declaration" id="id71">The <tt class="docutils literal"><span class="pre">default-locale</span></tt> declaration</a></li>
 <li><a class="reference internal" href="#title" id="id72">Title</a></li>
-<li><a class="reference internal" href="#id30" id="id73">Names</a></li>
+<li><a class="reference internal" href="#id28" id="id73">Names</a></li>
 </ul>
 </li>
 </ul>
@@ -430,6 +430,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#live-demo" id="id87">Live Demo</a></li>
 </ul>
 </div>
 <hr class="docutils" />
@@ -442,7 +443,7 @@ tools to format citations in any of the hundreds of styles
 supplied by the .  The processor complies with version 1.0 of the CSL
 specification, has been written and tested as an independent module,
 and can be run by any ECMAscript-compliant interpreter.  With an
-appropriate supporting environment, <a class="footnote-reference" href="#id5" id="id3">[1]</a> it can be deployed in a
+appropriate supporting environment, <a class="footnote-reference" href="#id3" id="id1">[1]</a> it can be deployed in a
 browser plugin, as part of a desktop application, or as a formatting
 backend for a website or web service.</p>
 <p>This manual covers the basic operation of the processor, including the
@@ -454,10 +455,10 @@ special requirements.</p>
 <p>Comments and complaints relating to this document and to the processor itself
 will be gladly received and eventually despatched with.  The best channel
 for providing feedback and getting help is the <img alt="link" src="link.png" /> <a class="reference external" href="http://groups.google.com/group/citeproc-js">project mailing list</a>.</p>
-<table class="first docutils footnote" frame="void" id="id5" rules="none">
+<table class="first docutils footnote" frame="void" id="id3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td>For further details on required infrastructure, see the sections
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>For further details on required infrastructure, see the sections
 <a class="reference internal" href="#local-environment">Local Environment</a>
 and <a class="reference internal" href="#data-input">Data Input</a> below.</td></tr>
 </tbody>
@@ -492,7 +493,7 @@ interpreters all satisfy this requirement. The V8 interpreter used by
 Google Chrome and Node does not.  The task of tying a Javascript
 interpreter into a given web framework or application is beyond
 the scope of this manual; but in Python-based environments, the
-<a class="reference external" href="http://github.com/davisp/python-spidermonkey">python-spidermonkey bridge module</a> by Paul Davis may be worth a
+<img alt="link" src="link.png" /> <a class="reference external" href="http://github.com/davisp/python-spidermonkey">python-spidermonkey bridge module</a> by Paul Davis may be worth a
 look.</p>
 <p>Instructions on running the processor test suite can be found
 in the section <a class="reference internal" href="#running-the-test-suite">Running the test suite</a> at the end of this manual.</p>
@@ -861,7 +862,7 @@ commands, respectively <tt class="docutils literal"><span class="pre">appendCita
 (<tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt>), is not covered by this manual.
 It is primarily useful as a tool for testing the processor, as it
 lacks any facility for position evaluation, which is needed in
-production environments. <a class="footnote-reference" href="#id11" id="id9">[2]</a></p>
+production environments. <a class="footnote-reference" href="#id9" id="id7">[2]</a></p>
 <p>The <tt class="docutils literal"><span class="pre">appendCitationCluster()</span></tt> and
 <tt class="docutils literal"><span class="pre">processCitationCluster()</span></tt> commands use a similar input format
 for citation data, which is described below in the <a class="reference internal" href="#data-input">Data Input</a>
@@ -977,11 +978,11 @@ below under <a class="reference internal" href="#local-environment">Local Enviro
 </pre></div>
 </td></tr></table>
 </div>
-<table class="docutils footnote" frame="void" id="id11" rules="none">
+<table class="docutils footnote" frame="void" id="id9" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id9">[2]</a></td><td>For illustrations of the input syntax for the <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt>
-command, see any test in the <a class="reference internal" href="#test-suite">test suite</a> that uses the
+<tr><td class="label"><a class="fn-backref" href="#id7">[2]</a></td><td>For illustrations of the input syntax for the <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt>
+command, see any test in the <img alt="link" src="link.png" /> <a class="reference internal" href="#test-suite">test suite</a> that uses the
 <a class="reference internal" href="#citation-items">CITATION-ITEMS</a> environment -- it accepts a bare
 array of <tt class="docutils literal"><span class="pre">citationItems</span></tt> objects, as described under
 <a class="reference internal" href="#data-input">Data Input</a> → <a class="reference internal" href="#citation-data-object">Citation data object</a>, below.</td></tr>
@@ -1103,7 +1104,7 @@ like this:</p>
 <h2><a class="toc-backref" href="#id54">Item fields</a></h2>
 <p>The locally defined <tt class="docutils literal"><span class="pre">retrieveItem()</span></tt> function must return data
 for the target item as a simple Javascript array containing recognized
-CSL fields. <a class="footnote-reference" href="#id17" id="id12">[3]</a>  The layout of the three field types is described below.</p>
+CSL fields. <a class="footnote-reference" href="#id15" id="id10">[3]</a>  The layout of the three field types is described below.</p>
 <div class="section" id="text-and-numeric-variables">
 <h3><a class="toc-backref" href="#id55">Text and numeric variables</a></h3>
 <p>Text and numeric variables are not distinguished in the data layer; both
@@ -1217,7 +1218,7 @@ to the processor is described below in the section
 <div class="section" id="non-byzantine-names">
 <span id="input-byzantine"></span><h4><a class="toc-backref" href="#id58">&quot;non-Byzantine&quot; names</a></h4>
 <p>Names not written in the Latin or Cyrillic
-scripts <a class="footnote-reference" href="#id18" id="id14">[4]</a> are always displayed
+scripts <a class="footnote-reference" href="#id16" id="id12">[4]</a> are always displayed
 with the family name first.  No special hint is needed in
 the input data; the processor is sensitive to the character
 set used in the name elements, and will handle such names
@@ -1537,17 +1538,17 @@ the processor registry, at the following locations:</p>
 </pre></div>
 </td></tr></table>
 </div>
-<table class="docutils footnote" frame="void" id="id17" rules="none">
+<table class="docutils footnote" frame="void" id="id15" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id12">[3]</a></td><td>For information on valid CSL variable names, please
+<tr><td class="label"><a class="fn-backref" href="#id10">[3]</a></td><td>For information on valid CSL variable names, please
 refer to the CSL specification, available via <a class="reference external" href="http://citationstyles.org/">http://citationstyles.org/</a>.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id18" rules="none">
+<table class="docutils footnote" frame="void" id="id16" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id14">[4]</a></td><td>The Latin and Cyrillic scripts are referred to here collectively
+<tr><td class="label"><a class="fn-backref" href="#id12">[4]</a></td><td>The Latin and Cyrillic scripts are referred to here collectively
 as &quot;Byzantine scripts&quot;, after the confluence of cultures in the first
 millenium that spanned both.</td></tr>
 </tbody>
@@ -1570,7 +1571,7 @@ functionality described here may or may not be found in other CSL 1.0
 compliant processors, when they arrive on the scene.</p>
 <div class="section" id="input-data-rescue">
 <h2><a class="toc-backref" href="#id63">Input data rescue</a></h2>
-<div class="section" id="id20">
+<div class="section" id="id18">
 <span id="dirty-names"></span><h3><a class="toc-backref" href="#id64">Names</a></h3>
 <p>Systems that use a simple two-field entry format can encode
 <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">dropping-particle</span></tt>
@@ -1627,7 +1628,7 @@ marks:</p>
 </td></tr></table>
 </div>
 </div>
-<div class="section" id="id21">
+<div class="section" id="id19">
 <span id="dirty-dates"></span><h3><a class="toc-backref" href="#id65">Dates</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor contains its own internal
 parsing code for raw date strings.  Clients may take advantage of the
@@ -1771,7 +1772,7 @@ elements are in the processor test fixtures in the
 </ul>
 </div>
 </div>
-<div class="section" id="id27">
+<div class="section" id="id25">
 <span id="multi-lingual-content"></span><h2><a class="toc-backref" href="#id70">Multi-lingual content</a></h2>
 <p>The version of <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> described by this manual incorporates
 an experimental mechanism for supporting cross-lingual and
@@ -1918,7 +1919,7 @@ language tag with a leading and trailing colon:</p>
 </td></tr></table>
 </div>
 </div>
-<div class="section" id="id30">
+<div class="section" id="id28">
 <h3><a class="toc-backref" href="#id73">Names</a></h3>
 <p>For personal names, alternative representations should be presented
 as separate &quot;name&quot; entries, immediately following the original
@@ -2625,6 +2626,15 @@ like the following:</p>
 </div>
 </div>
 </div>
+</div>
+<div class="section" id="live-demo">
+<h1><a class="toc-backref" href="#id87">Live Demo</a></h1>
+<p>When accessed using a Javascript-enabled browser with E4X support
+(such as <img alt="link" src="link.png" /> <a class="reference external" href="http://www.mozilla.com/">Firefox</a>), the <tt class="docutils literal"><span class="pre">./demo/demo.html</span></tt> file in the source archive
+(or <img alt="link" src="link.png" /> <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html">online</a>) will invoke the processor to render a few citations.  The Javascript
+files accompanying the page in the <tt class="docutils literal"><span class="pre">./demo</span></tt> directory show the basic
+steps required to load and run the processor, whether in the browser
+or server-side.</p>
 </div>
 </div>
 </body>
