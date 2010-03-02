@@ -33,17 +33,17 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-//load("./dojo/dojo/dojo.js");
-//dojo.registerModulePath("dojo","./dojo/dojo");
-//dojo.registerModulePath("dojox","./dojo/dojox");
-//dojo.registerModulePath("csl","./src");
-//dojo.registerModulePath("doh","./dojo/util/doh");
+load("./dojo/dojo/dojo.js");
+dojo.registerModulePath("dojo","./dojo/dojo");
+dojo.registerModulePath("dojox","./dojo/dojox");
+dojo.registerModulePath("csl","./src");
+dojo.registerModulePath("doh","./dojo/util/doh");
 
-//dojo.require("doh.runner");
+dojo.require("doh.runner");
 
 dojo.provide("citeproc_js.speed");
 
-//dojo.require("csl.csl");
+dojo.require("csl.csl");
 
 doh.registerGroup("citeproc_js.speed",
 	[
@@ -208,4 +208,4 @@ doh.registerGroup("citeproc_js.speed",
 	}
 );
 
-//citeproc_js.run();
+citeproc_js.run();

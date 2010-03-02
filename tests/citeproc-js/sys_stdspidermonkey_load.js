@@ -33,11 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-dojo.provide("citeproc_js.sys");
-
-dojo.require("csl.tests");
-
-doh.register("citeproc_js.sys", [
+dojo.provide("citeproc_js.sys_stdspidermonkey_load");
+doh.register("citeproc_js.sys_stdspidermonkey_load", [
 
 	function testInstantiationRhinoTestEmpty() {
 		function testme () {

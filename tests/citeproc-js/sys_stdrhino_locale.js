@@ -87,6 +87,3 @@ doh.register("citeproc_js.sys_stdrhino_locale", [
 	},
 ]);
 
-
-var x = [
-]
