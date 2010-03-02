@@ -107,6 +107,7 @@ var CSL = {
 	COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
 
 	DATE_PARTS: ["year","month","day"],
+	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 
 	ET_AL_NAMES: [
 		"et-al-min",

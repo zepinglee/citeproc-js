@@ -67,6 +67,7 @@ var CSL = {
 	POSITION: 2,
 	COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
 	DATE_PARTS: ["year","month","day"],
+	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 	ET_AL_NAMES: [
 		"et-al-min",
 		"et-al-use-first",
@@ -859,12 +860,12 @@ CSL.XmlToToken = function (state, tokentype) {
 	CSL.Node[name].build.call(token, state, target);
 };
 CSL.dateParser = function (txt) {
-	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, monthrexes;
+	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, monthrexes, seasonrex;
 	jiy_list = [
-		["\u660E\u6CBB",1867],
-		["\u5927\u6B63",1911],
-		["\u662D\u548C",1925],
-		["\u5E73\u6210",1988]
+		["\u660E\u6CBB", 1867],
+		["\u5927\u6B63", 1911],
+		["\u662D\u548C", 1925],
+		["\u5E73\u6210", 1988]
 	];
 	jiy = {};
 	for (pos in jiy_list) {
@@ -883,7 +884,7 @@ CSL.dateParser = function (txt) {
 	}
 	jiysplitter = jiysplitter.join("|");
 	jiysplitter = "(" + jiysplitter + ")([0-9]+)";
-	jiysplitter = RegExp(jiysplitter);
+	jiysplitter = new RegExp(jiysplitter);
 	jmd = /(\u6708|\u5E74)/g;
 	jy = /\u65E5$/;
 	jr = /〜/g;
@@ -893,26 +894,30 @@ CSL.dateParser = function (txt) {
 	rangesep = "[%%DATED%%]";
 	fuzzychar = "[?~]";
 	chars = "[a-zA-Z]+";
-	rex = "("+yearfirst+"|"+yearlast+"|"+number+"|"+rangesep+"|"+fuzzychar+"|"+chars+")";
-	rexdash = RegExp( rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "-") );
-	rexdashslash = RegExp( rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "\/") );
-	rexslashdash = RegExp( rex.replace(/%%NUMD%%/g, "\/").replace(/%%DATED%%/g, "-") );
+	rex = "(" + yearfirst + "|" + yearlast + "|" + number + "|" + rangesep + "|" + fuzzychar + "|" + chars + ")";
+	rexdash = new RegExp(rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "-"));
+	rexdashslash = new RegExp(rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "\/"));
+	rexslashdash = new RegExp(rex.replace(/%%NUMD%%/g, "\/").replace(/%%DATED%%/g, "-"));
 	seasonstrs = ["spr", "sum", "fal", "win"];
 	seasonrexes = [];
 	for (pos in seasonstrs) {
-		if (seasonstrs.hasOwnProperty()) {
-			seasonstr = seasonstrs[pos];
-			seasonrexes.push( RegExp(seasonstr+".*") );
+		if (seasonstrs.hasOwnProperty(pos)) {
+			seasonrex = new RegExp(seasonstrs[pos] + ".*");
+			seasonrexes.push(seasonrex);
 		}
 	}
 	monthstrs = "jan feb mar apr may jun jul aug sep oct nov dec";
 	monthstrs = monthstrs.split(" ");
 	monthrexes = [];
-	for each (monthstr in monthstrs) {
-		monthrexes.push( RegExp(monthstr+".*") );
+	for (pos in monthstrs) {
+		if (monthstrs.hasOwnProperty(pos)) {
+			monthstr = monthstrs[pos];
+			rex = new RegExp(monthstr);
+			monthrexes.push(rex);
+		}
 	}
 	this.parse = function (txt) {
-		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item;
+		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, pos, delim, ppos, element, pppos;
 		m = txt.match(jmd, "-");
 		if (m) {
 			txt = txt.replace(jy, "");
@@ -920,8 +925,8 @@ CSL.dateParser = function (txt) {
 			txt = txt.replace(jr, "/");
 			lst = txt.split(jiysplitter);
 			l = lst.length;
-			for	(pos=1; pos<l; pos+=3) {
-				lst[(pos + 1)] = years[lst[(pos)]] + parseInt(lst[(pos + 1)]);
+			for	(pos = 1; pos < l; pos += 3) {
+				lst[(pos + 1)] = jiy[lst[(pos)]] + parseInt(lst[(pos + 1)], 10);
 				lst[pos] = "";
 			}
 			txt = lst.join("");
@@ -943,107 +948,123 @@ CSL.dateParser = function (txt) {
 			if (slashcount.length > 3) {
 				range_delim = "-";
 				date_delim = "/";
-				lst = txt.split( rexslashdash );
+				lst = txt.split(rexslashdash);
 			} else {
 				range_delim = "/";
 				date_delim = "-";
-				lst = txt.split( rexdashslash );
+				lst = txt.split(rexdashslash);
 			}
 		} else {
 			txt = txt.replace("/", "-");
 			range_delim = "-";
 			date_delim = "-";
-			lst = txt.split( rexdash );
+			lst = txt.split(rexdash);
 		}
 		ret = [];
-		for each (item in lst) {
-			m = item.match(/^\s*([-\/]|[a-zA-Z]+|[-~?0-9]+)\s*$/);
-			if (m) {
-				ret.push(m[1]);
+		for (pos in lst) {
+			if (lst.hasOwnProperty(pos)) {
+				item = lst[pos];
+				m = item.match(/^\s*([\-\/]|[a-zA-Z]+|[\-~?0-9]+)\s*$/);
+				if (m) {
+					ret.push(m[1]);
+				}
 			}
 		}
 		delim_pos = ret.indexOf(range_delim);
 		delims = [];
 		isrange = false;
 		if (delim_pos > -1) {
-			delims.push( [0,delim_pos] );
-			delims.push( [(delim_pos+1),ret.length] );
+			delims.push([0, delim_pos]);
+			delims.push([(delim_pos + 1), ret.length]);
 			isrange = true;
 		} else {
-			delims.push([0,ret.length]);
+			delims.push([0, ret.length]);
 		}
 		suff = "";
-		for each (delim in delims) {
-			date = ret.slice(delim[0], delim[1]);
-			for each (element in date) {
-				if (element.indexOf(date_delim) > -1) {
-					this.parseNumericDate(thedate, date_delim, suff, element);
-					continue;
-				}
-				if (element.match(/[0-9]{4}/)) {
-					thedate["year"+suff] = element.replace(/^0*/, "");
-					continue;
-				}
-				breakme = false;
-				for (pos in monthrexes) {
-					if (element.toLocaleLowerCase().match(monthrexes[pos])) {
-						thedate["month"+suff] = ""+(parseInt(pos, 10)+1);
-						breakme = true;
-						break;
+		for (pos in delims) {
+			if (delims.hasOwnProperty(pos)) {
+				delim = delims[pos];
+				date = ret.slice(delim[0], delim[1]);
+				for (ppos in date) {
+					if (date.hasOwnProperty(ppos)) {
+						element = date[ppos];
+						if (element.indexOf(date_delim) > -1) {
+							this.parseNumericDate(thedate, date_delim, suff, element);
+							continue;
+						}
+						if (element.match(/[0-9]{4}/)) {
+							thedate[("year" + suff)] = element.replace(/^0*/, "");
+							continue;
+						}
+						breakme = false;
+						for (pppos in monthrexes) {
+							if (monthrexes.hasOwnProperty(pppos)) {
+								if (element.toLocaleLowerCase().match(monthrexes[pppos])) {
+									thedate[("month" + suff)] = "" + (parseInt(pppos, 10) + 1);
+									breakme = true;
+									break;
+								}
+							}
+						}
+						if (breakme) {
+							continue;
+						}
+						if (element.match(/^[0-9]+$/)) {
+							number = parseInt(element, 10);
+						}
+						if (element.toLocaleLowerCase().match(/^bc.*/) && number) {
+							thedate[("year" + suff)] = "" + (number * -1);
+							number = "";
+							continue;
+						}
+						if (element.toLocaleLowerCase().match(/^ad.*/) && number) {
+							thedate[("year" + suff)] = "" + number;
+							number = "";
+							continue;
+						}
+						breakme = false;
+						for (pppos in seasonrexes) {
+							if (seasonrexes.hasOwnProperty(pppos)) {
+								if (element.toLocaleLowerCase().match(seasonrexes[pppos])) {
+									thedate[("season" + suff)] = "" + (parseInt(pppos, 10) + 1);
+									breakme = true;
+									break;
+								}
+							}
+						}
+						if (breakme) {
+							continue;
+						}
+						if (element === "~" || element === "?" || element === "c" || element.match(/cir.*/)) {
+							thedate.fuzzy = "" + 1;
+							continue;
+						}
+						if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate[("season" + suff)]) {
+							note = element;
+							continue;
+						}
 					}
 				}
-				if (breakme) {
-					continue;
-				}
-				if (element.match(/^[0-9]+$/)) {
-					number = parseInt(element, 10);
-				}
-				if (element.toLocaleLowerCase().match(/^bc.*/) && number) {
-					thedate[("year" + suff)] = ""+(number*-1);
+				if (number) {
+					thedate[("day" + suff)] = number;
 					number = "";
-					continue;
 				}
-				if (element.toLocaleLowerCase().match(/^ad.*/) && number) {
-					thedate[("year" + suff)] = ""+number;
-					number = "";
-					continue;
+				if (note && !thedate[("season" + suff)]) {
+					thedate[("season" + suff)] = note;
+					note = "";
 				}
-				breakme = false;
-				for (pos in seasonrexes) {
-					if (element.toLocaleLowerCase().match(seasonrexes[pos])) {
-						thedate["season"+suff] = ""+(parseInt(pos, 10)+1);
-						breakme = true;
-						break;
-					}
-				}
-				if (breakme) {
-					continue;
-				}
-				if (element === "~" || element === "?" || element === "c" || element.match(/cir.*/)) {
-					thedate.fuzzy = "" + 1;
-					continue;
-				}
-				if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate["season"+suff]) {
-					note = element;
-					continue;
-				}
+				suff = "_end";
 			}
-			if (number) {
-				thedate[("day" + suff)] = number;
-				number = "";
-			}
-			if (note && !thedate["season"+suff]) {
-				thedate["season"+suff] = note;
-				note = "";
-			}
-			suff = "_end";
 		}
 		if (isrange) {
-			for each (item in ["year", "month", "day", "season"]) {
-				if (thedate[item] && !thedate[item+"_end"]) {
-					thedate[item+"_end"] = thedate[item];
-				} else if (!thedate[item] && thedate[item+"_end"]) {
-					thedate[item] = thedate[item+"_end"];
+			for (pos in CSL.DATE_PARTS_ALL) {
+				if (CSL.DATE_PARTS_ALL.hasOwnProperty(pos)) {
+					item = CSL.DATE_PARTS_ALL[pos];
+					if (thedate[item] && !thedate[(item + "_end")]) {
+						thedate[(item + "_end")] = thedate[item];
+					} else if (!thedate[item] && thedate[(item + "_end")]) {
+						thedate[item] = thedate[(item + "_end")];
+					}
 				}
 			}
 		}
