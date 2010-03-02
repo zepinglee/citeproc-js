@@ -32,22 +32,19 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.institutions");
-doh.register("std.institutions", [
-    function(){
-        var test = new StdRhinoTest("institutions_FirstAndLast");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsMaybeUseFirst");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("institutions_SimpleShortLong");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsAlwaysUseFirst");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+{
+    "bibentries": false, 
+    "bibsection": false, 
+    "citation_items": false, 
+    "citations": false, 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <locale>\n    <terms>\n      <term name=\"month-01\">HIGHLY VISIBLE TERM</term>\n    </terms>\n  </locale>\n  <locale xml:lang=\"en\">\n    <terms>\n      <term name=\"month-01\"></term>\n    </terms>\n  </locale>\n  <citation>\n    <layout>\n      <text variable=\"title\" suffix=\": \"/>\n      <text value=\"(\"/>\n      <text term=\"month-01\"/>\n      <text value=\")\"/>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "title": "Sample Title", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "Sample Title: ()"
+}

@@ -74,4 +74,8 @@ doh.register("std.locale", [
         var test = new StdRhinoTest("locale_SpecificStyleOpt");
         doh.assertEqual(test.result, test.run());
     }, 
+    function(){
+        var test = new StdRhinoTest("locale_OverloadWithEmptyString");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

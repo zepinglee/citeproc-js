@@ -43,10 +43,6 @@ doh.register("std.multilingual", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("multilingual_TextSortVariableExists");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("multilingual_NameTransliteration");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -60,6 +56,10 @@ doh.register("std.multilingual", [
     }, 
     function(){
         var test = new StdRhinoTest("multilingual_TextSortMacroExists");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("multilingual_TextSortVariableExists");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

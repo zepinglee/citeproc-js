@@ -56,18 +56,18 @@ Sample Title: (weird term)
   </info>
   <locale xml:lang="en">
     <terms>
-      <term name="and others">weird term</term>
+      <term name="interviewer">weird term</term>
     </terms>
   </locale>
   <locale>
     <terms>
-      <term name="and others"></term>
+      <term name="interviewer"></term>
     </terms>
   </locale>
   <citation>
     <layout>
       <text variable="title" suffix=": "/>
-      <text term="and others" prefix="(" suffix=")"/>
+      <text term="interviewer" prefix="(" suffix=")"/>
     </layout>
   </citation>
 </style>
