@@ -88,7 +88,7 @@ CSL.dateParser = function (txt) {
 	seasonstrs = ["spr", "sum", "fal", "win"];
 	seasonrexes = [];
 	for (pos in seasonstrs) {
-		if (seasonstrs.hasOwnProperty()) {
+		if (seasonstrs.hasOwnProperty(pos)) {
 			seasonstr = seasonstrs[pos];
 			seasonrexes.push( RegExp(seasonstr+".*") );
 		}

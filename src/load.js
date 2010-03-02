@@ -286,6 +286,7 @@ if (!CSL.XmlToToken) {
 if (!CSL.dateParser) {
 	load("./src/util_dateparser.js");
 }
+// jslint OK
 if (!CSL.Engine) {
 	load("./src/build.js");
 }

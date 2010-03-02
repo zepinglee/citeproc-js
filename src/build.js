@@ -597,48 +597,53 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 };
 
 CSL.Engine.prototype.parseNumericDate = function (ret, delim, suff, txt) {
-	var lst = txt.split(delim);
-	for each (var pos in [0, (lst.length-1)]) {
-		if (lst.length && lst[pos].length === 4) {
-			ret["year"+suff] = lst[pos].replace(/^0*/, "");
-			if (!pos) {
-				lst = lst.slice(1);
-			} else {
-				lst = lst.slice(0, pos);
+	var lst, pos;
+	lst = txt.split(delim);
+	for (pos in lst) {
+		if (lst.hasOwnProperty(pos)) {
+			if (lst.length && lst[pos].length === 4) {
+				ret[("year" + suff)] = lst[pos].replace(/^0*/, "");
+				if (!pos) {
+					lst = lst.slice(1);
+				} else {
+					lst = lst.slice(0, pos);
+				}
+				break;
 			}
-			break;
 		}
 	}
 	// comment
 	for (pos in lst) {
-		lst[pos] = parseInt(lst[pos], 10);
+		if (lst.hasOwnProperty()) {
+			lst[pos] = parseInt(lst[pos], 10);
+		}
 	}
 	//
 	// month and day parse
 	//
 	if (lst.length === 1) {
-		ret["month"+suff] = ""+lst[0];
+		ret[("month" + suff)] = "" + lst[0];
 	} else if (lst.length === 2) {
 		if (lst[0] > 12) {
-			ret["month"+suff] = ""+lst[1];
-			ret["day"+suff] = ""+lst[0];
+			ret[("month" + suff)] = "" + lst[1];
+			ret[("day" + suff)] = "" + lst[0];
 		} else {
-			ret["month"+suff] = ""+lst[0];
-			ret["day"+suff] = ""+lst[1];
-		};
-	};
+			ret[("month" + suff)] = "" + lst[0];
+			ret[("day" + suff)] = "" + lst[1];
+		}
+	}
 };
 
 
 CSL.Engine.prototype.setOpt = function (token, name, value) {
-	if ( token.name === "style" ) {
+	if (token.name === "style") {
 		this.opt[name] = value;
-	} else if ( ["citation", "bibliography"].indexOf(token.name) > -1) {
+	} else if (["citation", "bibliography"].indexOf(token.name) > -1) {
 		this[token.name].opt[name] = value;
 	} else if (["name-form", "name-delimiter", "names-delimiter"].indexOf(name) === -1) {
 		token.strings[name] = value;
 	}
-}
+};
 
 CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 	if ("citation" === token.name || "bibliography" === token.name) {
@@ -651,33 +656,34 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 			token.strings[localname] = this[this.build.area].opt[name];
 		}
 	}
-}
+};
 
 
 CSL.Engine.prototype.parseName = function (name) {
+	var m;
 	if (! name["non-dropping-particle"]) {
-		var m = name["family"].match(/^([ a-z]+)\s+(.*)/);
+		m = name.family.match(/^([ a-z]+)\s+(.*)/);
 		if (m) {
 			name["non-dropping-particle"] = m[1];
-			name["family"] = m[2];
+			name.family = m[2];
 		}
 	}
-	if (! name["suffix"]) {
-		var m = name["given"].match(/(.*)\s*,!*\s*(.*)$/);
+	if (! name.suffix) {
+		m = name.given.match(/(.*)\s*,!*\s*(.*)$/);
 		if (m) {
-			name["given"] = m[1];
-			name["suffix"] = m[2];
+			name.given = m[1];
+			name.suffix = m[2];
 			if (m[2].match(/.*[a-z].*/)) {
-				name["comma_suffix"] = true;
+				name.comma_suffix = true;
 			}
 		}
 	}
 	if (! name["dropping-particle"]) {
-		var m = name["given"].match(/^(.*?)\s+([ a-z]+)$/);
+		m = name.given.match(/^(.*?)\s+([ a-z]+)$/);
 		if (m) {
-			name["given"] = m[1];
+			name.given = m[1];
 			name["dropping-particle"] = m[2];
 		}
 	}
-}
+};
 
