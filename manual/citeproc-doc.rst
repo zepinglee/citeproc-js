@@ -7,7 +7,7 @@ Integrator's Manual
 
 .. class:: info-version
 
-   version 1.00##a63##
+   version 1.00##a64##
 
 .. class:: info-date
 
@@ -75,13 +75,16 @@ for providing feedback and getting help is the |link| `project mailing list`_.
 Setup and System Requirements
 -----------------------------
 
-The processor and its test framework can be run in three commonly
-available Javascript environments, using the scripts ``test.py`` or
-``runtest.sh``.  This manual does not cover the nitty-gritty of
-setting up the environment for these scripts, but the basic system
-requirements are described below.  If you get stuck and want advice,
-or if you find something in this manual that is out of date or just
-wrong, please feel free to drop a line to the |link| `project list`_.
+The processor is written in Javascript, one of the interesting
+features of which is the lack of a standard method of I/O.  As a
+result, the processor must be wrapped in other code to get data in and
+out of it, and every installation is going to be a little different.
+This manual does not cover the nitty-gritty of setting up the
+environment for running the processor in a particular environment, but
+the basic system requirements are described below.  If you get stuck
+and want advice, or if you find something in this manual that is out
+of date or just wrong, please feel free to drop a line to the |link|
+`project list`_.
 
 .. _`project list`: http://groups.google.com/group/citeproc-js
 
@@ -102,6 +105,9 @@ __ http://mercurial.selenic.com/wiki/
    ::
 
       hg clone http://bitbucket.org/fbennett/citeproc-js/
+
+This should get you a copy of the sources, and you should be able to
+exercise the test framework using the ``./test.py`` script.
 
 #######################
 Javascript interpreters
@@ -132,7 +138,7 @@ for ease of maintenance.  The files necessary for use in a runtime
 environment are catenated, in the appropriate sequence, in the
 ``citeproc.js`` file, located in the root of the source archive.  This
 file and the test fixtures can be refreshed using the 
-``./tools/MAKETESTS.sh`` shell script.
+``./test.py -r`` command.
 
 To build the processor, the ``citeproc.js`` source code should be
 loaded into the Javascript interpreter context, together with a
@@ -1082,7 +1088,6 @@ The extraction of "dropping" particles is done by scanning the
 For some names, leading lowercase terms in the ``family`` field should
 be treated as part of the name itself, and not as particles.  The
 ``parse-names`` flag should not be set on such names:
-marks:
 
 .. sourcecode:: js
 

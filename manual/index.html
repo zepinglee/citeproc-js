@@ -318,7 +318,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h1 class="title">The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> Citation Processor</h1>
 <h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
-<p class="info-version">version 1.00<sub>a63</sub></p>
+<p class="info-version">version 1.00<sub>a64</sub></p>
 <p class="info-date">2 March 2010</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
@@ -466,13 +466,16 @@ and <a class="reference internal" href="#data-input">Data Input</a> below.</td><
 </div>
 <div class="section" id="setup-and-system-requirements">
 <h1><a class="toc-backref" href="#id33">Setup and System Requirements</a></h1>
-<p>The processor and its test framework can be run in three commonly
-available Javascript environments, using the scripts <tt class="docutils literal"><span class="pre">test.py</span></tt> or
-<tt class="docutils literal"><span class="pre">runtest.sh</span></tt>.  This manual does not cover the nitty-gritty of
-setting up the environment for these scripts, but the basic system
-requirements are described below.  If you get stuck and want advice,
-or if you find something in this manual that is out of date or just
-wrong, please feel free to drop a line to the <img alt="link" src="link.png" /> <a class="reference external" href="http://groups.google.com/group/citeproc-js">project list</a>.</p>
+<p>The processor is written in Javascript, one of the interesting
+features of which is the lack of a standard method of I/O.  As a
+result, the processor must be wrapped in other code to get data in and
+out of it, and every installation is going to be a little different.
+This manual does not cover the nitty-gritty of setting up the
+environment for running the processor in a particular environment, but
+the basic system requirements are described below.  If you get stuck
+and want advice, or if you find something in this manual that is out
+of date or just wrong, please feel free to drop a line to the <img alt="link" src="link.png" />
+<a class="reference external" href="http://groups.google.com/group/citeproc-js">project list</a>.</p>
 <div class="section" id="getting-the-citeproc-js-sources">
 <h2><a class="toc-backref" href="#id34">Getting the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> sources</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> sources are hosted on <img alt="link" src="link.png" /> <a class="reference external" href="http://bitbucket.org/fbennett/citeproc-js/">BitBucket</a>.
@@ -484,6 +487,8 @@ just do a package install), and run the following command:</p>
 hg clone http://bitbucket.org/fbennett/citeproc-js/
 </pre>
 </blockquote>
+<p>This should get you a copy of the sources, and you should be able to
+exercise the test framework using the <tt class="docutils literal"><span class="pre">./test.py</span></tt> script.</p>
 </div>
 <div class="section" id="javascript-interpreters">
 <h2><a class="toc-backref" href="#id35">Javascript interpreters</a></h2>
@@ -505,7 +510,7 @@ for ease of maintenance.  The files necessary for use in a runtime
 environment are catenated, in the appropriate sequence, in the
 <tt class="docutils literal"><span class="pre">citeproc.js</span></tt> file, located in the root of the source archive.  This
 file and the test fixtures can be refreshed using the
-<tt class="docutils literal"><span class="pre">./tools/MAKETESTS.sh</span></tt> shell script.</p>
+<tt class="docutils literal"><span class="pre">./test.py</span> <span class="pre">-r</span></tt> command.</p>
 <p>To build the processor, the <tt class="docutils literal"><span class="pre">citeproc.js</span></tt> source code should be
 loaded into the Javascript interpreter context, together with a
 <tt class="docutils literal"><span class="pre">sys</span></tt> object provided by the integrator (see below), and the desired
@@ -1610,8 +1615,7 @@ The extraction of &quot;dropping&quot; particles is done by scanning the
 <tt class="docutils literal"><span class="pre">given</span></tt> field for trailing terms that contain no uppercase letters.</p>
 <p>For some names, leading lowercase terms in the <tt class="docutils literal"><span class="pre">family</span></tt> field should
 be treated as part of the name itself, and not as particles.  The
-<tt class="docutils literal"><span class="pre">parse-names</span></tt> flag should not be set on such names:
-marks:</p>
+<tt class="docutils literal"><span class="pre">parse-names</span></tt> flag should not be set on such names:</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
