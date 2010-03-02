@@ -59,6 +59,10 @@ doh.register("std.magic", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("magic_QuotesAndBraces1");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("magic_PunctuationInQuoteFalseSuppressExtra");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -108,6 +112,10 @@ doh.register("std.magic", [
     }, 
     function(){
         var test = new StdRhinoTest("magic_PunctuationInQuoteDelimiterTrue");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("magic_QuotesAndBraces2");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

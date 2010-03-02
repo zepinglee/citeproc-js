@@ -131,11 +131,11 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("date_LocalizedWithInStyleFormatting");
+        var test = new StdRhinoTest("date_TextFormFulldateDayRange");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("date_TextFormFulldateDayRange");
+        var test = new StdRhinoTest("date_LocalizedWithInStyleFormatting");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

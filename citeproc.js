@@ -61,6 +61,7 @@ var CSL = {
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 	ABBREVIATE_FIELDS: ["journal", "series", "institution", "authority"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
+	SWAPPING_PUNCTUATION: [".", ",", ";", ":"],
 	NONE: 0,
 	NUMERIC: 1,
 	POSITION: 2,
@@ -509,16 +510,24 @@ CSL.Output.Queue.prototype.renderBlobs = function(blobs,delim,blob_last_chars){
 	return [ret,ret_last_char];
 };
 CSL.Output.Queue.prototype.swapQuotePunctuation = function(ret,use_delim){
+	var pre_quote;
 	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
-		if (use_delim){
+		if (use_delim) {
 			var pos = use_delim.indexOf(" ");
-			if (pos > -1){
-				var pre_quote = use_delim.slice(0,pos);
-				use_delim = use_delim.slice(pos);
+			if (pos === -1) {
+				pos = use_delim.length;
+			}
+			if (pos > -1) {
+				if (CSL.SWAPPING_PUNCTUATION.indexOf(use_delim.slice(0,1)) > -1) {
+					pre_quote = use_delim.slice(0,pos);
+					use_delim = use_delim.slice(pos);
+				} else {
+					pre_quote = "";
+				}
 			} else {
-				var pre_quote = use_delim;
+				pre_quote = use_delim;
 				use_delim = "";
-			};
+			}
 			ret = ret.slice(0,(ret.length-1)) + pre_quote + ret.slice((ret.length-1));
 		};
 	};

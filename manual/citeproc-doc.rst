@@ -7,11 +7,11 @@ Integrator's Manual
 
 .. class:: info-version
 
-   version 1.00##a62##
+   version 1.00##a63##
 
 .. class:: info-date
 
-   =D=26 February 2010=D=
+   =D=2 March 2010=D=
 
 .. class:: contributors
 

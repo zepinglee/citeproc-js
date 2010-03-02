@@ -97,6 +97,8 @@ var CSL = {
 
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 
+	SWAPPING_PUNCTUATION: [".", ",", ";", ":"],
+
 	// update modes
 	NONE: 0,
 	NUMERIC: 1,
