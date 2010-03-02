@@ -106,6 +106,8 @@ var CSL = {
 
 	COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
 
+	DATE_PARTS: ["year","month","day"],
+
 	ET_AL_NAMES: [
 		"et-al-min",
 		"et-al-use-first",
@@ -280,6 +282,9 @@ if (!CSL.cloneAmbigConfig) {
 // jslint OK
 if (!CSL.XmlToToken) {
 	load("./src/util_nodes.js");
+}
+if (!CSL.dateParser) {
+	load("./src/util_dateparser.js");
 }
 if (!CSL.Engine) {
 	load("./src/build.js");

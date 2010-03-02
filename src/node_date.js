@@ -56,7 +56,7 @@ CSL.Node.date = new function(){
 						date_obj = {"date-parts": [[0]] };
 					}
 					if (date_obj.raw){
-						state.tmp.date_object = state.dateParseRaw( date_obj.raw );
+						state.tmp.date_object = state.fun.dateparser.parse( date_obj.raw );
 					} else if (date_obj["date-parts"]) {
 						state.tmp.date_object = state.dateParseArray( date_obj );
 					}

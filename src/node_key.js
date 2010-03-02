@@ -126,7 +126,7 @@ CSL.Node.key = new function(){
 							this.dateparts = ["year","month","day"];
 						}
 						if (dp.raw){
-							dp = state.dateParseRaw( dp.raw );
+							dp = state.fun.dateparser.parse( dp.raw );
 						} else if (dp["date-parts"]) {
 							dp = state.dateParseArray( dp );
 						};

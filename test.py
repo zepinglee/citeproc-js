@@ -65,7 +65,7 @@ class Bundle:
     def __init__(self):
         self.citeproc = "citeproc.js"
         f = ["load","queue","util_locale","util_processor","util_disambig"]
-        f.extend(["util_nodes","build","state","util_integration","cmd_update"])
+        f.extend(["util_nodes","util_dateparser","build","state","util_integration","cmd_update"])
         f.extend(["cmd_bibliography","cmd_cite","node_bibliography","node_choose"])
         f.extend(["node_citation","node_date","node_datepart","node_elseif","node_else"])
         f.extend(["node_etal","node_group","node_if","node_info","node_institution"])
