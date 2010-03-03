@@ -33,16 +33,16 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Engine.Opt = function (){
+CSL.Engine.Opt = function () {
 	this.has_disambiguate = false;
 	this.mode = "html";
-	this.dates = new Object();
+	this.dates = {};
 	this["locale-sort"] = [];
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
 	this["default-locale"] = ["en"];
-	this["update_mode"] = CSL.NONE;
+	this.update_mode = CSL.NONE;
 	/*
 	 * Default values.
 	 * The various et-al values are set globally,
@@ -57,7 +57,7 @@ CSL.Engine.Opt = function (){
 };
 
 
-CSL.Engine.Tmp = function (){
+CSL.Engine.Tmp = function () {
 	//
 	// scratch variable to display the total
 	// number of names in all rendered variables
@@ -71,12 +71,12 @@ CSL.Engine.Tmp = function (){
 	// this holds the field values collected by the @value
 	// and @variable attributes, for processing by the
 	// element functions.
-	this.value = new Array();
+	this.value = [];
 	/**
 	 * Object to hold the decorations declared by a name-part
 	 * element.
 	 */
-	this.namepart_decorations = new Object();
+	this.namepart_decorations = {};
 	/**
 	 * String variable to hold the type of a name-part
 	 * element.
@@ -95,7 +95,7 @@ CSL.Engine.Tmp = function (){
 	// names end tag pops it.  Output value check in @variable
 	// function of attributes.js sets level to false.  closing names
 	// tag maps a false value to superior level.
-	this.can_substitute = new CSL.Stack( 0, CSL.LITERAL);
+	this.can_substitute = new CSL.Stack(0, CSL.LITERAL);
 	//
 	// notes whether the formatted elements of a date span
 	// rendered anything.  controls whether literal fallback
@@ -115,7 +115,7 @@ CSL.Engine.Tmp = function (){
 	// stack flag used for term handling.  Set to true
 	// if at least one variable has tried to render, and
 	// no variables had content.
-	this.term_sibling = new CSL.Stack( undefined, CSL.LITERAL);
+	this.term_sibling = new CSL.Stack(undefined, CSL.LITERAL);
 	//
 	// boolean flag used to control first-letter capitalization
 	// of terms.  Set to true if any item preceding the term
@@ -125,7 +125,7 @@ CSL.Engine.Tmp = function (){
 	//
 	// stack flag used to control jumps in the closing
 	// token of a conditional.
-	this.jump = new CSL.Stack(0,CSL.LITERAL);
+	this.jump = new CSL.Stack(0, CSL.LITERAL);
 	//
 	// holds string parameters for group formatting, between
 	// the start of a group and the closing token.
@@ -136,10 +136,10 @@ CSL.Engine.Tmp = function (){
 
 	// for collapsing
 	this.last_suffix_used = "";
-	this.last_names_used = new Array();
-	this.last_years_used = new Array();
-	this.years_used = new Array();
-	this.names_used = new Array();
+	this.last_names_used = [];
+	this.last_years_used = [];
+	this.years_used = [];
+	this.names_used = [];
 
 	this.taintedItemIDs = false;
 	this.taintedCitationIDs = false;
@@ -173,24 +173,24 @@ CSL.Engine.Tmp = function (){
 	this.disambig_settings = new CSL.AmbigConfig();
 	//
 	// sort key array
-	this.bib_sort_keys = new Array();
+	this.bib_sort_keys = [];
 	//
 	// holds the prefix between the start of a group
 	// and the closing token.
-	this.prefix = new CSL.Stack("",CSL.LITERAL);
+	this.prefix = new CSL.Stack("", CSL.LITERAL);
 	//
 	// holds the suffix between the start of a group
 	// and the closing token.
-	this.suffix = new CSL.Stack("",CSL.LITERAL);
+	this.suffix = new CSL.Stack("", CSL.LITERAL);
 	//
 	// holds the group delimiter between the start of a group
 	// and the closing token.
-	this.delimiter = new CSL.Stack("",CSL.LITERAL);
+	this.delimiter = new CSL.Stack("", CSL.LITERAL);
 	//
 };
 
 
-CSL.Engine.Fun = function (){
+CSL.Engine.Fun = function () {
 	//
 	// matcher
 	this.match = new  CSL.Util.Match();
@@ -209,7 +209,7 @@ CSL.Engine.Fun = function (){
 };
 
 
-CSL.Engine.Build = function (){
+CSL.Engine.Build = function () {
 	// Alternate et-al term
 	// Holds the localization key of the alternative term
 	// to be used for et-al in a names environment.  Reduced
@@ -253,11 +253,11 @@ CSL.Engine.Build = function (){
 	this.term = false;
 	//
 	// the macros themselves are discarded after Build
-	this.macro = new Object();
+	this.macro = {};
 	//
 	// the macro build stack.  used to raise an error
 	// when macros would attempt to call themselves.
-	this.macro_stack = new Array();
+	this.macro_stack = [];
 	//
 	// stores the content of an XML text node during processing
 	this.text = false;
@@ -276,34 +276,34 @@ CSL.Engine.Build = function (){
 	// new level with value 1.  group start tag increments by 1,
 	// group end tag decrements by 1.  conditional wrappers are
 	// only applied if value is exactly 1.
-	this.substitute_level = new CSL.Stack( 0, CSL.LITERAL);
+	this.substitute_level = new CSL.Stack(0, CSL.LITERAL);
 	this.render_nesting_level = 0;
 	this.render_seen = false;
 };
 
 
-CSL.Engine.Configure = function (){
+CSL.Engine.Configure = function () {
 	//
 	// the fail and succeed arrays are used for stack
 	// processing during configure.
-	this.fail = new Array();
-	this.succeed = new Array();
+	this.fail = [];
+	this.succeed = [];
 };
 
 
-CSL.Engine.Citation = function (state){
+CSL.Engine.Citation = function (state) {
 	 // Citation options area.
 	 // Holds a mixture of persistent and ephemeral
 	 // options and scratch data used during processing of
 	 // a citation.</p>
-	this.opt = new Object();
+	this.opt = {};
 
-	this.tokens = new Array();
-	this.srt = new CSL.Registry.Comparifier(state,"citation_sort");
+	this.tokens = [];
+	this.srt = new CSL.Registry.Comparifier(state, "citation_sort");
 	//
 	// configuration array to hold the collapse
 	// options, if any.
-	this.opt.collapse = new Array();
+	this.opt.collapse = [];
 	//
 	// disambiguate options
 	this.opt["disambiguate-add-names"] = false;
@@ -314,11 +314,11 @@ CSL.Engine.Citation = function (state){
 };
 
 
-CSL.Engine.Bibliography = function (){
-	this.opt = new Object();
-	this.tokens = new Array();
+CSL.Engine.Bibliography = function () {
+	this.opt = {};
+	this.tokens = [];
 
-	this.opt.collapse = new Array();
+	this.opt.collapse = [];
 	this.opt["disambiguate-add-names"] = false;
 	this.opt["disambiguate-add-givenname"] = false;
 
@@ -326,19 +326,19 @@ CSL.Engine.Bibliography = function (){
 };
 
 
-CSL.Engine.BibliographySort = function (){
-	this.tokens = new Array();
-	this.opt = new Object();
-	this.opt.sort_directions = new Array();
-	this.keys = new Array();
+CSL.Engine.BibliographySort = function () {
+	this.tokens = [];
+	this.opt = {};
+	this.opt.sort_directions = [];
+	this.keys = [];
 	this.opt.topdecor = [];
 };
 
 
-CSL.Engine.CitationSort = function (){
-	this.tokens = new Array();
-	this.opt = new Object();
-	this.opt.sort_directions = new Array();
-	this.keys = new Array();
+CSL.Engine.CitationSort = function () {
+	this.tokens = [];
+	this.opt = {};
+	this.opt.sort_directions = [];
+	this.keys = [];
 	this.opt.topdecor = [];
 };
