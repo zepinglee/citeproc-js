@@ -432,13 +432,13 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 };
 
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
-	var lst, opt, o, pos;
+	var lst, opt, o, pos, key;
 	lst = value.split(/\s*:([\-a-zA-Z]+):\s*/);
 	value = undefined;
 	opt = this.opt[locale_type];
-	for (pos in opt) {
-		if (opt.hasOwnProperty(pos)) {
-			o = opt[pos];
+	for (key in opt) {
+		if (opt.hasOwnProperty(key)) {
+			o = opt[key];
 			if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
 				value = lst[(lst.indexOf(o) + 1)];
 				break;
@@ -478,55 +478,53 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 		}
 		addme = true;
 		updateme = false;
-		for (ppos in CSL.MINIMAL_NAME_FIELDS) {
-			if (CSL.MINIMAL_NAME_FIELDS.hasOwnProperty(ppos)) {
-				part = CSL.MINIMAL_NAME_FIELDS[ppos];
-				p = newname[part];
-				if (p) {
-					//
-					// Add a static-ordering toggle for non-roman, non-Cyrillic
-					// names.  Operate only on primary names (those that do not
-					// have a language subtag).
-					//
-					if (newname[part].length && newname[part][0] !== ":") {
-						if (newname["static-ordering"]) {
-							use_static_ordering = true;
-						} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-							use_static_ordering = true;
-						} else {
-							use_static_ordering = false;
+		llen = CSL.MINIMAL_NAME_FIELDS;
+		for (ppos = 0; ppos < len; ppos += 1) {
+			part = CSL.MINIMAL_NAME_FIELDS[ppos];
+			p = newname[part];
+			if (p) {
+				//
+				// Add a static-ordering toggle for non-roman, non-Cyrillic
+				// names.  Operate only on primary names (those that do not
+				// have a language subtag).
+				//
+				if (newname[part].length && newname[part][0] !== ":") {
+					if (newname["static-ordering"]) {
+						use_static_ordering = true;
+					} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)) {
+						use_static_ordering = true;
+					} else {
+						use_static_ordering = false;
+					}
+				}
+				newname["static-ordering"] = use_static_ordering;
+				m = p.match(/^:([\-a-zA-Z]+):\s+(.*)/);
+				if (m) {
+					addme = false;
+					lllen = this.opt[mode].length;
+					for (pppos = 0; pppos < len; pppos += 1) {
+						o = this.opt[mode][pppos];
+						if (m[1] === o) {
+							updateme = true;
+							newname[part] = m[2];
+							break;
 						}
 					}
-					newname["static-ordering"] = use_static_ordering;
-					m = p.match(/^:([\-a-zA-Z]+):\s+(.*)/);
-					if (m) {
-						addme = false;
-						for (pppos in this.opt[mode]) {
-							if (this.opt[mode].hasOwnProperty(pppos)) {
-								o = this.opt[mode][pppos];
-								if (m[1] === o) {
-									updateme = true;
-									newname[part] = m[2];
-									break;
-								}
+					if (!updateme) {
+						if (this.opt.lang) {
+							//
+							// Fallback to style default language.
+							//
+							if (this.opt.lang.indexOf("-") > -1) {
+								newopt = this.opt.lang.slice(0, this.opt.lang.indexOf("-"));
+							} else {
+								newopt = this.opt.lang;
 							}
-						}
-						if (!updateme) {
-							if (this.opt.lang) {
-								//
-								// Fallback to style default language.
-								//
-								if (this.opt.lang.indexOf("-") > -1) {
-									newopt = this.opt.lang.slice(0, this.opt.lang.indexOf("-"));
-								} else {
-									newopt = this.opt.lang;
-								}
-								if (m[1] === newopt) {
-									updateme = true;
-									newname[part] = m[2];
-									if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-										newname["static-ordering"] = false;
-									}
+							if (m[1] === newopt) {
+								updateme = true;
+								newname[part] = m[2];
+								if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
+									newname["static-ordering"] = false;
 								}
 							}
 						}
@@ -544,9 +542,7 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 			//
 			for (key in newname) {
 				if (newname.hasOwnProperty(key)) {
-					if (newname.hasOwnProperty(key)) {
-						ret[count][key] = newname[key];
-					}
+					ret[count][key] = newname[key];
 				}
 			}
 		}
@@ -556,18 +552,17 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 
 
 CSL.Engine.prototype.retrieveItems = function (ids) {
-	var ret, pos;
+	var ret, pos, len;
 	ret = [];
-	for (pos in ids) {
-		if (ids.hasOwnProperty(pos)) {
-			ret.push(this.sys.retrieveItem(ids[pos]));
-		}
+	len = ids.length;
+	for (pos = 0; pos < len; pos += 1) {
+		ret.push(this.sys.retrieveItem(ids[pos]));
 	}
 	return ret;
 };
 
 CSL.Engine.prototype.dateParseArray = function (date_obj) {
-	var ret, field, dpos, ppos, dp, exts;
+	var ret, field, dpos, ppos, dp, exts, llen, pos, len, pppos, lllen;
 	ret = {};
 	for (field in date_obj) {
 		if (field === "date-parts") {
@@ -578,16 +573,14 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 				}
 			}
 			exts = ["", "_end"];
-			for (dpos in dp) {
-				if (dp.hasOwnProperty(dpos)) {
-					for (ppos in CSL.DATE_PARTS) {
-						if (CSL.DATE_PARTS.hasOwnProperty(ppos)) {
-							ret[(CSL.DATE_PARTS[ppos] + exts[dpos])] = dp[dpos][ppos];
-						}
-					}
+			llen = dp.length;
+			for (ppos = 0; ppos < llen; ppos += 1) {
+				lllen = CSL.DATE_PARTS.length;
+				for (pppos = 0; pppos < lllen; pppos += 1) {
+					ret[(CSL.DATE_PARTS[pppos] + exts[ppos])] = dp[ppos][pppos];
 				}
 			}
-		} else {
+		} else if (date_obj.hasOwnProperty(field)) {
 			ret[field] = date_obj[field];
 		}
 	}
@@ -595,26 +588,24 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 };
 
 CSL.Engine.prototype.parseNumericDate = function (ret, delim, suff, txt) {
-	var lst, pos;
+	var lst, pos, len;
 	lst = txt.split(delim);
-	for (pos in lst) {
-		if (lst.hasOwnProperty(pos)) {
-			if (lst.length && lst[pos].length === 4) {
-				ret[("year" + suff)] = lst[pos].replace(/^0*/, "");
-				if (!pos) {
-					lst = lst.slice(1);
-				} else {
-					lst = lst.slice(0, pos);
-				}
-				break;
+	len = lst.length;
+	for (pos = 0; pos < len; pos += 1) {
+		if (lst[pos].length === 4) {
+			ret[("year" + suff)] = lst[pos].replace(/^0*/, "");
+			if (!pos) {
+				lst = lst.slice(1);
+			} else {
+				lst = lst.slice(0, pos);
 			}
+			break;
 		}
 	}
 	// comment
-	for (pos in lst) {
-		if (lst.hasOwnProperty()) {
-			lst[pos] = parseInt(lst[pos], 10);
-		}
+	len = lst.length;
+	for (pos = 0; pos < len; pos += 1) {
+		lst[pos] = parseInt(lst[pos], 10);
 	}
 	//
 	// month and day parse

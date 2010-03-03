@@ -67,30 +67,37 @@ CSL.Output.Queue.prototype.mergeTokenStrings = function (base, modifier) {
 		ret = new CSL.Token(base, CSL.SINGLETON);
 		key = "";
 		for (key in base_token.strings) {
-			ret.strings[key] = base_token.strings[key];
+			if (base_token.strings.hasOwnProperty(key)) {
+				ret.strings[key] = base_token.strings[key];
+			}
 		}
 		for (key in modifier_token.strings) {
-			ret.strings[key] = modifier_token.strings[key];
+			if (modifier_token.strings.hasOwnProperty(key)) {
+				ret.strings[key] = modifier_token.strings[key];
+			}
 		}
 		ret.decorations = base_token.decorations.concat(modifier_token.decorations);
 	}
 	return ret;
-}
+};
 
 // Store a new output format token based on another
 CSL.Output.Queue.prototype.addToken = function (name, modifier, token) {
-	var newtok = new CSL.Token("output");
-	if ("string" == typeof token) {
+	var newtok, attr;
+	newtok = new CSL.Token("output");
+	if ("string" === typeof token) {
 		token = this.formats.value()[token];
 	}
 	if (token && token.strings) {
 		for (attr in token.strings) {
-			newtok.strings[attr] = token.strings[attr];
+			if (token.strings.hasOwnProperty(attr)) {
+				newtok.strings[attr] = token.strings[attr];
+			}
 		}
 		newtok.decorations = token.decorations;
 
 	}
-	if ("string" == typeof modifier) {
+	if ("string" === typeof modifier) {
 		newtok.strings.delimiter = modifier;
 	}
 	this.formats.value()[name] = newtok;
@@ -103,7 +110,7 @@ CSL.Output.Queue.prototype.pushFormats = function (tokenstore) {
 	if (!tokenstore) {
 		tokenstore = {};
 	}
-	tokenstore["empty"] = this.empty;
+	tokenstore.empty = this.empty;
 	this.formats.push(tokenstore);
 };
 
@@ -117,12 +124,12 @@ CSL.Output.Queue.prototype.startTag = function (name, token) {
 	tokenstore[name] = token;
 	this.pushFormats(tokenstore);
 	this.openLevel(name);
-}
+};
 
 CSL.Output.Queue.prototype.endTag = function () {
 	this.closeLevel();
 	this.popFormats();
-}
+};
 
 //
 // newlevel adds a new blob object to the end of the current
@@ -130,6 +137,7 @@ CSL.Output.Queue.prototype.endTag = function () {
 // appends are made to blob list of the new object.
 
 CSL.Output.Queue.prototype.openLevel = function (token) {
+	var blob, curr;
 	//CSL.debug("openLevel");
 	if (!this.formats.value()[token]) {
 		throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
@@ -137,7 +145,7 @@ CSL.Output.Queue.prototype.openLevel = function (token) {
 	//CSL.debug("newlevel: "+token);
 	//
 	// delimiter, prefix, suffix, decorations from token
-	var blob = new CSL.Blob(this.formats.value()[token]);
+	blob = new CSL.Blob(this.formats.value()[token]);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
 		// this.state.tmp.offset_characters += blob.strings.prefix.length;
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
@@ -146,7 +154,7 @@ CSL.Output.Queue.prototype.openLevel = function (token) {
 		// this.state.tmp.offset_characters += blob.strings.suffix.length;
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
-	var curr = this.current.value();
+	curr = this.current.value();
 	curr.push(blob);
 	this.current.push(blob);
 };
@@ -158,7 +166,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 	//CSL.debug("closeLevel");
 	//CSL.debug("merge");
 	this.current.pop();
-}
+};
 
 //
 // append does the same thing as newlevel, except
@@ -166,29 +174,30 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 // and the current pointer is not moved after the push.
 
 CSL.Output.Queue.prototype.append = function (str, tokname) {
-	if ("undefined" == typeof str) {
+	var token, blob, curr;
+	if ("undefined" === typeof str) {
 		return;
-	};
-	if ("number" == typeof str) {
+	}
+	if ("number" === typeof str) {
 		str = "" + str;
 	}
-	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() == "suppress-me") {
+	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() === "suppress-me") {
 		return;
 	}
-	var blob = false;
+	blob = false;
 	if (!tokname) {
-		var token = this.formats.value()["empty"];
-	} else if (tokname == "literal") {
-		var token = true;
-	} else if ("string" == typeof tokname) {
-		var token = this.formats.value()[tokname];
+		token = this.formats.value().empty;
+	} else if (tokname === "literal") {
+		token = true;
+	} else if ("string" === typeof tokname) {
+		token = this.formats.value()[tokname];
 	} else {
-		var token = tokname;
+		token = tokname;
 	}
 	if (!token) {
 		throw "CSL processor error: unknown format token name: " + tokname;
 	}
-	if ("string" == typeof str && str.length) {
+	if ("string" === typeof str && str.length) {
 		this.last_char_rendered = str.slice(-1);
 	}
 	blob = new CSL.Blob(token, str);
@@ -198,8 +207,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix) {
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
-	var curr = this.current.value();
-	if ("string" == typeof blob.blobs) {
+	curr = this.current.value();
+	if ("string" === typeof blob.blobs) {
 		this.state.tmp.term_predecessor = true;
 	}
 	//
@@ -215,7 +224,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	// </Dennis Hopper impersonation>
 	//
 	if (this.state.tmp.count_offset_characters) {
-		if ("string" == typeof str) {
+		if ("string" === typeof str) {
 			//
 			// XXXXX: for all this offset stuff, need to strip affixes
 			// before measuring; they may contain markup tags.
@@ -223,7 +232,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 			this.state.tmp.offset_characters += blob.strings.prefix.length;
 			this.state.tmp.offset_characters += blob.strings.suffix.length;
 			this.state.tmp.offset_characters += blob.blobs.length;
-		} else if ("undefined" != str.num) {
+		} else if ("undefined" !== str.num) {
 			this.state.tmp.offset_characters += str.strings.prefix.length;
 			this.state.tmp.offset_characters += str.strings.suffix.length;
 			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
@@ -234,7 +243,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	// variables are not properly initialized elsewhere.
 	//
 	this.state.parallel.AppendBlobPointer(curr);
-	if ("string" == typeof str) {
+	if ("string" === typeof str) {
 		curr.push(blob);
 		if (blob.strings["text-case"]) {
 			//
@@ -246,14 +255,14 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 			// apply our changes to the blob copy.
 			//
 			blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
-		};
+		}
 		this.state.fun.flipflopper.init(str, blob);
 		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
 		this.state.fun.flipflopper.processTags();
 	} else {
 		curr.push(str);
 	}
-}
+};
 
 //
 // Maybe the way to do this is to take it by layers, and
@@ -271,11 +280,11 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 //
 
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
+	var blobs, ret, blob_last_chars, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen;
+	blobs = myblobs.slice();
+	ret = [];
 
-	var blobs = myblobs.slice();
-	var ret = [];
-
-	if (blobs.length == 0) {
+	if (blobs.length === 0) {
 		return ret;
 	}
 
@@ -283,7 +292,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		CSL.Output.Queue.normalizePrefixPunctuation(blobs);
 	}
 
-	var blob_last_chars = [];
+	blob_last_chars = [];
 
 	//
 	// Need to know the join delimiter before boiling blobs down
@@ -291,26 +300,28 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	// punctuation characters.
 	//
 	if (blob) {
-		var blob_delimiter = blob.strings.delimiter;
+		blob_delimiter = blob.strings.delimiter;
 	} else {
-		var blob_delimiter = "";
-	};
+		blob_delimiter = "";
+	}
 	//if (blob_delimiter.indexOf(".") > -1) {
 	//	CSL.debug("*** blob_delimiter: "+blob_delimiter);
 	//};
-	for (var i in blobs) {
-		var blobjr = blobs[i];
-		if ("string" == typeof blobjr.blobs) {
-			var last_str = "";
+
+	len = blobs.length;
+	for (pos = 0; pos < len; pos += 1) {
+		blobjr = blobs[pos];
+		if ("string" === typeof blobjr.blobs) {
+			last_str = "";
 			if (blobjr.strings.suffix) {
 				last_str = blobjr.strings.suffix;
 			} else if (blobjr.blobs) {
 				last_str = blobjr.blobs;
-			};
+			}
 			//var last_char = last_str[(last_str.length-1)];
-			var last_char = last_str.slice(-1);
+			last_char = last_str.slice(-1);
 
-			if ("number" == typeof blobjr.num) {
+			if ("number" === typeof blobjr.num) {
 				ret.push(blobjr);
 				blob_last_chars.push(last_char);
 			} else if (blobjr.blobs) {
@@ -318,20 +329,22 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				//
 				// text_escape is applied by flipflopper.
 				//
-				var b = blobjr.blobs;
+				b = blobjr.blobs;
 				if (!state.tmp.suppress_decorations) {
-					for each (var params in blobjr.decorations) {
+					llen = blobjr.decorations.length;
+					for (ppos = 0; ppos < llen; ppos += 1) {
+						params = blobjr.decorations[ppos];
 						b = state.fun.decorate[params[0]][params[1]](state, b);
-					};
-				};
-				var use_suffix = blobjr.strings.suffix;
-				if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == ".") {
+					}
+				}
+				use_suffix = blobjr.strings.suffix;
+				if (b[(b.length - 1)] === "." && use_suffix && use_suffix[0] === ".") {
 				    use_suffix = use_suffix.slice(1);
 				}
 				//
 				// Handle punctuation/quote swapping for suffix.
 				//
-				var qres = this.swapQuotePunctuation(b, use_suffix);
+				qres = this.swapQuotePunctuation(b, use_suffix);
 				b = qres[0];
 				use_suffix = qres[1];
 				//
@@ -339,15 +352,15 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				// queue before rendering, group wrappers need
 				// to produce no output if they are found to be
 				// empty.
-				if(b && b.length) {
+				if (b && b.length) {
 					b = blobjr.strings.prefix + b + use_suffix;
 					ret.push(b);
 					blob_last_chars.push(last_char);
 				}
-			};
+			}
 		} else if (blobjr.blobs.length) {
-			var res = state.output.string(state, blobjr.blobs, blobjr);
-			var addtoret = res[0];
+			res = state.output.string(state, blobjr.blobs, blobjr);
+			addtoret = res[0];
 			ret = ret.concat(addtoret);
 			blob_last_chars = blob_last_chars.concat(res[1]);
 
@@ -355,11 +368,12 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		} else {
 			continue;
 		}
-	};
-	var span_split = 0;
-	for (var j in ret) {
-		if ("string" == typeof ret[j]) {
-			span_split = (parseInt(j, 10) + 1);
+	}
+	span_split = 0;
+	len = ret.length;
+	for (pos = 0; pos < len; pos += 1) {
+		if ("string" === typeof ret[pos]) {
+			span_split = (parseInt(pos, 10) + 1);
 		}
 	}
 	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
@@ -373,36 +387,38 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	// ...
 	// Oh.  Yes, we can.  Good.
 	//
-	var res = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, blob_last_chars);
-	var blobs_start = res[0];
+	res = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, blob_last_chars);
+	blobs_start = res[0];
 	blob_last_chars = res[1].slice();
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
 		if (!state.tmp.suppress_decorations) {
-			for each (var params in blob.decorations) {
+			len = blob.decorations.length;
+			for (pos = 0; pos < len; pos += 1) {
+				params = blob.decorations[pos];
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
 			}
 		}
 		//
 		// XXXX: cut-and-paste warning.  same as a code block above.
 		//
-		var b = blobs_start;
-		var use_suffix = blob.strings.suffix;
-		if (b[(b.length-1)] == "." && use_suffix && use_suffix[0] == ".") {
+		b = blobs_start;
+		use_suffix = blob.strings.suffix;
+		if (b[(b.length - 1)] === "." && use_suffix && use_suffix[0] === ".") {
 			use_suffix = use_suffix.slice(1);
 		}
 		//
 		// Handle punctuation/quote swapping for suffix.
 		//
-		var qres = this.swapQuotePunctuation(b, use_suffix);
+		qres = this.swapQuotePunctuation(b, use_suffix);
 		b = qres[0];
-		if(b && b.length) {
+		if (b && b.length) {
 			use_suffix = qres[1];
 			b = blob.strings.prefix + b + use_suffix;
 		}
 		blobs_start = b;
 	}
-	var blobs_end = ret.slice(span_split, ret.length);
-	if (!blobs_end.length && blobs_start){
+	blobs_end = ret.slice(span_split, ret.length);
+	if (!blobs_end.length && blobs_start) {
 		ret = [blobs_start];
 	} else if (blobs_end.length && !blobs_start) {
 		ret = blobs_end;
@@ -412,59 +428,63 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	//
 	// Blobs is now definitely a string with
 	// trailing blobs.  Return it.
-	if ("undefined" == typeof blob){
+	if ("undefined" === typeof blob) {
 		this.queue = [];
 		this.current.mystack = [];
 		this.current.mystack.push(this.queue);
-		if (state.tmp.suppress_decorations){
-			var res = state.output.renderBlobs(ret);
+		if (state.tmp.suppress_decorations) {
+			res = state.output.renderBlobs(ret);
 			ret = res[0];
 			blob_last_chars = res[1].slice();
-		};
-	} else if ("boolean" == typeof blob){
-		var res = state.output.renderBlobs(ret);
+		}
+	} else if ("boolean" === typeof blob) {
+		res = state.output.renderBlobs(ret);
 		ret = res[0];
 		blob_last_chars = res[1].slice();
-	};
-	if (blob){
+	}
+	if (blob) {
 		return [ret, blob_last_chars.slice()];
 	} else {
 		return ret;
-	};
+	}
 };
 
-CSL.Output.Queue.prototype.clearlevel = function (){
-	var blob = this.current.value();
-	for (var i=(blob.blobs.length-1); i > -1; i--){
+CSL.Output.Queue.prototype.clearlevel = function () {
+	var blob, pos, len;
+	blob = this.current.value();
+	len = blob.blobs.length;
+	for (pos = 0; pos < len; pos += 1) {
 		blob.blobs.pop();
 	}
 };
 
-CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, blob_last_chars){
-	if (!delim){
+CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, blob_last_chars) {
+	var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params;
+	if (!delim) {
 		delim = "";
 	}
-	if (!blob_last_chars){
+	if (!blob_last_chars) {
 		blob_last_chars = [];
-	};
-	var state = this.state;
-	var ret = "";
-	var ret_last_char = [];
-	var use_delim = "";
-	var l = blobs.length;
-	for (var i=0; i < l; i++){
-		if (blobs[i].checkNext){
-			blobs[i].checkNext(blobs[(i + 1)]);
+	}
+	state = this.state;
+	ret = "";
+	ret_last_char = [];
+	use_delim = "";
+	len = blobs.length;
+	for (pos = 0; pos < len; pos += 1) {
+		if (blobs[pos].checkNext) {
+			blobs[pos].checkNext(blobs[(pos + 1)]);
 		}
 	}
-	for (var i in blobs){
-		var blob = blobs[i];
-		if (ret){
+	len = blobs.length;
+	for (pos = 0; pos < len; pos += 1) {
+		blob = blobs[pos];
+		if (ret) {
 			use_delim = delim;
 		}
-		if (blob && "string" == typeof blob){
+		if (blob && "string" === typeof blob) {
 			//throw "Attempt to render string as rangeable blob"
-			if (use_delim && blob_last_chars[(i-1)] == use_delim[0]) {
+			if (use_delim && blob_last_chars[(pos - 1)] === use_delim[0]) {
 				//
 				// Something for posterity, at the end of a remarkably
 				// unproductive day.
@@ -473,57 +493,57 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, blob_last_chars
 				//CSL.debug("  ######################## EUREKA ####################");
 				//CSL.debug("  ####################################################");
 				use_delim = use_delim.slice(1);
-			};
+			}
 			//
 			// Handle punctuation/quote swapping for delimiter joins.
 			//
-			var res = this.swapQuotePunctuation(ret, use_delim);
+			res = this.swapQuotePunctuation(ret, use_delim);
 			ret = res[0];
 			use_delim = res[1];
 			ret += use_delim;
 			ret += blob;
 			ret_last_char = blob_last_chars.slice(-1);
-		} else if (blob.status != CSL.SUPPRESS){
+		} else if (blob.status !== CSL.SUPPRESS) {
 			// CSL.debug("doing rangeable blob");
 			//var str = blob.blobs;
-			var str = blob.formatter.format(blob.num);
-			if (blob.strings["text-case"]){
+			str = blob.formatter.format(blob.num);
+			if (blob.strings["text-case"]) {
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
 			}
-			if (!state.tmp.suppress_decorations){
-				for each (var params in blob.decorations){
+			if (!state.tmp.suppress_decorations) {
+				llen = blob.decorations.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					params = blob.decorations[ppos];
 					str = state.fun.decorate[params[0]][params[1]](state, str);
-				};
-			};
-			//if (!suppress_decor){
-				str = blob.strings.prefix + str + blob.strings.suffix;
-			//}
-			if (blob.status == CSL.END){
+				}
+			}
+			str = blob.strings.prefix + str + blob.strings.suffix;
+			if (blob.status === CSL.END) {
 				ret += blob.range_prefix;
-			} else if (blob.status == CSL.SUCCESSOR){
+			} else if (blob.status === CSL.SUCCESSOR) {
 				ret += blob.successor_prefix;
-			} else if (blob.status == CSL.START){
+			} else if (blob.status === CSL.START) {
 				//
 				// didn't need this.  don't really know how this works.
 				// pure empirical fingerpainting for these joins.
 				//
 				ret += "";
-			} else if (blob.status == CSL.SEEN){
+			} else if (blob.status === CSL.SEEN) {
 				ret += blob.successor_prefix;
 			}
 			ret += str;
 			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
 			ret_last_char = blob_last_chars.slice(-1);
-		};
-	};
+		}
+	}
 	return [ret, ret_last_char];
 	////////return ret;
 };
 
 
-CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim){
-	var pre_quote;
-	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret[(ret.length-1)]) > -1){
+CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
+	var pre_quote, pos, len;
+	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret[(ret.length - 1)]) > -1) {
 		// if (use_delim && CSL.SWAPPING_PUNCTUATION.indexOf(use_delim.slice(0)) > -1) {
 		if (use_delim) {
 
@@ -533,7 +553,7 @@ CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim){
 
 			//  && CSL.SWAPPING_PUNCTUATION.indexOf(use_delim.slice(0)) > -1) {
 
-			var pos = use_delim.indexOf(" ");
+			pos = use_delim.indexOf(" ");
 			if (pos === -1) {
 				pos = use_delim.length;
 			}
@@ -548,37 +568,39 @@ CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim){
 				pre_quote = use_delim;
 				use_delim = "";
 			}
-			ret = ret.slice(0, (ret.length-1)) + pre_quote + ret.slice((ret.length-1));
-		};
-	};
+			ret = ret.slice(0, (ret.length - 1)) + pre_quote + ret.slice((ret.length - 1));
+		}
+	}
 	return [ret, use_delim];
 };
 
 
-CSL.Output.Queue.normalizePrefixPunctuation = function (blobs){
+CSL.Output.Queue.normalizePrefixPunctuation = function (blobs) {
+	var pos, len, m, punct;
 	//
 	// Move leading punctuation on prefixes to preceding
 	// element's suffix.
 	//
-	var punct = "";
-	if ("object" == typeof blobs[0] && blobs[0].blobs.length){
+	punct = "";
+	if ("object" === typeof blobs[0] && blobs[0].blobs.length) {
 		CSL.Output.Queue.normalizePrefixPunctuation(blobs[0].blobs);
 	}
-	if ("object" == typeof blobs){
-		for (var pos=(blobs.length-1); pos > 0; pos += -1){
-			if (!blobs[pos].blobs){
+	if ("object" === typeof blobs) {
+		len = blobs.length - 1;
+		for (pos = len; pos > 0; pos += -1) {
+			if (!blobs[pos].blobs) {
 				continue;
 			}
-			var m = blobs[pos].strings.prefix.match(/^([!.?])(.*)/);
-			if (m){
+			m = blobs[pos].strings.prefix.match(/^([!.?])(.*)/);
+			if (m) {
 				blobs[pos].strings.prefix = m[2];
-				if (["!", ".", "?"].indexOf(blobs[(pos-1)].strings.suffix.slice(-1)) > -1){
-					blobs[(pos-1)].strings.suffix += m[1];
+				if (["!", ".", "?"].indexOf(blobs[(pos - 1)].strings.suffix.slice(-1)) > -1) {
+					blobs[(pos - 1)].strings.suffix += m[1];
 				}
-			};
-			if ("object" == typeof blobs[pos] && blobs[pos].blobs.length){
+			}
+			if ("object" === typeof blobs[pos] && blobs[pos].blobs.length) {
 				CSL.Output.Queue.normalizePrefixPunctuation(blobs[pos].blobs);
 			}
-		};
-	};
+		}
+	}
 };
