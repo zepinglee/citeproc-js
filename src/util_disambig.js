@@ -34,40 +34,37 @@
  */
 
 CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
-	var ret, param, pos, ppos;
+	var ret, param, pos, ppos, len, llen;
 	ret = {};
 	ret.names = [];
 	ret.givens = [];
 	ret.year_suffix = false;
 	ret.disambiguate = false;
-	for (pos in config.names) {
-		if (config.names.hasOwnProperty(pos)) {
-			param = config.names[pos];
-			if (oldconfig && oldconfig.names[pos] !== param) {
-				// print("hello "+i);
+	len = config.names.length;
+	for (pos = 0; pos < len; pos += 1) {
+		param = config.names[pos];
+		if (oldconfig && oldconfig.names[pos] !== param) {
+			// print("hello "+i);
+			this.tmp.taintedItemIDs[itemID] = true;
+			oldconfig = false;
+		}
+		ret.names[pos] = param;
+	}
+	len = config.givens.length;
+	for (pos = 0; pos < len; pos += 1) {
+		param = [];
+		llen = config.givens[pos].length;
+		for (ppos = 0; ppos < llen; ppos += 1) {
+			// condition at line 312 of disambiguate.js protects against negative
+			// values of j
+			if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
+				// print("hello "+i+":"+j);
 				this.tmp.taintedItemIDs[itemID] = true;
 				oldconfig = false;
 			}
-			ret.names[pos] = param;
+			param.push(config.givens[pos][ppos]);
 		}
-	}
-	for (pos in config.givens) {
-		if (config.givens.hasOwnProperty(pos)) {
-			param = [];
-			for (ppos in config.givens[pos]) {
-				if (config.givens[pos].hasOwnProperty(ppos)) {
-					// condition at line 312 of disambiguate.js protects against negative
-					// values of j
-					if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
-						// print("hello "+i+":"+j);
-						this.tmp.taintedItemIDs[itemID] = true;
-						oldconfig = false;
-					}
-					param.push(config.givens[pos][ppos]);
-				}
-			}
-			ret.givens.push(param);
-		}
+		ret.givens.push(param);
 	}
 	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
 		// print("hello year_suffix");

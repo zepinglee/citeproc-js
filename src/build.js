@@ -194,16 +194,16 @@ CSL.Engine.prototype.buildTokenLists = function (area) {
 };
 
 CSL.Engine.prototype.setStyleAttributes = function () {
-	var dummy, attr, pos, attributes;
+	var dummy, attr, key, attributes;
 	dummy = {};
 	dummy.name = this.sys.xml.nodename(this.cslXml);
 	//
 	// Xml: more of it
 	//
 	attributes = this.sys.xml.attributes(this.cslXml);
-	for (pos in attributes) {
-		if (attributes.hasOwnProperty(pos)) {
-			attr = attributes[pos];
+	for (key in attributes) {
+		if (attributes.hasOwnProperty(key)) {
+			attr = attributes[key];
 			CSL.Attributes[("@" + this.sys.xml.getAttributeName(attr))].call(dummy, this, this.sys.xml.getAttributeValue(attr));
 		}
 	}
@@ -343,7 +343,7 @@ CSL.Engine.prototype.getDateNum = function (ItemField, partname) {
 };
 
 CSL.Engine.getField = function (mode, hash, term, form, plural) {
-	var ret, forms, f, pos;
+	var ret, forms, f, pos, len;
 	ret = "";
 	if (!hash[term]) {
 		if (mode === CSL.STRICT) {
@@ -361,59 +361,57 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 		forms = [form];
 	}
 	forms = forms.concat(["long"]);
-	for (pos in forms) {
-		if (forms.hasOwnProperty(pos)) {
-			f = forms[pos];
-			if ("string" === typeof hash[term]) {
-				ret = hash[term];
-			} else if ("undefined" !== typeof hash[term][f]) {
-				if ("string" === typeof hash[term][f]) {
-					ret = hash[term][f];
+	len = forms.length;
+	for (pos = 0; pos < len; pos += 1) {
+		f = forms[pos];
+		if ("string" === typeof hash[term]) {
+			ret = hash[term];
+		} else if ("undefined" !== typeof hash[term][f]) {
+			if ("string" === typeof hash[term][f]) {
+				ret = hash[term][f];
+			} else {
+				if ("number" === typeof plural) {
+					ret = hash[term][f][plural];
 				} else {
-					if ("number" === typeof plural) {
-						ret = hash[term][f][plural];
-					} else {
-						ret = hash[term][f][0];
-					}
+					ret = hash[term][f][0];
 				}
-				break;
 			}
+			break;
 		}
 	}
 	return ret;
 };
 
 CSL.Engine.prototype.configureTokenLists = function () {
-	var dateparts_master, area, pos, token, dateparts, part, ppos, pppos;
+	var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
 	//for each (var area in ["citation", "citation_sort", "bibliography","bibliography_sort"]) {
 	dateparts_master = ["year", "month", "day"];
-	for (pos in CSL.AREAS) {
-		if (CSL.AREAS.hasOwnProperty(pos)) {
-			area = CSL.AREAS[pos];
-			for (ppos = (this[area].tokens.length - 1); ppos > -1; ppos += -1) {
-				token = this[area].tokens[ppos];
-				if ("date" === token.name && CSL.END === token.tokentype) {
-					dateparts = [];
-				}
-				if ("date-part" === token.name && token.strings.name) {
-					for (pppos in dateparts_master) {
-						if (dateparts_master.hasOwnProperty(pppos)) {
-							part = dateparts_master[pppos];
-							if (part === token.strings.name) {
-								dateparts.push(token.strings.name);
-							}
-						}
+	len = CSL.AREAS.length;
+	for (pos = 0; pos < len; pos += 1) {
+		area = CSL.AREAS[pos];
+		llen = this[area].tokens.length - 1;
+		for (ppos = llen; ppos > -1; ppos += -1) {
+			token = this[area].tokens[ppos];
+			if ("date" === token.name && CSL.END === token.tokentype) {
+				dateparts = [];
+			}
+			if ("date-part" === token.name && token.strings.name) {
+				lllen = dateparts_master.length;
+				for (pppos = 0; pppos < lllen; pppos += 1) {
+					part = dateparts_master[pppos];
+					if (part === token.strings.name) {
+						dateparts.push(token.strings.name);
 					}
 				}
-				if ("date" === token.name && CSL.START === token.tokentype) {
-					dateparts.reverse();
-					token.dateparts = dateparts;
-				}
-				token.next = (ppos + 1);
-				//CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
-				if (token.name && CSL.Node[token.name].configure) {
-					CSL.Node[token.name].configure.call(token, this, ppos);
-				}
+			}
+			if ("date" === token.name && CSL.START === token.tokentype) {
+				dateparts.reverse();
+				token.dateparts = dateparts;
+			}
+			token.next = (ppos + 1);
+			//CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
+			if (token.name && CSL.Node[token.name].configure) {
+				CSL.Node[token.name].configure.call(token, this, ppos);
 			}
 		}
 	}
@@ -422,15 +420,14 @@ CSL.Engine.prototype.configureTokenLists = function () {
 };
 
 CSL.Engine.prototype.setAbbreviations = function (name) {
-	var vartype, pos;
+	var vartype, pos, len;
 	if (name) {
 		this.abbrev.abbreviations = name;
 	}
-	for (pos in CSL.ABBREVIATE_FIELDS) {
-		if (CSL.ABBREVIATE_FIELDS.hasOwnProperty(pos)) {
-			vartype = CSL.ABBREVIATE_FIELDS[pos];
-			this.abbrev[vartype] = this.sys.getAbbreviations(this.abbrev.abbreviations, vartype);
-		}
+	len = CSL.ABBREVIATE_FIELDS.length;
+	for (pos = 0; pos < len; pos += 1) {
+		vartype = CSL.ABBREVIATE_FIELDS[pos];
+		this.abbrev[vartype] = this.sys.getAbbreviations(this.abbrev.abbreviations, vartype);
 	}
 };
 
@@ -455,7 +452,7 @@ CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default
 };
 
 CSL.Engine.prototype.getNameSubFields = function (names) {
-	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, i, newopt;
+	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, len, llen, lllen, i, key;
 	count = -1;
 	ret = [];
 	mode = "locale-name";
@@ -463,73 +460,72 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 	if (this.tmp.area.slice(-5) === "_sort") {
 		mode = "locale-sort";
 	}
-	for (pos in names) {
-		if (names.hasOwnProperty(pos)) {
-			//
-			// clone the name object so we can trample on the content.
-			//
-			newname = {};
-			for (i in names[pos]) {
-				if (names[pos].hasOwnProperty(i)) {
-					newname[i] = names[pos][i];
-				}
+	len = names.length;
+	for (pos = 0; pos < len; pos += 1) {
+		//
+		// clone the name object so we can trample on the content.
+		//
+		newname = {};
+		for (key in names[pos]) {
+			if (names[pos].hasOwnProperty(key)) {
+				newname[key] = names[pos][key];
 			}
-			if (newname.given && !newname.family) {
-				newname.family = "";
-			} else if (newname.family && ! newname.given) {
-				newname.given = "";
-			}
-			addme = true;
-			updateme = false;
-			for (ppos in CSL.MINIMAL_NAME_FIELDS) {
-				if (CSL.MINIMAL_NAME_FIELDS.hasOwnProperty(ppos)) {
-					part = CSL.MINIMAL_NAME_FIELDS[ppos];
-					p = newname[part];
-					if (p) {
-						//
-						// Add a static-ordering toggle for non-roman, non-Cyrillic
-						// names.  Operate only on primary names (those that do not
-						// have a language subtag).
-						//
-						if (newname[part].length && newname[part][0] !== ":") {
-							if (newname["static-ordering"]) {
-								use_static_ordering = true;
-							} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-								use_static_ordering = true;
-							} else {
-								use_static_ordering = false;
-							}
+		}
+		if (newname.given && !newname.family) {
+			newname.family = "";
+		} else if (newname.family && ! newname.given) {
+			newname.given = "";
+		}
+		addme = true;
+		updateme = false;
+		for (ppos in CSL.MINIMAL_NAME_FIELDS) {
+			if (CSL.MINIMAL_NAME_FIELDS.hasOwnProperty(ppos)) {
+				part = CSL.MINIMAL_NAME_FIELDS[ppos];
+				p = newname[part];
+				if (p) {
+					//
+					// Add a static-ordering toggle for non-roman, non-Cyrillic
+					// names.  Operate only on primary names (those that do not
+					// have a language subtag).
+					//
+					if (newname[part].length && newname[part][0] !== ":") {
+						if (newname["static-ordering"]) {
+							use_static_ordering = true;
+						} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)) {
+							use_static_ordering = true;
+						} else {
+							use_static_ordering = false;
 						}
-						newname["static-ordering"] = use_static_ordering;
-						m = p.match(/^:([\-a-zA-Z]+):\s+(.*)/);
-						if (m) {
-							addme = false;
-							for (pppos in this.opt[mode]) {
-								if (this.opt[mode].hasOwnProperty(pppos)) {
-									o = this.opt[mode][pppos];
-									if (m[1] === o) {
-										updateme = true;
-										newname[part] = m[2];
-										break;
-									}
+					}
+					newname["static-ordering"] = use_static_ordering;
+					m = p.match(/^:([\-a-zA-Z]+):\s+(.*)/);
+					if (m) {
+						addme = false;
+						for (pppos in this.opt[mode]) {
+							if (this.opt[mode].hasOwnProperty(pppos)) {
+								o = this.opt[mode][pppos];
+								if (m[1] === o) {
+									updateme = true;
+									newname[part] = m[2];
+									break;
 								}
 							}
-							if (!updateme) {
-								if (this.opt.lang) {
-									//
-									// Fallback to style default language.
-									//
-									if (this.opt.lang.indexOf("-") > -1) {
-										newopt = this.opt.lang.slice(0, this.opt.lang.indexOf("-"));
-									} else {
-										newopt = this.opt.lang;
-									}
-									if (m[1] === newopt) {
-										updateme = true;
-										newname[part] = m[2];
-										if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-											newname["static-ordering"] = false;
-										}
+						}
+						if (!updateme) {
+							if (this.opt.lang) {
+								//
+								// Fallback to style default language.
+								//
+								if (this.opt.lang.indexOf("-") > -1) {
+									newopt = this.opt.lang.slice(0, this.opt.lang.indexOf("-"));
+								} else {
+									newopt = this.opt.lang;
+								}
+								if (m[1] === newopt) {
+									updateme = true;
+									newname[part] = m[2];
+									if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
+										newname["static-ordering"] = false;
 									}
 								}
 							}
@@ -537,17 +533,19 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 					}
 				}
 			}
-			if (addme) {
-				ret.push(newname);
-				count += 1;
-			} else if (updateme) {
-				//
-				// A true update rather than an overwrite
-				// of the pointer.
-				//
-				for (i in newname) {
-					if (newname.hasOwnProperty(i)) {
-						ret[count][i] = newname[i];
+		}
+		if (addme) {
+			ret.push(newname);
+			count += 1;
+		} else if (updateme) {
+			//
+			// A true update rather than an overwrite
+			// of the pointer.
+			//
+			for (key in newname) {
+				if (newname.hasOwnProperty(key)) {
+					if (newname.hasOwnProperty(key)) {
+						ret[count][key] = newname[key];
 					}
 				}
 			}

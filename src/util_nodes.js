@@ -34,7 +34,7 @@
  */
 
 CSL.tokenExec = function (token, Item, item) {
-	var next, maybenext, exec, pos;
+	var next, maybenext, exec, pos, len;
     next = token.next;
 	maybenext = false;
 	if (false) {
@@ -44,13 +44,12 @@ CSL.tokenExec = function (token, Item, item) {
 	if (token.evaluator) {
 	    next = token.evaluator(token, this, Item, item);
     }
-	for (pos in token.execs) {
-		if (token.execs.hasOwnProperty(pos)) {
-			exec = token.execs[pos];
-			maybenext = exec.call(token, this, Item, item);
-			if (maybenext) {
-				next = maybenext;
-			}
+	len = token.execs.length;
+	for (pos = 0; pos < len; pos += 1) {
+		exec = token.execs[pos];
+		maybenext = exec.call(token, this, Item, item);
+		if (maybenext) {
+			next = maybenext;
 		}
 	}
 	if (false) {

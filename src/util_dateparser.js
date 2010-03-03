@@ -34,7 +34,7 @@
  */
 
 CSL.dateParser = function (txt) {
-	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, monthrexes, seasonrex;
+	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, monthrexes, seasonrex, len;
 
 	// instance object with private constants and a public function.
 
@@ -45,22 +45,20 @@ CSL.dateParser = function (txt) {
 		["\u662D\u548C", 1925],
 		["\u5E73\u6210", 1988]
 	];
-	// years by names
+	// years by names (jiy)
+	// ... and ...
+	// regular expression to trap year name and year (jiysplitter)
 	jiy = {};
-	for (pos in jiy_list) {
-		if (jiy_list.hasOwnProperty(pos)) {
-			key = jiy_list[pos][0];
-			val = jiy_list[pos][1];
-			jiy[val] = key;
-		}
+	len = jiy_list.length;
+	for (pos = 0; pos < len; pos += 1) {
+		key = jiy_list[pos][0];
+		val = jiy_list[pos][1];
+		jiy[val] = key;
 	}
-	// regular expression to trap year name and year
 	jiysplitter = [];
-	for (pos in jiy_list) {
-		if (jiy_list.hasOwnProperty(pos)) {
-			val = jiy_list[pos];
-			jiysplitter.push(val);
-		}
+	for (pos = 0; pos < len; pos += 1) {
+		val = jiy_list[pos];
+		jiysplitter.push(val);
 	}
 	jiysplitter = jiysplitter.join("|");
 	jiysplitter = "(" + jiysplitter + ")([0-9]+)";
@@ -87,27 +85,25 @@ CSL.dateParser = function (txt) {
 	// seasons
 	seasonstrs = ["spr", "sum", "fal", "win"];
 	seasonrexes = [];
-	for (pos in seasonstrs) {
-		if (seasonstrs.hasOwnProperty(pos)) {
-			seasonrex = new RegExp(seasonstrs[pos] + ".*");
-			seasonrexes.push(seasonrex);
-		}
+	len = seasonstrs.length;
+	for (pos = 0; pos < len; pos += 1) {
+		seasonrex = new RegExp(seasonstrs[pos] + ".*");
+		seasonrexes.push(seasonrex);
 	}
 
 	// months
 	monthstrs = "jan feb mar apr may jun jul aug sep oct nov dec";
 	monthstrs = monthstrs.split(" ");
 	monthrexes = [];
-	for (pos in monthstrs) {
-		if (monthstrs.hasOwnProperty(pos)) {
-			monthstr = monthstrs[pos];
-			rex = new RegExp(monthstr);
-			monthrexes.push(rex);
-		}
+	len = monthstrs.length;
+	for (pos = 0; pos < len; pos += 1) {
+		monthstr = monthstrs[pos];
+		rex = new RegExp(monthstr);
+		monthrexes.push(rex);
 	}
 
 	this.parse = function (txt) {
-		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, pos, delim, ppos, element, pppos;
+		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, pos, delim, ppos, element, pppos, len, llen, lllen;
 		//
 		// Normalize the format and the year if it's a Japanese date
 		//
@@ -159,13 +155,12 @@ CSL.dateParser = function (txt) {
 			lst = txt.split(rexdash);
 		}
 		ret = [];
-		for (pos in lst) {
-			if (lst.hasOwnProperty(pos)) {
-				item = lst[pos];
-				m = item.match(/^\s*([\-\/]|[a-zA-Z]+|[\-~?0-9]+)\s*$/);
-				if (m) {
-					ret.push(m[1]);
-				}
+		len = lst.length;
+		for (pos = 0; pos < len; pos += 1) {
+			item = lst[pos];
+			m = item.match(/^\s*([\-\/]|[a-zA-Z]+|[\-~?0-9]+)\s*$/);
+			if (m) {
+				ret.push(m[1]);
 			}
 		}
 		//
@@ -185,132 +180,127 @@ CSL.dateParser = function (txt) {
 		// For each side of a range divide ...
 		//
 		suff = "";
-		for (pos in delims) {
-			if (delims.hasOwnProperty(pos)) {
-				delim = delims[pos];
+		len = delims.length;
+		for (pos = 0; pos < len; pos += 1) {
+			delim = delims[pos];
+			//
+			// Process each element ...
+			//
+			date = ret.slice(delim[0], delim[1]);
+			llen = date.length;
+			for (ppos = 0; ppos < llen; ppos += 1) {
+				element = date[ppos];
 				//
-				// Process each element ...
+				// If it's a numeric date, process it.
 				//
-				date = ret.slice(delim[0], delim[1]);
-				for (ppos in date) {
-					if (date.hasOwnProperty(ppos)) {
-						element = date[ppos];
-						//
-						// If it's a numeric date, process it.
-						//
-						if (element.indexOf(date_delim) > -1) {
-							this.parseNumericDate(thedate, date_delim, suff, element);
-							continue;
-						}
-						//
-						// If it's an obvious year, record it.
-						//
-						if (element.match(/[0-9]{4}/)) {
-							thedate[("year" + suff)] = element.replace(/^0*/, "");
-							continue;
-						}
-						//
-						// If it's a month, record it.
-						//
-						breakme = false;
-						for (pppos in monthrexes) {
-							if (monthrexes.hasOwnProperty(pppos)) {
-								if (element.toLocaleLowerCase().match(monthrexes[pppos])) {
-									thedate[("month" + suff)] = "" + (parseInt(pppos, 10) + 1);
-									breakme = true;
-									break;
-								}
-							}
-						}
-						if (breakme) {
-							continue;
-						}
-						//
-						// If it's a number, make a note of it
-						//
-						if (element.match(/^[0-9]+$/)) {
-							number = parseInt(element, 10);
-						}
-						//
-						// If it's a BC or AD marker, make a year of
-						// any note.  Separate, reverse the sign of the year
-						// if it's BC.
-						//
-						if (element.toLocaleLowerCase().match(/^bc.*/) && number) {
-							thedate[("year" + suff)] = "" + (number * -1);
-							number = "";
-							continue;
-						}
-						if (element.toLocaleLowerCase().match(/^ad.*/) && number) {
-							thedate[("year" + suff)] = "" + number;
-							number = "";
-							continue;
-						}
-						//
-						// If it's a season, record it.
-						//
-						breakme = false;
-						for (pppos in seasonrexes) {
-							if (seasonrexes.hasOwnProperty(pppos)) {
-								if (element.toLocaleLowerCase().match(seasonrexes[pppos])) {
-									thedate[("season" + suff)] = "" + (parseInt(pppos, 10) + 1);
-									breakme = true;
-									break;
-								}
-							}
-						}
-						if (breakme) {
-							continue;
-						}
-						//
-						// If it's a fuzzy marker, record it.
-						//
-						if (element === "~" || element === "?" || element === "c" || element.match(/cir.*/)) {
-							thedate.fuzzy = "" + 1;
-							continue;
-						}
-						//
-						// If it's cruft, make a note of it
-						//
-						if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate[("season" + suff)]) {
-							note = element;
-							continue;
-						}
+				if (element.indexOf(date_delim) > -1) {
+					this.parseNumericDate(thedate, date_delim, suff, element);
+					continue;
+				}
+				//
+				// If it's an obvious year, record it.
+				//
+				if (element.match(/[0-9]{4}/)) {
+					thedate[("year" + suff)] = element.replace(/^0*/, "");
+					continue;
+				}
+				//
+				// If it's a month, record it.
+				//
+				breakme = false;
+				lllen = monthrexes.length;
+				for (pppos = 0; pppos < lllen; pppos += 1) {
+					if (element.toLocaleLowerCase().match(monthrexes[pppos])) {
+						thedate[("month" + suff)] = "" + (parseInt(pppos, 10) + 1);
+						breakme = true;
+						break;
+					}
+					if (breakme) {
+						continue;
+					}
+					//
+					// If it's a number, make a note of it
+					//
+					if (element.match(/^[0-9]+$/)) {
+						number = parseInt(element, 10);
+					}
+					//
+					// If it's a BC or AD marker, make a year of
+					// any note.  Separate, reverse the sign of the year
+					// if it's BC.
+					//
+					if (element.toLocaleLowerCase().match(/^bc.*/) && number) {
+						thedate[("year" + suff)] = "" + (number * -1);
+						number = "";
+						continue;
+					}
+					if (element.toLocaleLowerCase().match(/^ad.*/) && number) {
+						thedate[("year" + suff)] = "" + number;
+						number = "";
+						continue;
 					}
 				}
 				//
-				// If at the end of the string there's still a note
-				// hanging around, make a day of it.
+				// If it's a season, record it.
 				//
-				if (number) {
-					thedate[("day" + suff)] = number;
-					number = "";
+				breakme = false;
+				lllen = seasonrexes.length;
+				for (pppos = 0; pppos < lllen; pppos += 1) {
+					if (element.toLocaleLowerCase().match(seasonrexes[pppos])) {
+						thedate[("season" + suff)] = "" + (parseInt(pppos, 10) + 1);
+						breakme = true;
+						break;
+					}
+				}
+				if (breakme) {
+					continue;
 				}
 				//
-				// If at the end of the string there's cruft lying
-				// around, and the season field is empty, put the
-				// cruft there.
+				// If it's a fuzzy marker, record it.
 				//
-				if (note && !thedate[("season" + suff)]) {
-					thedate[("season" + suff)] = note;
-					note = "";
+				if (element === "~" || element === "?" || element === "c" || element.match(/cir.*/)) {
+					thedate.fuzzy = "" + 1;
+					continue;
 				}
-				suff = "_end";
+				//
+				// If it's cruft, make a note of it
+				//
+				if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate[("season" + suff)]) {
+					note = element;
+					continue;
+				}
 			}
+			//
+			// If at the end of the string there's still a note
+			// hanging around, make a day of it.
+			//
+			if (number) {
+				thedate[("day" + suff)] = number;
+				number = "";
+			}
+			//
+			// If at the end of the string there's cruft lying
+			// around, and the season field is empty, put the
+			// cruft there.
+			//
+			if (note && !thedate[("season" + suff)]) {
+				thedate[("season" + suff)] = note;
+				note = "";
+			}
+			suff = "_end";
 		}
 		//
 		// update any missing elements on each side of the divide
 		// from the other
 		//
 		if (isrange) {
-			for (pos in CSL.DATE_PARTS_ALL) {
-				if (CSL.DATE_PARTS_ALL.hasOwnProperty(pos)) {
-					item = CSL.DATE_PARTS_ALL[pos];
-					if (thedate[item] && !thedate[(item + "_end")]) {
-						thedate[(item + "_end")] = thedate[item];
-					} else if (!thedate[item] && thedate[(item + "_end")]) {
-						thedate[item] = thedate[(item + "_end")];
-					}
+			len = CSL.DATE_PARTS_ALL.length;
+			for (pos = 0; pos < len; pos += 1) {
+				item = CSL.DATE_PARTS_ALL[pos];
+				if (thedate[item] && !thedate[(item + "_end")]) {
+					thedate[(item + "_end")] = thedate[item];
+				} else if (!thedate[item] && thedate[(item + "_end")]) {
+					thedate[item] = thedate[(item + "_end")];
 				}
 			}
 		}
