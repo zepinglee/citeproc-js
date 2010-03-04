@@ -33,53 +33,63 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Engine.prototype.appendCitationCluster = function(citation,has_bibliography){
-	var citationsPre = new Array();
-	for each (var c in this.registry.citationreg.citationByIndex){
-		citationsPre.push([c.id,c.properties.noteIndex]);
-	};
-	return this.processCitationCluster(citations,citationsPre,[]);
+CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliography) {
+	var pos, len, c, citationsPre;
+	citationsPre = [];
+	len = this.registry.citationreg.citationByIndex.length;
+	for (pos = 0; pos < len; pos += 1) {
+		c = this.registry.citationreg.citationByIndex[pos];
+		citationsPre.push([c.id, c.properties.noteIndex]);
+	}
+	return this.processCitationCluster(citation, citationsPre, []);
 };
 
-CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,citationsPost,has_bibliography){
-	this.tmp.taintedItemIDs = new Object();
-	this.tmp.taintedCitationIDs = new Object();
-	var sortedItems = [];
+CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj;
+	this.tmp.taintedItemIDs = {};
+	this.tmp.taintedCitationIDs = {};
+	sortedItems = [];
 	// make sure this citation has a unique ID, and register it in citationById.
 	// The ID will be accessible to the calling application when generating
 	// the next call to this function.
-	var new_citation = this.setCitationId(citation);
+	new_citation = this.setCitationId(citation);
 
 	// retrieve item data and compose items for use in rendering
 	// attach pointer to item data to shared copy for good measure
-	for (var pos in citation.citationItems){
-		var item = citation.citationItems[pos];
-		var Item = this.sys.retrieveItem(item.id);
-	    var newitem = [Item,item];
+	len = citation.citationItems.length;
+	for (pos = 0; pos < len; pos += 1) {
+		item = citation.citationItems[pos];
+		Item = this.sys.retrieveItem(item.id);
+	    newitem = [Item, item];
 		sortedItems.push(newitem);
 		citation.citationItems[pos].item = Item;
-	};
+	}
 	// sort the list to be used in rendering
-	if (sortedItems && sortedItems.length > 1 && this["citation_sort"].tokens.length > 0){
-		for (var k in sortedItems){
-			sortedItems[k].sortkeys = CSL.getSortKeys.call(this,inputList[k][0],"citation_sort");
-		};
+	if (sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+		len = sortedItems.length;
+		for (pos = 0; pos < len; pos += 1) {
+			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
+		}
 		sortedItems.sort(this.citation.srt.compareCompositeKeys);
-	};
+	}
 	// attach the sorted list to the citation item
 	citation.sortedItems = sortedItems;
 
 	// build reconstituted citations list in current document order
-	var citationByIndex = new Array();
-	for each (var c in citationsPre){
+	citationByIndex = [];
+	len = citationsPre.length;
+	for (pos = 0; pos < len; pos += 1) {
+		c = citationsPre[pos];
 		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
-	};
+	}
 	citationByIndex.push(citation);
-	for each (var c in citationsPost){
+	len = citationsPost.length;
+	for (pos = 0; pos < len; pos += 1) {
+		c = citationsPost[pos];
 		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
-	};
+	}
 	this.registry.citationreg.citationByIndex = citationByIndex;
 
 	//
@@ -311,7 +321,7 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	// turned up a subtle bug in the parallel detection code, trapped
 	// at line 266, above, and in line 94 of util_parallel.js.
 	//
-	ret.sort(function(a,b){
+	ret.sort(function (a,b){
 		if(a[0]>b[0]){
 			return 1;
 		} else if (a[0]<b[0]){
@@ -327,14 +337,14 @@ CSL.Engine.prototype.processCitationCluster = function(citation,citationsPre,cit
 	return ret;
 };
 
-CSL.Engine.prototype._processCitationCluster = function(sortedItems){
+CSL.Engine.prototype._processCitationCluster = function (sortedItems){
 	this.parallel.StartCitation(sortedItems);
 	var str = CSL.getCitationCluster.call(this,sortedItems);
 
 	return str;
 };
 
-CSL.Engine.prototype.makeCitationCluster = function(rawList){
+CSL.Engine.prototype.makeCitationCluster = function (rawList){
 	var inputList = [];
 	for each (var item in rawList){
 		var Item = this.sys.retrieveItem(item.id);
@@ -357,7 +367,7 @@ CSL.Engine.prototype.makeCitationCluster = function(rawList){
  * Get the undisambiguated version of a cite, without decorations
  * <p>This is used internally by the Registry.</p>
  */
-CSL.getAmbiguousCite = function(Item,disambig){
+CSL.getAmbiguousCite = function (Item,disambig){
 	if (disambig){
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -393,7 +403,7 @@ CSL.getAmbiguousCite = function(Item,disambig){
  * completion of the run.</p>
  */
 
-CSL.getSpliceDelimiter = function(last_collapsed){
+CSL.getSpliceDelimiter = function (last_collapsed){
 	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]){
 		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
 	}
@@ -553,7 +563,7 @@ CSL.getCitationCluster = function (inputList,citationID){
  * (This might be dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.getCite = function(Item,item,prevItemID){
+CSL.getCite = function (Item,item,prevItemID){
 	this.parallel.StartCite(Item,item,prevItemID);
 	CSL.citeStart.call(this,Item);
 	var next = 0;
@@ -564,7 +574,7 @@ CSL.getCite = function(Item,item,prevItemID){
 	this.parallel.CloseCite(this);
 };
 
-CSL.citeStart = function(Item){
+CSL.citeStart = function (Item){
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override){
@@ -588,7 +598,7 @@ CSL.citeStart = function(Item){
 	this.tmp.offset_characters = 0;
 };
 
-CSL.citeEnd = function(Item){
+CSL.citeEnd = function (Item){
 
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[-.,;:]$/)){
 		this.tmp.splice_delimiter = " ";
