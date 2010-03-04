@@ -162,7 +162,7 @@ StdRhinoTest.prototype.run = function(){
 			if (indexMap[""+cpos]){
 				citations.push(">>["+cpos+"] "+result[indexMap[cpos]][1]);
 			} else {
-				citations.push("..["+cpos+"] "+this.style._processCitationCluster.call(this.style,this.style.registry.citationreg.citationByIndex[cpos].sortedItems));
+				citations.push("..["+cpos+"] "+this.style.process_CitationCluster.call(this.style,this.style.registry.citationreg.citationByIndex[cpos].sortedItems));
 			}
 		};
 		ret = citations.join("\n");

@@ -315,17 +315,19 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// Push taints to the return object
 	//
 	for (key in this.tmp.taintedCitationIDs) {
-		obj = [];
-		citation = this.registry.citationreg.citationById[key];
-		obj.push(citation.properties.index);
-		obj.push(this._processCitationCluster.call(this, citation.sortedItems));
-		ret.push(obj);
+		if (this.tmp.taintedCitationIDs.hasOwnProperty(key)) {
+			obj = [];
+			citation = this.registry.citationreg.citationById[key];
+			obj.push(citation.properties.index);
+			obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
+			ret.push(obj);
+		}
 	}
 	this.tmp.taintedItemIDs = false;
 	this.tmp.taintedCitationIDs = false;
 	obj = [];
 	obj.push(citationsPre.length);
-	obj.push(this._processCitationCluster.call(this, sortedItems));
+	obj.push(this.process_CitationCluster.call(this, sortedItems));
 	ret.push(obj);
 	//
 	// note for posterity: Rhino and Spidermonkey produce different
@@ -334,9 +336,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// at line 266, above, and in line 94 of util_parallel.js.
 	//
 	ret.sort(function (a, b) {
-		if(a[0]>b[0]) {
+		if (a[0] > b[0]) {
 			return 1;
-		} else if (a[0]<b[0]) {
+		} else if (a[0] < b[0]) {
 			return -1;
 		} else {
 			return 0;
@@ -349,7 +351,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	return ret;
 };
 
-CSL.Engine.prototype._processCitationCluster = function (sortedItems) {
+CSL.Engine.prototype.process_CitationCluster = function (sortedItems) {
 	var str;
 	this.parallel.StartCitation(sortedItems);
 	str = CSL.getCitationCluster.call(this, sortedItems);
@@ -358,18 +360,22 @@ CSL.Engine.prototype._processCitationCluster = function (sortedItems) {
 };
 
 CSL.Engine.prototype.makeCitationCluster = function (rawList) {
+	var inputList, newitem, str, pos, len, item, Item;
 	inputList = [];
-	for each (item in rawList) {
+	len = rawList.length;
+	for (pos = 0; pos < len; pos += 1) {
+		item = rawList[pos];
 		Item = this.sys.retrieveItem(item.id);
 		newitem = [Item, item];
 		inputList.push(newitem);
-	};
-	if (inputList && inputList.length > 1 && this["citation_sort"].tokens.length > 0) {
- for (k in inputList) {
- rawList[k].sortkeys = CSL.getSortKeys.call(this, inputList[k][0],"citation_sort");
- };
- inputList.sort(this.citation.srt.compareCompositeKeys);
-	};
+	}
+	if (inputList && inputList.length > 1 && this.citation_sort.tokens.length > 0) {
+		len = inputList.length;
+		for (pos = 0; pos < len; pos += 1) {
+			rawList[pos].sortkeys = CSL.getSortKeys.call(this, inputList[pos][0], "citation_sort");
+		}
+		inputList.sort(this.citation.srt.compareCompositeKeys);
+	}
 	this.parallel.StartCitation();
 	str = CSL.getCitationCluster.call(this, inputList);
 	return str;
@@ -381,6 +387,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  * <p>This is used internally by the Registry.</p>
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
+	var use_parallels, ret;
 	if (disambig) {
 		this.tmp.disambig_request = disambig;
 	} else {
