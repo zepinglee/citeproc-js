@@ -1688,28 +1688,29 @@ CSL.Engine.CitationSort = function () {
 	this.keys = [];
 	this.opt.topdecor = [];
 };
-CSL.Engine.prototype.setCitationId = function(citation){
-	var ret = false;
-	if (!citation.citationID){
+CSL.Engine.prototype.setCitationId = function (citation) {
+	var ret, id, direction;
+	ret = false;
+	if (!citation.citationID) {
 		ret = true;
-		var id = Math.floor(Math.random()*100000000000000);
-		while (true){
-			var direction = 0;
-			if (!this.registry.citationreg.citationById[id]){
+		id = Math.floor(Math.random() * 100000000000000);
+		while (true) {
+			direction = 0;
+			if (!this.registry.citationreg.citationById[id]) {
 				citation.citationID = id.toString(32);
 				break;
-			} else if (!direction && id < 50000000000000){
+			} else if (!direction && id < 50000000000000) {
 				direction = 1;
 			} else {
 				direction = -1;
 			}
-			if (direction == 1){
-				id++;
+			if (direction === 1) {
+				id += 1;
 			} else {
-				id--;
-			};
-		};
-	};
+				id += -1;
+			}
+		}
+	}
 	this.registry.citationreg.citationById[citation.citationID] = citation;
 	return ret;
 };
