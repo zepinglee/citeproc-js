@@ -1757,134 +1757,157 @@ CSL.Engine.prototype.updateItems = function(idList){
 	this.registry.yearsuffix();
 	return this.registry.getSortedIds();
 };
-CSL.Engine.prototype.makeBibliography = function(bibsection){
-	var debug = false;
-	if (debug){
-		for each (tok in this.bibliography.tokens){
-			CSL.debug("bibtok: "+tok.name);
+CSL.Engine.prototype.makeBibliography = function (bibsection) {
+	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk;
+	debug = false;
+	if (false) {
+		len = this.bibliography.tokens.length;
+		for (pos = 0; pos < len; pos += 1) {
+			tok = this.bibliography.tokens[pos];
+			CSL.debug("bibtok: " + tok.name);
 		}
 		CSL.debug("---");
-		for each (tok in this.citation.tokens){
-			CSL.debug("cittok: "+tok.name);
+		len = this.citation.tokens.length;
+		for (pos = 0; pos < len; pos += 1) {
+			tokk = this.citation.tokens[pos];
+			CSL.debug("cittok: " + tok.name);
 		}
 		CSL.debug("---");
-		for each (tok in this.bibliography_sort.tokens){
-			CSL.debug("bibsorttok: "+tok.name);
+		len = this.bibliography_sort.tokens.length;
+		for (pos = 0; pos < len; pos += 1) {
+			tokkk = this.bibliography_sort.tokens[pos];
+			CSL.debug("bibsorttok: " + tok.name);
 		}
 	}
-	var ret = CSL.getBibliographyEntries.call(this,bibsection);
-	var params = {
-		"maxoffset":0,
-		"entryspacing":1,
-		"linespacing":1
+	ret = CSL.getBibliographyEntries.call(this, bibsection);
+	params = {
+		"maxoffset": 0,
+		"entryspacing": 1,
+		"linespacing": 1
 	};
-	var maxoffset = 0;
-	for each (var item in this.registry.reflist){
-		if (item.offset > params.maxoffset){
+	maxoffset = 0;
+	len = this.registry.reflist.length;
+	for (pos = 0; pos < len; pos += 1) {
+		item = this.registry.reflist;
+		if (item.offset > params.maxoffset) {
 			params.maxoffset = item.offset;
-		};
-	};
-	if (this.bibliography.opt.hangingindent){
+		}
+	}
+	if (this.bibliography.opt.hangingindent) {
 		params.hangingindent = this.bibliography.opt.hangingindent;
 	}
-	if (this.bibliography.opt.entryspacing){
+	if (this.bibliography.opt.entryspacing) {
 		params.entryspacing = this.bibliography.opt.entryspacing;
 	}
-	if (this.bibliography.opt.linespacing){
+	if (this.bibliography.opt.linespacing) {
 		params.linespacing = this.bibliography.opt.linespacing;
 	}
 	params.bibstart = this.fun.decorate.bibstart;
 	params.bibend = this.fun.decorate.bibend;
-	return [params,ret];
+	return [params, ret];
 };
-CSL.getBibliographyEntries = function (bibsection){
-	var ret = [];
+CSL.getBibliographyEntries = function (bibsection) {
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos;
+	ret = [];
 	this.tmp.area = "bibliography";
-	var input = this.retrieveItems(this.registry.getSortedIds());
+	input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
-	function eval_string(a,b){
-		if (a == b){
+	function eval_string(a, b) {
+		if (a === b) {
 			return true;
 		}
 		return false;
 	}
-	function eval_list(a,lst){
-		for each (var b in lst){
-			if (eval_string(a,b)){
+	function eval_list(a, lst) {
+		lllen = lst.length;
+		for (pppos = 0; pppos < lllen; pppos += 1) {
+			if (eval_string(a, lst[pppos])) {
 				return true;
 			}
 		}
 		return false;
 	}
-	function eval_spec(a,b){
-		if ((a == "none" || !a) && !b){
+	function eval_spec(a, b) {
+		if ((a === "none" || !a) && !b) {
 			return true;
 		}
-		if ("string" == typeof b){
-			return eval_string(a,b);
+		if ("string" === typeof b) {
+			return eval_string(a, b);
+		} else if (!b) {
+			return false;
 		} else {
-			return eval_list(a,b);
+			return eval_list(a, b);
 		}
 	}
-	for each (var item in input){
-		if (bibsection){
-			var include = true;
-			if (bibsection.include){
+	len = input.length;
+	for (pos = 0; pos < len; pos += 1) {
+		item = input[pos];
+		if (bibsection) {
+			include = true;
+			if (bibsection.include) {
 				include = false;
-				for each (spec in bibsection.include){
-					if (eval_spec(spec.value,item[spec.field])){
+				llen = bibsection.include.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					spec = bibsection.include[ppos];
+					if (eval_spec(spec.value, item[spec.field])) {
 						include = true;
 						break;
 					}
 				}
-			} else if (bibsection.exclude){
-				var anymatch = false;
-				for each (spec in bibsection.exclude){
-					if (eval_spec(spec.value,item[spec.field])){
+			} else if (bibsection.exclude) {
+				anymatch = false;
+				llen = bibsection.exclude.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					spec = bibsection.exclude[ppos];
+					if (eval_spec(spec.value, item[spec.field])) {
 						anymatch = true;
 						break;
 					}
 				}
-				if (anymatch){
+				if (anymatch) {
 					include = false;
 				}
-			} else if (bibsection.select){
+			} else if (bibsection.select) {
 				include = false;
-				var allmatch = true;
-				for each (spec in bibsection.select){
-					if (!eval_spec(spec.value,item[spec.field])){
+				allmatch = true;
+				llen = bibsection.select.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					spec = bibsection.select[ppos];
+					if (!eval_spec(spec.value, item[spec.field])) {
 						allmatch = false;
 					}
 				}
-				if (allmatch){
+				if (allmatch) {
 					include = true;
 				}
 			}
-			if (bibsection.quash){
-				var allmatch = true;
-				for each (spec in bibsection.quash){
-					if (!eval_spec(spec.value,item[spec.field])){
+			if (bibsection.quash) {
+				allmatch = true;
+				llen = bibsection.quash.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					spec = bibsection.quash[ppos];
+					if (!eval_spec(spec.value, item[spec.field])) {
 						allmatch = false;
 					}
 				}
-				if (allmatch){
+				if (allmatch) {
 					include = false;
 				}
 			}
-			if ( !include ){
+			if (!include) {
 				continue;
 			}
 		}
-		if (false){
-			CSL.debug("BIB: "+item.id);
+		if (false) {
+			CSL.debug("BIB: " + item.id);
 		}
-		var bib_entry = new CSL.Token("group",CSL.START);
-		bib_entry.decorations = [["@bibliography","entry"]];
-		this.output.startTag("bib_entry",bib_entry);
-		CSL.getCite.call(this,item);
+		bib_entry = new CSL.Token("group", CSL.START);
+		bib_entry.decorations = [["@bibliography", "entry"]];
+		this.output.startTag("bib_entry", bib_entry);
+		CSL.getCite.call(this, item);
 		this.output.endTag(); // closes bib_entry
-		var res = this.output.string(this,this.output.queue)[0];
-		if (!res){
+		res = this.output.string(this, this.output.queue)[0];
+		if (!res) {
 			res = "[CSL STYLE ERROR: reference with no printed form.]";
 		} else {
 			ret.push(res);

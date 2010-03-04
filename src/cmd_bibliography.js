@@ -129,7 +129,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 				// Opt-in: these are OR-ed.
 				//
 				include = false;
-				for each (spec in bibsection.include) {
+				llen = bibsection.include.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					spec = bibsection.include[ppos];
 					if (eval_spec(spec.value, item[spec.field])) {
 						include = true;
 						break;
@@ -140,7 +142,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 				// Opt-out: these are also OR-ed.
 				//
 				anymatch = false;
-				for each (spec in bibsection.exclude) {
+				llen = bibsection.exclude.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					spec = bibsection.exclude[ppos];
 					if (eval_spec(spec.value, item[spec.field])) {
 						anymatch = true;
 						break;
@@ -171,7 +175,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 				// Stop criteria: These are AND-ed.
 				//
 				allmatch = true;
-				for each (spec in bibsection.quash) {
+				llen = bibsection.quash.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					spec = bibsection.quash[ppos];
 					if (!eval_spec(spec.value, item[spec.field])) {
 						allmatch = false;
 					}
@@ -180,7 +186,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 					include = false;
 				}
 			}
-			if ( !include ) {
+			if (!include) {
 				continue;
 			}
 		}

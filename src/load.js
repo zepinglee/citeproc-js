@@ -306,7 +306,7 @@ if (!CSL.Engine.Opt) {
 if (!CSL.makeCitationCluster) {
 	load("./src/cmd_cite.js");
 }
-
+// jslint OK
 if (!CSL.makeBibliography) {
 	load("./src/cmd_bibliography.js");
 }
