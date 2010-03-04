@@ -36,7 +36,7 @@
 var debug = false;
 
 CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candidate_list) {
-	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id;
+	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key;
 	if (!candidate_list) {
 		//
 		// We start with the state and an ambig key.
@@ -203,8 +203,11 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	}
 	// if we don't have year-suffix available, we may
 	// have maxed out bases lying around
-	for (i in this.checkerator.maxed_out_bases) {
-		this.registry[i].disambig = this.checkerator.maxed_out_bases[i];
+	len = this.checkerator.maxed_out_bases.length;
+	for (key in this.checkerator.maxed_out_bases) {
+		if (this.checkerator.maxed_out_bases.hasOwnProperty(key)) {
+			this.registry[key].disambig = this.checkerator.maxed_out_bases[key];
+		}
 	}
 	return ret;
 };
@@ -215,6 +218,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 CSL.Checkerator = function () {};
 
 CSL.initCheckerator = function (tokens, modes) {
+	var len, pos;
 	this.seen = [];
 	this.modes = modes;
 	this.mode = this.modes[0];
@@ -225,8 +229,9 @@ CSL.initCheckerator = function (tokens, modes) {
 	this.base = false;
 	this.ids = [];
 	this.maxed_out_bases = {};
-	for each (token in tokens) {
-		this.ids.push(token.id);
+	len = tokens.length;
+	for (pos = 0; pos < len; pos += 1) {
+		this.ids.push(tokens[pos].id);
 	}
 	//
 	// used in givens mode (mode 1)
@@ -243,7 +248,7 @@ CSL.runCheckerator = function () {
 		return true;
 	}
 	return false;
-}
+};
 
 CSL.setMaxVals = function (maxvals) {
 	this.maxvals = maxvals;
@@ -255,10 +260,12 @@ CSL.setMinVal = function (minval) {
 };
 
 CSL.setCheckeratorBase = function (base) {
+	var pos, len;
 	this.base = base;
 	if (! this.mode1_counts) {
 		this.mode1_counts = [];
-		for each (i in this.base.givens) {
+		len = this.base.givens.length;
+		for (pos = 0; pos < len; pos += 1) {
 			this.mode1_counts.push(0);
 		}
 	}
@@ -289,6 +296,7 @@ CSL.checkCheckeratorForClash = function (str, otherstr) {
 };
 
 CSL.evaluateCheckeratorClashes = function () {
+	var namepos, ret, old;
 	//
 	// necessary for the odd case of static cites with no authors
 	if (!this.maxvals.length) {
@@ -315,21 +323,21 @@ CSL.evaluateCheckeratorClashes = function () {
 	// incrementing function
 	// if no clashes at all on expanded pass, just return true, it's a wrap
 	if (this.mode === "givens") {
-		var ret = true;
+		ret = true;
 		if (debug) {
 			CSL.debug("  ---> Comparing in mode 1: clashes=" + this.clashes + "; lastclashes=" + this.lastclashes);
 		}
-		var namepos = this.mode1_counts[this.modepos];
+		namepos = this.mode1_counts[this.modepos];
 		if (this.clashes && this.clashes === this.lastclashes) {
 			if (debug) {
 				CSL.debug("   ---> Applying mode 1 defaults: " + this.mode1_defaults);
 			}
 			if (this.mode1_defaults && namepos > 0) {
-				var old = this.mode1_defaults[(namepos-1)];
+				old = this.mode1_defaults[(namepos - 1)];
 				if (debug) {
 					CSL.debug("   ---> Resetting to default: (" + old + ")");
 				}
-				this.base.givens[this.modepos][(namepos-1)] = old;
+				this.base.givens[this.modepos][(namepos - 1)] = old;
 			}
 			ret = false;
 		} else if (this.clashes) {
@@ -364,7 +372,7 @@ CSL.maxCheckeratorAmbigLevel = function () {
 	if (this.mode === "disambiguate_true") {
 	//	this.mode = "names";
 	//	return true;
-		if (this.modes.indexOf("disambiguate_true") < (this.modes.length-1)) {
+		if (this.modes.indexOf("disambiguate_true") < (this.modes.length - 1)) {
 			this.mode = this.modes[(this.modes.indexOf("disambiguate_true") + 1)];
 			this.modepos = 0;
 		} else {
@@ -374,7 +382,7 @@ CSL.maxCheckeratorAmbigLevel = function () {
 	}
 
 	if (this.mode === "names") {
-		if (this.modepos === (this.base.names.length-1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
+		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
 			if (this.modes.length === 2) {
 				this.mode = "givens";
 				this.mode1_counts[this.modepos] = 0;
@@ -384,7 +392,7 @@ CSL.maxCheckeratorAmbigLevel = function () {
 			}
 		}
 	} else if (this.mode === "givens") {
-		if (this.modepos === (this.mode1_counts.length-1) && this.mode1_counts[this.modepos] === (this.maxvals[this.modepos])) {
+		if (this.modepos === (this.mode1_counts.length - 1) && this.mode1_counts[this.modepos] === (this.maxvals[this.modepos])) {
 			if (debug) {
 				CSL.debug("-----  Item maxed out -----");
 			}
@@ -406,6 +414,7 @@ CSL.maxCheckeratorAmbigLevel = function () {
  * Increment disambiguation level
  */
 CSL.incrementCheckeratorAmbigLevel = function () {
+	var val;
 	//
 	// this is a little tricky.  the counters are arrays.
 	// ... and for mode 1, this only gives us the position,
@@ -413,36 +422,36 @@ CSL.incrementCheckeratorAmbigLevel = function () {
 	// course are not subject to incrementing in this
 	// sense.
 	if (this.mode === "names") {
-		var val = this.base.names[this.modepos];
+		val = this.base.names[this.modepos];
 		if (val < this.maxvals[this.modepos]) {
 			this.base.names[this.modepos] += 1;
-		} else if (this.modepos < (this.base.names.length-1)) {
-			this.modepos +=1;
+		} else if (this.modepos < (this.base.names.length - 1)) {
+			this.modepos += 1;
 			this.base.names[this.modepos] = 0;
 		}
 	}
 	if (this.mode === "givens") {
-		var val = (this.mode1_counts[this.modepos]);
+		val = (this.mode1_counts[this.modepos]);
 		if (val < this.maxvals[this.modepos]) {
 			if (this.given_name_second_pass) {
 				if (debug) {
 					CSL.debug(" ** second pass");
-				};
+				}
 				this.given_name_second_pass = false;
 				this.mode1_counts[this.modepos] += 1;
 				this.base.givens[this.modepos][val] += 1;
 				if (debug) {
 					CSL.debug("   ---> (A) Setting expanded givenname param with base: " + this.base.givens);
-				};
+				}
 			} else {
 				this.mode1_defaults = this.base.givens[this.modepos].slice();
 				if (debug) {
 					CSL.debug(" ** first pass");
-				};
+				}
 				this.given_name_second_pass = true;
-			};
-		} else if (this.modepos < (this.base.givens.length-1)) {
-			this.modepos +=1;
+			}
+		} else if (this.modepos < (this.base.givens.length - 1)) {
+			this.modepos += 1;
 			this.base.givens[this.modepos][0] += 1;
 			this.mode1_defaults = this.base.givens[this.modepos].slice();
 			if (debug) {
@@ -456,26 +465,31 @@ CSL.incrementCheckeratorAmbigLevel = function () {
 };
 
 CSL.decrementCheckeratorNames = function (state, base) {
+	var base_return, do_me, i, j, pos, len, ppos, llen;
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
 	// unwind
-	var base_return = CSL.cloneAmbigConfig(base);
-	var do_me = false;
-	for (var i=(base_return.givens.length-1); i > -1; i--) {
-		for (var j=(base_return.givens[i].length-1); j > -1; j--) {
-			if (base_return.givens[i][j] === 2) {
+	base_return = CSL.cloneAmbigConfig(base);
+	do_me = false;
+	len = base_return.givens.length - 1;
+	for (pos = len; pos > -1; pos += -1) {
+		llen = base_return.givens[pos].length - 1;
+		for (ppos = llen; ppos > -1; ppos += -1) {
+			if (base_return.givens[pos][ppos] === 2) {
 				do_me = true;
 			}
 		}
 	}
 	if (do_me) {
-		for (var i=(base_return.givens.length-1); i > -1; i--) {
-			for (var j=(base_return.givens[i].length-1); j > -1; j--) {
-				if (base_return.givens[i][j] === 2) {
+		len = base_return.givens.length - 1;
+		for (pos = len; pos > -1; pos += -1) {
+			llen = base_return.givens[pos].length - 1;
+			for (ppos = llen; ppos > -1; ppos += -1) {
+				if (base_return.givens[pos][ppos] === 2) {
 					i = -1;
 					break;
 				}
-				base_return.names[i] += -1;
+				base_return.names[pos] += -1;
 			}
 		}
 	}
@@ -486,11 +500,12 @@ CSL.decrementCheckeratorNames = function (state, base) {
  * Return current base configuration for disambiguation
  */
 CSL.getAmbigConfig = function () {
-	var config = this.tmp.disambig_request;
+	var config, ret;
+	config = this.tmp.disambig_request;
 	if (!config) {
 		config = this.tmp.disambig_settings;
 	}
-	var ret = CSL.cloneAmbigConfig(config);
+	ret = CSL.cloneAmbigConfig(config);
 	return ret;
 };
 
@@ -512,21 +527,22 @@ CSL.getMinVal = function () {
  * Return available modes for disambiguation
  */
 CSL.getModes = function () {
-	var ret = [];
+	var ret, dagopt, gdropt;
+	ret = [];
 	if (this[this.tmp.area].opt["disambiguate-add-names"]) {
 		ret.push("names");
 	}
-	var dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
-	var gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
+	dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
 	//
 	// Use by-cite disambiguation for everything, for starters.
 	//
 	// hmm.  don't need any name expansion with the primary-name
 	// disambiguate-add-givenname, so no givens in that case.
 	if (dagopt) {
-		if (!gdropt || ("string" === typeof gdropt && "primary-name" != gdropt.slice(0, 12))) {
+		if (!gdropt || ("string" === typeof gdropt && "primary-name" !== gdropt.slice(0, 12))) {
 			ret.push("givens");
-		};
+		}
 	}
 	return ret;
 };

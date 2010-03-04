@@ -6544,134 +6544,146 @@ CSL.Registry.NameReg = function(state){
 	this.eval = evalname;
 };
 var debug = false;
-CSL.Registry.prototype.disambiguateCites = function (state,akey,modes,candidate_list){
-	if ( ! candidate_list){
-		var ambigs = this.ambigcites[akey].slice();
-		this.ambigcites[akey] = new Array();
+CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candidate_list) {
+	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key;
+	if (!candidate_list) {
+		ambigs = this.ambigcites[akey].slice();
+		this.ambigcites[akey] = [];
 	} else {
-		var ambigs = new Array();
-		for each (var reg_token in candidate_list){
+		ambigs = [];
+		len = candidate_list.length;
+		for (pos = 0; pos < len; pos += 1) {
+			reg_token = candidate_list[pos];
 			ambigs.push(reg_token.id);
-			var keypos = this.ambigcites[akey].indexOf(reg_token.id);
-			if (keypos > -1){
-				this.ambigcites[akey] = this.ambigcites[akey].slice(0,keypos).concat(this.ambigcites[akey].slice((keypos+1)));
+			keypos = this.ambigcites[akey].indexOf(reg_token.id);
+			if (keypos > -1) {
+				this.ambigcites[akey] = this.ambigcites[akey].slice(0, keypos).concat(this.ambigcites[akey].slice((keypos + 1)));
 			}
 		}
 	}
-	var id_vals = new Array();
-	for each (var a in ambigs){
-		id_vals.push(a);
+	id_vals = [];
+	len = ambigs.length;
+	for (pos = 0; pos < len; pos += 1) {
+		id_vals.push(ambigs[pos]);
 	}
-	var tokens = state.retrieveItems(id_vals);
-	if (candidate_list && candidate_list.length){
+	tokens = state.retrieveItems(id_vals);
+	if (candidate_list && candidate_list.length) {
 		modes = ["disambiguate_true"].concat(modes);
 	}
-	CSL.initCheckerator.call(this.checkerator,tokens,modes);
-	this.checkerator.lastclashes = (ambigs.length-1);
-	var base = false;
+	CSL.initCheckerator.call(this.checkerator, tokens, modes);
+	this.checkerator.lastclashes = (ambigs.length - 1);
+	base = false;
 	this.checkerator.pos = 0;
-	while (CSL.runCheckerator.call(this.checkerator)){
-		var token = tokens[this.checkerator.pos];
-		if (debug){
-			CSL.debug("<<<<<<<<<<<<<<<<<<<<<<<<< "+ token.id +" >>>>>>>>>>>>>>>>>>>>>>>>>>>");
+	while (CSL.runCheckerator.call(this.checkerator)) {
+		token = tokens[this.checkerator.pos];
+		if (debug) {
+			CSL.debug("<<<<<<<<<<<<<<<<<<<<<<<<< " + token.id + " >>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		}
-		if (this.ambigcites[akey].indexOf(token.id) > -1){
-			if (debug){
-				CSL.debug("---> Skip registered token for: "+token.id);
+		if (this.ambigcites[akey].indexOf(token.id) > -1) {
+			if (debug) {
+				CSL.debug("---> Skip registered token for: " + token.id);
 			}
 			this.checkerator.pos += 1;
 			continue;
 		}
 		this.checkerator.candidate = token.id;
-		if (base == false){
+		if (base === false) {
 			this.checkerator.mode = modes[0];
 		}
-		if (debug){
-			CSL.debug("  ---> Mode: "+this.checkerator.mode);
+		if (debug) {
+			CSL.debug("  ---> Mode: " + this.checkerator.mode);
 		}
-		if (debug){
-			CSL.debug("base in (givens):"+base["givens"]);
+		if (debug) {
+			CSL.debug("base in (givens):" + base.givens);
 		}
-		var str = CSL.getAmbiguousCite.call(state,token,base);
-		var maxvals = CSL.getMaxVals.call(state);
-		var minval = CSL.getMinVal.call(state);
+		str = CSL.getAmbiguousCite.call(state, token, base);
+		maxvals = CSL.getMaxVals.call(state);
+		minval = CSL.getMinVal.call(state);
 		base = CSL.getAmbigConfig.call(state);
-		if (!base["names"].length){
+		if (!base.names.length) {
 			maxvals = 0;
 		}
-		if (debug){
-			CSL.debug("base out (givens):"+base["givens"]);
+		if (debug) {
+			CSL.debug("base out (givens):" + base.givens);
 		}
-		if (candidate_list && candidate_list.length){
-			base["disambiguate"] = true;
+		if (candidate_list && candidate_list.length) {
+			base.disambiguate = true;
 		}
-		CSL.setCheckeratorBase.call(this.checkerator,base);
-		CSL.setMaxVals.call(this.checkerator,maxvals);
-		CSL.setMinVal.call(this.checkerator,minval);
-		for each (testpartner in tokens){
-			if (token.id == testpartner.id){
+		CSL.setCheckeratorBase.call(this.checkerator, base);
+		CSL.setMaxVals.call(this.checkerator, maxvals);
+		CSL.setMinVal.call(this.checkerator, minval);
+		len = tokens.length;
+		for (pos = 0; pos < len; pos += 1) {
+			testpartner = tokens[pos];
+			if (token.id === testpartner.id) {
 				continue;
 			}
-			var otherstr = CSL.getAmbiguousCite.call(state,testpartner,base);
-			if (debug){
-				CSL.debug("  ---> last clashes: "+this.checkerator.lastclashes);
-				CSL.debug("  ---> master:    "+token.id);
-				CSL.debug("  ---> master:    "+str);
-				CSL.debug("  ---> partner: "+testpartner.id);
-				CSL.debug("  ---> partner: "+otherstr);
+			otherstr = CSL.getAmbiguousCite.call(state, testpartner, base);
+			if (debug) {
+				CSL.debug("  ---> last clashes: " + this.checkerator.lastclashes);
+				CSL.debug("  ---> master:    " + token.id);
+				CSL.debug("  ---> master:    " + str);
+				CSL.debug("  ---> partner: " + testpartner.id);
+				CSL.debug("  ---> partner: " + otherstr);
 			}
-			if(CSL.checkCheckeratorForClash.call(this.checkerator,str,otherstr)){
+			if (CSL.checkCheckeratorForClash.call(this.checkerator, str, otherstr)) {
 				break;
 			}
 		}
-		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)){
-			var base_return = CSL.decrementCheckeratorNames.call(this,state,base);
-			this.registerAmbigToken(akey,token.id,base_return);
+		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)) {
+			base_return = CSL.decrementCheckeratorNames.call(this, state, base);
+			this.registerAmbigToken(akey, token.id, base_return);
 			this.checkerator.seen.push(token.id);
-			if (debug){
+			if (debug) {
 				CSL.debug("  ---> Evaluate: storing token config");
-				CSL.debug("          names: "+base["names"]);
-				CSL.debug("         givens: "+base_return["givens"]);
+				CSL.debug("          names: " + base.names);
+				CSL.debug("         givens: " + base_return.givens);
 			}
 			continue;
 		}
-		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)){
-			if ( ! state["citation"].opt["disambiguate-add-year-suffix"]){
+		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)) {
+			if (!state.citation.opt["disambiguate-add-year-suffix"]) {
 				this.checkerator.mode1_counts = false;
 				this.checkerator.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(base);
-				if (debug){
-					CSL.debug("  ---> Max out: remembering token config for: "+token.id);
-					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
+				if (debug) {
+					CSL.debug("  ---> Max out: remembering token config for: " + token.id);
+					CSL.debug("       (" + base.names + ":" + base.givens + ")");
 				}
 			} else {
-				if (debug){
-					CSL.debug("  ---> Max out: NOT storing token config for: "+token.id);
-					CSL.debug("       ("+base["names"]+":"+base["givens"]+")");
+				if (debug) {
+					CSL.debug("  ---> Max out: NOT storing token config for: " + token.id);
+					CSL.debug("       (" + base.names + ":" + base.givens + ")");
 				}
 			}
 			this.checkerator.seen.push(token.id);
 			base = false;
 			continue;
 		}
-		if (debug){
+		if (debug) {
 			CSL.debug("  ---> Incrementing");
 		}
 		CSL.incrementCheckeratorAmbigLevel.call(this.checkerator);
 	}
-	var ret = new Array();
-	for each (id in this.checkerator.ids){
-		if (id){
+	ret = [];
+	len = this.checkerator.ids.length;
+	for (pos = 0; pos < len; pos += 1) {
+		id = this.checkerator.ids[pos];
+		if (id) {
 			ret.push(this.registry[id]);
 		}
 	}
-	for (i in this.checkerator.maxed_out_bases){
-		this.registry[i].disambig = this.checkerator.maxed_out_bases[i];
+	len = this.checkerator.maxed_out_bases.length;
+	for (key in this.checkerator.maxed_out_bases) {
+		if (this.checkerator.maxed_out_bases.hasOwnProperty(key)) {
+			this.registry[key].disambig = this.checkerator.maxed_out_bases[key];
+		}
 	}
 	return ret;
 };
-CSL.Checkerator = function(){};
-CSL.initCheckerator = function(tokens,modes){
-	this.seen = new Array();
+CSL.Checkerator = function () {};
+CSL.initCheckerator = function (tokens, modes) {
+	var len, pos;
+	this.seen = [];
 	this.modes = modes;
 	this.mode = this.modes[0];
 	this.tokens_length = tokens.length;
@@ -6679,64 +6691,68 @@ CSL.initCheckerator = function(tokens,modes){
 	this.clashes = 0;
 	this.maxvals = false;
 	this.base = false;
-	this.ids = new Array();
-	this.maxed_out_bases = new Object();
-	for each (token in tokens){
-		this.ids.push(token.id);
+	this.ids = [];
+	this.maxed_out_bases = {};
+	len = tokens.length;
+	for (pos = 0; pos < len; pos += 1) {
+		this.ids.push(tokens[pos].id);
 	}
 	this.lastclashes = -1;
 	this.namepos = 0;
 	this.modepos = 0;
 	this.mode1_counts = false;
 };
-CSL.runCheckerator = function(){
-	if (this.seen.length < this.tokens_length){
+CSL.runCheckerator = function () {
+	if (this.seen.length < this.tokens_length) {
 		return true;
 	}
 	return false;
-}
-CSL.setMaxVals = function(maxvals){
+};
+CSL.setMaxVals = function (maxvals) {
 	this.maxvals = maxvals;
 };
-CSL.setMinVal = function(minval){
+CSL.setMinVal = function (minval) {
 	this.minval = minval;
 };
-CSL.setCheckeratorBase = function(base){
+CSL.setCheckeratorBase = function (base) {
+	var pos, len;
 	this.base = base;
-	if (! this.mode1_counts){
-		this.mode1_counts = new Array();
-		for each (i in this.base["givens"]){
+	if (! this.mode1_counts) {
+		this.mode1_counts = [];
+		len = this.base.givens.length;
+		for (pos = 0; pos < len; pos += 1) {
 			this.mode1_counts.push(0);
 		}
 	}
 };
-CSL.setCheckeratorMode = function(mode){
+CSL.setCheckeratorMode = function (mode) {
 	this.mode = mode;
 };
-CSL.checkCheckeratorForClash = function(str,otherstr){
-	if (str == otherstr){
-		if (this.mode == "names" || this.mode == "disambiguate_true"){
+CSL.checkCheckeratorForClash = function (str, otherstr) {
+	if (str === otherstr) {
+		if (this.mode === "names" || this.mode === "disambiguate_true") {
 			this.clashes += 1;
-			if (debug){
+			if (debug) {
 				CSL.debug("   (mode 0 clash, returning true)");
 			}
 			return true;
 		}
-		if (this.mode == "givens"){
+		if (this.mode === "givens") {
 			this.clashes += 1;
-			if (debug){
+			if (debug) {
 				CSL.debug("   (mode 1 clash, returning false)");
 			}
 		}
 		return false;
 	}
 };
-CSL.evaluateCheckeratorClashes = function(){
-	if (!this.maxvals.length){
+CSL.evaluateCheckeratorClashes = function () {
+	var namepos, ret, old;
+	if (!this.maxvals.length) {
 		return false;
 	}
-	if (this.mode == "names" || this.mode == "disambiguate_true"){
-		if (this.clashes){
+	if (this.mode === "names" || this.mode === "disambiguate_true") {
+		if (this.clashes) {
 			this.lastclashes = this.clashes;
 			this.clashes = 0;
 			return false;
@@ -6747,31 +6763,31 @@ CSL.evaluateCheckeratorClashes = function(){
 			return true;
 		}
 	}
-	if (this.mode == "givens"){
-		var ret = true;
-		if (debug){
-			CSL.debug("  ---> Comparing in mode 1: clashes="+this.clashes+"; lastclashes="+this.lastclashes);
+	if (this.mode === "givens") {
+		ret = true;
+		if (debug) {
+			CSL.debug("  ---> Comparing in mode 1: clashes=" + this.clashes + "; lastclashes=" + this.lastclashes);
 		}
-		var namepos = this.mode1_counts[this.modepos];
-		if (this.clashes && this.clashes == this.lastclashes){
-			if (debug){
-				CSL.debug("   ---> Applying mode 1 defaults: "+this.mode1_defaults);
+		namepos = this.mode1_counts[this.modepos];
+		if (this.clashes && this.clashes === this.lastclashes) {
+			if (debug) {
+				CSL.debug("   ---> Applying mode 1 defaults: " + this.mode1_defaults);
 			}
-			if (this.mode1_defaults && namepos > 0){
-				var old = this.mode1_defaults[(namepos-1)];
-				if (debug){
-					CSL.debug("   ---> Resetting to default: ("+old+")");
+			if (this.mode1_defaults && namepos > 0) {
+				old = this.mode1_defaults[(namepos - 1)];
+				if (debug) {
+					CSL.debug("   ---> Resetting to default: (" + old + ")");
 				}
-				this.base["givens"][this.modepos][(namepos-1)] = old;
+				this.base.givens[this.modepos][(namepos - 1)] = old;
 			}
 			ret = false;
 		} else if (this.clashes) {
-			if (debug){
+			if (debug) {
 				CSL.debug("   ---> Expanding given name helped a little, retaining it");
 			}
 			ret = false;
 		} else { // only non-clash should be possible
-			if (debug){
+			if (debug) {
 				CSL.debug("   ---> No clashes, storing token config and going to next");
 			}
 			this.mode1_counts = false;
@@ -6780,28 +6796,28 @@ CSL.evaluateCheckeratorClashes = function(){
 		}
 		this.lastclashes = this.clashes;
 		this.clashes = 0;
-		if (ret){
+		if (ret) {
 			this.ids[this.pos] = false;
 		}
 		return ret;
 	}
 };
-CSL.maxCheckeratorAmbigLevel = function (){
-	if (!this.maxvals.length){
+CSL.maxCheckeratorAmbigLevel = function () {
+	if (!this.maxvals.length) {
 		return true;
 	}
-	if (this.mode == "disambiguate_true"){
-		if (this.modes.indexOf("disambiguate_true") < (this.modes.length-1)){
-			this.mode = this.modes[(this.modes.indexOf("disambiguate_true")+1)];
+	if (this.mode === "disambiguate_true") {
+		if (this.modes.indexOf("disambiguate_true") < (this.modes.length - 1)) {
+			this.mode = this.modes[(this.modes.indexOf("disambiguate_true") + 1)];
 			this.modepos = 0;
 		} else {
 			this.pos += 1;
 			return true;
 		}
 	}
-	if (this.mode == "names"){
-		if (this.modepos == (this.base["names"].length-1) && this.base["names"][this.modepos] == this.maxvals[this.modepos]){
-			if (this.modes.length == 2){
+	if (this.mode === "names") {
+		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
+			if (this.modes.length === 2) {
 				this.mode = "givens";
 				this.mode1_counts[this.modepos] = 0;
 			} else {
@@ -6809,12 +6825,12 @@ CSL.maxCheckeratorAmbigLevel = function (){
 				return true;
 			}
 		}
-	} else if (this.mode == "givens"){
-		if (this.modepos == (this.mode1_counts.length-1) && this.mode1_counts[this.modepos] == (this.maxvals[this.modepos])){
-			if (debug){
+	} else if (this.mode === "givens") {
+		if (this.modepos === (this.mode1_counts.length - 1) && this.mode1_counts[this.modepos] === (this.maxvals[this.modepos])) {
+			if (debug) {
 				CSL.debug("-----  Item maxed out -----");
 			}
-			if (this.modes.length == 2){
+			if (this.modes.length === 2) {
 				this.mode = "givens";
 				this.pos += 1;
 			} else {
@@ -6825,42 +6841,43 @@ CSL.maxCheckeratorAmbigLevel = function (){
 	}
 	return false;
 };
-CSL.incrementCheckeratorAmbigLevel = function (){
-	if (this.mode == "names"){
-		var val = this.base["names"][this.modepos];
-		if (val < this.maxvals[this.modepos]){
-			this.base["names"][this.modepos] += 1;
-		} else if (this.modepos < (this.base["names"].length-1)){
-			this.modepos +=1;
-			this.base["names"][this.modepos] = 0;
+CSL.incrementCheckeratorAmbigLevel = function () {
+	var val;
+	if (this.mode === "names") {
+		val = this.base.names[this.modepos];
+		if (val < this.maxvals[this.modepos]) {
+			this.base.names[this.modepos] += 1;
+		} else if (this.modepos < (this.base.names.length - 1)) {
+			this.modepos += 1;
+			this.base.names[this.modepos] = 0;
 		}
 	}
-	if (this.mode == "givens"){
-		var val = (this.mode1_counts[this.modepos]);
-		if (val < this.maxvals[this.modepos]){
-			if (this.given_name_second_pass){
-				if (debug){
+	if (this.mode === "givens") {
+		val = (this.mode1_counts[this.modepos]);
+		if (val < this.maxvals[this.modepos]) {
+			if (this.given_name_second_pass) {
+				if (debug) {
 					CSL.debug(" ** second pass");
-				};
+				}
 				this.given_name_second_pass = false;
 				this.mode1_counts[this.modepos] += 1;
-				this.base["givens"][this.modepos][val] += 1;
-				if (debug){
-					CSL.debug("   ---> (A) Setting expanded givenname param with base: "+this.base["givens"]);
-				};
+				this.base.givens[this.modepos][val] += 1;
+				if (debug) {
+					CSL.debug("   ---> (A) Setting expanded givenname param with base: " + this.base.givens);
+				}
 			} else {
-				this.mode1_defaults = this.base["givens"][this.modepos].slice();
-				if (debug){
+				this.mode1_defaults = this.base.givens[this.modepos].slice();
+				if (debug) {
 					CSL.debug(" ** first pass");
-				};
+				}
 				this.given_name_second_pass = true;
-			};
-		} else if (this.modepos < (this.base["givens"].length-1)){
-			this.modepos +=1;
-			this.base["givens"][this.modepos][0] += 1;
-			this.mode1_defaults = this.base["givens"][this.modepos].slice();
-			if (debug){
-				CSL.debug("   ---> (B) Set expanded givenname param with base: "+this.base["givens"]);
+			}
+		} else if (this.modepos < (this.base.givens.length - 1)) {
+			this.modepos += 1;
+			this.base.givens[this.modepos][0] += 1;
+			this.mode1_defaults = this.base.givens[this.modepos].slice();
+			if (debug) {
+				CSL.debug("   ---> (B) Set expanded givenname param with base: " + this.base.givens);
 			}
 		} else {
 			this.mode = "names";
@@ -6868,54 +6885,61 @@ CSL.incrementCheckeratorAmbigLevel = function (){
 		}
 	}
 };
-CSL.decrementCheckeratorNames = function(state,base){
-	var base_return = CSL.cloneAmbigConfig(base);
-	var do_me = false;
-	for (var i=(base_return["givens"].length-1); i > -1; i--){
-		for (var j=(base_return["givens"][i].length-1); j > -1; j--){
-			if (base_return["givens"][i][j] == 2){
+CSL.decrementCheckeratorNames = function (state, base) {
+	var base_return, do_me, i, j, pos, len, ppos, llen;
+	base_return = CSL.cloneAmbigConfig(base);
+	do_me = false;
+	len = base_return.givens.length - 1;
+	for (pos = len; pos > -1; pos += -1) {
+		llen = base_return.givens[pos].length - 1;
+		for (ppos = llen; ppos > -1; ppos += -1) {
+			if (base_return.givens[pos][ppos] === 2) {
 				do_me = true;
 			}
 		}
 	}
-	if (do_me){
-		for (var i=(base_return["givens"].length-1); i > -1; i--){
-			for (var j=(base_return["givens"][i].length-1); j > -1; j--){
-				if (base_return["givens"][i][j] == 2){
+	if (do_me) {
+		len = base_return.givens.length - 1;
+		for (pos = len; pos > -1; pos += -1) {
+			llen = base_return.givens[pos].length - 1;
+			for (ppos = llen; ppos > -1; ppos += -1) {
+				if (base_return.givens[pos][ppos] === 2) {
 					i = -1;
 					break;
 				}
-				base_return["names"][i] += -1;
+				base_return.names[pos] += -1;
 			}
 		}
 	}
 	return base_return;
 };
-CSL.getAmbigConfig = function(){
-	var config = this.tmp.disambig_request;
-	if (!config){
+CSL.getAmbigConfig = function () {
+	var config, ret;
+	config = this.tmp.disambig_request;
+	if (!config) {
 		config = this.tmp.disambig_settings;
 	}
-	var ret = CSL.cloneAmbigConfig(config);
+	ret = CSL.cloneAmbigConfig(config);
 	return ret;
 };
-CSL.getMaxVals = function(){
+CSL.getMaxVals = function () {
 	return this.tmp.names_max.mystack.slice();
 };
-CSL.getMinVal = function(){
+CSL.getMinVal = function () {
 	return this.tmp["et-al-min"];
 };
-CSL.getModes = function(){
-	var ret = new Array();
-	if (this[this.tmp.area].opt["disambiguate-add-names"]){
+CSL.getModes = function () {
+	var ret, dagopt, gdropt;
+	ret = [];
+	if (this[this.tmp.area].opt["disambiguate-add-names"]) {
 		ret.push("names");
 	}
-	var dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
-	var gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
-	if (dagopt){
-		if (!gdropt || ("string" == typeof gdropt && "primary-name" != gdropt.slice(0,12))){
+	dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
+	gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
+	if (dagopt) {
+		if (!gdropt || ("string" === typeof gdropt && "primary-name" !== gdropt.slice(0, 12))) {
 			ret.push("givens");
-		};
+		}
 	}
 	return ret;
 };

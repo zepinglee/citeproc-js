@@ -413,6 +413,7 @@ if (!CSL.Registry.NameReg) {
 if (!CSL.Registry.CitationReg) {
 	load("./src/disambig_citations.js");
 }
+
 if (!CSL.Registry.prototype.disambiguateCites) {
 	load("./src/disambig_cites.js");
 }
