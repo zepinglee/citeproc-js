@@ -306,6 +306,7 @@ if (!CSL.Engine.Opt) {
 if (!CSL.makeCitationCluster) {
 	load("./src/cmd_cite.js");
 }
+
 if (!CSL.makeBibliography) {
 	load("./src/cmd_bibliography.js");
 }
@@ -413,7 +414,7 @@ if (!CSL.Registry.NameReg) {
 if (!CSL.Registry.CitationReg) {
 	load("./src/disambig_citations.js");
 }
-
+// jslint OK
 if (!CSL.Registry.prototype.disambiguateCites) {
 	load("./src/disambig_cites.js");
 }
