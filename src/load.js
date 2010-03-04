@@ -302,7 +302,7 @@ if (!CSL.Output) {
 if (!CSL.Engine.Opt) {
 	load("./src/state.js");
 }
-
+// jslint OK
 if (!CSL.makeCitationCluster) {
 	load("./src/cmd_cite.js");
 }

@@ -398,7 +398,7 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	this.tmp.force_subsequent = true;
-	CSL.getCite.call(this, Item,{});
+	CSL.getCite.call(this, Item, {});
 	this.tmp.force_subsequent = false;
 	ret = this.output.string(this, this.output.queue);
 	this.tmp.suppress_decorations = false;
@@ -407,7 +407,7 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 		CSL.debug("ok");
 	}
 	return ret;
-}
+};
 
 /**
  * Return delimiter for use in join
@@ -424,8 +424,8 @@ CSL.getAmbiguousCite = function (Item, disambig) {
  */
 
 CSL.getSpliceDelimiter = function (last_collapsed) {
-	if (last_collapsed && ! this.tmp.have_collapsed && this["citation"].opt["after-collapse-delimiter"]) {
-		this.tmp.splice_delimiter = this["citation"].opt["after-collapse-delimiter"];
+	if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
+		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
 	}
 	return this.tmp.splice_delimiter;
 };
@@ -435,7 +435,7 @@ CSL.getSpliceDelimiter = function (last_collapsed) {
  * flexible inter-cite splicing.
  */
 CSL.getCitationCluster = function (inputList, citationID) {
-	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs;
+	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj;
 	this.tmp.area = "citation";
 	delimiter = "";
 	result = "";
@@ -447,7 +447,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	if (citationID) {
 		this.registry.citationreg.citationById[citationID].properties.backref_index = false;
 		this.registry.citationreg.citationById[citationID].properties.backref_citation = false;
-	};
+	}
 
 	myparams = [];
 
@@ -459,12 +459,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		params = {};
 
 		if (pos > 0) {
-			CSL.getCite.call(this, Item,item,inputList[(pos-1)][1].id);
+			CSL.getCite.call(this, Item, item, inputList[(pos - 1)][1].id);
 		} else {
-			CSL.getCite.call(this, Item,item);
+			CSL.getCite.call(this, Item, item);
 		}
 
-		if (pos === (inputList.length-1)) {
+		if (pos === (inputList.length - 1)) {
 			this.parallel.ComposeSet();
 		}
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed);
@@ -479,7 +479,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		// corresponding to each element.
 		//
 		myparams.push(params);
-	};
+	}
 
 	this.parallel.PruneOutputQueue(this);
 	//
@@ -489,19 +489,20 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	//
 	empties = 0;
 	myblobs = this.output.queue.slice();
-	for (qpos in myblobs) {
+	len = myblobs.length;
+	for (pos = 0; pos < len; pos += 1) {
 
-		this.output.queue = [myblobs[qpos]];
+		this.output.queue = [myblobs[pos]];
 
-		this.tmp.suppress_decorations = myparams[qpos].suppress_decorations;
-		this.tmp.splice_delimiter = myparams[qpos].splice_delimiter;
+		this.tmp.suppress_decorations = myparams[pos].suppress_decorations;
+		this.tmp.splice_delimiter = myparams[pos].splice_delimiter;
 		//
 		// oh, one last second thought on delimiters ...
 		//
-		if (myblobs[qpos].parallel_delimiter) {
-			this.tmp.splice_delimiter = myblobs[qpos].parallel_delimiter;
+		if (myblobs[pos].parallel_delimiter) {
+			this.tmp.splice_delimiter = myblobs[pos].parallel_delimiter;
 		}
-		this.tmp.have_collapsed = myparams[qpos].have_collapsed;
+		this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
 		composite = this.output.string(this, this.output.queue);
 		this.tmp.suppress_decorations = false;
@@ -518,10 +519,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			compie = composite.pop();
 			if ("undefined" !== typeof compie) {
 				objects.push(compie);
-			};
+			}
 		}
 		composite.reverse();
-		for each (obj in composite) {
+		llen = composite.length;
+		for (ppos = 0; ppos < llen; ppos += 1) {
+			obj = composite[ppos];
 			if ("string" === typeof obj) {
 				objects.push(this.tmp.splice_delimiter + obj);
 				continue;
@@ -529,12 +532,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			compie = composite.pop();
 			if ("undefined" !== typeof compie) {
 				objects.push(compie);
-			};
-		};
-		if (objects.length === 0 && !inputList[qpos][1]["suppress-author"]) {
-			empties++;
+			}
 		}
-	};
+		if (objects.length === 0 && !inputList[pos][1]["suppress-author"]) {
+			empties += 1;
+		}
+	}
 	//
 	// Don't ask.  :(
 	//
@@ -544,15 +547,15 @@ CSL.getCitationCluster = function (inputList, citationID) {
 				objects[0] = this.tmp.splice_delimiter + objects[0];
 			} else {
 				objects.push(this.tmp.splice_delimiter);
-			};
-		};
+			}
+		}
 		objects.reverse();
-		for (x=1; x<empties; x++) {
+		for (pos = 1; pos < empties; pos += 1) {
 			objects.push(this.tmp.splice_delimiter + "[CSL STYLE ERROR: reference with no printed form.]");
-		};
+		}
 		objects.push("[CSL STYLE ERROR: reference with no printed form.]");
 		objects.reverse();
-	};
+	}
 	result += this.output.renderBlobs(objects)[0];
 	if (result) {
 		if (result.slice(-1) === this.citation.opt.layout_suffix.slice(0)) {
@@ -560,17 +563,14 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 		result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
 		if (!this.tmp.suppress_decorations) {
-			for each (params in this.citation.opt.layout_decorations) {
+			len = this.citation.opt.layout_decorations.length;
+			for (pos = 0; pos < len; pos += 1) {
+				params = this.citation.opt.layout_decorations[pos];
 				result = this.fun.decorate[params[0]][params[1]](this, result);
-			};
-		};
-	};
+			}
+		}
+	}
 	return result;
-	//if (citationID && this.tmp.backref_index.length) {
-	//	this.registry.citationreg.citationById[citationID].properties.backref_index = this.tmp.backref_index;
-	//	this.registry.citationreg.citationById[citationID].properties.backref_citation = this.tmp.backref_citation;
-	//};
-	//return result.replace("(csl:backref)", "","g").replace("(/csl:backref)","","g");
 };
 
 /*
@@ -585,12 +585,13 @@ CSL.getCitationCluster = function (inputList, citationID) {
  * (This might be dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.getCite = function (Item, item,prevItemID) {
-	this.parallel.StartCite(Item, item,prevItemID);
+CSL.getCite = function (Item, item, prevItemID) {
+	var next;
+	this.parallel.StartCite(Item, item, prevItemID);
 	CSL.citeStart.call(this, Item);
 	next = 0;
-	while(next < this[this.tmp.area].tokens.length) {
-		next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next],Item,item);
+	while (next < this[this.tmp.area].tokens.length) {
+		next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next], Item, item);
     }
 	CSL.citeEnd.call(this, Item);
 	this.parallel.CloseCite(this);
@@ -613,8 +614,8 @@ CSL.citeStart = function (Item) {
 
 	this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;
 
-	this["bibliography_sort"].keys = [];
-	this["citation_sort"].keys = [];
+	this.bibliography_sort.keys = [];
+	this.citation_sort.keys = [];
 
 	this.tmp.count_offset_characters = false;
 	this.tmp.offset_characters = 0;
@@ -622,7 +623,7 @@ CSL.citeStart = function (Item) {
 
 CSL.citeEnd = function (Item) {
 
-	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[-.,;:]$/)) {
+	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[\-.,;:]$/)) {
 		this.tmp.splice_delimiter = " ";
 	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[.,:;a-z].*/)) {
 		this.tmp.splice_delimiter = " ";
