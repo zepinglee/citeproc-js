@@ -314,7 +314,7 @@ if (!CSL.makeBibliography) {
 if (!CSL.setCitationId) {
 	load("./src/util_integration.js");
 }
-
+// jslint OK
 if (!CSL.updateItems) {
 	load("./src/cmd_update.js");
 }
@@ -344,6 +344,7 @@ if (!CSL.Node) {
     load("./src/node_substitute.js");
     load("./src/node_text.js");
 }
+
 if (!CSL.Node.names) {
 	load("./src/libnames.js");
 }
