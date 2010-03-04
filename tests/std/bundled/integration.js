@@ -35,6 +35,10 @@
 dojo.provide("std.integration");
 doh.register("std.integration", [
     function(){
+        var test = new StdRhinoTest("integration_CitationSortTwice");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("integration_FirstReferenceNoteNumberPositionChange");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -52,6 +56,10 @@ doh.register("std.integration", [
     }, 
     function(){
         var test = new StdRhinoTest("integration_IbidOnInsert");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("integration_CitationSort");
         doh.assertEqual(test.result, test.run());
     }, 
 ]);
