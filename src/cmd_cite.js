@@ -45,7 +45,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 };
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen;
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
@@ -176,12 +176,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				for (pppos = 0; pppos < lllen; pppos += 1) {
 					item = citations[ppos].sortedItems[pppos];
 					oldvalue = {};
-					oldvalue["position"] = item[1].position;
+					oldvalue.position = item[1].position;
 					oldvalue["first-reference-note-number"] = item[1]["first-reference-note-number"];
 					oldvalue["near-note"] = item[1]["near-note"];
 					item[1]["first-reference-note-number"] = 0;
 					item[1]["near-note"] = false;
-					if ("number" != typeof first_ref[item[1].id]) {
+					if ("number" !== typeof first_ref[item[1].id]) {
 						if (!onecitation.properties.noteIndex) {
 							onecitation.properties.noteIndex = 0;
 						}
@@ -203,22 +203,24 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 							//     (c) the previous onecitation must contain a reference
 							//         to the same item ...
 							// (this has some jiggery-pokery in it for parallels)
-							items = citations[(ppos-1)].sortedItems;
+							items = citations[(ppos - 1)].sortedItems;
 							useme = false;
-							if (citations[(ppos-1)].sortedItems[0][1].id === item[1].id || citations[(ppos-1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
+							if (citations[(ppos - 1)].sortedItems[0][1].id === item[1].id || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
 								useme = true;
 							}
-							for each (i in items.slice(1)) {
+							llllen = items.slice(1).length;
+							for (ppppos = 0; ppppos < llllen; ppppos += 1) {
+								i = items.slice(1)[ppppos];
 								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1].id].parallel === this.registry.registry[i[1].id]) {
 									useme = false;
 								}
-							};
+							}
 							if (useme) {
 								ibidme = true;
 							} else {
 								suprame = true;
 							}
-						} else if (pppos > 0 && onecitation.sortedItems[(pppos-1)][1].id === item[1].id) {
+						} else if (pppos > 0 && onecitation.sortedItems[(pppos - 1)][1].id === item[1].id) {
 							// Case 2: immediately preceding source in this onecitation
 							// (1) Threshold conditions
 							//     (a) there must be an imediately preceding reference to  the
@@ -227,16 +229,16 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						} else {
 							// everything else is definitely subsequent
 							suprame = true;
-						};
+						}
 						// conditions
 						if (ibidme) {
 							if (pppos > 0) {
-								prev_locator = onecitation.sortedItems[(pppos-1)][1].locator;
+								prev_locator = onecitation.sortedItems[(pppos - 1)][1].locator;
 							} else {
-								prev_locator = citations[(ppos-1)].sortedItems[0][1].locator;
+								prev_locator = citations[(ppos - 1)].sortedItems[0][1].locator;
 							}
 							curr_locator = item[1].locator;
-						};
+						}
 						// triage
 						if (ibidme && prev_locator && !curr_locator) {
 							ibidme = false;
@@ -257,7 +259,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 								//         (page number, etc.) and this onecitation has
 								//         a locator that is identical, use ibid
 								item[1].position = CSL.POSITION_IBID;
-							} else if (prev_locator && curr_locator && curr_locator != prev_locator) {
+							} else if (prev_locator && curr_locator && curr_locator !== prev_locator) {
 								//     (d) if the previous onecitation had a locator,
 								//         and this onecitation has one that differs,
 								//         use ibid+pages
@@ -273,19 +275,21 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						}
 						if (suprame) {
 							item[1].position = CSL.POSITION_SUBSEQUENT;
-							if (first_ref[item[1].id] != onecitation.properties.noteIndex) {
+							if (first_ref[item[1].id] !== onecitation.properties.noteIndex) {
 								item[1]["first-reference-note-number"] = first_ref[item[1].id];
-							};
-						};
-					};
+							}
+						}
+					}
 					if (onecitation.properties.noteIndex) {
-						if ((onecitation.properties.noteIndex-this.opt["near-note-distance"]) < onecitation.properties.noteIndex) {
+						if ((onecitation.properties.noteIndex - this.opt["near-note-distance"]) < onecitation.properties.noteIndex) {
 							item[1]["near-note"] = true;
-						};
-					};
-					if (onecitation.citationID != citation.citationID) {
-						for each (param in ["position", "first-reference-note-number","near-note"]) {
-							if (item[1][param] != oldvalue[param]) {
+						}
+					}
+					if (onecitation.citationID !== citation.citationID) {
+						llllen = CSL.POSITION_TEST_VARS.length;
+						for (ppppos = 0; ppppos < llllen; ppppos += 1) {
+							param = CSL.POSITION_TEST_VARS[ppppos];
+							if (item[1][param] !== oldvalue[param]) {
 								this.tmp.taintedCitationIDs[onecitation.citationID] = true;
 							}
 						}
@@ -295,7 +299,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		}
 	}
 	for (key in this.tmp.taintedItemIDs) {
-		this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
+		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
+			this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
+		}
 	}
 	// XXXXX: note to self: maybe provide for half-taints (backreferences)
 	//for (key in this.tmp.taintedCitationIDs) {
@@ -503,7 +509,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		} else {
 			composite.reverse();
 			compie = composite.pop();
-			if ("undefined" != typeof compie) {
+			if ("undefined" !== typeof compie) {
 				objects.push(compie);
 			};
 		}
@@ -514,7 +520,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 				continue;
 			}
 			compie = composite.pop();
-			if ("undefined" != typeof compie) {
+			if ("undefined" !== typeof compie) {
 				objects.push(compie);
 			};
 		};
