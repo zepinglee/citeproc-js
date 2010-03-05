@@ -33,35 +33,38 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Util.Institutions = new function(){};
+CSL.Util.Institutions = {};
 
 /**
  * Build a set of names, less any label or et al. tag
  */
-CSL.Util.Institutions.outputInstitutions = function(state,display_names){
-
+CSL.Util.Institutions.outputInstitutions = function (state, display_names) {
+	var len, pos, name, institution, value, token_long, token_short, parts;
 	state.output.openLevel("institution");
-	for each (var name in display_names){
-		var institution = state.output.getToken("institution");
-		var value = name.literal;
-		if (state.abbrev.institution[value]){
-			var token_long = state.output.mergeTokenStrings("institution-long","institution-if-short");
+	len = display_names.length;
+	for (pos = 0; pos < len; pos += 1) {
+		name = display_names[pos];
+		institution = state.output.getToken("institution");
+		value = name.literal;
+		if (state.abbrev.institution[value]) {
+			token_long = state.output.mergeTokenStrings("institution-long", "institution-if-short");
 		} else {
-			var token_long = state.output.getToken("institution-long");
+			token_long = state.output.getToken("institution-long");
 		}
-		var token_short = state.output.getToken("institution-short");
-		var parts = institution.strings["institution-parts"];
-		if ("short" == parts){
-			state.abbrev.output(state,value,token_short,token_long,true);
-		} else if ("short-long" == parts) {
-			state.abbrev.output(state,value,token_short);
-			state.output.append(value,token_long);
-		} else if ("long-short" == parts){
-			state.output.append(value,token_long);
-			state.abbrev.output(state,value,token_short);
+		token_short = state.output.getToken("institution-short");
+		parts = institution.strings["institution-parts"];
+		if ("short" === parts) {
+			state.abbrev.output(state, value, token_short, token_long, true);
+		} else if ("short-long" === parts) {
+			state.abbrev.output(state, value, token_short);
+			state.output.append(value, token_long);
+		} else if ("long-short" === parts) {
+			state.output.append(value, token_long);
+			state.abbrev.output(state, value, token_short);
 		} else {
-			state.output.append(value,token_long);
-		};
-	};
-	state.output.closeLevel(); // institution
+			state.output.append(value, token_long);
+		}
+	}
+	// institution
+	state.output.closeLevel();
 };
