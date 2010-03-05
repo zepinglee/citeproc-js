@@ -4879,15 +4879,13 @@ CSL.Blob.prototype.push = function (blob) {
 		this.blobs.push(blob);
 	}
 };
-if (!CSL) {
-}
-CSL.NumericBlob = function(num,mother_token){
-	this.alldecor = new Array();
+CSL.NumericBlob = function (num, mother_token) {
+	this.alldecor = [];
 	this.num = num;
 	this.blobs = num.toString();
 	this.status = CSL.START;
-	this.strings = new Object();
-	if (mother_token){
+	this.strings = {};
+	if (mother_token) {
 		this.decorations = mother_token.decorations;
 		this.strings.prefix = mother_token.strings.prefix;
 		this.strings.suffix = mother_token.strings.suffix;
@@ -4896,14 +4894,14 @@ CSL.NumericBlob = function(num,mother_token){
 		this.range_prefix = mother_token.range_prefix;
 		this.splice_prefix = "";
 		this.formatter = mother_token.formatter;
-		if (!this.formatter){
+		if (!this.formatter) {
 			this.formatter =  new CSL.Output.DefaultFormatter();
 		}
-		if (this.formatter){
+		if (this.formatter) {
 			this.type = this.formatter.format(1);
 		}
 	} else {
-		this.decorations = new Array();
+		this.decorations = [];
 		this.strings.prefix = "";
 		this.strings.suffix = "";
 		this.successor_prefix = "";
@@ -4912,37 +4910,37 @@ CSL.NumericBlob = function(num,mother_token){
 		this.formatter = new CSL.Output.DefaultFormatter();
 	}
 };
-CSL.NumericBlob.prototype.setFormatter = function(formatter){
+CSL.NumericBlob.prototype.setFormatter = function (formatter) {
 	this.formatter = formatter;
 	this.type = this.formatter.format(1);
 };
-CSL.Output.DefaultFormatter = function (){};
-CSL.Output.DefaultFormatter.prototype.format = function (num){
+CSL.Output.DefaultFormatter = function () {};
+CSL.Output.DefaultFormatter.prototype.format = function (num) {
 	return num.toString();
 };
-CSL.NumericBlob.prototype.checkNext = function(next){
-	if ( ! next || ! next.num || this.type != next.type || next.num != (this.num+1)){
-		if (this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
+CSL.NumericBlob.prototype.checkNext = function (next) {
+	if (! next || !next.num || this.type !== next.type || next.num !== (this.num + 1)) {
+		if (this.status === CSL.SUCCESSOR_OF_SUCCESSOR) {
 			this.status = CSL.END;
 		}
-		if ("object" == typeof next){
+		if ("object" === typeof next) {
 			next.status = CSL.SEEN;
 		}
 	} else { // next number is in the sequence
-		if (this.status == CSL.START || this.status == CSL.SEEN){
+		if (this.status === CSL.START || this.status === CSL.SEEN) {
 			next.status = CSL.SUCCESSOR;
-		} else if (this.status == CSL.SUCCESSOR || this.status == CSL.SUCCESSOR_OF_SUCCESSOR){
-			if (this.range_prefix){
+		} else if (this.status === CSL.SUCCESSOR || this.status === CSL.SUCCESSOR_OF_SUCCESSOR) {
+			if (this.range_prefix) {
 				next.status = CSL.SUCCESSOR_OF_SUCCESSOR;
 				this.status = CSL.SUPPRESS;
 			} else {
 				next.status = CSL.SUCCESSOR;
 			}
 		}
-		if (this.status == CSL.SEEN){
+		if (this.status === CSL.SEEN) {
 			this.status = CSL.SUCCESSOR;
 		}
-	};
+	}
 };
 if (!CSL){
 }

@@ -374,9 +374,11 @@ if (!CSL.AmbigConfig) {
 if (!CSL.Blob) {
 	load("./src/obj_blob.js");
 }
+// jslint OK
 if (!CSL.NumericBlob) {
 	load("./src/obj_number.js");
 }
+
 if (!CSL.Util) {
 	load("./src/util.js");
 }
