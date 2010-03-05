@@ -33,45 +33,47 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Abbrev = function(){
-	this.journal = new Object();
-	this.series = new Object();
-	this.institution = new Object();
-	this.authority = new Object();
-	this.hereinafter = new Object();
+CSL.Abbrev = function () {
+	this.journal = {};
+	this.series = {};
+	this.institution = {};
+	this.authority = {};
+	this.hereinafter = {};
 	this.abbreviations = "default";
 };
 
-CSL.Abbrev.prototype.output = function(state,value,token_short,token_long,use_fallback){
-	var basevalue = state.getTextSubField( value,"default-locale",true);
-	var shortvalue = state.abbrev.institution[value];
-	if (shortvalue){
-		state.output.append(shortvalue,token_short);
+CSL.Abbrev.prototype.output = function (state, value, token_short, token_long, use_fallback) {
+	var basevalue, shortvalue;
+	basevalue = state.getTextSubField(value, "default-locale", true);
+	shortvalue = state.abbrev.institution[value];
+	if (shortvalue) {
+		state.output.append(shortvalue, token_short);
 	} else {
-		if (use_fallback){
-			state.output.append(value,token_long);
-		};
-		print("UNKNOWN ABBREVIATION FOR: "+value);
-	};
+		if (use_fallback) {
+			state.output.append(value, token_long);
+		}
+		print("UNKNOWN ABBREVIATION FOR: " + value);
+	}
 };
 
-CSL.Abbrev.prototype.getOutputFunc = function(token,varname,vartype,altvar){
-
-	return function(state,Item){
-		var basevalue = state.getTextSubField( Item[varname],"default-locale",true);
-		var value = "";
-		if (state.abbrev[vartype]){
-			if (state.abbrev[vartype][basevalue]){
-				value = state.abbrev[vartype][ basevalue ];
+CSL.Abbrev.prototype.getOutputFunc = function (token, varname, vartype, altvar) {
+	var basevalue, value;
+	return function (state, Item) {
+		basevalue = state.getTextSubField(Item[varname], "default-locale", true);
+		value = "";
+		if (state.abbrev[vartype]) {
+			if (state.abbrev[vartype][basevalue]) {
+				value = state.abbrev[vartype][basevalue];
 			} else {
-				print("UNKNOWN ABBREVIATION FOR ... "+basevalue );		}
-		};
-		if (!value && Item[altvar]){
+				print("UNKNOWN ABBREVIATION FOR ... " + basevalue);
+			}
+		}
+		if (!value && Item[altvar]) {
 			value = Item[altvar];
-		};
-		if (!value){
+		}
+		if (!value) {
 			value = basevalue;
-		};
-		state.output.append(value,token);
+		}
+		state.output.append(value, token);
 	};
 };

@@ -144,6 +144,8 @@ var CSL = {
 		"et-al-subsequent-use-first"
 	],
 
+	PARALLEL_MATCH_VARS: ["title",  "container-title", "volume", "page"],
+
 	LOOSE: 0,
 	STRICT: 1,
 
@@ -353,9 +355,11 @@ if (!CSL.Attributes) {
 if (!CSL.Stack) {
 	load("./src/stack.js");
 }
+// jslint OK
 if (!CSL.Parallel) {
 	load("./src/util_parallel.js");
 }
+// jslint OK
 if (!CSL.Abbrev) {
 	load("./src/util_abbrev.js");
 }
