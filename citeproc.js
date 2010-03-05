@@ -4160,50 +4160,53 @@ CSL.Attributes["@match"] = function (state, arg) {
 	}
 };
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
-	var variables, len, pos, func, variable;
+	var variables, len, pos, func, variable, ret;
 	variables = arg.split(/\s+/);
 	len = variables.length;
-	for (pos = 0; pos < len; pos += 1) {
-		variable = variables[pos];
-		func = function (state, Item) {
+	func = function (state, Item) {
+		ret = [];
+		for (pos = 0; pos < len; pos += 1) {
+			variable = variables[pos];
 			if (Item[variable] && Item[variable].circa) {
-				return true;
+				ret.push(true);
+			} else {
+				ret.push(false);
 			}
-			return false;
-		};
-		this.tests.push(func);
-	}
+		}
+		return ret;
+	};
+	this.tests.push(func);
 };
 CSL.Attributes["@is-numeric"] = function (state, arg) {
-	var variables, variable, func, val, pos, len;
+	var variables, variable, func, val, pos, len, not_numeric_type, ret;
 	variables = arg.split(/\s+/);
 	len = variables.length;
-	for (pos = 0; pos < len; pos += 1) {
-		variable = variables[pos];
-		func = function (state, Item) {
-			if (CSL.NUMERIC_VARIABLES.indexOf(variable) === -1) {
-				return false;
-			}
+	func = function (state, Item) {
+		ret = [];
+		for (pos = 0; pos < len; pos += 1) {
+			variable = variables[pos];
+			not_numeric_type = CSL.NUMERIC_VARIABLES.indexOf(variable) === -1;
 			val = Item[variable];
-			if (typeof val === "undefined") {
-				return false;
-			}
 			if (typeof val === "number") {
 				val = val.toString();
 			}
-			if (typeof val !== "string") {
-				return false;
+			if (not_numeric_type) {
+				ret.push(false);
+			} else  if (typeof val === "undefined") {
+				ret.push(false);
+			} else if (typeof val !== "string") {
+				ret.push(false);
+			} else if (val.match(CSL.QUOTED_REGEXP_START) && val.match(CSL.QUOTED_REGEXP_END)) {
+				ret.push(false);
+			} else if (val.match(CSL.NUMBER_REGEXP)) {
+				ret.push(true);
+			} else {
+				ret.push(false);
 			}
-			if (val.match(CSL.QUOTED_REGEXP_START) && val.match(CSL.QUOTED_REGEXP_END)) {
-				return false;
-			}
-			if (val.match(CSL.NUMBER_REGEXP)) {
-				return true;
-			}
-			return false;
-		};
-		this.tests.push(func);
-	}
+		}
+		return ret;
+	};
+	this.tests.push(func);
 };
 CSL.Attributes["@names-min"] = function (state, arg) {
 	this.strings["et-al-min"] = parseInt(arg,  10);
