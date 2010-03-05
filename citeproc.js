@@ -4533,41 +4533,39 @@ CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
 	}
 	return myxml;
 };
-if (!CSL) {
-}
-CSL.Stack = function(val,literal){
-	this.mystack = new Array();
-	if (literal || val){
+CSL.Stack = function (val, literal) {
+	this.mystack = [];
+	if (literal || val) {
 		this.mystack.push(val);
-	};
+	}
 };
-CSL.Stack.prototype.push = function(val,literal){
-	if (literal || val){
+CSL.Stack.prototype.push = function (val, literal) {
+	if (literal || val) {
 		this.mystack.push(val);
 	} else {
 		this.mystack.push("");
 	}
 };
-CSL.Stack.prototype.clear = function(){
-	this.mystack = new Array();
+CSL.Stack.prototype.clear = function () {
+	this.mystack = [];
 };
-CSL.Stack.prototype.replace = function(val,literal){
-	if (this.mystack.length == 0){
-		throw "Internal CSL processor error: attempt to replace nonexistent stack item with "+val;
+CSL.Stack.prototype.replace = function (val, literal) {
+	if (this.mystack.length === 0) {
+		throw "Internal CSL processor error: attempt to replace nonexistent stack item with " + val;
 	}
-	if (literal || val){
-		this.mystack[(this.mystack.length-1)] = val;
+	if (literal || val) {
+		this.mystack[(this.mystack.length - 1)] = val;
 	} else {
-		this.mystack[(this.mystack.length-1)] = "";
+		this.mystack[(this.mystack.length - 1)] = "";
 	}
 };
-CSL.Stack.prototype.pop = function(){
+CSL.Stack.prototype.pop = function () {
 	return this.mystack.pop();
 };
-CSL.Stack.prototype.value = function(){
+CSL.Stack.prototype.value = function () {
 	return this.mystack.slice(-1)[0];
 };
-CSL.Stack.prototype.length = function(){
+CSL.Stack.prototype.length = function () {
 	return this.mystack.length;
 };
 CSL.Abbrev = function(){

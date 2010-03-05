@@ -349,6 +349,7 @@ if (!CSL.Node) {
 if (!CSL.Attributes) {
 	load("./src/attributes.js");
 }
+// jslint OK
 if (!CSL.Stack) {
 	load("./src/stack.js");
 }

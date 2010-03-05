@@ -33,11 +33,6 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-if (!CSL) {
-   load("./src/csl.js");
-}
-
-
 /**
  * String stack object.
  * <p>Numerous string stacks are used to track nested
@@ -46,19 +41,19 @@ if (!CSL) {
  * them.</p>
  * @class
  */
-CSL.Stack = function(val,literal){
-	this.mystack = new Array();
-	if (literal || val){
+CSL.Stack = function (val, literal) {
+	this.mystack = [];
+	if (literal || val) {
 		this.mystack.push(val);
-	};
+	}
 };
 
 /**
  * Push a value onto the stack.
  * <p>This just does what it says.</p>
  */
-CSL.Stack.prototype.push = function(val,literal){
-	if (literal || val){
+CSL.Stack.prototype.push = function (val, literal) {
+	if (literal || val) {
 		this.mystack.push(val);
 	} else {
 		this.mystack.push("");
@@ -68,8 +63,8 @@ CSL.Stack.prototype.push = function(val,literal){
 /**
  * Clear the stack
  */
-CSL.Stack.prototype.clear = function(){
-	this.mystack = new Array();
+CSL.Stack.prototype.clear = function () {
+	this.mystack = [];
 };
 
 /**
@@ -77,17 +72,17 @@ CSL.Stack.prototype.clear = function(){
  * <p>This removes some ugly syntax from the
  * main code.</p>
  */
-CSL.Stack.prototype.replace = function(val,literal){
+CSL.Stack.prototype.replace = function (val, literal) {
 	//
 	// safety fix after a bug was chased down.  Rhino
 	// JS will process a negative index without error (!).
-	if (this.mystack.length == 0){
-		throw "Internal CSL processor error: attempt to replace nonexistent stack item with "+val;
+	if (this.mystack.length === 0) {
+		throw "Internal CSL processor error: attempt to replace nonexistent stack item with " + val;
 	}
-	if (literal || val){
-		this.mystack[(this.mystack.length-1)] = val;
+	if (literal || val) {
+		this.mystack[(this.mystack.length - 1)] = val;
 	} else {
-		this.mystack[(this.mystack.length-1)] = "";
+		this.mystack[(this.mystack.length - 1)] = "";
 	}
 };
 
@@ -96,7 +91,7 @@ CSL.Stack.prototype.replace = function(val,literal){
  * Remove the top value from the stack.
  * <p>Just does what it says.</p>
  */
-CSL.Stack.prototype.pop = function(){
+CSL.Stack.prototype.pop = function () {
 	return this.mystack.pop();
 };
 
@@ -106,7 +101,7 @@ CSL.Stack.prototype.pop = function(){
  * <p>Removes a little hideous complication from
  * the main code.</p>
  */
-CSL.Stack.prototype.value = function(){
+CSL.Stack.prototype.value = function () {
 	return this.mystack.slice(-1)[0];
 };
 
@@ -116,6 +111,6 @@ CSL.Stack.prototype.value = function(){
  * <p>Used to identify if there is content to
  * be handled on the stack</p>
  */
-CSL.Stack.prototype.length = function(){
+CSL.Stack.prototype.length = function () {
 	return this.mystack.length;
 };
