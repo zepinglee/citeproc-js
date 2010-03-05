@@ -344,10 +344,8 @@ if (!CSL.Node) {
     load("./src/node_substitute.js");
     load("./src/node_text.js");
 }
-
-if (!CSL.Node.names) {
-	load("./src/libnames.js");
-}
+// jslint OK (it doesn't like us making functions within a loop,
+// but there's a good reason for doing so in this module)
 if (!CSL.Attributes) {
 	load("./src/attributes.js");
 }
