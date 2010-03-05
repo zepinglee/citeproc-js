@@ -378,10 +378,11 @@ if (!CSL.Blob) {
 if (!CSL.NumericBlob) {
 	load("./src/obj_number.js");
 }
-
+// jslint OK
 if (!CSL.Util) {
 	load("./src/util.js");
 }
+
 if (!CSL.Util.fixDateNode) {
 	load("./src/util_datenode.js");
 }
