@@ -111,6 +111,8 @@ var CSL = {
 	DATE_PARTS: ["year","month","day"],
 	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 
+	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix"],
+
 	ET_AL_NAMES: [
 		"et-al-min",
 		"et-al-use-first",
