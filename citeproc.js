@@ -5451,17 +5451,16 @@ CSL.Util.Dates.day["numeric-leading-zeros"] = function (state, num) {
 CSL.Util.Dates.day.ordinal = function (state, num) {
 	return state.fun.ordinalizer(num);
 };
-if (!CSL) {
-}
-CSL.Util.Sort = new function(){};
-CSL.Util.Sort.strip_prepositions = function(str){
-	if ("string" == typeof str){
-		var m = str.toLocaleLowerCase();
+CSL.Util.Sort = {};
+CSL.Util.Sort.strip_prepositions = function (str) {
+	var m;
+	if ("string" === typeof str) {
+		m = str.toLocaleLowerCase();
 		m = str.match(/^((a|an|the)\s+)/);
 	}
-	if (m){
+	if (m) {
 		str = str.substr(m[1].length);
-	};
+	}
 	return str;
 };
 CSL.Util.substituteStart = function(state,target){

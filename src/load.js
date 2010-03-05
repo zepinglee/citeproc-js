@@ -402,7 +402,7 @@ if (!CSL.Util.Institutions) {
 if (!CSL.Util.Dates) {
 	load("./src/util_dates.js");
 }
-
+// jslint fixes for util_sort.js
 if (!CSL.Util.Sort) {
 	load("./src/util_sort.js");
 }
