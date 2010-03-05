@@ -370,7 +370,7 @@ if (!CSL.Token) {
 if (!CSL.AmbigConfig) {
 	load("./src/obj_ambigconfig.js");
 }
-
+// jslint OK
 if (!CSL.Blob) {
 	load("./src/obj_blob.js");
 }
