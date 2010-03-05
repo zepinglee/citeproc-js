@@ -5086,32 +5086,35 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	}
 	return this.sys.xml.insertChildNodeAfter(parent, node, pos, datexml);
 };
-CSL.Util.Institutions = new function(){};
-CSL.Util.Institutions.outputInstitutions = function(state,display_names){
+CSL.Util.Institutions = {};
+CSL.Util.Institutions.outputInstitutions = function (state, display_names) {
+	var len, pos, name, institution, value, token_long, token_short, parts;
 	state.output.openLevel("institution");
-	for each (var name in display_names){
-		var institution = state.output.getToken("institution");
-		var value = name.literal;
-		if (state.abbrev.institution[value]){
-			var token_long = state.output.mergeTokenStrings("institution-long","institution-if-short");
+	len = display_names.length;
+	for (pos = 0; pos < len; pos += 1) {
+		name = display_names[pos];
+		institution = state.output.getToken("institution");
+		value = name.literal;
+		if (state.abbrev.institution[value]) {
+			token_long = state.output.mergeTokenStrings("institution-long", "institution-if-short");
 		} else {
-			var token_long = state.output.getToken("institution-long");
+			token_long = state.output.getToken("institution-long");
 		}
-		var token_short = state.output.getToken("institution-short");
-		var parts = institution.strings["institution-parts"];
-		if ("short" == parts){
-			state.abbrev.output(state,value,token_short,token_long,true);
-		} else if ("short-long" == parts) {
-			state.abbrev.output(state,value,token_short);
-			state.output.append(value,token_long);
-		} else if ("long-short" == parts){
-			state.output.append(value,token_long);
-			state.abbrev.output(state,value,token_short);
+		token_short = state.output.getToken("institution-short");
+		parts = institution.strings["institution-parts"];
+		if ("short" === parts) {
+			state.abbrev.output(state, value, token_short, token_long, true);
+		} else if ("short-long" === parts) {
+			state.abbrev.output(state, value, token_short);
+			state.output.append(value, token_long);
+		} else if ("long-short" === parts) {
+			state.output.append(value, token_long);
+			state.abbrev.output(state, value, token_short);
 		} else {
-			state.output.append(value,token_long);
-		};
-	};
-	state.output.closeLevel(); // institution
+			state.output.append(value, token_long);
+		}
+	}
+	state.output.closeLevel();
 };
 CSL.Util.Names = {};
 CSL.Util.Names.outputNames = function (state, display_names) {
@@ -5370,85 +5373,84 @@ CSL.Util.Names.rescueNameElements = function (names) {
 	}
 	return names;
 };
-if (!CSL) {
-}
-CSL.Util.Dates = new function(){};
-CSL.Util.Dates.year = new function(){};
-CSL.Util.Dates.year["long"] = function(state,num){
-	if (!num){
-		if ("boolean" == typeof num){
+CSL.Util.Dates = {};
+CSL.Util.Dates.year = {};
+CSL.Util.Dates.year["long"] = function (state, num) {
+	if (!num) {
+		if ("boolean" === typeof num) {
 			num = "";
 		} else {
 			num = 0;
 		}
 	}
 	return num.toString();
-}
-CSL.Util.Dates.year["short"] = function(state,num){
+};
+CSL.Util.Dates.year["short"] = function (state, num) {
 	num = num.toString();
-	if (num && num.length == 4){
+	if (num && num.length === 4) {
 		return num.substr(2);
 	}
-}
-CSL.Util.Dates.year["numeric"] = function(state,num){
-	num = ""+num;
-	var m = num.match(/^(.*?)([0-9]*)$/);
-	var pre = m[1];
+};
+CSL.Util.Dates.year.numeric = function (state, num) {
+	var m, pre;
+	num = "" + num;
+	m = num.match(/^(.*?)([0-9]*)$/);
+	pre = m[1];
 	num = m[2];
-	while (num.length < 4){
-		num = "0"+num;
+	while (num.length < 4) {
+		num = "0" + num;
 	}
-	return (pre+num);
-}
-CSL.Util.Dates["month"] = new function(){};
-CSL.Util.Dates.month["numeric"] = function(state,num){
+	return (pre + num);
+};
+CSL.Util.Dates.month = {};
+CSL.Util.Dates.month.numeric = function (state, num) {
 	var ret = num.toString();
 	return ret;
-}
-CSL.Util.Dates.month["numeric-leading-zeros"] = function(state,num){
-	if (!num){
+};
+CSL.Util.Dates.month["numeric-leading-zeros"] = function (state, num) {
+	if (!num) {
 		num = 0;
 	}
 	num = num.toString();
-	while (num.length < 2){
-		num = "0"+num;
+	while (num.length < 2) {
+		num = "0" + num;
 	}
 	return num.toString();
-}
-CSL.Util.Dates.month["long"] = function(state,num){
+};
+CSL.Util.Dates.month["long"] = function (state, num) {
 	num = num.toString();
-	while (num.length < 2){
-		num = "0"+num;
+	while (num.length < 2) {
+		num = "0" + num;
 	}
-	num = "month-"+num;
-	return state.getTerm(num,"long",0);
-}
-CSL.Util.Dates.month["short"] = function(state,num){
+	num = "month-" + num;
+	return state.getTerm(num, "long", 0);
+};
+CSL.Util.Dates.month["short"] = function (state, num) {
 	num = num.toString();
-	while (num.length < 2){
-		num = "0"+num;
+	while (num.length < 2) {
+		num = "0" + num;
 	}
-	num = "month-"+num;
-	return state.getTerm(num,"short",0);
-}
-CSL.Util.Dates["day"] = new function(){};
-CSL.Util.Dates.day["numeric"] = function(state,num){
+	num = "month-" + num;
+	return state.getTerm(num, "short", 0);
+};
+CSL.Util.Dates.day = {};
+CSL.Util.Dates.day.numeric = function (state, num) {
 	return num.toString();
-}
-CSL.Util.Dates.day["long"] = CSL.Util.Dates.day["numeric"];
-CSL.Util.Dates.day["numeric-leading-zeros"] = function(state,num){
-	if (!num){
+};
+CSL.Util.Dates.day["long"] = CSL.Util.Dates.day.numeric;
+CSL.Util.Dates.day["numeric-leading-zeros"] = function (state, num) {
+	if (!num) {
 		num = 0;
 	}
 	num = num.toString();
-	while (num.length < 2){
-		num = "0"+num;
+	while (num.length < 2) {
+		num = "0" + num;
 	}
 	return num.toString();
-}
-CSL.Util.Dates.day["ordinal"] = function(state,num){
+};
+CSL.Util.Dates.day.ordinal = function (state, num) {
 	return state.fun.ordinalizer(num);
-}
+};
 if (!CSL) {
 }
 CSL.Util.Sort = new function(){};

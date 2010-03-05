@@ -396,10 +396,13 @@ if (!CSL.Util.Names) {
 if (!CSL.Util.Institutions) {
 	load("./src/util_institutions.js");
 }
-
+// jslint OK (jslint wants "long" and "short" properties set in dot
+// notation, but these are reserved words in JS, and raise an error
+// in rhino.  Setting them in brace notation avoids the processing error.)
 if (!CSL.Util.Dates) {
 	load("./src/util_dates.js");
 }
+
 if (!CSL.Util.Sort) {
 	load("./src/util_sort.js");
 }
