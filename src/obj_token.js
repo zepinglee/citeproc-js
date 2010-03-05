@@ -33,10 +33,6 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-if (!CSL) {
-   load("./src/csl.js");
-}
-
 /**
  * Style token.
  * <p>This class provides the tokens that define
@@ -50,7 +46,7 @@ if (!CSL) {
  * marks the start of a node, the end of a node, or is a singleton.
  * @class
  */
-CSL.Token = function(name,tokentype){
+CSL.Token = function (name, tokentype) {
 	/**
 	 * Name of the element.
 	 * <p>This corresponds to the element name of the
@@ -60,7 +56,7 @@ CSL.Token = function(name,tokentype){
 	/**
 	 * Strings and other static content specific to the element.
 	 */
-	this.strings = new Object();
+	this.strings = {};
 	this.strings.delimiter = "";
 	this.strings.prefix = "";
 	this.strings.suffix = "";
@@ -83,7 +79,7 @@ CSL.Token = function(name,tokentype){
 	 * <p>Functions implementing the styling behaviour of the element
 	 * are pushed into this array in the {@link CSL.Core.Build} phase.
 	 */
-	this.execs = new Array();
+	this.execs = [];
 	/**
 	 * Token type.
 	 * <p>This is a flag constant indicating whether the token represents
@@ -109,7 +105,7 @@ CSL.Token = function(name,tokentype){
 	 * are registered here during {@link CSL.Core.Build}.
 	 * </p>
 	 */
-	this.tests = new Array();
+	this.tests = [];
 	/**
 	 * Jump point on success.
 	 * <p>This holds the list jump point to be used when the

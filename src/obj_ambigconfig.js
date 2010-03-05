@@ -33,19 +33,15 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-if (!CSL) {
-   load("./src/csl.js");
-}
-
 /**
  * Ambiguous Cite Configuration Object
  * @class
  */
-CSL.AmbigConfig = function(){
-	this.maxvals = new Array();
+CSL.AmbigConfig = function () {
+	this.maxvals = [];
 	this.minval = 1;
-	this.names = new Array();
-	this.givens = new Array();
+	this.names = [];
+	this.givens = [];
 	this.year_suffix = 0;
 	this.disambiguate = 0;
 };

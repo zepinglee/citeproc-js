@@ -362,12 +362,15 @@ if (!CSL.Parallel) {
 if (!CSL.Abbrev) {
 	load("./src/util_abbrev.js");
 }
+// jslint OK
 if (!CSL.Token) {
 	load("./src/obj_token.js");
 }
+// jslint OK
 if (!CSL.AmbigConfig) {
 	load("./src/obj_ambigconfig.js");
 }
+
 if (!CSL.Blob) {
 	load("./src/obj_blob.js");
 }

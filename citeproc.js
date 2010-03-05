@@ -4815,31 +4815,27 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 		}
 	}
 };
-if (!CSL) {
-}
-CSL.Token = function(name,tokentype){
+CSL.Token = function (name, tokentype) {
 	this.name = name;
-	this.strings = new Object();
+	this.strings = {};
 	this.strings.delimiter = "";
 	this.strings.prefix = "";
 	this.strings.suffix = "";
 	this.decorations = false;
 	this.variables = [];
-	this.execs = new Array();
+	this.execs = [];
 	this.tokentype = tokentype;
 	this.evaluator = false;
-	this.tests = new Array();
+	this.tests = [];
 	this.succeed = false;
 	this.fail = false;
 	this.next = false;
 };
-if (!CSL) {
-}
-CSL.AmbigConfig = function(){
-	this.maxvals = new Array();
+CSL.AmbigConfig = function () {
+	this.maxvals = [];
 	this.minval = 1;
-	this.names = new Array();
-	this.givens = new Array();
+	this.names = [];
+	this.givens = [];
 	this.year_suffix = 0;
 	this.disambiguate = 0;
 };
