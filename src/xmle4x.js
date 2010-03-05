@@ -187,3 +187,12 @@ CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
 	}
 	return myxml;
 };
+
+CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
+	var myxml;
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	myxml = XML(datexml.toXMLString());
+	parent.insertChildAfter(node,myxml);
+	delete parent.*[pos];
+	return parent;
+};

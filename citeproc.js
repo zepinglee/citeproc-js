@@ -4537,6 +4537,14 @@ CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
 	}
 	return myxml;
 };
+CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
+	var myxml;
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	myxml = XML(datexml.toXMLString());
+	parent.insertChildAfter(node,myxml);
+	delete parent.*[pos];
+	return parent;
+};
 CSL.Stack = function (val, literal) {
 	this.mystack = [];
 	if (literal || val) {
@@ -5033,44 +5041,49 @@ CSL.Util.Match = function () {
 		return ret;
 	};
 };
-CSL.Util.fixDateNode = function(parent,pos,node) {
-	var form = this.sys.xml.getAttributeValue( node, "form");
-	if (!form){
+CSL.Util.fixDateNode = function (parent, pos, node) {
+	var form, variable, datexml, subnode, partname, attrname, attrval, prefix, suffix, children, key, cchildren, attr, kkey;
+	form = this.sys.xml.getAttributeValue(node, "form");
+	if (!form) {
 		return parent;
 	}
-	var variable = this.sys.xml.getAttributeValue( node, "variable");
-	var prefix = this.sys.xml.getAttributeValue( node, "prefix");
-	var suffix = this.sys.xml.getAttributeValue( node, "suffix");
-	var datexml = this.sys.xml.nodeCopy( this.state.getDate( form ));
-	this.sys.xml.setAttribute( datexml, 'variable', variable );
-	if (prefix){
-		this.sys.xml.setAttribute( datexml, "prefix", prefix);
+	variable = this.sys.xml.getAttributeValue(node, "variable");
+	prefix = this.sys.xml.getAttributeValue(node, "prefix");
+	suffix = this.sys.xml.getAttributeValue(node, "suffix");
+	datexml = this.sys.xml.nodeCopy(this.state.getDate(form));
+	this.sys.xml.setAttribute(datexml, 'variable', variable);
+	if (prefix) {
+		this.sys.xml.setAttribute(datexml, "prefix", prefix);
 	}
-	if (suffix){
-		this.sys.xml.setAttribute( datexml, "suffix", suffix);
+	if (suffix) {
+		this.sys.xml.setAttribute(datexml, "suffix", suffix);
 	}
-	for each (var subnode in this.sys.xml.children(node)){
-		if ("date-part" == this.sys.xml.nodename(subnode)){
-			var partname = this.sys.xml.getAttributeValue(subnode,"name");
-			for each (var attr in this.sys.xml.attributes(subnode)){
-				var attrname = this.sys.xml.getAttributeName(attr);
-				var attrval = this.sys.xml.getAttributeValue(attr);
-				this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml,"date-part",partname,attrname,attrval);
+	children = this.sys.xml.children(node);
+	for (key in children) {
+		if ("xml" === typeof children[key]) {
+			subnode = children[key];
+			if ("date-part" === this.sys.xml.nodename(subnode)) {
+				partname = this.sys.xml.getAttributeValue(subnode, "name");
+				cchildren = this.sys.xml.attributes(subnode);
+				for (kkey in cchildren) {
+					if ("xml" === typeof cchildren[kkey]) {
+						attr = cchildren[kkey];
+						attrname = this.sys.xml.getAttributeName(attr);
+						attrval = this.sys.xml.getAttributeValue(attr);
+						this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attrname, attrval);
+					}
+				}
 			}
 		}
 	}
-	this.sys.xml.deleteAttribute(datexml,'form');
-	if ("year" == this.sys.xml.getAttributeValue(node,"date-parts")){
-		this.sys.xml.deleteNodeByNameAttribute(datexml,'month');
-		this.sys.xml.deleteNodeByNameAttribute(datexml,'day');
-	} else if ("year-month" == this.sys.xml.getAttributeValue(node,"date-parts")){
-		this.sys.xml.deleteNodeByNameAttribute(datexml,'day');
+	this.sys.xml.deleteAttribute(datexml, 'form');
+	if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {
+		this.sys.xml.deleteNodeByNameAttribute(datexml, 'month');
+		this.sys.xml.deleteNodeByNameAttribute(datexml, 'day');
+	} else if ("year-month" === this.sys.xml.getAttributeValue(node, "date-parts")) {
+		this.sys.xml.deleteNodeByNameAttribute(datexml, 'day');
 	}
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var myxml = XML(datexml.toXMLString());
-	parent.insertChildAfter(node,myxml);
-	delete parent.*[pos];
-	return parent;
+	return this.sys.xml.insertChildNodeAfter(parent, node, pos, datexml);
 };
 CSL.Util.Institutions = new function(){};
 CSL.Util.Institutions.outputInstitutions = function(state,display_names){
