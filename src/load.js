@@ -112,7 +112,7 @@ var CSL = {
 	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 
 	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix"],
-
+	DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
 	ET_AL_NAMES: [
 		"et-al-min",
 		"et-al-use-first",
@@ -323,6 +323,7 @@ if (!CSL.updateItems) {
 	load("./src/cmd_update.js");
 }
 if (!CSL.Node) {
+	// jslint OK
 	load("./src/node_bibliography.js");
     load("./src/node_choose.js");
     load("./src/node_citation.js");
@@ -342,6 +343,7 @@ if (!CSL.Node) {
     load("./src/node_macro.js");
     load("./src/node_name.js");
     load("./src/node_namepart.js");
+	// jslint OK
     load("./src/node_names.js");
     load("./src/node_number.js");
     load("./src/node_sort.js");
