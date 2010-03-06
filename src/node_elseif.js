@@ -61,6 +61,22 @@ CSL.Node["else-if"] = {
 				};
 				this.tests.push(func);
 			}
+			if (this.strings["near-note-distance-check"]) {
+				func = function (state, Item, item) {
+					if (state.tmp.force_subsequent) {
+						return true;
+					} else if (!item || !item.note_distance) {
+						return false;
+					} else {
+						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+				};
+				this.tests.push(func);
+			}
 			if (! this.evaluator) {
 				//
 				// cut and paste of "any"

@@ -34,79 +34,69 @@
  */
 
 CSL.Node["if"] = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			//for each (var variable in this.variables){
-			//	CSL.debug("outside function: "+variable);
-			//	var func = function(state,Item){
-			//		CSL.debug("inside function: "+variable);
-			//		if (Item[variable]){
-			//			CSL.debug("found: "+variable);
-			//			return true;
-			//		}
-			//		return false;
-			//	};
-			//	this["tests"].push(func);
-			//};
-			if ("number" == typeof this.strings.position){
-				var tryposition = this.strings.position;
-				var func = function(state,Item,item){
-					if (item && "undefined" == typeof item.position){
+	build: function (state, target) {
+		var tryposition, func;
+		if (this.tokentype === CSL.START) {
+			if ("number" === typeof this.strings.position) {
+				tryposition = this.strings.position;
+				func = function (state, Item, item) {
+					if (item && "undefined" === typeof item.position) {
 						item.position = 0;
 					}
-					if (state.tmp.force_subsequent && tryposition < 2){
+					if (state.tmp.force_subsequent && tryposition < 2) {
 						return true;
-					} else if (item && typeof item.position == "number"){
-						if (item.position == 0 && tryposition == 0){
+					} else if (item && typeof item.position === "number") {
+						if (item.position === 0 && tryposition === 0) {
 							return true;
-						} else if (tryposition > 0 && item.position >= tryposition){
+						} else if (tryposition > 0 && item.position >= tryposition) {
 							return true;
-						};
-					};
+						}
+					}
 					return false;
 				};
 				this.tests.push(func);
 			}
-			if (this.strings["near-note-distance-check"]){
-				var func = function (state,Item,item){
-					if (state.tmp.force_subsequent){
+			if (this.strings["near-note-distance-check"]) {
+				func = function (state, Item, item) {
+					if (state.tmp.force_subsequent) {
 						return true;
-					} else if (!item || !item["note_distance"]){
+					} else if (!item || !item.note_distance) {
 						return false;
 					} else {
-						if (item && item["note_distance"] > state.citation.opt["near-note-distance"]){
+						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
 							return false;
 						} else {
 							return true;
-						};
-					};
+						}
+					}
 				};
 				this.tests.push(func);
-			};
-			if (! this.evaluator){
+			}
+			if (!this.evaluator) {
 				//
 				// cut and paste of "any"
 				this.evaluator = state.fun.match.any;
-			};
+			}
 		}
-		if (this.tokentype == CSL.END){
-			var closingjump = function(state,Item){
+		if (this.tokentype === CSL.END) {
+			// closingjump
+			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
-			this["execs"].push(closingjump);
-		};
+			this.execs.push(func);
+		}
 		target.push(this);
 	},
-	configure: function (state,pos){
-		if (this.tokentype == CSL.START){
+	configure: function (state, pos) {
+		if (this.tokentype === CSL.START) {
 			// jump index on failure
-			this["fail"] = state.configure["fail"].slice(-1)[0];
-			this["succeed"] = this["next"];
+			this.fail = state.configure.fail.slice(-1)[0];
+			this.succeed = this.next;
 		} else {
 			// jump index on success
-			this["succeed"] = state.configure["succeed"].slice(-1)[0];
-			this["fail"] = this["next"];
+			this.succeed = state.configure.succeed.slice(-1)[0];
+			this.fail = this.next;
 		}
 	}
 };

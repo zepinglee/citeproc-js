@@ -340,8 +340,9 @@ if (!CSL.Node) {
     load("./src/node_else.js");
 	// jslint OK
     load("./src/node_etal.js");
-	
+	// jslint OK
     load("./src/node_group.js");
+	
     load("./src/node_if.js");
     load("./src/node_info.js");
     load("./src/node_institution.js");
