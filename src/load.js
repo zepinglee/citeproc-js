@@ -430,10 +430,11 @@ if (!CSL.Output.Formatters) {
 if (!CSL.Output.Formats) {
 	load("./src/formats.js");
 }
-
+// jslint OK
 if (!CSL.Registry) {
 	load("./src/registry.js");
 }
+
 if (!CSL.Registry.NameReg) {
 	load("./src/disambig_names.js");
 }
