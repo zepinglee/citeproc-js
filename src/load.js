@@ -348,6 +348,7 @@ if (!CSL.Node) {
     load("./src/node_number.js");
     load("./src/node_sort.js");
     load("./src/node_substitute.js");
+	// jslint OK
     load("./src/node_text.js");
 }
 // jslint OK

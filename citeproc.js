@@ -3711,239 +3711,233 @@ CSL.Node.substitute = {
 	}
 };
 CSL.Node.text = {
-	build: function (state,target){
-		CSL.Util.substituteStart.call(this,state,target);
-		if (this.postponed_macro){
-			CSL.expandMacro.call(state,this);
+	build: function (state, target) {
+		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, primary, secondary, primary_tok, secondary_tok;
+		CSL.Util.substituteStart.call(this, state, target);
+		if (this.postponed_macro) {
+			CSL.expandMacro.call(state, this);
 		} else {
-			var variable = this.variables[0];
-			if (variable){
-				var func = function(state,Item){
+			variable = this.variables[0];
+			if (variable) {
+				func = function (state, Item) {
 					state.parallel.StartVariable(this.variables[0]);
 					state.parallel.AppendToVariable(Item[this.variables[0]]);
 				};
-				this["execs"].push(func);
-			};
-			var form = "long";
-			var plural = 0;
-			if (this.strings.form){
+				this.execs.push(func);
+			}
+			form = "long";
+			plural = 0;
+			if (this.strings.form) {
 				form = this.strings.form;
 			}
-			if (this.strings.plural){
+			if (this.strings.plural) {
 				plural = this.strings.plural;
 			}
-			if ("citation-number" == variable || "year-suffix" == variable || "citation-label" == variable){
-				if (variable == "citation-number"){
+			if ("citation-number" === variable || "year-suffix" === variable || "citation-label" === variable) {
+				if (variable === "citation-number") {
 					state.opt.update_mode = CSL.NUMERIC;
-					if ("citation-number" == state[state.tmp.area].opt["collapse"]){
+					if ("citation-number" === state[state.tmp.area].opt.collapse) {
 						this.range_prefix = "-";
 					}
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
-					var func = function(state,Item,item){
-						var id = Item["id"];
-						if (!state.tmp.force_subsequent){
-							if (item && item["author-only"]){
+					func = function (state, Item, item) {
+						id = Item.id;
+						if (!state.tmp.force_subsequent) {
+							if (item && item["author-only"]) {
 								state.tmp.element_trace.replace("do-not-suppress-me");
-								var term = CSL.Output.Formatters["capitalize-first"](state,state.getTerm("reference","long","singular"));
-								state.output.append(term+" ");
+								term = CSL.Output.Formatters["capitalize-first"](state, state.getTerm("reference", "long", "singular"));
+								state.output.append(term + " ");
 								state.tmp.last_element_trace = true;
-							};
-							if (item && item["suppress-author"]){
-								if (state.tmp.last_element_trace){
+							}
+							if (item && item["suppress-author"]) {
+								if (state.tmp.last_element_trace) {
 									state.tmp.element_trace.replace("suppress-me");
-								};
+								}
 								state.tmp.last_element_trace = false;
-							};
-							var num = state.registry.registry[id].seq;
-							var number = new CSL.NumericBlob(num,this);
-							state.output.append(number,"literal");
-						};
+							}
+							num = state.registry.registry[id].seq;
+							number = new CSL.NumericBlob(num, this);
+							state.output.append(number, "literal");
+						}
 					};
-					this["execs"].push(func);
-				} else if (variable == "year-suffix"){
+					this.execs.push(func);
+				} else if (variable === "year-suffix") {
 					state.opt.has_year_suffix = true;
-					if (state[state.tmp.area].opt.collapse == "year-suffix-ranged"){
+					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
 						this.range_prefix = "-";
 					}
-					if (state[state.tmp.area].opt["year-suffix-delimiter"]){
+					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
 						this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
 					}
-					var func = function(state,Item){
-						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
-							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
-							var number = new CSL.NumericBlob(num,this);
-							var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
+					func = function (state, Item) {
+						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
+							num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+							number = new CSL.NumericBlob(num, this);
+							formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
-							state.output.append(number,"literal");
-							var firstoutput = state.tmp.term_sibling.mystack.indexOf(true) == -1;
-							var specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
-							if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag){
+							state.output.append(number, "literal");
+							firstoutput = state.tmp.term_sibling.mystack.indexOf(true) === -1;
+							specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
+							if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag) {
 								state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
 							}
 						}
 					};
-					this["execs"].push(func);
-				} else if (variable == "citation-label"){
+					this.execs.push(func);
+				} else if (variable === "citation-label") {
 					state.opt.has_year_suffix = true;
-					var func = function(state,Item){
-						var label = Item["citation-label"];
-						if (!label){
-							var myname = state.getTerm("reference","short",0);
-							for each (var n in CSL.CREATORS){
-								if (Item[n]){
-									var names = Item[n];
-									if (names && names.length){
-										var name = names[0];
+					func = function (state, Item) {
+						label = Item["citation-label"];
+						if (!label) {
+							myname = state.getTerm("reference", "short", 0);
+							len = CSL.CREATORS.length;
+							for (pos = 0; pos < len; pos += 1) {
+								n = CSL.CREATORS[pos];
+								if (Item[n]) {
+									names = Item[n];
+									if (names && names.length) {
+										name = names[0];
 									}
-									if (name && name.family){
-										myname = name.family.replace(/\s+/,"");
-									} else if (name && name.literal){
+									if (name && name.family) {
+										myname = name.family.replace(/\s+/, "");
+									} else if (name && name.literal) {
 										myname = name.literal;
-										var m = myname.toLowerCase().match(/^(a|the|an)(.*)/,"");
-										if (m){
+										m = myname.toLowerCase().match(/^(a|the|an)(.*)/, "");
+										if (m) {
 											myname = m[2];
 										}
 									}
 								}
 							}
-							var year = "0000";
-							if (Item.issued){
-								var dp = Item.issued["date-parts"];
-								if (dp && dp[0] && dp[0][0]){
-									year = ""+dp[0][0];
+							year = "0000";
+							if (Item.issued) {
+								dp = Item.issued["date-parts"];
+								if (dp && dp[0] && dp[0][0]) {
+									year = "" + dp[0][0];
 								}
 							}
 							label = myname + year;
-						};
-						var suffix = "";
-						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
-							var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+						}
+						suffix = "";
+						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
+							num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
 							suffix = state.fun.suffixator.format(num);
-						};
+						}
 						label += suffix;
-						state.output.append(label,this);
+						state.output.append(label, this);
 					};
-					this["execs"].push(func);
-				};
+					this.execs.push(func);
+				}
 			} else {
-				if (state.build.term){
-					var term = state.build.term;
-					term = state.getTerm(term,form,plural);
-					if (this.strings["strip-periods"]){
-						term = term.replace(/\./g,"");
-					};
-					var printterm = function(state,Item){
-						if (!state.tmp.term_predecessor){
-							term = CSL.Output.Formatters["capitalize-first"](state,term);
+				if (state.build.term) {
+					term = state.build.term;
+					term = state.getTerm(term, form, plural);
+					if (this.strings["strip-periods"]) {
+						term = term.replace(/\./g, "");
+					}
+					func = function (state, Item) {
+						if (!state.tmp.term_predecessor) {
+							term = CSL.Output.Formatters["capitalize-first"](state, term);
 							state.tmp.term_predecessor = true;
-						};
-						state.output.append(term,this);
+						}
+						state.output.append(term, this);
 					};
-					this["execs"].push(printterm);
+					this.execs.push(func);
 					state.build.term = false;
 					state.build.form = false;
 					state.build.plural = false;
-				} else if (this.variables.length){
-					if (["first-reference-note-number","locator"].indexOf(this.variables[0]) > -1){
-						var func = function(state,Item,item){
-							if (item && item[this.variables[0]]){
-								state.output.append(item[this.variables[0]],this);
-							};
+				} else if (this.variables.length) {
+					if (["first-reference-note-number", "locator"].indexOf(this.variables[0]) > -1) {
+						func = function (state, Item, item) {
+							if (item && item[this.variables[0]]) {
+								state.output.append(item[this.variables[0]], this);
+							}
 						};
-					} else if (this.variables[0] == "container-title" && form == "short"){
-						var func = state.abbrev.getOutputFunc(this,this.variables[0],"journal","journalAbbreviation");
-					} else if (this.variables[0] == "collection-title" && form == "short"){
-						var func = state.abbrev.getOutputFunc(this,this.variables[0],"series");
-					} else if (this.variables[0] == "authority" && form == "short"){
-						var func = state.abbrev.getOutputFunc(this,this.variables[0],"authority");
-					} else if (this.variables[0] == "title"){
-						if (state.build.area.slice(-5) == "_sort"){
-							var func = function(state,Item){
+					} else if (this.variables[0] === "container-title" && form === "short") {
+						func = state.abbrev.getOutputFunc(this, this.variables[0], "journal", "journalAbbreviation");
+					} else if (this.variables[0] === "collection-title" && form === "short") {
+						func = state.abbrev.getOutputFunc(this, this.variables[0], "series");
+					} else if (this.variables[0] === "authority" && form === "short") {
+						func = state.abbrev.getOutputFunc(this, this.variables[0], "authority");
+					} else if (this.variables[0] === "title") {
+						if (state.build.area.slice(-5) === "_sort") {
+							func = function (state, Item) {
 								var value = Item[this.variables[0]];
-								if (value){
-									value = state.getTextSubField(value,"locale-sort",true);
-									state.output.append(value,this);
-								};
+								if (value) {
+									value = state.getTextSubField(value, "locale-sort", true);
+									state.output.append(value, this);
+								}
 							};
 						} else {
-							var func = function(state,Item){
-								var value = Item[this.variables[0]];
-								if (value){
-									var primary = state.getTextSubField(value,"locale-pri",true);
-									var secondary = state.getTextSubField(value,"locale-sec");
-									if (secondary){
-										var primary_tok = new CSL.Token("text",CSL.SINGLETON);
-										var secondary_tok = new CSL.Token("text",CSL.SINGLETON);
-										for (var i in this.strings){
-											secondary_tok.strings[i] = this.strings[i];
-											if (i == "suffix"){
-												secondary_tok.strings.suffix = "]"+secondary_tok.strings.suffix;
-												continue;
-											} else if (i == "prefix"){
-												secondary_tok.strings.prefix = " ["+secondary_tok.strings.prefix;
+							func = function (state, Item) {
+								value = Item[this.variables[0]];
+								if (value) {
+									primary = state.getTextSubField(value, "locale-pri", true);
+									secondary = state.getTextSubField(value, "locale-sec");
+									if (secondary) {
+										primary_tok = new CSL.Token("text", CSL.SINGLETON);
+										secondary_tok = new CSL.Token("text", CSL.SINGLETON);
+										for (var key in this.strings) {
+											if (this.strings.hasOwnProperty(key)) {
+												secondary_tok.strings[key] = this.strings[key];
+												if (key === "suffix") {
+													secondary_tok.strings.suffix = "]" + secondary_tok.strings.suffix;
+													continue;
+												} else if (key === "prefix") {
+													secondary_tok.strings.prefix = " [" + secondary_tok.strings.prefix;
+												}
+												primary_tok.strings[key] = this.strings[key];
 											}
-											primary_tok.strings[i] = this.strings[i];
 										}
-										state.output.append(primary,primary_tok);
-										state.output.append(secondary,secondary_tok);
+										state.output.append(primary, primary_tok);
+										state.output.append(secondary, secondary_tok);
 									} else {
-										state.output.append(primary,this);
+										state.output.append(primary, this);
 									}
-								};
+								}
 							};
+						}
+					} else if (this.variables[0] === "page-first") {
+						func = function (state, Item) {
+							value = state.getVariable(Item, "page", form);
+							value = value.replace(/-.*/, "");
+							state.output.append(value, this);
 						};
-					} else if (this.variables[0] == "page-first"){
-						var func = function(state,Item){
-							var value = state.getVariable(Item,"page",form);
-							value = value.replace(/-.*/,"");
-							state.output.append(value,this);
-						};
-					} else if (this.variables[0] == "page"){
-						var func = function(state,Item){
-							var value = state.getVariable(Item,"page",form);
+					} else if (this.variables[0] === "page") {
+						func = function (state, Item) {
+							value = state.getVariable(Item, "page", form);
 							value = state.fun.page_mangler(value);
-							state.output.append(value,this);
+							state.output.append(value, this);
 						};
-					} else if (["publisher","publisher-place"].indexOf( this.variables[0] > -1)){
-						var func = function(state,Item){
-							var value = state.getVariable(Item,this.variables[0]);
-							if (value){
-								value = state.getTextSubField(value,"default-locale",true);
-								state.output.append(value,this);
+					} else if (["publisher", "publisher-place"].indexOf(this.variables[0] > -1)) {
+						func = function (state, Item) {
+							value = state.getVariable(Item, this.variables[0]);
+							if (value) {
+								value = state.getTextSubField(value, "default-locale", true);
+								state.output.append(value, this);
 							}
 						};
 					} else {
-						var func = function(state,Item){
-							var value = state.getVariable(Item,this.variables[0],form);
-							state.output.append(value,this);
+						func = function (state, Item) {
+							var value = state.getVariable(Item, this.variables[0], form);
+							state.output.append(value, this);
 						};
+					}
+					this.execs.push(func);
+				} else if (this.strings.value) {
+					func = function (state, Item) {
+						state.output.append(this.strings.value, this);
 					};
-					this["execs"].push(func);
-				} else if (this.strings.value){
-					var func = function(state,Item){
-						state.output.append(this.strings.value,this);
-					};
-					this["execs"].push(func);
-				} else {
-					var weird_output_function = function(state,Item){
-						if (state.tmp.value.length){
-							CSL.debug("Weird output pattern.  Can this be revised?");
-							for each (var val in state.tmp.value){
-								state.output.append(val,this);
-							}
-							state.tmp.value = new Array();
-						}
-					};
-					this["execs"].push(weird_output_function);
+					this.execs.push(func);
 				}
 			}
-			var func = function(state,Item){
+			func = function (state, Item) {
 				state.parallel.CloseVariable();
 			};
-			this["execs"].push(func);
+			this.execs.push(func);
 			target.push(this);
-		};
-		CSL.Util.substituteEnd.call(this,state,target);
+		}
+		CSL.Util.substituteEnd.call(this, state, target);
 	}
 };
 CSL.Attributes = {};
