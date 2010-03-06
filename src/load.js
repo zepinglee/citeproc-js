@@ -270,7 +270,7 @@ var CSL = {
 
 //SNIP-START
 
-// skip jslint
+// skip jslint check on this file, it doesn't get E4X
 if (!CSL.System) {
 	load("./src/xmle4x.js");
 }
@@ -438,7 +438,7 @@ if (!CSL.Registry) {
 if (!CSL.Registry.NameReg) {
 	load("./src/disambig_names.js");
 }
-
+// jslint OK
 if (!CSL.Registry.CitationReg) {
 	load("./src/disambig_citations.js");
 }

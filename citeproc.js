@@ -7114,7 +7114,7 @@ CSL.getModes = function () {
 	}
 	return ret;
 };
-CSL.Registry.CitationReg = function(state){
-	this.citationById = new Object();
-	this.citationByIndex = new Array();
+CSL.Registry.CitationReg = function (state) {
+	this.citationById = {};
+	this.citationByIndex = [];
 };

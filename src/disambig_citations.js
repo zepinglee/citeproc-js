@@ -33,7 +33,7 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Registry.CitationReg = function(state){
-	this.citationById = new Object();
-	this.citationByIndex = new Array();
+CSL.Registry.CitationReg = function (state) {
+	this.citationById = {};
+	this.citationByIndex = [];
 };
