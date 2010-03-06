@@ -344,8 +344,9 @@ if (!CSL.Node) {
     load("./src/node_group.js");
 	// jslint OK
     load("./src/node_if.js");
-	
+	// jslint OK
     load("./src/node_info.js");
+	
     load("./src/node_institution.js");
     load("./src/node_institutionpart.js");
 	// jslint OK

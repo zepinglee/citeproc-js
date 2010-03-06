@@ -34,18 +34,18 @@
  */
 
 CSL.Node.institution = {
-	build: function (state,target){
-		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
-			var func = function(state,Item){
-				state.output.addToken("institution",false,this);
+	build: function (state, target) {
+		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
+			var func = function (state, Item) {
+				state.output.addToken("institution", false, this);
 			};
-			this["execs"].push(func);
-		};
+			this.execs.push(func);
+		}
 		target.push(this);
 	},
-	configure: function (state,pos){
-		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
+	configure: function (state, pos) {
+		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
 			state.build.has_institution = true;
-		};
+		}
 	}
 };
