@@ -6366,6 +6366,9 @@ CSL.Registry.prototype.dorefreshes = function () {
 		if (this.refreshes.hasOwnProperty(key)) {
 			regtoken = this.registry[key];
 			delete this.registry[key];
+			if (!regtoken) {
+				continue;
+			}
 			regtoken.disambig = undefined;
 			regtoken.sortkeys = undefined;
 			regtoken.ambig = undefined;
@@ -6536,171 +6539,171 @@ CSL.getSortKeys = function (Item, key_type) {
 	this.tmp.area = area;
 	return this[key_type].keys;
 };
-CSL.Registry.NameReg = function(state){
+CSL.Registry.NameReg = function (state) {
+	var pkey, ikey, skey, floor, ceiling, param, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key;
 	this.state = state;
-	this.namereg = new Object();
-	this.nameind = new Object();
-	var pkey;
-	var ikey;
-	var skey;
-	this.itemkeyreg = new Object();
-	var _strip_periods = function(str){
-		if (!str){
+	this.namereg = {};
+	this.nameind = {};
+	this.itemkeyreg = {};
+	strip_periods = function (str) {
+		if (!str) {
 			str = "";
 		}
-		return str.replace("."," ").replace(/\s+/," ");
+		return str.replace(".", " ").replace(/\s+/, " ");
 	};
-	var _set_keys = function(state,itemid,nameobj){
-		pkey = _strip_periods(nameobj["family"]);
-		skey = _strip_periods(nameobj["given"]);
-		ikey = CSL.Util.Names.initializeWith(state,skey,"");
-		if (state[state.tmp.area].opt["givenname-disambiguation-rule"] == "by-cite"){
+	set_keys = function (state, itemid, nameobj) {
+		pkey = strip_periods(nameobj.family);
+		skey = strip_periods(nameobj.given);
+		ikey = CSL.Util.Names.initializeWith(state, skey, "");
+		if (state[state.tmp.area].opt["givenname-disambiguation-rule"] === "by-cite") {
 			pkey = itemid + pkey;
-		};
+		}
 	};
-	var evalname = function(item_id,nameobj,namenum,request_base,form,initials){
-		var floor;
-		var ceiling;
-		_set_keys(this.state,item_id,nameobj);
-		if ("undefined" == typeof this.namereg[pkey] || "undefined" == typeof this.namereg[pkey].ikey[ikey]){
+	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
+		set_keys(this.state, item_id, nameobj);
+		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
 			return 2;
 		}
-		var param = 2;
-		var dagopt = state[state.tmp.area].opt["disambiguate-add-givenname"];
-		var gdropt = state[state.tmp.area].opt["givenname-disambiguation-rule"];
-		if (gdropt == "by-cite"){
+		param = 2;
+		dagopt = state[state.tmp.area].opt["disambiguate-add-givenname"];
+		gdropt = state[state.tmp.area].opt["givenname-disambiguation-rule"];
+		if (gdropt === "by-cite") {
 			gdropt = "all-names";
-		};
-		if ("short" == form){
+		}
+		if ("short" === form) {
 			param = 0;
-		} else if ("string" == typeof initials || state.tmp.force_subsequent){
+		} else if ("string" === typeof initials || state.tmp.force_subsequent) {
 			param = 1;
-		};
-		if (param < request_base){
+		}
+		if (param < request_base) {
 			param = request_base;
 		}
-		if (state.tmp.force_subsequent || !dagopt){
+		if (state.tmp.force_subsequent || !dagopt) {
 			return param;
-		};
-		if ("string" == typeof gdropt && gdropt.slice(0,12) == "primary-name" && namenum > 0){
+		}
+		if ("string" === typeof gdropt && gdropt.slice(0, 12) === "primary-name" && namenum > 0) {
 			return param;
-		};
-		if (!gdropt || gdropt == "all-names" || gdropt == "primary-name"){
-			if (this.namereg[pkey].count > 1){
+		}
+		if (!gdropt || gdropt === "all-names" || gdropt === "primary-name") {
+			if (this.namereg[pkey].count > 1) {
 				param = 1;
-			};
-			if (this.namereg[pkey].ikey && this.namereg[pkey].ikey[ikey].count > 1){
+			}
+			if (this.namereg[pkey].ikey && this.namereg[pkey].ikey[ikey].count > 1) {
 				param = 2;
 			}
-		} else if (gdropt == "all-names-with-initials" || gdropt == "primary-name-with-initials"){
-			if (this.namereg[pkey].count > 1){
+		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
+			if (this.namereg[pkey].count > 1) {
 				param = 1;
 			}
-		};
+		}
 		return param;
 	};
-	var delitems = function(ids){
-		if ("string" == typeof ids){
+	delitems = function (ids) {
+		var i, item, pos, len, posA, posB, id, fullkey;
+		if ("string" === typeof ids) {
 			ids = [ids];
-		};
-		var ret = {};
-		for (var item in ids){
-			if (!this.nameind[item]){
+		}
+		ret = {};
+		len = ids.length;
+		for (pos = 0; pos < len; pos += 1) {
+			id = ids[pos];
+			if (!this.nameind[id]) {
 				continue;
-			};
-			var key = this.nameind[item].split("::");
-			pkey = key[0];
-			ikey = key[1];
-			skey = key[2];
-			var pos = this.namereg[pkey].items.indexOf(item);
-			var items = this.namereg[pkey].items;
-			if (skey){
-				pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item);
-				if (pos > -1){
-					items = this.namereg[pkey].ikey[ikey].skey[skey].items.slice();
-					this.namereg[pkey].ikey[ikey].skey[skey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
-				};
-				if (this.namereg[pkey].ikey[ikey].skey[skey].items.length == 0){
-					delete this.namereg[pkey].ikey[ikey].skey[skey];
-					this.namereg[pkey].ikey[ikey].count += -1;
-					if (this.namereg[pkey].ikey[ikey].count < 2){
-						for (var i in this.namereg[pkey].ikey[ikey].items){
-							ret[i] = true;
-						};
-					};
-				};
-			};
-			if (ikey){
-				pos = this.namereg[pkey].ikey[ikey].items.indexOf(item);
-				if (pos > -1){
-					items = this.namereg[pkey].ikey[ikey].items.slice();
-					this.namereg[pkey].ikey[ikey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
-				};
-				if (this.namereg[pkey].ikey[ikey].items.length == 0){
-					delete this.namereg[pkey].ikey[ikey];
-					this.namereg[pkey].count += -1;
-					if (this.namereg[pkey].count < 2){
-						for (var i in this.namereg[pkey].items){
-							ret[i] = true;
-						};
-					};
-				};
-			};
-			if (pkey){
-				pos = this.namereg[pkey].items.indexOf(item);
-				if (pos > -1){
-					items = this.namereg[pkey].items.slice();
-					this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
-				};
-				if (this.namereg[pkey].items.length == 0){
-					delete this.namereg[pkey];
-				};
 			}
-			this.namereg[pkey].items = items.slice(0,pos).concat(items.slice([pos+1],items.length));
-			delete this.nameind[item];
-		};
+			for (fullkey in this.nameind[id]) {
+				key = fullkey.split("::");
+				pkey = key[0];
+				ikey = key[1];
+				skey = key[2];
+				posA = this.namereg[pkey].items.indexOf(posA);
+				items = this.namereg[pkey].items;
+				if (skey) {
+					posB = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(id);
+					if (posB > -1) {
+						items = this.namereg[pkey].ikey[ikey].skey[skey].items.slice();
+						this.namereg[pkey].ikey[ikey].skey[skey].items = items.slice(0, posB).concat(items.slice([(posB + 1)], items.length));
+					}
+					if (this.namereg[pkey].ikey[ikey].skey[skey].items.length === 0) {
+						delete this.namereg[pkey].ikey[ikey].skey[skey];
+						this.namereg[pkey].ikey[ikey].count += -1;
+						if (this.namereg[pkey].ikey[ikey].count < 2) {
+							for each (i in this.namereg[pkey].ikey[ikey].items) {
+								ret[i] = true;
+							}
+						}
+					}
+				}
+				if (ikey) {
+					posB = this.namereg[pkey].ikey[ikey].items.indexOf(id);
+					if (posB > -1) {
+						items = this.namereg[pkey].ikey[ikey].items.slice();
+						this.namereg[pkey].ikey[ikey].items = items.slice(0, posB).concat(items.slice([posB+1], items.length));
+					}
+					if (this.namereg[pkey].ikey[ikey].items.length === 0) {
+						delete this.namereg[pkey].ikey[ikey];
+						this.namereg[pkey].count += -1;
+						if (this.namereg[pkey].count < 2) {
+							for each (var i in this.namereg[pkey].items) {
+								ret[i] = true;
+							}
+						}
+					}
+				}
+				if (pkey) {
+					posB = this.namereg[pkey].items.indexOf(id);
+					if (posB > -1) {
+						items = this.namereg[pkey].items.slice();
+						this.namereg[pkey].items = items.slice(0, posB).concat(items.slice([posB+1], items.length));
+					}
+					if (this.namereg[pkey].items.length === 0) {
+						delete this.namereg[pkey];
+					}
+				}
+				delete this.nameind[id][fullkey];
+			}
+		}
 		return ret;
-	};
-	var addname = function(item_id,nameobj,pos){
-		_set_keys(this.state,item_id,nameobj);
-		if (pkey){
-			if ("undefined" == typeof this.namereg[pkey]){
-				this.namereg[pkey] = new Object();
+	}
+	addname = function (item_id, nameobj, pos) {
+		set_keys(this.state, item_id, nameobj);
+		if (pkey) {
+			if ("undefined" === typeof this.namereg[pkey]) {
+				this.namereg[pkey] = {};
 				this.namereg[pkey]["count"] = 0;
-				this.namereg[pkey]["ikey"] = new Object();
-				this.namereg[pkey]["items"] = new Array();
-			};
-			if (this.namereg[pkey].items.indexOf(item_id) == -1){
+				this.namereg[pkey]["ikey"] = {};
+				this.namereg[pkey]["items"] = [];
+			}
+			if (this.namereg[pkey].items.indexOf(item_id) === -1) {
 				this.namereg[pkey].items.push(item_id);
-			};
-		};
-		if (pkey && ikey){
-			if ("undefined" == typeof this.namereg[pkey].ikey[ikey]){
-				this.namereg[pkey].ikey[ikey] = new Object();
+			}
+		}
+		if (pkey && ikey) {
+			if ("undefined" === typeof this.namereg[pkey].ikey[ikey]) {
+				this.namereg[pkey].ikey[ikey] = {};
 				this.namereg[pkey].ikey[ikey]["count"] = 0;
-				this.namereg[pkey].ikey[ikey]["skey"] = new Object();
-				this.namereg[pkey].ikey[ikey]["items"] = new Array();
+				this.namereg[pkey].ikey[ikey]["skey"] = {};
+				this.namereg[pkey].ikey[ikey]["items"] = [];
 				this.namereg[pkey]["count"] += 1;
-			};
-			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) == -1){
+			}
+			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
 				this.namereg[pkey].ikey[ikey].items.push(item_id);
-			};
-		};
-		if (pkey && ikey && skey){
-			if ("undefined" == typeof this.namereg[pkey].ikey[ikey].skey[skey]){
-				this.namereg[pkey].ikey[ikey].skey[skey] = new Object();
-				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = new Array();
+			}
+		}
+		if (pkey && ikey && skey) {
+			if ("undefined" === typeof this.namereg[pkey].ikey[ikey].skey[skey]) {
+				this.namereg[pkey].ikey[ikey].skey[skey] = {};
+				this.namereg[pkey].ikey[ikey].skey[skey]["items"] = [];
 				this.namereg[pkey].ikey[ikey]["count"] += 1;
-			};
-			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) == -1){
+			}
+			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
 				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
-			};
-		};
-		if ("undefined" == typeof this.nameind[item_id]){
-			this.nameind[item_id] = new Object();
-		};
+			}
+		}
+		if ("undefined" === typeof this.nameind[item_id]) {
+			this.nameind[item_id] = {};
+		}
 		this.nameind[item_id][pkey+"::"+ikey+"::"+skey] = true;
-	};
+	}
 	this.addname = addname;
 	this.delitems = delitems;
 	this.eval = evalname;

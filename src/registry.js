@@ -364,6 +364,9 @@ CSL.Registry.prototype.dorefreshes = function () {
 		if (this.refreshes.hasOwnProperty(key)) {
 			regtoken = this.registry[key];
 			delete this.registry[key];
+			if (!regtoken) {
+				continue;
+			}
 			regtoken.disambig = undefined;
 			regtoken.sortkeys = undefined;
 			regtoken.ambig = undefined;

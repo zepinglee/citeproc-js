@@ -43,6 +43,10 @@ doh.register("std.integration", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("integration_DeleteName");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("integration_SimpleFirstReferenceNoteNumber");
         doh.assertEqual(test.result, test.run());
     }, 
