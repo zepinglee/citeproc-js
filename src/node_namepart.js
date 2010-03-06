@@ -34,11 +34,12 @@
  */
 
 CSL.Node["name-part"] = {
-	build: function(state,target){
-		var set_namepart_format = function(state,Item){
-			state.output.addToken(this.strings.name,false,this);
+	build: function (state, target) {
+		var func;
+		func = function (state, Item) {
+			state.output.addToken(this.strings.name, false, this);
 		};
-		this["execs"].push(set_namepart_format);
+		this.execs.push(func);
 		target.push(this);
 	}
 };
