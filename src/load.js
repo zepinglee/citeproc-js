@@ -352,8 +352,9 @@ if (!CSL.Node) {
     load("./src/node_institutionpart.js");
 	// jslint OK
     load("./src/node_key.js");
-	
+	// jslint OK
     load("./src/node_label.js");
+	// jslint OK
     load("./src/node_layout.js");
 	// jslint OK
     load("./src/node_macro.js");

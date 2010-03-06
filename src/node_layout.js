@@ -34,8 +34,9 @@
  */
 
 CSL.Node.layout = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
+	build: function (state, target) {
+		var func, prefix_token, suffix_token;
+		if (this.tokentype === CSL.START) {
 			state.build.layout_flag = true;
 			//
 			// save out decorations for flipflop processing
@@ -45,79 +46,88 @@ CSL.Node.layout = {
 			//
 			// done_vars is used to prevent the repeated
 			// rendering of variables
-			var initialize_done_vars = function(state,Item){
-				state.tmp.done_vars = new Array();
-				//CSL.debug("== init rendered_name ==");
+			//
+			// initalize done vars
+			func = function (state, Item) {
+				state.tmp.done_vars = [];
+				//CSL.debug(" === init rendered_name === ");
 				state.tmp.rendered_name = false;
 			};
-			this.execs.push(initialize_done_vars);
+			this.execs.push(func);
 
-			var set_opt_delimiter = function(state,Item){
+			// set opt delimiter
+			func = function (state, Item) {
 				// just in case
 				state.tmp.sort_key_flag = false;
 				state[state.tmp.area].opt.delimiter = "";
-				if (this.strings.delimiter){
+				if (this.strings.delimiter) {
 					state[state.tmp.area].opt.delimiter = this.strings.delimiter;
-				};
+				}
 			};
-			this["execs"].push(set_opt_delimiter);
+			this.execs.push(func);
 
-			var reset_nameset_counter = function(state,Item){
+			// reset nameset counter
+			func = function (state, Item) {
 				state.tmp.nameset_counter = 0;
 			};
-			this["execs"].push(reset_nameset_counter);
+			this.execs.push(func);
 
 			state[state.build.area].opt.layout_prefix = this.strings.prefix;
 			state[state.build.area].opt.layout_suffix = this.strings.suffix;
 			state[state.build.area].opt.layout_delimiter = this.strings.delimiter;
 			state[state.build.area].opt.layout_decorations = this.decorations;
 
-			var declare_thyself = function(state,Item){
+			// declare thyself
+			func = function (state, Item) {
 				state.tmp.term_predecessor = false;
 				state.output.openLevel("empty");
 			};
-			this["execs"].push(declare_thyself);
+			this.execs.push(func);
 			target.push(this);
-			if (state.build.area == "citation"){
-				var prefix_token = new CSL.Token("text",CSL.SINGLETON);
-				var func = function(state,Item,item){
-					if (item && item["prefix"]){
-						var sp = "";
-						if (item["prefix"].match(CSL.ROMANESQUE_REGEXP)){
-							var sp = " ";
+			if (state.build.area === "citation") {
+				prefix_token = new CSL.Token("text", CSL.SINGLETON);
+				func = function (state, Item, item) {
+					var sp;
+					if (item && item.prefix) {
+						sp = "";
+						if (item.prefix.match(CSL.ROMANESQUE_REGEXP)) {
+							sp = " ";
 						}
-						state.output.append((item["prefix"]+sp),this);
-					};
+						state.output.append((item.prefix + sp), this);
+					}
 				};
-				prefix_token["execs"].push(func);
+				prefix_token.execs.push(func);
 				target.push(prefix_token);
 			}
-		};
-		if (this.tokentype == CSL.END){
+		}
+		if (this.tokentype === CSL.END) {
 			state.build.layout_flag = false;
-			if (state.build.area == "citation"){
-				var suffix_token = new CSL.Token("text",CSL.SINGLETON);
-				var func = function(state,Item,item){
-					if (item && item["suffix"]){
-						var sp = "";
-						if (item["suffix"].match(CSL.ROMANESQUE_REGEXP)){
-							var sp = " ";
+			if (state.build.area === "citation") {
+				suffix_token = new CSL.Token("text", CSL.SINGLETON);
+				func = function (state, Item, item) {
+					var sp;
+					if (item && item.suffix) {
+						sp = "";
+						if (item.suffix.match(CSL.ROMANESQUE_REGEXP)) {
+							sp = " ";
 						}
-						state.output.append((sp+item["suffix"]),this);
-					};
+						state.output.append((sp + item.suffix), this);
+					}
 				};
-				suffix_token["execs"].push(func);
+				suffix_token.execs.push(func);
 				target.push(suffix_token);
 			}
-			var mergeoutput = function(state,Item){
-				if (state.tmp.area == "bibliography"){
-					if (state.bibliography.opt["second-field-align"]){
-						state.output.endTag();  // closes bib_other
-					};
-				};
+			// mergeoutput
+			func = function (state, Item) {
+				if (state.tmp.area === "bibliography") {
+					if (state.bibliography.opt["second-field-align"]) {
+						// closes bib_other
+						state.output.endTag();
+					}
+				}
 				state.output.closeLevel();
 			};
-			this["execs"].push(mergeoutput);
+			this.execs.push(func);
 			target.push(this);
 		}
 	}
