@@ -34,23 +34,24 @@
  */
 
 CSL.Node["institution-part"] = {
-	build: function (state,target){
-		if ("long" == this.strings.name){
-			if (this.strings["if-short"]){
-				var func = function(state,Item){
-					state.output.addToken("institution-if-short",false,this);
+	build: function (state, target) {
+		var func;
+		if ("long" === this.strings.name) {
+			if (this.strings["if-short"]) {
+				func = function (state, Item) {
+					state.output.addToken("institution-if-short", false, this);
 				};
 			} else {
-				var func = function(state,Item){
-					state.output.addToken("institution-long",false,this);
+				func = function (state, Item) {
+					state.output.addToken("institution-long", false, this);
 				};
+			}
+		} else if ("short" === this.strings.name) {
+			func = function (state, Item) {
+				state.output.addToken("institution-short", false, this);
 			};
-		} else if ("short" == this.strings.name){
-			var func = function(state,Item){
-				state.output.addToken("institution-short",false,this);
-			};
-		};
-		this["execs"].push(func);
+		}
+		this.execs.push(func);
 		target.push(this);
 	}
 };
