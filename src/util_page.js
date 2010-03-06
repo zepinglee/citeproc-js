@@ -33,75 +33,71 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-if (!CSL) {
-	load("./src/csl.js");
-}
-
-CSL.Util.PageRangeMangler = new Object();
+CSL.Util.PageRangeMangler = {};
 
 
-CSL.Util.PageRangeMangler.getFunction = function(state){
+CSL.Util.PageRangeMangler.getFunction = function (state) {
+	var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
+	rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
 
-	var rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
-
-	var stringify = function(lst){
-		var l = lst.length;
-		for (var pos=1; pos<l; pos += 2){
-			if ("object" == typeof lst[pos]){
-				lst[pos] = lst[pos].join("");
-			};
-		};
-		return lst.join("");
-	};
-
-	var listify = function(str){
-		var lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
-		return lst;
-	};
-
-	var expand = function(str){
-		var lst = listify(str);
-		var l = lst.length;
-		for (var pos=1; pos<l; pos += 2){
-			var m = lst[pos].match(rangerex);
-			if (m){
-				if (!m[3] || m[1] == m[3]){
-					if (m[4].length < m[2].length){
-						m[4] = m[2].slice(0,(m[2].length-m[4].length)) + m[4];
-					}
-					if (parseInt(m[2],10) < parseInt(m[4],10)){
-						m[3] = "-"+m[1];
-						lst[pos] = m.slice(1);
-					}
-				}
+	stringify = function (lst) {
+		len = lst.length;
+		for (pos = 1; pos < len; pos += 2) {
+			if ("object" === typeof lst[pos]) {
+  				lst[pos] = lst[pos].join("");
 			}
-		};
-		return lst;
-	};
+		}
+  		return lst.join("");
+  	};
 
-	var minimize = function(lst){
-		var l = lst.length;
-		for (var pos=1; pos<l; pos += 2){
-			lst[pos][3] = _minimize(lst[pos][1], lst[pos][3]);
-			if (lst[pos][2].slice(1) == lst[pos][0]){
-				lst[pos][2] = "-";
-			}
-		};
-		return stringify(lst);
-	};
+	listify = function (str) {
+  		lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
+  		return lst;
+  	};
 
-	var _minimize = function(begin, end){
-		var b = (""+begin).split("");
-		var e = (""+end).split("");
-		var ret = e.slice();
-		ret.reverse();
-		if (b.length == e.length){
-			var l = b.length;
-			for (var pos=0; pos<l; pos += 1){
-				if (b[pos] == e[pos]){
-					ret.pop();
-				} else {
-					break;
+	expand = function (str) {
+		lst = listify(str);
+		len = lst.length;
+		for (pos = 1; pos < len; pos += 2) {
+			m = lst[pos].match(rangerex);
+			if (m) {
+				if (!m[3] || m[1] === m[3]) {
+					if (m[4].length < m[2].length) {
+						m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
+  					}
+					if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
+						m[3] = "-" + m[1];
+  						lst[pos] = m.slice(1);
+  					}
+  				}
+  			}
+		}
+  		return lst;
+  	};
+
+	minimize = function (lst) {
+		len = lst.length;
+		for (pos = 1; pos < len; pos += 2) {
+			lst[pos][3] = minimize_internal(lst[pos][1], lst[pos][3]);
+			if (lst[pos][2].slice(1) === lst[pos][0]) {
+  				lst[pos][2] = "-";
+  			}
+		}
+  		return stringify(lst);
+  	};
+
+	minimize_internal = function (begin, end) {
+		b = ("" + begin).split("");
+		e = ("" + end).split("");
+		ret = e.slice();
+  		ret.reverse();
+		if (b.length === e.length) {
+			llen = b.length;
+			for (ppos = 0; ppos < llen; ppos += 1) {
+				if (b[ppos] === e[ppos]) {
+  					ret.pop();
+  				} else {
+  					break;
 				}
 			}
 		}
@@ -109,20 +105,20 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 		return ret.join("");
 	};
 
-	var chicago = function(lst){
-		var l = lst.length;
-		for (var pos=1; pos<l; pos += 2){
-			if ("object" == typeof lst[pos]){
-				var m = lst[pos];
-				var begin = parseInt(m[1],10);
-				var end = parseInt(m[3],10);
-				if (begin > 100 && begin % 100 && parseInt((begin/100),10) == parseInt((end/100),10)){
-					m[3] = ""+(end % 100);
-				} else if (begin >= 10000){
-					m[3] = ""+(end % 1000);
+	chicago = function (lst) {
+		len = lst.length;
+		for (pos = 1; pos < len; pos += 2) {
+			if ("object" === typeof lst[pos]) {
+				m = lst[pos];
+				begin = parseInt(m[1], 10);
+				end = parseInt(m[3], 10);
+				if (begin > 100 && begin % 100 && parseInt((begin / 100), 10) === parseInt((end / 100), 10)) {
+					m[3] = "" + (end % 100);
+				} else if (begin >= 10000) {
+					m[3] = "" + (end % 1000);
 				}
 			}
-			if (m[2].slice(1) == m[0]){
+			if (m[2].slice(1) === m[0]) {
 				m[2] = "-";
 			}
 		}
@@ -132,26 +128,26 @@ CSL.Util.PageRangeMangler.getFunction = function(state){
 	//
 	// The top-level option handlers.
 	//
-	if (!state.opt["page-range-format"]){
-		var ret_func = function(str){
+	if (!state.opt["page-range-format"]) {
+		ret_func = function (str) {
 			return str;
 		};
-	} else if (state.opt["page-range-format"] == "expanded"){
-		var ret_func = function(str){
-			var lst = expand( str );
+	} else if (state.opt["page-range-format"] === "expanded") {
+		ret_func = function (str) {
+			var lst = expand(str);
 			return stringify(lst);
 		};
-	} else if (state.opt["page-range-format"] == "minimal") {
-		var ret_func = function(str){
+	} else if (state.opt["page-range-format"] === "minimal") {
+		ret_func = function (str) {
 			var lst = expand(str);
 			return minimize(lst);
 		};
-	} else if (state.opt["page-range-format"] == "chicago"){
-		var ret_func = function(str){
+	} else if (state.opt["page-range-format"] === "chicago") {
+		ret_func = function (str) {
 			var lst = expand(str);
 			return chicago(lst);
 		};
-	};
+	}
 	return ret_func;
 };
 

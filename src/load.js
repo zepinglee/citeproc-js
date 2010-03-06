@@ -414,10 +414,11 @@ if (!CSL.Util.substituteStart) {
 if (!CSL.Util.Suffixator) {
 	load("./src/util_number.js");
 }
-
+// jstlint OK
 if (!CSL.Util.PageRangeMangler) {
 	load("./src/util_page.js");
 }
+
 if (!CSL.Util.FlipFlopper) {
 	load("./src/util_flipflop.js");
 }
