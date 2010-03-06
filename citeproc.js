@@ -2501,165 +2501,154 @@ CSL.Node.date = {
 	}
 };
 CSL.Node["date-part"] = {
-	build: function (state,target){
-		if (!state.tmp.skipdate){
-		if (!this.strings.form){
+	build: function (state, target) {
+		var func, pos, len, decor, first_date, value, value_end, real, have_collapsed, invoked, precondition, known_year, bc, ad, bc_end, ad_end, ready, curr, dcurr, number, num, formatter, item;
+		if (!this.strings.form) {
 			this.strings.form = "long";
 		}
-		if (state.build.datexml){
-			for each (var decor in this.decorations){
-				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,decor[0],decor[1]);
-			};
-			for (var attr in this.strings){
-				if (attr == "name" || attr == "prefix" || attr == "suffix"){
-					continue;
-				};
-				state.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(state.build.datexml,'date-part',this.strings.name,attr,this.strings[attr]);
+		state.build.date_parts.push(this.strings.name);
+		func = function (state, Item) {
+			first_date = true;
+			value = "";
+			value_end = "";
+			state.tmp.donesies.push(this.strings.name);
+			if (state.tmp.date_object) {
+				value = state.tmp.date_object[this.strings.name];
+				value_end = state.tmp.date_object[(this.strings.name + "_end")];
 			}
-		} else {
-			state.build.date_parts.push(this.strings.name);
-			var render_date_part = function(state,Item){
-				var first_date = true;
-				var value = "";
-				var value_end = "";
-				state.tmp.donesies.push(this.strings.name);
-				if (state.tmp.date_object){
-					value = state.tmp.date_object[this.strings.name];
-					value_end = state.tmp.date_object[(this.strings.name+"_end")];
-				};
-				if ("year" == this.strings.name && value == 0 && !state.tmp.suppress_decorations){
-					value = state.getTerm("no date");
-				};
-				var real = !state.tmp.suppress_decorations;
-				var have_collapsed = state.tmp.have_collapsed;
-				var invoked = state[state.tmp.area].opt.collapse == "year-suffix" || state[state.tmp.area].opt.collapse == "year-suffix-ranged";
-				var precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
-				if (real && precondition && invoked){
-					state.tmp.years_used.push(value);
-					var known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
-					if (known_year && have_collapsed){
-						if (state.tmp.last_years_used[(state.tmp.years_used.length-1)] == value){
-							value = false;
-						};
-					};
-				};
-				if ("undefined" != typeof value){
-					var bc = false;
-					var ad = false;
-					var bc_end = false;
-					var ad_end = false;
-					if ("year" == this.strings.name){
-						if (parseInt(value,10) < 500 && parseInt(value,10) > 0){
-							ad = state.getTerm("ad");
-						};
-						if (parseInt(value,10) < 0){
-							bc = state.getTerm("bc");
-							value = (parseInt(value,10) * -1);
-						};
-						if (value_end){
-							if (parseInt(value_end,10) < 500 && parseInt(value_end,10) > 0){
-								ad_end = state.getTerm("ad");
-							};
-							if (parseInt(value_end,10) < 0){
-								bc_end = state.getTerm("bc");
-								value_end = (parseInt(value_end,10) * -1);
-							};
-						};
-					};
-					state.parallel.AppendToVariable(value);
-					if (this.strings.form){
-						value = CSL.Util.Dates[this.strings.name][this.strings.form](state,value);
-						if (value_end){
-							value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state,value_end);
+			if ("year" === this.strings.name && value === 0 && !state.tmp.suppress_decorations) {
+				value = state.getTerm("no date");
+			}
+			real = !state.tmp.suppress_decorations;
+			have_collapsed = state.tmp.have_collapsed;
+			invoked = state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged";
+			precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
+			if (real && precondition && invoked) {
+				state.tmp.years_used.push(value);
+				known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
+				if (known_year && have_collapsed) {
+					if (state.tmp.last_years_used[(state.tmp.years_used.length - 1)] === value) {
+						value = false;
+					}
+				}
+			}
+			if ("undefined" !== typeof value) {
+				bc = false;
+				ad = false;
+				bc_end = false;
+				ad_end = false;
+				if ("year" === this.strings.name) {
+					if (parseInt(value, 10) < 500 && parseInt(value, 10) > 0) {
+						ad = state.getTerm("ad");
+					}
+					if (parseInt(value, 10) < 0) {
+						bc = state.getTerm("bc");
+						value = (parseInt(value, 10) * -1);
+					}
+					if (value_end) {
+						if (parseInt(value_end, 10) < 500 && parseInt(value_end, 10) > 0) {
+							ad_end = state.getTerm("ad");
 						}
-					};
-					state.output.openLevel("empty");
-					if (state.tmp.date_collapse_at.length){
-						var ready = true;
-						for each (var item in state.tmp.date_collapse_at){
-							if (state.tmp.donesies.indexOf(item) == -1){
-								ready = false;
-								break;
+						if (parseInt(value_end, 10) < 0) {
+							bc_end = state.getTerm("bc");
+							value_end = (parseInt(value_end, 10) * -1);
+						}
+					}
+				}
+				state.parallel.AppendToVariable(value);
+				if (this.strings.form) {
+					value = CSL.Util.Dates[this.strings.name][this.strings.form](state, value);
+					if (value_end) {
+						value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state, value_end);
+					}
+				}
+				state.output.openLevel("empty");
+				if (state.tmp.date_collapse_at.length) {
+					ready = true;
+					len = state.tmp.date_collapse_at.length;
+					for (pos = 0; pos < len; pos += 1) {
+						item = state.tmp.date_collapse_at[pos];
+						if (state.tmp.donesies.indexOf(item) === -1) {
+							ready = false;
+							break;
+						}
+					}
+					if (ready) {
+						if ("" + value_end !== "0") {
+							if (state.dateput.queue.length === 0) {
+								first_date = true;
+							}
+							state.dateput.append(value_end, this);
+							if (first_date) {
+								state.dateput.current.value()[0].strings.prefix = "";
 							}
 						}
-						if (ready){
-							if (value_end != "0"){
-								if (state.dateput.queue.length == 0){
+						state.output.append(value, this);
+						curr = state.output.current.value();
+						curr.blobs[(curr.blobs.length - 1)].strings.suffix = "";
+						state.output.append(this.strings["range-delimiter"], "empty");
+						dcurr = state.dateput.current.value();
+						curr.blobs = curr.blobs.concat(dcurr);
+						state.dateput.string(state, state.dateput.queue);
+						state.tmp.date_collapse_at = [];
+					} else {
+						state.output.append(value, this);
+						if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1) {
+							if ("" + value_end !== "0") {
+								if (state.dateput.queue.length === 0) {
 									first_date = true;
 								}
-								state.dateput.append(value_end,this);
-								if (first_date){
-									state.dateput.current.value()[0].strings.prefix = "";
+								state.dateput.openLevel("empty");
+								state.dateput.append(value_end, this);
+								if (first_date) {
+									state.dateput.current.value().blobs[0].strings.prefix = "";
 								}
-							}
-							state.output.append(value,this);
-							var curr = state.output.current.value();
-							curr.blobs[(curr.blobs.length-1)].strings.suffix="";
-							state.output.append(this.strings["range-delimiter"],"empty");
-							var dcurr = state.dateput.current.value();
-							curr.blobs = curr.blobs.concat(dcurr);
-							state.dateput.string(state,state.dateput.queue);
-							state.tmp.date_collapse_at = [];
-						} else {
-							state.output.append(value,this);
-							if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1){
-								if (value_end != "0"){
-									if (state.dateput.queue.length == 0){
-										first_date = true;
-									}
-									state.dateput.openLevel("empty");
-									state.dateput.append(value_end,this);
-									if (first_date){
-										state.dateput.current.value().blobs[0].strings.prefix = "";
-									}
-									if (bc){
-										state.dateput.append(bc);
-									}
-									if (ad){
-										state.dateput.append(ad);
-									}
-									state.dateput.closeLevel();
+								if (bc) {
+									state.dateput.append(bc);
 								}
+								if (ad) {
+									state.dateput.append(ad);
+								}
+								state.dateput.closeLevel();
 							}
 						}
-					} else {
-						state.output.append(value,this);
 					}
-					if (bc){
-						state.output.append(bc);
+				} else {
+					state.output.append(value, this);
+				}
+				if (bc) {
+					state.output.append(bc);
+				}
+				if (ad) {
+					state.output.append(ad);
+				}
+				state.output.closeLevel();
+			} else if ("month" === this.strings.name) {
+				if (state.tmp.date_object.season) {
+					value = "" + state.tmp.date_object.season;
+					if (value && value.match(/^[1-4]$/)) {
+						state.output.append(state.getTerm(("season-0" + value)), this);
+					} else if (value) {
+						state.output.append(value, this);
 					}
-					if (ad){
-						state.output.append(ad);
-					}
-					state.output.closeLevel();
-				} else if ("month" == this.strings.name) {
-					if (state.tmp.date_object["season"]){
-						value = ""+state.tmp.date_object["season"];
-						if (value && value.match(/^[1-4]$/)){
-							state.output.append(state.getTerm(("season-0"+value)),this);
-						} else if (value){
-							state.output.append(value,this);
-						};
-					};
-				};
-				state.tmp.value = new Array();
-				if (!state.opt.has_year_suffix && "year" == this.strings.name){
-					if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]){
-						var num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
-						var number = new CSL.NumericBlob(num,this);
-						var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
-						number.setFormatter(formatter);
-						state.output.append(number,"literal");
-					};
-				};
-			};
-			if ("undefined" == typeof this.strings["range-delimiter"]){
-				this.strings["range-delimiter"] = "-";
+				}
 			}
-			this["execs"].push(render_date_part);
-			target.push(this);
+			state.tmp.value = [];
+			if (!state.opt.has_year_suffix && "year" === this.strings.name) {
+				if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
+					num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+					number = new CSL.NumericBlob(num, this);
+					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
+					number.setFormatter(formatter);
+					state.output.append(number, "literal");
+				}
+			}
 		};
-		};
+		this.execs.push(func);
+		if ("undefined" === typeof this.strings["range-delimiter"]) {
+			this.strings["range-delimiter"] = "-";
+		}
+		target.push(this);
 	}
 };
 CSL.Node["else-if"] = {

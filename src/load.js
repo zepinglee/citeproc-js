@@ -328,6 +328,7 @@ if (!CSL.Node) {
     load("./src/node_choose.js");
     load("./src/node_citation.js");
     load("./src/node_date.js");
+	// jslint OK
     load("./src/node_datepart.js");
     load("./src/node_elseif.js");
     load("./src/node_else.js");
