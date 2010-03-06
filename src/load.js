@@ -360,10 +360,11 @@ if (!CSL.Node) {
     load("./src/node_macro.js");
 	// jslint OK
     load("./src/node_name.js");
-	
+	// jslint OK
     load("./src/node_namepart.js");
 	// jslint OK
     load("./src/node_names.js");
+	
     load("./src/node_number.js");
     load("./src/node_sort.js");
     load("./src/node_substitute.js");
