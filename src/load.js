@@ -434,10 +434,11 @@ if (!CSL.Output.Formats) {
 if (!CSL.Registry) {
 	load("./src/registry.js");
 }
-
+// jslint OK
 if (!CSL.Registry.NameReg) {
 	load("./src/disambig_names.js");
 }
+
 if (!CSL.Registry.CitationReg) {
 	load("./src/disambig_citations.js");
 }

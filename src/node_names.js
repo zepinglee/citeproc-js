@@ -378,7 +378,7 @@ CSL.Node.names = new function(){
 							var param = val;
 //							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
 							if (state[state.tmp.area].opt["disambiguate-add-givenname"]){
-								var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,param,state.output.getToken("name").strings.form,this.strings["initialize-with"]);
+								var param = state.registry.namereg.evalname(Item.id,nameset.names[i],i,param,state.output.getToken("name").strings.form,this.strings["initialize-with"]);
 							};
 						} else {
 							//
@@ -388,7 +388,7 @@ CSL.Node.names = new function(){
 							//
 							var myform = state.output.getToken("name").strings.form;
 							var myinitials = this.strings["initialize-with"];
-							var param = state.registry.namereg.eval(Item.id,nameset.names[i],i,0,myform,myinitials);
+							var param = state.registry.namereg.evalname(Item.id,nameset.names[i],i,0,myform,myinitials);
 						};
 						state.tmp.disambig_settings["givens"][state.tmp.nameset_counter][i] = param;
 					}
