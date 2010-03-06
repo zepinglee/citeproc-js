@@ -2369,49 +2369,50 @@ CSL.Node.bibliography = {
 	}
 };
 CSL.Node.choose = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			var func = function(state,Item){ //open condition
+	build: function (state, target) {
+		var func;
+		if (this.tokentype === CSL.START) {
+			func = function (state, Item) {
 				state.tmp.jump.push(undefined, CSL.LITERAL);
 			};
 		}
-		if (this.tokentype == CSL.END){
-			var func = function(state,Item){ //close condition
+		if (this.tokentype === CSL.END) {
+			func = function (state, Item) {
 				state.tmp.jump.pop();
 			};
 		}
-		this["execs"].push(func);
+		this.execs.push(func);
 		target.push(this);
 	},
-	configure: function (state,pos){
-		if (this.tokentype == CSL.END){
-			state.configure["fail"].push((pos));
-			state.configure["succeed"].push((pos));
+	configure: function (state, pos) {
+		if (this.tokentype === CSL.END) {
+			state.configure.fail.push((pos));
+			state.configure.succeed.push((pos));
 		} else {
-			state.configure["fail"].pop();
-			state.configure["succeed"].pop();
+			state.configure.fail.pop();
+			state.configure.succeed.pop();
 		}
 	}
 };
 CSL.Node.citation = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START) {
-			state.fixOpt(this,"names-delimiter","delimiter");
-			state.fixOpt(this,"name-delimiter","delimiter");
-			state.fixOpt(this,"name-form","form");
-			state.fixOpt(this,"and","and");
-			state.fixOpt(this,"delimiter-precedes-last","delimiter-precedes-last");
-			state.fixOpt(this,"initialize-with","initialize-with");
-			state.fixOpt(this,"name-as-sort-order","name-as-sort-order");
-			state.fixOpt(this,"sort-separator","sort-separator");
-			state.fixOpt(this,"et-al-min","et-al-min");
-			state.fixOpt(this,"et-al-use-first","et-al-use-first");
-			state.fixOpt(this,"et-al-subsequent-min","et-al-subsequent-min");
-			state.fixOpt(this,"et-al-subsequent-use-first","et-al-subsequent-use-first");
+	build: function (state, target) {
+		if (this.tokentype === CSL.START) {
+			state.fixOpt(this, "names-delimiter", "delimiter");
+			state.fixOpt(this, "name-delimiter", "delimiter");
+			state.fixOpt(this, "name-form", "form");
+			state.fixOpt(this, "and", "and");
+			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "initialize-with", "initialize-with");
+			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
+			state.fixOpt(this, "sort-separator", "sort-separator");
+			state.fixOpt(this, "et-al-min", "et-al-min");
+			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
+			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 			state.build.area_return = state.build.area;
 			state.build.area = "citation";
 		}
-		if (this.tokentype == CSL.END) {
+		if (this.tokentype === CSL.END) {
 			state.build.area = state.build.area_return;
 		}
 	}
@@ -2658,48 +2659,49 @@ CSL.Node["date-part"] = {
 	}
 };
 CSL.Node["else-if"] = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			if ("number" == typeof this.strings.position){
-				var tryposition = this.strings.position;
-				var func = function(state,Item,item){
-					if (item && "undefined" == typeof item.position){
+	build: function (state, target) {
+		var func, tryposition;
+		if (this.tokentype === CSL.START) {
+			if ("number" === typeof this.strings.position) {
+				tryposition = this.strings.position;
+				func = function (state, Item, item) {
+					if (item && "undefined" === typeof item.position) {
 						item.position = 0;
 					}
-					if (state.tmp.force_subsequent && tryposition < 2){
+					if (state.tmp.force_subsequent && tryposition < 2) {
 						return true;
-					} else if (item && typeof item.position == "number" || "undefined" == typeof item.position){
-						if (item.position == 0 && tryposition == 0){
+					} else if (item && typeof item.position === "number" || "undefined" === typeof item.position) {
+						if (item.position === 0 && tryposition === 0) {
 							return true;
-						} else if (tryposition > 0 && item.position >= tryposition){
+						} else if (tryposition > 0 && item.position >= tryposition) {
 							return true;
-						};
-					};
+						}
+					}
 					return false;
 				};
 				this.tests.push(func);
 			}
-			if (! this.evaluator){
+			if (! this.evaluator) {
 				this.evaluator = state.fun.match.any;
-			};
+			}
 		}
-		if (this.tokentype == CSL.END){
-			var closingjump = function(state,Item){
+		if (this.tokentype === CSL.END) {
+			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
-			this["execs"].push(closingjump);
-		};
+			this.execs.push(func);
+		}
 		target.push(this);
 	},
-	configure: function(state,pos){
-		if (this.tokentype == CSL.START){
-			this["fail"] = state.configure["fail"].slice(-1)[0];
-			this["succeed"] = this["next"];
-			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
+	configure: function (state, pos) {
+		if (this.tokentype === CSL.START) {
+			this.fail = state.configure.fail.slice(-1)[0];
+			this.succeed = this.next;
+			state.configure.fail[(state.configure.fail.length - 1)] = pos;
 		} else {
-			this["succeed"] = state.configure["succeed"].slice(-1)[0];
-			this["fail"] = this["next"];
+			this.succeed = state.configure.succeed.slice(-1)[0];
+			this.fail = this.next;
 		}
 	}
 };
@@ -3176,7 +3178,7 @@ CSL.Node.layout = {
 	}
 };
 CSL.Node.macro = {
-	build: function (state,target){}
+	build: function (state, target) {}
 };
 CSL.Node.name = {
 	build: function (state,target){

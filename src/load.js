@@ -328,13 +328,15 @@ if (!CSL.Node) {
 	load("./src/node_bibliography.js");
 	// jslint OK
     load("./src/node_choose.js");
-	
+	// jslint OK
     load("./src/node_citation.js");
 	// jslint OK
     load("./src/node_date.js");
 	// jslint OK
     load("./src/node_datepart.js");
+	// jslint OK
     load("./src/node_elseif.js");
+	
     load("./src/node_else.js");
     load("./src/node_etal.js");
     load("./src/node_group.js");

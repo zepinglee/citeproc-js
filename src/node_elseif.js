@@ -36,64 +36,56 @@
 CSL.Node["else-if"] = {
 	//
 	// these function are the same as those in if, might just clone
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			//for each (var variable in this.variables){
-			//	var func = function(state,Item){
-			//		if (Item[variable]){
-			//			return true;
-			//		}
-			//		return false;
-			//	};
-			//	this["tests"].push(func);
-			//};
-			if ("number" == typeof this.strings.position){
-				var tryposition = this.strings.position;
+	build: function (state, target) {
+		var func, tryposition;
+		if (this.tokentype === CSL.START) {
+			if ("number" === typeof this.strings.position) {
+				tryposition = this.strings.position;
 				//
 				// c&p from node_if
 				//
-				var func = function(state,Item,item){
-					if (item && "undefined" == typeof item.position){
+				func = function (state, Item, item) {
+					if (item && "undefined" === typeof item.position) {
 						item.position = 0;
 					}
-					if (state.tmp.force_subsequent && tryposition < 2){
+					if (state.tmp.force_subsequent && tryposition < 2) {
 						return true;
-					} else if (item && typeof item.position == "number" || "undefined" == typeof item.position){
-						if (item.position == 0 && tryposition == 0){
+					} else if (item && typeof item.position === "number" || "undefined" === typeof item.position) {
+						if (item.position === 0 && tryposition === 0) {
 							return true;
-						} else if (tryposition > 0 && item.position >= tryposition){
+						} else if (tryposition > 0 && item.position >= tryposition) {
 							return true;
-						};
-					};
+						}
+					}
 					return false;
 				};
 				this.tests.push(func);
 			}
-			if (! this.evaluator){
+			if (! this.evaluator) {
 				//
 				// cut and paste of "any"
 				this.evaluator = state.fun.match.any;
-			};
+			}
 		}
-		if (this.tokentype == CSL.END){
-			var closingjump = function(state,Item){
+		if (this.tokentype === CSL.END) {
+			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
-			this["execs"].push(closingjump);
-		};
+			this.execs.push(func);
+		}
 		target.push(this);
 	},
-	configure: function(state,pos){
-		if (this.tokentype == CSL.START){
+	configure: function (state, pos) {
+		if (this.tokentype === CSL.START) {
 			// jump index on failure
-			this["fail"] = state.configure["fail"].slice(-1)[0];
-			this["succeed"] = this["next"];
-			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
+			this.fail = state.configure.fail.slice(-1)[0];
+			this.succeed = this.next;
+			state.configure.fail[(state.configure.fail.length - 1)] = pos;
 		} else {
 			// jump index on success
-			this["succeed"] = state.configure["succeed"].slice(-1)[0];
-			this["fail"] = this["next"];
+			this.succeed = state.configure.succeed.slice(-1)[0];
+			this.fail = this.next;
 		}
 	}
 };
