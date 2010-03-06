@@ -34,17 +34,20 @@
  */
 
 CSL.Node.key = {
-	build: function (state,target){
-		var start_key = new CSL.Token("key",CSL.START);
+	build: function (state, target) {
+		var start_key, func, sort_direction, variable, names_start_token, name_token, names_end_token, single_text, token, pos, keypos, ppos, len, llen, tok, gtok, saveme, end_key, tlen, tlst;
+		start_key = new CSL.Token("key", CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
-		var initialize_done_vars = function(state,Item){
-			state.tmp.done_vars = new Array();
+		// initialize done vars
+		func = function (state, Item) {
+			state.tmp.done_vars = [];
 		};
-		start_key.execs.push(initialize_done_vars);
+		start_key.execs.push(func);
 
-		var sort_direction = new Array();
-		if (this.strings.sort_direction == CSL.DESCENDING){
+		// sort direction
+		sort_direction = [];
+		if (this.strings.sort_direction === CSL.DESCENDING) {
 			sort_direction.push(1);
 			sort_direction.push(-1);
 		} else {
@@ -53,146 +56,155 @@ CSL.Node.key = {
 		}
 		state[state.build.area].opt.sort_directions.push(sort_direction);
 
-		var et_al_init = function(state,Item){
+		// et al init
+		func = function (state, Item) {
 			state.tmp.sort_key_flag = true;
-			if (this.strings["et-al-min"]){
+			if (this.strings["et-al-min"]) {
 				state.tmp["et-al-min"] = this.strings["et-al-min"];
 			}
-			if (this.strings["et-al-use-first"]){
+			if (this.strings["et-al-use-first"]) {
 				state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 			}
 		};
-		start_key["execs"].push(et_al_init);
+		start_key.execs.push(func);
 		target.push(start_key);
 		//
 		// ops to initialize the key's output structures
-		if (this.variables.length){
-			var variable = this.variables[0];
+		if (this.variables.length) {
+			variable = this.variables[0];
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
 				// Start tag
-				var names_start_token = new CSL.Token("names",CSL.START);
+				names_start_token = new CSL.Token("names", CSL.START);
 				names_start_token.tokentype = CSL.START;
 				names_start_token.variables = this.variables;
-				CSL.Node.names.build.call(names_start_token,state,target);
+				CSL.Node.names.build.call(names_start_token, state, target);
 				//
 				// Middle tag
-				var name_token = new CSL.Token("name",CSL.SINGLETON);
+				name_token = new CSL.Token("name", CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
-				CSL.Node.name.build.call(name_token,state,target);
+				CSL.Node.name.build.call(name_token, state, target);
 				//
 				// End tag
-				var names_end_token = new CSL.Token("names",CSL.END);
+				names_end_token = new CSL.Token("names", CSL.END);
 				names_end_token.tokentype = CSL.END;
-				CSL.Node.names.build.call(names_end_token,state,target);
+				CSL.Node.names.build.call(names_end_token, state, target);
 			} else {
-				var single_text = new CSL.Token("text",CSL.SINGLETON);
+				single_text = new CSL.Token("text", CSL.SINGLETON);
 				single_text.dateparts = this.dateparts;
-				if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1){
-					var output_func = function(state,Item){
-						var num = false;
-						if ("citation-number" == variable){
-							num = state.registry.registry[Item["id"]].seq.toString();
+				if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1) {
+					func = function (state, Item) {
+						var num, m;
+						num = false;
+						if ("citation-number" === variable) {
+							num = state.registry.registry[Item.id].seq.toString();
 						} else {
 							num = Item[variable];
-						};
-						if (num){
-							var m = num.match(/\s*(-{0,1}[0-9]+).*/);
-							if (m){
-								num = parseInt(m[1],10);
-								if (num < 0){
-									num = 99999999999999999999+num;
+						}
+						if (num) {
+							m = num.match(/\s*(-{0,1}[0-9]+).*/);
+							if (m) {
+								num = parseInt(m[1], 10);
+								if (num < 0) {
+									num = 99999999999999999999 + num;
 								}
-								num = ""+num;
-								while (num.length < 20){
-									num = "0"+num;
-								};
-							};
-						};
+								num = "" + num;
+								while (num.length < 20) {
+									num = "0" + num;
+								}
+							}
+						}
 						state.output.append(num, this);
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-					var output_func = function(state,Item){
-						var dp = Item[variable];
-						if ("undefined" == typeof dp){
+					func = function (state, Item) {
+						var dp, elem, value, e, yr, prefix;
+						dp = Item[variable];
+						if ("undefined" === typeof dp) {
 							dp = {"date-parts": [[0]] };
-							if (!dp["year"]){
+							if (!dp.year) {
 								state.tmp.empty_date = true;
-							};
-						};
-						if ("undefined" == typeof this.dateparts){
-							this.dateparts = ["year","month","day"];
-						}
-						if (dp.raw){
-							dp = state.fun.dateparser.parse( dp.raw );
-						} else if (dp["date-parts"]) {
-							dp = state.dateParseArray( dp );
-						};
-						if ("undefined" == typeof dp){
-							dp = {};
-						};
-						for each (var elem in ["year","month","day","year_end","month_end","day_end"]){
-							var value = 0;
-							var e = elem;
-							if (e.slice(-4) == "_end"){
-								e = e.slice(0,-4);
 							}
-							if (dp[elem] && this.dateparts.indexOf(e) > -1){
+						}
+						if ("undefined" === typeof this.dateparts) {
+							this.dateparts = ["year", "month", "day"];
+						}
+						if (dp.raw) {
+							dp = state.fun.dateparser.parse(dp.raw);
+						} else if (dp["date-parts"]) {
+							dp = state.dateParseArray(dp);
+						}
+						if ("undefined" === typeof dp) {
+							dp = {};
+						}
+						len = CSL.DATE_PARTS_INTERNAL.length;
+						for (pos = 0; pos < len; pos += 1) {
+							elem = CSL.DATE_PARTS_INTERNAL[pos];
+							value = 0;
+							e = elem;
+							if (e.slice(-4) === "_end") {
+								e = e.slice(0, -4);
+							}
+							if (dp[elem] && this.dateparts.indexOf(e) > -1) {
 								value = dp[elem];
-							};
-							if (elem.slice(0,4) == "year"){
-								var yr = CSL.Util.Dates[e]["numeric"](state,value);
-								var prefix = "Y";
-								if (yr[0] == "-"){
+							}
+							if (elem.slice(0, 4) === "year") {
+								yr = CSL.Util.Dates[e].numeric(state, value);
+								prefix = "Y";
+								if (yr[0] === "-") {
 									prefix = "X";
 									yr = yr.slice(1);
-									yr = 9999-parseInt(yr,10);
+									yr = 9999 - parseInt(yr, 10);
 								}
-								state.output.append(CSL.Util.Dates[elem.slice(0,4)]["numeric"](state,(prefix+yr)));
+								state.output.append(CSL.Util.Dates[elem.slice(0, 4)].numeric(state, (prefix + yr)));
 							} else {
-								state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state,value));
-							};
-						};
+								state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state, value));
+							}
+						}
 					};
-				} else if ("title" == variable) {
-					var output_func = function(state,Item){
+				} else if ("title" === variable) {
+					func = function (state, Item) {
 						var value = Item[variable];
-						if (value){
-							value = state.getTextSubField(value,"locale-sort",true);
-							state.output.append(value,"empty");
-						};
+						if (value) {
+							value = state.getTextSubField(value, "locale-sort", true);
+							state.output.append(value, "empty");
+						}
 					};
 				} else {
-					var output_func = function(state,Item){
-						state.output.append(Item[variable],"empty");
+					func = function (state, Item) {
+						state.output.append(Item[variable], "empty");
 					};
-				};
-				single_text["execs"].push(output_func);
+				}
+				single_text.execs.push(func);
 				target.push(single_text);
-			};
+			}
 		} else { // macro
 			//
 			// if it's not a variable, it's a macro
-			var token = new CSL.Token("text",CSL.SINGLETON);
+			token = new CSL.Token("text", CSL.SINGLETON);
 			token.postponed_macro = this.postponed_macro;
-			var pos = target.length;
-			var keypos = false;
-			CSL.expandMacro.call(state,token);
-			for (var ppos in target.slice(pos)){
-				var tok = target.slice(pos)[ppos];
-				if (tok && tok.name == "text" && tok.dateparts){
-					keypos = ppos;
+			// careful with the loop below: she's sensitive
+			// to change
+			tlen = target.length;
+			keypos = false;
+			CSL.expandMacro.call(state, token);
+			len = target.slice(tlen).length;
+			for (pos = 0; pos < len; pos += 1) {
+				tok = target.slice(tlen)[pos];
+				if (tok && tok.name === "text" && tok.dateparts) {
+					keypos = pos;
 					break;
-				};
+				}
 			}
-			if (keypos){
-				var saveme = target[(parseInt(keypos,10)+parseInt(pos,10))];
-				for (var xpos=(target.length-1);xpos > pos; xpos--){
+			if (keypos) {
+				saveme = target[(parseInt(keypos, 10) + parseInt(tlen, 10))];
+				len = target.length - 1;
+				for (pos = len; pos > tlen; pos += -1) {
 					target.pop();
 				}
 				target.push(saveme);
-				var gtok = new CSL.Token("group",CSL.END);
+				gtok = new CSL.Token("group", CSL.END);
 				target.push(gtok);
 			}
 		}
@@ -200,27 +212,29 @@ CSL.Node.key = {
 		// ops to output the key string result to an array go
 		// on the closing "key" tag before it is pushed.
 		// Do not close the level.
-		var end_key = new CSL.Token("key",CSL.END);
-		var store_key_for_use = function(state,Item){
-			var keystring = state.output.string(state,state.output.queue);
-			if (false){
-				CSL.debug("keystring: "+keystring+" "+typeof keystring);
+		end_key = new CSL.Token("key", CSL.END);
+		// store key for use
+		func = function (state, Item) {
+			var keystring = state.output.string(state, state.output.queue);
+			if (false) {
+				CSL.debug("keystring: " + keystring + " " + typeof keystring);
 			}
-			if ("string" != typeof keystring || state.tmp.empty_date){
+			if ("string" !== typeof keystring || state.tmp.empty_date) {
 				keystring = undefined;
 				state.tmp.empty_date = false;
 			}
 			state[state.tmp.area].keys.push(keystring);
-			state.tmp.value = new Array();
+			state.tmp.value = [];
 		};
-		end_key["execs"].push(store_key_for_use);
-		var reset_key_params = function(state,Item){
+		end_key.execs.push(func);
+		// reset key params
+		func = function (state, Item) {
 			// state.tmp.name_quash = new Object();
 			state.tmp["et-al-min"] = false;
 			state.tmp["et-al-use-first"] = false;
 			state.tmp.sort_key_flag = false;
 		};
-		end_key["execs"].push(reset_key_params);
+		end_key.execs.push(func);
 		target.push(end_key);
 	}
 };
