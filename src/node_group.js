@@ -34,57 +34,62 @@
  */
 
 CSL.Node.group = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			CSL.Util.substituteStart.call(this,state,target);
-			if (state.build.substitute_level.value()){
-				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
+	build: function (state, target) {
+		var func, execs;
+		if (this.tokentype === CSL.START) {
+			CSL.Util.substituteStart.call(this, state, target);
+			if (state.build.substitute_level.value()) {
+				state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
 			}
-			var newoutput = function(state,Item){
-				state.output.startTag("group",this);
+			// newoutput
+			func = function (state, Item) {
+				state.output.startTag("group", this);
 			};
 			//
 			// Paranoia.  Assure that this init function is the first executed.
-			var execs = new Array();
-			execs.push(newoutput);
+			execs = [];
+			execs.push(func);
 			this.execs = execs.concat(this.execs);
 
-			var fieldcontentflag = function(state,Item){
-				state.tmp.term_sibling.push( undefined, CSL.LITERAL );
+			// fieldcontentflag
+			func = function (state, Item) {
+				state.tmp.term_sibling.push(undefined, CSL.LITERAL);
 			};
-			this["execs"].push(fieldcontentflag);
+			this.execs.push(func);
 		} else {
-			var quashnonfields = function(state,Item){
+			// quashnonfields
+			func = function (state, Item) {
 				var flag = state.tmp.term_sibling.value();
-				if (false == flag){
+				if (false === flag) {
 					state.output.clearlevel();
 				}
 				state.tmp.term_sibling.pop();
 				//
 				// Heals group quashing glitch with nested groups.
 				//
-				if (flag && state.tmp.term_sibling.mystack.length > 1){
+				if (flag && state.tmp.term_sibling.mystack.length > 1) {
 					state.tmp.term_sibling.replace(true);
 				}
 			};
-			this["execs"].push(quashnonfields);
+			this.execs.push(func);
 
-			var mergeoutput = function(state,Item){
+			// mergeoutput
+			func = function (state, Item) {
 				//
 				// rendering happens inside the
 				// merge method, by applying decorations to
 				// each token to be merged.
 				state.output.endTag();
 			};
-			this["execs"].push(mergeoutput);
+			this.execs.push(func);
 		}
 		target.push(this);
 
-		if (this.tokentype == CSL.END){
-			if (state.build.substitute_level.value()){
-				state.build.substitute_level.replace((state.build.substitute_level.value()-1));
+		if (this.tokentype === CSL.END) {
+			if (state.build.substitute_level.value()) {
+				state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
 			}
-			CSL.Util.substituteEnd.call(this,state,target);
+			CSL.Util.substituteEnd.call(this, state, target);
 		}
 	}
 };
