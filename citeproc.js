@@ -3263,11 +3263,12 @@ CSL.Node.name = {
 	}
 };
 CSL.Node["name-part"] = {
-	build: function(state,target){
-		var set_namepart_format = function(state,Item){
-			state.output.addToken(this.strings.name,false,this);
+	build: function (state, target) {
+		var func;
+		func = function (state, Item) {
+			state.output.addToken(this.strings.name, false, this);
 		};
-		this["execs"].push(set_namepart_format);
+		this.execs.push(func);
 		target.push(this);
 	}
 };
@@ -3671,58 +3672,60 @@ CSL.Node.names = {
 	}
 };
 CSL.Node.number = {
-	build: function (state,target){
-		CSL.Util.substituteStart.call(this,state,target);
-		if (this.strings.form == "roman"){
+	build: function (state, target) {
+		var func;
+		CSL.Util.substituteStart.call(this, state, target);
+		if (this.strings.form === "roman") {
 			this.formatter = state.fun.romanizer;
-		} else if (this.strings.form == "ordinal"){
+		} else if (this.strings.form === "ordinal") {
 			this.formatter = state.fun.ordinalizer;
-		} else if (this.strings.form == "long-ordinal"){
+		} else if (this.strings.form === "long-ordinal") {
 			this.formatter = state.fun.long_ordinalizer;
 		}
-		if ("undefined" == typeof this.successor_prefix){
+		if ("undefined" === typeof this.successor_prefix) {
 			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 		}
-		var push_number_or_text = function(state,Item){
-			var varname = this.variables[0];
+		func = function (state, Item) {
+			var varname, num, number, m;
+			varname = this.variables[0];
 			state.parallel.StartVariable(this.variables[0]);
 			state.parallel.AppendToVariable(Item[this.variables[0]]);
-			if (varname == "page-range" || varname == "page-first"){
+			if (varname === "page-range" || varname === "page-first") {
 				varname = "page";
-			};
-			var num = Item[varname];
-			if ("undefined" != typeof num) {
-				if (this.variables[0] == "page-first"){
-					var m = num.split(/\s*(&|,|-)\s*/);
+			}
+			num = Item[varname];
+			if ("undefined" !== typeof num) {
+				if (this.variables[0] === "page-first") {
+					m = num.split(/\s*(&|,|-)\s*/);
 					num = m[0];
 				}
-				var m = num.match(/\s*([0-9]+).*/);
-				if (m){
-					num = parseInt( m[1], 10);
-					var number = new CSL.NumericBlob( num, this );
-					state.output.append(number,"literal");
+				m = num.match(/\s*([0-9]+).*/);
+				if (m) {
+					num = parseInt(m[1], 10);
+					number = new CSL.NumericBlob(num, this);
+					state.output.append(number, "literal");
 				} else {
 					state.output.append(num, this);
-				};
-			};
+				}
+			}
 			state.parallel.CloseVariable();
 		};
-		this["execs"].push(push_number_or_text);
+		this.execs.push(func);
 		target.push(this);
-		CSL.Util.substituteEnd.call(this,state,target);
+		CSL.Util.substituteEnd.call(this, state, target);
 	}
 };
 CSL.Node.sort = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			if (state.build.area == "citation"){
+	build: function (state, target) {
+		if (this.tokentype === CSL.START) {
+			if (state.build.area === "citation") {
 				state.parallel.use_parallels = false;
 			}
 			state.build.sort_flag  = true;
 			state.build.area_return = state.build.area;
-			state.build.area = state.build.area+"_sort";
-		};
-		if (this.tokentype == CSL.END){
+			state.build.area = state.build.area + "_sort";
+		}
+		if (this.tokentype === CSL.END) {
 			state.build.area = state.build.area_return;
 			state.build.sort_flag  = false;
 		}

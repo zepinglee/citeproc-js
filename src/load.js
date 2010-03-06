@@ -253,17 +253,6 @@ var CSL = {
 	},
 
 	locale: {},
-
-	//
-	// Well, that's interesting.  We're going to need fallbacks for
-	// these too.  Like terms, a session-persistent record of the
-	// locale data is made on CSL, and an ephemeral override record
-	// is recorded in the style.  When the locale object is called,
-	// the ephemeral record is checked first, and failing that we
-	// fall back to the record on CSL before blowing up.
-	//
-	// So need functions getOpt() and getDate()?
-	//
 	locale_opts: {},
 	locale_dates: {}
 
@@ -364,9 +353,11 @@ if (!CSL.Node) {
     load("./src/node_namepart.js");
 	// jslint OK
     load("./src/node_names.js");
-	
+	// jslint OK
     load("./src/node_number.js");
+	// jslint OK
     load("./src/node_sort.js");
+
     load("./src/node_substitute.js");
 	// jslint OK
     load("./src/node_text.js");
