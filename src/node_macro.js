@@ -34,5 +34,5 @@
  */
 
 CSL.Node.macro = {
-	build: function (state,target){}
+	build: function (state, target) {}
 };
