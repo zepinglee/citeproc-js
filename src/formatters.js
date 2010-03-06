@@ -33,36 +33,32 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-if (!CSL) {
-	load("./src/csl.js");
-}
-
 /**
  * A bundle of handy functions for text processing.
  * <p>Several of these are ripped off from various
  * locations in the Zotero source code.</p>
  * @namespace Toolkit of string functions
  */
-CSL.Output.Formatters = new function(){};
+CSL.Output.Formatters = {};
 
 
-CSL.Output.Formatters.strip_periods = function(state,string) {
-    return string.replace(/\./g," ").replace(/\s*$/g,"").replace(/\s+/g," ");
+CSL.Output.Formatters.strip_periods = function (state, string) {
+    return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
 };
 
 
 /**
  * A noop that just delivers the string.
  */
-CSL.Output.Formatters.passthrough = function(state,string){
+CSL.Output.Formatters.passthrough = function (state, string) {
 	return string;
 };
 
 /**
  * Force all letters in the string to lowercase.
  */
-CSL.Output.Formatters.lowercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
+CSL.Output.Formatters.lowercase = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
 	str.string = str.string.toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
@@ -71,11 +67,10 @@ CSL.Output.Formatters.lowercase = function(state,string) {
 /**
  * Force all letters in the string to uppercase.
  */
-CSL.Output.Formatters.uppercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
+CSL.Output.Formatters.uppercase = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
 	str.string = str.string.toUpperCase();
-	var ret = CSL.Output.Formatters.undoppelString(str);
-	return ret;
+	return CSL.Output.Formatters.undoppelString(str);
 };
 
 
@@ -83,10 +78,10 @@ CSL.Output.Formatters.uppercase = function(state,string) {
  * Force capitalization of the first letter in the string, leave
  * the rest of the characters untouched.
  */
-CSL.Output.Formatters["capitalize-first"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	if (str.string.length){
-		str.string = str.string[0].toUpperCase()+str.string.substr(1);
+CSL.Output.Formatters["capitalize-first"] = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+	if (str.string.length) {
+		str.string = str.string[0].toUpperCase() + str.string.substr(1);
 		return CSL.Output.Formatters.undoppelString(str);
 	} else {
 		return "";
@@ -98,9 +93,9 @@ CSL.Output.Formatters["capitalize-first"] = function(state,string) {
  * Similar to <b>capitalize_first</b>, but force the
  * subsequent characters to lowercase.
  */
-CSL.Output.Formatters["sentence"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	str.string = str.string[0].toUpperCase()+str.string.substr(1).toLowerCase();
+CSL.Output.Formatters.sentence = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+	str.string = str.string[0].toUpperCase() + str.string.substr(1).toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
 
@@ -111,15 +106,16 @@ CSL.Output.Formatters["sentence"] = function(state,string) {
  * letters to lowercase.  Single characters are forced
  * to uppercase.
  */
-CSL.Output.Formatters["capitalize-all"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	var strings = str.string.split(" ");
-	var l = strings.length;
-	for(var i=0; i<l; i++) {
-		if(strings[i].length > 1) {
-            strings[i] = strings[i][0].toUpperCase()+strings[i].substr(1).toLowerCase();
-        } else if(strings[i].length == 1) {
-            strings[i] = strings[i].toUpperCase();
+CSL.Output.Formatters["capitalize-all"] = function (state, string) {
+	var str, strings, len, pos;
+	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+	strings = str.string.split(" ");
+	len = strings.length;
+	for (pos = 0; pos < len; pos += 1) {
+		if (strings[pos].length > 1) {
+            strings[pos] = strings[pos][0].toUpperCase() + strings[pos].substr(1).toLowerCase();
+        } else if (strings[pos].length === 1) {
+            strings[pos] = strings[pos].toUpperCase();
         }
     }
 	str.string = strings.join(" ");
@@ -132,72 +128,73 @@ CSL.Output.Formatters["capitalize-all"] = function(state,string) {
  * Will not touch words that have some capitalization
  * already.
  */
-CSL.Output.Formatters["title"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
+CSL.Output.Formatters.title = function (state, string) {
+	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon;
+	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
 	}
 
 	// split words
-	var words = str.string.split(/(\s+)/);
-	var isUpperCase = str.string.toUpperCase() == string;
+	words = str.string.split(/(\s+)/);
+	isUpperCase = str.string.toUpperCase() === string;
 
-	var newString = "";
-	var delimiterOffset = words[0].length;
-	var lastWordIndex = words.length-1;
-	var previousWordIndex = -1;
-	for(var i=0; i<=lastWordIndex;  i += 2) {
+	newString = "";
+	delimiterOffset = words[0].length;
+	lastWordIndex = words.length - 1;
+	previousWordIndex = -1;
+	for (pos = 0; pos <= lastWordIndex;  pos += 2) {
 		// only do manipulation if not a delimiter character
-		if(words[i].length != 0 && (words[i].length != 1 || !/\s+/.test(words[i]))) {
-			var upperCaseVariant = words[i].toUpperCase();
-			var lowerCaseVariant = words[i].toLowerCase();
+		if (words[pos].length !== 0 && (words[pos].length !== 1 || !/\s+/.test(words[pos]))) {
+			upperCaseVariant = words[pos].toUpperCase();
+			lowerCaseVariant = words[pos].toLowerCase();
 
-				// only use if word does not already possess some capitalization
-				if(isUpperCase || words[i] == lowerCaseVariant) {
-					if(
-						// a skip word
-						CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) != -1
-						// not first or last word
-						&& i != 0 && i != lastWordIndex
-						// does not follow a colon
-						&& (previousWordIndex == -1 || words[previousWordIndex][words[previousWordIndex].length-1] != ":")
-					) {
-							words[i] = lowerCaseVariant;
-					} else {
-						// this is not a skip word or comes after a colon;
-						// we must capitalize
-						words[i] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
-					}
+			// only use if word does not already possess some capitalization
+			if (isUpperCase || words[pos] === lowerCaseVariant) {
+				skip = CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) !== -1;
+				notfirst = pos !== 0;
+				notlast = pos !== lastWordIndex;
+				firstword = previousWordIndex === -1;
+				aftercolon = words[previousWordIndex][(words[previousWordIndex].length - 1)] !== ":";
+				if (skip && notfirst && notlast && (firstword || aftercolon)) {
+					words[pos] = lowerCaseVariant;
+				} else {
+					// this is not a skip word or comes after a colon;
+					// we must capitalize
+					words[pos] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
 				}
-				previousWordIndex = i;
+			}
+			previousWordIndex = pos;
 		}
 	}
 	str.string = words.join("");
 	return CSL.Output.Formatters.undoppelString(str);
 };
 
-CSL.Output.Formatters.doppelString = function(string,rex){
-	var ret = new Object();
+CSL.Output.Formatters.doppelString = function (string, rex) {
+	var ret, pos, len;
+	ret = {};
 	ret.array = string.split(rex);
 	ret.string = "";
-	var l = ret.array.length;
-	for (var i=0; i<l; i += 2){
-		ret.string += ret.array[i];
-	};
+	len = ret.array.length;
+	for (pos = 0; pos < len; pos += 2) {
+		ret.string += ret.array[pos];
+	}
 	return ret;
 };
 
 
-CSL.Output.Formatters.undoppelString = function(str){
-	var ret = "";
-	var l = str.array.length;
-	for (var i=0; i<l; i += 1){
-		if ((i%2)){
-			ret += str.array[i];
+CSL.Output.Formatters.undoppelString = function (str) {
+	var ret, len, pos;
+	ret = "";
+	len = str.array.length;
+	for (pos = 0; pos < len; pos += 1) {
+		if ((pos % 2)) {
+			ret += str.array[pos];
 		} else {
-			ret += str.string.slice(0,str.array[i].length);
-			str.string = str.string.slice(str.array[i].length);
-		};
-	};
+			ret += str.string.slice(0, str.array[pos].length);
+			str.string = str.string.slice(str.array[pos].length);
+		}
+	}
 	return ret;
 };

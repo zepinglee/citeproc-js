@@ -6099,107 +6099,109 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function (blob, fun) {
 	blob.decorations.reverse();
 	return newdecor;
 };
-if (!CSL) {
-}
-CSL.Output.Formatters = new function(){};
-CSL.Output.Formatters.strip_periods = function(state,string) {
-    return string.replace(/\./g," ").replace(/\s*$/g,"").replace(/\s+/g," ");
+CSL.Output.Formatters = {};
+CSL.Output.Formatters.strip_periods = function (state, string) {
+    return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
 };
-CSL.Output.Formatters.passthrough = function(state,string){
+CSL.Output.Formatters.passthrough = function (state, string) {
 	return string;
 };
-CSL.Output.Formatters.lowercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
+CSL.Output.Formatters.lowercase = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
 	str.string = str.string.toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
-CSL.Output.Formatters.uppercase = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_USEALL);
+CSL.Output.Formatters.uppercase = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
 	str.string = str.string.toUpperCase();
-	var ret = CSL.Output.Formatters.undoppelString(str);
-	return ret;
+	return CSL.Output.Formatters.undoppelString(str);
 };
-CSL.Output.Formatters["capitalize-first"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	if (str.string.length){
-		str.string = str.string[0].toUpperCase()+str.string.substr(1);
+CSL.Output.Formatters["capitalize-first"] = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+	if (str.string.length) {
+		str.string = str.string[0].toUpperCase() + str.string.substr(1);
 		return CSL.Output.Formatters.undoppelString(str);
 	} else {
 		return "";
 	}
 };
-CSL.Output.Formatters["sentence"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	str.string = str.string[0].toUpperCase()+str.string.substr(1).toLowerCase();
+CSL.Output.Formatters.sentence = function (state, string) {
+	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+	str.string = str.string[0].toUpperCase() + str.string.substr(1).toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
-CSL.Output.Formatters["capitalize-all"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
-	var strings = str.string.split(" ");
-	var l = strings.length;
-	for(var i=0; i<l; i++) {
-		if(strings[i].length > 1) {
-            strings[i] = strings[i][0].toUpperCase()+strings[i].substr(1).toLowerCase();
-        } else if(strings[i].length == 1) {
-            strings[i] = strings[i].toUpperCase();
+CSL.Output.Formatters["capitalize-all"] = function (state, string) {
+	var str, strings, len, pos;
+	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+	strings = str.string.split(" ");
+	len = strings.length;
+	for (pos = 0; pos < len; pos += 1) {
+		if (strings[pos].length > 1) {
+            strings[pos] = strings[pos][0].toUpperCase() + strings[pos].substr(1).toLowerCase();
+        } else if (strings[pos].length === 1) {
+            strings[pos] = strings[pos].toUpperCase();
         }
     }
 	str.string = strings.join(" ");
 	return CSL.Output.Formatters.undoppelString(str);
 };
-CSL.Output.Formatters["title"] = function(state,string) {
-	var str = CSL.Output.Formatters.doppelString(string,CSL.TAG_ESCAPE);
+CSL.Output.Formatters.title = function (state, string) {
+	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon;
+	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
 	}
-	var words = str.string.split(/(\s+)/);
-	var isUpperCase = str.string.toUpperCase() == string;
-	var newString = "";
-	var delimiterOffset = words[0].length;
-	var lastWordIndex = words.length-1;
-	var previousWordIndex = -1;
-	for(var i=0; i<=lastWordIndex;  i += 2) {
-		if(words[i].length != 0 && (words[i].length != 1 || !/\s+/.test(words[i]))) {
-			var upperCaseVariant = words[i].toUpperCase();
-			var lowerCaseVariant = words[i].toLowerCase();
-				if(isUpperCase || words[i] == lowerCaseVariant) {
-					if(
-						CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) != -1
-						&& i != 0 && i != lastWordIndex
-						&& (previousWordIndex == -1 || words[previousWordIndex][words[previousWordIndex].length-1] != ":")
-					) {
-							words[i] = lowerCaseVariant;
-					} else {
-						words[i] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
-					}
+	words = str.string.split(/(\s+)/);
+	isUpperCase = str.string.toUpperCase() === string;
+	newString = "";
+	delimiterOffset = words[0].length;
+	lastWordIndex = words.length - 1;
+	previousWordIndex = -1;
+	for (pos = 0; pos <= lastWordIndex;  pos += 2) {
+		if (words[pos].length !== 0 && (words[pos].length !== 1 || !/\s+/.test(words[pos]))) {
+			upperCaseVariant = words[pos].toUpperCase();
+			lowerCaseVariant = words[pos].toLowerCase();
+			if (isUpperCase || words[pos] === lowerCaseVariant) {
+				skip = CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) !== -1;
+				notfirst = pos !== 0;
+				notlast = pos !== lastWordIndex;
+				firstword = previousWordIndex === -1;
+				aftercolon = words[previousWordIndex][(words[previousWordIndex].length - 1)] !== ":";
+				if (skip && notfirst && notlast && (firstword || aftercolon)) {
+					words[pos] = lowerCaseVariant;
+				} else {
+					words[pos] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
 				}
-				previousWordIndex = i;
+			}
+			previousWordIndex = pos;
 		}
 	}
 	str.string = words.join("");
 	return CSL.Output.Formatters.undoppelString(str);
 };
-CSL.Output.Formatters.doppelString = function(string,rex){
-	var ret = new Object();
+CSL.Output.Formatters.doppelString = function (string, rex) {
+	var ret, pos, len;
+	ret = {};
 	ret.array = string.split(rex);
 	ret.string = "";
-	var l = ret.array.length;
-	for (var i=0; i<l; i += 2){
-		ret.string += ret.array[i];
-	};
+	len = ret.array.length;
+	for (pos = 0; pos < len; pos += 2) {
+		ret.string += ret.array[pos];
+	}
 	return ret;
 };
-CSL.Output.Formatters.undoppelString = function(str){
-	var ret = "";
-	var l = str.array.length;
-	for (var i=0; i<l; i += 1){
-		if ((i%2)){
-			ret += str.array[i];
+CSL.Output.Formatters.undoppelString = function (str) {
+	var ret, len, pos;
+	ret = "";
+	len = str.array.length;
+	for (pos = 0; pos < len; pos += 1) {
+		if ((pos % 2)) {
+			ret += str.array[pos];
 		} else {
-			ret += str.string.slice(0,str.array[i].length);
-			str.string = str.string.slice(str.array[i].length);
-		};
-	};
+			ret += str.string.slice(0, str.array[pos].length);
+			str.string = str.string.slice(str.array[pos].length);
+		}
+	}
 	return ret;
 };
 if (!CSL) {
