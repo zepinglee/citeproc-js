@@ -328,6 +328,7 @@ if (!CSL.Node) {
 	load("./src/node_bibliography.js");
     load("./src/node_choose.js");
     load("./src/node_citation.js");
+
     load("./src/node_date.js");
 	// jslint OK
     load("./src/node_datepart.js");
@@ -339,6 +340,7 @@ if (!CSL.Node) {
     load("./src/node_info.js");
     load("./src/node_institution.js");
     load("./src/node_institutionpart.js");
+	// jslint OK
     load("./src/node_key.js");
     load("./src/node_label.js");
     load("./src/node_layout.js");

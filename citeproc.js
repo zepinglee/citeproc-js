@@ -2417,88 +2417,93 @@ CSL.Node.citation = {
 	}
 };
 CSL.Node.date = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
+	build: function (state, target) {
+		var func, date_obj, tok, len, pos, part, dpx, parts, mypos, start, end;
+		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			state.build.date_parts = [];
 			state.build.date_variables = this.variables;
-			CSL.Util.substituteStart.call(this,state,target);
-			var set_value = function(state,Item){
+			CSL.Util.substituteStart.call(this, state, target);
+			func = function (state, Item) {
 				state.tmp.element_rendered_ok = false;
 				state.tmp.donesies = [];
 				state.tmp.dateparts = [];
 				var dp = [];
-				if (this.variables.length){
+				if (this.variables.length) {
 					state.parallel.StartVariable(this.variables[0]);
-					var date_obj = Item[this.variables[0]];
-					if ("undefined" == typeof date_obj){
+					date_obj = Item[this.variables[0]];
+					if ("undefined" === typeof date_obj) {
 						date_obj = {"date-parts": [[0]] };
 					}
-					if (date_obj.raw){
-						state.tmp.date_object = state.fun.dateparser.parse( date_obj.raw );
+					if (date_obj.raw) {
+						state.tmp.date_object = state.fun.dateparser.parse(date_obj.raw);
 					} else if (date_obj["date-parts"]) {
-						state.tmp.date_object = state.dateParseArray( date_obj );
+						state.tmp.date_object = state.dateParseArray(date_obj);
 					}
-					for each (var part in this.dateparts){
-						if ("undefined" != typeof state.tmp.date_object[(part+"_end")]){
+					len = this.dateparts.length;
+					for (pos = 0; pos < len; pos += 1) {
+						part = this.dateparts[pos];
+						if ("undefined" !== typeof state.tmp.date_object[(part +  "_end")]) {
 							dp.push(part);
-						} else if (part == "month" && "undefined" != typeof state.tmp.date_object["season_end"]) {
+						} else if (part === "month" && "undefined" !== typeof state.tmp.date_object.season_end) {
 							dp.push(part);
-						};
-					};
-					var dpx = [];
-					var parts = ["year","month","day"];
-					for (var p in parts){
-						if (dp.indexOf(parts[p]) > -1){
-							dpx.push(parts[p]);
+						}
+					}
+					dpx = [];
+					parts = ["year", "month", "day"];
+					len = parts.length;
+					for (pos = 0; pos < len; pos += 1) {
+						if (dp.indexOf(parts[pos]) > -1) {
+							dpx.push(parts[pos]);
 						}
 					}
 					dp = dpx.slice();
-					var mypos = 2;
-					for (var pos=0;pos<dp.length; pos++){
-						var part = dp[pos];
-						var start = state.tmp.date_object[part];
-						var end = state.tmp.date_object[(part+"_end")];
-						if (start != end){
+					mypos = 2;
+					len = dp.length;
+					for (pos = 0; pos < len; pos += 1) {
+						part = dp[pos];
+						start = state.tmp.date_object[part];
+						end = state.tmp.date_object[(part + "_end")];
+						if (start !== end) {
 							mypos = pos;
 							break;
-						};
-					};
+						}
+					}
 					state.tmp.date_collapse_at = dp.slice(mypos);
 				} else {
 					state.tmp.date_object = false;
 				}
 			};
-			this["execs"].push(set_value);
-			var newoutput = function(state,Item){
-				state.output.startTag("date",this);
-				var tok = new CSL.Token("date-part",CSL.SINGLETON);
-				if (state.tmp.date_object["literal"]){
-					state.parallel.AppendToVariable(state.tmp.date_object["literal"]);
-					state.output.append(state.tmp.date_object["literal"],tok);
+			this.execs.push(func);
+			func = function (state, Item) {
+				state.output.startTag("date", this);
+				var tok = new CSL.Token("date-part", CSL.SINGLETON);
+				if (state.tmp.date_object.literal) {
+					state.parallel.AppendToVariable(state.tmp.date_object.literal);
+					state.output.append(state.tmp.date_object.literal, tok);
 					state.tmp.date_object = {};
 				}
 				tok.strings.suffix = " ";
 			};
-			this["execs"].push(newoutput);
+			this.execs.push(func);
 		}
-		if (state.build.sort_flag && this.tokentype == CSL.END){
-			var tok = new CSL.Token("key",CSL.SINGLETON);
+		if (state.build.sort_flag && this.tokentype === CSL.END) {
+			tok = new CSL.Token("key", CSL.SINGLETON);
 			tok.dateparts = state.build.date_parts.slice();
 			tok.variables = state.build.date_variables;
-			CSL.Node.key.build.call(tok,state,target);
+			CSL.Node.key.build.call(tok, state, target);
 			state.build.sort_flag = false;
 		}
-		if (!state.build.sort_flag && (this.tokentype == CSL.END || this.tokentype == CSL.SINGLETON)){
-			var mergeoutput = function(state,Item){
+		if (!state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
+			func = function (state, Item) {
 				state.output.endTag();
 				state.parallel.CloseVariable();
 			};
-			this["execs"].push(mergeoutput);
-		};
+			this.execs.push(func);
+		}
 		target.push(this);
-		if (this.tokentype == CSL.END && !state.build.sort_flag){
-			CSL.Util.substituteEnd.call(this,state,target);
-		};
+		if (this.tokentype === CSL.END && !state.build.sort_flag) {
+			CSL.Util.substituteEnd.call(this, state, target);
+		}
 	}
 };
 CSL.Node["date-part"] = {
