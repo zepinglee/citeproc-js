@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.institution = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.institution = {
+	build: function (state,target){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			var func = function(state,Item){
 				state.output.addToken("institution",false,this);
@@ -43,11 +42,10 @@ CSL.Node.institution = new function(){
 			this["execs"].push(func);
 		};
 		target.push(this);
-	};
-	this.configure = configure;
-	function configure(state,pos){
+	},
+	configure: function (state,pos){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			state.build.has_institution = true;
 		};
-	};
+	}
 };

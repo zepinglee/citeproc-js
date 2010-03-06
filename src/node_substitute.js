@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.substitute = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.substitute = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			var set_conditional = function(state,Item){
 				state.tmp.can_block_substitute = true;
@@ -46,7 +45,7 @@ CSL.Node.substitute = new function(){
 			this.execs.push(set_conditional);
 		};
 		target.push(this);
-	};
+	}
 };
 
 

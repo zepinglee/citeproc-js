@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.group = new function(){
-	this.build = build;
-	function build (state,target){
+CSL.Node.group = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			CSL.Util.substituteStart.call(this,state,target);
 			if (state.build.substitute_level.value()){

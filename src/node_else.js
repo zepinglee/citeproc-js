@@ -33,13 +33,11 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node["else"] = new function(){
-	this.build = build;
-	this.configure = configure;
-	function build (state,target){
+CSL.Node["else"] = {
+	build: function (state,target){
 		target.push(this);
-	}
-	function configure(state,pos){
+	},
+	configure: function (state,pos){
 		if (this.tokentype == CSL.START){
 			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
 		}

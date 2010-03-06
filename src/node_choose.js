@@ -33,10 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.choose = new function(){
-	this.build = build;
-	this.configure = configure;
-	function build (state,target){
+CSL.Node.choose = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			var func = function(state,Item){ //open condition
 				state.tmp.jump.push(undefined, CSL.LITERAL);
@@ -49,8 +47,9 @@ CSL.Node.choose = new function(){
 		}
 		this["execs"].push(func);
 		target.push(this);
-	}
-	function configure(state,pos){
+	},
+
+	configure: function (state,pos){
 		if (this.tokentype == CSL.END){
 			state.configure["fail"].push((pos));
 			state.configure["succeed"].push((pos));
@@ -60,5 +59,3 @@ CSL.Node.choose = new function(){
 		}
 	}
 };
-
-

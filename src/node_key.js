@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.key = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.key = {
+	build: function (state,target){
 		var start_key = new CSL.Token("key",CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
@@ -223,5 +222,5 @@ CSL.Node.key = new function(){
 		};
 		end_key["execs"].push(reset_key_params);
 		target.push(end_key);
-	};
+	}
 };

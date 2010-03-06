@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.name = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.name = {
+	build: function (state,target){
 
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			state.fixOpt(this,"name-delimiter","delimiter");
@@ -114,7 +113,7 @@ CSL.Node.name = new function(){
 		}
 
 		target.push(this);
-	};
+	}
 };
 
 

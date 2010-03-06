@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node["date-part"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["date-part"] = {
+	build: function (state,target){
 		if (!state.tmp.skipdate){
 		if (!this.strings.form){
 			this.strings.form = "long";
@@ -228,7 +227,7 @@ CSL.Node["date-part"] = new function(){
 			target.push(this);
 		};
 		};
-	};
+	}
 };
 
 

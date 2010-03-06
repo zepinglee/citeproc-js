@@ -33,15 +33,14 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node["et-al"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["et-al"] = {
+	build: function (state,target){
 		var set_et_al_format = function(state,Item){
 			state.output.addToken("etal",false,this);
 		};
 		this["execs"].push(set_et_al_format);
 		target.push(this);
-	};
+	}
 };
 
 

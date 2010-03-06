@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.label = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.label = {
+	build: function (state,target){
 		if (state.build.name_flag){
 			this.strings.label_position = CSL.AFTER;
 		} else {
@@ -77,7 +76,7 @@ CSL.Node.label = new function(){
 			state.build.form = false;
 		}
 		target.push(this);
-	};
+	}
 };
 
 

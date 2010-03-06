@@ -33,14 +33,13 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.info = new function(){
-	this.build = build;
-	function build (state,target){
+CSL.Node.info = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			state.build.skip = "info";
 		} else {
 			state.build.skip = false;
 		}
-	};
+	}
 };
 

@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.names = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.names = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			CSL.Util.substituteStart.call(this,state,target);
 			state.build.substitute_level.push(1);
@@ -546,7 +545,7 @@ CSL.Node.names = new function(){
 			CSL.Util.substituteEnd.call(this,state,target);
 
 		}
-	}
+	},
 
 	//
 	// XXXXX: in configure phase, set a flag if this node contains an
@@ -554,13 +553,12 @@ CSL.Node.names = new function(){
 	 // array containing two lists, to be run separately and joined
 	// in the end.  If we don't, the array will contain only one list.
 	//
-	this.configure = configure;
-	function configure(state,pos){
+	configure: function (state,pos){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			if (state.build.has_institution){
 				this.strings["has-institution"] = true;
 				state.build.has_institution = false;
 			};
 		};
-	};
+	}
 };

@@ -33,14 +33,13 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node["name-part"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["name-part"] = {
+	build: function(state,target){
 		var set_namepart_format = function(state,Item){
 			state.output.addToken(this.strings.name,false,this);
 		};
 		this["execs"].push(set_namepart_format);
 		target.push(this);
-	};
+	}
 };
 

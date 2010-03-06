@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node["institution-part"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["institution-part"] = {
+	build: function (state,target){
 		if ("long" == this.strings.name){
 			if (this.strings["if-short"]){
 				var func = function(state,Item){
@@ -53,5 +52,5 @@ CSL.Node["institution-part"] = new function(){
 		};
 		this["execs"].push(func);
 		target.push(this);
-	};
+	}
 };

@@ -2341,36 +2341,33 @@ CSL.citeEnd = function (Item) {
 	}
 };
 CSL.Node = {};
-CSL.Node.bibliography = new function(){
-	this.build = build;
-	function build(state,target){
-		if (this.tokentype == CSL.START){
+CSL.Node.bibliography = {
+	build: function (state, target) {
+		if (this.tokentype === CSL.START) {
 			state.parallel.use_parallels = false;
-			state.fixOpt(this,"names-delimiter","delimiter");
-			state.fixOpt(this,"name-delimiter","delimiter");
-			state.fixOpt(this,"name-form","form");
-			state.fixOpt(this,"and","and");
-			state.fixOpt(this,"delimiter-precedes-last","delimiter-precedes-last");
-			state.fixOpt(this,"initialize-with","initialize-with");
-			state.fixOpt(this,"name-as-sort-order","name-as-sort-order");
-			state.fixOpt(this,"sort-separator","sort-separator");
-			state.fixOpt(this,"et-al-min","et-al-min");
-			state.fixOpt(this,"et-al-use-first","et-al-use-first");
-			state.fixOpt(this,"et-al-subsequent-min","et-al-subsequent-min");
-			state.fixOpt(this,"et-al-subsequent-use-first","et-al-subsequent-use-first");
+			state.fixOpt(this, "names-delimiter", "delimiter");
+			state.fixOpt(this, "name-delimiter", "delimiter");
+			state.fixOpt(this, "name-form", "form");
+			state.fixOpt(this, "and", "and");
+			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "initialize-with", "initialize-with");
+			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
+			state.fixOpt(this, "sort-separator", "sort-separator");
+			state.fixOpt(this, "et-al-min", "et-al-min");
+			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
+			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 			state.build.area_return = state.build.area;
 			state.build.area = "bibliography";
 		}
-		if (this.tokentype == CSL.END){
+		if (this.tokentype === CSL.END) {
 			state.build.area = state.build.area_return;
 		}
 		target.push(this);
-	};
+	}
 };
-CSL.Node.choose = new function(){
-	this.build = build;
-	this.configure = configure;
-	function build (state,target){
+CSL.Node.choose = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			var func = function(state,Item){ //open condition
 				state.tmp.jump.push(undefined, CSL.LITERAL);
@@ -2383,8 +2380,8 @@ CSL.Node.choose = new function(){
 		}
 		this["execs"].push(func);
 		target.push(this);
-	}
-	function configure(state,pos){
+	},
+	configure: function (state,pos){
 		if (this.tokentype == CSL.END){
 			state.configure["fail"].push((pos));
 			state.configure["succeed"].push((pos));
@@ -2394,9 +2391,8 @@ CSL.Node.choose = new function(){
 		}
 	}
 };
-CSL.Node.citation = new function(){
-	this.build = build;
-	function build (state,target){
+CSL.Node.citation = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START) {
 			state.fixOpt(this,"names-delimiter","delimiter");
 			state.fixOpt(this,"name-delimiter","delimiter");
@@ -2418,9 +2414,8 @@ CSL.Node.citation = new function(){
 		}
 	}
 };
-CSL.Node.date = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.date = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			state.build.date_parts = [];
 			state.build.date_variables = this.variables;
@@ -2502,11 +2497,10 @@ CSL.Node.date = new function(){
 		if (this.tokentype == CSL.END && !state.build.sort_flag){
 			CSL.Util.substituteEnd.call(this,state,target);
 		};
-	};
+	}
 };
-CSL.Node["date-part"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["date-part"] = {
+	build: function (state,target){
 		if (!state.tmp.skipdate){
 		if (!this.strings.form){
 			this.strings.form = "long";
@@ -2665,12 +2659,10 @@ CSL.Node["date-part"] = new function(){
 			target.push(this);
 		};
 		};
-	};
+	}
 };
-CSL.Node["else-if"] = new function(){
-	this.build = build;
-	this.configure = configure;
-	function build (state,target){
+CSL.Node["else-if"] = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			if ("number" == typeof this.strings.position){
 				var tryposition = this.strings.position;
@@ -2703,8 +2695,8 @@ CSL.Node["else-if"] = new function(){
 			this["execs"].push(closingjump);
 		};
 		target.push(this);
-	}
-	function configure(state,pos){
+	},
+	configure: function(state,pos){
 		if (this.tokentype == CSL.START){
 			this["fail"] = state.configure["fail"].slice(-1)[0];
 			this["succeed"] = this["next"];
@@ -2715,31 +2707,27 @@ CSL.Node["else-if"] = new function(){
 		}
 	}
 };
-CSL.Node["else"] = new function(){
-	this.build = build;
-	this.configure = configure;
-	function build (state,target){
+CSL.Node["else"] = {
+	build: function (state,target){
 		target.push(this);
-	}
-	function configure(state,pos){
+	},
+	configure: function (state,pos){
 		if (this.tokentype == CSL.START){
 			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
 		}
 	}
 };
-CSL.Node["et-al"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["et-al"] = {
+	build: function (state,target){
 		var set_et_al_format = function(state,Item){
 			state.output.addToken("etal",false,this);
 		};
 		this["execs"].push(set_et_al_format);
 		target.push(this);
-	};
+	}
 };
-CSL.Node.group = new function(){
-	this.build = build;
-	function build (state,target){
+CSL.Node.group = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			CSL.Util.substituteStart.call(this,state,target);
 			if (state.build.substitute_level.value()){
@@ -2781,10 +2769,8 @@ CSL.Node.group = new function(){
 		}
 	}
 };
-CSL.Node["if"] = new function(){
-	this.build = build;
-	this.configure = configure;
-	function build (state,target){
+CSL.Node["if"] = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			if ("number" == typeof this.strings.position){
 				var tryposition = this.strings.position;
@@ -2833,8 +2819,8 @@ CSL.Node["if"] = new function(){
 			this["execs"].push(closingjump);
 		};
 		target.push(this);
-	}
-	function configure(state,pos){
+	},
+	configure: function (state,pos){
 		if (this.tokentype == CSL.START){
 			this["fail"] = state.configure["fail"].slice(-1)[0];
 			this["succeed"] = this["next"];
@@ -2844,19 +2830,17 @@ CSL.Node["if"] = new function(){
 		}
 	}
 };
-CSL.Node.info = new function(){
-	this.build = build;
-	function build (state,target){
+CSL.Node.info = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			state.build.skip = "info";
 		} else {
 			state.build.skip = false;
 		}
-	};
+	}
 };
-CSL.Node.institution = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.institution = {
+	build: function (state,target){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			var func = function(state,Item){
 				state.output.addToken("institution",false,this);
@@ -2864,17 +2848,15 @@ CSL.Node.institution = new function(){
 			this["execs"].push(func);
 		};
 		target.push(this);
-	};
-	this.configure = configure;
-	function configure(state,pos){
+	},
+	configure: function (state,pos){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			state.build.has_institution = true;
 		};
-	};
+	}
 };
-CSL.Node["institution-part"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["institution-part"] = {
+	build: function (state,target){
 		if ("long" == this.strings.name){
 			if (this.strings["if-short"]){
 				var func = function(state,Item){
@@ -2892,11 +2874,10 @@ CSL.Node["institution-part"] = new function(){
 		};
 		this["execs"].push(func);
 		target.push(this);
-	};
+	}
 };
-CSL.Node.key = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.key = {
+	build: function (state,target){
 		var start_key = new CSL.Token("key",CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
@@ -3067,11 +3048,10 @@ CSL.Node.key = new function(){
 		};
 		end_key["execs"].push(reset_key_params);
 		target.push(end_key);
-	};
+	}
 };
-CSL.Node.label = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.label = {
+	build: function (state,target){
 		if (state.build.name_flag){
 			this.strings.label_position = CSL.AFTER;
 		} else {
@@ -3113,11 +3093,10 @@ CSL.Node.label = new function(){
 			state.build.form = false;
 		}
 		target.push(this);
-	};
+	}
 };
-CSL.Node.layout = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.layout = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			state.build.layout_flag = true;
 			state[state.tmp.area].opt.topdecor = [this.decorations];
@@ -3191,16 +3170,13 @@ CSL.Node.layout = new function(){
 			this["execs"].push(mergeoutput);
 			target.push(this);
 		}
-	};
+	}
 };
-CSL.Node.macro = new function(){
-	this.build = build;
-	function build (state,target){
-	};
+CSL.Node.macro = {
+	build: function (state,target){}
 };
-CSL.Node.name = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.name = {
+	build: function (state,target){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			state.fixOpt(this,"name-delimiter","delimiter");
 			state.fixOpt(this,"name-form","form");
@@ -3251,21 +3227,19 @@ CSL.Node.name = new function(){
 			this["execs"].push(func);
 		}
 		target.push(this);
-	};
+	}
 };
-CSL.Node["name-part"] = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node["name-part"] = {
+	build: function(state,target){
 		var set_namepart_format = function(state,Item){
 			state.output.addToken(this.strings.name,false,this);
 		};
 		this["execs"].push(set_namepart_format);
 		target.push(this);
-	};
+	}
 };
-CSL.Node.names = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.names = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			CSL.Util.substituteStart.call(this,state,target);
 			state.build.substitute_level.push(1);
@@ -3648,20 +3622,18 @@ CSL.Node.names = new function(){
 			state.build.substitute_level.pop();
 			CSL.Util.substituteEnd.call(this,state,target);
 		}
-	}
-	this.configure = configure;
-	function configure(state,pos){
+	},
+	configure: function (state,pos){
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
 			if (state.build.has_institution){
 				this.strings["has-institution"] = true;
 				state.build.has_institution = false;
 			};
 		};
-	};
+	}
 };
-CSL.Node.number = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.number = {
+	build: function (state,target){
 		CSL.Util.substituteStart.call(this,state,target);
 		if (this.strings.form == "roman"){
 			this.formatter = state.fun.romanizer;
@@ -3700,11 +3672,10 @@ CSL.Node.number = new function(){
 		this["execs"].push(push_number_or_text);
 		target.push(this);
 		CSL.Util.substituteEnd.call(this,state,target);
-	};
+	}
 };
-CSL.Node.sort = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.sort = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			if (state.build.area == "citation"){
 				state.parallel.use_parallels = false;
@@ -3717,11 +3688,10 @@ CSL.Node.sort = new function(){
 			state.build.area = state.build.area_return;
 			state.build.sort_flag  = false;
 		}
-	};
+	}
 };
-CSL.Node.substitute = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.substitute = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			var set_conditional = function(state,Item){
 				state.tmp.can_block_substitute = true;
@@ -3732,11 +3702,10 @@ CSL.Node.substitute = new function(){
 			this.execs.push(set_conditional);
 		};
 		target.push(this);
-	};
+	}
 };
-CSL.Node.text = new function(){
-	this.build = build;
-	function build (state,target){
+CSL.Node.text = {
+	build: function (state,target){
 		CSL.Util.substituteStart.call(this,state,target);
 		if (this.postponed_macro){
 			CSL.expandMacro.call(state,this);
@@ -3969,7 +3938,7 @@ CSL.Node.text = new function(){
 			target.push(this);
 		};
 		CSL.Util.substituteEnd.call(this,state,target);
-	};
+	}
 };
 CSL.Attributes = {};
 CSL.Attributes["@class"] = function (state, arg) {

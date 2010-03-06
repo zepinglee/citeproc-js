@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.text = new function(){
-	this.build = build;
-	function build (state,target){
+CSL.Node.text = {
+	build: function (state,target){
 		CSL.Util.substituteStart.call(this,state,target);
 		if (this.postponed_macro){
 			CSL.expandMacro.call(state,this);
@@ -297,7 +296,7 @@ CSL.Node.text = new function(){
 			target.push(this);
 		};
 		CSL.Util.substituteEnd.call(this,state,target);
-	};
+	}
 };
 
 

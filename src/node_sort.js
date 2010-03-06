@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.sort = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.sort = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			if (state.build.area == "citation"){
 				state.parallel.use_parallels = false;
@@ -48,7 +47,7 @@ CSL.Node.sort = new function(){
 			state.build.area = state.build.area_return;
 			state.build.sort_flag  = false;
 		}
-	};
+	}
 };
 
 

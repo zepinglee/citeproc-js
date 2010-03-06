@@ -33,9 +33,8 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node.date = new function(){
-	this.build = build;
-	function build(state,target){
+CSL.Node.date = {
+	build: function (state,target){
 		if (this.tokentype == CSL.START || this.tokentype == CSL.SINGLETON){
 			// used to collect rendered date part names in node_datepart,
 			// for passing through to node_key, for use in dates embedded
@@ -170,5 +169,5 @@ CSL.Node.date = new function(){
 		if (this.tokentype == CSL.END && !state.build.sort_flag){
 			CSL.Util.substituteEnd.call(this,state,target);
 		};
-	};
+	}
 };

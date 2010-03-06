@@ -33,12 +33,10 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Node["else-if"] = new function(){
-	this.build = build;
-	this.configure = configure;
+CSL.Node["else-if"] = {
 	//
 	// these function are the same as those in if, might just clone
-	function build (state,target){
+	build: function (state,target){
 		if (this.tokentype == CSL.START){
 			//for each (var variable in this.variables){
 			//	var func = function(state,Item){
@@ -85,8 +83,8 @@ CSL.Node["else-if"] = new function(){
 			this["execs"].push(closingjump);
 		};
 		target.push(this);
-	}
-	function configure(state,pos){
+	},
+	configure: function(state,pos){
 		if (this.tokentype == CSL.START){
 			// jump index on failure
 			this["fail"] = state.configure["fail"].slice(-1)[0];
