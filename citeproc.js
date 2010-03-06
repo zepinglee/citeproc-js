@@ -6204,56 +6204,56 @@ CSL.Output.Formatters.undoppelString = function (str) {
 	}
 	return ret;
 };
-if (!CSL) {
-}
-CSL.Output.Formats = function(){};
+CSL.Output.Formats = function () {};
 CSL.Output.Formats.prototype.html = {
-	"text_escape": function(text){
-		return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+	"text_escape": function (text) {
+		return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 	},
 	"bibstart": "<div class=\"csl-bib-body\">\n",
 	"bibend": "</div>",
-	"@font-style/italic":"<i>%%STRING%%</i>",
-	"@font-style/oblique":"<em>%%STRING%%</em>",
-	"@font-style/normal":"<span style=\"font-style:normal;\">%%STRING%%</span>",
-	"@font-variant/small-caps":"<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
-	"@passthrough/true":CSL.Output.Formatters.passthrough,
-	"@font-variant/normal":false,
-	"@font-weight/bold":"<b>%%STRING%%</b>",
-	"@font-weight/normal":"<span style=\"font-weight:normal;\">%%STRING%%</span>",
-	"@font-weight/light":false,
-	"@text-decoration/none":"<span style=\"text-decoration:none;\">%%STRING%%</span>",
-	"@text-decoration/underline":"<span style=\"text-decoration:underline;\">%%STRING%%</span>",
-	"@vertical-align/baseline":false,
-	"@vertical-align/sup":"<sup>%%STRING%%</sup>",
-	"@vertical-align/sub":"<sub>%%STRING%%</sub>",
-	"@strip-periods/true":CSL.Output.Formatters.strip_periods,
-	"@strip-periods/false":function(state,string){return string;},
-	"@quotes/true":function(state,str){
-		if ("undefined" == typeof str){
+	"@font-style/italic": "<i>%%STRING%%</i>",
+	"@font-style/oblique": "<em>%%STRING%%</em>",
+	"@font-style/normal": "<span style=\"font-style:normal;\">%%STRING%%</span>",
+	"@font-variant/small-caps": "<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
+	"@passthrough/true": CSL.Output.Formatters.passthrough,
+	"@font-variant/normal": false,
+	"@font-weight/bold": "<b>%%STRING%%</b>",
+	"@font-weight/normal": "<span style=\"font-weight:normal;\">%%STRING%%</span>",
+	"@font-weight/light": false,
+	"@text-decoration/none": "<span style=\"text-decoration:none;\">%%STRING%%</span>",
+	"@text-decoration/underline": "<span style=\"text-decoration:underline;\">%%STRING%%</span>",
+	"@vertical-align/baseline": false,
+	"@vertical-align/sup": "<sup>%%STRING%%</sup>",
+	"@vertical-align/sub": "<sub>%%STRING%%</sub>",
+	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
+	"@strip-periods/false": function (state, string) {
+		return string;
+	},
+	"@quotes/true": function (state, str) {
+		if ("undefined" === typeof str) {
 			return state.getTerm("open-quote");
-		};
+		}
 		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
 	},
-	"@quotes/inner":function(state,str){
-		if ("undefined" == typeof str){
+	"@quotes/inner": function (state, str) {
+		if ("undefined" === typeof str) {
 			return "\u2019";
-		};
+		}
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
-	"@bibliography/entry": function(state,str){
-		return "  <div class=\"csl-entry\">"+str+"</div>\n";
+	"@bibliography/entry": function (state, str) {
+		return "  <div class=\"csl-entry\">" + str + "</div>\n";
 	},
-	"@display/block": function(state,str){
+	"@display/block": function (state, str) {
 		return "\n\n    <div class=\"csl-block\">" + str + "</div>\n";
 	},
-	"@display/left-margin": function(state,str){
+	"@display/left-margin": function (state, str) {
 		return "\n    <div class=\"csl-left-margin\">" + str + "</div>";
 	},
-	"@display/right-inline": function(state,str){
+	"@display/right-inline": function (state, str) {
 		return "<div class=\"csl-right-inline\">" + str + "</div>\n  ";
 	},
-	"@display/indent": function(state,str){
+	"@display/indent": function (state, str) {
 		return "<div class=\"csl-indent\">" + str + "</div>\n  ";
 	}
 };

@@ -426,10 +426,11 @@ if (!CSL.Util.FlipFlopper) {
 if (!CSL.Output.Formatters) {
 	load("./src/formatters.js");
 }
-
+// jslint OK
 if (!CSL.Output.Formats) {
 	load("./src/formats.js");
 }
+
 if (!CSL.Registry) {
 	load("./src/registry.js");
 }
