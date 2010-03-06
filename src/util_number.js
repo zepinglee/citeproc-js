@@ -33,54 +33,47 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-if (!CSL) {
-	load("./src/csl.js");
-}
+CSL.Util.LongOrdinalizer = function () {};
 
-//
-// This will probably become CSL.Util.Numbers
-//
-
-CSL.Util.LongOrdinalizer = function(){};
-
-CSL.Util.LongOrdinalizer.prototype.init = function(state){
+CSL.Util.LongOrdinalizer.prototype.init = function (state) {
 	this.state = state;
-	this.names = new Object();
-	for (var i=1; i<10; i+=1){
-		this.names[""+i] = state.getTerm("long-ordinal-0"+i);
-	};
+	this.names = {};
+	for (var i = 1; i < 10; i += 1) {
+		this.names[("" + i)] = state.getTerm(("long-ordinal-0" + i));
+	}
 	this.names["10"] = state.getTerm("long-ordinal-10");
 
 };
 
-CSL.Util.LongOrdinalizer.prototype.format = function(num){
-	var ret = this.names[""+num];
-	if (!ret){
+CSL.Util.LongOrdinalizer.prototype.format = function (num) {
+	var ret = this.names[("" + num)];
+	if (!ret) {
 		ret = this.state.fun.ordinalizer.format(num);
-	};
+	}
 	return ret;
 };
 
 
-CSL.Util.Ordinalizer = function(){};
+CSL.Util.Ordinalizer = function () {};
 
-CSL.Util.Ordinalizer.prototype.init = function(state){
-	this.suffixes = new Array();
-	for (var i=1; i<5; i+=1){
-		this.suffixes.push( state.getTerm("ordinal-0"+i) );
-	};
+CSL.Util.Ordinalizer.prototype.init = function (state) {
+	this.suffixes = [];
+	for (var i = 1; i < 5; i += 1) {
+		this.suffixes.push(state.getTerm(("ordinal-0" + i)));
+	}
 };
 
-CSL.Util.Ordinalizer.prototype.format = function(num){
-	num = parseInt(num,10);
-	var str = num.toString();
-	if ( (num/10)%10 == 1){
+CSL.Util.Ordinalizer.prototype.format = function (num) {
+	var str;
+	num = parseInt(num, 10);
+	str = num.toString();
+	if ((num / 10) % 10 === 1) {
 		str += this.suffixes[3];
-	} else if ( num%10 == 1) {
+	} else if (num % 10 === 1) {
 		str += this.suffixes[0];
-	} else if ( num%10 == 2){
+	} else if (num % 10 === 2) {
 		str += this.suffixes[1];
-	} else if ( num%10 == 3){
+	} else if (num % 10 === 3) {
 		str += this.suffixes[2];
 	} else {
 		str += this.suffixes[3];
@@ -88,17 +81,19 @@ CSL.Util.Ordinalizer.prototype.format = function(num){
 	return str;
 };
 
-CSL.Util.Romanizer = function (){};
+CSL.Util.Romanizer = function () {};
 
-CSL.Util.Romanizer.prototype.format = function(num){
-	var ret = "";
+CSL.Util.Romanizer.prototype.format = function (num) {
+	var ret, pos, n, numstr, len;
+	ret = "";
 	if (num < 6000) {
-		var numstr = num.toString().split("");
+		numstr = num.toString().split("");
 		numstr.reverse();
-		var pos = 0;
-		var n = 0;
-		for (var pos in numstr){
-			n = parseInt(numstr[pos],10);
+		pos = 0;
+		n = 0;
+		len = numstr.length;
+		for (pos = 0; pos < len; pos += 1) {
+			n = parseInt(numstr[pos], 10);
 			ret = CSL.ROMAN_NUMERALS[pos][n] + ret;
 		}
 	}
@@ -110,8 +105,8 @@ CSL.Util.Romanizer.prototype.format = function(num){
  * Create a suffix formed from a list of arbitrary characters of arbitrary length.
  * <p>This is a <i>lot</i> harder than it seems.</p>
  */
-CSL.Util.Suffixator = function(slist){
-	if (!slist){
+CSL.Util.Suffixator = function (slist) {
+	if (!slist) {
 		slist = CSL.SUFFIX_CHARS;
 	}
 	this.slist = slist.split(",");
@@ -124,51 +119,57 @@ CSL.Util.Suffixator = function(slist){
  * object with such a "format" method.</p>
  */
 
-CSL.Util.Suffixator.prototype.format = function(num){
+CSL.Util.Suffixator.prototype.format = function (num) {
 	var suffixes = this.get_suffixes(num);
-	return suffixes[(suffixes.length-1)];
-}
+	return suffixes[(suffixes.length - 1)];
+};
 
-CSL.Util.Suffixator.prototype.get_suffixes = function(num){
-	var suffixes = new Array();
+CSL.Util.Suffixator.prototype.get_suffixes = function (num) {
+	var suffixes, digits, chrs, pos, len, llen, ppos;
+	suffixes = [];
 
-	for (var i=0; i <= num; i++){
-		if (!i){
+	for (pos = 0; pos <= num; pos += 1) {
+		if (!pos) {
 			suffixes.push([0]);
 		} else {
-			suffixes.push( this.incrementArray(suffixes[(suffixes.length-1)],this.slist) );
+			suffixes.push(this.incrementArray(suffixes[(suffixes.length - 1)], this.slist));
 		}
-	};
-	for (pos in suffixes){
-		var digits = suffixes[pos];
-		var chrs = "";
-		for each (digit in digits){
-			chrs = chrs+this.slist[digit];
+	}
+	len = suffixes.length;
+	for (pos = 0; pos < len; pos += 1) {
+		digits = suffixes[pos];
+		chrs = "";
+		llen = digits.length;
+		for (ppos = 0; ppos < llen; ppos += 1) {
+			chrs = chrs + this.slist[digits[ppos]];
 		}
 		suffixes[pos] = chrs;
-	};
+	}
 	return suffixes;
 };
 
 
-CSL.Util.Suffixator.prototype.incrementArray = function (array){
+CSL.Util.Suffixator.prototype.incrementArray = function (array) {
+	var incremented, newdigit, i, pos, len;
 	array = array.slice();
-	var incremented = false;
-	for (var i=(array.length-1); i > -1; i--){
-		if (array[i] < (this.slist.length-1)){
-			array[i] += 1;
-			if (i < (array.length-1)){
-				array[(i+1)] = 0;
+	incremented = false;
+	len = array.length - 1;
+	for (pos = len; pos > -1; pos += -1) {
+		if (array[pos] < (this.slist.length - 1)) {
+			array[pos] += 1;
+			if (i < (array.length - 1)) {
+				array[(pos + 1)] = 0;
 			}
 			incremented = true;
 			break;
 		}
 	}
-	if (!incremented){
-		for (var i in array){
-			array[i] = 0;
+	if (!incremented) {
+		len = array.length;
+		for (pos = 0; pos < len; pos += 1) {
+			array[pos] = 0;
 		}
-		var newdigit = [0];
+		newdigit = [0];
 		array = newdigit.concat(array);
 	}
 	return array;

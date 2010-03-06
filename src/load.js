@@ -410,9 +410,11 @@ if (!CSL.Util.Sort) {
 if (!CSL.Util.substituteStart) {
 	load("./src/util_substitute.js");
 }
+// jslint OK
 if (!CSL.Util.Suffixator) {
 	load("./src/util_number.js");
 }
+
 if (!CSL.Util.PageRangeMangler) {
 	load("./src/util_page.js");
 }
