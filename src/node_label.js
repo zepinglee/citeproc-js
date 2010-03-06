@@ -34,43 +34,46 @@
  */
 
 CSL.Node.label = {
-	build: function (state,target){
-		if (state.build.name_flag){
+	build: function (state, target) {
+		var func, term, plural, form;
+		if (state.build.name_flag) {
 			this.strings.label_position = CSL.AFTER;
 		} else {
 			this.strings.label_position = CSL.BEFORE;
 		}
-		var set_label_info = function(state,Item){
-			state.output.addToken("label",false,this);
+		// set label info
+		func = function (state, Item) {
+			state.output.addToken("label", false, this);
 		};
-		this["execs"].push(set_label_info);
-		if (state.build.term){
-			var term = state.build.term;
-			var plural = 0;
-			if (!this.strings.form){
+		this.execs.push(func);
+		if (state.build.term) {
+			term = state.build.term;
+			plural = 0;
+			if (!this.strings.form) {
 				this.strings.form = "long";
 			}
-			var form = this.strings.form;
-			if ("number" == typeof this.strings.plural){
+			form = this.strings.form;
+			if ("number" === typeof this.strings.plural) {
 				plural = this.strings.plural;
-				CSL.debug("plural: "+this.strings.plural);
+				CSL.debug("plural: " + this.strings.plural);
 			}
-			var output_label = function(state,Item,item){
-				if ("locator" == term){
-					if (item && item.label){
+			func = function (state, Item, item) {
+				var myterm;
+				if ("locator" === term) {
+					if (item && item.label) {
 						myterm = item.label;
 					}
 				}
-				if (!myterm){
+				if (!myterm) {
 					myterm = "page";
 				}
-				var myterm = state.getTerm(myterm,form,plural);
-				if (this.strings["include-period"]){
+				myterm = state.getTerm(myterm, form, plural);
+				if (this.strings["include-period"]) {
 					myterm += ".";
 				}
-				state.output.append(myterm,this);
+				state.output.append(myterm, this);
 			};
-			this.execs.push(output_label);
+			this.execs.push(func);
 			state.build.plural = false;
 			state.build.term = false;
 			state.build.form = false;

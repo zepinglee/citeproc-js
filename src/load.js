@@ -346,11 +346,13 @@ if (!CSL.Node) {
     load("./src/node_if.js");
 	// jslint OK
     load("./src/node_info.js");
-	
+	// jslint OK
     load("./src/node_institution.js");
+	// jslint OK
     load("./src/node_institutionpart.js");
 	// jslint OK
     load("./src/node_key.js");
+	
     load("./src/node_label.js");
     load("./src/node_layout.js");
 	// jslint OK
