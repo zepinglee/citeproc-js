@@ -358,7 +358,9 @@ if (!CSL.Node) {
     load("./src/node_layout.js");
 	// jslint OK
     load("./src/node_macro.js");
+	// jslint OK
     load("./src/node_name.js");
+	
     load("./src/node_namepart.js");
 	// jslint OK
     load("./src/node_names.js");

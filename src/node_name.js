@@ -34,11 +34,11 @@
  */
 
 CSL.Node.name = {
-	build: function (state,target){
-
-		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
-			state.fixOpt(this,"name-delimiter","delimiter");
-			state.fixOpt(this,"name-form","form");
+	build: function (state, target) {
+		var func, pos, len, attrname;
+		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
+			state.fixOpt(this, "name-delimiter", "delimiter");
+			state.fixOpt(this, "name-form", "form");
 			//
 			// Okay, there's a problem with these.  Each of these is set
 			// on the name object, but must be accessible at the closing of
@@ -54,64 +54,60 @@ CSL.Node.name = {
 			// limit the jiggery-pokery and overhead to the compile phase.
 			// Might save a few trees, in aggregate.
 			//
-			state.fixOpt(this,"and","and");
-			state.fixOpt(this,"delimiter-precedes-last","delimiter-precedes-last");
-			state.fixOpt(this,"initialize-with","initialize-with");
-			state.fixOpt(this,"name-as-sort-order","name-as-sort-order");
-			state.fixOpt(this,"sort-separator","sort-separator");
+			state.fixOpt(this, "and", "and");
+			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "initialize-with", "initialize-with");
+			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
+			state.fixOpt(this, "sort-separator", "sort-separator");
 
-			state.fixOpt(this,"et-al-min","et-al-min");
-			state.fixOpt(this,"et-al-use-first","et-al-use-first");
-			state.fixOpt(this,"et-al-subsequent-min","et-al-subsequent-min");
-			state.fixOpt(this,"et-al-subsequent-use-first","et-al-subsequent-use-first");
+			state.fixOpt(this, "et-al-min", "et-al-min");
+			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
+			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 
-			state.build.nameattrs = new Object();
-			for each (attrname in CSL.NAME_ATTRIBUTES){
+			state.build.nameattrs = {};
+			len = CSL.NAME_ATTRIBUTES.length;
+			for (pos = 0; pos < len; pos += 1) {
+				attrname = CSL.NAME_ATTRIBUTES[pos];
 				state.build.nameattrs[attrname] = this.strings[attrname];
 			}
 
 			state.build.form = this.strings.form;
 			state.build.name_flag = true;
 
-			var set_et_al_params = function(state,Item){
-				if (Item.position || state.tmp.force_subsequent){
-					if (! state.tmp["et-al-min"]){
-						if (this.strings["et-al-subsequent-min"]){
+			// set et al params
+			func = function (state, Item) {
+				if (Item.position || state.tmp.force_subsequent) {
+					if (! state.tmp["et-al-min"]) {
+						if (this.strings["et-al-subsequent-min"]) {
 							state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
 						} else {
 							state.tmp["et-al-min"] = this.strings["et-al-min"];
 						}
 					}
-					if (! state.tmp["et-al-use-first"]){
-						if (this.strings["et-al-subsequent-use-first"]){
+					if (! state.tmp["et-al-use-first"]) {
+						if (this.strings["et-al-subsequent-use-first"]) {
 							state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
 						} else {
 							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 						}
 					}
 				} else {
-					if (! state.tmp["et-al-min"]){
+					if (! state.tmp["et-al-min"]) {
 						state.tmp["et-al-min"] = this.strings["et-al-min"];
 					}
-					if (! state.tmp["et-al-use-first"]){
+					if (! state.tmp["et-al-use-first"]) {
 						state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 					}
 				}
 			};
-			this["execs"].push(set_et_al_params);
+			this.execs.push(func);
 
-			var func = function(state,Item){
-				state.output.addToken("name",false,this);
+			func = function (state, Item) {
+				state.output.addToken("name", false, this);
 			};
-			this["execs"].push(func);
-
-			//var set_initialize_with = function(state,Item){
-			//	state.tmp["initialize-with"] = this.strings["initialize-with"];
-			//};
-			//this["execs"].push(set_initialize_with);
-
+			this.execs.push(func);
 		}
-
 		target.push(this);
 	}
 };

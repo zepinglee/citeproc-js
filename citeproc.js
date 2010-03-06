@@ -2681,6 +2681,22 @@ CSL.Node["else-if"] = {
 				};
 				this.tests.push(func);
 			}
+			if (this.strings["near-note-distance-check"]) {
+				func = function (state, Item, item) {
+					if (state.tmp.force_subsequent) {
+						return true;
+					} else if (!item || !item.note_distance) {
+						return false;
+					} else {
+						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+				};
+				this.tests.push(func);
+			}
 			if (! this.evaluator) {
 				this.evaluator = state.fun.match.any;
 			}
@@ -2706,131 +2722,134 @@ CSL.Node["else-if"] = {
 	}
 };
 CSL.Node["else"] = {
-	build: function (state,target){
+	build: function (state, target) {
 		target.push(this);
 	},
-	configure: function (state,pos){
-		if (this.tokentype == CSL.START){
-			state.configure["fail"][(state.configure["fail"].length-1)] = pos;
+	configure: function (state, pos) {
+		if (this.tokentype === CSL.START) {
+			state.configure.fail[(state.configure.fail.length - 1)] = pos;
 		}
 	}
 };
 CSL.Node["et-al"] = {
-	build: function (state,target){
-		var set_et_al_format = function(state,Item){
-			state.output.addToken("etal",false,this);
+	build: function (state, target) {
+		var func;
+		func = function (state, Item) {
+			state.output.addToken("etal", false, this);
 		};
-		this["execs"].push(set_et_al_format);
+		this.execs.push(func);
 		target.push(this);
 	}
 };
 CSL.Node.group = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			CSL.Util.substituteStart.call(this,state,target);
-			if (state.build.substitute_level.value()){
-				state.build.substitute_level.replace((state.build.substitute_level.value()+1));
+	build: function (state, target) {
+		var func, execs;
+		if (this.tokentype === CSL.START) {
+			CSL.Util.substituteStart.call(this, state, target);
+			if (state.build.substitute_level.value()) {
+				state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
 			}
-			var newoutput = function(state,Item){
-				state.output.startTag("group",this);
+			func = function (state, Item) {
+				state.output.startTag("group", this);
 			};
-			var execs = new Array();
-			execs.push(newoutput);
+			execs = [];
+			execs.push(func);
 			this.execs = execs.concat(this.execs);
-			var fieldcontentflag = function(state,Item){
-				state.tmp.term_sibling.push( undefined, CSL.LITERAL );
+			func = function (state, Item) {
+				state.tmp.term_sibling.push(undefined, CSL.LITERAL);
 			};
-			this["execs"].push(fieldcontentflag);
+			this.execs.push(func);
 		} else {
-			var quashnonfields = function(state,Item){
+			func = function (state, Item) {
 				var flag = state.tmp.term_sibling.value();
-				if (false == flag){
+				if (false === flag) {
 					state.output.clearlevel();
 				}
 				state.tmp.term_sibling.pop();
-				if (flag && state.tmp.term_sibling.mystack.length > 1){
+				if (flag && state.tmp.term_sibling.mystack.length > 1) {
 					state.tmp.term_sibling.replace(true);
 				}
 			};
-			this["execs"].push(quashnonfields);
-			var mergeoutput = function(state,Item){
+			this.execs.push(func);
+			func = function (state, Item) {
 				state.output.endTag();
 			};
-			this["execs"].push(mergeoutput);
+			this.execs.push(func);
 		}
 		target.push(this);
-		if (this.tokentype == CSL.END){
-			if (state.build.substitute_level.value()){
-				state.build.substitute_level.replace((state.build.substitute_level.value()-1));
+		if (this.tokentype === CSL.END) {
+			if (state.build.substitute_level.value()) {
+				state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
 			}
-			CSL.Util.substituteEnd.call(this,state,target);
+			CSL.Util.substituteEnd.call(this, state, target);
 		}
 	}
 };
 CSL.Node["if"] = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
-			if ("number" == typeof this.strings.position){
-				var tryposition = this.strings.position;
-				var func = function(state,Item,item){
-					if (item && "undefined" == typeof item.position){
+	build: function (state, target) {
+		var tryposition, func;
+		if (this.tokentype === CSL.START) {
+			if ("number" === typeof this.strings.position) {
+				tryposition = this.strings.position;
+				func = function (state, Item, item) {
+					if (item && "undefined" === typeof item.position) {
 						item.position = 0;
 					}
-					if (state.tmp.force_subsequent && tryposition < 2){
+					if (state.tmp.force_subsequent && tryposition < 2) {
 						return true;
-					} else if (item && typeof item.position == "number"){
-						if (item.position == 0 && tryposition == 0){
+					} else if (item && typeof item.position === "number") {
+						if (item.position === 0 && tryposition === 0) {
 							return true;
-						} else if (tryposition > 0 && item.position >= tryposition){
+						} else if (tryposition > 0 && item.position >= tryposition) {
 							return true;
-						};
-					};
+						}
+					}
 					return false;
 				};
 				this.tests.push(func);
 			}
-			if (this.strings["near-note-distance-check"]){
-				var func = function (state,Item,item){
-					if (state.tmp.force_subsequent){
+			if (this.strings["near-note-distance-check"]) {
+				func = function (state, Item, item) {
+					if (state.tmp.force_subsequent) {
 						return true;
-					} else if (!item || !item["note_distance"]){
+					} else if (!item || !item.note_distance) {
 						return false;
 					} else {
-						if (item && item["note_distance"] > state.citation.opt["near-note-distance"]){
+						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
 							return false;
 						} else {
 							return true;
-						};
-					};
+						}
+					}
 				};
 				this.tests.push(func);
-			};
-			if (! this.evaluator){
+			}
+			if (!this.evaluator) {
 				this.evaluator = state.fun.match.any;
-			};
+			}
 		}
-		if (this.tokentype == CSL.END){
-			var closingjump = function(state,Item){
+		if (this.tokentype === CSL.END) {
+			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
-			this["execs"].push(closingjump);
-		};
+			this.execs.push(func);
+		}
 		target.push(this);
 	},
-	configure: function (state,pos){
-		if (this.tokentype == CSL.START){
-			this["fail"] = state.configure["fail"].slice(-1)[0];
-			this["succeed"] = this["next"];
+	configure: function (state, pos) {
+		if (this.tokentype === CSL.START) {
+			this.fail = state.configure.fail.slice(-1)[0];
+			this.succeed = this.next;
 		} else {
-			this["succeed"] = state.configure["succeed"].slice(-1)[0];
-			this["fail"] = this["next"];
+			this.succeed = state.configure.succeed.slice(-1)[0];
+			this.fail = this.next;
 		}
 	}
 };
 CSL.Node.info = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
+	build: function (state, target) {
+		if (this.tokentype === CSL.START) {
 			state.build.skip = "info";
 		} else {
 			state.build.skip = false;
@@ -2838,39 +2857,40 @@ CSL.Node.info = {
 	}
 };
 CSL.Node.institution = {
-	build: function (state,target){
-		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
-			var func = function(state,Item){
-				state.output.addToken("institution",false,this);
+	build: function (state, target) {
+		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
+			var func = function (state, Item) {
+				state.output.addToken("institution", false, this);
 			};
-			this["execs"].push(func);
-		};
+			this.execs.push(func);
+		}
 		target.push(this);
 	},
-	configure: function (state,pos){
-		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
+	configure: function (state, pos) {
+		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
 			state.build.has_institution = true;
-		};
+		}
 	}
 };
 CSL.Node["institution-part"] = {
-	build: function (state,target){
-		if ("long" == this.strings.name){
-			if (this.strings["if-short"]){
-				var func = function(state,Item){
-					state.output.addToken("institution-if-short",false,this);
+	build: function (state, target) {
+		var func;
+		if ("long" === this.strings.name) {
+			if (this.strings["if-short"]) {
+				func = function (state, Item) {
+					state.output.addToken("institution-if-short", false, this);
 				};
 			} else {
-				var func = function(state,Item){
-					state.output.addToken("institution-long",false,this);
+				func = function (state, Item) {
+					state.output.addToken("institution-long", false, this);
 				};
+			}
+		} else if ("short" === this.strings.name) {
+			func = function (state, Item) {
+				state.output.addToken("institution-short", false, this);
 			};
-		} else if ("short" == this.strings.name){
-			var func = function(state,Item){
-				state.output.addToken("institution-short",false,this);
-			};
-		};
-		this["execs"].push(func);
+		}
+		this.execs.push(func);
 		target.push(this);
 	}
 };
@@ -3056,43 +3076,45 @@ CSL.Node.key = {
 	}
 };
 CSL.Node.label = {
-	build: function (state,target){
-		if (state.build.name_flag){
+	build: function (state, target) {
+		var func, term, plural, form;
+		if (state.build.name_flag) {
 			this.strings.label_position = CSL.AFTER;
 		} else {
 			this.strings.label_position = CSL.BEFORE;
 		}
-		var set_label_info = function(state,Item){
-			state.output.addToken("label",false,this);
+		func = function (state, Item) {
+			state.output.addToken("label", false, this);
 		};
-		this["execs"].push(set_label_info);
-		if (state.build.term){
-			var term = state.build.term;
-			var plural = 0;
-			if (!this.strings.form){
+		this.execs.push(func);
+		if (state.build.term) {
+			term = state.build.term;
+			plural = 0;
+			if (!this.strings.form) {
 				this.strings.form = "long";
 			}
-			var form = this.strings.form;
-			if ("number" == typeof this.strings.plural){
+			form = this.strings.form;
+			if ("number" === typeof this.strings.plural) {
 				plural = this.strings.plural;
-				CSL.debug("plural: "+this.strings.plural);
+				CSL.debug("plural: " + this.strings.plural);
 			}
-			var output_label = function(state,Item,item){
-				if ("locator" == term){
-					if (item && item.label){
+			func = function (state, Item, item) {
+				var myterm;
+				if ("locator" === term) {
+					if (item && item.label) {
 						myterm = item.label;
 					}
 				}
-				if (!myterm){
+				if (!myterm) {
 					myterm = "page";
 				}
-				var myterm = state.getTerm(myterm,form,plural);
-				if (this.strings["include-period"]){
+				myterm = state.getTerm(myterm, form, plural);
+				if (this.strings["include-period"]) {
 					myterm += ".";
 				}
-				state.output.append(myterm,this);
+				state.output.append(myterm, this);
 			};
-			this.execs.push(output_label);
+			this.execs.push(func);
 			state.build.plural = false;
 			state.build.term = false;
 			state.build.form = false;
@@ -3101,78 +3123,81 @@ CSL.Node.label = {
 	}
 };
 CSL.Node.layout = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START){
+	build: function (state, target) {
+		var func, prefix_token, suffix_token;
+		if (this.tokentype === CSL.START) {
 			state.build.layout_flag = true;
 			state[state.tmp.area].opt.topdecor = [this.decorations];
 			state[(state.tmp.area + "_sort")].opt.topdecor = [this.decorations];
-			var initialize_done_vars = function(state,Item){
-				state.tmp.done_vars = new Array();
+			func = function (state, Item) {
+				state.tmp.done_vars = [];
 				state.tmp.rendered_name = false;
 			};
-			this.execs.push(initialize_done_vars);
-			var set_opt_delimiter = function(state,Item){
+			this.execs.push(func);
+			func = function (state, Item) {
 				state.tmp.sort_key_flag = false;
 				state[state.tmp.area].opt.delimiter = "";
-				if (this.strings.delimiter){
+				if (this.strings.delimiter) {
 					state[state.tmp.area].opt.delimiter = this.strings.delimiter;
-				};
+				}
 			};
-			this["execs"].push(set_opt_delimiter);
-			var reset_nameset_counter = function(state,Item){
+			this.execs.push(func);
+			func = function (state, Item) {
 				state.tmp.nameset_counter = 0;
 			};
-			this["execs"].push(reset_nameset_counter);
+			this.execs.push(func);
 			state[state.build.area].opt.layout_prefix = this.strings.prefix;
 			state[state.build.area].opt.layout_suffix = this.strings.suffix;
 			state[state.build.area].opt.layout_delimiter = this.strings.delimiter;
 			state[state.build.area].opt.layout_decorations = this.decorations;
-			var declare_thyself = function(state,Item){
+			func = function (state, Item) {
 				state.tmp.term_predecessor = false;
 				state.output.openLevel("empty");
 			};
-			this["execs"].push(declare_thyself);
+			this.execs.push(func);
 			target.push(this);
-			if (state.build.area == "citation"){
-				var prefix_token = new CSL.Token("text",CSL.SINGLETON);
-				var func = function(state,Item,item){
-					if (item && item["prefix"]){
-						var sp = "";
-						if (item["prefix"].match(CSL.ROMANESQUE_REGEXP)){
-							var sp = " ";
+			if (state.build.area === "citation") {
+				prefix_token = new CSL.Token("text", CSL.SINGLETON);
+				func = function (state, Item, item) {
+					var sp;
+					if (item && item.prefix) {
+						sp = "";
+						if (item.prefix.match(CSL.ROMANESQUE_REGEXP)) {
+							sp = " ";
 						}
-						state.output.append((item["prefix"]+sp),this);
-					};
+						state.output.append((item.prefix + sp), this);
+					}
 				};
-				prefix_token["execs"].push(func);
+				prefix_token.execs.push(func);
 				target.push(prefix_token);
 			}
-		};
-		if (this.tokentype == CSL.END){
+		}
+		if (this.tokentype === CSL.END) {
 			state.build.layout_flag = false;
-			if (state.build.area == "citation"){
-				var suffix_token = new CSL.Token("text",CSL.SINGLETON);
-				var func = function(state,Item,item){
-					if (item && item["suffix"]){
-						var sp = "";
-						if (item["suffix"].match(CSL.ROMANESQUE_REGEXP)){
-							var sp = " ";
+			if (state.build.area === "citation") {
+				suffix_token = new CSL.Token("text", CSL.SINGLETON);
+				func = function (state, Item, item) {
+					var sp;
+					if (item && item.suffix) {
+						sp = "";
+						if (item.suffix.match(CSL.ROMANESQUE_REGEXP)) {
+							sp = " ";
 						}
-						state.output.append((sp+item["suffix"]),this);
-					};
+						state.output.append((sp + item.suffix), this);
+					}
 				};
-				suffix_token["execs"].push(func);
+				suffix_token.execs.push(func);
 				target.push(suffix_token);
 			}
-			var mergeoutput = function(state,Item){
-				if (state.tmp.area == "bibliography"){
-					if (state.bibliography.opt["second-field-align"]){
-						state.output.endTag();  // closes bib_other
-					};
-				};
+			func = function (state, Item) {
+				if (state.tmp.area === "bibliography") {
+					if (state.bibliography.opt["second-field-align"]) {
+						state.output.endTag();
+					}
+				}
 				state.output.closeLevel();
 			};
-			this["execs"].push(mergeoutput);
+			this.execs.push(func);
 			target.push(this);
 		}
 	}
@@ -3181,55 +3206,58 @@ CSL.Node.macro = {
 	build: function (state, target) {}
 };
 CSL.Node.name = {
-	build: function (state,target){
-		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1){
-			state.fixOpt(this,"name-delimiter","delimiter");
-			state.fixOpt(this,"name-form","form");
-			state.fixOpt(this,"and","and");
-			state.fixOpt(this,"delimiter-precedes-last","delimiter-precedes-last");
-			state.fixOpt(this,"initialize-with","initialize-with");
-			state.fixOpt(this,"name-as-sort-order","name-as-sort-order");
-			state.fixOpt(this,"sort-separator","sort-separator");
-			state.fixOpt(this,"et-al-min","et-al-min");
-			state.fixOpt(this,"et-al-use-first","et-al-use-first");
-			state.fixOpt(this,"et-al-subsequent-min","et-al-subsequent-min");
-			state.fixOpt(this,"et-al-subsequent-use-first","et-al-subsequent-use-first");
-			state.build.nameattrs = new Object();
-			for each (attrname in CSL.NAME_ATTRIBUTES){
+	build: function (state, target) {
+		var func, pos, len, attrname;
+		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
+			state.fixOpt(this, "name-delimiter", "delimiter");
+			state.fixOpt(this, "name-form", "form");
+			state.fixOpt(this, "and", "and");
+			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "initialize-with", "initialize-with");
+			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
+			state.fixOpt(this, "sort-separator", "sort-separator");
+			state.fixOpt(this, "et-al-min", "et-al-min");
+			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
+			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
+			state.build.nameattrs = {};
+			len = CSL.NAME_ATTRIBUTES.length;
+			for (pos = 0; pos < len; pos += 1) {
+				attrname = CSL.NAME_ATTRIBUTES[pos];
 				state.build.nameattrs[attrname] = this.strings[attrname];
 			}
 			state.build.form = this.strings.form;
 			state.build.name_flag = true;
-			var set_et_al_params = function(state,Item){
-				if (Item.position || state.tmp.force_subsequent){
-					if (! state.tmp["et-al-min"]){
-						if (this.strings["et-al-subsequent-min"]){
+			func = function (state, Item) {
+				if (Item.position || state.tmp.force_subsequent) {
+					if (! state.tmp["et-al-min"]) {
+						if (this.strings["et-al-subsequent-min"]) {
 							state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
 						} else {
 							state.tmp["et-al-min"] = this.strings["et-al-min"];
 						}
 					}
-					if (! state.tmp["et-al-use-first"]){
-						if (this.strings["et-al-subsequent-use-first"]){
+					if (! state.tmp["et-al-use-first"]) {
+						if (this.strings["et-al-subsequent-use-first"]) {
 							state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
 						} else {
 							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 						}
 					}
 				} else {
-					if (! state.tmp["et-al-min"]){
+					if (! state.tmp["et-al-min"]) {
 						state.tmp["et-al-min"] = this.strings["et-al-min"];
 					}
-					if (! state.tmp["et-al-use-first"]){
+					if (! state.tmp["et-al-use-first"]) {
 						state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 					}
 				}
 			};
-			this["execs"].push(set_et_al_params);
-			var func = function(state,Item){
-				state.output.addToken("name",false,this);
+			this.execs.push(func);
+			func = function (state, Item) {
+				state.output.addToken("name", false, this);
 			};
-			this["execs"].push(func);
+			this.execs.push(func);
 		}
 		target.push(this);
 	}
