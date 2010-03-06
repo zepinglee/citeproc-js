@@ -357,7 +357,7 @@ if (!CSL.Node) {
     load("./src/node_number.js");
 	// jslint OK
     load("./src/node_sort.js");
-
+	// jslint OK
     load("./src/node_substitute.js");
 	// jslint OK
     load("./src/node_text.js");
