@@ -34,27 +34,27 @@
  */
 
 CSL.Node.citation = {
-	build: function (state,target){
-		if (this.tokentype == CSL.START) {
+	build: function (state, target) {
+		if (this.tokentype === CSL.START) {
 
-			state.fixOpt(this,"names-delimiter","delimiter");
-			state.fixOpt(this,"name-delimiter","delimiter");
-			state.fixOpt(this,"name-form","form");
-			state.fixOpt(this,"and","and");
-			state.fixOpt(this,"delimiter-precedes-last","delimiter-precedes-last");
-			state.fixOpt(this,"initialize-with","initialize-with");
-			state.fixOpt(this,"name-as-sort-order","name-as-sort-order");
-			state.fixOpt(this,"sort-separator","sort-separator");
+			state.fixOpt(this, "names-delimiter", "delimiter");
+			state.fixOpt(this, "name-delimiter", "delimiter");
+			state.fixOpt(this, "name-form", "form");
+			state.fixOpt(this, "and", "and");
+			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "initialize-with", "initialize-with");
+			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
+			state.fixOpt(this, "sort-separator", "sort-separator");
 
-			state.fixOpt(this,"et-al-min","et-al-min");
-			state.fixOpt(this,"et-al-use-first","et-al-use-first");
-			state.fixOpt(this,"et-al-subsequent-min","et-al-subsequent-min");
-			state.fixOpt(this,"et-al-subsequent-use-first","et-al-subsequent-use-first");
+			state.fixOpt(this, "et-al-min", "et-al-min");
+			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
+			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 
 			state.build.area_return = state.build.area;
 			state.build.area = "citation";
 		}
-		if (this.tokentype == CSL.END) {
+		if (this.tokentype === CSL.END) {
 			state.build.area = state.build.area_return;
 		}
 	}

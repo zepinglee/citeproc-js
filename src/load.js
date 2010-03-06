@@ -326,8 +326,9 @@ if (!CSL.updateItems) {
 if (!CSL.Node) {
 	// jslint OK
 	load("./src/node_bibliography.js");
-	
+	// jslint OK
     load("./src/node_choose.js");
+	
     load("./src/node_citation.js");
 	// jslint OK
     load("./src/node_date.js");
