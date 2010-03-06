@@ -77,11 +77,13 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 			if ("date-part" === this.sys.xml.nodename(subnode)) {
 				partname = this.sys.xml.getAttributeValue(subnode, "name");
 				cchildren = this.sys.xml.attributes(subnode);
-				for (kkey in cchildren) {
-					if ("xml" === typeof cchildren[kkey]) {
-						attr = cchildren[kkey];
-						attrname = this.sys.xml.getAttributeName(attr);
-						attrval = this.sys.xml.getAttributeValue(attr);
+				for (attrname in cchildren) {
+					if (cchildren.hasOwnProperty(attrname)) {
+					//if ("xml" === typeof cchildren[kkey]) {
+						//attr = cchildren[kkey];
+						//attrname = this.sys.xml.getAttributeName(attr);
+						//attrval = this.sys.xml.getAttributeValue(attr);
+						attrval = cchildren[attrname];
 						this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attrname, attrval);
 					}
 				}

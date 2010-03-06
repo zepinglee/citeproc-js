@@ -603,7 +603,7 @@ CSL.localeResolve = function (langstr) {
 	return ret;
 };
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale, nodes, nnodes, pos, ppos, term, form, termname, styleopts, attr, date;
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname;
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
 	if (!this.locale[lang_out]) {
@@ -652,14 +652,13 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 	for (pos in nodes) {
 		if (true) {
 			styleopts = nodes[pos];
-			nnodes = sys.xml.attributes(styleopts);
-			for (ppos in nnodes) {
-				if (true) {
-					attr = nnodes[ppos];
-					if (sys.xml.getNodeValue(attr) === "true") {
-						this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
+			attributes = sys.xml.attributes(styleopts);
+			for (attrname in attributes) {
+				if (attributes.hasOwnProperty(attrname)) {
+					if (attributes[attrname] === "true") {
+						this.locale[lang_out].opts[attrname.slice(1)] = true;
 					} else {
-						this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
+						this.locale[lang_out].opts[attrname.slice(1)] = false;
 					}
 				}
 			}
@@ -1164,14 +1163,13 @@ CSL.Engine.prototype.buildTokenLists = function (area) {
 	CSL.buildStyle.call(this, navi);
 };
 CSL.Engine.prototype.setStyleAttributes = function () {
-	var dummy, attr, key, attributes;
+	var dummy, attr, key, attributes, attrname;
 	dummy = {};
 	dummy.name = this.sys.xml.nodename(this.cslXml);
 	attributes = this.sys.xml.attributes(this.cslXml);
-	for (key in attributes) {
-		if (attributes.hasOwnProperty(key)) {
-			attr = attributes[key];
-			CSL.Attributes[("@" + this.sys.xml.getAttributeName(attr))].call(dummy, this, this.sys.xml.getAttributeValue(attr));
+	for (attrname in attributes) {
+		if (attributes.hasOwnProperty(attrname)) {
+			CSL.Attributes[attrname].call(dummy, this, attributes[attrname]);
 		}
 	}
 };
@@ -4440,7 +4438,8 @@ CSL.System.Xml.E4X.prototype.children = function (myxml) {
 	return myxml.children();
 };
 CSL.System.Xml.E4X.prototype.nodename = function (myxml) {
-	return myxml.localName();
+	var ret = myxml.localName();
+	return ret;
 };
 CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
 	var ret, attrs, attr, key;
@@ -4452,7 +4451,7 @@ CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
 		if (key.slice(0,5) == "@e4x_") {
 			continue;
 		}
-		ret[key] = attr;
+		ret[key] = attr.toString();
 	}
 	return ret;
 };
@@ -4466,7 +4465,8 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function (myxml) {
 	return myxml.length();
 };
 CSL.System.Xml.E4X.prototype.getAttributeName = function (attr) {
-	return attr.localName();
+	var ret = attr.localName();
+	return ret;
 }
 CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
@@ -5066,11 +5066,9 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 			if ("date-part" === this.sys.xml.nodename(subnode)) {
 				partname = this.sys.xml.getAttributeValue(subnode, "name");
 				cchildren = this.sys.xml.attributes(subnode);
-				for (kkey in cchildren) {
-					if ("xml" === typeof cchildren[kkey]) {
-						attr = cchildren[kkey];
-						attrname = this.sys.xml.getAttributeName(attr);
-						attrval = this.sys.xml.getAttributeValue(attr);
+				for (attrname in cchildren) {
+					if (cchildren.hasOwnProperty(attrname)) {
+						attrval = cchildren[attrname];
 						this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attrname, attrval);
 					}
 				}
@@ -5722,15 +5720,15 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		len = lst.length;
 		for (pos = 1; pos < len; pos += 2) {
 			if ("object" === typeof lst[pos]) {
-  				lst[pos] = lst[pos].join("");
+				lst[pos] = lst[pos].join("");
 			}
 		}
-  		return lst.join("");
-  	};
+		return lst.join("");
+	};
 	listify = function (str) {
-  		lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
-  		return lst;
-  	};
+		lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
+		return lst;
+	};
 	expand = function (str) {
 		lst = listify(str);
 		len = lst.length;
@@ -5740,38 +5738,38 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 				if (!m[3] || m[1] === m[3]) {
 					if (m[4].length < m[2].length) {
 						m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
-  					}
+					}
 					if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
 						m[3] = "-" + m[1];
-  						lst[pos] = m.slice(1);
-  					}
-  				}
-  			}
+						lst[pos] = m.slice(1);
+					}
+				}
+			}
 		}
-  		return lst;
-  	};
+		return lst;
+	};
 	minimize = function (lst) {
 		len = lst.length;
 		for (pos = 1; pos < len; pos += 2) {
 			lst[pos][3] = minimize_internal(lst[pos][1], lst[pos][3]);
 			if (lst[pos][2].slice(1) === lst[pos][0]) {
-  				lst[pos][2] = "-";
-  			}
+				lst[pos][2] = "-";
+			}
 		}
-  		return stringify(lst);
-  	};
+		return stringify(lst);
+	};
 	minimize_internal = function (begin, end) {
 		b = ("" + begin).split("");
 		e = ("" + end).split("");
 		ret = e.slice();
-  		ret.reverse();
+		ret.reverse();
 		if (b.length === e.length) {
 			llen = b.length;
 			for (ppos = 0; ppos < llen; ppos += 1) {
 				if (b[ppos] === e[ppos]) {
-  					ret.pop();
-  				} else {
-  					break;
+					ret.pop();
+				} else {
+					break;
 				}
 			}
 		}
@@ -5819,258 +5817,283 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	}
 	return ret_func;
 };
-CSL.Util.FlipFlopper = function(state){
+CSL.Util.FlipFlopper = function (state) {
+	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes;
 	this.state = state;
 	this.blob = false;
-	var tagdefs = [
-		["<i>","</i>","italics","@font-style",["italic","normal"],true],
-		["<b>","</b>","bold","@font-weight",["bold","normal"],true],
-		["<sup>","</sup>","superscript","@vertical-align",["sup","sup"],true],
-		["<sub>","</sub>","subscript","@vertical-align",["sub","sub"],true],
-		["<sc>","</sc>","smallcaps","@font-variant",["small-caps","small-caps"],true],
-		["<span class=\"nocase\">","</span>","passthrough","@passthrough",["true","true"],true],
-		["<span class=\"nodecor\">","</span>","passthrough","@passthrough",["true","true"],true],
-		['"','"',"quotes","@quotes",["true","inner"],"'"],
-		["'","'","quotes","@quotes",["inner","true"],'"']
+	tagdefs = [
+		["<i>", "</i>", "italics", "@font-style", ["italic", "normal"], true],
+		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal"], true],
+		["<sup>", "</sup>", "superscript", "@vertical-align", ["sup", "sup"], true],
+		["<sub>", "</sub>", "subscript", "@vertical-align", ["sub", "sub"], true],
+		["<sc>", "</sc>", "smallcaps", "@font-variant", ["small-caps", "small-caps"], true],
+		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
+		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
+		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner"],  "'"],
+		["'",  "'",  "quotes",  "@quotes",  ["inner",  "true"],  '"']
 	];
-	for each (var t in ["quote"]){
-		for each (var p in ["-","-inner-"]){
-			var entry = new Array();
-			entry.push( state.getTerm( "open"+p+t ) );
-			entry.push( state.getTerm( "close"+p+t ) );
-			entry.push( t+"s" );
-			entry.push( "@"+t+"s" );
-			if ("-" == p){
-				entry.push( ["true", "inner"] );
-			} else {
-				entry.push( ["inner", "true"] );
-			};
-			entry.push(true);
-			tagdefs.push(entry);
-		};
-	};
-	var allTags = function(tagdefs){
-		var ret = new Array();
-		for each (var def in tagdefs){
-			if (ret.indexOf(def[0]) == -1){
-				var esc = "";
-				if (["(",")","[","]"].indexOf(def[0]) > -1){
+	for (pos = 0; pos < 2; pos += 1) {
+		p = ["-", "-inner-"][pos];
+		entry = [];
+		entry.push(state.getTerm(("open" + p + "quote")));
+		entry.push(state.getTerm(("close" + p + "quote")));
+		entry.push(("quote" + "s"));
+		entry.push(("@" + "quote" + "s"));
+		if ("-" === p) {
+			entry.push(["true", "inner"]);
+		} else {
+			entry.push(["inner", "true"]);
+		}
+		entry.push(true);
+		tagdefs.push(entry);
+	}
+	allTags = function (tagdefs) {
+		ret = [];
+		len = tagdefs.length;
+		for (pos = 0; pos < len; pos += 1) {
+			def = tagdefs[pos];
+			if (ret.indexOf(def[0]) === -1) {
+				esc = "";
+				if (["(", ")", "[", "]"].indexOf(def[0]) > -1) {
 					esc = "\\";
 				}
-				ret.push(esc+def[0]);
-			};
-			if (ret.indexOf(def[1]) == -1){
-				var esc = "";
-				if (["(",")","[","]"].indexOf(def[1]) > -1){
+				ret.push(esc + def[0]);
+			}
+			if (ret.indexOf(def[1]) === -1) {
+				esc = "";
+				if (["(", ")", "[", "]"].indexOf(def[1]) > -1) {
 					esc = "\\";
 				}
-				ret.push(esc+def[1]);
-			};
-		};
+				ret.push(esc + def[1]);
+			}
+		}
 		return ret;
 	};
-	this.allTagsRex = RegExp( "(" + allTags(tagdefs).join("|") + ")" );
-	var makeHashes = function(tagdefs){
-		var closeTags = new Object();
-		var flipTags = new Object();
-		var openToClose = new Object();
-		var openToDecorations = new Object();
-		var okReverse = new Object();
-		var l = tagdefs.length;
-		for (var i=0; i < l; i += 1){
-			closeTags[tagdefs[i][1]] = true;
-			flipTags[tagdefs[i][1]] = tagdefs[i][5];
-			openToClose[tagdefs[i][0]] = tagdefs[i][1];
-			openToDecorations[tagdefs[i][0]] = [tagdefs[i][3],tagdefs[i][4]];
-			okReverse[tagdefs[i][3]] = [tagdefs[i][3],[tagdefs[i][4][1],tagdefs[i][1]]];
-		};
-		return [closeTags,flipTags,openToClose,openToDecorations,okReverse];
+	this.allTagsRex = new RegExp("(" + allTags(tagdefs).join("|") + ")");
+	makeHashes = function (tagdefs) {
+		closeTags = {};
+		flipTags = {};
+		openToClose = {};
+		openToDecorations = {};
+		okReverse = {};
+		len = tagdefs.length;
+		for (pos = 0; pos < len; pos += 1) {
+			closeTags[tagdefs[pos][1]] = true;
+			flipTags[tagdefs[pos][1]] = tagdefs[pos][5];
+			openToClose[tagdefs[pos][0]] = tagdefs[pos][1];
+			openToDecorations[tagdefs[pos][0]] = [tagdefs[pos][3], tagdefs[pos][4]];
+			okReverse[tagdefs[pos][3]] = [tagdefs[pos][3], [tagdefs[pos][4][1], tagdefs[pos][1]]];
+		}
+		return [closeTags, flipTags, openToClose, openToDecorations, okReverse];
 	};
-	var hashes = makeHashes(tagdefs);
+	hashes = makeHashes(tagdefs);
 	this.closeTagsHash = hashes[0];
 	this.flipTagsHash = hashes[1];
 	this.openToCloseHash = hashes[2];
 	this.openToDecorations = hashes[3];
 	this.okReverseHash = hashes[4];
 };
-CSL.Util.FlipFlopper.prototype.init = function(str,blob){
-	if (!blob){
+CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
+	if (!blob) {
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Blob();
 	} else {
 		this.blob = blob;
-		this.strs = this.getSplitStrings( this.blob.blobs );
-		this.blob.blobs = new Array();
+		this.strs = this.getSplitStrings(this.blob.blobs);
+		this.blob.blobs = [];
 	}
 	this.blobstack = new CSL.Stack(this.blob);
 };
-CSL.Util.FlipFlopper.prototype.getSplitStrings = function(str){
-	var strs = str.split( this.allTagsRex );
-	for (var i=(strs.length-2); i>0; i +=-2){
-		if (strs[(i-1)].slice((strs[(i-1)].length-1)) == "\\"){
-			var newstr = strs[(i-1)].slice(0,(strs[(i-1)].length-1)) + strs[i] + strs[(i+1)];
-			var head = strs.slice(0,(i-1));
-			var tail = strs.slice((i+2));
+CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
+	var strs, pos, len, newstr, head, tail, expected_closers, expected_openers, expected_flips, tagstack, badTagStack, posA, sameAsOpen, openRev, flipRev, tag, ibeenrunned, posB, wanted_closer, posC, sep, resplice, params, lenA, lenB, lenC, badTagPos;
+	strs = str.split(this.allTagsRex);
+	len = strs.length - 2;
+	for (pos = len; pos > 0; pos += -2) {
+		if (strs[(pos - 1)].slice((strs[(pos - 1)].length - 1)) === "\\") {
+			newstr = strs[(pos - 1)].slice(0, (strs[(pos - 1)].length - 1)) + strs[pos] + strs[(pos + 1)];
+			head = strs.slice(0, (pos - 1));
+			tail = strs.slice((pos + 2));
 			head.push(newstr);
 			strs = head.concat(tail);
-		};
-	};
-	var expected_closers = new Array();
-	var expected_openers = new Array();
-	var expected_flips = new Array();
-	var tagstack = new Array();
-	var badTagStack = new Array();
-	var l = (strs.length-1);
-	for (var posA=1; posA<l; posA +=2){
-		var tag = strs[posA];
-		if (this.closeTagsHash[tag]){
+		}
+	}
+	expected_closers = [];
+	expected_openers = [];
+	expected_flips = [];
+	tagstack = [];
+	badTagStack = [];
+	lenA = strs.length - 1;
+	for (posA = 1; posA < lenA; posA += 2) {
+		tag = strs[posA];
+		if (this.closeTagsHash[tag]) {
 			expected_closers.reverse();
-			var sameAsOpen = this.openToCloseHash[tag];
-			var openRev = expected_closers.indexOf(tag);
-			var flipRev = expected_flips.indexOf(tag);
+			sameAsOpen = this.openToCloseHash[tag];
+			openRev = expected_closers.indexOf(tag);
+			flipRev = expected_flips.indexOf(tag);
 			expected_closers.reverse();
-			if ( !sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))){
-				var ibeenrunned = false;
-				for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
+			if (!sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))) {
+				ibeenrunned = false;
+				lenB = expected_closers.length - 1;
+				for (posB = lenB; posB > -1; posB += -1) {
 					ibeenrunned = true;
-					var wanted_closer = expected_closers[posB];
-					if (tag == wanted_closer){
+					wanted_closer = expected_closers[posB];
+					if (tag === wanted_closer) {
 						expected_closers.pop();
 						expected_openers.pop();
 						expected_flips.pop();
 						tagstack.pop();
 						break;
-					};
-					badTagStack.push( posA );
-				};
-				if (!ibeenrunned){
-					badTagStack.push( posA );
-				};
+					}
+					badTagStack.push(posA);
+				}
+				if (!ibeenrunned) {
+					badTagStack.push(posA);
+				}
 				continue;
-			};
-		};
-		if (this.openToCloseHash[tag]){
-			expected_closers.push( this.openToCloseHash[tag] );
-			expected_openers.push( tag );
-			expected_flips.push( this.flipTagsHash[tag] );
+			}
+		}
+		if (this.openToCloseHash[tag]) {
+			expected_closers.push(this.openToCloseHash[tag]);
+			expected_openers.push(tag);
+			expected_flips.push(this.flipTagsHash[tag]);
 			tagstack.push(posA);
-		};
-	};
-	for (var posC in expected_closers.slice()){
+		}
+	}
+	lenC = expected_closers.length - 1;
+	for (posC = lenC; posC > -1; posC += -1) {
 		expected_closers.pop();
 		expected_flips.pop();
 		expected_openers.pop();
-		badTagStack.push( tagstack.pop() );
-	};
-	badTagStack.sort(function(a,b){if(a<b){return 1;}else if(a>b){return -1;};return 0;});
-	for each (var badTagPos in badTagStack){
-		var head = strs.slice(0,(badTagPos-1));
-		var tail = strs.slice((badTagPos+2));
-		var sep = strs[badTagPos];
-		if (sep.length && sep[0] != "<" && this.openToDecorations[sep]){
-			var params = this.openToDecorations[sep];
+		badTagStack.push(tagstack.pop());
+	}
+	badTagStack.sort(
+		function (a, b) {
+			if (a < b) {
+				return 1;
+			} else if (a > b) {
+				return -1;
+			}
+			return 0;
+		}
+	);
+	len = badTagStack.length;
+	for (pos = 0; pos < len; pos += 1) {
+		badTagPos = badTagStack[pos];
+		head = strs.slice(0, (badTagPos - 1));
+		tail = strs.slice((badTagPos + 2));
+		sep = strs[badTagPos];
+		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep]) {
+			params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
 		}
-		var resplice = strs[(badTagPos-1)] + sep + strs[(badTagPos+1)];
+		resplice = strs[(badTagPos - 1)] + sep + strs[(badTagPos + 1)];
 		head.push(resplice);
 		strs = head.concat(tail);
-	};
-	var l = strs.length;
-	for (var i=0; i<l; i+=2){
-		strs[i] = CSL.Output.Formats[this.state.opt.mode].text_escape( strs[i] );
-	};
+	}
+	len = strs.length;
+	for (pos = 0; pos < len; pos += 2) {
+		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
+	}
 	return strs;
 };
-CSL.Util.FlipFlopper.prototype.processTags = function(){
-	var expected_closers = new Array();
-	var expected_openers = new Array();
-	var expected_flips = new Array();
-	var expected_rendering = new Array();
-	var str = "";
-	if (this.strs.length == 1){
+CSL.Util.FlipFlopper.prototype.processTags = function () {
+	var expected_closers, expected_openers, expected_flips, expected_rendering, str, posA, tag, prestr, newblob, blob, sameAsOpen, openRev, flipRev, posB, wanted_closer, newblobnest, param, fulldecor, level, decor, lenA, lenB, posC, lenC;
+	expected_closers = [];
+	expected_openers = [];
+	expected_flips = [];
+	expected_rendering = [];
+	str = "";
+	if (this.strs.length === 1) {
 		this.blob.blobs = this.strs[0];
-	} else if (this.strs.length > 2){
-		var l = (this.strs.length-1);
-		for (var posA=1; posA <l; posA+=2){
-			var tag = this.strs[posA];
-			var prestr = this.strs[(posA-1)];
-			var newblob = new CSL.Blob(false,prestr);
-			var blob = this.blobstack.value();
+	} else if (this.strs.length > 2) {
+		lenA = (this.strs.length - 1);
+		for (posA = 1; posA < lenA; posA += 2) {
+			tag = this.strs[posA];
+			prestr = this.strs[(posA - 1)];
+			newblob = new CSL.Blob(false, prestr);
+			blob = this.blobstack.value();
 			blob.push(newblob);
-			if (this.closeTagsHash[tag]){
+			if (this.closeTagsHash[tag]) {
 				expected_closers.reverse();
-				var sameAsOpen = this.openToCloseHash[tag];
-				var openRev = expected_closers.indexOf(tag);
-				var flipRev = expected_flips.indexOf(tag);
+				sameAsOpen = this.openToCloseHash[tag];
+				openRev = expected_closers.indexOf(tag);
+				flipRev = expected_flips.indexOf(tag);
 				expected_closers.reverse();
-				if ( !sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))){
-					for (var posB=(expected_closers.length-1); posB>-1; posB+=-1){
-						var wanted_closer = expected_closers[posB];
-						if (tag == wanted_closer){
+				if (!sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))) {
+					lenB = expected_closers.length;
+					for (posB = lenB; posB > -1; posB += -1) {
+						wanted_closer = expected_closers[posB];
+						if (tag === wanted_closer) {
 							expected_closers.pop();
 							expected_openers.pop();
 							expected_flips.pop();
 							expected_rendering.pop();
 							this.blobstack.pop();
 							break;
-						};
-					};
+						}
+					}
 					continue;
-				};
-			};
-			if (this.openToCloseHash[tag]){
-				expected_closers.push( this.openToCloseHash[tag] );
-				expected_openers.push( tag );
-				expected_flips.push( this.flipTagsHash[tag] );
+				}
+			}
+			if (this.openToCloseHash[tag]) {
+				expected_closers.push(this.openToCloseHash[tag]);
+				expected_openers.push(tag);
+				expected_flips.push(this.flipTagsHash[tag]);
 				blob = this.blobstack.value();
-				var newblobnest = new CSL.Blob();
+				newblobnest = new CSL.Blob();
 				blob.push(newblobnest);
-				var param = this.addFlipFlop(newblobnest,this.openToDecorations[tag]);
-				if (tag == "<span class=\"nodecor\">"){
-					var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor).concat([[["@quotes","inner"]]]);
-					for each (var level in fulldecor){
-						for each (var decor in level){
-							if (["@font-style","@font-weight","@font-variant"].indexOf(decor[0]) > -1){
-								param = this.addFlipFlop(newblobnest,this.okReverseHash[decor[0]]);
+				param = this.addFlipFlop(newblobnest, this.openToDecorations[tag]);
+				if (tag === "<span class=\"nodecor\">") {
+					fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor).concat([[["@quotes", "inner"]]]);
+					lenB = fulldecor.length;
+					for (posB = 0; posB < lenB; posB += 1) {
+						level = fulldecor[posB];
+						lenC = level.length;
+						for (posC = 0; posC < lenC; posC += 1) {
+							decor = level[posC];
+							if (["@font-style", "@font-weight", "@font-variant"].indexOf(decor[0]) > -1) {
+								param = this.addFlipFlop(newblobnest, this.okReverseHash[decor[0]]);
 							}
 						}
 					}
 				}
-				expected_rendering.push( this.state.fun.decorate[param[0]][param[1]](this.state));
+				expected_rendering.push(this.state.fun.decorate[param[0]][param[1]](this.state));
 				this.blobstack.push(newblobnest);
-			};
-		};
-	if (this.strs.length > 2){
-		str = this.strs[(this.strs.length-1)];
-		var blob = this.blobstack.value();
-		var newblob = new CSL.Blob(false,str);
-		blob.push(newblob);
-	};
-	};
+			}
+		}
+		if (this.strs.length > 2) {
+			str = this.strs[(this.strs.length - 1)];
+			blob = this.blobstack.value();
+			newblob = new CSL.Blob(false, str);
+			blob.push(newblob);
+		}
+	}
 	return this.blob;
 };
-CSL.Util.FlipFlopper.prototype.addFlipFlop = function(blob,fun){
-	var posB = 0;
-	var fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor).concat([[["@quotes","inner"]]]);
-	var l = fulldecor.length;
-	for (var posA=0; posA<l; posA+=1){
-		var decorations = fulldecor[posA];
-		var breakme = false;
-		for (var posC=(decorations.length-1); posC>-1; posC+=-1){
-			var decor = decorations[posC];
-			if (decor[0] == fun[0]){
-				if (decor[1] == fun[1][0]){
+CSL.Util.FlipFlopper.prototype.addFlipFlop = function (blob, fun) {
+	var posA, posB, fulldecor, lenA, decorations, breakme, decor, posC, newdecor, lenC;
+	posB = 0;
+	fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor).concat([[["@quotes", "inner"]]]);
+	lenA = fulldecor.length;
+	for (posA = 0; posA < lenA; posA += 1) {
+		decorations = fulldecor[posA];
+		breakme = false;
+		lenC = decorations.length - 1;
+		for (posC = lenC; posC > -1; posC += -1) {
+			decor = decorations[posC];
+			if (decor[0] === fun[0]) {
+				if (decor[1] === fun[1][0]) {
 					posB = 1;
-				};
+				}
 				breakme = true;
 				break;
-			};
-		};
-		if (breakme){
+			}
+		}
+		if (breakme) {
 			break;
-		};
-	};
-	var newdecor = [fun[0],fun[1][posB]];
+		}
+	}
+	newdecor = [fun[0], fun[1][posB]];
 	blob.decorations.reverse();
 	blob.decorations.push(newdecor);
 	blob.decorations.reverse();

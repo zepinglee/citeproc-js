@@ -418,10 +418,11 @@ if (!CSL.Util.Suffixator) {
 if (!CSL.Util.PageRangeMangler) {
 	load("./src/util_page.js");
 }
-
+// jslint OK
 if (!CSL.Util.FlipFlopper) {
 	load("./src/util_flipflop.js");
 }
+
 if (!CSL.Output.Formatters) {
 	load("./src/formatters.js");
 }

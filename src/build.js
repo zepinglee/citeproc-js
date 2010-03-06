@@ -194,17 +194,17 @@ CSL.Engine.prototype.buildTokenLists = function (area) {
 };
 
 CSL.Engine.prototype.setStyleAttributes = function () {
-	var dummy, attr, key, attributes;
+	var dummy, attr, key, attributes, attrname;
 	dummy = {};
 	dummy.name = this.sys.xml.nodename(this.cslXml);
 	//
 	// Xml: more of it
 	//
 	attributes = this.sys.xml.attributes(this.cslXml);
-	for (key in attributes) {
-		if (attributes.hasOwnProperty(key)) {
-			attr = attributes[key];
-			CSL.Attributes[("@" + this.sys.xml.getAttributeName(attr))].call(dummy, this, this.sys.xml.getAttributeValue(attr));
+	for (attrname in attributes) {
+		if (attributes.hasOwnProperty(attrname)) {
+			// attr = attributes[key];
+			CSL.Attributes[attrname].call(dummy, this, attributes[attrname]);
 		}
 	}
 };

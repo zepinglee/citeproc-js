@@ -60,7 +60,8 @@ CSL.System.Xml.E4X.prototype.children = function (myxml) {
 };
 
 CSL.System.Xml.E4X.prototype.nodename = function (myxml) {
-	return myxml.localName();
+	var ret = myxml.localName();
+	return ret;
 };
 
 CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
@@ -77,7 +78,7 @@ CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
 			continue;
 		}
 		//var value = attr;
-		ret[key] = attr;
+		ret[key] = attr.toString();
 	}
 	return ret;
 };
@@ -97,7 +98,8 @@ CSL.System.Xml.E4X.prototype.numberofnodes = function (myxml) {
 };
 
 CSL.System.Xml.E4X.prototype.getAttributeName = function (attr) {
-	return attr.localName();
+	var ret = attr.localName();
+	return ret;
 }
 
 CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace) {

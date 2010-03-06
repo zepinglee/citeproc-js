@@ -44,16 +44,16 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		len = lst.length;
 		for (pos = 1; pos < len; pos += 2) {
 			if ("object" === typeof lst[pos]) {
-  				lst[pos] = lst[pos].join("");
+				lst[pos] = lst[pos].join("");
 			}
 		}
-  		return lst.join("");
-  	};
+		return lst.join("");
+	};
 
 	listify = function (str) {
-  		lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
-  		return lst;
-  	};
+		lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
+		return lst;
+	};
 
 	expand = function (str) {
 		lst = listify(str);
@@ -64,40 +64,40 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 				if (!m[3] || m[1] === m[3]) {
 					if (m[4].length < m[2].length) {
 						m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
-  					}
+					}
 					if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
 						m[3] = "-" + m[1];
-  						lst[pos] = m.slice(1);
-  					}
-  				}
-  			}
+						lst[pos] = m.slice(1);
+					}
+				}
+			}
 		}
-  		return lst;
-  	};
+		return lst;
+	};
 
 	minimize = function (lst) {
 		len = lst.length;
 		for (pos = 1; pos < len; pos += 2) {
 			lst[pos][3] = minimize_internal(lst[pos][1], lst[pos][3]);
 			if (lst[pos][2].slice(1) === lst[pos][0]) {
-  				lst[pos][2] = "-";
-  			}
+				lst[pos][2] = "-";
+			}
 		}
-  		return stringify(lst);
-  	};
+		return stringify(lst);
+	};
 
 	minimize_internal = function (begin, end) {
 		b = ("" + begin).split("");
 		e = ("" + end).split("");
 		ret = e.slice();
-  		ret.reverse();
+		ret.reverse();
 		if (b.length === e.length) {
 			llen = b.length;
 			for (ppos = 0; ppos < llen; ppos += 1) {
 				if (b[ppos] === e[ppos]) {
-  					ret.pop();
-  				} else {
-  					break;
+					ret.pop();
+				} else {
+					break;
 				}
 			}
 		}

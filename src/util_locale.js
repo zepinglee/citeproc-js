@@ -56,7 +56,7 @@ CSL.localeResolve = function (langstr) {
 // below.
 //
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale, nodes, nnodes, pos, ppos, term, form, termname, styleopts, attr, date;
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname;
 
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
@@ -147,20 +147,15 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 			//
 			// Xml: get list of attributes on a node
 			//
-			nnodes = sys.xml.attributes(styleopts);
-			for (ppos in nnodes) {
-				if (true) {
-					attr = nnodes[ppos];
-					//
-					// Xml: get string value of attribute
-					//
-					if (sys.xml.getNodeValue(attr) === "true") {
-						//
-						// Xml:	get local name of attribute
-						//
-						this.locale[lang_out].opts[sys.xml.nodename(attr)] = true;
+			attributes = sys.xml.attributes(styleopts);
+			for (attrname in attributes) {
+				if (attributes.hasOwnProperty(attrname)) {
+					if (attributes[attrname] === "true") {
+						// trim off leading @
+						this.locale[lang_out].opts[attrname.slice(1)] = true;
 					} else {
-						this.locale[lang_out].opts[sys.xml.nodename(attr)] = false;
+						// trim off leading @
+						this.locale[lang_out].opts[attrname.slice(1)] = false;
 					}
 				}
 			}
