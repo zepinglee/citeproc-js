@@ -34,11 +34,12 @@
  */
 
 CSL.Node["et-al"] = {
-	build: function (state,target){
-		var set_et_al_format = function(state,Item){
-			state.output.addToken("etal",false,this);
+	build: function (state, target) {
+		var func;
+		func = function (state, Item) {
+			state.output.addToken("etal", false, this);
 		};
-		this["execs"].push(set_et_al_format);
+		this.execs.push(func);
 		target.push(this);
 	}
 };
