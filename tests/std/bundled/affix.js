@@ -46,4 +46,8 @@ doh.register("std.affix", [
         var test = new StdRhinoTest("affix_PrefixFullCitationTextOnly");
         doh.assertEqual(test.result, test.run());
     }, 
+    function(){
+        var test = new StdRhinoTest("affix_InterveningEmpty");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);

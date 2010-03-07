@@ -208,12 +208,12 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					} else if (this.dateparts && this.dateparts.length) {
 						varlen = Item[variable]['date-parts'][0].length;
 						needlen = 4;
-						if (this.dateparts.indexOf('day') > -1) {
-							needlen = 3;
+						if (this.dateparts.indexOf("year") > -1) {
+							needlen = 1;
 						} else if (this.dateparts.indexOf("month") > -1) {
 							needlen = 2;
-						} else if (this.dateparts.indexOf("year") > -1) {
-							needlen = 1;
+						} else if (this.dateparts.indexOf('day') > -1) {
+							needlen = 3;
 						}
 						if (varlen >= needlen) {
 							output = true;
@@ -243,11 +243,15 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					break;
 				}
 			}
+			//print("-- VAR: "+variable);
 			if (output) {
+				//print("-->"+variable+" set true");
 				state.tmp.term_sibling.replace(true);
 				state.tmp.can_substitute.replace(false,  CSL.LITERAL);
 			} else {
+				//print("-->"+variable+" set FALSE");
 				if (undefined === state.tmp.term_sibling.value()) {
+					//print("-- forcing false");
 					state.tmp.term_sibling.replace(false,  CSL.LITERAL);
 				}
 			}

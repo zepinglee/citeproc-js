@@ -2782,36 +2782,35 @@ CSL.Node.group = {
 			if (state.build.substitute_level.value()) {
 				state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
 			}
+			if (!quashquash || true) {
+				func = function (state, Item) {
+					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
+				};
+				this.execs.push(func);
+			}
 			func = function (state, Item) {
 				state.output.startTag("group", this);
 			};
 			execs = [];
 			execs.push(func);
 			this.execs = execs.concat(this.execs);
-			if (!quashquash) {
-				func = function (state, Item) {
-					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
-				};
-				this.execs.push(func);
-			}
 		} else {
-			if (!quashquash) {
+			if (!quashquash || true) {
 				func = function (state, Item) {
 					var flag = state.tmp.term_sibling.value();
+					state.output.endTag();
 					if (false === flag) {
-						state.output.clearlevel();
+						if (state.output.current.value().blobs) {
+							state.output.current.value().blobs.pop();
+						}
 					}
 					state.tmp.term_sibling.pop();
-					if (flag && state.tmp.term_sibling.mystack.length > 1) {
+					if ((flag === true || flag === undefined) && state.tmp.term_sibling.mystack.length > 1) {
 						state.tmp.term_sibling.replace(true);
 					}
 				};
 				this.execs.push(func);
 			}
-			func = function (state, Item) {
-				state.output.endTag();
-			};
-			this.execs.push(func);
 		}
 		target.push(this);
 		if (this.tokentype === CSL.END) {
@@ -4100,12 +4099,12 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					} else if (this.dateparts && this.dateparts.length) {
 						varlen = Item[variable]['date-parts'][0].length;
 						needlen = 4;
-						if (this.dateparts.indexOf('day') > -1) {
-							needlen = 3;
+						if (this.dateparts.indexOf("year") > -1) {
+							needlen = 1;
 						} else if (this.dateparts.indexOf("month") > -1) {
 							needlen = 2;
-						} else if (this.dateparts.indexOf("year") > -1) {
-							needlen = 1;
+						} else if (this.dateparts.indexOf('day') > -1) {
+							needlen = 3;
 						}
 						if (varlen >= needlen) {
 							output = true;

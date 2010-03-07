@@ -41,6 +41,14 @@ CSL.Node.group = {
 			if (state.build.substitute_level.value()) {
 				state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
 			}
+			if (!quashquash || true) {
+				// fieldcontentflag
+				func = function (state, Item) {
+					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
+					//print("++ SET: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
+				};
+				this.execs.push(func);
+			}
 			// newoutput
 			func = function (state, Item) {
 				state.output.startTag("group", this);
@@ -51,26 +59,34 @@ CSL.Node.group = {
 			execs.push(func);
 			this.execs = execs.concat(this.execs);
 
-			if (!quashquash) {
-				// fieldcontentflag
-				func = function (state, Item) {
-					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
-				};
-				this.execs.push(func);
-			}
 		} else {
-			if (!quashquash) {
+
+			if (!quashquash || true) {
 				// quashnonfields
 				func = function (state, Item) {
 					var flag = state.tmp.term_sibling.value();
+					//if (false === flag) {
+						//print("X"+state.output.current.value().strings.prefix+"X");
+						//state.output.clearlevel();
+						//print(state.output.queue[0].blobs[2].strings.prefix)
+					//}
+
+					state.output.endTag();
+					//print("-- QUASHER: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
 					if (false === flag) {
-						state.output.clearlevel();
+						//print("POP!");
+						//state.output.current.pop();
+						if (state.output.current.value().blobs) {
+							//print("pop");
+							state.output.current.value().blobs.pop();
+							//state.output.formats.pop();
+						}
 					}
 					state.tmp.term_sibling.pop();
 					//
 					// Heals group quashing glitch with nested groups.
 					//
-					if (flag && state.tmp.term_sibling.mystack.length > 1) {
+					if ((flag === true || flag === undefined) && state.tmp.term_sibling.mystack.length > 1) {
 						state.tmp.term_sibling.replace(true);
 					}
 				};
@@ -78,10 +94,11 @@ CSL.Node.group = {
 			}
 
 			// mergeoutput
-			func = function (state, Item) {
-				state.output.endTag();
-			};
-			this.execs.push(func);
+			//func = function (state, Item) {
+			//	state.output.endTag();
+			//};
+			//this.execs.push(func);
+
 		}
 		target.push(this);
 

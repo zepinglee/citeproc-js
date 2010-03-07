@@ -437,8 +437,8 @@ Chicago Author-Date.
               <text text-case="capitalize-first" variable="genre" />
             </if>
           </choose>
-          <text macro="publisher" />
-          <text macro="issued" />
+          <text macro="publisher"/>
+          <text macro="issued"/>
         </group>
       </else-if>
       <else>
@@ -519,7 +519,7 @@ Chicago Author-Date.
       </group>
       <text macro="locators" />
       <text macro="collection-title" prefix=". " />
-      <text macro="issue" />
+      <text macro="issue"/>
       <text macro="locators-newspaper" prefix=", " />
       <text macro="pages-article" />
       <text macro="access" prefix=". " />
