@@ -132,5 +132,3 @@ CSL.Node.layout = {
 		}
 	}
 };
-
-

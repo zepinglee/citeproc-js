@@ -63,27 +63,21 @@ CSL.tokenExec = function (token, Item, item) {
  * <p>Called on the state object.</p>
  */
 CSL.expandMacro = function (macro_key_token) {
-	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput;
+	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput, end_of_macro;
+
 	mkey = macro_key_token.postponed_macro;
 	if (this.build.macro_stack.indexOf(mkey) > -1) {
 		throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
 	} else {
 		this.build.macro_stack.push(mkey);
 	}
-	start_token = new CSL.Token("group", CSL.START);
-	start_token.decorations = this.decorations;
-	for (key in macro_key_token.strings) {
-		if (macro_key_token.strings.hasOwnProperty(key)) {
-			start_token.strings[key] = macro_key_token.strings[key];
-		}
-	}
-	newoutput = function (state, Item) {
-		//state.output.openLevel(this);
-		state.output.startTag("group", this);
-		//state.tmp.decorations.push(this.decorations);
-	};
-	start_token.execs.push(newoutput);
-	this[this.build.area].tokens.push(start_token);
+
+	//
+	//
+	// (true as the last argument suppresses quashing)
+	macro_key_token.tokentype = CSL.START;
+	CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
+
 	//
 	// Here's where things change pretty dramatically.  We pull
 	// macros out of E4X directly, and process them using the
@@ -102,19 +96,16 @@ CSL.expandMacro = function (macro_key_token) {
 	navi = new this.getNavi(this, macroxml);
 	CSL.buildStyle.call(this, navi);
 
-	end_token = new CSL.Token("group", CSL.END);
-	mergeoutput = function (state, Item) {
-		//
-		// rendering happens inside the
-		// merge method, by applying decorations to
-		// each token to be merged.
-		state.output.endTag();
-		//state.output.closeLevel();
-	};
-	end_token.execs.push(mergeoutput);
-	this[this.build.area].tokens.push(end_token);
+	//
+	// can't use the same token for the end of the group, since
+	// both would then share the same jump-points, causing an
+	// infinite loop.
+	// (true as the last argument suppresses quashing)
+	end_of_macro = new CSL.Token("group", CSL.END);
+	CSL.Node.group.build.call(end_of_macro, this, this[this.build.area].tokens, true);
 
 	this.build.macro_stack.pop();
+
 };
 
 

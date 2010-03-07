@@ -45,8 +45,8 @@ bibliographies, they are always placed at the end of the sort
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">BookD 1999</div>
-  <div class="csl-entry">BookB 2000</div>
+  <div class="csl-entry">BookD 1999.</div>
+  <div class="csl-entry">BookB 2000.</div>
   <div class="csl-entry">BookA n.d.</div>
   <div class="csl-entry">BookC n.d.</div>
   <div class="csl-entry">BookE n.d.</div>

@@ -75,5 +75,5 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">BookD 1999</div>\n  <div class=\"csl-entry\">BookB 2000</div>\n  <div class=\"csl-entry\">BookA n.d.</div>\n  <div class=\"csl-entry\">BookC n.d.</div>\n  <div class=\"csl-entry\">BookE n.d.</div>\n</div>"
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">BookD 1999.</div>\n  <div class=\"csl-entry\">BookB 2000.</div>\n  <div class=\"csl-entry\">BookA n.d.</div>\n  <div class=\"csl-entry\">BookC n.d.</div>\n  <div class=\"csl-entry\">BookE n.d.</div>\n</div>"
 }

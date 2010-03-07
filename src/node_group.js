@@ -34,7 +34,7 @@
  */
 
 CSL.Node.group = {
-	build: function (state, target) {
+	build: function (state, target, quashquash) {
 		var func, execs;
 		if (this.tokentype === CSL.START) {
 			CSL.Util.substituteStart.call(this, state, target);
@@ -51,34 +51,34 @@ CSL.Node.group = {
 			execs.push(func);
 			this.execs = execs.concat(this.execs);
 
-			// fieldcontentflag
-			func = function (state, Item) {
-				state.tmp.term_sibling.push(undefined, CSL.LITERAL);
-			};
-			this.execs.push(func);
+			if (!quashquash) {
+				// fieldcontentflag
+				func = function (state, Item) {
+					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
+				};
+				this.execs.push(func);
+			}
 		} else {
-			// quashnonfields
-			func = function (state, Item) {
-				var flag = state.tmp.term_sibling.value();
-				if (false === flag) {
-					state.output.clearlevel();
-				}
-				state.tmp.term_sibling.pop();
-				//
-				// Heals group quashing glitch with nested groups.
-				//
-				if (flag && state.tmp.term_sibling.mystack.length > 1) {
-					state.tmp.term_sibling.replace(true);
-				}
-			};
-			this.execs.push(func);
+			if (!quashquash) {
+				// quashnonfields
+				func = function (state, Item) {
+					var flag = state.tmp.term_sibling.value();
+					if (false === flag) {
+						state.output.clearlevel();
+					}
+					state.tmp.term_sibling.pop();
+					//
+					// Heals group quashing glitch with nested groups.
+					//
+					if (flag && state.tmp.term_sibling.mystack.length > 1) {
+						state.tmp.term_sibling.replace(true);
+					}
+				};
+				this.execs.push(func);
+			}
 
 			// mergeoutput
 			func = function (state, Item) {
-				//
-				// rendering happens inside the
-				// merge method, by applying decorations to
-				// each token to be merged.
 				state.output.endTag();
 			};
 			this.execs.push(func);

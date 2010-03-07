@@ -58,16 +58,17 @@ var CSL = {
 	POSITION_SUBSEQUENT: 1,
 	POSITION_IBID: 2,
 	POSITION_IBID_WITH_LOCATOR: 3,
-	POSITION_TEST_VARS: ["position", "first-reference-note-number","near-note"],
+	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 	ABBREVIATE_FIELDS: ["journal", "series", "institution", "authority"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 	SWAPPING_PUNCTUATION: [".", ",", ";", ":"],
+	TERMINAL_PUNCTUATION: [".", "!", "?", ":", "X", "Y"],
 	NONE: 0,
 	NUMERIC: 1,
 	POSITION: 2,
 	COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
-	DATE_PARTS: ["year","month","day"],
+	DATE_PARTS: ["year", "month", "day"],
 	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 	DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
 	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix"],
@@ -186,6 +187,7 @@ var CSL = {
 	locale_opts: {},
 	locale_dates: {}
 };
+CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.join("") + "])(.*)");
 CSL.Output = {};
 CSL.Output.Queue = function (state) {
 	this.state = state;
@@ -347,14 +349,14 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	}
 };
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
-	var blobs, ret, blob_last_chars, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen;
+	var blobs, ret, blob_last_chars, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading;
 	blobs = myblobs.slice();
 	ret = [];
 	if (blobs.length === 0) {
 		return ret;
 	}
 	if (!blob) {
-		CSL.Output.Queue.normalizePrefixPunctuation(blobs);
+		CSL.Output.Queue.normalizePrefixPunctuation(blobs, true);
 	}
 	blob_last_chars = [];
 	if (blob) {
@@ -401,6 +403,17 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		} else if (blobjr.blobs.length) {
 			res = state.output.string(state, blobjr.blobs, blobjr);
 			addtoret = res[0];
+			if (ret.slice(-1)[0] && addtoret.slice(-1)[0]) {
+				ttype = typeof ret.slice(-1)[0];
+				ltype = typeof addtoret.slice(-1)[0];
+				if ("string" === ttype && "string" === ltype) {
+					terminal = ret.slice(-1)[0].slice(-1);
+					leading = addtoret.slice(-1)[0].slice(0, 1);
+					if (CSL.TERMINAL_PUNCTUATION.indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.indexOf(leading) > -1) {
+						ret[(ret.length - 1)] = ret[(ret.length - 1)].slice(0, -1);
+					}
+				}
+			}
 			ret = ret.concat(addtoret);
 			blob_last_chars = blob_last_chars.concat(res[1]);
 		} else {
@@ -425,6 +438,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			len = blob.decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
+				if ("@bibliography" === params[0]) {
+					continue;
+				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
 			}
 		}
@@ -440,6 +456,16 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			b = blob.strings.prefix + b + use_suffix;
 		}
 		blobs_start = b;
+		if (!state.tmp.suppress_decorations) {
+			len = blob.decorations.length;
+			for (pos = 0; pos < len; pos += 1) {
+				params = blob.decorations[pos];
+				if ("@bibliography" !== params[0]) {
+					continue;
+				}
+				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
+			}
+		}
 	}
 	blobs_end = ret.slice(span_split, ret.length);
 	if (!blobs_end.length && blobs_start) {
@@ -563,8 +589,8 @@ CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
 	}
 	return [ret, use_delim];
 };
-CSL.Output.Queue.normalizePrefixPunctuation = function (blobs) {
-	var pos, len, m, punct;
+CSL.Output.Queue.normalizePrefixPunctuation = function (blobs, top) {
+	var pos, len, m, punct, suff, predecessor, rex;
 	punct = "";
 	if ("object" === typeof blobs[0] && blobs[0].blobs.length) {
 		CSL.Output.Queue.normalizePrefixPunctuation(blobs[0].blobs);
@@ -575,15 +601,34 @@ CSL.Output.Queue.normalizePrefixPunctuation = function (blobs) {
 			if (!blobs[pos].blobs) {
 				continue;
 			}
-			m = blobs[pos].strings.prefix.match(/^([!.?])(.*)/);
+			m = blobs[pos].strings.prefix.match(CSL.TERMINAL_PUNCTUATION_REGEXP);
 			if (m) {
 				blobs[pos].strings.prefix = m[2];
-				if (["!", ".", "?"].indexOf(blobs[(pos - 1)].strings.suffix.slice(-1)) > -1) {
-					blobs[(pos - 1)].strings.suffix += m[1];
-				}
+				predecessor = blobs[(pos - 1)];
+				CSL.Output.Queue.appendPunctuationToSuffix(predecessor, m[1]);
 			}
 			if ("object" === typeof blobs[pos] && blobs[pos].blobs.length) {
 				CSL.Output.Queue.normalizePrefixPunctuation(blobs[pos].blobs);
+			}
+		}
+	}
+};
+CSL.Output.Queue.appendPunctuationToSuffix = function (predecessor, punct) {
+	var suff, newpredecessor;
+	suff = predecessor.strings.suffix;
+	if (suff) {
+		if (CSL.TERMINAL_PUNCTUATION.indexOf(suff.slice(-1)) === -1) {
+			predecessor.strings.suffix += punct;
+		}
+	} else {
+		if ("string" === typeof predecessor.blobs) {
+			if (CSL.TERMINAL_PUNCTUATION.indexOf(predecessor.blobs.slice(-1)) === -1) {
+				predecessor.strings.suffix += punct;
+			}
+		} else {
+			newpredecessor = predecessor.blobs.slice(-1)[0];
+			if (newpredecessor) {
+				CSL.Output.Queue.appendPunctuationToSuffix(newpredecessor, punct);
 			}
 		}
 	}
@@ -812,37 +857,23 @@ CSL.tokenExec = function (token, Item, item) {
 	return next;
 };
 CSL.expandMacro = function (macro_key_token) {
-	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput;
+	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput, end_of_macro;
 	mkey = macro_key_token.postponed_macro;
 	if (this.build.macro_stack.indexOf(mkey) > -1) {
 		throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
 	} else {
 		this.build.macro_stack.push(mkey);
 	}
-	start_token = new CSL.Token("group", CSL.START);
-	start_token.decorations = this.decorations;
-	for (key in macro_key_token.strings) {
-		if (macro_key_token.strings.hasOwnProperty(key)) {
-			start_token.strings[key] = macro_key_token.strings[key];
-		}
-	}
-	newoutput = function (state, Item) {
-		state.output.startTag("group", this);
-	};
-	start_token.execs.push(newoutput);
-	this[this.build.area].tokens.push(start_token);
+	macro_key_token.tokentype = CSL.START;
+	CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
 	macroxml = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
 	if (!this.sys.xml.getNodeValue(macroxml)) {
 		throw "CSL style error: undefined macro \"" + mkey + "\"";
 	}
 	navi = new this.getNavi(this, macroxml);
 	CSL.buildStyle.call(this, navi);
-	end_token = new CSL.Token("group", CSL.END);
-	mergeoutput = function (state, Item) {
-		state.output.endTag();
-	};
-	end_token.execs.push(mergeoutput);
-	this[this.build.area].tokens.push(end_token);
+	end_of_macro = new CSL.Token("group", CSL.END);
+	CSL.Node.group.build.call(end_of_macro, this, this[this.build.area].tokens, true);
 	this.build.macro_stack.pop();
 };
 CSL.XmlToToken = function (state, tokentype) {
@@ -1905,10 +1936,12 @@ CSL.getBibliographyEntries = function (bibsection) {
 			CSL.debug("BIB: " + item.id);
 		}
 		bib_entry = new CSL.Token("group", CSL.START);
-		bib_entry.decorations = [["@bibliography", "entry"]];
+		bib_entry.strings.prefix = this[this.build.area].opt.layout_prefix;
+		bib_entry.strings.suffix = this[this.build.area].opt.layout_suffix;
+		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
 		this.output.startTag("bib_entry", bib_entry);
 		CSL.getCite.call(this, item);
-		this.output.endTag(); // closes bib_entry
+		this.output.endTag();
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
 			res = "[CSL STYLE ERROR: reference with no printed form.]";
@@ -2742,7 +2775,7 @@ CSL.Node["et-al"] = {
 	}
 };
 CSL.Node.group = {
-	build: function (state, target) {
+	build: function (state, target, quashquash) {
 		var func, execs;
 		if (this.tokentype === CSL.START) {
 			CSL.Util.substituteStart.call(this, state, target);
@@ -2755,22 +2788,26 @@ CSL.Node.group = {
 			execs = [];
 			execs.push(func);
 			this.execs = execs.concat(this.execs);
-			func = function (state, Item) {
-				state.tmp.term_sibling.push(undefined, CSL.LITERAL);
-			};
-			this.execs.push(func);
+			if (!quashquash) {
+				func = function (state, Item) {
+					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
+				};
+				this.execs.push(func);
+			}
 		} else {
-			func = function (state, Item) {
-				var flag = state.tmp.term_sibling.value();
-				if (false === flag) {
-					state.output.clearlevel();
-				}
-				state.tmp.term_sibling.pop();
-				if (flag && state.tmp.term_sibling.mystack.length > 1) {
-					state.tmp.term_sibling.replace(true);
-				}
-			};
-			this.execs.push(func);
+			if (!quashquash) {
+				func = function (state, Item) {
+					var flag = state.tmp.term_sibling.value();
+					if (false === flag) {
+						state.output.clearlevel();
+					}
+					state.tmp.term_sibling.pop();
+					if (flag && state.tmp.term_sibling.mystack.length > 1) {
+						state.tmp.term_sibling.replace(true);
+					}
+				};
+				this.execs.push(func);
+			}
 			func = function (state, Item) {
 				state.output.endTag();
 			};

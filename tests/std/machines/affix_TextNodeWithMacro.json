@@ -32,18 +32,18 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.affix");
-doh.register("std.affix", [
-    function(){
-        var test = new StdRhinoTest("affix_PrefixWithDecorations");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("affix_TextNodeWithMacro");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("affix_PrefixFullCitationTextOnly");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+{
+    "bibentries": false, 
+    "bibsection": false, 
+    "citation_items": false, 
+    "citations": false, 
+    "csl": "<style\n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <locale>\n    <style-options punctuation-in-quote=\"false\"/>\n  </locale>\n  <macro name=\"two\">\n    <text value=\"Two\"/>\n  </macro>\n  <citation>\n    <layout suffix=\".\">\n      <text value=\"One\"/>\n      <text macro=\"two\" prefix=\". \"/>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "id": "ITEM-1", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "One. Two."
+}

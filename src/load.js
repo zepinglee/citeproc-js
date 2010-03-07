@@ -91,7 +91,7 @@ var CSL = {
 	POSITION_IBID: 2,
 	POSITION_IBID_WITH_LOCATOR: 3,
 
-	POSITION_TEST_VARS: ["position", "first-reference-note-number","near-note"],
+	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
@@ -100,6 +100,7 @@ var CSL = {
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 
 	SWAPPING_PUNCTUATION: [".", ",", ";", ":"],
+	TERMINAL_PUNCTUATION: [".", "!", "?", ":", "X", "Y"],
 
 	// update modes
 	NONE: 0,
@@ -108,7 +109,7 @@ var CSL = {
 
 	COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
 
-	DATE_PARTS: ["year","month","day"],
+	DATE_PARTS: ["year", "month", "day"],
 	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 	DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
 
@@ -257,6 +258,9 @@ var CSL = {
 	locale_dates: {}
 
 };
+
+CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.join("") + "])(.*)");
+
 
 //SNIP-START
 

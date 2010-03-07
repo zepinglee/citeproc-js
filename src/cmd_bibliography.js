@@ -194,10 +194,14 @@ CSL.getBibliographyEntries = function (bibsection) {
 			CSL.debug("BIB: " + item.id);
 		}
 		bib_entry = new CSL.Token("group", CSL.START);
-		bib_entry.decorations = [["@bibliography", "entry"]];
+		bib_entry.strings.prefix = this[this.build.area].opt.layout_prefix;
+		bib_entry.strings.suffix = this[this.build.area].opt.layout_suffix;
+		// this[this.build.area].opt.layout_delimiter;
+		//bib_entry.decorations = this[this.build.area].opt.layout_decorations.concat([["@bibliography", "entry"]]);
+		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
 		this.output.startTag("bib_entry", bib_entry);
 		CSL.getCite.call(this, item);
-		this.output.endTag(); // closes bib_entry
+		this.output.endTag();
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
 			res = "[CSL STYLE ERROR: reference with no printed form.]";
