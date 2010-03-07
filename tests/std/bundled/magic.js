@@ -99,6 +99,10 @@ doh.register("std.magic", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("magic_PunctuationInQuoteNested");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("magic_StripPeriodsTrue");
         doh.assertEqual(test.result, test.run());
     }, 
