@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-“Speak, ‘friend’, and enter.”
+“Speak, ‘friend’ of mine, and enter.”
 <<===== RESULT =====<<
 
 >>===== CSL =====>>
