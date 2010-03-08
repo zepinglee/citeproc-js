@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-“Speak, ‘friend’ of mine, and enter.”
+“Speak, ‘friend’ of mine on this day, March 15, 1973, and enter.”
 <<===== RESULT =====<<
 
 >>===== CSL =====>>
@@ -53,12 +53,16 @@ citation
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <macro name="passphrase">
+    <group  prefix="Speak, " suffix=", and enter.">
+      <text  value="&#34;friend&#34;"/>
+      <text value=" of mine on this day, "/>
+      <date variable="issued" form="text"/>
+    </group>
+  </macro>
   <citation>
-    <layout prefix="Speak, " suffix=", and enter." quotes="true">
-      <group>
-        <text value="&#34;friend&#34;"/>
-        <text value=" of mine"/>
-      </group>
+    <layout>
+      <text macro="passphrase" quotes="true"/>
     </layout>
   </citation>
 </style>
@@ -69,6 +73,15 @@ citation
 [
     {
         "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    1973, 
+                    3, 
+                    15
+                ]
+            ]
+        }, 
         "type": "book"
     }
 ]
