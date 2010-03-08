@@ -57,6 +57,7 @@ citation
     <layout prefix="Speak, " suffix=", and enter." quotes="true">
       <group>
         <text value="&#34;friend&#34;"/>
+        <text value=" of mine"/>
       </group>
     </layout>
   </citation>
