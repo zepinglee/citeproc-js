@@ -6,13 +6,26 @@
 	<script type="text/javascript" src="./loadsys.js"></script>
 	<script type="text/javascript" src="./loadcsl.js"></script>
 	<script type="text/javascript" src="./loadcites.js"></script>
-	<script type="text/javascript" src="./instantiate.js"></script>
 	<script type="text/javascript" src="./runcites.js"></script>
   </head>
   <body onload="insert()">
 
-	<h1>Sample Bibliography</h1>
-	<div id="citations">[Sorry, the bibliography processor requires a browser with Javascript enabled, and the Javascript engine must have E4X support.  If your browser does not satisfy these requirements, you will see this message.]</div>
+	<h1>Sample Bibliographies</h1>
+
+    <div class="heading">
+       Chicago Author-Date (names sorted alphabetically, titles translated)
+    </div>
+	<div id="chicago_author_date">[Sorry, the bibliography processor requires a Firefox browser with Javascript enabled.]</div>
+
+    <div class="heading">
+       Chicago Fullnote Bibliography (names romanized, titles translated)
+    </div>
+	<div id="chicago_fullnote_bibliography"></div>
+	
+    <div class="heading">
+       Chicago Fullnote Bibliography (quotes inside punctuation)
+    </div>
+	<div id="chicago_fullnote_bibliography2"></div>
 	
   </body>
 </html>
