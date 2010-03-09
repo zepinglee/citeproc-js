@@ -63,6 +63,7 @@ CSL.Engine = function (sys, style, lang) {
 	this.dateput = new CSL.Output.Queue(this);
 
 	this.cslXml = this.sys.xml.makeXml(style);
+	this.sys.xml.addInstitutionNodes(this.cslXml);
 	//
 	// Note for posterity: tried manipulating the XML here to insert
 	// a list of the upcoming date-part names.  The object is apparently
@@ -120,6 +121,8 @@ CSL.Engine = function (sys, style, lang) {
 	//
 
 	this.setStyleAttributes();
+
+	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml,"class");
 
 	lang = this.opt["default-locale"][0];
 	langspec = CSL.localeResolve(lang);
@@ -498,7 +501,7 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 					}
 				}
 				newname["static-ordering"] = use_static_ordering;
-				m = p.match(/^:([\-a-zA-Z]+):\s+(.*)/);
+				m = p.match(/^:([\-a-zA-Z0-9]+):\s+(.*)/);
 				if (m) {
 					addme = false;
 					lllen = this.opt[mode].length;

@@ -25,7 +25,7 @@ if [ "$2" == "NOTHING" ]; then
 else
     ARG2="$2"
 fi
-for i in tests/citeproc-js/*.js; do
+for i in tests/std/humans/*.txt; do
     if [ $(grep -c "${1}" $i) -gt 0 ]; then
         if [ "$ACTION" == "1" ]; then
             #cat $i | sed -e "s~$1~${ARG2}~g" > $i.NEW

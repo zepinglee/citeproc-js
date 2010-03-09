@@ -198,3 +198,33 @@ CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,da
 	delete parent.*[pos];
 	return parent;
 };
+
+CSL.System.Xml.E4X.prototype.addInstitutionNodes = function(myxml) {
+	var institution_long, institution_short, children, node;
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	institution_long = <institution
+		institution-parts="long"
+		delimiter=", "
+		substitute-use-first="1"
+		use-last="1"/>;
+	institution_short = <institution
+		institution-parts="long"
+		delimiter=", "
+		substitute-use-first="1"
+		use-last="1"/>;
+	for each (node in myxml..names) {
+		//print("names");
+		if ("xml" == typeof node && node.elements("name").length() > 0) {
+			if (!node.institution.toString()) {
+				//print("adding node");
+				node.name += institution_long;
+			}
+		}
+	}
+	//print(myxml);
+	//for each (node in myxml..names) {
+	//	if (node.name.toString() && !node.institution.toString()) {
+	//		print("oops");
+	//	}
+	//}
+};

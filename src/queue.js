@@ -39,6 +39,7 @@ CSL.Output = {};
  * @class
  */
 CSL.Output.Queue = function (state) {
+	this.levelname = ["top"];
 	this.state = state;
 	this.queue = [];
 	this.empty = new CSL.Token("empty");
@@ -138,6 +139,7 @@ CSL.Output.Queue.prototype.endTag = function () {
 
 CSL.Output.Queue.prototype.openLevel = function (token) {
 	var blob, curr;
+	this.levelname.push(token);
 	//CSL.debug("openLevel");
 	if (!this.formats.value()[token]) {
 		throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
@@ -165,6 +167,10 @@ CSL.Output.Queue.prototype.openLevel = function (token) {
 CSL.Output.Queue.prototype.closeLevel = function (name) {
 	//CSL.debug("closeLevel");
 	//CSL.debug("merge");
+	if (name && name !== this.levelname[this.levelname.length - 1]) {
+		print("Level mismatch error:  wanted "+name+" but found "+this.levelname[this.levelname.length - 1]);
+	}
+	this.levelname.pop();
 	this.current.pop();
 };
 

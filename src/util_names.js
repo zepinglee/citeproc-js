@@ -231,8 +231,8 @@ CSL.Util.Names.getCommonTerm = function (state, namesets) {
 	}
 	base_nameset = namesets[0];
 	varnames = [];
-	if (varnames.indexOf(base_nameset.type) === -1) {
-		varnames.push(base_nameset.type);
+	if (varnames.indexOf(base_nameset.variable) === -1) {
+		varnames.push(base_nameset.variable);
 	}
 	short_namesets = namesets.slice(1);
 	len = short_namesets.length;
@@ -241,8 +241,8 @@ CSL.Util.Names.getCommonTerm = function (state, namesets) {
 		if (!CSL.Util.Names.compareNamesets(base_nameset, nameset)) {
 			return false;
 		}
-		if (varnames.indexOf(nameset.type) === -1) {
-			varnames.push(nameset.type);
+		if (varnames.indexOf(nameset.variable) === -1) {
+			varnames.push(nameset.variable);
 		}
 	}
 	varnames.sort();

@@ -90,8 +90,32 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	base = false;
 	this.checkerator.pos = 0;
 
+	// temporary stuff for debugging
+		str = CSL.getAmbiguousCite.call(state, tokens[0], base);
+		maxvals = CSL.getMaxVals.call(state);
+		minval = CSL.getMinVal.call(state);
+		base = CSL.getAmbigConfig.call(state);
+	if (debug) {
+		for (var a in base) {
+			//
+			// Console chatter
+			//
+			if ("number" === typeof base[a]) {
+				print(a + ": "+base[a]);
+			} else if (base[a].length) {
+				print("  "+a + ": list of length "+base[a].length);
+				for (b in base[a]) {
+					print("    "+b+": "+typeof base[a][b]+" of value "+base[a][b]);
+				}
+			} else {
+				print(a + ": object");
+			}
+		}
+	}
+
+//	return [];
 	while (CSL.runCheckerator.call(this.checkerator)) {
-		token = tokens[this.checkerator.pos];
+		token = this.checkerator.tokens[this.checkerator.pos];
 		if (debug) {
 			CSL.debug("<<<<<<<<<<<<<<<<<<<<<<<<< " + token.id + " >>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		}
@@ -123,9 +147,21 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 		// XXXXX: band-aid to block infinite looping for cites
 		// with no names to work with.
 		//
-		if (!base.names.length) {
-			maxvals = 0;
-		}
+
+		// maybe this doesn't work.  doesn't base.names always
+		// start out at zero anyway?
+		//len = base.names.length - 1;
+		//for (pos = len; pos > -1; pos += -1) {
+		//	if (base.names[pos] === 0) {
+		//		base.names.pop();
+		//		base.givens.pop();
+		//	} else {
+		//		break;
+		//	}
+		//}
+		//if (!base.names.length) {
+		//	maxvals = 0;
+		//}
 		if (debug) {
 			CSL.debug("base out (givens):" + base.givens);
 		}
@@ -219,6 +255,7 @@ CSL.Checkerator = function () {};
 
 CSL.initCheckerator = function (tokens, modes) {
 	var len, pos;
+	this.tokens = tokens;
 	this.seen = [];
 	this.modes = modes;
 	this.mode = this.modes[0];
@@ -244,6 +281,20 @@ CSL.initCheckerator = function (tokens, modes) {
 };
 
 CSL.runCheckerator = function () {
+	var len, pos;
+	//if (this.maxvals.length && this.maxvals[this.modepos] === 0) {
+	//	print("modepos: "+this.modepos);
+	//	this.seen.push(this.tokens[this.pos].id);
+	//}
+
+	//if (this.maxvals.length && this.maxvals[this.modepos] === 0) {
+	//	len = this.tokens.length;
+	//	for (pos = 0; pos < len; pos += 1) {
+	//		this.maxed_out_bases[this.tokens[pos].id] =
+	//CSL.cloneAmbigConfig(base);
+	//	}
+	//	return false;
+	//}
 	if (this.seen.length < this.tokens_length) {
 		return true;
 	}
@@ -382,10 +433,14 @@ CSL.maxCheckeratorAmbigLevel = function () {
 	}
 
 	if (this.mode === "names") {
+		if (debug) {
+			print("CHECK =================> ");
+		}
 		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
 			if (this.modes.length === 2) {
 				this.mode = "givens";
 				this.mode1_counts[this.modepos] = 0;
+				this.modepos = 0;
 			} else {
 				this.pos += 1;
 				return true;

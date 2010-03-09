@@ -611,6 +611,7 @@ CSL.citeStart = function (Item) {
 	this.tmp.names_used = [];
 	this.tmp.nameset_counter = 0;
 	this.tmp.years_used = [];
+	this.tmp.names_max.clear();
 
 	this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;
 

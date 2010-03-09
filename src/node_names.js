@@ -35,7 +35,9 @@
 
 CSL.Node.names = {
 	build: function (state, target) {
-		var pos, len, variable, func, rawvar, filtered_names, namesets, names, people, mynames, llen, ppos, n, nn, nnn, lllen, pppos, attrname, label, plural;
+		var debug, func, len, pos, attrname;
+		debug = false;
+
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			CSL.Util.substituteStart.call(this, state, target);
 			state.build.substitute_level.push(1);
@@ -44,105 +46,139 @@ CSL.Node.names = {
 
 			// init names
 			func = function (state, Item) {
+				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end;
 				state.parallel.StartVariable("names");
 				if (state.tmp.value.length === 0) {
+					namesets = [];
 					len = this.variables.length;
+					if (len && state.opt.xclass === "in-text") {
+						len = 1;
+					}
 					for (pos = 0; pos < len; pos += 1) {
 						variable = this.variables[pos];
+						if (debug) {
+							CSL.debug(">>>> variable: "+variable);
+						}
 						if (Item[variable]) {
 							rawvar = Item[variable];
 							if ("string" === typeof Item[variable]) {
 								rawvar = [{literal: Item[variable]}];
 							}
-							filtered_names = state.getNameSubFields(rawvar);
-							if (this.strings["has-institution"]) {
-								state.tmp["has-institution"] = true;
-								//
-								// Divide a nameset into a set of people-only and
-								// people+organization groupings, ordered for
-								// rendering.
-								//
-								namesets = [];
-								names = [];
-								people = false;
-								//
-								// there are always two pairs, even
-								// if empty.  ordering is [organization,people,
-								// organization,people].  for first pair,
-								// organization is always empty.
-								//
-								llen = filtered_names.length;
-								for (ppos = 0; ppos < llen; ppos += 1) {
-									n = filtered_names[ppos];
-									if (!n.literal) {
-										names.push(n);
-										people = true;
+							rawlist = state.getNameSubFields(rawvar);
+							names = [];
+							//
+							// we start with this:
+							//
+							//  {pers}, {orgs1}, {pers1a}, {pers1b}, {orgs2} ...
+							//
+							// where any {pers*} may be missing.
+							//
+							// We want a list of namesets with markers.
+							// Namesets are composed of only pers or only
+							// org.
+							//
+							// Markers:
+							//
+							//   variable (change triggers label and join)
+							//   species:pers (triggers et-al join and external rendering)
+							//   after_people (set once on 1st org, triggers "with" joiner)
+							//   pers_org_start (sets pers-org join)
+							//   species:org (triggers external rendering)
+							//   pers_org_end (finalizes pers-org join)
+							//   organization_start (first person or org of an organization)
+							//   organization_end  (totally last organiztion)
+							//
+							// state vars
+							after_people_set = false;
+							pers_seen = false; // toggles off again after org split
+							in_orgs = 0;
+							last_type = false;
+							nameset = {names: []};
+							llen = rawlist.length;
+							for (ppos = 0; ppos < llen; ppos += 1) {
+								name = rawlist[ppos];
+								if (name.literal) {
+									// org
+									if (name.literal.slice(0,1) === '"' && name.literal.slice(-1)) {
+										lllst = [name.literal.slice(1,-1)];
 									} else {
-										namesets.push(names);
-										names = [];
-										nn = n.literal.split(/,\s+/);
-										lllen = nn.length;
-										for (pppos = 0; pppos < lllen; pppos += 1) {
-											nnn = nn[pppos];
-											names.push({"literal": nnn});
+										lllst = name.literal.split(/,\s+/);
+									}
+									lllen = lllst.length;
+									for (pppos = 0; pppos < lllen; pppos += 1) {
+										name = {literal: lllst[pppos]};
+										nameset.names.push(name);
+									}
+									nameset.variable = variable;
+									nameset.species = "org";
+									if (!in_orgs && ppos === 0) {
+										after_people_set = true;
+									}
+									if (!in_orgs && ppos > 0 && (rawlist.length - 1 == ppos || rawlist[ppos + 1].literal)) {
+										after_people_set = true;
+										nameset.after_people = true;
+									}
+									if (rawlist.length > (ppos + 1) && !rawlist[ppos + 1].literal) {
+										nameset.pers_org_end = true;
+									}
+									if (!in_orgs) {
+										nameset.organization_first = true;
+									}
+									namesets.push(nameset);
+									nameset = {names: []};
+									in_orgs += 1;
+									pers_seen = false;
+								} else {
+									// pers
+									nameset.names.push(name);
+									nameset.variable = variable;
+									nameset.species = "pers";
+									if (in_orgs && !pers_seen) {
+										nameset.pers_org_start = true;
+									}
+									if (in_orgs === 1 && !after_people_set && (ppos === rawlist.length - 1 || rawlist.length > (ppos + 1) && rawlist[ppos + 1].literal)) {
+											nameset.after_people = true;
+											after_people_set = true;
+									}
+									if (namesets.length > 0 && namesets[namesets.length - 1].organization_first && rawlist.length > 0 && rawlist[ppos - 1].literal) {
+										namesets[namesets.length - 1].organization_first = false;
+										nameset.organization_first = true;
+									}
+									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal) {
+										if (ppos > 0 && namesets.length > 0 && namesets[namesets.length - 1].names.length && namesets[namesets.length - 1].names[0].literal) {
+											end = namesets.slice(-1);
+											namesets = namesets.slice(0,-1);
+											namesets.push(nameset);
+											namesets = namesets.concat(end);
+										} else {
+											namesets.push(nameset);
 										}
-										namesets.push(names);
-										names = [];
-										people = false;
+										nameset = {names: []};
 									}
+									pers_seen = true;
 								}
-								if (people) {
-									namesets.push(names);
-									names = [];
-									namesets.push(names);
-								}
-								namesets = [[]].concat(namesets);
-								if (!namesets.slice(-1)[0].length) {
-									namesets = namesets.slice(0, -1);
-								}
-								while (namesets.length < 4 || namesets.length % 2) {
-									namesets = namesets.concat([[]]);
-								}
-								llen = namesets.length;
-								for (ppos = 0; ppos < llen; ppos += 2) {
-									mynames = {};
-									mynames.type = variable;
-									mynames.species = "people";
-									if (ppos === 0) {
-										mynames.grouping = "first-person";
-										if (namesets[(ppos + 1)].length) {
-											state.tmp["has-first-person"] = true;
-										}
-									} else if (ppos === 2) {
-										mynames.grouping = "first-organization";
-									} else if (ppos === (namesets.length - 2)) {
-										mynames.grouping = "last-organization";
-									}
-									mynames.names = namesets[(ppos + 1)];
-									state.tmp.names_max.push(mynames.names.length);
-									state.tmp.value.push(mynames);
-									state.tmp.names_used.push(state.tmp.value.slice());
-
-									mynames = {};
-									mynames.type = variable;
-									mynames.species = "organizations";
-									if (ppos === (namesets.length - 2)) {
-										mynames.grouping = "last";
-									}
-									mynames.names = namesets[ppos];
-									state.tmp.names_max.push(mynames.names.length);
-									state.tmp.value.push(mynames);
-									state.tmp.names_used.push(state.tmp.value.slice());
-								}
-							} else {  // end if institution
-								mynames = {};
-								mynames.type = variable;
-								mynames.species = "people";
-								mynames.names = filtered_names;
-								state.tmp.names_max.push(mynames.names.length);
-								state.tmp.value.push(mynames);
-								state.tmp.names_used.push(state.tmp.value.slice());
 							}
+						}
+					}
+					if (state.opt.xclass === "in-text") {
+						namesets = namesets.slice(0,1);
+					}
+					len = namesets.length;
+					for (pos = 0; pos < len; pos += 1) {
+						state.tmp.names_max.push(namesets[pos].names.length);
+						state.tmp.names_used.push(namesets[pos]);
+					}
+					if (namesets.length && namesets[namesets.length - 1].species === "org") {
+						namesets[namesets.length - 1].organization_last = true;
+					}
+
+					state.tmp.value = namesets.slice();
+
+					if (debug) {
+						len = namesets.length;
+						for (pos = 0; pos < len; pos += 1) {
+							var mynameset = namesets[pos];
+							CSL.debug(mynameset.species);
 						}
 					}
 				}
@@ -163,6 +199,9 @@ CSL.Node.names = {
 			// init names
 			func = function (state, Item) {
 				state.output.startTag("names", this);
+				if (debug) {
+					CSL.debug("## startTag: names "+this.strings.suffix);
+				}
 				state.tmp.name_node = state.output.current.value();
 			};
 			this.execs.push(func);
@@ -185,7 +224,7 @@ CSL.Node.names = {
 
 			// handle names
 			func = function (state, Item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -197,6 +236,9 @@ CSL.Node.names = {
 				// Normalize names for which it is requested
 				//
 				len = namesets.length;
+				if (debug) {
+					CSL.debug("namesets.length[1]: "+namesets.length);
+				}
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
 					if ("organizations" === nameset.species) {
@@ -215,8 +257,18 @@ CSL.Node.names = {
 				local_count = 0;
 				nameset = {};
 
+				state.output.addToken("term-join");
+
 				state.output.addToken("space", " ");
 				state.output.addToken("sortsep", state.output.getToken("name").strings["sort-separator"]);
+
+				// not yet hooked up; using direct output instead.
+
+				state.output.addToken("with-join");
+				state.output.getToken("with-join").strings.delimiter = ", with ";
+
+				outer_and_term = " " + state.output.getToken("name").strings.and + " ";
+				state.output.addToken("institution-outer", outer_and_term);
 
 				if (!state.output.getToken("etal")) {
 					state.output.addToken("etal-join", ", ");
@@ -224,24 +276,27 @@ CSL.Node.names = {
 				} else {
 					state.output.addToken("etal-join", "");
 				}
-				if (!state.output.getToken("with")) {
-					withtoken = new CSL.Token("with", CSL.SINGLETON);
-					withtoken.strings.prefix = " ";
-					withtoken.strings.suffix = " ";
-					state.output.addToken("with", withtoken);
-				}
-				if (!state.output.getToken("label")) {
-					state.output.addToken("label");
-				}
 				if ("undefined" === typeof state.output.getToken("etal").strings.et_al_term) {
 					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al", "long", 0);
 				}
+
+				if (!state.output.getToken("label")) {
+					state.output.addToken("label");
+				}
+
+				delim = state.output.getToken("name").strings.delimiter;
+				state.output.addToken("inner", delim);
+
 				//
-				// Locale term not yet available.
+				// Locale term not yet available. (this approach didn't make sense
+				// anyway.  with is handled further down below.)
 				//
 				// if ("undefined" === typeof state.output.getToken("with").strings.with_term){
 				// state.output.getToken("with").strings.with_term = state.getTerm("with","long",0);
 				// }
+				//if ("undefined" === typeof state.output.getToken("with").strings.with_term){
+				//	state.output.getToken("with").strings.with_term = "with";
+				//}
 				state.output.addToken("commasep", ", ");
 
 				len = CSL.DECORABLE_NAME_PARTS.length;
@@ -253,16 +308,20 @@ CSL.Node.names = {
 				}
 				state.output.addToken("dropping-particle", false, state.output.getToken("family"));
 				state.output.addToken("non-dropping-particle", false, state.output.getToken("family"));
+
+				// open for term join, for any and all names.
+				state.output.openLevel("term-join");
+				if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
+					state.output.append(label, "label");
+				}
+
 				len = namesets.length;
+				if (debug) {
+					CSL.debug("namesets.length[2]: "+namesets.length);
+				}
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 					nameset = namesets[namesetIndex];
-					//
-					// XXXXX: this buggers up the nesting mimicry for
-					// institutional names support
-					//
-					//if (!nameset.names.length){
-					//	continue;
-					//}
+
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
 						//
 						// This is fine, but the naming of the comparison
@@ -273,9 +332,12 @@ CSL.Node.names = {
 						// cite.
 						//
 						if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
+							// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
 							lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+							//lastones = state.tmp.last_names_used;
 							currentones = state.tmp.names_used[state.tmp.nameset_counter];
-							compset = currentones.concat(lastones);
+							//currentones = state.tmp.names_used;
+							compset = [currentones,lastones];
 							if (CSL.Util.Names.getCommonTerm(state, compset)) {
 								continue;
 							} else {
@@ -286,11 +348,10 @@ CSL.Node.names = {
 					if (!state.tmp.disambig_request) {
 						state.tmp.disambig_settings.givens[state.tmp.nameset_counter] = [];
 					}
-					//
-					// Here is where we maybe truncate the list of
-					// names, to satisfy name-count and et-al constraints.
+
 					display_names = nameset.names.slice();
-					if ("people" === nameset.species) {
+
+					if ("pers" === nameset.species) {
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
 						//
 						// if there is anything on name request, we assume that
@@ -327,7 +388,6 @@ CSL.Node.names = {
 						overlength = display_names.length > discretionary_names_length;
 						et_al = false;
 						and_term = "";
-						outer_and_term = " " + state.output.getToken("name").strings.and + " ";
 
 						if (sane && overlength) {
 							if (! state.tmp.sort_key_flag) {
@@ -339,8 +399,10 @@ CSL.Node.names = {
 								and_term = state.output.getToken("name").strings.and;
 							}
 						}
+						state.output.formats.value().name.strings.delimiter = and_term;
+
 					} else {
-						// not if ("people" === nameset.species), must be "organizations"
+						// org
 						use_first = state.output.getToken("institution").strings["use-first"];
 						if (!use_first && namesetIndex === 0) {
 							use_first = state.output.getToken("institution").strings["substitute-use-first"];
@@ -371,15 +433,11 @@ CSL.Node.names = {
 					// "name" is the format for the outermost nesting of a nameset
 					// "inner" is a format consisting only of a delimiter, used for
 					// joining all but the last name in the set together.
-					delim = state.output.getToken("name").strings.delimiter;
-					if (!state.output.getToken("inner")) {
-						state.output.addToken("inner", delim);
+
+
+					if (debug) {
+						CSL.debug("nameset.names.length[1]: "+nameset.names.length);
 					}
-					//state.tmp.tokenstore["and"] = new CSL.Token("and");
-
-					state.output.formats.value().name.strings.delimiter = and_term;
-					state.output.addToken("outer-and", outer_and_term);
-
 					llen = nameset.names.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
 						//
@@ -406,7 +464,7 @@ CSL.Node.names = {
 							}
 						} else {
 							//
-							// ZZZZZ: it clicks.  here is where we will put the
+							// it clicks.  here is where we will put the
 							// call to the names register, to get the floor value
 							// for an individual name.
 							//
@@ -423,7 +481,7 @@ CSL.Node.names = {
 						if (common_term) {
 							termname = common_term;
 						} else {
-							termname = nameset.type;
+							termname = nameset.variable;
 						}
 						//
 						// XXXXX: quick hack.  This should be fixed earlier.
@@ -447,75 +505,98 @@ CSL.Node.names = {
 					// content at the end of the names block
 					//
 
-					// Gotcha.  Don't want to use startTag here, it pushes
-					// a fresh format token namespace, and we lose our pointer.]
-					// Use openLevel (and possibly addToken) instead.
+					// markers are:
+					//
+					//   variable (change triggers label and join)
+					//   species:pers (triggers et-al join and external rendering)
+					//   after_people (set once on 1st org, triggers "with" joiner)
+					//   pers_org_start (sets pers-org join)
+					//   species:org (triggers external rendering)
+					//   pers_org_end (finalizes pers-org join)
+					//
 
-					// XXXXX: careful with this; with institutional
-					// sub-nesting, this is going to give you multiple
-					// terms.  Should only happen once.
-					// This code really wants to be factored out, so we
-					// can see the nesting structure more easily.
-
-					// temporary: preserve existing structure
-					if (!state.tmp["has-institution"]) {
-						state.output.openLevel("empty"); // for term join
-						if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
-							state.output.append(label, "label");
+					if (namesetIndex > 0 && nameset.variable !== last_variable) {
+						if (debug) {
+							CSL.debug("-- blink 'term-join'");
 						}
-					} else if (nameset.grouping === "first-person") {
-						state.output.openLevel("empty"); // for term join
-						if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
-							state.output.append(label, "label");
-						}
-						// QQQ
-						// XXXX: well, here's where the joins will be manipulated
-						//state.output.openLevel("name");
-						state.output.openLevel("with");
-					} else if (nameset.grouping === "first-organization") {
-						if (state.tmp["has-first-person"]) {
-							state.output.append(" with ", "empty");
-						}
-						state.output.openLevel("outer-and");
-						state.output.openLevel("inner");
-					} else if (nameset.grouping === "last-organization") {
-						state.output.closeLevel(); // closes inner
-						state.output.openLevel("inner"); // open fresh inner
+						state.output.closeLevel("term-join");
+						state.output.openLevel("term-join");
 					}
-					if ("people" === nameset.species) {
+
+					if (nameset.after_people) {
+						if (debug) {
+							CSL.debug("-- reached 'after_people'");
+						}
+						state.output.append(", with ", "empty");
+					}
+
+					if (nameset.organization_first) {
+						if (debug) {
+							CSL.debug("-- reached 'organization_first'");
+						}
+						state.output.openLevel("institution-outer");
+						state.output.openLevel("inner");
+					}
+
+					//if (nameset.pers_org_start) {
+					//	if (debug) {
+					//		CSL.debug("-- reached 'pers_org_start'");
+					//	}
+					//	//state.output.openLevel("inner");
+					//}
+
+
+					if (nameset.species === "pers") {
+						// pers
+						if (debug) {
+							CSL.debug("-- reached species 'pers'");
+						}
 						state.output.openLevel("etal-join"); // join for etal
 						CSL.Util.Names.outputNames(state, display_names);
 						if (et_al) {
 							state.output.append(et_al, "etal");
 						}
-						state.output.closeLevel(); // etal
+						state.output.closeLevel("etal-join"); // etal
 					} else {
+						//org
 						CSL.Util.Institutions.outputInstitutions(state, display_names);
+						if (nameset.organization_last) {
+								if (debug) {
+									CSL.debug("-- reached 'organization_last'");
+								}
+							state.output.closeLevel("inner");
+							state.output.closeLevel("institution-outer");
+						} else {
+								if (debug) {
+									CSL.debug("-- reached 'organization_NOT_last'");
+								}
+							state.output.closeLevel("inner");
+							state.output.openLevel("inner");
+						}
 					}
 
-					if (!state.tmp["has-institution"]) {
+
+					//if (nameset.pers_org_end) {
+					//	if (debug) {
+					//		CSL.debug("-- reached 'pers_org_end'");
+					//	}
+					//	//state.output.closeLevel("inner");
+					//}
+
+					// lookahead
+					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
 						if (label && state.tmp.name_label_position !== CSL.BEFORE) {
 							state.output.append(label, "label");
 						}
-						// term
-						state.output.closeLevel();
-					} else if (nameset.grouping === "last") {
-						// trial token (inner)
-						state.output.closeLevel();
-						// trial token (inner)
-						state.output.closeLevel();
-						// trial token (with)
-						state.output.closeLevel();
-						if (label && state.tmp.name_label_position !== CSL.BEFORE) {
-							state.output.append(label, "label");
-						}
-						// term
-						state.output.closeLevel();
 					}
+
 
 					state.tmp.nameset_counter += 1;
-					// end of nameset loop
+					last_variable = nameset.variable;
 				}
+
+				state.output.closeLevel("term-join");
+
 				if (state.output.getToken("name").strings.form === "count") {
 					state.output.clearlevel();
 					state.output.append(local_count.toString());
@@ -535,6 +616,9 @@ CSL.Node.names = {
 				}
 				CSL.Util.Names.reinit(state, Item);
 				// names
+				if (debug) {
+					CSL.debug("## endTag: names");
+				}
 				state.output.endTag();
 
 				state.parallel.CloseVariable();

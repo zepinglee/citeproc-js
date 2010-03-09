@@ -121,6 +121,7 @@ StdRhinoTest.prototype._readTest = function(){
 
 
 StdRhinoTest.prototype.run = function(){
+	// print(this.myname);
 	var ret = new Array();
 	this.style = new CSL.Engine(this,this.test.csl);
 	this.style.setAbbreviations("default");
