@@ -40,14 +40,14 @@ citation
 
 
 >>===== RESULT =====>>
-Ministry of Education, Sports, Culture, Science and Technology
+Multi-National United
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />
@@ -70,7 +70,7 @@ Ministry of Education, Sports, Culture, Science and Technology
     {
         "author": [
             {
-                "literal": "Ministry of Education, Sports, Culture, Science and Technology", 
+                "literal": "Multi-National United", 
                 "static-ordering": false
             }
         ], 

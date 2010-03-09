@@ -62,7 +62,7 @@ Stamou, A.I. Title of the Article / A.I. Stamou, I. Katsiris, A. Schaelin
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.1x">
   <info>
     <id />

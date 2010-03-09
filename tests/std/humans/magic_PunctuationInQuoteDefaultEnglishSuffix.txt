@@ -48,7 +48,7 @@ Doe, “Book A,” 1900.
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />
@@ -56,9 +56,9 @@ Doe, “Book A,” 1900.
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout suffix=".">
-      <names suffix=", " variable="author">
-        <name form="short" />
+    <layout suffix="." delimiter="[z]">
+      <names suffix=", " variable="author" delimiter="[x]">
+        <name form="short" delimiter="[y]"/>
       </names>
       <text quotes="true" suffix=", " variable="title" />
       <date variable="issued">

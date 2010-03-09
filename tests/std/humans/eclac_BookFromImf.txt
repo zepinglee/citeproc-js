@@ -47,7 +47,7 @@ IMF (International Monetary Fund) (2009), “Regional economic outlook : asia an
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.1x">
   <info>
     <id />

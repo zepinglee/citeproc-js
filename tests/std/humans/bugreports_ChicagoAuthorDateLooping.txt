@@ -51,7 +51,7 @@ But comes out as:
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <title>Chicago Manual of Style (Author-Date format)</title>

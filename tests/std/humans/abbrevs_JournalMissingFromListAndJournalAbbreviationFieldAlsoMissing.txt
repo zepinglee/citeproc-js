@@ -47,7 +47,7 @@ Doe, <i>Mango Chutney Souffle</i>, 10 Journal of Irreproducible ResultsX 235 (19
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

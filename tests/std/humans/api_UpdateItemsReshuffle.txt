@@ -68,7 +68,7 @@ Doe 1960; Brown 1990; Ichi 2000; Roe 1970; Smith 1980.
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

@@ -35,10 +35,6 @@
 dojo.provide("std.textcase");
 doh.register("std.textcase", [
     function(){
-        var test = new StdRhinoTest("textcase_Uppercase");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("textcase_SentenceCapitalization");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -48,6 +44,10 @@ doh.register("std.textcase", [
     }, 
     function(){
         var test = new StdRhinoTest("textcase_UppercaseNumber");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("textcase_Uppercase");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

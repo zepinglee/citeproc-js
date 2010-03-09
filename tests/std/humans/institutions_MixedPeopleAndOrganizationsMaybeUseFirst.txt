@@ -47,7 +47,7 @@ Doe, et al., Big Ministry
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.1x"
       default-locale="en">
   <info>
@@ -93,6 +93,7 @@ Doe, et al., Big Ministry
                 "given": "Richard"
             }
         ], 
+        "id": "ITEM-1", 
         "type": "book"
     }
 ]

@@ -47,7 +47,7 @@ Asthma, Bronchitis, Cold (1990); Asthma, Bronchitis, Cold (1990); Dropsy, Enteri
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />
@@ -61,7 +61,7 @@ Asthma, Bronchitis, Cold (1990); Asthma, Bronchitis, Cold (1990); Dropsy, Enteri
          et-al-use-first="1"
          givenname-disambiguation-rule="by-cite">
     <layout delimiter="; ">
-      <names delimiter=", " variable="author">
+      <names delimiter="[X] " variable="author">
         <name delimiter=", " form="short" initialize-with="." />
       </names>
       <group prefix=" (" suffix=")">
@@ -196,3 +196,5 @@ Asthma, Bronchitis, Cold (1990); Asthma, Bronchitis, Cold (1990); Dropsy, Enteri
     }
 ]
 <<===== INPUT =====<<
+
+

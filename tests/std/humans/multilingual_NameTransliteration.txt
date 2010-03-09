@@ -47,9 +47,9 @@ Beato Takeshi, T. Kitano, R. Atkinson
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0"
-      default-locale="en-US-x-name-ja-Latn-hepburn">
+      default-locale="en-US-x-name-ja-alalc97">
   <info>
     <id />
     <title />
@@ -79,7 +79,7 @@ Beato Takeshi, T. Kitano, R. Atkinson
                 "static-ordering": false
             }, 
             {
-                "family": ":ja-Latn-hepburn:   Beato", 
+                "family": ":ja-alalc97:   Beato", 
                 "given": "Takeshi", 
                 "static-ordering": false
             }, 

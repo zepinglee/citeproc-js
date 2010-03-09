@@ -47,7 +47,7 @@ THIS IS A PEN THAT IS A SMITH PENCIL
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

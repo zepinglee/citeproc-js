@@ -47,7 +47,7 @@ circa 15 December 2005; 20 December 2005
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

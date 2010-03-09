@@ -35,6 +35,14 @@
 dojo.provide("std.institutions");
 doh.register("std.institutions", [
     function(){
+        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsInTextImplicitChop");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("institutions_QuotesSuppressCommaSplit");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("institutions_FirstAndLast");
         doh.assertEqual(test.result, test.run());
     }, 

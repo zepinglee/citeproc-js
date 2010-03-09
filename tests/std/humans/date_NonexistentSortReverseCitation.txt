@@ -49,7 +49,7 @@ Item 2; Item 4; Item 1; Item 3
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

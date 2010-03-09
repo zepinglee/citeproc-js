@@ -40,14 +40,14 @@ citation
 
 
 >>===== RESULT =====>>
-Пётр Ильич ЧАЙКОВСКИЙ, Rip VAN WINKLE, 我妻栄, Carl THUCYDIDES III, TOKUGAWA Ieyasu, Ministry of Fear, Loathing and Error, PRINCE
+Пётр Ильич ЧАЙКОВСКИЙ, Rip VAN WINKLE, 我妻栄, Carl THUCYDIDES III, TOKUGAWA Ieyasu, PRINCE
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />
@@ -97,10 +97,6 @@ citation
                 "family": "Tokugawa", 
                 "given": "Ieyasu", 
                 "static-ordering": true
-            }, 
-            {
-                "literal": "Ministry of Fear, Loathing and Error", 
-                "static-ordering": false
             }, 
             {
                 "family": "Prince", 

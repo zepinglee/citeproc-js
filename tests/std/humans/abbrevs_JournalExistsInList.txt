@@ -47,7 +47,7 @@ Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

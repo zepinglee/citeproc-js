@@ -62,7 +62,7 @@ Smith v. Noakes, 222 U.S. 200, 333 L.Ed. 300 (1965); Jim v. Bob, 444 U.S. 400 (1
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

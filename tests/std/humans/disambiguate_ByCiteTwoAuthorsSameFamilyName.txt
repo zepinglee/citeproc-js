@@ -47,7 +47,7 @@ A. Asthma and B. Asthma (1980); Bronchitis (1995); Asthma (1885)
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

@@ -46,7 +46,7 @@ Doe
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0"
       name-form="short">
   <info>

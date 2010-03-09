@@ -48,7 +48,7 @@ Doe, et al., <i>Book A</i> (2000); Doe, et al., <i>Book B</i> (2000)
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />

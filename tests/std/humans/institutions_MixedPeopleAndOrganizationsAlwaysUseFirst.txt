@@ -40,14 +40,14 @@ citation
 
 
 >>===== RESULT =====>>
-Noakes with Roe, Tiny Subcommittee, Big Ministry and Doe, et al., Trivial Working Group, Wasteful Enterprise eds.
+Noakes, with Roe, Tiny Subcommittee, Big Ministry and Doe, et al., Trivial Working Group, Wasteful Enterprise eds.
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.1x"
       default-locale="en">
   <info>

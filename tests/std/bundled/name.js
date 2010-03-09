@@ -51,6 +51,10 @@ doh.register("std.name", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("name_ImplicitInstitution");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("name_HyphenatedFirstName");
         doh.assertEqual(test.result, test.run());
     }, 
