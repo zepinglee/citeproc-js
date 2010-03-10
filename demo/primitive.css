@@ -1,3 +1,9 @@
+div.csl-indent {
+    margin-top: 0.5em;
+    margin-left: 2em;
+    padding-bottom: 0.2em;
+}
+
 div.heading {
     border-top: 1px solid black;
 }

@@ -44,6 +44,7 @@ var data = {
 				"static-ordering": false
 			}
 		],
+        "note":"The apostrophe in Bruce's name appears in proper typeset form.",
 		"publisher": "Routledge",
 		"issued": {
 			"date-parts":[
@@ -71,11 +72,13 @@ var data = {
 				[2009, 8]
 			]
 		},
-		"type": "article-journal"
+		"type": "article-journal",
+        "note": "Note the flip-flop behavior of the quotations marks around \"informal\" in the title of this citation.  This works for quotation marks in any style locale.  Oh, and, uh, these notes illustrate the formatting of annotated bibliographies (!)."
 	},
 	"ITEM-3": {
 		"id": "ITEM-3",
 		"title":"Key Process Conditions for Production of C<sub>4</sub> Dicarboxylic Acids in Bioreactor Batch Cultures of an Engineered <i>Saccharomyces cerevisiae</i> Strain",
+        "note":"This cite illustrates the rich text formatting capabilities in the new processor.  Although this particular cite does not exercise it, we also offer robust handling of name particles, such as \"van\" and \"de\" in the author names above.",
 		"author": [
 			{
 				"family": "Zelle",
@@ -124,6 +127,7 @@ var data = {
 		"type": "paper-conference",
 		"event": "Society for Cinema Studies Annual Meeting",
 		"event-place": "Denver, CO",
+        "note":"All styles in the CSL repository are supported by the new processor, including the popular Chicago styles by Elena.",
 		"issued": {
 			"date-parts": [
 				[
@@ -185,7 +189,7 @@ var data = {
 				"given": "Kenji"
 			}
 		],
-		"title": "\u9ad8\u7b49\u6559\u80b2\u6a5f\u95a2\u306b\u304a\u3051\u308b\u6b21\u4e16\u4ee3\u6559\u80b2\u5b66\u7fd2\u652f\u63f4\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u306e\u69cb\u7bc9\u306b\u5411\u3051\u3066 :en: Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education",
+		"title": "\u9ad8\u7b49\u6559\u80b2\u6a5f\u95a2\u306b\u304a\u3051\u308b\u6b21\u4e16\u4ee3\u6559\u80b2\u5b66\u7fd2\u652f\u63f4\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u306e\u69cb\u7bc9\u306b\u5411\u3051\u3066 :ja-alalc97: K\u014dt\u014d ky\u014diku ni okeru jisedai ky\u014diku gakush\u016b shien puratto f\u014dmu no k\u014dchiku ni mukete :en: Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education",
 		"container-title": "\u65e5\u672c\u6559\u80b2\u5de5\u5b66\u4f1a\u8ad6\u6587\u8a8c",
 		"volume": "31",
 		"issue": "3",
@@ -197,7 +201,31 @@ var data = {
 					12
 				]
 			]
-		}
+		},
+        "note": "Note the transformations to which this cite is subjected in the samples above, and the fact that it appears in the correct sort position in all rendered forms.  Selection of multi-lingual content can be configured in the style, permitting one database to serve a multi-lingual author in all languages in which she might publish."
+
+	},
+	"ITEM-6": {
+		"id": "ITEM-6",
+		"title":"Evaluating Components of International Migration: Consistency of 2000 Nativity Data",
+		"note": "This cite illustrates the formatting of institutional authors.  Note that there is no \"and\" between the individual author and the institution with which he is affiliated.",
+		"author": [
+			{
+				"literal": "U.S. Bureau of the Census"
+			},
+			{
+				"family": "Malone",
+				"given": "Nolan J.",
+				"static-ordering": false
+			}
+		],
+		"publisher": "Routledge",
+		"issued": {
+			"date-parts":[
+				[2001, 12, 5]
+			]
+		},
+		"type": "book"
 	}
 };
 
