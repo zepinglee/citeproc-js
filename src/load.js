@@ -57,7 +57,7 @@
 var CSL = {
 
 	debug: function (str) {
-		print(str);
+		//print(str);
 	},
 
 	START: 0,

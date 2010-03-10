@@ -46,7 +46,7 @@ CSL.Node.names = {
 
 			// init names
 			func = function (state, Item) {
-				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end;
+				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end, mynameset, tnamesets, frontnames, pair, offset, swaplist;
 				state.parallel.StartVariable("names");
 				if (state.tmp.value.length === 0) {
 					namesets = [];
@@ -57,7 +57,7 @@ CSL.Node.names = {
 					for (pos = 0; pos < len; pos += 1) {
 						variable = this.variables[pos];
 						if (debug) {
-							CSL.debug(">>>> variable: "+variable);
+							CSL.debug(">>>> variable: " + variable);
 						}
 						if (Item[variable]) {
 							rawvar = Item[variable];
@@ -89,18 +89,18 @@ CSL.Node.names = {
 							//   organization_end  (totally last organiztion)
 							//
 							// state vars
-							after_people_set = false;
-							pers_seen = false; // toggles off again after org split
-							in_orgs = 0;
-							last_type = false;
+							tnamesets = [];
 							nameset = {names: []};
+							frontnames = [];
 							llen = rawlist.length;
 							for (ppos = 0; ppos < llen; ppos += 1) {
 								name = rawlist[ppos];
 								if (name.literal) {
 									// org
-									if (name.literal.slice(0,1) === '"' && name.literal.slice(-1)) {
-										lllst = [name.literal.slice(1,-1)];
+									nameset.variable = variable;
+									nameset.species = "org";
+									if (name.literal.slice(0, 1) === '"' && name.literal.slice(-1)) {
+										lllst = [name.literal.slice(1, -1)];
 									} else {
 										lllst = name.literal.split(/,\s+/);
 									}
@@ -109,75 +109,88 @@ CSL.Node.names = {
 										name = {literal: lllst[pppos]};
 										nameset.names.push(name);
 									}
-									nameset.variable = variable;
-									nameset.species = "org";
-									if (!in_orgs && ppos === 0) {
-										after_people_set = true;
-									}
-									if (!in_orgs && ppos > 0 && (rawlist.length - 1 == ppos || rawlist[ppos + 1].literal)) {
-										after_people_set = true;
-										nameset.after_people = true;
-									}
-									if (rawlist.length > (ppos + 1) && !rawlist[ppos + 1].literal) {
-										nameset.pers_org_end = true;
-									}
-									if (!in_orgs) {
-										nameset.organization_first = true;
-									}
-									namesets.push(nameset);
+									tnamesets.push(nameset);
 									nameset = {names: []};
-									in_orgs += 1;
-									pers_seen = false;
 								} else {
 									// pers
-									nameset.names.push(name);
 									nameset.variable = variable;
 									nameset.species = "pers";
-									if (in_orgs && !pers_seen) {
-										nameset.pers_org_start = true;
-									}
-									if (in_orgs === 1 && !after_people_set && (ppos === rawlist.length - 1 || rawlist.length > (ppos + 1) && rawlist[ppos + 1].literal)) {
-											nameset.after_people = true;
-											after_people_set = true;
-									}
-									if (namesets.length > 0 && namesets[namesets.length - 1].organization_first && rawlist.length > 0 && rawlist[ppos - 1].literal) {
-										namesets[namesets.length - 1].organization_first = false;
-										nameset.organization_first = true;
-									}
+									nameset.names.push(name);
 									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal) {
-										if (ppos > 0 && namesets.length > 0 && namesets[namesets.length - 1].names.length && namesets[namesets.length - 1].names[0].literal) {
-											end = namesets.slice(-1);
-											namesets = namesets.slice(0,-1);
-											namesets.push(nameset);
-											namesets = namesets.concat(end);
-										} else {
-											namesets.push(nameset);
-										}
+										tnamesets.push(nameset);
 										nameset = {names: []};
 									}
-									pers_seen = true;
+								}
+								//   * variable (change triggers label and join)
+								//   * species:pers (triggers et-al join and external rendering)
+								//   after_people (set once on 1st org, triggers "with" joiner)
+								//   * organization_first (start of names with orgs)
+								//   * species:org (triggers external rendering)
+								//   * organization_last (end of names with orgs)
+							}
+
+							// rearrange list and apply position markers
+							if (tnamesets.length && tnamesets[0].species === "pers") {
+								frontnames = tnamesets.slice(0, 1);
+								tnamesets = tnamesets.slice(1);
+							}
+							swaplist = [];
+							llen = tnamesets.length - 2;
+							for (ppos = llen; ppos > -1; ppos += -1) {
+								// trigger switch  on literal, dragging forward
+								// any pers nameset that was passed over.
+								if (tnamesets[ppos].species === "org" && tnamesets[ppos + 1].species === "pers") {
+									swaplist.push(ppos);
 								}
 							}
+							llen = swaplist.length;
+							ppos = 0;
+							for (ppos; ppos < llen; ppos += 1) {
+								pair = tnamesets.slice(swaplist[ppos], (swaplist[ppos] + 2));
+								pair.reverse();
+								end = pair.concat(tnamesets.slice(swaplist[ppos] + 2));
+								tnamesets = tnamesets.slice(0, swaplist[ppos]).concat(end);
+							}
+							if (tnamesets.length && frontnames.length) {
+								tnamesets[0].after_people = true;
+							}
+							tnamesets = frontnames.concat(tnamesets);
+							if (tnamesets.length && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
+								offset = false;
+								if (tnamesets.length > 1) {
+									if (tnamesets[1].after_people) {
+										offset = 1;
+									} else {
+										offset = 0;
+									}
+								} else if (tnamesets[0].species === "org") {
+									offset = 0;
+								}
+								if (offset !== false) {
+									tnamesets[offset].organization_first = true;
+									tnamesets[tnamesets.length - 1].organization_last = true;
+								}
+							}
+							namesets = namesets.concat(tnamesets);
 						}
 					}
-					if (state.opt.xclass === "in-text") {
-						namesets = namesets.slice(0,1);
+					if (state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") {
+						namesets = namesets.slice(0, 1);
 					}
 					len = namesets.length;
 					for (pos = 0; pos < len; pos += 1) {
 						state.tmp.names_max.push(namesets[pos].names.length);
 						state.tmp.names_used.push(namesets[pos]);
 					}
-					if (namesets.length && namesets[namesets.length - 1].species === "org") {
-						namesets[namesets.length - 1].organization_last = true;
-					}
 
 					state.tmp.value = namesets.slice();
+
+					//print("CHECK: "+namesets[0].names.length);
 
 					if (debug) {
 						len = namesets.length;
 						for (pos = 0; pos < len; pos += 1) {
-							var mynameset = namesets[pos];
+							mynameset = namesets[pos];
 							CSL.debug(mynameset.species);
 						}
 					}
@@ -200,7 +213,7 @@ CSL.Node.names = {
 			func = function (state, Item) {
 				state.output.startTag("names", this);
 				if (debug) {
-					CSL.debug("## startTag: names "+this.strings.suffix);
+					CSL.debug("## startTag: names " + this.strings.suffix);
 				}
 				state.tmp.name_node = state.output.current.value();
 			};
@@ -237,7 +250,7 @@ CSL.Node.names = {
 				//
 				len = namesets.length;
 				if (debug) {
-					CSL.debug("namesets.length[1]: "+namesets.length);
+					CSL.debug("namesets.length[1]: " + namesets.length);
 				}
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
@@ -317,10 +330,12 @@ CSL.Node.names = {
 
 				len = namesets.length;
 				if (debug) {
-					CSL.debug("namesets.length[2]: "+namesets.length);
+					CSL.debug("namesets.length[2]: " + namesets.length);
 				}
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
+
 					nameset = namesets[namesetIndex];
+
 
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
 						//
@@ -337,7 +352,7 @@ CSL.Node.names = {
 							//lastones = state.tmp.last_names_used;
 							currentones = state.tmp.names_used[state.tmp.nameset_counter];
 							//currentones = state.tmp.names_used;
-							compset = [currentones,lastones];
+							compset = [currentones, lastones];
 							if (CSL.Util.Names.getCommonTerm(state, compset)) {
 								continue;
 							} else {
@@ -436,7 +451,7 @@ CSL.Node.names = {
 
 
 					if (debug) {
-						CSL.debug("nameset.names.length[1]: "+nameset.names.length);
+						CSL.debug("nameset.names.length[1]: " + nameset.names.length);
 					}
 					llen = nameset.names.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
@@ -561,15 +576,15 @@ CSL.Node.names = {
 						//org
 						CSL.Util.Institutions.outputInstitutions(state, display_names);
 						if (nameset.organization_last) {
-								if (debug) {
-									CSL.debug("-- reached 'organization_last'");
-								}
+							if (debug) {
+								CSL.debug("-- reached 'organization_last'");
+							}
 							state.output.closeLevel("inner");
 							state.output.closeLevel("institution-outer");
 						} else {
-								if (debug) {
-									CSL.debug("-- reached 'organization_NOT_last'");
-								}
+							if (debug) {
+								CSL.debug("-- reached 'organization_NOT_last'");
+							}
 							state.output.closeLevel("inner");
 							state.output.openLevel("inner");
 						}

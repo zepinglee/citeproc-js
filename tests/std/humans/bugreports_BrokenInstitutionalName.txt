@@ -32,14 +32,51 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.bugreports");
-doh.register("std.bugreports", [
-    function(){
-        var test = new StdRhinoTest("bugreports_ChicagoAuthorDateLooping");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("bugreports_BrokenInstitutionalName");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+<div class="csl-bib-body">
+  <div class="csl-entry">Malone, Nolan J., U.S. Bureau of the Census. 2001. <i>Evaluating Components of International Migration: Consistency of 2000 Nativity Data</i>. Routledge, December.</div>
+</div>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+chicago-author-date.csl
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "literal": "U.S. Bureau of the Census"
+            }, 
+            {
+                "family": "Malone", 
+                "given": "Nolan J.", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-6", 
+        "issued": {
+            "date-parts": [
+                [
+                    2001, 
+                    12
+                ]
+            ]
+        }, 
+        "note": "This cite illustrates the formatting of institutional authors.  Note that there is no \"and\" between the individual author and the institution with which he is affiliated.", 
+        "publisher": "Routledge", 
+        "title": "Evaluating Components of International Migration: Consistency of 2000 Nativity Data", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

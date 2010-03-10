@@ -34,7 +34,6 @@
  */
 var CSL = {
 	debug: function (str) {
-		print(str);
 	},
 	START: 0,
 	END: 1,
@@ -288,7 +287,7 @@ CSL.Output.Queue.prototype.openLevel = function (token) {
 };
 CSL.Output.Queue.prototype.closeLevel = function (name) {
 	if (name && name !== this.levelname[this.levelname.length - 1]) {
-		print("Level mismatch error:  wanted "+name+" but found "+this.levelname[this.levelname.length - 1]);
+		CSL.debug("Level mismatch error:  wanted " + name + " but found " + this.levelname[this.levelname.length - 1]);
 	}
 	this.levelname.pop();
 	this.current.pop();
@@ -1156,7 +1155,7 @@ CSL.Engine = function (sys, style, lang) {
 	}
 	this.opt["initialize-with-hyphen"] = true;
 	this.setStyleAttributes();
-	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml,"class");
+	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 	lang = this.opt["default-locale"][0];
 	langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
@@ -1405,7 +1404,7 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 };
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
 	var lst, opt, o, pos, key;
-	lst = value.split(/\s*:([\-a-zA-Z]+):\s*/);
+	lst = value.split(/\s*:([\-a-zA-Z0-9]+):\s*/);
 	value = undefined;
 	opt = this.opt[locale_type];
 	for (key in opt) {
@@ -3326,7 +3325,7 @@ CSL.Node.names = {
 			state.build.substitute_level.push(1);
 			state.fixOpt(this, "names-delimiter", "delimiter");
 			func = function (state, Item) {
-				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end;
+				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end, mynameset, tnamesets, frontnames, pair, offset, swaplist;
 				state.parallel.StartVariable("names");
 				if (state.tmp.value.length === 0) {
 					namesets = [];
@@ -3337,7 +3336,7 @@ CSL.Node.names = {
 					for (pos = 0; pos < len; pos += 1) {
 						variable = this.variables[pos];
 						if (debug) {
-							CSL.debug(">>>> variable: "+variable);
+							CSL.debug(">>>> variable: " + variable);
 						}
 						if (Item[variable]) {
 							rawvar = Item[variable];
@@ -3346,17 +3345,17 @@ CSL.Node.names = {
 							}
 							rawlist = state.getNameSubFields(rawvar);
 							names = [];
-							after_people_set = false;
-							pers_seen = false; // toggles off again after org split
-							in_orgs = 0;
-							last_type = false;
+							tnamesets = [];
 							nameset = {names: []};
+							frontnames = [];
 							llen = rawlist.length;
 							for (ppos = 0; ppos < llen; ppos += 1) {
 								name = rawlist[ppos];
 								if (name.literal) {
-									if (name.literal.slice(0,1) === '"' && name.literal.slice(-1)) {
-										lllst = [name.literal.slice(1,-1)];
+									nameset.variable = variable;
+									nameset.species = "org";
+									if (name.literal.slice(0, 1) === '"' && name.literal.slice(-1)) {
+										lllst = [name.literal.slice(1, -1)];
 									} else {
 										lllst = name.literal.split(/,\s+/);
 									}
@@ -3365,72 +3364,73 @@ CSL.Node.names = {
 										name = {literal: lllst[pppos]};
 										nameset.names.push(name);
 									}
-									nameset.variable = variable;
-									nameset.species = "org";
-									if (!in_orgs && ppos === 0) {
-										after_people_set = true;
-									}
-									if (!in_orgs && ppos > 0 && (rawlist.length - 1 == ppos || rawlist[ppos + 1].literal)) {
-										after_people_set = true;
-										nameset.after_people = true;
-									}
-									if (rawlist.length > (ppos + 1) && !rawlist[ppos + 1].literal) {
-										nameset.pers_org_end = true;
-									}
-									if (!in_orgs) {
-										nameset.organization_first = true;
-									}
-									namesets.push(nameset);
+									tnamesets.push(nameset);
 									nameset = {names: []};
-									in_orgs += 1;
-									pers_seen = false;
 								} else {
-									nameset.names.push(name);
 									nameset.variable = variable;
 									nameset.species = "pers";
-									if (in_orgs && !pers_seen) {
-										nameset.pers_org_start = true;
-									}
-									if (in_orgs === 1 && !after_people_set && (ppos === rawlist.length - 1 || rawlist.length > (ppos + 1) && rawlist[ppos + 1].literal)) {
-											nameset.after_people = true;
-											after_people_set = true;
-									}
-									if (namesets.length > 0 && namesets[namesets.length - 1].organization_first && rawlist.length > 0 && rawlist[ppos - 1].literal) {
-										namesets[namesets.length - 1].organization_first = false;
-										nameset.organization_first = true;
-									}
+									nameset.names.push(name);
 									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal) {
-										if (ppos > 0 && namesets.length > 0 && namesets[namesets.length - 1].names.length && namesets[namesets.length - 1].names[0].literal) {
-											end = namesets.slice(-1);
-											namesets = namesets.slice(0,-1);
-											namesets.push(nameset);
-											namesets = namesets.concat(end);
-										} else {
-											namesets.push(nameset);
-										}
+										tnamesets.push(nameset);
 										nameset = {names: []};
 									}
-									pers_seen = true;
 								}
 							}
+							if (tnamesets.length && tnamesets[0].species === "pers") {
+								frontnames = tnamesets.slice(0, 1);
+								tnamesets = tnamesets.slice(1);
+							}
+							swaplist = [];
+							llen = tnamesets.length - 2;
+							for (ppos = llen; ppos > -1; ppos += -1) {
+								if (tnamesets[ppos].species === "org" && tnamesets[ppos + 1].species === "pers") {
+									swaplist.push(ppos);
+								}
+							}
+							llen = swaplist.length;
+							ppos = 0;
+							for (ppos; ppos < llen; ppos += 1) {
+								pair = tnamesets.slice(swaplist[ppos], (swaplist[ppos] + 2));
+								pair.reverse();
+								end = pair.concat(tnamesets.slice(swaplist[ppos] + 2));
+								tnamesets = tnamesets.slice(0, swaplist[ppos]).concat(end);
+							}
+							if (tnamesets.length && frontnames.length) {
+								tnamesets[0].after_people = true;
+							}
+							tnamesets = frontnames.concat(tnamesets);
+							if (tnamesets.length && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
+								offset = false;
+								if (tnamesets.length > 1) {
+									if (tnamesets[1].after_people) {
+										offset = 1;
+									} else {
+										offset = 0;
+									}
+								} else if (tnamesets[0].species === "org") {
+									offset = 0;
+								}
+								if (offset !== false) {
+									tnamesets[offset].organization_first = true;
+									tnamesets[tnamesets.length - 1].organization_last = true;
+								}
+							}
+							namesets = namesets.concat(tnamesets);
 						}
 					}
-					if (state.opt.xclass === "in-text") {
-						namesets = namesets.slice(0,1);
+					if (state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") {
+						namesets = namesets.slice(0, 1);
 					}
 					len = namesets.length;
 					for (pos = 0; pos < len; pos += 1) {
 						state.tmp.names_max.push(namesets[pos].names.length);
 						state.tmp.names_used.push(namesets[pos]);
 					}
-					if (namesets.length && namesets[namesets.length - 1].species === "org") {
-						namesets[namesets.length - 1].organization_last = true;
-					}
 					state.tmp.value = namesets.slice();
 					if (debug) {
 						len = namesets.length;
 						for (pos = 0; pos < len; pos += 1) {
-							var mynameset = namesets[pos];
+							mynameset = namesets[pos];
 							CSL.debug(mynameset.species);
 						}
 					}
@@ -3447,7 +3447,7 @@ CSL.Node.names = {
 			func = function (state, Item) {
 				state.output.startTag("names", this);
 				if (debug) {
-					CSL.debug("## startTag: names "+this.strings.suffix);
+					CSL.debug("## startTag: names " + this.strings.suffix);
 				}
 				state.tmp.name_node = state.output.current.value();
 			};
@@ -3476,7 +3476,7 @@ CSL.Node.names = {
 				}
 				len = namesets.length;
 				if (debug) {
-					CSL.debug("namesets.length[1]: "+namesets.length);
+					CSL.debug("namesets.length[1]: " + namesets.length);
 				}
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
@@ -3532,7 +3532,7 @@ CSL.Node.names = {
 				}
 				len = namesets.length;
 				if (debug) {
-					CSL.debug("namesets.length[2]: "+namesets.length);
+					CSL.debug("namesets.length[2]: " + namesets.length);
 				}
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 					nameset = namesets[namesetIndex];
@@ -3540,7 +3540,7 @@ CSL.Node.names = {
 						if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
 							lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
 							currentones = state.tmp.names_used[state.tmp.nameset_counter];
-							compset = [currentones,lastones];
+							compset = [currentones, lastones];
 							if (CSL.Util.Names.getCommonTerm(state, compset)) {
 								continue;
 							} else {
@@ -3614,7 +3614,7 @@ CSL.Node.names = {
 					state.tmp.disambig_settings.names[state.tmp.nameset_counter] = display_names.length;
 					local_count += display_names.length;
 					if (debug) {
-						CSL.debug("nameset.names.length[1]: "+nameset.names.length);
+						CSL.debug("nameset.names.length[1]: " + nameset.names.length);
 					}
 					llen = nameset.names.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
@@ -3691,15 +3691,15 @@ CSL.Node.names = {
 					} else {
 						CSL.Util.Institutions.outputInstitutions(state, display_names);
 						if (nameset.organization_last) {
-								if (debug) {
-									CSL.debug("-- reached 'organization_last'");
-								}
+							if (debug) {
+								CSL.debug("-- reached 'organization_last'");
+							}
 							state.output.closeLevel("inner");
 							state.output.closeLevel("institution-outer");
 						} else {
-								if (debug) {
-									CSL.debug("-- reached 'organization_NOT_last'");
-								}
+							if (debug) {
+								CSL.debug("-- reached 'organization_NOT_last'");
+							}
 							state.output.closeLevel("inner");
 							state.output.openLevel("inner");
 						}
@@ -4712,7 +4712,7 @@ CSL.Abbrev.prototype.output = function (state, value, token_short, token_long, u
 		if (use_fallback) {
 			state.output.append(value, token_long);
 		}
-		print("UNKNOWN ABBREVIATION FOR: " + value);
+		CSL.debug("UNKNOWN ABBREVIATION FOR: " + value);
 	}
 };
 CSL.Abbrev.prototype.getOutputFunc = function (token, varname, vartype, altvar) {
@@ -4724,7 +4724,7 @@ CSL.Abbrev.prototype.getOutputFunc = function (token, varname, vartype, altvar) 
 			if (state.abbrev[vartype][basevalue]) {
 				value = state.abbrev[vartype][basevalue];
 			} else {
-				print("UNKNOWN ABBREVIATION FOR ... " + basevalue);
+				CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
 			}
 		}
 		if (!value && Item[altvar]) {
@@ -6858,24 +6858,10 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	this.checkerator.lastclashes = (ambigs.length - 1);
 	base = false;
 	this.checkerator.pos = 0;
-		str = CSL.getAmbiguousCite.call(state, tokens[0], base);
-		maxvals = CSL.getMaxVals.call(state);
-		minval = CSL.getMinVal.call(state);
-		base = CSL.getAmbigConfig.call(state);
-	if (debug) {
-		for (var a in base) {
-			if ("number" === typeof base[a]) {
-				print(a + ": "+base[a]);
-			} else if (base[a].length) {
-				print("  "+a + ": list of length "+base[a].length);
-				for (b in base[a]) {
-					print("    "+b+": "+typeof base[a][b]+" of value "+base[a][b]);
-				}
-			} else {
-				print(a + ": object");
-			}
-		}
-	}
+	str = CSL.getAmbiguousCite.call(state, tokens[0], base);
+	maxvals = CSL.getMaxVals.call(state);
+	minval = CSL.getMinVal.call(state);
+	base = CSL.getAmbigConfig.call(state);
 	while (CSL.runCheckerator.call(this.checkerator)) {
 		token = this.checkerator.tokens[this.checkerator.pos];
 		if (debug) {
@@ -7118,7 +7104,7 @@ CSL.maxCheckeratorAmbigLevel = function () {
 	}
 	if (this.mode === "names") {
 		if (debug) {
-			print("CHECK =================> ");
+			CSL.debug("CHECK =================> ");
 		}
 		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
 			if (this.modes.length === 2) {

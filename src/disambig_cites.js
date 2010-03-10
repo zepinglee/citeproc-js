@@ -91,29 +91,12 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	this.checkerator.pos = 0;
 
 	// temporary stuff for debugging
-		str = CSL.getAmbiguousCite.call(state, tokens[0], base);
-		maxvals = CSL.getMaxVals.call(state);
-		minval = CSL.getMinVal.call(state);
-		base = CSL.getAmbigConfig.call(state);
-	if (debug) {
-		for (var a in base) {
-			//
-			// Console chatter
-			//
-			if ("number" === typeof base[a]) {
-				print(a + ": "+base[a]);
-			} else if (base[a].length) {
-				print("  "+a + ": list of length "+base[a].length);
-				for (b in base[a]) {
-					print("    "+b+": "+typeof base[a][b]+" of value "+base[a][b]);
-				}
-			} else {
-				print(a + ": object");
-			}
-		}
-	}
+	str = CSL.getAmbiguousCite.call(state, tokens[0], base);
+	maxvals = CSL.getMaxVals.call(state);
+	minval = CSL.getMinVal.call(state);
+	base = CSL.getAmbigConfig.call(state);
 
-//	return [];
+	//	return [];
 	while (CSL.runCheckerator.call(this.checkerator)) {
 		token = this.checkerator.tokens[this.checkerator.pos];
 		if (debug) {
@@ -434,7 +417,7 @@ CSL.maxCheckeratorAmbigLevel = function () {
 
 	if (this.mode === "names") {
 		if (debug) {
-			print("CHECK =================> ");
+			CSL.debug("CHECK =================> ");
 		}
 		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
 			if (this.modes.length === 2) {

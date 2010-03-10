@@ -52,7 +52,7 @@ CSL.Abbrev.prototype.output = function (state, value, token_short, token_long, u
 		if (use_fallback) {
 			state.output.append(value, token_long);
 		}
-		print("UNKNOWN ABBREVIATION FOR: " + value);
+		CSL.debug("UNKNOWN ABBREVIATION FOR: " + value);
 	}
 };
 
@@ -65,7 +65,7 @@ CSL.Abbrev.prototype.getOutputFunc = function (token, varname, vartype, altvar) 
 			if (state.abbrev[vartype][basevalue]) {
 				value = state.abbrev[vartype][basevalue];
 			} else {
-				print("UNKNOWN ABBREVIATION FOR ... " + basevalue);
+				CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
 			}
 		}
 		if (!value && Item[altvar]) {

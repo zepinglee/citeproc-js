@@ -122,7 +122,7 @@ CSL.Engine = function (sys, style, lang) {
 
 	this.setStyleAttributes();
 
-	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml,"class");
+	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 
 	lang = this.opt["default-locale"][0];
 	langspec = CSL.localeResolve(lang);
@@ -436,7 +436,7 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
 	var lst, opt, o, pos, key;
-	lst = value.split(/\s*:([\-a-zA-Z]+):\s*/);
+	lst = value.split(/\s*:([\-a-zA-Z0-9]+):\s*/);
 	value = undefined;
 	opt = this.opt[locale_type];
 	for (key in opt) {

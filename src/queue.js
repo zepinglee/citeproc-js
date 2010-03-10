@@ -168,7 +168,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 	//CSL.debug("closeLevel");
 	//CSL.debug("merge");
 	if (name && name !== this.levelname[this.levelname.length - 1]) {
-		print("Level mismatch error:  wanted "+name+" but found "+this.levelname[this.levelname.length - 1]);
+		CSL.debug("Level mismatch error:  wanted " + name + " but found " + this.levelname[this.levelname.length - 1]);
 	}
 	this.levelname.pop();
 	this.current.pop();
