@@ -78,9 +78,6 @@ Doe, et al., Big Ministry
     {
         "author": [
             {
-                "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
-            }, 
-            {
                 "family": "Doe", 
                 "given": "John"
             }, 
@@ -91,6 +88,9 @@ Doe, et al., Big Ministry
             {
                 "family": "Snoakes", 
                 "given": "Richard"
+            }, 
+            {
+                "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
             }
         ], 
         "id": "ITEM-1", 

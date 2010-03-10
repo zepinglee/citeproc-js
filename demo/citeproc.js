@@ -3319,13 +3319,13 @@ CSL.Node["name-part"] = {
 CSL.Node.names = {
 	build: function (state, target) {
 		var debug, func, len, pos, attrname;
-		debug = false;
+		debug = true;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			CSL.Util.substituteStart.call(this, state, target);
 			state.build.substitute_level.push(1);
 			state.fixOpt(this, "names-delimiter", "delimiter");
 			func = function (state, Item) {
-				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end, mynameset;
+				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end, mynameset, tnamesets, frontnames, pair, offset, swaplist;
 				state.parallel.StartVariable("names");
 				if (state.tmp.value.length === 0) {
 					namesets = [];
@@ -3345,15 +3345,15 @@ CSL.Node.names = {
 							}
 							rawlist = state.getNameSubFields(rawvar);
 							names = [];
-							after_people_set = false;
-							pers_seen = false; // toggles off again after org split
-							in_orgs = 0;
-							last_type = false;
+							tnamesets = [];
 							nameset = {names: []};
+							frontnames = [];
 							llen = rawlist.length;
 							for (ppos = 0; ppos < llen; ppos += 1) {
 								name = rawlist[ppos];
 								if (name.literal) {
+									nameset.variable = variable;
+									nameset.species = "org";
 									if (name.literal.slice(0, 1) === '"' && name.literal.slice(-1)) {
 										lllst = [name.literal.slice(1, -1)];
 									} else {
@@ -3364,66 +3364,42 @@ CSL.Node.names = {
 										name = {literal: lllst[pppos]};
 										nameset.names.push(name);
 									}
-									nameset.variable = variable;
-									nameset.species = "org";
-									if (!in_orgs && ppos === 0) {
-										after_people_set = true;
-									}
-									if (!in_orgs && ppos > 0 && (rawlist.length - 1 === ppos || rawlist[ppos + 1].literal)) {
-										after_people_set = true;
-										nameset.after_people = true;
-									}
-									if (rawlist.length > (ppos + 1) && !rawlist[ppos + 1].literal) {
-										nameset.pers_org_end = true;
-									}
-									if (!in_orgs) {
-										nameset.organization_first = true;
-									}
-									namesets.push(nameset);
+									tnamesets.push(nameset);
 									nameset = {names: []};
-									in_orgs += 1;
-									pers_seen = false;
 								} else {
-									nameset.names.push(name);
 									nameset.variable = variable;
 									nameset.species = "pers";
-									if (in_orgs && !pers_seen) {
-										nameset.pers_org_start = true;
-									}
-									if (in_orgs === 1 && !after_people_set && (ppos === rawlist.length - 1 || rawlist.length > (ppos + 1) && rawlist[ppos + 1].literal)) {
-										nameset.after_people = true;
-										after_people_set = true;
-									}
-									if (namesets.length > 0 && namesets[namesets.length - 1].organization_first && rawlist.length > 0 && rawlist[ppos - 1].literal) {
-										namesets[namesets.length - 1].organization_first = false;
-										nameset.organization_first = true;
-									}
+									nameset.names.push(name);
 									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal) {
-										if (ppos > 0 && namesets.length > 0 && namesets[namesets.length - 1].names.length && namesets[namesets.length - 1].names[0].literal) {
-											end = namesets.slice(-1);
-											namesets = namesets.slice(0, -1);
-											namesets.push(nameset);
-											namesets = namesets.concat(end);
-										} else {
-											namesets.push(nameset);
-										}
+										tnamesets.push(nameset);
 										nameset = {names: []};
 									}
-									pers_seen = true;
 								}
 							}
+							if (tnamesets.length > 1 && tnamesets.slice(-1)[0].species === "pers") {
+								frontnames = tnamesets.slice(-1);
+								tnamesets = tnamesets.slice(0, tnamesets.length - 1);
+								if (tnamesets.length > 0) {
+									tnamesets[0].after_people = true;
+								}
+							}  else {
+								frontnames = [];
+							}
+							if (tnamesets.length > 0 && tnamesets.slice(-1)[0].species === "org" && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
+								tnamesets[0].organization_first = true;
+								tnamesets.slice(-1)[0].organization_last = true;
+							}
+							tnamesets = frontnames.concat(tnamesets);
+							namesets = namesets.concat(tnamesets);
 						}
 					}
-					if (state.opt.xclass === "in-text") {
+					if (state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") {
 						namesets = namesets.slice(0, 1);
 					}
 					len = namesets.length;
 					for (pos = 0; pos < len; pos += 1) {
 						state.tmp.names_max.push(namesets[pos].names.length);
 						state.tmp.names_used.push(namesets[pos]);
-					}
-					if (namesets.length && namesets[namesets.length - 1].species === "org") {
-						namesets[namesets.length - 1].organization_last = true;
 					}
 					state.tmp.value = namesets.slice();
 					if (debug) {
@@ -4533,7 +4509,7 @@ CSL.System.Xml.E4X.prototype.nodename = function (myxml) {
 	return ret;
 };
 CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
-	var ret, attrs, attr, key;
+	var ret, attrs, attr, key, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	ret = new Object();
 	attrs = myxml.attributes();
@@ -4560,6 +4536,7 @@ CSL.System.Xml.E4X.prototype.getAttributeName = function (attr) {
 	return ret;
 }
 CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (namespace) {
 		var ns = new Namespace(this.namespace[namespace]);
@@ -4574,6 +4551,7 @@ CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace)
 	return ret;
 }
 CSL.System.Xml.E4X.prototype.getNodeValue = function (myxml,name) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (name){
 		return myxml[name].toString();
@@ -4582,6 +4560,7 @@ CSL.System.Xml.E4X.prototype.getNodeValue = function (myxml,name) {
 	}
 }
 CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,attrname,attr,val) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (attr[0] != '@'){
 		attr = '@'+attr;
@@ -4601,14 +4580,16 @@ CSL.System.Xml.E4X.prototype.nodeCopy = function (myxml) {
 	return myxml.copy();
 }
 CSL.System.Xml.E4X.prototype.getNodesByName = function (myxml,name,nameattrval) {
+	var xml, ret;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ret = myxml.descendants(name);
+	ret = myxml.descendants(name);
 	if (nameattrval){
 		ret = ret.(@name == nameattrval);
 	}
 	return ret;
 }
 CSL.System.Xml.E4X.prototype.nodeNameIs = function (myxml,name) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (myxml.localName().toString() == name){
 		return true;
@@ -4616,11 +4597,12 @@ CSL.System.Xml.E4X.prototype.nodeNameIs = function (myxml,name) {
 	return false;
 }
 CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
+	var xml;
 	if ("xml" == typeof myxml){
 		myxml = myxml.toXMLString();
 	};
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	if (myxml){
 		myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
 		myxml = new XML(myxml);
@@ -4630,7 +4612,7 @@ CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
 	return myxml;
 };
 CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
-	var myxml;
+	var myxml, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	myxml = XML(datexml.toXMLString());
 	parent.insertChildAfter(node,myxml);
@@ -4638,7 +4620,7 @@ CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,da
 	return parent;
 };
 CSL.System.Xml.E4X.prototype.addInstitutionNodes = function(myxml) {
-	var institution_long, institution_short, children, node;
+	var institution_long, institution_short, children, node, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	institution_long = <institution
 		institution-parts="long"

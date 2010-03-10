@@ -65,7 +65,7 @@ CSL.System.Xml.E4X.prototype.nodename = function (myxml) {
 };
 
 CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
-	var ret, attrs, attr, key;
+	var ret, attrs, attr, key, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	ret = new Object();
 	attrs = myxml.attributes();
@@ -103,6 +103,7 @@ CSL.System.Xml.E4X.prototype.getAttributeName = function (attr) {
 }
 
 CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	//
 	// Oh, okay, I get it.  The syntax does not lend itself to parameterization,
@@ -123,6 +124,7 @@ CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace)
 }
 
 CSL.System.Xml.E4X.prototype.getNodeValue = function (myxml,name) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (name){
 		return myxml[name].toString();
@@ -132,6 +134,7 @@ CSL.System.Xml.E4X.prototype.getNodeValue = function (myxml,name) {
 }
 
 CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,attrname,attr,val) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (attr[0] != '@'){
 		attr = '@'+attr;
@@ -156,8 +159,9 @@ CSL.System.Xml.E4X.prototype.nodeCopy = function (myxml) {
 }
 
 CSL.System.Xml.E4X.prototype.getNodesByName = function (myxml,name,nameattrval) {
+	var xml, ret;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var ret = myxml.descendants(name);
+	ret = myxml.descendants(name);
 	if (nameattrval){
 		ret = ret.(@name == nameattrval);
 	}
@@ -165,6 +169,7 @@ CSL.System.Xml.E4X.prototype.getNodesByName = function (myxml,name,nameattrval) 
 }
 
 CSL.System.Xml.E4X.prototype.nodeNameIs = function (myxml,name) {
+	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	if (myxml.localName().toString() == name){
 		return true;
@@ -173,12 +178,13 @@ CSL.System.Xml.E4X.prototype.nodeNameIs = function (myxml,name) {
 }
 
 CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
+	var xml;
 	if ("xml" == typeof myxml){
 		// print("forcing serialization of xml to fix up namespacing");
 		myxml = myxml.toXMLString();
 	};
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	var xml = new Namespace("http://www.w3.org/XML/1998/namespace");
+	xml = new Namespace("http://www.w3.org/XML/1998/namespace");
 	if (myxml){
 		// print("deserializing xml");
 		myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
@@ -191,7 +197,7 @@ CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
 };
 
 CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
-	var myxml;
+	var myxml, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	myxml = XML(datexml.toXMLString());
 	parent.insertChildAfter(node,myxml);
@@ -200,7 +206,7 @@ CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,da
 };
 
 CSL.System.Xml.E4X.prototype.addInstitutionNodes = function(myxml) {
-	var institution_long, institution_short, children, node;
+	var institution_long, institution_short, children, node, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	institution_long = <institution
 		institution-parts="long"

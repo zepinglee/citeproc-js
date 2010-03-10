@@ -42,18 +42,11 @@
         {
             "editor": [
                 {
-                    "family": "Noakes", 
-                    "given": "John"
-                }, 
-                {
-                    "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
-                }, 
-                {
                     "family": "Roe", 
                     "given": "Jane"
                 }, 
                 {
-                    "literal": "Trivial Working Group, Evil Division, Wasteful Enterprise"
+                    "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
                 }, 
                 {
                     "family": "Doe", 
@@ -66,6 +59,13 @@
                 {
                     "family": "Snoakes", 
                     "given": "Richard"
+                }, 
+                {
+                    "literal": "Trivial Working Group, Evil Division, Wasteful Enterprise"
+                }, 
+                {
+                    "family": "Noakes", 
+                    "given": "John"
                 }
             ], 
             "type": "book"

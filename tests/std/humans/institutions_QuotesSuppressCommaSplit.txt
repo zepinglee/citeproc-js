@@ -70,12 +70,12 @@ Mercuricon Spittle, with Ministry of Fear, Loathing and Error
     {
         "author": [
             {
-                "family": "Spittle", 
-                "given": "Mercuricon", 
+                "literal": "\"Ministry of Fear, Loathing and Error\"", 
                 "static-ordering": false
             }, 
             {
-                "literal": "\"Ministry of Fear, Loathing and Error\"", 
+                "family": "Spittle", 
+                "given": "Mercuricon", 
                 "static-ordering": false
             }
         ], 

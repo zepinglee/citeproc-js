@@ -79,14 +79,6 @@ bibliography
     {
         "author": [
             {
-                "family": "Noakes", 
-                "given": "John", 
-                "static-ordering": false
-            }, 
-            {
-                "literal": "Department of Alien Weapons Vivisection, Multi-National United"
-            }, 
-            {
                 "family": "Doe", 
                 "given": "John", 
                 "static-ordering": false
@@ -94,6 +86,14 @@ bibliography
             {
                 "family": "Roe", 
                 "given": "Jane", 
+                "static-ordering": false
+            }, 
+            {
+                "literal": "Department of Alien Weapons Vivisection, Multi-National United"
+            }, 
+            {
+                "family": "Noakes", 
+                "given": "John", 
                 "static-ordering": false
             }
         ], 

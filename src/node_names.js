@@ -36,7 +36,7 @@
 CSL.Node.names = {
 	build: function (state, target) {
 		var debug, func, len, pos, attrname;
-		debug = false;
+		debug = true;
 
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			CSL.Util.substituteStart.call(this, state, target);
@@ -129,48 +129,20 @@ CSL.Node.names = {
 								//   * organization_last (end of names with orgs)
 							}
 
-							// rearrange list and apply position markers
-							if (tnamesets.length && tnamesets[0].species === "pers") {
-								frontnames = tnamesets.slice(0, 1);
-								tnamesets = tnamesets.slice(1);
-							}
-							swaplist = [];
-							llen = tnamesets.length - 2;
-							for (ppos = llen; ppos > -1; ppos += -1) {
-								// trigger switch  on literal, dragging forward
-								// any pers nameset that was passed over.
-								if (tnamesets[ppos].species === "org" && tnamesets[ppos + 1].species === "pers") {
-									swaplist.push(ppos);
+							if (tnamesets.length > 1 && tnamesets.slice(-1)[0].species === "pers") {
+								frontnames = tnamesets.slice(-1);
+								tnamesets = tnamesets.slice(0, tnamesets.length - 1);
+								if (tnamesets.length > 0) {
+									tnamesets[0].after_people = true;
 								}
+							}  else {
+								frontnames = [];
 							}
-							llen = swaplist.length;
-							ppos = 0;
-							for (ppos; ppos < llen; ppos += 1) {
-								pair = tnamesets.slice(swaplist[ppos], (swaplist[ppos] + 2));
-								pair.reverse();
-								end = pair.concat(tnamesets.slice(swaplist[ppos] + 2));
-								tnamesets = tnamesets.slice(0, swaplist[ppos]).concat(end);
-							}
-							if (tnamesets.length && frontnames.length) {
-								tnamesets[0].after_people = true;
+							if (tnamesets.length > 0 && tnamesets.slice(-1)[0].species === "org" && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
+								tnamesets[0].organization_first = true;
+								tnamesets.slice(-1)[0].organization_last = true;
 							}
 							tnamesets = frontnames.concat(tnamesets);
-							if (tnamesets.length && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
-								offset = false;
-								if (tnamesets.length > 1) {
-									if (tnamesets[1].after_people) {
-										offset = 1;
-									} else {
-										offset = 0;
-									}
-								} else if (tnamesets[0].species === "org") {
-									offset = 0;
-								}
-								if (offset !== false) {
-									tnamesets[offset].organization_first = true;
-									tnamesets[tnamesets.length - 1].organization_last = true;
-								}
-							}
 							namesets = namesets.concat(tnamesets);
 						}
 					}

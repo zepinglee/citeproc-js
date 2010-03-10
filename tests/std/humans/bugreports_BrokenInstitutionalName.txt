@@ -56,12 +56,12 @@ chicago-author-date.csl
     {
         "author": [
             {
-                "literal": "U.S. Bureau of the Census"
-            }, 
-            {
                 "family": "Malone", 
                 "given": "Nolan J.", 
                 "static-ordering": false
+            }, 
+            {
+                "literal": "U.S. Bureau of the Census"
             }
         ], 
         "id": "ITEM-6", 

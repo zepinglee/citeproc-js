@@ -79,18 +79,11 @@ Noakes, with Roe, Tiny Subcommittee, Big Ministry and Doe, et al., Trivial Worki
     {
         "editor": [
             {
-                "family": "Noakes", 
-                "given": "John"
-            }, 
-            {
-                "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
-            }, 
-            {
                 "family": "Roe", 
                 "given": "Jane"
             }, 
             {
-                "literal": "Trivial Working Group, Evil Division, Wasteful Enterprise"
+                "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
             }, 
             {
                 "family": "Doe", 
@@ -103,6 +96,13 @@ Noakes, with Roe, Tiny Subcommittee, Big Ministry and Doe, et al., Trivial Worki
             {
                 "family": "Snoakes", 
                 "given": "Richard"
+            }, 
+            {
+                "literal": "Trivial Working Group, Evil Division, Wasteful Enterprise"
+            }, 
+            {
+                "family": "Noakes", 
+                "given": "John"
             }
         ], 
         "type": "book"
