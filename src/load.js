@@ -182,8 +182,60 @@ var CSL = {
 	//NUMERIC_VARIABLES = x.slice();
 	DATE_VARIABLES: ["issued", "event", "accessed", "container", "original-date"],
 
-	TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
-	TAG_USEALL: /(<[^>]+>)/,
+	// TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
+	TAG_ESCAPE: function (str) {
+		var lst, len, pos, m, buf1, buf2, idx;
+		lst = str.split(/(<span\s+class=\"no(?:case|decor)\">)/);
+		len = lst.length - 1;
+		for (pos = len; pos > 1; pos += -2) {
+			m = lst[pos].match(/<\/span>/);
+			if (m) {
+				idx = lst[pos].indexOf("</span>");
+				buf1 = lst[pos].slice(0, idx);
+				buf2 = lst[pos].slice(idx + 7);
+				lst[pos - 1] += buf1 + "</span>";
+				lst[pos] = buf2;
+			} else {
+				buf1 = lst.slice(0, pos - 1);
+				if (pos < (lst.length - 1)) {
+					buf2 = lst[pos - 1] + lst[pos];
+				} else {
+					buf2 = lst[pos - 1] + lst[pos] + lst[pos + 1];
+				}
+				lst = buf1.push(buf2).concat(lst.slice(pos + 2));
+			}
+		}
+		return lst;
+	},
+
+	// TAG_USEALL: /(<[^>]+>)/,
+	TAG_USEALL: function (str) {
+		var ret, open, close, end;
+		ret = [""];
+		open = str.indexOf("<");
+		close = str.indexOf(">");
+		while (open > -1 && close > -1) {
+			if (open > close) {
+				end = open + 1;
+			} else {
+				end = close + 1;
+			}
+			if (open < close && str.slice(open + 1, close).indexOf("<") === -1) {
+				ret[ret.length - 1] += str.slice(0, open);
+				ret.push(str.slice(open, close + 1));
+				ret.push("");
+				str = str.slice(end);
+			} else {
+				ret[ret.length - 1] += str.slice(0, close + 1);
+				str = str.slice(end);
+			}
+			open = str.indexOf("<");
+			close = str.indexOf(">");
+		}
+		ret[ret.length - 1] += str;
+		return ret;
+	},
+
 
 	SKIP_WORDS: ["a", "the", "an"],
 

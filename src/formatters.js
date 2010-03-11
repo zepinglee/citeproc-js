@@ -174,7 +174,9 @@ CSL.Output.Formatters.title = function (state, string) {
 CSL.Output.Formatters.doppelString = function (string, rex) {
 	var ret, pos, len;
 	ret = {};
-	ret.array = string.split(rex);
+	// rex is a function that returns an appropriate array.
+	ret.array = rex(string);
+	// ret.array = string.split(rex);
 	ret.string = "";
 	len = ret.array.length;
 	for (pos = 0; pos < len; pos += 2) {

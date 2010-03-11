@@ -133,7 +133,7 @@ CSL.dateParser = function (txt) {
 		number = "";
 		note = "";
 		thedate = {};
-		if (txt.match(/^".*"$/)) {
+		if (txt.slice(0, 1) === "\"" && txt.slice(-1) === "\"") {
 			thedate.literal = txt.slice(1, -1);
 			return thedate;
 		}
@@ -229,12 +229,12 @@ CSL.dateParser = function (txt) {
 					// any note.  Separate, reverse the sign of the year
 					// if it's BC.
 					//
-					if (element.toLocaleLowerCase().match(/^bc.*/) && number) {
+					if (element.toLocaleLowerCase().match(/^bc/) && number) {
 						thedate[("year" + suff)] = "" + (number * -1);
 						number = "";
 						continue;
 					}
-					if (element.toLocaleLowerCase().match(/^ad.*/) && number) {
+					if (element.toLocaleLowerCase().match(/^ad/) && number) {
 						thedate[("year" + suff)] = "" + number;
 						number = "";
 						continue;
@@ -258,7 +258,7 @@ CSL.dateParser = function (txt) {
 				//
 				// If it's a fuzzy marker, record it.
 				//
-				if (element === "~" || element === "?" || element === "c" || element.match(/cir.*/)) {
+				if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
 					thedate.fuzzy = "" + 1;
 					continue;
 				}

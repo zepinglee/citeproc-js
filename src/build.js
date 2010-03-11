@@ -654,10 +654,11 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 CSL.Engine.prototype.parseName = function (name) {
 	var m;
 	if (! name["non-dropping-particle"]) {
-		m = name.family.match(/^([ a-z]+)\s+(.*)/);
+		m = name.family.match(/^([ a-z]+\s+)/);
 		if (m) {
-			name["non-dropping-particle"] = m[1];
-			name.family = m[2];
+			name.family = name.family.slice(m[1].length);
+			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
+
 		}
 	}
 	if (! name.suffix) {
@@ -665,7 +666,7 @@ CSL.Engine.prototype.parseName = function (name) {
 		if (m) {
 			name.given = m[1];
 			name.suffix = m[2];
-			if (m[2].match(/.*[a-z].*/)) {
+			if (m[2].match(/[a-z]/)) {
 				name.comma_suffix = true;
 			}
 		}

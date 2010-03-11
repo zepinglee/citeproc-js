@@ -116,8 +116,56 @@ var CSL = {
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 	NUMERIC_VARIABLES: ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"],
 	DATE_VARIABLES: ["issued", "event", "accessed", "container", "original-date"],
-	TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
-	TAG_USEALL: /(<[^>]+>)/,
+	TAG_ESCAPE: function (str) {
+		var lst, len, pos, m, buf1, buf2, idx;
+		lst = str.split(/(<span\s+class=\"no(?:case|decor)\">)/);
+		len = lst.length - 1;
+		for (pos = len; pos > 1; pos += -2) {
+			m = lst[pos].match(/<\/span>/);
+			if (m) {
+				idx = lst[pos].indexOf("</span>");
+				buf1 = lst[pos].slice(0, idx);
+				buf2 = lst[pos].slice(idx + 7);
+				lst[pos - 1] += buf1 + "</span>";
+				lst[pos] = buf2;
+			} else {
+				buf1 = lst.slice(0, pos - 1);
+				if (pos < (lst.length - 1)) {
+					buf2 = lst[pos - 1] + lst[pos];
+				} else {
+					buf2 = lst[pos - 1] + lst[pos] + lst[pos + 1];
+				}
+				lst = buf1.push(buf2).concat(lst.slice(pos + 2));
+			}
+		}
+		return lst;
+	},
+	TAG_USEALL: function (str) {
+		var ret, open, close, end;
+		ret = [""];
+		open = str.indexOf("<");
+		close = str.indexOf(">");
+		while (open > -1 && close > -1) {
+			if (open > close) {
+				end = open + 1;
+			} else {
+				end = close + 1;
+			}
+			if (open < close && str.slice(open + 1, close).indexOf("<") === -1) {
+				ret[ret.length - 1] += str.slice(0, open);
+				ret.push(str.slice(open, close + 1));
+				ret.push("");
+				str = str.slice(end);
+			} else {
+				ret[ret.length - 1] += str.slice(0, close + 1);
+				str = str.slice(end);
+			}
+			open = str.indexOf("<");
+			close = str.indexOf(">");
+		}
+		ret[ret.length - 1] += str;
+		return ret;
+	},
 	SKIP_WORDS: ["a", "the", "an"],
 	FORMAT_KEY_SEQUENCE: [
 		"@strip-periods",
@@ -995,7 +1043,7 @@ CSL.dateParser = function (txt) {
 		number = "";
 		note = "";
 		thedate = {};
-		if (txt.match(/^".*"$/)) {
+		if (txt.slice(0, 1) === "\"" && txt.slice(-1) === "\"") {
 			thedate.literal = txt.slice(1, -1);
 			return thedate;
 		}
@@ -1065,12 +1113,12 @@ CSL.dateParser = function (txt) {
 					if (element.match(/^[0-9]+$/)) {
 						number = parseInt(element, 10);
 					}
-					if (element.toLocaleLowerCase().match(/^bc.*/) && number) {
+					if (element.toLocaleLowerCase().match(/^bc/) && number) {
 						thedate[("year" + suff)] = "" + (number * -1);
 						number = "";
 						continue;
 					}
-					if (element.toLocaleLowerCase().match(/^ad.*/) && number) {
+					if (element.toLocaleLowerCase().match(/^ad/) && number) {
 						thedate[("year" + suff)] = "" + number;
 						number = "";
 						continue;
@@ -1088,7 +1136,7 @@ CSL.dateParser = function (txt) {
 				if (breakme) {
 					continue;
 				}
-				if (element === "~" || element === "?" || element === "c" || element.match(/cir.*/)) {
+				if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
 					thedate.fuzzy = "" + 1;
 					continue;
 				}
@@ -1593,10 +1641,10 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 CSL.Engine.prototype.parseName = function (name) {
 	var m;
 	if (! name["non-dropping-particle"]) {
-		m = name.family.match(/^([ a-z]+)\s+(.*)/);
+		m = name.family.match(/^([ a-z]+\s+)/);
 		if (m) {
-			name["non-dropping-particle"] = m[1];
-			name.family = m[2];
+			name.family = name.family.slice(m[1].length);
+			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
 		}
 	}
 	if (! name.suffix) {
@@ -1604,7 +1652,7 @@ CSL.Engine.prototype.parseName = function (name) {
 		if (m) {
 			name.given = m[1];
 			name.suffix = m[2];
-			if (m[2].match(/.*[a-z].*/)) {
+			if (m[2].match(/[a-z]/)) {
 				name.comma_suffix = true;
 			}
 		}
@@ -6303,7 +6351,7 @@ CSL.Output.Formatters.title = function (state, string) {
 CSL.Output.Formatters.doppelString = function (string, rex) {
 	var ret, pos, len;
 	ret = {};
-	ret.array = string.split(rex);
+	ret.array = rex(string);
 	ret.string = "";
 	len = ret.array.length;
 	for (pos = 0; pos < len; pos += 2) {
