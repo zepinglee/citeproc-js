@@ -351,7 +351,7 @@ class CslTest:
         for element in ["MODE","CSL","RESULT"]:
             self.extract(element,required=True,is_json=False)
             if element == "CSL" and self.data['csl'].endswith('.csl'):
-                self.data['csl'] = open( os.path.join("tests", "styles", fixEndings(self.data['csl'])).read())
+                self.data['csl'] = fixEndings(open( os.path.join("tests", "styles", self.data['csl'])).read())
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
