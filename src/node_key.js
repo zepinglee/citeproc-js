@@ -104,7 +104,7 @@ CSL.Node.key = {
 							num = Item[variable];
 						}
 						if (num) {
-							m = num.match(/\s*(-{0,1}[0-9]+).*/);
+							m = num.match(/\s*(-{0,1}[0-9]+)/);
 							if (m) {
 								num = parseInt(m[1], 10);
 								if (num < 0) {

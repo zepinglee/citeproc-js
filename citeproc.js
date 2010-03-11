@@ -492,7 +492,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			len = blob.decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
-				if (["@bibliography","@display"].indexOf(params[0]) > -1) {
+				if (["@bibliography", "@display"].indexOf(params[0]) > -1) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
@@ -1469,7 +1469,7 @@ CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default
 	return value;
 };
 CSL.Engine.prototype.getNameSubFields = function (names) {
-	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, len, llen, lllen, i, key;
+	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, len, llen, lllen, i, key, str, lang;
 	count = -1;
 	ret = [];
 	mode = "locale-name";
@@ -1507,15 +1507,17 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 					}
 				}
 				newname["static-ordering"] = use_static_ordering;
-				m = p.match(/^:([\-a-zA-Z0-9]+):\s+(.*)/);
+				m = p.match(/^(:[\-a-zA-Z0-9]+:\s+)/);
 				if (m) {
+					str = p.slice(m[1].length);
+					lang = m[1].slice(1).replace(/:\s+$/, "");
 					addme = false;
 					lllen = this.opt[mode].length;
 					for (pppos = 0; pppos < len; pppos += 1) {
 						o = this.opt[mode][pppos];
-						if (m[1] === o) {
+						if (lang === o) {
 							updateme = true;
-							newname[part] = m[2];
+							newname[part] = str;
 							break;
 						}
 					}
@@ -1526,9 +1528,9 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 							} else {
 								newopt = this.opt.lang;
 							}
-							if (m[1] === newopt) {
+							if (lang === newopt) {
 								updateme = true;
-								newname[part] = m[2];
+								newname[part] = str;
 								if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
 									newname["static-ordering"] = false;
 								}
@@ -1658,10 +1660,10 @@ CSL.Engine.prototype.parseName = function (name) {
 		}
 	}
 	if (! name["dropping-particle"]) {
-		m = name.given.match(/^(.*?)\s+([ a-z]+)$/);
+		m = name.given.match(/^(\s+[ a-z]*[a-z])$/);
 		if (m) {
-			name.given = m[1];
-			name["dropping-particle"] = m[2];
+			name.given = name.given.slice(0, m[1].length * -1);
+			name["dropping-particle"] = m[2].replace(/^\s+/, "");
 		}
 	}
 };
@@ -1847,7 +1849,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	return [params, ret];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -2373,9 +2375,9 @@ CSL.citeStart = function (Item) {
 	this.tmp.offset_characters = 0;
 };
 CSL.citeEnd = function (Item) {
-	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/.*[\-.,;:]$/)) {
+	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/[\-.,;:]$/)) {
 		this.tmp.splice_delimiter = " ";
-	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[.,:;a-z].*/)) {
+	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[.,:;a-z]/)) {
 		this.tmp.splice_delimiter = " ";
 	}
 	this.tmp.last_suffix_used = this.tmp.suffix.value();
@@ -3003,7 +3005,7 @@ CSL.Node.key = {
 							num = Item[variable];
 						}
 						if (num) {
-							m = num.match(/\s*(-{0,1}[0-9]+).*/);
+							m = num.match(/\s*(-{0,1}[0-9]+)/);
 							if (m) {
 								num = parseInt(m[1], 10);
 								if (num < 0) {
@@ -3723,7 +3725,7 @@ CSL.Node.number = {
 					m = num.split(/\s*(&|,|-)\s*/);
 					num = m[0];
 				}
-				m = num.match(/\s*([0-9]+).*/);
+				m = num.match(/\s*([0-9]+)/);
 				if (m) {
 					num = parseInt(m[1], 10);
 					number = new CSL.NumericBlob(num, this);

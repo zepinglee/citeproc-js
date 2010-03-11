@@ -75,7 +75,7 @@ CSL.Node.number = {
 					m = num.split(/\s*(&|,|-)\s*/);
 					num = m[0];
 				}
-				m = num.match(/\s*([0-9]+).*/);
+				m = num.match(/\s*([0-9]+)/);
 				if (m) {
 					num = parseInt(m[1], 10);
 					number = new CSL.NumericBlob(num, this);

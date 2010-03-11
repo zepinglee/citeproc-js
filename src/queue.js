@@ -446,7 +446,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			len = blob.decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
-				if (["@bibliography","@display"].indexOf(params[0]) > -1) {
+				if (["@bibliography", "@display"].indexOf(params[0]) > -1) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);

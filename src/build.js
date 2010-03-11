@@ -455,7 +455,7 @@ CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default
 };
 
 CSL.Engine.prototype.getNameSubFields = function (names) {
-	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, len, llen, lllen, i, key;
+	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, len, llen, lllen, i, key, str, lang;
 	count = -1;
 	ret = [];
 	mode = "locale-name";
@@ -501,15 +501,17 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 					}
 				}
 				newname["static-ordering"] = use_static_ordering;
-				m = p.match(/^:([\-a-zA-Z0-9]+):\s+(.*)/);
+				m = p.match(/^(:[\-a-zA-Z0-9]+:\s+)/);
 				if (m) {
+					str = p.slice(m[1].length);
+					lang = m[1].slice(1).replace(/:\s+$/, "");
 					addme = false;
 					lllen = this.opt[mode].length;
 					for (pppos = 0; pppos < len; pppos += 1) {
 						o = this.opt[mode][pppos];
-						if (m[1] === o) {
+						if (lang === o) {
 							updateme = true;
-							newname[part] = m[2];
+							newname[part] = str;
 							break;
 						}
 					}
@@ -523,9 +525,9 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 							} else {
 								newopt = this.opt.lang;
 							}
-							if (m[1] === newopt) {
+							if (lang === newopt) {
 								updateme = true;
-								newname[part] = m[2];
+								newname[part] = str;
 								if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
 									newname["static-ordering"] = false;
 								}
@@ -673,10 +675,10 @@ CSL.Engine.prototype.parseName = function (name) {
 		}
 	}
 	if (! name["dropping-particle"]) {
-		m = name.given.match(/^(.*?)\s+([ a-z]+)$/);
+		m = name.given.match(/^(\s+[ a-z]*[a-z])$/);
 		if (m) {
-			name.given = m[1];
-			name["dropping-particle"] = m[2];
+			name.given = name.given.slice(0, m[1].length * -1);
+			name["dropping-particle"] = m[2].replace(/^\s+/, "");
 		}
 	}
 };
