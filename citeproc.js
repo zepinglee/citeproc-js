@@ -1639,7 +1639,7 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 	}
 };
 CSL.Engine.prototype.parseName = function (name) {
-	var m;
+	var m, idx;
 	if (! name["non-dropping-particle"]) {
 		m = name.family.match(/^([ a-z]+\s+)/);
 		if (m) {
@@ -1648,11 +1648,12 @@ CSL.Engine.prototype.parseName = function (name) {
 		}
 	}
 	if (! name.suffix) {
-		m = name.given.match(/(.*)\s*,!*\s*(.*)$/);
+		m = name.given.match(/(\s*,!*\s*)/);
 		if (m) {
-			name.given = m[1];
-			name.suffix = m[2];
-			if (m[2].match(/[a-z]/)) {
+			idx = name.given.indexOf(m[1]);
+			name.suffix = name.given.slice(idx + m[1].length);
+			name.given = name.given.slice(0, idx);
+			if (name.suffix.match(/[a-z]/)) {
 				name.comma_suffix = true;
 			}
 		}
