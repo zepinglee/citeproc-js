@@ -76,9 +76,9 @@ dojo.registerModulePath("doh","./dojo-sm/util/doh");
 
 load("./citeproc.js");
 
-CSL.debug("#####");
-CSL.debug("Testing with tracemonkey");
-CSL.debug("#####");
+print("#####");
+print("Testing with tracemonkey");
+print("#####");
 
 load("./src/testing_rhino.js");
 load("./src/testing_stdrhino.js");

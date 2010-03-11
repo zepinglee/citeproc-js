@@ -55,8 +55,8 @@ dojo.registerModulePath("doh","./dojo/util/doh");
 
 load("./src/load.js");
 
-CSL.debug("#####");
-CSL.debug("Testing with rhino: "+environment["file.encoding"]);
+print("#####");
+print("Testing with rhino: "+environment["file.encoding"]);
 if ("UTF-8" != environment["file.encoding"]){
 	environment["file.encoding"] = "UTF-8";
 	environment["sun.jnu.encoding"] = "UTF-8";

@@ -36,7 +36,8 @@
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk;
 	debug = false;
-	if (false) {
+	//SNIP-START
+	if (debug) {
 		len = this.bibliography.tokens.length;
 		for (pos = 0; pos < len; pos += 1) {
 			tok = this.bibliography.tokens[pos];
@@ -55,6 +56,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 			CSL.debug("bibsorttok: " + tok.name);
 		}
 	}
+	//SNIP-END
 	ret = CSL.getBibliographyEntries.call(this, bibsection);
 	params = {
 		"maxoffset": 0,
@@ -190,9 +192,11 @@ CSL.getBibliographyEntries = function (bibsection) {
 				continue;
 			}
 		}
-		if (false) {
+		//SNIP-START
+		if (debug) {
 			CSL.debug("BIB: " + item.id);
 		}
+		//SNIP-END
 		bib_entry = new CSL.Token("group", CSL.START);
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
 		bib_entry.strings.suffix =

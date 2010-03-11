@@ -35,47 +35,67 @@
 
 CSL.Engine.prototype.updateItems = function (idList) {
 	var debug = false;
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> init <--");
 	}
+	//SNIP-END
 	this.registry.init(idList);
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> dodeletes <--");
 	}
+	//SNIP-END
 	this.registry.dodeletes(this.registry.myhash);
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> doinserts <--");
 	}
+	//SNIP-END
 	this.registry.doinserts(this.registry.mylist);
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> dorefreshes <--");
 	}
+	//SNIP-END
 	this.registry.dorefreshes();
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> rebuildlist <--");
 	}
+	//SNIP-END
 	this.registry.rebuildlist();
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> setdisambigs <--");
 	}
+	//SNIP-END
 	// taints always
 	this.registry.setdisambigs();
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> setsortkeys <--");
 	}
+	//SNIP-END
 	this.registry.setsortkeys();
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> sorttokens <--");
 	}
+	//SNIP-END
 	this.registry.sorttokens();
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> renumber <--");
 	}
+	//SNIP-END
 	// taints if numbered style
 	this.registry.renumber();
+	//SNIP-START
 	if (debug) {
 		CSL.debug("--> yearsuffix <--");
 	}
+	//SNIP-END
 	// taints always
 	this.registry.yearsuffix();
 

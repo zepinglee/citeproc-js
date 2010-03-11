@@ -35,7 +35,8 @@
 
 CSL.Node.key = {
 	build: function (state, target) {
-		var start_key, func, sort_direction, variable, names_start_token, name_token, names_end_token, single_text, token, pos, keypos, ppos, len, llen, tok, gtok, saveme, end_key, tlen, tlst;
+		var start_key, func, sort_direction, variable, names_start_token, name_token, names_end_token, single_text, token, pos, keypos, ppos, len, llen, tok, gtok, saveme, end_key, tlen, tlst, debug;
+		debug = false;
 		start_key = new CSL.Token("key", CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
@@ -216,9 +217,11 @@ CSL.Node.key = {
 		// store key for use
 		func = function (state, Item) {
 			var keystring = state.output.string(state, state.output.queue);
-			if (false) {
+			//SNIP-START
+			if (debug) {
 				CSL.debug("keystring: " + keystring + " " + typeof keystring);
 			}
+			//SNIP-END
 			if ("string" !== typeof keystring || state.tmp.empty_date) {
 				keystring = undefined;
 				state.tmp.empty_date = false;

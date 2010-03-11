@@ -35,7 +35,8 @@
 
 CSL.Node.label = {
 	build: function (state, target) {
-		var func, term, plural, form;
+		var func, term, plural, form, debug;
+		debug = false;
 		if (state.build.name_flag) {
 			this.strings.label_position = CSL.AFTER;
 		} else {
@@ -55,7 +56,11 @@ CSL.Node.label = {
 			form = this.strings.form;
 			if ("number" === typeof this.strings.plural) {
 				plural = this.strings.plural;
-				CSL.debug("plural: " + this.strings.plural);
+				//SNIP-START
+				if (debug) {
+					CSL.debug("plural: " + this.strings.plural);
+				}
+				//SNIP-END
 			}
 			func = function (state, Item, item) {
 				var myterm;

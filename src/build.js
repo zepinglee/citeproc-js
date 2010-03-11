@@ -572,7 +572,7 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 			dp = date_obj["date-parts"];
 			if (dp.length > 1) {
 				if (dp[0].length !== dp[1].length) {
-					CSL.debug("CSL data error: element mismatch in date range input.");
+					CSL.error("CSL data error: element mismatch in date range input.");
 				}
 			}
 			exts = ["", "_end"];

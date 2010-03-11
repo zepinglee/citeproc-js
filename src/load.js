@@ -56,8 +56,14 @@
  */
 var CSL = {
 
+	//SNIP-START
 	debug: function (str) {
-		//print(str);
+		print(str);
+	},
+	//SNIP-END
+
+	error: function (str) {
+		print(str);
 	},
 
 	START: 0,

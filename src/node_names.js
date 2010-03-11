@@ -36,7 +36,7 @@
 CSL.Node.names = {
 	build: function (state, target) {
 		var debug, func, len, pos, attrname;
-		debug = true;
+		debug = false;
 
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			CSL.Util.substituteStart.call(this, state, target);
@@ -56,9 +56,11 @@ CSL.Node.names = {
 					}
 					for (pos = 0; pos < len; pos += 1) {
 						variable = this.variables[pos];
+						//SNIP-START
 						if (debug) {
 							CSL.debug(">>>> variable: " + variable);
 						}
+						//SNIP-END
 						if (Item[variable]) {
 							rawvar = Item[variable];
 							if ("string" === typeof Item[variable]) {
@@ -159,6 +161,7 @@ CSL.Node.names = {
 
 					//print("CHECK: "+namesets[0].names.length);
 
+					//SNIP-START
 					if (debug) {
 						len = namesets.length;
 						for (pos = 0; pos < len; pos += 1) {
@@ -166,6 +169,7 @@ CSL.Node.names = {
 							CSL.debug(mynameset.species);
 						}
 					}
+					//SNIP-END
 				}
 			};
 			this.execs.push(func);
@@ -184,9 +188,11 @@ CSL.Node.names = {
 			// init names
 			func = function (state, Item) {
 				state.output.startTag("names", this);
+				//SNIP-START
 				if (debug) {
 					CSL.debug("## startTag: names " + this.strings.suffix);
 				}
+				//SNIP-END
 				state.tmp.name_node = state.output.current.value();
 			};
 			this.execs.push(func);
@@ -221,9 +227,11 @@ CSL.Node.names = {
 				// Normalize names for which it is requested
 				//
 				len = namesets.length;
+				//SNIP-START
 				if (debug) {
 					CSL.debug("namesets.length[1]: " + namesets.length);
 				}
+				//SNIP-END
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
 					if ("organizations" === nameset.species) {
@@ -301,9 +309,11 @@ CSL.Node.names = {
 				}
 
 				len = namesets.length;
+				//SNIP-START
 				if (debug) {
 					CSL.debug("namesets.length[2]: " + namesets.length);
 				}
+				//SNIP-END
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 
 					nameset = namesets[namesetIndex];
@@ -422,9 +432,11 @@ CSL.Node.names = {
 					// joining all but the last name in the set together.
 
 
+					//SNIP-START
 					if (debug) {
 						CSL.debug("nameset.names.length[1]: " + nameset.names.length);
 					}
+					//SNIP-END
 					llen = nameset.names.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
 						//
@@ -503,24 +515,30 @@ CSL.Node.names = {
 					//
 
 					if (namesetIndex > 0 && nameset.variable !== last_variable) {
+						//SNIP-START
 						if (debug) {
 							CSL.debug("-- blink 'term-join'");
 						}
+						//SNIP-END
 						state.output.closeLevel("term-join");
 						state.output.openLevel("term-join");
 					}
 
 					if (nameset.after_people) {
+						//SNIP-START
 						if (debug) {
 							CSL.debug("-- reached 'after_people'");
 						}
+						//SNIP-END
 						state.output.append(", with ", "empty");
 					}
 
 					if (nameset.organization_first) {
+						//SNIP-START
 						if (debug) {
 							CSL.debug("-- reached 'organization_first'");
 						}
+						//SNIP-END
 						state.output.openLevel("institution-outer");
 						state.output.openLevel("inner");
 					}
@@ -535,9 +553,11 @@ CSL.Node.names = {
 
 					if (nameset.species === "pers") {
 						// pers
+						//SNIP-START
 						if (debug) {
 							CSL.debug("-- reached species 'pers'");
 						}
+						//SNIP-END
 						state.output.openLevel("etal-join"); // join for etal
 						CSL.Util.Names.outputNames(state, display_names);
 						if (et_al) {
@@ -548,15 +568,19 @@ CSL.Node.names = {
 						//org
 						CSL.Util.Institutions.outputInstitutions(state, display_names);
 						if (nameset.organization_last) {
+							//SNIP-START
 							if (debug) {
 								CSL.debug("-- reached 'organization_last'");
 							}
+							//SNIP-END
 							state.output.closeLevel("inner");
 							state.output.closeLevel("institution-outer");
 						} else {
+							//SNIP-START
 							if (debug) {
 								CSL.debug("-- reached 'organization_NOT_last'");
 							}
+							//SNIP-END
 							state.output.closeLevel("inner");
 							state.output.openLevel("inner");
 						}
@@ -603,9 +627,11 @@ CSL.Node.names = {
 				}
 				CSL.Util.Names.reinit(state, Item);
 				// names
+				//SNIP-START
 				if (debug) {
 					CSL.debug("## endTag: names");
 				}
+				//SNIP-END
 				state.output.endTag();
 
 				state.parallel.CloseVariable();

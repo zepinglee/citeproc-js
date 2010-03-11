@@ -34,6 +34,7 @@
  */
 
 CSL.Abbrev = function () {
+	this.debug = false;
 	this.journal = {};
 	this.series = {};
 	this.institution = {};
@@ -52,7 +53,11 @@ CSL.Abbrev.prototype.output = function (state, value, token_short, token_long, u
 		if (use_fallback) {
 			state.output.append(value, token_long);
 		}
-		CSL.debug("UNKNOWN ABBREVIATION FOR: " + value);
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("UNKNOWN ABBREVIATION FOR: " + value);
+		}
+		//SNIP-END
 	}
 };
 
@@ -65,7 +70,11 @@ CSL.Abbrev.prototype.getOutputFunc = function (token, varname, vartype, altvar) 
 			if (state.abbrev[vartype][basevalue]) {
 				value = state.abbrev[vartype][basevalue];
 			} else {
-				CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
+				//SNIP-START
+				if (this.debug) {
+					CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
+				}
+				//SNIP-END
 			}
 		}
 		if (!value && Item[altvar]) {

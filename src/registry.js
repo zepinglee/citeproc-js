@@ -90,6 +90,7 @@
  */
 CSL.Registry = function (state) {
 	var pos, len, ret;
+	this.debug = false;
 	this.state = state;
 	this.registry = {};
 	this.reflist = [];
@@ -415,9 +416,11 @@ CSL.Registry.prototype.setdisambigs = function () {
 			// if there are multiple ambigs, disambiguate them
 			if (this.ambigcites[akey].length > 1) {
 				if (this.modes.length) {
+					//SNIP-START
 					if (this.debug) {
 						CSL.debug(" += -1-> Names disambiguation begin");
 					}
+					//SNIP-END
 					leftovers = this.disambiguateCites(this.state, akey, this.modes);
 				} else {
 					//
@@ -484,9 +487,11 @@ CSL.Registry.prototype.yearsuffix = function () {
 				this.registry[leftovers[("" + ppos)].id].disambig[2] = "" + ppos;
 			}
 		}
+		//SNIP-START
 		if (this.debug) {
 			CSL.debug("---> End of registry cleanup");
 		}
+		//SNIP-END
 	}
 };
 
@@ -597,9 +602,11 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
  */
 CSL.getSortKeys = function (Item, key_type) {
 	var area, strip_prepositions, use_parallels, len, pos;
+	//SNIP-START
 	if (false) {
 		CSL.debug("KEY TYPE: " + key_type);
 	}
+	//SNIP-END
 	area = this.tmp.area;
 	strip_prepositions = CSL.Util.Sort.strip_prepositions;
 	this.tmp.area = key_type;
@@ -616,9 +623,11 @@ CSL.getSortKeys = function (Item, key_type) {
 	for (pos = 0; pos < len; pos += 1) {
 		this[key_type].keys[pos] = strip_prepositions(this[key_type].keys[pos]);
 	}
+	//SNIP-START
 	if (false) {
 		CSL.debug("sort keys (" + key_type + "): " + this[key_type].keys);
 	}
+	//SNIP-END
 	this.tmp.area = area;
 	return this[key_type].keys;
 };

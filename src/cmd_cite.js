@@ -403,9 +403,6 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	ret = this.output.string(this, this.output.queue);
 	this.tmp.suppress_decorations = false;
 	this.parallel.use_parallels = use_parallels;
-	if (false) {
-		CSL.debug("ok");
-	}
 	return ret;
 };
 

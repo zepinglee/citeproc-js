@@ -55,14 +55,14 @@ dojo.registerModulePath("doh","./dojo/util/doh");
 
 load("./citeproc.js");
 
-CSL.debug("#####");
-CSL.debug("Testing with rhino: "+environment["file.encoding"]);
+print("#####");
+print("Testing with rhino: "+environment["file.encoding"]);
 if ("UTF-8" != environment["file.encoding"]){
 	environment["file.encoding"] = "UTF-8";
 	environment["sun.jnu.encoding"] = "UTF-8";
-	CSL.debug("Reset Rhino file.encoding to UTF-8");
+	print("Reset Rhino file.encoding to UTF-8");
 }
-CSL.debug("#####");
+print("#####");
 
 load("./src/testing_rhino.js");
 load("./src/testing_stdrhino.js");
