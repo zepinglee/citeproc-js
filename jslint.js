@@ -33,8 +33,6 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-
-
 // (C)2002 Douglas Crockford
 // www.JSLint.com
 // Rhino Edition
