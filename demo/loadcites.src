@@ -211,12 +211,12 @@ var data = {
 		"note": "This cite illustrates the formatting of institutional authors.  Note that there is no \"and\" between the individual author and the institution with which he is affiliated.",
 		"author": [
 			{
-				"literal": "U.S. Bureau of the Census"
-			},
-			{
 				"family": "Malone",
 				"given": "Nolan J.",
 				"static-ordering": false
+			},
+			{
+				"literal": "U.S. Bureau of the Census"
 			}
 		],
 		"publisher": "Routledge",

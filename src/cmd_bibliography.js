@@ -87,7 +87,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -194,14 +194,27 @@ CSL.getBibliographyEntries = function (bibsection) {
 			CSL.debug("BIB: " + item.id);
 		}
 		bib_entry = new CSL.Token("group", CSL.START);
-		bib_entry.strings.prefix = this[this.build.area].opt.layout_prefix;
-		bib_entry.strings.suffix = this[this.build.area].opt.layout_suffix;
-		// this[this.build.area].opt.layout_delimiter;
-		//bib_entry.decorations = this[this.build.area].opt.layout_decorations.concat([["@bibliography", "entry"]]);
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
+		bib_entry.strings.suffix =
 		this.output.startTag("bib_entry", bib_entry);
 		CSL.getCite.call(this, item);
-		this.output.endTag();
+		this.output.endTag("bib_entry");
+		//
+		// place layout prefix on first blob of each cite, and suffix
+		// on the last non-empty blob of each cite.  there be dragons
+		// here.
+		//
+		if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
+			topblobs = this.output.queue[0].blobs[0].blobs;
+			llen = topblobs.length - 1;
+			for (ppos = llen; ppos > -1; ppos += -1) {
+				if (topblobs[ppos].blobs && topblobs[ppos].blobs.length !== 0) {
+					topblobs[ppos].strings.suffix += this[this.build.area].opt.layout_suffix;
+					break;
+				}
+			}
+			topblobs[0].strings.prefix = this[this.build.area].opt.layout_prefix + topblobs[0].strings.prefix;
+		}
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
 			res = "[CSL STYLE ERROR: reference with no printed form.]";

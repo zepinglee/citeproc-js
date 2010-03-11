@@ -299,7 +299,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	}
 
 	blob_last_chars = [];
-
 	//
 	// Need to know the join delimiter before boiling blobs down
 	// to strings, so that we can cleanly clip out duplicate
@@ -317,6 +316,8 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	len = blobs.length;
 	for (pos = 0; pos < len; pos += 1) {
 		blobjr = blobs[pos];
+
+
 		//if (blobjr.strings.prefix && blobjr.strings.prefix.slice(0,1) == ":") {
 		//	print("GOTCHA!")
 		//} else {
@@ -352,6 +353,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 					}
 				}
 				use_suffix = blobjr.strings.suffix;
+				//print(">> junior suffix: "+blobjr.strings.suffix);
 				if (b[(b.length - 1)] === "." && use_suffix && use_suffix[0] === ".") {
 				    use_suffix = use_suffix.slice(1);
 				}
@@ -444,7 +446,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			len = blob.decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
-				if ("@bibliography" === params[0]) {
+				if (["@bibliography","@display"].indexOf(params[0]) > -1) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
@@ -472,7 +474,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			len = blob.decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
-				if ("@bibliography" !== params[0]) {
+				if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);

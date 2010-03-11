@@ -163,7 +163,7 @@ CSL.Attributes["@type"] = function (state, arg) {
  * @function
  */
 CSL.Attributes["@variable"] = function (state, arg) {
-	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key;
+	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key, flag;
 	this.variables = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
 		state.build.term = this.variables[0];
@@ -244,17 +244,22 @@ CSL.Attributes["@variable"] = function (state, arg) {
 				}
 			}
 			//print("-- VAR: "+variable);
+			flag = state.tmp.term_sibling.value();
 			if (output) {
-				//print("-->"+variable+" set true");
-				state.tmp.term_sibling.replace(true);
+				flag[2] = true;
+				state.tmp.term_sibling.replace(flag);
 				state.tmp.can_substitute.replace(false,  CSL.LITERAL);
 			} else {
-				//print("-->"+variable+" set FALSE");
-				if (undefined === state.tmp.term_sibling.value()) {
-					//print("-- forcing false");
-					state.tmp.term_sibling.replace(false,  CSL.LITERAL);
-				}
+				flag[1] = true;
 			}
+			//else {
+			//	//print("-->"+variable+" set FALSE");
+			//	if (undefined === state.tmp.term_sibling.value()) {
+			//		//print("-- forcing false");
+			//		state.tmp.term_sibling.replace(false,  CSL.LITERAL);
+			//	}
+			//}
+
 			//if (output) {
 			//	CSL.debug("Output! "+this.variables);
 			//} else {

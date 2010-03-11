@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ *
+ * The contents of this file are subject to the Common Public
+ * Attribution License Version 1.0 (the “License”); you may not use
+ * this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ *
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./std subdirectory of the distribution archive.
+ *
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ *
+ * The Initial Developer of the Original Code is Frank G. Bennett,
+ * Jr. All portions of the code written by Frank G. Bennett, Jr. are
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ */
+{
+    "bibentries": false, 
+    "bibsection": false, 
+    "citation_items": false, 
+    "citations": false, 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"in-text\"\n      version=\"1.0\">\n  <info>\n    <title>IEEE</title>\n    <id>http://www.zotero.org/styles/ieee</id>\n    <link rel=\"self\" href=\"http://www.zotero.org/styles/ieee\" />\n    <author>\n      <name>Michael Berkowitz</name>\n      <email>mberkowi@gmu.edu</email>\n    </author>\n    <contributor>\n      <name>Julian Onions</name>\n      <email>julian.onions@gmail.com</email>\n    </contributor>\n    <contributor>\n      <name>Rintze Zelle</name>\n      <uri>http://forums.zotero.org/account/831/</uri>\n    </contributor>\n    <category field=\"engineering\" />\n    <category field=\"generic-base\" />\n    <category citation-format=\"numeric\" />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n    <link href=\"http://www.ieee.org/portal/cms_docs_iportals/iportals/publications/authors/transjnl/stylemanual.pdf\" rel=\"documentation\" />\n  </info>\n  <macro name=\"author\">\n    <names variable=\"author\">\n      <name and=\"text\" delimiter=\", \" initialize-with=\".\" name-as-sort-order=\"all\" />\n      <label form=\"short\" prefix=\", \" suffix=\".\" text-case=\"lowercase\" />\n      <substitute>\n        <names variable=\"editor\" />\n        <names variable=\"translator\" />\n      </substitute>\n    </names>\n  </macro>\n  <macro name=\"editor\">\n    <names variable=\"editor\">\n      <name and=\"text\" delimiter=\", \" initialize-with=\".\" name-as-sort-order=\"all\" />\n      <label form=\"short\" prefix=\", \" suffix=\".\" text-case=\"lowercase\" />\n    </names>\n  </macro>\n  <macro name=\"title\">\n    <choose>\n      <if type=\"book\">\n        <text font-style=\"italic\" variable=\"title\" />\n      </if>\n      <else>\n        <text quotes=\"true\" variable=\"title\" />\n      </else>\n    </choose>\n  </macro>\n  <macro name=\"publisher\">\n    <text prefix=\" \" suffix=\": \" variable=\"publisher-place\" />\n    <text suffix=\", \" variable=\"publisher\" />\n    <date variable=\"issued\">\n      <date-part name=\"year\" />\n    </date>\n  </macro>\n  <macro name=\"access\">\n    <text variable=\"URL\" />\n  </macro>\n  <macro name=\"page\">\n    <group>\n      <label form=\"short\" suffix=\". \" variable=\"page\" />\n      <text variable=\"page\" />\n    </group>\n  </macro>\n  <citation \n         collapse=\"citation-number\"\n         et-al-min=\"3\"\n         et-al-use-first=\"1\">\n    <sort>\n      <key variable=\"citation-number\" />\n    </sort>\n    <layout delimiter=\",\" prefix=\"[\" suffix=\"]\">\n      <text variable=\"citation-number\" />\n    </layout>\n  </citation>\n  <bibliography \n         entry-spacing=\"0\"\n         second-field-align=\"flush\">\n    <layout suffix=\".\">\n      <text prefix=\"[\" suffix=\"]\" variable=\"citation-number\" />\n      <text macro=\"author\" prefix=\" \" suffix=\", \" />\n      <choose>\n        <if type=\"book\">\n          <group delimiter=\", \">\n            <text macro=\"title\" />\n            <text macro=\"publisher\" />\n          </group>\n        </if>\n        <else-if type=\"chapter\">\n          <group delimiter=\", \">\n            <text macro=\"title\" />\n            <text font-style=\"italic\" variable=\"container-title\" />\n            <text macro=\"editor\" />\n            <text macro=\"publisher\" />\n            <text macro=\"page\" />\n          </group>\n        </else-if>\n        <else-if type=\"patent\">\n          <text macro=\"title\" suffix=\", \" />\n          <text prefix=\"U.S. Patent \" variable=\"number\" />\n          <date prefix=\", \" variable=\"issued\">\n            <date-part name=\"month\" suffix=\" \" />\n            <date-part name=\"day\" suffix=\", \" />\n            <date-part name=\"year\" />\n          </date>\n        </else-if>\n        <else-if type=\"thesis\">\n          <group delimiter=\", \">\n            <text macro=\"title\" />\n            <text variable=\"genre\" />\n            <text variable=\"publisher\" />\n            <date variable=\"issued\">\n              <date-part name=\"year\" />\n            </date>\n          </group>\n        </else-if>\n        <else>\n          <group delimiter=\", \">\n            <text macro=\"title\" />\n            <text font-style=\"italic\" variable=\"container-title\" />\n            <text prefix=\" vol. \" variable=\"volume\" />\n            <date variable=\"issued\">\n              <date-part form=\"short\" name=\"month\" suffix=\". \" />\n              <date-part name=\"year\" />\n            </date>\n            <text macro=\"page\" />\n          </group>\n        </else>\n      </choose>\n    </layout>\n  </bibliography>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "family": "D'Arcus", 
+                    "given": "Bruce", 
+                    "static-ordering": false
+                }
+            ], 
+            "id": "ITEM-1", 
+            "issued": {
+                "date-parts": [
+                    [
+                        2005, 
+                        11, 
+                        22
+                    ]
+                ]
+            }, 
+            "note": "The apostrophe in Bruce's name appears in proper typeset form.", 
+            "publisher": "Routledge", 
+            "title": "Boundaries of Dissent: Protest and State Power in the Media Age", 
+            "type": "book"
+        }, 
+        {
+            "author": [
+                {
+                    "family": "Bennett", 
+                    "given": "Frank G.", 
+                    "static-ordering": false, 
+                    "suffix": "Jr."
+                }
+            ], 
+            "container-title": "Pac. Rim L. & Pol'y J.", 
+            "id": "ITEM-2", 
+            "issued": {
+                "date-parts": [
+                    [
+                        2009, 
+                        8
+                    ]
+                ]
+            }, 
+            "page": "463-509", 
+            "title": "Getting Property Right: \"Informal\" Mortgages in the Japanese Courts", 
+            "type": "article-journal", 
+            "volume": "18"
+        }
+    ], 
+    "mode": "bibliography", 
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">[1]</div><div class=\"csl-right-inline\"> D’Arcus, B., <i>Boundaries of Dissent: Protest and State Power in the Media Age</i>, Routledge, 2005.</div>\n  </div>\n  <div class=\"csl-entry\">\n    <div class=\"csl-left-margin\">[2]</div><div class=\"csl-right-inline\"> Bennett, F.G., Jr., “Getting Property Right: ‘Informal’ Mortgages in the Japanese Courts,” <i>Pac. Rim L. &amp; Pol’y J.</i>,  vol. 18, Aug. 2009, p. 463-509.</div>\n  </div>\n</div>"
+}

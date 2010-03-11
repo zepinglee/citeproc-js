@@ -35,7 +35,7 @@
 
 CSL.Node.text = {
 	build: function (state, target) {
-		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, primary, secondary, primary_tok, secondary_tok;
+		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, primary, secondary, primary_tok, secondary_tok, flag;
 		CSL.Util.substituteStart.call(this, state, target);
 		if (this.postponed_macro) {
 			CSL.expandMacro.call(state, this);
@@ -115,7 +115,16 @@ CSL.Node.text = {
 							// don't ask :)
 							// obviously the variable naming scheme needs
 							// a little touching up
-							firstoutput = state.tmp.term_sibling.mystack.indexOf(true) === -1;
+							firstoutput = false;
+							len = state.tmp.term_sibling.mystack.length;
+							for (pos = 0; pos < len; pos += 1) {
+								flag = state.tmp.term_sibling.mystack[pos];
+								if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
+									firstoutput = true;
+									break;
+								}
+							}
+							// firstoutput = state.tmp.term_sibling.mystack.indexOf(true) === -1;
 							specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
 							if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag) {
 								state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
@@ -179,6 +188,13 @@ CSL.Node.text = {
 					}
 					// printterm
 					func = function (state, Item) {
+						// if the term is not an empty string, flag this
+						// same as a variable with content.
+						if (term !== "") {
+							flag = state.tmp.term_sibling.value();
+							flag[0] = true;
+							state.tmp.term_sibling.replace(flag);
+						}
 						// capitalize the first letter of a term, if it is the
 						// first thing rendered in a citation (or if it is
 						// being rendered immediately after terminal punctuation,
@@ -279,6 +295,10 @@ CSL.Node.text = {
 					this.execs.push(func);
 				} else if (this.strings.value) {
 					func = function (state, Item) {
+						var flag;
+						flag = state.tmp.term_sibling.value();
+						flag[0] = true;
+						state.tmp.term_sibling.replace(flag);
 						state.output.append(this.strings.value, this);
 					};
 					this.execs.push(func);

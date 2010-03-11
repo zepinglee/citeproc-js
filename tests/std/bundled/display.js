@@ -39,6 +39,10 @@ doh.register("std.display", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("display_SecondFieldAlignMigratePunctuation");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("display_AuthorAsHeading");
         doh.assertEqual(test.result, test.run());
     }, 

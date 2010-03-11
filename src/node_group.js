@@ -44,7 +44,8 @@ CSL.Node.group = {
 			if (!quashquash || true) {
 				// fieldcontentflag
 				func = function (state, Item) {
-					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
+					// (see below)
+					state.tmp.term_sibling.push([false, false, false], CSL.LITERAL);
 					//print("++ SET: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
 				};
 				this.execs.push(func);
@@ -73,7 +74,12 @@ CSL.Node.group = {
 
 					state.output.endTag();
 					//print("-- QUASHER: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
-					if (false === flag) {
+					//
+					// 0 marks an intention to render a term or value
+					// 1 marks an attempt to render a variable
+					// 2 marks an actual variable rendering
+					//
+					if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
 						//print("POP!");
 						//state.output.current.pop();
 						if (state.output.current.value().blobs) {
@@ -86,8 +92,14 @@ CSL.Node.group = {
 					//
 					// Heals group quashing glitch with nested groups.
 					//
-					if ((flag === true || flag === undefined) && state.tmp.term_sibling.mystack.length > 1) {
-						state.tmp.term_sibling.replace(true);
+
+					// aha, I think.  There could be conditions that do NOTHING,
+					// which would leave behind an "undefined" on the flag.
+					// We need four states, not three: (1) rendered a variable;
+					// (2) failed to render a variable; (3) rendered a term;
+					// (4) didn't try to do anything.
+					if ((flag[2] || (!flag[1] && flag[0])) && state.tmp.term_sibling.mystack.length > 1) {
+						state.tmp.term_sibling.replace([false, false, true]);
 					}
 				};
 				this.execs.push(func);

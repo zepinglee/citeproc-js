@@ -1,3 +1,15 @@
+div.csl-left-margin {
+  width:2em;
+  float:left;
+  text-indent:1em;
+  padding:0.4em 0px 0.4em 0em;
+}
+
+div.csl-right-inline {
+  margin-left:2em;
+  padding:0.4em 0.4em 0.4em 1em;
+}
+
 div.csl-indent {
     margin-top: 0.5em;
     margin-left: 2em;

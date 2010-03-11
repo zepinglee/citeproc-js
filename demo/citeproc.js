@@ -443,7 +443,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			len = blob.decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
-				if ("@bibliography" === params[0]) {
+				if (["@bibliography","@display"].indexOf(params[0]) > -1) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
@@ -465,7 +465,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			len = blob.decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
-				if ("@bibliography" !== params[0]) {
+				if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
@@ -1644,7 +1644,7 @@ CSL.Engine.Tmp = function () {
 	this.element_rendered_ok = false;
 	this.element_trace = new CSL.Stack("style");
 	this.nameset_counter = 0;
-	this.term_sibling = new CSL.Stack(undefined, CSL.LITERAL);
+	this.term_sibling = new CSL.Stack([false, false, false], CSL.LITERAL);
 	this.term_predecessor = false;
 	this.jump = new CSL.Stack(0, CSL.LITERAL);
 	this.decorations = new CSL.Stack();
@@ -1848,7 +1848,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	return [params, ret];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -1943,12 +1943,22 @@ CSL.getBibliographyEntries = function (bibsection) {
 			CSL.debug("BIB: " + item.id);
 		}
 		bib_entry = new CSL.Token("group", CSL.START);
-		bib_entry.strings.prefix = this[this.build.area].opt.layout_prefix;
-		bib_entry.strings.suffix = this[this.build.area].opt.layout_suffix;
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
+		bib_entry.strings.suffix =
 		this.output.startTag("bib_entry", bib_entry);
 		CSL.getCite.call(this, item);
-		this.output.endTag();
+		this.output.endTag("bib_entry");
+		if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
+			topblobs = this.output.queue[0].blobs[0].blobs;
+			llen = topblobs.length - 1;
+			for (ppos = llen; ppos > -1; ppos += -1) {
+				if (topblobs[ppos].blobs && topblobs[ppos].blobs.length !== 0) {
+					topblobs[ppos].strings.suffix += this[this.build.area].opt.layout_suffix;
+					break;
+				}
+			}
+			topblobs[0].strings.prefix = this[this.build.area].opt.layout_prefix + topblobs[0].strings.prefix;
+		}
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
 			res = "[CSL STYLE ERROR: reference with no printed form.]";
@@ -2792,7 +2802,7 @@ CSL.Node.group = {
 			}
 			if (!quashquash || true) {
 				func = function (state, Item) {
-					state.tmp.term_sibling.push(undefined, CSL.LITERAL);
+					state.tmp.term_sibling.push([false, false, false], CSL.LITERAL);
 				};
 				this.execs.push(func);
 			}
@@ -2807,14 +2817,14 @@ CSL.Node.group = {
 				func = function (state, Item) {
 					var flag = state.tmp.term_sibling.value();
 					state.output.endTag();
-					if (false === flag) {
+					if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
 						if (state.output.current.value().blobs) {
 							state.output.current.value().blobs.pop();
 						}
 					}
 					state.tmp.term_sibling.pop();
-					if ((flag === true || flag === undefined) && state.tmp.term_sibling.mystack.length > 1) {
-						state.tmp.term_sibling.replace(true);
+					if ((flag[2] || (!flag[1] && flag[0])) && state.tmp.term_sibling.mystack.length > 1) {
+						state.tmp.term_sibling.replace([false, false, true]);
 					}
 				};
 				this.execs.push(func);
@@ -3810,7 +3820,7 @@ CSL.Node.substitute = {
 };
 CSL.Node.text = {
 	build: function (state, target) {
-		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, primary, secondary, primary_tok, secondary_tok;
+		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, primary, secondary, primary_tok, secondary_tok, flag;
 		CSL.Util.substituteStart.call(this, state, target);
 		if (this.postponed_macro) {
 			CSL.expandMacro.call(state, this);
@@ -3874,7 +3884,15 @@ CSL.Node.text = {
 							formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
 							state.output.append(number, "literal");
-							firstoutput = state.tmp.term_sibling.mystack.indexOf(true) === -1;
+							firstoutput = false;
+							len = state.tmp.term_sibling.mystack.length;
+							for (pos = 0; pos < len; pos += 1) {
+								flag = state.tmp.term_sibling.mystack[pos];
+								if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
+									firstoutput = true;
+									break;
+								}
+							}
 							specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
 							if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag) {
 								state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
@@ -3934,6 +3952,11 @@ CSL.Node.text = {
 						term = term.replace(/\./g, "");
 					}
 					func = function (state, Item) {
+						if (term !== "") {
+							flag = state.tmp.term_sibling.value();
+							flag[0] = true;
+							state.tmp.term_sibling.replace(flag);
+						}
 						if (!state.tmp.term_predecessor) {
 							term = CSL.Output.Formatters["capitalize-first"](state, term);
 							state.tmp.term_predecessor = true;
@@ -4024,6 +4047,10 @@ CSL.Node.text = {
 					this.execs.push(func);
 				} else if (this.strings.value) {
 					func = function (state, Item) {
+						var flag;
+						flag = state.tmp.term_sibling.value();
+						flag[0] = true;
+						state.tmp.term_sibling.replace(flag);
 						state.output.append(this.strings.value, this);
 					};
 					this.execs.push(func);
@@ -4094,7 +4121,7 @@ CSL.Attributes["@type"] = function (state, arg) {
 	this.tests.push(func);
 };
 CSL.Attributes["@variable"] = function (state, arg) {
-	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key;
+	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key, flag;
 	this.variables = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
 		state.build.term = this.variables[0];
@@ -4160,13 +4187,13 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					break;
 				}
 			}
+			flag = state.tmp.term_sibling.value();
 			if (output) {
-				state.tmp.term_sibling.replace(true);
+				flag[2] = true;
+				state.tmp.term_sibling.replace(flag);
 				state.tmp.can_substitute.replace(false,  CSL.LITERAL);
 			} else {
-				if (undefined === state.tmp.term_sibling.value()) {
-					state.tmp.term_sibling.replace(false,  CSL.LITERAL);
-				}
+				flag[1] = true;
 			}
 		};
 		this.execs.push(func);
