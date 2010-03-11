@@ -34,7 +34,7 @@
  */
 
 CSL.Util.fixDateNode = function (parent, pos, node) {
-	var form, variable, datexml, subnode, partname, attrname, attrval, prefix, suffix, children, key, cchildren, attr, kkey;
+	var form, variable, datexml, subnode, partname, attrname, attrval, prefix, suffix, children, key, cchildren, attr, kkey, display;
 	form = this.sys.xml.getAttributeValue(node, "form");
 	if (!form) {
 		return parent;
@@ -42,6 +42,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	variable = this.sys.xml.getAttributeValue(node, "variable");
 	prefix = this.sys.xml.getAttributeValue(node, "prefix");
 	suffix = this.sys.xml.getAttributeValue(node, "suffix");
+	display = this.sys.xml.getAttributeValue(node, "display");
 	//
 	// Xml: Copy a node
 	//
@@ -64,6 +65,12 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 		// Xml: Set attribute
 		//
 		this.sys.xml.setAttribute(datexml, "suffix", suffix);
+	}
+	if (display) {
+		//
+		// Xml: Set attribute
+		//
+		this.sys.xml.setAttribute(datexml, "display", display);
 	}
 	//
 	// Step through any date-part children of the layout date node,

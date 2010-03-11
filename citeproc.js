@@ -2523,7 +2523,9 @@ CSL.Node.date = {
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			state.build.date_parts = [];
 			state.build.date_variables = this.variables;
-			CSL.Util.substituteStart.call(this, state, target);
+			if (!state.build.sort_flag) {
+				CSL.Util.substituteStart.call(this, state, target);
+			}
 			func = function (state, Item) {
 				state.tmp.element_rendered_ok = false;
 				state.tmp.donesies = [];
@@ -2587,7 +2589,7 @@ CSL.Node.date = {
 			};
 			this.execs.push(func);
 		}
-		if (state.build.sort_flag && this.tokentype === CSL.END) {
+		if (state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
 			tok = new CSL.Token("key", CSL.SINGLETON);
 			tok.dateparts = state.build.date_parts.slice();
 			tok.variables = state.build.date_variables;
@@ -2602,8 +2604,10 @@ CSL.Node.date = {
 			this.execs.push(func);
 		}
 		target.push(this);
-		if (this.tokentype === CSL.END && !state.build.sort_flag) {
-			CSL.Util.substituteEnd.call(this, state, target);
+		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
+			if (!state.build.sort_flag) {
+				CSL.Util.substituteEnd.call(this, state, target);
+			}
 		}
 	}
 };
@@ -5213,7 +5217,7 @@ CSL.Util.Match = function () {
 	};
 };
 CSL.Util.fixDateNode = function (parent, pos, node) {
-	var form, variable, datexml, subnode, partname, attrname, attrval, prefix, suffix, children, key, cchildren, attr, kkey;
+	var form, variable, datexml, subnode, partname, attrname, attrval, prefix, suffix, children, key, cchildren, attr, kkey, display;
 	form = this.sys.xml.getAttributeValue(node, "form");
 	if (!form) {
 		return parent;
@@ -5221,6 +5225,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	variable = this.sys.xml.getAttributeValue(node, "variable");
 	prefix = this.sys.xml.getAttributeValue(node, "prefix");
 	suffix = this.sys.xml.getAttributeValue(node, "suffix");
+	display = this.sys.xml.getAttributeValue(node, "display");
 	datexml = this.sys.xml.nodeCopy(this.state.getDate(form));
 	this.sys.xml.setAttribute(datexml, 'variable', variable);
 	if (prefix) {
@@ -5228,6 +5233,9 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	}
 	if (suffix) {
 		this.sys.xml.setAttribute(datexml, "suffix", suffix);
+	}
+	if (display) {
+		this.sys.xml.setAttribute(datexml, "display", display);
 	}
 	children = this.sys.xml.children(node);
 	for (key in children) {
