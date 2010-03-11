@@ -7,6 +7,7 @@ import tempfile
 from cStringIO import StringIO
 from cPickle import Pickler, Unpickler
 import subprocess as sub 
+import string
 
 try:
     import json
@@ -31,11 +32,17 @@ class MissingHumansFile(Exception):
 class NoLicense(Exception):
     pass
 
+def fixEndings(str):
+    str = string.replace(str, '\r\n', '\n')
+    str = string.replace(str, '\r', '\n')
+    return str
+
+
 class ApplyLicense:
 
     def __init__(self):
         self.rex = "(?sm)^^(/\*.*?^\s*\*/\n*)(.*)"
-        m = re.match(self.rex, open( os.path.join("src","load.js")).read() )
+        m = re.match(self.rex, fixEndings(open( os.path.join("src","load.js")).read()) )
         if m:
             self.license = "%s\n" % m.group(1).strip()
         else:
@@ -50,7 +57,7 @@ class ApplyLicense:
     def process_file(self,path,file):
         filepath = os.path.join( path, file)
         if not filepath.endswith(".js") and not filepath.endswith(".txt") and not filepath.endswith(".json") and not filepath.endswith("README.txt"): return
-        text = open(filepath).read()
+        text = fixEndings(open(filepath).read())
         oldtext = text
         m = re.match(self.rex,text)
         if m:
@@ -88,7 +95,7 @@ class Bundle:
         for f in self.files:
             filename = os.path.join( "src", "%s.js"%f)
             ifh = open(filename)
-            subfile = ifh.read()
+            subfile = fixEndings(ifh.read())
             subfile = re.sub("(?sm)^\s*/\*.*?^\s*\*/","",subfile)
             subfile = re.sub("(?sm)^\s*//SNIP-START.*?^\s*//SNIP-END","",subfile)
             subfile = re.sub("(?sm)^\s*//.*?$","",subfile)
@@ -284,6 +291,7 @@ doh.register("std.%s", [
         while 1:
             line = ifh.readline()
             if not line: break
+            line = fixEndings(line)
             sys.stdout.write(line)
 
     def validateSource(self):
@@ -337,13 +345,13 @@ class CslTest:
         self.script = os.path.split(sys.argv[0])[1]
         self.pickle = ".".join((os.path.splitext( self.script )[0], "pkl"))
         self.data = {}
-        self.raw = open( os.path.sep.join(hpath)).read()
+        self.raw = fixEndings(open( os.path.sep.join(hpath)).read())
 
     def parse(self):
         for element in ["MODE","CSL","RESULT"]:
             self.extract(element,required=True,is_json=False)
             if element == "CSL" and self.data['csl'].endswith('.csl'):
-                self.data['csl'] = open( os.path.join("tests", "styles", self.data['csl'])).read()
+                self.data['csl'] = open( os.path.join("tests", "styles", fixEndings(self.data['csl'])).read())
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
@@ -559,6 +567,8 @@ if __name__ == "__main__":
     start = datetime.now()
     START="%s:%s:%s <--------------START" % (start.hour,start.minute,start.second)
     print START
+
+
 
     if opt.bundle:
         opt.grind = True
