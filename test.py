@@ -9,6 +9,9 @@ from cPickle import Pickler, Unpickler
 import subprocess as sub 
 import string
 
+reload(sys)
+sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
+
 try:
     import json
 except:
