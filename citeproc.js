@@ -1451,10 +1451,10 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 };
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
 	var lst, opt, o, pos, key, ret;
-	ret = "";
 	if (!value) {
-		value = "";
+		return "";
 	}
+	ret = "";
 	lst = value.split(/\s*:([\-a-zA-Z0-9]+):\s*/);
 	opt = this.opt[locale_type];
 	for (key in opt) {
