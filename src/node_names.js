@@ -143,6 +143,10 @@ CSL.Node.names = {
 							if (tnamesets.length > 0 && tnamesets.slice(-1)[0].species === "org" && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
 								tnamesets[0].organization_first = true;
 								tnamesets.slice(-1)[0].organization_last = true;
+								if (frontnames.length) {
+									frontnames[0].free_agent_start = true;
+									tnamesets.slice(-1)[0].free_agent_end = true;
+								}
 							}
 							tnamesets = frontnames.concat(tnamesets);
 							namesets = namesets.concat(tnamesets);
@@ -242,6 +246,9 @@ CSL.Node.names = {
 					if (namesets[0].species === "pers") {
 						namesets[0].names = namesets[0].names.slice(state.tmp.name_slice[namesets[0].variable]);
 						if (namesets[0].names.length === 0) {
+							if (namesets[0].free_agent_start) {
+								namesets[1].free_agent_start = true;
+							}
 							namesets = namesets.slice(1);
 						}
 					} else {
@@ -273,9 +280,16 @@ CSL.Node.names = {
 				state.output.addToken("sortsep", state.output.getToken("name").strings["sort-separator"]);
 
 				// not yet hooked up; using direct output instead.
+				// The term and the join need to be separated here,
+				// so that subsequent renderings of the name will
+				// be handled gracefully when the "with" join
+				// comes in front.
 
 				state.output.addToken("with-join");
-				state.output.getToken("with-join").strings.delimiter = ", with ";
+				state.output.getToken("with-join").strings.delimiter = ", ";
+
+				state.output.addToken("with-group");
+				state.output.getToken("with-group").strings.delimiter = " ";
 
 				outer_and_term = " " + state.output.getToken("name").strings.and + " ";
 				state.output.addToken("institution-outer", outer_and_term);
@@ -551,13 +565,18 @@ CSL.Node.names = {
 						state.output.openLevel("term-join");
 					}
 
+					if (nameset.free_agent_start) {
+						state.output.openLevel("with-join");
+					}
+
 					if (nameset.after_people) {
 						//SNIP-START
 						if (debug) {
 							CSL.debug("-- reached 'after_people'");
 						}
 						//SNIP-END
-						state.output.append(", with ", "empty");
+						state.output.openLevel("with-group");
+						state.output.append("with", "empty");
 					}
 
 					if (nameset.organization_first) {
@@ -621,13 +640,17 @@ CSL.Node.names = {
 					//	//state.output.closeLevel("inner");
 					//}
 
+					if (nameset.free_agent_end) {
+						state.output.closeLevel("with-group");
+						state.output.closeLevel("with-join");
+					}
+
 					// lookahead
 					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
 						if (label && state.tmp.name_label_position !== CSL.BEFORE) {
 							state.output.append(label, "label");
 						}
 					}
-
 
 					state.tmp.nameset_counter += 1;
 					last_variable = nameset.variable;
