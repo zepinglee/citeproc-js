@@ -348,21 +348,25 @@ class CslTest:
         self.raw = fixEndings(open( os.path.sep.join(hpath)).read())
 
     def parse(self):
-        for element in ["MODE","CSL","RESULT"]:
+        for element in ["MODE","CSL"]:
             self.extract(element,required=True,is_json=False)
             if element == "CSL" and self.data['csl'].endswith('.csl'):
                 self.data['csl'] = fixEndings(open( os.path.join("tests", "styles", self.data['csl'])).read())
+        self.extract("RESULT",required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
         self.extract("BIBENTRIES",required=False,is_json=True)
         self.extract("BIBSECTION",required=False,is_json=True)
 
-    def extract(self,tag,required=False,is_json=False):
+    def extract(self,tag,required=False,is_json=False,rstrip=False):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
         data = False
         if m:
-            data = m.group(2).strip()
+            if rstrip:
+                data = m.group(2).rstrip()
+            else:
+                data = m.group(2).strip()
         elif required:
             raise ElementMissing(self.script,tag,self.testname)
         if data != False:
