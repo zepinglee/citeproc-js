@@ -219,7 +219,7 @@ CSL.Node.names = {
 
 			// handle names
 			func = function (state, Item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, oldcurr;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -253,6 +253,14 @@ CSL.Node.names = {
 						}
 					} else {
 						namesets = namesets.slice(state.tmp.name_slice[namesets[0].variable]);
+					}
+					// should always be true, but just in case
+					// this slices off subsequent namesets in the initial name
+					// rendered, when the same name is rendered a second time.
+					// Useful for robust per-author listings.
+					oldcurr = state.bibliography.opt.trailing_names;
+					if (oldcurr) {
+						oldcurr[0].blobs = oldcurr[0].blobs.slice(0,oldcurr[1]).concat(oldcurr[0].blobs.slice(oldcurr[1] + 1));
 					}
 				}
 				len = namesets.length;
@@ -575,7 +583,7 @@ CSL.Node.names = {
 							CSL.debug("-- reached 'after_people'");
 						}
 						//SNIP-END
-						state.output.openLevel("with-group");
+						state.output.openLevel("with-group",CSL.MARK_TRAILING_NAMES);
 						state.output.append("with", "empty");
 					}
 

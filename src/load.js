@@ -97,6 +97,8 @@ var CSL = {
 	POSITION_IBID: 2,
 	POSITION_IBID_WITH_LOCATOR: 3,
 
+	MARK_TRAILING_NAMES: true,
+
 	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],

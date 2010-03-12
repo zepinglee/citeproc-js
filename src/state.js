@@ -316,7 +316,9 @@ CSL.Engine.Citation = function (state) {
 
 
 CSL.Engine.Bibliography = function () {
-	this.opt = {};
+	this.opt = {
+		trailing_names: false
+	};
 	this.tokens = [];
 
 	this.opt.collapse = [];

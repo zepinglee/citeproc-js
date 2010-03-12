@@ -137,7 +137,7 @@ CSL.Output.Queue.prototype.endTag = function () {
 // list, and adjusts the current pointer so that subsequent
 // appends are made to blob list of the new object.
 
-CSL.Output.Queue.prototype.openLevel = function (token) {
+CSL.Output.Queue.prototype.openLevel = function (token,saveme) {
 	var blob, curr;
 	this.levelname.push(token);
 	//CSL.debug("openLevel");
@@ -149,14 +149,15 @@ CSL.Output.Queue.prototype.openLevel = function (token) {
 	// delimiter, prefix, suffix, decorations from token
 	blob = new CSL.Blob(this.formats.value()[token]);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
-		// this.state.tmp.offset_characters += blob.strings.prefix.length;
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length) {
-		// this.state.tmp.offset_characters += blob.strings.suffix.length;
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
 	curr = this.current.value();
+	if (saveme) {
+		this.state.bibliography.opt.trailing_names = [curr, curr.blobs.length];
+	}
 	curr.push(blob);
 	this.current.push(blob);
 };
