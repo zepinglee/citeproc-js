@@ -64,7 +64,7 @@ var data = {
 			}
 		],
 		"title":"Getting Property Right: \"Informal\" Mortgages in the Japanese Courts",
-		"container-title":"Pac. Rim L. & Pol'y J.",
+		"container-title":"Pacific Rim Law & Policy Journal",
 		"volume": "18",
 		"page": "463-509",
 		"issued": {

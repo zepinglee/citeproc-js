@@ -435,23 +435,26 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 };
 
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
-	var lst, opt, o, pos, key;
+	var lst, opt, o, pos, key, ret;
+	if (!value) {
+		return "";
+	}
+	ret = "";
 	lst = value.split(/\s*:([\-a-zA-Z0-9]+):\s*/);
-	value = undefined;
 	opt = this.opt[locale_type];
 	for (key in opt) {
 		if (opt.hasOwnProperty(key)) {
 			o = opt[key];
 			if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
-				value = lst[(lst.indexOf(o) + 1)];
+				ret = lst[(lst.indexOf(o) + 1)];
 				break;
 			}
 		}
 	}
-	if (!value && use_default) {
-		value = lst[0];
+	if (!ret && use_default) {
+		ret = lst[0];
 	}
-	return value;
+	return ret;
 };
 
 CSL.Engine.prototype.getNameSubFields = function (names) {

@@ -33,7 +33,9 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-var Sys = function(){};
+var Sys = function(abbreviations){
+	this.abbreviations = abbreviations;
+};
 
 Sys.prototype.retrieveItem = function(id){
 	return data[id];
@@ -44,13 +46,5 @@ Sys.prototype.retrieveLocale = function(lang){
 };
 
 Sys.prototype.getAbbreviations = function(name,vartype){
-	var ret = {
-		"default": {
-			"journal":{},
-			"series":{},
-			"authority":{},
-			"institution":{}
-		}
-	};
-	return ret[name][vartype];
+	return this.abbreviations[name][vartype];
 };

@@ -174,7 +174,8 @@ CSL.Node.key = {
 					};
 				} else {
 					func = function (state, Item) {
-						state.output.append(Item[variable], "empty");
+						var varval = Item[variable];
+						state.output.append(varval, "empty");
 					};
 				}
 				single_text.execs.push(func);

@@ -45,6 +45,9 @@ CSL.Abbrev = function () {
 
 CSL.Abbrev.prototype.output = function (state, value, token_short, token_long, use_fallback) {
 	var basevalue, shortvalue;
+	//
+	// XXXXX: This is broken.  Why default-locale?  Why institution?
+	//
 	basevalue = state.getTextSubField(value, "default-locale", true);
 	shortvalue = state.abbrev.institution[value];
 	if (shortvalue) {
