@@ -340,25 +340,5 @@ CSL.Util.Names.stripRight = function (str) {
 	return str.slice(0, end);
 };
 
-
-CSL.Util.Names.rescueNameElements = function (names) {
-	var name, m;
-	for (name in names) {
-		if (names[name].given) {
-			if (names[name].given.indexOf(",") > -1) {
-				m = names[name].given.match(/(.*),(!?)\s*(.*)/);
-				names[name].given = m[1];
-				if (m[2]) {
-					names[name].comma_suffix = true;
-				}
-				names[name].suffix = m[3];
-			}
-			m = names[name].given.match(/(.*?)\s+([ a-z]+)$/);
-			if (m) {
-				names[name].given = m[1];
-				names[name].prefix = m[2];
-			}
-		}
-	}
-	return names;
-};
+// deleted CSL.Util.Names,rescueNameElements()
+// apparently not used.

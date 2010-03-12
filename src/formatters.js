@@ -129,7 +129,7 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
  * already.
  */
 CSL.Output.Formatters.title = function (state, string) {
-	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon;
+	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos;
 	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
@@ -151,7 +151,20 @@ CSL.Output.Formatters.title = function (state, string) {
 
 			// only use if word does not already possess some capitalization
 			if (isUpperCase || words[pos] === lowerCaseVariant) {
-				skip = CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) !== -1;
+				// complicated, but avoids use of insecure regular expression wildcard
+				skip = false;
+				len = CSL.SKIP_WORDS.length;
+				for (ppos = 0; ppos < len; ppos += 1) {
+					skipword = CSL.SKIP_WORDS[ppos];
+					idx = lowerCaseVariant.indexOf(skipword);
+					if (idx > -1) {
+						tmp = lowerCaseVariant.slice(0, idx, idx + lowerCaseVariant.slice(skipword.length));
+						if (!tmp.match(/[a-zA-Z]/)) {
+							skip = true;
+						}
+					}
+				}
+				//skip = CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) !== -1;
 				notfirst = pos !== 0;
 				notlast = pos !== lastWordIndex;
 				firstword = previousWordIndex === -1;

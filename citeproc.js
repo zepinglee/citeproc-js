@@ -3872,9 +3872,9 @@ CSL.Node.text = {
 										myname = name.family.replace(/\s+/, "");
 									} else if (name && name.literal) {
 										myname = name.literal;
-										m = myname.toLowerCase().match(/^(a|the|an)(.*)/, "");
+										m = myname.toLowerCase().match(/^(a|the|an\s+)/, "");
 										if (m) {
-											myname = m[2];
+											myname = myname.slice(m[1].length);
 										}
 									}
 								}
@@ -3974,8 +3974,12 @@ CSL.Node.text = {
 						}
 					} else if (this.variables[0] === "page-first") {
 						func = function (state, Item) {
+							var idx;
 							value = state.getVariable(Item, "page", form);
-							value = value.replace(/-.*/, "");
+							idx = value.indexOf("-");
+							if (idx > -1) {
+								value = value.slice(0, idx);
+							}
 							state.output.append(value, this);
 						};
 					} else if (this.variables[0] === "page") {
@@ -5428,27 +5432,6 @@ CSL.Util.Names.stripRight = function (str) {
 	}
 	return str.slice(0, end);
 };
-CSL.Util.Names.rescueNameElements = function (names) {
-	var name, m;
-	for (name in names) {
-		if (names[name].given) {
-			if (names[name].given.indexOf(",") > -1) {
-				m = names[name].given.match(/(.*),(!?)\s*(.*)/);
-				names[name].given = m[1];
-				if (m[2]) {
-					names[name].comma_suffix = true;
-				}
-				names[name].suffix = m[3];
-			}
-			m = names[name].given.match(/(.*?)\s+([ a-z]+)$/);
-			if (m) {
-				names[name].given = m[1];
-				names[name].prefix = m[2];
-			}
-		}
-	}
-	return names;
-};
 CSL.Util.Dates = {};
 CSL.Util.Dates.year = {};
 CSL.Util.Dates.year["long"] = function (state, num) {
@@ -5470,9 +5453,14 @@ CSL.Util.Dates.year["short"] = function (state, num) {
 CSL.Util.Dates.year.numeric = function (state, num) {
 	var m, pre;
 	num = "" + num;
-	m = num.match(/^(.*?)([0-9]*)$/);
-	pre = m[1];
-	num = m[2];
+	m = num.match(/([0-9]*)$/);
+	if (m) {
+		pre = num.slice(0, m[1].length * -1);
+		num = m[1];
+	} else {
+		pre = num;
+		num = "";
+	}
 	while (num.length < 4) {
 		num = "0" + num;
 	}
@@ -6224,7 +6212,7 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
 	return CSL.Output.Formatters.undoppelString(str);
 };
 CSL.Output.Formatters.title = function (state, string) {
-	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon;
+	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos;
 	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
@@ -6240,7 +6228,18 @@ CSL.Output.Formatters.title = function (state, string) {
 			upperCaseVariant = words[pos].toUpperCase();
 			lowerCaseVariant = words[pos].toLowerCase();
 			if (isUpperCase || words[pos] === lowerCaseVariant) {
-				skip = CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) !== -1;
+				skip = false;
+				len = CSL.SKIP_WORDS.length;
+				for (ppos = 0; ppos < len; ppos += 1) {
+					skipword = CSL.SKIP_WORDS[ppos];
+					idx = lowerCaseVariant.indexOf(skipword);
+					if (idx > -1) {
+						tmp = lowerCaseVariant.slice(0, idx, idx + lowerCaseVariant.slice(skipword.length));
+						if (!tmp.match(/[a-zA-Z]/)) {
+							skip = true;
+						}
+					}
+				}
 				notfirst = pos !== 0;
 				notlast = pos !== lastWordIndex;
 				firstword = previousWordIndex === -1;

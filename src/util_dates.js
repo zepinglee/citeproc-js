@@ -79,9 +79,14 @@ CSL.Util.Dates.year["short"] = function (state, num) {
 CSL.Util.Dates.year.numeric = function (state, num) {
 	var m, pre;
 	num = "" + num;
-	m = num.match(/^(.*?)([0-9]*)$/);
-	pre = m[1];
-	num = m[2];
+	m = num.match(/([0-9]*)$/);
+	if (m) {
+		pre = num.slice(0, m[1].length * -1);
+		num = m[1];
+	} else {
+		pre = num;
+		num = "";
+	}
 	while (num.length < 4) {
 		num = "0" + num;
 	}

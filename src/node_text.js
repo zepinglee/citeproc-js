@@ -153,9 +153,9 @@ CSL.Node.text = {
 										myname = name.family.replace(/\s+/, "");
 									} else if (name && name.literal) {
 										myname = name.literal;
-										m = myname.toLowerCase().match(/^(a|the|an)(.*)/, "");
+										m = myname.toLowerCase().match(/^(a|the|an\s+)/, "");
 										if (m) {
-											myname = m[2];
+											myname = myname.slice(m[1].length);
 										}
 									}
 								}
@@ -268,8 +268,12 @@ CSL.Node.text = {
 						}
 					} else if (this.variables[0] === "page-first") {
 						func = function (state, Item) {
+							var idx;
 							value = state.getVariable(Item, "page", form);
-							value = value.replace(/-.*/, "");
+							idx = value.indexOf("-");
+							if (idx > -1) {
+								value = value.slice(0, idx);
+							}
 							state.output.append(value, this);
 						};
 					} else if (this.variables[0] === "page") {
