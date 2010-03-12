@@ -51,7 +51,7 @@ CSL.Util.FlipFlopper = function (state) {
 		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
 		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
 		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner"],  "'"],
-		["'",  "'",  "quotes",  "@quotes",  ["inner",  "true"],  '"']
+		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true"],  '"']
 	];
 	//
 	// plus quote defs from locale.
@@ -247,6 +247,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 	}
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
+		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"));
 		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
 	}
 	return strs;

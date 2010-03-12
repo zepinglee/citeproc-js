@@ -19,7 +19,7 @@ var abbreviations = {
 		"journal":{
 			"Pacific Rim Law & Policy Journal":"PRL & PJ",
 			"日本教育工学会論文誌":"日教論",
-			"Applied and Environmental Microbiology":"Appl. & Env. Microbio."
+			"Applied and Environmental Microbiology":"Appl'd. & Env'tal Microbio."
 		},
 		"series":{
 			"International Rescue Wildlife Series":"I.R. Wildlife Series"

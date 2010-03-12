@@ -367,6 +367,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	}
 	if ("string" === typeof str && str.length) {
 		this.last_char_rendered = str.slice(-1);
+		str = str.replace(/\s+'/g, "\ \ \'").replace(/^'/g, "\ \'");
 	}
 	blob = new CSL.Blob(token, str);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix) {
@@ -1451,10 +1452,10 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 };
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
 	var lst, opt, o, pos, key, ret;
-	ret = "";
 	if (!value) {
-		value = "";
+		return "";
 	}
+	ret = "";
 	lst = value.split(/\s*:([\-a-zA-Z0-9]+):\s*/);
 	opt = this.opt[locale_type];
 	for (key in opt) {
@@ -5893,7 +5894,7 @@ CSL.Util.FlipFlopper = function (state) {
 		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
 		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
 		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner"],  "'"],
-		["'",  "'",  "quotes",  "@quotes",  ["inner",  "true"],  '"']
+		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true"],  '"']
 	];
 	for (pos = 0; pos < 2; pos += 1) {
 		p = ["-", "-inner-"][pos];
@@ -6055,6 +6056,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 	}
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
+		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"));
 		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
 	}
 	return strs;

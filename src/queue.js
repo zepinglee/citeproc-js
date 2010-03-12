@@ -205,6 +205,9 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	}
 	if ("string" === typeof str && str.length) {
 		this.last_char_rendered = str.slice(-1);
+		// This, and not the str argument below on flipflop, is the
+		// source of the flipflopper string source.
+		str = str.replace(/\s+'/g, "\ \ \'").replace(/^'/g, "\ \'");
 	}
 	blob = new CSL.Blob(token, str);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix) {
@@ -262,6 +265,11 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 			//
 			blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
 		}
+		//
+		// XXX: Beware superfluous code in your code.  str in this
+		// case is not the source of the final rendered string.
+		// See note above.
+		//
 		this.state.fun.flipflopper.init(str, blob);
 		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
 		this.state.fun.flipflopper.processTags();

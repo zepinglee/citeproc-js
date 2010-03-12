@@ -19,7 +19,7 @@ var abbreviations = {
 		"journal":{
 			"Pacific Rim Law & Policy Journal":"PRL & PJ",
 			"\u65e5\u672c\u6559\u80b2\u5de5\u5b66\u4f1a\u8ad6\u6587\u8a8c":"\u65e5\u6559\u8ad6",
-			"Applied and Environmental Microbiology":"Appl. & Env. Microbio."
+			"Applied and Environmental Microbiology":"Appl'd. & Env'tal Microbio."
 		},
 		"series":{
 			"International Rescue Wildlife Series":"I.R. Wildlife Series"
