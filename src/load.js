@@ -179,6 +179,18 @@ var CSL = {
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 
+	NAME_VARIABLES: [
+		"author",
+		"editor",
+		"translator",
+		"collection-editor",
+		"composer",
+		"container-author",
+		"editorial-director",
+		"interviewer",
+		"original-author",
+		"recipient"
+	],
 	NUMERIC_VARIABLES: ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"],
 	//var x = new Array();
 	//x = x.concat(["title","container-title","issued","page"]);

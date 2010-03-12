@@ -122,6 +122,8 @@ CSL.Engine = function (sys, style, lang) {
 
 	this.setStyleAttributes();
 
+	CSL.Util.Names.initNameSlices(this.tmp.name_slice);
+
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 
 	lang = this.opt["default-locale"][0];

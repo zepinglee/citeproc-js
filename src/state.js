@@ -187,6 +187,7 @@ CSL.Engine.Tmp = function () {
 	// and the closing token.
 	this.delimiter = new CSL.Stack("", CSL.LITERAL);
 	//
+	this.name_slice = {};
 };
 
 

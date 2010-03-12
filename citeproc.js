@@ -115,6 +115,18 @@ var CSL = {
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
+	NAME_VARIABLES: [
+		"author",
+		"editor",
+		"translator",
+		"collection-editor",
+		"composer",
+		"container-author",
+		"editorial-director",
+		"interviewer",
+		"original-author",
+		"recipient"
+	],
 	NUMERIC_VARIABLES: ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"],
 	DATE_VARIABLES: ["issued", "event", "accessed", "container", "original-date"],
 	TAG_ESCAPE: function (str) {
@@ -1203,6 +1215,7 @@ CSL.Engine = function (sys, style, lang) {
 	}
 	this.opt["initialize-with-hyphen"] = true;
 	this.setStyleAttributes();
+	CSL.Util.Names.initNameSlices(this.tmp.name_slice);
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 	lang = this.opt["default-locale"][0];
 	langspec = CSL.localeResolve(lang);
@@ -1719,6 +1732,7 @@ CSL.Engine.Tmp = function () {
 	this.prefix = new CSL.Stack("", CSL.LITERAL);
 	this.suffix = new CSL.Stack("", CSL.LITERAL);
 	this.delimiter = new CSL.Stack("", CSL.LITERAL);
+	this.name_slice = {};
 };
 CSL.Engine.Fun = function () {
 	this.match = new  CSL.Util.Match();
@@ -2377,6 +2391,7 @@ CSL.citeStart = function (Item) {
 	this.citation_sort.keys = [];
 	this.tmp.count_offset_characters = false;
 	this.tmp.offset_characters = 0;
+	CSL.Util.Names.initNameSlices(this.tmp.name_slice);
 };
 CSL.citeEnd = function (Item) {
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/[\-.,;:]$/)) {
@@ -3449,9 +3464,20 @@ CSL.Node.names = {
 					namesets = state.tmp.value;
 				}
 				len = namesets.length;
+				if (namesets.length && state.tmp.area === "bibliography") {
+					if (namesets[0].species === "pers") {
+						namesets[0].names = namesets[0].names.slice(state.tmp.name_slice[namesets[0].variable]);
+						if (namesets[0].names.length === 0) {
+							namesets = namesets.slice(1);
+						}
+					} else {
+						namesets = namesets.slice(state.tmp.name_slice[namesets[0].variable]);
+					}
+				}
+				len = namesets.length;
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
-					if ("organizations" === nameset.species) {
+					if ("org" === nameset.species) {
 						if (state.output.getToken("institution").strings["reverse-order"]) {
 							nameset.names.reverse();
 						}
@@ -3521,6 +3547,9 @@ CSL.Node.names = {
 					}
 					display_names = nameset.names.slice();
 					if ("pers" === nameset.species) {
+						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+							state.tmp.name_slice[nameset.variable] = state.tmp["et-al-use-first"];
+						}
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
 						discretionary_names_length = state.tmp["et-al-min"];
 						suppress_min = state.output.getToken("name").strings["suppress-min"];
@@ -3556,6 +3585,9 @@ CSL.Node.names = {
 						}
 						state.output.formats.value().name.strings.delimiter = and_term;
 					} else {
+						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+							state.tmp.name_slice[nameset.variable] = 1;
+						}
 						use_first = state.output.getToken("institution").strings["use-first"];
 						if (!use_first && namesetIndex === 0) {
 							use_first = state.output.getToken("institution").strings["substitute-use-first"];
@@ -5436,6 +5468,13 @@ CSL.Util.Names.stripRight = function (str) {
 		}
 	}
 	return str.slice(0, end);
+};
+CSL.Util.Names.initNameSlices = function (obj) {
+	var len, pos;
+	len = CSL.NAME_VARIABLES.length;
+	for (pos = 0; pos < len; pos += 1) {
+		obj[CSL.NAME_VARIABLES[pos]] = 0;
+	}
 };
 CSL.Util.Dates = {};
 CSL.Util.Dates.year = {};

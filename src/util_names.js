@@ -340,5 +340,13 @@ CSL.Util.Names.stripRight = function (str) {
 	return str.slice(0, end);
 };
 
+CSL.Util.Names.initNameSlices = function (obj) {
+	var len, pos;
+	len = CSL.NAME_VARIABLES.length;
+	for (pos = 0; pos < len; pos += 1) {
+		obj[CSL.NAME_VARIABLES[pos]] = 0;
+	}
+};
+
 // deleted CSL.Util.Names,rescueNameElements()
 // apparently not used.

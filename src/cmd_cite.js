@@ -617,6 +617,7 @@ CSL.citeStart = function (Item) {
 
 	this.tmp.count_offset_characters = false;
 	this.tmp.offset_characters = 0;
+	CSL.Util.Names.initNameSlices(this.tmp.name_slice);
 };
 
 CSL.citeEnd = function (Item) {

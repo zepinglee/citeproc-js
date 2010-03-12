@@ -232,9 +232,26 @@ CSL.Node.names = {
 					CSL.debug("namesets.length[1]: " + namesets.length);
 				}
 				//SNIP-END
+
+
+				// chop names in first nameset by value in names_slice,
+				// to allow suppression of initially listed author in
+				// subsequent renderings within a cite.  This works a little
+				// differently for personal and institutional authors.
+				if (namesets.length && state.tmp.area === "bibliography") {
+					if (namesets[0].species === "pers") {
+						namesets[0].names = namesets[0].names.slice(state.tmp.name_slice[namesets[0].variable]);
+						if (namesets[0].names.length === 0) {
+							namesets = namesets.slice(1);
+						}
+					} else {
+						namesets = namesets.slice(state.tmp.name_slice[namesets[0].variable]);
+					}
+				}
+				len = namesets.length;
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
-					if ("organizations" === nameset.species) {
+					if ("org" === nameset.species) {
 						if (state.output.getToken("institution").strings["reverse-order"]) {
 							nameset.names.reverse();
 						}
@@ -349,6 +366,12 @@ CSL.Node.names = {
 					display_names = nameset.names.slice();
 
 					if ("pers" === nameset.species) {
+						// set the number of names to be _intended_ for rendering,
+						// in the first nameset, if personal, for subsequent slicing.
+						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+							state.tmp.name_slice[nameset.variable] = state.tmp["et-al-use-first"];
+						}
+
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
 						//
 						// if there is anything on name request, we assume that
@@ -397,9 +420,13 @@ CSL.Node.names = {
 							}
 						}
 						state.output.formats.value().name.strings.delimiter = and_term;
-
 					} else {
 						// org
+						// set the number of names to be _intended_ for rendering,
+						// in the first nameset, if personal, for subsequent slicing.
+						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+							state.tmp.name_slice[nameset.variable] = 1;
+						}
 						use_first = state.output.getToken("institution").strings["use-first"];
 						if (!use_first && namesetIndex === 0) {
 							use_first = state.output.getToken("institution").strings["substitute-use-first"];
