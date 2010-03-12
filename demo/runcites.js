@@ -57,10 +57,31 @@ var insert = function(){
 	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography);
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	citeproc.setAbbreviations("default");
-	output = citeproc.makeBibliography();
+	var books = {
+		"select" : [
+			{
+				"field" : "type",
+				"value" : "book"
+			}
+		]
+	};
+	output = citeproc.makeBibliography(books);
 	if (output && output.length && output[1].length){
 		output = output[0].bibstart + output[1].join("") + output[0].bibend;
-		pointedStickInnerHtml("chicago_fullnote_bibliography",output);
+		pointedStickInnerHtml("chicago_fullnote_bibliography_books",output);
+	}
+	var articles = {
+		"exclude" : [
+			{
+				"field" : "type",
+				"value" : "book"
+			}
+		]
+	};
+	output = citeproc.makeBibliography(articles);
+	if (output && output.length && output[1].length){
+		output = output[0].bibstart + output[1].join("") + output[0].bibend;
+		pointedStickInnerHtml("chicago_fullnote_bibliography_articles",output);
 	}
 
 	citeproc = new CSL.Engine(sys,ieee);

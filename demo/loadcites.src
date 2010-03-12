@@ -78,7 +78,7 @@ var data = {
 	"ITEM-3": {
 		"id": "ITEM-3",
 		"title":"Key Process Conditions for Production of C<sub>4</sub> Dicarboxylic Acids in Bioreactor Batch Cultures of an Engineered <i>Saccharomyces cerevisiae</i> Strain",
-        "note":"This cite illustrates the rich text formatting capabilities in the new processor, as well as page range collapsing (in this case, applying the collapsing method required by the Chicago Manual of Style).  Although this particular cite does not exercise it, we also offer robust handling of name particles, such as \"van\" and \"de\" in the author names above.",
+        "note":"This cite illustrates the rich text formatting capabilities in the new processor, as well as page range collapsing (in this case, applying the collapsing method required by the Chicago Manual of Style).  Also, as the IEEE example above partially illustrates, we also offer robust handling of particles such as \"van\" and \"de\" in author names.",
 		"author": [
 			{
 				"family": "Zelle",
