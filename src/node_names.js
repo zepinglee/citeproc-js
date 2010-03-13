@@ -144,9 +144,42 @@ CSL.Node.names = {
 								tnamesets[0].organization_first = true;
 								tnamesets.slice(-1)[0].organization_last = true;
 								if (frontnames.length) {
+									// the free agent wrapper can be used to
+									// lift out trailing names as well as  for
+									// the "with" join
 									frontnames[0].free_agent_start = true;
 									tnamesets.slice(-1)[0].free_agent_end = true;
 								}
+							}
+							if (frontnames.length == 0) {
+								if (tnamesets.length > 1){
+									if (tnamesets[0].species === "pers") {
+										//pers
+										// inside inner
+										tnamesets[1].trailers1_start = true;
+										if (tnamesets.length === 2) {
+											// close at the end
+											tnamesets[1].trailers1a_end = true;
+										} else {
+											// close at the flip
+											tnamesets[1].trailers1b_end = true;
+										}
+										if (tnamesets.length > 2) {
+											// outside inner, at pos 2 and at end
+											tnamesets[2].trailers2_start = true;
+											tnamesets.slice(-1)[0].trailers2_end = true;
+										}
+									} else {
+										//org
+										// outside inner, pos 1 and at end
+										tnamesets[1].trailers2_start = true;
+										tnamesets.slice(-1)[0].trailers2_end = true;
+									}
+								}
+							} else {
+								// outside with-group
+								tnamesets[0].trailers3_start = true;
+								tnamesets.slice(-1)[0].trailers3_end = true;
 							}
 							tnamesets = frontnames.concat(tnamesets);
 							namesets = namesets.concat(tnamesets);
@@ -219,7 +252,7 @@ CSL.Node.names = {
 
 			// handle names
 			func = function (state, Item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, oldcurr;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -238,29 +271,39 @@ CSL.Node.names = {
 				//SNIP-END
 
 
+
 				// chop names in first nameset by value in names_slice,
-				// to allow suppression of initially listed author in
+				// suppress the initially listed author in
 				// subsequent renderings within a cite.  This works a little
 				// differently for personal and institutional authors.
 				if (namesets.length && state.tmp.area === "bibliography") {
+					// save off the varname for safekeeping
+					cut_var = namesets[0].variable;
+					cutinfo = state.tmp.names_cut;
 					if (namesets[0].species === "pers") {
-						namesets[0].names = namesets[0].names.slice(state.tmp.name_slice[namesets[0].variable]);
+						namesets[0].names = namesets[0].names.slice(cutinfo.counts[cut_var]);
 						if (namesets[0].names.length === 0) {
 							if (namesets[0].free_agent_start) {
 								namesets[1].free_agent_start = true;
 							}
+							if (namesets[0].organization_first) {
+								namesets[1].organization_first = true;
+							}
 							namesets = namesets.slice(1);
 						}
 					} else {
-						namesets = namesets.slice(state.tmp.name_slice[namesets[0].variable]);
+						namesets = namesets.slice(1);
 					}
 					// should always be true, but just in case
 					// this slices off subsequent namesets in the initial name
 					// rendered, when the same name is rendered a second time.
 					// Useful for robust per-author listings.
-					oldcurr = state.bibliography.opt.trailing_names;
-					if (oldcurr) {
-						oldcurr[0].blobs = oldcurr[0].blobs.slice(0,oldcurr[1]).concat(oldcurr[0].blobs.slice(oldcurr[1] + 1));
+					if (cutinfo.used === cut_var) {
+						llen = cutinfo.variable[cut_var].length - 1;
+						for (ppos = llen; ppos > -1; ppos += -1) {
+							obj = cutinfo.variable[cut_var][ppos];
+							obj[0].blobs = obj[0].blobs.slice(0, obj[1]).concat(obj[0].blobs.slice(obj[1] + 1));
+						}
 					}
 				}
 				len = namesets.length;
@@ -298,6 +341,8 @@ CSL.Node.names = {
 
 				state.output.addToken("with-group");
 				state.output.getToken("with-group").strings.delimiter = " ";
+
+				state.output.addToken("trailing-names");
 
 				outer_and_term = " " + state.output.getToken("name").strings.and + " ";
 				state.output.addToken("institution-outer", outer_and_term);
@@ -391,7 +436,7 @@ CSL.Node.names = {
 						// set the number of names to be _intended_ for rendering,
 						// in the first nameset, if personal, for subsequent slicing.
 						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
-							state.tmp.name_slice[nameset.variable] = state.tmp["et-al-use-first"];
+							state.tmp.names_cut.counts[nameset.variable] = state.tmp["et-al-use-first"];
 						}
 
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
@@ -447,7 +492,7 @@ CSL.Node.names = {
 						// set the number of names to be _intended_ for rendering,
 						// in the first nameset, if personal, for subsequent slicing.
 						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
-							state.tmp.name_slice[nameset.variable] = 1;
+							state.tmp.names_cut.counts[nameset.variable] = 1;
 						}
 						use_first = state.output.getToken("institution").strings["use-first"];
 						if (!use_first && namesetIndex === 0) {
@@ -563,6 +608,7 @@ CSL.Node.names = {
 					//   pers_org_end (finalizes pers-org join)
 					//
 
+
 					if (namesetIndex > 0 && nameset.variable !== last_variable) {
 						//SNIP-START
 						if (debug) {
@@ -570,6 +616,8 @@ CSL.Node.names = {
 						}
 						//SNIP-END
 						state.output.closeLevel("term-join");
+					}
+					if (namesetIndex > 0 && nameset.variable !== last_variable) {
 						state.output.openLevel("term-join");
 					}
 
@@ -577,13 +625,16 @@ CSL.Node.names = {
 						state.output.openLevel("with-join");
 					}
 
+					if (nameset.trailers3_start) {
+						state.output.openLevel("trailing-names",cut_var);
+					}
 					if (nameset.after_people) {
 						//SNIP-START
 						if (debug) {
 							CSL.debug("-- reached 'after_people'");
 						}
 						//SNIP-END
-						state.output.openLevel("with-group",CSL.MARK_TRAILING_NAMES);
+						state.output.openLevel("with-group");
 						state.output.append("with", "empty");
 					}
 
@@ -594,7 +645,15 @@ CSL.Node.names = {
 						}
 						//SNIP-END
 						state.output.openLevel("institution-outer");
+					}
+					if (nameset.trailers2_start) {
+						state.output.openLevel("trailing-names",cut_var);
+					}
+					if (nameset.organization_first) {
 						state.output.openLevel("inner");
+					}
+					if (nameset.trailers1_start) {
+						state.output.openLevel("trailing-names",cut_var);
 					}
 
 					//if (nameset.pers_org_start) {
@@ -627,7 +686,13 @@ CSL.Node.names = {
 								CSL.debug("-- reached 'organization_last'");
 							}
 							//SNIP-END
+							if (nameset.trailers1a_end) {
+								state.output.closeLevel("trailing-names");
+							}
 							state.output.closeLevel("inner");
+							if (nameset.trailers2_end) {
+								state.output.closeLevel("trailing-names");
+							}
 							state.output.closeLevel("institution-outer");
 						} else {
 							//SNIP-START
@@ -635,6 +700,9 @@ CSL.Node.names = {
 								CSL.debug("-- reached 'organization_NOT_last'");
 							}
 							//SNIP-END
+							if (nameset.trailers1b_end) {
+								state.output.closeLevel("trailing-names");
+							}
 							state.output.closeLevel("inner");
 							state.output.openLevel("inner");
 						}
@@ -650,6 +718,11 @@ CSL.Node.names = {
 
 					if (nameset.free_agent_end) {
 						state.output.closeLevel("with-group");
+					}
+					if (nameset.trailers3_end) {
+						state.output.closeLevel("trailing-names");
+					}
+					if (nameset.free_agent_end) {
 						state.output.closeLevel("with-join");
 					}
 

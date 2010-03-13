@@ -340,11 +340,15 @@ CSL.Util.Names.stripRight = function (str) {
 	return str.slice(0, end);
 };
 
-CSL.Util.Names.initNameSlices = function (obj) {
+CSL.Util.Names.initNameSlices = function (state) {
 	var len, pos;
+	state.tmp.names_cut = {
+		counts: [],
+		variable: {}
+	};
 	len = CSL.NAME_VARIABLES.length;
 	for (pos = 0; pos < len; pos += 1) {
-		obj[CSL.NAME_VARIABLES[pos]] = 0;
+		state.tmp.names_cut.counts[CSL.NAME_VARIABLES[pos]] = 0;
 	}
 };
 

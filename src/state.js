@@ -187,7 +187,7 @@ CSL.Engine.Tmp = function () {
 	// and the closing token.
 	this.delimiter = new CSL.Stack("", CSL.LITERAL);
 	//
-	this.name_slice = {};
+	this.names_cut = {};
 };
 
 
@@ -316,9 +316,7 @@ CSL.Engine.Citation = function (state) {
 
 
 CSL.Engine.Bibliography = function () {
-	this.opt = {
-		trailing_names: false
-	};
+	this.opt = {};
 	this.tokens = [];
 
 	this.opt.collapse = [];

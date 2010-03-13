@@ -27,6 +27,7 @@ dojo.require("std.number");
 dojo.require("std.plural");
 dojo.require("std.integration");
 dojo.require("std.api");
+dojo.require("std.citeprocjs");
 dojo.require("std.abbrevs");
 dojo.require("std.institutions");
 dojo.require("std.discretionary");

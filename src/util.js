@@ -58,7 +58,7 @@ CSL.Util.Match = function () {
 				reslist = [reslist];
 			}
 			llen = reslist.length;
-			for (ppos = 0; ppos < len; ppos += 1) {
+			for (ppos = 0; ppos < llen; ppos += 1) {
 				if (reslist[ppos]) {
 					ret = true;
 					break;

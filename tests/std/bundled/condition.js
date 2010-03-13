@@ -59,6 +59,10 @@ doh.register("std.condition", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("condition_FirstNullAny");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("condition_EmptyDate");
         doh.assertEqual(test.result, test.run());
     }, 

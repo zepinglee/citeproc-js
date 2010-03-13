@@ -58,6 +58,7 @@ var CSL = {
 	POSITION_SUBSEQUENT: 1,
 	POSITION_IBID: 2,
 	POSITION_IBID_WITH_LOCATOR: 3,
+	MARK_TRAILING_NAMES: true,
 	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 	ABBREVIATE_FIELDS: ["journal", "series", "institution", "authority"],
@@ -115,6 +116,18 @@ var CSL = {
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
+	NAME_VARIABLES: [
+		"author",
+		"editor",
+		"translator",
+		"collection-editor",
+		"composer",
+		"container-author",
+		"editorial-director",
+		"interviewer",
+		"original-author",
+		"recipient"
+	],
 	NUMERIC_VARIABLES: ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"],
 	DATE_VARIABLES: ["issued", "event", "accessed", "container", "original-date"],
 	TAG_ESCAPE: function (str) {
@@ -317,8 +330,8 @@ CSL.Output.Queue.prototype.endTag = function () {
 	this.closeLevel();
 	this.popFormats();
 };
-CSL.Output.Queue.prototype.openLevel = function (token) {
-	var blob, curr;
+CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
+	var blob, curr, x, has_ephemeral;
 	this.levelname.push(token);
 	if (!this.formats.value()[token]) {
 		throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
@@ -331,6 +344,17 @@ CSL.Output.Queue.prototype.openLevel = function (token) {
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
 	curr = this.current.value();
+	has_ephemeral = false;
+	for (x in this.state.bibliography.opt.trailing_names) {
+		has_ephemeral = x;
+		break;
+	}
+	if (ephemeral && ephemeral === has_ephemeral) {
+		if (!this.state.bibliography.opt.trailing_names[ephemeral]){
+			this.state.bibliography.opt.trailing_names[ephemeral] = [];
+		}
+		this.state.bibliography.opt.trailing_names[ephemeral].push([curr, curr.blobs.length]);
+	}
 	curr.push(blob);
 	this.current.push(blob);
 };
@@ -1203,6 +1227,7 @@ CSL.Engine = function (sys, style, lang) {
 	}
 	this.opt["initialize-with-hyphen"] = true;
 	this.setStyleAttributes();
+	CSL.Util.Names.initNameSlices(this.tmp.name_slice);
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 	lang = this.opt["default-locale"][0];
 	langspec = CSL.localeResolve(lang);
@@ -1719,6 +1744,7 @@ CSL.Engine.Tmp = function () {
 	this.prefix = new CSL.Stack("", CSL.LITERAL);
 	this.suffix = new CSL.Stack("", CSL.LITERAL);
 	this.delimiter = new CSL.Stack("", CSL.LITERAL);
+	this.name_slice = {};
 };
 CSL.Engine.Fun = function () {
 	this.match = new  CSL.Util.Match();
@@ -1761,7 +1787,9 @@ CSL.Engine.Citation = function (state) {
 	this.opt.topdecor = [];
 };
 CSL.Engine.Bibliography = function () {
-	this.opt = {};
+	this.opt = {
+		trailing_names: {}
+	};
 	this.tokens = [];
 	this.opt.collapse = [];
 	this.opt["disambiguate-add-names"] = false;
@@ -2377,6 +2405,7 @@ CSL.citeStart = function (Item) {
 	this.citation_sort.keys = [];
 	this.tmp.count_offset_characters = false;
 	this.tmp.offset_characters = 0;
+	CSL.Util.Names.initNameSlices(this.tmp.name_slice);
 };
 CSL.citeEnd = function (Item) {
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/[\-.,;:]$/)) {
@@ -3397,6 +3426,29 @@ CSL.Node.names = {
 							if (tnamesets.length > 0 && tnamesets.slice(-1)[0].species === "org" && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
 								tnamesets[0].organization_first = true;
 								tnamesets.slice(-1)[0].organization_last = true;
+								if (frontnames.length) {
+									frontnames[0].free_agent_start = true;
+									tnamesets.slice(-1)[0].free_agent_end = true;
+								}
+							}
+							if (frontnames.length == 0){
+								if (tnamesets.length === 2) {
+									tnamesets[1].trailers1_start = true;
+									tnamesets[1].trailers1_end = true;
+								} else if (tnamesets.length > 2) {
+									if (tnamesets[0].species === "pers") {
+										tnamesets[1].trailers1_start = true;
+										tnamesets[1].trailers1_end = true;
+										tnamesets[1].trailers2_start = true;
+										tnamesets.slice(-1)[0].trailers2_end = true;
+									} else {
+										tnamesets[1].trailers2_start = true;
+										tnamesets.slice(-1)[0].trailers2_end = true;
+									}
+								}
+							} else {
+								tnamesets[0].trailers3_start = true;
+								tnamesets.slice(-1)[0].trailers3_end = true;
 							}
 							tnamesets = frontnames.concat(tnamesets);
 							namesets = namesets.concat(tnamesets);
@@ -3440,7 +3492,7 @@ CSL.Node.names = {
 				}
 			}
 			func = function (state, Item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, oldcurr;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -3449,9 +3501,26 @@ CSL.Node.names = {
 					namesets = state.tmp.value;
 				}
 				len = namesets.length;
+				if (namesets.length && state.tmp.area === "bibliography") {
+					if (namesets[0].species === "pers") {
+						namesets[0].names = namesets[0].names.slice(state.tmp.name_slice[namesets[0].variable]);
+						if (namesets[0].names.length === 0) {
+							if (namesets[0].free_agent_start) {
+								namesets[1].free_agent_start = true;
+							}
+							if (namesets[0].organization_first) {
+								namesets[1].organization_first = true;
+							}
+							namesets = namesets.slice(1);
+						}
+					} else {
+						namesets = namesets.slice(state.tmp.name_slice[namesets[0].variable]);
+					}
+				}
+				len = namesets.length;
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
-					if ("organizations" === nameset.species) {
+					if ("org" === nameset.species) {
 						if (state.output.getToken("institution").strings["reverse-order"]) {
 							nameset.names.reverse();
 						}
@@ -3470,7 +3539,10 @@ CSL.Node.names = {
 				state.output.addToken("space", " ");
 				state.output.addToken("sortsep", state.output.getToken("name").strings["sort-separator"]);
 				state.output.addToken("with-join");
-				state.output.getToken("with-join").strings.delimiter = ", with ";
+				state.output.getToken("with-join").strings.delimiter = ", ";
+				state.output.addToken("with-group");
+				state.output.getToken("with-group").strings.delimiter = " ";
+				state.output.addToken("trailing-names");
 				outer_and_term = " " + state.output.getToken("name").strings.and + " ";
 				state.output.addToken("institution-outer", outer_and_term);
 				if (!state.output.getToken("etal")) {
@@ -3521,6 +3593,9 @@ CSL.Node.names = {
 					}
 					display_names = nameset.names.slice();
 					if ("pers" === nameset.species) {
+						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+							state.tmp.name_slice[nameset.variable] = state.tmp["et-al-use-first"];
+						}
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
 						discretionary_names_length = state.tmp["et-al-min"];
 						suppress_min = state.output.getToken("name").strings["suppress-min"];
@@ -3556,6 +3631,9 @@ CSL.Node.names = {
 						}
 						state.output.formats.value().name.strings.delimiter = and_term;
 					} else {
+						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+							state.tmp.name_slice[nameset.variable] = 1;
+						}
 						use_first = state.output.getToken("institution").strings["use-first"];
 						if (!use_first && namesetIndex === 0) {
 							use_first = state.output.getToken("institution").strings["substitute-use-first"];
@@ -3625,10 +3703,22 @@ CSL.Node.names = {
 					}
 					if (namesetIndex > 0 && nameset.variable !== last_variable) {
 						state.output.closeLevel("term-join");
+					}
+					if (namesetIndex > 0 && nameset.variable !== last_variable) {
 						state.output.openLevel("term-join");
 					}
+					if (nameset.free_agent_start) {
+						state.output.openLevel("with-join");
+					}
+					if (nameset.trailers3_start) {
+						state.output.openLevel("trailing-names");
+					}
 					if (nameset.after_people) {
-						state.output.append(", with ", "empty");
+						state.output.openLevel("with-group");
+						state.output.append("with", "empty");
+					}
+					if (nameset.trailers2_start) {
+						state.output.openLevel("trailing-names");
 					}
 					if (nameset.organization_first) {
 						state.output.openLevel("institution-outer");
@@ -3646,10 +3736,20 @@ CSL.Node.names = {
 						if (nameset.organization_last) {
 							state.output.closeLevel("inner");
 							state.output.closeLevel("institution-outer");
+							if (nameset.trailers2_end) {
+								state.output.closeLevel("trailing-names");
+							}
 						} else {
 							state.output.closeLevel("inner");
 							state.output.openLevel("inner");
 						}
+					}
+					if (nameset.free_agent_end) {
+						state.output.closeLevel("with-group");
+						if (nameset.trailers3_end) {
+							state.output.closeLevel("trailing-names");
+						}
+						state.output.closeLevel("with-join");
 					}
 					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
 						if (label && state.tmp.name_label_position !== CSL.BEFORE) {
@@ -5047,7 +5147,7 @@ CSL.Util.Match = function () {
 				reslist = [reslist];
 			}
 			llen = reslist.length;
-			for (ppos = 0; ppos < len; ppos += 1) {
+			for (ppos = 0; ppos < llen; ppos += 1) {
 				if (reslist[ppos]) {
 					ret = true;
 					break;
@@ -5436,6 +5536,13 @@ CSL.Util.Names.stripRight = function (str) {
 		}
 	}
 	return str.slice(0, end);
+};
+CSL.Util.Names.initNameSlices = function (obj) {
+	var len, pos;
+	len = CSL.NAME_VARIABLES.length;
+	for (pos = 0; pos < len; pos += 1) {
+		obj[CSL.NAME_VARIABLES[pos]] = 0;
+	}
 };
 CSL.Util.Dates = {};
 CSL.Util.Dates.year = {};

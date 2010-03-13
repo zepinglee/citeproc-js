@@ -397,7 +397,7 @@ class CslTest:
 
     def fix_dates(self):
         for pos in range(0, len(self.data["input"]),1):
-            for k in ["issued", "event", "accessed", "container", "original-date"]:
+            for k in ["issued", "event-date", "accessed", "container", "original-date"]:
                 if self.data["input"][pos].has_key(k):
                     newdate = []
                     if not self.data["input"][pos][k].has_key("date-parts"):

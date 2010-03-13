@@ -137,8 +137,8 @@ CSL.Output.Queue.prototype.endTag = function () {
 // list, and adjusts the current pointer so that subsequent
 // appends are made to blob list of the new object.
 
-CSL.Output.Queue.prototype.openLevel = function (token,saveme) {
-	var blob, curr;
+CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
+	var blob, curr, x, has_ephemeral;
 	this.levelname.push(token);
 	//CSL.debug("openLevel");
 	if (!this.formats.value()[token]) {
@@ -155,8 +155,18 @@ CSL.Output.Queue.prototype.openLevel = function (token,saveme) {
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
 	curr = this.current.value();
-	if (saveme) {
-		this.state.bibliography.opt.trailing_names = [curr, curr.blobs.length];
+	has_ephemeral = false;
+	for (x in this.state.tmp.names_cut.variable) {
+		has_ephemeral = x;
+		break;
+	}
+	// can only do this for one variable
+	if (ephemeral && (!has_ephemeral || ephemeral === has_ephemeral)) {
+		if (!this.state.tmp.names_cut.variable[ephemeral]){
+			this.state.tmp.names_cut.variable[ephemeral] = [];
+			this.state.tmp.names_cut.used = ephemeral;
+		}
+		this.state.tmp.names_cut.variable[ephemeral].push([curr, curr.blobs.length]);
 	}
 	curr.push(blob);
 	this.current.push(blob);

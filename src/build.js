@@ -122,7 +122,7 @@ CSL.Engine = function (sys, style, lang) {
 
 	this.setStyleAttributes();
 
-	CSL.Util.Names.initNameSlices(this.tmp.name_slice);
+	CSL.Util.Names.initNameSlices(this);
 
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 
