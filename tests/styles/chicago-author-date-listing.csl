@@ -19,6 +19,7 @@
   <locale>
     <terms>
 	  <term name="and others"></term>
+      <term name="contributor"></term>
 	</terms>
   </locale>
   <macro name="secondary-contributors">
@@ -118,12 +119,18 @@
     <text macro="anon" />
     <text macro="recipient" />
   </macro>
-  <macro name="contributor">
-    <names variable="author">
-      <name and="text" delimiter=", " delimiter-precedes-last="always" name-as-sort-order="first" sort-separator=", "  et-al-use-first="1" et-al-min="2"/>
-      <et-al term="and others"/>
+  <macro name="headline-contributor">
+    <names variable="contributor">
+      <name and="text" delimiter=", " 
+			delimiter-precedes-last="always" 
+			name-as-sort-order="first" 
+			sort-separator=", "  
+			et-al-use-first="1" 
+			et-al-min="2"/>
+	  <et-al term="and others"/>
       <label form="verb-short" prefix=", " suffix="." text-case="lowercase" />
       <substitute>
+		<names variable="author"/>
         <text macro="editor" />
         <text macro="translator" />
       </substitute>
@@ -364,12 +371,16 @@
          et-al-use-first="7"
          hanging-indent="true"
          subsequent-author-substitute="">
-    <sort>
-      <key macro="contributors" />
-      <key variable="issued" />
-    </sort>
+	<sort>
+	  <key macro="headline-contributor" 
+		   names-min="1" 
+		   names-use-first="1" 
+		   sort="ascending"/>
+	  <key variable="issued"
+		   sort="descending"/>
+	</sort>
     <layout>
-      <text macro="contributor" display="block"/>
+      <text macro="headline-contributor" display="block"/>
       <group display="left-margin">
         <text macro="date" />
 	  </group>
@@ -389,7 +400,14 @@
           <text macro="access" prefix=". " />
 		</group>
         <group prefix=" (" suffix=")" delimiter=" ">
-          <text prefix="co-authorship: " macro="contributors"/>
+		  <choose>
+			<if variable="contributor">
+			  <text prefix="contributor among: " macro="contributors"/>
+			</if>
+			<else>
+			  <text prefix="co-authorship: " macro="contributors"/>
+			</else>
+		  </choose>
 	    </group>
 	  </group>
     </layout>

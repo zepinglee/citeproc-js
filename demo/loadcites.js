@@ -269,6 +269,50 @@ var data = {
 		},
 		"type": "article-journal"
 
+	},
+	"ITEM-9": {
+		"id": "ITEM-9",
+		"container-title": "FEMS Yeast Research",
+		"volume": "9",
+		"issue": "8",
+		"page": "1123-1136",
+		"title": "Metabolic engineering of <i>Saccharomyces cerevisiae</i> for production of carboxylic acids: current status and challenges",
+		"contributor":[
+			{
+				"family": "Zelle",
+				"given": "Rintze M."
+			}
+		],
+		"author": [
+			{
+				"family": "Abbott",
+				"given": "Derek A."
+			},
+			{
+				"family": "Zelle",
+				"given": "Rintze M."
+			},
+			{
+				"family":"Pronk",
+				"given":"Jack T."
+			},
+			{
+				"family": "Maris",
+				"given":"Antonius J.A.",
+				"dropping-particle":"van"
+			}
+		],
+		"issued": {
+			"season": "2",
+			"date-parts": [
+				[
+					2009,
+					6,
+					6
+				]
+			]
+		},
+		"type": "article-journal"
 	}
 
 };
