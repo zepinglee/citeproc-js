@@ -226,6 +226,49 @@ var data = {
 			]
 		},
 		"type": "book"
-	}
-};
+	},
+	"ITEM-7": {
+		"id": "ITEM-7",
+		"title": "True Crime Radio and Listener Disenchantment with Network Broadcasting, 1935-1946",
+		"author":[
+			{
+				"family": "Razlogova",
+				"given": "Elena"
+			}
+		],
+		"container-title": "American Quarterly",
+		"volume": "58",
+		"page": "137-158",
+		"issued": {
+			"date-parts": [
+				[2006, 3]
+			]
+		},
+		"type": "article-journal"
+	},
+	"ITEM-8": {
+		"id": "ITEM-8",
+		"title": "The Guantanamobile Project",
+		"container-title": "Vectors",
+		"volume": "1",
+		"author":[
+			{
+				"family": "Razlogova",
+				"given": "Elena"
+			},
+			{
+				"family": "Lynch",
+				"given": "Lisa"
+			}
+		],
+		"issued": {
+			"season": "2",
+			"date-parts": [
+				[2005]
+			]
+		},
+		"type": "article-journal"
 
+	}
+
+};

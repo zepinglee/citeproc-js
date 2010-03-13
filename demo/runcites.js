@@ -84,6 +84,15 @@ var insert = function(){
 		pointedStickInnerHtml("chicago_fullnote_bibliography_articles",output);
 	}
 
+	citeproc = new CSL.Engine(sys,chicago_author_date_listing);
+	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6", "ITEM-7", "ITEM-8"]);
+	citeproc.setAbbreviations("default");
+	output = citeproc.makeBibliography();
+	if (output && output.length && output[1].length){
+		output = output[0].bibstart + output[1].join("") + output[0].bibend;
+		pointedStickInnerHtml("chicago_author_date_listing",output);
+	}
+
 	citeproc = new CSL.Engine(sys,ieee);
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	citeproc.setAbbreviations("slightly_weird");
