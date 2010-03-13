@@ -4,7 +4,7 @@ citation
 
 
 >>===== RESULT =====>>
-1998년 4월 10일 
+1998년 4월 10일
 1998년 4월
 1998년
 1998/04/10
@@ -25,9 +25,9 @@ citation
   </info>
   <locale>
     <date form="text">
-      <date-part name="year" suffix="&#45380; "/>
-      <date-part name="month" form="numeric" suffix="&#50900; "/>
-      <date-part name="day" suffix="&#51068;"/>
+      <date-part name="year" suffix="&#45380;"/>
+      <date-part name="month" form="numeric" prefix=" " suffix="&#50900;"/>
+      <date-part name="day" prefix=" " suffix="&#51068;"/>
     </date>
     <date form="numeric">
       <date-part name="year"/>
