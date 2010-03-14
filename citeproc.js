@@ -2718,6 +2718,7 @@ CSL.Node["date-part"] = {
 				if (state.tmp.date_object.season) {
 					value = "" + state.tmp.date_object.season;
 					if (value && value.match(/^[1-4]$/)) {
+						state.tmp.term_sibling.replace([false, false, true]);
 						state.output.append(state.getTerm(("season-0" + value)), this);
 					} else if (value) {
 						state.output.append(value, this);

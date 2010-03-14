@@ -262,7 +262,7 @@ var data = {
 			}
 		],
 		"issued": {
-			"season": "2",
+			"season": 3,
 			"date-parts": [
 				[2005]
 			]
