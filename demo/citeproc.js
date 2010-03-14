@@ -120,6 +120,7 @@ var CSL = {
 		"author",
 		"editor",
 		"translator",
+		"contributor",
 		"collection-editor",
 		"composer",
 		"container-author",

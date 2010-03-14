@@ -120,6 +120,7 @@ var CSL = {
 		"author",
 		"editor",
 		"translator",
+		"contributor",
 		"collection-editor",
 		"composer",
 		"container-author",
@@ -200,6 +201,7 @@ var CSL = {
 	CREATORS: [
 		"author",
 		"editor",
+		"contributor",
 		"translator",
 		"recipient",
 		"interviewer",

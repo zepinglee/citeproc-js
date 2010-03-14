@@ -1,7 +1,8 @@
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="in-text"
-      version="1.0">
+      version="1.0"
+	  default-locale="en-US-x-sort-ja-alalc97">
   <info>
     <title>Chicago Manual of Style (Author-Date format)</title>
     <id>http://www.zotero.org/styles/chicago-author-date</id>
@@ -129,8 +130,19 @@
 			et-al-min="2"/>
 	  <et-al term="and others"/>
       <label form="verb-short" prefix=", " suffix="." text-case="lowercase" />
+    </names>
+  </macro>
+  <macro name="headline-author">
+    <names variable="author">
+      <name and="text" delimiter=", " 
+			delimiter-precedes-last="always" 
+			name-as-sort-order="first" 
+			sort-separator=", "  
+			et-al-use-first="1" 
+			et-al-min="2"/>
+	  <et-al term="and others"/>
+      <label form="verb-short" prefix=", " suffix="." text-case="lowercase" />
       <substitute>
-		<names variable="author"/>
         <text macro="editor" />
         <text macro="translator" />
       </substitute>
@@ -347,6 +359,16 @@
       </else>
     </choose>
   </macro>
+  <macro name="headline">
+	<choose>
+	  <if variable="contributor">
+		<text macro="headline-contributor"/>
+	  </if>
+	  <else>
+		<text macro="headline-author"/>
+	  </else>
+	</choose>
+  </macro>
   <citation 
          disambiguate-add-givenname="true"
          disambiguate-add-names="true"
@@ -372,7 +394,7 @@
          hanging-indent="true"
          subsequent-author-substitute="">
 	<sort>
-	  <key macro="headline-contributor" 
+	  <key macro="headline" 
 		   names-min="1" 
 		   names-use-first="1" 
 		   sort="ascending"/>
@@ -380,7 +402,7 @@
 		   sort="descending"/>
 	</sort>
     <layout>
-      <text macro="headline-contributor" display="block"/>
+      <text macro="headline" display="block"/>        
       <group display="left-margin">
         <text macro="date" />
 	  </group>
@@ -400,12 +422,12 @@
           <text macro="access" prefix=". " />
 		</group>
         <group prefix=" (" suffix=")" delimiter=" ">
-		  <choose>
-			<if variable="contributor">
-			  <text prefix="contributor among: " macro="contributors"/>
+          <choose>
+            <if variable="contributor">
+              <text prefix="co-author among: " macro="contributors"/>
 			</if>
-			<else>
-			  <text prefix="co-authorship: " macro="contributors"/>
+            <else>
+  		      <text prefix="co-authorship: " macro="contributors"/>
 			</else>
 		  </choose>
 	    </group>
