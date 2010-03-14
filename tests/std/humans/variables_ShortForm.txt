@@ -45,6 +45,18 @@ Journal of Irreproducible Results
 J. Irrep. Res.
 <<===== RESULT =====<<
 
+>>== ABBREVIATIONS ==>>
+{
+    "default": {
+        "journal": {
+            "Journal of Irreproducible Results": "J. Irrep. Res."
+        }
+    }
+}
+<<== ABBREVIATIONS ==<<
+
+
+
 >>===== CITATION-ITEMS =====>>
 [
     [

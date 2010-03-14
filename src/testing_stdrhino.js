@@ -37,19 +37,10 @@ var StdRhinoTest = function(myname,custom){
 	this.myname = myname;
 	this._cache = {};
 	this._acache = { "default": {
-						 "journal":{
-							 "Journal of Irreproducible Results":"J. Irrep. Res."
-						 },
-						 "series":{
-							 "International Rescue Wildlife Series":"I.R. Wildlife Series"
-						 },
-						 "authority":{
-							 "United Nations": "U.N."
-						 },
-						 "institution":{
-							 "Bureau of Gaseous Unformed Stuff":"BoGUS",
-							 "Economic Commission for Latin America and the Carribean":"ECLAC"
-						 }
+						 "journal":{},
+						 "series":{},
+						 "authority":{},
+						 "institution":{}
 					 }
 				   };
 	this._ids = [];
@@ -79,8 +70,8 @@ StdRhinoTest.prototype.getAbbreviations = function(name,vartype){
 	return this._acache[name][vartype];
 };
 
-StdRhinoTest.prototype.addAbbreviation = function(name,vartype){
-	this._acache[name][vartype] = "";
+StdRhinoTest.prototype.addAbbreviation = function(name,vartype,key,val){
+	this._acache[name][vartype][key] = val;
 };
 
 //
@@ -122,11 +113,21 @@ StdRhinoTest.prototype._readTest = function(){
 
 StdRhinoTest.prototype.run = function(){
 	// print(this.myname);
-	var ret = new Array();
+	var len, pos, ret, id_set, nick;
+	ret = new Array();
 	this.style = new CSL.Engine(this,this.test.csl);
 	this.style.setAbbreviations("default");
+	if (this.test.abbreviations) {
+		for (nick in this.test.abbreviations) {
+			for (field in this.test.abbreviations[nick]) {
+				for (key in this.test.abbreviations[nick][field]) {
+					this.addAbbreviation(nick,field,key,this.test.abbreviations[nick][field][key]);
+				}
+			}
+		}
+	}
 	if (this.test.bibentries){
-		for each (var id_set in this.test.bibentries){
+		for each (id_set in this.test.bibentries){
 			this.style.updateItems(id_set);
 		}
 	} else {

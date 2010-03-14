@@ -38,10 +38,19 @@ citation
 <<== MODE ==<<
 
 
+>>== ABBREVIATIONS ==>>
+{
+    "default": {
+        "journal": {
+            "Journal of Irreproducible Results": "J. Irrep. Res."
+        }
+    }
+}
+<<== ABBREVIATIONS ==<<
 
 
 >>== RESULT ==>>
-Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
+J. Irrep. Res.
 <<== RESULT ==<<
 
 >>===== CSL =====>>
@@ -56,16 +65,7 @@ Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
   </info>
   <citation>
     <layout suffix=".">
-      <names variable="author" suffix=", ">
-        <name form="short" sort-separator=" " name-as-sort-order="first"/>
-      </names>
-      <text variable="title" font-style="italic" suffix=", "/>
-      <number variable="volume" suffix=" "/>
       <text variable="container-title" form="short"/>
-      <text variable="page-first" prefix=" "/>
-      <date variable="issued" prefix=" (" suffix=")">
-        <date-part name="year"/>
-      </date>
     </layout>
   </citation>
 </style>
@@ -75,27 +75,10 @@ Doe, <i>Mango Chutney Souffle</i>, 10 J. Irrep. Res. 235 (1988).
 >>===== INPUT =====>>
 [
     {
-        "author": [
-            {
-                "family": "Doe", 
-                "given": "John", 
-                "static-ordering": false
-            }
-        ], 
         "container-title": "Journal of Irreproducible Results", 
         "id": "ITEM-1", 
-        "issued": {
-            "date-parts": [
-                [
-                    "1988"
-                ]
-            ]
-        }, 
         "journalAbbreviation": "JIR", 
-        "page": "235", 
-        "title": "Mango Chutney Souffle", 
-        "type": "article-journal", 
-        "volume": "10"
+        "type": "article-journal"
     }
 ]
 <<===== INPUT =====<<

@@ -361,6 +361,7 @@ class CslTest:
         self.extract("CITATIONS",required=False,is_json=True)
         self.extract("BIBENTRIES",required=False,is_json=True)
         self.extract("BIBSECTION",required=False,is_json=True)
+        self.extract("ABBREVIATIONS",required=False,is_json=True)
 
     def extract(self,tag,required=False,is_json=False,rstrip=False):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
@@ -392,6 +393,10 @@ class CslTest:
             citations_str = json.dumps(self.data["citations"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("CITATIONS", "CITATIONS"),self.raw)
             newraw = m.group(1) + "\n" + citations_str + m.group(3)
+        if self.data["abbreviations"]:
+            abbreviations_str = json.dumps(self.data["abbreviations"],indent=4,sort_keys=True,ensure_ascii=False)
+            m = re.match(self.RE_ELEMENT % ("ABBREVIATIONS", "ABBREVIATIONS"),self.raw)
+            newraw = m.group(1) + "\n" + abbreviations_str + m.group(3)
         if self.raw != newraw:
             open(self.hp,"w+").write(newraw)
 

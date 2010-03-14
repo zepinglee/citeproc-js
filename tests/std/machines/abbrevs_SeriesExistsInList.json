@@ -33,33 +33,25 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 {
+    "abbreviations": {
+        "default": {
+            "series": {
+                "International Rescue Wildlife Series": "I.R. Wildlife Series"
+            }
+        }
+    }, 
     "bibentries": false, 
     "bibsection": false, 
     "citation_items": false, 
     "citations": false, 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"note\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout suffix=\".\">\n      <names variable=\"author\" suffix=\", \">\n        <name form=\"short\"/>\n      </names>\n      <text variable=\"title\"/>\n      <group prefix=\" (\" suffix=\")\" delimiter=\", \">\n        <text variable=\"collection-title\" form=\"short\"/>\n        <date variable=\"issued\">\n          <date-part name=\"year\"/>\n        </date>\n      </group>\n    </layout>\n  </citation>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"note\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <text variable=\"collection-title\" form=\"short\"/>\n    </layout>\n  </citation>\n</style>", 
     "input": [
         {
-            "author": [
-                {
-                    "family": "Doe", 
-                    "given": "John", 
-                    "static-ordering": false
-                }
-            ], 
             "collection-title": "International Rescue Wildlife Series", 
             "id": "ITEM-1", 
-            "issued": {
-                "date-parts": [
-                    [
-                        "1988"
-                    ]
-                ]
-            }, 
-            "title": "Mating Habits of Pluvial Frogs", 
             "type": "book"
         }
     ], 
     "mode": "citation", 
-    "result": "Doe, Mating Habits of Pluvial Frogs (I.R. Wildlife Series, 1988)."
+    "result": "I.R. Wildlife Series"
 }

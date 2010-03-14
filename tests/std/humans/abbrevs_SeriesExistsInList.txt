@@ -41,8 +41,19 @@ citation
 
 
 >>== RESULT ==>>
-Doe, Mating Habits of Pluvial Frogs (I.R. Wildlife Series, 1988).
+I.R. Wildlife Series
 <<== RESULT ==<<
+
+>>== ABBREVIATIONS ==>>
+{
+    "default": {
+        "series": {
+            "International Rescue Wildlife Series": "I.R. Wildlife Series"
+        }
+    }
+}
+<<== ABBREVIATIONS ==<<
+
 
 >>===== CSL =====>>
 <style 
@@ -55,17 +66,8 @@ Doe, Mating Habits of Pluvial Frogs (I.R. Wildlife Series, 1988).
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout suffix=".">
-      <names variable="author" suffix=", ">
-        <name form="short"/>
-      </names>
-      <text variable="title"/>
-      <group prefix=" (" suffix=")" delimiter=", ">
-        <text variable="collection-title" form="short"/>
-        <date variable="issued">
-          <date-part name="year"/>
-        </date>
-      </group>
+    <layout>
+      <text variable="collection-title" form="short"/>
     </layout>
   </citation>
 </style>
@@ -75,23 +77,8 @@ Doe, Mating Habits of Pluvial Frogs (I.R. Wildlife Series, 1988).
 >>===== INPUT =====>>
 [
     {
-        "author": [
-            {
-                "family": "Doe", 
-                "given": "John", 
-                "static-ordering": false
-            }
-        ], 
         "collection-title": "International Rescue Wildlife Series", 
         "id": "ITEM-1", 
-        "issued": {
-            "date-parts": [
-                [
-                    "1988"
-                ]
-            ]
-        }, 
-        "title": "Mating Habits of Pluvial Frogs", 
         "type": "book"
     }
 ]

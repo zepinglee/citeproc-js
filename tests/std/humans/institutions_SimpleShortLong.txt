@@ -43,6 +43,16 @@ citation
 BoGUS (Bureau of Gaseous Unformed Stuff)
 <<===== RESULT =====<<
 
+>>== ABBREVIATIONS ==>>
+{
+    "default": {
+        "institution": {
+            "Bureau of Gaseous Unformed Stuff": "BoGUS"
+        }
+    }
+}
+<<== ABBREVIATIONS ==<<
+
 
 >>===== CSL =====>>
 <style 
