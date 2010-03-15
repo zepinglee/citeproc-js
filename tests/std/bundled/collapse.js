@@ -59,6 +59,10 @@ doh.register("std.collapse", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("collapse_CitationNumberRangesInsert");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("collapse_AuthorCollapseDifferentAuthorsOneWithEtAl");
         doh.assertEqual(test.result, test.run());
     }, 
