@@ -1886,7 +1886,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	return [params, ret];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug, collapse_parallel;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -1983,28 +1983,32 @@ CSL.getBibliographyEntries = function (bibsection) {
 		}
 		bib_entry = new CSL.Token("group", CSL.START);
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
-		bib_entry.strings.suffix = "";
 		this.output.startTag("bib_entry", bib_entry);
 		var sortedItems = [[{id: item.id}, item]];
-		this.parallel.StartCitation(sortedItems, this.output.queue[0].blobs);
-		this.output.queue[0].strings.delimiter = ", ";
 		if (this.registry.registry[item.id].master) {
+			collapse_parallel = true;
+			this.parallel.StartCitation(sortedItems);
+			this.output.queue[0].strings.delimiter = ", ";
 			CSL.getCite.call(this, item);
 			skips[item.id] = true;
 			for each (i in this.registry.registry[item.id].siblings) {
 				var eyetem = this.sys.retrieveItem(i);
-				CSL.getCite.call(this, eyetem, {id: i}, item.id);
+				CSL.getCite.call(this, eyetem);
 				skips[eyetem.id] = true;
 			}
 			this.parallel.ComposeSet();
 			this.parallel.PruneOutputQueue();
-		} else if (!this.registry.registry[item.id].siblings || this.registry.registry[item.id].siblings.length) {
+		} else if (!this.registry.registry[item.id].siblings) {
 			CSL.getCite.call(this, item);
-			skips[item.id] = true;
 		}
 		this.output.endTag("bib_entry");
 		if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
-			topblobs = this.output.queue[0].blobs[0].blobs;
+			if (collapse_parallel) {
+				topblobs = this.output.queue[0].blobs;
+				collapse_parallel = false;
+			} else {
+				topblobs = this.output.queue[0].blobs[0].blobs;
+			}
 			llen = topblobs.length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
 				if (topblobs[ppos].blobs && topblobs[ppos].blobs.length !== 0) {
@@ -5061,10 +5065,14 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
 	}
 };
 CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
-	var len, pos, varname, b, llen, ppos;
+	var len, pos, varname, b, llen, ppos, out;
 	if (this.use_parallels) {
+		out = this.state.output.current.value();
+		if ("undefined" === typeof out.length) {
+			out = out.blobs;
+		}
 		for each (pos in this.delim_pointers) {
-			this.out[pos].parallel_delimiter = ", ";
+			out[pos].parallel_delimiter = ", ";
 		}
 		len = varnames.length - 1;
 		for (pos = len; pos > -1; pos += -1) {

@@ -39,6 +39,10 @@ doh.register("std.institutions", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("institutions_SimpleShortLong");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("institutions_QuotesSuppressCommaSplit");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -48,10 +52,6 @@ doh.register("std.institutions", [
     }, 
     function(){
         var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsMaybeUseFirst");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("institutions_SimpleShortLong");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

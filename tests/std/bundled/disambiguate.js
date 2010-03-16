@@ -71,10 +71,6 @@ doh.register("std.disambiguate", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("disambiguate_NoTextElementUsesYearSuffixVariable");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("disambiguate_PrimaryNameGenerally");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -112,6 +108,10 @@ doh.register("std.disambiguate", [
     }, 
     function(){
         var test = new StdRhinoTest("disambiguate_CitationLabelDefault");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("disambiguate_NoTextElementUsesYearSuffixVariable");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

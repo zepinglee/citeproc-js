@@ -335,13 +335,17 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
 };
 
 CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
-	var len, pos, varname, b, llen, ppos;
+	var len, pos, varname, b, llen, ppos, out;
 	if (this.use_parallels) {
 		//
 		// special delimiter within parallel cites.
 		//
+		out = this.state.output.current.value();
+		if ("undefined" === typeof out.length) {
+			out = out.blobs;
+		}
 		for each (pos in this.delim_pointers) {
-			this.out[pos].parallel_delimiter = ", ";
+			out[pos].parallel_delimiter = ", ";
 		}
 		len = varnames.length - 1;
 		for (pos = len; pos > -1; pos += -1) {

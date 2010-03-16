@@ -89,7 +89,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug, collapse_parallel;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -204,32 +204,30 @@ CSL.getBibliographyEntries = function (bibsection) {
 		//SNIP-END
 		bib_entry = new CSL.Token("group", CSL.START);
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
-		// XXXXXXXX: ??? assignment was missing ... what was the intended value?
-		bib_entry.strings.suffix = "";
+
 		this.output.startTag("bib_entry", bib_entry);
 
-		//if (this.registry.registry[item.id].parallel && this.registry.registry[item.id].parallel != item.id) {
-		//	print("Let's do the Time Warp again. "+ item.id);
-		//} else {
-		//	print("other");
-		//}
+		// The needs fixing.  Parallel cite should be generated
+		// by arrival of either a master or a sibling, with the
+		// same result.
 
 		var sortedItems = [[{id: item.id}, item]];
-		this.parallel.StartCitation(sortedItems, this.output.queue[0].blobs);
-		this.output.queue[0].strings.delimiter = ", ";
 		if (this.registry.registry[item.id].master) {
+			collapse_parallel = true;
+			this.parallel.StartCitation(sortedItems);
+			this.output.queue[0].strings.delimiter = ", ";
 			CSL.getCite.call(this, item);
 			skips[item.id] = true;
 			for each (i in this.registry.registry[item.id].siblings) {
 				var eyetem = this.sys.retrieveItem(i);
-				CSL.getCite.call(this, eyetem, {id: i}, item.id);
+				CSL.getCite.call(this, eyetem);
 				skips[eyetem.id] = true;
 			}
 			this.parallel.ComposeSet();
 			this.parallel.PruneOutputQueue();
-		} else if (!this.registry.registry[item.id].siblings || this.registry.registry[item.id].siblings.length) {
+		} else if (!this.registry.registry[item.id].siblings) {
 			CSL.getCite.call(this, item);
-			skips[item.id] = true;
+			//skips[item.id] = true;
 		}
 		//
 		// XXX: loop to render parallels goes here
@@ -242,7 +240,17 @@ CSL.getBibliographyEntries = function (bibsection) {
 		// here.
 		//
 		if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
-			topblobs = this.output.queue[0].blobs[0].blobs;
+			// The output queue stuff needs cleaning up.  the result of
+			// output.current.value() is sometimes a blob, sometimes its list
+			// of blobs.  this is inconsistency is a source of confusion, and
+			// should be cleaned up across the code base in the first
+			// instance, before making any other changes to output code.
+			if (collapse_parallel) {
+				topblobs = this.output.queue[0].blobs;
+				collapse_parallel = false;
+			} else {
+				topblobs = this.output.queue[0].blobs[0].blobs;
+			}
 			llen = topblobs.length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
 				if (topblobs[ppos].blobs && topblobs[ppos].blobs.length !== 0) {
