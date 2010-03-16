@@ -37,6 +37,7 @@ CSL.Node.citation = {
 	build: function (state, target) {
 		if (this.tokentype === CSL.START) {
 
+
 			state.fixOpt(this, "names-delimiter", "delimiter");
 			state.fixOpt(this, "name-delimiter", "delimiter");
 			state.fixOpt(this, "name-form", "form");

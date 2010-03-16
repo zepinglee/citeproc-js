@@ -50,6 +50,12 @@ CSL.Node.text = {
 					state.parallel.AppendToVariable(Item[this.variables[0]]);
 				};
 				this.execs.push(func);
+			} else {
+				func = function (state, Item) {
+					state.parallel.StartVariable("value");
+					state.parallel.AppendToVariable("whatever ...");
+				};
+				this.execs.push(func);
 			}
 			form = "long";
 			plural = 0;
@@ -310,7 +316,7 @@ CSL.Node.text = {
 				}
 			}
 			func = function (state, Item) {
-				state.parallel.CloseVariable();
+				state.parallel.CloseVariable("text");
 			};
 			this.execs.push(func);
 			target.push(this);

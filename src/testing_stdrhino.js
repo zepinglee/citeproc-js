@@ -133,42 +133,41 @@ StdRhinoTest.prototype.run = function(){
 	} else {
 		this.style.updateItems(this._ids);
 	}
-	if (this.test.mode == "citation"){
-		if (!this.test.citation_items && !this.test.citations){
-			var citation = [];
-			for each (item in this.style.registry.reflist){
-				citation.push({"id":item.id});
-			}
-			this.test.citation_items = [citation];
+	if (!this.test.citation_items && !this.test.citations){
+		var citation = [];
+		for each (item in this.style.registry.reflist){
+			citation.push({"id":item.id});
 		}
-		var citations = [];
-		if (this.test.citation_items){
-			for each (var citation in this.test.citation_items){
-				// sortCitationCluster(), we hardly knew ya
-				// this.style.sortCitationCluster(citation);
-				citations.push(this.style.makeCitationCluster(citation));
-			}
-		} else if (this.test.citations){
-			for each (var citation in this.test.citations.slice(0,-1)){
-				this.style.processCitationCluster(citation[0],citation[1],citation[2]);
-			};
-			var citation = this.test.citations.slice(-1)[0];
-			var result = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
+		this.test.citation_items = [citation];
+	}
+	var citations = [];
+	if (this.test.citation_items){
+		for each (var citation in this.test.citation_items){
+			// sortCitationCluster(), we hardly knew ya
+			// this.style.sortCitationCluster(citation);
+			citations.push(this.style.makeCitationCluster(citation));
+		}
+	} else if (this.test.citations){
+		for each (var citation in this.test.citations.slice(0,-1)){
+			this.style.processCitationCluster(citation[0],citation[1],citation[2]);
 		};
-		var indexMap = new Object();
-		for (var pos in result){
-			indexMap[""+result[pos][0]] = pos;
-		};
-		for (var cpos in this.style.registry.citationreg.citationByIndex){
-			var citation = this.style.registry.citationreg.citationByIndex[cpos];
-			if (indexMap[""+cpos]){
-				citations.push(">>["+cpos+"] "+result[indexMap[cpos]][1]);
-			} else {
-				citations.push("..["+cpos+"] "+this.style.process_CitationCluster.call(this.style,this.style.registry.citationreg.citationByIndex[cpos].sortedItems));
-			}
-		};
-		ret = citations.join("\n");
-	} else if (this.test.mode == "bibliography"){
+		var citation = this.test.citations.slice(-1)[0];
+		var result = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
+	};
+	var indexMap = new Object();
+	for (var pos in result){
+		indexMap[""+result[pos][0]] = pos;
+	};
+	for (var cpos in this.style.registry.citationreg.citationByIndex){
+		var citation = this.style.registry.citationreg.citationByIndex[cpos];
+		if (indexMap[""+cpos]){
+			citations.push(">>["+cpos+"] "+result[indexMap[cpos]][1]);
+		} else {
+			citations.push("..["+cpos+"] "+this.style.process_CitationCluster.call(this.style,this.style.registry.citationreg.citationByIndex[cpos].sortedItems));
+		}
+	};
+	ret = citations.join("\n");
+	if (this.test.mode == "bibliography"){
 		if (this.test.bibsection){
 			var ret = this.style.makeBibliography(this.test.bibsection);
 		} else {
@@ -177,7 +176,8 @@ StdRhinoTest.prototype.run = function(){
         ret = ret[0]["bibstart"] + ret[1].join("") + ret[0]["bibend"];
 	} else if (this.test.mode == "bibliography-header"){
 		var ret = this.style.makeBibliography()[0];
-	} else {
+	}
+	if (this.test.mode !== "bibliography" && this.test.mode !== "citation") {
 		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
 	}
 	return ret;

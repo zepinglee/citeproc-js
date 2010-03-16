@@ -84,7 +84,7 @@ CSL.Node.number = {
 					state.output.append(num, this);
 				}
 			}
-			state.parallel.CloseVariable();
+			state.parallel.CloseVariable("number");
 		};
 		this.execs.push(func);
 

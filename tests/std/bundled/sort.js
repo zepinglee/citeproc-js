@@ -55,6 +55,10 @@ doh.register("std.sort", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("sort_StripMarkup");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("sort_DateVariableMixedElementsAscendingA");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -68,10 +72,6 @@ doh.register("std.sort", [
     }, 
     function(){
         var test = new StdRhinoTest("sort_DateVariableMixedElementsDescendingB");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("sort_StripMarkup");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

@@ -765,7 +765,7 @@ CSL.Node.names = {
 				//SNIP-END
 				state.output.endTag();
 
-				state.parallel.CloseVariable();
+				state.parallel.CloseVariable("names");
 
 				state.tmp["has-institution"] = false;
 				state.tmp["has-first-person"] = false;

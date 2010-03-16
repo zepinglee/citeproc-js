@@ -66,8 +66,7 @@
  */
 CSL.Parallel = function (state) {
 	this.state = state;
-	this.sets = new CSL.Stack();
-	this.sets.push([]);
+	this.sets = new CSL.Stack([]);
 	this.try_cite = true;
 	this.use_parallels = true;
 };
@@ -76,13 +75,22 @@ CSL.Parallel.prototype.isMid = function (variable) {
 	return ["volume", "container-title", "issue", "page", "locator"].indexOf(variable) > -1;
 };
 
-CSL.Parallel.prototype.StartCitation = function (sortedItems) {
+CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 	if (this.use_parallels) {
 		this.sortedItems = sortedItems;
 		this.sortedItemsPos = -1;
 		this.sets.clear();
 		this.sets.push([]);
-		this.in_series = false;
+		this.in_series = true;
+		this.am_master = true;
+		this.delim_counter = 0;
+		this.delim_pointers = [];
+		if (out) {
+			this.out = out;
+		} else {
+			this.out = this.state.output.queue;
+		}
+
 	}
 };
 
@@ -91,7 +99,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems) {
  *
  */
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
-	var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator;
+	var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
 	if (this.use_parallels) {
 		if (this.sets.value().length && this.sets.value()[0].itemId === Item.id) {
 			this.ComposeSet();
@@ -116,6 +124,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 				if (this.in_series) {
 					this.sets.push([]);
 					this.in_series = false;
+					this.am_master = false;
 				}
 				break;
 			}
@@ -133,6 +142,8 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 		// is a lurking ibid reference.
 		//
 		if (this.sortedItems && this.sortedItemsPos > 0 && this.sortedItemsPos < this.sortedItems.length) {
+			// This works, and I am absolutely certain that I have
+			// no idea how or why.
 			curr = this.sortedItems[this.sortedItemsPos][1];
 			last_id = this.sortedItems[(this.sortedItemsPos - 1)][1].id;
 			master = this.state.registry.registry[last_id].parallel;
@@ -156,7 +167,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 			}
 		}
 		this.force_collapse = false;
-		if (this.state.registry.registry[Item.id].parallel && this.state.registry.registry[Item.id].parallel !== Item.id) {
+		if (this.state.registry.registry[Item.id].parallel) {
 			this.force_collapse = true;
 		}
 	}
@@ -178,8 +189,9 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		} else if (this.target === "mid" && !is_mid) {
 			this.target = "end";
 		} else if (this.target === "end" && is_mid) {
-			this.try_cite = false;
+			this.try_cite = true;
 			this.in_series = false;
+			this.am_master = false;
 		}
 		this.cite[this.target].push(variable);
 	}
@@ -194,6 +206,7 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
 	if (this.use_parallels && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
 		this.data.blobs.push([blob, blob.blobs.length]);
+
 	}
 };
 
@@ -215,15 +228,16 @@ CSL.Parallel.prototype.AppendToVariable = function (str) {
  * item can't necessarily be discarded; it might be the first
  * member of an upcoming sequence ???]
  */
-CSL.Parallel.prototype.CloseVariable = function () {
+CSL.Parallel.prototype.CloseVariable = function (hello) {
 	if (this.use_parallels && (this.try_cite || this.force_collapse)) {
 		this.cite[this.variable] = this.data;
 		if (this.sets.value().length > 0) {
 			var prev = this.sets.value()[(this.sets.value().length - 1)];
 			if (!this.isMid(this.variable) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
 				// evaluation takes place later, at close of cite.
-				this.try_cite = false;
+				//this.try_cite = true;
 				this.in_series = false;
+				this.am_master = false;
 			}
 		}
 	}
@@ -235,11 +249,7 @@ CSL.Parallel.prototype.CloseVariable = function () {
  */
 CSL.Parallel.prototype.CloseCite = function () {
 	if (this.use_parallels) {
-		if ((this.try_cite || this.force_collapse) && this.state.registry.registry[this.cite.itemId].parallel !== this.cite.itemId) {
-			if (this.sets.value().length && this.state[this.state.tmp.area].opt["year-suffix-delimiter"]) {
-				this.state.tmp.splice_delimiter = this.state[this.state.tmp.area].opt["year-suffix-delimiter"];
-			}
-		} else {
+		if (!this.in_series && !this.force_collapse) {
 			this.ComposeSet(true);
 		}
 		this.sets.value().push(this.cite);
@@ -253,33 +263,47 @@ CSL.Parallel.prototype.CloseCite = function () {
 CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 	var start, end, cite, pos, master, len;
 	if (this.use_parallels) {
-		if (this.sets.value().length > 1) {
-			start = this.state.output.queue.length - (this.sets.value().length - 1);
-			end = this.state.output.queue.length;
-			if (next_output_in_progress) {
-				end += -1;
-			}
-			for (pos = start; pos < end; pos += 1) {
-				this.state.output.queue[pos].parallel_delimiter = ", ";
-			}
+		// a bit loose here: zero-length sets relate to one cite,
+		// apparently.
+		if (this.sets.value().length < 2 && !this.in_series) {
+			this.sets.value().pop();
+			this.delim_counter += 1;
+		} else {
 			len = this.sets.value().length;
 			for (pos = 0; pos < len; pos += 1) {
+				if (pos === 0) {
+					this.delim_counter += 1;
+				} else {
+					this.delim_pointers.push(this.delim_counter);
+					this.delim_counter += 1;
+				}
 				cite = this.sets.value()[pos];
+
 				if (CSL.POSITION_FIRST === cite.position) {
-					master = cite.itemId;
-					if (cite.prevItemID) {
-						master = this.state.registry.registry[cite.prevItemID].parallel;
-						if (!master) {
-							master = cite.prevItemID;
+					if (this.am_master) {
+						this.state.registry.registry[cite.itemId].master = true;
+						//this.state.registry.registry[cite.itemId].parallel = cite.itemId;
+						this.state.registry.registry[cite.itemId].siblings = [];
+						this.am_master = false;
+					} else {
+						if (cite.prevItemID) {
+							if (!this.state.registry.registry[cite.prevItemID].parallel) {
+								this.state.registry.registry[cite.itemId].parallel = cite.prevItemID;
+							} else {
+								this.state.registry.registry[cite.itemId].parallel = this.state.registry.registry[cite.prevItemID].parallel;
+							}
+							this.state.registry.registry[cite.itemId].siblings = this.state.registry.registry[cite.prevItemID].siblings;
+							this.state.registry.registry[cite.itemId].siblings.push(cite.itemId);
 						}
 					}
-					this.state.registry.registry[cite.itemId].parallel = master;
 				}
 			}
-		} else {
-			this.sets.pop();
+			this.sets.push([]);
+			//this.in_series = false;
+
 		}
-		this.sets.push([]);
+		this.am_master = true;
+		this.in_series = true;
 	}
 };
 
@@ -292,17 +316,18 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
 		len = this.sets.mystack.length;
 		for (pos = 0; pos < len; pos += 1) {
 			series = this.sets.mystack[pos];
-			llen = series.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				cite = series[ppos];
-				if (ppos === 0) {
-					this.purgeVariableBlobs(cite, cite.end);
-				} else {
-					if (ppos === (series.length - 1) && series.length > 2) {
-						this.purgeVariableBlobs(cite, cite.top.concat(cite.end));
-					} else {
+			if (series.length > 1) {
+				llen = series.length;
+				for (ppos = 0; ppos < llen; ppos += 1) {
+					cite = series[ppos];
+					if (ppos === 0) {
+						this.purgeVariableBlobs(cite, cite.end);
+					} else if (ppos === (series.length - 1)){
 						this.purgeVariableBlobs(cite, cite.top);
+					} else {
+						this.purgeVariableBlobs(cite, cite.top.concat(cite.end));
 					}
+
 				}
 			}
 		}
@@ -312,12 +337,18 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
 CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 	var len, pos, varname, b, llen, ppos;
 	if (this.use_parallels) {
-		len = varnames.length;
-		for (pos = 0; pos < len; pos += 1) {
+		//
+		// special delimiter within parallel cites.
+		//
+		for each (pos in this.delim_pointers) {
+			this.out[pos].parallel_delimiter = ", ";
+		}
+		len = varnames.length - 1;
+		for (pos = len; pos > -1; pos += -1) {
 			varname = varnames[pos];
 			if (cite[varname]) {
-				llen = cite[varname].blobs.length;
-				for (ppos = 0; ppos < llen; ppos += 1) {
+				llen = cite[varname].blobs.length - 1;
+				for (ppos = llen; ppos > -1; ppos += -1) {
 					b = cite[varname].blobs[ppos];
 					b[0].blobs = b[0].blobs.slice(0, b[1]).concat(b[0].blobs.slice((b[1] + 1)));
 				}

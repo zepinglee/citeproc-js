@@ -39,13 +39,13 @@
     "citation_items": [
         [
             {
-                "id": "ITEM-3"
-            }, 
-            {
                 "id": "ITEM-1"
             }, 
             {
                 "id": "ITEM-2"
+            }, 
+            {
+                "id": "ITEM-3"
             }
         ]
     ], 
@@ -99,5 +99,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Jim v. Bob, 444 U.S. 400 (1965); Smith v. Noakes, 222 U.S. 200, 333 L.Ed. 300 (1965)"
+    "result": "Smith v. Noakes, 222 U.S. 200, 333 L.Ed. 300 (1965); Jim v. Bob, 444 U.S. 400 (1965)"
 }

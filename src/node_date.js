@@ -169,7 +169,7 @@ CSL.Node.date = {
 			// mergeoutput
 			func = function (state, Item) {
 				state.output.endTag();
-				state.parallel.CloseVariable();
+				state.parallel.CloseVariable("date");
 			};
 			this.execs.push(func);
 		}

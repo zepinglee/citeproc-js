@@ -324,6 +324,10 @@ CSL.Engine.Bibliography = function () {
 	this.opt["disambiguate-add-givenname"] = false;
 
 	this.opt.topdecor = [];
+	this.opt.layout_decorations = [];
+	this.opt.layout_prefix = "";
+	this.opt.layout_suffix = "";
+	this.opt.layout_delimiter = "";
 };
 
 

@@ -121,9 +121,14 @@ CSL.getBibliographyEntries = function (bibsection) {
 			return eval_list(a, b);
 		}
 	}
+
+	var skips = {};
 	len = input.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = input[pos];
+		if (skips[item.id]) {
+			continue;
+		}
 		if (bibsection) {
 			include = true;
 			if (bibsection.include) {
@@ -199,9 +204,37 @@ CSL.getBibliographyEntries = function (bibsection) {
 		//SNIP-END
 		bib_entry = new CSL.Token("group", CSL.START);
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
-		bib_entry.strings.suffix =
+		// XXXXXXXX: ??? assignment was missing ... what was the intended value?
+		bib_entry.strings.suffix = "";
 		this.output.startTag("bib_entry", bib_entry);
-		CSL.getCite.call(this, item);
+
+		//if (this.registry.registry[item.id].parallel && this.registry.registry[item.id].parallel != item.id) {
+		//	print("Let's do the Time Warp again. "+ item.id);
+		//} else {
+		//	print("other");
+		//}
+
+		var sortedItems = [[{id: item.id}, item]];
+		this.parallel.StartCitation(sortedItems, this.output.queue[0].blobs);
+		this.output.queue[0].strings.delimiter = ", ";
+		if (this.registry.registry[item.id].master) {
+			CSL.getCite.call(this, item);
+			skips[item.id] = true;
+			for each (i in this.registry.registry[item.id].siblings) {
+				var eyetem = this.sys.retrieveItem(i);
+				CSL.getCite.call(this, eyetem, {id: i}, item.id);
+				skips[eyetem.id] = true;
+			}
+			this.parallel.ComposeSet();
+			this.parallel.PruneOutputQueue();
+		} else if (!this.registry.registry[item.id].siblings || this.registry.registry[item.id].siblings.length) {
+			CSL.getCite.call(this, item);
+			skips[item.id] = true;
+		}
+		//
+		// XXX: loop to render parallels goes here
+		// XXX: just have to mark them somehow ...
+		//
 		this.output.endTag("bib_entry");
 		//
 		// place layout prefix on first blob of each cite, and suffix

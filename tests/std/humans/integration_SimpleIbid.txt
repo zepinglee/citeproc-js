@@ -124,8 +124,17 @@ citation
             <text variable="locator"/>
           </group>
         </if>
-        <else>
+        <else-if position="ibid-with-locator">
+          <text value="ibid-with-locator"/>
+        </else-if>
+        <else-if position="ibid">
           <text term="ibid"/>
+        </else-if>
+        <else-if position="subsequent">
+          <text value="subsequent"/>
+        </else-if>
+        <else>
+          <text value="huh?"/>
         </else>
       </choose>
     </layout>

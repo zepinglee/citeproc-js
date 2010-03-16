@@ -193,6 +193,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						// backward-looking position evaluation happens here.
 						//
 						//
+						//
 						ibidme = false;
 						suprame = false;
 						if (ppos > 0 && parseInt(pppos, 10) === 0) {
@@ -376,7 +377,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
 		}
 		inputList.sort(this.citation.srt.compareCompositeKeys);
 	}
-	this.parallel.StartCitation();
+	this.parallel.StartCitation(inputList);
 	str = CSL.getCitationCluster.call(this, inputList);
 	return str;
 };
@@ -460,10 +461,19 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		} else {
 			CSL.getCite.call(this, Item, item);
 		}
+		// ZZZZZZ:
+		//print("parallel is: "+this.registry.registry[Item.id].parallel);
+		//print("parallel is: "+Item.id);
 
 		if (pos === (inputList.length - 1)) {
 			this.parallel.ComposeSet();
 		}
+
+		//print("-- item: "+Item.id);
+		//for (var x in this.registry.registry[Item.id]) {
+		//	print("  "+x+": "+this.registry.registry[Item.id][x]);
+		//}
+
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed);
 		if (item && item["author-only"]) {
 			this.tmp.suppress_decorations = true;
