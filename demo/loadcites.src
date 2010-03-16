@@ -226,6 +226,139 @@ var data = {
 			]
 		},
 		"type": "book"
-	}
+	},
+	"ITEM-7": {
+		"id": "ITEM-7",
+		"title": "True Crime Radio and Listener Disenchantment with Network Broadcasting, 1935-1946",
+		"author":[
+			{
+				"family": "Razlogova",
+				"given": "Elena"
+			}
+		],
+		"container-title": "American Quarterly",
+		"volume": "58",
+		"page": "137-158",
+		"issued": {
+			"date-parts": [
+				[2006, 3]
+			]
+		},
+		"type": "article-journal"
+	},
+	"ITEM-8": {
+		"id": "ITEM-8",
+		"title": "The Guantanamobile Project",
+		"container-title": "Vectors",
+		"volume": "1",
+		"author":[
+			{
+				"family": "Razlogova",
+				"given": "Elena"
+			},
+			{
+				"family": "Lynch",
+				"given": "Lisa"
+			}
+		],
+		"issued": {
+			"season": 3,
+			"date-parts": [
+				[2005]
+			]
+		},
+		"type": "article-journal"
+
+	},
+	"ITEM-9": {
+		"id": "ITEM-9",
+		"container-title": "FEMS Yeast Research",
+		"volume": "9",
+		"issue": "8",
+		"page": "1123-1136",
+		"title": "Metabolic engineering of <i>Saccharomyces cerevisiae</i> for production of carboxylic acids: current status and challenges",
+		"contributor":[
+			{
+				"family": "Zelle",
+				"given": "Rintze M."
+			}
+		],
+		"author": [
+			{
+				"family": "Abbott",
+				"given": "Derek A."
+			},
+			{
+				"family": "Zelle",
+				"given": "Rintze M."
+			},
+			{
+				"family":"Pronk",
+				"given":"Jack T."
+			},
+			{
+				"family": "Maris",
+				"given":"Antonius J.A.",
+				"dropping-particle":"van"
+			}
+		],
+		"issued": {
+			"season": "2",
+			"date-parts": [
+				[
+					2009,
+					6,
+					6
+				]
+			]
+		},
+		"type": "article-journal"
+	},
+    "ITEM-10": {
+        "container-title": "N.Y.2d", 
+        "id": "ITEM-10", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "page": "683", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
+        "volume": 73
+    }, 
+    "ITEM-11": {
+        "container-title": "N.E.2d", 
+        "id": "ITEM-11", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "page": "386", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
+        "volume": 541
+    }, 
+    "ITEM-12": {
+        "container-title": "N.Y.S.2d", 
+        "id": "ITEM-12", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "page": "357", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
+        "volume": 543
+    }
+
 };
 

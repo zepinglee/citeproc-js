@@ -313,6 +313,52 @@ var data = {
 			]
 		},
 		"type": "article-journal"
-	}
+	},
+    "ITEM-10": {
+        "container-title": "N.Y.2d", 
+        "id": "ITEM-10", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "page": "683", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
+        "volume": 73
+    }, 
+    "ITEM-11": {
+        "container-title": "N.E.2d", 
+        "id": "ITEM-11", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "page": "386", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
+        "volume": 541
+    }, 
+    "ITEM-12": {
+        "container-title": "N.Y.S.2d", 
+        "id": "ITEM-12", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1989"
+                ]
+            ]
+        }, 
+        "page": "357", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
+        "volume": 543
+    }
 
 };
+
