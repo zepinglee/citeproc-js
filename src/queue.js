@@ -139,15 +139,11 @@ CSL.Output.Queue.prototype.endTag = function () {
 
 CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
 	var blob, curr, x, has_ephemeral;
-	this.levelname.push(token);
-	//CSL.debug("openLevel");
 	if (!this.formats.value()[token]) {
 		throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
 	}
-	//CSL.debug("newlevel: "+token);
-	//
 	// delimiter, prefix, suffix, decorations from token
-	blob = new CSL.Blob(this.formats.value()[token]);
+	blob = new CSL.Blob(this.formats.value()[token], false, token);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
@@ -176,12 +172,15 @@ CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
  * "merge" used to be real complicated, now it's real simple.
  */
 CSL.Output.Queue.prototype.closeLevel = function (name) {
-	//CSL.debug("closeLevel");
-	//CSL.debug("merge");
-	if (name && name !== this.levelname[this.levelname.length - 1]) {
-		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.levelname[this.levelname.length - 1]);
+	// CLEANUP: Okay, so this.current.value() holds the blob at the
+	// end of the current list.  This is wrong.  It should
+	// be the parent, so that we have  the choice of reading
+	// the affixes and decorations, or appending to its
+	// content.  The code that manipulates blobs will be
+	// much simpler that way.
+	if (name && name !== this.current.value().levelname) {
+		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().blobs[this.current.value().blobs.length - 1].levelname);
 	}
-	this.levelname.pop();
 	this.current.pop();
 };
 

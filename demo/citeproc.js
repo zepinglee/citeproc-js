@@ -334,11 +334,10 @@ CSL.Output.Queue.prototype.endTag = function () {
 };
 CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
 	var blob, curr, x, has_ephemeral;
-	this.levelname.push(token);
 	if (!this.formats.value()[token]) {
 		throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
 	}
-	blob = new CSL.Blob(this.formats.value()[token]);
+	blob = new CSL.Blob(this.formats.value()[token], false, token);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
@@ -362,10 +361,9 @@ CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
 	this.current.push(blob);
 };
 CSL.Output.Queue.prototype.closeLevel = function (name) {
-	if (name && name !== this.levelname[this.levelname.length - 1]) {
-		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.levelname[this.levelname.length - 1]);
+	if (name && name !== this.current.value().levelname) {
+		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().blobs[this.current.value().blobs.length - 1].levelname);
 	}
-	this.levelname.pop();
 	this.current.pop();
 };
 CSL.Output.Queue.prototype.append = function (str, tokname) {
@@ -1416,10 +1414,10 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	len = forms.length;
 	for (pos = 0; pos < len; pos += 1) {
 		f = forms[pos];
-		if ("string" === typeof hash[term]) {
+		if ("string" === typeof hash[term] || "number" === typeof hash[term]) {
 			ret = hash[term];
 		} else if ("undefined" !== typeof hash[term][f]) {
-			if ("string" === typeof hash[term][f]) {
+			if ("string" === typeof hash[term][f] || "number" === typeof hash[term][f]) {
 				ret = hash[term][f];
 			} else {
 				if ("number" === typeof plural) {
@@ -4153,7 +4151,7 @@ CSL.Node.text = {
 							value = state.fun.page_mangler(value);
 							state.output.append(value, this);
 						};
-					} else if (["publisher", "publisher-place"].indexOf(this.variables[0] > -1)) {
+					} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
 						func = function (state, Item) {
 							value = state.getVariable(Item, this.variables[0]);
 							if (value) {
@@ -5111,8 +5109,9 @@ CSL.AmbigConfig = function () {
 	this.year_suffix = 0;
 	this.disambiguate = 0;
 };
-CSL.Blob = function (token, str) {
+CSL.Blob = function (token, str, levelname) {
 	var len, pos, key;
+	this.levelname = levelname;
 	if (token) {
 		this.strings = {};
 		for (key in token.strings) {

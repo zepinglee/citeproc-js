@@ -56,6 +56,8 @@ CSL.Engine = function (sys, style, lang) {
 	this.bibliography = new CSL.Engine.Bibliography();
 
 	this.output = new CSL.Output.Queue(this);
+
+	//this.render = new CSL.Render(this);
 	//
 	// This latter queue is used for formatting date chunks
 	// before they are folded back into the main queue.
@@ -369,10 +371,10 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	len = forms.length;
 	for (pos = 0; pos < len; pos += 1) {
 		f = forms[pos];
-		if ("string" === typeof hash[term]) {
+		if ("string" === typeof hash[term] || "number" === typeof hash[term]) {
 			ret = hash[term];
 		} else if ("undefined" !== typeof hash[term][f]) {
-			if ("string" === typeof hash[term][f]) {
+			if ("string" === typeof hash[term][f] || "number" === typeof hash[term][f]) {
 				ret = hash[term][f];
 			} else {
 				if ("number" === typeof plural) {

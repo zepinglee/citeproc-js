@@ -33,47 +33,17 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Blob = function (token, str, levelname) {
-	var len, pos, key;
-	this.levelname = levelname;
-	//print(levelname);
-	if (token) {
-		this.strings = {};
-		for (key in token.strings) {
-			if (token.strings.hasOwnProperty(key)) {
-				this.strings[key] = token.strings[key];
-			}
-		}
-		this.decorations = [];
-		if (token.decorations === undefined) {
-			len = 0;
-		} else {
-			len = token.decorations.length;
-		}
-		for (pos = 0; pos < len; pos += 1) {
-			this.decorations.push(token.decorations[pos].slice());
-		}
-	} else {
-		this.strings = {};
-		this.strings.prefix = "";
-		this.strings.suffix = "";
-		this.strings.delimiter = "";
-		this.decorations = [];
-	}
-	if ("string" === typeof str) {
-		this.blobs = str;
-	} else {
-		this.blobs = [];
-	}
-	this.alldecor = [this.decorations];
+// The new-look output queue.
+
+// This should be designed so that a method .string() is
+// available on all blobs.  Then for selective rendering, we
+// can just run the method on the blob, and it's done.
+
+CSL.Render = function (state) {
+	this.state = state;
+	this.formats = new CSL.Stack({empty: new CSL.Token("empty")});
+	this.queue = new CSL.Blob("empty");
+	this.current = new CSL.Stack(this.queue);
+	this.suppress_join_punctuation = false;
 };
 
-
-CSL.Blob.prototype.push = function (blob) {
-	if ("string" === typeof this.blobs) {
-		throw "Attempt to push blob onto string object";
-	} else {
-		blob.alldecor = blob.alldecor.concat(this.alldecor);
-		this.blobs.push(blob);
-	}
-};

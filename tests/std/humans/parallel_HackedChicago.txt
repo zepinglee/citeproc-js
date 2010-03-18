@@ -67,7 +67,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">People v. Taylor, N.Y.2d 683, N.E.2d 386, N.Y.S.2d 357 (1989).</div>
+  <div class="csl-entry">People v. Taylor, 73 N.Y.2d 683, 541 N.E.2d 386, 543 N.Y.S.2d 357 (1989).</div>
 </div>
 <<===== RESULT =====<<
 

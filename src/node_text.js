@@ -288,7 +288,7 @@ CSL.Node.text = {
 							value = state.fun.page_mangler(value);
 							state.output.append(value, this);
 						};
-					} else if (["publisher", "publisher-place"].indexOf(this.variables[0] > -1)) {
+					} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
 						func = function (state, Item) {
 							value = state.getVariable(Item, this.variables[0]);
 							if (value) {
