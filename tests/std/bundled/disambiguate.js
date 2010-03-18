@@ -67,6 +67,10 @@ doh.register("std.disambiguate", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("disambiguate_DifferentSpacingInInitials");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("disambiguate_ByCiteGivennameExpandCrossNestedNames");
         doh.assertEqual(test.result, test.run());
     }, 

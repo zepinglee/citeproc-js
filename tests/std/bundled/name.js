@@ -251,6 +251,10 @@ doh.register("std.name", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("name_PeriodAfterInitials");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("name_StartAndAtOrMoreThanMax");
         doh.assertEqual(test.result, test.run());
     }, 
