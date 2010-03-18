@@ -33,17 +33,21 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-// The new-look output queue.
+dojo.provide("citeproc_js.render");
 
-// This should be designed so that a method .string() is
-// available on all blobs.  Then for selective rendering, we
-// can just run the method on the blob, and it's done.
+doh.register("citeproc_js.render", [
 
-CSL.Render = function (state) {
-	this.state = state;
-	this.formats = new CSL.Stack({empty: new CSL.Token("empty")});
-	this.top = new CSL.Blob(false, false, "top");
-	this.current = new CSL.Stack(this.top);
-};
+	function testInstantiation() {
+		function testme () {
+			try {
+				var out = new CSL.Render();
+				return "Success";
+			} catch (e) {
+				return e;
+			}
+		}
+		var res = testme();
+		doh.assertEqual( "Success", res );
+	},
 
-CSL.render = CSL.Render();
+]);

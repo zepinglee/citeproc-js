@@ -374,9 +374,6 @@ if (!CSL.Output) {
 if (!CSL.Engine.Opt) {
 	load("./src/state.js");
 }
-//if (!CSL.Render) {
-//	load("./src/render.js");
-//}
 // jslint OK
 if (!CSL.makeCitationCluster) {
 	load("./src/cmd_cite.js");
@@ -470,6 +467,9 @@ if (!CSL.AmbigConfig) {
 // jslint OK
 if (!CSL.Blob) {
 	load("./src/obj_blob.js");
+}
+if (!CSL.Render) {
+	load("./src/render.js");
 }
 // jslint OK
 if (!CSL.NumericBlob) {

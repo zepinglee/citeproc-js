@@ -47,7 +47,6 @@ CSL.Output.Queue = function (state) {
 	tokenstore.empty = this.empty;
 	this.formats = new CSL.Stack(tokenstore);
 	this.current = new CSL.Stack(this.queue);
-	this.suppress_join_punctuation = false;
 };
 
 CSL.Output.Queue.prototype.getToken = function (name) {

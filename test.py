@@ -607,11 +607,8 @@ if __name__ == "__main__":
                 params.buildRunner()
                 params.runTests(bundle=opt.bundle)
         elif opt.processor:
-            print "one"
             params.buildRunner()
-            print "two"
             params.runTests()
-            print "three"
     except (KeyboardInterrupt, SystemExit):
         for file in os.listdir("."):
             if not file.startswith("tmp") or not len(file) == 9: continue
