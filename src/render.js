@@ -40,10 +40,149 @@
 // can just run the method on the blob, and it's done.
 
 CSL.Render = function (state) {
+	//
+	// Make state object available.
 	this.state = state;
-	this.formats = new CSL.Stack({empty: new CSL.Token("empty")});
+	//
+	// Tokens are named bundles of decorations, affixes and delimiters,
+	// with a structure similar to that of the main style tokens.
+	// We avoid CSL.Stack() here to save overhead.
+	this.formats = [
+		{empty: new CSL.Token("empty")}
+	];
+	this.formats_lastpos = 0;
+	//
+	// The nested output queue.
 	this.top = new CSL.Blob(false, false, "top");
-	this.current = new CSL.Stack(this.top);
+	//
+	// Current always returns the current blob with dependent children.
+	this.current = [this.top];
+	this.current_lastpos = 0;
+	// Flag to control whether offset characters are calculated
+	this.calculate_offset = false;
 };
+
+CSL.Render.overlayStrings = function (target, stringtok) {
+	for (attr in stringtok.strings) {
+		if (stringtok.strings.hasOwnProperty(attr)) {
+			target.strings[attr] = stringtok.strings[attr];
+		}
+	}
+};
+
+CSL.Render.prototype.getToken = function (name) {
+	return this.formats[this.formats_lastpos][name];
+};
+
+CSL.Render.prototype.getStrings = function (name) {
+	return this.formats[this.formats_lastpos][name].strings;
+};
+
+CSL.Render.prototype.getDecorations = function (name) {
+	return this.formats[this.formats_lastpos][name].decorations;
+};
+
+//
+// If name exists in formats, error.
+// If name only, create an empty token of "name" in formats.
+// If name + addtok, create a new tok formatted as addtok and add to formats as name.
+CSL.Render.prototype.addToken = function (name, tok) {
+	var newtok, attr;
+	//
+	//if (!name) {
+	//   throw "CSL error: missing name in addToken()";
+	// }
+	//
+	//if (this.formats[this.formats_lastpos][name]) {
+	//	throw "CSL error: token " + name + " exists at level: " + this.formats.length;
+	//}
+	newtok = new CSL.Token(name);
+	CSL.Render.overlayStrings(newtok, tok);
+	newtok.decorations = tok.decorations;
+	this.formats[this.formats_lastpos][name] = newtok;
+};
+
+//
+// name is a string, which may be the same as the name of base, decorations,
+//   or strings.
+// base is a string, the name of a token to use as the base
+// decorations is a the name of a token containing decorations
+// strings is the name of a token (possibly same as above) containing strings.
+//
+// The decorations and strings are overlaid onto base, and the resulting
+// token is added to formats as name.  The base, decorations and strings
+// tokens may be overwritten by name, but are not otherwise affected.
+//
+CSL.Render.prototype.mergeToken = function (name, base, decorations, strings) {
+	var newtok, stringtok, decortok;
+	newtok = CSL.Token(name);
+	base = this.formats[this.formats_lastpos][base];
+	CSL.Render.overlayStrings(newtok, base);
+	newtok.decorations = base.decorations;
+	if (decorations) {
+		decortok = this.formats[this.formats_lastpos][decorations];
+		newtok.decorations = decortok.decorations;
+	}
+	if (strings) {
+		stringtok = this.formats[this.formats_lastpos][strings];
+		CSL.Render.overlayStrings(newtok, stringtok);
+	}
+};
+
+CSL.Render.prototype.newFormats = function (name, token) {
+	var tokenstore = {};
+	tokenstore[name] = token;
+	this.formats.push(tokenstore);
+	this.openLevel(name);
+};
+
+CSL.Render.prototype.oldFormats = function (name) {
+	this.closeLevel(name);
+	this.formats.pop();
+};
+
+
+CSL.Render.prototype.openLevel = function (name,ephemeral) {
+	var blob, curr, x, has_ephemeral;
+	if (!this.formats[this.formats_lastpos][name]) {
+		throw "CSL processor error: call to nonexistent format token \"" + name + "\"";
+	}
+	// delimiter, prefix, suffix, decorations from token
+	blob = new CSL.Blob(this.formats.value()[name], false, name);
+	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
+		this.state.tmp.offset_characters += blob.strings.prefix.length;
+	}
+	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length) {
+		this.state.tmp.offset_characters += blob.strings.suffix.length;
+	}
+	curr = this.current.value();
+	has_ephemeral = false;
+	for (x in this.state.tmp.names_cut.variable) {
+		has_ephemeral = x;
+		break;
+	}
+	// can only do this for one variable
+	if (ephemeral && (!has_ephemeral || ephemeral === has_ephemeral)) {
+		if (!this.state.tmp.names_cut.variable[ephemeral]){
+			this.state.tmp.names_cut.variable[ephemeral] = [];
+			this.state.tmp.names_cut.used = ephemeral;
+		}
+		this.state.tmp.names_cut.variable[ephemeral].push([curr, curr.blobs.length]);
+	}
+	curr.push(blob);
+	this.current.push(blob);
+};
+
+/**
+ * "merge" used to be real complicated, now it's real simple.
+ */
+CSL.Render.prototype.closeLevel = function (name) {
+	if (name && name !== this.current.value().levelname) {
+		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().blobs[this.current.value().blobs.length - 1].levelname);
+	}
+	this.current.pop();
+};
+
+
 
 CSL.render = CSL.Render();

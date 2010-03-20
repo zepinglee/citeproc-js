@@ -2431,6 +2431,7 @@ CSL.citeStart = function (Item) {
 	this.citation_sort.keys = [];
 	this.tmp.count_offset_characters = false;
 	this.tmp.offset_characters = 0;
+	this.tmp.has_done_year_suffix = false;
 	CSL.Util.Names.initNameSlices(this);
 };
 CSL.citeEnd = function (Item) {
@@ -2751,7 +2752,8 @@ CSL.Node["date-part"] = {
 			}
 			state.tmp.value = [];
 			if (!state.opt.has_year_suffix && "year" === this.strings.name) {
-				if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
+				if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2] && !state.tmp.has_done_year_suffix) {
+					state.tmp.has_done_year_suffix = true;
 					num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
 					number = new CSL.NumericBlob(num, this);
 					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
