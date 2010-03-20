@@ -5,13 +5,21 @@ The ``citeproc-js`` Citation Processor
 Integrator's Manual
 ~~~~~~~~~~~~~~~~~~~
 
+.. class:: fixed
+
+   `citationstyles.org`__
+
+__ http://citationstyles.org/
+
+
+
 .. class:: info-version
 
-   version 1.00##a64##
+   version 1.00##a65##
 
 .. class:: info-date
 
-   =D=2 March 2010=D=
+   =D=20 March 2010=D=
 
 .. class:: contributors
 
@@ -43,7 +51,7 @@ This is the site administrator's manual for ``citeproc-js``, a
 Javascript implementation of the |link| `Citation Style Language
 (CSL)`__ used by Zotero, Mendeley and other popular reference
 tools to format citations in any of the hundreds of styles
-supplied by the .  The processor complies with version 1.0 of the CSL
+supplied by the CSL style repository. [#]_  The processor complies with version 1.0 of the CSL
 specification, has been written and tested as an independent module,
 and can be run by any ECMAscript-compliant interpreter.  With an
 appropriate supporting environment, [#]_ it can be deployed in a
@@ -65,11 +73,20 @@ for providing feedback and getting help is the |link| `project mailing list`_.
 
 .. class:: first
 
-   .. [#] For further details on required infrastructure, see the sections 
-          `Local Environment`_ 
-          and `Data Input`_ below.
+   .. [#] The repository is currently housed at `zotero.org`__.  Note that
+          styles in the Zotero styles repository are currently at CSL version
+          0.8.  Use the `tools provided by the CSL project`__ to convert CSL 0.8 
+          styles to the version 1.0 syntax supported by this processor.
+
+.. [#] For further details on required infrastructure, see the sections 
+       `Local Environment`_ 
+       and `Data Input`_ below.
 
 .. _`project mailing list`: http://groups.google.com/group/citeproc-js
+
+__ http://zotero.org/styles
+
+__ http://bitbucket.org/bdarcus/csl-utils/
 
 -----------------------------
 Setup and System Requirements
