@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a70##
+   version 1.00##a71##
 
 .. class:: info-date
 
@@ -75,7 +75,7 @@ for providing feedback and getting help is the |link| `project mailing list`_.
 
    .. [#] The repository is currently housed at `zotero.org`__.  Note that
           styles in the Zotero styles repository are currently at CSL version
-          0.8.  Use the `tools provided by the CSL project`__ to convert CSL 0.8 
+          0.8.1.  Use the `tools provided by the CSL project`__ to convert CSL 0.8.1 
           styles to the version 1.0 syntax supported by this processor.
 
 .. [#] For further details on required infrastructure, see the sections 
