@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a65##
+   version 1.00##a70##
 
 .. class:: info-date
 
-   =D=20 March 2010=D=
+   =D=22 March 2010=D=
 
 .. class:: contributors
 
@@ -1920,10 +1920,10 @@ like the following:
             "properties": {
                "noteIndex": 1
             }
-         }
-      ],
-      ["CITATION-1"],
-      []
+         },
+         ["CITATION-1"],
+         []
+      ]
    ]
    <<===== CITATIONS =====<<
 
