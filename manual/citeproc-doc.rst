@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a73##
+   version 1.00##a74##
 
 .. class:: info-date
 
-   =D=28 March 2010=D=
+   =D=29 March 2010=D=
 
 .. class:: contributors
 
@@ -395,8 +395,8 @@ HTML output mode):
    [
       { 
          "maxoffset": 0,
-         "entryspacing": 1,
-         "linespacing": 1,
+         "entryspacing": 0,
+         "linespacing": 0,
          "hangingindent": 0,
          "second-field-align": false,
          "bibstart": "<div class=\"csl-bib-body\">\n",

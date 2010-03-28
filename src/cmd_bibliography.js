@@ -95,8 +95,8 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	ret = CSL.getBibliographyEntries.call(this, bibsection);
 	params = {
 		"maxoffset": 0,
-		"entryspacing": 1,
-		"linespacing": 1,
+		"entryspacing": 0,
+		"linespacing": 0,
 		"second-field-align": false
 	};
 	if (this.bibliography.opt["second-field-align"]) {
