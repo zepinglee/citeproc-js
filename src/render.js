@@ -60,6 +60,7 @@ CSL.Render = function (state) {
 	this.current_lastpos = 0;
 	// Flag to control whether offset characters are calculated
 	this.calculate_offset = false;
+	this.offset = 0;
 };
 
 CSL.Render.overlayStrings = function (target, stringtok) {
@@ -83,15 +84,10 @@ CSL.Render.prototype.getDecorations = function (name) {
 };
 
 //
-// If name exists in formats, error.
 // If name only, create an empty token of "name" in formats.
 // If name + addtok, create a new tok formatted as addtok and add to formats as name.
 CSL.Render.prototype.addToken = function (name, tok) {
 	var newtok, attr;
-	//
-	//if (!name) {
-	//   throw "CSL error: missing name in addToken()";
-	// }
 	//
 	//if (this.formats[this.formats_lastpos][name]) {
 	//	throw "CSL error: token " + name + " exists at level: " + this.formats.length;
@@ -129,12 +125,14 @@ CSL.Render.prototype.mergeToken = function (name, base, decorations, strings) {
 	}
 };
 
+
 CSL.Render.prototype.newFormats = function (name, token) {
 	var tokenstore = {};
 	tokenstore[name] = token;
 	this.formats.push(tokenstore);
 	this.openLevel(name);
 };
+
 
 CSL.Render.prototype.oldFormats = function (name) {
 	this.closeLevel(name);
@@ -144,16 +142,18 @@ CSL.Render.prototype.oldFormats = function (name) {
 
 CSL.Render.prototype.openLevel = function (name,ephemeral) {
 	var blob, curr, x, has_ephemeral;
-	if (!this.formats[this.formats_lastpos][name]) {
-		throw "CSL processor error: call to nonexistent format token \"" + name + "\"";
-	}
+
+	//if (!this.formats[this.formats_lastpos][name]) {
+	//	throw "CSL processor error: call to nonexistent format token \"" + name + "\"";
+	//}
+
 	// delimiter, prefix, suffix, decorations from token
-	blob = new CSL.Blob(this.formats.value()[name], false, name);
-	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
-		this.state.tmp.offset_characters += blob.strings.prefix.length;
+	blob = new CSL.Blob(this.formats[this.formats_lastpos][name], false, name);
+	if (this.calculate_offset && blob.strings.prefix.length) {
+		this.offset += blob.strings.prefix.length;
 	}
-	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length) {
-		this.state.tmp.offset_characters += blob.strings.suffix.length;
+	if (this.calculate_offset && blob.strings.suffix.length) {
+		this.offset += blob.strings.suffix.length;
 	}
 	curr = this.current.value();
 	has_ephemeral = false;
@@ -172,6 +172,7 @@ CSL.Render.prototype.openLevel = function (name,ephemeral) {
 	curr.push(blob);
 	this.current.push(blob);
 };
+
 
 /**
  * "merge" used to be real complicated, now it's real simple.

@@ -74,7 +74,10 @@ CSL.Util.substituteStart = function (state, target) {
 				func = function (state, Item) {
 					if (!state.tmp.render_seen) {
 						state.output.startTag("bib_first", bib_first);
+						// XXX: this will go away
 						state.tmp.count_offset_characters = true;
+						// this will not
+						state.output.calculate_offset = true;
 					}
 				};
 				bib_first.execs.push(func);
@@ -139,7 +142,10 @@ CSL.Util.substituteEnd = function (state, target) {
 			if (state.build.cls) {
 				func = function (state, Item) {
 					state.output.endTag("bib_first");
+					// XXX: this will go away
 					state.tmp.count_offset_characters = false;
+					// this will not
+					state.output.calculate_offset = false;
 				};
 				this.execs.push(func);
 				state.build.cls = false;
@@ -150,7 +156,10 @@ CSL.Util.substituteEnd = function (state, target) {
 				func = function (state, Item) {
 					if (!state.tmp.render_seen) {
 						state.output.endTag(); // closes bib_first
+						// XXX: this will go away
 						state.tmp.count_offset_characters = false;
+						// this will not
+						state.output.calculate_offset = false;
 					}
 				};
 				bib_first_end.execs.push(func);

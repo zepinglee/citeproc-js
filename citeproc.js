@@ -1864,7 +1864,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	maxoffset = 0;
 	len = this.registry.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		item = this.registry.reflist;
+		item = this.registry.reflist[pos];
 		if (item.offset > params.maxoffset) {
 			params.maxoffset = item.offset;
 		}
@@ -5753,6 +5753,7 @@ CSL.Util.substituteStart = function (state, target) {
 					if (!state.tmp.render_seen) {
 						state.output.startTag("bib_first", bib_first);
 						state.tmp.count_offset_characters = true;
+						state.output.calculate_offset = true;
 					}
 				};
 				bib_first.execs.push(func);
@@ -5792,6 +5793,7 @@ CSL.Util.substituteEnd = function (state, target) {
 				func = function (state, Item) {
 					state.output.endTag("bib_first");
 					state.tmp.count_offset_characters = false;
+					state.output.calculate_offset = false;
 				};
 				this.execs.push(func);
 				state.build.cls = false;
@@ -5802,6 +5804,7 @@ CSL.Util.substituteEnd = function (state, target) {
 					if (!state.tmp.render_seen) {
 						state.output.endTag(); // closes bib_first
 						state.tmp.count_offset_characters = false;
+						state.output.calculate_offset = false;
 					}
 				};
 				bib_first_end.execs.push(func);
