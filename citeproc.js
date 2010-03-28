@@ -1859,8 +1859,12 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	params = {
 		"maxoffset": 0,
 		"entryspacing": 1,
-		"linespacing": 1
+		"linespacing": 1,
+		"second-field-align": false
 	};
+	if (this.bibliography.opt["second-field-align"]) {
+		params["second-field-align"] = this.bibliography.opt["second-field-align"];
+	}
 	maxoffset = 0;
 	len = this.registry.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {

@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a71##
+   version 1.00##a73##
 
 .. class:: info-date
 
-   =D=22 March 2010=D=
+   =D=28 March 2010=D=
 
 .. class:: contributors
 
@@ -398,6 +398,7 @@ HTML output mode):
          "entryspacing": 1,
          "linespacing": 1,
          "hangingindent": 0,
+         "second-field-align": false,
          "bibstart": "<div class=\"csl-bib-body\">\n",
          "bibend": "</div>"
       },
@@ -431,6 +432,12 @@ HTML output mode):
    The number of em-spaces to apply in hanging indents within the
    bibliography.
 
+*second-field-align*
+   When the ``second-field-align`` CSL option is set, this returns
+   either "flush" or "margin".  The calling application should
+   align text in bibliography output as described in the `CSL specification`__.
+   Where ``second-field-align`` is not set, this return value is set to ``false``.
+
 *bibstart*
    A string to be appended to the front of the finished bibliography
    string.
@@ -438,6 +445,10 @@ HTML output mode):
 *bibend*
    A string to be appended to the end of the finished bibliography
    string.
+
+
+__ http://citationstyles.org/downloads/specification.html#bibliography-specific-options
+
 
 #################
 Citation commands
