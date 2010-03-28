@@ -101,7 +101,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	maxoffset = 0;
 	len = this.registry.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		item = this.registry.reflist;
+		item = this.registry.reflist[pos];
 		if (item.offset > params.maxoffset) {
 			params.maxoffset = item.offset;
 		}
