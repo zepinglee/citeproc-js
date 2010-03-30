@@ -1858,8 +1858,8 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	ret = CSL.getBibliographyEntries.call(this, bibsection);
 	params = {
 		"maxoffset": 0,
-		"entryspacing": 1,
-		"linespacing": 1,
+		"entryspacing": 0,
+		"linespacing": 0,
 		"second-field-align": false
 	};
 	if (this.bibliography.opt["second-field-align"]) {
@@ -2137,7 +2137,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						if (ppos > 0 && parseInt(pppos, 10) === 0) {
 							items = citations[(ppos - 1)].sortedItems;
 							useme = false;
-							if (citations[(ppos - 1)].sortedItems[0][1].id === item[1].id || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
+							if ((citations[(ppos - 1)].sortedItems[0][1].id === item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
 								useme = true;
 							}
 							llllen = items.slice(1).length;

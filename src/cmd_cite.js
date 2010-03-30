@@ -203,10 +203,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 							//     (b) this item must be the first in this onecitation
 							//     (c) the previous onecitation must contain a reference
 							//         to the same item ...
+							//     (d) the note numbers must be the same or consecutive.
 							// (this has some jiggery-pokery in it for parallels)
 							items = citations[(ppos - 1)].sortedItems;
 							useme = false;
-							if (citations[(ppos - 1)].sortedItems[0][1].id === item[1].id || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
+							if ((citations[(ppos - 1)].sortedItems[0][1].id === item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
 								useme = true;
 							}
 							llllen = items.slice(1).length;
@@ -259,6 +260,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 								//     (c) if the previous onecitation had a locator
 								//         (page number, etc.) and this onecitation has
 								//         a locator that is identical, use ibid
+
 								item[1].position = CSL.POSITION_IBID;
 							} else if (prev_locator && curr_locator && curr_locator !== prev_locator) {
 								//     (d) if the previous onecitation had a locator,

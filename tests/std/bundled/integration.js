@@ -63,6 +63,10 @@ doh.register("std.integration", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("integration_SubsequentWhenInterveningFootnote");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("integration_CitationSort");
         doh.assertEqual(test.result, test.run());
     }, 
