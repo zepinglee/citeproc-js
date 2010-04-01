@@ -43,6 +43,10 @@ doh.register("std.discretionary", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("discretionary_SuppressMultipleAuthors");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("discretionary_CitationNumberSuppressAuthor");
         doh.assertEqual(test.result, test.run());
     }, 

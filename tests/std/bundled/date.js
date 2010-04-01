@@ -247,10 +247,6 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("date_TextFormMonthdateMonthRange");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("date_LocalizedDateFormats-sr-RS");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -288,6 +284,10 @@ doh.register("std.date", [
     }, 
     function(){
         var test = new StdRhinoTest("date_LocalizedDateFormats-it-IT");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_TextFormMonthdateMonthRange");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
