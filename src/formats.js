@@ -71,6 +71,7 @@ CSL.Output.Formats.prototype.html = {
 	"@vertical-align/baseline": false,
 	"@vertical-align/sup": "<sup>%%STRING%%</sup>",
 	"@vertical-align/sub": "<sub>%%STRING%%</sub>",
+	"@vertical-align/baseline": "<span style=\"baseline\">%%STRING%%</span>",
 	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
 	"@strip-periods/false": function (state, string) {
 		return string;

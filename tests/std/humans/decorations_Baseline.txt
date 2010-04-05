@@ -32,26 +32,71 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.decorations");
-doh.register("std.decorations", [
-    function(){
-        var test = new StdRhinoTest("decorations_Baseline");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_SimpleFlipFlop");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_SimpleQuotes");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_NestedQuotesInnerReverse");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_NestedQuotes");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+
+>>== MODE ==>>
+bibliography
+<<== MODE ==<<
+
+
+
+>>== RESULT ==>>
+<div class="csl-bib-body">
+  <div class="csl-entry"><sup>Little, Stuart, <span style="baseline">My Short Narrative</span> (1990)</sup></div>
+</div>
+<<== RESULT ==<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <text value="Ignore me"/>
+    </layout>
+  </citation>
+  <bibliography>
+    <layout>
+      <group delimiter=" " vertical-align="sup">
+        <group delimiter=", ">
+          <names variable="author">
+            <name sort-separator=", " name-as-sort-order="all"/>
+          </names>
+          <text vertical-align="baseline" variable="title"/>
+        </group>
+        <date variable="issued" form="text" prefix="(" suffix=")"/>
+      </group>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Little", 
+                "given": "Stuart"
+            }
+        ], 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1990"
+                ]
+            ]
+        }, 
+        "title": "My Short Narrative", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<
