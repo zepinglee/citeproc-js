@@ -81,7 +81,8 @@ class Bundle:
         f.extend(["node_etal","node_group","node_if","node_info","node_institution"])
         f.extend(["node_institutionpart","node_key","node_label","node_layout","node_macro"])
         f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
-        f.extend(["node_substitute","node_text","attributes","xmle4x","stack","util_abbrev"])
+        f.extend(["node_substitute","node_text","attributes","system","xmle4x","xmldom"])
+        f.extend(["stack","util_abbrev"])
         f.extend(["util_parallel","obj_token","obj_ambigconfig","obj_blob","obj_number"])
         f.extend(["util","util_datenode","util_institutions","util_names","util_dates"])
         f.extend(["util_sort","util_substitute","util_number","util_page","util_flipflop"])
@@ -526,7 +527,17 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Display test names during processing.')
+    parser.add_option("-b", "--bundle-only", dest="makebundle",
+                      default=False,
+                      action="store_true", 
+                      help='Create the citeproc.js bundle and exit.')
     (opt, args) = parser.parse_args()
+
+    if opt.makebundle:
+        bundler = Bundle()
+        bundler.deleteOldBundle()
+        bundler.createNewBundle()
+        sys.exit()
 
     if not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
         parser.print_help()
