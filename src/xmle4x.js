@@ -33,8 +33,6 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.System = {};
-CSL.System.Xml = {};
 /**
  * Functions for parsing an XML object using E4X.
  */

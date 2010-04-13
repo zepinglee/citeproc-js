@@ -54,6 +54,10 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
+//var alert = function(str) {
+//	print(str);
+//}
+
 var CSL = {
 
 	//SNIP-START
@@ -340,7 +344,13 @@ CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.jo
 
 // skip jslint check on this file, it doesn't get E4X
 if (!CSL.System) {
+	load("./src/system.js");
+}
+if (!CSL.System.Xml.E4X) {
 	load("./src/xmle4x.js");
+}
+if (!CSL.System.Xml.DOM) {
+	load("./src/xmldom.js");
 }
 // jslint OK
 if (!CSL.localeResolve) {

@@ -33,10 +33,14 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-CSL.Engine = function (sys, style, lang) {
+CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
 	this.sys = sys;
-	this.sys.xml = new CSL.System.Xml.E4X();
+	if (xmlmode) {
+		this.sys.xml = new CSL.System.Xml[xmlmode]();
+	} else {
+		this.sys.xml = new CSL.System.Xml.E4X();
+	}
 	if ("string" !== typeof style) {
 		style = "";
 	}

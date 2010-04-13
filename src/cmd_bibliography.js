@@ -301,10 +301,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 		}
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
-			res = "[CSL STYLE ERROR: reference with no printed form.]";
-		} else {
-			ret.push(res);
+			res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";
 		}
+		ret.push(res);
 	}
 	this.tmp.disambig_override = false;
 	return ret;

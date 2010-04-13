@@ -56,7 +56,7 @@ CSL.localeResolve = function (langstr) {
 // below.
 //
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname;
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, pos, len;
 
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
@@ -79,7 +79,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 		// Xml: get a list of all "locale" nodes
 		//
 		nodes = sys.xml.getNodesByName(myxml, "locale");
-		for (pos in nodes) {
+		for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 			if (true) {
 				blob = nodes[pos];
 				//
@@ -96,7 +96,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 	// Xml: get a list of term nodes within locale
 	//
 	nodes = sys.xml.getNodesByName(locale, 'term');
-	for (pos in nodes) {
+	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		if (true) {
 			term = nodes[pos];
 			//
@@ -116,7 +116,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 			//
 			// Xml: test of existence of node
 			//
-			if (sys.xml.getNodesByName(term, 'multiple').length()) {
+			if (sys.xml.numberofnodes(sys.xml.getNodesByName(term, 'multiple'))) {
 				this.locale[lang_out].terms[termname][form] = [];
 				//
 				// Xml: get string value of attribute, plus
@@ -141,7 +141,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 	// Xml: get list of nodes by node type
 	//
 	nodes = sys.xml.getNodesByName(locale, 'style-options');
-	for (pos in nodes) {
+	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		if (true) {
 			styleopts = nodes[pos];
 			//
@@ -165,7 +165,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 	// Xml: get list of nodes by type
 	//
 	nodes = sys.xml.getNodesByName(locale, 'date');
-	for (pos in nodes) {
+	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		if (true) {
 			date = nodes[pos];
 			//
