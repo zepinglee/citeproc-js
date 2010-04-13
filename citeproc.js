@@ -1398,7 +1398,7 @@ CSL.Engine.prototype.getDateNum = function (ItemField, partname) {
 CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	var ret, forms, f, pos, len;
 	ret = "";
-	if (!hash[term]) {
+	if ("undefined" == typeof hash[term]) {
 		if (mode === CSL.STRICT) {
 			throw "Error in getField: term\"" + term + "\" does not exist.";
 		} else {
@@ -4869,7 +4869,10 @@ CSL.System.Xml.DOM.prototype.getAttributeValue = function (myxml,name,namespace)
 }
 CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
 	var ret = "";
-	if (name){
+	if (myxml && myxml.hasAttributes && myxml.hasAttributes() && myxml.attributes.name.value == "contributor") {
+		ret = "";
+	}
+	else if (name){
 		var vals = myxml.getElementsByTagName(name);
 		if (vals.length > 0) {
 			ret = vals[0].textContent;
@@ -4900,7 +4903,12 @@ CSL.System.Xml.DOM.prototype.deleteAttribute = function (myxml,attr) {
 	delete myxml["@"+attr];
 }
 CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
-	alert("Todo (4)");
+	var attribute;
+	if (!myxml.ownerDocument) {
+		myxml = myxml.firstChild;
+	}
+	attribute = myxml.ownerDocument.createAttribute(attr);
+	myxml.setAttribute(attr, val);
     return false;
 }
 CSL.System.Xml.DOM.prototype.nodeCopy = function (myxml) {

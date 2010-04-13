@@ -356,7 +356,7 @@ CSL.Engine.prototype.getDateNum = function (ItemField, partname) {
 CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	var ret, forms, f, pos, len;
 	ret = "";
-	if (!hash[term]) {
+	if ("undefined" == typeof hash[term]) {
 		if (mode === CSL.STRICT) {
 			throw "Error in getField: term\"" + term + "\" does not exist.";
 		} else {

@@ -129,11 +129,14 @@ CSL.System.Xml.DOM.prototype.getAttributeValue = function (myxml,name,namespace)
 }
 
 //
-// Can't this be, you know, simplified?
+// Can't this be, you know ... simplified?
 //
 CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
 	var ret = "";
-	if (name){
+	if (myxml && myxml.hasAttributes && myxml.hasAttributes() && myxml.attributes.name.value == "contributor") {
+		ret = "";
+	}
+	else if (name){
 		var vals = myxml.getElementsByTagName(name);
 		if (vals.length > 0) {
 			ret = vals[0].textContent;
@@ -168,8 +171,12 @@ CSL.System.Xml.DOM.prototype.deleteAttribute = function (myxml,attr) {
 }
 
 CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
-	alert("Todo (4)");
-	//myxml['@'+attr] = val;
+	var attribute;
+	if (!myxml.ownerDocument) {
+		myxml = myxml.firstChild;
+	}
+	attribute = myxml.ownerDocument.createAttribute(attr);
+	myxml.setAttribute(attr, val);
     return false;
 }
 
