@@ -729,7 +729,7 @@ CSL.localeResolve = function (langstr) {
 	return ret;
 };
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname;
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, pos, len;
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
 	if (!this.locale[lang_out]) {
@@ -743,7 +743,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 		locale = myxml;
 	} else {
 		nodes = sys.xml.getNodesByName(myxml, "locale");
-		for (pos in nodes) {
+		for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 			if (true) {
 				blob = nodes[pos];
 				if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
@@ -754,7 +754,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 		}
 	}
 	nodes = sys.xml.getNodesByName(locale, 'term');
-	for (pos in nodes) {
+	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		if (true) {
 			term = nodes[pos];
 			termname = sys.xml.getAttributeValue(term, 'name');
@@ -765,7 +765,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 			if (sys.xml.getAttributeValue(term, 'form')) {
 				form = sys.xml.getAttributeValue(term, 'form');
 			}
-			if (sys.xml.getNodesByName(term, 'multiple').length()) {
+			if (sys.xml.numberofnodes(sys.xml.getNodesByName(term, 'multiple'))) {
 				this.locale[lang_out].terms[termname][form] = [];
 				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
 				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][1] = sys.xml.getNodeValue(term, 'multiple');
@@ -775,7 +775,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 		}
 	}
 	nodes = sys.xml.getNodesByName(locale, 'style-options');
-	for (pos in nodes) {
+	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		if (true) {
 			styleopts = nodes[pos];
 			attributes = sys.xml.attributes(styleopts);
@@ -791,7 +791,7 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 		}
 	}
 	nodes = sys.xml.getNodesByName(locale, 'date');
-	for (pos in nodes) {
+	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		if (true) {
 			date = nodes[pos];
 			this.locale[lang_out].dates[sys.xml.getAttributeValue(date, "form")] = date;
@@ -1196,10 +1196,14 @@ CSL.dateParser = function (txt) {
 		return thedate;
 	};
 };
-CSL.Engine = function (sys, style, lang) {
+CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
 	this.sys = sys;
-	this.sys.xml = new CSL.System.Xml.E4X();
+	if (xmlmode) {
+		this.sys.xml = new CSL.System.Xml[xmlmode]();
+	} else {
+		this.sys.xml = new CSL.System.Xml.E4X();
+	}
 	if ("string" !== typeof style) {
 		style = "";
 	}
@@ -2021,10 +2025,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 		}
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
-			res = "[CSL STYLE ERROR: reference with no printed form.]";
-		} else {
-			ret.push(res);
+			res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";
 		}
+		ret.push(res);
 	}
 	this.tmp.disambig_override = false;
 	return ret;
@@ -4790,6 +4793,173 @@ CSL.System.Xml.E4X.prototype.addInstitutionNodes = function(myxml) {
 			if (!node.institution.toString()) {
 				node.name += institution_long;
 			}
+		}
+	}
+};
+CSL.System.Xml.DOM = function () {
+	this.parser = new DOMParser();
+	var inst_txt = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"/></docco>";
+	var inst_doc = this.parser.parseFromString(inst_txt, "text/xml");
+	var inst_node = inst_doc.getElementsByTagName("institution");
+	this.institution = inst_node.item(0);
+	this.ns = "http://purl.org/net/xbiblio/csl";
+};
+CSL.System.Xml.DOM.prototype.clean = function (xml) {
+	xml = xml.replace(/<\?[^?]+\?>/g, "");
+	xml = xml.replace(/<![^>]+>/g, "");
+	xml = xml.replace(/^\s+/, "");
+	xml = xml.replace(/\s+$/, "");
+	xml = xml.replace(/^\n*/, "");
+	return xml;
+};
+CSL.System.Xml.DOM.prototype.children = function (myxml) {
+	var children, pos, len, ret;
+	if (myxml) {
+		ret = [];
+		children = myxml.childNodes;
+		for (pos = 0, len = children.length; pos < len; pos += 1) {
+			if (children[pos].nodeName != "#text") {
+				ret.push(children[pos]);
+			}
+		}
+		return ret;
+	} else {
+		return [];
+	}
+};
+CSL.System.Xml.DOM.prototype.nodename = function (myxml) {
+	var ret = myxml.nodeName;
+	return ret;
+};
+CSL.System.Xml.DOM.prototype.attributes = function (myxml) {
+	var ret, attrs, attr, key, xml, pos, len;
+	ret = new Object();
+	if (myxml && myxml.hasAttributes()) {
+		attrs = myxml.attributes;
+		for (pos = 0, len=attrs.length; pos < len; pos += 1) {
+			attr = attrs[pos];
+			ret["@" + attr.name] = attr.value;
+		}
+	}
+	return ret;
+};
+CSL.System.Xml.DOM.prototype.content = function (myxml) {
+	return myxml.textContent;
+};
+CSL.System.Xml.DOM.prototype.namespace = {
+	"xml":"http://www.w3.org/XML/1998/namespace"
+}
+CSL.System.Xml.DOM.prototype.numberofnodes = function (myxml) {
+	if (myxml) {
+		return myxml.length;
+	} else {
+		return 0;
+	}
+};
+CSL.System.Xml.DOM.prototype.getAttributeName = function (attr) {
+	var ret = attr.name;
+	return ret;
+}
+CSL.System.Xml.DOM.prototype.getAttributeValue = function (myxml,name,namespace) {
+	var ret = "";
+	if (myxml && myxml.hasAttributes() && myxml.attributes[name]) {
+		ret = myxml.attributes[name].value;
+	}
+	return ret;
+}
+CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
+	var ret = "";
+	if (name){
+		var vals = myxml.getElementsByTagName(name);
+		if (vals.length > 0) {
+			ret = vals[0].textContent;
+		}
+	} else {
+		ret = myxml;
+	}
+	if (ret && ret.childNodes && ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text") {
+		ret = myxml.textContent;
+	}
+	return ret;
+}
+CSL.System.Xml.DOM.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,attrname,attr,val) {
+	var xml;
+	alert("Todo (1)");
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	if (attr[0] != '@'){
+		attr = '@'+attr;
+	}
+	myxml[nodename].(@name == attrname)[0][attr] = val;
+}
+CSL.System.Xml.DOM.prototype.deleteNodeByNameAttribute = function (myxml,val) {
+	alert("Todo (2)");
+	delete myxml.*.(@name==val)[0];
+}
+CSL.System.Xml.DOM.prototype.deleteAttribute = function (myxml,attr) {
+	alert("Todo (3)");
+	delete myxml["@"+attr];
+}
+CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
+	alert("Todo (4)");
+    return false;
+}
+CSL.System.Xml.DOM.prototype.nodeCopy = function (myxml) {
+	alert("Todo (5)");
+	return myxml.copy();
+}
+CSL.System.Xml.DOM.prototype.getNodesByName = function (myxml,name,nameattrval) {
+	var ret, nodes, node, pos, len;
+	ret = [];
+	nodes = myxml.getElementsByTagName(name);
+	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
+		node = nodes[pos];
+		if (nameattrval && !(node.hasAttributes() && node.attributes.name && node.attributes.name.value == nameattrval)) {
+			continue;
+		}
+		ret.push(node);
+	}
+	return ret;
+}
+CSL.System.Xml.DOM.prototype.nodeNameIs = function (myxml,name) {
+	if (myxml.nodeName == "#document" && myxml.firstChild.nodeName == name) {
+		return true;
+	}
+	if (name == myxml.nodeName) {
+		return true;
+	}
+	return false;
+}
+CSL.System.Xml.DOM.prototype.makeXml = function (myxml) {
+	var ret, topnode;
+	if (!myxml) {
+		myxml = "<bogus/>";
+	}
+	var nodetree = this.parser.parseFromString(myxml, "text/xml");
+	return nodetree;
+};
+CSL.System.Xml.DOM.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
+	alert("Todo (6)");
+	var myxml, xml;
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	myxml = XML(datexml.toXMLString());
+	parent.insertChildAfter(node,myxml);
+	delete parent.*[pos];
+	return parent;
+};
+CSL.System.Xml.DOM.prototype.addInstitutionNodes = function(myxml) {
+	var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
+	names = myxml.getElementsByTagName("names");
+	for (pos = 0, len = names.length; pos < len; pos += 1) {
+		thenames = names[pos];
+		name = thenames.getElementsByTagName("name");
+		if (name.length == 0) {
+			continue;
+		}
+		institution = thenames.getElementsByTagName("institution");
+		if (institution.length == 0) {
+			theinstitution = myxml.importNode(this.institution, true);
+			thename = name[0];
+			thenames.insertBefore(theinstitution, thename.nextSibling);
 		}
 	}
 };
