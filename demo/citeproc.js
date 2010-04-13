@@ -4836,7 +4836,6 @@ CSL.System.Xml.DOM.prototype.getAttributeValue = function (myxml,name,namespace)
 CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
 	var ret = "";
 	if (myxml && myxml.hasAttributes && myxml.hasAttributes() && myxml.attributes.name.value == "contributor") {
-		alert("TRYING: " + name);
 		ret = "";
 	}
 	else if (name){
