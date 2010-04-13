@@ -152,9 +152,9 @@ doh.registerGroup("citeproc_js.speed",
 				//CSL.debug("starting iterate at: "+printme);
 				while(curr.next != false){
 					var printme = curr.phoneytitle;
-					while (printme.length < this.maxlength){
-						printme = " "+printme;
-					}
+					//while (printme.length < this.maxlength){
+					//	printme = " "+printme;
+					//}
 					CSL.debug(printme);
 					curr = this.registry[curr.next];
 				}
