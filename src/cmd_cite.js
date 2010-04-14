@@ -45,7 +45,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 };
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids;
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
@@ -116,7 +116,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// Position evaluation!
 	//
 	// set positions in reconstituted list, noting taints
-	this.registry.citationreg.citationByItemId = {};
+	this.registry.citationreg.citationIdByItemId = {};
 	if (this.opt.update_mode === CSL.POSITION || true) {
 		textCitations = [];
 		noteCitations = [];
@@ -128,12 +128,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		llen = citationByIndex[pos].sortedItems.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			item = citationByIndex[pos].sortedItems[ppos];
-			if (!this.registry.citationreg.citationByItemId[item[1].id]) {
-				this.registry.citationreg.citationByItemId[item[1].id] = [];
+			if (!this.registry.citationreg.citationIdByItemId[item[1].id]) {
+				this.registry.citationreg.citationIdByItemId[item[1].id] = [];
 				update_items.push(item[1].id);
 			}
-			if (this.registry.citationreg.citationByItemId[item[1].id].indexOf(citationByIndex[pos]) === -1) {
-				this.registry.citationreg.citationByItemId[item[1].id].push(citationByIndex[pos]);
+			if (this.registry.citationreg.citationIdByItemId[item[1].id].indexOf(citationByIndex[pos]) == -1) {
+				this.registry.citationreg.citationIdByItemId[item[1].id].push(citationByIndex[pos].citationID);
 			}
 
 		}
@@ -303,7 +303,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	}
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
-			this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
+			cids = this.registry.citationreg.citationIdByItemId[key];
+			for (pos = 0, len = cids.length; pos < len; pos += 1) {
+				this.tmp.taintedCitationIDs[cids[pos]] = true;
+			}
 		}
 	}
 	// XXXXX: note to self: maybe provide for half-taints (backreferences)
