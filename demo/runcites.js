@@ -47,45 +47,70 @@ function pointedStickInnerHtml(elementid,content){
 
 var citation = {
 	"citationItems": [
-       {
-		   id: "ITEM-10"
-	   },
-       {
-		   id: "ITEM-11"
-	   },
-       {
-		   id: "ITEM-12"
-	   }
+		{
+			id: "ITEM-1"
+		},
+		{
+			id: "ITEM-2"
+		},
+		{
+			id: "ITEM-3"
+		},
+		{
+			id: "ITEM-4"
+		},
+		{
+			id: "ITEM-5"
+		},
+		{
+			id: "ITEM-6"
+		},
+		{
+			id: "ITEM-10"
+		},
+		{
+			id: "ITEM-11"
+		},
+		{
+			id: "ITEM-12"
+		}
 	],
 	"properties": {
 		"noteIndex": 1
 	}
 };
 
-
 var insert = function(){
+	var citeproc, output;
 	var sys = new Sys(abbreviations);
-	var citeproc = new CSL.Engine(sys,chicago_author_date, false, "DOM");
+
+	// Chicago Author-Date
+	citeproc = new CSL.Engine(sys, chicago_author_date, false, "DOM");
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
-	var output = citeproc.makeBibliography();
+	output = citeproc.makeBibliography();
 	if (output && output.length && output[1].length){
 		output = output[0].bibstart + output[1].join("") + output[0].bibend;
 		pointedStickInnerHtml("chicago_author_date",output);
 	}
 
+	// Subsectioned
 	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography, false, "DOM");
-	citeproc.updateItems(["ITEM-10","ITEM-11","ITEM-12"]);
+	citeproc.setAbbreviations("default");
+	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6", "ITEM-10","ITEM-11","ITEM-12"]);
 	citeproc.appendCitationCluster(citation);
-	output = citeproc.makeBibliography();
+	var cases = {
+		"select" : [
+			{
+				"field" : "type",
+				"value" : "legal_case"
+			}
+		]
+	};
+	output = citeproc.makeBibliography(cases);
 	if (output && output.length && output[1].length){
 		output = output[0].bibstart + output[1].join("") + output[0].bibend;
 		pointedStickInnerHtml("chicago_fullnote_bibliography_cases",output);
 	}
-
-
-	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography, false, "DOM");
-	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
-	citeproc.setAbbreviations("default");
 	var books = {
 		"select" : [
 			{
@@ -104,6 +129,10 @@ var insert = function(){
 			{
 				"field" : "type",
 				"value" : "book"
+			},
+			{
+				"field" : "type",
+				"value" : "legal_case"
 			}
 		]
 	};
@@ -113,6 +142,7 @@ var insert = function(){
 		pointedStickInnerHtml("chicago_fullnote_bibliography_articles",output);
 	}
 
+	// Listing
 	citeproc = new CSL.Engine(sys,chicago_author_date_listing, false, "DOM");
 	citeproc.updateItems(["ITEM-1", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6", "ITEM-7", "ITEM-8","ITEM-9"]);
 	citeproc.setAbbreviations("default");
@@ -122,6 +152,7 @@ var insert = function(){
 		pointedStickInnerHtml("chicago_author_date_listing",output);
 	}
 
+	// IEEE
 	citeproc = new CSL.Engine(sys,ieee, false, "DOM");
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	citeproc.setAbbreviations("slightly_weird");
@@ -131,7 +162,8 @@ var insert = function(){
 		pointedStickInnerHtml("ieee",output);
 	}
 
-	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography2, false, "DOM");
+	// Annotated
+	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography2);
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	citeproc.setAbbreviations("default");
 	output = citeproc.makeBibliography();

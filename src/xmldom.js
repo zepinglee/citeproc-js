@@ -133,10 +133,12 @@ CSL.System.Xml.DOM.prototype.getAttributeValue = function (myxml,name,namespace)
 //
 CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
 	var ret = "";
-	if (myxml && myxml.hasAttributes && myxml.hasAttributes() && myxml.attributes.name.value == "contributor") {
-		ret = "";
-	}
-	else if (name){
+	//if (myxml && myxml.hasAttributes && myxml.hasAttributes() && myxml.attributes.name.value == "contributor") {
+		//ret = "";
+	//	alert(myxml.childNodes.length);
+	//}
+	//else
+	if (name){
 		var vals = myxml.getElementsByTagName(name);
 		if (vals.length > 0) {
 			ret = vals[0].textContent;
@@ -144,7 +146,7 @@ CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
 	} else {
 		ret = myxml;
 	}
-	if (ret && ret.childNodes && ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text") {
+	if (ret && ret.childNodes && (ret.childNodes.length == 0 || (ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text"))) {
 		ret = myxml.textContent;
 	}
 	return ret;

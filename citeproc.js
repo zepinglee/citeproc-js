@@ -1,3 +1,37 @@
+/*
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ *
+ * The contents of this file are subject to the Common Public
+ * Attribution License Version 1.0 (the “License”); you may not use
+ * this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ *
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./std subdirectory of the distribution archive.
+ *
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ *
+ * The Initial Developer of the Original Code is Frank G. Bennett,
+ * Jr. All portions of the code written by Frank G. Bennett, Jr. are
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ */
 var CSL = {
 	error: function (str) {
 		print(str);
@@ -2009,7 +2043,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 	return this.processCitationCluster(citation, citationsPre, []);
 };
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids;
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
@@ -2045,7 +2079,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	}
 	this.registry.citationreg.citationByIndex = citationByIndex;
-	this.registry.citationreg.citationByItemId = {};
+	this.registry.citationreg.citationIdByItemId = {};
 	if (this.opt.update_mode === CSL.POSITION || true) {
 		textCitations = [];
 		noteCitations = [];
@@ -2057,12 +2091,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		llen = citationByIndex[pos].sortedItems.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			item = citationByIndex[pos].sortedItems[ppos];
-			if (!this.registry.citationreg.citationByItemId[item[1].id]) {
-				this.registry.citationreg.citationByItemId[item[1].id] = [];
+			if (!this.registry.citationreg.citationIdByItemId[item[1].id]) {
+				this.registry.citationreg.citationIdByItemId[item[1].id] = [];
 				update_items.push(item[1].id);
 			}
-			if (this.registry.citationreg.citationByItemId[item[1].id].indexOf(citationByIndex[pos]) === -1) {
-				this.registry.citationreg.citationByItemId[item[1].id].push(citationByIndex[pos]);
+			if (this.registry.citationreg.citationIdByItemId[item[1].id].indexOf(citationByIndex[pos]) == -1) {
+				this.registry.citationreg.citationIdByItemId[item[1].id].push(citationByIndex[pos].citationID);
 			}
 		}
 		if (this.opt.update_mode === CSL.POSITION || true) {
@@ -2179,7 +2213,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	}
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
-			this.tmp.taintedCitationIDs[this.registry.citationreg.citationByItemId[key]] = true;
+			cids = this.registry.citationreg.citationIdByItemId[key];
+			for (pos = 0, len = cids.length; pos < len; pos += 1) {
+				this.tmp.taintedCitationIDs[cids[pos]] = true;
+			}
 		}
 	}
 	ret = [];
@@ -4835,10 +4872,7 @@ CSL.System.Xml.DOM.prototype.getAttributeValue = function (myxml,name,namespace)
 }
 CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
 	var ret = "";
-	if (myxml && myxml.hasAttributes && myxml.hasAttributes() && myxml.attributes.name.value == "contributor") {
-		ret = "";
-	}
-	else if (name){
+	if (name){
 		var vals = myxml.getElementsByTagName(name);
 		if (vals.length > 0) {
 			ret = vals[0].textContent;
@@ -4846,7 +4880,7 @@ CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
 	} else {
 		ret = myxml;
 	}
-	if (ret && ret.childNodes && ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text") {
+	if (ret && ret.childNodes && (ret.childNodes.length == 0 || (ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text"))) {
 		ret = myxml.textContent;
 	}
 	return ret;
@@ -5152,9 +5186,12 @@ CSL.Parallel.prototype.CloseCite = function () {
 CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 	var start, end, cite, pos, master, len;
 	if (this.use_parallels) {
-		if (this.sets.value().length < 2 && !this.in_series) {
-			this.sets.value().pop();
-			this.delim_counter += 1;
+		if (this.sets.value().length == 1) {
+			if (!this.in_series) {
+				this.sets.value().pop();
+				this.delim_counter += 1;
+			} else {
+			}
 		} else {
 			len = this.sets.value().length;
 			for (pos = 0; pos < len; pos += 1) {
@@ -7116,7 +7153,9 @@ CSL.Registry.NameReg = function (state) {
 		if ("undefined" === typeof this.nameind[item_id]) {
 			this.nameind[item_id] = {};
 		}
-		this.nameind[item_id][pkey + "::" + ikey + "::" + skey] = true;
+		if (pkey) {
+			this.nameind[item_id][pkey + "::" + ikey + "::" + skey] = true;
+		}
 	};
 	this.addname = addname;
 	this.delitems = delitems;
