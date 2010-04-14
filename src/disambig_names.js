@@ -261,7 +261,9 @@ CSL.Registry.NameReg = function (state) {
 			this.nameind[item_id] = {};
 		}
 		//CSL.debug("INS-A");
-		this.nameind[item_id][pkey + "::" + ikey + "::" + skey] = true;
+		if (pkey) {
+			this.nameind[item_id][pkey + "::" + ikey + "::" + skey] = true;
+		}
 		//CSL.debug("INS-B");
 	};
 	this.addname = addname;
