@@ -163,7 +163,7 @@ var insert = function(){
 	}
 
 	// Annotated
-	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography2);
+	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography2, false, "DOM");
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	citeproc.setAbbreviations("default");
 	output = citeproc.makeBibliography();

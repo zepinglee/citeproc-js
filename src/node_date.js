@@ -72,6 +72,11 @@ CSL.Node.date = {
 					// date-parts and (b) in the *_end data.
 					// (note to self: remember that season is a
 					// fallback var when month and day are empty)
+
+
+					//if ("undefined" === typeof this.dateparts) {
+					//	this.dateparts = ["year", "month", "day"];
+					//}
 					len = this.dateparts.length;
 					for (pos = 0; pos < len; pos += 1) {
 						part = this.dateparts[pos];
@@ -156,6 +161,7 @@ CSL.Node.date = {
 		if (state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
 			tok = new CSL.Token("key", CSL.SINGLETON);
 			//tok.date_object = state.tmp.date_object;
+
 			tok.dateparts = state.build.date_parts.slice();
 			// any date variable name will do here; it just triggers
 			// construction of a date key, using the state.tmp.date_object

@@ -282,13 +282,18 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
 		// if there are children, check for date nodes and
 		// convert if appropriate
 		for (pos in sneakpeek) {
-			if ("xml" === typeof sneakpeek[pos]) {
+			//
+			// Aha!  If we're to be cross-platform, we can't
+			// rely on E4X type discrimination to identify
+			// an XML object.
+			//
+			//if ("xml" === typeof sneakpeek[pos]) {
 				node = sneakpeek[pos];
 				if ("date" === this.sys.xml.nodename(node)) {
 					currnode = CSL.Util.fixDateNode.call(this, currnode, pos, node);
 					sneakpeek = this.sys.xml.children(currnode);
 				}
-			}
+			//}
 		}
 		//
 		// if first node of a span, process it, then descend

@@ -163,13 +163,21 @@ CSL.System.Xml.DOM.prototype.setAttributeOnNodeIdentifiedByNameAttribute = funct
 }
 
 CSL.System.Xml.DOM.prototype.deleteNodeByNameAttribute = function (myxml,val) {
-	alert("Todo (2)");
-	delete myxml.*.(@name==val)[0];
+	var pos, len, node, nodes;
+	nodes = myxml.childNodes;
+	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
+		node = nodes[pos];
+		if (!node || node.nodeType == node.TEXT_NODE) {
+			continue;
+		}
+		if (node.hasAttributes() && node.attributes.name.value == val) {
+			myxml.removeChild(nodes[pos]);
+		}
+	}
 }
 
 CSL.System.Xml.DOM.prototype.deleteAttribute = function (myxml,attr) {
-	alert("Todo (3)");
-	delete myxml["@"+attr];
+	myxml.removeAttribute(attr);
 }
 
 CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
@@ -183,8 +191,8 @@ CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
 }
 
 CSL.System.Xml.DOM.prototype.nodeCopy = function (myxml) {
-	alert("Todo (5)");
-	return myxml.copy();
+	var cloned_node = myxml.cloneNode(true);
+	return cloned_node;
 }
 
 CSL.System.Xml.DOM.prototype.getNodesByName = function (myxml,name,nameattrval) {
@@ -221,12 +229,9 @@ CSL.System.Xml.DOM.prototype.makeXml = function (myxml) {
 };
 
 CSL.System.Xml.DOM.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
-	alert("Todo (6)");
 	var myxml, xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	myxml = XML(datexml.toXMLString());
-	parent.insertChildAfter(node,myxml);
-	delete parent.*[pos];
+	myxml = node.ownerDocument.importNode(datexml, true);
+	parent.replaceChild(myxml, node);
 	return parent;
 };
 

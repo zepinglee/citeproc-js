@@ -1339,13 +1339,11 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
 		return false;
 	} else {
 		for (pos in sneakpeek) {
-			if ("xml" === typeof sneakpeek[pos]) {
 				node = sneakpeek[pos];
 				if ("date" === this.sys.xml.nodename(node)) {
 					currnode = CSL.Util.fixDateNode.call(this, currnode, pos, node);
 					sneakpeek = this.sys.xml.children(currnode);
 				}
-			}
 		}
 		CSL.XmlToToken.call(currnode, this.state, CSL.START);
 		this.depth += 1;
@@ -4895,12 +4893,20 @@ CSL.System.Xml.DOM.prototype.setAttributeOnNodeIdentifiedByNameAttribute = funct
 	myxml[nodename].(@name == attrname)[0][attr] = val;
 }
 CSL.System.Xml.DOM.prototype.deleteNodeByNameAttribute = function (myxml,val) {
-	alert("Todo (2)");
-	delete myxml.*.(@name==val)[0];
+	var pos, len, node, nodes;
+	nodes = myxml.childNodes;
+	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
+		node = nodes[pos];
+		if (!node || node.nodeType == node.TEXT_NODE) {
+			continue;
+		}
+		if (node.hasAttributes() && node.attributes.name.value == val) {
+			myxml.removeChild(nodes[pos]);
+		}
+	}
 }
 CSL.System.Xml.DOM.prototype.deleteAttribute = function (myxml,attr) {
-	alert("Todo (3)");
-	delete myxml["@"+attr];
+	myxml.removeAttribute(attr);
 }
 CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
 	var attribute;
@@ -4912,8 +4918,8 @@ CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
     return false;
 }
 CSL.System.Xml.DOM.prototype.nodeCopy = function (myxml) {
-	alert("Todo (5)");
-	return myxml.copy();
+	var cloned_node = myxml.cloneNode(true);
+	return cloned_node;
 }
 CSL.System.Xml.DOM.prototype.getNodesByName = function (myxml,name,nameattrval) {
 	var ret, nodes, node, pos, len;
@@ -4946,12 +4952,9 @@ CSL.System.Xml.DOM.prototype.makeXml = function (myxml) {
 	return nodetree;
 };
 CSL.System.Xml.DOM.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
-	alert("Todo (6)");
 	var myxml, xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	myxml = XML(datexml.toXMLString());
-	parent.insertChildAfter(node,myxml);
-	delete parent.*[pos];
+	myxml = node.ownerDocument.importNode(datexml, true);
+	parent.replaceChild(myxml, node);
 	return parent;
 };
 CSL.System.Xml.DOM.prototype.addInstitutionNodes = function(myxml) {
@@ -5190,7 +5193,6 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 			if (!this.in_series) {
 				this.sets.value().pop();
 				this.delim_counter += 1;
-			} else {
 			}
 		} else {
 			len = this.sets.value().length;
