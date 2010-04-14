@@ -4798,6 +4798,30 @@ CSL.System.Xml.E4X.prototype.addInstitutionNodes = function(myxml) {
 	}
 };
 CSL.System.Xml.DOM = function () {
+	if (typeof (DOMParser) == 'undefined') {
+		DOMParser = function() {};
+		DOMParser.prototype.parseFromString = function (str, contentType) {
+			var xmldata, ret;
+			if (typeof (ActiveXObject) != 'undefined') {
+				xmldata = new ActiveXObject('MSXML.DomDocument');
+				xmldata.async = false;
+				xmldata.loadXML(str);
+				ret = xmldata;
+			} else if(typeof(XMLHttpRequest) != 'undefined') {
+				xmldata = new XMLHttpRequest;
+				if (!contentType) {
+					contentType = 'application/xml';
+				}
+				xmldata.open('GET', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(str), false);
+				if (xmldata.overrideMimeType) {
+					xmldata.overrideMimeType(contentType);
+				}
+				xmldata.send(null);
+				ret = xmldata.responseXML;
+			};
+			return ret;
+		};
+	}
 	this.parser = new DOMParser();
 	var inst_txt = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"/></docco>";
 	var inst_doc = this.parser.parseFromString(inst_txt, "text/xml");
