@@ -53,6 +53,8 @@ dojo.registerModulePath("csl","./src");
 dojo.registerModulePath("csl.output","./src/output");
 dojo.registerModulePath("doh","./dojo/util/doh");
 
+load("./xmle4x.js");
+load("./xmldom.js");
 load("./citeproc.js");
 
 print("#####");

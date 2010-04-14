@@ -36,11 +36,7 @@
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
 	this.sys = sys;
-	if (xmlmode) {
-		this.sys.xml = new CSL.System.Xml[xmlmode]();
-	} else {
-		this.sys.xml = new CSL.System.Xml.E4X();
-	}
+	this.sys.xml = new CSL.System.Xml.Parsing();
 	if ("string" !== typeof style) {
 		style = "";
 	}

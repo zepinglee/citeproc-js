@@ -33,5 +33,16 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
+var XML_PARSING;
+var CSL_E4X;
+var CSL_CHROME;
+if (CSL_E4X) {
+	XML_PARSING = CSL_E4X;
+} else {
+	XML_PARSING = CSL_CHROME;
+}
+
 CSL.System = {};
-CSL.System.Xml = {};
+CSL.System.Xml = {
+	"Parsing": XML_PARSING
+};

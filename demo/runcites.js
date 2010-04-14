@@ -85,7 +85,7 @@ var insert = function(){
 	var sys = new Sys(abbreviations);
 
 	// Chicago Author-Date
-	citeproc = new CSL.Engine(sys, chicago_author_date, false, "DOM");
+	citeproc = new CSL.Engine(sys, chicago_author_date);
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	output = citeproc.makeBibliography();
 	if (output && output.length && output[1].length){
@@ -94,7 +94,7 @@ var insert = function(){
 	}
 
 	// Subsectioned
-	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography, false, "DOM");
+	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography);
 	citeproc.setAbbreviations("default");
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6", "ITEM-10","ITEM-11","ITEM-12"]);
 	citeproc.appendCitationCluster(citation);
@@ -143,7 +143,7 @@ var insert = function(){
 	}
 
 	// Listing
-	citeproc = new CSL.Engine(sys,chicago_author_date_listing, false, "DOM");
+	citeproc = new CSL.Engine(sys,chicago_author_date_listing);
 	citeproc.updateItems(["ITEM-1", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6", "ITEM-7", "ITEM-8","ITEM-9"]);
 	citeproc.setAbbreviations("default");
 	output = citeproc.makeBibliography();
@@ -153,7 +153,7 @@ var insert = function(){
 	}
 
 	// IEEE
-	citeproc = new CSL.Engine(sys,ieee, false, "DOM");
+	citeproc = new CSL.Engine(sys,ieee);
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	citeproc.setAbbreviations("slightly_weird");
 	output = citeproc.makeBibliography();
@@ -163,7 +163,7 @@ var insert = function(){
 	}
 
 	// Annotated
-	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography2, false, "DOM");
+	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography2);
 	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
 	citeproc.setAbbreviations("default");
 	output = citeproc.makeBibliography();

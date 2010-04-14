@@ -346,8 +346,9 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 		if ("undefined" === typeof out.length) {
 			out = out.blobs;
 		}
-		for each (pos in this.delim_pointers) {
-			out[pos].parallel_delimiter = ", ";
+		for (pos = 0, len = this.delim_pointers.length; pos < len; pos += 1) {
+			ppos = this.delim_pointers[pos];
+			out[ppos].parallel_delimiter = ", ";
 		}
 		len = varnames.length - 1;
 		for (pos = len; pos > -1; pos += -1) {

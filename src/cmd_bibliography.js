@@ -128,7 +128,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug, collapse_parallel;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug, collapse_parallel, i, siblings;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -257,7 +257,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 			this.output.queue[0].strings.delimiter = ", ";
 			CSL.getCite.call(this, item);
 			skips[item.id] = true;
-			for each (i in this.registry.registry[item.id].siblings) {
+			siblings = this.registry.registry[item.id].siblings;
+			for (ppos = 0, llen = siblings.length; ppos < llen; ppos += 1) {
+				i = this.registry.registry[item.id].siblings[ppos];
 				var eyetem = this.sys.retrieveItem(i);
 				CSL.getCite.call(this, eyetem);
 				skips[eyetem.id] = true;

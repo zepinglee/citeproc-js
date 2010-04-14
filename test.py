@@ -81,7 +81,7 @@ class Bundle:
         f.extend(["node_etal","node_group","node_if","node_info","node_institution"])
         f.extend(["node_institutionpart","node_key","node_label","node_layout","node_macro"])
         f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
-        f.extend(["node_substitute","node_text","attributes","system","xmle4x","xmldom"])
+        f.extend(["node_substitute","node_text","attributes","system"])
         f.extend(["stack","util_abbrev"])
         f.extend(["util_parallel","obj_token","obj_ambigconfig","obj_blob","obj_number"])
         f.extend(["util","util_datenode","util_institutions","util_names","util_dates"])
@@ -94,19 +94,30 @@ class Bundle:
         if os.path.exists( self.citeproc ):
             os.unlink(self.citeproc)
 
+    def cleanFile(self, subfile):
+        subfile = fixEndings(subfile)
+        subfile = re.sub("(?sm)^\s*/\*.*?^\s*\*/","",subfile)
+        subfile = re.sub("(?sm)^\s*//SNIP-START.*?^\s*//SNIP-END","",subfile)
+        subfile = re.sub("(?sm)^\s*//.*?$","",subfile)
+        subfile = re.sub("(?sm)^\s*load.*?$","",subfile)
+        subfile = re.sub("(?sm)^\s*\n","",subfile)
+        return subfile
+
     def createNewBundle(self):
         file = ""
         for f in self.files:
             filename = os.path.join( "src", "%s.js"%f)
             ifh = open(filename)
-            subfile = fixEndings(ifh.read())
-            subfile = re.sub("(?sm)^\s*/\*.*?^\s*\*/","",subfile)
-            subfile = re.sub("(?sm)^\s*//SNIP-START.*?^\s*//SNIP-END","",subfile)
-            subfile = re.sub("(?sm)^\s*//.*?$","",subfile)
-            subfile = re.sub("(?sm)^\s*load.*?$","",subfile)
-            subfile = re.sub("(?sm)^\s*\n","",subfile)
-            file += subfile
+            file += self.cleanFile(ifh.read())
         open(self.citeproc,"w+").write(file)
+        open(os.path.join("demo", self.citeproc),"w+").write(file)
+
+        for f in ["xmle4x", "xmldom"]:
+            filename = os.path.join( "src", "%s.js" % f)
+            ifh = open(filename)
+            file = self.cleanFile(ifh.read())
+            open("%s.js" % f, "w+").write(file)
+            open(os.path.join("demo", "%s.js" % f), "w+").write(file)
 
 class Params:
     def __init__(self,opt,args,force=None):

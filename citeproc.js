@@ -1199,11 +1199,7 @@ CSL.dateParser = function (txt) {
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
 	this.sys = sys;
-	if (xmlmode) {
-		this.sys.xml = new CSL.System.Xml[xmlmode]();
-	} else {
-		this.sys.xml = new CSL.System.Xml.E4X();
-	}
+	this.sys.xml = new CSL.System.Xml.Parsing();
 	if ("string" !== typeof style) {
 		style = "";
 	}
@@ -1889,7 +1885,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	return [params, ret];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug, collapse_parallel;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, cites, debug, collapse_parallel, i, siblings;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -1994,7 +1990,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 			this.output.queue[0].strings.delimiter = ", ";
 			CSL.getCite.call(this, item);
 			skips[item.id] = true;
-			for each (i in this.registry.registry[item.id].siblings) {
+			siblings = this.registry.registry[item.id].siblings;
+			for (ppos = 0, llen = siblings.length; ppos < llen; ppos += 1) {
+				i = this.registry.registry[item.id].siblings[ppos];
 				var eyetem = this.sys.retrieveItem(i);
 				CSL.getCite.call(this, eyetem);
 				skips[eyetem.id] = true;
@@ -4648,355 +4646,17 @@ CSL.Attributes["@reverse-order"] = function (state, arg) {
 CSL.Attributes["@display"] = function (state, arg) {
 	this.strings.cls = arg;
 };
+var XML_PARSING;
+var CSL_E4X;
+var CSL_CHROME;
+if (CSL_E4X) {
+	XML_PARSING = CSL_E4X;
+} else {
+	XML_PARSING = CSL_CHROME;
+}
 CSL.System = {};
-CSL.System.Xml = {};
-CSL.System.Xml.E4X = function () {};
-CSL.System.Xml.E4X.prototype.clean = function (xml) {
-	xml = xml.replace(/<\?[^?]+\?>/g, "");
-	xml = xml.replace(/<![^>]+>/g, "");
-	xml = xml.replace(/^\s+/g, "");
-	xml = xml.replace(/\s+$/g, "");
-	return xml;
-};
-CSL.System.Xml.E4X.prototype.children = function (myxml) {
-	return myxml.children();
-};
-CSL.System.Xml.E4X.prototype.nodename = function (myxml) {
-	var ret = myxml.localName();
-	return ret;
-};
-CSL.System.Xml.E4X.prototype.attributes = function (myxml) {
-	var ret, attrs, attr, key, xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	ret = new Object();
-	attrs = myxml.attributes();
-	for each (attr in attrs) {
-		key = "@" + attr.localName();
-		if (key.slice(0,5) == "@e4x_") {
-			continue;
-		}
-		ret[key] = attr.toString();
-	}
-	return ret;
-};
-CSL.System.Xml.E4X.prototype.content = function (myxml) {
-	return myxml.toString();
-};
-CSL.System.Xml.E4X.prototype.namespace = {
-	"xml":"http://www.w3.org/XML/1998/namespace"
-}
-CSL.System.Xml.E4X.prototype.numberofnodes = function (myxml) {
-	return myxml.length();
-};
-CSL.System.Xml.E4X.prototype.getAttributeName = function (attr) {
-	var ret = attr.localName();
-	return ret;
-}
-CSL.System.Xml.E4X.prototype.getAttributeValue = function (myxml,name,namespace) {
-	var xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	if (namespace) {
-		var ns = new Namespace(this.namespace[namespace]);
-		var ret = myxml.@ns::[name].toString();
-	} else {
-		if (name) {
-			var ret = myxml.attribute(name).toString();
-		} else {
-			var ret = myxml.toString();
-		}
-	}
-	return ret;
-}
-CSL.System.Xml.E4X.prototype.getNodeValue = function (myxml,name) {
-	var xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	if (name){
-		return myxml[name].toString();
-	} else {
-		return myxml.toString();
-	}
-}
-CSL.System.Xml.E4X.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,attrname,attr,val) {
-	var xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	if (attr[0] != '@'){
-		attr = '@'+attr;
-	}
-	myxml[nodename].(@name == attrname)[0][attr] = val;
-}
-CSL.System.Xml.E4X.prototype.deleteNodeByNameAttribute = function (myxml,val) {
-	delete myxml.*.(@name==val)[0];
-}
-CSL.System.Xml.E4X.prototype.deleteAttribute = function (myxml,attr) {
-	delete myxml["@"+attr];
-}
-CSL.System.Xml.E4X.prototype.setAttribute = function (myxml,attr,val) {
-	myxml['@'+attr] = val;
-}
-CSL.System.Xml.E4X.prototype.nodeCopy = function (myxml) {
-	return myxml.copy();
-}
-CSL.System.Xml.E4X.prototype.getNodesByName = function (myxml,name,nameattrval) {
-	var xml, ret;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	ret = myxml.descendants(name);
-	if (nameattrval){
-		ret = ret.(@name == nameattrval);
-	}
-	return ret;
-}
-CSL.System.Xml.E4X.prototype.nodeNameIs = function (myxml,name) {
-	var xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	if (myxml.localName().toString() == name){
-		return true;
-	}
-	return false;
-}
-CSL.System.Xml.E4X.prototype.makeXml = function (myxml) {
-	var xml;
-	if ("xml" == typeof myxml){
-		myxml = myxml.toXMLString();
-	};
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	xml = new Namespace("http://www.w3.org/XML/1998/namespace");
-	if (myxml){
-		myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
-		myxml = new XML(myxml);
-	} else {
-		myxml = new XML();
-	}
-	return myxml;
-};
-CSL.System.Xml.E4X.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
-	var myxml, xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	myxml = XML(datexml.toXMLString());
-	parent.insertChildAfter(node,myxml);
-	delete parent.*[pos];
-	return parent;
-};
-CSL.System.Xml.E4X.prototype.addInstitutionNodes = function(myxml) {
-	var institution_long, institution_short, children, node, xml;
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	institution_long = <institution
-		institution-parts="long"
-		delimiter=", "
-		substitute-use-first="1"
-		use-last="1"/>;
-	institution_short = <institution
-		institution-parts="long"
-		delimiter=", "
-		substitute-use-first="1"
-		use-last="1"/>;
-	for each (node in myxml..names) {
-		if ("xml" == typeof node && node.elements("name").length() > 0) {
-			if (!node.institution.toString()) {
-				node.name += institution_long;
-			}
-		}
-	}
-};
-CSL.System.Xml.DOM = function () {
-	if (typeof (DOMParser) == 'undefined') {
-		DOMParser = function() {};
-		DOMParser.prototype.parseFromString = function (str, contentType) {
-			var xmldata, ret;
-			if (typeof (ActiveXObject) != 'undefined') {
-				xmldata = new ActiveXObject('MSXML.DomDocument');
-				xmldata.async = false;
-				xmldata.loadXML(str);
-				ret = xmldata;
-			} else if(typeof(XMLHttpRequest) != 'undefined') {
-				xmldata = new XMLHttpRequest;
-				if (!contentType) {
-					contentType = 'application/xml';
-				}
-				xmldata.open('GET', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(str), false);
-				if (xmldata.overrideMimeType) {
-					xmldata.overrideMimeType(contentType);
-				}
-				xmldata.send(null);
-				ret = xmldata.responseXML;
-			};
-			return ret;
-		};
-	}
-	this.parser = new DOMParser();
-	var inst_txt = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"/></docco>";
-	var inst_doc = this.parser.parseFromString(inst_txt, "text/xml");
-	var inst_node = inst_doc.getElementsByTagName("institution");
-	this.institution = inst_node.item(0);
-	this.ns = "http://purl.org/net/xbiblio/csl";
-};
-CSL.System.Xml.DOM.prototype.clean = function (xml) {
-	xml = xml.replace(/<\?[^?]+\?>/g, "");
-	xml = xml.replace(/<![^>]+>/g, "");
-	xml = xml.replace(/^\s+/, "");
-	xml = xml.replace(/\s+$/, "");
-	xml = xml.replace(/^\n*/, "");
-	return xml;
-};
-CSL.System.Xml.DOM.prototype.children = function (myxml) {
-	var children, pos, len, ret;
-	if (myxml) {
-		ret = [];
-		children = myxml.childNodes;
-		for (pos = 0, len = children.length; pos < len; pos += 1) {
-			if (children[pos].nodeName != "#text") {
-				ret.push(children[pos]);
-			}
-		}
-		return ret;
-	} else {
-		return [];
-	}
-};
-CSL.System.Xml.DOM.prototype.nodename = function (myxml) {
-	var ret = myxml.nodeName;
-	return ret;
-};
-CSL.System.Xml.DOM.prototype.attributes = function (myxml) {
-	var ret, attrs, attr, key, xml, pos, len;
-	ret = new Object();
-	if (myxml && myxml.hasAttributes()) {
-		attrs = myxml.attributes;
-		for (pos = 0, len=attrs.length; pos < len; pos += 1) {
-			attr = attrs[pos];
-			ret["@" + attr.name] = attr.value;
-		}
-	}
-	return ret;
-};
-CSL.System.Xml.DOM.prototype.content = function (myxml) {
-	return myxml.textContent;
-};
-CSL.System.Xml.DOM.prototype.namespace = {
-	"xml":"http://www.w3.org/XML/1998/namespace"
-}
-CSL.System.Xml.DOM.prototype.numberofnodes = function (myxml) {
-	if (myxml) {
-		return myxml.length;
-	} else {
-		return 0;
-	}
-};
-CSL.System.Xml.DOM.prototype.getAttributeName = function (attr) {
-	var ret = attr.name;
-	return ret;
-}
-CSL.System.Xml.DOM.prototype.getAttributeValue = function (myxml,name,namespace) {
-	var ret = "";
-	if (myxml && myxml.hasAttributes() && myxml.attributes[name]) {
-		ret = myxml.attributes[name].value;
-	}
-	return ret;
-}
-CSL.System.Xml.DOM.prototype.getNodeValue = function (myxml,name) {
-	var ret = "";
-	if (name){
-		var vals = myxml.getElementsByTagName(name);
-		if (vals.length > 0) {
-			ret = vals[0].textContent;
-		}
-	} else {
-		ret = myxml;
-	}
-	if (ret && ret.childNodes && (ret.childNodes.length == 0 || (ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text"))) {
-		ret = myxml.textContent;
-	}
-	return ret;
-}
-CSL.System.Xml.DOM.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,attrname,attr,val) {
-	var xml;
-	alert("Todo (1)");
-	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	if (attr[0] != '@'){
-		attr = '@'+attr;
-	}
-	myxml[nodename].(@name == attrname)[0][attr] = val;
-}
-CSL.System.Xml.DOM.prototype.deleteNodeByNameAttribute = function (myxml,val) {
-	var pos, len, node, nodes;
-	nodes = myxml.childNodes;
-	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
-		node = nodes[pos];
-		if (!node || node.nodeType == node.TEXT_NODE) {
-			continue;
-		}
-		if (node.hasAttributes() && node.attributes.name.value == val) {
-			myxml.removeChild(nodes[pos]);
-		}
-	}
-}
-CSL.System.Xml.DOM.prototype.deleteAttribute = function (myxml,attr) {
-	myxml.removeAttribute(attr);
-}
-CSL.System.Xml.DOM.prototype.setAttribute = function (myxml,attr,val) {
-	var attribute;
-	if (!myxml.ownerDocument) {
-		myxml = myxml.firstChild;
-	}
-	attribute = myxml.ownerDocument.createAttribute(attr);
-	myxml.setAttribute(attr, val);
-    return false;
-}
-CSL.System.Xml.DOM.prototype.nodeCopy = function (myxml) {
-	var cloned_node = myxml.cloneNode(true);
-	return cloned_node;
-}
-CSL.System.Xml.DOM.prototype.getNodesByName = function (myxml,name,nameattrval) {
-	var ret, nodes, node, pos, len;
-	ret = [];
-	nodes = myxml.getElementsByTagName(name);
-	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
-		node = nodes[pos];
-		if (nameattrval && !(node.hasAttributes() && node.attributes.name && node.attributes.name.value == nameattrval)) {
-			continue;
-		}
-		ret.push(node);
-	}
-	return ret;
-}
-CSL.System.Xml.DOM.prototype.nodeNameIs = function (myxml,name) {
-	if (myxml.nodeName == "#document" && myxml.firstChild.nodeName == name) {
-		return true;
-	}
-	if (name == myxml.nodeName) {
-		return true;
-	}
-	return false;
-}
-CSL.System.Xml.DOM.prototype.makeXml = function (myxml) {
-	var ret, topnode;
-	if (!myxml) {
-		myxml = "<bogus/>";
-	}
-	var nodetree = this.parser.parseFromString(myxml, "text/xml");
-	return nodetree;
-};
-CSL.System.Xml.DOM.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
-	var myxml, xml;
-	myxml = node.ownerDocument.importNode(datexml, true);
-	parent.replaceChild(myxml, node);
-	return parent;
-};
-CSL.System.Xml.DOM.prototype.addInstitutionNodes = function(myxml) {
-	var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
-	names = myxml.getElementsByTagName("names");
-	for (pos = 0, len = names.length; pos < len; pos += 1) {
-		thenames = names[pos];
-		name = thenames.getElementsByTagName("name");
-		if (name.length == 0) {
-			continue;
-		}
-		institution = thenames.getElementsByTagName("institution");
-		if (institution.length == 0) {
-			theinstitution = myxml.importNode(this.institution, true);
-			thename = name[0];
-			thenames.insertBefore(theinstitution, thename.nextSibling);
-		}
-	}
+CSL.System.Xml = {
+	"Parsing": XML_PARSING
 };
 CSL.Stack = function (val, literal) {
 	this.mystack = [];
@@ -5281,8 +4941,9 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 		if ("undefined" === typeof out.length) {
 			out = out.blobs;
 		}
-		for each (pos in this.delim_pointers) {
-			out[pos].parallel_delimiter = ", ";
+		for (pos = 0, len = this.delim_pointers.length; pos < len; pos += 1) {
+			ppos = this.delim_pointers[pos];
+			out[ppos].parallel_delimiter = ", ";
 		}
 		len = varnames.length - 1;
 		for (pos = len; pos > -1; pos += -1) {
