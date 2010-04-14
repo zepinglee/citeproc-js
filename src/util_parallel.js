@@ -265,9 +265,11 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 	if (this.use_parallels) {
 		// a bit loose here: zero-length sets relate to one cite,
 		// apparently.
-		if (this.sets.value().length < 2 && !this.in_series) {
-			this.sets.value().pop();
-			this.delim_counter += 1;
+		if (this.sets.value().length == 1) {
+			if (!this.in_series) {
+				this.sets.value().pop();
+				this.delim_counter += 1;
+			}
 		} else {
 			len = this.sets.value().length;
 			for (pos = 0; pos < len; pos += 1) {
