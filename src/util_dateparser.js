@@ -68,7 +68,7 @@ CSL.dateParser = function (txt) {
 	// japanese regular expression for year
 	jy = /\u65E5$/;
 	// japanese regular expression for range
-	jr = /〜/g;
+	jr = /\u301c/g;
 
 	// main parsing regexps
 	yearlast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
