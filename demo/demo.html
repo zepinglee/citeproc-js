@@ -15,23 +15,27 @@
 
 	<h1>CSL Bibliography Samples</h1>
 
-	<p>When viewed in Firefox with Javascript enabled, this page will
-       display a set of example bibliographies that illustrate some of
-       the capabilities of the citeproc-js citation formatter.  For more
-       details, see the <a href="http://citationstyles.org/">CSL website</a>
-       and the 
+	<p>When viewed in Firefox, Safari or Google Chrome with Javascript
+       enabled, this page will display a set of example bibliographies
+       that illustrate some of the capabilities of
+       the <span style="font-family: courier,
+       monospace">citeproc-js</span> citation formatter, which
+       implements CSL 1.0.  For more details, see
+       the <a href="http://citationstyles.org/">CSL website</a> and
+       the
        <a href="http://gsl-nagoya-u.net/http/pub/citeproc-doc.html">processor manual</a>.
     </p>
 
-    <p>A few comments on the bibliography listings below.  These are generated
-       from a single set of database entries; the formatting you see is
-       entirely controlled by style code fed to the CSL processor inside
-       your browser.  In this page, the style code has been handled using 
-       the DOM (Document Object Model, a standard mechanism for parsing
-       structured documents, available in all modern Web browsers).  For
-       server-side use, the processor can also use the E4X parsing engine,
-       which is available natively in the Rhino, Spidermonkey and
-       Tracemonkey Javascript implementations.
+    <p>A few comments on the bibliography listings below.  These are
+       generated from a single set of database entries; the formatting
+       you see is entirely controlled by style code fed to the CSL
+       processor inside your browser.  When viewed in Internet
+       Explorer, Safari or Google Chrome, the CSL style code is read
+       using the DOM (Document Object Model, a standard mechanism for
+       parsing structured documents).  For server-side use and in the
+       Firefox browser, the processor uses the E4X parsing engine
+       instead, which is available natively in the Rhino, Spidermonkey
+       and Tracemonkey javascript implementations.
     </p>
 
     <p>If parsing fails and you do not see bibliography listings below,
@@ -41,7 +45,7 @@
     </p>
 
     <div class="heading">
-       Chicago Author-Date (names sorted alphabetically, titles translated, no abbreviations)
+       Chicago Author-Date (names sorted alphabetically, titles translated, no abbreviations, year italicized for testing purposes)
     </div>
 	<div class="hangindent" id="chicago_author_date">[Sorry, the bibliography processor requires a Firefox browser with Javascript enabled.]</div>
 
