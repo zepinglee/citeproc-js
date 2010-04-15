@@ -34,7 +34,7 @@
  */
 
 CSL.Util.fixDateNode = function (parent, pos, node) {
-	var form, variable, datexml, subnode, partname, attrname, attrval, prefix, suffix, children, key, cchildren, attr, kkey, display;
+	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, cchildren, kkey, display;
 	form = this.sys.xml.getAttributeValue(node, "form");
 	if (!form) {
 		return parent;
@@ -79,20 +79,17 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	//
 	children = this.sys.xml.children(node);
 	for (key in children) {
-		if ("xml" === typeof children[key]) {
-			subnode = children[key];
-			if ("date-part" === this.sys.xml.nodename(subnode)) {
-				partname = this.sys.xml.getAttributeValue(subnode, "name");
-				cchildren = this.sys.xml.attributes(subnode);
-				for (attrname in cchildren) {
-					if (cchildren.hasOwnProperty(attrname)) {
-					//if ("xml" === typeof cchildren[kkey]) {
-						//attr = cchildren[kkey];
-						//attrname = this.sys.xml.getAttributeName(attr);
-						//attrval = this.sys.xml.getAttributeValue(attr);
-						attrval = cchildren[attrname];
-						this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attrname, attrval);
+		subnode = children[key];
+		if ("date-part" === this.sys.xml.nodename(subnode)) {
+			partname = this.sys.xml.getAttributeValue(subnode, "name");
+			cchildren = this.sys.xml.attributes(subnode);
+			for (attr in cchildren) {
+				if (cchildren.hasOwnProperty(attr)) {
+					if (attr == "@name") {
+						continue;
 					}
+					val = cchildren[attr];
+					this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 				}
 			}
 		}
