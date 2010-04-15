@@ -245,9 +245,10 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		head.push(resplice);
 		strs = head.concat(tail);
 	}
+
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
-		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"));
+		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"), "g");
 		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
 	}
 	return strs;
