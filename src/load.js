@@ -58,6 +58,24 @@
 //	print(str);
 //}
 
+// Unbelievable.  IE 6 does not implement Array.indexOf()?
+
+if (!Array.indexOf) {
+	Array.prototype.indexOf = function(obj){
+		var i, len;
+		for(i = 0, len = this.length; i < len; i += 1){
+			if(this[i] == obj){
+				return i;
+			}
+		}
+		return -1;
+	};
+}
+
+//var alert = function (one) { print(one); };
+var alert = function (one) { };
+
+
 var CSL = {
 
 	//SNIP-START
@@ -209,8 +227,16 @@ var CSL = {
 
 	// TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
 	TAG_ESCAPE: function (str) {
-		var lst, len, pos, m, buf1, buf2, idx;
-		lst = str.split(/(<span\s+class=\"no(?:case|decor)\">)/);
+		var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+		// Workaround for Internet Exporer
+		mx = str.match(/(<span\s+class=\"no(?:case|decor)\">)/g);
+		lst = str.split(/<span\s+class=\"no(?:case|decor)\">/g);
+		myret = [lst[0]];
+		for (pos = 1, len = lst.length; pos < len; pos += 1) {
+			myret.push(mx[pos - 1]);
+			myret.push(lst[pos]);
+		}
+		lst = myret.slice();
 		len = lst.length - 1;
 		for (pos = len; pos > 1; pos += -2) {
 			m = lst[pos].match(/<\/span>/);

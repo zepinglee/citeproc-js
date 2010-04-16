@@ -274,7 +274,7 @@ CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
  * Initialize a name.
  */
 CSL.Util.Names.initializeWith = function (state, name, terminator) {
-	var namelist, l, i, n, m, extra, ret, s, c, pos, len, ppos, llen, llst;
+	var namelist, l, i, n, m, extra, ret, s, c, pos, len, ppos, llen, llst, mx, lst;
 	if (!name) {
 		return "";
 	}
@@ -282,14 +282,15 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 	if (state.opt["initialize-with-hyphen"] === false) {
 		namelist = namelist.replace(/\-/g, " ");
 	}
-	namelist = namelist.replace(/\./g, " ").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ").split(/(\-|\s+)/);
+	namelist = namelist.replace(/\./g, " ").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
+	// Workaround for Internet Explorer
+	namelist = namelist.split(/(\-|\s+)/);
 	l = namelist.length;
 	for (pos = 0; pos < l; pos += 2) {
 		n = namelist[pos];
 		m = n.match(CSL.NAME_INITIAL_REGEXP);
 		if (m && m[1] === m[1].toUpperCase()) {
 			extra = "";
-			// extra upper-case characters also included
 			if (m[2]) {
 				s = "";
 				llst = m[2].split("");
@@ -317,7 +318,6 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 				namelist.push(terminator);
 			}
 		} else if (n.match(CSL.ROMANESQUE_REGEXP)) {
-			// romanish things that began with lower-case characters don't get initialized ...
 			namelist[pos] = " " + n;
 		}
 	}

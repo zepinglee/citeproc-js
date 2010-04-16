@@ -81,7 +81,8 @@ CSL.Mode = function (mode) {
 	params = CSL.Output.Formats[mode];
 	for (param in params) {
 		if (true) {
-			if ("@" !== param[0]) {
+
+			if ("@" !== param.slice(0,1)) {
 				decorations[param] = params[param];
 				continue;
 			}

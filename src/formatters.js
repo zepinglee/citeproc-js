@@ -129,29 +129,31 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
  * already.
  */
 CSL.Output.Formatters.title = function (state, string) {
-	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos;
+	var str, words, isUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
 	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
 	}
 
 	// split words
-	words = str.string.split(/(\s+)/);
+	// Workaround for Internet Explorer
+	mx = str.string.match(/(\s+)/g);
+	lst = str.string.split(/\s+/);
+	myret = [lst[0]];
+	for (pos = 1, len = lst.length; pos < len; pos += 1) {
+		myret.push(mx[pos - 1]);
+		myret.push(lst[pos]);
+	}
+	words = myret.slice();
 	isUpperCase = str.string.toUpperCase() === string;
-
 	newString = "";
-	delimiterOffset = words[0].length;
 	lastWordIndex = words.length - 1;
 	previousWordIndex = -1;
 	for (pos = 0; pos <= lastWordIndex;  pos += 2) {
-		// only do manipulation if not a delimiter character
 		if (words[pos].length !== 0 && (words[pos].length !== 1 || !/\s+/.test(words[pos]))) {
 			upperCaseVariant = words[pos].toUpperCase();
 			lowerCaseVariant = words[pos].toLowerCase();
-
-			// only use if word does not already possess some capitalization
 			if (isUpperCase || words[pos] === lowerCaseVariant) {
-				// complicated, but avoids use of insecure regular expression wildcard
 				skip = false;
 				len = CSL.SKIP_WORDS.length;
 				for (ppos = 0; ppos < len; ppos += 1) {
@@ -164,7 +166,6 @@ CSL.Output.Formatters.title = function (state, string) {
 						}
 					}
 				}
-				//skip = CSL.SKIP_WORDS.indexOf(lowerCaseVariant.replace(/[^a-zA-Z]+/, "")) !== -1;
 				notfirst = pos !== 0;
 				notlast = pos !== lastWordIndex;
 				firstword = previousWordIndex === -1;
@@ -172,8 +173,6 @@ CSL.Output.Formatters.title = function (state, string) {
 				if (skip && notfirst && notlast && (firstword || aftercolon)) {
 					words[pos] = lowerCaseVariant;
 				} else {
-					// this is not a skip word or comes after a colon;
-					// we must capitalize
 					words[pos] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
 				}
 			}

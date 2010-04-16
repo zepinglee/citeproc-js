@@ -158,11 +158,7 @@ CSL.XmlToToken = function (state, tokentype) {
 				try {
 					CSL.Attributes[key].call(token, state, "" + attributes[key]);
 				} catch (e) {
-					if (e === "TypeError: Cannot call method \"call\" of undefined") {
-						throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
-					} else {
-						throw "CSL processor error, " + key + " attribute: " + e;
-					}
+					alert("Unknown attribute? \"" + key + "\" in node \"" + name + "\" while processing CSL file");
 				}
 			}
 		}

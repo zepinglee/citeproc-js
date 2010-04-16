@@ -630,16 +630,29 @@ CSL.Attributes["@page-range-format"] = function (state, arg) {
 
 
 CSL.Attributes["@default-locale"] = function (state, arg) {
-	var lst, len, pos;
-	lst = arg;
-	lst = lst.split(/-x-(sort|pri|sec|name)-/);
+	var lst, len, pos, m, ret;
+	//alert("workaround in @default-locale: " + arg);
+	// Workaround for Internet Exploder 6
+	m = arg.match(/-x-(sort|pri|sec|name)-/g);
+	if (m) {
+		for (pos = 0, len = m.length; pos < len; pos += 1) {
+			m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/,"");
+		}
+	}
+	lst = arg.split(/-x-(?:sort|pri|sec|name)-/);
+	ret = [lst[0]];
+	for (pos = 1, len = lst.length; pos < len; pos += 1) {
+		ret.push(m[pos - 1]);
+		ret.push(lst[pos]);
+	}
+	lst = ret.slice();
 	len = lst.length;
 	for (pos = 1; pos < len; pos += 2) {
 		state.opt[("locale-" + lst[pos])].push(lst[(pos + 1)].replace(/^\s*/g, "").replace(/\s*$/g, ""));
 	}
-	if (len) {
+	if (lst.length) {
 		state.opt["default-locale"] = lst.slice(0, 1);
-	} else {
+	} 	else {
 		state.opt["default-locale"] = ["en"];
 	}
 };

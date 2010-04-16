@@ -72,7 +72,7 @@ CSL.Node.number = {
 			num = Item[varname];
 			if ("undefined" !== typeof num) {
 				if (this.variables[0] === "page-first") {
-					m = num.split(/\s*(&|,|-)\s*/);
+					m = num.split(/\s*(?:&|,|-)\s*/);
 					num = m[0];
 				}
 				m = num.match(/\s*([0-9]+)/);

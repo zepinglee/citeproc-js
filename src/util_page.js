@@ -51,8 +51,16 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	};
 
 	listify = function (str) {
-		lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
-		return lst;
+		var m, lst, ret;
+		// Workaround for Internet Explorer
+		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
+		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
+		ret = [lst[0]];
+		for (pos = 1, len = lst.length; pos < len; pos += 1) {
+			ret.push(m[pos - 1]);
+			ret.push(lst[pos]);
+		}
+		return ret;
 	};
 
 	expand = function (str) {

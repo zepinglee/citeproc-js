@@ -359,6 +359,7 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	ret = "";
 	if ("undefined" == typeof hash[term]) {
 		if (mode === CSL.STRICT) {
+			alert("Error in getField: term\"" + term + "\" does not exist.");
 			throw "Error in getField: term\"" + term + "\" does not exist.";
 		} else {
 			return undefined;
@@ -444,12 +445,25 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 };
 
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
-	var lst, opt, o, pos, key, ret;
+	var m, lst, opt, o, pos, key, ret, len, myret;
 	if (!value) {
 		return "";
 	}
 	ret = "";
-	lst = value.split(/\s*:([\-a-zA-Z0-9]+):\s*/);
+	// Workaround for Internet Explorer
+	m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
+	if (m) {
+		for (pos = 0, len = m.length; pos < len; pos += 1) {
+			m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/,"");
+		}
+	}
+	lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
+	myret = [lst[0]];
+	for (pos = 1, len = lst.length; pos < len; pos += 1) {
+		myret.push(m[pos - 1]);
+		myret.push(lst[pos]);
+	}
+	lst = myret.slice();
 	opt = this.opt[locale_type];
 	for (key in opt) {
 		if (opt.hasOwnProperty(key)) {

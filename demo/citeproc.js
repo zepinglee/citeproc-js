@@ -1,3 +1,15 @@
+if (!Array.indexOf) {
+	Array.prototype.indexOf = function(obj){
+		var i, len;
+		for(i = 0, len = this.length; i < len; i += 1){
+			if(this[i] == obj){
+				return i;
+			}
+		}
+		return -1;
+	};
+}
+var alert = function (one) { };
 var CSL = {
 	error: function (str) {
 		print(str);
@@ -98,8 +110,15 @@ var CSL = {
 	NUMERIC_VARIABLES: ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"],
 	DATE_VARIABLES: ["issued", "event", "accessed", "container", "original-date"],
 	TAG_ESCAPE: function (str) {
-		var lst, len, pos, m, buf1, buf2, idx;
-		lst = str.split(/(<span\s+class=\"no(?:case|decor)\">)/);
+		var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+		mx = str.match(/(<span\s+class=\"no(?:case|decor)\">)/g);
+		lst = str.split(/<span\s+class=\"no(?:case|decor)\">/g);
+		myret = [lst[0]];
+		for (pos = 1, len = lst.length; pos < len; pos += 1) {
+			myret.push(mx[pos - 1]);
+			myret.push(lst[pos]);
+		}
+		lst = myret.slice();
 		len = lst.length - 1;
 		for (pos = len; pos > 1; pos += -2) {
 			m = lst[pos].match(/<\/span>/);
@@ -791,7 +810,7 @@ CSL.Mode = function (mode) {
 	params = CSL.Output.Formats[mode];
 	for (param in params) {
 		if (true) {
-			if ("@" !== param[0]) {
+			if ("@" !== param.slice(0,1)) {
 				decorations[param] = params[param];
 				continue;
 			}
@@ -945,11 +964,7 @@ CSL.XmlToToken = function (state, tokentype) {
 				try {
 					CSL.Attributes[key].call(token, state, "" + attributes[key]);
 				} catch (e) {
-					if (e === "TypeError: Cannot call method \"call\" of undefined") {
-						throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
-					} else {
-						throw "CSL processor error, " + key + " attribute: " + e;
-					}
+					alert("Unknown attribute? \"" + key + "\" in node \"" + name + "\" while processing CSL file");
 				}
 			}
 		}
@@ -983,7 +998,7 @@ CSL.dateParser = function (txt) {
 	jiysplitter = new RegExp(jiysplitter);
 	jmd = /(\u6708|\u5E74)/g;
 	jy = /\u65E5$/;
-	jr = /〜/g;
+	jr = /\u301c/g;
 	yearlast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
 	yearfirst = "[?0-9]{4}(?:%%NUMD%%[?0-9]{1,2}){0,2}(?![0-9])";
 	number = "[?0-9]{1,3}";
@@ -1360,6 +1375,7 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	ret = "";
 	if ("undefined" == typeof hash[term]) {
 		if (mode === CSL.STRICT) {
+			alert("Error in getField: term\"" + term + "\" does not exist.");
 			throw "Error in getField: term\"" + term + "\" does not exist.";
 		} else {
 			return undefined;
@@ -1440,12 +1456,24 @@ CSL.Engine.prototype.setAbbreviations = function (name) {
 	}
 };
 CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
-	var lst, opt, o, pos, key, ret;
+	var m, lst, opt, o, pos, key, ret, len, myret;
 	if (!value) {
 		return "";
 	}
 	ret = "";
-	lst = value.split(/\s*:([\-a-zA-Z0-9]+):\s*/);
+	m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
+	if (m) {
+		for (pos = 0, len = m.length; pos < len; pos += 1) {
+			m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/,"");
+		}
+	}
+	lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
+	myret = [lst[0]];
+	for (pos = 1, len = lst.length; pos < len; pos += 1) {
+		myret.push(m[pos - 1]);
+		myret.push(lst[pos]);
+	}
+	lst = myret.slice();
 	opt = this.opt[locale_type];
 	for (key in opt) {
 		if (opt.hasOwnProperty(key)) {
@@ -3852,7 +3880,7 @@ CSL.Node.number = {
 			num = Item[varname];
 			if ("undefined" !== typeof num) {
 				if (this.variables[0] === "page-first") {
-					m = num.split(/\s*(&|,|-)\s*/);
+					m = num.split(/\s*(?:&|,|-)\s*/);
 					num = m[0];
 				}
 				m = num.match(/\s*([0-9]+)/);
@@ -4560,16 +4588,27 @@ CSL.Attributes["@page-range-format"] = function (state, arg) {
 	state.opt["page-range-format"] = arg;
 };
 CSL.Attributes["@default-locale"] = function (state, arg) {
-	var lst, len, pos;
-	lst = arg;
-	lst = lst.split(/-x-(sort|pri|sec|name)-/);
+	var lst, len, pos, m, ret;
+	m = arg.match(/-x-(sort|pri|sec|name)-/g);
+	if (m) {
+		for (pos = 0, len = m.length; pos < len; pos += 1) {
+			m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/,"");
+		}
+	}
+	lst = arg.split(/-x-(?:sort|pri|sec|name)-/);
+	ret = [lst[0]];
+	for (pos = 1, len = lst.length; pos < len; pos += 1) {
+		ret.push(m[pos - 1]);
+		ret.push(lst[pos]);
+	}
+	lst = ret.slice();
 	len = lst.length;
 	for (pos = 1; pos < len; pos += 2) {
 		state.opt[("locale-" + lst[pos])].push(lst[(pos + 1)].replace(/^\s*/g, "").replace(/\s*$/g, ""));
 	}
-	if (len) {
+	if (lst.length) {
 		state.opt["default-locale"] = lst.slice(0, 1);
-	} else {
+	} 	else {
 		state.opt["default-locale"] = ["en"];
 	}
 };
@@ -5396,7 +5435,7 @@ CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
 	return true;
 };
 CSL.Util.Names.initializeWith = function (state, name, terminator) {
-	var namelist, l, i, n, m, extra, ret, s, c, pos, len, ppos, llen, llst;
+	var namelist, l, i, n, m, extra, ret, s, c, pos, len, ppos, llen, llst, mx, lst;
 	if (!name) {
 		return "";
 	}
@@ -5404,7 +5443,8 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 	if (state.opt["initialize-with-hyphen"] === false) {
 		namelist = namelist.replace(/\-/g, " ");
 	}
-	namelist = namelist.replace(/\./g, " ").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ").split(/(\-|\s+)/);
+	namelist = namelist.replace(/\./g, " ").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
+	namelist = namelist.split(/(\-|\s+)/);
 	l = namelist.length;
 	for (pos = 0; pos < l; pos += 2) {
 		n = namelist[pos];
@@ -5564,8 +5604,9 @@ CSL.Util.Sort.strip_prepositions = function (str) {
 	return str;
 };
 CSL.Util.substituteStart = function (state, target) {
-	var element_trace, display, bib_first, func, choose_start, if_start;
-	if (("text" === this.name && !this.postponed_macro) || ["number", "date", "names"].indexOf(this.name) > -1) {
+	var element_trace, display, bib_first, func, choose_start, if_start, nodetypes;
+	nodetypes = ["number", "date", "names"];
+	if (("text" === this.name && !this.postponed_macro) || nodetypes.indexOf(this.name) > -1) {
 		element_trace = function (state, Item, item) {
 			if (state.tmp.element_trace.value() === "author" || "names" === this.name) {
 				if (item && item["author-only"]) {
@@ -5824,8 +5865,15 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		return lst.join("");
 	};
 	listify = function (str) {
-		lst = str.split(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/);
-		return lst;
+		var m, lst, ret;
+		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
+		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
+		ret = [lst[0]];
+		for (pos = 1, len = lst.length; pos < len; pos += 1) {
+			ret.push(m[pos - 1]);
+			ret.push(lst[pos]);
+		}
+		return ret;
 	};
 	expand = function (str) {
 		lst = listify(str);
@@ -6090,7 +6138,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 	}
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
-		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"));
+		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"), "g");
 		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
 	}
 	return strs;
@@ -6245,15 +6293,21 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
 	return CSL.Output.Formatters.undoppelString(str);
 };
 CSL.Output.Formatters.title = function (state, string) {
-	var str, words, isUpperCase, newString, delimiterOffset, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos;
+	var str, words, isUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
 	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
 	}
-	words = str.string.split(/(\s+)/);
+	mx = str.string.match(/(\s+)/g);
+	lst = str.string.split(/\s+/);
+	myret = [lst[0]];
+	for (pos = 1, len = lst.length; pos < len; pos += 1) {
+		myret.push(mx[pos - 1]);
+		myret.push(lst[pos]);
+	}
+	words = myret.slice();
 	isUpperCase = str.string.toUpperCase() === string;
 	newString = "";
-	delimiterOffset = words[0].length;
 	lastWordIndex = words.length - 1;
 	previousWordIndex = -1;
 	for (pos = 0; pos <= lastWordIndex;  pos += 2) {

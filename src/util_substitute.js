@@ -34,12 +34,13 @@
  */
 
 CSL.Util.substituteStart = function (state, target) {
-	var element_trace, display, bib_first, func, choose_start, if_start;
+	var element_trace, display, bib_first, func, choose_start, if_start, nodetypes;
 	//
 	// Contains body code for both substitute and first-field/remaining-fields
 	// formatting.
 	//
-	if (("text" === this.name && !this.postponed_macro) || ["number", "date", "names"].indexOf(this.name) > -1) {
+	nodetypes = ["number", "date", "names"];
+	if (("text" === this.name && !this.postponed_macro) || nodetypes.indexOf(this.name) > -1) {
 		element_trace = function (state, Item, item) {
 			if (state.tmp.element_trace.value() === "author" || "names" === this.name) {
 				if (item && item["author-only"]) {
