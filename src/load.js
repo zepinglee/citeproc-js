@@ -64,7 +64,7 @@ if (!Array.indexOf) {
 	Array.prototype.indexOf = function(obj){
 		var i, len;
 		for(i = 0, len = this.length; i < len; i += 1){
-			if(this[i] == obj){
+			if(this[i] === obj){
 				return i;
 			}
 		}
@@ -73,7 +73,7 @@ if (!Array.indexOf) {
 }
 
 //var alert = function (one) { print(one); };
-var alert = function (one) { };
+//var alert = function (one) { };
 
 
 var CSL = {

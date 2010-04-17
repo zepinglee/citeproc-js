@@ -42,6 +42,11 @@ function pointedStickInnerHtml(elementid,content){
 		while (el.hasChildNodes())
 			el.removeChild(el.lastChild);
 		el.appendChild(htmlFrag);
+	} else {
+		if (document.getElementById) {
+			var el = document.getElementById(elementid);
+			el.innerHTML = content;
+		}
 	}
 }
 
@@ -83,84 +88,6 @@ var citation = {
 var insert = function(){
 	var citeproc, output;
 	var sys = new Sys(abbreviations);
-
-	// Chicago Author-Date
-	citeproc = new CSL.Engine(sys, chicago_author_date);
-	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
-	output = citeproc.makeBibliography();
-	if (output && output.length && output[1].length){
-		output = output[0].bibstart + output[1].join("") + output[0].bibend;
-		pointedStickInnerHtml("chicago_author_date",output);
-	}
-
-	// Subsectioned
-	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography);
-	citeproc.setAbbreviations("default");
-	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6", "ITEM-10","ITEM-11","ITEM-12"]);
-	citeproc.appendCitationCluster(citation);
-	var cases = {
-		"select" : [
-			{
-				"field" : "type",
-				"value" : "legal_case"
-			}
-		]
-	};
-	output = citeproc.makeBibliography(cases);
-	if (output && output.length && output[1].length){
-		output = output[0].bibstart + output[1].join("") + output[0].bibend;
-		pointedStickInnerHtml("chicago_fullnote_bibliography_cases",output);
-	}
-	var books = {
-		"select" : [
-			{
-				"field" : "type",
-				"value" : "book"
-			}
-		]
-	};
-	output = citeproc.makeBibliography(books);
-	if (output && output.length && output[1].length){
-		output = output[0].bibstart + output[1].join("") + output[0].bibend;
-		pointedStickInnerHtml("chicago_fullnote_bibliography_books",output);
-	}
-	var articles = {
-		"exclude" : [
-			{
-				"field" : "type",
-				"value" : "book"
-			},
-			{
-				"field" : "type",
-				"value" : "legal_case"
-			}
-		]
-	};
-	output = citeproc.makeBibliography(articles);
-	if (output && output.length && output[1].length){
-		output = output[0].bibstart + output[1].join("") + output[0].bibend;
-		pointedStickInnerHtml("chicago_fullnote_bibliography_articles",output);
-	}
-
-	// Listing
-	citeproc = new CSL.Engine(sys,chicago_author_date_listing);
-	citeproc.updateItems(["ITEM-1", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6", "ITEM-7", "ITEM-8","ITEM-9"]);
-	citeproc.setAbbreviations("default");
-	output = citeproc.makeBibliography();
-	if (output && output.length && output[1].length){
-		output = output[0].bibstart + output[1].join("") + output[0].bibend;
-		pointedStickInnerHtml("chicago_author_date_listing",output);
-	}
-
-	// IEEE
-	citeproc = new CSL.Engine(sys,ieee);
-	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
-	citeproc.setAbbreviations("slightly_weird");
-	output = citeproc.makeBibliography();
-	if (output && output.length && output[1].length){
-		output = output[0].bibstart + output[1].join("") + output[0].bibend;
-		pointedStickInnerHtml("ieee",output);
-	}
 
 	// Annotated
 	citeproc = new CSL.Engine(sys,chicago_fullnote_bibliography2);

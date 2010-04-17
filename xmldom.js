@@ -36,6 +36,9 @@ var ActiveXObject;
 var XMLHttpRequest;
 var DOMParser;
 var CSL_IS_IE;
+var fancytog1 = true;
+var fancytog2 = true;
+var fancytog3 = true;
 var CSL_CHROME = function () {
 	if ("undefined" == typeof DOMParser || CSL_IS_IE) {
 		CSL_IS_IE = true;
@@ -49,7 +52,7 @@ var CSL_CHROME = function () {
 			} else if ("undefined" != typeof XMLHttpRequest) {
 				var xmldata = new XMLHttpRequest;
 				if (!contentType) {
-					contentType = 'application/xml';
+					contentType = 'text/xml';
 				}
 				xmldata.open('GET', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(str), false);
 				if(xmldata.overrideMimeType) {
@@ -60,7 +63,13 @@ var CSL_CHROME = function () {
 			}
 		};
 		this.hasAttributes = function (node) {
-			return true;
+			var ret;
+			if (node.attributes && node.attributes.length) {
+				ret = true;
+			} else {
+				ret = false;
+			}
+			return ret;
 		};
 		this.importNode = function (doc, srcElement) {
 			var imported, pos, len, attribute;
@@ -87,7 +96,7 @@ var CSL_CHROME = function () {
 	}
 	this.parser = new DOMParser();
 	var inst_txt = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"/></docco>";
-	var inst_doc = this.parser.parseFromString(inst_txt, "application/xml");
+	var inst_doc = this.parser.parseFromString(inst_txt, "text/xml");
 	var inst_node = inst_doc.getElementsByTagName("institution");
 	this.institution = inst_node.item(0);
 	this.ns = "http://purl.org/net/xbiblio/csl";
@@ -132,7 +141,13 @@ CSL_CHROME.prototype.attributes = function (myxml) {
 	return ret;
 };
 CSL_CHROME.prototype.content = function (myxml) {
-	var ret = myxml.textContent;
+	if ("undefined" != typeof myxml.textContent) {
+		ret = myxml.textContent;
+	} else if ("undefined" != typeof myxml.innerText) {
+		ret = myxml.innerText;
+	} else {
+		ret = myxml.txt;
+	}
 	return ret;
 };
 CSL_CHROME.prototype.namespace = {
@@ -161,19 +176,31 @@ CSL_CHROME.prototype.getNodeValue = function (myxml,name) {
 	if (name){
 		var vals = myxml.getElementsByTagName(name);
 		if (vals.length > 0) {
-			ret = vals[0].textContent;
+			if ("undefined" != typeof vals[0].textContent) {
+				ret = vals[0].textContent;
+			} else if ("undefined" != typeof vals[0].innerText) {
+				ret = vals[0].innerText;
+			} else {
+				ret = vals[0].text;
+			}
 		}
 	} else {
 		ret = myxml;
 	}
 	if (ret && ret.childNodes && (ret.childNodes.length == 0 || (ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text"))) {
-		ret = myxml.textContent;
+		if ("undefined" != typeof ret.textContent) {
+			ret = ret.textContent;
+		} else if ("undefined" != typeof ret.innerText) {
+			ret = ret.innerText;
+		} else {
+			ret = ret.text;
+		}
 	}
 	return ret;
 }
 CSL_CHROME.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,partname,attrname,val) {
 	var pos, len, xml, nodes, node;
-	if (attrname[0] === '@'){
+	if (attrname.slice(0,1) === '@'){
 		attrname = attrname.slice(1);
 	}
 	nodes = myxml.getElementsByTagName(nodename);
@@ -193,7 +220,7 @@ CSL_CHROME.prototype.deleteNodeByNameAttribute = function (myxml,val) {
 		if (!node || node.nodeType == node.TEXT_NODE) {
 			continue;
 		}
-		if (this.hasAttributes(node) && node.attributes.name.value == val) {
+		if (this.hasAttributes(node) && node.getAttribute("name") == val) {
 			myxml.removeChild(nodes[pos]);
 		}
 	}
@@ -220,7 +247,7 @@ CSL_CHROME.prototype.getNodesByName = function (myxml,name,nameattrval) {
 	nodes = myxml.getElementsByTagName(name);
 	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
 		node = nodes.item(pos);
-		if (nameattrval && !(this.hasAttributes(node) && node.attributes.name && node.attributes.name.value == nameattrval)) {
+		if (nameattrval && !(this.hasAttributes(node) && node.getAttribute("name") == nameattrval)) {
 			continue;
 		}
 		ret.push(node);

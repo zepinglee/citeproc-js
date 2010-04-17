@@ -81,7 +81,7 @@ CSL.Output.Formatters.uppercase = function (state, string) {
 CSL.Output.Formatters["capitalize-first"] = function (state, string) {
 	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (str.string.length) {
-		str.string = str.string[0].toUpperCase() + str.string.substr(1);
+		str.string = str.string.slice(0,1).toUpperCase() + str.string.substr(1);
 		return CSL.Output.Formatters.undoppelString(str);
 	} else {
 		return "";
@@ -187,6 +187,9 @@ CSL.Output.Formatters.doppelString = function (string, rex) {
 	var ret, pos, len;
 	ret = {};
 	// rex is a function that returns an appropriate array.
+	//
+	// XXXXX: Does this work in Internet Explorer?
+	//
 	ret.array = rex(string);
 	// ret.array = string.split(rex);
 	ret.string = "";

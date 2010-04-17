@@ -36,14 +36,13 @@ if (!Array.indexOf) {
 	Array.prototype.indexOf = function(obj){
 		var i, len;
 		for(i = 0, len = this.length; i < len; i += 1){
-			if(this[i] == obj){
+			if(this[i] === obj){
 				return i;
 			}
 		}
 		return -1;
 	};
 }
-var alert = function (one) { };
 var CSL = {
 	error: function (str) {
 		print(str);
@@ -5902,10 +5901,14 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		var m, lst, ret;
 		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
 		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
-		ret = [lst[0]];
-		for (pos = 1, len = lst.length; pos < len; pos += 1) {
-			ret.push(m[pos - 1]);
-			ret.push(lst[pos]);
+		if (lst.length == 0) {
+			ret = m;
+		} else {
+			ret = [lst[0]];
+			for (pos = 1, len = lst.length; pos < len; pos += 1) {
+				ret.push(m[pos - 1]);
+				ret.push(lst[pos]);
+			}
 		}
 		return ret;
 	};
@@ -6049,7 +6052,16 @@ CSL.Util.FlipFlopper = function (state) {
 		}
 		return ret;
 	};
-	this.allTagsRex = new RegExp("(" + allTags(tagdefs).join("|") + ")");
+	var allTagsLst = allTags(tagdefs);
+	var lst = [];
+	for (pos = 0, len = allTagsLst.length; pos < len; pos += 1) {
+		if (allTagsLst[pos]) {
+			lst.push(allTagsLst[pos]);
+		}
+	}
+	allTagsLst = lst.slice();
+	this.allTagsRexMatch = new RegExp("(" + allTagsLst.join("|") + ")", "g");
+	this.allTagsRexSplit = new RegExp("(?:" + allTagsLst.join("|") + ")");
 	makeHashes = function (tagdefs) {
 		closeTags = {};
 		flipTags = {};
@@ -6085,8 +6097,15 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 	this.blobstack = new CSL.Stack(this.blob);
 };
 CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
-	var strs, pos, len, newstr, head, tail, expected_closers, expected_openers, expected_flips, tagstack, badTagStack, posA, sameAsOpen, openRev, flipRev, tag, ibeenrunned, posB, wanted_closer, posC, sep, resplice, params, lenA, lenB, lenC, badTagPos;
-	strs = str.split(this.allTagsRex);
+	var strs, pos, len, newstr, head, tail, expected_closers, expected_openers, expected_flips, tagstack, badTagStack, posA, sameAsOpen, openRev, flipRev, tag, ibeenrunned, posB, wanted_closer, posC, sep, resplice, params, lenA, lenB, lenC, badTagPos, mx;
+	mx = str.match(this.allTagsRexMatch);
+	strs = str.split(this.allTagsRexSplit);
+	var myret = [strs[0]];
+	for (pos = 1, len = strs.length; pos < len; pos += 1) {
+		myret.push(mx[pos - 1]);
+		myret.push(strs[pos]);
+	}
+	strs = myret.slice();
 	len = strs.length - 2;
 	for (pos = len; pos > 0; pos += -2) {
 		if (strs[(pos - 1)].slice((strs[(pos - 1)].length - 1)) === "\\") {
@@ -6300,7 +6319,7 @@ CSL.Output.Formatters.uppercase = function (state, string) {
 CSL.Output.Formatters["capitalize-first"] = function (state, string) {
 	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (str.string.length) {
-		str.string = str.string[0].toUpperCase() + str.string.substr(1);
+		str.string = str.string.slice(0,1).toUpperCase() + str.string.substr(1);
 		return CSL.Output.Formatters.undoppelString(str);
 	} else {
 		return "";
