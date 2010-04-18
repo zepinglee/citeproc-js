@@ -56,18 +56,11 @@ CSL.Util.FlipFlopper = function (state) {
 	//
 	// plus quote defs from locale.
 	//
-	//alert("tagdefs at start: "+tagdefs);
 	for (pos = 0; pos < 2; pos += 1) {
 		p = ["-", "-inner-"][pos];
 		entry = [];
 		entry.push(state.getTerm(("open" + p + "quote")));
-		//alert("locale open quote: ("+state.getTerm(("open" + p + "quote"))+")");
 		entry.push(state.getTerm(("close" + p + "quote")));
-		//alert("locale close quote: ("+state.getTerm(("close" + p + "quote"))+")");
-		//entry.push("\u201c");
-		//alert("locale open quote: \u201c");
-		//entry.push("\u201d");
-		//alert("locale close quote: \u201d");
 		entry.push(("quote" + "s"));
 		entry.push(("@" + "quote" + "s"));
 		if ("-" === p) {
@@ -78,7 +71,6 @@ CSL.Util.FlipFlopper = function (state) {
 		entry.push(true);
 		tagdefs.push(entry);
 	}
-	//alert("tagdefs with locale quotes: "+tagdefs);
 	allTags = function (tagdefs) {
 		ret = [];
 		len = tagdefs.length;
@@ -101,16 +93,11 @@ CSL.Util.FlipFlopper = function (state) {
 		}
 		return ret;
 	};
-	//var lst = [];
-	//for (pos = 0, len = tagdefs.length; pos < len; pos += 1) {
-	//	if (tagdefs[pos]) {
-	//		lst.push(tagdefs[pos]);
-	//	}
-	//}
-	//tagdefs = lst.slice();
-	// This is a hack.  We should fix the list capture at source.
+
+	// This protects against empty quote defs in the locale,
+	// which would otherwise cause the derived regexp to go
+	// berserk and corrupt the string.
 	var allTagsLst = allTags(tagdefs);
-	//alert(allTagsLst);
 	var lst = [];
 	for (pos = 0, len = allTagsLst.length; pos < len; pos += 1) {
 		if (allTagsLst[pos]) {

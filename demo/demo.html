@@ -1,5 +1,6 @@
 <html>
   <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link rel="stylesheet" type="text/css" href="./primitive.css" />
 	<script type="text/javascript" src="./xmle4x.js"></script>
 	<script type="text/javascript" src="./xmldom.js"></script>
@@ -15,27 +16,32 @@
 
 	<h1>CSL Bibliography Samples</h1>
 
-	<p>When viewed in Firefox, Safari or Google Chrome with Javascript
-       enabled, this page will display a set of example bibliographies
-       that illustrate some of the capabilities of
+	<p>When viewed in Firefox, Safari, Google Chrome or Internet Explorer,
+       this page (if you have enabled Javascript) will display a set of example bibliographies,
+       illustrating some of the capabilities of
        the <span style="font-family: courier,
-       monospace">citeproc-js</span> citation formatter, which
-       implements CSL 1.0.  For more details, see
-       the <a href="http://citationstyles.org/">CSL website</a> and
-       the
+       monospace">citeproc-js</span> citation formatter, an
+       implementation of the CSL 1.0 citation style language specification.  
+	  For further information on CSL, see
+       the <a href="http://citationstyles.org/">CSL website</a>.  For more
+       details on the processor, see the
        <a href="http://gsl-nagoya-u.net/http/pub/citeproc-doc.html">processor manual</a>.
     </p>
 
     <p>A few comments on the bibliography listings below.  These are
-       generated from a single set of database entries; the formatting
+       generated from a single set of <a href="sampledata.html">database 
+       entries<a> supplied to the processor as a JSON object; the formatting
        you see is entirely controlled by style code fed to the CSL
-       processor inside your browser.  When viewed in Internet
-       Explorer, Safari or Google Chrome, the CSL style code is read
-       using the DOM (Document Object Model, a standard mechanism for
-       parsing structured documents).  For server-side use and in the
+       processor inside your browser.
+    </p>
+
+    <p>(Techie gloss: When viewed in Internet
+       Explorer, Safari or Google Chrome, the 
+       CSL style code is read
+       using the DOM.  For server-side use and in the
        Firefox browser, the processor uses the E4X parsing engine
        instead, which is available natively in the Rhino, Spidermonkey
-       and Tracemonkey javascript implementations.
+       and Tracemonkey javascript implementations.)
     </p>
 
     <p>If parsing fails and you do not see bibliography listings below,

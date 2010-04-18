@@ -54,11 +54,9 @@
  * constants that are needed during processing.</p>
  * @namespace A CSL citation formatter.
  */
-//var alert = function(str) {
-//	print(str);
-//}
 
-// Unbelievable.  IE 6 does not implement Array.indexOf()?
+// IE6 does not implement Array.indexOf().
+// IE7 neither, according to rumour.
 
 if (!Array.indexOf) {
 	Array.prototype.indexOf = function(obj){
@@ -72,9 +70,10 @@ if (!Array.indexOf) {
 	};
 }
 
+// Defs used when debugging in a browser
+//
 //var alert = function (one) { print(one); };
 //var alert = function (one) { };
-
 
 var CSL = {
 

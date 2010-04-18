@@ -359,7 +359,6 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	ret = "";
 	if ("undefined" == typeof hash[term]) {
 		if (mode === CSL.STRICT) {
-			alert("Error in getField: term\"" + term + "\" does not exist.");
 			throw "Error in getField: term\"" + term + "\" does not exist.";
 		} else {
 			return undefined;

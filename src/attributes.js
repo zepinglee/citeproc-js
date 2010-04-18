@@ -631,8 +631,10 @@ CSL.Attributes["@page-range-format"] = function (state, arg) {
 
 CSL.Attributes["@default-locale"] = function (state, arg) {
 	var lst, len, pos, m, ret;
-	//alert("workaround in @default-locale: " + arg);
-	// Workaround for Internet Exploder 6
+	//
+	// Workaround for Internet Exploder 6 (doesn't recognize
+	// groups in str.split(/something(braced-group)something/)
+	//
 	m = arg.match(/-x-(sort|pri|sec|name)-/g);
 	if (m) {
 		for (pos = 0, len = m.length; pos < len; pos += 1) {

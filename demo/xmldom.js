@@ -2,9 +2,6 @@ var ActiveXObject;
 var XMLHttpRequest;
 var DOMParser;
 var CSL_IS_IE;
-var fancytog1 = true;
-var fancytog2 = true;
-var fancytog3 = true;
 var CSL_CHROME = function () {
 	if ("undefined" == typeof DOMParser || CSL_IS_IE) {
 		CSL_IS_IE = true;
@@ -37,29 +34,38 @@ var CSL_CHROME = function () {
 			}
 			return ret;
 		};
-		this.importNode = function (doc, srcElement) {
-			var imported, pos, len, attribute;
-			imported = doc.createElement (srcElement.nodeName);
-			if (this.hasAttributes(srcElement)) {
-				for (pos = 0, len = srcElement.attributes.length; pos < len; pos += 1) {
-					attribute = srcElement.attributes[pos];
-						imported.setAttribute(attribute.name, attribute.value);
-				}
-			}
-			if (imported.firstChild) {
-				imported.innerHTML = srcElement.innerHTML;
-			}
-			return imported;
-		};
 	} else {
 		this.hasAttributes = function (node) {
 			return node["hasAttributes"]();
 		};
-		this.importNode = function (doc, srcElement) {
-			var ret = doc.importNode(srcElement, true);
-			return ret;
-		};
 	}
+	this.importNode = function (doc, srcElement) {
+		if ("undefined" == typeof doc.importNode) {
+			var ret = this._importNode(doc, srcElement, true);
+		} else {
+			var ret = doc.importNode(srcElement, true);
+		}
+		return ret;
+	};
+	this._importNode = function(doc, node, allChildren) {
+		switch (node.nodeType) {
+			case 1:
+				var newNode = doc.createElement(node.nodeName);
+				if (node.attributes && node.attributes.length > 0)
+					for (var i = 0, il = node.attributes.length; i < il;)
+						newNode.setAttribute(node.attributes[i].nodeName, node.getAttribute(node.attributes[i++].nodeName));
+					if (allChildren && node.childNodes && node.childNodes.length > 0)
+						for (var i = 0, il = node.childNodes.length; i < il;)
+							newNode.appendChild(this._importNode(doc, node.childNodes[i++], allChildren));
+				return newNode;
+				break;
+			case 3:
+			case 4:
+			case 8:
+				return doc.createTextNode(node.nodeValue);
+				break;
+		}
+	};
 	this.parser = new DOMParser();
 	var inst_txt = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"/></docco>";
 	var inst_doc = this.parser.parseFromString(inst_txt, "text/xml");
@@ -107,6 +113,7 @@ CSL_CHROME.prototype.attributes = function (myxml) {
 	return ret;
 };
 CSL_CHROME.prototype.content = function (myxml) {
+	var ret;
 	if ("undefined" != typeof myxml.textContent) {
 		ret = myxml.textContent;
 	} else if ("undefined" != typeof myxml.innerText) {
@@ -238,8 +245,8 @@ CSL_CHROME.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
 	var myxml, xml;
 	myxml = this.importNode(node.ownerDocument, datexml);
 	parent.replaceChild(myxml, node);
-	return parent;
-};
+ 	return parent;
+ };
 CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 	var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
 	names = myxml.getElementsByTagName("names");

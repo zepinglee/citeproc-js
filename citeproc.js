@@ -664,7 +664,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, blob_last_chars
 };
 CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
 	var pre_quote, pos, len;
-	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret[(ret.length - 1)]) > -1) {
+	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret.slice(-1)) > -1) {
 		if (use_delim) {
 			pos = use_delim.indexOf(" ");
 			if (pos === -1) {
@@ -997,7 +997,11 @@ CSL.XmlToToken = function (state, tokentype) {
 				try {
 					CSL.Attributes[key].call(token, state, "" + attributes[key]);
 				} catch (e) {
-					alert("Unknown attribute? \"" + key + "\" in node \"" + name + "\" while processing CSL file");
+					if (e === "TypeError: Cannot call method \"call\" of undefined") {
+						throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
+					} else {
+						throw "CSL processor error, " + key + " attribute: " + e;
+					}
 				}
 			}
 		}
@@ -1408,7 +1412,6 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	ret = "";
 	if ("undefined" == typeof hash[term]) {
 		if (mode === CSL.STRICT) {
-			alert("Error in getField: term\"" + term + "\" does not exist.");
 			throw "Error in getField: term\"" + term + "\" does not exist.";
 		} else {
 			return undefined;

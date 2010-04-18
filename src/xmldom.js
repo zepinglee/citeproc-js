@@ -42,10 +42,6 @@ var XMLHttpRequest;
 var DOMParser;
 var CSL_IS_IE;
 
-var fancytog1 = true;
-var fancytog2 = true;
-var fancytog3 = true;
-
 var CSL_CHROME = function () {
 	if ("undefined" == typeof DOMParser || CSL_IS_IE) {
 		CSL_IS_IE = true;
@@ -69,9 +65,6 @@ var CSL_CHROME = function () {
 				return xmldata.responseXML;
 			}
 		};
-		//
-		// For this too, spoof Firefox DOM behavior with a function.
-		//
 		this.hasAttributes = function (node) {
 			var ret;
 			if (node.attributes && node.attributes.length) {
@@ -81,45 +74,43 @@ var CSL_CHROME = function () {
 			}
 			return ret;
 		};
-		this.importNode = function (doc, srcElement) {
-			var imported, pos, len, attribute;
-			// Internet Explorer
-			// create an element with the same name
-			imported = doc.createElement (srcElement.nodeName);
-			// copy the attributes of the source element
-			if (this.hasAttributes(srcElement)) {
-				for (pos = 0, len = srcElement.attributes.length; pos < len; pos += 1) {
-					attribute = srcElement.attributes[pos];
-					// XXXXX: Does this actually do anything?
-					// If it does nothing under IE, that might help
-					// explain the mysterious disappearance
-					// of macros.
-					//if (attribute.specified) {
-						imported.setAttribute(attribute.name, attribute.value);
-					//}
-
-					//if (fancytog1) {
-					//	alert("this.importNode() ran at least once without error, setting: "+ attribute.name + " to "+attribute.value);
-					//	fancytog1 = false;
-					//}
-				}
-			}
-			// copy the entire contents of the source element
-			if (imported.firstChild) {
-				imported.innerHTML = srcElement.innerHTML;
-			}
-			// return the composed element, ready for insertion
-			return imported;
-		};
 	} else {
 		this.hasAttributes = function (node) {
 			return node["hasAttributes"]();
 		};
-		this.importNode = function (doc, srcElement) {
-			var ret = doc.importNode(srcElement, true);
-			return ret;
-		};
 	}
+	this.importNode = function (doc, srcElement) {
+		if ("undefined" == typeof doc.importNode) {
+			var ret = this._importNode(doc, srcElement, true);
+		} else {
+			var ret = doc.importNode(srcElement, true);
+		}
+		return ret;
+	};
+	// In case importNode is not available.
+	// Thx + hat tip to Anthony T. Holdener III
+	// http://www.alistapart.com/articles/crossbrowserscripting
+	// cases 3, 4, 8 = text, cdata, comment
+	this._importNode = function(doc, node, allChildren) {
+		switch (node.nodeType) {
+			// element node
+			case 1:
+				var newNode = doc.createElement(node.nodeName);
+				if (node.attributes && node.attributes.length > 0)
+					for (var i = 0, il = node.attributes.length; i < il;)
+						newNode.setAttribute(node.attributes[i].nodeName, node.getAttribute(node.attributes[i++].nodeName));
+					if (allChildren && node.childNodes && node.childNodes.length > 0)
+						for (var i = 0, il = node.childNodes.length; i < il;)
+							newNode.appendChild(this._importNode(doc, node.childNodes[i++], allChildren));
+				return newNode;
+				break;
+			case 3:
+			case 4:
+			case 8:
+				return doc.createTextNode(node.nodeValue);
+				break;
+		}
+	};
 	this.parser = new DOMParser();
 	var inst_txt = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"/></docco>";
 	var inst_doc = this.parser.parseFromString(inst_txt, "text/xml");
@@ -147,7 +138,6 @@ CSL_CHROME.prototype.clean = function (xml) {
  */
 CSL_CHROME.prototype.children = function (myxml) {
 	var children, pos, len, ret;
-	//alert("Start children");
 	if (myxml) {
 		ret = [];
 		children = myxml.childNodes;
@@ -156,43 +146,33 @@ CSL_CHROME.prototype.children = function (myxml) {
 				ret.push(children[pos]);
 			}
 		}
-	//alert("End children 2");
 		return ret;
 	} else {
-	//alert("End children 2");
 		return [];
 	}
 };
 
 CSL_CHROME.prototype.nodename = function (myxml) {
-	//alert("Start nodename");
 	var ret = myxml.nodeName;
-	//alert("End nodename");
 	return ret;
 };
 
 CSL_CHROME.prototype.attributes = function (myxml) {
 	var ret, attrs, attr, key, xml, pos, len;
-	//alert("Start attributes");
 	ret = new Object();
 	if (myxml && this.hasAttributes(myxml)) {
 		attrs = myxml.attributes;
 		for (pos = 0, len=attrs.length; pos < len; pos += 1) {
 			attr = attrs[pos];
 			ret["@" + attr.name] = attr.value;
-			//if (fancytog2) {
-			//	alert("this.attributes() ran at least once without error, setting: @" + attr.name + " to " + attr.value);
-			//	fancytog2 = false;
-			//}
 		}
 	}
-	//alert("End attributes");
 	return ret;
 };
 
 
 CSL_CHROME.prototype.content = function (myxml) {
-	//alert("Start content");
+	var ret;
 	if ("undefined" != typeof myxml.textContent) {
 		ret = myxml.textContent;
 	} else if ("undefined" != typeof myxml.innerText) {
@@ -200,7 +180,6 @@ CSL_CHROME.prototype.content = function (myxml) {
 	} else {
 		ret = myxml.txt;
 	}
-	//alert("End content");
 	return ret;
 };
 
@@ -210,30 +189,23 @@ CSL_CHROME.prototype.namespace = {
 }
 
 CSL_CHROME.prototype.numberofnodes = function (myxml) {
-	//alert("Start numberofnodes");
 	if (myxml) {
-	//alert("End numberofnodes 1");
 		return myxml.length;
 	} else {
-	//alert("End numberofnodes 2");
 		return 0;
 	}
 };
 
 CSL_CHROME.prototype.getAttributeName = function (attr) {
-	//alert("Start getAttributeName");
 	var ret = attr.name;
-	//alert("End getAttributeName");
 	return ret;
 }
 
 CSL_CHROME.prototype.getAttributeValue = function (myxml,name,namespace) {
 	var ret = "";
-	//alert("Start getAttributeValue");
 	if (myxml && this.hasAttributes(myxml) && myxml.getAttribute(name)) {
 		ret = myxml.getAttribute(name);
 	}
-	//alert("End getAttributeValue: " + ret);
 	return ret;
 }
 
@@ -241,13 +213,7 @@ CSL_CHROME.prototype.getAttributeValue = function (myxml,name,namespace) {
 // Can't this be, you know ... simplified?
 //
 CSL_CHROME.prototype.getNodeValue = function (myxml,name) {
-	//alert("Start getNodeValue");
 	var ret = "";
-	//if (myxml && myxml.hasAttributes && myxml.hasAttributes() && myxml.attributes.name.value == "contributor") {
-		//ret = "";
-	//	//alert(myxml.childNodes.length);
-	//}
-	//else
 	if (name){
 		var vals = myxml.getElementsByTagName(name);
 		if (vals.length > 0) {
@@ -271,13 +237,11 @@ CSL_CHROME.prototype.getNodeValue = function (myxml,name) {
 			ret = ret.text;
 		}
 	}
-	//alert("End getNodeValue");
 	return ret;
 }
 
 CSL_CHROME.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,partname,attrname,val) {
 	var pos, len, xml, nodes, node;
-	//alert("Start setAttributeOnNodeIdentifiedByNameAttribute");
 	if (attrname.slice(0,1) === '@'){
 		attrname = attrname.slice(1);
 	}
@@ -289,12 +253,10 @@ CSL_CHROME.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myx
 		}
 		node.setAttribute(attrname, val);
 	}
-	//alert("End setAttributeOnNodeIdentifiedByNameAttribute");
 }
 
 CSL_CHROME.prototype.deleteNodeByNameAttribute = function (myxml,val) {
 	var pos, len, node, nodes;
-	//alert("Start deleteNodeByNameAttribute");
 	nodes = myxml.childNodes;
 	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
 		node = nodes[pos];
@@ -303,90 +265,68 @@ CSL_CHROME.prototype.deleteNodeByNameAttribute = function (myxml,val) {
 		}
 		if (this.hasAttributes(node) && node.getAttribute("name") == val) {
 			myxml.removeChild(nodes[pos]);
-			//if (fancytog3) {
-			//	alert("this.deleteNodeByNameAttribute() ran at least once without error");
-			//	fancytog3 = false;
-			//}
 		}
 	}
-	//alert("End deleteNodeByNameAttribute");
 }
 
 CSL_CHROME.prototype.deleteAttribute = function (myxml,attr) {
-	//alert("Start deleteAttribute");
 	myxml.removeAttribute(attr);
-	//alert("End deleteAttribute");
 }
 
 CSL_CHROME.prototype.setAttribute = function (myxml,attr,val) {
 	var attribute;
-	//alert("Start setAttribute");
 	if (!myxml.ownerDocument) {
 		myxml = myxml.firstChild;
 	}
 	attribute = myxml.ownerDocument.createAttribute(attr);
 	myxml.setAttribute(attr, val);
-	//alert("End setAttribute");
     return false;
 }
 
 CSL_CHROME.prototype.nodeCopy = function (myxml) {
-	//alert("Start cloneNode");
 	var cloned_node = myxml.cloneNode(true);
-	//alert("End cloneNode");
 	return cloned_node;
 }
 
 CSL_CHROME.prototype.getNodesByName = function (myxml,name,nameattrval) {
 	var ret, nodes, node, pos, len;
-	//alert("Start getNodesByName");
 	ret = [];
 	nodes = myxml.getElementsByTagName(name);
 	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
 		node = nodes.item(pos);
 		if (nameattrval && !(this.hasAttributes(node) && node.getAttribute("name") == nameattrval)) {
+//		if (nameattrval && !(this.attributes && node.attributes.name && node.attributes.name.value == nameattrval)) {
 			continue;
 		}
 		ret.push(node);
 	}
-	//alert("End getNodesByName");
 	return ret;
 }
 
 CSL_CHROME.prototype.nodeNameIs = function (myxml,name) {
-	//if (myxml.nodeName == "#document" && myxml.firstChild.nodeName == name) {
-	//	return true;
-	//}
-	//alert("Start nodeNameIs");
 	if (name == myxml.nodeName) {
 		return true;
 	}
-	//alert("End nodeNameIs");
 	return false;
 }
 
 CSL_CHROME.prototype.makeXml = function (myxml) {
 	var ret, topnode;
-	//alert("Start makeXml");
 	if (!myxml) {
 		myxml = "<docco><bogus/></docco>";
 	}
 	var nodetree = this.parser.parseFromString(myxml, "application/xml");
-	//alert("End makeXml");
 	return nodetree.firstChild;
 };
 
 CSL_CHROME.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
-	//alert("Start insertChildAfter");
 	var myxml, xml;
 	myxml = this.importNode(node.ownerDocument, datexml);
 	parent.replaceChild(myxml, node);
-	//alert("End insertChildAfter");
-	return parent;
-};
+ 	return parent;
+ };
 
 CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
-	//alert("Start addInstitutionNodes");
 	var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
 	names = myxml.getElementsByTagName("names");
 	for (pos = 0, len = names.length; pos < len; pos += 1) {
@@ -402,7 +342,6 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 			thenames.insertBefore(theinstitution, thename.nextSibling);
 		}
 	}
-	//alert("End addInstitutionNodes");
 };
 
 

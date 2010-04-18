@@ -35,8 +35,6 @@
 
 CSL.Util.PageRangeMangler = {};
 
-//var fancytog7 = true;
-
 CSL.Util.PageRangeMangler.getFunction = function (state) {
 	var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
 	rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
@@ -56,10 +54,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		// Workaround for Internet Explorer
 		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
 		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
-			//if (fancytog7 || true) {
-			//	print("Working from str: " + str + "\n  Found m: "+m.length+ "\n  Found lst.length: "+lst.length);
-			//	fancytog7 = false;
-			//}
+
 		if (lst.length == 0) {
 			ret = m;
 		} else {
@@ -69,11 +64,6 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 				ret.push(lst[pos]);
 			}
 		}
-		//ret = [];
-		//for (pos = 1, len = lst.length; pos < len; pos += 1) {
-		//	ret.push(m[pos - 1]);
-		//	ret.push(lst[pos]);
-		//}
 		return ret;
 	};
 

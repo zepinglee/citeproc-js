@@ -133,9 +133,6 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 				// Xml: get string value of attribute, plus
 				// Xml: get string value of node content
 				//
-				//if (sys.xml.getAttributeValue(term, 'name') == "open-quote") {
-				//	alert("setting open quote to: " + sys.xml.getNodeValue(term));
-				//}
 				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
 			}
 		}

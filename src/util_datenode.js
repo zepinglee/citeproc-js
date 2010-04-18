@@ -39,6 +39,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	if (!form) {
 		return parent;
 	}
+
 	variable = this.sys.xml.getAttributeValue(node, "variable");
 	prefix = this.sys.xml.getAttributeValue(node, "prefix");
 	suffix = this.sys.xml.getAttributeValue(node, "suffix");
@@ -99,6 +100,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	//
 	this.sys.xml.deleteAttribute(datexml, 'form');
 	if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {
+
 		//
 		// Xml: Find one node by attribute and delete
 		//
@@ -107,19 +109,13 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 		// Xml: Find one node by attribute and delete
 		//
 		this.sys.xml.deleteNodeByNameAttribute(datexml, 'day');
+
+
 	} else if ("year-month" === this.sys.xml.getAttributeValue(node, "date-parts")) {
 		//
 		// Xml: Find one node by attribute and delete
 		//
 		this.sys.xml.deleteNodeByNameAttribute(datexml, 'day');
 	}
-	//
-	// Repeat after me: Rhino's E4X implementation sucks and needs help.
-	//   Rhino's E4X implementation sucks and needs help.
-	//   Rhino's E4X implementation sucks and needs help.
-	//   Rhino's E4X implementation sucks and needs help.
-	//   Rhino's E4X implementation sucks and needs help.
-	//   Rhino's E4X implementation sucks and needs help.
-	//
 	return this.sys.xml.insertChildNodeAfter(parent, node, pos, datexml);
 };

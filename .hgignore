@@ -1,5 +1,6 @@
 syntax: regexp
 
+UPLOAD.sh$
 ^run-opt.js$
 ^jing
 ^jsdoc.*
