@@ -110,10 +110,11 @@ CSL.Node.date = {
 							break;
 						}
 					}
-					// Pluck out the year if same as volume.
+					// Suppress the year if we're not sorting, and
+					// it's the same as the volume,
 					// Needed for English-style case cites.  Here's hoping it
 					// doesn't have side effects.
-					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === ("" + date_obj["date-parts"])) {
+					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object["year"]) {
 						for (var key in state.tmp.date_object) {
 							if (state.tmp.date_object.hasOwnProperty(key)) {
 								if (key.slice(0,4) === "year") {
