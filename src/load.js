@@ -222,7 +222,7 @@ var CSL = {
 	//x = x.concat(["reporting-date","decision-date","filing-date"]);
 	//x = x.concat(["revision-date"]);
 	//NUMERIC_VARIABLES = x.slice();
-	DATE_VARIABLES: ["issued", "event", "accessed", "container", "original-date"],
+	DATE_VARIABLES: ["issued", "event-date", "accessed", "container", "original-date"],
 
 	// TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
 	TAG_ESCAPE: function (str) {
