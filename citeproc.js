@@ -2601,6 +2601,15 @@ CSL.Node.date = {
 						}
 					}
 					dp = dpx.slice();
+					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object["year"]) {
+						for (var key in state.tmp.date_object) {
+							if (state.tmp.date_object.hasOwnProperty(key)) {
+								if (key.slice(0,4) === "year") {
+									delete state.tmp.date_object[key];
+								}
+							}
+						}
+					}
 					mypos = 2;
 					len = dp.length;
 					for (pos = 0; pos < len; pos += 1) {
@@ -4827,13 +4836,14 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 			}
 		}
 		this.cite = {};
-		this.cite.top = [];
+		this.cite.front = [];
 		this.cite.mid = [];
-		this.cite.end = [];
+		this.cite.back = [];
+		this.cite.back_forceme = [];
 		this.cite.position = position;
 		this.cite.itemId = Item.id;
 		this.cite.prevItemID = prevItemID;
-		this.target = "top";
+		this.target = "front";
 		if (this.sortedItems && this.sortedItemsPos > 0 && this.sortedItemsPos < this.sortedItems.length) {
 			curr = this.sortedItems[this.sortedItemsPos][1];
 			last_id = this.sortedItems[(this.sortedItemsPos - 1)][1].id;
@@ -4870,11 +4880,11 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		this.data.value = "";
 		this.data.blobs = [];
 		var is_mid = this.isMid(variable);
-		if (this.target === "top" && is_mid) {
+		if (this.target === "front" && is_mid) {
 			this.target = "mid";
 		} else if (this.target === "mid" && !is_mid) {
-			this.target = "end";
-		} else if (this.target === "end" && is_mid) {
+			this.target = "back";
+		} else if (this.target === "back" && is_mid) {
 			this.try_cite = true;
 			this.in_series = false;
 			this.am_master = false;
@@ -4887,9 +4897,20 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
 		this.data.blobs.push([blob, blob.blobs.length]);
 	}
 };
-CSL.Parallel.prototype.AppendToVariable = function (str) {
+CSL.Parallel.prototype.AppendToVariable = function (str,varname) {
 	if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-		this.data.value += "::" + str;
+		if (this.target != "back" || true) {
+			this.data.value += "::" + str;
+		} else {
+			var prev = this.sets.value()[(this.sets.value().length - 1)];
+			if (prev) {
+				if (prev[this.variable]) {
+					if (prev[this.variable].value) {
+						this.data.value += "::" + str;
+					}
+				}
+			}
+		}
 	}
 };
 CSL.Parallel.prototype.CloseVariable = function (hello) {
@@ -4897,23 +4918,48 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 		this.cite[this.variable] = this.data;
 		if (this.sets.value().length > 0) {
 			var prev = this.sets.value()[(this.sets.value().length - 1)];
-			if (!this.isMid(this.variable) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
-				this.in_series = false;
-				this.am_master = false;
+			if (this.target === "front") {
+				if (!prev[this.variable] || this.data.value !== prev[this.variable].value) {
+					this.in_series = false;
+					this.am_master = false;
+				}
+			} else if (this.target === "back") {
+				if (prev[this.variable]) {
+						if (this.data.value !== prev[this.variable].value && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
+							this.in_series = false;
+							this.am_master = false;
+						}
+				}
 			}
 		}
 	}
 };
 CSL.Parallel.prototype.CloseCite = function () {
+	var x, pos, len;
 	if (this.use_parallels) {
 		if (!this.in_series && !this.force_collapse) {
 			this.ComposeSet(true);
+		}
+		if (this.sets.value().length === 0) {
+			var has_issued = false;
+			for (pos = 0, len=this.cite.back.length; pos < len; pos += 1) {
+				x = this.cite.back[pos];
+				if (x === "issued" && this.cite.issued && this.cite.issued.value) {
+					has_issued = true;
+					break;
+				}
+			}
+			if (!has_issued) {
+				this.cite.back_forceme.push("issued");
+			}
+		} else {
+			this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
 		}
 		this.sets.value().push(this.cite);
 	}
 };
 CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
-	var start, end, cite, pos, master, len;
+	var cite, pos, master, len;
 	if (this.use_parallels) {
 		if (this.sets.value().length == 1) {
 			if (!this.in_series) {
@@ -4965,11 +5011,11 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
 				for (ppos = 0; ppos < llen; ppos += 1) {
 					cite = series[ppos];
 					if (ppos === 0) {
-						this.purgeVariableBlobs(cite, cite.end);
+						this.purgeVariableBlobs(cite, cite.back);
 					} else if (ppos === (series.length - 1)){
-						this.purgeVariableBlobs(cite, cite.top);
+						this.purgeVariableBlobs(cite, cite.front.concat(cite.back_forceme));
 					} else {
-						this.purgeVariableBlobs(cite, cite.top.concat(cite.end));
+						this.purgeVariableBlobs(cite, cite.front.concat(cite.back));
 					}
 				}
 			}

@@ -33,9 +33,6 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
-
-
-
 var data = {
 	"ITEM-1": {
 		"id": "ITEM-1",
@@ -49,9 +46,10 @@ var data = {
 		],
         "note":"The apostrophe in Bruce's name appears in proper typeset form.",
 		"publisher": "Routledge",
+        "publisher-place": "New York",
 		"issued": {
 			"date-parts":[
-				[2005, 11, 22]
+				[2006]
 			]
 		},
 		"type": "book"
@@ -223,6 +221,7 @@ var data = {
 			}
 		],
 		"publisher": "Routledge",
+        "publisher-place": "New York",
 		"issued": {
 			"date-parts":[
 				[2001, 12, 5]
@@ -318,48 +317,48 @@ var data = {
 		"type": "article-journal"
 	},
     "ITEM-10": {
-        "container-title": "N.Y.2d",
-        "id": "ITEM-10",
+        "container-title": "N.Y.2d", 
+        "id": "ITEM-10", 
         "issued": {
             "date-parts": [
                 [
                     "1989"
                 ]
             ]
-        },
-        "page": "683",
-        "title": "People v. Taylor",
-        "type": "legal_case",
+        }, 
+        "page": "683", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
         "volume": 73
-    },
+    }, 
     "ITEM-11": {
-        "container-title": "N.E.2d",
-        "id": "ITEM-11",
+        "container-title": "N.E.2d", 
+        "id": "ITEM-11", 
         "issued": {
             "date-parts": [
                 [
                     "1989"
                 ]
             ]
-        },
-        "page": "386",
-        "title": "People v. Taylor",
-        "type": "legal_case",
+        }, 
+        "page": "386", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
         "volume": 541
-    },
+    }, 
     "ITEM-12": {
-        "container-title": "N.Y.S.2d",
-        "id": "ITEM-12",
+        "container-title": "N.Y.S.2d", 
+        "id": "ITEM-12", 
         "issued": {
             "date-parts": [
                 [
                     "1989"
                 ]
             ]
-        },
-        "page": "357",
-        "title": "People v. Taylor",
-        "type": "legal_case",
+        }, 
+        "page": "357", 
+        "title": "People v. Taylor", 
+        "type": "legal_case", 
         "volume": 543
     }
 

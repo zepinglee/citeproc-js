@@ -256,12 +256,14 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 								//     (b) if the previous onecitation had no locator
 								//         and this onecitation also has none, use ibid
 								item[1].position = CSL.POSITION_IBID;
+								//print("setting ibid in cmd_cite()");
 							} else if (prev_locator && curr_locator === prev_locator) {
 								//     (c) if the previous onecitation had a locator
 								//         (page number, etc.) and this onecitation has
 								//         a locator that is identical, use ibid
 
 								item[1].position = CSL.POSITION_IBID;
+								//print("setting ibid in cmd_cite() [2]");
 							} else if (prev_locator && curr_locator && curr_locator !== prev_locator) {
 								//     (d) if the previous onecitation had a locator,
 								//         and this onecitation has one that differs,

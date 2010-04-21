@@ -15,6 +15,14 @@ h2 {
   padding-bottom: 0em;
 }
 
+h3 {
+  font-size: 95%;
+  margin-top: 0.9em;
+  margin-bottom: 0em;
+  padding-top: 0em;
+  padding-bottom: 0em;
+}
+
 div.csl-left-margin {
   width:2em;
   float:left;
@@ -50,8 +58,8 @@ div.csl-indent {
 }
 
 div.heading {
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    border-top: 5px solid #ccc;
+    border-bottom: 5px solid #ccc;
 }
 
 div.csl-bib-body {

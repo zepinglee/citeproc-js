@@ -39,6 +39,10 @@ doh.register("std.parallel", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("parallel_SuppressYearIfSuppressedInFirstCite");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("parallel_Bibliography");
         doh.assertEqual(test.result, test.run());
     }, 

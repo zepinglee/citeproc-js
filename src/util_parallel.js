@@ -101,6 +101,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 	var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
 	if (this.use_parallels) {
+		//print("StartCite");
 		if (this.sets.value().length && this.sets.value()[0].itemId === Item.id) {
 			this.ComposeSet();
 		}
@@ -130,13 +131,14 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 			}
 		}
 		this.cite = {};
-		this.cite.top = [];
+		this.cite.front = [];
 		this.cite.mid = [];
-		this.cite.end = [];
+		this.cite.back = [];
+		this.cite.back_forceme = [];
 		this.cite.position = position;
 		this.cite.itemId = Item.id;
 		this.cite.prevItemID = prevItemID;
-		this.target = "top";
+		this.target = "front";
 		//
 		// Reevaluate position of this cite, if it follows another, in case it
 		// is a lurking ibid reference.
@@ -161,6 +163,8 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 					curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
 				} else if (curr_locator === prev_locator) {
 					curr.position = CSL.POSITION_IBID;
+					//**print("setting IBID in util_parallel");
+					//**print(" === "+this.sets.value().length);
 				} else {
 					curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
 				}
@@ -184,11 +188,11 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		this.data.value = "";
 		this.data.blobs = [];
 		var is_mid = this.isMid(variable);
-		if (this.target === "top" && is_mid) {
+		if (this.target === "front" && is_mid) {
 			this.target = "mid";
 		} else if (this.target === "mid" && !is_mid) {
-			this.target = "end";
-		} else if (this.target === "end" && is_mid) {
+			this.target = "back";
+		} else if (this.target === "back" && is_mid) {
 			this.try_cite = true;
 			this.in_series = false;
 			this.am_master = false;
@@ -214,9 +218,23 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
  * Adds string data to the current variable
  * in the variables tracking object.
  */
-CSL.Parallel.prototype.AppendToVariable = function (str) {
+CSL.Parallel.prototype.AppendToVariable = function (str,varname) {
 	if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-		this.data.value += "::" + str;
+			// ZZZZZ
+		if (this.target != "back" || true) {
+			//print("  setting: "+str);
+			this.data.value += "::" + str;
+		} else {
+			var prev = this.sets.value()[(this.sets.value().length - 1)];
+			if (prev) {
+				if (prev[this.variable]) {
+					if (prev[this.variable].value) {
+						//**print("append var "+this.variable+" as value "+this.data.value);
+						this.data.value += "::" + str;
+					}
+				}
+			}
+		}
 	}
 };
 
@@ -233,11 +251,30 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 		this.cite[this.variable] = this.data;
 		if (this.sets.value().length > 0) {
 			var prev = this.sets.value()[(this.sets.value().length - 1)];
-			if (!this.isMid(this.variable) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
-				// evaluation takes place later, at close of cite.
-				//this.try_cite = true;
-				this.in_series = false;
-				this.am_master = false;
+			if (this.target === "front") {
+				if (!prev[this.variable] || this.data.value !== prev[this.variable].value) {
+					// evaluation takes place later, at close of cite.
+					//this.try_cite = true;
+					this.in_series = false;
+					this.am_master = false;
+				}
+			} else if (this.target === "back") {
+				//
+				// Careful here.  But rollback is your friend, of course.
+				//
+//				if (prev[this.variable] && prev[this.variable].value) {
+				if (prev[this.variable]) {
+						if (this.data.value !== prev[this.variable].value && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
+							//print(this.variable);
+							//print(this.sets.value().slice(-1)[0].back_forceme);
+							// evaluation takes place later, at close of cite.
+							//this.try_cite = true;
+							//**print("-------------- reset --------------");
+							//print("  breaking series");
+							this.in_series = false;
+							this.am_master = false;
+						}
+				}
 			}
 		}
 	}
@@ -248,11 +285,37 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
  * tracking array, and evaluate maybe.
  */
 CSL.Parallel.prototype.CloseCite = function () {
+	var x, pos, len;
 	if (this.use_parallels) {
 		if (!this.in_series && !this.force_collapse) {
 			this.ComposeSet(true);
 		}
+		//**print("[pushing cite]");
+		if (this.sets.value().length === 0) {
+			var has_issued = false;
+			for (pos = 0, len=this.cite.back.length; pos < len; pos += 1) {
+				x = this.cite.back[pos];
+				//**print("  ->issued="+this.cite.issued);
+				//for (var x in this.cite.issued) {
+				//	print("..."+x);
+				//}
+				if (x === "issued" && this.cite.issued && this.cite.issued.value) {
+					//print("HAS ISSUED");
+					has_issued = true;
+					break;
+				}
+			}
+			if (!has_issued) {
+				//print("  setting issued in back_forceme variable culling list");
+				this.cite.back_forceme.push("issued");
+			}
+		} else {
+			//print("  renewing");
+			this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
+		}
+		//print("WooHoo lengtsh fo sets value list: "+this.sets.mystack.length);
 		this.sets.value().push(this.cite);
+	//print("CloseCite");
 	}
 };
 
@@ -261,7 +324,7 @@ CSL.Parallel.prototype.CloseCite = function () {
  * composed sets.
  */
 CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
-	var start, end, cite, pos, master, len;
+	var cite, pos, master, len;
 	if (this.use_parallels) {
 		// a bit loose here: zero-length sets relate to one cite,
 		// apparently.
@@ -270,6 +333,11 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 				this.sets.value().pop();
 				this.delim_counter += 1;
 			}
+			// XXXXX: hackaround that could be used maybe, if nothing cleaner pans out.
+			//
+			//print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
+			//**print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
+			//this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme = [];
 		} else {
 			len = this.sets.value().length;
 			for (pos = 0; pos < len; pos += 1) {
@@ -306,6 +374,7 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 		}
 		this.am_master = true;
 		this.in_series = true;
+		//print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
 	}
 };
 
@@ -323,11 +392,12 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
 				for (ppos = 0; ppos < llen; ppos += 1) {
 					cite = series[ppos];
 					if (ppos === 0) {
-						this.purgeVariableBlobs(cite, cite.end);
+						this.purgeVariableBlobs(cite, cite.back);
 					} else if (ppos === (series.length - 1)){
-						this.purgeVariableBlobs(cite, cite.top);
+						//print(" a little rumor: "+cite.back_forceme);
+						this.purgeVariableBlobs(cite, cite.front.concat(cite.back_forceme));
 					} else {
-						this.purgeVariableBlobs(cite, cite.top.concat(cite.end));
+						this.purgeVariableBlobs(cite, cite.front.concat(cite.back));
 					}
 
 				}

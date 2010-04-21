@@ -46,9 +46,10 @@ var data = {
 		],
         "note":"The apostrophe in Bruce's name appears in proper typeset form.",
 		"publisher": "Routledge",
+        "publisher-place": "New York",
 		"issued": {
 			"date-parts":[
-				[2005, 11, 22]
+				[2006]
 			]
 		},
 		"type": "book"
@@ -220,6 +221,7 @@ var data = {
 			}
 		],
 		"publisher": "Routledge",
+        "publisher-place": "New York",
 		"issued": {
 			"date-parts":[
 				[2001, 12, 5]
