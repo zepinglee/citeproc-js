@@ -80,7 +80,7 @@ CSL.Node.text = {
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					func = function (state, Item, item) {
 						id = Item.id;
-						if (!state.tmp.force_subsequent) {
+						if (!state.tmp.just_looking) {
 							if (item && item["author-only"]) {
 								state.tmp.element_trace.replace("do-not-suppress-me");
 								term = CSL.Output.Formatters["capitalize-first"](state, state.getTerm("reference", "long", "singular"));
@@ -93,9 +93,9 @@ CSL.Node.text = {
 								}
 								state.tmp.last_element_trace = false;
 							}
-							num = state.registry.registry[id].seq;
-							number = new CSL.NumericBlob(num, this);
-							state.output.append(number, "literal");
+						num = state.registry.registry[id].seq;
+						number = new CSL.NumericBlob(num, this);
+						state.output.append(number, "literal");
 						}
 					};
 					this.execs.push(func);
