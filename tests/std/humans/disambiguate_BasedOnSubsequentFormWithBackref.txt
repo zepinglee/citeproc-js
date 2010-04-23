@@ -105,7 +105,16 @@ Roe, Her Book, supra note 2.
   <citation>
     <layout delimiter="; " suffix=".">
       <choose>
-        <if position="subsequent">
+        <if position="first">
+          <names variable="author">
+            <name />
+          </names>
+          <text prefix=", " variable="title" />
+          <date variable="issued">
+            <date-part name="year" prefix=" (" suffix=")" />
+          </date>
+        </if>
+        <else-if position="subsequent">
           <names variable="author">
             <name form="short" />
           </names>
@@ -116,15 +125,9 @@ Roe, Her Book, supra note 2.
           </choose>
           <text prefix=", " suffix=" " value="supra note" />
           <text variable="first-reference-note-number" />
-        </if>
+        </else-if>
         <else>
-          <names variable="author">
-            <name />
-          </names>
-          <text prefix=", " variable="title" />
-          <date variable="issued">
-            <date-part name="year" prefix=" (" suffix=")" />
-          </date>
+          <text value="FAILED TO MATCH"/>
         </else>
       </choose>
     </layout>
