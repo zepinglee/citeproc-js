@@ -3436,7 +3436,7 @@ CSL.Node.names = {
 			CSL.Util.substituteStart.call(this, state, target);
 			state.build.substitute_level.push(1);
 			state.fixOpt(this, "names-delimiter", "delimiter");
-			func = function (state, Item) {
+			func = function (state, Item, item) {
 				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end, mynameset, tnamesets, frontnames, pair, offset, swaplist;
 				state.parallel.StartVariable("names");
 				if (state.tmp.value.length === 0) {
@@ -3528,8 +3528,18 @@ CSL.Node.names = {
 							namesets = namesets.concat(tnamesets);
 						}
 					}
-					if (state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") {
+					if ((state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") || (state.opt.xclass === "note" && item && "number" === typeof item.position && item.position !== CSL.POSITION_FIRST)) {
 						namesets = namesets.slice(0, 1);
+						if (namesets.length) {
+							if (namesets[0].species === "pers") {
+								namesets[0].organization_first = false;
+								namesets[0].after_people = false;
+								namesets[0].free_agent_start = false;
+								namesets[0].free_agent_end = false;
+							} else {
+								namesets[0].organization_last = true;
+							}
+						}
 					}
 					len = namesets.length;
 					for (pos = 0; pos < len; pos += 1) {
@@ -3575,7 +3585,7 @@ CSL.Node.names = {
 					namesets = state.tmp.value;
 				}
 				len = namesets.length;
-				if (namesets.length && state.tmp.area === "bibliography") {
+				if (namesets.length && (state.tmp.area === "bibliography" || (state.tmp.area && state.opt.xclass === "note"))) {
 					cut_var = namesets[0].variable;
 					cutinfo = state.tmp.names_cut;
 					if (namesets[0].species === "pers") {
@@ -3590,7 +3600,7 @@ CSL.Node.names = {
 							namesets = namesets.slice(1);
 						}
 					} else {
-						namesets = namesets.slice(1);
+						namesets = namesets.slice(0,1);
 					}
 					if (cutinfo.used === cut_var) {
 						llen = cutinfo.variable[cut_var].length - 1;
@@ -3676,12 +3686,12 @@ CSL.Node.names = {
 					}
 					display_names = nameset.names.slice();
 					if ("pers" === nameset.species) {
-						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+						suppress_min = state.output.getToken("name").strings["suppress-min"];
+						if (namesetIndex === 0 && !suppress_min &&(state.tmp.area === "bibliography" || (state.tmp.area === "citation" &&state.opt.xclass === "note"))) {
 							state.tmp.names_cut.counts[nameset.variable] = state.tmp["et-al-use-first"];
 						}
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
 						discretionary_names_length = state.tmp["et-al-min"];
-						suppress_min = state.output.getToken("name").strings["suppress-min"];
 						suppress_condition = suppress_min && display_names.length >= suppress_min;
 						if (suppress_condition) {
 							continue;
@@ -3714,7 +3724,7 @@ CSL.Node.names = {
 						}
 						state.output.formats.value().name.strings.delimiter = and_term;
 					} else {
-						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+						if (namesetIndex === 0 && (state.tmp.area === "bibliography" || (state.tmp.area === "citation" && state.opt.xclass === "note"))) {
 							state.tmp.names_cut.counts[nameset.variable] = 1;
 						}
 						use_first = state.output.getToken("institution").strings["use-first"];
