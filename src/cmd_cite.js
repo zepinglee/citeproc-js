@@ -39,7 +39,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 	len = this.registry.citationreg.citationByIndex.length;
 	for (pos = 0; pos < len; pos += 1) {
 		c = this.registry.citationreg.citationByIndex[pos];
-		citationsPre.push([c.id, c.properties.noteIndex]);
+		citationsPre.push([c.citationID, c.properties.noteIndex]);
 	}
 	return this.processCitationCluster(citation, citationsPre, []);
 };
@@ -405,10 +405,10 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	use_parallels = this.parallel.use_parallels;
 	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
-	this.tmp.force_subsequent = true;
-	CSL.getCite.call(this, Item, {});
-	this.tmp.force_subsequent = false;
+	this.tmp.just_looking = true;
+	CSL.getCite.call(this, Item, {position:1});
 	ret = this.output.string(this, this.output.queue);
+	this.tmp.just_looking = false;
 	this.tmp.suppress_decorations = false;
 	this.parallel.use_parallels = use_parallels;
 	return ret;
