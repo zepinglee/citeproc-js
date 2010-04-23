@@ -650,7 +650,15 @@ CSL.citeEnd = function (Item) {
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
 
+	// This is a hack, in a way; I have lost track of where
+	// the disambig (name rendering) settings used for rendering work their way
+	// into the registry.  This resets defaults to the subsequent form,
+	// when first cites are rendered.
+	if (this.tmp.disambig_restore) {
+		this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
+	}
 	this.tmp.disambig_request = false;
+
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters) {
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}

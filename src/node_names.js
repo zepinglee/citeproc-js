@@ -252,7 +252,7 @@ CSL.Node.names = {
 
 			// handle names
 			func = function (state, Item, item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -552,6 +552,9 @@ CSL.Node.names = {
 						}
 						//
 						// set the display mode default for givennames if required
+						myform = state.output.getToken("name").strings.form;
+						myinitials = this.strings["initialize-with"];
+						paramx = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
 						if (state.tmp.sort_key_flag) {
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = 2;
 							param = 2;
@@ -575,9 +578,14 @@ CSL.Node.names = {
 							// call to the names register, to get the floor value
 							// for an individual name.
 							//
-							myform = state.output.getToken("name").strings.form;
-							myinitials = this.strings["initialize-with"];
-							param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
+							param = paramx;
+						}
+						// Need to save off the settings based on subsequent
+						// form, when first cites are rendered.  Otherwise you
+						// get full form names everywhere.
+						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST && paramx > param) {
+							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
+							param = paramx;
 						}
 						state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
 					}
