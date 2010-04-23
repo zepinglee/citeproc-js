@@ -76,8 +76,11 @@ CSL.Node.name = {
 			state.build.name_flag = true;
 
 			// set et al params
-			func = function (state, Item) {
-				if (Item.position || state.tmp.force_subsequent) {
+			func = function (state, Item, item) {
+				if ("undefined" === typeof item) {
+					item = {};
+				}
+				if (item.position) {
 					if (! state.tmp["et-al-min"]) {
 						if (this.strings["et-al-subsequent-min"]) {
 							state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
