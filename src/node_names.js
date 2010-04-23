@@ -45,7 +45,7 @@ CSL.Node.names = {
 			state.fixOpt(this, "names-delimiter", "delimiter");
 
 			// init names
-			func = function (state, Item) {
+			func = function (state, Item, item) {
 				var namesets, nameset, names, rawlist, after_people_set, pers_seen, in_orgs, last_type, name, len, pos, variable, rawvar, llen, ppos, lllen, pppos, lllst, end, mynameset, tnamesets, frontnames, pair, offset, swaplist;
 				state.parallel.StartVariable("names");
 				if (state.tmp.value.length === 0) {
@@ -185,8 +185,19 @@ CSL.Node.names = {
 							namesets = namesets.concat(tnamesets);
 						}
 					}
-					if (state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") {
+					if ((state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") || (state.opt.xclass === "note" && item && "number" === typeof item.position && item.position !== CSL.POSITION_FIRST)) {
+//					if ((state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
 						namesets = namesets.slice(0, 1);
+						if (namesets.length) {
+							if (namesets[0].species === "pers") {
+								namesets[0].organization_first = false;
+								namesets[0].after_people = false;
+								namesets[0].free_agent_start = false;
+								namesets[0].free_agent_end = false;
+							} else {
+								namesets[0].organization_last = true;
+							}
+						}
 					}
 					len = namesets.length;
 					for (pos = 0; pos < len; pos += 1) {
@@ -276,7 +287,7 @@ CSL.Node.names = {
 				// suppress the initially listed author in
 				// subsequent renderings within a cite.  This works a little
 				// differently for personal and institutional authors.
-				if (namesets.length && state.tmp.area === "bibliography") {
+				if (namesets.length && (state.tmp.area === "bibliography" || (state.tmp.area && state.opt.xclass === "note"))) {
 					// save off the varname for safekeeping
 					cut_var = namesets[0].variable;
 					cutinfo = state.tmp.names_cut;
@@ -292,7 +303,7 @@ CSL.Node.names = {
 							namesets = namesets.slice(1);
 						}
 					} else {
-						namesets = namesets.slice(1);
+						namesets = namesets.slice(0,1);
 					}
 					// should always be true, but just in case
 					// this slices off subsequent namesets in the initial name
@@ -434,9 +445,14 @@ CSL.Node.names = {
 					display_names = nameset.names.slice();
 
 					if ("pers" === nameset.species) {
+						//
+						// the names constraint (experimental)
+						//
+						suppress_min = state.output.getToken("name").strings["suppress-min"];
+
 						// set the number of names to be _intended_ for rendering,
 						// in the first nameset, if personal, for subsequent slicing.
-						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+						if (namesetIndex === 0 && !suppress_min &&(state.tmp.area === "bibliography" || (state.tmp.area === "citation" &&state.opt.xclass === "note"))) {
 							state.tmp.names_cut.counts[nameset.variable] = state.tmp["et-al-use-first"];
 						}
 
@@ -448,9 +464,8 @@ CSL.Node.names = {
 						discretionary_names_length = state.tmp["et-al-min"];
 
 						//
-						// the names constraint
+						// Invoke names constraint
 						//
-						suppress_min = state.output.getToken("name").strings["suppress-min"];
 						suppress_condition = suppress_min && display_names.length >= suppress_min;
 						if (suppress_condition) {
 							continue;
@@ -492,7 +507,7 @@ CSL.Node.names = {
 						// org
 						// set the number of names to be _intended_ for rendering,
 						// in the first nameset, if personal, for subsequent slicing.
-						if (namesetIndex === 0 && state.tmp.area === "bibliography") {
+						if (namesetIndex === 0 && (state.tmp.area === "bibliography" || (state.tmp.area === "citation" && state.opt.xclass === "note"))) {
 							state.tmp.names_cut.counts[nameset.variable] = 1;
 						}
 						use_first = state.output.getToken("institution").strings["use-first"];
