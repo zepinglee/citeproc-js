@@ -110,7 +110,7 @@ CSL.Util.substituteStart = function (state, target) {
 		// (okay, we use conditionals a lot more than that.
 		// we slot them in for author-only as well...)
 		choose_start = new CSL.Token("choose", CSL.START);
-		target.push(choose_start);
+		CSL.Node.choose.build.call(choose_start,state,target);
 		if_start = new CSL.Token("if", CSL.START);
 		//
 		// Set a test of the shadow if token to skip this
@@ -137,52 +137,50 @@ CSL.Util.substituteStart = function (state, target) {
 
 CSL.Util.substituteEnd = function (state, target) {
 	var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, printing, str;
-	//if (state.build.area === "bibliography") {
-		state.build.render_nesting_level += -1;
-		if (state.build.render_nesting_level === 0) {
-			if (state.build.cls) {
-				func = function (state, Item) {
-					state.output.endTag("bib_first");
+	state.build.render_nesting_level += -1;
+	if (state.build.render_nesting_level === 0) {
+		if (state.build.cls) {
+			func = function (state, Item) {
+				state.output.endTag("bib_first");
+				// XXX: this will go away
+				state.tmp.count_offset_characters = false;
+				// this will not
+				state.output.calculate_offset = false;
+			};
+			this.execs.push(func);
+			state.build.cls = false;
+		}
+		if (state.build.area == "bibliography" && state.bibliography.opt["second-field-align"]) {
+			bib_first_end = new CSL.Token("group", CSL.END);
+			// first func end
+			func = function (state, Item) {
+				if (!state.tmp.render_seen) {
+					state.output.endTag(); // closes bib_first
 					// XXX: this will go away
 					state.tmp.count_offset_characters = false;
 					// this will not
 					state.output.calculate_offset = false;
-				};
-				this.execs.push(func);
-				state.build.cls = false;
-			}
-			if (state.build.area == "bibliography" && state.bibliography.opt["second-field-align"]) {
-				bib_first_end = new CSL.Token("group", CSL.END);
-				// first func end
-				func = function (state, Item) {
-					if (!state.tmp.render_seen) {
-						state.output.endTag(); // closes bib_first
-						// XXX: this will go away
-						state.tmp.count_offset_characters = false;
-						// this will not
-						state.output.calculate_offset = false;
-					}
-				};
-				bib_first_end.execs.push(func);
-				target.push(bib_first_end);
-				bib_other = new CSL.Token("group", CSL.START);
-				bib_other.decorations = [["@display", "right-inline"]];
-				func = function (state, Item) {
-					if (!state.tmp.render_seen) {
-						state.tmp.render_seen = true;
-						state.output.startTag("bib_other", bib_other);
-					}
-				};
-				bib_other.execs.push(func);
-				target.push(bib_other);
-			}
+				}
+			};
+			bib_first_end.execs.push(func);
+			target.push(bib_first_end);
+			bib_other = new CSL.Token("group", CSL.START);
+			bib_other.decorations = [["@display", "right-inline"]];
+			func = function (state, Item) {
+				if (!state.tmp.render_seen) {
+					state.tmp.render_seen = true;
+					state.output.startTag("bib_other", bib_other);
+				}
+			};
+			bib_other.execs.push(func);
+			target.push(bib_other);
 		}
-	//}
+	}
 	if (state.build.substitute_level.value() === 1) {
 		if_end = new CSL.Token("if", CSL.END);
 		target.push(if_end);
 		choose_end = new CSL.Token("choose", CSL.END);
-		target.push(choose_end);
+		CSL.Node.choose.build.call(choose_end,state,target);
 	}
 
 	toplevel = "names" === this.name && state.build.substitute_level.value() === 0;
