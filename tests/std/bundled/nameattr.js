@@ -55,10 +55,6 @@ doh.register("std.nameattr", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("nameattr_EtAlSubsequentUseFirstOnNamesInCitation");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("nameattr_NameDelimiterOnBibliographyInBibliography");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -76,10 +72,6 @@ doh.register("std.nameattr", [
     }, 
     function(){
         var test = new StdRhinoTest("nameattr_EtAlSubsequentMinOnNamesInBibliography");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("nameattr_EtAlSubsequentUseFirstOnNamesInBibliography");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
@@ -132,10 +124,6 @@ doh.register("std.nameattr", [
     }, 
     function(){
         var test = new StdRhinoTest("nameattr_SortSeparatorOnStyleInBibliography");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("nameattr_EtAlSubsequentMinOnNamesInCitation");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
