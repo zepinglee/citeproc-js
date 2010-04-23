@@ -2479,6 +2479,9 @@ CSL.citeEnd = function (Item) {
 	this.tmp.last_suffix_used = this.tmp.suffix.value();
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
+	if (this.tmp.disambig_restore) {
+		this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
+	}
 	this.tmp.disambig_request = false;
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters) {
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
@@ -3563,7 +3566,7 @@ CSL.Node.names = {
 				}
 			}
 			func = function (state, Item, item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -3753,6 +3756,9 @@ CSL.Node.names = {
 							param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter].push(param);
 						}
+						myform = state.output.getToken("name").strings.form;
+						myinitials = this.strings["initialize-with"];
+						paramx = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
 						if (state.tmp.sort_key_flag) {
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = 2;
 							param = 2;
@@ -3766,9 +3772,11 @@ CSL.Node.names = {
 								param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, param, state.output.getToken("name").strings.form, this.strings["initialize-with"]);
 							}
 						} else {
-							myform = state.output.getToken("name").strings.form;
-							myinitials = this.strings["initialize-with"];
-							param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
+							param = paramx;
+						}
+						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST && paramx > param) {
+							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
+							param = paramx;
 						}
 						state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
 					}
