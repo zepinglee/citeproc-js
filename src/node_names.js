@@ -251,7 +251,7 @@ CSL.Node.names = {
 			}
 
 			// handle names
-			func = function (state, Item) {
+			func = function (state, Item, item) {
 				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
@@ -426,6 +426,7 @@ CSL.Node.names = {
 							}
 						}
 					}
+
 					if (!state.tmp.disambig_request) {
 						state.tmp.disambig_settings.givens[state.tmp.nameset_counter] = [];
 					}
@@ -531,16 +532,29 @@ CSL.Node.names = {
 						CSL.debug("nameset.names.length[1]: " + nameset.names.length);
 					}
 					//SNIP-END
+					// DON'T DO THIS IF NO NAMES IN SUBSEQUENT FORM
 					llen = nameset.names.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
 						//
 						// register the name in the global names disambiguation
 						// registry
 						state.registry.namereg.addname(Item.id, nameset.names[ppos], ppos);
+						var chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter];
+						if ("undefined" === typeof chk) {
+							state.tmp.disambig_settings.givens.push([]);
+						}
+						chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos];
+						if ("undefined" === typeof chk) {
+							myform = state.output.getToken("name").strings.form;
+							myinitials = this.strings["initialize-with"];
+							param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
+							state.tmp.disambig_settings.givens[state.tmp.nameset_counter].push(param);
+						}
 						//
 						// set the display mode default for givennames if required
 						if (state.tmp.sort_key_flag) {
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = 2;
+							param = 2;
 						} else if (state.tmp.disambig_request) {
 							//
 							// fix a request for initials that makes no sense.
