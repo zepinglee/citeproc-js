@@ -88,7 +88,7 @@ CSL.Registry.NameReg = function (state) {
 		//
 		if ("short" === form) {
 			param = 0;
-		} else if ("string" === typeof initials || state.tmp.force_subsequent) {
+		} else if ("string" === typeof initials) {
 			param = 1;
 		}
 		//
@@ -97,7 +97,7 @@ CSL.Registry.NameReg = function (state) {
 		if (param < request_base) {
 			param = request_base;
 		}
-		if (state.tmp.force_subsequent || !dagopt) {
+		if (!dagopt) {
 			return param;
 		}
 		if ("string" === typeof gdropt && gdropt.slice(0, 12) === "primary-name" && namenum > 0) {
