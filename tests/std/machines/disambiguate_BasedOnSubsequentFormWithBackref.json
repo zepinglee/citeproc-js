@@ -157,5 +157,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Doe, His Book (2000); Doe, His Other Book (2001).\nRoe, Her Book (1998).\nRoe, Her Other Book (1999).\nDoe, His Book, supra note 1.\nRoe, Her Book, supra note 2."
+    "result": "John Doe, His Book (2000); John Doe, His Other Book (2001).\nJane Roe, Her Book (1998).\nJane Roe, Her Other Book (1999).\nDoe, His Book, supra note 1.\nRoe, Her Book, supra note 2."
 }

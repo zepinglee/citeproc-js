@@ -198,5 +198,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Doe, His Book 12 (2000); Doe, His Other Book 23 (2001).\nNoakes, His Book 34 (1730).\nRoe, Her Book 45 (1998).\nRoe, Her Other Book 56 (1999).\nDoe, His Book, supra note 1, at 67.\nRoe, Her Book, supra note 3, at 78.\nNoakes, supra note 2, at 89."
+    "result": "John Doe, His Book 12 (2000); John Doe, His Other Book 23 (2001).\nJohn Noakes, His Book 34 (1730).\nJane Roe, Her Book 45 (1998).\nJane Roe, Her Other Book 56 (1999).\nDoe, His Book, supra note 1, at 67.\nRoe, Her Book, supra note 3, at 78.\nNoakes, supra note 2, at 89."
 }
