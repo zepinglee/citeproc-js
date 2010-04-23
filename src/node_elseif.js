@@ -48,9 +48,7 @@ CSL.Node["else-if"] = {
 					if (item && "undefined" === typeof item.position) {
 						item.position = 0;
 					}
-					if (state.tmp.force_subsequent && tryposition < 2) {
-						return true;
-					} else if (item && typeof item.position === "number" || "undefined" === typeof item.position) {
+					if (item && typeof item.position === "number" || "undefined" === typeof item.position) {
 						if (item.position === 0 && tryposition === 0) {
 							return true;
 						} else if (tryposition > 0 && item.position >= tryposition) {
@@ -63,9 +61,7 @@ CSL.Node["else-if"] = {
 			}
 			if (this.strings["near-note-distance-check"]) {
 				func = function (state, Item, item) {
-					if (state.tmp.force_subsequent) {
-						return true;
-					} else if (!item || !item.note_distance) {
+					if (!item || !item.note_distance) {
 						return false;
 					} else {
 						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
