@@ -38,9 +38,12 @@ bibliography
 <<===== MODE =====<<
 
 
+NOTE: no effect, of course.
+
+
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John Doe, et al.</div>
+  <div class="csl-entry">John Doe, Jane Roe, Richard Snoakes</div>
 </div>
 <<===== RESULT =====<<
 
@@ -66,7 +69,7 @@ bibliography
   <bibliography>
     <layout>
       <names variable="author">
-        <name et-al-subsequent-min="3" delimiter=", "/>
+        <name delimiter=", "/>
       </names>
     </layout>
   </bibliography>

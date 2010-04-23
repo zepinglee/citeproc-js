@@ -37,9 +37,11 @@
 citation
 <<===== MODE =====<<
 
+NOTE: no effect, of course.
+
 
 >>===== RESULT =====>>
-John Doe, et al.
+John Doe, Jane Roe, Richard Snoakes
 <<===== RESULT =====<<
 
 
@@ -56,7 +58,7 @@ John Doe, et al.
   <citation>
     <layout>
       <names variable="author">
-        <name et-al-subsequent-min="3" delimiter=", "/>
+        <name delimiter=", "/>
       </names>
     </layout>
   </citation>

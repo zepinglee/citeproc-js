@@ -52,10 +52,9 @@
                 }
             ], 
             "id": "ITEM-1", 
-            "position": 1, 
             "type": "book"
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Doe, et al.</div>\n</div>"
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Doe, Jane Roe</div>\n</div>"
 }

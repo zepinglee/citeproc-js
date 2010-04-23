@@ -43,6 +43,18 @@ John Doe, et al.
 <<===== RESULT =====<<
 
 
+>>===== CITATION-ITEMS =====>>
+[
+    [
+        {
+            "id": "ITEM-1", 
+            "position": 1
+        }
+    ]
+]
+<<===== CITATION-ITEMS =====<<
+
+
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
@@ -79,7 +91,6 @@ John Doe, et al.
             }
         ], 
         "id": "ITEM-1", 
-        "position": 1, 
         "type": "book"
     }
 ]

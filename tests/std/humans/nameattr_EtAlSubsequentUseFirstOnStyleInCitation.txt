@@ -42,12 +42,24 @@ citation
 John Doe, Jane Roe, et al.
 <<===== RESULT =====<<
 
+>>===== CITATION-ITEMS =====>>
+[
+    [
+        {
+            "id": "ITEM-1", 
+            "position": 1
+        }
+    ]
+]
+<<===== CITATION-ITEMS =====<<
+
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.0"
+      et-al-subsequent-use-first="2">
   <info>
     <id />
     <title />
@@ -56,7 +68,7 @@ John Doe, Jane Roe, et al.
   <citation>
     <layout>
       <names variable="author">
-        <name et-al-subsequent-min="3" delimiter=", " et-al-subsequent-use-first="2"/>
+        <name et-al-subsequent-min="3" delimiter=", "/>
       </names>
     </layout>
   </citation>
@@ -82,7 +94,6 @@ John Doe, Jane Roe, et al.
             }
         ], 
         "id": "ITEM-1", 
-        "position": 1, 
         "type": "book"
     }
 ]

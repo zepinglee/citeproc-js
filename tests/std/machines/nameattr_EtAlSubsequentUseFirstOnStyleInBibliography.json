@@ -61,5 +61,5 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Doe, Jane Roe, et al.</div>\n</div>"
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">John Doe, Jane Roe, Richard Snoakes</div>\n</div>"
 }

@@ -38,9 +38,13 @@ bibliography
 <<===== MODE =====<<
 
 
+NOTE: The subsequent forms of et-al-min and et-al-use-first are
+completely ignored in the bibliography.
+
+
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John Doe, Jane Roe, et al.</div>
+  <div class="csl-entry">John Doe, Jane Roe, Richard Snoakes</div>
 </div>
 <<===== RESULT =====<<
 
