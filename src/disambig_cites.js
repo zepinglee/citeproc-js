@@ -192,7 +192,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			//SNIP-START
 			if (debug) {
 				CSL.debug("  ---> Evaluate: storing token config");
-				CSL.debug("          names: " + base.names);
+				CSL.debug("          names: " + base_return.names);
 				CSL.debug("         givens: " + base_return.givens);
 			}
 			//SNIP-END
@@ -571,7 +571,12 @@ CSL.decrementCheckeratorNames = function (state, base) {
 					i = -1;
 					break;
 				}
-				base_return.names[pos] += -1;
+				// Be careful to treat the givens and names
+				// arrays in step.  Fixes bug affecting
+				// disambiguate_AllNamesBaseNameCountOnFailureIfYearSuffixAvailable
+				if (ppos < base_return.names[pos]) {
+					base_return.names[pos] += -1;
+				}
 			}
 		}
 	}
