@@ -400,10 +400,13 @@ CSL.Engine.prototype.configureTokenLists = function () {
 	dateparts_master = ["year", "month", "day"];
 	len = CSL.AREAS.length;
 	for (pos = 0; pos < len; pos += 1) {
+		//var ret = [];
 		area = CSL.AREAS[pos];
 		llen = this[area].tokens.length - 1;
 		for (ppos = llen; ppos > -1; ppos += -1) {
 			token = this[area].tokens[ppos];
+			//token.pos = ppos;
+			//ret.push(token);
 			if ("date" === token.name && CSL.END === token.tokentype) {
 				dateparts = [];
 			}
@@ -426,6 +429,25 @@ CSL.Engine.prototype.configureTokenLists = function () {
 				CSL.Node[token.name].configure.call(token, this, ppos);
 			}
 		}
+		//var offset = "";
+		//var lnum = 0;
+		//if (area === "citation" && true) {
+		//	ret.reverse();
+		//	for (ppos = 0, llen = ret.length; ppos < llen; ppos += 1) {
+		//		lnum = (ppos);
+		//		while ((""+lnum).length < 3) {
+		//			lnum = " " + lnum;
+		//		}
+				//if (ret[ppos].tokentype === CSL.START) {
+				//	offset += "  ";
+				//} else if (ret[ppos].tokentype === CSL.END) {
+				//	offset = offset.slice(0,-2);
+				//	print(lnum+offset+"</"+ret[ppos].name+">");
+				//} else {
+				//	print(lnum+offset+"<"+ret[ppos].name+"/>");
+				//}
+		//	}
+		//}
 	}
 	this.version = CSL.version;
 	return this.state;
