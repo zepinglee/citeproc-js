@@ -446,6 +446,7 @@ class CslTest:
             print self.testname
         if not os.path.exists(os.path.join("..","jing")):
             print "Error: jing not found as sibling of processor archive."
+            print "  Looked in: %s" % os.path.join("..","jing")
             sys.exit()
         m = re.match("(?sm).*version=\"([.0-9a-z]+)\".*",self.data["csl"])
         if m:
