@@ -42,7 +42,7 @@ citation
 
 >>===== RESULT =====>>
 Appleton “Tom Swift and His Electric Runabout” (1910).
-Ibid.
+SUBSEQUENT.
 <<===== RESULT =====<<
 
 
@@ -91,7 +91,7 @@ Ibid.
           </group>
         </if>
         <else-if position="subsequent">
-          <text term="ibid" />
+          <text value="SUBSEQUENT" />
         </else-if>
         <else-if position="ibid">
           <text term="ibid" />
