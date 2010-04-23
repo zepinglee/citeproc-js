@@ -78,7 +78,7 @@
                 }, 
                 {
                     "family": "Bronchitis", 
-                    "given": "Beauregarde", 
+                    "given": "Bosworth", 
                     "static-ordering": false
                 }, 
                 {
@@ -158,5 +158,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "Asthma, et al. (1990a); Asthma, et al. (1990b); Dropsy, Edward Enteritis, X. Fever (2000); Dropsy, Ernie Enteritis, Y. Fever (2000)"
+    "result": "Asthma, et al. (1990a); Asthma, et al. (1990b); Dropsy, Edward Enteritis, et al. (2000); Dropsy, Ernie Enteritis, et al. (2000)"
 }
