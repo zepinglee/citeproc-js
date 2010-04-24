@@ -654,7 +654,7 @@ CSL.citeEnd = function (Item) {
 	// the disambig (name rendering) settings used for rendering work their way
 	// into the registry.  This resets defaults to the subsequent form,
 	// when first cites are rendered.
-	if (this.tmp.disambig_restore) {
+	if (this.tmp.disambig_restore && this.registry.registry[Item.id]) {
 		this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
 	}
 	this.tmp.disambig_request = false;
