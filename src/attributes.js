@@ -228,9 +228,15 @@ CSL.Attributes["@variable"] = function (state, arg) {
 				} else if ("citation-number" === variable) {
 					output = true;
 					break;
+				} else if ("first-reference-note-number" === variable) {
+					if (item && item["first-reference-note-number"]) {
+						output = true;
+						break;
+					}
 				} else if ("object" === typeof Item[variable]) {
 					if (Item[variable].length) {
 						output = true;
+						break;
 					}
 				} else if ("string" === typeof Item[variable] && Item[variable]) {
 					output = true;
@@ -277,7 +283,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 				variable = this.variables[pos];
 				x = false;
 				myitem = Item;
-				if (item && variable === "locator") {
+				if (item && ["locator","first-reference-note-number"].indexOf(variable) > -1) {
 					myitem = item;
 				}
 				if (myitem[variable]) {
@@ -432,7 +438,23 @@ CSL.Attributes["@plural"] = function (state, arg) {
 
 
 CSL.Attributes["@locator"] = function (state, arg) {
-
+	var func;
+	if (["if",  "else-if"].indexOf(this.name) > -1) {
+		// check for variable value
+		func = function (state, Item, item) {
+			var label;
+			if (!item.label) {
+				label = "page";
+			} else {
+				label = item.label;
+			}
+			if (arg == label) {
+				return true;
+			}
+			return false;
+		};
+		this.tests.push(func);
+	}
 };
 
 
