@@ -220,7 +220,6 @@ CSL.Node.text = {
 					if (["first-reference-note-number", "locator"].indexOf(this.variables[0]) > -1) {
 						func = function (state, Item, item) {
 							if (item && item[this.variables[0]]) {
-								//state.tmp.backref_index.push(Item.id);
 								state.output.append(item[this.variables[0]], this);
 							}
 						};
