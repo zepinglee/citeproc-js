@@ -48,7 +48,7 @@ J. Irrep. Res.
 >>== ABBREVIATIONS ==>>
 {
     "default": {
-        "journal": {
+        "container-title": {
             "Journal of Irreproducible Results": "J. Irrep. Res."
         }
     }

@@ -47,7 +47,7 @@ I.R. Wildlife Series
 >>== ABBREVIATIONS ==>>
 {
     "default": {
-        "series": {
+        "collection-title": {
             "International Rescue Wildlife Series": "I.R. Wildlife Series"
         }
     }
