@@ -68,6 +68,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	};
 
 	expand = function (str) {
+		str = ""+str;
 		lst = listify(str);
 		len = lst.length;
 		for (pos = 1; pos < len; pos += 2) {
