@@ -72,7 +72,7 @@ CSL.Parallel = function (state) {
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["volume", "container-title", "issue", "page", "locator"].indexOf(variable) > -1;
+	return ["volume", "container-title", "issue", "page", "locator","number"].indexOf(variable) > -1;
 };
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
@@ -120,7 +120,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 		len = CSL.PARALLEL_MATCH_VARS.length;
 		for (pos = 0; pos < len; pos += 1) {
 			x = CSL.PARALLEL_MATCH_VARS[pos];
-			if (!Item[x]) {
+			if (!Item[x] || CSL.PARALLEL_TYPES.indexOf(Item["type"]) === -1) {
 				this.try_cite = false;
 				if (this.in_series) {
 					this.sets.push([]);
@@ -195,7 +195,7 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		} else if (this.target === "back" && is_mid) {
 			this.try_cite = true;
 			this.in_series = false;
-			this.am_master = false;
+			//this.am_master = false;
 		}
 		this.cite[this.target].push(variable);
 	}
@@ -256,7 +256,7 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 					// evaluation takes place later, at close of cite.
 					//this.try_cite = true;
 					this.in_series = false;
-					this.am_master = false;
+					//this.am_master = false;
 				}
 			} else if (this.target === "back") {
 				//
@@ -272,7 +272,7 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 							//**print("-------------- reset --------------");
 							//print("  breaking series");
 							this.in_series = false;
-							this.am_master = false;
+							//this.am_master = false;
 						}
 				}
 			}
