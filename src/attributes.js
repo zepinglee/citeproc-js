@@ -394,7 +394,11 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 			}
 
 			if (not_numeric_type) {
-				ret.push(false);
+				if (Item[variable] && (""+Item[variable]).match(/[0-9]$/)) {
+					ret.push(true);
+				} else {
+					ret.push(false);
+				}
 			} else  if (typeof val === "undefined") {
 				ret.push(false);
 			} else if (typeof val !== "string") {
