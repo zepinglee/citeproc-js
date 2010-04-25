@@ -4826,6 +4826,9 @@ CSL.Transform = function (state) {
 	this["collection-title"] = {};
 	this.institution = {};
 	this.authority = {};
+	this.title = {};
+	this.publisher = {};
+	this["publisher-place"] = {};
 	this.hereinafter = {};
 	var abbreviations = "default";
 	var token;
@@ -4885,7 +4888,7 @@ CSL.Transform = function (state) {
 				var value, primary;
 				value = Item[myfieldname];
 				primary = getTextSubField(value, transform_locale, transform_fallback);
-				primary = abbreviate(state, Item, alternative_varname, value, mysubsection, true);
+				primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
 				state.output.append(primary, this);
 			};
 		} else if (transform_locale === "locale-sec") {
