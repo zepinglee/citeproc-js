@@ -115,7 +115,8 @@ var CSL = {
 		"et-al-subsequent-min",
 		"et-al-subsequent-use-first"
 	],
-	PARALLEL_MATCH_VARS: ["title",  "container-title", "volume", "page"],
+	PARALLEL_MATCH_VARS: ["title",  "container-title"],
+	PARALLEL_TYPES: ["legal_case",  "legislation"],
 	LOOSE: 0,
 	STRICT: 1,
 	PREFIX_PUNCTUATION: /[.;:]\s*$/,
@@ -3964,19 +3965,6 @@ CSL.Node.text = {
 			CSL.expandMacro.call(state, this);
 		} else {
 			variable = this.variables[0];
-			if (variable) {
-				func = function (state, Item) {
-					state.parallel.StartVariable(this.variables[0]);
-					state.parallel.AppendToVariable(Item[this.variables[0]]);
-				};
-				this.execs.push(func);
-			} else {
-				func = function (state, Item) {
-					state.parallel.StartVariable("value");
-					state.parallel.AppendToVariable("whatever ...");
-				};
-				this.execs.push(func);
-			}
 			form = "long";
 			plural = 0;
 			if (this.strings.form) {
@@ -4112,6 +4100,11 @@ CSL.Node.text = {
 					state.build.form = false;
 					state.build.plural = false;
 				} else if (this.variables.length) {
+					func = function (state, Item) {
+						state.parallel.StartVariable(this.variables[0]);
+						state.parallel.AppendToVariable(Item[this.variables[0]]);
+					};
+					this.execs.push(func);
 					if (CSL.MULTI_FIELDS.indexOf(this.variables[0]) > -1) {
 						if (form === "short") {
 							state.transform.init(this, this.variables[0], this.variables[0]);
@@ -4153,28 +4146,38 @@ CSL.Node.text = {
 							};
 						} else if (this.variables[0] === "page-first") {
 							func = function (state, Item) {
-								var idx;
+								var idx, value;
 								value = state.getVariable(Item, "page", form);
-								idx = value.indexOf("-");
-								if (idx > -1) {
-									value = value.slice(0, idx);
-								}
+								if (value) {
+									idx = value.indexOf("-");
+									if (idx > -1) {
+										value = value.slice(0, idx);
+									}
 								state.output.append(value, this);
+								}
 							};
 						} else  if (this.variables[0] === "page") {
 							func = function (state, Item) {
-								value = state.getVariable(Item, "page", form);
-								value = state.fun.page_mangler(value);
-								state.output.append(value, this);
+								var value = state.getVariable(Item, "page", form);
+								if (value) {
+									value = state.fun.page_mangler(value);
+									state.output.append(value, this);
+								}
 							};
 						} else {
 							func = function (state, Item) {
 								var value = state.getVariable(Item, this.variables[0], form);
-								state.output.append(value, this);
+								if (value) {
+									state.output.append(value, this);
+								}
 							};
 						}
 					}
 					this.execs.push(func);
+					func = function (state, Item) {
+						state.parallel.CloseVariable("text");
+					};
+			this.execs.push(func);
 				} else if (this.strings.value) {
 					func = function (state, Item) {
 						var flag;
@@ -4186,10 +4189,6 @@ CSL.Node.text = {
 					this.execs.push(func);
 				}
 			}
-			func = function (state, Item) {
-				state.parallel.CloseVariable("text");
-			};
-			this.execs.push(func);
 			target.push(this);
 		}
 		CSL.Util.substituteEnd.call(this, state, target);
@@ -4420,7 +4419,11 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 				val = val.toString();
 			}
 			if (not_numeric_type) {
-				ret.push(false);
+				if (Item[variable] && (""+Item[variable]).match(/[0-9]$/)) {
+					ret.push(true);
+				} else {
+					ret.push(false);
+				}
 			} else  if (typeof val === "undefined") {
 				ret.push(false);
 			} else if (typeof val !== "string") {
@@ -5008,7 +5011,7 @@ CSL.Parallel = function (state) {
 	this.use_parallels = true;
 };
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["volume", "container-title", "issue", "page", "locator"].indexOf(variable) > -1;
+	return ["volume", "container-title", "issue", "page", "locator","number"].indexOf(variable) > -1;
 };
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 	if (this.use_parallels) {
@@ -5041,7 +5044,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 		len = CSL.PARALLEL_MATCH_VARS.length;
 		for (pos = 0; pos < len; pos += 1) {
 			x = CSL.PARALLEL_MATCH_VARS[pos];
-			if (!Item[x]) {
+			if (!Item[x] || CSL.PARALLEL_TYPES.indexOf(Item["type"]) === -1) {
 				this.try_cite = false;
 				if (this.in_series) {
 					this.sets.push([]);
@@ -5103,7 +5106,6 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		} else if (this.target === "back" && is_mid) {
 			this.try_cite = true;
 			this.in_series = false;
-			this.am_master = false;
 		}
 		this.cite[this.target].push(variable);
 	}
@@ -5137,13 +5139,11 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 			if (this.target === "front") {
 				if (!prev[this.variable] || this.data.value !== prev[this.variable].value) {
 					this.in_series = false;
-					this.am_master = false;
 				}
 			} else if (this.target === "back") {
 				if (prev[this.variable]) {
 						if (this.data.value !== prev[this.variable].value && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
 							this.in_series = false;
-							this.am_master = false;
 						}
 				}
 			}
@@ -6107,6 +6107,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		return ret;
 	};
 	expand = function (str) {
+		str = ""+str;
 		lst = listify(str);
 		len = lst.length;
 		for (pos = 1; pos < len; pos += 2) {
