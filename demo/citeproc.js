@@ -38,7 +38,8 @@ var CSL = {
 	MARK_TRAILING_NAMES: true,
 	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-	ABBREVIATE_FIELDS: ["journal", "series", "institution", "authority"],
+	MULTI_FIELDS: ["publisher","publisher-place","title","container-title", "collection-title", "institution", "authority"],
+	CITE_FIELDS: ["first-reference-note-number","locator"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 	SWAPPING_PUNCTUATION: [".", ",", ";", ":"],
 	TERMINAL_PUNCTUATION: [".", "!", "?", ":", "X", "Y"],
@@ -1188,7 +1189,10 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 		style = "";
 	}
 	this.parallel = new CSL.Parallel(this);
-	this.abbrev = new CSL.Abbrev();
+	this.transform = new CSL.Transform(this);
+	this.setAbbreviations = function (nick) {
+		this.transform.setAbbreviations(nick);
+	};
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
 	this.build = new CSL.Engine.Build();
@@ -1445,51 +1449,6 @@ CSL.Engine.prototype.configureTokenLists = function () {
 	}
 	this.version = CSL.version;
 	return this.state;
-};
-CSL.Engine.prototype.setAbbreviations = function (name) {
-	var vartype, pos, len;
-	if (name) {
-		this.abbrev.abbreviations = name;
-	}
-	len = CSL.ABBREVIATE_FIELDS.length;
-	for (pos = 0; pos < len; pos += 1) {
-		vartype = CSL.ABBREVIATE_FIELDS[pos];
-		this.abbrev[vartype] = this.sys.getAbbreviations(this.abbrev.abbreviations, vartype);
-	}
-};
-CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
-	var m, lst, opt, o, pos, key, ret, len, myret;
-	if (!value) {
-		return "";
-	}
-	ret = "";
-	m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
-	if (m) {
-		for (pos = 0, len = m.length; pos < len; pos += 1) {
-			m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/,"");
-		}
-	}
-	lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
-	myret = [lst[0]];
-	for (pos = 1, len = lst.length; pos < len; pos += 1) {
-		myret.push(m[pos - 1]);
-		myret.push(lst[pos]);
-	}
-	lst = myret.slice();
-	opt = this.opt[locale_type];
-	for (key in opt) {
-		if (opt.hasOwnProperty(key)) {
-			o = opt[key];
-			if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
-				ret = lst[(lst.indexOf(o) + 1)];
-				break;
-			}
-		}
-	}
-	if (!ret && use_default) {
-		ret = lst[0];
-	}
-	return ret;
 };
 CSL.Engine.prototype.getNameSubFields = function (names) {
 	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, len, llen, lllen, i, key, str, lang;
@@ -3133,13 +3092,10 @@ CSL.Node.key = {
 						}
 					};
 				} else if ("title" === variable) {
-					func = function (state, Item) {
-						var value = Item[variable];
-						if (value) {
-							value = state.getTextSubField(value, "locale-sort", true);
-							state.output.append(value, "empty");
-						}
-					};
+					state.transform.init("empty","title");
+					state.transform.setTransformLocale("locale-sort");
+					state.transform.setTransformFallback(true);
+					func = state.transform.getOutputFunction();
 				} else {
 					func = function (state, Item) {
 						var varval = Item[variable];
@@ -3968,7 +3924,7 @@ CSL.Node.substitute = {
 };
 CSL.Node.text = {
 	build: function (state, target) {
-		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, primary, secondary, primary_tok, secondary_tok, flag;
+		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, flag;
 		CSL.Util.substituteStart.call(this, state, target);
 		if (this.postponed_macro) {
 			CSL.expandMacro.call(state, this);
@@ -4122,85 +4078,67 @@ CSL.Node.text = {
 					state.build.form = false;
 					state.build.plural = false;
 				} else if (this.variables.length) {
-					if (["first-reference-note-number", "locator"].indexOf(this.variables[0]) > -1) {
-						func = function (state, Item, item) {
-							if (item && item[this.variables[0]]) {
-								state.output.append(item[this.variables[0]], this);
-							}
-						};
-					} else if (this.variables[0] === "container-title" && form === "short") {
-						func = state.abbrev.getOutputFunc(this, this.variables[0], "journal", "journalAbbreviation");
-					} else if (this.variables[0] === "collection-title" && form === "short") {
-						func = state.abbrev.getOutputFunc(this, this.variables[0], "series");
-					} else if (this.variables[0] === "authority" && form === "short") {
-						func = state.abbrev.getOutputFunc(this, this.variables[0], "authority");
-					} else if (this.variables[0] === "title") {
+					if (CSL.MULTI_FIELDS.indexOf(this.variables[0]) > -1) {
+						if (form === "short") {
+							state.transform.init(this, this.variables[0], this.variables[0]);
+						} else {
+							state.transform.init(this, this.variables[0]);
+						}
 						if (state.build.area.slice(-5) === "_sort") {
-							func = function (state, Item) {
-								var value = Item[this.variables[0]];
-								if (value) {
-									value = state.getTextSubField(value, "locale-sort", true);
-									state.output.append(value, this);
+							state.transform.setTransformLocale("locale-sort");
+							state.transform.setTransformFallback(true);
+							func = state.transform.getOutputFunction();
+						} else if (form === "short") {
+							state.transform.setAbbreviationFallback(true);
+							state.transform.setTransformLocale("locale-pri");
+							state.transform.setTransformFallback(true);
+							if (this.variables[0] === "container-title") {
+								state.transform.setAlternativeVariableName("journalAbbreviation");
+							} else if (["publisher","publisher-place"].indexOf(this.variables[0]) > -1) {
+								state.transform.setTransformLocale("default-locale");
+							}
+							func = state.transform.getOutputFunction();
+						} else if (this.variables[0] === "title") {
+							state.transform.setTransformLocale("locale-sec");
+							state.transform.setTransformFallback(true);
+							func = state.transform.getOutputFunction();
+						} else {
+							state.transform.setTransformLocale("locale-pri");
+							state.transform.setTransformFallback(true);
+							if (["publisher","publisher-place"].indexOf(this.variables[0]) > -1) {
+								state.transform.setTransformLocale("default-locale");
+							}
+							func = state.transform.getOutputFunction();
+						}
+					} else {
+						if (CSL.CITE_FIELDS.indexOf(this.variables[0]) > -1) {
+							func = function (state, Item, item) {
+								if (item && item[this.variables[0]]) {
+									state.output.append(item[this.variables[0]], this);
 								}
+							};
+						} else if (this.variables[0] === "page-first") {
+							func = function (state, Item) {
+								var idx;
+								value = state.getVariable(Item, "page", form);
+								idx = value.indexOf("-");
+								if (idx > -1) {
+									value = value.slice(0, idx);
+								}
+								state.output.append(value, this);
+							};
+						} else  if (this.variables[0] === "page") {
+							func = function (state, Item) {
+								value = state.getVariable(Item, "page", form);
+								value = state.fun.page_mangler(value);
+								state.output.append(value, this);
 							};
 						} else {
 							func = function (state, Item) {
-								value = Item[this.variables[0]];
-								if (value) {
-									primary = state.getTextSubField(value, "locale-pri", true);
-									secondary = state.getTextSubField(value, "locale-sec");
-									if (secondary) {
-										primary_tok = new CSL.Token("text", CSL.SINGLETON);
-										secondary_tok = new CSL.Token("text", CSL.SINGLETON);
-										for (var key in this.strings) {
-											if (this.strings.hasOwnProperty(key)) {
-												secondary_tok.strings[key] = this.strings[key];
-												if (key === "suffix") {
-													secondary_tok.strings.suffix = "]" + secondary_tok.strings.suffix;
-													continue;
-												} else if (key === "prefix") {
-													secondary_tok.strings.prefix = " [" + secondary_tok.strings.prefix;
-												}
-												primary_tok.strings[key] = this.strings[key];
-											}
-										}
-										state.output.append(primary, primary_tok);
-										state.output.append(secondary, secondary_tok);
-									} else {
-										state.output.append(primary, this);
-									}
-								}
+								var value = state.getVariable(Item, this.variables[0], form);
+								state.output.append(value, this);
 							};
 						}
-					} else if (this.variables[0] === "page-first") {
-						func = function (state, Item) {
-							var idx;
-							value = state.getVariable(Item, "page", form);
-							idx = value.indexOf("-");
-							if (idx > -1) {
-								value = value.slice(0, idx);
-							}
-							state.output.append(value, this);
-						};
-					} else if (this.variables[0] === "page") {
-						func = function (state, Item) {
-							value = state.getVariable(Item, "page", form);
-							value = state.fun.page_mangler(value);
-							state.output.append(value, this);
-						};
-					} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
-						func = function (state, Item) {
-							value = state.getVariable(Item, this.variables[0]);
-							if (value) {
-								value = state.getTextSubField(value, "default-locale", true);
-								state.output.append(value, this);
-							}
-						};
-					} else {
-						func = function (state, Item) {
-							var value = state.getVariable(Item, this.variables[0], form);
-							state.output.append(value, this);
-						};
 					}
 					this.execs.push(func);
 				} else if (this.strings.value) {
@@ -4757,45 +4695,273 @@ CSL.Stack.prototype.value = function () {
 CSL.Stack.prototype.length = function () {
 	return this.mystack.length;
 };
-CSL.Abbrev = function () {
-	this.debug = false;
-	this.journal = {};
-	this.series = {};
+CSL.Util = {};
+CSL.Util.Match = function () {
+	var func, pos, len, reslist, res, ppos, llen;
+	this.any = function (token, state, Item, item) {
+		var ret = false;
+		len = token.tests.length;
+		for (pos = 0; pos < len; pos += 1) {
+			func = token.tests[pos];
+			reslist = func.call(token, state, Item, item);
+			if ("object" !== typeof reslist) {
+				reslist = [reslist];
+			}
+			llen = reslist.length;
+			for (ppos = 0; ppos < llen; ppos += 1) {
+				if (reslist[ppos]) {
+					ret = true;
+					break;
+				}
+			}
+			if (ret) {
+				break;
+			}
+		}
+		if (ret) {
+			ret = token.succeed;
+			state.tmp.jump.replace("succeed");
+		} else {
+			ret = token.fail;
+			state.tmp.jump.replace("fail");
+		}
+		return ret;
+	};
+	this.none = function (token, state, Item, item) {
+		var ret = true;
+		len = this.tests.length;
+		for (pos = 0; pos < len; pos += 1) {
+			func = this.tests[pos];
+			reslist = func.call(token, state, Item, item);
+			if ("object" !== typeof reslist) {
+				reslist = [reslist];
+			}
+			llen = reslist.length;
+			for (ppos = 0; ppos < llen; ppos += 1) {
+				if (reslist[ppos]) {
+					ret = false;
+					break;
+				}
+			}
+			if (!ret) {
+				break;
+			}
+		}
+		if (ret) {
+			ret = token.succeed;
+			state.tmp.jump.replace("succeed");
+		} else {
+			ret = token.fail;
+			state.tmp.jump.replace("fail");
+		}
+		return ret;
+	};
+	this.all = function (token, state, Item, item) {
+		var ret = true;
+		len = this.tests.length;
+		for (pos = 0; pos < len; pos += 1) {
+			func = this.tests[pos];
+			reslist = func.call(token, state, Item, item);
+			if ("object" !== typeof reslist) {
+				reslist = [reslist];
+			}
+			llen = reslist.length;
+			for (pos = 0; pos < len; pos += 1) {
+				if (!reslist[ppos]) {
+					ret = false;
+					break;
+				}
+			}
+			if (!ret) {
+				break;
+			}
+		}
+		if (ret) {
+			ret = token.succeed;
+			state.tmp.jump.replace("succeed");
+		} else {
+			ret = token.fail;
+			state.tmp.jump.replace("fail");
+		}
+		return ret;
+	};
+};
+CSL.Transform = function (state) {
+	var debug = false;
+	this["container-title"] = {};
+	this["collection-title"] = {};
 	this.institution = {};
 	this.authority = {};
 	this.hereinafter = {};
-	this.abbreviations = "default";
-};
-CSL.Abbrev.prototype.output = function (state, value, token_short, token_long, use_fallback) {
-	var basevalue, shortvalue;
-	basevalue = state.getTextSubField(value, "default-locale", true);
-	shortvalue = state.abbrev.institution[value];
-	if (shortvalue) {
-		state.output.append(shortvalue, token_short);
-	} else {
-		if (use_fallback) {
-			state.output.append(value, token_long);
+	var abbreviations = "default";
+	var token;
+	var fieldname;
+	var subsection;
+	var opt;
+	function init (t, f, x) {
+		token = t;
+		fieldname = f;
+		subsection = x;
+		opt = {
+			abbreviation_fallback:false,
+			alternative_varname:false,
+			transform_locale:false,
+			transform_fallback:false
+		};
+	};
+	this.init = init;
+	function setAbbreviationFallback (b) {
+		opt.abbreviation_fallback = b;
+	}
+	this.setAbbreviationFallback = setAbbreviationFallback;
+	function setAlternativeVariableName (s) {
+		opt.alternative_varname = s;
+	}
+	this.setAlternativeVariableName = setAlternativeVariableName;
+	function setTransformLocale (s) {
+		opt.transform_locale = s;
+	}
+	this.setTransformLocale = setTransformLocale;
+	function setTransformFallback (b) {
+		opt.transform_fallback = b;
+	}
+	this.setTransformFallback = setTransformFallback;
+	function setAbbreviations (name) {
+		var vartype, pos, len;
+		if (name) {
+			abbreviations = name;
+		}
+		len = CSL.MULTI_FIELDS.length;
+		for (pos = 0; pos < len; pos += 1) {
+			vartype = CSL.MULTI_FIELDS[pos];
+			this[vartype] = state.sys.getAbbreviations(abbreviations, vartype);
+		}
+	};
+	this.setAbbreviations = setAbbreviations;
+	function getOutputFunction () {
+		var mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
+		var mysubsection = subsection;
+		var myfieldname = fieldname;
+		var abbreviation_fallback = opt.abbreviation_fallback;
+		var alternative_varname = opt.alternative_varname;
+		var transform_locale = opt.transform_locale;
+		var transform_fallback = opt.transform_fallback;
+		if (mysubsection) {
+			return function (state, Item) {
+				var value, primary;
+				value = Item[myfieldname];
+				primary = getTextSubField(value, transform_locale, transform_fallback);
+				primary = abbreviate(state, Item, alternative_varname, value, mysubsection, true);
+				state.output.append(primary, this);
+			};
+		} else if (transform_locale === "locale-sec") {
+			return 	function (state, Item) {
+				var primary, secondary, primary_tok, secondary_tok, key, value;
+				value = Item[myfieldname];
+				if (value) {
+					if ("number" === typeof value) {
+						value = ""+value;
+					}
+					primary = getTextSubField(value, "locale-pri", transform_fallback);
+					secondary = getTextSubField(value, "locale-sec");
+					if (secondary) {
+						primary_tok = CSL.Util.cloneToken(this);
+						primary_tok.strings.suffix = "";
+						secondary_tok = new CSL.Token("text", CSL.SINGLETON);
+						secondary_tok.strings.suffix = "]" + this.strings.suffix;
+						secondary_tok.strings.prefix = " [";
+						state.output.append(primary, primary_tok);
+						state.output.append(secondary, secondary_tok);
+					} else {
+						state.output.append(primary, this);
+					}
+				}
+				return null;
+			};
+		} else {
+			return function (state, Item) {
+				var value, primary;
+				value = Item[myfieldname];
+				if (value) {
+					if ("number" === typeof value) {
+						value = ""+value;
+					}
+					primary = getTextSubField(value, transform_locale, transform_fallback);
+					state.output.append(primary, this);
+				}
+				return null;
+			};
 		}
 	}
-};
-CSL.Abbrev.prototype.getOutputFunc = function (token, varname, vartype, altvar) {
-	var basevalue, value;
-	return function (state, Item) {
-		basevalue = state.getTextSubField(Item[varname], "default-locale", true);
+	this.getOutputFunction = getOutputFunction;
+	function output (state, basevalue, token_short, token_long, use_fallback) {
+		var shortvalue;
+		shortvalue = state.transform.institution[basevalue];
+		if (shortvalue) {
+			state.output.append(shortvalue, token_short);
+		} else {
+			if (use_fallback) {
+				state.output.append(basevalue, token_long);
+			}
+		}
+	};
+	this.output = output;
+	function abbreviate (state, Item, altvar, basevalue, mysubsection, use_field) {
+		var value;
+		if (!mysubsection) {
+			return basevalue;
+		}
 		value = "";
-		if (state.abbrev[vartype]) {
-			if (state.abbrev[vartype][basevalue]) {
-				value = state.abbrev[vartype][basevalue];
+		if (state.transform[mysubsection]) {
+			if (state.transform[mysubsection][basevalue]) {
+				value = state.transform[mysubsection][basevalue];
 			} else {
 			}
 		}
-		if (!value && Item[altvar]) {
+		if (!value && Item[altvar] && use_field) {
 			value = Item[altvar];
 		}
 		if (!value) {
 			value = basevalue;
 		}
-		state.output.append(value, token);
+		return value;
+	};
+	function getTextSubField (value, locale_type, use_default) {
+		var m, lst, opt, o, pos, key, ret, len, myret;
+		if (!value) {
+			return "";
+		}
+		ret = "";
+		m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
+		if (m) {
+			for (pos = 0, len = m.length; pos < len; pos += 1) {
+				m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/,"");
+			}
+		}
+		lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
+		myret = [lst[0]];
+		for (pos = 1, len = lst.length; pos < len; pos += 1) {
+			myret.push(m[pos - 1]);
+			myret.push(lst[pos]);
+		}
+		lst = myret.slice();
+		opt = state.opt[locale_type];
+		if ("undefined" == typeof opt) {
+			opt = state.opt["default-locale"];
+		}
+		for (key in opt) {
+			if (opt.hasOwnProperty(key)) {
+				o = opt[key];
+				if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
+					ret = lst[(lst.indexOf(o) + 1)];
+					break;
+				}
+			}
+		}
+		if (!ret && use_default) {
+			ret = lst[0];
+		}
+		return ret;
 	};
 };
 CSL.Parallel = function (state) {
@@ -5075,6 +5241,26 @@ CSL.Token = function (name, tokentype) {
 	this.fail = false;
 	this.next = false;
 };
+CSL.Util.cloneToken = function (token) {
+	var newtok, key, pos, len;
+	if ("string" === typeof token) {
+		return token;
+	}
+	newtok = new CSL.Token(token.name, token.tokentype);
+	for (key in token.strings) {
+		if (token.strings.hasOwnProperty(key)) {
+			newtok.strings[key] = token.strings[key];
+		}
+	}
+	if (token.decorations) {
+		newtok.decorations = [];
+		for (pos = 0, len = token.decorations.length; pos < len; pos += 1) {
+			newtok.decorations.push(token.decorations[pos].slice());
+		}
+	}
+	newtok.variables = token.variables.slice();
+	return newtok;
+};
 CSL.AmbigConfig = function () {
 	this.maxvals = [];
 	this.minval = 1;
@@ -5187,97 +5373,6 @@ CSL.NumericBlob.prototype.checkNext = function (next) {
 		}
 	}
 };
-CSL.Util = {};
-CSL.Util.Match = function () {
-	var func, pos, len, reslist, res, ppos, llen;
-	this.any = function (token, state, Item, item) {
-		var ret = false;
-		len = token.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = token.tests[pos];
-			reslist = func.call(token, state, Item, item);
-			if ("object" !== typeof reslist) {
-				reslist = [reslist];
-			}
-			llen = reslist.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				if (reslist[ppos]) {
-					ret = true;
-					break;
-				}
-			}
-			if (ret) {
-				break;
-			}
-		}
-		if (ret) {
-			ret = token.succeed;
-			state.tmp.jump.replace("succeed");
-		} else {
-			ret = token.fail;
-			state.tmp.jump.replace("fail");
-		}
-		return ret;
-	};
-	this.none = function (token, state, Item, item) {
-		var ret = true;
-		len = this.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = this.tests[pos];
-			reslist = func.call(token, state, Item, item);
-			if ("object" !== typeof reslist) {
-				reslist = [reslist];
-			}
-			llen = reslist.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				if (reslist[ppos]) {
-					ret = false;
-					break;
-				}
-			}
-			if (!ret) {
-				break;
-			}
-		}
-		if (ret) {
-			ret = token.succeed;
-			state.tmp.jump.replace("succeed");
-		} else {
-			ret = token.fail;
-			state.tmp.jump.replace("fail");
-		}
-		return ret;
-	};
-	this.all = function (token, state, Item, item) {
-		var ret = true;
-		len = this.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = this.tests[pos];
-			reslist = func.call(token, state, Item, item);
-			if ("object" !== typeof reslist) {
-				reslist = [reslist];
-			}
-			llen = reslist.length;
-			for (pos = 0; pos < len; pos += 1) {
-				if (!reslist[ppos]) {
-					ret = false;
-					break;
-				}
-			}
-			if (!ret) {
-				break;
-			}
-		}
-		if (ret) {
-			ret = token.succeed;
-			state.tmp.jump.replace("succeed");
-		} else {
-			ret = token.fail;
-			state.tmp.jump.replace("fail");
-		}
-		return ret;
-	};
-};
 CSL.Util.fixDateNode = function (parent, pos, node) {
 	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, cchildren, kkey, display;
 	form = this.sys.xml.getAttributeValue(node, "form");
@@ -5334,7 +5429,7 @@ CSL.Util.Institutions.outputInstitutions = function (state, display_names) {
 		name = display_names[pos];
 		institution = state.output.getToken("institution");
 		value = name.literal;
-		if (state.abbrev.institution[value]) {
+		if (state.transform.institution[value]) {
 			token_long = state.output.mergeTokenStrings("institution-long", "institution-if-short");
 		} else {
 			token_long = state.output.getToken("institution-long");
@@ -5342,13 +5437,13 @@ CSL.Util.Institutions.outputInstitutions = function (state, display_names) {
 		token_short = state.output.getToken("institution-short");
 		parts = institution.strings["institution-parts"];
 		if ("short" === parts) {
-			state.abbrev.output(state, value, token_short, token_long, true);
+			state.transform.output(state, value, token_short, token_long, true);
 		} else if ("short-long" === parts) {
-			state.abbrev.output(state, value, token_short);
+			state.transform.output(state, value, token_short);
 			state.output.append(value, token_long);
 		} else if ("long-short" === parts) {
 			state.output.append(value, token_long);
-			state.abbrev.output(state, value, token_short);
+			state.transform.output(state, value, token_short);
 		} else {
 			state.output.append(value, token_long);
 		}
