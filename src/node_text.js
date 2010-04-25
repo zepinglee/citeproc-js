@@ -35,7 +35,7 @@
 
 CSL.Node.text = {
 	build: function (state, target) {
-		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, primary, secondary, primary_tok, secondary_tok, flag;
+		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, flag;
 		CSL.Util.substituteStart.call(this, state, target);
 		if (this.postponed_macro) {
 			CSL.expandMacro.call(state, this);
@@ -217,92 +217,97 @@ CSL.Node.text = {
 					state.build.form = false;
 					state.build.plural = false;
 				} else if (this.variables.length) {
-					if (["first-reference-note-number", "locator"].indexOf(this.variables[0]) > -1) {
-						func = function (state, Item, item) {
-							if (item && item[this.variables[0]]) {
-								state.output.append(item[this.variables[0]], this);
-							}
-						};
-					} else if (this.variables[0] === "container-title" && form === "short") {
-						// Use tracking function
-						func = state.abbrev.getOutputFunc(this, this.variables[0], "journal", "journalAbbreviation");
-					} else if (this.variables[0] === "collection-title" && form === "short") {
-						// Use tracking function
-						func = state.abbrev.getOutputFunc(this, this.variables[0], "series");
-					} else if (this.variables[0] === "authority" && form === "short") {
-						// Use tracking function
-						func = state.abbrev.getOutputFunc(this, this.variables[0], "authority");
-					} else if (this.variables[0] === "title") {
+					// plain string fields
+
+					// Deal with multi-fields and ordinary fields separately.
+					if (CSL.MULTI_FIELDS.indexOf(this.variables[0]) > -1) {
+						// multi-fields
+						// Initialize transform factory according to whether
+						// abbreviation is desired.
+						if (form === "short") {
+							state.transform.init(this, this.variables[0], this.variables[0]);
+						} else {
+							state.transform.init(this, this.variables[0]);
+						}
 						if (state.build.area.slice(-5) === "_sort") {
-							func = function (state, Item) {
-								var value = Item[this.variables[0]];
-								if (value) {
-									value = state.getTextSubField(value, "locale-sort", true);
-									state.output.append(value, this);
+							// multi-fields for sorting get a sort transform,
+							// (abbreviated if the short form was selected)
+							state.transform.setTransformLocale("locale-sort");
+							state.transform.setTransformFallback(true);
+							func = state.transform.getOutputFunction();
+						} else if (form === "short") {
+							// all short-form multi-fields for rendering get a locale-pri
+							// transform before abbreviation.
+							state.transform.setAbbreviationFallback(true);
+							state.transform.setTransformLocale("locale-pri");
+							state.transform.setTransformFallback(true);
+							if (this.variables[0] === "container-title") {
+								state.transform.setAlternativeVariableName("journalAbbreviation");
+							} else if (["publisher","publisher-place"].indexOf(this.variables[0]) > -1) {
+								// language of publisher and publisher-place follow
+								// the locale of the style.
+								state.transform.setTransformLocale("default-locale");
+							}
+							func = state.transform.getOutputFunction();
+						} else if (this.variables[0] === "title") {
+							// among long-form multi-fields, titles are an
+							// exception: they get a locale-sec transform
+							// if a value is available.
+							state.transform.setTransformLocale("locale-sec");
+							state.transform.setTransformFallback(true);
+							func = state.transform.getOutputFunction();
+						} else {
+							// ordinary long-form multi-fields get a locale-pri
+							// transform only.
+							state.transform.setTransformLocale("locale-pri");
+							state.transform.setTransformFallback(true);
+							if (["publisher","publisher-place"].indexOf(this.variables[0]) > -1) {
+								// language of publisher and publisher-place follow
+								// the locale of the style.
+								state.transform.setTransformLocale("default-locale");
+							}
+							func = state.transform.getOutputFunction();
+						}
+					} else {
+						// ordinary fields
+						if (CSL.CITE_FIELDS.indexOf(this.variables[0]) > -1) {
+							// per-cite fields are read from item, rather than Item
+							func = function (state, Item, item) {
+								if (item && item[this.variables[0]]) {
+									state.output.append(item[this.variables[0]], this);
 								}
+							};
+						} else if (this.variables[0] === "page-first") {
+							// page-first is a virtual field, consisting
+							// of the front slice of page.
+							func = function (state, Item) {
+								var idx;
+								value = state.getVariable(Item, "page", form);
+								idx = value.indexOf("-");
+								if (idx > -1) {
+									value = value.slice(0, idx);
+								}
+								state.output.append(value, this);
+							};
+						} else  if (this.variables[0] === "page") {
+							// page gets mangled with the correct collapsing
+							// algorithm
+							func = function (state, Item) {
+								value = state.getVariable(Item, "page", form);
+								value = state.fun.page_mangler(value);
+								state.output.append(value, this);
 							};
 						} else {
+							// anything left over just gets output in the normal way.
 							func = function (state, Item) {
-								value = Item[this.variables[0]];
-								if (value) {
-									primary = state.getTextSubField(value, "locale-pri", true);
-									secondary = state.getTextSubField(value, "locale-sec");
-
-									if (secondary) {
-										primary_tok = new CSL.Token("text", CSL.SINGLETON);
-										secondary_tok = new CSL.Token("text", CSL.SINGLETON);
-										for (var key in this.strings) {
-											if (this.strings.hasOwnProperty(key)) {
-												secondary_tok.strings[key] = this.strings[key];
-												if (key === "suffix") {
-													secondary_tok.strings.suffix = "]" + secondary_tok.strings.suffix;
-													continue;
-												} else if (key === "prefix") {
-													secondary_tok.strings.prefix = " [" + secondary_tok.strings.prefix;
-												}
-												primary_tok.strings[key] = this.strings[key];
-											}
-										}
-										state.output.append(primary, primary_tok);
-										state.output.append(secondary, secondary_tok);
-									} else {
-										state.output.append(primary, this);
-									}
-								}
+								var value = state.getVariable(Item, this.variables[0], form);
+								state.output.append(value, this);
 							};
 						}
-					} else if (this.variables[0] === "page-first") {
-						func = function (state, Item) {
-							var idx;
-							value = state.getVariable(Item, "page", form);
-							idx = value.indexOf("-");
-							if (idx > -1) {
-								value = value.slice(0, idx);
-							}
-							state.output.append(value, this);
-						};
-					} else if (this.variables[0] === "page") {
-						func = function (state, Item) {
-							value = state.getVariable(Item, "page", form);
-							value = state.fun.page_mangler(value);
-							state.output.append(value, this);
-						};
-					} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
-						func = function (state, Item) {
-							value = state.getVariable(Item, this.variables[0]);
-							if (value) {
-								value = state.getTextSubField(value, "default-locale", true);
-								state.output.append(value, this);
-							}
-						};
-					} else {
-						func = function (state, Item) {
-							var value = state.getVariable(Item, this.variables[0], form);
-							state.output.append(value, this);
-						};
 					}
 					this.execs.push(func);
 				} else if (this.strings.value) {
+					// for the text value attribute.
 					func = function (state, Item) {
 						var flag;
 						flag = state.tmp.term_sibling.value();

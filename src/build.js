@@ -43,7 +43,10 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	this.parallel = new CSL.Parallel(this);
 	//this.parallel.use_parallels = true;
 
-	this.abbrev = new CSL.Abbrev();
+	this.transform = new CSL.Transform(this);
+	this.setAbbreviations = function (nick) {
+		this.transform.setAbbreviations(nick);
+	};
 
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
@@ -451,54 +454,6 @@ CSL.Engine.prototype.configureTokenLists = function () {
 	}
 	this.version = CSL.version;
 	return this.state;
-};
-
-CSL.Engine.prototype.setAbbreviations = function (name) {
-	var vartype, pos, len;
-	if (name) {
-		this.abbrev.abbreviations = name;
-	}
-	len = CSL.ABBREVIATE_FIELDS.length;
-	for (pos = 0; pos < len; pos += 1) {
-		vartype = CSL.ABBREVIATE_FIELDS[pos];
-		this.abbrev[vartype] = this.sys.getAbbreviations(this.abbrev.abbreviations, vartype);
-	}
-};
-
-CSL.Engine.prototype.getTextSubField = function (value, locale_type, use_default) {
-	var m, lst, opt, o, pos, key, ret, len, myret;
-	if (!value) {
-		return "";
-	}
-	ret = "";
-	// Workaround for Internet Explorer
-	m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
-	if (m) {
-		for (pos = 0, len = m.length; pos < len; pos += 1) {
-			m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/,"");
-		}
-	}
-	lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
-	myret = [lst[0]];
-	for (pos = 1, len = lst.length; pos < len; pos += 1) {
-		myret.push(m[pos - 1]);
-		myret.push(lst[pos]);
-	}
-	lst = myret.slice();
-	opt = this.opt[locale_type];
-	for (key in opt) {
-		if (opt.hasOwnProperty(key)) {
-			o = opt[key];
-			if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
-				ret = lst[(lst.indexOf(o) + 1)];
-				break;
-			}
-		}
-	}
-	if (!ret && use_default) {
-		ret = lst[0];
-	}
-	return ret;
 };
 
 CSL.Engine.prototype.getNameSubFields = function (names) {

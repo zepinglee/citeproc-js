@@ -124,7 +124,9 @@ var CSL = {
 
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
-	ABBREVIATE_FIELDS: ["journal", "series", "institution", "authority"],
+	MULTI_FIELDS: ["publisher","publisher-place","title","container-title", "collection-title", "institution", "authority"],
+
+	CITE_FIELDS: ["first-reference-note-number","locator"],
 
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 
@@ -488,8 +490,12 @@ if (!CSL.Parallel) {
 	load("./src/util_parallel.js");
 }
 // jslint OK
-if (!CSL.Abbrev) {
-	load("./src/util_abbrev.js");
+if (!CSL.Util) {
+	load("./src/util.js");
+}
+// jslint OK
+if (!CSL.Transform) {
+	load("./src/util_transform.js");
 }
 // jslint OK
 if (!CSL.Token) {
@@ -509,10 +515,6 @@ if (!CSL.Render) {
 // jslint OK
 if (!CSL.NumericBlob) {
 	load("./src/obj_number.js");
-}
-// jslint OK
-if (!CSL.Util) {
-	load("./src/util.js");
 }
 // jslint OK
 if (!CSL.Util.fixDateNode) {

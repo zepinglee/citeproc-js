@@ -165,13 +165,17 @@ CSL.Node.key = {
 						}
 					};
 				} else if ("title" === variable) {
-					func = function (state, Item) {
-						var value = Item[variable];
-						if (value) {
-							value = state.getTextSubField(value, "locale-sort", true);
-							state.output.append(value, "empty");
-						}
-					};
+					state.transform.init("empty","title");
+					state.transform.setTransformLocale("locale-sort");
+					state.transform.setTransformFallback(true);
+					func = state.transform.getOutputFunction();
+					//func = function (state, Item) {
+					//	var value = Item[variable];
+					//	if (value) {
+					//		value = state.transform.getTextSubField(value, "locale-sort", true);
+					//		state.output.append(value, "empty");
+					//	}
+					//};
 				} else {
 					func = function (state, Item) {
 						var varval = Item[variable];

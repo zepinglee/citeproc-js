@@ -134,3 +134,30 @@ CSL.Token = function (name, tokentype) {
 	 */
 	this.next = false;
 };
+
+// Have needed this for yonks
+CSL.Util.cloneToken = function (token) {
+	var newtok, key, pos, len;
+	if ("string" === typeof token) {
+		return token;
+	}
+	newtok = new CSL.Token(token.name, token.tokentype);
+	for (key in token.strings) {
+		if (token.strings.hasOwnProperty(key)) {
+			newtok.strings[key] = token.strings[key];
+		}
+	}
+	if (token.decorations) {
+		newtok.decorations = [];
+		for (pos = 0, len = token.decorations.length; pos < len; pos += 1) {
+			newtok.decorations.push(token.decorations[pos].slice());
+		}
+	}
+	newtok.variables = token.variables.slice();
+
+	// Probably overkill; this is only used for cloning formatting
+	// tokens.
+	// newtok.execs = token.execs.slice();
+	// newtok.tests = token.tests.slice();
+	return newtok;
+};
