@@ -179,7 +179,8 @@ var CSL = {
 		"et-al-subsequent-use-first"
 	],
 
-	PARALLEL_MATCH_VARS: ["title",  "container-title", "volume", "page"],
+	PARALLEL_MATCH_VARS: ["title",  "container-title"],
+	PARALLEL_TYPES: ["legal_case",  "legislation"],
 
 	LOOSE: 0,
 	STRICT: 1,
