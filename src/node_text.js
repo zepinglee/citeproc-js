@@ -44,19 +44,20 @@ CSL.Node.text = {
 			//
 			// Do non-macro stuff
 			variable = this.variables[0];
-			if (variable) {
-				func = function (state, Item) {
-					state.parallel.StartVariable(this.variables[0]);
-					state.parallel.AppendToVariable(Item[this.variables[0]]);
-				};
-				this.execs.push(func);
-			} else {
-				func = function (state, Item) {
-					state.parallel.StartVariable("value");
-					state.parallel.AppendToVariable("whatever ...");
-				};
-				this.execs.push(func);
-			}
+			//if (variable) {
+			//	func = function (state, Item) {
+			//		state.parallel.StartVariable(this.variables[0]);
+			//		state.parallel.AppendToVariable(Item[this.variables[0]]);
+			//	};
+			//	this.execs.push(func);
+			//}
+			//else {
+			//	func = function (state, Item) {
+			//		state.parallel.StartVariable("value");
+			//		state.parallel.AppendToVariable("whatever ...");
+			//	};
+			//	this.execs.push(func);
+			//}
 			form = "long";
 			plural = 0;
 			if (this.strings.form) {
@@ -217,6 +218,12 @@ CSL.Node.text = {
 					state.build.form = false;
 					state.build.plural = false;
 				} else if (this.variables.length) {
+					func = function (state, Item) {
+						state.parallel.StartVariable(this.variables[0]);
+						state.parallel.AppendToVariable(Item[this.variables[0]]);
+					};
+					this.execs.push(func);
+					
 					// plain string fields
 
 					// Deal with multi-fields and ordinary fields separately.
@@ -281,31 +288,41 @@ CSL.Node.text = {
 							// page-first is a virtual field, consisting
 							// of the front slice of page.
 							func = function (state, Item) {
-								var idx;
+								var idx, value;
 								value = state.getVariable(Item, "page", form);
-								idx = value.indexOf("-");
-								if (idx > -1) {
-									value = value.slice(0, idx);
-								}
+								if (value) {
+									idx = value.indexOf("-");
+									if (idx > -1) {
+										value = value.slice(0, idx);
+									}
 								state.output.append(value, this);
+								}
 							};
 						} else  if (this.variables[0] === "page") {
 							// page gets mangled with the correct collapsing
 							// algorithm
 							func = function (state, Item) {
-								value = state.getVariable(Item, "page", form);
-								value = state.fun.page_mangler(value);
-								state.output.append(value, this);
+								var value = state.getVariable(Item, "page", form);
+								if (value) {
+									value = state.fun.page_mangler(value);
+									state.output.append(value, this);
+								}
 							};
 						} else {
 							// anything left over just gets output in the normal way.
 							func = function (state, Item) {
 								var value = state.getVariable(Item, this.variables[0], form);
-								state.output.append(value, this);
+								if (value) {
+									state.output.append(value, this);
+								}
 							};
 						}
 					}
 					this.execs.push(func);
+					func = function (state, Item) {
+						state.parallel.CloseVariable("text");
+					};
+			this.execs.push(func);
 				} else if (this.strings.value) {
 					// for the text value attribute.
 					func = function (state, Item) {
@@ -319,10 +336,6 @@ CSL.Node.text = {
 					// otherwise no output
 				}
 			}
-			func = function (state, Item) {
-				state.parallel.CloseVariable("text");
-			};
-			this.execs.push(func);
 			target.push(this);
 		}
 		CSL.Util.substituteEnd.call(this, state, target);
