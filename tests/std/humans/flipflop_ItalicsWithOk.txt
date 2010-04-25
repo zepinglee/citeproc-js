@@ -57,8 +57,9 @@ bibliography
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout>
-      <text value="BOGUS"/>
+     <layout>
+		<text variable="title" suffix=". " font-style="italic"/>
+      	<text value="BOGUS"/>
     </layout>
   </citation>
   <bibliography>
