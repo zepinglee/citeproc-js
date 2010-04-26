@@ -1995,7 +1995,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 	return this.processCitationCluster(citation, citationsPre, []);
 };
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance;
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
@@ -2031,7 +2031,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	}
 	this.registry.citationreg.citationByIndex = citationByIndex;
-	this.registry.citationreg.citationIdByItemId = {};
+	this.registry.citationreg.citationsByItemId = {};
 	if (this.opt.update_mode === CSL.POSITION || true) {
 		textCitations = [];
 		noteCitations = [];
@@ -2043,12 +2043,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		llen = citationByIndex[pos].sortedItems.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			item = citationByIndex[pos].sortedItems[ppos];
-			if (!this.registry.citationreg.citationIdByItemId[item[1].id]) {
-				this.registry.citationreg.citationIdByItemId[item[1].id] = [];
+			if (!this.registry.citationreg.citationsByItemId[item[1].id]) {
+				this.registry.citationreg.citationsByItemId[item[1].id] = [];
 				update_items.push(item[1].id);
 			}
-			if (this.registry.citationreg.citationIdByItemId[item[1].id].indexOf(citationByIndex[pos]) == -1) {
-				this.registry.citationreg.citationIdByItemId[item[1].id].push(citationByIndex[pos].citationID);
+			if (this.registry.citationreg.citationsByItemId[item[1].id].indexOf(citationByIndex[pos]) == -1) {
+				this.registry.citationreg.citationsByItemId[item[1].id].push(citationByIndex[pos]);
 			}
 		}
 		if (this.opt.update_mode === CSL.POSITION || true) {
@@ -2146,8 +2146,14 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						}
 					}
 					if (onecitation.properties.noteIndex) {
-						if ((onecitation.properties.noteIndex - this.opt["near-note-distance"]) < onecitation.properties.noteIndex) {
-							item[1]["near-note"] = true;
+						cids = this.registry.citationreg.citationsByItemId[item[0].id];
+						for (ppppos = (cids.length - 1); ppppos > -1; ppppos += -1) {
+							if (cids[ppppos].properties.noteIndex < onecitation.properties.noteIndex) {
+								note_distance = onecitation.properties.noteIndex - cids[ppppos].properties.noteIndex;
+								if (note_distance <= this.citation.opt["near-note-distance"]) {
+									item[1]["near-note"] = true;
+								}
+							}
 						}
 					}
 					if (onecitation.citationID !== citation.citationID) {
@@ -2165,9 +2171,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	}
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
-			cids = this.registry.citationreg.citationIdByItemId[key];
-			for (pos = 0, len = cids.length; pos < len; pos += 1) {
-				this.tmp.taintedCitationIDs[cids[pos]] = true;
+			citations = this.registry.citationreg.citationsByItemId[key];
+			for (pos = 0, len = citations.length; pos < len; pos += 1) {
+				this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
 			}
 		}
 	}
@@ -2753,12 +2759,14 @@ CSL.Node["else-if"] = {
 					if (item && "undefined" === typeof item.position) {
 						item.position = 0;
 					}
-					if (item && typeof item.position === "number" || "undefined" === typeof item.position) {
+					if (item && typeof item.position === "number") {
 						if (item.position === 0 && tryposition === 0) {
 							return true;
 						} else if (tryposition > 0 && item.position >= tryposition) {
 							return true;
 						}
+					} else if (tryposition === 0) {
+						return true;
 					}
 					return false;
 				};
@@ -2766,15 +2774,10 @@ CSL.Node["else-if"] = {
 			}
 			if (this.strings["near-note-distance-check"]) {
 				func = function (state, Item, item) {
-					if (!item || !item.note_distance) {
-						return false;
-					} else {
-						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
-							return false;
-						} else {
-							return true;
-						}
+					if (item && item["near-note"]){
+						return true;
 					}
+					return false;
 				};
 				this.tests.push(func);
 			}
@@ -2885,6 +2888,8 @@ CSL.Node["if"] = {
 						} else if (tryposition > 0 && item.position >= tryposition) {
 							return true;
 						}
+					} else if (tryposition === 0) {
+						return true;
 					}
 					return false;
 				};
@@ -2892,15 +2897,10 @@ CSL.Node["if"] = {
 			}
 			if (this.strings["near-note-distance-check"]) {
 				func = function (state, Item, item) {
-					if (!item || !item.note_distance) {
-						return false;
-					} else {
-						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
-							return false;
-						} else {
-							return true;
-						}
+					if (item && item["near-note"]) {
+						return true;
 					}
+					return false;
 				};
 				this.tests.push(func);
 			}
@@ -4429,7 +4429,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
 	if (["if",  "else-if"].indexOf(this.name) > -1) {
 		func = function (state, Item, item) {
 			var label;
-			if (!item.label) {
+			if ("undefined" === typeof item || !item.label) {
 				label = "page";
 			} else {
 				label = item.label;
@@ -6798,7 +6798,7 @@ CSL.Registry.prototype.renumber = function () {
 	len = this.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.reflist[pos];
-		if (this.state.tmp.taintedItemIDs && item.seq !== (pos + 1)) {
+		if (this.state.opt.update_mode === CSL.NUMERIC && this.state.tmp.taintedItemIDs && item.seq !== (pos + 1)) {
 			this.state.tmp.taintedItemIDs[item.id] = true;
 		}
 		item.seq = (pos + 1);
