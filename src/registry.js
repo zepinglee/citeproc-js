@@ -461,7 +461,9 @@ CSL.Registry.prototype.renumber = function () {
 	len = this.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.reflist[pos];
-		if (this.state.tmp.taintedItemIDs && item.seq !== (pos + 1)) {
+		// save the overhead of rerenderings if citation-number is not
+		// used in the style.
+		if (this.state.opt.update_mode === CSL.NUMERIC && this.state.tmp.taintedItemIDs && item.seq !== (pos + 1)) {
 			this.state.tmp.taintedItemIDs[item.id] = true;
 		}
 		item.seq = (pos + 1);
