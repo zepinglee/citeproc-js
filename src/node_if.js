@@ -49,6 +49,8 @@ CSL.Node["if"] = {
 						} else if (tryposition > 0 && item.position >= tryposition) {
 							return true;
 						}
+					} else if (tryposition === 0) {
+						return true;
 					}
 					return false;
 				};
@@ -56,15 +58,10 @@ CSL.Node["if"] = {
 			}
 			if (this.strings["near-note-distance-check"]) {
 				func = function (state, Item, item) {
-					if (!item || !item.note_distance) {
-						return false;
-					} else {
-						if (item && item.note_distance > state.citation.opt["near-note-distance"]) {
-							return false;
-						} else {
-							return true;
-						}
+					if (item && item["near-note"]) {
+						return true;
 					}
+					return false;
 				};
 				this.tests.push(func);
 			}
