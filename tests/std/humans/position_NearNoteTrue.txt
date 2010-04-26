@@ -50,7 +50,7 @@ Note is near!
     [
         {
             "id": "ITEM-1", 
-            "note_distance": 4
+            "near-note": true
         }
     ]
 ]

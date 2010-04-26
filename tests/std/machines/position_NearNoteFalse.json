@@ -40,7 +40,7 @@
         [
             {
                 "id": "ITEM-1", 
-                "note_distance": 10
+                "near-note": false
             }
         ]
     ], 

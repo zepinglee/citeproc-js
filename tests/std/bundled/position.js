@@ -47,10 +47,6 @@ doh.register("std.position", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("position_NearNoteOptionMakesFalse");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("position_NearNoteFalse");
         doh.assertEqual(test.result, test.run());
     }, 

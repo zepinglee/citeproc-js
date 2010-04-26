@@ -47,11 +47,11 @@ doh.register("std.flipflop", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("flipflop_QuotesInFieldNotOnNode");
+        var test = new StdRhinoTest("flipflop_ItalicsFlipped");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("flipflop_ItalicsFlipped");
+        var test = new StdRhinoTest("flipflop_QuotesInFieldNotOnNode");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
