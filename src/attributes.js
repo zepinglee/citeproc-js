@@ -447,7 +447,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
 		// check for variable value
 		func = function (state, Item, item) {
 			var label;
-			if (!item.label) {
+			if ("undefined" === typeof item || !item.label) {
 				label = "page";
 			} else {
 				label = item.label;
