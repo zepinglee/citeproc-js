@@ -45,7 +45,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 };
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance;
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
@@ -116,7 +116,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// Position evaluation!
 	//
 	// set positions in reconstituted list, noting taints
-	this.registry.citationreg.citationIdByItemId = {};
+	this.registry.citationreg.citationsByItemId = {};
 	if (this.opt.update_mode === CSL.POSITION || true) {
 		textCitations = [];
 		noteCitations = [];
@@ -128,14 +128,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		llen = citationByIndex[pos].sortedItems.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			item = citationByIndex[pos].sortedItems[ppos];
-			if (!this.registry.citationreg.citationIdByItemId[item[1].id]) {
-				this.registry.citationreg.citationIdByItemId[item[1].id] = [];
+			if (!this.registry.citationreg.citationsByItemId[item[1].id]) {
+				this.registry.citationreg.citationsByItemId[item[1].id] = [];
 				update_items.push(item[1].id);
 			}
-			if (this.registry.citationreg.citationIdByItemId[item[1].id].indexOf(citationByIndex[pos]) == -1) {
-				this.registry.citationreg.citationIdByItemId[item[1].id].push(citationByIndex[pos].citationID);
+			if (this.registry.citationreg.citationsByItemId[item[1].id].indexOf(citationByIndex[pos]) == -1) {
+				this.registry.citationreg.citationsByItemId[item[1].id].push(citationByIndex[pos]);
 			}
-
 		}
 		if (this.opt.update_mode === CSL.POSITION || true) {
 			if (citationByIndex[pos].properties.noteIndex) {
@@ -165,12 +164,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				// (2) first-reference-note-number as required (on onecitation item)
 				// (3) near-note as required (on onecitation item, according to
 				//     state.opt["near-note-distance"] parameter)
-				// (4) state.registry.citationreg.citationByItemId.
+				// (4) state.registry.citationreg.citationsByItemId.
 				//
 				// Any state changes caused by unsetting or resetting should
 				// trigger a single entry for the citations in
 				// state.tmp.taintedCitationIDs (can block on presence of
-				// state.registry.citationreg.citationByItemId).
+				// state.registry.citationreg.citationsByItemId).
 				//
 				lllen = citations[ppos].sortedItems.length;
 				for (pppos = 0; pppos < lllen; pppos += 1) {
@@ -286,9 +285,18 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						}
 					}
 					if (onecitation.properties.noteIndex) {
-						if ((onecitation.properties.noteIndex - this.opt["near-note-distance"]) < onecitation.properties.noteIndex) {
-							item[1]["near-note"] = true;
+						cids = this.registry.citationreg.citationsByItemId[item[0].id];
+						for (ppppos = (cids.length - 1); ppppos > -1; ppppos += -1) {
+							if (cids[ppppos].properties.noteIndex < onecitation.properties.noteIndex) {
+								note_distance = onecitation.properties.noteIndex - cids[ppppos].properties.noteIndex;
+								if (note_distance <= this.citation.opt["near-note-distance"]) {
+									item[1]["near-note"] = true;
+								}
+							}
 						}
+						// if ((onecitation.properties.noteIndex - this.citation.opt["near-note-distance"]) < onecitation.properties.noteIndex) {
+						//	item[1]["near-note"] = true;
+						// }
 					}
 					if (onecitation.citationID !== citation.citationID) {
 						llllen = CSL.POSITION_TEST_VARS.length;
@@ -305,9 +313,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	}
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
-			cids = this.registry.citationreg.citationIdByItemId[key];
-			for (pos = 0, len = cids.length; pos < len; pos += 1) {
-				this.tmp.taintedCitationIDs[cids[pos]] = true;
+			citations = this.registry.citationreg.citationsByItemId[key];
+			for (pos = 0, len = citations.length; pos < len; pos += 1) {
+				this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
 			}
 		}
 	}
