@@ -474,6 +474,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		if (pos > 0) {
 			CSL.getCite.call(this, Item, item, inputList[(pos - 1)][1].id);
 		} else {
+			this.tmp.term_predecessor = false;
 			CSL.getCite.call(this, Item, item);
 		}
 		// ZZZZZZ:

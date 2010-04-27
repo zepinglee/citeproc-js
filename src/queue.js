@@ -217,6 +217,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 		// This, and not the str argument below on flipflop, is the
 		// source of the flipflopper string source.
 		str = str.replace(/\s+'/g, "\ \ \'").replace(/^'/g, "\ \'");
+		// signal whether we end with terminal punctuation?
+		this.state.tmp.term_predecessor = true;
 	}
 	blob = new CSL.Blob(token, str);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix) {
