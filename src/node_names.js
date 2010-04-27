@@ -359,7 +359,7 @@ CSL.Node.names = {
 				state.output.addToken("institution-outer", outer_and_term);
 
 				if (!state.output.getToken("etal")) {
-					state.output.addToken("etal-join", ", ");
+					state.output.addToken("etal-join", " ");
 					state.output.addToken("etal");
 				} else {
 					state.output.addToken("etal-join", "");
