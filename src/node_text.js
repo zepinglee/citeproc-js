@@ -195,6 +195,7 @@ CSL.Node.text = {
 					}
 					// printterm
 					func = function (state, Item) {
+						var myterm;
 						// if the term is not an empty string, flag this
 						// same as a variable with content.
 						if (term !== "") {
@@ -208,10 +209,11 @@ CSL.Node.text = {
 						// I guess, actually).
 						if (!state.tmp.term_predecessor) {
 							//CSL.debug("Capitalize");
-							term = CSL.Output.Formatters["capitalize-first"](state, term);
-							state.tmp.term_predecessor = true;
+							myterm = CSL.Output.Formatters["capitalize-first"](state, term);
+						} else {
+							myterm = term;
 						}
-						state.output.append(term, this);
+						state.output.append(myterm, this);
 					};
 					this.execs.push(func);
 					state.build.term = false;
@@ -223,7 +225,7 @@ CSL.Node.text = {
 						state.parallel.AppendToVariable(Item[this.variables[0]]);
 					};
 					this.execs.push(func);
-					
+
 					// plain string fields
 
 					// Deal with multi-fields and ordinary fields separately.
