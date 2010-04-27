@@ -82,7 +82,6 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 		this.sets.clear();
 		this.sets.push([]);
 		this.in_series = true;
-		this.am_master = true;
 		this.delim_counter = 0;
 		this.delim_pointers = [];
 		if (out) {
@@ -123,9 +122,8 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 			if (!Item[x] || CSL.PARALLEL_TYPES.indexOf(Item["type"]) === -1) {
 				this.try_cite = false;
 				if (this.in_series) {
-					this.sets.push([]);
+					// clean list is pushed to stack later.  this.sets.push([]);
 					this.in_series = false;
-					this.am_master = false;
 				}
 				break;
 			}
@@ -195,7 +193,6 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		} else if (this.target === "back" && is_mid) {
 			this.try_cite = true;
 			this.in_series = false;
-			//this.am_master = false;
 		}
 		this.cite[this.target].push(variable);
 	}
@@ -256,7 +253,6 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 					// evaluation takes place later, at close of cite.
 					//this.try_cite = true;
 					this.in_series = false;
-					//this.am_master = false;
 				}
 			} else if (this.target === "back") {
 				//
@@ -272,7 +268,6 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 							//**print("-------------- reset --------------");
 							//print("  breaking series");
 							this.in_series = false;
-							//this.am_master = false;
 						}
 				}
 			}
@@ -350,11 +345,10 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 				cite = this.sets.value()[pos];
 
 				if (CSL.POSITION_FIRST === cite.position) {
-					if (this.am_master) {
+					if (pos === 0) {
 						this.state.registry.registry[cite.itemId].master = true;
 						//this.state.registry.registry[cite.itemId].parallel = cite.itemId;
 						this.state.registry.registry[cite.itemId].siblings = [];
-						this.am_master = false;
 					} else {
 						if (cite.prevItemID) {
 							if (!this.state.registry.registry[cite.prevItemID].parallel) {
@@ -372,7 +366,6 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 			//this.in_series = false;
 
 		}
-		this.am_master = true;
 		this.in_series = true;
 		//print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
 	}
