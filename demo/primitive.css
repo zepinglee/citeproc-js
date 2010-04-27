@@ -1,3 +1,14 @@
+li {
+   margin-bottom: 0.5em;
+}
+
+div.footnote {
+   text-indent: -1.3em;
+   margin-left: 1.3em;
+   margin-bottom: 0.2em;
+}
+
+
 div.pagebreak {
   page-break-before: always;
 }
