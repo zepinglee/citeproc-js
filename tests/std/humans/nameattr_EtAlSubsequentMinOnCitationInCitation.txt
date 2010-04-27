@@ -39,7 +39,7 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe, et al.
+John Doe et al.
 <<===== RESULT =====<<
 
 

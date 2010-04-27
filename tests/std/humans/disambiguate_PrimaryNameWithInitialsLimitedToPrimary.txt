@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-A. Asthma, et al. (1980); G. Asthma, et al. (1995); Dropsy and Asthma (1995)
+A. Asthma et al. (1980); G. Asthma et al. (1995); Dropsy and Asthma (1995)
 <<===== RESULT =====<<
 
 

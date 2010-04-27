@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-Doe, et al., Big Ministry
+Doe et al., Big Ministry
 <<===== RESULT =====<<
 
 

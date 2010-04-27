@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-Asthma, et al. (1990a); Asthma, et al. (1990b); Dropsy, Enteritis, X. Fever (2000); Dropsy, Enteritis, Y. Fever (2000)
+Asthma et al. (1990a); Asthma et al. (1990b); Dropsy, Enteritis, X. Fever (2000); Dropsy, Enteritis, Y. Fever (2000)
 <<===== RESULT =====<<
 
 

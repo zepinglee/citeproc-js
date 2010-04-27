@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-Doe, Roe, et al.
+Doe, Roe et al.
 <<===== RESULT =====<<
 
 

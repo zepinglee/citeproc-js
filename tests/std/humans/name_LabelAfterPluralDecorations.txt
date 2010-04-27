@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe, et al. (editors)
+John Doe et al. (editors)
 <<===== RESULT =====<<
 
 
