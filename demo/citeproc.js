@@ -3563,7 +3563,7 @@ CSL.Node.names = {
 				outer_and_term = " " + state.output.getToken("name").strings.and + " ";
 				state.output.addToken("institution-outer", outer_and_term);
 				if (!state.output.getToken("etal")) {
-					state.output.addToken("etal-join", ", ");
+					state.output.addToken("etal-join", " ");
 					state.output.addToken("etal");
 				} else {
 					state.output.addToken("etal-join", "");
@@ -5122,7 +5122,6 @@ CSL.Parallel.prototype.CloseCite = function () {
 		if (!this.in_series && !this.force_collapse) {
 			this.ComposeSet(true);
 		}
-		this.the_very_beginning_of_a_citation = false;
 		if (this.sets.value().length === 0) {
 			var has_issued = false;
 			for (pos = 0, len=this.cite.back.length; pos < len; pos += 1) {
