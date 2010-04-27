@@ -79,7 +79,6 @@ CSL.Node.layout = {
 
 			// declare thyself
 			func = function (state, Item) {
-				state.tmp.term_predecessor = false;
 				state.output.openLevel("empty");
 			};
 			this.execs.push(func);
