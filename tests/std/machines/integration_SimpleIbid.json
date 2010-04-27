@@ -138,5 +138,5 @@
         }
     ], 
     "mode": "citation", 
-    "result": "..[0] (Doe p. 12; Roe p. 23)\n>>[1] (Noakes p. 34; Ibid; Snoakes p. 45)"
+    "result": "..[0] (Doe p. 12; Roe p. 23)\n>>[1] (Noakes p. 34; ibid; Snoakes p. 45)"
 }
