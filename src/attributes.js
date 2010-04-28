@@ -625,14 +625,14 @@ CSL.Attributes["@hanging-indent"] = function (state, arg) {
 
 CSL.Attributes["@line-spacing"] = function (state, arg) {
 	if (arg && arg.match(/^[.0-9]+$/)) {
-		state[this.name].opt.linespacing = parseFloat(arg, 10);
+		state[this.name].opt["line-spacing"] = parseFloat(arg, 10);
 	}
 };
 
 
 CSL.Attributes["@entry-spacing"] = function (state, arg) {
 	if (arg && arg.match(/^[.0-9]+$/)) {
-		state[this.name].opt.entryspacing = parseFloat(arg, 10);
+		state[this.name].opt["entry-spacing"] = parseFloat(arg, 10);
 	}
 };
 

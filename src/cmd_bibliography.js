@@ -97,8 +97,8 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	entry_strings = ret[1];
 	params = {
 		"maxoffset": 0,
-		"entryspacing": 0,
-		"linespacing": 0,
+		"entryspacing": this.bibliography.opt["entry-spacing"],
+		"linespacing": this.bibliography.opt["line-spacing"],
 		"second-field-align": false,
 		"entry_ids":entry_ids
 	};
@@ -115,12 +115,6 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	}
 	if (this.bibliography.opt.hangingindent) {
 		params.hangingindent = this.bibliography.opt.hangingindent;
-	}
-	if (this.bibliography.opt.entryspacing) {
-		params.entryspacing = this.bibliography.opt.entryspacing;
-	}
-	if (this.bibliography.opt.linespacing) {
-		params.linespacing = this.bibliography.opt.linespacing;
 	}
 	params.bibstart = this.fun.decorate.bibstart;
 	params.bibend = this.fun.decorate.bibend;
