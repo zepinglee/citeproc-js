@@ -1786,6 +1786,8 @@ CSL.Engine.Bibliography = function () {
 	this.opt.layout_prefix = "";
 	this.opt.layout_suffix = "";
 	this.opt.layout_delimiter = "";
+	this.opt["line-spacing"] = 1;
+	this.opt["entry-spacing"] = 1;
 };
 CSL.Engine.BibliographySort = function () {
 	this.tokens = [];
@@ -1862,8 +1864,8 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	entry_strings = ret[1];
 	params = {
 		"maxoffset": 0,
-		"entryspacing": 0,
-		"linespacing": 0,
+		"entryspacing": this.bibliography.opt["entry-spacing"],
+		"linespacing": this.bibliography.opt["line-spacing"],
 		"second-field-align": false,
 		"entry_ids":entry_ids
 	};
@@ -1880,12 +1882,6 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	}
 	if (this.bibliography.opt.hangingindent) {
 		params.hangingindent = this.bibliography.opt.hangingindent;
-	}
-	if (this.bibliography.opt.entryspacing) {
-		params.entryspacing = this.bibliography.opt.entryspacing;
-	}
-	if (this.bibliography.opt.linespacing) {
-		params.linespacing = this.bibliography.opt.linespacing;
 	}
 	params.bibstart = this.fun.decorate.bibstart;
 	params.bibend = this.fun.decorate.bibend;
@@ -4623,12 +4619,12 @@ CSL.Attributes["@hanging-indent"] = function (state, arg) {
 };
 CSL.Attributes["@line-spacing"] = function (state, arg) {
 	if (arg && arg.match(/^[.0-9]+$/)) {
-		state[this.name].opt.linespacing = parseFloat(arg, 10);
+		state[this.name].opt["line-spacing"] = parseFloat(arg, 10);
 	}
 };
 CSL.Attributes["@entry-spacing"] = function (state, arg) {
 	if (arg && arg.match(/^[.0-9]+$/)) {
-		state[this.name].opt.entryspacing = parseFloat(arg, 10);
+		state[this.name].opt["entry-spacing"] = parseFloat(arg, 10);
 	}
 };
 CSL.Attributes["@near-note-distance"] = function (state, arg) {
@@ -6784,9 +6780,9 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 				"id": item,
 				"seq": 0,
 				"offset": 0,
-				"sortkeys": undefined,
-				"ambig": undefined,
-				"disambig": undefined
+				"sortkeys": false,
+				"ambig": false,
+				"disambig": false
 			};
 			this.registry[item] = newitem;
 			abase = CSL.getAmbigConfig.call(this.state);
@@ -7002,6 +6998,7 @@ CSL.Registry.NameReg = function (state) {
 		}
 	};
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
+		var pos, len, items;
 		set_keys(this.state, item_id, nameobj);
 		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
 			return 2;
@@ -7036,6 +7033,67 @@ CSL.Registry.NameReg = function (state) {
 		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
 			if (this.namereg[pkey].count > 1) {
 				param = 1;
+			}
+		}
+		if (param === 0) {
+			pos = this.namereg[pkey].ikey[ikey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].skey[skey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			if (this.namereg[pkey].items.indexOf(item_id) === -1) {
+				this.namereg[pkey].items.push(item_id);
+			}
+		} else if (param === 1) {
+			pos = this.namereg[pkey].items.indexOf(item_id);
+			items = this.namereg[pkey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].skey[skey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
+				this.namereg[pkey].ikey[ikey].items.push(item_id);
+			}
+		} else if (param === 2) {
+			pos = this.namereg[pkey].items.indexOf(item_id);
+			items = this.namereg[pkey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			pos = this.namereg[pkey].ikey[ikey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
+				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
 			}
 		}
 		return param;
@@ -7121,9 +7179,6 @@ CSL.Registry.NameReg = function (state) {
 				this.namereg[pkey].ikey = {};
 				this.namereg[pkey].items = [];
 			}
-			if (this.namereg[pkey].items.indexOf(item_id) === -1) {
-				this.namereg[pkey].items.push(item_id);
-			}
 		}
 		if (pkey && ikey) {
 			if ("undefined" === typeof this.namereg[pkey].ikey[ikey]) {
@@ -7133,18 +7188,12 @@ CSL.Registry.NameReg = function (state) {
 				this.namereg[pkey].ikey[ikey].items = [];
 				this.namereg[pkey].count += 1;
 			}
-			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
-				this.namereg[pkey].ikey[ikey].items.push(item_id);
-			}
 		}
 		if (pkey && ikey && skey) {
 			if ("undefined" === typeof this.namereg[pkey].ikey[ikey].skey[skey]) {
 				this.namereg[pkey].ikey[ikey].skey[skey] = {};
 				this.namereg[pkey].ikey[ikey].skey[skey].items = [];
 				this.namereg[pkey].ikey[ikey].count += 1;
-			}
-			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
-				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
 			}
 		}
 		if ("undefined" === typeof this.nameind[item_id]) {
