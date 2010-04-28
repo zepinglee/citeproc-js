@@ -444,6 +444,9 @@ CSL.Node.names = {
 
 					display_names = nameset.names.slice();
 
+					// XXXXX: Context-sensitive adjustment to et-al delimiter could
+					// go here.
+
 					if ("pers" === nameset.species) {
 						//
 						// the names constraint (experimental)
