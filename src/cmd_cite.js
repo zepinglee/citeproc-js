@@ -618,6 +618,7 @@ CSL.getCite = function (Item, item, prevItemID) {
     }
 	CSL.citeEnd.call(this, Item);
 	this.parallel.CloseCite(this);
+	return Item.id;
 };
 
 CSL.citeStart = function (Item) {
