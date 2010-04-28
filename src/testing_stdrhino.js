@@ -179,9 +179,32 @@ StdRhinoTest.prototype.run = function(){
 		}
         ret = ret[0]["bibstart"] + ret[1].join("") + ret[0]["bibend"];
 	} else if (this.test.mode == "bibliography-header"){
-		var ret = this.style.makeBibliography()[0];
+		var obj = this.style.makeBibliography()[0];
+		var lst = [];
+		for (var key in obj) {
+			var keyval = [];
+			keyval.push(key);
+			keyval.push(obj[key]);
+			lst.push(keyval);
+		}
+		lst.sort(
+			function (a, b) {
+				if (a > b) {
+					return 1;
+				} else if (a < b) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		);
+		ret = "";
+		for (pos = 0, len = lst.length; pos < len; pos += 1) {
+			ret += lst[pos][0] + ": " + lst[pos][1] + "\n";
+		}
+		ret = ret.replace(/^\s+/,"").replace(/\s+$/,"");
 	}
-	if (this.test.mode !== "bibliography" && this.test.mode !== "citation") {
+	if (this.test.mode !== "bibliography" && this.test.mode !== "citation" && this.test.mode !== "bibliography-header") {
 		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
 	}
 	return ret;
