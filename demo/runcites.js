@@ -50,13 +50,13 @@ function pointedStickInnerHtml(elementid,content){
 	}
 }
 
-var insertCites = function(cites) {
+var insertCites = function(cites, name) {
 	var pos, len, data, idx, cite, spannodes, nodes, node, id, ret;
 	nodes = [];
 	spannodes = document.getElementsByTagName("span");
 	for (pos = 0, len = spannodes.length; pos < len; pos += 1) {
 		node = spannodes.item(pos);
-		if (node.getAttribute("name") !== "citation") {
+		if (node.getAttribute("name") !== name) {
 			continue;
 		}
 		nodes.push(node);
@@ -70,7 +70,84 @@ var insertCites = function(cites) {
 	}
 }
 
-var citationSrc1 = {
+var citationCAD1 = {
+	"citationItems": [
+        {
+			id: "ITEM-1"
+		}
+	],
+	"properties": {
+		"noteIndex": 1
+	}
+};
+
+var citationCAD2 = {
+	"citationItems": [
+        {
+			id: "ITEM-2"
+		}
+	],
+	"properties": {
+		"noteIndex": 2
+	}
+};
+
+var citationCAD3 = {
+	"citationItems": [
+        {
+			id: "ITEM-3"
+		}
+	],
+	"properties": {
+		"noteIndex": 3
+	}
+};
+
+var citationCAD4 = {
+	"citationItems": [
+        {
+			id: "ITEM-4"
+		}
+	],
+	"properties": {
+		"noteIndex": 4
+	}
+};
+
+var citationCAD5 = {
+	"citationItems": [
+        {
+			id: "ITEM-5"
+		}
+	],
+	"properties": {
+		"noteIndex": 5
+	}
+};
+
+var citationCAD6 = {
+	"citationItems": [
+        {
+			id: "ITEM-6"
+		}
+	],
+	"properties": {
+		"noteIndex": 6
+	}
+};
+
+var citationCAD7 = {
+	"citationItems": [
+        {
+			id: "ITEM-21"
+		}
+	],
+	"properties": {
+		"noteIndex": 7
+	}
+};
+
+var citationBB1 = {
 	"citationItems": [
         {
 			id: "ITEM-6",
@@ -83,7 +160,7 @@ var citationSrc1 = {
 	}
 };
 
-var citationSrc2 = {
+var citationBB2 = {
 	"citationItems": [
         {
 			id: "ITEM-6"
@@ -108,7 +185,7 @@ var citationSrc2 = {
 	}
 };
 
-var citationSrc3 = {
+var citationBB3 = {
 	"citationItems": [
         {
 			id: "ITEM-13",
@@ -134,7 +211,7 @@ var citationSrc3 = {
 	}
 };
 
-var citationSrc4 = {
+var citationBB4 = {
 	"citationItems": [
         {
 			id: "ITEM-2"
@@ -145,7 +222,7 @@ var citationSrc4 = {
 	}
 };
 
-var citationSrc5 = {
+var citationBB5 = {
 	"citationItems": [
         {
 			id: "ITEM-2",
@@ -176,7 +253,7 @@ var citationSrc5 = {
 	}
 };
 
-var citationSrc6 = {
+var citationBB6 = {
 	"citationItems": [
         {
 			id: "ITEM-16"
@@ -187,7 +264,7 @@ var citationSrc6 = {
 	}
 };
 
-var citationSrc7 = {
+var citationBB7 = {
 	"citationItems": [
         {
 			id: "ITEM-17",
@@ -205,7 +282,7 @@ var citationSrc7 = {
 	}
 };
 
-var citationSrc8 = {
+var citationBB8 = {
 	"citationItems": [
         {
 			id: "ITEM-19",
@@ -217,7 +294,7 @@ var citationSrc8 = {
 	}
 };
 
-var citationSrc9 = {
+var citationBB9 = {
 	"citationItems": [
         {
 			id: "ITEM-20",
@@ -229,7 +306,7 @@ var citationSrc9 = {
 	}
 };
 
-var citationSrc10 = {
+var citationBB10 = {
 	"citationItems": [
         {
 			id: "ITEM-3",
@@ -246,7 +323,7 @@ var citationSrc10 = {
 	}
 };
 
-var citationSrc11 = {
+var citationBB11 = {
 	"citationItems": [
         {
 			id: "ITEM-13",
@@ -265,7 +342,21 @@ var insert = function(){
 
 	// Chicago Author-Date
 	citeproc = new CSL.Engine(sys, chicago_author_date);
-	citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4", "ITEM-5", "ITEM-6"]);
+	var cad1 = citeproc.appendCitationCluster(citationCAD1);
+	insertCites(cad1,"citation_cad");
+	var cad2 = citeproc.appendCitationCluster(citationCAD2);
+	insertCites(cad2,"citation_cad");
+	var cad3 = citeproc.appendCitationCluster(citationCAD3);
+	insertCites(cad3,"citation_cad");
+	var cad4 = citeproc.appendCitationCluster(citationCAD4);
+	insertCites(cad4,"citation_cad");
+	var cad5 = citeproc.appendCitationCluster(citationCAD5);
+	insertCites(cad5,"citation_cad");
+	var cad6 = citeproc.appendCitationCluster(citationCAD6);
+	insertCites(cad6,"citation_cad");
+	var cad7 = citeproc.appendCitationCluster(citationCAD7);
+	//alert("Targeted update of cites\naffected by name addition:\n"+cad7);
+	insertCites(cad7,"citation_cad");
 	output = citeproc.makeBibliography();
 	if (output && output.length && output[1].length){
 		output = output[0].bibstart + output[1].join("") + output[0].bibend;
@@ -275,28 +366,28 @@ var insert = function(){
 	// Bluebook and subsectioned bib
 	citeproc = new CSL.Engine(sys,bluebook_demo);
 	citeproc.setAbbreviations("default");
-	var citation1 = citeproc.appendCitationCluster(citationSrc1);
-	insertCites(citation1);
-	var citation2 = citeproc.appendCitationCluster(citationSrc2);
-	insertCites(citation2);
-	var citation3 = citeproc.appendCitationCluster(citationSrc3);
-	insertCites(citation3);
-	var citation4 = citeproc.appendCitationCluster(citationSrc4);
-	insertCites(citation4);
-	var citation5 = citeproc.appendCitationCluster(citationSrc5);
-	insertCites(citation5);
-	var citation6 = citeproc.appendCitationCluster(citationSrc6);
-	insertCites(citation6);
-	var citation7 = citeproc.appendCitationCluster(citationSrc7);
-	insertCites(citation7);
-	var citation8 = citeproc.appendCitationCluster(citationSrc8);
-	insertCites(citation8);
-	var citation9 = citeproc.appendCitationCluster(citationSrc9);
-	insertCites(citation9);
-	var citation10 = citeproc.appendCitationCluster(citationSrc10);
-	insertCites(citation10);
-	var citation11 = citeproc.appendCitationCluster(citationSrc11);
-	insertCites(citation11);
+	var citation1 = citeproc.appendCitationCluster(citationBB1);
+	insertCites(citation1,"citation");
+	var citation2 = citeproc.appendCitationCluster(citationBB2);
+	insertCites(citation2,"citation");
+	var citation3 = citeproc.appendCitationCluster(citationBB3);
+	insertCites(citation3,"citation");
+	var citation4 = citeproc.appendCitationCluster(citationBB4);
+	insertCites(citation4,"citation");
+	var citation5 = citeproc.appendCitationCluster(citationBB5);
+	insertCites(citation5,"citation");
+	var citation6 = citeproc.appendCitationCluster(citationBB6);
+	insertCites(citation6,"citation");
+	var citation7 = citeproc.appendCitationCluster(citationBB7);
+	insertCites(citation7,"citation");
+	var citation8 = citeproc.appendCitationCluster(citationBB8);
+	insertCites(citation8,"citation");
+	var citation9 = citeproc.appendCitationCluster(citationBB9);
+	insertCites(citation9,"citation");
+	var citation10 = citeproc.appendCitationCluster(citationBB10);
+	insertCites(citation10,"citation");
+	var citation11 = citeproc.appendCitationCluster(citationBB11);
+	insertCites(citation11,"citation");
 
 	var cases = {
 		"include" : [

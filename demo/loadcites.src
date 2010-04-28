@@ -471,6 +471,26 @@ var data = {
            ]
 		},
         "type": "legal_case"
+    },
+    "ITEM-21": {
+        "id": "ITEM-21", 
+        "title": "Chapters on Chaucer",
+		"author":[
+			{
+				"family": "Malone",
+				"given": "Kemp"
+			}
+		],
+        "publisher":"Johns Hopkins Press",
+        "publisher-place": "Baltimore",
+		"issued": {
+           "date-parts": [
+             [
+                1951
+             ]
+           ]
+		},
+        "type": "book"
     }
 };
 
