@@ -1,4 +1,5 @@
 dojo.require("doh.runner");
+dojo.require("std.bibheader");
 dojo.require("std.magic");
 dojo.require("std.eclac");
 dojo.require("std.position");

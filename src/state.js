@@ -328,6 +328,8 @@ CSL.Engine.Bibliography = function () {
 	this.opt.layout_prefix = "";
 	this.opt.layout_suffix = "";
 	this.opt.layout_delimiter = "";
+	this.opt["line-spacing"] = 1;
+	this.opt["entry-spacing"] = 1;
 };
 
 
