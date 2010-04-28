@@ -61,6 +61,7 @@ CSL.Registry.NameReg = function (state) {
 	};
 
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
+		var pos, len, items;
 		set_keys(this.state, item_id, nameobj);
 		//
 		// give literals a pass
@@ -116,6 +117,70 @@ CSL.Registry.NameReg = function (state) {
 		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
 			if (this.namereg[pkey].count > 1) {
 				param = 1;
+			}
+		}
+		// an item_id should exist only on one level.  item_id's on levels
+		// other than the selected level should be tainted but not touched;
+		// cascading disambiguation will take care of them.
+		if (param === 0) {
+			pos = this.namereg[pkey].ikey[ikey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].skey[skey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			if (this.namereg[pkey].items.indexOf(item_id) === -1) {
+				this.namereg[pkey].items.push(item_id);
+			}
+		} else if (param === 1) {
+			pos = this.namereg[pkey].items.indexOf(item_id);
+			items = this.namereg[pkey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].skey[skey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
+				this.namereg[pkey].ikey[ikey].items.push(item_id);
+			}
+		} else if (param === 2) {
+			pos = this.namereg[pkey].items.indexOf(item_id);
+			items = this.namereg[pkey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			pos = this.namereg[pkey].ikey[ikey].items.indexOf(item_id);
+			items = this.namereg[pkey].ikey[ikey].items;
+			if (pos > -1) {
+				items = items.slice(0,pos).concat(items.slice(pos + 1));
+			}
+			for (pos = 0, len = items.length; pos < len; pos += 1) {
+				this.state.tmp.taintedItemIDs[items[pos]] = true;
+			}
+			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
+				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
 			}
 		}
 		return param;
@@ -224,6 +289,12 @@ CSL.Registry.NameReg = function (state) {
 		// pkey, ikey and skey should be stored in separate cascading objects.
 		// there should also be a kkey, on each, which holds the item ids using
 		// that form of the name.
+		//
+		// (later note: well, we seem to have slipped a notch here.
+		// Adding lists of IDs all over the place here makes no sense;
+		// the lists need to include _only_ the items currently rendered
+		// at the given level, and the place to do that is in evalname,
+		// and in delnames, not here.)
 		if (pkey) {
 			if ("undefined" === typeof this.namereg[pkey]) {
 				this.namereg[pkey] = {};
@@ -231,9 +302,9 @@ CSL.Registry.NameReg = function (state) {
 				this.namereg[pkey].ikey = {};
 				this.namereg[pkey].items = [];
 			}
-			if (this.namereg[pkey].items.indexOf(item_id) === -1) {
-				this.namereg[pkey].items.push(item_id);
-			}
+//			if (this.namereg[pkey].items.indexOf(item_id) === -1) {
+//				this.namereg[pkey].items.push(item_id);
+//			}
 		}
 		if (pkey && ikey) {
 			if ("undefined" === typeof this.namereg[pkey].ikey[ikey]) {
@@ -243,9 +314,9 @@ CSL.Registry.NameReg = function (state) {
 				this.namereg[pkey].ikey[ikey].items = [];
 				this.namereg[pkey].count += 1;
 			}
-			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
-				this.namereg[pkey].ikey[ikey].items.push(item_id);
-			}
+//			if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
+//				this.namereg[pkey].ikey[ikey].items.push(item_id);
+//			}
 		}
 		if (pkey && ikey && skey) {
 			if ("undefined" === typeof this.namereg[pkey].ikey[ikey].skey[skey]) {
@@ -253,9 +324,9 @@ CSL.Registry.NameReg = function (state) {
 				this.namereg[pkey].ikey[ikey].skey[skey].items = [];
 				this.namereg[pkey].ikey[ikey].count += 1;
 			}
-			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
-				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
-			}
+//			if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
+//				this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
+//			}
 		}
 		if ("undefined" === typeof this.nameind[item_id]) {
 			this.nameind[item_id] = {};
