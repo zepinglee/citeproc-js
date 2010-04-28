@@ -101,3 +101,37 @@ CSL.Engine.prototype.updateItems = function (idList) {
 
 	return this.registry.getSortedIds();
 };
+
+CSL.Engine.prototype.updateUncitedItems = function (idList) {
+	var debug = false;
+
+	// prepare extended list of items
+	this.registry.init(idList, true);
+
+	// don't delete things
+	// this.registry.dodeletes(this.registry.myhash);
+
+	// add anything that's missing
+	this.registry.doinserts(this.registry.mylist);
+
+	// mark uncited entries
+	this.registry.douncited();
+
+	// refreshes are only triggered by dodeletes, so skip it
+	//this.registry.dorefreshes();
+
+	// everything else is the same as updateItems()
+	this.registry.rebuildlist();
+
+	this.registry.setdisambigs();
+
+	this.registry.setsortkeys();
+
+	this.registry.sorttokens();
+
+	this.registry.renumber();
+
+	this.registry.yearsuffix();
+
+	return this.registry.getSortedIds();
+};

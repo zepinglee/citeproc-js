@@ -102,6 +102,7 @@ CSL.Registry = function (state) {
 	this.myhash = {};
 	this.deletes = [];
 	this.inserts = [];
+	this.uncited = [];
 	this.refreshes = {};
 	this.akeys = {};
 	//
@@ -179,12 +180,22 @@ CSL.Registry = function (state) {
 // 19. (o) [renumber] Reset citation numbers on list items
 //
 
-CSL.Registry.prototype.init = function (myitems) {
+CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	var len, pos;
 	//
 	//  1. Receive list as function argument, store as hash and as list.
 	//
-	this.mylist = myitems;
+	// (be additive if only marking uncited items)
+	if (uncited_flag && this.mylist && this.mylist.length) {
+		this.uncited = myitems;
+		for (pos = 0, len = myitems.length; pos < len; pos += 1) {
+			if (!this.myhash[myitems[pos]]) {
+				this.mylist.push(myitems[pos]);
+			}
+		}
+	} else {
+		this.mylist = myitems;
+	}
 	this.myhash = {};
 	len = myitems.length;
 	for (pos = 0; pos < len; pos += 1) {
@@ -207,6 +218,10 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
 	//
 	for (key in this.registry) {
 		if (this.registry.hasOwnProperty(key) && !myhash[key]) {
+			// skip items explicitly marked as uncited
+			if (this.registry[key].uncited) {
+				continue;
+			}
 			//
 			//  3a. Delete names in items to be deleted from names reg.
 			//
@@ -321,6 +336,16 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 	}
 	// Disabled.  See formats.js for code.
 	// this.state.fun.decorate.items_add( this.state.output[this.state.opt.mode].tmp, mylist );
+};
+
+CSL.Registry.prototype.douncited = function () {
+	var pos, len;
+	for (pos = 0, len = this.mylist.length; pos < len; pos += 1) {
+		this.registry[this.mylist[pos]].uncited = false;
+	}
+	for (pos = 0, len = this.uncited.length; pos < len; pos += 1) {
+		this.registry[this.mylist[pos]].uncited = true;
+	}
 };
 
 CSL.Registry.prototype.rebuildlist = function () {
