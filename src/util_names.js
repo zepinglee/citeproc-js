@@ -176,10 +176,12 @@ CSL.Util.Names.getNamepartSequence = function (state, seg, name) {
 		//
 		// Discretionary sort ordering and inversions
 		//
-		if (state.opt["demote-non-dropping-particle"] === "always") {
-			sequence = [["sortsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
+		if (["always","display-and-sort"].indexOf(state.opt["demote-non-dropping-particle"]) > -1) {
+			// Drop non-dropping particle
+			sequence = [["sortsep", "sortsep", "space"], ["family", "suffix"], ["given", "dropping-particle", "non-dropping-particle"], []];
 		} else {
-			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle", "family"], ["given", "dropping-particle"], ["suffix"]];
+			// Don't drop particle.
+			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle","family"], ["given", "dropping-particle"], ["suffix"]];
 		}
 	} else { // plain vanilla
 		sequence = [[suffix_sep, "space", "space"], ["given"], ["dropping-particle", "non-dropping-particle", "family"], ["suffix"]];

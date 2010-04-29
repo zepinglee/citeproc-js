@@ -54,6 +54,8 @@ CSL.Engine.Opt = function () {
 	this["et-al-use-first"] = 1;
 	this["et-al-subsequent-min"] = false;
 	this["et-al-subsequent-use-first"] = false;
+
+	this["demote-non-dropping-particle"] = "display-and-sort";
 };
 
 
