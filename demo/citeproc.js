@@ -1665,6 +1665,7 @@ CSL.Engine.Opt = function () {
 	this["et-al-use-first"] = 1;
 	this["et-al-subsequent-min"] = false;
 	this["et-al-subsequent-use-first"] = false;
+	this["demote-non-dropping-particle"] = "display-and-sort";
 };
 CSL.Engine.Tmp = function () {
 	this.names_max = new CSL.Stack();
@@ -5582,10 +5583,10 @@ CSL.Util.Names.getNamepartSequence = function (state, seg, name) {
 			sequence = [["space", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
 		}
 	} else if (token && (token.strings["name-as-sort-order"] === "all" || (token.strings["name-as-sort-order"] === "first" && seg === "start"))) {
-		if (state.opt["demote-non-dropping-particle"] === "always") {
-			sequence = [["sortsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
+		if (["always","display-and-sort"].indexOf(state.opt["demote-non-dropping-particle"]) > -1) {
+			sequence = [["sortsep", "sortsep", "space"], ["family", "suffix"], ["given", "dropping-particle", "non-dropping-particle"], []];
 		} else {
-			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle", "family"], ["given", "dropping-particle"], ["suffix"]];
+			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle","family"], ["given", "dropping-particle"], ["suffix"]];
 		}
 	} else { // plain vanilla
 		sequence = [[suffix_sep, "space", "space"], ["given"], ["dropping-particle", "non-dropping-particle", "family"], ["suffix"]];
