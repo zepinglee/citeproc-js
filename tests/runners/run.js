@@ -14,6 +14,7 @@ dojo.require("std.unicode");
 dojo.require("std.page");
 dojo.require("std.textcase");
 dojo.require("std.decorations");
+dojo.require("std.nameorder");
 dojo.require("std.disambiguate");
 dojo.require("std.name");
 dojo.require("std.nameattr");

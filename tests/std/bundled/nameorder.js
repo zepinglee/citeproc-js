@@ -32,66 +32,30 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-
->>===== MODE =====>>
-bibliography
-<<===== MODE =====<<
-
-
-
->>===== RESULT =====>>
-<div class="csl-bib-body">
-  <div class="csl-entry">Book B</div>
-  <div class="csl-entry">Book A</div>
-  <div class="csl-entry">Book C</div>
-</div>
-<<===== RESULT =====<<
-
->>===== CSL =====>>
-<style 
-      xmlns="http://purl.org/net/xbiblio/csl"
-      class="note"
-      version="1.0">
-  <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
-  <citation>
-    <layout delimiter=", ">
-	  <text variable="title"/>
-    </layout>
-  </citation>
-  <bibliography>
-    <sort>
-      <key variable="status" sort="ascending"/>
-      <key variable="title"/>
-    </sort>
-    <layout>
-	  <text variable="title"/>
-    </layout>
-  </bibliography>
-</style>
-<<===== CSL =====<<
-
-
->>===== INPUT =====>>
-[
-    {
-        "id": "ITEM-1", 
-        "title": "Book A", 
-        "type": "book"
+dojo.provide("std.nameorder");
+doh.register("std.nameorder", [
+    function(){
+        var test = new StdRhinoTest("nameorder_Long");
+        doh.assertEqual(test.result, test.run());
     }, 
-    {
-        "id": "ITEM-2", 
-        "status": "forthcoming", 
-        "title": "Book B", 
-        "type": "book"
+    function(){
+        var test = new StdRhinoTest("nameorder_ShortNameAsSortDemoteNever");
+        doh.assertEqual(test.result, test.run());
     }, 
-    {
-        "id": "ITEM-3", 
-        "title": "Book C", 
-        "type": "book"
-    }
-]
-<<===== INPUT =====<<
+    function(){
+        var test = new StdRhinoTest("nameorder_LongNameAsSortDemoteNever");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("nameorder_LongNameAsSortDemoteDisplayAndSort");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("nameorder_Short");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("nameorder_ShortDemoteDisplayAndSort");
+        doh.assertEqual(test.result, test.run());
+    }, 
+]);

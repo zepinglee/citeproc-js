@@ -67,7 +67,7 @@ bibliography
       <key variable="status" sort="descending"/>
       <key variable="title"/>
     </sort>
-    <layout delimiter=", ">
+    <layout>
 	  <text variable="title"/>
     </layout>
   </bibliography>

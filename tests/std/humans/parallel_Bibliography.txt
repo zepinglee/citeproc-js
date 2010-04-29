@@ -124,18 +124,20 @@ bibliography
     </layout>
   </citation>
   <bibliography>
-    <group delimiter=", ">
-      <text variable="title"/>
-      <group delimiter=" ">
-        <text variable="volume"/>
-        <text variable="container-title"/>
-        <group>
-          <text variable="page"/>
-          <text variable="locator" prefix=", "/>
+    <layout>
+	  <group delimiter=", ">
+        <text variable="title"/>
+        <group delimiter=" ">
+          <text variable="volume"/>
+          <text variable="container-title"/>
+          <group>
+            <text variable="page"/>
+            <text variable="locator" prefix=", "/>
+          </group>
+          <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
         </group>
-        <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
       </group>
-    </group>
+    </layout>
   </bibliography>
 </style>
 <<===== CSL =====<<

@@ -231,6 +231,10 @@ doh.register("std.name", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("name_ArticularShortFormCommaSuffix");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("name_WesternPrimaryFontStyle");
         doh.assertEqual(test.result, test.run());
     }, 

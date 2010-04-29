@@ -32,66 +32,29 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-
->>===== MODE =====>>
-bibliography
-<<===== MODE =====<<
-
-
-
->>===== RESULT =====>>
-<div class="csl-bib-body">
-  <div class="csl-entry">Book B</div>
-  <div class="csl-entry">Book A</div>
-  <div class="csl-entry">Book C</div>
-</div>
-<<===== RESULT =====<<
-
->>===== CSL =====>>
-<style 
-      xmlns="http://purl.org/net/xbiblio/csl"
-      class="note"
-      version="1.0">
-  <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
-  <citation>
-    <layout delimiter=", ">
-	  <text variable="title"/>
-    </layout>
-  </citation>
-  <bibliography>
-    <sort>
-      <key variable="status" sort="ascending"/>
-      <key variable="title"/>
-    </sort>
-    <layout>
-	  <text variable="title"/>
-    </layout>
-  </bibliography>
-</style>
-<<===== CSL =====<<
-
-
->>===== INPUT =====>>
-[
-    {
-        "id": "ITEM-1", 
-        "title": "Book A", 
-        "type": "book"
-    }, 
-    {
-        "id": "ITEM-2", 
-        "status": "forthcoming", 
-        "title": "Book B", 
-        "type": "book"
-    }, 
-    {
-        "id": "ITEM-3", 
-        "title": "Book C", 
-        "type": "book"
-    }
-]
-<<===== INPUT =====<<
+{
+    "abbreviations": false, 
+    "bibentries": false, 
+    "bibsection": false, 
+    "citation_items": false, 
+    "citations": false, 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"note\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <names variable=\"author\">\n        <name form=\"short\"/>\n      </names>\n    </layout>\n  </citation>\n</style>", 
+    "input": [
+        {
+            "author": [
+                {
+                    "dropping-particle": "de", 
+                    "family": "Martinière", 
+                    "given": "Gérard", 
+                    "non-dropping-particle": "la", 
+                    "static-ordering": false, 
+                    "suffix": "III"
+                }
+            ], 
+            "id": "ITEM-1", 
+            "type": "book"
+        }
+    ], 
+    "mode": "citation", 
+    "result": "la Martinière III"
+}
