@@ -1,0 +1,133 @@
+Summary of changes to citeproc-js since version 1.0.0 release.
+
+
+========================
+Changes in version 1.0.1
+========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Return maxoffset and the value of second-field-align itself in the
+  header of the return value from makeBibliography() when
+  second-field-align is used.
+
+- Correctly set the value of entry-spacing and line-spacing, providing
+  for a default value of 1 for both attributes, and permitting them
+  to be set to 0.
+
+- Set position to subsequent rather than ibid on cites for which one
+  or more notes stand between the current citation and the preceding
+  partner.
+
+- Implement and test the baseline value for vertical-align.
+
+- Recognize first-reference-note-number as a variable attribute value
+  on cs:if and cs:else-if.  Wake up locator attribute on cs:if and
+  cs:else-if.
+
+- Fix uppercasing of terms when rendered at first position, and
+  prevent uppercasing otherwise.
+
+- Use a space rather than space + comma as the delimiter preceding
+  an implicit et-al term.
+
+- Return entry_ids in the header returned by makeBibliography().  The
+  entry_ids value is a list, in turn containing one list per entry
+  (the nested list being necessary to provide for parallel citations
+  picked up in the bibliography).
+
+- Support for uncited items, via new updateUncitedItems() command.
+
+-----------
+Fine tuning
+-----------
+
+- Suppress issued year if it matches the volume number exactly.  This
+  effect is needed for UK case cites.  It's an exception, so other
+  content must take priority; the change comes out if it causes
+  problems elsewhere.
+
+- Fixes in node_names.js to make institutional names handling available in note styles.
+
+- In what I think is a harmless divergence from the specification,
+  return true for is-numeric for non-numeric variables that end in a
+  number.  Some styles require adjustment of joins, such as the
+  insertion of a comma, in this case.
+
+- Taint items for a change in sequence number only if citation-number
+  is used in the citation.
+
+---------------------------------
+Fixes to parallels detection code
+---------------------------------
+
+- Fix array overrun bug in parallel detection code.
+
+- When the trailing year is quashed in a cite in initial position
+  within a set, quash it also in the final partner.  Needed to
+  handle public domain citations.
+
+- Provide looser constraint on minimum variable content for parallels
+  detection.  Provide for adding a constraint on item type.
+
+- Eliminate am_master flag, and instead rely on the position of the
+  rendered item under analysis within the cite set.  This works after
+  eliminating and extraneous cite set list push operation that was
+  causing it to fail.
+
+-----------------
+Internal bugfixes
+-----------------
+
+- Suppress registration of names that do not include a family name.
+
+- Provide for the possibility that subsequent citation forms will not
+  include any names, and therefore not produce disambiguation data in
+  the registry.
+
+- Avoid rendering of citation numbers when evaluating subsequent cites
+  for disambiguation purposes, in node_text.js
+
+- Fix a subtle bug in the rollback of added names, in
+  disambig_cites.js.
+
+- Companion changes in node_names.js and cmd_cite.js, to restore
+  parameters based on subsequent-form disambiguation to the registry,
+  after rendering a first-position cite.
+
+- Fix bug caused by incomplete cs:choose node set as a helper for
+  cs:substitute.
+
+- Rename citationIdByItemId to citationsByItemId, and adjust code to
+  set this list with pointers instead of IDs.  Leverage availability
+  of citation pointers to get near-note conditional working.
+
+-------
+Cleanup
+-------
+
+- Delete tests which, if they had been correctly written, would have
+  been invalid CSL.
+
+- Fix tests involving et-al-subsequent-min and
+  et-al-subsequent-use-first that were either incorrectly written or
+  required a wrong result.
+
+- Align abbreviation list keys with field names in tests.
+
+- Cleanup and reorganization of code related to multi-lingual handling
+  and abbreviations.
+
+- Adjust near-note tests to use a simple boolean value on the cite
+  supplement element of the item, rather than a note distance.
+
+- Adjust tests to reflect correct lowercasing of ibid term when not at
+  first position.
+
+- Change tests to use a space rather than comma+space before et al.
+
+
+
+
