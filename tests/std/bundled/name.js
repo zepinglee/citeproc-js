@@ -215,6 +215,10 @@ doh.register("std.name", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("name_NonDroppingParticleDefault");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("name_Institution");
         doh.assertEqual(test.result, test.run());
     }, 

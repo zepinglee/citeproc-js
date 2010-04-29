@@ -41,7 +41,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">Prawn, Christopher the, and also with van der Merwe, Wikus, Multi-National United</div>
+  <div class="csl-entry">Prawn, Christopher the, and also with Merwe, Wikus van der, Multi-National United</div>
 </div>
 <<===== RESULT =====<<
 

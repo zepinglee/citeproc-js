@@ -47,6 +47,10 @@ doh.register("std.sort", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("sort_StatusFieldAscending");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("sort_AguStyleReverseGroups");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -96,6 +100,10 @@ doh.register("std.sort", [
     }, 
     function(){
         var test = new StdRhinoTest("sort_AguStyle");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_StatusFieldDescending");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
