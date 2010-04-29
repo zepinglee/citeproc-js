@@ -127,7 +127,3 @@ Cleanup
   first position.
 
 - Change tests to use a space rather than comma+space before et al.
-
-
-
-
