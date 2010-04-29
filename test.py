@@ -55,6 +55,8 @@ class ApplyLicense:
     def apply(self):
         for path in [".", "src", os.path.join("tests", "std"), os.path.join("tests","std","humans"),os.path.join("tests","std","bundled"), os.path.join("tests","std","machines"),os.path.join("tests","citeproc-js")]:
             for file in os.listdir( path ):
+                if file == "CHANGES.txt" or file == "DESIDERATA.txt":
+                    continue
                 self.process_file(path,file)
 
     def process_file(self,path,file):
