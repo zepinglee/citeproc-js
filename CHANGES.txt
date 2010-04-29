@@ -2,6 +2,25 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ========================
+Changes in version 1.0.2
+========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix errors in the placement of non-dropping particles.
+
+- Fix placement of particles in short-form names.
+
+-------
+Cleanup
+-------
+
+- Fix invalid CSL in test fixtures.
+
+
+========================
 Changes in version 1.0.1
 ========================
 
