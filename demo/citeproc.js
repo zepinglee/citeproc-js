@@ -5552,7 +5552,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 	for (pos = 0; pos < len; pos += 1) {
 		key = subsequence[pos];
 		namepart = this.name[key];
-		if (("given" === key || "suffix" === key) && !this.name["static-ordering"]) {
+		if (("given" === key || (this.name.comma_suffix && "suffix" === key) || "dropping-particle" === key) && !this.name["static-ordering"]) {
 			if (0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
 				continue;
 			} else if ("given" === key && 1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
@@ -5586,7 +5586,7 @@ CSL.Util.Names.getNamepartSequence = function (state, seg, name) {
 		if (["always","display-and-sort"].indexOf(state.opt["demote-non-dropping-particle"]) > -1) {
 			sequence = [["sortsep", "sortsep", "space"], ["family", "suffix"], ["given", "dropping-particle", "non-dropping-particle"], []];
 		} else {
-			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle","family"], ["given", "dropping-particle"], ["suffix"]];
+			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle","family","suffix"], ["given", "dropping-particle"], []];
 		}
 	} else { // plain vanilla
 		sequence = [[suffix_sep, "space", "space"], ["given"], ["dropping-particle", "non-dropping-particle", "family"], ["suffix"]];
