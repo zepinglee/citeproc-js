@@ -88,7 +88,7 @@ var data = {
 			{
 				"family": "Hulster",
 				"given": "Erik",
-				"dropping-particle":"de"
+				"non-dropping-particle":"de"
 			},
 			{
 				"family": "Kloezen",
@@ -101,7 +101,7 @@ var data = {
 			{
 				"family": "Maris",
 				"given":"Antonius J.A.",
-				"dropping-particle":"van"
+				"non-dropping-particle":"van"
 			}
 		],
 		"container-title": "Applied and Environmental Microbiology",
@@ -301,7 +301,7 @@ var data = {
 			{
 				"family": "Maris",
 				"given":"Antonius J.A.",
-				"dropping-particle":"van"
+				"non-dropping-particle":"van"
 			}
 		],
 		"issued": {
