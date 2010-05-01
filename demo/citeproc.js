@@ -3603,6 +3603,7 @@ CSL.Node.names = {
 				}
 				state.output.addToken("dropping-particle", false, state.output.getToken("family"));
 				state.output.addToken("non-dropping-particle", false, state.output.getToken("family"));
+				state.output.addToken("suffix", false, state.output.getToken("family"));
 				state.output.openLevel("term-join");
 				if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
 					state.output.append(label, "label");
