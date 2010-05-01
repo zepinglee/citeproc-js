@@ -353,17 +353,17 @@ CSL.Node.names = {
 				state.output.addToken("with-group");
 				state.output.getToken("with-group").strings.delimiter = " ";
 
+				if (!state.output.getToken("etal")) {
+					state.output.addToken("etal");
+					state.output.getToken("etal").implicit = true;
+				}
+				state.output.addToken("etal-join");
+
 				state.output.addToken("trailing-names");
 
 				outer_and_term = " " + state.output.getToken("name").strings.and + " ";
 				state.output.addToken("institution-outer", outer_and_term);
 
-				if (!state.output.getToken("etal")) {
-					state.output.addToken("etal-join", " ");
-					state.output.addToken("etal");
-				} else {
-					state.output.addToken("etal-join", "");
-				}
 				if ("undefined" === typeof state.output.getToken("etal").strings.et_al_term) {
 					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al", "long", 0);
 				}
@@ -444,9 +444,6 @@ CSL.Node.names = {
 
 					display_names = nameset.names.slice();
 
-					// XXXXX: Context-sensitive adjustment to et-al delimiter could
-					// go here.
-
 					if ("pers" === nameset.species) {
 						//
 						// the names constraint (experimental)
@@ -498,6 +495,18 @@ CSL.Node.names = {
 						if (sane && overlength) {
 							if (! state.tmp.sort_key_flag) {
 								et_al = state.output.getToken("etal").strings.et_al_term;
+								// XXXXX: temporary hack to exhibit existing context-sensitive
+								// et al. join behavior.
+
+								if (state.output.getToken("etal").implicit) {
+									if (discretionary_names_length > 1) {
+										state.output.getToken("etal-join").strings.delimiter = ", ";
+									} else {
+										state.output.getToken("etal-join").strings.delimiter = " ";
+									}
+								} else {
+									state.output.getToken("etal-join").strings.delimiter = "";
+								}
 							}
 							display_names = display_names.slice(0, discretionary_names_length);
 						} else {
