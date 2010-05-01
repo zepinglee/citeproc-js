@@ -32,36 +32,52 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-{
-    "abbreviations": false, 
-    "bibentries": false, 
-    "bibsection": false, 
-    "citation_items": false, 
-    "citations": false, 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"note\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <citation>\n    <layout>\n      <names variable=\"author\">\n        <name />\n      </names>\n    </layout>\n  </citation>\n</style>", 
-    "input": [
-        {
-            "author": [
-                {
-                    "comma-suffix": true, 
-                    "family": "Doe", 
-                    "given": "Jeffrey", 
-                    "static-ordering": false, 
-                    "suffix": "Jr."
-                }
-            ], 
-            "id": "item-1", 
-            "issued": {
-                "date-parts": [
-                    [
-                        "2001"
-                    ]
-                ]
-            }, 
-            "title": "My Life as an Anonymous Heir", 
-            "type": "book"
-        }
-    ], 
-    "mode": "citation", 
-    "result": "Jeffrey Doe, Jr."
-}
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+Doe III, James
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <names variable="author">
+        <name name-as-sort-order="all"/>
+      </names>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "James", 
+                "static-ordering": false, 
+                "suffix": "III"
+            }
+        ], 
+        "id": "item-1", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<

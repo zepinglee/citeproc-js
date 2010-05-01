@@ -70,7 +70,7 @@ Jeffrey Doe, Jr.
     {
         "author": [
             {
-                "comma_suffix": true, 
+                "comma-suffix": true, 
                 "family": "Doe", 
                 "given": "Jeffrey", 
                 "static-ordering": false, 

@@ -107,6 +107,10 @@ doh.register("std.name", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("name_ArticularWithCommaNameAsSortOrder");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("name_AsianGlyphs");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -180,6 +184,10 @@ doh.register("std.name", [
     }, 
     function(){
         var test = new StdRhinoTest("name_SubstituteInheritLabel");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("name_ArticularNameAsSortOrder");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

@@ -70,7 +70,7 @@ Doe
     {
         "author": [
             {
-                "comma_suffix": true, 
+                "comma-suffix": true, 
                 "family": "Doe", 
                 "given": "James", 
                 "static-ordering": false, 

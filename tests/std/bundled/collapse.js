@@ -75,11 +75,11 @@ doh.register("std.collapse", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixes");
+        var test = new StdRhinoTest("collapse_YearSuffixCollapse");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("collapse_YearSuffixCollapse");
+        var test = new StdRhinoTest("collapse_CitationNumberRangesWithAffixes");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

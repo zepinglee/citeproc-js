@@ -239,10 +239,6 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("date_RawParseSimpleDate");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("date_LocalizedDateFormats-uk-UA");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -287,6 +283,10 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("date_RawParseSimpleDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("date_TextFormMonthdateMonthRange");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -323,10 +323,6 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("date_LocalizedNumericDefaultMissingDay");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("date_LocalizedDateFormats-sk-SK");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -340,6 +336,10 @@ doh.register("std.date", [
     }, 
     function(){
         var test = new StdRhinoTest("date_OtherWithDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("date_LocalizedNumericDefaultMissingDay");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
