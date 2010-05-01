@@ -165,7 +165,7 @@ RhinoTest.prototype._fixAllNames = function(input){
 							var m = parsed[2].match(/\!\s*(.*)/);
 							if (m){
 								entry.suffix = m[1];
-								entry.comma_suffix = true;
+								entry["comma-suffix"] = true;
 							} else {
 								entry.suffix = parsed[2];
 							}

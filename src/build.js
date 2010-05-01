@@ -672,7 +672,7 @@ CSL.Engine.prototype.parseName = function (name) {
 			name.suffix = name.given.slice(idx + m[1].length);
 			name.given = name.given.slice(0, idx);
 			if (name.suffix.match(/[a-z]/)) {
-				name.comma_suffix = true;
+				name["comma-suffix"] = true;
 			}
 		}
 	}

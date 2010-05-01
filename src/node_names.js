@@ -340,6 +340,7 @@ CSL.Node.names = {
 
 				state.output.addToken("space", " ");
 				state.output.addToken("sortsep", state.output.getToken("name").strings["sort-separator"]);
+				state.output.addToken("suffixsep", " ");
 
 				// not yet hooked up; using direct output instead.
 				// The term and the join need to be separated here,
