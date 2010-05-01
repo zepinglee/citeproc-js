@@ -61,6 +61,7 @@ var data = {
 				"family": "Bennett",
 				"given": "Frank G.",
 				"suffix": "Jr.",
+				"comma-suffix": true,
 				"static-ordering": false
 			}
 		],
