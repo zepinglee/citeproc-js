@@ -2,6 +2,21 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ========================
+Changes in version 1.0.3
+========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Use comma + space for delimiter before implicit et al. term, when
+  preceded by more than one personal name.  Brings processor behav ior
+  into line with current Zotero processor and common style
+  requirements.  Context sensitivity is not available with explicit et
+  al. term; tha t issue to be addressed in CSL 1.1.
+
+
+========================
 Changes in version 1.0.2
 ========================
 
