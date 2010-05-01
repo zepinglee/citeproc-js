@@ -39,7 +39,7 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe, Jane Roe et al.
+John Doe, Jane Roe, et al.
 <<===== RESULT =====<<
 
 >>===== CITATION-ITEMS =====>>

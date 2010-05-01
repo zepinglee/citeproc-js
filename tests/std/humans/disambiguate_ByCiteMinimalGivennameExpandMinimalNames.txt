@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-A. Asthma, Brandon Bronchitis et al.; A. Asthma, Biff Bronchitis et al.
+A. Asthma, Brandon Bronchitis, et al.; A. Asthma, Biff Bronchitis, et al.
 <<===== RESULT =====<<
 
 
