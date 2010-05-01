@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a74##
+   version 1.00##a75##
 
 .. class:: info-date
 
-   =D=29 March 2010=D=
+   =D=1 May 2010=D=
 
 .. class:: contributors
 
@@ -655,10 +655,10 @@ retrieved by the processor should have the following structure:
 
    ABBREVS = { 
       "default": {
-         "journal":{
+         "container-title":{
             "Journal of Irreproducible Results":"J. Irrep. Res."
          },
-         "series":{
+         "collection-title":{
             "International Rescue Wildlife Series":"I.R. Wildlife Series"
          },
          "authority":{
@@ -666,7 +666,11 @@ retrieved by the processor should have the following structure:
 		 },
          "institution":{
             "Bureau of Gaseous Unformed Stuff":"BoGUS"
-         };
+         },
+         "title": {},
+         "publisher": {},
+         "publisher-place": {},
+         "hereinafter": {}
       };
    };
 
@@ -748,16 +752,6 @@ Names with particles
 Name particles, such as the "von" in "Werner von Braun", can
 be delivered separately from the family and given name,
 as ``dropping-particle`` and ``non-dropping-particle`` elements.
-Name suffixes such as the "Jr." in "Frank Bennett Jr." can be 
-delivered as a ``suffix`` element.
-
-.. admonition:: Hint
-
-   A simplified format for delivering particles and name suffixes
-   to the processor is described below in the section 
-   `Dirty Tricks`_ → `Input data rescue`_ → `Names`__.
-
-__ `dirty-names`_
 
 .. sourcecode:: js
 
@@ -779,6 +773,41 @@ __ `dirty-names`_
        }
      ]
    }
+
+!!!!!!!!!!!!!!!!!!!!!!!
+Names with an articular
+!!!!!!!!!!!!!!!!!!!!!!!
+
+Name suffixes such as the "Jr." in "Frank Bennett, Jr."  and the "III"
+in "Horatio Ramses III" can be delivered as a ``suffix`` element.
+
+.. admonition:: Hint
+
+   A simplified format for delivering particles and name suffixes
+   to the processor is described below in the section 
+   `Dirty Tricks`_ → `Input data rescue`_ → `Names`__.
+
+__ `dirty-names`_
+
+.. sourcecode:: js
+
+   { "author" : [
+       { "family" : "Bennett",
+         "given" : "Frank G.",
+         "suffix" : "Jr.",
+         "comma-suffix": "true"
+       },
+       { "family" : "Ramses",
+         "given" : "Horatio",
+         "suffix" : "III"
+       }
+     ]
+   }
+
+Note the use of the ``comma-suffix`` field in the example above.  This
+hint must be included for suffixes that are preceded by a comma, which
+render differently from "ordinary" suffixes both in the ordinary long
+form, and when the name is displayed in sort order.
 
 .. _`input-byzantine`:
 
