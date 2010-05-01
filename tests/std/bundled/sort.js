@@ -43,10 +43,6 @@ doh.register("std.sort", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("sort_NameImplicitSortOrderAndForm");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("sort_StatusFieldAscending");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -80,6 +76,10 @@ doh.register("std.sort", [
     }, 
     function(){
         var test = new StdRhinoTest("sort_CitationEdit");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("sort_NameImplicitSortOrderAndForm");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

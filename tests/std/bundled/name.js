@@ -47,6 +47,10 @@ doh.register("std.name", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("name_MixedFormatsPrimaryDecorations");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("name_SubstituteName");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -120,10 +124,6 @@ doh.register("std.name", [
     }, 
     function(){
         var test = new StdRhinoTest("name_SubstituteMacroInheritDecorations");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("name_MixedFormatsPrimaryDecorations");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

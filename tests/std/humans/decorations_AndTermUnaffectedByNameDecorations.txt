@@ -32,30 +32,61 @@
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
-dojo.provide("std.decorations");
-doh.register("std.decorations", [
-    function(){
-        var test = new StdRhinoTest("decorations_Baseline");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_SimpleFlipFlop");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_AndTermUnaffectedByNameDecorations");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_SimpleQuotes");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_NestedQuotesInnerReverse");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("decorations_NestedQuotes");
-        doh.assertEqual(test.result, test.run());
-    }, 
-]);
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+<span style="font-variant:small-caps;">John</span> <span style="font-variant:small-caps;">Doe</span> <span style="font-variant:small-caps;">III</span> and <span style="font-variant:small-caps;">Jane</span> <span style="font-variant:small-caps;">van</span> <span style="font-variant:small-caps;">Roe</span>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <names variable="author">
+        <name and="text">
+          <name-part name="family" font-variant="small-caps"/>
+          <name-part name="given" font-variant="small-caps"/>
+        </name>
+      </names>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "static-ordering": false, 
+                "suffix": "III"
+            }, 
+            {
+                "family": "Roe", 
+                "given": "Jane", 
+                "non-dropping-particle": "van", 
+                "static-ordering": false
+            }
+        ], 
+        "id": "ITEM-1", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<
