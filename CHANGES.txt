@@ -2,6 +2,34 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ========================
+Changes in version 1.0.4
+========================
+
+-----------
+Enhancement
+-----------
+
+- Fix articulars preceded by a comma (as Bennett's own name)
+  to render correctly in bibliographies, as "Bennett, Frank G., Jr.".
+
+---------------------------
+Minor interface adjustments
+---------------------------
+
+- Change the "comma_suffix" key used to indicate that a name suffix
+  should be preceded by a comma to "comma-suffix", for consistency.
+
+
+-------
+Cleanup
+-------
+
+- Fix manual to reflect minor interface adjustments made in 1.0.1 and 
+  1.0.4 releases, and to mention the "hereinafter" section of the
+  abbreviations object, previously overlooked.
+
+
+========================
 Changes in version 1.0.3
 ========================
 
@@ -137,6 +165,16 @@ Internal bugfixes
 - Rename citationIdByItemId to citationsByItemId, and adjust code to
   set this list with pointers instead of IDs.  Leverage availability
   of citation pointers to get near-note conditional working.
+
+---------------------------
+Minor interface adjustments
+---------------------------
+
+- Extend abbreviations structure with addition sections
+  "title", "publisher", and "publisher-place".  Change names of
+  abbreviation sections "journal" and "series" to "container-title"
+  and "collection-title" respectively, for consistency and clarity.
+
 
 -------
 Cleanup
