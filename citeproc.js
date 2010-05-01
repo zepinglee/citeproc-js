@@ -1673,7 +1673,7 @@ CSL.Engine.prototype.parseName = function (name) {
 			name.suffix = name.given.slice(idx + m[1].length);
 			name.given = name.given.slice(0, idx);
 			if (name.suffix.match(/[a-z]/)) {
-				name.comma_suffix = true;
+				name["comma-suffix"] = true;
 			}
 		}
 	}
@@ -3606,6 +3606,7 @@ CSL.Node.names = {
 				state.output.addToken("term-join");
 				state.output.addToken("space", " ");
 				state.output.addToken("sortsep", state.output.getToken("name").strings["sort-separator"]);
+				state.output.addToken("suffixsep", " ");
 				state.output.addToken("with-join");
 				state.output.getToken("with-join").strings.delimiter = ", ";
 				state.output.addToken("with-group");
@@ -5572,9 +5573,9 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 			state.output.append(this.name.literal, "empty");
 		} else {
 			sequence = CSL.Util.Names.getNamepartSequence(state, seg, this.name);
-			state.output.openLevel(sequence[0][0]);
-			state.output.openLevel(sequence[0][1]);
-			state.output.openLevel(sequence[0][2]);
+			state.output.openLevel(sequence[0][0]); // articular join
+			state.output.openLevel(sequence[0][1]); // join to last element (?)
+			state.output.openLevel(sequence[0][2]); // inter-element join (?)
 			this.outputNameParts(sequence[1]);
 			state.output.closeLevel();
 			state.output.openLevel(sequence[0][2]);
@@ -5594,7 +5595,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 	for (pos = 0; pos < len; pos += 1) {
 		key = subsequence[pos];
 		namepart = this.name[key];
-		if (("given" === key || (this.name.comma_suffix && "suffix" === key) || "dropping-particle" === key) && !this.name["static-ordering"]) {
+		if (("given" === key || (this.name["comma-suffix"] && "suffix" === key) || "dropping-particle" === key) && !this.name["static-ordering"]) {
 			if (0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
 				continue;
 			} else if ("given" === key && 1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
@@ -5608,30 +5609,38 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 CSL.Util.Names.getNamepartSequence = function (state, seg, name) {
 	var token, suffix_sep, romanesque, sequence;
 	token = state.output.getToken("name");
-	if (name.comma_suffix) {
-		suffix_sep = "commasep";
+	if (name["comma-suffix"]) {
+		state.output.getToken("suffixsep").strings.delimiter = ", ";
 	} else {
-		suffix_sep = "space";
+		state.output.getToken("suffixsep").strings.delimiter = " ";
 	}
 	romanesque = name.family.match(CSL.ROMANESQUE_REGEXP);
 	if (!romanesque) {
 		sequence = [["empty", "empty", "empty"], ["non-dropping-particle", "family"], ["given"], []];
 	} else if (name["static-ordering"]) { // entry likes sort order
-		sequence = [["space", "space", "space"], ["non-dropping-particle", "family"], ["given"], []];
+		sequence = [["empty", "space", "space"], ["non-dropping-particle", "family"], ["given"], []];
 	} else if (state.tmp.sort_key_flag) {
 		if (state.opt["demote-non-dropping-particle"] === "never") {
-			sequence = [["space", "sortsep", "space"], ["non-dropping-particle", "family", "dropping-particle"], ["given"], ["suffix"]];
+			sequence = [["suffixsep", "sortsep", "space"], ["non-dropping-particle", "family", "dropping-particle"], ["given"], ["suffix"]];
 		} else {
-			sequence = [["space", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
+			sequence = [["suffixsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
 		}
 	} else if (token && (token.strings["name-as-sort-order"] === "all" || (token.strings["name-as-sort-order"] === "first" && seg === "start"))) {
 		if (["always","display-and-sort"].indexOf(state.opt["demote-non-dropping-particle"]) > -1) {
-			sequence = [["sortsep", "sortsep", "space"], ["family", "suffix"], ["given", "dropping-particle", "non-dropping-particle"], []];
+			if (name["comma-suffix"]) {
+				sequence = [["suffixsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
+			} else {
+				sequence = [["suffixsep", "sortsep", "space"], ["family", "suffix"], ["given", "dropping-particle", "non-dropping-particle"], []];
+			}
 		} else {
-			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle","family","suffix"], ["given", "dropping-particle"], []];
+			if (name["comma-suffix"]) {
+				sequence = [["suffixsep", "sortsep", "space"], ["non-dropping-particle","family"], ["given", "dropping-particle"], ["suffix"]];
+			} else {
+				sequence = [["suffixsep", "sortsep", "space"], ["non-dropping-particle","family","suffix"], ["given", "dropping-particle"], []];
+			}
 		}
 	} else { // plain vanilla
-		sequence = [[suffix_sep, "space", "space"], ["given"], ["dropping-particle", "non-dropping-particle", "family"], ["suffix"]];
+		sequence = [["suffixsep", "space", "space"], ["given"], ["dropping-particle", "non-dropping-particle", "family"], ["suffix"]];
 	}
 	return sequence;
 };
