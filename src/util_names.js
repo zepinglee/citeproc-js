@@ -138,13 +138,14 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 	for (pos = 0; pos < len; pos += 1) {
 		key = subsequence[pos];
 		namepart = this.name[key];
-		if (("given" === key || (this.name["comma-suffix"] && "suffix" === key) || "dropping-particle" === key) && !this.name["static-ordering"]) {
-			if (0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
-				continue;
-			} else if ("given" === key && 1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
-				initialize_with = state.output.getToken("name").strings["initialize-with"];
-				namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
-			}
+		// Do not include given name, dropping particle or suffix in strict short form of name
+		if (["given","suffix","dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
+			continue;
+		}
+		// initialize if appropriate
+		if ("given" === key && 1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
+			initialize_with = state.output.getToken("name").strings["initialize-with"];
+			namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
 		}
 		state.output.append(namepart, key);
 	}
