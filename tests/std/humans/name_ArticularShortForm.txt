@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-Doe III
+Doe
 <<===== RESULT =====<<
 
 
