@@ -43,7 +43,7 @@ bibliography
 <div class="csl-bib-body">
   <div class="csl-entry">
 
-    <div class="csl-block">Bennett Jr., Frank G.</div>
+    <div class="csl-block">Bennett, Frank G., Jr.</div>
 
     <div class="csl-left-margin">2009</div><div class="csl-right-inline">Getting Property Right: “Informal” Mortgages in the Japanese Courts. <i>Pacific Rim Law &amp; Policy Journal</i> 18 (August): 463-509.</div>
   </div>
@@ -138,6 +138,7 @@ chicago-author-date-listing.csl
     {
         "author": [
             {
+                "comma-suffix": "true", 
                 "family": "Bennett", 
                 "given": "Frank G.", 
                 "static-ordering": false, 
