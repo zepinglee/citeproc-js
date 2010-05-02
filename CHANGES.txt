@@ -2,6 +2,40 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ========================
+Changes in version 1.0.6
+========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Drop suffix from short form of names.
+
+- Use implicit context-sensitive joins (space or comma + space)
+  when the cs:et-al element is used in a name (i.e. align behavior
+  of this element with behavior of the implicit "et al." term, as
+  required by the amended CSL specification).
+
+- Permit use of "initials" with non-byzantine names, when style requires
+  initialization of a name.  Will allow truncation of Japanese given
+  names to the first character, as required by some book publisher
+  styles in Japan, and possibly in other Asian-script domains.
+
+-------
+Cleanup
+-------
+
+- Move a test specific to citeproc-js to citeprocjs group.
+
+- Adjust tests to require implicit application of comma + space prefix
+  to et al. term, when cs:et-al is used.
+
+- Simplify handling of "et-al" and "with" joins, eliminating a couple
+  of nesting levels.  Preliminary infrastructure for discriminate
+  handling of "et-al" and "and" terms with institutional names.
+
+
+========================
 Changes in version 1.0.5
 ========================
 
