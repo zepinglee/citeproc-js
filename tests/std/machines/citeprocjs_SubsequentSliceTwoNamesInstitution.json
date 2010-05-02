@@ -38,7 +38,7 @@
     "bibsection": false, 
     "citation_items": false, 
     "citations": false, 
-    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"note\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <locale>\n    <terms>\n      <term name=\"and others\"></term>\n    </terms>\n  </locale>\n  <citation>\n    <layout>\n      <names variable=\"author\">\n        <name/>\n      </names>\n    </layout>\n  </citation>\n  <bibliography et-al-min=\"2\" et-al-use-first=\"1\">\n    <layout>\n      <group delimiter=\", \">\n        <names variable=\"author\">\n          <name sort-separator=\", \" name-as-sort-order=\"first\"/>\n          <et-al term=\"and others\"/>\n        </names>\n        <group delimiter=\" \">\n          <text value=\"and also\"/>\n          <names variable=\"author\">\n            <name sort-separator=\", \" name-as-sort-order=\"all\" et-al-min=\"0\"/>\n          </names>\n        </group>\n      </group>\n    </layout>\n  </bibliography>\n</style>", 
+    "csl": "<style \n      xmlns=\"http://purl.org/net/xbiblio/csl\"\n      class=\"note\"\n      version=\"1.0\">\n  <info>\n    <id />\n    <title />\n    <updated>2009-08-10T04:49:00+09:00</updated>\n  </info>\n  <locale>\n    <terms>\n      <term name=\"and others\"></term>\n    </terms>\n  </locale>\n  <citation>\n    <layout>\n      <names variable=\"author\">\n        <name/>\n      </names>\n    </layout>\n  </citation>\n  <bibliography et-al-min=\"2\" et-al-use-first=\"1\">\n    <layout>\n\t  <names variable=\"author\" suffix=\" (as primary author)\">\n        <name sort-separator=\", \" name-as-sort-order=\"first\"/>\n        <et-al term=\"and others\"/>\n      </names>\n      <group delimiter=\" \">\n        <names variable=\"author\">\n          <name sort-separator=\", \" name-as-sort-order=\"all\" et-al-min=\"0\"/>\n        </names>\n      </group>\n    </layout>\n  </bibliography>\n</style>", 
     "input": [
         {
             "author": [
@@ -63,5 +63,5 @@
         }
     ], 
     "mode": "bibliography", 
-    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Prawn, Christopher the, and also with Merwe, Wikus van der, Multi-National United</div>\n</div>"
+    "result": "<div class=\"csl-bib-body\">\n  <div class=\"csl-entry\">Prawn, Christopher the (as primary author), with Merwe, Wikus van der, Multi-National United</div>\n</div>"
 }

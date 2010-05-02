@@ -41,7 +41,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">Prawn, Christopher the, and also with Merwe, Wikus van der, Multi-National United</div>
+  <div class="csl-entry">Prawn, Christopher the (as primary author), with Merwe, Wikus van der, Multi-National United</div>
 </div>
 <<===== RESULT =====<<
 
@@ -70,17 +70,14 @@ bibliography
   </citation>
   <bibliography et-al-min="2" et-al-use-first="1">
     <layout>
-      <group delimiter=", ">
+	  <names variable="author" suffix=" (as primary author)">
+        <name sort-separator=", " name-as-sort-order="first"/>
+        <et-al term="and others"/>
+      </names>
+      <group delimiter=" ">
         <names variable="author">
-          <name sort-separator=", " name-as-sort-order="first"/>
-          <et-al term="and others"/>
+          <name sort-separator=", " name-as-sort-order="all" et-al-min="0"/>
         </names>
-        <group delimiter=" ">
-          <text value="and also"/>
-          <names variable="author">
-            <name sort-separator=", " name-as-sort-order="all" et-al-min="0"/>
-          </names>
-        </group>
       </group>
     </layout>
   </bibliography>
