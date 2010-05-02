@@ -195,10 +195,6 @@ doh.register("std.name", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("name_SubsequentSliceTwoNamesInstitution");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("name_AuthorCountWithMultipleVariables");
         doh.assertEqual(test.result, test.run());
     }, 

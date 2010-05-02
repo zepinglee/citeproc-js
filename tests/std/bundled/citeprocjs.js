@@ -38,4 +38,8 @@ doh.register("std.citeprocjs", [
         var test = new StdRhinoTest("citeprocjs_AuthorListing");
         doh.assertEqual(test.result, test.run());
     }, 
+    function(){
+        var test = new StdRhinoTest("citeprocjs_SubsequentSliceTwoNamesInstitution");
+        doh.assertEqual(test.result, test.run());
+    }, 
 ]);
