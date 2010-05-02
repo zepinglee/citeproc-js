@@ -36,10 +36,20 @@
 CSL.Node["et-al"] = {
 	build: function (state, target) {
 		var func;
-		func = function (state, Item) {
-			state.output.addToken("etal", false, this);
-		};
-		this.execs.push(func);
+		// XXXXX: wrong, but gets us going for testing
+		if (state.build.area === "citation") {
+			func = function (state, Item) {
+				state.output.addToken("et-al-pers", false, this);
+				state.output.addToken("et-al-org", false, this);
+			};
+			this.execs.push(func);
+		} else if (state.build.area === "bibliography") {
+			func = function (state, Item) {
+				state.output.addToken("et-al-pers", false, this);
+				state.output.addToken("et-al-org", false, this);
+			};
+			this.execs.push(func);
+		}
 		target.push(this);
 	}
 };

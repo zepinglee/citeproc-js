@@ -336,11 +336,74 @@ CSL.Node.names = {
 				local_count = 0;
 				nameset = {};
 
+				// Various formatting tokens needed for names output.
 				state.output.addToken("term-join");
+				state.output.addToken("etal-join");
 
 				state.output.addToken("space", " ");
 				state.output.addToken("sortsep", state.output.getToken("name").strings["sort-separator"]);
 				state.output.addToken("suffixsep", " ");
+
+				// Style token for et-al element with personal names.
+				// The prefix of this element will be overwritten by the -single
+				// and -multiple variants on the fly.
+				if (!state.output.getToken("et-al-pers")) {
+					state.output.addToken("et-al-pers");
+				}
+				state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
+				state.output.getToken("et-al-pers").strings["prefix-multiple"] = ", ";
+				var et_al_pers = state.getTerm("et-al", "long", 0);
+				if ("undefined" !== typeof state.output.getToken("et-al-pers").strings.term) {
+					et_al_pers = state.output.getToken("et-al-pers").strings.term;
+				}
+
+				// Style token for et-al element with institutional names.
+				// The prefix of this element will be overwritten by the -single
+				// and -multiple variants on the fly.
+				// XXX: Not yet hooked up, institutional et al. untested
+				if (!state.output.getToken("et-al-org")) {
+					state.output.addToken("et-al-org");
+				}
+				state.output.getToken("et-al-org").strings["prefix-single"] = " ";
+				state.output.getToken("et-al-org").strings["prefix-multiple"] = ", ";
+				var et_al_org = state.getTerm("et-al", "long", 0);
+
+				// Style token for and element with personal names.
+				// The prefix of this element will be overwritten by the -single
+				// and -multiple variants on the fly, if the and attribute
+				// is set on cs:name.  Otherwise prefix is set to nil, and
+				// and_pers is set to the value of the cs:name delimiter
+				// attribute.
+				// XXX: Not yet hooked up
+				if (!state.output.getToken("and-pers")) {
+					state.output.addToken("and-pers");
+					// Conditional goes here
+				}
+				state.output.getToken("and-pers").strings["prefix-single"] = " ";
+				state.output.getToken("and-pers").strings["prefix-multiple"] = ", ";
+				// Conditional goes here
+				var and_pers = state.getTerm("and", "long", 0);
+
+				// Style token for and element with instiutional names.
+				// The prefix of this element will be overwritten by the -single
+				// and -multiple variants on the fly, if the and attribute
+				// is set on cs:name.  Otherwise prefix is set to nil, and
+				// and_org is set to the value of the cs:institution delimiter
+				// attribute.
+				// XXX: Not yet hooked up
+				if (!state.output.getToken("and-org")) {
+					state.output.addToken("and-org");
+					// Conditional goes here
+				}
+				state.output.getToken("and-org").strings["prefix-single"] = " ";
+				state.output.getToken("and-org").strings["prefix-multiple"] = ", ";
+				// Conditional goes here
+				var and_org = state.getTerm("and", "long", 0);
+
+				state.output.addToken("with");
+				state.output.getToken("with").strings.prefix = ", ";
+				state.output.getToken("with").strings.suffix = " ";
+				var with_term = "with";
 
 				// not yet hooked up; using direct output instead.
 				// The term and the join need to be separated here,
@@ -348,26 +411,20 @@ CSL.Node.names = {
 				// be handled gracefully when the "with" join
 				// comes in front.
 
-				state.output.addToken("with-join");
-				state.output.getToken("with-join").strings.delimiter = ", ";
+				//state.output.addToken("with-join");
+				//state.output.getToken("with-join").strings.delimiter = ", ";
 
-				state.output.addToken("with-group");
-				state.output.getToken("with-group").strings.delimiter = " ";
-
-				if (!state.output.getToken("etal")) {
-					state.output.addToken("etal");
-					state.output.getToken("etal").implicit = true;
-				}
-				state.output.addToken("etal-join");
+				//state.output.addToken("with-group");
+				//state.output.getToken("with-group").strings.delimiter = " ";
 
 				state.output.addToken("trailing-names");
 
 				outer_and_term = " " + state.output.getToken("name").strings.and + " ";
 				state.output.addToken("institution-outer", outer_and_term);
 
-				if ("undefined" === typeof state.output.getToken("etal").strings.et_al_term) {
-					state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al", "long", 0);
-				}
+				//if ("undefined" === typeof state.output.getToken("etal").strings.et_al_term) {
+				//	state.output.getToken("etal").strings.et_al_term = state.getTerm("et-al", "long", 0);
+				//}
 
 				if (!state.output.getToken("label")) {
 					state.output.addToken("label");
@@ -496,18 +553,16 @@ CSL.Node.names = {
 
 						if (sane && overlength) {
 							if (! state.tmp.sort_key_flag) {
-								et_al = state.output.getToken("etal").strings.et_al_term;
+								et_al = et_al_pers;
+								//et_al = state.output.getToken("etal").strings.et_al_term;
+
 								// XXXXX: temporary hack to exhibit existing context-sensitive
 								// et al. join behavior.
 
-								if (state.output.getToken("etal").implicit) {
-									if (discretionary_names_length > 1) {
-										state.output.getToken("etal-join").strings.delimiter = ", ";
-									} else {
-										state.output.getToken("etal-join").strings.delimiter = " ";
-									}
+								if (discretionary_names_length > 1) {
+									state.output.getToken("et-al-pers").strings.prefix = state.output.getToken("et-al-pers").strings["prefix-multiple"];
 								} else {
-									state.output.getToken("etal-join").strings.delimiter = "";
+									state.output.getToken("et-al-pers").strings.prefix = state.output.getToken("et-al-pers").strings["prefix-single"];
 								}
 							}
 							display_names = display_names.slice(0, discretionary_names_length);
@@ -672,9 +727,9 @@ CSL.Node.names = {
 						state.output.openLevel("term-join");
 					}
 
-					if (nameset.free_agent_start) {
-						state.output.openLevel("with-join");
-					}
+					//if (nameset.free_agent_start) {
+					//	state.output.openLevel("with-join");
+					//}
 
 					if (nameset.trailers3_start) {
 						state.output.openLevel("trailing-names",cut_var);
@@ -685,8 +740,8 @@ CSL.Node.names = {
 							CSL.debug("-- reached 'after_people'");
 						}
 						//SNIP-END
-						state.output.openLevel("with-group");
-						state.output.append("with", "empty");
+						//state.output.openLevel("with-group");
+						state.output.append("with", "with");
 					}
 
 					if (nameset.organization_first) {
@@ -725,7 +780,7 @@ CSL.Node.names = {
 						state.output.openLevel("etal-join"); // join for etal
 						CSL.Util.Names.outputNames(state, display_names);
 						if (et_al) {
-							state.output.append(et_al, "etal");
+							state.output.append(et_al, "et-al-pers");
 						}
 						state.output.closeLevel("etal-join"); // etal
 					} else {
@@ -767,15 +822,15 @@ CSL.Node.names = {
 					//	//state.output.closeLevel("inner");
 					//}
 
-					if (nameset.free_agent_end) {
-						state.output.closeLevel("with-group");
-					}
+					//if (nameset.free_agent_end) {
+					//	state.output.closeLevel("with-group");
+					//}
 					if (nameset.trailers3_end) {
 						state.output.closeLevel("trailing-names");
 					}
-					if (nameset.free_agent_end) {
-						state.output.closeLevel("with-join");
-					}
+					//if (nameset.free_agent_end) {
+					//	state.output.closeLevel("with-join");
+					//}
 
 					// lookahead
 					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
