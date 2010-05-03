@@ -63,6 +63,10 @@ doh.register("std.citeprocjs", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("citeprocjs_ParseParticleAsName");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("citeprocjs_ParseSuffixAllCapsForceCommaSortOrder");
         doh.assertEqual(test.result, test.run());
     }, 
