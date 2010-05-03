@@ -3546,6 +3546,9 @@ CSL.Node.names = {
 						if (name["parse-names"]) {
 							state.parseName(name);
 						}
+						if (name.family && name.family.length && name.family.slice(0,1) === '"' && name.family.slice(-1)) {
+							name.family = name.family.slice(1,-1);
+						}
 					}
 				}
 				local_count = 0;
