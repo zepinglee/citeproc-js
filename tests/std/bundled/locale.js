@@ -39,15 +39,15 @@ doh.register("std.locale", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("locale_EmptyPlusOverrideStyleOpt");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
         var test = new StdRhinoTest("locale_EmptyPlusOverrideTerm");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
         var test = new StdRhinoTest("locale_EmptyDate");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
+        var test = new StdRhinoTest("locale_EmptyPlusOverrideStyleOpt");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

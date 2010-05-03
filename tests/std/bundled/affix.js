@@ -39,11 +39,11 @@ doh.register("std.affix", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("affix_TextNodeWithMacro");
+        var test = new StdRhinoTest("affix_PrefixFullCitationTextOnly");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("affix_PrefixFullCitationTextOnly");
+        var test = new StdRhinoTest("affix_TextNodeWithMacro");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

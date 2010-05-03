@@ -91,6 +91,10 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("date_LocalizedTextYearWithAffixes");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("date_LocalizedDateFormats-zh-CN");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -136,10 +140,6 @@ doh.register("std.date", [
     }, 
     function(){
         var test = new StdRhinoTest("date_NoDate");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("date_LocalizedTextYearWithAffixes");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
@@ -359,6 +359,10 @@ doh.register("std.date", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
+        var test = new StdRhinoTest("date_LocalizedDateFormats-af-ZA");
+        doh.assertEqual(test.result, test.run());
+    }, 
+    function(){
         var test = new StdRhinoTest("date_LocalizedNumericYearMonth");
         doh.assertEqual(test.result, test.run());
     }, 
@@ -368,10 +372,6 @@ doh.register("std.date", [
     }, 
     function(){
         var test = new StdRhinoTest("date_LocalizedDateFormats-pt-PT");
-        doh.assertEqual(test.result, test.run());
-    }, 
-    function(){
-        var test = new StdRhinoTest("date_LocalizedDateFormats-af-ZA");
         doh.assertEqual(test.result, test.run());
     }, 
 ]);

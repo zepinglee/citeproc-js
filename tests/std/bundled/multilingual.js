@@ -47,11 +47,11 @@ doh.register("std.multilingual", [
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("multilingual_TextPrimaryExists");
+        var test = new StdRhinoTest("multilingual_TextSecondaryExists");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){
-        var test = new StdRhinoTest("multilingual_TextSecondaryExists");
+        var test = new StdRhinoTest("multilingual_TextPrimaryExists");
         doh.assertEqual(test.result, test.run());
     }, 
     function(){

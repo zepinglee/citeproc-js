@@ -40,7 +40,7 @@ citation
 
 
 >>===== RESULT =====>>
-Doe III, James
+Doe, James, III
 <<===== RESULT =====<<
 
 
