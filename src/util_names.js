@@ -180,20 +180,10 @@ CSL.Util.Names.getNamepartSequence = function (state, seg, name) {
 		//
 		if (["always","display-and-sort"].indexOf(state.opt["demote-non-dropping-particle"]) > -1) {
 			// Drop non-dropping particle
-			if (name["comma-suffix"]) {
-				sequence = [["suffixsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
-			} else {
-				sequence = [["suffixsep", "sortsep", "space"], ["family", "suffix"], ["given", "dropping-particle", "non-dropping-particle"], []];
-			}
-
+			sequence = [["sortsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
 		} else {
 			// Don't drop particle.
-			if (name["comma-suffix"]) {
-				sequence = [["suffixsep", "sortsep", "space"], ["non-dropping-particle","family"], ["given", "dropping-particle"], ["suffix"]];
-			} else {
-				sequence = [["suffixsep", "sortsep", "space"], ["non-dropping-particle","family","suffix"], ["given", "dropping-particle"], []];
-			}
-
+			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle","family"], ["given", "dropping-particle"], ["suffix"]];
 		}
 	} else { // plain vanilla
 		sequence = [["suffixsep", "space", "space"], ["given"], ["dropping-particle", "non-dropping-particle", "family"], ["suffix"]];
@@ -368,3 +358,34 @@ CSL.Util.Names.initNameSlices = function (state) {
 
 // deleted CSL.Util.Names,rescueNameElements()
 // apparently not used.
+
+
+CSL.Engine.prototype.parseName = function (name) {
+	var m, idx;
+	if (! name["non-dropping-particle"]) {
+		m = name.family.match(/^([ a-z]+\s+)/);
+		if (m) {
+			name.family = name.family.slice(m[1].length);
+			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
+
+		}
+	}
+	if (! name.suffix) {
+		m = name.given.match(/(\s*,!*\s*)/);
+		if (m) {
+			idx = name.given.indexOf(m[1]);
+			if (name.given.slice(idx, idx + m[1].length).replace(/\s*/g,"").length === 2) {
+				name["comma-suffix"] = true;
+			}
+			name.suffix = name.given.slice(idx + m[1].length);
+			name.given = name.given.slice(0, idx);
+		}
+	}
+	if (! name["dropping-particle"]) {
+		m = name.given.match(/^(\s+[ a-z]*[a-z])$/);
+		if (m) {
+			name.given = name.given.slice(0, m[1].length * -1);
+			name["dropping-particle"] = m[2].replace(/^\s+/, "");
+		}
+	}
+};
