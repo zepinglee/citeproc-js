@@ -1,5 +1,37 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+========================
+Changes in version 1.0.7
+========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Place name suffix after the given name is name-as-sort-order
+  rendering, separated by a comma, as required by CMS.
+
+- Provide for quote-escaping of name field parsing, when the
+  citeproc-js specific parse-names toggle is used to invoke
+  name field pre-parsing.
+
+-------
+Cleanup
+-------
+
+- Tests of citeproc-js name parsing extension, with CMS-correct
+  handling of name suffixes.
+
+- Fix placement of name suffix in several tests.
+
+- Move parseName() function from build.js to util_names.js.  
+
+- Test for quote-escaped particles in the family name with name field
+  parsing.
+
+- Update to manual to cover the citeproc-js parsing conventions for
+  name particles and suffixes.
+
 
 ========================
 Changes in version 1.0.6
