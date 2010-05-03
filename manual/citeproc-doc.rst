@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a75##
+   version 1.00##a76##
 
 .. class:: info-date
 
-   =D=1 May 2010=D=
+   =D=3 May 2010=D=
 
 .. class:: contributors
 
@@ -711,6 +711,9 @@ should be presented as simple strings.
       "volume" : "10"
    }
 
+.. _clean-names:
+
+
 ^^^^^
 Names
 ^^^^^
@@ -806,8 +809,8 @@ __ `dirty-names`_
 
 Note the use of the ``comma-suffix`` field in the example above.  This
 hint must be included for suffixes that are preceded by a comma, which
-render differently from "ordinary" suffixes both in the ordinary long
-form, and when the name is displayed in sort order.
+render differently from "ordinary" suffixes in the ordinary long
+form.
 
 .. _`input-byzantine`:
 
@@ -1117,40 +1120,114 @@ Names
 ^^^^^
 
 Systems that use a simple two-field entry format can encode
-``non-dropping-particle`` and ``dropping-particle``
-elements on a name by including them in the ``family``
-or ``given`` fields, respectively, setting the ``parse-names``
-flag on the name object to indicate that the processor should
-perform particle extraction on these fields:
+``non-dropping-particle``, ``dropping-particle`` and ``suffix`` name
+sub-elements by writing them appropriately in the ``family`` or
+``given`` name fields and setting a ``parse-names`` flag on the name
+object.  The processor will then attempt to parse out the elements
+and convert them to the explicit form (as documented under `Data input`_
+→ `Names`__ above) before rendering.  With the ``parse-names`` flag,
+sub-elements are recognized as follows.
+
+__ `clean-names`_
+
+!!!!!!!!!!!!!!!!!!!!!!!!!
+``non-dropping-particle``
+!!!!!!!!!!!!!!!!!!!!!!!!!
+
+A string at the beginning of the ``family`` field consisting
+of spaces and lowercase roman or Cyrillic characters will
+be treated as a ``non-dropping-particle``.
+
+.. sourcecode:: js
+
+   { "author" : [ 
+       { "family" : "van Gogh",
+         "given" : "Vincent",
+         "parse-names" : "true"
+       }
+     ]
+   }
+
+
+!!!!!!!!!!!!!!!!!!!!!
+``dropping-particle``
+!!!!!!!!!!!!!!!!!!!!!
+
+A string at the end of the ``given`` name field consisting
+of spaces and lowercase roman or Cyrillic characters will
+be treated as a ``dropping-particle``.
 
 .. sourcecode:: js
 
    { "author" : [ 
        { "family" : "Humboldt",
-          "given" : "Alexander von",
-          "parse-names" : true
-       },
-       { "family" : "van Gogh",
-         "given" : "Vincent",
-         "parse-names" : true
+         "given" : "Alexander von",
+         "parse-names" : "true"
        }
      ]
    }
 
-The extraction of "non-dropping" particles is done by scanning the
-``family`` field for leading terms that contain no uppercase letters.
-The extraction of "dropping" particles is done by scanning the
-``given`` field for trailing terms that contain no uppercase letters.
+!!!!!!!!!!!!!!!!!!!!!
+``suffix`` (ordinary)
+!!!!!!!!!!!!!!!!!!!!!
 
-For some names, leading lowercase terms in the ``family`` field should
-be treated as part of the name itself, and not as particles.  The
-``parse-names`` flag should not be set on such names:
+Content following a comma in the ``given`` name field
+will be parse out as a name ``suffix``.
 
 .. sourcecode:: js
 
-   { "author" : [
-       { "family" : "van der Vlist",
-          "given" : "Eric"
+   { "author" : [ 
+       { "family" : "King",
+         "given" : "Martin Luther, Jr.",
+         "parse-names" : "true"
+       }, 
+       { "family" : "Gates",
+         "given" : "William Henry, III",
+         "parse-names" : "true"
+       }
+     ]
+   }
+
+!!!!!!!!!!!!!!!!!!!!!!!!!
+``suffix`` (forced comma)
+!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Modern typographical convention does not place a
+comma between suffixes such as "Jr." and the last
+name, when rendering the name in normal order:
+"John Doe Jr."  If an individual prefers that the
+traditional comma be used in rendering their name, the
+comma can be force by placing a exclamation mark
+after the comma:
+
+.. sourcecode:: js
+
+   { "author" : [ 
+       { "family" : "Bennett",
+         "given" : "Frank G.,! Jr.",
+         "parse-names" : "true"
+       }
+     ]
+   }
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Particles as part of the last name
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+The particles preceding some names should be treated
+as part of the last name, depending on the cultural
+heritage and personal preferences of the individual.
+To suppress parsing and treat such particles as part
+of the ``family`` name field, enclose the ``family``
+name field content in double-quotes:
+
+.. sourcecode:: js
+
+   { "author" : [ 
+       { "family" : "\"van der Vlist\"",
+         "given" : "Eric",
+         "parse-names" : "true"
        }
      ]
    }
