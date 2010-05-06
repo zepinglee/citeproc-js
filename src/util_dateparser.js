@@ -34,7 +34,7 @@
  */
 
 CSL.dateParser = function (txt) {
-	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, monthrexes, seasonrex, len;
+	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, monthrexes, seasonrex, len, jiymatchstring, jiymatcher;
 
 	// instance object with private constants and a public function.
 
@@ -53,20 +53,28 @@ CSL.dateParser = function (txt) {
 	for (pos = 0; pos < len; pos += 1) {
 		key = jiy_list[pos][0];
 		val = jiy_list[pos][1];
-		jiy[val] = key;
+		jiy[key] = val;
 	}
-	jiysplitter = [];
+	jiymatchstring = [];
 	for (pos = 0; pos < len; pos += 1) {
-		val = jiy_list[pos];
-		jiysplitter.push(val);
+		val = jiy_list[pos][0];
+		jiymatchstring.push(val);
 	}
-	jiysplitter = jiysplitter.join("|");
-	jiysplitter = "(" + jiysplitter + ")([0-9]+)";
+	jiymatchstring = jiymatchstring.join("|");
+	//
+	// Oh, dear.  Getting this to work in IE6 is going to
+	// be a pain.
+	//
+	jiysplitter = "(?:" + jiymatchstring + ")(?:[0-9]+)";
 	jiysplitter = new RegExp(jiysplitter);
+	// for IE6 workaround
+	jiymatcher = "(" + jiymatchstring + ")([0-9]+)";
+	jiymatcher = new RegExp(jiymatcher);
 	// japanese regular expression for month or day
 	jmd = /(\u6708|\u5E74)/g;
 	// japanese regular expression for year
-	jy = /\u65E5$/;
+	//jy = /\u65E5$/;
+	jy = /\u65E5/;
 	// japanese regular expression for range
 	jr = /\u301c/g;
 
@@ -103,20 +111,32 @@ CSL.dateParser = function (txt) {
 	}
 
 	this.parse = function (txt) {
-		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, pos, delim, ppos, element, pppos, len, llen, lllen;
+		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, pos, delim, ppos, element, pppos, len, llen, lllen, mm, slst, mmpos;
 		//
 		// Normalize the format and the year if it's a Japanese date
 		//
-		m = txt.match(jmd, "-");
+		m = txt.match(jmd);
 		if (m) {
 			txt = txt.replace(jy, "");
 			txt = txt.replace(jmd, "-");
 			txt = txt.replace(jr, "/");
 
-			lst = txt.split(jiysplitter);
+			// Not IE6 safe, applying tortuous workaround
+			slst = txt.split(jiysplitter);
+			lst = [];
+			mm = txt.match(jiymatcher);
+			for (pos = 0, len = slst.length; pos < len; pos += 1) {
+				lst.push(slst[pos]);
+				if (pos !== (len - 1)) {
+					mmpos = (pos * 2) + 1;
+					lst.push(mm[mmpos]);
+					lst.push(mm[mmpos + 1]);
+				}
+			}
+			// workaround duly applied, this now works
 			l = lst.length;
 			for	(pos = 1; pos < l; pos += 3) {
-				lst[(pos + 1)] = jiy[lst[(pos)]] + parseInt(lst[(pos + 1)], 10);
+				lst[pos + 1] = jiy[lst[pos]] + parseInt(lst[pos + 1], 10);
 				lst[pos] = "";
 			}
 			txt = lst.join("");
@@ -125,10 +145,14 @@ CSL.dateParser = function (txt) {
 			// normalize date and identify delimiters
 			//
 			txt = txt.replace(/\.\s*$/, "");
+
+			// not sure what this is meant to do
 			txt = txt.replace(/\.(?! )/, "");
 			slash = txt.indexOf("/");
 			dash = txt.indexOf("-");
 		}
+		// drop punctuation from a.d., b.c.
+		txt = txt.replace(/([A-Za-z])\./g, "$1");
 
 		number = "";
 		note = "";
@@ -311,5 +335,41 @@ CSL.dateParser = function (txt) {
 			thedate = { "literal": txt };
 		}
 		return thedate;
+	};
+
+	this.parseNumericDate = function (ret, delim, suff, txt) {
+		var lst, pos, len;
+		lst = txt.split(delim);
+		len = lst.length;
+		for (pos = 0; pos < len; pos += 1) {
+			if (lst[pos].length === 4) {
+				ret[("year" + suff)] = lst[pos].replace(/^0*/, "");
+				if (!pos) {
+					lst = lst.slice(1);
+				} else {
+					lst = lst.slice(0, pos);
+				}
+				break;
+			}
+		}
+		// comment
+		len = lst.length;
+		for (pos = 0; pos < len; pos += 1) {
+			lst[pos] = parseInt(lst[pos], 10);
+		}
+		//
+		// month and day parse
+		//
+		if (lst.length === 1) {
+			ret[("month" + suff)] = "" + lst[0];
+		} else if (lst.length === 2) {
+			if (lst[0] > 12) {
+				ret[("month" + suff)] = "" + lst[1];
+				ret[("day" + suff)] = "" + lst[0];
+			} else {
+				ret[("month" + suff)] = "" + lst[0];
+				ret[("day" + suff)] = "" + lst[1];
+			}
+		}
 	};
 };
