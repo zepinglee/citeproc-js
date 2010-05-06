@@ -62,5 +62,3 @@ doh.register("citeproc_js.build", [
 	}
 ]);
 
-var x = [
-]
