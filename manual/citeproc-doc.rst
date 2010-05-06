@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a76##
+   version 1.00##a77##
 
 .. class:: info-date
 
-   =D=3 May 2010=D=
+   =D=7 May 2010=D=
 
 .. class:: contributors
 
@@ -206,6 +206,11 @@ one of them optional:
     A language tag compliant with RFC 4646.  Defaults to ``en``.
     Styles that contain a ``default-locale`` declaration
     on the ``style`` node will ignore this option.
+
+The version of the processor itself can be obtained
+from the attribute ``processor_version``.  The supported
+CSL version can be obtained from ``csl_version``.
+
 
 
 #################

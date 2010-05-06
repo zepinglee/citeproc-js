@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ========================
+Changes in version 1.0.9
+========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Cause processor to report its own version as processor_version,
+  and the supported CSL version as csl_version.
+
+
+========================
 Changes in version 1.0.8
 ========================
 
