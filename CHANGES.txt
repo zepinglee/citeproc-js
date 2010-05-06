@@ -1,6 +1,36 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ========================
+Changes in version 1.0.8
+========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix code incompatible with IE6 in util_dateparser.js.
+
+- Fix error in the code for generating year-suffix strings
+  (fixes bug affecting very high values unlikely to be encountered
+  in actual operation).
+
+-------
+Cleanup
+-------
+
+- Various small fixes in the tests/citeproc_js processor
+  tests directory to get tests working with current version
+  of code.
+
+- Make syntax and formatting adjustments to recent code as
+  recommended by jslint.
+
+- Fix invalid CSL in one test.
+
+- Drop some extraneous files from the archive.
+
+
+========================
 Changes in version 1.0.7
 ========================
 
