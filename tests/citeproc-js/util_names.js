@@ -95,6 +95,8 @@ var sortsep = new CSL.Token("sortsep");
 sortsep.strings.delimiter = ", ";
 state.output.addToken("sortsep",false,sortsep);
 
+state.output.addToken("suffixsep");
+
 // the name-as-sort-order param from the
 // name element is set on an otherwise
 // empty token for "start", "middle" and
@@ -138,7 +140,7 @@ var space = new CSL.Token("space");
 space.strings.delimiter = " ";
 state.output.addToken("space",false,space);
 
-state.tmp.disambig_settings["givens"] = [[[1],[1],[1]]];
+state.tmp.disambig_settings["givens"] = [[1,1,1]];
 state.tmp["initialize-with"] = ".";
 
 state.tmp.nameset_counter = 0;
