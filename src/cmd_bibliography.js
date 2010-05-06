@@ -100,7 +100,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 		"entryspacing": this.bibliography.opt["entry-spacing"],
 		"linespacing": this.bibliography.opt["line-spacing"],
 		"second-field-align": false,
-		"entry_ids":entry_ids
+		"entry_ids": entry_ids
 	};
 	if (this.bibliography.opt["second-field-align"]) {
 		params["second-field-align"] = this.bibliography.opt["second-field-align"];
@@ -125,7 +125,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem;
 	ret = [];
 	this.tmp.area = "bibliography";
 	input = this.retrieveItems(this.registry.getSortedIds());
@@ -158,7 +158,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 		}
 	}
 
-	var skips = {};
+	skips = {};
 	all_item_ids = [];
 	len = input.length;
 	for (pos = 0; pos < len; pos += 1) {
@@ -248,7 +248,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 		// by arrival of either a master or a sibling, with the
 		// same result.
 
-		var sortedItems = [[{id: item.id}, item]];
+		sortedItems = [[{id: item.id}, item]];
 		entry_item_ids = [];
 		if (this.registry.registry[item.id].master) {
 			collapse_parallel = true;
@@ -259,7 +259,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 			siblings = this.registry.registry[item.id].siblings;
 			for (ppos = 0, llen = siblings.length; ppos < llen; ppos += 1) {
 				i = this.registry.registry[item.id].siblings[ppos];
-				var eyetem = this.sys.retrieveItem(i);
+				eyetem = this.sys.retrieveItem(i);
 				entry_item_ids.push(CSL.getCite.call(this, eyetem));
 				skips[eyetem.id] = true;
 			}

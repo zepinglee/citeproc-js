@@ -82,7 +82,7 @@ CSL.Mode = function (mode) {
 	for (param in params) {
 		if (true) {
 
-			if ("@" !== param.slice(0,1)) {
+			if ("@" !== param.slice(0, 1)) {
 				decorations[param] = params[param];
 				continue;
 			}

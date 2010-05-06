@@ -33,13 +33,48 @@
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  */
 
+/*
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ *
+ * The contents of this file are subject to the Common Public
+ * Attribution License Version 1.0 (the “License”); you may not use
+ * this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ *
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./std subdirectory of the distribution archive.
+ *
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ *
+ * The Initial Developer of the Original Code is Frank G. Bennett,
+ * Jr. All portions of the code written by Frank G. Bennett, Jr. are
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ */
+
 //
 // (A) initialize flipflopper with an empty blob to receive output.
 // Text string in existing output queue blob will be replaced with
 // an array containing this blob.
 
 CSL.Util.FlipFlopper = function (state) {
-	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes;
+	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes, allTagsLst, lst;
 	this.state = state;
 	this.blob = false;
 	tagdefs = [
@@ -97,8 +132,8 @@ CSL.Util.FlipFlopper = function (state) {
 	// This protects against empty quote defs in the locale,
 	// which would otherwise cause the derived regexp to go
 	// berserk and corrupt the string.
-	var allTagsLst = allTags(tagdefs);
-	var lst = [];
+	allTagsLst = allTags(tagdefs);
+	lst = [];
 	for (pos = 0, len = allTagsLst.length; pos < len; pos += 1) {
 		if (allTagsLst[pos]) {
 			lst.push(allTagsLst[pos]);
@@ -152,13 +187,13 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 // markup.
 //
 CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
-	var strs, pos, len, newstr, head, tail, expected_closers, expected_openers, expected_flips, tagstack, badTagStack, posA, sameAsOpen, openRev, flipRev, tag, ibeenrunned, posB, wanted_closer, posC, sep, resplice, params, lenA, lenB, lenC, badTagPos, mx;
+	var strs, pos, len, newstr, head, tail, expected_closers, expected_openers, expected_flips, tagstack, badTagStack, posA, sameAsOpen, openRev, flipRev, tag, ibeenrunned, posB, wanted_closer, posC, sep, resplice, params, lenA, lenB, lenC, badTagPos, mx, myret;
 	//
 	// Do the split.
 	//
 	mx = str.match(this.allTagsRexMatch);
 	strs = str.split(this.allTagsRexSplit);
-	var myret = [strs[0]];
+	myret = [strs[0]];
 	for (pos = 1, len = strs.length; pos < len; pos += 1) {
 		myret.push(mx[pos - 1]);
 		myret.push(strs[pos]);

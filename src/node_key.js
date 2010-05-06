@@ -165,7 +165,7 @@ CSL.Node.key = {
 						}
 					};
 				} else if ("title" === variable) {
-					state.transform.init("empty","title");
+					state.transform.init("empty", "title");
 					state.transform.setTransformLocale("locale-sort");
 					state.transform.setTransformFallback(true);
 					func = state.transform.getOutputFunction();

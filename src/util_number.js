@@ -126,6 +126,7 @@ CSL.Util.Suffixator.prototype.format = function (num) {
 
 CSL.Util.Suffixator.prototype.get_suffixes = function (num) {
 	var suffixes, digits, chrs, pos, len, llen, ppos;
+	num = parseInt(num, 10);
 	suffixes = [];
 
 	for (pos = 0; pos <= num; pos += 1) {
@@ -150,15 +151,17 @@ CSL.Util.Suffixator.prototype.get_suffixes = function (num) {
 
 
 CSL.Util.Suffixator.prototype.incrementArray = function (array) {
-	var incremented, newdigit, i, pos, len;
+	var incremented, newdigit, i, pos, len, ppos, llen;
 	array = array.slice();
 	incremented = false;
 	len = array.length - 1;
 	for (pos = len; pos > -1; pos += -1) {
 		if (array[pos] < (this.slist.length - 1)) {
 			array[pos] += 1;
-			if (i < (array.length - 1)) {
-				array[(pos + 1)] = 0;
+			// zero out everything to the right of the
+			// incremented element
+			for (ppos = (pos + 1), llen = array.length; ppos < llen; ppos += 1) {
+				array[ppos] = 0;
 			}
 			incremented = true;
 			break;

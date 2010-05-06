@@ -37,12 +37,11 @@ var XML_PARSING;
 var CSL_E4X;
 var CSL_CHROME;
 var DOMParser;
-if ("undefined" != typeof CSL_E4X && "undefined" != DOMParser) {
+if ("undefined" !== typeof CSL_E4X) {
 	XML_PARSING = CSL_E4X;
 } else {
 	XML_PARSING = CSL_CHROME;
 }
-
 CSL.System = {};
 CSL.System.Xml = {
 	"Parsing": XML_PARSING

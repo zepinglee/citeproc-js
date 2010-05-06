@@ -64,6 +64,7 @@ CSL.Render = function (state) {
 };
 
 CSL.Render.overlayStrings = function (target, stringtok) {
+	var attr;
 	for (attr in stringtok.strings) {
 		if (stringtok.strings.hasOwnProperty(attr)) {
 			target.strings[attr] = stringtok.strings[attr];
@@ -139,8 +140,7 @@ CSL.Render.prototype.oldFormats = function (name) {
 	this.formats.pop();
 };
 
-
-CSL.Render.prototype.openLevel = function (name,ephemeral) {
+CSL.Render.prototype.openLevel = function (name, ephemeral) {
 	var blob, curr, x, has_ephemeral;
 
 	//if (!this.formats[this.formats_lastpos][name]) {
@@ -158,12 +158,14 @@ CSL.Render.prototype.openLevel = function (name,ephemeral) {
 	curr = this.current.value();
 	has_ephemeral = false;
 	for (x in this.state.tmp.names_cut.variable) {
-		has_ephemeral = x;
-		break;
+		if (this.state.tmp.names_cut.variable.hasOwnProperty(x)) {
+			has_ephemeral = x;
+			break;
+		}
 	}
 	// can only do this for one variable
 	if (ephemeral && (!has_ephemeral || ephemeral === has_ephemeral)) {
-		if (!this.state.tmp.names_cut.variable[ephemeral]){
+		if (!this.state.tmp.names_cut.variable[ephemeral]) {
 			this.state.tmp.names_cut.variable[ephemeral] = [];
 			this.state.tmp.names_cut.used = ephemeral;
 		}

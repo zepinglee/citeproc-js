@@ -283,7 +283,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 				variable = this.variables[pos];
 				x = false;
 				myitem = Item;
-				if (item && ["locator","first-reference-note-number"].indexOf(variable) > -1) {
+				if (item && ["locator", "first-reference-note-number"].indexOf(variable) > -1) {
 					myitem = item;
 				}
 				if (myitem[variable]) {
@@ -394,7 +394,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 			}
 
 			if (not_numeric_type) {
-				if (Item[variable] && (""+Item[variable]).match(/[0-9]$/)) {
+				if (Item[variable] && ("" + Item[variable]).match(/[0-9]$/)) {
 					ret.push(true);
 				} else {
 					ret.push(false);
@@ -452,7 +452,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
 			} else {
 				label = item.label;
 			}
-			if (arg == label) {
+			if (arg === label) {
 				return true;
 			}
 			return false;
@@ -664,7 +664,7 @@ CSL.Attributes["@default-locale"] = function (state, arg) {
 	m = arg.match(/-x-(sort|pri|sec|name)-/g);
 	if (m) {
 		for (pos = 0, len = m.length; pos < len; pos += 1) {
-			m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/,"");
+			m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/, "");
 		}
 	}
 	lst = arg.split(/-x-(?:sort|pri|sec|name)-/);
@@ -680,7 +680,7 @@ CSL.Attributes["@default-locale"] = function (state, arg) {
 	}
 	if (lst.length) {
 		state.opt["default-locale"] = lst.slice(0, 1);
-	} 	else {
+	} else {
 		state.opt["default-locale"] = ["en"];
 	}
 };

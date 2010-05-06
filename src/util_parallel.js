@@ -72,7 +72,7 @@ CSL.Parallel = function (state) {
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["volume", "container-title", "issue", "page", "locator","number"].indexOf(variable) > -1;
+	return ["volume", "container-title", "issue", "page", "locator", "number"].indexOf(variable) > -1;
 };
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
@@ -119,7 +119,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 		len = CSL.PARALLEL_MATCH_VARS.length;
 		for (pos = 0; pos < len; pos += 1) {
 			x = CSL.PARALLEL_MATCH_VARS[pos];
-			if (!Item[x] || CSL.PARALLEL_TYPES.indexOf(Item["type"]) === -1) {
+			if (!Item[x] || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
 				this.try_cite = false;
 				if (this.in_series) {
 					// clean list is pushed to stack later.  this.sets.push([]);
@@ -215,10 +215,10 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
  * Adds string data to the current variable
  * in the variables tracking object.
  */
-CSL.Parallel.prototype.AppendToVariable = function (str,varname) {
+CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
 	if (this.use_parallels && (this.try_cite || this.force_collapse)) {
 			// ZZZZZ
-		if (this.target != "back" || true) {
+		if (this.target !== "back" || true) {
 			//print("  setting: "+str);
 			this.data.value += "::" + str;
 		} else {
@@ -255,20 +255,16 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 					this.in_series = false;
 				}
 			} else if (this.target === "back") {
-				//
-				// Careful here.  But rollback is your friend, of course.
-				//
-//				if (prev[this.variable] && prev[this.variable].value) {
 				if (prev[this.variable]) {
-						if (this.data.value !== prev[this.variable].value && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
-							//print(this.variable);
-							//print(this.sets.value().slice(-1)[0].back_forceme);
-							// evaluation takes place later, at close of cite.
-							//this.try_cite = true;
-							//**print("-------------- reset --------------");
-							//print("  breaking series");
-							this.in_series = false;
-						}
+					if (this.data.value !== prev[this.variable].value && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
+						//print(this.variable);
+						//print(this.sets.value().slice(-1)[0].back_forceme);
+						// evaluation takes place later, at close of cite.
+						//this.try_cite = true;
+						//**print("-------------- reset --------------");
+						//print("  breaking series");
+						this.in_series = false;
+					}
 				}
 			}
 		}
@@ -280,15 +276,15 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
  * tracking array, and evaluate maybe.
  */
 CSL.Parallel.prototype.CloseCite = function () {
-	var x, pos, len;
+	var x, pos, len, has_issued;
 	if (this.use_parallels) {
 		if (!this.in_series && !this.force_collapse) {
 			this.ComposeSet(true);
 		}
 		//**print("[pushing cite]");
 		if (this.sets.value().length === 0) {
-			var has_issued = false;
-			for (pos = 0, len=this.cite.back.length; pos < len; pos += 1) {
+			has_issued = false;
+			for (pos = 0, len = this.cite.back.length; pos < len; pos += 1) {
 				x = this.cite.back[pos];
 				//**print("  ->issued="+this.cite.issued);
 				//for (var x in this.cite.issued) {
@@ -323,7 +319,7 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 	if (this.use_parallels) {
 		// a bit loose here: zero-length sets relate to one cite,
 		// apparently.
-		if (this.sets.value().length == 1) {
+		if (this.sets.value().length === 1) {
 			if (!this.in_series) {
 				this.sets.value().pop();
 				this.delim_counter += 1;
@@ -386,7 +382,7 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
 					cite = series[ppos];
 					if (ppos === 0) {
 						this.purgeVariableBlobs(cite, cite.back);
-					} else if (ppos === (series.length - 1)){
+					} else if (ppos === (series.length - 1)) {
 						//print(" a little rumor: "+cite.back_forceme);
 						this.purgeVariableBlobs(cite, cite.front.concat(cite.back_forceme));
 					} else {

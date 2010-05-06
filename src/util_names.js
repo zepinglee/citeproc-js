@@ -139,7 +139,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 		key = subsequence[pos];
 		namepart = this.name[key];
 		// Do not include given name, dropping particle or suffix in strict short form of name
-		if (["given","suffix","dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
+		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
 			continue;
 		}
 		// initialize if appropriate
@@ -178,12 +178,12 @@ CSL.Util.Names.getNamepartSequence = function (state, seg, name) {
 		//
 		// Discretionary sort ordering and inversions
 		//
-		if (["always","display-and-sort"].indexOf(state.opt["demote-non-dropping-particle"]) > -1) {
+		if (["always", "display-and-sort"].indexOf(state.opt["demote-non-dropping-particle"]) > -1) {
 			// Drop non-dropping particle
 			sequence = [["sortsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
 		} else {
 			// Don't drop particle.
-			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle","family"], ["given", "dropping-particle"], ["suffix"]];
+			sequence = [["sortsep", "sortsep", "space"], ["non-dropping-particle", "family"], ["given", "dropping-particle"], ["suffix"]];
 		}
 	} else { // plain vanilla
 		sequence = [["suffixsep", "space", "space"], ["given"], ["dropping-particle", "non-dropping-particle", "family"], ["suffix"]];
@@ -374,7 +374,7 @@ CSL.Engine.prototype.parseName = function (name) {
 		m = name.given.match(/(\s*,!*\s*)/);
 		if (m) {
 			idx = name.given.indexOf(m[1]);
-			if (name.given.slice(idx, idx + m[1].length).replace(/\s*/g,"").length === 2) {
+			if (name.given.slice(idx, idx + m[1].length).replace(/\s*/g, "").length === 2) {
 				name["comma-suffix"] = true;
 			}
 			name.suffix = name.given.slice(idx + m[1].length);

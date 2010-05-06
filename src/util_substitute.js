@@ -58,47 +58,42 @@ CSL.Util.substituteStart = function (state, target) {
 		};
 		this.execs.push(element_trace);
 	}
-	//if (state.build.area === "bibliography") {
-		display = this.strings.cls;
-		this.strings.cls = false;
-		if (state.build.render_nesting_level === 0) {
-			//
-			// The markup formerly known as @bibliography/first
-			//
-			// Separate second-field-align from the generic display logic.
-			// There will be some code replication, but not in the
-			// assembled style.
-			//
-			if (state.build.area == "bibliography" && state.bibliography.opt["second-field-align"]) {
-				bib_first = new CSL.Token("group", CSL.START);
-				bib_first.decorations = [["@display", "left-margin"]];
-				func = function (state, Item) {
-					if (!state.tmp.render_seen) {
-						state.output.startTag("bib_first", bib_first);
-						// XXX: this will go away
-						state.tmp.count_offset_characters = true;
-						// this will not
-						state.output.calculate_offset = true;
-					}
-				};
-				bib_first.execs.push(func);
-				target.push(bib_first);
-			} else if (CSL.DISPLAY_CLASSES.indexOf(display) > -1) {
-				bib_first = new CSL.Token("group", CSL.START);
-				bib_first.decorations = [["@display", display]];
-				func = function (state, Item) {
+	display = this.strings.cls;
+	this.strings.cls = false;
+	if (state.build.render_nesting_level === 0) {
+		//
+		// The markup formerly known as @bibliography/first
+		//
+		// Separate second-field-align from the generic display logic.
+		// There will be some code replication, but not in the
+		// assembled style.
+		//
+		if (state.build.area === "bibliography" && state.bibliography.opt["second-field-align"]) {
+			bib_first = new CSL.Token("group", CSL.START);
+			bib_first.decorations = [["@display", "left-margin"]];
+			func = function (state, Item) {
+				if (!state.tmp.render_seen) {
 					state.output.startTag("bib_first", bib_first);
-					//if (bib_first.strings.cls === "left-margin") {
-					//	state.tmp.count_offset_characters = true;
-					//}
-				};
-				bib_first.execs.push(func);
-				target.push(bib_first);
-			}
-			state.build.cls = display;
+					// XXX: this will go away
+					state.tmp.count_offset_characters = true;
+					// this will not
+					state.output.calculate_offset = true;
+				}
+			};
+			bib_first.execs.push(func);
+			target.push(bib_first);
+		} else if (CSL.DISPLAY_CLASSES.indexOf(display) > -1) {
+			bib_first = new CSL.Token("group", CSL.START);
+			bib_first.decorations = [["@display", display]];
+			func = function (state, Item) {
+				state.output.startTag("bib_first", bib_first);
+			};
+			bib_first.execs.push(func);
+			target.push(bib_first);
 		}
-		state.build.render_nesting_level += 1;
-	//}
+		state.build.cls = display;
+	}
+	state.build.render_nesting_level += 1;
 	if (state.build.substitute_level.value() === 1) {
 		//
 		// All top-level elements in a substitute environment get
@@ -110,7 +105,7 @@ CSL.Util.substituteStart = function (state, target) {
 		// (okay, we use conditionals a lot more than that.
 		// we slot them in for author-only as well...)
 		choose_start = new CSL.Token("choose", CSL.START);
-		CSL.Node.choose.build.call(choose_start,state,target);
+		CSL.Node.choose.build.call(choose_start, state, target);
 		if_start = new CSL.Token("if", CSL.START);
 		//
 		// Set a test of the shadow if token to skip this
@@ -150,7 +145,7 @@ CSL.Util.substituteEnd = function (state, target) {
 			this.execs.push(func);
 			state.build.cls = false;
 		}
-		if (state.build.area == "bibliography" && state.bibliography.opt["second-field-align"]) {
+		if (state.build.area === "bibliography" && state.bibliography.opt["second-field-align"]) {
 			bib_first_end = new CSL.Token("group", CSL.END);
 			// first func end
 			func = function (state, Item) {
@@ -180,7 +175,7 @@ CSL.Util.substituteEnd = function (state, target) {
 		if_end = new CSL.Token("if", CSL.END);
 		target.push(if_end);
 		choose_end = new CSL.Token("choose", CSL.END);
-		CSL.Node.choose.build.call(choose_end,state,target);
+		CSL.Node.choose.build.call(choose_end, state, target);
 	}
 
 	toplevel = "names" === this.name && state.build.substitute_level.value() === 0;

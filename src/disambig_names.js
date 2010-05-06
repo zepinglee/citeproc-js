@@ -126,7 +126,7 @@ CSL.Registry.NameReg = function (state) {
 			pos = this.namereg[pkey].ikey[ikey].items.indexOf(item_id);
 			items = this.namereg[pkey].ikey[ikey].items;
 			if (pos > -1) {
-				items = items.slice(0,pos).concat(items.slice(pos + 1));
+				items = items.slice(0, pos).concat(items.slice(pos + 1));
 			}
 			for (pos = 0, len = items.length; pos < len; pos += 1) {
 				this.state.tmp.taintedItemIDs[items[pos]] = true;
@@ -134,7 +134,7 @@ CSL.Registry.NameReg = function (state) {
 			pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id);
 			items = this.namereg[pkey].ikey[ikey].skey[skey].items;
 			if (pos > -1) {
-				items = items.slice(0,pos).concat(items.slice(pos + 1));
+				items = items.slice(0, pos).concat(items.slice(pos + 1));
 			}
 			for (pos = 0, len = items.length; pos < len; pos += 1) {
 				this.state.tmp.taintedItemIDs[items[pos]] = true;
@@ -146,7 +146,7 @@ CSL.Registry.NameReg = function (state) {
 			pos = this.namereg[pkey].items.indexOf(item_id);
 			items = this.namereg[pkey].items;
 			if (pos > -1) {
-				items = items.slice(0,pos).concat(items.slice(pos + 1));
+				items = items.slice(0, pos).concat(items.slice(pos + 1));
 			}
 			for (pos = 0, len = items.length; pos < len; pos += 1) {
 				this.state.tmp.taintedItemIDs[items[pos]] = true;
@@ -154,7 +154,7 @@ CSL.Registry.NameReg = function (state) {
 			pos = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id);
 			items = this.namereg[pkey].ikey[ikey].skey[skey].items;
 			if (pos > -1) {
-				items = items.slice(0,pos).concat(items.slice(pos + 1));
+				items = items.slice(0, pos).concat(items.slice(pos + 1));
 			}
 			for (pos = 0, len = items.length; pos < len; pos += 1) {
 				this.state.tmp.taintedItemIDs[items[pos]] = true;
@@ -166,7 +166,7 @@ CSL.Registry.NameReg = function (state) {
 			pos = this.namereg[pkey].items.indexOf(item_id);
 			items = this.namereg[pkey].items;
 			if (pos > -1) {
-				items = items.slice(0,pos).concat(items.slice(pos + 1));
+				items = items.slice(0, pos).concat(items.slice(pos + 1));
 			}
 			for (pos = 0, len = items.length; pos < len; pos += 1) {
 				this.state.tmp.taintedItemIDs[items[pos]] = true;
@@ -174,7 +174,7 @@ CSL.Registry.NameReg = function (state) {
 			pos = this.namereg[pkey].ikey[ikey].items.indexOf(item_id);
 			items = this.namereg[pkey].ikey[ikey].items;
 			if (pos > -1) {
-				items = items.slice(0,pos).concat(items.slice(pos + 1));
+				items = items.slice(0, pos).concat(items.slice(pos + 1));
 			}
 			for (pos = 0, len = items.length; pos < len; pos += 1) {
 				this.state.tmp.taintedItemIDs[items[pos]] = true;

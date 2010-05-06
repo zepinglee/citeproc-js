@@ -97,7 +97,7 @@
  */
 
 CSL.Transform = function (state) {
-	var debug = false;
+	var debug = false, abbreviations, token, fieldname, subsection, opt;
 
 	// Abbreviation subsections
 	this["container-title"] = {};
@@ -109,56 +109,115 @@ CSL.Transform = function (state) {
 	this["publisher-place"] = {};
 	this.hereinafter = {};
 
-	var abbreviations = "default";
-
-	// Initialization arguments
-	var token;
-	var fieldname;
-	var subsection;
-
-	// Optional arguments
-	var opt;
+	abbreviations = "default";
 
 	// Initialization method
-	function init (t, f, x) {
+	function init(t, f, x) {
 		token = t;
 		fieldname = f;
 		subsection = x;
 		opt = {
-			abbreviation_fallback:false,
-			alternative_varname:false,
-			transform_locale:false,
-			transform_fallback:false
+			abbreviation_fallback: false,
+			alternative_varname: false,
+			transform_locale: false,
+			transform_fallback: false
 		};
-	};
+	}
 	this.init = init;
 
+	// Internal function
+	function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
+		var value;
+		if (!mysubsection) {
+			return basevalue;
+		}
+		value = "";
+		if (state.transform[mysubsection]) {
+			if (state.transform[mysubsection][basevalue]) {
+				value = state.transform[mysubsection][basevalue];
+			} else {
+				//SNIP-START
+				if (this.debug) {
+					CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
+				}
+				//SNIP-END
+			}
+		}
+		if (!value && Item[altvar] && use_field) {
+			value = Item[altvar];
+		}
+		if (!value) {
+			value = basevalue;
+		}
+		return value;
+	}
+
+	// Internal function
+	function getTextSubField(value, locale_type, use_default) {
+		var m, lst, opt, o, pos, key, ret, len, myret;
+		if (!value) {
+			return "";
+		}
+		ret = "";
+		// Workaround for Internet Explorer
+		m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
+		if (m) {
+			for (pos = 0, len = m.length; pos < len; pos += 1) {
+				m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/, "");
+			}
+		}
+		lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
+		myret = [lst[0]];
+		for (pos = 1, len = lst.length; pos < len; pos += 1) {
+			myret.push(m[pos - 1]);
+			myret.push(lst[pos]);
+		}
+		lst = myret.slice();
+		opt = state.opt[locale_type];
+		if ("undefined" === typeof opt) {
+			opt = state.opt["default-locale"];
+		}
+		for (key in opt) {
+			if (opt.hasOwnProperty(key)) {
+				o = opt[key];
+				if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
+					ret = lst[(lst.indexOf(o) + 1)];
+					break;
+				}
+			}
+		}
+		if (!ret && use_default) {
+			ret = lst[0];
+		}
+		return ret;
+	}
+
 	//
-	function setAbbreviationFallback (b) {
+	function setAbbreviationFallback(b) {
 		opt.abbreviation_fallback = b;
 	}
 	this.setAbbreviationFallback = setAbbreviationFallback;
 
 	//
-	function setAlternativeVariableName (s) {
+	function setAlternativeVariableName(s) {
 		opt.alternative_varname = s;
 	}
 	this.setAlternativeVariableName = setAlternativeVariableName;
 
 	//
-	function setTransformLocale (s) {
+	function setTransformLocale(s) {
 		opt.transform_locale = s;
 	}
 	this.setTransformLocale = setTransformLocale;
 
 	//
-	function setTransformFallback (b) {
+	function setTransformFallback(b) {
 		opt.transform_fallback = b;
 	}
 	this.setTransformFallback = setTransformFallback;
 
 	// Setter for abbreviation lists
-	function setAbbreviations (name) {
+	function setAbbreviations(name) {
 		var vartype, pos, len;
 		if (name) {
 			abbreviations = name;
@@ -168,22 +227,23 @@ CSL.Transform = function (state) {
 			vartype = CSL.MULTI_FIELDS[pos];
 			this[vartype] = state.sys.getAbbreviations(abbreviations, vartype);
 		}
-	};
+	}
 	this.setAbbreviations = setAbbreviations;
 
 	// Return function appropriate to selected options
-	function getOutputFunction () {
+	function getOutputFunction() {
+		var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
 
 		// Freeze mandatory values
-		var mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
-		var mysubsection = subsection;
-		var myfieldname = fieldname;
+		mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
+		mysubsection = subsection;
+		myfieldname = fieldname;
 
 		// Freeze option values
-		var abbreviation_fallback = opt.abbreviation_fallback;
-		var alternative_varname = opt.alternative_varname;
-		var transform_locale = opt.transform_locale;
-		var transform_fallback = opt.transform_fallback;
+		abbreviation_fallback = opt.abbreviation_fallback;
+		alternative_varname = opt.alternative_varname;
+		transform_locale = opt.transform_locale;
+		transform_fallback = opt.transform_fallback;
 
 		if (mysubsection) {
 			// Short form
@@ -197,12 +257,12 @@ CSL.Transform = function (state) {
 			};
 		} else if (transform_locale === "locale-sec") {
 			// Long form, with secondary translation
-			return 	function (state, Item) {
+			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key, value;
 				value = Item[myfieldname];
 				if (value) {
 					if ("number" === typeof value) {
-						value = ""+value;
+						value = "" + value;
 					}
 					primary = getTextSubField(value, "locale-pri", transform_fallback);
 					secondary = getTextSubField(value, "locale-sec");
@@ -227,7 +287,7 @@ CSL.Transform = function (state) {
 				value = Item[myfieldname];
 				if (value) {
 					if ("number" === typeof value) {
-						value = ""+value;
+						value = "" + value;
 					}
 					primary = getTextSubField(value, transform_locale, transform_fallback);
 					state.output.append(primary, this);
@@ -238,7 +298,7 @@ CSL.Transform = function (state) {
 	}
 	this.getOutputFunction = getOutputFunction;
 
-	function output (state, basevalue, token_short, token_long, use_fallback) {
+	function output(state, basevalue, token_short, token_long, use_fallback) {
 		//
 		// This output method is specific to institutions.
 		// See util_institutions.js
@@ -262,79 +322,8 @@ CSL.Transform = function (state) {
 			}
 			//SNIP-END
 		}
-	};
+	}
 	this.output = output;
-
-	// Token output function
-    // CSL.Transform.prototype.getOutputFunc = function (token, varname, vartype, altvar) {
-	// var basevalue, value, abbreviate;
-
-	// Internal function
-	function abbreviate (state, Item, altvar, basevalue, mysubsection, use_field) {
-		var value;
-		if (!mysubsection) {
-			return basevalue;
-		}
-		value = "";
-		if (state.transform[mysubsection]) {
-			if (state.transform[mysubsection][basevalue]) {
-				value = state.transform[mysubsection][basevalue];
-			} else {
-				//SNIP-START
-				if (this.debug) {
-					CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
-				}
-				//SNIP-END
-			}
-		}
-		if (!value && Item[altvar] && use_field) {
-			value = Item[altvar];
-		}
-		if (!value) {
-			value = basevalue;
-		}
-		return value;
-	};
-
-	// Internal function
-	function getTextSubField (value, locale_type, use_default) {
-		var m, lst, opt, o, pos, key, ret, len, myret;
-		if (!value) {
-			return "";
-		}
-		ret = "";
-		// Workaround for Internet Explorer
-		m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
-		if (m) {
-			for (pos = 0, len = m.length; pos < len; pos += 1) {
-				m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/,"");
-			}
-		}
-		lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
-		myret = [lst[0]];
-		for (pos = 1, len = lst.length; pos < len; pos += 1) {
-			myret.push(m[pos - 1]);
-			myret.push(lst[pos]);
-		}
-		lst = myret.slice();
-		opt = state.opt[locale_type];
-		if ("undefined" == typeof opt) {
-			opt = state.opt["default-locale"];
-		}
-		for (key in opt) {
-			if (opt.hasOwnProperty(key)) {
-				o = opt[key];
-				if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
-					ret = lst[(lst.indexOf(o) + 1)];
-					break;
-				}
-			}
-		}
-		if (!ret && use_default) {
-			ret = lst[0];
-		}
-		return ret;
-	};
 };
 
 

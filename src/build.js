@@ -269,7 +269,7 @@ CSL.Engine.prototype.getNavi.prototype.getbro = function () {
 
 
 CSL.Engine.prototype.getNavi.prototype.getkids = function () {
-	var currnode, sneakpeek, pos, node;
+	var currnode, sneakpeek, pos, node, len;
 	currnode = this.nodeList[this.depth][1][this.nodeList[this.depth][0]];
 	sneakpeek = this.sys.xml.children(currnode);
 	//var sneakpeek = currnode.children();
@@ -280,6 +280,7 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
 	} else {
 		// if there are children, check for date nodes and
 		// convert if appropriate
+//		for (pos = 0, len = sneakpeek.length; pos < len; pos += 1) {
 		for (pos in sneakpeek) {
 			//
 			// Aha!  If we're to be cross-platform, we can't
@@ -287,11 +288,16 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
 			// an XML object.
 			//
 			//if ("xml" === typeof sneakpeek[pos]) {
+			//
+			// lie to jslint, for the benefit of Rhino
+			//
+			if (true) {
 				node = sneakpeek[pos];
 				if ("date" === this.sys.xml.nodename(node)) {
 					currnode = CSL.Util.fixDateNode.call(this, currnode, pos, node);
 					sneakpeek = this.sys.xml.children(currnode);
 				}
+			}
 			//}
 		}
 		//
@@ -360,7 +366,7 @@ CSL.Engine.prototype.getDateNum = function (ItemField, partname) {
 CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	var ret, forms, f, pos, len;
 	ret = "";
-	if ("undefined" == typeof hash[term]) {
+	if ("undefined" === typeof hash[term]) {
 		if (mode === CSL.STRICT) {
 			throw "Error in getField: term\"" + term + "\" does not exist.";
 		} else {
@@ -593,43 +599,6 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 	}
 	return ret;
 };
-
-CSL.Engine.prototype.parseNumericDate = function (ret, delim, suff, txt) {
-	var lst, pos, len;
-	lst = txt.split(delim);
-	len = lst.length;
-	for (pos = 0; pos < len; pos += 1) {
-		if (lst[pos].length === 4) {
-			ret[("year" + suff)] = lst[pos].replace(/^0*/, "");
-			if (!pos) {
-				lst = lst.slice(1);
-			} else {
-				lst = lst.slice(0, pos);
-			}
-			break;
-		}
-	}
-	// comment
-	len = lst.length;
-	for (pos = 0; pos < len; pos += 1) {
-		lst[pos] = parseInt(lst[pos], 10);
-	}
-	//
-	// month and day parse
-	//
-	if (lst.length === 1) {
-		ret[("month" + suff)] = "" + lst[0];
-	} else if (lst.length === 2) {
-		if (lst[0] > 12) {
-			ret[("month" + suff)] = "" + lst[1];
-			ret[("day" + suff)] = "" + lst[0];
-		} else {
-			ret[("month" + suff)] = "" + lst[0];
-			ret[("day" + suff)] = "" + lst[1];
-		}
-	}
-};
-
 
 CSL.Engine.prototype.setOpt = function (token, name, value) {
 	if (token.name === "style") {

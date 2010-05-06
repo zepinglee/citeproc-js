@@ -132,7 +132,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				this.registry.citationreg.citationsByItemId[item[1].id] = [];
 				update_items.push(item[1].id);
 			}
-			if (this.registry.citationreg.citationsByItemId[item[1].id].indexOf(citationByIndex[pos]) == -1) {
+			if (this.registry.citationreg.citationsByItemId[item[1].id].indexOf(citationByIndex[pos]) === -1) {
 				this.registry.citationreg.citationsByItemId[item[1].id].push(citationByIndex[pos]);
 			}
 		}
@@ -414,7 +414,7 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	this.tmp.just_looking = true;
-	CSL.getCite.call(this, Item, {position:1});
+	CSL.getCite.call(this, Item, {position: 1});
 	ret = this.output.string(this, this.output.queue);
 	this.tmp.just_looking = false;
 	this.tmp.suppress_decorations = false;

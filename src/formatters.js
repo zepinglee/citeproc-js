@@ -81,7 +81,7 @@ CSL.Output.Formatters.uppercase = function (state, string) {
 CSL.Output.Formatters["capitalize-first"] = function (state, string) {
 	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (str.string.length) {
-		str.string = str.string.slice(0,1).toUpperCase() + str.string.substr(1);
+		str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1);
 		return CSL.Output.Formatters.undoppelString(str);
 	} else {
 		return "";

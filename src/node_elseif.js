@@ -63,7 +63,7 @@ CSL.Node["else-if"] = {
 			}
 			if (this.strings["near-note-distance-check"]) {
 				func = function (state, Item, item) {
-					if (item && item["near-note"]){
+					if (item && item["near-note"]) {
 						return true;
 					}
 					return false;

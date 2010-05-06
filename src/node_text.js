@@ -94,9 +94,9 @@ CSL.Node.text = {
 								}
 								state.tmp.last_element_trace = false;
 							}
-						num = state.registry.registry[id].seq;
-						number = new CSL.NumericBlob(num, this);
-						state.output.append(number, "literal");
+							num = state.registry.registry[id].seq;
+							number = new CSL.NumericBlob(num, this);
+							state.output.append(number, "literal");
 						}
 					};
 					this.execs.push(func);
@@ -252,7 +252,7 @@ CSL.Node.text = {
 							state.transform.setTransformFallback(true);
 							if (this.variables[0] === "container-title") {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
-							} else if (["publisher","publisher-place"].indexOf(this.variables[0]) > -1) {
+							} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
 								// language of publisher and publisher-place follow
 								// the locale of the style.
 								state.transform.setTransformLocale("default-locale");
@@ -270,7 +270,7 @@ CSL.Node.text = {
 							// transform only.
 							state.transform.setTransformLocale("locale-pri");
 							state.transform.setTransformFallback(true);
-							if (["publisher","publisher-place"].indexOf(this.variables[0]) > -1) {
+							if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
 								// language of publisher and publisher-place follow
 								// the locale of the style.
 								state.transform.setTransformLocale("default-locale");
@@ -297,7 +297,7 @@ CSL.Node.text = {
 									if (idx > -1) {
 										value = value.slice(0, idx);
 									}
-								state.output.append(value, this);
+									state.output.append(value, this);
 								}
 							};
 						} else  if (this.variables[0] === "page") {
@@ -324,7 +324,7 @@ CSL.Node.text = {
 					func = function (state, Item) {
 						state.parallel.CloseVariable("text");
 					};
-			this.execs.push(func);
+					this.execs.push(func);
 				} else if (this.strings.value) {
 					// for the text value attribute.
 					func = function (state, Item) {

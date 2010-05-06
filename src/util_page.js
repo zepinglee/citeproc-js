@@ -55,7 +55,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
 		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
 
-		if (lst.length == 0) {
+		if (lst.length === 0) {
 			ret = m;
 		} else {
 			ret = [lst[0]];
@@ -68,7 +68,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	};
 
 	expand = function (str) {
-		str = ""+str;
+		str = "" + str;
 		lst = listify(str);
 		len = lst.length;
 		for (pos = 1; pos < len; pos += 2) {

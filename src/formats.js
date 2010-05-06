@@ -68,7 +68,6 @@ CSL.Output.Formats.prototype.html = {
 	"@font-weight/light": false,
 	"@text-decoration/none": "<span style=\"text-decoration:none;\">%%STRING%%</span>",
 	"@text-decoration/underline": "<span style=\"text-decoration:underline;\">%%STRING%%</span>",
-	"@vertical-align/baseline": false,
 	"@vertical-align/sup": "<sup>%%STRING%%</sup>",
 	"@vertical-align/sub": "<sub>%%STRING%%</sub>",
 	"@vertical-align/baseline": "<span style=\"baseline\">%%STRING%%</span>",

@@ -56,7 +56,7 @@ CSL.localeResolve = function (langstr) {
 // below.
 //
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, pos, len;
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len;
 
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");

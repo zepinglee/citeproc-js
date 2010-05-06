@@ -151,8 +151,8 @@ CSL.Node.names = {
 									tnamesets.slice(-1)[0].free_agent_end = true;
 								}
 							}
-							if (frontnames.length == 0) {
-								if (tnamesets.length > 1){
+							if (frontnames.length === 0) {
+								if (tnamesets.length > 1) {
 									if (tnamesets[0].species === "pers") {
 										//pers
 										// inside inner
@@ -263,7 +263,7 @@ CSL.Node.names = {
 
 			// handle names
 			func = function (state, Item, item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj, et_al_pers, et_al_org, and_pers, and_org, with_term, chk;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -303,7 +303,7 @@ CSL.Node.names = {
 							namesets = namesets.slice(1);
 						}
 					} else {
-						namesets = namesets.slice(0,1);
+						namesets = namesets.slice(0, 1);
 					}
 					// should always be true, but just in case
 					// this slices off subsequent namesets in the initial name
@@ -331,8 +331,8 @@ CSL.Node.names = {
 						if (name["parse-names"]) {
 							state.parseName(name);
 						}
-						if (name.family && name.family.length && name.family.slice(0,1) === '"' && name.family.slice(-1)) {
-							name.family = name.family.slice(1,-1);
+						if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1)) {
+							name.family = name.family.slice(1, -1);
 						}
 					}
 				}
@@ -355,7 +355,7 @@ CSL.Node.names = {
 				}
 				state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
 				state.output.getToken("et-al-pers").strings["prefix-multiple"] = ", ";
-				var et_al_pers = state.getTerm("et-al", "long", 0);
+				et_al_pers = state.getTerm("et-al", "long", 0);
 				if ("undefined" !== typeof state.output.getToken("et-al-pers").strings.term) {
 					et_al_pers = state.output.getToken("et-al-pers").strings.term;
 				}
@@ -369,7 +369,7 @@ CSL.Node.names = {
 				}
 				state.output.getToken("et-al-org").strings["prefix-single"] = " ";
 				state.output.getToken("et-al-org").strings["prefix-multiple"] = ", ";
-				var et_al_org = state.getTerm("et-al", "long", 0);
+				et_al_org = state.getTerm("et-al", "long", 0);
 
 				// Style token for and element with personal names.
 				// The prefix of this element will be overwritten by the -single
@@ -385,7 +385,7 @@ CSL.Node.names = {
 				state.output.getToken("and-pers").strings["prefix-single"] = " ";
 				state.output.getToken("and-pers").strings["prefix-multiple"] = ", ";
 				// Conditional goes here
-				var and_pers = state.getTerm("and", "long", 0);
+				and_pers = state.getTerm("and", "long", 0);
 
 				// Style token for and element with instiutional names.
 				// The prefix of this element will be overwritten by the -single
@@ -401,12 +401,12 @@ CSL.Node.names = {
 				state.output.getToken("and-org").strings["prefix-single"] = " ";
 				state.output.getToken("and-org").strings["prefix-multiple"] = ", ";
 				// Conditional goes here
-				var and_org = state.getTerm("and", "long", 0);
+				and_org = state.getTerm("and", "long", 0);
 
 				state.output.addToken("with");
 				state.output.getToken("with").strings.prefix = ", ";
 				state.output.getToken("with").strings.suffix = " ";
-				var with_term = "with";
+				with_term = "with";
 
 				// not yet hooked up; using direct output instead.
 				// The term and the join need to be separated here,
@@ -514,7 +514,7 @@ CSL.Node.names = {
 
 						// set the number of names to be _intended_ for rendering,
 						// in the first nameset, if personal, for subsequent slicing.
-						if (namesetIndex === 0 && !suppress_min &&(state.tmp.area === "bibliography" || (state.tmp.area === "citation" &&state.opt.xclass === "note"))) {
+						if (namesetIndex === 0 && !suppress_min && (state.tmp.area === "bibliography" || (state.tmp.area === "citation" && state.opt.xclass === "note"))) {
 							state.tmp.names_cut.counts[nameset.variable] = state.tmp["et-al-use-first"];
 						}
 
@@ -626,7 +626,7 @@ CSL.Node.names = {
 						// register the name in the global names disambiguation
 						// registry
 						state.registry.namereg.addname(Item.id, nameset.names[ppos], ppos);
-						var chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter];
+						chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter];
 						if ("undefined" === typeof chk) {
 							state.tmp.disambig_settings.givens.push([]);
 						}
@@ -735,7 +735,7 @@ CSL.Node.names = {
 					//}
 
 					if (nameset.trailers3_start) {
-						state.output.openLevel("trailing-names",cut_var);
+						state.output.openLevel("trailing-names", cut_var);
 					}
 					if (nameset.after_people) {
 						//SNIP-START
@@ -756,13 +756,13 @@ CSL.Node.names = {
 						state.output.openLevel("institution-outer");
 					}
 					if (nameset.trailers2_start) {
-						state.output.openLevel("trailing-names",cut_var);
+						state.output.openLevel("trailing-names", cut_var);
 					}
 					if (nameset.organization_first) {
 						state.output.openLevel("inner");
 					}
 					if (nameset.trailers1_start) {
-						state.output.openLevel("trailing-names",cut_var);
+						state.output.openLevel("trailing-names", cut_var);
 					}
 
 					//if (nameset.pers_org_start) {

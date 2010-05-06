@@ -46,10 +46,11 @@ CSL.Node.date = {
 				CSL.Util.substituteStart.call(this, state, target);
 			}
 			func = function (state, Item) {
+				var key, dp;
 				state.tmp.element_rendered_ok = false;
 				state.tmp.donesies = [];
 				state.tmp.dateparts = [];
-				var dp = [];
+				dp = [];
 				//if (this.variables.length && Item[this.variables[0]]){
 				if (this.variables.length) {
 					state.parallel.StartVariable(this.variables[0]);
@@ -100,10 +101,10 @@ CSL.Node.date = {
 					// it's the same as the volume,
 					// Needed for English-style case cites.  Here's hoping it
 					// doesn't have side effects.
-					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object["year"]) {
-						for (var key in state.tmp.date_object) {
+					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year) {
+						for (key in state.tmp.date_object) {
 							if (state.tmp.date_object.hasOwnProperty(key)) {
-								if (key.slice(0,4) === "year") {
+								if (key.slice(0, 4) === "year") {
 									delete state.tmp.date_object[key];
 								}
 							}

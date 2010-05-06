@@ -59,10 +59,10 @@
 // IE7 neither, according to rumour.
 
 if (!Array.indexOf) {
-	Array.prototype.indexOf = function(obj){
+	Array.prototype.indexOf = function (obj) {
 		var i, len;
-		for(i = 0, len = this.length; i < len; i += 1){
-			if(this[i] === obj){
+		for (i = 0, len = this.length; i < len; i += 1) {
+			if (this[i] === obj) {
 				return i;
 			}
 		}
@@ -124,9 +124,9 @@ var CSL = {
 
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
-	MULTI_FIELDS: ["publisher","publisher-place","title","container-title", "collection-title", "institution", "authority"],
+	MULTI_FIELDS: ["publisher", "publisher-place", "title", "container-title", "collection-title", "institution", "authority"],
 
-	CITE_FIELDS: ["first-reference-note-number","locator"],
+	CITE_FIELDS: ["first-reference-note-number", "locator"],
 
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 

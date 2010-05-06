@@ -136,7 +136,7 @@ CSL.Output.Queue.prototype.endTag = function () {
 // list, and adjusts the current pointer so that subsequent
 // appends are made to blob list of the new object.
 
-CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
+CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 	var blob, curr, x, has_ephemeral;
 	if (!this.formats.value()[token]) {
 		throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
@@ -152,12 +152,14 @@ CSL.Output.Queue.prototype.openLevel = function (token,ephemeral) {
 	curr = this.current.value();
 	has_ephemeral = false;
 	for (x in this.state.tmp.names_cut.variable) {
-		has_ephemeral = x;
-		break;
+		if (this.state.tmp.names_cut.variable.hasOwnProperty(x)) {
+			has_ephemeral = x;
+			break;
+		}
 	}
 	// can only do this for one variable
 	if (ephemeral && (!has_ephemeral || ephemeral === has_ephemeral)) {
-		if (!this.state.tmp.names_cut.variable[ephemeral]){
+		if (!this.state.tmp.names_cut.variable[ephemeral]) {
 			this.state.tmp.names_cut.variable[ephemeral] = [];
 			this.state.tmp.names_cut.used = ephemeral;
 		}
@@ -216,7 +218,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 		this.last_char_rendered = str.slice(-1);
 		// This, and not the str argument below on flipflop, is the
 		// source of the flipflopper string source.
-		str = str.replace(/\s+'/g, "\ \ \'").replace(/^'/g, "\ \'");
+		str = str.replace(/\s+'/g, "  \'").replace(/^'/g, " \'");
 		// signal whether we end with terminal punctuation?
 		this.state.tmp.term_predecessor = true;
 	}
