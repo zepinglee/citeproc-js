@@ -135,12 +135,13 @@ CSL.Transform = function (state) {
 		if (state.transform[mysubsection]) {
 			if (state.transform[mysubsection][basevalue]) {
 				value = state.transform[mysubsection][basevalue];
-			} else {
+			} else if ("string" != typeof state.transform[mysubsection][basevalue]) {
 				//SNIP-START
 				if (this.debug) {
 					CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
 				}
 				//SNIP-END
+				state.transform[mysubsection][basevalue] = "";
 			}
 		}
 		if (!value && Item[altvar] && use_field) {
