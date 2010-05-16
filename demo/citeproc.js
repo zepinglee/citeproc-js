@@ -1231,7 +1231,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.10";
+	this.processor_version = "1.0.11";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4861,7 +4861,8 @@ CSL.Transform = function (state) {
 		if (state.transform[mysubsection]) {
 			if (state.transform[mysubsection][basevalue]) {
 				value = state.transform[mysubsection][basevalue];
-			} else {
+			} else if ("string" != typeof state.transform[mysubsection][basevalue]) {
+				state.transform[mysubsection][basevalue] = "";
 			}
 		}
 		if (!value && Item[altvar] && use_field) {
