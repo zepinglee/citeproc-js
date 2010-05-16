@@ -330,8 +330,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
 <p class="fixed"><a class="reference external" href="http://citationstyles.org/">citationstyles.org</a></p>
-<p class="info-version">version 1.00<sub>a77</sub></p>
-<p class="info-date">7 May 2010</p>
+<p class="info-version">version 1.00<sub>a78</sub></p>
+<p class="info-date">17 May 2010</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
 <dd><ul class="first last simple">
@@ -1018,10 +1018,29 @@ with the name of the list as sole argument.  The named list is fetched
 and installed by the <tt class="docutils literal"><span class="pre">sys.getAbbreviations()</span></tt> command, documented
 below under <a class="reference internal" href="#local-environment">Local Environment</a> → <a class="reference internal" href="#system-functions">System Functions</a>.</p>
 <div class="codeblock js">
-<table class="highlighttable"><tr><td class="linenos"><pre>1</pre></td><td class="code"><div class="highlight"><pre><span class="nx">citeproc</span><span class="p">.</span><span class="nx">setAbbreviations</span><span class="p">(</span> <span class="s2">&quot;default&quot;</span> <span class="p">);</span>
+<table class="highlighttable"><tr><td class="linenos"><pre>1</pre></td><td class="code"><div class="highlight"><pre><span class="nx">citeproc</span><span class="p">.</span><span class="nx">setAbbreviations</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">);</span>
 </pre></div>
 </td></tr></table>
 </div>
+<p>At runtime, whenever an abbreviation is requested but unavailable,
+an empty abbreviation entry is opened in the processor <tt class="docutils literal"><span class="pre">.transform</span></tt>
+object.  Entries are keyed on the abbreviation category and the long form of
+the field value.  Abbreviation catetories are as follows: <tt class="docutils literal"><span class="pre">container-title</span></tt>,
+<tt class="docutils literal"><span class="pre">collection-title</span></tt>, <tt class="docutils literal"><span class="pre">authority</span></tt>, <tt class="docutils literal"><span class="pre">institution</span></tt>, <tt class="docutils literal"><span class="pre">title</span></tt>,
+<tt class="docutils literal"><span class="pre">publisher</span></tt>, <tt class="docutils literal"><span class="pre">publisher-place</span></tt>, <tt class="docutils literal"><span class="pre">hereinafter</span></tt>.</p>
+<p>After any run of the <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt> or citation rendering commands,
+the full set of registered abbreviations (including the empty entries identified at
+runtime) can be read from the processor.  For example, if the processor
+instance is named <tt class="docutils literal"><span class="pre">citeproc</span></tt>, a structure as shown in <a class="reference internal" href="#local-environment">Local Environment</a>
+→ <a class="reference internal" href="#system-functions">System Functions</a> → <a class="reference internal" href="#getabbreviations">getAbbreviations()</a> can be obtained as follows:</p>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre>1</pre></td><td class="code"><div class="highlight"><pre><span class="k">var</span> <span class="nx">myabbrevs</span> <span class="o">=</span> <span class="nx">citeproc</span><span class="p">.</span><span class="nx">transform</span><span class="o">;</span>
+</pre></div>
+</td></tr></table>
+</div>
+<p>The structure thus obtained can then be edited, via the user interface
+of the calling application, to alter the abbreviations applied at the
+next run of the processor.</p>
 <table class="docutils footnote" frame="void" id="id15" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">

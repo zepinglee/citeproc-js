@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a77##
+   version 1.00##a78##
 
 .. class:: info-date
 
-   =D=7 May 2010=D=
+   =D=17 May 2010=D=
 
 .. class:: contributors
 
@@ -579,7 +579,28 @@ below under `Local Environment`_ → `System Functions`_.
 
 .. sourcecode:: js
 
-   citeproc.setAbbreviations( "default" );
+   citeproc.setAbbreviations("default");
+
+At runtime, whenever an abbreviation is requested but unavailable,
+an empty abbreviation entry is opened in the processor ``.transform``
+object.  Entries are keyed on the abbreviation category and the long form of
+the field value.  Abbreviation catetories are as follows: ``container-title``,
+``collection-title``, ``authority``, ``institution``, ``title``, 
+``publisher``, ``publisher-place``, ``hereinafter``.
+
+After any run of the ``makeBibliography()`` or citation rendering commands,
+the full set of registered abbreviations (including the empty entries identified at
+runtime) can be read from the processor.  For example, if the processor
+instance is named ``citeproc``, a structure as shown in `Local Environment`_
+→ `System Functions`_ → `getAbbreviations()`_ can be obtained as follows:
+
+.. sourcecode:: js
+
+   var myabbrevs = citeproc.transform;
+
+The structure thus obtained can then be edited, via the user interface
+of the calling application, to alter the abbreviations applied at the
+next run of the processor.
 
 .. [#] For illustrations of the input syntax for the ``makeBibliography()``
        command, see any test in the |link| `test suite`_ that uses the
