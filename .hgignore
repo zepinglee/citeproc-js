@@ -1,5 +1,7 @@
 syntax: regexp
 
+/bundled$
+/run$
 UPLOAD.sh$
 ^run-opt.js$
 ^jing
