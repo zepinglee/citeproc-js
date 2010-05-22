@@ -42,7 +42,7 @@ def fixEndings(str):
 
 def path(name):
     if name == "std":
-        return os.path.join("tests", "fixtures", "std")
+        return os.path.join("tests", "fixtures", "std", "processor-tests", "humans")
     elif name == "run":
         return os.path.join("tests", "fixtures", "run")
     elif name == "bundled":
