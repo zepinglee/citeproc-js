@@ -1,6 +1,41 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.12
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in optional date parser code affecting ranged
+  Japanese dates.
+
+-------
+Cleanup
+-------
+
+- Separate local and standard test fixtures, and make necessary
+  adjustments to test framework.
+
+- Drop test subdirectories "bundled" and "run" from mercurial.
+
+
+=========================
+Changes in version 1.0.11
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Processor now opens a key entry in the abbreviation lists for any 
+  field value for which abbreviation is requested, but unavailable.
+  This should provide enough to get a circle-of-goodness thing
+  going to start crowdsourcing style-specific abbreviation lists.
+
+
+=========================
 Changes in version 1.0.10
 =========================
 
