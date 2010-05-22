@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a78##
+   version 1.00##a79##
 
 .. class:: info-date
 
-   =D=17 May 2010=D=
+   =D=22 May 2010=D=
 
 .. class:: contributors
 
@@ -125,6 +125,22 @@ __ http://mercurial.selenic.com/wiki/
 
 This should get you a copy of the sources, and you should be able to
 exercise the test framework using the ``./test.py`` script.
+
+####################################
+Obtaining the Standard Test Fixtures
+####################################
+
+To run the test suite, the standard test fixtures must be added to the
+processor source bundle.  To do so, enter the directory ``./tests/fixtures``,
+and issue the following command:
+
+   ::
+
+      hg clone https://fbennett@bitbucket.org/fbennett/citeproc-test std
+
+Note the explicit target directory "std" following the repository
+address.
+
 
 #######################
 Javascript interpreters
