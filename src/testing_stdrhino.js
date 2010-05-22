@@ -50,13 +50,14 @@ var StdRhinoTest = function(myname,custom){
 	this._ids = [];
 	if (myname){
 		var test;
-		if ("undefined" != typeof custom && custom == "custom"){
-			test = readFile("./tests/custom/machines/" + myname + ".json", "UTF-8");
-		} else if ("undefined" != typeof custom && custom == "local"){
-			test = readFile("./tests/local/machines/" + myname + ".json", "UTF-8");
-		} else {
-			test = readFile("./tests/std/machines/" + myname + ".json", "UTF-8");
-		}
+		//if ("undefined" != typeof custom && custom == "custom"){
+		//	test = readFile("./tests/custom/" + myname + ".json", "UTF-8");
+		//} else if ("undefined" != typeof custom && custom == "local"){
+		//	test = readFile("./tests/local/machines/" + myname + ".json", "UTF-8");
+		//} else {
+		//	test = readFile("./tests/std/machines/" + myname + ".json", "UTF-8");
+		//}
+		test = readFile("./tests/fixtures/run/machines/" + myname + ".json", "UTF-8");
 		eval( "this.test = "+test);
 		this.result = this.test.result;
 		this._setCache();

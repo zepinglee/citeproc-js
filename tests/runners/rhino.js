@@ -47,11 +47,11 @@ dojo.tests = {
 load("./dojo/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo/dojo");
 dojo.registerModulePath("dojox","./dojo/dojox");
-dojo.registerModulePath("std","./tests/std/bundled");
-dojo.registerModulePath("citeproc_js","./tests/citeproc-js");
-dojo.registerModulePath("csl","./src");
-dojo.registerModulePath("csl.output","./src/output");
-dojo.registerModulePath("doh","./dojo/util/doh");
+dojo.registerModulePath("std", "./tests/bundled");
+dojo.registerModulePath("citeproc_js", "./tests/citeproc-js");
+dojo.registerModulePath("csl", "./src");
+dojo.registerModulePath("csl.output", "./src/output");
+dojo.registerModulePath("doh", "./dojo/util/doh");
 
 load("./src/xmle4x.js");
 load("./src/xmldom.js");

@@ -68,7 +68,7 @@ var readFile = function(filename){
 load("./dojo-sm/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo-sm/dojo");
 dojo.registerModulePath("dojox","./dojo-sm/dojox");
-dojo.registerModulePath("std","./tests/std/bundled");
+dojo.registerModulePath("std","./tests/bundled");
 dojo.registerModulePath("citeproc_js","./tests/citeproc-js");
 dojo.registerModulePath("csl","./src");
 dojo.registerModulePath("csl.output","./src/output");
