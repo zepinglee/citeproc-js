@@ -40,6 +40,21 @@ def fixEndings(str):
     str = string.replace(str, '\r', '\n')
     return str
 
+def path(name):
+    if name == "std":
+        return os.path.join("tests", "fixtures", "std")
+    elif name == "run":
+        return os.path.join("tests", "fixtures", "run")
+    elif name == "bundled":
+        return os.path.join("tests", "bundled")
+    elif name == "local":
+        return os.path.join("tests", "fixtures", "local")
+    elif name == "config":
+        return os.path.join("tests", "config")
+    elif name == "citeproc-js":
+        return os.path.join("tests", "citeproc-js")
+    elif name == "runners":
+        return os.path.join("tests", "runners")
 
 class ApplyLicense:
 
@@ -53,14 +68,14 @@ class ApplyLicense:
         print self.license
 
     def apply(self):
-        for path in [".", "src", os.path.join("tests", "std"), os.path.join("tests","std","humans"),os.path.join("tests","std","bundled"), os.path.join("tests","std","machines"),os.path.join("tests","citeproc-js")]:
-            for file in os.listdir( path ):
+        for p in [".", "src", path("std"), path("local"), path("bundled"), path("citeproc-js")]:
+            for file in os.listdir(p):
                 if file == "CHANGES.txt" or file == "DESIDERATA.txt":
                     continue
-                self.process_file(path,file)
+                self.process_file(p,file)
 
-    def process_file(self,path,file):
-        filepath = os.path.join( path, file)
+    def process_file(self,p,file):
+        filepath = os.path.join(p, file)
         if not filepath.endswith(".js") and not filepath.endswith(".txt") and not filepath.endswith(".json") and not filepath.endswith("README.txt"): return
         text = fixEndings(open(filepath).read())
         oldtext = text
@@ -139,23 +154,27 @@ class Params:
         self.runners = os.path.join( self.tests, "runners")
         self.makedirs()
         self.initConfig()
+        self.copySource()
 
     def makedirs(self):
-        for dir in ("std","custom","citeproc-js","runners"):
-            p = os.path.join(self.tests, dir)
+        for dir in ("std", "citeproc-js", "runners"):
+            p = path(dir)
             if not os.path.exists(p):
                 os.makedirs(p)
-        for dir in ("std","custom"):
-            for subdir in ("humans","machines"):
-                p = os.path.join( self.tests, dir, subdir)
-                if not os.path.exists(p):
-                    os.makedirs(p)
+        for subdir in ("humans","machines"):
+            p = os.path.join(path("run"), subdir)
+            if not os.path.exists(p):
+                os.makedirs(p)
 
     def path(self):
+        return (path("run"),)
+        ## The stuff below is irrelevant
         if self.force:
-            return ( os.path.join( self.tests, self.force), )
+            print "one"
+            return (path(self.force),)
         else:
-            return (os.path.join(self.tests,"custom"),os.path.join(self.tests,"std"))
+            print "two"
+            return (path("run"),)
 
     def getSourcePaths(self):
         if self.opt.processor:
@@ -173,7 +192,7 @@ class Params:
                 self.files['humans'][filename] = (filepath)
             else:
                 for path in self.path():
-                    for filename in os.listdir( os.path.join(path,"humans")):
+                    for filename in os.listdir(os.path.join(path,"humans")):
                         if not filename.endswith(".txt"): continue
                         if args:
                             if not filename.startswith("%s_" % self.args[0]): continue
@@ -181,25 +200,21 @@ class Params:
                             self.files['humans'][filename] = (path,os.path.join("humans",filename))
     
     def clearSource(self):
-        mstd = os.path.join( "tests", "std", "machines")
-        mcustom = os.path.join( "tests", "custom", "machines")
-        for file in os.listdir(mstd):
-            if not file.endswith(".json"): continue
-            os.unlink( os.path.join(mstd, file) )
-        for file in os.listdir(mcustom):
-            if not file.endswith(".json"): continue
-            os.unlink( os.path.join(mcustom, file) )
+        for subdir in ["run"]:
+            for file in os.listdir(os.path.join(path(subdir), "machines")):
+                if not file.endswith(".json"): continue
+                os.unlink(os.path.join(path(subdir), "machines", file))
 
     def refreshSource(self,force=False):
         groups = {}
         for filename in self.files['humans'].keys():
             hpath = self.files['humans'][filename]
-            mpath = os.path.join( self.files['humans'][filename][0], "machines", "%s.json" % filename[:-4] )
-            hp = os.path.sep.join( hpath )
-            mp = os.path.join( mpath )
+            mpath = os.path.join(self.files['humans'][filename][0], "machines", "%s.json" % filename[:-4] )
+            hp = os.path.sep.join(hpath)
+            mp = os.path.join(mpath)
             #if force:
             #    self.grindFile(hpath,filename,mp)
-            if not os.path.exists( mp ):
+            if not os.path.exists(mp):
                 self.grindFile(hpath,filename,mp)
                 if self.opt.verbose:
                     print "Created: %s" % mp
@@ -220,7 +235,7 @@ class Params:
                         groups[groupkey]["mtime"] = mmod
         if len(self.args) < 2:
             for group in groups.keys():
-                gp = os.path.join("tests","std","bundled","%s.js"%group)
+                gp = os.path.join(path("bundled"), "%s.js"%group)
                 needs_gp = True
                 if os.path.exists( gp ):
                     needs_gp = False
@@ -229,7 +244,7 @@ class Params:
                 if needs_gp or groups[group]["mtime"] > gt:
                     if self.opt.verbose:
                         sys.stdout.write("!")
-                    ofh = open( os.path.join("tests","std", "bundled","%s.js" % group), "w+" )
+                    ofh = open( os.path.join(path("bundled"), "%s.js" % group), "w+" )
                     group_text = '''dojo.provide("std.%s");
 doh.register("std.%s", [
 ''' % (group,group)
@@ -247,14 +262,14 @@ doh.register("std.%s", [
 
     def buildRunner(self):
         has_files = False
-        ofh = open( os.path.join( "tests","runners","run.js"), "w+")
+        ofh = open( os.path.join(path("runners"), "run.js"), "w+")
         header = 'dojo.require("doh.runner");\n'
         ofh.write(header)
         if self.opt.processor:
-            testpath = os.path.join("tests","citeproc-js")
+            testpath = path("citeproc-js")
             nick = "citeproc_js"
         else:
-            testpath = os.path.join("tests","std","bundled")
+            testpath = path("bundled")
             nick = "std"
         if len(args) == 2:
             keys = self.files['humans'].keys()
@@ -291,7 +306,7 @@ doh.register("std.%s", [
 
     def runTests(self,bundle=False):
         cp = ConfigParser()
-        cp.read( os.path.join("tests","config","test.cnf") )
+        cp.read(os.path.join(path("config"), "test.cnf"))
         if self.opt.tracemonkey:
             
             engine = cp.get("tracemonkey","command")
@@ -302,7 +317,7 @@ doh.register("std.%s", [
         bundleext = ""
         if bundle:
             bundleext = "-bundled"
-        runpath = os.path.join("tests","runners","%s%s.js" %(nick,bundleext))
+        runpath = os.path.join(path("runners"), "%s%s.js" %(nick,bundleext))
         command = "%s %s" % (engine,runpath)
         ifh = sub.Popen(command,shell=True, stdout=sub.PIPE).stdout
         while 1:
@@ -313,7 +328,7 @@ doh.register("std.%s", [
 
     def validateSource(self):
         skip_to_pos = 0
-        if os.path.exists( self.pickle ):
+        if os.path.exists(self.pickle):
             upfh = open(self.pickle)
             unpickler = Unpickler(upfh)
             old_opt,old_pos = unpickler.load()
@@ -334,19 +349,48 @@ doh.register("std.%s", [
 
     def initConfig(self):
 
-        if not os.path.exists( os.path.join("tests", "config") ):
-            os.makedirs( os.path.join("tests", "config") )
+        if not os.path.exists(path("bundled")):
+            os.makedirs(path("bundled"))
 
-        if not os.path.exists( os.path.join("tests", "config", "test.cnf") ):
+        if not os.path.exists(path("std")):
+            os.makedirs(path("std"))
+
+        if not os.path.exists(os.path.join(path("run"))):
+            os.makedirs(path("run"))
+
+        if not os.path.exists(os.path.join(os.path.join(path("run"), "machines"))):
+            os.makedirs(os.path.join(path("run"), "machines"))
+
+        if not os.path.exists(os.path.join(os.path.join(path("run"), "humans"))):
+            os.makedirs(os.path.join(path("run"), "humans"))
+
+        if not os.path.exists(path("config")):
+            os.makedirs(path("config"))
+
+        if not os.path.exists(os.path.join(path("config"), "test.cnf")):
             test_template = '''[tracemonkey]
 command: /home/bennett/src/jslibs/Linux_32_opt/jshost -u
 
 [rhino]
 command: java -client -jar ./rhino/js-1.7R2.jar -opt 8
 '''
-            ofh = open( os.path.join("tests", "config", "test.cnf"), "w+" )
+            ofh = open(os.path.join(path("config"), "test.cnf"), "w+" )
             ofh.write(test_template)
             ofh.close()
+
+    def copySource(self):
+        for filename in os.listdir(os.path.join(path("run"), "humans")):
+            os.unlink(os.path.join(path("run"), "humans", filename))
+        for sourcedir in [path("local"), path("std")]:
+            for filename in os.listdir(sourcedir):
+                if not filename.endswith(".txt"):
+                    continue
+                filepath = os.path.join(path("run"), "humans", filename)
+                if os.path.exists(filepath):
+                    print "WARNING: duplicate fixture name \"%s\"" % filename
+                ofh = open(filepath, "w+")
+                ofh.write(open(os.path.join(sourcedir, filename)).read())
+                ofh.close()
 
 class CslTest:
     def __init__(self,opt,hpath,testname,pos=0):
@@ -354,7 +398,7 @@ class CslTest:
         self.pos = pos
         self.testname = testname
         self.hpath = hpath
-        self.hp = os.path.sep.join( hpath )
+        self.hp = os.path.sep.join(hpath)
 	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
         self.CREATORS += ["composer","original-author","container-author","collection-editor"]
         self.RE_ELEMENT = '(?sm)^(.*>>=.*%s[^\n]+)(.*)(\n<<=.*%s.*)'
@@ -362,7 +406,7 @@ class CslTest:
         self.script = os.path.split(sys.argv[0])[1]
         self.pickle = ".".join((os.path.splitext( self.script )[0], "pkl"))
         self.data = {}
-        self.raw = fixEndings(open( os.path.sep.join(hpath)).read())
+        self.raw = fixEndings(open(os.path.sep.join(hpath)).read())
 
     def parse(self):
         for element in ["MODE","CSL"]:
