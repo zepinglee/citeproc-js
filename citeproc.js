@@ -1038,8 +1038,8 @@ CSL.dateParser = function (txt) {
 	jiymatchstring = jiymatchstring.join("|");
 	jiysplitter = "(?:" + jiymatchstring + ")(?:[0-9]+)";
 	jiysplitter = new RegExp(jiysplitter);
-	jiymatcher = "(" + jiymatchstring + ")([0-9]+)";
-	jiymatcher = new RegExp(jiymatcher);
+	jiymatcher = "(?:" + jiymatchstring + ")(?:[0-9]+)";
+	jiymatcher = new RegExp(jiymatcher, "g");
 	jmd = /(\u6708|\u5E74)/g;
 	jy = /\u65E5/;
 	jr = /\u301c/g;
@@ -1076,15 +1076,21 @@ CSL.dateParser = function (txt) {
 			txt = txt.replace(jy, "");
 			txt = txt.replace(jmd, "-");
 			txt = txt.replace(jr, "/");
+			txt = txt.replace("-/", "/");
+			txt = txt.replace(/-$/,"");
 			slst = txt.split(jiysplitter);
 			lst = [];
 			mm = txt.match(jiymatcher);
+			var mmx = [];
+			for (pos = 0, len = mm.length; pos < len; pos += 1) {
+				mmx = mmx.concat(mm[pos].match(/([^0-9]+)([0-9]+)/).slice(1));
+			}
 			for (pos = 0, len = slst.length; pos < len; pos += 1) {
 				lst.push(slst[pos]);
 				if (pos !== (len - 1)) {
-					mmpos = (pos * 2) + 1;
-					lst.push(mm[mmpos]);
-					lst.push(mm[mmpos + 1]);
+					mmpos = (pos * 2);
+					lst.push(mmx[mmpos]);
+					lst.push(mmx[mmpos + 1]);
 				}
 			}
 			l = lst.length;
@@ -1265,7 +1271,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.11";
+	this.processor_version = "1.0.12";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
