@@ -240,3 +240,7 @@ doh.register("citeproc_js.dateparse", [
         doh.assertEqual(6, keycount(res) );
     }
 ]);
+
+var x = [
+
+]
