@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.13
+=========================
+
+-------
+Cleanup
+-------
+
+- Drop standard test fixture data from citeproc-js source repository.
+
+- Adjust test runner test.py to accomodate the directory structure of
+  the standalone copy of the test fixtures.
+
+- Add note on the need to add the test fixtures manually to the README.txt 
+  file and the processor manual.
+
+
+=========================
 Changes in version 1.0.12
 =========================
 
