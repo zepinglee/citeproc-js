@@ -6,7 +6,8 @@ if [ "$1" == "" ]; then
     echo "#### jslint results for citeproc-js/src/*.js ####" > jslint_results.txt
     files=$(ls ./src/*.js)
 else
-	files="$1"
+        java -client -jar ./rhino/js-1.7R2.jar jslint.js $1
+	exit 0
 fi
 
 for i in ${files}; do
@@ -21,11 +22,7 @@ for i in ${files}; do
     if [ "$STARTSWITH" == "testing" ]; then
        continue
     fi
-    if [ "$1" == "" ]; then
-        echo "" >> jslint_results.txt
-        echo "<<< ${i} >>>" >> jslint_results.txt
-   	java -client -jar ./rhino/js-1.7R2.jar jslint.js $i >> jslint_results.txt
-     else
-        java -client -jar ./rhino/js-1.7R2.jar jslint.js $i
-     fi
+    echo "" >> jslint_results.txt
+    echo "<<< ${i} >>>" >> jslint_results.txt
+    java -client -jar ./rhino/js-1.7R2.jar jslint.js $i >> jslint_results.txt
 done
