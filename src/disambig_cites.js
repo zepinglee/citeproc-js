@@ -192,6 +192,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			//SNIP-START
 			if (debug) {
 				CSL.debug("  ---> Evaluate: storing token config");
+				CSL.debug("           akey: " + akey);
 				CSL.debug("          names: " + base_return.names);
 				CSL.debug("         givens: " + base_return.givens);
 			}
