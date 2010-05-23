@@ -670,7 +670,7 @@ CSL.Node.names = {
 						// Need to save off the settings based on subsequent
 						// form, when first cites are rendered.  Otherwise you
 						// get full form names everywhere.
-						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST && paramx > param) {
+						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
 							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
 							param = paramx;
 						}
