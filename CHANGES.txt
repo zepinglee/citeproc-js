@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.14
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Remove conditional statement that caused leakage of long-form names into subsequent 
+  cites in the MHRA style.
+
+- Fix error in test fixture example contained in the processor manual.
+
+-------
+Cleanup
+-------
+
+- Add ambig key to one block of debugging info in disambig_cites.js
+
+- Set path to styles to point into manually updated external standard tests bundle.
+
+- Remove styles used by standard tests from this archive.
+
+
+=========================
 Changes in version 1.0.13
 =========================
 
