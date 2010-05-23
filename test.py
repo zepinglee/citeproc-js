@@ -43,6 +43,8 @@ def fixEndings(str):
 def path(name):
     if name == "std":
         return os.path.join("tests", "fixtures", "std", "processor-tests", "humans")
+    elif name == "styles":
+        return os.path.join("tests", "fixtures", "std", "styles")
     elif name == "run":
         return os.path.join("tests", "fixtures", "run")
     elif name == "bundled":
@@ -412,7 +414,7 @@ class CslTest:
         for element in ["MODE","CSL"]:
             self.extract(element,required=True,is_json=False)
             if element == "CSL" and self.data['csl'].endswith('.csl'):
-                self.data['csl'] = fixEndings(open( os.path.join("tests", "styles", self.data['csl'])).read())
+                self.data['csl'] = fixEndings(open(os.path.join(path("styles"), self.data['csl'])).read())
         self.extract("RESULT",required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
