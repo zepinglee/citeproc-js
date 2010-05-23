@@ -1237,7 +1237,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.13";
+	this.processor_version = "1.0.14";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3761,7 +3761,7 @@ CSL.Node.names = {
 						} else {
 							param = paramx;
 						}
-						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST && paramx > param) {
+						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
 							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
 							param = paramx;
 						}
