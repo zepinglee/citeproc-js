@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.15
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Eliminate implicit rendering of "no date" term by cs:date.
+
+
+=========================
 Changes in version 1.0.14
 =========================
 
