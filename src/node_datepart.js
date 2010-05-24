@@ -58,7 +58,7 @@ CSL.Node["date-part"] = {
 				//}
 			}
 			if ("year" === this.strings.name && value === 0 && !state.tmp.suppress_decorations) {
-				value = state.getTerm("no date");
+				value = false;
 			}
 			real = !state.tmp.suppress_decorations;
 			have_collapsed = state.tmp.have_collapsed;
