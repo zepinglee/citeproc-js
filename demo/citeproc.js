@@ -1237,7 +1237,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.14";
+	this.processor_version = "1.0.15";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2325,6 +2325,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		if (item && item["author-only"]) {
 			return composite;
 		}
+		if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
+			composite.push("[CSL STYLE ERROR: reference with no printed form.]");
+		}
 		if (objects.length && "string" === typeof composite[0]) {
 			composite.reverse();
 			objects.push(this.tmp.splice_delimiter + composite.pop());
@@ -2351,21 +2354,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		if (objects.length === 0 && !inputList[pos][1]["suppress-author"]) {
 			empties += 1;
 		}
-	}
-	if (empties) {
-		if (objects.length) {
-			if (typeof objects[0] === "string") {
-				objects[0] = this.tmp.splice_delimiter + objects[0];
-			} else {
-				objects.push(this.tmp.splice_delimiter);
-			}
-		}
-		objects.reverse();
-		for (pos = 1; pos < empties; pos += 1) {
-			objects.push(this.tmp.splice_delimiter + "[CSL STYLE ERROR: reference with no printed form.]");
-		}
-		objects.push("[CSL STYLE ERROR: reference with no printed form.]");
-		objects.reverse();
 	}
 	result += this.output.renderBlobs(objects)[0];
 	if (result) {
@@ -2630,7 +2618,7 @@ CSL.Node["date-part"] = {
 				value_end = state.tmp.date_object[(this.strings.name + "_end")];
 			}
 			if ("year" === this.strings.name && value === 0 && !state.tmp.suppress_decorations) {
-				value = state.getTerm("no date");
+				value = false;
 			}
 			real = !state.tmp.suppress_decorations;
 			have_collapsed = state.tmp.have_collapsed;
