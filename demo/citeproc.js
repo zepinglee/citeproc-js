@@ -349,7 +349,7 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 };
 CSL.Output.Queue.prototype.closeLevel = function (name) {
 	if (name && name !== this.current.value().levelname) {
-		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().blobs[this.current.value().blobs.length - 1].levelname);
+		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().levelname);
 	}
 	this.current.pop();
 };
@@ -1237,7 +1237,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.15";
+	this.processor_version = "1.0.16";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1527,7 +1527,7 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 		}
 		if (newname.given && !newname.family) {
 			newname.family = "";
-		} else if (newname.family && ! newname.given) {
+		} else if (newname.family && !newname.given) {
 			newname.given = "";
 		}
 		addme = true;
@@ -1589,6 +1589,13 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 					ret[count][key] = newname[key];
 				}
 			}
+		}
+		if (!newname.literal && !newname.given && newname.family) {
+			newname.literal = newname.family;
+		}
+		if (newname.literal) {
+			delete newname.family;
+			delete newname.given;
 		}
 	}
 	return ret;
@@ -3537,6 +3544,9 @@ CSL.Node.names = {
 						}
 					} else {
 						namesets = namesets.slice(0, 1);
+						if (namesets[0].organization_first) {
+							namesets[0].organization_last = true;
+						}
 					}
 					if (cutinfo.used === cut_var) {
 						llen = cutinfo.variable[cut_var].length - 1;
