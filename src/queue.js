@@ -180,7 +180,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 	// content.  The code that manipulates blobs will be
 	// much simpler that way.
 	if (name && name !== this.current.value().levelname) {
-		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().blobs[this.current.value().blobs.length - 1].levelname);
+		CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().levelname);
 	}
 	this.current.pop();
 };
