@@ -304,6 +304,9 @@ CSL.Node.names = {
 						}
 					} else {
 						namesets = namesets.slice(0, 1);
+						if (namesets[0].organization_first) {
+							namesets[0].organization_last = true;
+						}
 					}
 					// should always be true, but just in case
 					// this slices off subsequent namesets in the initial name
