@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.16
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix error raised by bad var in warning message.
+
+-------------------------------------
+Adjustments to extended functionality
+-------------------------------------
+
+- Treat names that have a family element without a given element
+  as institutional names, with related adjustments to test fixtures.
+
+-------
+Cleanup
+-------
+
+- Drop test fixture description from processor manual.  This is
+  now to be maintained in the manual of the CSL Test Suite.
+
+=========================
 Changes in version 1.0.15
 =========================
 

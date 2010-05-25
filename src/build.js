@@ -35,7 +35,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.15";
+	this.processor_version = "1.0.16";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -486,7 +486,7 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 		}
 		if (newname.given && !newname.family) {
 			newname.family = "";
-		} else if (newname.family && ! newname.given) {
+		} else if (newname.family && !newname.given) {
 			newname.given = "";
 		}
 		addme = true;
@@ -560,6 +560,13 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 					ret[count][key] = newname[key];
 				}
 			}
+		}
+		if (!newname.literal && !newname.given && newname.family) {
+			newname.literal = newname.family;
+		}
+		if (newname.literal) {
+			delete newname.family;
+			delete newname.given;
 		}
 	}
 	return ret;
