@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a83##
+   version 1.00##a84##
 
 .. class:: info-date
 
@@ -146,14 +146,16 @@ Obtaining the Locale Files
 ##########################
 
 The processor requires a set of standard CSL 1.0 locale files in order
-to run.  These may be installed using the following comment:
+to run.  These may be installed and set up using the following two commands
+(under Linux):
 
    ::
 
-      hg clone https://fbennett@bitbucket.org/bdarcus/csl-locales locale
+      hg clone https://fbennett@bitbucket.org/bdarcus/csl-locales
+      ln -s csl-locales/trunk/ locale
 
-Note the explict target directory "locale" following the 
-repository address.
+
+
 
 #######################
 Javascript interpreters
