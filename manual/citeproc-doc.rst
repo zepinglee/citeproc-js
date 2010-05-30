@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a82##
+   version 1.00##a83##
 
 .. class:: info-date
 
-   =D=25 May 2010=D=
+   =D=30 May 2010=D=
 
 .. class:: contributors
 
@@ -141,6 +141,19 @@ and issue the following command:
 Note the explicit target directory "std" following the repository
 address.
 
+##########################
+Obtaining the Locale Files
+##########################
+
+The processor requires a set of standard CSL 1.0 locale files in order
+to run.  These may be installed using the following comment:
+
+   ::
+
+      hg clone https://fbennett@bitbucket.org/bdarcus/csl-locales locale
+
+Note the explict target directory "locale" following the 
+repository address.
 
 #######################
 Javascript interpreters
