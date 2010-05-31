@@ -65,7 +65,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		citation.citationItems[pos].item = Item;
 	}
 	// sort the list to be used in rendering
-	if (sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (!this[this.tmp.area].opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	//if (sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
@@ -310,6 +311,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				}
 			}
 		}
+	}
+	if (this[this.tmp.area].opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+		len = sortedItems.length;
+		for (pos = 0; pos < len; pos += 1) {
+			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
+		}
+		sortedItems.sort(this.citation.srt.compareCompositeKeys);
 	}
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
