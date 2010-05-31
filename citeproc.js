@@ -2063,7 +2063,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		sortedItems.push(newitem);
 		citation.citationItems[pos].item = Item;
 	}
-	if (sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (!this[this.tmp.area].opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
@@ -2223,6 +2223,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				}
 			}
 		}
+	}
+	if (this[this.tmp.area].opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+		len = sortedItems.length;
+		for (pos = 0; pos < len; pos += 1) {
+			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
+		}
+		sortedItems.sort(this.citation.srt.compareCompositeKeys);
 	}
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
@@ -3062,6 +3069,9 @@ CSL.Node.key = {
 		target.push(start_key);
 		if (this.variables.length) {
 			variable = this.variables[0];
+			if (variable === "citation-number" && state.build.area === "citation_sort") {
+				state.citation.opt["citation-number-sort"] = true;
+			}
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				names_start_token = new CSL.Token("names", CSL.START);
 				names_start_token.tokentype = CSL.START;
