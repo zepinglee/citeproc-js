@@ -137,7 +137,7 @@ StdRhinoTest.prototype.run = function(){
 		for each (id_set in this.test.bibentries){
 			this.style.updateItems(id_set);
 		}
-	} else {
+	} else if (!this.test.citations) {
 		this.style.updateItems(this._ids);
 	}
 	if (!this.test.citation_items && !this.test.citations){
