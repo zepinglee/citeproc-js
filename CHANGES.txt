@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.17
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- For styles that sort cites on citation-number, postpone the
+  cite sort operation, to allow the registry entry and accompanying
+  sequence number to appear in the registry before the sort is
+  attempted.
+
+=========================
 Changes in version 1.0.16
 =========================
 
