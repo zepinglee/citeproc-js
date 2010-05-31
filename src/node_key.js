@@ -73,6 +73,14 @@ CSL.Node.key = {
 		// ops to initialize the key's output structures
 		if (this.variables.length) {
 			variable = this.variables[0];
+			// Set flag if sorting citations by citation-number
+			// XXXXX: This will assume citation-number sorting if
+			// that variable is set as key in ANY position.  Could
+			// be a little more conservative, but secondary sorts
+			// by this variable seem unlikely.
+			if (variable === "citation-number" && state.build.area === "citation_sort") {
+				state.citation.opt["citation-number-sort"] = true;
+			}
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
 				// Start tag
