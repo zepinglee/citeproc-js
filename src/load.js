@@ -188,8 +188,7 @@ var CSL = {
 	PREFIX_PUNCTUATION: /[.;:]\s*$/,
 	SUFFIX_PUNCTUATION: /^\s*[.;:,\(\)]/,
 
-	NUMBER_REGEXP: /(?:^\d+|\d+$|\d{3,})/, // avoid evaluating "F.2d" as numeric
-                                                 // Afterthought: um ... why?
+	NUMBER_REGEXP: /(?:^\d+|\d+$)/,
 	QUOTED_REGEXP_START: /^"/,
 	QUOTED_REGEXP_END: /^"$/,
 	//
