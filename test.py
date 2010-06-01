@@ -57,6 +57,8 @@ def path(name):
         return os.path.join("tests", "citeproc-js")
     elif name == "runners":
         return os.path.join("tests", "runners")
+    elif name == "demo":
+        return os.path.join("demo")
 
 class ApplyLicense:
 
@@ -70,9 +72,21 @@ class ApplyLicense:
         print self.license
 
     def apply(self):
-        for p in [".", "src", path("std"), path("local"), path("bundled"), path("citeproc-js")]:
+        for p in [".", "src", path("std"), path("local"), path("bundled"), path("citeproc-js"), path("demo")]:
             for file in os.listdir(p):
                 if file == "CHANGES.txt" or file == "DESIDERATA.txt":
+                    continue
+                if file.endswith(".src"):
+                    continue
+                if file.endswith(".sh"):
+                    continue
+                if file.endswith(".csl"):
+                    continue
+                if file.endswith(".py"):
+                    continue
+                if file.endswith(".html"):
+                    continue
+                if file.endswith(".css"):
                     continue
                 self.process_file(p,file)
 
