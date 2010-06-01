@@ -8,6 +8,39 @@ Changes in version 1.0.17
 Mishandled or unimplemented features
 ------------------------------------
 
+- RTF and plain text output specs, provided by Simon Kornblith of
+  the Zotero project, Center for History and New Media, George
+  Mason University.
+
+- Fix weakness in by-cite disambiguation where (I think) maxing out
+  disambiguation parameters results in successful disambiguation o f
+  all but one of the cites in a pool.  Relevant discussion on
+  `xbiblio list @ SourceForge`__.
+
+__ http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTimtM7wsRL9dhcb4xUICFdj2VIom_Y2t_1wvG1RQ%40mail.gmail.com&forum_name=xbiblio-devel
+
+
+
+-------
+Cleanup
+-------
+
+- Added -E option to ./test.py, to dump processor code with embedded E4X
+  support, as used in Zotero.
+
+- Renamed -b option in ./test.py to -B, for consistency with new -E option.
+
+- Simplify regexp used to identify numbers in numeric variables.  Now
+  more conservative, but this is probably right.  No effect on tests.
+
+=========================
+Changes in version 1.0.17
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
 - For styles that sort cites on citation-number, postpone the
   cite sort operation, to allow the registry entry and accompanying
   sequence number to appear in the registry before the sort is
