@@ -91,9 +91,16 @@ class ApplyLicense:
 
 class Bundle:
     
-    def __init__(self):
-        self.citeproc = "citeproc.js"
-        f = ["load","queue","util_locale","util_processor","util_disambig"]
+    def __init__(self, mode=None):
+        if mode == "e4x":
+            self.citeproc = "citeproce4x.js"
+        else:
+            self.citeproc = "citeproc.js"
+        self.mode = mode
+        f = ["load"]
+        if mode == "e4x":
+            f.extend(["xmle4x"])
+        f.extend(["queue","util_locale","util_processor","util_disambig"])
         f.extend(["util_nodes","util_dateparser","build","state","util_integration","cmd_update"])
         f.extend(["cmd_bibliography","cmd_cite","node_bibliography","node_choose"])
         f.extend(["node_citation","node_date","node_datepart","node_elseif","node_else"])
@@ -129,14 +136,17 @@ class Bundle:
             ifh = open(filename)
             file += self.cleanFile(ifh.read())
         open(self.citeproc,"w+").write(file)
-        open(os.path.join("demo", self.citeproc),"w+").write(file)
+        if self.mode == "e4x":
+            print "Wrote bundle code with e4x support to ./citeproce4x.js "
+        if self.mode == None:
+            open(os.path.join("demo", self.citeproc),"w+").write(file)
 
-        for f in ["xmle4x", "xmldom"]:
-            filename = os.path.join( "src", "%s.js" % f)
-            ifh = open(filename)
-            file = self.cleanFile(ifh.read())
-            open("%s.js" % f, "w+").write(file)
-            open(os.path.join("demo", "%s.js" % f), "w+").write(file)
+            for f in ["xmle4x", "xmldom"]:
+                filename = os.path.join( "src", "%s.js" % f)
+                ifh = open(filename)
+                file = self.cleanFile(ifh.read())
+                open("%s.js" % f, "w+").write(file)
+                open(os.path.join("demo", "%s.js" % f), "w+").write(file)
 
 class Params:
     def __init__(self,opt,args,force=None):
@@ -587,14 +597,29 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Display test names during processing.')
-    parser.add_option("-b", "--bundle-only", dest="makebundle",
+    parser.add_option("-B", "--bundle-only", dest="makebundle",
                       default=False,
                       action="store_true", 
                       help='Create the citeproc.js bundle and exit.')
+    parser.add_option("-E", "--e4x-bundle-only", dest="makee4xbundle",
+                      default=False,
+                      action="store_true", 
+                      help='Create a citeproce4x.js bundle with embedded e4x support and exit.')
     (opt, args) = parser.parse_args()
+
+    if opt.makebundle and opt.makee4xbundle:
+        print parser.print_help()
+        print "\nError: The -B and -E options cannot be used together."
+        sys.exit()
 
     if opt.makebundle:
         bundler = Bundle()
+        bundler.deleteOldBundle()
+        bundler.createNewBundle()
+        sys.exit()
+
+    if opt.makee4xbundle:
+        bundler = Bundle(mode="e4x")
         bundler.deleteOldBundle()
         bundler.createNewBundle()
         sys.exit()
