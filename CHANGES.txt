@@ -1,7 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
-Changes in version 1.0.17
+Changes in version 1.0.19
+=========================
+
+-------
+Cleanup
+-------
+
+- Set up AGPLv3 as an alternative license to CPAL.
+
+=========================
+Changes in version 1.0.18
 =========================
 
 ------------------------------------
@@ -13,7 +23,7 @@ Mishandled or unimplemented features
   Mason University.
 
 - Fix weakness in by-cite disambiguation where (I think) maxing out
-  disambiguation parameters results in successful disambiguation o f
+  disambiguation parameters results in successful disambiguation of
   all but one of the cites in a pool.  Relevant discussion on
   `xbiblio list @ SourceForge`__.
 
