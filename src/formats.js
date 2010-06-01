@@ -110,4 +110,145 @@ CSL.Output.Formats.prototype.html = {
 	}
 };
 
+/**
+ * Plain text output specification.
+ *
+ * (Code contributed by Simon Kornblith, Center for History and New Media,
+ * George Mason University.)
+ */
+CSL.Output.Formats.prototype.text = {
+	//
+	// text_escape: Format-specific function for escaping text destined
+	// for output.  Takes the text to be escaped as sole argument.  Function
+	// will be run only once across each portion of text to be escaped, it
+	// need not be idempotent.
+	//
+	"text_escape": function (text) {
+		return text;
+	},
+	"bibstart": "",
+	"bibend": "",
+	"@font-style/italic": false,
+	"@font-style/oblique": false,
+	"@font-style/normal": false,
+	"@font-variant/small-caps": false,
+	"@passthrough/true": CSL.Output.Formatters.passthrough,
+	"@font-variant/normal": false,
+	"@font-weight/bold": false,
+	"@font-weight/normal": false,
+	"@font-weight/light": false,
+	"@text-decoration/none": false,
+	"@text-decoration/underline": false,
+	"@vertical-align/baseline": false,
+	"@vertical-align/sup": false,
+	"@vertical-align/sub": false,
+	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
+	"@strip-periods/false": function (state, string) {
+		return string;
+	},
+	"@quotes/true": function (state, str) {
+		if ("undefined" === typeof str) {
+			return state.getTerm("open-quote");
+		}
+		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
+	},
+	"@quotes/inner": function (state, str) {
+		if ("undefined" === typeof str) {
+			//
+			// Mostly right by being wrong (for apostrophes)
+			//
+			return "\u2019";
+		}
+		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+	},
+	//"@bibliography/body": function (state,str){
+	//	return "<div class=\"csl-bib-body\">\n"+str+"</div>";
+	//},
+	"@bibliography/entry": function (state, str) {
+		return str+"\n";
+	},
+	"@display/block": function (state, str) {
+		return "\n"+str;
+	},
+	"@display/left-margin": function (state, str) {
+		return str;
+	},
+	"@display/right-inline": function (state, str) {
+		return str;
+	},
+	"@display/indent": function (state, str) {
+		return "\n    "+str;
+	}
+};
+
+/**
+ * Plain text output specification.
+ *
+ * (Code contributed by Simon Kornblith, Center for History and New Media,
+ * George Mason University.)
+ */
+CSL.Output.Formats.prototype.rtf = {
+	//
+	// text_escape: Format-specific function for escaping text destined
+	// for output.  Takes the text to be escaped as sole argument.  Function
+	// will be run only once across each portion of text to be escaped, it
+	// need not be idempotent.
+	//
+	"text_escape": function (text) {
+		return text.replace("\\", "\\\\", "g").replace(/[\x7F-\uFFFF]/g,
+			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+" " })
+			.replace("\t", "\\tab ", "g");
+	},
+	"@passthrough/true": CSL.Output.Formatters.passthrough,
+	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
+	"@font-style/italic":"\\i %%STRING%%\\i0 ",
+	"@font-style/normal":false,
+	"@font-style/oblique":"\\i %%STRING%%\\i0 ",
+	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0 ",
+	"@font-variant/normal":false,
+	"@font-weight/bold":"\\b %%STRING%%\\b0 ",
+	"@font-weight/normal":false,
+	"@font-weight/light":false,
+	"@text-decoration/none":false,
+	"@text-decoration/underline":"\\ul %%STRING%%\\ul0 ",
+	"@vertical-align/baseline":false,
+	"@vertical-align/sup":"\\super %%STRING%%\\nosupersub ",
+	"@vertical-align/sub":"\\sub %%STRING%%\\nosupersub ",
+	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
+	"@strip-periods/false": function (state, string) {
+		return string;
+	},
+	"@quotes/true": function (state, str) {
+		if ("undefined" === typeof str) {
+			return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-quote"));
+		}
+		return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-quote")) + str + CSL.Output.Formats.rtf.text_escape(state.getTerm("close-quote"));
+	},
+	"@quotes/inner": function (state, str) {
+		if ("undefined" === typeof str) {
+			return CSL.Output.Formats.rtf.text_escape("\u2019");
+		}
+		return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-inner-quote")) + str + CSL.Output.Formats.rtf.text_escape(state.getTerm("close-inner-quote"));
+	},
+	"bibstart":"{\\rtf ",
+	"bibend":"}",
+	"@display/block":"%%STRING%%\\line\r\n",
+	"@bibliography/entry": function(state,str){
+		var spacing = [];
+		for(var i=0; i<state.opt.entryspacing; i++) {
+			spacing.push("\\\r\n ");
+		}
+		return str+spacing.join("");
+	},
+	"@display/left-margin": function(state,str){
+		return str+"\\tab";
+	},
+	"@display/right-inline": function (state, str) {
+		return str+"\n";
+	},
+	"@display/indent": function (state, str) {
+		return "\n\\tab "+str;
+	}
+};
+
 CSL.Output.Formats = new CSL.Output.Formats();
