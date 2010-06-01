@@ -36,7 +36,7 @@
 var debug = false;
 
 CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candidate_list) {
-	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key;
+	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key, givensbase, remainder, last_remainder;
 	if (!candidate_list) {
 		//
 		// We start with the state and an ambig key.
@@ -95,8 +95,13 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	maxvals = CSL.getMaxVals.call(state);
 	minval = CSL.getMinVal.call(state);
 	base = CSL.getAmbigConfig.call(state);
-
+	givensbase = [];
+	for (pos = 0, len = base.givens.length; pos < len; pos += 1) {
+		givensbase.push(base.givens[pos].slice());
+	}
 	//	return [];
+	remainder = tokens.length;
+	last_remainder = this.checkerator.seen.length;
 	while (CSL.runCheckerator.call(this.checkerator)) {
 		token = this.checkerator.tokens[this.checkerator.pos];
 		//SNIP-START
@@ -186,7 +191,16 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			}
 		}
 		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)) {
-			base_return = CSL.decrementCheckeratorNames.call(this, state, base);
+			// This remainder stuff is used to trigger aggressive rollout
+			// of expanded givennames.  It's an empirical fix; not quite
+			// sure of the exact logic that moves the values here.
+			remainder = tokens.length - this.checkerator.seen.length;
+			if (remainder === 1 && last_remainder === 0) {
+				base_return = CSL.decrementCheckeratorGivenNames.call(this, state, base, givensbase, token.id);
+			} else {
+				base_return = CSL.decrementCheckeratorNames.call(this, state, base, givensbase);
+			}
+			last_remainder = remainder;
 			this.registerAmbigToken(akey, token.id, base_return);
 			this.checkerator.seen.push(token.id);
 			//SNIP-START
@@ -547,7 +561,18 @@ CSL.incrementCheckeratorAmbigLevel = function () {
 	}
 };
 
-CSL.decrementCheckeratorNames = function (state, base) {
+CSL.decrementCheckeratorGivenNames = function (state, base, givensbase, id) {
+	var base_return, ids, pos, len;
+	ids = this.checkerator.ids;
+	this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
+	base_return = CSL.cloneAmbigConfig(base);
+	for (pos = 0, len = base_return.givens.length; pos < len; pos += 1) {
+		base_return.givens[pos] = givensbase.slice();
+	}
+	return base_return;
+};
+
+CSL.decrementCheckeratorNames = function (state, base, givensbase) {
 	var base_return, do_me, i, j, pos, len, ppos, llen;
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
@@ -558,8 +583,8 @@ CSL.decrementCheckeratorNames = function (state, base) {
 	for (pos = len; pos > -1; pos += -1) {
 		llen = base_return.givens[pos].length - 1;
 		for (ppos = llen; ppos > -1; ppos += -1) {
-			if (base_return.givens[pos][ppos] === 2) {
-				do_me = true;
+			if (base_return.givens[pos][ppos] > givensbase[pos][ppos]) {
+					do_me = true;
 			}
 		}
 	}
@@ -568,7 +593,7 @@ CSL.decrementCheckeratorNames = function (state, base) {
 		for (pos = len; pos > -1; pos += -1) {
 			llen = base_return.givens[pos].length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
-				if (base_return.givens[pos][ppos] === 2) {
+				if (base_return.givens[pos][ppos] > givensbase[pos][ppos]) {
 					i = -1;
 					break;
 				}
