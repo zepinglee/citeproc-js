@@ -87,7 +87,7 @@ var CSL = {
 	STRICT: 1,
 	PREFIX_PUNCTUATION: /[.;:]\s*$/,
 	SUFFIX_PUNCTUATION: /^\s*[.;:,\(\)]/,
-	NUMBER_REGEXP: /(?:^\d+|\d+$|\d{3,})/, // avoid evaluating "F.2d" as numeric
+	NUMBER_REGEXP: /(?:^\d+|\d+$)/,
 	QUOTED_REGEXP_START: /^"/,
 	QUOTED_REGEXP_END: /^"$/,
 	NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/,
@@ -1237,7 +1237,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.17";
+	this.processor_version = "1.0.18";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6712,6 +6712,115 @@ CSL.Output.Formats.prototype.html = {
 		return "<div class=\"csl-indent\">" + str + "</div>\n  ";
 	}
 };
+CSL.Output.Formats.prototype.text = {
+	"text_escape": function (text) {
+		return text;
+	},
+	"bibstart": "",
+	"bibend": "",
+	"@font-style/italic": false,
+	"@font-style/oblique": false,
+	"@font-style/normal": false,
+	"@font-variant/small-caps": false,
+	"@passthrough/true": CSL.Output.Formatters.passthrough,
+	"@font-variant/normal": false,
+	"@font-weight/bold": false,
+	"@font-weight/normal": false,
+	"@font-weight/light": false,
+	"@text-decoration/none": false,
+	"@text-decoration/underline": false,
+	"@vertical-align/baseline": false,
+	"@vertical-align/sup": false,
+	"@vertical-align/sub": false,
+	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
+	"@strip-periods/false": function (state, string) {
+		return string;
+	},
+	"@quotes/true": function (state, str) {
+		if ("undefined" === typeof str) {
+			return state.getTerm("open-quote");
+		}
+		return state.getTerm("open-quote") + str + state.getTerm("close-quote");
+	},
+	"@quotes/inner": function (state, str) {
+		if ("undefined" === typeof str) {
+			return "\u2019";
+		}
+		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+	},
+	"@bibliography/entry": function (state, str) {
+		return str+"\n";
+	},
+	"@display/block": function (state, str) {
+		return "\n"+str;
+	},
+	"@display/left-margin": function (state, str) {
+		return str;
+	},
+	"@display/right-inline": function (state, str) {
+		return str;
+	},
+	"@display/indent": function (state, str) {
+		return "\n    "+str;
+	}
+};
+CSL.Output.Formats.prototype.rtf = {
+	"text_escape": function (text) {
+		return text.replace("\\", "\\\\", "g").replace(/[\x7F-\uFFFF]/g,
+			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+" " })
+			.replace("\t", "\\tab ", "g");
+	},
+	"@passthrough/true": CSL.Output.Formatters.passthrough,
+	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
+	"@font-style/italic":"\\i %%STRING%%\\i0 ",
+	"@font-style/normal":false,
+	"@font-style/oblique":"\\i %%STRING%%\\i0 ",
+	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0 ",
+	"@font-variant/normal":false,
+	"@font-weight/bold":"\\b %%STRING%%\\b0 ",
+	"@font-weight/normal":false,
+	"@font-weight/light":false,
+	"@text-decoration/none":false,
+	"@text-decoration/underline":"\\ul %%STRING%%\\ul0 ",
+	"@vertical-align/baseline":false,
+	"@vertical-align/sup":"\\super %%STRING%%\\nosupersub ",
+	"@vertical-align/sub":"\\sub %%STRING%%\\nosupersub ",
+	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
+	"@strip-periods/false": function (state, string) {
+		return string;
+	},
+	"@quotes/true": function (state, str) {
+		if ("undefined" === typeof str) {
+			return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-quote"));
+		}
+		return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-quote")) + str + CSL.Output.Formats.rtf.text_escape(state.getTerm("close-quote"));
+	},
+	"@quotes/inner": function (state, str) {
+		if ("undefined" === typeof str) {
+			return CSL.Output.Formats.rtf.text_escape("\u2019");
+		}
+		return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-inner-quote")) + str + CSL.Output.Formats.rtf.text_escape(state.getTerm("close-inner-quote"));
+	},
+	"bibstart":"{\\rtf ",
+	"bibend":"}",
+	"@display/block":"%%STRING%%\\line\r\n",
+	"@bibliography/entry": function(state,str){
+		var spacing = [];
+		for(var i=0; i<state.opt.entryspacing; i++) {
+			spacing.push("\\\r\n ");
+		}
+		return str+spacing.join("");
+	},
+	"@display/left-margin": function(state,str){
+		return str+"\\tab";
+	},
+	"@display/right-inline": function (state, str) {
+		return str+"\n";
+	},
+	"@display/indent": function (state, str) {
+		return "\n\\tab "+str;
+	}
+};
 CSL.Output.Formats = new CSL.Output.Formats();
 CSL.Registry = function (state) {
 	var pos, len, ret;
@@ -7237,7 +7346,7 @@ CSL.Registry.NameReg = function (state) {
 };
 var debug = false;
 CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candidate_list) {
-	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key;
+	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key, givensbase, remainder, last_remainder;
 	if (!candidate_list) {
 		ambigs = this.ambigcites[akey].slice();
 		this.ambigcites[akey] = [];
@@ -7270,6 +7379,12 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	maxvals = CSL.getMaxVals.call(state);
 	minval = CSL.getMinVal.call(state);
 	base = CSL.getAmbigConfig.call(state);
+	givensbase = [];
+	for (pos = 0, len = base.givens.length; pos < len; pos += 1) {
+		givensbase.push(base.givens[pos].slice());
+	}
+	remainder = tokens.length;
+	last_remainder = this.checkerator.seen.length;
 	while (CSL.runCheckerator.call(this.checkerator)) {
 		token = this.checkerator.tokens[this.checkerator.pos];
 		if (this.ambigcites[akey].indexOf(token.id) > -1) {
@@ -7302,7 +7417,13 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			}
 		}
 		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)) {
-			base_return = CSL.decrementCheckeratorNames.call(this, state, base);
+			remainder = tokens.length - this.checkerator.seen.length;
+			if (remainder === 1 && last_remainder === 0) {
+				base_return = CSL.decrementCheckeratorGivenNames.call(this, state, base, givensbase, token.id);
+			} else {
+				base_return = CSL.decrementCheckeratorNames.call(this, state, base, givensbase);
+			}
+			last_remainder = remainder;
 			this.registerAmbigToken(akey, token.id, base_return);
 			this.checkerator.seen.push(token.id);
 			continue;
@@ -7507,7 +7628,17 @@ CSL.incrementCheckeratorAmbigLevel = function () {
 		}
 	}
 };
-CSL.decrementCheckeratorNames = function (state, base) {
+CSL.decrementCheckeratorGivenNames = function (state, base, givensbase, id) {
+	var base_return, ids, pos, len;
+	ids = this.checkerator.ids;
+	this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
+	base_return = CSL.cloneAmbigConfig(base);
+	for (pos = 0, len = base_return.givens.length; pos < len; pos += 1) {
+		base_return.givens[pos] = givensbase.slice();
+	}
+	return base_return;
+};
+CSL.decrementCheckeratorNames = function (state, base, givensbase) {
 	var base_return, do_me, i, j, pos, len, ppos, llen;
 	base_return = CSL.cloneAmbigConfig(base);
 	do_me = false;
@@ -7515,8 +7646,8 @@ CSL.decrementCheckeratorNames = function (state, base) {
 	for (pos = len; pos > -1; pos += -1) {
 		llen = base_return.givens[pos].length - 1;
 		for (ppos = llen; ppos > -1; ppos += -1) {
-			if (base_return.givens[pos][ppos] === 2) {
-				do_me = true;
+			if (base_return.givens[pos][ppos] > givensbase[pos][ppos]) {
+					do_me = true;
 			}
 		}
 	}
@@ -7525,7 +7656,7 @@ CSL.decrementCheckeratorNames = function (state, base) {
 		for (pos = len; pos > -1; pos += -1) {
 			llen = base_return.givens[pos].length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
-				if (base_return.givens[pos][ppos] === 2) {
+				if (base_return.givens[pos][ppos] > givensbase[pos][ppos]) {
 					i = -1;
 					break;
 				}
