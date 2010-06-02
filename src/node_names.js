@@ -153,7 +153,7 @@ CSL.Node.names = {
 							}  else {
 								frontnames = [];
 							}
-							if (tnamesets.length > 0 && tnamesets.slice(-1)[0].species === "org" && !(state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
+							if (tnamesets.length > 0 && tnamesets.slice(-1)[0].species === "org") {
 								tnamesets[0].organization_first = true;
 								tnamesets.slice(-1)[0].organization_last = true;
 								if (frontnames.length) {
