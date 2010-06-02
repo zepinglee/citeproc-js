@@ -49,7 +49,7 @@
 var debug = false;
 
 CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candidate_list) {
-	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key, givensbase, remainder, last_remainder;
+	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key, origbase, remainder, last_remainder;
 	if (!candidate_list) {
 		//
 		// We start with the state and an ambig key.
@@ -108,10 +108,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	maxvals = CSL.getMaxVals.call(state);
 	minval = CSL.getMinVal.call(state);
 	base = CSL.getAmbigConfig.call(state);
-	givensbase = [];
-	for (pos = 0, len = base.givens.length; pos < len; pos += 1) {
-		givensbase.push(base.givens[pos].slice());
-	}
+	origbase = CSL.cloneAmbigConfig(base);
 	//	return [];
 	remainder = tokens.length;
 	last_remainder = this.checkerator.seen.length;
@@ -208,10 +205,11 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			// of expanded givennames.  It's an empirical fix; not quite
 			// sure of the exact logic that moves the values here.
 			remainder = tokens.length - this.checkerator.seen.length;
+			//print("remainder: "+remainder+", last_remainder: "+last_remainder);
 			if (remainder === 1 && last_remainder === 0) {
-				base_return = CSL.decrementCheckeratorGivenNames.call(this, state, base, givensbase, token.id);
+				base_return = CSL.decrementCheckeratorGivenNames.call(this, state, base, origbase, token.id);
 			} else {
-				base_return = CSL.decrementCheckeratorNames.call(this, state, base, givensbase);
+				base_return = CSL.decrementCheckeratorNames.call(this, state, base, origbase, token.id);
 			}
 			last_remainder = remainder;
 			this.registerAmbigToken(akey, token.id, base_return);
@@ -227,23 +225,15 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			continue;
 		}
 		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)) {
-			if (!state.citation.opt["disambiguate-add-year-suffix"]) {
-				this.checkerator.mode1_counts = false;
-				this.checkerator.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(base);
-				//SNIP-START
-				if (debug) {
-					CSL.debug("  ---> Max out: remembering token config for: " + token.id);
-					CSL.debug("       (" + base.names + ":" + base.givens + ")");
-				}
-				//SNIP-END
-			} else {
-				//SNIP-START
-				if (debug) {
-					CSL.debug("  ---> Max out: NOT storing token config for: " + token.id);
-					CSL.debug("       (" + base.names + ":" + base.givens + ")");
-				}
-				//SNIP-END
+			//if (true || (!state.opt.has_disambigate && !state.citation.opt["disambiguate-add-year-suffix"]) || !state.citation.opt.oneauthor_bib_sort) {
+			this.checkerator.mode1_counts = false;
+			this.checkerator.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(base);
+			//SNIP-START
+			if (debug) {
+				CSL.debug("  ---> Max out: remembering token config for: " + token.id);
+				CSL.debug("       (" + base.names + ":" + base.givens + ")");
 			}
+			//SNIP-END
 			this.checkerator.seen.push(token.id);
 			base = false;
 			continue;
@@ -574,19 +564,19 @@ CSL.incrementCheckeratorAmbigLevel = function () {
 	}
 };
 
-CSL.decrementCheckeratorGivenNames = function (state, base, givensbase, id) {
+CSL.decrementCheckeratorGivenNames = function (state, base, origbase, id) {
 	var base_return, ids, pos, len;
 	ids = this.checkerator.ids;
 	this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
 	base_return = CSL.cloneAmbigConfig(base);
 	for (pos = 0, len = base_return.givens.length; pos < len; pos += 1) {
-		base_return.givens[pos] = givensbase.slice();
+		base_return.givens[pos] = origbase.givens[pos].slice();
 	}
 	return base_return;
 };
 
-CSL.decrementCheckeratorNames = function (state, base, givensbase) {
-	var base_return, do_me, i, j, pos, len, ppos, llen;
+CSL.decrementCheckeratorNames = function (state, base, origbase, id) {
+	var base_return, do_me, i, j, pos, len, ppos, llen, ids;
 	// two reverse scans, one to determine if there are any expanded
 	// names to stop the unwind, and another to perform the
 	// unwind
@@ -596,18 +586,21 @@ CSL.decrementCheckeratorNames = function (state, base, givensbase) {
 	for (pos = len; pos > -1; pos += -1) {
 		llen = base_return.givens[pos].length - 1;
 		for (ppos = llen; ppos > -1; ppos += -1) {
-			if (base_return.givens[pos][ppos] > givensbase[pos][ppos]) {
-					do_me = true;
+			if (base_return.givens[pos][ppos] > origbase.givens[pos][ppos]) {
+				do_me = true;
 			}
 		}
 	}
 	if (do_me) {
+		ids = this.checkerator.ids;
 		len = base_return.givens.length - 1;
 		for (pos = len; pos > -1; pos += -1) {
 			llen = base_return.givens[pos].length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
-				if (base_return.givens[pos][ppos] > givensbase[pos][ppos]) {
-					i = -1;
+				if (base_return.givens[pos][ppos] > origbase.givens[pos][ppos]) {
+					if (ids.indexOf(id) > -1) {
+						this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
+					}
 					break;
 				}
 				// Be careful to treat the givens and names
