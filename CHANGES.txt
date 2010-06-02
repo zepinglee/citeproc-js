@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.20
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Retain all names added by disambiguate-add-givennames when year-suffix
+  is added to a cite.  While not strictly necessary for disambiguation,
+  the additional information is useful when scanning a bibliography for
+  the target entry.  In the previous implementation, Bennett was guilty
+  of thinking too much like a computer with a hash table, and too little
+  like a reader with a reference list in front of them.
+
+- Eliminate conditions that erroneously suppressed wrapper tags on
+  institutional names.
+
+
+
+=========================
 Changes in version 1.0.19
 =========================
 
