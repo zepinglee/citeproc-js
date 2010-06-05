@@ -118,6 +118,7 @@ CSL.Registry = function (state) {
 	this.uncited = [];
 	this.refreshes = {};
 	this.akeys = {};
+	this.oldseq = {};
 	//
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
@@ -195,6 +196,7 @@ CSL.Registry = function (state) {
 
 CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	var len, pos;
+	this.oldseq = {};
 	//
 	//  1. Receive list as function argument, store as hash and as list.
 	//
@@ -369,13 +371,15 @@ CSL.Registry.prototype.rebuildlist = function () {
 	//
 	this.reflist = [];
 	//
-	//  6. Apply citation numbers to new list.
+	//  6. Apply citation numbers to new list,
+	//     saving off old sequence numbers as we go.
 	//
 	// count = 1;
 	len = this.mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.mylist[pos];
 		this.reflist.push(this.registry[item]);
+		this.oldseq[item] = this.registry[item].seq;
 		this.registry[item].seq = (pos + 1);
 		// count += 1;
 	}
@@ -501,10 +505,12 @@ CSL.Registry.prototype.renumber = function () {
 		item = this.reflist[pos];
 		// save the overhead of rerenderings if citation-number is not
 		// used in the style.
-		if (this.state.opt.update_mode === CSL.NUMERIC && this.state.tmp.taintedItemIDs && item.seq !== (pos + 1)) {
+		item.seq = (pos + 1);
+		// update_mode is set to CSL.NUMERIC if citation-number is rendered
+		// in citations.
+		if (this.state.opt.update_mode === CSL.NUMERIC && this.state.tmp.taintedItemIDs && item.seq !== this.oldseq[item.id]) {
 			this.state.tmp.taintedItemIDs[item.id] = true;
 		}
-		item.seq = (pos + 1);
 	}
 };
 

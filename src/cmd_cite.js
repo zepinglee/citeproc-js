@@ -78,7 +78,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		citation.citationItems[pos].item = Item;
 	}
 	// sort the list to be used in rendering
-	if (!this[this.tmp.area].opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (!this.citation.opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 	//if (sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
@@ -116,6 +116,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// (2) The processor memos the type of style referencing as
 	// CSL.NONE, CSL.NUMERIC or CSL.POSITION in state.opt.update_mode.
 	//
+	// XXXX: NO LONGER
 	// (3) For citations containing cites with backreference note numbers,
 	// a string image of the rendered citation is held in
 	// citation.properties.backref_citation, and a list of
@@ -131,7 +132,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	//
 	// set positions in reconstituted list, noting taints
 	this.registry.citationreg.citationsByItemId = {};
-	if (this.opt.update_mode === CSL.POSITION || true) {
+	if (this.opt.update_mode === CSL.POSITION) {
 		textCitations = [];
 		noteCitations = [];
 	}
@@ -150,7 +151,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				this.registry.citationreg.citationsByItemId[item[1].id].push(citationByIndex[pos]);
 			}
 		}
-		if (this.opt.update_mode === CSL.POSITION || true) {
+		if (this.opt.update_mode === CSL.POSITION) {
 			if (citationByIndex[pos].properties.noteIndex) {
 				noteCitations.push(citationByIndex[pos]);
 			} else {
@@ -164,7 +165,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	if (!has_bibliography) {
 		this.updateItems(update_items);
 	}
-	if (this.opt.update_mode === CSL.POSITION || true) {
+	if (this.opt.update_mode === CSL.POSITION) {
 		for (pos = 0; pos < 2; pos += 1) {
 			citations = [textCitations, noteCitations][pos];
 			first_ref = {};
@@ -325,7 +326,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		}
 	}
-	if (this[this.tmp.area].opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (this.citation.opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
