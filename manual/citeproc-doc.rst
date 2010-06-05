@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a84##
+   version 1.00##a85##
 
 .. class:: info-date
 
-   =D=30 May 2010=D=
+   =D=6 June 2010=D=
 
 .. class:: contributors
 
@@ -1120,6 +1120,10 @@ Values added to individual citation item objects may include:
   to this resource can be found within a specific number of notes,
   counting back from the current position.  What is "near" in
   this sense is style-dependent.
+* ``unsorted``: a boolean flag indicating whether sorting imposed
+  by the style should be suspended for this citation.  When true,
+  cites are rendered in the order in which they are presented
+  in ``citationItems``.
 
 Citations are registered and accessed by the processor internally
 in arrays and Javascript objects.  Calling applications should

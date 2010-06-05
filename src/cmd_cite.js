@@ -84,7 +84,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
 		}
-		sortedItems.sort(this.citation.srt.compareCompositeKeys);
+		if (!citation.properties.unsorted) {
+			sortedItems.sort(this.citation.srt.compareCompositeKeys);
+		}
 	}
 	// attach the sorted list to the citation item
 	citation.sortedItems = sortedItems;
@@ -331,7 +333,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
 		}
-		sortedItems.sort(this.citation.srt.compareCompositeKeys);
+		if (!citation.properties.unsorted) {
+			sortedItems.sort(this.citation.srt.compareCompositeKeys);
+		}
 	}
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
