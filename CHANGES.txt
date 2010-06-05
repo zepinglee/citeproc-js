@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.22
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Bypass sorting of citations that have a value for "unsorted" 
+  in citation.properties.
+
+-------
+Cleanup
+-------
+
+- Document "unsorted" toggle in processor manual.
+
+
+=========================
 Changes in version 1.0.21
 =========================
 
