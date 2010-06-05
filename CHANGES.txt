@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.21
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Tighten up "NUMERIC" update_mode to mean styles that render
+  citation-number in citations (renderings in the bibliography
+  are now ignored for purposes of setting this internal flag).
+
+- The numeric styles fix introduced at version 1.0.17 broke with
+  styles that sort the bibliography on anything other than
+  citation-number (i.e. document first-reference order).  With
+  this release, arbitrary sorts of the bibliography work with
+  numeric styles.
+
+- Position evaluation code is now invoked only in styles that make
+  use of position testing (to save a few cycles).
+
+- Numeric styles now perform targetted citation updates correctly.
+
+
+=========================
 Changes in version 1.0.20
 =========================
 
