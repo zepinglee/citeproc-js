@@ -86,7 +86,9 @@ CSL.Node.text = {
 				// different set of formatting parameters on the output
 				// queue.
 				if (variable === "citation-number") {
-					state.opt.update_mode = CSL.NUMERIC;
+					if (state.build.area === "citation") {
+						state.opt.update_mode = CSL.NUMERIC;
+					}
 					//this.strings.is_rangeable = true;
 					if ("citation-number" === state[state.tmp.area].opt.collapse) {
 						this.range_prefix = "-";
