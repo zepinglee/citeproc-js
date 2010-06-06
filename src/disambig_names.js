@@ -227,6 +227,11 @@ CSL.Registry.NameReg = function (state) {
 					pkey = key[0];
 					ikey = key[1];
 					skey = key[2];
+					// Skip names that have been deleted already.
+					// Needed to clear integration DisambiguateAddGivenname.txt
+					if ("undefined" === typeof this.namereg[pkey]) {
+						continue;
+					}
 					posA = this.namereg[pkey].items.indexOf(posA);
 					items = this.namereg[pkey].items;
 					if (skey) {
