@@ -1284,7 +1284,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.22";
+	this.processor_version = "1.0.23";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7030,10 +7030,15 @@ CSL.Registry.prototype.dorefreshes = function () {
 	}
 };
 CSL.Registry.prototype.setdisambigs = function () {
-	var akey, leftovers, key, pos, len;
+	var akey, leftovers, key, pos, len, id;
 	this.leftovers = [];
 	for (akey in this.akeys) {
 		if (this.akeys.hasOwnProperty(akey)) {
+			for (pos = this.ambigcites[akey].length - 1; pos > -1; pos += -1) {
+				if ("undefined" === typeof this.registry[this.ambigcites[akey][pos]]) {
+					this.ambigcites[akey] = this.ambigcites[akey].slice(0,pos).concat(this.ambigcites[akey].slice(pos + 1));
+				}
+			}
 			if (this.ambigcites[akey].length > 1) {
 				if (this.modes.length) {
 					leftovers = this.disambiguateCites(this.state, akey, this.modes);
@@ -7309,6 +7314,9 @@ CSL.Registry.NameReg = function (state) {
 					pkey = key[0];
 					ikey = key[1];
 					skey = key[2];
+					if ("undefined" === typeof this.namereg[pkey]) {
+						continue;
+					}
 					posA = this.namereg[pkey].items.indexOf(posA);
 					items = this.namereg[pkey].items;
 					if (skey) {
