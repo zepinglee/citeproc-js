@@ -254,7 +254,7 @@ CSL.Output.Formats.prototype.rtf = {
 		return str+spacing.join("");
 	},
 	"@display/left-margin": function(state,str){
-		return str+"\\tab";
+		return str+"\\tab ";
 	},
 	"@display/right-inline": function (state, str) {
 		return str+"\n";

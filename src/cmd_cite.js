@@ -46,6 +46,17 @@
  * or the [AGPLv3] License.”
  */
 
+CSL.Engine.prototype.startPreviewCitationCluster = function (citation) {
+	// Generate output for a hypothetical citation at the current position,
+	// using the set of all preceding citations as context.  Give the
+	// citation ID a special prefix, so that it can be unwound after
+	// preview is complete.
+};
+
+CSL.Engine.prototype.endPreviewCitationCluster = function (citation, has_bibliography) {
+	//
+};
+
 CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliography) {
 	var pos, len, c, citationsPre;
 	citationsPre = [];
