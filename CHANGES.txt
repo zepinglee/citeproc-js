@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.24
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Cope with item IDs of numeric type, and roll back
+  one patch from 1.0.23 that becomes unnecessary as
+  a result.
+
+
+=========================
 Changes in version 1.0.23
 =========================
 
