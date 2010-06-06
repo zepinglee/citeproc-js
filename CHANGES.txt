@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.23
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Cope with two disambiguation cases, involving add-names and
+  add-givenname, that succeeded in crashing the processor.
+
+
+=========================
 Changes in version 1.0.22
 =========================
 
