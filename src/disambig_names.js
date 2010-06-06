@@ -206,7 +206,7 @@ CSL.Registry.NameReg = function (state) {
 	//
 	delitems = function (ids) {
 		var i, item, pos, len, posA, posB, id, fullkey, llen, ppos, otherid;
-		if ("string" === typeof ids) {
+		if ("string" === typeof ids || "number" === typeof ids) {
 			ids = [ids];
 		}
 		ret = {};

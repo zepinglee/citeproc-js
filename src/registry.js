@@ -454,13 +454,6 @@ CSL.Registry.prototype.setdisambigs = function () {
 	//
 	for (akey in this.akeys) {
 		if (this.akeys.hasOwnProperty(akey)) {
-			// Cull entries that have been deleted along the way.
-			// Avoids error raised by  integration_DuplicateItem.txt
-			for (pos = this.ambigcites[akey].length - 1; pos > -1; pos += -1) {
-				if ("undefined" === typeof this.registry[this.ambigcites[akey][pos]]) {
-					this.ambigcites[akey] = this.ambigcites[akey].slice(0,pos).concat(this.ambigcites[akey].slice(pos + 1));
-				}
-			}
 			//
 			// if there are multiple ambigs, disambiguate them
 			if (this.ambigcites[akey].length > 1) {
@@ -636,8 +629,8 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
 	if (!this.ambigcites[akey]) {
 		this.ambigcites[akey] = [];
 	}
-	if (this.ambigcites[akey].indexOf(id) === -1) {
-		this.ambigcites[akey].push(id);
+	if (this.ambigcites[akey].indexOf("" + id) === -1) {
+		this.ambigcites[akey].push("" + id);
 	}
 	this.registry[id].ambig = akey;
 	var dome = false;
