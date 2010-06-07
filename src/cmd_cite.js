@@ -46,18 +46,24 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.Engine.prototype.startPreviewCitationCluster = function (citation) {
+CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
+	var oldMode, oldCitationID, newCitationID, ret;
 	// Generate output for a hypothetical citation at the current position,
-	// using the set of all preceding citations as context.  Give the
-	// citation ID a special prefix, so that it can be unwound after
-	// preview is complete.
+	// Leave the registry in the same state in which it was found.
+	oldMode = this.opt.mode;
+	this.setOutputFormat(newMode);
+	oldCitationID = citation.citationID;
+	newCitationID = this.setCitationId(citation, true);
+
+	ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
+
+	delete this.registry.citationreg.citationById[newCitationID];
+	citation.citationID = oldCitationID;
+	this.setOutputFormat(oldMode);
+	return ret;
 };
 
-CSL.Engine.prototype.endPreviewCitationCluster = function (citation, has_bibliography) {
-	//
-};
-
-CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliography) {
+CSL.Engine.prototype.appendCitationCluster = function (citation) {
 	var pos, len, c, citationsPre;
 	citationsPre = [];
 	len = this.registry.citationreg.citationByIndex.length;
@@ -65,11 +71,40 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 		c = this.registry.citationreg.citationByIndex[pos];
 		citationsPre.push([c.citationID, c.properties.noteIndex]);
 	}
-	return this.processCitationCluster(citation, citationsPre, []);
+	return this.processCitationCluster(citation, citationsPre, [], CSL.ASSUME_ALL_ITEMS_REGISTERED);
 };
 
-CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
+CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance;
+	if (flag === CSL.PREVIEW) {
+		// Identify items that will be added to the registry
+		var tmpItems = [];
+		for (pos = 0, len = citation.citationItems.length; pos < len; pos += 1) {
+			if (!this.registry.registry[citation.citationItems[pos].id]) {
+				tmpItems.push(citation.citationItems[pos].id);
+			}
+		}
+		// We'll need to restore the ambig state of ambig partner
+		// citations, so save off that state here, in oldAmbigData, as
+		// a list of two-element arrays (item id, disambig data).
+		var oldAmbigs = {};
+		var oldAmbigData = [];
+		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
+			for (key in oldAmbigs) {
+				oldAmbigs[CSL.getAmbiguousCite.call(this, tmpItems[pos])] = [];
+				if (oldAmbigs.hasOwnProperty) {
+					var ids = this.registry.ambigcites[oldAmbigs[ppos]];
+					if (ids) {
+						for (ppos = 0, llen = ids.length; ppos < llen; ppos += 1) {
+							var disambig = CSL.cloneAmbigConfig(this.registry[ids[ppos]].disambig);
+							oldAmbigData.push([ids[ppos], disambig]);
+						}
+					}
+				}
+			}
+		}
+		this.updateItems(this.registry.mylist.concat(tmpItems));
+	}
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
@@ -175,7 +210,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	//
 	// update bibliography items here
 	//
-	if (!has_bibliography) {
+	if (flag !== CSL.PREVIEW && flag !== CSL.ASSUME_ALL_ITEMS_REGISTERED) {
 		this.updateItems(update_items);
 	}
 	if (this.opt.update_mode === CSL.POSITION) {
@@ -364,43 +399,75 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// The hard part will be in the testing, as usual.
 	//
 	ret = [];
-	//
-	// Push taints to the return object
-	//
-	for (key in this.tmp.taintedCitationIDs) {
-		if (this.tmp.taintedCitationIDs.hasOwnProperty(key)) {
-			obj = [];
-			citation = this.registry.citationreg.citationById[key];
-			obj.push(citation.properties.index);
-			obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
-			ret.push(obj);
+	if (flag === CSL.PREVIEW) {
+		// If previewing, return only a rendered string
+		ret = this.process_CitationCluster.call(this, citation.sortedItems);
+		// Wind out anything related to new items added for the preview.
+		// This means (1) names, (2) disambig state for affected items,
+		// (3) keys registered in the ambigs pool arrays, and (4) registry
+		// items.
+		//
+		// Roll back names reg of added items
+		this.registry.namereg.delitems(tmpItems);
+		// Roll back disambig states
+		for (pos = 0, len = oldAmbigData.length; pos < len; pos += 1) {
+			this.registry[oldAmbigData[pos][0]].disambig = oldAmbigData[pos][1];
 		}
+		// Drop keys registered in ambigs pool array for each added item
+		for (key in oldAmbigs) {
+			if (oldAmbigs.hasOwnProperty(key)) {
+				var lst = this.registry.ambigcites[oldAmbigs[key]];
+				for (pos = lst.length - 1; pos > -1; pos += 1) {
+					if (tmpItems.indexOf(lst[pos]) > -1) {
+						this.registry.registry[oldAmbigs[key]] = lst.slice(0, pos).concat(lst.slice(pos + 1));
+					}
+				}
+			}
+		}
+		// Delete registry items for temporarily added items
+		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
+			delete this.registry.registry[tmpItems[pos]];
+		}
+	} else {
+		// Run taints only if not previewing
+		//
+		// Push taints to the return object
+		//
+		for (key in this.tmp.taintedCitationIDs) {
+			if (this.tmp.taintedCitationIDs.hasOwnProperty(key)) {
+				obj = [];
+				citation = this.registry.citationreg.citationById[key];
+				obj.push(citation.properties.index);
+				obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
+				ret.push(obj);
+			}
+		}
+		this.tmp.taintedItemIDs = false;
+		this.tmp.taintedCitationIDs = false;
+		obj = [];
+		obj.push(citationsPre.length);
+		obj.push(this.process_CitationCluster.call(this, sortedItems));
+		ret.push(obj);
+		//
+		// note for posterity: Rhino and Spidermonkey produce different
+		// sort results for items with matching keys.  That discrepancy
+		// turned up a subtle bug in the parallel detection code, trapped
+		// at line 266, above, and in line 94 of util_parallel.js.
+		//
+		ret.sort(function (a, b) {
+			if (a[0] > b[0]) {
+				return 1;
+			} else if (a[0] < b[0]) {
+				return -1;
+			} else {
+				return 0;
+			}
+		});
+		//
+		// In normal rendering, return is a list of two-part arrays, with the first element
+		// a citation index number, and the second the text to be inserted.
+		//
 	}
-	this.tmp.taintedItemIDs = false;
-	this.tmp.taintedCitationIDs = false;
-	obj = [];
-	obj.push(citationsPre.length);
-	obj.push(this.process_CitationCluster.call(this, sortedItems));
-	ret.push(obj);
-	//
-	// note for posterity: Rhino and Spidermonkey produce different
-	// sort results for items with matching keys.  That discrepancy
-	// turned up a subtle bug in the parallel detection code, trapped
-	// at line 266, above, and in line 94 of util_parallel.js.
-	//
-	ret.sort(function (a, b) {
-		if (a[0] > b[0]) {
-			return 1;
-		} else if (a[0] < b[0]) {
-			return -1;
-		} else {
-			return 0;
-		}
-	});
-	//
-	// Return is a list of two-part arrays, with the first element
-	// a citation index number, and the second the text to be inserted.
-	//
 	return ret;
 };
 

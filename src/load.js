@@ -100,6 +100,9 @@ var CSL = {
 		print(str);
 	},
 
+	PREVIEW: "Just for laughs.",
+	ASSUME_ALL_ITEMS_REGISTERED: "Assume we have registered all items.",
+
 	START: 0,
 	END: 1,
 	SINGLETON: 2,
