@@ -46,11 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.Engine.prototype.setCitationId = function (citation) {
+CSL.Engine.prototype.setCitationId = function (citation, force) {
 	var ret, id, direction;
 	ret = false;
-	if (!citation.citationID) {
-		ret = true;
+	if (!citation.citationID || force) {
 		id = Math.floor(Math.random() * 100000000000000);
 		while (true) {
 			direction = 0;
@@ -68,6 +67,7 @@ CSL.Engine.prototype.setCitationId = function (citation) {
 				id += -1;
 			}
 		}
+		ret = id;
 	}
 	this.registry.citationreg.citationById[citation.citationID] = citation;
 	return ret;
