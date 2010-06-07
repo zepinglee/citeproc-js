@@ -60,6 +60,8 @@ var CSL = {
 	error: function (str) {
 		print(str);
 	},
+	PREVIEW: "Just for laughs.",
+	ASSUME_ALL_ITEMS_REGISTERED: "Assume we have registered all items.",
 	START: 0,
 	END: 1,
 	SINGLETON: 2,
@@ -1284,7 +1286,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.24";
+	this.processor_version = "1.0.25";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1821,11 +1823,10 @@ CSL.Engine.CitationSort = function () {
 	this.keys = [];
 	this.opt.topdecor = [];
 };
-CSL.Engine.prototype.setCitationId = function (citation) {
+CSL.Engine.prototype.setCitationId = function (citation, force) {
 	var ret, id, direction;
 	ret = false;
-	if (!citation.citationID) {
-		ret = true;
+	if (!citation.citationID || force) {
 		id = Math.floor(Math.random() * 100000000000000);
 		while (true) {
 			direction = 0;
@@ -1843,6 +1844,7 @@ CSL.Engine.prototype.setCitationId = function (citation) {
 				id += -1;
 			}
 		}
+		ret = id;
 	}
 	this.registry.citationreg.citationById[citation.citationID] = citation;
 	return ret;
@@ -2052,7 +2054,19 @@ CSL.getBibliographyEntries = function (bibsection) {
 	this.tmp.disambig_override = false;
 	return [all_item_ids, ret];
 };
-CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliography) {
+CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
+	var oldMode, oldCitationID, newCitationID, ret;
+	oldMode = this.opt.mode;
+	this.setOutputFormat(newMode);
+	oldCitationID = citation.citationID;
+	newCitationID = this.setCitationId(citation, true);
+	ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
+	delete this.registry.citationreg.citationById[newCitationID];
+	citation.citationID = oldCitationID;
+	this.setOutputFormat(oldMode);
+	return ret;
+};
+CSL.Engine.prototype.appendCitationCluster = function (citation) {
 	var pos, len, c, citationsPre;
 	citationsPre = [];
 	len = this.registry.citationreg.citationByIndex.length;
@@ -2060,10 +2074,35 @@ CSL.Engine.prototype.appendCitationCluster = function (citation, has_bibliograph
 		c = this.registry.citationreg.citationByIndex[pos];
 		citationsPre.push([c.citationID, c.properties.noteIndex]);
 	}
-	return this.processCitationCluster(citation, citationsPre, []);
+	return this.processCitationCluster(citation, citationsPre, [], CSL.ASSUME_ALL_ITEMS_REGISTERED);
 };
-CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, has_bibliography) {
+CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance;
+	if (flag === CSL.PREVIEW) {
+		var tmpItems = [];
+		for (pos = 0, len = citation.citationItems.length; pos < len; pos += 1) {
+			if (!this.registry.registry[citation.citationItems[pos].id]) {
+				tmpItems.push(citation.citationItems[pos].id);
+			}
+		}
+		var oldAmbigs = {};
+		var oldAmbigData = [];
+		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
+			for (key in oldAmbigs) {
+				oldAmbigs[CSL.getAmbiguousCite.call(this, tmpItems[pos])] = [];
+				if (oldAmbigs.hasOwnProperty) {
+					var ids = this.registry.ambigcites[oldAmbigs[ppos]];
+					if (ids) {
+						for (ppos = 0, llen = ids.length; ppos < llen; ppos += 1) {
+							var disambig = CSL.cloneAmbigConfig(this.registry[ids[ppos]].disambig);
+							oldAmbigData.push([ids[ppos], disambig]);
+						}
+					}
+				}
+			}
+		}
+		this.updateItems(this.registry.mylist.concat(tmpItems));
+	}
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
@@ -2129,7 +2168,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		}
 	}
-	if (!has_bibliography) {
+	if (flag !== CSL.PREVIEW && flag !== CSL.ASSUME_ALL_ITEMS_REGISTERED) {
 		this.updateItems(update_items);
 	}
 	if (this.opt.update_mode === CSL.POSITION) {
@@ -2257,30 +2296,51 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		}
 	}
 	ret = [];
-	for (key in this.tmp.taintedCitationIDs) {
-		if (this.tmp.taintedCitationIDs.hasOwnProperty(key)) {
-			obj = [];
-			citation = this.registry.citationreg.citationById[key];
-			obj.push(citation.properties.index);
-			obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
-			ret.push(obj);
+	if (flag === CSL.PREVIEW) {
+		ret = this.process_CitationCluster.call(this, citation.sortedItems);
+		this.registry.namereg.delitems(tmpItems);
+		for (pos = 0, len = oldAmbigData.length; pos < len; pos += 1) {
+			this.registry[oldAmbigData[pos][0]].disambig = oldAmbigData[pos][1];
 		}
+		for (key in oldAmbigs) {
+			if (oldAmbigs.hasOwnProperty(key)) {
+				var lst = this.registry.ambigcites[oldAmbigs[key]];
+				for (pos = lst.length - 1; pos > -1; pos += 1) {
+					if (tmpItems.indexOf(lst[pos]) > -1) {
+						this.registry.registry[oldAmbigs[key]] = lst.slice(0, pos).concat(lst.slice(pos + 1));
+					}
+				}
+			}
+		}
+		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
+			delete this.registry.registry[tmpItems[pos]];
+		}
+	} else {
+		for (key in this.tmp.taintedCitationIDs) {
+			if (this.tmp.taintedCitationIDs.hasOwnProperty(key)) {
+				obj = [];
+				citation = this.registry.citationreg.citationById[key];
+				obj.push(citation.properties.index);
+				obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
+				ret.push(obj);
+			}
+		}
+		this.tmp.taintedItemIDs = false;
+		this.tmp.taintedCitationIDs = false;
+		obj = [];
+		obj.push(citationsPre.length);
+		obj.push(this.process_CitationCluster.call(this, sortedItems));
+		ret.push(obj);
+		ret.sort(function (a, b) {
+			if (a[0] > b[0]) {
+				return 1;
+			} else if (a[0] < b[0]) {
+				return -1;
+			} else {
+				return 0;
+			}
+		});
 	}
-	this.tmp.taintedItemIDs = false;
-	this.tmp.taintedCitationIDs = false;
-	obj = [];
-	obj.push(citationsPre.length);
-	obj.push(this.process_CitationCluster.call(this, sortedItems));
-	ret.push(obj);
-	ret.sort(function (a, b) {
-		if (a[0] > b[0]) {
-			return 1;
-		} else if (a[0] < b[0]) {
-			return -1;
-		} else {
-			return 0;
-		}
-	});
 	return ret;
 };
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems) {
@@ -6865,7 +6925,7 @@ CSL.Output.Formats.prototype.rtf = {
 		return str+spacing.join("");
 	},
 	"@display/left-margin": function(state,str){
-		return str+"\\tab";
+		return str+"\\tab ";
 	},
 	"@display/right-inline": function (state, str) {
 		return str+"\n";
