@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a85##
+   version 1.00##a86##
 
 .. class:: info-date
 
-   =D=6 June 2010=D=
+   =D=8 June 2010=D=
 
 .. class:: contributors
 
@@ -566,6 +566,8 @@ addition of a citation triggers changes to other citations:
 
    citeproc.processCitationCluster(citation,citationsPre,citationsPost);
 
+   ...
+
    [
       [ 1,"(Ronald Snoakes 1950)" ],
       [ 3,"(Richard Snoakes 1950)" ]
@@ -575,6 +577,29 @@ A worked example showing the result of multiple transactions can be
 found in the |link| `processor test suite`__.
 
 __ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/integration_IbidOnInsert.txt
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``previewCitationCluster()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``previewCitationCluster()`` command takes the same arguments
+as ``processCitationCluster()``, plus a flag to indicate the
+output mode.  The return value is a string representing the
+citation as it would be rendered in the specified context. There is 
+no effect on the processor state.
+
+.. sourcecode:: js
+
+   var citationsPre = [ ["citation-abc",1], ["citation-def",2] ];
+
+   var citationsPost = [ ["citation-ghi",4] ];
+
+   citeproc.previewCitationCluster(citation,citationsPre,citationsPost,"html");
+
+   ...
+
+   "(Richard Snoakes 1950)"
 
 
 #####################
