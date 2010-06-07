@@ -1,6 +1,36 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.25
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Provide new command, previewCitationCluster(), that returns
+  string for hypothetical citation at specified position,
+  without affecting processor state.
+
+- Fix bug that would have cause appendCitationCluster() to
+  run updateItems() unnecessarily.
+
+- Provide for forced generation of citationID, for use
+  in previewing.
+
+-------
+Cleanup
+-------
+
+- Provide more meaningful internal flags for processCitationCluster().
+
+- Add entry for new previewCitationCluster() command to processor
+  manual.
+
+- A few tests of the new previewCitationCluster() command.
+
+
+=========================
 Changes in version 1.0.24
 =========================
 
