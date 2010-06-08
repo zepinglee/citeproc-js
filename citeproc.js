@@ -1714,6 +1714,8 @@ CSL.Engine.Opt = function () {
 	this["locale-name"] = [];
 	this["default-locale"] = ["en"];
 	this.update_mode = CSL.NONE;
+	this.bib_mode = CSL.NONE;
+	this.sort_citations = false;
 	this["et-al-min"] = 0;
 	this["et-al-use-first"] = 1;
 	this["et-al-subsequent-min"] = false;
@@ -2081,12 +2083,12 @@ CSL.getBibliographyEntries = function (bibsection) {
 	return [all_item_ids, ret];
 };
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
-	var oldMode, oldCitationID, newCitationID, ret;
+	var oldMode, oldCitationID, newCitationID, ret, data;
 	oldMode = this.opt.mode;
 	this.setOutputFormat(newMode);
 	oldCitationID = citation.citationID;
 	newCitationID = this.setCitationId(citation, true);
-	ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
+	[data, ret] = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
 	delete this.registry.citationreg.citationById[newCitationID];
 	citation.citationID = oldCitationID;
 	this.setOutputFormat(oldMode);
@@ -2103,7 +2105,9 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 	return this.processCitationCluster(citation, citationsPre, [], CSL.ASSUME_ALL_ITEMS_REGISTERED);
 };
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data;
+	return_data = {"bibchange": false};
+	this.registry.return_data = return_data;
 	if (flag === CSL.PREVIEW) {
 		var tmpItems = [];
 		for (pos = 0, len = citation.citationItems.length; pos < len; pos += 1) {
@@ -2141,7 +2145,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		sortedItems.push(newitem);
 		citation.citationItems[pos].item = Item;
 	}
-	if (!this.citation.opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (!this.opt.citation_number_sort && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
@@ -2304,7 +2308,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		}
 	}
-	if (this.citation.opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (this.opt.citation_number_sort && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
@@ -2367,7 +2371,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		});
 	}
-	return ret;
+	return [return_data, ret];
 };
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems) {
 	var str;
@@ -3173,7 +3177,7 @@ CSL.Node.key = {
 		if (this.variables.length) {
 			variable = this.variables[0];
 			if (variable === "citation-number" && state.build.area === "citation_sort") {
-				state.citation.opt["citation-number-sort"] = true;
+				state.opt.citation_number_sort = true;
 			}
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				names_start_token = new CSL.Token("names", CSL.START);
@@ -4086,6 +4090,7 @@ CSL.Node.sort = {
 		if (this.tokentype === CSL.START) {
 			if (state.build.area === "citation") {
 				state.parallel.use_parallels = false;
+				state.opt.sort_citations = true;
 			}
 			state.build.sort_flag  = true;
 			state.build.area_return = state.build.area;
@@ -4132,6 +4137,9 @@ CSL.Node.text = {
 				if (variable === "citation-number") {
 					if (state.build.area === "citation") {
 						state.opt.update_mode = CSL.NUMERIC;
+					}
+					if (state.build.area === "bibliography") {
+						state.opt.bib_mode = CSL.NUMERIC;
 					}
 					if ("citation-number" === state[state.tmp.area].opt.collapse) {
 						this.range_prefix = "-";
@@ -6977,6 +6985,7 @@ CSL.Registry = function (state) {
 	this.refreshes = {};
 	this.akeys = {};
 	this.oldseq = {};
+	this.return_data = {};
 	this.ambigcites = {};
 	this.sorter = new CSL.Registry.Comparifier(state, "bibliography_sort");
 	this.modes = CSL.getModes.call(this.state);
@@ -7039,6 +7048,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
 				this.refreshes[id] = true;
 			}
 			delete this.registry[key];
+			this.return_data.bibchange = true;
 		}
 	}
 };
@@ -7066,6 +7076,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			abase = CSL.getAmbigConfig.call(this.state);
 			this.registerAmbigToken(akey, item, abase);
 			this.touched[item] = true;
+			this.return_data.bibchange = true;
 		}
 	}
 };
@@ -7148,8 +7159,13 @@ CSL.Registry.prototype.renumber = function () {
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.reflist[pos];
 		item.seq = (pos + 1);
-		if (this.state.opt.update_mode === CSL.NUMERIC && this.state.tmp.taintedItemIDs && item.seq !== this.oldseq[item.id]) {
-			this.state.tmp.taintedItemIDs[item.id] = true;
+		if (this.state.tmp.taintedItemIDs && item.seq !== this.oldseq[item.id]) {
+			if (this.state.opt.update_mode === CSL.NUMERIC) {
+				this.state.tmp.taintedItemIDs[item.id] = true;
+			}
+			if (this.state.opt.bib_mode === CSL.NUMERIC) {
+				this.return_data.bibchange = true;
+			}
 		}
 	}
 };
