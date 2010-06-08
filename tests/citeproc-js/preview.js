@@ -154,19 +154,21 @@ doh.register("citeproc_js.preview", [
 		doh.assertEqual("(Doe, Roe)", res);
 	},
 	function testOverlayPreview() {
-		var sys = new RhinoTest([ITEM1]);
-		var style = new CSL.Engine(sys,mycsl);
-		var res1 = style.processCitationCluster(CITATION1, [], []);
-		var res2 = style.previewCitationCluster(CITATION1, [], [], "html");
+		var sys, style, res1, res2, data;
+		sys = new RhinoTest([ITEM1]);
+		style = new CSL.Engine(sys,mycsl);
+		[data, res1] = style.processCitationCluster(CITATION1, [], []);
+		res2 = style.previewCitationCluster(CITATION1, [], [], "html");
 		doh.assertEqual("(Doe, Roe)", res1[0][1]);
 		doh.assertEqual("(Doe, Roe)", res2);
 	},
 	function testRollbackGivennameDisambig() {
-		var sys = new RhinoTest([ITEM1, ITEM2]);
-		var style = new CSL.Engine(sys,mycsl);
-		var res1 = style.processCitationCluster(CITATION1, [], []);
-		var res2 = style.previewCitationCluster(CITATION2, [["CITATION-1", 1]], [], "html");
-		var res3 = style.processCitationCluster(CITATION3, [["CITATION-1", 1]], []);
+		var sys, style, res1, res2, res3, data;
+		sys = new RhinoTest([ITEM1, ITEM2]);
+		style = new CSL.Engine(sys,mycsl);
+		[data, res1] = style.processCitationCluster(CITATION1, [], []);
+		res2 = style.previewCitationCluster(CITATION2, [["CITATION-1", 1]], [], "html");
+		[data, res3] = style.processCitationCluster(CITATION3, [["CITATION-1", 1]], []);
 		doh.assertEqual("(Doe, Roe)", res1[0][1]);
 		doh.assertEqual("(J. Doe, R. Doe)", res2);
 		doh.assertEqual("(Doe, Roe)", res3[0][1]);

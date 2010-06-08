@@ -195,11 +195,12 @@ doh.register("citeproc_js.restore", [
 	},
 	function testThatItWorksAtAll() {
 		function testme () {
-			var sys = new RhinoTest([XITEM1, XITEM2]);
-			var style = new CSL.Engine(sys,mycsl);
+			var sys, style, res1, res2, data;
+			sys = new RhinoTest([XITEM1, XITEM2]);
+			style = new CSL.Engine(sys,mycsl);
 			try {
-				var res1 = style.processCitationCluster(XCITATION1, [], []);
-				var res2 = style.processCitationCluster(XCITATION2, [], []);
+				[data, res1] = style.processCitationCluster(XCITATION1, [], []);
+				[data, res2] = style.processCitationCluster(XCITATION2, [], []);
 				style.restoreProcessorState([XCITATION1x, XCITATION2x]);
 				return "Success";
 			} catch (e) {
@@ -209,12 +210,13 @@ doh.register("citeproc_js.restore", [
 		doh.assertEqual("Success", testme());
 	},
 	function testThatItWorksAtAll() {
-		var sys = new RhinoTest([XITEM1, XITEM2, XITEM3]);
-		var style = new CSL.Engine(sys,Xmycsl);
-		var res1 = style.processCitationCluster(XCITATION1, [], []);
-		var res2 = style.processCitationCluster(XCITATION2, [["CITATION-1", 1]], []);
+		var sys, style, res1, res2, res3, data;
+		sys = new RhinoTest([XITEM1, XITEM2, XITEM3]);
+		style = new CSL.Engine(sys,Xmycsl);
+		[data, res1] = style.processCitationCluster(XCITATION1, [], []);
+		[data, res2] = style.processCitationCluster(XCITATION2, [["CITATION-1", 1]], []);
 		style.restoreProcessorState([XCITATION1x, XCITATION2x]);
-		var res3 = style.processCitationCluster(XCITATION3, [["CITATION-1", 1],["CITATION-2", 2]], []);
+		[data, res3] = style.processCitationCluster(XCITATION3, [["CITATION-1", 1],["CITATION-2", 2]], []);
 		doh.assertEqual(2, res3.length);
 		doh.assertEqual(0, res3[0][0]);
 		doh.assertEqual("(Roe; J. Doe)", res3[0][1]);
