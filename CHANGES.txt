@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.27
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix obvious memory leak and corruption bug affecting sortedItems 
+  elements, of citationItem content objects.
+  
+
+=========================
 Changes in version 1.0.26
 =========================
 
