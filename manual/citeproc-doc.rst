@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a86##
+   version 1.00##a87##
 
 .. class:: info-date
 
@@ -279,6 +279,14 @@ arbitrary, system-dependent identifier, used by the locally customized
 ``retrieveItem()`` method to retrieve
 actual item data.  
 
+########################
+``updateUncitedItems()``
+########################
+
+The ``updateUncitedItems()`` command has the same interface
+as ``updateItems()``, but the reference items it adds are
+not subject to deletion when no longer referenced by a
+cite anywhere in the document.
 
 
 ######################
@@ -600,6 +608,27 @@ no effect on the processor state.
    ...
 
    "(Richard Snoakes 1950)"
+
+
+
+
+###########################
+``restoreProcessorState()``
+###########################
+
+The ``restoreProcessorState()`` command can be used to restore the
+processor state in a single operation, where citation objects,
+complete with position variables and ``sortkeys``, are available.
+The command takes a single argument, which is an array of such
+citation objects:
+
+.. sourcecode:: js
+
+   citeproc.restoreProcessorState(citations);
+
+
+Uncited items must be restored separately using the ``updateUncitedItems()``
+command.
 
 
 #####################
