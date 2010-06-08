@@ -1,6 +1,28 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.26
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement new command restoreProcessorState(), for use in
+  ... restoring the processor state, when position variables
+  and citation sort keys are already known.
+
+-------
+Cleanup
+-------
+
+- Add entry for new restoreProcessorState() command to processor
+  manual.
+
+- A few tests of the restoreProcessorState() command.
+
+
+=========================
 Changes in version 1.0.25
 =========================
 
