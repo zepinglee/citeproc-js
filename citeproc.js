@@ -1286,7 +1286,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.26";
+	this.processor_version = "1.0.27";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1853,8 +1853,8 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 	var pos, len, ppos, llen, item, Item, newitem, citationList, itemList, sortedItems;
 	citationList = [];
 	itemList = [];
-	sortedItems = [];
 	for (pos = 0, len = citations.length; pos < len; pos += 1) {
+		sortedItems = [];
 		for (ppos = 0, len = citations[pos].citationItems.length; ppos < llen; ppos += 1) {
 			item = citations[pos].citationItems[ppos];
 			Item = this.sys.retrieveItem(item.id);
@@ -1867,10 +1867,10 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 			sortedItems.sort(this.citation.srt.compareCompositeKeys);
 		}
 		citations[pos].sortedItems = sortedItems;
-		this.updateItems(itemList);
 		this.registry.citationreg.citationById[citations[pos].citationID] = citations[pos];
 		citationList.push([citations[pos].citationID, citations[pos].properties.noteIndex]);
 	}
+	this.updateItems(itemList);
 	if (citations && citations.length) {
 		this.processCitationCluster(citations[0], [], citationList.slice(1));
 	}
