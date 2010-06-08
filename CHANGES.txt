@@ -1,5 +1,45 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+======================================
+Changes in version 1.0.28 [API change]
+======================================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- This version introduces a significant change to the return
+  value of processCitationCluster().  It is now an array with
+  two elements, the first being a JS object that serves as a
+  data segment, and the second the list of two-element arrays
+  representing insertion indexes and strings for insertion
+  (as previously documented).  An API change of this scale
+  probably calls for some more visible sign in the version
+  numbering, but the original statement on versioning says
+  that the major and minor numbers will align with the CSL
+  schema, so we stay at level 1.0.
+
+- The data segment referred to above contains just one element
+  currently, "bibchange", which is true if processing the
+  citation results in any change affecting the bibliography.
+
+- This release also introduces one change and one addition to
+  style configuration flags.  The flag at citation.opt["citation-number-sort"]
+  has been moved to opt.citation_number_sort, for clarity and
+  consistency.  A new flag, open.sort_citations, is true if
+  citations are sorted by the style in any way.
+
+-------
+Cleanup
+-------
+
+- Document API change in the processor manual.
+
+- Document availability of opt.citation_number_sort and 
+  opt.sort_citations in the processor manual.
+
+
+
 =========================
 Changes in version 1.0.27
 =========================
