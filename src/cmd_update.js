@@ -46,6 +46,45 @@
  * or the [AGPLv3] License.”
  */
 
+CSL.Engine.prototype.restoreProcessorState = function (citations) {
+	var pos, len, ppos, llen, item, Item, newitem, citationList, itemList, sortedItems;
+	// Quickly restore state from citation details retained by
+	// calling application.
+	//
+	// Position details and sortkeys are assumed to be correct.  Item
+	// data is retrieved, and sortedItems arrays are created and
+	// sorted as required by the current style.
+	citationList = [];
+	itemList = [];
+	sortedItems = [];
+	for (pos = 0, len = citations.length; pos < len; pos += 1) {
+		for (ppos = 0, len = citations[pos].citationItems.length; ppos < llen; ppos += 1) {
+			item = citations[pos].citationItems[ppos];
+			Item = this.sys.retrieveItem(item.id);
+			newitem = [Item, item];
+			sortedItems.push(newitem);
+			citations[pos].citationItems[ppos].item = Item;
+			itemList.push(item.id);
+		}
+		if (!citations[pos].properties.unsorted) {
+			sortedItems.sort(this.citation.srt.compareCompositeKeys);
+		}
+		citations[pos].sortedItems = sortedItems;
+		// Register Items
+		this.updateItems(itemList);
+		// Save citation data in registry
+		this.registry.citationreg.citationById[citations[pos].citationID] = citations[pos];
+		// Save off citationIDs and index positions, for use in
+		// final initialization.
+		citationList.push([citations[pos].citationID, citations[pos].properties.noteIndex]);
+	}
+	// Rendering one citation restores remainder of processor state.
+	if (citations && citations.length) {
+		this.processCitationCluster(citations[0], [], citationList.slice(1));
+	}
+};
+
+
 CSL.Engine.prototype.updateItems = function (idList) {
 	var debug = false;
 	//SNIP-START
