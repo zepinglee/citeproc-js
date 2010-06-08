@@ -132,6 +132,7 @@ StdRhinoTest.prototype._readTest = function(){
 
 
 StdRhinoTest.prototype.run = function(){
+	var result, data;
 	// print(this.myname);
 	var len, pos, ret, id_set, nick;
 	ret = new Array();
@@ -172,7 +173,7 @@ StdRhinoTest.prototype.run = function(){
 			this.style.processCitationCluster(citation[0],citation[1],citation[2]);
 		};
 		var citation = this.test.citations.slice(-1)[0];
-		var result = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
+		[data, result] = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
 	};
 	var indexMap = new Object();
 	for (var pos in result){
