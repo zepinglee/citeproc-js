@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a87##
+   version 1.00##a88##
 
 .. class:: info-date
 
@@ -242,6 +242,22 @@ The version of the processor itself can be obtained
 from the attribute ``processor_version``.  The supported
 CSL version can be obtained from ``csl_version``.
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Processor Configuration Flags
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The processor has several flags that can be used by the
+calling application to shape the user interface to the
+processor.  These include (assuming the instantiated processor
+is in an object ``citeproc``):
+
+``citeproc.opt.sort_citations``
+   Set to true if the style is one that sorts citations
+   in any way.
+
+``citeproc.opt.citation_number_sort``
+   Set to true if citations are sorted by citation
+   number.
 
 
 #################
@@ -563,8 +579,13 @@ arguments: a citation object, a list of citation ID/note index pairs
 representing existing citations that precede the target citation, and
 a similar list of pairs for citations coming after the target.  Like
 the ``appendCitationCluster()`` command run without a flag, its
-return array may contain multiple elements, where the edit or
-addition of a citation triggers changes to other citations:
+return value is an array of two elements: a data object, and
+an array of one or more index/string pairs, one for each citation
+affected by the citation edit or insertion operation.  As shown below,
+the data object currently has a single boolean value, ``bibchange``,
+which indicates whether the document bibliography is in need of
+refreshing as a result of the ``processCitationCluster()`` operation.
+
 
 .. sourcecode:: js
 
@@ -577,8 +598,13 @@ addition of a citation triggers changes to other citations:
    ...
 
    [
-      [ 1,"(Ronald Snoakes 1950)" ],
-      [ 3,"(Richard Snoakes 1950)" ]
+      {
+        "bibchange": true
+      },
+      [
+         [ 1,"(Ronald Snoakes 1950)" ],
+         [ 3,"(Richard Snoakes 1950)" ]
+      ]
    ]
 
 A worked example showing the result of multiple transactions can be
@@ -1480,12 +1506,14 @@ a call controlled by the ``suppress-author`` element, *in that order*:
    
 .. sourcecode:: js
 
-   var citation = { 
+   var citation, result;
+
+   citation = { 
      "citationItems": ["ID-3", {"suppress-author": 1}],
      "properties": { "noteIndex": 5 }
    }
 
-   var result = citeproc.processCitationCluster( citation );
+   [data, result] = citeproc.processCitationCluster( citation );
 
 In the first call, the processor will automatically suppress decorations (superscripting).
 Also in the first call, if a numeric style is used, the processor will provide a localized 
