@@ -47,7 +47,7 @@
  */
 
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
-	var oldMode, oldCitationID, newCitationID, ret;
+	var oldMode, oldCitationID, newCitationID, ret, data;
 	// Generate output for a hypothetical citation at the current position,
 	// Leave the registry in the same state in which it was found.
 	oldMode = this.opt.mode;
@@ -55,7 +55,7 @@ CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, 
 	oldCitationID = citation.citationID;
 	newCitationID = this.setCitationId(citation, true);
 
-	ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
+	[data, ret] = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
 
 	delete this.registry.citationreg.citationById[newCitationID];
 	citation.citationID = oldCitationID;
@@ -75,7 +75,9 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 };
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data;
+	return_data = {"bibchange": false};
+	this.registry.return_data = return_data;
 	if (flag === CSL.PREVIEW) {
 		// Identify items that will be added to the registry
 		var tmpItems = [];
@@ -124,7 +126,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		citation.citationItems[pos].item = Item;
 	}
 	// sort the list to be used in rendering
-	if (!this.citation.opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (!this.opt.citation_number_sort && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 	//if (sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
@@ -374,7 +376,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		}
 	}
-	if (this.citation.opt["citation-number-sort"] && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
+	if (this.opt.citation_number_sort && sortedItems && sortedItems.length > 1 && this.citation_sort.tokens.length > 0) {
 		len = sortedItems.length;
 		for (pos = 0; pos < len; pos += 1) {
 			sortedItems[pos][1].sortkeys = CSL.getSortKeys.call(this, sortedItems[pos][0], "citation_sort");
@@ -468,7 +470,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// a citation index number, and the second the text to be inserted.
 		//
 	}
-	return ret;
+	return [return_data, ret];
 };
 
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems) {

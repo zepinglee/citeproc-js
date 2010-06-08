@@ -119,6 +119,7 @@ CSL.Registry = function (state) {
 	this.refreshes = {};
 	this.akeys = {};
 	this.oldseq = {};
+	this.return_data = {};
 	//
 	// each ambig is a list of the ids of other objects
 	// that have the same base-level rendering
@@ -276,6 +277,8 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
 			//  3d. Delete all items in deletion list from hash.
 			//
 			delete this.registry[key];
+			// For processCitationCluster()
+			this.return_data.bibchange = true;
 		}
 	}
 	// Disabled.  See formats.js for code.
@@ -347,6 +350,8 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			//  4h. Make a note that this item needs its sort keys refreshed.
 			//
 			this.touched[item] = true;
+			// For processCitationCluster()
+			this.return_data.bibchange = true;
 		}
 	}
 	// Disabled.  See formats.js for code.
@@ -508,8 +513,13 @@ CSL.Registry.prototype.renumber = function () {
 		item.seq = (pos + 1);
 		// update_mode is set to CSL.NUMERIC if citation-number is rendered
 		// in citations.
-		if (this.state.opt.update_mode === CSL.NUMERIC && this.state.tmp.taintedItemIDs && item.seq !== this.oldseq[item.id]) {
-			this.state.tmp.taintedItemIDs[item.id] = true;
+		if (this.state.tmp.taintedItemIDs && item.seq !== this.oldseq[item.id]) {
+			if (this.state.opt.update_mode === CSL.NUMERIC) {
+				this.state.tmp.taintedItemIDs[item.id] = true;
+			}
+			if (this.state.opt.bib_mode === CSL.NUMERIC) {
+				this.return_data.bibchange = true;
+			}
 		}
 	}
 };

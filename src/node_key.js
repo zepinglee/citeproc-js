@@ -92,7 +92,7 @@ CSL.Node.key = {
 			// be a little more conservative, but secondary sorts
 			// by this variable seem unlikely.
 			if (variable === "citation-number" && state.build.area === "citation_sort") {
-				state.citation.opt["citation-number-sort"] = true;
+				state.opt.citation_number_sort = true;
 			}
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//

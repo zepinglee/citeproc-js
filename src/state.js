@@ -56,6 +56,8 @@ CSL.Engine.Opt = function () {
 	this["locale-name"] = [];
 	this["default-locale"] = ["en"];
 	this.update_mode = CSL.NONE;
+	this.bib_mode = CSL.NONE;
+	this.sort_citations = false;
 	/*
 	 * Default values.
 	 * The various et-al values are set globally,
