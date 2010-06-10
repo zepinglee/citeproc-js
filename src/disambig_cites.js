@@ -49,15 +49,75 @@
 var debug = true;
 
 /*
- * What the variables mean
+ * Pseudocode for disambiguation
  *
- * Disambiguation is hard, and this code is not well composed.
- * It is known to work only because it has been heavily tested.
- * Here is an attempt to extract some order from what lies below.
+ * This module has been rewritten several times.  In each iteration, it
+ * has gradually gotten wooly and incomprehensible as additional wrinkles
+ * in disambiguation requirements emerged.  The current implementation is
+ * meant to be as lucid as possible, given the complexity of the process.
  *
- * Processing is done in a while loop.
+ * Disambiguation actions affect the state of several state objects
+ * in the citeproc-js metabolism:
  *
- * Before entering the loop,
+ * (1) Names registry entries
+ * (2) Reference registry entries
+ *     - the disambig object
+ *     - the ambig key string for the group
+ *
+ * Disambiguation of type (1) is performed first, if required.  The code
+ * for that is in disambig_names.js.  Type (2) disambiguation is handled
+ * by the code below.
+ *
+ * Disambiguation of type (2) involves three possible operations, which
+ * are performed in the following sequence:
+ *   (a) progressive transformation of names;
+ *   (b) rendering with disambiguate="true"; and
+ *   (c) application of year suffixes.
+ *
+ * The result of disambiguation is stored in a unique "disambig"
+ * object for each item in the registry.  The aim of disambiguation
+ * in this module is to set this bundle of values, which are used to
+ * control the form of the citation during rendering.
+ *
+ * The functions in this module used to perform each stage of
+ * disambiguation are as follows:
+ *   (a)(i)  disNames();
+ *   (a)(ii) disGivens();
+ *   (b)     disExtraText()
+ *   (c)     disYears()
+ *
+ * The wrapper function disambigateCites() sets up variables
+ * that are fed to each of the above functions in sequence.
+ * Some functions may be skipped, depending on the configuration
+ * of the style.
+ *
+ * The disambiguateCites() function operates on a group of
+ * cites that share the same "akey" or ambiguity key, which is the
+ * form of the cite when rendered in "subsequent" position by
+ * the style, with any dynamically generated numbers (note backreferences,
+ * year-suffixes, etc) set to nil.
+ *
+ * The registry disambig objects for each cite to be disambiguated
+ * are set to a base value by disambigCites() at the start of processing.
+ * The base "names" and "givens" values may vary between citations at
+ * the start of processing, depending on the number of names available
+ * on the target item, and the effect of Type (1) disambiguation.
+ *
+ * The disambig object is incremented during disambiguation.  The
+ * algorithm used for incrementing differs for each of the functions
+ * (a)-(c) listed above:
+ *   (a)(i)  disNames():     one name is added for each increment
+ *   (a)(ii) disGivens():    each name is incremented in turn, from
+ *                           base to max value
+ *   (b)     disExtraText(): extra text is toggled on, then off
+ *   (c)     disYears():     year suffixes are applied in a single
+ *                           operation.
+ *
+ * [...]
+ *
+ * During disambiguation, the rendered form of cites at successive
+ * increments of
+ *
  */
 
 CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candidate_list) {
@@ -317,6 +377,9 @@ CSL.Checkerator = function () {};
 
 CSL.initCheckerator = function (tokens, modes, akey, registry) {
 	var len, pos;
+	// set during names disambiguation, rerun in givens
+	// disambiguation.
+	this.tokensets = {};
 	this.registry = registry;
 	this.tokens = tokens;
 	this.seen = [];
@@ -445,8 +508,6 @@ CSL.evaluateCheckeratorClashes = function () {
 				}
 				this.ids[this.ids.indexOf(this.test_strangers[0])] = false;
 			}
-			print("test_partners: "+this.test_partners);
-			print("test_strangers: "+this.test_strangers);
 			//this.ids[this.pos] = false;
 			//this.pos += 1;
 			// xx print("reset 2");
@@ -566,7 +627,14 @@ CSL.maxCheckeratorAmbigLevel = function (origbase) {
 					this.pos = 0;
 				} else {
 					print("n other")
-					this.pos += 1;
+					print("test_partners: "+this.test_partners);
+					if (this.test_partners.length) {
+
+					}
+					print("test_strangers: "+this.test_strangers);
+					if (this.test_strangers.length === 0) {
+						this.pos += 1;
+					}
 				}
 			} else {
 				print("n two")
