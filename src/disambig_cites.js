@@ -159,6 +159,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 		maxvals = CSL.getMaxVals.call(state);
 		minval = CSL.getMinVal.call(state);
 		base = CSL.getAmbigConfig.call(state);
+		var testbase = CSL.cloneAmbigConfig(base);
 		//
 		// XXXXX: band-aid to block infinite looping for cites
 		// with no names to work with.
@@ -192,12 +193,26 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 		CSL.setMinVal.call(this.checkerator, minval);
 
 		len = tokens.length;
+		this.checkerator.test_partners = [];
 		for (pos = 0; pos < len; pos += 1) {
 			testpartner = tokens[pos];
 			if (token.id === testpartner.id) {
 				continue;
 			}
 			otherstr = CSL.getAmbiguousCite.call(state, testpartner, base);
+			// Oh, crap.  We need to skip this item if the base differs from
+			// that of the current cite.  How to do that without a performance hit?
+			// Patch up for now.  But there might be a better way to do this.
+			if (this.checkerator.maxed_out_bases[testpartner.id]) {
+				if (CSL.compareAmbigConfig(base, testbase)) {
+					base.names = testbase.names.slice();
+					base.givens = testbase.givens.slice();
+					for (pos = 0, len = testbase.givens; pos < len; pos += 1) {
+						base.givens[pos] = testbase.givens[pos].slice();
+					}
+					continue;
+				}
+			}
 			//SNIP-START
 			if (debug) {
 				CSL.debug("  ---> last clashes: " + this.checkerator.lastclashes);
@@ -210,6 +225,11 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 
 			if (CSL.checkCheckeratorForClash.call(this.checkerator, str, otherstr)) {
 				break;
+			} else {
+				if (CSL.compareAmbigConfig(base, testbase) === 0) {
+					// xx print("  clashing bases are equivalent, could cache testpartner");
+					this.checkerator.test_partners.push(testpartner.id);
+				}
 			}
 		}
 		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)) {
@@ -219,6 +239,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			base_return = CSL.decrementCheckeratorNames.call(this, state, base, origbase, token.id);
 			this.registerAmbigToken(akey, token.id, base_return);
 			if (this.checkerator.seen.indexOf(token.id) === -1) {
+				print("pushing token id to seen: "+token.id);
 				this.checkerator.seen.push(token.id);
 			}
 			//SNIP-START
@@ -229,13 +250,14 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 				CSL.debug("         givens: " + base_return.givens);
 			}
 			//SNIP-END
-			// xx print("tokens_length: "+this.checkerator.tokens_length);
-			// xx print("seen: "+this.checkerator.seen);
-			// xx print("tokens: "+this.checkerator.tokens);
+			print("tokens_length: "+this.checkerator.tokens_length);
+			print("seen: "+this.checkerator.seen);
+			print("tokens: "+this.checkerator.tokens);
+			print("pos: "+this.checkerator.pos);
 
 			continue;
 		}
-		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)) {
+		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator, origbase)) {
 			//if (true || (!state.opt.has_disambigate && !state.citation.opt["disambiguate-add-year-suffix"]) || !state.citation.opt.oneauthor_bib_sort) {
 			this.checkerator.mode1_counts = false;
 			this.checkerator.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(base);
@@ -266,6 +288,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	for (pos = 0; pos < len; pos += 1) {
 		id = this.checkerator.ids[pos];
 		if (id) {
+			// xx print("stuffed in ret: "+id);
 			ret.push(this.registry[id]);
 		}
 	}
@@ -274,8 +297,11 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 	len = this.checkerator.maxed_out_bases.length;
 	for (key in this.checkerator.maxed_out_bases) {
 		if (this.checkerator.maxed_out_bases.hasOwnProperty(key)) {
+			// xx print("maxed: "+key);
 			this.registry[key].disambig = this.checkerator.maxed_out_bases[key];
-			this.ambigcites[akey].push(key);
+			if (this.ambigcites[akey].indexOf(key) === -1) {
+				this.ambigcites[akey].push(key);
+			}
 		}
 	}
 	return ret;
@@ -332,7 +358,8 @@ CSL.runCheckerator = function () {
 	//}
 	if (this.seen.length < this.tokens_length) {
 		// xx print("seen: "+this.seen);
-		// xx print("tokens: "+this.tokens_length);
+		// xx print("tokens_length: "+this.tokens_length);
+		// xx print("tokens: "+this.tokens.length);
 		return true;
 	}
 	return false;
@@ -397,6 +424,7 @@ CSL.evaluateCheckeratorClashes = function () {
 	// mode 0 is pretty simple
 	if (this.mode === "names" || this.mode === "disambiguate_true") {
 		if (this.clashes) {
+			// xx print("reset 1");
 			this.lastclashes = this.clashes;
 			this.clashes = 0;
 			return false;
@@ -404,6 +432,7 @@ CSL.evaluateCheckeratorClashes = function () {
 			// cleared, so increment.  also quash the id as done.
 			this.ids[this.pos] = false;
 			this.pos += 1;
+			// xx print("reset 2");
 			this.lastclashes = this.clashes;
 			return true;
 		}
@@ -455,6 +484,11 @@ CSL.evaluateCheckeratorClashes = function () {
 			this.pos += 1;
 			ret = true;
 		}
+		// xx print("Uh-oh.  Resetting clashes: "+this.clashes+" "+this.lastclashes);
+		if (this.lastclashes === this.clashes) {
+		    // xx print("Nasty hack alert (as if that were necessary, given the state of this code): requesting unwind.");
+			this.please_unwind_givens = true;
+		}
 		this.lastclashes = this.clashes;
 		this.clashes = 0;
 		if (ret) {
@@ -464,7 +498,8 @@ CSL.evaluateCheckeratorClashes = function () {
 	}
 };
 
-CSL.maxCheckeratorAmbigLevel = function () {
+CSL.maxCheckeratorAmbigLevel = function (origbase) {
+	var pos, len;
 	//
 	// like the above, necessary for the odd case of static cites with no authors
 	if (!this.maxvals.length) {
@@ -489,20 +524,30 @@ CSL.maxCheckeratorAmbigLevel = function () {
 			CSL.debug("CHECK =================> ");
 		}
 		//SNIP-END
+		print("tokens: "+this.tokens);
+		print("modepos: "+this.modepos);
+		print("base.names.length: "+this.base.names.length);
+		print("base.names[this.modepos]: "+this.base.names[this.modepos]);
+		print("maxvals[this.modepos]: "+this.maxvals[this.modepos]);
 		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
+			print("n")
 			if (this.modes.length === 2) {
 			    if (this.pos === (this.tokens.length -1)) {
-					// xx print("n one")
+					print("n one")
 					this.mode = "givens";
 					this.mode1_counts[this.modepos] = 0;
 					this.modepos = 0;
 					this.pos = 0;
 				} else {
-					// xx print("n other")
+					print("n other")
 					this.pos += 1;
+					//
+					// Heals one, breaks several others.  Hmm.
+					//
+					//return true;
 				}
 			} else {
-				// xx print("n two")
+				print("n two")
 				this.pos += 1;
 				return true;
 			}
@@ -531,15 +576,48 @@ CSL.maxCheckeratorAmbigLevel = function () {
 					//return true;
 				} else {
 					// xx print("b")
+
 					var token = this.tokens[this.pos];
-					this.pos += 1;
-					this.modepos = 0;
-					this.mode1_counts[this.modepos] = 0;
+					// xx print("clashes: "+this.clashes);
+					// xx print("lastclashes: "+this.lastclashes);
+					if (this.please_unwind_givens) {
+						// xx print("decrementing?");
+						this.base = CSL.decrementCheckeratorGivenNames.call(this.registry, this.state, this.base, origbase, token.id);
+						// xx print("GOT: "+this.base.givens);
+						this.please_unwind_givens = false;
+					}
 					this.registry.registerAmbigToken(this.akey, token.id, this.base);
 					if (this.seen.indexOf(token.id) === -1) {
 						this.seen.push(token.id);
 					}
+					this.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(this.base);
+					this.pos += 1;
+					this.modepos = 0;
+					this.mode1_counts[this.modepos] = 0;
+
+					// Can we identify fellow maxers at this point?
+					// xx print("Q: Can we identify fellow maxers at this point?");
+					// xx print("A: Yes.");
+					// xx print(this.test_partners);
+
+					for (pos = 0, len = this.test_partners.length; pos < len; pos += 1) {
+						this.registry.registerAmbigToken(this.akey, this.test_partners[pos], this.base);
+						if (this.seen.indexOf(this.test_partners[pos]) === -1) {
+							this.seen.push(this.test_partners[pos]);
+						}
+						this.maxed_out_bases[this.test_partners[pos]] = CSL.cloneAmbigConfig(this.base);
+						//	// identify token in this.tokens and quash
+					//	var mypos = this.ids.indexOf(this.test_partners[pos]);
+					//	this.tokens[mypos] = false;
+						// xx print("THE COUNT: "+this.maxed_out_bases.__count__);
+					}
+
 					// xx print("returnee");
+					//print(this.lastclashes+" "+this.test_partners.length);
+					//if (this.lastclashes === this.test_partners.length) {
+					//	print("return true!");
+					//	return true;
+					//}
 					return false;
 				}
 
@@ -551,6 +629,7 @@ CSL.maxCheckeratorAmbigLevel = function () {
 			//this.ids[this.pos] = false;
 		}
 	}
+	print("return false");
 	return false;
 };
 
@@ -567,6 +646,7 @@ CSL.incrementCheckeratorAmbigLevel = function () {
 	// course are not subject to incrementing in this
 	// sense.
 	if (this.mode === "names") {
+		this.given_name_second_pass = false;
 		val = this.base.names[this.modepos];
 		if (val < this.maxvals[this.modepos]) {
 			this.base.names[this.modepos] += 1;
@@ -620,7 +700,10 @@ CSL.incrementCheckeratorAmbigLevel = function () {
 CSL.decrementCheckeratorGivenNames = function (state, base, origbase, id) {
 	var base_return, ids, pos, len;
 	ids = this.checkerator.ids;
-	this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
+	//
+	// Maybe.  Might need a toggle for this.
+	//
+	//this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
 	base_return = CSL.cloneAmbigConfig(base);
 	for (pos = 0, len = base_return.givens.length; pos < len; pos += 1) {
 		base_return.givens[pos] = origbase.givens[pos].slice();
