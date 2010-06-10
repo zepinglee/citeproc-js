@@ -194,6 +194,7 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 
 		len = tokens.length;
 		this.checkerator.test_partners = [];
+		this.checkerator.test_strangers = [];
 		for (pos = 0; pos < len; pos += 1) {
 			testpartner = tokens[pos];
 			if (token.id === testpartner.id) {
@@ -224,12 +225,13 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			//SNIP-END
 
 			if (CSL.checkCheckeratorForClash.call(this.checkerator, str, otherstr)) {
-				break;
-			} else {
 				if (CSL.compareAmbigConfig(base, testbase) === 0) {
+					//xxprint("cache: "+testpartner.id);
 					// xx print("  clashing bases are equivalent, could cache testpartner");
 					this.checkerator.test_partners.push(testpartner.id);
 				}
+			} else {
+				this.checkerator.test_strangers.push(testpartner.id);
 			}
 		}
 		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)) {
@@ -239,9 +241,10 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 			base_return = CSL.decrementCheckeratorNames.call(this, state, base, origbase, token.id);
 			this.registerAmbigToken(akey, token.id, base_return);
 			if (this.checkerator.seen.indexOf(token.id) === -1) {
-				print("pushing token id to seen: "+token.id);
+				//xxxprint("pushing token id to seen: "+token.id);
 				this.checkerator.seen.push(token.id);
 			}
+			this.checkerator.ids[this.checkerator.ids.indexOf(token.id)] = false;
 			//SNIP-START
 			if (debug) {
 				CSL.debug("  ---> Evaluate: storing token config");
@@ -250,10 +253,10 @@ CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candida
 				CSL.debug("         givens: " + base_return.givens);
 			}
 			//SNIP-END
-			print("tokens_length: "+this.checkerator.tokens_length);
-			print("seen: "+this.checkerator.seen);
-			print("tokens: "+this.checkerator.tokens);
-			print("pos: "+this.checkerator.pos);
+			//xxprint("tokens_length: "+this.checkerator.tokens_length);
+			//xxprint("seen: "+this.checkerator.seen);
+			//xxprint("tokens: "+this.checkerator.tokens);
+			//xxprint("pos: "+this.checkerator.pos);
 
 			continue;
 		}
@@ -406,9 +409,10 @@ CSL.checkCheckeratorForClash = function (str, otherstr) {
 			this.clashes += 1;
 			//SNIP-START
 			if (debug) {
-				CSL.debug("   (mode 1 clash, returning false)");
+				CSL.debug("   (mode 1 clash, returning true)");
 			}
 			//SNIP-END
+			return true;
 		}
 		return false;
 	}
@@ -421,14 +425,35 @@ CSL.evaluateCheckeratorClashes = function () {
 	if (!this.maxvals.length) {
 		return false;
 	}
-	// mode 0 is pretty simple
 	if (this.mode === "names" || this.mode === "disambiguate_true") {
-		if (this.clashes) {
+		if (this.clashes === this.lastclashes) {
+			//xxprint("[SAME]");
 			// xx print("reset 1");
 			this.lastclashes = this.clashes;
 			this.clashes = 0;
 			return false;
+		} else if (this.clashes) {
+			//xxprint("[BETTER]: "+this.test_partners+" vs "+this.test_strangers);
+			//
+			// hasn't cleared in this case, there are still conflicts, BUT
+			//
+			if (this.test_strangers.length === 1) {
+				//xxprint("Oh, Save Me!");
+				this.registry.registerAmbigToken(this.akey, this.test_strangers[0], this.base);
+				if (this.seen.indexOf(this.test_strangers[0]) === -1) {
+					this.seen.push(this.test_strangers[0]);
+				}
+				this.ids[this.ids.indexOf(this.test_strangers[0])] = false;
+			}
+			print("test_partners: "+this.test_partners);
+			print("test_strangers: "+this.test_strangers);
+			//this.ids[this.pos] = false;
+			//this.pos += 1;
+			// xx print("reset 2");
+			this.lastclashes = this.clashes;
+			return false;
 		} else {
+			//xxprint("[DUNNO]");
 			// cleared, so increment.  also quash the id as done.
 			this.ids[this.pos] = false;
 			this.pos += 1;
@@ -436,7 +461,8 @@ CSL.evaluateCheckeratorClashes = function () {
 			this.lastclashes = this.clashes;
 			return true;
 		}
-	}
+	} else
+
 	// compare the clash counts
 	// if clash counts not reduced, reverse change in base
 	// if clash counts reduced, hold the change steady
@@ -524,13 +550,13 @@ CSL.maxCheckeratorAmbigLevel = function (origbase) {
 			CSL.debug("CHECK =================> ");
 		}
 		//SNIP-END
-		print("tokens: "+this.tokens);
-		print("modepos: "+this.modepos);
-		print("base.names.length: "+this.base.names.length);
-		print("base.names[this.modepos]: "+this.base.names[this.modepos]);
-		print("maxvals[this.modepos]: "+this.maxvals[this.modepos]);
+		//xxprint("tokens: "+this.tokens);
+		//xxprint("modepos: "+this.modepos);
+		//xxprint("base.names.length: "+this.base.names.length);
+		//xxprint("base.names[this.modepos]: "+this.base.names[this.modepos]);
+		//xxprint("maxvals[this.modepos]: "+this.maxvals[this.modepos]);
 		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
-			print("n")
+			//xxprint("n")
 			if (this.modes.length === 2) {
 			    if (this.pos === (this.tokens.length -1)) {
 					print("n one")
@@ -541,10 +567,6 @@ CSL.maxCheckeratorAmbigLevel = function (origbase) {
 				} else {
 					print("n other")
 					this.pos += 1;
-					//
-					// Heals one, breaks several others.  Hmm.
-					//
-					//return true;
 				}
 			} else {
 				print("n two")
@@ -606,18 +628,7 @@ CSL.maxCheckeratorAmbigLevel = function (origbase) {
 							this.seen.push(this.test_partners[pos]);
 						}
 						this.maxed_out_bases[this.test_partners[pos]] = CSL.cloneAmbigConfig(this.base);
-						//	// identify token in this.tokens and quash
-					//	var mypos = this.ids.indexOf(this.test_partners[pos]);
-					//	this.tokens[mypos] = false;
-						// xx print("THE COUNT: "+this.maxed_out_bases.__count__);
 					}
-
-					// xx print("returnee");
-					//print(this.lastclashes+" "+this.test_partners.length);
-					//if (this.lastclashes === this.test_partners.length) {
-					//	print("return true!");
-					//	return true;
-					//}
 					return false;
 				}
 
@@ -629,7 +640,7 @@ CSL.maxCheckeratorAmbigLevel = function (origbase) {
 			//this.ids[this.pos] = false;
 		}
 	}
-	print("return false");
+	//xxprint("return false");
 	return false;
 };
 
