@@ -129,9 +129,9 @@ CSL.Node.text = {
 						this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
 					}
 					func = function (state, Item) {
-						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
+						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.just_looking) {
 							//state.output.append(state.registry.registry[Item.id].disambig[2],this);
-							num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+							num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
 							number = new CSL.NumericBlob(num, this);
 							formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
@@ -195,8 +195,8 @@ CSL.Node.text = {
 							label = myname + year;
 						}
 						suffix = "";
-						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
-							num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false) {
+							num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
 							suffix = state.fun.suffixator.format(num);
 						}
 						label += suffix;

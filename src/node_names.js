@@ -672,7 +672,7 @@ CSL.Node.names = {
 							}
 							param = val;
 //							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
-							if (state[state.tmp.area].opt["disambiguate-add-givenname"]) {
+							if (state.opt["disambiguate-add-givenname"]) {
 								param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, param, state.output.getToken("name").strings.form, this.strings["initialize-with"]);
 							}
 						} else {

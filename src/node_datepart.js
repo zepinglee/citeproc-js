@@ -76,7 +76,7 @@ CSL.Node["date-part"] = {
 			real = !state.tmp.suppress_decorations;
 			have_collapsed = state.tmp.have_collapsed;
 			invoked = state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged";
-			precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
+			precondition = state.opt["disambiguate-add-year-suffix"];
 			if (real && precondition && invoked) {
 				state.tmp.years_used.push(value);
 				known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
@@ -208,10 +208,10 @@ CSL.Node["date-part"] = {
 				}
 			}
 			state.tmp.value = [];
-			if (!state.opt.has_year_suffix && "year" === this.strings.name) {
-				if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2] && !state.tmp.has_done_year_suffix) {
+			if (!state.opt.has_year_suffix && "year" === this.strings.name && !state.tmp.just_looking) {
+				if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.has_done_year_suffix) {
 					state.tmp.has_done_year_suffix = true;
-					num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+					num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
 					number = new CSL.NumericBlob(num, this);
 					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 					number.setFormatter(formatter);

@@ -68,7 +68,7 @@ CSL.Registry.NameReg = function (state) {
 		pkey = strip_periods(nameobj.family);
 		skey = strip_periods(nameobj.given);
 		ikey = CSL.Util.Names.initializeWith(state, skey, "");
-		if (state[state.tmp.area].opt["givenname-disambiguation-rule"] === "by-cite") {
+		if (state.opt["givenname-disambiguation-rule"] === "by-cite") {
 			pkey = itemid + pkey;
 		}
 	};
@@ -92,8 +92,8 @@ CSL.Registry.NameReg = function (state) {
 		// <option disambiguate-add-givenname value="by-cite"/> (g)
 		//
 		param = 2;
-		dagopt = state[state.tmp.area].opt["disambiguate-add-givenname"];
-		gdropt = state[state.tmp.area].opt["givenname-disambiguation-rule"];
+		dagopt = state.opt["disambiguate-add-givenname"];
+		gdropt = state.opt["givenname-disambiguation-rule"];
 		if (gdropt === "by-cite") {
 			gdropt = "all-names";
 		}
