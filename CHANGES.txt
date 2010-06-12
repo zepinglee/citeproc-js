@@ -1,5 +1,38 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+=========================
+Changes in version 1.0.29
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Complete reimplementation of cite-level disambiguation.
+  The new code is more compact and maintainable, and
+  avoids thrashing behavior that afflicted the previous
+  code when a large number of cites required both
+  add-names and year-suffix disambiguation.
+
+- Suppress year suffix when fresh ambig keys are generated.
+
+-------
+Cleanup
+-------
+
+- Move disambiguation options from citeproc.citation.opt
+  to citeproc.opt.
+
+- Use named year_suffix element on disambiguation configuration
+  objects, rather than the anachronistic index value 2.
+
+- Set default value of false rather than number 0 on year_suffix
+  element.
+
+- Generate year suffix for any non-false value on year_suffix
+  element.
+
+
 ======================================
 Changes in version 1.0.28 [API change]
 ======================================

@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.28";
+	this.processor_version = "1.0.29";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -166,6 +166,7 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	this.configureTokenLists();
 
 	this.registry = new CSL.Registry(this);
+	this.disambiguate = new CSL.Disambiguation(this);
 
 	this.splice_delimiter = false;
 
