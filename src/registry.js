@@ -125,8 +125,8 @@ CSL.Registry = function (state) {
 	// that have the same base-level rendering
 	this.ambigcites = {};
 	this.sorter = new CSL.Registry.Comparifier(state, "bibliography_sort");
-	this.modes = CSL.getModes.call(this.state);
-	this.checkerator = new CSL.Checkerator();
+	//this.modes = CSL.getModes.call(this.state);
+	//this.checkerator = new CSL.Checkerator();
 
 	this.getSortedIds = function () {
 		ret = [];
@@ -460,39 +460,11 @@ CSL.Registry.prototype.setdisambigs = function () {
 	for (akey in this.akeys) {
 		if (this.akeys.hasOwnProperty(akey)) {
 			//
-			// if there are multiple ambigs, disambiguate them
-			if (this.ambigcites[akey].length > 1) {
-				if (this.modes.length) {
-					//SNIP-START
-					if (this.debug) {
-						CSL.debug(" += -1-> Names disambiguation begin");
-					}
-					//SNIP-END
-					leftovers = this.disambiguateCites(this.state, akey, this.modes);
-				} else {
-					//
-					// if we didn't disambiguate with names, everything is
-					// a leftover.
-					leftovers = [];
-					len = this.ambigcites[akey].length;
-					for (pos = 0; pos < len; pos += 1) {
-						key = this.ambigcites[akey][pos];
-						leftovers.push(this.registry[key]);
-					}
-				}
-				//
-				// for anything left over, set disambiguate to true, and
-				// try again from the base.
-				if (leftovers && leftovers.length && this.state.opt.has_disambiguate) {
-					leftovers = this.disambiguateCites(this.state, akey, this.modes, leftovers);
-				}
-				//
-				// Throws single leftovers.
-				// Enough of this correctness shtuff already.  Using a band-aide on this.
-				if (leftovers.length > 1) {
-					this.leftovers.push(leftovers);
-				}
-			}
+			// Disambiguation is fully encapsulated.
+			// Disambiguator will run only if there are multiple
+			// items, and at least one disambiguation mode is
+			// in effect.
+			this.state.disambiguate.run(akey);
 		}
 	}
 	this.akeys = {};
@@ -524,34 +496,6 @@ CSL.Registry.prototype.renumber = function () {
 	}
 };
 
-CSL.Registry.prototype.yearsuffix = function () {
-	var leftovers, pos, len, ppos, llen;
-	len = this.leftovers.length;
-	for (pos = 0; pos < len; pos += 1) {
-		leftovers = this.leftovers[pos];
-		if (leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]) {
-			//CSL.debug("ORDER OF ASSIGNING YEAR SUFFIXES");
-			leftovers.sort(this.compareRegistryTokens);
-			llen = leftovers.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				//CSL.debug("  "+leftovers[i].id);
-				//
-				// stringification is only required here because the conditions
-				// inside the disambiguation machinery have not yet been tightened
-				// up to ===.
-				//
-				this.registry[leftovers[("" + ppos)].id].disambig[2] = "" + ppos;
-			}
-		}
-		//SNIP-START
-		if (this.debug) {
-			CSL.debug("---> End of registry cleanup");
-		}
-		//SNIP-END
-	}
-};
-
-
 CSL.Registry.prototype.setsortkeys = function () {
 	var key;
 	//
@@ -570,6 +514,7 @@ CSL.Registry.prototype.sorttokens = function () {
 	// 18. Resort token list.
 	//
 	this.reflist.sort(this.sorter.compareKeys);
+	//print("sorted reflist: "+[this.reflist[pos].id for (pos in this.reflist)]);
 };
 
 /**
