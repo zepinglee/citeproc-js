@@ -909,11 +909,31 @@ CSL.setDecorations = function (state, attributes) {
 	}
 	return ret;
 };
+CSL.compareAmbigConfig = function(a, b) {
+	var ret, pos, len, ppos, llen;
+	if (a.names.length !== b.names.length) {
+		return 1;
+	} else {
+		for (pos = 0, len = a.names.length; pos < len; pos += 1) {
+			if (a.names[pos] !== b.names[pos]) {
+				return 1;
+			} else {
+				for (ppos = 0, llen = a.names[pos]; ppos < llen; ppos += 1) {
+					if (a.givens[pos][ppos] !== b.givens[pos][ppos]) {
+						return 1;
+					}
+				}
+			}
+		}
+	}
+	return 0;
+};
 CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	var ret, param, pos, ppos, len, llen;
 	ret = {};
 	ret.names = [];
 	ret.givens = [];
+	ret.year_suffix_citeform = false;
 	ret.year_suffix = false;
 	ret.disambiguate = false;
 	len = config.names.length;
@@ -942,13 +962,23 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
-	ret.year_suffix = config.year_suffix;
-	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
-		this.tmp.taintedItemIDs[itemID] = true;
-		oldconfig = false;
-	}
 	ret.disambiguate = config.disambiguate;
 	return ret;
+};
+CSL.getAmbigConfig = function () {
+	var config, ret;
+	config = this.tmp.disambig_request;
+	if (!config) {
+		config = this.tmp.disambig_settings;
+	}
+	ret = CSL.cloneAmbigConfig(config);
+	return ret;
+};
+CSL.getMaxVals = function () {
+	return this.tmp.names_max.mystack.slice();
+};
+CSL.getMinVal = function () {
+	return this.tmp["et-al-min"];
 };
 CSL.tokenExec = function (token, Item, item) {
 	var next, maybenext, exec, pos, len, debug;
@@ -1286,7 +1316,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.27";
+	this.processor_version = "1.0.29";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1340,6 +1370,7 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	this.buildTokenLists("bibliography");
 	this.configureTokenLists();
 	this.registry = new CSL.Registry(this);
+	this.disambiguate = new CSL.Disambiguation(this);
 	this.splice_delimiter = false;
 	this.fun.dateparser = new CSL.dateParser();
 	this.fun.flipflopper = new CSL.Util.FlipFlopper(this);
@@ -1794,6 +1825,8 @@ CSL.Engine.Citation = function (state) {
 	this.opt.collapse = [];
 	this.opt["disambiguate-add-names"] = false;
 	this.opt["disambiguate-add-givenname"] = false;
+	this.opt["disambiguate-add-year-suffix"] = false;
+	this.opt["givenname-disambiguation-rule"] = "none";
 	this.opt["near-note-distance"] = 5;
 	this.opt.topdecor = [];
 };
@@ -1801,8 +1834,6 @@ CSL.Engine.Bibliography = function () {
 	this.opt = {};
 	this.tokens = [];
 	this.opt.collapse = [];
-	this.opt["disambiguate-add-names"] = false;
-	this.opt["disambiguate-add-givenname"] = false;
 	this.opt.topdecor = [];
 	this.opt.layout_decorations = [];
 	this.opt.layout_prefix = "";
@@ -1884,11 +1915,10 @@ CSL.Engine.prototype.updateItems = function (idList) {
 	this.registry.doinserts(this.registry.mylist);
 	this.registry.dorefreshes();
 	this.registry.rebuildlist();
-	this.registry.setdisambigs();
 	this.registry.setsortkeys();
+	this.registry.setdisambigs();
 	this.registry.sorttokens();
 	this.registry.renumber();
-	this.registry.yearsuffix();
 	return this.registry.getSortedIds();
 };
 CSL.Engine.prototype.updateUncitedItems = function (idList) {
@@ -1897,11 +1927,10 @@ CSL.Engine.prototype.updateUncitedItems = function (idList) {
 	this.registry.doinserts(this.registry.mylist);
 	this.registry.douncited();
 	this.registry.rebuildlist();
-	this.registry.setdisambigs();
 	this.registry.setsortkeys();
+	this.registry.setdisambigs();
 	this.registry.sorttokens();
 	this.registry.renumber();
-	this.registry.yearsuffix();
 	return this.registry.getSortedIds();
 };
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
@@ -2778,7 +2807,7 @@ CSL.Node["date-part"] = {
 			real = !state.tmp.suppress_decorations;
 			have_collapsed = state.tmp.have_collapsed;
 			invoked = state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged";
-			precondition = state[state.tmp.area].opt["disambiguate-add-year-suffix"];
+			precondition = state.opt["disambiguate-add-year-suffix"];
 			if (real && precondition && invoked) {
 				state.tmp.years_used.push(value);
 				known_year = state.tmp.last_years_used.length >= state.tmp.years_used.length;
@@ -2891,10 +2920,10 @@ CSL.Node["date-part"] = {
 				}
 			}
 			state.tmp.value = [];
-			if (!state.opt.has_year_suffix && "year" === this.strings.name) {
-				if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2] && !state.tmp.has_done_year_suffix) {
+			if (!state.opt.has_year_suffix && "year" === this.strings.name && !state.tmp.just_looking) {
+				if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.has_done_year_suffix) {
 					state.tmp.has_done_year_suffix = true;
-					num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+					num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
 					number = new CSL.NumericBlob(num, this);
 					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 					number.setFormatter(formatter);
@@ -3904,7 +3933,7 @@ CSL.Node.names = {
 								val = 2;
 							}
 							param = val;
-							if (state[state.tmp.area].opt["disambiguate-add-givenname"]) {
+							if (state.opt["disambiguate-add-givenname"]) {
 								param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, param, state.output.getToken("name").strings.form, this.strings["initialize-with"]);
 							}
 						} else {
@@ -4175,8 +4204,8 @@ CSL.Node.text = {
 						this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
 					}
 					func = function (state, Item) {
-						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
-							num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.just_looking) {
+							num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
 							number = new CSL.NumericBlob(num, this);
 							formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 							number.setFormatter(formatter);
@@ -4232,8 +4261,8 @@ CSL.Node.text = {
 							label = myname + year;
 						}
 						suffix = "";
-						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig[2]) {
-							num = parseInt(state.registry.registry[Item.id].disambig[2], 10);
+						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false) {
+							num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
 							suffix = state.fun.suffixator.format(num);
 						}
 						label += suffix;
@@ -4675,7 +4704,7 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
 };
 CSL.Attributes["@givenname-disambiguation-rule"] = function (state, arg) {
 	if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(arg) > -1) {
-		state[this.name].opt["givenname-disambiguation-rule"] = arg;
+		state.opt["givenname-disambiguation-rule"] = arg;
 	}
 };
 CSL.Attributes["@collapse"] = function (state, arg) {
@@ -4742,17 +4771,17 @@ CSL.Attributes["@subsequent-author-substitute"] = function (state, arg) {
 };
 CSL.Attributes["@disambiguate-add-names"] = function (state, arg) {
 	if (arg === "true") {
-		state[this.name].opt["disambiguate-add-names"] = true;
+		state.opt["disambiguate-add-names"] = true;
 	}
 };
 CSL.Attributes["@disambiguate-add-givenname"] = function (state, arg) {
 	if (arg === "true") {
-		state[this.name].opt["disambiguate-add-givenname"] = true;
+		state.opt["disambiguate-add-givenname"] = true;
 	}
 };
 CSL.Attributes["@disambiguate-add-year-suffix"] = function (state, arg) {
 	if (arg === "true") {
-		state[this.name].opt["disambiguate-add-year-suffix"] = true;
+		state.opt["disambiguate-add-year-suffix"] = true;
 	}
 };
 CSL.Attributes["@second-field-align"] = function (state, arg) {
@@ -5463,7 +5492,7 @@ CSL.AmbigConfig = function () {
 	this.minval = 1;
 	this.names = [];
 	this.givens = [];
-	this.year_suffix = 0;
+	this.year_suffix = false;
 	this.disambiguate = 0;
 };
 CSL.Blob = function (token, str, levelname) {
@@ -6988,8 +7017,6 @@ CSL.Registry = function (state) {
 	this.return_data = {};
 	this.ambigcites = {};
 	this.sorter = new CSL.Registry.Comparifier(state, "bibliography_sort");
-	this.modes = CSL.getModes.call(this.state);
-	this.checkerator = new CSL.Checkerator();
 	this.getSortedIds = function () {
 		ret = [];
 		len = this.reflist.length;
@@ -7131,24 +7158,7 @@ CSL.Registry.prototype.setdisambigs = function () {
 	this.leftovers = [];
 	for (akey in this.akeys) {
 		if (this.akeys.hasOwnProperty(akey)) {
-			if (this.ambigcites[akey].length > 1) {
-				if (this.modes.length) {
-					leftovers = this.disambiguateCites(this.state, akey, this.modes);
-				} else {
-					leftovers = [];
-					len = this.ambigcites[akey].length;
-					for (pos = 0; pos < len; pos += 1) {
-						key = this.ambigcites[akey][pos];
-						leftovers.push(this.registry[key]);
-					}
-				}
-				if (leftovers && leftovers.length && this.state.opt.has_disambiguate) {
-					leftovers = this.disambiguateCites(this.state, akey, this.modes, leftovers);
-				}
-				if (leftovers.length > 1) {
-					this.leftovers.push(leftovers);
-				}
-			}
+			this.state.disambiguate.run(akey);
 		}
 	}
 	this.akeys = {};
@@ -7165,20 +7175,6 @@ CSL.Registry.prototype.renumber = function () {
 			}
 			if (this.state.opt.bib_mode === CSL.NUMERIC) {
 				this.return_data.bibchange = true;
-			}
-		}
-	}
-};
-CSL.Registry.prototype.yearsuffix = function () {
-	var leftovers, pos, len, ppos, llen;
-	len = this.leftovers.length;
-	for (pos = 0; pos < len; pos += 1) {
-		leftovers = this.leftovers[pos];
-		if (leftovers && leftovers.length && this.state[this.state.tmp.area].opt["disambiguate-add-year-suffix"]) {
-			leftovers.sort(this.compareRegistryTokens);
-			llen = leftovers.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				this.registry[leftovers[("" + ppos)].id].disambig[2] = "" + ppos;
 			}
 		}
 	}
@@ -7288,7 +7284,7 @@ CSL.Registry.NameReg = function (state) {
 		pkey = strip_periods(nameobj.family);
 		skey = strip_periods(nameobj.given);
 		ikey = CSL.Util.Names.initializeWith(state, skey, "");
-		if (state[state.tmp.area].opt["givenname-disambiguation-rule"] === "by-cite") {
+		if (state.opt["givenname-disambiguation-rule"] === "by-cite") {
 			pkey = itemid + pkey;
 		}
 	};
@@ -7299,8 +7295,8 @@ CSL.Registry.NameReg = function (state) {
 			return 2;
 		}
 		param = 2;
-		dagopt = state[state.tmp.area].opt["disambiguate-add-givenname"];
-		gdropt = state[state.tmp.area].opt["givenname-disambiguation-rule"];
+		dagopt = state.opt["disambiguate-add-givenname"];
+		gdropt = state.opt["givenname-disambiguation-rule"];
 		if (gdropt === "by-cite") {
 			gdropt = "all-names";
 		}
@@ -7505,317 +7501,294 @@ CSL.Registry.NameReg = function (state) {
 	this.delitems = delitems;
 	this.evalname = evalname;
 };
-var debug = false;
-CSL.Registry.prototype.disambiguateCites = function (state, akey, modes, candidate_list) {
-	var ambigs, reg_token, keypos, id_vals, a, base, token, pos, len, tokens, str, maxvals, minval, testpartner, otherstr, base_return, ret, id, key, origbase, remainder, last_remainder;
-	if (!candidate_list) {
-		ambigs = this.ambigcites[akey].slice();
-		this.ambigcites[akey] = [];
-	} else {
-		ambigs = [];
-		len = candidate_list.length;
-		for (pos = 0; pos < len; pos += 1) {
-			reg_token = candidate_list[pos];
-			ambigs.push(reg_token.id);
-			keypos = this.ambigcites[akey].indexOf(reg_token.id);
-			if (keypos > -1) {
-				this.ambigcites[akey] = this.ambigcites[akey].slice(0, keypos).concat(this.ambigcites[akey].slice((keypos + 1)));
-			}
-		}
+CSL.Disambiguation = function (state) {
+	this.state = state;
+	this.sys = this.state.sys;
+	this.registry = state.registry.registry;
+	this.ambigcites = state.registry.ambigcites;
+	this.configModes();
+	this.clashes = [1, 0];
+};
+CSL.Disambiguation.prototype.run = function(akey) {
+	if (!this.modes.length) {
+		return;
 	}
-	id_vals = [];
-	len = ambigs.length;
-	for (pos = 0; pos < len; pos += 1) {
-		id_vals.push(ambigs[pos]);
-	}
-	tokens = state.retrieveItems(id_vals);
-	if (candidate_list && candidate_list.length) {
-		modes = ["disambiguate_true"].concat(modes);
-	}
-	CSL.initCheckerator.call(this.checkerator, tokens, modes);
-	this.checkerator.lastclashes = (ambigs.length - 1);
-	base = false;
-	this.checkerator.pos = 0;
-	str = CSL.getAmbiguousCite.call(state, tokens[0], base);
-	maxvals = CSL.getMaxVals.call(state);
-	minval = CSL.getMinVal.call(state);
-	base = CSL.getAmbigConfig.call(state);
-	origbase = CSL.cloneAmbigConfig(base);
-	remainder = tokens.length;
-	last_remainder = this.checkerator.seen.length;
-	while (CSL.runCheckerator.call(this.checkerator)) {
-		token = this.checkerator.tokens[this.checkerator.pos];
-		if (this.ambigcites[akey].indexOf(token.id) > -1) {
-			this.checkerator.pos += 1;
-			continue;
-		}
-		this.checkerator.candidate = token.id;
-		if (base === false) {
-			this.checkerator.mode = modes[0];
-		}
-		str = CSL.getAmbiguousCite.call(state, token, base);
-		maxvals = CSL.getMaxVals.call(state);
-		minval = CSL.getMinVal.call(state);
-		base = CSL.getAmbigConfig.call(state);
-		if (candidate_list && candidate_list.length) {
-			base.disambiguate = true;
-		}
-		CSL.setCheckeratorBase.call(this.checkerator, base);
-		CSL.setMaxVals.call(this.checkerator, maxvals);
-		CSL.setMinVal.call(this.checkerator, minval);
-		len = tokens.length;
-		for (pos = 0; pos < len; pos += 1) {
-			testpartner = tokens[pos];
-			if (token.id === testpartner.id) {
-				continue;
+	this.initVars(akey);
+	this.runDisambig();
+};
+CSL.Disambiguation.prototype.runDisambig = function () {
+	var pos, len, ppos, llen, pppos, lllen, ismax;
+	for (pos = 0; pos < this.lists.length; pos += 1) {
+		this.nnameset = 0;
+		this.gnameset = 0;
+		this.gname = 0;
+		while(this.lists[pos][1].length) {
+			this.listpos = pos;
+			if (!this.base) {
+				this.base = this.lists[pos][0];
 			}
-			otherstr = CSL.getAmbiguousCite.call(state, testpartner, base);
-			if (CSL.checkCheckeratorForClash.call(this.checkerator, str, otherstr)) {
-				break;
-			}
-		}
-		if (CSL.evaluateCheckeratorClashes.call(this.checkerator)) {
-			remainder = tokens.length - this.checkerator.seen.length;
-			if (remainder === 1 && last_remainder === 0) {
-				base_return = CSL.decrementCheckeratorGivenNames.call(this, state, base, origbase, token.id);
+			if (this.rerun) {
+				this.rerun = false;
 			} else {
-				base_return = CSL.decrementCheckeratorNames.call(this, state, base, origbase, token.id);
+				this.scanItems(this.lists[pos], 0);
 			}
-			last_remainder = remainder;
-			this.registerAmbigToken(akey, token.id, base_return);
-			this.checkerator.seen.push(token.id);
-			continue;
-		}
-		if (CSL.maxCheckeratorAmbigLevel.call(this.checkerator)) {
-			this.checkerator.mode1_counts = false;
-			this.checkerator.maxed_out_bases[token.id] = CSL.cloneAmbigConfig(base);
-			this.checkerator.seen.push(token.id);
-			base = false;
-			continue;
-		}
-		CSL.incrementCheckeratorAmbigLevel.call(this.checkerator);
-	}
-	ret = [];
-	len = this.checkerator.ids.length;
-	for (pos = 0; pos < len; pos += 1) {
-		id = this.checkerator.ids[pos];
-		if (id) {
-			ret.push(this.registry[id]);
+			ismax = this.incrementDisambig();
+			this.scanItems(this.lists[pos], 1);
+			this.evalScan(ismax);
 		}
 	}
-	len = this.checkerator.maxed_out_bases.length;
-	for (key in this.checkerator.maxed_out_bases) {
-		if (this.checkerator.maxed_out_bases.hasOwnProperty(key)) {
-			this.registry[key].disambig = this.checkerator.maxed_out_bases[key];
+};
+CSL.Disambiguation.prototype.scanItems = function (list, phase) {
+	var pos, len, Item, otherItem, ItemCite, otherItemCite, ignore, base;
+	Item = list[1][0];
+	this.partners = [];
+	[this.base, this.maxvals, this.minval, ItemCite] = this.getItem(Item);
+	this.partners.push(Item);
+	this.clashes[phase] = 0;
+	this.nonpartners = [];
+	for (pos = 1, len = list[1].length; pos < len; pos += 1) {
+		otherItem = list[1][pos];
+		[ignore, ignore, ignore, otherItemCite] = this.getItem(otherItem);
+		if (ItemCite === otherItemCite) {
+			this.clashes[phase] += 1;
+			this.partners.push(otherItem);
+		} else {
+			this.nonpartners.push(otherItem);
 		}
 	}
-	return ret;
 };
-CSL.Checkerator = function () {};
-CSL.initCheckerator = function (tokens, modes) {
-	var len, pos;
-	this.tokens = tokens;
-	this.seen = [];
-	this.modes = modes;
-	this.mode = this.modes[0];
-	this.tokens_length = tokens.length;
-	this.pos = 0;
-	this.clashes = 0;
-	this.maxvals = false;
-	this.base = false;
-	this.ids = [];
-	this.maxed_out_bases = {};
-	len = tokens.length;
-	for (pos = 0; pos < len; pos += 1) {
-		this.ids.push(tokens[pos].id);
-	}
-	this.lastclashes = -1;
-	this.namepos = 0;
-	this.modepos = 0;
-	this.mode1_counts = false;
+CSL.Disambiguation.prototype.evalScan = function (ismax) {
+	this[this.modes[this.modeindex]](ismax);
 };
-CSL.runCheckerator = function () {
-	var len, pos;
-	if (this.seen.length < this.tokens_length) {
-		return true;
-	}
-	return false;
-};
-CSL.setMaxVals = function (maxvals) {
-	this.maxvals = maxvals;
-};
-CSL.setMinVal = function (minval) {
-	this.minval = minval;
-};
-CSL.setCheckeratorBase = function (base) {
+CSL.Disambiguation.prototype.disNames = function (ismax) {
 	var pos, len;
-	this.base = base;
-	if (! this.mode1_counts) {
-		this.mode1_counts = [];
-		len = this.base.givens.length;
-		for (pos = 0; pos < len; pos += 1) {
-			this.mode1_counts.push(0);
-		}
-	}
-};
-CSL.setCheckeratorMode = function (mode) {
-	this.mode = mode;
-};
-CSL.checkCheckeratorForClash = function (str, otherstr) {
-	if (str === otherstr) {
-		if (this.mode === "names" || this.mode === "disambiguate_true") {
-			this.clashes += 1;
-			return true;
-		}
-		if (this.mode === "givens") {
-			this.clashes += 1;
-		}
-		return false;
-	}
-};
-CSL.evaluateCheckeratorClashes = function () {
-	var namepos, ret, old;
-	if (!this.maxvals.length) {
-		return false;
-	}
-	if (this.mode === "names" || this.mode === "disambiguate_true") {
-		if (this.clashes) {
-			this.lastclashes = this.clashes;
-			this.clashes = 0;
-			return false;
+	if (this.clashes[1] === 0) {
+		this.registry[this.partners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+		if (this.nonpartners.length === 1) {
+			this.registry[this.nonpartners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+			this.lists[this.listpos] = [this.base,[]];
 		} else {
-			this.ids[this.pos] = false;
-			this.pos += 1;
-			this.lastclashes = this.clashes;
-			return true;
+			this.lists[this.listpos] = [this.base, this.nonpartners];
 		}
-	}
-	if (this.mode === "givens") {
-		ret = true;
-		namepos = this.mode1_counts[this.modepos];
-		if (this.clashes && this.clashes === this.lastclashes) {
-			if (this.mode1_defaults && namepos > 0) {
-				old = this.mode1_defaults[(namepos - 1)];
-				this.base.givens[this.modepos][(namepos - 1)] = old;
+	} else if (this.clashes[1] < this.clashes[0]) {
+		this.lists[this.listpos] = [this.base, this.partners];
+		if (this.nonpartners.length === 1) {
+			this.registry[this.nonpartners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+		} else {
+			this.lists.push([this.base, this.nonpartners]);
+		}
+	} else {
+		if (ismax || this.advance_mode) {
+			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
+				this.registry[this.partners[pos].id].disambig = CSL.cloneAmbigConfig(this.base);
 			}
-			ret = false;
-		} else if (this.clashes) {
-			ret = false;
-		} else { // only non-clash should be possible
-			this.mode1_counts = false;
-			this.pos += 1;
-			ret = true;
+			if (ismax) {
+				this.lists[this.listpos] = [this.base, this.nonpartners];
+			}
+		} else {
+			this.rerun = true;
 		}
-		this.lastclashes = this.clashes;
-		this.clashes = 0;
-		if (ret) {
-			this.ids[this.pos] = false;
-		}
-		return ret;
 	}
 };
-CSL.maxCheckeratorAmbigLevel = function () {
-	if (!this.maxvals.length) {
-		return true;
-	}
-	if (this.mode === "disambiguate_true") {
-		if (this.modes.indexOf("disambiguate_true") < (this.modes.length - 1)) {
-			this.mode = this.modes[(this.modes.indexOf("disambiguate_true") + 1)];
-			this.modepos = 0;
+CSL.Disambiguation.prototype.disGivens = function (ismax) {
+	var pos, len;
+	if (this.clashes[1] === 0) {
+		this.base = this.decrementNames();
+		this.registry[this.partners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+		if (this.nonpartners.length === 1) {
+			this.registry[this.nonpartners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+			this.lists[this.listpos] = [this.base,[]];
 		} else {
-			this.pos += 1;
-			return true;
+			this.lists[this.listpos] = [this.base, this.nonpartners];
+		}
+	} else if (this.clashes[1] < this.clashes[0]) {
+		this.lists[this.listpos] = [this.base, this.partners];
+		if (this.nonpartners.length === 1) {
+			this.registry[this.nonpartners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+		} else {
+			this.lists.push([this.base, this.nonpartners]);
+		}
+	} else {
+		this.base = CSL.cloneAmbigConfig(this.oldbase);
+		if (ismax || this.advance_mode) {
+			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
+				this.registry[this.partners[pos].id].disambig = CSL.cloneAmbigConfig(this.base);
+			}
+			if (ismax) {
+				this.lists[this.listpos] = [this.base, this.nonpartners];
+			}
+		} else {
+			this.rerun = true;
 		}
 	}
-	if (this.mode === "names") {
-		if (this.modepos === (this.base.names.length - 1) && this.base.names[this.modepos] === this.maxvals[this.modepos]) {
-			if (this.modes.length === 2) {
-				this.mode = "givens";
-				this.mode1_counts[this.modepos] = 0;
-				this.modepos = 0;
-			} else {
-				this.pos += 1;
+};
+CSL.Disambiguation.prototype.disExtraText = function () {
+	var pos, len;
+	if (this.clashes[1] === 0) {
+		this.registry[this.partners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+		if (this.nonpartners.length === 1) {
+			this.registry[this.nonpartners[0].id].disambig = CSL.cloneAmbigConfig(this.base);
+			this.lists[this.listpos] = [this.base,[]];
+		} else {
+			this.lists[this.listpos] = [this.base, this.nonpartners];
+		}
+	} else {
+		this.base.disambiguate = false;
+		this.lists[this.listpos] = [this.base, this.lists[this.listpos][1].slice(1)];
+	}
+};
+CSL.Disambiguation.prototype.disYears = function () {
+	var pos, len, tokens, token, item;
+	tokens = [];
+	for (pos = 0, len = this.lists[this.listpos][1].length; pos < len; pos += 1) {
+		token = this.registry[this.lists[this.listpos][1][pos].id];
+		tokens.push(token);
+	}
+	tokens.sort(this.state.registry.sorter.compareKeys);
+	for (pos = 0, len = tokens.length; pos < len; pos += 1) {
+		tokens[pos].disambig = CSL.cloneAmbigConfig(this.base);
+		tokens[pos].disambig.year_suffix = ""+pos;
+	}
+	this.lists[this.listpos] = [this.base, []];
+};
+CSL.Disambiguation.prototype.incrementDisambig = function () {
+	var val, maxed;
+	maxed = false;
+	this.oldbase = CSL.cloneAmbigConfig(this.base);
+	if (this.advance_mode) {
+		this.modeindex += 1;
+		this.advance_mode = false;
+	}
+	if (!maxed && "disNames" === this.modes[this.modeindex]) {
+		if (this.base.names[this.nnameset] < this.maxvals[this.nnameset]) {
+			this.base.names[this.nnameset] += 1;
+		} else {
+			if (this.nnameset < (this.base.names.length - 1)) {
+				this.nnameset += 1;
+			}
+			if (this.base.names[this.nnameset] < this.maxvals[this.nnameset]) {
+				this.base.names[this.nnameset] += 1;
+			}
+		}
+		if (this.nnameset === (this.base.names.length - 1) && this.base.names[this.nnameset] === this.maxvals[this.nnameset]) {
+			if (this.modeindex === (this.modes.length - 1)) {
 				return true;
-			}
-		}
-	} else if (this.mode === "givens") {
-		if (this.modepos === (this.mode1_counts.length - 1) && this.mode1_counts[this.modepos] === (this.maxvals[this.modepos])) {
-			if (this.modes.length === 2) {
-				this.mode = "givens";
-				this.pos += 1;
 			} else {
-				this.pos += 1;
+				maxed = false;
 			}
-			return true;
 		}
 	}
-	return false;
-};
-CSL.incrementCheckeratorAmbigLevel = function () {
-	var val;
-	if (this.mode === "names") {
-		val = this.base.names[this.modepos];
-		if (val < this.maxvals[this.modepos]) {
-			this.base.names[this.modepos] += 1;
-		} else if (this.modepos < (this.base.names.length - 1)) {
-			this.modepos += 1;
-			this.base.names[this.modepos] = 0;
-		}
-	}
-	if (this.mode === "givens") {
-		val = (this.mode1_counts[this.modepos]);
-		if (val < this.maxvals[this.modepos]) {
-			if (this.given_name_second_pass) {
-				this.given_name_second_pass = false;
-				this.mode1_counts[this.modepos] += 1;
-				this.base.givens[this.modepos][val] += 1;
-			} else {
-				this.mode1_defaults = this.base.givens[this.modepos].slice();
-				this.given_name_second_pass = true;
+	if (!maxed && "disGivens" === this.modes[this.modeindex]) {
+		if (this.gname < this.maxvals[this.gnameset]) {
+			if (this.base.givens[this.gnameset][this.gname] === this.minval) {
+				this.base.givens[this.gnameset][this.gname] += 1;
 			}
-		} else if (this.modepos < (this.base.givens.length - 1)) {
-			this.modepos += 1;
-			this.base.givens[this.modepos][0] += 1;
-			this.mode1_defaults = this.base.givens[this.modepos].slice();
+			this.base.givens[this.gnameset][this.gname] += 1;
+			this.gname += 1;
 		} else {
-			this.mode = "names";
-			this.pos += 1;
+			if (this.gnameset < (this.base.givens.length - 1)) {
+				this.gnameset += 1;
+				this.gname = 0;
+			}
+			if (this.gname < this.maxvals[this.gnameset]) {
+				this.base.givens[this.gnameset][this.gname] += 1;
+				this.gname += 1;
+			}
 		}
 	}
-};
-CSL.decrementCheckeratorGivenNames = function (state, base, origbase, id) {
-	var base_return, ids, pos, len;
-	ids = this.checkerator.ids;
-	this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
-	base_return = CSL.cloneAmbigConfig(base);
-	for (pos = 0, len = base_return.givens.length; pos < len; pos += 1) {
-		base_return.givens[pos] = origbase.givens[pos].slice();
+	if (!maxed && "disExtraText" === this.modes[this.modeindex]) {
+		maxed = false;
+		this.base.disambiguate = true;
+		if (this.modeindex === (this.modes.length - 1)) {
+			return true;
+		} else {
+			maxed = false;
+		}
 	}
-	return base_return;
+	if (!maxed && "disYears" === this.modes[this.modeindex]) {
+		maxed = false;
+	}
+	if (this.modes[this.modeindex] === "disGivens") {
+		if ((this.gnameset === (this.base.names.length - 1) && this.gname === this.maxvals[this.gnameset]) || this.base.names.length === 0) {
+			if (this.modeindex === (this.modes.length - 1)) {
+				maxed = true;
+			} else {
+				this.advance_mode = true;
+			}
+		}
+	}
+	if (this.modes[this.modeindex] === "disNames") {
+		if ((this.nnameset === (this.base.names.length - 1) && this.base.names[this.nnameset] === this.maxvals[this.nnameset]) || this.base.names.length === 0) {
+			if (this.modeindex === (this.modes.length - 1)) {
+				maxed = true;
+			} else {
+				this.advance_mode = true;
+			}
+		}
+	}
+	return maxed;
 };
-CSL.decrementCheckeratorNames = function (state, base, origbase, id) {
+CSL.Disambiguation.prototype.getItem = function (Item) {
+	var str, maxvals, minval, base;
+	str = CSL.getAmbiguousCite.call(this.state, Item, this.base);
+	maxvals = CSL.getMaxVals.call(this.state);
+	minval = CSL.getMinVal.call(this.state);
+	base = CSL.getAmbigConfig.call(this.state);
+	return [base, maxvals, minval, str];
+};
+CSL.Disambiguation.prototype.initVars = function (akey) {
+	var pos, len;
+	var myIds, myItems;
+	this.lists = [];
+	this.base = false;
+	myItems = [];
+	myIds = this.ambigcites[akey];
+	for (pos = 0, len = myIds.length; pos < len; pos += 1) {
+		this.state.tmp.taintedItemIDs[myIds[pos]] = true;
+	}
+	if (myIds.length > 1) {
+		myItems = [this.sys.retrieveItem(myIds[p]) for (p in myIds)];
+		this.lists.push([this.base, myItems]);
+	}
+	this.modeindex = 0;
+};
+CSL.Disambiguation.prototype.configModes = function () {
+	var dagopt, gdropt;
+	this.modes = [];
+	if (this.state.opt["disambiguate-add-names"]) {
+		this.modes.push("disNames");
+	}
+	dagopt = this.state.opt["disambiguate-add-givenname"];
+	gdropt = this.state.opt["givenname-disambiguation-rule"];
+	if (dagopt && gdropt === "by-cite") {
+		this.modes.push("disGivens");
+	}
+	if (this.state.opt.has_disambiguate) {
+		this.modes.push("disExtraText");
+	}
+	if (this.state.opt["disambiguate-add-year-suffix"]) {
+		this.modes.push("disYears");
+	}
+};
+CSL.Disambiguation.prototype.decrementNames = function () {
 	var base_return, do_me, i, j, pos, len, ppos, llen, ids;
-	base_return = CSL.cloneAmbigConfig(base);
+	base_return = CSL.cloneAmbigConfig(this.base);
 	do_me = false;
 	len = base_return.givens.length - 1;
 	for (pos = len; pos > -1; pos += -1) {
 		llen = base_return.givens[pos].length - 1;
 		for (ppos = llen; ppos > -1; ppos += -1) {
-			if (base_return.givens[pos][ppos] > origbase.givens[pos][ppos]) {
+			if (base_return.givens[pos][ppos] > this.oldbase.givens[pos][ppos]) {
 				do_me = true;
 			}
 		}
 	}
 	if (do_me) {
-		ids = this.checkerator.ids;
 		len = base_return.givens.length - 1;
 		for (pos = len; pos > -1; pos += -1) {
 			llen = base_return.givens[pos].length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
-				if (base_return.givens[pos][ppos] > origbase.givens[pos][ppos]) {
-					if (ids.indexOf(id) > -1) {
-						this.checkerator.ids = ids.slice(0,ids.indexOf(id)).concat(ids.slice(ids.indexOf(id) + 1));
-					}
+				if (base_return.givens[pos][ppos] > this.oldbase.givens[pos][ppos]) {
 					break;
 				}
 				if (ppos < base_return.names[pos]) {
@@ -7825,36 +7798,6 @@ CSL.decrementCheckeratorNames = function (state, base, origbase, id) {
 		}
 	}
 	return base_return;
-};
-CSL.getAmbigConfig = function () {
-	var config, ret;
-	config = this.tmp.disambig_request;
-	if (!config) {
-		config = this.tmp.disambig_settings;
-	}
-	ret = CSL.cloneAmbigConfig(config);
-	return ret;
-};
-CSL.getMaxVals = function () {
-	return this.tmp.names_max.mystack.slice();
-};
-CSL.getMinVal = function () {
-	return this.tmp["et-al-min"];
-};
-CSL.getModes = function () {
-	var ret, dagopt, gdropt;
-	ret = [];
-	if (this[this.tmp.area].opt["disambiguate-add-names"]) {
-		ret.push("names");
-	}
-	dagopt = this[this.tmp.area].opt["disambiguate-add-givenname"];
-	gdropt = this[this.tmp.area].opt["givenname-disambiguation-rule"];
-	if (dagopt) {
-		if (!gdropt || ("string" === typeof gdropt && "primary-name" !== gdropt.slice(0, 12))) {
-			ret.push("givens");
-		}
-	}
-	return ret;
 };
 CSL.Registry.CitationReg = function (state) {
 	this.citationById = {};
