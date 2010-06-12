@@ -513,7 +513,7 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
 
 CSL.Attributes["@givenname-disambiguation-rule"] = function (state, arg) {
 	if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(arg) > -1) {
-		state[this.name].opt["givenname-disambiguation-rule"] = arg;
+		state.opt["givenname-disambiguation-rule"] = arg;
 	}
 };
 
@@ -605,19 +605,19 @@ CSL.Attributes["@subsequent-author-substitute"] = function (state, arg) {
 
 CSL.Attributes["@disambiguate-add-names"] = function (state, arg) {
 	if (arg === "true") {
-		state[this.name].opt["disambiguate-add-names"] = true;
+		state.opt["disambiguate-add-names"] = true;
 	}
 };
 
 CSL.Attributes["@disambiguate-add-givenname"] = function (state, arg) {
 	if (arg === "true") {
-		state[this.name].opt["disambiguate-add-givenname"] = true;
+		state.opt["disambiguate-add-givenname"] = true;
 	}
 };
 
 CSL.Attributes["@disambiguate-add-year-suffix"] = function (state, arg) {
 	if (arg === "true") {
-		state[this.name].opt["disambiguate-add-year-suffix"] = true;
+		state.opt["disambiguate-add-year-suffix"] = true;
 	}
 };
 
