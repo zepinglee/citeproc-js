@@ -119,17 +119,17 @@ CSL.Engine.prototype.updateItems = function (idList) {
 	this.registry.rebuildlist();
 	//SNIP-START
 	if (debug) {
-		CSL.debug("--> setdisambigs <--");
-	}
-	//SNIP-END
-	// taints always
-	this.registry.setdisambigs();
-	//SNIP-START
-	if (debug) {
 		CSL.debug("--> setsortkeys <--");
 	}
 	//SNIP-END
 	this.registry.setsortkeys();
+	// taints always
+	//SNIP-START
+	if (debug) {
+		CSL.debug("--> setdisambigs <--");
+	}
+	//SNIP-END
+	this.registry.setdisambigs();
 	//SNIP-START
 	if (debug) {
 		CSL.debug("--> sorttokens <--");
@@ -149,7 +149,7 @@ CSL.Engine.prototype.updateItems = function (idList) {
 	}
 	//SNIP-END
 	// taints always
-	this.registry.yearsuffix();
+	//this.registry.yearsuffix();
 
 	return this.registry.getSortedIds();
 };
@@ -175,15 +175,13 @@ CSL.Engine.prototype.updateUncitedItems = function (idList) {
 	// everything else is the same as updateItems()
 	this.registry.rebuildlist();
 
-	this.registry.setdisambigs();
-
 	this.registry.setsortkeys();
+
+	this.registry.setdisambigs();
 
 	this.registry.sorttokens();
 
 	this.registry.renumber();
-
-	this.registry.yearsuffix();
 
 	return this.registry.getSortedIds();
 };
