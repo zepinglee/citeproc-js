@@ -46,11 +46,33 @@
  * or the [AGPLv3] License.”
  */
 
+CSL.compareAmbigConfig = function(a, b) {
+	var ret, pos, len, ppos, llen;
+	// return of true means the ambig configs differ
+	if (a.names.length !== b.names.length) {
+		return 1;
+	} else {
+		for (pos = 0, len = a.names.length; pos < len; pos += 1) {
+			if (a.names[pos] !== b.names[pos]) {
+				return 1;
+			} else {
+				for (ppos = 0, llen = a.names[pos]; ppos < llen; ppos += 1) {
+					if (a.givens[pos][ppos] !== b.givens[pos][ppos]) {
+						return 1;
+					}
+				}
+			}
+		}
+	}
+	return 0;
+};
+
 CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	var ret, param, pos, ppos, len, llen;
 	ret = {};
 	ret.names = [];
 	ret.givens = [];
+	ret.year_suffix_citeform = false;
 	ret.year_suffix = false;
 	ret.disambiguate = false;
 	len = config.names.length;
@@ -79,14 +101,14 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		}
 		ret.givens.push(param);
 	}
+	// I think we just leave this out.
+	//if (oldconfig && oldconfig.year_suffix_citeform !== config.year_suffix_citeform) {
+	//	// print("hello year_suffix");
+	//	this.tmp.taintedItemIDs[itemID] = true;
+	//	oldconfig = false;
+	//}
 	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
 		// print("hello year_suffix");
-		this.tmp.taintedItemIDs[itemID] = true;
-		oldconfig = false;
-	}
-	ret.year_suffix = config.year_suffix;
-	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
-		// print("hello disambiguate");
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
@@ -94,5 +116,29 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	return ret;
 };
 
+/**
+ * Return current base configuration for disambiguation
+ */
+CSL.getAmbigConfig = function () {
+	var config, ret;
+	config = this.tmp.disambig_request;
+	if (!config) {
+		config = this.tmp.disambig_settings;
+	}
+	ret = CSL.cloneAmbigConfig(config);
+	return ret;
+};
 
+/**
+ * Return max values for disambiguation
+ */
+CSL.getMaxVals = function () {
+	return this.tmp.names_max.mystack.slice();
+};
 
+/**
+ * Return min value for disambiguation
+ */
+CSL.getMinVal = function () {
+	return this.tmp["et-al-min"];
+};
