@@ -55,6 +55,6 @@ CSL.AmbigConfig = function () {
 	this.minval = 1;
 	this.names = [];
 	this.givens = [];
-	this.year_suffix = 0;
+	this.year_suffix = false;
 	this.disambiguate = 0;
 };
