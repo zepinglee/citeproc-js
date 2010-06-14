@@ -46,6 +46,26 @@
  * or the [AGPLv3] License.”
  */
 
+CSL.Engine.prototype.previewCitationClusterStatic = function (citation, newMode, insert) {
+	var citationsPre, citationsPost, pos, len;
+	citationsPre = [];
+	citationsPost = [];
+	if (this.registry.citationreg.citationByIndex && this.registry.citationreg.citationByIndex.length) {
+		var citationByIndex = this.registry.citationreg.citationByIndex;
+		var citationsAll = [];
+		for (pos = 0, len = citationByIndex.length; pos < len; pos += 1) {
+			citationsAll.push([citationByIndex[pos].citationID, citationByIndex[pos].properties.noteIndex]);
+		}
+		citationsPre = citationsAll.slice(0, citation.properties.index);
+		if (insert) {
+			citationsPost = citationsAll.slice(citation.properties.index);
+		} else {
+			citationsPost = citationsAll.slice(citation.properties.index + 1);
+		}
+	}
+	return this.previewCitationCluster(citation, citationsPre, citationsPost, newMode);
+};
+
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
 	var oldMode, oldCitationID, newCitationID, ret, data;
 	// Generate output for a hypothetical citation at the current position,
