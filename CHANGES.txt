@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.30
+=========================
+
+-----------
+Enhancement
+-----------
+
+- Add new previewCitationClusterStatic() command, to
+  simplify the task of generating previews in the calling
+  application.  The command requires only a citation
+  object, and an output mode flag (typically "html").
+
+-------
+Cleanup
+-------
+
+- Document previewCitationClusterStatic() command in the
+  processor manual.
+
+
+=========================
 Changes in version 1.0.29
 =========================
 
