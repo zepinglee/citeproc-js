@@ -79,6 +79,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
 	if (flag === CSL.PREVIEW) {
+		// take a slice of existing citations
+		var oldCitations = this.registry.citationreg.citationByIndex.slice();
 		// Identify items that will be added to the registry
 		var tmpItems = [];
 		for (pos = 0, len = citation.citationItems.length; pos < len; pos += 1) {
@@ -86,25 +88,30 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				tmpItems.push(citation.citationItems[pos].id);
 			}
 		}
+		// Identify items that will go missing in the preview transaction
+		// Lots of action here, but faster than rerendering.
 		lostItemList = [];
-		if (replacement) {
-			// Identify items that will go missing in the preview transaction
-			// Lots of action here, but faster than rerendering.
-			var newCitationIds = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
-			var newItemIds = {};
-			for (pos = 0, len = newCitationIds.length; pos < len; pos += 1) {
-				c = this.registry.citationreg.citationById[newCitationIds[pos][0]];
-				for (ppos = 0, llen = c.citationItems.length; ppos < llen; ppos += 1) {
-					newItemIds[c.citationItems[ppos].id] = true;
-				}
-			}
-			for (pos = 0, len = replacement.citationItems.length; pos < len; pos += 1) {
-				if (!newItemIds[replacement.citationItems[pos].id]) {
-					lostItemId = replacement.citationItems[pos].id;
-					lostItemList.push([lostItemId, this.registry.registry[lostItemId]]);
-				}
+		var newCitationIds = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
+		var newItemIds = {};
+		for (pos = 0, len = newCitationIds.length; pos < len; pos += 1) {
+			c = this.registry.citationreg.citationById[newCitationIds[pos][0]];
+			for (ppos = 0, llen = c.citationItems.length; ppos < llen; ppos += 1) {
+				newItemIds[c.citationItems[ppos].id] = true;
 			}
 		}
+		for (id in this.registry.registry) {
+			if (!newItemIds[id]) {
+				lostItemList.push([id, this.registry.registry[id]]);
+			}
+		}
+		//if (replacement) {
+		//	for (pos = 0, len = replacement.citationItems.length; pos < len; pos += 1) {
+		//		if (!newItemIds[replacement.citationItems[pos].id]) {
+		//			lostItemId = replacement.citationItems[pos].id;
+		//			lostItemList.push([lostItemId, this.registry.registry[lostItemId]]);
+		//		}
+		//	}
+		//}
 		// We'll need to restore the ambig state of ambig partner
 		// citations, so save off that state here, in oldAmbigData, as
 		// a list of two-element arrays (item id, disambig data).
@@ -428,6 +435,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// (3) keys registered in the ambigs pool arrays, and (4) registry
 		// items.
 		//
+		// restore sliced citations ... ?
+		this.registry.citationreg.citationByIndex = oldCitations;
+		this.registry.citationreg.citationsById = {};
+		for (pos = 0, len = oldCitations.length; pos < len; pos += 1) {
+			this.registry.citationreg.citationsById[oldCitations[pos].citationID] = oldCitations[pos];
+		}
 		// Roll back names reg of added items
 		this.registry.namereg.delitems(tmpItems);
 		// Restore names reg of missing items (lostItemIds will be empty
