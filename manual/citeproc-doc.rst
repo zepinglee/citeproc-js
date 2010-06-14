@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a88##
+   version 1.00##a89##
 
 .. class:: info-date
 
-   =D=8 June 2010=D=
+   =D=14 June 2010=D=
 
 .. class:: contributors
 
@@ -634,6 +634,28 @@ no effect on the processor state.
    ...
 
    "(Richard Snoakes 1950)"
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``previewCitationClusterStatic()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``previewCitationClusterStatic()`` command assumes that the
+internal processor state reflects the content of the document.
+It requires only a citation object to operate.  An ``insert``
+toggle, if true, will cause the citation at same index position as
+the preview object to be retained.
+
+.. sourcecode:: js
+
+   var insert = false;
+
+   citeproc.previewCitationClusterStatic(citation,"html", false);
+
+   ...
+
+   "(Richard Snoakes 1950)"
+
 
 
 
