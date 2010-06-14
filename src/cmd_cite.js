@@ -77,11 +77,8 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag, replacement) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData;
 	return_data = {"bibchange": false};
-	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-	print("processCitationCluster(): "+flag);
 	this.registry.return_data = return_data;
 	if (flag === CSL.PREVIEW) {
-		print("STORING");
 		// Identify items that will be added to the registry
 		var tmpItems = [];
 		for (pos = 0, len = citation.citationItems.length; pos < len; pos += 1) {
@@ -95,10 +92,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			// Lots of action here, but faster than rerendering.
 			var newCitationIds = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
 			var newItemIds = {};
-
-			// everything works, but the logic of the following two blocks or so
-			// is wrong.  have a rethink.
-
 			for (pos = 0, len = newCitationIds.length; pos < len; pos += 1) {
 				c = this.registry.citationreg.citationById[newCitationIds[pos][0]];
 				for (ppos = 0, llen = c.citationItems.length; ppos < llen; ppos += 1) {
@@ -107,42 +100,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 			for (pos = 0, len = replacement.citationItems.length; pos < len; pos += 1) {
 				if (!newItemIds[replacement.citationItems[pos].id]) {
-					print("hello: found a lost one in "+replacement.citationItems[pos].id);
 					lostItemId = replacement.citationItems[pos].id;
-
-					//
-					// The problem seems to be that these objects are not cloned.
-					//
-					var nameind = this.registry.namereg.nameind[lostItemId];
-					var iclone = {};
-					for (key in nameind) {
-						iclone[key] = true;
-					}
-
-					var nameindpkeys = this.registry.namereg.nameindpkeys[lostItemId];
-					var clone = {};
-					for (pkey in nameindpkeys) {
-						print("hello1:"+pkey+": "+nameindpkeys[pkey])
-						clone[pkey] = {};
-						clone[pkey].items = nameindpkeys[pkey].items.slice();
-						clone[pkey].ikey = {};
-						for (ikey in nameindpkeys[pkey].ikey) {
-							clone[pkey].ikey[ikey] = {};
-							clone[pkey].ikey[ikey].items = nameindpkeys[pkey].ikey[ikey].items.slice();
-							clone[pkey].ikey[ikey].skey = {};
-							print("hello2")
-							for (skey in nameindpkeys[pkey].ikey[ikey].skey) {
-								clone[pkey].ikey[ikey].skey[skey] = {};
-								clone[pkey].ikey[ikey].skey[skey].items = nameindpkeys[pkey].ikey[ikey].skey[skey].items.slice();
-								print("hello3")
-							}
-						}
-					}
-					print("nameind: "+this.registry.namereg.nameind[lostItemId]);
-					print("nameindpkeys: "+this.registry.namereg.nameindpkeys[lostItemId]);
-					print("nameindpkeys: "+this.registry.namereg.nameindpkeys[lostItemId]["Doe"].ikey["J"].skey["John"].items);
-					lostItemList.push([lostItemId, iclone, clone, this.registry.registry[lostItemId]]);
-					//lostItemList.push([lostItemId, this.registry.namereg.nameind[lostItemId], this.registry.namereg.nameindpkeys[lostItemId], this.registry.registry[lostItemId]]);
+					lostItemList.push([lostItemId, this.registry.registry[lostItemId]]);
 				}
 			}
 		}
@@ -273,9 +232,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// update bibliography items here
 	//
 	if (flag !== CSL.ASSUME_ALL_ITEMS_REGISTERED) {
-		print("updateItems() [start]");
 		this.updateItems(update_items);
-		print("updateItems() [end]");
 	}
 	if (this.opt.update_mode === CSL.POSITION) {
 		for (pos = 0; pos < 2; pos += 1) {
@@ -430,7 +387,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						for (ppppos = 0; ppppos < llllen; ppppos += 1) {
 							param = CSL.POSITION_TEST_VARS[ppppos];
 							if (item[1][param] !== oldvalue[param]) {
-								print("TAINTING");
 								this.tmp.taintedCitationIDs[onecitation.citationID] = true;
 							}
 						}
@@ -465,7 +421,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	//
 	ret = [];
 	if (flag === CSL.PREVIEW) {
-		print("RESTORING");
 		// If previewing, return only a rendered string
 		ret = this.process_CitationCluster.call(this, citation.sortedItems);
 		// Wind out anything related to new items added for the preview.
@@ -478,24 +433,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// Restore names reg of missing items (lostItemIds will be empty
 		// if original citation being edited is not supplied as
 		// "replacement" argument.
-		if (true) {
 		for (pos = 0, len = lostItemList.length; pos < len; pos += 1) {
-			// lostItemIds is a three-element array: id, nameind, nameindpkeys
+			// lostItemIds is a two-element array: id, registry entry
 			lostItemData = lostItemList[pos];
-			print("Lost item data: "+lostItemList[pos][0]);
-			this.registry.registry[lostItemData[0]] = lostItemData[3];
-			if (false){
-			this.registry.namereg.nameind[lostItemData[0]] = lostItemData[1];
-			this.registry.namereg.nameindpkeys[lostItemData[0]] = lostItemData[2];
-			for (key in lostItemData[2]) {
-				if (lostItemData[2].hasOwnProperty(key)) {
-					print("  "+key);
-					print("  "+lostItemData[2][key].items);
-					this.registry.namereg[key] = lostItemData[2][key];
-				}
-			}
-			}
-		}
+			this.registry.registry[lostItemData[0]] = lostItemData[1];
 		}
 		// Roll back disambig states
 		for (pos = 0, len = oldAmbigData.length; pos < len; pos += 1) {
@@ -517,7 +458,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			delete this.registry.registry[tmpItems[pos]];
 		}
 	} else {
-		print(" ... running taints ... ");
 		// Run taints only if not previewing
 		//
 		// Push taints to the return object
@@ -562,7 +502,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems) {
 	var str;
-	print("**process_CitationCluster()")
 	this.parallel.StartCitation(sortedItems);
 	str = CSL.getCitationCluster.call(this, sortedItems);
 
@@ -598,7 +537,6 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
 	var use_parallels, ret;
-	print("getAmbiguousCite()");
 	if (disambig) {
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -644,7 +582,6 @@ CSL.getSpliceDelimiter = function (last_collapsed) {
  */
 CSL.getCitationCluster = function (inputList, citationID) {
 	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj;
-	print("getCitationCluster()");
 	this.tmp.area = "citation";
 	delimiter = "";
 	result = "";
@@ -794,7 +731,6 @@ CSL.getCite = function (Item, item, prevItemID) {
 	this.parallel.StartCite(Item, item, prevItemID);
 	CSL.citeStart.call(this, Item);
 	next = 0;
-	print("getCite()");
 	while (next < this[this.tmp.area].tokens.length) {
 		next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next], Item, item);
     }
