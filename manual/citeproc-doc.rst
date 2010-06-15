@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a89##
+   version 1.00##a90##
 
 .. class:: info-date
 
-   =D=14 June 2010=D=
+   =D=15 June 2010=D=
 
 .. class:: contributors
 
