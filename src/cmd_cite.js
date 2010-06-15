@@ -80,6 +80,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	this.registry.return_data = return_data;
 
 	if (flag === CSL.PREVIEW) {
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** start state save *********");
+		}
+		//SNIP-END
 		var lostItemReg = {};
 		var lostItemNameInd = {};
 		var lostItemNameIndPkeys = {};
@@ -173,6 +178,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		}
 		//this.updateItems(this.registry.mylist.concat(tmpItems));
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** end state save *********");
+		}
+		//SNIP-END
 	}
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
@@ -280,7 +290,17 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// update bibliography items here
 	//
 	if (flag !== CSL.ASSUME_ALL_ITEMS_REGISTERED) {
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** start update items *********");
+		}
+		//SNIP-END
 		this.updateItems(update_items);
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** endo update items *********");
+		}
+		//SNIP-END
 	}
 	if (this.opt.update_mode === CSL.POSITION) {
 		for (pos = 0; pos < 2; pos += 1) {
@@ -463,7 +483,18 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	ret = [];
 	if (flag === CSL.PREVIEW) {
 		// If previewing, return only a rendered string
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** start run processor *********");
+		}
+		//SNIP-END
 		ret = this.process_CitationCluster.call(this, citation.sortedItems);
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** end run processor *********");
+			CSL.debug("****** start state restore *********");
+		}
+		//SNIP-END
 		// Wind out anything related to new items added for the preview.
 		// This means (1) names, (2) disambig state for affected items,
 		// (3) keys registered in the ambigs pool arrays, and (4) registry
@@ -476,7 +507,17 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			this.registry.citationreg.citationById[oldCitations[pos].citationID] = oldCitations[pos];
 		}
 		// Roll back names reg of added items
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** start delitems *********");
+		}
+		//SNIP-END
 		this.registry.namereg.delitems(tmpItems);
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** end delitems *********");
+		}
+		//SNIP-END
 		// Restore names reg of missing and potentially corrupted items
 		for (key in lostItemReg) {
 			this.registry.registry[key] = lostItemReg[id];
@@ -506,8 +547,18 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
 			delete this.registry.registry[tmpItems[pos]];
 		}
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** start final update *********");
+		}
+		//SNIP-END
 		this.updateItems([key for (key in this.registry.registry)]);
-
+		//SNIP-START
+		if (this.debug) {
+			CSL.debug("****** end final update *********");
+			CSL.debug("****** end state restore *********");
+		}
+		//SNIP-END
 	} else {
 		// Run taints only if not previewing
 		//
