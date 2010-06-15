@@ -674,10 +674,6 @@ the preview object to be retained.
 ``restoreProcessorState()``
 ###########################
 
-.. class:: redback
-
-   [deprecated: always use ``previewCitationCluster()`` instead]
-
 The ``restoreProcessorState()`` command can be used to restore the
 processor state in a single operation, where citation objects,
 complete with position variables and ``sortkeys``, are available.
