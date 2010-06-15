@@ -619,14 +619,19 @@ __ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/integratio
 
 The ``previewCitationCluster()`` command takes the same arguments
 as ``processCitationCluster()``, plus a flag to indicate the
-output mode.  The return value is a string representing the
-citation as it would be rendered in the specified context. There is 
-no effect on the processor state.
+output mode.
+
+The return value is a string representing the
+citation as it would be rendered in the specified context.  This command 
+will preview citations
+exactly as they will appear in the document, and will have no
+effect on processor state: the next edit will return updates
+as if the preview command had not been run.
+
 
 .. sourcecode:: js
 
    var citationsPre = [ ["citation-abc",1], ["citation-def",2] ];
-
    var citationsPost = [ ["citation-ghi",4] ];
 
    citeproc.previewCitationCluster(citation,citationsPre,citationsPost,"html");
@@ -636,9 +641,14 @@ no effect on the processor state.
    "(Richard Snoakes 1950)"
 
 
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``previewCitationClusterStatic()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. class:: redback
+
+   [command withdrawn: always use ``previewCitationCluster()`` instead]
 
 The ``previewCitationClusterStatic()`` command assumes that the
 internal processor state reflects the content of the document.
@@ -663,6 +673,10 @@ the preview object to be retained.
 ###########################
 ``restoreProcessorState()``
 ###########################
+
+.. class:: redback
+
+   [deprecated: always use ``previewCitationCluster()`` instead]
 
 The ``restoreProcessorState()`` command can be used to restore the
 processor state in a single operation, where citation objects,
