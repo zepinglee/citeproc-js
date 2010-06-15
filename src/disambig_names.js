@@ -51,6 +51,8 @@ CSL.Registry.NameReg = function (state) {
 	this.state = state;
 	this.namereg = {};
 	this.nameind = {};
+	// used for restoring state following preview
+	this.nameindpkeys = {};
 	//
 	// family, initials form, fullname (with given stripped of periods)
 	//
@@ -211,10 +213,8 @@ CSL.Registry.NameReg = function (state) {
 		}
 		ret = {};
 		len = ids.length;
-		//print(ids[0])
 		for (pos = 0; pos < len; pos += 1) {
 			id = ids[pos];
-			//print("Umm ... "+this.nameind[id]+" ... er ... "+this.nameind);
 			//CSL.debug("DEL-A");
 			if (!this.nameind[id]) {
 				continue;
@@ -285,10 +285,12 @@ CSL.Registry.NameReg = function (state) {
 							delete this.namereg[pkey];
 						}
 					}
+
 					//this.namereg[pkey].items = items.slice(0, posA).concat(items.slice([posA+1], items.length));
 					delete this.nameind[id][fullkey];
 				}
 			}
+			// XXXXX: Why not just delete the whole nameind[id] here?
 		}
 		return ret;
 	};
@@ -348,10 +350,12 @@ CSL.Registry.NameReg = function (state) {
 		}
 		if ("undefined" === typeof this.nameind[item_id]) {
 			this.nameind[item_id] = {};
+			this.nameindpkeys[item_id] = {};
 		}
 		//CSL.debug("INS-A");
 		if (pkey) {
 			this.nameind[item_id][pkey + "::" + ikey + "::" + skey] = true;
+			this.nameindpkeys[item_id][pkey] = this.namereg[pkey];
 		}
 		//CSL.debug("INS-B");
 	};

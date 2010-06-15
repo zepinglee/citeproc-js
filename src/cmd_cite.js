@@ -46,7 +46,7 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode, replacement) {
+CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
 	var oldMode, oldCitationID, newCitationID, ret, data;
 	// Generate output for a hypothetical citation at the current position,
 	// Leave the registry in the same state in which it was found.
@@ -55,7 +55,7 @@ CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, 
 	oldCitationID = citation.citationID;
 	newCitationID = this.setCitationId(citation, true);
 
-	[data, ret] = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW, replacement);
+	[data, ret] = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
 
 	delete this.registry.citationreg.citationById[newCitationID];
 	citation.citationID = oldCitationID;
@@ -74,11 +74,15 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 	return this.processCitationCluster(citation, citationsPre, [], CSL.ASSUME_ALL_ITEMS_REGISTERED);
 };
 
-CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag, replacement) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData;
+CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys;
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
+
 	if (flag === CSL.PREVIEW) {
+		var lostItemReg = {};
+		var lostItemNameInd = {};
+		var lostItemNameIndPkeys = {};
 		// take a slice of existing citations
 		var oldCitations = this.registry.citationreg.citationByIndex.slice();
 		// Identify items that will be added to the registry
@@ -90,8 +94,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		}
 		// Identify items that will go missing in the preview transaction
 		// Lots of action here, but faster than rerendering.
-		lostItemList = [];
-		var newCitationIds = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
+		//var newCitationIds = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
+		var newCitationIds = citationsPre.concat(citationsPost);
 		var newItemIds = {};
 		for (pos = 0, len = newCitationIds.length; pos < len; pos += 1) {
 			c = this.registry.citationreg.citationById[newCitationIds[pos][0]];
@@ -99,19 +103,56 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				newItemIds[c.citationItems[ppos].id] = true;
 			}
 		}
+		otherLostPkeys = [];
 		for (id in this.registry.registry) {
 			if (!newItemIds[id]) {
-				lostItemList.push([id, this.registry.registry[id]]);
+				//
+				// The problem seems to be that these objects are not cloned.
+				//
+				var nameind = this.registry.namereg.nameind[id];
+				var iclone = {};
+				for (key in nameind) {
+					iclone[key] = true;
+				}
+				var nameindpkeys = this.registry.namereg.nameindpkeys[id];
+				var clone = {};
+				for (pkey in nameindpkeys) {
+					clone[pkey] = {};
+					clone[pkey].items = nameindpkeys[pkey].items.slice();
+					otherLostPkeys.concat(clone[pkey].items);
+					clone[pkey].ikey = {};
+					for (ikey in nameindpkeys[pkey].ikey) {
+						clone[pkey].ikey[ikey] = {};
+						clone[pkey].ikey[ikey].items = nameindpkeys[pkey].ikey[ikey].items.slice();
+						otherLostPkeys.concat(clone[pkey].ikey[ikey].items);
+
+						clone[pkey].ikey[ikey].skey = {};
+						for (skey in nameindpkeys[pkey].ikey[ikey].skey) {
+							clone[pkey].ikey[ikey].skey[skey] = {};
+							clone[pkey].ikey[ikey].skey[skey].items = nameindpkeys[pkey].ikey[ikey].skey[skey].items.slice();
+							otherLostPkeys.concat(clone[pkey].ikey[ikey].skey[skey].items);
+						}
+					}
+				}
+				//
+				// Aha!  Need a further nested loop here, to pick up items
+				// known to be associated.  Where to get the data from?
+				// How to know who else has the same pkey, ikey or skey?
+				// Just snagging off of the name object during the clone
+				// should be okay, yes?  But must feed a separate entry
+				// in lostItemList -- so it shouldn't be a list at all,
+				// but an object holding keyed lists.  For the otheritem
+				// entries, the registry entry value can be left false --
+				// or it can be snagged, it doesn't matter.
+				//
+				lostItemReg[id] = this.registry.registry[id];
+				lostItemNameInd[id] = iclone;
+				lostItemNameIndPkeys[id] = clone;
+				for (pos = 0, len < otherLostPkeys.length; pos < len; pos += 1) {
+					lostItemNameIndPkeys[otherLostPkeys[pos]] = clone;
+				}
 			}
 		}
-		//if (replacement) {
-		//	for (pos = 0, len = replacement.citationItems.length; pos < len; pos += 1) {
-		//		if (!newItemIds[replacement.citationItems[pos].id]) {
-		//			lostItemId = replacement.citationItems[pos].id;
-		//			lostItemList.push([lostItemId, this.registry.registry[lostItemId]]);
-		//		}
-		//	}
-		//}
 		// We'll need to restore the ambig state of ambig partner
 		// citations, so save off that state here, in oldAmbigData, as
 		// a list of two-element arrays (item id, disambig data).
@@ -131,7 +172,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				}
 			}
 		}
-		this.updateItems(this.registry.mylist.concat(tmpItems));
+		//this.updateItems(this.registry.mylist.concat(tmpItems));
 	}
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
@@ -419,13 +460,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		}
 	}
-	// XXXXX: note to self: maybe provide for half-taints (backreferences)
-	//for (key in this.tmp.taintedCitationIDs) {
-	//	print(key);
-	//};
-	//
-	// The hard part will be in the testing, as usual.
-	//
 	ret = [];
 	if (flag === CSL.PREVIEW) {
 		// If previewing, return only a rendered string
@@ -435,21 +469,23 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// (3) keys registered in the ambigs pool arrays, and (4) registry
 		// items.
 		//
-		// restore sliced citations ... ?
+		// restore sliced citations
 		this.registry.citationreg.citationByIndex = oldCitations;
-		this.registry.citationreg.citationsById = {};
+		this.registry.citationreg.citationById = {};
 		for (pos = 0, len = oldCitations.length; pos < len; pos += 1) {
-			this.registry.citationreg.citationsById[oldCitations[pos].citationID] = oldCitations[pos];
+			this.registry.citationreg.citationById[oldCitations[pos].citationID] = oldCitations[pos];
 		}
 		// Roll back names reg of added items
 		this.registry.namereg.delitems(tmpItems);
-		// Restore names reg of missing items (lostItemIds will be empty
-		// if original citation being edited is not supplied as
-		// "replacement" argument.
-		for (pos = 0, len = lostItemList.length; pos < len; pos += 1) {
-			// lostItemIds is a two-element array: id, registry entry
-			lostItemData = lostItemList[pos];
-			this.registry.registry[lostItemData[0]] = lostItemData[1];
+		// Restore names reg of missing and potentially corrupted items
+		for (key in lostItemReg) {
+			this.registry.registry[key] = lostItemReg[id];
+		}
+		for (key in lostItemNameInd) {
+			this.registry.namereg.nameind[key] = lostItemNameInd[key];
+		}
+		for (key in lostItemNameIndPkeys) {
+			this.registry.namereg.nameindpkeys[key] = lostItemNameIndPkeys[key];
 		}
 		// Roll back disambig states
 		for (pos = 0, len = oldAmbigData.length; pos < len; pos += 1) {
@@ -470,6 +506,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
 			delete this.registry.registry[tmpItems[pos]];
 		}
+		this.updateItems([key for (key in this.registry.registry)]);
+
 	} else {
 		// Run taints only if not previewing
 		//
