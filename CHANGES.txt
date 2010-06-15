@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.32
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bugs in the handling of document-wide names disambiguation
+  that manifested when one or more items with identical names were
+  deleted from the registry.
+
+-------
+Cleanup
+-------
+
+- More thorough tests for previewCitationCluster().
+
+- Add some debugging trace chatter for cmd_cite.js.
+
+- Pointless increment to processor manual version number.
+
+
+=========================
 Changes in version 1.0.31
 =========================
 
