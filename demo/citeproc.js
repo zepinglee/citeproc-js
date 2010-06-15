@@ -1316,7 +1316,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.31";
+	this.processor_version = "1.0.32";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7330,7 +7330,7 @@ CSL.getSortKeys = function (Item, key_type) {
 	return this[key_type].keys;
 };
 CSL.Registry.NameReg = function (state) {
-	var pkey, ikey, skey, floor, ceiling, param, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key;
+	var pkey, ikey, skey, floor, ceiling, param, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
 	this.state = state;
 	this.namereg = {};
 	this.nameind = {};
@@ -7475,39 +7475,31 @@ CSL.Registry.NameReg = function (state) {
 					posA = this.namereg[pkey].items.indexOf(posA);
 					items = this.namereg[pkey].items;
 					if (skey) {
-						posB = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(id);
+						myitems = this.namereg[pkey].ikey[ikey].skey[skey].items;
+						posB = myitems.indexOf(id);
 						if (posB > -1) {
-							items = this.namereg[pkey].ikey[ikey].skey[skey].items.slice();
-							this.namereg[pkey].ikey[ikey].skey[skey].items = items.slice(0, posB).concat(items.slice([(posB + 1)], items.length));
+							this.namereg[pkey].ikey[ikey].skey[skey].items = myitems.slice(0, posB).concat(myitems.slice([(posB + 1)]));
 						}
-						if (this.namereg[pkey].ikey[ikey].skey[skey].items.length === 0) {
-							delete this.namereg[pkey].ikey[ikey].skey[skey];
-							this.namereg[pkey].ikey[ikey].count += -1;
-							if (this.namereg[pkey].ikey[ikey].count < 2) {
-								llen = this.namereg[pkey].ikey[ikey].items.length;
-								for (ppos = 0; ppos < llen; ppos += 1) {
-									otherid = this.namereg[pkey].ikey[ikey].items[ppos];
-									ret[otherid] = true;
-								}
-							}
+						if (this.namereg[pkey].ikey[ikey].skey[skey].items.length === 1) {
+							this.namereg[pkey].ikey[ikey].items.push(this.namereg[pkey].ikey[ikey].skey[skey].items[0]);
+							this.namereg[pkey].ikey[ikey].skey[skey].items = [];
+						}
+						for (ppos = 0, llen = this.namereg[pkey].ikey[ikey].skey[skey].items.length; ppos < llen; ppos += 1) {
+							ret[this.namereg[pkey].ikey[ikey].items[ppos]] = true;
 						}
 					}
 					if (ikey) {
 						posB = this.namereg[pkey].ikey[ikey].items.indexOf(id);
 						if (posB > -1) {
 							items = this.namereg[pkey].ikey[ikey].items.slice();
-							this.namereg[pkey].ikey[ikey].items = items.slice(0, posB).concat(items.slice([posB + 1], items.length));
+							this.namereg[pkey].ikey[ikey].items = items.slice(0, posB).concat(items.slice([posB + 1]));
 						}
-						if (this.namereg[pkey].ikey[ikey].items.length === 0) {
-							delete this.namereg[pkey].ikey[ikey];
-							this.namereg[pkey].count += -1;
-							if (this.namereg[pkey].count < 2) {
-								llen = this.namereg[pkey].items.length;
-								for (ppos = 0; ppos < llen; ppos += 1) {
-									otherid = this.namereg[pkey].items[ppos];
-									ret[otherid] = true;
-								}
-							}
+						if (this.namereg[pkey].ikey[ikey].items.length === 1) {
+							this.namereg[pkey].items.push(this.namereg[pkey].ikey[ikey].items[0]);
+							this.namereg[pkey].ikey[ikey].items = [];
+						}
+						for (ppos = 0, llen = this.namereg[pkey].ikey[ikey].items.length; ppos < llen; ppos += 1) {
+							ret[this.namereg[pkey].ikey[ikey].items[ppos]] = true;
 						}
 					}
 					if (pkey) {
@@ -7516,13 +7508,18 @@ CSL.Registry.NameReg = function (state) {
 							items = this.namereg[pkey].items.slice();
 							this.namereg[pkey].items = items.slice(0, posB).concat(items.slice([posB + 1], items.length));
 						}
-						if (this.namereg[pkey].items.length === 0) {
+						for (ppos = 0, llen = this.namereg[pkey].items.length; ppos < llen; ppos += 1) {
+							ret[this.namereg[pkey].items[ppos]] = true;
+						}
+						if (this.namereg[pkey].items.length < 2) {
 							delete this.namereg[pkey];
 						}
 					}
 					delete this.nameind[id][fullkey];
 				}
 			}
+			delete this.nameind[id];
+			delete this.nameindpkeys[id];
 		}
 		return ret;
 	};
