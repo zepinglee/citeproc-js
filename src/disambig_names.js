@@ -47,7 +47,7 @@
  */
 
 CSL.Registry.NameReg = function (state) {
-	var pkey, ikey, skey, floor, ceiling, param, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key;
+	var pkey, ikey, skey, floor, ceiling, param, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
 	this.state = state;
 	this.namereg = {};
 	this.nameind = {};
@@ -211,68 +211,54 @@ CSL.Registry.NameReg = function (state) {
 		if ("string" === typeof ids || "number" === typeof ids) {
 			ids = [ids];
 		}
+		// ret carries the IDs of other items using this name.
 		ret = {};
 		len = ids.length;
 		for (pos = 0; pos < len; pos += 1) {
 			id = ids[pos];
-			//CSL.debug("DEL-A");
 			if (!this.nameind[id]) {
 				continue;
 			}
 			for (fullkey in this.nameind[id]) {
 				if (this.nameind[id].hasOwnProperty(fullkey)) {
 					key = fullkey.split("::");
-					// print("key: "+key);
-					//CSL.debug("DEL-B");
 					pkey = key[0];
 					ikey = key[1];
 					skey = key[2];
 					// Skip names that have been deleted already.
-					// Needed to clear integration DisambiguateAddGivenname.txt
+					// Needed to clear integration DisambiguateAddGivenname1.txt
+					// and integration DisambiguateAddGivenname2.txt
 					if ("undefined" === typeof this.namereg[pkey]) {
 						continue;
 					}
 					posA = this.namereg[pkey].items.indexOf(posA);
 					items = this.namereg[pkey].items;
 					if (skey) {
-						//print("skey: "+skey);
-						posB = this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(id);
-						//print("posB: "+posB+" for: "+pos+" in "+this.namereg[pkey].ikey[ikey].skey[skey].items);
+						myitems = this.namereg[pkey].ikey[ikey].skey[skey].items;
+						posB = myitems.indexOf(id);
 						if (posB > -1) {
-							items = this.namereg[pkey].ikey[ikey].skey[skey].items.slice();
-							this.namereg[pkey].ikey[ikey].skey[skey].items = items.slice(0, posB).concat(items.slice([(posB + 1)], items.length));
+							this.namereg[pkey].ikey[ikey].skey[skey].items = myitems.slice(0, posB).concat(myitems.slice([(posB + 1)]));
 						}
-						//print("ok: "+this.namereg[pkey].ikey[ikey].skey[skey].items.length);
-						if (this.namereg[pkey].ikey[ikey].skey[skey].items.length === 0) {
-							//print("  reached");
-							delete this.namereg[pkey].ikey[ikey].skey[skey];
-							this.namereg[pkey].ikey[ikey].count += -1;
-							if (this.namereg[pkey].ikey[ikey].count < 2) {
-								// print(this.namereg[pkey].ikey[ikey].items.length);
-								llen = this.namereg[pkey].ikey[ikey].items.length;
-								for (ppos = 0; ppos < llen; ppos += 1) {
-									otherid = this.namereg[pkey].ikey[ikey].items[ppos];
-									ret[otherid] = true;
-								}
-							}
+						if (this.namereg[pkey].ikey[ikey].skey[skey].items.length === 1) {
+							this.namereg[pkey].ikey[ikey].items.push(this.namereg[pkey].ikey[ikey].skey[skey].items[0]);
+							this.namereg[pkey].ikey[ikey].skey[skey].items = [];
+						}
+						for (ppos = 0, llen = this.namereg[pkey].ikey[ikey].skey[skey].items.length; ppos < llen; ppos += 1) {
+							ret[this.namereg[pkey].ikey[ikey].items[ppos]] = true;
 						}
 					}
 					if (ikey) {
 						posB = this.namereg[pkey].ikey[ikey].items.indexOf(id);
 						if (posB > -1) {
 							items = this.namereg[pkey].ikey[ikey].items.slice();
-							this.namereg[pkey].ikey[ikey].items = items.slice(0, posB).concat(items.slice([posB + 1], items.length));
+							this.namereg[pkey].ikey[ikey].items = items.slice(0, posB).concat(items.slice([posB + 1]));
 						}
-						if (this.namereg[pkey].ikey[ikey].items.length === 0) {
-							delete this.namereg[pkey].ikey[ikey];
-							this.namereg[pkey].count += -1;
-							if (this.namereg[pkey].count < 2) {
-								llen = this.namereg[pkey].items.length;
-								for (ppos = 0; ppos < llen; ppos += 1) {
-									otherid = this.namereg[pkey].items[ppos];
-									ret[otherid] = true;
-								}
-							}
+						if (this.namereg[pkey].ikey[ikey].items.length === 1) {
+							this.namereg[pkey].items.push(this.namereg[pkey].ikey[ikey].items[0]);
+							this.namereg[pkey].ikey[ikey].items = [];
+						}
+						for (ppos = 0, llen = this.namereg[pkey].ikey[ikey].items.length; ppos < llen; ppos += 1) {
+							ret[this.namereg[pkey].ikey[ikey].items[ppos]] = true;
 						}
 					}
 					if (pkey) {
@@ -281,16 +267,18 @@ CSL.Registry.NameReg = function (state) {
 							items = this.namereg[pkey].items.slice();
 							this.namereg[pkey].items = items.slice(0, posB).concat(items.slice([posB + 1], items.length));
 						}
-						if (this.namereg[pkey].items.length === 0) {
+						for (ppos = 0, llen = this.namereg[pkey].items.length; ppos < llen; ppos += 1) {
+							ret[this.namereg[pkey].items[ppos]] = true;
+						}
+						if (this.namereg[pkey].items.length < 2) {
 							delete this.namereg[pkey];
 						}
 					}
-
-					//this.namereg[pkey].items = items.slice(0, posA).concat(items.slice([posA+1], items.length));
 					delete this.nameind[id][fullkey];
 				}
 			}
-			// XXXXX: Why not just delete the whole nameind[id] here?
+			delete this.nameind[id];
+			delete this.nameindpkeys[id];
 		}
 		return ret;
 	};
