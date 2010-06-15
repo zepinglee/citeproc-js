@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.31
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix some state restore bugs in previewCitationCluster().
+
+-------
+Cleanup
+-------
+
+- Roll back previewCitationClusterStatic() command that
+  was introduced in the last release.  Discussion and more
+  careful thought showed that it is not safe and not
+  generally a good idea to make blind assumptions about
+  document state.
+
+- Extend the test fixtures for previewCitationCluster()
+  a bit.
+
+
+=========================
 Changes in version 1.0.30
 =========================
 
