@@ -77,6 +77,18 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys;
 	this.debug = false;
+
+	if (this.is_running) {
+		return [{}, [[citation.properties.index, "Concurrency error or processor crash."]]];
+	}
+	this.is_running = true;
+	//
+	// Suspenders and a belt.  Is it possible for another thread
+	// to change the length or content of these lists after submission?
+	//
+	citationsPre = citationsPre.slice();
+	citationsPost = citationsPost.slice();
+
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
 
@@ -475,8 +487,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
 			citations = this.registry.citationreg.citationsByItemId[key];
-			for (pos = 0, len = citations.length; pos < len; pos += 1) {
-				this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
+			// Current citation may be tainted but will not exist
+			// during previewing.
+			if (citations) {
+				for (pos = 0, len = citations.length; pos < len; pos += 1) {
+					this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
+				}
 			}
 		}
 	}
@@ -571,9 +587,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				}
 				obj = [];
 				citation = this.registry.citationreg.citationById[key];
-				obj.push(citation.properties.index);
-				obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
-				ret.push(obj);
+				// Again, citation may not exist during previewing
+				if (citation) {
+					obj.push(citation.properties.index);
+					obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
+					ret.push(obj);
+				}
 			}
 		}
 		this.tmp.taintedItemIDs = false;
@@ -602,6 +621,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// a citation index number, and the second the text to be inserted.
 		//
 	}
+	this.is_running = false;
 	return [return_data, ret];
 };
 
