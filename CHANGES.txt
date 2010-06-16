@@ -1,6 +1,49 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.34
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Include year suffix in clone of disambiguation
+  configuration.  Failure to include this parameter
+  appears to have been behind some intermittent
+  glitches in preview handling of year suffixed
+  citations.
+
+- Avoid processor crash when unregistered citation
+  objects are encountered in preview mode.  The crash
+  points occur during tainting, which is irrelevant
+  in preview mode, so no harm is done; but I'm not
+  really sure why this would ever happen.  Possibly
+  a concurrency issue?
+
+-------
+Cleanup
+-------
+
+- Eliminate unused keyname on cloned disambig objects.
+
+- Minor formatting cleanup in util_disambig.js.
+
+- Add a couple of paranoia operations to processCitationCluster().
+
+  * Issue a bogus warning citation in the event of a processor
+    crash.  This should come out for production.
+
+  * Slice citationsPre and citationsPost when they enter
+    the processor.  I've been exploring some instability
+    with large numbers of same-author/same-year cites in
+    Zotero, and thought that mallability of list input
+    might be part of the problem.  No idea whether these
+    lists can or do change length or content during processing,
+    but just in case.
+
+
+=========================
 Changes in version 1.0.33
 =========================
 

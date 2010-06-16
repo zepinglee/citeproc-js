@@ -933,11 +933,9 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	ret = {};
 	ret.names = [];
 	ret.givens = [];
-	ret.year_suffix_citeform = false;
 	ret.year_suffix = false;
 	ret.disambiguate = false;
-	len = config.names.length;
-	for (pos = 0; pos < len; pos += 1) {
+	for (pos = 0, len = config.names.length; pos < len; pos += 1) {
 		param = config.names[pos];
 		if (oldconfig && oldconfig.names[pos] !== param) {
 			this.tmp.taintedItemIDs[itemID] = true;
@@ -945,8 +943,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		}
 		ret.names[pos] = param;
 	}
-	len = config.givens.length;
-	for (pos = 0; pos < len; pos += 1) {
+	for (pos = 0, len = config.givens.length; pos < len; pos += 1) {
 		param = [];
 		llen = config.givens[pos].length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
@@ -962,6 +959,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
+	ret.year_suffix = config.year_suffix;
 	ret.disambiguate = config.disambiguate;
 	return ret;
 };
@@ -1316,7 +1314,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.33";
+	this.processor_version = "1.0.34";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2136,6 +2134,12 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys;
 	this.debug = false;
+	if (this.is_running) {
+		return [{}, [[citation.properties.index, "Concurrency error or processor crash."]]];
+	}
+	this.is_running = true;
+	citationsPre = citationsPre.slice();
+	citationsPost = citationsPost.slice();
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
 	if (flag === CSL.PREVIEW) {
@@ -2396,8 +2400,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
 			citations = this.registry.citationreg.citationsByItemId[key];
-			for (pos = 0, len = citations.length; pos < len; pos += 1) {
-				this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
+			if (citations) {
+				for (pos = 0, len = citations.length; pos < len; pos += 1) {
+					this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
+				}
 			}
 		}
 	}
@@ -2444,9 +2450,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				}
 				obj = [];
 				citation = this.registry.citationreg.citationById[key];
-				obj.push(citation.properties.index);
-				obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
-				ret.push(obj);
+				if (citation) {
+					obj.push(citation.properties.index);
+					obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
+					ret.push(obj);
+				}
 			}
 		}
 		this.tmp.taintedItemIDs = false;
@@ -2465,6 +2473,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		});
 	}
+	this.is_running = false;
 	return [return_data, ret];
 };
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems) {
