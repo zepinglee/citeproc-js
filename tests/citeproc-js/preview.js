@@ -145,6 +145,43 @@ var ITEM4 = {
 	}
 };
 
+var ITEM5 = {
+	"id": "ITEM-5",
+	"type": "book",
+	"author": [
+		{
+			"family": "Gershwin",
+			"given": "George"
+		}
+	],
+	"issued": {
+		"date-parts": [
+			[
+				1999
+			]
+		]
+	}
+};
+
+
+var ITEM6 = {
+	"id": "ITEM-6",
+	"type": "book",
+	"author": [
+		{
+			"family": "Gershwin",
+			"given": "George"
+		}
+	],
+	"issued": {
+		"date-parts": [
+			[
+				1999
+			]
+		]
+	}
+};
+
 
 
 var CITATION1 = {
@@ -242,10 +279,24 @@ var CITATION6 = {
 	}
 };
 
+var CITATION7 = {
+	"citationItems": [
+		{
+			"id": "ITEM-5"
+		},
+		{
+			"id": "ITEM-6"
+		}
+	],
+	"properties": {
+		"index": 0,
+		"noteIndex": 0
+	}
+};
+
 
 
 doh.register("citeproc_js.preview", [
-
 	function testInstantiation() {
 		function testme () {
 			if ("undefined" == typeof Item){
@@ -287,7 +338,6 @@ doh.register("citeproc_js.preview", [
 		//doh.assertEqual("(Doe, Roe)", res1[0][1]);
 		//doh.assertEqual("(Doe, R. Roe)", res2);
 		//doh.assertEqual(1, res3.length);
-		print(res3);
 		doh.assertEqual("(Doe, Roe)", res3[0][1]);
 	},
 	function testInitialsNeededOnlyWithOriginalCitationItemContent() {
@@ -357,5 +407,15 @@ doh.register("citeproc_js.preview", [
 		var style = new CSL.Engine(sys,mycsl);
 		var res = style.previewCitationCluster(CITATION6, [], [], "html");
 		doh.assertEqual("(Wallbanger, Smith 1999; Wallbanger, Smith 1999)", res);
+	},
+	function testFirstCiteYearSuffixPreviewEditPreviewEdit() {
+		var res;
+		var sys = new RhinoTest([ITEM5, ITEM6]);
+		var style = new CSL.Engine(sys,mycsl2);
+		[date, res] = style.processCitationCluster(CITATION7, [], [], "html");
+		res = style.previewCitationCluster(CITATION7, [], [], "html");
+		doh.assertEqual("(Gershwin 1999a; Gershwin 1999b)", res);
+		[date, res] = style.processCitationCluster(CITATION7, [], [], "html");
+		doh.assertEqual("(Gershwin 1999a; Gershwin 1999b)", res[0][1]);
 	}
 ]);
