@@ -72,11 +72,9 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	ret = {};
 	ret.names = [];
 	ret.givens = [];
-	ret.year_suffix_citeform = false;
 	ret.year_suffix = false;
 	ret.disambiguate = false;
-	len = config.names.length;
-	for (pos = 0; pos < len; pos += 1) {
+	for (pos = 0, len = config.names.length; pos < len; pos += 1) {
 		param = config.names[pos];
 		if (oldconfig && oldconfig.names[pos] !== param) {
 			// print("hello "+i);
@@ -85,8 +83,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		}
 		ret.names[pos] = param;
 	}
-	len = config.givens.length;
-	for (pos = 0; pos < len; pos += 1) {
+	for (pos = 0, len = config.givens.length; pos < len; pos += 1) {
 		param = [];
 		llen = config.givens[pos].length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
@@ -101,17 +98,12 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		}
 		ret.givens.push(param);
 	}
-	// I think we just leave this out.
-	//if (oldconfig && oldconfig.year_suffix_citeform !== config.year_suffix_citeform) {
-	//	// print("hello year_suffix");
-	//	this.tmp.taintedItemIDs[itemID] = true;
-	//	oldconfig = false;
-	//}
 	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
 		// print("hello year_suffix");
 		this.tmp.taintedItemIDs[itemID] = true;
 		oldconfig = false;
 	}
+	ret.year_suffix = config.year_suffix;
 	ret.disambiguate = config.disambiguate;
 	return ret;
 };
