@@ -1316,7 +1316,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.32";
+	this.processor_version = "1.0.33";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2135,6 +2135,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 };
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys;
+	this.debug = false;
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
 	if (flag === CSL.PREVIEW) {
@@ -2148,7 +2149,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				tmpItems.push(citation.citationItems[pos].id);
 			}
 		}
-		var newCitationIds = citationsPre.concat(citationsPost);
+		var newCitationIds = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
 		var newItemIds = {};
 		for (pos = 0, len = newCitationIds.length; pos < len; pos += 1) {
 			c = this.registry.citationreg.citationById[newCitationIds[pos][0]];
@@ -2438,6 +2439,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	} else {
 		for (key in this.tmp.taintedCitationIDs) {
 			if (this.tmp.taintedCitationIDs.hasOwnProperty(key)) {
+				if (key === citation.citationID) {
+					continue;
+				}
 				obj = [];
 				citation = this.registry.citationreg.citationById[key];
 				obj.push(citation.properties.index);

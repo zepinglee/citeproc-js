@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.33
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- In preview mode, avoid tampering with the registry data,
+  of items in the citation to be previewed that already
+  exist in the registry.  Fixes errors in subsequent
+  rendering of year suffixes.
+
+- Suppress redundant return value for current cite, when it is
+  tainted by an update by processCitationCluster().
+
+-------
+Cleanup
+-------
+
+- Add a further unit test for previewCitationCluster(), to
+  uncover year suffix bug.
+
+
+=========================
 Changes in version 1.0.32
 =========================
 
