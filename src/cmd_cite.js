@@ -48,17 +48,14 @@
 
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
 	var oldMode, oldCitationID, newCitationID, ret, data;
+
 	// Generate output for a hypothetical citation at the current position,
 	// Leave the registry in the same state in which it was found.
 	oldMode = this.opt.mode;
 	this.setOutputFormat(newMode);
-	oldCitationID = citation.citationID;
-	newCitationID = this.setCitationId(citation, true);
 
 	[data, ret] = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
 
-	delete this.registry.citationreg.citationById[newCitationID];
-	citation.citationID = oldCitationID;
 	this.setOutputFormat(oldMode);
 	return ret;
 };
@@ -75,22 +72,13 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 };
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys, disambig;
 	this.debug = false;
-
-	if (this.is_running) {
-		return [{}, [[citation.properties.index, "Concurrency error or processor crash."]]];
-	}
-	this.is_running = true;
-	//
-	// Suspenders and a belt.  Is it possible for another thread
-	// to change the length or content of these lists after submission?
-	//
-	citationsPre = citationsPre.slice();
-	citationsPost = citationsPost.slice();
-
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
+
+	// make sure this citation has a unique ID, and register it in citationById.
+	this.setCitationId(citation);
 
 	if (flag === CSL.PREVIEW) {
 		//SNIP-START
@@ -98,98 +86,48 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			CSL.debug("****** start state save *********");
 		}
 		//SNIP-END
-		var lostItemReg = {};
-		var lostItemNameInd = {};
-		var lostItemNameIndPkeys = {};
-		// take a slice of existing citations
-		var oldCitations = this.registry.citationreg.citationByIndex.slice();
-		// Identify items that will be added to the registry
-		var tmpItems = [];
-		for (pos = 0, len = citation.citationItems.length; pos < len; pos += 1) {
-			if (!this.registry.registry[citation.citationItems[pos].id]) {
-				tmpItems.push(citation.citationItems[pos].id);
-			}
-		}
-		// Identify items that will go missing in the preview transaction
-		// Lots of action here, but faster than rerendering.
-		var newCitationIds = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
+		//
+		// Simplify.
+
+		// Take a slice of existing citations.
+		var oldCitationList = this.registry.citationreg.citationByIndex.slice();
+
+		// Take a slice of current items, for later use with update.
+		var oldItemList = this.registry.reflist.slice();
+
+		// Make a list of preview citation ref objects
+		var newCitationList = citationsPre.concat([[citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
+
+		// Make a full list of desired ids, for use in preview update,
+		// and a hash list of same while we're at it.
 		var newItemIds = {};
-		for (pos = 0, len = newCitationIds.length; pos < len; pos += 1) {
-			c = this.registry.citationreg.citationById[newCitationIds[pos][0]];
+		var newItemIdsList = [];
+		for (pos = 0, len = newCitationList.length; pos < len; pos += 1) {
+			c = this.registry.citationreg.citationById[newCitationList[pos][0]];
 			for (ppos = 0, llen = c.citationItems.length; ppos < llen; ppos += 1) {
 				newItemIds[c.citationItems[ppos].id] = true;
+				newItemIdsList.push(c.citationItems[ppos].id);
 			}
 		}
-		otherLostPkeys = [];
-		for (id in this.registry.registry) {
-			if (!newItemIds[id]) {
-				//
-				// The problem seems to be that these objects are not cloned.
-				//
-				var nameind = this.registry.namereg.nameind[id];
-				var iclone = {};
-				for (key in nameind) {
-					iclone[key] = true;
-				}
-				var nameindpkeys = this.registry.namereg.nameindpkeys[id];
-				var clone = {};
-				for (pkey in nameindpkeys) {
-					clone[pkey] = {};
-					clone[pkey].items = nameindpkeys[pkey].items.slice();
-					otherLostPkeys.concat(clone[pkey].items);
-					clone[pkey].ikey = {};
-					for (ikey in nameindpkeys[pkey].ikey) {
-						clone[pkey].ikey[ikey] = {};
-						clone[pkey].ikey[ikey].items = nameindpkeys[pkey].ikey[ikey].items.slice();
-						otherLostPkeys.concat(clone[pkey].ikey[ikey].items);
 
-						clone[pkey].ikey[ikey].skey = {};
-						for (skey in nameindpkeys[pkey].ikey[ikey].skey) {
-							clone[pkey].ikey[ikey].skey[skey] = {};
-							clone[pkey].ikey[ikey].skey[skey].items = nameindpkeys[pkey].ikey[ikey].skey[skey].items.slice();
-							otherLostPkeys.concat(clone[pkey].ikey[ikey].skey[skey].items);
-						}
-					}
-				}
-				//
-				// Aha!  Need a further nested loop here, to pick up items
-				// known to be associated.  Where to get the data from?
-				// How to know who else has the same pkey, ikey or skey?
-				// Just snagging off of the name object during the clone
-				// should be okay, yes?  But must feed a separate entry
-				// in lostItemList -- so it shouldn't be a list at all,
-				// but an object holding keyed lists.  For the otheritem
-				// entries, the registry entry value can be left false --
-				// or it can be snagged, it doesn't matter.
-				//
-				lostItemReg[id] = this.registry.registry[id];
-				lostItemNameInd[id] = iclone;
-				lostItemNameIndPkeys[id] = clone;
-				for (pos = 0, len < otherLostPkeys.length; pos < len; pos += 1) {
-					lostItemNameIndPkeys[otherLostPkeys[pos]] = clone;
-				}
-			}
-		}
-		// We'll need to restore the ambig state of ambig partner
-		// citations, so save off that state here, in oldAmbigData, as
-		// a list of two-element arrays (item id, disambig data).
+		// Clone and save off disambigs of items that will be lost.
 		var oldAmbigs = {};
-		var oldAmbigData = [];
-		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
-			for (key in oldAmbigs) {
-				oldAmbigs[CSL.getAmbiguousCite.call(this, tmpItems[pos])] = [];
-				if (oldAmbigs.hasOwnProperty) {
-					var ids = this.registry.ambigcites[oldAmbigs[ppos]];
-					if (ids) {
-						for (ppos = 0, llen = ids.length; ppos < llen; ppos += 1) {
-							var disambig = CSL.cloneAmbigConfig(this.registry[ids[ppos]].disambig);
-							oldAmbigData.push([ids[ppos], disambig]);
-						}
+		for (pos = 0, len = oldItemList.length; pos < len; pos += 1) {
+			if (!newItemIds[oldItemList[pos].id]) {
+				var oldAkey = this.registry.registry[oldItemList[pos].id].ambig;
+				var ids = this.registry.ambigcites[oldAkey];
+				if (ids) {
+					for (ppos = 0, llen = ids.length; ppos < llen; ppos += 1) {
+						oldAmbigs[ids[ppos]] = CSL.cloneAmbigConfig(this.registry.registry[ids[ppos]].disambig);
 					}
 				}
 			}
 		}
+
+		// Update items.  This will produce the base name data and sort things.
+		// Possibly unnecessary?
 		//this.updateItems(this.registry.mylist.concat(tmpItems));
+
 		//SNIP-START
 		if (this.debug) {
 			CSL.debug("****** end state save *********");
@@ -199,10 +137,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	sortedItems = [];
-	// make sure this citation has a unique ID, and register it in citationById.
-	// The ID will be accessible to the calling application when generating
-	// the next call to this function.
-	new_citation = this.setCitationId(citation);
 
 	// retrieve item data and compose items for use in rendering
 	// attach pointer to item data to shared copy for good measure
@@ -516,62 +450,31 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// (3) keys registered in the ambigs pool arrays, and (4) registry
 		// items.
 		//
+
 		// restore sliced citations
-		this.registry.citationreg.citationByIndex = oldCitations;
+		this.registry.citationreg.citationByIndex = oldCitationList;
 		this.registry.citationreg.citationById = {};
-		for (pos = 0, len = oldCitations.length; pos < len; pos += 1) {
-			this.registry.citationreg.citationById[oldCitations[pos].citationID] = oldCitations[pos];
+		for (pos = 0, len = oldCitationList.length; pos < len; pos += 1) {
+			this.registry.citationreg.citationById[oldCitationList[pos].citationID] = oldCitationList[pos];
 		}
-		// Roll back names reg of added items
-		//SNIP-START
-		if (this.debug) {
-			CSL.debug("****** start delitems *********");
-		}
-		//SNIP-END
-		this.registry.namereg.delitems(tmpItems);
-		//SNIP-START
-		if (this.debug) {
-			CSL.debug("****** end delitems *********");
-		}
-		//SNIP-END
-		// Restore names reg of missing and potentially corrupted items
-		for (key in lostItemReg) {
-			this.registry.registry[key] = lostItemReg[id];
-		}
-		for (key in lostItemNameInd) {
-			this.registry.namereg.nameind[key] = lostItemNameInd[key];
-		}
-		for (key in lostItemNameIndPkeys) {
-			this.registry.namereg.nameindpkeys[key] = lostItemNameIndPkeys[key];
-		}
-		// Roll back disambig states
-		for (pos = 0, len = oldAmbigData.length; pos < len; pos += 1) {
-			this.registry[oldAmbigData[pos][0]].disambig = oldAmbigData[pos][1];
-		}
-		// Drop keys registered in ambigs pool array for each added item
-		for (key in oldAmbigs) {
-			if (oldAmbigs.hasOwnProperty(key)) {
-				var lst = this.registry.ambigcites[oldAmbigs[key]];
-				for (pos = lst.length - 1; pos > -1; pos += 1) {
-					if (tmpItems.indexOf(lst[pos]) > -1) {
-						this.registry.registry[oldAmbigs[key]] = lst.slice(0, pos).concat(lst.slice(pos + 1));
-					}
-				}
-			}
-		}
-		// Delete registry items for temporarily added items
-		for (pos = 0, len = tmpItems.length; pos < len; pos += 1) {
-			delete this.registry.registry[tmpItems[pos]];
-		}
+
 		//SNIP-START
 		if (this.debug) {
 			CSL.debug("****** start final update *********");
 		}
 		//SNIP-END
-		this.updateItems([key for (key in this.registry.registry)]);
+		this.updateItems([oldItemList[pos].id for (pos in oldItemList)]);
 		//SNIP-START
 		if (this.debug) {
 			CSL.debug("****** end final update *********");
+		}
+		//SNIP-END
+		// Roll back disambig states
+		for (key in oldAmbigs) {
+			this.registry.registry[key].disambig = oldAmbigs[key];
+		}
+		//SNIP-START
+		if (this.debug) {
 			CSL.debug("****** end state restore *********");
 		}
 		//SNIP-END
@@ -621,7 +524,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// a citation index number, and the second the text to be inserted.
 		//
 	}
-	this.is_running = false;
 	return [return_data, ret];
 };
 
