@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.35
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Simplify save/restore operations for previewing.
+
+- Tie in tainting code for disambig values registered via disambig_cites.js.  
+  Possibly over-aggressive about rerendering now, but it works.
+
+
+=========================
 Changes in version 1.0.34
 =========================
 
