@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.36
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Refresh citations in which names or year suffixes have
+  (potentially) changed.
+
+
+=========================
 Changes in version 1.0.35
 =========================
 
