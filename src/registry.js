@@ -324,6 +324,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 				"offset": 0,
 				"sortkeys": false,
 				"ambig": false,
+				"rendered": false,
 				"disambig": false
 			};
 			//
@@ -580,7 +581,7 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 	return 0;
 };
 
-CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
+CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
 	if (!this.ambigcites[akey]) {
 		this.ambigcites[akey] = [];
 	}
@@ -590,7 +591,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
 	this.registry[id].ambig = akey;
 	var dome = false;
 	if (this.state.tmp.taintedItemIDs) {
-		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, id);
+		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, id, tainters);
 	} else {
 		this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
 	}

@@ -67,7 +67,7 @@ CSL.compareAmbigConfig = function(a, b) {
 	return 0;
 };
 
-CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
+CSL.cloneAmbigConfig = function (config, oldconfig, itemID, tainters) {
 	var ret, param, pos, ppos, len, llen;
 	ret = {};
 	ret.names = [];
@@ -77,8 +77,9 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 	for (pos = 0, len = config.names.length; pos < len; pos += 1) {
 		param = config.names[pos];
 		if (oldconfig && oldconfig.names[pos] !== param) {
-			// print("hello "+i);
-			this.tmp.taintedItemIDs[itemID] = true;
+			for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
+				this.tmp.taintedItemIDs[tainters[ppos].id] = true;
+			}
 			oldconfig = false;
 		}
 		ret.names[pos] = param;
@@ -90,8 +91,9 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 			// condition at line 312 of disambiguate.js protects against negative
 			// values of j
 			if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
-				// print("hello "+i+":"+j);
-				this.tmp.taintedItemIDs[itemID] = true;
+				for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
+					this.tmp.taintedItemIDs[tainters[ppos].id] = true;
+				}
 				oldconfig = false;
 			}
 			param.push(config.givens[pos][ppos]);
@@ -99,8 +101,9 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID) {
 		ret.givens.push(param);
 	}
 	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
-		// print("hello year_suffix");
-		this.tmp.taintedItemIDs[itemID] = true;
+		for (pos = 0, len = tainters.length; pos < len; pos += 1) {
+			this.tmp.taintedItemIDs[tainters[pos].id] = true;
+		}
 		oldconfig = false;
 	}
 	ret.year_suffix = config.year_suffix;

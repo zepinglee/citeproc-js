@@ -94,6 +94,7 @@ CSL.Disambiguation.prototype.runDisambig = function () {
 CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	var pos, len, Item, otherItem, ItemCite, otherItemCite, ignore, base;
 	Item = list[1][0];
+	this.scanlist = list[1];
 	this.partners = [];
 	[this.base, this.maxvals, this.minval, ItemCite] = this.getItem(Item);
 	this.partners.push(Item);
@@ -124,9 +125,9 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		// no clashes
 		// Remove item from list.  If only one non-clashing item,
 		// remove it as well.
-		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -136,7 +137,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		// requeue nonpartners, and remove them from the list
 		this.lists[this.listpos] = [this.base, this.partners];
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 		} else {
 			this.lists.push([this.base, this.nonpartners]);
 		}
@@ -147,7 +148,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		// Otherwise, allow increment and recycle.
 		if (ismax || this.advance_mode) {
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
-				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base);
+				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base, this.scanlist);
 			}
 			if (ismax) {
 				// everything in the nonpartner set is preserved.
@@ -168,9 +169,9 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		//print("no CLash: "+this.gname)
 		// this branch is the same as for disNames(): if it resolves, we're done with it
 		this.base = this.decrementNames();
-		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -179,7 +180,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		// fewer clashes
 		this.lists[this.listpos] = [this.base, this.partners];
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 		} else {
 			this.lists.push([this.base, this.nonpartners]);
 		}
@@ -189,7 +190,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		this.base = CSL.cloneAmbigConfig(this.oldbase);
 		if (ismax || this.advance_mode) {
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
-				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base);
+				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base, this.scanlist);
 			}
 			if (ismax) {
 				this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -204,9 +205,9 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 	var pos, len;
 	// Try with disambiguate="true""
 	if (this.clashes[1] === 0) {
-		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -227,7 +228,7 @@ CSL.Disambiguation.prototype.disYears = function () {
 	}
 	tokens.sort(this.state.registry.sorter.compareKeys);
 	for (pos = 0, len = tokens.length; pos < len; pos += 1) {
-		this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base, this.scanlist);
 		tokens[pos].disambig.year_suffix = ""+pos;
 	}
 	this.lists[this.listpos] = [this.base, []];
