@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.37
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Quash duplicate terminal punctuation at the end of citations.
+  This can happen where an abbreviated term such as id. or
+  ibid. is rendered at the end of a citation in a note style,
+  in which the note is terminated with a period.
+
+- Eliminate implicit for loops in array constructs, which is
+  sadly not available in Chromium JS engine.
+
+
+=========================
 Changes in version 1.0.36
 =========================
 
