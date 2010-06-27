@@ -337,7 +337,9 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 	//	this.state.tmp.taintedItemIDs[myIds[pos]] = true;
 	//}
 	if (myIds.length > 1) {
-		myItems = [this.sys.retrieveItem(myIds[p]) for (p in myIds)];
+		for (pos = 0, len = myIds.length; pos < len; pos += 1) {
+			myItems.push(this.sys.retrieveItem(myIds[pos]));
+		}
 		// first element is the base disambig, which is false for the initial
 		// list.
 		this.lists.push([this.base, myItems]);

@@ -520,7 +520,6 @@ CSL.Registry.prototype.sorttokens = function () {
 	// 18. Resort token list.
 	//
 	this.reflist.sort(this.sorter.compareKeys);
-	//print("sorted reflist: "+[this.reflist[pos].id for (pos in this.reflist)]);
 };
 
 /**
