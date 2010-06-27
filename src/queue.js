@@ -726,3 +726,23 @@ CSL.Output.Queue.appendPunctuationToSuffix = function (predecessor, punct) {
 		}
 	}
 };
+
+CSL.Output.Queue.quashDuplicateFinalPunctuation = function (myblobs, chr) {
+	if ("string" === typeof myblobs) {
+		if (chr === myblobs.slice(-1)) {
+			return myblobs.slice(0, -1);
+		} else {
+			return myblobs;
+		}
+	} else if (myblobs.length) {
+		var lastblob = myblobs.slice(-1)[0];
+		if (lastblob.strings.suffix && chr === lastblob.strings.suffix.slice(-1)) {
+			lastblob.strings.suffix = lastblob.strings.suffix.slice(0, -1);
+		} else if ("object" === typeof lastblob.blobs) {
+			return CSL.Output.Queue.quashDuplicateFinalPunctuation(lastblob.blobs, chr);
+		} else if ("string" === typeof lastblob.blobs) {
+			lastblob.blobs = CSL.Output.Queue.quashDuplicateFinalPunctuation(lastblob.blobs, chr);
+		}
+	}
+	return false;
+}

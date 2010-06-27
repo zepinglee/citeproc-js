@@ -72,7 +72,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 };
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
-	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys, disambig;
+	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys, disambig, oldItemIds;
 	this.debug = false;
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
@@ -423,11 +423,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			citations = this.registry.citationreg.citationsByItemId[key];
 			// Current citation may be tainted but will not exist
 			// during previewing.
-			if (citations) {
+			//if (citations) {
 				for (pos = 0, len = citations.length; pos < len; pos += 1) {
 					this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
 				}
-			}
+			//}
 		}
 	}
 	ret = [];
@@ -463,7 +463,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			CSL.debug("****** start final update *********");
 		}
 		//SNIP-END
-		this.updateItems([oldItemList[pos].id for (pos in oldItemList)]);
+		oldItemIds = [];
+		for (pos = 0, len = oldItemList.length; pos < len; pos += 1) {
+			oldItemIds.push(oldItemList[pos].id);
+		}
+		this.updateItems(oldItemIds);
 		//SNIP-START
 		if (this.debug) {
 			CSL.debug("****** end final update *********");
@@ -490,12 +494,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				}
 				obj = [];
 				citation = this.registry.citationreg.citationById[key];
-				// Again, citation may not exist during previewing
-				if (citation) {
+				// Again, citation may not exist during previewing?
+				//if (citation) {
 					obj.push(citation.properties.index);
 					obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
 					ret.push(obj);
-				}
+				//}
 			}
 		}
 		this.tmp.taintedItemIDs = false;
@@ -672,8 +676,13 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	//
 	empties = 0;
 	myblobs = this.output.queue.slice();
-	len = myblobs.length;
-	for (pos = 0; pos < len; pos += 1) {
+
+
+	if (CSL.TERMINAL_PUNCTUATION.indexOf(this.citation.opt.layout_suffix) > -1) {
+		CSL.Output.Queue.quashDuplicateFinalPunctuation(myblobs, this.citation.opt.layout_suffix.slice(0, 1));
+	}
+
+	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
 
 		this.output.queue = [myblobs[pos]];
 

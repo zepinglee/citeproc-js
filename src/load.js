@@ -147,7 +147,7 @@ var CSL = {
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 
 	SWAPPING_PUNCTUATION: [".", ",", ";", ":"],
-	TERMINAL_PUNCTUATION: [".", "!", "?", ":", "X", "Y"],
+	TERMINAL_PUNCTUATION: [".", "!", "?", ":"],
 
 	// update modes
 	NONE: 0,
