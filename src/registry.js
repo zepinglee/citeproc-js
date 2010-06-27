@@ -421,9 +421,14 @@ CSL.Registry.prototype.dorefreshes = function () {
 			regtoken.ambig = undefined;
 
 			Item = this.state.sys.retrieveItem(key);
-			old_akey = akey;
-			akey = CSL.getAmbiguousCite.call(this.state, Item);
-			if (this.state.tmp.taintedItemIDs && this.state.opt.update_mode !== CSL.NUMERIC && old_akey !== akey) {
+			//old_akey = akey;
+			//akey = CSL.getAmbiguousCite.call(this.state, Item);
+			//if (this.state.tmp.taintedItemIDs && this.state.opt.update_mode !== CSL.NUMERIC && old_akey !== akey) {
+			//	print("Does this happen? If so: "+old_akey+" :: "+akey);
+			//	this.state.tmp.taintedItemIDs[key] = true;
+			//}
+			if ("undefined" === typeof akey) {
+				CSL.getAmbiguousCite.call(this.state, Item);
 				this.state.tmp.taintedItemIDs[key] = true;
 			}
 			this.registry[key] = regtoken;
