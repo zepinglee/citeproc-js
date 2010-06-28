@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.38
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix appendCitationCluster() to work with the API revision
+  made to processCitationCluster() in point release 1.0.28.
+
+-----------
+Enhancement
+-----------
+
+- When user provides a cite suffix that ends with a full stop,
+  suppress the normal inter-cite join.
+
+
+=========================
 Changes in version 1.0.37
 =========================
 
