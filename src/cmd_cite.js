@@ -68,7 +68,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 		c = this.registry.citationreg.citationByIndex[pos];
 		citationsPre.push([c.citationID, c.properties.noteIndex]);
 	}
-	return this.processCitationCluster(citation, citationsPre, [], CSL.ASSUME_ALL_ITEMS_REGISTERED);
+	return this.processCitationCluster(citation, citationsPre, [])[1];
 };
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
@@ -612,7 +612,7 @@ CSL.getSpliceDelimiter = function (last_collapsed) {
  * flexible inter-cite splicing.
  */
 CSL.getCitationCluster = function (inputList, citationID) {
-	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj;
+	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item;
 	this.tmp.area = "citation";
 	delimiter = "";
 	result = "";
@@ -627,7 +627,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	}
 
 	myparams = [];
-
 	len = inputList.length;
 	for (pos = 0; pos < len; pos += 1) {
 		Item = inputList[pos][0];
@@ -657,6 +656,18 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed);
 		if (item && item["author-only"]) {
 			this.tmp.suppress_decorations = true;
+		}
+
+		if (pos > 0) {
+			preceding_item = inputList[pos - 1][1];
+			if (preceding_item.suffix && pos > 0 && preceding_item.suffix.slice(-1) === ".") {
+				var spaceidx = params.splice_delimiter.indexOf(" ");
+				if (spaceidx > -1) {
+					params.splice_delimiter = params.splice_delimiter.slice(spaceidx);
+				} else {
+					params.splice_delimiter = "";
+				}
+			}
 		}
 		params.suppress_decorations = this.tmp.suppress_decorations;
 		params.have_collapsed = this.tmp.have_collapsed;
