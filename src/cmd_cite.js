@@ -256,6 +256,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			llen = citations.length;
 			for (ppos = 0; ppos < llen; ppos += 1) {
 				onecitation = citations[ppos];
+				if (!onecitation.properties.noteIndex) {
+					onecitation.properties.noteIndex = 0;
+				}
 				// Set the following:
 				//
 				// (1) position as required (as per current Zotero)
@@ -272,16 +275,25 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				lllen = citations[ppos].sortedItems.length;
 				for (pppos = 0; pppos < lllen; pppos += 1) {
 					item = citations[ppos].sortedItems[pppos];
+					// Don't touch item data of other cites when previewing
+					if (flag === CSL.PREVIEW) {
+						if (onecitation.citationID !== citation.citationID) {
+							if ("undefined" === typeof first_ref[item[1].id]) {
+								first_ref[item[1].id] = onecitation.properties.noteIndex;
+								last_ref[item[1].id] = onecitation.properties.noteIndex;
+							} else {
+								last_ref[item[1].id] = onecitation.properties.noteIndex;
+							}
+							continue;
+						}
+					}
 					oldvalue = {};
 					oldvalue.position = item[1].position;
 					oldvalue["first-reference-note-number"] = item[1]["first-reference-note-number"];
 					oldvalue["near-note"] = item[1]["near-note"];
 					item[1]["first-reference-note-number"] = 0;
 					item[1]["near-note"] = false;
-					if ("number" !== typeof first_ref[item[1].id]) {
-						if (!onecitation.properties.noteIndex) {
-							onecitation.properties.noteIndex = 0;
-						}
+					if ("undefined" === typeof first_ref[item[1].id]) {
 						first_ref[item[1].id] = onecitation.properties.noteIndex;
 						last_ref[item[1].id] = onecitation.properties.noteIndex;
 						item[1].position = CSL.POSITION_FIRST;
@@ -386,18 +398,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						}
 					}
 					if (onecitation.properties.noteIndex) {
-						cids = this.registry.citationreg.citationsByItemId[item[0].id];
-						for (ppppos = (cids.length - 1); ppppos > -1; ppppos += -1) {
-							if (cids[ppppos].properties.noteIndex < onecitation.properties.noteIndex) {
-								note_distance = onecitation.properties.noteIndex - cids[ppppos].properties.noteIndex;
-								if (note_distance <= this.citation.opt["near-note-distance"]) {
-									item[1]["near-note"] = true;
-								}
-							}
+						note_distance = onecitation.properties.noteIndex - last_ref[item[1].id];
+						if (note_distance <= this.citation.opt["near-note-distance"]) {
+							item[1]["near-note"] = true;
 						}
-						// if ((onecitation.properties.noteIndex - this.citation.opt["near-note-distance"]) < onecitation.properties.noteIndex) {
-						//	item[1]["near-note"] = true;
-						// }
+						last_ref[item[1].id] = onecitation.properties.noteIndex;
 					}
 					if (onecitation.citationID !== citation.citationID) {
 						llllen = CSL.POSITION_TEST_VARS.length;
@@ -496,11 +501,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 					continue;
 				}
 				obj = [];
-				citation = this.registry.citationreg.citationById[key];
+				var mycitation = this.registry.citationreg.citationById[key];
 				// Again, citation may not exist during previewing?
 				//if (citation) {
-					obj.push(citation.properties.index);
-					obj.push(this.process_CitationCluster.call(this, citation.sortedItems));
+					obj.push(mycitation.properties.index);
+					obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems));
 					ret.push(obj);
 				//}
 			}
