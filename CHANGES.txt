@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.40
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid update to position data of other citations during
+  previewing.  On-the-fly updates of related citations upon
+  citation edit or insert were broken, but should now work 
+  correctly.
+
+
+=========================
 Changes in version 1.0.39
 =========================
 
