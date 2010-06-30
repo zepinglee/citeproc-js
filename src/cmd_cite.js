@@ -304,7 +304,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 							// (this has some jiggery-pokery in it for parallels)
 							items = citations[(ppos - 1)].sortedItems;
 							useme = false;
-							if ((citations[(ppos - 1)].sortedItems[0][1].id === item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
+							// (note: use of looser == form for first comparison below
+							// is important: the id may be of type number or string,
+							// and the looser form will work with both.
+							if ((citations[(ppos - 1)].sortedItems[0][1].id == item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
 								useme = true;
 							}
 							llllen = items.slice(1).length;
