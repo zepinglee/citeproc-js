@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.39
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a tiny bug that could cause erroneous position values when
+  previewing under some circumstances, resulting in an incorrect
+  cite form in preview, and a different (but correct) cite form
+  in the document.
+
+
+=========================
 Changes in version 1.0.38
 =========================
 
