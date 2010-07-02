@@ -319,13 +319,17 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 							// (note: use of looser == form for first comparison below
 							// is important: the id may be of type number or string,
 							// and the looser form will work with both.
-							if ((citations[(ppos - 1)].sortedItems[0][1].id == item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
+							if ((citations[(ppos - 1)].sortedItems[0][1].id == item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
 								useme = true;
 							}
 							llllen = items.slice(1).length;
 							for (ppppos = 0; ppppos < llllen; ppppos += 1) {
 								i = items.slice(1)[ppppos];
+								// XXXXX: This test can't be right.  parallel stores an ID ... ?
 								if (!this.registry.registry[i[1].id].parallel || this.registry.registry[i[1].id].parallel === this.registry.registry[i[1].id]) {
+									// Does fire in some tests, as a matching undefined
+									// No apparent side effects of turning it off, though.
+									// For future consideration.
 									useme = false;
 								}
 							}
