@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.41
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reset processor's internal last_name_rendered variable,
+  to prevent previous runs of the processor from affecting
+  bibliography output.
+
+
+=========================
 Changes in version 1.0.40
 =========================
 

@@ -101,7 +101,7 @@ var CSL = {
 	},
 
 	PREVIEW: "Just for laughs.",
-	ASSUME_ALL_ITEMS_REGISTERED: "Assume we have registered all items.",
+	ASSUME_ALL_ITEMS_REGISTERED: 2,
 
 	START: 0,
 	END: 1,

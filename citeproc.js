@@ -61,7 +61,7 @@ var CSL = {
 		print(str);
 	},
 	PREVIEW: "Just for laughs.",
-	ASSUME_ALL_ITEMS_REGISTERED: "Assume we have registered all items.",
+	ASSUME_ALL_ITEMS_REGISTERED: 2,
 	START: 0,
 	END: 1,
 	SINGLETON: 2,
@@ -1339,7 +1339,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.40";
+	this.processor_version = "1.0.41";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1506,6 +1506,8 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
 		this.output[mode] = {};
 		this.output[mode].tmp = {};
 	}
+};
+CSL.Engine.prototype.setLocale = function (locale) {
 };
 CSL.Engine.prototype.getTerm = function (term, form, plural) {
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural);
@@ -1991,6 +1993,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem;
 	ret = [];
 	this.tmp.area = "bibliography";
+	this.tmp.last_rendered_name = false;
 	input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	function eval_string(a, b) {
@@ -2292,7 +2295,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						if (ppos > 0 && parseInt(pppos, 10) === 0) {
 							items = citations[(ppos - 1)].sortedItems;
 							useme = false;
-							if ((citations[(ppos - 1)].sortedItems[0][1].id == item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id === this.registry.registry[item[1].id].parallel) {
+							if ((citations[(ppos - 1)].sortedItems[0][1].id == item[1].id && citations[ppos - 1].properties.noteIndex >= (citations[ppos].properties.noteIndex - 1)) || citations[(ppos - 1)].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
 								useme = true;
 							}
 							llllen = items.slice(1).length;

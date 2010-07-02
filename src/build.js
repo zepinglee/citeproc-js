@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.40";
+	this.processor_version = "1.0.41";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -339,6 +339,10 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
 	}
 	// Disabled.  See formats.js for code.
 	// this.fun.decorate.format_init(this.output[mode].tmp);
+};
+
+CSL.Engine.prototype.setLocale = function (locale) {
+
 };
 
 CSL.Engine.prototype.getTerm = function (term, form, plural) {
