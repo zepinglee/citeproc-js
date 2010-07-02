@@ -106,6 +106,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem;
 	ret = [];
 	this.tmp.area = "bibliography";
+	this.tmp.last_rendered_name = false;
 	input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	function eval_string(a, b) {
