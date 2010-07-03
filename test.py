@@ -106,14 +106,14 @@ class ApplyLicense:
 class Bundle:
     
     def __init__(self, mode=None):
-        if mode == "e4x":
-            self.citeproc = "citeproce4x.js"
+        if mode == "zotero":
+            self.citeproc = "citeproc_zotero.js"
         else:
             self.citeproc = "citeproc.js"
         self.mode = mode
         f = ["load"]
-        if mode == "e4x":
-            f.extend(["xmle4x"])
+        if mode == "zotero":
+            f.extend(["xmle4x", "error_zotero"])
         f.extend(["queue","util_locale","util_processor","util_disambig"])
         f.extend(["util_nodes","util_dateparser","build","state","util_integration","cmd_update"])
         f.extend(["cmd_bibliography","cmd_cite","node_bibliography","node_choose"])
@@ -150,8 +150,8 @@ class Bundle:
             ifh = open(filename)
             file += self.cleanFile(ifh.read())
         open(self.citeproc,"w+").write(file)
-        if self.mode == "e4x":
-            print "Wrote bundle code with e4x support to ./citeproce4x.js "
+        if self.mode == "zotero":
+            print "Wrote bundle code with e4x support and Zotero error handling to ./citeproce4x.js "
         if self.mode == None:
             open(os.path.join("demo", self.citeproc),"w+").write(file)
 
@@ -615,13 +615,13 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Create the citeproc.js bundle and exit.')
-    parser.add_option("-E", "--e4x-bundle-only", dest="makee4xbundle",
+    parser.add_option("-Z", "--zotero-bundle-only", dest="makezoterobundle",
                       default=False,
                       action="store_true", 
-                      help='Create a citeproce4x.js bundle with embedded e4x support and exit.')
+                      help='Create a citeproce4x.js bundle with embedded e4x support suitable for use in Zotero, and exit.')
     (opt, args) = parser.parse_args()
 
-    if opt.makebundle and opt.makee4xbundle:
+    if opt.makebundle and opt.makezoterobundle:
         print parser.print_help()
         print "\nError: The -B and -E options cannot be used together."
         sys.exit()
@@ -632,8 +632,8 @@ if __name__ == "__main__":
         bundler.createNewBundle()
         sys.exit()
 
-    if opt.makee4xbundle:
-        bundler = Bundle(mode="e4x")
+    if opt.makezoterobundle:
+        bundler = Bundle(mode="zotero")
         bundler.deleteOldBundle()
         bundler.createNewBundle()
         sys.exit()
