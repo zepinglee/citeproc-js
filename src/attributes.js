@@ -546,6 +546,14 @@ CSL.Attributes["@et-al-use-first"] = function (state, arg) {
 	state.setOpt(this, "et-al-use-first", parseInt(arg, 10));
 };
 
+CSL.Attributes["@et-al-use-last"] = function (state, arg) {
+	if (arg === "true") {
+		this.strings["et-al-use-last"] = true;
+	} else {
+		this.strings["et-al-use-last"] = false;
+	}
+};
+
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
 	state.setOpt(this, "et-al-subsequent-min", parseInt(arg, 10));
 };

@@ -162,12 +162,15 @@ var CSL = {
 
 	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix"],
 	DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
-	ET_AL_NAMES: [
-		"et-al-min",
-		"et-al-use-first",
-		"et-al-subsequent-min",
-		"et-al-subsequent-use-first"
-	],
+
+	// XXXX: Apparently never used
+	// ET_AL_NAMES: [
+	// 	"et-al-min",
+	// 	"et-al-use-first",
+	// 	"et-al-use-last",
+	// 	"et-al-subsequent-min",
+	// 	"et-al-subsequent-use-first"
+	// ],
 
 	DISAMBIGUATE_OPTIONS: [
 		"disambiguate-add-names",

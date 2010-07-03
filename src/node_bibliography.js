@@ -66,6 +66,7 @@ CSL.Node.bibliography = {
 
 			state.fixOpt(this, "et-al-min", "et-al-min");
 			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-use-last", "et-al-use-last");
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 
