@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.43
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- In test.py, change the -E bundled code dump option to -Z,
+  and describe as a Zotero bundle option in script help messages.
+
+- Include an assignment of CSL.error to Zotero.debug in the Zotero
+  bundle, so that error messages and warnings from the processor will
+  pass through correctly, without crashing the processor.
+
+- Render literal passthrough strings on date objects only when
+  the year is included among the requested date elements.
+
+- Add temporary code to normalize the structure of some date 
+  input objects.
+
+  (... and so we bid a sad farewell to the Meaning of Life 
+  release.)
+ 
+
+=========================
 Changes in version 1.0.42
 =========================
 

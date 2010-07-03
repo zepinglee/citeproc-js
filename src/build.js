@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.42";
+	this.processor_version = "1.0.43";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -621,7 +621,15 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 				}
 			}
 		} else if (date_obj.hasOwnProperty(field)) {
-			ret[field] = date_obj[field];
+
+			// XXXX: temporary workaround
+
+			if (field === "literal" && "object" === typeof date_obj.literal && "string" === typeof date_obj.literal.part) {
+				CSL.error("CSL: fixing up weird literal date value");
+				ret.literal = date_obj.literal.part;
+			} else {
+				ret[field] = date_obj[field];
+			}
 		}
 	}
 	return ret;

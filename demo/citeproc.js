@@ -1333,7 +1333,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.42";
+	this.processor_version = "1.0.43";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1728,7 +1728,12 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 				}
 			}
 		} else if (date_obj.hasOwnProperty(field)) {
-			ret[field] = date_obj[field];
+			if (field === "literal" && "object" === typeof date_obj.literal && "string" === typeof date_obj.literal.part) {
+				CSL.error("CSL: fixing up weird literal date value");
+				ret.literal = date_obj.literal.part;
+			} else {
+				ret[field] = date_obj[field];
+			}
 		}
 	}
 	return ret;
@@ -2746,6 +2751,8 @@ CSL.Node.date = {
 						state.tmp.date_object = state.fun.dateparser.parse(date_obj.raw);
 					} else if (date_obj["date-parts"]) {
 						state.tmp.date_object = state.dateParseArray(date_obj);
+					} else if ("object" === typeof date_obj) {
+					    state.tmp.date_object = state.dateParseArray(date_obj);
 					}
 					len = this.dateparts.length;
 					for (pos = 0; pos < len; pos += 1) {
@@ -2793,13 +2800,6 @@ CSL.Node.date = {
 			this.execs.push(func);
 			func = function (state, Item) {
 				state.output.startTag("date", this);
-				var tok = new CSL.Token("date-part", CSL.SINGLETON);
-				if (state.tmp.date_object.literal) {
-					state.parallel.AppendToVariable(state.tmp.date_object.literal);
-					state.output.append(state.tmp.date_object.literal, tok);
-					state.tmp.date_object = {};
-				}
-				tok.strings.suffix = " ";
 			};
 			this.execs.push(func);
 		}
@@ -2837,6 +2837,10 @@ CSL.Node["date-part"] = {
 			value = "";
 			value_end = "";
 			state.tmp.donesies.push(this.strings.name);
+			if (state.tmp.date_object.literal && "year" === this.strings.name) {
+				state.parallel.AppendToVariable(state.tmp.date_object.literal);
+				state.output.append(state.tmp.date_object.literal, this);
+			}
 			if (state.tmp.date_object) {
 				value = state.tmp.date_object[this.strings.name];
 				value_end = state.tmp.date_object[(this.strings.name + "_end")];
