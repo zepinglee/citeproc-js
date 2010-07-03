@@ -63,12 +63,16 @@ CSL.Node["date-part"] = {
 			value = "";
 			value_end = "";
 			state.tmp.donesies.push(this.strings.name);
+
+			// Render literal only when year is included in date output
+			if (state.tmp.date_object.literal && "year" === this.strings.name) {
+				state.parallel.AppendToVariable(state.tmp.date_object.literal);
+				state.output.append(state.tmp.date_object.literal, this);
+			}
+
 			if (state.tmp.date_object) {
 				value = state.tmp.date_object[this.strings.name];
 				value_end = state.tmp.date_object[(this.strings.name + "_end")];
-				//if ("undefined" === typeof value_end && state.tmp.area.slice(-5) === "_sort"){
-				//	print("sorting it");
-				//}
 			}
 			if ("year" === this.strings.name && value === 0 && !state.tmp.suppress_decorations) {
 				value = false;

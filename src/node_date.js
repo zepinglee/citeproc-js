@@ -75,6 +75,11 @@ CSL.Node.date = {
 						state.tmp.date_object = state.fun.dateparser.parse(date_obj.raw);
 					} else if (date_obj["date-parts"]) {
 						state.tmp.date_object = state.dateParseArray(date_obj);
+					} else if ("object" === typeof date_obj) {
+
+						// XXXX: Temporary workaround for repairs
+
+					    state.tmp.date_object = state.dateParseArray(date_obj);
 					}
 					//
 					// Call a function here to analyze the
@@ -170,17 +175,6 @@ CSL.Node.date = {
 			// newoutput
 			func = function (state, Item) {
 				state.output.startTag("date", this);
-				var tok = new CSL.Token("date-part", CSL.SINGLETON);
-				//
-				// if present, sneak in a literal here and quash the remainder
-				// of output from this date.
-				//
-				if (state.tmp.date_object.literal) {
-					state.parallel.AppendToVariable(state.tmp.date_object.literal);
-					state.output.append(state.tmp.date_object.literal, tok);
-					state.tmp.date_object = {};
-				}
-				tok.strings.suffix = " ";
 			};
 			this.execs.push(func);
 		}
