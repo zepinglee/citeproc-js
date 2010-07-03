@@ -276,7 +276,7 @@ CSL.Node.names = {
 
 			// handle names
 			func = function (state, Item, item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj, et_al_pers, et_al_org, and_pers, and_org, with_term, chk;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj, et_al_pers, et_al_org, and_pers, and_org, with_term, chk, apply_ellipsis;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -491,7 +491,6 @@ CSL.Node.names = {
 
 					nameset = namesets[namesetIndex];
 
-
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
 						//
 						// This is fine, but the naming of the comparison
@@ -535,6 +534,11 @@ CSL.Node.names = {
 						}
 
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
+						if (state.tmp["et-al-use-last"] && state.tmp["et-al-min"] >= state.tmp["et-al-use-first"] + 2) {
+							apply_ellipsis = true;
+						} else {
+							apply_ellipsis = false;
+						}
 						//
 						// if there is anything on name request, we assume that
 						// it was configured correctly via state.names_request
@@ -584,10 +588,17 @@ CSL.Node.names = {
 									state.output.getToken("et-al-pers").strings.prefix = state.output.getToken("et-al-pers").strings["prefix-single"];
 								}
 							}
-							display_names = display_names.slice(0, discretionary_names_length);
+							if (apply_ellipsis) {
+								state.tmp.use_ellipsis = true;
+								display_names = display_names.slice(0, discretionary_names_length).concat(display_names.slice(-1));
+							} else {
+								display_names = display_names.slice(0, discretionary_names_length);
+							}
 						} else {
-							if (state.output.getToken("name").strings.and && ! state.tmp.sort_key_flag && display_names.length > 1) {
-								and_term = state.output.getToken("name").strings.and;
+							if (!state.tmp.sort_key_flag && display_names.length > 1) {
+								if (state.output.getToken("name").strings.and) {
+									and_term = state.output.getToken("name").strings.and;
+								}
 							}
 						}
 						state.output.formats.value().name.strings.delimiter = and_term;
@@ -798,7 +809,7 @@ CSL.Node.names = {
 						//SNIP-END
 						state.output.openLevel("etal-join"); // join for etal
 						CSL.Util.Names.outputNames(state, display_names);
-						if (et_al) {
+						if (et_al && !state.tmp.use_ellipsis) {
 							state.output.append(et_al, "et-al-pers");
 						}
 						state.output.closeLevel("etal-join"); // etal
@@ -897,6 +908,8 @@ CSL.Node.names = {
 
 				state.tmp["et-al-min"] = false;
 				state.tmp["et-al-use-first"] = false;
+				state.tmp["et-al-use-last"] = false;
+				state.tmp.use_ellipsis = false;
 
 				state.tmp.can_block_substitute = false;
 			};
@@ -911,7 +924,6 @@ CSL.Node.names = {
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			state.build.substitute_level.pop();
 			CSL.Util.substituteEnd.call(this, state, target);
-
 		}
 	},
 

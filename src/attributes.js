@@ -548,9 +548,9 @@ CSL.Attributes["@et-al-use-first"] = function (state, arg) {
 
 CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 	if (arg === "true") {
-		this.strings["et-al-use-last"] = true;
+		state.setOpt(this, "et-al-use-last", true);
 	} else {
-		this.strings["et-al-use-last"] = false;
+		state.setOpt(this, "et-al-use-last", false);
 	}
 };
 

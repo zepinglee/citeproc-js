@@ -55,7 +55,9 @@ CSL.Util.Names.outputNames = function (state, display_names) {
 	var segments, and;
 	segments = new this.StartMiddleEnd(state, display_names);
 	and = state.output.getToken("name").strings.delimiter;
-	if (state.output.getToken("name").strings["delimiter-precedes-last"] === "always") {
+	if (state.tmp.use_ellipsis) {
+		and = state.output.getToken("inner").strings.delimiter + state.getTerm("ellipsis") + " ";
+	} else if (state.output.getToken("name").strings["delimiter-precedes-last"] === "always") {
 		and = state.output.getToken("inner").strings.delimiter + and;
 	} else if (state.output.getToken("name").strings["delimiter-precedes-last"] === "never") {
 		if (!and) {
