@@ -207,18 +207,19 @@ CSL.Attributes["@variable"] = function (state, arg) {
 
 		// check for output
 		func = function (state, Item, item) {
+			var mydate;
 			output = false;
 			len = this.variables.length;
 			for (pos = 0; pos < len; pos += 1) {
 				variable = this.variables[pos];
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-					if (!Item[variable] || !Item[variable]['date-parts'] || !Item[variable]['date-parts'].length) {
-						//
-						// If there is no date value at all, we'll print "n.d."
-						//
+					if (Item[variable] && Item[variable].raw) {
 						output = true;
 						break;
-					} else if (this.dateparts && this.dateparts.length) {
+					} else if (Item[variable] && Item[variable].literal) {
+						output = true;
+						break;
+					} else if (Item[variable] && Item[variable]['date-parts'] && Item[variable]['date-parts'].length && this.dateparts && this.dateparts.length) {
 						varlen = Item[variable]['date-parts'][0].length;
 						needlen = 4;
 						if (this.dateparts.indexOf("year") > -1) {
