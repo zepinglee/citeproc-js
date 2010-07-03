@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.42
+=========================
+
+-----------
+Enhancement
+-----------
+
+- Provisional implementation of ellipsis truncation of 
+  creator listings as required by APA 6th, in anticipation 
+  of upcoming point release of CSL schema and specification.
+
+
+=========================
 Changes in version 1.0.41
 =========================
 

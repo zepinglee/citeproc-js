@@ -101,12 +101,6 @@ var CSL = {
 	DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
 	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix"],
 	DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
-	ET_AL_NAMES: [
-		"et-al-min",
-		"et-al-use-first",
-		"et-al-subsequent-min",
-		"et-al-subsequent-use-first"
-	],
 	DISAMBIGUATE_OPTIONS: [
 		"disambiguate-add-names",
 		"disambiguate-add-givenname",
@@ -1339,7 +1333,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.41";
+	this.processor_version = "1.0.42";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1774,6 +1768,7 @@ CSL.Engine.Opt = function () {
 	this.sort_citations = false;
 	this["et-al-min"] = 0;
 	this["et-al-use-first"] = 1;
+	this["et-al-use-last"] = false;
 	this["et-al-subsequent-min"] = false;
 	this["et-al-subsequent-use-first"] = false;
 	this["demote-non-dropping-particle"] = "display-and-sort";
@@ -2664,6 +2659,7 @@ CSL.Node.bibliography = {
 			state.fixOpt(this, "sort-separator", "sort-separator");
 			state.fixOpt(this, "et-al-min", "et-al-min");
 			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-use-last", "et-al-use-last");
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 			state.build.area_return = state.build.area;
@@ -2714,6 +2710,7 @@ CSL.Node.citation = {
 			state.fixOpt(this, "sort-separator", "sort-separator");
 			state.fixOpt(this, "et-al-min", "et-al-min");
 			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-use-last", "et-al-use-last");
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 			state.build.area_return = state.build.area;
@@ -3537,6 +3534,7 @@ CSL.Node.name = {
 			state.fixOpt(this, "sort-separator", "sort-separator");
 			state.fixOpt(this, "et-al-min", "et-al-min");
 			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
+			state.fixOpt(this, "et-al-use-last", "et-al-use-last");
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 			state.build.nameattrs = {};
@@ -3573,6 +3571,9 @@ CSL.Node.name = {
 					if (! state.tmp["et-al-use-first"]) {
 						state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 					}
+				}
+				if ("undefined" !== this.strings["et-al-use-last"]) {
+					state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
 				}
 			};
 			this.execs.push(func);
@@ -3742,7 +3743,7 @@ CSL.Node.names = {
 				}
 			}
 			func = function (state, Item, item) {
-				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj, et_al_pers, et_al_org, and_pers, and_org, with_term, chk;
+				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, cut_var, obj, et_al_pers, et_al_org, and_pers, and_org, with_term, chk, apply_ellipsis;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 				if (common_term) {
@@ -3884,6 +3885,11 @@ CSL.Node.names = {
 							state.tmp.names_cut.counts[nameset.variable] = state.tmp["et-al-use-first"];
 						}
 						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
+						if (state.tmp["et-al-use-last"] && state.tmp["et-al-min"] >= state.tmp["et-al-use-first"] + 2) {
+							apply_ellipsis = true;
+						} else {
+							apply_ellipsis = false;
+						}
 						discretionary_names_length = state.tmp["et-al-min"];
 						suppress_condition = suppress_min && display_names.length >= suppress_min;
 						if (suppress_condition) {
@@ -3914,10 +3920,17 @@ CSL.Node.names = {
 									state.output.getToken("et-al-pers").strings.prefix = state.output.getToken("et-al-pers").strings["prefix-single"];
 								}
 							}
-							display_names = display_names.slice(0, discretionary_names_length);
+							if (apply_ellipsis) {
+								state.tmp.use_ellipsis = true;
+								display_names = display_names.slice(0, discretionary_names_length).concat(display_names.slice(-1));
+							} else {
+								display_names = display_names.slice(0, discretionary_names_length);
+							}
 						} else {
-							if (state.output.getToken("name").strings.and && ! state.tmp.sort_key_flag && display_names.length > 1) {
-								and_term = state.output.getToken("name").strings.and;
+							if (!state.tmp.sort_key_flag && display_names.length > 1) {
+								if (state.output.getToken("name").strings.and) {
+									and_term = state.output.getToken("name").strings.and;
+								}
 							}
 						}
 						state.output.formats.value().name.strings.delimiter = and_term;
@@ -4036,7 +4049,7 @@ CSL.Node.names = {
 					if (nameset.species === "pers") {
 						state.output.openLevel("etal-join"); // join for etal
 						CSL.Util.Names.outputNames(state, display_names);
-						if (et_al) {
+						if (et_al && !state.tmp.use_ellipsis) {
 							state.output.append(et_al, "et-al-pers");
 						}
 						state.output.closeLevel("etal-join"); // etal
@@ -4092,6 +4105,8 @@ CSL.Node.names = {
 				state.tmp["has-first-person"] = false;
 				state.tmp["et-al-min"] = false;
 				state.tmp["et-al-use-first"] = false;
+				state.tmp["et-al-use-last"] = false;
+				state.tmp.use_ellipsis = false;
 				state.tmp.can_block_substitute = false;
 			};
 			this.execs.push(func);
@@ -4769,6 +4784,13 @@ CSL.Attributes["@et-al-min"] = function (state, arg) {
 };
 CSL.Attributes["@et-al-use-first"] = function (state, arg) {
 	state.setOpt(this, "et-al-use-first", parseInt(arg, 10));
+};
+CSL.Attributes["@et-al-use-last"] = function (state, arg) {
+	if (arg === "true") {
+		state.setOpt(this, "et-al-use-last", true);
+	} else {
+		state.setOpt(this, "et-al-use-last", false);
+	}
 };
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
 	state.setOpt(this, "et-al-subsequent-min", parseInt(arg, 10));
@@ -5726,7 +5748,9 @@ CSL.Util.Names.outputNames = function (state, display_names) {
 	var segments, and;
 	segments = new this.StartMiddleEnd(state, display_names);
 	and = state.output.getToken("name").strings.delimiter;
-	if (state.output.getToken("name").strings["delimiter-precedes-last"] === "always") {
+	if (state.tmp.use_ellipsis) {
+		and = state.output.getToken("inner").strings.delimiter + state.getTerm("ellipsis") + " ";
+	} else if (state.output.getToken("name").strings["delimiter-precedes-last"] === "always") {
 		and = state.output.getToken("inner").strings.delimiter + and;
 	} else if (state.output.getToken("name").strings["delimiter-precedes-last"] === "never") {
 		if (!and) {
