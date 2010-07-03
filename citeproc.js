@@ -1333,7 +1333,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.43";
+	this.processor_version = "1.0.44";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4528,15 +4528,19 @@ CSL.Attributes["@variable"] = function (state, arg) {
 		};
 		this.execs.push(func);
 		func = function (state, Item, item) {
+			var mydate;
 			output = false;
 			len = this.variables.length;
 			for (pos = 0; pos < len; pos += 1) {
 				variable = this.variables[pos];
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-					if (!Item[variable] || !Item[variable]['date-parts'] || !Item[variable]['date-parts'].length) {
+					if (Item[variable] && Item[variable].raw) {
 						output = true;
 						break;
-					} else if (this.dateparts && this.dateparts.length) {
+					} else if (Item[variable] && Item[variable].literal) {
+						output = true;
+						break;
+					} else if (Item[variable] && Item[variable]['date-parts'] && Item[variable]['date-parts'].length && this.dateparts && this.dateparts.length) {
 						varlen = Item[variable]['date-parts'][0].length;
 						needlen = 4;
 						if (this.dateparts.indexOf("year") > -1) {

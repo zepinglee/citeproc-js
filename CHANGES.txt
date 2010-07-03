@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.44
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not treat empty dates as rendering content for purposes of
+  implicit group conditional rendering, but do recognize literal 
+  date content in the same context."
+
+
+=========================
 Changes in version 1.0.43
 =========================
 
