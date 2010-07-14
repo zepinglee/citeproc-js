@@ -351,12 +351,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	for (pos = 0; pos < len; pos += 1) {
 		blobjr = blobs[pos];
 
-
-		//if (blobjr.strings.prefix && blobjr.strings.prefix.slice(0,1) == ":") {
-		//	print("GOTCHA!")
-		//} else {
-		//	print("-----");
-		//}
 		if ("string" === typeof blobjr.blobs) {
 			last_str = "";
 			if (blobjr.strings.suffix) {
@@ -403,6 +397,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				// to produce no output if they are found to be
 				// empty.
 				if (b && b.length) {
+					if (last_char === " " && blobjr.strings.prefix.slice(0, 1) === last_char) {
+						blobjr.strings.prefix = blobjr.strings.prefix.slice(1);
+					}
 					b = blobjr.strings.prefix + b + use_suffix;
 					ret.push(b);
 					// this is telling the truth.  the rest of the
@@ -442,7 +439,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 					terminal = ret.slice(-1)[0].slice(-1);
 					leading = addtoret.slice(-1)[0].slice(0, 1);
 					if (CSL.TERMINAL_PUNCTUATION.indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.indexOf(leading) > -1) {
-						//print("BINGO");
 						// last terminal punctuation wins
 						ret[(ret.length - 1)] = ret[(ret.length - 1)].slice(0, -1);
 					}
