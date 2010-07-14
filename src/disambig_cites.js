@@ -96,14 +96,19 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	Item = list[1][0];
 	this.scanlist = list[1];
 	this.partners = [];
-	[this.base, this.maxvals, this.minval, ItemCite] = this.getItem(Item);
+
+    var tempResult = this.getItem(Item);
+    this.base = tempResult[0];
+    this.maxvals = tempResult[1];
+    this.minval = tempResult[2];
+    ItemCite = tempResult[3];
+
 	this.partners.push(Item);
 	this.clashes[phase] = 0;
 	this.nonpartners = [];
 	for (pos = 1, len = list[1].length; pos < len; pos += 1) {
 		otherItem = list[1][pos];
-		[ignore, ignore, ignore, otherItemCite] = this.getItem(otherItem);
-		// print("("+ItemCite+") / ("+otherItemCite+")");
+		otherItemCite = this.getItem(otherItem)[3];
 		if (ItemCite === otherItemCite) {
 			this.clashes[phase] += 1;
 			this.partners.push(otherItem);

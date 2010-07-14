@@ -54,10 +54,10 @@ CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, 
 	oldMode = this.opt.mode;
 	this.setOutputFormat(newMode);
 
-	[data, ret] = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
+	ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
 
 	this.setOutputFormat(oldMode);
-	return ret;
+	return ret[1];
 };
 
 CSL.Engine.prototype.appendCitationCluster = function (citation) {
