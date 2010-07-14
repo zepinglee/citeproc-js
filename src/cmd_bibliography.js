@@ -103,7 +103,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr;
 	ret = [];
 	this.tmp.area = "bibliography";
 	this.tmp.last_rendered_name = false;
@@ -274,11 +274,16 @@ CSL.getBibliographyEntries = function (bibsection) {
 			llen = topblobs.length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
 				if (topblobs[ppos].blobs && topblobs[ppos].blobs.length !== 0) {
-					topblobs[ppos].strings.suffix += this[this.build.area].opt.layout_suffix;
+					// Fix up duplicate terminal punctuation, reported by Carles Pina 2010-07-15
+					chr = this.bibliography.opt.layout_suffix.slice(0, 1);
+					if (chr && topblobs[ppos].strings.suffix.slice(-1) === chr) {
+						topblobs[ppos].strings.suffix = topblobs[ppos].strings.suffix.slice(0, -1);
+					}
+					topblobs[ppos].strings.suffix += this.bibliography.opt.layout_suffix;
 					break;
 				}
 			}
-			topblobs[0].strings.prefix = this[this.build.area].opt.layout_prefix + topblobs[0].strings.prefix;
+			topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
 		}
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
