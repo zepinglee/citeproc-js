@@ -506,6 +506,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				b = qres[0];
 				use_suffix = qres[1];
 				if (b && b.length) {
+					if (last_char === " " && blobjr.strings.prefix.slice(0, 1) === last_char) {
+						blobjr.strings.prefix = blobjr.strings.prefix.slice(1);
+					}
 					b = blobjr.strings.prefix + b + use_suffix;
 					ret.push(b);
 					blob_last_chars.push(last_char);
@@ -1333,7 +1336,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.44";
+	this.processor_version = "1.0.45";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1990,7 +1993,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	return [params, entry_strings];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr;
 	ret = [];
 	this.tmp.area = "bibliography";
 	this.tmp.last_rendered_name = false;
@@ -2122,11 +2125,15 @@ CSL.getBibliographyEntries = function (bibsection) {
 			llen = topblobs.length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
 				if (topblobs[ppos].blobs && topblobs[ppos].blobs.length !== 0) {
-					topblobs[ppos].strings.suffix += this[this.build.area].opt.layout_suffix;
+					chr = this.bibliography.opt.layout_suffix.slice(0, 1);
+					if (chr && topblobs[ppos].strings.suffix.slice(-1) === chr) {
+						topblobs[ppos].strings.suffix = topblobs[ppos].strings.suffix.slice(0, -1);
+					}
+					topblobs[ppos].strings.suffix += this.bibliography.opt.layout_suffix;
 					break;
 				}
 			}
-			topblobs[0].strings.prefix = this[this.build.area].opt.layout_prefix + topblobs[0].strings.prefix;
+			topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
 		}
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
@@ -2141,9 +2148,9 @@ CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, 
 	var oldMode, oldCitationID, newCitationID, ret, data;
 	oldMode = this.opt.mode;
 	this.setOutputFormat(newMode);
-	[data, ret] = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
+	ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
 	this.setOutputFormat(oldMode);
-	return ret;
+	return ret[1];
 };
 CSL.Engine.prototype.appendCitationCluster = function (citation) {
 	var pos, len, c, citationsPre;
@@ -7618,13 +7625,17 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	Item = list[1][0];
 	this.scanlist = list[1];
 	this.partners = [];
-	[this.base, this.maxvals, this.minval, ItemCite] = this.getItem(Item);
+    var tempResult = this.getItem(Item);
+    this.base = tempResult[0];
+    this.maxvals = tempResult[1];
+    this.minval = tempResult[2];
+    ItemCite = tempResult[3];
 	this.partners.push(Item);
 	this.clashes[phase] = 0;
 	this.nonpartners = [];
 	for (pos = 1, len = list[1].length; pos < len; pos += 1) {
 		otherItem = list[1][pos];
-		[ignore, ignore, ignore, otherItemCite] = this.getItem(otherItem);
+		otherItemCite = this.getItem(otherItem)[3];
 		if (ItemCite === otherItemCite) {
 			this.clashes[phase] += 1;
 			this.partners.push(otherItem);

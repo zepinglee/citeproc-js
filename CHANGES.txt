@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.45
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix duplicate terminal punctuation
+  affecting bibliography output.
+
+- Eliminate dereferencing assignments, for
+  compatibility with some JS implementations.
+
+- Suppress duplicate spaces affecting some
+  styles.
+
+-------
+Cleanup
+-------
+
+- Fix typo in demo page.
+
+=========================
 Changes in version 1.0.44
 =========================
 
