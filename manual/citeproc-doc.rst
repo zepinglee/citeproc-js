@@ -276,7 +276,7 @@ forth.
 .. admonition:: Hint
 
    The sequence in which items are listed in the
-   argument to ``updateItems()`` will be reflected in the ordering
+   argument to ``updateItems()`` will ordinarily be reflected in the ordering
    of bibliographies only if the style installed in the processor
    does not impose its own sort order.
 
@@ -290,6 +290,15 @@ forth.
    
    citeproc.updateItems( my_ids );
 
+.. admonition:: Hint
+
+   To suppress sorting, give a second argument to the command
+   with a value of ``true``.
+
+.. sourcecode:: js
+
+   citeproc.updateItems(my_ids, true);
+
 Note that only IDs may be used to identify items.  The ID is an
 arbitrary, system-dependent identifier, used by the locally customized
 ``retrieveItem()`` method to retrieve
@@ -300,7 +309,8 @@ actual item data.
 ########################
 
 The ``updateUncitedItems()`` command has the same interface
-as ``updateItems()``, but the reference items it adds are
+as ``updateItems()`` (including the option to suppress sorting
+by the style), but the reference items it adds are
 not subject to deletion when no longer referenced by a
 cite anywhere in the document.
 
