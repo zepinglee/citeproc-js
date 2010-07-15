@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a90##
+   version 1.00##a91##
 
 .. class:: info-date
 
-   =D=15 June 2010=D=
+   =D=15 July 2010=D=
 
 .. class:: contributors
 
@@ -290,10 +290,8 @@ forth.
    
    citeproc.updateItems( my_ids );
 
-.. admonition:: Hint
-
-   To suppress sorting, give a second argument to the command
-   with a value of ``true``.
+To suppress sorting, give a second argument to the command
+with a value of ``true``.
 
 .. sourcecode:: js
 
