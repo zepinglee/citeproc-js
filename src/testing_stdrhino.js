@@ -132,7 +132,7 @@ StdRhinoTest.prototype._readTest = function(){
 
 
 StdRhinoTest.prototype.run = function(){
-	var result, data;
+	var result, data, nosort;
 	// print(this.myname);
 	var len, pos, ret, id_set, nick;
 	ret = new Array();
@@ -147,12 +147,16 @@ StdRhinoTest.prototype.run = function(){
 			}
 		}
 	}
+
+	if (this.test.mode === "bibliography-nosort") {
+		nosort = true;
+	}
 	if (this.test.bibentries){
 		for each (id_set in this.test.bibentries){
-			this.style.updateItems(id_set);
+			this.style.updateItems(id_set, nosort);
 		}
 	} else if (!this.test.citations) {
-		this.style.updateItems(this._ids);
+		this.style.updateItems(this._ids, nosort);
 	}
 	if (!this.test.citation_items && !this.test.citations){
 		var citation = [];
@@ -188,7 +192,7 @@ StdRhinoTest.prototype.run = function(){
 		}
 	};
 	ret = citations.join("\n");
-	if (this.test.mode == "bibliography"){
+	if (this.test.mode == "bibliography" || this.test.mode == "bibliography-nosort"){
 		if (this.test.bibsection){
 			var ret = this.style.makeBibliography(this.test.bibsection);
 		} else {
@@ -221,7 +225,7 @@ StdRhinoTest.prototype.run = function(){
 		}
 		ret = ret.replace(/^\s+/,"").replace(/\s+$/,"");
 	}
-	if (this.test.mode !== "bibliography" && this.test.mode !== "citation" && this.test.mode !== "bibliography-header") {
+	if (this.test.mode !== "bibliography" && this.test.mode !== "citation" && this.test.mode !== "bibliography-header" && this.test.mode != "bibliography-nosort") {
 		throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
 	}
 	return ret;
