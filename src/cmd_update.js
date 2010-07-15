@@ -85,7 +85,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 };
 
 
-CSL.Engine.prototype.updateItems = function (idList) {
+CSL.Engine.prototype.updateItems = function (idList, nosort) {
 	var debug = false;
 	//SNIP-START
 	if (debug) {
@@ -130,12 +130,15 @@ CSL.Engine.prototype.updateItems = function (idList) {
 	}
 	//SNIP-END
 	this.registry.setdisambigs();
-	//SNIP-START
-	if (debug) {
-		CSL.debug("--> sorttokens <--");
+
+	if (!nosort) {
+		//SNIP-START
+		if (debug) {
+			CSL.debug("--> sorttokens <--");
+		}
+		//SNIP-END
+		this.registry.sorttokens();
 	}
-	//SNIP-END
-	this.registry.sorttokens();
 	//SNIP-START
 	if (debug) {
 		CSL.debug("--> renumber <--");
@@ -154,7 +157,7 @@ CSL.Engine.prototype.updateItems = function (idList) {
 	return this.registry.getSortedIds();
 };
 
-CSL.Engine.prototype.updateUncitedItems = function (idList) {
+CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
 	var debug = false;
 
 	// prepare extended list of items
@@ -179,7 +182,9 @@ CSL.Engine.prototype.updateUncitedItems = function (idList) {
 
 	this.registry.setdisambigs();
 
-	this.registry.sorttokens();
+	if (!nosort) {
+		this.registry.sorttokens();
+	}
 
 	this.registry.renumber();
 
