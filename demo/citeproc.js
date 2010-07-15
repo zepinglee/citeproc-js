@@ -1336,7 +1336,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.45";
+	this.processor_version = "1.0.46";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1936,7 +1936,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 		this.processCitationCluster(citations[0], [], citationList.slice(1));
 	}
 };
-CSL.Engine.prototype.updateItems = function (idList) {
+CSL.Engine.prototype.updateItems = function (idList, nosort) {
 	var debug = false;
 	this.registry.init(idList);
 	this.registry.dodeletes(this.registry.myhash);
@@ -1945,11 +1945,13 @@ CSL.Engine.prototype.updateItems = function (idList) {
 	this.registry.rebuildlist();
 	this.registry.setsortkeys();
 	this.registry.setdisambigs();
-	this.registry.sorttokens();
+	if (!nosort) {
+		this.registry.sorttokens();
+	}
 	this.registry.renumber();
 	return this.registry.getSortedIds();
 };
-CSL.Engine.prototype.updateUncitedItems = function (idList) {
+CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
 	var debug = false;
 	this.registry.init(idList, true);
 	this.registry.doinserts(this.registry.mylist);
@@ -1957,7 +1959,9 @@ CSL.Engine.prototype.updateUncitedItems = function (idList) {
 	this.registry.rebuildlist();
 	this.registry.setsortkeys();
 	this.registry.setdisambigs();
-	this.registry.sorttokens();
+	if (!nosort) {
+		this.registry.sorttokens();
+	}
 	this.registry.renumber();
 	return this.registry.getSortedIds();
 };

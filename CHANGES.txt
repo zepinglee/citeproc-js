@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.46
+=========================
+
+-----------
+Enhancement
+-----------
+
+- Add option to updateItems() and updateUncitedItems()
+  to suppress sorting of the bibliography.
+
+
+=========================
 Changes in version 1.0.45
 =========================
 
