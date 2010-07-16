@@ -66,7 +66,7 @@ To run the test suite, the standard test fixtures must be added to this
 archive.  To do so, enter the directory ./tests/fixtures, and issue
 the following command:
 
-  hg clone https://fbennett@bitbucket.org/fbennett/citeproc-test std
+  hg clone http://bitbucket.org/bdarcus/citeproc-test std
 
 (Note the explicit target directory "std" following the repository
 address.)
