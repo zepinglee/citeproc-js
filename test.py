@@ -724,7 +724,7 @@ if __name__ == "__main__":
             if not file.startswith("tmp") or not len(file) == 9: continue
             os.unlink(file)
         sys.exit()
-    except MissingHumansFile as error:
+    except MissingHumansFile, error:
         parser.print_help()
         print '''\nError: File \"%s\" not found.
        Looked in:''' % error[0]
