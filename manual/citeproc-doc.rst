@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a91##
+   version 1.00##a92##
 
 .. class:: info-date
 
-   =D=15 July 2010=D=
+   =D=16 July 2010=D=
 
 .. class:: contributors
 
@@ -136,7 +136,7 @@ and issue the following command:
 
    ::
 
-      hg clone https://fbennett@bitbucket.org/fbennett/citeproc-test std
+      hg clone http://bitbucket.org/bdarcus/citeproc-test std
 
 Note the explicit target directory "std" following the repository
 address.
@@ -151,7 +151,7 @@ to run.  These may be installed and set up using the following two commands
 
    ::
 
-      hg clone https://fbennett@bitbucket.org/bdarcus/csl-locales
+      hg clone http://bitbucket.org/bdarcus/csl-locales
       ln -s csl-locales/trunk/ locale
 
 
@@ -618,7 +618,7 @@ refreshing as a result of the ``processCitationCluster()`` operation.
 A worked example showing the result of multiple transactions can be
 found in the |link| `processor test suite`__.
 
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/integration_IbidOnInsert.txt
+__ http://bitbucket.org/bdarcus/citeproc-test/src/tip/processor-tests/humans/integration_IbidOnInsert.txt
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1570,10 +1570,10 @@ elements are in the processor test fixtures in the
 * |link| `CitationNumberSuppressAuthor`__
 * |link| `SuppressAuthorSolo`__
 
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_AuthorOnly.txt
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_CitationNumberAuthorOnlyThenSuppressAuthor.txt
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_CitationNumberSuppressAuthor.txt
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/tests/std/humans/discretionary_SuppressAuthorSolo.txt
+__ http://bitbucket.org/bdarcus/citeproc-test/src/tip/processor-tests/humans/discretionary_AuthorOnly.txt
+__ http://bitbucket.org/bdarcus/citeproc-test/src/tip/processor-tests/humans/discretionary_CitationNumberAuthorOnlyThenSuppressAuthor.txt
+__ http://bitbucket.org/bdarcus/citeproc-test/src/tip/processor-tests/humans/discretionary_CitationNumberSuppressAuthor.txt
+__ http://bitbucket.org/bdarcus/citeproc-test/src/tip/processor-tests/humans/discretionary_SuppressAuthorSolo.txt
 
 
 
