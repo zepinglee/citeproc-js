@@ -49,6 +49,10 @@
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings;
 	debug = false;
+	if ("string" === typeof bibsection ) {
+		this.opt.citation_number_slug = bibsection;
+		bibsection = false;
+	}
 	//SNIP-START
 	if (debug) {
 		len = this.bibliography.tokens.length;
@@ -96,6 +100,9 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	}
 	params.bibstart = this.fun.decorate.bibstart;
 	params.bibend = this.fun.decorate.bibend;
+
+	this.opt.citation_number_slug = false;
+
 	return [params, entry_strings];
 };
 

@@ -72,6 +72,8 @@ CSL.Engine.Opt = function () {
 	this["et-al-subsequent-use-first"] = false;
 
 	this["demote-non-dropping-particle"] = "display-and-sort";
+
+	this.citation_number_slug = false;
 };
 
 

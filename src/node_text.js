@@ -113,7 +113,11 @@ CSL.Node.text = {
 								state.tmp.last_element_trace = false;
 							}
 							num = state.registry.registry[id].seq;
-							number = new CSL.NumericBlob(num, this);
+							if (state.opt.citation_number_slug) {
+								number = state.opt.citation_number_slug;
+							} else {
+								number = new CSL.NumericBlob(num, this);
+							}
 							state.output.append(number, "literal");
 						}
 					};
