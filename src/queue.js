@@ -320,7 +320,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 //
 
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
-	var blobs, ret, blob_last_chars, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading;
+	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters;
 	blobs = myblobs.slice();
 	ret = [];
 
@@ -329,61 +329,49 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	}
 
 	if (!blob) {
-		CSL.Output.Queue.normalizePrefixPunctuation(blobs, true);
-	}
-
-	blob_last_chars = [];
-	//
-	// Need to know the join delimiter before boiling blobs down
-	// to strings, so that we can cleanly clip out duplicate
-	// punctuation characters.
-	//
-	if (blob) {
-		blob_delimiter = blob.strings.delimiter;
-	} else {
 		blob_delimiter = "";
+		CSL.Output.Queue.normalizePunctuation(blobs);
+	} else {
+		blob_delimiter = blob.strings.delimiter;
 	}
-	//if (blob_delimiter.indexOf(".") > -1) {
-	//	CSL.debug("*** blob_delimiter: "+blob_delimiter);
-	//};
 
-	len = blobs.length;
-	for (pos = 0; pos < len; pos += 1) {
+	for (pos = 0, len = blobs.length; pos < len; pos += 1) {
 		blobjr = blobs[pos];
 
 		if ("string" === typeof blobjr.blobs) {
-			last_str = "";
-			if (blobjr.strings.suffix) {
-				//print("  +");
-				last_str = blobjr.strings.suffix;
-			} else if (blobjr.blobs) {
-				//print("  -");
-				last_str = blobjr.blobs;
-			}
-			//var last_char = last_str[(last_str.length-1)];
-			last_char = last_str.slice(-1);
 
 			if ("number" === typeof blobjr.num) {
 				ret.push(blobjr);
-				//print("number: "+last_char);
-				blob_last_chars.push(last_char);
 			} else if (blobjr.blobs) {
-				// skip empty strings!!!!!!!!!!!!
-				//
-				// text_escape is applied by flipflopper.
-				//
+				// (skips empty strings)
 				b = blobjr.blobs;
+
+				use_suffix = blobjr.strings.suffix;
+
+				// Run strip-periods
+				// This is 'way awkward, but this does need to be run
+				// here, and the other decorations do need to be run
+				// below, within the conditional.  Might eventually
+				// separate the two categories of decoration, but for
+				// now, this works.
+				for (ppos = blobjr.decorations.length - 1; ppos > -1; ppos += -1) {
+					params = blobjr.decorations[ppos];
+					if (params[0] === "@strip-periods" && params[1] === "true") {
+						b = state.fun.decorate[params[0]][params[1]](state, b);
+						blobjr.decorations = blobjr.decorations.slice(0, ppos).concat(blobjr.decorations.slice(ppos + 1));
+					}
+				}
+
+				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_suffix.slice(0, 1)) > -1 && use_suffix.slice(0, 1) === b.slice(-1)) {
+					use_suffix = use_suffix.slice(1);
+				}
+
 				if (!state.tmp.suppress_decorations) {
 					llen = blobjr.decorations.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
 						params = blobjr.decorations[ppos];
 						b = state.fun.decorate[params[0]][params[1]](state, b);
 					}
-				}
-				use_suffix = blobjr.strings.suffix;
-				//print(">> junior suffix: "+blobjr.strings.suffix);
-				if (b[(b.length - 1)] === "." && use_suffix && use_suffix[0] === ".") {
-				    use_suffix = use_suffix.slice(1);
 				}
 				//
 				// Handle punctuation/quote swapping for suffix.
@@ -397,29 +385,12 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				// to produce no output if they are found to be
 				// empty.
 				if (b && b.length) {
-					if (last_char === " " && blobjr.strings.prefix.slice(0, 1) === last_char) {
-						blobjr.strings.prefix = blobjr.strings.prefix.slice(1);
-					}
 					b = blobjr.strings.prefix + b + use_suffix;
 					ret.push(b);
-					// this is telling the truth.  the rest of the
-					// last_char stuff is hopelessly out of whack
-					// at the moment.  might scrub it.
-					//print("non-number: "+last_char);
-					blob_last_chars.push(last_char);
 				}
 			}
 		} else if (blobjr.blobs.length) {
-			res = state.output.string(state, blobjr.blobs, blobjr);
-			addtoret = res[0];
-			//
-			// No idea how you make this stuff comprehensible.
-			// After much stumbling about, this turns out to
-			// be a place where we can make a hacking check for
-			// clashing terminal punctuation.  It may break in all
-			// sorts of ways, but controlling this beast is too
-			// hard to worry about perfection.
-			//
+			addtoret = state.output.string(state, blobjr.blobs, blobjr);
 			if (ret.slice(-1)[0] && addtoret.slice(-1)[0]) {
 				ttype = typeof ret.slice(-1)[0];
 				ltype = typeof addtoret.slice(-1)[0];
@@ -429,23 +400,17 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				// for ranged joins.  If we hit one of them, we skip this
 				// fixit operation.
 				//
-				// This tangle of code could be eliminated if styles were
-				// built to avoid adding terminal punctuation on subsequent
-				// siblings or their children.  Handling that is quite a
-				// bit to ask of the processor.
-				//
-				//print(ttype+"  "+ltype);
 				if ("string" === ttype && "string" === ltype) {
 					terminal = ret.slice(-1)[0].slice(-1);
 					leading = addtoret.slice(-1)[0].slice(0, 1);
-					if (CSL.TERMINAL_PUNCTUATION.indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.indexOf(leading) > -1) {
+
+					if ((CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && terminal === leading) || CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(leading) > -1) {
 						// last terminal punctuation wins
 						ret[(ret.length - 1)] = ret[(ret.length - 1)].slice(0, -1);
 					}
 				}
 			}
 			ret = ret.concat(addtoret);
-			blob_last_chars = blob_last_chars.concat(res[1]);
 		} else {
 			continue;
 		}
@@ -460,17 +425,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
 		span_split = ret.length;
 	}
-	//
-	// Need to know the last char of every element in the list
-	// here, so that we can delete duplicates before the join.  But the elements
-	// are text strings, so there is noplace to store that info.  What to do?
-	// Can we know the delimiter at the point these strings are built?
-	// ...
-	// Oh.  Yes, we can.  Good.
-	//
-	res = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, blob_last_chars);
-	blobs_start = res[0];
-	blob_last_chars = res[1].slice();
+	blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter);
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
 		if (!state.tmp.suppress_decorations) {
 			len = blob.decorations.length;
@@ -487,9 +442,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		//
 		b = blobs_start;
 		use_suffix = blob.strings.suffix;
-		if (b[(b.length - 1)] === "." && use_suffix && use_suffix[0] === ".") {
-			use_suffix = use_suffix.slice(1);
-		}
 		//
 		// Handle punctuation/quote swapping for suffix.
 		//
@@ -527,17 +479,13 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		this.current.mystack = [];
 		this.current.mystack.push(this.queue);
 		if (state.tmp.suppress_decorations) {
-			res = state.output.renderBlobs(ret);
-			ret = res[0];
-			blob_last_chars = res[1].slice();
+			ret = state.output.renderBlobs(ret);
 		}
 	} else if ("boolean" === typeof blob) {
-		res = state.output.renderBlobs(ret);
-		ret = res[0];
-		blob_last_chars = res[1].slice();
+		ret = state.output.renderBlobs(ret);
 	}
 	if (blob) {
-		return [ret, blob_last_chars.slice()];
+		return ret;
 	} else {
 		return ret;
 	}
@@ -552,14 +500,10 @@ CSL.Output.Queue.prototype.clearlevel = function () {
 	}
 };
 
-CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, blob_last_chars) {
+CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 	var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params;
-	//print("renderBlobs: "+delim);
 	if (!delim) {
 		delim = "";
-	}
-	if (!blob_last_chars) {
-		blob_last_chars = [];
 	}
 	state = this.state;
 	ret = "";
@@ -578,26 +522,19 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, blob_last_chars
 			use_delim = delim;
 		}
 		if (blob && "string" === typeof blob) {
-			//throw "Attempt to render string as rangeable blob"
-			if (use_delim && blob_last_chars[(pos - 1)] === use_delim[0]) {
-				//
-				// Something for posterity, at the end of a remarkably
-				// unproductive day.
-				//
-				//CSL.debug("  ####################################################");
-				//CSL.debug("  ######################## EUREKA ####################");
-				//CSL.debug("  ####################################################");
-				use_delim = use_delim.slice(1);
-			}
-			//
-			// Handle punctuation/quote swapping for delimiter joins.
-			//
 			res = this.swapQuotePunctuation(ret, use_delim);
 			ret = res[0];
 			use_delim = res[1];
+			if (CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1) > -1)) {
+				if (use_delim.slice(0, 1) === ret.slice(-1)) {
+					use_delim = use_delim.slice(1);
+				}
+				if (use_delim.slice(-1) === blob.slice(0, 1)) {
+					use_delim = use_delim.slice(0, -1);
+				}
+			}
 			ret += use_delim;
 			ret += blob;
-			ret_last_char = blob_last_chars.slice(-1);
 		} else if (blob.status !== CSL.SUPPRESS) {
 			// CSL.debug("doing rangeable blob");
 			//var str = blob.blobs;
@@ -618,35 +555,21 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, blob_last_chars
 			} else if (blob.status === CSL.SUCCESSOR) {
 				ret += blob.successor_prefix;
 			} else if (blob.status === CSL.START) {
-				//
-				// didn't need this.  don't really know how this works.
-				// pure empirical fingerpainting for these joins.
-				//
 				ret += "";
 			} else if (blob.status === CSL.SEEN) {
 				ret += blob.successor_prefix;
 			}
 			ret += str;
-			//ret_last_char = blob_last_chars.slice((blob_last_chars.length-1),blob_last_chars.length);
-			ret_last_char = blob_last_chars.slice(-1);
 		}
 	}
-	return [ret, ret_last_char];
-	////////return ret;
+	return ret;
 };
 
 CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
 	var pre_quote, pos, len;
 	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret.slice(-1)) > -1) {
-		// if (use_delim && CSL.SWAPPING_PUNCTUATION.indexOf(use_delim.slice(0)) > -1) {
+
 		if (use_delim) {
-
-			//
-			// XXXXX: this is messed up,  but for now it works for common cases.
-			//
-
-			//  && CSL.SWAPPING_PUNCTUATION.indexOf(use_delim.slice(0)) > -1) {
-
 			pos = use_delim.indexOf(" ");
 			if (pos === -1) {
 				pos = use_delim.length;
@@ -669,36 +592,52 @@ CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
 };
 
 
-CSL.Output.Queue.normalizePrefixPunctuation = function (blobs, top) {
-	var pos, len, m, punct, suff, predecessor, rex;
+CSL.Output.Queue.normalizePunctuation = function (blobs, res) {
+	var pos, len, m, punct, suff, predecessor, rex, params, ppos, llen;
 	//
 	// Move leading punctuation on prefixes to preceding
-	// element's suffix.
+	// element's suffix.  This is not good logic, actually;
+	// if there is an intervening delimiter, we will
+	// be moving the punctuation to the other side of it.
+	// But if we assume that punctuation will always be
+	// intended to apply directly to the preceding element,
+	// and so be splice at element level with an empty
+	// delimiter, it will be okay.
 	//
-	punct = "";
-	//
-	// Descend until we find a prefix value?
-	//
-	if ("object" === typeof blobs[0] && blobs[0].blobs.length) {
-		CSL.Output.Queue.normalizePrefixPunctuation(blobs[0].blobs);
-	}
 	if ("object" === typeof blobs) {
-		len = blobs.length - 1;
-		for (pos = len; pos > 0; pos += -1) {
+		for (pos = 0, len = blobs.length; pos < len; pos += 1) {
 			if (!blobs[pos].blobs) {
 				continue;
 			}
-			m = blobs[pos].strings.prefix.match(CSL.TERMINAL_PUNCTUATION_REGEXP);
-			if (m) {
-				blobs[pos].strings.prefix = m[2];
-				predecessor = blobs[(pos - 1)];
-				CSL.Output.Queue.appendPunctuationToSuffix(predecessor, m[1]);
+
+			if (pos > 0) {
+				m = blobs[pos].strings.prefix.match(CSL.TERMINAL_PUNCTUATION_REGEXP);
+				if (m) {
+					blobs[pos].strings.prefix = m[2];
+					predecessor = blobs[(pos - 1)];
+					CSL.Output.Queue.appendPunctuationToSuffix(predecessor, m[1]);
+				}
 			}
 			if ("object" === typeof blobs[pos] && blobs[pos].blobs.length) {
-				CSL.Output.Queue.normalizePrefixPunctuation(blobs[pos].blobs);
+				res = CSL.Output.Queue.normalizePunctuation(blobs[pos].blobs, res);
+			}
+			if (res) {
+				if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(blobs[pos].strings.suffix.slice(0, 1)) > -1) {
+					blobs[pos].strings.suffix = blobs[pos].strings.suffix.slice(1);
+				}
+			}
+			if (pos === blobs.length -1 && "string" === typeof blobs[pos].blobs && (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(blobs[pos].strings.suffix.slice(0, 1)) > -1 || CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(blobs[pos].blobs.slice(-1)) > -1)) {
+				res = true;
+			}
+			if (res && blobs[pos].strings.suffix.match(CSL.CLOSURES)) {
+				res = false;
+			}
+			if (pos !== blobs.length - 1) {
+				res = false;
 			}
 		}
 	}
+	return res;
 };
 
 
