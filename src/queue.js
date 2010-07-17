@@ -626,7 +626,7 @@ CSL.Output.Queue.normalizePunctuation = function (blobs, res) {
 					blobs[pos].strings.suffix = blobs[pos].strings.suffix.slice(1);
 				}
 			}
-			if (pos === blobs.length -1 && "string" === typeof blobs[pos].blobs && (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(blobs[pos].strings.suffix.slice(0, 1)) > -1 || CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(blobs[pos].blobs.slice(-1)) > -1)) {
+			if (pos === blobs.length -1 && (("string" === typeof blobs[pos].blobs && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(blobs[pos].blobs.slice(-1)) > -1) || CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(blobs[pos].strings.suffix.slice(0, 1)) > -1)) {
 				res = true;
 			}
 			if (res && blobs[pos].strings.suffix.match(CSL.CLOSURES)) {
