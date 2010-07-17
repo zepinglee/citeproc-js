@@ -147,7 +147,7 @@ var CSL = {
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 
 	SWAPPING_PUNCTUATION: [".", ",", ";", ":"],
-	TERMINAL_PUNCTUATION: [".", "!", "?", ":"],
+	TERMINAL_PUNCTUATION: [".", "!", "?", ":", " "],
 
 	// update modes
 	NONE: 0,
@@ -383,7 +383,8 @@ var CSL = {
 
 };
 
-CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.join("") + "])(.*)");
+CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
+CSL.CLOSURES = new RegExp(".*[\\]\\)]");
 
 
 //SNIP-START
