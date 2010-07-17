@@ -1,6 +1,43 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.47
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a duplicate space issue reported by Carles Pina.
+
+- General refactoring of code for identifying an quashing
+  duplicate punctuation and spaces.  The code should be
+  easier to control when further issues involving punctuation
+  arise down the road.
+
+-----------
+Enhancement
+-----------
+
+- Provide for replacement of the citation number in
+  numbered styles with a slug, so that strings in a
+  bibliography listing can be used in a template
+  without rerendering.
+
+-------
+Cleanup
+-------
+
+- Fix up stale links in processor manual.
+
+- Fix syntax error in test.py affecting Python 2.5 systems.
+
+- Add explanatory notes to demo.html page, in an effort
+  to clarify the way processor output can be styled
+  and formatted.
+
+
+=========================
 Changes in version 1.0.46
 =========================
 

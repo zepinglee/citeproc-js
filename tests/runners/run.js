@@ -11,6 +11,7 @@ dojo.require("std.locators");
 dojo.require("std.parallel");
 dojo.require("std.variables");
 dojo.require("std.unicode");
+dojo.require("std.simplespace");
 dojo.require("std.page");
 dojo.require("std.textcase");
 dojo.require("std.decorations");
