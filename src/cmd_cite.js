@@ -756,7 +756,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			empties += 1;
 		}
 	}
-	result += this.output.renderBlobs(objects)[0];
+	result += this.output.renderBlobs(objects);
 	if (result) {
 		if (result.slice(-1) === this.citation.opt.layout_suffix.slice(0)) {
 			result = result.slice(0, -1);
