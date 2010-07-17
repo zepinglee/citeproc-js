@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a92##
+   version 1.00##a93##
 
 .. class:: info-date
 
