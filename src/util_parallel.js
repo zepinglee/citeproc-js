@@ -85,7 +85,7 @@ CSL.Parallel = function (state) {
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["volume", "container-title", "issue", "page", "locator", "number"].indexOf(variable) > -1;
+	return ["author", "volume", "container-title", "issue", "page", "locator", "number"].indexOf(variable) > -1;
 };
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
