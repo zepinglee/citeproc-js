@@ -151,7 +151,7 @@ class Bundle:
             file += self.cleanFile(ifh.read())
         open(self.citeproc,"w+").write(file)
         if self.mode == "zotero":
-            print "Wrote bundle code with e4x support and Zotero error handling to ./citeproce4x.js "
+            print "Wrote bundle code with e4x support and Zotero error handling to ./citeproc_zotero.js "
         if self.mode == None:
             open(os.path.join("demo", self.citeproc),"w+").write(file)
 
