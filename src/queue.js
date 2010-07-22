@@ -320,7 +320,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 //
 
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
-	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters;
+	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters, use_prefix;
 	blobs = myblobs.slice();
 	ret = [];
 
@@ -347,6 +347,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				b = blobjr.blobs;
 
 				use_suffix = blobjr.strings.suffix;
+				use_prefix = blobjr.strings.prefix;
 
 				// Run strip-periods
 				// This is 'way awkward, but this does need to be run
@@ -364,6 +365,10 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 
 				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_suffix.slice(0, 1)) > -1 && use_suffix.slice(0, 1) === b.slice(-1)) {
 					use_suffix = use_suffix.slice(1);
+				}
+
+				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
+					use_prefix = use_prefix.slice(0, -1);
 				}
 
 				if (!state.tmp.suppress_decorations) {
@@ -449,7 +454,13 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		b = qres[0];
 		if (b && b.length) {
 			use_suffix = qres[1];
-			b = blob.strings.prefix + b + use_suffix;
+			use_prefix = blob.strings.prefix;
+
+			if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
+				use_prefix = use_prefix.slice(0, -1);
+			}
+
+			b = use_prefix + b + use_suffix;
 		}
 		blobs_start = b;
 		if (!state.tmp.suppress_decorations) {
