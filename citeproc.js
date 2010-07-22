@@ -461,7 +461,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	}
 };
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
-	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters;
+	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters, use_prefix;
 	blobs = myblobs.slice();
 	ret = [];
 	if (blobs.length === 0) {
@@ -481,6 +481,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			} else if (blobjr.blobs) {
 				b = blobjr.blobs;
 				use_suffix = blobjr.strings.suffix;
+				use_prefix = blobjr.strings.prefix;
 				for (ppos = blobjr.decorations.length - 1; ppos > -1; ppos += -1) {
 					params = blobjr.decorations[ppos];
 					if (params[0] === "@strip-periods" && params[1] === "true") {
@@ -490,6 +491,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				}
 				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_suffix.slice(0, 1)) > -1 && use_suffix.slice(0, 1) === b.slice(-1)) {
 					use_suffix = use_suffix.slice(1);
+				}
+				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
+					use_prefix = use_prefix.slice(0, -1);
 				}
 				if (!state.tmp.suppress_decorations) {
 					llen = blobjr.decorations.length;
@@ -552,7 +556,11 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		b = qres[0];
 		if (b && b.length) {
 			use_suffix = qres[1];
-			b = blob.strings.prefix + b + use_suffix;
+			use_prefix = blob.strings.prefix;
+			if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
+				use_prefix = use_prefix.slice(0, -1);
+			}
+			b = use_prefix + b + use_suffix;
 		}
 		blobs_start = b;
 		if (!state.tmp.suppress_decorations) {
@@ -4263,11 +4271,11 @@ CSL.Node.text = {
 							}
 							num = state.registry.registry[id].seq;
 							if (state.opt.citation_number_slug) {
-								number = state.opt.citation_number_slug;
+								state.output.append(state.opt.citation_number_slug);
 							} else {
 								number = new CSL.NumericBlob(num, this);
+								state.output.append(number, "literal");
 							}
-							state.output.append(number, "literal");
 						}
 					};
 					this.execs.push(func);
@@ -4393,6 +4401,8 @@ CSL.Node.text = {
 							state.transform.setTransformFallback(true);
 							if (this.variables[0] === "container-title") {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
+							} else if (this.variables[0] === "title") {
+								state.transform.setAlternativeVariableName("shortTitle");
 							} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
 								state.transform.setTransformLocale("default-locale");
 							}
@@ -5292,7 +5302,7 @@ CSL.Parallel = function (state) {
 	this.use_parallels = true;
 };
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["volume", "container-title", "issue", "page", "locator", "number"].indexOf(variable) > -1;
+	return ["author", "volume", "container-title", "issue", "page", "locator", "number"].indexOf(variable) > -1;
 };
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 	if (this.use_parallels) {
