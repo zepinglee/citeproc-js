@@ -114,11 +114,11 @@ CSL.Node.text = {
 							}
 							num = state.registry.registry[id].seq;
 							if (state.opt.citation_number_slug) {
-								number = state.opt.citation_number_slug;
+								state.output.append(state.opt.citation_number_slug);
 							} else {
 								number = new CSL.NumericBlob(num, this);
+								state.output.append(number, "literal");
 							}
-							state.output.append(number, "literal");
 						}
 					};
 					this.execs.push(func);
@@ -256,6 +256,7 @@ CSL.Node.text = {
 						// Initialize transform factory according to whether
 						// abbreviation is desired.
 						if (form === "short") {
+							// shouldn't third arg be "short"?
 							state.transform.init(this, this.variables[0], this.variables[0]);
 						} else {
 							state.transform.init(this, this.variables[0]);
@@ -274,6 +275,8 @@ CSL.Node.text = {
 							state.transform.setTransformFallback(true);
 							if (this.variables[0] === "container-title") {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
+							} else if (this.variables[0] === "title") {
+								state.transform.setAlternativeVariableName("shortTitle");
 							} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
 								// language of publisher and publisher-place follow
 								// the locale of the style.
