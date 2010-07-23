@@ -114,7 +114,7 @@ CSL.Node.text = {
 							}
 							num = state.registry.registry[id].seq;
 							if (state.opt.citation_number_slug) {
-								state.output.append(state.opt.citation_number_slug);
+								state.output.append(state.opt.citation_number_slug, this);
 							} else {
 								number = new CSL.NumericBlob(num, this);
 								state.output.append(number, "literal");
@@ -257,7 +257,8 @@ CSL.Node.text = {
 						// abbreviation is desired.
 						if (form === "short") {
 							// shouldn't third arg be "short"?
-							state.transform.init(this, this.variables[0], this.variables[0]);
+							//state.transform.init(this, this.variables[0], this.variables[0]);
+							state.transform.init(this, this.variables[0], "short");
 						} else {
 							state.transform.init(this, this.variables[0]);
 						}

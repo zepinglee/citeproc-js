@@ -60,13 +60,13 @@ doh.registerGroup("citeproc_js.slug",
 					  + "</citation>"
 					  + "<bibliography>"
 					  + "<layout>"
-					  + "<text variable=\"citation-number\"/>"
+					  + "<text variable=\"citation-number\" prefix=\"[\" suffix=\"]\"/>"
 					  + "</layout>"
 					  + "</bibliography>"
 				+ "</style>";
 			var result = citeproc_js.slug.makeBib(xml, [{id: "Item-1"}]);
-			doh.assertEqual("  <div class=\"csl-entry\">{SLUG}</div>\n", result[1][0]);
-			doh.assertEqual("  <div class=\"csl-entry\">{SLUG}</div>\n", result[1][1]);
+			doh.assertEqual("  <div class=\"csl-entry\">[{SLUG}]</div>\n", result[1][0]);
+			doh.assertEqual("  <div class=\"csl-entry\">[{SLUG}]</div>\n", result[1][1]);
 		}
 	],
 	function(){  //setup
