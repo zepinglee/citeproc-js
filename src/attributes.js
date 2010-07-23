@@ -212,6 +212,13 @@ CSL.Attributes["@variable"] = function (state, arg) {
 			len = this.variables.length;
 			for (pos = 0; pos < len; pos += 1) {
 				variable = this.variables[pos];
+				if (this.strings.form === "short" && !Item[variable]) {
+					if (variable === "title") {
+						variable = "shortTitle";
+					} else if (variable === "container-title") {
+						variable = "journalAbbreviation";
+					}
+				}
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					if (Item[variable] && Item[variable].raw) {
 						output = true;
