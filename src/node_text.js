@@ -258,7 +258,7 @@ CSL.Node.text = {
 						if (form === "short") {
 							// shouldn't third arg be "short"?
 							//state.transform.init(this, this.variables[0], this.variables[0]);
-							state.transform.init(this, this.variables[0], "short");
+							state.transform.init(this, this.variables[0], this.variables[0]);
 						} else {
 							state.transform.init(this, this.variables[0]);
 						}
