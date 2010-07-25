@@ -60,7 +60,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 		sortedItems = [];
 		for (ppos = 0, len = citations[pos].citationItems.length; ppos < llen; ppos += 1) {
 			item = citations[pos].citationItems[ppos];
-			Item = this.sys.retrieveItem(item.id);
+			Item = this.retrieveItem(item.id);
 			newitem = [Item, item];
 			sortedItems.push(newitem);
 			citations[pos].citationItems[ppos].item = Item;

@@ -221,6 +221,10 @@ var CSL = {
 	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
+
+	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
+	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
+
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 
 	NAME_VARIABLES: [

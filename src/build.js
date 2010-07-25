@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.47";
+	this.processor_version = "1.0.48";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -596,9 +596,29 @@ CSL.Engine.prototype.retrieveItems = function (ids) {
 	ret = [];
 	len = ids.length;
 	for (pos = 0; pos < len; pos += 1) {
-		ret.push(this.sys.retrieveItem(ids[pos]));
+		ret.push(this.retrieveItem(ids[pos]));
 	}
 	return ret;
+};
+
+// Wrapper for sys.retrieveItem supplied by calling application.
+// Adds experimental fields embedded in the note field for
+// style development trial and testing purposes.
+CSL.Engine.prototype.retrieveItem = function (id) {
+	var Item, m, pos, len, mm;
+	Item = this.sys.retrieveItem(id);
+	if (Item.note) {
+		m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
+		if (m) {
+			for (pos = 0, len = m.length; pos < len; pos += 1) {
+				mm = CSL.NOTE_FIELD_REGEXP.exec(m[pos]);
+				if (!Item[mm[1]]) {
+					Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+				}
+			}
+		}
+	}
+	return Item;
 };
 
 CSL.Engine.prototype.dateParseArray = function (date_obj) {

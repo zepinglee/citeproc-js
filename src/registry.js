@@ -300,7 +300,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			//
 			//  4a. Retrieve entries for items to insert.
 			//
-			Item = this.state.sys.retrieveItem(item);
+			Item = this.state.retrieveItem(item);
 			//
 			//  4b. Generate ambig key.
 			//
@@ -420,7 +420,7 @@ CSL.Registry.prototype.dorefreshes = function () {
 			regtoken.sortkeys = undefined;
 			regtoken.ambig = undefined;
 
-			Item = this.state.sys.retrieveItem(key);
+			Item = this.state.retrieveItem(key);
 			//old_akey = akey;
 			//akey = CSL.getAmbiguousCite.call(this.state, Item);
 			//if (this.state.tmp.taintedItemIDs && this.state.opt.update_mode !== CSL.NUMERIC && old_akey !== akey) {
@@ -509,7 +509,7 @@ CSL.Registry.prototype.setsortkeys = function () {
 	//
 	for (key in this.touched) {
 		if (this.touched.hasOwnProperty(key)) {
-			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.sys.retrieveItem(key), "bibliography_sort");
+			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
 			//CSL.debug("touched: "+item+" ... "+this.registry[item].sortkeys);
 		}
 	}

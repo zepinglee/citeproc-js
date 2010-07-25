@@ -245,7 +245,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 			siblings = this.registry.registry[item.id].siblings;
 			for (ppos = 0, llen = siblings.length; ppos < llen; ppos += 1) {
 				i = this.registry.registry[item.id].siblings[ppos];
-				eyetem = this.sys.retrieveItem(i);
+				eyetem = this.retrieveItem(i);
 				entry_item_ids.push(CSL.getCite.call(this, eyetem));
 				skips[eyetem.id] = true;
 			}

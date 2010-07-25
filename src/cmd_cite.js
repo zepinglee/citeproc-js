@@ -143,7 +143,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	len = citation.citationItems.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = citation.citationItems[pos];
-		Item = this.sys.retrieveItem(item.id);
+		Item = this.retrieveItem(item.id);
 	    newitem = [Item, item];
 		sortedItems.push(newitem);
 		citation.citationItems[pos].item = Item;
@@ -557,7 +557,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
 	len = rawList.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = rawList[pos];
-		Item = this.sys.retrieveItem(item.id);
+		Item = this.retrieveItem(item.id);
 		newitem = [Item, item];
 		inputList.push(newitem);
 	}

@@ -343,7 +343,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 	//}
 	if (myIds.length > 1) {
 		for (pos = 0, len = myIds.length; pos < len; pos += 1) {
-			myItems.push(this.sys.retrieveItem(myIds[pos]));
+			myItems.push(this.state.retrieveItem(myIds[pos]));
 		}
 		// first element is the base disambig, which is false for the initial
 		// list.
