@@ -137,6 +137,8 @@ var CSL = {
 	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
+	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
+	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 	NAME_VARIABLES: [
 		"author",
@@ -631,12 +633,19 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			res = this.swapQuotePunctuation(ret, use_delim);
 			ret = res[0];
 			use_delim = res[1];
-			if (CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1) > -1)) {
+			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1)) > -1) {
 				if (use_delim.slice(0, 1) === ret.slice(-1)) {
 					use_delim = use_delim.slice(1);
 				}
+			}
+			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(-1)) > -1) {
 				if (use_delim.slice(-1) === blob.slice(0, 1)) {
 					use_delim = use_delim.slice(0, -1);
+				}
+			}
+			if (!use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(blob.slice(0, 1)) > -1) {
+				if (ret.slice(-1) === blob.slice(0, 1)) {
+					blob = blob.slice(1);
 				}
 			}
 			ret += use_delim;
@@ -1337,7 +1346,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.47";
+	this.processor_version = "1.0.48";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1708,9 +1717,25 @@ CSL.Engine.prototype.retrieveItems = function (ids) {
 	ret = [];
 	len = ids.length;
 	for (pos = 0; pos < len; pos += 1) {
-		ret.push(this.sys.retrieveItem(ids[pos]));
+		ret.push(this.retrieveItem(ids[pos]));
 	}
 	return ret;
+};
+CSL.Engine.prototype.retrieveItem = function (id) {
+	var Item, m, pos, len, mm;
+	Item = this.sys.retrieveItem(id);
+	if (Item.note) {
+		m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
+		if (m) {
+			for (pos = 0, len = m.length; pos < len; pos += 1) {
+				mm = CSL.NOTE_FIELD_REGEXP.exec(m[pos]);
+				if (!Item[mm[1]]) {
+					Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+				}
+			}
+		}
+	}
+	return Item;
 };
 CSL.Engine.prototype.dateParseArray = function (date_obj) {
 	var ret, field, dpos, ppos, dp, exts, llen, pos, len, pppos, lllen;
@@ -1920,7 +1945,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 		sortedItems = [];
 		for (ppos = 0, len = citations[pos].citationItems.length; ppos < llen; ppos += 1) {
 			item = citations[pos].citationItems[ppos];
-			Item = this.sys.retrieveItem(item.id);
+			Item = this.retrieveItem(item.id);
 			newitem = [Item, item];
 			sortedItems.push(newitem);
 			citations[pos].citationItems[ppos].item = Item;
@@ -2115,7 +2140,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 			siblings = this.registry.registry[item.id].siblings;
 			for (ppos = 0, llen = siblings.length; ppos < llen; ppos += 1) {
 				i = this.registry.registry[item.id].siblings[ppos];
-				eyetem = this.sys.retrieveItem(i);
+				eyetem = this.retrieveItem(i);
 				entry_item_ids.push(CSL.getCite.call(this, eyetem));
 				skips[eyetem.id] = true;
 			}
@@ -2211,7 +2236,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	len = citation.citationItems.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = citation.citationItems[pos];
-		Item = this.sys.retrieveItem(item.id);
+		Item = this.retrieveItem(item.id);
 	    newitem = [Item, item];
 		sortedItems.push(newitem);
 		citation.citationItems[pos].item = Item;
@@ -2462,7 +2487,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
 	len = rawList.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = rawList[pos];
-		Item = this.sys.retrieveItem(item.id);
+		Item = this.retrieveItem(item.id);
 		newitem = [Item, item];
 		inputList.push(newitem);
 	}
@@ -4271,7 +4296,7 @@ CSL.Node.text = {
 							}
 							num = state.registry.registry[id].seq;
 							if (state.opt.citation_number_slug) {
-								state.output.append(state.opt.citation_number_slug);
+								state.output.append(state.opt.citation_number_slug, this);
 							} else {
 								number = new CSL.NumericBlob(num, this);
 								state.output.append(number, "literal");
@@ -4557,6 +4582,13 @@ CSL.Attributes["@variable"] = function (state, arg) {
 			len = this.variables.length;
 			for (pos = 0; pos < len; pos += 1) {
 				variable = this.variables[pos];
+				if (this.strings.form === "short" && !Item[variable]) {
+					if (variable === "title") {
+						variable = "shortTitle";
+					} else if (variable === "container-title") {
+						variable = "journalAbbreviation";
+					}
+				}
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					if (Item[variable] && Item[variable].raw) {
 						output = true;
@@ -7187,7 +7219,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 	for (pos = 0; pos < len; pos += 1) {
 		item = mylist[pos];
 		if (!this.registry[item]) {
-			Item = this.state.sys.retrieveItem(item);
+			Item = this.state.retrieveItem(item);
 			akey = CSL.getAmbiguousCite.call(this.state, Item);
 			this.akeys[akey] = true;
 			newitem = {
@@ -7239,7 +7271,7 @@ CSL.Registry.prototype.dorefreshes = function () {
 			regtoken.disambig = undefined;
 			regtoken.sortkeys = undefined;
 			regtoken.ambig = undefined;
-			Item = this.state.sys.retrieveItem(key);
+			Item = this.state.retrieveItem(key);
 			if ("undefined" === typeof akey) {
 				CSL.getAmbiguousCite.call(this.state, Item);
 				this.state.tmp.taintedItemIDs[key] = true;
@@ -7282,7 +7314,7 @@ CSL.Registry.prototype.setsortkeys = function () {
 	var key;
 	for (key in this.touched) {
 		if (this.touched.hasOwnProperty(key)) {
-			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.sys.retrieveItem(key), "bibliography_sort");
+			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
 		}
 	}
 };
@@ -7850,7 +7882,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 	myIds = this.ambigcites[akey];
 	if (myIds.length > 1) {
 		for (pos = 0, len = myIds.length; pos < len; pos += 1) {
-			myItems.push(this.sys.retrieveItem(myIds[pos]));
+			myItems.push(this.state.retrieveItem(myIds[pos]));
 		}
 		this.lists.push([this.base, myItems]);
 	}

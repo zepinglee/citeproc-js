@@ -1,6 +1,38 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.48
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Further fixes to quashing of duplicate punctuation
+  and spaces.
+
+- Fix issues with bibliography slug.
+
+- Properly report orphan shortTitle and journalAbbriviation 
+  to group as producing output, when short form is called 
+  and main variable is nil.
+
+- Fix bug in short form title support.
+
+- Permit author to vary between parallel citations. Useful
+  for French case-and-commentary string cites.
+
+-----------
+Enhancement
+-----------
+
+- Provide for parsing experimental variables out of the
+  content of the note variable.  For use in advance
+  testing of styles that require changes to the variables
+  available in CSL, or supplied by the calling application.
+
+
+=========================
 Changes in version 1.0.47
 =========================
 

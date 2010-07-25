@@ -26,6 +26,7 @@ dojo.require("std.bibsection");
 dojo.require("std.locale");
 dojo.require("std.quotes");
 dojo.require("std.flipflop");
+dojo.require("std.form");
 dojo.require("std.number");
 dojo.require("std.plural");
 dojo.require("std.integration");
