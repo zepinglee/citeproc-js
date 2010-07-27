@@ -29,3 +29,4 @@ UPLOAD.sh$
 .*\.jsxdr$
 ^citeproc-doc.tar.gz$
 ^citeproc_zotero.js$
+^std$
