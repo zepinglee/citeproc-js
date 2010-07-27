@@ -120,8 +120,9 @@ var CSL_CHROME = function () {
 			case 3:
 			case 4:
 			case 8:
-				return doc.createTextNode(node.nodeValue);
-				break;
+				// Drop comments on the floor as well.
+				//return doc.createTextNode(node.nodeValue);
+				//break;
 		}
 	};
 	this.parser = new DOMParser();
