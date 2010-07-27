@@ -103,6 +103,7 @@ CSL.Output.Formats.prototype.html = {
 		}
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
+	"@quotes/false": false,
 	//"@bibliography/body": function (state,str){
 	//	return "<div class=\"csl-bib-body\">\n"+str+"</div>";
 	//},
@@ -174,6 +175,7 @@ CSL.Output.Formats.prototype.text = {
 		}
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
+	"@quotes/false": false,
 	//"@bibliography/body": function (state,str){
 	//	return "<div class=\"csl-bib-body\">\n"+str+"</div>";
 	//},
@@ -243,6 +245,7 @@ CSL.Output.Formats.prototype.rtf = {
 		}
 		return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-inner-quote")) + str + CSL.Output.Formats.rtf.text_escape(state.getTerm("close-inner-quote"));
 	},
+	"@quotes/false": false,
 	"bibstart":"{\\rtf ",
 	"bibend":"}",
 	"@display/block":"%%STRING%%\\line\r\n",
