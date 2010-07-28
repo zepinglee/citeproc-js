@@ -51,14 +51,12 @@ citation
 <<===== MODE =====<<
 
 
-The result string in this test currently contains a small error.  In
-this citation form, entries that show container-title should be
-preceded by a "; " as the join, rather than ", ".  When this is
-resolved in the processor, this test will be amended.
+This is an example of "parallel" citation collapsing based on rendered
+content, with a French case and comment string citation.
 
 
 >>===== RESULT =====>>
-Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-variant:small-caps;">J. Sainte-Rose</span>, <i>D</i>, 2000, somm. p. 358, <span style="font-variant:small-caps;">Ph. Delebecque</span>, p. 900, <span style="font-variant:small-caps;">S. Piedelievre</span>.
+Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-variant:small-caps;">J. Sainte-Rose</span>; <i>D</i>, 2000, somm. p. 358, <span style="font-variant:small-caps;">Ph. Delebecque</span>, p. 900, <span style="font-variant:small-caps;">S. Piedelievre</span>.
 <<===== RESULT =====<<
 
 
