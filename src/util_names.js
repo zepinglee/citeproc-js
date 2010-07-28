@@ -158,9 +158,13 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 			continue;
 		}
 		// initialize if appropriate
-		if ("given" === key && 1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
-			initialize_with = state.output.getToken("name").strings["initialize-with"];
-			namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
+		if ("given" === key) {
+			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
+				initialize_with = state.output.getToken("name").strings["initialize-with"];
+				namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
+			} else {
+				namepart = CSL.Util.Names.unInitialize(state, namepart);
+			}
 		}
 		state.output.append(namepart, key);
 	}
@@ -288,6 +292,28 @@ CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
 	return true;
 };
 
+/**
+ * Un-initialize a name (quash caps after first character)
+ */
+CSL.Util.Names.unInitialize = function (state, name) {
+	var namelist, punctlist, ret, pos, len;
+	if (!name) {
+		return "";
+	}
+	namelist = name.split(/(?:\-|\s+)/);
+	punctlist = name.match(/(\-|\s+)/);
+	ret = "";
+	for (pos = 0, len = namelist.length; pos < len; pos += 1) {
+		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1))) {
+			namelist[pos] = namelist[pos].slice(0, 1) + namelist[pos].slice(1).toLowerCase();
+		}
+		ret += namelist[pos];
+		if (pos < len - 1) {
+			ret += punctlist[pos];
+		}
+	}
+	return ret;
+};
 
 /**
  * Initialize a name.
