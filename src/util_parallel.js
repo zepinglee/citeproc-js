@@ -85,7 +85,7 @@ CSL.Parallel = function (state) {
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["author", "volume", "container-title", "issue", "page", "locator", "number"].indexOf(variable) > -1;
+	return ["names", "section", "volume", "container-title", "issue", "page", "locator"].indexOf(variable) > -1;
 };
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
@@ -113,7 +113,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 	var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
 	if (this.use_parallels) {
-		//print("StartCite");
+		// print("StartCite");
 		if (this.sets.value().length && this.sets.value()[0].itemId === Item.id) {
 			this.ComposeSet();
 		}
@@ -145,8 +145,10 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 		this.cite.front = [];
 		this.cite.mid = [];
 		this.cite.back = [];
+		this.cite.front_collapse = {};
 		this.cite.back_forceme = [];
 		this.cite.position = position;
+		this.cite.Item = Item;
 		this.cite.itemId = Item.id;
 		this.cite.prevItemID = prevItemID;
 		this.target = "front";
@@ -201,13 +203,22 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		var is_mid = this.isMid(variable);
 		if (this.target === "front" && is_mid) {
 			this.target = "mid";
-		} else if (this.target === "mid" && !is_mid) {
+		} else if (this.target === "mid" && !is_mid && this.cite.Item.title) {
 			this.target = "back";
 		} else if (this.target === "back" && is_mid) {
 			this.try_cite = true;
 			this.in_series = false;
 		}
-		this.cite[this.target].push(variable);
+		// Exception for docket number.  Necessary for some
+		// civil law cites (France), which put the docket number
+		// at the end of the first of a series of references.
+		if (variable === "number") {
+			this.cite.front.push(variable);
+		} else if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(variable) > -1) {
+			this.cite.front.push(variable);
+		} else {
+			this.cite[this.target].push(variable);
+		}
 	}
 };
 
@@ -218,9 +229,8 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
  * after parallels detection is complete.
  */
 CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
-	if (this.use_parallels && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
+	if (this.use_parallels && this.variable && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
 		this.data.blobs.push([blob, blob.blobs.length]);
-
 	}
 };
 
@@ -262,10 +272,22 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 		if (this.sets.value().length > 0) {
 			var prev = this.sets.value()[(this.sets.value().length - 1)];
 			if (this.target === "front") {
-				if (!prev[this.variable] || this.data.value !== prev[this.variable].value) {
+				if (!(!prev[this.variable] && !this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
 					// evaluation takes place later, at close of cite.
 					//this.try_cite = true;
 					this.in_series = false;
+				}
+			} else if (this.target === "mid") {
+				if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(this.variable) > -1) {
+					if (prev[this.variable]) {
+						if (prev[this.variable].value === this.data.value) {
+							this.cite.front_collapse[this.variable] = true;
+						} else {
+							this.cite.front_collapse[this.variable] = false;
+						}
+					} else {
+						this.cite.front_collapse[this.variable] = false;
+					}
 				}
 			} else if (this.target === "back") {
 				if (prev[this.variable]) {
@@ -282,6 +304,7 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 			}
 		}
 	}
+	this.variable = false;
 };
 
 /**
@@ -289,8 +312,32 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
  * tracking array, and evaluate maybe.
  */
 CSL.Parallel.prototype.CloseCite = function () {
-	var x, pos, len, has_issued;
+	var x, pos, len, has_issued, use_journal_info, volume_pos, container_title_pos, section_pos;
 	if (this.use_parallels) {
+		use_journal_info = false;
+		if (!this.cite.front_collapse["container-title"]) {
+			use_journal_info = true;
+		}
+		if (this.cite.front_collapse.volume === false) {
+			use_journal_info = true;
+		}
+		if (this.cite.front_collapse.section === false) {
+			use_journal_info = true;
+		}
+		if (use_journal_info) {
+			section_pos = this.cite.front.indexOf("section");
+			if (section_pos > -1) {
+				this.cite.front = this.cite.front.slice(0,section_pos).concat(this.cite.front.slice(section_pos + 1));
+			}
+			volume_pos = this.cite.front.indexOf("volume");
+			if (volume_pos > -1) {
+				this.cite.front = this.cite.front.slice(0,volume_pos).concat(this.cite.front.slice(volume_pos + 1));
+			}
+			container_title_pos = this.cite.front.indexOf("container-title");
+			if (container_title_pos > -1) {
+				this.cite.front = this.cite.front.slice(0,container_title_pos).concat(this.cite.front.slice(container_title_pos + 1));
+			}
+		}
 		if (!this.in_series && !this.force_collapse) {
 			this.ComposeSet(true);
 		}
