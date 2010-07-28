@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a93##
+   version 1.00##a94##
 
 .. class:: info-date
 
-   =D=16 July 2010=D=
+   =D=28 July 2010=D=
 
 .. class:: contributors
 
@@ -31,6 +31,7 @@ __ http://citationstyles.org/
        * Lennard Fuller
        * Fergus Gallagher
        * Simon Kornblith
+       * Carles Pina
        * Dan Stillman
        * Rintze Zelle
 
@@ -161,16 +162,26 @@ to run.  These may be installed and set up using the following two commands
 Javascript interpreters
 #######################
 
-A ECMAscript interpreter with E4X support is required to run the
-processor.  The Rhino, Spidermonkey and Tracemonkey Javascript
-interpreters all satisfy this requirement. The V8 interpreter used by
-Google Chrome and Node does not.  The task of tying a Javascript
-interpreter into a given web framework or application is beyond
-the scope of this manual; but in Python-based environments, the
-|link| `python-spidermonkey bridge module`__ by Paul Davis may be worth a
-look.
+An ECMAscript (Javascript) interpreter is required to run the
+processor.  The processor code itself is written in such a way
+that it should run on a wide variety of platforms, including
+Rhino, Spidermonkey and Tracemonkey on the server side, and
+browsers such as Internet Explorer (version 6 and higher), Firefox,
+Mozilla, Safari, Google Chrome, and Opera.
 
-__ http://github.com/davisp/python-spidermonkey
+To parse the XML files used to define locales and styles, the
+processor relies on a supplementary module, which must be loaded into
+the same Javascript context as the processor itself.  The
+``xmle4x.js`` and ``xmldom.js`` files shipped with the processor
+source should serve this purpose.  The ``xmle4x.js`` module supports
+Gecko-based browsers, and other platforms that embed the Rhino,
+Spidermonkey or Tracemonkey Javascript interpreters.  The ``xmldom.js``
+module supports all other browsers as well.
+
+For an example of working code, the source behind the 
+|link| `processor demo page`__ may be useful as a reference.
+
+__ http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html
 
 Instructions on running the processor test suite can be found
 in the section `Running the test suite`_ at the end of this manual.

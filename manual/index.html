@@ -334,8 +334,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
 <p class="fixed"><a class="reference external" href="http://citationstyles.org/">citationstyles.org</a></p>
-<p class="info-version">version 1.00<sub>a93</sub></p>
-<p class="info-date">16 July 2010</p>
+<p class="info-version">version 1.00<sub>a94</sub></p>
+<p class="info-date">28 July 2010</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
 <dd><ul class="first last simple">
@@ -348,6 +348,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <li>Lennard Fuller</li>
 <li>Fergus Gallagher</li>
 <li>Simon Kornblith</li>
+<li>Carles Pina</li>
 <li>Dan Stillman</li>
 <li>Rintze Zelle</li>
 </ul>
@@ -543,14 +544,22 @@ ln -s csl-locales/trunk/ locale
 </div>
 <div class="section" id="javascript-interpreters">
 <h2><a class="toc-backref" href="#id46">Javascript interpreters</a></h2>
-<p>A ECMAscript interpreter with E4X support is required to run the
-processor.  The Rhino, Spidermonkey and Tracemonkey Javascript
-interpreters all satisfy this requirement. The V8 interpreter used by
-Google Chrome and Node does not.  The task of tying a Javascript
-interpreter into a given web framework or application is beyond
-the scope of this manual; but in Python-based environments, the
-<img alt="link" src="link.png" /> <a class="reference external" href="http://github.com/davisp/python-spidermonkey">python-spidermonkey bridge module</a> by Paul Davis may be worth a
-look.</p>
+<p>An ECMAscript (Javascript) interpreter is required to run the
+processor.  The processor code itself is written in such a way
+that it should run on a wide variety of platforms, including
+Rhino, Spidermonkey and Tracemonkey on the server side, and
+browsers such as Internet Explorer (version 6 and higher), Firefox,
+Mozilla, Safari, Google Chrome, and Opera.</p>
+<p>To parse the XML files used to define locales and styles, the
+processor relies on a supplementary module, which must be loaded into
+the same Javascript context as the processor itself.  The
+<tt class="docutils literal"><span class="pre">xmle4x.js</span></tt> and <tt class="docutils literal"><span class="pre">xmldom.js</span></tt> files shipped with the processor
+source should serve this purpose.  The <tt class="docutils literal"><span class="pre">xmle4x.js</span></tt> module supports
+Gecko-based browsers, and other platforms that embed the Rhino,
+Spidermonkey or Tracemonkey Javascript interpreters.  The <tt class="docutils literal"><span class="pre">xmldom.js</span></tt>
+module supports all other browsers as well.</p>
+<p>For an example of working code, the source behind the
+<img alt="link" src="link.png" /> <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html">processor demo page</a> may be useful as a reference.</p>
 <p>Instructions on running the processor test suite can be found
 in the section <a class="reference internal" href="#running-the-test-suite">Running the test suite</a> at the end of this manual.</p>
 </div>
