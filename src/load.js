@@ -460,6 +460,7 @@ if (!CSL.Node) {
     load("./src/node_choose.js");
 	// jslint OK
     load("./src/node_citation.js");
+    load("./src/node_comment.js");
 	// jslint OK
     load("./src/node_date.js");
 	// jslint OK

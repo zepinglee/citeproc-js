@@ -118,6 +118,7 @@ class Bundle:
         f.extend(["util_nodes","util_dateparser","build","state","util_integration","cmd_update"])
         f.extend(["cmd_bibliography","cmd_cite","node_bibliography","node_choose"])
         f.extend(["node_citation","node_date","node_datepart","node_elseif","node_else"])
+        f.extend(["node_comment"])
         f.extend(["node_etal","node_group","node_if","node_info","node_institution"])
         f.extend(["node_institutionpart","node_key","node_label","node_layout","node_macro"])
         f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
