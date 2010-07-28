@@ -1,6 +1,48 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.49
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix XML parsing code in xmldom.js to screen XML comments
+  from the processor.  Thanks to Carles Pina for reporting
+  this fault.
+
+- Tighten up conditions for suppression of the trailing year
+  where the volume number and the year have the same value.
+  Suppression will no longer occur when the rendered date
+  contains additional details (day, month).
+
+- Throw a more meaningful error when an invalid locale
+  is requested.  Thanks to Carles Pina.
+
+- Fix missing definition of quotes="false" in formats.js.
+  Thanks to Carles Pina.
+
+- Fix bug in handling of capitalized characters used in
+  citeproc-js hackaround for multi-character initials.
+
+-----------
+Enhancement
+-----------
+
+- Extend support for "parallel" legal citations to include
+  case and comment string citations used in French legal
+  writing.
+
+-------
+Cleanup
+-------
+
+- Adjust demo page to include a comment (to check that
+  comment nodes are no longer reaching the processor).
+  
+
+=========================
 Changes in version 1.0.48
 =========================
 

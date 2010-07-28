@@ -124,8 +124,9 @@ var CSL = {
 		"et-al-subsequent-min",
 		"et-al-subsequent-use-first"
 	],
-	PARALLEL_MATCH_VARS: ["title",  "container-title"],
+	PARALLEL_MATCH_VARS: ["container-title"],
 	PARALLEL_TYPES: ["legal_case",  "legislation"],
+	PARALLEL_COLLAPSING_MID_VARSET: ["volume", "container-title", "section"],
 	LOOSE: 0,
 	STRICT: 1,
 	PREFIX_PUNCTUATION: /[.;:]\s*$/,
@@ -137,6 +138,7 @@ var CSL = {
 	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
+	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f]+$/,
 	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
 	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
@@ -784,6 +786,9 @@ CSL.localeResolve = function (langstr) {
 	}
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
+	if ("undefined" === typeof ret.base) {
+        throw "Locale not found \"" + langlst[0] + "\"";
+	}
 	if (langlst.length === 1 || langlst[1] === "x") {
 		ret.best = ret.base.replace("_", "-");
 	} else {
@@ -1346,7 +1351,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.48";
+	this.processor_version = "1.0.49";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2799,6 +2804,8 @@ CSL.Node.date = {
 					}
 					len = this.dateparts.length;
 					for (pos = 0; pos < len; pos += 1) {
+					}
+					for (pos = 0; pos < len; pos += 1) {
 						part = this.dateparts[pos];
 						if ("undefined" !== typeof state.tmp.date_object[(part +  "_end")]) {
 							dp.push(part);
@@ -2815,7 +2822,7 @@ CSL.Node.date = {
 						}
 					}
 					dp = dpx.slice();
-					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year) {
+					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
 						for (key in state.tmp.date_object) {
 							if (state.tmp.date_object.hasOwnProperty(key)) {
 								if (key.slice(0, 4) === "year") {
@@ -5334,7 +5341,7 @@ CSL.Parallel = function (state) {
 	this.use_parallels = true;
 };
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["author", "volume", "container-title", "issue", "page", "locator", "number"].indexOf(variable) > -1;
+	return ["names", "section", "volume", "container-title", "issue", "page", "locator"].indexOf(variable) > -1;
 };
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 	if (this.use_parallels) {
@@ -5378,8 +5385,10 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 		this.cite.front = [];
 		this.cite.mid = [];
 		this.cite.back = [];
+		this.cite.front_collapse = {};
 		this.cite.back_forceme = [];
 		this.cite.position = position;
+		this.cite.Item = Item;
 		this.cite.itemId = Item.id;
 		this.cite.prevItemID = prevItemID;
 		this.target = "front";
@@ -5421,17 +5430,23 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		var is_mid = this.isMid(variable);
 		if (this.target === "front" && is_mid) {
 			this.target = "mid";
-		} else if (this.target === "mid" && !is_mid) {
+		} else if (this.target === "mid" && !is_mid && this.cite.Item.title) {
 			this.target = "back";
 		} else if (this.target === "back" && is_mid) {
 			this.try_cite = true;
 			this.in_series = false;
 		}
-		this.cite[this.target].push(variable);
+		if (variable === "number") {
+			this.cite.front.push(variable);
+		} else if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(variable) > -1) {
+			this.cite.front.push(variable);
+		} else {
+			this.cite[this.target].push(variable);
+		}
 	}
 };
 CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
-	if (this.use_parallels && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
+	if (this.use_parallels && this.variable && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
 		this.data.blobs.push([blob, blob.blobs.length]);
 	}
 };
@@ -5457,8 +5472,20 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 		if (this.sets.value().length > 0) {
 			var prev = this.sets.value()[(this.sets.value().length - 1)];
 			if (this.target === "front") {
-				if (!prev[this.variable] || this.data.value !== prev[this.variable].value) {
+				if (!(!prev[this.variable] && !this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
 					this.in_series = false;
+				}
+			} else if (this.target === "mid") {
+				if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(this.variable) > -1) {
+					if (prev[this.variable]) {
+						if (prev[this.variable].value === this.data.value) {
+							this.cite.front_collapse[this.variable] = true;
+						} else {
+							this.cite.front_collapse[this.variable] = false;
+						}
+					} else {
+						this.cite.front_collapse[this.variable] = false;
+					}
 				}
 			} else if (this.target === "back") {
 				if (prev[this.variable]) {
@@ -5469,10 +5496,36 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
 			}
 		}
 	}
+	this.variable = false;
 };
 CSL.Parallel.prototype.CloseCite = function () {
-	var x, pos, len, has_issued;
+	var x, pos, len, has_issued, use_journal_info, volume_pos, container_title_pos, section_pos;
 	if (this.use_parallels) {
+		use_journal_info = false;
+		if (!this.cite.front_collapse["container-title"]) {
+			use_journal_info = true;
+		}
+		if (this.cite.front_collapse.volume === false) {
+			use_journal_info = true;
+		}
+		if (this.cite.front_collapse.section === false) {
+			use_journal_info = true;
+		}
+		if (use_journal_info) {
+			this.cite.use_journal_info = true;
+			section_pos = this.cite.front.indexOf("section");
+			if (section_pos > -1) {
+				this.cite.front = this.cite.front.slice(0,section_pos).concat(this.cite.front.slice(section_pos + 1));
+			}
+			volume_pos = this.cite.front.indexOf("volume");
+			if (volume_pos > -1) {
+				this.cite.front = this.cite.front.slice(0,volume_pos).concat(this.cite.front.slice(volume_pos + 1));
+			}
+			container_title_pos = this.cite.front.indexOf("container-title");
+			if (container_title_pos > -1) {
+				this.cite.front = this.cite.front.slice(0,container_title_pos).concat(this.cite.front.slice(container_title_pos + 1));
+			}
+		}
 		if (!this.in_series && !this.force_collapse) {
 			this.ComposeSet(true);
 		}
@@ -5505,13 +5558,17 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 		} else {
 			len = this.sets.value().length;
 			for (pos = 0; pos < len; pos += 1) {
+				cite = this.sets.value()[pos];
 				if (pos === 0) {
 					this.delim_counter += 1;
 				} else {
-					this.delim_pointers.push(this.delim_counter);
+					if (!cite.Item.title && cite.use_journal_info) {
+						this.delim_pointers.push(false);
+					} else {
+						this.delim_pointers.push(this.delim_counter);
+					}
 					this.delim_counter += 1;
 				}
-				cite = this.sets.value()[pos];
 				if (CSL.POSITION_FIRST === cite.position) {
 					if (pos === 0) {
 						this.state.registry.registry[cite.itemId].master = true;
@@ -5565,7 +5622,9 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 		}
 		for (pos = 0, len = this.delim_pointers.length; pos < len; pos += 1) {
 			ppos = this.delim_pointers[pos];
-			out[ppos].parallel_delimiter = ", ";
+			if (ppos !== false) {
+				out[ppos].parallel_delimiter = ", ";
+			}
 		}
 		len = varnames.length - 1;
 		for (pos = len; pos > -1; pos += -1) {
@@ -5896,9 +5955,13 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
 			continue;
 		}
-		if ("given" === key && 1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
-			initialize_with = state.output.getToken("name").strings["initialize-with"];
-			namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
+		if ("given" === key) {
+			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
+				initialize_with = state.output.getToken("name").strings["initialize-with"];
+				namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
+			} else {
+				namepart = CSL.Util.Names.unInitialize(state, namepart);
+			}
 		}
 		state.output.append(namepart, key);
 	}
@@ -5981,6 +6044,25 @@ CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
 		}
 	}
 	return true;
+};
+CSL.Util.Names.unInitialize = function (state, name) {
+	var namelist, punctlist, ret, pos, len;
+	if (!name) {
+		return "";
+	}
+	namelist = name.split(/(?:\-|\s+)/);
+	punctlist = name.match(/(\-|\s+)/);
+	ret = "";
+	for (pos = 0, len = namelist.length; pos < len; pos += 1) {
+		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1))) {
+			namelist[pos] = namelist[pos].slice(0, 1) + namelist[pos].slice(1).toLowerCase();
+		}
+		ret += namelist[pos];
+		if (pos < len - 1) {
+			ret += punctlist[pos];
+		}
+	}
+	return ret;
 };
 CSL.Util.Names.initializeWith = function (state, name, terminator) {
 	var namelist, l, i, n, m, extra, ret, s, c, pos, len, ppos, llen, llst, mx, lst;
@@ -7003,6 +7085,7 @@ CSL.Output.Formats.prototype.html = {
 		}
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
+	"@quotes/false": false,
 	"@bibliography/entry": function (state, str) {
 		return "  <div class=\"csl-entry\">" + str + "</div>\n";
 	},
@@ -7055,6 +7138,7 @@ CSL.Output.Formats.prototype.text = {
 		}
 		return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
 	},
+	"@quotes/false": false,
 	"@bibliography/entry": function (state, str) {
 		return str+"\n";
 	},
@@ -7108,6 +7192,7 @@ CSL.Output.Formats.prototype.rtf = {
 		}
 		return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-inner-quote")) + str + CSL.Output.Formats.rtf.text_escape(state.getTerm("close-inner-quote"));
 	},
+	"@quotes/false": false,
 	"bibstart":"{\\rtf ",
 	"bibend":"}",
 	"@display/block":"%%STRING%%\\line\r\n",
