@@ -325,6 +325,7 @@ CSL.Parallel.prototype.CloseCite = function () {
 			use_journal_info = true;
 		}
 		if (use_journal_info) {
+			this.cite.use_journal_info = true;
 			section_pos = this.cite.front.indexOf("section");
 			if (section_pos > -1) {
 				this.cite.front = this.cite.front.slice(0,section_pos).concat(this.cite.front.slice(section_pos + 1));
@@ -392,13 +393,17 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 		} else {
 			len = this.sets.value().length;
 			for (pos = 0; pos < len; pos += 1) {
+				cite = this.sets.value()[pos];
 				if (pos === 0) {
 					this.delim_counter += 1;
 				} else {
-					this.delim_pointers.push(this.delim_counter);
+					if (!cite.Item.title && cite.use_journal_info) {
+						this.delim_pointers.push(false);
+					} else {
+						this.delim_pointers.push(this.delim_counter);
+					}
 					this.delim_counter += 1;
 				}
-				cite = this.sets.value()[pos];
 
 				if (CSL.POSITION_FIRST === cite.position) {
 					if (pos === 0) {
@@ -467,7 +472,9 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 		}
 		for (pos = 0, len = this.delim_pointers.length; pos < len; pos += 1) {
 			ppos = this.delim_pointers[pos];
-			out[ppos].parallel_delimiter = ", ";
+			if (ppos !== false) {
+				out[ppos].parallel_delimiter = ", ";
+			}
 		}
 		len = varnames.length - 1;
 		for (pos = len; pos > -1; pos += -1) {
