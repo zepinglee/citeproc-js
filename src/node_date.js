@@ -98,6 +98,8 @@ CSL.Node.date = {
 					//}
 					len = this.dateparts.length;
 					for (pos = 0; pos < len; pos += 1) {
+					}
+					for (pos = 0; pos < len; pos += 1) {
 						part = this.dateparts[pos];
 						if ("undefined" !== typeof state.tmp.date_object[(part +  "_end")]) {
 							dp.push(part);
@@ -114,12 +116,12 @@ CSL.Node.date = {
 						}
 					}
 					dp = dpx.slice();
-
 					// Suppress the year if we're not sorting, and
-					// it's the same as the volume,
+					// it's the same as the volume, and we would render
+					// only the year, with not month or day.
 					// Needed for English-style case cites.  Here's hoping it
 					// doesn't have side effects.
-					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year) {
+					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
 						for (key in state.tmp.date_object) {
 							if (state.tmp.date_object.hasOwnProperty(key)) {
 								if (key.slice(0, 4) === "year") {
@@ -128,7 +130,6 @@ CSL.Node.date = {
 							}
 						}
 					}
-
 					//
 					// (2) Reverse the list and step through in
 					// reverse order, popping each item if the
