@@ -3098,6 +3098,11 @@ CSL.Node["else"] = {
 		}
 	}
 };
+CSL.Node["#comment"] = {
+       build: function (state, target) {
+		   CSL.debug("CSL processor warning: comment node reached");
+       }
+};
 CSL.Node["et-al"] = {
 	build: function (state, target) {
 		var func;
