@@ -198,8 +198,9 @@ var CSL = {
 		"et-al-subsequent-use-first"
 	],
 
-	PARALLEL_MATCH_VARS: ["title",  "container-title"],
+	PARALLEL_MATCH_VARS: ["container-title"],
 	PARALLEL_TYPES: ["legal_case",  "legislation"],
+	PARALLEL_COLLAPSING_MID_VARSET: ["volume", "container-title", "section"],
 
 	LOOSE: 0,
 	STRICT: 1,
@@ -221,6 +222,7 @@ var CSL = {
 	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
+	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f]+$/,
 
 	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
 	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
