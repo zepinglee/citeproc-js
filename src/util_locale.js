@@ -54,6 +54,9 @@ CSL.localeResolve = function (langstr) {
 	}
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
+	if ("undefined" === typeof ret.base) {
+        throw "Locale not found \"" + langlst[0] + "\"";
+	}
 	if (langlst.length === 1 || langlst[1] === "x") {
 		ret.best = ret.base.replace("_", "-");
 	} else {
