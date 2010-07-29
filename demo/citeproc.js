@@ -2535,7 +2535,8 @@ CSL.getSpliceDelimiter = function (last_collapsed) {
 	return this.tmp.splice_delimiter;
 };
 CSL.getCitationCluster = function (inputList, citationID) {
-	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item;
+	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc;
+	txt_esc = CSL.Output.Formats[this.opt.mode].text_escape;
 	this.tmp.area = "citation";
 	delimiter = "";
 	result = "";
@@ -2607,7 +2608,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 		if (objects.length && "string" === typeof composite[0]) {
 			composite.reverse();
-			objects.push(this.tmp.splice_delimiter + composite.pop());
+			objects.push(txt_esc(this.tmp.splice_delimiter) + composite.pop());
 		} else {
 			composite.reverse();
 			compie = composite.pop();
@@ -2620,7 +2621,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			obj = composite[ppos];
 			if ("string" === typeof obj) {
-				objects.push(this.tmp.splice_delimiter + obj);
+				objects.push(txt_esc(this.tmp.splice_delimiter) + obj);
 				continue;
 			}
 			compie = composite.pop();
@@ -2637,7 +2638,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		if (result.slice(-1) === this.citation.opt.layout_suffix.slice(0)) {
 			result = result.slice(0, -1);
 		}
-		result = this.citation.opt.layout_prefix + result + this.citation.opt.layout_suffix;
+		result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(this.citation.opt.layout_suffix);
 		if (!this.tmp.suppress_decorations) {
 			len = this.citation.opt.layout_decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
