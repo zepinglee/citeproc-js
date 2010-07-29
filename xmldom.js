@@ -283,6 +283,7 @@ CSL_CHROME.prototype.makeXml = function (myxml) {
 	if (!myxml) {
 		myxml = "<docco><bogus/></docco>";
 	}
+	myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
 	var nodetree = this.parser.parseFromString(myxml, "application/xml");
 	return nodetree.firstChild;
 };
