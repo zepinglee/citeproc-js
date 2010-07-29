@@ -6959,7 +6959,7 @@ CSL.Output.Formatters["capitalize-first"] = function (state, string) {
 };
 CSL.Output.Formatters.sentence = function (state, string) {
 	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-	str.string = str.string[0].toUpperCase() + str.string.substr(1).toLowerCase();
+	str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1).toLowerCase();
 	return CSL.Output.Formatters.undoppelString(str);
 };
 CSL.Output.Formatters["capitalize-all"] = function (state, string) {
@@ -6969,7 +6969,7 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
 	len = strings.length;
 	for (pos = 0; pos < len; pos += 1) {
 		if (strings[pos].length > 1) {
-            strings[pos] = strings[pos][0].toUpperCase() + strings[pos].substr(1).toLowerCase();
+            strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1).toLowerCase();
         } else if (strings[pos].length === 1) {
             strings[pos] = strings[pos].toUpperCase();
         }
@@ -7019,7 +7019,7 @@ CSL.Output.Formatters.title = function (state, string) {
 				if (skip && notfirst && notlast && (firstword || aftercolon)) {
 					words[pos] = lowerCaseVariant;
 				} else {
-					words[pos] = upperCaseVariant[0] + lowerCaseVariant.substr(1);
+					words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
 				}
 			}
 			previousWordIndex = pos;
