@@ -45,6 +45,7 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
+
 CSL.Node["#comment"] = {
        // This is a comment in the CSL file.
        build: function (state, target) {
