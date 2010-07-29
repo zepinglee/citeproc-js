@@ -320,7 +320,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 //
 
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
-	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters, use_prefix;
+	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters, use_prefix, txt_esc;
+	txt_esc = CSL.Output.Formats[this.state.opt.mode].text_escape;
 	blobs = myblobs.slice();
 	ret = [];
 
@@ -390,7 +391,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				// to produce no output if they are found to be
 				// empty.
 				if (b && b.length) {
-					b = blobjr.strings.prefix + b + use_suffix;
+					b = txt_esc(blobjr.strings.prefix) + b + txt_esc(use_suffix);
 					ret.push(b);
 				}
 			}
@@ -460,7 +461,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				use_prefix = use_prefix.slice(0, -1);
 			}
 
-			b = use_prefix + b + use_suffix;
+			b = txt_esc(use_prefix) + b + txt_esc(use_suffix);
 		}
 		blobs_start = b;
 		if (!state.tmp.suppress_decorations) {
@@ -512,7 +513,8 @@ CSL.Output.Queue.prototype.clearlevel = function () {
 };
 
 CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
-	var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params;
+	var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params, txt_esc;
+	txt_esc = CSL.Output.Formats[this.state.opt.mode].text_escape;
 	if (!delim) {
 		delim = "";
 	}
@@ -551,7 +553,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 					blob = blob.slice(1);
 				}
 			}
-			ret += use_delim;
+			ret += txt_esc(use_delim);
 			ret += blob;
 		} else if (blob.status !== CSL.SUPPRESS) {
 			// CSL.debug("doing rangeable blob");
