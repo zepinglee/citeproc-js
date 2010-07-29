@@ -1,6 +1,33 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.50
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Apply output-mode-specific text_escape function to
+  affixes and delimiters.
+
+- Strip XML declaration from CSL and locale strings
+  received for parsing in the xmldom.js module.
+
+- Add paranoia fallback to handle comment nodes that
+  sneak past the XML parser.
+
+Thanks to Carles Pina for bug reports on the issues
+above.
+
+-------
+Cleanup
+-------
+
+- Update manual to indicate support for non-E4X platforms.
+
+
+=========================
 Changes in version 1.0.49
 =========================
 
