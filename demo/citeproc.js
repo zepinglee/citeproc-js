@@ -7017,8 +7017,11 @@ CSL.Output.Formatters.title = function (state, string) {
 				}
 				notfirst = pos !== 0;
 				notlast = pos !== lastWordIndex;
-				firstword = previousWordIndex === -1;
-				aftercolon = words[previousWordIndex][(words[previousWordIndex].length - 1)] !== ":";
+				if (words[previousWordIndex]) {
+					aftercolon = words[previousWordIndex].slice(-1) !== ":";
+				} else {
+					aftercolon = false;
+				}
 				if (skip && notfirst && notlast && (firstword || aftercolon)) {
 					words[pos] = lowerCaseVariant;
 				} else {

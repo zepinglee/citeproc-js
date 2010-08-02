@@ -80,7 +80,7 @@ for providing feedback and getting help is the |link| `project mailing list`_.
           styles to the version 1.0 syntax supported by this processor.
 
 .. [#] For further details on required infrastructure, see the sections 
-       `Local Environment`_ 
+       `Locally defined system functions`_ 
        and `Data Input`_ below.
 
 .. _`project mailing list`: http://groups.google.com/group/citeproc-js
@@ -204,29 +204,33 @@ loaded into the Javascript interpreter context, together with a
 ``sys`` object provided by the integrator (see below), and the desired
 CSL style (as a string).
 
-------------------
-Processor Commands
-------------------
+---------------------
+Running the processor
+---------------------
 
-The processor command set will be a grave disappointment to those well versed in
-the tormented intricacies of reference management and bibliography
-formatting.  The processor is instantiated with a single command,
-controlled with three others, and has just two commands for adjustments
-to its runtime configuration.
+Instances of the processor are produced using ``CSL.Engine()`` function.
+Note that, as detailed below under `Locally defined system functions`_,
+certain local data access functions must be defined separately on an
+object supplied to the processor as its first argument.
 
+Once instantiated, a processor instance can be configured via a small
+set of runtime setter methods.  Instance methods are also used to load
+item data into the processor, and to produce output objects suitable
+for consumption by a word processor plugin, or for use in constructing
+bibliographies.  Details of these and other methods available on
+processor instances are given below.
 
-################
-``CSL.Engine()``
-################
+###############################
+Instantiation: ``CSL.Engine()``
+###############################
 
-A working instance of the processor can (well, must) be created using the
-``CSL.Engine()`` command, as shown in the code illustration below.  
-This command takes up to three arguments, two of them required, and 
-one of them optional:
+The ``CSL.Engine()`` command is invoked as shown in the code
+illustration below.  This command takes up to three arguments, two of
+them required, and one of them optional:
 
 .. admonition:: Important
 
-   See the section `Local Environment`_ → `System functions`_ below for guidance
+   See the section `Locally defined system functions`_ below for guidance
    on the definition of the functions contained in the ``sys``
    object.
 
@@ -253,27 +257,226 @@ The version of the processor itself can be obtained
 from the attribute ``processor_version``.  The supported
 CSL version can be obtained from ``csl_version``.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Processor Configuration Flags
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Locally defined system functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The processor has several flags that can be used by the
-calling application to shape the user interface to the
-processor.  These include (assuming the instantiated processor
-is in an object ``citeproc``):
+While ``citeproc-js`` does a great deal of the heavy lifting needed
+for correct formatting of citations and bibliographies, a certain
+amount of programming is required to prepare the environment for its
+correct operation.
 
-``citeproc.opt.sort_citations``
-   Set to true if the style is one that sorts citations
-   in any way.
+Two functions must be defined separately and supplied to the processor
+upon instantiation.  These functions are used by the processor to
+obtain locale and item data from the surrounding environment.  The
+exact definition of each may vary from one system to another; those
+given below assume the existence of a global ``DATA`` object in the
+context of the processor instance, and are provided only for the
+purpose of illustration.
 
-``citeproc.opt.citation_number_sort``
-   Set to true if citations are sorted by citation
-   number.
+!!!!!!!!!!!!!!!!!!!!
+``retrieveLocale()``
+!!!!!!!!!!!!!!!!!!!!
+
+The ``retrieveLocale()`` function is used internally by the processor to
+retrieve the serialized XML of a given locale.  It takes a single RFC
+4646 compliant language tag as argument, composed of a single language
+tag (``en``) or of a language tag and region subtag (``en-US``).  The
+name of the XML document in the CSL distribution that contains the
+relevant locale data may be obtained from the ``CSL.localeRegistry``
+array.  The sample function below is provided for reference
+only.
 
 
-#################
+.. sourcecode:: js
+
+   sys.retrieveLocale = function(lang){
+	   var ret = DATA._locales[ CSL.localeRegistry[lang] ];
+	   return ret;
+   };
+
+
+
+!!!!!!!!!!!!!!!!!!
+``retrieveItem()``
+!!!!!!!!!!!!!!!!!!
+
+The ``retrieveItem()`` function is used by the processor to
+fetch individual items from storage.
+
+.. sourcecode:: js
+
+   sys.retrieveItem = function(id){
+	   return DATA._items[id];
+   };
+
+!!!!!!!!!!!!!!!!!!!!!!
+``getAbbreviations()``
+!!!!!!!!!!!!!!!!!!!!!!
+
+The ``getAbbreviations()`` command is invoked by the processor
+at startup, and when the ``setAbbreviations()`` command is
+invoked on the instantiated processor.  The abbreviation list
+retrieved by the processor should have the following structure:
+
+.. sourcecode:: js
+
+   var ABBREVS = { 
+      "default": {
+         "container-title":{
+            "Journal of Irreproducible Results":"J. Irrep. Res."
+         },
+         "collection-title":{
+            "International Rescue Wildlife Series":"I.R. Wildlife Series"
+         },
+         "authority":{
+            "United States Patent and Trademark Office": "USPTO"
+		 },
+         "institution":{
+            "Bureau of Gaseous Unformed Stuff":"BoGUS"
+         },
+         "title": {},
+         "publisher": {},
+         "publisher-place": {},
+         "hereinafter": {}
+      };
+   };
+
+If the object above provides the abbreviation store for the system,
+an appropriate ``sys.getAbbreviations()`` function might look
+like this:
+
+.. sourcecode:: js
+
+   sys.getAbbreviations = function(name){
+      return ABBREVS[name];
+   };
+
+^^^^^^^^^^^^^^^^^^^^^^
+Configuration commands
+^^^^^^^^^^^^^^^^^^^^^^
+
+!!!!!!!!!!!!!!!!!!!!!
+``setOutputFormat()``
+!!!!!!!!!!!!!!!!!!!!!
+
+The default output format of the processor is HTML. Output formats for
+RTF and plain text are defined in the distribution source file
+``./src/formats.js``.  Additional formats can be added if desired.
+See |link| `the file itself`__ for details; it's pretty
+straightforward.
+
+__ http://bitbucket.org/fbennett/citeproc-js/src/tip/src/formats.js
+
+The output format of the processor can be changed to any of the
+defined formats after instantiation, using the ``setOutputFormat()``
+command:
+
+.. sourcecode:: js
+
+   citeproc.setOutputFormat("rtf");
+
+This command is specific to the ``citeproc-js`` processor
+
+
+!!!!!!!!!!!!!!!!!!!!!!
+``setAbbreviations()``
+!!!!!!!!!!!!!!!!!!!!!!
+
+The processor recognizes abbreviation lists for journal titles, series
+titles, authorities (such as the Supreme Court of New York), and
+institution names (such as International Business Machines).  A list
+can be set in the processor using the ``setAbbreviations()`` command,
+with the name of the list as sole argument.  The named list is fetched
+and installed by the ``sys.getAbbreviations()`` command, documented
+below under `Locally defined system functions`_.
+
+.. sourcecode:: js
+
+   citeproc.setAbbreviations("default");
+
+At runtime, whenever an abbreviation is requested but unavailable,
+an empty abbreviation entry is opened in the processor ``.transform``
+object.  Entries are keyed on the abbreviation category and the long form of
+the field value.  Abbreviation catetories are as follows: ``container-title``,
+``collection-title``, ``authority``, ``institution``, ``title``, 
+``publisher``, ``publisher-place``, ``hereinafter``.
+
+After any run of the ``makeBibliography()`` or citation rendering commands,
+the full set of registered abbreviations (including the empty entries identified at
+runtime) can be read from the processor.  For example, if the processor
+instance is named ``citeproc``, a structure as shown in `Locally defined system functions`_ 
+→ `getAbbreviations()`_ can be obtained as follows:
+
+.. sourcecode:: js
+
+   var ABBREVS = citeproc.transform;
+
+The structure thus obtained can then be edited, via the user interface
+of the calling application, to alter the abbreviations applied at the
+next run of the processor.
+
+.. [#] For illustrations of the input syntax for the ``makeBibliography()``
+       command, see any test in the |link| `test suite`_ that uses the
+       CITATION-ITEMS environment described in the `CSL Test Suite manual`__.
+
+__ http://gsl-nagoya-u.net/http/pub/citeproc-test.html
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``restoreProcessorState()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+The ``restoreProcessorState()`` command can be used to restore the
+processor state in a single operation, where citation objects,
+complete with position variables and ``sortkeys``, are available.
+The command takes a single argument, which is an array of such
+citation objects:
+
+.. sourcecode:: js
+
+   citeproc.restoreProcessorState(citations);
+
+
+Uncited items must be restored separately using the ``updateUncitedItems()``
+command.
+
+^^^^^^^^^^^^^^
+Readable Flags
+^^^^^^^^^^^^^^
+
+The instantiated processor has several readable flags that can be used
+by the calling application to shape the user interface to the
+processor.  These include the following: [#]_
+
+!!!!!!!!!!!!!!!!!!!!!!
+``opt.sort_citations``
+!!!!!!!!!!!!!!!!!!!!!!
+
+True if the style is one that sorts citations in any way.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``opt.citation_number_sort``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+True if citations are sorted by citation
+   
+.. [#] Note that these are information variables intended for reading
+       only; changing their value directly will have no effect on the
+       actual behavior of the processor.
+
+
+
+
+
+##############################
+Loading items to the processor
+##############################
+
+
+^^^^^^^^^^^^^^^^^
 ``updateItems()``
-#################
+^^^^^^^^^^^^^^^^^
 
 Before citations or a bibliography can be generated, an ordered list
 of reference items must ordinarily be loaded into the processor using
@@ -313,9 +516,9 @@ arbitrary, system-dependent identifier, used by the locally customized
 ``retrieveItem()`` method to retrieve
 actual item data.  
 
-########################
+^^^^^^^^^^^^^^^^^^^^^^^^
 ``updateUncitedItems()``
-########################
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``updateUncitedItems()`` command has the same interface
 as ``updateItems()`` (including the option to suppress sorting
@@ -324,9 +527,13 @@ not subject to deletion when no longer referenced by a
 cite anywhere in the document.
 
 
-######################
+#########################
+Generating bibliographies
+#########################
+
+^^^^^^^^^^^^^^^^^^^^^^
 ``makeBibliography()``
-######################
+^^^^^^^^^^^^^^^^^^^^^^
 
 The ``makeBibliography()`` command does what its name implies.  
 If invoked without an argument,
@@ -346,9 +553,83 @@ registered in the processor:
    variable types.  See the ``quash`` example below
    for details.
 
-^^^^^^^^^^^^^^^^
+!!!!!!!!!!!!
+Return value
+!!!!!!!!!!!!
+
+The value returned by this command is a two-element list, composed of
+a Javascript array containing certain formatting parameters, and a
+list of strings representing bibliography entries.  It is the responsibility
+of the calling application to compose the list into a finish string
+for insertion into the document.  The first
+element —- the array of formatting parameters —- contains the key/value
+pairs shown below (the values shown are the processor defaults in the
+HTML output mode):
+
+.. sourcecode:: js
+
+   [
+      { 
+         maxoffset: 0,
+         entryspacing: 0,
+         linespacing: 0,
+         hangingindent: 0,
+         second-field-align: false,
+         bibstart: "<div class=\"csl-bib-body\">\n",
+         bibend: "</div>",
+         bibliography_errors: []
+      },
+      [
+         "<div class=\"csl-entry\">Book A</div>",
+         "<div class=\"csl-entry\">Book C</div>"
+      ]
+   ]
+
+*maxoffset*
+   Some citation styles apply a label (either a number or an
+   alphanumeric code) to each bibliography entry, and use this label
+   to cite bibliography items in the main text.  In the bibliography,
+   the labels may either be hung in the margin, or they may be set
+   flush to the margin, with the citations indented by a uniform
+   amount to the right.  In the latter case, the amount of indentation
+   needed depends on the maximum width of any label.  The
+   ``maxoffset`` value gives the maximum number of characters that
+   appear in any label used in the bibliography.  The client that
+   controls the final rendering of the bibliography string should use
+   this value to calculate and apply a suitable indentation length.
+
+*entryspacing*
+   An integer representing the spacing between entries in the bibliography.
+
+*linespacing*
+   An integer representing the spacing between the lines within
+   each bibliography entry.
+
+*hangingindent*
+   The number of em-spaces to apply in hanging indents within the
+   bibliography.
+
+*second-field-align*
+   When the ``second-field-align`` CSL option is set, this returns
+   either "flush" or "margin".  The calling application should
+   align text in bibliography output as described in the `CSL specification`__.
+   Where ``second-field-align`` is not set, this return value is set to ``false``.
+
+*bibstart*
+   A string to be appended to the front of the finished bibliography
+   string.
+   
+*bibend*
+   A string to be appended to the end of the finished bibliography
+   string.
+
+
+__ http://citationstyles.org/downloads/specification.html#bibliography-specific-options
+
+
+!!!!!!!!!!!!!!!!
 Selective output
-^^^^^^^^^^^^^^^^
+!!!!!!!!!!!!!!!!
 
 The ``makeBibliography()`` command accepts one optional argument,
 which is a nested Javascript object that may contain
@@ -456,82 +737,17 @@ input examples, is as follows:
 
    var mybib = cp.makeBibliography(myarg);
 
-^^^^^^^^^^^^
-Return value
-^^^^^^^^^^^^
-
-The value returned by this command is a two-element list, composed of
-a Javascript array containing certain formatting parameters, and a
-list of strings representing bibliography entries.  It is the responsibility
-of the calling application to compose the list into a finish string
-for insertion into the document.  The first
-element —- the array of formatting parameters —- contains the key/value
-pairs shown below (the values shown are the processor defaults in the
-HTML output mode):
-
-.. sourcecode:: js
-
-   [
-      { 
-         "maxoffset": 0,
-         "entryspacing": 0,
-         "linespacing": 0,
-         "hangingindent": 0,
-         "second-field-align": false,
-         "bibstart": "<div class=\"csl-bib-body\">\n",
-         "bibend": "</div>"
-      },
-      [
-         "<div class=\"csl-entry\">Book A</div>",
-         "<div class=\"csl-entry\">Book C</div>"
-      ]
-   ]
-
-*maxoffset*
-   Some citation styles apply a label (either a number or an
-   alphanumeric code) to each bibliography entry, and use this label
-   to cite bibliography items in the main text.  In the bibliography,
-   the labels may either be hung in the margin, or they may be set
-   flush to the margin, with the citations indented by a uniform
-   amount to the right.  In the latter case, the amount of indentation
-   needed depends on the maximum width of any label.  The
-   ``maxoffset`` value gives the maximum number of characters that
-   appear in any label used in the bibliography.  The client that
-   controls the final rendering of the bibliography string should use
-   this value to calculate and apply a suitable indentation length.
-
-*entryspacing*
-   An integer representing the spacing between entries in the bibliography.
-
-*linespacing*
-   An integer representing the spacing between the lines within
-   each bibliography entry.
-
-*hangingindent*
-   The number of em-spaces to apply in hanging indents within the
-   bibliography.
-
-*second-field-align*
-   When the ``second-field-align`` CSL option is set, this returns
-   either "flush" or "margin".  The calling application should
-   align text in bibliography output as described in the `CSL specification`__.
-   Where ``second-field-align`` is not set, this return value is set to ``false``.
-
-*bibstart*
-   A string to be appended to the front of the finished bibliography
-   string.
-   
-*bibend*
-   A string to be appended to the end of the finished bibliography
-   string.
+####################
+Outputting citations
+####################
 
 
-__ http://citationstyles.org/downloads/specification.html#bibliography-specific-options
 
+The available citation commands are:
 
-#################
-Citation commands
-#################
+* `appendCitationCluster()`_
+* `processCitationCluster()`_
+* `previewCitationCluster()`_
 
 Citation commands generate strings for insertion into the text of a
 target document.  Citations can be added to a document in one of two
@@ -550,43 +766,6 @@ The ``appendCitationCluster()`` and
 ``processCitationCluster()`` commands use a similar input format
 for citation data, which is described below in the `Data Input`_
 → `Citation data object`_ section below.
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``appendCitationCluster()``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The ``appendCitationCluster()`` command takes a single citation
-object as argument, and an optional flag to indicate whether
-a full list of bibliography items has already been registered
-in the processor with the ``updateItems()`` command.  If the flag
-is true, the command should return an array containing exactly
-one two-element array, consisting of the current index position
-as the first element, and a string for insertion into the document
-as the second.  To wit:
-
-.. sourcecode:: js
-
-   citeproc.appendCitationCluster(mycitation,true);
-
-   [
-      [ 5, "(J. Doe 2000)" ]
-   ]
-
-If the flag is false, invocations of the command may return
-multiple elements in the list, when the processor sense that
-the additional bibliography items added by the citation require 
-changes to other citations to achieve disambiguation.  In this
-case, a typical return value might look like this:
-
-.. sourcecode:: js
-
-   citeproc.appendCitationCluster(mycitation);
-
-   [
-      [ 2, "(Jake Doe 2000)" ],
-      [ 5, "(John Doe 2000)" ]
-   ]
-
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``processCitationCluster()``
@@ -632,6 +811,43 @@ found in the |link| `processor test suite`__.
 __ http://bitbucket.org/bdarcus/citeproc-test/src/tip/processor-tests/humans/integration_IbidOnInsert.txt
 
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``appendCitationCluster()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``appendCitationCluster()`` command takes a single citation
+object as argument, and an optional flag to indicate whether
+a full list of bibliography items has already been registered
+in the processor with the ``updateItems()`` command.  If the flag
+is true, the command should return an array containing exactly
+one two-element array, consisting of the current index position
+as the first element, and a string for insertion into the document
+as the second.  To wit:
+
+.. sourcecode:: js
+
+   citeproc.appendCitationCluster(mycitation,true);
+
+   [
+      [ 5, "(J. Doe 2000)" ]
+   ]
+
+If the flag is false, invocations of the command may return
+multiple elements in the list, when the processor sense that
+the additional bibliography items added by the citation require 
+changes to other citations to achieve disambiguation.  In this
+case, a typical return value might look like this:
+
+.. sourcecode:: js
+
+   citeproc.appendCitationCluster(mycitation);
+
+   [
+      [ 2, "(Jake Doe 2000)" ],
+      [ 5, "(John Doe 2000)" ]
+   ]
+
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``previewCitationCluster()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -661,216 +877,78 @@ as if the preview command had not been run.
 
 
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``previewCitationClusterStatic()``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+####################################
+Handling items with no rendered form
+####################################
 
-.. class:: redback
+The processor might fail to produce meaningful rendered output in three
+situations:
 
-   [command withdrawn: always use ``previewCitationCluster()`` instead]
+1. When `makeBibliography()`_ is run,
+   and the configured style contains no ``bibliography`` node;
 
-The ``previewCitationClusterStatic()`` command assumes that the
-internal processor state reflects the content of the document.
-It requires only a citation object to operate.  An ``insert``
-toggle, if true, will cause the citation at same index position as
-the preview object to be retained.
+2. When `makeBibliography()`_ is run, and no variable other than
+   ``citation-number`` produces output for an individual entry; or
 
-.. sourcecode:: js
+3. When a `citation command`__ is used, but no element rendered for a
+   particular cite produces any output.
 
-   var insert = false;
+__ `Outputting citations`_
 
-   citeproc.previewCitationClusterStatic(citation,"html", false);
+The processor handles these three cases as described below.
 
-   ...
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+No ``bibliography`` node in style
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   "(Richard Snoakes 1950)"
+When the `makeBibliography()`_ command is run on a style
+that has no ``bibliography`` node, the command returns
+a value of ``false``.
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+No item output for bibliography entry
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-
-
-###########################
-``restoreProcessorState()``
-###########################
-
-The ``restoreProcessorState()`` command can be used to restore the
-processor state in a single operation, where citation objects,
-complete with position variables and ``sortkeys``, are available.
-The command takes a single argument, which is an array of such
-citation objects:
-
-.. sourcecode:: js
-
-   citeproc.restoreProcessorState(citations);
-
-
-Uncited items must be restored separately using the ``updateUncitedItems()``
-command.
-
-
-#####################
-``setOutputFormat()``
-#####################
-
-The output format of the processor can be changed after instantiation
-using the ``setOutputFormat()`` command.  This command is specific
-to the ``citeproc-js`` processor.
-
-.. admonition:: Hint
-
-   See the section `Output Formatting`_ below for notes
-   on defining new output formats.
+When the return value of the `makeBibliography()`_ command contains
+entries that produce no output other than for the (automatically
+generated) ``citation-number`` variable, a three-element array object
+consisting of the ``itemID`` of each offending entry, its index
+position in the array of strings returned by ``makeBibliography()``,
+and an error code (always "1", currently) is pushed to
+``bibliography_errors`` in the data segment of the return value:
 
 .. sourcecode:: js
 
-   citeproc.setOutputFormat("rtf");
+   [
+      {
+         maxoffset: 0,
+         entryspacing: 0,
+         linespacing: 0,
+         hangingindent: 0,
+         second-field-align: false,
+         bibstart: "<div class=\"csl-bib-body\">\n",
+         bibend: "</div>",
+         bibliography_errors: [
+            [2, "ITEM-2", 1]
+         ]
+      },
+      [
+         "[1] Snoakes, Big Book (2000)",
+         "[2] Doe, Bigger Book (2001)",
+         "[3] ",
+         "[4] Roe, Her Book (2002)"
+      ]
+   ]
 
+The calling application may use the information in ``bibliography_errors``
+to prompt the user concerning possible corrective action.   
 
-
-######################
-``setAbbreviations()``
-######################
-
-The processor recognizes abbreviation lists for journal titles, series
-titles, authorities (such as the Supreme Court of New York), and
-institution names (such as International Business Machines).  A list
-can be set in the processor using the ``setAbbreviations()`` command,
-with the name of the list as sole argument.  The named list is fetched
-and installed by the ``sys.getAbbreviations()`` command, documented
-below under `Local Environment`_ → `System Functions`_.
-
-.. sourcecode:: js
-
-   citeproc.setAbbreviations("default");
-
-At runtime, whenever an abbreviation is requested but unavailable,
-an empty abbreviation entry is opened in the processor ``.transform``
-object.  Entries are keyed on the abbreviation category and the long form of
-the field value.  Abbreviation catetories are as follows: ``container-title``,
-``collection-title``, ``authority``, ``institution``, ``title``, 
-``publisher``, ``publisher-place``, ``hereinafter``.
-
-After any run of the ``makeBibliography()`` or citation rendering commands,
-the full set of registered abbreviations (including the empty entries identified at
-runtime) can be read from the processor.  For example, if the processor
-instance is named ``citeproc``, a structure as shown in `Local Environment`_
-→ `System Functions`_ → `getAbbreviations()`_ can be obtained as follows:
-
-.. sourcecode:: js
-
-   var myabbrevs = citeproc.transform;
-
-The structure thus obtained can then be edited, via the user interface
-of the calling application, to alter the abbreviations applied at the
-next run of the processor.
-
-.. [#] For illustrations of the input syntax for the ``makeBibliography()``
-       command, see any test in the |link| `test suite`_ that uses the
-       CITATION-ITEMS environment described in the `CSL Test Suite manual`__.
-
-__ http://gsl-nagoya-u.net/http/pub/citeproc-test.html
-
-
------------------
-Local Environment
------------------
-
-While ``citeproc-js`` does a great deal of the heavy lifting needed
-for correct formatting of citations and bibliographies, a certain
-amount of programming is required to prepare the environment for its
-correct operation.
-
-
-################
-System functions
-################
-
-As mentioned above in the section on `CSL.Engine()`_, two functions
-must be defined separately and supplied to the processor upon
-instantiation.  These functions are used by the processor to obtain
-locale and item data from the surrounding environment.  The exact
-definition of each may vary from one system to another; those given below
-assume the existence of a global ``DATA`` object in the context of the
-processor instance, and are provided only for the purpose of
-illustration.
-
-^^^^^^^^^^^^^^^^^^^^
-``retrieveLocale()``
-^^^^^^^^^^^^^^^^^^^^
-
-The ``retrieveLocale()`` function is used internally by the processor to
-retrieve the serialized XML of a given locale.  It takes a single RFC
-4646 compliant language tag as argument, composed of a single language
-tag (``en``) or of a language tag and region subtag (``en-US``).  The
-name of the XML document in the CSL distribution that contains the
-relevant locale data may be obtained from the ``CSL.localeRegistry``
-array.  The sample function below is provided for reference
-only.
-
-
-.. sourcecode:: js
-
-   sys.retrieveLocale = function(lang){
-	   var ret = DATA._locales[ CSL.localeRegistry[lang] ];
-	   return ret;
-   };
-
-
-
-^^^^^^^^^^^^^^^^^^
-``retrieveItem()``
-^^^^^^^^^^^^^^^^^^
-
-The ``retrieveItem()`` function is used by the processor to
-fetch individual items from storage.
-
-.. sourcecode:: js
-
-   sys.retrieveItem = function(id){
-	   return DATA._items[id];
-   };
 
 ^^^^^^^^^^^^^^^^^^^^^^
-``getAbbreviations()``
+No output for citation
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The ``getAbbreviations()`` command is invoked by the processor
-at startup, and when the ``setAbbreviations()`` command is
-invoked on the instantiated processor.  The abbreviation list
-retrieved by the processor should have the following structure:
 
-.. sourcecode:: js
-
-   ABBREVS = { 
-      "default": {
-         "container-title":{
-            "Journal of Irreproducible Results":"J. Irrep. Res."
-         },
-         "collection-title":{
-            "International Rescue Wildlife Series":"I.R. Wildlife Series"
-         },
-         "authority":{
-            "United States Patent and Trademark Office": "USPTO"
-		 },
-         "institution":{
-            "Bureau of Gaseous Unformed Stuff":"BoGUS"
-         },
-         "title": {},
-         "publisher": {},
-         "publisher-place": {},
-         "hereinafter": {}
-      };
-   };
-
-If the object above provides the abbreviation store for the system,
-an appropriate ``sys.getAbbreviations()`` function might look
-like this:
-
-.. sourcecode:: js
-
-   sys.getAbbreviations = function(name){
-      return ABBREVS[name];
-   };
 
 
 ----------
@@ -1276,19 +1354,6 @@ the processor registry, at the following locations:
 .. [#] The Latin and Cyrillic scripts are referred to here collectively
        as "Byzantine scripts", after the confluence of cultures in the first
        millenium that spanned both.
-
-
------------------
-Output Formatting
------------------
-
-The test fixtures assume HTML output, which the processor supports out
-of the box as its default mode.  It is currently the only mode
-supported in the distributed version of the code, but additional modes
-can be created by adding definitions for them to the source file ``./src/formats.js``.
-See |link| `the file itself`__ for details; it's pretty straightforward.
-
-__ http://bitbucket.org/fbennett/citeproc-js/src/tip/src/formats.js
 
 ------------
 Dirty Tricks
