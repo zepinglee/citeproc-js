@@ -948,7 +948,37 @@ to prompt the user concerning possible corrective action.
 No output for citation
 ^^^^^^^^^^^^^^^^^^^^^^
 
+When a citation processing command produces no output for a citation,
+a XX-element array object consisting of the ``citationID``, the
+index position of the citation in the target document, the ``itemID``
+of the offending reference, the index position of the reference
+in the sorted version of the citation, and an error code (always "1",
+currently) is pushed to the ``citation_errors`` array in the
+data segment of the return value.
 
+Note that ``previewCitationCluster()`` returns only a string value,
+with no data segment; citation errors are not available with this
+command.
+
+.. sourcecode:: js
+
+   [
+      {
+        bibchange: true,
+        citation_errors: [
+           "citationID_12345",
+           4,
+           "itemID_67890",
+           0,
+           1
+        ]
+      },
+      [
+         [ 1,"(Ronald Snoakes 1950)" ],
+         [ 4,"[CSL STYLE ERROR: reference with no printed form.]" ],
+         [ 5,"(Richard Snoakes 1950)" ]
+      ]
+   ]
 
 
 ----------

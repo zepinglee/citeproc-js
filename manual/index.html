@@ -1406,6 +1406,53 @@ to prompt the user concerning possible corrective action.</p>
 </div>
 <div class="section" id="no-output-for-citation">
 <h3><a class="toc-backref" href="#id78">No output for citation</a></h3>
+<p>When a citation processing command produces no output for a citation,
+a XX-element array object consisting of the <tt class="docutils literal"><span class="pre">citationID</span></tt>, the
+index position of the citation in the target document, the <tt class="docutils literal"><span class="pre">itemID</span></tt>
+of the offending reference, the index position of the reference
+in the sorted version of the citation, and an error code (always &quot;1&quot;,
+currently) is pushed to the <tt class="docutils literal"><span class="pre">citation_errors</span></tt> array in the
+data segment of the return value.</p>
+<p>Note that <tt class="docutils literal"><span class="pre">previewCitationCluster()</span></tt> returns only a string value,
+with no data segment; citation errors are not available with this
+command.</p>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td class="code"><div class="highlight"><pre><span class="p">[</span>
+   <span class="p">{</span>
+     <span class="nx">bibchange</span><span class="o">:</span> <span class="kc">true</span><span class="o">,</span>
+     <span class="nx">citation_errors</span><span class="o">:</span> <span class="p">[</span>
+        <span class="s2">&quot;citationID_12345&quot;</span><span class="o">,</span>
+        <span class="mi">4</span><span class="o">,</span>
+        <span class="s2">&quot;itemID_67890&quot;</span><span class="o">,</span>
+        <span class="mi">0</span><span class="o">,</span>
+        <span class="mi">1</span>
+     <span class="p">]</span>
+   <span class="p">}</span><span class="o">,</span>
+   <span class="p">[</span>
+      <span class="p">[</span> <span class="mi">1</span><span class="o">,</span><span class="s2">&quot;(Ronald Snoakes 1950)&quot;</span> <span class="p">]</span><span class="o">,</span>
+      <span class="p">[</span> <span class="mi">4</span><span class="o">,</span><span class="s2">&quot;[CSL STYLE ERROR: reference with no printed form.]&quot;</span> <span class="p">]</span><span class="o">,</span>
+      <span class="p">[</span> <span class="mi">5</span><span class="o">,</span><span class="s2">&quot;(Richard Snoakes 1950)&quot;</span> <span class="p">]</span>
+   <span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</td></tr></table>
+</div>
 </div>
 </div>
 </div>
