@@ -46,60 +46,42 @@
  * or the [AGPLv3] License.”
  */
 
-dojo.provide("citeproc_js.emptybib");
-doh.registerGroup("citeproc_js.emptybib",
+dojo.provide("citeproc_js.emptycite");
+doh.registerGroup("citeproc_js.emptycite",
 	[
 		function testInstantiation() {
-			var t = citeproc_js.emptybib;
+			var t = citeproc_js.emptycite;
 			var res = false;
 			try {
-				var citeproc = new CSL.Engine(t.sys, t.csl_nobib);
+				var citeproc = new CSL.Engine(t.sys, t.csl);
 				res = "Success";
 			} catch (e) {
 				res = "Failure";
 			}
 			doh.assertEqual( "Success", res );
 		},
-		function testNoBibliographyAtAll() {
-			var t = citeproc_js.emptybib;
-			var citeproc = new CSL.Engine(t.sys, t.csl_nobib);
-			citeproc.updateItems(["ITEM-1"]);
-			var res = citeproc.makeBibliography();
-			doh.assertEqual(false, res);
+		function testCiteOk() {
+		var t = citeproc_js.emptycite;
+			var citeproc = new CSL.Engine(t.sys, t.csl);
+			var res = citeproc.processCitationCluster(t.citation1, [], []);
+			doh.assertEqual(0, res[0].citation_errors.length);
 		},
-		function testEmptyBibliographyEntry() {
-			var t = citeproc_js.emptybib;
-			var citeproc = new CSL.Engine(t.sys, t.csl_hasbib);
-			citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4"]);
-			var res = citeproc.makeBibliography();
-			// One error returned, with value of [2, "ITEM-3", 1]
-			doh.assertEqual(1, res[0].bibliography_errors.length);
-			doh.assertEqual(2, res[0].bibliography_errors[0].index);
-			doh.assertEqual("ITEM-3", res[0].bibliography_errors[0].itemID);
-			doh.assertEqual(1, res[0].bibliography_errors[0].error_code);
-		},
-		function testEmptyBibliographyEntryExceptCitationNumber() {
-			var t = citeproc_js.emptybib;
-			var citeproc = new CSL.Engine(t.sys, t.csl_hasnumberedbib);
-			citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-3", "ITEM-4"]);
-			var res = citeproc.makeBibliography();
-			// One error returned, with value of [2, "ITEM-3", 1]
-			doh.assertEqual(1, res[0].bibliography_errors.length);
-			doh.assertEqual(2, res[0].bibliography_errors[0].index);
-			doh.assertEqual("ITEM-3", res[0].bibliography_errors[0].itemID);
-			doh.assertEqual(CSL.ERROR_NO_RENDERED_FORM, res[0].bibliography_errors[0].error_code);
-		},
-		function testBibliographyOk() {
-			var t = citeproc_js.emptybib;
-			var citeproc = new CSL.Engine(t.sys, t.csl_hasbib);
-			citeproc.updateItems(["ITEM-1", "ITEM-2", "ITEM-4"]);
-			var res = citeproc.makeBibliography();
-			// One error returned, with value of [2, "ITEM-3", 1]
-			doh.assertEqual(0, res[0].bibliography_errors.length);
+		function testEmptyCite() {
+		var t = citeproc_js.emptycite;
+			var citeproc = new CSL.Engine(t.sys, t.csl);
+			var res = citeproc.processCitationCluster(t.citation2, [], []);
+			// One error returned, with value of [0, "citation2", 2, "ITEM-3", 1]
+			doh.assertEqual(1, res[0].citation_errors.length);
+			doh.assertEqual(0, res[0].citation_errors[0].index);
+			doh.assertEqual(5, res[0].citation_errors[0].noteIndex);
+			doh.assertEqual("citation2", res[0].citation_errors[0].citationID);
+			doh.assertEqual(2, res[0].citation_errors[0].citationItems_pos);
+			doh.assertEqual("ITEM-3", res[0].citation_errors[0].itemID);
+			doh.assertEqual(CSL.ERROR_NO_RENDERED_FORM, res[0].citation_errors[0].error_code);
 		}
 	],
 	function () {
-		var t = citeproc_js.emptybib;
+		var t = citeproc_js.emptycite;
 		var Sys = function () {
 			var ITEMS = {
 				"ITEM-1": {
@@ -147,40 +129,33 @@ doh.registerGroup("citeproc_js.emptybib",
 			};
 		};
 		t.sys = new Sys();
-		t.csl_nobib = "<style>"
+		t.csl = "<style>"
 					+ "<citation>"
 					+ "  <layout>"
 					+ "    <text variable=\"title\"/>"
 					+ "  </layout>"
 					+ "</citation>"
 			+ "</style>";
-		t.csl_hasbib = "<style>"
-					+ "<citation>"
-					+ "  <layout>"
-					+ "    <text variable=\"title\"/>"
-					+ "  </layout>"
-					+ "</citation>"
-					+ "<bibliography>"
-					+ "  <layout>"
-					+ "    <text variable=\"title\"/>"
-					+ "  </layout>"
-					+ "</bibliography>"
-			+ "</style>";
-		t.csl_hasnumberedbib = "<style>"
-					+ "<citation>"
-					+ "  <layout>"
-					+ "    <text variable=\"title\"/>"
-					+ "  </layout>"
-					+ "</citation>"
-					+ "<bibliography>"
-					+ "  <layout>"
-					+ "    <text variable=\"citation-number\" prefix=\"[\" suffix=\"] \"/>"
-					+ "    <text variable=\"title\"/>"
-					+ "  </layout>"
-					+ "</bibliography>"
-			+ "</style>";
-		t.makeTestBib = function (ids) {
-
+		t.citation1 = {
+			citationID: "citation1",
+			citationItems: [
+				{id:"ITEM-1"}
+			],
+			properties: {
+				noteIndex: 1
+			}
+		};
+		t.citation2 = {
+			citationID: "citation2",
+			citationItems: [
+				{id:"ITEM-1"},
+				{id:"ITEM-2"},
+				{id:"ITEM-3"},
+				{id:"ITEM-4"}
+			],
+			properties: {
+				noteIndex: 5
+			}
 		};
 	},
 	function () {}
