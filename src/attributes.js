@@ -273,7 +273,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 			//print("-- VAR: "+variable);
 			flag = state.tmp.term_sibling.value();
 			if (output) {
-				if (variable !== "citation-number") {
+				if (variable !== "citation-number" || !state.tmp.area === "bibliography") {
 					state.tmp.cite_renders_content = true;
 				}
 				flag[2] = true;

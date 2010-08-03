@@ -74,6 +74,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys, disambig, oldItemIds;
 	this.debug = false;
+	this.tmp.citation_errors = [];
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
 
@@ -504,18 +505,26 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				if (key === citation.citationID) {
 					continue;
 				}
-				obj = [];
 				var mycitation = this.registry.citationreg.citationById[key];
-				// Again, citation may not exist during previewing?
-				//if (citation) {
-					obj.push(mycitation.properties.index);
-					obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems));
-					ret.push(obj);
-				//}
+				// For error reporting
+				this.tmp.citation_pos = mycitation.properties.index;
+				this.tmp.citation_note_index = mycitation.properties.noteIndex;
+				this.tmp.citation_id = mycitation.citationID;
+				obj = [];
+				obj.push(mycitation.properties.index);
+				obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems));
+				ret.push(obj);
+				this.tmp.citation_pos += 1;
 			}
 		}
 		this.tmp.taintedItemIDs = false;
 		this.tmp.taintedCitationIDs = false;
+
+		// For error reporting again
+		this.tmp.citation_pos = citation.properties.index;
+		this.tmp.citation_note_index = citation.properties.noteIndex;
+		this.tmp.citation_id = citation.citationID;
+
 		obj = [];
 		obj.push(citationsPre.length);
 		obj.push(this.process_CitationCluster.call(this, sortedItems));
@@ -540,6 +549,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		// a citation index number, and the second the text to be inserted.
 		//
 	}
+	return_data.citation_errors = this.tmp.citation_errors.slice();
 	return [return_data, ret];
 };
 
@@ -568,6 +578,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
 		}
 		inputList.sort(this.citation.srt.compareCompositeKeys);
 	}
+	this.tmp.citation_errors = [];
 	this.parallel.StartCitation(inputList);
 	str = CSL.getCitationCluster.call(this, inputList);
 	return str;
@@ -624,7 +635,7 @@ CSL.getSpliceDelimiter = function (last_collapsed) {
  * flexible inter-cite splicing.
  */
 CSL.getCitationCluster = function (inputList, citationID) {
-	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc;
+	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object;
 	txt_esc = CSL.Output.Formats[this.opt.mode].text_escape;
 	this.tmp.area = "citation";
 	delimiter = "";
@@ -653,7 +664,18 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			this.tmp.term_predecessor = false;
 			CSL.getCite.call(this, Item, item);
 		}
-
+		// Make a note of any errors
+		if (!this.tmp.cite_renders_content) {
+			error_object = {
+				citationID: this.tmp.citation_id,
+				index: this.tmp.citation_pos,
+				noteIndex: this.tmp.citation_note_index,
+				itemID: Item.id,
+				citationItems_pos: pos,
+				error_code: CSL.ERROR_NO_RENDERED_FORM
+			};
+			this.tmp.citation_errors.push(error_object);
+		}
 		if (pos === (inputList.length - 1)) {
 			this.parallel.ComposeSet();
 		}
@@ -779,7 +801,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
  * entries in a bibliography.)
  */
 CSL.getCite = function (Item, item, prevItemID) {
-	var next;
+	var next, error_object;
 	this.tmp.cite_renders_content = false;
 	this.parallel.StartCite(Item, item, prevItemID);
 	CSL.citeStart.call(this, Item);
@@ -789,9 +811,15 @@ CSL.getCite = function (Item, item, prevItemID) {
     }
 	CSL.citeEnd.call(this, Item);
 	this.parallel.CloseCite(this);
-	if (!this.tmp.cite_renders_content) {
+	// Odd place for this, but it seems to fit here
+	if (!this.tmp.cite_renders_content && !this.tmp.just_looking) {
 		if (this.tmp.area === "bibliography") {
-			this.tmp.bibliography_errors.push([this.tmp.bibliography_pos, Item.id, 1]);
+			error_object = {
+				index: this.tmp.bibliography_pos,
+				itemID: Item.id,
+				error_code: CSL.ERROR_NO_RENDERED_FORM
+			};
+			this.tmp.bibliography_errors.push(error_object);
 		}
 	}
 	return Item.id;

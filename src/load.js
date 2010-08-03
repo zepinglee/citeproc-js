@@ -100,6 +100,8 @@ var CSL = {
 		print(str);
 	},
 
+	ERROR_NO_RENDERED_FORM: 1,
+
 	PREVIEW: "Just for laughs.",
 	ASSUME_ALL_ITEMS_REGISTERED: 2,
 
