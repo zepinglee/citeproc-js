@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a95##
+   version 1.00##a96##
 
 .. class:: info-date
 
@@ -737,9 +737,9 @@ input examples, is as follows:
 
    var mybib = cp.makeBibliography(myarg);
 
-####################
-Outputting citations
-####################
+###################
+Output of citations
+###################
 
 
 
@@ -893,7 +893,7 @@ situations:
 3. When a `citation command`__ is used, but no element rendered for a
    particular cite produces any output.
 
-__ `Outputting citations`_
+__ `Output of citations`_
 
 The processor handles these three cases as described below.
 
@@ -911,11 +911,11 @@ No item output for bibliography entry
 
 When the return value of the `makeBibliography()`_ command contains
 entries that produce no output other than for the (automatically
-generated) ``citation-number`` variable, a three-element array object
-consisting of the ``itemID`` of each offending entry, its index
-position in the array of strings returned by ``makeBibliography()``,
-and an error code (always "1", currently) is pushed to
-``bibliography_errors`` in the data segment of the return value:
+generated) ``citation-number`` variable, an error object with
+ID and position information on the offending entry,
+and a bitwise error code (always CSL.ERROR_NO_RENDERED_FORM, currently)
+is pushed to the ``bibliography_errors`` array in the data segment of the 
+return object:
 
 .. sourcecode:: js
 
@@ -929,7 +929,11 @@ and an error code (always "1", currently) is pushed to
          bibstart: "<div class=\"csl-bib-body\">\n",
          bibend: "</div>",
          bibliography_errors: [
-            [2, "ITEM-2", 1]
+            {
+               index: 2,
+               itemID: "ITEM-2",
+               error_code: CSL.ERROR_NO_RENDERED_FORM
+            }
          ]
       },
       [
@@ -949,12 +953,10 @@ No output for citation
 ^^^^^^^^^^^^^^^^^^^^^^
 
 When a citation processing command produces no output for a citation,
-a XX-element array object consisting of the ``citationID``, the
-index position of the citation in the target document, the ``itemID``
-of the offending reference, the index position of the reference
-in the sorted version of the citation, and an error code (always "1",
-currently) is pushed to the ``citation_errors`` array in the
-data segment of the return value.
+an error object with ID and position information on the offending
+cite, and a bitwise error code (always
+``CSL.ERROR_NO_RENDERED_FORM``, currently) is pushed to the 
+``citation_errors`` array in the data segment of the return object.
 
 Note that ``previewCitationCluster()`` returns only a string value,
 with no data segment; citation errors are not available with this
@@ -966,11 +968,14 @@ command.
       {
         bibchange: true,
         citation_errors: [
-           "citationID_12345",
-           4,
-           "itemID_67890",
-           0,
-           1
+           {
+              citationID: "citationID_12345",
+              index: 4,
+              noteIndex: 25,
+              itemID: "itemID_67890",
+              citationItem_pos: 0,
+              error_code: CSL.ERROR_NO_RENDERED_FORM
+           }
         ]
       },
       [

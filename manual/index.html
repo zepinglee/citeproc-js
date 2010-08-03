@@ -334,8 +334,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
 <p class="fixed"><a class="reference external" href="http://citationstyles.org/">citationstyles.org</a></p>
-<p class="info-version">version 1.00<sub>a94</sub></p>
-<p class="info-date">28 July 2010</p>
+<p class="info-version">version 1.00<sub>a96</sub></p>
+<p class="info-date">3 August 2010</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
 <dd><ul class="first last simple">
@@ -401,7 +401,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#outputting-citations" id="id71">Outputting citations</a><ul>
+<li><a class="reference internal" href="#output-of-citations" id="id71">Output of citations</a><ul>
 <li><a class="reference internal" href="#processcitationcluster" id="id72"><tt class="docutils literal"><span class="pre">processCitationCluster()</span></tt></a></li>
 <li><a class="reference internal" href="#appendcitationcluster" id="id73"><tt class="docutils literal"><span class="pre">appendCitationCluster()</span></tt></a></li>
 <li><a class="reference internal" href="#previewcitationcluster" id="id74"><tt class="docutils literal"><span class="pre">previewCitationCluster()</span></tt></a></li>
@@ -431,38 +431,39 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 </ul>
 </li>
 <li><a class="reference internal" href="#dirty-tricks" id="id88">Dirty Tricks</a><ul>
-<li><a class="reference internal" href="#input-data-rescue" id="id89">Input data rescue</a><ul>
-<li><a class="reference internal" href="#id28" id="id90">Names</a><ul>
-<li><a class="reference internal" href="#non-dropping-particle" id="id91"><tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt></a></li>
-<li><a class="reference internal" href="#dropping-particle" id="id92"><tt class="docutils literal"><span class="pre">dropping-particle</span></tt></a></li>
-<li><a class="reference internal" href="#suffix-ordinary" id="id93"><tt class="docutils literal"><span class="pre">suffix</span></tt> (ordinary)</a></li>
-<li><a class="reference internal" href="#suffix-forced-comma" id="id94"><tt class="docutils literal"><span class="pre">suffix</span></tt> (forced comma)</a></li>
-<li><a class="reference internal" href="#particles-as-part-of-the-last-name" id="id95">Particles as part of the last name</a></li>
+<li><a class="reference internal" href="#supplementary-fields" id="id89">Supplementary fields</a></li>
+<li><a class="reference internal" href="#input-data-rescue" id="id90">Input data rescue</a><ul>
+<li><a class="reference internal" href="#id28" id="id91">Names</a><ul>
+<li><a class="reference internal" href="#non-dropping-particle" id="id92"><tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt></a></li>
+<li><a class="reference internal" href="#dropping-particle" id="id93"><tt class="docutils literal"><span class="pre">dropping-particle</span></tt></a></li>
+<li><a class="reference internal" href="#suffix-ordinary" id="id94"><tt class="docutils literal"><span class="pre">suffix</span></tt> (ordinary)</a></li>
+<li><a class="reference internal" href="#suffix-forced-comma" id="id95"><tt class="docutils literal"><span class="pre">suffix</span></tt> (forced comma)</a></li>
+<li><a class="reference internal" href="#particles-as-part-of-the-last-name" id="id96">Particles as part of the last name</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id30" id="id96">Dates</a></li>
+<li><a class="reference internal" href="#id30" id="id97">Dates</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#processor-control" id="id97">Processor control</a><ul>
-<li><a class="reference internal" href="#author-only" id="id98"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
-<li><a class="reference internal" href="#suppress-author" id="id99"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
-<li><a class="reference internal" href="#automating-text-insertions" id="id100">Automating text insertions</a></li>
+<li><a class="reference internal" href="#processor-control" id="id98">Processor control</a><ul>
+<li><a class="reference internal" href="#author-only" id="id99"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></li>
+<li><a class="reference internal" href="#suppress-author" id="id100"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></li>
+<li><a class="reference internal" href="#automating-text-insertions" id="id101">Automating text insertions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id36" id="id101">Multi-lingual content</a><ul>
-<li><a class="reference internal" href="#the-default-locale-declaration" id="id102">The <tt class="docutils literal"><span class="pre">default-locale</span></tt> declaration</a></li>
-<li><a class="reference internal" href="#title" id="id103">Title</a></li>
-<li><a class="reference internal" href="#id39" id="id104">Names</a></li>
+<li><a class="reference internal" href="#id36" id="id102">Multi-lingual content</a><ul>
+<li><a class="reference internal" href="#the-default-locale-declaration" id="id103">The <tt class="docutils literal"><span class="pre">default-locale</span></tt> declaration</a></li>
+<li><a class="reference internal" href="#title" id="id104">Title</a></li>
+<li><a class="reference internal" href="#id39" id="id105">Names</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#test-suite" id="id105">Test Suite</a><ul>
-<li><a class="reference internal" href="#running-the-test-suite" id="id106">Running the test suite</a></li>
-<li><a class="reference internal" href="#fixture-layout" id="id107">Fixture layout</a></li>
+<li><a class="reference internal" href="#test-suite" id="id106">Test Suite</a><ul>
+<li><a class="reference internal" href="#running-the-test-suite" id="id107">Running the test suite</a></li>
+<li><a class="reference internal" href="#fixture-layout" id="id108">Fixture layout</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#live-demo" id="id108">Live Demo</a></li>
+<li><a class="reference internal" href="#live-demo" id="id109">Live Demo</a></li>
 </ul>
 </div>
 <hr class="docutils" />
@@ -1176,8 +1177,8 @@ for which that field is missing or has a nil value.</p>
 </div>
 </div>
 </div>
-<div class="section" id="outputting-citations">
-<h2><a class="toc-backref" href="#id71">Outputting citations</a></h2>
+<div class="section" id="output-of-citations">
+<h2><a class="toc-backref" href="#id71">Output of citations</a></h2>
 <p>The available citation commands are:</p>
 <ul class="simple">
 <li><a class="reference internal" href="#appendcitationcluster">appendCitationCluster()</a></li>
@@ -1339,7 +1340,7 @@ situations:</p>
 and the configured style contains no <tt class="docutils literal"><span class="pre">bibliography</span></tt> node;</li>
 <li>When <a class="reference internal" href="#makebibliography">makeBibliography()</a> is run, and no variable other than
 <tt class="docutils literal"><span class="pre">citation-number</span></tt> produces output for an individual entry; or</li>
-<li>When a <a class="reference internal" href="#outputting-citations">citation command</a> is used, but no element rendered for a
+<li>When a <a class="reference internal" href="#output-of-citations">citation command</a> is used, but no element rendered for a
 particular cite produces any output.</li>
 </ol>
 <p>The processor handles these three cases as described below.</p>
@@ -1353,11 +1354,75 @@ a value of <tt class="docutils literal"><span class="pre">false</span></tt>.</p>
 <h3><a class="toc-backref" href="#id77">No item output for bibliography entry</a></h3>
 <p>When the return value of the <a class="reference internal" href="#makebibliography">makeBibliography()</a> command contains
 entries that produce no output other than for the (automatically
-generated) <tt class="docutils literal"><span class="pre">citation-number</span></tt> variable, a three-element array object
-consisting of the <tt class="docutils literal"><span class="pre">itemID</span></tt> of each offending entry, its index
-position in the array of strings returned by <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt>,
-and an error code (always &quot;1&quot;, currently) is pushed to
-<tt class="docutils literal"><span class="pre">bibliography_errors</span></tt> in the data segment of the return value:</p>
+generated) <tt class="docutils literal"><span class="pre">citation-number</span></tt> variable, an error object with
+ID and position information on the offending entry,
+and a bitwise error code (always CSL.ERROR_NO_RENDERED_FORM, currently)
+is pushed to the <tt class="docutils literal"><span class="pre">bibliography_errors</span></tt> array in the data segment of the
+return object:</p>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></td><td class="code"><div class="highlight"><pre><span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nx">maxoffset</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
+      <span class="nx">entryspacing</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
+      <span class="nx">linespacing</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
+      <span class="nx">hangingindent</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
+      <span class="nx">second</span><span class="o">-</span><span class="nx">field</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="kc">false</span><span class="o">,</span>
+      <span class="nx">bibstart</span><span class="o">:</span> <span class="s2">&quot;&lt;div class=\&quot;csl-bib-body\&quot;&gt;\n&quot;</span><span class="o">,</span>
+      <span class="nx">bibend</span><span class="o">:</span> <span class="s2">&quot;&lt;/div&gt;&quot;</span><span class="o">,</span>
+      <span class="nx">bibliography_errors</span><span class="o">:</span> <span class="p">[</span>
+         <span class="p">{</span>
+            <span class="nx">index</span><span class="o">:</span> <span class="mi">2</span><span class="o">,</span>
+            <span class="nx">itemID</span><span class="o">:</span> <span class="s2">&quot;ITEM-2&quot;</span><span class="o">,</span>
+            <span class="nx">error_code</span><span class="o">:</span> <span class="nx">CSL</span><span class="p">.</span><span class="nx">ERROR_NO_RENDERED_FORM</span>
+         <span class="p">}</span>
+      <span class="p">]</span>
+   <span class="p">}</span><span class="o">,</span>
+   <span class="p">[</span>
+      <span class="s2">&quot;[1] Snoakes, Big Book (2000)&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;[2] Doe, Bigger Book (2001)&quot;</span><span class="o">,</span>
+      <span class="s2">&quot;[3] &quot;</span><span class="o">,</span>
+      <span class="s2">&quot;[4] Roe, Her Book (2002)&quot;</span>
+   <span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</td></tr></table>
+</div>
+<p>The calling application may use the information in <tt class="docutils literal"><span class="pre">bibliography_errors</span></tt>
+to prompt the user concerning possible corrective action.</p>
+</div>
+<div class="section" id="no-output-for-citation">
+<h3><a class="toc-backref" href="#id78">No output for citation</a></h3>
+<p>When a citation processing command produces no output for a citation,
+an error object with ID and position information on the offending
+cite, and a bitwise error code (always
+<tt class="docutils literal"><span class="pre">CSL.ERROR_NO_RENDERED_FORM</span></tt>, currently) is pushed to the
+<tt class="docutils literal"><span class="pre">citation_errors</span></tt> array in the data segment of the return object.</p>
+<p>Note that <tt class="docutils literal"><span class="pre">previewCitationCluster()</span></tt> returns only a string value,
+with no data segment; citation errors are not available with this
+command.</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre> 1
  2
@@ -1380,68 +1445,16 @@ and an error code (always &quot;1&quot;, currently) is pushed to
 19
 20</pre></td><td class="code"><div class="highlight"><pre><span class="p">[</span>
    <span class="p">{</span>
-      <span class="nx">maxoffset</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
-      <span class="nx">entryspacing</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
-      <span class="nx">linespacing</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
-      <span class="nx">hangingindent</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
-      <span class="nx">second</span><span class="o">-</span><span class="nx">field</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="kc">false</span><span class="o">,</span>
-      <span class="nx">bibstart</span><span class="o">:</span> <span class="s2">&quot;&lt;div class=\&quot;csl-bib-body\&quot;&gt;\n&quot;</span><span class="o">,</span>
-      <span class="nx">bibend</span><span class="o">:</span> <span class="s2">&quot;&lt;/div&gt;&quot;</span><span class="o">,</span>
-      <span class="nx">bibliography_errors</span><span class="o">:</span> <span class="p">[</span>
-         <span class="p">[</span><span class="mi">2</span><span class="o">,</span> <span class="s2">&quot;ITEM-2&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="p">]</span>
-      <span class="p">]</span>
-   <span class="p">}</span><span class="o">,</span>
-   <span class="p">[</span>
-      <span class="s2">&quot;[1] Snoakes, Big Book (2000)&quot;</span><span class="o">,</span>
-      <span class="s2">&quot;[2] Doe, Bigger Book (2001)&quot;</span><span class="o">,</span>
-      <span class="s2">&quot;[3] &quot;</span><span class="o">,</span>
-      <span class="s2">&quot;[4] Roe, Her Book (2002)&quot;</span>
-   <span class="p">]</span>
-<span class="p">]</span>
-</pre></div>
-</td></tr></table>
-</div>
-<p>The calling application may use the information in <tt class="docutils literal"><span class="pre">bibliography_errors</span></tt>
-to prompt the user concerning possible corrective action.</p>
-</div>
-<div class="section" id="no-output-for-citation">
-<h3><a class="toc-backref" href="#id78">No output for citation</a></h3>
-<p>When a citation processing command produces no output for a citation,
-a XX-element array object consisting of the <tt class="docutils literal"><span class="pre">citationID</span></tt>, the
-index position of the citation in the target document, the <tt class="docutils literal"><span class="pre">itemID</span></tt>
-of the offending reference, the index position of the reference
-in the sorted version of the citation, and an error code (always &quot;1&quot;,
-currently) is pushed to the <tt class="docutils literal"><span class="pre">citation_errors</span></tt> array in the
-data segment of the return value.</p>
-<p>Note that <tt class="docutils literal"><span class="pre">previewCitationCluster()</span></tt> returns only a string value,
-with no data segment; citation errors are not available with this
-command.</p>
-<div class="codeblock js">
-<table class="highlighttable"><tr><td class="linenos"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17</pre></td><td class="code"><div class="highlight"><pre><span class="p">[</span>
-   <span class="p">{</span>
      <span class="nx">bibchange</span><span class="o">:</span> <span class="kc">true</span><span class="o">,</span>
      <span class="nx">citation_errors</span><span class="o">:</span> <span class="p">[</span>
-        <span class="s2">&quot;citationID_12345&quot;</span><span class="o">,</span>
-        <span class="mi">4</span><span class="o">,</span>
-        <span class="s2">&quot;itemID_67890&quot;</span><span class="o">,</span>
-        <span class="mi">0</span><span class="o">,</span>
-        <span class="mi">1</span>
+        <span class="p">{</span>
+           <span class="nx">citationID</span><span class="o">:</span> <span class="s2">&quot;citationID_12345&quot;</span><span class="o">,</span>
+           <span class="nx">index</span><span class="o">:</span> <span class="mi">4</span><span class="o">,</span>
+           <span class="nx">noteIndex</span><span class="o">:</span> <span class="mi">25</span><span class="o">,</span>
+           <span class="nx">itemID</span><span class="o">:</span> <span class="s2">&quot;itemID_67890&quot;</span><span class="o">,</span>
+           <span class="nx">citationItem_pos</span><span class="o">:</span> <span class="mi">0</span><span class="o">,</span>
+           <span class="nx">error_code</span><span class="o">:</span> <span class="nx">CSL</span><span class="p">.</span><span class="nx">ERROR_NO_RENDERED_FORM</span>
+        <span class="p">}</span>
      <span class="p">]</span>
    <span class="p">}</span><span class="o">,</span>
    <span class="p">[</span>
@@ -1957,10 +1970,36 @@ millenium that spanned both.</td></tr>
 are not properly speaking a part of the CSL specification.  The
 functionality described here may or may not be found in other CSL 1.0
 compliant processors, when they arrive on the scene.</p>
+<div class="section" id="supplementary-fields">
+<h2><a class="toc-backref" href="#id89">Supplementary fields</a></h2>
+<p>Where the calling application provides a user interface for adding and
+editing bibliographic items, a limited set of fields is typically
+provided for each if the item types recognized by the
+application. Fields that map to valid CSL variables needed for a
+particular type of reference may not be available.</p>
+<p>If the calling application provides a mapping of the <tt class="docutils literal"><span class="pre">note</span></tt> variable
+to all types, the processor can parse missing fields out of this
+variable, for use in rendering citations. This facility is intended
+only for testing purposes.  It provides a means of illustrating
+citation use cases, with a view to requesting an adjustment to the
+field lists or the user interface of the calling application.  It should
+not be relied upon as a permanent workaround in production data;
+and it should <em>never</em> be used to add variables that are not in the
+CSL specification.</p>
+<p>The syntax for adding supplementary fields via the <tt class="docutils literal"><span class="pre">note</span></tt> variable
+is as follows:</p>
+<div class="codeblock js">
+<table class="highlighttable"><tr><td class="linenos"><pre>1</pre></td><td class="code"><div class="highlight"><pre><span class="p">{</span><span class="o">:</span><span class="nx">authority</span><span class="o">:</span><span class="nx">Superior</span> <span class="nx">Court</span> <span class="nx">of</span> <span class="nx">California</span><span class="p">}{</span><span class="o">:</span><span class="nx">section</span><span class="o">:</span><span class="nx">A</span><span class="p">}</span>
+</pre></div>
+</td></tr></table>
+</div>
+<p>Supplementary variables are read by the processor as flat strings, so names
+and date parsing will not work with them.</p>
+</div>
 <div class="section" id="input-data-rescue">
-<h2><a class="toc-backref" href="#id89">Input data rescue</a></h2>
+<h2><a class="toc-backref" href="#id90">Input data rescue</a></h2>
 <div class="section" id="id28">
-<span id="dirty-names"></span><h3><a class="toc-backref" href="#id90">Names</a></h3>
+<span id="dirty-names"></span><h3><a class="toc-backref" href="#id91">Names</a></h3>
 <p>Systems that use a simple two-field entry format can encode
 <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt>, <tt class="docutils literal"><span class="pre">dropping-particle</span></tt> and <tt class="docutils literal"><span class="pre">suffix</span></tt> name
 sub-elements by writing them appropriately in the <tt class="docutils literal"><span class="pre">family</span></tt> or
@@ -1970,7 +2009,7 @@ and convert them to the explicit form (as documented under <a class="reference i
 → <a class="reference internal" href="#clean-names">Names</a> above) before rendering.  With the <tt class="docutils literal"><span class="pre">parse-names</span></tt> flag,
 sub-elements are recognized as follows.</p>
 <div class="section" id="non-dropping-particle">
-<h4><a class="toc-backref" href="#id91"><tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt></a></h4>
+<h4><a class="toc-backref" href="#id92"><tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt></a></h4>
 <p>A string at the beginning of the <tt class="docutils literal"><span class="pre">family</span></tt> field consisting
 of spaces and lowercase roman or Cyrillic characters will
 be treated as a <tt class="docutils literal"><span class="pre">non-dropping-particle</span></tt>.</p>
@@ -1993,7 +2032,7 @@ be treated as a <tt class="docutils literal"><span class="pre">non-dropping-part
 </div>
 </div>
 <div class="section" id="dropping-particle">
-<h4><a class="toc-backref" href="#id92"><tt class="docutils literal"><span class="pre">dropping-particle</span></tt></a></h4>
+<h4><a class="toc-backref" href="#id93"><tt class="docutils literal"><span class="pre">dropping-particle</span></tt></a></h4>
 <p>A string at the end of the <tt class="docutils literal"><span class="pre">given</span></tt> name field consisting
 of spaces and lowercase roman or Cyrillic characters will
 be treated as a <tt class="docutils literal"><span class="pre">dropping-particle</span></tt>.</p>
@@ -2016,7 +2055,7 @@ be treated as a <tt class="docutils literal"><span class="pre">dropping-particle
 </div>
 </div>
 <div class="section" id="suffix-ordinary">
-<h4><a class="toc-backref" href="#id93"><tt class="docutils literal"><span class="pre">suffix</span></tt> (ordinary)</a></h4>
+<h4><a class="toc-backref" href="#id94"><tt class="docutils literal"><span class="pre">suffix</span></tt> (ordinary)</a></h4>
 <p>Content following a comma in the <tt class="docutils literal"><span class="pre">given</span></tt> name field
 will be parse out as a name <tt class="docutils literal"><span class="pre">suffix</span></tt>.</p>
 <div class="codeblock js">
@@ -2046,7 +2085,7 @@ will be parse out as a name <tt class="docutils literal"><span class="pre">suffi
 </div>
 </div>
 <div class="section" id="suffix-forced-comma">
-<h4><a class="toc-backref" href="#id94"><tt class="docutils literal"><span class="pre">suffix</span></tt> (forced comma)</a></h4>
+<h4><a class="toc-backref" href="#id95"><tt class="docutils literal"><span class="pre">suffix</span></tt> (forced comma)</a></h4>
 <p>Modern typographical convention does not place a
 comma between suffixes such as &quot;Jr.&quot; and the last
 name, when rendering the name in normal order:
@@ -2073,7 +2112,7 @@ after the comma:</p>
 </div>
 </div>
 <div class="section" id="particles-as-part-of-the-last-name">
-<h4><a class="toc-backref" href="#id95">Particles as part of the last name</a></h4>
+<h4><a class="toc-backref" href="#id96">Particles as part of the last name</a></h4>
 <p>The particles preceding some names should be treated
 as part of the last name, depending on the cultural
 heritage and personal preferences of the individual.
@@ -2100,7 +2139,7 @@ name field content in double-quotes:</p>
 </div>
 </div>
 <div class="section" id="id30">
-<span id="dirty-dates"></span><h3><a class="toc-backref" href="#id96">Dates</a></h3>
+<span id="dirty-dates"></span><h3><a class="toc-backref" href="#id97">Dates</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> processor contains its own internal
 parsing code for raw date strings.  Clients may take advantage of the
 processor's internal parser by supplying date strings as a single
@@ -2123,13 +2162,13 @@ above under <a class="reference internal" href="#data-input">Data Input</a> → 
 </div>
 </div>
 <div class="section" id="processor-control">
-<h2><a class="toc-backref" href="#id97">Processor control</a></h2>
+<h2><a class="toc-backref" href="#id98">Processor control</a></h2>
 <p>In ordinary operation, the processor generates citation strings
 suitable for a given position in the document.  To support some use
 cases, the processor is capable of delivering special-purpose
 fragments of a citation.</p>
 <div class="section" id="author-only">
-<h3><a class="toc-backref" href="#id98"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id99"><tt class="docutils literal"><span class="pre">author-only</span></tt></a></h3>
 <p>When the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command (not documented here) is
 invoked with a non-nil <tt class="docutils literal"><span class="pre">author-only</span></tt> element, everything but the
 author name in a cite is suppressed.  The name is returned without
@@ -2148,7 +2187,7 @@ without printing the cite itself, is a useless thing to do.
 And if that were the end of the story, you would be right ...</p>
 </div>
 <div class="section" id="suppress-author">
-<h3><a class="toc-backref" href="#id99"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
+<h3><a class="toc-backref" href="#id100"><tt class="docutils literal"><span class="pre">suppress-author</span></tt></a></h3>
 <p>To suppress the rendering of names in a cite, include a <tt class="docutils literal"><span class="pre">suppress-author</span></tt>
 element with a non-nil value in the supplementary data:</p>
 <div class="codeblock js">
@@ -2164,7 +2203,7 @@ element with a non-nil value in the supplementary data:</p>
 combination with the <tt class="docutils literal"><span class="pre">author-only</span></tt> element, as described below.</p>
 </div>
 <div class="section" id="automating-text-insertions">
-<h3><a class="toc-backref" href="#id100">Automating text insertions</a></h3>
+<h3><a class="toc-backref" href="#id101">Automating text insertions</a></h3>
 <p>Calls to the <tt class="docutils literal"><span class="pre">makeCitationCluster()</span></tt> command with the <tt class="docutils literal"><span class="pre">author-only</span></tt>
 and to <tt class="docutils literal"><span class="pre">processCitationCluster()</span></tt> or <tt class="docutils literal"><span class="pre">appendCitationCluster()</span></tt> with the
 <tt class="docutils literal"><span class="pre">suppress-author</span></tt> control elements can be used to produce
@@ -2248,7 +2287,7 @@ elements are in the processor test fixtures in the
 </div>
 </div>
 <div class="section" id="id36">
-<span id="multi-lingual-content"></span><h2><a class="toc-backref" href="#id101">Multi-lingual content</a></h2>
+<span id="multi-lingual-content"></span><h2><a class="toc-backref" href="#id102">Multi-lingual content</a></h2>
 <p>The version of <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> described by this manual incorporates
 an experimental mechanism for supporting cross-lingual and
 mixed-language citation styles, such as 我妻栄 [Wagatsuma Sakae],
@@ -2259,7 +2298,7 @@ citation management, it provides a platform for proof of concept, and
 for the development of styles to support more robust multilingual support
 when it arrives.</p>
 <div class="section" id="the-default-locale-declaration">
-<h3><a class="toc-backref" href="#id102">The <tt class="docutils literal"><span class="pre">default-locale</span></tt> declaration</a></h3>
+<h3><a class="toc-backref" href="#id103">The <tt class="docutils literal"><span class="pre">default-locale</span></tt> declaration</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">style</span></tt> tag in a CSL style may contain a <tt class="docutils literal"><span class="pre">default-locale</span></tt> attribute.</p>
 <!-- The clothesline construct below removes the hint box from the
 normal flow, so that it overlays the code block below.  This
@@ -2382,7 +2421,7 @@ language is available (as will normally be the case for an ordinary
 Zotero data store).</p>
 </div>
 <div class="section" id="title">
-<h3><a class="toc-backref" href="#id103">Title</a></h3>
+<h3><a class="toc-backref" href="#id104">Title</a></h3>
 <p>For titles, alternative representations are appended
 directly to the field content, separated by the appropriate
 language tag with a leading and trailing colon:</p>
@@ -2395,7 +2434,7 @@ language tag with a leading and trailing colon:</p>
 </div>
 </div>
 <div class="section" id="id39">
-<h3><a class="toc-backref" href="#id104">Names</a></h3>
+<h3><a class="toc-backref" href="#id105">Names</a></h3>
 <p>For personal names, alternative representations should be presented
 as separate &quot;name&quot; entries, immediately following the original
 for the name element to which they apply.  For example:</p>
@@ -2443,7 +2482,7 @@ set on them, to preserve their original formatting behavior.</p>
 </div>
 </div>
 <div class="section" id="test-suite">
-<h1><a class="toc-backref" href="#id105">Test Suite</a></h1>
+<h1><a class="toc-backref" href="#id106">Test Suite</a></h1>
 <div class="admonition-important admonition">
 <p class="first admonition-title">Important</p>
 <p class="last">Note that the standard CSL test fixtures are not distributed
@@ -2459,7 +2498,7 @@ machine-friendly form (JSON), and by preparing an appropriate Javascript
 execution wrapper for each.  These operations are performed automatically
 by the top-level test runner script that ships with the sources.</p>
 <div class="section" id="running-the-test-suite">
-<h2><a class="toc-backref" href="#id106">Running the test suite</a></h2>
+<h2><a class="toc-backref" href="#id107">Running the test suite</a></h2>
 <p>Tests are controlled by the <tt class="docutils literal"><span class="pre">./test.py</span></tt> script in the root
 directory of the archive.  To run all standard tests in the suite using
 the <tt class="docutils literal"><span class="pre">rhino</span></tt> interpreted shipped with the processor, use
@@ -2499,13 +2538,13 @@ development environment.  The sources for <tt class="docutils literal"><span cla
 After installation, adjust the path to the <tt class="docutils literal"><span class="pre">jshost</span></tt> utility in <tt class="docutils literal"><span class="pre">./tests/config/test.cnf</span></tt>.</p>
 </div>
 <div class="section" id="fixture-layout">
-<h2><a class="toc-backref" href="#id107">Fixture layout</a></h2>
+<h2><a class="toc-backref" href="#id108">Fixture layout</a></h2>
 <p>For infomation on the layout of the test fixtures, see
 the <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-test.html">CSL Test Suite</a> manual.</p>
 </div>
 </div>
 <div class="section" id="live-demo">
-<h1><a class="toc-backref" href="#id108">Live Demo</a></h1>
+<h1><a class="toc-backref" href="#id109">Live Demo</a></h1>
 <p>When accessed using a Javascript-enabled browser with E4X support
 (such as <img alt="link" src="link.png" /> <a class="reference external" href="http://www.mozilla.com/">Firefox</a>), the <tt class="docutils literal"><span class="pre">./demo/demo.html</span></tt> file in the source archive
 (or <img alt="link" src="link.png" /> <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html">online</a>) will invoke the processor to render a few citations.  The Javascript
