@@ -152,6 +152,3 @@ doh.registerGroup("citeproc_js.queue",
 
 	}
 );
-
-var x = [
-]

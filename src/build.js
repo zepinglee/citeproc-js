@@ -350,6 +350,9 @@ CSL.Engine.prototype.getTerm = function (term, form, plural) {
 	if (typeof ret === "undefined") {
 		ret = CSL.Engine.getField(CSL.STRICT, CSL.locale[this.opt.lang].terms, term, form, plural);
 	}
+	if (ret) {
+		this.tmp.cite_renders_content = true;
+	}
 	return ret;
 };
 

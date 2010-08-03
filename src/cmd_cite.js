@@ -653,18 +653,10 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			this.tmp.term_predecessor = false;
 			CSL.getCite.call(this, Item, item);
 		}
-		// ZZZZZZ:
-		//print("parallel is: "+this.registry.registry[Item.id].parallel);
-		//print("parallel is: "+Item.id);
 
 		if (pos === (inputList.length - 1)) {
 			this.parallel.ComposeSet();
 		}
-
-		//print("-- item: "+Item.id);
-		//for (var x in this.registry.registry[Item.id]) {
-		//	print("  "+x+": "+this.registry.registry[Item.id][x]);
-		//}
 
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed);
 		if (item && item["author-only"]) {
@@ -783,11 +775,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
  * the top-level list in the relevant *.opt.output
  * stack, as a list item consisting of a single string.
  *
- * (This might be dual-purposed for generating individual
+ * (This is dual-purposed for generating individual
  * entries in a bibliography.)
  */
 CSL.getCite = function (Item, item, prevItemID) {
 	var next;
+	this.tmp.cite_renders_content = false;
 	this.parallel.StartCite(Item, item, prevItemID);
 	CSL.citeStart.call(this, Item);
 	next = 0;
@@ -796,6 +789,11 @@ CSL.getCite = function (Item, item, prevItemID) {
     }
 	CSL.citeEnd.call(this, Item);
 	this.parallel.CloseCite(this);
+	if (!this.tmp.cite_renders_content) {
+		if (this.tmp.area === "bibliography") {
+			this.tmp.bibliography_errors.push([this.tmp.bibliography_pos, Item.id, 1]);
+		}
+	}
 	return Item.id;
 };
 

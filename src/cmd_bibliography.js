@@ -47,8 +47,12 @@
  */
 
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
-	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings;
+	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings, bibliography_errors;
 	debug = false;
+	// API change: added in version 1.0.51
+	if (!this.bibliography.tokens.length) {
+		return false;
+	}
 	if ("string" === typeof bibsection ) {
 		this.opt.citation_number_slug = bibsection;
 		bibsection = false;
@@ -82,7 +86,8 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 		"entryspacing": this.bibliography.opt["entry-spacing"],
 		"linespacing": this.bibliography.opt["line-spacing"],
 		"second-field-align": false,
-		"entry_ids": entry_ids
+		"entry_ids": entry_ids,
+		"bibliography_errors": this.tmp.bibliography_errors.slice()
 	};
 	if (this.bibliography.opt["second-field-align"]) {
 		params["second-field-align"] = this.bibliography.opt["second-field-align"];
@@ -114,6 +119,8 @@ CSL.getBibliographyEntries = function (bibsection) {
 	ret = [];
 	this.tmp.area = "bibliography";
 	this.tmp.last_rendered_name = false;
+	this.tmp.bibliography_errors = [];
+	this.tmp.bibliography_pos = 0;
 	input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	function eval_string(a, b) {
@@ -255,6 +262,9 @@ CSL.getBibliographyEntries = function (bibsection) {
 			entry_item_ids.push(CSL.getCite.call(this, item));
 			//skips[item.id] = true;
 		}
+
+		this.tmp.bibliography_pos += 1;
+
 		all_item_ids.push(entry_item_ids);
 		//
 		// XXX: loop to render parallels goes here

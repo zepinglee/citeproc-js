@@ -273,25 +273,15 @@ CSL.Attributes["@variable"] = function (state, arg) {
 			//print("-- VAR: "+variable);
 			flag = state.tmp.term_sibling.value();
 			if (output) {
+				if (variable !== "citation-number") {
+					state.tmp.cite_renders_content = true;
+				}
 				flag[2] = true;
 				state.tmp.term_sibling.replace(flag);
 				state.tmp.can_substitute.replace(false,  CSL.LITERAL);
 			} else {
 				flag[1] = true;
 			}
-			//else {
-			//	//print("-->"+variable+" set FALSE");
-			//	if (undefined === state.tmp.term_sibling.value()) {
-			//		//print("-- forcing false");
-			//		state.tmp.term_sibling.replace(false,  CSL.LITERAL);
-			//	}
-			//}
-
-			//if (output) {
-			//	CSL.debug("Output! "+this.variables);
-			//} else {
-			//	CSL.debug("No output! "+this.variables);
-			//}
 		};
 		this.execs.push(func);
 	} else if (["if",  "else-if"].indexOf(this.name) > -1) {
