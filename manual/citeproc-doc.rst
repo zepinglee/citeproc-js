@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a94##
+   version 1.00##a95##
 
 .. class:: info-date
 
-   =D=28 July 2010=D=
+   =D=3 August 2010=D=
 
 .. class:: contributors
 
@@ -1393,6 +1393,37 @@ This section presents features of the ``citeproc-js`` processor that
 are not properly speaking a part of the CSL specification.  The
 functionality described here may or may not be found in other CSL 1.0
 compliant processors, when they arrive on the scene.
+
+####################
+Supplementary fields
+####################
+
+Where the calling application provides a user interface for adding and
+editing bibliographic items, a limited set of fields is typically
+provided for each if the item types recognized by the
+application. Fields that map to valid CSL variables needed for a
+particular type of reference may not be available.
+
+If the calling application provides a mapping of the ``note`` variable
+to all types, the processor can parse missing fields out of this
+variable, for use in rendering citations. This facility is intended
+only for testing purposes.  It provides a means of illustrating
+citation use cases, with a view to requesting an adjustment to the
+field lists or the user interface of the calling application.  It should
+not be relied upon as a permanent workaround in production data;
+and it should *never* be used to add variables that are not in the
+CSL specification.
+
+The syntax for adding supplementary fields via the ``note`` variable
+is as follows:
+
+.. sourcecode:: js
+
+   {:authority:Superior Court of California}{:section:A}
+
+Supplementary variables are read by the processor as flat strings, so names
+and date parsing will not work with them.
+
 
 #################
 Input data rescue
