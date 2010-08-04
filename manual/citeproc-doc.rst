@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a96##
+   version 1.00##a98##
 
 .. class:: info-date
 
-   =D=3 August 2010=D=
+   =D=4 August 2010=D=
 
 .. class:: contributors
 
@@ -971,7 +971,7 @@ command.
            {
               citationID: "citationID_12345",
               index: 4,
-              noteIndex: 25,
+              noteIndex: 3,           // for example
               itemID: "itemID_67890",
               citationItem_pos: 0,
               error_code: CSL.ERROR_NO_RENDERED_FORM
