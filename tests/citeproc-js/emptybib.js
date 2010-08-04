@@ -65,7 +65,7 @@ doh.registerGroup("citeproc_js.emptybib",
 			var citeproc = new CSL.Engine(t.sys, t.csl_nobib);
 			citeproc.updateItems(["ITEM-1"]);
 			var res = citeproc.makeBibliography();
-			doh.assertEqual(false, res);
+			doh.assertEqual(true, res === false);
 		},
 		function testEmptyBibliographyEntry() {
 			var t = citeproc_js.emptybib;
