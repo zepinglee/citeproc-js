@@ -538,7 +538,8 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			res = this.swapQuotePunctuation(ret, use_delim);
 			ret = res[0];
 			use_delim = res[1];
-			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1)) > -1) {
+			// delimiter and preceding string
+			if (use_delim && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(use_delim.slice(0, 1)) > -1) {
 				if (use_delim.slice(0, 1) === ret.slice(-1)) {
 					use_delim = use_delim.slice(1);
 				}
