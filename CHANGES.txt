@@ -12,6 +12,10 @@ API change
   entries that produce no rendered output.  See processor
   manual for details.
 
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
 - Fix string breakage affecting text-case="title".
 
 - Fix over-aggressive quashing of spaces, which affected
