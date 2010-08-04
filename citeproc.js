@@ -60,6 +60,7 @@ var CSL = {
 	error: function (str) {
 		print(str);
 	},
+	ERROR_NO_RENDERED_FORM: 1,
 	PREVIEW: "Just for laughs.",
 	ASSUME_ALL_ITEMS_REGISTERED: 2,
 	START: 0,
@@ -637,7 +638,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			res = this.swapQuotePunctuation(ret, use_delim);
 			ret = res[0];
 			use_delim = res[1];
-			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1)) > -1) {
+			if (use_delim && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(use_delim.slice(0, 1)) > -1) {
 				if (use_delim.slice(0, 1) === ret.slice(-1)) {
 					use_delim = use_delim.slice(1);
 				}
@@ -1353,7 +1354,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.50";
+	this.processor_version = "1.0.51";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1527,6 +1528,9 @@ CSL.Engine.prototype.getTerm = function (term, form, plural) {
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural);
 	if (typeof ret === "undefined") {
 		ret = CSL.Engine.getField(CSL.STRICT, CSL.locale[this.opt.lang].terms, term, form, plural);
+	}
+	if (ret) {
+		this.tmp.cite_renders_content = true;
 	}
 	return ret;
 };
@@ -2000,8 +2004,11 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
 	return this.registry.getSortedIds();
 };
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
-	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings;
+	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings, bibliography_errors;
 	debug = false;
+	if (!this.bibliography.tokens.length) {
+		return false;
+	}
 	if ("string" === typeof bibsection ) {
 		this.opt.citation_number_slug = bibsection;
 		bibsection = false;
@@ -2014,7 +2021,8 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 		"entryspacing": this.bibliography.opt["entry-spacing"],
 		"linespacing": this.bibliography.opt["line-spacing"],
 		"second-field-align": false,
-		"entry_ids": entry_ids
+		"entry_ids": entry_ids,
+		"bibliography_errors": this.tmp.bibliography_errors.slice()
 	};
 	if (this.bibliography.opt["second-field-align"]) {
 		params["second-field-align"] = this.bibliography.opt["second-field-align"];
@@ -2036,10 +2044,13 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	return [params, entry_strings];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr, entry_item_data;
 	ret = [];
+	entry_item_data = [];
 	this.tmp.area = "bibliography";
 	this.tmp.last_rendered_name = false;
+	this.tmp.bibliography_errors = [];
+	this.tmp.bibliography_pos = 0;
 	input = this.retrieveItems(this.registry.getSortedIds());
 	this.tmp.disambig_override = true;
 	function eval_string(a, b) {
@@ -2156,6 +2167,8 @@ CSL.getBibliographyEntries = function (bibsection) {
 		} else if (!this.registry.registry[item.id].siblings) {
 			entry_item_ids.push(CSL.getCite.call(this, item));
 		}
+		entry_item_data.push("");
+		this.tmp.bibliography_pos += 1;
 		all_item_ids.push(entry_item_ids);
 		this.output.endTag("bib_entry");
 		if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
@@ -2208,6 +2221,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys, disambig, oldItemIds;
 	this.debug = false;
+	this.tmp.citation_errors = [];
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
 	this.setCitationId(citation);
@@ -2457,15 +2471,22 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 				if (key === citation.citationID) {
 					continue;
 				}
-				obj = [];
 				var mycitation = this.registry.citationreg.citationById[key];
-					obj.push(mycitation.properties.index);
-					obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems));
-					ret.push(obj);
+				this.tmp.citation_pos = mycitation.properties.index;
+				this.tmp.citation_note_index = mycitation.properties.noteIndex;
+				this.tmp.citation_id = mycitation.citationID;
+				obj = [];
+				obj.push(mycitation.properties.index);
+				obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems));
+				ret.push(obj);
+				this.tmp.citation_pos += 1;
 			}
 		}
 		this.tmp.taintedItemIDs = false;
 		this.tmp.taintedCitationIDs = false;
+		this.tmp.citation_pos = citation.properties.index;
+		this.tmp.citation_note_index = citation.properties.noteIndex;
+		this.tmp.citation_id = citation.citationID;
 		obj = [];
 		obj.push(citationsPre.length);
 		obj.push(this.process_CitationCluster.call(this, sortedItems));
@@ -2480,6 +2501,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		});
 	}
+	return_data.citation_errors = this.tmp.citation_errors.slice();
 	return [return_data, ret];
 };
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems) {
@@ -2505,6 +2527,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
 		}
 		inputList.sort(this.citation.srt.compareCompositeKeys);
 	}
+	this.tmp.citation_errors = [];
 	this.parallel.StartCitation(inputList);
 	str = CSL.getCitationCluster.call(this, inputList);
 	return str;
@@ -2535,7 +2558,7 @@ CSL.getSpliceDelimiter = function (last_collapsed) {
 	return this.tmp.splice_delimiter;
 };
 CSL.getCitationCluster = function (inputList, citationID) {
-	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc;
+	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object;
 	txt_esc = CSL.Output.Formats[this.opt.mode].text_escape;
 	this.tmp.area = "citation";
 	delimiter = "";
@@ -2561,6 +2584,17 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		} else {
 			this.tmp.term_predecessor = false;
 			CSL.getCite.call(this, Item, item);
+		}
+		if (!this.tmp.cite_renders_content) {
+			error_object = {
+				citationID: this.tmp.citation_id,
+				index: this.tmp.citation_pos,
+				noteIndex: this.tmp.citation_note_index,
+				itemID: Item.id,
+				citationItems_pos: pos,
+				error_code: CSL.ERROR_NO_RENDERED_FORM
+			};
+			this.tmp.citation_errors.push(error_object);
 		}
 		if (pos === (inputList.length - 1)) {
 			this.parallel.ComposeSet();
@@ -2650,7 +2684,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	return result;
 };
 CSL.getCite = function (Item, item, prevItemID) {
-	var next;
+	var next, error_object;
+	this.tmp.cite_renders_content = false;
 	this.parallel.StartCite(Item, item, prevItemID);
 	CSL.citeStart.call(this, Item);
 	next = 0;
@@ -2659,6 +2694,16 @@ CSL.getCite = function (Item, item, prevItemID) {
     }
 	CSL.citeEnd.call(this, Item);
 	this.parallel.CloseCite(this);
+	if (!this.tmp.cite_renders_content && !this.tmp.just_looking) {
+		if (this.tmp.area === "bibliography") {
+			error_object = {
+				index: this.tmp.bibliography_pos,
+				itemID: Item.id,
+				error_code: CSL.ERROR_NO_RENDERED_FORM
+			};
+			this.tmp.bibliography_errors.push(error_object);
+		}
+	}
 	return Item.id;
 };
 CSL.citeStart = function (Item) {
@@ -4657,6 +4702,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
 			}
 			flag = state.tmp.term_sibling.value();
 			if (output) {
+				if (variable !== "citation-number" || !state.tmp.area === "bibliography") {
+					state.tmp.cite_renders_content = true;
+				}
 				flag[2] = true;
 				state.tmp.term_sibling.replace(flag);
 				state.tmp.can_substitute.replace(false,  CSL.LITERAL);
@@ -7058,6 +7106,12 @@ CSL.Output.Formatters.undoppelString = function (str) {
 		}
 	}
 	return ret;
+};
+CSL.Output.Formatters.serializeItemAsRdf = function (Item) {
+	return "";
+};
+CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
+	return "";
 };
 CSL.Output.Formats = function () {};
 CSL.Output.Formats.prototype.html = {

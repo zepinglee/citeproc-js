@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.51
+=========================
+
+----------
+API change
+----------
+
+- Return error objects with details of cites or bibliography
+  entries that produce no rendered output.  See processor
+  manual for details.
+
+- Fix string breakage affecting text-case="title".
+
+- Fix over-aggressive quashing of spaces, which affected
+  spacing following RTF entities.
+
+-------
+Cleanup
+-------
+
+- Update manual with description of supplementary field
+  facility.
+
+
+=========================
 Changes in version 1.0.50
 =========================
 
