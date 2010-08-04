@@ -115,8 +115,9 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr, entry_item_data;
 	ret = [];
+	entry_item_data = [];
 	this.tmp.area = "bibliography";
 	this.tmp.last_rendered_name = false;
 	this.tmp.bibliography_errors = [];
@@ -262,6 +263,8 @@ CSL.getBibliographyEntries = function (bibsection) {
 			entry_item_ids.push(CSL.getCite.call(this, item));
 			//skips[item.id] = true;
 		}
+		// For RDF support
+		entry_item_data.push("");
 
 		this.tmp.bibliography_pos += 1;
 

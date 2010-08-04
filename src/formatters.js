@@ -231,3 +231,13 @@ CSL.Output.Formatters.undoppelString = function (str) {
 	}
 	return ret;
 };
+
+
+CSL.Output.Formatters.serializeItemAsRdf = function (Item) {
+	return "";
+};
+
+
+CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
+	return "";
+};
