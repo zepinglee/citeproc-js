@@ -524,7 +524,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				if ("string" === ttype && "string" === ltype) {
 					terminal = ret.slice(-1)[0].slice(-1);
 					leading = addtoret.slice(-1)[0].slice(0, 1);
-					if ((CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && terminal === leading) || CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(leading) > -1) {
+					if ((CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && terminal === leading) || (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(leading) > -1)) {
 						ret[(ret.length - 1)] = ret[(ret.length - 1)].slice(0, -1);
 					}
 				}
@@ -638,7 +638,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			res = this.swapQuotePunctuation(ret, use_delim);
 			ret = res[0];
 			use_delim = res[1];
-			if (use_delim && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(use_delim.slice(0, 1)) > -1) {
+			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1)) > -1) {
 				if (use_delim.slice(0, 1) === ret.slice(-1)) {
 					use_delim = use_delim.slice(1);
 				}
@@ -1354,7 +1354,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.51";
+	this.processor_version = "1.0.52";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7223,24 +7223,24 @@ CSL.Output.Formats.prototype.text = {
 CSL.Output.Formats.prototype.rtf = {
 	"text_escape": function (text) {
 		return text.replace("\\", "\\\\", "g").replace(/[\x7F-\uFFFF]/g,
-			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+" " })
-			.replace("\t", "\\tab ", "g");
+			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}" })
+			.replace("\t", "\\tab{}", "g");
 	},
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
 	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
-	"@font-style/italic":"\\i %%STRING%%\\i0 ",
+	"@font-style/italic":"\\i %%STRING%%\\i0{}",
 	"@font-style/normal":false,
-	"@font-style/oblique":"\\i %%STRING%%\\i0 ",
-	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0 ",
+	"@font-style/oblique":"\\i %%STRING%%\\i0{}",
+	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
 	"@font-variant/normal":false,
-	"@font-weight/bold":"\\b %%STRING%%\\b0 ",
+	"@font-weight/bold":"\\b %%STRING%%\\b0{}",
 	"@font-weight/normal":false,
 	"@font-weight/light":false,
 	"@text-decoration/none":false,
-	"@text-decoration/underline":"\\ul %%STRING%%\\ul0 ",
+	"@text-decoration/underline":"\\ul %%STRING%%\\ul0{}",
 	"@vertical-align/baseline":false,
-	"@vertical-align/sup":"\\super %%STRING%%\\nosupersub ",
-	"@vertical-align/sub":"\\sub %%STRING%%\\nosupersub ",
+	"@vertical-align/sup":"\\super %%STRING%%\\nosupersub{}",
+	"@vertical-align/sub":"\\sub %%STRING%%\\nosupersub{}",
 	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
 	"@strip-periods/false": function (state, string) {
 		return string;

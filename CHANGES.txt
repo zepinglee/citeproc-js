@@ -1,6 +1,34 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.52
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reverse the RTF-related conservatism in the quashing
+  of duplicate spaces that was introduced in 1.0.51.
+
+- Add missing parens to suspect test condition (not
+  related to any known bug).
+
+----------
+API change
+----------
+
+- The processor quashes double spaces in the output.
+  RTF control words can be terminated with a space, but
+  this causes an immediately following space to be lost
+  from the output. To avoid this, the RTF output mode of 
+  the processor has been adjusted to terminate RTF control
+  words with {} rather than space. Applications that convert
+  processor output between other formats (such as HTML)
+  may need to be adjusted to accomodate this new behavior.
+
+
+=========================
 Changes in version 1.0.51
 =========================
 
