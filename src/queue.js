@@ -368,8 +368,11 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 					use_suffix = use_suffix.slice(1);
 				}
 
+				// CSL.debug("ZZZa =============");
 				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
+					// CSL.debug("ZZZa prefix before: " + use_prefix);
 					use_prefix = use_prefix.slice(0, -1);
+					// CSL.debug("ZZZa prefix after: " + use_prefix);
 				}
 
 				if (!state.tmp.suppress_decorations) {
@@ -394,6 +397,8 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 					b = txt_esc(blobjr.strings.prefix) + b + txt_esc(use_suffix);
 					ret.push(b);
 				}
+				// CSL.debug("ZZZa b: " + b);
+				// CSL.debug("ZZZa <=============");
 			}
 		} else if (blobjr.blobs.length) {
 			addtoret = state.output.string(state, blobjr.blobs, blobjr);
@@ -410,10 +415,14 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 					terminal = ret.slice(-1)[0].slice(-1);
 					leading = addtoret.slice(-1)[0].slice(0, 1);
 
-					if ((CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && terminal === leading) || CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(leading) > -1) {
+					// CSL.debug("ZZZc ==============>");
+					// CSL.debug("ZZZc ret before: " + ret);
+					if ((CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && terminal === leading) || (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(leading) > -1)) {
 						// last terminal punctuation wins
 						ret[(ret.length - 1)] = ret[(ret.length - 1)].slice(0, -1);
 					}
+					// CSL.debug("ZZZc ret after: " + ret);
+					// CSL.debug("ZZZc <==============");
 				}
 			}
 			ret = ret.concat(addtoret);
@@ -457,11 +466,16 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			use_suffix = qres[1];
 			use_prefix = blob.strings.prefix;
 
+			// CSL.debug("ZZZb =============>");
 			if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
+				// CSL.debug("ZZZb prefix before: " + use_prefix);
 				use_prefix = use_prefix.slice(0, -1);
+				// CSL.debug("ZZZb prefix after: " + use_prefix);
 			}
 
 			b = txt_esc(use_prefix) + b + txt_esc(use_suffix);
+			// CSL.debug("ZZZb b: " + b);
+			// CSL.debug("ZZZb <=============");
 		}
 		blobs_start = b;
 		if (!state.tmp.suppress_decorations) {
@@ -537,25 +551,31 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 		if (blob && "string" === typeof blob) {
 			res = this.swapQuotePunctuation(ret, use_delim);
 			ret = res[0];
+			// CSL.debug("ZZZd ==============>");
+			// CSL.debug("ZZZd ret before: " + ret);
 			use_delim = res[1];
-			// delimiter and preceding string
-			if (use_delim && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(use_delim.slice(0, 1)) > -1) {
+			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1)) > -1) {
 				if (use_delim.slice(0, 1) === ret.slice(-1)) {
+					// CSL.debug("ZZZd slicing @ A");
 					use_delim = use_delim.slice(1);
 				}
 			}
 			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(-1)) > -1) {
 				if (use_delim.slice(-1) === blob.slice(0, 1)) {
+					// CSL.debug("ZZZd slicing @ B");
 					use_delim = use_delim.slice(0, -1);
 				}
 			}
 			if (!use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(blob.slice(0, 1)) > -1) {
 				if (ret.slice(-1) === blob.slice(0, 1)) {
+					// CSL.debug("ZZZd slicing @ C");
 					blob = blob.slice(1);
 				}
 			}
 			ret += txt_esc(use_delim);
 			ret += blob;
+			// CSL.debug("ZZZd <==============");
+			// CSL.debug("ZZZd ret after: " + ret);
 		} else if (blob.status !== CSL.SUPPRESS) {
 			// CSL.debug("doing rangeable blob");
 			//var str = blob.blobs;
