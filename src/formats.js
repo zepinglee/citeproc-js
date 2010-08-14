@@ -211,24 +211,24 @@ CSL.Output.Formats.prototype.rtf = {
 	//
 	"text_escape": function (text) {
 		return text.replace("\\", "\\\\", "g").replace(/[\x7F-\uFFFF]/g,
-			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+" " })
-			.replace("\t", "\\tab ", "g");
+			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}" })
+			.replace("\t", "\\tab{}", "g");
 	},
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
 	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
-	"@font-style/italic":"\\i %%STRING%%\\i0 ",
+	"@font-style/italic":"\\i %%STRING%%\\i0{}",
 	"@font-style/normal":false,
-	"@font-style/oblique":"\\i %%STRING%%\\i0 ",
-	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0 ",
+	"@font-style/oblique":"\\i %%STRING%%\\i0{}",
+	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
 	"@font-variant/normal":false,
-	"@font-weight/bold":"\\b %%STRING%%\\b0 ",
+	"@font-weight/bold":"\\b %%STRING%%\\b0{}",
 	"@font-weight/normal":false,
 	"@font-weight/light":false,
 	"@text-decoration/none":false,
-	"@text-decoration/underline":"\\ul %%STRING%%\\ul0 ",
+	"@text-decoration/underline":"\\ul %%STRING%%\\ul0{}",
 	"@vertical-align/baseline":false,
-	"@vertical-align/sup":"\\super %%STRING%%\\nosupersub ",
-	"@vertical-align/sub":"\\sub %%STRING%%\\nosupersub ",
+	"@vertical-align/sup":"\\super %%STRING%%\\nosupersub{}",
+	"@vertical-align/sub":"\\sub %%STRING%%\\nosupersub{}",
 	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
 	"@strip-periods/false": function (state, string) {
 		return string;
