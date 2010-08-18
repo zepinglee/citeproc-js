@@ -57,8 +57,11 @@ if (!Array.indexOf) {
 	};
 }
 var CSL = {
+	debug: function (str) {
+		print("CSL: " + str);
+	},
 	error: function (str) {
-		print(str);
+		print("CSL error: " + str);
 	},
 	ERROR_NO_RENDERED_FORM: 1,
 	PREVIEW: "Just for laughs.",
@@ -1354,7 +1357,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.52";
+	this.processor_version = "1.0.53";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4106,7 +4109,9 @@ CSL.Node.names = {
 							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
 							param = paramx;
 						}
-						state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
+						if (!state.tmp.sort_key_flag) {
+							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
+						}
 					}
 					label = false;
 					if (state.output.getToken("label").strings.label_position) {
@@ -6009,7 +6014,9 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 		key = subsequence[pos];
 		namepart = this.name[key];
 		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
-			continue;
+			if (!(key === "given" && !this.name.family)) {
+					continue;
+			}
 		}
 		if ("given" === key) {
 			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
@@ -7550,7 +7557,7 @@ CSL.getSortKeys = function (Item, key_type) {
 	return this[key_type].keys;
 };
 CSL.Registry.NameReg = function (state) {
-	var pkey, ikey, skey, floor, ceiling, param, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
+	var pkey, ikey, skey, floor, ceiling, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
 	this.state = state;
 	this.namereg = {};
 	this.nameind = {};
@@ -7571,10 +7578,10 @@ CSL.Registry.NameReg = function (state) {
 		}
 	};
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
-		var pos, len, items;
+		var pos, len, items, param;
 		set_keys(this.state, item_id, nameobj);
 		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
-			return 2;
+			return request_base;
 		}
 		param = 2;
 		dagopt = state.opt["disambiguate-add-givenname"];

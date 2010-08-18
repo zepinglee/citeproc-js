@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.53
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a subtle bug that caused full author names to
+  be erroneously rendered in citations although the
+  style parameters did not permit them.
+
+
+=========================
 Changes in version 1.0.52
 =========================
 
