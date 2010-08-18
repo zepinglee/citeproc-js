@@ -71,9 +71,70 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 	return this.processCitationCluster(citation, citationsPre, [])[1];
 };
 
+//SNIP-START
+CSL.Engine.prototype.dumpCslCitation = function (citation, flag) {
+	var i, ilen, key, kkey, itemID, Item, j, jlen, disambig, regentry;
+	CSL.debug("=== citationID " + citation.citationID + " in [" + flag + "] mode ===");
+	CSL.debug("   +++ citationItems +++");
+	for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
+		itemID = citation.citationItems[i].id;
+		if (i == 0) {
+			CSL.debug("      ### itemID " + citation.citationItems[i].id + " ###");
+		}
+		CSL.debug("         --- Item data " + " ---");
+		Item = this.retrieveItem(citation.citationItems[i].id);
+		for (key in Item) {
+			if (CSL.NAME_VARIABLES.indexOf(key) > -1) {
+				CSL.debug("            * names: " + key);
+				for (j = 0, jlen = Item[key].length; j < jlen; j += 1) {
+					CSL.debug("               [" + j + "]");
+					for (kkey in Item[key][j]) {
+						CSL.debug("               + " + kkey + ": " + Item[key][j][kkey]);
+					}
+				}
+			}
+		}
+		CSL.debug("         --- Cite data ---");
+		for (key in citation.citationItems[i]) {
+			if (key === 'id') {
+				continue;
+			}
+			CSL.debug("            * " + key + ": " + citation.citationItems[i][key]);
+		}
+		CSL.debug("         --- Disambiguation registry data ---");
+		regentry = this.registry.registry[itemID];
+		if (regentry) {
+			disambig = regentry.disambig;
+			CSL.debug("            * maxvals: " + disambig.maxvals);
+			CSL.debug("            * minval: " + disambig.minval);
+			CSL.debug("            * year_suffix: " + disambig.year_suffix);
+			CSL.debug("            * disambiguate: " + disambig.disambiguate);
+			CSL.debug("            * givens ... ");
+			for (i = 0, ilen = disambig.givens.length; i < ilen; i += 1) {
+				CSL.debug("               [" + i + "]");
+				for (j = 0, jlen = disambig.givens[i].length; j < jlen; j += 1) {
+					CSL.debug("               + " + disambig.givens[i][j]);
+				}
+			}
+			CSL.debug("            * names ... ");
+			for (i = 0, ilen = disambig.names.length; i < ilen; i += 1) {
+				CSL.debug("               + " + disambig.names[i]);
+			}
+		}
+	}
+	CSL.debug("   +++ properties +++");
+	for (key in citation.properties) {
+		CSL.debug("      * " + key + ": " + citation.properties[key]);
+	}
+}
+//SNIP-END
+
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var sortedItems, new_citation, pos, len, item, citationByIndex, c, Item, newitem, k, textCitations, noteCitations, update_items, citations, first_ref, last_ref, ipos, ilen, cpos, onecitation, oldvalue, ibidme, suprame, useme, items, i, key, prev_locator, curr_locator, param, ret, obj, ppos, llen, lllen, pppos, ppppos, llllen, cids, note_distance, return_data, lostItemId, lostItemList, lostItemData, otherLostPkeys, disambig, oldItemIds;
 	this.debug = false;
+	//SNIP-START
+	// this.dumpCslCitation(citation, flag);
+	//SNIP-END
 	this.tmp.citation_errors = [];
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;

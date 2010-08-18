@@ -47,7 +47,7 @@
  */
 
 CSL.Registry.NameReg = function (state) {
-	var pkey, ikey, skey, floor, ceiling, param, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
+	var pkey, ikey, skey, floor, ceiling, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
 	this.state = state;
 	this.namereg = {};
 	this.nameind = {};
@@ -76,12 +76,12 @@ CSL.Registry.NameReg = function (state) {
 	};
 
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
-		var pos, len, items;
+		var pos, len, items, param;
 		set_keys(this.state, item_id, nameobj);
 		//
 		// give literals a pass
 		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
-			return 2;
+			return request_base;
 		}
 		//
 		// possible options are:

@@ -701,7 +701,9 @@ CSL.Node.names = {
 							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
 							param = paramx;
 						}
-						state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
+						if (!state.tmp.sort_key_flag) {
+							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
+						}
 					}
 					//
 					// configure label if poss

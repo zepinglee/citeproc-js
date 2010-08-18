@@ -155,7 +155,9 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 		namepart = this.name[key];
 		// Do not include given name, dropping particle or suffix in strict short form of name
 		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
-			continue;
+			if (!(key === "given" && !this.name.family)) {
+					continue;
+			}
 		}
 		// initialize if appropriate
 		if ("given" === key) {

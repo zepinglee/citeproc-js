@@ -89,15 +89,11 @@ if (!Array.indexOf) {
 //var alert = function (one) { };
 
 var CSL = {
-
-	//SNIP-START
 	debug: function (str) {
-		print(str);
+		print("CSL: " + str);
 	},
-	//SNIP-END
-
 	error: function (str) {
-		print(str);
+		print("CSL error: " + str);
 	},
 
 	ERROR_NO_RENDERED_FORM: 1,
