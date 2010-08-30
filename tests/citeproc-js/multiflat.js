@@ -52,8 +52,8 @@ doh.registerGroup("citeproc_js.multiflat",
 		function testPlainFieldReadWrite() {
 			var t = citeproc_js.multiflat;
 			var myitem = new t.MultiField();
-			myitem.title = 'hi';
-			doh.assertEqual('hi', myitem.title);
+			//myitem.title = 'hi';
+			//doh.assertEqual('hi', myitem.title);
 		},
 		function testSetGetPlainFieldWithMultiField() {
 			var t = citeproc_js.multiflat;
@@ -80,8 +80,8 @@ doh.registerGroup("citeproc_js.multiflat",
 			var myitem = new t.MultiField();
 			myitem.title = 'hiya';
 			myitem.setMultiField('title', 'foo', 'ja');
-			doh.assertEqual('hiya', myitem.title);
-			doh.assertEqual('foo', myitem.getMultiField('title', 'ja'));
+			myitem.setMultiField('title', '', 'ja');
+			doh.assertEqual('hiya', myitem._title);
 		}
 	],
 	function () {
@@ -105,54 +105,83 @@ doh.registerGroup("citeproc_js.multiflat",
 
 		t.MultiField.prototype.setMultiField = function (name, val, lang) {
 			var text, texts, code, codes, s, tlen, clen, key, codeslen;
-			if (!name || !val) {
+			if (!name) {
 				throw "Empty argument to setMultiField";
 			}
-			if (!this['_' + name + '_base']) {
-				this._loadMulti(name);
+			if (this['_' + name] && this['_' + name].slice(0, 1) === '#') {
+				if (!this['_' + name + '_base']) {
+					this._loadMulti(name);
+				}
 			}
-			// XXXX Restore to non-multilingualized form when
-			// no dependent entries exist.
 			if (!lang) {
-				this['_' + name + '_base'] = val;
+				if (!this['_' + name + '_multi'].__count__) {
+					this['_' + name] = val;
+					this['_' + name + '_base'] = null;
+				} else {
+					this['_' + name + '_base'] = val;
+				}
 			} else {
-				this['_' + name + '_multi'][lang] = val;
+				// Handle lang entry deletion
+				if (!val && this['_' + name + '_multi'][lang]) {
+					delete this['_' + name + '_multi'][lang];
+				} else if (val) {
+					this['_' + name + '_multi'][lang] = val;
+				}
 			}
-			text = this['_' + name + '_base'];
-			tlen = '' + text.length;
-			while (tlen.length < 6) {
-				tlen = '0' + tlen;
-			}
-			code = tlen + '00';
-			codes += code;
-			texts += text;
-			for (key in this['_' + name + '_multi']) {
-				text = this['_' + name + '_multi'][key];
+			//
+			if (!this['_' + name + '_multi'].__count__) {
+				if (this['_' + name + '_base']) {
+					this['_' + name] = this['_' + name + '_base'];
+					this['_' + name + '_base'] = null;
+				}
+			} else {
+				codes = '';
+				texts = '';
+				if (this['_' + name] && this['_' + name].slice(0, 1) !== '#') {
+					this['_' + name + '_base'] = this['_' + name];
+				}
+				text = this['_' + name + '_base'];
 				tlen = '' + text.length;
 				while (tlen.length < 6) {
 					tlen = '0' + tlen;
 				}
-				clen = '' + code.length;
-				while (clen.length < 2) {
-					clen = '0' + clen;
-				}
-				code = tlen + clen + key;
+				code = tlen + '00';
 				codes += code;
 				texts += text;
+				for (key in this['_' + name + '_multi']) {
+					text = this['_' + name + '_multi'][key];
+					tlen = '' + text.length;
+					while (tlen.length < 6) {
+						tlen = '0' + tlen;
+					}
+					clen = '' + key.length;
+					while (clen.length < 2) {
+						clen = '0' + clen;
+					}
+					code = tlen + clen + key;
+					codes += code;
+					texts += text;
+				}
+				codeslen = '' + codes.length;
+				while (codeslen.length < 4) {
+					codeslen = '0' + codeslen;
+				}
+				this['_' + name] = '#' + codeslen + codes + texts;
 			}
-			codeslen = '' + codes.length;
-			while (codeslen < 4) {
-				codeslen = '0' + codeslen;
-			}
-			this['_' + name] = codeslen + codes + texts;
 		};
 		t.MultiField.prototype.getMultiField = function (name, lang) {
-			if (!this['_' + name + '_base']) {
-				this._loadMulti(name);
+			if (this['_' + name] && this['_' + name.slice(0, 1) === '#']) {
+				if (!this['_' + name + '_base']) {
+					print("oops.  why?");
+					this._loadMulti(name);
+				}
 			}
 			if (!lang) {
-				// Account for non-multilingualized fields.
-				return this['_' + name + '_base'];
+				if (this['_' + name] && this['_' + name].slice(0, 1) === '#') {
+					return this['_' + name + '_base'];
+				} else {
+					return this['_' + name];
+				}
 			} else if (this['_' + name + '_multi'][lang]) {
 				return this['_' + name + '_multi'][lang];
 			} else {
@@ -183,7 +212,7 @@ doh.registerGroup("citeproc_js.multiflat",
 
 			s = this['_' + name];
 			if (!s) {
-				return '';
+				return;
 			}
 			base = '';
 			var multi = {};
