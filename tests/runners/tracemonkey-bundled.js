@@ -57,10 +57,14 @@ var print = function(txt){
 	Print( enc(txt)+'\n');
 }
 
-var readFile = function(filename){
+var readFile = function(filename, nodecode){
     var file = new File(filename);
     file.Open( File.RDONLY );
-    var ret = dec( file.Read() );
+	if ("undefined" !== typeof nodecode) {
+		var ret = dec( file.Read() );
+	} else {
+		var ret = file.Read();
+	}
     file.Close();
     return ret;
 }

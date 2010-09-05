@@ -60,7 +60,11 @@ var print = function(txt){
 var readFile = function(filename){
     var file = new File(filename);
     file.Open( File.RDONLY );
-    var ret = dec( file.Read() );
+	if ("undefined" !== typeof nodecode) {
+		var ret = dec( file.Read() );
+	} else {
+		var ret = file.Read();
+	}
     file.Close();
     return ret;
 }
