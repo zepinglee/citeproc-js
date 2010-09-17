@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.54
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fixes misplacement of labels set before the
+  nameset to which they apply.
+
+=========================
 Changes in version 1.0.53
 =========================
 

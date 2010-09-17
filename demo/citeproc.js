@@ -1357,7 +1357,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.53";
+	this.processor_version = "1.0.54";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3967,12 +3967,33 @@ CSL.Node.names = {
 				state.output.addToken("non-dropping-particle", false, state.output.getToken("family"));
 				state.output.addToken("suffix", false, state.output.getToken("family"));
 				state.output.openLevel("term-join");
-				if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
-					state.output.append(label, "label");
-				}
 				len = namesets.length;
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 					nameset = namesets[namesetIndex];
+					label = false;
+					if (state.output.getToken("label").strings.label_position) {
+						if (common_term) {
+							termname = common_term;
+						} else {
+							termname = nameset.variable;
+						}
+						if (!state.output.getToken("label").strings.form) {
+							form = "long";
+						} else {
+							form = state.output.getToken("label").strings.form;
+						}
+						if ("number" === typeof state.output.getToken("label").strings.plural) {
+							plural = state.output.getToken("label").strings.plural;
+						} else if (nameset.names.length > 1) {
+							plural = 1;
+						} else {
+							plural = 0;
+						}
+						label = state.getTerm(termname, form, plural);
+					}
+					if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
+						state.output.append(label, "label");
+					}
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
 						if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
 							lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
@@ -4113,27 +4134,6 @@ CSL.Node.names = {
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
 						}
 					}
-					label = false;
-					if (state.output.getToken("label").strings.label_position) {
-						if (common_term) {
-							termname = common_term;
-						} else {
-							termname = nameset.variable;
-						}
-						if (!state.output.getToken("label").strings.form) {
-							form = "long";
-						} else {
-							form = state.output.getToken("label").strings.form;
-						}
-						if ("number" === typeof state.output.getToken("label").strings.plural) {
-							plural = state.output.getToken("label").strings.plural;
-						} else if (nameset.names.length > 1) {
-							plural = 1;
-						} else {
-							plural = 0;
-						}
-						label = state.getTerm(termname, form, plural);
-					}
 					if (namesetIndex > 0 && nameset.variable !== last_variable) {
 						state.output.closeLevel("term-join");
 					}
@@ -4188,7 +4188,7 @@ CSL.Node.names = {
 						state.output.closeLevel("trailing-names");
 					}
 					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
-						if (label && state.tmp.name_label_position !== CSL.BEFORE) {
+						if (label && state.output.getToken("label").strings.label_position !== CSL.BEFORE) {
 							state.output.append(label, "label");
 						}
 					}
