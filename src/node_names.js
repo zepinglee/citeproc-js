@@ -477,9 +477,6 @@ CSL.Node.names = {
 
 				// open for term join, for any and all names.
 				state.output.openLevel("term-join");
-				if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
-					state.output.append(label, "label");
-				}
 
 				len = namesets.length;
 				//SNIP-START
@@ -490,6 +487,33 @@ CSL.Node.names = {
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 
 					nameset = namesets[namesetIndex];
+					//
+					// configure label if poss
+					label = false;
+					if (state.output.getToken("label").strings.label_position) {
+						if (common_term) {
+							termname = common_term;
+						} else {
+							termname = nameset.variable;
+						}
+						if (!state.output.getToken("label").strings.form) {
+							form = "long";
+						} else {
+							form = state.output.getToken("label").strings.form;
+						}
+						if ("number" === typeof state.output.getToken("label").strings.plural) {
+							plural = state.output.getToken("label").strings.plural;
+						} else if (nameset.names.length > 1) {
+							plural = 1;
+						} else {
+							plural = 0;
+						}
+						label = state.getTerm(termname, form, plural);
+					}
+
+					if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
+						state.output.append(label, "label");
+					}
 
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
 						//
@@ -706,32 +730,6 @@ CSL.Node.names = {
 						}
 					}
 					//
-					// configure label if poss
-					label = false;
-					if (state.output.getToken("label").strings.label_position) {
-						if (common_term) {
-							termname = common_term;
-						} else {
-							termname = nameset.variable;
-						}
-						//
-						// XXXXX: quick hack.  This should be fixed earlier.
-						//
-						if (!state.output.getToken("label").strings.form) {
-							form = "long";
-						} else {
-							form = state.output.getToken("label").strings.form;
-						}
-						if ("number" === typeof state.output.getToken("label").strings.plural) {
-							plural = state.output.getToken("label").strings.plural;
-						} else if (nameset.names.length > 1) {
-							plural = 1;
-						} else {
-							plural = 0;
-						}
-						label = state.getTerm(termname, form, plural);
-					}
-					//
 					// Nesting levels are opened to control joins with
 					// content at the end of the names block
 					//
@@ -866,7 +864,7 @@ CSL.Node.names = {
 
 					// lookahead
 					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
-						if (label && state.tmp.name_label_position !== CSL.BEFORE) {
+						if (label && state.output.getToken("label").strings.label_position !== CSL.BEFORE) {
 							state.output.append(label, "label");
 						}
 					}
