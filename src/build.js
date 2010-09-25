@@ -337,14 +337,36 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
 		this.output[mode] = {};
 		this.output[mode].tmp = {};
 	}
-	// Disabled.  See formats.js for code.
-	// this.fun.decorate.format_init(this.output[mode].tmp);
 };
 
-CSL.Engine.prototype.setLocale = function (locale) {
-
-};
-
+CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
+	var i, ilen;
+	this.opt['locale-sort'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-sort'].push(tags[i]);
+	}
+}
+	
+CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
+	var i, ilen;
+	this.opt['locale-pri'] = [];	
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-pri'].push(tags[i]);
+	}
+	this.opt['locale-name'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-name'].push(tags[i]);
+	}
+}
+	
+CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
+	var i, ilen;
+	this.opt['locale-sec'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-sec'].push(tags[i]);
+	}
+}
+	
 CSL.Engine.prototype.getTerm = function (term, form, plural) {
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural);
 	if (typeof ret === "undefined") {
