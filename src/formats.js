@@ -75,7 +75,7 @@ CSL.Output.Formats.prototype.html = {
 	"@font-style/normal": "<span style=\"font-style:normal;\">%%STRING%%</span>",
 	"@font-variant/small-caps": "<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
-	"@font-variant/normal": false,
+	"@font-variant/normal": "<span style=\"font-variant:normal;\">%%STRING%%</span>",
 	"@font-weight/bold": "<b>%%STRING%%</b>",
 	"@font-weight/normal": "<span style=\"font-weight:normal;\">%%STRING%%</span>",
 	"@font-weight/light": false,
