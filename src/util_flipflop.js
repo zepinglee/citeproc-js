@@ -55,16 +55,23 @@ CSL.Util.FlipFlopper = function (state) {
 	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes, allTagsLst, lst;
 	this.state = state;
 	this.blob = false;
+	//
+	// XXXZ
+	// Bug: nodecor doesn't work with small-caps, possibly other element.
+	// Possibly extend 5th argument with the 'nocase' element as 
+	// a third sub-argument.  Currently, it's using 'normal', but
+	// not in a way that makes sense when generalized beyond italics.
+	//
 	tagdefs = [
-		["<i>", "</i>", "italics", "@font-style", ["italic", "normal"], true],
-		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal"], true],
-		["<sup>", "</sup>", "superscript", "@vertical-align", ["sup", "sup"], true],
-		["<sub>", "</sub>", "subscript", "@vertical-align", ["sub", "sub"], true],
-		["<sc>", "</sc>", "smallcaps", "@font-variant", ["small-caps", "small-caps"], true],
-		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
-		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
-		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner"],  "'"],
-		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true"],  '"']
+		["<i>", "</i>", "italics", "@font-style", ["italic", "normal","normal"], true],
+		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal","normal"], true],
+		["<sup>", "</sup>", "superscript", "@vertical-align", ["sup", "sup","baseline"], true],
+		["<sub>", "</sub>", "subscript", "@vertical-align", ["sub", "sub","baseline"], true],
+		["<sc>", "</sc>", "smallcaps", "@font-variant", ["small-caps", "small-caps","normal"], true],
+		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
+		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
+		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner","true"],  "'"],
+		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true","true"],  '"']
 	];
 	//
 	// plus quote defs from locale.
@@ -132,7 +139,7 @@ CSL.Util.FlipFlopper = function (state) {
 			flipTags[tagdefs[pos][1]] = tagdefs[pos][5];
 			openToClose[tagdefs[pos][0]] = tagdefs[pos][1];
 			openToDecorations[tagdefs[pos][0]] = [tagdefs[pos][3], tagdefs[pos][4]];
-			okReverse[tagdefs[pos][3]] = [tagdefs[pos][3], [tagdefs[pos][4][1], tagdefs[pos][1]]];
+			okReverse[tagdefs[pos][3]] = [tagdefs[pos][3], [tagdefs[pos][4][2], tagdefs[pos][1]]];
 		}
 		return [closeTags, flipTags, openToClose, openToDecorations, okReverse];
 	};
