@@ -428,7 +428,7 @@ CSL.Registry.prototype.dorefreshes = function () {
 			//	this.state.tmp.taintedItemIDs[key] = true;
 			//}
 			if ("undefined" === typeof akey) {
-				CSL.getAmbiguousCite.call(this.state, Item);
+				akey = CSL.getAmbiguousCite.call(this.state, Item);
 				this.state.tmp.taintedItemIDs[key] = true;
 			}
 			this.registry[key] = regtoken;
