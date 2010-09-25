@@ -1357,7 +1357,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.54";
+	this.processor_version = "1.0.55";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1525,8 +1525,31 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
 		this.output[mode].tmp = {};
 	}
 };
-CSL.Engine.prototype.setLocale = function (locale) {
-};
+CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
+	var i, ilen;
+	this.opt['locale-sort'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-sort'].push(tags[i]);
+	}
+}
+CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
+	var i, ilen;
+	this.opt['locale-pri'] = [];	
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-pri'].push(tags[i]);
+	}
+	this.opt['locale-name'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-name'].push(tags[i]);
+	}
+}
+CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
+	var i, ilen;
+	this.opt['locale-sec'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-sec'].push(tags[i]);
+	}
+}
 CSL.Engine.prototype.getTerm = function (term, form, plural) {
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural);
 	if (typeof ret === "undefined") {
@@ -6695,15 +6718,15 @@ CSL.Util.FlipFlopper = function (state) {
 	this.state = state;
 	this.blob = false;
 	tagdefs = [
-		["<i>", "</i>", "italics", "@font-style", ["italic", "normal"], true],
-		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal"], true],
-		["<sup>", "</sup>", "superscript", "@vertical-align", ["sup", "sup"], true],
-		["<sub>", "</sub>", "subscript", "@vertical-align", ["sub", "sub"], true],
-		["<sc>", "</sc>", "smallcaps", "@font-variant", ["small-caps", "small-caps"], true],
-		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
-		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true"], true],
-		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner"],  "'"],
-		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true"],  '"']
+		["<i>", "</i>", "italics", "@font-style", ["italic", "normal","normal"], true],
+		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal","normal"], true],
+		["<sup>", "</sup>", "superscript", "@vertical-align", ["sup", "sup","baseline"], true],
+		["<sub>", "</sub>", "subscript", "@vertical-align", ["sub", "sub","baseline"], true],
+		["<sc>", "</sc>", "smallcaps", "@font-variant", ["small-caps", "small-caps","normal"], true],
+		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
+		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
+		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner","true"],  "'"],
+		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true","true"],  '"']
 	];
 	for (pos = 0; pos < 2; pos += 1) {
 		p = ["-", "-inner-"][pos];
@@ -6764,7 +6787,7 @@ CSL.Util.FlipFlopper = function (state) {
 			flipTags[tagdefs[pos][1]] = tagdefs[pos][5];
 			openToClose[tagdefs[pos][0]] = tagdefs[pos][1];
 			openToDecorations[tagdefs[pos][0]] = [tagdefs[pos][3], tagdefs[pos][4]];
-			okReverse[tagdefs[pos][3]] = [tagdefs[pos][3], [tagdefs[pos][4][1], tagdefs[pos][1]]];
+			okReverse[tagdefs[pos][3]] = [tagdefs[pos][3], [tagdefs[pos][4][2], tagdefs[pos][1]]];
 		}
 		return [closeTags, flipTags, openToClose, openToDecorations, okReverse];
 	};
@@ -7132,7 +7155,7 @@ CSL.Output.Formats.prototype.html = {
 	"@font-style/normal": "<span style=\"font-style:normal;\">%%STRING%%</span>",
 	"@font-variant/small-caps": "<span style=\"font-variant:small-caps;\">%%STRING%%</span>",
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
-	"@font-variant/normal": false,
+	"@font-variant/normal": "<span style=\"font-variant:normal;\">%%STRING%%</span>",
 	"@font-weight/bold": "<b>%%STRING%%</b>",
 	"@font-weight/normal": "<span style=\"font-weight:normal;\">%%STRING%%</span>",
 	"@font-weight/light": false,
@@ -7430,7 +7453,7 @@ CSL.Registry.prototype.dorefreshes = function () {
 			regtoken.ambig = undefined;
 			Item = this.state.retrieveItem(key);
 			if ("undefined" === typeof akey) {
-				CSL.getAmbiguousCite.call(this.state, Item);
+				akey = CSL.getAmbiguousCite.call(this.state, Item);
 				this.state.tmp.taintedItemIDs[key] = true;
 			}
 			this.registry[key] = regtoken;

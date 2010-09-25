@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.55
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug that triggered "registry[id] undefined"
+  error in some disambiguation operations.
+
+- Fix bug affecting voluntary suppression
+  of small caps in rich text parsing engine.
+
+-----------
+Enhancement
+-----------
+
+- Add methods for setting multilingual 
+  transliteration, translation, and sort 
+  parameters on configured processor.
+
+
+=========================
 Changes in version 1.0.54
 =========================
 
