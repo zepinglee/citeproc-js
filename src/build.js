@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.55";
+	this.processor_version = "1.0.56";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -347,15 +347,19 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
 	}
 }
 	
-CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
+CSL.Engine.prototype.setLangTagsForCslNameTransliteration = function (tags) {
+	var i, ilen;
+	this.opt['locale-name'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-name'].push(tags[i]);
+	}
+}
+	
+CSL.Engine.prototype.setLangTagsForCslTitleTransliteration = function (tags) {
 	var i, ilen;
 	this.opt['locale-pri'] = [];	
 	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
 		this.opt['locale-pri'].push(tags[i]);
-	}
-	this.opt['locale-name'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-name'].push(tags[i]);
 	}
 }
 	

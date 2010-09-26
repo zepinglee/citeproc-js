@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.56
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Provide for separate configuration of name
+  and title transliterations.
+
+
+=========================
 Changes in version 1.0.55
 =========================
 
