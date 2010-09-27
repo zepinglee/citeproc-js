@@ -51,7 +51,7 @@ CSL.Node["else-if"] = {
 	// these function are the same as those in if, might just clone
 	build: function (state, target) {
 		var func, tryposition;
-		if (this.tokentype === CSL.START) {
+		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			if ("number" === typeof this.strings.position) {
 				tryposition = this.strings.position;
 				//
@@ -89,7 +89,7 @@ CSL.Node["else-if"] = {
 				this.evaluator = state.fun.match.any;
 			}
 		}
-		if (this.tokentype === CSL.END) {
+		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];
 				return next;

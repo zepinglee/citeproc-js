@@ -49,7 +49,7 @@
 CSL.Node["if"] = {
 	build: function (state, target) {
 		var tryposition, func;
-		if (this.tokentype === CSL.START) {
+		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			if ("number" === typeof this.strings.position) {
 				tryposition = this.strings.position;
 				func = function (state, Item, item) {
@@ -84,7 +84,7 @@ CSL.Node["if"] = {
 				this.evaluator = state.fun.match.any;
 			}
 		}
-		if (this.tokentype === CSL.END) {
+		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			// closingjump
 			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];

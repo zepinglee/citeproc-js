@@ -1357,7 +1357,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.56";
+	this.processor_version = "1.0.57";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3112,7 +3112,7 @@ CSL.Node["date-part"] = {
 CSL.Node["else-if"] = {
 	build: function (state, target) {
 		var func, tryposition;
-		if (this.tokentype === CSL.START) {
+		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			if ("number" === typeof this.strings.position) {
 				tryposition = this.strings.position;
 				func = function (state, Item, item) {
@@ -3145,7 +3145,7 @@ CSL.Node["else-if"] = {
 				this.evaluator = state.fun.match.any;
 			}
 		}
-		if (this.tokentype === CSL.END) {
+		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];
 				return next;
@@ -3249,7 +3249,7 @@ CSL.Node.group = {
 CSL.Node["if"] = {
 	build: function (state, target) {
 		var tryposition, func;
-		if (this.tokentype === CSL.START) {
+		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			if ("number" === typeof this.strings.position) {
 				tryposition = this.strings.position;
 				func = function (state, Item, item) {
@@ -3282,7 +3282,7 @@ CSL.Node["if"] = {
 				this.evaluator = state.fun.match.any;
 			}
 		}
-		if (this.tokentype === CSL.END) {
+		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
 				var next = this[state.tmp.jump.value()];
 				return next;
