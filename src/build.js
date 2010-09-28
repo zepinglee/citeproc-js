@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.57";
+	this.processor_version = "1.0.58";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -569,28 +569,28 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 						if (lang === o) {
 							updateme = true;
 							newname[part] = str;
-							break;
-						}
-					}
-					if (!updateme) {
-						if (this.opt.lang) {
-							//
-							// Fallback to style default language.
-							//
-							if (this.opt.lang.indexOf("-") > -1) {
-								newopt = this.opt.lang.slice(0, this.opt.lang.indexOf("-"));
-							} else {
-								newopt = this.opt.lang;
-							}
-							if (lang === newopt) {
-								updateme = true;
-								newname[part] = str;
+							if (lang.indexOf("-") === -1) {
 								if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
 									newname["static-ordering"] = false;
 								}
 							}
+							break;
 						}
 					}
+					//if (!updateme) {
+						//
+						// If selected language is a lone primary subtag,
+						// let its script govern name ordering.  Otherwise,
+						// let the headline entry govern name ordering.
+						//
+					//	if (lang.indexOf("-") === -1) {
+					//		updateme = true;
+					//		newname[part] = str;
+					//		if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
+					//			newname["static-ordering"] = false;
+					//		}
+					//	}
+					//}
 				}
 			}
 		}

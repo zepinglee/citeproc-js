@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.58
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- In multilingual names handling,
+  eliminate fallback to default locale
+  language. (Running with this configuration
+  in an application proved to be confusing.)
+
+
+=========================
 Changes in version 1.0.57
 =========================
 

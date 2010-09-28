@@ -62,7 +62,7 @@ Beato T., T. Kitano, R. Atkinson
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-name-ja-alalc97">
+      default-locale="en-US-x-name-ja-alalc97-x-name-en">
   <info>
     <id />
     <title />
