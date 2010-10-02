@@ -776,9 +776,13 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	empties = 0;
 	myblobs = this.output.queue.slice();
 
-
-	if (CSL.TERMINAL_PUNCTUATION.indexOf(this.citation.opt.layout_suffix) > -1) {
-		CSL.Output.Queue.quashDuplicateFinalPunctuation(myblobs, this.citation.opt.layout_suffix.slice(0, 1));
+	var use_layout_suffix = this.citation.opt.layout_suffix;
+	
+	if (CSL.TERMINAL_PUNCTUATION.indexOf(use_layout_suffix) > -1) {
+		var res = CSL.Output.Queue.quashDuplicateFinalPunctuation(this, myblobs, use_layout_suffix.slice(0, 1));
+		if (res === true) {
+			use_layout_suffix = use_layout_suffix.slice(1);
+		}
 	}
 
 	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
@@ -795,6 +799,11 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 		this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
+		// print("queue: "+this.output.queue.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].decorations);
+		
+		// XXXZ
+		CSL.Output.Queue.quashDuplicateFinalPunctuation(this, this.output.queue[this.output.queue.length - 1], "#");
+		
 		composite = this.output.string(this, this.output.queue);
 		this.tmp.suppress_decorations = false;
 		// meaningless assignment
@@ -834,10 +843,10 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	}
 	result += this.output.renderBlobs(objects);
 	if (result) {
-		if (result.slice(-1) === this.citation.opt.layout_suffix.slice(0)) {
+		if (result.slice(-1) === use_layout_suffix.slice(0)) {
 			result = result.slice(0, -1);
 		}
-		result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(this.citation.opt.layout_suffix);
+		result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(use_layout_suffix);
 		if (!this.tmp.suppress_decorations) {
 			len = this.citation.opt.layout_decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
