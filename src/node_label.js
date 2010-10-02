@@ -148,4 +148,4 @@ CSL.evaluateStringPluralism = function (str) {
 	} else {
 		return 0;
 	}
-}
+};
