@@ -200,6 +200,33 @@ CSL.Node.names = {
 					}
 					if ((state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") || (state.opt.xclass === "note" && item && "number" === typeof item.position && item.position !== CSL.POSITION_FIRST)) {
 //					if ((state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
+
+						if (namesets.length > 1) {
+							// Similar logic to that embedded in evaluateLabel
+							// (see node_label.js)
+							// The two functions should probably be combined, but
+							// not possible currently, where they work
+							// on different structures of the same data.
+							// One for later.
+							var creatorCount = -1;
+							var lastWasPerson = true;
+							state.tmp.forceEtAl = false;
+							for (var i = 0, ilen = namesets.length; i < ilen; i += 1) {
+								if ("pers" === namesets[i].species) {
+									creatorCount += 1;
+									lastWasPerson = true;
+								} else {
+									if (!lastWasPerson) {
+										creatorCount += 1;
+									}
+									lastWasPerson = false;
+								}
+								if (creatorCount) {
+									state.tmp.forceEtAl = true;
+									break;
+								}
+							}
+						}
 						namesets = namesets.slice(0, 1);
 						if (namesets.length) {
 							if (namesets[0].species === "pers") {
@@ -490,25 +517,14 @@ CSL.Node.names = {
 					//
 					// configure label if poss
 					label = false;
+					var labelnode = state.output.getToken("label");
 					if (state.output.getToken("label").strings.label_position) {
 						if (common_term) {
 							termname = common_term;
 						} else {
 							termname = nameset.variable;
 						}
-						if (!state.output.getToken("label").strings.form) {
-							form = "long";
-						} else {
-							form = state.output.getToken("label").strings.form;
-						}
-						if ("number" === typeof state.output.getToken("label").strings.plural) {
-							plural = state.output.getToken("label").strings.plural;
-						} else if (nameset.names.length > 1) {
-							plural = 1;
-						} else {
-							plural = 0;
-						}
-						label = state.getTerm(termname, form, plural);
+						label = CSL.evaluateLabel(labelnode, state, Item, item, termname, nameset.variable);
 					}
 
 					if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
@@ -595,17 +611,24 @@ CSL.Node.names = {
 							}
 						}
 						overlength = display_names.length > discretionary_names_length;
+						// This var is used to control contextual join, and
+						// lies about the number of names when forceEtAl is true,
+						// unless normalized.
+						if (discretionary_names_length > display_names.length) {
+							discretionary_names_length = display_names.length;
+						}
 						et_al = false;
 						and_term = "";
 
-						if (sane && overlength) {
+						// forceEtAl is relevant when the author list is
+						// truncated to eliminate clutter.
+						if (sane && (overlength || state.tmp.forceEtAl)) {
 							if (! state.tmp.sort_key_flag) {
 								et_al = et_al_pers;
 								//et_al = state.output.getToken("etal").strings.et_al_term;
 
 								// XXXXX: temporary hack to exhibit existing context-sensitive
 								// et al. join behavior.
-
 								if (discretionary_names_length > 1) {
 									state.output.getToken("et-al-pers").strings.prefix = state.output.getToken("et-al-pers").strings["prefix-multiple"];
 								} else {
@@ -619,9 +642,11 @@ CSL.Node.names = {
 								display_names = display_names.slice(0, discretionary_names_length);
 							}
 						} else {
-							if (!state.tmp.sort_key_flag && display_names.length > 1) {
-								if (state.output.getToken("name").strings.and) {
-									and_term = state.output.getToken("name").strings.and;
+							if (!state.tmp.sort_key_flag) {
+								if (display_names.length > 1) {
+									if (state.output.getToken("name").strings.and) {
+										and_term = state.output.getToken("name").strings.and;
+									}
 								}
 							}
 						}
@@ -912,6 +937,8 @@ CSL.Node.names = {
 				state.tmp.use_ellipsis = false;
 
 				state.tmp.can_block_substitute = false;
+				
+				state.tmp.forceEtAl = false;
 			};
 			this.execs.push(func);
 
