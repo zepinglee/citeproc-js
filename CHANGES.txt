@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.59
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Extend punctuation swapping to cases
+  where quotes entered within a locator.
+
+- Implement context-sensitive pluralization
+  of labels.
+
+- Fix bug affecting givennames with more
+  than two words when rendered in full
+  form without initialization.
+
+- Fixes et al. behavior affecting some
+  mixed personal and institutional name
+  combinations.
+
+
+=========================
 Changes in version 1.0.58
 =========================
 
