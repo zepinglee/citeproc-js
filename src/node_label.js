@@ -62,34 +62,15 @@ CSL.Node.label = {
 		this.execs.push(func);
 		if (state.build.term) {
 			term = state.build.term;
-			plural = 0;
+			plural = false;
 			if (!this.strings.form) {
 				this.strings.form = "long";
 			}
-			form = this.strings.form;
-			if ("number" === typeof this.strings.plural) {
-				plural = this.strings.plural;
-				//SNIP-START
-				if (debug) {
-					CSL.debug("plural: " + this.strings.plural);
-				}
-				//SNIP-END
-			}
 			func = function (state, Item, item) {
-				var myterm;
-				if ("locator" === term) {
-					if (item && item.label) {
-						myterm = item.label;
-					}
-				}
-				if (!myterm) {
-					myterm = "page";
-				}
-				myterm = state.getTerm(myterm, form, plural);
-				if (this.strings["include-period"]) {
-					myterm += ".";
-				}
-				state.output.append(myterm, this);
+				// This is abstracted away, because the same
+				// logic must be run in cs:names.
+				var termtxt = CSL.evaluateLabel(this, state, Item, item, term);
+				state.output.append(termtxt, this);
 			};
 			this.execs.push(func);
 			state.build.plural = false;
@@ -100,4 +81,71 @@ CSL.Node.label = {
 	}
 };
 
+CSL.evaluateLabel = function (node, state, Item, item, term, termvar) {
+	var myterm;
+	if ("locator" === term) {
+		if (item && item.label) {
+			myterm = item.label;
+		}
+		if (!myterm) {
+			myterm = "page";
+		}
+	} else {
+		myterm = term;
+	}
+	if (!termvar) {
+		termvar = term;
+	}
+	// Plurals detection.
+	var plural = node.strings.plural;
+	if ("number" !== typeof plural) {
+		if (CSL.CREATORS.indexOf(termvar) > -1) {
+			// check for plural creator
+			// This is a little tricky, because an institutional
+			// name following an individual is an affiliation.
+			var creatorCount = -1;
+			var lastWasPerson = true;
+			plural = 0;
+			for (var i = 0, ilen = Item[termvar].length; i < ilen; i += 1) {
+				if (Item[termvar][i].given) {
+					creatorCount += 1;
+					lastWasPerson = true;
+				} else {
+					if (!lastWasPerson) {
+						creatorCount += 1;
+					}
+					lastWasPerson = false;
+				}
+				if (creatorCount) {
+					plural = 1;
+					break;
+				}
+			}
+		} else if ("locator" == term) {
+			// check for plural flat field in supplementary item
+			if (item) {
+				plural = CSL.evaluateStringPluralism(item.locator);				
+			}
+		} else if (Item[term]) {
+			// check for plural flat field in main Item
+			plural = CSL.evaluateStringPluralism(Item[term]);			
+		}
+		// cleanup
+		if ("number" !== typeof plural) {
+			plural = 0;
+		}
+	}
+	var termtxt = state.getTerm(myterm, node.strings.form, plural);
+	if (node.strings["strip-periods"]) {
+		termtxt = termtxt.replace(/\./g, "");
+	}
+	return termtxt;
+}
 
+CSL.evaluateStringPluralism = function (str) {
+	if (str && str.match(/(?:[0-9], *[0-9]| and |&|[0-9] *- *[0-9])/)) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
