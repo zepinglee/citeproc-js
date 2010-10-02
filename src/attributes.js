@@ -444,10 +444,14 @@ CSL.Attributes["@sort"] = function (state, arg) {
 
 
 CSL.Attributes["@plural"] = function (state, arg) {
-	if ("always" === arg) {
+	// Accepted values of plural attribute differ on cs:text
+	// and cs:label nodes.
+	if ("always" === arg || "true" === arg) {
 		this.strings.plural = 1;
-	} else if ("never" === arg) {
+	} else if ("never" === arg || "false" === arg) {
 		this.strings.plural = 0;
+	} else if ("contextual" === arg) {
+		this.strings.plural = false;
 	}
 };
 
