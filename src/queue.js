@@ -609,8 +609,8 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
 	var pre_quote, pos, len;
 	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret.slice(-1)) > -1) {
-
 		if (use_delim) {
+					
 			pos = use_delim.indexOf(" ");
 			if (pos === -1) {
 				pos = use_delim.length;
@@ -703,7 +703,10 @@ CSL.Output.Queue.appendPunctuationToSuffix = function (predecessor, punct) {
 	}
 };
 
-CSL.Output.Queue.quashDuplicateFinalPunctuation = function (myblobs, chr) {
+// This is dual-purposed to move terminal punctuation inside a set 
+// of quotes, as needed to address punctuation handling for locators 
+// that contain quotes in rich text.  Fault reported by Sean Takats.
+CSL.Output.Queue.quashDuplicateFinalPunctuation = function (state, myblobs, chr) {
 	if ("string" === typeof myblobs) {
 		if (chr === myblobs.slice(-1)) {
 			return myblobs.slice(0, -1);
@@ -711,13 +714,28 @@ CSL.Output.Queue.quashDuplicateFinalPunctuation = function (myblobs, chr) {
 			return myblobs;
 		}
 	} else if (myblobs.length) {
+		// XXXZ FIXME (done): swap punctuation for quotes in locators
+		// Note that this makes no effort to control for duplicates;
+		// but if this takes effect mainly to cope with in-field quotes,
+		// such as might appear at the end of a locator, it should not
+		// cause any difficulties that can't be coped with easily at
+		// the user level.
+		if (state.getOpt('punctuation-in-quote')) {
+			var decorations = myblobs.slice(-1)[0].decorations;
+			for (var i = 0, ilen = decorations.length; i < ilen; i += 1) {
+				if (decorations[i][0] === '@quotes' && decorations[i][1] === 'true') {
+					myblobs.slice(-1)[0].blobs.slice(-1)[0].blobs += chr;
+					return true;
+				}
+			}
+		}
 		var lastblob = myblobs.slice(-1)[0];
 		if (lastblob.strings.suffix && chr === lastblob.strings.suffix.slice(-1)) {
 			lastblob.strings.suffix = lastblob.strings.suffix.slice(0, -1);
 		} else if ("object" === typeof lastblob.blobs) {
-			return CSL.Output.Queue.quashDuplicateFinalPunctuation(lastblob.blobs, chr);
+			return CSL.Output.Queue.quashDuplicateFinalPunctuation(state, lastblob.blobs, chr);
 		} else if ("string" === typeof lastblob.blobs) {
-			lastblob.blobs = CSL.Output.Queue.quashDuplicateFinalPunctuation(lastblob.blobs, chr);
+			lastblob.blobs = CSL.Output.Queue.quashDuplicateFinalPunctuation(state, lastblob.blobs, chr);
 		}
 	}
 	return false;
