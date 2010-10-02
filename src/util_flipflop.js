@@ -55,13 +55,6 @@ CSL.Util.FlipFlopper = function (state) {
 	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes, allTagsLst, lst;
 	this.state = state;
 	this.blob = false;
-	//
-	// XXXZ
-	// Bug: nodecor doesn't work with small-caps, possibly other element.
-	// Possibly extend 5th argument with the 'nocase' element as 
-	// a third sub-argument.  Currently, it's using 'normal', but
-	// not in a way that makes sense when generalized beyond italics.
-	//
 	tagdefs = [
 		["<i>", "</i>", "italics", "@font-style", ["italic", "normal","normal"], true],
 		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal","normal"], true],
@@ -291,6 +284,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"), "g");
 		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
 	}
+	// XXXZ FIXME (done): swap punctuation for locators
 	return strs;
 };
 //
@@ -315,9 +309,11 @@ CSL.Util.FlipFlopper.prototype.processTags = function () {
 			tag = this.strs[posA];
 			prestr = this.strs[(posA - 1)];
 			// start by pushing in the trailing text string
-			newblob = new CSL.Blob(false, prestr);
-			blob = this.blobstack.value();
-			blob.push(newblob);
+			if (prestr) {
+				newblob = new CSL.Blob(false, prestr);
+				blob = this.blobstack.value();
+				blob.push(newblob);
+			}
 //
 // (a) For closing tags, check to see if it matches something
 // on the working stack.  If so, pop the stack and close the
@@ -400,9 +396,11 @@ CSL.Util.FlipFlopper.prototype.processTags = function () {
 //
 		if (this.strs.length > 2) {
 			str = this.strs[(this.strs.length - 1)];
-			blob = this.blobstack.value();
-			newblob = new CSL.Blob(false, str);
-			blob.push(newblob);
+			if (str) {
+				blob = this.blobstack.value();
+				newblob = new CSL.Blob(false, str);
+				blob.push(newblob);
+			}
 		}
 	}
 	return this.blob;
