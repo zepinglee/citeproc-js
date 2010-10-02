@@ -303,7 +303,7 @@ CSL.Util.Names.unInitialize = function (state, name) {
 		return "";
 	}
 	namelist = name.split(/(?:\-|\s+)/);
-	punctlist = name.match(/(\-|\s+)/);
+	punctlist = name.match(/(\-|\s+)/g);
 	ret = "";
 	for (pos = 0, len = namelist.length; pos < len; pos += 1) {
 		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1))) {
