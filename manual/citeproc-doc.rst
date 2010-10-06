@@ -49,7 +49,7 @@ Introduction
 ------------
 
 This is the site administrator's manual for ``citeproc-js``, a
-Javascript implementation of the |link| `Citation Style Language
+JavaScript implementation of the |link| `Citation Style Language
 (CSL)`__ used by Zotero, Mendeley and other popular reference
 tools to format citations in any of the hundreds of styles
 supplied by the CSL style repository. [#]_  The processor complies with version 1.0 of the CSL
@@ -93,7 +93,7 @@ __ http://bitbucket.org/bdarcus/csl-utils/
 Setup and System Requirements
 -----------------------------
 
-The processor is written in Javascript, one of the interesting
+The processor is written in JavaScript, one of the interesting
 features of which is the lack of a standard method of I/O.  As a
 result, the processor must be wrapped in other code to get data in and
 out of it, and every installation is going to be a little different.
@@ -159,10 +159,10 @@ to run.  These may be installed and set up using the following two commands
 
 
 #######################
-Javascript interpreters
+JavaScript interpreters
 #######################
 
-An ECMAscript (Javascript) interpreter is required to run the
+An ECMAscript (JavaScript) interpreter is required to run the
 processor.  The processor code itself is written in such a way
 that it should run on a wide variety of platforms, including
 Rhino, Spidermonkey and Tracemonkey on the server side, and
@@ -171,11 +171,11 @@ Mozilla, Safari, Google Chrome, and Opera.
 
 To parse the XML files used to define locales and styles, the
 processor relies on a supplementary module, which must be loaded into
-the same Javascript context as the processor itself.  The
+the same JavaScript context as the processor itself.  The
 ``xmle4x.js`` and ``xmldom.js`` files shipped with the processor
 source should serve this purpose.  The ``xmle4x.js`` module supports
 Gecko-based browsers, and other platforms that embed the Rhino,
-Spidermonkey or Tracemonkey Javascript interpreters.  The ``xmldom.js``
+Spidermonkey or Tracemonkey JavaScript interpreters.  The ``xmldom.js``
 module supports all other browsers as well.
 
 For an example of working code, the source behind the 
@@ -200,7 +200,7 @@ file and the test fixtures can be refreshed using the
 ``./test.py -r`` command.
 
 To build the processor, the ``citeproc.js`` source code should be
-loaded into the Javascript interpreter context, together with a
+loaded into the JavaScript interpreter context, together with a
 ``sys`` object provided by the integrator (see below), and the desired
 CSL style (as a string).
 
@@ -241,7 +241,7 @@ them required, and one of them optional:
                                  lang)
 
 *sys*
-    A Javascript object containing the functions
+    A JavaScript object containing the functions
     ``retrieveLocale()`` and ``retrieveItem()``.
 
 *style*
@@ -558,7 +558,7 @@ Return value
 !!!!!!!!!!!!
 
 The value returned by this command is a two-element list, composed of
-a Javascript array containing certain formatting parameters, and a
+a JavaScript array containing certain formatting parameters, and a
 list of strings representing bibliography entries.  It is the responsibility
 of the calling application to compose the list into a finish string
 for insertion into the document.  The first
@@ -632,7 +632,7 @@ Selective output
 !!!!!!!!!!!!!!!!
 
 The ``makeBibliography()`` command accepts one optional argument,
-which is a nested Javascript object that may contain
+which is a nested JavaScript object that may contain
 *one of* the objects ``select``, ``include`` or ``exclude``, and
 optionally an additional  ``quash`` object.  Each of these four objects
 is an array containing one or more objects with ``field`` and ``value``
@@ -996,7 +996,7 @@ Item fields
 ###########
 
 The locally defined ``retrieveItem()`` function must return data
-for the target item as a simple Javascript array containing recognized
+for the target item as a simple JavaScript array containing recognized
 CSL fields. [#]_  The layout of the three field types is described below.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1020,7 +1020,7 @@ Names
 ^^^^^
 
 When present in the item data, CSL name variables must
-be delivered as a list of Javascript arrays, with one
+be delivered as a list of JavaScript arrays, with one
 array for each name represented by the variable.
 Simple personal names are composed of ``family`` and ``given`` elements,
 containing respectively the family and given name of the individual.
@@ -1145,7 +1145,7 @@ Sometimes it might be desired to handle a Latin or Cyrillic
 transliteration as if it were a fixed (non-Byzantine) name.  This
 behavior can be prompted by including a ``static-ordering`` element in
 the name array.  The actual value of the element is irrelevant, so
-long as it returns true when tested by the Javascript interpreter.
+long as it returns true when tested by the JavaScript interpreter.
 
 .. sourcecode:: js
 
@@ -1164,8 +1164,8 @@ long as it returns true when tested by the Javascript interpreter.
 Dates
 ^^^^^
 
-Date fields are Javascript objects, within which the "date-parts" element
-is a nested Javascript array containing a start
+Date fields are JavaScript objects, within which the "date-parts" element
+is a nested JavaScript array containing a start
 date and optional end date, each of which consists of a year,
 an optional month and an optional day, in that order if present.
 
@@ -1370,7 +1370,7 @@ Values added to individual citation item objects may include:
   in ``citationItems``.
 
 Citations are registered and accessed by the processor internally
-in arrays and Javascript objects.  Calling applications should
+in arrays and JavaScript objects.  Calling applications should
 not need to access this data directly, but it is available in
 the processor registry, at the following locations:
 
@@ -1913,7 +1913,7 @@ scripts that can be used to confirm that the system performs correctly
 after installation.  The tests begin as individual human-friendly
 fixtures written in a special format, shown in the sample file
 immediately below.  Tests are prepared for use by grinding them into a
-machine-friendly form (JSON), and by preparing an appropriate Javascript
+machine-friendly form (JSON), and by preparing an appropriate JavaScript
 execution wrapper for each.  These operations are performed automatically
 by the top-level test runner script that ships with the sources.
 
@@ -1930,7 +1930,7 @@ the following command::
     ./test.py -s
 
 Options and arguments can be used to select an alternative
-Javascript interpreter, or  to change or limit the set of tests
+JavaScript interpreter, or  to change or limit the set of tests
 run.  The script options are as follows:
 
 ``--help``: 
@@ -1956,7 +1956,7 @@ run.  The script options are as follows:
 ``--verbose``      
      Display test names during processing.
 
-The ``--tracemonkey`` option requires the ``jslibs`` Javascript
+The ``--tracemonkey`` option requires the ``jslibs`` JavaScript
 development environment.  The sources for ``jslibs`` can be obtained from |link| `Google Code`_.
 After installation, adjust the path to the ``jshost`` utility in ``./tests/config/test.cnf``.
 
@@ -1977,9 +1977,9 @@ __ http://gsl-nagoya-u.net/http/pub/citeproc-test.html
 Live Demo
 ---------
 
-When accessed using a Javascript-enabled browser with E4X support
+When accessed using a JavaScript-enabled browser with E4X support
 (such as |link| `Firefox`__), the ``./demo/demo.html`` file in the source archive
-(or |link| `online`__) will invoke the processor to render a few citations.  The Javascript
+(or |link| `online`__) will invoke the processor to render a few citations.  The JavaScript
 files accompanying the page in the ``./demo`` directory show the basic
 steps required to load and run the processor, whether in the browser
 or server-side.
