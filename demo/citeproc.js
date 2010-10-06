@@ -1366,7 +1366,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.59";
+	this.processor_version = "1.0.60";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1377,6 +1377,9 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	this.transform = new CSL.Transform(this);
 	this.setAbbreviations = function (nick) {
 		this.transform.setAbbreviations(nick);
+	};
+	this.setParseNames = function (val) {
+		this.opt['parse-names'] = val;
 	};
 	this.opt = new CSL.Engine.Opt();
 	this.tmp = new CSL.Engine.Tmp();
@@ -1844,6 +1847,7 @@ CSL.Engine.Opt = function () {
 	this["et-al-subsequent-min"] = false;
 	this["et-al-subsequent-use-first"] = false;
 	this["demote-non-dropping-particle"] = "display-and-sort";
+	this["parse-names"] = true;
 	this.citation_number_slug = false;
 };
 CSL.Engine.Tmp = function () {
@@ -3994,7 +3998,7 @@ CSL.Node.names = {
 					llen = nameset.names.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
 						name = nameset.names[ppos];
-						if (name["parse-names"]) {
+						if (name["parse-names"] || state.opt["parse-names"]) {
 							state.parseName(name);
 						}
 						if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1)) {
@@ -6293,14 +6297,14 @@ CSL.Util.Names.initNameSlices = function (state) {
 };
 CSL.Engine.prototype.parseName = function (name) {
 	var m, idx;
-	if (! name["non-dropping-particle"]) {
+	if (! name["non-dropping-particle"] && name.family) {
 		m = name.family.match(/^([ a-z]+\s+)/);
 		if (m) {
 			name.family = name.family.slice(m[1].length);
 			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
 		}
 	}
-	if (! name.suffix) {
+	if (!name.suffix && name.given) {
 		m = name.given.match(/(\s*,!*\s*)/);
 		if (m) {
 			idx = name.given.indexOf(m[1]);
@@ -6311,7 +6315,7 @@ CSL.Engine.prototype.parseName = function (name) {
 			name.given = name.given.slice(0, idx);
 		}
 	}
-	if (! name["dropping-particle"]) {
+	if (! name["dropping-particle"] && name.given) {
 		m = name.given.match(/^(\s+[ a-z]*[a-z])$/);
 		if (m) {
 			name.given = name.given.slice(0, m[1].length * -1);
