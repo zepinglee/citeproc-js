@@ -72,6 +72,10 @@ CSL.Engine.Opt = function () {
 	this["et-al-subsequent-use-first"] = false;
 
 	this["demote-non-dropping-particle"] = "display-and-sort";
+	// default of true, because none of our consuming
+	// applications so far store the various prefixes and 
+	// suffixes we support in separate fields.
+	this["parse-names"] = true;
 
 	this.citation_number_slug = false;
 };

@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.59";
+	this.processor_version = "1.0.60";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -61,6 +61,10 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	this.transform = new CSL.Transform(this);
 	this.setAbbreviations = function (nick) {
 		this.transform.setAbbreviations(nick);
+	};
+	// true or false
+	this.setParseNames = function (val) {
+		this.opt['parse-names'] = val;
 	};
 
 	this.opt = new CSL.Engine.Opt();

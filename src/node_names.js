@@ -371,7 +371,7 @@ CSL.Node.names = {
 					llen = nameset.names.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
 						name = nameset.names[ppos];
-						if (name["parse-names"]) {
+						if (name["parse-names"] || state.opt["parse-names"]) {
 							state.parseName(name);
 						}
 						if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1)) {
