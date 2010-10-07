@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.61
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Block needless initialization of names where
+  form is long, no initialization is requested,
+  and last names are identical.
+
+Thanks to Carles Pina for this bug report.
+
+
+=========================
 Changes in version 1.0.60
 =========================
 
