@@ -1,6 +1,35 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.63
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix appendCitationCluster() to return
+  a simple string, and required by Zotero 
+  RTF Scan or any similar utility.
+
+
+=========================
+Changes in version 1.0.62
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Block needless initialization of names where
+  the full name is requested and initialization
+  is not.
+
+Thanks again to Carles Pina for reporting this
+fault.
+
+
+=========================
 Changes in version 1.0.61
 =========================
 

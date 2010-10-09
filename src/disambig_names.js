@@ -77,7 +77,7 @@ CSL.Registry.NameReg = function (state) {
 
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
 		var pos, len, items, param;
-		if ((!form || 'long' == form) && 'string' !== typeof initials) {
+		if ((!form || 'long' == form || request_base == 2) && 'string' !== typeof initials) {
 			return 2;
 		}
 		set_keys(this.state, item_id, nameobj);
