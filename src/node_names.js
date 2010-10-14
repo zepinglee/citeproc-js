@@ -727,7 +727,10 @@ CSL.Node.names = {
 							// can't do this in disambig, because the availability
 							// of initials is not a global parameter.
 							val = state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos];
-							if (val === 1 && "undefined" === typeof this.strings["initialize-with"]) {
+							// This is limited to by-cite disambiguation.
+							if (val === 1 && 
+								state.opt["givenname-disambiguation-rule"] === "by-cite" && 
+								"undefined" === typeof this.strings["initialize-with"]) {
 								val = 2;
 							}
 							param = val;
