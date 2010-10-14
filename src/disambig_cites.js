@@ -341,7 +341,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 	//for (pos = 0, len = myIds.length; pos < len; pos += 1) {
 	//	this.state.tmp.taintedItemIDs[myIds[pos]] = true;
 	//}
-	if (myIds.length > 1) {
+	if (myIds && myIds.length > 1) {
 		for (pos = 0, len = myIds.length; pos < len; pos += 1) {
 			myItems.push(this.state.retrieveItem(myIds[pos]));
 		}
