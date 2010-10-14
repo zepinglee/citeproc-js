@@ -68,7 +68,8 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 		c = this.registry.citationreg.citationByIndex[pos];
 		citationsPre.push([c.citationID, c.properties.noteIndex]);
 	}
-	return this.processCitationCluster(citation, citationsPre, [])[1][0][1];
+	// Drop the data segment to return a list of pos/string pairs.
+	return this.processCitationCluster(citation, citationsPre, [])[1];
 };
 
 //SNIP-START
