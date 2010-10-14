@@ -48,177 +48,203 @@
 
 dojo.provide("citeproc_js.restore");
 
-var Xmycsl = "<style>"
-	  + "<citation disambiguate-add-givenname=\"true\">"
-	  + "  <sort>"
-	  + "    <key variable=\"title\"/>"
-	  + "  </sort>"
-	  + "  <layout delimiter=\"; \" prefix=\"(\" suffix=\")\">"
-	  + "    <names variable=\"author\">"
-	  + "    <name form=\"short\" initialize-with=\". \"/>"
-	  + "    </names>"
-	  + "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
-	  + "  </layout>"
-	  + "</citation>"
-	+ "</style>";
-
-var XITEM1 = {
-	"id": "ITEM-1",
-	"type": "book",
-	"title": "Book B",
-	"author": [
-		{
-			"family": "Doe",
-			"given": "John"
-		}
-	]
-};
-
-var XITEM2 = {
-	"id": "ITEM-2",
-	"type": "book",
-	"title": "Book A",
-	"author": [
-		{
-			"family": "Roe",
-			"given": "Jane"
-		}
-	]
-};
-
-var XITEM3 = {
-	"id": "ITEM-3",
-	"type": "book",
-	"title": "Book C",
-	"author": [
-		{
-			"family": "Doe",
-			"given": "Richard"
-		}
-	]
-};
-
-
-var XCITATION1 = {
-	"citationID": "CITATION-1",
-	"citationItems": [
-		{
-			"id": "ITEM-1"
+doh.registerGroup("citeproc_js.restore",
+	[
+		function testInstantiation() {
+			var t = citeproc_js.restore;
+			function testme () {
+				if ("undefined" == typeof Item){
+					Item = {"id": "Item-1"};
+				}
+				try {
+					var sys = new RhinoTest();
+					var style = new CSL.Engine(sys,t.csl);
+					return "Success";
+				} catch (e) {
+					return "Failure";
+				}
+			}
+			var res = testme();
+			doh.assertEqual( "Success", res );
 		},
-		{
-			"id": "ITEM-2"
+		function testThatItWorksAtAll() {
+			var t = citeproc_js.restore;
+			function testme () {
+				var sys, style, res1, res2, data;
+				sys = new RhinoTest([t.item1, t.item2]);
+				style = new CSL.Engine(sys,t.csl);
+				try {
+					[data, res1] = style.processCitationCluster(t.citation1, [], []);
+					[data, res2] = style.processCitationCluster(t.citation2, [], []);
+					style.restoreProcessorState([t.citation1x, t.citation2x]);
+					return "Success";
+				} catch (e) {
+					return e;
+				}
+			}
+			doh.assertEqual("Success", testme());
+		},
+		function testRestore() {
+			var sys, style, res1, res2, res3, data;
+			var t = citeproc_js.restore;
+			sys = new RhinoTest([t.item1, t.item2, t.item3]);
+			style = new CSL.Engine(sys,t.csl);
+			[data, res1] = style.processCitationCluster(t.citation1, [], []);
+			[data, res2] = style.processCitationCluster(t.citation2, [["CITATION-1", 1]], []);
+			style.restoreProcessorState([t.citation1x, t.citation2x]);
+			[data, res3] = style.processCitationCluster(t.citation3, [["CITATION-1", 1],["CITATION-2", 2]], []);
+			doh.assertEqual("(Roe; J. Doe)", res3[0][1]);
+			doh.assertEqual(2, res3.length);
+			doh.assertEqual(0, res3[0][0]);
+			doh.assertEqual("(Roe; J. Doe)", res3[0][1]);
+		},
+		function testEmptyRestore() {
+			var sys, style, res1, res2, res3, data;
+			var t = citeproc_js.restore;
+			sys = new RhinoTest([t.item1, t.item2, t.item3]);
+			style = new CSL.Engine(sys,t.csl);
+			[data, res1] = style.processCitationCluster(t.citation1, [], []);
+			[data, res2] = style.processCitationCluster(t.citation2, [["CITATION-1", 1]], []);
+			style.restoreProcessorState();
+			[data, res3] = style.processCitationCluster(t.citation3, [], []);
+			doh.assertEqual(1, res3.length);
+			doh.assertEqual(0, res3[0][0]);
+			doh.assertEqual("(Doe)", res3[0][1]);
 		}
 	],
-	"properties": {
-		"index": 0,
-		"noteIndex": 1
-	}
-};
-
-var XCITATION1x = {
-	"citationID": "CITATION-1",
-	"citationItems": [
-		{
+	function(){  //setup
+		citeproc_js.restore.csl = "<style>"
+			+ "<citation disambiguate-add-givenname=\"true\">"
+			+ "  <sort>"
+			+ "    <key variable=\"title\"/>"
+			+ "  </sort>"
+			+ "  <layout delimiter=\"; \" prefix=\"(\" suffix=\")\">"
+			+ "    <names variable=\"author\">"
+			+ "    <name form=\"short\" initialize-with=\". \"/>"
+			+ "    </names>"
+			+ "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
+			+ "  </layout>"
+			+ "</citation>"
+			+ "</style>";
+		citeproc_js.restore.item1 = {
 			"id": "ITEM-1",
-			"position": 0,
-			"sortkeys": ["Book B"]
-		},
-		{
+			"type": "book",
+			"title": "Book B",
+			"author": [
+				{
+					"family": "Doe",
+					"given": "John"
+				}
+			]
+		};
+		citeproc_js.restore.item2 = {
 			"id": "ITEM-2",
-			"position": 0,
-			"sortkeys": [["Book A"]]
-		}
-	],
-	"properties": {
-		"index": 0,
-		"noteIndex": 1
-	}
-};
-
-var XCITATION2 = {
-	"citationID": "CITATION-2",
-	"citationItems": [
-		{
-			"id": "ITEM-2"
-		}
-	],
-	"properties": {
-		"index": 1,
-		"noteIndex": 2
-	}
-};
-
-var XCITATION2x = {
-	"citationID": "CITATION-2",
-	"citationItems": [
-		{
-			"id": "ITEM-2",
-			"position": 0,
-			"sortkeys": [["Book A"]]
-		}
-	],
-	"properties": {
-		"index": 1,
-		"noteIndex": 2
-	}
-};
-
-var XCITATION3 = {
-	"citationID": "CITATION-3",
-	"citationItems": [
-		{
-			"id": "ITEM-3"
-		}
-	],
-	"properties": {
-		"index": 2,
-		"noteIndex": 3
-	}
-};
-
-doh.register("citeproc_js.restore", [
-	function testInstantiation() {
-		function testme () {
-			if ("undefined" == typeof Item){
-				Item = {"id": "Item-1"};
+			"type": "book",
+			"title": "Book A",
+			"author": [
+				{
+					"family": "Roe",
+					"given": "Jane"
+				}
+			]
+		};
+		citeproc_js.restore.item3 = {
+			"id": "ITEM-3",
+			"type": "book",
+			"title": "Book C",
+			"author": [
+				{
+					"family": "Doe",
+					"given": "Richard"
+				}
+			]
+		};
+		citeproc_js.restore.citation1 = {
+			"citationID": "CITATION-1",
+			"citationItems": [
+				{
+					"id": "ITEM-1"
+				},
+				{
+					"id": "ITEM-2"
+				}
+			],
+			"properties": {
+				"index": 0,
+				"noteIndex": 1
 			}
-			try {
-				var sys = new RhinoTest();
-				var style = new CSL.Engine(sys,Xmycsl);
-				return "Success";
-			} catch (e) {
-				return "Failure";
+		};
+		citeproc_js.restore.citation1x = {
+			"citationID": "CITATION-1",
+			"citationItems": [
+				{
+					"id": "ITEM-1",
+					"position": 0,
+					"sortkeys": ["Book B"]
+				},
+				{
+					"id": "ITEM-2",
+					"position": 0,
+					"sortkeys": [["Book A"]]
+				}
+			],
+			"properties": {
+				"index": 0,
+				"noteIndex": 1
 			}
-		}
-		var res = testme();
-		doh.assertEqual( "Success", res );
+		};
+		citeproc_js.restore.citation2 = {
+			"citationID": "CITATION-2",
+			"citationItems": [
+				{
+					"id": "ITEM-2"
+				}
+			],
+			"properties": {
+				"index": 1,
+				"noteIndex": 2
+			}
+		};
+		citeproc_js.restore.citation2x = {
+			"citationID": "CITATION-2",
+			"citationItems": [
+				{
+					"id": "ITEM-2",
+					"position": 0,
+					"sortkeys": [["Book A"]]
+				}
+			],
+			"properties": {
+				"index": 1,
+				"noteIndex": 2
+			}
+		};
+		citeproc_js.restore.citation3 = {
+			"citationID": "CITATION-3",
+			"citationItems": [
+				{
+					"id": "ITEM-3"
+				}
+			],
+			"properties": {
+				"index": 2,
+				"noteIndex": 3
+			}
+		};
 	},
-	function testThatItWorksAtAll() {
-		function testme () {
-			var sys, style, res1, res2, data;
-			sys = new RhinoTest([XITEM1, XITEM2]);
-			style = new CSL.Engine(sys,mycsl);
-			try {
-				[data, res1] = style.processCitationCluster(XCITATION1, [], []);
-				[data, res2] = style.processCitationCluster(XCITATION2, [], []);
-				style.restoreProcessorState([XCITATION1x, XCITATION2x]);
-				return "Success";
-			} catch (e) {
-				return e;
-			}
-		}
-		doh.assertEqual("Success", testme());
-	},
-	function testThatItWorksAtAll() {
-		var sys, style, res1, res2, res3, data;
-		sys = new RhinoTest([XITEM1, XITEM2, XITEM3]);
-		style = new CSL.Engine(sys,Xmycsl);
-		[data, res1] = style.processCitationCluster(XCITATION1, [], []);
-		[data, res2] = style.processCitationCluster(XCITATION2, [["CITATION-1", 1]], []);
-		style.restoreProcessorState([XCITATION1x, XCITATION2x]);
-		[data, res3] = style.processCitationCluster(XCITATION3, [["CITATION-1", 1],["CITATION-2", 2]], []);
-		doh.assertEqual(2, res3.length);
-		doh.assertEqual(0, res3[0][0]);
-		doh.assertEqual("(Roe; J. Doe)", res3[0][1]);
+	function(){ // teardown
+		delete citeproc_js.restore.csl;
+		delete citeproc_js.restore.item1;
+		delete citeproc_js.restore.item2;
+		delete citeproc_js.restore.item3;
+		delete citeproc_js.restore.citation1;
+		delete citeproc_js.restore.citation1x;
+		delete citeproc_js.restore.citation2;
+		delete citeproc_js.restore.citation2x;
+		delete citeproc_js.restore.citation3;
 	}
-]);
+);
+
+
+var x = [
+]
