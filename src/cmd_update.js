@@ -48,14 +48,22 @@
 
 CSL.Engine.prototype.restoreProcessorState = function (citations) {
 	var pos, len, ppos, llen, item, Item, newitem, citationList, itemList, sortedItems;
+	
 	// Quickly restore state from citation details retained by
 	// calling application.
 	//
-	// Position details and sortkeys are assumed to be correct.  Item
+	// if citations are provided, position details and sortkeys 
+	// on the citation objects are are assumed to be correct.  Item
 	// data is retrieved, and sortedItems arrays are created and
 	// sorted as required by the current style.
+	//
+	// If citations is an empty list or nil, reset processor to
+	// empty state.
 	citationList = [];
 	itemList = [];
+	if (!citations) {
+		citations = [];
+	}
 	for (pos = 0, len = citations.length; pos < len; pos += 1) {
 		sortedItems = [];
 		for (ppos = 0, len = citations[pos].citationItems.length; ppos < llen; ppos += 1) {
@@ -79,8 +87,12 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 	// Register Items
 	this.updateItems(itemList);
 	// Rendering one citation restores remainder of processor state.
+	// If citations is empty, rest to empty state.
 	if (citations && citations.length) {
 		this.processCitationCluster(citations[0], [], citationList.slice(1));
+	} else {
+		this.registry = new CSL.Registry(this);
+		this.tmp = new CSL.Engine.Tmp();
 	}
 };
 
