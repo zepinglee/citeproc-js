@@ -1,6 +1,70 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.65
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not needlessly circumvent name disambiguation logic. Reverses 
+  a patch introduced in the 1.0.61 through 1.0.64 series of 
+  changes.
+
+- Apply the concise and correct fix for the undefined-in-name bug 
+  previously addressed by the 1.0.61 through 1.0.64 series of 
+  releases. Just replacing an undefined variable with an empty string 
+  does the trick.
+
+- Force an initialized name that lacks an explicit string 
+  value on initialize-with to full form, but only when using 
+  the by-cite disambiguation rule.
+
+- Permit update of year-suffix when it is added, in addition 
+  to when it exists and then changes.
+
+- Protect against an undefined value in updateItems(), which 
+  can apparently sometimes occur in the course of word processor 
+  plugin transactions.
+
+- Map page-first variable to page when snooping for a value. 
+  Prevents a lone page-first cs:text node within a cs:group 
+  from being suppressed for lack of output.
+
+- Repair recently amended appendCitationCluster() command to 
+  return a list of paired values, in accordance with the 
+  processor manual.
+
+- Extend restoreProcessorState() to work with an empty argument, 
+  for resetting the processor to a pristine state.  Use case 
+  suggested by Carles Pina.
+
+-------
+Cleanup
+-------
+
+- Align version tag with version in source in this release.
+
+- Refactor test fixture bundle for restoreProcessorState() function
+  to avoid setting globals, and add a fixture to test resetting to 
+  an empty state.
+
+
+=========================
+Changes in version 1.0.64
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Release tag to pick up the actual changes
+  claimed in 1.0.62 and 1.0.63, the checkins
+  of which were lost in the shuffle.
+
+
+=========================
 Changes in version 1.0.63
 =========================
 
