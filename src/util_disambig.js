@@ -76,7 +76,10 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID, tainters) {
 	ret.disambiguate = false;
 	for (pos = 0, len = config.names.length; pos < len; pos += 1) {
 		param = config.names[pos];
-		if (oldconfig && oldconfig.names[pos] !== param) {
+		// Fixes update bug affecting plugins, without impacting
+		// efficiency with update of large numbers of year-suffixed
+		// items.
+		if (oldconfig && (!oldconfig.names[pos] || oldconfig.names[pos] !== param)) {
 			for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
 				this.tmp.taintedItemIDs[tainters[ppos].id] = true;
 			}
