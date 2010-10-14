@@ -217,6 +217,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						variable = "shortTitle";
 					} else if (variable === "container-title") {
 						variable = "journalAbbreviation";
+					} else if (variable === "page-first") {
+						variable = "page";
 					}
 				}
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
