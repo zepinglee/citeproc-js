@@ -325,6 +325,9 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 	if (!name) {
 		return "";
 	}
+	if (!terminator) {
+		terminator = "";
+	}
 	namelist = name;
 	if (state.opt["initialize-with-hyphen"] === false) {
 		namelist = namelist.replace(/\-/g, " ");
