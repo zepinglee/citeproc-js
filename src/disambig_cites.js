@@ -243,7 +243,14 @@ CSL.Disambiguation.prototype.disYears = function () {
 	}
 	tokens.sort(this.state.registry.sorter.compareKeys);
 	for (pos = 0, len = tokens.length; pos < len; pos += 1) {
-		this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base, this.scanlist);
+		// Only pass this.scanlist on the first iteration.  The
+		// list will be iterated on execution, and should only
+		// be run once, to avoid losing update markers.
+		if (pos === 0) {
+			this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base, this.scanlist);
+		} else {
+			this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base);
+		}
 		tokens[pos].disambig.year_suffix = ""+pos;
 	}
 	this.lists[this.listpos] = [this.base, []];

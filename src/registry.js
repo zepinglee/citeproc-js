@@ -594,7 +594,8 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, ta
 	}
 	this.registry[id].ambig = akey;
 	var dome = false;
-	if (this.state.tmp.taintedItemIDs) {
+	// if (this.state.tmp.taintedItemIDs) {
+	if (tainters) {
 		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, id, tainters);
 	} else {
 		this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
