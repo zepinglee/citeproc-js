@@ -360,6 +360,9 @@ CSL.Node.names = {
 						}
 					}
 				}
+				if (!state.output.getToken("institution")) {
+					state.output.addToken("institution");
+				}
 				len = namesets.length;
 				for (pos = 0; pos < len; pos += 1) {
 					nameset = namesets[pos];
