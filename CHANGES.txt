@@ -1,6 +1,42 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.66
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Adjustment the conditions for application
+  of year-suffix values.
+
+- Avoid redundant application of year-suffix
+  values during disambiguation.
+
+- Provide a default "institution" format blob on
+  the output queue, to avoid a processor
+  crash with lone institutional author
+  names.
+
+Thanks to Carles Pina for bug reports and
+testing.
+
+-------
+Cleanup
+-------
+
+- Add e4x declaration when loading e4x parsing
+  code in demo.html, to avoid error in the Chrome
+  browser. Thanks to Fergus Gallagher for this fix.
+
+
+(If these changes show some staying power, we can
+discuss later whether to name this release
+"Route 66" or "Norman Conquest".)
+
+
+=========================
 Changes in version 1.0.65
 =========================
 
