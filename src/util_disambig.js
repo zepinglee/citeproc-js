@@ -93,7 +93,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID, tainters) {
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			// condition at line 312 of disambiguate.js protects against negative
 			// values of j
-			if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
+			if (oldconfig && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
 				for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
 					this.tmp.taintedItemIDs[tainters[ppos].id] = true;
 				}
@@ -103,11 +103,17 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID, tainters) {
 		}
 		ret.givens.push(param);
 	}
-	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
-		for (pos = 0, len = tainters.length; pos < len; pos += 1) {
-			this.tmp.taintedItemIDs[tainters[pos].id] = true;
+	if (tainters && tainters.length > 1) {
+		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
+			for (pos = 0, len = tainters.length; pos < len; pos += 1) {
+				var oldYS = this.registry.registry[tainters[pos].id].disambig.year_suffix;
+				if (tainters && (false === oldYS || oldYS != pos)) {
+					// alert(this.registry.registry[tainters[pos].id].disambig.year_suffix+" -- "+pos+" for "+tainters[pos].id);
+					this.tmp.taintedItemIDs[tainters[pos].id] = true;
+				}
+			}
+			oldconfig = false;
 		}
-		oldconfig = false;
 	}
 	ret.year_suffix = config.year_suffix;
 	ret.disambiguate = config.disambiguate;
