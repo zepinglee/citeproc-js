@@ -995,7 +995,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID, tainters) {
 		param = [];
 		llen = config.givens[pos].length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
-			if (oldconfig && oldconfig.givens[pos] && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
+			if (oldconfig && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
 				for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
 					this.tmp.taintedItemIDs[tainters[ppos].id] = true;
 				}
@@ -1005,11 +1005,16 @@ CSL.cloneAmbigConfig = function (config, oldconfig, itemID, tainters) {
 		}
 		ret.givens.push(param);
 	}
-	if (oldconfig && oldconfig.year_suffix !== config.year_suffix) {
-		for (pos = 0, len = tainters.length; pos < len; pos += 1) {
-			this.tmp.taintedItemIDs[tainters[pos].id] = true;
+	if (tainters && tainters.length > 1) {
+		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
+			for (pos = 0, len = tainters.length; pos < len; pos += 1) {
+				var oldYS = this.registry.registry[tainters[pos].id].disambig.year_suffix;
+				if (tainters && (false === oldYS || oldYS !== pos)) {
+					this.tmp.taintedItemIDs[tainters[pos].id] = true;
+				}
+			}
+			oldconfig = false;
 		}
-		oldconfig = false;
 	}
 	ret.year_suffix = config.year_suffix;
 	ret.disambiguate = config.disambiguate;
@@ -7640,7 +7645,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, ta
 	}
 	this.registry[id].ambig = akey;
 	var dome = false;
-	if (this.state.tmp.taintedItemIDs) {
+	if (tainters) {
 		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, id, tainters);
 	} else {
 		this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
@@ -7967,9 +7972,9 @@ CSL.Disambiguation.prototype.evalScan = function (ismax) {
 CSL.Disambiguation.prototype.disNames = function (ismax) {
 	var pos, len;
 	if (this.clashes[1] === 0) {
-		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
+		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -7977,14 +7982,14 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 	} else if (this.clashes[1] < this.clashes[0]) {
 		this.lists[this.listpos] = [this.base, this.partners];
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
 		} else {
 			this.lists.push([this.base, this.nonpartners]);
 		}
 	} else {
 		if (ismax || this.advance_mode) {
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
-				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base, this.scanlist);
+				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base);
 			}
 			if (ismax) {
 				this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -7998,9 +8003,9 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	var pos, len;
 	if (this.clashes[1] === 0) {
 		this.base = this.decrementNames();
-		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
+		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -8008,7 +8013,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	} else if (this.clashes[1] < this.clashes[0]) {
 		this.lists[this.listpos] = [this.base, this.partners];
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
 		} else {
 			this.lists.push([this.base, this.nonpartners]);
 		}
@@ -8016,7 +8021,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		this.base = CSL.cloneAmbigConfig(this.oldbase);
 		if (ismax || this.advance_mode) {
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
-				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base, this.scanlist);
+				this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base);
 			}
 			if (ismax) {
 				this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -8029,9 +8034,9 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 CSL.Disambiguation.prototype.disExtraText = function () {
 	var pos, len;
 	if (this.clashes[1] === 0) {
-		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
+		this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
+			this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
@@ -8050,7 +8055,11 @@ CSL.Disambiguation.prototype.disYears = function () {
 	}
 	tokens.sort(this.state.registry.sorter.compareKeys);
 	for (pos = 0, len = tokens.length; pos < len; pos += 1) {
-		this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base, this.scanlist);
+		if (pos === 0) {
+			this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base, this.scanlist);
+		} else {
+			this.state.registry.registerAmbigToken(this.akey, tokens[pos].id, this.base);
+		}
 		tokens[pos].disambig.year_suffix = ""+pos;
 	}
 	this.lists[this.listpos] = [this.base, []];
