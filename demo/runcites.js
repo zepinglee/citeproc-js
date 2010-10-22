@@ -183,13 +183,34 @@ var citationBB2 = {
 			id: "ITEM-6"
 		},
         {
-			id: "ITEM-10"
+			id: "ITEM-10",
+			label: "page",
+			locator: "685"
 		},
         {
-			id: "ITEM-11"
+			id: "ITEM-11",
+			label: "page",
+			locator: "388"
 		},
         {
-			id: "ITEM-12"
+			id: "ITEM-12",
+			label: "page",
+			locator: "359"
+		},
+        {
+			id: "ITEM-10",
+			label: "page",
+			locator: "690"
+		},
+        {
+			id: "ITEM-11",
+			label: "page",
+			locator: "393"
+		},
+        {
+			id: "ITEM-12",
+			label: "page",
+			locator: "364"
 		},
         {
 			id: "ITEM-6",

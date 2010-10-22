@@ -654,6 +654,16 @@
 	  <text variable="locator"/>
 	</group>
   </macro>
+  <macro name="bb-point-locator-subsequent">
+	<group delimiter=" ">
+	  <choose>
+		<if locator="page" match="none">
+		  <label form="symbol" variable="locator"/>
+		</if>
+	  </choose>
+	  <text variable="locator"/>
+	</group>
+  </macro>
 
   <!-- ### LEGAL CASE ### -->
   <macro name="bb-legal-case">
@@ -665,7 +675,7 @@
 		<text macro="bb-ibid"/>
 	  </else-if>
 	  <else-if position="subsequent">
-
+		<text macro="bb-legal-case-subsequent"/>
 	  </else-if>
 	</choose>
   </macro>
@@ -693,6 +703,26 @@
             <date-part name="year"/>	
           </date>
         </group>	
+      </group>
+	</group>
+  </macro>
+  <macro name="bb-legal-case-subsequent">
+    <group delimiter=", ">
+      <text variable="title"/>
+      <group delimiter=" ">
+		<choose>
+		  <if variable="issue">
+			<text variable="volume" prefix="[" suffix="]"/>
+			<text variable="issue"/>
+		  </if>
+		  <else>
+			<text variable="volume"/>
+		  </else>
+		</choose>
+        <text variable="container-title"/>
+		<group>
+		  <text macro="bb-point-locator-subsequent"/>
+		</group>
       </group>
 	</group>
   </macro>
