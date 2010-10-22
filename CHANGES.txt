@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.67
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reimplement duplicate terminal punctuation handling in new
+  adjustPunctuation() function.  Remove old functions used for this
+  purpose, which were excessively complex and fragile.  Some
+  operations in queue.js may now be redundant, since the new code does
+  a much better job of cleaning up the output queue in advance of
+  serialization.
+
+
+=========================
 Changes in version 1.0.66
 =========================
 
