@@ -700,7 +700,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object;
 	txt_esc = CSL.Output.Formats[this.opt.mode].text_escape;
 	this.tmp.area = "citation";
-	delimiter = "";
 	result = "";
 	objects = [];
 	this.tmp.last_suffix_used = "";
@@ -777,15 +776,35 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	empties = 0;
 	myblobs = this.output.queue.slice();
 
-	var use_layout_suffix = this.citation.opt.layout_suffix;
-	
-	if (CSL.TERMINAL_PUNCTUATION.indexOf(use_layout_suffix) > -1) {
-		var res = CSL.Output.Queue.quashDuplicateFinalPunctuation(this, myblobs, use_layout_suffix.slice(0, 1));
-		if (res === true) {
-			use_layout_suffix = use_layout_suffix.slice(1);
+	// Use a fake blob to reflect any mods to the suffix and delimiter
+	var fakeblob = {
+		strings: {
+			suffix: this.citation.opt.layout_suffix,
+			delimiter: this.citation.opt.layout_delimiter				
 		}
+	};
+	var suffix = this.citation.opt.layout_suffix;
+	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix) > -1) {
+		suffix = this.citation.opt.layout_suffix.slice(0, 1);
+	} else {
+		suffix = "";
 	}
-
+	var delimiter = this.citation.opt.layout_delimiter;
+	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter) > -1) {
+		delimiter = this.citation.opt.layout_delimiter.slice(0, 1);
+	} else {
+		delimiter = "";
+	}
+	var mystk = [
+		{
+			suffix: suffix,
+			delimiter: delimiter,
+			blob: fakeblob
+		}
+	];
+	CSL.Output.Queue.adjustPunctuation(this, myblobs, mystk);
+	var use_layout_suffix = mystk[0].blob.strings.suffix;
+	
 	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
 
 		this.output.queue = [myblobs[pos]];
@@ -800,11 +819,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 		this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
-		// print("queue: "+this.output.queue.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].blobs.slice(-1)[0].decorations);
-		
-		// XXXZ
-		CSL.Output.Queue.quashDuplicateFinalPunctuation(this, this.output.queue[this.output.queue.length - 1], "#");
-		
 		composite = this.output.string(this, this.output.queue);
 		this.tmp.suppress_decorations = false;
 		// meaningless assignment

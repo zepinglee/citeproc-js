@@ -324,14 +324,14 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	txt_esc = CSL.Output.Formats[this.state.opt.mode].text_escape;
 	blobs = myblobs.slice();
 	ret = [];
-
+	
 	if (blobs.length === 0) {
 		return ret;
 	}
 
 	if (!blob) {
 		blob_delimiter = "";
-		CSL.Output.Queue.normalizePunctuation(blobs);
+		CSL.Output.Queue.adjustPunctuation(state, blobs);
 	} else {
 		blob_delimiter = blob.strings.delimiter;
 	}
@@ -349,20 +349,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 
 				use_suffix = blobjr.strings.suffix;
 				use_prefix = blobjr.strings.prefix;
-
-				// Run strip-periods
-				// This is 'way awkward, but this does need to be run
-				// here, and the other decorations do need to be run
-				// below, within the conditional.  Might eventually
-				// separate the two categories of decoration, but for
-				// now, this works.
-				for (ppos = blobjr.decorations.length - 1; ppos > -1; ppos += -1) {
-					params = blobjr.decorations[ppos];
-					if (params[0] === "@strip-periods" && params[1] === "true") {
-						b = state.fun.decorate[params[0]][params[1]](state, b);
-						blobjr.decorations = blobjr.decorations.slice(0, ppos).concat(blobjr.decorations.slice(ppos + 1));
-					}
-				}
 
 				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_suffix.slice(0, 1)) > -1 && use_suffix.slice(0, 1) === b.slice(-1)) {
 					use_suffix = use_suffix.slice(1);
@@ -385,9 +371,19 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				//
 				// Handle punctuation/quote swapping for suffix.
 				//
+				
+				// !!! Okay, this is it.  Decorations have been
+				// serialized by the block above.
+				// ...
+				// But if punctuation is in a delimiter, we don't
+				// see it here.  And if we wait for renderBlobs,
+				// the decorations have been serialized.  Tough
+				// one.
 				qres = this.swapQuotePunctuation(b, use_suffix);
 				b = qres[0];
 				use_suffix = qres[1];
+
+				
 				//
 				// because we will rip out portions of the output
 				// queue before rendering, group wrappers need
@@ -401,6 +397,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				// CSL.debug("ZZZa <=============");
 			}
 		} else if (blobjr.blobs.length) {
+
 			addtoret = state.output.string(state, blobjr.blobs, blobjr);
 			if (ret.slice(-1)[0] && addtoret.slice(-1)[0]) {
 				ttype = typeof ret.slice(-1)[0];
@@ -632,111 +629,156 @@ CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
 	return [ret, use_delim];
 };
 
-
-CSL.Output.Queue.normalizePunctuation = function (blobs, res) {
-	var pos, len, m, punct, suff, predecessor, rex, params, ppos, llen;
-	//
-	// Move leading punctuation on prefixes to preceding
-	// element's suffix.  This is not good logic, actually;
-	// if there is an intervening delimiter, we will
-	// be moving the punctuation to the other side of it.
-	// But if we assume that punctuation will always be
-	// intended to apply directly to the preceding element,
-	// and so be splice at element level with an empty
-	// delimiter, it will be okay.
-	//
-	if ("object" === typeof blobs) {
-		for (pos = 0, len = blobs.length; pos < len; pos += 1) {
-			if (!blobs[pos].blobs) {
-				continue;
-			}
-
-			if (pos > 0) {
-				m = blobs[pos].strings.prefix.match(CSL.TERMINAL_PUNCTUATION_REGEXP);
-				if (m) {
-					blobs[pos].strings.prefix = m[2];
-					predecessor = blobs[(pos - 1)];
-					CSL.Output.Queue.appendPunctuationToSuffix(predecessor, m[1]);
-				}
-			}
-			if ("object" === typeof blobs[pos] && blobs[pos].blobs.length) {
-				res = CSL.Output.Queue.normalizePunctuation(blobs[pos].blobs, res);
-			}
-			if (res) {
-				if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(blobs[pos].strings.suffix.slice(0, 1)) > -1) {
-					blobs[pos].strings.suffix = blobs[pos].strings.suffix.slice(1);
-				}
-			}
-			if (pos === blobs.length -1 && (("string" === typeof blobs[pos].blobs && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(blobs[pos].blobs.slice(-1)) > -1) || CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(blobs[pos].strings.suffix.slice(0, 1)) > -1)) {
-				res = true;
-			}
-			if (res && blobs[pos].strings.suffix.match(CSL.CLOSURES)) {
-				res = false;
-			}
-			if (pos !== blobs.length - 1) {
-				res = false;
-			}
-		}
+CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
+	var chr, suffix, delimiter, blob;
+	var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
+	
+	if (!stk) {
+		stk = [{suffix: "", delimiter: ""}];
 	}
-	return res;
-};
-
-
-CSL.Output.Queue.appendPunctuationToSuffix = function (predecessor, punct) {
-	var suff, newpredecessor;
-	suff = predecessor.strings.suffix;
-	if (suff) {
-		if (CSL.TERMINAL_PUNCTUATION.indexOf(suff.slice(-1)) === -1) {
-			predecessor.strings.suffix += punct;
+	delimiter = stk[stk.length - 1].delimiter;
+	suffix = stk[stk.length - 1].suffix;
+	blob = stk[stk.length - 1].blob;
+	if ("string" === typeof myblobs) {
+		// Suppress any duplicate terminal punctuation at source.
+		if (suffix) {
+			if (blob && 
+				TERMS.indexOf(myblobs.slice(-1)) > -1) {
+					blob.strings.suffix = blob.strings.suffix.slice(1);
+			}
 		}
 	} else {
-		if ("string" === typeof predecessor.blobs) {
-			if (CSL.TERMINAL_PUNCTUATION.indexOf(predecessor.blobs.slice(-1)) === -1) {
-				predecessor.strings.suffix += punct;
-			}
-		} else {
-			newpredecessor = predecessor.blobs.slice(-1)[0];
-			if (newpredecessor) {
-				CSL.Output.Queue.appendPunctuationToSuffix(newpredecessor, punct);
+		// Purge empty blobs, so that neighbors are true neighbors
+		for (var i = myblobs.length - 1; i > -1; i += -1) {
+			if (!myblobs[i].blobs.length) {
+				myblobs = myblobs.slice(0, i).concat(myblobs.slice(i + 1));
 			}
 		}
-	}
-};
-
-// This is dual-purposed to move terminal punctuation inside a set 
-// of quotes, as needed to address punctuation handling for locators 
-// that contain quotes in rich text.  Fault reported by Sean Takats.
-CSL.Output.Queue.quashDuplicateFinalPunctuation = function (state, myblobs, chr) {
-	if ("string" === typeof myblobs) {
-		if (chr === myblobs.slice(-1)) {
-			return myblobs.slice(0, -1);
-		} else {
-			return myblobs;
-		}
-	} else if (myblobs.length) {
-		// XXXZ FIXME (done): swap punctuation for quotes in locators
-		// Note that this makes no effort to control for duplicates;
-		// but if this takes effect mainly to cope with in-field quotes,
-		// such as might appear at the end of a locator, it should not
-		// cause any difficulties that can't be coped with easily at
-		// the user level.
-		if (state.getOpt('punctuation-in-quote')) {
-			var decorations = myblobs.slice(-1)[0].decorations;
-			for (var i = 0, ilen = decorations.length; i < ilen; i += 1) {
-				if (decorations[i][0] === '@quotes' && decorations[i][1] === 'true') {
-					myblobs.slice(-1)[0].blobs.slice(-1)[0].blobs += chr;
-					return true;
+		// Complete the move of leading terminal punctuation 
+		// from superior delimiter to suffix at this level,
+		// to allow selective suppression.
+		if (delimiter) {
+			for (var j = 0, jlen = myblobs.length - 1; j < jlen; j += 1) {
+				if (TERMS.indexOf(myblobs[j].strings.suffix.slice(-1)) === -1) {
+					myblobs[j].strings.suffix += delimiter;
 				}
 			}
 		}
-		var lastblob = myblobs.slice(-1)[0];
-		if (lastblob.strings.suffix && chr === lastblob.strings.suffix.slice(-1)) {
-			lastblob.strings.suffix = lastblob.strings.suffix.slice(0, -1);
-		} else if ("object" === typeof lastblob.blobs) {
-			return CSL.Output.Queue.quashDuplicateFinalPunctuation(state, lastblob.blobs, chr);
-		} else if ("string" === typeof lastblob.blobs) {
-			lastblob.blobs = CSL.Output.Queue.quashDuplicateFinalPunctuation(state, lastblob.blobs, chr);
+		// Step through blobs in reverse, so that superior suffix can
+		// quelched after first use.
+		for (var i = myblobs.length - 1; i > -1; i += -1) {
+			var doblob = myblobs[i];
+			// Do stuff with delimiter or suffix
+			if (i !== (myblobs.length - 1)) {
+				suffix = "";
+				blob = false;
+			}
+			if (i < (myblobs.length - 1)) {
+				// Migrate any terminal punctuation on a subsequent
+				// prefix to the current suffix, iff the
+				// (remainder of the) intervening delimiter is empty.
+				// Needed for CSL of the Chicago styles.
+				if (blob) {
+					var nextdelimiter = blob.strings.delimiter;
+				} else {
+					var nextdelimiter = "";
+				}
+				var nextprefix = myblobs[i + 1].strings.prefix;
+				if (!nextdelimiter && 
+					nextprefix &&
+					TERMS.indexOf(nextprefix.slice(0, 1)) > -1) {
+						doblob.strings.suffix = nextprefix.slice(0, 1);
+						myblobs[i + 1].strings.prefix = nextprefix.slice(1);
+				}
+			}
+			// If duplicate terminal punctuation on superior suffix,
+			// quash on superior object.
+			if (suffix) {
+				if (doblob.strings.suffix && 
+					TERMS.indexOf(suffix) > -1 &&
+					TERMS.indexOf(doblob.strings.suffix.slice(-1)) > -1) {
+						blob.strings.suffix = blob.strings.suffix.slice(1);
+				}
+			}
+			// Run strip-periods.  This cleans affected field
+			// content before is is processed by the first
+			// "string" === typeof function above, at the next
+			// iteration.
+			if ("string" === typeof doblob.blobs && doblob.blobs) {
+				for (var ppos = doblob.decorations.length - 1; ppos > -1; ppos += -1) {
+					var params = doblob.decorations[ppos];
+					if (params[0] === "@strip-periods" && params[1] === "true") {
+						doblob.blobs = state.fun.decorate[params[0]][params[1]](state, doblob.blobs);
+						doblob.decorations = doblob.decorations.slice(0, ppos).concat(doblob.decorations.slice(ppos + 1));
+					}
+				}
+			}
+			// Swap punctuation into quotation marks is required.
+			if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
+				var decorations = myblobs.slice(-1)[0].decorations;
+				for (var j = 0, jlen = decorations.length; j < jlen; j += 1) {
+					if (decorations[j][0] === '@quotes' && decorations[j][1] === 'true') {
+						if ("string" === typeof myblobs[j].blobs) {
+							myblobs[j].blobs += stk[stk.length - 1].suffix;
+						} else {
+							myblobs[j].blobs.slice(-1)[0].strings.suffix += stk[stk.length - 1].suffix;
+						}
+					}
+				}
+			}
+			// Prepare variables for the sniffing stack, for use
+			// in the next recursion.
+			if (i === (myblobs.length - 1)) {
+				// If last blob in series, use superior suffix if current
+				// level has none.
+				if (doblob.strings.suffix) {
+					suffix = doblob.strings.suffix.slice(0, 1);
+					blob = doblob;
+				} else {
+					suffix = stk[stk.length - 1].suffix;
+					blob = stk[stk.length - 1].blob;
+				}
+			} else {
+				// If NOT last blob in series, use only the current
+				// level suffix for sniffing.
+				if (doblob.strings.suffix) {
+					suffix = doblob.strings.suffix.slice(0, 1);
+					blob = doblob;
+				} else {
+					suffix = "";
+					blob = false;
+				}
+				
+			}
+			// Use leading suffix char for sniffing only if it
+			// is a terminal punctuation character.
+			if (TERMS.indexOf(suffix) === -1) {
+				suffix = "";
+				blob = false;
+			}
+			// Use leading delimiter char for sniffing only if it
+			// is a terminal punctuation character.
+			if (doblob.strings.delimiter) {
+				delimiter = doblob.strings.delimiter.slice(0, 1);
+				if (TERMS.indexOf(delimiter) > -1) {
+					doblob.strings.delimiter = doblob.strings.delimiter.slice(1);
+				} else {
+					delimiter = "";
+				}
+			} else {
+				delimiter = "";
+			}
+			// Push variables to stack and recurse.
+			stk.push({suffix: suffix, delimiter:delimiter, blob:blob});
+			CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
 		}
 	}
+	// Always pop the stk when returning, unless it's the end of the line
+	// (return value is needed in cmd_cite.js, so that the adjusted
+	// suffix can be extracted from the fake blob used at top level).
+	if (stk.length > 1) {
+		stk.pop();		
+	}
 	return false;
-}
+};
+
