@@ -363,7 +363,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <li><a class="reference internal" href="#getting-the-citeproc-js-sources" id="id46">Getting the <tt class="docutils literal"><span class="pre">citeproc-js</span></tt> sources</a></li>
 <li><a class="reference internal" href="#obtaining-the-standard-test-fixtures" id="id47">Obtaining the Standard Test Fixtures</a></li>
 <li><a class="reference internal" href="#obtaining-the-locale-files" id="id48">Obtaining the Locale Files</a></li>
-<li><a class="reference internal" href="#javascript-interpreters" id="id49">Javascript interpreters</a></li>
+<li><a class="reference internal" href="#javascript-interpreters" id="id49">JavaScript interpreters</a></li>
 <li><a class="reference internal" href="#loading-runtime-code" id="id50">Loading runtime code</a></li>
 </ul>
 </li>
@@ -470,7 +470,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <div class="section" id="introduction">
 <h1><a class="toc-backref" href="#id44">Introduction</a></h1>
 <p>This is the site administrator's manual for <tt class="docutils literal"><span class="pre">citeproc-js</span></tt>, a
-Javascript implementation of the <img alt="link" src="link.png" /> <a class="reference external" href="http://citationstyles.org/">Citation Style Language
+JavaScript implementation of the <img alt="link" src="link.png" /> <a class="reference external" href="http://citationstyles.org/">Citation Style Language
 (CSL)</a> used by Zotero, Mendeley and other popular reference
 tools to format citations in any of the hundreds of styles
 supplied by the CSL style repository. <a class="footnote-reference" href="#id5" id="id2">[1]</a>  The processor complies with version 1.0 of the CSL
@@ -508,7 +508,7 @@ and <a class="reference internal" href="#data-input">Data Input</a> below.</td><
 </div>
 <div class="section" id="setup-and-system-requirements">
 <h1><a class="toc-backref" href="#id45">Setup and System Requirements</a></h1>
-<p>The processor is written in Javascript, one of the interesting
+<p>The processor is written in JavaScript, one of the interesting
 features of which is the lack of a standard method of I/O.  As a
 result, the processor must be wrapped in other code to get data in and
 out of it, and every installation is going to be a little different.
@@ -558,8 +558,8 @@ ln -s csl-locales/trunk/ locale
 </blockquote>
 </div>
 <div class="section" id="javascript-interpreters">
-<h2><a class="toc-backref" href="#id49">Javascript interpreters</a></h2>
-<p>An ECMAscript (Javascript) interpreter is required to run the
+<h2><a class="toc-backref" href="#id49">JavaScript interpreters</a></h2>
+<p>An ECMAscript (JavaScript) interpreter is required to run the
 processor.  The processor code itself is written in such a way
 that it should run on a wide variety of platforms, including
 Rhino, Spidermonkey and Tracemonkey on the server side, and
@@ -567,11 +567,11 @@ browsers such as Internet Explorer (version 6 and higher), Firefox,
 Mozilla, Safari, Google Chrome, and Opera.</p>
 <p>To parse the XML files used to define locales and styles, the
 processor relies on a supplementary module, which must be loaded into
-the same Javascript context as the processor itself.  The
+the same JavaScript context as the processor itself.  The
 <tt class="docutils literal"><span class="pre">xmle4x.js</span></tt> and <tt class="docutils literal"><span class="pre">xmldom.js</span></tt> files shipped with the processor
 source should serve this purpose.  The <tt class="docutils literal"><span class="pre">xmle4x.js</span></tt> module supports
 Gecko-based browsers, and other platforms that embed the Rhino,
-Spidermonkey or Tracemonkey Javascript interpreters.  The <tt class="docutils literal"><span class="pre">xmldom.js</span></tt>
+Spidermonkey or Tracemonkey JavaScript interpreters.  The <tt class="docutils literal"><span class="pre">xmldom.js</span></tt>
 module supports all other browsers as well.</p>
 <p>For an example of working code, the source behind the
 <img alt="link" src="link.png" /> <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html">processor demo page</a> may be useful as a reference.</p>
@@ -587,7 +587,7 @@ environment are catenated, in the appropriate sequence, in the
 file and the test fixtures can be refreshed using the
 <tt class="docutils literal"><span class="pre">./test.py</span> <span class="pre">-r</span></tt> command.</p>
 <p>To build the processor, the <tt class="docutils literal"><span class="pre">citeproc.js</span></tt> source code should be
-loaded into the Javascript interpreter context, together with a
+loaded into the JavaScript interpreter context, together with a
 <tt class="docutils literal"><span class="pre">sys</span></tt> object provided by the integrator (see below), and the desired
 CSL style (as a string).</p>
 </div>
@@ -626,7 +626,7 @@ object.</p>
 </div>
 <dl class="docutils">
 <dt><em>sys</em></dt>
-<dd>A Javascript object containing the functions
+<dd>A JavaScript object containing the functions
 <tt class="docutils literal"><span class="pre">retrieveLocale()</span></tt> and <tt class="docutils literal"><span class="pre">retrieveItem()</span></tt>.</dd>
 <dt><em>style</em></dt>
 <dd>The CSL code for a style, as XML in serialized (string) form
@@ -931,7 +931,7 @@ for details.</p>
 <div class="section" id="return-value">
 <h4><a class="toc-backref" href="#id69">Return value</a></h4>
 <p>The value returned by this command is a two-element list, composed of
-a Javascript array containing certain formatting parameters, and a
+a JavaScript array containing certain formatting parameters, and a
 list of strings representing bibliography entries.  It is the responsibility
 of the calling application to compose the list into a finish string
 for insertion into the document.  The first
@@ -1010,7 +1010,7 @@ string.</dd>
 <div class="section" id="selective-output">
 <h4><a class="toc-backref" href="#id70">Selective output</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">makeBibliography()</span></tt> command accepts one optional argument,
-which is a nested Javascript object that may contain
+which is a nested JavaScript object that may contain
 <em>one of</em> the objects <tt class="docutils literal"><span class="pre">select</span></tt>, <tt class="docutils literal"><span class="pre">include</span></tt> or <tt class="docutils literal"><span class="pre">exclude</span></tt>, and
 optionally an additional  <tt class="docutils literal"><span class="pre">quash</span></tt> object.  Each of these four objects
 is an array containing one or more objects with <tt class="docutils literal"><span class="pre">field</span></tt> and <tt class="docutils literal"><span class="pre">value</span></tt>
@@ -1474,7 +1474,7 @@ command.</p>
 <div class="section" id="item-fields">
 <h2><a class="toc-backref" href="#id80">Item fields</a></h2>
 <p>The locally defined <tt class="docutils literal"><span class="pre">retrieveItem()</span></tt> function must return data
-for the target item as a simple Javascript array containing recognized
+for the target item as a simple JavaScript array containing recognized
 CSL fields. <a class="footnote-reference" href="#id26" id="id21">[5]</a>  The layout of the three field types is described below.</p>
 <div class="section" id="text-and-numeric-variables">
 <h3><a class="toc-backref" href="#id81">Text and numeric variables</a></h3>
@@ -1493,7 +1493,7 @@ should be presented as simple strings.</p>
 <div class="section" id="names">
 <span id="clean-names"></span><h3><a class="toc-backref" href="#id82">Names</a></h3>
 <p>When present in the item data, CSL name variables must
-be delivered as a list of Javascript arrays, with one
+be delivered as a list of JavaScript arrays, with one
 array for each name represented by the variable.
 Simple personal names are composed of <tt class="docutils literal"><span class="pre">family</span></tt> and <tt class="docutils literal"><span class="pre">given</span></tt> elements,
 containing respectively the family and given name of the individual.</p>
@@ -1653,7 +1653,7 @@ name field, the <tt class="docutils literal"><span class="pre">static-ordering</
 transliteration as if it were a fixed (non-Byzantine) name.  This
 behavior can be prompted by including a <tt class="docutils literal"><span class="pre">static-ordering</span></tt> element in
 the name array.  The actual value of the element is irrelevant, so
-long as it returns true when tested by the Javascript interpreter.</p>
+long as it returns true when tested by the JavaScript interpreter.</p>
 <div class="codeblock js">
 <table class="highlighttable"><tr><td class="linenos"><pre>1
 2
@@ -1675,8 +1675,8 @@ long as it returns true when tested by the Javascript interpreter.</p>
 </div>
 <div class="section" id="dates">
 <span id="input-dates"></span><h3><a class="toc-backref" href="#id86">Dates</a></h3>
-<p>Date fields are Javascript objects, within which the &quot;date-parts&quot; element
-is a nested Javascript array containing a start
+<p>Date fields are JavaScript objects, within which the &quot;date-parts&quot; element
+is a nested JavaScript array containing a start
 date and optional end date, each of which consists of a year,
 an optional month and an optional day, in that order if present.</p>
 <div class="admonition-hint admonition">
@@ -1931,7 +1931,7 @@ cites are rendered in the order in which they are presented
 in <tt class="docutils literal"><span class="pre">citationItems</span></tt>.</li>
 </ul>
 <p>Citations are registered and accessed by the processor internally
-in arrays and Javascript objects.  Calling applications should
+in arrays and JavaScript objects.  Calling applications should
 not need to access this data directly, but it is available in
 the processor registry, at the following locations:</p>
 <div class="codeblock js">
@@ -2494,7 +2494,7 @@ scripts that can be used to confirm that the system performs correctly
 after installation.  The tests begin as individual human-friendly
 fixtures written in a special format, shown in the sample file
 immediately below.  Tests are prepared for use by grinding them into a
-machine-friendly form (JSON), and by preparing an appropriate Javascript
+machine-friendly form (JSON), and by preparing an appropriate JavaScript
 execution wrapper for each.  These operations are performed automatically
 by the top-level test runner script that ships with the sources.</p>
 <div class="section" id="running-the-test-suite">
@@ -2507,7 +2507,7 @@ the following command:</p>
 ./test.py -s
 </pre>
 <p>Options and arguments can be used to select an alternative
-Javascript interpreter, or  to change or limit the set of tests
+JavaScript interpreter, or  to change or limit the set of tests
 run.  The script options are as follows:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">--help</span></tt>:</dt>
@@ -2533,7 +2533,7 @@ opts, takes only test name as single argument).</dd>
 <dt><tt class="docutils literal"><span class="pre">--verbose</span></tt></dt>
 <dd>Display test names during processing.</dd>
 </dl>
-<p>The <tt class="docutils literal"><span class="pre">--tracemonkey</span></tt> option requires the <tt class="docutils literal"><span class="pre">jslibs</span></tt> Javascript
+<p>The <tt class="docutils literal"><span class="pre">--tracemonkey</span></tt> option requires the <tt class="docutils literal"><span class="pre">jslibs</span></tt> JavaScript
 development environment.  The sources for <tt class="docutils literal"><span class="pre">jslibs</span></tt> can be obtained from <img alt="link" src="link.png" /> <a class="reference external" href="http://code.google.com/p/jslibs/">Google Code</a>.
 After installation, adjust the path to the <tt class="docutils literal"><span class="pre">jshost</span></tt> utility in <tt class="docutils literal"><span class="pre">./tests/config/test.cnf</span></tt>.</p>
 </div>
@@ -2545,9 +2545,9 @@ the <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citepro
 </div>
 <div class="section" id="live-demo">
 <h1><a class="toc-backref" href="#id109">Live Demo</a></h1>
-<p>When accessed using a Javascript-enabled browser with E4X support
+<p>When accessed using a JavaScript-enabled browser with E4X support
 (such as <img alt="link" src="link.png" /> <a class="reference external" href="http://www.mozilla.com/">Firefox</a>), the <tt class="docutils literal"><span class="pre">./demo/demo.html</span></tt> file in the source archive
-(or <img alt="link" src="link.png" /> <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html">online</a>) will invoke the processor to render a few citations.  The Javascript
+(or <img alt="link" src="link.png" /> <a class="reference external" href="http://gsl-nagoya-u.net/http/pub/citeproc-demo/demo.html">online</a>) will invoke the processor to render a few citations.  The JavaScript
 files accompanying the page in the <tt class="docutils literal"><span class="pre">./demo</span></tt> directory show the basic
 steps required to load and run the processor, whether in the browser
 or server-side.</p>
