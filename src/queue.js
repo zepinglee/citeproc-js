@@ -687,7 +687,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
 				if (!nextdelimiter && 
 					nextprefix &&
 					TERMS.indexOf(nextprefix.slice(0, 1)) > -1) {
-						doblob.strings.suffix = nextprefix.slice(0, 1);
+						doblob.strings.suffix += nextprefix.slice(0, 1);
 						myblobs[i + 1].strings.prefix = nextprefix.slice(1);
 				}
 			}
