@@ -493,6 +493,20 @@ var data = {
            ]
 		},
         "type": "book"
+    },
+    "ITEM-22": {
+        "container-title" : "American Psychologist",
+        "id" : "ITEM-22",
+        "issue" : "5",
+        "page" : "339-351",
+        "title" : "Does Psychology make a significant difference in our lives?",
+        "type" : "article-journal",
+        "volume" : "59",
+        "author" : [
+            {
+	            "family" : "Zimbardo",
+	            "given": "Philip G"
+            }
+        ]
     }
 };
-

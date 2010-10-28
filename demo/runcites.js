@@ -512,5 +512,15 @@ var insert = function(){
 		output = output[0].bibstart + output[1].join("") + output[0].bibend;
 		pointedStickInnerHtml("chicago_fullnote_bibliography2",output);
 	}
+	
+	// WebKit Test
+	citeproc = new CSL.Engine(sys,apa_x2);
+	citeproc.updateItems(["ITEM-22"]);
+	citeproc.setAbbreviations("default");
+	output = citeproc.makeBibliography();
+	if (output && output.length && output[1].length){
+		output = output[0].bibstart + output[1].join("") + output[0].bibend;
+		pointedStickInnerHtml("apa_x2",output);
+	}
 
 };
