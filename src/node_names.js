@@ -327,7 +327,7 @@ CSL.Node.names = {
 				// suppress the initially listed author in
 				// subsequent renderings within a cite.  This works a little
 				// differently for personal and institutional authors.
-				if (namesets.length && (state.tmp.area === "bibliography" || (state.tmp.area && state.opt.xclass === "note"))) {
+				if (namesets.length && (state.tmp.area === "bibliography" || state.tmp.area === "bibliography_sort" || (state.tmp.area && state.opt.xclass === "note"))) {
 					// save off the varname for safekeeping
 					cut_var = namesets[0].variable;
 					cutinfo = state.tmp.names_cut;
