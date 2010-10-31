@@ -664,6 +664,9 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	this.tmp.suppress_decorations = true;
 	this.tmp.just_looking = true;
 	CSL.getCite.call(this, Item, {position: 1});
+	// !!!
+	CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
+	CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
 	ret = this.output.string(this, this.output.queue);
 	this.tmp.just_looking = false;
 	this.tmp.suppress_decorations = false;
@@ -802,11 +805,14 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			blob: fakeblob
 		}
 	];
-	CSL.Output.Queue.adjustPunctuation(this, myblobs, mystk);
-	var use_layout_suffix = mystk[0].blob.strings.suffix;
+	//print("=== FROM CITE ===");
+	var use_layout_suffix = this.citation.opt.layout_suffix;
 	
 	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
+		CSL.Output.Queue.purgeEmptyBlobs(this.output.queue, true);
+	}
 
+	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
 		this.output.queue = [myblobs[pos]];
 
 		this.tmp.suppress_decorations = myparams[pos].suppress_decorations;
@@ -819,6 +825,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 		this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
+		// No purgeEmptyBlobs() with this housecleaning adjustment
+		// to punctuation.
+		CSL.Output.Queue.adjustPunctuation(this, this.output.queue, mystk);
 		composite = this.output.string(this, this.output.queue);
 		this.tmp.suppress_decorations = false;
 		// meaningless assignment
@@ -858,8 +867,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	}
 	result += this.output.renderBlobs(objects);
 	if (result) {
-		if (result.slice(-1) === use_layout_suffix.slice(0)) {
-			result = result.slice(0, -1);
+		if (this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
+			use_layout_suffix = use_layout_suffix.slice(1);
 		}
 		result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(use_layout_suffix);
 		if (!this.tmp.suppress_decorations) {
