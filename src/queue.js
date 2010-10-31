@@ -331,7 +331,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 
 	if (!blob) {
 		blob_delimiter = "";
-		CSL.Output.Queue.adjustPunctuation(state, blobs);
 	} else {
 		blob_delimiter = blob.strings.delimiter;
 	}
@@ -350,17 +349,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				use_suffix = blobjr.strings.suffix;
 				use_prefix = blobjr.strings.prefix;
 
-				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_suffix.slice(0, 1)) > -1 && use_suffix.slice(0, 1) === b.slice(-1)) {
-					use_suffix = use_suffix.slice(1);
-				}
-
-				// CSL.debug("ZZZa =============");
-				if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
-					// CSL.debug("ZZZa prefix before: " + use_prefix);
-					use_prefix = use_prefix.slice(0, -1);
-					// CSL.debug("ZZZa prefix after: " + use_prefix);
-				}
-
 				if (!state.tmp.suppress_decorations) {
 					llen = blobjr.decorations.length;
 					for (ppos = 0; ppos < llen; ppos += 1) {
@@ -368,22 +356,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 						b = state.fun.decorate[params[0]][params[1]](state, b);
 					}
 				}
-				//
-				// Handle punctuation/quote swapping for suffix.
-				//
-				
-				// !!! Okay, this is it.  Decorations have been
-				// serialized by the block above.
-				// ...
-				// But if punctuation is in a delimiter, we don't
-				// see it here.  And if we wait for renderBlobs,
-				// the decorations have been serialized.  Tough
-				// one.
-				qres = this.swapQuotePunctuation(b, use_suffix);
-				b = qres[0];
-				use_suffix = qres[1];
-
-				
 				//
 				// because we will rip out portions of the output
 				// queue before rendering, group wrappers need
@@ -393,8 +365,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 					b = txt_esc(blobjr.strings.prefix) + b + txt_esc(use_suffix);
 					ret.push(b);
 				}
-				// CSL.debug("ZZZa b: " + b);
-				// CSL.debug("ZZZa <=============");
 			}
 		} else if (blobjr.blobs.length) {
 
@@ -411,15 +381,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				if ("string" === ttype && "string" === ltype) {
 					terminal = ret.slice(-1)[0].slice(-1);
 					leading = addtoret.slice(-1)[0].slice(0, 1);
-
-					// CSL.debug("ZZZc ==============>");
-					// CSL.debug("ZZZc ret before: " + ret);
-					if ((CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && terminal === leading) || (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(terminal) > -1 && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(leading) > -1)) {
-						// last terminal punctuation wins
-						ret[(ret.length - 1)] = ret[(ret.length - 1)].slice(0, -1);
-					}
-					// CSL.debug("ZZZc ret after: " + ret);
-					// CSL.debug("ZZZc <==============");
 				}
 			}
 			ret = ret.concat(addtoret);
@@ -454,25 +415,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		//
 		b = blobs_start;
 		use_suffix = blob.strings.suffix;
-		//
-		// Handle punctuation/quote swapping for suffix.
-		//
-		qres = this.swapQuotePunctuation(b, use_suffix);
-		b = qres[0];
 		if (b && b.length) {
-			use_suffix = qres[1];
 			use_prefix = blob.strings.prefix;
-
-			// CSL.debug("ZZZb =============>");
-			if (CSL.TERMINAL_PUNCTUATION.indexOf(use_prefix.slice(-1)) > -1 && use_prefix.slice(-1) === b.slice(0, 1)) {
-				// CSL.debug("ZZZb prefix before: " + use_prefix);
-				use_prefix = use_prefix.slice(0, -1);
-				// CSL.debug("ZZZb prefix after: " + use_prefix);
-			}
-
 			b = txt_esc(use_prefix) + b + txt_esc(use_suffix);
-			// CSL.debug("ZZZb b: " + b);
-			// CSL.debug("ZZZb <=============");
 		}
 		blobs_start = b;
 		if (!state.tmp.suppress_decorations) {
@@ -546,36 +491,9 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			use_delim = delim;
 		}
 		if (blob && "string" === typeof blob) {
-			res = this.swapQuotePunctuation(ret, use_delim);
-			ret = res[0];
-			// CSL.debug("ZZZd ==============>");
-			// CSL.debug("ZZZd ret before: " + ret);
-			use_delim = res[1];
-			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(0, 1)) > -1) {
-				if (use_delim.slice(0, 1) === ret.slice(-1)) {
-					// CSL.debug("ZZZd slicing @ A");
-					use_delim = use_delim.slice(1);
-				}
-			}
-			if (use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(use_delim.slice(-1)) > -1) {
-				if (use_delim.slice(-1) === blob.slice(0, 1)) {
-					// CSL.debug("ZZZd slicing @ B");
-					use_delim = use_delim.slice(0, -1);
-				}
-			}
-			if (!use_delim && CSL.TERMINAL_PUNCTUATION.indexOf(blob.slice(0, 1)) > -1) {
-				if (ret.slice(-1) === blob.slice(0, 1)) {
-					// CSL.debug("ZZZd slicing @ C");
-					blob = blob.slice(1);
-				}
-			}
 			ret += txt_esc(use_delim);
 			ret += blob;
-			// CSL.debug("ZZZd <==============");
-			// CSL.debug("ZZZd ret after: " + ret);
 		} else if (blob.status !== CSL.SUPPRESS) {
-			// CSL.debug("doing rangeable blob");
-			//var str = blob.blobs;
 			str = blob.formatter.format(blob.num);
 			if (blob.strings["text-case"]) {
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
@@ -603,103 +521,146 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 	return ret;
 };
 
-CSL.Output.Queue.prototype.swapQuotePunctuation = function (ret, use_delim) {
-	var pre_quote, pos, len;
-	if (ret.length && this.state.getOpt("punctuation-in-quote") && this.state.opt.close_quotes_array.indexOf(ret.slice(-1)) > -1) {
-		if (use_delim) {
-					
-			pos = use_delim.indexOf(" ");
-			if (pos === -1) {
-				pos = use_delim.length;
+CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
+	var res, j, jlen, tmpblobs;
+	if ("string" === typeof myblobs || !myblobs.length) {
+		return;
+	}
+	for (var i = myblobs.length - 1; i > -1; i += -1) {
+		CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs);		
+	}
+	for (var i = myblobs.length - 1; i > -1; i += -1) {
+		// Edit myblobs in place
+		if (!myblobs[i].blobs.length) {
+			tmpblobs = myblobs.slice(i + 1);
+			for (j = i, jlen = myblobs.length; j < jlen; j += 1) {
+				myblobs.pop();
 			}
-			if (pos > -1) {
-				if (CSL.SWAPPING_PUNCTUATION.indexOf(use_delim.slice(0, 1)) > -1) {
-					pre_quote = use_delim.slice(0, pos);
-					use_delim = use_delim.slice(pos);
-				} else {
-					pre_quote = "";
-				}
-			} else {
-				pre_quote = use_delim;
-				use_delim = "";
+			for (j = 0, jlen = tmpblobs.length; j < jlen; j += 1) {
+				myblobs.push(tmpblobs[j]);
 			}
-			ret = ret.slice(0, (ret.length - 1)) + pre_quote + ret.slice((ret.length - 1));
+		} else if (endOnly) {
+			break;
 		}
 	}
-	return [ret, use_delim];
-};
+}
 
-CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
-	var chr, suffix, delimiter, blob;
+CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
+	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX;
+
 	var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
+	var SWAPS = CSL.SWAPPING_PUNCTUATION;
 	
 	if (!stk) {
 		stk = [{suffix: "", delimiter: ""}];
 	}
-	delimiter = stk[stk.length - 1].delimiter;
-	suffix = stk[stk.length - 1].suffix;
-	blob = stk[stk.length - 1].blob;
+
+	slast = stk.length - 1;
+
+	delimiter = stk[slast].delimiter;
+	dpref = stk[slast].dpref;
+	dsuff = stk[slast].dsuff;
+	dsufff = stk[slast].dsufff;
+	prefix = stk[slast].prefix;
+	suffix = stk[slast].suffix;
+	blob = stk[slast].blob;
+
 	if ("string" === typeof myblobs) {
-		// Suppress any duplicate terminal punctuation at source.
+		// Note that (1) the "suffix" variable is set 
+		// non-nil only if it contains terminal punctuation;
+		// (2) "myblobs" is a string in this case; (3) we
+		// don't try to control duplicate spaces, because
+		// if they're in the user-supplied string somehow, 
+		// they've been put there by intention.
 		if (suffix) {
 			if (blob && 
-				TERMS.indexOf(myblobs.slice(-1)) > -1) {
+				TERMS.indexOf(myblobs.slice(-1)) > -1 &&
+				TERMS.indexOf(suffix) > -1) {
 					blob.strings.suffix = blob.strings.suffix.slice(1);
 			}
 		}
+		state.tmp.last_chr = myblobs.slice(-1);
 	} else {
-		// Purge empty blobs, so that neighbors are true neighbors
-		for (var i = myblobs.length - 1; i > -1; i += -1) {
-			if (!myblobs[i].blobs.length) {
-				myblobs = myblobs.slice(0, i).concat(myblobs.slice(i + 1));
-			}
-		}
-		// Complete the move of leading terminal punctuation 
+		// Complete the move of a leading terminal punctuation 
 		// from superior delimiter to suffix at this level,
 		// to allow selective suppression.
-		if (delimiter) {
+		if (dpref) {
 			for (var j = 0, jlen = myblobs.length - 1; j < jlen; j += 1) {
-				if (TERMS.indexOf(myblobs[j].strings.suffix.slice(-1)) === -1) {
-					myblobs[j].strings.suffix += delimiter;
+				var t = myblobs[j].strings.suffix.slice(-1);
+				// print("hey: ["+j+"] ("+dpref+") ("+myblobs[0].blobs+")")
+
+				if (TERMS.indexOf(t) === -1 ||
+				    TERMS.indexOf(dpref) === -1) {
+						myblobs[j].strings.suffix += dpref;
 				}
 			}
 		}
-		// Step through blobs in reverse, so that superior suffix can
-		// quelched after first use.
-		for (var i = myblobs.length - 1; i > -1; i += -1) {
+
+		for (var i = 0, ilen = myblobs.length; i < ilen; i += 1) {
 			var doblob = myblobs[i];
-			// Do stuff with delimiter or suffix
-			if (i !== (myblobs.length - 1)) {
-				suffix = "";
-				blob = false;
+			
+			if (i === 0) {
+				if (prefix) {
+					if (doblob.strings.prefix.slice(0, 1) === " ") {
+						doblob.strings.prefix = doblob.strings.prefix.slice(1);
+					}
+				}
 			}
+			
+			if (dsufff) {
+				if (doblob.strings.prefix) {
+					if (i === 0) {
+						if (doblob.strings.prefix.slice(0, 1) === " ") {
+							doblob.strings.prefix = doblob.strings.prefix.slice(1);
+						}
+					}
+				}
+			}
+			if (dsuff) {
+				if (i > 0) {
+					if (doblob.strings.prefix.slice(0, 1) === " ") {
+						doblob.strings.prefix = doblob.strings.prefix.slice(1);
+					}
+				}
+			}
+
 			if (i < (myblobs.length - 1)) {
-				// Migrate any terminal punctuation on a subsequent
+				// Migrate any leading terminal punctuation on a subsequent
 				// prefix to the current suffix, iff the
 				// (remainder of the) intervening delimiter is empty.
 				// Needed for CSL of the Chicago styles.
-				if (blob) {
-					var nextdelimiter = blob.strings.delimiter;
-				} else {
-					var nextdelimiter = "";
-				}
 				var nextprefix = myblobs[i + 1].strings.prefix;
-				if (!nextdelimiter && 
-					nextprefix &&
-					TERMS.indexOf(nextprefix.slice(0, 1)) > -1) {
-						doblob.strings.suffix += nextprefix.slice(0, 1);
-						myblobs[i + 1].strings.prefix = nextprefix.slice(1);
+				if (!delimiter) {
+					if (nextprefix) {
+						var nxtchr = nextprefix.slice(0, 1);
+						if (SWAPS.indexOf(nxtchr) > -1) {
+							myblobs[i + 1].strings.prefix = nextprefix.slice(1);
+							if (TERMS.indexOf(nxtchr) === -1 ||
+								(TERMS.indexOf(nxtchr) > -1 &&
+								 TERMS.indexOf(doblob.strings.suffix.slice(-1)) === -1)) {
+									 doblob.strings.suffix += nxtchr;
+							}
+						} else if (nxtchr === " " &&
+									doblob.strings.suffix.slice(-1) === " ") {
+							doblob.strings.suffix = doblob.strings.suffix.slice(0, -1);
+						}
+					}
 				}
 			}
-			// If duplicate terminal punctuation on superior suffix,
+
+			// If duplicate punctuation on superior suffix,
 			// quash on superior object.
-			if (suffix) {
-				if (doblob.strings.suffix && 
-					TERMS.indexOf(suffix) > -1 &&
-					TERMS.indexOf(doblob.strings.suffix.slice(-1)) > -1) {
-						blob.strings.suffix = blob.strings.suffix.slice(1);
+			if (i === (myblobs.length - 1)) {
+				if (suffix) {
+					if (doblob.strings.suffix && 
+//						(suffix === doblob.strings.suffix.slice(-1) ||
+						 (TERMS.indexOf(suffix) > -1 &&
+						  TERMS.indexOf(doblob.strings.suffix.slice(-1)) > -1)) {
+							blob.strings.suffix = blob.strings.suffix.slice(1);
+					}
 				}
 			}
+
 			// Run strip-periods.  This cleans affected field
 			// content before is is processed by the first
 			// "string" === typeof function above, at the next
@@ -713,71 +674,143 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
 					}
 				}
 			}
-			// Swap punctuation into quotation marks is required.
-			if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
-				var decorations = myblobs.slice(-1)[0].decorations;
+
+			// Swap punctuation into quotation marks as required.
+			//if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
+			if (state.getOpt('punctuation-in-quote')) {
+				var decorations = doblob.decorations;
 				for (var j = 0, jlen = decorations.length; j < jlen; j += 1) {
 					if (decorations[j][0] === '@quotes' && decorations[j][1] === 'true') {
-						if ("string" === typeof myblobs[j].blobs) {
-							myblobs[j].blobs += stk[stk.length - 1].suffix;
+						var swapchar = doblob.strings.suffix.slice(0, 1);
+						var swapblob = false;
+						if (SWAPS.indexOf(swapchar) > -1) {
+							swapblob = doblob;
+						} else if (SWAPS.indexOf(suffix) > -1 && i === (myblobs.length - 1)) {
+							swapchar = suffix;
+							swapblob = blob;
 						} else {
-							myblobs[j].blobs.slice(-1)[0].strings.suffix += stk[stk.length - 1].suffix;
+							swapchar = false;
+						}
+						if (swapchar) {
+							if ("string" === typeof doblob.blobs) {
+								if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1) {
+									doblob.blobs += swapchar;										
+								}
+							} else {
+								if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1) {
+									doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
+								}
+							}
+							swapblob.strings.suffix = swapblob.strings.suffix.slice(1);
 						}
 					}
 				}
 			}
+
 			// Prepare variables for the sniffing stack, for use
 			// in the next recursion.
+
 			if (i === (myblobs.length - 1)) {
 				// If last blob in series, use superior suffix if current
 				// level has none.
 				if (doblob.strings.suffix) {
-					suffix = doblob.strings.suffix.slice(0, 1);
-					blob = doblob;
+					suffixX = doblob.strings.suffix.slice(0, 1);
+					blobX = doblob;
 				} else {
-					suffix = stk[stk.length - 1].suffix;
-					blob = stk[stk.length - 1].blob;
+					suffixX = stk[stk.length - 1].suffix;
+					blobX = stk[stk.length - 1].blob;
 				}
 			} else {
 				// If NOT last blob in series, use only the current
 				// level suffix for sniffing.
 				if (doblob.strings.suffix) {
-					suffix = doblob.strings.suffix.slice(0, 1);
-					blob = doblob;
+					suffixX = doblob.strings.suffix.slice(0, 1);
+					blobX = doblob;
 				} else {
-					suffix = "";
-					blob = false;
+					suffixX = "";
+					blobX = false;
 				}
 				
 			}
+
 			// Use leading suffix char for sniffing only if it
 			// is a terminal punctuation character.
-			if (TERMS.indexOf(suffix) === -1) {
-				suffix = "";
-				blob = false;
+			if (SWAPS.indexOf(suffixX) === -1) {
+				suffixX = "";
+				blobX = false;
 			}
+
 			// Use leading delimiter char for sniffing only if it
 			// is a terminal punctuation character.
-			if (doblob.strings.delimiter) {
-				delimiter = doblob.strings.delimiter.slice(0, 1);
-				if (TERMS.indexOf(delimiter) > -1) {
+			if (doblob.strings.delimiter && 
+				doblob.blobs.length > 1) {
+				dprefX = doblob.strings.delimiter.slice(0, 1);
+				if (SWAPS.indexOf(dprefX) > -1) {
 					doblob.strings.delimiter = doblob.strings.delimiter.slice(1);
 				} else {
-					delimiter = "";
+					dprefX = "";
 				}
 			} else {
-				delimiter = "";
+				dprefX = "";
 			}
+			
+			if (doblob.strings.prefix) {
+				if (doblob.strings.prefix.slice(-1) === " ") {
+					// Marker copy only, no slice at this level before descending.
+					prefixX = " ";
+				} else {
+					prefixX = "";
+				}
+			} else {
+				if (i === 0) {
+					prefixX = prefix;					
+				} else {
+					prefixX = "";
+				}
+			}
+
+			if (dsuff) {
+				dsufffX = dsuff;
+			} else {
+				if (i === 0) {
+					dsufffX = dsufff;					
+				} else {
+					dsufffX = "";
+				}
+			}
+			if (doblob.strings.delimiter) {
+				if (doblob.strings.delimiter.slice(-1) === " " &&
+					"object" === typeof doblob.blobs && doblob.blobs.length > 1) {
+					   dsuffX = doblob.strings.delimiter.slice(-1);
+				} else {
+					dsuffX = "";						
+				}
+			} else {
+				dsuffX = "";					
+			}
+			
+			delimiterX = doblob.strings.delimiter;
+
 			// Push variables to stack and recurse.
-			stk.push({suffix: suffix, delimiter:delimiter, blob:blob});
+			stk.push({suffix: suffixX, dsuff:dsuffX, blob:blobX, delimiter:delimiterX, prefix:prefixX, dpref: dprefX, dsufff: dsufffX});
 			CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
+		}
+		
+		// cmd_cite.js needs a report of the last character to be
+		// rendered, to suppress extraneous trailing periods in
+		// rare cases.
+		if (myblobs && myblobs.length) {
+			var last_suffix = myblobs[myblobs.length - 1].strings.suffix;
+			if (last_suffix) {
+				state.tmp.last_chr = last_suffix.slice(-1);
+			}
 		}
 	}
 	// Always pop the stk when returning, unless it's the end of the line
 	// (return value is needed in cmd_cite.js, so that the adjusted
 	// suffix can be extracted from the fake blob used at top level).
 	if (stk.length > 1) {
-		stk.pop();		
+		stk.pop();
 	}
 	return false;
 };
