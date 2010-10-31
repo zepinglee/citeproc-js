@@ -305,6 +305,8 @@ CSL.getBibliographyEntries = function (bibsection) {
 			}
 			topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
 		}
+		CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
+		CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
 		res = this.output.string(this, this.output.queue)[0];
 		if (!res) {
 			res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";
