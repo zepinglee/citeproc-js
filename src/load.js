@@ -83,18 +83,7 @@ if (!Array.indexOf) {
 	};
 }
 
-// Defs used when debugging in a browser
-//
-//var alert = function (one) { print(one); };
-//var alert = function (one) { };
-
 var CSL = {
-	debug: function (str) {
-		print("CSL: " + str);
-	},
-	error: function (str) {
-		print("CSL error: " + str);
-	},
 
 	ERROR_NO_RENDERED_FORM: 1,
 
@@ -394,6 +383,9 @@ CSL.CLOSURES = new RegExp(".*[\\]\\)]");
 //SNIP-START
 
 // skip jslint check on this file, it doesn't get E4X
+if (!CSL.debug) {
+	load("./src/print.js");
+}
 if (!CSL.System) {
 	load("./src/system.js");
 }

@@ -57,12 +57,6 @@ if (!Array.indexOf) {
 	};
 }
 var CSL = {
-	debug: function (str) {
-		print("CSL: " + str);
-	},
-	error: function (str) {
-		print("CSL error: " + str);
-	},
 	ERROR_NO_RENDERED_FORM: 1,
 	PREVIEW: "Just for laughs.",
 	ASSUME_ALL_ITEMS_REGISTERED: 2,
@@ -289,6 +283,19 @@ var CSL = {
 };
 CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
 CSL.CLOSURES = new RegExp(".*[\\]\\)]");
+if ("undefined" === typeof console) {
+	CSL.debug = function () {};
+	CSL.error = function (str) {
+		throw "CSL error: " + str;
+	};
+} else {
+	CSL.debug = function (str) {
+        print("CSL: " + str);
+	};
+	CSL.error = function (str) {
+        print("CSL error: " + str);
+	};
+}
 CSL.Output = {};
 CSL.Output.Queue = function (state) {
 	this.levelname = ["top"];
