@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.68
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Further refactoring of output queue mechanism, to
+  unify all quote-swapping and detection code for
+  duplicate terminal punctuation and spaces in a
+  single function.  No changes to behavior, unless
+  there is a hole in the test suite somewhere.
+
+- Fix an output nesting mismatch error triggered
+  by items with two institutional authors in sequence,
+  when rendered with a style that sorts on the
+  bibliography.
+
+- In the output queue mechanism, fix a bug in the 
+  migration of a leading terminal character in a
+  prefix to the preceding sibling suffix.
+
+
+=========================
 Changes in version 1.0.67
 =========================
 
