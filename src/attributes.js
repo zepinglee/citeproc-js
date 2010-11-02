@@ -178,19 +178,20 @@ CSL.Attributes["@type"] = function (state, arg) {
 CSL.Attributes["@variable"] = function (state, arg) {
 	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key, flag;
 	this.variables = arg.split(/\s+/);
+	this.variables_real = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
 		state.build.term = this.variables[0];
 	} else if (["names", "date", "text", "number"].indexOf(this.name) > -1) {
 		//
 		// An oddity of variable handling is that this.variables
 		// is actually ephemeral; the full list of variables is
-		// held in the inner var, and pushed into this.variables
+		// held in the variables_real var, and pushed into this.variables
 		// conditionally in order to suppress repeat renderings of
 		// the same item variable.  [STILL FUNCTIONAL? 2010.01.15]
 		//
 		// set variable names
 		func = function (state, Item) {
-			variables = this.variables.slice();
+			variables = this.variables_real.slice();
 			this.variables = [];
 
 			len = variables.length;
