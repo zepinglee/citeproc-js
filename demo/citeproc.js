@@ -670,9 +670,23 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 		}
 	}
 }
+CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
+	if (!chr) {
+		return;
+	}
+	if ("object" === typeof myblob) {
+		if (CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1 && 
+			CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1) {
+			myblob.strings.prefix = myblob.strings.prefix.slice(1);
+		} else if ("object" === typeof myblob.blobs) {
+			CSL.Output.Queue.purgeNearsidePrefixChars(myblob.blobs[0], chr);
+		}
+	}
+}
 CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
-	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX;
+	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr;
 	var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
+	var TERM_OR_SPACE = CSL.TERMINAL_PUNCTUATION;
 	var SWAPS = CSL.SWAPPING_PUNCTUATION;
 	if (!stk) {
 		stk = [{suffix: "", delimiter: ""}];
@@ -693,7 +707,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 					blob.strings.suffix = blob.strings.suffix.slice(1);
 			}
 		}
-		state.tmp.last_chr = myblobs.slice(-1);
+		lastchr = myblobs.slice(-1);
 	} else {
 		if (dpref) {
 			for (var j = 0, jlen = myblobs.length - 1; j < jlen; j += 1) {
@@ -706,6 +720,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 		}
 		for (var i = 0, ilen = myblobs.length; i < ilen; i += 1) {
 			var doblob = myblobs[i];
+			CSL.Output.Queue.purgeNearsidePrefixChars(doblob, lastchr);
 			if (i === 0) {
 				if (prefix) {
 					if (doblob.strings.prefix.slice(0, 1) === " ") {
@@ -807,7 +822,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 				if (doblob.strings.suffix) {
 					suffixX = doblob.strings.suffix.slice(0, 1);
 					blobX = doblob;
-				} else {
+  				} else {
 					suffixX = "";
 					blobX = false;
 				}
@@ -861,19 +876,20 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			}
 			delimiterX = doblob.strings.delimiter;
 			stk.push({suffix: suffixX, dsuff:dsuffX, blob:blobX, delimiter:delimiterX, prefix:prefixX, dpref: dprefX, dsufff: dsufffX});
-			CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
+			lastchr = CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
 		}
 		if (myblobs && myblobs.length) {
 			var last_suffix = myblobs[myblobs.length - 1].strings.suffix;
 			if (last_suffix) {
-				state.tmp.last_chr = last_suffix.slice(-1);
+				lastchr = last_suffix.slice(-1);
 			}
 		}
 	}
 	if (stk.length > 1) {
 		stk.pop();
 	}
-	return false;
+	state.tmp.last_chr = lastchr;
+	return lastchr;
 };
 CSL.localeResolve = function (langstr) {
 	var ret, langlst;
@@ -2861,6 +2877,7 @@ CSL.getCite = function (Item, item, prevItemID) {
 	return Item.id;
 };
 CSL.citeStart = function (Item) {
+	this.tmp.lastchr = "";
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override) {
@@ -4839,11 +4856,12 @@ CSL.Attributes["@type"] = function (state, arg) {
 CSL.Attributes["@variable"] = function (state, arg) {
 	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key, flag;
 	this.variables = arg.split(/\s+/);
+	this.variables_real = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
 		state.build.term = this.variables[0];
 	} else if (["names", "date", "text", "number"].indexOf(this.name) > -1) {
 		func = function (state, Item) {
-			variables = this.variables.slice();
+			variables = this.variables_real.slice();
 			this.variables = [];
 			len = variables.length;
 			for (pos = 0; pos < len; pos += 1) {
