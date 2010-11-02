@@ -545,10 +545,25 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 	}
 }
 
+CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
+	if (!chr) {
+		return;
+	}
+	if ("object" === typeof myblob) {
+		if (CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1 && 
+			CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1) {
+			myblob.strings.prefix = myblob.strings.prefix.slice(1);
+		} else if ("object" === typeof myblob.blobs) {
+			CSL.Output.Queue.purgeNearsidePrefixChars(myblob.blobs[0], chr);
+		}
+	}
+}
+
 CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
-	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX;
+	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr;
 
 	var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
+	var TERM_OR_SPACE = CSL.TERMINAL_PUNCTUATION;
 	var SWAPS = CSL.SWAPPING_PUNCTUATION;
 	
 	if (!stk) {
@@ -579,7 +594,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 					blob.strings.suffix = blob.strings.suffix.slice(1);
 			}
 		}
-		state.tmp.last_chr = myblobs.slice(-1);
+		lastchr = myblobs.slice(-1);
 	} else {
 		// Complete the move of a leading terminal punctuation 
 		// from superior delimiter to suffix at this level,
@@ -596,8 +611,14 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			}
 		}
 
+		// Descend down the nearest blobs until we run into
+		// a string blob or a prefix, and if we find a
+		// prefix with an initial character that conflicts
+		// with the lastchr found so far, quash the prefix char.
 		for (var i = 0, ilen = myblobs.length; i < ilen; i += 1) {
 			var doblob = myblobs[i];
+
+			CSL.Output.Queue.purgeNearsidePrefixChars(doblob, lastchr);
 			
 			if (i === 0) {
 				if (prefix) {
@@ -726,7 +747,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 				if (doblob.strings.suffix) {
 					suffixX = doblob.strings.suffix.slice(0, 1);
 					blobX = doblob;
-				} else {
+  				} else {
 					suffixX = "";
 					blobX = false;
 				}
@@ -793,7 +814,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 
 			// Push variables to stack and recurse.
 			stk.push({suffix: suffixX, dsuff:dsuffX, blob:blobX, delimiter:delimiterX, prefix:prefixX, dpref: dprefX, dsufff: dsufffX});
-			CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
+			lastchr = CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
 		}
 		
 		// cmd_cite.js needs a report of the last character to be
@@ -802,7 +823,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 		if (myblobs && myblobs.length) {
 			var last_suffix = myblobs[myblobs.length - 1].strings.suffix;
 			if (last_suffix) {
-				state.tmp.last_chr = last_suffix.slice(-1);
+				lastchr = last_suffix.slice(-1);
 			}
 		}
 	}
@@ -812,6 +833,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 	if (stk.length > 1) {
 		stk.pop();
 	}
-	return false;
+	state.tmp.last_chr = lastchr;
+	return lastchr;
 };
 

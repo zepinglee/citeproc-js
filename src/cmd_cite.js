@@ -920,6 +920,7 @@ CSL.getCite = function (Item, item, prevItemID) {
 };
 
 CSL.citeStart = function (Item) {
+	this.tmp.lastchr = "";
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override) {
