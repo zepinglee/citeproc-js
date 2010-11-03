@@ -1469,7 +1469,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.68";
+	this.processor_version = "1.0.69";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3044,7 +3044,7 @@ CSL.Node.date = {
 					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
 						for (key in state.tmp.date_object) {
 							if (state.tmp.date_object.hasOwnProperty(key)) {
-								if (key.slice(0, 4) === "year") {
+								if (key.slice(0, 4) === "year" && state.tmp.citeblob.can_suppress_identical_year) {
 									delete state.tmp.date_object[key];
 								}
 							}
@@ -3791,6 +3791,7 @@ CSL.Node.layout = {
 			state[state.build.area].opt.layout_decorations = this.decorations;
 			func = function (state, Item) {
 				state.output.openLevel("empty");
+				state.tmp.citeblob = state.output.queue[state.output.queue.length - 1];
 			};
 			this.execs.push(func);
 			target.push(this);
@@ -4741,6 +4742,14 @@ CSL.Node.text = {
 							}
 							func = state.transform.getOutputFunction();
 						}
+						if (this.variables[0] === "container-title") {
+							var xfunc = function (state, Item, item) {
+								if (Item['container-title'] && state.tmp.citeblob.has_volume) {
+									state.tmp.citeblob.can_suppress_identical_year = true;
+								}
+							};
+							this.execs.push(xfunc);
+						}
 					} else {
 						if (CSL.CITE_FIELDS.indexOf(this.variables[0]) > -1) {
 							func = function (state, Item, item) {
@@ -4765,6 +4774,14 @@ CSL.Node.text = {
 								var value = state.getVariable(Item, "page", form);
 								if (value) {
 									value = state.fun.page_mangler(value);
+									state.output.append(value, this);
+								}
+							};
+						} else if ("volume") {
+							func = function (state, Item) {
+								var value = state.getVariable(Item, this.variables[0], form);
+								if (value) {
+									state.tmp.citeblob.has_volume = true;
 									state.output.append(value, this);
 								}
 							};

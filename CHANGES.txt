@@ -1,6 +1,38 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.69
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Limit suppression of a year that is identical to the
+  volume number only for cites in which volume and 
+  container-title are both rendered, and volume precedes 
+  container-title.  Suppression allows legal cites such as
+  The King v. Lockwood, 99 Eng. Rep. 379 (K.B. 1782) and
+  Hastings v. Perkins, 1930 P. 217 (Eng. C.A.) to be handled
+  with a single item type and without resorting to presentation
+  toggles in the input data.  Limiting suppression to cites
+  in which a rendered volume precedes a rendered container-title
+  prevents this behavior from corrupting other citation forms.
+
+- Suppress a leading prefix character that is nested at an 
+  arbitrary depth on the subsequent sibling hierarchy of the 
+  current output blob object, where it would result in duplicate
+  punctuation in the flattened output.
+
+- Fix over-aggressive suppression, on subsequent items, of variables 
+  that are called through cs:substitute (and are therefore suppressed
+  within the current item).
+
+- Define print statement conditionally, following suggestions from 
+  Carles Pina and Fergus Gallagher.
+
+
+=========================
 Changes in version 1.0.68
 =========================
 
