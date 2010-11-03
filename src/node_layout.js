@@ -93,6 +93,9 @@ CSL.Node.layout = {
 			// declare thyself
 			func = function (state, Item) {
 				state.output.openLevel("empty");
+				// Pointer to top-level blob for each cite is tracked, to
+				// allow per-cite values to be set for can_suppress_identical_year.
+				state.tmp.citeblob = state.output.queue[state.output.queue.length - 1];
 			};
 			this.execs.push(func);
 			target.push(this);

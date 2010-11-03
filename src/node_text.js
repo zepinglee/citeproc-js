@@ -303,6 +303,14 @@ CSL.Node.text = {
 							}
 							func = state.transform.getOutputFunction();
 						}
+						if (this.variables[0] === "container-title") {
+							var xfunc = function (state, Item, item) {
+								if (Item['container-title'] && state.tmp.citeblob.has_volume) {
+									state.tmp.citeblob.can_suppress_identical_year = true;
+								}
+							};
+							this.execs.push(xfunc);
+						}
 					} else {
 						// ordinary fields
 						if (CSL.CITE_FIELDS.indexOf(this.variables[0]) > -1) {
@@ -333,6 +341,17 @@ CSL.Node.text = {
 								var value = state.getVariable(Item, "page", form);
 								if (value) {
 									value = state.fun.page_mangler(value);
+									state.output.append(value, this);
+								}
+							};
+						} else if ("volume") {
+							func = function (state, Item) {
+								var value = state.getVariable(Item, this.variables[0], form);
+								if (value) {
+									// Only allow the suppression of a year identical
+									// to the volume number if the container-title
+									// is rendered after the volume number.
+									state.tmp.citeblob.has_volume = true;
 									state.output.append(value, this);
 								}
 							};
