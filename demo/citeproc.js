@@ -797,12 +797,18 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 						}
 						if (swapchar) {
 							if ("string" === typeof doblob.blobs) {
-								if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1) {
-									doblob.blobs += swapchar;										
+								if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1 ||
+								   (TERMS.indexOf(doblob.blobs.slice(-1)) > -1 &&
+									SWAPS.indexOf(swapchar) > -1 &&
+									TERMS.indexOf(swapchar) === -1)) {
+										doblob.blobs += swapchar;
 								}
 							} else {
-								if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1) {
-									doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
+								if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1 ||
+									(TERMS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) > -1 &&
+									 SWAPS.indexOf(swapchar) > -1 &&
+									 TERMS.indexOf(swapchar) === -1)) {
+										 doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
 								}
 							}
 							swapblob.strings.suffix = swapblob.strings.suffix.slice(1);
@@ -1469,7 +1475,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.69";
+	this.processor_version = "1.0.70";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();

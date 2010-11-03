@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.69";
+	this.processor_version = "1.0.70";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();

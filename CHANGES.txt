@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.70
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Adopt conventions from Chicago 16th ed. for commas that follow 
+  terminal punctuation in user content fields such as title.
+
+
+=========================
 Changes in version 1.0.69
 =========================
 
