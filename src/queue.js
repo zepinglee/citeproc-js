@@ -712,14 +712,27 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 						} else {
 							swapchar = false;
 						}
+						// This reflects Chicago 16th.
 						if (swapchar) {
+							// For both possible case, if ending punctuation is 
+							// not in SWAPS, add the swapchar.
+							// Otherwise add the swapchar only if ending punctuation 
+							// is in TERMS, and the swapchar is in SWAPS and not in TERMS.
+							//
+							// Code could do with some pruning, but that's the logic of it.
 							if ("string" === typeof doblob.blobs) {
-								if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1) {
-									doblob.blobs += swapchar;										
+								if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1 ||
+								   (TERMS.indexOf(doblob.blobs.slice(-1)) > -1 &&
+									SWAPS.indexOf(swapchar) > -1 &&
+									TERMS.indexOf(swapchar) === -1)) {
+										doblob.blobs += swapchar;
 								}
 							} else {
-								if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1) {
-									doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
+								if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1 ||
+									(TERMS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) > -1 &&
+									 SWAPS.indexOf(swapchar) > -1 &&
+									 TERMS.indexOf(swapchar) === -1)) {
+										 doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
 								}
 							}
 							swapblob.strings.suffix = swapblob.strings.suffix.slice(1);
