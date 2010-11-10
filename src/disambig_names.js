@@ -63,7 +63,7 @@ CSL.Registry.NameReg = function (state) {
 		if (!str) {
 			str = "";
 		}
-		return str.replace(".", " ").replace(/\s+/, " ");
+		return str.replace(".", " ", "g").replace(/\s+/g, " ").replace(/\s+$/,"");
 	};
 
 	set_keys = function (state, itemid, nameobj) {
@@ -127,7 +127,7 @@ CSL.Registry.NameReg = function (state) {
 				param = 1;
 			}
 			if (this.namereg[pkey].ikey && this.namereg[pkey].ikey[ikey].count > 1) {
-				param = 2;
+			    param = 2;
 			}
 		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
 			if (this.namereg[pkey].count > 1) {
