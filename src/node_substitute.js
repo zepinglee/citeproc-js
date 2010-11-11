@@ -54,7 +54,7 @@ CSL.Node.substitute = {
 			func = function (state, Item) {
 				state.tmp.can_block_substitute = true;
 				if (state.tmp.value.length) {
-					state.tmp.can_substitute.replace(false, CSL.LITERAL);
+				    state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}
 			};
 			this.execs.push(func);

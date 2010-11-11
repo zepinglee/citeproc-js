@@ -210,37 +210,37 @@ CSL.Node.text = {
 				}
 			} else {
 				if (state.build.term) {
-					term = state.build.term;
-					term = state.getTerm(term, form, plural);
-					if (this.strings["strip-periods"]) {
-						term = term.replace(/\./g, "");
+				    term = state.build.term;
+				    term = state.getTerm(term, form, plural);
+				    if (this.strings["strip-periods"]) {
+					term = term.replace(/\./g, "");
+				    }
+				    // printterm
+				    func = function (state, Item) {
+					var myterm;
+					// if the term is not an empty string, flag this
+					// same as a variable with content.
+					if (term !== "") {
+					    flag = state.tmp.term_sibling.value();
+					    flag[0] = true;
+					    state.tmp.term_sibling.replace(flag);
 					}
-					// printterm
-					func = function (state, Item) {
-						var myterm;
-						// if the term is not an empty string, flag this
-						// same as a variable with content.
-						if (term !== "") {
-							flag = state.tmp.term_sibling.value();
-							flag[0] = true;
-							state.tmp.term_sibling.replace(flag);
-						}
-						// capitalize the first letter of a term, if it is the
-						// first thing rendered in a citation (or if it is
-						// being rendered immediately after terminal punctuation,
-						// I guess, actually).
-						if (!state.tmp.term_predecessor) {
-							//CSL.debug("Capitalize");
-							myterm = CSL.Output.Formatters["capitalize-first"](state, term);
-						} else {
-							myterm = term;
-						}
-						state.output.append(myterm, this);
-					};
-					this.execs.push(func);
-					state.build.term = false;
-					state.build.form = false;
-					state.build.plural = false;
+					// capitalize the first letter of a term, if it is the
+					// first thing rendered in a citation (or if it is
+					// being rendered immediately after terminal punctuation,
+					// I guess, actually).
+					if (!state.tmp.term_predecessor) {
+					    //CSL.debug("Capitalize");
+					    myterm = CSL.Output.Formatters["capitalize-first"](state, term);
+					} else {
+					    myterm = term;
+					}
+					state.output.append(myterm, this);
+				    };
+				    this.execs.push(func);
+				    state.build.term = false;
+				    state.build.form = false;
+				    state.build.plural = false;
 				} else if (this.variables.length) {
 					func = function (state, Item) {
 						state.parallel.StartVariable(this.variables[0]);

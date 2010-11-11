@@ -958,6 +958,7 @@ CSL.citeEnd = function (Item) {
 	this.tmp.last_suffix_used = this.tmp.suffix.value();
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
+	this.tmp.cut_var = false;
 
 	// This is a hack, in a way; I have lost track of where
 	// the disambig (name rendering) settings used for rendering work their way
