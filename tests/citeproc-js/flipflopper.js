@@ -57,7 +57,7 @@ doh.register("citeproc_js.flipflopper", [
 		ff.init("head<i>italic</b>bold's");
 		ff.processTags();
 		doh.assertEqual(35,ff.blob.blobs.length);
-		doh.assertEqual("head&lt;i&gt;italic&lt;/b&gt;bold\u2019s",ff.blob.blobs);
+		doh.assertEqual("head&lt;i&gt;italic&lt;/b&gt;bold\u02bcs",ff.blob.blobs);
 	},
 	function testImmediateClosingSingleQuote(){
 		var myxml = "<style></style>";
