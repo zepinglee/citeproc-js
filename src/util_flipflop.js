@@ -281,7 +281,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
-		strs[pos] = strs[pos].replace("'", this.state.getTerm("close-inner-quote"), "g");
+		strs[pos] = strs[pos].replace("'", "\u02bc");
 		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
 	}
 	// XXXZ FIXME (done): swap punctuation for locators
