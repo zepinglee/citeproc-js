@@ -62,7 +62,7 @@ bibliography
   </div>
   <div class="csl-entry">
 
-    <div class="csl-block">D’Arcus, Bruce</div>
+    <div class="csl-block">DʼArcus, Bruce</div>
 
     <div class="csl-left-margin">2005</div><div class="csl-right-inline"><i>Boundaries of Dissent: Protest and State Power in the Media Age</i>. Routledge, November 22.</div>
   </div>
