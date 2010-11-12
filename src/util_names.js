@@ -147,17 +147,37 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 };
 
 CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence) {
-	var state, len, pos, key, namepart, initialize_with;
+	var state, len, pos, key, namepart, initialize_with, preffie;
 	state = this.state;
+    	// Purge empty name parts from keylist
+	for (var i = subsequence.length - 1; i > -1; i += -1) {
+	    if (!this.name[subsequence[i]]) {
+		subsequence = subsequence.slice(0, i).concat(subsequence.slice(i + 1));
+	    }
+	}
+	preffie = "";
 	len = subsequence.length;
 	for (pos = 0; pos < len; pos += 1) {
 		key = subsequence[pos];
 		namepart = this.name[key];
+		if (preffie) {
+		    namepart = preffie + namepart;
+		    preffie = "";
+		}
 		// Do not include given name, dropping particle or suffix in strict short form of name
 		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
 			if (!(key === "given" && !this.name.family)) {
 					continue;
 			}
+		}
+		// If ends in an apostrophe, is a particle, and is immediately
+		// followed by family, merge particle to family.
+		if (key === "dropping-particle" 
+		    && ["'","\u02bc","\u2019"].indexOf(namepart.slice(-1)) > -1
+		    && pos < subsequence.length - 1
+		    && subsequence[pos + 1] === "family") {
+			preffie = namepart;
+			continue;
 		}
 		// initialize if appropriate
 		if ("given" === key) {
