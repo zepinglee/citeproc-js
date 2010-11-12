@@ -48,41 +48,12 @@
 
 CSL.Node["if"] = {
 	build: function (state, target) {
-		var tryposition, func;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-			if ("number" === typeof this.strings.position) {
-				tryposition = this.strings.position;
-				func = function (state, Item, item) {
-					if (item && "undefined" === typeof item.position) {
-						item.position = 0;
-					}
-					if (item && typeof item.position === "number") {
-						if (item.position === 0 && tryposition === 0) {
-							return true;
-						} else if (tryposition > 0 && item.position >= tryposition) {
-							return true;
-						}
-					} else if (tryposition === 0) {
-						return true;
-					}
-					return false;
-				};
-				this.tests.push(func);
-			}
-			if (this.strings["near-note-distance-check"]) {
-				func = function (state, Item, item) {
-					if (item && item["near-note"]) {
-						return true;
-					}
-					return false;
-				};
-				this.tests.push(func);
-			}
-			if (!this.evaluator) {
-				//
-				// cut and paste of "any"
-				this.evaluator = state.fun.match.any;
-			}
+		    if (!this.evaluator) {
+			//
+			// cut and paste of "any"
+			this.evaluator = state.fun.match.any;
+		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			// closingjump

@@ -486,17 +486,56 @@ CSL.Attributes["@newdate"] = function (state, arg) {
 
 
 CSL.Attributes["@position"] = function (state, arg) {
+    var tryposition;
 	state.opt.update_mode = CSL.POSITION;
-	if (arg === "first") {
-		this.strings.position = CSL.POSITION_FIRST;
-	} else if (arg === "subsequent") {
-		this.strings.position = CSL.POSITION_SUBSEQUENT;
-	} else if (arg === "ibid") {
-		this.strings.position = CSL.POSITION_IBID;
-	} else if (arg === "ibid-with-locator") {
-		this.strings.position = CSL.POSITION_IBID_WITH_LOCATOR;
-	} else if (arg === "near-note") {
-		this.strings["near-note-distance-check"] = true;
+	var lst = arg.split(/\s+/);
+	for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
+	    if (state.build.area.slice(0, 12) === "bibliography") {
+		func = function (state, Item, item) {
+		    return false;
+		}
+		this.tests.push(func);
+	    } else {
+		if (lst[i] === "first") {
+		    tryposition = CSL.POSITION_FIRST;
+		} else if (lst[i] === "subsequent") {
+		    tryposition = CSL.POSITION_SUBSEQUENT;
+		} else if (lst[i] === "ibid") {
+		    tryposition = CSL.POSITION_IBID;
+		} else if (lst[i] === "ibid-with-locator") {
+		    tryposition = CSL.POSITION_IBID_WITH_LOCATOR;
+		}
+		// ZZZZZ We need a factory function here, similar
+		// to what we do for decorations.
+		var factory = function (tryposition) {
+		    return  function (state, Item, item) {
+			if (item && "undefined" === typeof item.position) {
+			    item.position = 0;
+			}
+			if (item && typeof item.position === "number") {
+			    if (item.position === 0 && tryposition === 0) {
+				return true;
+			    } else if (tryposition > 0 && item.position >= tryposition) {
+				return true;
+			    }
+			} else if (tryposition === 0) {
+			    return true;
+			}
+			return false;
+		    };
+		};
+		func = factory(tryposition);
+		this.tests.push(func);
+	    }
+	    if (lst[i] === "near-note") {
+		func = function (state, Item, item) {
+		    if (item && item["near-note"]) {
+			return true;
+		    }
+		    return false;
+		};
+		this.tests.push(func);
+	    }
 	}
 };
 
