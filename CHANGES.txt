@@ -1,6 +1,37 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.71
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Variables (including names) should be (and have been)
+  suppressed when rendered via the cs:substitute node
+  of cs:names.  Subsequent rendering of any name variable
+  after its first use within a given cite was being
+  suppressed unconditionally, however, and this behavior
+  differed from the Zotero CSL 0.8.1 processor.  This
+  patch restores the original behavior, allowing names
+  rendered outside of cs:substitute to be used repeatedly
+  within a cite.  (The only exception to this behavior
+  is a name rendered with et-al-min=1 and et-al-use-first=1,
+  which will be clipped from subsequent output.)
+
+- The processor was using the localized close-inner-quote
+  character for apostrophes.  This caused problems in
+  styles that use alternative quotation marks.  The
+  processor now uses a hard-coded apostrophe character
+  for apostrophes.
+
+- A bug in the normalization of names, for disambiguation
+  purposes, that contain punctuatioin or extraneous spaces
+  has been fixed.
+
+
+=========================
 Changes in version 1.0.70
 =========================
 
