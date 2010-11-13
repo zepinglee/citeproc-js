@@ -259,6 +259,7 @@ var CSL = {
 		is: "is_IS",
 		it: "it_IT",
 		ja: "ja_JP",
+		kh: "kh_KH",
 		ko: "ko_KR",
 		mn: "mn_MN",
 		nb: "nb_NO",
@@ -1485,7 +1486,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.73";
+	this.processor_version = "1.0.74";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3456,6 +3457,7 @@ CSL.Node.key = {
 		start_key = new CSL.Token("key", CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
+		start_key.strings["et-al-use-last"] = this.strings["et-al-use-last"];
 		func = function (state, Item) {
 			state.tmp.done_vars = [];
 		};
@@ -3476,6 +3478,9 @@ CSL.Node.key = {
 			}
 			if (this.strings["et-al-use-first"]) {
 				state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
+			}
+			if (this.strings["et-al-use-last"]) {
+				state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
 			}
 		};
 		start_key.execs.push(func);
@@ -3623,6 +3628,7 @@ CSL.Node.key = {
 		func = function (state, Item) {
 			state.tmp["et-al-min"] = false;
 			state.tmp["et-al-use-first"] = false;
+			state.tmp["et-al-use-last"] = false;
 			state.tmp.sort_key_flag = false;
 		};
 		end_key.execs.push(func);
@@ -3854,7 +3860,7 @@ CSL.Node.name = {
 						state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 					}
 				}
-				if ("undefined" !== this.strings["et-al-use-last"]) {
+				if ("undefined" !== typeof this.strings["et-al-use-last"]) {
 					state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
 				}
 			};
@@ -4481,14 +4487,15 @@ CSL.Node.number = {
 				    && all_with_spaces 
 				    && num.match(/[-,&]/) 
 				    && !num.match(/[^- 0-9,&]/)) {
-				    var prefixes = num.split(/[0-9]+/);
 				    var nums = num.match(/[0-9]+/g);
+				    var range_ok = true;
 				    for (i = prefixes.length - 2; i > 0; i += -1) {
 					if (prefixes && prefixes[i].indexOf("-") > -1) {
 					    var start = parseInt(nums[i - 1], 10);
 					    var end = parseInt(nums[i], 10);
-					    if (start >= end) {
-						continue;
+					    if (start >= end || start < (end - 1000)) {
+						range_ok = false;
+						break;
 					    }
 					    var replacement = [];
 					    for (j = start, jlen = end + 1; j < jlen; j += 1) {
@@ -4497,7 +4504,8 @@ CSL.Node.number = {
 					    nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
 					}
 				    }
-				    nums = nums.sort(function (a,b) {
+				    if (range_ok) {
+					nums = nums.sort(function (a,b) {
 					    a = parseInt(a, 10);
 					    b = parseInt(b, 10);
 					    if (a > b) {
@@ -4507,24 +4515,27 @@ CSL.Node.number = {
 					    } else {
 						return 0;
 					    }
-				    });
-				    for (i = nums.length; i > -1; i += -1) {
-					if (nums[i] === nums[i + 1]) {
-					    nums = nums.slice(0, i).concat(nums.slice(i + 1));
+					});
+					for (i = nums.length; i > -1; i += -1) {
+					    if (nums[i] === nums[i + 1]) {
+						nums = nums.slice(0, i).concat(nums.slice(i + 1));
+					    }
 					}
-				    }
-				    state.output.openLevel("empty");
-				    for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
-					num = parseInt(nums[i], 10);
-					number = new CSL.NumericBlob(num, this);
-					if (i > 0) {
-					    number.successor_prefix = " & ";
-					    number.range_prefix = "-";
-					    number.splice_prefix = ", ";
+					state.output.openLevel("empty");
+					for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
+					    num = parseInt(nums[i], 10);
+					    number = new CSL.NumericBlob(num, this);
+					    if (i > 0) {
+						number.successor_prefix = " & ";
+						number.range_prefix = "-";
+						number.splice_prefix = ", ";
+					    }
+					    state.output.append(number, "literal");
 					}
-					state.output.append(number, "literal");
+					state.output.closeLevel("empty");
+				    } else {
+					state.output.append(num, this);
 				    }
-				    state.output.closeLevel("empty");
 				} else if (!all_with_spaces) {
 				    state.output.append(num, this);
 				} else {
@@ -5112,6 +5123,13 @@ CSL.Attributes["@names-min"] = function (state, arg) {
 };
 CSL.Attributes["@names-use-first"] = function (state, arg) {
 	this.strings["et-al-use-first"] = parseInt(arg, 10);
+};
+CSL.Attributes["@names-use-last"] = function (state, arg) {
+    	if (arg === "true") {
+		this.strings["et-al-use-last"] = true;
+	} else {
+		this.strings["et-al-use-last"] = false;
+	}
 };
 CSL.Attributes["@sort"] = function (state, arg) {
 	if (arg === "descending") {
@@ -6258,7 +6276,7 @@ CSL.Util.Names.outputNames = function (state, display_names) {
 	segments = new this.StartMiddleEnd(state, display_names);
 	and = state.output.getToken("name").strings.delimiter;
 	if (state.tmp.use_ellipsis) {
-		and = state.output.getToken("inner").strings.delimiter + state.getTerm("ellipsis") + " ";
+		and = state.output.getToken("inner").strings.delimiter + "\u2026 ";
 	} else if (state.output.getToken("name").strings["delimiter-precedes-last"] === "always") {
 		and = state.output.getToken("inner").strings.delimiter + and;
 	} else if (state.output.getToken("name").strings["delimiter-precedes-last"] === "never") {

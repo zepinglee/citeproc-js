@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.74
+=========================
+
+-----------
+Enhancement
+-----------
+
+- Recognize new Khmer locale for CSL provided by
+  Hem Sras.
+
+- When parsing number ranges in the input to cs:number,
+  abort parsing when spread of range is over an
+  arbitrary limit of 1000.
+
+- Support names-use-last attribute on cs:key.
+  (Anticipatory change to support upcoming change
+  to CSL schema and specification.)
+
+- Use unicode ellipsis character rather than
+  (nonexistent) locale term when splicing
+  author listings trucated with et-al-use-last.
+
+
+=========================
 Changes in version 1.0.73
 =========================
 
