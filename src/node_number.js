@@ -98,15 +98,28 @@ CSL.Node.number = {
 				//
 				// (If we are in a cs:sort node, we use
 				// the first number encountered only)
+				var prefixes = num.split(/[0-9]+/);
+				var all_with_spaces = true;
+				// all_with_spaces will be false only if it is
+				// of length >= 3, and has a string with no
+				// space between position 1 and position length - 2.
+				// Single numbers will evaluate true, because
+				// the length of prefixes in that case will be 2.
+				for (var i = 1, ilen = prefixes.length - 1; i < ilen; i += 1) {
+				    if (prefixes[i].indexOf(" ") === -1) {
+					all_with_spaces = false;
+					break;
+				    }
+				}
 				if (state.tmp.area !== "citation_sort"
 				    && state.tmp.area !== "bibliography_sort"
+				    && all_with_spaces 
 				    && num.match(/[-,&]/) 
 				    && !num.match(/[^- 0-9,&]/)) {
 				    // For endash.  Wait for complaints on this one.
 				    //num = num.replace("-","\u2013", "g");
 				    var prefixes = num.split(/[0-9]+/);
 				    var nums = num.match(/[0-9]+/g);
-				    var prefixes = num.split(/[0-9]+/);
 				    // Expand ranges
 				    for (i = prefixes.length - 2; i > 0; i += -1) {
 					if (prefixes && prefixes[i].indexOf("-") > -1) {
@@ -152,6 +165,13 @@ CSL.Node.number = {
 					state.output.append(number, "literal");
 				    }
 				    state.output.closeLevel("empty");
+				} else if (!all_with_spaces) {
+				    // Don't attempt to apply numeric formatting
+				    // or to normalize the content for weird
+				    // numbers like "1-505" (no space between the
+				    // numbers and the hyphen suggests that 505 might
+				    // be meant as a leaf number)
+				    state.output.append(num, this);
 				} else {
 				    m = num.match(/\s*([0-9]+)/);
 				    if (m) {
