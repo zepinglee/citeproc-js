@@ -612,6 +612,16 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			blobs[pos].checkNext(blobs[(pos + 1)]);
 		}
 	}
+	var doit = true;
+	for (pos = blobs.length - 1; pos > 0; pos += -1) {
+	    if (blobs[pos].checkLast) {
+		if (doit && blobs[pos].checkLast(blobs[pos - 1])) {
+		    doit = false;
+		}
+	    } else {
+		doit = true;
+	    }
+	}
 	len = blobs.length;
 	for (pos = 0; pos < len; pos += 1) {
 		blob = blobs[pos];
@@ -641,7 +651,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			} else if (blob.status === CSL.START) {
 				ret += "";
 			} else if (blob.status === CSL.SEEN) {
-				ret += blob.successor_prefix;
+				ret += blob.splice_prefix;
 			}
 			ret += str;
 		}
@@ -2826,7 +2836,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
 				objects.push(compie);
 			}
 		}
-		composite.reverse();
 		llen = composite.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			obj = composite[ppos];
@@ -4442,6 +4451,9 @@ CSL.Node.number = {
 		if ("undefined" === typeof this.successor_prefix) {
 			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 		}
+		if ("undefined" === typeof this.splice_prefix) {
+			this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
+		}
 		func = function (state, Item) {
 			var varname, num, number, m;
 			varname = this.variables[0];
@@ -4456,15 +4468,31 @@ CSL.Node.number = {
 					m = num.split(/\s*(?:&|,|-)\s*/);
 					num = m[0];
 				}
-				if (num.match(/[-,&]/) && !num.match(/[^- 0-9,&]/)) {
+				if (state.tmp.area !== "citation_sort"
+				    && state.tmp.area !== "bibliography_sort"
+				    && num.match(/[-,&]/) 
+				    && !num.match(/[^- 0-9,&]/)) {
 				    var prefixes = num.split(/[0-9]+/);
 				    var nums = num.match(/[0-9]+/g);
+				    nums = nums.sort(function (a,b) {
+					    a = parseInt(a, 10);
+					    b = parseInt(b, 10);
+					    if (a > b) {
+						return 1;
+					    } else if (a < b) {
+						return -1;
+					    } else {
+						return 0;
+					    }
+				    });
 				    state.output.openLevel("empty");
 				    for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
 					num = parseInt(nums[i], 10);
 					number = new CSL.NumericBlob(num, this);
 					if (i > 0) {
-					    state.output.append(prefixes[i], "empty");
+					    number.successor_prefix = " & ";
+					    number.range_prefix = "-";
+					    number.splice_prefix = ", ";
 					}
 					state.output.append(number, "literal");
 				    }
@@ -4547,6 +4575,7 @@ CSL.Node.text = {
 						this.range_prefix = "-";
 					}
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
+					this.splice_prefix = state[state.build.area].opt.layout_delimiter;
 					func = function (state, Item, item) {
 						id = Item.id;
 						if (!state.tmp.just_looking) {
@@ -6059,7 +6088,7 @@ CSL.NumericBlob = function (num, mother_token) {
 		this.strings["text-case"] = mother_token.strings["text-case"];
 		this.successor_prefix = mother_token.successor_prefix;
 		this.range_prefix = mother_token.range_prefix;
-		this.splice_prefix = "";
+		this.splice_prefix = mother_token.splice_prefix;
 		this.formatter = mother_token.formatter;
 		if (!this.formatter) {
 			this.formatter =  new CSL.Output.DefaultFormatter();
@@ -6104,10 +6133,15 @@ CSL.NumericBlob.prototype.checkNext = function (next) {
 				next.status = CSL.SUCCESSOR;
 			}
 		}
-		if (this.status === CSL.SEEN) {
-			this.status = CSL.SUCCESSOR;
-		}
 	}
+};
+CSL.NumericBlob.prototype.checkLast = function (last) {
+    if (this.status === CSL.SEEN 
+	|| (last.num !== (this.num - 1) && this.status === CSL.SUCCESSOR)) {
+		this.status = CSL.SUCCESSOR;
+		return true;
+    }
+    return false;
 };
 CSL.Util.fixDateNode = function (parent, pos, node) {
 	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, cchildren, kkey, display;
