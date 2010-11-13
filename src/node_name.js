@@ -117,7 +117,7 @@ CSL.Node.name = {
 						state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 					}
 				}
-				if ("undefined" !== this.strings["et-al-use-last"]) {
+				if ("undefined" !== typeof this.strings["et-al-use-last"]) {
 					state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
 				}
 			};

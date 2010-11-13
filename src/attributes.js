@@ -439,6 +439,14 @@ CSL.Attributes["@names-use-first"] = function (state, arg) {
 	this.strings["et-al-use-first"] = parseInt(arg, 10);
 };
 
+CSL.Attributes["@names-use-last"] = function (state, arg) {
+    	if (arg === "true") {
+		this.strings["et-al-use-last"] = true;
+	} else {
+		this.strings["et-al-use-last"] = false;
+	}
+};
+
 CSL.Attributes["@sort"] = function (state, arg) {
 	if (arg === "descending") {
 		this.strings.sort_direction = CSL.DESCENDING;

@@ -53,6 +53,7 @@ CSL.Node.key = {
 		start_key = new CSL.Token("key", CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
+		start_key.strings["et-al-use-last"] = this.strings["et-al-use-last"];
 		// initialize done vars
 		func = function (state, Item) {
 			state.tmp.done_vars = [];
@@ -78,6 +79,9 @@ CSL.Node.key = {
 			}
 			if (this.strings["et-al-use-first"]) {
 				state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
+			}
+			if (this.strings["et-al-use-last"]) {
+				state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
 			}
 		};
 		start_key.execs.push(func);
@@ -261,6 +265,7 @@ CSL.Node.key = {
 			// state.tmp.name_quash = new Object();
 			state.tmp["et-al-min"] = false;
 			state.tmp["et-al-use-first"] = false;
+			state.tmp["et-al-use-last"] = false;
 			state.tmp.sort_key_flag = false;
 		};
 		end_key.execs.push(func);
