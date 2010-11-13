@@ -8,11 +8,12 @@ Changes in version 1.0.72
 Mishandled or unimplemented features
 ------------------------------------
 
-- Recognize simple range, comma, and ampersand joins 
-  in cs:number.  Permits forms like "1st-2nd", "xi-xv", 
-  etc.  (This is an anticipatory change, not required 
-  by the current CSL 1.0 specification, but it seems 
-  to be the behavior that one would expect.)
+- Allow simple range, comma, and ampersand joins 
+  in the input to cs:number, to permit "1st-2nd", 
+  "xi-xv", etc.  When multiple numbers are given,
+  sort them as a list, truncate ranges, perform 
+  numeric formatting, and provide appropriate 
+  punctuation.
 
 - Eliminate space following a trailing apostrophe on a 
   dropping-particle, when immediately followed by family
