@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.72
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize simple range, comma, and ampersand joins 
+  in cs:number.  Permits forms like "1st-2nd", "xi-xv", 
+  etc.  (This is an anticipatory change, not required 
+  by the current CSL 1.0 specification, but it seems 
+  to be the behavior that one would expect.)
+
+- Eliminate space following a trailing apostrophe on a 
+  dropping-particle, when immediately followed by family
+  in rendered output.
+
+- Recognize multiple parameters of position attribute of 
+  cs:if and cs:else-if, per CSL 1.0 schema.  For the fix,
+  eliminate cutted-and-pasteded code from node_if.js and 
+  node_elseif.js, and consolidate in attributes.js.
+
+
+=========================
 Changes in version 1.0.71
 =========================
 

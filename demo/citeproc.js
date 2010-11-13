@@ -1475,7 +1475,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.71";
+	this.processor_version = "1.0.72";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3262,37 +3262,9 @@ CSL.Node["else-if"] = {
 	build: function (state, target) {
 		var func, tryposition;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-			if ("number" === typeof this.strings.position) {
-				tryposition = this.strings.position;
-				func = function (state, Item, item) {
-					if (item && "undefined" === typeof item.position) {
-						item.position = 0;
-					}
-					if (item && typeof item.position === "number") {
-						if (item.position === 0 && tryposition === 0) {
-							return true;
-						} else if (tryposition > 0 && item.position >= tryposition) {
-							return true;
-						}
-					} else if (tryposition === 0) {
-						return true;
-					}
-					return false;
-				};
-				this.tests.push(func);
-			}
-			if (this.strings["near-note-distance-check"]) {
-				func = function (state, Item, item) {
-					if (item && item["near-note"]) {
-						return true;
-					}
-					return false;
-				};
-				this.tests.push(func);
-			}
-			if (! this.evaluator) {
-				this.evaluator = state.fun.match.any;
-			}
+		    if (! this.evaluator) {
+			this.evaluator = state.fun.match.any;
+		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
@@ -3397,39 +3369,10 @@ CSL.Node.group = {
 };
 CSL.Node["if"] = {
 	build: function (state, target) {
-		var tryposition, func;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-			if ("number" === typeof this.strings.position) {
-				tryposition = this.strings.position;
-				func = function (state, Item, item) {
-					if (item && "undefined" === typeof item.position) {
-						item.position = 0;
-					}
-					if (item && typeof item.position === "number") {
-						if (item.position === 0 && tryposition === 0) {
-							return true;
-						} else if (tryposition > 0 && item.position >= tryposition) {
-							return true;
-						}
-					} else if (tryposition === 0) {
-						return true;
-					}
-					return false;
-				};
-				this.tests.push(func);
-			}
-			if (this.strings["near-note-distance-check"]) {
-				func = function (state, Item, item) {
-					if (item && item["near-note"]) {
-						return true;
-					}
-					return false;
-				};
-				this.tests.push(func);
-			}
-			if (!this.evaluator) {
-				this.evaluator = state.fun.match.any;
-			}
+		    if (!this.evaluator) {
+			this.evaluator = state.fun.match.any;
+		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
@@ -4513,13 +4456,28 @@ CSL.Node.number = {
 					m = num.split(/\s*(?:&|,|-)\s*/);
 					num = m[0];
 				}
-				m = num.match(/\s*([0-9]+)/);
-				if (m) {
+				if (num.match(/[-,&]/) && !num.match(/[^- 0-9,&]/)) {
+				    var prefixes = num.split(/[0-9]+/);
+				    var nums = num.match(/[0-9]+/g);
+				    state.output.openLevel("empty");
+				    for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
+					num = parseInt(nums[i], 10);
+					number = new CSL.NumericBlob(num, this);
+					if (i > 0) {
+					    state.output.append(prefixes[i], "empty");
+					}
+					state.output.append(number, "literal");
+				    }
+				    state.output.closeLevel("empty");
+				} else {
+				    m = num.match(/\s*([0-9]+)/);
+				    if (m) {
 					num = parseInt(m[1], 10);
 					number = new CSL.NumericBlob(num, this);
 					state.output.append(number, "literal");
-				} else {
+				    } else {
 					state.output.append(num, this);
+				    }
 				}
 			}
 			state.parallel.CloseVariable("number");
@@ -5131,17 +5089,54 @@ CSL.Attributes["@locator"] = function (state, arg) {
 CSL.Attributes["@newdate"] = function (state, arg) {
 };
 CSL.Attributes["@position"] = function (state, arg) {
+    var tryposition;
 	state.opt.update_mode = CSL.POSITION;
-	if (arg === "first") {
-		this.strings.position = CSL.POSITION_FIRST;
-	} else if (arg === "subsequent") {
-		this.strings.position = CSL.POSITION_SUBSEQUENT;
-	} else if (arg === "ibid") {
-		this.strings.position = CSL.POSITION_IBID;
-	} else if (arg === "ibid-with-locator") {
-		this.strings.position = CSL.POSITION_IBID_WITH_LOCATOR;
-	} else if (arg === "near-note") {
-		this.strings["near-note-distance-check"] = true;
+	var lst = arg.split(/\s+/);
+	for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
+	    if (state.build.area.slice(0, 12) === "bibliography") {
+		func = function (state, Item, item) {
+		    return false;
+		}
+		this.tests.push(func);
+	    } else {
+		if (lst[i] === "first") {
+		    tryposition = CSL.POSITION_FIRST;
+		} else if (lst[i] === "subsequent") {
+		    tryposition = CSL.POSITION_SUBSEQUENT;
+		} else if (lst[i] === "ibid") {
+		    tryposition = CSL.POSITION_IBID;
+		} else if (lst[i] === "ibid-with-locator") {
+		    tryposition = CSL.POSITION_IBID_WITH_LOCATOR;
+		}
+		var factory = function (tryposition) {
+		    return  function (state, Item, item) {
+			if (item && "undefined" === typeof item.position) {
+			    item.position = 0;
+			}
+			if (item && typeof item.position === "number") {
+			    if (item.position === 0 && tryposition === 0) {
+				return true;
+			    } else if (tryposition > 0 && item.position >= tryposition) {
+				return true;
+			    }
+			} else if (tryposition === 0) {
+			    return true;
+			}
+			return false;
+		    };
+		};
+		func = factory(tryposition);
+		this.tests.push(func);
+	    }
+	    if (lst[i] === "near-note") {
+		func = function (state, Item, item) {
+		    if (item && item["near-note"]) {
+			return true;
+		    }
+		    return false;
+		};
+		this.tests.push(func);
+	    }
 	}
 };
 CSL.Attributes["@disambiguate"] = function (state, arg) {
@@ -6273,16 +6268,33 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 	this.nameoffset += this.segments[seg].length;
 };
 CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence) {
-	var state, len, pos, key, namepart, initialize_with;
+	var state, len, pos, key, namepart, initialize_with, preffie;
 	state = this.state;
+	for (var i = subsequence.length - 1; i > -1; i += -1) {
+	    if (!this.name[subsequence[i]]) {
+		subsequence = subsequence.slice(0, i).concat(subsequence.slice(i + 1));
+	    }
+	}
+	preffie = "";
 	len = subsequence.length;
 	for (pos = 0; pos < len; pos += 1) {
 		key = subsequence[pos];
 		namepart = this.name[key];
+		if (preffie) {
+		    namepart = preffie + namepart;
+		    preffie = "";
+		}
 		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
 			if (!(key === "given" && !this.name.family)) {
 					continue;
 			}
+		}
+		if (key === "dropping-particle" 
+		    && ["'","\u02bc","\u2019"].indexOf(namepart.slice(-1)) > -1
+		    && pos < subsequence.length - 1
+		    && subsequence[pos + 1] === "family") {
+			preffie = namepart;
+			continue;
 		}
 		if ("given" === key) {
 			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
