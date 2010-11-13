@@ -88,13 +88,34 @@ CSL.Node.number = {
 					m = num.split(/\s*(?:&|,|-)\s*/);
 					num = m[0];
 				}
-				m = num.match(/\s*([0-9]+)/);
-				if (m) {
+				// Check for valid multiple items.  If found, 
+				// open a new empty level and iterate this, with 
+				// intervening punctuation set as prefixes to the 
+				// second and succeeding output blobs.
+				if (num.match(/[-,&]/) && !num.match(/[^- 0-9,&]/)) {
+				    // For endash.  Wait for complaints on this one.
+				    //num = num.replace("-","\u2013", "g");
+				    var prefixes = num.split(/[0-9]+/);
+				    var nums = num.match(/[0-9]+/g);
+				    state.output.openLevel("empty");
+				    for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
+					num = parseInt(nums[i], 10);
+					number = new CSL.NumericBlob(num, this);
+					if (i > 0) {
+					    state.output.append(prefixes[i], "empty");
+					}
+					state.output.append(number, "literal");
+				    }
+				    state.output.closeLevel("empty");
+				} else {
+				    m = num.match(/\s*([0-9]+)/);
+				    if (m) {
 					num = parseInt(m[1], 10);
 					number = new CSL.NumericBlob(num, this);
 					state.output.append(number, "literal");
-				} else {
+				    } else {
 					state.output.append(num, this);
+				    }
 				}
 			}
 			state.parallel.CloseVariable("number");
