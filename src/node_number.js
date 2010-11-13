@@ -106,6 +106,22 @@ CSL.Node.number = {
 				    //num = num.replace("-","\u2013", "g");
 				    var prefixes = num.split(/[0-9]+/);
 				    var nums = num.match(/[0-9]+/g);
+				    var prefixes = num.split(/[0-9]+/);
+				    // Expand ranges
+				    for (i = prefixes.length - 2; i > 0; i += -1) {
+					if (prefixes && prefixes[i].indexOf("-") > -1) {
+					    var start = parseInt(nums[i - 1], 10);
+					    var end = parseInt(nums[i], 10);
+					    if (start >= end) {
+						continue;
+					    }
+					    var replacement = [];
+					    for (j = start, jlen = end + 1; j < jlen; j += 1) {
+						replacement.push(""+j);
+					    }
+					    nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
+					}
+				    }
 				    nums = nums.sort(function (a,b) {
 					    a = parseInt(a, 10);
 					    b = parseInt(b, 10);
@@ -117,6 +133,12 @@ CSL.Node.number = {
 						return 0;
 					    }
 				    });
+				    // Eliminate duplicate numbers
+				    for (i = nums.length; i > -1; i += -1) {
+					if (nums[i] === nums[i + 1]) {
+					    nums = nums.slice(0, i).concat(nums.slice(i + 1));
+					}
+				    }
 				    state.output.openLevel("empty");
 				    for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
 					num = parseInt(nums[i], 10);
