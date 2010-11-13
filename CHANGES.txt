@@ -11,9 +11,16 @@ Mishandled or unimplemented features
 - Allow simple range, comma, and ampersand joins 
   in the input to cs:number, to permit "1st-2nd", 
   "xi-xv", etc.  When multiple numbers are given,
-  sort them as a list, truncate ranges, perform 
-  numeric formatting, and provide appropriate 
-  punctuation.
+  the following operations are performed:
+
+    (1) ranges are expanded and the numbers are 
+        converted to a list; 
+    (2) the resulting list is sorted; 
+    (3) duplicates are eliminated; 
+    (4) ranges are truncated; 
+    (5) numeric formatting is performed; and 
+    (6) appropriate punctuation is applied to 
+        the result.
 
 - Eliminate space following a trailing apostrophe on a 
   dropping-particle, when immediately followed by family
