@@ -848,7 +848,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
 				objects.push(compie);
 			}
 		}
-		composite.reverse();
+		// Seems odd, but this was unnecessary and broken.
+		//composite.reverse();
 		llen = composite.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			obj = composite[ppos];

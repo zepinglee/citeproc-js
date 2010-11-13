@@ -63,6 +63,9 @@ CSL.Node.number = {
 		if ("undefined" === typeof this.successor_prefix) {
 			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 		}
+		if ("undefined" === typeof this.splice_prefix) {
+			this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
+		}
 		// is this needed?
 		//if ("undefined" === typeof this.splice_prefix){
 		//	this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
@@ -92,17 +95,37 @@ CSL.Node.number = {
 				// open a new empty level and iterate this, with 
 				// intervening punctuation set as prefixes to the 
 				// second and succeeding output blobs.
-				if (num.match(/[-,&]/) && !num.match(/[^- 0-9,&]/)) {
+				//
+				// (If we are in a cs:sort node, we use
+				// the first number encountered only)
+				if (state.tmp.area !== "citation_sort"
+				    && state.tmp.area !== "bibliography_sort"
+				    && num.match(/[-,&]/) 
+				    && !num.match(/[^- 0-9,&]/)) {
 				    // For endash.  Wait for complaints on this one.
 				    //num = num.replace("-","\u2013", "g");
 				    var prefixes = num.split(/[0-9]+/);
 				    var nums = num.match(/[0-9]+/g);
+				    nums = nums.sort(function (a,b) {
+					    a = parseInt(a, 10);
+					    b = parseInt(b, 10);
+					    if (a > b) {
+						return 1;
+					    } else if (a < b) {
+						return -1;
+					    } else {
+						return 0;
+					    }
+				    });
 				    state.output.openLevel("empty");
 				    for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
 					num = parseInt(nums[i], 10);
 					number = new CSL.NumericBlob(num, this);
 					if (i > 0) {
-					    state.output.append(prefixes[i], "empty");
+					    // state.output.append(prefixes[i], "empty");
+					    number.successor_prefix = " & ";
+					    number.range_prefix = "-";
+					    number.splice_prefix = ", ";
 					}
 					state.output.append(number, "literal");
 				    }

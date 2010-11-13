@@ -71,7 +71,7 @@ CSL.NumericBlob = function (num, mother_token) {
 		this.strings["text-case"] = mother_token.strings["text-case"];
 		this.successor_prefix = mother_token.successor_prefix;
 		this.range_prefix = mother_token.range_prefix;
-		this.splice_prefix = "";
+		this.splice_prefix = mother_token.splice_prefix;
 		this.formatter = mother_token.formatter;
 		if (!this.formatter) {
 			this.formatter =  new CSL.Output.DefaultFormatter();
@@ -121,12 +121,22 @@ CSL.NumericBlob.prototype.checkNext = function (next) {
 			} else {
 				next.status = CSL.SUCCESSOR;
 			}
-
 		}
-		// won't see this again, so no effect of processing, but this
 		// wakes up the correct delimiter.
-		if (this.status === CSL.SEEN) {
-			this.status = CSL.SUCCESSOR;
-		}
+		//if (this.status === CSL.SEEN) {
+		//	this.status = CSL.SUCCESSOR;
+		//}
+
 	}
+};
+
+
+CSL.NumericBlob.prototype.checkLast = function (last) {
+    // Used to adjust final non-range join
+    if (this.status === CSL.SEEN 
+	|| (last.num !== (this.num - 1) && this.status === CSL.SUCCESSOR)) {
+		this.status = CSL.SUCCESSOR;
+		return true;
+    }
+    return false;
 };

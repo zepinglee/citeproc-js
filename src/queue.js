@@ -484,6 +484,17 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			blobs[pos].checkNext(blobs[(pos + 1)]);
 		}
 	}
+	// Fix last non-range join
+	var doit = true;
+	for (pos = blobs.length - 1; pos > 0; pos += -1) {
+	    if (blobs[pos].checkLast) {
+		if (doit && blobs[pos].checkLast(blobs[pos - 1])) {
+		    doit = false;
+		}
+	    } else {
+		doit = true;
+	    }
+	}
 	len = blobs.length;
 	for (pos = 0; pos < len; pos += 1) {
 		blob = blobs[pos];
@@ -513,7 +524,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			} else if (blob.status === CSL.START) {
 				ret += "";
 			} else if (blob.status === CSL.SEEN) {
-				ret += blob.successor_prefix;
+				ret += blob.splice_prefix;
 			}
 			ret += str;
 		}
