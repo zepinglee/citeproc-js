@@ -351,6 +351,7 @@ var CSL = {
 		is: "is_IS",
 		it: "it_IT",
 		ja: "ja_JP",
+		kh: "kh_KH",
 		ko: "ko_KR",
 		mn: "mn_MN",
 		nb: "nb_NO",
