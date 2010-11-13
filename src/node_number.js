@@ -118,15 +118,17 @@ CSL.Node.number = {
 				    && !num.match(/[^- 0-9,&]/)) {
 				    // For endash.  Wait for complaints on this one.
 				    //num = num.replace("-","\u2013", "g");
-				    var prefixes = num.split(/[0-9]+/);
 				    var nums = num.match(/[0-9]+/g);
 				    // Expand ranges
+				    var range_ok = true;
 				    for (i = prefixes.length - 2; i > 0; i += -1) {
 					if (prefixes && prefixes[i].indexOf("-") > -1) {
 					    var start = parseInt(nums[i - 1], 10);
 					    var end = parseInt(nums[i], 10);
-					    if (start >= end) {
-						continue;
+					    // Block silly values
+					    if (start >= end || start < (end - 1000)) {
+						range_ok = false;
+						break;
 					    }
 					    var replacement = [];
 					    for (j = start, jlen = end + 1; j < jlen; j += 1) {
@@ -135,7 +137,8 @@ CSL.Node.number = {
 					    nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
 					}
 				    }
-				    nums = nums.sort(function (a,b) {
+				    if (range_ok) {
+					nums = nums.sort(function (a,b) {
 					    a = parseInt(a, 10);
 					    b = parseInt(b, 10);
 					    if (a > b) {
@@ -145,26 +148,29 @@ CSL.Node.number = {
 					    } else {
 						return 0;
 					    }
-				    });
-				    // Eliminate duplicate numbers
-				    for (i = nums.length; i > -1; i += -1) {
-					if (nums[i] === nums[i + 1]) {
-					    nums = nums.slice(0, i).concat(nums.slice(i + 1));
+					});
+					// Eliminate duplicate numbers
+					for (i = nums.length; i > -1; i += -1) {
+					    if (nums[i] === nums[i + 1]) {
+						nums = nums.slice(0, i).concat(nums.slice(i + 1));
+					    }
 					}
-				    }
-				    state.output.openLevel("empty");
-				    for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
-					num = parseInt(nums[i], 10);
-					number = new CSL.NumericBlob(num, this);
-					if (i > 0) {
-					    // state.output.append(prefixes[i], "empty");
-					    number.successor_prefix = " & ";
-					    number.range_prefix = "-";
-					    number.splice_prefix = ", ";
+					state.output.openLevel("empty");
+					for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
+					    num = parseInt(nums[i], 10);
+					    number = new CSL.NumericBlob(num, this);
+					    if (i > 0) {
+						// state.output.append(prefixes[i], "empty");
+						number.successor_prefix = " & ";
+						number.range_prefix = "-";
+						number.splice_prefix = ", ";
+					    }
+					    state.output.append(number, "literal");
 					}
-					state.output.append(number, "literal");
+					state.output.closeLevel("empty");
+				    } else {
+					state.output.append(num, this);
 				    }
-				    state.output.closeLevel("empty");
 				} else if (!all_with_spaces) {
 				    // Don't attempt to apply numeric formatting
 				    // or to normalize the content for weird
