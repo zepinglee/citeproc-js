@@ -1485,7 +1485,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.72";
+	this.processor_version = "1.0.73";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4468,13 +4468,21 @@ CSL.Node.number = {
 					m = num.split(/\s*(?:&|,|-)\s*/);
 					num = m[0];
 				}
+				var prefixes = num.split(/[0-9]+/);
+				var all_with_spaces = true;
+				for (var i = 1, ilen = prefixes.length - 1; i < ilen; i += 1) {
+				    if (prefixes[i].indexOf(" ") === -1) {
+					all_with_spaces = false;
+					break;
+				    }
+				}
 				if (state.tmp.area !== "citation_sort"
 				    && state.tmp.area !== "bibliography_sort"
+				    && all_with_spaces 
 				    && num.match(/[-,&]/) 
 				    && !num.match(/[^- 0-9,&]/)) {
 				    var prefixes = num.split(/[0-9]+/);
 				    var nums = num.match(/[0-9]+/g);
-				    var prefixes = num.split(/[0-9]+/);
 				    for (i = prefixes.length - 2; i > 0; i += -1) {
 					if (prefixes && prefixes[i].indexOf("-") > -1) {
 					    var start = parseInt(nums[i - 1], 10);
@@ -4517,6 +4525,8 @@ CSL.Node.number = {
 					state.output.append(number, "literal");
 				    }
 				    state.output.closeLevel("empty");
+				} else if (!all_with_spaces) {
+				    state.output.append(num, this);
 				} else {
 				    m = num.match(/\s*([0-9]+)/);
 				    if (m) {

@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.73
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Limit the recognition of multiple numbers
+  to cases in which numbers are separated by
+  at least one space, to prevent accidental
+  reformatting of leaf numbers.
+
+
+=========================
 Changes in version 1.0.72
 =========================
 
