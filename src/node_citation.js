@@ -56,6 +56,7 @@ CSL.Node.citation = {
 			state.fixOpt(this, "name-form", "form");
 			state.fixOpt(this, "and", "and");
 			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "delimiter-precedes-et-al", "delimiter-precedes-et-al");
 			state.fixOpt(this, "initialize-with", "initialize-with");
 			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
 			state.fixOpt(this, "sort-separator", "sort-separator");

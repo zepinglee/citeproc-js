@@ -637,6 +637,10 @@ CSL.Attributes["@delimiter-precedes-last"] = function (state, arg) {
 	state.setOpt(this, "delimiter-precedes-last", arg);
 };
 
+CSL.Attributes["@delimiter-precedes-et-al"] = function (state, arg) {
+	state.setOpt(this, "delimiter-precedes-et-al", arg);
+};
+
 CSL.Attributes["@initialize-with"] = function (state, arg) {
 	state.setOpt(this, "initialize-with", arg);
 };

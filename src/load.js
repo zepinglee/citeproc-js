@@ -176,6 +176,7 @@ var CSL = {
 	NAME_ATTRIBUTES: [
 		"and",
 		"delimiter-precedes-last",
+		"delimiter-precedes-et-al",
 		"initialize-with",
 		"name-as-sort-order",
 		"sort-separator",

@@ -410,8 +410,17 @@ CSL.Node.names = {
 				if (!state.output.getToken("et-al-pers")) {
 					state.output.addToken("et-al-pers");
 				}
-				state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
-				state.output.getToken("et-al-pers").strings["prefix-multiple"] = ", ";
+				var nametok = state.output.getToken("name");
+				if (nametok.strings["delimiter-precedes-et-al"] === "always") {
+					state.output.getToken("et-al-pers").strings["prefix-single"] = nametok.strings.delimiter;
+					state.output.getToken("et-al-pers").strings["prefix-multiple"] = nametok.strings.delimiter;
+				} else if (nametok.strings["delimiter-precedes-et-al"] === "never") {
+					state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
+					state.output.getToken("et-al-pers").strings["prefix-multiple"] = " ";
+				} else {
+					state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
+					state.output.getToken("et-al-pers").strings["prefix-multiple"] = nametok.strings.delimiter;
+				}
 				et_al_pers = state.getTerm("et-al", "long", 0);
 				if ("undefined" !== typeof state.output.getToken("et-al-pers").strings.term) {
 					et_al_pers = state.output.getToken("et-al-pers").strings.term;
@@ -421,6 +430,7 @@ CSL.Node.names = {
 				// The prefix of this element will be overwritten by the -single
 				// and -multiple variants on the fly.
 				// XXX: Not yet hooked up, institutional et al. untested
+				// XXX: needs same handling of delimiter-precedes-et-al as above?
 				if (!state.output.getToken("et-al-org")) {
 					state.output.addToken("et-al-org");
 				}
