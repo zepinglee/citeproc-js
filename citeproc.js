@@ -114,6 +114,7 @@ var CSL = {
 	NAME_ATTRIBUTES: [
 		"and",
 		"delimiter-precedes-last",
+		"delimiter-precedes-et-al",
 		"initialize-with",
 		"name-as-sort-order",
 		"sort-separator",
@@ -1486,7 +1487,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.74";
+	this.processor_version = "1.0.75";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2943,6 +2944,7 @@ CSL.Node.bibliography = {
 			state.fixOpt(this, "name-form", "form");
 			state.fixOpt(this, "and", "and");
 			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "delimiter-precedes-et-al", "delimiter-precedes-et-al");
 			state.fixOpt(this, "initialize-with", "initialize-with");
 			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
 			state.fixOpt(this, "sort-separator", "sort-separator");
@@ -2994,6 +2996,7 @@ CSL.Node.citation = {
 			state.fixOpt(this, "name-form", "form");
 			state.fixOpt(this, "and", "and");
 			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "delimiter-precedes-et-al", "delimiter-precedes-et-al");
 			state.fixOpt(this, "initialize-with", "initialize-with");
 			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
 			state.fixOpt(this, "sort-separator", "sort-separator");
@@ -3817,6 +3820,7 @@ CSL.Node.name = {
 			state.fixOpt(this, "name-form", "form");
 			state.fixOpt(this, "and", "and");
 			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
+			state.fixOpt(this, "delimiter-precedes-et-al", "delimiter-precedes-et-al");
 			state.fixOpt(this, "initialize-with", "initialize-with");
 			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
 			state.fixOpt(this, "sort-separator", "sort-separator");
@@ -4125,8 +4129,17 @@ CSL.Node.names = {
 				if (!state.output.getToken("et-al-pers")) {
 					state.output.addToken("et-al-pers");
 				}
-				state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
-				state.output.getToken("et-al-pers").strings["prefix-multiple"] = ", ";
+				var nametok = state.output.getToken("name");
+				if (nametok.strings["delimiter-precedes-et-al"] === "always") {
+					state.output.getToken("et-al-pers").strings["prefix-single"] = nametok.strings.delimiter;
+					state.output.getToken("et-al-pers").strings["prefix-multiple"] = nametok.strings.delimiter;
+				} else if (nametok.strings["delimiter-precedes-et-al"] === "never") {
+					state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
+					state.output.getToken("et-al-pers").strings["prefix-multiple"] = " ";
+				} else {
+					state.output.getToken("et-al-pers").strings["prefix-single"] = " ";
+					state.output.getToken("et-al-pers").strings["prefix-multiple"] = nametok.strings.delimiter;
+				}
 				et_al_pers = state.getTerm("et-al", "long", 0);
 				if ("undefined" !== typeof state.output.getToken("et-al-pers").strings.term) {
 					et_al_pers = state.output.getToken("et-al-pers").strings.term;
@@ -4172,6 +4185,7 @@ CSL.Node.names = {
 				state.output.addToken("dropping-particle", false, state.output.getToken("family"));
 				state.output.addToken("non-dropping-particle", false, state.output.getToken("family"));
 				state.output.addToken("suffix", false, state.output.getToken("family"));
+				state.output.getToken("suffix").decorations = [];
 				state.output.openLevel("term-join");
 				len = namesets.length;
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
@@ -5286,6 +5300,9 @@ CSL.Attributes["@and"] = function (state, arg) {
 CSL.Attributes["@delimiter-precedes-last"] = function (state, arg) {
 	state.setOpt(this, "delimiter-precedes-last", arg);
 };
+CSL.Attributes["@delimiter-precedes-et-al"] = function (state, arg) {
+	state.setOpt(this, "delimiter-precedes-et-al", arg);
+};
 CSL.Attributes["@initialize-with"] = function (state, arg) {
 	state.setOpt(this, "initialize-with", arg);
 };
@@ -6368,7 +6385,13 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 		}
 		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
 			if (!(key === "given" && !this.name.family)) {
+				if (key === "suffix") {
+					if (this.name.suffix !== this.name.suffix.toLowerCase()) {
+						continue;
+					}
+				} else {
 					continue;
+				}
 			}
 		}
 		if (key === "dropping-particle" 
@@ -7939,6 +7962,10 @@ CSL.Registry.NameReg = function (state) {
 	set_keys = function (state, itemid, nameobj) {
 		pkey = strip_periods(nameobj.family);
 		skey = strip_periods(nameobj.given);
+		var m = skey.match(/,\!* [^,]$/);
+		if (m && m[1] === m[1].toLowerCase()) {
+			skey = skey.replace(/,\!* [^,]$/, "");
+		}
 		ikey = CSL.Util.Names.initializeWith(state, skey, "");
 		if (state.opt["givenname-disambiguation-rule"] === "by-cite") {
 			pkey = itemid + pkey;

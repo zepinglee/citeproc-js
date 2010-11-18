@@ -1,6 +1,28 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.75
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not apply decorative formatting to name suffixes.
+
+-----------
+Enhancement
+-----------
+
+- For an all-lowercase name suffix (such as an explicit "et al."),
+  exclude the suffix from the name for disambiguation purposes, and
+  include it in the strict short form of the name in the short form 
+  of a citation.
+
+- Add and recognize delimiter-precedes-et-al attribute.
+
+
+=========================
 Changes in version 1.0.74
 =========================
 
