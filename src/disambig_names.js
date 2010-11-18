@@ -69,6 +69,12 @@ CSL.Registry.NameReg = function (state) {
 	set_keys = function (state, itemid, nameobj) {
 		pkey = strip_periods(nameobj.family);
 		skey = strip_periods(nameobj.given);
+		// Drop lowercase suffixes (such as et al.) from given name field
+		// for disambiguation purposes.
+		var m = skey.match(/,\!* [^,]$/);
+		if (m && m[1] === m[1].toLowerCase()) {
+			skey = skey.replace(/,\!* [^,]$/, "");
+		}
 		ikey = CSL.Util.Names.initializeWith(state, skey, "");
 		if (state.opt["givenname-disambiguation-rule"] === "by-cite") {
 			pkey = itemid + pkey;
