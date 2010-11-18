@@ -515,6 +515,7 @@ CSL.Node.names = {
 				state.output.addToken("dropping-particle", false, state.output.getToken("family"));
 				state.output.addToken("non-dropping-particle", false, state.output.getToken("family"));
 				state.output.addToken("suffix", false, state.output.getToken("family"));
+				state.output.getToken("suffix").decorations = [];
 
 				// open for term join, for any and all names.
 				state.output.openLevel("term-join");
