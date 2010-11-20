@@ -22,7 +22,8 @@ Enhancements
   include it in the strict short form of the name in the short form 
   of a citation.
 
-- Add and recognize delimiter-precedes-et-al attribute.
+- Add and recognize delimiter-precedes-et-al attribute, in
+  line with draft CSL proposal.
 
 - Implement grammatical gender sensitivity for ordinal
   suffixes, in line with draft CSL proposal.
