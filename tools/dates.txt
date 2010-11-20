@@ -51,7 +51,8 @@ Aug 31, 2000
 Sum 2000
 --> season="Trinity",year=2001
 Trinity 2001
-
+--> season=1,year=2000,season_end=2,year_end=2001
+Spring 2000 - Summer 2001
 
 # Fuzzy
 --> fuzzy=1,month=8,day=31,year=2000

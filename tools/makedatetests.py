@@ -7,12 +7,12 @@ mypath = os.path.split(sys.argv[0])[0]
 if len(mypath):
     os.chdir(mypath)
 
-datalst = open("../ref/dates.txt").read().split('\n')
+datalst = open("../tools/dates.txt").read().decode("utf8").split('\n')
 
 tests = []
 
 template1 = '''
-dojo.provide("tests.test_dateparse");
+dojo.provide("citeproc_js.dateparse");
 
 var sys = new RhinoTest();
 var citeproc = new CSL.Engine(sys,"<style></style>");
@@ -24,9 +24,6 @@ var keycount = function(obj){
     }
     return c;
 };
-
-print("Note: some tests in this bundle that fail under Rhino because of coding issues");
-print("::::: will pass under python+spidermonkey.");
 
 doh.register("tests.dateparse", [%s
 ]);
@@ -43,7 +40,7 @@ template4 = '''
 
 template3 = '''
     function test_dateparse%0.3d() {
-        var res = citeproc.dateParseRaw("%s");%s
+        var res = citeproc.fun.dateparser.parse("%s");%s
     }
 '''.strip()
 
@@ -99,6 +96,16 @@ for pos in range(0, len(tests), 1):
 
 final = template1 % (',\n    '.join( results3 ),)
 
-open("../tests/test_dateparse.js","w+").write(final)
+ofh = open("../tests/citeproc-js/dateparse.js","w+")
+
+for char in final:
+    if ord(char) > 256:
+        c = hex(ord(char))[2:]
+        while len(c) < 4:
+            c = "0" + c
+        
+        ofh.write("\u%s" % (c,))
+    else:
+        ofh.write(char)
 
 print "Done!"
