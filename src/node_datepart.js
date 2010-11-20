@@ -205,6 +205,13 @@ CSL.Node["date-part"] = {
 				state.output.closeLevel();
 				//state.output.endTag();
 			} else if ("month" === this.strings.name) {
+				// XXX The simpler solution here will be to
+				// directly install season and season_end on
+				// month, with a value of 13, 14, 15, 16, or
+				// (to allow correct ranging with Down Under
+				// dates) 17 or 18.  That will allow ranging
+				// to take place in the normal way.  With this
+				// "approach", it doesn't.
 				//
 				// No value for this target variable
 				//
