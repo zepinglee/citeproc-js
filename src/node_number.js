@@ -77,7 +77,7 @@ CSL.Node.number = {
 		//
 		// push number or text
 		func = function (state, Item) {
-			var varname, num, number, m;
+			var varname, num, number, m, j, jlen;
 			varname = this.variables[0];
 			state.parallel.StartVariable(this.variables[0]);
 			state.parallel.AppendToVariable(Item[this.variables[0]]);
@@ -142,11 +142,11 @@ CSL.Node.number = {
 					    a = parseInt(a, 10);
 					    b = parseInt(b, 10);
 					    if (a > b) {
-						return 1;
+							return 1;
 					    } else if (a < b) {
-						return -1;
+							return -1;
 					    } else {
-						return 0;
+							return 0;
 					    }
 					});
 					// Eliminate duplicate numbers
@@ -159,11 +159,12 @@ CSL.Node.number = {
 					for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
 					    num = parseInt(nums[i], 10);
 					    number = new CSL.NumericBlob(num, this);
+						number.gender = state.opt["noun-genders"][varname];
 					    if (i > 0) {
-						// state.output.append(prefixes[i], "empty");
-						number.successor_prefix = " & ";
-						number.range_prefix = "-";
-						number.splice_prefix = ", ";
+							// state.output.append(prefixes[i], "empty");
+							number.successor_prefix = " & ";
+							number.range_prefix = "-";
+							number.splice_prefix = ", ";
 					    }
 					    state.output.append(number, "literal");
 					}
@@ -180,12 +181,13 @@ CSL.Node.number = {
 				    state.output.append(num, this);
 				} else {
 				    m = num.match(/\s*([0-9]+)/);
-				    if (m) {
-					num = parseInt(m[1], 10);
-					number = new CSL.NumericBlob(num, this);
-					state.output.append(number, "literal");
+					if (m) {
+						num = parseInt(m[1], 10);
+						number = new CSL.NumericBlob(num, this);
+						number.gender = state.opt["noun-genders"][varname];
+						state.output.append(number, "literal");
 				    } else {
-					state.output.append(num, this);
+						state.output.append(num, this);
 				    }
 				}
 			}

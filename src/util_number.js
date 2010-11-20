@@ -50,19 +50,26 @@ CSL.Util.LongOrdinalizer = function () {};
 
 CSL.Util.LongOrdinalizer.prototype.init = function (state) {
 	this.state = state;
-	this.names = {};
-	for (var i = 1; i < 10; i += 1) {
-		this.names[("" + i)] = state.getTerm(("long-ordinal-0" + i));
-	}
-	this.names["10"] = state.getTerm("long-ordinal-10");
-
 };
 
-CSL.Util.LongOrdinalizer.prototype.format = function (num) {
-	var ret = this.names[("" + num)];
-	if (!ret) {
-		ret = this.state.fun.ordinalizer.format(num);
+CSL.Util.LongOrdinalizer.prototype.format = function (num, gender) {
+	if (num < 10) {
+		num = "0" + num;
 	}
+	// Argument true means "loose".
+	var ret = CSL.Engine.getField(
+		CSL.LOOSE, 
+		this.state.locale[this.state.opt.lang].terms,
+		"long-ordinal-" + num,
+		"long", 
+		0, 
+		gender
+	);
+	if (!ret) {
+		ret = this.state.fun.ordinalizer.format(num, gender);
+	}
+	// Probably too optimistic -- what if only renders in _sort?
+	this.state.tmp.cite_renders_content = true;
 	return ret;
 };
 
@@ -70,26 +77,35 @@ CSL.Util.LongOrdinalizer.prototype.format = function (num) {
 CSL.Util.Ordinalizer = function () {};
 
 CSL.Util.Ordinalizer.prototype.init = function (state) {
-	this.suffixes = [];
-	for (var i = 1; i < 5; i += 1) {
-		this.suffixes.push(state.getTerm(("ordinal-0" + i)));
+	this.suffixes = {};
+	for (var i = 0, ilen = 3; i < ilen; i += 1) {
+		var gender = [undefined, "masculine", "feminine"][i];
+		this.suffixes[gender] = [];
+		for (var j = 1; j < 5; j += 1) {
+			var ordinal = state.getTerm("ordinal-0" + j, "long", false, gender);
+			if ("undefined" === typeof ordinal) {
+				delete this.suffixes[gender];
+				break;
+			}
+			this.suffixes[gender].push(ordinal);			
+		}
 	}
 };
 
-CSL.Util.Ordinalizer.prototype.format = function (num) {
+CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
 	var str;
 	num = parseInt(num, 10);
 	str = num.toString();
 	if ((num / 10) % 10 === 1) {
-		str += this.suffixes[3];
+		str += this.suffixes[gender][3];
 	} else if (num % 10 === 1) {
-		str += this.suffixes[0];
+		str += this.suffixes[gender][0];
 	} else if (num % 10 === 2) {
-		str += this.suffixes[1];
+		str += this.suffixes[gender][1];
 	} else if (num % 10 === 3) {
-		str += this.suffixes[2];
+		str += this.suffixes[gender][2];
 	} else {
-		str += this.suffixes[3];
+		str += this.suffixes[gender][3];
 	}
 	return str;
 };

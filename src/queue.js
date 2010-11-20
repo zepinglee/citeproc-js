@@ -505,7 +505,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			ret += txt_esc(use_delim);
 			ret += blob;
 		} else if (blob.status !== CSL.SUPPRESS) {
-			str = blob.formatter.format(blob.num);
+			str = blob.formatter.format(blob.num, blob.gender);
 			if (blob.strings["text-case"]) {
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
 			}

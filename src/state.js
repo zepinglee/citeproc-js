@@ -55,6 +55,9 @@ CSL.Engine.Opt = function () {
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
 	this["default-locale"] = ["en"];
+	
+	this["noun-genders"] = {};
+
 	this.update_mode = CSL.NONE;
 	this.bib_mode = CSL.NONE;
 	this.sort_citations = false;

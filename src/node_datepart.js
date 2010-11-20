@@ -116,10 +116,17 @@ CSL.Node["date-part"] = {
 
 				state.parallel.AppendToVariable(value);
 
+				// For gendered locales
+				var monthnameid = ""+state.tmp.date_object.month;
+				while (monthnameid.length < 2) {
+					monthnameid = "0"+monthnameid;
+				}
+				monthnameid = "month-"+monthnameid;
+				var gender = state.opt["noun-genders"][monthnameid];
 				if (this.strings.form) {
-					value = CSL.Util.Dates[this.strings.name][this.strings.form](state, value);
+					value = CSL.Util.Dates[this.strings.name][this.strings.form](state, value, gender);
 					if (value_end) {
-						value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state, value_end);
+						value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state, value_end, gender);
 					}
 				}
 				state.output.openLevel("empty");

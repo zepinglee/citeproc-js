@@ -72,7 +72,7 @@ CSL.localeResolve = function (langstr) {
 // below.
 //
 CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len;
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target;
 
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
@@ -113,43 +113,77 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 	//
 	nodes = sys.xml.getNodesByName(locale, 'term');
 	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-		if (true) {
-			term = nodes[pos];
+		term = nodes[pos];
+		//
+		// Xml: get string value of attribute
+		//
+		termname = sys.xml.getAttributeValue(term, 'name');
+		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
+			this.locale[lang_out].terms[termname] = {};
+		}
+		form = "long";
+		genderform = false;
+		//
+		// Xml: get string value of form attribute, if any
+		//
+		if (sys.xml.getAttributeValue(term, 'form')) {
+			form = sys.xml.getAttributeValue(term, 'form');
+		}
+		//
+		// Xml: get string value of gender attribute, if any
+		// 
+		if (sys.xml.getAttributeValue(term, 'gender-form')) {
+			genderform = sys.xml.getAttributeValue(term, 'gender-form');
+		}
+		//
+		// Xml: set global gender assignment for variable associated
+		// with term name
+		// 
+		if (sys.xml.getAttributeValue(term, 'gender')) {
+			this.opt["noun-genders"][termname] = sys.xml.getAttributeValue(term, 'gender');
+		}
+		// Work on main segment or gender-specific sub-segment as appropriate
+		if (genderform) {
+			this.locale[lang_out].terms[termname][genderform] = {};
+			this.locale[lang_out].terms[termname][genderform][form] = [];
+			target = this.locale[lang_out].terms[termname][genderform];
+		} else {
+			this.locale[lang_out].terms[termname][form] = [];
+			target = this.locale[lang_out].terms[termname];
+		}
+		//
+		// Xml: test of existence of node
+		//
+		if (sys.xml.numberofnodes(sys.xml.getNodesByName(term, 'multiple'))) {
 			//
-			// Xml: get string value of attribute
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			termname = sys.xml.getAttributeValue(term, 'name');
-			if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
-				this.locale[lang_out].terms[termname] = {};
-			}
-			form = "long";
+			target[form][0] = sys.xml.getNodeValue(term, 'single');
 			//
-			// Xml: get string value of attribute
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			if (sys.xml.getAttributeValue(term, 'form')) {
-				form = sys.xml.getAttributeValue(term, 'form');
-			}
+			target[form][1] = sys.xml.getNodeValue(term, 'multiple');
+		} else {
 			//
-			// Xml: test of existence of node
+			// Xml: get string value of attribute, plus
+			// Xml: get string value of node content
 			//
-			if (sys.xml.numberofnodes(sys.xml.getNodesByName(term, 'multiple'))) {
-				this.locale[lang_out].terms[termname][form] = [];
-				//
-				// Xml: get string value of attribute, plus
-				// Xml: get string value of node content
-				//
-				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][0] = sys.xml.getNodeValue(term, 'single');
-				//
-				// Xml: get string value of attribute, plus
-				// Xml: get string value of node content
-				//
-				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form][1] = sys.xml.getNodeValue(term, 'multiple');
-			} else {
-				//
-				// Xml: get string value of attribute, plus
-				// Xml: get string value of node content
-				//
-				this.locale[lang_out].terms[sys.xml.getAttributeValue(term, 'name')][form] = sys.xml.getNodeValue(term);
+			target[form] = sys.xml.getNodeValue(term);
+		}
+	}
+	// Iterate over main segments, and fill in any holes in gender-specific data
+	// sub-segments
+	for (termname in this.locale[lang_out].terms) {
+		for (var i = 0, ilen = 2; i < ilen; i += 1) {
+			genderform = CSL.GENDERS[i];
+			if (this.locale[lang_out].terms[termname][genderform]) {
+				for (form in this.locale[lang_out].terms[termname]) {
+					if (!this.locale[lang_out].terms[termname][genderform][form]) {
+						this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
+					}
+				}
 			}
 		}
 	}

@@ -85,6 +85,8 @@ if (!Array.indexOf) {
 
 var CSL = {
 
+	GENDERS: ["masculine", "feminine"],
+	
 	ERROR_NO_RENDERED_FORM: 1,
 
 	PREVIEW: "Just for laughs.",

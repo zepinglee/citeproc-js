@@ -112,7 +112,7 @@ CSL.Attributes["@macro"] = function (state, arg) {
 
 CSL.Attributes["@term"] = function (state, arg) {
 	if (this.name === "et-al") {
-		if (CSL.locale[state.opt.lang].terms[arg]) {
+		if (state.locale[state.opt.lang].terms[arg]) {
 			this.strings.term = state.getTerm(arg, "long", 0);
 		} else {
 			this.strings.term = arg;

@@ -153,17 +153,23 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	lang = this.opt["default-locale"][0];
 	langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
-	if (!CSL.locale[langspec.best]) {
-		localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.best));
-		CSL.localeSet.call(CSL, sys, localexml, langspec.best, langspec.best);
-	}
+	//if (!CSL.locale[langspec.best]) {
+	//	localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.best));
+	//	CSL.localeSet.call(CSL, sys, localexml, langspec.best, langspec.best);
+	//}
+	//this.locale = CSL.locale;
 	this.locale = {};
-	locale = sys.xml.makeXml();
 	if (!this.locale[langspec.best]) {
+		localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.best));
+		CSL.localeSet.call(this, sys, localexml, langspec.best, langspec.best);
+	}
+	//this.locale = {};
+	//locale = sys.xml.makeXml();
+	//if (!this.locale[langspec.best]) {
 		CSL.localeSet.call(this, sys, this.cslXml, "", langspec.best);
 		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);
 		CSL.localeSet.call(this, sys, this.cslXml, langspec.best, langspec.best);
-	}
+	//}
 
 	this.buildTokenLists("citation");
 	this.buildTokenLists("bibliography");
@@ -375,10 +381,10 @@ CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
 	}
 }
 	
-CSL.Engine.prototype.getTerm = function (term, form, plural) {
-	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural);
+CSL.Engine.prototype.getTerm = function (term, form, plural, gender, loose) {
+	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
 	if (typeof ret === "undefined") {
-		ret = CSL.Engine.getField(CSL.STRICT, CSL.locale[this.opt.lang].terms, term, form, plural);
+		ret = CSL.Engine.getField(CSL.STRICT, this.locale[this.opt.lang].terms, term, form, plural, gender);
 	}
 	if (ret) {
 		this.tmp.cite_renders_content = true;
@@ -416,15 +422,20 @@ CSL.Engine.prototype.getDateNum = function (ItemField, partname) {
 	}
 };
 
-CSL.Engine.getField = function (mode, hash, term, form, plural) {
-	var ret, forms, f, pos, len;
+CSL.Engine.getField = function (mode, hash, term, form, plural, gender) {
+	var ret, forms, f, pos, len, hashterm;
 	ret = "";
 	if ("undefined" === typeof hash[term]) {
 		if (mode === CSL.STRICT) {
-			throw "Error in getField: term\"" + term + "\" does not exist.";
+			throw "Error in getField: term \"" + term + "\" does not exist.";
 		} else {
 			return undefined;
 		}
+	}
+	if (gender && hash[term][gender]) {
+		hashterm = hash[term][gender];
+	} else {
+		hashterm = hash[term];
 	}
 	forms = [];
 	if (form === "symbol") {
@@ -438,16 +449,16 @@ CSL.Engine.getField = function (mode, hash, term, form, plural) {
 	len = forms.length;
 	for (pos = 0; pos < len; pos += 1) {
 		f = forms[pos];
-		if ("string" === typeof hash[term] || "number" === typeof hash[term]) {
-			ret = hash[term];
-		} else if ("undefined" !== typeof hash[term][f]) {
-			if ("string" === typeof hash[term][f] || "number" === typeof hash[term][f]) {
-				ret = hash[term][f];
+		if ("string" === typeof hashterm || "number" === typeof hashterm) {
+			ret = hashterm;
+		} else if ("undefined" !== typeof hashterm[f]) {
+			if ("string" === typeof hashterm[f] || "number" === typeof hashterm[f]) {
+				ret = hashterm[f];
 			} else {
 				if ("number" === typeof plural) {
-					ret = hash[term][f][plural];
+					ret = hashterm[f][plural];
 				} else {
-					ret = hash[term][f][0];
+					ret = hashterm[f][0];
 				}
 			}
 			break;

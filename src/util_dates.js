@@ -201,6 +201,6 @@ CSL.Util.Dates.day["numeric-leading-zeros"] = function (state, num) {
  * ordinal suffix appropriate to the locale.  For the present,
  * it just does what is most of the time right for English.</p>
  */
-CSL.Util.Dates.day.ordinal = function (state, num) {
-	return state.fun.ordinalizer(num);
+CSL.Util.Dates.day.ordinal = function (state, num, gender) {
+	return state.fun.ordinalizer.format(num, gender);
 };
