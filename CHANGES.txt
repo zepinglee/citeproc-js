@@ -10,9 +10,12 @@ Mishandled or unimplemented features
 
 - Do not apply decorative formatting to name suffixes.
 
------------
-Enhancement
------------
+- Fix breakage in ordinal suffix formatting for days
+  in a date.
+
+------------
+Enhancements
+------------
 
 - For an all-lowercase name suffix (such as an explicit "et al."),
   exclude the suffix from the name for disambiguation purposes, and
@@ -20,6 +23,9 @@ Enhancement
   of a citation.
 
 - Add and recognize delimiter-precedes-et-al attribute.
+
+- Implement grammatical gender sensitivity for ordinal
+  suffixes, in line with draft CSL proposal.
 
 
 =========================
