@@ -1512,7 +1512,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.76";
+	this.processor_version = "1.0.77";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7670,7 +7670,7 @@ CSL.Output.Formats.prototype.text = {
 };
 CSL.Output.Formats.prototype.rtf = {
 	"text_escape": function (text) {
-		return text.replace("\\", "\\\\", "g").replace(/[\x7F-\uFFFF]/g,
+		return text.replace(/([\\{}])/g, "\\$1", "g").replace(/[\x7F-\uFFFF]/g,
 			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}" })
 			.replace("\t", "\\tab{}", "g");
 	},
@@ -7710,11 +7710,7 @@ CSL.Output.Formats.prototype.rtf = {
 	"bibend":"}",
 	"@display/block":"%%STRING%%\\line\r\n",
 	"@bibliography/entry": function(state,str){
-		var spacing = [];
-		for(var i=0; i<state.opt.entryspacing; i++) {
-			spacing.push("\\\r\n ");
-		}
-		return str+spacing.join("");
+		return str;
 	},
 	"@display/left-margin": function(state,str){
 		return str+"\\tab ";
