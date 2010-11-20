@@ -83,7 +83,7 @@ doh.register("citeproc_js.sys_stdrhino_locale", [
 	function testSetLocaleEmptyValue(){
 		var sys = new StdRhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
-		doh.assertEqual("and", CSL.locale["en-US"].terms["and"]["long"]);
+		doh.assertEqual("and", obj.locale["en-US"].terms["and"]["long"]);
 	},
 	function testLocaleGlobalWorksAtAll(){
 		try {

@@ -86,7 +86,7 @@ doh.register("citeproc_js.sys_rhino_locale", [
 	function testSetLocaleEmptyValue(){
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
-		doh.assertEqual("books", CSL.locale["en-US"].terms["book"]["long"][1]);
+		doh.assertEqual("books", obj.locale["en-US"].terms["book"]["long"][1]);
 	},
 	function testLocalSetLocaleWorksAtAll(){
 		try {

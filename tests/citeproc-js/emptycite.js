@@ -160,3 +160,4 @@ doh.registerGroup("citeproc_js.emptycite",
 	},
 	function () {}
 );
+
