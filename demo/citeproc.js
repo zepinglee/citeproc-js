@@ -1512,7 +1512,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.75";
+	this.processor_version = "1.0.76";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1729,7 +1729,7 @@ CSL.Engine.prototype.getOpt = function (arg) {
 	if ("undefined" !== typeof this.locale[this.opt.lang].opts[arg]) {
 		return this.locale[this.opt.lang].opts[arg];
 	} else {
-		return CSL.locale[this.opt.lang].opts[arg];
+		return this.locale[this.opt.lang].opts[arg];
 	}
 };
 CSL.Engine.prototype.getVariable = function (Item, varname, form, plural) {

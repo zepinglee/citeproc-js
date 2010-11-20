@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.76
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in locale processing, arising from the
+  previous release, that could trigger a processor
+  crash.
+
+
+=========================
 Changes in version 1.0.75
 =========================
 
