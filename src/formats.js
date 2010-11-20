@@ -210,7 +210,7 @@ CSL.Output.Formats.prototype.rtf = {
 	// need not be idempotent.
 	//
 	"text_escape": function (text) {
-		return text.replace("\\", "\\\\", "g").replace(/[\x7F-\uFFFF]/g,
+		return text.replace(/([\\{}])/g, "\\$1", "g").replace(/[\x7F-\uFFFF]/g,
 			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}" })
 			.replace("\t", "\\tab{}", "g");
 	},
@@ -250,11 +250,7 @@ CSL.Output.Formats.prototype.rtf = {
 	"bibend":"}",
 	"@display/block":"%%STRING%%\\line\r\n",
 	"@bibliography/entry": function(state,str){
-		var spacing = [];
-		for(var i=0; i<state.opt.entryspacing; i++) {
-			spacing.push("\\\r\n ");
-		}
-		return str+spacing.join("");
+		return str;
 	},
 	"@display/left-margin": function(state,str){
 		return str+"\\tab ";
