@@ -240,7 +240,7 @@ CSL.Node["date-part"] = {
 		};
 		this.execs.push(func);
 		if ("undefined" === typeof this.strings["range-delimiter"]) {
-			this.strings["range-delimiter"] = "-";
+			this.strings["range-delimiter"] = "\u2013";
 		}
 		target.push(this);
 	}

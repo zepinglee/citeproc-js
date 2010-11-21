@@ -104,7 +104,10 @@ CSL.dateParser = function (txt) {
 	rexslashdash = new RegExp(rex.replace(/%%NUMD%%/g, "\/").replace(/%%DATED%%/g, "-"));
 
 	// seasons
-	seasonstrs = ["spr", "sum", "fal", "win"];
+	//seasonstrs = ["spr", "sum", "fal", "win"];
+	// Disabling separate seasons match, moving to
+	// month.
+	seasonstrs = [];
 	seasonrexes = [];
 	len = seasonstrs.length;
 	for (pos = 0; pos < len; pos += 1) {
@@ -113,7 +116,7 @@ CSL.dateParser = function (txt) {
 	}
 
 	// months
-	monthstrs = "jan feb mar apr may jun jul aug sep oct nov dec";
+	monthstrs = "jan feb mar apr may jun jul aug sep oct nov dec spr sum fal win spr sum";
 	monthstrs = monthstrs.split(" ");
 	monthrexes = [];
 	len = monthstrs.length;
@@ -347,6 +350,9 @@ CSL.dateParser = function (txt) {
 				}
 			}
 		}
+		//
+		// Replace months with season if appropriate.  
+		// 
 		//
 		// If there's no year, it's a failure; pass through the literal
 		//
