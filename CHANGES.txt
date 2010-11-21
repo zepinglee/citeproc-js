@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.79
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Correct fault in locale fallback behavior.  Had been ignoring
+  optional default argument set in the processor.
+
+
+=========================
 Changes in version 1.0.78
 =========================
 

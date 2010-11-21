@@ -1512,7 +1512,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.78";
+	this.processor_version = "1.0.79";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1551,17 +1551,24 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	this.setStyleAttributes();
 	CSL.Util.Names.initNameSlices(this);
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
-	lang = this.opt["default-locale"][0];
+	if (this.opt["default-locale"][0]) {
+		lang = this.opt["default-locale"][0];
+	};
 	langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
 	this.locale = {};
 	if (!this.locale[langspec.best]) {
 		localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.best));
+		if (langspec.bare !== langspec.best) {
+			CSL.localeSet.call(this, sys, localexml, langspec.bare, langspec.best);
+		}
 		CSL.localeSet.call(this, sys, localexml, langspec.best, langspec.best);
 	}
-		CSL.localeSet.call(this, sys, this.cslXml, "", langspec.best);
-		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);
-		CSL.localeSet.call(this, sys, this.cslXml, langspec.best, langspec.best);
+	CSL.localeSet.call(this, sys, this.cslXml, "", langspec.best);
+	if (langspec.bare !== langspec.best) {
+		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);		
+	}
+	CSL.localeSet.call(this, sys, this.cslXml, langspec.best, langspec.best);
 	this.buildTokenLists("citation");
 	this.buildTokenLists("bibliography");
 	this.configureTokenLists();

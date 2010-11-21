@@ -46,14 +46,6 @@
  * or the [AGPLv3] License.”
  */
 
-Fix pluralization of edition, volume and issue, when CSL is updated.
-  Awaiting approval in CSL.  Thought: should test Edition, no?
-  How do ordinals work with multiple numbers?  Every number in the
-  set gets a suffix?  Or abort if not a clean parse?  Or other?
-  (oops, done)
-Fix join for d'Smith, with d' as dropping particle.
-  http://forums.zotero.org/discussion/15085/2/french-localization-csl-10/#Item_7
-  (oops, done)
-Align position test to spec, or align spec to processor, in cs:bibliography.
-  Fix up position logic, allow multiple position variables.
-  (oops, done)
+Otherwise, awaiting bug reports and the finalization of the EDTF
+specification.
+
