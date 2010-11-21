@@ -54,7 +54,7 @@ CSL.Engine.Opt = function () {
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
-	this["default-locale"] = ["en"];
+	this["default-locale"] = [];
 	
 	this["noun-genders"] = {};
 

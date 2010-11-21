@@ -83,10 +83,35 @@ doh.register("citeproc_js.sys_rhino_locale", [
 		CSL.localeSet.call(obj,sys,myxml,"de-DE","de-DE");
 		doh.assertEqual("und", obj.locale["de-DE"].terms["and"]["long"]);
 	},
-	function testSetLocaleEmptyValue(){
+	function testSetLocaleNilValueNoStyleDefault(){
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
+		doh.assertEqual("en_US", obj.opt["default-locale"][0]);
 		doh.assertEqual("books", obj.locale["en-US"].terms["book"]["long"][1]);
+	},
+	function testSetLocaleNilValueStyleHasDefault(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style default-locale=\"de-DE\"></style>");
+		doh.assertEqual("de-DE", obj.opt["default-locale"][0]);
+		doh.assertEqual("Bücher", obj.locale["de-DE"].terms["book"]["long"][1]);
+	},
+	function testSetLocaleHasValueNoStyleDefault(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style></style>", "de-DE");
+		doh.assertEqual("en_US", obj.opt["default-locale"][0]);
+		doh.assertEqual("Bücher", obj.locale["de-DE"].terms["book"]["long"][1]);
+	},
+	function testSetLocaleHasValueAndStyleDefault(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style default-locale=\"de-AT\"></style>", "de-DE");
+		doh.assertEqual("de-AT", obj.opt["default-locale"][0]);
+		doh.assertEqual("Bücher", obj.locale["de-DE"].terms["book"]["long"][1]);
+	},
+	function testSetLocaleHasValueAndStyleDefaultWithForceValue(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style default-locale=\"de-AT\"></style>", "de-DE", true);
+		doh.assertEqual("de-DE", obj.opt["default-locale"][0]);
+		doh.assertEqual("Bücher", obj.locale["de-DE"].terms["book"]["long"][1]);
 	},
 	function testLocalSetLocaleWorksAtAll(){
 		try {
@@ -100,29 +125,5 @@ doh.register("citeproc_js.sys_rhino_locale", [
 		}
 		doh.assertEqual("Success", res);
 		doh.assertEqual("object", typeof obj.locale["de-DE"].terms);
-	},
-	function testGlobalSetLocaleWorksAtAll(){
-		try {
-			var sys = new RhinoTest();
-			var obj = new CSL.Engine(sys,"<style></style>");
-			var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
-			CSL.localeSet.call(CSL,sys,myxml,"de-DE","de-DE");
-			var res = "Success";
-		} catch (e){
-			var res = e;
-		}
-		doh.assertEqual("Success", res);
-		doh.assertEqual("object", typeof CSL.locale["de-DE"].terms);
-	},
-	function testSetGlobalLocaleStringValue(){
-		var sys = new RhinoTest();
-		var citeproc = new CSL.Engine(sys,"<style></style>");
-		var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
-		CSL.localeSet.call(CSL,sys,myxml,"de-DE","de-DE");
-		doh.assertEqual("und", CSL.locale["de-DE"].terms["and"]["long"]);
-	},
+	}
 ]);
-
-var x = [
-
-]

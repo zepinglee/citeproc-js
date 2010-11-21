@@ -46,7 +46,7 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.Engine = function (sys, style, lang, xmlmode) {
+CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
 	this.processor_version = "1.0.79";
 	this.csl_version = "1.0";
@@ -157,9 +157,22 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 
-	if (this.opt["default-locale"][0]) {
+	// We seem to have two language specs flying around:
+	//   this.opt["default-locale"], and this.opt.lang
+	// Keeping them aligned for safety's sake, pending
+	// eventual cleanup.
+	if (lang && forceLang) {
+		this.opt["default-locale"] = [lang];
+	}
+	if (this.opt["default-locale"].length === 0) {
+		if (!lang) {
+			lang = "en_US";
+		}
+		this.opt["default-locale"].push("en_US");
+	}
+	if (!lang) {
 		lang = this.opt["default-locale"][0];
-	};
+	}
 	langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
 	this.locale = {};
