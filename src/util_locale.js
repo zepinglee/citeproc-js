@@ -49,9 +49,9 @@
 CSL.localeResolve = function (langstr) {
 	var ret, langlst;
 	ret = {};
-	if ("undefined" === typeof langstr) {
-		langstr = "en_US";
-	}
+	//if ("undefined" === typeof langstr) {
+	//	langstr = "en_US";
+	//}
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if ("undefined" === typeof ret.base) {
@@ -96,15 +96,13 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 		//
 		nodes = sys.xml.getNodesByName(myxml, "locale");
 		for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-			if (true) {
-				blob = nodes[pos];
-				//
-				// Xml: get locale xml:lang
-				//
-				if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
-					locale = blob;
-					break;
-				}
+			blob = nodes[pos];
+			//
+			// Xml: get locale xml:lang
+			//
+			if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
+				locale = blob;
+				break;
 			}
 		}
 	}

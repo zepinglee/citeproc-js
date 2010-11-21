@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.79";
+	this.processor_version = "1.0.80";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -185,7 +185,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	}
 	CSL.localeSet.call(this, sys, this.cslXml, "", langspec.best);
 	if (langspec.bare !== langspec.best) {
-		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);		
+		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);
 	}
 	CSL.localeSet.call(this, sys, this.cslXml, langspec.best, langspec.best);
 
