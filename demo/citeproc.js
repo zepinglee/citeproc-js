@@ -913,9 +913,6 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 CSL.localeResolve = function (langstr) {
 	var ret, langlst;
 	ret = {};
-	if ("undefined" === typeof langstr) {
-		langstr = "en_US";
-	}
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if ("undefined" === typeof ret.base) {
@@ -945,12 +942,10 @@ CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
 	} else {
 		nodes = sys.xml.getNodesByName(myxml, "locale");
 		for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-			if (true) {
-				blob = nodes[pos];
-				if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
-					locale = blob;
-					break;
-				}
+			blob = nodes[pos];
+			if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
+				locale = blob;
+				break;
 			}
 		}
 	}
@@ -1510,9 +1505,9 @@ CSL.dateParser = function (txt) {
 		}
 	};
 };
-CSL.Engine = function (sys, style, lang, xmlmode) {
+CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.79";
+	this.processor_version = "1.0.80";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1551,9 +1546,18 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	this.setStyleAttributes();
 	CSL.Util.Names.initNameSlices(this);
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
-	if (this.opt["default-locale"][0]) {
+	if (lang && forceLang) {
+		this.opt["default-locale"] = [lang];
+	}
+	if (this.opt["default-locale"].length === 0) {
+		if (!lang) {
+			lang = "en_US";
+		}
+		this.opt["default-locale"].push("en_US");
+	}
+	if (!lang) {
 		lang = this.opt["default-locale"][0];
-	};
+	}
 	langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
 	this.locale = {};
@@ -1566,7 +1570,7 @@ CSL.Engine = function (sys, style, lang, xmlmode) {
 	}
 	CSL.localeSet.call(this, sys, this.cslXml, "", langspec.best);
 	if (langspec.bare !== langspec.best) {
-		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);		
+		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);
 	}
 	CSL.localeSet.call(this, sys, this.cslXml, langspec.best, langspec.best);
 	this.buildTokenLists("citation");
@@ -1992,7 +1996,7 @@ CSL.Engine.Opt = function () {
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
 	this["locale-name"] = [];
-	this["default-locale"] = ["en"];
+	this["default-locale"] = [];
 	this["noun-genders"] = {};
 	this.update_mode = CSL.NONE;
 	this.bib_mode = CSL.NONE;
@@ -5659,7 +5663,7 @@ CSL.Transform = function (state) {
 		return value;
 	}
 	function getTextSubField(value, locale_type, use_default) {
-		var m, lst, opt, o, pos, key, ret, len, myret;
+		var m, lst, opt, o, oo, pos, key, ret, len, myret;
 		if (!value) {
 			return "";
 		}
@@ -5683,8 +5687,12 @@ CSL.Transform = function (state) {
 		}
 		for (key in opt) {
 			if (opt.hasOwnProperty(key)) {
-				o = opt[key];
-				if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
+				oo = opt[key];
+				o = oo.split(/[-_]/)[0];
+				if (oo && lst.indexOf(oo) > -1 && lst.indexOf(oo) % 2) {
+					ret = lst[(lst.indexOf(oo) + 1)];
+					break;
+				} else if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
 					ret = lst[(lst.indexOf(o) + 1)];
 					break;
 				}

@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.80
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- More fixes to locale selection behavior.
+
+-----------
+Enhancement
+-----------
+
+- Provide a toggle to override the locale of a style
+  with the locale set on the processor at runtime.
+
+
+=========================
 Changes in version 1.0.79
 =========================
 
