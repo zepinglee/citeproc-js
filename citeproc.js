@@ -1294,14 +1294,14 @@ CSL.dateParser = function (txt) {
 	rexdash = new RegExp(rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "-"));
 	rexdashslash = new RegExp(rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "\/"));
 	rexslashdash = new RegExp(rex.replace(/%%NUMD%%/g, "\/").replace(/%%DATED%%/g, "-"));
-	seasonstrs = ["spr", "sum", "fal", "win"];
+	seasonstrs = [];
 	seasonrexes = [];
 	len = seasonstrs.length;
 	for (pos = 0; pos < len; pos += 1) {
 		seasonrex = new RegExp(seasonstrs[pos] + ".*");
 		seasonrexes.push(seasonrex);
 	}
-	monthstrs = "jan feb mar apr may jun jul aug sep oct nov dec";
+	monthstrs = "jan feb mar apr may jun jul aug sep oct nov dec spr sum fal win spr sum";
 	monthstrs = monthstrs.split(" ");
 	monthrexes = [];
 	len = monthstrs.length;
@@ -1512,7 +1512,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, xmlmode) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.77";
+	this.processor_version = "1.0.78";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3300,7 +3300,7 @@ CSL.Node["date-part"] = {
 		};
 		this.execs.push(func);
 		if ("undefined" === typeof this.strings["range-delimiter"]) {
-			this.strings["range-delimiter"] = "-";
+			this.strings["range-delimiter"] = "\u2013";
 		}
 		target.push(this);
 	}
@@ -6687,29 +6687,59 @@ CSL.Util.Dates.year.numeric = function (state, num) {
 };
 CSL.Util.Dates.month = {};
 CSL.Util.Dates.month.numeric = function (state, num) {
-	var ret = num.toString();
+	if (num) {
+		num = parseInt(num, 10);
+		if (num > 12) {
+			num = "";
+		}
+	}
+	var ret = "" + num;
 	return ret;
 };
 CSL.Util.Dates.month["numeric-leading-zeros"] = function (state, num) {
 	if (!num) {
 		num = 0;
 	}
-	num = num.toString();
+	num = parseInt(num, 10);
+	if (num > 12) {
+		num = 0;
+	}
+	num = "" + num;
 	while (num.length < 2) {
 		num = "0" + num;
 	}
 	return num.toString();
 };
 CSL.Util.Dates.month["long"] = function (state, num) {
-	num = num.toString();
+	var stub = "month-";
+	num = parseInt(num, 10);
+	if (num > 12) {
+		stub = "season-";
+		if (num > 16) {
+			num = num - 16;
+		} else {
+			num = num - 12;
+		}
+	}
+	num = "" + num;
 	while (num.length < 2) {
 		num = "0" + num;
 	}
-	num = "month-" + num;
+	num = stub + num;
 	return state.getTerm(num, "long", 0);
 };
 CSL.Util.Dates.month["short"] = function (state, num) {
-	num = num.toString();
+	var stub = "month-";
+	num = parseInt(num, 10);
+	if (num > 12) {
+		stub = "season-";
+		if (num > 16) {
+			num = num - 16;
+		} else {
+			num = num - 12;
+		}
+	}
+	num = "" + num;
 	while (num.length < 2) {
 		num = "0" + num;
 	}

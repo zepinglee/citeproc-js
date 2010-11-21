@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.78
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Enable the proper parsing and rendering of
+  seasons in ranged dates, in the internal
+  dates parser.
+
+
+=========================
 Changes in version 1.0.77
 =========================
 
