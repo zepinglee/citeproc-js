@@ -168,7 +168,7 @@ CSL.Transform = function (state) {
 
 	// Internal function
 	function getTextSubField(value, locale_type, use_default) {
-		var m, lst, opt, o, pos, key, ret, len, myret;
+		var m, lst, opt, o, oo, pos, key, ret, len, myret;
 		if (!value) {
 			return "";
 		}
@@ -193,8 +193,13 @@ CSL.Transform = function (state) {
 		}
 		for (key in opt) {
 			if (opt.hasOwnProperty(key)) {
-				o = opt[key];
-				if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
+				// Fallback from more to less specific language tag
+				oo = opt[key];
+				o = oo.split(/[-_]/)[0];
+				if (oo && lst.indexOf(oo) > -1 && lst.indexOf(oo) % 2) {
+					ret = lst[(lst.indexOf(oo) + 1)];
+					break;
+				} else if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
 					ret = lst[(lst.indexOf(o) + 1)];
 					break;
 				}
