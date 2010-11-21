@@ -47,11 +47,11 @@ Aug 31, 2000
 
 
 # Seasons
---> season=2,year=2000
+--> month=14,year=2000
 Sum 2000
 --> season="Trinity",year=2001
 Trinity 2001
---> season=1,year=2000,season_end=2,year_end=2001
+--> month=13,year=2000,month_end=14,year_end=2001
 Spring 2000 - Summer 2001
 
 # Fuzzy

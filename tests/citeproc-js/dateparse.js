@@ -119,8 +119,8 @@ doh.register("tests.dateparse", [function test_dateparse001() {
     },
     function test_dateparse010() {
         var res = citeproc.fun.dateparser.parse("Sum 2000");
-        doh.assertEqual("2", res["season"]);
         doh.assertEqual("2000", res["year"]);
+        doh.assertEqual("14", res["month"]);
         doh.assertEqual(2, keycount(res) );
     },
     function test_dateparse011() {
@@ -131,10 +131,10 @@ doh.register("tests.dateparse", [function test_dateparse001() {
     },
     function test_dateparse012() {
         var res = citeproc.fun.dateparser.parse("Spring 2000 - Summer 2001");
-        doh.assertEqual("1", res["season"]);
-        doh.assertEqual("2", res["season_end"]);
-        doh.assertEqual("2001", res["year_end"]);
+        doh.assertEqual("14", res["month_end"]);
         doh.assertEqual("2000", res["year"]);
+        doh.assertEqual("2001", res["year_end"]);
+        doh.assertEqual("13", res["month"]);
         doh.assertEqual(4, keycount(res) );
     },
     function test_dateparse013() {
