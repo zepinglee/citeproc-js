@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a98##
+   version 1.00##a99##
 
 .. class:: info-date
 
-   =D=4 August 2010=D=
+   =D=22 November 2010=D=
 
 .. class:: contributors
 
@@ -225,8 +225,8 @@ Instantiation: ``CSL.Engine()``
 ###############################
 
 The ``CSL.Engine()`` command is invoked as shown in the code
-illustration below.  This command takes up to three arguments, two of
-them required, and one of them optional:
+illustration below.  This command takes up to four arguments, two of
+them required, and two of them optional:
 
 .. admonition:: Important
 
@@ -250,8 +250,15 @@ them required, and one of them optional:
 
 *lang* (optional)
     A language tag compliant with RFC 4646.  Defaults to ``en``.
-    Styles that contain a ``default-locale`` declaration
-    on the ``style`` node will ignore this option.
+    Styles that contain a ``default-locale`` attribute value
+    on the ``style`` node will ignore this option unless
+    the ``forceLang`` argument is set to a non-nil value.
+
+*forceLang* (optional)
+    When set to a non-nil value, force the use of the
+    locale set in the ``lang`` argument, overriding
+    any language set in the ``default-locale`` attribute
+    on the ``style`` node.
 
 The version of the processor itself can be obtained
 from the attribute ``processor_version``.  The supported
