@@ -55,13 +55,15 @@ CSL.localeResolve = function (langstr) {
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if ("undefined" === typeof ret.base) {
-        throw "Locale not found \"" + langlst[0] + "\"";
+		CSL.error("CSL: unknown locale "+langstr+", setting to en-US");
+		return {base:"en-US", best:"en-US", bare:"en"};
 	}
 	if (langlst.length === 1 || langlst[1] === "x") {
 		ret.best = ret.base.replace("_", "-");
 	} else {
 		ret.best = langlst.slice(0, 2).join("-");
 	}
+	ret.base = ret.base.replace("_", "-");
 	ret.bare = langlst[0];
 	return ret;
 };
