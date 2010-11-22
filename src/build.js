@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.80";
+	this.processor_version = "1.0.81";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -161,31 +161,46 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	//   this.opt["default-locale"], and this.opt.lang
 	// Keeping them aligned for safety's sake, pending
 	// eventual cleanup.
+	if (lang) {
+		lang = lang.replace("_", "-");
+	}
+	if (this.opt["default-locale"][0]) {
+		this.opt["default-locale"][0] = this.opt["default-locale"][0].replace("_", "-");
+	}
 	if (lang && forceLang) {
 		this.opt["default-locale"] = [lang];
 	}
+	if (lang && !forceLang && this.opt["default-locale"][0]) {
+		lang = this.opt["default-locale"][0];
+	}
 	if (this.opt["default-locale"].length === 0) {
 		if (!lang) {
-			lang = "en_US";
+			lang = "en-US";
 		}
-		this.opt["default-locale"].push("en_US");
+		this.opt["default-locale"].push("en-US");
 	}
 	if (!lang) {
 		lang = this.opt["default-locale"][0];
 	}
 	langspec = CSL.localeResolve(lang);
 	this.opt.lang = langspec.best;
+	this.opt["default-locale"][0] = langspec.best;
 	this.locale = {};
-	if (!this.locale[langspec.best]) {
-		localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.best));
-		if (langspec.bare !== langspec.best) {
-			CSL.localeSet.call(this, sys, localexml, langspec.bare, langspec.best);
+	localexml = sys.xml.makeXml(sys.retrieveLocale("en-US"));
+	CSL.localeSet.call(this, sys, localexml, "en-US", langspec.best);
+	if (langspec.best !== "en-US") {
+		if (langspec.base !== langspec.best) {
+			localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.base));
+			CSL.localeSet.call(this, sys, localexml, langspec.base, langspec.best);
 		}
-		CSL.localeSet.call(this, sys, localexml, langspec.best, langspec.best);
+		localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.best));
+		CSL.localeSet.call(this, sys, localexml, langspec.best, langspec.best);		
 	}
+
 	CSL.localeSet.call(this, sys, this.cslXml, "", langspec.best);
-	if (langspec.bare !== langspec.best) {
-		CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);
+	CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);
+	if (langspec.base !== langspec.best) {
+		CSL.localeSet.call(this, sys, this.cslXml, langspec.base, langspec.best);
 	}
 	CSL.localeSet.call(this, sys, this.cslXml, langspec.best, langspec.best);
 
