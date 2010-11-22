@@ -86,7 +86,7 @@ doh.register("citeproc_js.sys_rhino_locale", [
 	function testSetLocaleNilValueNoStyleDefault(){
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
-		doh.assertEqual("en_US", obj.opt["default-locale"][0]);
+		doh.assertEqual("en-US", obj.opt["default-locale"][0]);
 		doh.assertEqual("books", obj.locale["en-US"].terms["book"]["long"][1]);
 	},
 	function testSetLocaleNilValueStyleHasDefault(){
@@ -98,20 +98,34 @@ doh.register("citeproc_js.sys_rhino_locale", [
 	function testSetLocaleHasValueNoStyleDefault(){
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>", "de-DE");
-		doh.assertEqual("en_US", obj.opt["default-locale"][0]);
+		doh.assertEqual("de-DE", obj.opt["default-locale"][0]);
 		doh.assertEqual("Bücher", obj.locale["de-DE"].terms["book"]["long"][1]);
 	},
 	function testSetLocaleHasValueAndStyleDefault(){
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style default-locale=\"de-AT\"></style>", "de-DE");
 		doh.assertEqual("de-AT", obj.opt["default-locale"][0]);
-		doh.assertEqual("Bücher", obj.locale["de-DE"].terms["book"]["long"][1]);
+		// Odd that this should be the value for Austrian, but that's
+		// what the current de-AT locale reports.
+		doh.assertEqual("books", obj.locale["de-AT"].terms["book"]["long"][1]);
 	},
 	function testSetLocaleHasValueAndStyleDefaultWithForceValue(){
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style default-locale=\"de-AT\"></style>", "de-DE", true);
 		doh.assertEqual("de-DE", obj.opt["default-locale"][0]);
 		doh.assertEqual("Bücher", obj.locale["de-DE"].terms["book"]["long"][1]);
+	},
+	function testSetLocaleUnknownLocaleForced(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style default-locale=\"xx-XX\"></style>", "yy-YY", true);
+		doh.assertEqual("en-US", obj.opt["default-locale"][0]);
+		doh.assertEqual("books", obj.locale["en-US"].terms["book"]["long"][1]);
+	},
+	function testSetLocaleUnknownLocaleOnStyle(){
+		var sys = new RhinoTest();
+		var obj = new CSL.Engine(sys,"<style default-locale=\"xx-XX\"></style>");
+		doh.assertEqual("en-US", obj.opt["default-locale"][0]);
+		doh.assertEqual("books", obj.locale["en-US"].terms["book"]["long"][1]);
 	},
 	function testLocalSetLocaleWorksAtAll(){
 		try {
