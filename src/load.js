@@ -209,10 +209,10 @@ var CSL = {
 	// locale caps version with existing version, character by character.
 	// hard stuff, but if it breaks, that's what to do.
 	NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/,
-	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f]/,
-	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
-	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
-	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f]+$/,
+	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
+	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
+	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]$/,
+	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]+$/,
 
 	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
 	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
