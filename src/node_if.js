@@ -48,11 +48,12 @@
 
 CSL.Node["if"] = {
 	build: function (state, target) {
+		var func;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 		    if (!this.evaluator) {
-			//
-			// cut and paste of "any"
-			this.evaluator = state.fun.match.any;
+				//
+				// cut and paste of "any"
+				this.evaluator = state.fun.match.any;
 		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
@@ -66,7 +67,7 @@ CSL.Node["if"] = {
 		target.push(this);
 	},
 	configure: function (state, pos) {
-		if (this.tokentype === CSL.START) {
+		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			// jump index on failure
 			this.fail = state.configure.fail.slice(-1)[0];
 			this.succeed = this.next;
