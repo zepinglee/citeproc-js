@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.82
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fixes to cs:if and cs:else-if logic.  Was failing to set the
+  match attribute on singleton nodes, among other things.
+
+- Treat greek letters as part of the "romanesque" character set, 
+  for name formatting purposes.
+
+- If cs:number input has numbers separated by spaces, but also 
+  extraneous non-comma, non-ampersand, non-hyphen characters, 
+  then render as literal.
+
+
+=========================
 Changes in version 1.0.81
 =========================
 

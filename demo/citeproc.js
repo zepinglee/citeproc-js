@@ -135,10 +135,10 @@ var CSL = {
 	QUOTED_REGEXP_START: /^"/,
 	QUOTED_REGEXP_END: /^"$/,
 	NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/,
-	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f]/,
-	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f]/,
-	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f]$/,
-	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f]+$/,
+	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
+	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
+	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]$/,
+	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]+$/,
 	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
 	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
@@ -916,7 +916,7 @@ CSL.localeResolve = function (langstr) {
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if ("undefined" === typeof ret.base) {
-		CSL.error("CSL: unknown locale "+langstr+", setting to en-US");
+		CSL.error("unknown locale "+langstr+", setting to en-US");
 		return {base:"en-US", best:"en-US", bare:"en"};
 	}
 	if (langlst.length === 1 || langlst[1] === "x") {
@@ -1509,7 +1509,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.81";
+	this.processor_version = "1.0.82";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3354,6 +3354,10 @@ CSL.Node["else-if"] = {
 			this.fail = state.configure.fail.slice(-1)[0];
 			this.succeed = this.next;
 			state.configure.fail[(state.configure.fail.length - 1)] = pos;
+		} else if (this.tokentype === CSL.SINGLETON) {
+			this.fail = this.next;
+			this.succeed = state.configure.succeed.slice(-1)[0];
+			state.configure.fail[(state.configure.fail.length - 1)] = pos;
 		} else {
 			this.succeed = state.configure.succeed.slice(-1)[0];
 			this.fail = this.next;
@@ -3443,9 +3447,10 @@ CSL.Node.group = {
 };
 CSL.Node["if"] = {
 	build: function (state, target) {
+		var func;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 		    if (!this.evaluator) {
-			this.evaluator = state.fun.match.any;
+				this.evaluator = state.fun.match.any;
 		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
@@ -3461,6 +3466,9 @@ CSL.Node["if"] = {
 		if (this.tokentype === CSL.START) {
 			this.fail = state.configure.fail.slice(-1)[0];
 			this.succeed = this.next;
+		} else if (this.tokentype === CSL.SINGLETON) {
+			this.fail = this.next;
+			this.succeed = state.configure.succeed.slice(-1)[0];
 		} else {
 			this.succeed = state.configure.succeed.slice(-1)[0];
 			this.fail = this.next;
@@ -4558,64 +4566,63 @@ CSL.Node.number = {
 				    }
 				}
 				if (state.tmp.area !== "citation_sort"
-				    && state.tmp.area !== "bibliography_sort"
-				    && all_with_spaces 
-				    && num.match(/[-,&]/) 
-				    && !num.match(/[^- 0-9,&]/)) {
-				    var nums = num.match(/[0-9]+/g);
-				    var range_ok = true;
-				    for (i = prefixes.length - 2; i > 0; i += -1) {
-					if (prefixes && prefixes[i].indexOf("-") > -1) {
-					    var start = parseInt(nums[i - 1], 10);
-					    var end = parseInt(nums[i], 10);
-					    if (start >= end || start < (end - 1000)) {
-						range_ok = false;
-						break;
-					    }
-					    var replacement = [];
-					    for (j = start, jlen = end + 1; j < jlen; j += 1) {
-						replacement.push(""+j);
-					    }
-					    nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
+				  && state.tmp.area !== "bibliography_sort"
+				  && all_with_spaces 
+				  && !num.match(/[^- 0-9,&]/)) {
+					var nums = num.match(/[0-9]+/g);
+					var range_ok = true;
+					for (i = prefixes.length - 2; i > 0; i += -1) {
+						if (prefixes && prefixes[i].indexOf("-") > -1) {
+							var start = parseInt(nums[i - 1], 10);
+							var end = parseInt(nums[i], 10);
+							if (start >= end || start < (end - 1000)) {
+								range_ok = false;
+								break;
+							}
+							var replacement = [];
+							for (j = start, jlen = end + 1; j < jlen; j += 1) {
+								replacement.push(""+j);
+							}
+								nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
+						}
 					}
+					if (range_ok) {
+						nums = nums.sort(function (a,b) {
+							a = parseInt(a, 10);
+							b = parseInt(b, 10);
+							if (a > b) {
+								return 1;
+							} else if (a < b) {
+								return -1;
+							} else {
+								return 0;
+							}
+						});
+						for (i = nums.length; i > -1; i += -1) {
+							if (nums[i] === nums[i + 1]) {
+								nums = nums.slice(0, i).concat(nums.slice(i + 1));
+							}
+						}
+						state.output.openLevel("empty");
+						for (i = 0, ilen = nums.length; i < ilen; i += 1) {
+							num = parseInt(nums[i], 10);
+							number = new CSL.NumericBlob(num, this);
+							number.gender = state.opt["noun-genders"][varname];
+							if (i > 0) {
+								number.successor_prefix = " & ";
+								number.range_prefix = "-";
+								number.splice_prefix = ", ";
+							}
+							state.output.append(number, "literal");
+						}
+						state.output.closeLevel("empty");
+					} else {
+						state.output.append(num, this);
 				    }
-				    if (range_ok) {
-					nums = nums.sort(function (a,b) {
-					    a = parseInt(a, 10);
-					    b = parseInt(b, 10);
-					    if (a > b) {
-							return 1;
-					    } else if (a < b) {
-							return -1;
-					    } else {
-							return 0;
-					    }
-					});
-					for (i = nums.length; i > -1; i += -1) {
-					    if (nums[i] === nums[i + 1]) {
-						nums = nums.slice(0, i).concat(nums.slice(i + 1));
-					    }
-					}
-					state.output.openLevel("empty");
-					for (var i = 0, ilen = nums.length; i < ilen; i += 1) {
-					    num = parseInt(nums[i], 10);
-					    number = new CSL.NumericBlob(num, this);
-						number.gender = state.opt["noun-genders"][varname];
-					    if (i > 0) {
-							number.successor_prefix = " & ";
-							number.range_prefix = "-";
-							number.splice_prefix = ", ";
-					    }
-					    state.output.append(number, "literal");
-					}
-					state.output.closeLevel("empty");
-				    } else {
-					state.output.append(num, this);
-				    }
-				} else if (!all_with_spaces) {
+				} else if (!all_with_spaces || prefixes.length > 2) {
 				    state.output.append(num, this);
 				} else {
-				    m = num.match(/\s*([0-9]+)/);
+					m = num.match(/\s*([0-9]+)/);
 					if (m) {
 						num = parseInt(m[1], 10);
 						number = new CSL.NumericBlob(num, this);
@@ -5129,7 +5136,7 @@ CSL.Attributes["@delimiter"] = function (state, arg) {
 };
 CSL.Attributes["@match"] = function (state, arg) {
 	var evaluator;
-	if (this.tokentype === CSL.START) {
+	if (this.tokentype === CSL.START || CSL.SINGLETON) {
 		if ("none" === arg) {
 			evaluator = state.fun.match.none;
 		} else if ("any" === arg) {
