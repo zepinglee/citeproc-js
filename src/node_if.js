@@ -67,10 +67,14 @@ CSL.Node["if"] = {
 		target.push(this);
 	},
 	configure: function (state, pos) {
-		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+		if (this.tokentype === CSL.START) {
 			// jump index on failure
 			this.fail = state.configure.fail.slice(-1)[0];
 			this.succeed = this.next;
+		} else if (this.tokentype === CSL.SINGLETON) {
+			// jump index on failure (in this case, should be equivalent to next)
+			this.fail = this.next;
+			this.succeed = state.configure.succeed.slice(-1)[0];
 		} else {
 			// jump index on success
 			this.succeed = state.configure.succeed.slice(-1)[0];

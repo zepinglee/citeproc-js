@@ -75,7 +75,7 @@ CSL.Node["else-if"] = {
 			state.configure.fail[(state.configure.fail.length - 1)] = pos;
 		} else if (this.tokentype === CSL.SINGLETON) {
 			// jump index on failure
-			this.fail = state.configure.fail.slice(-1)[0];
+			this.fail = this.next;
 			this.succeed = state.configure.succeed.slice(-1)[0];
 			state.configure.fail[(state.configure.fail.length - 1)] = pos;
 		} else {

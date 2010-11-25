@@ -360,7 +360,7 @@ CSL.Attributes["@delimiter"] = function (state, arg) {
  */
 CSL.Attributes["@match"] = function (state, arg) {
 	var evaluator;
-	if (this.tokentype === CSL.START) {
+	if (this.tokentype === CSL.START || CSL.SINGLETON) {
 		if ("none" === arg) {
 			evaluator = state.fun.match.none;
 		} else if ("any" === arg) {
