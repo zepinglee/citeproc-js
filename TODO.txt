@@ -46,6 +46,16 @@
  * or the [AGPLv3] License.”
  */
 
-Otherwise, awaiting bug reports and the finalization of the EDTF
-specification.
+As the raw input format now seems to cover every reasonable
+requirement for generating citations (in the Gregorian calendar, at
+least), some further testing would get us ready to prove up, from
+trials in the wild, what to screen out of EDTF when it eventually
+arrives.  Particular targets are:
 
+  - sorting of seasons
+  - availability of unknown dates (i.e. 192?)
+  - compatibility of unknown dates with date ranges
+  - sorting with unknown dates
+
+Otherwise, just awaiting further bug reports, the finalization of the
+EDTF specification.
