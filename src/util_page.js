@@ -92,10 +92,13 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 						m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
 					}
 					if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
-						m[3] = "-" + m[1];
+						m[3] = "\u2013" + m[1];
 						lst[pos] = m.slice(1);
 					}
 				}
+			}
+			if ("string" === typeof lst[pos]) {
+				lst[pos] = lst[pos].replace("-", "\u2013");
 			}
 		}
 		return lst;
@@ -106,7 +109,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		for (pos = 1; pos < len; pos += 2) {
 			lst[pos][3] = minimize_internal(lst[pos][1], lst[pos][3]);
 			if (lst[pos][2].slice(1) === lst[pos][0]) {
-				lst[pos][2] = "-";
+				lst[pos][2] = "\u2013";
 			}
 		}
 		return stringify(lst);
@@ -145,7 +148,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 				}
 			}
 			if (m[2].slice(1) === m[0]) {
-				m[2] = "-";
+				m[2] = "\u2013";
 			}
 		}
 		return stringify(lst);
