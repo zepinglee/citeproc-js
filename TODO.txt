@@ -57,5 +57,5 @@ arrives.  Particular targets are:
   - compatibility of unknown dates with date ranges
   - sorting with unknown dates
 
-Otherwise, just awaiting further bug reports, the finalization of the
-EDTF specification.
+Otherwise, just awaiting further bug reports, and the finalization of
+the EDTF specification.

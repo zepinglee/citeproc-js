@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.83
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Use en-dash rather than hyphen in formatted page range
+  joins.
+
+
+=========================
 Changes in version 1.0.82
 =========================
 
