@@ -46,6 +46,11 @@
  * or the [AGPLv3] License.”
  */
 
+Conditional branching on language is still at the proposal stage,
+but it's probably worth implementing trial code in the processor,
+to provide some assurance that the proposal will satisfy the
+use cases it's aimed at.
+
 As the raw input format now seems to cover every reasonable
 requirement for generating citations (in the Gregorian calendar, at
 least), some further testing would get us ready to prove up, from
