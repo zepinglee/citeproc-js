@@ -8,6 +8,17 @@ Changes in version 1.0.83
 Mishandled or unimplemented features
 ------------------------------------
 
+- Preserve explicit double spaces in HTML output.
+
+
+=========================
+Changes in version 1.0.83
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
 - Use en-dash rather than hyphen in formatted page range
   joins.
 

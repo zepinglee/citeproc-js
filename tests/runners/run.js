@@ -4,6 +4,7 @@ dojo.require("std.magic");
 dojo.require("std.number");
 dojo.require("std.eclac");
 dojo.require("std.locators");
+dojo.require("std.spaces");
 dojo.require("std.plural");
 dojo.require("std.integration");
 dojo.require("std.page");
