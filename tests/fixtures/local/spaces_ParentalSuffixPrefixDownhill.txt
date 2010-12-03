@@ -108,6 +108,6 @@ One. Two. [parental suffix-prefix-downhill]
         "title": "One", 
         "note": "Two",
         "type": "article-newspaper"
-    },
+    }
 ]
 <<===== INPUT =====<<

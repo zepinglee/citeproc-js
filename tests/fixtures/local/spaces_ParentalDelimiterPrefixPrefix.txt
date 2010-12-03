@@ -112,12 +112,6 @@ One. Two. [parental delimiter-prefix-prefix]
         "title": "One", 
         "note": "Two",
         "type": "entry-encyclopedia"
-    },
-    {
-        "id": "ITEM-2", 
-        "title": "One", 
-        "note": "Two",
-        "type": "article-journal"
     }
 ]
 <<===== INPUT =====<<

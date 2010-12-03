@@ -88,9 +88,9 @@ One. Two. [sibling delimiter-prefix]
   <citation>
     <layout delimiter="&#x0A;">
       <choose>
-        <else-if type="article-magazine">
+        <if type="article-magazine">
           <text macro="sibling-delimiter-prefix"/>
-        </else-if>
+        </if>
       </choose>
       <text value=". ["/>
       <text variable="locator"/>
