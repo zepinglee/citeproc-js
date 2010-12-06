@@ -50,6 +50,9 @@ CSL.Node["if"] = {
 	build: function (state, target) {
 		var func;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+			if (this.locale) {
+				state.opt.lang = this.locale;
+			}
 		    if (!this.evaluator) {
 				//
 				// cut and paste of "any"
@@ -59,10 +62,17 @@ CSL.Node["if"] = {
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			// closingjump
 			func = function (state, Item) {
+				if (this.locale_default) {
+					state.opt.lang = this.locale_default;
+				}
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
 			this.execs.push(func);
+
+			if (this.locale_default) {
+				state.opt.lang = this.locale_default;
+			}
 		}
 		target.push(this);
 	},

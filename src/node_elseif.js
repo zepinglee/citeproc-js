@@ -52,18 +52,27 @@ CSL.Node["else-if"] = {
 	build: function (state, target) {
 		var func, tryposition;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+			if (this.locale) {
+				state.opt.lang = this.locale;
+			}
 		    if (! this.evaluator) {
-			//
-			// cut and paste of "any"
-			this.evaluator = state.fun.match.any;
+				//
+				// cut and paste of "any"
+				this.evaluator = state.fun.match.any;
 		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
+				if (this.locale_default) {
+					state.opt.lang = this.locale_default;
+				}
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
 			this.execs.push(func);
+			if (this.locale_default) {
+				state.opt.lang = this.locale_default;
+			}
 		}
 		target.push(this);
 	},
