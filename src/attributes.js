@@ -325,6 +325,42 @@ CSL.Attributes["@variable"] = function (state, arg) {
 	}
 };
 
+CSL.Attributes["@language"] = function (state, arg) {
+	var func, ret, len, pos, variable, myitem, x, langspec, lang;
+
+	// Parse out locale and base language
+	lang = CSL.localeParse(arg);
+
+	// Analyze the locale
+	langspec = CSL.localeResolve(lang);
+
+	// Load the locale terms etc.
+	state.localeConfigure(langspec);
+
+	// Set locale tag on node
+	this.locale_default = state.opt["default-locale"][0];
+	this.locale = langspec.best;
+
+	// check for variable value
+	func = function (state, Item, item) {
+		var key;
+		ret = [];
+		x = false;
+		if (Item.language) {
+			lang = CSL.localeParse(Item.language);
+			langspec = CSL.localeResolve(lang);
+			if (langspec.best === this.locale) {
+				// XXXX: aha.  This DOES need to go on a test, after all.
+				state.opt.lang = this.locale;
+				x = true;
+				ret.push(x);
+			}
+		}
+		return ret;
+	};
+	this.tests.push(func);
+};
+
 /*
  * Store suffix string on token.
  * @name CSL.Attributes.@suffix
