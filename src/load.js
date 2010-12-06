@@ -400,10 +400,6 @@ if (!CSL.System.Xml.DOM) {
 	load("./src/xmldom.js");
 }
 // jslint OK
-if (!CSL.localeResolve) {
-	load("./src/util_locale.js");
-}
-// jslint OK
 if (!CSL.Mode) {
 	load("./src/util_processor.js");
 }
@@ -447,6 +443,9 @@ if (!CSL.setCitationId) {
 if (!CSL.updateItems) {
 	load("./src/cmd_update.js");
 }
+if (!CSL.localeResolve) {
+	load("./src/util_locale.js");
+}
 if (!CSL.Node) {
 	// jslint OK
 	load("./src/node_bibliography.js");
@@ -455,6 +454,7 @@ if (!CSL.Node) {
 	// jslint OK
     load("./src/node_citation.js");
     load("./src/node_comment.js");
+	// jslint OK
 	// jslint OK
     load("./src/node_date.js");
 	// jslint OK
