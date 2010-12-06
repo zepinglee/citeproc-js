@@ -49,9 +49,8 @@
 CSL.Util.fixDateNode = function (parent, pos, node) {
 	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, cchildren, kkey, display;
 	form = this.sys.xml.getAttributeValue(node, "form");
-	if (!form) {
-		return parent;
-	}
+
+	var dateparts = this.sys.xml.getAttributeValue(node, "date-parts");
 
 	variable = this.sys.xml.getAttributeValue(node, "variable");
 	prefix = this.sys.xml.getAttributeValue(node, "prefix");
@@ -61,6 +60,8 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	// Xml: Copy a node
 	//
 	datexml = this.sys.xml.nodeCopy(this.state.getDate(form));
+	this.sys.xml.setAttribute(datexml, 'form', form);
+	this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
 	//
 	// Xml: Set attribute
 	//
@@ -92,29 +93,27 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	// locale template node copy.
 	//
 	children = this.sys.xml.children(node);
-	for (key in children) {
-		// lie to jslint
-		if (true) {
-			subnode = children[key];
-			if ("date-part" === this.sys.xml.nodename(subnode)) {
-				partname = this.sys.xml.getAttributeValue(subnode, "name");
-				cchildren = this.sys.xml.attributes(subnode);
-				for (attr in cchildren) {
-					if (cchildren.hasOwnProperty(attr)) {
-						if (attr === "@name") {
-							continue;
+	if (!this.sys.xml.numberofnodes(children)) {
+		for (key in children) {
+			// lie to jslint
+			if (true) {
+				subnode = children[key];
+				if ("date-part" === this.sys.xml.nodename(subnode)) {
+					partname = this.sys.xml.getAttributeValue(subnode, "name");
+					cchildren = this.sys.xml.attributes(subnode);
+					for (attr in cchildren) {
+						if (cchildren.hasOwnProperty(attr)) {
+							if (attr === "@name") {
+								continue;
+							}
+							val = cchildren[attr];
+								this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 						}
-						val = cchildren[attr];
-						this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 					}
 				}
 			}
 		}
 	}
-	//
-	// Xml: Delete attribute
-	//
-	this.sys.xml.deleteAttribute(datexml, 'form');
 	if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {
 
 		//
