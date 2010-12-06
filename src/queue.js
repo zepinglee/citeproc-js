@@ -556,13 +556,20 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 	}
 }
 
+// XXXXX: Okay, stop and think about the following two functions.
+// Spaces have no formatting characteristics, so they can be
+// safely purged at lower levels.  If a separate function is used
+// for punctuation (i.e. the original setup), and special-purpose
+// functions are applied to spaces, we can get more robust 
+// behavior without breaking things all over the place.
+
 CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
 	if (!chr) {
 		return;
 	}
 	if ("object" === typeof myblob) {
-		if (CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1 && 
-			CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1) {
+		if ((CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1 && 
+			 CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1)) {
 			myblob.strings.prefix = myblob.strings.prefix.slice(1);
 		} else if ("object" === typeof myblob.blobs) {
 			CSL.Output.Queue.purgeNearsidePrefixChars(myblob.blobs[0], chr);
@@ -570,8 +577,37 @@ CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
 	}
 }
 
+CSL.Output.Queue.purgeNearsidePrefixSpaces = function(myblob, chr) {
+	//if (!chr) {
+	//	return;
+	//}
+	if ("object" === typeof myblob) {
+		if (" " === chr && " " === myblob.strings.prefix.slice(0, 1)) {
+			myblob.strings.prefix = myblob.strings.prefix.slice(1);
+		} else if ("object" === typeof myblob.blobs) {
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(myblob.blobs[0], chr);
+		}
+	}
+}
+
+CSL.Output.Queue.purgeNearsideSuffixSpaces = function(myblob, chr) {
+	if ("object" === typeof myblob) {
+		if (" " === chr && " " === myblob.strings.suffix.slice(-1)) {
+			myblob.strings.suffix = myblob.strings.suffix.slice(0, -1);
+		} else if ("object" === typeof myblob.blobs) {
+			if (!chr) {
+				chr = myblob.strings.suffix.slice(-1);
+			}
+			chr = CSL.Output.Queue.purgeNearsideSuffixSpaces(myblob.blobs[myblob.blobs.length - 1], chr);
+		} else {
+			chr = myblob.strings.suffix.slice(-1);
+		}
+	}
+	return chr;
+}
+
 CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
-	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr;
+	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr, firstchr, chr, exposed_suffixes, exposed;
 
 	var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
 	var TERM_OR_SPACE = CSL.TERMINAL_PUNCTUATION;
@@ -606,6 +642,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			}
 		}
 		lastchr = myblobs.slice(-1);
+		firstchr = myblobs.slice(0,1);
 	} else {
 		// Complete the move of a leading terminal punctuation 
 		// from superior delimiter to suffix at this level,
@@ -617,9 +654,53 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 
 				if (TERMS.indexOf(t) === -1 ||
 				    TERMS.indexOf(dpref) === -1) {
-						myblobs[j].strings.suffix += dpref;
+					// Drop duplicate space
+					if (dpref !== " " || dpref !== myblobs[j].strings.suffix.slice(-1)) {
+						myblobs[j].strings.suffix += dpref;						
+					}
 				}
 			}
+		}
+
+		// For ParentalSuffixPrefixUphill
+		if (suffix === " ") {
+			CSL.Output.Queue.purgeNearsideSuffixSpaces(myblobs[myblobs.length - 1], " ");
+		}
+		var lst = [];
+		for (var i = 0, ilen = myblobs.length - 1; i < ilen; i += 1) {
+			var doblob = myblobs[i];
+			var following_prefix = myblobs[i + 1].strings.prefix;
+			var chr = false;
+			// A record of the suffix leading character
+			// nearest to each empty delimiter, for use
+			// in comparisons in the next function.
+			var ret = CSL.Output.Queue.purgeNearsideSuffixSpaces(doblob, chr);
+			if (!dsuff) {
+				lst.push(ret);
+			} else {
+				lst.push(false);
+			}
+		}
+
+		// For ParentalSuffixPrefixDownhill
+		chr = false;
+		for (var i = 1, ilen = myblobs.length; i < ilen; i += 1) {
+			var doblob = myblobs[i];
+			var chr = "";
+			var preceding_suffix = myblobs[i - 1].strings.suffix;
+			if (dsuff === " ") {
+				chr = dsuff;
+			} else if (preceding_suffix) {
+				chr = preceding_suffix.slice(-1);
+			} else if (lst[i - 1]) {
+				chr = lst[i - 1];
+			}
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(doblob, chr);
+		}
+		if (dsufff) {
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
+		} else if (prefix === " ") {
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
 		}
 
 		// Descend down the nearest blobs until we run into
@@ -631,10 +712,11 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 
 			CSL.Output.Queue.purgeNearsidePrefixChars(doblob, lastchr);
 			
+			// Prefix and suffix
 			if (i === 0) {
 				if (prefix) {
 					if (doblob.strings.prefix.slice(0, 1) === " ") {
-						doblob.strings.prefix = doblob.strings.prefix.slice(1);
+						//doblob.strings.prefix = doblob.strings.prefix.slice(1);
 					}
 				}
 			}
@@ -643,7 +725,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 				if (doblob.strings.prefix) {
 					if (i === 0) {
 						if (doblob.strings.prefix.slice(0, 1) === " ") {
-							doblob.strings.prefix = doblob.strings.prefix.slice(1);
+							//doblob.strings.prefix = doblob.strings.prefix.slice(1);
 						}
 					}
 				}
@@ -651,7 +733,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			if (dsuff) {
 				if (i > 0) {
 					if (doblob.strings.prefix.slice(0, 1) === " ") {
-						doblob.strings.prefix = doblob.strings.prefix.slice(1);
+						//doblob.strings.prefix = doblob.strings.prefix.slice(1);
 					}
 				}
 			}
@@ -780,7 +862,8 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 
 			// Use leading suffix char for sniffing only if it
 			// is a terminal punctuation character.
-			if (SWAPS.indexOf(suffixX) === -1) {
+			if (SWAPS.concat([" "]).indexOf(suffixX) === -1) {
+			//if (SWAPS.indexOf(suffixX) === -1) {
 				suffixX = "";
 				blobX = false;
 			}
@@ -790,7 +873,8 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			if (doblob.strings.delimiter && 
 				doblob.blobs.length > 1) {
 				dprefX = doblob.strings.delimiter.slice(0, 1);
-				if (SWAPS.indexOf(dprefX) > -1) {
+				if (SWAPS.concat([" "]).indexOf(dprefX) > -1) {
+				//if (SWAPS.indexOf(dprefX) > -1) {
 					doblob.strings.delimiter = doblob.strings.delimiter.slice(1);
 				} else {
 					dprefX = "";
@@ -857,6 +941,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 	if (stk.length > 1) {
 		stk.pop();
 	}
+	// Are these needed?
 	state.tmp.last_chr = lastchr;
 	return lastchr;
 };
