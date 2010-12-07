@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.87
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Where et-al-min, et-al-subsequent-min or names-min are
+  set to some value larger than an arbitrary threshold of
+  50, truncate author lists that are longer than that value
+  (plus a buffer value of 2), to raise performance to a 
+  reasonable level with large namesets.
+
+
+=========================
 Changes in version 1.0.86
 =========================
 

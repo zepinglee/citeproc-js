@@ -1460,7 +1460,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.85";
+	this.processor_version = "1.0.87";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1792,6 +1792,7 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 	if (this.tmp.area.slice(-5) === "_sort") {
 		mode = "locale-sort";
 	}
+	ilen = names.length;
 	for (i = 0, ilen = names.length; i < ilen; i += 1) {
 		newname = {};
 		for (key in names[i]) {
@@ -1958,6 +1959,7 @@ CSL.Engine.Opt = function () {
 	this["demote-non-dropping-particle"] = "display-and-sort";
 	this["parse-names"] = true;
 	this.citation_number_slug = false;
+	this.max_number_of_names = 0;
 };
 CSL.Engine.Tmp = function () {
 	this.names_max = new CSL.Stack();
@@ -4063,6 +4065,10 @@ CSL.Node.names = {
 							if ("string" === typeof Item[variable]) {
 								rawvar = [{literal: Item[variable]}];
 							}
+							var rawlen = rawvar.length;
+							if (state.opt.max_number_of_names && rawlen > 50 && rawlen > (state.opt.max_number_of_names + 2)) {
+								rawvar = rawvar.slice(0, state.opt.max_number_of_names + 2);
+							}
 							rawlist = state.getNameSubFields(rawvar);
 							names = [];
 							tnamesets = [];
@@ -5312,7 +5318,11 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 	this.tests.push(func);
 };
 CSL.Attributes["@names-min"] = function (state, arg) {
-	this.strings["et-al-min"] = parseInt(arg,  10);
+	var val = parseInt(arg, 10);
+	if (state.opt.max_number_of_names < val) {
+		state.opt.max_number_of_names = val;
+	}
+	this.strings["et-al-min"] = val;
 };
 CSL.Attributes["@names-use-first"] = function (state, arg) {
 	this.strings["et-al-use-first"] = parseInt(arg, 10);
@@ -5443,10 +5453,14 @@ CSL.Attributes["@name-delimiter"] = function (state, arg) {
 	state.setOpt(this, "name-delimiter", arg);
 };
 CSL.Attributes["@et-al-min"] = function (state, arg) {
-	state.setOpt(this, "et-al-min", parseInt(arg, 10));
+	var val = parseInt(arg, 10);
+	if (state.opt.max_number_of_names < val) {
+		state.opt.max_number_of_names = val;
+	}
+	state.setOpt(this, "et-al-min", val);
 };
 CSL.Attributes["@et-al-use-first"] = function (state, arg) {
-	state.setOpt(this, "et-al-use-first", parseInt(arg, 10));
+	state.setOpt(this, "et-al-use-first", parseInt(arg));
 };
 CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 	if (arg === "true") {
@@ -5456,7 +5470,11 @@ CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 	}
 };
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
-	state.setOpt(this, "et-al-subsequent-min", parseInt(arg, 10));
+	var val = parseInt(arg, 10);
+	if (state.opt.max_number_of_names < val) {
+		state.opt.max_number_of_names = val;
+	}
+	state.setOpt(this, "et-al-subsequent-min", val);
 };
 CSL.Attributes["@et-al-subsequent-use-first"] = function (state, arg) {
 	state.setOpt(this, "et-al-subsequent-use-first", parseInt(arg, 10));
@@ -5589,14 +5607,10 @@ CSL.Attributes["@if-short"] = function (state, arg) {
 	}
 };
 CSL.Attributes["@substitute-use-first"] = function (state, arg) {
-	if (arg.match(/^[0-9]+$/)) {
-		this.strings["substitute-use-first"] = parseInt(arg, 10);
-	}
+	this.strings["substitute-use-first"] = parseInt(arg, 10);
 };
 CSL.Attributes["@use-first"] = function (state, arg) {
-	if (arg.match(/^[0-9]+$/)) {
-		this.strings["use-first"] = parseInt(arg, 10);
-	}
+	this.strings["use-first"] = parseInt(arg, 10);
 };
 CSL.Attributes["@use-last"] = function (state, arg) {
 	if (arg.match(/^[0-9]+$/)) {
