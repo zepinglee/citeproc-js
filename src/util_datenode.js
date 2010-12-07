@@ -125,6 +125,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 				}
 			}
 		}
+	}
 	
 	if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {
 
