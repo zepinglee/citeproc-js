@@ -47,8 +47,14 @@
  */
 
 CSL.Util.fixDateNode = function (parent, pos, node) {
-	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, cchildren, kkey, display;
+	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, subchildren, kkey, display;
+	
 	form = this.sys.xml.getAttributeValue(node, "form");
+	var lingo = this.sys.xml.getAttributeValue(node, "lingo");
+
+	if (!this.state.getDate(form)) {
+		return parent;
+	}
 
 	var dateparts = this.sys.xml.getAttributeValue(node, "date-parts");
 
@@ -56,10 +62,12 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	prefix = this.sys.xml.getAttributeValue(node, "prefix");
 	suffix = this.sys.xml.getAttributeValue(node, "suffix");
 	display = this.sys.xml.getAttributeValue(node, "display");
+	
 	//
 	// Xml: Copy a node
 	//
 	datexml = this.sys.xml.nodeCopy(this.state.getDate(form));
+	this.sys.xml.setAttribute(datexml, 'lingo', this.state.opt.lang);
 	this.sys.xml.setAttribute(datexml, 'form', form);
 	this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
 	//
@@ -92,28 +100,32 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	// and lay their attributes onto the corresponding node in the
 	// locale template node copy.
 	//
+	// tests: language_BaseLocale
+	// tests: date_LocalizedTextInStyleLocaleWithTextCase
+	// 
 	children = this.sys.xml.children(node);
-	if (!this.sys.xml.numberofnodes(children)) {
-		for (key in children) {
-			// lie to jslint
-			if (true) {
-				subnode = children[key];
-				if ("date-part" === this.sys.xml.nodename(subnode)) {
-					partname = this.sys.xml.getAttributeValue(subnode, "name");
-					cchildren = this.sys.xml.attributes(subnode);
-					for (attr in cchildren) {
-						if (cchildren.hasOwnProperty(attr)) {
-							if (attr === "@name") {
-								continue;
-							}
-							val = cchildren[attr];
-								this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
+	for (key in children) {
+		// lie to jslint
+		subnode = children[key];
+		if ("date-part" === this.sys.xml.nodename(subnode)) {
+			partname = this.sys.xml.getAttributeValue(subnode, "name");
+			subchildren = this.sys.xml.attributes(subnode);
+			for (attr in subchildren) {
+				if (subchildren.hasOwnProperty(attr)) {
+					if ("@name" === attr) {
+						continue;
+					}
+					if (lingo && lingo !== this.state.opt.lang) {
+						if (["@suffix", "@prefix", "@form"].indexOf(attr) > -1) {
+							continue;
 						}
 					}
+					val = subchildren[attr];
+					this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 				}
 			}
 		}
-	}
+	
 	if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {
 
 		//
