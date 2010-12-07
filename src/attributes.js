@@ -325,6 +325,10 @@ CSL.Attributes["@variable"] = function (state, arg) {
 	}
 };
 
+// Used as a flag during dates processing
+CSL.Attributes["@lingo"] = function (state, arg) {
+}
+
 CSL.Attributes["@language"] = function (state, arg) {
 	var func, ret, len, pos, variable, myitem, x, langspec, lang;
 
