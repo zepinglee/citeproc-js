@@ -413,7 +413,7 @@ CSL.Engine.prototype.getDate = function (form) {
 	if (this.locale[this.opt.lang].dates[form]) {
 		return this.locale[this.opt.lang].dates[form];
 	} else {
-		return CSL.locale[this.opt.lang].dates[form];
+		return false;
 	}
 };
 
