@@ -1,7 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
-Changes in version 1.0.83
+Changes in version 1.0.85
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Pass full suite of double space suppression tests.
+
+- Language switching within a style works, for both
+  localized dates and terms.  (This functionality is
+  not yet recognized as valid CSL.)
+
+
+=========================
+Changes in version 1.0.84
 =========================
 
 ------------------------------------
@@ -9,6 +24,8 @@ Mishandled or unimplemented features
 ------------------------------------
 
 - Preserve explicit double spaces in HTML output.
+
+(Released as 1.0.84-1)
 
 
 =========================

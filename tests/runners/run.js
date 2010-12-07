@@ -2,6 +2,7 @@ dojo.require("doh.runner");
 dojo.require("std.substitute");
 dojo.require("std.magic");
 dojo.require("std.number");
+dojo.require("std.language");
 dojo.require("std.eclac");
 dojo.require("std.locators");
 dojo.require("std.spaces");

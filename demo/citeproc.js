@@ -688,16 +688,40 @@ CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
 		return;
 	}
 	if ("object" === typeof myblob) {
-		if (CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1 && 
-			CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1) {
+		if ((CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1 && 
+			 CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1)) {
 			myblob.strings.prefix = myblob.strings.prefix.slice(1);
 		} else if ("object" === typeof myblob.blobs) {
 			CSL.Output.Queue.purgeNearsidePrefixChars(myblob.blobs[0], chr);
 		}
 	}
 }
+CSL.Output.Queue.purgeNearsidePrefixSpaces = function(myblob, chr) {
+	if ("object" === typeof myblob) {
+		if (" " === chr && " " === myblob.strings.prefix.slice(0, 1)) {
+			myblob.strings.prefix = myblob.strings.prefix.slice(1);
+		} else if ("object" === typeof myblob.blobs) {
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(myblob.blobs[0], chr);
+		}
+	}
+}
+CSL.Output.Queue.purgeNearsideSuffixSpaces = function(myblob, chr) {
+	if ("object" === typeof myblob) {
+		if (" " === chr && " " === myblob.strings.suffix.slice(-1)) {
+			myblob.strings.suffix = myblob.strings.suffix.slice(0, -1);
+		} else if ("object" === typeof myblob.blobs) {
+			if (!chr) {
+				chr = myblob.strings.suffix.slice(-1);
+			}
+			chr = CSL.Output.Queue.purgeNearsideSuffixSpaces(myblob.blobs[myblob.blobs.length - 1], chr);
+		} else {
+			chr = myblob.strings.suffix.slice(-1);
+		}
+	}
+	return chr;
+}
 CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
-	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr;
+	var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr, firstchr, chr, exposed_suffixes, exposed;
 	var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
 	var TERM_OR_SPACE = CSL.TERMINAL_PUNCTUATION;
 	var SWAPS = CSL.SWAPPING_PUNCTUATION;
@@ -721,15 +745,52 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			}
 		}
 		lastchr = myblobs.slice(-1);
+		firstchr = myblobs.slice(0,1);
 	} else {
 		if (dpref) {
 			for (var j = 0, jlen = myblobs.length - 1; j < jlen; j += 1) {
 				var t = myblobs[j].strings.suffix.slice(-1);
 				if (TERMS.indexOf(t) === -1 ||
 				    TERMS.indexOf(dpref) === -1) {
-						myblobs[j].strings.suffix += dpref;
+					if (dpref !== " " || dpref !== myblobs[j].strings.suffix.slice(-1)) {
+						myblobs[j].strings.suffix += dpref;						
+					}
 				}
 			}
+		}
+		if (suffix === " ") {
+			CSL.Output.Queue.purgeNearsideSuffixSpaces(myblobs[myblobs.length - 1], " ");
+		}
+		var lst = [];
+		for (var i = 0, ilen = myblobs.length - 1; i < ilen; i += 1) {
+			var doblob = myblobs[i];
+			var following_prefix = myblobs[i + 1].strings.prefix;
+			var chr = false;
+			var ret = CSL.Output.Queue.purgeNearsideSuffixSpaces(doblob, chr);
+			if (!dsuff) {
+				lst.push(ret);
+			} else {
+				lst.push(false);
+			}
+		}
+		chr = false;
+		for (var i = 1, ilen = myblobs.length; i < ilen; i += 1) {
+			var doblob = myblobs[i];
+			var chr = "";
+			var preceding_suffix = myblobs[i - 1].strings.suffix;
+			if (dsuff === " ") {
+				chr = dsuff;
+			} else if (preceding_suffix) {
+				chr = preceding_suffix.slice(-1);
+			} else if (lst[i - 1]) {
+				chr = lst[i - 1];
+			}
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(doblob, chr);
+		}
+		if (dsufff) {
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
+		} else if (prefix === " ") {
+			CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
 		}
 		for (var i = 0, ilen = myblobs.length; i < ilen; i += 1) {
 			var doblob = myblobs[i];
@@ -737,7 +798,6 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			if (i === 0) {
 				if (prefix) {
 					if (doblob.strings.prefix.slice(0, 1) === " ") {
-						doblob.strings.prefix = doblob.strings.prefix.slice(1);
 					}
 				}
 			}
@@ -745,7 +805,6 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 				if (doblob.strings.prefix) {
 					if (i === 0) {
 						if (doblob.strings.prefix.slice(0, 1) === " ") {
-							doblob.strings.prefix = doblob.strings.prefix.slice(1);
 						}
 					}
 				}
@@ -753,7 +812,6 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			if (dsuff) {
 				if (i > 0) {
 					if (doblob.strings.prefix.slice(0, 1) === " ") {
-						doblob.strings.prefix = doblob.strings.prefix.slice(1);
 					}
 				}
 			}
@@ -846,14 +904,14 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 					blobX = false;
 				}
 			}
-			if (SWAPS.indexOf(suffixX) === -1) {
+			if (SWAPS.concat([" "]).indexOf(suffixX) === -1) {
 				suffixX = "";
 				blobX = false;
 			}
 			if (doblob.strings.delimiter && 
 				doblob.blobs.length > 1) {
 				dprefX = doblob.strings.delimiter.slice(0, 1);
-				if (SWAPS.indexOf(dprefX) > -1) {
+				if (SWAPS.concat([" "]).indexOf(dprefX) > -1) {
 					doblob.strings.delimiter = doblob.strings.delimiter.slice(1);
 				} else {
 					dprefX = "";
@@ -909,116 +967,6 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 	}
 	state.tmp.last_chr = lastchr;
 	return lastchr;
-};
-CSL.localeResolve = function (langstr) {
-	var ret, langlst;
-	ret = {};
-	langlst = langstr.split(/[\-_]/);
-	ret.base = CSL.LANG_BASES[langlst[0]];
-	if ("undefined" === typeof ret.base) {
-		CSL.error("unknown locale "+langstr+", setting to en-US");
-		return {base:"en-US", best:"en-US", bare:"en"};
-	}
-	if (langlst.length === 1 || langlst[1] === "x") {
-		ret.best = ret.base.replace("_", "-");
-	} else {
-		ret.best = langlst.slice(0, 2).join("-");
-	}
-	ret.base = ret.base.replace("_", "-");
-	ret.bare = langlst[0];
-	return ret;
-};
-CSL.localeSet = function (sys, myxml, lang_in, lang_out) {
-	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target;
-	lang_in = lang_in.replace("_", "-");
-	lang_out = lang_out.replace("_", "-");
-	if (!this.locale[lang_out]) {
-		this.locale[lang_out] = {};
-		this.locale[lang_out].terms = {};
-		this.locale[lang_out].opts = {};
-		this.locale[lang_out].dates = {};
-	}
-	locale = sys.xml.makeXml();
-	if (sys.xml.nodeNameIs(myxml, 'locale')) {
-		locale = myxml;
-	} else {
-		nodes = sys.xml.getNodesByName(myxml, "locale");
-		for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-			blob = nodes[pos];
-			if (sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
-				locale = blob;
-				break;
-			}
-		}
-	}
-	nodes = sys.xml.getNodesByName(locale, 'term');
-	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-		term = nodes[pos];
-		termname = sys.xml.getAttributeValue(term, 'name');
-		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
-			this.locale[lang_out].terms[termname] = {};
-		}
-		form = "long";
-		genderform = false;
-		if (sys.xml.getAttributeValue(term, 'form')) {
-			form = sys.xml.getAttributeValue(term, 'form');
-		}
-		if (sys.xml.getAttributeValue(term, 'gender-form')) {
-			genderform = sys.xml.getAttributeValue(term, 'gender-form');
-		}
-		if (sys.xml.getAttributeValue(term, 'gender')) {
-			this.opt["noun-genders"][termname] = sys.xml.getAttributeValue(term, 'gender');
-		}
-		if (genderform) {
-			this.locale[lang_out].terms[termname][genderform] = {};
-			this.locale[lang_out].terms[termname][genderform][form] = [];
-			target = this.locale[lang_out].terms[termname][genderform];
-		} else {
-			this.locale[lang_out].terms[termname][form] = [];
-			target = this.locale[lang_out].terms[termname];
-		}
-		if (sys.xml.numberofnodes(sys.xml.getNodesByName(term, 'multiple'))) {
-			target[form][0] = sys.xml.getNodeValue(term, 'single');
-			target[form][1] = sys.xml.getNodeValue(term, 'multiple');
-		} else {
-			target[form] = sys.xml.getNodeValue(term);
-		}
-	}
-	for (termname in this.locale[lang_out].terms) {
-		for (var i = 0, ilen = 2; i < ilen; i += 1) {
-			genderform = CSL.GENDERS[i];
-			if (this.locale[lang_out].terms[termname][genderform]) {
-				for (form in this.locale[lang_out].terms[termname]) {
-					if (!this.locale[lang_out].terms[termname][genderform][form]) {
-						this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
-					}
-				}
-			}
-		}
-	}
-	nodes = sys.xml.getNodesByName(locale, 'style-options');
-	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-		if (true) {
-			styleopts = nodes[pos];
-			attributes = sys.xml.attributes(styleopts);
-			for (attrname in attributes) {
-				if (attributes.hasOwnProperty(attrname)) {
-					if (attributes[attrname] === "true") {
-						this.locale[lang_out].opts[attrname.slice(1)] = true;
-					} else {
-						this.locale[lang_out].opts[attrname.slice(1)] = false;
-					}
-				}
-			}
-		}
-	}
-	nodes = sys.xml.getNodesByName(locale, 'date');
-	for (pos = 0, len = sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-		if (true) {
-			date = nodes[pos];
-			this.locale[lang_out].dates[sys.xml.getAttributeValue(date, "form")] = date;
-		}
-	}
 };
 CSL.substituteOne = function (template) {
 	return function (state, list) {
@@ -1234,8 +1182,11 @@ CSL.XmlToToken = function (state, tokentype) {
 	attributes = state.sys.xml.attributes(this);
 	decorations = CSL.setDecorations.call(this, state, attributes);
 	token = new CSL.Token(name, tokentype);
-	if (tokentype !== CSL.END) {
+	if (tokentype !== CSL.END || name === "if" || name === "else-if") {
 		for (key in attributes) {
+			if (tokentype === CSL.END && key !== "@language") {
+				continue;
+			}
 			if (attributes.hasOwnProperty(key)) {
 				try {
 					CSL.Attributes[key].call(token, state, "" + attributes[key]);
@@ -1509,7 +1460,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.84";
+	this.processor_version = "1.0.85";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1573,22 +1524,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.opt.lang = langspec.best;
 	this.opt["default-locale"][0] = langspec.best;
 	this.locale = {};
-	localexml = sys.xml.makeXml(sys.retrieveLocale("en-US"));
-	CSL.localeSet.call(this, sys, localexml, "en-US", langspec.best);
-	if (langspec.best !== "en-US") {
-		if (langspec.base !== langspec.best) {
-			localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.base));
-			CSL.localeSet.call(this, sys, localexml, langspec.base, langspec.best);
-		}
-		localexml = sys.xml.makeXml(sys.retrieveLocale(langspec.best));
-		CSL.localeSet.call(this, sys, localexml, langspec.best, langspec.best);		
-	}
-	CSL.localeSet.call(this, sys, this.cslXml, "", langspec.best);
-	CSL.localeSet.call(this, sys, this.cslXml, langspec.bare, langspec.best);
-	if (langspec.base !== langspec.best) {
-		CSL.localeSet.call(this, sys, this.cslXml, langspec.base, langspec.best);
-	}
-	CSL.localeSet.call(this, sys, this.cslXml, langspec.best, langspec.best);
+	this.localeConfigure(langspec);
 	this.buildTokenLists("citation");
 	this.buildTokenLists("bibliography");
 	this.configureTokenLists();
@@ -1749,7 +1685,7 @@ CSL.Engine.prototype.getDate = function (form) {
 	if (this.locale[this.opt.lang].dates[form]) {
 		return this.locale[this.opt.lang].dates[form];
 	} else {
-		return CSL.locale[this.opt.lang].dates[form];
+		return false;
 	}
 };
 CSL.Engine.prototype.getOpt = function (arg) {
@@ -3043,6 +2979,138 @@ CSL.Node.choose = {
 		}
 	}
 };
+CSL.localeResolve = function (langstr) {
+	var ret, langlst;
+	ret = {};
+	langlst = langstr.split(/[\-_]/);
+	ret.base = CSL.LANG_BASES[langlst[0]];
+	if ("undefined" === typeof ret.base) {
+		CSL.error("unknown locale "+langstr+", setting to en-US");
+		return {base:"en-US", best:"en-US", bare:"en"};
+	}
+	if (langlst.length === 1 || langlst[1] === "x") {
+		ret.best = ret.base.replace("_", "-");
+	} else {
+		ret.best = langlst.slice(0, 2).join("-");
+	}
+	ret.base = ret.base.replace("_", "-");
+	ret.bare = langlst[0];
+	return ret;
+};
+CSL.localeParse = function (arg) {
+	return arg;
+}
+CSL.Engine.prototype.localeConfigure = function (langspec) {
+	var localexml;
+	localexml = this.sys.xml.makeXml(this.sys.retrieveLocale("en-US"));
+	this.localeSet(localexml, "en-US", langspec.best);
+	if (langspec.best !== "en-US") {
+		if (langspec.base !== langspec.best) {
+			localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.base));
+			this.localeSet(localexml, langspec.base, langspec.best);
+		}
+		localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.best));
+		this.localeSet(localexml, langspec.best, langspec.best);		
+	}
+	this.localeSet(this.cslXml, "", langspec.best);
+	this.localeSet(this.cslXml, langspec.bare, langspec.best);
+	if (langspec.base !== langspec.best) {
+		this.localeSet(this.cslXml, langspec.base, langspec.best);
+	}
+	this.localeSet(this.cslXml, langspec.best, langspec.best);
+}
+CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target;
+	lang_in = lang_in.replace("_", "-");
+	lang_out = lang_out.replace("_", "-");
+	if (!this.locale[lang_out]) {
+		this.locale[lang_out] = {};
+		this.locale[lang_out].terms = {};
+		this.locale[lang_out].opts = {};
+		this.locale[lang_out].dates = {};
+	}
+	locale = this.sys.xml.makeXml();
+	if (this.sys.xml.nodeNameIs(myxml, 'locale')) {
+		locale = myxml;
+	} else {
+		nodes = this.sys.xml.getNodesByName(myxml, "locale");
+		for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+			blob = nodes[pos];
+			if (this.sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
+				locale = blob;
+				break;
+			}
+		}
+	}
+	nodes = this.sys.xml.getNodesByName(locale, 'term');
+	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+		term = nodes[pos];
+		termname = this.sys.xml.getAttributeValue(term, 'name');
+		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
+			this.locale[lang_out].terms[termname] = {};
+		}
+		form = "long";
+		genderform = false;
+		if (this.sys.xml.getAttributeValue(term, 'form')) {
+			form = this.sys.xml.getAttributeValue(term, 'form');
+		}
+		if (this.sys.xml.getAttributeValue(term, 'gender-form')) {
+			genderform = this.sys.xml.getAttributeValue(term, 'gender-form');
+		}
+		if (this.sys.xml.getAttributeValue(term, 'gender')) {
+			this.opt["noun-genders"][termname] = this.sys.xml.getAttributeValue(term, 'gender');
+		}
+		if (genderform) {
+			this.locale[lang_out].terms[termname][genderform] = {};
+			this.locale[lang_out].terms[termname][genderform][form] = [];
+			target = this.locale[lang_out].terms[termname][genderform];
+		} else {
+			this.locale[lang_out].terms[termname][form] = [];
+			target = this.locale[lang_out].terms[termname];
+		}
+		if (this.sys.xml.numberofnodes(this.sys.xml.getNodesByName(term, 'multiple'))) {
+			target[form][0] = this.sys.xml.getNodeValue(term, 'single');
+			target[form][1] = this.sys.xml.getNodeValue(term, 'multiple');
+		} else {
+			target[form] = this.sys.xml.getNodeValue(term);
+		}
+	}
+	for (termname in this.locale[lang_out].terms) {
+		for (var i = 0, ilen = 2; i < ilen; i += 1) {
+			genderform = CSL.GENDERS[i];
+			if (this.locale[lang_out].terms[termname][genderform]) {
+				for (form in this.locale[lang_out].terms[termname]) {
+					if (!this.locale[lang_out].terms[termname][genderform][form]) {
+						this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
+					}
+				}
+			}
+		}
+	}
+	nodes = this.sys.xml.getNodesByName(locale, 'style-options');
+	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+		if (true) {
+			styleopts = nodes[pos];
+			attributes = this.sys.xml.attributes(styleopts);
+			for (attrname in attributes) {
+				if (attributes.hasOwnProperty(attrname)) {
+					if (attributes[attrname] === "true") {
+						this.locale[lang_out].opts[attrname.slice(1)] = true;
+					} else {
+						this.locale[lang_out].opts[attrname.slice(1)] = false;
+					}
+				}
+			}
+		}
+	}
+	nodes = this.sys.xml.getNodesByName(locale, 'date');
+	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+		if (true) {
+			date = nodes[pos];
+			this.locale[lang_out].dates[this.sys.xml.getAttributeValue(date, "form")] = date;
+		}
+	}
+};
 CSL.Node.citation = {
 	build: function (state, target) {
 		if (this.tokentype === CSL.START) {
@@ -3336,16 +3404,25 @@ CSL.Node["else-if"] = {
 	build: function (state, target) {
 		var func, tryposition;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+			if (this.locale) {
+				state.opt.lang = this.locale;
+			}
 		    if (! this.evaluator) {
-			this.evaluator = state.fun.match.any;
+				this.evaluator = state.fun.match.any;
 		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
+				if (this.locale_default) {
+					state.opt.lang = this.locale_default;
+				}
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
 			this.execs.push(func);
+			if (this.locale_default) {
+				state.opt.lang = this.locale_default;
+			}
 		}
 		target.push(this);
 	},
@@ -3449,16 +3526,25 @@ CSL.Node["if"] = {
 	build: function (state, target) {
 		var func;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+			if (this.locale) {
+				state.opt.lang = this.locale;
+			}
 		    if (!this.evaluator) {
 				this.evaluator = state.fun.match.any;
 		    }
 		}
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
+				if (this.locale_default) {
+					state.opt.lang = this.locale_default;
+				}
 				var next = this[state.tmp.jump.value()];
 				return next;
 			};
 			this.execs.push(func);
+			if (this.locale_default) {
+				state.opt.lang = this.locale_default;
+			}
 		}
 		target.push(this);
 	},
@@ -5125,6 +5211,32 @@ CSL.Attributes["@variable"] = function (state, arg) {
 		this.tests.push(func);
 	}
 };
+CSL.Attributes["@lingo"] = function (state, arg) {
+}
+CSL.Attributes["@language"] = function (state, arg) {
+	var func, ret, len, pos, variable, myitem, x, langspec, lang;
+	lang = CSL.localeParse(arg);
+	langspec = CSL.localeResolve(lang);
+	state.localeConfigure(langspec);
+	this.locale_default = state.opt["default-locale"][0];
+	this.locale = langspec.best;
+	func = function (state, Item, item) {
+		var key;
+		ret = [];
+		x = false;
+		if (Item.language) {
+			lang = CSL.localeParse(Item.language);
+			langspec = CSL.localeResolve(lang);
+			if (langspec.best === this.locale) {
+				state.opt.lang = this.locale;
+				x = true;
+				ret.push(x);
+			}
+		}
+		return ret;
+	};
+	this.tests.push(func);
+};
 CSL.Attributes["@suffix"] = function (state, arg) {
 	this.strings.suffix = arg;
 };
@@ -6283,16 +6395,21 @@ CSL.NumericBlob.prototype.checkLast = function (last) {
     return false;
 };
 CSL.Util.fixDateNode = function (parent, pos, node) {
-	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, cchildren, kkey, display;
+	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, subchildren, kkey, display;
 	form = this.sys.xml.getAttributeValue(node, "form");
-	if (!form) {
+	var lingo = this.sys.xml.getAttributeValue(node, "lingo");
+	if (!this.state.getDate(form)) {
 		return parent;
 	}
+	var dateparts = this.sys.xml.getAttributeValue(node, "date-parts");
 	variable = this.sys.xml.getAttributeValue(node, "variable");
 	prefix = this.sys.xml.getAttributeValue(node, "prefix");
 	suffix = this.sys.xml.getAttributeValue(node, "suffix");
 	display = this.sys.xml.getAttributeValue(node, "display");
 	datexml = this.sys.xml.nodeCopy(this.state.getDate(form));
+	this.sys.xml.setAttribute(datexml, 'lingo', this.state.opt.lang);
+	this.sys.xml.setAttribute(datexml, 'form', form);
+	this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
 	this.sys.xml.setAttribute(datexml, 'variable', variable);
 	if (prefix) {
 		this.sys.xml.setAttribute(datexml, "prefix", prefix);
@@ -6305,24 +6422,26 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	}
 	children = this.sys.xml.children(node);
 	for (key in children) {
-		if (true) {
-			subnode = children[key];
-			if ("date-part" === this.sys.xml.nodename(subnode)) {
-				partname = this.sys.xml.getAttributeValue(subnode, "name");
-				cchildren = this.sys.xml.attributes(subnode);
-				for (attr in cchildren) {
-					if (cchildren.hasOwnProperty(attr)) {
-						if (attr === "@name") {
+		subnode = children[key];
+		if ("date-part" === this.sys.xml.nodename(subnode)) {
+			partname = this.sys.xml.getAttributeValue(subnode, "name");
+			subchildren = this.sys.xml.attributes(subnode);
+			for (attr in subchildren) {
+				if (subchildren.hasOwnProperty(attr)) {
+					if ("@name" === attr) {
+						continue;
+					}
+					if (lingo && lingo !== this.state.opt.lang) {
+						if (["@suffix", "@prefix", "@form"].indexOf(attr) > -1) {
 							continue;
 						}
-						val = cchildren[attr];
-						this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 					}
+					val = subchildren[attr];
+					this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 				}
 			}
 		}
 	}
-	this.sys.xml.deleteAttribute(datexml, 'form');
 	if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {
 		this.sys.xml.deleteNodeByNameAttribute(datexml, 'month');
 		this.sys.xml.deleteNodeByNameAttribute(datexml, 'day');
