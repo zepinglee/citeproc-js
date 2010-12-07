@@ -79,6 +79,10 @@ CSL.Node.names = {
 							if ("string" === typeof Item[variable]) {
 								rawvar = [{literal: Item[variable]}];
 							}
+							var rawlen = rawvar.length;
+							if (state.opt.max_number_of_names && rawlen > 50 && rawlen > (state.opt.max_number_of_names + 2)) {
+								rawvar = rawvar.slice(0, state.opt.max_number_of_names + 2);
+							}
 							rawlist = state.getNameSubFields(rawvar);
 							names = [];
 							//

@@ -472,7 +472,11 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 
 
 CSL.Attributes["@names-min"] = function (state, arg) {
-	this.strings["et-al-min"] = parseInt(arg,  10);
+	var val = parseInt(arg, 10);
+	if (state.opt.max_number_of_names < val) {
+		state.opt.max_number_of_names = val;
+	}
+	this.strings["et-al-min"] = val;
 };
 
 CSL.Attributes["@names-use-first"] = function (state, arg) {
@@ -631,11 +635,15 @@ CSL.Attributes["@name-delimiter"] = function (state, arg) {
 };
 
 CSL.Attributes["@et-al-min"] = function (state, arg) {
-	state.setOpt(this, "et-al-min", parseInt(arg, 10));
+	var val = parseInt(arg, 10);
+	if (state.opt.max_number_of_names < val) {
+		state.opt.max_number_of_names = val;
+	}
+	state.setOpt(this, "et-al-min", val);
 };
 
 CSL.Attributes["@et-al-use-first"] = function (state, arg) {
-	state.setOpt(this, "et-al-use-first", parseInt(arg, 10));
+	state.setOpt(this, "et-al-use-first", parseInt(arg));
 };
 
 CSL.Attributes["@et-al-use-last"] = function (state, arg) {
@@ -647,7 +655,11 @@ CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 };
 
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
-	state.setOpt(this, "et-al-subsequent-min", parseInt(arg, 10));
+	var val = parseInt(arg, 10);
+	if (state.opt.max_number_of_names < val) {
+		state.opt.max_number_of_names = val;
+	}
+	state.setOpt(this, "et-al-subsequent-min", val);
 };
 
 CSL.Attributes["@et-al-subsequent-use-first"] = function (state, arg) {
@@ -823,15 +835,11 @@ CSL.Attributes["@if-short"] = function (state, arg) {
 };
 
 CSL.Attributes["@substitute-use-first"] = function (state, arg) {
-	if (arg.match(/^[0-9]+$/)) {
-		this.strings["substitute-use-first"] = parseInt(arg, 10);
-	}
+	this.strings["substitute-use-first"] = parseInt(arg, 10);
 };
 
 CSL.Attributes["@use-first"] = function (state, arg) {
-	if (arg.match(/^[0-9]+$/)) {
-		this.strings["use-first"] = parseInt(arg, 10);
-	}
+	this.strings["use-first"] = parseInt(arg, 10);
 };
 
 CSL.Attributes["@use-last"] = function (state, arg) {

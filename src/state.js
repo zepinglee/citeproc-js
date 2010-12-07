@@ -81,6 +81,7 @@ CSL.Engine.Opt = function () {
 	this["parse-names"] = true;
 
 	this.citation_number_slug = false;
+	this.max_number_of_names = 0;
 };
 
 
