@@ -1784,7 +1784,7 @@ CSL.Engine.prototype.configureTokenLists = function () {
 	return this.state;
 };
 CSL.Engine.prototype.getNameSubFields = function (names) {
-	var pos, ppos, pppos, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, len, llen, lllen, i, key, str, lang;
+	var i, j, k, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, ilen, jlen, klen, key, str, lang;
 	count = -1;
 	ret = [];
 	mode = "locale-name";
@@ -1792,12 +1792,11 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 	if (this.tmp.area.slice(-5) === "_sort") {
 		mode = "locale-sort";
 	}
-	len = names.length;
-	for (pos = 0; pos < len; pos += 1) {
+	for (i = 0, ilen = names.length; i < ilen; i += 1) {
 		newname = {};
-		for (key in names[pos]) {
-			if (names[pos].hasOwnProperty(key)) {
-				newname[key] = names[pos][key];
+		for (key in names[i]) {
+			if (names[i].hasOwnProperty(key)) {
+				newname[key] = names[i][key];
 			}
 		}
 		if (newname.given && !newname.family) {
@@ -1807,9 +1806,8 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 		}
 		addme = true;
 		updateme = false;
-		llen = CSL.MINIMAL_NAME_FIELDS;
-		for (ppos = 0; ppos < len; ppos += 1) {
-			part = CSL.MINIMAL_NAME_FIELDS[ppos];
+		for (j = 0, jlen = CSL.MINIMAL_NAME_FIELDS.length; j < jlen; j += 1) {
+			part = CSL.MINIMAL_NAME_FIELDS[j];
 			p = newname[part];
 			if (p) {
 				if (newname[part].length && newname[part][0] !== ":") {
@@ -1827,9 +1825,8 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 					str = p.slice(m[1].length);
 					lang = m[1].slice(1).replace(/:\s+$/, "");
 					addme = false;
-					lllen = this.opt[mode].length;
-					for (pppos = 0; pppos < len; pppos += 1) {
-						o = this.opt[mode][pppos];
+					for (k = 0, klen = this.opt[mode].length; k < klen; k += 1) {
+						o = this.opt[mode][k];
 						if (lang === o) {
 							updateme = true;
 							newname[part] = str;

@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.86
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Improve performance when handling very large
+  sets of names.
+
+(Thanks to Nick and Carles at Mendeley for reporting,
+and for exploring the source of the fault.)
+
+
+=========================
 Changes in version 1.0.85
 =========================
 
