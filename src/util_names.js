@@ -362,18 +362,22 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 	namelist = namelist.replace(/\./g, " ").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
 	// Workaround for Internet Explorer
 	namelist = namelist.split(/(\-|\s+)/);
-	l = namelist.length;
-	for (pos = 0; pos < l; pos += 2) {
-		n = namelist[pos];
+	for (i = 0, ilen = namelist.length; i < ilen; i += 2) {
+		n = namelist[i];
+		if (!n) {
+			continue;
+		}
 		m = n.match(CSL.NAME_INITIAL_REGEXP);
+		if (!m && !n.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)) {
+			m = n.match(/(.)(.*)/);
+		}
 		if (m && m[1] === m[1].toUpperCase()) {
 			extra = "";
 			if (m[2]) {
 				s = "";
-				llst = m[2].split("");
-				llen = llst.length;
-				for (ppos = 0; ppos < llen; ppos += 1) {
-					c = llst[ppos];
+				lst = m[2].split("");
+				for (j = 0, jlen = lst.length; j < jlen; j += 1) {
+					c = lst[j];
 					if (c === c.toUpperCase()) {
 						s += c;
 					} else {
@@ -384,18 +388,26 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 					extra = s.toLocaleLowerCase();
 				}
 			}
-			namelist[pos] = m[1].toLocaleUpperCase() + extra;
-			if (pos < (namelist.length - 1)) {
-				if (namelist[(pos + 1)].indexOf("-") > -1) {
-					namelist[(pos + 1)] = terminator + namelist[(pos + 1)];
+			namelist[i] = m[1].toLocaleUpperCase() + extra;
+			if (i < (ilen - 1)) {
+				if (terminator.match("%s")) {
+					namelist[i] = terminator.replace("%s", namelist[i]);
 				} else {
-					namelist[(pos + 1)] = terminator;
+					if (namelist[i + 1].indexOf("-") > -1) {
+						namelist[i + 1] = terminator + namelist[i + 1];
+					} else {
+						namelist[i + 1] = terminator;
+					}
 				}
 			} else {
-				namelist.push(terminator);
+				if (terminator.match("%s")) {
+					namelist[i] = terminator.replace("%s", namelist[i]);
+				} else {
+					namelist.push(terminator);
+				}
 			}
 		} else if (n.match(CSL.ROMANESQUE_REGEXP)) {
-			namelist[pos] = " " + n;
+			namelist[i] = " " + n;
 		}
 	}
 	ret = CSL.Util.Names.stripRight(namelist.join(""));
