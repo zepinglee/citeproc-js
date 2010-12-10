@@ -368,7 +368,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 			continue;
 		}
 		m = n.match(CSL.NAME_INITIAL_REGEXP);
-		if (!m && !n.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)) {
+		if (!m && (!n.match(CSL.STARTSWITH_ROMANESQUE_REGEXP) && n.length > 1 && terminator.match("%s"))) {
 			m = n.match(/(.)(.*)/);
 		}
 		if (m && m[1] === m[1].toUpperCase()) {

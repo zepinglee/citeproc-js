@@ -75,7 +75,9 @@ CSL.Registry.NameReg = function (state) {
 		if (m && m[1] === m[1].toLowerCase()) {
 			skey = skey.replace(/,\!* [^,]$/, "");
 		}
-		ikey = CSL.Util.Names.initializeWith(state, skey, "");
+		// The %s terminator enables normal initialization behavior
+		// with non-Byzantine names.
+		ikey = CSL.Util.Names.initializeWith(state, skey, "%s");
 		if (state.opt["givenname-disambiguation-rule"] === "by-cite") {
 			pkey = itemid + pkey;
 		}
