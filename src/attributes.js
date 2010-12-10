@@ -343,6 +343,7 @@ CSL.Attributes["@language"] = function (state, arg) {
 
 	// Set locale tag on node
 	this.locale_default = state.opt["default-locale"][0];
+	this.locale_base = langspec.base;
 	this.locale = langspec.best;
 
 	// check for variable value
@@ -353,7 +354,11 @@ CSL.Attributes["@language"] = function (state, arg) {
 		if (Item.language) {
 			lang = CSL.localeParse(Item.language);
 			langspec = CSL.localeResolve(lang);
-			if (langspec.best === this.locale) {
+			// We match on the base language only, so variants
+			// of Chinese, say, will all match against any Chinese
+			// locale.  But we apply the more specific locale set on 
+			// the condition.
+			if (langspec.base === this.locale_base) {
 				// XXXX: aha.  This DOES need to go on a test, after all.
 				state.opt.lang = this.locale;
 				x = true;
