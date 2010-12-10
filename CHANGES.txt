@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.88
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fine tuning of language condition logic, to use only
+  the base language name for matching, while applying
+  the full locale specified in the conditional.
+
+- Refinements to the recently introduced handling of 
+  brace-enclosed leading characters as initialized 
+  form of names.
+
+- Adjustments to print statement arbitration, suggested
+  by Carles Pina and Fergus Gallagher.
+
+
+=========================
 Changes in version 1.0.87
 =========================
 

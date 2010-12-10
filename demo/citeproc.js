@@ -286,17 +286,17 @@ var CSL = {
 };
 CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
 CSL.CLOSURES = new RegExp(".*[\\]\\)]");
-if ("undefined" === typeof console) {
+if ("object" === typeof console && "function" === typeof console.log) {
+	CSL.debug = function (str) {
+        console.log("CSL: " + str);
+	};
+	CSL.error = function (str) {
+        console.log("CSL error: " + str);
+	};
+} else {
 	CSL.debug = function () {};
 	CSL.error = function (str) {
 		throw "CSL error: " + str;
-	};
-} else {
-	CSL.debug = function (str) {
-        print("CSL: " + str);
-	};
-	CSL.error = function (str) {
-        print("CSL error: " + str);
 	};
 }
 CSL.Output = {};
@@ -1460,7 +1460,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.87";
+	this.processor_version = "1.0.88";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1792,7 +1792,6 @@ CSL.Engine.prototype.getNameSubFields = function (names) {
 	if (this.tmp.area.slice(-5) === "_sort") {
 		mode = "locale-sort";
 	}
-	ilen = names.length;
 	for (i = 0, ilen = names.length; i < ilen; i += 1) {
 		newname = {};
 		for (key in names[i]) {
@@ -5222,6 +5221,7 @@ CSL.Attributes["@language"] = function (state, arg) {
 	langspec = CSL.localeResolve(lang);
 	state.localeConfigure(langspec);
 	this.locale_default = state.opt["default-locale"][0];
+	this.locale_base = langspec.base;
 	this.locale = langspec.best;
 	func = function (state, Item, item) {
 		var key;
@@ -5230,7 +5230,7 @@ CSL.Attributes["@language"] = function (state, arg) {
 		if (Item.language) {
 			lang = CSL.localeParse(Item.language);
 			langspec = CSL.localeResolve(lang);
-			if (langspec.best === this.locale) {
+			if (langspec.base === this.locale_base) {
 				state.opt.lang = this.locale;
 				x = true;
 				ret.push(x);
@@ -6728,18 +6728,22 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 	}
 	namelist = namelist.replace(/\./g, " ").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
 	namelist = namelist.split(/(\-|\s+)/);
-	l = namelist.length;
-	for (pos = 0; pos < l; pos += 2) {
-		n = namelist[pos];
+	for (i = 0, ilen = namelist.length; i < ilen; i += 2) {
+		n = namelist[i];
+		if (!n) {
+			continue;
+		}
 		m = n.match(CSL.NAME_INITIAL_REGEXP);
+		if (!m && (!n.match(CSL.STARTSWITH_ROMANESQUE_REGEXP) && n.length > 1 && terminator.match("%s"))) {
+			m = n.match(/(.)(.*)/);
+		}
 		if (m && m[1] === m[1].toUpperCase()) {
 			extra = "";
 			if (m[2]) {
 				s = "";
-				llst = m[2].split("");
-				llen = llst.length;
-				for (ppos = 0; ppos < llen; ppos += 1) {
-					c = llst[ppos];
+				lst = m[2].split("");
+				for (j = 0, jlen = lst.length; j < jlen; j += 1) {
+					c = lst[j];
 					if (c === c.toUpperCase()) {
 						s += c;
 					} else {
@@ -6750,18 +6754,26 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 					extra = s.toLocaleLowerCase();
 				}
 			}
-			namelist[pos] = m[1].toLocaleUpperCase() + extra;
-			if (pos < (namelist.length - 1)) {
-				if (namelist[(pos + 1)].indexOf("-") > -1) {
-					namelist[(pos + 1)] = terminator + namelist[(pos + 1)];
+			namelist[i] = m[1].toLocaleUpperCase() + extra;
+			if (i < (ilen - 1)) {
+				if (terminator.match("%s")) {
+					namelist[i] = terminator.replace("%s", namelist[i]);
 				} else {
-					namelist[(pos + 1)] = terminator;
+					if (namelist[i + 1].indexOf("-") > -1) {
+						namelist[i + 1] = terminator + namelist[i + 1];
+					} else {
+						namelist[i + 1] = terminator;
+					}
 				}
 			} else {
-				namelist.push(terminator);
+				if (terminator.match("%s")) {
+					namelist[i] = terminator.replace("%s", namelist[i]);
+				} else {
+					namelist.push(terminator);
+				}
 			}
 		} else if (n.match(CSL.ROMANESQUE_REGEXP)) {
-			namelist[pos] = " " + n;
+			namelist[i] = " " + n;
 		}
 	}
 	ret = CSL.Util.Names.stripRight(namelist.join(""));
@@ -8214,7 +8226,7 @@ CSL.Registry.NameReg = function (state) {
 		if (m && m[1] === m[1].toLowerCase()) {
 			skey = skey.replace(/,\!* [^,]$/, "");
 		}
-		ikey = CSL.Util.Names.initializeWith(state, skey, "");
+		ikey = CSL.Util.Names.initializeWith(state, skey, "%s");
 		if (state.opt["givenname-disambiguation-rule"] === "by-cite") {
 			pkey = itemid + pkey;
 		}
