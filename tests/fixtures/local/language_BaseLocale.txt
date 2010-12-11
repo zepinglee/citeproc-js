@@ -53,11 +53,15 @@ citation
 
 
 >>===== RESULT =====>>
-1965年6月1日 + 10月
-1 juin 1965 + octobre
-June 01, 1965 + October
-1 Juni 1965 + Oktober (Austrian)
-1 Juni 1965 + Oktober (Austrian)
+1965年6月1日 + 10月 (Japan)
+1 juin 1965 + octobre (France)
+June 01, 1965 + October (US English)
+1 Juni 1965 + Oktober (Austria)
+1 Juni 1965 + Oktober (Austria)
+1965年6月1日 + 10月 (Mainland China)
+1965年6月1日 + 10月 (Taiwan)
+1 de Junho de 1965 + Outubro (Portugal)
+1 de Junho de 1965 + Outubro (Portugal)
 <<===== RESULT =====<<
 
 
@@ -73,7 +77,47 @@ June 01, 1965 + October
   </info>
   <locale xml:lang="de-AT">
     <terms>
-      <term name="month-10">Oktober (Austrian)</term>
+      <term name="month-10">Oktober (Austria)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="de-DE">
+    <terms>
+      <term name="month-10">Oktober (Germany)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="en-US">
+    <terms>
+      <term name="month-10">October (US English)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="fr-FR">
+    <terms>
+      <term name="month-10">octobre (France)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="ja-JP">
+    <terms>
+      <term name="month-10">10月 (Japan)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="pt-BR">
+    <terms>
+      <term name="month-10">outubro (Brazil)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="pt-PT">
+    <terms>
+      <term name="month-10">Outubro (Portugal)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="zh-CN">
+    <terms>
+      <term name="month-10">10月 (Mainland China)</term>
+    </terms>
+  </locale>
+  <locale xml:lang="zh-TW">
+    <terms>
+      <term name="month-10">10月 (Taiwan)</term>
     </terms>
   </locale>
   <macro name="cite">
@@ -94,7 +138,16 @@ June 01, 1965 + October
         <else-if language="fr">
           <text macro="cite"/>
         </else-if>
-        <else-if language="de-AT">
+        <else-if language="de-AT de-DE">
+          <text macro="cite"/>
+        </else-if>
+        <else-if language="pt">
+          <text macro="cite"/>
+        </else-if>
+        <else-if language="zh-CH">
+          <text macro="cite"/>
+        </else-if>
+        <else-if language="zh-TW">
           <text macro="cite"/>
         </else-if>
         <else>
@@ -177,6 +230,62 @@ June 01, 1965 + October
             ]
         }, 
         "language": "de-AT",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-6", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965", 
+                    "6", 
+                    "1"
+                ]
+            ]
+        }, 
+        "language": "zh-CH",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-7", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965", 
+                    "6", 
+                    "1"
+                ]
+            ]
+        }, 
+        "language": "zh-TW",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-8", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965", 
+                    "6", 
+                    "1"
+                ]
+            ]
+        }, 
+        "language": "pt-BR",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-9", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965", 
+                    "6", 
+                    "1"
+                ]
+            ]
+        }, 
+        "language": "pt-PT",
         "type": "book"
     }
 ]
