@@ -8,15 +8,20 @@ Changes in version 1.0.89
 Mishandled or unimplemented features
 ------------------------------------
 
-- Allow multiple locales to be specified in a condition, and 
+- Allow multiple locales to be specified in a condition,
   restrict fallback behavior to base (single two-character) 
-  locale set as the first element in the list argument.
+  locales, and use the first locale specified in
+  language attribute as the locale to be assigned to
+  children of the condition when the test is successful.
+
+- Properly honor locale for quotes and punctuation in
+  language condition statements.
+
+- Implement dynamic locale-sensitive delimiter and affixes
+  with language condition statements.
 
 - Fix minor bug in xmle4x.js XML parser affecting some
   locale load operations.
-
-- Properly honor locale for quotes and punctuation in
-  language conditional statements.
 
 
 =========================

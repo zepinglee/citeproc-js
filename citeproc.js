@@ -91,6 +91,7 @@ var CSL = {
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 	SWAPPING_PUNCTUATION: [".", "!", "?", ":",",",";"],
 	TERMINAL_PUNCTUATION: [".", "!", "?", ":", " "],
+	SPLICE_PUNCTUATION: [".", "!", "?", ":", ";", ","],
 	NONE: 0,
 	NUMERIC: 1,
 	POSITION: 2,
@@ -2000,6 +2001,7 @@ CSL.Engine.Tmp = function () {
 	this.suffix = new CSL.Stack("", CSL.LITERAL);
 	this.delimiter = new CSL.Stack("", CSL.LITERAL);
 	this.names_cut = {};
+	this.cite_locales = [];
 };
 CSL.Engine.Fun = function () {
 	this.match = new  CSL.Util.Match();
@@ -2708,9 +2710,20 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	this.parallel.use_parallels = use_parallels;
 	return ret;
 };
-CSL.getSpliceDelimiter = function (last_collapsed) {
+CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 	if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
 		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
+	} else if (this.tmp.cite_locales[pos - 1]) {
+		var alt_layout_delimiter = false;
+		if (this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]) {
+			alt_layout_delimiter = this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]["long"];
+		}
+		if (alt_layout_delimiter) {
+			this.tmp.splice_delimiter = alt_layout_delimiter;
+			if (CSL.SPLICE_PUNCTUATION.indexOf(this.tmp.splice_delimiter.slice(-1)) > -1) {
+				this.tmp.splice_delimiter += " ";
+			}
+		}
 	}
 	return this.tmp.splice_delimiter;
 };
@@ -2724,6 +2737,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	this.tmp.last_names_used = [];
 	this.tmp.last_years_used = [];
 	this.tmp.backref_index = [];
+	this.tmp.cite_locales = [];
 	if (citationID) {
 		this.registry.citationreg.citationById[citationID].properties.backref_index = false;
 		this.registry.citationreg.citationById[citationID].properties.backref_citation = false;
@@ -2755,7 +2769,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		if (pos === (inputList.length - 1)) {
 			this.parallel.ComposeSet();
 		}
-		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed);
+		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed, pos);
 		if (item && item["author-only"]) {
 			this.tmp.suppress_decorations = true;
 		}
@@ -2784,16 +2798,18 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 	};
 	var suffix = this.citation.opt.layout_suffix;
-	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix) > -1) {
-		suffix = this.citation.opt.layout_suffix.slice(0, 1);
-	} else {
-		suffix = "";
+	var last_locale = this.tmp.cite_locales[this.tmp.cite_locales.length - 1];
+	if (last_locale 
+		&& this.locale[last_locale].terms["layout-suffix"]
+		&& this.locale[last_locale].terms["layout-suffix"]["long"]) {
+		suffix = this.locale[last_locale].terms["layout-suffix"]["long"];
+	}
+	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix.slice(0, 1)) > -1) {
+		suffix = suffix.slice(0, 1);
 	}
 	var delimiter = this.citation.opt.layout_delimiter;
-	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter) > -1) {
-		delimiter = this.citation.opt.layout_delimiter.slice(0, 1);
-	} else {
-		delimiter = "";
+	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter.slice(0, 1)) > -1) {
+		delimiter = delimiter.slice(0, 1);
 	}
 	var mystk = [
 		{
@@ -2802,7 +2818,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			blob: fakeblob
 		}
 	];
-	var use_layout_suffix = this.citation.opt.layout_suffix;
+	var use_layout_suffix = suffix;
 	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
 		CSL.Output.Queue.purgeEmptyBlobs(this.output.queue, true);
 	}
@@ -2911,6 +2927,7 @@ CSL.citeStart = function (Item) {
 	this.tmp.offset_characters = 0;
 	this.tmp.has_done_year_suffix = false;
 	CSL.Util.Names.initNameSlices(this);
+	this.tmp.last_cite_locale = false;
 };
 CSL.citeEnd = function (Item) {
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/[\-.,;:]$/)) {
@@ -2929,6 +2946,7 @@ CSL.citeEnd = function (Item) {
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters) {
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}
+	this.tmp.cite_locales.push(this.tmp.last_cite_locale);
 };
 CSL.Node = {};
 CSL.Node.bibliography = {
@@ -5251,6 +5269,7 @@ CSL.Attributes["@language"] = function (state, arg) {
 			for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
 				if (langspec.best === this.locale_list[i].best) {
 					state.opt.lang = this.locale;
+					state.tmp.last_cite_locale = this.locale;
 					state.output.openLevel("empty");
 					state.output.current.value().new_locale = this.locale;
 					res = true;
@@ -5259,6 +5278,7 @@ CSL.Attributes["@language"] = function (state, arg) {
 			}
 			if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
 				state.opt.lang = this.locale;
+				state.tmp.last_cite_locale = this.locale;
 				state.output.openLevel("empty");
 				state.output.current.value().new_locale = this.locale;
 				res = true;
