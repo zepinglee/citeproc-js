@@ -95,16 +95,16 @@ citation
 
 
 >>===== RESULT =====>>
-北野猛、「監督の目」、1999年3月11日。
+北野猛、「監督の目」、1999年2月11日。
 島田紳助、「ネタ作り」、2000年6月1日。
-北野猛、「監督の目」、1999年3月11日。島田紳助、「ネタ作り」、2000年6月1日。
-Partridge, A., "Radiant Radio", 1 Oct. 1988.
-Only Me, "My Way, the Right Way", 13 Nov. 1992.
-Partridge, A., "Radiant Radio", 1 Oct. 1988; Only Me, "My Way, the Right Way", 13 Nov. 1992.
-北野猛、「監督の目」、1999年3月11日。Partridge, A., "Radiant Radio", 1 Oct. 1988.
-Only Me, "My Way, the Right Way", 13 Nov. 1992; 島田紳助、「ネタ作り」、2000年6月1日。
-Only Me, "My Way, the Right Way", 13 Nov. 1992; 島田紳助、「ネタ作り」、2000年6月1日。Partridge, A., "Radiant Radio", 1 Oct. 1988.
-島田紳助、「ネタ作り」、2000年6月1日。Partridge, A., "Radiant Radio", 1 Oct. 1988; 北野猛、「監督の目」、1999年3月11日。
+北野猛、「監督の目」、1999年2月11日。島田紳助、「ネタ作り」、2000年6月1日。
+Partridge, A., “Radiant Radio”, Oct. 1, 1988.
+Only Me, “My Way, the Right Way”, Nov. 13, 1992.
+Partridge, A., “Radiant Radio”, Oct. 1, 1988; Only Me, “My Way, the Right Way”, Nov. 13, 1992.
+北野猛、「監督の目」、1999年2月11日。Partridge, A., “Radiant Radio”, Oct. 1, 1988.
+Only Me, “My Way, the Right Way”, Nov. 13, 1992; 島田紳助、「ネタ作り」、2000年6月1日。
+Only Me, “My Way, the Right Way”, Nov. 13, 1992; 島田紳助、「ネタ作り」、2000年6月1日。Partridge, A., “Radiant Radio”, Oct. 1, 1988.
+島田紳助、「ネタ作り」、2000年6月1日。Partridge, A., “Radiant Radio”, Oct. 1, 1988; 北野猛、「監督の目」、1999年2月11日。
 <<===== RESULT =====<<
 
 
@@ -130,7 +130,7 @@ Only Me, "My Way, the Right Way", 13 Nov. 1992; 島田紳助、「ネタ作り�
   </locale>
   <locale xml:lang="en-US">
     <terms>
-      <term name="layout-delimiter">; </term>
+      <term name="layout-delimiter">;</term>
       <term name="layout-prefix"></term>
       <term name="layout-suffix">.</term>
     </terms>
