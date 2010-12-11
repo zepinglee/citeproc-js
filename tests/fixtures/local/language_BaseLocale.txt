@@ -138,7 +138,7 @@ June 01, 1965 + October (US English)
         <else-if language="fr">
           <text macro="cite"/>
         </else-if>
-        <else-if language="de-AT de-DE">
+        <else-if language="de-AT de">
           <text macro="cite"/>
         </else-if>
         <else-if language="pt">
