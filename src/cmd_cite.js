@@ -688,9 +688,23 @@ CSL.getAmbiguousCite = function (Item, disambig) {
  * completion of the run.</p>
  */
 
-CSL.getSpliceDelimiter = function (last_collapsed) {
+CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 	if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
 		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
+	} else if (this.tmp.cite_locales[pos - 1]) {
+		//
+		// Must have a value to take effect.  Use zero width space to force empty delimiter.
+		var alt_layout_delimiter = false;
+		if (this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]) {
+			alt_layout_delimiter = this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]["long"];
+		}
+		if (alt_layout_delimiter) {
+			this.tmp.splice_delimiter = alt_layout_delimiter;
+			// This is just horrible
+			if (CSL.SPLICE_PUNCTUATION.indexOf(this.tmp.splice_delimiter.slice(-1)) > -1) {
+				this.tmp.splice_delimiter += " ";
+			}
+		}
 	}
 	return this.tmp.splice_delimiter;
 };
@@ -709,6 +723,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	this.tmp.last_names_used = [];
 	this.tmp.last_years_used = [];
 	this.tmp.backref_index = [];
+	this.tmp.cite_locales = [];
 	if (citationID) {
 		this.registry.citationreg.citationById[citationID].properties.backref_index = false;
 		this.registry.citationreg.citationById[citationID].properties.backref_citation = false;
@@ -744,7 +759,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			this.parallel.ComposeSet();
 		}
 
-		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed);
+		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed, pos);
 		if (item && item["author-only"]) {
 			this.tmp.suppress_decorations = true;
 		}
@@ -787,16 +802,20 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 	};
 	var suffix = this.citation.opt.layout_suffix;
-	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix) > -1) {
-		suffix = this.citation.opt.layout_suffix.slice(0, 1);
-	} else {
-		suffix = "";
+	var last_locale = this.tmp.cite_locales[this.tmp.cite_locales.length - 1];
+	//
+	// Must have a value to take effect.  Use zero width space to force empty suffix.
+	if (last_locale 
+		&& this.locale[last_locale].terms["layout-suffix"]
+		&& this.locale[last_locale].terms["layout-suffix"]["long"]) {
+		suffix = this.locale[last_locale].terms["layout-suffix"]["long"];
+	}
+	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix.slice(0, 1)) > -1) {
+		suffix = suffix.slice(0, 1);
 	}
 	var delimiter = this.citation.opt.layout_delimiter;
-	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter) > -1) {
-		delimiter = this.citation.opt.layout_delimiter.slice(0, 1);
-	} else {
-		delimiter = "";
+	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter.slice(0, 1)) > -1) {
+		delimiter = delimiter.slice(0, 1);
 	}
 	var mystk = [
 		{
@@ -806,7 +825,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 	];
 	//print("=== FROM CITE ===");
-	var use_layout_suffix = this.citation.opt.layout_suffix;
+	var use_layout_suffix = suffix;
 	
 	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
 		CSL.Output.Queue.purgeEmptyBlobs(this.output.queue, true);
@@ -946,6 +965,7 @@ CSL.citeStart = function (Item) {
 	this.tmp.offset_characters = 0;
 	this.tmp.has_done_year_suffix = false;
 	CSL.Util.Names.initNameSlices(this);
+	this.tmp.last_cite_locale = false;
 };
 
 CSL.citeEnd = function (Item) {
@@ -973,4 +993,5 @@ CSL.citeEnd = function (Item) {
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters) {
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}
+	this.tmp.cite_locales.push(this.tmp.last_cite_locale);
 };

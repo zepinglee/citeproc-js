@@ -377,6 +377,7 @@ CSL.Attributes["@language"] = function (state, arg) {
 			for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
 				if (langspec.best === this.locale_list[i].best) {
 					state.opt.lang = this.locale;
+					state.tmp.last_cite_locale = this.locale;
 					// Set empty group open tag with locale set marker
 					state.output.openLevel("empty");
 					state.output.current.value().new_locale = this.locale;
@@ -386,6 +387,7 @@ CSL.Attributes["@language"] = function (state, arg) {
 			}
 			if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
 				state.opt.lang = this.locale;
+				state.tmp.last_cite_locale = this.locale;
 				// Set empty group open tag with locale set marker
 				state.output.openLevel("empty");
 				state.output.current.value().new_locale = this.locale;
