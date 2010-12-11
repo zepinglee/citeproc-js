@@ -182,7 +182,7 @@ CSL_E4X.prototype.getNodesByName = function (myxml,name,nameattrval) {
 CSL_E4X.prototype.nodeNameIs = function (myxml,name) {
 	var xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-	if (myxml.localName().toString() == name){
+	if (myxml.localName() && myxml.localName().toString() == name){
 		return true;
 	}
 	return false;
