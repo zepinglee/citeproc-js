@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.89
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Allow multiple locales to be specified in a condition, and 
+  restrict fallback behavior to base (single two-character) 
+  locale set as the first element in the list argument.
+
+- Fix minor bug in xmle4x.js XML parser affecting some
+  locale load operations.
+
+- Properly honor locale for quotes and punctuation in
+  language conditional statements.
+
+
+=========================
 Changes in version 1.0.88
 =========================
 

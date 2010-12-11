@@ -491,6 +491,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	} else {
 		blob_delimiter = blob.strings.delimiter;
 	}
+	if (blob && blob.new_locale) {
+		state.opt.lang = blob.new_locale;
+	}
 	for (pos = 0, len = blobs.length; pos < len; pos += 1) {
 		blobjr = blobs[pos];
 		if ("string" === typeof blobjr.blobs) {
@@ -584,6 +587,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		}
 	} else if ("boolean" === typeof blob) {
 		ret = state.output.renderBlobs(ret);
+	}
+	if (blob && blob.new_locale) {
+		state.opt.lang = blob.old_locale;
 	}
 	if (blob) {
 		return ret;
@@ -1460,7 +1466,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.88";
+	this.processor_version = "1.0.89";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3412,6 +3418,8 @@ CSL.Node["else-if"] = {
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
 				if (this.locale_default) {
+					state.output.current.value().old_locale = this.locale_default;
+					state.output.closeLevel("empty");
 					state.opt.lang = this.locale_default;
 				}
 				var next = this[state.tmp.jump.value()];
@@ -3534,6 +3542,8 @@ CSL.Node["if"] = {
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item) {
 				if (this.locale_default) {
+					state.output.current.value().old_locale = this.locale_default;
+					state.output.closeLevel("empty");
 					state.opt.lang = this.locale_default;
 				}
 				var next = this[state.tmp.jump.value()];
@@ -5216,26 +5226,45 @@ CSL.Attributes["@variable"] = function (state, arg) {
 CSL.Attributes["@lingo"] = function (state, arg) {
 }
 CSL.Attributes["@language"] = function (state, arg) {
-	var func, ret, len, pos, variable, myitem, x, langspec, lang;
-	lang = CSL.localeParse(arg);
-	langspec = CSL.localeResolve(lang);
-	state.localeConfigure(langspec);
+	var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
+	lst = arg.split(/\s+/);
+	this.locale_bases = [];
+	for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+		lang = CSL.localeParse(lst[i]);
+		langspec = CSL.localeResolve(lang);
+		if (lst[i].length === 2) {
+			this.locale_bases.push(langspec.base);
+		}
+		state.localeConfigure(langspec);
+		lst[i] = langspec;
+	}
 	this.locale_default = state.opt["default-locale"][0];
-	this.locale_base = langspec.base;
-	this.locale = langspec.best;
+	this.locale = lst[0].best;
+	this.locale_list = lst.slice();
 	func = function (state, Item, item) {
-		var key;
+		var key, res;
 		ret = [];
-		x = false;
 		if (Item.language) {
 			lang = CSL.localeParse(Item.language);
 			langspec = CSL.localeResolve(lang);
-			if (langspec.base === this.locale_base) {
+			res = false;
+			for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
+				if (langspec.best === this.locale_list[i].best) {
+					state.opt.lang = this.locale;
+					state.output.openLevel("empty");
+					state.output.current.value().new_locale = this.locale;
+					res = true;
+					break;
+				}
+			}
+			if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
 				state.opt.lang = this.locale;
-				x = true;
-				ret.push(x);
+				state.output.openLevel("empty");
+				state.output.current.value().new_locale = this.locale;
+				res = true;
 			}
 		}
+		ret.push(res);
 		return ret;
 	};
 	this.tests.push(func);
