@@ -63,6 +63,9 @@ CSL.Node["if"] = {
 			// closingjump
 			func = function (state, Item) {
 				if (this.locale_default) {
+					// Open output tag with locale marker
+					state.output.current.value().old_locale = this.locale_default;
+					state.output.closeLevel("empty");
 					state.opt.lang = this.locale_default;
 				}
 				var next = this[state.tmp.jump.value()];

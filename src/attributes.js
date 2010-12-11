@@ -336,16 +336,16 @@ CSL.Attributes["@language"] = function (state, arg) {
 	lst = arg.split(/\s+/);
 
 	// Expand each list element
-	this.locale_base = false;
+	this.locale_bases = [];
 	for (i = 0, ilen = lst.length; i < ilen; i += 1) {
 		// Parse out language string
 		lang = CSL.localeParse(lst[i]);
 	
 		// Analyze the locale
 		langspec = CSL.localeResolve(lang);
-		if (i === 0 && lst[i].length === 2) {
+		if (lst[i].length === 2) {
 			// For fallback
-			this.locale_base = langspec.base;
+			this.locale_bases.push(langspec.base);
 		}
 		// Load the locale terms etc.
 		state.localeConfigure(langspec);
@@ -377,12 +377,18 @@ CSL.Attributes["@language"] = function (state, arg) {
 			for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
 				if (langspec.best === this.locale_list[i].best) {
 					state.opt.lang = this.locale;
+					// Set empty group open tag with locale set marker
+					state.output.openLevel("empty");
+					state.output.current.value().new_locale = this.locale;
 					res = true;
 					break;
 				}
 			}
-			if (!res && langspec.base === this.locale_base) {
+			if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
 				state.opt.lang = this.locale;
+				// Set empty group open tag with locale set marker
+				state.output.openLevel("empty");
+				state.output.current.value().new_locale = this.locale;
 				res = true;
 			}
 		}

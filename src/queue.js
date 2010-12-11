@@ -335,6 +335,10 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		blob_delimiter = blob.strings.delimiter;
 	}
 
+	if (blob && blob.new_locale) {
+		state.opt.lang = blob.new_locale;
+	}
+
 	for (pos = 0, len = blobs.length; pos < len; pos += 1) {
 		blobjr = blobs[pos];
 
@@ -452,6 +456,11 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	} else if ("boolean" === typeof blob) {
 		ret = state.output.renderBlobs(ret);
 	}
+
+	if (blob && blob.new_locale) {
+		state.opt.lang = blob.old_locale;
+	}
+
 	if (blob) {
 		return ret;
 	} else {
