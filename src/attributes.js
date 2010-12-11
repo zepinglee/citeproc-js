@@ -330,41 +330,63 @@ CSL.Attributes["@lingo"] = function (state, arg) {
 }
 
 CSL.Attributes["@language"] = function (state, arg) {
-	var func, ret, len, pos, variable, myitem, x, langspec, lang;
+	var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
 
-	// Parse out locale and base language
-	lang = CSL.localeParse(arg);
+	// Split argument
+	lst = arg.split(/\s+/);
 
-	// Analyze the locale
-	langspec = CSL.localeResolve(lang);
+	// Expand each list element
+	this.locale_base = false;
+	for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+		// Parse out language string
+		lang = CSL.localeParse(lst[i]);
+	
+		// Analyze the locale
+		langspec = CSL.localeResolve(lang);
+		if (i === 0 && lst[i].length === 2) {
+			// For fallback
+			this.locale_base = langspec.base;
+		}
+		// Load the locale terms etc.
+		state.localeConfigure(langspec);
 
-	// Load the locale terms etc.
-	state.localeConfigure(langspec);
-
+		// Replace string with locale spec object
+		lst[i] = langspec;
+	}
 	// Set locale tag on node
 	this.locale_default = state.opt["default-locale"][0];
-	this.locale_base = langspec.base;
-	this.locale = langspec.best;
+	// The locale to set on node children if match is successful
+	this.locale = lst[0].best;
+	// Locales to test
+	this.locale_list = lst.slice();
 
 	// check for variable value
 	func = function (state, Item, item) {
-		var key;
+		var key, res;
 		ret = [];
-		x = false;
 		if (Item.language) {
 			lang = CSL.localeParse(Item.language);
 			langspec = CSL.localeResolve(lang);
-			// We match on the base language only, so variants
-			// of Chinese, say, will all match against any Chinese
-			// locale.  But we apply the more specific locale set on 
-			// the condition.
-			if (langspec.base === this.locale_base) {
-				// XXXX: aha.  This DOES need to go on a test, after all.
+			// We attempt to match a specific locale from the
+			// list of parameters.  If that fails, we fall back
+			// to the base locale of the first element.  The
+			// locale applied is always the first local 
+			// in the list of parameters (or base locale, for a 
+			// single two-character language code) 
+			res = false;
+			for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
+				if (langspec.best === this.locale_list[i].best) {
+					state.opt.lang = this.locale;
+					res = true;
+					break;
+				}
+			}
+			if (!res && langspec.base === this.locale_base) {
 				state.opt.lang = this.locale;
-				x = true;
-				ret.push(x);
+				res = true;
 			}
 		}
+		ret.push(res);
 		return ret;
 	};
 	this.tests.push(func);
