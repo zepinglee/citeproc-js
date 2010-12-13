@@ -694,16 +694,9 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 	} else if (this.tmp.cite_locales[pos - 1]) {
 		//
 		// Must have a value to take effect.  Use zero width space to force empty delimiter.
-		var alt_layout_delimiter = false;
-		if (this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]) {
-			alt_layout_delimiter = this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]["long"];
-		}
-		if (alt_layout_delimiter) {
-			this.tmp.splice_delimiter = alt_layout_delimiter;
-			// This is just horrible
-			if (CSL.SPLICE_PUNCTUATION.indexOf(this.tmp.splice_delimiter.slice(-1)) > -1) {
-				this.tmp.splice_delimiter += " ";
-			}
+		var alt_affixes = this.tmp.cite_affixes[this.tmp.cite_locales[pos - 1]];
+		if (alt_affixes && alt_affixes.delimiter) {
+			this.tmp.splice_delimiter = alt_affixes.delimiter;
 		}
 	}
 	return this.tmp.splice_delimiter;
@@ -758,7 +751,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		if (pos === (inputList.length - 1)) {
 			this.parallel.ComposeSet();
 		}
-
 		params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed, pos);
 		if (item && item["author-only"]) {
 			this.tmp.suppress_decorations = true;
@@ -806,9 +798,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	//
 	// Must have a value to take effect.  Use zero width space to force empty suffix.
 	if (last_locale 
-		&& this.locale[last_locale].terms["layout-suffix"]
-		&& this.locale[last_locale].terms["layout-suffix"]["long"]) {
-		suffix = this.locale[last_locale].terms["layout-suffix"]["long"];
+		&& this.tmp.cite_affixes[last_locale]
+		&& this.tmp.cite_affixes[last_locale].suffix) {
+		suffix = this.tmp.cite_affixes[last_locale].suffix;
 	}
 	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix.slice(0, 1)) > -1) {
 		suffix = suffix.slice(0, 1);
@@ -835,6 +827,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		this.output.queue = [myblobs[pos]];
 
 		this.tmp.suppress_decorations = myparams[pos].suppress_decorations;
+		
 		this.tmp.splice_delimiter = myparams[pos].splice_delimiter;
 		//
 		// oh, one last second thought on delimiters ...
@@ -956,7 +949,8 @@ CSL.citeStart = function (Item) {
 	this.tmp.years_used = [];
 	this.tmp.names_max.clear();
 
-	this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;
+	this.tmp.splice_delimiter = this[this.tmp.area].opt.layout_delimiter;
+	//this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;
 
 	this.bibliography_sort.keys = [];
 	this.citation_sort.keys = [];

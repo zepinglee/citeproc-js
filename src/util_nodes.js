@@ -162,12 +162,12 @@ CSL.XmlToToken = function (state, tokentype) {
 	attributes = state.sys.xml.attributes(this);
 	decorations = CSL.setDecorations.call(this, state, attributes);
 	token = new CSL.Token(name, tokentype);
-	if (tokentype !== CSL.END || name === "if" || name === "else-if") {
+	if (tokentype !== CSL.END || name === "if" || name === "else-if" || name === "layout") {
 		//
 		// xml: more xml stuff
 		//
 		for (key in attributes) {
-			if (tokentype === CSL.END && key !== "@language") {
+			if (tokentype === CSL.END && key !== "@language" && key !== "@locale") {
 				continue;
 			}
 			if (attributes.hasOwnProperty(key)) {

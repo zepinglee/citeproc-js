@@ -329,75 +329,82 @@ CSL.Attributes["@variable"] = function (state, arg) {
 CSL.Attributes["@lingo"] = function (state, arg) {
 }
 
-CSL.Attributes["@language"] = function (state, arg) {
+CSL.Attributes["@locale"] = function (state, arg) {
 	var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
 
-	// Split argument
-	lst = arg.split(/\s+/);
+	if (this.name === "layout") {
+		// For layout
+		this.locale_raw = arg;
+	} else {
+		// For if and if-else
 
-	// Expand each list element
-	this.locale_bases = [];
-	for (i = 0, ilen = lst.length; i < ilen; i += 1) {
-		// Parse out language string
-		lang = CSL.localeParse(lst[i]);
-	
-		// Analyze the locale
-		langspec = CSL.localeResolve(lang);
-		if (lst[i].length === 2) {
-			// For fallback
-			this.locale_bases.push(langspec.base);
-		}
-		// Load the locale terms etc.
-		state.localeConfigure(langspec);
+		// Split argument
+		lst = arg.split(/\s+/);
 
-		// Replace string with locale spec object
-		lst[i] = langspec;
-	}
-	// Set locale tag on node
-	this.locale_default = state.opt["default-locale"][0];
-	// The locale to set on node children if match is successful
-	this.locale = lst[0].best;
-	// Locales to test
-	this.locale_list = lst.slice();
-
-	// check for variable value
-	func = function (state, Item, item) {
-		var key, res;
-		ret = [];
-		if (Item.language) {
-			lang = CSL.localeParse(Item.language);
+		// Expand each list element
+		this.locale_bases = [];
+		for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+			// Parse out language string
+			lang = CSL.localeParse(lst[i]);
+		
+			// Analyze the locale
 			langspec = CSL.localeResolve(lang);
-			// We attempt to match a specific locale from the
-			// list of parameters.  If that fails, we fall back
-			// to the base locale of the first element.  The
-			// locale applied is always the first local 
-			// in the list of parameters (or base locale, for a 
-			// single two-character language code) 
-			res = false;
-			for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
-				if (langspec.best === this.locale_list[i].best) {
+			if (lst[i].length === 2) {
+				// For fallback
+				this.locale_bases.push(langspec.base);
+			}
+			// Load the locale terms etc.
+			state.localeConfigure(langspec);
+			
+			// Replace string with locale spec object
+			lst[i] = langspec;
+		}
+		// Set locale tag on node
+		this.locale_default = state.opt["default-locale"][0];
+		// The locale to set on node children if match is successful
+		this.locale = lst[0].best;
+		// Locales to test
+		this.locale_list = lst.slice();
+		
+		// check for variable value
+		func = function (state, Item, item) {
+			var key, res;
+			ret = [];
+			if (Item.language) {
+				lang = CSL.localeParse(Item.language);
+				langspec = CSL.localeResolve(lang);
+				// We attempt to match a specific locale from the
+				// list of parameters.  If that fails, we fall back
+				// to the base locale of the first element.  The
+				// locale applied is always the first local 
+				// in the list of parameters (or base locale, for a 
+				// single two-character language code) 
+				res = false;
+				for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
+					if (langspec.best === this.locale_list[i].best) {
+						state.opt.lang = this.locale;
+						state.tmp.last_cite_locale = this.locale;
+						// Set empty group open tag with locale set marker
+						state.output.openLevel("empty");
+						state.output.current.value().new_locale = this.locale;
+						res = true;
+						break;
+					}
+				}
+				if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
 					state.opt.lang = this.locale;
 					state.tmp.last_cite_locale = this.locale;
 					// Set empty group open tag with locale set marker
 					state.output.openLevel("empty");
 					state.output.current.value().new_locale = this.locale;
 					res = true;
-					break;
 				}
 			}
-			if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
-				state.opt.lang = this.locale;
-				state.tmp.last_cite_locale = this.locale;
-				// Set empty group open tag with locale set marker
-				state.output.openLevel("empty");
-				state.output.current.value().new_locale = this.locale;
-				res = true;
-			}
-		}
-		ret.push(res);
-		return ret;
+			ret.push(res);
+			return ret;
+		};
+		this.tests.push(func);
 	};
-	this.tests.push(func);
 };
 
 /*

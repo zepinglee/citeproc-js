@@ -218,7 +218,7 @@ CSL.Engine.Tmp = function () {
 	this.names_cut = {};
 	// Used for conditional locale switching.
 	this.cite_locales = [];
-
+	this.cite_affixes = false;
 };
 
 
