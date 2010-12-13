@@ -1399,7 +1399,7 @@ CSL.dateParser = function (txt) {
 					continue;
 				}
 				if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
-					thedate.fuzzy = "" + 1;
+					thedate.circa = "" + 1;
 					continue;
 				}
 				if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate[("season" + suff)]) {
@@ -1467,7 +1467,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.90";
+	this.processor_version = "1.0.91";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
