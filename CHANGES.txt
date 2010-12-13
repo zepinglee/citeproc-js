@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.92
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix ordinal suffix assignment to values
+  11 - 19 (for English, at least).
+
+
+=========================
 Changes in version 1.0.91
 =========================
 

@@ -1467,7 +1467,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.91";
+	this.processor_version = "1.0.92";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7234,7 +7234,7 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
 	var str;
 	num = parseInt(num, 10);
 	str = num.toString();
-	if ((num / 10) % 10 === 1) {
+	if ((num / 10) % 10 === 1 || (num > 10 && num < 20)) {
 		str += this.suffixes[gender][3];
 	} else if (num % 10 === 1) {
 		str += this.suffixes[gender][0];
