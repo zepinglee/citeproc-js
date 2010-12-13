@@ -130,30 +130,29 @@ June 01, 1965 + October (US English)
     <text term="month-10" prefix=" + "/>
   </macro>
   <citation>
+    <layout locale="ja" delimiter="&#x0A;">
+      <text macro="cite"/>
+    </layout>
+    <layout locale="fr" delimiter="&#x0A;">
+      <text macro="cite"/>
+    </layout>
+    <layout locale="de-AT de" delimiter="&#x0A;">
+      <text macro="cite"/>
+    </layout>
+    <layout locale="at" delimiter="&#x0A;">
+      <text macro="cite"/>
+    </layout>
+    <layout locale="pt" delimiter="&#x0A;">
+      <text macro="cite"/>
+    </layout>
+    <layout locale="zh-CH" delimiter="&#x0A;">
+      <text macro="cite"/>
+    </layout>
+    <layout locale="zh-TW" delimiter="&#x0A;">
+      <text macro="cite"/>
+    </layout>
     <layout delimiter="&#x0A;">
-      <choose>
-        <if language="ja">
-          <text macro="cite"/>
-        </if>
-        <else-if language="fr">
-          <text macro="cite"/>
-        </else-if>
-        <else-if language="de-AT de">
-          <text macro="cite"/>
-        </else-if>
-        <else-if language="pt">
-          <text macro="cite"/>
-        </else-if>
-        <else-if language="zh-CH">
-          <text macro="cite"/>
-        </else-if>
-        <else-if language="zh-TW">
-          <text macro="cite"/>
-        </else-if>
-        <else>
-          <text macro="cite"/>
-        </else>
-      </choose>
+      <text macro="cite"/>
     </layout>
   </citation>
 </style>

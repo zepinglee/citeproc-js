@@ -121,18 +121,8 @@ Only Me, “My Way, the Right Way”, Nov. 13, 1992; 島田紳助、「ネタ作
   </info>
   <locale xml:lang="ja-JP">
     <terms>
-      <term name="layout-delimiter"></term>
-      <term name="layout-prefix"></term>
-      <term name="layout-suffix"></term>
       <term name="open-quote">「</term>
       <term name="close-quote">」</term>
-    </terms>
-  </locale>
-  <locale xml:lang="en-US">
-    <terms>
-      <term name="layout-delimiter">;</term>
-      <term name="layout-prefix"></term>
-      <term name="layout-suffix">.</term>
     </terms>
   </locale>
   <macro name="cite-japanese">
@@ -157,15 +147,11 @@ Only Me, “My Way, the Right Way”, Nov. 13, 1992; 島田紳助、「ネタ作
     </group>
   </macro>
   <citation>
+    <layout locale="en" delimiter="; " suffix=".">
+      <text macro="cite-english"/>
+    </layout>
     <layout delimiter="。" suffix="。">
-      <choose>
-        <if language="en">
-          <text macro="cite-english"/>
-        </if>
-        <else>
-          <text macro="cite-japanese"/>
-        </else>
-      </choose>
+      <text macro="cite-japanese"/>
     </layout>
   </citation>
 </style>
