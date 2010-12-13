@@ -305,7 +305,7 @@ CSL.dateParser = function (txt) {
 				// If it's a fuzzy marker, record it.
 				//
 				if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
-					thedate.fuzzy = "" + 1;
+					thedate.circa = "" + 1;
 					continue;
 				}
 				//
