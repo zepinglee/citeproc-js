@@ -1189,9 +1189,9 @@ CSL.XmlToToken = function (state, tokentype) {
 	attributes = state.sys.xml.attributes(this);
 	decorations = CSL.setDecorations.call(this, state, attributes);
 	token = new CSL.Token(name, tokentype);
-	if (tokentype !== CSL.END || name === "if" || name === "else-if") {
+	if (tokentype !== CSL.END || name === "if" || name === "else-if" || name === "layout") {
 		for (key in attributes) {
-			if (tokentype === CSL.END && key !== "@language") {
+			if (tokentype === CSL.END && key !== "@language" && key !== "@locale") {
 				continue;
 			}
 			if (attributes.hasOwnProperty(key)) {
@@ -1467,7 +1467,7 @@ CSL.dateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.89";
+	this.processor_version = "1.0.90";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2002,6 +2002,7 @@ CSL.Engine.Tmp = function () {
 	this.delimiter = new CSL.Stack("", CSL.LITERAL);
 	this.names_cut = {};
 	this.cite_locales = [];
+	this.cite_affixes = false;
 };
 CSL.Engine.Fun = function () {
 	this.match = new  CSL.Util.Match();
@@ -2714,15 +2715,9 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 	if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
 		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
 	} else if (this.tmp.cite_locales[pos - 1]) {
-		var alt_layout_delimiter = false;
-		if (this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]) {
-			alt_layout_delimiter = this.locale[this.tmp.cite_locales[pos - 1]].terms["layout-delimiter"]["long"];
-		}
-		if (alt_layout_delimiter) {
-			this.tmp.splice_delimiter = alt_layout_delimiter;
-			if (CSL.SPLICE_PUNCTUATION.indexOf(this.tmp.splice_delimiter.slice(-1)) > -1) {
-				this.tmp.splice_delimiter += " ";
-			}
+		var alt_affixes = this.tmp.cite_affixes[this.tmp.cite_locales[pos - 1]];
+		if (alt_affixes && alt_affixes.delimiter) {
+			this.tmp.splice_delimiter = alt_affixes.delimiter;
 		}
 	}
 	return this.tmp.splice_delimiter;
@@ -2800,9 +2795,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	var suffix = this.citation.opt.layout_suffix;
 	var last_locale = this.tmp.cite_locales[this.tmp.cite_locales.length - 1];
 	if (last_locale 
-		&& this.locale[last_locale].terms["layout-suffix"]
-		&& this.locale[last_locale].terms["layout-suffix"]["long"]) {
-		suffix = this.locale[last_locale].terms["layout-suffix"]["long"];
+		&& this.tmp.cite_affixes[last_locale]
+		&& this.tmp.cite_affixes[last_locale].suffix) {
+		suffix = this.tmp.cite_affixes[last_locale].suffix;
 	}
 	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix.slice(0, 1)) > -1) {
 		suffix = suffix.slice(0, 1);
@@ -2920,7 +2915,7 @@ CSL.citeStart = function (Item) {
 	this.tmp.nameset_counter = 0;
 	this.tmp.years_used = [];
 	this.tmp.names_max.clear();
-	this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;
+	this.tmp.splice_delimiter = this[this.tmp.area].opt.layout_delimiter;
 	this.bibliography_sort.keys = [];
 	this.citation_sort.keys = [];
 	this.tmp.count_offset_characters = false;
@@ -3913,10 +3908,7 @@ CSL.evaluateStringPluralism = function (str) {
 CSL.Node.layout = {
 	build: function (state, target) {
 		var func, prefix_token, suffix_token;
-		if (this.tokentype === CSL.START) {
-			state.build.layout_flag = true;
-			state[state.tmp.area].opt.topdecor = [this.decorations];
-			state[(state.tmp.area + "_sort")].opt.topdecor = [this.decorations];
+		if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
 			func = function (state, Item) {
 				state.tmp.done_vars = [];
 				state.tmp.rendered_name = false;
@@ -3934,10 +3926,6 @@ CSL.Node.layout = {
 				state.tmp.nameset_counter = 0;
 			};
 			this.execs.push(func);
-			state[state.build.area].opt.layout_prefix = this.strings.prefix;
-			state[state.build.area].opt.layout_suffix = this.strings.suffix;
-			state[state.build.area].opt.layout_delimiter = this.strings.delimiter;
-			state[state.build.area].opt.layout_decorations = this.decorations;
 			func = function (state, Item) {
 				state.output.openLevel("empty");
 				state.tmp.citeblob = state.output.queue[state.output.queue.length - 1];
@@ -3960,33 +3948,96 @@ CSL.Node.layout = {
 				target.push(prefix_token);
 			}
 		}
-		if (this.tokentype === CSL.END) {
-			state.build.layout_flag = false;
-			if (state.build.area === "citation") {
-				suffix_token = new CSL.Token("text", CSL.SINGLETON);
-				func = function (state, Item, item) {
-					var sp;
-					if (item && item.suffix) {
-						sp = "";
-						if (item.suffix.match(CSL.ROMANESQUE_REGEXP)) {
-							sp = " ";
-						}
-						state.output.append((sp + item.suffix), this);
-					}
-				};
-				suffix_token.execs.push(func);
-				target.push(suffix_token);
+		if (this.locale_raw) {
+			var my_tok = new CSL.Token("dummy", CSL.START);
+			my_tok.locale = this.locale_raw;
+			my_tok.strings.delimiter = this.strings.delimiter;
+			my_tok.strings.suffix = this.strings.suffix;
+			if (!state.tmp.cite_affixes) {
+				state.tmp.cite_affixes = {};
 			}
-			func = function (state, Item) {
-				if (state.tmp.area === "bibliography") {
-					if (state.bibliography.opt["second-field-align"]) {
-						state.output.endTag();
-					}
+		}
+		if (this.tokentype === CSL.START) {
+			state.build.layout_flag = true;
+			if (!this.locale_raw) {
+				state[state.tmp.area].opt.topdecor = [this.decorations];
+				state[(state.tmp.area + "_sort")].opt.topdecor = [this.decorations];
+				state[state.build.area].opt.layout_prefix = this.strings.prefix;
+				state[state.build.area].opt.layout_suffix = this.strings.suffix;
+				state[state.build.area].opt.layout_delimiter = this.strings.delimiter;
+				state[state.build.area].opt.layout_decorations = this.decorations;
+				if (state.tmp.cite_affixes) {
+					tok = new CSL.Token("else", CSL.START);
+					CSL.Node["else"].build.call(tok, state, target);
 				}
-				state.output.closeLevel();
-			};
-			this.execs.push(func);
-			target.push(this);
+			} // !this.locale_raw
+			if (this.locale_raw) {
+				if (!state.build.layout_locale_flag) {
+					var choose_tok = new CSL.Token("choose", CSL.START);
+					CSL.Node.choose.build.call(choose_tok, state, target);
+					my_tok.name = "if";
+					CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+					CSL.Node["if"].build.call(my_tok, state, target);
+				} else {
+					my_tok.name = "else-if";
+					CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+					CSL.Node["else-if"].build.call(my_tok, state, target);
+				}
+				state.tmp.cite_affixes[my_tok.locale] = {};
+				state.tmp.cite_affixes[my_tok.locale].delimiter = this.strings.delimiter;
+				state.tmp.cite_affixes[my_tok.locale].suffix = this.strings.suffix;
+			}
+		}
+		if (this.tokentype === CSL.END) {
+			if (this.locale_raw) {
+				if (!state.build.layout_locale_flag) {
+					my_tok.name = "if";
+					my_tok.tokentype = CSL.END;
+					CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+					CSL.Node["if"].build.call(my_tok, state, target);
+					state.build.layout_locale_flag = true;
+				} else {
+					my_tok.name = "else-if";
+					my_tok.tokentype = CSL.END;
+					CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+					CSL.Node["else-if"].build.call(my_tok, state, target);
+				}
+			}
+			if (!this.locale_raw) {
+				if (state.tmp.cite_affixes) {
+					tok = new CSL.Token("else", CSL.END);
+					CSL.Node["else"].build.call(tok, state, target);
+					tok = new CSL.Token("choose", CSL.END);
+					CSL.Node.choose.build.call(tok, state, target);
+				}
+				state.build_layout_locale_flag = true;
+				if (state.build.area === "citation") {
+					suffix_token = new CSL.Token("text", CSL.SINGLETON);
+					func = function (state, Item, item) {
+						var sp;
+						if (item && item.suffix) {
+							sp = "";
+							if (item.suffix.match(CSL.ROMANESQUE_REGEXP)) {
+								sp = " ";
+							}
+							state.output.append((sp + item.suffix), this);
+						}
+					};
+					suffix_token.execs.push(func);
+					target.push(suffix_token);
+				}
+				func = function (state, Item) {
+					if (state.tmp.area === "bibliography") {
+						if (state.bibliography.opt["second-field-align"]) {
+							state.output.endTag();
+						}
+					}
+					state.output.closeLevel();
+				};
+				this.execs.push(func);
+				target.push(this);
+				state.build.layout_flag = false;
+			} // !this.layout_raw
 		}
 	}
 };
@@ -5243,51 +5294,55 @@ CSL.Attributes["@variable"] = function (state, arg) {
 };
 CSL.Attributes["@lingo"] = function (state, arg) {
 }
-CSL.Attributes["@language"] = function (state, arg) {
+CSL.Attributes["@locale"] = function (state, arg) {
 	var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
-	lst = arg.split(/\s+/);
-	this.locale_bases = [];
-	for (i = 0, ilen = lst.length; i < ilen; i += 1) {
-		lang = CSL.localeParse(lst[i]);
-		langspec = CSL.localeResolve(lang);
-		if (lst[i].length === 2) {
-			this.locale_bases.push(langspec.base);
-		}
-		state.localeConfigure(langspec);
-		lst[i] = langspec;
-	}
-	this.locale_default = state.opt["default-locale"][0];
-	this.locale = lst[0].best;
-	this.locale_list = lst.slice();
-	func = function (state, Item, item) {
-		var key, res;
-		ret = [];
-		if (Item.language) {
-			lang = CSL.localeParse(Item.language);
+	if (this.name === "layout") {
+		this.locale_raw = arg;
+	} else {
+		lst = arg.split(/\s+/);
+		this.locale_bases = [];
+		for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+			lang = CSL.localeParse(lst[i]);
 			langspec = CSL.localeResolve(lang);
-			res = false;
-			for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
-				if (langspec.best === this.locale_list[i].best) {
+			if (lst[i].length === 2) {
+				this.locale_bases.push(langspec.base);
+			}
+			state.localeConfigure(langspec);
+			lst[i] = langspec;
+		}
+		this.locale_default = state.opt["default-locale"][0];
+		this.locale = lst[0].best;
+		this.locale_list = lst.slice();
+		func = function (state, Item, item) {
+			var key, res;
+			ret = [];
+			if (Item.language) {
+				lang = CSL.localeParse(Item.language);
+				langspec = CSL.localeResolve(lang);
+				res = false;
+				for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
+					if (langspec.best === this.locale_list[i].best) {
+						state.opt.lang = this.locale;
+						state.tmp.last_cite_locale = this.locale;
+						state.output.openLevel("empty");
+						state.output.current.value().new_locale = this.locale;
+						res = true;
+						break;
+					}
+				}
+				if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
 					state.opt.lang = this.locale;
 					state.tmp.last_cite_locale = this.locale;
 					state.output.openLevel("empty");
 					state.output.current.value().new_locale = this.locale;
 					res = true;
-					break;
 				}
 			}
-			if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
-				state.opt.lang = this.locale;
-				state.tmp.last_cite_locale = this.locale;
-				state.output.openLevel("empty");
-				state.output.current.value().new_locale = this.locale;
-				res = true;
-			}
-		}
-		ret.push(res);
-		return ret;
+			ret.push(res);
+			return ret;
+		};
+		this.tests.push(func);
 	};
-	this.tests.push(func);
 };
 CSL.Attributes["@suffix"] = function (state, arg) {
 	this.strings.suffix = arg;
@@ -6709,9 +6764,7 @@ CSL.Util.Names.getCommonTerm = function (state, namesets) {
 	}
 	base_nameset = namesets[0];
 	varnames = [];
-	if (varnames.indexOf(base_nameset.variable) === -1) {
 		varnames.push(base_nameset.variable);
-	}
 	short_namesets = namesets.slice(1);
 	len = short_namesets.length;
 	for (pos = 0; pos < len; pos += 1) {

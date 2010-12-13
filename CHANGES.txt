@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.90
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reimplement language conditions through
+  cs:layout rather than cs:choose.
+
+
+=========================
 Changes in version 1.0.89
 =========================
 
