@@ -68,17 +68,17 @@ doh.register("citeproc_js.sys_stdrhino_locale", [
 		var sys = new StdRhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
 		var myxml = sys.xml.makeXml( sys.retrieveLocale("af-ZA") );
-		CSL.localeSet.call(obj,sys,myxml,"af-ZA","af-ZA");
+		obj.localeSet(myxml,"af-ZA","af-ZA");
 		var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
-		CSL.localeSet.call(obj,sys,myxml,"de-DE","de-DE");
+		obj.localeSet(myxml,"de-DE","de-DE");
 		doh.assertEqual("und", obj.locale["de-DE"].terms["and"]["long"]);
 	},
 	function testSetLocaleStringValue(){
 		var sys = new StdRhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
 		var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
-		CSL.localeSet.call(CSL,sys,myxml,"de-DE","de-DE");
-		doh.assertEqual("und", CSL.locale["de-DE"].terms["and"]["long"]);
+		obj.localeSet(myxml,"de-DE","de-DE");
+		doh.assertEqual("und", obj.locale["de-DE"].terms["and"]["long"]);
 	},
 	function testSetLocaleEmptyValue(){
 		var sys = new StdRhinoTest();
@@ -90,13 +90,13 @@ doh.register("citeproc_js.sys_stdrhino_locale", [
 			var sys = new RhinoTest();
 			var obj = new CSL.Engine(sys,"<style></style>");
 			var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
-			CSL.localeSet.call(CSL,sys,myxml,"de-DE","de-DE");
+			obj.localeSet(myxml,"de-DE","de-DE");
 			var res = "Success";
 		} catch (e){
 			var res = e;
 		}
 		doh.assertEqual("Success", res);
-		doh.assertNotEqual("undefined", typeof CSL.locale["de-DE"].terms);
+		doh.assertNotEqual("undefined", typeof obj.locale["de-DE"].terms);
 	},
 ]);
 

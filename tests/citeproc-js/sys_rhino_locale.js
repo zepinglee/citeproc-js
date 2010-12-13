@@ -78,9 +78,9 @@ doh.register("citeproc_js.sys_rhino_locale", [
 		var sys = new RhinoTest();
 		var obj = new CSL.Engine(sys,"<style></style>");
 		var myxml = sys.xml.makeXml( sys.retrieveLocale("af-ZA") );
-		CSL.localeSet.call(obj,sys,myxml,"af-ZA","af-ZA");
+		obj.localeSet(myxml,"af-ZA","af-ZA");
 		var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
-		CSL.localeSet.call(obj,sys,myxml,"de-DE","de-DE");
+		obj.localeSet(myxml,"de-DE","de-DE");
 		doh.assertEqual("und", obj.locale["de-DE"].terms["and"]["long"]);
 	},
 	function testSetLocaleNilValueNoStyleDefault(){
@@ -132,7 +132,7 @@ doh.register("citeproc_js.sys_rhino_locale", [
 			var sys = new RhinoTest();
 			var obj = new CSL.Engine(sys,"<style></style>");
 			var myxml = sys.xml.makeXml( sys.retrieveLocale("de-DE") );
-			CSL.localeSet.call(obj,sys,myxml,"de-DE","de-DE");
+			obj.localeSet(myxml,"de-DE","de-DE");
 			var res = "Success";
 		} catch (e){
 			var res = e;
