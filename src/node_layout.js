@@ -50,22 +50,19 @@ CSL.Node.layout = {
 	build: function (state, target) {
 		var func, prefix_token, suffix_token;
 
-		// What a mess!  Too much fun here.
-
-			if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
-				// ********
+		if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
 			//
 			// done_vars is used to prevent the repeated
 			// rendering of variables
 			//
-			// initalize done vars [all nodes]
+			// initalize done vars
 			func = function (state, Item) {
 				state.tmp.done_vars = [];
 				//CSL.debug(" === init rendered_name === ");
 				state.tmp.rendered_name = false;
 			};
 			this.execs.push(func);
-			// set opt delimiter [all nodes]
+			// set opt delimiter
 			func = function (state, Item) {
 				// just in case
 				state.tmp.sort_key_flag = false;
@@ -94,62 +91,41 @@ CSL.Node.layout = {
 			this.execs.push(func);
 			target.push(this);
 
-
-				if (state.build.area === "citation") {
-					prefix_token = new CSL.Token("text", CSL.SINGLETON);
-					func = function (state, Item, item) {
-						var sp;
-						if (item && item.prefix) {
-							sp = "";
-							if (item.prefix.match(CSL.ROMANESQUE_REGEXP)) {
-								sp = " ";
-							}
-							state.output.append((item.prefix + sp), this);
+			if (state.build.area === "citation") {
+				prefix_token = new CSL.Token("text", CSL.SINGLETON);
+				func = function (state, Item, item) {
+					var sp;
+					if (item && item.prefix) {
+						sp = "";
+						if (item.prefix.match(CSL.ROMANESQUE_REGEXP)) {
+							sp = " ";
 						}
-					};
-					prefix_token.execs.push(func);
-					target.push(prefix_token);
-
-				}
-
-
-
-				// ********
+						state.output.append((item.prefix + sp), this);
+					}
+				};
+				prefix_token.execs.push(func);
+				target.push(prefix_token);
 			}
-
-
+		}
 		if (this.locale_raw) {
-
 			var my_tok = new CSL.Token("dummy", CSL.START);
 			my_tok.locale = this.locale_raw;
 			my_tok.strings.delimiter = this.strings.delimiter;
 			my_tok.strings.suffix = this.strings.suffix;
-
 			if (!state.tmp.cite_affixes) {
 				state.tmp.cite_affixes = {};
-
 			}
-
 		}
 		if (this.tokentype === CSL.START) {
 			state.build.layout_flag = true;
-				
-				
+							
 			// Only run the following once, to set up the final layout node ...
 			if (!this.locale_raw) {
-
-				// XXXX: Need to do an audit of these operations.
-				// Some should happen only on the first node, as init.
-				// Some should happen only on the final node, to set affixes.
-				// Some should happen on all nodes.
-
 				//
 				// save out decorations for flipflop processing [final node only]
 				//
 				state[state.tmp.area].opt.topdecor = [this.decorations];
 				state[(state.tmp.area + "_sort")].opt.topdecor = [this.decorations];
-
-
 
 				state[state.build.area].opt.layout_prefix = this.strings.prefix;
 				state[state.build.area].opt.layout_suffix = this.strings.suffix;
@@ -169,9 +145,6 @@ CSL.Node.layout = {
 
 			// Conditionals
 			if (this.locale_raw) {
-				// XXXXX: This looks good, but the tokens will
-				// need to be cloned and renamed.
-
 				if (!state.build.layout_locale_flag) {
 					// if layout_locale_flag is untrue,
 					// write cs:choose START and cs:if START
@@ -195,7 +168,6 @@ CSL.Node.layout = {
 			}
 		}
 		if (this.tokentype === CSL.END) {
-			
 			if (this.locale_raw) {
 				if (!state.build.layout_locale_flag) {
 					// If layout_locale_flag is untrue, write cs:if END
@@ -240,16 +212,6 @@ CSL.Node.layout = {
 					suffix_token.execs.push(func);
 					target.push(suffix_token);
 				}
-
-				// Why the hell does this get the wrong jump value?
-				// Why do joins disappear?
-				// What's going on?
-				//
-				// Maybe function execution sequence matters
-				// here?  Compare with the previous version?
-				//
-				//var layout_end = new CSL.Token("layout", CSL.END);
-				//layout_end.strings.delimiter = this.strings.delimiter;
 
 				// mergeoutput
 				func = function (state, Item) {
