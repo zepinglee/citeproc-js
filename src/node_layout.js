@@ -52,8 +52,7 @@ CSL.Node.layout = {
 
 		// What a mess!  Too much fun here.
 
-			if (!state.tmp.cite_affixes) {
-
+			if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
 				// ********
 			//
 			// done_vars is used to prevent the repeated
@@ -93,7 +92,6 @@ CSL.Node.layout = {
 				state.tmp.citeblob = state.output.queue[state.output.queue.length - 1];
 			};
 			this.execs.push(func);
-
 			target.push(this);
 
 
@@ -113,6 +111,7 @@ CSL.Node.layout = {
 					target.push(prefix_token);
 
 				}
+
 
 
 				// ********
@@ -155,7 +154,9 @@ CSL.Node.layout = {
 				state[state.build.area].opt.layout_prefix = this.strings.prefix;
 				state[state.build.area].opt.layout_suffix = this.strings.suffix;
 				state[state.build.area].opt.layout_delimiter = this.strings.delimiter;
+
 				state[state.build.area].opt.layout_decorations = this.decorations;
+				
 				// Only do this if we're running conditionals
 				if (state.tmp.cite_affixes) {
 					// if build_layout_locale_flag is true,
@@ -224,7 +225,6 @@ CSL.Node.layout = {
 					CSL.Node.choose.build.call(tok, state, target);
 				}
 				state.build_layout_locale_flag = true;
-				state.build.layout_flag = false;
 				if (state.build.area === "citation") {
 					suffix_token = new CSL.Token("text", CSL.SINGLETON);
 					func = function (state, Item, item) {
@@ -240,6 +240,17 @@ CSL.Node.layout = {
 					suffix_token.execs.push(func);
 					target.push(suffix_token);
 				}
+
+				// Why the hell does this get the wrong jump value?
+				// Why do joins disappear?
+				// What's going on?
+				//
+				// Maybe function execution sequence matters
+				// here?  Compare with the previous version?
+				//
+				//var layout_end = new CSL.Token("layout", CSL.END);
+				//layout_end.strings.delimiter = this.strings.delimiter;
+
 				// mergeoutput
 				func = function (state, Item) {
 					if (state.tmp.area === "bibliography") {
@@ -252,6 +263,7 @@ CSL.Node.layout = {
 				};
 				this.execs.push(func);
 				target.push(this);
+				state.build.layout_flag = false;
 			} // !this.layout_raw
 		}
 	}
