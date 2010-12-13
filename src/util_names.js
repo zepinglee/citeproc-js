@@ -282,10 +282,13 @@ CSL.Util.Names.getCommonTerm = function (state, namesets) {
 		return false;
 	}
 	base_nameset = namesets[0];
+	
+	// XXXXXX: ??? WTF?
 	varnames = [];
-	if (varnames.indexOf(base_nameset.variable) === -1) {
+	// surely ...
+	//if (varnames.indexOf(base_nameset.variable) === -1) {
 		varnames.push(base_nameset.variable);
-	}
+	//}
 	short_namesets = namesets.slice(1);
 	len = short_namesets.length;
 	for (pos = 0; pos < len; pos += 1) {
