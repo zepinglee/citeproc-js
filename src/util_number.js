@@ -96,7 +96,7 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
 	var str;
 	num = parseInt(num, 10);
 	str = num.toString();
-	if ((num / 10) % 10 === 1) {
+	if ((num / 10) % 10 === 1 || (num > 10 && num < 20)) {
 		str += this.suffixes[gender][3];
 	} else if (num % 10 === 1) {
 		str += this.suffixes[gender][0];
