@@ -139,7 +139,7 @@ doh.register("tests.dateparse", [function test_dateparse001() {
     },
     function test_dateparse013() {
         var res = citeproc.fun.dateparser.parse("circa 08-31-2000");
-        doh.assertEqual("1", res["fuzzy"]);
+        doh.assertEqual("1", res["circa"]);
         doh.assertEqual("2000", res["year"]);
         doh.assertEqual("31", res["day"]);
         doh.assertEqual("8", res["month"]);
@@ -147,7 +147,7 @@ doh.register("tests.dateparse", [function test_dateparse001() {
     },
     function test_dateparse014() {
         var res = citeproc.fun.dateparser.parse("circa 2000-31-08");
-        doh.assertEqual("1", res["fuzzy"]);
+        doh.assertEqual("1", res["circa"]);
         doh.assertEqual("2000", res["year"]);
         doh.assertEqual("31", res["day"]);
         doh.assertEqual("8", res["month"]);
@@ -155,7 +155,7 @@ doh.register("tests.dateparse", [function test_dateparse001() {
     },
     function test_dateparse015() {
         var res = citeproc.fun.dateparser.parse("circa Aug 31, 2000");
-        doh.assertEqual("1", res["fuzzy"]);
+        doh.assertEqual("1", res["circa"]);
         doh.assertEqual("2000", res["year"]);
         doh.assertEqual("31", res["day"]);
         doh.assertEqual("8", res["month"]);
@@ -163,7 +163,7 @@ doh.register("tests.dateparse", [function test_dateparse001() {
     },
     function test_dateparse016() {
         var res = citeproc.fun.dateparser.parse("Aug 31 2000 ?");
-        doh.assertEqual("1", res["fuzzy"]);
+        doh.assertEqual("1", res["circa"]);
         doh.assertEqual("2000", res["year"]);
         doh.assertEqual("31", res["day"]);
         doh.assertEqual("8", res["month"]);
@@ -171,7 +171,7 @@ doh.register("tests.dateparse", [function test_dateparse001() {
     },
     function test_dateparse017() {
         var res = citeproc.fun.dateparser.parse("[31 Aug 2000?]");
-        doh.assertEqual("1", res["fuzzy"]);
+        doh.assertEqual("1", res["circa"]);
         doh.assertEqual("2000", res["year"]);
         doh.assertEqual("31", res["day"]);
         doh.assertEqual("8", res["month"]);

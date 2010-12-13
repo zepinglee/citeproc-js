@@ -5,7 +5,7 @@
 # Fields:
 #   year, month, day
 #   year_end, month_end, day_end
-#   fuzzy
+#   circa
 #   season
 #
 # See http://gsl-nagoya-u.net/http/pub/citeproc-doc.html#dates
@@ -54,8 +54,8 @@ Trinity 2001
 --> month=13,year=2000,month_end=14,year_end=2001
 Spring 2000 - Summer 2001
 
-# Fuzzy
---> fuzzy=1,month=8,day=31,year=2000
+# Circa
+--> circa=1,month=8,day=31,year=2000
 circa 08-31-2000
 circa 2000-31-08
 circa Aug 31, 2000
