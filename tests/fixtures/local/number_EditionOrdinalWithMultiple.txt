@@ -66,6 +66,9 @@ edition: 37th-40th
 edition: 43-41
 edition: 205 - 2000
 edition: 1 vol + 1 CD
+edition: 12th
+edition: 12a-c
+edition: 12th Yellow-tailed Wooly Monkey
 <<===== RESULT =====<<
 
 >>===== CSL =====>>
@@ -147,6 +150,21 @@ edition: 1 vol + 1 CD
 	{
 		"id": "ITEM-12",
 		"edition" : "1 vol + 1 CD",
+		"type": "book"
+	},
+	{
+		"id": "ITEM-13",
+		"edition" : "12nd",
+		"type": "book"
+	},
+	{
+		"id": "ITEM-14",
+		"edition" : "12a-c",
+		"type": "book"
+	},
+	{
+		"id": "ITEM-15",
+		"edition" : "12th Yellow-tailed Wooly Monkey",
 		"type": "book"
 	}
 ]
