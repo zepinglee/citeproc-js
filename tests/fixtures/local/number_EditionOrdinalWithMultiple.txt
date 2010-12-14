@@ -68,7 +68,7 @@ edition: 205 - 2000
 edition: 1 vol + 1 CD
 edition: 12th
 edition: 12a-c
-edition: 12th Yellow-tailed Wooly Monkey
+edition: 12th
 <<===== RESULT =====<<
 
 >>===== CSL =====>>
