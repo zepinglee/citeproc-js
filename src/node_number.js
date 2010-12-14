@@ -107,8 +107,8 @@ CSL.Node.number = {
 				//   the length of prefixes in that case will be 2.
 				for (var i = 1, ilen = prefixes.length - 1; i < ilen; i += 1) {
 				    if (prefixes[i].indexOf(" ") === -1) {
-					all_with_spaces = false;
-					break;
+						all_with_spaces = false;
+						break;
 				    }
 				}
 				if (state.tmp.area !== "citation_sort"
@@ -180,7 +180,7 @@ CSL.Node.number = {
 				    state.output.append(num, this);
 				} else {
 					// Single number
-					m = num.match(/\s*([0-9]+)/);
+					m = num.match(/\s*([0-9]+)(?:[^-]* |[^-]*$)/);
 					if (m) {
 						num = parseInt(m[1], 10);
 						number = new CSL.NumericBlob(num, this);
