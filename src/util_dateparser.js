@@ -119,6 +119,20 @@ CSL.DateParser = function (txt) {
 	this.mstrings = "january february march april may june july august september october november december spring summer fall winter spring summer";
 	this.mstrings = this.mstrings.split(" ");
 
+	this.setOrderDayMonth = function() {
+		// preferred ordering for numeric dates
+		this.monthguess = 1;
+		this.dayguess = 0;
+	}
+
+	this.setOrderMonthDay = function() {
+		// preferred ordering for numeric dates
+		this.monthguess = 0;
+		this.dayguess = 1;
+	}
+
+	this.setOrderMonthDay();
+
 	this.resetMonths = function() {
 		// Function to reset months to default.
 		this.msets = [];
@@ -138,6 +152,7 @@ CSL.DateParser = function (txt) {
 			this.mrexes.push(new RegExp("(?:" + this.mabbrevs[i].join("|") + ")"));
 		}
 	}
+
 	this.resetMonths();
 
 	this.addMonths = function(lst) {
@@ -221,7 +236,7 @@ CSL.DateParser = function (txt) {
 	}
 
 	this.parse = function (txt) {
-		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, pos, delim, ppos, element, pppos, len, llen, lllen, mm, slst, mmpos;
+		var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, delim, element, mm, slst, mmpos, i, ilen, j, jlen, k, klen;
 		//
 		// Normalize the format and the year if it's a Japanese date
 		//
@@ -320,16 +335,14 @@ CSL.DateParser = function (txt) {
 		// For each side of a range divide ...
 		//
 		suff = "";
-		len = delims.length;
-		for (pos = 0; pos < len; pos += 1) {
-			delim = delims[pos];
+		for (i = 0, ilen = delims.length; i < ilen; i += 1) {
+			delim = delims[i];
 			//
 			// Process each element ...
 			//
 			date = ret.slice(delim[0], delim[1]);
-			llen = date.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				element = date[ppos];
+			for (j = 0, jlen = date.length; j < jlen; j += 1) {
+				element = date[j];
 				//
 				// If it's a numeric date, process it.
 				//
@@ -348,10 +361,9 @@ CSL.DateParser = function (txt) {
 				// If it's a month, record it.
 				//
 				breakme = false;
-				lllen = this.mrexes.length;
-				for (pppos = 0; pppos < lllen; pppos += 1) {
-					if (element.toLocaleLowerCase().match(this.mrexes[pppos])) {
-						thedate[("month" + suff)] = "" + (parseInt(pppos, 10) + 1);
+				for (k = 0, klen = this.mrexes.length; k < klen; k += 1) {
+					if (element.toLocaleLowerCase().match(this.mrexes[k])) {
+						thedate[("month" + suff)] = "" + (parseInt(k, 10) + 1);
 						breakme = true;
 						break;
 					}
@@ -385,9 +397,9 @@ CSL.DateParser = function (txt) {
 				//
 				breakme = false;
 				lllen = seasonrexes.length;
-				for (pppos = 0; pppos < lllen; pppos += 1) {
-					if (element.toLocaleLowerCase().match(seasonrexes[pppos])) {
-						thedate[("season" + suff)] = "" + (parseInt(pppos, 10) + 1);
+				for (k = 0, klen = seasonrexes.length; k < klen; k += 1) {
+					if (element.toLocaleLowerCase().match(seasonrexes[k])) {
+						thedate[("season" + suff)] = "" + (parseInt(k, 10) + 1);
 						breakme = true;
 						break;
 					}
@@ -434,9 +446,9 @@ CSL.DateParser = function (txt) {
 		// from the other
 		//
 		if (isrange) {
-			len = CSL.DATE_PARTS_ALL.length;
-			for (pos = 0; pos < len; pos += 1) {
-				item = CSL.DATE_PARTS_ALL[pos];
+			
+			for (j = 0, jlen = CSL.DATE_PARTS_ALL.length; j < jlen; j += 1) {
+				item = CSL.DATE_PARTS_ALL[j];
 				if (thedate[item] && !thedate[(item + "_end")]) {
 					thedate[(item + "_end")] = thedate[item];
 				} else if (!thedate[item] && thedate[(item + "_end")]) {
@@ -459,22 +471,22 @@ CSL.DateParser = function (txt) {
 	this.parseNumericDate = function (ret, delim, suff, txt) {
 		var lst, pos, len;
 		lst = txt.split(delim);
-		len = lst.length;
-		for (pos = 0; pos < len; pos += 1) {
-			if (lst[pos].length === 4) {
-				ret[("year" + suff)] = lst[pos].replace(/^0*/, "");
-				if (!pos) {
+		
+		for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+			if (lst[i].length === 4) {
+				ret[("year" + suff)] = lst[i].replace(/^0*/, "");
+				if (!i) {
 					lst = lst.slice(1);
 				} else {
-					lst = lst.slice(0, pos);
+					lst = lst.slice(0, i);
 				}
 				break;
 			}
 		}
 		// comment
-		len = lst.length;
-		for (pos = 0; pos < len; pos += 1) {
-			lst[pos] = parseInt(lst[pos], 10);
+		
+		for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+			lst[i] = parseInt(lst[i], 10);
 		}
 		//
 		// month and day parse
@@ -482,12 +494,12 @@ CSL.DateParser = function (txt) {
 		if (lst.length === 1) {
 			ret[("month" + suff)] = "" + lst[0];
 		} else if (lst.length === 2) {
-			if (lst[0] > 12) {
-				ret[("month" + suff)] = "" + lst[1];
-				ret[("day" + suff)] = "" + lst[0];
+			if (lst[this.monthguess] > 12) {
+				ret[("month" + suff)] = "" + lst[this.dayguess];
+				ret[("day" + suff)] = "" + lst[this.monthguess];
 			} else {
-				ret[("month" + suff)] = "" + lst[0];
-				ret[("day" + suff)] = "" + lst[1];
+				ret[("month" + suff)] = "" + lst[this.monthguess];
+				ret[("day" + suff)] = "" + lst[this.dayguess];
 			}
 		}
 	};
