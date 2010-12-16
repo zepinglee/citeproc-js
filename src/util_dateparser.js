@@ -46,8 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.dateParser = function (txt) {
-	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, monthrexes, seasonrex, len, jiymatchstring, jiymatcher;
+CSL.DateParser = function (txt) {
+	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, mrexes, seasonrex, len, jiymatchstring, jiymatcher;
 
 	// instance object with private constants and a public function.
 
@@ -116,14 +116,108 @@ CSL.dateParser = function (txt) {
 	}
 
 	// months
-	monthstrs = "jan feb mar apr may jun jul aug sep oct nov dec spr sum fal win spr sum";
-	monthstrs = monthstrs.split(" ");
-	monthrexes = [];
-	len = monthstrs.length;
-	for (pos = 0; pos < len; pos += 1) {
-		monthstr = monthstrs[pos];
-		rex = new RegExp(monthstr);
-		monthrexes.push(rex);
+	this.mstrings = "january february march april may june july august september october november december spring summer fall winter spring summer";
+	this.mstrings = this.mstrings.split(" ");
+
+	this.resetMonths = function() {
+		// Function to reset months to default.
+		this.msets = [];
+		for (var i = 0, ilen = this.mstrings.length; i < ilen; i += 1) {
+			this.msets.push([this.mstrings[i]]);
+		}
+		this.mabbrevs = [];
+		for (var i = 0, ilen = this.msets.length; i < ilen; i += 1) {
+			// XXX Aha.  Needs to nest here.
+			this.mabbrevs.push([]);
+			for (var j = 0, jlen = this.msets[i].length; j < jlen; j += 1) {
+				this.mabbrevs[i].push(this.msets[i][0].slice(0, 3));
+			}
+		}
+		this.mrexes = [];
+		for (var i = 0, ilen = this.mabbrevs.length; i < ilen; i += 1) {
+			this.mrexes.push(new RegExp("(?:" + this.mabbrevs[i].join("|") + ")"));
+		}
+	}
+	this.resetMonths();
+
+	this.addMonths = function(lst) {
+		// Function to extend the month regexes with an additional
+		// set of month strings, extending strings as required to
+		// resolve ambiguities.
+
+		// Normalize string to list
+		if ("string" === typeof lst) {
+			lst = lst.split(/\s+/);
+		}
+
+		// Check that there are twelve (or sixteen) to add
+		if (lst.length !== 12 && lst.length !== 16) {
+			CSL.debug("month [+season] list of "+lst.length+", expected 12 or 16. Ignoring.");
+			return;
+		}
+
+		// Extend as necessary to resolve ambiguities
+		var othermatch = [];
+		var thismatch = [];
+		// For each new month string ...
+		for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
+			// Compare with each existing abbreviation and ...
+			var abbrevlen = false;
+			var skip = false;
+			var insert = 3;
+			var extend = {};
+			for (var j = 0, jlen = this.mabbrevs.length; j < jlen; j += 1) {
+				// Set default abbrevlen
+				extend[j] = {};
+				if (j === i) {
+					// Mark for skipping if same as an existing abbreviation of same month
+					for (var k = 0, klen = this.mabbrevs[i].length; k < klen; k += 1) {
+						if (this.mabbrevs[i][k] === lst[i].slice(0, this.mabbrevs[i][k].length)) {
+							skip = true;
+							break;
+						}
+					}
+				} else {
+					// Mark for extending if same as existing abbreviation of any other month
+					for (var k = 0, klen = this.mabbrevs[j].length; k < klen; k += 1) {
+						abbrevlen = this.mabbrevs[j][k].length;
+						if (this.mabbrevs[j][k] === lst[i].slice(0, abbrevlen)) {
+							while (this.msets[j][k].slice(0, abbrevlen) === lst[i].slice(0, abbrevlen)) {
+								// Abort when full length is hit, otherwise extend
+								if (abbrevlen > lst[i].length || abbrevlen > this.msets[j][k].length) {
+									CSL.debug("unable to disambiguate month string in date parser: "+lst[i]);
+									break;
+								} else {
+									// Mark both new entry and existing abbrev for extension
+									abbrevlen += 1;
+								}
+							}
+							insert = abbrevlen;
+							extend[j][k] = abbrevlen;
+						}
+					}
+				}
+				for (var j in extend) {
+					j = parseInt(j, 10);
+					for (var k in extend[j]) {
+						k = parseInt(k, 10);
+						abbrevlen = extend[j][k];
+						this.mabbrevs[j][k] = this.msets[j][k].slice(0, abbrevlen);
+					}
+				}
+			}
+			// Insert here
+			if (!skip) {
+				this.msets[i].push(lst[i]);
+				this.mabbrevs[i].push(lst[i].slice(0, insert));
+			}
+		}
+
+		// Compose
+		this.mrexes = [];
+		for (var i = 0, ilen = this.mabbrevs.length; i < ilen; i += 1) {
+			this.mrexes.push(new RegExp("(?:" + this.mabbrevs[i].join("|") + ")"));
+		}
 	}
 
 	this.parse = function (txt) {
@@ -254,9 +348,9 @@ CSL.dateParser = function (txt) {
 				// If it's a month, record it.
 				//
 				breakme = false;
-				lllen = monthrexes.length;
+				lllen = this.mrexes.length;
 				for (pppos = 0; pppos < lllen; pppos += 1) {
-					if (element.toLocaleLowerCase().match(monthrexes[pppos])) {
+					if (element.toLocaleLowerCase().match(this.mrexes[pppos])) {
 						thedate[("month" + suff)] = "" + (parseInt(pppos, 10) + 1);
 						breakme = true;
 						break;

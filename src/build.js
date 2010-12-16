@@ -200,7 +200,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	//
 	// date parser
 	//
-	this.fun.dateparser = new CSL.dateParser();
+	this.fun.dateparser = new CSL.DateParser();
 	//
 	// flip-flopper for inline markup
 	//

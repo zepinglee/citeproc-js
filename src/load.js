@@ -413,7 +413,7 @@ if (!CSL.XmlToToken) {
 	load("./src/util_nodes.js");
 }
 // jslint OK
-if (!CSL.dateParser) {
+if (!CSL.DateParser) {
 	load("./src/util_dateparser.js");
 }
 // jslint OK
