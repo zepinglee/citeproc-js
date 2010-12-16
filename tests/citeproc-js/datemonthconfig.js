@@ -46,11 +46,11 @@
  * or the [AGPLv3] License.”
  */
 
-dojo.provide("citeproc_js.dateparams");
+dojo.provide("citeproc_js.datemonthconfig");
 
 CSL.debug = print;
 
-doh.register("tests.dateparams", [
+doh.register("tests.datemonthconfig", [
 		function test_ExtendAmbigMonthAbbrev() {
 			var parser = new CSL.DateParser;
 			parser.addMonths("jan januberry mar apr may jun jul aug sep oct nov dec");
