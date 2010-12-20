@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a99##
+   version 1.00##a100##
 
 .. class:: info-date
 
-   =D=22 November 2010=D=
+   =D=19 December 2010=D=
 
 .. class:: contributors
 
@@ -1441,8 +1441,6 @@ and date parsing will not work with them.
 Input data rescue
 #################
 
-
-
 .. _dirty-names:
 
 ^^^^^
@@ -1904,6 +1902,89 @@ __ `input-byzantine`_
    }
 
 
+-----------
+Date parser
+-----------
+
+A parser that converts human-readable dates to a structured form
+is available as a self-contained module, under the name ``CSL.DateParser``.
+
+#################################
+Instantiation: ``CSL.DateParser``
+#################################
+
+When used as a standalone module, the parser must be instantiated in
+the usual way before use:
+
+.. sourcecode:: js
+
+   var parser = new CSL.DateParser;
+
+##############
+Parser methods
+##############
+
+The following methods are available on the parser object, to control
+parsing behavior and to parse string input.
+
+``parser.parse(str)``
+    Parse the string ``str`` and return a ္date object.
+    Within the date object, the parsed date may be represented
+    either as a set of key/value pairs (see ``returnAsKeys()``,
+    below), or as a nested array under a ``date-parts`` key
+    (see ``returnAsArray()``, below). 
+
+``parser.returnAsArray()``
+    Set the date value on the date object returned by
+    the ``parse()`` method as a nested array under
+    a ``date-parts`` key.  For example, the date range
+    31 January 2000 to 28 February 2001 would look like
+    this in array format:
+
+    .. sourcecode:: js
+
+       {
+         "date-parts": [
+           [2000, 1, 31],
+           [2001, 2, 28]
+         ]
+       }
+
+``parser.returnAsKeys()`` [default]
+    Set the date value on the date object returned by
+    the ``parse()`` method as a set of name/value pairs.
+    For example, the date range 
+    31 January 2000 to 28 February 2001 would look like
+    this in keys format:
+
+    .. sourcecode:: js
+
+       {
+         year: 2000, 
+         month: 1,
+         day: 31,
+         year_end: 2001, 
+         month_end: 2, 
+         day_end: 28
+       }
+
+``parser.setOrderMonthDay()`` [default]
+    When parsing human-readable numeric dates, assume mm/dd/yyyy ordering.
+
+``parser.setOrderDayMonth()``
+    When parsing human-readable numeric dates, assume dd/mm/yyyy ordering.
+
+``parser.addMonths(str)``
+    Extend the parser to recognize a set of 12 additional space-delimited human-readable
+    text dates.  The parser so extended will recognize dates by their first
+    three characters, unless additional characters are required to distinguish
+    between different months with similar names.  To extend also by seasons,
+    add four additional season names to the space-delimited list of names
+    (for a list of 16 names).
+
+``parser.resetMonths(str)``
+    Reset month recognition to the default of ``jan feb mar apr may
+    jun jul aug sep oct nov dec spr sum fal win``.
 
 ----------
 Test Suite
