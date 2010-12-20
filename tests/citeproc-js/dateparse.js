@@ -59,7 +59,17 @@ var keycount = function(obj){
     return c;
 };
 
-doh.register("tests.dateparse", [function test_dateparse001() {
+doh.register("tests.dateparse", [    function test_dateparse029() {
+        var res = citeproc.fun.dateparser.parse("Aug 15 2000 - Aug 20 2000");
+        doh.assertEqual("2000", res["year_end"]);
+        doh.assertEqual("8", res["month"]);
+        doh.assertEqual("20", res["day_end"]);
+        doh.assertEqual("2000", res["year"]);
+        doh.assertEqual("8", res["month_end"]);
+        doh.assertEqual("15", res["day"]);
+        doh.assertEqual(6, keycount(res) );
+		},
+function test_dateparse001() {
         var res = citeproc.fun.dateparser.parse("Wed 24 Oct 2000");
         doh.assertEqual("10", res["month"]);
         doh.assertEqual("24", res["day"]);
@@ -243,19 +253,8 @@ doh.register("tests.dateparse", [function test_dateparse001() {
         var res = citeproc.fun.dateparser.parse("\u5e73\u621012\u5e748\u6708\u301c\u5e73\u621012\u5e749\u6708");
         doh.assertEqual("9", res["month_end"]);
         doh.assertEqual("8", res["month"]);
-        doh.assertEqual("2000", res["year_end"]);
         doh.assertEqual("2000", res["year"]);
+        doh.assertEqual("2000", res["year_end"]);
         doh.assertEqual(4, keycount(res) );
-    },
-    function test_dateparse029() {
-        var res = citeproc.fun.dateparser.parse("Aug 15 2000 - Aug 20 2000");
-        doh.assertEqual("2000", res["year_end"]);
-        doh.assertEqual("8", res["month"]);
-        doh.assertEqual("20", res["day_end"]);
-        doh.assertEqual("2000", res["year"]);
-        doh.assertEqual("8", res["month_end"]);
-        doh.assertEqual("15", res["day"]);
-        doh.assertEqual(6, keycount(res) );
     }
 ]);
-
