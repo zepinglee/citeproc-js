@@ -72,15 +72,9 @@ CSL.Node.date = {
 						date_obj = {"date-parts": [[0]] };
 					}
 					if (date_obj.raw) {
-						state.tmp.date_object = state.fun.dateparser.parse(date_obj.raw);
-					} else if (date_obj["date-parts"]) {
-						state.tmp.date_object = state.dateParseArray(date_obj);
-					} else if ("object" === typeof date_obj) {
-
-						// XXXX: Temporary workaround for repairs
-
-					    state.tmp.date_object = state.dateParseArray(date_obj);
+						date_obj = state.fun.dateparser.parse(date_obj.raw);
 					}
+					state.tmp.date_object = state.dateParseArray(date_obj);
 					//
 					// Call a function here to analyze the
 					// data and set the name of the date-part that
@@ -92,13 +86,10 @@ CSL.Node.date = {
 					// (note to self: remember that season is a
 					// fallback var when month and day are empty)
 
-
 					//if ("undefined" === typeof this.dateparts) {
 					//	this.dateparts = ["year", "month", "day"];
 					//}
 					len = this.dateparts.length;
-					for (pos = 0; pos < len; pos += 1) {
-					}
 					for (pos = 0; pos < len; pos += 1) {
 						part = this.dateparts[pos];
 						if ("undefined" !== typeof state.tmp.date_object[(part +  "_end")]) {
