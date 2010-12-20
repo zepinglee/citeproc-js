@@ -46,6 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
+
+// Can this go direct to array form?
+
+
 CSL.DateParser = function (txt) {
 	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, mrexes, seasonrex, len, jiymatchstring, jiymatcher;
 
@@ -465,8 +469,42 @@ CSL.DateParser = function (txt) {
 		if (!thedate.year) {
 			thedate = { "literal": txt };
 		}
+		if (this.use_array) {
+			this.toArray(thedate);			
+		}
 		return thedate;
 	};
+
+	this.returnAsArray = function () {
+		this.use_array = true;
+	}
+
+	this.returnAsKeys = function () {
+		this.use_array = false;
+	}
+
+	this.toArray = function (thedate) {
+		thedate["date-parts"] = [];
+		thedate["date-parts"].push([]);
+		var slicelen = 0;
+		for (var i = 0, ilen = 3; i < ilen; i += 1) {
+			var part = ["year", "month", "day"][i];
+			if (!thedate[part]) {
+				break;
+			}
+			slicelen += 1;
+			thedate["date-parts"][0].push(thedate[part]);
+			delete thedate[part];
+		}
+		for (var i = 0, ilen = slicelen; i < ilen; i += 1) {
+			var part = ["year_end", "month_end", "day_end"][i];
+			if (thedate[part] && thedate["date-parts"].length === 1) {
+				thedate["date-parts"].push([]);
+			}
+			thedate["date-parts"][1].push(thedate[part]);
+			delete thedate[part];
+		}
+	}
 
 	this.parseNumericDate = function (ret, delim, suff, txt) {
 		var lst, pos, len;
