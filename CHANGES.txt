@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.93
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Cast human-readable dates parser as a separate JS module,
+  and provide documentation in the processor manual.
+
+- Small change to multiple value handling in cs:number.
+
+
+=========================
 Changes in version 1.0.92
 =========================
 
