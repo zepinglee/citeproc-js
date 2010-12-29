@@ -1572,7 +1572,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.93";
+	this.processor_version = "1.0.94";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1747,42 +1747,6 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
 CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function () {
 	return this.nodeList[this.depth][1];
 };
-CSL.Engine.prototype.setOutputFormat = function (mode) {
-	this.opt.mode = mode;
-	this.fun.decorate = CSL.Mode(mode);
-	if (!this.output[mode]) {
-		this.output[mode] = {};
-		this.output[mode].tmp = {};
-	}
-};
-CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
-	var i, ilen;
-	this.opt['locale-sort'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-sort'].push(tags[i]);
-	}
-}
-CSL.Engine.prototype.setLangTagsForCslNameTransliteration = function (tags) {
-	var i, ilen;
-	this.opt['locale-name'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-name'].push(tags[i]);
-	}
-}
-CSL.Engine.prototype.setLangTagsForCslTitleTransliteration = function (tags) {
-	var i, ilen;
-	this.opt['locale-pri'] = [];	
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-pri'].push(tags[i]);
-	}
-}
-CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
-	var i, ilen;
-	this.opt['locale-sec'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-sec'].push(tags[i]);
-	}
-}
 CSL.Engine.prototype.getTerm = function (term, form, plural, gender, loose) {
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
 	if (typeof ret === "undefined") {
@@ -2049,6 +2013,42 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 		}
 	}
 };
+CSL.Engine.prototype.setOutputFormat = function (mode) {
+	this.opt.mode = mode;
+	this.fun.decorate = CSL.Mode(mode);
+	if (!this.output[mode]) {
+		this.output[mode] = {};
+		this.output[mode].tmp = {};
+	}
+};
+CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
+	var i, ilen;
+	this.opt['locale-sort'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-sort'].push(tags[i]);
+	}
+}
+CSL.Engine.prototype.setLangTagsForCslNameTransliteration = function (tags) {
+	var i, ilen;
+	this.opt['locale-name'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-name'].push(tags[i]);
+	}
+}
+CSL.Engine.prototype.setLangTagsForCslTitleTransliteration = function (tags) {
+	var i, ilen;
+	this.opt['locale-pri'] = [];	
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-pri'].push(tags[i]);
+	}
+}
+CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
+	var i, ilen;
+	this.opt['locale-sec'] = [];
+	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+		this.opt['locale-sec'].push(tags[i]);
+	}
+}
 CSL.Engine.Opt = function () {
 	this.has_disambiguate = false;
 	this.mode = "html";
