@@ -115,8 +115,9 @@ class Bundle:
         if mode == "zotero":
             f.extend(["xmle4x", "error_zotero"])
         f.extend(["queue","util_processor","util_disambig"])
-        f.extend(["util_nodes","util_dateparser","build","state","util_integration","cmd_update"])
-        f.extend(["cmd_bibliography","cmd_cite","node_bibliography","node_choose"])
+        f.extend(["util_nodes","util_dateparser","build","api_control"])
+        f.extend(["state","util_integration","api_update"])
+        f.extend(["api_bibliography","api_cite","node_bibliography","node_choose"])
         f.extend(["util_locale"])
         f.extend(["node_citation","node_date","node_datepart","node_elseif","node_else"])
         f.extend(["node_comment"])

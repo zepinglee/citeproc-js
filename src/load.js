@@ -420,6 +420,10 @@ if (!CSL.DateParser) {
 if (!CSL.Engine) {
 	load("./src/build.js");
 }
+if (!CSL.Engine.prototype.setOutputFormat) {
+	load("./src/api_control.js");
+}
+
 // jslint OK
 if (!CSL.Output) {
 	load("./src/queue.js");
@@ -430,11 +434,11 @@ if (!CSL.Engine.Opt) {
 }
 // jslint OK
 if (!CSL.makeCitationCluster) {
-	load("./src/cmd_cite.js");
+	load("./src/api_cite.js");
 }
 // jslint OK
 if (!CSL.makeBibliography) {
-	load("./src/cmd_bibliography.js");
+	load("./src/api_bibliography.js");
 }
 // jslint OK
 if (!CSL.setCitationId) {
@@ -442,7 +446,7 @@ if (!CSL.setCitationId) {
 }
 // jslint OK
 if (!CSL.updateItems) {
-	load("./src/cmd_update.js");
+	load("./src/api_update.js");
 }
 if (!CSL.localeResolve) {
 	load("./src/util_locale.js");
