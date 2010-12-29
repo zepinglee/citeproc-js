@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a100##
+   version 1.00##a102##
 
 .. class:: info-date
 
@@ -1928,7 +1928,7 @@ The following methods are available on the parser object, to control
 parsing behavior and to parse string input.
 
 ``parser.parse(str)``
-    Parse the string ``str`` and return a ္date object.
+    Parse the string ``str`` and return a date object.
     Within the date object, the parsed date may be represented
     either as a set of key/value pairs (see ``returnAsKeys()``,
     below), or as a nested array under a ``date-parts`` key
@@ -1976,13 +1976,13 @@ parsing behavior and to parse string input.
 
 ``parser.addMonths(str)``
     Extend the parser to recognize a set of 12 additional space-delimited human-readable
-    text dates.  The parser so extended will recognize dates by their first
+    text months.  The parser so extended will recognize months by their first
     three characters, unless additional characters are required to distinguish
     between different months with similar names.  To extend also by seasons,
     add four additional season names to the space-delimited list of names
     (for a list of 16 names).
 
-``parser.resetMonths(str)``
+``parser.resetMonths()``
     Reset month recognition to the default of ``jan feb mar apr may
     jun jul aug sep oct nov dec spr sum fal win``.
 

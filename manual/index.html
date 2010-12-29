@@ -334,7 +334,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
 <p class="fixed"><a class="reference external" href="http://citationstyles.org/">citationstyles.org</a></p>
-<p class="info-version">version 1.00<sub>a100</sub></p>
+<p class="info-version">version 1.00<sub>a102</sub></p>
 <p class="info-date">19 December 2010</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
@@ -2512,7 +2512,7 @@ the usual way before use:</p>
 parsing behavior and to parse string input.</p>
 <dl class="docutils">
 <dt><tt class="docutils literal">parser.parse(str)</tt></dt>
-<dd>Parse the string <tt class="docutils literal">str</tt> and return a ္date object.
+<dd>Parse the string <tt class="docutils literal">str</tt> and return a date object.
 Within the date object, the parsed date may be represented
 either as a set of key/value pairs (see <tt class="docutils literal">returnAsKeys()</tt>,
 below), or as a nested array under a <tt class="docutils literal"><span class="pre">date-parts</span></tt> key
@@ -2571,12 +2571,12 @@ this in keys format:</p>
 <dd>When parsing human-readable numeric dates, assume dd/mm/yyyy ordering.</dd>
 <dt><tt class="docutils literal">parser.addMonths(str)</tt></dt>
 <dd>Extend the parser to recognize a set of 12 additional space-delimited human-readable
-text dates.  The parser so extended will recognize dates by their first
+text months.  The parser so extended will recognize months by their first
 three characters, unless additional characters are required to distinguish
 between different months with similar names.  To extend also by seasons,
 add four additional season names to the space-delimited list of names
 (for a list of 16 names).</dd>
-<dt><tt class="docutils literal">parser.resetMonths(str)</tt></dt>
+<dt><tt class="docutils literal">parser.resetMonths()</tt></dt>
 <dd>Reset month recognition to the default of <tt class="docutils literal">jan feb mar apr may
 jun jul aug sep oct nov dec spr sum fal win</tt>.</dd>
 </dl>
