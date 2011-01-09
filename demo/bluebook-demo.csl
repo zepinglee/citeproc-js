@@ -677,6 +677,9 @@
 	  <else-if position="subsequent">
 		<text macro="bb-legal-case-subsequent"/>
 	  </else-if>
+	  <else>
+		<text macro="bb-legal-case-first"/>
+	  </else>
 	</choose>
   </macro>
   <macro name="bb-legal-case-first">
