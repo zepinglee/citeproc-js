@@ -144,54 +144,86 @@ var data = {
 		"author": [
 			{
 				"family": "梶田",
-				"given": "将司"
-			},
-			{
-				"family": ":ja-alalc97: Kajita",
-				"given": "Shoji"
+				"given": "将司",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+								"family": "Kajita",
+								"given": "Shoji"
+						}
+					}
+				}				
 			},
 			{
 				"family": "角所",
-				"given": "考"
-			},
-			{
-				"family": ":ja-alalc97: Kakusho",
-				"given": "Takashi"
+				"given": "考",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Kakusho",
+							"given": "Takashi"
+						}
+					}
+				}				
 			},
 			{
 				"family": "中澤",
-				"given": "篤志"
-			},
-			{
-				"family": ":ja-alalc97: Nakazawa",
-				"given": "Atsushi"
+				"given": "篤志",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Nakazawa",
+							"given": "Atsushi"
+						}
+					}
+				}				
 			},
 			{
 				"family": "竹村",
-				"given": "治雄"
-			},
-			{
-				"family": ":ja-alalc97: Takemura",
-				"given": "Haruo"
+				"given": "治雄",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Takemura",
+							"given": "Haruo"
+						}
+					}
+				}				
 			},
 			{
 				"family": "美濃",
-				"given": "導彦"
-			},
-			{
-				"family": ":ja-alalc97: Mino",
-				"given": "Michihiko"
+				"given": "導彦",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Mino",
+							"given": "Michihiko"
+						}
+					}
+				}				
 			},
 			{
 				"family": "間瀬",
-				"given": "健二"
-			},
-			{
-				"family": ":ja-alalc97: Mase",
-				"given": "Kenji"
+				"given": "健二",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Mase",
+							"given": "Kenji"
+						}
+					}
+				}				
 			}
 		],
-		"title": "高等教育機関における次世代教育学習支援プラットフォームの構築に向けて :ja-alalc97: Kōtō kyōiku ni okeru jisedai kyōiku gakushū shien puratto fōmu no kōchiku ni mukete :en: Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education",
+		"title": "高等教育機関における次世代教育学習支援プラットフォームの構築に向けて",
+		"multi":{
+			"_keys":{
+				"title":{
+					"ja-alalc97": "Kōtō kyōiku ni okeru jisedai kyōiku gakushū shien puratto fōmu no kōchiku ni mukete",
+					"en": "Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education"
+				}
+			}
+		},
 		"container-title": "日本教育工学会論文誌",
 		"volume": "31",
 		"issue": "3",
@@ -365,7 +397,15 @@ var data = {
     },
     "ITEM-13": {
         "id": "ITEM-13", 
-        "title": "民法 :ja-alalc97: Minpō :en: Japanese Civil Code", 
+        "title": "民法",
+		"multi":{
+			"_keys":{
+				"title": {
+					"ja-alalc97": "Minpō",
+					"en": "Japanese Civil Code"
+				}
+			}
+		},
         "type": "legislation"
     },
     "ITEM-14": {

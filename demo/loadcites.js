@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
- * Reserved.
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
  *
  * The contents of this file are subject to the Common Public
- * Attribution License Version 1.0 (the “License”); you may not use
+ * Attribution License Version 1.0 (the \u201cLicense\u201d); you may not use
  * this file except in compliance with the License. You may obtain a
  * copy of the License at:
  *
@@ -15,7 +14,7 @@
  * Original Developer. In addition, Exhibit A has been modified to be
  * consistent with Exhibit B.
  *
- * Software distributed under the License is distributed on an “AS IS”
+ * Software distributed under the License is distributed on an \u201cAS IS\u201d
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
@@ -32,18 +31,6 @@
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
  * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Affero General Public License (the [AGPLv3]
- * License), in which case the provisions of [AGPLv3] License are
- * applicable instead of those above. If you wish to allow use of your
- * version of this file only under the terms of the [AGPLv3] License
- * and not to allow others to use your version of this file under the
- * CPAL, indicate your decision by deleting the provisions above and
- * replace them with the notice and other provisions required by the
- * [AGPLv3] License. If you do not delete the provisions above, a
- * recipient may use your version of this file under either the CPAL
- * or the [AGPLv3] License.”
  */
 
 var data = {
@@ -157,54 +144,86 @@ var data = {
 		"author": [
 			{
 				"family": "\u68b6\u7530",
-				"given": "\u5c06\u53f8"
-			},
-			{
-				"family": ":ja-alalc97: Kajita",
-				"given": "Shoji"
+				"given": "\u5c06\u53f8",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+								"family": "Kajita",
+								"given": "Shoji"
+						}
+					}
+				}				
 			},
 			{
 				"family": "\u89d2\u6240",
-				"given": "\u8003"
-			},
-			{
-				"family": ":ja-alalc97: Kakusho",
-				"given": "Takashi"
+				"given": "\u8003",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Kakusho",
+							"given": "Takashi"
+						}
+					}
+				}				
 			},
 			{
 				"family": "\u4e2d\u6fa4",
-				"given": "\u7be4\u5fd7"
-			},
-			{
-				"family": ":ja-alalc97: Nakazawa",
-				"given": "Atsushi"
+				"given": "\u7be4\u5fd7",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Nakazawa",
+							"given": "Atsushi"
+						}
+					}
+				}				
 			},
 			{
 				"family": "\u7af9\u6751",
-				"given": "\u6cbb\u96c4"
-			},
-			{
-				"family": ":ja-alalc97: Takemura",
-				"given": "Haruo"
+				"given": "\u6cbb\u96c4",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Takemura",
+							"given": "Haruo"
+						}
+					}
+				}				
 			},
 			{
 				"family": "\u7f8e\u6fc3",
-				"given": "\u5c0e\u5f66"
-			},
-			{
-				"family": ":ja-alalc97: Mino",
-				"given": "Michihiko"
+				"given": "\u5c0e\u5f66",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Mino",
+							"given": "Michihiko"
+						}
+					}
+				}				
 			},
 			{
 				"family": "\u9593\u702c",
-				"given": "\u5065\u4e8c"
-			},
-			{
-				"family": ":ja-alalc97: Mase",
-				"given": "Kenji"
+				"given": "\u5065\u4e8c",
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Mase",
+							"given": "Kenji"
+						}
+					}
+				}				
 			}
 		],
-		"title": "\u9ad8\u7b49\u6559\u80b2\u6a5f\u95a2\u306b\u304a\u3051\u308b\u6b21\u4e16\u4ee3\u6559\u80b2\u5b66\u7fd2\u652f\u63f4\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u306e\u69cb\u7bc9\u306b\u5411\u3051\u3066 :ja-alalc97: K\u014dt\u014d ky\u014diku ni okeru jisedai ky\u014diku gakush\u016b shien puratto f\u014dmu no k\u014dchiku ni mukete :en: Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education",
+		"title": "\u9ad8\u7b49\u6559\u80b2\u6a5f\u95a2\u306b\u304a\u3051\u308b\u6b21\u4e16\u4ee3\u6559\u80b2\u5b66\u7fd2\u652f\u63f4\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u306e\u69cb\u7bc9\u306b\u5411\u3051\u3066",
+		"multi":{
+			"_keys":{
+				"title":{
+					"ja-alalc97": "K\u014dt\u014d ky\u014diku ni okeru jisedai ky\u014diku gakush\u016b shien puratto f\u014dmu no k\u014dchiku ni mukete",
+					"en": "Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education"
+				}
+			}
+		},
 		"container-title": "\u65e5\u672c\u6559\u80b2\u5de5\u5b66\u4f1a\u8ad6\u6587\u8a8c",
 		"volume": "31",
 		"issue": "3",
@@ -378,7 +397,15 @@ var data = {
     },
     "ITEM-13": {
         "id": "ITEM-13", 
-        "title": "\u6c11\u6cd5 :ja-alalc97: Minp\u014d :en: Japanese Civil Code", 
+        "title": "\u6c11\u6cd5", 
+		"multi":{
+			"_keys":{
+				"title": {
+					"ja-alalc97": "Minp\u014d",
+					"en": "Japanese Civil Code"
+				}
+			}
+		},
         "type": "legislation"
     },
     "ITEM-14": {
