@@ -167,46 +167,32 @@ CSL.Transform = function (state) {
 	}
 
 	// Internal function
-	function getTextSubField(value, locale_type, use_default) {
+	function getTextSubField(Item, field, locale_type, use_default) {
 		var m, lst, opt, o, oo, pos, key, ret, len, myret;
-		if (!value) {
+		if (!Item[field]) {
 			return "";
 		}
 		ret = "";
-		// Workaround for Internet Explorer
-		m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
-		if (m) {
-			for (pos = 0, len = m.length; pos < len; pos += 1) {
-				m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/, "");
-			}
+
+		opts = state.opt[locale_type];
+		if ("undefined" === typeof opts) {
+			opts = state.opt["default-locale"];
 		}
-		lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
-		myret = [lst[0]];
-		for (pos = 1, len = lst.length; pos < len; pos += 1) {
-			myret.push(m[pos - 1]);
-			myret.push(lst[pos]);
-		}
-		lst = myret.slice();
-		opt = state.opt[locale_type];
-		if ("undefined" === typeof opt) {
-			opt = state.opt["default-locale"];
-		}
-		for (key in opt) {
-			if (opt.hasOwnProperty(key)) {
-				// Fallback from more to less specific language tag
-				oo = opt[key];
-				o = oo.split(/[-_]/)[0];
-				if (oo && lst.indexOf(oo) > -1 && lst.indexOf(oo) % 2) {
-					ret = lst[(lst.indexOf(oo) + 1)];
-					break;
-				} else if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
-					ret = lst[(lst.indexOf(o) + 1)];
-					break;
-				}
+
+		for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
+			// Fallback from more to less specific language tag
+			opt = opts[i];
+			o = opt.split(/[-_]/)[0];
+			if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
+				ret = Item.multi._keys[field][opt];
+				break;
+			} else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
+				ret = Item.multi._keys[field][o];
+				break;
 			}
 		}
 		if (!ret && use_default) {
-			ret = lst[0];
+			ret = Item[field];
 		}
 		return ret;
 	}
@@ -267,50 +253,37 @@ CSL.Transform = function (state) {
 		if (mysubsection) {
 			// Short form
 			return function (state, Item) {
-				var value, primary;
-				value = Item[myfieldname];
+				var primary;
 
-				primary = getTextSubField(value, transform_locale, transform_fallback);
+				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 				primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
 				state.output.append(primary, this);
 			};
 		} else if (transform_locale === "locale-sec") {
 			// Long form, with secondary translation
 			return function (state, Item) {
-				var primary, secondary, primary_tok, secondary_tok, key, value;
-				value = Item[myfieldname];
-				if (value) {
-					if ("number" === typeof value) {
-						value = "" + value;
-					}
-					primary = getTextSubField(value, "locale-pri", transform_fallback);
-					secondary = getTextSubField(value, "locale-sec");
-					if (secondary) {
-						primary_tok = CSL.Util.cloneToken(this);
-						primary_tok.strings.suffix = "";
-						secondary_tok = new CSL.Token("text", CSL.SINGLETON);
-						secondary_tok.strings.suffix = "]" + this.strings.suffix;
-						secondary_tok.strings.prefix = " [";
-
-						state.output.append(primary, primary_tok);
-						state.output.append(secondary, secondary_tok);
-					} else {
-						state.output.append(primary, this);
-					}
+				var primary, secondary, primary_tok, secondary_tok, key;
+				primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
+				secondary = getTextSubField(Item, myfieldname, "locale-sec");
+				if (secondary) {
+					primary_tok = CSL.Util.cloneToken(this);
+					primary_tok.strings.suffix = "";
+					secondary_tok = new CSL.Token("text", CSL.SINGLETON);
+					secondary_tok.strings.suffix = "]" + this.strings.suffix;
+					secondary_tok.strings.prefix = " [";
+					
+					state.output.append(primary, primary_tok);
+					state.output.append(secondary, secondary_tok);
+				} else {
+					state.output.append(primary, this);
 				}
 				return null;
 			};
 		} else {
 			return function (state, Item) {
-				var value, primary;
-				value = Item[myfieldname];
-				if (value) {
-					if ("number" === typeof value) {
-						value = "" + value;
-					}
-					primary = getTextSubField(value, transform_locale, transform_fallback);
-					state.output.append(primary, this);
-				}
+				var primary;
+				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
+				state.output.append(primary, this);
 				return null;
 			};
 		}
