@@ -46,34 +46,40 @@
  * or the [AGPLv3] License.”
  */
 
->>===== MODE =====>>
+>>== MODE ==>>
 citation
-<<===== MODE =====<<
+<<== MODE ==<<
 
 
+>>== ABBREVIATIONS ==>>
+{
+    "default": {
+        "title": {
+            "Journal of Irreproducible Results": "J. Irrep. Res."
+        }
+    }
+}
+<<== ABBREVIATIONS ==<<
 
->>===== RESULT =====>>
-Zzzzzzzzz; Aardvaark
-<<===== RESULT =====<<
 
+>>== RESULT ==>>
+Minpō.
+<<== RESULT ==<<
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-sort-ja-Hrkt">
+      default-locale="en-US-x-pri-ja-alalc97-x-sec-en">
   <info>
     <id />
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <sort>
-      <key variable="title"/>
-    </sort>
-    <layout delimiter="; ">
-      <text variable="title"/>
+    <layout suffix=".">
+      <text variable="title" form="short"/>
     </layout>
   </citation>
 </style>
@@ -84,24 +90,13 @@ Zzzzzzzzz; Aardvaark
 [
     {
         "id": "ITEM-1", 
-        "title": "Aardvaark", 
-        "type": "book",
+        "title": "民法",
+        "type": "legislation",
 		"multi":{
 			"_keys":{
 				"title":{
-					"ja-Hrkt":"お"
-				}
-			}
-		}
-    }, 
-    {
-        "id": "ITEM-2", 
-        "title": "Zzzzzzzzz", 
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Hrkt":"あ"
+					"ja-alalc97":"Minpō",
+					"en":"Japanese Civil Code"
 				}
 			}
 		}

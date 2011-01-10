@@ -87,13 +87,27 @@ Zzzzzzzzz; Aardvaark
 [
     {
         "id": "ITEM-1", 
-        "title": "Aardvaark :ja-Hrkt: お", 
-        "type": "book"
+        "title": "Aardvaark",
+        "type": "book",
+		"multi":{
+			"_keys":{
+				"title":{
+					"ja-Hrkt":"お"
+				}
+			}
+		}		
     }, 
     {
         "id": "ITEM-2", 
-        "title": "Zzzzzzzzz :ja-Hrkt: あ", 
-        "type": "book"
+        "title": "Zzzzzzzzz",
+        "type": "book",
+		"multi":{
+			"_keys":{
+				"title":{
+					"ja-Hrkt":"あ"
+				}
+			}
+		}
     }
 ]
 <<===== INPUT =====<<

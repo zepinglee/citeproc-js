@@ -81,13 +81,27 @@ citation
 [
     {
         "id": "ITEM-1", 
-        "title": "民法 :eng: Civil Code", 
-        "type": "book"
+        "title": "民法",
+        "type": "book",
+		"multi":{
+			"_keys":{
+				"title":{
+					"en":"Civil Code"
+				}
+			}
+		}
     }, 
     {
         "id": "ITEM-2", 
-        "title": "刑法 :eng: Criminal Code", 
-        "type": "book"
+        "title": "刑法",
+        "type": "book",
+		"multi":{
+			"_keys":{
+				"title":{
+					"en":"Criminal Code"
+				}
+			}
+		}
     }
 ]
 <<===== INPUT =====<<

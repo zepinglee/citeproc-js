@@ -203,11 +203,21 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
             ]
         }, 
         "number": "LC/L.2656-P", 
-        "publisher": "Naciones Unidas - ECLAC :en:United Nations - ECLAC", 
-        "publisher-place": "Santiago de Chile :en:Santiago", 
+        "publisher": "Naciones Unidas - ECLAC", 
+        "publisher-place": "Santiago de Chile", 
         "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
         "type": "book", 
-        "un-sales-number": "S.07.II.G.6"
+        "un-sales-number": "S.07.II.G.6",
+		"multi":{
+			"_keys":{
+				"publisher":{
+					"en":"United Nations - ECLAC"
+				},
+				"publisher-place":{
+					"en":"Santiago"
+				}
+			}
+		}
     }
 ]
 <<===== INPUT =====<<

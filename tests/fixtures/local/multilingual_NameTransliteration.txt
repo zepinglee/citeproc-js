@@ -89,22 +89,28 @@ Beato T., T. Kitano, R. Atkinson
             {
                 "family": "ビート", 
                 "given": "たけし", 
-                "static-ordering": false
-            }, 
-            {
-                "family": ":ja-alalc97:   Beato", 
-                "given": "Takeshi", 
-                "static-ordering": false
+                "static-ordering": false,
+				"multi":{
+					"_key":{
+						"ja-alalc97":{
+							"family": "Beato", 
+                			"given": "Takeshi"
+						}
+					}
+				}
             }, 
             {
                 "family": "北野", 
                 "given": "武", 
-                "static-ordering": false
-            }, 
-            {
-                "family": ":en:   Kitano", 
-                "given": "Takeshi", 
-                "static-ordering": false
+                "static-ordering": false,
+				"multi":{
+					"_key":{
+						"en":{
+							"family": "Kitano", 
+                			"given": "Takeshi"
+						}
+					}
+				}
             }, 
             {
                 "family": "Atkinson", 

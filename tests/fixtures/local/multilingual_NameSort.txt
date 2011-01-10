@@ -89,11 +89,14 @@ R. Atkinson; 北野武; ビートたけし
             {
                 "family": "ビート", 
                 "given": "たけし", 
-                "static-ordering": false
-            }, 
-            {
-                "family": ":ja-Hrkt: ビートタケシ", 
-                "static-ordering": false
+                "static-ordering": false,
+				"multi":{
+					"_key":{
+						"ja-Hrkt":{
+							"family":"ビートタケシ"
+						}
+					}
+				}
             }
         ], 
         "id": "ITEM-1", 
@@ -104,11 +107,14 @@ R. Atkinson; 北野武; ビートたけし
             {
                 "family": "北野", 
                 "given": "武", 
-                "static-ordering": false
-            }, 
-            {
-                "family": ":ja-Hrkt: キタノタケシ", 
-                "static-ordering": false
+                "static-ordering": false,
+				"multi":{
+					"_key":{
+						"ja-Hrkt":{
+							"family":"キタノタケシ"
+						}
+					}
+				}
             }
         ], 
         "id": "ITEM-2", 
