@@ -1,5 +1,33 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+======================================
+Changes in version 1.0.94 [API change)
+======================================
+
+----------
+API change
+----------
+
+- The input format for multilingual data changes in
+  this version.  The previous format, intended only
+  for testing, relied on string parsing to identify
+  multilingual data embedded in a given field. While
+  this strategy worked for initial testing (its sole
+  intended purpose), it is cumbersome and potentially 
+  fragile.
+
+  The multilingual input data format recognized beginning 
+  with this version of citeproc-js separates multilingual 
+  content properly into separate elements, resulting 
+  in simpler design and more robust operation.
+
+  The change to the multilingual input format is not
+  backward compatible; in the unlikely event that any 
+  existing projects have relied upon the old format,
+  adjustments will be required to run this version
+  of the processor.
+
+
 =========================
 Changes in version 1.0.93
 =========================

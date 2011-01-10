@@ -1860,73 +1860,61 @@ CSL.Engine.prototype.configureTokenLists = function () {
 	return this.state;
 };
 CSL.Engine.prototype.getNameSubFields = function (names) {
-	var i, j, k, count, ret, mode, use_static_ordering, name, newname, addme, updateme, part, o, p, m, newopt, ilen, jlen, klen, key, str, lang;
-	count = -1;
+	var i, j, k, ret, mode, newname, opt, ilen, jlen, klen, key, langTag;
 	ret = [];
 	mode = "locale-name";
-	use_static_ordering = false;
 	if (this.tmp.area.slice(-5) === "_sort") {
 		mode = "locale-sort";
 	}
 	for (i = 0, ilen = names.length; i < ilen; i += 1) {
 		newname = {};
+		newname.multi = {};
+		newname.multi._key = {};
 		for (key in names[i]) {
 			if (names[i].hasOwnProperty(key)) {
-				newname[key] = names[i][key];
-			}
-		}
-		if (newname.given && !newname.family) {
-			newname.family = "";
-		} else if (newname.family && !newname.given) {
-			newname.given = "";
-		}
-		addme = true;
-		updateme = false;
-		for (j = 0, jlen = CSL.MINIMAL_NAME_FIELDS.length; j < jlen; j += 1) {
-			part = CSL.MINIMAL_NAME_FIELDS[j];
-			p = newname[part];
-			if (p) {
-				if (newname[part].length && newname[part][0] !== ":") {
-					if (newname["static-ordering"]) {
-						use_static_ordering = true;
-					} else if (!newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-						use_static_ordering = true;
-					} else {
-						use_static_ordering = false;
-					}
-				}
-				newname["static-ordering"] = use_static_ordering;
-				m = p.match(/^(:[\-a-zA-Z0-9]+:\s+)/);
-				if (m) {
-					str = p.slice(m[1].length);
-					lang = m[1].slice(1).replace(/:\s+$/, "");
-					addme = false;
-					for (k = 0, klen = this.opt[mode].length; k < klen; k += 1) {
-						o = this.opt[mode][k];
-						if (lang === o) {
-							updateme = true;
-							newname[part] = str;
-							if (lang.indexOf("-") === -1) {
-								if (newname[part].match(CSL.ROMANESQUE_REGEXP)) {
-									newname["static-ordering"] = false;
-								}
-							}
-							break;
+				if (key === "multi") {
+					for (langTag in names[i].multi._key) {
+						newname.multi._key[langTag] = {};
+						for (var kkey in names[i].multi._key[langTag]) {
+							newname.multi._key[langTag][kkey] = names[i].multi._key[langTag][kkey];
 						}
 					}
+				} else {
+					newname[key] = names[i][key];
 				}
 			}
 		}
-		if (addme) {
-			ret.push(newname);
-			count += 1;
-		} else if (updateme) {
-			for (key in newname) {
-				if (newname.hasOwnProperty(key)) {
-					ret[count][key] = newname[key];
+		if (!newname.family) {
+			newname.family = "";
+		}
+		if (!newname.given) {
+			newname.given = "";
+		}
+		if (newname["static-ordering"]) {
+			newname["static-ordering"] = true;
+		} else if (!(newname.family + newname.given).match(CSL.ROMANESQUE_REGEXP)) {
+			newname["static-ordering"] = true;
+		} else {
+			newname["static-ordering"] = false;
+		}
+		for (k = 0, klen = this.opt[mode].length; k < klen; k += 1) {
+			opt = this.opt[mode][k];
+			if (newname.multi._key[opt]) {
+				if (newname.multi._key[opt].family) {
+					newname.family = newname.multi._key[opt].family;
 				}
+				if (newname.multi._key[opt].given) {
+					newname.given = newname.multi._key[opt].given;
+				}
+				if (opt.indexOf("-") === -1) {
+					if ((newname.family + newname.given).match(CSL.ROMANESQUE_REGEXP)) {
+						newname["static-ordering"] = false;
+					}
+				}
+				break;
 			}
 		}
+		ret.push(newname);
 		if (!newname.literal && !newname.given && newname.family) {
 			newname.literal = newname.family;
 		}
@@ -6012,44 +6000,29 @@ CSL.Transform = function (state) {
 		}
 		return value;
 	}
-	function getTextSubField(value, locale_type, use_default) {
+	function getTextSubField(Item, field, locale_type, use_default) {
 		var m, lst, opt, o, oo, pos, key, ret, len, myret;
-		if (!value) {
+		if (!Item[field]) {
 			return "";
 		}
 		ret = "";
-		m = value.match(/\s*:([\-a-zA-Z0-9]+):\s*/g);
-		if (m) {
-			for (pos = 0, len = m.length; pos < len; pos += 1) {
-				m[pos] = m[pos].replace(/^\s*:/, "").replace(/:\s*$/, "");
-			}
+		opts = state.opt[locale_type];
+		if ("undefined" === typeof opts) {
+			opts = state.opt["default-locale"];
 		}
-		lst = value.split(/\s*:(?:[\-a-zA-Z0-9]+):\s*/);
-		myret = [lst[0]];
-		for (pos = 1, len = lst.length; pos < len; pos += 1) {
-			myret.push(m[pos - 1]);
-			myret.push(lst[pos]);
-		}
-		lst = myret.slice();
-		opt = state.opt[locale_type];
-		if ("undefined" === typeof opt) {
-			opt = state.opt["default-locale"];
-		}
-		for (key in opt) {
-			if (opt.hasOwnProperty(key)) {
-				oo = opt[key];
-				o = oo.split(/[-_]/)[0];
-				if (oo && lst.indexOf(oo) > -1 && lst.indexOf(oo) % 2) {
-					ret = lst[(lst.indexOf(oo) + 1)];
-					break;
-				} else if (o && lst.indexOf(o) > -1 && lst.indexOf(o) % 2) {
-					ret = lst[(lst.indexOf(o) + 1)];
-					break;
-				}
+		for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
+			opt = opts[i];
+			o = opt.split(/[-_]/)[0];
+			if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
+				ret = Item.multi._keys[field][opt];
+				break;
+			} else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
+				ret = Item.multi._keys[field][o];
+				break;
 			}
 		}
 		if (!ret && use_default) {
-			ret = lst[0];
+			ret = Item[field];
 		}
 		return ret;
 	}
@@ -6092,47 +6065,34 @@ CSL.Transform = function (state) {
 		transform_fallback = opt.transform_fallback;
 		if (mysubsection) {
 			return function (state, Item) {
-				var value, primary;
-				value = Item[myfieldname];
-				primary = getTextSubField(value, transform_locale, transform_fallback);
+				var primary;
+				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 				primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
 				state.output.append(primary, this);
 			};
 		} else if (transform_locale === "locale-sec") {
 			return function (state, Item) {
-				var primary, secondary, primary_tok, secondary_tok, key, value;
-				value = Item[myfieldname];
-				if (value) {
-					if ("number" === typeof value) {
-						value = "" + value;
-					}
-					primary = getTextSubField(value, "locale-pri", transform_fallback);
-					secondary = getTextSubField(value, "locale-sec");
-					if (secondary) {
-						primary_tok = CSL.Util.cloneToken(this);
-						primary_tok.strings.suffix = "";
-						secondary_tok = new CSL.Token("text", CSL.SINGLETON);
-						secondary_tok.strings.suffix = "]" + this.strings.suffix;
-						secondary_tok.strings.prefix = " [";
-						state.output.append(primary, primary_tok);
-						state.output.append(secondary, secondary_tok);
-					} else {
-						state.output.append(primary, this);
-					}
+				var primary, secondary, primary_tok, secondary_tok, key;
+				primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
+				secondary = getTextSubField(Item, myfieldname, "locale-sec");
+				if (secondary) {
+					primary_tok = CSL.Util.cloneToken(this);
+					primary_tok.strings.suffix = "";
+					secondary_tok = new CSL.Token("text", CSL.SINGLETON);
+					secondary_tok.strings.suffix = "]" + this.strings.suffix;
+					secondary_tok.strings.prefix = " [";
+					state.output.append(primary, primary_tok);
+					state.output.append(secondary, secondary_tok);
+				} else {
+					state.output.append(primary, this);
 				}
 				return null;
 			};
 		} else {
 			return function (state, Item) {
-				var value, primary;
-				value = Item[myfieldname];
-				if (value) {
-					if ("number" === typeof value) {
-						value = "" + value;
-					}
-					primary = getTextSubField(value, transform_locale, transform_fallback);
-					state.output.append(primary, this);
-				}
+				var primary;
+				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
+				state.output.append(primary, this);
 				return null;
 			};
 		}
