@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a102##
+   version 1.00##a103##
 
 .. class:: info-date
 
-   =D=19 December 2010=D=
+   =D=10 January 2011=D=
 
 .. class:: contributors
 
@@ -1733,88 +1733,56 @@ Multi-lingual content
 .. role:: sc
 
 The version of ``citeproc-js`` described by this manual incorporates
-an experimental mechanism for supporting cross-lingual and
+a mechanism for supporting cross-lingual and
 mixed-language citation styles, such as 我妻栄 [Wagatsuma Sakae], 
-:sc:`債権各論 [Obligations in Detail]` (1969).  While the scheme
-described below cannot be considered
-a permanent and stable solution to the problem of multi-lingual
-citation management, it provides a platform for proof of concept, and
-for the development of styles to support more robust multilingual support
-when it arrives.
+:sc:`債権各論 [Obligations in Detail]` (1969). The scheme
+described below should be considered experimental for the
+present. The code is intended for deployment in the
+Zotero reference manager; when it is eventually accepted for deployment (possibly with
+further modifications), the implementation can be considered
+stable.
 
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The ``default-locale`` declaration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The ``style`` tag in a CSL style may contain a ``default-locale`` attribute.
-
-
-.. The clothesline construct below removes the hint box from the
-   normal flow, so that it overlays the code block below.  This
-   is necessary wherever the edge of the table containing the
-   code block might extend to the edge of a hint/important box.
-
-.. class:: clothesline
-
-   ..
-
-      .. admonition:: Hint
-   
-         When the ``default-locale`` attribute is omitted, 
-         the default language is set to ``en-US``.
-   
-.. sourcecode:: xml
-      
-   <style 
-       xmlns="http://purl.org/net/xbiblio/csl"
-       class="in-text"
-       version="1.0"
-       default-locale="de">
-     <info>
-       <id />
-       <title />
-       <updated>2009-08-10T04:49:00+09:00</updated>
-     </info>
-     <citation>
-       <layout>
-         <names variable="author">
-           <name />
-         </names>
-       </layout>
-     </citation>
-   </style>
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Selecting multi-lingual variants
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For multi-lingual operation, a style may be set to request alternative
 versions and translations of the ``title`` field, and of the author
-and other name fields, using an extension to the ``default-locale``
-attribute.  Extensions consist of an extension tag, followed by
-a language setting that conforms to |link| `RFC 4646`__ (typically constructed
-from components listed in the |link| `IANA Language Subtag Registry`__).  Recognized extension
-tags are as follows:
+and other name fields.  There are two methods of setting multilingual
+parameters: via ``default-locale`` (intended primarily for testing) and
+via API methods (intended for production use).
 
-__ http://www.ietf.org/rfc/rfc4646.txt
+When set via ``default-locale``, extensions consist of an extension tag, followed by
+a language setting that conforms to |link| `RFC 5646`__ (typically constructed
+from components listed in the |link| `IANA Language Subtag Registry`__).  
+When set via an API method, the argument to the appropriate method should
+be a list of RFC 5646 language tags.
+
+Recognized extension
+tags for use with ``default-locale`` [and corresponding API methods] are as follows:
+
+__ http://www.ietf.org/rfc/rfc5646.txt
 
 __ http://www.iana.org/assignments/language-subtag-registry
 
 
-``-x-pri-``
+``-x-pri-`` [``setLangTagsForCslTitleTransliteration()``\ ]
    Sets a preferred language or translitertion for the title field.
 
-``-x-sec-``
+``-x-sec-`` [``setLangTagsForCslTranslation()``\ ]
    Sets an optional secondary translation for the title field. 
    If this tag is present, a translation in the target language 
    will (if available) be placed in square braces immediately  after the title text.
 
-``-x-sort-``
+``-x-sort-`` [``setLangTagsForCslSort()``\ ]
    Sets the preferred language or transliteration to be used for both the 
-   title field and for names.
+   title field and for names in sort keys.
 
-``-x-name-``
-   Sets the preferred language or transliteration for names.
+``-x-name-`` [``setLangTagsForCslNameTransliteration()``\ ]
+   Sets the preferred language for transliteration for names.
 
-The tags are applied to a style by appending them to the language
-string in the ``default-locale`` element:
+An example of ``default-locale`` configuration:
 
 .. sourcecode:: xml
 
@@ -1824,8 +1792,8 @@ string in the ``default-locale`` element:
        version="1.0"
        default-locale="en-US-x-pri-ja-Hrkt">
 
-Multiple tags may be specified, and tags are cumulative, and for
-readability, individual tags may be separated by newlines within the
+Multiple tags may be specified, and tags are cumulative. For
+readability in test fixtures, individual tags may be separated by newlines within the
 attribute.  The following will attempt to render titles in either
 Pinyin transliteration (for Chinese titles) or Hepburn romanization
 (for Japanese titles), sorting by the transliteration.
@@ -1842,6 +1810,17 @@ Pinyin transliteration (for Chinese titles) or Hepburn romanization
            -x-sort-zh-Latn-pinyin
            -x-sort-ja-Latn-hepburn">
 
+An example of API configuration:
+
+.. sourcecode:: js
+
+   citeproc.setLangTagsForCslSort(["zh-alalc97", "ja-alalc97"]);
+
+
+^^^^^^^^^^^
+Data format
+^^^^^^^^^^^
+
 Multi-lingual operation depends upon the presence of alternative
 representations of field content embedded in the item data.  When
 alternative field content is not availaable, the "real" field content
@@ -1851,26 +1830,35 @@ language is available (as will normally be the case for an ordinary
 Zotero data store).
 
 
-^^^^^
+!!!!!
 Title
-^^^^^
+!!!!!
 
-For titles, alternative representations are appended
-directly to the field content, separated by the appropriate
-language tag with a leading and trailing colon:
+For titles and other ordinary string fields, alternative representations are
+placed in a separate ``multi`` segment on the item, keyed to the
+field name and the language tag (note the use of the ``_keys`` element on the
+``multi`` object):
 
 .. sourcecode:: js
 
-   { "title" : "民法 :ja-Latn-hepburn-heploc: Minpō :en: Civil Code"
+   { "title" : "民法",
+     "multi": {
+       "_keys": {
+         "title": {
+           "ja-alalc97": "Minpō",
+           "en":"Civil Code"
+         }
+	   }
+     }
    }
 
-^^^^^
+!!!!!
 Names
-^^^^^
+!!!!!
 
-For personal names, alternative representations should be presented
-as separate "name" entries, immediately following the original
-for the name element to which they apply.  For example:
+For names, alternative representations are set on a ``multi``
+segment of the name object itself (note the use of the ``_key``
+element on the ``multi`` object):
 
 .. admonition:: Hint
 
@@ -1887,16 +1875,26 @@ __ `input-byzantine`_
 
    { "author" : [
        { "family" : "穂積",
-         "given" : "陳重"
-       },
-       { "family" : ":ja-Latn: Hozumi",
-         "given" : "Nobushige"
+         "given" : "陳重",
+         "multi": {
+           "_key": {
+             "ja-alalc97": {
+               "family" : "Hozumi",
+               "given" : "Nobushige"
+             }
+           }
+         }
        },
        { "family" : "中川",
          "given" : "善之助"
-       },
-       { "family" : ":ja-Latn: Nakagawa",
-         "given" : "Zennosuke"
+         "multi": {
+           "_key": {
+             "ja-alalc97": {
+               "family" : "Nakagawa",
+               "given" : "Zennosuke"
+             }
+           }
+         }
        }
      ]
    }
