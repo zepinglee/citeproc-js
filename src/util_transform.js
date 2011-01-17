@@ -298,7 +298,7 @@ CSL.Transform = function (state) {
 		var shortvalue;
 		//
 		// This was pointless: institutions are names, and language
-		// selection is done by getNameSubFields().
+		// selection is done with this.name().
 		//basevalue = this.getTextSubField(value, "locale-pri", true);
 
 		shortvalue = state.transform.institution[basevalue];
@@ -316,6 +316,91 @@ CSL.Transform = function (state) {
 		}
 	}
 	this.output = output;
+
+	// The name transform code is placed here to keep similar things
+	// in one place.  Obviously this module could do with a little
+	// tidying up.
+
+	/*
+	 * Return a single name object
+	 */
+	function name (state, name, langTags) {
+		var i, ret, optLangTag, ilen, key, langTag;
+		if (state.tmp.area.slice(-5) === "_sort") {
+			 langTags = state.opt["locale-sort"];
+		}
+		if ("string" === typeof langTags) {
+			langTags = [langTags];
+		}
+		// Normalize to string
+		if (!name.family) {
+			name.family = "";
+		}
+		if (!name.given) {
+			name.given = "";
+		}
+		//
+		// Add a static-ordering toggle for non-roman, non-Cyrillic
+		// names, based on the headline values.
+		//
+		var static_ordering_val = false;
+		var static_ordering_freshcheck = false;
+		if (name["static-ordering"]) {
+			static_ordering_val = true;
+		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+			static_ordering_val = true;
+		}
+		//
+		// Step through the requested languages in sequence
+		// until a match is found
+		//
+		var transliterated = false;
+		if (langTags && name.multi) {
+			for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
+				langTag = langTags[i];
+				if (name.multi._key[langTag]) {
+					name = name.multi._key[langTag];
+					transliterated = true;
+					if (langTag.indexOf("-") === -1) {
+						var static_ordering_freshcheck = true;
+					}
+					break;
+				}
+			}
+		}
+		// var clone the item before writing into it
+		name = {
+			family:name.family,
+			given:name.given,
+			"non-dropping-particle":name["non-dropping-particle"],
+			"dropping-particle":name["dropping-particle"],
+			suffix:name.suffix,
+			"static-ordering":static_ordering_val,
+			"parse-names":name["parse-names"],
+			"comma-suffix":name["comma-suffix"],
+			transliterated:transliterated
+		}
+		if (static_ordering_freshcheck &&
+			(name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+			name["static-ordering"] = false;
+		}
+		if (state.opt["parse-names"]
+			&& name["parse-names"] !== 0) {
+			state.parseName(name);
+		}
+		if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"') {
+			name.family = name.family.slice(1, -1);
+		}
+		if (!name.literal && !name.given && name.family) {
+			name.literal = name.family;
+		}
+		if (name.literal) {
+			delete name.family;
+			delete name.given;
+		}
+		return name;
+	}
+	this.name = name;
 };
 
 

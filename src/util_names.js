@@ -117,42 +117,70 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 	for (pos = 0; pos < len; pos += 1) {
 		this.namenum = parseInt(pos, 10);
 		this.name = this.segments[seg][pos];
-		if (this.name.literal) {
-			value = this.name.literal;
-			state.output.append(this.name.literal, "empty");
-		} else {
-			sequence = CSL.Util.Names.getNamepartSequence(state, seg, this.name);
-
-			state.output.openLevel(sequence[0][0]); // articular join
-			state.output.openLevel(sequence[0][1]); // join to last element (?)
-			state.output.openLevel(sequence[0][2]); // inter-element join (?)
-
-			this.outputNameParts(sequence[1]);
-
-			state.output.closeLevel();
-			state.output.openLevel(sequence[0][2]);
-
-			this.outputNameParts(sequence[2]);
-
-			state.output.closeLevel();
-			state.output.closeLevel();
-			//
-			// articular goes here  //
-			//
-			this.outputNameParts(sequence[3]);
-
-			state.output.closeLevel();
+		// Get the language tags from the names transliteration
+		// preference, and feed it to the following function.
+		var translit = state.opt["locale-name"];
+		var transformed = this.outputName(seg, pos, translit);
+		if (this.opt["locale-show-original-names"] && transformed && this.name.given) {
+			// OOOOO: This should be a formatting blob with affixes.
+			var parens = new CSL.Blob();
+			parens.strings.prefix = " (";
+			parens.strings.suffix = ")";
+			this.state.output.addToken("parens", false, parens);
+			this.outputName(seg, pos, false, token);
 		}
 	}
 	this.nameoffset += this.segments[seg].length;
 };
 
-CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence) {
+CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, translit, token) {
+
+	var name = this.state.transform.name(this.state, this.name, translit);
+
+	if (name.literal) {
+		value = name.literal;
+		this.state.output.append(name.literal, "empty");
+	} else {
+
+		if (token) {
+			this.state.output.openLevel("parens");
+		} 
+
+		sequence = CSL.Util.Names.getNamepartSequence(this.state, seg, name);
+		
+		this.state.output.openLevel(sequence[0][0]); // articular join
+		this.state.output.openLevel(sequence[0][1]); // join to last element (?)
+		this.state.output.openLevel(sequence[0][2]); // inter-element join (?)
+		
+		this.outputNameParts(name, sequence[1]);
+		
+		this.state.output.closeLevel();
+		this.state.output.openLevel(sequence[0][2]);
+		
+		this.outputNameParts(name, sequence[2]);
+		
+		this.state.output.closeLevel();
+		this.state.output.closeLevel();
+		//
+		// articular goes here  //
+		//
+		this.outputNameParts(name, sequence[3]);
+		
+		this.state.output.closeLevel();
+
+		if (token) {
+			this.state.output.closeLevel(); // parens
+		}
+	}
+	return name.transformed;
+};
+
+CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (name, subsequence) {
 	var state, len, pos, key, namepart, initialize_with, preffie;
 	state = this.state;
     	// Purge empty name parts from keylist
 	for (var i = subsequence.length - 1; i > -1; i += -1) {
-	    if (!this.name[subsequence[i]]) {
+	    if (!name[subsequence[i]]) {
 		subsequence = subsequence.slice(0, i).concat(subsequence.slice(i + 1));
 	    }
 	}
@@ -160,16 +188,16 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (subsequence)
 	len = subsequence.length;
 	for (pos = 0; pos < len; pos += 1) {
 		key = subsequence[pos];
-		namepart = this.name[key];
+		namepart = name[key];
 		if (preffie) {
 		    namepart = preffie + namepart;
 		    preffie = "";
 		}
 		// Do not include given name, dropping particle or suffix in strict short form of name
 		if (["given", "suffix", "dropping-particle"].indexOf(key) > -1 && 0 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][this.namenum + this.nameoffset]) {
-			if (!(key === "given" && !this.name.family)) {
+			if (!(key === "given" && !name.family)) {
 				if (key === "suffix") {
-					if (this.name.suffix !== this.name.suffix.toLowerCase()) {
+					if (name.suffix !== name.suffix.toLowerCase()) {
 						continue;
 					}
 				} else {

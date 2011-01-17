@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.94";
+	this.processor_version = "1.0.95";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -500,96 +500,6 @@ CSL.Engine.prototype.configureTokenLists = function () {
 	}
 	this.version = CSL.version;
 	return this.state;
-};
-
-CSL.Engine.prototype.getNameSubFields = function (names) {
-	var i, j, k, ret, mode, newname, opt, ilen, jlen, klen, key, langTag;
-	ret = [];
-	mode = "locale-name";
-	if (this.tmp.area.slice(-5) === "_sort") {
-		mode = "locale-sort";
-	}
-	for (i = 0, ilen = names.length; i < ilen; i += 1) {
-		//
-		// clone the name object so we can trample on the content.
-		//
-		newname = {};
-		newname.multi = {};
-		newname.multi._key = {};
-		for (key in names[i]) {
-			if (names[i].hasOwnProperty(key)) {
-				if (key === "multi") {
-					for (langTag in names[i].multi._key) {
-						newname.multi._key[langTag] = {};
-						for (var kkey in names[i].multi._key[langTag]) {
-							newname.multi._key[langTag][kkey] = names[i].multi._key[langTag][kkey];
-						}
-					}
-				} else {
-					newname[key] = names[i][key];
-				}
-			}
-		}
-
-		// This normalization should happen at the end of the function
-		if (!newname.family) {
-			newname.family = "";
-		}
-		if (!newname.given) {
-			newname.given = "";
-		}
-
-		// What this is doing is to set static ordering according
-		// to analysis of the headline values, then stir
-		// in the content of a variant, if any, then readjust
-		// static ordering if the variant is a bare language.
-
-		//
-		// Add a static-ordering toggle for non-roman, non-Cyrillic
-		// names, based on the headline values.
-		//
-		if (newname["static-ordering"]) {
-			newname["static-ordering"] = true;
-		} else if (!(newname.family + newname.given).match(CSL.ROMANESQUE_REGEXP)) {
-			newname["static-ordering"] = true;
-		} else {
-			newname["static-ordering"] = false;
-		}
-		
-		// Step through the requested languages in sequence
-		for (k = 0, klen = this.opt[mode].length; k < klen; k += 1) {
-			opt = this.opt[mode][k];
-			if (newname.multi._key[opt]) {
-				//
-				// OOOOO: Obviously quashing the headline values
-				// is a bad idea.  This will need to be revisited
-				// when we implement the rendering of alternative 
-				// creator names.
-				//
-				if (newname.multi._key[opt].family) {
-					newname.family = newname.multi._key[opt].family;
-				}
-				if (newname.multi._key[opt].given) {
-					newname.given = newname.multi._key[opt].given;
-				}
-				if (opt.indexOf("-") === -1) {
-					if ((newname.family + newname.given).match(CSL.ROMANESQUE_REGEXP)) {
-						newname["static-ordering"] = false;
-					}
-				}
-				break;
-			}
-		}
-		ret.push(newname);
-		if (!newname.literal && !newname.given && newname.family) {
-			newname.literal = newname.family;
-		}
-		if (newname.literal) {
-			delete newname.family;
-			delete newname.given;
-		}
-	}
-	return ret;
 };
 
 

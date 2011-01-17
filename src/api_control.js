@@ -85,5 +85,14 @@ CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
 	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
 		this.opt['locale-sec'].push(tags[i]);
 	}
-}
+};
+
 	
+CSL.Engine.prototype.setOriginalCreatorNameFormsOption = function (arg) {
+	if (arg) {
+		this.opt["locale-show-original-names"] = true;
+	} else {
+		this.opt["locale-show-original-names"] = false;
+	}
+};
+

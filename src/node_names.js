@@ -75,15 +75,15 @@ CSL.Node.names = {
 						}
 						//SNIP-END
 						if (Item[variable]) {
-							rawvar = Item[variable];
+							rawlist = Item[variable];
 							if ("string" === typeof Item[variable]) {
-								rawvar = [{literal: Item[variable]}];
+								rawlist = [{literal: Item[variable]}];
 							}
-							var rawlen = rawvar.length;
+							var rawlen = rawlist.length;
 							if (state.opt.max_number_of_names && rawlen > 50 && rawlen > (state.opt.max_number_of_names + 2)) {
-								rawvar = rawvar.slice(0, state.opt.max_number_of_names + 2);
+								rawlist = rawlist.slice(0, state.opt.max_number_of_names + 2);
 							}
-							rawlist = state.getNameSubFields(rawvar);
+							
 							names = [];
 							//
 							// we start with this:
@@ -114,14 +114,22 @@ CSL.Node.names = {
 							llen = rawlist.length;
 							for (ppos = 0; ppos < llen; ppos += 1) {
 								name = rawlist[ppos];
-								if (name.literal) {
+								//
+								// Force all institutional names to literal.
+								//
+								if (name.literal || (name.family && !name.given)) {
 									// org
 									nameset.variable = variable;
 									nameset.species = "org";
-									if (name.literal.slice(0, 1) === '"' && name.literal.slice(-1)) {
-										lllst = [name.literal.slice(1, -1)];
+									if (name.literal) {
+										var lit = name.literal;
 									} else {
-										lllst = name.literal.split(/,\s+/);
+										var lit = name.family;
+									}
+									if (lit.slice(0, 1) === '"' && lit.slice(-1)) {
+										lllst = [lit.slice(1, -1)];
+									} else {
+										lllst = lit.split(/,\s+/);
 									}
 									lllen = lllst.length;
 									for (pppos = 0; pppos < lllen; pppos += 1) {
@@ -383,17 +391,6 @@ CSL.Node.names = {
 					if ("org" === nameset.species) {
 						if (state.output.getToken("institution").strings["reverse-order"]) {
 							nameset.names.reverse();
-						}
-					}
-					llen = nameset.names.length;
-					for (ppos = 0; ppos < llen; ppos += 1) {
-						name = nameset.names[ppos];
-						if (state.opt["parse-names"]
-						    && name["parse-names"] !== 0) {
-							state.parseName(name);
-						}
-						if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1)) {
-							name.family = name.family.slice(1, -1);
 						}
 					}
 				}
