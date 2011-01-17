@@ -1,5 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+=========================
+Changes in version 1.0.95
+=========================
+
+------------
+Enhancements
+------------
+
+- Render multilingual names atomically, and do not
+  modify the content of names objects during
+  processing. This permits implementation of alternative
+  name forms, needed to accomodate a new style rule
+  in scientific publishing, that permits author names
+  to be given in the original script alongside the
+  romanized form.
+
+- Implement the rendering of original name forms,
+  where an alternative form of the name is used for
+  the primary rendering.
+
+
 ======================================
 Changes in version 1.0.94 [API change)
 ======================================
