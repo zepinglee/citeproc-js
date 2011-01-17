@@ -89,7 +89,6 @@ Beato T., T. Kitano, R. Atkinson
             {
                 "family": "ビート", 
                 "given": "たけし", 
-                "static-ordering": false,
 				"multi":{
 					"_key":{
 						"ja-alalc97":{
@@ -102,7 +101,6 @@ Beato T., T. Kitano, R. Atkinson
             {
                 "family": "北野", 
                 "given": "武", 
-                "static-ordering": false,
 				"multi":{
 					"_key":{
 						"en":{
@@ -114,8 +112,7 @@ Beato T., T. Kitano, R. Atkinson
             }, 
             {
                 "family": "Atkinson", 
-                "given": "Rowan", 
-                "static-ordering": false
+                "given": "Rowan"
             }
         ], 
         "id": "ITEM-1", 
