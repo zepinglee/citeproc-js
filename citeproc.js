@@ -1970,7 +1970,14 @@ CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
 	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
 		this.opt['locale-sec'].push(tags[i]);
 	}
-}
+};
+CSL.Engine.prototype.setOriginalCreatorNameFormsOption = function (arg) {
+	if (arg) {
+		this.opt["locale-show-original-names"] = true;
+	} else {
+		this.opt["locale-show-original-names"] = false;
+	}
+};
 CSL.Engine.Opt = function () {
 	this.has_disambiguate = false;
 	this.mode = "html";
@@ -6709,25 +6716,21 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 		this.namenum = parseInt(pos, 10);
 		this.name = this.segments[seg][pos];
 		var translit = state.opt["locale-name"];
-		var transformed = this.outputName(seg, pos, translit);
-		if (transformed && this.name.given) {
-			var parens = new CSL.Blob();
-			parens.strings.prefix = " (";
-			parens.strings.suffix = ")";
-			this.state.output.addToken("parens", false, parens);
-			this.outputName(seg, pos, false, token);
-		}
+		this.outputName(seg, pos, translit);
 	}
 	this.nameoffset += this.segments[seg].length;
 };
-CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, translit, token) {
+CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, translit, tokenname) {
 	var name = this.state.transform.name(this.state, this.name, translit);
 	if (name.literal) {
 		value = name.literal;
 		this.state.output.append(name.literal, "empty");
 	} else {
-		if (token) {
-			this.state.output.openLevel("parens");
+		if (name.transliterated) {
+			this.state.output.openLevel("empty");
+		}
+		if (tokenname) {
+			this.state.output.openLevel(tokenname);
 		} 
 		sequence = CSL.Util.Names.getNamepartSequence(this.state, seg, name);
 		this.state.output.openLevel(sequence[0][0]); // articular join
@@ -6741,11 +6744,24 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, transli
 		this.state.output.closeLevel();
 		this.outputNameParts(name, sequence[3]);
 		this.state.output.closeLevel();
-		if (token) {
+		if (tokenname) {
 			this.state.output.closeLevel(); // parens
 		}
+		if (this.state.opt["locale-show-original-names"] 
+			&& this.state.tmp.area === "bibliography"
+			&& name.transliterated 
+			&& this.name.given) {
+			var parens = new CSL.Blob();
+			parens.strings.prefix = " (";
+			parens.strings.suffix = ")";
+			this.state.output.addToken("parens", false, parens);
+			this.outputName(seg, pos, false, "parens");
+		}
+		if (name.transliterated) {
+			this.state.output.closeLevel(); // wrapper to avoid delimiter between names.
+		}
 	}
-	return name.transformed;
+	return name.transliterated;
 };
 CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (name, subsequence) {
 	var state, len, pos, key, namepart, initialize_with, preffie;
@@ -8408,6 +8424,7 @@ CSL.Registry.NameReg = function (state) {
 	};
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
 		var pos, len, items, param;
+		var nameobj = state.transform.name(state, nameobj, state.opt["locale-name"]);
 		set_keys(this.state, item_id, nameobj);
 		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
 			return request_base;
@@ -8580,6 +8597,7 @@ CSL.Registry.NameReg = function (state) {
 		return ret;
 	};
 	addname = function (item_id, nameobj, pos) {
+		var nameobj = state.transform.name(state, nameobj, state.opt["locale-name"]);
 		set_keys(this.state, item_id, nameobj);
 		if (pkey) {
 			if ("undefined" === typeof this.namereg[pkey]) {
