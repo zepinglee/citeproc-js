@@ -121,7 +121,10 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 		// preference, and feed it to the following function.
 		var translit = state.opt["locale-name"];
 		var transformed = this.outputName(seg, pos, translit);
-		if (this.opt["locale-show-original-names"] && transformed && this.name.given) {
+		if (state.opt["locale-show-original-names"] 
+			&& state.tmp.area === "bibliography"
+			&& transformed 
+			&& this.name.given) {
 			// OOOOO: This should be a formatting blob with affixes.
 			var parens = new CSL.Blob();
 			parens.strings.prefix = " (";
