@@ -85,6 +85,7 @@ CSL.Registry.NameReg = function (state) {
 
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
 		var pos, len, items, param;
+		var nameobj = state.transform.name(state, nameobj, state.opt["locale-name"]);
 		set_keys(this.state, item_id, nameobj);
 		//
 		// give literals a pass
@@ -300,6 +301,7 @@ CSL.Registry.NameReg = function (state) {
 	// style.
 	//
 	addname = function (item_id, nameobj, pos) {
+		var nameobj = state.transform.name(state, nameobj, state.opt["locale-name"]);
 		//CSL.debug("INS");
 		set_keys(this.state, item_id, nameobj);
 		// pkey, ikey and skey should be stored in separate cascading objects.
