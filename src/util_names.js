@@ -120,23 +120,12 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 		// Get the language tags from the names transliteration
 		// preference, and feed it to the following function.
 		var translit = state.opt["locale-name"];
-		var transformed = this.outputName(seg, pos, translit);
-		if (state.opt["locale-show-original-names"] 
-			&& state.tmp.area === "bibliography"
-			&& transformed 
-			&& this.name.given) {
-			// OOOOO: This should be a formatting blob with affixes.
-			var parens = new CSL.Blob();
-			parens.strings.prefix = " (";
-			parens.strings.suffix = ")";
-			this.state.output.addToken("parens", false, parens);
-			this.outputName(seg, pos, false, token);
-		}
+		this.outputName(seg, pos, translit);
 	}
 	this.nameoffset += this.segments[seg].length;
 };
 
-CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, translit, token) {
+CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, translit, tokenname) {
 
 	var name = this.state.transform.name(this.state, this.name, translit);
 
@@ -145,8 +134,12 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, transli
 		this.state.output.append(name.literal, "empty");
 	} else {
 
-		if (token) {
-			this.state.output.openLevel("parens");
+		if (name.transliterated) {
+			this.state.output.openLevel("empty");
+		}
+
+		if (tokenname) {
+			this.state.output.openLevel(tokenname);
 		} 
 
 		sequence = CSL.Util.Names.getNamepartSequence(this.state, seg, name);
@@ -171,11 +164,28 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputName = function (seg, pos, transli
 		
 		this.state.output.closeLevel();
 
-		if (token) {
+		if (tokenname) {
 			this.state.output.closeLevel(); // parens
 		}
+
+		if (this.state.opt["locale-show-original-names"] 
+			&& this.state.tmp.area === "bibliography"
+			&& name.transliterated 
+			&& this.name.given) {
+
+			var parens = new CSL.Blob();
+			parens.strings.prefix = " (";
+			parens.strings.suffix = ")";
+			this.state.output.addToken("parens", false, parens);
+			this.outputName(seg, pos, false, "parens");
+		}
+
+		if (name.transliterated) {
+			this.state.output.closeLevel(); // wrapper to avoid delimiter between names.
+		}
+
 	}
-	return name.transformed;
+	return name.transliterated;
 };
 
 CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (name, subsequence) {
