@@ -4,6 +4,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 Changes in version 1.0.95
 =========================
 
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix global variable assignment. Important for stability.
+
+
+=========================
+Changes in version 1.0.95
+=========================
+
 ------------
 Enhancements
 ------------

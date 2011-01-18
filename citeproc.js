@@ -1572,7 +1572,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.95";
+	this.processor_version = "1.0.96";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5935,7 +5935,7 @@ CSL.Transform = function (state) {
 		return value;
 	}
 	function getTextSubField(Item, field, locale_type, use_default) {
-		var m, lst, opt, o, oo, pos, key, ret, len, myret;
+		var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
 		if (!Item[field]) {
 			return "";
 		}
