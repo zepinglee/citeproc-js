@@ -168,7 +168,7 @@ CSL.Transform = function (state) {
 
 	// Internal function
 	function getTextSubField(Item, field, locale_type, use_default) {
-		var m, lst, opt, o, oo, pos, key, ret, len, myret;
+		var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
 		if (!Item[field]) {
 			return "";
 		}
