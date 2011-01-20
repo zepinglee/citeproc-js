@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a103##
+   version 1.00##a104##
 
 .. class:: info-date
 
-   =D=10 January 2011=D=
+   =D=20 January 2011=D=
 
 .. class:: contributors
 
@@ -1767,8 +1767,8 @@ __ http://www.ietf.org/rfc/rfc5646.txt
 __ http://www.iana.org/assignments/language-subtag-registry
 
 
-``-x-pri-`` [``setLangTagsForCslTitleTransliteration()``\ ]
-   Sets a preferred language or translitertion for the title field.
+``-x-pri-`` [``setLangTagsForCslTransliteration()``\ ]
+   Sets a preferred language for translitertions.
 
 ``-x-sec-`` [``setLangTagsForCslTranslation()``\ ]
    Sets an optional secondary translation for the title field. 
@@ -1778,9 +1778,6 @@ __ http://www.iana.org/assignments/language-subtag-registry
 ``-x-sort-`` [``setLangTagsForCslSort()``\ ]
    Sets the preferred language or transliteration to be used for both the 
    title field and for names in sort keys.
-
-``-x-name-`` [``setLangTagsForCslNameTransliteration()``\ ]
-   Sets the preferred language for transliteration for names.
 
 An example of ``default-locale`` configuration:
 
@@ -1815,6 +1812,24 @@ An example of API configuration:
 .. sourcecode:: js
 
    citeproc.setLangTagsForCslSort(["zh-alalc97", "ja-alalc97"]);
+
+The processor offers two boolean API methods that are not available
+via ``default-locale``:
+
+``setOriginalCreatorNameFormsOption()``
+   With argument ``true``, instructs the processor to append the 
+   personal names in their original form in parentheses after transliterations.
+   Default is ``false``.
+
+``setOriginalCreatorNameFormatOption()``
+   With argument ``true``, instructs the processor to use the 
+   name-part ordering conventions appropriate to the original form 
+   of personal names when transliterating.  When this option
+   is in effect, names represented in a non-Byzantine script
+   in their original form will not have their given name part
+   truncated to initials, regardless of the setting provided
+   by the CSL style. Default is ``false``.
+
 
 
 ^^^^^^^^^^^

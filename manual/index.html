@@ -334,8 +334,8 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
 <p class="fixed"><a class="reference external" href="http://citationstyles.org/">citationstyles.org</a></p>
-<p class="info-version">version 1.00<sub>a103</sub></p>
-<p class="info-date">10 January 2011</p>
+<p class="info-version">version 1.00<sub>a104</sub></p>
+<p class="info-date">20 January 2011</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
 <dd><ul class="first last simple">
@@ -2326,8 +2326,8 @@ be a list of RFC 5646 language tags.</p>
 <p>Recognized extension
 tags for use with <tt class="docutils literal"><span class="pre">default-locale</span></tt> [and corresponding API methods] are as follows:</p>
 <dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">-x-pri-</span></tt> [<tt class="docutils literal">setLangTagsForCslTitleTransliteration()</tt>]</dt>
-<dd>Sets a preferred language or translitertion for the title field.</dd>
+<dt><tt class="docutils literal"><span class="pre">-x-pri-</span></tt> [<tt class="docutils literal">setLangTagsForCslTransliteration()</tt>]</dt>
+<dd>Sets a preferred language for translitertions.</dd>
 <dt><tt class="docutils literal"><span class="pre">-x-sec-</span></tt> [<tt class="docutils literal">setLangTagsForCslTranslation()</tt>]</dt>
 <dd>Sets an optional secondary translation for the title field.
 If this tag is present, a translation in the target language
@@ -2335,8 +2335,6 @@ will (if available) be placed in square braces immediately  after the title text
 <dt><tt class="docutils literal"><span class="pre">-x-sort-</span></tt> [<tt class="docutils literal">setLangTagsForCslSort()</tt>]</dt>
 <dd>Sets the preferred language or transliteration to be used for both the
 title field and for names in sort keys.</dd>
-<dt><tt class="docutils literal"><span class="pre">-x-name-</span></tt> [<tt class="docutils literal">setLangTagsForCslNameTransliteration()</tt>]</dt>
-<dd>Sets the preferred language for transliteration for names.</dd>
 </dl>
 <p>An example of <tt class="docutils literal"><span class="pre">default-locale</span></tt> configuration:</p>
 <div class="codeblock xml">
@@ -2384,6 +2382,22 @@ Pinyin transliteration (for Chinese titles) or Hepburn romanization
 </pre></div>
 </td></tr></table>
 </div>
+<p>The processor offers two boolean API methods that are not available
+via <tt class="docutils literal"><span class="pre">default-locale</span></tt>:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal">setOriginalCreatorNameFormsOption()</tt></dt>
+<dd>With argument <tt class="docutils literal">true</tt>, instructs the processor to append the
+personal names in their original form in parentheses after transliterations.
+Default is <tt class="docutils literal">false</tt>.</dd>
+<dt><tt class="docutils literal">setOriginalCreatorNameFormatOption()</tt></dt>
+<dd>With argument <tt class="docutils literal">true</tt>, instructs the processor to use the
+name-part ordering conventions appropriate to the original form
+of personal names when transliterating.  When this option
+is in effect, names represented in a non-Byzantine script
+in their original form will not have their given name part
+truncated to initials, regardless of the setting provided
+by the CSL style. Default is <tt class="docutils literal">false</tt>.</dd>
+</dl>
 </div>
 <div class="section" id="data-format">
 <h3><a class="toc-backref" href="#id104">Data format</a></h3>
