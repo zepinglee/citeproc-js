@@ -51,9 +51,14 @@ citation
 <<===== MODE =====<<
 
 
+Prior to the 1.0.97 release of citeproc-js, this produced the result
+"Beato T., T. Kitano, R. Atkinson". New API provides
+more intuitive control over formatting of transliterated
+names, but cannot be tested through the standard test suit
+machinery.
 
 >>===== RESULT =====>>
-Beato T., T. Kitano, R. Atkinson
+T. Beato, T. Kitano, R. Atkinson
 <<===== RESULT =====<<
 
 
@@ -62,7 +67,7 @@ Beato T., T. Kitano, R. Atkinson
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-name-ja-alalc97-x-name-en">
+      default-locale="en-US-x-pri-ja-alalc97-x-pri-en">
   <info>
     <id />
     <title />
