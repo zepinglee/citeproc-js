@@ -340,11 +340,13 @@ CSL.Transform = function (state) {
 			name.given = "";
 		}
 		//
-		// Add a static-ordering toggle for non-roman, non-Cyrillic
+		// Optionally add a static-ordering toggle for non-roman, non-Cyrillic
 		// names, based on the headline values.
 		//
 		var static_ordering_val = false;
 		var static_ordering_freshcheck = false;
+		var block_initialize = false;
+		var transliterated = false;
 		if (name["static-ordering"]) {
 			static_ordering_val = true;
 		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
@@ -354,15 +356,24 @@ CSL.Transform = function (state) {
 		// Step through the requested languages in sequence
 		// until a match is found
 		//
-		var transliterated = false;
 		if (langTags && name.multi) {
 			for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
 				langTag = langTags[i];
 				if (name.multi._key[langTag]) {
 					name = name.multi._key[langTag];
 					transliterated = true;
-					if (langTag.indexOf("-") === -1) {
-						var static_ordering_freshcheck = true;
+					if (!state.opt['locale-use-original-name-format']) {
+						static_ordering_freshcheck = true;
+					} else {
+						// Quash initialize-with if original was non-romanesque
+						// and we are trying to preserve the original formatting
+						// conventions.
+						// (i.e. supply as much information as possible if
+						// the transliteration spans radically different
+						// writing conventions)
+						if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+							block_initialize = true;
+						}
 					}
 					break;
 				}
@@ -378,7 +389,8 @@ CSL.Transform = function (state) {
 			"static-ordering":static_ordering_val,
 			"parse-names":name["parse-names"],
 			"comma-suffix":name["comma-suffix"],
-			transliterated:transliterated
+			transliterated:transliterated,
+			block_initialize:block_initialize
 		}
 		if (static_ordering_freshcheck &&
 			(name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {

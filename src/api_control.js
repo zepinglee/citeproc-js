@@ -63,15 +63,7 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
 	}
 }
 	
-CSL.Engine.prototype.setLangTagsForCslNameTransliteration = function (tags) {
-	var i, ilen;
-	this.opt['locale-name'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-name'].push(tags[i]);
-	}
-}
-	
-CSL.Engine.prototype.setLangTagsForCslTitleTransliteration = function (tags) {
+CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
 	var i, ilen;
 	this.opt['locale-pri'] = [];	
 	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
@@ -93,6 +85,15 @@ CSL.Engine.prototype.setOriginalCreatorNameFormsOption = function (arg) {
 		this.opt["locale-show-original-names"] = true;
 	} else {
 		this.opt["locale-show-original-names"] = false;
+	}
+};
+
+
+CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
+	if (arg) {
+		this.opt["locale-use-original-name-format"] = true;
+	} else {
+		this.opt["locale-use-original-name-format"] = false;
 	}
 };
 

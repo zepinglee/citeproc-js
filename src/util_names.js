@@ -119,7 +119,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 		this.name = this.segments[seg][pos];
 		// Get the language tags from the names transliteration
 		// preference, and feed it to the following function.
-		var translit = state.opt["locale-name"];
+		var translit = state.opt["locale-pri"];
 		this.outputName(seg, pos, translit);
 	}
 	this.nameoffset += this.segments[seg].length;
@@ -229,7 +229,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (name, subseq
 		}
 		// initialize if appropriate
 		if ("given" === key) {
-			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
+			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)] && !name.block_initialize) {
 				initialize_with = state.output.getToken("name").strings["initialize-with"];
 				namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
 			} else {
