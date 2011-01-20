@@ -1,5 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+=========================
+Changes in version 1.0.98
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix failure to honor et-al-subsequent-min
+  when it is smaller than et-al-min (which
+  it ordinarily is).
+
+
 ======================================
 Changes in version 1.0.97 [API change]
 ======================================

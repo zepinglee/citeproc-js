@@ -1572,7 +1572,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.97";
+	this.processor_version = "1.0.98";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4105,6 +4105,11 @@ CSL.Node.name = {
 				if (item.position) {
 					if (! state.tmp["et-al-min"]) {
 						if (this.strings["et-al-subsequent-min"]) {
+							if (state.registry.registry[Item.id]
+								&& !state.registry.registry[Item.id].have_seen_subsequent) {
+								state.registry.registry[Item.id].have_seen_subsequent = true;
+								state.tmp.disambig_request = false;
+							}
 							state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
 						} else {
 							state.tmp["et-al-min"] = this.strings["et-al-min"];
@@ -4112,6 +4117,11 @@ CSL.Node.name = {
 					}
 					if (! state.tmp["et-al-use-first"]) {
 						if (this.strings["et-al-subsequent-use-first"]) {
+							if (state.registry.registry[Item.id]
+								&& !state.registry.registry[Item.id].have_seen_subsequent) {
+								state.registry.registry[Item.id].have_seen_subsequent = true;
+								state.tmp.disambig_request = false;
+							}
 							state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
 						} else {
 							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
@@ -5596,6 +5606,7 @@ CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 	}
 };
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
+	state.opt.update_mode = CSL.POSITION;
 	var val = parseInt(arg, 10);
 	if (state.opt.max_number_of_names < val) {
 		state.opt.max_number_of_names = val;
@@ -5603,6 +5614,7 @@ CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
 	state.setOpt(this, "et-al-subsequent-min", val);
 };
 CSL.Attributes["@et-al-subsequent-use-first"] = function (state, arg) {
+	state.opt.update_mode = CSL.POSITION;
 	state.setOpt(this, "et-al-subsequent-use-first", parseInt(arg, 10));
 };
 CSL.Attributes["@truncate-min"] = function (state, arg) {
