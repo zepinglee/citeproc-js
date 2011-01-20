@@ -1572,7 +1572,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.96";
+	this.processor_version = "1.0.97";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1950,14 +1950,7 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
 		this.opt['locale-sort'].push(tags[i]);
 	}
 }
-CSL.Engine.prototype.setLangTagsForCslNameTransliteration = function (tags) {
-	var i, ilen;
-	this.opt['locale-name'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-name'].push(tags[i]);
-	}
-}
-CSL.Engine.prototype.setLangTagsForCslTitleTransliteration = function (tags) {
+CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
 	var i, ilen;
 	this.opt['locale-pri'] = [];	
 	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
@@ -1978,6 +1971,13 @@ CSL.Engine.prototype.setOriginalCreatorNameFormsOption = function (arg) {
 		this.opt["locale-show-original-names"] = false;
 	}
 };
+CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
+	if (arg) {
+		this.opt["locale-use-original-name-format"] = true;
+	} else {
+		this.opt["locale-use-original-name-format"] = false;
+	}
+};
 CSL.Engine.Opt = function () {
 	this.has_disambiguate = false;
 	this.mode = "html";
@@ -1985,8 +1985,8 @@ CSL.Engine.Opt = function () {
 	this["locale-sort"] = [];
 	this["locale-pri"] = [];
 	this["locale-sec"] = [];
-	this["locale-name"] = [];
 	this["default-locale"] = [];
+	this["locale-use-original-name-format"] = false;
 	this["noun-genders"] = {};
 	this.update_mode = CSL.NONE;
 	this.bib_mode = CSL.NONE;
@@ -6060,20 +6060,25 @@ CSL.Transform = function (state) {
 		}
 		var static_ordering_val = false;
 		var static_ordering_freshcheck = false;
+		var block_initialize = false;
+		var transliterated = false;
 		if (name["static-ordering"]) {
 			static_ordering_val = true;
 		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
 			static_ordering_val = true;
 		}
-		var transliterated = false;
 		if (langTags && name.multi) {
 			for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
 				langTag = langTags[i];
 				if (name.multi._key[langTag]) {
 					name = name.multi._key[langTag];
 					transliterated = true;
-					if (langTag.indexOf("-") === -1) {
-						var static_ordering_freshcheck = true;
+					if (!state.opt['locale-use-original-name-format']) {
+						static_ordering_freshcheck = true;
+					} else {
+						if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+							block_initialize = true;
+						}
 					}
 					break;
 				}
@@ -6088,7 +6093,8 @@ CSL.Transform = function (state) {
 			"static-ordering":static_ordering_val,
 			"parse-names":name["parse-names"],
 			"comma-suffix":name["comma-suffix"],
-			transliterated:transliterated
+			transliterated:transliterated,
+			block_initialize:block_initialize
 		}
 		if (static_ordering_freshcheck &&
 			(name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
@@ -6715,7 +6721,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputSegmentNames = function (seg) {
 	for (pos = 0; pos < len; pos += 1) {
 		this.namenum = parseInt(pos, 10);
 		this.name = this.segments[seg][pos];
-		var translit = state.opt["locale-name"];
+		var translit = state.opt["locale-pri"];
 		this.outputName(seg, pos, translit);
 	}
 	this.nameoffset += this.segments[seg].length;
@@ -6799,7 +6805,7 @@ CSL.Util.Names.StartMiddleEnd.prototype.outputNameParts = function (name, subseq
 			continue;
 		}
 		if ("given" === key) {
-			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)]) {
+			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)] && !name.block_initialize) {
 				initialize_with = state.output.getToken("name").strings["initialize-with"];
 				namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
 			} else {
@@ -8424,7 +8430,7 @@ CSL.Registry.NameReg = function (state) {
 	};
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
 		var pos, len, items, param;
-		var nameobj = state.transform.name(state, nameobj, state.opt["locale-name"]);
+		var nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
 		set_keys(this.state, item_id, nameobj);
 		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
 			return request_base;
@@ -8597,7 +8603,7 @@ CSL.Registry.NameReg = function (state) {
 		return ret;
 	};
 	addname = function (item_id, nameobj, pos) {
-		var nameobj = state.transform.name(state, nameobj, state.opt["locale-name"]);
+		var nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
 		set_keys(this.state, item_id, nameobj);
 		if (pkey) {
 			if ("undefined" === typeof this.namereg[pkey]) {

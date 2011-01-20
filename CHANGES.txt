@@ -1,7 +1,36 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+======================================
+Changes in version 1.0.97 [API change]
+======================================
+
+------------
+Enhancements
+------------
+
+- Replace the methods setLangTagsForCslNameTransliteration()
+  and setLangTagsForCslTitleTransliteration() with a single
+  method setLangTagsForCslTransliteration().
+
+- Change the multilingual parameters available through the
+  default-locale attribute of style files (parameters used
+  primarily for testing, not production) to reflect the
+  API change described above.
+
+- Add method setOriginalCreatorNameFormatOption() to the
+  control API. This allows the name ordering and initialization
+  conventions of transliterated names either to track those
+  of the original language, or to follow the conventions
+  of the target script.
+
+- Document new setOriginalCreatorNameFormatOption() method and 
+  the previously added method setOriginalCreatorNameFormsOption()
+  in the processor manual, and update the description of testing
+  parameters available via the default-locale attribute.
+
+
 =========================
-Changes in version 1.0.95
+Changes in version 1.0.96
 =========================
 
 ------------------------------------
