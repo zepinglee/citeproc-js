@@ -697,6 +697,7 @@ CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 };
 
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
+	state.opt.update_mode = CSL.POSITION;
 	var val = parseInt(arg, 10);
 	if (state.opt.max_number_of_names < val) {
 		state.opt.max_number_of_names = val;
@@ -705,6 +706,7 @@ CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
 };
 
 CSL.Attributes["@et-al-subsequent-use-first"] = function (state, arg) {
+	state.opt.update_mode = CSL.POSITION;
 	state.setOpt(this, "et-al-subsequent-use-first", parseInt(arg, 10));
 };
 

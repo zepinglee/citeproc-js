@@ -98,6 +98,11 @@ CSL.Node.name = {
 				if (item.position) {
 					if (! state.tmp["et-al-min"]) {
 						if (this.strings["et-al-subsequent-min"]) {
+							if (state.registry.registry[Item.id]
+								&& !state.registry.registry[Item.id].have_seen_subsequent) {
+								state.registry.registry[Item.id].have_seen_subsequent = true;
+								state.tmp.disambig_request = false;
+							}
 							state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
 						} else {
 							state.tmp["et-al-min"] = this.strings["et-al-min"];
@@ -105,6 +110,11 @@ CSL.Node.name = {
 					}
 					if (! state.tmp["et-al-use-first"]) {
 						if (this.strings["et-al-subsequent-use-first"]) {
+							if (state.registry.registry[Item.id]
+								&& !state.registry.registry[Item.id].have_seen_subsequent) {
+								state.registry.registry[Item.id].have_seen_subsequent = true;
+								state.tmp.disambig_request = false;
+							}
 							state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
 						} else {
 							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
