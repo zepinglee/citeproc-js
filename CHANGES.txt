@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.0.99
+=========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix loop constraint variable misassignment that was 
+  a likely cause behind reported instability in word 
+  processor plugins.
+
+
+=========================
 Changes in version 1.0.98
 =========================
 

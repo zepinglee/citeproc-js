@@ -1572,7 +1572,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.98";
+	this.processor_version = "1.0.99";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2133,28 +2133,28 @@ CSL.Engine.prototype.setCitationId = function (citation, force) {
 	return ret;
 };
 CSL.Engine.prototype.restoreProcessorState = function (citations) {
-	var pos, len, ppos, llen, item, Item, newitem, citationList, itemList, sortedItems;
+	var item, Item, newitem, citationList, itemList, sortedItems;
 	citationList = [];
 	itemList = [];
 	if (!citations) {
 		citations = [];
 	}
-	for (pos = 0, len = citations.length; pos < len; pos += 1) {
+	for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
 		sortedItems = [];
-		for (ppos = 0, len = citations[pos].citationItems.length; ppos < llen; ppos += 1) {
-			item = citations[pos].citationItems[ppos];
+		for (var j = 0, jlen = citations[i].citationItems.length; j < jlen; j += 1) {
+			item = citations[i].citationItems[j];
 			Item = this.retrieveItem(item.id);
 			newitem = [Item, item];
 			sortedItems.push(newitem);
-			citations[pos].citationItems[ppos].item = Item;
+			citations[i].citationItems[j].item = Item;
 			itemList.push(item.id);
 		}
-		if (!citations[pos].properties.unsorted) {
+		if (!citations[i].properties.unsorted) {
 			sortedItems.sort(this.citation.srt.compareCompositeKeys);
 		}
-		citations[pos].sortedItems = sortedItems;
-		this.registry.citationreg.citationById[citations[pos].citationID] = citations[pos];
-		citationList.push([citations[pos].citationID, citations[pos].properties.noteIndex]);
+		citations[i].sortedItems = sortedItems;
+		this.registry.citationreg.citationById[citations[i].citationID] = citations[i];
+		citationList.push([citations[i].citationID, citations[i].properties.noteIndex]);
 	}
 	this.updateItems(itemList);
 	if (citations && citations.length) {
