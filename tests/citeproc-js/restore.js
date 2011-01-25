@@ -185,7 +185,7 @@ doh.registerGroup("citeproc_js.restore",
 				{
 					"id": "ITEM-2",
 					"position": 0,
-					"sortkeys": [["Book A"]]
+					"sortkeys": ["Book A"]
 				}
 			],
 			"properties": {
@@ -211,7 +211,7 @@ doh.registerGroup("citeproc_js.restore",
 				{
 					"id": "ITEM-2",
 					"position": 0,
-					"sortkeys": [["Book A"]]
+					"sortkeys": ["Book A"]
 				}
 			],
 			"properties": {
