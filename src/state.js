@@ -79,6 +79,7 @@ CSL.Engine.Opt = function () {
 	// applications so far store the various prefixes and 
 	// suffixes we support in separate fields.
 	this["parse-names"] = true;
+	// this["auto-vietnamese-names"] = true;
 
 	this.citation_number_slug = false;
 	this.max_number_of_names = 0;

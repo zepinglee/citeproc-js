@@ -317,6 +317,25 @@ CSL.Transform = function (state) {
 	}
 	this.output = output;
 
+	function getStaticOrder (name, refresh) {
+		var static_ordering_val = false;
+		if (!refresh && name["static-ordering"]) {
+			static_ordering_val = true;
+		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+			static_ordering_val = true;
+		} else if (name.multi && name.multi.main.slice(0,2) == 'vn') {
+			static_ordering_val = true;
+		} else {
+			if (state.opt['auto-vietnamese-names']
+				&& (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
+					&& CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
+
+				static_ordering_val = true;
+			}
+		}
+		return static_ordering_val;
+	}
+
 	// The name transform code is placed here to keep similar things
 	// in one place.  Obviously this module could do with a little
 	// tidying up.
@@ -343,15 +362,10 @@ CSL.Transform = function (state) {
 		// Optionally add a static-ordering toggle for non-roman, non-Cyrillic
 		// names, based on the headline values.
 		//
-		var static_ordering_val = false;
 		var static_ordering_freshcheck = false;
 		var block_initialize = false;
 		var transliterated = false;
-		if (name["static-ordering"]) {
-			static_ordering_val = true;
-		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-			static_ordering_val = true;
-		}
+		var static_ordering_val = getStaticOrder(name);
 		//
 		// Step through the requested languages in sequence
 		// until a match is found
@@ -393,7 +407,8 @@ CSL.Transform = function (state) {
 			block_initialize:block_initialize
 		}
 		if (static_ordering_freshcheck &&
-			(name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+			!getStaticOrder(name, true)) {
+			
 			name["static-ordering"] = false;
 		}
 		if (state.opt["parse-names"]

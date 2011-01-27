@@ -97,3 +97,11 @@ CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
 	}
 };
 
+CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
+	if (arg) {
+		this.opt["auto-vietnamese-names"] = true;
+	} else {
+		this.opt["auto-vietnamese-names"] = false;
+	}
+};
+
