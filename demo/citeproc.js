@@ -140,6 +140,8 @@ var CSL = {
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]$/,
 	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]+$/,
+	VIETNAMESE_SPECIALS: /[\u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]/,
+	VIETNAMESE_NAMES: /^(?:(?:[.AaBbCcDdEeGgHhIiKkLlMmNnOoPpQqRrSsTtUuVvXxYy \u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]{2,6})(\s+|$))+$/,
 	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
 	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
@@ -1572,7 +1574,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.99";
+	this.processor_version = "1.0.100";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1976,6 +1978,13 @@ CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
 		this.opt["locale-use-original-name-format"] = true;
 	} else {
 		this.opt["locale-use-original-name-format"] = false;
+	}
+};
+CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
+	if (arg) {
+		this.opt["auto-vietnamese-names"] = true;
+	} else {
+		this.opt["auto-vietnamese-names"] = false;
 	}
 };
 CSL.Engine.Opt = function () {
@@ -6056,6 +6065,23 @@ CSL.Transform = function (state) {
 		}
 	}
 	this.output = output;
+	function getStaticOrder (name, refresh) {
+		var static_ordering_val = false;
+		if (!refresh && name["static-ordering"]) {
+			static_ordering_val = true;
+		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+			static_ordering_val = true;
+		} else if (name.multi && name.multi.main.slice(0,2) == 'vn') {
+			static_ordering_val = true;
+		} else {
+			if (state.opt['auto-vietnamese-names']
+				&& (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
+					&& CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
+				static_ordering_val = true;
+			}
+		}
+		return static_ordering_val;
+	}
 	function name (state, name, langTags) {
 		var i, ret, optLangTag, ilen, key, langTag;
 		if (state.tmp.area.slice(-5) === "_sort") {
@@ -6070,15 +6096,10 @@ CSL.Transform = function (state) {
 		if (!name.given) {
 			name.given = "";
 		}
-		var static_ordering_val = false;
 		var static_ordering_freshcheck = false;
 		var block_initialize = false;
 		var transliterated = false;
-		if (name["static-ordering"]) {
-			static_ordering_val = true;
-		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-			static_ordering_val = true;
-		}
+		var static_ordering_val = getStaticOrder(name);
 		if (langTags && name.multi) {
 			for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
 				langTag = langTags[i];
@@ -6109,7 +6130,7 @@ CSL.Transform = function (state) {
 			block_initialize:block_initialize
 		}
 		if (static_ordering_freshcheck &&
-			(name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+			!getStaticOrder(name, true)) {
 			name["static-ordering"] = false;
 		}
 		if (state.opt["parse-names"]
