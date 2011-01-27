@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a104##
+   version 1.00##a105##
 
 .. class:: info-date
 
-   =D=20 January 2011=D=
+   =D=27 January 2011=D=
 
 .. class:: contributors
 
@@ -1813,7 +1813,7 @@ An example of API configuration:
 
    citeproc.setLangTagsForCslSort(["zh-alalc97", "ja-alalc97"]);
 
-The processor offers two boolean API methods that are not available
+The processor offers three boolean API methods that are not available
 via ``default-locale``:
 
 ``setOriginalCreatorNameFormsOption()``
@@ -1829,6 +1829,13 @@ via ``default-locale``:
    in their original form will not have their given name part
    truncated to initials, regardless of the setting provided
    by the CSL style. Default is ``false``.
+
+``setAutoVietnameseNames()``
+   With argument ``true``, the processor will attempt to
+   identify Vietnamese names, and format them correctly,
+   with the family name always in first position. Default
+   is ``false``, because there is a small possibility of
+   false positives when this code is enabled.
 
 
 
