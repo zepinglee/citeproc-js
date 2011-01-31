@@ -84,6 +84,24 @@ doh.registerGroup("citeproc_js.restore",
 			}
 			doh.assertEqual("Success", testme());
 		},
+		function testThatItWorksWithUndefinedSortkeysObject() {
+			var t = citeproc_js.restore;
+			function testme () {
+				var sys, style, res1, res2, data;
+				sys = new RhinoTest([t.item1, t.item2]);
+				style = new CSL.Engine(sys,t.csl);
+				try {
+					delete t.citation1x.citationItems[0].sortkeys;
+					delete t.citation1x.citationItems[1].sortkeys;
+					delete t.citation2x.citationItems[0].sortkeys;
+					style.restoreProcessorState([t.citation1x, t.citation2x]);
+					return "Success";
+				} catch (e) {
+					return e;
+				}
+			}
+			doh.assertEqual("Success", testme());
+		},
 		function testRestore() {
 			var sys, style, res1, res2, res3, data;
 			var t = citeproc_js.restore;
