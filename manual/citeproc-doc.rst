@@ -1768,7 +1768,7 @@ __ http://www.iana.org/assignments/language-subtag-registry
 
 
 ``-x-pri-`` [``setLangTagsForCslTransliteration()``\ ]
-   Sets a preferred language for translitertions.
+   Sets a preferred language for transliterations.
 
 ``-x-sec-`` [``setLangTagsForCslTranslation()``\ ]
    Sets an optional secondary translation for the title field. 
