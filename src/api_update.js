@@ -68,6 +68,9 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 		sortedItems = [];
 		for (var j = 0, jlen = citations[i].citationItems.length; j < jlen; j += 1) {
 			item = citations[i].citationItems[j];
+			if ("undefined" === typeof item.sortkeys) {
+				item.sortkeys = [];
+			}
 			Item = this.retrieveItem(item.id);
 			newitem = [Item, item];
 			sortedItems.push(newitem);
