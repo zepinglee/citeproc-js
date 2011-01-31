@@ -133,7 +133,7 @@ CSL.Node.names = {
 									}
 									lllen = lllst.length;
 									for (pppos = 0; pppos < lllen; pppos += 1) {
-										name = {literal: lllst[pppos]};
+										name = {literal: lllst[pppos], family:'', given:''};
 										nameset.names.push(name);
 									}
 									tnamesets.push(nameset);
@@ -645,7 +645,6 @@ CSL.Node.names = {
 						}
 						et_al = false;
 						and_term = "";
-
 						// forceEtAl is relevant when the author list is
 						// truncated to eliminate clutter.
 						if (sane && (overlength || state.tmp.forceEtAl)) {
@@ -714,7 +713,6 @@ CSL.Node.names = {
 					// "name" is the format for the outermost nesting of a nameset
 					// "inner" is a format consisting only of a delimiter, used for
 					// joining all but the last name in the set together.
-
 
 					//SNIP-START
 					if (debug) {

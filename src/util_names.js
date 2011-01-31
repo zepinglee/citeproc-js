@@ -357,7 +357,7 @@ CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
 		llen = CSL.NAME_PARTS.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			part = CSL.NAME_PARTS[ppos];
-			if (!base_nameset.names[pos] || base_nameset.names[pos][part] !== name[part]) {
+			if (!base_nameset.names[pos] || base_nameset.names[pos][part] != name[part]) {
 				return false;
 			}
 		}

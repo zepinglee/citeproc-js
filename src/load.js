@@ -150,7 +150,7 @@ var CSL = {
 	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 	DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
 
-	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix"],
+	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix", "literal"],
 	DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
 
 	// XXXX: Apparently never used
