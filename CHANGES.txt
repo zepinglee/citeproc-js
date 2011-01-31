@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.101
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add sortkeys array to skeleton items received during 
+  restoreProcessorState() if it is undefined. Avoids
+  a processor crash on the first Zotero 2.1 connection 
+  to a Zotero 2.0.9 document. Fault reported by Hem
+  Sras.
+
+
+==========================
 Changes in version 1.0.100
 ==========================
 
