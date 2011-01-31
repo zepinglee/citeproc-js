@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.101
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Allow institutional names to collapse correctly in collapsing citations.
+
+
+==========================
 Changes in version 1.0.100
 ==========================
 

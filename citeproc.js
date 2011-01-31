@@ -99,7 +99,7 @@ var CSL = {
 	DATE_PARTS: ["year", "month", "day"],
 	DATE_PARTS_ALL: ["year", "month", "day", "season"],
 	DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
-	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix"],
+	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix", "literal"],
 	DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
 	DISAMBIGUATE_OPTIONS: [
 		"disambiguate-add-names",
@@ -1574,7 +1574,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.100";
+	this.processor_version = "1.0.101";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4217,7 +4217,7 @@ CSL.Node.names = {
 									}
 									lllen = lllst.length;
 									for (pppos = 0; pppos < lllen; pppos += 1) {
-										name = {literal: lllst[pppos]};
+										name = {literal: lllst[pppos], family:'', given:''};
 										nameset.names.push(name);
 									}
 									tnamesets.push(nameset);
@@ -6918,7 +6918,7 @@ CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
 		llen = CSL.NAME_PARTS.length;
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			part = CSL.NAME_PARTS[ppos];
-			if (!base_nameset.names[pos] || base_nameset.names[pos][part] !== name[part]) {
+			if (!base_nameset.names[pos] || base_nameset.names[pos][part] != name[part]) {
 				return false;
 			}
 		}
