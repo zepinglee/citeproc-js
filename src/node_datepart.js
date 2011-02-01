@@ -233,6 +233,12 @@ CSL.Node["date-part"] = {
 					number = new CSL.NumericBlob(num, this);
 					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 					number.setFormatter(formatter);
+					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
+						number.range_prefix = "-";
+					}
+					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
+						number.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
+					}
 					state.output.append(number, "literal");
 				}
 			}
