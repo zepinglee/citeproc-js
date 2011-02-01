@@ -323,7 +323,7 @@ CSL.Transform = function (state) {
 			static_ordering_val = true;
 		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
 			static_ordering_val = true;
-		} else if (name.multi && name.multi.main.slice(0,2) == 'vn') {
+		} else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
 			static_ordering_val = true;
 		} else {
 			if (state.opt['auto-vietnamese-names']
