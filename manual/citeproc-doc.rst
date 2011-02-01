@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a106##
+   version 1.00##a108##
 
 .. class:: info-date
 
-   =D=1 February 2011=D=
+   =D=2 February 2011=D=
 
 .. class:: contributors
 
@@ -1376,18 +1376,24 @@ Values added to individual citation item objects may include:
   cites are rendered in the order in which they are presented
   in ``citationItems``.
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Runtime state: Internal objects and arrays
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Citations are registered and accessed by the processor internally
-in arrays and JavaScript objects.  Calling applications should
-not need to access this data directly, but it is available in
-the processor registry, at the following locations:
+in arrays and JavaScript objects. Data that may be of use to
+calling applications can be accessed at the following locations
+(note that the content of these variables should not be modified
+directly; the processor will update them automatically when
+citation data is processed or updated via the API):
 
 .. sourcecode:: js
 
-   citeproc.registry.citationreg.citationById
+   citeproc.registry.citationreg.citationById      // (object, returns object)
 
-   citeproc.registry.citationreg.citationByIndex
+   citeproc.registry.citationreg.citationByIndex   // (array, returns object)
 
-   citeproc.registry.citationreg.citationByItemId
+   citeproc.registry.citationreg.citationsByItemId // (object, returns array)
 
 
 .. [#] For information on valid CSL variable names, please
