@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.102
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Protect against undefined name.multi.main when
+  checking headline names for a name tag.
+
+- Fix for undefined value bug. When rendering non-ranged cites collapsed 
+  with collapse="year-suffix", and the year suffix is implicit
+  (not being rendered through a cs:text node with 
+  variable="year-suffix"), add the necessary splice delimiter
+  details to the number object.
+
+
+==========================
 Changes in version 1.0.101
 ==========================
 

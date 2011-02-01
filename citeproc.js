@@ -1574,7 +1574,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.101";
+	this.processor_version = "1.0.102";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3447,6 +3447,12 @@ CSL.Node["date-part"] = {
 					number = new CSL.NumericBlob(num, this);
 					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 					number.setFormatter(formatter);
+					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
+						number.range_prefix = "-";
+					}
+					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
+						number.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
+					}
 					state.output.append(number, "literal");
 				}
 			}
@@ -6074,7 +6080,7 @@ CSL.Transform = function (state) {
 			static_ordering_val = true;
 		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
 			static_ordering_val = true;
-		} else if (name.multi && name.multi.main.slice(0,2) == 'vn') {
+		} else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
 			static_ordering_val = true;
 		} else {
 			if (state.opt['auto-vietnamese-names']
