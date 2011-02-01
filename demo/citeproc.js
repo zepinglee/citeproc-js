@@ -1574,7 +1574,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.102";
+	this.processor_version = "1.0.103";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2169,12 +2169,14 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 		citationList.push([citations[i].citationID, citations[i].properties.noteIndex]);
 	}
 	this.updateItems(itemList);
+	var ret = [];
 	if (citations && citations.length) {
-		this.processCitationCluster(citations[0], [], citationList.slice(1));
+		ret = this.processCitationCluster(citations[0], [], citationList.slice(1));
 	} else {
 		this.registry = new CSL.Registry(this);
 		this.tmp = new CSL.Engine.Tmp();
 	}
+	return ret;
 };
 CSL.Engine.prototype.updateItems = function (idList, nosort) {
 	var debug = false;
@@ -8196,9 +8198,15 @@ CSL.Registry = function (state) {
 	this.sorter = new CSL.Registry.Comparifier(state, "bibliography_sort");
 	this.getSortedIds = function () {
 		ret = [];
-		len = this.reflist.length;
-		for (pos = 0; pos < len; pos += 1) {
-			ret.push(this.reflist[pos].id);
+		for (i = 0, ilen = this.reflist.length; i < ilen; i += 1) {
+			ret.push(this.reflist[i].id);
+		}
+		return ret;
+	};
+	this.getSortedRegistryItems = function () {
+		ret = [];
+		for (i = 0, ilen = this.reflist.length; i < ilen; i += 1) {
+			ret.push(this.reflist[i]);
 		}
 		return ret;
 	};
@@ -8275,7 +8283,8 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 				"sortkeys": false,
 				"ambig": false,
 				"rendered": false,
-				"disambig": false
+				"disambig": false,
+				"ref": Item
 			};
 			this.registry[item] = newitem;
 			abase = CSL.getAmbigConfig.call(this.state);

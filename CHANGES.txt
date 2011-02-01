@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.103
+==========================
+
+-----------
+Enhancement
+-----------
+
+- Add a reference to item data in registry objects.
+
+- Provide a registry method getSortedRegistryObjects()
+  to return current bibliography data.
+
+- Document new registry method in processor manual.
+
+
+==========================
 Changes in version 1.0.102
 ==========================
 
