@@ -91,12 +91,14 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 	this.updateItems(itemList);
 	// Rendering one citation restores remainder of processor state.
 	// If citations is empty, rest to empty state.
+	var ret = [];
 	if (citations && citations.length) {
-		this.processCitationCluster(citations[0], [], citationList.slice(1));
+		ret = this.processCitationCluster(citations[0], [], citationList.slice(1));
 	} else {
 		this.registry = new CSL.Registry(this);
 		this.tmp = new CSL.Engine.Tmp();
 	}
+	return ret;
 };
 
 
