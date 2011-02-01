@@ -15,11 +15,11 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a105##
+   version 1.00##a106##
 
 .. class:: info-date
 
-   =D=27 January 2011=D=
+   =D=1 February 2011=D=
 
 .. class:: contributors
 
@@ -1830,7 +1830,7 @@ via ``default-locale``:
    truncated to initials, regardless of the setting provided
    by the CSL style. Default is ``false``.
 
-``setAutoVietnameseNames()``
+``setAutoVietnameseNamesOption()``
    With argument ``true``, the processor will attempt to
    identify Vietnamese names, and format them correctly,
    with the family name always in first position. Default
