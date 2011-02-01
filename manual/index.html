@@ -334,7 +334,7 @@ pre.codeblock span.Error { color: red; font-weight: bold; }
 <h2 class="subtitle" id="integrator-s-manual">Integrator's Manual</h2>
 
 <p class="fixed"><a class="reference external" href="http://citationstyles.org/">citationstyles.org</a></p>
-<p class="info-version">version 1.00<sub>a108</sub></p>
+<p class="info-version">version 1.00<sub>a111</sub></p>
 <p class="info-date">2 February 2011</p>
 <dl class="contributors docutils">
 <dt>Author of this manual</dt>
@@ -1956,15 +1956,27 @@ calling applications can be accessed at the following locations
 directly; the processor will update them automatically when
 citation data is processed or updated via the API):</p>
 <div class="codeblock js">
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span class="nx">citeproc</span><span class="p">.</span><span class="nx">registry</span><span class="p">.</span><span class="nx">citationreg</span><span class="p">.</span><span class="nx">citationById</span>      <span class="c1">// (object, returns object)</span>
-
-<span class="nx">citeproc</span><span class="p">.</span><span class="nx">registry</span><span class="p">.</span><span class="nx">citationreg</span><span class="p">.</span><span class="nx">citationByIndex</span>   <span class="c1">// (array, returns object)</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span class="nx">citeproc</span><span class="p">.</span><span class="nx">registry</span><span class="p">.</span><span class="nx">citationreg</span><span class="p">.</span><span class="nx">citationById</span>      <span class="c1">// (object, returns object)</span>
 
 <span class="nx">citeproc</span><span class="p">.</span><span class="nx">registry</span><span class="p">.</span><span class="nx">citationreg</span><span class="p">.</span><span class="nx">citationsByItemId</span> <span class="c1">// (object, returns array)</span>
+
+<span class="nx">citeproc</span><span class="p">.</span><span class="nx">registry</span><span class="p">.</span><span class="nx">citationreg</span><span class="p">.</span><span class="nx">citationByIndex</span>   <span class="c1">// (array of objects)</span>
+
+<span class="nx">citeproc</span><span class="p">.</span><span class="nx">registry</span><span class="p">.</span><span class="nx">getSortedRegistryItems</span><span class="p">()</span>      <span class="c1">// (returns an array of</span>
+                                                <span class="c1">// registry objects, with</span>
+                                                <span class="c1">// ``uncited`` set ``true``</span>
+                                                <span class="c1">// as appropriate, and</span>
+                                                <span class="c1">// item data on key ``ref``)</span>
 </pre></div>
 </td></tr></table>
 </div>

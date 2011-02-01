@@ -15,7 +15,7 @@ __ http://citationstyles.org/
 
 .. class:: info-version
 
-   version 1.00##a108##
+   version 1.00##a111##
 
 .. class:: info-date
 
@@ -1391,10 +1391,15 @@ citation data is processed or updated via the API):
 
    citeproc.registry.citationreg.citationById      // (object, returns object)
 
-   citeproc.registry.citationreg.citationByIndex   // (array, returns object)
-
    citeproc.registry.citationreg.citationsByItemId // (object, returns array)
 
+   citeproc.registry.citationreg.citationByIndex   // (array of objects)
+
+   citeproc.registry.getSortedRegistryItems()      // (returns an array of 
+                                                   // registry objects, with
+                                                   // ``uncited`` set ``true``
+                                                   // as appropriate, and
+                                                   // item data on key ``ref``)
 
 .. [#] For information on valid CSL variable names, please
           refer to the CSL specification, available via http://citationstyles.org/.
