@@ -130,9 +130,16 @@ CSL.Registry = function (state) {
 
 	this.getSortedIds = function () {
 		ret = [];
-		len = this.reflist.length;
-		for (pos = 0; pos < len; pos += 1) {
-			ret.push(this.reflist[pos].id);
+		for (i = 0, ilen = this.reflist.length; i < ilen; i += 1) {
+			ret.push(this.reflist[i].id);
+		}
+		return ret;
+	};
+
+	this.getSortedRegistryItems = function () {
+		ret = [];
+		for (i = 0, ilen = this.reflist.length; i < ilen; i += 1) {
+			ret.push(this.reflist[i]);
 		}
 		return ret;
 	};
@@ -325,7 +332,8 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 				"sortkeys": false,
 				"ambig": false,
 				"rendered": false,
-				"disambig": false
+				"disambig": false,
+				"ref": Item
 			};
 			//
 			//
