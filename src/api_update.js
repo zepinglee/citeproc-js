@@ -64,35 +64,65 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 	if (!citations) {
 		citations = [];
 	}
+	// Adjust citationIDs to avoid duplicates, save off index numbers
+	var indexNumbers = [];
+	var citationIds = {};
 	for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
+		if (citationIds[citations[i].citationID]) {
+			this.setCitationId(citations[i], true);
+		}
+		citationIds[citations[i].citationID] = true;
+		indexNumbers.push(citations[i].properties.index);
+	}
+	// Slice citations and sort by their declared index positions, if any,
+	// then reassign index and noteIndex numbers.
+	var oldCitations = citations.slice();
+	oldCitations.sort(
+	    function (a,b) {
+			if (a.properties.index < b.properties.index) {
+				return -1;
+			} else if (a.properties.index > b.properties.index) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	);
+	for (var i = 0, ilen = oldCitations.length; i < ilen; i += 1) {
+		oldCitations[i].properties.index = i;
+	}
+	for (var i = 0, ilen = oldCitations.length; i < ilen; i += 1) {
 		sortedItems = [];
-		for (var j = 0, jlen = citations[i].citationItems.length; j < jlen; j += 1) {
-			item = citations[i].citationItems[j];
+		for (var j = 0, jlen = oldCitations[i].citationItems.length; j < jlen; j += 1) {
+			item = oldCitations[i].citationItems[j];
 			if ("undefined" === typeof item.sortkeys) {
 				item.sortkeys = [];
 			}
 			Item = this.retrieveItem(item.id);
 			newitem = [Item, item];
 			sortedItems.push(newitem);
-			citations[i].citationItems[j].item = Item;
+			oldCitations[i].citationItems[j].item = Item;
 			itemList.push(item.id);
 		}
-		if (!citations[i].properties.unsorted) {
+		if (!oldCitations[i].properties.unsorted) {
 			sortedItems.sort(this.citation.srt.compareCompositeKeys);
 		}
-		citations[i].sortedItems = sortedItems;
+		oldCitations[i].sortedItems = sortedItems;
 		// Save citation data in registry
-		this.registry.citationreg.citationById[citations[i].citationID] = citations[i];
-		// Save off citationIDs and index positions, for use in
-		// final initialization.
-		citationList.push([citations[i].citationID, citations[i].properties.noteIndex]);
+		this.registry.citationreg.citationById[oldCitations[i].citationID] = oldCitations[i];
 	}
 	// Register Items
 	this.updateItems(itemList);
-	// Rendering one citation restores remainder of processor state.
-	// If citations is empty, rest to empty state.
+
+	// Construct citationList from original copy
+	for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
+		citationList.push([citations[i].citationID, citations[i].properties.noteIndex]);
+	}
+
 	var ret = [];
 	if (citations && citations.length) {
+		// Rendering one citation restores remainder of processor state.
+		// If citations is empty, rest to empty state.
 		ret = this.processCitationCluster(citations[0], [], citationList.slice(1));
 	} else {
 		this.registry = new CSL.Registry(this);

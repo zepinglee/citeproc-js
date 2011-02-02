@@ -102,6 +102,21 @@ doh.registerGroup("citeproc_js.restore",
 			}
 			doh.assertEqual("Success", testme());
 		},
+		function testThatItWorksWithDuplicateCitationIDs() {
+			var t = citeproc_js.restore;
+			function testme () {
+				var sys, style, res1, res2, data;
+				sys = new RhinoTest([t.item1, t.item2]);
+				style = new CSL.Engine(sys,t.csl);
+				try {
+					var res = style.restoreProcessorState([t.citation1x, t.citation2x, t.citation1xx]);
+					return "Success";
+				} catch (e) {
+					return e;
+				}
+			}
+			doh.assertEqual("Success", testme());
+		},
 		function testRestore() {
 			var sys, style, res1, res2, res3, data;
 			var t = citeproc_js.restore;
@@ -193,6 +208,25 @@ doh.registerGroup("citeproc_js.restore",
 			}
 		};
 		citeproc_js.restore.citation1x = {
+			"citationID": "CITATION-1",
+			"citationItems": [
+				{
+					"id": "ITEM-1",
+					"position": 0,
+					"sortkeys": ["Book B"]
+				},
+				{
+					"id": "ITEM-2",
+					"position": 0,
+					"sortkeys": ["Book A"]
+				}
+			],
+			"properties": {
+				"index": 0,
+				"noteIndex": 1
+			}
+		};
+		citeproc_js.restore.citation1xx = {
 			"citationID": "CITATION-1",
 			"citationItems": [
 				{
