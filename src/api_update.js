@@ -98,11 +98,11 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 			if ("undefined" === typeof item.sortkeys) {
 				item.sortkeys = [];
 			}
-			Item = this.retrieveItem(item.id);
+			Item = this.retrieveItem("" + item.id);
 			newitem = [Item, item];
 			sortedItems.push(newitem);
 			oldCitations[i].citationItems[j].item = Item;
-			itemList.push(item.id);
+			itemList.push("" + item.id);
 		}
 		if (!oldCitations[i].properties.unsorted) {
 			sortedItems.sort(this.citation.srt.compareCompositeKeys);
@@ -116,7 +116,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 
 	// Construct citationList from original copy
 	for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
-		citationList.push([citations[i].citationID, citations[i].properties.noteIndex]);
+		citationList.push(["" + citations[i].citationID, citations[i].properties.noteIndex]);
 	}
 
 	var ret = [];

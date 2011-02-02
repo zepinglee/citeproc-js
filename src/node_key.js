@@ -164,9 +164,8 @@ CSL.Node.key = {
 						if ("undefined" === typeof dp) {
 							dp = {};
 						}
-						len = CSL.DATE_PARTS_INTERNAL.length;
-						for (pos = 0; pos < len; pos += 1) {
-							elem = CSL.DATE_PARTS_INTERNAL[pos];
+						for (var i = 0, ilen = CSL.DATE_PARTS_INTERNAL.length; i < ilen; i += 1) {
+							elem = CSL.DATE_PARTS_INTERNAL[i];
 							value = 0;
 							e = elem;
 							if (e.slice(-4) === "_end") {
@@ -220,11 +219,10 @@ CSL.Node.key = {
 			tlen = target.length;
 			keypos = false;
 			CSL.expandMacro.call(state, token);
-			len = target.slice(tlen).length;
-			for (pos = 0; pos < len; pos += 1) {
-				tok = target.slice(tlen)[pos];
+			for (var i = 0, ilen = target.slice(tlen).length; i < ilen; i += 1) {
+				tok = target.slice(tlen)[i];
 				if (tok && tok.name === "text" && tok.dateparts) {
-					keypos = pos;
+					keypos = i;
 					break;
 				}
 			}

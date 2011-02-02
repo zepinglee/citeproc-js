@@ -242,25 +242,25 @@ CSL.getBibliographyEntries = function (bibsection) {
 		// by arrival of either a master or a sibling, with the
 		// same result.
 
-		sortedItems = [[{id: item.id}, item]];
+		sortedItems = [[{id: "" + item.id}, item]];
 		entry_item_ids = [];
 		if (this.registry.registry[item.id].master) {
 			collapse_parallel = true;
 			this.parallel.StartCitation(sortedItems);
 			this.output.queue[0].strings.delimiter = ", ";
-			entry_item_ids.push(CSL.getCite.call(this, item));
+			entry_item_ids.push("" + CSL.getCite.call(this, item));
 			skips[item.id] = true;
 			siblings = this.registry.registry[item.id].siblings;
 			for (ppos = 0, llen = siblings.length; ppos < llen; ppos += 1) {
 				i = this.registry.registry[item.id].siblings[ppos];
 				eyetem = this.retrieveItem(i);
-				entry_item_ids.push(CSL.getCite.call(this, eyetem));
+				entry_item_ids.push("" + CSL.getCite.call(this, eyetem));
 				skips[eyetem.id] = true;
 			}
 			this.parallel.ComposeSet();
 			this.parallel.PruneOutputQueue();
 		} else if (!this.registry.registry[item.id].siblings) {
-			entry_item_ids.push(CSL.getCite.call(this, item));
+			entry_item_ids.push("" + CSL.getCite.call(this, item));
 			//skips[item.id] = true;
 		}
 		// For RDF support

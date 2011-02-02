@@ -131,7 +131,7 @@ CSL.Registry = function (state) {
 	this.getSortedIds = function () {
 		ret = [];
 		for (i = 0, ilen = this.reflist.length; i < ilen; i += 1) {
-			ret.push(this.reflist[i].id);
+			ret.push("" + this.reflist[i].id);
 		}
 		return ret;
 	};
@@ -277,7 +277,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
 			//
 			len = this.ambigcites[ambig].length;
 			for (pos = 0; pos < len; pos += 1) {
-				id = this.ambigcites[ambig][pos];
+				id = "" + this.ambigcites[ambig][pos];
 				this.refreshes[id] = true;
 			}
 			//
@@ -326,7 +326,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			//  4e. Create registry token.
 			//
 			newitem = {
-				"id": item,
+				"id": "" + item,
 				"seq": 0,
 				"offset": 0,
 				"sortkeys": false,
@@ -499,7 +499,7 @@ CSL.Registry.prototype.renumber = function () {
 		item.seq = (pos + 1);
 		// update_mode is set to CSL.NUMERIC if citation-number is rendered
 		// in citations.
-		if (this.state.tmp.taintedItemIDs && item.seq !== this.oldseq[item.id]) {
+		if (this.state.tmp.taintedItemIDs && item.seq != this.oldseq[item.id]) {
 			if (this.state.opt.update_mode === CSL.NUMERIC) {
 				this.state.tmp.taintedItemIDs[item.id] = true;
 			}
@@ -604,7 +604,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, ta
 	var dome = false;
 	// if (this.state.tmp.taintedItemIDs) {
 	if (tainters) {
-		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, id, tainters);
+		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, tainters);
 	} else {
 		this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
 	}

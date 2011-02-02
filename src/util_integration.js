@@ -67,7 +67,7 @@ CSL.Engine.prototype.setCitationId = function (citation, force) {
 				id += -1;
 			}
 		}
-		ret = id;
+		ret = "" + id;
 	}
 	this.registry.citationreg.citationById[citation.citationID] = citation;
 	return ret;

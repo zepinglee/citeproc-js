@@ -725,7 +725,7 @@ CSL.Node.names = {
 						//
 						// register the name in the global names disambiguation
 						// registry
-						state.registry.namereg.addname(Item.id, nameset.names[ppos], ppos);
+						state.registry.namereg.addname("" + Item.id, nameset.names[ppos], ppos);
 						chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter];
 						if ("undefined" === typeof chk) {
 							state.tmp.disambig_settings.givens.push([]);
@@ -734,14 +734,14 @@ CSL.Node.names = {
 						if ("undefined" === typeof chk) {
 							myform = state.output.getToken("name").strings.form;
 							myinitials = this.strings["initialize-with"];
-							param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
+							param = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter].push(param);
 						}
 						//
 						// set the display mode default for givennames if required
 						myform = state.output.getToken("name").strings.form;
 						myinitials = this.strings["initialize-with"];
-						paramx = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
+						paramx = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
 						if (state.tmp.sort_key_flag) {
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = 2;
 							param = 2;
@@ -760,7 +760,7 @@ CSL.Node.names = {
 							param = val;
 //							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
 							if (state.opt["disambiguate-add-givenname"]) {
-								param = state.registry.namereg.evalname(Item.id, nameset.names[ppos], ppos, param, state.output.getToken("name").strings.form, this.strings["initialize-with"]);
+								param = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, param, state.output.getToken("name").strings.form, this.strings["initialize-with"]);
 							}
 						} else {
 							//

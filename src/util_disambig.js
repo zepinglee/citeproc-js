@@ -67,7 +67,7 @@ CSL.compareAmbigConfig = function(a, b) {
 	return 0;
 };
 
-CSL.cloneAmbigConfig = function (config, oldconfig, itemID, tainters) {
+CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
 	var ret, param, pos, ppos, len, llen;
 	ret = {};
 	ret.names = [];

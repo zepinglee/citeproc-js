@@ -114,7 +114,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 	var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
 	if (this.use_parallels) {
 		// print("StartCite");
-		if (this.sets.value().length && this.sets.value()[0].itemId === Item.id) {
+		if (this.sets.value().length && this.sets.value()[0].itemId == Item.id) {
 			this.ComposeSet();
 		}
 		this.sortedItemsPos += 1;
@@ -149,8 +149,8 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 		this.cite.back_forceme = [];
 		this.cite.position = position;
 		this.cite.Item = Item;
-		this.cite.itemId = Item.id;
-		this.cite.prevItemID = prevItemID;
+		this.cite.itemId = "" + Item.id;
+		this.cite.prevItemID = "" + prevItemID;
 		this.target = "front";
 		//
 		// Reevaluate position of this cite, if it follows another, in case it
@@ -160,13 +160,13 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 			// This works, and I am absolutely certain that I have
 			// no idea how or why.
 			curr = this.sortedItems[this.sortedItemsPos][1];
-			last_id = this.sortedItems[(this.sortedItemsPos - 1)][1].id;
+			last_id = "" + this.sortedItems[(this.sortedItemsPos - 1)][1].id;
 			master = this.state.registry.registry[last_id].parallel;
 			prev_locator = false;
-			if (master === curr.id) {
+			if (master == curr.id) {
 				len = this.sortedItemsPos - 1;
 				for (pos = len; pos > -1; pos += -1) {
-					if (this.sortedItems[pos][1].id === Item.id) {
+					if (this.sortedItems[pos][1].id == Item.id) {
 						prev_locator = this.sortedItems[pos][1].locator;
 						break;
 					}
