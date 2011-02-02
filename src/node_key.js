@@ -129,17 +129,8 @@ CSL.Node.key = {
 							num = Item[variable];
 						}
 						if (num) {
-							m = num.match(/\s*(-{0,1}[0-9]+)/);
-							if (m) {
-								num = parseInt(m[1], 10);
-								if (num < 0) {
-									num = 99999999999999999999 + num;
-								}
-								num = "" + num;
-								while (num.length < 20) {
-									num = "0" + num;
-								}
-							}
+							// Code currently in util_number.js
+							num = CSL.Util.padding(num);
 						}
 						state.output.append(num, this);
 					};
@@ -187,6 +178,14 @@ CSL.Node.key = {
 								state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state, value));
 							}
 						}
+						if (state.registry.registry[Item.id].disambig.year_suffix) {
+							num = state.registry.registry[Item.id].disambig.year_suffix.toString();
+							num = CSL.Util.padding(num);
+						} else {
+							num = CSL.Util.padding("0");
+						}
+						state.output.append("S"+num)
+
 					};
 				} else if ("title" === variable) {
 					state.transform.init("empty", "title");

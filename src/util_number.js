@@ -46,6 +46,21 @@
  * or the [AGPLv3] License.”
  */
 
+CSL.Util.padding = function (num) {
+	m = num.match(/\s*(-{0,1}[0-9]+)/);
+	if (m) {
+		num = parseInt(m[1], 10);
+		if (num < 0) {
+			num = 99999999999999999999 + num;
+		}
+		num = "" + num;
+		while (num.length < 20) {
+			num = "0" + num;
+		}
+	}
+	return num;
+}
+
 CSL.Util.LongOrdinalizer = function () {};
 
 CSL.Util.LongOrdinalizer.prototype.init = function (state) {
