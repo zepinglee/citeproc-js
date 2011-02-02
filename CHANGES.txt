@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.104
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Make restoreProcessorState() notice that the sequence
+  of citations has changed, and assign fresh citation
+  IDs to duplicate citations in the input.
+
+
+==========================
 Changes in version 1.0.103
 ==========================
 
