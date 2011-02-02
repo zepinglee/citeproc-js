@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.105
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Assure that all ids passed into an array or se
+  as a straight variable are stringified. Loosen
+  condition statements where appropriate to treat
+  numeric IDs of string and numeric type as
+  equivalent.
+
+
+==========================
 Changes in version 1.0.104
 ==========================
 
