@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.106
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a flaw in disambiguation logic that could
+  result in a processor hang, when a creator list
+  with fewer names that its predecessor required
+  additional names to accomplish disambiguation.
+  
+- Include the year-suffix as a sortable number
+  string in dates used as sort keys. Citations
+  that include a year-suffix will now sort correctly
+  within the citation.
+
+- Restore XML to defaults before creating E4X
+  objects.
+
+- Repair the processor demo page, which broke
+  after revision 1.0.95.
+
+
+==========================
 Changes in version 1.0.105
 ==========================
 
