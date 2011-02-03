@@ -1574,7 +1574,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.106";
+	this.processor_version = "1.0.107";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8797,7 +8797,9 @@ CSL.Disambiguation.prototype.evalScan = function (ismax) {
 CSL.Disambiguation.prototype.disNames = function (ismax) {
 	var pos, len;
 	if (this.clashes[1] === 0) {
-		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
@@ -8830,7 +8832,9 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		if (this.clashes[0] === 1) {
 			this.base = this.decrementNames();
 		}
-		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
@@ -8861,7 +8865,9 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 CSL.Disambiguation.prototype.disExtraText = function () {
 	var pos, len;
 	if (this.clashes[1] === 0) {
-		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];

@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.107
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Quash year-suffix on all entries that successfully
+  disambiguate on the basis of names or text added
+  with disambiguate="true".
+
+
+==========================
 Changes in version 1.0.106
 ==========================
 
