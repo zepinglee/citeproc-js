@@ -97,7 +97,7 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	this.scanlist = list[1];
 	this.partners = [];
 
-    var tempResult = this.getItem(Item);
+    var tempResult = this.getItemDesc(Item);
     this.base = tempResult[0];
     this.maxvals = tempResult[1];
     this.minval = tempResult[2];
@@ -108,11 +108,18 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	this.nonpartners = [];
 	for (pos = 1, len = list[1].length; pos < len; pos += 1) {
 		otherItem = list[1][pos];
-		otherItemCite = this.getItem(otherItem)[3];
+		otherItemData = this.getItemDesc(otherItem);
+		otherItemCite = otherItemData[3];
+		otherItemBase = otherItemData[0];
+
+		// FIXED
+		// print("  --> "+Item.id+": ("+ItemCite+") "+otherItem.id+": ("+otherItemCite+")");
 		if (ItemCite === otherItemCite) {
+			// print("    clash");
 			this.clashes[phase] += 1;
 			this.partners.push(otherItem);
 		} else {
+			// print("    non-clash");
 			this.nonpartners.push(otherItem);
 		}
 	}
@@ -120,20 +127,20 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 
 CSL.Disambiguation.prototype.evalScan = function (ismax) {
 	// print("MODE: "+this.modeindex+" "+this.modes);
+	// FIXED
+	//print("Mode: "+this.modes[this.modeindex]+" names: "+this.base.names[this.nnameset]);
 	this[this.modes[this.modeindex]](ismax);
 };
 
 CSL.Disambiguation.prototype.disNames = function (ismax) {
 	var pos, len;
-	// print("disnames")
+	// print("== disnames ==")
 	if (this.clashes[1] === 0) {
 		// no clashes
 		// Remove item from list.  If only one non-clashing item,
 		// remove it as well.
-		//this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
 		if (this.nonpartners.length === 1) {
-			//this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
@@ -171,17 +178,23 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 
 CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	var pos, len;
-	// print("disgivens")
+	// print("== disgivens ==")
+	// FIXED
+	// print("  ... names at top: "+this.base.names[this.nnameset]);
+	// print("  ... clashes: "+this.clashes);
 	// Haven't compared in detail, but the logic of this seems to the be same
 	// as above.
 	if (this.clashes[1] === 0) {
 		//print("no CLash: "+this.gname)
 		// this branch is the same as for disNames(): if it resolves, we're done with it
-		this.base = this.decrementNames();
-		// this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
+
+		// Not absolutely positively certain that this is a 100% effective
+		// condition, but it covers demonstrated edge cases.
+		if (this.clashes[0] === 1) {
+			this.base = this.decrementNames();
+		}
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
 		if (this.nonpartners.length === 1) {
-			// this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
@@ -191,7 +204,6 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		// fewer clashes
 		this.lists[this.listpos] = [this.base, this.partners];
 		if (this.nonpartners.length === 1) {
-			//this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 		} else {
 			this.lists.push([this.base, this.nonpartners]);
@@ -202,7 +214,6 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		this.base = CSL.cloneAmbigConfig(this.oldbase);
 		if (ismax || this.advance_mode) {
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
-				// this.state.registry.registerAmbigToken(this.akey, this.partners[pos].id, this.base, this.scanlist);
 				this.state.registry.registerAmbigToken(this.akey, "" + this.partners[pos].id, this.base);
 			}
 			if (ismax) {
@@ -337,8 +348,9 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
 	return maxed;
 };
 
-CSL.Disambiguation.prototype.getItem = function (Item) {
+CSL.Disambiguation.prototype.getItemDesc = function (Item, forceMax) {
 	var str, maxvals, minval, base;
+	//print("getItem with name limits: "+this.base.names);
 	str = CSL.getAmbiguousCite.call(this.state, Item, this.base);
 	maxvals = CSL.getMaxVals.call(this.state);
 	minval = CSL.getMinVal.call(this.state);
@@ -348,20 +360,40 @@ CSL.Disambiguation.prototype.getItem = function (Item) {
 
 CSL.Disambiguation.prototype.initVars = function (akey) {
 	var pos, len;
-	var myIds, myItems;
+	var myIds, myItemBundles, myItems;
 	this.lists = [];
 	this.base = false;
 	this.akey = akey;
-	myItems = [];
+	myItemBundles = [];
 	myIds = this.ambigcites[akey];
-	// For on-the-fly editing.
-	//for (pos = 0, len = myIds.length; pos < len; pos += 1) {
-	//	this.state.tmp.taintedItemIDs[myIds[pos]] = true;
-	//}
 	if (myIds && myIds.length > 1) {
-		for (pos = 0, len = myIds.length; pos < len; pos += 1) {
-			myItems.push(this.state.retrieveItem("" + myIds[pos]));
+		// Build a composite list of Items and associated
+		// disambig objects. This is messy, but it's the only
+		// way to get the items sorted by the number of names
+		// to be disambiguated. If they are in descending order
+		// with name expansions, the processor will hang.
+		for (var i = 0, ilen = myIds.length; i < ilen; i += 1) {
+			var myItem = this.state.retrieveItem("" + myIds[i]);
+			myItemBundles.push([this.getItemDesc(myItem), myItem]);
 		}
+		myItemBundles.sort(
+ 			function (a, b) {
+   				if (a[0][1] > b[0][1]) {
+					return 1;
+				} else if (a[0][1] < b[0][1]) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+ 		);
+		var myItems = [];
+		for (var i = 0, ilen = myItemBundles.length; i < ilen; i += 1) {
+			myItems.push(myItemBundles[i][1]);
+		}
+		// FIXED
+		//print("Item sequence: "+[myItems[x].id for (x in myItems)]);
+		
 		// first element is the base disambig, which is false for the initial
 		// list.
 		this.lists.push([this.base, myItems]);
@@ -417,6 +449,8 @@ CSL.Disambiguation.prototype.decrementNames = function () {
 		for (pos = len; pos > -1; pos += -1) {
 			llen = base_return.givens[pos].length - 1;
 			for (ppos = llen; ppos > -1; ppos += -1) {
+				// FIXED
+				//print("** at "+pos+" "+ppos+" >> "+base_return.givens[pos][ppos]+" and "+this.oldbase.givens[pos][ppos]);
 				if (base_return.givens[pos][ppos] > this.oldbase.givens[pos][ppos]) {
 					break;
 				}
