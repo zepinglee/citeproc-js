@@ -190,6 +190,14 @@ CSL_E4X.prototype.nodeNameIs = function (myxml,name) {
 
 CSL_E4X.prototype.makeXml = function (myxml) {
 	var xml;
+	// Reset to XML defaults before plunging into E4X.
+	// Per https://www.zotero.org/trac/ticket/1780
+	XML.ignoreComments = true;
+	XML.ignoreProcessingInstructions = true;
+ 	XML.ignoreWhitespace = true;
+	XML.prettyPrinting = true;
+	XML.prettyIndent = 2;
+	
 	if ("xml" == typeof myxml){
 		// print("forcing serialization of xml to fix up namespacing");
 		myxml = myxml.toXMLString();

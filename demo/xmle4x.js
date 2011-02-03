@@ -150,6 +150,11 @@ CSL_E4X.prototype.nodeNameIs = function (myxml,name) {
 }
 CSL_E4X.prototype.makeXml = function (myxml) {
 	var xml;
+	XML.ignoreComments = true;
+	XML.ignoreProcessingInstructions = true;
+ 	XML.ignoreWhitespace = true;
+	XML.prettyPrinting = true;
+	XML.prettyIndent = 2;
 	if ("xml" == typeof myxml){
 		myxml = myxml.toXMLString();
 	};
