@@ -59,6 +59,7 @@ CSL.Disambiguation.prototype.run = function(akey) {
 	if (!this.modes.length) {
 		return;
 	}
+	// print("== RUN ==");
 	this.initVars(akey);
 	this.runDisambig();
 };
@@ -139,7 +140,14 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		// no clashes
 		// Remove item from list.  If only one non-clashing item,
 		// remove it as well.
-		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
+		
+		// Note that this.partners has length of exactly one in this case,
+		// because there are no clashes. As we've therefore resolved conflicts
+		// by adding names, we clone the base and quash any lurking year_suffix
+		// value.
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
@@ -193,7 +201,10 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		if (this.clashes[0] === 1) {
 			this.base = this.decrementNames();
 		}
-		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
+		// See note in disNames, above.
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
 			this.lists[this.listpos] = [this.base,[]];
@@ -230,7 +241,10 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 	// Try with disambiguate="true""
 	if (this.clashes[1] === 0) {
 		//this.state.registry.registerAmbigToken(this.akey, this.partners[0].id, this.base, this.scanlist);
-		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
+		// See note in disNames, above.
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			//this.state.registry.registerAmbigToken(this.akey, this.nonpartners[0].id, this.base, this.scanlist);
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
