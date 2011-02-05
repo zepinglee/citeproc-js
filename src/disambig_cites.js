@@ -397,7 +397,13 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 				} else if (a[0][1] < b[0][1]) {
 					return -1;
 				} else {
-					return 0;
+					if (a[1].id > b[1].id) {
+						return 1;
+					} else if (a[1].id < b[1].id) {
+						return -1;
+					} else {
+						return 0;
+					}
 				}
 			}
  		);
