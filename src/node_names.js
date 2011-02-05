@@ -621,7 +621,9 @@ CSL.Node.names = {
 
 						//
 						// if rendering for display, do not honor a disambig_request
-						// to set names length below et-al-use-first
+						// to set names length below et-al-use-first, and do not
+						// truncate unless number of names is equal to or greater
+						// than et-al-min
 						//
 						if (state.tmp.suppress_decorations) {
 							if (state.tmp.disambig_request) {
@@ -630,8 +632,12 @@ CSL.Node.names = {
 								discretionary_names_length = state.tmp["et-al-use-first"];
 							}
 						} else {
-							if (state.tmp.disambig_request && state.tmp["et-al-use-first"] < state.tmp.disambig_request.names[state.tmp.nameset_counter]) {
-								discretionary_names_length = state.tmp.disambig_request.names[state.tmp.nameset_counter];
+							if (state.tmp.disambig_request && state.tmp.disambig_request.names[state.tmp.nameset_counter] > state.tmp["et-al-use-first"]) {
+								if (display_names.length < state.tmp["et-al-min"]) {
+									discretionary_names_length = display_names.length;
+								} else {
+									discretionary_names_length = state.tmp.disambig_request.names[state.tmp.nameset_counter];
+								}
 							} else if (display_names.length >= state.tmp["et-al-min"]) {
 								discretionary_names_length = state.tmp["et-al-use-first"];
 							}
