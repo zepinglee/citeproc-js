@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.108
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Prevent et al. truncation of name lists that are
+  less than et-al-min (or et-al-subsequent-min, depending
+  on context), when they are accompanied by a clash
+  partner with fewer names.
+
+
+==========================
 Changes in version 1.0.107
 ==========================
 
