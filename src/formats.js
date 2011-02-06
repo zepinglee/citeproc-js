@@ -66,7 +66,10 @@ CSL.Output.Formats.prototype.html = {
 	// need not be idempotent.
 	//
 	"text_escape": function (text) {
-		return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace("  ", "&nbsp; ", "g");
+		// Numeric entities, in case the output is processed as
+		// xml in an environment in which HTML named entities are
+		// not declared.
+		return text.replace(/&/g, "&#38;").replace(/</g, "&#60;").replace(/>/g, "&#62;").replace("  ", "&#160; ", "g");
 	},
 	"bibstart": "<div class=\"csl-bib-body\">\n",
 	"bibend": "</div>",
