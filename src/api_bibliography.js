@@ -107,7 +107,6 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	params.bibend = this.fun.decorate.bibend;
 
 	this.opt.citation_number_slug = false;
-
 	return [params, entry_strings];
 };
 
