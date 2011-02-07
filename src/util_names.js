@@ -348,7 +348,7 @@ CSL.Util.Names.getCommonTerm = function (state, namesets) {
 
 CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
 	var name, pos, len, part, ppos, llen;
-	if (!base_nameset.names || !nameset.names || base_nameset.names.length !== nameset.names.length) {
+	if (!base_nameset.names || !nameset.names || base_nameset.names.length !== nameset.names.length || base_nameset.etal !== nameset.etal) {
 		return false;
 	}
 	len = nameset.names.length;

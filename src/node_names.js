@@ -251,10 +251,8 @@ CSL.Node.names = {
 							}
 						}
 					}
-					len = namesets.length;
-					for (pos = 0; pos < len; pos += 1) {
+					for (pos = 0, len = namesets.length; pos < len; pos += 1) {
 						state.tmp.names_max.push(namesets[pos].names.length);
-						state.tmp.names_used.push(namesets[pos]);
 					}
 
 					state.tmp.value = namesets.slice();
@@ -557,30 +555,6 @@ CSL.Node.names = {
 						state.output.append(label, "label");
 					}
 
-					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
-						//
-						// This is fine, but the naming of the comparison
-						// function is confusing.  This is just checking whether the
-						// current name is the same as the last name rendered
-						// in the last cite, and it works.  Set a toggle if the
-						// test fails, so we can avoid further suppression in the
-						// cite.
-						//
-						if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
-							// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-							lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-							//lastones = state.tmp.last_names_used;
-							currentones = state.tmp.names_used[state.tmp.nameset_counter];
-							//currentones = state.tmp.names_used;
-							compset = [currentones, lastones];
-							if (CSL.Util.Names.getCommonTerm(state, compset)) {
-								continue;
-							} else {
-								state.tmp.have_collapsed = false;
-							}
-						}
-					}
-
 					if (!state.tmp.disambig_request) {
 						state.tmp.disambig_settings.givens[state.tmp.nameset_counter] = [];
 					}
@@ -714,6 +688,32 @@ CSL.Node.names = {
 					}
 					state.tmp.disambig_settings.names[state.tmp.nameset_counter] = display_names.length;
 					local_count += display_names.length;
+
+					state.tmp.names_used.push({names:display_names,etal:et_al});
+
+					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
+						//
+						// This is fine, but the naming of the comparison
+						// function is confusing.  This is just checking whether the
+						// current name is the same as the last name rendered
+						// in the last cite, and it works.  Set a toggle if the
+						// test fails, so we can avoid further suppression in the
+						// cite.
+						//
+						if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
+							// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+							lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+							//lastones = state.tmp.last_names_used;
+							currentones = state.tmp.names_used[state.tmp.nameset_counter];
+							//currentones = state.tmp.names_used;
+							compset = [currentones, lastones];
+							if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
+								continue;
+							} else {
+								state.tmp.have_collapsed = false;
+							}
+						}
+					}
 
 					//
 					// "name" is the format for the outermost nesting of a nameset
