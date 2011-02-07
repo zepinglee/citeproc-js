@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.110
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- With collapse="year", do not block the collapsing
+  of subsequent authors due to differences that are
+  masked by et al. truncation of the name list.
+
+
+==========================
 Changes in version 1.0.109
 ==========================
 
