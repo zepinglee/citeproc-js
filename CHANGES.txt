@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.111
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid error when sorting items not yet added to the registry,
+  triggered in Zotero clients on attempt to enter multiple
+  citations in a style that applies sorting to citations.
+
+
+
+==========================
 Changes in version 1.0.110
 ==========================
 
