@@ -178,7 +178,7 @@ CSL.Node.key = {
 								state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state, value));
 							}
 						}
-						if (state.registry.registry[Item.id].disambig.year_suffix) {
+						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix) {
 							num = state.registry.registry[Item.id].disambig.year_suffix.toString();
 							num = CSL.Util.padding(num);
 						} else {
