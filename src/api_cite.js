@@ -977,7 +977,9 @@ CSL.citeEnd = function (Item) {
 	// into the registry.  This resets defaults to the subsequent form,
 	// when first cites are rendered.
 	if (this.tmp.disambig_restore && this.registry.registry[Item.id]) {
-		this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
+		//this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
+		this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names;
+		this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens;
 	}
 	this.tmp.disambig_request = false;
 
