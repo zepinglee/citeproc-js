@@ -227,6 +227,12 @@ var CSL = {
 		"@vertical-align",
 		"@quotes"
 	],
+	INSTITUTION_KEYS: [
+		"font-style",
+		"font-variant",
+		"font-weight",
+		"text-decoration"
+	],
 	SUFFIX_CHARS: "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z",
 	ROMAN_NUMERALS: [
 		[ "", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix" ],
@@ -1574,7 +1580,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.112";
+	this.processor_version = "1.0.113";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();

@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.113
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Apply formatting set on family name parts to institutions as well.
+
+
+==========================
 Changes in version 1.0.112
 ==========================
 
@@ -11,6 +22,7 @@ Mishandled or unimplemented features
 - Avoid carrying year-suffix forward to a following 
   reference when performing position-sensitive
   citation updates.
+
 
 
 ==========================
