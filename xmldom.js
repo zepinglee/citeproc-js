@@ -307,6 +307,23 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 			theinstitution = this.importNode(myxml.ownerDocument, this.institution);
 			thename = name[0];
 			thenames.insertBefore(theinstitution, thename.nextSibling);
+			for (var j = 0, jlen = CSL.INSTITUTION_KEYS.length; j < jlen; j += 1) {
+				var attrname = CSL.INSTITUTION_KEYS[j];
+				var attrval = thename.getAttribute(attrname);
+				if (attrval) {
+					theinstitution.setAttribute(attrname, attrval);
+				}
+			}
+			var nameparts = thename.getElementsByTagName("name-part");
+			for (var j = 0, jlen = nameparts.length; j < jlen; j += 1) {
+				if ('family' === nameparts[j].getAttribute('name')) {
+					for (var k = 0, klen = CSL.INSTITUTION_KEYS.length; k < klen; k += 1) {
+						var attrname = CSL.INSTITUTION_KEYS[k];
+						var attrval = nameparts[j].getAttribute(attrname);
+						theinstitution.setAttribute(attrname, attrval);
+					}
+				}
+			}
 		}
 	}
 };
