@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.114
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reset disambig_restore variable after use. Prevents disambiguation 
+  parameters from leaking between references.
+
+- Fix insane parameters in a style used for testing, which were not previously
+  triggering a failure because of the bug listed above.
+
+
+==========================
 Changes in version 1.0.113
 ==========================
 
