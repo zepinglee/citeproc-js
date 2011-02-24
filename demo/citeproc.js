@@ -1580,7 +1580,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.115";
+	this.processor_version = "1.0.116";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6935,7 +6935,7 @@ CSL.Util.Names.getCommonTerm = function (state, namesets) {
 	}
 	base_nameset = namesets[0];
 	varnames = [];
-		varnames.push(base_nameset.variable);
+	varnames.push(base_nameset.variable);
 	short_namesets = namesets.slice(1);
 	len = short_namesets.length;
 	for (pos = 0; pos < len; pos += 1) {
@@ -6948,7 +6948,12 @@ CSL.Util.Names.getCommonTerm = function (state, namesets) {
 		}
 	}
 	varnames.sort();
-	return varnames.join("");
+	var combined_terms = varnames.join("");
+	if (state.locale[state.opt.lang].terms[combined_terms]) {
+		return varnames.join("");
+	} else {
+		return false;
+	}
 };
 CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
 	var name, pos, len, part, ppos, llen;
