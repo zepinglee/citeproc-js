@@ -967,7 +967,7 @@ CSL.citeEnd = function (Item) {
 		this.tmp.splice_delimiter = " ";
 	}
 
-	this.tmp.last_suffix_used = this.tmp.suffix.value();
+ 	this.tmp.last_suffix_used = this.tmp.suffix.value();
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
 	this.tmp.cut_var = false;
@@ -976,10 +976,10 @@ CSL.citeEnd = function (Item) {
 	// the disambig (name rendering) settings used for rendering work their way
 	// into the registry.  This resets defaults to the subsequent form,
 	// when first cites are rendered.
-	if (this.tmp.disambig_restore && this.registry.registry[Item.id]) {
-		this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
-	}
-	this.tmp.disambig_restore = false;
+	//if (this.tmp.disambig_restore && this.registry.registry[Item.id]) {
+	//	this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
+	//}
+	//this.tmp.disambig_restore = false;
 	this.tmp.disambig_request = false;
 
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters) {

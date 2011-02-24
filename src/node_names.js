@@ -779,7 +779,7 @@ CSL.Node.names = {
 						// Need to save off the settings based on subsequent
 						// form, when first cites are rendered.  Otherwise you
 						// get full form names everywhere.
-						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
+						if (!state.tmp.disambig_restore && !state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
 							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
 							param = paramx;
 						}
@@ -972,6 +972,13 @@ CSL.Node.names = {
 				state.tmp.can_block_substitute = false;
 				
 				state.tmp.forceEtAl = false;
+
+				if (state.tmp.disambig_restore && state.registry.registry[Item.id]) {
+					state.registry.registry[Item.id].disambig.names = state.tmp.disambig_restore.names;
+					state.registry.registry[Item.id].disambig.givens = state.tmp.disambig_restore.givens;
+				}
+				state.tmp.disambig_restore = false;
+
 			};
 			this.execs.push(func);
 
