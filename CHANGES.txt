@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.115
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Revise code for resstoring disambig_restore variable
+  after use, in response to reports of random inclusion
+  of extra names in citations, in styles that do not
+  even require disambiguation. This is not a guaranteed
+  fix; we will have to see what people discover in field
+  testing.
+
+
+==========================
 Changes in version 1.0.114
 ==========================
 

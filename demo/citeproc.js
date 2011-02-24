@@ -1580,7 +1580,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.114";
+	this.processor_version = "1.0.115";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3010,14 +3010,10 @@ CSL.citeEnd = function (Item) {
 	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[.,:;a-z]/)) {
 		this.tmp.splice_delimiter = " ";
 	}
-	this.tmp.last_suffix_used = this.tmp.suffix.value();
+ 	this.tmp.last_suffix_used = this.tmp.suffix.value();
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
 	this.tmp.cut_var = false;
-	if (this.tmp.disambig_restore && this.registry.registry[Item.id]) {
-		this.registry.registry[Item.id].disambig = this.tmp.disambig_restore;
-	}
-	this.tmp.disambig_restore = false;
 	this.tmp.disambig_request = false;
 	if (!this.tmp.suppress_decorations && this.tmp.offset_characters) {
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
@@ -4661,7 +4657,7 @@ CSL.Node.names = {
 						} else {
 							param = paramx;
 						}
-						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
+						if (!state.tmp.disambig_restore && !state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
 							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
 							param = paramx;
 						}
@@ -4756,6 +4752,11 @@ CSL.Node.names = {
 				state.tmp.use_ellipsis = false;
 				state.tmp.can_block_substitute = false;
 				state.tmp.forceEtAl = false;
+				if (state.tmp.disambig_restore && state.registry.registry[Item.id]) {
+					state.registry.registry[Item.id].disambig.names = state.tmp.disambig_restore.names;
+					state.registry.registry[Item.id].disambig.givens = state.tmp.disambig_restore.givens;
+				}
+				state.tmp.disambig_restore = false;
 			};
 			this.execs.push(func);
 			state.build.names_flag = false;
