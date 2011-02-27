@@ -226,6 +226,7 @@ CSL.Node.layout = {
 				this.execs.push(func);
 				target.push(this);
 				state.build.layout_flag = false;
+				state.build.layout_locale_flag = false;
 			} // !this.layout_raw
 		}
 	}
