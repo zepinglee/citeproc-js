@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.118
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Enable edition as a multilingual variable, and
+  force use of the global locale when rendering,
+  aligning multilingual behavior of this variable 
+  with publisher and publisher place.
+
+- Fix a stack error that occured when both citation
+  and bibliography were included in a style that
+  makes use of the context-sensitive locale switching
+  facility in citeproc-js.
+
+
+==========================
 Changes in version 1.0.117
 ==========================
 

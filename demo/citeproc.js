@@ -86,7 +86,7 @@ var CSL = {
 	MARK_TRAILING_NAMES: true,
 	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-	MULTI_FIELDS: ["publisher", "publisher-place", "title", "container-title", "collection-title", "institution", "authority"],
+	MULTI_FIELDS: ["publisher", "publisher-place", "title","container-title", "collection-title", "institution", "authority","edition"],
 	CITE_FIELDS: ["first-reference-note-number", "locator"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 	SWAPPING_PUNCTUATION: [".", "!", "?", ":",",",";"],
@@ -1580,7 +1580,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.117";
+	this.processor_version = "1.0.118";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4110,6 +4110,7 @@ CSL.Node.layout = {
 				this.execs.push(func);
 				target.push(this);
 				state.build.layout_flag = false;
+				state.build.layout_locale_flag = false;
 			} // !this.layout_raw
 		}
 	}
@@ -5101,7 +5102,7 @@ CSL.Node.text = {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
 							} else if (this.variables[0] === "title") {
 								state.transform.setAlternativeVariableName("shortTitle");
-							} else if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
+							} else if (["publisher", "publisher-place", "edition"].indexOf(this.variables[0]) > -1) {
 								state.transform.setTransformLocale("default-locale");
 							}
 							func = state.transform.getOutputFunction();
@@ -5112,7 +5113,7 @@ CSL.Node.text = {
 						} else {
 							state.transform.setTransformLocale("locale-pri");
 							state.transform.setTransformFallback(true);
-							if (["publisher", "publisher-place"].indexOf(this.variables[0]) > -1) {
+							if (["publisher", "publisher-place", "edition"].indexOf(this.variables[0]) > -1) {
 								state.transform.setTransformLocale("default-locale");
 							}
 							func = state.transform.getOutputFunction();
