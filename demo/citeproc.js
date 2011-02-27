@@ -1580,7 +1580,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.116";
+	this.processor_version = "1.0.117";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7298,7 +7298,7 @@ CSL.Util.substituteStart = function (state, target) {
 	}
 };
 CSL.Util.substituteEnd = function (state, target) {
-	var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, printing, str;
+	var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, str;
 	state.build.render_nesting_level += -1;
 	if (state.build.render_nesting_level === 0) {
 		if (state.build.cls) {
@@ -7344,13 +7344,14 @@ CSL.Util.substituteEnd = function (state, target) {
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
-			printing = !state.tmp.suppress_decorations;
+			var text_esc = CSL.Output.Formats[state.opt.mode].text_escape;
+			var printing = !state.tmp.suppress_decorations;
 			if (printing) {
 				if (!state.tmp.rendered_name) {
 					state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.blobs, false);
 					if (state.tmp.rendered_name) {
 						if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
-							str = new CSL.Blob(false, state[state.tmp.area].opt["subsequent-author-substitute"]);
+							str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
 							state.tmp.name_node.blobs = [str];
 						}
 						state.tmp.last_rendered_name = state.tmp.rendered_name;

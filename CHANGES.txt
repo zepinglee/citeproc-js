@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.117
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Escape the value of subsequent-author-substutute when
+  rendering bibliographies. This squashes the ??? bug
+  flat as a pancake.
+
+
+==========================
 Changes in version 1.0.116
 ==========================
 
