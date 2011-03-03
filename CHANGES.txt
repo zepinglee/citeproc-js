@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.120
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not force characters to lower case when invoking
+  localeCompare().
+
+
+==========================
 Changes in version 1.0.119
 ==========================
 

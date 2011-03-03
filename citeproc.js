@@ -1580,7 +1580,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.119";
+	this.processor_version = "1.0.120";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8459,7 +8459,7 @@ CSL.Registry.Comparifier = function (state, keyset) {
 			} else if ("undefined" === typeof b.sortkeys[pos]) {
 				cmp = sort_directions[pos][0];
 			} else {
-				cmp = a.sortkeys[pos].toLocaleLowerCase().localeCompare(b.sortkeys[pos].toLocaleLowerCase());
+				cmp = a.sortkeys[pos].localeCompare(b.sortkeys[pos]);
 			}
 			if (0 < cmp) {
 				return sort_directions[pos][1];
