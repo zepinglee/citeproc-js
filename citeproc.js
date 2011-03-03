@@ -1580,7 +1580,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.118";
+	this.processor_version = "1.0.119";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1984,6 +1984,13 @@ CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
 		this.opt["locale-use-original-name-format"] = true;
 	} else {
 		this.opt["locale-use-original-name-format"] = false;
+	}
+};
+CSL.Engine.prototype.setSuppressTitleTransliterationOption = function (arg) {
+	if (arg) {
+		this.opt["locale-suppress-title-transliteration"] = true;
+	} else {
+		this.opt["locale-suppress-title-transliteration"] = false;
 	}
 };
 CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
@@ -6072,7 +6079,16 @@ CSL.Transform = function (state) {
 		} else if (transform_locale === "locale-sec") {
 			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key;
-				primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
+				if (state.opt["locale-suppress-title-transliteration"] 
+					&& (state.tmp.area === 'bibliography'
+						|| (state.opt.xclass === "note" &&
+							state.tmp.area === "citation")
+						)
+					) {
+					primary = Item[myfieldname];
+				} else {
+					primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
+				}
 				secondary = getTextSubField(Item, myfieldname, "locale-sec");
 				if (secondary) {
 					primary_tok = CSL.Util.cloneToken(this);
