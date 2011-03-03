@@ -97,6 +97,14 @@ CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
 	}
 };
 
+CSL.Engine.prototype.setSuppressTitleTransliterationOption = function (arg) {
+	if (arg) {
+		this.opt["locale-suppress-title-transliteration"] = true;
+	} else {
+		this.opt["locale-suppress-title-transliteration"] = false;
+	}
+};
+
 CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
 	if (arg) {
 		this.opt["auto-vietnamese-names"] = true;

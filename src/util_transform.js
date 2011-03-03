@@ -263,7 +263,16 @@ CSL.Transform = function (state) {
 			// Long form, with secondary translation
 			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key;
-				primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
+				if (state.opt["locale-suppress-title-transliteration"] 
+					&& (state.tmp.area === 'bibliography'
+						|| (state.opt.xclass === "note" &&
+							state.tmp.area === "citation")
+						)
+					) {
+					primary = Item[myfieldname];
+				} else {
+					primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
+				}
 				secondary = getTextSubField(Item, myfieldname, "locale-sec");
 				if (secondary) {
 					primary_tok = CSL.Util.cloneToken(this);
