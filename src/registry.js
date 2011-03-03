@@ -557,7 +557,7 @@ CSL.Registry.Comparifier = function (state, keyset) {
 			} else if ("undefined" === typeof b.sortkeys[pos]) {
 				cmp = sort_directions[pos][0];
 			} else {
-				cmp = a.sortkeys[pos].toLocaleLowerCase().localeCompare(b.sortkeys[pos].toLocaleLowerCase());
+				cmp = a.sortkeys[pos].localeCompare(b.sortkeys[pos]);
 			}
 			if (0 < cmp) {
 				return sort_directions[pos][1];
