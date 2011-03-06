@@ -118,6 +118,7 @@ CSL.Node.names = {
 								// Force all institutional names to literal.
 								//
 								if (name.literal || (name.family && !name.given)) {
+									//print("NAME LITERAL");
 									// org
 									nameset.variable = variable;
 									nameset.species = "org";
@@ -139,11 +140,13 @@ CSL.Node.names = {
 									tnamesets.push(nameset);
 									nameset = {names: []};
 								} else {
+									//print("NAME PERSONAL");
 									// pers
 									nameset.variable = variable;
 									nameset.species = "pers";
 									nameset.names.push(name);
-									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal) {
+									//print("Whoa: "+rawlist.length+" "+rawlist[ppos + 1].family);
+									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal || (rawlist[ppos + 1].family && !rawlist[ppos + 1].given)) {
 										tnamesets.push(nameset);
 										nameset = {names: []};
 									}
@@ -156,6 +159,7 @@ CSL.Node.names = {
 								//   * organization_last (end of names with orgs)
 							}
 
+							//print("type: "+tnamesets[0].species);
 							if (tnamesets.length > 1 && tnamesets.slice(-1)[0].species === "pers") {
 								frontnames = tnamesets.slice(-1);
 								tnamesets = tnamesets.slice(0, tnamesets.length - 1);
@@ -213,6 +217,7 @@ CSL.Node.names = {
 					if ((state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation") || (state.opt.xclass === "note" && item && "number" === typeof item.position && item.position !== CSL.POSITION_FIRST)) {
 //					if ((state.opt.xclass === "in-text" && state.tmp.area.slice(0, 8) === "citation")) {
 
+						//print("Hi: "+namesets.length);
 						if (namesets.length > 1) {
 							// Similar logic to that embedded in evaluateLabel
 							// (see node_label.js)
