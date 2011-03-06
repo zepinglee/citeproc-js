@@ -543,6 +543,10 @@ CSL.Node.names = {
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 
 					nameset = namesets[namesetIndex];
+					// SAVE PARAMETERS HERE, IF APPROPRIATE
+					if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST && state.registry.registry[Item.id]) {
+						state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.registry.registry[Item.id].disambig);
+					}
 					//
 					// configure label if poss
 					label = false;
@@ -784,8 +788,7 @@ CSL.Node.names = {
 						// Need to save off the settings based on subsequent
 						// form, when first cites are rendered.  Otherwise you
 						// get full form names everywhere.
-						if (!state.tmp.disambig_restore && !state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
-							state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.tmp.disambig_settings);
+						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
 							param = paramx;
 						}
 						if (!state.tmp.sort_key_flag) {
@@ -978,12 +981,12 @@ CSL.Node.names = {
 				
 				state.tmp.forceEtAl = false;
 
-				if (state.tmp.disambig_restore && state.registry.registry[Item.id]) {
+				// RESTORE PARAMETERS IF APPROPRIATE
+				if (state.tmp.disambig_restore) {
 					state.registry.registry[Item.id].disambig.names = state.tmp.disambig_restore.names;
 					state.registry.registry[Item.id].disambig.givens = state.tmp.disambig_restore.givens;
 				}
 				state.tmp.disambig_restore = false;
-
 			};
 			this.execs.push(func);
 
