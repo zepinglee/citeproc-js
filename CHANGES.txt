@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.121
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Properly render a personal author that is succeeded by an institutional
+  author as the last entry in a nameset.
+
+
+==========================
 Changes in version 1.0.120
 ==========================
 
