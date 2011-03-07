@@ -908,12 +908,12 @@ CSL.getCite = function (Item, item, prevItemID) {
 	var next, error_object;
 	this.tmp.cite_renders_content = false;
 	this.parallel.StartCite(Item, item, prevItemID);
-	CSL.citeStart.call(this, Item);
+	CSL.citeStart.call(this, Item, item);
 	next = 0;
 	while (next < this[this.tmp.area].tokens.length) {
 		next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next], Item, item);
     }
-	CSL.citeEnd.call(this, Item);
+	CSL.citeEnd.call(this, Item, item);
 	this.parallel.CloseCite(this);
 	// Odd place for this, but it seems to fit here
 	if (!this.tmp.cite_renders_content && !this.tmp.just_looking) {
@@ -929,7 +929,7 @@ CSL.getCite = function (Item, item, prevItemID) {
 	return "" + Item.id;
 };
 
-CSL.citeStart = function (Item) {
+CSL.citeStart = function (Item, item) {
 	this.tmp.lastchr = "";
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
@@ -957,9 +957,21 @@ CSL.citeStart = function (Item) {
 	this.tmp.has_done_year_suffix = false;
 	CSL.Util.Names.initNameSlices(this);
 	this.tmp.last_cite_locale = false;
+	// SAVE PARAMETERS HERE, IF APPROPRIATE
+	// (promiscuous addition of global parameters => death by a thousand cuts)
+	if (!this.tmp.just_looking && item && !item.position && this.registry.registry[Item.id]) {
+		this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
+	}
 };
 
-CSL.citeEnd = function (Item) {
+CSL.citeEnd = function (Item, item) {
+
+	// RESTORE PARAMETERS IF APPROPRIATE
+	if (this.tmp.disambig_restore) {
+		this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names;
+		this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens;
+	}
+	this.tmp.disambig_restore = false;
 
 	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/[\-.,;:]$/)) {
 		this.tmp.splice_delimiter = " ";

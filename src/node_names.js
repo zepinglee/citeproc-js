@@ -543,10 +543,6 @@ CSL.Node.names = {
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 
 					nameset = namesets[namesetIndex];
-					// SAVE PARAMETERS HERE, IF APPROPRIATE
-					if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST && state.registry.registry[Item.id]) {
-						state.tmp.disambig_restore = CSL.cloneAmbigConfig(state.registry.registry[Item.id].disambig);
-					}
 					//
 					// configure label if poss
 					label = false;
@@ -981,12 +977,6 @@ CSL.Node.names = {
 				
 				state.tmp.forceEtAl = false;
 
-				// RESTORE PARAMETERS IF APPROPRIATE
-				if (state.tmp.disambig_restore) {
-					state.registry.registry[Item.id].disambig.names = state.tmp.disambig_restore.names;
-					state.registry.registry[Item.id].disambig.givens = state.tmp.disambig_restore.givens;
-				}
-				state.tmp.disambig_restore = false;
 			};
 			this.execs.push(func);
 
