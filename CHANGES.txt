@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.122
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reset correctly after first citation rendering.
+
+
+==========================
 Changes in version 1.0.121
 ==========================
 
