@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.123
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Deliver U+2019 rather than U+02bc for apostrophes.
+
+
+==========================
 Changes in version 1.0.122
 ==========================
 
