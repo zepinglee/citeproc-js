@@ -594,6 +594,17 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 };
 
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
+	// Taint if number of names to be included has changed
+	var old_names_params = this.registry[id].disambig.names;
+	if (old_names_params) {
+		for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
+			var new_names_params = ambig_config.names[i];
+			if (new_names_params[j] !== old_names_params[j]) {
+				this.state.tmp.taintedItemIDs[id] = true;
+			}
+		}
+	}
+
 	if (!this.ambigcites[akey]) {
 		this.ambigcites[akey] = [];
 	}
