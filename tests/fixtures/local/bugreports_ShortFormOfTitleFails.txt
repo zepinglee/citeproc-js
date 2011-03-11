@@ -63,7 +63,7 @@ citation
 
 
 >>== RESULT ==>>
-Minpō.
+Minpō [Japanese Civil Code].
 <<== RESULT ==<<
 
 >>===== CSL =====>>
