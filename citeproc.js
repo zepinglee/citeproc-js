@@ -1,50 +1,3 @@
-/*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
- * Reserved.
- *
- * The contents of this file are subject to the Common Public
- * Attribution License Version 1.0 (the “License”); you may not use
- * this file except in compliance with the License. You may obtain a
- * copy of the License at:
- *
- * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
- *
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
- *
- * Software distributed under the License is distributed on an “AS IS”
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is the citation formatting software known as
- * "citeproc-js" (an implementation of the Citation Style Language
- * [CSL]), including the original test fixtures and software located
- * under the ./std subdirectory of the distribution archive.
- *
- * The Original Developer is not the Initial Developer and is
- * __________. If left blank, the Original Developer is the Initial
- * Developer.
- *
- * The Initial Developer of the Original Code is Frank G. Bennett,
- * Jr. All portions of the code written by Frank G. Bennett, Jr. are
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
- *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Affero General Public License (the [AGPLv3]
- * License), in which case the provisions of [AGPLv3] License are
- * applicable instead of those above. If you wish to allow use of your
- * version of this file only under the terms of the [AGPLv3] License
- * and not to allow others to use your version of this file under the
- * CPAL, indicate your decision by deleting the provisions above and
- * replace them with the notice and other provisions required by the
- * [AGPLv3] License. If you do not delete the provisions above, a
- * recipient may use your version of this file under either the CPAL
- * or the [AGPLv3] License.”
- */
 if (!Array.indexOf) {
 	Array.prototype.indexOf = function (obj) {
 		var i, len;
@@ -1580,7 +1533,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.123";
+	this.processor_version = "1.0.124";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5104,9 +5057,13 @@ CSL.Node.text = {
 							state.transform.setTransformFallback(true);
 							func = state.transform.getOutputFunction();
 						} else if (form === "short") {
-							state.transform.setAbbreviationFallback(true);
-							state.transform.setTransformLocale("locale-pri");
-							state.transform.setTransformFallback(true);
+							 if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
+								 state.transform.setTransformLocale("locale-sec");
+							 } else {
+								 state.transform.setTransformLocale("locale-pri");
+							 }
+							 state.transform.setTransformFallback(true);
+							 state.transform.setAbbreviationFallback(true);
 							if (this.variables[0] === "container-title") {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
 							} else if (this.variables[0] === "title") {
@@ -5115,7 +5072,7 @@ CSL.Node.text = {
 								state.transform.setTransformLocale("default-locale");
 							}
 							func = state.transform.getOutputFunction();
-						} else if (this.variables[0] === "title") {
+						} else if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
 							state.transform.setTransformLocale("locale-sec");
 							state.transform.setTransformFallback(true);
 							func = state.transform.getOutputFunction();
@@ -6071,7 +6028,7 @@ CSL.Transform = function (state) {
 		alternative_varname = opt.alternative_varname;
 		transform_locale = opt.transform_locale;
 		transform_fallback = opt.transform_fallback;
-		if (mysubsection) {
+		if (false && mysubsection) {
 			return function (state, Item) {
 				var primary;
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
@@ -6082,17 +6039,23 @@ CSL.Transform = function (state) {
 			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key;
 				if (state.opt["locale-suppress-title-transliteration"] 
-					&& (state.tmp.area === 'bibliography'
+					|| !((state.tmp.area === 'bibliography'
 						|| (state.opt.xclass === "note" &&
-							state.tmp.area === "citation")
+							state.tmp.area === "citation"))
 						)
 					) {
 					primary = Item[myfieldname];
 				} else {
 					primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
 				}
+				if (mysubsection) {
+					primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
+				}
 				secondary = getTextSubField(Item, myfieldname, "locale-sec");
-				if (secondary) {
+				if (secondary && ((state.tmp.area === 'bibliography' || (state.opt.xclass === "note" && state.tmp.area === "citation")))) {
+					if (mysubsection) {
+						secondary = abbreviate(state, Item, alternative_varname, secondary, mysubsection, true);
+					}
 					primary_tok = CSL.Util.cloneToken(this);
 					primary_tok.strings.suffix = "";
 					secondary_tok = new CSL.Token("text", CSL.SINGLETON);
@@ -8490,6 +8453,15 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 	return 0;
 };
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
+	if (this.registry[id] && this.registry[id].disambig && this.registry[id].disambig.names) {
+		for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
+			var new_names_params = ambig_config.names[i];
+			var old_names_params = this.registry[id].disambig.names[i];
+			if (new_names_params !== old_names_params) {
+				this.state.tmp.taintedItemIDs[id] = true;
+			}
+		}
+	}
 	if (!this.ambigcites[akey]) {
 		this.ambigcites[akey] = [];
 	}

@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.124
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Taint citations containing cites in which the number of names to be used
+  changes as the result of adding or editing another citation.
+
+- Provide translations for container-title and collection-title
+  as well as title.
+
+
+==========================
 Changes in version 1.0.123
 ==========================
 
