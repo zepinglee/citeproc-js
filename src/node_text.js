@@ -270,11 +270,16 @@ CSL.Node.text = {
 							state.transform.setTransformFallback(true);
 							func = state.transform.getOutputFunction();
 						} else if (form === "short") {
-							// all short-form multi-fields for rendering get a locale-pri
-							// transform before abbreviation.
-							state.transform.setAbbreviationFallback(true);
-							state.transform.setTransformLocale("locale-pri");
-							state.transform.setTransformFallback(true);
+							 if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
+								 // short-form title things get translations maybe
+								 state.transform.setTransformLocale("locale-sec");
+							 } else {
+								 // all other short-form multi-fields for rendering get a locale-pri
+								 // transform before abbreviation.
+								 state.transform.setTransformLocale("locale-pri");
+							 }
+							 state.transform.setTransformFallback(true);
+							 state.transform.setAbbreviationFallback(true);
 							if (this.variables[0] === "container-title") {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
 							} else if (this.variables[0] === "title") {
@@ -285,7 +290,7 @@ CSL.Node.text = {
 								state.transform.setTransformLocale("default-locale");
 							}
 							func = state.transform.getOutputFunction();
-						} else if (this.variables[0] === "title") {
+						} else if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
 							// among long-form multi-fields, titles are an
 							// exception: they get a locale-sec transform
 							// if a value is available.
