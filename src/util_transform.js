@@ -250,7 +250,10 @@ CSL.Transform = function (state) {
 		transform_locale = opt.transform_locale;
 		transform_fallback = opt.transform_fallback;
 
-		if (mysubsection) {
+		// XXXXX This is a try-and-see change, we'll see how it goes.
+		// Apply uniform transforms to all variables that request
+		// translation.
+		if (false && mysubsection) {
 			// Short form
 			return function (state, Item) {
 				var primary;
@@ -264,17 +267,25 @@ CSL.Transform = function (state) {
 			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key;
 				if (state.opt["locale-suppress-title-transliteration"] 
-					&& (state.tmp.area === 'bibliography'
+					|| !((state.tmp.area === 'bibliography'
 						|| (state.opt.xclass === "note" &&
-							state.tmp.area === "citation")
+							state.tmp.area === "citation"))
 						)
 					) {
 					primary = Item[myfieldname];
 				} else {
 					primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
 				}
+				// Signifying short form -- the variable name is misleading.
+				if (mysubsection) {
+					primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
+				}
 				secondary = getTextSubField(Item, myfieldname, "locale-sec");
-				if (secondary) {
+				if (secondary && ((state.tmp.area === 'bibliography' || (state.opt.xclass === "note" && state.tmp.area === "citation")))) {
+					// Signifying short form -- again, the variable name is misleading.
+					if (mysubsection) {
+						secondary = abbreviate(state, Item, alternative_varname, secondary, mysubsection, true);
+					}
 					primary_tok = CSL.Util.cloneToken(this);
 					primary_tok.strings.suffix = "";
 					secondary_tok = new CSL.Token("text", CSL.SINGLETON);
