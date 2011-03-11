@@ -234,6 +234,10 @@ var data = {
 				"title":{
 					"ja-alalc97": "K\u014dt\u014d ky\u014diku ni okeru jisedai ky\u014diku gakush\u016b shien puratto f\u014dmu no k\u014dchiku ni mukete",
 					"en": "Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education"
+				},
+				"container-title":{
+					"ja-alalc97": "Nihon ky\u014diku k\u014dgaku ronbunshi",
+					"en": "Journal of the Japan Educational Engineering Society"
 				}
 			}
 		},
@@ -410,7 +414,7 @@ var data = {
     },
     "ITEM-13": {
         "id": "ITEM-13", 
-        "title": "\u6c11\u6cd5", 
+        "title": "\u6c11\u6cd5",
 		"multi":{
 			"_keys":{
 				"title": {

@@ -51,6 +51,7 @@ var abbreviations = {
 		"container-title":{
 			"Pacific Rim Law & Policy Journal":"Pac. Rim L. & Pol\u2019y J.",
 			"\u65e5\u672c\u6559\u80b2\u5de5\u5b66\u4f1a\u8ad6\u6587\u8a8c":"\u65e5\u6559\u8ad6\u8a8c",
+			"Journal of the Japan Educational Engineering Society":"J. Japan Educ. Engineering Soc.",
 			"Applied and Environmental Microbiology":"Applied and Environmental Microbiology"
 		},
 		"collection-title":{
@@ -67,6 +68,7 @@ var abbreviations = {
 		"container-title":{
 			"Pacific Rim Law & Policy Journal":"PRL & PJ",
 			"\u65e5\u672c\u6559\u80b2\u5de5\u5b66\u4f1a\u8ad6\u6587\u8a8c":"\u65e5\u6559\u8ad6",
+			"Journal of the Japan Educational Engineering Society":"J. Japan Educ. Eng. Soc.",
 			"Applied and Environmental Microbiology":"Appl'd. & Env'tal Microbio."
 		},
 		"collection-title":{

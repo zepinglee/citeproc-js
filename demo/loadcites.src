@@ -221,6 +221,10 @@ var data = {
 				"title":{
 					"ja-alalc97": "Kōtō kyōiku ni okeru jisedai kyōiku gakushū shien puratto fōmu no kōchiku ni mukete",
 					"en": "Toward the Development of Next-Generation Platforms for Teaching and Learning in Higher Education"
+				},
+				"container-title":{
+					"ja-alalc97": "Nihon kyōiku kōgaku ronbunshi",
+					"en": "Journal of the Japan Educational Engineering Society"
 				}
 			}
 		},
