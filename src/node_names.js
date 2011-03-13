@@ -50,6 +50,7 @@ CSL.Node.names = {
 	build: function (state, target) {
 		var debug, func, len, pos, attrname;
 		debug = false;
+		// CSL.debug = print;
 
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			CSL.Util.substituteStart.call(this, state, target);
@@ -169,17 +170,6 @@ CSL.Node.names = {
 							}  else {
 								frontnames = [];
 							}
-							if (tnamesets.length > 0 && tnamesets.slice(-1)[0].species === "org") {
-								tnamesets[0].organization_first = true;
-								tnamesets.slice(-1)[0].organization_last = true;
-								if (frontnames.length) {
-									// the free agent wrapper can be used to
-									// lift out trailing names as well as  for
-									// the "with" join
-									frontnames[0].free_agent_start = true;
-									tnamesets.slice(-1)[0].free_agent_end = true;
-								}
-							}
 							if (frontnames.length === 0) {
 								if (tnamesets.length > 1) {
 									if (tnamesets[0].species === "pers") {
@@ -244,21 +234,19 @@ CSL.Node.names = {
 								}
 							}
 						}
-						namesets = namesets.slice(0, 1);
 						if (namesets.length) {
 							if (namesets[0].species === "pers") {
-								namesets[0].organization_first = false;
+								// XXXXX Let's try doing this one solely as a cleanup
+								// after the namesets are composed.
+								//namesets[0].organization_first = false;
 								namesets[0].after_people = false;
-								namesets[0].free_agent_start = false;
-								namesets[0].free_agent_end = false;
-							} else {
-								namesets[0].organization_last = true;
 							}
 						}
 					}
 					for (pos = 0, len = namesets.length; pos < len; pos += 1) {
 						state.tmp.names_max.push(namesets[pos].names.length);
 					}
+
 
 					state.tmp.value = namesets.slice();
 
@@ -354,37 +342,104 @@ CSL.Node.names = {
 				    cutinfo = state.tmp.names_cut;
 				    // (seems to be where aggressive suppression happens)
 				    if (namesets[0].species === "pers") {
-					if (state.tmp.cut_var) {
-					    namesets[0].names = namesets[0].names.slice(cutinfo.counts[state.tmp.cut_var]);
-					}
+						if (state.tmp.cut_var) {
+							namesets[0].names = namesets[0].names.slice(cutinfo.counts[state.tmp.cut_var]);
+						}
 					
-					if (namesets[0].names.length === 0) {
-					    if (namesets[0].free_agent_start) {
-						namesets[1].free_agent_start = true;
-					    }
-					    if (namesets[0].organization_first) {
-						namesets[1].organization_first = true;
-					    }
-					    namesets = namesets.slice(1);
-					}
-				    } else {
-					namesets = namesets.slice(0, 1);
-					if (namesets[0].organization_first) {
-					    namesets[0].organization_last = true;
-					}
-				    }
+						if (namesets[0].names.length === 0) {
+							namesets = namesets.slice(1);
+						}
+				    } 
+					//else {
+						//namesets = namesets.slice(0, 1);
+						
+						//if (namesets[0].organization_first) {
+						//	namesets[namesets.length - 1].organization_last = true;
+						//}
+
+						// XXXXX Let's try doing this solely as a cleanup
+						// after the namesets are composed.
+						//namesets[0].organization_first = true;
+						//namesets[namesets.length - 1].organization_last = true;
+				    //}
+
 				    // should always be true, but just in case
 				    // this slices off subsequent namesets in the initial name
 				    // rendered, when the same name is rendered a second time.
 				    // Useful for robust per-author listings.
 				    if (state.tmp.cut_var && cutinfo.used === state.tmp.cut_var) {
-					llen = cutinfo.variable[state.tmp.cut_var].length - 1;
-					for (ppos = llen; ppos > -1; ppos += -1) {
-					    obj = cutinfo.variable[state.tmp.cut_var][ppos];
-					    obj[0].blobs = obj[0].blobs.slice(0, obj[1]).concat(obj[0].blobs.slice(obj[1] + 1));
-					}
+						llen = cutinfo.variable[state.tmp.cut_var].length - 1;
+						for (ppos = llen; ppos > -1; ppos += -1) {
+							obj = cutinfo.variable[state.tmp.cut_var][ppos];
+							obj[0].blobs = obj[0].blobs.slice(0, obj[1]).concat(obj[0].blobs.slice(obj[1] + 1));
+						}
 				    }
 				}
+
+				// Style token for and element with instiutional names.
+				// The prefix of this element will be overwritten by the -single
+				// and -multiple variants on the fly, if the and attribute
+				// is set on cs:name.  Otherwise prefix is set to nil, and
+				// and_org is set to the value of the cs:institution delimiter
+				// attribute.
+				// XXX: Not yet hooked up
+				if (!state.output.getToken("and-org")) {
+					state.output.addToken("and-org");
+				}
+				var prefix_single_org = " ";
+				var prefix_multiple_org = ", ";
+				// Conditional goes here
+				var and_org = state.getTerm("and", "long", 0);
+
+				// Cleanup
+				// Offset of 1 for exceptional case of unaffiliated
+				// authors only.
+				var offset = 0;
+				if (namesets.length > 1 && namesets[1].after_people) {
+					var offset = 1
+				}
+				var numnamesets = 0;
+				for (i = offset, ilen = namesets.length; i < ilen; i += 1) {
+					if (namesets[i].species === 'org') {
+						if (i > 0 && namesets[i - 1].species === 'pers' && !namesets[i].after_people) {
+							namesets[i - 1].organization_first = true;
+						} else {
+							namesets [i].organization_first = true;
+						}
+						namesets[i].organization_last = true;
+						numnamesets += 1;
+					}
+				}
+				var namesetcount = 0;
+				for (i = offset, ilen = namesets.length; i < ilen; i += 1) {
+					//print("i - offset = "+(i - offset));
+					//print("  species = "+namesets[i].species);
+					//print("  numnamesets = "+numnamesets);
+					//print("    i + 1 = "+(i + 1));
+					if (namesets[i].species === 'org' && numnamesets > 1) {
+						if ((i - offset) > 0 && numnamesets === (namesetcount + 1)) {
+							if (namesets[i - 1].species === 'pers') {
+								namesets[i - 2].institutions_and_join = true;
+							} else {
+								namesets[i - 1].institutions_and_join = true;
+							}
+						}
+						namesetcount += 1;
+					}
+				}
+				// Apply outer nameset join
+				// (This is can the used as a model for revising other joins
+				// of this kind; it's relatively transparent, best of a bad lot.)
+				if (numnamesets > 1) {
+					state.output.getToken("and-org").strings.prefix = prefix_single_org;
+					if (numnamesets > 2) {
+						namesets[offset].institutions_penultimate_group_start = true;
+						namesets[namesets.length - 2].institutions_penultimate_group_end = true;
+						state.output.getToken("and-org").strings.prefix = prefix_multiple_org;
+					}
+					state.output.getToken("and-org").strings.suffix = " ";
+				}
+
 				if (!state.output.getToken("institution")) {
 					state.output.addToken("institution");
 				}
@@ -458,38 +513,10 @@ CSL.Node.names = {
 				// Conditional goes here
 				and_pers = state.getTerm("and", "long", 0);
 
-				// Style token for and element with instiutional names.
-				// The prefix of this element will be overwritten by the -single
-				// and -multiple variants on the fly, if the and attribute
-				// is set on cs:name.  Otherwise prefix is set to nil, and
-				// and_org is set to the value of the cs:institution delimiter
-				// attribute.
-				// XXX: Not yet hooked up
-				if (!state.output.getToken("and-org")) {
-					state.output.addToken("and-org");
-					// Conditional goes here
-				}
-				state.output.getToken("and-org").strings["prefix-single"] = " ";
-				state.output.getToken("and-org").strings["prefix-multiple"] = ", ";
-				// Conditional goes here
-				and_org = state.getTerm("and", "long", 0);
-
 				state.output.addToken("with");
 				state.output.getToken("with").strings.prefix = ", ";
 				state.output.getToken("with").strings.suffix = " ";
 				with_term = "with";
-
-				// not yet hooked up; using direct output instead.
-				// The term and the join need to be separated here,
-				// so that subsequent renderings of the name will
-				// be handled gracefully when the "with" join
-				// comes in front.
-
-				//state.output.addToken("with-join");
-				//state.output.getToken("with-join").strings.delimiter = ", ";
-
-				//state.output.addToken("with-group");
-				//state.output.getToken("with-group").strings.delimiter = " ";
 
 				state.output.addToken("trailing-names");
 
@@ -833,7 +860,17 @@ CSL.Node.names = {
 						}
 						//SNIP-END
 						//state.output.openLevel("with-group");
-						state.output.append("with", "with");
+						//state.output.append("with", "with");
+						state.output.append(with_term, "with");
+					}
+
+					if (nameset.institutions_penultimate_group_start) {
+						//SNIP-START
+						if (debug) {
+							CSL.debug("-- reached 'institutions_penultimate_group_start'");
+						}
+						//SNIP-END
+						state.output.openLevel("inner");
 					}
 
 					if (nameset.organization_first) {
@@ -884,6 +921,8 @@ CSL.Node.names = {
 								CSL.debug("-- reached 'organization_last'");
 							}
 							//SNIP-END
+
+
 							if (nameset.trailers1a_end) {
 								state.output.closeLevel("trailing-names");
 							}
@@ -892,10 +931,22 @@ CSL.Node.names = {
 								state.output.closeLevel("trailing-names");
 							}
 							state.output.closeLevel("institution-outer");
+
+							// ??? The whole "NOT last" thing is obscure.
+							// I think it's actually an anachronism ...
+							if (nameset.institutions_penultimate_group_end) {
+								//SNIP-START
+								if (debug) {
+									CSL.debug("-- reached 'institutions_penultimate_group_end'");
+								}
+								//SNIP-END
+								state.output.closeLevel("inner");
+							}
 						} else {
+							print("***** This should now never happen.");
 							//SNIP-START
 							if (debug) {
-								CSL.debug("-- reached 'organization_NOT_last'");
+								CSL.debug("-- reached 'organization_NOT_last' ("+nameset.species+")");
 							}
 							//SNIP-END
 							if (nameset.trailers1b_end) {
@@ -904,8 +955,16 @@ CSL.Node.names = {
 							state.output.closeLevel("inner");
 							state.output.openLevel("inner");
 						}
-					}
 
+						if (nameset.institutions_and_join) {
+							//SNIP-START
+							if (debug) {
+								CSL.debug("-- reached 'institutions_and_join'");
+							}
+							//SNIP-END
+							state.output.append(and_org, "and-org");
+						}
+					}
 
 					//if (nameset.pers_org_end) {
 					//	if (debug) {
