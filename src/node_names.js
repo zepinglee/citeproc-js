@@ -943,7 +943,7 @@ CSL.Node.names = {
 								state.output.closeLevel("inner");
 							}
 						} else {
-							print("***** This should now never happen.");
+							//print("***** This should now never happen.");
 							//SNIP-START
 							if (debug) {
 								CSL.debug("-- reached 'organization_NOT_last' ("+nameset.species+")");
