@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.125
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Include all institutional authors when rendering, with
+  correct joins.  For the present, the join to the last
+  institutional author is set always to the "long" form
+  of the "and" term, subject to feedback on proper behavior
+  and possible extensions to CSL.
+
+  Since I'm not sure of the correct treatment for institutional names
+  in author-date strings, we'll just open this up for the present, and
+  restrict names included again, if necessary, in light of user
+  feedback.
+
+
+==========================
 Changes in version 1.0.124
 ==========================
 
