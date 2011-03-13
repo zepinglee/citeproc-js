@@ -51,9 +51,15 @@ citation
 <<===== MODE =====<<
 
 
+At the first stage of full processor deployment, let's eliminate
+the implicit chop behavior. If there is merit in the implicit
+chop of namesets after the first personal author, as this test
+had it originally, that will emerge in feedback on processor
+behavior.
+
 
 >>===== RESULT =====>>
-Noakes et al. eds.
+Noakes et al., with Roe et al., Tiny Subcommittee, Big Ministry and Doe et al., Trivial Working Group, Wasteful Enterprise eds.
 <<===== RESULT =====<<
 
 
