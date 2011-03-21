@@ -744,7 +744,11 @@ CSL.Node.names = {
 							} else {
 								state.tmp.have_collapsed = false;
 							}
+						} else {
+							state.tmp.have_collapsed = false;
 						}
+					} else {
+						state.tmp.have_collapsed = false;
 					}
 
 					//
