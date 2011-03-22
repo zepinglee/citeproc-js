@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.127
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reflect extended name lists triggered by disambiguate-add-names
+  in bibliography as well as in citations.
+
+
+==========================
+Changes in version 1.0.126
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Bugfix for styles that failed to show year-suffix in the bibliography,
+  by slightly extending the conditions under which implicit year-suffix 
+  is applied.
+
+
+==========================
 Changes in version 1.0.125
 ==========================
 
