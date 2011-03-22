@@ -647,6 +647,16 @@ CSL.Node.names = {
 							} else if (display_names.length >= state.tmp["et-al-min"]) {
 								discretionary_names_length = state.tmp["et-al-use-first"];
 							}
+							// XXXX: This is a workaround. Under some conditions.
+							// Where namesets disambiguate on one of the two names
+							// dropped here, it is possible for more than one
+							// in-text citation to be close (and indistinguishable)
+							// matches to a single bibliography entry.
+							//
+							// 
+							if (state.tmp["et-al-use-last"] && discretionary_names_length > (state.tmp["et-al-min"] - 2)) {
+								discretionary_names_length = state.tmp["et-al-min"] - 2;
+							}
 						}
 						overlength = display_names.length > discretionary_names_length;
 						// This var is used to control contextual join, and
@@ -1033,7 +1043,9 @@ CSL.Node.names = {
 
 				state.tmp["et-al-min"] = false;
 				state.tmp["et-al-use-first"] = false;
-				state.tmp["et-al-use-last"] = false;
+				if (!state.tmp["et-al-use-last"]) {
+					state.tmp["et-al-use-last"] = false;
+				}
 				state.tmp.use_ellipsis = false;
 
 				state.tmp.can_block_substitute = false;
