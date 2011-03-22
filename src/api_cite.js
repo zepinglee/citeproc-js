@@ -941,6 +941,11 @@ CSL.citeStart = function (Item, item) {
 	} else {
 		this.tmp.disambig_settings = new CSL.AmbigConfig();
 	}
+	if (this.tmp.area === 'bibliography' && this.opt["disambiguate-add-names"] && this.registry.registry[Item.id] && this.tmp.disambig_override) {
+		this.tmp.disambig_request = this.tmp.disambig_settings;
+		this.tmp.disambig_request.names = this.registry.registry[Item.id].disambig.names.slice();
+		this.tmp.disambig_settings.names = this.registry.registry[Item.id].disambig.names.slice();
+	}
 	this.tmp.names_used = [];
 	this.tmp.nameset_counter = 0;
 	this.tmp.years_used = [];
