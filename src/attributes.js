@@ -526,7 +526,7 @@ CSL.Attributes["@names-use-first"] = function (state, arg) {
 };
 
 CSL.Attributes["@names-use-last"] = function (state, arg) {
-    	if (arg === "true") {
+	if (arg === "true") {
 		this.strings["et-al-use-last"] = true;
 	} else {
 		this.strings["et-al-use-last"] = false;
