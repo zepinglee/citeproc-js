@@ -309,7 +309,7 @@ var CSL = {
 	},
 
 
-	SKIP_WORDS: ["a", "the", "an"],
+	SKIP_WORDS: ["but", "or", "yet", "so", "for", "and", "nor", "a", "an", "the", "at", "by", "from", "in", "into", "of", "on", "to", "with", "up", "down", "as", "via", "onto", "over", "till"],
 
 	FORMAT_KEY_SEQUENCE: [
 		"@strip-periods",
