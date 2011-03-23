@@ -201,7 +201,7 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		this.data.value = "";
 		this.data.blobs = [];
 		var is_mid = this.isMid(variable);
-		if (this.target === "front" && is_mid) {
+		if (this.target === "front" && is_mid && this.cite.front.length && (this.cite.front.length > 1 || this.cite.front.indexOf("names") === -1)) {
 			this.target = "mid";
 		} else if (this.target === "mid" && !is_mid && this.cite.Item.title) {
 			this.target = "back";
@@ -418,6 +418,11 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 								this.state.registry.registry[cite.itemId].parallel = this.state.registry.registry[cite.prevItemID].parallel;
 							}
 							this.state.registry.registry[cite.itemId].siblings = this.state.registry.registry[cite.prevItemID].siblings;
+							// XXXX This should never happen
+							if (!this.state.registry.registry[cite.itemId].siblings) {
+								this.state.registry.registry[cite.itemId].siblings = [];
+								CSL.debug("WARNING: adding missing siblings array to registry object");
+							}
 							this.state.registry.registry[cite.itemId].siblings.push(cite.itemId);
 						}
 					}
