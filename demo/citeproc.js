@@ -217,7 +217,7 @@ var CSL = {
 		ret[ret.length - 1] += str;
 		return ret;
 	},
-	SKIP_WORDS: ["a", "the", "an"],
+	SKIP_WORDS: ["but", "or", "yet", "so", "for", "and", "nor", "a", "an", "the", "at", "by", "from", "in", "into", "of", "on", "to", "with", "up", "down", "as", "via", "onto", "over", "till"],
 	FORMAT_KEY_SEQUENCE: [
 		"@strip-periods",
 		"@font-style",
@@ -682,7 +682,7 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 		return;
 	}
 	for (var i = myblobs.length - 1; i > -1; i += -1) {
-		CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs);		
+		CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs, endOnly);
 	}
 	for (var i = myblobs.length - 1; i > -1; i += -1) {
 		if (!myblobs[i].blobs.length) {
@@ -693,7 +693,8 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 			for (j = 0, jlen = tmpblobs.length; j < jlen; j += 1) {
 				myblobs.push(tmpblobs[j]);
 			}
-		} else if (endOnly) {
+		}
+		if (endOnly) {
 			break;
 		}
 	}
@@ -1580,7 +1581,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.127";
+	this.processor_version = "1.0.128";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2832,7 +2833,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		last_collapsed = this.tmp.have_collapsed;
 		params = {};
 		if (pos > 0) {
-			CSL.getCite.call(this, Item, item, "" + inputList[(pos - 1)][1].id);
+			CSL.getCite.call(this, Item, item, "" + inputList[(pos - 1)][0].id);
 		} else {
 			this.tmp.term_predecessor = false;
 			CSL.getCite.call(this, Item, item);
@@ -6353,7 +6354,7 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		this.data.value = "";
 		this.data.blobs = [];
 		var is_mid = this.isMid(variable);
-		if (this.target === "front" && is_mid) {
+		if (this.target === "front" && is_mid && this.cite.front.length && (this.cite.front.length > 1 || this.cite.front.indexOf("names") === -1)) {
 			this.target = "mid";
 		} else if (this.target === "mid" && !is_mid && this.cite.Item.title) {
 			this.target = "back";
@@ -6506,6 +6507,10 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
 								this.state.registry.registry[cite.itemId].parallel = this.state.registry.registry[cite.prevItemID].parallel;
 							}
 							this.state.registry.registry[cite.itemId].siblings = this.state.registry.registry[cite.prevItemID].siblings;
+							if (!this.state.registry.registry[cite.itemId].siblings) {
+								this.state.registry.registry[cite.itemId].siblings = [];
+								CSL.debug("WARNING: adding missing siblings array to registry object");
+							}
 							this.state.registry.registry[cite.itemId].siblings.push(cite.itemId);
 						}
 					}
@@ -8076,7 +8081,7 @@ CSL.Output.Formatters.title = function (state, string) {
 					skipword = CSL.SKIP_WORDS[ppos];
 					idx = lowerCaseVariant.indexOf(skipword);
 					if (idx > -1) {
-						tmp = lowerCaseVariant.slice(0, idx, idx + lowerCaseVariant.slice(skipword.length));
+						tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
 						if (!tmp.match(/[a-zA-Z]/)) {
 							skip = true;
 						}

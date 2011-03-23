@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.128
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Broaden the list of skip-words used by the title-case
+  function. Fixes regression from 2.0.9.
+
+- Tighten conditions for identifying parallel citations
+  somewhat.
+
+- Provide some protection against a processor crash when
+  parallel citation machinery missteps.
+
+
+==========================
 Changes in version 1.0.127
 ==========================
 
