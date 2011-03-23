@@ -547,7 +547,7 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 		return;
 	}
 	for (var i = myblobs.length - 1; i > -1; i += -1) {
-		CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs);		
+		CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs, endOnly);
 	}
 	for (var i = myblobs.length - 1; i > -1; i += -1) {
 		// Edit myblobs in place
@@ -559,7 +559,8 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 			for (j = 0, jlen = tmpblobs.length; j < jlen; j += 1) {
 				myblobs.push(tmpblobs[j]);
 			}
-		} else if (endOnly) {
+		}
+		if (endOnly) {
 			break;
 		}
 	}
