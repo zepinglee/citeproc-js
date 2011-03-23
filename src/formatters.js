@@ -173,7 +173,7 @@ CSL.Output.Formatters.title = function (state, string) {
 					skipword = CSL.SKIP_WORDS[ppos];
 					idx = lowerCaseVariant.indexOf(skipword);
 					if (idx > -1) {
-						tmp = lowerCaseVariant.slice(0, idx, idx + lowerCaseVariant.slice(skipword.length));
+						tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
 						if (!tmp.match(/[a-zA-Z]/)) {
 							skip = true;
 						}
