@@ -647,7 +647,8 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 		if (suffix) {
 			if (blob && 
 				TERMS.indexOf(myblobs.slice(-1)) > -1 &&
-				TERMS.indexOf(suffix) > -1) {
+				TERMS.indexOf(suffix) > -1 &&
+				blob.strings.suffix !== " ") {
 					blob.strings.suffix = blob.strings.suffix.slice(1);
 			}
 		}
