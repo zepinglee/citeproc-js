@@ -978,12 +978,6 @@ CSL.citeEnd = function (Item, item) {
 	}
 	this.tmp.disambig_restore = false;
 
-	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/[\-.,;:]$/)) {
-		this.tmp.splice_delimiter = " ";
-	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[.,:;a-z]/)) {
-		this.tmp.splice_delimiter = " ";
-	}
-
  	this.tmp.last_suffix_used = this.tmp.suffix.value();
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
