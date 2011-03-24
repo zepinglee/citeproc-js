@@ -97,7 +97,7 @@ CSL.Node.layout = {
 					var sp;
 					if (item && item.prefix) {
 						sp = "";
-						if (item.prefix.match(CSL.ROMANESQUE_REGEXP)) {
+						if (item.prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
 							sp = " ";
 						}
 						state.output.append((item.prefix + sp), this);
@@ -203,7 +203,7 @@ CSL.Node.layout = {
 						var sp;
 						if (item && item.suffix) {
 							sp = "";
-							if (item.suffix.match(CSL.ROMANESQUE_REGEXP)) {
+							if (item.suffix.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)) {
 								sp = " ";
 							}
 							state.output.append((sp + item.suffix), this);
