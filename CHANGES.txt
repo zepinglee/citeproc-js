@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.129
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix minor spacing bug affecting ASA style.
+
+- Tighten conditions for the automatic insertion
+  of spaces between user-supplied affixes and
+  citations to which they apply.
+
+
+==========================
 Changes in version 1.0.128
 ==========================
 

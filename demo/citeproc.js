@@ -138,7 +138,7 @@ var CSL = {
 	NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/,
 	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
-	ENDSWITH_ROMANESQUE_REGEXP: /[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]$/,
+	ENDSWITH_ROMANESQUE_REGEXP: /[.;:&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]$/,
 	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]+$/,
 	VIETNAMESE_SPECIALS: /[\u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]/,
 	VIETNAMESE_NAMES: /^(?:(?:[.AaBbCcDdEeGgHhIiKkLlMmNnOoPpQqRrSsTtUuVvXxYy \u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]{2,6})(\s+|$))+$/,
@@ -756,7 +756,8 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 		if (suffix) {
 			if (blob && 
 				TERMS.indexOf(myblobs.slice(-1)) > -1 &&
-				TERMS.indexOf(suffix) > -1) {
+				TERMS.indexOf(suffix) > -1 &&
+				blob.strings.suffix !== " ") {
 					blob.strings.suffix = blob.strings.suffix.slice(1);
 			}
 		}
@@ -1581,7 +1582,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.128";
+	this.processor_version = "1.0.129";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3026,11 +3027,6 @@ CSL.citeEnd = function (Item, item) {
 		this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens;
 	}
 	this.tmp.disambig_restore = false;
-	if (this.tmp.last_suffix_used && this.tmp.last_suffix_used.match(/[\-.,;:]$/)) {
-		this.tmp.splice_delimiter = " ";
-	} else if (this.tmp.prefix.value() && this.tmp.prefix.value().match(/^[.,:;a-z]/)) {
-		this.tmp.splice_delimiter = " ";
-	}
  	this.tmp.last_suffix_used = this.tmp.suffix.value();
 	this.tmp.last_years_used = this.tmp.years_used.slice();
 	this.tmp.last_names_used = this.tmp.names_used.slice();
@@ -4032,7 +4028,7 @@ CSL.Node.layout = {
 					var sp;
 					if (item && item.prefix) {
 						sp = "";
-						if (item.prefix.match(CSL.ROMANESQUE_REGEXP)) {
+						if (item.prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
 							sp = " ";
 						}
 						state.output.append((item.prefix + sp), this);
@@ -4111,7 +4107,7 @@ CSL.Node.layout = {
 						var sp;
 						if (item && item.suffix) {
 							sp = "";
-							if (item.suffix.match(CSL.ROMANESQUE_REGEXP)) {
+							if (item.suffix.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)) {
 								sp = " ";
 							}
 							state.output.append((sp + item.suffix), this);
