@@ -1583,7 +1583,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.130";
+	this.processor_version = "1.0.131";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7704,6 +7704,7 @@ CSL.Util.FlipFlopper = function (state) {
 	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes, allTagsLst, lst;
 	this.state = state;
 	this.blob = false;
+	this.quotechars = ["'", '"'];
 	tagdefs = [
 		["<i>", "</i>", "italics", "@font-style", ["italic", "normal","normal"], true],
 		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal","normal"], true],
@@ -7718,8 +7719,12 @@ CSL.Util.FlipFlopper = function (state) {
 	for (pos = 0; pos < 2; pos += 1) {
 		p = ["-", "-inner-"][pos];
 		entry = [];
-		entry.push(state.getTerm(("open" + p + "quote")));
-		entry.push(state.getTerm(("close" + p + "quote")));
+		var openq = state.getTerm(("open" + p + "quote"));
+		entry.push(openq);
+		this.quotechars.push(openq);
+		var closeq = state.getTerm(("close" + p + "quote"));
+		entry.push(closeq);
+		this.quotechars.push(closeq);
 		entry.push(("quote" + "s"));
 		entry.push(("@" + "quote" + "s"));
 		if ("-" === p) {
@@ -7881,7 +7886,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		head = strs.slice(0, (badTagPos - 1));
 		tail = strs.slice((badTagPos + 2));
 		sep = strs[badTagPos];
-		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep]) {
+		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep) === -1) {
 			params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
 		}
