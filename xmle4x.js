@@ -183,29 +183,26 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 		institution-parts="long"
 		delimiter=", "
 		substitute-use-first="1"
-		use-last="1"/>;
-	institution_short = <institution
-		institution-parts="long"
-		delimiter=", "
-		substitute-use-first="1"
-		use-last="1"/>;
-	name_part = <name-part />;
+		use-last="1"/>
+	institution_part = <institution-part name="long"/>;
 	for each (node in myxml..names) {
 		if ("xml" == typeof node && node.elements("name").length() > 0) {
 			if (!node.institution.toString()) {
 				node.name += institution_long;
 				for each (var attr in CSL.INSTITUTION_KEYS) {
-						if (node.name.@[attr].toString()) {
-							node.institution.@[attr] = node.name.@[attr].toString();
-						}
+					if (node.name.@[attr].toString()) {
+						node.institution.@[attr] = node.name.@[attr].toString();
 					}
-				if (node.name['name-part'] && node.name['name-part'].@name.toString() === 'family') {
-					node.name += name_part;
-					for each (var attr in CSL.INSTITUTION_KEYS) {
-							if (node.name['name-part'].@[attr].toString()) {
-								node.institution.@[attr] = node.name['name-part'].@[attr].toString();
-							}
+				}
+				node.institution[0].appendChild(institution_part)
+				for each (var namepartnode in node.name['name-part']) {
+	   				if (namepartnode.@name.toString() === 'family') {
+						for each (var attr in CSL.INSTITUTION_KEYS) {
+		   					if (namepartnode.@[attr].toString()) {
+								node.institution['institution-part'][0].@[attr] = namepartnode.@[attr].toString();
+		   					}
 						}
+	   				}
 				}
 			}
 		}
