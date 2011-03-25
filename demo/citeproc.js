@@ -231,7 +231,8 @@ var CSL = {
 		"font-style",
 		"font-variant",
 		"font-weight",
-		"text-decoration"
+		"text-decoration",
+		"text-case"
 	],
 	SUFFIX_CHARS: "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z",
 	ROMAN_NUMERALS: [
@@ -1582,7 +1583,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.129";
+	this.processor_version = "1.0.130";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();

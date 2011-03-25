@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.130
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Map family name decorations to institutions
+  in xmle4x.js. Similar changes may be required
+  in xmldom.js.
+
+
+==========================
 Changes in version 1.0.129
 ==========================
 
