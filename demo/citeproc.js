@@ -2479,10 +2479,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	}
 	this.setCitationId(citation);
 	if (citation) {
-		CSL.debug("citationID after setCitationId(): ("+citation.citationID+")");
-		CSL.debug("citationreg.citationById object for "+citation.citationID+": ("+this.registry.citationreg.citationById[citation.citationID]+")");
+		CSL.debug("  citationID after setCitationId(): ("+citation.citationID+")");
+		CSL.debug("  citationreg.citationById object for "+citation.citationID+": ("+this.registry.citationreg.citationById[citation.citationID]+")");
 	} else {
-		CSL.error("nil citation after setCitationID()");
+		CSL.error("  nil citation after setCitationID()");
 	}
 	if (flag === CSL.PREVIEW) {
 		var oldCitationList = this.registry.citationreg.citationByIndex.slice();
@@ -2535,6 +2535,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	len = citationsPre.length;
 	for (pos = 0; pos < len; pos += 1) {
 		c = citationsPre[pos];
+		CSL.debug("  -- attempting to access Pre citation with ID: ("+c[0]+")");
 		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	}
@@ -2542,6 +2543,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	len = citationsPost.length;
 	for (pos = 0; pos < len; pos += 1) {
 		c = citationsPost[pos];
+		CSL.debug("  -- attempting to access Post citation with ID: ("+c[0]+")");
 		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	}
