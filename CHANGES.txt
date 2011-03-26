@@ -8,6 +8,17 @@ Changes in version 1.0.132
 Mishandled or unimplemented features
 ------------------------------------
 
+- Quash ordinary variables rendered via cs:substitute.
+
+
+==========================
+Changes in version 1.0.132
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
 - Wake up debug tracing in Zotero configuration of the processor.
 
 

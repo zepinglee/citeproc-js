@@ -1583,7 +1583,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.132";
+	this.processor_version = "1.0.133";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3863,7 +3863,7 @@ CSL.Node.key = {
 					state.transform.init("empty", "title");
 					state.transform.setTransformLocale("locale-sort");
 					state.transform.setTransformFallback(true);
-					func = state.transform.getOutputFunction();
+					func = state.transform.getOutputFunction(this.variables);
 				} else {
 					func = function (state, Item) {
 						var varval = Item[variable];
@@ -4987,7 +4987,12 @@ CSL.Node.text = {
 		if (this.postponed_macro) {
 			CSL.expandMacro.call(state, this);
 		} else {
-			variable = this.variables[0];
+			if (!this.variables_real) {
+				this.variables_real = [];
+			}
+			if (!this.variables) {
+				this.variables = [];
+			}
 			form = "long";
 			plural = 0;
 			if (this.strings.form) {
@@ -4996,8 +5001,8 @@ CSL.Node.text = {
 			if (this.strings.plural) {
 				plural = this.strings.plural;
 			}
-			if ("citation-number" === variable || "year-suffix" === variable || "citation-label" === variable) {
-				if (variable === "citation-number") {
+			if ("citation-number" === this.variables_real[0] || "year-suffix" === this.variables_real[0] || "citation-label" === this.variables_real[0]) {
+				if (this.variables_real[0] === "citation-number") {
 					if (state.build.area === "citation") {
 						state.opt.update_mode = CSL.NUMERIC;
 					}
@@ -5034,7 +5039,7 @@ CSL.Node.text = {
 						}
 					};
 					this.execs.push(func);
-				} else if (variable === "year-suffix") {
+				} else if (this.variables_real[0] === "year-suffix") {
 					state.opt.has_year_suffix = true;
 					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
 						this.range_prefix = "-";
@@ -5065,7 +5070,7 @@ CSL.Node.text = {
 						}
 					};
 					this.execs.push(func);
-				} else if (variable === "citation-label") {
+				} else if (this.variables_real[0] === "citation-label") {
 					state.opt.has_year_suffix = true;
 					func = function (state, Item) {
 						label = Item["citation-label"];
@@ -5134,51 +5139,52 @@ CSL.Node.text = {
 				    state.build.term = false;
 				    state.build.form = false;
 				    state.build.plural = false;
-				} else if (this.variables.length) {
+				} else if (this.variables_real.length) {
 					func = function (state, Item) {
 						state.parallel.StartVariable(this.variables[0]);
 						state.parallel.AppendToVariable(Item[this.variables[0]]);
 					};
 					this.execs.push(func);
-					if (CSL.MULTI_FIELDS.indexOf(this.variables[0]) > -1) {
+					if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1) {
 						if (form === "short") {
-							state.transform.init(this, this.variables[0], this.variables[0]);
+							state.transform.init(this, this.variables_real[0], this.variables_real[0]);
 						} else {
-							state.transform.init(this, this.variables[0]);
+							state.transform.init(this, this.variables_real[0]);
 						}
 						if (state.build.area.slice(-5) === "_sort") {
+							state.transform.init(this, this.variables_real[0], this.variables_real[0]);
 							state.transform.setTransformLocale("locale-sort");
 							state.transform.setTransformFallback(true);
-							func = state.transform.getOutputFunction();
+							func = state.transform.getOutputFunction(this.variables);
 						} else if (form === "short") {
-							 if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
+							 if (["title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
 								 state.transform.setTransformLocale("locale-sec");
 							 } else {
 								 state.transform.setTransformLocale("locale-pri");
 							 }
 							 state.transform.setTransformFallback(true);
 							 state.transform.setAbbreviationFallback(true);
-							if (this.variables[0] === "container-title") {
+							if (this.variables_real[0] === "container-title") {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
-							} else if (this.variables[0] === "title") {
+							} else if (this.variables_real[0] === "title") {
 								state.transform.setAlternativeVariableName("shortTitle");
-							} else if (["publisher", "publisher-place", "edition"].indexOf(this.variables[0]) > -1) {
+							} else if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
 								state.transform.setTransformLocale("default-locale");
 							}
-							func = state.transform.getOutputFunction();
-						} else if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
+							func = state.transform.getOutputFunction(this.variables);
+						} else if (["title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
 							state.transform.setTransformLocale("locale-sec");
 							state.transform.setTransformFallback(true);
-							func = state.transform.getOutputFunction();
+							func = state.transform.getOutputFunction(this.variables);
 						} else {
 							state.transform.setTransformLocale("locale-pri");
 							state.transform.setTransformFallback(true);
-							if (["publisher", "publisher-place", "edition"].indexOf(this.variables[0]) > -1) {
+							if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
 								state.transform.setTransformLocale("default-locale");
 							}
-							func = state.transform.getOutputFunction();
+							func = state.transform.getOutputFunction(this.variables);
 						}
-						if (this.variables[0] === "container-title") {
+						if (this.variables_real[0] === "container-title") {
 							var xfunc = function (state, Item, item) {
 								if (Item['container-title'] && state.tmp.citeblob.has_volume) {
 									state.tmp.citeblob.can_suppress_identical_year = true;
@@ -5187,13 +5193,13 @@ CSL.Node.text = {
 							this.execs.push(xfunc);
 						}
 					} else {
-						if (CSL.CITE_FIELDS.indexOf(this.variables[0]) > -1) {
+						if (CSL.CITE_FIELDS.indexOf(this.variables_real[0]) > -1) {
 							func = function (state, Item, item) {
 								if (item && item[this.variables[0]]) {
 									state.output.append(item[this.variables[0]], this);
 								}
 							};
-						} else if (this.variables[0] === "page-first") {
+						} else if (this.variables_real[0] === "page-first") {
 							func = function (state, Item) {
 								var idx, value;
 								value = state.getVariable(Item, "page", form);
@@ -5205,7 +5211,7 @@ CSL.Node.text = {
 									state.output.append(value, this);
 								}
 							};
-						} else  if (this.variables[0] === "page") {
+						} else  if (this.variables_real[0] === "page") {
 							func = function (state, Item) {
 								var value = state.getVariable(Item, "page", form);
 								if (value) {
@@ -5215,17 +5221,21 @@ CSL.Node.text = {
 							};
 						} else if ("volume") {
 							func = function (state, Item) {
-								var value = state.getVariable(Item, this.variables[0], form);
-								if (value) {
-									state.tmp.citeblob.has_volume = true;
-									state.output.append(value, this);
+								if (this.variables[0]) {
+									var value = state.getVariable(Item, this.variables[0], form);
+									if (value) {
+										state.tmp.citeblob.has_volume = true;
+										state.output.append(value, this);
+									}
 								}
 							};
 						} else {
 							func = function (state, Item) {
-								var value = state.getVariable(Item, this.variables[0], form);
-								if (value) {
-									state.output.append(value, this);
+								if (this.variables[0]) {
+									var value = state.getVariable(Item, this.variables[0], form);
+									if (value) {
+										state.output.append(value, this);
+									}
 								}
 							};
 						}
@@ -5315,7 +5325,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
 	} else if (["names", "date", "text", "number"].indexOf(this.name) > -1) {
 		func = function (state, Item) {
 			variables = this.variables_real.slice();
-			this.variables = [];
+			for (var i = this.variables.length - 1; i > -1; i += -1) {
+				this.variables.pop();
+			};
 			len = variables.length;
 			for (pos = 0; pos < len; pos += 1) {
 				if (state.tmp.done_vars.indexOf(variables[pos]) === -1) {
@@ -6113,7 +6125,7 @@ CSL.Transform = function (state) {
 		}
 	}
 	this.setAbbreviations = setAbbreviations;
-	function getOutputFunction() {
+	function getOutputFunction(variables) {
 		var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
 		mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
 		mysubsection = subsection;
@@ -6125,6 +6137,9 @@ CSL.Transform = function (state) {
 		if (false && mysubsection) {
 			return function (state, Item) {
 				var primary;
+				if (!variables[0]) {
+					return null;
+				}
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 				primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
 				state.output.append(primary, this);
@@ -6132,6 +6147,9 @@ CSL.Transform = function (state) {
 		} else if (transform_locale === "locale-sec") {
 			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key;
+				if (!variables[0]) {
+					return null;
+				}
 				if (state.opt["locale-suppress-title-transliteration"] 
 					|| !((state.tmp.area === 'bibliography'
 						|| (state.opt.xclass === "note" &&
@@ -6165,6 +6183,9 @@ CSL.Transform = function (state) {
 		} else {
 			return function (state, Item) {
 				var primary;
+				if (!variables[0]) {
+					return null;
+				}
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 				state.output.append(primary, this);
 				return null;
