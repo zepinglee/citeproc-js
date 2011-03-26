@@ -236,7 +236,7 @@ CSL.Transform = function (state) {
 	this.setAbbreviations = setAbbreviations;
 
 	// Return function appropriate to selected options
-	function getOutputFunction() {
+	function getOutputFunction(variables) {
 		var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
 
 		// Freeze mandatory values
@@ -257,6 +257,9 @@ CSL.Transform = function (state) {
 			// Short form
 			return function (state, Item) {
 				var primary;
+				if (!variables[0]) {
+					return null;
+				}
 
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 				primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
@@ -266,6 +269,9 @@ CSL.Transform = function (state) {
 			// Long form, with secondary translation
 			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key;
+				if (!variables[0]) {
+					return null;
+				}
 				if (state.opt["locale-suppress-title-transliteration"] 
 					|| !((state.tmp.area === 'bibliography'
 						|| (state.opt.xclass === "note" &&
@@ -302,6 +308,9 @@ CSL.Transform = function (state) {
 		} else {
 			return function (state, Item) {
 				var primary;
+				if (!variables[0]) {
+					return null;
+				}
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 				state.output.append(primary, this);
 				return null;

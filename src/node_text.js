@@ -56,21 +56,18 @@ CSL.Node.text = {
 			// ...
 			//
 			// Do non-macro stuff
-			variable = this.variables[0];
-			//if (variable) {
-			//	func = function (state, Item) {
-			//		state.parallel.StartVariable(this.variables[0]);
-			//		state.parallel.AppendToVariable(Item[this.variables[0]]);
-			//	};
-			//	this.execs.push(func);
-			//}
-			//else {
-			//	func = function (state, Item) {
-			//		state.parallel.StartVariable("value");
-			//		state.parallel.AppendToVariable("whatever ...");
-			//	};
-			//	this.execs.push(func);
-			//}
+			
+			// Guess again. this.variables is ephemeral, adjusted by an initial
+			// function set on the node via @variable attribute setup.
+			//variable = this.variables[0];
+			
+			if (!this.variables_real) {
+				this.variables_real = [];
+			}
+			if (!this.variables) {
+				this.variables = [];
+			}
+
 			form = "long";
 			plural = 0;
 			if (this.strings.form) {
@@ -79,13 +76,13 @@ CSL.Node.text = {
 			if (this.strings.plural) {
 				plural = this.strings.plural;
 			}
-			if ("citation-number" === variable || "year-suffix" === variable || "citation-label" === variable) {
+			if ("citation-number" === this.variables_real[0] || "year-suffix" === this.variables_real[0] || "citation-label" === this.variables_real[0]) {
 				//
 				// citation-number and year-suffix are super special,
 				// because they are rangeables, and require a completely
 				// different set of formatting parameters on the output
 				// queue.
-				if (variable === "citation-number") {
+				if (this.variables_real[0] === "citation-number") {
 					if (state.build.area === "citation") {
 						state.opt.update_mode = CSL.NUMERIC;
 					}
@@ -123,7 +120,7 @@ CSL.Node.text = {
 						}
 					};
 					this.execs.push(func);
-				} else if (variable === "year-suffix") {
+				} else if (this.variables_real[0] === "year-suffix") {
 
 					state.opt.has_year_suffix = true;
 
@@ -162,7 +159,7 @@ CSL.Node.text = {
 						}
 					};
 					this.execs.push(func);
-				} else if (variable === "citation-label") {
+				} else if (this.variables_real[0] === "citation-label") {
 					state.opt.has_year_suffix = true;
 					func = function (state, Item) {
 						label = Item["citation-label"];
@@ -242,7 +239,7 @@ CSL.Node.text = {
 				    state.build.term = false;
 				    state.build.form = false;
 				    state.build.plural = false;
-				} else if (this.variables.length) {
+				} else if (this.variables_real.length) {
 					func = function (state, Item) {
 						state.parallel.StartVariable(this.variables[0]);
 						state.parallel.AppendToVariable(Item[this.variables[0]]);
@@ -252,25 +249,26 @@ CSL.Node.text = {
 					// plain string fields
 
 					// Deal with multi-fields and ordinary fields separately.
-					if (CSL.MULTI_FIELDS.indexOf(this.variables[0]) > -1) {
+					if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1) {
 						// multi-fields
 						// Initialize transform factory according to whether
 						// abbreviation is desired.
 						if (form === "short") {
 							// shouldn't third arg be "short"?
 							//state.transform.init(this, this.variables[0], this.variables[0]);
-							state.transform.init(this, this.variables[0], this.variables[0]);
+							state.transform.init(this, this.variables_real[0], this.variables_real[0]);
 						} else {
-							state.transform.init(this, this.variables[0]);
+							state.transform.init(this, this.variables_real[0]);
 						}
 						if (state.build.area.slice(-5) === "_sort") {
 							// multi-fields for sorting get a sort transform,
 							// (abbreviated if the short form was selected)
+							state.transform.init(this, this.variables_real[0], this.variables_real[0]);
 							state.transform.setTransformLocale("locale-sort");
 							state.transform.setTransformFallback(true);
-							func = state.transform.getOutputFunction();
+							func = state.transform.getOutputFunction(this.variables);
 						} else if (form === "short") {
-							 if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
+							 if (["title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
 								 // short-form title things get translations maybe
 								 state.transform.setTransformLocale("locale-sec");
 							 } else {
@@ -280,36 +278,36 @@ CSL.Node.text = {
 							 }
 							 state.transform.setTransformFallback(true);
 							 state.transform.setAbbreviationFallback(true);
-							if (this.variables[0] === "container-title") {
+							if (this.variables_real[0] === "container-title") {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
-							} else if (this.variables[0] === "title") {
+							} else if (this.variables_real[0] === "title") {
 								state.transform.setAlternativeVariableName("shortTitle");
-							} else if (["publisher", "publisher-place", "edition"].indexOf(this.variables[0]) > -1) {
+							} else if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
 								// language of publisher and publisher-place follow
 								// the locale of the style.
 								state.transform.setTransformLocale("default-locale");
 							}
-							func = state.transform.getOutputFunction();
-						} else if (["title", "container-title", "collection-title"].indexOf(this.variables[0]) > -1) {
+							func = state.transform.getOutputFunction(this.variables);
+						} else if (["title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
 							// among long-form multi-fields, titles are an
 							// exception: they get a locale-sec transform
 							// if a value is available.
 							state.transform.setTransformLocale("locale-sec");
 							state.transform.setTransformFallback(true);
-							func = state.transform.getOutputFunction();
+							func = state.transform.getOutputFunction(this.variables);
 						} else {
 							// ordinary long-form multi-fields get a locale-pri
 							// transform only.
 							state.transform.setTransformLocale("locale-pri");
 							state.transform.setTransformFallback(true);
-							if (["publisher", "publisher-place", "edition"].indexOf(this.variables[0]) > -1) {
+							if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
 								// language of publisher and publisher-place follow
 								// the locale of the style.
 								state.transform.setTransformLocale("default-locale");
 							}
-							func = state.transform.getOutputFunction();
+							func = state.transform.getOutputFunction(this.variables);
 						}
-						if (this.variables[0] === "container-title") {
+						if (this.variables_real[0] === "container-title") {
 							var xfunc = function (state, Item, item) {
 								if (Item['container-title'] && state.tmp.citeblob.has_volume) {
 									state.tmp.citeblob.can_suppress_identical_year = true;
@@ -319,14 +317,14 @@ CSL.Node.text = {
 						}
 					} else {
 						// ordinary fields
-						if (CSL.CITE_FIELDS.indexOf(this.variables[0]) > -1) {
+						if (CSL.CITE_FIELDS.indexOf(this.variables_real[0]) > -1) {
 							// per-cite fields are read from item, rather than Item
 							func = function (state, Item, item) {
 								if (item && item[this.variables[0]]) {
 									state.output.append(item[this.variables[0]], this);
 								}
 							};
-						} else if (this.variables[0] === "page-first") {
+						} else if (this.variables_real[0] === "page-first") {
 							// page-first is a virtual field, consisting
 							// of the front slice of page.
 							func = function (state, Item) {
@@ -340,7 +338,7 @@ CSL.Node.text = {
 									state.output.append(value, this);
 								}
 							};
-						} else  if (this.variables[0] === "page") {
+						} else  if (this.variables_real[0] === "page") {
 							// page gets mangled with the correct collapsing
 							// algorithm
 							func = function (state, Item) {
@@ -352,21 +350,25 @@ CSL.Node.text = {
 							};
 						} else if ("volume") {
 							func = function (state, Item) {
-								var value = state.getVariable(Item, this.variables[0], form);
-								if (value) {
-									// Only allow the suppression of a year identical
-									// to the volume number if the container-title
-									// is rendered after the volume number.
-									state.tmp.citeblob.has_volume = true;
-									state.output.append(value, this);
+								if (this.variables[0]) {
+									var value = state.getVariable(Item, this.variables[0], form);
+									if (value) {
+										// Only allow the suppression of a year identical
+										// to the volume number if the container-title
+										// is rendered after the volume number.
+										state.tmp.citeblob.has_volume = true;
+										state.output.append(value, this);
+									}
 								}
 							};
 						} else {
 							// anything left over just gets output in the normal way.
 							func = function (state, Item) {
-								var value = state.getVariable(Item, this.variables[0], form);
-								if (value) {
-									state.output.append(value, this);
+								if (this.variables[0]) {
+									var value = state.getVariable(Item, this.variables[0], form);
+									if (value) {
+										state.output.append(value, this);
+									}
 								}
 							};
 						}

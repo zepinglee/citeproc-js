@@ -191,7 +191,7 @@ CSL.Node.key = {
 					state.transform.init("empty", "title");
 					state.transform.setTransformLocale("locale-sort");
 					state.transform.setTransformFallback(true);
-					func = state.transform.getOutputFunction();
+					func = state.transform.getOutputFunction(this.variables);
 					//func = function (state, Item) {
 					//	var value = Item[variable];
 					//	if (value) {

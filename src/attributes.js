@@ -192,7 +192,10 @@ CSL.Attributes["@variable"] = function (state, arg) {
 		// set variable names
 		func = function (state, Item) {
 			variables = this.variables_real.slice();
-			this.variables = [];
+			// Clear this.variables in place
+			for (var i = this.variables.length - 1; i > -1; i += -1) {
+				this.variables.pop();
+			};
 
 			len = variables.length;
 			for (pos = 0; pos < len; pos += 1) {
