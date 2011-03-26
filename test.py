@@ -111,9 +111,11 @@ class Bundle:
         else:
             self.citeproc = "citeproc.js"
         self.mode = mode
-        f = ["load", "print"]
+        f = ["load"]
         if mode == "zotero":
-            f.extend(["xmle4x", "error_zotero"])
+            f.extend(["print_zotero", "xmle4x"])
+        else:
+            f.extend(["print"])
         f.extend(["queue","util_processor","util_disambig"])
         f.extend(["util_nodes","util_dateparser","build","api_control"])
         f.extend(["state","util_integration","api_update"])

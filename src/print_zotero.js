@@ -46,4 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.error = Zotero.debug;
+CSL.debug = function (str) {
+	Zotero.debug("CSL: " + str);
+};
+
+CSL.error = function (str) {
+	Zotero.debug("CSL error: " + str);
+};
