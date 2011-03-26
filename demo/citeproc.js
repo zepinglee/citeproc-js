@@ -1583,7 +1583,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.131";
+	this.processor_version = "1.0.132";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2472,7 +2472,18 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	this.tmp.citation_errors = [];
 	return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
+	if (citation) {
+		CSL.debug("citationID received by processCitationCluster(): ("+citation.citationID+")");
+	} else {
+		CSL.error("nil citation received by processCitationCluster()");
+	}
 	this.setCitationId(citation);
+	if (citation) {
+		CSL.debug("citationID after setCitationId(): ("+citation.citationID+")");
+		CSL.debug("citationreg.citationById object for "+citation.citationID+": ("+this.registry.citationreg.citationById[citation.citationID]+")");
+	} else {
+		CSL.error("nil citation after setCitationID()");
+	}
 	if (flag === CSL.PREVIEW) {
 		var oldCitationList = this.registry.citationreg.citationByIndex.slice();
 		var oldItemList = this.registry.reflist.slice();
