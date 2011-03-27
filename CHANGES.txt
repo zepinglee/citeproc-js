@@ -1,7 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
-Changes in version 1.0.132
+Changes in version 1.0.134
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Raise output flag on page-first virtual
+  variable, so that it is not suppressed when
+  rendered as the sole content of a group,
+  or of a macro (with an implicit group wrapper).
+
+==========================
+Changes in version 1.0.133
 ==========================
 
 ------------------------------------

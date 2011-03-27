@@ -39,6 +39,7 @@ dojo.require("std.namespaces");
 dojo.require("std.variables");
 dojo.require("std.sort");
 dojo.require("std.parallel");
+dojo.require("std.virtual");
 dojo.require("std.fullstyles");
 dojo.require("std.discretionary");
 dojo.require("std.collapse");
