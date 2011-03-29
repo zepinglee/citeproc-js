@@ -116,7 +116,7 @@ class Bundle:
             f.extend(["print_zotero", "xmle4x"])
         else:
             f.extend(["print"])
-        f.extend(["queue","util_processor","util_disambig"])
+        f.extend(["sort","queue","util_processor","util_disambig"])
         f.extend(["util_nodes","util_dateparser","build","api_control"])
         f.extend(["state","util_integration","api_update"])
         f.extend(["api_bibliography","api_cite","node_bibliography","node_choose"])

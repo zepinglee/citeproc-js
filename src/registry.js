@@ -536,6 +536,7 @@ CSL.Registry.prototype.sorttokens = function () {
  */
 CSL.Registry.Comparifier = function (state, keyset) {
 	var sort_directions, len, pos, compareKeys;
+	var sortCompare = CSL.getSortCompare();
 	sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function (a, b) {
 		len = a.sortkeys.length;
@@ -557,7 +558,8 @@ CSL.Registry.Comparifier = function (state, keyset) {
 			} else if ("undefined" === typeof b.sortkeys[pos]) {
 				cmp = sort_directions[pos][0];
 			} else {
-				cmp = a.sortkeys[pos].localeCompare(b.sortkeys[pos]);
+				// cmp = a.sortkeys[pos].localeCompare(b.sortkeys[pos]);
+				cmp = sortCompare(a.sortkeys[pos], b.sortkeys[pos]);
 			}
 			if (0 < cmp) {
 				return sort_directions[pos][1];

@@ -406,6 +406,9 @@ if (!CSL.debug) {
 if (!CSL.System) {
 	load("./src/system.js");
 }
+if (!CSL.getSortCompare) {
+	load("./src/sort.js");
+}
 if (!CSL.System.Xml.E4X) {
 	load("./src/xmle4x.js");
 }
