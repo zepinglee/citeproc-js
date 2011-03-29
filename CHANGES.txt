@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.135
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix undefined year-suffix-delimiter with implicit
+  year suffix.
+
+
+==========================
 Changes in version 1.0.134
 ==========================
 
