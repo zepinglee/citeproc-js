@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.136
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not rely on localeCompare() if a collation is available.
+  Avoids erratic results from this function in Firefox Javascript
+  implementations.
+
+
+==========================
 Changes in version 1.0.135
 ==========================
 
