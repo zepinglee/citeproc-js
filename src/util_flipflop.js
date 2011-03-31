@@ -65,7 +65,7 @@ CSL.Util.FlipFlopper = function (state) {
 		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
 		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
 		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner","true"],  "'"],
-		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true","true"],  '"']
+		["'",  "'",  "quotes",  "@quotes",  ["inner",  "true","true"],  '"']
 	];
 	//
 	// plus quote defs from locale.
