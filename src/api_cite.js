@@ -855,6 +855,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		// meaningless assignment
 		// this.tmp.handle_ranges = false;
 		if (item && item["author-only"]) {
+			this.tmp.suppress_decorations = false;
 			return composite;
 		}
 		if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
@@ -902,6 +903,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			}
 		}
 	}
+	this.tmp.suppress_decorations = false;
 	return result;
 };
 
