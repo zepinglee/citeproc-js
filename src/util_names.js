@@ -493,7 +493,7 @@ CSL.Util.Names.initNameSlices = function (state) {
 CSL.Engine.prototype.parseName = function (name) {
 	var m, idx;
 	if (! name["non-dropping-particle"] && name.family) {
-		m = name.family.match(/^([ a-z]+\s+)/);
+		m = name.family.match(/^([[ \'\u2019a-z]+\s+)/);
 		if (m) {
 			name.family = name.family.slice(m[1].length);
 			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
@@ -512,7 +512,7 @@ CSL.Engine.prototype.parseName = function (name) {
 		}
 	}
 	if (! name["dropping-particle"] && name.given) {
-		m = name.given.match(/^(\s+[ a-z]*[a-z])$/);
+		m = name.given.match(/^(\s+[ \'\u2019a-z]*[a-z])$/);
 		if (m) {
 			name.given = name.given.slice(0, m[1].length * -1);
 			name["dropping-particle"] = m[2].replace(/^\s+/, "");
