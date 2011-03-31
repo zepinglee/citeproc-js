@@ -1621,7 +1621,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.136";
+	this.processor_version = "1.0.137";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2743,9 +2743,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	for (key in this.tmp.taintedItemIDs) {
 		if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
 			citations = this.registry.citationreg.citationsByItemId[key];
+			if (citations) {
 				for (pos = 0, len = citations.length; pos < len; pos += 1) {
 					this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
 				}
+			}
 		}
 	}
 	ret = [];
@@ -8416,12 +8418,12 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	if (uncited_flag && this.mylist && this.mylist.length) {
 		this.uncited = myitems;
 		for (pos = 0, len = myitems.length; pos < len; pos += 1) {
-			if (!this.myhash[myitems[pos]]) {
-				this.mylist.push(myitems[pos]);
+			if (!this.myhash[myitems[pos]] && this.mylist.indexOf(myitems[pos]) === -1) {
+				this.mylist.push("" + myitems[pos]);
 			}
 		}
 	} else {
-		this.mylist = myitems;
+		this.mylist = myitems.concat(this.uncited);
 	}
 	this.myhash = {};
 	len = myitems.length;
