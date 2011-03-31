@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.138
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Properly reset state.tmp.suppress_decorations
+  in getCitationCluster().
+
+- Avoid corruption of a leading apostrophe.
+
+
+==========================
 Changes in version 1.0.137
 ==========================
 

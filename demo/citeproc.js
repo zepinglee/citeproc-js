@@ -1621,7 +1621,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.137";
+	this.processor_version = "1.0.138";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2972,6 +2972,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		composite = this.output.string(this, this.output.queue);
 		this.tmp.suppress_decorations = false;
 		if (item && item["author-only"]) {
+			this.tmp.suppress_decorations = false;
 			return composite;
 		}
 		if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
@@ -3017,6 +3018,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			}
 		}
 	}
+	this.tmp.suppress_decorations = false;
 	return result;
 };
 CSL.getCite = function (Item, item, prevItemID) {
@@ -7228,7 +7230,7 @@ CSL.Util.Names.initNameSlices = function (state) {
 CSL.Engine.prototype.parseName = function (name) {
 	var m, idx;
 	if (! name["non-dropping-particle"] && name.family) {
-		m = name.family.match(/^([ a-z]+\s+)/);
+		m = name.family.match(/^([[ \'\u2019a-z]+\s+)/);
 		if (m) {
 			name.family = name.family.slice(m[1].length);
 			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
@@ -7246,7 +7248,7 @@ CSL.Engine.prototype.parseName = function (name) {
 		}
 	}
 	if (! name["dropping-particle"] && name.given) {
-		m = name.given.match(/^(\s+[ a-z]*[a-z])$/);
+		m = name.given.match(/^(\s+[ \'\u2019a-z]*[a-z])$/);
 		if (m) {
 			name.given = name.given.slice(0, m[1].length * -1);
 			name["dropping-particle"] = m[2].replace(/^\s+/, "");
@@ -7963,7 +7965,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		head = strs.slice(0, (badTagPos - 1));
 		tail = strs.slice((badTagPos + 2));
 		sep = strs[badTagPos];
-		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep) === -1) {
+		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
 			params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
 		}
