@@ -212,12 +212,17 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	if (uncited_flag && this.mylist && this.mylist.length) {
 		this.uncited = myitems;
 		for (pos = 0, len = myitems.length; pos < len; pos += 1) {
-			if (!this.myhash[myitems[pos]]) {
-				this.mylist.push(myitems[pos]);
+			// XXXX Checking whether this is where the extra copy of uncited IDs creeps in.
+			// Confirmed: it is
+			// This could be more efficient, but for the time being,
+			// refresh following a manual insert to the bibliography works
+			// as expected.
+			if (!this.myhash[myitems[pos]] && this.mylist.indexOf(myitems[pos]) === -1) {
+				this.mylist.push("" + myitems[pos]);
 			}
 		}
 	} else {
-		this.mylist = myitems;
+		this.mylist = myitems.concat(this.uncited);
 	}
 	this.myhash = {};
 	len = myitems.length;

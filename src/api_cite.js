@@ -508,11 +508,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			citations = this.registry.citationreg.citationsByItemId[key];
 			// Current citation may be tainted but will not exist
 			// during previewing.
-			//if (citations) {
+			if (citations) {
 				for (pos = 0, len = citations.length; pos < len; pos += 1) {
 					this.tmp.taintedCitationIDs[citations[pos].citationID] = true;
 				}
-			//}
+			}
 		}
 	}
 	ret = [];
