@@ -65,7 +65,7 @@ CSL.Util.FlipFlopper = function (state) {
 		["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
 		["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
 		['"',  '"',  "quotes",  "@quotes",  ["true",  "inner","true"],  "'"],
-		["'",  "'",  "quotes",  "@quotes",  ["inner",  "true","true"],  '"']
+		[" '",  "'",  "quotes",  "@quotes",  ["inner",  "true","true"],  '"']
 	];
 	//
 	// plus quote defs from locale.
@@ -275,7 +275,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		head = strs.slice(0, (badTagPos - 1));
 		tail = strs.slice((badTagPos + 2));
 		sep = strs[badTagPos];
-		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep) === -1) {
+		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
 			params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
 		}
