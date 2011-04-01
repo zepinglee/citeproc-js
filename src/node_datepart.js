@@ -59,6 +59,11 @@ CSL.Node["date-part"] = {
 		// Set delimiter here, if poss.
 		//
 		func = function (state, Item) {
+
+			if (!state.tmp.date_object) {
+				return;
+			}
+
 			first_date = true;
 			value = "";
 			value_end = "";

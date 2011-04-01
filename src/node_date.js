@@ -65,7 +65,10 @@ CSL.Node.date = {
 				state.tmp.dateparts = [];
 				dp = [];
 				//if (this.variables.length && Item[this.variables[0]]){
-				if (this.variables.length) {
+				if (this.variables.length
+					&& !(state.tmp.just_looking
+						 && this.variables[0] !== "issued")) {
+
 					state.parallel.StartVariable(this.variables[0]);
 					date_obj = Item[this.variables[0]];
 					if ("undefined" === typeof date_obj) {
