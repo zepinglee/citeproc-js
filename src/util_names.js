@@ -378,7 +378,9 @@ CSL.Util.Names.unInitialize = function (state, name) {
 	punctlist = name.match(/(\-|\s+)/g);
 	ret = "";
 	for (pos = 0, len = namelist.length; pos < len; pos += 1) {
-		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1))) {
+		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1)) 
+			&& namelist[pos] 
+			&& namelist[pos] !== namelist[pos].toUpperCase()) {
 			namelist[pos] = namelist[pos].slice(0, 1) + namelist[pos].slice(1).toLowerCase();
 		}
 		ret += namelist[pos];
