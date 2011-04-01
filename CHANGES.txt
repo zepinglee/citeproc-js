@@ -1,6 +1,28 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.140
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix some issues in the title case function.
+
+- Always treat the year-suffix variable as rendering 
+  output, for purposes of cs:group rendering suppression.
+
+- Among the date variables, include only the issued date 
+  when generating strings for disambiguation.
+
+- Properly fix the colon suppression (software) bug.
+
+- Do not add an and attribute to the implicit institution 
+  node if none exists on the companion name node.
+
+
+==========================
 Changes in version 1.0.139
 ==========================
 

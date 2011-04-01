@@ -794,8 +794,8 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 	if ("string" === typeof myblobs) {
 		if (suffix) {
 			if (blob && 
-				TERMS.slice(1).indexOf(myblobs.slice(-1)) > -1 &&
-				TERMS.indexOf(suffix) > -1 &&
+				TERMS.indexOf(myblobs.slice(-1)) > -1 &&
+				TERMS.slice(1).indexOf(suffix) > -1 &&
 				blob.strings.suffix !== " ") {
 					blob.strings.suffix = blob.strings.suffix.slice(1);
 			}
@@ -893,8 +893,8 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 			if (i === (myblobs.length - 1)) {
 				if (suffix) {
 					if (doblob.strings.suffix && 
-						 (TERMS.indexOf(suffix) > -1 &&
-						  TERMS.slice(1).indexOf(doblob.strings.suffix.slice(-1)) > -1)) {
+						(TERMS.slice(1).indexOf(suffix) > -1 &&
+						  TERMS.indexOf(doblob.strings.suffix.slice(-1)) > -1)) {
 							blob.strings.suffix = blob.strings.suffix.slice(1);
 					}
 				}
@@ -1621,7 +1621,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.139";
+	this.processor_version = "1.0.140";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3318,7 +3318,9 @@ CSL.Node.date = {
 				state.tmp.donesies = [];
 				state.tmp.dateparts = [];
 				dp = [];
-				if (this.variables.length) {
+				if (this.variables.length
+					&& !(state.tmp.just_looking
+						 && this.variables[0] !== "issued")) {
 					state.parallel.StartVariable(this.variables[0]);
 					date_obj = Item[this.variables[0]];
 					if ("undefined" === typeof date_obj) {
@@ -3407,6 +3409,9 @@ CSL.Node["date-part"] = {
 		}
 		state.build.date_parts.push(this.strings.name);
 		func = function (state, Item) {
+			if (!state.tmp.date_object) {
+				return;
+			}
 			first_date = true;
 			value = "";
 			value_end = "";
@@ -5398,6 +5403,10 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					} else if (variable === "container-title") {
 						variable = "journalAbbreviation";
 					}
+				}
+                if (variable === "year-suffix") {
+					output = true;
+					break;
 				}
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					if (Item[variable] && Item[variable].raw) {
@@ -8155,6 +8164,15 @@ CSL.Output.Formatters.title = function (state, string) {
 		if (words[pos].length !== 0 && (words[pos].length !== 1 || !/\s+/.test(words[pos]))) {
 			upperCaseVariant = words[pos].toUpperCase();
 			lowerCaseVariant = words[pos].toLowerCase();
+			var totallyskip = false;
+			if (!isUpperCase || (words.length === 1 && words[pos].length < 4)) {
+				for (var j = 0, jlen = lowerCaseVariant.length; j < jlen; j += 1) {
+					if (lowerCaseVariant[j] !== upperCaseVariant[j] 
+						&& words[pos][j] === upperCaseVariant[j]) {
+						  totallyskip = true;
+					}
+				}
+			}
 			if (isUpperCase || words[pos] === lowerCaseVariant) {
 				skip = false;
 				len = CSL.SKIP_WORDS.length;
@@ -8175,10 +8193,12 @@ CSL.Output.Formatters.title = function (state, string) {
 				} else {
 					aftercolon = false;
 				}
-				if (skip && notfirst && notlast && (firstword || aftercolon)) {
-					words[pos] = lowerCaseVariant;
-				} else {
-					words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+				if (!totallyskip) {
+					if (skip && notfirst && notlast && (firstword || aftercolon)) {
+						words[pos] = lowerCaseVariant;
+					} else {
+						words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+					}
 				}
 			}
 			previousWordIndex = pos;
