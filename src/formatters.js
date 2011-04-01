@@ -166,6 +166,15 @@ CSL.Output.Formatters.title = function (state, string) {
 		if (words[pos].length !== 0 && (words[pos].length !== 1 || !/\s+/.test(words[pos]))) {
 			upperCaseVariant = words[pos].toUpperCase();
 			lowerCaseVariant = words[pos].toLowerCase();
+			var totallyskip = false;
+			if (!isUpperCase || (words.length === 1 && words[pos].length < 4)) {
+				for (var j = 0, jlen = lowerCaseVariant.length; j < jlen; j += 1) {
+					if (lowerCaseVariant[j] !== upperCaseVariant[j] 
+						&& words[pos][j] === upperCaseVariant[j]) {
+						  totallyskip = true;
+					}
+				}
+			}
 			if (isUpperCase || words[pos] === lowerCaseVariant) {
 				skip = false;
 				len = CSL.SKIP_WORDS.length;
@@ -186,10 +195,12 @@ CSL.Output.Formatters.title = function (state, string) {
 				} else {
 					aftercolon = false;
 				}
-				if (skip && notfirst && notlast && (firstword || aftercolon)) {
-					words[pos] = lowerCaseVariant;
-				} else {
-					words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+				if (!totallyskip) {
+					if (skip && notfirst && notlast && (firstword || aftercolon)) {
+						words[pos] = lowerCaseVariant;
+					} else {
+						words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+					}
 				}
 			}
 			previousWordIndex = pos;
