@@ -226,6 +226,14 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						variable = "journalAbbreviation";
 					}
 				}
+                if (variable === "year-suffix") {
+					// year-suffix always signals that it produces output,
+					// even when it doesn't. This permits it to be used with
+					// the "no date" term inside a group used exclusively
+					// to control formatting.
+					output = true;
+					break;
+				}
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					if (Item[variable] && Item[variable].raw) {
 						output = true;
