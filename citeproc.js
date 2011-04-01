@@ -90,7 +90,7 @@ var CSL = {
 	CITE_FIELDS: ["first-reference-note-number", "locator"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 	SWAPPING_PUNCTUATION: [".", "!", "?", ":",",",";"],
-	TERMINAL_PUNCTUATION: [".", "!", "?", ":", " "],
+	TERMINAL_PUNCTUATION: [":", ".", "!", "?", " "],
 	SPLICE_PUNCTUATION: [".", "!", "?", ":", ";", ","],
 	NONE: 0,
 	NUMERIC: 1,
@@ -794,7 +794,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 	if ("string" === typeof myblobs) {
 		if (suffix) {
 			if (blob && 
-				TERMS.indexOf(myblobs.slice(-1)) > -1 &&
+				TERMS.slice(1).indexOf(myblobs.slice(-1)) > -1 &&
 				TERMS.indexOf(suffix) > -1 &&
 				blob.strings.suffix !== " ") {
 					blob.strings.suffix = blob.strings.suffix.slice(1);
@@ -894,7 +894,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 				if (suffix) {
 					if (doblob.strings.suffix && 
 						 (TERMS.indexOf(suffix) > -1 &&
-						  TERMS.indexOf(doblob.strings.suffix.slice(-1)) > -1)) {
+						  TERMS.slice(1).indexOf(doblob.strings.suffix.slice(-1)) > -1)) {
 							blob.strings.suffix = blob.strings.suffix.slice(1);
 					}
 				}
@@ -1621,7 +1621,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.138";
+	this.processor_version = "1.0.139";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();

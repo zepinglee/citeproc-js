@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.139
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not suppress a colon following a period when
+  adjusting punctuation.
+
+
+==========================
 Changes in version 1.0.138
 ==========================
 
