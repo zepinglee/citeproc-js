@@ -1621,7 +1621,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.140";
+	this.processor_version = "1.0.141";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7137,7 +7137,9 @@ CSL.Util.Names.unInitialize = function (state, name) {
 	punctlist = name.match(/(\-|\s+)/g);
 	ret = "";
 	for (pos = 0, len = namelist.length; pos < len; pos += 1) {
-		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1))) {
+		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1)) 
+			&& namelist[pos] 
+			&& namelist[pos] !== namelist[pos].toUpperCase()) {
 			namelist[pos] = namelist[pos].slice(0, 1) + namelist[pos].slice(1).toLowerCase();
 		}
 		ret += namelist[pos];
@@ -7976,7 +7978,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		sep = strs[badTagPos];
 		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
 			params = this.openToDecorations[sep];
-			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
+			sep = this.state.fun.decorate[params[0]][params[1]](this.state);
 		}
 		resplice = strs[(badTagPos - 1)] + sep + strs[(badTagPos + 1)];
 		head.push(resplice);

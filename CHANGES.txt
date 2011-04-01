@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.141
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix typo that would produce a (well, now "the",
+  unfortunately) "sep is undefined" error.
+
+- Avoid lowercasing words within a name that
+  are in all caps, when no text-case transformation
+  is applied to the name.
+
+
+==========================
 Changes in version 1.0.140
 ==========================
 
