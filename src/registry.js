@@ -225,9 +225,9 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 		this.mylist = myitems.concat(this.uncited);
 	}
 	this.myhash = {};
-	len = myitems.length;
+	len = this.mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		this.myhash[myitems[pos]] = true;
+		this.myhash[this.mylist[pos]] = true;
 	}
 	//
 	//  2. Initialize refresh list.  Never needs sorting, only hash required.
