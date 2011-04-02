@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.142
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Provide itemID to bibliography entry wrapper
+  function, for use in HTML link wrappers and the like.
+  Thanks to Phillip Lord at Newcastle University for
+  exploring possible paths for this in the processor
+  code.
+
+
+==========================
 Changes in version 1.0.141
 ==========================
 

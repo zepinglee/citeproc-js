@@ -614,7 +614,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
 					continue;
 				}
-				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
+				blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start);
 			}
 		}
 	}
@@ -1621,7 +1621,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.141";
+	this.processor_version = "1.0.142";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2431,6 +2431,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 		bib_entry = new CSL.Token("group", CSL.START);
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
 		this.output.startTag("bib_entry", bib_entry);
+		this.output.current.value().item_id = item.id;
 		sortedItems = [[{id: "" + item.id}, item]];
 		entry_item_ids = [];
 		if (this.registry.registry[item.id].master) {
