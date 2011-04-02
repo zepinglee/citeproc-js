@@ -196,7 +196,7 @@ CSL.Util.substituteEnd = function (state, target) {
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
-			var text_esc = CSL.Output.Formats[state.opt.mode].text_escape;
+			var text_esc = CSL.getSafeEscape(state.opt.mode, state.tmp.area);
 			var printing = !state.tmp.suppress_decorations;
 			if (printing) {
 				if (!state.tmp.rendered_name) {

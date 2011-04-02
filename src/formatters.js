@@ -54,6 +54,13 @@
  */
 CSL.Output.Formatters = {};
 
+CSL.getSafeEscape = function(outputModeOpt, outputArea) {
+	if (["bibliography", "citation"].indexOf(outputArea) > -1) {
+		return CSL.Output.Formats[outputModeOpt].text_escape;
+	} else {
+		return function (txt) { return txt; };
+	}
+};
 
 CSL.Output.Formatters.strip_periods = function (state, string) {
     return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
