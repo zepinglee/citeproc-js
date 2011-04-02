@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.143
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not apply text_escape when building strings
+  for purposes other than display. Fixes sort issues
+  on Scandinavian and other non-ascii character sets.
+
+- Fix potentially serious bug in registry handing of 
+  uncited items, that could result in incomplete 
+  registration of internal item data.
+
+
+==========================
 Changes in version 1.0.142
 ==========================
 

@@ -528,7 +528,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 };
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters, use_prefix, txt_esc;
-	txt_esc = CSL.Output.Formats[this.state.opt.mode].text_escape;
+	txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
 	blobs = myblobs.slice();
 	ret = [];
 	if (blobs.length === 0) {
@@ -655,7 +655,7 @@ CSL.Output.Queue.prototype.clearlevel = function () {
 };
 CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 	var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params, txt_esc;
-	txt_esc = CSL.Output.Formats[this.state.opt.mode].text_escape;
+	txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
 	if (!delim) {
 		delim = "";
 	}
@@ -1621,7 +1621,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.142";
+	this.processor_version = "1.0.143";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7502,7 +7502,7 @@ CSL.Util.substituteEnd = function (state, target) {
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
-			var text_esc = CSL.Output.Formats[state.opt.mode].text_escape;
+			var text_esc = CSL.getSafeEscape(state.opt.mode, state.tmp.area);
 			var printing = !state.tmp.suppress_decorations;
 			if (printing) {
 				if (!state.tmp.rendered_name) {
@@ -7882,6 +7882,7 @@ CSL.Util.FlipFlopper = function (state) {
 	this.okReverseHash = hashes[4];
 };
 CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
+	this.txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
 	if (!blob) {
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Blob();
@@ -7988,7 +7989,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
 		strs[pos] = strs[pos].replace("'", "\u2019");
-		strs[pos] = CSL.Output.Formats[this.state.opt.mode].text_escape(strs[pos]);
+		strs[pos] = this.txt_esc(strs[pos]);
 	}
 	return strs;
 };
@@ -8100,6 +8101,13 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function (blob, fun) {
 	return newdecor;
 };
 CSL.Output.Formatters = {};
+CSL.getSafeEscape = function(outputModeOpt, outputArea) {
+	if (["bibliography", "citation"].indexOf(outputArea) > -1) {
+		return CSL.Output.Formats[outputModeOpt].text_escape;
+	} else {
+		return function (txt) { return txt; };
+	}
+};
 CSL.Output.Formatters.strip_periods = function (state, string) {
     return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
 };
@@ -8451,9 +8459,9 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 		this.mylist = myitems.concat(this.uncited);
 	}
 	this.myhash = {};
-	len = myitems.length;
+	len = this.mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		this.myhash[myitems[pos]] = true;
+		this.myhash[this.mylist[pos]] = true;
 	}
 	this.refreshes = {};
 	this.touched = {};
