@@ -111,6 +111,19 @@ CSL.Output.Formats.prototype.html = {
 	//	return "<div class=\"csl-bib-body\">\n"+str+"</div>";
 	//},
 	"@bibliography/entry": function (state, str) {
+		// Test for this.item_id to add decorations to
+		// bibliography output of individual entries.
+		//
+		// Full item content can be obtained from
+		// state.registry.registry[id].ref, using
+		// CSL variable keys.
+		//
+		// Example:
+		//
+		//   print(state.registry.registry[this.item_id].ref["title"]);
+		//
+		// At present, for parallel citations, only the
+		// id of the master item is supplied on this.item_id.
 		return "  <div class=\"csl-entry\">" + str + "</div>\n";
 	},
 	"@display/block": function (state, str) {

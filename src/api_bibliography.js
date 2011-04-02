@@ -236,6 +236,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 		bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
 
 		this.output.startTag("bib_entry", bib_entry);
+		this.output.current.value().item_id = item.id;
 
 		// The needs fixing.  Parallel cite should be generated
 		// by arrival of either a master or a sibling, with the
