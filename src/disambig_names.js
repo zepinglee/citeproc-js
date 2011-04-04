@@ -84,6 +84,11 @@ CSL.Registry.NameReg = function (state) {
 	};
 
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
+		if (state.tmp.area === "bibliography"
+			&& !form
+			&& "string" !== typeof initials) {
+			  return 2;
+		}
 		var pos, len, items, param;
 		var nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
 		set_keys(this.state, "" + item_id, nameobj);
