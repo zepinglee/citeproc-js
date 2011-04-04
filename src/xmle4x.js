@@ -235,7 +235,7 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 	for each (node in myxml..names) {
 		//print("names");
 		if ("xml" == typeof node && node.elements("name").length() > 0) {
-			if (!node.institution.toString()) {
+			if (!node.institution.toXMLString()) {
 				//print("adding node");
 				institution_long = <institution
 					institution-parts="long"
