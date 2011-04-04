@@ -248,6 +248,7 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 						node.institution.@[attr] = node.name.@[attr].toString();
 					}
 				}
+				node.institution.@delimiter = node.name.@delimiter.toString();
 				if (node.name.@and.toString()) {
 					institution_long.@and = "text";
 				}
