@@ -87,6 +87,11 @@ CSL.Util.FlipFlopper = function (state) {
 			entry.push(["inner", "true"]);
 		}
 		entry.push(true);
+		if ("-" === p) {
+			entry.push(state.getTerm(("close-inner-quote")));
+		} else {
+			entry.push(state.getTerm(("close-quote")));
+		}
 		tagdefs.push(entry);
 	}
 	allTags = function (tagdefs) {
@@ -278,7 +283,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		sep = strs[badTagPos];
 		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
 			params = this.openToDecorations[sep];
-			sep = this.state.fun.decorate[params[0]][params[1]](this.state);
+			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
 		}
 		resplice = strs[(badTagPos - 1)] + sep + strs[(badTagPos + 1)];
 		head.push(resplice);
