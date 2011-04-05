@@ -50,10 +50,16 @@
 citation
 <<===== MODE =====<<
 
+The space preceding the colon in the result below is a half-width
+non-breaking space.
+
+See http://en.wikipedia.org/wiki/Space_(punctuation)#Breaking_and_non-breaking_spaces
+and http://forums.zotero.org/discussion/4933/localized-quotes/#Comment_88384
+for details.
 
 
 >>===== RESULT =====>>
-IMF (International Monetary Fund) (2009), “Regional economic outlook : asia and pacific. world economic and financial surveys,” Washington, DC, May. 
+IMF (International Monetary Fund) (2009), “Regional economic outlook : asia and pacific. world economic and financial surveys,” Washington, DC, May.
 <<===== RESULT =====<<
 
 
