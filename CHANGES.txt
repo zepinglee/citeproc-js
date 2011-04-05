@@ -1,6 +1,28 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.144
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Honor a fullname request in the bibliography,
+  regardless of what has happened with name
+  disambiguation settings in citations.
+
+- Fix bugs producing "sep is not defined" and 
+  "state.fun.decorate [params[0]][params[1]] is not a function"
+  errors.
+
+- Fix institution delimiter bug.
+
+- Adjust punctuation to satisfy French orthographic
+  rules.
+
+
+==========================
 Changes in version 1.0.143
 ==========================
 
