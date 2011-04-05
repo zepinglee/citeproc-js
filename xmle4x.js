@@ -181,7 +181,7 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
 	for each (node in myxml..names) {
 		if ("xml" == typeof node && node.elements("name").length() > 0) {
-			if (!node.institution.toString()) {
+			if (!node.institution.toXMLString()) {
 				institution_long = <institution
 					institution-parts="long"
 					substitute-use-first="1"
@@ -193,6 +193,7 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 						node.institution.@[attr] = node.name.@[attr].toString();
 					}
 				}
+				node.institution.@delimiter = node.name.@delimiter.toString();
 				if (node.name.@and.toString()) {
 					institution_long.@and = "text";
 				}
