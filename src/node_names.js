@@ -64,10 +64,15 @@ CSL.Node.names = {
 				state.parallel.StartVariable("names");
 				if (state.tmp.value.length === 0) {
 					namesets = [];
+
+					// Variable
+					// We're going to need another style type to cover
+					// in-text notes, to avoid this truncation.
 					len = this.variables.length;
-					if (len && state.opt.xclass === "in-text") {
+					if (len && state.opt.xclass === "in-text" && state.tmp.area === 'citation') {
 						len = 1;
 					}
+
 					for (pos = 0; pos < len; pos += 1) {
 						variable = this.variables[pos];
 						//SNIP-START
@@ -118,9 +123,11 @@ CSL.Node.names = {
 								//
 								// Force all institutional names to literal.
 								//
-								if (name.literal || (name.family && !name.given)) {
+								if (name.literal 
+									|| (!name.given && name.family && name.isInstitution)) {
 									//print("NAME LITERAL");
 									// org
+
 									nameset.variable = variable;
 									nameset.species = "org";
 									if (name.literal) {
@@ -135,7 +142,11 @@ CSL.Node.names = {
 									}
 									lllen = lllst.length;
 									for (pppos = 0; pppos < lllen; pppos += 1) {
-										name = {literal: lllst[pppos], family:'', given:''};
+										name = {
+											literal: lllst[pppos],
+											family:'',
+											given:''
+										};
 										nameset.names.push(name);
 									}
 									tnamesets.push(nameset);
@@ -309,10 +320,12 @@ CSL.Node.names = {
 				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, obj, et_al_pers, et_al_org, and_pers, and_org, with_term, chk, apply_ellipsis;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
-				if (common_term) {
+
+				if (common_term && state.getTerm(common_term, "long", 0)) {
 					namesets = state.tmp.value.slice(0, 1);
 				} else {
 					namesets = state.tmp.value;
+					common_term = false;
 				}
 				//
 				// Normalize names for which it is requested
@@ -561,6 +574,8 @@ CSL.Node.names = {
 				// open for term join, for any and all names.
 				state.output.openLevel("term-join");
 
+				var set_nameset_delimiter = false;
+
 				len = namesets.length;
 				//SNIP-START
 				if (debug) {
@@ -568,6 +583,7 @@ CSL.Node.names = {
 				}
 				//SNIP-END
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
+
 
 					nameset = namesets[namesetIndex];
 					//
@@ -581,6 +597,12 @@ CSL.Node.names = {
 							termname = nameset.variable;
 						}
 						label = CSL.evaluateLabel(labelnode, state, Item, item, termname, nameset.variable);
+					}
+
+					if (namesetIndex > 0 && nameset.variable !== last_variable) {
+					//if (namesetIndex > 0) {
+						state.output.closeLevel("term-join");
+						state.output.openLevel("term-join");
 					}
 
 					if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
@@ -847,23 +869,6 @@ CSL.Node.names = {
 					//   pers_org_end (finalizes pers-org join)
 					//
 
-
-					if (namesetIndex > 0 && nameset.variable !== last_variable) {
-						//SNIP-START
-						if (debug) {
-							CSL.debug("-- blink 'term-join'");
-						}
-						//SNIP-END
-						state.output.closeLevel("term-join");
-					}
-					if (namesetIndex > 0 && nameset.variable !== last_variable) {
-						state.output.openLevel("term-join");
-					}
-
-					//if (nameset.free_agent_start) {
-					//	state.output.openLevel("with-join");
-					//}
-
 					if (nameset.trailers3_start) {
 						state.output.openLevel("trailing-names", state.tmp.cut_var);
 					}
@@ -873,8 +878,6 @@ CSL.Node.names = {
 							CSL.debug("-- reached 'after_people'");
 						}
 						//SNIP-END
-						//state.output.openLevel("with-group");
-						//state.output.append("with", "with");
 						state.output.append(with_term, "with");
 					}
 
@@ -980,22 +983,9 @@ CSL.Node.names = {
 						}
 					}
 
-					//if (nameset.pers_org_end) {
-					//	if (debug) {
-					//		CSL.debug("-- reached 'pers_org_end'");
-					//	}
-					//	//state.output.closeLevel("inner");
-					//}
-
-					//if (nameset.free_agent_end) {
-					//	state.output.closeLevel("with-group");
-					//}
 					if (nameset.trailers3_end) {
 						state.output.closeLevel("trailing-names");
 					}
-					//if (nameset.free_agent_end) {
-					//	state.output.closeLevel("with-join");
-					//}
 
 					// lookahead
 					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
@@ -1005,6 +995,11 @@ CSL.Node.names = {
 					}
 
 					state.tmp.nameset_counter += 1;
+
+					set_nameset_delimiter = false;
+					if (last_variable && last_variable === nameset.variable) {
+						set_nameset_delimiter = true;
+					}
 					last_variable = nameset.variable;
 				}
 
