@@ -90,7 +90,7 @@ Roe, Big Ministry
                 "given": "Jane"
             }, 
             {
-                "family": "Big Ministry"
+                "literal": "Big Ministry"
             }
         ], 
         "type": "book"
