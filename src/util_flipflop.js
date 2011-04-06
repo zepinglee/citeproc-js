@@ -292,7 +292,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
-		strs[pos] = strs[pos].replace("'", "\u2019");
+		strs[pos] = strs[pos].replace("'", "\u2019", "g");
 		strs[pos] = this.txt_esc(strs[pos]);
 	}
 	// XXXZ FIXME (done): swap punctuation for locators
