@@ -158,7 +158,7 @@ CSL.Node.names = {
 									nameset.species = "pers";
 									nameset.names.push(name);
 									//print("Whoa: "+rawlist.length+" "+rawlist[ppos + 1].family);
-									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal || (rawlist[ppos + 1].family && !rawlist[ppos + 1].given)) {
+									if (rawlist.length === (ppos + 1) || rawlist[ppos + 1].literal || (rawlist[ppos + 1].family && !rawlist[ppos + 1].given && rawlist[ppos + 1].isInstitution)) {
 										tnamesets.push(nameset);
 										nameset = {names: []};
 									}
