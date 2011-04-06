@@ -1622,7 +1622,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.144";
+	this.processor_version = "1.0.145";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4299,7 +4299,7 @@ CSL.Node.names = {
 				if (state.tmp.value.length === 0) {
 					namesets = [];
 					len = this.variables.length;
-					if (len && state.opt.xclass === "in-text") {
+					if (len && state.opt.xclass === "in-text" && state.tmp.area === 'citation') {
 						len = 1;
 					}
 					for (pos = 0; pos < len; pos += 1) {
@@ -4320,7 +4320,8 @@ CSL.Node.names = {
 							llen = rawlist.length;
 							for (ppos = 0; ppos < llen; ppos += 1) {
 								name = rawlist[ppos];
-								if (name.literal || (name.family && !name.given)) {
+								if (name.literal 
+									|| (!name.given && name.family && name.isInstitution)) {
 									nameset.variable = variable;
 									nameset.species = "org";
 									if (name.literal) {
@@ -4335,7 +4336,11 @@ CSL.Node.names = {
 									}
 									lllen = lllst.length;
 									for (pppos = 0; pppos < lllen; pppos += 1) {
-										name = {literal: lllst[pppos], family:'', given:''};
+										name = {
+											literal: lllst[pppos],
+											family:'',
+											given:''
+										};
 										nameset.names.push(name);
 									}
 									tnamesets.push(nameset);
@@ -4448,10 +4453,11 @@ CSL.Node.names = {
 				var common_term, nameset, name, local_count, withtoken, namesetIndex, lastones, currentones, compset, display_names, suppress_min, suppress_condition, sane, discretionary_names_length, overlength, et_al, and_term, outer_and_term, use_first, append_last, delim, param, paramx, val, s, myform, myinitials, termname, form, namepart, namesets, llen, ppos, label, plural, last_variable, cutinfo, obj, et_al_pers, et_al_org, and_pers, and_org, with_term, chk, apply_ellipsis;
 				namesets = [];
 				common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
-				if (common_term) {
+				if (common_term && state.getTerm(common_term, "long", 0)) {
 					namesets = state.tmp.value.slice(0, 1);
 				} else {
 					namesets = state.tmp.value;
+					common_term = false;
 				}
 				len = namesets.length;
 				if (namesets.length && (state.tmp.area === "bibliography" || state.tmp.area === "bibliography_sort" || (state.tmp.area && state.opt.xclass === "note"))) {
@@ -4593,6 +4599,7 @@ CSL.Node.names = {
 				state.output.addToken("suffix", false, state.output.getToken("family"));
 				state.output.getToken("suffix").decorations = [];
 				state.output.openLevel("term-join");
+				var set_nameset_delimiter = false;
 				len = namesets.length;
 				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
 					nameset = namesets[namesetIndex];
@@ -4605,6 +4612,10 @@ CSL.Node.names = {
 							termname = nameset.variable;
 						}
 						label = CSL.evaluateLabel(labelnode, state, Item, item, termname, nameset.variable);
+					}
+					if (namesetIndex > 0 && nameset.variable !== last_variable) {
+						state.output.closeLevel("term-join");
+						state.output.openLevel("term-join");
 					}
 					if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
 						state.output.append(label, "label");
@@ -4767,12 +4778,6 @@ CSL.Node.names = {
 							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
 						}
 					}
-					if (namesetIndex > 0 && nameset.variable !== last_variable) {
-						state.output.closeLevel("term-join");
-					}
-					if (namesetIndex > 0 && nameset.variable !== last_variable) {
-						state.output.openLevel("term-join");
-					}
 					if (nameset.trailers3_start) {
 						state.output.openLevel("trailing-names", state.tmp.cut_var);
 					}
@@ -4835,6 +4840,10 @@ CSL.Node.names = {
 						}
 					}
 					state.tmp.nameset_counter += 1;
+					set_nameset_delimiter = false;
+					if (last_variable && last_variable === nameset.variable) {
+						set_nameset_delimiter = true;
+					}
 					last_variable = nameset.variable;
 				}
 				state.output.closeLevel("term-join");
@@ -7994,7 +8003,7 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 	}
 	len = strs.length;
 	for (pos = 0; pos < len; pos += 2) {
-		strs[pos] = strs[pos].replace("'", "\u2019");
+		strs[pos] = strs[pos].replace("'", "\u2019", "g");
 		strs[pos] = this.txt_esc(strs[pos]);
 	}
 	return strs;

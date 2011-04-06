@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.145
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Require new isInstitution toggle with lone family name
+  element to force it to render as an institution.
+
+- Do not truncate multiple variables on a name node
+  to a single variable in an in-text style unless in 
+  citation area.
+
+- Move an inter-name-variable delimiter from after a preceding 
+  name label (wrong) to before the label (correct).
+
+- Convert all apostrophes in content strings, not only the
+  first one encountered in the string.
+
+- Do not merge identical editor and translator if the
+  combined term label is empty.
+
+
+==========================
 Changes in version 1.0.144
 ==========================
 
