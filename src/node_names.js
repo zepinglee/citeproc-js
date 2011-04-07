@@ -755,6 +755,20 @@ CSL.Node.names = {
 
 					state.tmp.names_used.push({names:display_names,etal:et_al});
 
+					if (!state.tmp.suppress_decorations
+						&& state.tmp.last_names_used.length === state.tmp.names_used.length
+						&& state.tmp.area === "citation") {
+						// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+						lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+						//lastones = state.tmp.last_names_used;
+						currentones = state.tmp.names_used[state.tmp.nameset_counter];
+						//currentones = state.tmp.names_used;
+						compset = [currentones, lastones];
+						if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
+							state.tmp.same_author_as_previous_cite = true;
+						}
+					}
+
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
 						//
 						// This is fine, but the naming of the comparison
@@ -764,18 +778,10 @@ CSL.Node.names = {
 						// test fails, so we can avoid further suppression in the
 						// cite.
 						//
-						if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
-							// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-							lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-							//lastones = state.tmp.last_names_used;
-							currentones = state.tmp.names_used[state.tmp.nameset_counter];
-							//currentones = state.tmp.names_used;
-							compset = [currentones, lastones];
-							if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
-								continue;
-							} else {
-								state.tmp.have_collapsed = false;
-							}
+
+						//if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
+						if (state.tmp.same_author_as_previous_cite) {
+							continue;
 						} else {
 							state.tmp.have_collapsed = false;
 						}

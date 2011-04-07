@@ -699,7 +699,9 @@ CSL.getAmbiguousCite = function (Item, disambig) {
  */
 
 CSL.getSpliceDelimiter = function (last_collapsed, pos) {
-	if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
+	if (this.tmp.same_author_as_previous_cite && this.opt.xclass === "in-text") {
+		this.tmp.splice_delimiter = ", ";
+	} else if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
 		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
 	} else if (this.tmp.cite_locales[pos - 1]) {
 		//
@@ -945,6 +947,7 @@ CSL.getCite = function (Item, item, prevItemID) {
 };
 
 CSL.citeStart = function (Item, item) {
+	this.tmp.same_author_as_previous_cite = false;
 	this.tmp.lastchr = "";
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
