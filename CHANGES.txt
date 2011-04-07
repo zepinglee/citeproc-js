@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.147
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Debugging trace to help track down the cause of
+  "sep is undefined" error, should it persist.
+
+- Hard-code a comma between cites with the same author
+  (hack to restore previous processor behavior, pending
+  changes to CSL to permit this delimiter to be controlled
+  explicitly)
+
+
+==========================
 Changes in version 1.0.146
 ==========================
 

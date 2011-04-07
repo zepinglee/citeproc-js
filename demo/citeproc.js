@@ -1622,7 +1622,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.146";
+	this.processor_version = "1.0.147";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2857,7 +2857,9 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	return ret;
 };
 CSL.getSpliceDelimiter = function (last_collapsed, pos) {
-	if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
+	if (this.tmp.same_author_as_previous_cite && this.opt.xclass === "in-text") {
+		this.tmp.splice_delimiter = ", ";
+	} else if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
 		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
 	} else if (this.tmp.cite_locales[pos - 1]) {
 		var alt_affixes = this.tmp.cite_affixes[this.tmp.cite_locales[pos - 1]];
@@ -3047,6 +3049,7 @@ CSL.getCite = function (Item, item, prevItemID) {
 	return "" + Item.id;
 };
 CSL.citeStart = function (Item, item) {
+	this.tmp.same_author_as_previous_cite = false;
 	this.tmp.lastchr = "";
 	this.tmp.have_collapsed = true;
 	this.tmp.render_seen = false;
@@ -4721,16 +4724,19 @@ CSL.Node.names = {
 					state.tmp.disambig_settings.names[state.tmp.nameset_counter] = display_names.length;
 					local_count += display_names.length;
 					state.tmp.names_used.push({names:display_names,etal:et_al});
+					if (!state.tmp.suppress_decorations
+						&& state.tmp.last_names_used.length === state.tmp.names_used.length
+						&& state.tmp.area === "citation") {
+						lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+						currentones = state.tmp.names_used[state.tmp.nameset_counter];
+						compset = [currentones, lastones];
+						if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
+							state.tmp.same_author_as_previous_cite = true;
+						}
+					}
 					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
-						if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
-							lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-							currentones = state.tmp.names_used[state.tmp.nameset_counter];
-							compset = [currentones, lastones];
-							if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
-								continue;
-							} else {
-								state.tmp.have_collapsed = false;
-							}
+						if (state.tmp.same_author_as_previous_cite) {
+							continue;
 						} else {
 							state.tmp.have_collapsed = false;
 						}
@@ -7993,9 +7999,11 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		head = strs.slice(0, (badTagPos - 1));
 		tail = strs.slice((badTagPos + 2));
 		sep = strs[badTagPos];
+		CSL.debug("sep [1] is: ("+sep+") for badTagPos: ("+badTagPos+") in strs ("+strs+")");
 		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
 			params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
+			CSL.debug("sep [2] is: ("+sep+") from params[0] ("+params[0]+") and params[1][0] ("+params[1][0]+") -- params is ("+params+")");
 		}
 		resplice = strs[(badTagPos - 1)] + sep + strs[(badTagPos + 1)];
 		head.push(resplice);
