@@ -124,7 +124,11 @@ CSL.Output.Formats.prototype.html = {
 		//
 		// At present, for parallel citations, only the
 		// id of the master item is supplied on this.item_id.
-		return "  <div class=\"csl-entry\">" + str + "</div>\n";
+		var insert = "";
+		if (state.sys.embedBibliographyEntry) {
+			insert = state.sys.embedBibliographyEntry(this.item_id) + "\n";
+		}
+		return "  <div class=\"csl-entry\">" + str + "</div>\n" + insert;
 	},
 	"@display/block": function (state, str) {
 		return "\n\n    <div class=\"csl-block\">" + str + "</div>\n";
