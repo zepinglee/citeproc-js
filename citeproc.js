@@ -1622,7 +1622,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.147";
+	this.processor_version = "1.0.148";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3567,7 +3567,7 @@ CSL.Node["date-part"] = {
 						number.range_prefix = "-";
 					}
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
-						number.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
+						number.successor_prefix = state[state.tmp.area].opt["year-suffix-delimiter"];
 					}
 					state.output.append(number, "literal");
 				}
@@ -4235,11 +4235,6 @@ CSL.Node.name = {
 				if (item.position) {
 					if (! state.tmp["et-al-min"]) {
 						if (this.strings["et-al-subsequent-min"]) {
-							if (state.registry.registry[Item.id]
-								&& !state.registry.registry[Item.id].have_seen_subsequent) {
-								state.registry.registry[Item.id].have_seen_subsequent = true;
-								state.tmp.disambig_request = false;
-							}
 							state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
 						} else {
 							state.tmp["et-al-min"] = this.strings["et-al-min"];
@@ -4247,11 +4242,6 @@ CSL.Node.name = {
 					}
 					if (! state.tmp["et-al-use-first"]) {
 						if (this.strings["et-al-subsequent-use-first"]) {
-							if (state.registry.registry[Item.id]
-								&& !state.registry.registry[Item.id].have_seen_subsequent) {
-								state.registry.registry[Item.id].have_seen_subsequent = true;
-								state.tmp.disambig_request = false;
-							}
 							state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
 						} else {
 							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
@@ -8311,7 +8301,11 @@ CSL.Output.Formats.prototype.html = {
 	},
 	"@quotes/false": false,
 	"@bibliography/entry": function (state, str) {
-		return "  <div class=\"csl-entry\">" + str + "</div>\n";
+		var insert = "";
+		if (state.sys.embedBibliographyEntry) {
+			insert = state.sys.embedBibliographyEntry(this.item_id) + "\n";
+		}
+		return "  <div class=\"csl-entry\">" + str + "</div>\n" + insert;
 	},
 	"@display/block": function (state, str) {
 		return "\n\n    <div class=\"csl-block\">" + str + "</div>\n";

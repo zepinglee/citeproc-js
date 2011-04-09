@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.148
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in the application of an explicit 
+  year-suffix collapse delimiter to an implicit 
+  year-suffix.
+
+- Eliminate a couple of redundant code blocks that 
+  would have triggered unnecessary disambiguation operations.
+
+- Provide a skeleton function for embedding bibliographic data
+  adjacent to rendered bibliography entries.
+
+
+==========================
 Changes in version 1.0.147
 ==========================
 
