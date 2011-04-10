@@ -47,6 +47,8 @@
  */
 
 CSL.NameOutput.prototype.divideNames = function (Item, variables) {
+	var Item = this.Item;
+	var variables = this.variables;
 	this.varnames = variables.slice();
 	this.freeters = {};
 	this.persons = {};
@@ -54,8 +56,8 @@ CSL.NameOutput.prototype.divideNames = function (Item, variables) {
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var variable = variables[i];
 		var values = this._normalizeVariableValue(Item, variable);
-		getFreeters(variable, values);
-		getPersonsAndInstitutions(variable, values);
+		this._getFreeters(variable, values);
+		this._getPersonsAndInstitutions(variable, values);
 	}
 };
 
@@ -68,7 +70,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 };
 
 CSL.NameOutput.prototype._getFreeters = function (variable, values) {
-	this._markCutVariable(variable, values);
+	this._markCutVariableAndCut(variable, values);
 	this.freeters[variable] = [];
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
@@ -96,7 +98,7 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values
 			institution = values[i];
 		}
 	}
-	if (institution} {
+	if (institution) {
 		this._markCutVariableAndCut(variable, persons);
 		this.persons.push(persons);
 		this.institutions.push(institution);
@@ -106,24 +108,24 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values
 CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
 	// See util_namestruncate.js for code that uses this cut variable.
 	if (values.length
-		&& (state.tmp.area === "bibliography" 
-			|| state.tmp.area === "bibliography_sort" 
-			|| (state.tmp.area && state.opt.xclass === "note"))) {
+		&& (this.state.tmp.area === "bibliography" 
+			|| this.state.tmp.area === "bibliography_sort" 
+			|| (this.state.tmp.area && this.state.opt.xclass === "note"))) {
 	
-		if (!state.tmp.cut_var
+		if (!this.state.tmp.cut_var
 			&& this.name["et-al-min"] === 1 
 			&& this.name["et-al-use-first"] === 1) {
 			
-			state.tmp.cut_var = namesets[0].variable;
+			this.state.tmp.cut_var = namesets[0].variable;
 		}
 
 		// Slice off subsequent namesets in the initial name
 		// rendered, when the same name is rendered a second time.
 		// Useful for robust per-author listings.
-		if (state.tmp.cut_var && cutinfo.used === state.tmp.cut_var) {
-			var ilen = cutinfo.variable[state.tmp.cut_var].length - 1;
+		if (this.state.tmp.cut_var && cutinfo.used === this.state.tmp.cut_var) {
+			var ilen = cutinfo.variable[this.state.tmp.cut_var].length - 1;
 			for (var i = ilen; i > -1; i += -1) {
-				obj = cutinfo.variable[state.tmp.cut_var][i];
+				obj = cutinfo.variable[this.state.tmp.cut_var][i];
 				obj[0].blobs = obj[0].blobs.slice(0, obj[1]).concat(obj[0].blobs.slice(obj[1] + 1));
 			}
 		}

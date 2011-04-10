@@ -77,194 +77,9 @@ CSL.Node.names = {
 		};
 		
 		if (this.tokentype === CSL.END) {
-			// init names
-			func = function (state, Item) {
-				state.output.startTag("names", "empty");
-				state.tmp.name_node = state.output.current.value();
-			};
-			this.execs.push(func);
-			
-			// handle names
 			func = function (state, Item, item) {
-
-				// Confusion starts from here ...
-
-
-
-				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
-
-
-					nameset = namesets[namesetIndex];
-					//
-					// configure label if poss
-					label = false;
-					var labelnode = state.output.getToken("label");
-					if (state.output.getToken("label").strings.label_position) {
-						if (common_term) {
-							termname = common_term;
-						} else {
-							termname = nameset.variable;
-						}
-						label = CSL.evaluateLabel(labelnode, state, Item, item, termname, nameset.variable);
-					}
-
-
-					// ZZZZZ Need to include labels, from namesout.js
-					if (label && state.output.getToken("label").strings.label_position === CSL.BEFORE) {
-						state.output.append(label, "label");
-					}
-
-					if (!state.tmp.disambig_request) {
-						state.tmp.disambig_settings.givens[state.tmp.nameset_counter] = [];
-					}
-
-					display_names = nameset.names.slice();
-
-					if ("pers" === nameset.species) {
-						//
-						// the names constraint (experimental)
-						//
-						suppress_min = state.output.getToken("name").strings["suppress-min"];
-
-					} else {
-					}
-					state.tmp.disambig_settings.names[state.tmp.nameset_counter] = display_names.length;
-					local_count += display_names.length;
-
-					state.tmp.names_used.push({names:display_names,etal:et_al});
-
-					if (!state.tmp.suppress_decorations
-						&& state.tmp.last_names_used.length === state.tmp.names_used.length
-						&& state.tmp.area === "citation") {
-						// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-						lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-						//lastones = state.tmp.last_names_used;
-						currentones = state.tmp.names_used[state.tmp.nameset_counter];
-						//currentones = state.tmp.names_used;
-						compset = [currentones, lastones];
-						if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
-							state.tmp.same_author_as_previous_cite = true;
-						}
-					}
-
-					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
-						//
-						// This is fine, but the naming of the comparison
-						// function is confusing.  This is just checking whether the
-						// current name is the same as the last name rendered
-						// in the last cite, and it works.  Set a toggle if the
-						// test fails, so we can avoid further suppression in the
-						// cite.
-						//
-
-						//if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
-						if (state.tmp.same_author_as_previous_cite) {
-							continue;
-						} else {
-							state.tmp.have_collapsed = false;
-						}
-					} else {
-						state.tmp.have_collapsed = false;
-					}
-
-					//
-					// "name" is the format for the outermost nesting of a nameset
-					// "inner" is a format consisting only of a delimiter, used for
-					// joining all but the last name in the set together.
-
-					//SNIP-START
-					if (debug) {
-						CSL.debug("nameset.names.length[1]: " + nameset.names.length);
-					}
-					//SNIP-END
-					// DON'T DO THIS IF NO NAMES IN SUBSEQUENT FORM
-					llen = nameset.names.length;
-					for (ppos = 0; ppos < llen; ppos += 1) {
-						//
-						// register the name in the global names disambiguation
-						// registry
-						state.registry.namereg.addname("" + Item.id, nameset.names[ppos], ppos);
-						chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter];
-						if ("undefined" === typeof chk) {
-							state.tmp.disambig_settings.givens.push([]);
-						}
-						chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos];
-						if ("undefined" === typeof chk) {
-							myform = state.output.getToken("name").strings.form;
-							myinitials = this.strings["initialize-with"];
-							param = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
-							state.tmp.disambig_settings.givens[state.tmp.nameset_counter].push(param);
-						}
-						//
-						// set the display mode default for givennames if required
-						myform = state.output.getToken("name").strings.form;
-						myinitials = this.strings["initialize-with"];
-						paramx = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
-						if (state.tmp.sort_key_flag) {
-							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = 2;
-							param = 2;
-						} else if (state.tmp.disambig_request) {
-							//
-							// fix a request for initials that makes no sense.
-							// can't do this in disambig, because the availability
-							// of initials is not a global parameter.
-							val = state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos];
-							// This is limited to by-cite disambiguation.
-							if (val === 1 && 
-								state.opt["givenname-disambiguation-rule"] === "by-cite" && 
-								"undefined" === typeof this.strings["initialize-with"]) {
-								val = 2;
-							}
-							param = val;
-//							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
-							if (state.opt["disambiguate-add-givenname"]) {
-								param = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, param, state.output.getToken("name").strings.form, this.strings["initialize-with"]);
-							}
-						} else {
-							//
-							// it clicks.  here is where we will put the
-							// call to the names register, to get the floor value
-							// for an individual name.
-							//
-							param = paramx;
-						}
-						// Need to save off the settings based on subsequent
-						// form, when first cites are rendered.  Otherwise you
-						// get full form names everywhere.
-						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
-							param = paramx;
-						}
-						if (!state.tmp.sort_key_flag) {
-							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
-						}
-					}
-
-					// lookahead
-					if (namesets.length === namesetIndex + 1 || namesets[namesetIndex + 1].variable !== namesets[namesetIndex].variable) {
-						if (label && state.output.getToken("label").strings.label_position !== CSL.BEFORE) {
-							state.output.append(label, "label");
-						}
-					}
-
-					state.tmp.nameset_counter += 1;
-
-					set_nameset_delimiter = false;
-					if (last_variable && last_variable === nameset.variable) {
-						set_nameset_delimiter = true;
-					}
-					last_variable = nameset.variable;
-				}
-
-				state.output.closeLevel("term-join");
-
-				if (state.output.getToken("name").strings.form === "count") {
-					state.output.clearlevel();
-					state.output.append(local_count.toString());
-					state.tmp["et-al-min"] = false;
-					state.tmp["et-al-use-first"] = false;
-				}
+				state.nameOutput.outputNames();
 			};
-			// handle names
 			this.execs.push(func);
 		}
 
@@ -274,36 +89,13 @@ CSL.Node.names = {
 				if (!state.tmp.can_substitute.pop()) {
 					state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}
-				CSL.Util.Names.reinit(state, Item);
-				// names
-				//SNIP-START
-				if (debug) {
-					CSL.debug("## endTag: names");
-				}
-				//SNIP-END
 				state.output.endTag();
 
 				state.parallel.CloseVariable("names");
 
-				state.tmp["has-institution"] = false;
-				state.tmp["has-first-person"] = false;
-
-				state.tmp["et-al-min"] = false;
-				state.tmp["et-al-use-first"] = false;
-				if (!state.tmp["et-al-use-last"]) {
-					state.tmp["et-al-use-last"] = false;
-				}
-				state.tmp.use_ellipsis = false;
-
 				state.tmp.can_block_substitute = false;
-				
-				state.tmp.forceEtAl = false;
-
 			};
 			this.execs.push(func);
-
-			state.build.name_flag = false;
-
 		}
 		target.push(this);
 
