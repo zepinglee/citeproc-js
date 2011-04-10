@@ -64,7 +64,7 @@ CSL.NameOutput = function(token, state, Item, item, variables) {
 		for (var j = 0, jlen = this.institutions; j < jlen; j += 1) {
 			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
 		}
-		var varblob = this.join([this.freeters[variable], affiliates]);
+		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], affiliates]);
 		blob_list.push(varblob);
 	}
 	for (var i = 1, ilen = blob_list.length - 1; i < ilen; i += 1) {
