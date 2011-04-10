@@ -49,6 +49,7 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 	}
 	// Eliminate false and empty blobs
 	for (var i = blobs.length - 1; i > -1; i += -1) {
+		print("CCC: "+blobs[i].length)
 		if (!blobs[i] || !blobs[i].blobs.length) {
 			blobs = blobs.slice(0, i).concat(blobs.slice(i + 1));
 		}
@@ -70,10 +71,10 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 			blobs = blobs.slice(0, -1).push(multiple).concat(blobs.slice(-1))
 		}
 	}
-	this.state.output.openLevel();
+	this.state.output.openLevel("empty");
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
 		this.state.output.append(blobs[i]);
 	}
-	this.state.output.closeLevel();
+	this.state.output.closeLevel("empty");
 	return this.state.output.current.pop();
 };
