@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
+ * Reserved.
+ *
+ * The contents of this file are subject to the Common Public
+ * Attribution License Version 1.0 (the “License”); you may not use
+ * this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ *
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./std subdirectory of the distribution archive.
+ *
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ *
+ * The Initial Developer of the Original Code is Frank G. Bennett,
+ * Jr. All portions of the code written by Frank G. Bennett, Jr. are
+ * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ *
+ * Alternatively, the contents of this file may be used under the
+ * terms of the GNU Affero General Public License (the [AGPLv3]
+ * License), in which case the provisions of [AGPLv3] License are
+ * applicable instead of those above. If you wish to allow use of your
+ * version of this file only under the terms of the [AGPLv3] License
+ * and not to allow others to use your version of this file under the
+ * CPAL, indicate your decision by deleting the provisions above and
+ * replace them with the notice and other provisions required by the
+ * [AGPLv3] License. If you do not delete the provisions above, a
+ * recipient may use your version of this file under either the CPAL
+ * or the [AGPLv3] License.”
+ */
+
+CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
+	for (var variable in this.institutions) {
+		this._truncateNameList(this.freeters, variable);
+		this._truncateNameList(this.persons, variable);
+	}
+};
+
+CSL.NameOutput.prototype._truncateNameList = function (container, variable) {
+	if (this.state.opt.max_number_of_names 
+		&& container[variable].length > 50 
+		&& container[variable].length > (this.state.opt.max_number_of_names + 2)) {
+		
+		container[variable] = container[variable].slice(0, this.state.opt.max_number_of_names + 2);
+	}
+	// This will not be robust against multiple name variables on a single node
+	if (state.tmp.cut_var === variable) {
+		var cutinfo = state.tmp.names_cut;
+		container[variable] = container[variable].slice(cutinfo.counts[state.tmp.cut_var]);
+	}
+}
