@@ -519,7 +519,6 @@ if (!CSL.Node) {
     load("./src/util_names_config.js");
     load("./src/util_names_etal.js");
 
-
 	// jslint OK
     load("./src/node_name.js");
 	// jslint OK

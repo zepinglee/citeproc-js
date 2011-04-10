@@ -1,3 +1,7 @@
+CSL.NameOutput.prototype.getLabel = function (variable) {
+	//
+};
+/*
 					//
 					// configure label if poss
 					label = false;
@@ -17,3 +21,4 @@
 						state.output.append(label, "label");
 					}
 
+*/
