@@ -55,6 +55,7 @@ CSL.NameOutput = function(state, Item, item, variables) {
 };
 
 CSL.NameOutput.prototype.outputNames = function () {
+	var variables = this.variables;
 	print("(2)");
 	this.getConfigs();
 	print("(3)");
@@ -68,24 +69,31 @@ CSL.NameOutput.prototype.outputNames = function () {
 	print("(7)");
 	this.setCommonTerm();
 	print("(8)");
-	this.renderFreetersAndPersonalNameLists();
+	this.renderFreetersAndPersonalNames();
+	print("(9)");
 	this.renderInstitutionNames();
+	print("(10)");
 	var blob_list = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var variable = variables[i];
-		var persons_and_institutions = [];
-		for (var j = 0, jlen = this.institutions; j < jlen; j += 1) {
+		var affiliates = false;
+		for (var j = 0, jlen = this.institutions.length; j < jlen; j += 1) {
 			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
 		}
 		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], affiliates]);
 		blob_list.push(varblob);
 	}
+	print("(11)");
 	for (var i = 1, ilen = blob_list.length - 1; i < ilen; i += 1) {
 		blob_list[i].strings.prefix = this.names.strings.delimiter + blob_list[i].strings.prefix;
 	}
-	this.state.output.openLevel();
+	print("(12)");
+	this.state.output.openLevel("empty");
+	print("(13)");
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
-		this.state.output.append(blob_list[i]);
+		//this.state.output.append(blob_list[i]);
 	}
-	this.state.output.closeLevel();
+	print("(14)");
+	this.state.output.closeLevel("empty");
+	print("(15)");
 };

@@ -51,6 +51,7 @@ CSL.Node.institution = {
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
 			var func = function (state, Item) {
 				state.output.addToken("institution", false, this);
+				state.nameOutput.institution = this;
 			};
 			this.execs.push(func);
 		}

@@ -89,8 +89,7 @@ CSL.Node.names = {
 				if (!state.tmp.can_substitute.pop()) {
 					state.tmp.can_substitute.replace(false, CSL.LITERAL);
 				}
-				state.output.endTag();
-
+				
 				state.parallel.CloseVariable("names");
 
 				state.tmp.can_block_substitute = false;
