@@ -49,20 +49,30 @@
 CSL.NameOutput = function(token, state, Item, item, variables) {
 	this.state = state;
 
-	this.getEtAlConfig(item);
+	this.getConfigs(item);
 	this.divideNames(Item, variables);
 	this.truncatePersonalNameLists();
 	this.constrainNames();
 	this.setElAlParameters();
-	this.setCommonTerm();
+	this.setCommonTerm(variables);
 	this.renderFreetersAndPersonalNameLists();
 	this.renderInstitutionNames();
 	var blob_list = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var variable = variables[i];
+		var persons_and_institutions = [];
 		for (var j = 0, jlen = this.institutions; j < jlen; j += 1) {
-			var twoblobs = [this.persons[j], this.institutions[j]];
-			var blob_unit = this.joinNames(twoblobs, this.)
+			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
 		}
+		var varblob = this.join([this.freeters[variable], affiliates]);
+		blob_list.push(varblob);
 	}
-}
+	for (var i = 1, ilen = blob_list.length - 1; i < ilen; i += 1) {
+		blob_list[i].strings.prefix = this.names.strings.delimiter + blob_list[i].strings.prefix;
+	}
+	this.state.output.openLevel();
+	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
+		this.state.output.append(blob_list[i]);
+	}
+	this.state.output.closeLevel();
+};

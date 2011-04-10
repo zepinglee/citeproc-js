@@ -12,12 +12,6 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, variable, index) {
 };
 
 
-CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
-	//
-	return this._join(blobs, this.name.delimiter);
-};
-
-
 CSL.NameOutput.prototype.joinPersonsAndInstitutions = function (blobs) {
 	//
 	return this._join(blobs, this.name.delimiter);

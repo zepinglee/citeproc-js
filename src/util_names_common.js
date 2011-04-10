@@ -1,5 +1,5 @@
-CSL.NameOutput.prototype.setCommonTerm = function () {
-	var varnames = this.varnames.slice();
+CSL.NameOutput.prototype.setCommonTerm = function (variables) {
+	var varnames = variables.slice();
 	varnames.sort();
 	this.common_term = varnames.join("");
 	if (!state.locale[state.opt.lang].terms[this.common_term]
@@ -11,6 +11,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 	var count = 0;
 	var other_namesets = [];
 	for (var variable in this.varnames) {
+		// Nameset is all out of order, but that doesn't matter in this context.
 		var nameset = this.freeters[variable].concat(this.persons[variable]).concat(this.institutions[variable]);
 		if (count === 0) {
 			var base_nameset = nameset;
