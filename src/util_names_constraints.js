@@ -1,9 +1,15 @@
 // What on earth does this need to do?
+
+CSL.NameOutput.prototype.constrainNames = function () {
+	//
+};
+
+/*
 	var section = ["persons", "institutions", "freeters"];
 	this.nameConstraint = {
 		persons: [],
 		institutions: 0,
-		freeters = 0
+		freeters: 0
 	};
 	for (var i = 0, ilen = 3; i < ilen; i += 1) {
 		if ("persons" === section[i]) {
@@ -14,7 +20,7 @@
 			this.nameConstraint[section[i]] = this._getNameConstraint(this[section]);
 		}
 	}
-
+*/
 
 /*
 						// set the number of names to be _intended_ for rendering,
@@ -149,5 +155,132 @@
 								}
 							}
 						}
+
+ */
+
+
+// More on personal names, I think
+// Who knows?
+/*
+					state.tmp.disambig_settings.names[state.tmp.nameset_counter] = display_names.length;
+					local_count += display_names.length;
+
+					state.tmp.names_used.push({names:display_names,etal:et_al});
+
+					if (!state.tmp.suppress_decorations
+						&& state.tmp.last_names_used.length === state.tmp.names_used.length
+						&& state.tmp.area === "citation") {
+						// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+						lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+						//lastones = state.tmp.last_names_used;
+						currentones = state.tmp.names_used[state.tmp.nameset_counter];
+						//currentones = state.tmp.names_used;
+						compset = [currentones, lastones];
+						if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
+							state.tmp.same_author_as_previous_cite = true;
+						}
+					}
+
+					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
+						//
+						// This is fine, but the naming of the comparison
+						// function is confusing.  This is just checking whether the
+						// current name is the same as the last name rendered
+						// in the last cite, and it works.  Set a toggle if the
+						// test fails, so we can avoid further suppression in the
+						// cite.
+						//
+
+						//if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
+						if (state.tmp.same_author_as_previous_cite) {
+							continue;
+						} else {
+							state.tmp.have_collapsed = false;
+						}
+					} else {
+						state.tmp.have_collapsed = false;
+					}
+
+					//
+					// "name" is the format for the outermost nesting of a nameset
+					// "inner" is a format consisting only of a delimiter, used for
+					// joining all but the last name in the set together.
+
+
+ */
+
+// Stuff about disambiguation ...
+/*
+					llen = nameset.names.length;
+					for (ppos = 0; ppos < llen; ppos += 1) {
+						//
+						// register the name in the global names disambiguation
+						// registry
+						state.registry.namereg.addname("" + Item.id, nameset.names[ppos], ppos);
+						chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter];
+						if ("undefined" === typeof chk) {
+							state.tmp.disambig_settings.givens.push([]);
+						}
+						chk = state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos];
+						if ("undefined" === typeof chk) {
+							myform = state.output.getToken("name").strings.form;
+							myinitials = this.strings["initialize-with"];
+							param = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
+							state.tmp.disambig_settings.givens[state.tmp.nameset_counter].push(param);
+						}
+						//
+						// set the display mode default for givennames if required
+						myform = state.output.getToken("name").strings.form;
+						myinitials = this.strings["initialize-with"];
+						paramx = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, 0, myform, myinitials);
+						if (state.tmp.sort_key_flag) {
+							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = 2;
+							param = 2;
+						} else if (state.tmp.disambig_request) {
+							//
+							// fix a request for initials that makes no sense.
+							// can't do this in disambig, because the availability
+							// of initials is not a global parameter.
+							val = state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos];
+							// This is limited to by-cite disambiguation.
+							if (val === 1 && 
+								state.opt["givenname-disambiguation-rule"] === "by-cite" && 
+								"undefined" === typeof this.strings["initialize-with"]) {
+								val = 2;
+							}
+							param = val;
+//							if (state[state.tmp.area].opt["disambiguate-add-givenname"] && state[state.tmp.area].opt["givenname-disambiguation-rule"] != "by-cite"){
+							if (state.opt["disambiguate-add-givenname"]) {
+								param = state.registry.namereg.evalname("" + Item.id, nameset.names[ppos], ppos, param, state.output.getToken("name").strings.form, this.strings["initialize-with"]);
+							}
+						} else {
+							//
+							// it clicks.  here is where we will put the
+							// call to the names register, to get the floor value
+							// for an individual name.
+							//
+							param = paramx;
+						}
+						// Need to save off the settings based on subsequent
+						// form, when first cites are rendered.  Otherwise you
+						// get full form names everywhere.
+						if (!state.tmp.just_looking && item && item.position === CSL.POSITION_FIRST) {
+							param = paramx;
+						}
+						if (!state.tmp.sort_key_flag) {
+							state.tmp.disambig_settings.givens[state.tmp.nameset_counter][ppos] = param;
+						}
+					}
+ */
+
+
+// More refugee code from node_names.js
+/*
+				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
+					nameset = namesets[namesetIndex];
+					if (!state.tmp.disambig_request) {
+						state.tmp.disambig_settings.givens[state.tmp.nameset_counter] = [];
+					}
+				}
 
  */

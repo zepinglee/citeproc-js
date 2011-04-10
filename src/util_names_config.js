@@ -46,7 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.NameOutput.prototype.getConfigs = function (item) {
+CSL.NameOutput.prototype.getConfigs = function () {
+	var item = this.item;
 	// ??? from node_names.js
 	// (2) Set et al value to true or false
 	if ("undefined" === typeof item) {
@@ -69,8 +70,8 @@ CSL.NameOutput.prototype.getConfigs = function (item) {
 		this.etal_use_first = this.name.strings["et-al-use-first"];
 	}
 	// Provided for use as the starting level for disambiguation.
-	if (!state.tmp["et-al-min"]) {
-		state.tmp["et-al-min"] = this.etal_min;
+	if (!this.state.tmp["et-al-min"]) {
+		this.state.tmp["et-al-min"] = this.etal_min;
 	}
 };
 

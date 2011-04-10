@@ -46,15 +46,28 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.NameOutput = function(token, state, Item, item, variables) {
+CSL.NameOutput = function(state, Item, item, variables) {
+	print("(1)");
 	this.state = state;
+	this.Item = Item;
+	this.item = item;
+	this.variables = variables;
+};
 
-	this.getConfigs(item);
-	this.divideNames(Item, variables);
+CSL.NameOutput.prototype.outputNames = function () {
+	print("(2)");
+	this.getConfigs();
+	print("(3)");
+	this.divideNames();
+	print("(4)");
 	this.truncatePersonalNameLists();
+	print("(5)");
 	this.constrainNames();
-	this.setElAlParameters();
-	this.setCommonTerm(variables);
+	print("(6)");
+	this.setEtAlParameters();
+	print("(7)");
+	this.setCommonTerm();
+	print("(8)");
 	this.renderFreetersAndPersonalNameLists();
 	this.renderInstitutionNames();
 	var blob_list = [];

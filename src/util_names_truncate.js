@@ -61,8 +61,8 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable) {
 		container[variable] = container[variable].slice(0, this.state.opt.max_number_of_names + 2);
 	}
 	// This will not be robust against multiple name variables on a single node
-	if (state.tmp.cut_var === variable) {
-		var cutinfo = state.tmp.names_cut;
-		container[variable] = container[variable].slice(cutinfo.counts[state.tmp.cut_var]);
+	if (this.state.tmp.cut_var === variable) {
+		var cutinfo = this.state.tmp.names_cut;
+		container[variable] = container[variable].slice(cutinfo.counts[this.state.tmp.cut_var]);
 	}
 }

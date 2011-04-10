@@ -45,7 +45,7 @@ CSL.NameOutput.prototype._joinPersonsEtAl = function (blobs) {
 
 CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 	// Eliminate false and empty blobs
-	for (var i = 0, ilen = blobs.length) {
+	for (var i = blobs.length - 1; i > -1; i += -1) {
 		if (!blobs[i] || !blobs[i].blobs.length) {
 			blobs = blobs.slice(0, i).concat(blobs.slice(i + 1));
 		}

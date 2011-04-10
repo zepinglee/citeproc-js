@@ -1,8 +1,9 @@
-CSL.NameOutput.prototype.setCommonTerm = function (variables) {
+CSL.NameOutput.prototype.setCommonTerm = function () {
+	var variables = this.variables;
 	var varnames = variables.slice();
 	varnames.sort();
 	this.common_term = varnames.join("");
-	if (!state.locale[state.opt.lang].terms[this.common_term]
+	if (!this.state.locale[this.state.opt.lang].terms[this.common_term]
 		|| !this.state.getTerm(varnames.join(""), "long", 0)) {
 
 		this.common_term = false;
@@ -20,7 +21,7 @@ CSL.NameOutput.prototype.setCommonTerm = function (variables) {
 		}
 		count += 1;
 	}
-	for (var i = 0, ilen = other_namesets.length, i < ilen; i += 1 ) {
+	for (var i = 0, ilen = other_namesets.length; i < ilen; i += 1 ) {
 		if (!CSL.Util.Names.compareNamesets(base_nameset, other_namesets[i])) {
 			this.common_term = false;
 			return;
