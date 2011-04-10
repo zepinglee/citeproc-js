@@ -81,7 +81,9 @@ CSL.NameOutput.prototype.outputNames = function () {
 			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
 		}
 		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], affiliates]);
-		blob_list.push(varblob);
+		if (varblob) {
+			blob_list.push(varblob);
+		}
 	}
 	print("(11)");
 	for (var i = 1, ilen = blob_list.length - 1; i < ilen; i += 1) {
@@ -91,7 +93,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.state.output.openLevel("empty");
 	print("(13)");
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
-		//this.state.output.append(blob_list[i]);
+		this.state.output.append(blob_list[i]);
 	}
 	print("(14)");
 	this.state.output.closeLevel("empty");
