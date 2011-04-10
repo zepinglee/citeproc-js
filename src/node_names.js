@@ -86,16 +86,8 @@ CSL.Node.names = {
 			
 			// handle names
 			func = function (state, Item, item) {
-				var namesets = [];
-				var common_term = CSL.Util.Names.getCommonTerm(state, state.tmp.value);
 
-				if (common_term && state.getTerm(common_term, "long", 0)) {
-					namesets = state.tmp.value.slice(0, 1);
-				} else {
-					namesets = state.tmp.value;
-					common_term = false;
-				}
-				
+
 				// chop names in first nameset by value in names_slice,
 				// suppress the initially listed author in
 				// subsequent renderings within a cite.  This works a little

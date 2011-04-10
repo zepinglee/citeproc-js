@@ -280,26 +280,6 @@ CSL.Util.Names.getNamepartSequence = function (state, seg, name) {
 	return sequence;
 };
 
-//
-// Apparently never used.
-//
-//CSL.Util.Names.deep_copy = function (nameset) {
-//	var nameset2, len, pos, name2, name;
-//	print("USING");
-//	nameset2 = [];
-//	len = nameset.length;
-//	for (pos = 0; pos < len; pos += 1) {
-//		name = nameset[pos];
-//		name2 = {};
-//		for (var i in name) {
-//			name2[i] = name[i];
-//		}
-//		nameset2.push(name2);
-//	}
-//	return nameset2;
-//};
-
-
 /**
  * Reinitialize scratch variables used by names machinery.
  */
@@ -315,55 +295,6 @@ CSL.Util.Names.reinit = function (state, Item) {
 
 	state.tmp.name_et_al_form = "long";
 	state.tmp.et_al_prefix = false;
-};
-
-CSL.Util.Names.getCommonTerm = function (state, namesets) {
-	var base_nameset, varnames, len, pos, short_namesets, nameset;
-	if (namesets.length < 2) {
-		return false;
-	}
-	base_nameset = namesets[0];
-	
-	varnames = [];
-	varnames.push(base_nameset.variable);
-	short_namesets = namesets.slice(1);
-	len = short_namesets.length;
-	for (pos = 0; pos < len; pos += 1) {
-		nameset = short_namesets[pos];
-		if (!CSL.Util.Names.compareNamesets(base_nameset, nameset)) {
-			return false;
-		}
-		if (varnames.indexOf(nameset.variable) === -1) {
-			varnames.push(nameset.variable);
-		}
-	}
-	varnames.sort();
-	var combined_terms = varnames.join("");
-	if (state.locale[state.opt.lang].terms[combined_terms]) {
-		return varnames.join("");
-	} else {
-		return false;
-	}
-};
-
-
-CSL.Util.Names.compareNamesets = function (base_nameset, nameset) {
-	var name, pos, len, part, ppos, llen;
-	if (!base_nameset.names || !nameset.names || base_nameset.names.length !== nameset.names.length || base_nameset.etal !== nameset.etal) {
-		return false;
-	}
-	len = nameset.names.length;
-	for (pos = 0; pos < len; pos += 1) {
-		name = nameset.names[pos];
-		llen = CSL.NAME_PARTS.length;
-		for (ppos = 0; ppos < llen; ppos += 1) {
-			part = CSL.NAME_PARTS[ppos];
-			if (!base_nameset.names[pos] || base_nameset.names[pos][part] != name[part]) {
-				return false;
-			}
-		}
-	}
-	return true;
 };
 
 /**

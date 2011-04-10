@@ -47,6 +47,7 @@
  */
 
 CSL.NameOutput.prototype.divideNames = function (Item, variables) {
+	this.varnames = variables.slice();
 	this.freeters = {};
 	this.persons = {};
 	this.institutions = {};
@@ -88,7 +89,7 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values
 		if (this.isPerson(values[i])) {
 			persons.push(values[i]);
 		} else if (institution) {
-			this._markCutVariable(variable, persons);
+			this._markCutVariableAndCut(variable, persons);
 			this.persons.push(persons);
 			this.institutions.push(institution);
 			persons = [];
@@ -96,13 +97,13 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values
 		}
 	}
 	if (institution} {
-		this._markCutVariable(variable, persons);
+		this._markCutVariableAndCut(variable, persons);
 		this.persons.push(persons);
 		this.institutions.push(institution);
 	}
 };
 
-CSL.NameOutput.prototype._markCutVariable = function (variable, values) {
+CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
 	// See util_namestruncate.js for code that uses this cut variable.
 	if (values.length
 		&& (state.tmp.area === "bibliography" 
@@ -115,18 +116,16 @@ CSL.NameOutput.prototype._markCutVariable = function (variable, values) {
 			
 			state.tmp.cut_var = namesets[0].variable;
 		}
-	}
-};
 
-		// should always be true, but just in case
-		// this slices off subsequent namesets in the initial name
+		// Slice off subsequent namesets in the initial name
 		// rendered, when the same name is rendered a second time.
 		// Useful for robust per-author listings.
 		if (state.tmp.cut_var && cutinfo.used === state.tmp.cut_var) {
-			llen = cutinfo.variable[state.tmp.cut_var].length - 1;
-			for (ppos = llen; ppos > -1; ppos += -1) {
-				obj = cutinfo.variable[state.tmp.cut_var][ppos];
+			var ilen = cutinfo.variable[state.tmp.cut_var].length - 1;
+			for (var i = ilen; i > -1; i += -1) {
+				obj = cutinfo.variable[state.tmp.cut_var][i];
 				obj[0].blobs = obj[0].blobs.slice(0, obj[1]).concat(obj[0].blobs.slice(obj[1] + 1));
 			}
 		}
 	}
+};
