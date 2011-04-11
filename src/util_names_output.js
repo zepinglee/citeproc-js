@@ -69,10 +69,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 	print("(7)");
 	this.setCommonTerm();
 	print("(8)");
-	this.renderFreetersAndPersonalNames();
+	this.renderAllNames();
 	print("(9)");
-	this.renderInstitutionNames();
-	print("(10)");
 	var blob_list = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var variable = variables[i];
@@ -87,17 +85,17 @@ CSL.NameOutput.prototype.outputNames = function () {
 			blob_list.push(varblob);
 		}
 	}
-	print("(11)");
+	print("(10)");
 	for (var i = 1, ilen = blob_list.length - 1; i < ilen; i += 1) {
 		blob_list[i].strings.prefix = this.names.strings.delimiter + blob_list[i].strings.prefix;
 	}
-	print("(12)");
+	print("(11)");
 	this.state.output.openLevel("empty");
-	print("(13)");
+	print("(12)");
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
 		this.state.output.append(blob_list[i], "literal");
 	}
-	print("(14)");
+	print("(13)");
 	this.state.output.closeLevel("empty");
-	print("(15)");
+	print("(14)");
 };

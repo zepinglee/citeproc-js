@@ -732,11 +732,9 @@ CSL.Attributes["@suppress-min"] = function (state, arg) {
 
 
 CSL.Attributes["@and"] = function (state, arg) {
-	var myarg, and;
-	myarg = "&";
+	var myarg = "&";
 	if ("text" === arg) {
-		and = state.getTerm("and", "long", 0);
-		myarg = and;
+		myarg = state.getTerm("and", "long", 0);
 	}
 	state.setOpt(this, "and", myarg);
 };
