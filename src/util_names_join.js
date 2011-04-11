@@ -48,7 +48,6 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 	}
 	// Eliminate false and empty blobs
 	for (var i = blobs.length - 1; i > -1; i += -1) {
-		print("CCC: "+blobs[i].length)
 		if (!blobs[i] || !blobs[i].blobs.length) {
 			blobs = blobs.slice(0, i).concat(blobs.slice(i + 1));
 		}
@@ -71,8 +70,6 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 		}
 	}
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
-		// XXXX This is obviously wrong. Need a means of appending
-		// to our fake blob, to build structures.
 		this.state.output.append(blobs[i], false, true);
 	}
 	return this.state.output.pop();

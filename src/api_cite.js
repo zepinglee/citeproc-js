@@ -838,9 +838,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
 		this.output.queue = [myblobs[pos]];
 
-		print("one")
 		this.tmp.suppress_decorations = myparams[pos].suppress_decorations;
-		print("two")
 		
 		this.tmp.splice_delimiter = myparams[pos].splice_delimiter;
 		//

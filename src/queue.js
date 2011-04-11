@@ -187,11 +187,8 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 		}
 		this.state.tmp.names_cut.variable[ephemeral].push([curr, curr.blobs.length]);
 	}
-		print("AHA");
 	curr.push(blob);
-		print("AHA2");
 	this.current.push(blob);
-		print("AHA3");
 };
 
 /**

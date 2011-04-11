@@ -69,6 +69,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	}
 	// Transliteration happens here, if at all.
 	for (var i = 0, ilen = names.length; i < ilen; i += 1) {
+		this._parseName(names[i]);
 		var name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
 		names[i] = name;
 	}

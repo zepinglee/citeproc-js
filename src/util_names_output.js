@@ -52,6 +52,7 @@ CSL.NameOutput = function(state, Item, item, variables) {
 	this.Item = Item;
 	this.item = item;
 	this.variables = variables;
+	this.testRe = new RegExp("\s+");
 };
 
 CSL.NameOutput.prototype.outputNames = function () {
@@ -78,9 +79,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 		for (var j = 0, jlen = this.institutions.length; j < jlen; j += 1) {
 			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
 		}
-		print("aaa")
 		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], affiliates]);
-		print("bbb")
 		if (varblob) {
 			blob_list.push(varblob);
 		}

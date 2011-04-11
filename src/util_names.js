@@ -195,32 +195,3 @@ CSL.Util.Names.initNameSlices = function (state) {
 // apparently not used.
 
 
-CSL.Engine.prototype.parseName = function (name) {
-	var m, idx;
-	if (! name["non-dropping-particle"] && name.family) {
-		m = name.family.match(/^([[ \'\u2019a-z]+\s+)/);
-		if (m) {
-			name.family = name.family.slice(m[1].length);
-			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
-
-		}
-	}
-	if (!name.suffix && name.given) {
-		m = name.given.match(/(\s*,!*\s*)/);
-		if (m) {
-			idx = name.given.indexOf(m[1]);
-			if (name.given.slice(idx, idx + m[1].length).replace(/\s*/g, "").length === 2) {
-				name["comma-suffix"] = true;
-			}
-			name.suffix = name.given.slice(idx + m[1].length);
-			name.given = name.given.slice(0, idx);
-		}
-	}
-	if (! name["dropping-particle"] && name.given) {
-		m = name.given.match(/^(\s+[ \'\u2019a-z]*[a-z])$/);
-		if (m) {
-			name.given = name.given.slice(0, m[1].length * -1);
-			name["dropping-particle"] = m[2].replace(/^\s+/, "");
-		}
-	}
-};

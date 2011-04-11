@@ -440,10 +440,10 @@ CSL.Transform = function (state) {
 			
 			name["static-ordering"] = false;
 		}
-		if (state.opt["parse-names"]
-			&& name["parse-names"] !== 0) {
-			state.parseName(name);
-		}
+		//if (state.opt["parse-names"]
+		//	&& name["parse-names"] !== 0) {
+		//	state.parseName(name);
+		//}
 		if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"') {
 			name.family = name.family.slice(1, -1);
 		}
