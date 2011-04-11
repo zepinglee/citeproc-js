@@ -83,7 +83,6 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("aaa")
 		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], affiliates]);
 		print("bbb")
-
 		if (varblob) {
 			blob_list.push(varblob);
 		}
@@ -93,12 +92,12 @@ CSL.NameOutput.prototype.outputNames = function () {
 		blob_list[i].strings.prefix = this.names.strings.delimiter + blob_list[i].strings.prefix;
 	}
 	print("(12)");
-	this.state.output.openLevel("empty");
+	//this.state.output.openLevel("empty");
 	print("(13)");
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
-		this.state.output.append(blob_list[i]);
+		this.state.output.append(blob_list[i], "literal");
 	}
 	print("(14)");
-	this.state.output.closeLevel("empty");
+	//this.state.output.closeLevel("empty");
 	print("(15)");
 };

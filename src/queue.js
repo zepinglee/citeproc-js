@@ -62,6 +62,17 @@ CSL.Output.Queue = function (state) {
 	this.current = new CSL.Stack(this.queue);
 };
 
+// XXX This works, but causes a mismatch in api_cite
+// Could insert a placeholder
+// Better to have a function that spits out an independent blob.
+// Is that possible though?
+// Okay. Use queue.append() with fake_queue instead.
+CSL.Output.Queue.prototype.makeblob = function (str, tokname) {
+	var fake_queue = new CSL.Blob;
+	this.append(str, tokname, fake_queue);
+	return fake_queue;
+};
+
 CSL.Output.Queue.prototype.getToken = function (name) {
 	var ret = this.formats.value()[name];
 	return ret;
@@ -206,7 +217,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 // that the blob it pushes has text content,
 // and the current pointer is not moved after the push.
 
-CSL.Output.Queue.prototype.append = function (str, tokname) {
+CSL.Output.Queue.prototype.append = function (str, tokname, fake_queue) {
 	var token, blob, curr;
 	if ("undefined" === typeof str) {
 		return;
@@ -250,7 +261,12 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix) {
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
-	curr = this.current.value();
+	if (fake_queue) {
+		print("Fake it!");
+		curr = fake_queue.blobs;
+	} else {
+		curr = this.current.value();
+	}
 	if ("string" === typeof blob.blobs) {
 		this.state.tmp.term_predecessor = true;
 	}
@@ -285,7 +301,9 @@ CSL.Output.Queue.prototype.append = function (str, tokname) {
 	// Caution: The parallel detection machinery will blow up if tracking
 	// variables are not properly initialized elsewhere.
 	//
-	this.state.parallel.AppendBlobPointer(curr);
+	if (!fake_queue) {
+		this.state.parallel.AppendBlobPointer(curr);
+	}
 	if ("string" === typeof str) {
 		curr.push(blob);
 		if (blob.strings["text-case"]) {

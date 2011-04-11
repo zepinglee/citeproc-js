@@ -71,10 +71,8 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 			blobs = blobs.slice(0, -1).push(multiple).concat(blobs.slice(-1))
 		}
 	}
-	this.state.output.openLevel("empty");
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
-		this.state.output.append(blobs[i]);
+		return this.state.output.makeblob(blobs[i]);
 	}
-	this.state.output.closeLevel("empty");
 	return this.state.output.current.pop();
 };
