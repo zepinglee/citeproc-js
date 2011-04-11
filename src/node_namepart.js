@@ -56,4 +56,3 @@ CSL.Node["name-part"] = {
 		target.push(this);
 	}
 };
-

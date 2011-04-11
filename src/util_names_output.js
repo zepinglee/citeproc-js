@@ -59,7 +59,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	print("(2)");
 	this.getConfigs();
 	print("(3)");
-	this.divideNames();
+	this.divideAndTransliterateNames();
 	print("(4)");
 	this.truncatePersonalNameLists();
 	print("(5)");

@@ -46,7 +46,7 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.NameOutput.prototype.divideNames = function (Item, variables) {
+CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables) {
 	var Item = this.Item;
 	var variables = this.variables;
 	this.varnames = variables.slice();
@@ -63,10 +63,16 @@ CSL.NameOutput.prototype.divideNames = function (Item, variables) {
 
 CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	if ("string" === typeof Item[variable]) {
-		return [{literal: Item[variable]}];
+		var names = [{literal: Item[variable]}];
 	} else {
-		return Item[variable];
+		var names = Item[variable].slice();
 	}
+	// Transliteration happens here, if at all.
+	for (var i = 0, ilen = names.length; i < ilen; i += 1) {
+		var name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
+		names[i] = name;
+	}
+	return names;
 };
 
 CSL.NameOutput.prototype._getFreeters = function (variable, values) {

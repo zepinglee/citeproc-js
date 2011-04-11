@@ -447,7 +447,7 @@ CSL.Transform = function (state) {
 		if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"') {
 			name.family = name.family.slice(1, -1);
 		}
-		if (!name.literal && !name.given && name.family) {
+		if (!name.literal && (!name.given && name.family && name.isInstitution)) {
 			name.literal = name.family;
 		}
 		if (name.literal) {
