@@ -67,10 +67,8 @@ CSL.Output.Queue = function (state) {
 // Better to have a function that spits out an independent blob.
 // Is that possible though?
 // Okay. Use queue.append() with fake_queue instead.
-CSL.Output.Queue.prototype.makeblob = function (str, tokname) {
-	var fake_queue = new CSL.Blob;
-	this.append(str, tokname, fake_queue);
-	return fake_queue;
+CSL.Output.Queue.prototype.pop = function () {
+	return this.current.value().blobs.pop();
 };
 
 CSL.Output.Queue.prototype.getToken = function (name) {
@@ -217,7 +215,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 // that the blob it pushes has text content,
 // and the current pointer is not moved after the push.
 
-CSL.Output.Queue.prototype.append = function (str, tokname, fake_queue) {
+CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	var token, blob, curr;
 	if ("undefined" === typeof str) {
 		return;
@@ -261,12 +259,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, fake_queue) {
 	if (this.state.tmp.count_offset_characters && blob.strings.suffix) {
 		this.state.tmp.offset_characters += blob.strings.suffix.length;
 	}
-	if (fake_queue) {
-		print("Fake it!");
-		curr = fake_queue.blobs;
-	} else {
-		curr = this.current.value();
-	}
+	curr = this.current.value();
 	if ("string" === typeof blob.blobs) {
 		this.state.tmp.term_predecessor = true;
 	}
@@ -301,7 +294,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, fake_queue) {
 	// Caution: The parallel detection machinery will blow up if tracking
 	// variables are not properly initialized elsewhere.
 	//
-	if (!fake_queue) {
+	if (!notSerious) {
 		this.state.parallel.AppendBlobPointer(curr);
 	}
 	if ("string" === typeof str) {

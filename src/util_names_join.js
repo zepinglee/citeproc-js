@@ -25,20 +25,19 @@ CSL.NameOutput.prototype.joinFreetersAndAffiliates = function (blobs) {
 
 
 CSL.NameOutput.prototype._joinPersonsEtAl = function (blobs) {
+	
 	//
     var blob = this._join(blobs, this.name.delimiter);
 	if (!blob) {
 		ret = false;
 	}
-	this.state.output.openLevel();
-	this.state.append(blob, CSL.LITERAL);
+	var fake_queue = new CSL.Blob;
+	this.state.append(blob, "literal", fake_queue);
 	if (blobs.length > 1) {
-		this.state.output.append(this.name.etal_multiple);
+		this.state.output.append(this.name.etal_multiple, "literal", fake_queue);
 	} else if (blobs.length === 1) {
-		this.state.output.append(this.name.etal_single);
+		this.state.output.append(this.name.etal_single, "literal", fake_queue);
 	}
-	this.state.output.closeLevel();
-	ret = this.state.output.current.pop();
 	return ret;
 };
 
@@ -72,7 +71,9 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 		}
 	}
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
-		return this.state.output.makeblob(blobs[i]);
+		// XXXX This is obviously wrong. Need a means of appending
+		// to our fake blob, to build structures.
+		this.state.output.append(blobs[i], false, true);
 	}
-	return this.state.output.current.pop();
+	return this.state.output.pop();
 };
