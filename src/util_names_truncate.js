@@ -51,14 +51,25 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 	// of names, for use in et-al evaluation.
 	this.freeters_count = {};
 	this.persons_count = {};
-	// Probably coming later.
-	//this.institutions_count = {};
-	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
-		var v = this.variables[i];
+	this.institutions_count = {};
+	for (var v in this.freeters) {
+		if (this.state.tmp.cut_var === v) {
+			var cutinfo = this.state.tmp.names_cut;
+			this.freeters[v] = this.freeters[v].slice(cutinfo.counts[v]);
+		}
 		this.freeters_count[v] = this.freeters[v].length;
 		this.freeters[v] = this._truncateNameList(this.freeters, v);
+	}
+	for (var v in this.persons) {
+		this.institutions_count[v] = this.institutions.length;
+		this._truncateNameList(this.institutions, v);
+		this.persons[v] = this.persons[v].slice(0, this.institutions.length);
 		this.persons_count[v] = [];
 		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
+			if (this.state.tmp.cut_var === v) {
+				var cutinfo = this.state.tmp.names_cut;
+				this.persons[v][j] = this.persons[v][j].slice(cutinfo.counts[v]);
+			}
 			this.persons_count[v][j] = this.persons[v][j].length;
 			this.persons[v][j] = this._truncateNameList(this.persons, v, j);
 		}
@@ -76,11 +87,6 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
 		&& lst.length > (this.state.opt.max_number_of_names + 2)) {
 		
 		lst = lst.slice(0, this.state.opt.max_number_of_names + 2);
-	}
-	// This will not be robust against multiple name variables on a single node
-	if (this.state.tmp.cut_var === variable) {
-		var cutinfo = this.state.tmp.names_cut;
-		lst = lst.slice(cutinfo.counts[this.state.tmp.cut_var]);
 	}
 	return lst;
 }

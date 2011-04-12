@@ -52,7 +52,11 @@ CSL.NameOutput = function(state, Item, item, variables) {
 	this.Item = Item;
 	this.item = item;
 	this.variables = variables;
-	this.testRe = new RegExp("\s+");
+	this.suppress = {
+		persons:false,
+		institutions:false,
+		freeters:false
+	}
 };
 
 CSL.NameOutput.prototype.outputNames = function () {
@@ -79,7 +83,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 		for (var j = 0, jlen = this.institutions.length; j < jlen; j += 1) {
 			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
 		}
-		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], affiliates]);
+		var institutions = this.joinInstitutions(affiliates);
+		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], institutions]);
 		if (varblob) {
 			blob_list.push(varblob);
 		}
@@ -99,3 +104,12 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.state.output.append(blob, this.names);
 	print("(15)");
 };
+
+/*
+CSL.NameOutput.prototype.suppressNames = function() {
+	suppress_condition = suppress_min && display_names.length >= suppress_min;
+	if (suppress_condition) {
+		continue;
+	}
+}
+*/

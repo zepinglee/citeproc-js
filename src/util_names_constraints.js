@@ -1,54 +1,35 @@
-// What on earth does this need to do?
-
 CSL.NameOutput.prototype.constrainNames = function () {
-	//
-};
-
-/*
-	var section = ["persons", "institutions", "freeters"];
-	this.nameConstraint = {
-		persons: [],
-		institutions: 0,
-		freeters: 0
-	};
-	for (var i = 0, ilen = 3; i < ilen; i += 1) {
-		if ("persons" === section[i]) {
-			for (var j, jlen = this.persons.length; j < jlen; j += 1) {
-				this.nameConstraint[section[i]] = this._getNameConstraint(this.persons[j]);
-			}
-		} else {
-			this.nameConstraint[section[i]] = this._getNameConstraint(this[section]);
+	// Help >!<
+	// cut-names stuff
+	this._setNamesCutCount();
+	// figure out how many names to include, in light of the disambig params
+	var sane = this.state.tmp["et-al-min"] >= this.state.tmp["et-al-use-first"];
+	for (var v in this.freeters) {
+		// Constrain independent authors here
+		this._imposeNameConstraints(this.freeters, v);
+	}
+	for (var v in this.persons) {
+		// Constrain institutions here
+		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
+			// Constrain affiliated authors here
+			this._imposeNameConstraints(this.persons[v], j);
 		}
 	}
-*/
+};
 
+CSL.NameOutput.prototype._imposeNameConstraints = function () {
+	var discretionary_names_length = this.state.tmp["et-al-min"];
+};
 /*
-						// set the number of names to be _intended_ for rendering,
-						// in the first nameset, if personal, for subsequent slicing.
-						if (namesetIndex === 0 && !suppress_min && (state.tmp.area === "bibliography" || (state.tmp.area === "citation" && state.opt.xclass === "note"))) {
-							state.tmp.names_cut.counts[nameset.variable] = state.tmp["et-al-use-first"];
-						}
-
-						sane = state.tmp["et-al-min"] >= state.tmp["et-al-use-first"];
-						if (state.tmp["et-al-use-last"] && state.tmp["et-al-min"] >= state.tmp["et-al-use-first"] + 2) {
-							apply_ellipsis = true;
-						} else {
-							apply_ellipsis = false;
-						}
-						//
-						// if there is anything on name request, we assume that
-						// it was configured correctly via state.names_request
-						// by the function calling the renderer.
-						discretionary_names_length = state.tmp["et-al-min"];
-
-						//
-						// Invoke names constraint
-						//
-						suppress_condition = suppress_min && display_names.length >= suppress_min;
-						if (suppress_condition) {
-							continue;
-						}
-
+	// Push this a _ function below
+	//
+	// if there is anything on name request, we assume that
+	// it was configured correctly via state.names_request
+	// by the function calling the renderer.
+	discretionary_names_length = state.tmp["et-al-min"];
+	//
+	// Invoke names constraint
+	//
 						//
 						// if rendering for display, do not honor a disambig_request
 						// to set names length below et-al-use-first, and do not
@@ -122,6 +103,26 @@ CSL.NameOutput.prototype.constrainNames = function () {
 							}
 						}
 						state.output.formats.value().name.strings.delimiter = and_term;
+	// chop the lists
+};
+*/
+
+CSL.NameOutput.prototype._setNamesCutCount = function () {
+	if (this.name["suppress-min"]
+		&& (this.state.tmp.area === "bibliography"
+			|| (this.state.tmp.area === "citation"
+				&& this.state.opt.xclass === "note"))) {
+		
+		for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+			var v = this.variables[i];
+			if (this.freeters.length) {
+				this.state.tmp.names_cut.counts[v] = this.state.tmp["et-al-use-first"];
+			}
+		}
+	}
+};
+
+/*
 
  */
 
