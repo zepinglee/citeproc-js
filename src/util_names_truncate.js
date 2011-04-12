@@ -47,22 +47,31 @@
  */
 
 CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
-	for (var variable in this.institutions) {
-		this._truncateNameList(this.freeters, variable);
-		this._truncateNameList(this.persons, variable);
+	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		var v = this.variables[i];
+		this.freeters[v] = this._truncateNameList(this.freeters, v);
+		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
+			this.persons[v][j] = this._truncateNameList(this.persons, v, j);
+		}
 	}
 };
 
-CSL.NameOutput.prototype._truncateNameList = function (container, variable) {
+CSL.NameOutput.prototype._truncateNameList = function (container, variable, index) {
+	if ("undefined" === typeof index) {
+		var lst = container[variable];
+	} else {
+		var lst = container[variable][index];
+	}
 	if (this.state.opt.max_number_of_names 
-		&& container[variable].length > 50 
-		&& container[variable].length > (this.state.opt.max_number_of_names + 2)) {
+		&& lst.length > 50 
+		&& lst.length > (this.state.opt.max_number_of_names + 2)) {
 		
-		container[variable] = container[variable].slice(0, this.state.opt.max_number_of_names + 2);
+		lst = lst.slice(0, this.state.opt.max_number_of_names + 2);
 	}
 	// This will not be robust against multiple name variables on a single node
 	if (this.state.tmp.cut_var === variable) {
 		var cutinfo = this.state.tmp.names_cut;
-		container[variable] = container[variable].slice(cutinfo.counts[this.state.tmp.cut_var]);
+		lst = lst.slice(cutinfo.counts[this.state.tmp.cut_var]);
 	}
+	return lst;
 }
