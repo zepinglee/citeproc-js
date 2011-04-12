@@ -732,11 +732,7 @@ CSL.Attributes["@suppress-min"] = function (state, arg) {
 
 
 CSL.Attributes["@and"] = function (state, arg) {
-	var myarg = "&";
-	if ("text" === arg) {
-		myarg = state.getTerm("and", "long", 0);
-	}
-	state.setOpt(this, "and", myarg);
+	this.strings["and"] = arg;
 };
 
 CSL.Attributes["@delimiter-precedes-last"] = function (state, arg) {
