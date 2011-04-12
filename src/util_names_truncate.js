@@ -47,10 +47,19 @@
  */
 
 CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
+	// XXX Before truncation, make a note of the original number
+	// of names, for use in et-al evaluation.
+	this.freeters_count = {};
+	this.persons_count = {};
+	// Probably coming later.
+	//this.institutions_count = {};
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
+		this.freeters_count[v] = this.freeters[v].length;
 		this.freeters[v] = this._truncateNameList(this.freeters, v);
+		this.persons_count[v] = [];
 		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
+			this.persons_count[v][j] = this.persons[v][j].length;
 			this.persons[v][j] = this._truncateNameList(this.persons, v, j);
 		}
 	}
