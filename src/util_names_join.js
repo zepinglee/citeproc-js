@@ -2,7 +2,7 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, variable, index) {
 	var ret;
 	//
 	if (this.etal_spec[variable][index] === 1) {
-		ret = this._joinPersonsEtAl(blobs, this.name.delimiter);
+		ret = this._joinPersonsEtAl(blobs);
 	} else if (this.etal_spec[variable][index] === 2) {
 		ret = this._join(blobs, this.name.delimiter, this.name.ellipsis_single, this.name.ellipsis_multiple);
 	} else {
@@ -23,7 +23,7 @@ CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
 
 CSL.NameOutput.prototype.joinFreetersAndAffiliates = function (blobs) {
 	// Nothing, one or two, never more
-	return this._join(blobs, false, this.institution.with_single, this.institution.with_multiple);
+	return this._join(blobs, false, this.with_single, this.with_multiple);
 };
 
 
@@ -34,14 +34,16 @@ CSL.NameOutput.prototype._joinPersonsEtAl = function (blobs) {
 	if (!blob) {
 		ret = false;
 	}
-	var fake_queue = new CSL.Blob;
-	this.state.append(blob, "literal", fake_queue);
+	// notSerious
+	this.state.openLevel("empty");
+	this.state.append(blob, "literal", true);
 	if (blobs.length > 1) {
-		this.state.output.append(this.name.etal_multiple, "literal", fake_queue);
+		this.state.output.append(this.etal_multiple, "literal", true);
 	} else if (blobs.length === 1) {
-		this.state.output.append(this.name.etal_single, "literal", fake_queue);
+		this.state.output.append(this.etal_single, "literal", true);
 	}
-	return ret;
+	this.state.closeLevel("empty");
+	return this.state.output.pop();
 };
 
 

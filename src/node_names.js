@@ -77,13 +77,75 @@ CSL.Node.names = {
 		};
 		
 		if (this.tokentype === CSL.END) {
+
+			for (var i = 0, ilen = 3; i < ilen; i += 1) {
+				var key = ["family", "given", "et-al"][i];
+				this[key] = state.build[key];
+				state.build[key] = undefined;
+			}
+			// Et al. and with terms
+			if (this["et-al"] && "string" === typeof this["et-al"].term) {
+				var myetal = state.getTerm(this.strings["et-al"]);
+				if (!myetal) {
+					myetal = this.strings["et-al"]
+				}
+			} else {
+				var myetal = state.getTerm("et-al", "long", 0);
+			}
+			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(myetal)) {
+				var etal_default_prefix = " ";
+				var etal_suffix = " ";
+			} else {
+				var etal_default_prefix = "";
+				var etal_suffix = "";
+			}
+			this["et-al"] = {};
+			this["et-al"].single = new CSL.Blob(myetal, "empty");
+			this["et-al"].single.strings.suffix = etal_suffix;
+			this["et-al"].multiple = new CSL.Blob(myetal, "empty");
+			this["et-al"].multiple.strings.suffix = etal_suffix;
+			if (this.strings["delimiter-precedes-et-al"] === "always") {
+				this["et-al"].single.strings.prefix = this.strings.delimiter;
+				this["et-al"].multiple.strings.prefix = this.strings.delimiter;
+			} else if (this.strings["delimiter-precedes-et-al"] === "contextual") {
+				this["et-al"].single.strings.prefix = etal_default_prefix;
+				this["et-al"].multiple.strings.prefix = this.strings.delimiter;
+			} else {
+				this["et-al"].single.strings.prefix = etal_default_prefix;
+				this["et-al"].multiple.strings.prefix = etal_default_prefix;
+			}
+
+			var mywith = "with";
+			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(mywith)) {
+				var with_default_prefix = " ";
+				var with_suffix = " ";
+			} else {
+				var with_default_prefix = "";
+				var with_suffix = "";
+			}
+			this["with"] = {};
+			this["with"].single = new CSL.Blob(mywith, "empty");
+			this["with"].single.strings.suffix = with_suffix;
+			this["with"].multiple = new CSL.Blob(mywith, "empty");
+			this["with"].multiple.strings.suffix = with_suffix;
+			if (this.strings["delimiter-precedes-last"] === "always") {
+				this["with"].single.strings.prefix = this.strings.delimiter;
+				this["with"].multiple.strings.prefix = this.strings.delimiter;
+			} else if (this.strings["delimiter-precedes-last"] === "contextual") {
+				this["with"].single.strings.prefix = with_default_prefix;
+				this["with"].multiple.strings.prefix = this.strings.delimiter;
+			} else {
+				this["with"].single.strings.prefix = with_default_prefix;
+				this["with"].multiple.strings.prefix = with_default_prefix;
+			}
+
+			// "and" and "ellipsis" are set in node_name.js
+
 			func = function (state, Item, item) {
 				state.nameOutput.outputNames();
 			};
 			this.execs.push(func);
-		}
 
-		if (this.tokentype === CSL.END) {
 			// unsets
 			func = function (state, Item) {
 				if (!state.tmp.can_substitute.pop()) {
@@ -101,21 +163,6 @@ CSL.Node.names = {
 		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
 			state.build.substitute_level.pop();
 			CSL.Util.substituteEnd.call(this, state, target);
-		}
-	},
-
-	//
-	// XXXXX: in configure phase, set a flag if this node contains an
-	// institution node.  If it does, then each nameset will be filtered into an
-	 // array containing two lists, to be run separately and joined
-	// in the end.  If we don't, the array will contain only one list.
-	//
-	configure: function (state, pos) {
-		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
-			if (state.build.has_institution) {
-				this.strings["has-institution"] = true;
-				state.build.has_institution = false;
-			}
 		}
 	}
 };

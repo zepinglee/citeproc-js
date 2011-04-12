@@ -48,11 +48,6 @@
 
 CSL.Node["name-part"] = {
 	build: function (state, target) {
-		var func;
-		func = function (state, Item) {
-			state.nameOutput[this.strings.name] = this;
-		};
-		this.execs.push(func);
-		target.push(this);
+		state.build[this.strings.name] = this;
 	}
 };
