@@ -93,6 +93,9 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	print("(12)");
 	this.state.output.closeLevel("empty");
+	print("(13)");
 	var blob = this.state.output.pop();
+	print("(14)");
 	this.state.output.append(blob, this.names);
+	print("(15)");
 };
