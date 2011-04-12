@@ -85,16 +85,14 @@ CSL.NameOutput.prototype.outputNames = function () {
 		}
 	}
 	print("(10)");
-	for (var i = 1, ilen = blob_list.length - 1; i < ilen; i += 1) {
-		blob_list[i].strings.prefix = this.names.strings.delimiter + blob_list[i].strings.prefix;
-	}
-	print("(11)");
 	this.state.output.openLevel("empty");
-	print("(12)");
+	print("(11)");
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
-		this.state.output.append(blob_list[i], "literal");
+		// notSerious
+		this.state.output.append(blob_list[i], "literal", true);
 	}
-	print("(13)");
+	print("(12)");
 	this.state.output.closeLevel("empty");
-	print("(14)");
+	var blob = this.state.output.pop();
+	this.state.output.append(blob, this.names);
 };
