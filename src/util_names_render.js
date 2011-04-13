@@ -11,6 +11,7 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 		// to this function.
 		pos += 2;
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
+			print("Um ...");
 			this.institutions[v][j] = this.renderInstitutionNames(this.institutions[v][j]);
 			this.persons[v][j] = this._renderPersonalNames(this.persons[v][j], pos);
 			pos += 1
@@ -22,9 +23,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function (value) {
 	// This is a straightforward rendering of the institution
 	// name; the fancy business with ellipsis or et al comes later,
 	// at the join stage.
-	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
-		//
-	}
+	print("well, how about that");
 };
 
 CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {

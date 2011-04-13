@@ -433,7 +433,8 @@ CSL.Transform = function (state) {
 			"parse-names":name["parse-names"],
 			"comma-suffix":name["comma-suffix"],
 			transliterated:transliterated,
-			block_initialize:block_initialize
+			block_initialize:block_initialize,
+			literal:name.literal
 		}
 		if (static_ordering_freshcheck &&
 			!getStaticOrder(name, true)) {

@@ -74,6 +74,8 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	}
 	// Transliteration happens here, if at all.
 	for (var i = 0, ilen = names.length; i < ilen; i += 1) {
+		if (names[i].literal) {
+		}
 		this._parseName(names[i]);
 		var name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
 		names[i] = name;
@@ -98,6 +100,7 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values
 	this.persons[variable] = [];
 	this.institutions[variable] = [];
 	var persons = [];
+	// XXXX This is all wrong ...
 	var institution = false;
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {

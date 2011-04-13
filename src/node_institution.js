@@ -49,8 +49,39 @@
 CSL.Node.institution = {
 	build: function (state, target) {
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
+
 			var func = function (state, Item) {
-				state.output.addToken("institution", false, this);
+
+				// This is the same code for the same result as in node_name.js, 
+				// but when cs:institution comes on stream, it may produce
+				// different results.
+				if ("text" === this.strings["and"]) {
+					var myand = state.getTerm("and", "long", 0);
+				} else if ("symbol" === this.strings["and"]) {
+					var myand = "&";
+				}
+				if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(myand)) {
+					var and_default_prefix = " ";
+					var and_suffix = " ";
+				} else {
+					var and_default_prefix = "";
+					var and_suffix = "";
+				}
+				this["and"] = {};
+				this["and"].single = new CSL.Blob("empty", myand);
+				this["and"].single.strings.suffix = and_suffix;
+				this["and"].multiple = new CSL.Blob("empty", myand);
+				this["and"].multiple.strings.suffix = and_suffix;
+				if (this.strings["delimiter-precedes-last"] === "always") {
+					this["and"].single.strings.prefix = this.strings.delimiter;
+					this["and"].multiple.strings.prefix = this.strings.delimiter;
+				} else if (this.strings["delimiter-precedes-last"] === "contextual") {
+					this["and"].single.strings.prefix = and_default_prefix;
+					this["and"].multiple.strings.prefix = this.strings.delimiter;
+				} else {
+					this["and"].single.strings.prefix = and_default_prefix;
+					this["and"].multiple.strings.prefix = and_default_prefix;
+				}
 				state.nameOutput.institution = this;
 			};
 			this.execs.push(func);
