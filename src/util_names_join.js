@@ -13,11 +13,11 @@
 CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 	var ret;
 	//
-	//this.etal_spec = [];
+	//this.etal_spec = [2];
 	if (this.etal_spec[pos] === 1) {
-		print("spec: "+this.etal_spec[pos]);
 		ret = this._joinPersonsEtAl(blobs);
 	} else if (this.etal_spec[pos] === 2) {
+		print("spec: "+this.etal_spec[pos]);
 		ret = this._join(blobs, this.name.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple);
 	} else {
 		ret = this._join(blobs, this.name.delimiter, this.name.and.single, this.name.and.multiple);
@@ -33,6 +33,7 @@ CSL.NameOutput.prototype.joinPersonsAndInstitutions = function (blobs) {
 
 CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
 	//return this._join(blobs, this.institution.delimiter, this.institution.and.single, this.institution.and.multiple);
+	print(this.name.and)
 	return this._join(blobs, this.institution.delimiter, this.name.and.single, this.name.and.multiple);
 };
 
@@ -67,8 +68,6 @@ CSL.NameOutput.prototype._joinPersonsEtAl = function (blobs) {
 
 
 CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
-	print("single: "+single);
-	print("multiple: "+multiple);
 	if (!blobs) {
 		return false;
 	}

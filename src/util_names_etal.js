@@ -1,6 +1,6 @@
 CSL.NameOutput.prototype.setEtAlParameters = function () {
 	//
-	this.etal_spec = [1];
+	this.etal_spec = [2];
 	
 };
 
