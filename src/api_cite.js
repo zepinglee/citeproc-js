@@ -663,6 +663,16 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
 	var use_parallels, ret;
+	// Oh, darn. We need an efficient means of identifying
+	// whether an Item object has changed compared with the
+	// last-seen form, to invalidate the cached copy.
+	//
+	// Without requiring the calling application to raise
+	// an explicit flag on the object (not very friendly),
+	// I don't see any way forward other than outright
+	// serialization every time the object passes through
+	// here. Certainly faster than rerendering the cite,
+	// but it's still overhead. Yuck.
 	if (disambig) {
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -681,6 +691,7 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	this.tmp.just_looking = false;
 	this.tmp.suppress_decorations = false;
 	this.parallel.use_parallels = use_parallels;
+	// Cache the result.
 	return ret;
 };
 
@@ -947,6 +958,7 @@ CSL.getCite = function (Item, item, prevItemID) {
 	return "" + Item.id;
 };
 
+
 CSL.citeStart = function (Item, item) {
 	this.tmp.same_author_as_previous_cite = false;
 	this.tmp.lastchr = "";
@@ -1017,3 +1029,51 @@ CSL.citeEnd = function (Item, item) {
 	}
 	this.tmp.cite_locales.push(this.tmp.last_cite_locale);
 };
+
+
+// More on personal names, I think
+// This should be run after all names have been sent to
+// output, no? It's used to determine what join should be
+// applied -- maybe that itself is not necessary, since
+// alternative joins are really only needed for author-date
+// styles, in which case we'd be looking at collapsing
+// anyway.
+//
+// I seem to remember that the collapse toggle raises too late,
+// though.
+/*
+					if (!state.tmp.suppress_decorations
+						&& state.tmp.last_names_used.length === state.tmp.names_used.length
+						&& state.tmp.area === "citation") {
+						// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+						lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
+						//lastones = state.tmp.last_names_used;
+						currentones = state.tmp.names_used[state.tmp.nameset_counter];
+						//currentones = state.tmp.names_used;
+						compset = [currentones, lastones];
+						if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
+							state.tmp.same_author_as_previous_cite = true;
+						}
+					}
+
+					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
+						//
+						// This is fine, but the naming of the comparison
+						// function is confusing.  This is just checking whether the
+						// current name is the same as the last name rendered
+						// in the last cite, and it works.  Set a toggle if the
+						// test fails, so we can avoid further suppression in the
+						// cite.
+						//
+
+						//if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
+						if (state.tmp.same_author_as_previous_cite) {
+							continue;
+						} else {
+							state.tmp.have_collapsed = false;
+						}
+					} else {
+						state.tmp.have_collapsed = false;
+					}
+
+ */

@@ -3,16 +3,13 @@ CSL.NameOutput.prototype.constrainNames = function () {
 	this._setNamesCutCount();
 	// figure out how many names to include, in light of the disambig params
 	//
-	// Ooooooh, ugly. We can't map these reliably to a sequence. What to do?
-	// Sort the list of variables before evaluation? Really SHOULD be set
-	// out in rendering order, for rational disambiguation progress.
-	//
-	// Damn.
-	for (var v in this.freeters) {
+	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		var v = this.variables[i];
+		if (!this.freeters[v]) {
+			continue;
+		}
 		// Constrain independent authors here
 		this._imposeNameConstraints(this.freeters, this.freeters_count, v, "freeters");
-	}
-	for (var v in this.persons) {
 		// Constrain institutions here
 		this._imposeNameConstraints(this.institutions, this.institutions_count, v, "institutions");
 		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
@@ -30,11 +27,11 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, typ
 	// Mappings, to allow existing disambiguation machinery to
 	// remain untouched.
 	if ("freeters" === type) {
-		var pos = 0;
-	} else if ("institutions" === key) {
-		var pos = 1;
+		var pos = this.nameset_base;
+	} else if ("institutions" === type) {
+		var pos = this.nameset_base + 1;
 	} else {
-		var pos = key + 2;
+		var pos = this.nameset_base + parseInt(key) + 2;
 	}
 	if (this.state.tmp.suppress_decorations) {
 		if (this.state.tmp.disambig_request) {
@@ -86,6 +83,11 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, typ
 			display_names = display_names.slice(0, discretionary_names_length);
 		}
 	}
+	this.state.tmp.disambig_settings.names[pos] = display_names.length;
+	
+	if (!this.state.tmp.disambig_request) {
+		this.state.tmp.disambig_settings.givens[pos] = [];
+	}
 };
 
 CSL.NameOutput.prototype._setNamesCutCount = function () {
@@ -102,68 +104,3 @@ CSL.NameOutput.prototype._setNamesCutCount = function () {
 		}
 	}
 };
-
-
-
-// More on personal names, I think
-// Who knows?
-/*
-					state.tmp.disambig_settings.names[state.tmp.nameset_counter] = display_names.length;
-					local_count += display_names.length;
-
-					state.tmp.names_used.push({names:display_names,etal:et_al});
-
-					if (!state.tmp.suppress_decorations
-						&& state.tmp.last_names_used.length === state.tmp.names_used.length
-						&& state.tmp.area === "citation") {
-						// lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-						lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-						//lastones = state.tmp.last_names_used;
-						currentones = state.tmp.names_used[state.tmp.nameset_counter];
-						//currentones = state.tmp.names_used;
-						compset = [currentones, lastones];
-						if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
-							state.tmp.same_author_as_previous_cite = true;
-						}
-					}
-
-					if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
-						//
-						// This is fine, but the naming of the comparison
-						// function is confusing.  This is just checking whether the
-						// current name is the same as the last name rendered
-						// in the last cite, and it works.  Set a toggle if the
-						// test fails, so we can avoid further suppression in the
-						// cite.
-						//
-
-						//if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
-						if (state.tmp.same_author_as_previous_cite) {
-							continue;
-						} else {
-							state.tmp.have_collapsed = false;
-						}
-					} else {
-						state.tmp.have_collapsed = false;
-					}
-
-					//
-					// "name" is the format for the outermost nesting of a nameset
-					// "inner" is a format consisting only of a delimiter, used for
-					// joining all but the last name in the set together.
-
-
- */
-
-
-
-// More refugee code from node_names.js
-/*
-				for  (namesetIndex = 0; namesetIndex < len; namesetIndex += 1) {
-					nameset = namesets[namesetIndex];
-					if (!state.tmp.disambig_request) {
-						state.tmp.disambig_settings.givens[state.tmp.nameset_counter] = [];
-					}
-				}
-
- */

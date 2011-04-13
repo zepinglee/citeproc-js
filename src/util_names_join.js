@@ -10,12 +10,13 @@
 	}
  */
 
-CSL.NameOutput.prototype.joinPersons = function (blobs, variable, index) {
+CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 	var ret;
 	//
-	if (this.etal_spec[variable][index] === 1) {
+	this.etal_spec = [];
+	if (this.etal_spec[pos] === 1) {
 		ret = this._joinPersonsEtAl(blobs);
-	} else if (this.etal_spec[variable][index] === 2) {
+	} else if (this.etal_spec[pos] === 2) {
 		ret = this._join(blobs, this.name.delimiter, this.name.ellipsis_single, this.name.ellipsis_multiple);
 	} else {
 		ret = this._join(blobs, this.name.delimiter, this.name.and_single, this.name.and_multiple);

@@ -52,6 +52,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 	this.freeters_count = {};
 	this.persons_count = {};
 	this.institutions_count = {};
+	// By key is okay here, as we don't care about sequence.
 	for (var v in this.freeters) {
 		if (this.state.tmp.cut_var === v) {
 			var cutinfo = this.state.tmp.names_cut;

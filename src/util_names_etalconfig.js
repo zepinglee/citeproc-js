@@ -46,7 +46,7 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.NameOutput.prototype.getConfigs = function () {
+CSL.NameOutput.prototype.getEtAlConfig = function () {
 	var item = this.item;
 	// Et-al style parameters (may be sidestepped by disambiguation
 	// in util_names_constraints.js)
@@ -73,11 +73,3 @@ CSL.NameOutput.prototype.getConfigs = function () {
 		this.state.tmp["et-al-min"] = this.etal_min;
 	}
 };
-
-/*
-
-				if (!state.output.getToken("label")) {
-					state.output.addToken("label");
-				}
-
-*/

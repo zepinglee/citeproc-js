@@ -54,10 +54,15 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 	this.persons = {};
 	this.institutions = {};
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
-		var variable = variables[i];
-		var values = this._normalizeVariableValue(Item, variable);
-		this._getFreeters(variable, values);
-		this._getPersonsAndInstitutions(variable, values);
+		var v = variables[i];
+		var values = this._normalizeVariableValue(Item, v);
+		this._getFreeters(v, values);
+		this.nameset_offset += 1;
+		this._getPersonsAndInstitutions(v, values);
+		// Institutions is one nameset (i.e. increment by adding an institution and
+		// its affiliated authors)
+		this.nameset_offset += 1;
+		this.nameset_offset += this.persons[v].length;
 	}
 };
 

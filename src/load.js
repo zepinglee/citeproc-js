@@ -516,7 +516,7 @@ if (!CSL.Node) {
     load("./src/util_names_join.js");
     load("./src/util_names_common.js");
     load("./src/util_names_constraints.js");
-    load("./src/util_names_config.js");
+    load("./src/util_names_etalconfig.js");
     load("./src/util_names_etal.js");
     load("./src/util_names_render.js");
 

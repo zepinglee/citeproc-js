@@ -51,10 +51,14 @@ CSL.NameOutput = function(state, Item, item, variables) {
 	this.state = state;
 	this.Item = Item;
 	this.item = item;
-	this.disambig_pos = 0;
+	this.nameset_base = 0;
 };
 
 CSL.NameOutput.prototype.init = function (names) {
+	if (this.nameset_offset) {
+		this.nameset_base = this.nameset_base + this.nameset_offset;
+	}
+	this.nameset_offset = 0;
 	this.names = names;
 	this.variables = names.variables;
 	this.suppress = {
@@ -70,7 +74,7 @@ CSL.NameOutput.prototype.init = function (names) {
 CSL.NameOutput.prototype.outputNames = function () {
 	var variables = this.variables;
 	print("(2)");
-	this.getConfigs();
+	this.getEtAlConfig();
 	print("(3)");
 	this.divideAndTransliterateNames();
 	print("(4)");
