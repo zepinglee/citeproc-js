@@ -68,54 +68,55 @@ CSL.Node.name = {
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 			
-			// The three terms "et-al", "and" and "ellipsis" are stored
-			// as strings here, and styled into blobs within nameOutput().
-			// (specifically, in util_names_config.js)
+			// The "and" and "ellipsis" characters are cast as blobs
+			// on cs:name here, in single and multiple forms.
 			this.strings.et_al = state.getTerm("et-al", "long", 0);
-			// We use the dedicated Unicode ellipsis character because
-			// it is recommended by some editors, and can be more easily
-			// identified for find and replace operations.
-			// Source: http://en.wikipedia.org/wiki/Ellipsis#Computer_representations
-			//
-			// Eventually, this should be localized as a term in CSL, with some
-			// mechanism for triggering appropriate punctuation handling around
-			// the ellipsis placeholder (Polish is a particularly tough case for that).
-			var myellipsis = "\u2026";
-			if ("text" === this.strings["and"]) {
-				var myand = state.getTerm("and", "long", 0);
-			} else if ("symbol" === this.strings["and"]) {
-				var myand = "&";
+			if (this.strings["et-al-use-last"]) {
+				// We use the dedicated Unicode ellipsis character because
+				// it is recommended by some editors, and can be more easily
+				// identified for find and replace operations.
+				// Source: http://en.wikipedia.org/wiki/Ellipsis#Computer_representations
+				//
+				// Eventually, this should be localized as a term in CSL, with some
+				// mechanism for triggering appropriate punctuation handling around
+				// the ellipsis placeholder (Polish is a particularly tough case for that).
+				var myellipsis = "\u2026";
+				this["ellipsis"] = {};
+				this["ellipsis"].single = new CSL.Blob(myellipsis, "empty");
+				this["ellipsis"].multiple = new CSL.Blob(myellipsis, "empty");
+				this["ellipsis"].single.strings.prefix = " ";
+				this["ellipsis"].single.strings.suffix = " ";
+				this["ellipsis"].multiple.strings.prefix = " ";
+				this["ellipsis"].multiple.strings.suffix = " ";
+			} else if (this.strings["and"]) {
+				if ("text" === this.strings["and"]) {
+					var myand = state.getTerm("and", "long", 0);
+				} else if ("symbol" === this.strings["and"]) {
+					var myand = "&";
+				}
+				if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(myand)) {
+					var and_default_prefix = " ";
+					var and_suffix = " ";
+				} else {
+					var and_default_prefix = "";
+					var and_suffix = "";
+				}
+				this["and"] = {};
+				this["and"].single = new CSL.Blob(myand, "empty");
+				this["and"].single.strings.suffix = and_suffix;
+				this["and"].multiple = new CSL.Blob(myand, "empty");
+				this["and"].multiple.strings.suffix = and_suffix;
+				if (this.strings["delimiter-precedes-last"] === "always") {
+					this["and"].single.strings.prefix = this.strings.delimiter;
+					this["and"].multiple.strings.prefix = this.strings.delimiter;
+				} else if (this.strings["delimiter-precedes-last"] === "contextual") {
+					this["and"].single.strings.prefix = and_default_prefix;
+					this["and"].multiple.strings.prefix = this.strings.delimiter;
+				} else {
+					this["and"].single.strings.prefix = and_default_prefix;
+					this["and"].multiple.strings.prefix = and_default_prefix;
+				}
 			}
-			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(myand)) {
-				var and_default_prefix = " ";
-				var and_suffix = " ";
-			} else {
-				var and_default_prefix = "";
-				var and_suffix = "";
-			}
-			this["and"] = {};
-			this["and"].single = new CSL.Blob(myand, "empty");
-			this["and"].single.strings.suffix = and_suffix;
-			this["and"].multiple = new CSL.Blob(myand, "empty");
-			this["and"].multiple.strings.suffix = and_suffix;
-			if (this.strings["delimiter-precedes-last"] === "always") {
-				this["and"].single.strings.prefix = this.strings.delimiter;
-				this["and"].multiple.strings.prefix = this.strings.delimiter;
-			} else if (this.strings["delimiter-precedes-last"] === "contextual") {
-				this["and"].single.strings.prefix = and_default_prefix;
-				this["and"].multiple.strings.prefix = this.strings.delimiter;
-			} else {
-				this["and"].single.strings.prefix = and_default_prefix;
-				this["and"].multiple.strings.prefix = and_default_prefix;
-			}
-
-			this["ellipsis"] = {};
-			this["ellipsis"].single = new CSL.Blob(myellipsis, "empty");
-			this["ellipsis"].multiple = new CSL.Blob(myellipsis, "empty");
-			this["ellipsis"].single.strings.prefix = " ";
-			this["ellipsis"].single.strings.suffix = " ";
-			this["ellipsis"].multiple.strings.prefix = " ";
-			this["ellipsis"].multiple.strings.suffix = " ";
 
 			func = function (state, Item) {
 				state.nameOutput.name = this;

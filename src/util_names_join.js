@@ -1,3 +1,15 @@
+/*
+ else {
+		if (!state.tmp.sort_key_flag) {
+			if (display_names.length > 1) {
+				if (this.state.output.getToken("name").strings.and) {
+					and_term = this.state.output.getToken("name").strings.and;
+				}
+			}
+		}
+	}
+ */
+
 CSL.NameOutput.prototype.joinPersons = function (blobs, variable, index) {
 	var ret;
 	//

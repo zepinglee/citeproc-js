@@ -927,6 +927,7 @@ CSL.getCite = function (Item, item, prevItemID) {
 	this.parallel.StartCite(Item, item, prevItemID);
 	CSL.citeStart.call(this, Item, item);
 	next = 0;
+	this.nameOutput = new CSL.NameOutput(this, Item, item);
 	while (next < this[this.tmp.area].tokens.length) {
 		next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next], Item, item);
     }

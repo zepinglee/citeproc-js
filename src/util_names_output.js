@@ -51,12 +51,20 @@ CSL.NameOutput = function(state, Item, item, variables) {
 	this.state = state;
 	this.Item = Item;
 	this.item = item;
-	this.variables = variables;
+	this.disambig_pos = 0;
+};
+
+CSL.NameOutput.prototype.init = function (names) {
+	this.names = names;
+	this.variables = names.variables;
 	this.suppress = {
 		persons:false,
 		institutions:false,
 		freeters:false
 	}
+	this["et-al"] = undefined;
+	this["with"] = undefined;
+	this.name = undefined;
 };
 
 CSL.NameOutput.prototype.outputNames = function () {
