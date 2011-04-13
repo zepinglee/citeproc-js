@@ -5,9 +5,6 @@ CSL.NameOutput.prototype.constrainNames = function () {
 	//
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
-		if (!this.freeters[v]) {
-			continue;
-		}
 		// Constrain independent authors here
 		this._imposeNameConstraints(this.freeters, this.freeters_count, v, "freeters");
 		// Constrain institutions here
@@ -39,20 +36,21 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, typ
 			// state.tmp.nameset_counter is the number of the nameset
 			// in the disambiguation try-sequence. Ouch.
 			discretionary_names_length = this.state.tmp.disambig_request.names[pos];
-		} else if (count[key] >= this.state.tmp["et-al-min"]) {
-			discretionary_names_length = this.state.tmp["et-al-use-first"];
+		} else if (count[key] >= this.etal_min) {
+			discretionary_names_length = this.etal_use_first;
 		}
 	} else {
 		if (this.state.tmp.disambig_request 
-			&& this.state.tmp.disambig_request.names[pos] > this.state.tmp["et-al-use-first"]) {
-			
-			if (count[key] < this.state.tmp["et-al-min"]) {
+			&& this.state.tmp.disambig_request.names[pos] > this.etal_use_first) {
+
+			if (count[key] < this.etal_min) {
 				discretionary_names_length = count[key];
 			} else {
 				discretionary_names_length = this.state.tmp.disambig_request.names[pos];
 			}
-		} else if (count[key] >= this.state.tmp["et-al-min"]) {
-			discretionary_names_length = this.state.tmp["et-al-use-first"];
+		} else if (count[key] >= this.etal_min) {
+			//discretionary_names_length = this.state.tmp["et-al-use-first"];
+			discretionary_names_length = this.etal_use_first;
 		}
 		// XXXX: This is a workaround. Under some conditions.
 		// Where namesets disambiguate on one of the two names
@@ -61,30 +59,32 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, typ
 		// matches to a single bibliography entry.
 		//
 		// 
-		if (this.state.tmp["et-al-use-last"] && discretionary_names_length > (this.state.tmp["et-al-min"] - 2)) {
-			discretionary_names_length = this.state.tmp["et-al-min"] - 2;
+		if (this.name.strings["et-al-use-last"] && discretionary_names_length > (this.etal_min - 2)) {
+			discretionary_names_length = this.etal_min - 2;
 		}
 	}
-	var sane = this.state.tmp["et-al-min"] >= this.state.tmp["et-al-use-first"];
+	var sane = this.etal_min >= this.etal_use_first;
 	var overlength = count[key] > discretionary_names_length;
 	// This var is used to control contextual join, and
 	// lies about the number of names when forceEtAl is true,
 	// unless normalized.
 	if (discretionary_names_length > count[key]) {
+
 		// Use actual truncated list length, to avoid overrun.
 		discretionary_names_length = display_names.length;
 	}
 	// forceEtAl is relevant when the author list is
 	// truncated to eliminate clutter.
 	if (sane && overlength) {
-		if (this.name["et-al-use-last"]) {
-			display_names = display_names.slice(0, discretionary_names_length).concat(display_names.slice(-1));
+		if (this.name.strings["et-al-use-last"]) {
+			lst[key] = display_names.slice(0, discretionary_names_length).concat(display_names.slice(-1));
 		} else {
-			display_names = display_names.slice(0, discretionary_names_length);
+			lst[key] = display_names.slice(0, discretionary_names_length);
 		}
 	}
-	this.state.tmp.disambig_settings.names[pos] = display_names.length;
-	
+	this.state.tmp.disambig_settings.names[pos] = lst[key].length;
+
+	// ???
 	if (!this.state.tmp.disambig_request) {
 		this.state.tmp.disambig_settings.givens[pos] = [];
 	}
@@ -99,7 +99,7 @@ CSL.NameOutput.prototype._setNamesCutCount = function () {
 		for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 			var v = this.variables[i];
 			if (this.freeters.length) {
-				this.state.tmp.names_cut.counts[v] = this.state.tmp["et-al-use-first"];
+				this.state.tmp.names_cut.counts[v] = this.etal_use_first;
 			}
 		}
 	}

@@ -142,9 +142,7 @@ CSL.Node.names = {
 			// "and" and "ellipsis" are set in node_name.js
 
 			func = function (state, Item, item) {
-				print("ALRIGHT: "+this["et-al"].multiple.blobs);
 				state.nameOutput["et-al"] = this["et-al"];
-				print("this et-al: "+this["et-al"]);
 				state.nameOutput["with"] = this["with"];
 				state.nameOutput.outputNames();
 			};

@@ -37,9 +37,7 @@ CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
 
 CSL.NameOutput.prototype.joinFreetersAndAffiliates = function (blobs) {
 	// Nothing, one or two, never more
-	print("Joining institutions ...");
-	// Problem here: "with" should not appear if only one.
-	var ret = this._join(blobs, " ", this["with"].single, this["with"].multiple);
+	var ret = this._join(blobs, "[never here]", this["with"].single, this["with"].multiple);
 	return ret;
 };
 

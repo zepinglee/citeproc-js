@@ -72,8 +72,3 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, key) {
 						}
 					}
 };
-
-
-// Stuff about disambiguation ...
-/*
- */

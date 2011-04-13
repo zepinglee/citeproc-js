@@ -2,7 +2,6 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 	// Note that et-al/ellipsis parameters are set on the basis
 	// of rendering order through the whole cite.
 	var pos = this.nameset_base;
-	print("nameset_base: "+this.nameset_base);
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
 		this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
@@ -22,7 +21,6 @@ CSL.NameOutput.prototype.renderInstitutionNames = function (value) {
 	// This is a straightforward rendering of the institution
 	// name; the fancy business with ellipsis or et al comes later,
 	// at the join stage.
-	print("literal: "+value.literal);
 	this.state.output.openLevel("empty");
 	this.state.output.append(value.literal);
 	this.state.output.closeLevel("empty");

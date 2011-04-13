@@ -62,7 +62,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 		this.freeters[v] = this._truncateNameList(this.freeters, v);
 	}
 	for (var v in this.persons) {
-		this.institutions_count[v] = this.institutions.length;
+		this.institutions_count[v] = this.institutions[v].length;
 		this._truncateNameList(this.institutions, v);
 		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
 		this.persons_count[v] = [];
