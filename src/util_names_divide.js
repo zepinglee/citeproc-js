@@ -101,22 +101,19 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values
 	this.institutions[variable] = [];
 	var persons = [];
 	// XXXX This is all wrong ...
+	// Need to iterate over variables
+	// Need to always clear
 	var institution = false;
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
 			persons.push(values[i]);
-		} else if (institution) {
-			this._markCutVariableAndCut(variable, persons);
-			this.persons.push(persons);
-			this.institutions.push(institution);
+		} else {
+			//this._markCutVariableAndCut(variable, persons);
+			this.persons[variable].push(persons);
+			this.institutions[variable].push(values[i]);
 			persons = [];
-			institution = values[i];
+			institution = true;
 		}
-	}
-	if (institution) {
-		this._markCutVariableAndCut(variable, persons);
-		this.persons.push(persons);
-		this.institutions.push(institution);
 	}
 };
 
