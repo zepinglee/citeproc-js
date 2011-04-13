@@ -89,17 +89,18 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.renderAllNames();
 	print("(9)");
 	var blob_list = [];
+	var affiliates = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
-		var variable = variables[i];
-		var affiliates = false;
-		for (var j = 0, jlen = this.institutions.length; j < jlen; j += 1) {
+		var v = variables[i];
+		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
 			print("(9a)");
-			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
+			affiliates.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
 		}
 		print("(9b)");
 		var institutions = this.joinInstitutions(affiliates);
+		affiliates = [];
 		print("(9c)");
-		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], institutions]);
+		var varblob = this.joinFreetersAndAffiliates([this.freeters[v], institutions]);
 		if (varblob) {
 			blob_list.push(varblob);
 		}

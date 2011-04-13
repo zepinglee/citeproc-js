@@ -32,9 +32,7 @@ CSL.NameOutput.prototype.joinPersonsAndInstitutions = function (blobs) {
 };
 
 CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
-	//return this._join(blobs, this.institution.delimiter, this.institution.and.single, this.institution.and.multiple);
-	print(this.name.and)
-	return this._join(blobs, this.institution.delimiter, this.institution.and.single, this.institution.and.multiple);
+	return this._join(blobs, this.institution.strings.delimiter, this.institution.and.single, this.institution.and.multiple);
 };
 
 CSL.NameOutput.prototype.joinFreetersAndAffiliates = function (blobs) {

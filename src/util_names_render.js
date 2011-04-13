@@ -22,7 +22,12 @@ CSL.NameOutput.prototype.renderInstitutionNames = function (value) {
 	// This is a straightforward rendering of the institution
 	// name; the fancy business with ellipsis or et al comes later,
 	// at the join stage.
-	return false;
+	print("literal: "+value.literal);
+	this.state.output.openLevel("empty");
+	this.state.output.append(value.literal);
+	this.state.output.closeLevel("empty");
+	var ret = this.state.output.pop();
+	return ret;
 };
 
 CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {

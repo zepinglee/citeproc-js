@@ -115,6 +115,8 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values
 		}
 	}
 	this.persons[variable].push(persons);
+	this.persons[variable].reverse();
+	this.institutions[variable].reverse();
 };
 
 CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
