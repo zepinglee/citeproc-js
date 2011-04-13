@@ -82,8 +82,8 @@ CSL.Node.name = {
 				// the ellipsis placeholder (Polish is a particularly tough case for that).
 				var myellipsis = "\u2026";
 				this["ellipsis"] = {};
-				this["ellipsis"].single = new CSL.Blob(myellipsis, "empty");
-				this["ellipsis"].multiple = new CSL.Blob(myellipsis, "empty");
+				this["ellipsis"].single = new CSL.Blob("empty", myellipsis);
+				this["ellipsis"].multiple = new CSL.Blob("empty", myellipsis);
 				this["ellipsis"].single.strings.prefix = " ";
 				this["ellipsis"].single.strings.suffix = " ";
 				this["ellipsis"].multiple.strings.prefix = " ";
@@ -102,9 +102,9 @@ CSL.Node.name = {
 					var and_suffix = "";
 				}
 				this["and"] = {};
-				this["and"].single = new CSL.Blob(myand, "empty");
+				this["and"].single = new CSL.Blob("empty", myand);
 				this["and"].single.strings.suffix = and_suffix;
-				this["and"].multiple = new CSL.Blob(myand, "empty");
+				this["and"].multiple = new CSL.Blob("empty", myand);
 				this["and"].multiple.strings.suffix = and_suffix;
 				if (this.strings["delimiter-precedes-last"] === "always") {
 					this["and"].single.strings.prefix = this.strings.delimiter;

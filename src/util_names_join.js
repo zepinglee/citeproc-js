@@ -13,13 +13,14 @@
 CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 	var ret;
 	//
-	this.etal_spec = [];
+	//this.etal_spec = [];
 	if (this.etal_spec[pos] === 1) {
+		print("spec: "+this.etal_spec[pos]);
 		ret = this._joinPersonsEtAl(blobs);
 	} else if (this.etal_spec[pos] === 2) {
-		ret = this._join(blobs, this.name.delimiter, this.name.ellipsis_single, this.name.ellipsis_multiple);
+		ret = this._join(blobs, this.name.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple);
 	} else {
-		ret = this._join(blobs, this.name.delimiter, this.name.and_single, this.name.and_multiple);
+		ret = this._join(blobs, this.name.delimiter, this.name.and.single, this.name.and.multiple);
 	}
 	return ret;
 };
@@ -31,36 +32,43 @@ CSL.NameOutput.prototype.joinPersonsAndInstitutions = function (blobs) {
 };
 
 CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
-	return this._join(blobs, this.institution.delimiter, this.institution.and_single, this.institution.and_multiple);
+	//return this._join(blobs, this.institution.delimiter, this.institution.and.single, this.institution.and.multiple);
+	return this._join(blobs, this.institution.delimiter, this.name.and.single, this.name.and.multiple);
 };
 
 CSL.NameOutput.prototype.joinFreetersAndAffiliates = function (blobs) {
 	// Nothing, one or two, never more
-	return this._join(blobs, false, this.with_single, this.with_multiple);
+	print("XX");
+	var ret = this._join(blobs, false, this["with"].single, this["with"].multiple);
+	print("YY");
+	return ret;
 };
 
 
 CSL.NameOutput.prototype._joinPersonsEtAl = function (blobs) {
-	
+	print("gogo");	
 	//
     var blob = this._join(blobs, this.name.delimiter);
 	if (!blob) {
 		ret = false;
 	}
 	// notSerious
-	this.state.openLevel("empty");
-	this.state.append(blob, "literal", true);
+	this.state.output.openLevel("empty");
+	this.state.output.append(blob, "literal", true);
 	if (blobs.length > 1) {
-		this.state.output.append(this.etal_multiple, "literal", true);
+		this.state.output.append(this["et-al"].multiple, "literal", true);
 	} else if (blobs.length === 1) {
-		this.state.output.append(this.etal_single, "literal", true);
+		print("I AM ONE");
+		this.state.output.append(this["et-al"].single, "literal", true);
 	}
-	this.state.closeLevel("empty");
+	this.state.output.closeLevel("empty");
 	return this.state.output.pop();
 };
 
 
 CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
+	print("single: "+single);
+	print("multiple: "+multiple);
 	if (!blobs) {
 		return false;
 	}
@@ -84,11 +92,13 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 			blobs[i].strings.suffix += delimiter;
 		}
 		if (multiple) {
-			blobs = blobs.slice(0, -1).push(multiple).concat(blobs.slice(-1))
+			blobs.push(multiple)
 		}
 	}
+	this.state.output.openLevel("empty");
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
 		this.state.output.append(blobs[i], false, true);
 	}
+	this.state.output.closeLevel("empty");
 	return this.state.output.pop();
 };

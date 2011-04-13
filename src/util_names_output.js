@@ -93,9 +93,12 @@ CSL.NameOutput.prototype.outputNames = function () {
 		var variable = variables[i];
 		var affiliates = false;
 		for (var j = 0, jlen = this.institutions.length; j < jlen; j += 1) {
+			print("(9a)");
 			var affiliates = this.joinPersonsAndInstitutions([this.persons[j], this.institutions[j]]);
 		}
+		print("(9b)");
 		var institutions = this.joinInstitutions(affiliates);
+		print("(9c)");
 		var varblob = this.joinFreetersAndAffiliates([this.freeters[variable], institutions]);
 		if (varblob) {
 			blob_list.push(varblob);

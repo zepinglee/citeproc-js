@@ -2,7 +2,7 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 	// Note that et-al/ellipsis parameters are set on the basis
 	// of rendering order through the whole cite.
 	var pos = this.nameset_base;
-	print("namesets_base: "+this.namesets_base);
+	print("nameset_base: "+this.nameset_base);
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
 		this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);

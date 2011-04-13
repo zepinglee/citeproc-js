@@ -98,10 +98,11 @@ CSL.Node.names = {
 				var etal_default_prefix = "";
 				var etal_suffix = "";
 			}
+			print("Setting et-al on names END");
 			this["et-al"] = {};
-			this["et-al"].single = new CSL.Blob(myetal, "empty");
+			this["et-al"].single = new CSL.Blob("empty", myetal);
 			this["et-al"].single.strings.suffix = etal_suffix;
-			this["et-al"].multiple = new CSL.Blob(myetal, "empty");
+			this["et-al"].multiple = new CSL.Blob("empty", myetal);
 			this["et-al"].multiple.strings.suffix = etal_suffix;
 			if (this.strings["delimiter-precedes-et-al"] === "always") {
 				this["et-al"].single.strings.prefix = this.strings.delimiter;
@@ -123,9 +124,9 @@ CSL.Node.names = {
 				var with_suffix = "";
 			}
 			this["with"] = {};
-			this["with"].single = new CSL.Blob(mywith, "empty");
+			this["with"].single = new CSL.Blob("empty", mywith);
 			this["with"].single.strings.suffix = with_suffix;
-			this["with"].multiple = new CSL.Blob(mywith, "empty");
+			this["with"].multiple = new CSL.Blob("empty", mywith);
 			this["with"].multiple.strings.suffix = with_suffix;
 			if (this.strings["delimiter-precedes-last"] === "always") {
 				this["with"].single.strings.prefix = this.strings.delimiter;
@@ -141,6 +142,10 @@ CSL.Node.names = {
 			// "and" and "ellipsis" are set in node_name.js
 
 			func = function (state, Item, item) {
+				print("ALRIGHT: "+this["et-al"].multiple.blobs);
+				state.nameOutput["et-al"] = this["et-al"];
+				print("this et-al: "+this["et-al"]);
+				state.nameOutput["with"] = this["with"];
 				state.nameOutput.outputNames();
 			};
 			this.execs.push(func);
