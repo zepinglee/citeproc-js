@@ -70,6 +70,7 @@ CSL.Node.name = {
 			
 			// The "and" and "ellipsis" characters are cast as blobs
 			// on cs:name here, in single and multiple forms.
+
 			this.strings.et_al = state.getTerm("et-al", "long", 0);
 			if (this.strings["et-al-use-last"]) {
 				// We use the dedicated Unicode ellipsis character because
