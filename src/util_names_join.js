@@ -38,9 +38,9 @@ CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
 
 CSL.NameOutput.prototype.joinFreetersAndAffiliates = function (blobs) {
 	// Nothing, one or two, never more
-	print("XX");
-	var ret = this._join(blobs, false, this["with"].single, this["with"].multiple);
-	print("YY");
+	print("Joining institutions ...");
+	// Problem here: "with" should not appear if only one.
+	var ret = this._join(blobs, " ", this["with"].single, this["with"].multiple);
 	return ret;
 };
 
@@ -78,6 +78,8 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 			blobs = blobs.slice(0, i).concat(blobs.slice(i + 1));
 		}
 	}
+	// XXXX This needs some attention before moving further.
+	// Code is not sufficiently transparent.
 	if (!blobs.length) {
 		return false;
 	} else if (single && blobs.length === 2) {
@@ -88,11 +90,18 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 		} else {
 			var delimiter_offset = 1;
 		}
+		// It kind of makes sense down to here.
 		for (var i = 0, ilen = blobs.length - delimiter_offset; i < ilen; i += 1) {
 			blobs[i].strings.suffix += delimiter;
 		}
-		if (multiple) {
-			blobs.push(multiple)
+		if (blobs.length > 1) {
+			var blob = blobs.pop();
+			if (multiple) {
+				blobs.push(multiple);
+			} else {
+				blobs.push(single);
+			}
+			blobs.push(blob);
 		}
 	}
 	this.state.output.openLevel("empty");
