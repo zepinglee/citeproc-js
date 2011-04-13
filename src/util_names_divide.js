@@ -55,6 +55,7 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 	this.institutions = {};
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
+		this.variable_offset[v] = this.nameset_offset;
 		var values = this._normalizeVariableValue(Item, v);
 		this._getFreeters(v, values);
 		this.nameset_offset += 1;

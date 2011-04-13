@@ -1,26 +1,24 @@
-/*
- else {
-		if (!state.tmp.sort_key_flag) {
-			if (display_names.length > 1) {
-				if (this.state.output.getToken("name").strings.and) {
-					and_term = this.state.output.getToken("name").strings.and;
-				}
-			}
-		}
-	}
- */
-
 CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 	var ret;
-	//
-	//this.etal_spec = [2];
 	if (this.etal_spec[pos] === 1) {
-		ret = this._joinPersonsEtAl(blobs);
+		ret = this._joinEtAl(blobs);
 	} else if (this.etal_spec[pos] === 2) {
-		print("spec: "+this.etal_spec[pos]);
-		ret = this._join(blobs, this.name.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple);
+		ret = this._joinEllipsis(blobs);
 	} else {
-		ret = this._join(blobs, this.name.delimiter, this.name.and.single, this.name.and.multiple);
+		ret = this._joinAnd(blobs, "name");
+	}
+	return ret;
+};
+
+
+CSL.NameOutput.prototype.joinInstitutionSets = function (blobs, pos) {
+	var ret;
+	if (this.etal_spec[pos] === 1) {
+		ret = this._joinEtAl(blobs);
+	} else if (this.etal_spec[pos] === 2) {
+		ret = this._joinEllipsis(blobs);
+	} else {
+		ret = this._joinAnd(blobs, "institution");
 	}
 	return ret;
 };
@@ -28,24 +26,20 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 
 CSL.NameOutput.prototype.joinPersonsAndInstitutions = function (blobs) {
 	//
-	return this._join(blobs, this.name.delimiter);
+	return this._join(blobs, this.name.strings.delimiter);
 };
 
-CSL.NameOutput.prototype.joinInstitutions = function (blobs) {
-	return this._join(blobs, this.institution.strings.delimiter, this.institution.and.single, this.institution.and.multiple);
-};
-
-CSL.NameOutput.prototype.joinFreetersAndAffiliates = function (blobs) {
+CSL.NameOutput.prototype.joinFreetersAndInstitutionSets = function (blobs) {
 	// Nothing, one or two, never more
 	var ret = this._join(blobs, "[never here]", this["with"].single, this["with"].multiple);
 	return ret;
 };
 
 
-CSL.NameOutput.prototype._joinPersonsEtAl = function (blobs) {
-	print("gogo");	
+CSL.NameOutput.prototype._joinEtAl = function (blobs) {
+	print("gogo: "+this.name.strings.delimiter);	
 	//
-    var blob = this._join(blobs, this.name.delimiter);
+    var blob = this._join(blobs, this.name.strings.delimiter);
 	if (!blob) {
 		ret = false;
 	}
@@ -60,6 +54,16 @@ CSL.NameOutput.prototype._joinPersonsEtAl = function (blobs) {
 	}
 	this.state.output.closeLevel("empty");
 	return this.state.output.pop();
+};
+
+
+CSL.NameOutput.prototype._joinEllipsis = function (blobs) {
+	return this._join(blobs, this.name.strings.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple);
+};
+
+
+CSL.NameOutput.prototype._joinAnd = function (blobs, type) {
+	return this._join(blobs, this[type].strings.delimiter, this[type].and.single, this[type].and.multiple);
 };
 
 
@@ -106,3 +110,17 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 	this.state.output.closeLevel("empty");
 	return this.state.output.pop();
 };
+
+
+/*
+ else {
+		if (!state.tmp.sort_key_flag) {
+			if (display_names.length > 1) {
+				if (this.state.output.getToken("name").strings.and) {
+					and_term = this.state.output.getToken("name").strings.and;
+				}
+			}
+		}
+	}
+ */
+

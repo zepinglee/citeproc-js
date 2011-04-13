@@ -73,6 +73,7 @@ CSL.NameOutput.prototype.init = function (names) {
 
 CSL.NameOutput.prototype.outputNames = function () {
 	var variables = this.variables;
+	this.variable_offset = {};
 	print("(2)");
 	this.getEtAlConfig();
 	print("(3)");
@@ -89,15 +90,16 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.renderAllNames();
 	print("(9)");
 	var blob_list = [];
-	var affiliates = [];
+	var institution_sets = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
-			affiliates.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
+			institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
 		}
-		var institutions = this.joinInstitutions(affiliates);
+		var pos = this.nameset_base + this.variable_offset[v] + 1;
+		var institutions = this.joinInstitutionSets(institution_sets, pos);
 		affiliates = [];
-		var varblob = this.joinFreetersAndAffiliates([this.freeters[v], institutions]);
+		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
 		if (varblob) {
 			blob_list.push(varblob);
 		}
