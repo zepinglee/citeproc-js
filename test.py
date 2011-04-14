@@ -127,7 +127,7 @@ class Bundle:
         f.extend(["node_institutionpart","node_key","node_label","node_layout","node_macro"])
 
         f.extend(["util_names_output","util_names_tests","util_names_truncate"])
-        f.extend(["util_names_divide","util_names_label","util_names_join"])
+        f.extend(["util_names_divide","util_names_label","util_names_join","util_names_disambig"])
         f.extend(["util_names_common","util_names_constraints","util_names_etalconfig"])
 
         f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
