@@ -207,8 +207,8 @@ CSL.Node.text = {
 					this.execs.push(func);
 				}
 			} else {
-				if (state.build.term) {
-				    term = state.build.term;
+				if (this.strings.term) {
+				    term = this.strings.term;
 				    term = state.getTerm(term, form, plural);
 				    if (this.strings["strip-periods"]) {
 					term = term.replace(/\./g, "");

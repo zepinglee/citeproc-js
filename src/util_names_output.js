@@ -47,7 +47,7 @@
  */
 
 CSL.NameOutput = function(state, Item, item, variables) {
-	this.debug = true;
+	this.debug = false;
 	if (this.debug) {
 		print("(1)");
 	}
