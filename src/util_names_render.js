@@ -35,14 +35,14 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 		var names = [];
 		for (var i = 0, ilen = values.length; i < ilen; i += 1) {
 			var val = values[i];
-			names.push(this._renderOnePersonalName(val, i));
+			names.push(this._renderOnePersonalName(val, pos, i));
 		}
 		ret = this.joinPersons(names, pos);
 	}
 	return ret;
 };
 
-CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos) {
+CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	// Extract name parts. With a rusty pair of piers if necessary.
 	var name = this._normalizeNameInput(value);
 	// XXX Possibly an adjustment to particles with apostrophe happens here
@@ -51,11 +51,16 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos) {
 	// - Joins between the two name groups (say, ", ").
 	// - Join to the suffix (say, ", " or " ").
 	// How to express this cleanly?
-	var non_dropping_particle = this._nonDroppingParticle(name);
 	var dropping_particle = this._droppingParticle(name);
 	var family = this._familyName(name);
+	var non_dropping_particle = this._nonDroppingParticle(name);
 	var given = this._givenName(name);
 	var suffix = this._nameSuffix(name);
+	if (this._isShort(pos, i)) {
+		non_dropping_particle = false;
+		given = false;
+		suffix = false;
+	}
 	var sort_sep = this.name["sort-separator"];
 	if (name["comma-suffix"]) {
 		var suffix_sep = ", ";
@@ -77,7 +82,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos) {
 			var merged = this._join([family, second], sort_sep);
 			var blob = this._join([merged, suffix], suffix_sep);
 		}
-	} else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && pos === 0)) {
+	} else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0)) {
 		//
 		// Discretionary sort ordering and inversions
 		//
@@ -102,6 +107,37 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos) {
 	this.state.output.append(blob, "literal", true);
 	return this.state.output.pop();
 };
+
+CSL.NameOutput.prototype._isShort = function (pos, i) {
+	if (0 === this.state.tmp.disambig_settings.givens[pos][i]) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+/*
+		// Do not include given name, dropping particle or suffix in strict short form of name
+
+		// If ends in an apostrophe, is a particle, and is immediately
+		// followed by family, merge particle to family.
+		if (key === "dropping-particle" 
+		    && ["'","\u02bc","\u2019"].indexOf(namepart.slice(-1)) > -1
+		    && pos < subsequence.length - 1
+		    && subsequence[pos + 1] === "family") {
+			preffie = namepart;
+			continue;
+		}
+		// initialize if appropriate
+		if ("given" === key) {
+			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)] && !name.block_initialize) {
+				initialize_with = state.output.getToken("name").strings["initialize-with"];
+				namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
+			} else {
+				namepart = CSL.Util.Names.unInitialize(state, namepart);
+			}
+		}
+*/
 
 CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 	name = {
