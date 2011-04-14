@@ -69,7 +69,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	}
 	var romanesque = name.family.match(CSL.ROMANESQUE_REGEXP);
 	if (!romanesque) {
-		var blob = this._join([non_dropping_particle, family, given]);
+		var blob = this._join([non_dropping_particle, family, given], "");
 	} else if (name["static-ordering"]) { // entry likes sort order
 		var blob = this._join([non_dropping_particle, family, given], " ");
 	} else if (this.state.tmp.sort_key_flag) {
@@ -105,7 +105,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	}
 	// notSerious
 	this.state.output.append(blob, "literal", true);
-	return this.state.output.pop();
+	var ret = this.state.output.pop();
+	return ret;
 };
 
 CSL.NameOutput.prototype._isShort = function (pos, i) {

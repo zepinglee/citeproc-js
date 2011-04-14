@@ -93,11 +93,6 @@ CSL.Registry.NameReg = function (state) {
 		var nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
 		set_keys(this.state, "" + item_id, nameobj);
 		//
-		// give literals a pass
-		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
-			return request_base;
-		}
-		//
 		// possible options are:
 		//
 		// <option disambiguate-add-givenname value="true"/> (a)
@@ -120,6 +115,11 @@ CSL.Registry.NameReg = function (state) {
 			param = 0;
 		} else if ("string" === typeof initials) {
 			param = 1;
+		}
+		//
+		// give literals a pass
+		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
+			return param;
 		}
 		//
 		// adjust value upward if appropriate
