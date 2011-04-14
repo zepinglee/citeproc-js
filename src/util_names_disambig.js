@@ -48,12 +48,12 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
 			// This is limited to by-cite disambiguation.
 			if (val === 1 && 
 				this.state.opt["givenname-disambiguation-rule"] === "by-cite" && 
-				"undefined" === typeof this.strings["initialize-with"]) {
+				"undefined" === typeof this.name.strings["initialize-with"]) {
 				val = 2;
 			}
 			var param = val;
 			if (this.state.opt["disambiguate-add-givenname"]) {
-				param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, param, this.name.strings.form, this.strings["initialize-with"]);
+				param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, param, this.name.strings.form, this.name.strings["initialize-with"]);
 			}
 		} else {
 			//
