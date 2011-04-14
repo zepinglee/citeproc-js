@@ -23,7 +23,6 @@ CSL.NameOutput.prototype._setEtAlParameter = function (type, v, j) {
 		if (this.etal_use_last) {
 			this.etal_spec.push(2);
 		} else {
-			print("Well ...");
 			this.etal_spec.push(1);
 		}
 	} else {

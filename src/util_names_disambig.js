@@ -6,6 +6,7 @@ CSL.NameOutput.prototype.disambigNames = function () {
 		var v = this.variables[i];
 		this._runDisambigNames(this.freeters[v], pos);
 		// We're skipping institutions, so +2
+		this.state.tmp.disambig_settings.givens.push([]);
 		pos += 2;
 		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
 			this._runDisambigNames(this.persons[v][j], pos);
