@@ -82,39 +82,9 @@ CSL.Node.names = {
 				this[key] = state.build[key];
 				state.build[key] = undefined;
 			}
-			// Et al. and with terms
-			if (this["et-al"] && "string" === typeof this["et-al"].term) {
-				var myetal = state.getTerm(this.strings["et-al"]);
-				if (!myetal) {
-					myetal = this.strings["et-al"]
-				}
-			} else {
-				var myetal = state.getTerm("et-al", "long", 0);
-			}
-			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(myetal)) {
-				var etal_default_prefix = " ";
-				var etal_suffix = " ";
-			} else {
-				var etal_default_prefix = "";
-				var etal_suffix = "";
-			}
-			print("Setting et-al on names END");
-			this["et-al"] = {};
-			this["et-al"].single = new CSL.Blob("empty", myetal);
-			this["et-al"].single.strings.suffix = etal_suffix;
-			this["et-al"].multiple = new CSL.Blob("empty", myetal);
-			this["et-al"].multiple.strings.suffix = etal_suffix;
-			if (this.strings["delimiter-precedes-et-al"] === "always") {
-				this["et-al"].single.strings.prefix = this.strings.delimiter;
-				this["et-al"].multiple.strings.prefix = this.strings.delimiter;
-			} else if (this.strings["delimiter-precedes-et-al"] === "contextual") {
-				this["et-al"].single.strings.prefix = etal_default_prefix;
-				this["et-al"].multiple.strings.prefix = this.strings.delimiter;
-			} else {
-				this["et-al"].single.strings.prefix = etal_default_prefix;
-				this["et-al"].multiple.strings.prefix = etal_default_prefix;
-			}
-
+			// The with term. This isn't the right place
+			// for this, but it's all hard-wired at the
+			// moment.
 			var mywith = "with";
 			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(mywith)) {
 				var with_default_prefix = " ";
@@ -142,7 +112,6 @@ CSL.Node.names = {
 			// "and" and "ellipsis" are set in node_name.js
 
 			func = function (state, Item, item) {
-				state.nameOutput["et-al"] = this["et-al"];
 				state.nameOutput["with"] = this["with"];
 				state.nameOutput.outputNames();
 			};

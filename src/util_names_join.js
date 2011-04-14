@@ -37,7 +37,6 @@ CSL.NameOutput.prototype.joinFreetersAndInstitutionSets = function (blobs) {
 
 
 CSL.NameOutput.prototype._joinEtAl = function (blobs) {
-	print("gogo: "+this.name.strings.delimiter);	
 	//
     var blob = this._join(blobs, this.name.strings.delimiter);
 	if (!blob) {
@@ -47,10 +46,9 @@ CSL.NameOutput.prototype._joinEtAl = function (blobs) {
 	this.state.output.openLevel("empty");
 	this.state.output.append(blob, "literal", true);
 	if (blobs.length > 1) {
-		this.state.output.append(this["et-al"].multiple, "literal", true);
+		this.state.output.append(this.name["et-al"].multiple, "literal", true);
 	} else if (blobs.length === 1) {
-		print("I AM ONE");
-		this.state.output.append(this["et-al"].single, "literal", true);
+		this.state.output.append(this.name["et-al"].single, "literal", true);
 	}
 	this.state.output.closeLevel("empty");
 	return this.state.output.pop();
