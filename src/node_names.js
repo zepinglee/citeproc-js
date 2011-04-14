@@ -82,6 +82,11 @@ CSL.Node.names = {
 				this[key] = state.build[key];
 				state.build[key] = undefined;
 			}
+
+			// Labels, if any
+			this.label = state.build.name_label;
+			state.build.name_label = undefined;
+
 			// The with term. This isn't the right place
 			// for this, but it's all hard-wired at the
 			// moment.
@@ -110,9 +115,9 @@ CSL.Node.names = {
 			}
 
 			// "and" and "ellipsis" are set in node_name.js
-
 			func = function (state, Item, item) {
 				state.nameOutput["with"] = this["with"];
+				state.nameOutput.label = this.label;
 				state.nameOutput.outputNames();
 			};
 			this.execs.push(func);
@@ -128,6 +133,8 @@ CSL.Node.names = {
 				state.tmp.can_block_substitute = false;
 			};
 			this.execs.push(func);
+
+			state.build.name_flag = false;
 		}
 		target.push(this);
 

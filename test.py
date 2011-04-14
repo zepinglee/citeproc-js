@@ -130,6 +130,8 @@ class Bundle:
         f.extend(["util_names_divide","util_names_label","util_names_join","util_names_disambig"])
         f.extend(["util_names_common","util_names_constraints","util_names_etalconfig"])
 
+        f.extend(["util_label"])
+
         f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
         f.extend(["node_substitute","node_text","attributes","system"])
         f.extend(["stack","util","util_transform"])

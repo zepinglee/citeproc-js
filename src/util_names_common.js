@@ -42,8 +42,6 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 };
 
 CSL.NameOutput.prototype._compareNamesets = function (base_nameset, nameset) {
-	var name, pos, len, part, ppos, llen;
-	//if (base_nameset.length !== nameset.length || base_nameset.etal !== nameset.etal) {
 	if (base_nameset.length !== nameset.length) {
 		return false;
 	}

@@ -521,6 +521,8 @@ if (!CSL.Node) {
     load("./src/util_names_etal.js");
     load("./src/util_names_render.js");
 
+    load("./src/util_label.js");
+
 	// jslint OK
     load("./src/node_name.js");
 	// jslint OK

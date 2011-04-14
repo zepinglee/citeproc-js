@@ -368,7 +368,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				ret.push(blobjr);
 			} else if (blobjr.blobs) {
 				// (skips empty strings)
-				b = blobjr.blobs;
+				b = txt_esc(blobjr.blobs);
 
 				use_suffix = blobjr.strings.suffix;
 				use_prefix = blobjr.strings.prefix;

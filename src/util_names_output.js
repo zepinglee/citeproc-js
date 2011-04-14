@@ -128,7 +128,12 @@ CSL.NameOutput.prototype.outputNames = function () {
 		var institutions = this.joinInstitutionSets(institution_sets, pos);
 		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
 		if (varblob) {
+			// Apply labels, if any
+			varblob = this._applyLabels(varblob, v);
 			blob_list.push(varblob);
+		}
+		if (this.common_term) {
+			break;
 		}
 	}
 	if (this.debug) {
@@ -158,6 +163,57 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("(16)");
 	}
 };
+
+CSL.NameOutput.prototype._applyLabels = function (blob, v) {
+	if (!this.label) {
+		return blob;
+	}
+	var plural = 0;
+	var num = this.freeters[v].length + this.institutions[v].length;
+	if (num > 1) {
+		plural = 1;
+	} else {
+		for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+			num += this.persons[v][j].length;
+		}
+		if (num > 1) {
+			plural = 1;
+		}
+	}
+	// Some code duplication here, should be factored out.
+	if (this.label.before) {
+		var txt = this._buildLabel(v, plural, "before")
+		var label = new CSL.Blob(this.label.before, txt);
+		var newblob = new CSL.Blob;
+		newblob.push(label);
+		newblob.push(blob);
+		blob = newblob;
+	}
+	if (this.label.after) {
+		var txt = this._buildLabel(v, plural, "after")
+		var label = new CSL.Blob(this.label.after, txt);
+		var newblob = new CSL.Blob;
+		newblob.push(blob);
+		newblob.push(label);
+		blob = newblob;
+	}
+	return blob;
+};
+
+CSL.NameOutput.prototype._buildLabel = function (term, plural, position) {
+	if (this.common_term) {
+		term = this.common_term;
+	}
+	var node = this.label[position];
+	if (node) {
+		var ret = CSL.castLabel(this.state, node, term, plural);
+	} else {
+		var ret = false;
+	}
+	return ret;
+};
+
+
 
 /*
 CSL.NameOutput.prototype.suppressNames = function() {

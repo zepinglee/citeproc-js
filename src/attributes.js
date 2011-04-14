@@ -111,11 +111,7 @@ CSL.Attributes["@macro"] = function (state, arg) {
 
 
 CSL.Attributes["@term"] = function (state, arg) {
-	if (this.name === "et-al") {
-		this.strings.term = arg;
-	} else {
-		state.build.term = arg;
-	}
+	this.strings.term = arg;
 };
 
 
@@ -176,7 +172,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 	this.variables = arg.split(/\s+/);
 	this.variables_real = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
-		state.build.term = this.variables[0];
+		this.strings.term = this.variables[0];
 	} else if (["names", "date", "text", "number"].indexOf(this.name) > -1) {
 		//
 		// An oddity of variable handling is that this.variables

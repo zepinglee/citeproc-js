@@ -159,6 +159,9 @@ CSL.Node.name = {
 				}
 				state.nameOutput.name = this;
 			};
+			
+			state.build.name_flag = true;
+
 			this.execs.push(func);
 		}
 		target.push(this);
