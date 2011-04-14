@@ -49,27 +49,6 @@
 CSL.Util.Names = {};
 
 /**
- * Build a set of names, less any label or et al. tag
- */
-
-/**
- * Reinitialize scratch variables used by names machinery.
- */
-//
-// XXXX A handy guide to variable assignments that need
-// XXXX to be eliminated.  :)
-//
-CSL.Util.Names.reinit = function (state, Item) {
-	state.tmp.value = [];
-	state.tmp.name_et_al_term = false;
-	state.tmp.name_et_al_decorations = false;
-
-
-	state.tmp.name_et_al_form = "long";
-	state.tmp.et_al_prefix = false;
-};
-
-/**
  * Un-initialize a name (quash caps after first character)
  */
 CSL.Util.Names.unInitialize = function (state, name) {

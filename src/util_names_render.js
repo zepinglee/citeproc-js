@@ -73,7 +73,6 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos) {
 			var merged = this._join([first, given], sort_sep);
 			var blob = this._join([merged, suffix], suffix_sep);
 		} else {
-			sequence = [["suffixsep", "sortsep", "space"], ["family"], ["given", "dropping-particle", "non-dropping-particle"], ["suffix"]];
 			var second = this._join([given, dropping_particle, non_dropping_particle], " ");
 			var merged = this._join([family, second], sort_sep);
 			var blob = this._join([merged, suffix], suffix_sep);
