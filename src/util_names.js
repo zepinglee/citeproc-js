@@ -48,6 +48,8 @@
 
 CSL.Util.Names = {};
 
+CSL.Util.Names.compareNamesets = CSL.NameOutput.prototype._compareNamesets;
+
 /**
  * Un-initialize a name (quash caps after first character)
  */
