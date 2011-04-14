@@ -214,6 +214,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 
 CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	var token, blob, curr;
+	var useblob = true;
 	if ("undefined" === typeof str) {
 		return;
 	}
@@ -228,6 +229,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		token = this.formats.value().empty;
 	} else if (tokname === "literal") {
 		token = true;
+		useblob = false;
 	} else if ("string" === typeof tokname) {
 		token = this.formats.value()[tokname];
 	} else {
@@ -315,6 +317,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		this.state.fun.flipflopper.init(str, blob);
 		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
 		this.state.fun.flipflopper.processTags();
+	} else if (useblob) {
+		curr.push(blob);
 	} else {
 		curr.push(str);
 	}
