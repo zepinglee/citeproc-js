@@ -300,7 +300,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
 				this.base.names[this.nnameset] += 1;
 			}
 		}
-		if (this.nnameset === (this.base.names.length - 1) && this.base.names[this.nnameset] === this.maxvals[this.nnameset]) {
+		if ((this.nnameset === (this.base.names.length - 1) && this.base.names[this.nnameset] === this.maxvals[this.nnameset])) {
 			if (this.modeindex === (this.modes.length - 1)) {
 				return true;
 			} else {

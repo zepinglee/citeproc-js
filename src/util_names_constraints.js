@@ -7,12 +7,15 @@ CSL.NameOutput.prototype.constrainNames = function () {
 		var v = this.variables[i];
 		// Constrain independent authors here
 		this._imposeNameConstraints(this.freeters, this.freeters_count, v, "freeters");
+		this.state.tmp.names_max.push(this.freeters[v].length, "literal");
 		// Constrain institutions here
 		this._imposeNameConstraints(this.institutions, this.institutions_count, v, "institutions");
+		this.state.tmp.names_max.push(this.institutions[v].length, "literal");
 		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
 		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
 			// Constrain affiliated authors here
 			this._imposeNameConstraints(this.persons[v], this.persons_count[v], j, "persons");
+			this.state.tmp.names_max.push(this.persons[v][j].length, "literal");
 		}
 	}
 };
