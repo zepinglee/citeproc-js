@@ -44,7 +44,7 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 
 CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos) {
 	// Extract name parts. With a rusty pair of piers if necessary.
-	name = this._normalizeNameInput(value);
+	var name = this._normalizeNameInput(value);
 	// XXX Possibly an adjustment to particles with apostrophe happens here
 	// Below, we do need three join groups:
 	// - Joins within a name element group (say, space).
