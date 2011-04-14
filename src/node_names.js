@@ -116,6 +116,10 @@ CSL.Node.names = {
 
 			// "and" and "ellipsis" are set in node_name.js
 			func = function (state, Item, item) {
+				for (var i = 0, ilen = 3; i < ilen; i += 1) {
+					var key = ["family", "given", "et-al"][i];
+					state.nameOutput[key] = this[key];
+				}
 				state.nameOutput["with"] = this["with"];
 				state.nameOutput.label = this.label;
 				state.nameOutput.outputNames();

@@ -100,7 +100,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		}
 	} else { // plain vanilla
 		var second = this._join([dropping_particle, non_dropping_particle, family], " ");
-		var merged = this._join([given, family], " ");
+		var merged = this._join([given, second], " ");
 		var blob = this._join([merged, suffix], suffix_sep);
 	}
 	// notSerious
@@ -169,22 +169,22 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 */
 
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
-	this.state.output.append(name["non-dropping-particle"], "empty", true);
+	this.state.output.append(name["non-dropping-particle"], this.family, true);
 	return this.state.output.pop();
 };
 
 CSL.NameOutput.prototype._droppingParticle = function (name) {
-	this.state.output.append(name["dropping-particle"], "empty", true);
+	this.state.output.append(name["dropping-particle"], this.family, true);
 	return this.state.output.pop();
 };
 
 CSL.NameOutput.prototype._familyName = function (name) {
-	this.state.output.append(name["family"], "empty", true);
+	this.state.output.append(name["family"], this.family, true);
 	return this.state.output.pop();
 };
 
 CSL.NameOutput.prototype._givenName = function (name) {
-	this.state.output.append(name["given"], "empty", true);
+	this.state.output.append(name["given"], this.given, true);
 	return this.state.output.pop();
 };
 
