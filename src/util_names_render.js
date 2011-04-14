@@ -37,9 +37,7 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 			var val = values[i];
 			names.push(this._renderOnePersonalName(val, i));
 		}
-		print("ok? for "+pos+" (\"freeters\" index is special)");
 		ret = this.joinPersons(names, pos);
-		print("  yes")
 	}
 	return ret;
 };

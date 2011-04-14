@@ -47,7 +47,10 @@
  */
 
 CSL.NameOutput = function(state, Item, item, variables) {
-	print("(1)");
+	this.debug = false;
+	if (this.debug) {
+		print("(1)");
+	}
 	this.state = state;
 	this.Item = Item;
 	this.item = item;
@@ -74,23 +77,41 @@ CSL.NameOutput.prototype.init = function (names) {
 CSL.NameOutput.prototype.outputNames = function () {
 	var variables = this.variables;
 	this.variable_offset = {};
-	print("(2)");
+	if (this.debug) {
+		print("(2)");
+	}
 	this.getEtAlConfig();
-	print("(3)");
+	if (this.debug) {
+		print("(3)");
+	}
 	this.divideAndTransliterateNames();
-	print("(4)");
+	if (this.debug) {
+		print("(4)");
+	}
 	this.truncatePersonalNameLists();
-	print("(5)");
+	if (this.debug) {
+		print("(5)");
+	}
 	this.constrainNames();
-	print("(6)");
+	if (this.debug) {
+		print("(6)");
+	}
 	this.disambigNames();
-	print("(7)");
+	if (this.debug) {
+		print("(7)");
+	}
 	this.setEtAlParameters();
-	print("(8)");
+	if (this.debug) {
+		print("(8)");
+	}
 	this.setCommonTerm();
-	print("(9)");
+	if (this.debug) {
+		print("(9)");
+	}
 	this.renderAllNames();
-	print("(10)");
+	if (this.debug) {
+		print("(10)");
+	}
 	var blob_list = [];
 	var institution_sets = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
@@ -106,20 +127,32 @@ CSL.NameOutput.prototype.outputNames = function () {
 			blob_list.push(varblob);
 		}
 	}
-	print("(11)");
+	if (this.debug) {
+		print("(11)");
+	}
 	this.state.output.openLevel("empty");
-	print("(12)");
+	if (this.debug) {
+		print("(12)");
+	}
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
 		// notSerious
 		this.state.output.append(blob_list[i], "literal", true);
 	}
-	print("(13)");
+	if (this.debug) {
+		print("(13)");
+	}
 	this.state.output.closeLevel("empty");
-	print("(14)");
+	if (this.debug) {
+		print("(14)");
+	}
 	var blob = this.state.output.pop();
-	print("(15)");
+	if (this.debug) {
+		print("(15)");
+	}
 	this.state.output.append(blob, this.names);
-	print("(16)");
+	if (this.debug) {
+		print("(16)");
+	}
 };
 
 /*
