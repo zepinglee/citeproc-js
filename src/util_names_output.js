@@ -47,7 +47,7 @@
  */
 
 CSL.NameOutput = function(state, Item, item, variables) {
-	this.debug = false;
+	this.debug = true;
 	if (this.debug) {
 		print("(1)");
 	}
@@ -80,22 +80,27 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(2)");
 	}
+	// util_names_etalconfig.js
 	this.getEtAlConfig();
 	if (this.debug) {
 		print("(3)");
 	}
+	// util_names_divide.js
 	this.divideAndTransliterateNames();
 	if (this.debug) {
 		print("(4)");
 	}
+	// util_names_truncate.js
 	this.truncatePersonalNameLists();
 	if (this.debug) {
 		print("(5)");
 	}
+	// util_names_constraints.js
 	this.constrainNames();
 	if (this.debug) {
 		print("(6)");
 	}
+	// util_names_disambig.js
 	this.disambigNames();
 	if (this.debug) {
 		print("(7)");
@@ -121,7 +126,6 @@ CSL.NameOutput.prototype.outputNames = function () {
 		}
 		var pos = this.nameset_base + this.variable_offset[v] + 1;
 		var institutions = this.joinInstitutionSets(institution_sets, pos);
-		affiliates = [];
 		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
 		if (varblob) {
 			blob_list.push(varblob);

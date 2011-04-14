@@ -73,4 +73,3 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
 		this.state.tmp["et-al-min"] = this.etal_min;
 	}
 };
-
