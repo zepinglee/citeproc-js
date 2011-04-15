@@ -56,7 +56,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	var dropping_particle = this._droppingParticle(name);
 	var family = this._familyName(name);
 	var non_dropping_particle = this._nonDroppingParticle(name);
-	var given = this._givenName(name);
+	var given = this._givenName(name, pos, i);
 	var suffix = this._nameSuffix(name);
 	if (this._isShort(pos, i)) {
 		dropping_particle = false;
@@ -132,14 +132,6 @@ CSL.NameOutput.prototype._isShort = function (pos, i) {
 			continue;
 		}
 		// initialize if appropriate
-		if ("given" === key) {
-			if (1 === state.tmp.disambig_settings.givens[state.tmp.nameset_counter][(this.namenum + this.nameoffset)] && !name.block_initialize) {
-				initialize_with = state.output.getToken("name").strings["initialize-with"];
-				namepart = CSL.Util.Names.initializeWith(state, namepart, initialize_with);
-			} else {
-				namepart = CSL.Util.Names.unInitialize(state, namepart);
-			}
-		}
 */
 
 CSL.NameOutput.prototype._normalizeNameInput = function (value) {
@@ -192,8 +184,16 @@ CSL.NameOutput.prototype._familyName = function (name) {
 	return false;
 };
 
-CSL.NameOutput.prototype._givenName = function (name) {
-	if (this.state.output.append(name["given"], this.given, true)) {
+CSL.NameOutput.prototype._givenName = function (name, pos, i) {
+
+	if (1 === this.state.tmp.disambig_settings.givens[pos][i] && !name.block_initialize) {
+		var initialize_with = this.name.strings["initialize-with"];
+		name.given = CSL.Util.Names.initializeWith(this.state, name.given, initialize_with);
+	} else {
+		name.given = CSL.Util.Names.unInitialize(this.state, name.given);
+	}
+
+	if (this.state.output.append(name.given, this.given, true)) {
 		return this.state.output.pop();
 	}
 	return false;

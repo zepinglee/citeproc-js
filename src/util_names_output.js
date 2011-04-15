@@ -211,20 +211,20 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
 	}
 	// Some code duplication here, should be factored out.
 	if (this.label.before) {
-		var txt = this._buildLabel(v, plural, "before")
-		var label = new CSL.Blob(this.label.before, txt);
-		var newblob = new CSL.Blob;
-		newblob.push(label);
-		newblob.push(blob);
-		blob = newblob;
+		var txt = this._buildLabel(v, plural, "before");
+		this.state.output.openLevel("empty");
+		this.state.output.append(txt, this.label.before, true);
+		this.state.output.append(blob, "literal", true);
+		this.state.output.closeLevel("empty");
+		blob = this.state.output.pop();
 	}
 	if (this.label.after) {
 		var txt = this._buildLabel(v, plural, "after")
-		var label = new CSL.Blob(this.label.after, txt);
-		var newblob = new CSL.Blob;
-		newblob.push(blob);
-		newblob.push(label);
-		blob = newblob;
+		this.state.output.openLevel("empty");
+		this.state.output.append(blob, "literal", true);
+		this.state.output.append(txt, this.label.after, true);
+		this.state.output.closeLevel("empty");
+		blob = this.state.output.pop();
 	}
 	return blob;
 };

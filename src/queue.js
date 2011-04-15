@@ -326,21 +326,6 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	return true;
 };
 
-//
-// Maybe the way to do this is to take it by layers, and
-// analyze a FLAT list of blobs returned during recursive
-// execution.  If the list is all numbers and there is no
-// group decor, don't touch it.  If it ends in numbers,
-// set the group delimiter on the first in the series,
-// and join the strings with the group delimiter.  If it
-// has numbers followed by strings, render each number
-// in place, and join with the group delimiter.  Return
-// the mixed flat list, and recurse upward.
-//
-// That sort of cascade should work, and should be more
-// easily comprehensible than this mess.
-//
-
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters, use_prefix, txt_esc;
 	txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
