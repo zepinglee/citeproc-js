@@ -94,6 +94,8 @@ CSL.NameOutput.prototype._hasValues = function () {
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
 		if (this.Item[v]) {
+			// ??? If substitution is working correctly,
+			// this check should not be necessary
 			return true;
 		}
 	}
