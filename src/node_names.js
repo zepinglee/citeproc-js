@@ -71,18 +71,18 @@ CSL.Node.names = {
 
 
 		if (this.tokentype === CSL.START) {
+			// init can substitute
+			func = function (state, Item) {
+				state.tmp.can_substitute.push(true);
+			};
+			this.execs.push(func);
+
 
 			// init names
 			func = function (state, Item, item) {
 				state.parallel.StartVariable("names");
 			}
-			//this.execs.push(func);
-
-			// init can substitute
-			func = function (state, Item) {
-				state.tmp.can_substitute.push(true);
-			};
-			//this.execs.push(func);
+			this.execs.push(func);
 
 			func = function (state, Item, item) {
 				state.nameOutput.init(this);
