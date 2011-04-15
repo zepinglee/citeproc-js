@@ -67,6 +67,9 @@ CSL.Node.name = {
 			state.fixOpt(this, "et-al-use-last", "et-al-use-last");
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
+
+			// Et-al (onward processing in node_etal.js and node_names.js)
+			state.build.etal_term = "et-al";
 			
 			// And
 			if ("text" === this.strings["and"]) {
@@ -88,32 +91,6 @@ CSL.Node.name = {
 				this.and_prefix_multiple = this.strings.delimiter;
 			} else if (this.strings["delimiter-precedes-last"] === "contextual") {
 				this.and_prefix_multiple = this.strings.delimiter;
-			}
-
-			// Et-al
-			if (this["et-al"] && "string" === typeof this["et-al"].term) {
-				this.etal_term = state.getTerm(this.strings["et-al"]);
-				if (!this.etal_term) {
-					this.etal_term = this.strings["et-al"]
-				}
-			} else {
-				this.etal_term = state.getTerm("et-al", "long", 0);
-			}
-			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
-				this.etal_prefix_single = " ";
-				this.etal_prefix_multiple = " ";
-				this.etal_suffix = "";
-			} else {
-				this.etal_prefix_single = "";
-				this.etal_prefix_multiple = "";
-				this.etal_suffix = "";
-			}
-			if (this.strings["delimiter-precedes-et-al"] === "always") {
-				this.etal_prefix_single = this.strings.delimiter;
-				this.etal_prefix_multiple = this.strings.delimiter;
-			} else if (this.strings["delimiter-precedes-et-al"] === "contextual"
-					   || !this.strings["delimiter-precedes-et-al"]) {
-				this.etal_prefix_multiple = this.strings.delimiter;
 			}
 
 			if (this.strings["et-al-use-last"]) {
@@ -139,14 +116,6 @@ CSL.Node.name = {
 				this["and"].multiple = new CSL.Blob("empty", this.and_term);
 				this["and"].multiple.strings.prefix = this.and_prefix_multiple;
 				this["and"].multiple.strings.suffix = this.and_suffix;
-
-				this["et-al"] = {};
-				this["et-al"].single = new CSL.Blob("empty", this.etal_term);
-				this["et-al"].single.strings.suffix = this.etal_suffix;
-				this["et-al"].single.strings.prefix = this.etal_prefix_single;
-				this["et-al"].multiple = new CSL.Blob("empty", this.etal_term);
-				this["et-al"].multiple.strings.suffix = this.etal_suffix;
-				this["et-al"].multiple.strings.prefix = this.etal_prefix_multiple;
 
 				if (this.strings["et-al-use-last"]) {
 					this["ellipsis"] = {};

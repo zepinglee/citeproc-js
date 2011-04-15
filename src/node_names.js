@@ -130,14 +130,42 @@ CSL.Node.names = {
 				this["with"].multiple.strings.prefix = with_default_prefix;
 			}
 
+			// Et-al (strings only)
+			// Blob production has to happen inside nameOutput()
+			// since proper escaping requires access to the output
+			// queue.
+			if (state.build.etal_node) {
+				this.etal_style = state.build.etal_node;
+			} else {
+				this.etal_style = "empty";
+			}
+			this.etal_term = state.getTerm(state.build.etal_term, "long", 0);
+			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
+				this.etal_prefix_single = " ";
+				this.etal_prefix_multiple = " ";
+				this.etal_suffix = "";
+			} else {
+				this.etal_prefix_single = "";
+				this.etal_prefix_multiple = "";
+				this.etal_suffix = "";
+			}
+			// et-al affixes are further adjusted in nameOutput(),
+			// after the term (possibly changed in cs:et-al) is known.
+			
+
 			// "and" and "ellipsis" are set in node_name.js
 			func = function (state, Item, item) {
 				for (var i = 0, ilen = 3; i < ilen; i += 1) {
-					var key = ["family", "given", "et-al"][i];
+					var key = ["family", "given"][i];
 					state.nameOutput[key] = this[key];
 				}
 				state.nameOutput["with"] = this["with"];
 				state.nameOutput.label = this.label;
+				state.nameOutput.etal_style = this.etal_style;
+				state.nameOutput.etal_term = this.etal_term;
+				state.nameOutput.etal_prefix_single = this.etal_prefix_single;
+				state.nameOutput.etal_prefix_multiple = this.etal_prefix_multiple;
+				state.nameOutput.etal_suffix = this.etal_suffix;
 				state.nameOutput.outputNames();
 			};
 			this.execs.push(func);

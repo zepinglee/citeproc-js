@@ -42,13 +42,14 @@ CSL.NameOutput.prototype._joinEtAl = function (blobs) {
 	if (!blob) {
 		ret = false;
 	}
+	
 	// notSerious
 	this.state.output.openLevel("empty");
 	this.state.output.append(blob, "literal", true);
 	if (blobs.length > 1) {
-		this.state.output.append(this.name["et-al"].multiple, "literal", true);
+		this.state.output.append(this["et-al"].multiple, "literal", true);
 	} else if (blobs.length === 1) {
-		this.state.output.append(this.name["et-al"].single, "literal", true);
+		this.state.output.append(this["et-al"].single, "literal", true);
 	}
 	this.state.output.closeLevel("empty");
 	return this.state.output.pop();

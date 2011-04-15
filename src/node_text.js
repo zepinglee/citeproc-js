@@ -175,6 +175,7 @@ CSL.Node.text = {
 									names = Item[n];
 									if (names && names.length) {
 										name = names[0];
+										break;
 									}
 									if (name && name.family) {
 										myname = name.family.replace(/\s+/, "");
@@ -184,6 +185,7 @@ CSL.Node.text = {
 										if (m) {
 											myname = myname.slice(m[1].length);
 										}
+										break;
 									}
 								}
 							}

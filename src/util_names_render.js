@@ -141,7 +141,8 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 		suffix:value.suffix,
 		"comma-suffix":value["comma-suffix"],
 		"non-dropping-particle":value["non-dropping-particle"],
-		"dropping-particle":value["dropping-particle"]
+		"dropping-particle":value["dropping-particle"],
+		"static-ordering":value["static-ordering"]
 	}
 	this._parseName(name);
 	return name;
