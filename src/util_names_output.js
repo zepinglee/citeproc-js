@@ -126,6 +126,13 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(6)");
 	}
+	// form="count"
+	if (this.name.strings.form === "count") {
+		print("COUNT ME! "+this.names_count);
+		this.state.output.append(this.names_count, "empty");
+		return;
+	}
+
 	// util_names_disambig.js
 	this.disambigNames();
 	if (this.debug) {
