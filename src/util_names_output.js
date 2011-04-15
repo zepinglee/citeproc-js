@@ -76,16 +76,28 @@ CSL.NameOutput.prototype.init = function (names) {
 
 
 CSL.NameOutput.prototype.reinit = function (names) {
-	this.nameset_offset = 0;
-	// What-all should be carried across from the subsidiary
-	// names node, and on what conditions? For each attribute,
-	// and decoration, is it an override, or is it additive?
-	this.variables = names.variables;
-	this.suppress = {
-		persons:false,
-		institutions:false,
-		freeters:false
+	if (!this._hasValues()) {
+		this.nameset_offset = 0;
+		// What-all should be carried across from the subsidiary
+		// names node, and on what conditions? For each attribute,
+		// and decoration, is it an override, or is it additive?
+		this.variables = names.variables;
+		this.suppress = {
+			persons:false,
+			institutions:false,
+			freeters:false
+		}
 	}
+};
+
+CSL.NameOutput.prototype._hasValues = function () {
+	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		var v = this.variables[i];
+		if (this.Item[v]) {
+			return true;
+		}
+	}
+	return false;
 };
 
 CSL.NameOutput.prototype.outputNames = function () {
