@@ -60,7 +60,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	var given = this._givenName(name);
 	var suffix = this._nameSuffix(name);
 	if (this._isShort(pos, i)) {
-		non_dropping_particle = false;
+		dropping_particle = false;
 		given = false;
 		suffix = false;
 	}
