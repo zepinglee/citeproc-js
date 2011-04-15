@@ -128,7 +128,6 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	// form="count"
 	if (this.name.strings.form === "count") {
-		print("COUNT ME! "+this.names_count);
 		this.state.output.append(this.names_count, "empty");
 		return;
 	}

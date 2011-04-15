@@ -108,14 +108,32 @@ CSL.Node.name = {
 				this.ellipsis_suffix = " ";
 			}
 
+			// Workaround to allow explicit empty string
+			// on cs:name delimiter.
+			if ("undefined" == typeof this.strings.name_delimiter) {
+				this.strings.delimiter = ", ";
+			} else {
+				this.strings.delimiter = this.strings.name_delimiter;
+			}
+
 			func = function (state, Item) {
 				this["and"] = {};
-				this["and"].single = new CSL.Blob("empty", this.and_term);
-				this["and"].single.strings.prefix = this.and_prefix_single;
-				this["and"].single.strings.suffix = this.and_suffix;
-				this["and"].multiple = new CSL.Blob("empty", this.and_term);
-				this["and"].multiple.strings.prefix = this.and_prefix_multiple;
-				this["and"].multiple.strings.suffix = this.and_suffix;
+				if (this.strings.and) {
+					this["and"].single = new CSL.Blob("empty", this.and_term);
+					this["and"].single.strings.prefix = this.and_prefix_single;
+					this["and"].single.strings.suffix = this.and_suffix;
+					this["and"].multiple = new CSL.Blob("empty", this.and_term);
+					this["and"].multiple.strings.prefix = this.and_prefix_multiple;
+					this["and"].multiple.strings.suffix = this.and_suffix;
+				} else if (this.strings.delimiter) {
+					// This is a little weird, but it works.
+					this["and"].single = new CSL.Blob("empty", this.strings.delimiter);
+					this["and"].single.strings.prefix = "";
+					this["and"].single.strings.suffix = "";
+					this["and"].multiple = new CSL.Blob("empty", this.strings.delimiter);
+					this["and"].multiple.strings.prefix = "";
+					this["and"].multiple.strings.suffix = "";
+				}
 
 				if (this.strings["et-al-use-last"]) {
 					this["ellipsis"] = {};

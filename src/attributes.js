@@ -437,7 +437,11 @@ CSL.Attributes["@prefix"] = function (state, arg) {
  * @function
  */
 CSL.Attributes["@delimiter"] = function (state, arg) {
-	this.strings.delimiter = arg;
+	if ("name" == this.name) {
+		this.strings.name_delimiter = arg;
+	} else {
+		this.strings.delimiter = arg;
+	}
 };
 
 
