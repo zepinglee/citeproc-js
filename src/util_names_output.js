@@ -47,7 +47,7 @@
  */
 
 CSL.NameOutput = function(state, Item, item, variables) {
-	this.debug = true;
+	this.debug = false;
 	if (this.debug) {
 		print("(1)");
 	}
@@ -60,7 +60,7 @@ CSL.NameOutput = function(state, Item, item, variables) {
 CSL.NameOutput.prototype.init = function (names) {
 	if (this.nameset_offset) {
 		this.nameset_base = this.nameset_base + this.nameset_offset;
-	}
+   	}
 	this.nameset_offset = 0;
 	this.names = names;
 	this.variables = names.variables;
@@ -72,6 +72,20 @@ CSL.NameOutput.prototype.init = function (names) {
 	this["et-al"] = undefined;
 	this["with"] = undefined;
 	this.name = undefined;
+};
+
+
+CSL.NameOutput.prototype.reinit = function (names) {
+	this.nameset_offset = 0;
+	// What-all should be carried across from the subsidiary
+	// names node, and on what conditions? For each attribute,
+	// and decoration, is it an override, or is it additive?
+	this.variables = names.variables;
+	this.suppress = {
+		persons:false,
+		institutions:false,
+		freeters:false
+	}
 };
 
 CSL.NameOutput.prototype.outputNames = function () {

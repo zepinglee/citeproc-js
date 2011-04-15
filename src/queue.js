@@ -216,13 +216,13 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	var token, blob, curr;
 	var useblob = true;
 	if ("undefined" === typeof str) {
-		return;
+		return false;
 	}
 	if ("number" === typeof str) {
 		str = "" + str;
 	}
 	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() === "suppress-me") {
-		return;
+		return false;
 	}
 	blob = false;
 	if (!tokname) {
@@ -322,6 +322,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	} else {
 		curr.push(str);
 	}
+	return true;
 };
 
 //

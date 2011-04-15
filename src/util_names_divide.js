@@ -70,6 +70,8 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	if ("string" === typeof Item[variable]) {
 		var names = [{literal: Item[variable]}];
+	} else if (!Item[variable]) {
+		var names = {};
 	} else {
 		var names = Item[variable].slice();
 	}

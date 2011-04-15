@@ -62,12 +62,26 @@ CSL.Node.names = {
 			// init names
 			func = function (state, Item, item) {
 				state.parallel.StartVariable("names");
-				state.nameOutput.init(this);
+			}
+			this.execs.push(func);
+
+		}
+		
+		if (this.tokentype === CSL.SINGLETON) {
+			func = function (state, Item, item) {
+				state.nameOutput.reinit(this);
 			};
 			this.execs.push(func);
 		}
-		
+
+
 		if (this.tokentype === CSL.START) {
+
+			func = function (state, Item, item) {
+				state.nameOutput.init(this);
+			};
+			this.execs.push(func);
+
 			// init can substitute
 			func = function (state, Item) {
 				state.tmp.can_substitute.push(true);

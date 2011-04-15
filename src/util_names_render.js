@@ -170,28 +170,38 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 */
 
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
-	this.state.output.append(name["non-dropping-particle"], this.family, true);
-	return this.state.output.pop();
+	if (this.state.output.append(name["non-dropping-particle"], this.family, true)) {
+		return this.state.output.pop();
+	}
+	return false;
 };
 
 CSL.NameOutput.prototype._droppingParticle = function (name) {
-	this.state.output.append(name["dropping-particle"], this.family, true);
-	return this.state.output.pop();
+	if (this.state.output.append(name["dropping-particle"], this.family, true)) {
+		return this.state.output.pop();
+	}
+	return false;
 };
 
 CSL.NameOutput.prototype._familyName = function (name) {
-	this.state.output.append(name["family"], this.family, true);
-	return this.state.output.pop();
+	if (this.state.output.append(name["family"], this.family, true)) {
+		return this.state.output.pop();
+	}
+	return false;
 };
 
 CSL.NameOutput.prototype._givenName = function (name) {
-	this.state.output.append(name["given"], this.given, true);
-	return this.state.output.pop();
+	if (this.state.output.append(name["given"], this.given, true)) {
+		return this.state.output.pop();
+	}
+	return false;
 };
 
 CSL.NameOutput.prototype._nameSuffix = function (name) {
-	this.state.output.append(name["suffix"], "empty", true);
-	return this.state.output.pop();
+	if (this.state.output.append(name["suffix"], "empty", true)) {
+		return this.state.output.pop();
+	}
+	return false;
 };
 
 CSL.NameOutput.prototype._parseName = function (name) {
