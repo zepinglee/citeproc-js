@@ -47,7 +47,7 @@
  */
 
 CSL.NameOutput = function(state, Item, item, variables) {
-	this.debug = true;
+	this.debug = false;
 	if (this.debug) {
 		print("(1)");
 	}
@@ -152,6 +152,9 @@ CSL.NameOutput.prototype.outputNames = function () {
 		}
 		var pos = this.nameset_base + this.variable_offset[v] + 1;
 		var institutions = this.joinInstitutionSets(institution_sets, pos);
+		//if (v === "author") {
+		//	print("  freeters[v] (2): "+this.freeters[v].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs);
+		//}
 		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
 		if (varblob) {
 			// Apply labels, if any
@@ -171,7 +174,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
 		// notSerious
-		this.state.output.append(blob_list[i], "literal", true);
+		this.state.output.append(blob_list[i], "literal");
 	}
 	if (this.debug) {
 		print("(13)");

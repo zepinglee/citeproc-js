@@ -248,6 +248,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		// This, and not the str argument below on flipflop, is the
 		// source of the flipflopper string source.
 		str = str.replace(/\s+'/g, "  \'").replace(/^'/g, " \'");
+
 		// signal whether we end with terminal punctuation?
 		this.state.tmp.term_predecessor = true;
 	}
@@ -359,7 +360,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	if (blob && blob.new_locale) {
 		state.opt.lang = blob.new_locale;
 	}
-
 	for (pos = 0, len = blobs.length; pos < len; pos += 1) {
 		blobjr = blobs[pos];
 
@@ -369,7 +369,8 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				ret.push(blobjr);
 			} else if (blobjr.blobs) {
 				// (skips empty strings)
-				b = txt_esc(blobjr.blobs);
+				//b = txt_esc(blobjr.blobs);
+				b = blobjr.blobs;
 
 				use_suffix = blobjr.strings.suffix;
 				use_prefix = blobjr.strings.prefix;

@@ -76,7 +76,7 @@ CSL.Node.name = {
 			}
 			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
 				this.and_prefix_single = " ";
-				this.and_prefix_multiple = " ";
+				this.and_prefix_multiple = ", ";
 				this.and_suffix = " ";
 			} else {
 				this.and_prefix_single = "";
@@ -102,7 +102,7 @@ CSL.Node.name = {
 			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
 				this.etal_prefix_single = " ";
 				this.etal_prefix_multiple = " ";
-				this.etal_suffix = " ";
+				this.etal_suffix = "";
 			} else {
 				this.etal_prefix_single = "";
 				this.etal_prefix_multiple = "";
@@ -137,7 +137,7 @@ CSL.Node.name = {
 				this["and"].single.strings.prefix = this.and_prefix_single;
 				this["and"].single.strings.suffix = this.and_suffix;
 				this["and"].multiple = new CSL.Blob("empty", this.and_term);
-				this["and"].single.strings.prefix = this.and_prefix_multiple;
+				this["and"].multiple.strings.prefix = this.and_prefix_multiple;
 				this["and"].multiple.strings.suffix = this.and_suffix;
 
 				this["et-al"] = {};

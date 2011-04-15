@@ -4,7 +4,6 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 	var pos = this.nameset_base;
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
-		print("freeters: "+this.freeters[v].length+" for "+v);
 		this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
 		// Because pos is not relevant to institutions. They are rendered
 		// individually below, but "institutions" as a nameset is irrelevant
@@ -64,7 +63,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		given = false;
 		suffix = false;
 	}
-	var sort_sep = this.name["sort-separator"];
+	var sort_sep = this.name.strings["sort-separator"];
 	if (name["comma-suffix"]) {
 		var suffix_sep = ", ";
 	} else {

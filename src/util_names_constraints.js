@@ -1,38 +1,38 @@
 CSL.NameOutput.prototype.constrainNames = function () {
+
 	// cut-names stuff
-	this._setNamesCutCount();
+	//this._setNamesCutCount();
+
 	// figure out how many names to include, in light of the disambig params
 	//
+
+	var pos = 0;
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
 		// Constrain independent authors here
-		this._imposeNameConstraints(this.freeters, this.freeters_count, v, "freeters");
 		this.state.tmp.names_max.push(this.freeters[v].length, "literal");
+		this._imposeNameConstraints(this.freeters, this.freeters_count, v, pos);
+		pos += 1;
 		// Constrain institutions here
-		this._imposeNameConstraints(this.institutions, this.institutions_count, v, "institutions");
 		this.state.tmp.names_max.push(this.institutions[v].length, "literal");
+		this._imposeNameConstraints(this.institutions, this.institutions_count, v, pos);
 		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
+		pos += 1;
 		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
 			// Constrain affiliated authors here
-			this._imposeNameConstraints(this.persons[v], this.persons_count[v], j, "persons");
 			this.state.tmp.names_max.push(this.persons[v][j].length, "literal");
+			this._imposeNameConstraints(this.persons[v], this.persons_count[v], j, pos);
+			pos += 1;
 		}
 	}
 };
 
-CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, type) {
+CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos) {
 	// display_names starts as the original length of this list of names.
 	var display_names = lst[key];
 	var discretionary_names_length = this.state.tmp["et-al-min"];
 	// Mappings, to allow existing disambiguation machinery to
 	// remain untouched.
-	if ("freeters" === type) {
-		var pos = this.nameset_base;
-	} else if ("institutions" === type) {
-		var pos = this.nameset_base + 1;
-	} else {
-		var pos = this.nameset_base + parseInt(key) + 2;
-	}
 	if (this.state.tmp.suppress_decorations) {
 		if (this.state.tmp.disambig_request) {
 			// Oh. Trouble.

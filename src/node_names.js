@@ -59,17 +59,11 @@ CSL.Node.names = {
 			
 			state.fixOpt(this, "names-delimiter", "delimiter");
 
-			// init names
-			func = function (state, Item, item) {
-				state.parallel.StartVariable("names");
-			}
-			this.execs.push(func);
 
 		}
 		
 		if (this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item, item) {
-				print("  REINIT");
 				state.nameOutput.reinit(this);
 			};
 			this.execs.push(func);
@@ -78,17 +72,23 @@ CSL.Node.names = {
 
 		if (this.tokentype === CSL.START) {
 
+			// init names
 			func = function (state, Item, item) {
-				print("INIT");
-				state.nameOutput.init(this);
-			};
-			this.execs.push(func);
+				state.parallel.StartVariable("names");
+			}
+			//this.execs.push(func);
 
 			// init can substitute
 			func = function (state, Item) {
 				state.tmp.can_substitute.push(true);
 			};
+			//this.execs.push(func);
+
+			func = function (state, Item, item) {
+				state.nameOutput.init(this);
+			};
 			this.execs.push(func);
+
 		};
 		
 		if (this.tokentype === CSL.END) {
@@ -152,7 +152,7 @@ CSL.Node.names = {
 
 				state.tmp.can_block_substitute = false;
 			};
-			this.execs.push(func);
+			//this.execs.push(func);
 
 			state.build.name_flag = false;
 		}
