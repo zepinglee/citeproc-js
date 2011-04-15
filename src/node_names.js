@@ -69,6 +69,7 @@ CSL.Node.names = {
 		
 		if (this.tokentype === CSL.SINGLETON) {
 			func = function (state, Item, item) {
+				print("  REINIT");
 				state.nameOutput.reinit(this);
 			};
 			this.execs.push(func);
@@ -78,6 +79,7 @@ CSL.Node.names = {
 		if (this.tokentype === CSL.START) {
 
 			func = function (state, Item, item) {
+				print("INIT");
 				state.nameOutput.init(this);
 			};
 			this.execs.push(func);

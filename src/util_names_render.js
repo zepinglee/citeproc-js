@@ -4,6 +4,7 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 	var pos = this.nameset_base;
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
+		print("freeters: "+this.freeters[v].length+" for "+v);
 		this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
 		// Because pos is not relevant to institutions. They are rendered
 		// individually below, but "institutions" as a nameset is irrelevant
@@ -21,6 +22,8 @@ CSL.NameOutput.prototype.renderInstitutionNames = function (value) {
 	// This is a straightforward rendering of the institution
 	// name; the fancy business with ellipsis or et al comes later,
 	// at the join stage.
+	//
+	// XXXX Actually needs the splitting mechanisms added here.
 	this.state.output.openLevel("empty");
 	this.state.output.append(value.literal);
 	this.state.output.closeLevel("empty");

@@ -114,13 +114,13 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 		otherItemBase = otherItemData[0];
 
 		// FIXED
-		// print("  --> "+Item.id+": ("+ItemCite+") "+otherItem.id+": ("+otherItemCite+")");
+		print("  --> "+Item.id+": ("+ItemCite+") "+otherItem.id+": ("+otherItemCite+")");
 		if (ItemCite === otherItemCite) {
-			// print("    clash");
+			print("    clash");
 			this.clashes[phase] += 1;
 			this.partners.push(otherItem);
 		} else {
-			// print("    non-clash");
+			print("    non-clash");
 			this.nonpartners.push(otherItem);
 		}
 	}
@@ -129,7 +129,7 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 CSL.Disambiguation.prototype.evalScan = function (ismax) {
 	// print("MODE: "+this.modeindex+" "+this.modes);
 	// FIXED
-	//print("Mode: "+this.modes[this.modeindex]+" names: "+this.base.names[this.nnameset]);
+	print("Mode: "+this.modes[this.modeindex]+" names: "+this.base.names[this.nnameset]);
 	this[this.modes[this.modeindex]](ismax);
 };
 
