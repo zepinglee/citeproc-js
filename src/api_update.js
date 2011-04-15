@@ -133,7 +133,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 
 
 CSL.Engine.prototype.updateItems = function (idList, nosort) {
-	var debug = false;
+	var debug = true;
 	//CSL.debug = print
 	//SNIP-START
 	if (debug) {
