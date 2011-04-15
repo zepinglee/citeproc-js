@@ -142,7 +142,8 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 		"comma-suffix":value["comma-suffix"],
 		"non-dropping-particle":value["non-dropping-particle"],
 		"dropping-particle":value["dropping-particle"],
-		"static-ordering":value["static-ordering"]
+		"static-ordering":value["static-ordering"],
+		block_initialize:value.block_initialize
 	}
 	this._parseName(name);
 	return name;
@@ -187,7 +188,7 @@ CSL.NameOutput.prototype._familyName = function (name) {
 
 CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 
-	if (1 === this.state.tmp.disambig_settings.givens[pos][i] && !name.block_initialize) {
+	if (name.family && 1 === this.state.tmp.disambig_settings.givens[pos][i] && !name.block_initialize) {
 		var initialize_with = this.name.strings["initialize-with"];
 		name.given = CSL.Util.Names.initializeWith(this.state, name.given, initialize_with);
 	} else {
