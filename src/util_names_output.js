@@ -76,7 +76,7 @@ CSL.NameOutput.prototype.init = function (names) {
 
 
 CSL.NameOutput.prototype.reinit = function (names) {
-	if (!this._hasValues()) {
+	if (!this._hasValues() && false) {
 		this.nameset_offset = 0;
 		// What-all should be carried across from the subsidiary
 		// names node, and on what conditions? For each attribute,
@@ -182,7 +182,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
 		// notSerious
-		this.state.output.append(blob_list[i], "literal");
+		this.state.output.append(blob_list[i], "literal", true);
 	}
 	if (this.debug) {
 		print("(13)");

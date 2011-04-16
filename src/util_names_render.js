@@ -24,7 +24,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function (value) {
 	//
 	// XXXX Actually needs the splitting mechanisms added here.
 	this.state.output.openLevel("empty");
-	this.state.output.append(value.literal);
+	this.state.output.append(value.literal, "empty", true);
 	this.state.output.closeLevel("empty");
 	var ret = this.state.output.pop();
 	return ret;

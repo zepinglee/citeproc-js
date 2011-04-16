@@ -57,7 +57,6 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
 		this.etal_prefix_multiple = this.name.strings.delimiter;
 	}
 
-
 	this["et-al"] = {};
 
 	this.state.output.append(this.etal_term, this.etal_style, true);
@@ -69,7 +68,7 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
 	this["et-al"].multiple = this.state.output.pop();
 	this["et-al"].multiple.strings.suffix = this.etal_suffix;
 	this["et-al"].multiple.strings.prefix = this.etal_prefix_multiple;
-	
+
 	// Et-al style parameters (may be sidestepped by disambiguation
 	// in util_names_constraints.js)
 	if ("undefined" === typeof item) {

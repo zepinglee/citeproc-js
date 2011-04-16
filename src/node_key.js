@@ -60,6 +60,12 @@ CSL.Node.key = {
 		};
 		start_key.execs.push(func);
 
+		// initialize output queue
+		func = function (state, Item) {
+			state.output.openLevel("empty");;
+		};
+		start_key.execs.push(func);
+
 		// sort direction
 		sort_direction = [];
 		if (this.strings.sort_direction === CSL.DESCENDING) {
@@ -106,11 +112,16 @@ CSL.Node.key = {
 				names_start_token.variables = this.variables;
 				CSL.Node.names.build.call(names_start_token, state, target);
 				//
-				// Middle tag
+				// Name tag
 				name_token = new CSL.Token("name", CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
 				CSL.Node.name.build.call(name_token, state, target);
+				//
+				// Institution tag
+				institution_token = new CSL.Token("institution", CSL.SINGLETON);
+				institution_token.tokentype = CSL.SINGLETON;
+				CSL.Node.institution.build.call(institution_token, state, target);
 				//
 				// End tag
 				names_end_token = new CSL.Token("names", CSL.END);
@@ -241,6 +252,13 @@ CSL.Node.key = {
 		// on the closing "key" tag before it is pushed.
 		// Do not close the level.
 		end_key = new CSL.Token("key", CSL.END);
+
+		// initialize output queue
+		func = function (state, Item) {
+			state.output.closeLevel("empty");;
+		};
+		end_key.execs.push(func);
+
 		// store key for use
 		func = function (state, Item) {
 			var keystring = state.output.string(state, state.output.queue);
