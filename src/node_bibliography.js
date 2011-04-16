@@ -64,6 +64,7 @@ CSL.Node.bibliography = {
 			state.fixOpt(this, "initialize-with", "initialize-with");
 			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
 			state.fixOpt(this, "sort-separator", "sort-separator");
+			state.fixOpt(this, "and", "and");
 
 			state.fixOpt(this, "et-al-min", "et-al-min");
 			state.fixOpt(this, "et-al-use-first", "et-al-use-first");

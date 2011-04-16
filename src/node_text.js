@@ -175,6 +175,7 @@ CSL.Node.text = {
 									names = Item[n];
 									if (names && names.length) {
 										name = names[0];
+										break;
 									}
 									if (name && name.family) {
 										myname = name.family.replace(/\s+/, "");
@@ -184,6 +185,7 @@ CSL.Node.text = {
 										if (m) {
 											myname = myname.slice(m[1].length);
 										}
+										break;
 									}
 								}
 							}
@@ -207,8 +209,8 @@ CSL.Node.text = {
 					this.execs.push(func);
 				}
 			} else {
-				if (state.build.term) {
-				    term = state.build.term;
+				if (this.strings.term) {
+				    term = this.strings.term;
 				    term = state.getTerm(term, form, plural);
 				    if (this.strings["strip-periods"]) {
 					term = term.replace(/\./g, "");

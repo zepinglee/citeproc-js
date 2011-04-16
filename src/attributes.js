@@ -111,15 +111,7 @@ CSL.Attributes["@macro"] = function (state, arg) {
 
 
 CSL.Attributes["@term"] = function (state, arg) {
-	if (this.name === "et-al") {
-		if (state.locale[state.opt.lang].terms[arg]) {
-			this.strings.term = state.getTerm(arg, "long", 0);
-		} else {
-			this.strings.term = arg;
-		}
-	} else {
-		state.build.term = arg;
-	}
+	this.strings.term = arg;
 };
 
 
@@ -180,7 +172,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 	this.variables = arg.split(/\s+/);
 	this.variables_real = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
-		state.build.term = this.variables[0];
+		this.strings.term = this.variables[0];
 	} else if (["names", "date", "text", "number"].indexOf(this.name) > -1) {
 		//
 		// An oddity of variable handling is that this.variables
@@ -445,7 +437,11 @@ CSL.Attributes["@prefix"] = function (state, arg) {
  * @function
  */
 CSL.Attributes["@delimiter"] = function (state, arg) {
-	this.strings.delimiter = arg;
+	if ("name" == this.name) {
+		this.strings.name_delimiter = arg;
+	} else {
+		this.strings.delimiter = arg;
+	}
 };
 
 
@@ -732,13 +728,7 @@ CSL.Attributes["@suppress-min"] = function (state, arg) {
 
 
 CSL.Attributes["@and"] = function (state, arg) {
-	var myarg, and;
-	myarg = "&";
-	if ("text" === arg) {
-		and = state.getTerm("and", "long", 0);
-		myarg = and;
-	}
-	state.setOpt(this, "and", myarg);
+	this.strings["and"] = arg;
 };
 
 CSL.Attributes["@delimiter-precedes-last"] = function (state, arg) {

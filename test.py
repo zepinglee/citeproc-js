@@ -125,6 +125,13 @@ class Bundle:
         f.extend(["node_comment"])
         f.extend(["node_etal","node_group","node_if","node_info","node_institution"])
         f.extend(["node_institutionpart","node_key","node_label","node_layout","node_macro"])
+
+        f.extend(["util_names_output","util_names_tests","util_names_truncate"])
+        f.extend(["util_names_divide","util_names_label","util_names_join","util_names_disambig"])
+        f.extend(["util_names_common","util_names_constraints","util_names_etalconfig"])
+
+        f.extend(["util_label"])
+
         f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
         f.extend(["node_substitute","node_text","attributes","system"])
         f.extend(["stack","util","util_transform"])
@@ -223,7 +230,9 @@ class Params:
                 self.files['humans'][filename] = (filepath)
             else:
                 for path in self.path():
-                    for filename in os.listdir(os.path.join(path,"humans")):
+                    filenames = os.listdir(os.path.join(path,"humans"))
+                    filenames.sort()
+                    for filename in filenames:
                         if not filename.endswith(".txt"): continue
                         if args:
                             if not filename.startswith("%s_" % self.args[0]): continue
@@ -413,7 +422,9 @@ command: java -client -jar ./rhino/js-1.7R2.jar -opt 8
         for filename in os.listdir(os.path.join(path("run"), "humans")):
             os.unlink(os.path.join(path("run"), "humans", filename))
         for sourcedir in [path("local"), path("std")]:
-            for filename in os.listdir(sourcedir):
+            filenames = os.listdir(sourcedir)
+            filenames.sort()
+            for filename in filenames:
                 if not filename.endswith(".txt"):
                     continue
                 filepath = os.path.join(path("run"), "humans", filename)

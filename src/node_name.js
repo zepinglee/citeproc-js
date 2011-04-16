@@ -50,29 +50,17 @@ CSL.Node.name = {
 	build: function (state, target) {
 		var func, pos, len, attrname;
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
+			//state.fixOpt(this, "names-delimiter", "delimiter");
 			state.fixOpt(this, "name-delimiter", "delimiter");
 			state.fixOpt(this, "name-form", "form");
-			//
-			// Okay, there's a problem with these.  Each of these is set
-			// on the name object, but must be accessible at the closing of
-			// the enclosing names object.  How did I do this before?
-			//
-			// Boosting to tmp seems to be the current strategy, and although
-			// that's very messy, it does work.  It would be simple enough
-			// to extend the function applied to initialize-with below (which
-			// tests okay) to the others.  Probably that's the best short-term
-			// solution.
-			//
-			// The boost to tmp could be a boost to build, instead.  That would
-			// limit the jiggery-pokery and overhead to the compile phase.
-			// Might save a few trees, in aggregate.
-			//
+			
 			state.fixOpt(this, "and", "and");
 			state.fixOpt(this, "delimiter-precedes-last", "delimiter-precedes-last");
 			state.fixOpt(this, "delimiter-precedes-et-al", "delimiter-precedes-et-al");
 			state.fixOpt(this, "initialize-with", "initialize-with");
 			state.fixOpt(this, "name-as-sort-order", "name-as-sort-order");
 			state.fixOpt(this, "sort-separator", "sort-separator");
+			state.fixOpt(this, "and", "and");
 
 			state.fixOpt(this, "et-al-min", "et-al-min");
 			state.fixOpt(this, "et-al-use-first", "et-al-use-first");
@@ -80,53 +68,87 @@ CSL.Node.name = {
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 
-			state.build.nameattrs = {};
-			len = CSL.NAME_ATTRIBUTES.length;
-			for (pos = 0; pos < len; pos += 1) {
-				attrname = CSL.NAME_ATTRIBUTES[pos];
-				state.build.nameattrs[attrname] = this.strings[attrname];
+			// Et-al (onward processing in node_etal.js and node_names.js)
+			state.build.etal_term = "et-al";
+			
+			// And
+			if ("text" === this.strings["and"]) {
+				this.and_term = state.getTerm("and", "long", 0);
+			} else if ("symbol" === this.strings["and"]) {
+				this.and_term = "&";
+			}
+			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
+				this.and_prefix_single = " ";
+				this.and_prefix_multiple = ", ";
+				this.and_suffix = " ";
+			} else {
+				this.and_prefix_single = "";
+				this.and_prefix_multiple = "";
+				this.and_suffix = "";
+			}
+			if (this.strings["delimiter-precedes-last"] === "always") {
+				this.and_prefix_single = this.strings.delimiter;
+				this.and_prefix_multiple = this.strings.delimiter;
+			} else if (this.strings["delimiter-precedes-last"] === "contextual") {
+				this.and_prefix_multiple = this.strings.delimiter;
 			}
 
-			state.build.form = this.strings.form;
-			state.build.name_flag = true;
+			if (this.strings["et-al-use-last"]) {
+				// We use the dedicated Unicode ellipsis character because
+				// it is recommended by some editors, and can be more easily
+				// identified for find and replace operations.
+				// Source: http://en.wikipedia.org/wiki/Ellipsis#Computer_representations
+				//
+				// Eventually, this should be localized as a term in CSL, with some
+				// mechanism for triggering appropriate punctuation handling around
+				// the ellipsis placeholder (Polish is a particularly tough case for that).
+				this.ellipsis_term = "\u2026";
+				this.ellipsis_prefix_single = " ";
+				this.ellipsis_prefix_multiple = " ";
+				this.ellipsis_suffix = " ";
+			}
 
-			// set et al params
-			func = function (state, Item, item) {
-				if ("undefined" === typeof item) {
-					item = {};
-				}
-				if (item.position) {
-					if (! state.tmp["et-al-min"]) {
-						if (this.strings["et-al-subsequent-min"]) {
-							state.tmp["et-al-min"] = this.strings["et-al-subsequent-min"];
-						} else {
-							state.tmp["et-al-min"] = this.strings["et-al-min"];
-						}
-					}
-					if (! state.tmp["et-al-use-first"]) {
-						if (this.strings["et-al-subsequent-use-first"]) {
-							state.tmp["et-al-use-first"] = this.strings["et-al-subsequent-use-first"];
-						} else {
-							state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
-						}
-					}
-				} else {
-					if (! state.tmp["et-al-min"]) {
-						state.tmp["et-al-min"] = this.strings["et-al-min"];
-					}
-					if (! state.tmp["et-al-use-first"]) {
-						state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
-					}
-				}
-				if ("undefined" !== typeof this.strings["et-al-use-last"]) {
-					state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
-				}
-			};
-			this.execs.push(func);
+			// Workaround to allow explicit empty string
+			// on cs:name delimiter.
+			if ("undefined" == typeof this.strings.name_delimiter) {
+				this.strings.delimiter = ", ";
+			} else {
+				this.strings.delimiter = this.strings.name_delimiter;
+			}
 
 			func = function (state, Item) {
-				state.output.addToken("name", false, this);
+				this["and"] = {};
+				if (this.strings.and) {
+					this["and"].single = new CSL.Blob("empty", this.and_term);
+					this["and"].single.strings.prefix = this.and_prefix_single;
+					this["and"].single.strings.suffix = this.and_suffix;
+					this["and"].multiple = new CSL.Blob("empty", this.and_term);
+					this["and"].multiple.strings.prefix = this.and_prefix_multiple;
+					this["and"].multiple.strings.suffix = this.and_suffix;
+				} else if (this.strings.delimiter) {
+					// This is a little weird, but it works.
+					this["and"].single = new CSL.Blob("empty", this.strings.delimiter);
+					this["and"].single.strings.prefix = "";
+					this["and"].single.strings.suffix = "";
+					this["and"].multiple = new CSL.Blob("empty", this.strings.delimiter);
+					this["and"].multiple.strings.prefix = "";
+					this["and"].multiple.strings.suffix = "";
+				}
+
+				if (this.strings["et-al-use-last"]) {
+					this["ellipsis"] = {};
+					this["ellipsis"].single = new CSL.Blob("empty", this.ellipsis_term);
+					this["ellipsis"].single.strings.prefix = this.ellipsis_prefix_single;
+					this["ellipsis"].single.strings.suffix = this.ellipsis_suffix;
+					this["ellipsis"].multiple = new CSL.Blob("empty", this.ellipsis_term);
+					this["ellipsis"].multiple.strings.prefix = this.ellipsis_prefix_multiple;
+					this["ellipsis"].multiple.strings.suffix = this.ellipsis_suffix;
+				}
+				state.nameOutput.name = this;
 			};
+			
+			state.build.name_flag = true;
+
 			this.execs.push(func);
 		}
 		target.push(this);
