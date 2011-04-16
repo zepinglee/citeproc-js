@@ -181,4 +181,4 @@ CSL.normalDecorIsOrphan = function (blob, params) {
 		}
 	}
 	return false;
-}
+};
