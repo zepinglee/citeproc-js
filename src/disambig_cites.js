@@ -59,7 +59,7 @@ CSL.Disambiguation.prototype.run = function(akey) {
 	if (!this.modes.length) {
 		return;
 	}
-	// print("== RUN ==");
+	//print("== RUN ==");
 	this.initVars(akey);
 	this.runDisambig();
 };
@@ -127,9 +127,9 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 };
 
 CSL.Disambiguation.prototype.evalScan = function (ismax) {
-	// print("MODE: "+this.modeindex+" "+this.modes);
+	//print("MODE: "+this.modeindex+" "+this.modes);
 	// FIXED
-	//print("Mode: "+this.modes[this.modeindex]+" names: "+this.base.names[this.nnameset]);
+	//print("  Mode: "+this.modes[this.modeindex]+" names: "+this.base.names[this.nnameset]);
 	this[this.modes[this.modeindex]](ismax);
 };
 
@@ -186,7 +186,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 
 CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	var pos, len;
-	// print("== disgivens ==")
+	//print("== disgivens == ISMAX: "+ismax)
 	// FIXED
 	// print("  ... names at top: "+this.base.names[this.nnameset]);
 	// print("  ... clashes: "+this.clashes);
@@ -309,6 +309,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
 		}
 	}
 	if (!maxed && "disGivens" === this.modes[this.modeindex]) {
+		//print("   check max (1): "+this.gname+" "+this.gnameset+" "+this.maxvals[this.gnameset]+" ("+this.maxvals+")");
 		if (this.gname < this.maxvals[this.gnameset]) {
 			if (this.base.givens[this.gnameset][this.gname] === this.minval) {
 				this.base.givens[this.gnameset][this.gname] += 1;
@@ -338,19 +339,24 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
 	if (!maxed && "disYears" === this.modes[this.modeindex]) {
 		maxed = false;
 	}
-	if (this.modes[this.modeindex] === "disGivens") {
-		if ((this.gnameset === (this.base.names.length - 1) && this.gname === this.maxvals[this.gnameset]) || this.base.names.length === 0) {
-				//print("maxed out")
+	if (!maxed && this.modes[this.modeindex] === "disGivens") {
+		//print("  max check data ==> "+this.gname+" "+this.maxvals[this.gnameset]+" "+this.gnameset+" "+this.base.names.length);
+		// Test for undefined in an inelegant safety catch to prevent overruns.
+		// Sometime when I or someone else is feeling ambitious, maybe the cause
+		// of the overrun currently seen in disambiguate_AndreaEg4 can be tracked
+		// down.
+		if ((this.gnameset >= (this.base.names.length - 1) && ("undefined" === typeof this.maxvals[this.gnameset] || this.gname === this.maxvals[this.gnameset])) || this.base.names.length === 0) {
 			if (this.modeindex === (this.modes.length - 1)) {
-				// print("TOTAL MAX disGivens");
+				//print("TOTAL MAX disGivens");
 				maxed = true;
 			} else {
 				this.advance_mode = true;
 			}
 		}
 	}
-	if (this.modes[this.modeindex] === "disNames") {
-		if ((this.nnameset === (this.base.names.length - 1) && this.base.names[this.nnameset] === this.maxvals[this.nnameset]) || this.base.names.length === 0) {
+	if (!maxed && this.modes[this.modeindex] === "disNames") {
+		// Test for undefined is a safety catch. See note above on disGivens block.
+		if ((this.nnameset >= (this.base.names.length - 1) && ("undefined" === typeof this.maxvals[this.nnameset] ||this.base.names[this.nnameset] === this.maxvals[this.nnameset])) || this.base.names.length === 0) {
 			if (this.modeindex === (this.modes.length - 1)) {
 				// print("TOTAL MAX disNames");
 				maxed = true;
