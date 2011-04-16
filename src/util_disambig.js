@@ -106,8 +106,13 @@ CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
 	if (tainters && tainters.length > 1) {
 		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
 			for (pos = 0, len = tainters.length; pos < len; pos += 1) {
-				var oldYS = this.registry.registry[tainters[pos].id].disambig.year_suffix;
-
+				try {
+					var oldYS = this.registry.registry[tainters[pos].id].disambig.year_suffix;
+				} catch (e) {
+					CSL.debug("tainters[pos]id: "+tainters[pos].id);
+					CSL.debug(e);
+					throw e;
+				}
 				if (tainters && (false === oldYS || oldYS != pos)) {
 					this.tmp.taintedItemIDs[tainters[pos].id] = true;
 				}
