@@ -1,39 +1,33 @@
 CSL.NameOutput.prototype.constrainNames = function () {
+
 	// cut-names stuff
 	//this._setNamesCutCount();
 
 	// figure out how many names to include, in light of the disambig params
 	//
 	this.names_count = 0;
-	//var pos = 0;
-	var pos = this.nameset_base;
+	var pos = 0;
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
 		// Constrain independent authors here
-		if (this.freeters[v].length) {
-			this.state.tmp.names_max.push(this.freeters[v].length, "literal");
-			this._imposeNameConstraints(this.freeters, this.freeters_count, v, pos);
-			this.names_count += this.freeters[v].length;
-			pos += 1;
-		}
+		this.state.tmp.names_max.push(this.freeters[v].length, "literal");
+		this._imposeNameConstraints(this.freeters, this.freeters_count, v, pos);
+		this.names_count += this.freeters[v].length;
+		pos += 1;
 
 		// Constrain institutions here
-		if (this.institutions[v].length) {
-			this.state.tmp.names_max.push(this.institutions[v].length, "literal");
-			this._imposeNameConstraints(this.institutions, this.institutions_count, v, pos);
-			this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
-			this.names_count += this.institutions[v].length;
-			pos += 1;
-		}
+		this.state.tmp.names_max.push(this.institutions[v].length, "literal");
+		this._imposeNameConstraints(this.institutions, this.institutions_count, v, pos);
+		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
+		this.names_count += this.institutions[v].length;
+		pos += 1;
 
-		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
 			// Constrain affiliated authors here
-			if (this.persons[v][j].length) {
-				this.state.tmp.names_max.push(this.persons[v][j].length, "literal");
-				this._imposeNameConstraints(this.persons[v], this.persons_count[v], j, pos);
-				this.names_count += this.persons[v][j].length;
-				pos += 1;
-			}
+			this.state.tmp.names_max.push(this.persons[v][j].length, "literal");
+			this._imposeNameConstraints(this.persons[v], this.persons_count[v], j, pos);
+			this.names_count += this.persons[v][j].length;
+			pos += 1;
 		}
 	}
 };

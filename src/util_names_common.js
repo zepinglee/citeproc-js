@@ -18,7 +18,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 		offset += 2;
 		offset += this.persons[v].length;
 	}
-	//offset = (offset/this.variables.length);
+	offset = (offset/this.variables.length);
 	for (var i = 0, ilen = this.variables.length - 1; i < ilen; i += 1) {
 		var v = this.variables[i];
 		var vv = this.variables[i + 1];

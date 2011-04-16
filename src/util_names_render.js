@@ -106,9 +106,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		var blob = this._join([merged, suffix], suffix_sep);
 	}
 	// notSerious
-	//this.state.output.append(blob, "literal", true);
-	//var ret = this.state.output.pop();
-	return blob;
+	this.state.output.append(blob, "literal", true);
+	var ret = this.state.output.pop();
+	return ret;
 };
 
 CSL.NameOutput.prototype._isShort = function (pos, i) {

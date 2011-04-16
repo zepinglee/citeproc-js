@@ -433,22 +433,21 @@ CSL.Transform = function (state) {
 			"parse-names":name["parse-names"],
 			"comma-suffix":name["comma-suffix"],
 			transliterated:transliterated,
-			block_initialize:block_initialize,
-			literal:name.literal
+			block_initialize:block_initialize
 		}
 		if (static_ordering_freshcheck &&
 			!getStaticOrder(name, true)) {
 			
 			name["static-ordering"] = false;
 		}
-		//if (state.opt["parse-names"]
-		//	&& name["parse-names"] !== 0) {
-		//	state.parseName(name);
-		//}
+		if (state.opt["parse-names"]
+			&& name["parse-names"] !== 0) {
+			state.parseName(name);
+		}
 		if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"') {
 			name.family = name.family.slice(1, -1);
 		}
-		if (!name.literal && (!name.given && name.family && name.isInstitution)) {
+		if (!name.literal && !name.given && name.family) {
 			name.literal = name.family;
 		}
 		if (name.literal) {

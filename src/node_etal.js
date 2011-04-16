@@ -48,11 +48,23 @@
 
 CSL.Node["et-al"] = {
 	build: function (state, target) {
-		if (state.build.area === "citation" || state.build.area === "bibliography") {
-			state.build.etal_node = this;
-			if ("string" === typeof this.strings.term) {
-				state.build.etal_term = this.strings.term;
-			}
+		var func;
+		// XXXXX: wrong, but gets us going for testing
+		if (state.build.area === "citation") {
+			func = function (state, Item) {
+				state.output.addToken("et-al-pers", false, this);
+				state.output.addToken("et-al-org", false, this);
+			};
+			this.execs.push(func);
+		} else if (state.build.area === "bibliography") {
+			func = function (state, Item) {
+				state.output.addToken("et-al-pers", false, this);
+				state.output.addToken("et-al-org", false, this);
+			};
+			this.execs.push(func);
 		}
+		target.push(this);
 	}
 };
+
+

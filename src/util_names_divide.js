@@ -58,7 +58,12 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 		this.variable_offset[v] = this.nameset_offset;
 		var values = this._normalizeVariableValue(Item, v);
 		this._getFreeters(v, values);
+		this.nameset_offset += 1;
 		this._getPersonsAndInstitutions(v, values);
+		// Institutions is one nameset (i.e. increment by adding an institution and
+		// its affiliated authors)
+		this.nameset_offset += 1;
+		this.nameset_offset += this.persons[v].length;
 	}
 };
 
@@ -81,51 +86,40 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	return names;
 };
 
-CSL.NameOutput.prototype._getFreeters = function (v, values) {
-	this._markCutVariableAndCut(v, values);
-	this.freeters[v] = [];
+CSL.NameOutput.prototype._getFreeters = function (variable, values) {
+	this._markCutVariableAndCut(variable, values);
+	this.freeters[variable] = [];
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
-			this.freeters[v].push(values.pop());
+			this.freeters[variable].push(values.pop());
 		} else {
 			break;
 		}
 	}
-	this.freeters[v].reverse();
-	if (this.freeters[v].length) {
-		this.nameset_offset += 1;
-	}
+	this.freeters[variable].reverse();
 };
 
-CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
-	this.persons[v] = [];
-	this.institutions[v] = [];
+CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values) {
+	this.persons[variable] = [];
+	this.institutions[variable] = [];
 	var persons = [];
 	var first = true;
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
 			persons.push(values[i]);
 		} else {
-			this.institutions[v].push(values[i]);
+			this.institutions[variable].push(values[i]);
 			if (!first) {
-				this._markCutVariableAndCut(v, persons);
-				this.persons[v].push(persons);
+				this._markCutVariableAndCut(variable, persons);
+				this.persons[variable].push(persons);
 				persons = [];
 			}
 			first = false;
 		}
 	}
-	this.persons[v].push(persons);
-	this.persons[v].reverse();
-	this.institutions[v].reverse();
-	if (this.institutions[v].length) {
-		this.nameset_offset += 1;
-	}
-	for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-		if (this.persons[v][i].length) {
-			this.nameset_offset += 1;
-		}
-	}
+	this.persons[variable].push(persons);
+	this.persons[variable].reverse();
+	this.institutions[variable].reverse();
 };
 
 CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {

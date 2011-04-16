@@ -186,11 +186,7 @@ var CSL = {
 		"et-al-min",
 		"et-al-use-first",
 		"et-al-subsequent-min",
-		"et-al-subsequent-use-first",
-		"form",
-		"prefix",
-		"suffix",
-		"delimiter"
+		"et-al-subsequent-use-first"
 	],
 
 	PARALLEL_MATCH_VARS: ["container-title"],
@@ -507,22 +503,6 @@ if (!CSL.Node) {
     load("./src/node_layout.js");
 	// jslint OK
     load("./src/node_macro.js");
-
-    load("./src/util_names_output.js");
-    load("./src/util_names_tests.js");
-    load("./src/util_names_truncate.js");
-    load("./src/util_names_divide.js");
-    load("./src/util_names_label.js");
-    load("./src/util_names_join.js");
-    load("./src/util_names_common.js");
-    load("./src/util_names_constraints.js");
-    load("./src/util_names_disambig.js");
-    load("./src/util_names_etalconfig.js");
-    load("./src/util_names_etal.js");
-    load("./src/util_names_render.js");
-
-    load("./src/util_label.js");
-
 	// jslint OK
     load("./src/node_name.js");
 	// jslint OK

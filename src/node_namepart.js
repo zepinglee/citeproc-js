@@ -48,6 +48,12 @@
 
 CSL.Node["name-part"] = {
 	build: function (state, target) {
-		state.build[this.strings.name] = this;
+		var func;
+		func = function (state, Item) {
+			state.output.addToken(this.strings.name, false, this);
+		};
+		this.execs.push(func);
+		target.push(this);
 	}
 };
+
