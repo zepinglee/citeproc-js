@@ -89,8 +89,8 @@ CSL.Node.name = {
 			if (this.strings["delimiter-precedes-last"] === "always") {
 				this.and_prefix_single = this.strings.delimiter;
 				this.and_prefix_multiple = this.strings.delimiter;
-			} else if (this.strings["delimiter-precedes-last"] === "contextual") {
-				this.and_prefix_multiple = this.strings.delimiter;
+			} else if (this.strings["delimiter-precedes-last"] === "never") {
+				this.and_prefix_multiple = " ";
 			}
 
 			if (this.strings["et-al-use-last"]) {
@@ -119,10 +119,12 @@ CSL.Node.name = {
 			func = function (state, Item) {
 				this["and"] = {};
 				if (this.strings.and) {
-					this["and"].single = new CSL.Blob("empty", this.and_term);
+					state.output.append(this.and_term, "empty", true);
+					this["and"].single = state.output.pop();
 					this["and"].single.strings.prefix = this.and_prefix_single;
 					this["and"].single.strings.suffix = this.and_suffix;
-					this["and"].multiple = new CSL.Blob("empty", this.and_term);
+					state.output.append(this.and_term, "empty", true);
+					this["and"].multiple = state.output.pop();
 					this["and"].multiple.strings.prefix = this.and_prefix_multiple;
 					this["and"].multiple.strings.suffix = this.and_suffix;
 				} else if (this.strings.delimiter) {
