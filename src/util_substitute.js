@@ -196,14 +196,11 @@ CSL.Util.substituteEnd = function (state, target) {
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
-			print("OK1");
 			var text_esc = CSL.getSafeEscape(state.opt.mode, state.tmp.area);
 			var printing = !state.tmp.suppress_decorations;
 			if (printing) {
 				if (!state.tmp.rendered_name) {
-					print("AAx");
 					state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.blobs, false);
-					print("AAy");
 					if (state.tmp.rendered_name) {
 						//CSL.debug("TRY! "+state.tmp.rendered_name);
 						if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
@@ -212,10 +209,8 @@ CSL.Util.substituteEnd = function (state, target) {
 						}
 						state.tmp.last_rendered_name = state.tmp.rendered_name;
 					}
-					print("AAz");
 				}
 			}
-			print("  OK2");
 		};
 		author_substitute.execs.push(func);
 		target.push(author_substitute);
