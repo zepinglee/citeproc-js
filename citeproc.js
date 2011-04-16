@@ -543,8 +543,8 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	if (blob && blob.new_locale) {
 		state.opt.lang = blob.new_locale;
 	}
-	for (pos = 0, len = blobs.length; pos < len; pos += 1) {
-		blobjr = blobs[pos];
+	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
+		blobjr = blobs[i];
 		if ("string" === typeof blobjr.blobs) {
 			if ("number" === typeof blobjr.num) {
 				ret.push(blobjr);
@@ -554,8 +554,11 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				use_prefix = blobjr.strings.prefix;
 				if (!state.tmp.suppress_decorations) {
 					llen = blobjr.decorations.length;
-					for (ppos = 0; ppos < llen; ppos += 1) {
-						params = blobjr.decorations[ppos];
+					for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
+						params = blobjr.decorations[j];
+						if (CSL.normalDecorIsOrphan(blobjr, params)) {
+							continue;
+						}
 						b = state.fun.decorate[params[0]][params[1]](state, b);
 					}
 				}
@@ -613,6 +616,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
 				if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
+					continue;
+				}
+				if (CSL.normalDecorIsOrphan(blobs_start, params)) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start);
@@ -698,6 +704,9 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 				llen = blob.decorations.length;
 				for (ppos = 0; ppos < llen; ppos += 1) {
 					params = blob.decorations[ppos];
+					if (CSL.normalDecorIsOrphan(blob, params)) {
+						continue;
+					}
 					str = state.fun.decorate[params[0]][params[1]](state, str);
 				}
 			}
@@ -1097,6 +1106,24 @@ CSL.setDecorations = function (state, attributes) {
 		}
 	}
 	return ret;
+};
+CSL.normalDecorIsOrphan = function (blob, params) {
+	if (params[1] === "normal") {
+		var use_param = false;
+		for (var k = blob.alldecor.length - 1; k > -1; k += -1) {
+			for (var n = blob.alldecor[k].length - 1; n > -1; n += -1) {
+				if (blob.alldecor[k][n][0] === params[0]) {
+					if (blob.alldecor[k][n][1] !== "normal") {
+						use_param = true;
+					}
+				}
+			}
+		}
+		if (!use_param) {
+			return true;
+		}
+	}
+	return false;
 };
 CSL.compareAmbigConfig = function(a, b) {
 	var ret, pos, len, ppos, llen;
@@ -1622,7 +1649,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.148";
+	this.processor_version = "1.0.149";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3018,6 +3045,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			len = this.citation.opt.layout_decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = this.citation.opt.layout_decorations[pos];
+				if (params[1] === "normal") {
+					continue;
+				}
 				result = this.fun.decorate[params[0]][params[1]](this, result);
 			}
 		}
@@ -8382,12 +8412,12 @@ CSL.Output.Formats.prototype.rtf = {
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
 	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
 	"@font-style/italic":"\\i %%STRING%%\\i0{}",
-	"@font-style/normal":false,
+	"@font-style/normal":"\\i0{}%STRING%%\\i{}",
 	"@font-style/oblique":"\\i %%STRING%%\\i0{}",
 	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
-	"@font-variant/normal":false,
+	"@font-variant/normal":"\\scaps0{}%%STRING%%\\scaps{}",
 	"@font-weight/bold":"\\b %%STRING%%\\b0{}",
-	"@font-weight/normal":false,
+	"@font-weight/normal":"\\b0{}%STRING%%\\b{}",
 	"@font-weight/light":false,
 	"@text-decoration/none":false,
 	"@text-decoration/underline":"\\ul %%STRING%%\\ul0{}",
