@@ -142,7 +142,13 @@ CSL.Node.names = {
 			this.etal_term = state.getTerm(state.build.etal_term, "long", 0);
 			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
 				this.etal_prefix_single = " ";
-				this.etal_prefix_multiple = " ";
+				// Should be name delimiter, not hard-wired.
+				this.etal_prefix_multiple = state.build.name_delimiter;
+				if (state.build["delimiter-precedes-et-al"] === "always") {
+					this.etal_prefix_single = state.build.name_delimiter;
+				} else if (state.build["delimiter-precedes-et-al"] === "never") {
+					this.etal_prefix_multiple = " ";
+				}
 				this.etal_suffix = "";
 			} else {
 				this.etal_prefix_single = "";

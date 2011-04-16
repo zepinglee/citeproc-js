@@ -157,19 +157,34 @@ CSL.NameOutput.prototype.outputNames = function () {
 	var institution_sets = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
+		if (this.debug) {
+			print("(11a)");
+		}
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
 			institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
 		}
+		if (this.debug) {
+			print("(11b)");
+		}
 		var pos = this.nameset_base + this.variable_offset[v] + 1;
 		var institutions = this.joinInstitutionSets(institution_sets, pos);
+		if (this.debug) {
+			print("(11c)");
+		}
 		//if (v === "author") {
 		//	print("  freeters[v] (2): "+this.freeters[v].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs);
 		//}
 		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
+		if (this.debug) {
+			print("(11d)");
+		}
 		if (varblob) {
 			// Apply labels, if any
 			varblob = this._applyLabels(varblob, v);
 			blob_list.push(varblob);
+		}
+		if (this.debug) {
+			print("(11e)");
 		}
 		if (this.common_term) {
 			break;
@@ -209,12 +224,12 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
 		return blob;
 	}
 	var plural = 0;
-	var num = this.freeters[v].length + this.institutions[v].length;
+	var num = this.freeters_count[v] + this.institutions_count[v];
 	if (num > 1) {
 		plural = 1;
 	} else {
 		for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-			num += this.persons[v][j].length;
+			num += this.persons_count[v][j];
 		}
 		if (num > 1) {
 			plural = 1;

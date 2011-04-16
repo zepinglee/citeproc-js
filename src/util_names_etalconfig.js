@@ -49,14 +49,6 @@
 CSL.NameOutput.prototype.getEtAlConfig = function () {
 	var item = this.item;
 
-	if (this.name.strings["delimiter-precedes-et-al"] === "always") {
-		this.etal_prefix_single = this.name.strings.delimiter;
-		this.etal_prefix_multiple = this.name.strings.delimiter;
-	} else if (this.name.strings["delimiter-precedes-et-al"] === "contextual"
-			   || !this.name.strings["delimiter-precedes-et-al"]) {
-		this.etal_prefix_multiple = this.name.strings.delimiter;
-	}
-
 	this["et-al"] = {};
 
 	this.state.output.append(this.etal_term, this.etal_style, true);
