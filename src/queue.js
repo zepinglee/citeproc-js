@@ -345,8 +345,8 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	if (blob && blob.new_locale) {
 		state.opt.lang = blob.new_locale;
 	}
-	for (pos = 0, len = blobs.length; pos < len; pos += 1) {
-		blobjr = blobs[pos];
+	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
+		blobjr = blobs[i];
 
 		if ("string" === typeof blobjr.blobs) {
 
@@ -362,8 +362,11 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 
 				if (!state.tmp.suppress_decorations) {
 					llen = blobjr.decorations.length;
-					for (ppos = 0; ppos < llen; ppos += 1) {
-						params = blobjr.decorations[ppos];
+					for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
+						params = blobjr.decorations[j];
+						if (CSL.normalDecorIsOrphan(blobjr, params)) {
+							continue;
+						}
 						b = state.fun.decorate[params[0]][params[1]](state, b);
 					}
 				}
@@ -418,6 +421,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				if (["@bibliography", "@display"].indexOf(params[0]) > -1) {
 					continue;
 				}
+				if (CSL.normalDecorIsOrphan(blobs_start, params)) {
+					continue;
+				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
 			}
 		}
@@ -436,6 +442,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
 				if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
+					continue;
+				}
+				if (CSL.normalDecorIsOrphan(blobs_start, params)) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start);
@@ -529,6 +538,9 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 				llen = blob.decorations.length;
 				for (ppos = 0; ppos < llen; ppos += 1) {
 					params = blob.decorations[ppos];
+					if (CSL.normalDecorIsOrphan(blob, params)) {
+						continue;
+					}
 					str = state.fun.decorate[params[0]][params[1]](state, str);
 				}
 			}

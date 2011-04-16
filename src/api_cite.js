@@ -912,6 +912,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
 			len = this.citation.opt.layout_decorations.length;
 			for (pos = 0; pos < len; pos += 1) {
 				params = this.citation.opt.layout_decorations[pos];
+				// The "normal" formats in some output modes expect
+				// a superior nested decoration environment, and
+				// so should produce no output here.
+				if (params[1] === "normal") {
+					continue;
+				}
 				result = this.fun.decorate[params[0]][params[1]](this, result);
 			}
 		}

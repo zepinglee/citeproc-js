@@ -160,3 +160,25 @@ CSL.setDecorations = function (state, attributes) {
 	return ret;
 };
 
+CSL.normalDecorIsOrphan = function (blob, params) {
+	if (params[1] === "normal") {
+		// print("params: "+params);
+		var use_param = false;
+		for (var k = blob.alldecor.length - 1; k > -1; k += -1) {
+			// print("  all decor: "+blob.alldecor[k].length);
+			for (var n = blob.alldecor[k].length - 1; n > -1; n += -1) {
+				// print("  superior param: "+blob.alldecor[k][n]);
+				if (blob.alldecor[k][n][0] === params[0]) {
+					// print("  HIT!");
+					if (blob.alldecor[k][n][1] !== "normal") {
+						use_param = true;
+					}
+				}
+			}
+		}
+		if (!use_param) {
+			return true;
+		}
+	}
+	return false;
+}
