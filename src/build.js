@@ -48,7 +48,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.149";
+	this.processor_version = "1.0.148";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -584,7 +584,7 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 		}
 	}
 	if ("name" === token.name || "names" === token.name) {
-		if ("undefined" === typeof token.strings[localname] && "undefined" !== typeof this[this.build.area].opt[name]) {
+		if (! token.strings[localname] && "undefined" !== typeof this[this.build.area].opt[name]) {
 			token.strings[localname] = this[this.build.area].opt[name];
 		}
 	}

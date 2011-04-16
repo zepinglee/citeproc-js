@@ -75,8 +75,6 @@ CSL.Blob = function (token, str, levelname) {
 	}
 	if ("string" === typeof str) {
 		this.blobs = str;
-	} else if (str) {
-		this.blobs = [str];
 	} else {
 		this.blobs = [];
 	}

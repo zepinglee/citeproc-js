@@ -62,15 +62,6 @@ CSL.Output.Queue = function (state) {
 	this.current = new CSL.Stack(this.queue);
 };
 
-// XXX This works, but causes a mismatch in api_cite
-// Could insert a placeholder
-// Better to have a function that spits out an independent blob.
-// Is that possible though?
-// Okay. Use queue.append() with fake_queue instead.
-CSL.Output.Queue.prototype.pop = function () {
-	return this.current.value().blobs.pop();
-};
-
 CSL.Output.Queue.prototype.getToken = function (name) {
 	var ret = this.formats.value()[name];
 	return ret;
@@ -212,24 +203,22 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 // that the blob it pushes has text content,
 // and the current pointer is not moved after the push.
 
-CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
+CSL.Output.Queue.prototype.append = function (str, tokname) {
 	var token, blob, curr;
-	var useblob = true;
 	if ("undefined" === typeof str) {
-		return false;
+		return;
 	}
 	if ("number" === typeof str) {
 		str = "" + str;
 	}
 	if (this.state.tmp.element_trace && this.state.tmp.element_trace.value() === "suppress-me") {
-		return false;
+		return;
 	}
 	blob = false;
 	if (!tokname) {
 		token = this.formats.value().empty;
 	} else if (tokname === "literal") {
 		token = true;
-		useblob = false;
 	} else if ("string" === typeof tokname) {
 		token = this.formats.value()[tokname];
 	} else {
@@ -248,7 +237,6 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		// This, and not the str argument below on flipflop, is the
 		// source of the flipflopper string source.
 		str = str.replace(/\s+'/g, "  \'").replace(/^'/g, " \'");
-
 		// signal whether we end with terminal punctuation?
 		this.state.tmp.term_predecessor = true;
 	}
@@ -294,9 +282,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	// Caution: The parallel detection machinery will blow up if tracking
 	// variables are not properly initialized elsewhere.
 	//
-	if (!notSerious) {
-		this.state.parallel.AppendBlobPointer(curr);
-	}
+	this.state.parallel.AppendBlobPointer(curr);
 	if ("string" === typeof str) {
 		curr.push(blob);
 		if (blob.strings["text-case"]) {
@@ -318,13 +304,25 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		this.state.fun.flipflopper.init(str, blob);
 		//CSL.debug("(queue.append blob decorations): "+blob.decorations);
 		this.state.fun.flipflopper.processTags();
-	} else if (useblob) {
-		curr.push(blob);
 	} else {
 		curr.push(str);
 	}
-	return true;
 };
+
+//
+// Maybe the way to do this is to take it by layers, and
+// analyze a FLAT list of blobs returned during recursive
+// execution.  If the list is all numbers and there is no
+// group decor, don't touch it.  If it ends in numbers,
+// set the group delimiter on the first in the series,
+// and join the strings with the group delimiter.  If it
+// has numbers followed by strings, render each number
+// in place, and join with the group delimiter.  Return
+// the mixed flat list, and recurse upward.
+//
+// That sort of cascade should work, and should be more
+// easily comprehensible than this mess.
+//
 
 CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	var blobs, ret, blob_delimiter, i, params, blobjr, last_str, last_char, b, use_suffix, qres, addtoret, span_split, j, res, blobs_start, blobs_end, key, pos, len, ppos, llen, ttype, ltype, terminal, leading, delimiters, use_prefix, txt_esc;
@@ -345,6 +343,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	if (blob && blob.new_locale) {
 		state.opt.lang = blob.new_locale;
 	}
+
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
 		blobjr = blobs[i];
 
@@ -354,7 +353,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				ret.push(blobjr);
 			} else if (blobjr.blobs) {
 				// (skips empty strings)
-				//b = txt_esc(blobjr.blobs);
 				b = blobjr.blobs;
 
 				use_suffix = blobjr.strings.suffix;
@@ -419,9 +417,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			for (pos = 0; pos < len; pos += 1) {
 				params = blob.decorations[pos];
 				if (["@bibliography", "@display"].indexOf(params[0]) > -1) {
-					continue;
-				}
-				if (CSL.normalDecorIsOrphan(blobs_start, params)) {
 					continue;
 				}
 				blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);

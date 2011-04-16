@@ -114,13 +114,13 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 		otherItemBase = otherItemData[0];
 
 		// FIXED
-		//print("  --> "+Item.id+": ("+ItemCite+") "+otherItem.id+": ("+otherItemCite+")");
+		// print("  --> "+Item.id+": ("+ItemCite+") "+otherItem.id+": ("+otherItemCite+")");
 		if (ItemCite === otherItemCite) {
-			//print("    clash");
+			// print("    clash");
 			this.clashes[phase] += 1;
 			this.partners.push(otherItem);
 		} else {
-			//print("    non-clash");
+			// print("    non-clash");
 			this.nonpartners.push(otherItem);
 		}
 	}
@@ -300,7 +300,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
 				this.base.names[this.nnameset] += 1;
 			}
 		}
-		if ((this.nnameset === (this.base.names.length - 1) && this.base.names[this.nnameset] === this.maxvals[this.nnameset])) {
+		if (this.nnameset === (this.base.names.length - 1) && this.base.names[this.nnameset] === this.maxvals[this.nnameset]) {
 			if (this.modeindex === (this.modes.length - 1)) {
 				return true;
 			} else {

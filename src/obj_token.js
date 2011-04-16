@@ -166,14 +166,11 @@ CSL.Util.cloneToken = function (token) {
 			newtok.decorations.push(token.decorations[pos].slice());
 		}
 	}
-	if (token.variables) {
-		newtok.variables = token.variables.slice();
-	}
+	newtok.variables = token.variables.slice();
+
 	// Probably overkill; this is only used for cloning formatting
 	// tokens.
-	if (token.execs) {
-		newtok.execs = token.execs.slice();
-		newtok.tests = token.tests.slice();
-	}
+	// newtok.execs = token.execs.slice();
+	// newtok.tests = token.tests.slice();
 	return newtok;
 };
