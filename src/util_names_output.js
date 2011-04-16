@@ -47,7 +47,7 @@
  */
 
 CSL.NameOutput = function(state, Item, item, variables) {
-	this.debug = false;
+	this.debug = true;
 	if (this.debug) {
 		print("(1)");
 	}
@@ -133,23 +133,25 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.state.output.append(this.names_count, "empty");
 		return;
 	}
-
-	// util_names_disambig.js
-	this.disambigNames();
 	if (this.debug) {
 		print("(7)");
 	}
-	this.setEtAlParameters();
+	// util_names_disambig.js
+	this.disambigNames();
 	if (this.debug) {
 		print("(8)");
 	}
-	this.setCommonTerm();
+	this.setEtAlParameters();
 	if (this.debug) {
 		print("(9)");
 	}
-	this.renderAllNames();
+	this.setCommonTerm();
 	if (this.debug) {
 		print("(10)");
+	}
+	this.renderAllNames();
+	if (this.debug) {
+		print("(11)");
 	}
 	var blob_list = [];
 	var institution_sets = [];
@@ -174,31 +176,32 @@ CSL.NameOutput.prototype.outputNames = function () {
 		}
 	}
 	if (this.debug) {
-		print("(11)");
+		print("(12)");
 	}
 	this.state.output.openLevel("empty");
 	if (this.debug) {
-		print("(12)");
+		print("(13)");
 	}
 	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
 		// notSerious
 		this.state.output.append(blob_list[i], "literal", true);
 	}
 	if (this.debug) {
-		print("(13)");
+		print("(14)");
 	}
 	this.state.output.closeLevel("empty");
 	if (this.debug) {
-		print("(14)");
+		print("(15)");
 	}
 	var blob = this.state.output.pop();
 	if (this.debug) {
-		print("(15)");
+		print("(16)");
 	}
 	this.state.output.append(blob, this.names);
 	if (this.debug) {
-		print("(16)");
+		print("(17)");
 	}
+	this.state.tmp.name_node = blob;
 };
 
 CSL.NameOutput.prototype._applyLabels = function (blob, v) {
