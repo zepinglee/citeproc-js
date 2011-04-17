@@ -607,9 +607,6 @@ if (!CSL.Output.Formats) {
 if (!CSL.Registry) {
 	load("./src/registry.js");
 }
-if (!CSL.Registry.prototype.getCache) {
-	load("./src/cache.js");
-}
 // jslint OK
 if (!CSL.Registry.NameReg) {
 	load("./src/disambig_names.js");

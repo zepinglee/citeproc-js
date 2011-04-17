@@ -662,10 +662,6 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  * <p>This is used internally by the Registry.</p>
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
-	var cacheCopy = this.registry.getCache(Item, disambig);
-	if (cacheCopy) {
-		return cacheCopy;
-	}
 	if (disambig) {
 		this.tmp.disambig_request = disambig;
 	} else {
@@ -684,7 +680,6 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	this.tmp.just_looking = false;
 	this.tmp.suppress_decorations = false;
 	this.parallel.use_parallels = use_parallels;
-	this.registry.setCache(Item, disambig, ret);
 	return ret;
 };
 
