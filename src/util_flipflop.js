@@ -55,7 +55,7 @@ CSL.Util.FlipFlopper = function (state) {
 	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes, allTagsLst, lst;
 	this.state = state;
 	this.blob = false;
-	this.quotechars = ["'", '"'];
+	this.quotechars = ['"', "'"];
 	tagdefs = [
 		["<i>", "</i>", "italics", "@font-style", ["italic", "normal","normal"], true],
 		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal","normal"], true],
@@ -158,6 +158,7 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 	this.txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
 	// CSL.debug("(flipflopper received blob decorations): "+blob.decorations);
 	// CSL.debug("(blob alldecor): "+blob.alldecor);
+	str = this._normalizeString(str);
 	if (!blob) {
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Blob();
@@ -169,6 +170,15 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 	this.blobstack = new CSL.Stack(this.blob);
 	// CSL.debug("(this.blobstack.value() alldecor): "+this.blobstack.value().alldecor);
 };
+
+CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
+	for (var i = 0, ilen = 2; i < ilen; i += 1) {
+		str = str.replace(this.quotechars[i + 2], this.quotechars[0]);
+		str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+	}
+	return str;
+};
+
 //
 // (1) scan the string for escape characters.  Split the
 // string on tag candidates, and rejoin the tags that
