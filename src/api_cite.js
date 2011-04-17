@@ -662,14 +662,17 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  * <p>This is used internally by the Registry.</p>
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
-	var use_parallels, ret;
+	var cacheCopy = this.registry.getCache(Item, disambig);
+	if (cacheCopy) {
+		return cacheCopy;
+	}
 	if (disambig) {
 		this.tmp.disambig_request = disambig;
 	} else {
 		this.tmp.disambig_request = false;
 	}
 	this.tmp.area = "citation";
-	use_parallels = this.parallel.use_parallels;
+	var use_parallels = this.parallel.use_parallels;
 	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	this.tmp.just_looking = true;
@@ -677,10 +680,11 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 	// !!!
 	CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
 	CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
-	ret = this.output.string(this, this.output.queue);
+	var ret = this.output.string(this, this.output.queue);
 	this.tmp.just_looking = false;
 	this.tmp.suppress_decorations = false;
 	this.parallel.use_parallels = use_parallels;
+	this.registry.setCache(Item, disambig, ret);
 	return ret;
 };
 

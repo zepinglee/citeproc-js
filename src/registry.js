@@ -109,6 +109,7 @@ CSL.Registry = function (state) {
 	this.reflist = [];
 	this.namereg = new CSL.Registry.NameReg(state);
 	this.citationreg = new CSL.Registry.CitationReg(state);
+	this.cache = {};
 	//
 	// shared scratch vars
 	this.mylist = [];

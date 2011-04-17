@@ -131,7 +131,7 @@ class Bundle:
         f.extend(["util_parallel","obj_token","obj_ambigconfig","obj_blob","obj_number"])
         f.extend(["util_datenode","util_institutions","util_names","util_dates"])
         f.extend(["util_sort","util_substitute","util_number","util_page","util_flipflop"])
-        f.extend(["formatters","formats","registry","disambig_names","disambig_cites"])
+        f.extend(["formatters","formats","registry","cache","disambig_names","disambig_cites"])
         f.extend(["disambig_citations"])
         self.files = f
     
