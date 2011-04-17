@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.150
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Some cleanup of core disambiguation code in disambig_cites.js. 
+  Greater clarity, possibly a slight time saving.
+
+- Normalize quote chars to avoid "sep is undefined" error on 
+  mismatched quote marks.
+
+- Fix bug in year-suffix assignment code.
+
+
+==========================
 Changes in version 1.0.149
 ==========================
 

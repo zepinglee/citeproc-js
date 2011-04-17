@@ -1145,42 +1145,40 @@ CSL.compareAmbigConfig = function(a, b) {
 	return 0;
 };
 CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
-	var ret, param, pos, ppos, len, llen;
-	ret = {};
+	var ret = {};
 	ret.names = [];
 	ret.givens = [];
 	ret.year_suffix = false;
 	ret.disambiguate = false;
-	for (pos = 0, len = config.names.length; pos < len; pos += 1) {
-		param = config.names[pos];
-		if (oldconfig && (!oldconfig.names[pos] || oldconfig.names[pos] !== param)) {
-			for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
-				this.tmp.taintedItemIDs[tainters[ppos].id] = true;
+	for (var i = 0, ilen = config.names.length; i < ilen; i += 1) {
+		var param = config.names[i];
+		if (oldconfig && (!oldconfig.names[i] || oldconfig.names[i] !== param)) {
+			for (var j = 0, jlen = tainters.length; j < jlen; j += 1) {
+				this.tmp.taintedItemIDs[tainters[j].id] = true;
 			}
 			oldconfig = false;
 		}
-		ret.names[pos] = param;
+		ret.names[i] = param;
 	}
-	for (pos = 0, len = config.givens.length; pos < len; pos += 1) {
-		param = [];
-		llen = config.givens[pos].length;
-		for (ppos = 0; ppos < llen; ppos += 1) {
-			if (oldconfig && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
-				for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
-					this.tmp.taintedItemIDs[tainters[ppos].id] = true;
+	for (var i  = 0, ilen = config.givens.length; i < ilen; i += 1) {
+		var param = [];
+		for (var j = 0, jlen = config.givens[i].length; j < jlen; j += 1) {
+			if (oldconfig && oldconfig.givens[i][j] !== config.givens[i][j]) {
+				for (var k = 0, klen = tainters.length; k < klen; k += 1) {
+					this.tmp.taintedItemIDs[tainters[k].id] = true;
 				}
 				oldconfig = false;
 			}
-			param.push(config.givens[pos][ppos]);
+			param.push(config.givens[i][j]);
 		}
 		ret.givens.push(param);
 	}
 	if (tainters && tainters.length > 1) {
 		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
-			for (pos = 0, len = tainters.length; pos < len; pos += 1) {
-				var oldYS = this.registry.registry[tainters[pos].id].disambig.year_suffix;
-				if (tainters && (false === oldYS || oldYS != pos)) {
-					this.tmp.taintedItemIDs[tainters[pos].id] = true;
+			for (var i = 0, ilen = tainters.length; i < ilen; i += 1) {
+				var oldYS = this.registry.registry[tainters[i].id].disambig.year_suffix;
+				if (tainters && (false === oldYS || oldYS != i)) {
+					this.tmp.taintedItemIDs[tainters[i].id] = true;
 				}
 			}
 			oldconfig = false;
@@ -1649,7 +1647,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.149";
+	this.processor_version = "1.0.150";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2863,21 +2861,20 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
 	return str;
 };
 CSL.getAmbiguousCite = function (Item, disambig) {
-	var use_parallels, ret;
 	if (disambig) {
 		this.tmp.disambig_request = disambig;
 	} else {
 		this.tmp.disambig_request = false;
 	}
 	this.tmp.area = "citation";
-	use_parallels = this.parallel.use_parallels;
+	var use_parallels = this.parallel.use_parallels;
 	this.parallel.use_parallels = false;
 	this.tmp.suppress_decorations = true;
 	this.tmp.just_looking = true;
 	CSL.getCite.call(this, Item, {position: 1});
 	CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
 	CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
-	ret = this.output.string(this, this.output.queue);
+	var ret = this.output.string(this, this.output.queue);
 	this.tmp.just_looking = false;
 	this.tmp.suppress_decorations = false;
 	this.parallel.use_parallels = use_parallels;
@@ -7831,7 +7828,7 @@ CSL.Util.FlipFlopper = function (state) {
 	var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes, allTagsLst, lst;
 	this.state = state;
 	this.blob = false;
-	this.quotechars = ["'", '"'];
+	this.quotechars = ['"', "'"];
 	tagdefs = [
 		["<i>", "</i>", "italics", "@font-style", ["italic", "normal","normal"], true],
 		["<b>", "</b>", "bold", "@font-weight", ["bold", "normal","normal"], true],
@@ -7924,6 +7921,7 @@ CSL.Util.FlipFlopper = function (state) {
 };
 CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 	this.txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
+	str = this._normalizeString(str);
 	if (!blob) {
 		this.strs = this.getSplitStrings(str);
 		this.blob = new CSL.Blob();
@@ -7933,6 +7931,13 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 		this.blob.blobs = [];
 	}
 	this.blobstack = new CSL.Stack(this.blob);
+};
+CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
+	for (var i = 0, ilen = 2; i < ilen; i += 1) {
+		str = str.replace(this.quotechars[i + 2], this.quotechars[0]);
+		str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+	}
+	return str;
 };
 CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 	var strs, pos, len, newstr, head, tail, expected_closers, expected_openers, expected_flips, tagstack, badTagStack, posA, sameAsOpen, openRev, flipRev, tag, ibeenrunned, posB, wanted_closer, posC, sep, resplice, params, lenA, lenB, lenC, badTagPos, mx, myret;
@@ -8466,6 +8471,7 @@ CSL.Registry = function (state) {
 	this.reflist = [];
 	this.namereg = new CSL.Registry.NameReg(state);
 	this.citationreg = new CSL.Registry.CitationReg(state);
+	this.cache = {};
 	this.mylist = [];
 	this.myhash = {};
 	this.deletes = [];
@@ -9057,16 +9063,22 @@ CSL.Disambiguation.prototype.evalScan = function (ismax) {
 };
 CSL.Disambiguation.prototype.disNames = function (ismax) {
 	var pos, len;
-	if (this.clashes[1] === 0) {
+	if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
-			this.lists[this.listpos] = [this.base,[]];
-		} else {
-			this.lists[this.listpos] = [this.base, this.nonpartners];
-		}
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.lists[this.listpos] = [this.base, []];
+	} else if (this.clashes[1] === 0) {
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
+		this.lists[this.listpos] = [this.base, this.nonpartners];
+	} else if (this.nonpartners.length === 1) {
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.lists[this.listpos] = [this.base, this.partners];
 	} else if (this.clashes[1] < this.clashes[0]) {
 		this.lists[this.listpos] = [this.base, this.partners];
 		if (this.nonpartners.length === 1) {
@@ -9089,19 +9101,31 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 };
 CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	var pos, len;
-	if (this.clashes[1] === 0) {
+	if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
 		if (this.clashes[0] === 1) {
 			this.base = this.decrementNames();
 		}
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
-			this.lists[this.listpos] = [this.base,[]];
-		} else {
-			this.lists[this.listpos] = [this.base, this.nonpartners];
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.lists[this.listpos] = [this.base, []];
+	} else if (this.clashes[1] === 0) {
+		if (this.clashes[0] === 1) {
+			this.base = this.decrementNames();
 		}
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
+		this.lists[this.listpos] = [this.base, this.nonpartners];
+	} else if (this.nonpartners.length === 1) {
+		if (this.clashes[0] === 1) {
+			this.base = this.decrementNames();
+		}
+		mybase = CSL.cloneAmbigConfig(this.base);
+		mybase.year_suffix = false;
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.lists[this.listpos] = [this.base, this.partners];
 	} else if (this.clashes[1] < this.clashes[0]) {
 		this.lists[this.listpos] = [this.base, this.partners];
 		if (this.nonpartners.length === 1) {
