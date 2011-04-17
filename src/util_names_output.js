@@ -76,7 +76,7 @@ CSL.NameOutput.prototype.init = function (names) {
 
 
 CSL.NameOutput.prototype.reinit = function (names) {
-	if (!this._hasValues() && false) {
+	if (!this._hasValues()) {
 		this.nameset_offset = 0;
 		// What-all should be carried across from the subsidiary
 		// names node, and on what conditions? For each attribute,
