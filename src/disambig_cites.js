@@ -136,7 +136,7 @@ CSL.Disambiguation.prototype.evalScan = function (ismax) {
 CSL.Disambiguation.prototype.disNames = function (ismax) {
 	var pos, len;
 	// print("== disnames ==")
-	if (this.clashes[1] === 0) {
+	if (this.clashes[1] === 0 || this.nonpartners.length === 1) {
 		// no clashes
 		// Remove item from list.  If only one non-clashing item,
 		// remove it as well.
@@ -150,7 +150,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
-			this.lists[this.listpos] = [this.base,[]];
+			this.lists[this.listpos] = [this.base, this.partners]
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
 		}
@@ -192,7 +192,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	// print("  ... clashes: "+this.clashes);
 	// Haven't compared in detail, but the logic of this seems to the be same
 	// as above.
-	if (this.clashes[1] === 0) {
+	if (this.clashes[1] === 0 || this.nonpartners.length === 1) {
 		//print("no CLash: "+this.gname)
 		// this branch is the same as for disNames(): if it resolves, we're done with it
 
@@ -207,7 +207,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
 			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
-			this.lists[this.listpos] = [this.base,[]];
+			this.lists[this.listpos] = [this.base, this.partners];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
 		}
@@ -260,7 +260,7 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 
 CSL.Disambiguation.prototype.disYears = function () {
 	var pos, len, tokens, token, item;
-	// year-suffix
+	// print("=== disYears ==");
 	tokens = [];
 	for (pos = 0, len = this.lists[this.listpos][1].length; pos < len; pos += 1) {
 		token = this.registry[this.lists[this.listpos][1][pos].id];
