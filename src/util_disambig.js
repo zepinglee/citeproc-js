@@ -68,48 +68,46 @@ CSL.compareAmbigConfig = function(a, b) {
 };
 
 CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
-	var ret, param, pos, ppos, len, llen;
-	ret = {};
+	var ret = {};
 	ret.names = [];
 	ret.givens = [];
 	ret.year_suffix = false;
 	ret.disambiguate = false;
-	for (pos = 0, len = config.names.length; pos < len; pos += 1) {
-		param = config.names[pos];
+	for (var i = 0, ilen = config.names.length; i < ilen; i += 1) {
+		var param = config.names[i];
 		// Fixes update bug affecting plugins, without impacting
 		// efficiency with update of large numbers of year-suffixed
 		// items.
-		if (oldconfig && (!oldconfig.names[pos] || oldconfig.names[pos] !== param)) {
-			for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
-				this.tmp.taintedItemIDs[tainters[ppos].id] = true;
+		if (oldconfig && (!oldconfig.names[i] || oldconfig.names[i] !== param)) {
+			for (var j = 0, jlen = tainters.length; j < jlen; j += 1) {
+				this.tmp.taintedItemIDs[tainters[j].id] = true;
 			}
 			oldconfig = false;
 		}
-		ret.names[pos] = param;
+		ret.names[i] = param;
 	}
-	for (pos = 0, len = config.givens.length; pos < len; pos += 1) {
-		param = [];
-		llen = config.givens[pos].length;
-		for (ppos = 0; ppos < llen; ppos += 1) {
+	for (var i  = 0, ilen = config.givens.length; i < ilen; i += 1) {
+		var param = [];
+		for (var j = 0, jlen = config.givens[i].length; j < jlen; j += 1) {
 			// condition at line 312 of disambiguate.js protects against negative
 			// values of j
-			if (oldconfig && oldconfig.givens[pos][ppos] !== config.givens[pos][ppos]) {
-				for (ppos = 0, llen = tainters.length; ppos < llen; ppos += 1) {
-					this.tmp.taintedItemIDs[tainters[ppos].id] = true;
+			if (oldconfig && oldconfig.givens[i][j] !== config.givens[i][j]) {
+				for (var k = 0, klen = tainters.length; k < klen; k += 1) {
+					this.tmp.taintedItemIDs[tainters[k].id] = true;
 				}
 				oldconfig = false;
 			}
-			param.push(config.givens[pos][ppos]);
+			param.push(config.givens[i][j]);
 		}
 		ret.givens.push(param);
 	}
 	if (tainters && tainters.length > 1) {
 		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
-			for (pos = 0, len = tainters.length; pos < len; pos += 1) {
-				var oldYS = this.registry.registry[tainters[pos].id].disambig.year_suffix;
+			for (var i = 0, ilen = tainters.length; i < ilen; i += 1) {
+				var oldYS = this.registry.registry[tainters[i].id].disambig.year_suffix;
 
-				if (tainters && (false === oldYS || oldYS != pos)) {
-					this.tmp.taintedItemIDs[tainters[pos].id] = true;
+				if (tainters && (false === oldYS || oldYS != i)) {
+					this.tmp.taintedItemIDs[tainters[i].id] = true;
 				}
 			}
 			oldconfig = false;
