@@ -172,9 +172,9 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 };
 
 CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
-	for (var i = 2, ilen = this.quotechars.length; i < ilen; i += 2) {
-		str = str.replace(this.quotechars[i], this.quotechars[0]);
-		str = str.replace(this.quotechars[i + 1], this.quotechars[1]);
+	for (var i = 0, ilen = 2; i < ilen; i += 1) {
+		str = str.replace(this.quotechars[i + 2], this.quotechars[0]);
+		str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
 	}
 	return str;
 };
