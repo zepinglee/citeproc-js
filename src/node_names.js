@@ -59,7 +59,6 @@ CSL.Node.names = {
 			
 			state.fixOpt(this, "names-delimiter", "delimiter");
 
-
 		}
 		
 		if (this.tokentype === CSL.SINGLETON) {
@@ -71,6 +70,9 @@ CSL.Node.names = {
 
 
 		if (this.tokentype === CSL.START) {
+
+			state.build.names_flag = true;
+
 			// init can substitute
 			func = function (state, Item) {
 				state.tmp.can_substitute.push(true);
@@ -186,7 +188,7 @@ CSL.Node.names = {
 
 				state.tmp.can_block_substitute = false;
 			};
-			//this.execs.push(func);
+			this.execs.push(func);
 
 			state.build.name_flag = false;
 		}
