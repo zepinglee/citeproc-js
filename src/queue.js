@@ -160,11 +160,18 @@ CSL.Output.Queue.prototype.endTag = function () {
 
 CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 	var blob, curr, x, has_ephemeral;
-	if (!this.formats.value()[token]) {
-		throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
+	if ("object" === typeof token) {
+		// delimiter, prefix, suffix, decorations from token
+		blob = new CSL.Blob(token);
+	} else if ("undefined" === typeof token) {
+		blob = new CSL.Blob(this.formats.value()["empty"], false, "empty");
+	} else {
+		if (!this.formats.value()[token]) {
+			throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
+		}
+		// delimiter, prefix, suffix, decorations from token
+		blob = new CSL.Blob(this.formats.value()[token], false, token);
 	}
-	// delimiter, prefix, suffix, decorations from token
-	blob = new CSL.Blob(this.formats.value()[token], false, token);
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
