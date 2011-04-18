@@ -57,6 +57,8 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 		var v = variables[i];
 		this.variable_offset[v] = this.nameset_offset;
 		var values = this._normalizeVariableValue(Item, v);
+		// Used for cs:substitute. See node_substitute.js
+		this.state.tmp.value = this.state.tmp.value.concat(values);
 		this._getFreeters(v, values);
 		this._getPersonsAndInstitutions(v, values);
 	}
@@ -66,7 +68,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	if ("string" === typeof Item[variable]) {
 		var names = [{literal: Item[variable]}];
 	} else if (!Item[variable]) {
-		var names = {};
+		var names = [];
 	} else {
 		var names = Item[variable].slice();
 	}
