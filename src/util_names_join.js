@@ -1,9 +1,9 @@
 CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 	var ret;
 	if (this.etal_spec[pos] === 1) {
-		ret = this._joinEtAl(blobs);
+		ret = this._joinEtAl(blobs, "name");
 	} else if (this.etal_spec[pos] === 2) {
-		ret = this._joinEllipsis(blobs);
+		ret = this._joinEllipsis(blobs, "name");
 	} else {
 		ret = this._joinAnd(blobs, "name");
 	}
@@ -36,7 +36,7 @@ CSL.NameOutput.prototype.joinFreetersAndInstitutionSets = function (blobs) {
 };
 
 
-CSL.NameOutput.prototype._joinEtAl = function (blobs) {
+CSL.NameOutput.prototype._joinEtAl = function (blobs, type) {
 	//
     var blob = this._join(blobs, this.name.strings.delimiter);
 	if (!blob) {
@@ -44,29 +44,29 @@ CSL.NameOutput.prototype._joinEtAl = function (blobs) {
 	}
 	
 	// notSerious
-	this.state.output.openLevel("empty");
+	this.state.output.openLevel(this[type]);
 	this.state.output.append(blob, "literal", true);
 	if (blobs.length > 1) {
 		this.state.output.append(this["et-al"].multiple, "literal", true);
 	} else if (blobs.length === 1) {
 		this.state.output.append(this["et-al"].single, "literal", true);
 	}
-	this.state.output.closeLevel("empty");
+	this.state.output.closeLevel();
 	return this.state.output.pop();
 };
 
 
-CSL.NameOutput.prototype._joinEllipsis = function (blobs) {
-	return this._join(blobs, this.name.strings.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple);
+CSL.NameOutput.prototype._joinEllipsis = function (blobs, type) {
+	return this._join(blobs, this.name.strings.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple, this[type]);
 };
 
 
 CSL.NameOutput.prototype._joinAnd = function (blobs, type) {
-	return this._join(blobs, this[type].strings.delimiter, this[type].and.single, this[type].and.multiple);
+	return this._join(blobs, this[type].strings.delimiter, this[type].and.single, this[type].and.multiple, this[type]);
 };
 
 
-CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
+CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, token) {
 	if (!blobs) {
 		return false;
 	}
@@ -102,11 +102,11 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
 			blobs.push(blob);
 		}
 	}
-	this.state.output.openLevel("empty");
+	this.state.output.openLevel(token);
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
 		this.state.output.append(blobs[i], false, true);
 	}
-	this.state.output.closeLevel("empty");
+	this.state.output.closeLevel();
 	return this.state.output.pop();
 };
 
