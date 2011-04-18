@@ -70,11 +70,6 @@ CSL.NameOutput.prototype.init = function (names) {
 			this.state.tmp.value = this.state.tmp.value.concat(this.Item[this.variables[i]]);
 		}
 	}
-	this.suppress = {
-		persons:false,
-		institutions:false,
-		freeters:false
-	}
 	this["et-al"] = undefined;
 	this["with"] = undefined;
 	this.name = undefined;
@@ -88,11 +83,6 @@ CSL.NameOutput.prototype.reinit = function (names) {
 		// names node, and on what conditions? For each attribute,
 		// and decoration, is it an override, or is it additive?
 		this.variables = names.variables;
-		this.suppress = {
-			persons:false,
-			institutions:false,
-			freeters:false
-		}
 	}
 };
 
@@ -224,6 +214,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	//this.state.tmp.name_node = blob;
 	this.state.tmp.name_node = this.state.output.current.value();
+	// For name_SubstituteOnNamesSpanNamesSpanFail
+	this.variables = [];
 };
 
 CSL.NameOutput.prototype._applyLabels = function (blob, v) {
