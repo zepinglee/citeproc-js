@@ -109,6 +109,9 @@ CSL.Registry = function (state) {
 	this.reflist = [];
 	this.namereg = new CSL.Registry.NameReg(state);
 	this.citationreg = new CSL.Registry.CitationReg(state);
+	// See CSL.NameOutput.prototype.outputNames
+	// and CSL.Registry.prototype.doinserts
+	this.authorstrings = {};
 	//
 	// shared scratch vars
 	this.mylist = [];
@@ -323,8 +326,15 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			//
 			// See bottom of CSL.NameOutput.prototype.outputNames
 			// for use of this variable.
+
+			// XXXXX This actually needs to save the sort key string,
+			// not the disambig form.
 			this.state.tmp.primary_names_string = false;
+			// XX1 print("-- registry insert: setting \"primary_names_string\" to: false");
 			akey = CSL.getAmbiguousCite.call(this.state, Item);
+			this.state.registry.authorstrings[Item.id] = this.state.tmp.primary_names_string;
+			// XX1 print("-- registry insert: setting \"primary_names_string\" to: "+this.state.tmp.primary_names_string);
+
 			//
 			//  4d. Record ambig pool key on akey list (used for updating further
 			//      down the chain).

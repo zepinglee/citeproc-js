@@ -212,19 +212,11 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(17)");
 	}
-	//this.state.tmp.name_node = blob;
+	// Also used in CSL.Util.substituteEnd (which could do with
+	// some cleanup at this writing).
 	this.state.tmp.name_node = this.state.output.current.value();
 	// Let's try something clever here.
-	// 
-	// See CSL.Registry.prototype.doinserts for reset
-	// of this variable.
-	if (!this.state.tmp.primary_names_string && this.state.tmp.just_looking) {
-		var str = this.state.output.string(this.state, this.state.tmp.name_node.blobs);
-		this.state.tmp.primary_names_string = str;
-		// ZZZZZ Register this value someplace persistent,
-		// for use in grouped cite key operations, and
-		// for collapsing evaluation.
-	}
+	this._collapseAuthor();
 	// For name_SubstituteOnNamesSpanNamesSpanFail
 	this.variables = [];
 };
@@ -279,6 +271,31 @@ CSL.NameOutput.prototype._buildLabel = function (term, plural, position) {
 };
 
 
+CSL.NameOutput.prototype._collapseAuthor = function () {
+	// 
+	// See CSL.Registry.prototype.doinserts for reset
+	// of this variable.
+	if (this.state[this.state.tmp.area].opt.collapse) {
+		if (!this.state.tmp.just_looking && this.state.tmp.primary_names_string
+			&& 	!this.state.tmp.suppress_decorations) {
+			if (this.state.tmp.primary_names_string
+				&& this.state.tmp.primary_names_string === this.state.tmp.last_primary_names_string) {
+			
+				// XX1 print("    CUT!");
+				this.state.tmp.name_node.blobs.pop();
+			}
+		}
+	}
+	if (!this.state.tmp.primary_names_string && this.state.tmp.just_looking) {
+		var str = "";
+		var myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+		if (myqueue) {
+			str = this.state.output.string(this.state, myqueue, false);
+		}
+		this.state.tmp.primary_names_string = str;
+		//print("str: "+str);
+	}
+};
 
 /*
 CSL.NameOutput.prototype.suppressNames = function() {

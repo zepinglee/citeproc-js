@@ -731,6 +731,9 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
  */
 CSL.getCitationCluster = function (inputList, citationID) {
 	var delimiter, result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object;
+	// XX1 print("== getCitationCluster(): set \"last_primary_names_string\" to false");
+	this.tmp.last_primary_names_string = false;
+	this.tmp.primary_names_string = false;
 	txt_esc = CSL.Output.Formats[this.opt.mode].text_escape;
 	this.tmp.area = "citation";
 	result = "";
@@ -1034,6 +1037,11 @@ CSL.citeEnd = function (Item, item) {
 		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
 	}
 	this.tmp.cite_locales.push(this.tmp.last_cite_locale);
+
+    if (!this.tmp.just_looking && this.tmp.area === "citation") {
+		// XX1 print(this.tmp.area+": setting \"last_primary_names_string\" to: "+this.tmp.primary_names_string);
+		this.tmp.last_primary_names_string = this.tmp.primary_names_string;
+	}
 };
 
 
