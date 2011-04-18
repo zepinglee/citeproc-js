@@ -45,6 +45,9 @@ CSL.NameOutput.prototype._joinEtAl = function (blobs, type) {
 	
 	// notSerious
 	this.state.output.openLevel(this[type]);
+	// Delimiter is applied from separately saved source in this case,
+	// for discriminate application of single and multiple joins.
+	this.state.output.current.value().strings.delimiter = "";
 	this.state.output.append(blob, "literal", true);
 	if (blobs.length > 1) {
 		this.state.output.append(this["et-al"].multiple, "literal", true);
@@ -103,6 +106,9 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
 		}
 	}
 	this.state.output.openLevel(token);
+	// Delimiter is applied from separately saved source in this case,
+	// for discriminate application of single and multiple joins.
+	this.state.output.current.value().strings.delimiter = "";
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
 		this.state.output.append(blobs[i], false, true);
 	}
