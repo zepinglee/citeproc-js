@@ -107,6 +107,8 @@ CSL.Util.substituteStart = function (state, target) {
 		state.build.cls = display;
 	}
 	state.build.render_nesting_level += 1;
+	// Should this be render_nesting_level, with the increment
+	// below? ... ?
 	if (state.build.substitute_level.value() === 1) {
 		//
 		// All top-level elements in a substitute environment get
