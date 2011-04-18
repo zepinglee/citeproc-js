@@ -216,7 +216,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(17)");
 	}
-	this.state.tmp.name_node = blob;
+	//this.state.tmp.name_node = blob;
+	this.state.tmp.name_node = this.state.output.current.value();
 };
 
 CSL.NameOutput.prototype._applyLabels = function (blob, v) {
