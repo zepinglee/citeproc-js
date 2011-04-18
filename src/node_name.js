@@ -69,6 +69,7 @@ CSL.Node.name = {
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 
 			// Et-al (onward processing in node_etal.js and node_names.js)
+			// XXXXX Why is this necessary? This is available on this.name, right?
 			state.build.etal_term = "et-al";
 			state.build.name_delimiter = this.strings.delimiter;
 			state.build["delimiter-precedes-et-al"] = this.strings["delimiter-precedes-et-al"];
