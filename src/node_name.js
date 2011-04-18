@@ -124,10 +124,22 @@ CSL.Node.name = {
 				// mechanism for triggering appropriate punctuation handling around
 				// the ellipsis placeholder (Polish is a particularly tough case for that).
 				this.ellipsis_term = "\u2026";
+				// Similar treatment to "and", above, will be needed
+				// here when this becomes a locale term.
 				this.ellipsis_prefix_single = " ";
-				this.ellipsis_prefix_multiple = " ";
+				this.ellipsis_prefix_multiple =  this.strings.delimiter;;
 				this.ellipsis_suffix = " ";
 			}
+			if (this.strings["delimiter-precedes-et-al"] === "always") {
+				this.and_prefix_single = this.strings.delimiter;
+			} else if (this.strings["delimiter-precedes-last"] === "never") {
+				// Slightly fragile, as explained above in the code
+				// for "and".
+				if (this.and_prefix_multiple) {
+					this.and_prefix_multiple = " ";
+				}
+			}
+
 
 			func = function (state, Item) {
 				this["and"] = {};

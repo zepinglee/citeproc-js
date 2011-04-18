@@ -65,6 +65,7 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
 	if ("undefined" === typeof item) {
 		item = {};
 	}
+	this.etal_use_last = this.name.strings["et-al-use-last"];
 	if (item.position) {
 		if (this.name.strings["et-al-subsequent-min"]) {
 			this.etal_min = this.name.strings["et-al-subsequent-min"];
