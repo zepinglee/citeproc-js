@@ -51,7 +51,7 @@ CSL.Node.name = {
 		var func, pos, len, attrname;
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
 			//state.fixOpt(this, "names-delimiter", "delimiter");
-			state.fixOpt(this, "name-delimiter", "delimiter");
+			state.fixOpt(this, "name-delimiter", "name_delimiter");
 			state.fixOpt(this, "name-form", "form");
 			
 			state.fixOpt(this, "and", "and");
@@ -140,7 +140,6 @@ CSL.Node.name = {
 					this.and_prefix_multiple = " ";
 				}
 			}
-
 
 			func = function (state, Item) {
 				this["and"] = {};
