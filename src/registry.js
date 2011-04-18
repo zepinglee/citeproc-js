@@ -321,6 +321,9 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			//  4c. Add names in items to be inserted to names reg
 			//      (implicit in getAmbiguousCite).
 			//
+			// See bottom of CSL.NameOutput.prototype.outputNames
+			// for use of this variable.
+			this.state.tmp.primary_names_string = false;
 			akey = CSL.getAmbiguousCite.call(this.state, Item);
 			//
 			//  4d. Record ambig pool key on akey list (used for updating further
@@ -602,6 +605,8 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
 	// Taint if number of names to be included has changed
+	// ZZZZZ Hullo, this might be the place to slot in cache invalidation
+	// for cached disambiguation. That idea might have some life in it yet.
 	if (this.registry[id] && this.registry[id].disambig && this.registry[id].disambig.names) {
 		for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
 			var new_names_params = ambig_config.names[i];

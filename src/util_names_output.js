@@ -214,6 +214,17 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	//this.state.tmp.name_node = blob;
 	this.state.tmp.name_node = this.state.output.current.value();
+	// Let's try something clever here.
+	// 
+	// See CSL.Registry.prototype.doinserts for reset
+	// of this variable.
+	if (!this.state.tmp.primary_names_string && this.state.tmp.just_looking) {
+		var str = this.state.output.string(this.state, this.state.tmp.name_node.blobs);
+		this.state.tmp.primary_names_string = str;
+		// ZZZZZ Register this value someplace persistent,
+		// for use in grouped cite key operations, and
+		// for collapsing evaluation.
+	}
 	// For name_SubstituteOnNamesSpanNamesSpanFail
 	this.variables = [];
 };
