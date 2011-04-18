@@ -64,6 +64,12 @@ CSL.NameOutput.prototype.init = function (names) {
 	this.nameset_offset = 0;
 	this.names = names;
 	this.variables = names.variables;
+	this.state.tmp.value = [];
+	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
+			this.state.tmp.value = this.state.tmp.value.concat(this.Item[this.variables[i]]);
+		}
+	}
 	this.suppress = {
 		persons:false,
 		institutions:false,
