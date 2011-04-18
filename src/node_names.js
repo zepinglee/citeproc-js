@@ -174,9 +174,16 @@ CSL.Node.names = {
 				state.nameOutput.etal_prefix_single = this.etal_prefix_single;
 				state.nameOutput.etal_prefix_multiple = this.etal_prefix_multiple;
 				state.nameOutput.etal_suffix = this.etal_suffix;
-				state.nameOutput.outputNames();
 			};
 			this.execs.push(func);
+
+			if (state.build.render_nesting_level === 1) {
+				func = function (state, Item) {
+					// Only one names rendering per customer.
+					state.nameOutput.outputNames();
+				};
+				this.execs.push(func);
+			}
 
 			// unsets
 			func = function (state, Item) {
