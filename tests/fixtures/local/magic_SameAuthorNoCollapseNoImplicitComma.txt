@@ -79,7 +79,7 @@ citation
 
 
 >>== RESULT ==>>
->>[0] (John Smith 1999, John Smith 2000; Bob Jones 2011)
+>>[0] (John Smith 1999; John Smith 2000; Bob Jones 2011)
 <<== RESULT ==<<
 
 >>===== CSL =====>>
