@@ -108,6 +108,7 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 		} else {
 			this.institutions[v].push(values[i]);
 			if (!first) {
+				persons.reverse();
 				this._markCutVariableAndCut(v, persons);
 				this.persons[v].push(persons);
 				persons = [];
@@ -115,8 +116,8 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 			first = false;
 		}
 	}
+	persons.reverse();
 	this.persons[v].push(persons);
-	this.persons[v].reverse();
 	this.institutions[v].reverse();
 	if (this.institutions[v].length) {
 		this.nameset_offset += 1;
