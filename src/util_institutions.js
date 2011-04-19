@@ -53,31 +53,4 @@ CSL.Util.Institutions = {};
  */
 CSL.Util.Institutions.outputInstitutions = function (state, display_names) {
 	var len, pos, name, institution, value, token_long, token_short, parts;
-	state.output.openLevel("institution");
-	len = display_names.length;
-	for (pos = 0; pos < len; pos += 1) {
-		name = display_names[pos];
-		institution = state.output.getToken("institution");
-		value = name.literal;
-		if (state.transform.institution[value]) {
-			token_long = state.output.mergeTokenStrings("institution-long", "institution-if-short");
-		} else {
-			token_long = state.output.getToken("institution-long");
-		}
-		token_short = state.output.getToken("institution-short");
-		parts = institution.strings["institution-parts"];
-		if ("short" === parts) {
-			state.transform.output(state, value, token_short, token_long, true);
-		} else if ("short-long" === parts) {
-			state.transform.output(state, value, token_short);
-			state.output.append(value, token_long);
-		} else if ("long-short" === parts) {
-			state.output.append(value, token_long);
-			state.transform.output(state, value, token_short);
-		} else {
-			state.output.append(value, token_long);
-		}
-	}
-	// institution
-	state.output.closeLevel();
 };

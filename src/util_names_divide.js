@@ -106,7 +106,7 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 		if (this.isPerson(values[i])) {
 			persons.push(values[i]);
 		} else {
-			this.institutions[v].push(values[i]);
+			this.institutions[v] = this._splitInstitution(values[i]);
 			if (!first) {
 				persons.reverse();
 				this._markCutVariableAndCut(v, persons);
@@ -154,4 +154,33 @@ CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
 			}
 		}
 	}
+};
+
+
+CSL.NameOutput.prototype._splitInstitution = function (variable, values) {
+	var use_first = this.institution.strings["use-first"];
+	if (!use_first) {
+		use_first = this.institution.strings["substitute-use-first"];
+	}
+	if (!use_first) {
+		use_first = 0;
+	}
+	var append_last = this.institution.strings["use-last"];
+	if (!append_last) {
+		append_last = 0;
+	}
+	var subunits = values.literal.split(/\s+,\s+/);
+	if (use_first || append_last) {
+		var s = subunits.slice(0, use_first);
+		subunits = subunits.slice(use_first);
+		if (append_last) {
+			if (append_last > subunits.length) {
+				append_last = subunits.length;
+			}
+			if (append_last) {
+				subunits = s.concat(subunits.slice((subunits.length - append_last)));
+			}
+		}
+	}
+	return subunits;
 };

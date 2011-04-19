@@ -247,35 +247,34 @@ CSL.NameOutput.prototype._parseName = function (name) {
 	}
 };
 
-// From orgs section
-/*
-						// org
-						// set the number of names to be _intended_ for rendering,
-						// in the first nameset, if personal, for subsequent slicing.
-						if (namesetIndex === 0 && (state.tmp.area === "bibliography" || (state.tmp.area === "citation" && state.opt.xclass === "note"))) {
-							state.tmp.names_cut.counts[nameset.variable] = 1;
-						}
-						use_first = state.output.getToken("institution").strings["use-first"];
-						if (!use_first && namesetIndex === 0) {
-							use_first = state.output.getToken("institution").strings["substitute-use-first"];
-						}
-						if (!use_first) {
-							use_first = 0;
-						}
-						append_last = state.output.getToken("institution").strings["use-last"];
-						if (use_first || append_last) {
-							s = display_names.slice();
-							display_names = [];
-							display_names = s.slice(0, use_first);
-							s = s.slice(use_first);
-							if (append_last) {
-								if (append_last > s.length) {
-									append_last = s.length;
-								}
-								if (append_last) {
-									display_names = display_names.concat(s.slice((s.length - append_last)));
-								}
-							}
-						}
 
- */
+// Institution rendering
+/*
+	state.output.openLevel("institution");
+	len = display_names.length;
+	for (pos = 0; pos < len; pos += 1) {
+		name = display_names[pos];
+		institution = state.output.getToken("institution");
+		value = name.literal;
+		if (state.transform.institution[value]) {
+			token_long = state.output.mergeTokenStrings("institution-long", "institution-if-short");
+		} else {
+			token_long = state.output.getToken("institution-long");
+		}
+		token_short = state.output.getToken("institution-short");
+		parts = institution.strings["institution-parts"];
+		if ("short" === parts) {
+			state.transform.output(state, value, token_short, token_long, true);
+		} else if ("short-long" === parts) {
+			state.transform.output(state, value, token_short);
+			state.output.append(value, token_long);
+		} else if ("long-short" === parts) {
+			state.output.append(value, token_long);
+			state.transform.output(state, value, token_short);
+		} else {
+			state.output.append(value, token_long);
+		}
+	}
+	// institution
+	state.output.closeLevel();
+	*/

@@ -1,7 +1,7 @@
 dojo.require("doh.runner");
-doh.register("run.magic_SuppressDuplicateVariableRendering", [
+doh.register("run.name_ImplicitInstitution", [
     function(){
-        var test = new StdRhinoTest("magic_SuppressDuplicateVariableRendering","run");
+        var test = new StdRhinoTest("name_ImplicitInstitution","run");
         doh.assertEqual(test.result, test.run());
     },
 ])

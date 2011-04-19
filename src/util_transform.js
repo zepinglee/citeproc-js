@@ -326,10 +326,6 @@ CSL.Transform = function (state) {
 		//
 		var shortvalue;
 		//
-		// This was pointless: institutions are names, and language
-		// selection is done with this.name().
-		//basevalue = this.getTextSubField(value, "locale-pri", true);
-
 		shortvalue = state.transform.institution[basevalue];
 		if (shortvalue) {
 			state.output.append(shortvalue, token_short);
