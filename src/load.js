@@ -512,7 +512,6 @@ if (!CSL.Node) {
     load("./src/util_names_tests.js");
     load("./src/util_names_truncate.js");
     load("./src/util_names_divide.js");
-    load("./src/util_names_label.js");
     load("./src/util_names_join.js");
     load("./src/util_names_common.js");
     load("./src/util_names_constraints.js");
