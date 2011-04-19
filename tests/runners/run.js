@@ -1,7 +1,7 @@
 dojo.require("doh.runner");
-doh.register("run.name_TwoRolesSameRenderingSeparateRoleLabels", [
+doh.register("run.magic_SuppressDuplicateVariableRendering", [
     function(){
-        var test = new StdRhinoTest("name_TwoRolesSameRenderingSeparateRoleLabels","run");
+        var test = new StdRhinoTest("magic_SuppressDuplicateVariableRendering","run");
         doh.assertEqual(test.result, test.run());
     },
 ])

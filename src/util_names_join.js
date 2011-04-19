@@ -75,7 +75,7 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
 	}
 	// Eliminate false and empty blobs
 	for (var i = blobs.length - 1; i > -1; i += -1) {
-		if (!blobs[i] || !blobs[i].blobs.length) {
+		if (!blobs[i] || blobs[i].length === 0 || !blobs[i].blobs.length) {
 			blobs = blobs.slice(0, i).concat(blobs.slice(i + 1));
 		}
 	}
