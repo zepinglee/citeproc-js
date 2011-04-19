@@ -14,9 +14,9 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 CSL.NameOutput.prototype.joinInstitutionSets = function (blobs, pos) {
 	var ret;
 	if (this.etal_spec[pos] === 1) {
-		ret = this._joinEtAl(blobs);
+		ret = this._joinEtAl(blobs, "institution");
 	} else if (this.etal_spec[pos] === 2) {
-		ret = this._joinEllipsis(blobs);
+		ret = this._joinEllipsis(blobs, "institution");
 	} else {
 		ret = this._joinAnd(blobs, "institution");
 	}

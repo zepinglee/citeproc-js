@@ -150,9 +150,10 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("(11)");
 	}
 	var blob_list = [];
-	var institution_sets = [];
 	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
+		var institution_sets = [];
+		var institutions = false;
 		if (this.debug) {
 			print("(11a)");
 		}
@@ -162,8 +163,10 @@ CSL.NameOutput.prototype.outputNames = function () {
 		if (this.debug) {
 			print("(11b)");
 		}
-		var pos = this.nameset_base + this.variable_offset[v] + 1;
-		var institutions = this.joinInstitutionSets(institution_sets, pos);
+		if (this.institutions[v].length) {
+			var pos = this.nameset_base + this.variable_offset[v] + 1;
+			var institutions = this.joinInstitutionSets(institution_sets, pos);
+		}
 		if (this.debug) {
 			print("(11c)");
 		}

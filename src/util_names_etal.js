@@ -3,8 +3,12 @@ CSL.NameOutput.prototype.setEtAlParameters = function () {
 	this.etal_spec = [];
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
-		this._setEtAlParameter("freeters", v);
-		this._setEtAlParameter("institutions", v);
+		if (this.freeters[v].length) {
+			this._setEtAlParameter("freeters", v);
+		}
+		if (this.institutions[v].length) {
+			this._setEtAlParameter("institutions", v);
+		}
 		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
 			this._setEtAlParameter("persons", v, j);
 		}
