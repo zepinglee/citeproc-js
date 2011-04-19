@@ -170,9 +170,6 @@ CSL.NameOutput.prototype.outputNames = function () {
 		if (this.debug) {
 			print("(11c)");
 		}
-		//if (v === "author") {
-		//	print("  freeters[v] (2): "+this.freeters[v].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs);
-		//}
 		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
 		if (this.debug) {
 			print("(11d)");
@@ -192,7 +189,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(12)");
 	}
-	this.state.output.openLevel("empty");
+	this.state.output.openLevel(this.names);
 	if (this.debug) {
 		print("(13)");
 	}
@@ -203,7 +200,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(14)");
 	}
-	this.state.output.closeLevel("empty");
+	this.state.output.closeLevel();
 	if (this.debug) {
 		print("(15)");
 	}
