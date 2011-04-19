@@ -4,11 +4,15 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 	var pos = this.nameset_base;
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
-		this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
+		if (this.freeters[v].length) {
+			this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
+		}
 		// Because pos is not relevant to institutions. They are rendered
 		// individually below, but "institutions" as a nameset is irrelevant
 		// to this function.
-		pos += 2;
+		if (this.institutions[v].length) {
+			pos += 1;
+		}
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
 			this.institutions[v][j] = this.renderInstitutionNames(this.institutions[v][j]);
 			this.persons[v][j] = this._renderPersonalNames(this.persons[v][j], pos);
