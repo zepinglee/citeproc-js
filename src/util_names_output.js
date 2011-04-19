@@ -246,6 +246,9 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
 	}
 	// Some code duplication here, should be factored out.
 	if (this.label.before) {
+		if ("number" === typeof this.label.before.strings.plural) {
+			plural = this.label.before.strings.plural;
+		}
 		var txt = this._buildLabel(v, plural, "before");
 		this.state.output.openLevel("empty");
 		this.state.output.append(txt, this.label.before, true);
@@ -254,6 +257,9 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
 		blob = this.state.output.pop();
 	}
 	if (this.label.after) {
+		if ("number" === typeof this.label.after.strings.plural) {
+			plural = this.label.after.strings.plural;
+		}
 		var txt = this._buildLabel(v, plural, "after")
 		this.state.output.openLevel("empty");
 		this.state.output.append(blob, "literal", true);
