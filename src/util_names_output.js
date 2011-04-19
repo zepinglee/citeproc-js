@@ -189,7 +189,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(12)");
 	}
-	this.state.output.openLevel(this.names);
+	this.state.output.openLevel("empty");
+	this.state.output.current.value().delimiter = this.names.delimiter;
 	if (this.debug) {
 		print("(13)");
 	}
@@ -200,7 +201,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(14)");
 	}
-	this.state.output.closeLevel();
+	this.state.output.closeLevel("empty");
 	if (this.debug) {
 		print("(15)");
 	}
