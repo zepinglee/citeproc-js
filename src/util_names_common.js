@@ -25,33 +25,25 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 		this.common_term = false;
 		return;
 	}
-	var pos = this.nameset_base;
-	var offset = 0;
-	for (var i = 0, ilen = this.variables.length - 1; i < ilen; i += 1) {
-		var v = this.variables[i];
-		// For freeters & institutions
-		offset += 2;
-		offset += this.persons[v].length;
-	}
-	//offset = (offset/this.variables.length);
+	var freeters_offset = 0;
 	for (var i = 0, ilen = this.variables.length - 1; i < ilen; i += 1) {
 		var v = this.variables[i];
 		var vv = this.variables[i + 1];
-		if (!this._compareNamesets(this.freeters[v], this.freeters[vv])
-			|| this.etal_spec[pos] !== this.etal_spec[pos + offset]) {
-
-			this.common_term = false;
-			return;
-		}
-		// Skipping institutions, so add an extra 1
-		pos += (1 + offset + 1);
-		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-			if (!this._compareNamesets(this.persons[v][j], this.persons[vv][j])
-				|| this.etal_spec[pos] !== this.etal_spec[pos + offset]) {
+		if (this.freeters[v].length) {
+			if (this.etal_spec[this.variable_offset[v]] !== this.etal_spec[this.variable_offset[vv]]
+				|| !this._compareNamesets(this.freeters[v], this.freeters[vv])) {
+				
 				this.common_term = false;
 				return;
 			}
-			pos += (1 + offset);
+			freeters_offset += 1;
+		}
+		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+			if (this.etal_spec[this.variable_offset[v] + freeters_offset + j + 1] !== this.etal_spec[this.variable_offset + freeters_offset + j + 1]
+				|| !this._compareNamesets(this.persons[v][j], this.persons[vv][j])) {
+				this.common_term = false;
+				return;
+			}
 		}
 	}
 };
