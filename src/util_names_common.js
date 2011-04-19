@@ -3,8 +3,18 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 	var varnames = variables.slice();
 	varnames.sort();
 	this.common_term = varnames.join("");
+
+	var has_term = false;
+	if (this.label) {
+		if (this.label.before) {
+			has_term = this.state.getTerm(this.common_term, this.label.before.strings.form, 0);
+		} else if (this.label.after) {
+			has_term = this.state.getTerm(this.common_term, this.label.after.strings.form, 0);
+		}
+	}
+
 	if (!this.state.locale[this.state.opt.lang].terms[this.common_term]
-		|| !this.state.getTerm(varnames.join(""), "long", 0)
+		|| !has_term
 		|| this.variables.length < 2) {
 
 		this.common_term = false;
