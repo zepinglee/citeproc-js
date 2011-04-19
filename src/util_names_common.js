@@ -4,6 +4,11 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 	varnames.sort();
 	this.common_term = varnames.join("");
 
+	// When no varnames are on offer
+	if (!this.common_term) {
+		return false;
+	}
+
 	var has_term = false;
 	if (this.label) {
 		if (this.label.before) {
