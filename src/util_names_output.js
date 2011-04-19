@@ -190,7 +190,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("(12)");
 	}
 	this.state.output.openLevel("empty");
-	this.state.output.current.value().delimiter = this.names.delimiter;
+	this.state.output.current.value().strings.delimiter = this.names.strings.delimiter;
 	if (this.debug) {
 		print("(13)");
 	}
@@ -215,11 +215,17 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	// Also used in CSL.Util.substituteEnd (which could do with
 	// some cleanup at this writing).
+	if (this.debug) {
+		print("(18)");
+	}
 	this.state.tmp.name_node = this.state.output.current.value();
 	// Let's try something clever here.
 	this._collapseAuthor();
 	// For name_SubstituteOnNamesSpanNamesSpanFail
 	this.variables = [];
+	if (this.debug) {
+		print("(19)");
+	}
 };
 
 CSL.NameOutput.prototype._applyLabels = function (blob, v) {
@@ -273,28 +279,31 @@ CSL.NameOutput.prototype._buildLabel = function (term, plural, position) {
 
 
 CSL.NameOutput.prototype._collapseAuthor = function () {
-	// 
-	// See CSL.Registry.prototype.doinserts for reset
-	// of this variable.
-	if (this.state[this.state.tmp.area].opt.collapse) {
-		if (!this.state.tmp.just_looking && this.state.tmp.primary_names_string
+	// collapse can be undefined, an array of length zero, and probably
+	// other things ... ugh.
+	if (this.state[this.state.tmp.area].opt.collapse 
+		&& this.state[this.state.tmp.area].opt.collapse.length) {
+		if (!this.state.tmp.just_looking
 			&& 	!this.state.tmp.suppress_decorations) {
-			if (this.state.tmp.primary_names_string
-				&& this.state.tmp.primary_names_string === this.state.tmp.last_primary_names_string) {
+
+
+			var str = "";
+			var myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			if (myqueue) {
+				str = this.state.output.string(this.state, myqueue, false);
+			}
+			if (str === this.state.tmp.last_primary_names_string) {
 			
 				// XX1 print("    CUT!");
 				this.state.tmp.name_node.blobs.pop();
+			} else {
+				this.state.registry.authorstrings[this.Item.id] = str;
+				this.state.tmp.last_primary_names_string = str;
+				if (this.item && this.item["suppress-author"]) {
+					this.state.tmp.name_node.blobs.pop();
+				}
 			}
 		}
-	}
-	if (!this.state.tmp.primary_names_string && this.state.tmp.just_looking) {
-		var str = "";
-		var myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
-		if (myqueue) {
-			str = this.state.output.string(this.state, myqueue, false);
-		}
-		this.state.tmp.primary_names_string = str;
-		//print("str: "+str);
 	}
 };
 
