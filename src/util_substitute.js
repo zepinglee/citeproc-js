@@ -59,7 +59,8 @@ CSL.Util.substituteStart = function (state, target) {
 				if (item && item["author-only"]) {
 					state.tmp.element_trace.push("do-not-suppress-me");
 				} else if (item && item["suppress-author"]) {
-					state.tmp.element_trace.push("suppress-me");
+					// This is better handled by namesOutput()
+					//state.tmp.element_trace.push("suppress-me");
 				}
 			} else {
 				if (item && item["author-only"]) {
