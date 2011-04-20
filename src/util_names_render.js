@@ -90,7 +90,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	var family = this._familyName(name);
 	var non_dropping_particle = this._nonDroppingParticle(name);
 	var given = this._givenName(name, pos, i);
-	var suffix = this._nameSuffix(name);
+	var suffix = this._nameSuffix(name, pos);
 	if (this._isShort(pos, i)) {
 		dropping_particle = false;
 		given = false;
@@ -234,8 +234,14 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 	return false;
 };
 
-CSL.NameOutput.prototype._nameSuffix = function (name) {
-	if (this.state.output.append(name["suffix"], "empty", true)) {
+CSL.NameOutput.prototype._nameSuffix = function (name, pos) {
+	if (name["suffix"].match(/^et.?al[^a-z]$/)) {
+		if (this.name.strings["et-al-use-last"]) {
+			this.etal_spec[pos] = 2;
+		} else {
+			this.etal_spec[pos] = 1;
+		}
+	} else if (this.state.output.append(name["suffix"], "empty", true)) {
 		return this.state.output.pop();
 	}
 	return false;
