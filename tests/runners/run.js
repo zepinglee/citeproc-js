@@ -1,7 +1,7 @@
 dojo.require("doh.runner");
-doh.register("run.institutions_MixedPeopleAndOrganizationsAlwaysUseFirst", [
+doh.register("run.institutions_FirstAndLast", [
     function(){
-        var test = new StdRhinoTest("institutions_MixedPeopleAndOrganizationsAlwaysUseFirst","run");
+        var test = new StdRhinoTest("institutions_FirstAndLast","run");
         doh.assertEqual(test.result, test.run());
     },
 ])
