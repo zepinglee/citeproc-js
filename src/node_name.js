@@ -172,9 +172,31 @@ CSL.Node.name = {
 					this["ellipsis"].multiple.strings.suffix = this.ellipsis_suffix;
 				}
 
-				state.tmp["et-al-min"] = this.strings["et-al-min"];
-				state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
-				state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
+				// et-al parameters are annoyingly incomprehensible
+				// again.
+				//
+				// Explanation probably just adds a further layer of
+				// irritation, but what's INTENDED here is that
+				// the state.tmp et-al variables are set from the
+				// cs:key element when composing sort keys, and a
+				// macro containing a name can be called from cs:key.
+				// So when cs:key sets et-al attributes, they are
+				// set on state.tmp, and when the key is finished
+				// processing, the state.tmp variables are reset to
+				// undefined. IN THEORY the state.tmp et-al variables
+				// will not be used in other contexts. I hope.
+				//
+				// Anyway, the current tests now seem to pass.
+				if ("undefined" === typeof state.tmp["et-al-min"]) {
+					state.tmp["et-al-min"] = this.strings["et-al-min"];
+				}
+				if ("undefined" === typeof state.tmp["et-al-use-first"]) {
+					state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
+				}
+				if ("undefined" === typeof state.tmp["et-al-use-last"]) {
+					//print("  setting et-al-use-last from name: "+this.strings["et-al-use-last"]);
+					state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
+				}
 
 				state.nameOutput.name = this;
 			};

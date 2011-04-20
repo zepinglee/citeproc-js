@@ -175,6 +175,9 @@ CSL.Node.names = {
 				state.nameOutput.etal_prefix_multiple = this.etal_prefix_multiple;
 				state.nameOutput.etal_suffix = this.etal_suffix;
 				state.nameOutput.outputNames();
+				state.tmp["et-al-use-first"] = undefined;
+				state.tmp["et-al-min"] = undefined;
+				state.tmp["et-al-use-last"] = undefined;
 			};
 			this.execs.push(func);
 

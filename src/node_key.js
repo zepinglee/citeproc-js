@@ -80,6 +80,7 @@ CSL.Node.key = {
 		// et al init
 		func = function (state, Item) {
 			state.tmp.sort_key_flag = true;
+			//print("== key node function ==");
 			if (this.strings["et-al-min"]) {
 				state.tmp["et-al-min"] = this.strings["et-al-min"];
 			}
@@ -88,6 +89,7 @@ CSL.Node.key = {
 			}
 			if ("boolean" === typeof this.strings["et-al-use-last"]) {
 				state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
+				//print("  set tmp et-al-use-last: "+this.strings["et-al-use-last"])
 			}
 		};
 		start_key.execs.push(func);
@@ -282,9 +284,9 @@ CSL.Node.key = {
 		// reset key params
 		func = function (state, Item) {
 			// state.tmp.name_quash = new Object();
-			state.tmp["et-al-min"] = false;
-			state.tmp["et-al-use-first"] = false;
-			state.tmp["et-al-use-last"] = false;
+			state.tmp["et-al-min"] = undefined;
+			state.tmp["et-al-use-first"] = undefined;
+			state.tmp["et-al-use-last"] = undefined;
 			state.tmp.sort_key_flag = false;
 		};
 		end_key.execs.push(func);
