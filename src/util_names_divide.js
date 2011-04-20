@@ -190,8 +190,10 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
 		append_last = 0;
 	}
 	if (use_first || append_last) {
+		var s = subunits.slice();
 		var subunits = subunits.slice(0, use_first);
-		var s = subunits.slice(use_first);
+		var s = s.slice(use_first);
+		print(s);
 		if (append_last) {
 			if (append_last > s.length) {
 				append_last = s.length;
