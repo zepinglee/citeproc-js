@@ -121,6 +121,7 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 	if (has_affiliates) {
 		persons.reverse();
 		this.persons[v].push(persons);
+		this.persons[v].reverse();
 		this.institutions[v].reverse();
 	}
 	if (this.institutions[v].length) {

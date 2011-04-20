@@ -66,7 +66,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 		this._truncateNameList(this.institutions, v);
 		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
 		this.persons_count[v] = [];
-		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
+		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
 			if (this.state.tmp.cut_var === v) {
 				var cutinfo = this.state.tmp.names_cut;
 				this.persons[v][j] = this.persons[v][j].slice(cutinfo.counts[v]);

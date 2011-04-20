@@ -6,6 +6,7 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 		var v = this.variables[i];
 		if (this.freeters[v].length) {
 			this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
+			pos += 1;
 		}
 		if (this.institutions[v].length) {
 			pos += 1;

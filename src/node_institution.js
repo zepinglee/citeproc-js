@@ -60,6 +60,9 @@ CSL.Node.institution = {
 				} else if ("symbol" === this.strings["and"]) {
 					var myand = "&";
 				}
+				if (state.nameOutput.name.and_term) {
+					var myand = state.getTerm("and", "long", 0);
+				}
 				if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(myand)) {
 					var and_default_prefix = " ";
 					var and_suffix = " ";
