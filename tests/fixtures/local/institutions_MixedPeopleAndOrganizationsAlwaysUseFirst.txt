@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-Noakes, with Roe, Tiny Subcommittee, Big Ministry and Doe et al., Trivial Working Group, Wasteful Enterprise eds.
+Noakes with Roe, Tiny Subcommittee, Big Ministry and Doe et al., Trivial Working Group, Wasteful Enterprise eds.
 <<===== RESULT =====<<
 
 
@@ -73,7 +73,7 @@ Noakes, with Roe, Tiny Subcommittee, Big Ministry and Doe et al., Trivial Workin
     et-al-use-first="1">
     <layout>
       <names variable="editor" delimiter=", ">
-        <name form="short" delimiter=", " and="text"/>
+        <name form="short" delimiter=", " and="symbol"/>
         <institution 
           institution-parts="long" 
           delimiter=", "
