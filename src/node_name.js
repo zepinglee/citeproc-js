@@ -162,8 +162,8 @@ CSL.Node.name = {
 					this["and"].multiple.strings.suffix = "";
 				}
 
+				this["ellipsis"] = {};
 				if (this.strings["et-al-use-last"]) {
-					this["ellipsis"] = {};
 					this["ellipsis"].single = new CSL.Blob("empty", this.ellipsis_term);
 					this["ellipsis"].single.strings.prefix = this.ellipsis_prefix_single;
 					this["ellipsis"].single.strings.suffix = this.ellipsis_suffix;
@@ -171,6 +171,11 @@ CSL.Node.name = {
 					this["ellipsis"].multiple.strings.prefix = this.ellipsis_prefix_multiple;
 					this["ellipsis"].multiple.strings.suffix = this.ellipsis_suffix;
 				}
+
+				state.tmp["et-al-min"] = this.strings["et-al-min"];
+				state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
+				state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
+
 				state.nameOutput.name = this;
 			};
 			

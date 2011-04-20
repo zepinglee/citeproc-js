@@ -55,6 +55,7 @@ CSL.NameOutput = function(state, Item, item, variables) {
 	this.Item = Item;
 	this.item = item;
 	this.nameset_base = 0;
+	this._author_is_first = false;
 };
 
 CSL.NameOutput.prototype.init = function (names) {
@@ -64,6 +65,9 @@ CSL.NameOutput.prototype.init = function (names) {
 	this.nameset_offset = 0;
 	this.names = names;
 	this.variables = names.variables;
+	if (this.nameset_base === 0 && this.variables[0] === "author") {
+		this._author_is_first = true;
+	}
 	this.state.tmp.value = [];
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
@@ -293,8 +297,9 @@ CSL.NameOutput.prototype._buildLabel = function (term, plural, position) {
 CSL.NameOutput.prototype._collapseAuthor = function () {
 	// collapse can be undefined, an array of length zero, and probably
 	// other things ... ugh.
-	if (this.state[this.state.tmp.area].opt.collapse 
-		&& this.state[this.state.tmp.area].opt.collapse.length) {
+	if ((this.item && this.item["suppress-author"] && this._author_is_first)
+		|| (this.state[this.state.tmp.area].opt.collapse 
+			&& this.state[this.state.tmp.area].opt.collapse.length)) {
 		if (!this.state.tmp.just_looking
 			&& 	!this.state.tmp.suppress_decorations) {
 

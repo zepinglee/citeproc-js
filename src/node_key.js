@@ -86,7 +86,7 @@ CSL.Node.key = {
 			if (this.strings["et-al-use-first"]) {
 				state.tmp["et-al-use-first"] = this.strings["et-al-use-first"];
 			}
-			if (this.strings["et-al-use-last"]) {
+			if ("boolean" === typeof this.strings["et-al-use-last"]) {
 				state.tmp["et-al-use-last"] = this.strings["et-al-use-last"];
 			}
 		};
@@ -116,6 +116,10 @@ CSL.Node.key = {
 				name_token = new CSL.Token("name", CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
+				name_token.strings["sort-separator"] = " ";
+				name_token.strings["et-al-use-last"] = this.strings["et-al-use-last"];
+				name_token.strings["et-al-min"] = this.strings["et-al-min"];
+				name_token.strings["et-al-use-first"] = this.strings["et-al-use-first"];
 				CSL.Node.name.build.call(name_token, state, target);
 				//
 				// Institution tag

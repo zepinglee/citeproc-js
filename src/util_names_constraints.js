@@ -42,9 +42,18 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
 	// display_names starts as the original length of this list of names.
 	var display_names = lst[key];
 	var discretionary_names_length = this.state.tmp["et-al-min"];
+
 	// Mappings, to allow existing disambiguation machinery to
 	// remain untouched.
 	if (this.state.tmp.suppress_decorations) {
+		/*
+		if (this.state.tmp.area === "bibliography_sort" || this.state.tmp.area === "citation_sort") {
+			print("OK ------> "+this.state.tmp.area);
+			if (this.name.strings["et-al-use-last"] && discretionary_names_length > (this.etal_min - 2)) {
+				discretionary_names_length = this.etal_min - 2;
+			}
+		}
+		*/
 		if (this.state.tmp.disambig_request) {
 			// Oh. Trouble.
 			// state.tmp.nameset_counter is the number of the nameset
@@ -73,7 +82,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
 		// matches to a single bibliography entry.
 		//
 		// 
-		if (this.name.strings["et-al-use-last"] && discretionary_names_length > (this.etal_min - 2)) {
+		if (this.etal_use_last && discretionary_names_length > (this.etal_min - 2)) {
 			discretionary_names_length = this.etal_min - 2;
 		}
 	}
@@ -90,7 +99,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
 	// forceEtAl is relevant when the author list is
 	// truncated to eliminate clutter.
 	if (sane && overlength) {
-		if (this.name.strings["et-al-use-last"]) {
+		if (this.etal_use_last) {
 			lst[key] = display_names.slice(0, discretionary_names_length).concat(display_names.slice(-1));
 		} else {
 			lst[key] = display_names.slice(0, discretionary_names_length);

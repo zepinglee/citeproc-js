@@ -82,7 +82,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 };
 
 CSL.NameOutput.prototype._getFreeters = function (v, values) {
-	this._markCutVariableAndCut(v, values);
+	//this._markCutVariableAndCut(v, values);
 	this.freeters[v] = [];
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
@@ -111,7 +111,7 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 			this.institutions[v].push(values[i]);
 			if (!first) {
 				persons.reverse();
-				this._markCutVariableAndCut(v, persons);
+				//this._markCutVariableAndCut(v, persons);
 				this.persons[v].push(persons);
 				persons = [];
 			}
