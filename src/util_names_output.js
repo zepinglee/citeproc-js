@@ -314,6 +314,8 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 				if (this.item && this.item["suppress-author"]) {
 					this.state.tmp.name_node.blobs.pop();
 				}
+				// Arcane and probably unnecessarily complicated
+				this.state.tmp.have_collapsed = false;
 			}
 		}
 	}

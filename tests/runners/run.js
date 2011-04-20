@@ -1,7 +1,7 @@
 dojo.require("doh.runner");
-doh.register("run.name_EtAlAsSuffixInCitationShort", [
+doh.register("run.collapse_TrailingDelimiter", [
     function(){
-        var test = new StdRhinoTest("name_EtAlAsSuffixInCitationShort","run");
+        var test = new StdRhinoTest("collapse_TrailingDelimiter","run");
         doh.assertEqual(test.result, test.run());
     },
 ])
