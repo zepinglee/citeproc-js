@@ -235,7 +235,7 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 };
 
 CSL.NameOutput.prototype._nameSuffix = function (name, pos) {
-	if (name["suffix"].match(/^et.?al[^a-z]$/)) {
+	if (name["suffix"] && name["suffix"].match(/^et.?al[^a-z]$/)) {
 		if (this.name.strings["et-al-use-last"]) {
 			this.etal_spec[pos] = 2;
 		} else {
