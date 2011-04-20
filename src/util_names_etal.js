@@ -23,7 +23,7 @@ CSL.NameOutput.prototype._setEtAlParameter = function (type, v, j) {
 		var lst = this[type][v][j];
 		var count = this[type + "_count"][v][j];
 	}
-	if (lst.length < count) {
+	if (lst.length < count && !this.state.tmp.sort_key_flag) {
 		if (this.etal_use_last) {
 			this.etal_spec.push(2);
 		} else {

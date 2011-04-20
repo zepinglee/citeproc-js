@@ -69,9 +69,11 @@ CSL.Node.key = {
 		// sort direction
 		sort_direction = [];
 		if (this.strings.sort_direction === CSL.DESCENDING) {
+			//print("sort: descending on "+state.tmp.area);
 			sort_direction.push(1);
 			sort_direction.push(-1);
 		} else {
+			//print("sort: ascending");
 			sort_direction.push(-1);
 			sort_direction.push(1);
 		}
@@ -272,6 +274,7 @@ CSL.Node.key = {
 			if (debug) {
 				CSL.debug("keystring: " + keystring + " " + typeof keystring);
 			}
+			//print("keystring: " + keystring + " " + typeof keystring);
 			//SNIP-END
 			if ("string" !== typeof keystring || state.tmp.empty_date) {
 				keystring = undefined;
