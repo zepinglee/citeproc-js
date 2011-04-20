@@ -73,6 +73,12 @@ CSL.NameOutput.prototype.init = function (names) {
 	this["et-al"] = undefined;
 	this["with"] = undefined;
 	this.name = undefined;
+	// long, long-with-short, short
+	this.institutionpart = {};
+	// family, given
+	//this.namepart = {};
+	// before, after
+	//this.label = {};
 };
 
 

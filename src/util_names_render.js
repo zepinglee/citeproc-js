@@ -7,31 +7,60 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 		if (this.freeters[v].length) {
 			this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
 		}
-		// Because pos is not relevant to institutions. They are rendered
-		// individually below, but "institutions" as a nameset is irrelevant
-		// to this function.
 		if (this.institutions[v].length) {
 			pos += 1;
 		}
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
-			this.institutions[v][j] = this.renderInstitutionNames(this.institutions[v][j]);
 			this.persons[v][j] = this._renderPersonalNames(this.persons[v][j], pos);
 			pos += 1
 		}
 	}
+	this.renderInstitutionNames();
 };
 
-CSL.NameOutput.prototype.renderInstitutionNames = function (value) {
-	// This is a straightforward rendering of the institution
-	// name; the fancy business with ellipsis or et al comes later,
-	// at the join stage.
-	//
-	// XXXX Actually needs the splitting mechanisms added here.
-	this.state.output.openLevel("empty");
-	this.state.output.append(value.literal, "empty", true);
-	this.state.output.closeLevel("empty");
-	var ret = this.state.output.pop();
-	return ret;
+CSL.NameOutput.prototype.renderInstitutionNames = function () {
+	// Institutions are split to string list as
+	// this.institutions[v]["long"] and this.institutions[v]["short"]
+	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		var v = this.variables[i];
+		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
+			switch (this.institution.strings["institution-parts"]) {
+			case "short":
+				if (this.institutions[v][j]["short"].length) {
+					var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["short"], this.institutionpart["short"])];
+				} else {
+					var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], this.institutionpart["long"])];
+				}
+				break;
+			case "short-long":
+				var long_style = this._getLongStyle(v, j);
+				var institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], this.institutionpart["short"]);
+				var institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
+				var institution = [institution_short, institution_long];
+				break;
+			case "long-short":
+				var long_style = this._getLongStyle(v, j);
+				var institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], this.institutionpart["short"]);
+				var institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
+				var institution = [institution_long, institution_short];
+				break;
+			default:
+				var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], this.institutionpart["long"])];
+				break;
+			}
+			this.institutions[v][j] = this._join(institution, "");
+		}
+	}
+};
+
+CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
+	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
+		if (blobs[i]) {
+			this.state.output.append(blobs[i], style, true);
+			blobs[i] = this.state.output.pop();
+		}
+	}
+	return this._join(blobs, this.name.strings.delimiter);
 };
 
 CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
@@ -212,6 +241,19 @@ CSL.NameOutput.prototype._nameSuffix = function (name) {
 	return false;
 };
 
+CSL.NameOutput.prototype._getLongStyle = function (v, i) {
+	if (this.institutions[v][i]["short"].length) {
+		if (this.institutionpart["long-with-short"]) {
+			var long_style = this.institutionpart["long-with-short"];
+		} else {
+			var long_style = this.institutionpart["long"];
+		}
+	} else {
+		var long_style = this.institutionpart["long"];
+	}
+	return long_style;
+};
+
 CSL.NameOutput.prototype._parseName = function (name) {
 	var m, idx;
 	// ???
@@ -247,7 +289,6 @@ CSL.NameOutput.prototype._parseName = function (name) {
 	}
 };
 
-
 // Institution rendering
 /*
 	state.output.openLevel("institution");
@@ -277,4 +318,5 @@ CSL.NameOutput.prototype._parseName = function (name) {
 	}
 	// institution
 	state.output.closeLevel();
-	*/
+*/
+

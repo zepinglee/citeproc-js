@@ -72,8 +72,8 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	}
 	// Transliteration happens here, if at all.
 	for (var i = 0, ilen = names.length; i < ilen; i += 1) {
-		if (names[i].literal) {
-		}
+		//if (names[i].literal) {
+		//}
 		this._parseName(names[i]);
 		var name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
 		names[i] = name;
@@ -101,12 +101,14 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 	this.persons[v] = [];
 	this.institutions[v] = [];
 	var persons = [];
+	var has_affiliates = false;
 	var first = true;
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
 			persons.push(values[i]);
 		} else {
-			this.institutions[v] = this._splitInstitution(values[i]);
+			has_affiliates = true;
+			this.institutions[v].push(values[i]);
 			if (!first) {
 				persons.reverse();
 				this._markCutVariableAndCut(v, persons);
@@ -116,9 +118,11 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 			first = false;
 		}
 	}
-	persons.reverse();
-	this.persons[v].push(persons);
-	this.institutions[v].reverse();
+	if (has_affiliates) {
+		persons.reverse();
+		this.persons[v].push(persons);
+		this.institutions[v].reverse();
+	}
 	if (this.institutions[v].length) {
 		this.nameset_offset += 1;
 	}
@@ -126,8 +130,10 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 		if (this.persons[v][i].length) {
 			this.nameset_offset += 1;
 		}
+		this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
 	}
 };
+
 
 CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
 	// See util_namestruncate.js for code that uses this cut variable.
@@ -157,10 +163,24 @@ CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
 };
 
 
-CSL.NameOutput.prototype._splitInstitution = function (variable, values) {
+CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
+	var ret = {};
+	ret["long"] = this._trimInstitution(value.literal.split(/\s*,\s*/), v, i);
+	var str = this.state.transform.institution[value.literal];
+	if (str) {
+		ret["short"] = this._trimInstitution(str.split(/\s*,\s*/), v, i);
+	} else {
+		ret["short"] = false;
+	}
+	return ret;
+};
+
+CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
 	var use_first = this.institution.strings["use-first"];
 	if (!use_first) {
-		use_first = this.institution.strings["substitute-use-first"];
+		if (this.persons[v][i].length === 0) {
+			use_first = this.institution.strings["substitute-use-first"];
+		}
 	}
 	if (!use_first) {
 		use_first = 0;
@@ -169,16 +189,15 @@ CSL.NameOutput.prototype._splitInstitution = function (variable, values) {
 	if (!append_last) {
 		append_last = 0;
 	}
-	var subunits = values.literal.split(/\s+,\s+/);
 	if (use_first || append_last) {
-		var s = subunits.slice(0, use_first);
-		subunits = subunits.slice(use_first);
+		var subunits = subunits.slice(0, use_first);
+		var s = subunits.slice(use_first);
 		if (append_last) {
-			if (append_last > subunits.length) {
-				append_last = subunits.length;
+			if (append_last > s.length) {
+				append_last = s.length;
 			}
 			if (append_last) {
-				subunits = s.concat(subunits.slice((subunits.length - append_last)));
+				subunits = subunits.concat(s.slice((s.length - append_last)));
 			}
 		}
 	}
