@@ -268,6 +268,11 @@ CSL.NameOutput.prototype._parseName = function (name) {
 	//	&& name["parse-names"] !== 0) {
 	//	state.parseName(name);
 	//}
+	if (name.family && !name.given && name.isInstitution) {
+		name.literal = name.family;
+		name.family = undefined;
+		name.isInstitution = undefined;
+	}
 	if (!name["non-dropping-particle"] && name.family) {
 		m = name.family.match(/^([[ \'\u2019a-z]+\s+)/);
 		if (m) {
