@@ -218,7 +218,7 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 			// This could be more efficient, but for the time being,
 			// refresh following a manual insert to the bibliography works
 			// as expected.
-			if (!this.myhash[myitems[pos]] && this.mylist.indexOf(myitems[pos]) === -1) {
+			if (!this.myhash[myitems[pos]] && this.mylist.indexOf("" + myitems[pos]) === -1) {
 				this.mylist.push("" + myitems[pos]);
 			}
 		}
@@ -308,7 +308,8 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 	//
 	len = mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		item = mylist[pos];
+		// Force all IDs to string immediately on insert.
+		item = "" + mylist[pos];
 		if (!this.registry[item]) {
 			//
 			//  4a. Retrieve entries for items to insert.
