@@ -81,12 +81,6 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	// Extract name parts. With a rusty pair of piers if necessary.
 	var name = this._normalizeNameInput(value);
-	// XXX Possibly an adjustment to particles with apostrophe happens here
-	// Below, we do need three join groups:
-	// - Joins within a name element group (say, space).
-	// - Joins between the two name groups (say, ", ").
-	// - Join to the suffix (say, ", " or " ").
-	// How to express this cleanly?
 	var dropping_particle = this._droppingParticle(name);
 	var family = this._familyName(name);
 	var non_dropping_particle = this._nonDroppingParticle(name);
@@ -135,6 +129,14 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			var blob = this._join([merged, suffix], sort_sep);
 		}
 	} else { // plain vanilla
+		if (name["dropping-particle"] && name.family && !name["non-dropping-particle"]) {
+			if (["'","\u02bc","\u2019"].indexOf(name["dropping-particle"].slice(-1)) > -1) {
+				name.family = name["dropping-particle"] + name.family;
+				name["dropping-particle"] = undefined;
+				dropping_particle = false;
+				family = this._familyName(name);
+			}
+		}
 		var second = this._join([dropping_particle, non_dropping_particle, family], " ");
 		var merged = this._join([given, second], " ");
 		var blob = this._join([merged, suffix], suffix_sep);
@@ -156,15 +158,6 @@ CSL.NameOutput.prototype._isShort = function (pos, i) {
 /*
 		// Do not include given name, dropping particle or suffix in strict short form of name
 
-		// If ends in an apostrophe, is a particle, and is immediately
-		// followed by family, merge particle to family.
-		if (key === "dropping-particle" 
-		    && ["'","\u02bc","\u2019"].indexOf(namepart.slice(-1)) > -1
-		    && pos < subsequence.length - 1
-		    && subsequence[pos + 1] === "family") {
-			preffie = namepart;
-			continue;
-		}
 		// initialize if appropriate
 */
 
