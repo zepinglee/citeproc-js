@@ -253,7 +253,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						output = true;
 					}
 					break;
-				} else if ("citation-number" === variable) {
+				} else if (["citation-number","citation-label"].indexOf(variable) > -1) {
 					output = true;
 					break;
 				} else if ("first-reference-note-number" === variable) {
