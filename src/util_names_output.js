@@ -174,7 +174,10 @@ CSL.NameOutput.prototype.outputNames = function () {
 			print("(11b)");
 		}
 		if (this.institutions[v].length) {
-			var pos = this.nameset_base + this.variable_offset[v] + 1;
+			var pos = this.nameset_base + this.variable_offset[v];
+			if (this.freeters[v].length) {
+				pos += 1;
+			}
 			var institutions = this.joinInstitutionSets(institution_sets, pos);
 		}
 		if (this.debug) {
