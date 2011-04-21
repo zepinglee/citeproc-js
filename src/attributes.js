@@ -728,7 +728,7 @@ CSL.Attributes["@suppress-min"] = function (state, arg) {
 
 
 CSL.Attributes["@and"] = function (state, arg) {
-	this.strings["and"] = arg;
+	state.setOpt(this, "and", arg);
 };
 
 CSL.Attributes["@delimiter-precedes-last"] = function (state, arg) {
