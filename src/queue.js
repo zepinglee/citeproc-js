@@ -248,6 +248,12 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	if (!token) {
 		throw "CSL processor error: unknown format token name: " + tokname;
 	}
+	// Unset delimiters must be left undefined until they reach the queue
+	// in order to discriminate unset from explicitly empty delimiters
+	// when inheriting a default value from a superior node.
+	if (token.strings && "undefined" === typeof token.strings.delimiter) {
+		token.strings.delimiter = "";
+	}
 	if ("string" === typeof str && str.length) {
 
 		// Source (;?!»«): http://en.wikipedia.org/wiki/Space_(punctuation)#Breaking_and_non-breaking_spaces

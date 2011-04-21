@@ -712,7 +712,7 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 	if (this.tmp.same_author_as_previous_cite && this.opt.xclass === "in-text") {
 		this.tmp.splice_delimiter = ", ";
-	} else if (last_collapsed && ! this.tmp.have_collapsed && this.citation.opt["after-collapse-delimiter"]) {
+	} else if (last_collapsed && ! this.tmp.have_collapsed && "string" === typeof this.citation.opt["after-collapse-delimiter"]) {
 		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
 	} else if (this.tmp.cite_locales[pos - 1]) {
 		//
@@ -721,6 +721,10 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 		if (alt_affixes && alt_affixes.delimiter) {
 			this.tmp.splice_delimiter = alt_affixes.delimiter;
 		}
+	}
+	// Paranoia
+	if (!this.tmp.splice_delimiter) {
+		this.tmp.splice_delimiter = "";
 	}
 	return this.tmp.splice_delimiter;
 };
@@ -831,6 +835,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		suffix = suffix.slice(0, 1);
 	}
 	var delimiter = this.citation.opt.layout_delimiter;
+	if (!delimiter) {
+		delimiter = "";
+	}
 	if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter.slice(0, 1)) > -1) {
 		delimiter = delimiter.slice(0, 1);
 	}

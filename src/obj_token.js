@@ -70,7 +70,7 @@ CSL.Token = function (name, tokentype) {
 	 * Strings and other static content specific to the element.
 	 */
 	this.strings = {};
-	this.strings.delimiter = "";
+	this.strings.delimiter = undefined;
 	this.strings.prefix = "";
 	this.strings.suffix = "";
 	/**
