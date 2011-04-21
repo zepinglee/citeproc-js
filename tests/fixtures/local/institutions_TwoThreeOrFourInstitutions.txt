@@ -53,7 +53,9 @@ citation
 
 
 >>===== RESULT =====>>
-???
+John Doe &#38; Jane Roe
+Doe John Co, Roe Jane Co and Noakes Richard Co
+John Doe, Jane Roe, Richard Noakes and Deacon Snoakes
 <<===== RESULT =====<<
 
 
@@ -78,6 +80,8 @@ citation
 <<===== CSL =====<<
 
 
+>>===== INPUT =====>>
+[
     {
         "author": [
             {
@@ -90,28 +94,21 @@ citation
         "id": "ITEM-1", 
         "type": "book"
     },
-
-
->>===== INPUT =====>>
-[
     {
         "author": [
             {
-                "literal": "John Doe"
+                "literal": "Doe John Co"
             },
             {
-                "literal": "Jane Roe"
+                "literal": "Roe Jane Co"
             },
             {
-                "literal": "Richard Noakes"
+                "literal": "Noakes Richard Co"
             }
         ], 
         "id": "ITEM-2", 
         "type": "book"
-    }
-]
-<<===== INPUT =====<<
-
+    },
     {
         "author": [
             {
@@ -130,3 +127,6 @@ citation
         "id": "ITEM-3", 
         "type": "book"
     }
+]
+<<===== INPUT =====<<
+
