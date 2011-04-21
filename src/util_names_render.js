@@ -257,6 +257,12 @@ CSL.NameOutput.prototype._getLongStyle = function (v, i) {
 	} else {
 		var long_style = this.institutionpart["long"];
 	}
+	if (!long_style) {
+		var long_style = new CSL.Token;
+	}
+	if (!long_style.decorations) {
+		long_style.decorations = [];
+	}
 	long_style.decorations = this.institution.decorations.concat(long_style.decorations);
 	return long_style;
 };
@@ -266,6 +272,9 @@ CSL.NameOutput.prototype._getShortStyle = function () {
 		var short_style = this.institutionpart["short"];
 	} else {
 		var short_style = new CSL.Token;
+	}
+	if (!short_style.decorations) {
+		short_style.decorations = [];
 	}
 	short_style.decorations = this.institution.decorations.concat(short_style.decorations);
 	return short_style;
