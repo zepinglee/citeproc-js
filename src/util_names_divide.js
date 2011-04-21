@@ -166,10 +166,18 @@ CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
 	var ret = {};
-	ret["long"] = this._trimInstitution(value.literal.split(/\s*,\s*/), v, i);
+	if (value.literal.slice(0,1) === '"' && value.literal.slice(-1) === '"') {
+		ret["long"] = [value.literal.slice(1,-1)];
+	} else {
+		ret["long"] = this._trimInstitution(value.literal.split(/\s*,\s*/), v, i);
+	}
 	var str = this.state.transform.institution[value.literal];
 	if (str) {
-		ret["short"] = this._trimInstitution(str.split(/\s*,\s*/), v, i);
+		if (str.slice(0,1) === '"' && str.slice(-1) === '"') {
+			ret["short"] = [str.slice(1,-1)];
+		} else {
+			ret["short"] = this._trimInstitution(str.split(/\s*,\s*/), v, i);
+		}
 	} else {
 		ret["short"] = false;
 	}
