@@ -245,7 +245,10 @@ CSL.Registry.NameReg = function (state) {
 					if ("undefined" === typeof this.namereg[pkey]) {
 						continue;
 					}
-					posA = this.namereg[pkey].items.indexOf(posA);
+
+					// ????
+					//posA = this.namereg[pkey].items.indexOf(posA);
+
 					items = this.namereg[pkey].items;
 					if (skey) {
 						myitems = this.namereg[pkey].ikey[ikey].skey[skey].items;
