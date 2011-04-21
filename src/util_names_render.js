@@ -28,25 +28,30 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
 			switch (this.institution.strings["institution-parts"]) {
 			case "short":
 				if (this.institutions[v][j]["short"].length) {
-					var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["short"], this.institutionpart["short"])];
+					var short_style = this_getShortStyle();
+					var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style)];
 				} else {
-					var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], this.institutionpart["long"])];
+					var long_style = this._getLongStyle(v, j);
+					var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style)];
 				}
 				break;
 			case "short-long":
 				var long_style = this._getLongStyle(v, j);
-				var institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], this.institutionpart["short"]);
+				var short_style = this._getShortStyle();
+				var institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style);
 				var institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
 				var institution = [institution_short, institution_long];
 				break;
 			case "long-short":
 				var long_style = this._getLongStyle(v, j);
-				var institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], this.institutionpart["short"]);
+				var short_style = this._getShortStyle();
+				var institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style);
 				var institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
 				var institution = [institution_long, institution_short];
 				break;
 			default:
-				var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], this.institutionpart["long"])];
+				var long_style = this._getLongStyle(v, j);
+				var institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style)];
 				break;
 			}
 			this.institutions[v][j] = this._join(institution, "");
@@ -57,6 +62,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
 CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
 	for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
 		if (blobs[i]) {
+			//this.state.output.append(blobs[i], style, true);
 			this.state.output.append(blobs[i], style, true);
 			blobs[i] = this.state.output.pop();
 		}
@@ -251,7 +257,18 @@ CSL.NameOutput.prototype._getLongStyle = function (v, i) {
 	} else {
 		var long_style = this.institutionpart["long"];
 	}
+	long_style.decorations = this.institution.decorations.concat(long_style.decorations);
 	return long_style;
+};
+
+CSL.NameOutput.prototype._getShortStyle = function () {
+	if (this.institutionpart["short"]) {
+		var short_style = this.institutionpart["short"];
+	} else {
+		var short_style = new CSL.Token;
+	}
+	short_style.decorations = this.institution.decorations.concat(short_style.decorations);
+	return short_style;
 };
 
 CSL.NameOutput.prototype._parseName = function (name) {

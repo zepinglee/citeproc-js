@@ -36,7 +36,7 @@ CSL.NameOutput.prototype.joinFreetersAndInstitutionSets = function (blobs) {
 };
 
 
-CSL.NameOutput.prototype._joinEtAl = function (blobs, type) {
+CSL.NameOutput.prototype._joinEtAl = function (blobs, tokenname) {
 	//
     var blob = this._join(blobs, this.name.strings.delimiter);
 	if (!blob) {
@@ -44,7 +44,7 @@ CSL.NameOutput.prototype._joinEtAl = function (blobs, type) {
 	}
 	
 	// notSerious
-	this.state.output.openLevel(this[type]);
+	this.state.output.openLevel(this._getToken(tokenname));
 	// Delimiter is applied from separately saved source in this case,
 	// for discriminate application of single and multiple joins.
 	this.state.output.current.value().strings.delimiter = "";
@@ -59,17 +59,17 @@ CSL.NameOutput.prototype._joinEtAl = function (blobs, type) {
 };
 
 
-CSL.NameOutput.prototype._joinEllipsis = function (blobs, type) {
-	return this._join(blobs, this.name.strings.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple, this[type]);
+CSL.NameOutput.prototype._joinEllipsis = function (blobs, tokenname) {
+	return this._join(blobs, this.name.strings.delimiter, this.name.ellipsis.single, this.name.ellipsis.multiple, tokenname);
 };
 
 
-CSL.NameOutput.prototype._joinAnd = function (blobs, type) {
-	return this._join(blobs, this[type].strings.delimiter, this[type].and.single, this[type].and.multiple, this[type]);
+CSL.NameOutput.prototype._joinAnd = function (blobs, tokenname) {
+	return this._join(blobs, this[tokenname].strings.delimiter, this[tokenname].and.single, this[tokenname].and.multiple, tokenname);
 };
 
 
-CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, token) {
+CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, tokenname) {
 	if (!blobs) {
 		return false;
 	}
@@ -105,7 +105,7 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
 			blobs.push(blob);
 		}
 	}
-	this.state.output.openLevel(token);
+	this.state.output.openLevel(this._getToken(tokenname));
 	// Delimiter is applied from separately saved source in this case,
 	// for discriminate application of single and multiple joins.
 	if (single && multiple) {
@@ -117,6 +117,20 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
 	this.state.output.closeLevel();
 	return this.state.output.pop();
 };
+
+
+CSL.NameOutput.prototype._getToken = function (tokenname) {
+	var token = this[tokenname];
+	if (tokenname === "institution") {
+		var newtoken = new CSL.Token;
+		// Which, hmm, is the same thing as "empty"
+		// Oh, well.
+		//newtoken.strings.prefix = token.prefix;
+		//newtoken.strings.suffix = token.suffix;
+		return newtoken;
+	}
+	return token;
+}
 
 
 /*
