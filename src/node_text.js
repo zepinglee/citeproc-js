@@ -175,18 +175,17 @@ CSL.Node.text = {
 									names = Item[n];
 									if (names && names.length) {
 										name = names[0];
-										break;
 									}
 									if (name && name.family) {
-										myname = name.family.replace(/\s+/, "");
+										myname = name.family.replace(/\s+/g, "_");
 									} else if (name && name.literal) {
 										myname = name.literal;
 										m = myname.toLowerCase().match(/^(a|the|an\s+)/, "");
 										if (m) {
 											myname = myname.slice(m[1].length);
 										}
-										break;
 									}
+									break;
 								}
 							}
 							year = "0000";
