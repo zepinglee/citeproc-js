@@ -176,6 +176,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 		"non-dropping-particle":value["non-dropping-particle"],
 		"dropping-particle":value["dropping-particle"],
 		"static-ordering":value["static-ordering"],
+		"parse-names":value["parse-names"],
 		block_initialize:value.block_initialize
 	}
 	this._parseName(name);
@@ -282,6 +283,9 @@ CSL.NameOutput.prototype._getShortStyle = function () {
 
 CSL.NameOutput.prototype._parseName = function (name) {
 	var m, idx;
+	if (!name["parse-names"] && "undefined" !== typeof name["parse-names"]) {
+		return name;
+	}
 	// ???
 	//if (this.state.opt["parse-names"]
 	//	&& name["parse-names"] !== 0) {
