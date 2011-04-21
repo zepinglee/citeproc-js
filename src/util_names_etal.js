@@ -1,6 +1,8 @@
 CSL.NameOutput.prototype.setEtAlParameters = function () {
 	//
-	this.etal_spec = [];
+	if (!this.etal_spec) {
+		this.etal_spec = [];
+	}
 	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		var v = this.variables[i];
 		if (this.freeters[v].length) {
