@@ -712,7 +712,8 @@ CSL.getAmbiguousCite = function (Item, disambig) {
 CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 	if (last_collapsed && ! this.tmp.have_collapsed && "string" === typeof this.citation.opt["after-collapse-delimiter"]) {
 		this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
-	} else 	if (this.tmp.have_collapsed && this.opt.xclass === "in-text") {
+	} else 	if (this.tmp.have_collapsed && this.opt.xclass === "in-text" && this.tmp.rendered_a_name) {
+		print("Applying have_collapsed delimiter");
 		this.tmp.splice_delimiter = ", ";
 	} else if (this.tmp.cite_locales[pos - 1]) {
 		//
@@ -977,7 +978,14 @@ CSL.getCite = function (Item, item, prevItemID) {
 CSL.citeStart = function (Item, item) {
 	this.tmp.same_author_as_previous_cite = false;
 	this.tmp.lastchr = "";
-	this.tmp.have_collapsed = true;
+	if (this.tmp.area === "citation" && this.citation.collapse) {
+		this.tmp.have_collapsed = true;
+	} else {
+		this.tmp.have_collapsed = false;
+	}
+	// This would not be needed if the default value of
+	// have_collapsed (above) were false instead of true.
+	this.tmp.rendered_a_name = false;
 	this.tmp.render_seen = false;
 	if (this.tmp.disambig_request  && ! this.tmp.disambig_override) {
 		this.tmp.disambig_settings = this.tmp.disambig_request;

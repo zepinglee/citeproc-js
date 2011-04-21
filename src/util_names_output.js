@@ -319,6 +319,11 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			} else {
 				this.state.registry.authorstrings[this.Item.id] = str;
 				this.state.tmp.last_primary_names_string = str;
+				// This would not be necessary if the starting
+				// value of have_collapsed were false instead
+				// of true.
+				this.state.tmp.rendered_a_name = true;
+				print("rendered a name!");
 				if (this.item && this.item["suppress-author"]) {
 					this.state.tmp.name_node.blobs.pop();
 				}
