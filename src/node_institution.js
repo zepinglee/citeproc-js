@@ -50,6 +50,10 @@ CSL.Node.institution = {
 	build: function (state, target) {
 		if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
 
+			if ("string" === typeof state.build.name_delimiter) {
+				this.strings.delimiter = state.build.name_delimiter;
+			}
+
 			var func = function (state, Item) {
 
 				// This is the same code for the same result as in node_name.js, 
