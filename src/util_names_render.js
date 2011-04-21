@@ -296,8 +296,13 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		name.family = undefined;
 		name.isInstitution = undefined;
 	}
-	if (name.family && name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"') {
-		noparse = true;
+	if (name.family 
+		&& (name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"')
+		|| (!name["parse-names"] && "undefined" !== typeof name["parse-names"])) {
+		var noparse = true;
+		name["parse-names"] = 0;
+	} else {
+		var noparse = false;
 	}
 	if (!name["non-dropping-particle"] && name.family && !noparse) {
 		m = name.family.match(/^([[ \'\u2019a-z]+\s+)/);
