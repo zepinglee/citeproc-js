@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.151
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Force all itemIDs to string on initial insert.
+  May avoid undefined citationID and pkey
+  errors.
+
+
+==========================
 Changes in version 1.0.150
 ==========================
 

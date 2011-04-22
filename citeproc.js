@@ -1647,7 +1647,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.150";
+	this.processor_version = "1.0.151";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8504,7 +8504,7 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	if (uncited_flag && this.mylist && this.mylist.length) {
 		this.uncited = myitems;
 		for (pos = 0, len = myitems.length; pos < len; pos += 1) {
-			if (!this.myhash[myitems[pos]] && this.mylist.indexOf(myitems[pos]) === -1) {
+			if (!this.myhash[myitems[pos]] && this.mylist.indexOf("" + myitems[pos]) === -1) {
 				this.mylist.push("" + myitems[pos]);
 			}
 		}
@@ -8558,7 +8558,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 	}
 	len = mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		item = mylist[pos];
+		item = "" + mylist[pos];
 		if (!this.registry[item]) {
 			Item = this.state.retrieveItem(item);
 			akey = CSL.getAmbiguousCite.call(this.state, Item);
@@ -8904,7 +8904,6 @@ CSL.Registry.NameReg = function (state) {
 					if ("undefined" === typeof this.namereg[pkey]) {
 						continue;
 					}
-					posA = this.namereg[pkey].items.indexOf(posA);
 					items = this.namereg[pkey].items;
 					if (skey) {
 						myitems = this.namereg[pkey].ikey[ikey].skey[skey].items;
