@@ -54,10 +54,6 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 	this.institutions_count = {};
 	// By key is okay here, as we don't care about sequence.
 	for (var v in this.freeters) {
-		if (this.state.tmp.cut_var === v) {
-			var cutinfo = this.state.tmp.names_cut;
-			this.freeters[v] = this.freeters[v].slice(cutinfo.counts[v]);
-		}
 		this.freeters_count[v] = this.freeters[v].length;
 		this.freeters[v] = this._truncateNameList(this.freeters, v);
 	}
@@ -67,10 +63,6 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
 		this.persons_count[v] = [];
 		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-			if (this.state.tmp.cut_var === v) {
-				var cutinfo = this.state.tmp.names_cut;
-				this.persons[v][j] = this.persons[v][j].slice(cutinfo.counts[v]);
-			}
 			this.persons_count[v][j] = this.persons[v][j].length;
 			this.persons[v][j] = this._truncateNameList(this.persons, v, j);
 		}
