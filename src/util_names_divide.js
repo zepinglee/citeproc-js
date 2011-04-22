@@ -60,8 +60,13 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 		if (this.name.strings["suppress-min"] && values.length >= this.name.strings["suppress-min"]) {
 			values = [];
 		}
-		this._getFreeters(v, values);
-		this._getPersonsAndInstitutions(v, values);
+		if (this.etal_min === 1 && this.etal_use_first === 1) {
+			var chopvar = v;
+		} else {
+			var chopvar = false;
+		}
+		this._getFreeters(v, values, chopvar);
+		this._getPersonsAndInstitutions(v, values, chopvar);
 	}
 };
 
@@ -84,12 +89,21 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	return names;
 };
 
-CSL.NameOutput.prototype._getFreeters = function (v, values) {
-	//this._markCutVariableAndCut(v, values);
+CSL.NameOutput.prototype._getFreeters = function (v, values, chopvar) {
 	this.freeters[v] = [];
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
+			if (this._please_chop === v) {
+				values.pop();
+				this._please_chop = false;
+				continue;
+			}
 			this.freeters[v].push(values.pop());
+			if (chopvar) {
+				this._clearValues(values);
+				this._please_chop = chopvar;
+				break;
+			}
 		} else {
 			break;
 		}
@@ -100,7 +114,7 @@ CSL.NameOutput.prototype._getFreeters = function (v, values) {
 	}
 };
 
-CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
+CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values, chopvar) {
 	this.persons[v] = [];
 	this.institutions[v] = [];
 	var persons = [];
@@ -108,13 +122,23 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 	var first = true;
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
-			persons.push(values[i]);
+			if (this._please_chop === v) {
+				this._please_chop = false;
+				continue;
+			}
+			if (chopvar) {
+				this.freeters[v].push(values[i]);
+				this._clearValues(values);
+				this._please_chop = chopvar;
+				break;
+			} else {
+				persons.push(values[i]);
+			}
 		} else {
 			has_affiliates = true;
 			this.institutions[v].push(values[i]);
 			if (!first) {
 				persons.reverse();
-				//this._markCutVariableAndCut(v, persons);
 				this.persons[v].push(persons);
 				persons = [];
 			}
@@ -128,6 +152,16 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 		this.institutions[v].reverse();
 	}
 	if (this.institutions[v].length) {
+		if (this._please_chop === v) {
+			this.institutions[v] = this.institutions[v].slice(1);
+			this._please_chop = false;
+		} else if (chopvar && !this._please_chop) {
+			this.institutions[v] = this.institutions[v].slice(0, 1);
+			values = [];
+			this._please_chop = chopvar;
+		}
+	}
+	if (this.institutions[v].length) {
 		this.nameset_offset += 1;
 	}
 	for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
@@ -138,34 +172,11 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 	}
 };
 
-
-CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
-	// See util_namestruncate.js for code that uses this cut variable.
-	if (values.length
-		&& (this.state.tmp.area === "bibliography" 
-			|| this.state.tmp.area === "bibliography_sort" 
-			|| (this.state.tmp.area && this.state.opt.xclass === "note"))) {
-	
-		if (!this.state.tmp.cut_var
-			&& this.name["et-al-min"] === 1 
-			&& this.name["et-al-use-first"] === 1) {
-			
-			this.state.tmp.cut_var = namesets[0].variable;
-		}
-
-		// Slice off subsequent namesets in the initial name
-		// rendered, when the same name is rendered a second time.
-		// Useful for robust per-author listings.
-		if (this.state.tmp.cut_var && cutinfo.used === this.state.tmp.cut_var) {
-			var ilen = cutinfo.variable[this.state.tmp.cut_var].length - 1;
-			for (var i = ilen; i > -1; i += -1) {
-				obj = cutinfo.variable[this.state.tmp.cut_var][i];
-				obj[0].blobs = obj[0].blobs.slice(0, obj[1]).concat(obj[0].blobs.slice(obj[1] + 1));
-			}
-		}
+CSL.NameOutput.prototype._clearValues = function (values) {
+	for (var i = values.length - 1; i > -1; i += -1) {
+		values.pop();
 	}
 };
-
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
 	var ret = {};

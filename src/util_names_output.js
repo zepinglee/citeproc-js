@@ -56,6 +56,7 @@ CSL.NameOutput = function(state, Item, item, variables) {
 	this.item = item;
 	this.nameset_base = 0;
 	this._author_is_first = false;
+	this._please_chop = false;
 };
 
 CSL.NameOutput.prototype.init = function (names) {
