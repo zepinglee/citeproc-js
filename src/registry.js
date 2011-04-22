@@ -204,7 +204,6 @@ CSL.Registry = function (state) {
 //
 
 CSL.Registry.prototype.init = function (myitems, uncited_flag) {
-	var len, pos;
 	this.oldseq = {};
 	//
 	//  1. Receive list as function argument, store as hash and as list.
@@ -212,14 +211,15 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	// (be additive if only marking uncited items)
 	if (uncited_flag && this.mylist && this.mylist.length) {
 		this.uncited = myitems;
-		for (pos = 0, len = myitems.length; pos < len; pos += 1) {
+		for (var i = 0, ilen = myitems.length; i < ilen; i += 1) {
 			// XXXX Checking whether this is where the extra copy of uncited IDs creeps in.
 			// Confirmed: it is
 			// This could be more efficient, but for the time being,
 			// refresh following a manual insert to the bibliography works
 			// as expected.
-			if (!this.myhash[myitems[pos]] && this.mylist.indexOf("" + myitems[pos]) === -1) {
-				this.mylist.push("" + myitems[pos]);
+			myitems[i] = "" + myitems[i];
+			if (!this.myhash[myitems[i]] && this.mylist.indexOf(myitems[i]) === -1) {
+				this.mylist.push(myitems[i]);
 			}
 		}
 	} else {
@@ -227,8 +227,9 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	}
 	this.myhash = {};
 	len = this.mylist.length;
-	for (pos = 0; pos < len; pos += 1) {
-		this.myhash[this.mylist[pos]] = true;
+	for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
+		this.mylist[i] = "" + this.mylist[i];
+		this.myhash[this.mylist[i]] = true;
 	}
 	//
 	//  2. Initialize refresh list.  Never needs sorting, only hash required.
@@ -308,8 +309,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 	//
 	len = mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		// Force all IDs to string immediately on insert.
-		item = "" + mylist[pos];
+		item = mylist[pos];
 		if (!this.registry[item]) {
 			//
 			//  4a. Retrieve entries for items to insert.
