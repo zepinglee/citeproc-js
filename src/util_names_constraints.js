@@ -1,7 +1,4 @@
 CSL.NameOutput.prototype.constrainNames = function () {
-	// cut-names stuff
-	//this._setNamesCutCount();
-
 	// figure out how many names to include, in light of the disambig params
 	//
 	this.names_count = 0;
@@ -110,20 +107,5 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
 	// ???
 	if (!this.state.tmp.disambig_request) {
 		this.state.tmp.disambig_settings.givens[pos] = [];
-	}
-};
-
-CSL.NameOutput.prototype._setNamesCutCount = function () {
-	if (this.name["suppress-min"]
-		&& (this.state.tmp.area === "bibliography"
-			|| (this.state.tmp.area === "citation"
-				&& this.state.opt.xclass === "note"))) {
-		
-		for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
-			var v = this.variables[i];
-			if (this.freeters.length) {
-				this.state.tmp.names_cut.counts[v] = this.etal_use_first;
-			}
-		}
 	}
 };
