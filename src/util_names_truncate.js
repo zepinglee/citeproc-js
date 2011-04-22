@@ -67,6 +67,69 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 			this.persons[v][j] = this._truncateNameList(this.persons, v, j);
 		}
 	}
+	// Could be factored out to a separate function for clarity.
+	if (this.etal_min === 1 && this.etal_use_first === 1 
+		&& !(this.state.tmp.area === "bibliography_sort" 
+			 || this.state.tmp.area === "citation_sort" 
+			 || this.state.tmp.just_looking)) {
+		var chopvar = v;
+	} else {
+		var chopvar = false;
+	}
+	if (chopvar || this._please_chop) {
+		for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+			var v = this.variables[i];
+			if (this.freeters[v].length) {
+				if (this._please_chop === v) {
+					this.freeters[v] = this.freeters[v].slice(1);
+					this._please_chop = false;
+				} else if (chopvar && !this._please_chop) {
+					this.freeters[v] = this.freeters[v].slice(0, 1);
+					this.institutions[v] = [];
+					this.persons[v] = [];
+					this._please_chop = chopvar;
+				}
+			}
+			for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+				if (this.persons[v][i].length) {
+					if (this._please_chop === v) {
+						this.persons[v][i] = this.persons[v][i].slice(1);
+						this._please_chop = false;
+						break;
+					} else if (chopvar && !this._please_chop) {
+						this.freeters[v] = this.persons[v][i].slice(0, 1);
+						this.institutions[v] = [];
+						this.persons[v] = [];
+						values = [];
+						this._please_chop = chopvar;
+						break;
+					}
+				}
+			}
+			if (this.institutions[v].length) {
+				if (this._please_chop === v) {
+					this.institutions[v] = this.institutions[v].slice(1);
+					this._please_chop = false;
+				} else if (chopvar && !this._please_chop) {
+					this.institutions[v] = this.institutions[v].slice(0, 1);
+					values = [];
+					this._please_chop = chopvar;
+				}
+			}
+		}
+	}
+	// Could also be factored out to a separate function for clarity.
+	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		if (this.institutions[v].length) {
+			this.nameset_offset += 1;
+		}
+		for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+			if (this.persons[v][i].length) {
+				this.nameset_offset += 1;
+			}
+			this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
+		}
+	}
 };
 
 CSL.NameOutput.prototype._truncateNameList = function (container, variable, index) {

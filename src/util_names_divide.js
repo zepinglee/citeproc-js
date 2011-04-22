@@ -60,16 +60,8 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 		if (this.name.strings["suppress-min"] && values.length >= this.name.strings["suppress-min"]) {
 			values = [];
 		}
-		if (this.etal_min === 1 && this.etal_use_first === 1 
-			&& !(this.state.tmp.area === "bibliography_sort" 
-				|| this.state.tmp.area === "citation_sort" 
-				|| this.state.tmp.just_looking)) {
-			var chopvar = v;
-		} else {
-			var chopvar = false;
-		}
-		this._getFreeters(v, values, chopvar);
-		this._getPersonsAndInstitutions(v, values, chopvar);
+		this._getFreeters(v, values);
+		this._getPersonsAndInstitutions(v, values);
 	}
 };
 
@@ -92,7 +84,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	return names;
 };
 
-CSL.NameOutput.prototype._getFreeters = function (v, values, chopvar) {
+CSL.NameOutput.prototype._getFreeters = function (v, values) {
 	this.freeters[v] = [];
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
@@ -107,7 +99,7 @@ CSL.NameOutput.prototype._getFreeters = function (v, values, chopvar) {
 	}
 };
 
-CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values, chopvar) {
+CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
 	this.persons[v] = [];
 	this.institutions[v] = [];
 	var persons = [];
@@ -132,52 +124,6 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values, chopv
 		this.persons[v].push(persons);
 		this.persons[v].reverse();
 		this.institutions[v].reverse();
-	}
-	if (this.freeters[v].length) {
-		if (this._please_chop === v) {
-			this.freeters[v] = this.freeters[v].slice(1);
-			this._please_chop = false;
-		} else if (chopvar && !this._please_chop) {
-			this.freeters[v] = this.freeters[v].slice(0, 1);
-			this.institutions[v] = [];
-			this.persons[v] = [];
-			this._please_chop = chopvar;
-		}
-	}
-	for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-		if (this.persons[v][i].length) {
-			if (this._please_chop === v) {
-				this.persons[v][i] = this.persons[v][i].slice(1);
-				this._please_chop = false;
-				break;
-			} else if (chopvar && !this._please_chop) {
-				this.freeters[v] = this.persons[v][i].slice(0, 1);
-				this.institutions[v] = [];
-				this.persons[v] = [];
-				values = [];
-				this._please_chop = chopvar;
-				break;
-			}
-		}
-	}
-	if (this.institutions[v].length) {
-		if (this._please_chop === v) {
-			this.institutions[v] = this.institutions[v].slice(1);
-			this._please_chop = false;
-		} else if (chopvar && !this._please_chop) {
-			this.institutions[v] = this.institutions[v].slice(0, 1);
-			values = [];
-			this._please_chop = chopvar;
-		}
-	}
-	if (this.institutions[v].length) {
-		this.nameset_offset += 1;
-	}
-	for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-		if (this.persons[v][i].length) {
-			this.nameset_offset += 1;
-		}
-		this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
 	}
 };
 
