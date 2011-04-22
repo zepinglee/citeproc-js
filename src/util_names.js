@@ -65,7 +65,10 @@ CSL.Util.Names.unInitialize = function (state, name) {
 		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1)) 
 			&& namelist[pos] 
 			&& namelist[pos] !== namelist[pos].toUpperCase()) {
-			namelist[pos] = namelist[pos].slice(0, 1) + namelist[pos].slice(1).toLowerCase();
+
+			// More or less like this, to address the following fault report:
+			// http://forums.zotero.org/discussion/17610/apsa-problems-with-capitalization-of-mc-mac-etc/
+			namelist[pos] = namelist[pos].slice(0, 1) + namelist[pos].slice(1, 2).toLowerCase() + namelist[pos].slice(2);
 		}
 		ret += namelist[pos];
 		if (pos < len - 1) {
