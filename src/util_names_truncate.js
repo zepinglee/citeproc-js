@@ -82,9 +82,11 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 			if (this.freeters[v].length) {
 				if (this._please_chop === v) {
 					this.freeters[v] = this.freeters[v].slice(1);
+					this.freeters_count[v] += -1;
 					this._please_chop = false;
 				} else if (chopvar && !this._please_chop) {
 					this.freeters[v] = this.freeters[v].slice(0, 1);
+					this.freeters_count[v] = 1;
 					this.institutions[v] = [];
 					this.persons[v] = [];
 					this._please_chop = chopvar;
@@ -94,10 +96,12 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 				if (this.persons[v][i].length) {
 					if (this._please_chop === v) {
 						this.persons[v][i] = this.persons[v][i].slice(1);
+						this.persons_count[v][i] += -1;
 						this._please_chop = false;
 						break;
 					} else if (chopvar && !this._please_chop) {
 						this.freeters[v] = this.persons[v][i].slice(0, 1);
+						this.freeters_count[v] = 1;
 						this.institutions[v] = [];
 						this.persons[v] = [];
 						values = [];
@@ -109,9 +113,11 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 			if (this.institutions[v].length) {
 				if (this._please_chop === v) {
 					this.institutions[v] = this.institutions[v].slice(1);
+					this.institutions_count[v] += -1;
 					this._please_chop = false;
 				} else if (chopvar && !this._please_chop) {
 					this.institutions[v] = this.institutions[v].slice(0, 1);
+					this.institutions_count[v] = 1;
 					values = [];
 					this._please_chop = chopvar;
 				}
