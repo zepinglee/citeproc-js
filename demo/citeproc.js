@@ -1647,7 +1647,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.151";
+	this.processor_version = "1.0.152";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8499,13 +8499,13 @@ CSL.Registry = function (state) {
 	};
 };
 CSL.Registry.prototype.init = function (myitems, uncited_flag) {
-	var len, pos;
 	this.oldseq = {};
 	if (uncited_flag && this.mylist && this.mylist.length) {
 		this.uncited = myitems;
-		for (pos = 0, len = myitems.length; pos < len; pos += 1) {
-			if (!this.myhash[myitems[pos]] && this.mylist.indexOf("" + myitems[pos]) === -1) {
-				this.mylist.push("" + myitems[pos]);
+		for (var i = 0, ilen = myitems.length; i < ilen; i += 1) {
+			myitems[i] = "" + myitems[i];
+			if (!this.myhash[myitems[i]] && this.mylist.indexOf(myitems[i]) === -1) {
+				this.mylist.push(myitems[i]);
 			}
 		}
 	} else {
@@ -8513,8 +8513,9 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	}
 	this.myhash = {};
 	len = this.mylist.length;
-	for (pos = 0; pos < len; pos += 1) {
-		this.myhash[this.mylist[pos]] = true;
+	for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
+		this.mylist[i] = "" + this.mylist[i];
+		this.myhash[this.mylist[i]] = true;
 	}
 	this.refreshes = {};
 	this.touched = {};
@@ -8558,7 +8559,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 	}
 	len = mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
-		item = "" + mylist[pos];
+		item = mylist[pos];
 		if (!this.registry[item]) {
 			Item = this.state.retrieveItem(item);
 			akey = CSL.getAmbiguousCite.call(this.state, Item);

@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.152
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Correctly compose the forcing of itemIDs to string.
+
+
+==========================
 Changes in version 1.0.151
 ==========================
 
