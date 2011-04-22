@@ -843,7 +843,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	}
 	var mystk = [
 		{
-			suffix: suffix,
+			suffix: "",
 			delimiter: delimiter,
 			blob: fakeblob
 		}
@@ -871,6 +871,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
 
 		// No purgeEmptyBlobs() with this housecleaning adjustment
 		// to punctuation.
+		if (pos === (myblobs.length - 1)) {
+			mystk[0].suffix = use_layout_suffix;
+		}
 		CSL.Output.Queue.adjustPunctuation(this, this.output.queue, mystk);
 		composite = this.output.string(this, this.output.queue);
 		this.tmp.suppress_decorations = false;
