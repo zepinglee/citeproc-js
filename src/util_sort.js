@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /**
  * Helper functions for constructing sort keys.
  * @namespace Sort key utilities

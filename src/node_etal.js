@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node["et-al"] = {
 	build: function (state, target) {
 		if (state.build.area === "citation" || state.build.area === "bibliography") {

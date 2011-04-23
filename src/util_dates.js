@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /**
  * Date mangling functions.
  * @namespace Date construction utilities

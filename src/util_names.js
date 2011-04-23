@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Util.Names = {};
 
 CSL.Util.Names.compareNamesets = CSL.NameOutput.prototype._compareNamesets;
@@ -54,25 +56,25 @@ CSL.Util.Names.compareNamesets = CSL.NameOutput.prototype._compareNamesets;
  * Un-initialize a name (quash caps after first character)
  */
 CSL.Util.Names.unInitialize = function (state, name) {
-	var namelist, punctlist, ret, pos, len;
+	var i, ilen, namelist, punctlist, ret;
 	if (!name) {
 		return "";
 	}
 	namelist = name.split(/(?:\-|\s+)/);
 	punctlist = name.match(/(\-|\s+)/g);
 	ret = "";
-	for (pos = 0, len = namelist.length; pos < len; pos += 1) {
-		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[pos].slice(0,-1)) 
-			&& namelist[pos] 
-			&& namelist[pos] !== namelist[pos].toUpperCase()) {
+	for (i = 0, ilen = namelist.length; i < ilen; i += 1) {
+		if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[i].slice(0,-1)) 
+			&& namelist[i] 
+			&& namelist[i] !== namelist[i].toUpperCase()) {
 
 			// More or less like this, to address the following fault report:
 			// http://forums.zotero.org/discussion/17610/apsa-problems-with-capitalization-of-mc-mac-etc/
-			namelist[pos] = namelist[pos].slice(0, 1) + namelist[pos].slice(1, 2).toLowerCase() + namelist[pos].slice(2);
+			namelist[i] = namelist[i].slice(0, 1) + namelist[i].slice(1, 2).toLowerCase() + namelist[i].slice(2);
 		}
-		ret += namelist[pos];
-		if (pos < len - 1) {
-			ret += punctlist[pos];
+		ret += namelist[i];
+		if (i < ilen - 1) {
+			ret += punctlist[i];
 		}
 	}
 	return ret;
@@ -82,14 +84,14 @@ CSL.Util.Names.unInitialize = function (state, name) {
  * Initialize a name.
  */
 CSL.Util.Names.initializeWith = function (state, name, terminator) {
-	var namelist, l, i, n, m, extra, ret, s, c, pos, len, ppos, llen, llst, mx, lst;
+	var i, ilen, j, jlen, n, m;
 	if (!name) {
 		return "";
 	}
 	if (!terminator) {
 		terminator = "";
 	}
-	namelist = name;
+	var namelist = name;
 	if (state.opt["initialize-with-hyphen"] === false) {
 		namelist = namelist.replace(/\-/g, " ");
 	}
@@ -106,12 +108,12 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 			m = n.match(/(.)(.*)/);
 		}
 		if (m && m[1] === m[1].toUpperCase()) {
-			extra = "";
+			var extra = "";
 			if (m[2]) {
-				s = "";
-				lst = m[2].split("");
+				var s = "";
+				var lst = m[2].split("");
 				for (j = 0, jlen = lst.length; j < jlen; j += 1) {
-					c = lst[j];
+					var c = lst[j];
 					if (c === c.toUpperCase()) {
 						s += c;
 					} else {
@@ -144,7 +146,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 			namelist[i] = " " + n;
 		}
 	}
-	ret = CSL.Util.Names.stripRight(namelist.join(""));
+	var ret = CSL.Util.Names.stripRight(namelist.join(""));
 	ret = ret.replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
 	return ret;
 };

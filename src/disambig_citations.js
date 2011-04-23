@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Registry.CitationReg = function (state) {
 	this.citationById = {};
 	this.citationByIndex = [];

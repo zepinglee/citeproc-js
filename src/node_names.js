@@ -46,13 +46,14 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.names = {
 	build: function (state, target) {
-		var debug, func, len, pos, attrname;
-		debug = false;
+		var func, len, pos, attrname;
+		var debug = false;
 		// CSL.debug = print;
 		
-		var debug = false;
 		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
 			CSL.Util.substituteStart.call(this, state, target);
 			state.build.substitute_level.push(1);
@@ -83,7 +84,7 @@ CSL.Node.names = {
 			// init names
 			func = function (state, Item, item) {
 				state.parallel.StartVariable("names");
-			}
+			};
 			this.execs.push(func);
 
 			func = function (state, Item, item) {
@@ -91,7 +92,7 @@ CSL.Node.names = {
 			};
 			this.execs.push(func);
 
-		};
+		}
 		
 		if (this.tokentype === CSL.END) {
 
@@ -109,12 +110,12 @@ CSL.Node.names = {
 			// for this, but it's all hard-wired at the
 			// moment.
 			var mywith = "with";
+
+			var with_default_prefix = "";
+			var with_suffix = "";
 			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(mywith)) {
-				var with_default_prefix = " ";
-				var with_suffix = " ";
-			} else {
-				var with_default_prefix = "";
-				var with_suffix = "";
+				with_default_prefix = " ";
+				with_suffix = " ";
 			}
 			this["with"] = {};
 			this["with"].single = new CSL.Blob("empty", mywith);

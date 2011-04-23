@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Engine.prototype.setOutputFormat = function (mode) {
 	this.opt.mode = mode;
 	this.fun.decorate = CSL.Mode(mode);
@@ -61,7 +63,7 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
 	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
 		this.opt['locale-sort'].push(tags[i]);
 	}
-}
+};
 	
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
 	var i, ilen;
@@ -69,7 +71,7 @@ CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
 	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
 		this.opt['locale-pri'].push(tags[i]);
 	}
-}
+};
 	
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
 	var i, ilen;

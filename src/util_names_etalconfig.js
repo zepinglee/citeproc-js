@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.NameOutput.prototype.getEtAlConfig = function () {
 	var item = this.item;
 	this["et-al"] = {};

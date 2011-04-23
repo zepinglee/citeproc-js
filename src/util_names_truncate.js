@@ -46,25 +46,32 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
+	var v, i, ilen, j, jlen, chopvar, values;
 	// XXX Before truncation, make a note of the original number
 	// of names, for use in et-al evaluation.
 	this.freeters_count = {};
 	this.persons_count = {};
 	this.institutions_count = {};
 	// By key is okay here, as we don't care about sequence.
-	for (var v in this.freeters) {
-		this.freeters_count[v] = this.freeters[v].length;
-		this.freeters[v] = this._truncateNameList(this.freeters, v);
+	for (v in this.freeters) {
+		if (this.freeters.hasOwnProperty(v)) {
+			this.freeters_count[v] = this.freeters[v].length;
+			this.freeters[v] = this._truncateNameList(this.freeters, v);
+		}
 	}
-	for (var v in this.persons) {
-		this.institutions_count[v] = this.institutions[v].length;
-		this._truncateNameList(this.institutions, v);
-		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
-		this.persons_count[v] = [];
-		for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-			this.persons_count[v][j] = this.persons[v][j].length;
-			this.persons[v][j] = this._truncateNameList(this.persons, v, j);
+	for (v in this.persons) {
+		if (this.persons.hasOwnProperty(v)) {
+			this.institutions_count[v] = this.institutions[v].length;
+			this._truncateNameList(this.institutions, v);
+			this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
+			this.persons_count[v] = [];
+			for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+				this.persons_count[v][j] = this.persons[v][j].length;
+				this.persons[v][j] = this._truncateNameList(this.persons, v, j);
+			}
 		}
 	}
 	// Could be factored out to a separate function for clarity.
@@ -72,13 +79,13 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 		&& !(this.state.tmp.area === "bibliography_sort" 
 			 || this.state.tmp.area === "citation_sort" 
 			 || this.state.tmp.just_looking)) {
-		var chopvar = v;
+		chopvar = v;
 	} else {
-		var chopvar = false;
+		chopvar = false;
 	}
 	if (chopvar || this._please_chop) {
-		for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
-			var v = this.variables[i];
+		for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+			v = this.variables[i];
 			if (this.freeters[v].length) {
 				if (this._please_chop === v) {
 					this.freeters[v] = this.freeters[v].slice(1);
@@ -92,7 +99,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 					this._please_chop = chopvar;
 				}
 			}
-			for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+			for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
 				if (this.persons[v][i].length) {
 					if (this._please_chop === v) {
 						this.persons[v][i] = this.persons[v][i].slice(1);
@@ -125,11 +132,11 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 		}
 	}
 	// Could also be factored out to a separate function for clarity.
-	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+	for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		if (this.institutions[v].length) {
 			this.nameset_offset += 1;
 		}
-		for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+		for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
 			if (this.persons[v][i].length) {
 				this.nameset_offset += 1;
 			}
@@ -139,10 +146,11 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 };
 
 CSL.NameOutput.prototype._truncateNameList = function (container, variable, index) {
+	var lst;
 	if ("undefined" === typeof index) {
-		var lst = container[variable];
+		lst = container[variable];
 	} else {
-		var lst = container[variable][index];
+		lst = container[variable][index];
 	}
 	if (this.state.opt.max_number_of_names 
 		&& lst.length > 50 
@@ -151,4 +159,5 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
 		lst = lst.slice(0, this.state.opt.max_number_of_names + 2);
 	}
 	return lst;
-}
+};
+

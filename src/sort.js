@@ -46,21 +46,25 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.getSortCompare = function () {
+	var strcmp;
 	try {
+		var Components;
 		var localeService = Components.classes["@mozilla.org/intl/nslocaleservice;1"]
 			.getService(Components.interfaces.nsILocaleService);
 		var collationFactory = Components.classes["@mozilla.org/intl/collation-factory;1"]
 			.getService(Components.interfaces.nsICollationFactory);
 		var collation = collationFactory.CreateCollation(localeService.getApplicationLocale());
-		var strcmp = function(a, b) {
+		strcmp = function(a, b) {
 			return collation.compareString(1, a, b);
-		}
-		CSL.debug("XXX Using collation");
+		};
+		CSL.debug("Using collation sort");
 	} catch (e) {
-		var strcmp = function (a, b) {
+		strcmp = function (a, b) {
 			return a.localeCompare(b);
-		}
+		};
 	}
 	var isKana = /^[\u3040-\u309f\u30a0-\u30ff]/;
 	var sortCompare = function (a, b) {
@@ -86,6 +90,6 @@ CSL.getSortCompare = function () {
 		} else {
 			return strcmp(a, b);
 		}
-	}
+	};
 	return sortCompare;
-}
+};

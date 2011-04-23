@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Registry.NameReg = function (state) {
 	var pkey, ikey, skey, floor, ceiling, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
 	this.state = state;
@@ -84,13 +86,11 @@ CSL.Registry.NameReg = function (state) {
 	};
 
 	evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
-		if (state.tmp.area === "bibliography"
-			&& !form
-			&& "string" !== typeof initials) {
+		var pos, len, items, param;
+		if (state.tmp.area === "bibliography" && !form && "string" !== typeof initials) {
 			  return 2;
 		}
-		var pos, len, items, param;
-		var nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
+		nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
 		set_keys(this.state, "" + item_id, nameobj);
 		//
 		// possible options are:
@@ -309,7 +309,7 @@ CSL.Registry.NameReg = function (state) {
 	// style.
 	//
 	addname = function (item_id, nameobj, pos) {
-		var nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
+		nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
 		//CSL.debug("INS");
 		set_keys(this.state, "" + item_id, nameobj);
 		// pkey, ikey and skey should be stored in separate cascading objects.

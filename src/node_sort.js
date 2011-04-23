@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.sort = {
 	build: function (state, target) {
 		if (this.tokentype === CSL.START) {

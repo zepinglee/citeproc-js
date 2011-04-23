@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+
 /**
  * String stack object.
  * <p>Numerous string stacks are used to track nested

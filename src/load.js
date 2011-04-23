@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /**
  * A Javascript implementation of the CSL citation formatting language.
  *
@@ -153,15 +155,6 @@ var CSL = {
 	NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix", "literal"],
 	DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
 
-	// XXXX: Apparently never used
-	// ET_AL_NAMES: [
-	// 	"et-al-min",
-	// 	"et-al-use-first",
-	// 	"et-al-use-last",
-	// 	"et-al-subsequent-min",
-	// 	"et-al-subsequent-use-first"
-	// ],
-
 	DISAMBIGUATE_OPTIONS: [
 		"disambiguate-add-names",
 		"disambiguate-add-givenname",
@@ -223,8 +216,8 @@ var CSL = {
 
 	VIETNAMESE_NAMES: /^(?:(?:[.AaBbCcDdEeGgHhIiKkLlMmNnOoPpQqRrSsTtUuVvXxYy \u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]{2,6})(\s+|$))+$/,
 
-	NOTE_FIELDS_REGEXP: /{:[-a-z]+:[^}]+}/g,
-	NOTE_FIELD_REGEXP: /{:([-a-z]+):([^}]+)}/,
+	NOTE_FIELDS_REGEXP: /\{:[\-a-z]+:[^\}]+\}/g,
+	NOTE_FIELD_REGEXP: /\{:([\-a-z]+):([^\}]+)\}/,
 
 	DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 
@@ -569,9 +562,6 @@ if (!CSL.AmbigConfig) {
 if (!CSL.Blob) {
 	load("./src/obj_blob.js");
 }
-if (!CSL.Render) {
-	load("./src/render.js");
-}
 // jslint OK
 if (!CSL.NumericBlob) {
 	load("./src/obj_number.js");
@@ -583,10 +573,6 @@ if (!CSL.Util.fixDateNode) {
 // jslint OK
 if (!CSL.Util.Names) {
 	load("./src/util_names.js");
-}
-// jslint OK
-if (!CSL.Util.Institutions) {
-	load("./src/util_institutions.js");
 }
 // jslint OK (jslint wants "long" and "short" properties set in dot
 // notation, but these are reserved words in JS, and raise an error

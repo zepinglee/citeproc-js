@@ -46,6 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+var console;
+
 if ("object" === typeof console && "function" === typeof console.log) {
 	CSL.debug = function (str) {
         console.log("CSL: " + str);

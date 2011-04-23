@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /*
  * Fields can be transformed by translation/transliteration, or by
  * abbreviation.  Two levels of translation/transliteration
@@ -182,7 +184,7 @@ CSL.Transform = function (state) {
 		for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
 			// Fallback from more to less specific language tag
 			opt = opts[i];
-			o = opt.split(/[-_]/)[0];
+			o = opt.split(/[\-_]/)[0];
 			if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
 				ret = Item.multi._keys[field][opt];
 				break;
@@ -368,7 +370,7 @@ CSL.Transform = function (state) {
 	/*
 	 * Return a single name object
 	 */
-	function name (state, name, langTags) {
+	function getName (state, name, langTags) {
 		var i, ret, optLangTag, ilen, key, langTag;
 		if (state.tmp.area.slice(-5) === "_sort") {
 			 langTags = state.opt["locale-sort"];
@@ -431,7 +433,7 @@ CSL.Transform = function (state) {
 			transliterated:transliterated,
 			block_initialize:block_initialize,
 			literal:name.literal
-		}
+		};
 		if (static_ordering_freshcheck &&
 			!getStaticOrder(name, true)) {
 			
@@ -453,7 +455,7 @@ CSL.Transform = function (state) {
 		}
 		return name;
 	}
-	this.name = name;
+	this.name = getName;
 };
 
 

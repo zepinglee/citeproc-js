@@ -46,14 +46,17 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables) {
+/*global CSL: true */
+
+CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
+	var i, ilen;
 	var Item = this.Item;
 	var variables = this.variables;
 	this.varnames = variables.slice();
 	this.freeters = {};
 	this.persons = {};
 	this.institutions = {};
-	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
+	for (i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
 		this.variable_offset[v] = this.nameset_offset;
 		var values = this._normalizeVariableValue(Item, v);
@@ -66,19 +69,20 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables
 };
 
 CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
+	var names, name, i, ilen;
 	if ("string" === typeof Item[variable]) {
-		var names = [{literal: Item[variable]}];
+		names = [{literal: Item[variable]}];
 	} else if (!Item[variable]) {
-		var names = [];
+		names = [];
 	} else {
-		var names = Item[variable].slice();
+		names = Item[variable].slice();
 	}
 	// Transliteration happens here, if at all.
-	for (var i = 0, ilen = names.length; i < ilen; i += 1) {
+	for (i = 0, ilen = names.length; i < ilen; i += 1) {
 		//if (names[i].literal) {
 		//}
 		this._parseName(names[i]);
-		var name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
+		name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
 		names[i] = name;
 	}
 	return names;
@@ -154,6 +158,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
 };
 
 CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
+	var s;
 	var use_first = this.institution.strings["use-first"];
 	if (!use_first) {
 		if (this.persons[v][i].length === 0) {
@@ -168,9 +173,9 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
 		append_last = 0;
 	}
 	if (use_first || append_last) {
-		var s = subunits.slice();
-		var subunits = subunits.slice(0, use_first);
-		var s = s.slice(use_first);
+		s = subunits.slice();
+		subunits = subunits.slice(0, use_first);
+		s = s.slice(use_first);
 		if (append_last) {
 			if (append_last > s.length) {
 				append_last = s.length;

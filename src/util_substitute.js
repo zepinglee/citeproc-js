@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Util.substituteStart = function (state, target) {
 	var element_trace, display, bib_first, func, choose_start, if_start, nodetypes;
 	//

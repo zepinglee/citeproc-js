@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.date = {
 	build: function (state, target) {
 		var func, date_obj, tok, len, pos, part, dpx, parts, mypos, start, end;

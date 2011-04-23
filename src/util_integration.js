@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+
 CSL.Engine.prototype.setCitationId = function (citation, force) {
 	var ret, id, direction;
 	ret = false;

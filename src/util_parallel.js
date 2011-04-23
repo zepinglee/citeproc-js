@@ -74,6 +74,8 @@
 // composition.
 //
 
+/*global CSL: true */
+
 /**
  * Initializes the parallel cite tracking arrays
  */

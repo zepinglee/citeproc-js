@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings, bibliography_errors;
 	debug = false;
@@ -53,7 +55,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	if (!this.bibliography.tokens.length) {
 		return false;
 	}
-	if ("string" === typeof bibsection ) {
+	if ("string" === typeof bibsection) {
 		this.opt.citation_number_slug = bibsection;
 		bibsection = false;
 	}

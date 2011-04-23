@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node["institution-part"] = {
 	build: function (state, target) {
 		var func;

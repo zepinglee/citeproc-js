@@ -46,9 +46,11 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.layout = {
 	build: function (state, target) {
-		var func, prefix_token, suffix_token;
+		var func, prefix_token, suffix_token, tok;
 
 		if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
 			//
@@ -107,8 +109,11 @@ CSL.Node.layout = {
 				target.push(prefix_token);
 			}
 		}
+
+		// Cast token to be used in one of the configurations below.
+		var my_tok;
 		if (this.locale_raw) {
-			var my_tok = new CSL.Token("dummy", CSL.START);
+			my_tok = new CSL.Token("dummy", CSL.START);
 			my_tok.locale = this.locale_raw;
 			my_tok.strings.delimiter = this.strings.delimiter;
 			my_tok.strings.suffix = this.strings.suffix;
@@ -116,6 +121,7 @@ CSL.Node.layout = {
 				state.tmp.cite_affixes = {};
 			}
 		}
+
 		if (this.tokentype === CSL.START) {
 			state.build.layout_flag = true;
 							

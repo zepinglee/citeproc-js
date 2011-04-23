@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node["if"] = {
 	build: function (state, target) {
 		var func;

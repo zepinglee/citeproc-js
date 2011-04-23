@@ -46,11 +46,13 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.key = {
 	build: function (state, target) {
-		var start_key, func, sort_direction, variable, names_start_token, name_token, names_end_token, single_text, token, pos, keypos, ppos, len, llen, tok, gtok, saveme, end_key, tlen, tlst, debug;
-		debug = false;
-		start_key = new CSL.Token("key", CSL.START);
+		var func, i, ilen;
+		var debug = false;
+		var start_key = new CSL.Token("key", CSL.START);
 		start_key.strings["et-al-min"] = this.strings["et-al-min"];
 		start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
 		start_key.strings["et-al-use-last"] = this.strings["et-al-use-last"];
@@ -62,12 +64,12 @@ CSL.Node.key = {
 
 		// initialize output queue
 		func = function (state, Item) {
-			state.output.openLevel("empty");;
+			state.output.openLevel("empty");
 		};
 		start_key.execs.push(func);
 
 		// sort direction
-		sort_direction = [];
+		var sort_direction = [];
 		if (this.strings.sort_direction === CSL.DESCENDING) {
 			//print("sort: descending on "+state.tmp.area);
 			sort_direction.push(1);
@@ -99,7 +101,7 @@ CSL.Node.key = {
 		//
 		// ops to initialize the key's output structures
 		if (this.variables.length) {
-			variable = this.variables[0];
+			var variable = this.variables[0];
 			// Set flag if sorting citations by citation-number
 			// XXXXX: This will assume citation-number sorting if
 			// that variable is set as key in ANY position.  Could
@@ -111,13 +113,13 @@ CSL.Node.key = {
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
 				// Start tag
-				names_start_token = new CSL.Token("names", CSL.START);
+				var names_start_token = new CSL.Token("names", CSL.START);
 				names_start_token.tokentype = CSL.START;
 				names_start_token.variables = this.variables;
 				CSL.Node.names.build.call(names_start_token, state, target);
 				//
 				// Name tag
-				name_token = new CSL.Token("name", CSL.SINGLETON);
+				var name_token = new CSL.Token("name", CSL.SINGLETON);
 				name_token.tokentype = CSL.SINGLETON;
 				name_token.strings["name-as-sort-order"] = "all";
 				name_token.strings["sort-separator"] = " ";
@@ -127,16 +129,16 @@ CSL.Node.key = {
 				CSL.Node.name.build.call(name_token, state, target);
 				//
 				// Institution tag
-				institution_token = new CSL.Token("institution", CSL.SINGLETON);
+				var institution_token = new CSL.Token("institution", CSL.SINGLETON);
 				institution_token.tokentype = CSL.SINGLETON;
 				CSL.Node.institution.build.call(institution_token, state, target);
 				//
 				// End tag
-				names_end_token = new CSL.Token("names", CSL.END);
+				var names_end_token = new CSL.Token("names", CSL.END);
 				names_end_token.tokentype = CSL.END;
 				CSL.Node.names.build.call(names_end_token, state, target);
 			} else {
-				single_text = new CSL.Token("text", CSL.SINGLETON);
+				var single_text = new CSL.Token("text", CSL.SINGLETON);
 				single_text.dateparts = this.dateparts;
 				if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1) {
 					func = function (state, Item) {
@@ -155,7 +157,7 @@ CSL.Node.key = {
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					func = function (state, Item) {
-						var dp, elem, value, e, yr, prefix;
+						var dp, elem, value, e, yr, prefix, i, ilen, num;
 						dp = Item[variable];
 						if ("undefined" === typeof dp) {
 							dp = {"date-parts": [[0]] };
@@ -174,7 +176,7 @@ CSL.Node.key = {
 						if ("undefined" === typeof dp) {
 							dp = {};
 						}
-						for (var i = 0, ilen = CSL.DATE_PARTS_INTERNAL.length; i < ilen; i += 1) {
+						for (i = 0, ilen = CSL.DATE_PARTS_INTERNAL.length; i < ilen; i += 1) {
 							elem = CSL.DATE_PARTS_INTERNAL[i];
 							value = 0;
 							e = elem;
@@ -203,7 +205,7 @@ CSL.Node.key = {
 						} else {
 							num = CSL.Util.padding("0");
 						}
-						state.output.append("S"+num)
+						state.output.append("S"+num);
 
 					};
 				} else if ("title" === variable) {
@@ -230,28 +232,27 @@ CSL.Node.key = {
 		} else { // macro
 			//
 			// if it's not a variable, it's a macro
-			token = new CSL.Token("text", CSL.SINGLETON);
+			var token = new CSL.Token("text", CSL.SINGLETON);
 			token.postponed_macro = this.postponed_macro;
 			// careful with the loop below: she's sensitive
 			// to change
-			tlen = target.length;
-			keypos = false;
+			var tlen = target.length;
+			var keypos = false;
 			CSL.expandMacro.call(state, token);
-			for (var i = 0, ilen = target.slice(tlen).length; i < ilen; i += 1) {
-				tok = target.slice(tlen)[i];
+			for (i = 0, ilen = target.slice(tlen).length; i < ilen; i += 1) {
+				var tok = target.slice(tlen)[i];
 				if (tok && tok.name === "text" && tok.dateparts) {
 					keypos = i;
 					break;
 				}
 			}
 			if (keypos) {
-				saveme = target[(parseInt(keypos, 10) + parseInt(tlen, 10))];
-				len = target.length - 1;
-				for (pos = len; pos > tlen; pos += -1) {
+				var saveme = target[(parseInt(keypos, 10) + parseInt(tlen, 10))];
+				for (i = (target.length - 1); i > tlen; i += -1) {
 					target.pop();
 				}
 				target.push(saveme);
-				gtok = new CSL.Token("group", CSL.END);
+				var gtok = new CSL.Token("group", CSL.END);
 				target.push(gtok);
 			}
 		}
@@ -259,11 +260,11 @@ CSL.Node.key = {
 		// ops to output the key string result to an array go
 		// on the closing "key" tag before it is pushed.
 		// Do not close the level.
-		end_key = new CSL.Token("key", CSL.END);
+		var end_key = new CSL.Token("key", CSL.END);
 
 		// initialize output queue
 		func = function (state, Item) {
-			state.output.closeLevel("empty");;
+			state.output.closeLevel("empty");
 		};
 		end_key.execs.push(func);
 
@@ -274,11 +275,11 @@ CSL.Node.key = {
 			if (debug) {
 				CSL.debug("keystring: " + keystring + " " + typeof keystring);
 			}
+			//print("keystring: (" + keystring + ") " + typeof keystring);
+			//SNIP-END
 			if ("" === keystring) {
 				keystring = undefined;
 			}
-			//print("keystring: (" + keystring + ") " + typeof keystring);
-			//SNIP-END
 			if ("string" !== typeof keystring || state.tmp.empty_date) {
 				keystring = undefined;
 				state.tmp.empty_date = false;

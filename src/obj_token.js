@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /**
  * Style token.
  * <p>This class provides the tokens that define

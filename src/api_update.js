@@ -46,8 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Engine.prototype.restoreProcessorState = function (citations) {
-	var item, Item, newitem, citationList, itemList, sortedItems;
+	var i, ilen, j, jlen, item, Item, newitem, citationList, itemList, sortedItems;
 	
 	// Quickly restore state from citation details retained by
 	// calling application.
@@ -67,7 +69,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 	// Adjust citationIDs to avoid duplicates, save off index numbers
 	var indexNumbers = [];
 	var citationIds = {};
-	for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
+	for (i = 0, ilen = citations.length; i < ilen; i += 1) {
 		if (citationIds[citations[i].citationID]) {
 			this.setCitationId(citations[i], true);
 		}
@@ -88,12 +90,12 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 			}
 		}
 	);
-	for (var i = 0, ilen = oldCitations.length; i < ilen; i += 1) {
+	for (i = 0, ilen = oldCitations.length; i < ilen; i += 1) {
 		oldCitations[i].properties.index = i;
 	}
-	for (var i = 0, ilen = oldCitations.length; i < ilen; i += 1) {
+	for (i = 0, ilen = oldCitations.length; i < ilen; i += 1) {
 		sortedItems = [];
-		for (var j = 0, jlen = oldCitations[i].citationItems.length; j < jlen; j += 1) {
+		for (j = 0, jlen = oldCitations[i].citationItems.length; j < jlen; j += 1) {
 			item = oldCitations[i].citationItems[j];
 			if ("undefined" === typeof item.sortkeys) {
 				item.sortkeys = [];
@@ -115,7 +117,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 	this.updateItems(itemList);
 
 	// Construct citationList from original copy
-	for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
+	for (i = 0, ilen = citations.length; i < ilen; i += 1) {
 		citationList.push(["" + citations[i].citationID, citations[i].properties.noteIndex]);
 	}
 

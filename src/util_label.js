@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.evaluateLabel = function (node, state, Item, item) {
 	var myterm;
 	if ("locator" === node.strings.term) {

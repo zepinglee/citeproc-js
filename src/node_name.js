@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.name = {
 	build: function (state, target) {
 		var func, pos, len, attrname;
@@ -83,9 +85,9 @@ CSL.Node.name = {
 			}
 
 			// And
-			if ("text" === this.strings["and"]) {
+			if ("text" === this.strings.and) {
 				this.and_term = state.getTerm("and", "long", 0);
-			} else if ("symbol" === this.strings["and"]) {
+			} else if ("symbol" === this.strings.and) {
 				this.and_term = "&";
 			}
 			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
@@ -128,7 +130,7 @@ CSL.Node.name = {
 				// Similar treatment to "and", above, will be needed
 				// here when this becomes a locale term.
 				this.ellipsis_prefix_single = " ";
-				this.ellipsis_prefix_multiple =  this.strings.delimiter;;
+				this.ellipsis_prefix_multiple =  this.strings.delimiter;
 				this.ellipsis_suffix = " ";
 			}
 			if (this.strings["delimiter-precedes-et-al"] === "always") {
@@ -142,34 +144,34 @@ CSL.Node.name = {
 			}
 
 			func = function (state, Item) {
-				this["and"] = {};
+				this.and = {};
 				if (this.strings.and) {
 					state.output.append(this.and_term, "empty", true);
-					this["and"].single = state.output.pop();
-					this["and"].single.strings.prefix = this.and_prefix_single;
-					this["and"].single.strings.suffix = this.and_suffix;
+					this.and.single = state.output.pop();
+					this.and.single.strings.prefix = this.and_prefix_single;
+					this.and.single.strings.suffix = this.and_suffix;
 					state.output.append(this.and_term, "empty", true);
-					this["and"].multiple = state.output.pop();
-					this["and"].multiple.strings.prefix = this.and_prefix_multiple;
-					this["and"].multiple.strings.suffix = this.and_suffix;
+					this.and.multiple = state.output.pop();
+					this.and.multiple.strings.prefix = this.and_prefix_multiple;
+					this.and.multiple.strings.suffix = this.and_suffix;
 				} else if (this.strings.delimiter) {
 					// This is a little weird, but it works.
-					this["and"].single = new CSL.Blob("empty", this.strings.delimiter);
-					this["and"].single.strings.prefix = "";
-					this["and"].single.strings.suffix = "";
-					this["and"].multiple = new CSL.Blob("empty", this.strings.delimiter);
-					this["and"].multiple.strings.prefix = "";
-					this["and"].multiple.strings.suffix = "";
+					this.and.single = new CSL.Blob("empty", this.strings.delimiter);
+					this.and.single.strings.prefix = "";
+					this.and.single.strings.suffix = "";
+					this.and.multiple = new CSL.Blob("empty", this.strings.delimiter);
+					this.and.multiple.strings.prefix = "";
+					this.and.multiple.strings.suffix = "";
 				}
 
-				this["ellipsis"] = {};
+				this.ellipsis = {};
 				if (this.strings["et-al-use-last"]) {
-					this["ellipsis"].single = new CSL.Blob("empty", this.ellipsis_term);
-					this["ellipsis"].single.strings.prefix = this.ellipsis_prefix_single;
-					this["ellipsis"].single.strings.suffix = this.ellipsis_suffix;
-					this["ellipsis"].multiple = new CSL.Blob("empty", this.ellipsis_term);
-					this["ellipsis"].multiple.strings.prefix = this.ellipsis_prefix_multiple;
-					this["ellipsis"].multiple.strings.suffix = this.ellipsis_suffix;
+					this.ellipsis.single = new CSL.Blob("empty", this.ellipsis_term);
+					this.ellipsis.single.strings.prefix = this.ellipsis_prefix_single;
+					this.ellipsis.single.strings.suffix = this.ellipsis_suffix;
+					this.ellipsis.multiple = new CSL.Blob("empty", this.ellipsis_term);
+					this.ellipsis.multiple.strings.prefix = this.ellipsis_prefix_multiple;
+					this.ellipsis.multiple.strings.suffix = this.ellipsis_suffix;
 				}
 
 				// et-al parameters are annoyingly incomprehensible

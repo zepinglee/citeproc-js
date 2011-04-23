@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Util.PageRangeMangler = {};
 
 CSL.Util.PageRangeMangler.getFunction = function (state) {

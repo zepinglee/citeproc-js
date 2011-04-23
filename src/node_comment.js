@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node["#comment"] = {
        // This is a comment in the CSL file.
        build: function (state, target) {

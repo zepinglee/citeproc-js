@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.number = {
 	build: function (state, target) {
 		var func;
@@ -114,7 +116,7 @@ CSL.Node.number = {
 				if (state.tmp.area !== "citation_sort"
 				  && state.tmp.area !== "bibliography_sort"
 				  && all_with_spaces 
-				  && !num.match(/[^- 0-9,&]/)) {
+				  && !num.match(/[^\- 0-9,&]/)) {
 					// For endash.  Wait for complaints on this one.
 					//num = num.replace("-","\u2013", "g");
 					var nums = num.match(/[0-9]+/g);
@@ -180,7 +182,7 @@ CSL.Node.number = {
 				    state.output.append(num, this);
 				} else {
 					// Single number
-					m = num.match(/\s*([0-9]+)(?:[^-]* |[^-]*$)/);
+					m = num.match(/\s*([0-9]+)(?:[^\-]* |[^\-]*$)/);
 					if (m) {
 						num = parseInt(m[1], 10);
 						number = new CSL.NumericBlob(num, this);

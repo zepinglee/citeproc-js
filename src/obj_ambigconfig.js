@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /**
  * Ambiguous Cite Configuration Object
  * @class

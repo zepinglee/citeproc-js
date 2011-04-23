@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Disambiguation = function (state) {
 	this.state = state;
 	this.sys = this.state.sys;
@@ -93,7 +95,7 @@ CSL.Disambiguation.prototype.runDisambig = function () {
 };
 
 CSL.Disambiguation.prototype.scanItems = function (list, phase) {
-	var pos, len, Item, otherItem, ItemCite, otherItemCite, ignore, base;
+	var pos, len, Item, otherItem, ItemCite, ignore, base;
 	Item = list[1][0];
 	this.scanlist = list[1];
 	this.partners = [];
@@ -109,9 +111,9 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	this.nonpartners = [];
 	for (pos = 1, len = list[1].length; pos < len; pos += 1) {
 		otherItem = list[1][pos];
-		otherItemData = this.getItemDesc(otherItem);
-		otherItemCite = otherItemData[3];
-		otherItemBase = otherItemData[0];
+		var otherItemData = this.getItemDesc(otherItem);
+		var otherItemCite = otherItemData[3];
+		//otherItemBase = otherItemData[0];
 
 		// FIXED
 		// print("  --> "+Item.id+": ("+ItemCite+") "+otherItem.id+": ("+otherItemCite+")");
@@ -134,7 +136,7 @@ CSL.Disambiguation.prototype.evalScan = function (ismax) {
 };
 
 CSL.Disambiguation.prototype.disNames = function (ismax) {
-	var pos, len;
+	var pos, len, mybase;
 	// print("== disNames ==")
 	if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
 		mybase = CSL.cloneAmbigConfig(this.base);
@@ -186,7 +188,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 
 
 CSL.Disambiguation.prototype.disGivens = function (ismax) {
-	var pos, len;
+	var pos, len, mybase;
 	// print("== disGivens ==")
 	if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
 		if (this.clashes[0] === 1) {
@@ -248,7 +250,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 
 
 CSL.Disambiguation.prototype.disExtraText = function () {
-	var pos, len;
+	var pos, len, mybase;
 	// Try with disambiguate="true""
 	if (this.clashes[1] === 0) {
 		// See note in disNames, above.
@@ -387,8 +389,7 @@ CSL.Disambiguation.prototype.getItemDesc = function (Item, forceMax) {
 };
 
 CSL.Disambiguation.prototype.initVars = function (akey) {
-	var pos, len;
-	var myIds, myItemBundles, myItems;
+	var i, ilen, myIds, myItemBundles, myItems;
 	this.lists = [];
 	this.base = false;
 	this.akey = akey;
@@ -400,13 +401,13 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 		// way to get the items sorted by the number of names
 		// to be disambiguated. If they are in descending order
 		// with name expansions, the processor will hang.
-		for (var i = 0, ilen = myIds.length; i < ilen; i += 1) {
+		for (i = 0, ilen = myIds.length; i < ilen; i += 1) {
 			var myItem = this.state.retrieveItem("" + myIds[i]);
 			myItemBundles.push([this.getItemDesc(myItem), myItem]);
 		}
 		myItemBundles.sort(
- 			function (a, b) {
-   				if (a[0][1] > b[0][1]) {
+			function (a, b) {
+				if (a[0][1] > b[0][1]) {
 					return 1;
 				} else if (a[0][1] < b[0][1]) {
 					return -1;
@@ -420,9 +421,9 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 					}
 				}
 			}
- 		);
-		var myItems = [];
-		for (var i = 0, ilen = myItemBundles.length; i < ilen; i += 1) {
+		);
+		myItems = [];
+		for (i = 0, ilen = myItemBundles.length; i < ilen; i += 1) {
 			myItems.push(myItemBundles[i][1]);
 		}
 		// FIXED

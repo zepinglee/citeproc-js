@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true, Zotero: true */
+
 CSL.debug = function (str) {
 	Zotero.debug("CSL: " + str);
 };

@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.tokenExec = function (token, Item, item) {
 	var next, maybenext, exec, pos, len, debug;
 	debug = false;
@@ -167,19 +169,20 @@ CSL.XmlToToken = function (state, tokentype) {
 		// xml: more xml stuff
 		//
 		for (key in attributes) {
-			if (tokentype === CSL.END && key !== "@language" && key !== "@locale") {
-				continue;
-			}
 			if (attributes.hasOwnProperty(key)) {
-				try {
-					CSL.Attributes[key].call(token, state, "" + attributes[key]);
-				} catch (e) {
-					if (e === "TypeError: Cannot call method \"call\" of undefined") {
-						throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
-					} else {
-						throw "CSL processor error, " + key + " attribute: " + e;
+				if (tokentype === CSL.END && key !== "@language" && key !== "@locale") {
+					continue;
+				}
+				if (attributes.hasOwnProperty(key)) {
+					try {
+						CSL.Attributes[key].call(token, state, "" + attributes[key]);
+					} catch (e) {
+						if (e === "TypeError: Cannot call method \"call\" of undefined") {
+							throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
+						} else {
+							throw "CSL processor error, " + key + " attribute: " + e;
+						}
 					}
-
 				}
 			}
 		}

@@ -129,6 +129,7 @@ class Bundle:
         f.extend(["util_names_output","util_names_tests","util_names_truncate"])
         f.extend(["util_names_divide","util_names_join","util_names_disambig"])
         f.extend(["util_names_common","util_names_constraints","util_names_etalconfig"])
+        f.extend(["util_names_render","util_names_etal"])
 
         f.extend(["util_label"])
 
@@ -136,7 +137,7 @@ class Bundle:
         f.extend(["node_substitute","node_text","attributes","system"])
         f.extend(["stack","util","util_transform"])
         f.extend(["util_parallel","obj_token","obj_ambigconfig","obj_blob","obj_number"])
-        f.extend(["util_datenode","util_institutions","util_names","util_dates"])
+        f.extend(["util_datenode","util_names","util_dates"])
         f.extend(["util_sort","util_substitute","util_number","util_page","util_flipflop"])
         f.extend(["formatters","formats","registry","disambig_names","disambig_cites"])
         f.extend(["disambig_citations"])
@@ -148,7 +149,8 @@ class Bundle:
 
     def cleanFile(self, subfile):
         subfile = fixEndings(subfile)
-        subfile = re.sub("(?sm)^\s*/\*.*?^\s*\*/","",subfile)
+        subfile = re.sub("(?m)^(\/\*.*?\*\/)$", "", subfile)
+        subfile = re.sub("(?sm)^\s*\/\*.*?^\s*\*\/","",subfile)
         subfile = re.sub("(?sm)^\s*//SNIP-START.*?^\s*//SNIP-END","",subfile)
         subfile = re.sub("(?sm)^\s*//.*?$","",subfile)
         subfile = re.sub("(?sm)^\s*load.*?$","",subfile)

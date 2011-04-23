@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.label = {
 	build: function (state, target) {
 		var debug = false;
@@ -56,7 +58,7 @@ CSL.Node.label = {
 			if (!this.strings.form) {
 				this.strings.form = "long";
 			}
-			func = function (state, Item, item) {
+			var func = function (state, Item, item) {
 				// This is abstracted away, because the same
 				// logic must be run in cs:names.
 				var termtxt = CSL.evaluateLabel(this, state, Item, item);

@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
 	this.processor_version = "1.0.149";
@@ -72,6 +74,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.build = new CSL.Engine.Build();
 	this.fun = new CSL.Engine.Fun();
 	this.configure = new CSL.Engine.Configure();
+	// Build citation before citation_sort in order to pick up
+	// state.opt.update_mode, needed it determine whether
+	// a grouped sort should be performed.
 	this.citation_sort = new CSL.Engine.CitationSort();
 	this.bibliography_sort = new CSL.Engine.BibliographySort();
 	this.citation = new CSL.Engine.Citation(this);

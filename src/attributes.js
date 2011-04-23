@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Attributes = {};
 
 CSL.Attributes["@class"] = function (state, arg) {
@@ -187,7 +189,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 			// Clear this.variables in place
 			for (var i = this.variables.length - 1; i > -1; i += -1) {
 				this.variables.pop();
-			};
+			}
 
 			len = variables.length;
 			for (pos = 0; pos < len; pos += 1) {
@@ -280,7 +282,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 			//print("-- VAR: "+variable);
 			flag = state.tmp.term_sibling.value();
 			if (output) {
-				if (variable !== "citation-number" || !state.tmp.area === "bibliography") {
+				if (variable !== "citation-number" || state.tmp.area !== "bibliography") {
 					state.tmp.cite_renders_content = true;
 				}
 				flag[2] = true;
@@ -331,7 +333,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 
 // Used as a flag during dates processing
 CSL.Attributes["@lingo"] = function (state, arg) {
-}
+};
 
 CSL.Attributes["@locale"] = function (state, arg) {
 	var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
@@ -408,7 +410,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
 			return ret;
 		};
 		this.tests.push(func);
-	};
+	}
 };
 
 /*
@@ -590,14 +592,35 @@ CSL.Attributes["@newdate"] = function (state, arg) {
 CSL.Attributes["@position"] = function (state, arg) {
     var tryposition;
 	state.opt.update_mode = CSL.POSITION;
+
+	var factory = function (tryposition) {
+		return  function (state, Item, item) {
+			if (state.tmp.area === "bibliography" || state.tmp.area === "bibliography_sort") {
+				return false;
+			}
+			if (item && "undefined" === typeof item.position) {
+				item.position = 0;
+			}
+			if (item && typeof item.position === "number") {
+				if (item.position === 0 && tryposition === 0) {
+					return true;
+				} else if (tryposition > 0 && item.position >= tryposition) {
+					return true;
+				}
+			} else if (tryposition === 0) {
+				return true;
+			}
+			return false;
+		};
+	};
+	var near_note_func = function (state, Item, item) {
+		if (item && item["near-note"]) {
+			return true;
+		}
+		return false;
+	};
 	var lst = arg.split(/\s+/);
 	for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
-	    if (state.build.area.slice(0, 12) === "bibliography") {
-		func = function (state, Item, item) {
-		    return false;
-		}
-		this.tests.push(func);
-	    } else {
 		if (lst[i] === "first") {
 		    tryposition = CSL.POSITION_FIRST;
 		} else if (lst[i] === "subsequent") {
@@ -607,36 +630,12 @@ CSL.Attributes["@position"] = function (state, arg) {
 		} else if (lst[i] === "ibid-with-locator") {
 		    tryposition = CSL.POSITION_IBID_WITH_LOCATOR;
 		}
-		// ZZZZZ We need a factory function here, similar
+		// A factory function, similar
 		// to what we do for decorations.
-		var factory = function (tryposition) {
-		    return  function (state, Item, item) {
-			if (item && "undefined" === typeof item.position) {
-			    item.position = 0;
-			}
-			if (item && typeof item.position === "number") {
-			    if (item.position === 0 && tryposition === 0) {
-				return true;
-			    } else if (tryposition > 0 && item.position >= tryposition) {
-				return true;
-			    }
-			} else if (tryposition === 0) {
-			    return true;
-			}
-			return false;
-		    };
-		};
-		func = factory(tryposition);
+		var func = factory(tryposition);
 		this.tests.push(func);
-	    }
 	    if (lst[i] === "near-note") {
-		func = function (state, Item, item) {
-		    if (item && item["near-note"]) {
-			return true;
-		    }
-		    return false;
-		};
-		this.tests.push(func);
+			this.tests.push(near_note_func);
 	    }
 	}
 };
@@ -693,7 +692,7 @@ CSL.Attributes["@et-al-min"] = function (state, arg) {
 };
 
 CSL.Attributes["@et-al-use-first"] = function (state, arg) {
-	state.setOpt(this, "et-al-use-first", parseInt(arg));
+	state.setOpt(this, "et-al-use-first", parseInt(arg, 10));
 };
 
 CSL.Attributes["@et-al-use-last"] = function (state, arg) {
