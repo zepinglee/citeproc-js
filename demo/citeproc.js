@@ -1673,7 +1673,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.149";
+	this.processor_version = "1.0.153";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3397,7 +3397,8 @@ CSL.Node.citation = {
 			state.opt.grouped_sort = state.opt.xclass === "in-text" 
 				&& state.citation.opt.collapse 
 				&& state.citation.opt.collapse.length
-				&& state.opt.update_mode !== CSL.POSITION;
+				&& state.opt.update_mode !== CSL.POSITION
+				&& state.opt.update_mode !== CSL.NUMERIC;
 			if (state.opt.grouped_sort 
 				&& state.citation_sort.opt.sort_directions.length) {
 				var firstkey = state.citation_sort.opt.sort_directions[0].slice();

@@ -1,6 +1,34 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.153
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Massive overhaul of names formatting code,
+  to make it maintainable. Several things that
+  were broken and basically unfixable in the
+  old code now work properly.
+
+- Do not force lowercase on Celtic clan names.
+
+- Do not add a stray period to titles in
+  Chicago note styles, when quotes run up against
+  the cite join delimiter because of a missing
+  page number in a subsequent cite.
+
+- In in-text author-date styles that perform
+  collapsing (and in these styles only), group
+  citations by the author part of the string,
+  so that collapsing never fails due to the
+  vagaries of (say) date sorting. Addresses an
+  issue raised by Bruce D'Arcus.
+
+
+==========================
 Changes in version 1.0.152
 ==========================
 
