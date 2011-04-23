@@ -80,7 +80,8 @@ CSL.Node.citation = {
 			state.opt.grouped_sort = state.opt.xclass === "in-text" 
 				&& state.citation.opt.collapse 
 				&& state.citation.opt.collapse.length
-				&& state.opt.update_mode !== CSL.POSITION;
+				&& state.opt.update_mode !== CSL.POSITION
+				&& state.opt.update_mode !== CSL.NUMERIC;
 			
 			if (state.opt.grouped_sort 
 				&& state.citation_sort.opt.sort_directions.length) {
