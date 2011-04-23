@@ -239,7 +239,7 @@ CSL.Output.Formats.prototype.rtf = {
 	},
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
 	"@font-style/italic":"\\i %%STRING%%\\i0{}",
-	"@font-style/normal":"\\i0{}%STRING%%\\i{}",
+	"@font-style/normal":"\\i0{}%%STRING%%\\i{}",
 	"@font-style/oblique":"\\i %%STRING%%\\i0{}",
 	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
 	"@font-variant/normal":"\\scaps0{}%%STRING%%\\scaps{}",
