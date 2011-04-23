@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node.text = {
 	build: function (state, target) {
 		var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, flag;
@@ -177,7 +179,7 @@ CSL.Node.text = {
 										name = names[0];
 									}
 									if (name && name.family) {
-										myname = name.family.replace(/\s+/, "");
+										myname = name.family.replace(/\s+/g, "_");
 									} else if (name && name.literal) {
 										myname = name.literal;
 										m = myname.toLowerCase().match(/^(a|the|an\s+)/, "");
@@ -185,6 +187,7 @@ CSL.Node.text = {
 											myname = myname.slice(m[1].length);
 										}
 									}
+									break;
 								}
 							}
 							year = "0000";
@@ -207,8 +210,8 @@ CSL.Node.text = {
 					this.execs.push(func);
 				}
 			} else {
-				if (state.build.term) {
-				    term = state.build.term;
+				if (this.strings.term) {
+				    term = this.strings.term;
 				    term = state.getTerm(term, form, plural);
 				    if (this.strings["strip-periods"]) {
 					term = term.replace(/\./g, "");

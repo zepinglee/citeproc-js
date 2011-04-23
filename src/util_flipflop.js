@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 //
 // (A) initialize flipflopper with an empty blob to receive output.
 // Text string in existing output queue blob will be replaced with

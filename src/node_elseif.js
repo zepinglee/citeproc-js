@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node["else-if"] = {
 	//
 	// these function are the same as those in if, might just clone

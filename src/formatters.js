@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /**
  * A bundle of handy functions for text processing.
  * <p>Several of these are ripped off from various
@@ -176,8 +178,7 @@ CSL.Output.Formatters.title = function (state, string) {
 			var totallyskip = false;
 			if (!isUpperCase || (words.length === 1 && words[pos].length < 4)) {
 				for (var j = 0, jlen = lowerCaseVariant.length; j < jlen; j += 1) {
-					if (lowerCaseVariant[j] !== upperCaseVariant[j] 
-						&& words[pos][j] === upperCaseVariant[j]) {
+					if (lowerCaseVariant[j] !== upperCaseVariant[j] && words[pos][j] === upperCaseVariant[j]) {
 						  totallyskip = true;
 					}
 				}

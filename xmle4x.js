@@ -194,8 +194,8 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 					}
 				}
 				node.institution.@delimiter = node.name.@delimiter.toString();
-				if (node.name.@and.toString()) {
-					institution_long.@and = "text";
+				if (node.name.@and.toXMLString()) {
+					node.institution.@and = "text";
 				}
 				node.institution[0].appendChild(institution_part)
 				for each (var namepartnode in node.name['name-part']) {

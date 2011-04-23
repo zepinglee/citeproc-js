@@ -46,9 +46,11 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.152";
+	this.processor_version = "1.0.149";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -72,6 +74,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.build = new CSL.Engine.Build();
 	this.fun = new CSL.Engine.Fun();
 	this.configure = new CSL.Engine.Configure();
+	// Build citation before citation_sort in order to pick up
+	// state.opt.update_mode, needed it determine whether
+	// a grouped sort should be performed.
 	this.citation_sort = new CSL.Engine.CitationSort();
 	this.bibliography_sort = new CSL.Engine.BibliographySort();
 	this.citation = new CSL.Engine.Citation(this);
@@ -584,7 +589,7 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 		}
 	}
 	if ("name" === token.name || "names" === token.name) {
-		if (! token.strings[localname] && "undefined" !== typeof this[this.build.area].opt[name]) {
+		if ("undefined" === typeof token.strings[localname] && "undefined" !== typeof this[this.build.area].opt[name]) {
 			token.strings[localname] = this[this.build.area].opt[name];
 		}
 	}

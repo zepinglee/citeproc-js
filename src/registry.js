@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+
 //
 // Time for a rewrite of this module.
 //
@@ -102,14 +105,16 @@
  * @class
  */
 CSL.Registry = function (state) {
-	var pos, len, ret;
+	var pos, len, ret, i, ilen;
 	this.debug = false;
 	this.state = state;
 	this.registry = {};
 	this.reflist = [];
 	this.namereg = new CSL.Registry.NameReg(state);
 	this.citationreg = new CSL.Registry.CitationReg(state);
-	this.cache = {};
+	// See CSL.NameOutput.prototype.outputNames
+	// and CSL.Registry.prototype.doinserts
+	this.authorstrings = {};
 	//
 	// shared scratch vars
 	this.mylist = [];
@@ -204,6 +209,7 @@ CSL.Registry = function (state) {
 //
 
 CSL.Registry.prototype.init = function (myitems, uncited_flag) {
+	var i, ilen;
 	this.oldseq = {};
 	//
 	//  1. Receive list as function argument, store as hash and as list.
@@ -211,7 +217,7 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	// (be additive if only marking uncited items)
 	if (uncited_flag && this.mylist && this.mylist.length) {
 		this.uncited = myitems;
-		for (var i = 0, ilen = myitems.length; i < ilen; i += 1) {
+		for (i = 0, ilen = myitems.length; i < ilen; i += 1) {
 			// XXXX Checking whether this is where the extra copy of uncited IDs creeps in.
 			// Confirmed: it is
 			// This could be more efficient, but for the time being,
@@ -226,8 +232,7 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 		this.mylist = myitems.concat(this.uncited);
 	}
 	this.myhash = {};
-	len = this.mylist.length;
-	for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
+	for (i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
 		this.mylist[i] = "" + this.mylist[i];
 		this.myhash[this.mylist[i]] = true;
 	}
@@ -604,6 +609,8 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
 	// Taint if number of names to be included has changed
+	// ZZZZZ Hullo, this might be the place to slot in cache invalidation
+	// for cached disambiguation. That idea might have some life in it yet.
 	if (this.registry[id] && this.registry[id].disambig && this.registry[id].disambig.names) {
 		for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
 			var new_names_params = ambig_config.names[i];

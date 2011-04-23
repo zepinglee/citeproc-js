@@ -46,112 +46,54 @@
  * or the [AGPLv3] License.”
  */
 
->>== MODE ==>>
-citation
-<<== MODE ==<<
+/*global CSL: true */
 
->>=====  CITATIONS =====>>
-[
-    [
-        {
-			"citationID":"CITATION-1",
-			"citationItems":[
-				{
-					"id":"ITEM-1"
-				},
-				{
-					"id":"ITEM-2"
-				},
-				{
-					"id":"ITEM-3"
-				}
-			], 
-			"properties":{
-				"index":0, 
-				"noteIndex":1
+CSL.evaluateLabel = function (node, state, Item, item) {
+	var myterm;
+	if ("locator" === node.strings.term) {
+		if (item && item.label) {
+			myterm = item.label;
+		}
+		if (!myterm) {
+			myterm = "page";
+		}
+	} else {
+		myterm = node.strings.term;
+	}
+	// Plurals detection.
+	var plural = node.strings.plural;
+	if ("number" !== typeof plural) {
+		if ("locator" == node.strings.term) {
+			// check for plural flat field in supplementary item
+			if (item) {
+				plural = CSL.evaluateStringPluralism(item.locator);				
 			}
-		},
-		[], 
-		[]
-    ]
-]
-<<=====  CITATIONS =====<<
+		} else if (Item[node.strings.term]) {
+			// check for plural flat field in main Item
+			plural = CSL.evaluateStringPluralism(Item[node.strings.term]);			
+		}
+		// cleanup
+		if ("number" !== typeof plural) {
+			plural = 0;
+		}
+	}
+	return CSL.castLabel(state, node, myterm, plural);
+};
+
+CSL.evaluateStringPluralism = function (str) {
+	if (str && str.match(/(?:[0-9], *[0-9]| and |&|[0-9] *- *[0-9])/)) {
+		return 1;
+	} else {
+		return 0;
+	}
+};
+
+CSL.castLabel = function (state, node, term, plural) {
+	var ret = state.getTerm(term, node.strings.form, plural);
+	if (node.strings["strip-periods"]) {
+		ret = ret.replace(/\./g, "");
+	}
+	return ret;
+};
 
 
->>== RESULT ==>>
->>[0] (John Smith 1999, John Smith 2000; Bob Jones 2011)
-<<== RESULT ==<<
-
->>===== CSL =====>>
-<style 
-      xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
-      version="1.0">
-  <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
-  <citation>
-    <layout delimiter="; " prefix="(" suffix=")">
-      <group delimiter=" ">
-        <names variable="author">
-          <name/>
-        </names>
-        <date variable="issued" form="text"/>
-      </group>
-    </layout>
-  </citation>
-</style>
-<<===== CSL =====<<
-
-
->>===== INPUT =====>>
-[
-    {
-        "id": "ITEM-1", 
-		"author":[
-			{
-				"family":"Smith",
-				"given":"John"
-			}
-		],
-		"issued":{
-			"date-parts":[
-				[1999]
-			]
-		},
-        "type": "article-journal"
-    },
-    {
-        "id": "ITEM-2", 
-		"author":[
-			{
-				"family":"Smith",
-				"given":"John"
-			}
-		],
-		"issued":{
-			"date-parts":[
-				[2000]
-			]
-		},
-        "type": "article-journal"
-    },
-    {
-        "id": "ITEM-3", 
-		"author":[
-			{
-				"family":"Jones",
-				"given":"Bob"
-			}
-		],
-		"issued":{
-			"date-parts":[
-				[2011]
-			]
-		},
-        "type": "article-journal"
-    }
-]
-<<===== INPUT =====<<

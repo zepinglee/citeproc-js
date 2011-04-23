@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+
 CSL.compareAmbigConfig = function(a, b) {
 	var ret, pos, len, ppos, llen;
 	// return of true means the ambig configs differ
@@ -68,31 +71,32 @@ CSL.compareAmbigConfig = function(a, b) {
 };
 
 CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
+	var i, ilen, j, jlen, k, klen, param;
 	var ret = {};
 	ret.names = [];
 	ret.givens = [];
 	ret.year_suffix = false;
 	ret.disambiguate = false;
-	for (var i = 0, ilen = config.names.length; i < ilen; i += 1) {
-		var param = config.names[i];
+	for (i = 0, ilen = config.names.length; i < ilen; i += 1) {
+		param = config.names[i];
 		// Fixes update bug affecting plugins, without impacting
 		// efficiency with update of large numbers of year-suffixed
 		// items.
 		if (oldconfig && (!oldconfig.names[i] || oldconfig.names[i] !== param)) {
-			for (var j = 0, jlen = tainters.length; j < jlen; j += 1) {
+			for (j = 0, jlen = tainters.length; j < jlen; j += 1) {
 				this.tmp.taintedItemIDs[tainters[j].id] = true;
 			}
 			oldconfig = false;
 		}
 		ret.names[i] = param;
 	}
-	for (var i  = 0, ilen = config.givens.length; i < ilen; i += 1) {
-		var param = [];
-		for (var j = 0, jlen = config.givens[i].length; j < jlen; j += 1) {
+	for (i  = 0, ilen = config.givens.length; i < ilen; i += 1) {
+		param = [];
+		for (j = 0, jlen = config.givens[i].length; j < jlen; j += 1) {
 			// condition at line 312 of disambiguate.js protects against negative
 			// values of j
 			if (oldconfig && oldconfig.givens[i][j] !== config.givens[i][j]) {
-				for (var k = 0, klen = tainters.length; k < klen; k += 1) {
+				for (k = 0, klen = tainters.length; k < klen; k += 1) {
 					this.tmp.taintedItemIDs[tainters[k].id] = true;
 				}
 				oldconfig = false;
@@ -103,7 +107,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
 	}
 	if (tainters && tainters.length > 1) {
 		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
-			for (var i = 0, ilen = tainters.length; i < ilen; i += 1) {
+			for (i = 0, ilen = tainters.length; i < ilen; i += 1) {
 				var oldYS = this.registry.registry[tainters[i].id].disambig.year_suffix;
 
 				if (tainters && (false === oldYS || oldYS != i)) {

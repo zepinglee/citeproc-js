@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Util.substituteStart = function (state, target) {
 	var element_trace, display, bib_first, func, choose_start, if_start, nodetypes;
 	//
@@ -59,7 +61,8 @@ CSL.Util.substituteStart = function (state, target) {
 				if (item && item["author-only"]) {
 					state.tmp.element_trace.push("do-not-suppress-me");
 				} else if (item && item["suppress-author"]) {
-					state.tmp.element_trace.push("suppress-me");
+					// This is better handled by namesOutput()
+					//state.tmp.element_trace.push("suppress-me");
 				}
 			} else {
 				if (item && item["author-only"]) {
@@ -107,6 +110,8 @@ CSL.Util.substituteStart = function (state, target) {
 		state.build.cls = display;
 	}
 	state.build.render_nesting_level += 1;
+	// Should this be render_nesting_level, with the increment
+	// below? ... ?
 	if (state.build.substitute_level.value() === 1) {
 		//
 		// All top-level elements in a substitute environment get

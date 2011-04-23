@@ -46,8 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Util.padding = function (num) {
-	m = num.match(/\s*(-{0,1}[0-9]+)/);
+	var m = num.match(/\s*(-{0,1}[0-9]+)/);
 	if (m) {
 		num = parseInt(m[1], 10);
 		if (num < 0) {
@@ -59,7 +61,7 @@ CSL.Util.padding = function (num) {
 		}
 	}
 	return num;
-}
+};
 
 CSL.Util.LongOrdinalizer = function () {};
 

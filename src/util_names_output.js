@@ -46,8 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.NameOutput = function(state, Item, item, variables) {
-	this.debug = true;
+	this.debug = false;
 	if (this.debug) {
 		print("(1)");
 	}
@@ -55,38 +57,45 @@ CSL.NameOutput = function(state, Item, item, variables) {
 	this.Item = Item;
 	this.item = item;
 	this.nameset_base = 0;
+	this._author_is_first = false;
+	this._please_chop = false;
 };
 
 CSL.NameOutput.prototype.init = function (names) {
 	if (this.nameset_offset) {
 		this.nameset_base = this.nameset_base + this.nameset_offset;
-   	}
+	}
 	this.nameset_offset = 0;
 	this.names = names;
 	this.variables = names.variables;
-	this.suppress = {
-		persons:false,
-		institutions:false,
-		freeters:false
+	if (this.nameset_base === 0 && this.variables[0] === "author") {
+		this._author_is_first = true;
+	}
+	this.state.tmp.value = [];
+	for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
+			this.state.tmp.value = this.state.tmp.value.concat(this.Item[this.variables[i]]);
+		}
 	}
 	this["et-al"] = undefined;
 	this["with"] = undefined;
 	this.name = undefined;
+	// long, long-with-short, short
+	this.institutionpart = {};
+	// family, given
+	//this.namepart = {};
+	// before, after
+	//this.label = {};
 };
 
 
 CSL.NameOutput.prototype.reinit = function (names) {
-	if (!this._hasValues() && false) {
+	if (!this._hasValues()) {
 		this.nameset_offset = 0;
 		// What-all should be carried across from the subsidiary
 		// names node, and on what conditions? For each attribute,
 		// and decoration, is it an override, or is it additive?
 		this.variables = names.variables;
-		this.suppress = {
-			persons:false,
-			institutions:false,
-			freeters:false
-		}
 	}
 };
 
@@ -103,6 +112,7 @@ CSL.NameOutput.prototype._hasValues = function () {
 };
 
 CSL.NameOutput.prototype.outputNames = function () {
+	var i, ilen;
 	var variables = this.variables;
 	this.variable_offset = {};
 	if (this.debug) {
@@ -154,22 +164,40 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("(11)");
 	}
 	var blob_list = [];
-	var institution_sets = [];
-	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
+	for (i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
+		var institution_sets = [];
+		var institutions = false;
+		if (this.debug) {
+			print("(11a)");
+		}
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
 			institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
 		}
-		var pos = this.nameset_base + this.variable_offset[v] + 1;
-		var institutions = this.joinInstitutionSets(institution_sets, pos);
-		//if (v === "author") {
-		//	print("  freeters[v] (2): "+this.freeters[v].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs[0].blobs);
-		//}
+		if (this.debug) {
+			print("(11b)");
+		}
+		if (this.institutions[v].length) {
+			var pos = this.nameset_base + this.variable_offset[v];
+			if (this.freeters[v].length) {
+				pos += 1;
+			}
+			institutions = this.joinInstitutionSets(institution_sets, pos);
+		}
+		if (this.debug) {
+			print("(11c)");
+		}
 		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
+		if (this.debug) {
+			print("(11d)");
+		}
 		if (varblob) {
 			// Apply labels, if any
 			varblob = this._applyLabels(varblob, v);
 			blob_list.push(varblob);
+		}
+		if (this.debug) {
+			print("(11e)");
 		}
 		if (this.common_term) {
 			break;
@@ -179,10 +207,11 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("(12)");
 	}
 	this.state.output.openLevel("empty");
+	this.state.output.current.value().strings.delimiter = this.names.strings.delimiter;
 	if (this.debug) {
 		print("(13)");
 	}
-	for (var i = 0, ilen = blob_list.length; i < ilen; i += 1) {
+	for (i = 0, ilen = blob_list.length; i < ilen; i += 1) {
 		// notSerious
 		this.state.output.append(blob_list[i], "literal", true);
 	}
@@ -201,20 +230,33 @@ CSL.NameOutput.prototype.outputNames = function () {
 	if (this.debug) {
 		print("(17)");
 	}
-	this.state.tmp.name_node = blob;
+	// Also used in CSL.Util.substituteEnd (which could do with
+	// some cleanup at this writing).
+	if (this.debug) {
+		print("(18)");
+	}
+	this.state.tmp.name_node = this.state.output.current.value();
+	// Let's try something clever here.
+	this._collapseAuthor();
+	// For name_SubstituteOnNamesSpanNamesSpanFail
+	this.variables = [];
+	if (this.debug) {
+		print("(19)");
+	}
 };
 
 CSL.NameOutput.prototype._applyLabels = function (blob, v) {
+	var txt;
 	if (!this.label) {
 		return blob;
 	}
 	var plural = 0;
-	var num = this.freeters[v].length + this.institutions[v].length;
+	var num = this.freeters_count[v] + this.institutions_count[v];
 	if (num > 1) {
 		plural = 1;
 	} else {
 		for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-			num += this.persons[v][j].length;
+			num += this.persons_count[v][i];
 		}
 		if (num > 1) {
 			plural = 1;
@@ -222,7 +264,10 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
 	}
 	// Some code duplication here, should be factored out.
 	if (this.label.before) {
-		var txt = this._buildLabel(v, plural, "before");
+		if ("number" === typeof this.label.before.strings.plural) {
+			plural = this.label.before.strings.plural;
+		}
+		txt = this._buildLabel(v, plural, "before");
 		this.state.output.openLevel("empty");
 		this.state.output.append(txt, this.label.before, true);
 		this.state.output.append(blob, "literal", true);
@@ -230,7 +275,10 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
 		blob = this.state.output.pop();
 	}
 	if (this.label.after) {
-		var txt = this._buildLabel(v, plural, "after")
+		if ("number" === typeof this.label.after.strings.plural) {
+			plural = this.label.after.strings.plural;
+		}
+		txt = this._buildLabel(v, plural, "after");
 		this.state.output.openLevel("empty");
 		this.state.output.append(blob, "literal", true);
 		this.state.output.append(txt, this.label.after, true);
@@ -244,16 +292,57 @@ CSL.NameOutput.prototype._buildLabel = function (term, plural, position) {
 	if (this.common_term) {
 		term = this.common_term;
 	}
+
+	var ret = false;
 	var node = this.label[position];
 	if (node) {
-		var ret = CSL.castLabel(this.state, node, term, plural);
-	} else {
-		var ret = false;
+		ret = CSL.castLabel(this.state, node, term, plural);
 	}
 	return ret;
 };
 
 
+CSL.NameOutput.prototype._collapseAuthor = function () {
+	var myqueue, mystr;
+	// collapse can be undefined, an array of length zero, and probably
+	// other things ... ugh.
+	if ((this.item && this.item["suppress-author"] && this._author_is_first)
+		|| (this.state[this.state.tmp.area].opt.collapse 
+			&& this.state[this.state.tmp.area].opt.collapse.length)) {
+
+		if (this.state.tmp.authorstring_request) {
+			// Avoid running this on every call to getAmbiguousCite()?
+			mystr = "";
+			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			if (myqueue) {
+				mystr = this.state.output.string(this.state, myqueue, false);
+			}
+			this.state.registry.authorstrings[this.Item.id] = mystr;
+		} else if (!this.state.tmp.just_looking
+			&& !this.state.tmp.suppress_decorations) {
+
+			// XX1 print("RENDER: "+this.Item.id);
+			mystr = "";
+			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			if (myqueue) {
+				mystr = this.state.output.string(this.state, myqueue, false);
+			}
+			if (mystr === this.state.tmp.last_primary_names_string) {
+			
+				// XX1 print("    CUT!");
+				this.state.tmp.name_node.blobs.pop();
+			} else {
+				// XX1 print("remembering: "+mystr);
+				this.state.tmp.last_primary_names_string = mystr;
+				if (this.item && this.item["suppress-author"]) {
+					this.state.tmp.name_node.blobs.pop();
+				}
+				// Arcane and probably unnecessarily complicated
+				this.state.tmp.have_collapsed = false;
+			}
+		}
+	}
+};
 
 /*
 CSL.NameOutput.prototype.suppressNames = function() {

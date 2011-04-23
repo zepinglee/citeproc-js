@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Util.fixDateNode = function (parent, pos, node) {
 	var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, subchildren, kkey, display;
 	
@@ -105,26 +107,30 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
 	// 
 	children = this.sys.xml.children(node);
 	for (key in children) {
-		// lie to jslint
-		subnode = children[key];
-		if ("date-part" === this.sys.xml.nodename(subnode)) {
-			partname = this.sys.xml.getAttributeValue(subnode, "name");
-			subchildren = this.sys.xml.attributes(subnode);
-			for (attr in subchildren) {
-				if (subchildren.hasOwnProperty(attr)) {
-					if ("@name" === attr) {
-						continue;
-					}
-					if (lingo && lingo !== this.state.opt.lang) {
-						if (["@suffix", "@prefix", "@form"].indexOf(attr) > -1) {
+		// Ah. Object children is XML. Can pass it along,
+		// but hasOwnProperty() won't work on it.
+		//if (children.hasOwnProperty(key)) {
+			// lie to jslint
+			subnode = children[key];
+			if ("date-part" === this.sys.xml.nodename(subnode)) {
+				partname = this.sys.xml.getAttributeValue(subnode, "name");
+				subchildren = this.sys.xml.attributes(subnode);
+				for (attr in subchildren) {
+					if (subchildren.hasOwnProperty(attr)) {
+						if ("@name" === attr) {
 							continue;
 						}
+						if (lingo && lingo !== this.state.opt.lang) {
+							if (["@suffix", "@prefix", "@form"].indexOf(attr) > -1) {
+								continue;
+							}
+						}
+						val = subchildren[attr];
+						this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 					}
-					val = subchildren[attr];
-					this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
 				}
 			}
-		}
+			//}
 	}
 	
 	if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {

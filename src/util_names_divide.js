@@ -46,105 +46,144 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.NameOutput.prototype.divideAndTransliterateNames = function (Item, variables) {
+/*global CSL: true */
+
+CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
+	var i, ilen;
 	var Item = this.Item;
 	var variables = this.variables;
 	this.varnames = variables.slice();
 	this.freeters = {};
 	this.persons = {};
 	this.institutions = {};
-	for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
+	for (i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
 		this.variable_offset[v] = this.nameset_offset;
 		var values = this._normalizeVariableValue(Item, v);
+		if (this.name.strings["suppress-min"] && values.length >= this.name.strings["suppress-min"]) {
+			values = [];
+		}
 		this._getFreeters(v, values);
-		this.nameset_offset += 1;
 		this._getPersonsAndInstitutions(v, values);
-		// Institutions is one nameset (i.e. increment by adding an institution and
-		// its affiliated authors)
-		this.nameset_offset += 1;
-		this.nameset_offset += this.persons[v].length;
 	}
 };
 
 CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
+	var names, name, i, ilen;
 	if ("string" === typeof Item[variable]) {
-		var names = [{literal: Item[variable]}];
+		names = [{literal: Item[variable]}];
 	} else if (!Item[variable]) {
-		var names = {};
+		names = [];
 	} else {
-		var names = Item[variable].slice();
+		names = Item[variable].slice();
 	}
 	// Transliteration happens here, if at all.
-	for (var i = 0, ilen = names.length; i < ilen; i += 1) {
-		if (names[i].literal) {
-		}
+	for (i = 0, ilen = names.length; i < ilen; i += 1) {
+		//if (names[i].literal) {
+		//}
 		this._parseName(names[i]);
-		var name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
+		name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
 		names[i] = name;
 	}
 	return names;
 };
 
-CSL.NameOutput.prototype._getFreeters = function (variable, values) {
-	this._markCutVariableAndCut(variable, values);
-	this.freeters[variable] = [];
+CSL.NameOutput.prototype._getFreeters = function (v, values) {
+	this.freeters[v] = [];
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
-			this.freeters[variable].push(values.pop());
+			this.freeters[v].push(values.pop());
 		} else {
 			break;
 		}
 	}
-	this.freeters[variable].reverse();
+	this.freeters[v].reverse();
+	if (this.freeters[v].length) {
+		this.nameset_offset += 1;
+	}
 };
 
-CSL.NameOutput.prototype._getPersonsAndInstitutions = function (variable, values) {
-	this.persons[variable] = [];
-	this.institutions[variable] = [];
+CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
+	this.persons[v] = [];
+	this.institutions[v] = [];
 	var persons = [];
+	var has_affiliates = false;
 	var first = true;
 	for (var i = values.length - 1; i > -1; i += -1) {
 		if (this.isPerson(values[i])) {
 			persons.push(values[i]);
 		} else {
-			this.institutions[variable].push(values[i]);
+			has_affiliates = true;
+			this.institutions[v].push(values[i]);
 			if (!first) {
-				this._markCutVariableAndCut(variable, persons);
-				this.persons[variable].push(persons);
+				persons.reverse();
+				this.persons[v].push(persons);
 				persons = [];
 			}
 			first = false;
 		}
 	}
-	this.persons[variable].push(persons);
-	this.persons[variable].reverse();
-	this.institutions[variable].reverse();
+	if (has_affiliates) {
+		persons.reverse();
+		this.persons[v].push(persons);
+		this.persons[v].reverse();
+		this.institutions[v].reverse();
+	}
 };
 
-CSL.NameOutput.prototype._markCutVariableAndCut = function (variable, values) {
-	// See util_namestruncate.js for code that uses this cut variable.
-	if (values.length
-		&& (this.state.tmp.area === "bibliography" 
-			|| this.state.tmp.area === "bibliography_sort" 
-			|| (this.state.tmp.area && this.state.opt.xclass === "note"))) {
-	
-		if (!this.state.tmp.cut_var
-			&& this.name["et-al-min"] === 1 
-			&& this.name["et-al-use-first"] === 1) {
-			
-			this.state.tmp.cut_var = namesets[0].variable;
-		}
+CSL.NameOutput.prototype._clearValues = function (values) {
+	for (var i = values.length - 1; i > -1; i += -1) {
+		values.pop();
+	}
+};
 
-		// Slice off subsequent namesets in the initial name
-		// rendered, when the same name is rendered a second time.
-		// Useful for robust per-author listings.
-		if (this.state.tmp.cut_var && cutinfo.used === this.state.tmp.cut_var) {
-			var ilen = cutinfo.variable[this.state.tmp.cut_var].length - 1;
-			for (var i = ilen; i > -1; i += -1) {
-				obj = cutinfo.variable[this.state.tmp.cut_var][i];
-				obj[0].blobs = obj[0].blobs.slice(0, obj[1]).concat(obj[0].blobs.slice(obj[1] + 1));
+CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
+	var ret = {};
+	if (value.literal.slice(0,1) === '"' && value.literal.slice(-1) === '"') {
+		ret["long"] = [value.literal.slice(1,-1)];
+	} else {
+		ret["long"] = this._trimInstitution(value.literal.split(/\s*,\s*/), v, i);
+	}
+	var str = this.state.transform.institution[value.literal];
+	if (str) {
+		if (str.slice(0,1) === '"' && str.slice(-1) === '"') {
+			ret["short"] = [str.slice(1,-1)];
+		} else {
+			ret["short"] = this._trimInstitution(str.split(/\s*,\s*/), v, i);
+		}
+	} else {
+		ret["short"] = false;
+	}
+	return ret;
+};
+
+CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
+	var s;
+	var use_first = this.institution.strings["use-first"];
+	if (!use_first) {
+		if (this.persons[v][i].length === 0) {
+			use_first = this.institution.strings["substitute-use-first"];
+		}
+	}
+	if (!use_first) {
+		use_first = 0;
+	}
+	var append_last = this.institution.strings["use-last"];
+	if (!append_last) {
+		append_last = 0;
+	}
+	if (use_first || append_last) {
+		s = subunits.slice();
+		subunits = subunits.slice(0, use_first);
+		s = s.slice(use_first);
+		if (append_last) {
+			if (append_last > s.length) {
+				append_last = s.length;
+			}
+			if (append_last) {
+				subunits = subunits.concat(s.slice((s.length - append_last)));
 			}
 		}
 	}
+	return subunits;
 };

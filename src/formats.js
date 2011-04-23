@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+
 /**
  * Output specifications.
  * @class
@@ -235,7 +238,6 @@ CSL.Output.Formats.prototype.rtf = {
 			.replace("\t", "\\tab{}", "g");
 	},
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
-	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
 	"@font-style/italic":"\\i %%STRING%%\\i0{}",
 	"@font-style/normal":"\\i0{}%STRING%%\\i{}",
 	"@font-style/oblique":"\\i %%STRING%%\\i0{}",

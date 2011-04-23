@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 /**
  * Style token.
  * <p>This class provides the tokens that define
@@ -70,7 +72,7 @@ CSL.Token = function (name, tokentype) {
 	 * Strings and other static content specific to the element.
 	 */
 	this.strings = {};
-	this.strings.delimiter = "";
+	this.strings.delimiter = undefined;
 	this.strings.prefix = "";
 	this.strings.suffix = "";
 	/**
@@ -166,11 +168,14 @@ CSL.Util.cloneToken = function (token) {
 			newtok.decorations.push(token.decorations[pos].slice());
 		}
 	}
-	newtok.variables = token.variables.slice();
-
+	if (token.variables) {
+		newtok.variables = token.variables.slice();
+	}
 	// Probably overkill; this is only used for cloning formatting
 	// tokens.
-	// newtok.execs = token.execs.slice();
-	// newtok.tests = token.tests.slice();
+	if (token.execs) {
+		newtok.execs = token.execs.slice();
+		newtok.tests = token.tests.slice();
+	}
 	return newtok;
 };

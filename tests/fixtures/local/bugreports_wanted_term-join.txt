@@ -46,38 +46,39 @@
  * or the [AGPLv3] License.”
  */
 
-CSL.Util.Institutions = {};
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
 
-/**
- * Build a set of names, less any label or et al. tag
- */
-CSL.Util.Institutions.outputInstitutions = function (state, display_names) {
-	var len, pos, name, institution, value, token_long, token_short, parts;
-	state.output.openLevel("institution");
-	len = display_names.length;
-	for (pos = 0; pos < len; pos += 1) {
-		name = display_names[pos];
-		institution = state.output.getToken("institution");
-		value = name.literal;
-		if (state.transform.institution[value]) {
-			token_long = state.output.mergeTokenStrings("institution-long", "institution-if-short");
-		} else {
-			token_long = state.output.getToken("institution-long");
-		}
-		token_short = state.output.getToken("institution-short");
-		parts = institution.strings["institution-parts"];
-		if ("short" === parts) {
-			state.transform.output(state, value, token_short, token_long, true);
-		} else if ("short-long" === parts) {
-			state.transform.output(state, value, token_short);
-			state.output.append(value, token_long);
-		} else if ("long-short" === parts) {
-			state.output.append(value, token_long);
-			state.transform.output(state, value, token_short);
-		} else {
-			state.output.append(value, token_long);
-		}
+Test by Carles Pina.  Was throwing nesting mismatch
+error to console in citeproc-js.
+
+The "term-join" element is no longer present in citeproc-js,
+as of release 1.0.150, but this test now also checks for
+correct classification of elements with family name only
+and the "isInstitution" flag as institutional authors
+(which should trigger an "and" join, in citeproc-js).
+
+>>===== RESULT =====>>
+<div class="csl-bib-body">
+  <div class="csl-entry">test01 and test02,</div>
+</div>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+harvard1.csl
+<<===== CSL =====<<
+
+>>===== INPUT =====>
+[
+	{
+		"id":"ITEM-1",
+		"type":"article-journal",
+		"author":[
+			{"family":"test01","given":"","isInstitution":true},
+			{"family":"test02","given":"","isInstitution":true}
+		]
 	}
-	// institution
-	state.output.closeLevel();
-};
+]
+<<====== INPUT =====

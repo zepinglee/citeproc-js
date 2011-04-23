@@ -71,7 +71,7 @@ Tiny Subcommittee, Big Ministry
   <citation>
     <layout>
       <names variable="author">
-        <name delimiter="[X]"/>
+        <name delimiter=", "/>
         <institution 
           institution-parts="long" 
           delimiter=", "

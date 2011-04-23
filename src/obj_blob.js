@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Blob = function (token, str, levelname) {
 	var len, pos, key;
 	this.levelname = levelname;
@@ -75,6 +77,8 @@ CSL.Blob = function (token, str, levelname) {
 	}
 	if ("string" === typeof str) {
 		this.blobs = str;
+	} else if (str) {
+		this.blobs = [str];
 	} else {
 		this.blobs = [];
 	}

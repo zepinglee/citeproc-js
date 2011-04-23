@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 var XML_PARSING;
 var CSL_E4X;
 var CSL_CHROME;

@@ -46,17 +46,10 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.NameOutput.prototype.getEtAlConfig = function () {
 	var item = this.item;
-
-	if (this.name.strings["delimiter-precedes-et-al"] === "always") {
-		this.etal_prefix_single = this.name.strings.delimiter;
-		this.etal_prefix_multiple = this.name.strings.delimiter;
-	} else if (this.name.strings["delimiter-precedes-et-al"] === "contextual"
-			   || !this.name.strings["delimiter-precedes-et-al"]) {
-		this.etal_prefix_multiple = this.name.strings.delimiter;
-	}
-
 	this["et-al"] = {};
 
 	this.state.output.append(this.etal_term, this.etal_style, true);
@@ -74,6 +67,7 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
 	if ("undefined" === typeof item) {
 		item = {};
 	}
+	//print("== getEtAlConfig() == "+this.state.tmp.area);
 	if (item.position) {
 		if (this.name.strings["et-al-subsequent-min"]) {
 			this.etal_min = this.name.strings["et-al-subsequent-min"];
@@ -86,8 +80,24 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
 			this.etal_use_first = this.name.strings["et-al-use-first"];
 		}
 	} else {
-		this.etal_min = this.name.strings["et-al-min"];
-		this.etal_use_first = this.name.strings["et-al-use-first"];
+		if (this.state.tmp["et-al-min"]) {
+			this.etal_min = this.state.tmp["et-al-min"];
+		} else {
+			this.etal_min = this.name.strings["et-al-min"];
+		}
+		if (this.state.tmp["et-al-use-first"]) {
+			this.etal_use_first = this.state.tmp["et-al-use-first"];
+		} else {
+			this.etal_use_first = this.name.strings["et-al-use-first"];
+		}
+		if ("boolean" === typeof this.state.tmp["et-al-use-last"]) {
+			//print("  etal_use_last from tmp: "+this.state.tmp["et-al-use-last"]);
+			this.etal_use_last = this.state.tmp["et-al-use-last"];
+		} else {
+			//print("  etal_use_last from name: "+this.name.strings["et-al-use-last"]);
+			this.etal_use_last = this.name.strings["et-al-use-last"];
+		}
+		//print("  etal_use_last: "+this.etal_use_last);
 	}
 	// Provided for use as the starting level for disambiguation.
 	if (!this.state.tmp["et-al-min"]) {

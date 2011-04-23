@@ -46,22 +46,24 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.Node["institution-part"] = {
 	build: function (state, target) {
 		var func;
 		if ("long" === this.strings.name) {
 			if (this.strings["if-short"]) {
 				func = function (state, Item) {
-					state.output.addToken("institution-if-short", false, this);
+					state.nameOutput.institutionpart["long-with-short"] = this;
 				};
 			} else {
 				func = function (state, Item) {
-					state.output.addToken("institution-long", false, this);
+					state.nameOutput.institutionpart["long"] = this;
 				};
 			}
 		} else if ("short" === this.strings.name) {
 			func = function (state, Item) {
-				state.output.addToken("institution-short", false, this);
+				state.nameOutput.institutionpart["short"] = this;
 			};
 		}
 		this.execs.push(func);

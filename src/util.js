@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+
 /**
  * Utilities for various things.
  * @namespace Utilities

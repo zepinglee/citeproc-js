@@ -46,42 +46,111 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
+	var v, i, ilen, j, jlen, chopvar, values;
 	// XXX Before truncation, make a note of the original number
 	// of names, for use in et-al evaluation.
 	this.freeters_count = {};
 	this.persons_count = {};
 	this.institutions_count = {};
 	// By key is okay here, as we don't care about sequence.
-	for (var v in this.freeters) {
-		if (this.state.tmp.cut_var === v) {
-			var cutinfo = this.state.tmp.names_cut;
-			this.freeters[v] = this.freeters[v].slice(cutinfo.counts[v]);
+	for (v in this.freeters) {
+		if (this.freeters.hasOwnProperty(v)) {
+			this.freeters_count[v] = this.freeters[v].length;
+			this.freeters[v] = this._truncateNameList(this.freeters, v);
 		}
-		this.freeters_count[v] = this.freeters[v].length;
-		this.freeters[v] = this._truncateNameList(this.freeters, v);
 	}
-	for (var v in this.persons) {
-		this.institutions_count[v] = this.institutions[v].length;
-		this._truncateNameList(this.institutions, v);
-		this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
-		this.persons_count[v] = [];
-		for (var j = 0, jlen = this.persons.length; j < jlen; j += 1) {
-			if (this.state.tmp.cut_var === v) {
-				var cutinfo = this.state.tmp.names_cut;
-				this.persons[v][j] = this.persons[v][j].slice(cutinfo.counts[v]);
+	for (v in this.persons) {
+		if (this.persons.hasOwnProperty(v)) {
+			this.institutions_count[v] = this.institutions[v].length;
+			this._truncateNameList(this.institutions, v);
+			this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
+			this.persons_count[v] = [];
+			for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+				this.persons_count[v][j] = this.persons[v][j].length;
+				this.persons[v][j] = this._truncateNameList(this.persons, v, j);
 			}
-			this.persons_count[v][j] = this.persons[v][j].length;
-			this.persons[v][j] = this._truncateNameList(this.persons, v, j);
+		}
+	}
+	// Could be factored out to a separate function for clarity.
+	if (this.etal_min === 1 && this.etal_use_first === 1 
+		&& !(this.state.tmp.area === "bibliography_sort" 
+			 || this.state.tmp.area === "citation_sort" 
+			 || this.state.tmp.just_looking)) {
+		chopvar = v;
+	} else {
+		chopvar = false;
+	}
+	if (chopvar || this._please_chop) {
+		for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+			v = this.variables[i];
+			if (this.freeters[v].length) {
+				if (this._please_chop === v) {
+					this.freeters[v] = this.freeters[v].slice(1);
+					this.freeters_count[v] += -1;
+					this._please_chop = false;
+				} else if (chopvar && !this._please_chop) {
+					this.freeters[v] = this.freeters[v].slice(0, 1);
+					this.freeters_count[v] = 1;
+					this.institutions[v] = [];
+					this.persons[v] = [];
+					this._please_chop = chopvar;
+				}
+			}
+			for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+				if (this.persons[v][i].length) {
+					if (this._please_chop === v) {
+						this.persons[v][i] = this.persons[v][i].slice(1);
+						this.persons_count[v][i] += -1;
+						this._please_chop = false;
+						break;
+					} else if (chopvar && !this._please_chop) {
+						this.freeters[v] = this.persons[v][i].slice(0, 1);
+						this.freeters_count[v] = 1;
+						this.institutions[v] = [];
+						this.persons[v] = [];
+						values = [];
+						this._please_chop = chopvar;
+						break;
+					}
+				}
+			}
+			if (this.institutions[v].length) {
+				if (this._please_chop === v) {
+					this.institutions[v] = this.institutions[v].slice(1);
+					this.institutions_count[v] += -1;
+					this._please_chop = false;
+				} else if (chopvar && !this._please_chop) {
+					this.institutions[v] = this.institutions[v].slice(0, 1);
+					this.institutions_count[v] = 1;
+					values = [];
+					this._please_chop = chopvar;
+				}
+			}
+		}
+	}
+	// Could also be factored out to a separate function for clarity.
+	for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+		if (this.institutions[v].length) {
+			this.nameset_offset += 1;
+		}
+		for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+			if (this.persons[v][i].length) {
+				this.nameset_offset += 1;
+			}
+			this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
 		}
 	}
 };
 
 CSL.NameOutput.prototype._truncateNameList = function (container, variable, index) {
+	var lst;
 	if ("undefined" === typeof index) {
-		var lst = container[variable];
+		lst = container[variable];
 	} else {
-		var lst = container[variable][index];
+		lst = container[variable][index];
 	}
 	if (this.state.opt.max_number_of_names 
 		&& lst.length > 50 
@@ -90,4 +159,5 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
 		lst = lst.slice(0, this.state.opt.max_number_of_names + 2);
 	}
 	return lst;
-}
+};
+

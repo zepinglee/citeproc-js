@@ -46,6 +46,8 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
 CSL.localeResolve = function (langstr) {
 	var ret, langlst;
 	ret = {};
@@ -77,7 +79,7 @@ CSL.localeParse = function (arg) {
 	//	
 	//}
 	return arg;
-}
+};
 
 // Use call to invoke this.
 CSL.Engine.prototype.localeConfigure = function (langspec) {
@@ -98,8 +100,7 @@ CSL.Engine.prototype.localeConfigure = function (langspec) {
 		this.localeSet(this.cslXml, langspec.base, langspec.best);
 	}
 	this.localeSet(this.cslXml, langspec.best, langspec.best);
-}
-	
+};
 	
 //
 // XXXXX: Got it.  The locales objects need to be reorganized,
@@ -208,6 +209,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 	// Iterate over main segments, and fill in any holes in gender-specific data
 	// sub-segments
 	for (termname in this.locale[lang_out].terms) {
+		if (this.locale[lang_out].terms.hasOwnProperty(termname)) {
 		for (var i = 0, ilen = 2; i < ilen; i += 1) {
 			genderform = CSL.GENDERS[i];
 			if (this.locale[lang_out].terms[termname][genderform]) {
@@ -217,6 +219,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 					}
 				}
 			}
+		}
 		}
 	}
 	//

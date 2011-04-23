@@ -132,8 +132,9 @@ StdRhinoTest.prototype._readTest = function(){
 
 
 StdRhinoTest.prototype.run = function(){
+	//print("-->"+this.myname);
 	var result, data, nosort;
-	print("--> "+this.myname);
+	// print(this.myname);
 	var len, pos, ret, id_set, nick;
 	ret = new Array();
 	this.style = new CSL.Engine(this,this.test.csl);
