@@ -142,7 +142,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		this.lists[this.listpos] = [this.base, []];
 	} else if (this.clashes[1] === 0) {
 		// no clashes
@@ -160,7 +160,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 	} else if (this.nonpartners.length === 1) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		this.lists[this.listpos] = [this.base, this.partners];
 	} else if (this.clashes[1] < this.clashes[0]) {
 		// fewer clashes
@@ -197,7 +197,8 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
+		
 		this.lists[this.listpos] = [this.base, []];
 	} else if (this.clashes[1] === 0) {
 		if (this.clashes[0] === 1) {
@@ -221,7 +222,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		}
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		this.lists[this.listpos] = [this.base, this.partners];
 	} else if (this.clashes[1] < this.clashes[0]) {
 		// fewer clashes
@@ -258,7 +259,7 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
