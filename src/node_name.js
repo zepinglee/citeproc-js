@@ -70,6 +70,24 @@ CSL.Node.name = {
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 
+			// Many CSL styles pointlessly set et-al-[min|use-first]
+			// and et-al-subsequent-[min|use-first] to the same
+			// value.
+			// Set state.opt.update_mode = CSL.POSITION if
+			// et-al-subsequent-min or et-al-subsequent-use-first
+			// are set AND their value differs from their plain
+			// counterparts.
+			if (this.strings["et-al-subsequent-min"]
+				&& (this.strings["et-al-subsequent-min"] !== this.strings["et-al-min"])) {
+				
+				state.opt.update_mode = CSL.POSITION;
+			}
+			if (this.strings["et-al-subsequent-use-first"]
+				&& (this.strings["et-al-subsequent-use-first"] !== this.strings["et-al-use-first"])) {
+				
+				state.opt.update_mode = CSL.POSITION;
+			}
+
 			// Et-al (onward processing in node_etal.js and node_names.js)
 			// XXXXX Why is this necessary? This is available on this.name, right?
 			state.build.etal_term = "et-al";
