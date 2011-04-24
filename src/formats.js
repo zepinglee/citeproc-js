@@ -244,7 +244,7 @@ CSL.Output.Formats.prototype.rtf = {
 	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
 	"@font-variant/normal":"\\scaps0{}%%STRING%%\\scaps{}",
 	"@font-weight/bold":"\\b %%STRING%%\\b0{}",
-	"@font-weight/normal":"\\b0{}%STRING%%\\b{}",
+	"@font-weight/normal":"\\b0{}%%STRING%%\\b{}",
 	"@font-weight/light":false,
 	"@text-decoration/none":false,
 	"@text-decoration/underline":"\\ul %%STRING%%\\ul0{}",
