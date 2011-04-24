@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.155
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- When initialize-with is not set on a name, and
+  the short form is used, and disambiguate-add-givenname="true",
+  jump immediately to the full name form, without trying
+  to disambiguate by adding initials. This conforms to the
+  CSL 1.0 specification.
+
+
+==========================
 Changes in version 1.0.154
 ==========================
 

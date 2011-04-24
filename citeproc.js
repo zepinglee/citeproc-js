@@ -1673,7 +1673,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.154";
+	this.processor_version = "1.0.155";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8911,7 +8911,7 @@ CSL.Output.Formats.prototype.rtf = {
 	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
 	"@font-variant/normal":"\\scaps0{}%%STRING%%\\scaps{}",
 	"@font-weight/bold":"\\b %%STRING%%\\b0{}",
-	"@font-weight/normal":"\\b0{}%STRING%%\\b{}",
+	"@font-weight/normal":"\\b0{}%%STRING%%\\b{}",
 	"@font-weight/light":false,
 	"@text-decoration/none":false,
 	"@text-decoration/underline":"\\ul %%STRING%%\\ul0{}",
@@ -9300,7 +9300,10 @@ CSL.Registry.NameReg = function (state) {
 			if (this.namereg[pkey].count > 1) {
 				param = 1;
 			}
-			if (this.namereg[pkey].ikey && this.namereg[pkey].ikey[ikey].count > 1) {
+			if ((this.namereg[pkey].ikey 
+				 && this.namereg[pkey].ikey[ikey].count > 1)
+				|| (this.namereg[pkey].count > 1 
+					&& "string" !== typeof initials)) {
 			    param = 2;
 			}
 		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
@@ -9553,7 +9556,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		this.lists[this.listpos] = [this.base, []];
 	} else if (this.clashes[1] === 0) {
 		mybase = CSL.cloneAmbigConfig(this.base);
@@ -9563,7 +9566,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 	} else if (this.nonpartners.length === 1) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		this.lists[this.listpos] = [this.base, this.partners];
 	} else if (this.clashes[1] < this.clashes[0]) {
 		this.lists[this.listpos] = [this.base, this.partners];
@@ -9594,7 +9597,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		this.lists[this.listpos] = [this.base, []];
 	} else if (this.clashes[1] === 0) {
 		if (this.clashes[0] === 1) {
@@ -9610,7 +9613,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		}
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
-		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		this.lists[this.listpos] = [this.base, this.partners];
 	} else if (this.clashes[1] < this.clashes[0]) {
 		this.lists[this.listpos] = [this.base, this.partners];
@@ -9640,7 +9643,7 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
 		if (this.nonpartners.length === 1) {
-			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.base);
+			this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 			this.lists[this.listpos] = [this.base,[]];
 		} else {
 			this.lists[this.listpos] = [this.base, this.nonpartners];
