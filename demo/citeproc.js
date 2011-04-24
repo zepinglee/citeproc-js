@@ -1673,7 +1673,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.153";
+	this.processor_version = "1.0.154";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5491,6 +5491,14 @@ CSL.Node.name = {
 			state.fixOpt(this, "et-al-use-last", "et-al-use-last");
 			state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
 			state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
+			if (this.strings["et-al-subsequent-min"]
+				&& (this.strings["et-al-subsequent-min"] !== this.strings["et-al-min"])) {
+				state.opt.update_mode = CSL.POSITION;
+			}
+			if (this.strings["et-al-subsequent-use-first"]
+				&& (this.strings["et-al-subsequent-use-first"] !== this.strings["et-al-use-first"])) {
+				state.opt.update_mode = CSL.POSITION;
+			}
 			state.build.etal_term = "et-al";
 			state.build.name_delimiter = this.strings.delimiter;
 			state.build["delimiter-precedes-et-al"] = this.strings["delimiter-precedes-et-al"];
@@ -6597,7 +6605,6 @@ CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 	}
 };
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
-	state.opt.update_mode = CSL.POSITION;
 	var val = parseInt(arg, 10);
 	if (state.opt.max_number_of_names < val) {
 		state.opt.max_number_of_names = val;
@@ -6605,7 +6612,6 @@ CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
 	state.setOpt(this, "et-al-subsequent-min", val);
 };
 CSL.Attributes["@et-al-subsequent-use-first"] = function (state, arg) {
-	state.opt.update_mode = CSL.POSITION;
 	state.setOpt(this, "et-al-subsequent-use-first", parseInt(arg, 10));
 };
 CSL.Attributes["@truncate-min"] = function (state, arg) {
@@ -8900,7 +8906,7 @@ CSL.Output.Formats.prototype.rtf = {
 	},
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
 	"@font-style/italic":"\\i %%STRING%%\\i0{}",
-	"@font-style/normal":"\\i0{}%STRING%%\\i{}",
+	"@font-style/normal":"\\i0{}%%STRING%%\\i{}",
 	"@font-style/oblique":"\\i %%STRING%%\\i0{}",
 	"@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
 	"@font-variant/normal":"\\scaps0{}%%STRING%%\\scaps{}",

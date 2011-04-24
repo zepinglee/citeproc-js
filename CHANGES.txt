@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.154
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not flag style as position sensitive (thereby
+  disabling grouped sorting mechanism) merely
+  due to the fact that et-al-subsequent-min or
+  et-al-subsequent-use-first are set; set this
+  flag ONLY when these values differ from their
+  plain counterparts.
+
+
+==========================
 Changes in version 1.0.153
 ==========================
 
