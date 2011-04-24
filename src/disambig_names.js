@@ -140,7 +140,11 @@ CSL.Registry.NameReg = function (state) {
 			if (this.namereg[pkey].count > 1) {
 				param = 1;
 			}
-			if (this.namereg[pkey].ikey && this.namereg[pkey].ikey[ikey].count > 1) {
+			if ((this.namereg[pkey].ikey 
+				 && this.namereg[pkey].ikey[ikey].count > 1)
+				|| (this.namereg[pkey].count > 1 
+					&& "string" !== typeof initials)) {
+
 			    param = 2;
 			}
 		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
