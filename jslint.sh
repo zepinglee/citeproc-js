@@ -4,7 +4,7 @@ rm -f jslint_results.txt
 touch jshint_done.txt
 
 JSLINT="java -client -jar ./rhino/js-1.7R2.jar ./jshint/rhino.js"
-OPTS="onevar=false,undef=true,boss=false,curly=true,forin=true,regexp=false,laxbreak=true"
+OPTS="onevar=false,undef=true,boss=false,curly=true,forin=true,regexp=false,laxbreak=true,maxerr=1000"
 
 if [ "$1" == "" ]; then
     echo "#### jslint results for citeproc-dev/src/*.js ####" > jslint_results.txt
