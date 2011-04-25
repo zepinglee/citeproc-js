@@ -1,0 +1,35 @@
+The variable names listed below were globally assigned
+in citeproc-js version 1.0.148. All global variable
+assignments have been eliminated as of citeproc-js
+version 1.0.155.
+
+In the archive, the following commands can now be
+used to check for global assignments in the main
+body of the code (excepting the xmle4x.js and
+xmldom.js modules, which must be inspected separately):
+
+  ./test.py -B
+  ./jslint.sh ./citeproc.js
+
+I'll obviously be watching this more carefully going forward, but
+it's probably a good idea to run this check against new processor
+releases in advance of deployment, just to be on the safe side.
+
+
+Components
+console
+func
+i
+ilen
+j
+jlen
+lllen
+m
+mybase
+num
+otherItemBase
+otherItemData
+sequence
+strcmp
+tok
+value
