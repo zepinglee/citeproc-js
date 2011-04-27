@@ -567,7 +567,7 @@ CSL.Attributes["@plural"] = function (state, arg) {
 CSL.Attributes["@locator"] = function (state, arg) {
 	var func;
 	var trylabels = arg.replace("sub verbo", "sub-verbo");
-	trylabels = arg.split(/\s+/);
+	trylabels = trylabels.split(/\s+/);
 	if (trylabels.indexOf("sub-verbo") > -1) {
 		trylabels.push("sub verbo");
 	}
