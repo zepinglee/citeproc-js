@@ -318,7 +318,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						for (key in myitem[variable]) {
 							if (myitem[variable].hasOwnProperty(key)) {
 								x = true;
-								break;
+							} else {
+								x = false;
 							}
 						}
 					}
@@ -565,19 +566,28 @@ CSL.Attributes["@plural"] = function (state, arg) {
 
 CSL.Attributes["@locator"] = function (state, arg) {
 	var func;
+	var trylabels = arg.replace("sub verbo", "sub-verbo");
+	trylabels = arg.split(/\s+/);
+	if (trylabels.indexOf("sub-verbo") > -1) {
+		trylabels.push("sub verbo");
+	}
 	if (["if",  "else-if"].indexOf(this.name) > -1) {
 		// check for variable value
 		func = function (state, Item, item) {
-			var label;
+			var ret = [];
 			if ("undefined" === typeof item || !item.label) {
 				label = "page";
 			} else {
 				label = item.label;
 			}
-			if (arg === label) {
-				return true;
+			for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
+				if (trylabels[i] === label) {
+					ret.push(true);
+				} else {
+					ret.push(false);
+				}
 			}
-			return false;
+			return ret;
 		};
 		this.tests.push(func);
 	}
