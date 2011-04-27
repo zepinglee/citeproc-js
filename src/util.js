@@ -132,16 +132,14 @@ CSL.Util.Match = function () {
 		// assume true, return false on any single false hit
 		//
 		var ret = true;
-		len = this.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = this.tests[pos];
+		for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
+			func = this.tests[i];
 			reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
-			llen = reslist.length;
-			for (pos = 0; pos < len; pos += 1) {
-				if (!reslist[ppos]) {
+			for (j = 0, jlen = reslist.length; j < jlen; j += 1) {
+				if (!reslist[j]) {
 					ret = false;
 					break;
 				}
