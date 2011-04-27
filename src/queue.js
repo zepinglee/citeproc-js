@@ -260,7 +260,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 
 		// Source (;?!»«): http://en.wikipedia.org/wiki/Space_(punctuation)#Breaking_and_non-breaking_spaces
 		// Source (:): http://forums.zotero.org/discussion/4933/localized-quotes/#Comment_88384
-		str = str.replace(/ ([:;?!\u00bb])/g, "\u202f$1").replace(/\u00ab /g, "«\u202f");
+		str = str.replace(/ ([:;?!\u00bb])/g, "\u202f$1").replace(/\u00ab /g, "\u00ab\u202f");
 
 		this.last_char_rendered = str.slice(-1);
 		// This, and not the str argument below on flipflop, is the
