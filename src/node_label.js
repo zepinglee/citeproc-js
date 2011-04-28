@@ -61,7 +61,7 @@ CSL.Node.label = {
 			var func = function (state, Item, item) {
 				// This is abstracted away, because the same
 				// logic must be run in cs:names.
-				if (item.label === "sub verbo") {
+				if (item && item.label === "sub verbo") {
 					item.label = "sub-verbo";
 				}
 				var termtxt = CSL.evaluateLabel(this, state, Item, item);
