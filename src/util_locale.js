@@ -151,6 +151,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 		// Xml: get string value of attribute
 		//
 		termname = this.sys.xml.getAttributeValue(term, 'name');
+		if (termname === "sub verbo") {
+			termname = "sub-verbo";
+		}
 		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
 			this.locale[lang_out].terms[termname] = {};
 		}

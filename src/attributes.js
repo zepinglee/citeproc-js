@@ -113,7 +113,11 @@ CSL.Attributes["@macro"] = function (state, arg) {
 
 
 CSL.Attributes["@term"] = function (state, arg) {
-	this.strings.term = arg;
+	if (arg === "sub verbo") {
+		this.strings.term = "sub-verbo";
+	} else {
+		this.strings.term = arg;
+	}
 };
 
 
@@ -568,9 +572,6 @@ CSL.Attributes["@locator"] = function (state, arg) {
 	var func;
 	var trylabels = arg.replace("sub verbo", "sub-verbo");
 	trylabels = trylabels.split(/\s+/);
-	if (trylabels.indexOf("sub-verbo") > -1) {
-		trylabels.push("sub verbo");
-	}
 	if (["if",  "else-if"].indexOf(this.name) > -1) {
 		// check for variable value
 		func = function (state, Item, item) {
@@ -578,6 +579,8 @@ CSL.Attributes["@locator"] = function (state, arg) {
 			var label;
 			if ("undefined" === typeof item || !item.label) {
 				label = "page";
+			} else if (item.label === "sub verbo") {
+				label = "sub-verbo";
 			} else {
 				label = item.label;
 			}
