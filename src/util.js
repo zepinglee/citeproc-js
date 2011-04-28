@@ -138,7 +138,7 @@ CSL.Util.Match = function () {
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
-			for (j = 0, jlen = reslist.length; j < jlen; j += 1) {
+			for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
 				if (!reslist[j]) {
 					ret = false;
 					break;
