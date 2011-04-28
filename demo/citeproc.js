@@ -511,7 +511,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		token.strings.delimiter = "";
 	}
 	if ("string" === typeof str && str.length) {
-		str = str.replace(/ ([:;?!\u00bb])/g, "\u202f$1").replace(/\u00ab /g, "«\u202f");
+		str = str.replace(/ ([:;?!\u00bb])/g, "\u202f$1").replace(/\u00ab /g, "\u00ab\u202f");
 		this.last_char_rendered = str.slice(-1);
 		str = str.replace(/\s+'/g, "  \'").replace(/^'/g, " \'");
 		this.state.tmp.term_predecessor = true;
@@ -1673,7 +1673,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.155";
+	this.processor_version = "1.0.156";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6311,7 +6311,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						for (key in myitem[variable]) {
 							if (myitem[variable].hasOwnProperty(key)) {
 								x = true;
-								break;
+							} else {
+								x = false;
 							}
 						}
 					}
@@ -6489,18 +6490,28 @@ CSL.Attributes["@plural"] = function (state, arg) {
 };
 CSL.Attributes["@locator"] = function (state, arg) {
 	var func;
+	var trylabels = arg.replace("sub verbo", "sub-verbo");
+	trylabels = trylabels.split(/\s+/);
+	if (trylabels.indexOf("sub-verbo") > -1) {
+		trylabels.push("sub verbo");
+	}
 	if (["if",  "else-if"].indexOf(this.name) > -1) {
 		func = function (state, Item, item) {
+			var ret = [];
 			var label;
 			if ("undefined" === typeof item || !item.label) {
 				label = "page";
 			} else {
 				label = item.label;
 			}
-			if (arg === label) {
-				return true;
+			for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
+				if (trylabels[i] === label) {
+					ret.push(true);
+				} else {
+					ret.push(false);
+				}
 			}
-			return false;
+			return ret;
 		};
 		this.tests.push(func);
 	}
@@ -6865,16 +6876,14 @@ CSL.Util.Match = function () {
 	};
 	this.all = function (token, state, Item, item) {
 		var ret = true;
-		len = this.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = this.tests[pos];
+		for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
+			func = this.tests[i];
 			reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
-			llen = reslist.length;
-			for (pos = 0; pos < len; pos += 1) {
-				if (!reslist[ppos]) {
+			for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
+				if (!reslist[j]) {
 					ret = false;
 					break;
 				}

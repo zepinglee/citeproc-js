@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.156
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bugs in evaluation of match="all".
+
+- Properly split and evaluate label names in
+  locator attribute on cs:if and cs:else-if.
+
+- Special handling of "sub verbo", to treat it as
+  a single token on the locator attribute.
+
+- Correctly encode guillemet character in find-and-replace 
+  operation.
+
+==========================
 Changes in version 1.0.155
 ==========================
 
