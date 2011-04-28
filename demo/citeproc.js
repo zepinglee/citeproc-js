@@ -1673,7 +1673,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.156";
+	this.processor_version = "1.0.157";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3305,6 +3305,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		term = nodes[pos];
 		termname = this.sys.xml.getAttributeValue(term, 'name');
+		if (termname === "sub verbo") {
+			termname = "sub-verbo";
+		}
 		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
 			this.locale[lang_out].terms[termname] = {};
 		}
@@ -4124,6 +4127,9 @@ CSL.Node.label = {
 				this.strings.form = "long";
 			}
 			var func = function (state, Item, item) {
+				if (item && item.label === "sub verbo") {
+					item.label = "sub-verbo";
+				}
 				var termtxt = CSL.evaluateLabel(this, state, Item, item);
 				state.output.append(termtxt, this);
 			};
@@ -6164,7 +6170,11 @@ CSL.Attributes["@macro"] = function (state, arg) {
 	this.postponed_macro = arg;
 };
 CSL.Attributes["@term"] = function (state, arg) {
-	this.strings.term = arg;
+	if (arg === "sub verbo") {
+		this.strings.term = "sub-verbo";
+	} else {
+		this.strings.term = arg;
+	}
 };
 CSL.Attributes["@xmlns"] = function (state, arg) {};
 CSL.Attributes["@lang"] = function (state, arg) {
@@ -6492,15 +6502,14 @@ CSL.Attributes["@locator"] = function (state, arg) {
 	var func;
 	var trylabels = arg.replace("sub verbo", "sub-verbo");
 	trylabels = trylabels.split(/\s+/);
-	if (trylabels.indexOf("sub-verbo") > -1) {
-		trylabels.push("sub verbo");
-	}
 	if (["if",  "else-if"].indexOf(this.name) > -1) {
 		func = function (state, Item, item) {
 			var ret = [];
 			var label;
 			if ("undefined" === typeof item || !item.label) {
 				label = "page";
+			} else if (item.label === "sub verbo") {
+				label = "sub-verbo";
 			} else {
 				label = item.label;
 			}

@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.157
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- A more comprehensive fix for "sub verbo" -> "sub-verbo",
+  that will work with match="all" with both forms of the
+  term.
+
+
+==========================
 Changes in version 1.0.156
 ==========================
 
