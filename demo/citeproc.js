@@ -141,6 +141,7 @@ var CSL = {
 	QUOTED_REGEXP_END: /^"$/,
 	NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/,
 	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
+	ROMANESQUE_NOT_REGEXP: /[^a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/g,
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[.;:&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]$/,
 	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]+$/,
@@ -1673,7 +1674,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.157";
+	this.processor_version = "1.0.158";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2115,6 +2116,7 @@ CSL.Engine.Opt = function () {
 	this["parse-names"] = true;
 	this.citation_number_slug = false;
 	this.max_number_of_names = 0;
+	this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
 };
 CSL.Engine.Tmp = function () {
 	this.names_max = new CSL.Stack();
@@ -2338,6 +2340,92 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
 	}
 	this.registry.renumber();
 	return this.registry.getSortedIds();
+};
+CSL.Engine.prototype.getCitationLabel = function (Item) {
+	var label = "";
+	var params = this.getTrigraphParams();
+	var config = params[0];
+	var myname = this.getTerm("reference", "short", 0);
+	myname = myname.replace(".", "");
+	myname = myname.slice(0, 1).toUpperCase() + myname.slice(1);
+	for (var i = 0, ilen = CSL.CREATORS.length; i < ilen; i += 1) {
+		var n = CSL.CREATORS[i];
+		if (Item[n]) {
+			var names = Item[n];
+			if (names.length > params.length) {
+				config = params[params.length - 1];
+			} else {
+				config = params[names.length - 1];
+			}
+			for (var j = 0, jlen = names.length; j < jlen; j += 1) {
+				if (j === config.authors.length) {
+					break;
+				}
+				var name = this.transform.name(this, names[j], this.opt["locale-pri"]);
+				if (name && name.family) {
+					var myname = name.family;
+					myname = myname.replace(/^([ \'\u2019a-z]+\s+)/, "");
+				} else if (name && name.literal) {
+					var myname = name.literal;
+				}
+				var m = myname.toLowerCase().match(/^(a\s+|the\s+|an\s+)/);
+				if (m) {
+					myname = myname.slice(m[1].length);
+				}
+				myname = myname.replace(CSL.ROMANESQUE_NOT_REGEXP, "", "g");
+				if (!myname) {
+					break;
+				}
+				myname = myname.slice(0, config.authors[j]);
+				if (myname.length > 1) {
+					myname = myname.slice(0, 1).toUpperCase() + myname.slice(1).toLowerCase();
+				} else if (myname.length === 1) {
+					myname = myname.toUpperCase();
+				}
+				label += myname;
+			}
+			break;
+		}
+	}
+	var year = "0000";
+	if (Item.issued) {
+		var dp = Item.issued["date-parts"];
+		if (dp && dp[0] && dp[0][0]) {
+			year = "" + dp[0][0];
+		}
+	}
+	year = year.slice((config.year * -1));
+	var label = label + year;
+	return label;
+};
+CSL.Engine.prototype.getTrigraphParams = function () {
+	var params = [];
+	var ilst = this.opt.trigraph.split(":");
+	if (!this.opt.trigraph || this.opt.trigraph[0] !== "A") {
+		throw "Bad trigraph definition: "+this.opt.trigraph;
+	}
+	for (var i = 0, ilen = ilst.length; i < ilen; i += 1) {
+		var str = ilst[i];
+		var config = {authors:[], year:0};
+		for (var j = 0, jlen = str.length; j < jlen; j += 1) {
+			switch (str[j]) {
+			case "A":
+				config.authors.push(1);
+				break;
+			case "a":
+				config.authors[config.authors.length - 1] += 1;
+				break;
+			case "0":
+				config.year += 1;
+				break;
+			default:
+				throw "Invalid character in trigraph definition: "+this.opt.trigraph;
+				break;
+			}
+		}
+		params.push(config);
+	}
+	return params;
 };
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings, bibliography_errors;
@@ -5957,35 +6045,7 @@ CSL.Node.text = {
 					func = function (state, Item) {
 						label = Item["citation-label"];
 						if (!label) {
-							myname = state.getTerm("reference", "short", 0);
-							len = CSL.CREATORS.length;
-							for (pos = 0; pos < len; pos += 1) {
-								n = CSL.CREATORS[pos];
-								if (Item[n]) {
-									names = Item[n];
-									if (names && names.length) {
-										name = names[0];
-									}
-									if (name && name.family) {
-										myname = name.family.replace(/\s+/g, "_");
-									} else if (name && name.literal) {
-										myname = name.literal;
-										m = myname.toLowerCase().match(/^(a|the|an\s+)/, "");
-										if (m) {
-											myname = myname.slice(m[1].length);
-										}
-									}
-									break;
-								}
-							}
-							year = "0000";
-							if (Item.issued) {
-								dp = Item.issued["date-parts"];
-								if (dp && dp[0] && dp[0][0]) {
-									year = "" + dp[0][0];
-								}
-							}
-							label = myname + year;
+							label = state.getCitationLabel(Item);
 						}
 						suffix = "";
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false) {
@@ -9215,6 +9275,9 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 	return 0;
 };
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
+	if (!this.registry[id]) {
+		CSL.debug("Warning: unregistered item: itemID=("+id+"), akey=("+akey+")");
+	};
 	if (this.registry[id] && this.registry[id].disambig && this.registry[id].disambig.names) {
 		for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
 			var new_names_params = ambig_config.names[i];

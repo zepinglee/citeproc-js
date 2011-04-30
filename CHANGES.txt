@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.158
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reimplement citation-label to permit configuration
+  of the generated string. The algorithm can be controlled
+  by adjusting the "trigraph" string in citeproc.opt.trigraph.
+
+  The string consists of a series of specifiers delimited by ":",
+  which define the format for strings generated against a
+  nameset corresponding in length to the position of the
+  specifier (beginning with 1). Each specifier must begin
+  with "A", and must consist only of characters "A", "a", and "0".
+  where "A" indicates a name boundary, and "0" indicates a
+  digit in the "issued" year.
+
+
+==========================
 Changes in version 1.0.157
 ==========================
 
