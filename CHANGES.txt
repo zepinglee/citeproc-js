@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.159
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Run processor in a try/catch to prevent
+  a crash during preview from blocking
+  reconstruction of the registry.
+
+- Eliminate nesting closure that was causing
+  a non-fatal tag mismatch.
+
+- Force all-uppercase terms to lowercase
+  (a hack that really should not be necessary,
+  and may not be required with recent fixes).
+
+
+==========================
 Changes in version 1.0.158
 ==========================
 

@@ -1674,7 +1674,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.158";
+	this.processor_version = "1.0.159";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1850,6 +1850,10 @@ CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function () {
 	return this.nodeList[this.depth][1];
 };
 CSL.Engine.prototype.getTerm = function (term, form, plural, gender, loose) {
+	if (term && term.match(/[A-Z]/) && term === term.toUpperCase()) {
+		CSL.debug("Warning: term key is in uppercase form: "+term);
+		term = term.toLowerCase();
+	}
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
 	if (typeof ret === "undefined") {
 		ret = CSL.Engine.getField(CSL.STRICT, this.locale[this.opt.lang].terms, term, form, plural, gender);
@@ -2909,7 +2913,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	}
 	var ret = [];
 	if (flag === CSL.PREVIEW) {
-		ret = this.process_CitationCluster.call(this, citation.sortedItems, citation.citationID);
+		try {
+			ret = this.process_CitationCluster.call(this, citation.sortedItems, citation.citationID);
+		} catch (e) {
+			CSL.error("Error running CSL processor for preview");
+		}
 		this.registry.citationreg.citationByIndex = oldCitationList;
 		this.registry.citationreg.citationById = {};
 		for (i = 0, ilen = oldCitationList.length; i < ilen; i += 1) {
@@ -4179,10 +4187,6 @@ CSL.Node.key = {
 			}
 		}
 		var end_key = new CSL.Token("key", CSL.END);
-		func = function (state, Item) {
-			state.output.closeLevel("empty");
-		};
-		end_key.execs.push(func);
 		func = function (state, Item) {
 			var keystring = state.output.string(state, state.output.queue);
 			if ("" === keystring) {
