@@ -262,11 +262,13 @@ CSL.Node.key = {
 		// Do not close the level.
 		var end_key = new CSL.Token("key", CSL.END);
 
-		// initialize output queue
-		func = function (state, Item) {
-			state.output.closeLevel("empty");
-		};
-		end_key.execs.push(func);
+		// Eliminated at revision 1.0.159.
+		// Was causing non-fatal error "wanted empty but found group".
+		// Possible contributor to weird "PAGES" bug?
+		//func = function (state, Item) {
+			//state.output.closeLevel("empty");
+		//};
+		//end_key.execs.push(func);
 
 		// store key for use
 		func = function (state, Item) {
