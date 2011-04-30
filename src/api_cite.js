@@ -216,6 +216,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		}
 		//SNIP-END
 	}
+
 	this.tmp.taintedItemIDs = {};
 	this.tmp.taintedCitationIDs = {};
 	var sortedItems = [];
@@ -562,6 +563,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			}
 		}
 	}
+
 	var ret = [];
 	if (flag === CSL.PREVIEW) {
 		// If previewing, return only a rendered string
@@ -570,8 +572,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 			CSL.debug("****** start run processor *********");
 		}
 		//SNIP-END
-		ret = this.process_CitationCluster.call(this, citation.sortedItems, citation.citationID);
-
+		try {
+			ret = this.process_CitationCluster.call(this, citation.sortedItems, citation.citationID);
+		} catch (e) {
+			CSL.error("Error running CSL processor for preview");
+		}
+			
 		//SNIP-START
 		if (this.debug) {
 			CSL.debug("****** end run processor *********");
