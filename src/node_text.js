@@ -166,38 +166,7 @@ CSL.Node.text = {
 					func = function (state, Item) {
 						label = Item["citation-label"];
 						if (!label) {
-							//
-							// A shot in the dark
-							//
-							myname = state.getTerm("reference", "short", 0);
-							len = CSL.CREATORS.length;
-							for (pos = 0; pos < len; pos += 1) {
-								n = CSL.CREATORS[pos];
-								if (Item[n]) {
-									names = Item[n];
-									if (names && names.length) {
-										name = names[0];
-									}
-									if (name && name.family) {
-										myname = name.family.replace(/\s+/g, "_");
-									} else if (name && name.literal) {
-										myname = name.literal;
-										m = myname.toLowerCase().match(/^(a|the|an\s+)/, "");
-										if (m) {
-											myname = myname.slice(m[1].length);
-										}
-									}
-									break;
-								}
-							}
-							year = "0000";
-							if (Item.issued) {
-								dp = Item.issued["date-parts"];
-								if (dp && dp[0] && dp[0][0]) {
-									year = "" + dp[0][0];
-								}
-							}
-							label = myname + year;
+							label = state.getCitationLabel(Item);
 						}
 						suffix = "";
 						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false) {

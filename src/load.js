@@ -208,6 +208,7 @@ var CSL = {
 	// hard stuff, but if it breaks, that's what to do.
 	NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f])([a-zA-Z\u0080-\u017f\u0400-\u052f]*|)/,
 	ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
+	ROMANESQUE_NOT_REGEXP: /[^a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/g,
 	STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]/,
 	ENDSWITH_ROMANESQUE_REGEXP: /[.;:&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]$/,
 	ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe]+$/,
@@ -431,6 +432,9 @@ if (!CSL.DateParser) {
 // jslint OK
 if (!CSL.Engine) {
 	load("./src/build.js");
+}
+if (!CSL.Engine.prototype.getCitationLabel) {
+	load("./src/util_citationlabel.js");
 }
 if (!CSL.Engine.prototype.setOutputFormat) {
 	load("./src/api_control.js");
