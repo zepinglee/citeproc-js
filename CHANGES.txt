@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.160
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Make sorting work against the citation-label
+  virtual variable.
+
+
+==========================
 Changes in version 1.0.159
 ==========================
 

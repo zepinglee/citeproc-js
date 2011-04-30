@@ -1674,7 +1674,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.159";
+	this.processor_version = "1.0.160";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4097,6 +4097,11 @@ CSL.Node.key = {
 						}
 						state.output.append(num, this);
 					};
+				} else if (variable === "citation-label") {
+					func = function (state, Item) {
+						var trigraph = state.getCitationLabel(Item);
+						state.output.append(trigraph, this);
+					}
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					func = function (state, Item) {
 						var dp, elem, value, e, yr, prefix, i, ilen, num;
