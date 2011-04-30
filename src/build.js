@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.158";
+	this.processor_version = "1.0.159";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -363,6 +363,10 @@ CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function () {
 };
 
 CSL.Engine.prototype.getTerm = function (term, form, plural, gender, loose) {
+	if (term && term.match(/[A-Z]/) && term === term.toUpperCase()) {
+		CSL.debug("Warning: term key is in uppercase form: "+term);
+		term = term.toLowerCase();
+	}
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
 	if (typeof ret === "undefined") {
 		ret = CSL.Engine.getField(CSL.STRICT, this.locale[this.opt.lang].terms, term, form, plural, gender);
