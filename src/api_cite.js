@@ -1063,9 +1063,8 @@ CSL.citeStart = function (Item, item) {
 	this.bibliography_sort.keys = [];
 	this.citation_sort.keys = [];
 
-	this.tmp.count_offset_characters = false;
-	this.tmp.offset_characters = 0;
 	this.tmp.has_done_year_suffix = false;
+	// XXX Is this stuff needed anymore?
 	CSL.Util.Names.initNameSlices(this);
 	this.tmp.last_cite_locale = false;
 	// SAVE PARAMETERS HERE, IF APPROPRIATE
@@ -1076,7 +1075,6 @@ CSL.citeStart = function (Item, item) {
 };
 
 CSL.citeEnd = function (Item, item) {
-
 	// RESTORE PARAMETERS IF APPROPRIATE
 	if (this.tmp.disambig_restore) {
 		this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names;
@@ -1099,9 +1097,6 @@ CSL.citeEnd = function (Item, item) {
 	//this.tmp.disambig_restore = false;
 	this.tmp.disambig_request = false;
 
-	if (!this.tmp.suppress_decorations && this.tmp.offset_characters) {
-		this.registry.registry[Item.id].offset = this.tmp.offset_characters;
-	}
 	this.tmp.cite_locales.push(this.tmp.last_cite_locale);
 };
 
