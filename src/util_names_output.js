@@ -327,9 +327,13 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			// Avoid running this on every call to getAmbiguousCite()?
 			mystr = "";
 			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			var oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
 			}
+			// Avoid side-effects on character counting: we're only interested
+			// in the final rendering.
+			this.state.tmp.offset_characters = oldchars;
 			this.state.registry.authorstrings[this.Item.id] = mystr;
 		} else if (!this.state.tmp.just_looking
 			&& !this.state.tmp.suppress_decorations) {
@@ -337,6 +341,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			// XX1 print("RENDER: "+this.Item.id);
 			mystr = "";
 			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			var oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
 			}
@@ -344,11 +349,17 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			
 				// XX1 print("    CUT!");
 				this.state.tmp.name_node.blobs.pop();
+				// If popped, avoid side-effects on character counting: we're only interested
+				// in things that actually render.
+				this.state.tmp.offset_characters = oldchars;
 			} else {
 				// XX1 print("remembering: "+mystr);
 				this.state.tmp.last_primary_names_string = mystr;
 				if (this.item && this.item["suppress-author"]) {
 					this.state.tmp.name_node.blobs.pop();
+					// If popped, avoid side-effects on character counting: we're only interested
+					// in things that actually render.
+					this.state.tmp.offset_characters = oldchars;
 				}
 				// Arcane and probably unnecessarily complicated
 				this.state.tmp.have_collapsed = false;
