@@ -115,6 +115,19 @@ CSL.NameOutput.prototype.outputNames = function () {
 	var i, ilen;
 	var variables = this.variables;
 	this.variable_offset = {};
+
+	if (this.family) {
+		this.family_decor = CSL.Util.cloneToken(this.family);
+		this.family_decor.strings.prefix = "";
+		this.family_decor.strings.suffix = "";
+	}
+
+	if (this.given) {
+		this.given_decor = CSL.Util.cloneToken(this.given);
+		this.given_decor.strings.prefix = "";
+		this.given_decor.strings.suffix = "";
+	}
+
 	if (this.debug) {
 		print("(2)");
 	}
