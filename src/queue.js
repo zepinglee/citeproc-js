@@ -74,13 +74,16 @@ CSL.Output.Queue.prototype.pop = function () {
 };
 
 CSL.Output.Queue.prototype.getToken = function (name) {
+	CSL.debug("XXX loc [1]");
 	var ret = this.formats.value()[name];
 	return ret;
 };
 
 CSL.Output.Queue.prototype.mergeTokenStrings = function (base, modifier) {
 	var base_token, modifier_token, ret, key;
+	CSL.debug("XXX loc [2]");
 	base_token = this.formats.value()[base];
+	CSL.debug("XXX loc [3]");
 	modifier_token = this.formats.value()[modifier];
 	ret = base_token;
 	if (modifier_token) {
@@ -110,6 +113,7 @@ CSL.Output.Queue.prototype.addToken = function (name, modifier, token) {
 	var newtok, attr;
 	newtok = new CSL.Token("output");
 	if ("string" === typeof token) {
+	CSL.debug("XXX loc [4]");
 		token = this.formats.value()[token];
 	}
 	if (token && token.strings) {
@@ -124,8 +128,12 @@ CSL.Output.Queue.prototype.addToken = function (name, modifier, token) {
 	if ("string" === typeof modifier) {
 		newtok.strings.delimiter = modifier;
 	}
+	CSL.debug("XXX loc [5]");
 	this.formats.value()[name] = newtok;
 };
+
+var TESTINGTHING = {};
+TESTINGTHING.counter = 0;
 
 //
 // newFormat adds a new bundle of formatting tokens to
@@ -134,12 +142,16 @@ CSL.Output.Queue.prototype.pushFormats = function (tokenstore) {
 	if (!tokenstore) {
 		tokenstore = {};
 	}
+	CSL.debug("XXX pushFormats() ["+TESTINGTHING.counter+"]");
+	TESTINGTHING.counter += 1;
 	tokenstore.empty = this.empty;
 	this.formats.push(tokenstore);
 };
 
 
 CSL.Output.Queue.prototype.popFormats = function (tokenstore) {
+	TESTINGTHING.counter += 1;
+	CSL.debug("XXX popFormats() ["+TESTINGTHING.counter+"]");
 	this.formats.pop();
 };
 
@@ -166,14 +178,19 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 		// delimiter, prefix, suffix, decorations from token
 		blob = new CSL.Blob(token);
 	} else if ("undefined" === typeof token) {
+	CSL.debug("XXX loc [6]");
 		blob = new CSL.Blob(this.formats.value().empty, false, "empty");
 	} else {
-		if (!this.formats.value()[token]) {
+		CSL.debug("XXX loc [7]");
+		if (!this.formats.value() || !this.formats.value()[token]) {
 			throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
 		}
 		// delimiter, prefix, suffix, decorations from token
+	CSL.debug("XXX loc [8]");
 		blob = new CSL.Blob(this.formats.value()[token], false, token);
 	}
+	// XXX This is nuts, no? Should surely be counting only the characters
+	// and affixes in the first top-level blob for a cite.
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
@@ -238,11 +255,13 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	}
 	blob = false;
 	if (!tokname) {
+	CSL.debug("XXX loc [9]");
 		token = this.formats.value().empty;
 	} else if (tokname === "literal") {
 		token = true;
 		useblob = false;
 	} else if ("string" === typeof tokname) {
+	CSL.debug("XXX loc [10]");
 		token = this.formats.value()[tokname];
 	} else {
 		token = tokname;
@@ -271,6 +290,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		this.state.tmp.term_predecessor = true;
 	}
 	blob = new CSL.Blob(token, str);
+	// XXX Why are we doing this counting twice? And why isn't the counting
+	// limited to bibliographies? This could be much cleaner.
 	if (this.state.tmp.count_offset_characters && blob.strings.prefix) {
 		this.state.tmp.offset_characters += blob.strings.prefix.length;
 	}
@@ -285,13 +306,6 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	// XXXXX: Interface to this function needs cleaning up.
 	// The str variable is ignored if blob is given, and blob
 	// must contain the string to be processed.  Ugly.
-	//CSL.debug("str:"+str.length);
-	//CSL.debug("blob:"+blob);
-	//CSL.debug("tokname:"+tokname);
-	//
-	// <Dennis Hopper impersonation>
-	// XXXXX: This is, like, too messed up for _words_, man.
-	// </Dennis Hopper impersonation>
 	//
 	if (this.state.tmp.count_offset_characters) {
 		if ("string" === typeof str) {
@@ -299,13 +313,17 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 			// XXXXX: for all this offset stuff, need to strip affixes
 			// before measuring; they may contain markup tags.
 			//
+			CSL.debug("XXX offset[A] before");
 			this.state.tmp.offset_characters += blob.strings.prefix.length;
 			this.state.tmp.offset_characters += blob.strings.suffix.length;
 			this.state.tmp.offset_characters += blob.blobs.length;
-		} else if ("undefined" !== str.num) {
+			CSL.debug("XXX    offset[A] after");
+		} else if ("undefined" !== typeof str.num) {
+			CSL.debug("XXX offset[B] before");
 			this.state.tmp.offset_characters += str.strings.prefix.length;
 			this.state.tmp.offset_characters += str.strings.suffix.length;
 			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
+			CSL.debug("XXX    offset[B] after");
 		}
 	}
 	//

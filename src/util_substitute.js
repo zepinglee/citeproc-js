@@ -91,6 +91,7 @@ CSL.Util.substituteStart = function (state, target) {
 				if (!state.tmp.render_seen) {
 					state.output.startTag("bib_first", bib_first);
 					// XXX: this will go away
+					Zotero.debug("XXX HELLO, OPENING!! ++++++++++++++++++++++++++++++++++++ "+state.tmp.offset_characters);
 					state.tmp.count_offset_characters = true;
 					// this will not
 					state.output.calculate_offset = true;
@@ -152,6 +153,7 @@ CSL.Util.substituteEnd = function (state, target) {
 	var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, str;
 	state.build.render_nesting_level += -1;
 	if (state.build.render_nesting_level === 0) {
+		CSL.debug("XXX --> "+state.build.cls+" "+state.build.area+" "+state.bibliography.opt["second-field-align"]);
 		if (state.build.cls) {
 			func = function (state, Item) {
 				state.output.endTag("bib_first");
@@ -162,8 +164,7 @@ CSL.Util.substituteEnd = function (state, target) {
 			};
 			this.execs.push(func);
 			state.build.cls = false;
-		}
-		if (state.build.area === "bibliography" && state.bibliography.opt["second-field-align"]) {
+		} else if (state.build.area === "bibliography" && state.bibliography.opt["second-field-align"]) {
 			bib_first_end = new CSL.Token("group", CSL.END);
 			// first func end
 			func = function (state, Item) {
@@ -171,6 +172,7 @@ CSL.Util.substituteEnd = function (state, target) {
 					state.output.endTag(); // closes bib_first
 					// XXX: this will go away
 					state.tmp.count_offset_characters = false;
+					Zotero.debug("XXX HELLO, CLOSING!! ++++++++++++++++++++++++++++++++++++"+state.tmp.offset_characters);
 					// this will not
 					state.output.calculate_offset = false;
 				}

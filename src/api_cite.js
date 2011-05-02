@@ -575,7 +575,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 		try {
 			ret = this.process_CitationCluster.call(this, citation.sortedItems, citation.citationID);
 		} catch (e) {
-			CSL.error("Error running CSL processor for preview");
+			CSL.error("Error running CSL processor for preview: "+e);
 		}
 			
 		//SNIP-START
