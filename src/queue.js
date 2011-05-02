@@ -190,21 +190,6 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 		blob = new CSL.Blob(this.formats.value()[token], false, token);
 	}
 	curr = this.current.value();
-	has_ephemeral = false;
-	for (x in this.state.tmp.names_cut.variable) {
-		if (this.state.tmp.names_cut.variable.hasOwnProperty(x)) {
-			has_ephemeral = x;
-			break;
-		}
-	}
-	// can only do this for one variable
-	if (ephemeral && (!has_ephemeral || ephemeral === has_ephemeral)) {
-		if (!this.state.tmp.names_cut.variable[ephemeral]) {
-			this.state.tmp.names_cut.variable[ephemeral] = [];
-			this.state.tmp.names_cut.used = ephemeral;
-		}
-		this.state.tmp.names_cut.variable[ephemeral].push([curr, curr.blobs.length]);
-	}
 	curr.push(blob);
 	this.current.push(blob);
 };

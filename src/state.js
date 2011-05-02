@@ -219,7 +219,6 @@ CSL.Engine.Tmp = function () {
 	// and the closing token.
 	this.delimiter = new CSL.Stack("", CSL.LITERAL);
 	//
-	this.names_cut = {};
 	// Used for conditional locale switching.
 	this.cite_locales = [];
 	this.cite_affixes = false;

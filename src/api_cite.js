@@ -1064,8 +1064,6 @@ CSL.citeStart = function (Item, item) {
 	this.citation_sort.keys = [];
 
 	this.tmp.has_done_year_suffix = false;
-	// XXX Is this stuff needed anymore?
-	CSL.Util.Names.initNameSlices(this);
 	this.tmp.last_cite_locale = false;
 	// SAVE PARAMETERS HERE, IF APPROPRIATE
 	// (promiscuous addition of global parameters => death by a thousand cuts)
