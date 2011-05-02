@@ -1674,7 +1674,7 @@ CSL.DateParser = function (txt) {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.160";
+	this.processor_version = "1.0.161";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4437,6 +4437,16 @@ CSL.NameOutput.prototype.outputNames = function () {
 	var i, ilen;
 	var variables = this.variables;
 	this.variable_offset = {};
+	if (this.family) {
+		this.family_decor = CSL.Util.cloneToken(this.family);
+		this.family_decor.strings.prefix = "";
+		this.family_decor.strings.suffix = "";
+	}
+	if (this.given) {
+		this.given_decor = CSL.Util.cloneToken(this.given);
+		this.given_decor.strings.prefix = "";
+		this.given_decor.strings.suffix = "";
+	}
 	if (this.debug) {
 		print("(2)");
 	}
@@ -5333,11 +5343,27 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	} else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0)) {
 		if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
 			second = this._join([given, dropping_particle, non_dropping_particle], " ");
+			if (this.given) {
+				second.strings.prefix = this.given.strings.prefix;
+				second.strings.suffix = this.given.strings.suffix;
+			}
+			if (family && this.family) {
+				family.strings.prefix = this.family.strings.prefix;
+				family.strings.suffix = this.family.strings.suffix;
+			}
 			merged = this._join([family, second], sort_sep);
 			blob = this._join([merged, suffix], sort_sep);
 		} else {
 			first = this._join([non_dropping_particle, family], " ");
+			if (this.family) {
+				first.strings.prefix = this.family.strings.prefix;
+				first.strings.suffix = this.family.strings.suffix;
+			}
 			second = this._join([given, dropping_particle], " ");
+			if (this.given) {
+				second.strings.prefix = this.given.strings.prefix;
+				second.strings.suffix = this.given.strings.suffix;
+			}
 			merged = this._join([first, second], sort_sep);
 			blob = this._join([merged, suffix], sort_sep);
 		}
@@ -5351,6 +5377,14 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			}
 		}
 		second = this._join([dropping_particle, non_dropping_particle, family], " ");
+		if (this.family) {
+			second.strings.prefix = this.family.strings.prefix;
+			second.strings.suffix = this.family.strings.suffix;
+		}
+		if (this.given) {
+			given.strings.prefix = this.given.strings.prefix;
+			given.strings.suffix = this.given.strings.suffix;
+		}
 		merged = this._join([given, second], " ");
 		blob = this._join([merged, suffix], suffix_sep);
 	}
@@ -5379,19 +5413,19 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 	return name;
 };
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
-	if (this.state.output.append(name["non-dropping-particle"], this.family, true)) {
+	if (this.state.output.append(name["non-dropping-particle"], this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
 };
 CSL.NameOutput.prototype._droppingParticle = function (name) {
-	if (this.state.output.append(name["dropping-particle"], this.family, true)) {
+	if (this.state.output.append(name["dropping-particle"], this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
 };
 CSL.NameOutput.prototype._familyName = function (name) {
-	if (this.state.output.append(name.family, this.family, true)) {
+	if (this.state.output.append(name.family, this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
@@ -5403,7 +5437,7 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 	} else {
 		name.given = CSL.Util.Names.unInitialize(this.state, name.given);
 	}
-	if (this.state.output.append(name.given, this.given, true)) {
+	if (this.state.output.append(name.given, this.given_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
@@ -5473,7 +5507,7 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		noparse = false;
 	}
 	if (!name["non-dropping-particle"] && name.family && !noparse) {
-		m = name.family.match(/^([ \'\u2019a-z]+\s+)/);
+		m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[\s+|\'\u2019]|[DVL][^ ]\s+|[DVL][^ ][^ ]\s+))/);
 		if (m) {
 			name.family = name.family.slice(m[1].length);
 			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
@@ -5491,10 +5525,11 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		}
 	}
 	if (!name["dropping-particle"] && name.given) {
-		m = name.given.match(/^(\s+[ \'\u2019a-z]*[a-z])$/);
+		m = name.given.match(/(\s+)([a-z][ \'\u2019a-z]*)$/);
 		if (m) {
-			name.given = name.given.slice(0, m[1].length * -1);
-			name["dropping-particle"] = m[2].replace(/^\s+/, "");
+			name.given = name.given.slice(0, (m[1].length + m[2].length) * -1);
+			name["dropping-particle"] = m[2];
+			print(name["dropping-particle"]);
 		}
 	}
 };
