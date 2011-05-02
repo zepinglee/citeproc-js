@@ -189,14 +189,6 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 	CSL.debug("XXX loc [8]");
 		blob = new CSL.Blob(this.formats.value()[token], false, token);
 	}
-	// XXX This is nuts, no? Should surely be counting only the characters
-	// and affixes in the first top-level blob for a cite.
-	if (this.state.tmp.count_offset_characters && blob.strings.prefix.length) {
-		this.state.tmp.offset_characters += blob.strings.prefix.length;
-	}
-	if (this.state.tmp.count_offset_characters && blob.strings.suffix.length) {
-		this.state.tmp.offset_characters += blob.strings.suffix.length;
-	}
 	curr = this.current.value();
 	has_ephemeral = false;
 	for (x in this.state.tmp.names_cut.variable) {
@@ -290,41 +282,9 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 		this.state.tmp.term_predecessor = true;
 	}
 	blob = new CSL.Blob(token, str);
-	// XXX Why are we doing this counting twice? And why isn't the counting
-	// limited to bibliographies? This could be much cleaner.
-	if (this.state.tmp.count_offset_characters && blob.strings.prefix) {
-		this.state.tmp.offset_characters += blob.strings.prefix.length;
-	}
-	if (this.state.tmp.count_offset_characters && blob.strings.suffix) {
-		this.state.tmp.offset_characters += blob.strings.suffix.length;
-	}
 	curr = this.current.value();
 	if ("string" === typeof blob.blobs) {
 		this.state.tmp.term_predecessor = true;
-	}
-	//
-	// XXXXX: Interface to this function needs cleaning up.
-	// The str variable is ignored if blob is given, and blob
-	// must contain the string to be processed.  Ugly.
-	//
-	if (this.state.tmp.count_offset_characters) {
-		if ("string" === typeof str) {
-			//
-			// XXXXX: for all this offset stuff, need to strip affixes
-			// before measuring; they may contain markup tags.
-			//
-			CSL.debug("XXX offset[A] before");
-			this.state.tmp.offset_characters += blob.strings.prefix.length;
-			this.state.tmp.offset_characters += blob.strings.suffix.length;
-			this.state.tmp.offset_characters += blob.blobs.length;
-			CSL.debug("XXX    offset[A] after");
-		} else if ("undefined" !== typeof str.num) {
-			CSL.debug("XXX offset[B] before");
-			this.state.tmp.offset_characters += str.strings.prefix.length;
-			this.state.tmp.offset_characters += str.strings.suffix.length;
-			this.state.tmp.offset_characters += str.formatter.format(str.num).length;
-			CSL.debug("XXX    offset[B] after");
-		}
 	}
 	//
 	// Caution: The parallel detection machinery will blow up if tracking
@@ -377,6 +337,10 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	var blob_delimiter = "";
 	if (blob) {
 		blob_delimiter = blob.strings.delimiter;
+	} else {
+		//print("=== Setting false to start ===");
+		state.tmp.count_offset_characters = false;
+		state.tmp.offset_characters = 0;
 	}
 
 	if (blob && blob.new_locale) {
@@ -387,17 +351,20 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	for (i = 0, ilen = blobs.length; i < ilen; i += 1) {
 		blobjr = blobs[i];
 
-		if ("string" === typeof blobjr.blobs) {
+		if (blobjr.strings.first_blob) {
+			// Being the Item.id of the the entry being rendered.
+			//print("  -- turning on counting");
+			state.tmp.count_offset_characters = blobjr.strings.first_blob;
+		}
 
+		if ("string" === typeof blobjr.blobs) {
 			if ("number" === typeof blobjr.num) {
 				ret.push(blobjr);
 			} else if (blobjr.blobs) {
 				// (skips empty strings)
 				//b = txt_esc(blobjr.blobs);
 				b = blobjr.blobs;
-
-				use_suffix = blobjr.strings.suffix;
-				use_prefix = blobjr.strings.prefix;
+				var blen = b.length;
 
 				if (!state.tmp.suppress_decorations) {
 					for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
@@ -414,8 +381,11 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 				// to produce no output if they are found to be
 				// empty.
 				if (b && b.length) {
-					b = txt_esc(blobjr.strings.prefix) + b + txt_esc(use_suffix);
+					b = txt_esc(blobjr.strings.prefix) + b + txt_esc(blobjr.strings.suffix);
 					ret.push(b);
+					if (state.tmp.count_offset_characters) {
+						state.tmp.offset_characters += (blen + blobjr.strings.suffix.length + blobjr.strings.prefix.length);
+					}
 				}
 			}
 		} else if (blobjr.blobs.length) {
@@ -436,8 +406,11 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			//	}
 			//}
 			ret = ret.concat(addtoret);
-		} else {
-			continue;
+		}
+		if (blobjr.strings.first_blob) {
+			// The Item.id of the entry being rendered.
+			state.registry.registry[state.tmp.count_offset_characters].offset = state.tmp.offset_characters;
+			state.tmp.count_offset_characters = false;
 		}
 	}
 	var span_split = 0;
@@ -448,6 +421,13 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	}
 	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
 		span_split = ret.length;
+	}
+	var mytype = "string"
+	for (var q = 0, qlen = ret.length; q < qlen; q += 1) {
+		if (typeof ret[q] !== "string") {
+			mytype = typeof ret[q];
+			break;
+		}
 	}
 	var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter);
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
@@ -468,6 +448,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		if (b && b.length) {
 			use_prefix = blob.strings.prefix;
 			b = txt_esc(use_prefix) + b + txt_esc(use_suffix);
+			if (state.tmp.count_offset_characters) {
+				state.tmp.offset_characters += (use_prefix.length + use_suffix.length);
+			}
 		}
 		blobs_start = b;
 		if (!state.tmp.suppress_decorations) {
@@ -562,8 +545,13 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 		if (blob && "string" === typeof blob) {
 			ret += txt_esc(use_delim);
 			ret += blob;
+			if (state.tmp.count_offset_characters) {
+				//state.tmp.offset_characters += (use_delim.length + blob.length);
+				state.tmp.offset_characters += (use_delim.length);
+			}
 		} else if (blob.status !== CSL.SUPPRESS) {
 			str = blob.formatter.format(blob.num, blob.gender);
+			var strlen = str.length;
 			if (blob.strings["text-case"]) {
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
 			}
@@ -578,16 +566,21 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 				}
 			}
 			str = blob.strings.prefix + str + blob.strings.suffix;
+			var addme = "";
 			if (blob.status === CSL.END) {
-				ret += blob.range_prefix;
+				addme = blob.range_prefix;
 			} else if (blob.status === CSL.SUCCESSOR) {
-				ret += blob.successor_prefix;
+				addme = blob.successor_prefix;
 			} else if (blob.status === CSL.START) {
-				ret += "";
+				addme = "";
 			} else if (blob.status === CSL.SEEN) {
-				ret += blob.splice_prefix;
+				addme = blob.splice_prefix;
 			}
+			ret += addme;
 			ret += str;
+			if (state.tmp.count_offset_characters) {
+				state.tmp.offset_characters += (addme.length + blob.strings.prefix.length + strlen + blob.strings.suffix.length);
+			}
 		}
 	}
 	return ret;
