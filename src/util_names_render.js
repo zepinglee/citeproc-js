@@ -158,10 +158,12 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	var romanesque = name.family.match(CSL.ROMANESQUE_REGEXP);
 	var blob, merged, first, second;
 	if (!romanesque) {
+		// XXX handle affixes for given and family
 		blob = this._join([non_dropping_particle, family, given], "");
 	} else if (name["static-ordering"]) { // entry likes sort order
 		blob = this._join([non_dropping_particle, family, given], " ");
 	} else if (this.state.tmp.sort_key_flag) {
+		// ok with no affixes here
 		if (this.state.opt["demote-non-dropping-particle"] === "never") {
 			first = this._join([non_dropping_particle, family, dropping_particle], " ");
 			merged = this._join([first, given], sort_sep);
@@ -178,12 +180,30 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
 			// Drop non-dropping particle
 			second = this._join([given, dropping_particle, non_dropping_particle], " ");
+			if (this.given) {
+				second.strings.prefix = this.given.strings.prefix;
+				second.strings.suffix = this.given.strings.suffix;
+			}
+			if (family && this.family) {
+				family.strings.prefix = this.family.strings.prefix;
+				family.strings.suffix = this.family.strings.suffix;
+			}
 			merged = this._join([family, second], sort_sep);
 			blob = this._join([merged, suffix], sort_sep);
 		} else {
 			// Don't drop particle.
 			first = this._join([non_dropping_particle, family], " ");
+			if (this.family) {
+				first.strings.prefix = this.family.strings.prefix;
+				first.strings.suffix = this.family.strings.suffix;
+			}
+
 			second = this._join([given, dropping_particle], " ");
+			if (this.given) {
+				second.strings.prefix = this.given.strings.prefix;
+				second.strings.suffix = this.given.strings.suffix;
+			}
+
 			merged = this._join([first, second], sort_sep);
 			blob = this._join([merged, suffix], sort_sep);
 		}
@@ -197,6 +217,14 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			}
 		}
 		second = this._join([dropping_particle, non_dropping_particle, family], " ");
+		if (this.family) {
+			second.strings.prefix = this.family.strings.prefix;
+			second.strings.suffix = this.family.strings.suffix;
+		}
+		if (this.given) {
+			given.strings.prefix = this.given.strings.prefix;
+			given.strings.suffix = this.given.strings.suffix;
+		}
 		merged = this._join([given, second], " ");
 		blob = this._join([merged, suffix], suffix_sep);
 	}
@@ -237,37 +265,22 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 };
 
 
-/*
-				len = CSL.DECORABLE_NAME_PARTS.length;
-				for (pos = 0; pos < len; pos += 1) {
-					namepart = CSL.DECORABLE_NAME_PARTS[pos];
-					if (!state.output.getToken(namepart)) {
-						state.output.addToken(namepart);
-					}
-				}
-				state.output.addToken("dropping-particle", false, state.output.getToken("family"));
-				state.output.addToken("non-dropping-particle", false, state.output.getToken("family"));
-				state.output.addToken("suffix", false, state.output.getToken("family"));
-				state.output.getToken("suffix").decorations = [];
-
-*/
-
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
-	if (this.state.output.append(name["non-dropping-particle"], this.family, true)) {
+	if (this.state.output.append(name["non-dropping-particle"], this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
 };
 
 CSL.NameOutput.prototype._droppingParticle = function (name) {
-	if (this.state.output.append(name["dropping-particle"], this.family, true)) {
+	if (this.state.output.append(name["dropping-particle"], this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
 };
 
 CSL.NameOutput.prototype._familyName = function (name) {
-	if (this.state.output.append(name.family, this.family, true)) {
+	if (this.state.output.append(name.family, this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
@@ -282,7 +295,7 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 		name.given = CSL.Util.Names.unInitialize(this.state, name.given);
 	}
 
-	if (this.state.output.append(name.given, this.given, true)) {
+	if (this.state.output.append(name.given, this.given_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
@@ -341,11 +354,6 @@ CSL.NameOutput.prototype._parseName = function (name) {
 	if (!name["parse-names"] && "undefined" !== typeof name["parse-names"]) {
 		return name;
 	}
-	// ???
-	//if (this.state.opt["parse-names"]
-	//	&& name["parse-names"] !== 0) {
-	//	state.parseName(name);
-	//}
 	if (name.family && !name.given && name.isInstitution) {
 		name.literal = name.family;
 		name.family = undefined;
@@ -361,7 +369,7 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		noparse = false;
 	}
 	if (!name["non-dropping-particle"] && name.family && !noparse) {
-		m = name.family.match(/^([ \'\u2019a-z]+\s+)/);
+		m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[\s+|\'\u2019]|[DVL][^ ]\s+|[DVL][^ ][^ ]\s+))/);
 		if (m) {
 			name.family = name.family.slice(m[1].length);
 			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
@@ -380,42 +388,10 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		}
 	}
 	if (!name["dropping-particle"] && name.given) {
-		m = name.given.match(/^(\s+[ \'\u2019a-z]*[a-z])$/);
+		m = name.given.match(/(\s+)([a-z][ \'\u2019a-z]*)$/);
 		if (m) {
-			name.given = name.given.slice(0, m[1].length * -1);
-			name["dropping-particle"] = m[2].replace(/^\s+/, "");
+			name.given = name.given.slice(0, (m[1].length + m[2].length) * -1);
+			name["dropping-particle"] = m[2];
 		}
 	}
 };
-
-// Institution rendering
-/*
-	state.output.openLevel("institution");
-	len = display_names.length;
-	for (pos = 0; pos < len; pos += 1) {
-		name = display_names[pos];
-		institution = state.output.getToken("institution");
-		value = name.literal;
-		if (state.transform.institution[value]) {
-			token_long = state.output.mergeTokenStrings("institution-long", "institution-if-short");
-		} else {
-			token_long = state.output.getToken("institution-long");
-		}
-		token_short = state.output.getToken("institution-short");
-		parts = institution.strings["institution-parts"];
-		if ("short" === parts) {
-			state.transform.output(state, value, token_short, token_long, true);
-		} else if ("short-long" === parts) {
-			state.transform.output(state, value, token_short);
-			state.output.append(value, token_long);
-		} else if ("long-short" === parts) {
-			state.output.append(value, token_long);
-			state.transform.output(state, value, token_short);
-		} else {
-			state.output.append(value, token_long);
-		}
-	}
-	// institution
-	state.output.closeLevel();
-*/
-
