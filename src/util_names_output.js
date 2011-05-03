@@ -50,9 +50,11 @@
 
 CSL.NameOutput = function(state, Item, item, variables) {
 	this.debug = false;
+	//SNIP-START
 	if (this.debug) {
 		print("(1)");
 	}
+	//SNIP-END
 	this.state = state;
 	this.Item = Item;
 	this.item = item;
@@ -128,68 +130,92 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.given_decor.strings.suffix = "";
 	}
 
+	//SNIP-START
 	if (this.debug) {
 		print("(2)");
 	}
+	//SNIP-END
 	// util_names_etalconfig.js
 	this.getEtAlConfig();
+	//SNIP-START
 	if (this.debug) {
 		print("(3)");
 	}
+	//SNIP-END
 	// util_names_divide.js
 	this.divideAndTransliterateNames();
+	//SNIP-START
 	if (this.debug) {
 		print("(4)");
 	}
+	//SNIP-END
 	// util_names_truncate.js
 	this.truncatePersonalNameLists();
+	//SNIP-START
 	if (this.debug) {
 		print("(5)");
 	}
+	//SNIP-END
 	// util_names_constraints.js
 	this.constrainNames();
+	//SNIP-START
 	if (this.debug) {
 		print("(6)");
 	}
+	//SNIP-END
 	// form="count"
 	if (this.name.strings.form === "count") {
 		this.state.output.append(this.names_count, "empty");
 		return;
 	}
+	//SNIP-START
 	if (this.debug) {
 		print("(7)");
 	}
+	//SNIP-END
 	// util_names_disambig.js
 	this.disambigNames();
+	//SNIP-START
 	if (this.debug) {
 		print("(8)");
 	}
+	//SNIP-END
 	this.setEtAlParameters();
+	//SNIP-START
 	if (this.debug) {
 		print("(9)");
 	}
+	//SNIP-END
 	this.setCommonTerm();
+	//SNIP-START
 	if (this.debug) {
 		print("(10)");
 	}
+	//SNIP-END
 	this.renderAllNames();
+	//SNIP-START
 	if (this.debug) {
 		print("(11)");
 	}
+	//SNIP-END
 	var blob_list = [];
 	for (i = 0, ilen = variables.length; i < ilen; i += 1) {
 		var v = variables[i];
 		var institution_sets = [];
 		var institutions = false;
+		//SNIP-START
 		if (this.debug) {
 			print("(11a)");
 		}
+		//SNIP-END
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
 			institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
 		}
+		//SNIP-START
 		if (this.debug) {
 			print("(11b)");
 		}
+		//SNIP-END
 		if (this.institutions[v].length) {
 			var pos = this.nameset_base + this.variable_offset[v];
 			if (this.freeters[v].length) {
@@ -197,65 +223,87 @@ CSL.NameOutput.prototype.outputNames = function () {
 			}
 			institutions = this.joinInstitutionSets(institution_sets, pos);
 		}
+		//SNIP-START
 		if (this.debug) {
 			print("(11c)");
 		}
+		//SNIP-END
 		var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
+		//SNIP-START
 		if (this.debug) {
 			print("(11d)");
 		}
+		//SNIP-END
 		if (varblob) {
 			// Apply labels, if any
 			varblob = this._applyLabels(varblob, v);
 			blob_list.push(varblob);
 		}
+		//SNIP-START
 		if (this.debug) {
 			print("(11e)");
 		}
+		//SNIP-END
 		if (this.common_term) {
 			break;
 		}
 	}
+	//SNIP-START
 	if (this.debug) {
 		print("(12)");
 	}
+	//SNIP-END
 	this.state.output.openLevel("empty");
 	this.state.output.current.value().strings.delimiter = this.names.strings.delimiter;
+	//SNIP-START
 	if (this.debug) {
 		print("(13)");
 	}
+	//SNIP-END
 	for (i = 0, ilen = blob_list.length; i < ilen; i += 1) {
 		// notSerious
 		this.state.output.append(blob_list[i], "literal", true);
 	}
+	//SNIP-START
 	if (this.debug) {
 		print("(14)");
 	}
+	//SNIP-END
 	this.state.output.closeLevel("empty");
+	//SNIP-START
 	if (this.debug) {
 		print("(15)");
 	}
+	//SNIP-END
 	var blob = this.state.output.pop();
+	//SNIP-START
 	if (this.debug) {
 		print("(16)");
 	}
+	//SNIP-END
 	this.state.output.append(blob, this.names);
+	//SNIP-START
 	if (this.debug) {
 		print("(17)");
 	}
+	//SNIP-END
 	// Also used in CSL.Util.substituteEnd (which could do with
 	// some cleanup at this writing).
+	//SNIP-START
 	if (this.debug) {
 		print("(18)");
 	}
+	//SNIP-END
 	this.state.tmp.name_node = this.state.output.current.value();
 	// Let's try something clever here.
 	this._collapseAuthor();
 	// For name_SubstituteOnNamesSpanNamesSpanFail
 	this.variables = [];
+	//SNIP-START
 	if (this.debug) {
 		print("(19)");
 	}
+	//SNIP-END
 };
 
 CSL.NameOutput.prototype._applyLabels = function (blob, v) {
@@ -316,7 +364,7 @@ CSL.NameOutput.prototype._buildLabel = function (term, plural, position) {
 
 
 CSL.NameOutput.prototype._collapseAuthor = function () {
-	var myqueue, mystr;
+	var myqueue, mystr, oldchars;
 	// collapse can be undefined, an array of length zero, and probably
 	// other things ... ugh.
 	if ((this.item && this.item["suppress-author"] && this._author_is_first)
@@ -327,7 +375,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			// Avoid running this on every call to getAmbiguousCite()?
 			mystr = "";
 			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
-			var oldchars = this.state.tmp.offset_characters;
+			oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
 			}
@@ -341,7 +389,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			// XX1 print("RENDER: "+this.Item.id);
 			mystr = "";
 			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
-			var oldchars = this.state.tmp.offset_characters;
+			oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
 			}

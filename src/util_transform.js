@@ -430,21 +430,16 @@ CSL.Transform = function (state) {
 			"static-ordering":static_ordering_val,
 			"parse-names":name["parse-names"],
 			"comma-suffix":name["comma-suffix"],
+			"comma-dropping-particle":name["comma-dropping-particle"],
 			transliterated:transliterated,
 			block_initialize:block_initialize,
-			literal:name.literal
+			literal:name.literal,
+			isInstitution:name.isInstitution
 		};
 		if (static_ordering_freshcheck &&
 			!getStaticOrder(name, true)) {
 			
 			name["static-ordering"] = false;
-		}
-		//if (state.opt["parse-names"]
-		//	&& name["parse-names"] !== 0) {
-		//	state.parseName(name);
-		//}
-		if (name.family && name.family.length && name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"') {
-			name.family = name.family.slice(1, -1);
 		}
 		if (!name.literal && (!name.given && name.family && name.isInstitution)) {
 			name.literal = name.family;

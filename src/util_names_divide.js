@@ -78,12 +78,12 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 		names = Item[variable].slice();
 	}
 	// Transliteration happens here, if at all.
+	// (not terribly efficient; the refactoring of object
+	// content should take place after constraints are
+	// imposed)
 	for (i = 0, ilen = names.length; i < ilen; i += 1) {
-		//if (names[i].literal) {
-		//}
-		this._parseName(names[i]);
-		name = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
-		names[i] = name;
+		names[i] = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
+		names[i] = this._normalizeNameInput(names[i]);
 	}
 	return names;
 };

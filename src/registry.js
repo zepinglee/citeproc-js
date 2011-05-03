@@ -610,7 +610,7 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
 	if (!this.registry[id]) {
 		CSL.debug("Warning: unregistered item: itemID=("+id+"), akey=("+akey+")");
-	};
+	}
 	// Taint if number of names to be included has changed
 	// ZZZZZ Hullo, this might be the place to slot in cache invalidation
 	// for cached disambiguation. That idea might have some life in it yet.

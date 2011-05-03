@@ -137,12 +137,13 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 
 CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	// Extract name parts. With a rusty pair of piers if necessary.
-	var name = this._normalizeNameInput(value);
-	var dropping_particle = this._droppingParticle(name);
+	//var name = this._normalizeNameInput(value);
+	var name = value;
+	var dropping_particle = this._droppingParticle(name, pos);
 	var family = this._familyName(name);
 	var non_dropping_particle = this._nonDroppingParticle(name);
 	var given = this._givenName(name, pos, i);
-	var suffix = this._nameSuffix(name, pos);
+	var suffix = this._nameSuffix(name);
 	if (this._isShort(pos, i)) {
 		dropping_particle = false;
 		given = false;
@@ -180,6 +181,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
 			// Drop non-dropping particle
 			second = this._join([given, dropping_particle, non_dropping_particle], " ");
+			//second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
+			//second = this._join([second, non_dropping_particle], " ");
 			if (this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
@@ -198,6 +201,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 				first.strings.suffix = this.family.strings.suffix;
 			}
 
+			//second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
 			second = this._join([given, dropping_particle], " ");
 			if (this.given) {
 				second.strings.prefix = this.given.strings.prefix;
@@ -210,10 +214,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	} else { // plain vanilla
 		if (name["dropping-particle"] && name.family && !name["non-dropping-particle"]) {
 			if (["'","\u02bc","\u2019"].indexOf(name["dropping-particle"].slice(-1)) > -1) {
-				name.family = name["dropping-particle"] + name.family;
-				name["dropping-particle"] = undefined;
+				family = this._join([dropping_particle, family], "");
 				dropping_particle = false;
-				family = this._familyName(name);
 			}
 		}
 		second = this._join([dropping_particle, non_dropping_particle, family], " ");
@@ -225,7 +227,10 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			given.strings.prefix = this.given.strings.prefix;
 			given.strings.suffix = this.given.strings.suffix;
 		}
-		merged = this._join([given, second], " ");
+		if (second.strings.prefix) {
+			name["comma-dropping-particle"] = "";
+		}
+		merged = this._join([given, second], (name["comma-dropping-particle"] + " "));
 		blob = this._join([merged, suffix], suffix_sep);
 	}
 	// notSerious
@@ -248,8 +253,11 @@ CSL.NameOutput.prototype._isShort = function (pos, i) {
 		// initialize if appropriate
 */
 
+// Input names should be touched by _normalizeNameInput()
+// exactly once: this is not idempotent.
 CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 	var name = {
+		literal:value.literal,
 		family:value.family,
 		given:value.given,
 		suffix:value.suffix,
@@ -258,6 +266,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 		"dropping-particle":value["dropping-particle"],
 		"static-ordering":value["static-ordering"],
 		"parse-names":value["parse-names"],
+		"comma-dropping-particle": "",
 		block_initialize:value.block_initialize
 	};
 	this._parseName(name);
@@ -272,8 +281,15 @@ CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
 	return false;
 };
 
-CSL.NameOutput.prototype._droppingParticle = function (name) {
-	if (this.state.output.append(name["dropping-particle"], this.family_decor, true)) {
+CSL.NameOutput.prototype._droppingParticle = function (name, pos) {
+	if (name["dropping-particle"] && name["dropping-particle"].match(/^et.?al[^a-z]$/)) {
+		if (this.name.strings["et-al-use-last"]) {
+			this.etal_spec[pos] = 2;
+		} else {
+			this.etal_spec[pos] = 1;
+		}
+		name["comma-dropping-particle"] = "";
+	} else if (this.state.output.append(name["dropping-particle"], this.given_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
@@ -301,14 +317,8 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 	return false;
 };
 
-CSL.NameOutput.prototype._nameSuffix = function (name, pos) {
-	if (name.suffix && name.suffix.match(/^et.?al[^a-z]$/)) {
-		if (this.name.strings["et-al-use-last"]) {
-			this.etal_spec[pos] = 2;
-		} else {
-			this.etal_spec[pos] = 1;
-		}
-	} else if (this.state.output.append(name.suffix, "empty", true)) {
+CSL.NameOutput.prototype._nameSuffix = function (name) {
+	if (this.state.output.append(name.suffix, "empty", true)) {
 		return this.state.output.pop();
 	}
 	return false;
@@ -363,6 +373,8 @@ CSL.NameOutput.prototype._parseName = function (name) {
 	if (name.family 
 		&& (name.family.slice(0, 1) === '"' && name.family.slice(-1) === '"')
 		|| (!name["parse-names"] && "undefined" !== typeof name["parse-names"])) {
+
+		name.family = name.family.slice(1, -1);
 		noparse = true;
 		name["parse-names"] = 0;
 	} else {
@@ -380,10 +392,17 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		m = name.given.match(/(\s*,!*\s*)/);
 		if (m) {
 			idx = name.given.indexOf(m[1]);
-			if (name.given.slice(idx, idx + m[1].length).replace(/\s*/g, "").length === 2) {
-				name["comma-suffix"] = true;
+			var possible_suffix = name.given.slice(idx + m[1].length);
+			var possible_comma = name.given.slice(idx, idx + m[1].length).replace(/\s*/g, "");
+			if (possible_suffix.length <= 3) {
+				if (possible_comma.length === 2) {
+					name["comma-suffix"] = true;
+				}
+				name.suffix = possible_suffix;
+			} else if (!name["dropping-particle"] && name.given) {
+				name["dropping-particle"] = possible_suffix;
+				name["comma-dropping-particle"] = ",";
 			}
-			name.suffix = name.given.slice(idx + m[1].length);
 			name.given = name.given.slice(0, idx);
 		}
 	}

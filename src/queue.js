@@ -407,7 +407,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
 		span_split = ret.length;
 	}
-	var mytype = "string"
+	var mytype = "string";
 	for (var q = 0, qlen = ret.length; q < qlen; q += 1) {
 		if (typeof ret[q] !== "string") {
 			mytype = typeof ret[q];

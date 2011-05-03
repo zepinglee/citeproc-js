@@ -68,11 +68,11 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
 				}
 				var name = this.transform.name(this, names[j], this.opt["locale-pri"]);
 				if (name && name.family) {
-					var myname = name.family;
+					myname = name.family;
 					myname = myname.replace(/^([ \'\u2019a-z]+\s+)/, "");
 
 				} else if (name && name.literal) {
-					var myname = name.literal;
+					myname = name.literal;
 				}
 				var m = myname.toLowerCase().match(/^(a\s+|the\s+|an\s+)/);
 				if (m) {
@@ -101,7 +101,7 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
 		}
 	}
 	year = year.slice((config.year * -1));
-	var label = label + year;
+	label = label + year;
 	return label;
 };
 
@@ -127,7 +127,6 @@ CSL.Engine.prototype.getTrigraphParams = function () {
 				break;
 			default:
 				throw "Invalid character in trigraph definition: "+this.opt.trigraph;
-				break;
 			}
 		}
 		params.push(config);
