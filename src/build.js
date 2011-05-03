@@ -532,7 +532,11 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			for (pos = 0, len = m.length; pos < len; pos += 1) {
 				mm = CSL.NOTE_FIELD_REGEXP.exec(m[pos]);
 				if (!Item[mm[1]]) {
-					Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+					if (CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
+						Item[mm[1]] = {raw:mm[2]};
+					} else {
+						Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+					}
 				}
 			}
 		}
