@@ -10,7 +10,7 @@ Mishandled or unimplemented features
 
 - Recognize dates when entered in cheater syntax
   (via the note variable). Syntax is:
-  {:original-date: 2001-01-10}
+  {:original-date: 2001-01-10} 
 
 
 ==========================
