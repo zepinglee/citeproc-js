@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.163
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize dates when entered in cheater syntax
+  (via the note variable). Syntax is:
+  {:original-date: 2001-01-10}
+
+
+==========================
 Changes in version 1.0.162
 ==========================
 

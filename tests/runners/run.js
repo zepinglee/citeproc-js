@@ -21,6 +21,7 @@ dojo.require("std.simplespace");
 dojo.require("std.unicode");
 dojo.require("std.flipflop");
 dojo.require("std.citeprocjs");
+dojo.require("std.dateparser");
 dojo.require("std.nameorder");
 dojo.require("std.textcase");
 dojo.require("std.label");
