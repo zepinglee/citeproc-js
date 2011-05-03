@@ -49,7 +49,7 @@
 /*global CSL: true */
 
 
-CSL.DateParser = function (txt) {
+CSL.DateParser = function () {
 	var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, mrexes, seasonrex, len, jiymatchstring, jiymatcher;
 
 	// instance object with private constants and a public function.
