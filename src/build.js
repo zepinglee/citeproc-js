@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.161";
+	this.processor_version = "1.0.162";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -157,8 +157,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	//     -- en_US
 	
 	this.setStyleAttributes();
-
-	CSL.Util.Names.initNameSlices(this);
 
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
 

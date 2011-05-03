@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.162
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Tell the truth when reporting label offsets to
+  the calling application.
+
+- Remove some unused code relating to names.
+
+- Further small adjustments to the handling of
+  name particles.
+
+
+==========================
 Changes in version 1.0.161
 ==========================
 
