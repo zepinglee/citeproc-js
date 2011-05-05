@@ -932,7 +932,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		this.tmp.suppress_decorations = false;
 		// meaningless assignment
 		// this.tmp.handle_ranges = false;
-		if (item && item["author-only"]) {
+		if ("string" === typeof composite) {
 			this.tmp.suppress_decorations = false;
 			return composite;
 		}
