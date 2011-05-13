@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.164
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a subtle bug in the interaction of the names-based
+  and cite-based disambiguation engines, affecting styles
+  that rely on names-based disambiguation with givenname
+  expansion.
+
+
+==========================
 Changes in version 1.0.163
 ==========================
 

@@ -1682,7 +1682,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.163";
+	this.processor_version = "1.0.164";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3158,7 +3158,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		CSL.Output.Queue.adjustPunctuation(this, this.output.queue, mystk);
 		composite = this.output.string(this, this.output.queue);
 		this.tmp.suppress_decorations = false;
-		if (item && item["author-only"]) {
+		if ("string" === typeof composite) {
 			this.tmp.suppress_decorations = false;
 			return composite;
 		}
@@ -9330,6 +9330,7 @@ CSL.Registry.NameReg = function (state) {
 		param = 2;
 		dagopt = state.opt["disambiguate-add-givenname"];
 		gdropt = state.opt["givenname-disambiguation-rule"];
+		var gdropt_orig = gdropt;
 		if (gdropt === "by-cite") {
 			gdropt = "all-names";
 		}
@@ -9341,7 +9342,7 @@ CSL.Registry.NameReg = function (state) {
 		if ("undefined" === typeof this.namereg[pkey] || "undefined" === typeof this.namereg[pkey].ikey[ikey]) {
 			return param;
 		}
-		if (param < request_base) {
+		if (gdropt_orig === "by-cite" && param < request_base) {
 			param = request_base;
 		}
 		if (!dagopt) {
