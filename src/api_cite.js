@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
+ * Copyright (c) 2009, 2010 and 2011 Frank G. Bennett, Jr. All Rights
  * Reserved.
  *
  * The contents of this file are subject to the Common Public
@@ -71,69 +71,6 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 	return this.processCitationCluster(citation, citationsPre, [])[1];
 };
 
-//SNIP-START
-CSL.Engine.prototype.dumpCslCitation = function (citation, flag) {
-	var i, ilen, j, jlen, ikey, jkey;
-	CSL.debug("=== citationID " + citation.citationID + " in [" + flag + "] mode ===");
-	CSL.debug("   +++ citationItems +++");
-	for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
-		var itemID = "" + citation.citationItems[i].id;
-		if (i === 0) {
-			CSL.debug("      ### itemID " + citation.citationItems[i].id + " ###");
-		}
-		CSL.debug("         --- Item data " + " ---");
-		var Item = this.retrieveItem("" + citation.citationItems[i].id);
-		for (ikey in Item) {
-			if (CSL.NAME_VARIABLES.indexOf("" + ikey) > -1) {
-				CSL.debug("            * names: " + ikey);
-				for (j = 0, jlen = Item[ikey].length; j < jlen; j += 1) {
-					CSL.debug("               [" + j + "]");
-					for (jkey in Item[ikey][j]) {
-						if (Item[ikey][j].hasOwnProperty(jkey)) {
-							CSL.debug("               + " + jkey + ": " + Item[ikey][j][jkey]);
-						}
-					}
-				}
-			}
-		}
-		CSL.debug("         --- Cite data ---");
-		for (ikey in citation.citationItems[i]) {
-			if (citation.citationItems[i].hasOwnProperty(ikey)) {
-				if (ikey === 'id') {
-					continue;
-				}
-				CSL.debug("            * " + ikey + ": " + citation.citationItems[i][ikey]);
-			}
-		}
-		CSL.debug("         --- Disambiguation registry data ---");
-		var regentry = this.registry.registry[itemID];
-		if (regentry) {
-			var disambig = regentry.disambig;
-			CSL.debug("            * maxvals: " + disambig.maxvals);
-			CSL.debug("            * minval: " + disambig.minval);
-			CSL.debug("            * year_suffix: " + disambig.year_suffix);
-			CSL.debug("            * disambiguate: " + disambig.disambiguate);
-			CSL.debug("            * givens ... ");
-			for (i = 0, ilen = disambig.givens.length; i < ilen; i += 1) {
-				CSL.debug("               [" + i + "]");
-				for (j = 0, jlen = disambig.givens[i].length; j < jlen; j += 1) {
-					CSL.debug("               + " + disambig.givens[i][j]);
-				}
-			}
-			CSL.debug("            * names ... ");
-			for (i = 0, ilen = disambig.names.length; i < ilen; i += 1) {
-				CSL.debug("               + " + disambig.names[i]);
-			}
-		}
-	}
-	CSL.debug("   +++ properties +++");
-	for (ikey in citation.properties) {
-		if (citation.properties.hasOwnProperty(ikey)) {
-			CSL.debug("      * " + ikey + ": " + citation.properties[ikey]);
-		}
-	}
-};
-//SNIP-END
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var c, i, ilen, j, jlen, k, klen, n, nlen, key, Item, item, noteCitations, textCitations;
