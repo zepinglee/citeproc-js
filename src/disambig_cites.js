@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
+ * Copyright (c) 2009, 2010 and 2011 Frank G. Bennett, Jr. All Rights
  * Reserved.
  *
  * The contents of this file are subject to the Common Public
@@ -156,7 +156,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-		this.lists[this.listpos] = [this.base, this.nonpartners];
+		this.lists[this.listpos] = [this.base, []];
 	} else if (this.nonpartners.length === 1) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
@@ -181,6 +181,9 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 				this.lists[this.listpos] = [this.base, this.nonpartners];
 			}
 		} else {
+			// Disambiguation actually runs very slightly faster
+			// when this and the similar toggle in disGivens()
+			// are used. Go figure.
 			this.rerun = true;
 		}
 	}
@@ -196,7 +199,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		}
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
-		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
+		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.base);
 		this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
 		
 		this.lists[this.listpos] = [this.base, []];
@@ -204,14 +207,6 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 		if (this.clashes[0] === 1) {
 			this.base = this.decrementNames();
 		}
-		// no clashes
-		// Remove item from list.  If only one non-clashing item,
-		// remove it as well.
-		
-		// Note that this.partners has length of exactly one in this case,
-		// because there are no clashes. As we've therefore resolved conflicts
-		// by adding names, we clone the base and quash any lurking year_suffix
-		// value.
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
 		this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
@@ -394,6 +389,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 	this.lists = [];
 	this.base = false;
 	this.akey = akey;
+	this.advance_mode = false;
 	myItemBundles = [];
 	myIds = this.ambigcites[akey];
 	if (myIds && myIds.length > 1) {
