@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
+ * Copyright (c) 2009, 2010 and 2011 Frank G. Bennett, Jr. All Rights
  * Reserved.
  *
  * The contents of this file are subject to the Common Public
@@ -246,7 +246,8 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 CSL.Registry.prototype.dodeletes = function (myhash) {
 	var otheritems, key, ambig, pos, len, items, kkey, mypos, id;
 	if ("string" === typeof myhash) {
-		myhash = {myhash: true};
+		myhash = {};
+		myhash[myhash] = true;
 	}
 	//
 	//  3. Delete loop.
