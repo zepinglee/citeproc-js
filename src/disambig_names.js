@@ -105,6 +105,7 @@ CSL.Registry.NameReg = function (state) {
 		param = 2;
 		dagopt = state.opt["disambiguate-add-givenname"];
 		gdropt = state.opt["givenname-disambiguation-rule"];
+		var gdropt_orig = gdropt;
 		if (gdropt === "by-cite") {
 			gdropt = "all-names";
 		}
@@ -122,9 +123,10 @@ CSL.Registry.NameReg = function (state) {
 			return param;
 		}
 		//
-		// adjust value upward if appropriate
+		// adjust value upward if appropriate -- only if running
+		// a non-names-global disambiguation strategy
 		//
-		if (param < request_base) {
+		if (gdropt_orig === "by-cite" && param < request_base) {
 			param = request_base;
 		}
 		if (!dagopt) {
