@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
+ * Copyright (c) 2009, 2010 and 2011 Frank G. Bennett, Jr. All Rights
  * Reserved.
  *
  * The contents of this file are subject to the Common Public
@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.164";
+	this.processor_version = "1.0.165";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();

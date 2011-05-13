@@ -1,6 +1,33 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.165
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Protect against undefined skey and ikey elements
+  when removing names from citeproc.registry.namereg.
+
+- Always use the shortest permitted form of names
+  when building item ambig keys.
+
+- Reset advance_mode toggle when initializing
+  disambiguation engine.
+
+- Avoid unnecessary reruns of the disambiguation
+  queue in disNames().
+
+- Fix bad conversion of string to object in registry
+  dodeletes() method. This code is probably never used
+  anyway, but if it does, it will work correctly now.
+
+- Remove unused debugging function from api_cite.js
+
+
+==========================
 Changes in version 1.0.164
 ==========================
 
