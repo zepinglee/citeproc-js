@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights
+ * Copyright (c) 2009, 2010 and 2011 Frank G. Bennett, Jr. All Rights
  * Reserved.
  *
  * The contents of this file are subject to the Common Public
@@ -218,7 +218,15 @@ CSL.Registry.NameReg = function (state) {
 				this.namereg[pkey].ikey[ikey].skey[skey].items.push("" + item_id);
 			}
 		}
-		return param;
+		if (!state.registry.registry[item_id]) {
+			if (form == "short") {
+				return 0;
+			} else if ("string" == typeof initials) {
+				return 1
+			}
+		} else {
+			return param;
+		}
 	};
 
 	//
@@ -256,7 +264,10 @@ CSL.Registry.NameReg = function (state) {
 					//posA = this.namereg[pkey].items.indexOf(posA);
 
 					items = this.namereg[pkey].items;
-					if (skey) {
+					// This was really, really unperceptive. They key elements
+					// have absolutely nothing to do with whether there was ever
+					// a registration at each key level.
+					if (skey && this.namereg[pkey].ikey[ikey] && this.namereg[pkey].ikey[ikey].skey[skey]) {
 						myitems = this.namereg[pkey].ikey[ikey].skey[skey].items;
 						posB = myitems.indexOf("" + id);
 						if (posB > -1) {
@@ -270,7 +281,7 @@ CSL.Registry.NameReg = function (state) {
 							ret[this.namereg[pkey].ikey[ikey].items[ppos]] = true;
 						}
 					}
-					if (ikey) {
+					if (ikey && this.namereg[pkey].ikey[ikey]) {
 						posB = this.namereg[pkey].ikey[ikey].items.indexOf("" + id);
 						if (posB > -1) {
 							items = this.namereg[pkey].ikey[ikey].items.slice();
