@@ -1,0 +1,68 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE===== <<
+
+>>===== RESULT =====>>
+<span style="font-variant:small-caps;">Sch&ouml;ner</span>, <span style="font-variant: small-caps;">R.</span>, <span style="font-variant: small-caps;">Viereck-Goette</span>, <span style="font-variant: small-caps;">L.</span>, <span style="font-variant: small-caps;">Schneider</span>, <span style="font-variant: small-caps;">J.</span> &#38; <span style="font-variant: small-caps;">Bomfleur</span>, <span style="font-variant: small-caps;">B.</span> 2007. Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica: A revised stratigraphic model. <i>In</i> <span style="font-variant: small-caps;">Cooper, </span><span style="font-variant: small-caps;">A. K.</span> &amp; <span style="font-variant: small-caps;">Raymond, </span><span style="font-variant: small-caps;">C. R.</span>, <em>eds.</em> Antarctica: a keystone in a changing world &ndash; Online Proceedings of the&nbsp; 10th ISAES. USGS Open-File Report 2007&ndash;1047, Short Research Paper 102, 5 pp, 10.3133/of2007- 1047.srp102.
+<<===== RESULT===== <<
+
+>>===== CSL =====>>
+antarctic-science.csl
+<<===== CSL===== <<
+
+>>===== INPUT =====>>
+[
+  {
+    "id": 4,
+    "type": "paper-conference",
+    "multi": {
+      "_keys": {}
+    },
+    "title": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica: A revised stratigraphic model",
+    "page": "5",
+    "volume": "1047",
+    "shortTitle": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica",
+    "author": [
+      {
+        "family": "Schöner",
+        "given": "R.",
+        "isInstitution": ""
+      },
+      {
+        "family": "Viereck-Goette",
+        "given": "L.",
+        "isInstitution": ""
+      },
+      {
+        "family": "Schneider",
+        "given": "J.",
+        "isInstitution": ""
+      },
+      {
+        "family": "Bomfleur",
+        "given": "B.",
+        "isInstitution": ""
+      }
+    ],
+    "editor": [
+      {
+        "family": "Cooper",
+        "given": "A. K.",
+        "isInstitution": ""
+      },
+      {
+        "family": "Raymond",
+        "given": "C. R.",
+        "isInstitution": ""
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    }
+  }
+]
+<<===== INPUT===== <<

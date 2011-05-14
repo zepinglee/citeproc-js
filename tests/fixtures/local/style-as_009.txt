@@ -1,0 +1,51 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE===== <<
+
+>>===== RESULT =====>>
+<span style="font-variant:small-caps;">Van </span><span style="font-variant: small-caps;">den Broeke</span>, <span style="font-variant: small-caps;">M.R.</span>, <span style="font-variant: small-caps;">Reijmer</span>, <span style="font-variant: small-caps;">C.H.</span> &#38; <span style="font-variant: small-caps;">Van der </span><span style="font-variant: small-caps;">Wal</span>, <span style="font-variant: small-caps;">R.S.W</span>. 2004. Surface radiation balance in Antarctica as measured with automatic weather stations. <i>Journal of Geophysical Research</i>, <b>109</b>, 10.1029/2003JD004394.
+<<===== RESULT===== <<
+
+>>===== CSL =====>>
+antarctic-science.csl
+<<===== CSL===== <<
+
+>>===== INPUT =====>>
+[
+  {
+    "id": 12,
+    "type": "article-journal",
+    "multi": {
+      "_keys": {}
+    },
+    "title": "Surface radiation balance in Antarctica as measured with automatic weather stations",
+    "container-title": "Journal of Geophysical Research",
+    "volume": "109",
+    "issue": "10.1029",
+    "author": [
+      {
+        "family": "Van den Broeke",
+        "given": "M. R.",
+        "isInstitution": ""
+      },
+      {
+        "family": "Reijmer",
+        "given": "C. H.",
+        "isInstitution": ""
+      },
+      {
+        "family": "van der Wal",
+        "given": "R. S. W.",
+        "isInstitution": ""
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    }
+  }
+]
+<<===== INPUT===== <<

@@ -1,0 +1,41 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE===== <<
+
+>>===== RESULT =====>>
+<span style="font-variant:small-caps;">CCAMLR</span>. 1995. <i>Report of the Fourteenth Meeting of the Commission </i>(CCAMLR-XIV), Hobart: CCAMLR, 153 pp.
+<<===== RESULT===== <<
+
+>>===== CSL =====>>
+antarctic-science.csl
+<<===== CSL===== <<
+
+>>===== INPUT =====>>
+[
+  {
+    "id": 16,
+    "type": "report",
+    "multi": {
+      "_keys": {}
+    },
+    "title": "Report of the Fourteenth Meeting\u000aof the Commission (CCAMLR-XIV)",
+    "publisher": "CCAMLR",
+    "publisher-place": "Hobart, Australia",
+    "event-place": "Hobart, Australia",
+    "author": [
+      {
+        "family": "CCAMLR",
+        "given": "",
+        "isInstitution": 1
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    }
+  }
+]
+<<===== INPUT===== <<
