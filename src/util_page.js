@@ -162,7 +162,11 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	//
 	if (!state.opt["page-range-format"]) {
 		ret_func = function (str) {
-			return str.replace("-", "\u2013", "g");
+			// On second thought, don't do this. In some
+			// applications, a style might want these strings
+			// to be output verbatim.
+			//return str.replace("-", "\u2013", "g");
+			return str;
 		};
 	} else if (state.opt["page-range-format"] === "expanded") {
 		ret_func = function (str) {
