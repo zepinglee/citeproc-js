@@ -370,15 +370,12 @@ CSL.Output.Queue.prototype.pop = function () {
 	return this.current.value().blobs.pop();
 };
 CSL.Output.Queue.prototype.getToken = function (name) {
-	CSL.debug("XXX loc [1]");
 	var ret = this.formats.value()[name];
 	return ret;
 };
 CSL.Output.Queue.prototype.mergeTokenStrings = function (base, modifier) {
 	var base_token, modifier_token, ret, key;
-	CSL.debug("XXX loc [2]");
 	base_token = this.formats.value()[base];
-	CSL.debug("XXX loc [3]");
 	modifier_token = this.formats.value()[modifier];
 	ret = base_token;
 	if (modifier_token) {
@@ -406,7 +403,6 @@ CSL.Output.Queue.prototype.addToken = function (name, modifier, token) {
 	var newtok, attr;
 	newtok = new CSL.Token("output");
 	if ("string" === typeof token) {
-	CSL.debug("XXX loc [4]");
 		token = this.formats.value()[token];
 	}
 	if (token && token.strings) {
@@ -420,23 +416,16 @@ CSL.Output.Queue.prototype.addToken = function (name, modifier, token) {
 	if ("string" === typeof modifier) {
 		newtok.strings.delimiter = modifier;
 	}
-	CSL.debug("XXX loc [5]");
 	this.formats.value()[name] = newtok;
 };
-var TESTINGTHING = {};
-TESTINGTHING.counter = 0;
 CSL.Output.Queue.prototype.pushFormats = function (tokenstore) {
 	if (!tokenstore) {
 		tokenstore = {};
 	}
-	CSL.debug("XXX pushFormats() ["+TESTINGTHING.counter+"]");
-	TESTINGTHING.counter += 1;
 	tokenstore.empty = this.empty;
 	this.formats.push(tokenstore);
 };
 CSL.Output.Queue.prototype.popFormats = function (tokenstore) {
-	TESTINGTHING.counter += 1;
-	CSL.debug("XXX popFormats() ["+TESTINGTHING.counter+"]");
 	this.formats.pop();
 };
 CSL.Output.Queue.prototype.startTag = function (name, token) {
@@ -454,14 +443,11 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
 	if ("object" === typeof token) {
 		blob = new CSL.Blob(token);
 	} else if ("undefined" === typeof token) {
-	CSL.debug("XXX loc [6]");
 		blob = new CSL.Blob(this.formats.value().empty, false, "empty");
 	} else {
-		CSL.debug("XXX loc [7]");
 		if (!this.formats.value() || !this.formats.value()[token]) {
 			throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
 		}
-	CSL.debug("XXX loc [8]");
 		blob = new CSL.Blob(this.formats.value()[token], false, token);
 	}
 	curr = this.current.value();
@@ -490,13 +476,11 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	}
 	blob = false;
 	if (!tokname) {
-	CSL.debug("XXX loc [9]");
 		token = this.formats.value().empty;
 	} else if (tokname === "literal") {
 		token = true;
 		useblob = false;
 	} else if ("string" === typeof tokname) {
-	CSL.debug("XXX loc [10]");
 		token = this.formats.value()[tokname];
 	} else {
 		token = tokname;
@@ -5544,7 +5528,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 	return CSL.castLabel(state, node, myterm, plural);
 };
 CSL.evaluateStringPluralism = function (str) {
-	if (str && str.match(/(?:[0-9], *[0-9]| and |&|[0-9] *- *[0-9])/)) {
+	if (str && str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|[0-9]\s*[\-\u2013]\s*[0-9])/)) {
 		return 1;
 	} else {
 		return 0;
@@ -6136,6 +6120,7 @@ CSL.Node.text = {
 							func = function (state, Item) {
 								var idx, value;
 								value = state.getVariable(Item, "page", form);
+								value = value.replace("\u2013", "-", "g");
 								if (value) {
 									idx = value.indexOf("-");
 									if (idx > -1) {
@@ -6246,7 +6231,7 @@ CSL.Attributes["@type"] = function (state, arg) {
 	this.tests.push(func);
 };
 CSL.Attributes["@variable"] = function (state, arg) {
-	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key, flag;
+	var variables, pos, len, func, output, variable, varlen, needlen, ret, myitem, key, flag;
 	this.variables = arg.split(/\s+/);
 	this.variables_real = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
@@ -6354,7 +6339,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 		this.execs.push(func);
 	} else if (["if",  "else-if"].indexOf(this.name) > -1) {
 		func = function (state, Item, item) {
-			var key;
+			var key, x;
 			ret = [];
 			len = this.variables.length;
 			for (pos = 0; pos < len; pos += 1) {
@@ -6369,7 +6354,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						x = true;
 					} else if ("object" === typeof myitem[variable]) {
 						for (key in myitem[variable]) {
-							if (myitem[variable].hasOwnProperty(key)) {
+							if (myitem[variable][key]) {
 								x = true;
 							} else {
 								x = false;
@@ -6874,19 +6859,16 @@ CSL.Stack.prototype.length = function () {
 };
 CSL.Util = {};
 CSL.Util.Match = function () {
-	var func, pos, len, reslist, res, ppos, llen;
 	this.any = function (token, state, Item, item) {
 		var ret = false;
-		len = token.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = token.tests[pos];
-			reslist = func.call(token, state, Item, item);
+		for (var i = 0, ilen = token.tests.length; i < ilen; i += 1) {
+			var func = token.tests[i];
+			var reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
-			llen = reslist.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				if (reslist[ppos]) {
+			for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
+				if (reslist[j]) {
 					ret = true;
 					break;
 				}
@@ -6906,16 +6888,14 @@ CSL.Util.Match = function () {
 	};
 	this.none = function (token, state, Item, item) {
 		var ret = true;
-		len = this.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = this.tests[pos];
-			reslist = func.call(token, state, Item, item);
+		for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
+			var func = this.tests[i];
+			var reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
-			llen = reslist.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				if (reslist[ppos]) {
+			for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
+				if (reslist[j]) {
 					ret = false;
 					break;
 				}
@@ -6936,8 +6916,8 @@ CSL.Util.Match = function () {
 	this.all = function (token, state, Item, item) {
 		var ret = true;
 		for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
-			func = this.tests[i];
-			reslist = func.call(token, state, Item, item);
+			var func = this.tests[i];
+			var reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
@@ -8261,6 +8241,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	};
 	listify = function (str) {
 		var m, lst, ret;
+		str = str.replace("\u2013", "-", "g");
 		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
 		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
 		if (lst.length === 0) {
@@ -9432,7 +9413,7 @@ CSL.Registry.NameReg = function (state) {
 			if (form == "short") {
 				return 0;
 			} else if ("string" == typeof initials) {
-				return 1
+				return 1;
 			}
 		} else {
 			return param;

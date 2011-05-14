@@ -1,6 +1,28 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.166
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Remove hasOwnProperty() condition wrapper
+  from key iteration loop used for the
+  match="none" condition evaluation. The target
+  variable might be an array, in which case
+  WebKit systems and Tracemonkey produce
+  differing results (WebKit filters the 
+  indices with this function, Firefox doesn't).
+
+- Recognize en-dash equally with hyphen when
+  evaluating page numbers for context pluralization.
+
+- Some minor code cleanup.
+
+
+==========================
 Changes in version 1.0.165
 ==========================
 
