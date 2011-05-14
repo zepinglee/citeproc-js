@@ -81,7 +81,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 };
 
 CSL.evaluateStringPluralism = function (str) {
-	if (str && str.match(/(?:[0-9], *[0-9]| and |&|[0-9] *- *[0-9])/)) {
+	if (str && str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|[0-9]\s*[\-\u2013]\s*[0-9])/)) {
 		return 1;
 	} else {
 		return 0;
