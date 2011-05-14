@@ -174,7 +174,7 @@ CSL.Attributes["@type"] = function (state, arg) {
  * @function
  */
 CSL.Attributes["@variable"] = function (state, arg) {
-	var variables, pos, len, func, output, variable, varlen, needlen, ret, x, myitem, key, flag;
+	var variables, pos, len, func, output, variable, varlen, needlen, ret, myitem, key, flag;
 	this.variables = arg.split(/\s+/);
 	this.variables_real = arg.split(/\s+/);
 	if ("label" === this.name && this.variables[0]) {
@@ -300,7 +300,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 	} else if (["if",  "else-if"].indexOf(this.name) > -1) {
 		// check for variable value
 		func = function (state, Item, item) {
-			var key;
+			var key, x;
 			ret = [];
 			len = this.variables.length;
 			for (pos = 0; pos < len; pos += 1) {
@@ -320,7 +320,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						// non-zero-length list
 						//
 						for (key in myitem[variable]) {
-							if (myitem[variable].hasOwnProperty(key)) {
+							if (myitem[variable][key]) {
 								x = true;
 							} else {
 								x = false;
