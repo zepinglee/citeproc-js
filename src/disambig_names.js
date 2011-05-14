@@ -222,7 +222,7 @@ CSL.Registry.NameReg = function (state) {
 			if (form == "short") {
 				return 0;
 			} else if ("string" == typeof initials) {
-				return 1
+				return 1;
 			}
 		} else {
 			return param;
