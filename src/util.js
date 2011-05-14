@@ -59,23 +59,20 @@ CSL.Util = {};
  * Also dumping this stuff here temporarily.
  */
 CSL.Util.Match = function () {
-	var func, pos, len, reslist, res, ppos, llen;
 
 	this.any = function (token, state, Item, item) {
 		//
 		// assume false, return true on any single true hit
 		//
 		var ret = false;
-		len = token.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = token.tests[pos];
-			reslist = func.call(token, state, Item, item);
+		for (var i = 0, ilen = token.tests.length; i < ilen; i += 1) {
+			var func = token.tests[i];
+			var reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
-			llen = reslist.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				if (reslist[ppos]) {
+			for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
+				if (reslist[j]) {
 					ret = true;
 					break;
 				}
@@ -99,16 +96,14 @@ CSL.Util.Match = function () {
 		// assume true, return false on any single true hit
 		//
 		var ret = true;
-		len = this.tests.length;
-		for (pos = 0; pos < len; pos += 1) {
-			func = this.tests[pos];
-			reslist = func.call(token, state, Item, item);
+		for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
+			var func = this.tests[i];
+			var reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
-			llen = reslist.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				if (reslist[ppos]) {
+			for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
+				if (reslist[j]) {
 					ret = false;
 					break;
 				}
@@ -133,8 +128,8 @@ CSL.Util.Match = function () {
 		//
 		var ret = true;
 		for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
-			func = this.tests[i];
-			reslist = func.call(token, state, Item, item);
+			var func = this.tests[i];
+			var reslist = func.call(token, state, Item, item);
 			if ("object" !== typeof reslist) {
 				reslist = [reslist];
 			}
