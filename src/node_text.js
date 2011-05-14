@@ -302,6 +302,7 @@ CSL.Node.text = {
 							func = function (state, Item) {
 								var idx, value;
 								value = state.getVariable(Item, "page", form);
+								value = value.replace("\u2013", "-", "g");
 								if (value) {
 									idx = value.indexOf("-");
 									if (idx > -1) {

@@ -66,6 +66,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 
 	listify = function (str) {
 		var m, lst, ret;
+		str = str.replace("\u2013", "-", "g");
 		// Workaround for Internet Explorer
 		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
 		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
@@ -161,7 +162,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	//
 	if (!state.opt["page-range-format"]) {
 		ret_func = function (str) {
-			return str;
+			return str.replace("-", "\u2013", "g");
 		};
 	} else if (state.opt["page-range-format"] === "expanded") {
 		ret_func = function (str) {
