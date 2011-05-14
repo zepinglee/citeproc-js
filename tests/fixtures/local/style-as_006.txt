@@ -3,7 +3,9 @@ bibliography
 <<===== MODE===== <<
 
 >>===== RESULT =====>>
-<span style="font-variant:small-caps;">Barrett</span>, <span style="font-variant: small-caps;">P.J.</span>, <span style="font-variant: small-caps;">Payne</span>, <span style="font-variant: small-caps;">A.R.</span> &#38; <span style="font-variant: small-caps;">Ward</span>, <span style="font-variant: small-caps;">B.L.</span> 1983. Modern sedimentation in McMurdo Sound, Antarctica. <i>In</i> <span style="font-variant: small-caps;">Oliver</span>, <span style="font-variant: small-caps;">R. L.</span>, <span style="font-variant: small-caps;">James</span>, <span style="font-variant: small-caps;">P. R.</span> &amp;&nbsp;<span style="font-variant: small-caps;">Jago</span>, <span style="font-variant: small-caps;">J. B.,</span> <em>eds. Antarctic earth science</em>. Canberra: Australian Academy of Science &amp; Cambridge: Cambridge University Press, 550&ndash;554.
+<div class="csl-bib-body">
+  <div class="csl-entry"><span style="font-variant:small-caps;">Barrett</span>, <span style="font-variant:small-caps;">P.J.</span>, <span style="font-variant:small-caps;">Payne</span>, <span style="font-variant:small-caps;">A.R.</span> &#38; <span style="font-variant:small-caps;">Ward</span>, <span style="font-variant:small-caps;">B.L.</span> 1983. Modern sedimentation in McMurdo Sound, Antarctica. <i>In</i> <span style="font-variant:small-caps;">Oliver</span>, <span style="font-variant:small-caps;">R.L.</span>, <span style="font-variant:small-caps;">James</span>, <span style="font-variant:small-caps;">P.R.</span> &#38; <span style="font-variant:small-caps;">Jago</span>, <span style="font-variant:small-caps;">J.B.,</span> <i>eds.</i> <i>Antarctic earth science</i>. Canberra: Australian Academy of Science &#38; Cambridge: Cambridge University Press, 550–554.</div>
+</div>
 <<===== RESULT===== <<
 
 >>===== CSL =====>>
@@ -23,39 +25,32 @@ antarctic-science.csl
     "publisher": "Australian Academy of Science; Cambridge University Press",
     "publisher-place": "Canberra; Cambridge",
     "page": "550–554",
-    "event-place": "Canberra; Cambridge",
     "author": [
       {
         "family": "Barrett",
-        "given": "P. J.",
-        "isInstitution": ""
+        "given": "P. J."
       },
       {
         "family": "Payne",
-        "given": "A. R.",
-        "isInstitution": ""
+        "given": "A. R."
       },
       {
         "family": "Ward",
-        "given": "B. L.",
-        "isInstitution": ""
+        "given": "B. L."
       }
     ],
     "editor": [
       {
         "family": "Oliver",
-        "given": "R. L.",
-        "isInstitution": ""
+        "given": "R. L."
       },
       {
         "family": "James",
-        "given": "P. R.",
-        "isInstitution": ""
+        "given": "P. R."
       },
       {
         "family": "Jago",
-        "given": "J. B.",
-        "isInstitution": ""
+        "given": "J. B."
       }
     ],
     "issued": {

@@ -3,7 +3,9 @@ bibliography
 <<===== MODE===== <<
 
 >>===== RESULT =====>>
-<span style="font-variant:small-caps;">Stanley</span>, <span style="font-variant: small-caps;">S.M.</span> 1979. <i>Macroevolution, pattern and process</i>. San Francisco, CA: Freeman, 573 pp.
+<div class="csl-bib-body">
+  <div class="csl-entry"><span style="font-variant:small-caps;">Stanley</span>, <span style="font-variant:small-caps;">S.M.</span> 1979. <i>Macroevolution, pattern and process</i>. San Francisco, CA: Freeman, 573 pp.</div>
+</div>
 <<===== RESULT===== <<
 
 >>===== CSL =====>>
