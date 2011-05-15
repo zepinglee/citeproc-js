@@ -166,60 +166,14 @@ CSL.Util.Suffixator = function (slist) {
  */
 
 CSL.Util.Suffixator.prototype.format = function (num) {
-	var suffixes = this.get_suffixes(num);
-	return suffixes[(suffixes.length - 1)];
-};
-
-CSL.Util.Suffixator.prototype.get_suffixes = function (num) {
-	var suffixes, digits, chrs, pos, len, llen, ppos;
-	num = parseInt(num, 10);
-	suffixes = [];
-
-	for (pos = 0; pos <= num; pos += 1) {
-		if (!pos) {
-			suffixes.push([0]);
-		} else {
-			suffixes.push(this.incrementArray(suffixes[(suffixes.length - 1)], this.slist));
-		}
-	}
-	len = suffixes.length;
-	for (pos = 0; pos < len; pos += 1) {
-		digits = suffixes[pos];
-		chrs = "";
-		llen = digits.length;
-		for (ppos = 0; ppos < llen; ppos += 1) {
-			chrs = chrs + this.slist[digits[ppos]];
-		}
-		suffixes[pos] = chrs;
-	}
-	return suffixes;
-};
-
-
-CSL.Util.Suffixator.prototype.incrementArray = function (array) {
-	var incremented, newdigit, i, pos, len, ppos, llen;
-	array = array.slice();
-	incremented = false;
-	len = array.length - 1;
-	for (pos = len; pos > -1; pos += -1) {
-		if (array[pos] < (this.slist.length - 1)) {
-			array[pos] += 1;
-			// zero out everything to the right of the
-			// incremented element
-			for (ppos = (pos + 1), llen = array.length; ppos < llen; ppos += 1) {
-				array[ppos] = 0;
-			}
-			incremented = true;
-			break;
-		}
-	}
-	if (!incremented) {
-		len = array.length;
-		for (pos = 0; pos < len; pos += 1) {
-			array[pos] = 0;
-		}
-		newdigit = [0];
-		array = newdigit.concat(array);
-	}
-	return array;
+	// Many thanks to Avram Lyon for this code, and good
+	// riddance to the several functions that it replaces.
+	var X, N;
+	var key = "";
+	do {
+		X = ((N % 26) == 0) ? 26 : (N % 26);
+		key = letters[X-1] + key;
+		N = (N - X) / 26;
+	} while ( N != 0 );
+	return key;
 };
