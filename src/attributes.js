@@ -597,6 +597,21 @@ CSL.Attributes["@locator"] = function (state, arg) {
 	}
 };
 
+CSL.Attributes["@has-publisher-and-publisher-place"] = function (state, arg) {
+	this.strings["has-publisher-and-publisher-place"] = true;
+};
+
+CSL.Attributes["@publisher-delimiter-precedes-last"] = function (state, arg) {
+	this.strings["publisher-delimiter-precedes-last"] = arg;
+};
+
+CSL.Attributes["@publisher-delimiter"] = function (state, arg) {
+	this.strings["publisher-delimiter"] = arg;
+};
+
+CSL.Attributes["@publisher-and"] = function (state, arg) {
+	this.strings["publisher-and"] = arg;
+};
 
 CSL.Attributes["@newdate"] = function (state, arg) {
 

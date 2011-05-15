@@ -516,6 +516,7 @@ if (!CSL.Node) {
     load("./src/util_names_etalconfig.js");
     load("./src/util_names_etal.js");
     load("./src/util_names_render.js");
+	load("./src/util_publishers.js");
 
     load("./src/util_label.js");
 

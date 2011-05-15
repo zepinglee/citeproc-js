@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.166";
+	this.processor_version = "1.0.167";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -93,6 +93,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
 	this.cslXml = this.sys.xml.makeXml(style);
 	this.sys.xml.addInstitutionNodes(this.cslXml);
+	this.sys.xml.insertPublisherAndPlace(this.cslXml);
 	//
 	// Note for posterity: tried manipulating the XML here to insert
 	// a list of the upcoming date-part names.  The object is apparently
@@ -106,9 +107,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	if ("undefined" === typeof attrs["@sort-separator"]) {
 		this.sys.xml.setAttribute(this.cslXml, "sort-separator", ", ");
 	}
-	if ("undefined" === typeof attrs["@name-delimiter"]) {
-		this.sys.xml.setAttribute(this.cslXml, "name-delimiter", ", ");
-	}
+	//if ("undefined" === typeof attrs["@name-delimiter"]) {
+	//	this.sys.xml.setAttribute(this.cslXml, "name-delimiter", ", ");
+	//}
 
 	this.opt["initialize-with-hyphen"] = true;
 
@@ -600,6 +601,3 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
 		}
 	}
 };
-
-
-

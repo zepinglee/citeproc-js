@@ -237,6 +237,24 @@ CSL.Transform = function (state) {
 	}
 	this.setAbbreviations = setAbbreviations;
 
+	function publisherCheck (varname, primary, tok) {
+		if (state.publisherOutput && primary) {
+			if (["publisher","publisher-place"].indexOf(varname) === -1) {
+				return false;
+			} else {
+				state.publisherOutput[varname + "-token"] = tok;
+				state.publisherOutput.varlist.push(varname);
+				var lst = primary.split(/;\s*/);
+				if (lst.length === state.publisherOutput[varname + "-list"].length) {
+					state.tmp[varname + "-list"] = lst;
+				}
+				state.tmp[varname + "-token"] = tok;
+				return true;
+			}
+		}
+		return false;
+	};
+
 	// Return function appropriate to selected options
 	function getOutputFunction(variables) {
 		var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
@@ -255,23 +273,23 @@ CSL.Transform = function (state) {
 		// XXXXX This is a try-and-see change, we'll see how it goes.
 		// Apply uniform transforms to all variables that request
 		// translation.
-		if (false && mysubsection) {
-			// Short form
-			return function (state, Item) {
-				var primary;
-				if (!variables[0]) {
-					return null;
-				}
-
-				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
-				primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
-				state.output.append(primary, this);
-			};
-		} else if (transform_locale === "locale-sec") {
+		if (transform_locale === "locale-sec") {
 			// Long form, with secondary translation
 			return function (state, Item) {
 				var primary, secondary, primary_tok, secondary_tok, key;
 				if (!variables[0]) {
+					return null;
+				}
+				
+				// Problem for multilingual: we really should be
+				// checking for sanity on the basis of the output
+				// strings to be actually used. (also below)
+				if (state.tmp["publisher-list"]) {
+					if (variables[0] === "publisher") {
+						state.tmp["publisher-token"] = this;
+					} else if (variables[0] === "publisher-place") {
+						state.tmp["publisher-place-token"] = this;
+					}
 					return null;
 				}
 				if (state.opt["locale-suppress-title-transliteration"] 
@@ -314,7 +332,14 @@ CSL.Transform = function (state) {
 					return null;
 				}
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
-				state.output.append(primary, this);
+				// Factor this out
+				if (publisherCheck(variables[0], primary, this)) {
+					return null;
+				} else {
+					// Safe, because when state.tmp["publisher-list"] exists,
+					// the variable must be one of publisher or publisher-place.
+					state.output.append(primary, this);
+				}
 				return null;
 			};
 		}
