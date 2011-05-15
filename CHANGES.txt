@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.167
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Replace several largely incomprehensible functions used
+  to generate alphabetic suffixes with a short function
+  from Avram Lyon that is concise, readable, and does the 
+  same thing.
+
+- Implement paired rendering and "and"-wise joins of multiple 
+  publishers and publisher-places, where (a) rendered as the sole 
+  text elements within a group, (b) with no affixes on the two 
+  text elements, and (c) the data consist of semicolon-delimited 
+  lists of equal length, and (d) (at least) name-delimiter 
+  is supplied on the ancestor cs:citation or cs:bibliography 
+  node.  The "and" term used for the join, if any, is also that
+  specified on the ancestor node.
+
+
+==========================
 Changes in version 1.0.166
 ==========================
 

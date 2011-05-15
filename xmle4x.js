@@ -176,6 +176,28 @@ CSL_E4X.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
 	delete parent.*[pos];
 	return parent;
 };
+CSL_E4X.prototype.insertPublisherAndPlace = function(myxml) {
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	for each (var node in myxml..group) {
+			if (node.children().length() === 2) {
+				var twovars = [];
+				for each (var child in node.children()) {
+						if (child.children().length() === 0
+) {
+							twovars.push(child.@variable.toString());
+							if (child.@suffix.toString()
+								|| child.@prefix.toString()) {
+								twovars = [];
+								break;
+							}
+						}
+					}
+				if (twovars.indexOf("publisher") > -1 && twovars.indexOf("publisher-place") > -1) {
+					node["@has-publisher-and-publisher-place"] = "true";
+				}
+			}
+		}
+};
 CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 	var institution_long, institution_short, name_part, children, node, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
