@@ -165,14 +165,15 @@ CSL.Util.Suffixator = function (slist) {
  * object with such a "format" method.</p>
  */
 
-CSL.Util.Suffixator.prototype.format = function (num) {
+CSL.Util.Suffixator.prototype.format = function (N) {
 	// Many thanks to Avram Lyon for this code, and good
 	// riddance to the several functions that it replaces.
 	var X, N;
+	N += 1;
 	var key = "";
 	do {
 		X = ((N % 26) == 0) ? 26 : (N % 26);
-		key = letters[X-1] + key;
+		key = this.slist[X-1] + key;
 		N = (N - X) / 26;
 	} while ( N != 0 );
 	return key;
