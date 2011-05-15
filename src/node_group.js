@@ -117,12 +117,14 @@ CSL.Node.group = {
 				var outer_area = state.build.area.replace(/_sort$/, "");
 				if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
 					func = function (state, Item) {
-						var outer_area = state.tmp.area.replace("_sort", "");
-						state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
-						state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
-						state.publisherOutput.and = state[outer_area].opt["and"];
-						state.publisherOutput.render();
-						state.publisherOutput = false;
+						if (state.publisherOutput) {
+							var outer_area = state.tmp.area.replace("_sort", "");
+							state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
+							state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
+							state.publisherOutput.and = state[outer_area].opt["and"];
+							state.publisherOutput.render();
+							state.publisherOutput = false;
+						}
 					};
 					this.execs.push(func);
 				}
