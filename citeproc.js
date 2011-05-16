@@ -1230,9 +1230,6 @@ CSL.tokenExec = function (token, Item, item) {
 			next = maybenext;
 		}
 	}
-	if (false) {
-		CSL.debug(token.name + " (" + token.tokentype + ") ---> done");
-	}
 	return next;
 };
 CSL.expandMacro = function (macro_key_token) {
@@ -2644,18 +2641,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	this.tmp.citation_errors = [];
 	var return_data = {"bibchange": false};
 	this.registry.return_data = return_data;
-	if (citation) {
-		CSL.debug("citationID received by processCitationCluster(): ("+citation.citationID+")");
-	} else {
-		CSL.error("nil citation received by processCitationCluster()");
-	}
 	this.setCitationId(citation);
-	if (citation) {
-		CSL.debug("  citationID after setCitationId(): ("+citation.citationID+")");
-		CSL.debug("  citationreg.citationById object for "+citation.citationID+": ("+this.registry.citationreg.citationById[citation.citationID]+")");
-	} else {
-		CSL.error("  nil citation after setCitationID()");
-	}
 	var oldCitationList;
 	var oldItemList;
 	var oldAmbigs;
@@ -2699,14 +2685,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	var citationByIndex = [];
 	for (i = 0, ilen = citationsPre.length; i < ilen; i += 1) {
 		c = citationsPre[i];
-		CSL.debug("  -- attempting to access Pre citation with ID: ("+c[0]+")");
 		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	}
 	citationByIndex.push(citation);
 	for (i = 0, ilen = citationsPost.length; i < ilen; i += 1) {
 		c = citationsPost[i];
-		CSL.debug("  -- attempting to access Post citation with ID: ("+c[0]+")");
 		this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
 		citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
 	}
@@ -3877,12 +3861,14 @@ CSL.Node.group = {
 				var outer_area = state.build.area.replace(/_sort$/, "");
 				if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
 					func = function (state, Item) {
-						var outer_area = state.tmp.area.replace("_sort", "");
-						state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
-						state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
-						state.publisherOutput.and = state[outer_area].opt["and"];
-						state.publisherOutput.render();
-						state.publisherOutput = false;
+						if (state.publisherOutput) {
+							var outer_area = state.tmp.area.replace("_sort", "");
+							state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
+							state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
+							state.publisherOutput.and = state[outer_area].opt["and"];
+							state.publisherOutput.render();
+							state.publisherOutput = false;
+						}
 					};
 					this.execs.push(func);
 				}
@@ -5460,7 +5446,7 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		noparse = false;
 	}
 	if (!name["non-dropping-particle"] && name.family && !noparse) {
-		m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[\s+|\'\u2019]|[DVL][^ ]\s+|[DVL][^ ][^ ]\s+))/);
+		m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[\s+|\'\u2019]|[DVL][^ ]\s+[a-z]*\s*|[DVL][^ ][^ ]\s+[a-z]*\s*))/);
 		if (m) {
 			name.family = name.family.slice(m[1].length);
 			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
@@ -8637,11 +8623,9 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		head = strs.slice(0, (badTagPos - 1));
 		tail = strs.slice((badTagPos + 2));
 		sep = strs[badTagPos];
-		CSL.debug("sep [1] is: ("+sep+") for badTagPos: ("+badTagPos+") in strs ("+strs+")");
 		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
 			params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
-			CSL.debug("sep [2] is: ("+sep+") from params[0] ("+params[0]+") and params[1][0] ("+params[1][0]+") -- params is ("+params+")");
 		}
 		resplice = strs[(badTagPos - 1)] + sep + strs[(badTagPos + 1)];
 		head.push(resplice);
@@ -9320,9 +9304,6 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 	return 0;
 };
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
-	if (!this.registry[id]) {
-		CSL.debug("Warning: unregistered item: itemID=("+id+"), akey=("+akey+")");
-	}
 	if (this.registry[id] && this.registry[id].disambig && this.registry[id].disambig.names) {
 		for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
 			var new_names_params = ambig_config.names[i];

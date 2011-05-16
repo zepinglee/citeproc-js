@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.168
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Provide missing insertPublisherAndPlace() function
+  in xmldom.js. WebKit systems will now run again.
+
+- Attempt to execute publisherOutput only if it has 
+  been instantiated for use.
+
+
+==========================
 Changes in version 1.0.167
 ==========================
 
