@@ -293,11 +293,11 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 		head = strs.slice(0, (badTagPos - 1));
 		tail = strs.slice((badTagPos + 2));
 		sep = strs[badTagPos];
-		CSL.debug("sep [1] is: ("+sep+") for badTagPos: ("+badTagPos+") in strs ("+strs+")");
+		//CSL.debug("sep [1] is: ("+sep+") for badTagPos: ("+badTagPos+") in strs ("+strs+")");
 		if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
 			params = this.openToDecorations[sep];
 			sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
-			CSL.debug("sep [2] is: ("+sep+") from params[0] ("+params[0]+") and params[1][0] ("+params[1][0]+") -- params is ("+params+")");
+			//CSL.debug("sep [2] is: ("+sep+") from params[0] ("+params[0]+") and params[1][0] ("+params[1][0]+") -- params is ("+params+")");
 		}
 		resplice = strs[(badTagPos - 1)] + sep + strs[(badTagPos + 1)];
 		head.push(resplice);

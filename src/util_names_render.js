@@ -136,8 +136,6 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 };
 
 CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
-	// Extract name parts. With a rusty pair of piers if necessary.
-	//var name = this._normalizeNameInput(value);
 	var name = value;
 	var dropping_particle = this._droppingParticle(name, pos);
 	var family = this._familyName(name);
@@ -381,7 +379,7 @@ CSL.NameOutput.prototype._parseName = function (name) {
 		noparse = false;
 	}
 	if (!name["non-dropping-particle"] && name.family && !noparse) {
-		m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[\s+|\'\u2019]|[DVL][^ ]\s+|[DVL][^ ][^ ]\s+))/);
+		m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[\s+|\'\u2019]|[DVL][^ ]\s+[a-z]*\s*|[DVL][^ ][^ ]\s+[a-z]*\s*))/);
 		if (m) {
 			name.family = name.family.slice(m[1].length);
 			name["non-dropping-particle"] = m[1].replace(/\s+$/, "");

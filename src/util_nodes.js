@@ -70,9 +70,11 @@ CSL.tokenExec = function (token, Item, item) {
 			next = maybenext;
 		}
 	}
+	//SNIP-START
 	if (false) {
 		CSL.debug(token.name + " (" + token.tokentype + ") ---> done");
 	}
+	//SNIP-END
 	return next;
 };
 
