@@ -293,6 +293,29 @@ CSL_CHROME.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
 	parent.replaceChild(myxml, node);
  	return parent;
  };
+CSL_CHROME.prototype.insertPublisherAndPlace = function(myxml) {
+	var group = myxml.getElementsByTagName("group");
+	for (var i = 0, ilen = group.length; i < ilen; i += 1) {
+		var node = group.item(i);
+		if (node.childNodes.length === 2) {
+			var twovars = [];
+			for (var j = 0, jlen = 2; j < jlen; j += 1) {
+				var child = node.childNodes.item(j);
+				if (child.childNodes.length === 0) {
+					twovars.push(child.getAttribute('variable'));
+					if (child.getAttribute('suffix')
+						|| child.getAttribute('prefix')) {
+						twovars = [];
+						break;
+					}
+				}
+			}
+			if (twovars.indexOf("publisher") > -1 && twovars.indexOf("publisher-place") > -1) {
+				node.setAttribute('has-publisher-and-publisher-place', true);
+			}
+		}
+	}
+};
 CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 	var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
 	names = myxml.getElementsByTagName("names");
