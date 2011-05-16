@@ -267,7 +267,7 @@ class Params:
                     print "Old: %s" % mp
                 self.grindFile(hpath,filename,mp)
             if not self.opt.processor:
-                m = re.match("([a-z]*)_.*",filename)
+                m = re.match("([-a-z]*)_.*",filename)
                 if m:
                     groupkey = m.group(1)
                     if not groups.has_key(groupkey):
@@ -446,7 +446,7 @@ class CslTest:
 	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
         self.CREATORS += ["composer","original-author","container-author","collection-editor"]
         self.RE_ELEMENT = '(?sm)^(.*>>=.*%s[^\n]+)(.*)(\n<<=.*%s.*)'
-        self.RE_FILENAME = '^[a-z]+_[a-zA-Z0-9]+\.txt$'
+        self.RE_FILENAME = '^[-a-z]+_[a-zA-Z0-9]+\.txt$'
         self.script = os.path.split(sys.argv[0])[1]
         self.pickle = ".".join((os.path.splitext( self.script )[0], "pkl"))
         self.data = {}
