@@ -51,7 +51,9 @@ bibliography
 <<===== MODE===== <<
 
 >>===== RESULT =====>>
-<span style="font-variant:small-caps;">Sch&ouml;ner</span>, <span style="font-variant: small-caps;">R.</span>, <span style="font-variant: small-caps;">Viereck-Goette</span>, <span style="font-variant: small-caps;">L.</span>, <span style="font-variant: small-caps;">Schneider</span>, <span style="font-variant: small-caps;">J.</span> &#38; <span style="font-variant: small-caps;">Bomfleur</span>, <span style="font-variant: small-caps;">B.</span> 2007. Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica: A revised stratigraphic model. <i>In</i> <span style="font-variant: small-caps;">Cooper, </span><span style="font-variant: small-caps;">A. K.</span> &amp; <span style="font-variant: small-caps;">Raymond, </span><span style="font-variant: small-caps;">C. R.</span>, <em>eds.</em> Antarctica: a keystone in a changing world &ndash; Online Proceedings of the&nbsp; 10th ISAES. USGS Open-File Report 2007&ndash;1047, Short Research Paper 102, 5 pp, 10.3133/of2007- 1047.srp102.
+<div class="csl-bib-body">
+  <div class="csl-entry"><span style="font-variant:small-caps;">Schöner</span>, <span style="font-variant:small-caps;">R.</span>, <span style="font-variant:small-caps;">Viereck-Goette</span>, <span style="font-variant:small-caps;">L.</span>, <span style="font-variant:small-caps;">Schneider</span>, <span style="font-variant:small-caps;">J.</span> &#38; <span style="font-variant:small-caps;">Bomfleur</span>, <span style="font-variant:small-caps;">B.</span> 2007. Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica: A revised stratigraphic model. <i>In</i> <span style="font-variant:small-caps;">Cooper</span>, <span style="font-variant:small-caps;">A.K.</span> &#38; <span style="font-variant:small-caps;">Raymond</span>, <span style="font-variant:small-caps;">C.R.</span>, <i>eds.</i> <i>Antarctica: a keystone in a changing world</i> – Online Proceedings of the 10th ISAES. USGS Open-File Report 2007–1047, Short Research Paper 102, 5 pp, 10.3133/of2007-1047.srp102.</div>
+</div>
 <<===== RESULT===== <<
 
 >>===== CSL =====>>
@@ -66,42 +68,38 @@ antarctic-science.csl
     "multi": {
       "_keys": {}
     },
+	"DOI": "10.3133/of2007-1047.srp102",
     "title": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica: A revised stratigraphic model",
-    "page": "5",
-    "volume": "1047",
+	"container-title": "Antarctica: a keystone in a changing world",
+	"event": "Online Proceedings of the 10th ISAES",
     "shortTitle": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica",
+	"note": "{:number-of-pages: 5} {:number: USGS Open-File Report 2007–1047, Short Research Paper 102}",
     "author": [
       {
         "family": "Schöner",
-        "given": "R.",
-        "isInstitution": ""
+        "given": "R."
       },
       {
         "family": "Viereck-Goette",
-        "given": "L.",
-        "isInstitution": ""
+        "given": "L."
       },
       {
         "family": "Schneider",
-        "given": "J.",
-        "isInstitution": ""
+        "given": "J."
       },
       {
         "family": "Bomfleur",
-        "given": "B.",
-        "isInstitution": ""
+        "given": "B."
       }
     ],
     "editor": [
       {
         "family": "Cooper",
-        "given": "A. K.",
-        "isInstitution": ""
+        "given": "A. K."
       },
       {
         "family": "Raymond",
-        "given": "C. R.",
-        "isInstitution": ""
+        "given": "C. R."
       }
     ],
     "issued": {

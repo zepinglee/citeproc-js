@@ -76,8 +76,7 @@ antarctic-science.csl
     "author": [
       {
         "family": "Stanley",
-        "given": "Steven M.",
-        "isInstitution": ""
+        "given": "Steven M."
       }
     ],
     "issued": {

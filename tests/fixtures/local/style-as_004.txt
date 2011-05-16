@@ -80,8 +80,7 @@ antarctic-science.csl
     "author": [
       {
         "family": "Suarez",
-        "given": "M.",
-        "isInstitution": ""
+        "given": "M."
       }
     ]
   }

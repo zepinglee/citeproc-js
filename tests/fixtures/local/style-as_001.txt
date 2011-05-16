@@ -77,8 +77,7 @@ antarctic-science.csl
     "author": [
       {
         "family": "Cantrill",
-        "given": "D. J.",
-        "isInstitution": ""
+        "given": "D. J."
       }
     ],
     "issued": {
