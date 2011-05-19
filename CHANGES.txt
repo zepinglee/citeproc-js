@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.169
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not attempt to apply affixes to name parts
+  that evaluate false. Fault reported by
+  Faolan Cheslack-Postava.
+
+
+==========================
 Changes in version 1.0.168
 ==========================
 

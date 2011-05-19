@@ -1663,7 +1663,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.167";
+	this.processor_version = "1.0.169";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5277,7 +5277,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	} else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0)) {
 		if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
 			second = this._join([given, dropping_particle, non_dropping_particle], " ");
-			if (this.given) {
+			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
 			}
@@ -5289,12 +5289,12 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			blob = this._join([merged, suffix], sort_sep);
 		} else {
 			first = this._join([non_dropping_particle, family], " ");
-			if (this.family) {
+			if (first && this.family) {
 				first.strings.prefix = this.family.strings.prefix;
 				first.strings.suffix = this.family.strings.suffix;
 			}
 			second = this._join([given, dropping_particle], " ");
-			if (this.given) {
+			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
 			}
@@ -5309,11 +5309,11 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			}
 		}
 		second = this._join([dropping_particle, non_dropping_particle, family], " ");
-		if (this.family) {
+		if (second && this.family) {
 			second.strings.prefix = this.family.strings.prefix;
 			second.strings.suffix = this.family.strings.suffix;
 		}
-		if (this.given) {
+		if (given && this.given) {
 			given.strings.prefix = this.given.strings.prefix;
 			given.strings.suffix = this.given.strings.suffix;
 		}
