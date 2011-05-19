@@ -181,7 +181,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			second = this._join([given, dropping_particle, non_dropping_particle], " ");
 			//second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
 			//second = this._join([second, non_dropping_particle], " ");
-			if (this.given) {
+			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
 			}
@@ -194,14 +194,14 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		} else {
 			// Don't drop particle.
 			first = this._join([non_dropping_particle, family], " ");
-			if (this.family) {
+			if (first && this.family) {
 				first.strings.prefix = this.family.strings.prefix;
 				first.strings.suffix = this.family.strings.suffix;
 			}
 
 			//second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
 			second = this._join([given, dropping_particle], " ");
-			if (this.given) {
+			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
 			}
@@ -217,11 +217,11 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			}
 		}
 		second = this._join([dropping_particle, non_dropping_particle, family], " ");
-		if (this.family) {
+		if (second && this.family) {
 			second.strings.prefix = this.family.strings.prefix;
 			second.strings.suffix = this.family.strings.suffix;
 		}
-		if (this.given) {
+		if (given && this.given) {
 			given.strings.prefix = this.given.strings.prefix;
 			given.strings.suffix = this.given.strings.suffix;
 		}
