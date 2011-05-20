@@ -130,6 +130,11 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.given_decor.strings.suffix = "";
 	}
 
+	if (!this.institution.decorations) {
+		this.institution.decorations = [];
+	}
+	this.institution.decorations_base = this.institution.decorations.slice();
+
 	//SNIP-START
 	if (this.debug) {
 		print("(2)");
