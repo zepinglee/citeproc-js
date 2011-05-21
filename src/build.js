@@ -569,7 +569,7 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 			// XXXX: temporary workaround
 
 			if (field === "literal" && "object" === typeof date_obj.literal && "string" === typeof date_obj.literal.part) {
-				CSL.error("CSL: fixing up weird literal date value");
+				CSL.debug("Warning: fixing up weird literal date value");
 				ret.literal = date_obj.literal.part;
 			} else {
 				ret[field] = date_obj[field];
