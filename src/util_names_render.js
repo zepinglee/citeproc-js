@@ -76,7 +76,6 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
 		var v = this.variables[i];
 		for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
 			var institution, institution_short, institution_long, short_style, long_style;
-			this.institution.decorations = this.institution.decorations_base.slice();
 			switch (this.institution.strings["institution-parts"]) {
 			case "short":
 				if (this.institutions[v][j]["short"].length) {
@@ -337,10 +336,6 @@ CSL.NameOutput.prototype._getLongStyle = function (v, i) {
 	if (!long_style) {
 		long_style = new CSL.Token();
 	}
-	if (!long_style.decorations) {
-		long_style.decorations = [];
-	}
-	long_style.decorations = this.institution.decorations.concat(long_style.decorations);
 	return long_style;
 };
 
@@ -351,10 +346,6 @@ CSL.NameOutput.prototype._getShortStyle = function () {
 	} else {
 		short_style = new CSL.Token();
 	}
-	if (!short_style.decorations) {
-		short_style.decorations = [];
-	}
-	short_style.decorations = this.institution.decorations.concat(short_style.decorations);
 	return short_style;
 };
 
