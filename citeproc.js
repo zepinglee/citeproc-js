@@ -1663,7 +1663,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.169";
+	this.processor_version = "1.0.170";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5406,10 +5406,6 @@ CSL.NameOutput.prototype._getLongStyle = function (v, i) {
 	if (!long_style) {
 		long_style = new CSL.Token();
 	}
-	if (!long_style.decorations) {
-		long_style.decorations = [];
-	}
-	long_style.decorations = this.institution.decorations.concat(long_style.decorations);
 	return long_style;
 };
 CSL.NameOutput.prototype._getShortStyle = function () {
@@ -5419,10 +5415,6 @@ CSL.NameOutput.prototype._getShortStyle = function () {
 	} else {
 		short_style = new CSL.Token();
 	}
-	if (!short_style.decorations) {
-		short_style.decorations = [];
-	}
-	short_style.decorations = this.institution.decorations.concat(short_style.decorations);
 	return short_style;
 };
 CSL.NameOutput.prototype._parseName = function (name) {
@@ -6206,8 +6198,8 @@ CSL.Node.text = {
 							func = function (state, Item) {
 								var idx, value;
 								value = state.getVariable(Item, "page", form);
-								value = value.replace("\u2013", "-", "g");
 								if (value) {
+									value = value.replace("\u2013", "-", "g");
 									idx = value.indexOf("-");
 									if (idx > -1) {
 										value = value.slice(0, idx);

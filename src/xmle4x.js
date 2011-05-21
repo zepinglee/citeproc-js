@@ -282,7 +282,9 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 				for each (var namepartnode in node.name['name-part']) {
 	   				if (namepartnode.@name.toString() === 'family') {
 						for each (var attr in CSL.INSTITUTION_KEYS) {
-							node.institution['institution-part'][0].@[attr] = namepartnode.@[attr].toString();
+						    if (namepartnode.@[attr].toString()) {
+								node.institution['institution-part'][0].@[attr] = namepartnode.@[attr].toString();
+							}
 						}
 	   				}
 				}

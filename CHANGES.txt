@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.170
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not attempt to replace en-dash with hyphen on 
+  undefined value in CSL.Node.text.
+
+- Ignore decorations array on cs:institution nodes.
+
+***
+
+Both issues reported by Faolan.
+
+
+==========================
 Changes in version 1.0.169
 ==========================
 

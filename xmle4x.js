@@ -210,22 +210,22 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 					use-last="1"/>
 				institution_part = <institution-part name="long"/>;
 				node.name += institution_long;
-				for each (var attr in CSL.INSTITUTION_KEYS) {
-					if (node.name.@[attr].toString()) {
-						node.institution.@[attr] = node.name.@[attr].toString();
-					}
-				}
 				node.institution.@delimiter = node.name.@delimiter.toString();
 				if (node.name.@and.toXMLString()) {
 					node.institution.@and = "text";
 				}
-				node.institution[0].appendChild(institution_part)
+				node.institution[0].appendChild(institution_part);
+				for each (var attr in CSL.INSTITUTION_KEYS) {
+					if (node.name.@[attr].toString()) {
+						node.institution['institution-part'][0].@[attr] = node.name.@[attr].toString();
+					}
+				}
 				for each (var namepartnode in node.name['name-part']) {
 	   				if (namepartnode.@name.toString() === 'family') {
 						for each (var attr in CSL.INSTITUTION_KEYS) {
-		   					if (namepartnode.@[attr].toString()) {
+						    if (namepartnode.@[attr].toString()) {
 								node.institution['institution-part'][0].@[attr] = namepartnode.@[attr].toString();
-		   					}
+							}
 						}
 	   				}
 				}

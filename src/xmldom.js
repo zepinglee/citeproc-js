@@ -399,7 +399,9 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 					for (var k = 0, klen = CSL.INSTITUTION_KEYS.length; k < klen; k += 1) {
 						var attrname = CSL.INSTITUTION_KEYS[k];
 						var attrval = nameparts[j].getAttribute(attrname);
-						theinstitutionpart.setAttribute(attrname, attrval);
+						if (attrval) {
+							theinstitutionpart.setAttribute(attrname, attrval);
+						}
 					}
 				}
 			}

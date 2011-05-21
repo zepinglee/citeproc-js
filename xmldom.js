@@ -112,10 +112,12 @@ var CSL_CHROME = function () {
 		}
 	};
 	this.parser = new DOMParser();
-	var inst_txt = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"/></docco>";
-	var inst_doc = this.parser.parseFromString(inst_txt, "text/xml");
+	var str = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"><institution-part name=\"long\"></institution></docco>";
+	var inst_doc = this.parser.parseFromString(str, "text/xml");
 	var inst_node = inst_doc.getElementsByTagName("institution");
 	this.institution = inst_node.item(0);
+	var inst_part_node = inst_doc.getElementsByTagName("institution-part");
+	this.institutionpart = inst_part_node.item(0);
 	this.ns = "http://purl.org/net/xbiblio/csl";
 };
 CSL_CHROME.prototype.clean = function (xml) {
@@ -320,7 +322,7 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 	var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
 	names = myxml.getElementsByTagName("names");
 	for (pos = 0, len = names.length; pos < len; pos += 1) {
-		thenames = names[pos];
+		thenames = names.item(pos);
 		name = thenames.getElementsByTagName("name");
 		if (name.length == 0) {
 			continue;
@@ -328,13 +330,14 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 		institution = thenames.getElementsByTagName("institution");
 		if (institution.length == 0) {
 			theinstitution = this.importNode(myxml.ownerDocument, this.institution);
-			thename = name[0];
+			theinstitutionpart = theinstitution.getElementsByTagName("institution-part").item(0);
+			thename = name.item(0);
 			thenames.insertBefore(theinstitution, thename.nextSibling);
 			for (var j = 0, jlen = CSL.INSTITUTION_KEYS.length; j < jlen; j += 1) {
 				var attrname = CSL.INSTITUTION_KEYS[j];
 				var attrval = thename.getAttribute(attrname);
 				if (attrval) {
-					theinstitution.setAttribute(attrname, attrval);
+					theinstitutionpart.setAttribute(attrname, attrval);
 				}
 			}
 			var nameparts = thename.getElementsByTagName("name-part");
@@ -343,7 +346,9 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 					for (var k = 0, klen = CSL.INSTITUTION_KEYS.length; k < klen; k += 1) {
 						var attrname = CSL.INSTITUTION_KEYS[k];
 						var attrval = nameparts[j].getAttribute(attrname);
-						theinstitution.setAttribute(attrname, attrval);
+						if (attrval) {
+							theinstitutionpart.setAttribute(attrname, attrval);
+						}
 					}
 				}
 			}
