@@ -57,7 +57,7 @@ CSL.localeResolve = function (langstr) {
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if ("undefined" === typeof ret.base) {
-		CSL.error("unknown locale "+langstr+", setting to en-US");
+		CSL.debug("Warning: unknown locale "+langstr+", setting to en-US");
 		return {base:"en-US", best:"en-US", bare:"en"};
 	}
 	if (langlst.length === 1 || langlst[1] === "x") {
