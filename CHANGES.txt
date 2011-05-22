@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.171
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Ignore name terms that are missing from the locale files
+  when generating labels in cs:names.
+
+- Log message with CSL.debug() rather than CSL.error()
+  when falling back from unknown locale.
+
+- Log message with CSL.debug() rather than CSL.error() when 
+  fixing up non-fatal but weird date values.
+
+- Step past comment nodes silently (this is a simple noop
+  for the processor, so save the chatter in the log files).
+
+
+==========================
 Changes in version 1.0.170
 ==========================
 

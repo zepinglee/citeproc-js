@@ -134,6 +134,7 @@ var CSL = {
 	PARALLEL_COLLAPSING_MID_VARSET: ["volume", "container-title", "section"],
 	LOOSE: 0,
 	STRICT: 1,
+	TOLERANT: 2,
 	PREFIX_PUNCTUATION: /[.;:]\s*$/,
 	SUFFIX_PUNCTUATION: /^\s*[.;:,\(\)]/,
 	NUMBER_REGEXP: /(?:^\d+|\d+$)/,
@@ -1663,7 +1664,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.170";
+	this.processor_version = "1.0.171";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1835,14 +1836,16 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
 CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function () {
 	return this.nodeList[this.depth][1];
 };
-CSL.Engine.prototype.getTerm = function (term, form, plural, gender, loose) {
+CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode) {
 	if (term && term.match(/[A-Z]/) && term === term.toUpperCase()) {
 		CSL.debug("Warning: term key is in uppercase form: "+term);
 		term = term.toLowerCase();
 	}
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
-	if (typeof ret === "undefined") {
-		ret = CSL.Engine.getField(CSL.STRICT, this.locale[this.opt.lang].terms, term, form, plural, gender);
+	if (typeof ret === "undefined" && mode === CSL.STRICT) {
+		throw "Error in getTerm: term \"" + term + "\" does not exist.";
+	} else if (mode === CSL.TOLERANT) {
+		ret = false;
 	}
 	if (ret) {
 		this.tmp.cite_renders_content = true;
@@ -2001,7 +2004,7 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 			}
 		} else if (date_obj.hasOwnProperty(field)) {
 			if (field === "literal" && "object" === typeof date_obj.literal && "string" === typeof date_obj.literal.part) {
-				CSL.error("CSL: fixing up weird literal date value");
+				CSL.debug("Warning: fixing up weird literal date value");
 				ret.literal = date_obj.literal.part;
 			} else {
 				ret[field] = date_obj[field];
@@ -3309,7 +3312,7 @@ CSL.localeResolve = function (langstr) {
 	langlst = langstr.split(/[\-_]/);
 	ret.base = CSL.LANG_BASES[langlst[0]];
 	if ("undefined" === typeof ret.base) {
-		CSL.error("unknown locale "+langstr+", setting to en-US");
+		CSL.debug("Warning: unknown locale "+langstr+", setting to en-US");
 		return {base:"en-US", best:"en-US", bare:"en"};
 	}
 	if (langlst.length === 1 || langlst[1] === "x") {
@@ -3804,7 +3807,6 @@ CSL.Node["else"] = {
 };
 CSL.Node["#comment"] = {
        build: function (state, target) {
-		   CSL.debug("CSL processor warning: comment node reached");
        }
 };
 CSL.Node["et-al"] = {
@@ -5541,8 +5543,8 @@ CSL.evaluateStringPluralism = function (str) {
 		return 0;
 	}
 };
-CSL.castLabel = function (state, node, term, plural) {
-	var ret = state.getTerm(term, node.strings.form, plural);
+CSL.castLabel = function (state, node, term, plural, mode) {
+	var ret = state.getTerm(term, node.strings.form, plural, false, mode);
 	if (node.strings["strip-periods"]) {
 		ret = ret.replace(/\./g, "");
 	}
