@@ -88,8 +88,8 @@ CSL.evaluateStringPluralism = function (str) {
 	}
 };
 
-CSL.castLabel = function (state, node, term, plural) {
-	var ret = state.getTerm(term, node.strings.form, plural);
+CSL.castLabel = function (state, node, term, plural, mode) {
+	var ret = state.getTerm(term, node.strings.form, plural, false, mode);
 	if (node.strings["strip-periods"]) {
 		ret = ret.replace(/\./g, "");
 	}

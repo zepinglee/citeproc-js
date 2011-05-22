@@ -192,6 +192,7 @@ var CSL = {
 
 	LOOSE: 0,
 	STRICT: 1,
+	TOLERANT: 2,
 
 	PREFIX_PUNCTUATION: /[.;:]\s*$/,
 	SUFFIX_PUNCTUATION: /^\s*[.;:,\(\)]/,
