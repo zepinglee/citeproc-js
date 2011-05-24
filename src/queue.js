@@ -70,7 +70,14 @@ CSL.Output.Queue = function (state) {
 // Is that possible though?
 // Okay. Use queue.append() with fake_queue instead.
 CSL.Output.Queue.prototype.pop = function () {
-	return this.current.value().blobs.pop();
+	// For some reason, state.output.current.value() here can be an array, 
+	// not a blob ... ?
+	var drip = this.current.value();
+	if (drip.length) {
+		return drip.pop();
+	} else {
+		return drip.blobs.pop();
+	}
 };
 
 CSL.Output.Queue.prototype.getToken = function (name) {
@@ -548,6 +555,9 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 		}
 		if (blob && "string" === typeof blob) {
 			ret += txt_esc(use_delim);
+			// XXX Blob should be run through flipflop and flattened here.
+			// (I think it must be a fragment of text around a numeric
+			// variable)
 			ret += blob;
 			if (state.tmp.count_offset_characters) {
 				//state.tmp.offset_characters += (use_delim.length + blob.length);
@@ -555,7 +565,14 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			}
 		} else if (blob.status !== CSL.SUPPRESS) {
 			str = blob.formatter.format(blob.num, blob.gender);
-			var strlen = str.length;
+			// Workaround to get a more or less accurate value.
+			var strlen = str.replace(/<[^>]*>/g, "").length;
+			// notSerious
+			this.append(str, "empty", true);
+			var str_blob = this.pop();
+			var count_offset_characters = state.tmp.count_offset_characters;
+			var str = this.string(state, [str_blob], false);
+			state.tmp.count_offset_characters = count_offset_characters;
 			if (blob.strings["text-case"]) {
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
 			}
