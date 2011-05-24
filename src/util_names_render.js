@@ -178,9 +178,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		//
 		if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
 			// Drop non-dropping particle
-			second = this._join([given, dropping_particle, non_dropping_particle], " ");
-			//second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
-			//second = this._join([second, non_dropping_particle], " ");
+			//second = this._join([given, dropping_particle, non_dropping_particle], " ");
+			second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
+			second = this._join([second, non_dropping_particle], " ");
 			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
@@ -199,8 +199,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 				first.strings.suffix = this.family.strings.suffix;
 			}
 
-			//second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
-			second = this._join([given, dropping_particle], " ");
+			second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
+			//second = this._join([given, dropping_particle], " ");
 			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
