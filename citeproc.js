@@ -368,7 +368,12 @@ CSL.Output.Queue = function (state) {
 	this.current = new CSL.Stack(this.queue);
 };
 CSL.Output.Queue.prototype.pop = function () {
-	return this.current.value().blobs.pop();
+	var drip = this.current.value();
+	if (drip.length) {
+		return drip.pop();
+	} else {
+		return drip.blobs.pop();
+	}
 };
 CSL.Output.Queue.prototype.getToken = function (name) {
 	var ret = this.formats.value()[name];
@@ -701,7 +706,12 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			}
 		} else if (blob.status !== CSL.SUPPRESS) {
 			str = blob.formatter.format(blob.num, blob.gender);
-			var strlen = str.length;
+			var strlen = str.replace(/<[^>]*>/g, "").length;
+			this.append(str, "empty", true);
+			var str_blob = this.pop();
+			var count_offset_characters = state.tmp.count_offset_characters;
+			var str = this.string(state, [str_blob], false);
+			state.tmp.count_offset_characters = count_offset_characters;
 			if (blob.strings["text-case"]) {
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
 			}
@@ -1664,7 +1674,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.171";
+	this.processor_version = "1.0.172";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();

@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.172
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Properly render encoded rich text markup embedded in
+  ordinal suffix terms.
+
+
+==========================
 Changes in version 1.0.171
 ==========================
 
