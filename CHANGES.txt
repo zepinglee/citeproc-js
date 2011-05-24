@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.173
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Extend dropping-particle handling implemented in
+  changeset 9dd55c95979b to names rendered in sort
+  order.
+
+
+==========================
 Changes in version 1.0.172
 ==========================
 

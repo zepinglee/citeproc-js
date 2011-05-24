@@ -1674,7 +1674,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.172";
+	this.processor_version = "1.0.173";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5288,7 +5288,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		}
 	} else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0)) {
 		if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
-			second = this._join([given, dropping_particle, non_dropping_particle], " ");
+			second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
+			second = this._join([second, non_dropping_particle], " ");
 			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
@@ -5305,7 +5306,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 				first.strings.prefix = this.family.strings.prefix;
 				first.strings.suffix = this.family.strings.suffix;
 			}
-			second = this._join([given, dropping_particle], " ");
+			second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
 			if (second && this.given) {
 				second.strings.prefix = this.given.strings.prefix;
 				second.strings.suffix = this.given.strings.suffix;
