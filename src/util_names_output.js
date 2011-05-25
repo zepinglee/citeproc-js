@@ -122,12 +122,16 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.family_decor = CSL.Util.cloneToken(this.family);
 		this.family_decor.strings.prefix = "";
 		this.family_decor.strings.suffix = "";
+	} else {
+		this.family_decor = false;
 	}
 
 	if (this.given) {
 		this.given_decor = CSL.Util.cloneToken(this.given);
 		this.given_decor.strings.prefix = "";
 		this.given_decor.strings.suffix = "";
+	} else {
+		this.given_decor = false;
 	}
 
 	//SNIP-START
