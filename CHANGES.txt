@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.174
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Correctly suppress "normal" font forms as the
+  top-level font declaration of their class, as this
+  can have unexpected side effects depending on the 
+  style.
+
+- Prevent leakage of formatting parameters between
+  the cs:name-part elements of different cs:names
+  nodes within the same cite.
+
+
+==========================
 Changes in version 1.0.173
 ==========================
 
