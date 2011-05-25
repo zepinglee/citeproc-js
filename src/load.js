@@ -415,10 +415,6 @@ if (!CSL.System.Xml.DOM) {
 	load("./src/xmldom.js");
 }
 // jslint OK
-if (!CSL.Mode) {
-	load("./src/util_processor.js");
-}
-// jslint OK
 if (!CSL.cloneAmbigConfig) {
 	load("./src/util_disambig.js");
 }
@@ -433,6 +429,10 @@ if (!CSL.DateParser) {
 // jslint OK
 if (!CSL.Engine) {
 	load("./src/build.js");
+}
+// jslint OK
+if (!CSL.Mode) {
+	load("./src/util_processor.js");
 }
 if (!CSL.Engine.prototype.getCitationLabel) {
 	load("./src/util_citationlabel.js");

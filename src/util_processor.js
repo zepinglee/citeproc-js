@@ -162,17 +162,23 @@ CSL.setDecorations = function (state, attributes) {
 	return ret;
 };
 
-CSL.normalDecorIsOrphan = function (blob, params) {
+CSL.Engine.prototype.normalDecorIsOrphan = function (blob, params) {
+	//print("params: "+params);
 	if (params[1] === "normal") {
-		// print("params: "+params);
 		var use_param = false;
-		for (var k = blob.alldecor.length - 1; k > -1; k += -1) {
-			// print("  all decor: "+blob.alldecor[k].length);
-			for (var n = blob.alldecor[k].length - 1; n > -1; n += -1) {
-				// print("  superior param: "+blob.alldecor[k][n]);
-				if (blob.alldecor[k][n][0] === params[0]) {
-					// print("  HIT!");
-					if (blob.alldecor[k][n][1] !== "normal") {
+		var all_the_decor;
+		if (this.tmp.area === "citation") {
+			all_the_decor = [this.citation.opt.layout_decorations].concat(blob.alldecor);
+		} else {
+			all_the_decor = blob.alldecor;
+		}
+		for (var k = all_the_decor.length - 1; k > -1; k += -1) {
+			//print("  all decor: "+all_the_decor[k].length);
+			for (var n = all_the_decor[k].length - 1; n > -1; n += -1) {
+				//print("  superior param: "+all_the_decor[k][n]);
+				if (all_the_decor[k][n][0] === params[0]) {
+					//print("  HIT!");
+					if (all_the_decor[k][n][1] !== "normal") {
 						use_param = true;
 					}
 				}
