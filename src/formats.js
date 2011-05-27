@@ -72,7 +72,14 @@ CSL.Output.Formats.prototype.html = {
 		// Numeric entities, in case the output is processed as
 		// xml in an environment in which HTML named entities are
 		// not declared.
-		return text.replace(/&/g, "&#38;").replace(/</g, "&#60;").replace(/>/g, "&#62;").replace("  ", "&#160; ", "g");
+		return text.replace(/&/g, "&#38;")
+		.replace(/</g, "&#60;")
+		.replace(/>/g, "&#62;")
+		.replace("  ", "&#160; ", "g")
+		.replace(CSL.SUPERSCRIPTS_REGEXP,
+				 function(aChar) {
+					 return "&#60;sup&#62;" + CSL.SUPERSCRIPTS[aChar] + "&#60;/sup&#62;";
+				 });
 	},
 	"bibstart": "<div class=\"csl-bib-body\">\n",
 	"bibend": "</div>",
@@ -233,9 +240,15 @@ CSL.Output.Formats.prototype.rtf = {
 	// need not be idempotent.
 	//
 	"text_escape": function (text) {
-		return text.replace(/([\\{}])/g, "\\$1", "g").replace(/[\x7F-\uFFFF]/g,
-			function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}" })
-			.replace("\t", "\\tab{}", "g");
+		return text
+		.replace(/([\\{}])/g, "\\$1", "g")
+		.replace(CSL.SUPERSCRIPTS_REGEXP,
+				 function(aChar) {
+					 return "\\super " + CSL.SUPERSCRIPTS[aChar] + "\\nosupersub{}";
+				 })
+		.replace(/[\x7F-\uFFFF]/g,
+				 function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}" })
+		.replace("\t", "\\tab{}", "g");
 	},
 	"@passthrough/true": CSL.Output.Formatters.passthrough,
 	"@font-style/italic":"\\i %%STRING%%\\i0{}",
