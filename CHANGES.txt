@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.175
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Convert Unicode superscript characters to marked-up
+  equivalents in RTF and HTML output. This permits the
+  use of these characters in locale term strings where
+  superscript is required, while producing output that
+  will be reliably rendered by target applications.
+
+
+==========================
 Changes in version 1.0.174
 ==========================
 
