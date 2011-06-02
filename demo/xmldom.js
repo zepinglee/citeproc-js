@@ -128,6 +128,23 @@ CSL_CHROME.prototype.clean = function (xml) {
 	xml = xml.replace(/^\n*/, "");
 	return xml;
 };
+CSL_CHROME.prototype.getStyleId = function (myxml) {
+	var text = "";
+	var node = myxml.getElementsByTagName("id");
+	if (node && node.length) {
+		node = node.item(0);
+	}
+	if (node) {
+		text = node.textContent;
+	}
+	if (!text) {
+		text = node.innerText;
+	}
+	if (!text) {
+		text = node.innerHTML;
+	}
+	return text;
+};
 CSL_CHROME.prototype.children = function (myxml) {
 	var children, pos, len, ret;
 	if (myxml) {

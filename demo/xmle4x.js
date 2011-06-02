@@ -53,6 +53,14 @@ CSL_E4X.prototype.clean = function (xml) {
 	xml = xml.replace(/\s+$/g, "");
 	return xml;
 };
+CSL_E4X.prototype.getStyleId = function (myxml) {
+	var text = "";
+	var node = myxml..id;
+	if (node && node.length()) {
+		node = node[0].toString();
+	}
+	return text;
+};
 CSL_E4X.prototype.children = function (myxml) {
 	return myxml.children();
 };
