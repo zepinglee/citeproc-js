@@ -1726,6 +1726,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.opt["initialize-with-hyphen"] = true;
 	this.setStyleAttributes();
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
+	this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
 	if (lang) {
 		lang = lang.replace("_", "-");
 	}
