@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.176
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Record the processor styleID in citeproc.opt.
+
+
+==========================
 Changes in version 1.0.175
 ==========================
 
