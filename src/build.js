@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.175";
+	this.processor_version = "1.0.176";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -160,6 +160,8 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.setStyleAttributes();
 
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
+
+
 
 	// We seem to have two language specs flying around:
 	//   this.opt["default-locale"], and this.opt.lang

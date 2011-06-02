@@ -155,6 +155,27 @@ CSL_CHROME.prototype.clean = function (xml) {
 /**
  * Methods to call on a node.
  */
+CSL_CHROME.prototype.getStyleId = function (myxml) {
+	var text = "";
+	var node = myxml.getElementsByTagName("id");
+	if (node && node.length) {
+		node = node.item(0);
+	}
+	if (node) {
+		// W3C conformant browsers
+		text = node.textContent;
+	}
+	if (!text) {
+		// Opera, IE 6 & 7
+		text = node.innerText;
+	}
+	if (!text) {
+		// Safari
+		text = node.innerHTML;
+	}
+	return text;
+};
+
 CSL_CHROME.prototype.children = function (myxml) {
 	var children, pos, len, ret;
 	if (myxml) {
