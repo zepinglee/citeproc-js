@@ -160,7 +160,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.setStyleAttributes();
 
 	this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
-
+	this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
 
 
 	// We seem to have two language specs flying around:
