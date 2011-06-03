@@ -57,7 +57,7 @@ citation
 # of the CSL code are otherwise identical.
 
 >>===== RESULT =====>>
-Rosales, Osvaldo y Mikio Kuwayama (2007), «América latina y china e india: hacia una nueva alianza de comercio e inversión,» Serie de Comercio Internacional, N° 81 (LC/L.2656-P), Santiago de Chile, Naciones Unidas - ECLAC, enero. Publicación de las Naciones Unidas, N&#60;sup&#62;o&#60;/sup&#62; de venta: S.07.II.G.6.
+Rosales, Osvaldo y Mikio Kuwayama (2007), «América latina y china e india: hacia una nueva alianza de comercio e inversión,» Serie de Comercio Internacional, N° 81 (LC/L.2656-P), Santiago de Chile, Naciones Unidas - ECLAC, enero. Publicación de las Naciones Unidas, N<sup>o</sup> de venta: S.07.II.G.6.
 <<===== RESULT =====<<
 
 
