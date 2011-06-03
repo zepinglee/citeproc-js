@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.177
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Don't escape HTML superscript markup in output.
+
+- Fix bug in quoted escaping of numeric field content.
+
+
+==========================
 Changes in version 1.0.176
 ==========================
 
