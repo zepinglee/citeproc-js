@@ -501,11 +501,11 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 			not_numeric_type = CSL.NUMERIC_VARIABLES.indexOf(variable) === -1;
 			val = Item[variable];
 			if (typeof val === "number") {
-				val = val.toString();
+				val = "" + val;
 			}
 
 			if (not_numeric_type) {
-				if (Item[variable] && ("" + Item[variable]).match(/[0-9]$/)) {
+				if (val && val.match(/[0-9]$/)) {
 					ret.push(true);
 				} else {
 					ret.push(false);
@@ -514,7 +514,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 				ret.push(false);
 			} else if (typeof val !== "string") {
 				ret.push(false);
-			} else if (val.match(CSL.QUOTED_REGEXP_START) && val.match(CSL.QUOTED_REGEXP_END)) {
+			} else if (val.slice(0, 1) === '"' && val.slice(-1) === '"') {
 				ret.push(false);
 			} else if (val.match(CSL.NUMBER_REGEXP)) {
 				ret.push(true);

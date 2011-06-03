@@ -198,8 +198,6 @@ var CSL = {
 	SUFFIX_PUNCTUATION: /^\s*[.;:,\(\)]/,
 
 	NUMBER_REGEXP: /(?:^\d+|\d+$)/,
-	QUOTED_REGEXP_START: /^"/,
-	QUOTED_REGEXP_END: /^"$/,
 	//
 	// \u0400-\u042f are cyrillic and extended cyrillic capitals
 	// this is not fully smart yet.  can't do what this was trying to do
