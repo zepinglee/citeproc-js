@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.177";
+	this.processor_version = "1.0.178";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4350,9 +4350,6 @@ CSL.Node.label = {
 				this.strings.form = "long";
 			}
 			var func = function (state, Item, item) {
-				if (item && item.label === "sub verbo") {
-					item.label = "sub-verbo";
-				}
 				var termtxt = CSL.evaluateLabel(this, state, Item, item);
 				state.output.append(termtxt, this);
 			};
@@ -5640,7 +5637,11 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 	var myterm;
 	if ("locator" === node.strings.term) {
 		if (item && item.label) {
-			myterm = item.label;
+			if (item.label === "sub verbo") {
+				myterm = "sub-verbo";
+			} else {
+				myterm = item.label;
+			}
 		}
 		if (!myterm) {
 			myterm = "page";

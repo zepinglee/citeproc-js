@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.178
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Adopt a method for recognizing "sub verbo" term that does
+  not touch the input string shared with the calling application.
+
+
+==========================
 Changes in version 1.0.177
 ==========================
 
