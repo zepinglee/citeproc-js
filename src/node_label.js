@@ -59,11 +59,14 @@ CSL.Node.label = {
 				this.strings.form = "long";
 			}
 			var func = function (state, Item, item) {
+				// Must accomplish this without touching strings
+				// shared with the calling application: "sub verbo"
+				// and "sub-verbo" must both pass, as they stand.
+				//if (item && item.label === "sub verbo") {
+				//	item.label = "sub-verbo";
+				//}
 				// This is abstracted away, because the same
 				// logic must be run in cs:names.
-				if (item && item.label === "sub verbo") {
-					item.label = "sub-verbo";
-				}
 				var termtxt = CSL.evaluateLabel(this, state, Item, item);
 				state.output.append(termtxt, this);
 			};

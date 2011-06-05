@@ -52,7 +52,11 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 	var myterm;
 	if ("locator" === node.strings.term) {
 		if (item && item.label) {
-			myterm = item.label;
+			if (item.label === "sub verbo") {
+				myterm = "sub-verbo";
+			} else {
+				myterm = item.label;
+			}
 		}
 		if (!myterm) {
 			myterm = "page";
