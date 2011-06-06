@@ -148,6 +148,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		suffix = false;
 	}
 	var sort_sep = this.name.strings["sort-separator"];
+	if (!sort_sep) {
+		sort_sep = "";
+	}
 	var suffix_sep;
 	if (name["comma-suffix"]) {
 		suffix_sep = ", ";

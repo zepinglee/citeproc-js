@@ -98,10 +98,7 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
 		myform = this.name.strings.form;
 		myinitials = this.name.strings["initialize-with"];
 		paramx = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, 0, myform, myinitials);
-		if (this.state.tmp.sort_key_flag) {
-			this.state.tmp.disambig_settings.givens[pos][i] = 2;
-			param = 2;
-		} else if (this.state.tmp.disambig_request) {
+		if (this.state.tmp.disambig_request) {
 			//
 			// fix a request for initials that makes no sense.
 			// can't do this in disambig, because the availability
