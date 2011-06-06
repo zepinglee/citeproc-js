@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.179
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Honor givenname options set within macros when used as sort keys.
+
+
+==========================
 Changes in version 1.0.178
 ==========================
 
