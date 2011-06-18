@@ -122,6 +122,11 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.family_decor = CSL.Util.cloneToken(this.family);
 		this.family_decor.strings.prefix = "";
 		this.family_decor.strings.suffix = "";
+		// Sets text-case value (text-case="title" is suppressed for items
+		// non-English with non-English value in Item.language)
+		for (var i = 0, ilen = this.family.execs.length; i < ilen; i += 1) {
+			this.family.execs[i].call(this.family_decor, this.state, this.Item);
+		}
 	} else {
 		this.family_decor = false;
 	}
@@ -130,6 +135,11 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.given_decor = CSL.Util.cloneToken(this.given);
 		this.given_decor.strings.prefix = "";
 		this.given_decor.strings.suffix = "";
+		// Sets text-case value (text-case="title" is suppressed for items
+		// non-English with non-English value in Item.language)
+		for (var i = 0, ilen = this.given.execs.length; i < ilen; i += 1) {
+			this.given.execs[i].call(this.given_decor, this.state, this.Item);
+		}
 	} else {
 		this.given_decor = false;
 	}
