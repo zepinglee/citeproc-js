@@ -129,6 +129,7 @@ CSL.Node.text = {
 					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
 						this.range_prefix = "-";
 					}
+					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
 						this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
 					}
