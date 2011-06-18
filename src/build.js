@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.179";
+	this.processor_version = "1.0.181";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -92,6 +92,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.dateput = new CSL.Output.Queue(this);
 
 	this.cslXml = this.sys.xml.makeXml(style);
+	this.sys.xml.addMissingNameNodes(this.cslXml);
 	this.sys.xml.addInstitutionNodes(this.cslXml);
 	this.sys.xml.insertPublisherAndPlace(this.cslXml);
 	//

@@ -335,6 +335,19 @@ CSL_CHROME.prototype.insertPublisherAndPlace = function(myxml) {
 		}
 	}
 };
+CSL_CHROME.prototype.addMissingNameNodes = function(myxml) {
+	var nameslist = myxml.getElementsByTagName("names");
+	for (var i = 0, ilen = nameslist.length; i < ilen; i += 1) {
+		var names = nameslist.item(i);
+		var namelist = names.getElementsByTagName("name");
+		if ((!namelist || namelist.length === 0)
+			|| names.parentNode.tagName.toLowerCase() !== "substitute") {
+			var doc = names.ownerDocument();
+			var name = doc.createElement("name");
+			names.appendChild(name);
+		}
+	}
+};
 CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 	var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
 	names = myxml.getElementsByTagName("names");

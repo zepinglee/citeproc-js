@@ -259,6 +259,16 @@ CSL_E4X.prototype.insertPublisherAndPlace = function(myxml) {
 		}
 };
 
+CSL_E4X.prototype.addMissingNameNodes = function(myxml) {
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	for each (node in myxml..names) {
+		if ("xml" == typeof node && node.parent().localName() !== "substitute" && node.elements("name").length() === 0) {
+			var name = <name/>;
+			node.appendChild(name);
+		}
+	}
+};
+
 CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 	var institution_long, institution_short, name_part, children, node, xml;
 	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
