@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.182
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- ownerDocument is a property, not a method.
+  Fixed in xmldom.js.
+
+- Suppress text-case="title" transform when
+  (off-CSL) language variable begins with a valid
+  language tag that is non-en.
+
+
+==========================
 Changes in version 1.0.181
 ==========================
 

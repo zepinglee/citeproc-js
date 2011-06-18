@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.181";
+	this.processor_version = "1.0.182";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4562,6 +4562,9 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.family_decor = CSL.Util.cloneToken(this.family);
 		this.family_decor.strings.prefix = "";
 		this.family_decor.strings.suffix = "";
+		for (var i = 0, ilen = this.family.execs.length; i < ilen; i += 1) {
+			this.family.execs[i].call(this.family_decor, this.state, this.Item);
+		}
 	} else {
 		this.family_decor = false;
 	}
@@ -4569,6 +4572,9 @@ CSL.NameOutput.prototype.outputNames = function () {
 		this.given_decor = CSL.Util.cloneToken(this.given);
 		this.given_decor.strings.prefix = "";
 		this.given_decor.strings.suffix = "";
+		for (var i = 0, ilen = this.given.execs.length; i < ilen; i += 1) {
+			this.given.execs[i].call(this.given_decor, this.state, this.Item);
+		}
 	} else {
 		this.given_decor = false;
 	}
@@ -6966,7 +6972,19 @@ CSL.Attributes["@page-range-format"] = function (state, arg) {
 	state.opt["page-range-format"] = arg;
 };
 CSL.Attributes["@text-case"] = function (state, arg) {
-	this.strings["text-case"] = arg;
+	var func = function (state, Item) {
+		var m;
+		this.strings["text-case"] = arg;
+		if (arg === "title" && Item.language) {
+			m = Item.language.match(/^\s*([a-z]{2})(?:$|-| )/);
+			if (m) {
+				if (m[1] !== "en") {
+					this.strings["text-case"] = "passthrough";
+				}
+			}
+		}
+	}
+	this.execs.push(func);
 };
 CSL.Attributes["@page-range-format"] = function (state, arg) {
 	state.opt["page-range-format"] = arg;
