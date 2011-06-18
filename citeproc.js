@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.179";
+	this.processor_version = "1.0.181";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1715,6 +1715,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.output = new CSL.Output.Queue(this);
 	this.dateput = new CSL.Output.Queue(this);
 	this.cslXml = this.sys.xml.makeXml(style);
+	this.sys.xml.addMissingNameNodes(this.cslXml);
 	this.sys.xml.addInstitutionNodes(this.cslXml);
 	this.sys.xml.insertPublisherAndPlace(this.cslXml);
 	attrs = this.sys.xml.attributes(this.cslXml);
@@ -5435,6 +5436,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			}
 		}
 		second = this._join([dropping_particle, non_dropping_particle, family], " ");
+		second = this._join([second, suffix], suffix_sep);
 		if (second && this.family) {
 			second.strings.prefix = this.family.strings.prefix;
 			second.strings.suffix = this.family.strings.suffix;
@@ -5446,8 +5448,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		if (second.strings.prefix) {
 			name["comma-dropping-particle"] = "";
 		}
-		merged = this._join([given, second], (name["comma-dropping-particle"] + " "));
-		blob = this._join([merged, suffix], suffix_sep);
+		blob = this._join([given, second], (name["comma-dropping-particle"] + " "));
 	}
 	return blob;
 };
@@ -6196,6 +6197,7 @@ CSL.Node.text = {
 					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
 						this.range_prefix = "-";
 					}
+					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
 						this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
 					}
@@ -8876,7 +8878,7 @@ CSL.getSafeEscape = function(outputModeOpt, outputArea) {
 	}
 };
 CSL.Output.Formatters.strip_periods = function (state, string) {
-    return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
+    return string.replace(/\./g, "");
 };
 CSL.Output.Formatters.passthrough = function (state, string) {
 	return string;

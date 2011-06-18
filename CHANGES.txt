@@ -1,6 +1,51 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.181
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not insert space as a placeholder when applying
+  strip-periods. In the only known use case in which this
+  is significant (preserving space in abbreviated journal
+  titles), it results in an incorrectly formatted string.
+  The new behavior is simpler, both to code and to explain,
+  reflects the plain meaning of the attribute name, and
+  conforms to the CSL specification.
+
+- Correctly process top-level cs:names nodes (those without
+  a cs:substitute parent). This covers a recent CSL proposal,
+  which will allow the volume of name formatting code in many 
+  CSL styles to be significantly reduced.
+
+- Place suffix on cs:name-part nodes of name="family" outside
+  of a name suffix, when the name is rendered in "vanilla"
+  ordering (i.e. not in sort ordering). This brings the
+  processor into line with a recent proposal to allow affixes
+  on cs:name-part.
+
+- Fix a delimiter bug affecting styles that disambiguate by 
+  applying a year suffix, with collapsing, where year-suffix-delimiter
+  is not specified. No such styles exist as far as we know, but
+  it was a bug, and it's now fixed.
+
+
+==========================
+Changes in version 1.0.180
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Eliminate potential extraneous trailing space when applying
+  strip-periods.
+
+
+==========================
 Changes in version 1.0.179
 ==========================
 
