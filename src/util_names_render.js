@@ -220,6 +220,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 			}
 		}
 		second = this._join([dropping_particle, non_dropping_particle, family], " ");
+		second = this._join([second, suffix], suffix_sep);
 		if (second && this.family) {
 			second.strings.prefix = this.family.strings.prefix;
 			second.strings.suffix = this.family.strings.suffix;
@@ -231,8 +232,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		if (second.strings.prefix) {
 			name["comma-dropping-particle"] = "";
 		}
-		merged = this._join([given, second], (name["comma-dropping-particle"] + " "));
-		blob = this._join([merged, suffix], suffix_sep);
+		blob = this._join([given, second], (name["comma-dropping-particle"] + " "));
 	}
 	// notSerious
 	//this.state.output.append(blob, "literal", true);
