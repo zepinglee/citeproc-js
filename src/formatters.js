@@ -65,7 +65,8 @@ CSL.getSafeEscape = function(outputModeOpt, outputArea) {
 };
 
 CSL.Output.Formatters.strip_periods = function (state, string) {
-    return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
+    //return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
+    return string.replace(/\./g, "");
 };
 
 
