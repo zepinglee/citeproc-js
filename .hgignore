@@ -1,5 +1,7 @@
 syntax: regexp
 
+\.tar\.gz$
+\.zip$
 ^jshint_done.txt
 ^Diffs
 ^tools/jslint.*
