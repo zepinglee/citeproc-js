@@ -6973,13 +6973,20 @@ CSL.Attributes["@page-range-format"] = function (state, arg) {
 };
 CSL.Attributes["@text-case"] = function (state, arg) {
 	var func = function (state, Item) {
-		var m;
 		this.strings["text-case"] = arg;
-		if (arg === "title" && Item.language) {
-			m = Item.language.match(/^\s*([a-z]{2})(?:$|-| )/);
-			if (m) {
-				if (m[1] !== "en") {
+		if (arg === "title") {
+			var m = false;
+			if (Item.language) {
+				m = Item.language.match(/^\s*([a-z]{2})(?:$|-| )/);
+			}
+			if (state.opt["default-locale"][0].slice(0, 2) === "en") {
+				if (m && m[1] !== "en") {
 					this.strings["text-case"] = "passthrough";
+				}
+			} else {
+				this.strings["text-case"] = "passthrough";
+				if (m && m[1] === "en") {
+					this.strings["text-case"] = arg;
 				}
 			}
 		}

@@ -13,7 +13,9 @@ Mishandled or unimplemented features
 
 - Suppress text-case="title" transform when
   (off-CSL) language variable begins with a valid
-  language tag that is non-en.
+  language tag that is non-en, or when default-locale
+  is non-en and language variable is either not set,
+  or set to a non-en value.
 
 
 ==========================
