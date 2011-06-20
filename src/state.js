@@ -86,6 +86,7 @@ CSL.Engine.Opt = function () {
 	this.citation_number_slug = false;
 	this.max_number_of_names = 0;
 	this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
+	this.development_extensions = true;
 };
 
 

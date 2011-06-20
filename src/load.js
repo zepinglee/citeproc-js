@@ -87,8 +87,6 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-	THERE_IS_ONLY_CSL: false,
-
 	GENDERS: ["masculine", "feminine"],
 	
 	ERROR_NO_RENDERED_FORM: 1,
