@@ -532,7 +532,7 @@ CSL.Engine.prototype.retrieveItems = function (ids) {
 CSL.Engine.prototype.retrieveItem = function (id) {
 	var Item, m, pos, len, mm;
 	Item = this.sys.retrieveItem("" + id);
-	if (this.development_extensions && Item.note) {
+	if (this.opt.development_extensions && Item.note) {
 		m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
 		if (m) {
 			for (pos = 0, len = m.length; pos < len; pos += 1) {
