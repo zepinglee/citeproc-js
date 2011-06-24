@@ -17,6 +17,16 @@ Mishandled or unimplemented features
   is non-en and language variable is either not set,
   or set to a non-en value.
 
+- Provide an option to remove behavior that is
+  not standard CSL from the processor for production
+  use.
+
+- Use en-dash for collapsed citation ranges.
+
+- Provide code for future configurability of both
+  page range and citation collapse range delimiter 
+  as a locale term.
+
 
 ==========================
 Changes in version 1.0.181

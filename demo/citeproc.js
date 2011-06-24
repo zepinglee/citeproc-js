@@ -1868,6 +1868,9 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode) {
 		term = term.toLowerCase();
 	}
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
+	if (!ret && term === "range-delimiter") {
+		ret = "\u2013";
+	}
 	if (typeof ret === "undefined" && mode === CSL.STRICT) {
 		throw "Error in getTerm: term \"" + term + "\" does not exist.";
 	} else if (mode === CSL.TOLERANT) {
@@ -1992,7 +1995,7 @@ CSL.Engine.prototype.retrieveItems = function (ids) {
 CSL.Engine.prototype.retrieveItem = function (id) {
 	var Item, m, pos, len, mm;
 	Item = this.sys.retrieveItem("" + id);
-	if (Item.note) {
+	if (this.opt.development_extensions && Item.note) {
 		m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
 		if (m) {
 			for (pos = 0, len = m.length; pos < len; pos += 1) {
@@ -2214,6 +2217,12 @@ CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
 		this.opt["auto-vietnamese-names"] = false;
 	}
 };
+CSL.Engine.prototype.turnOffDevelopmentExtensions = function (arg) {
+	this.opt.development_extensions = false;
+};
+CSL.Engine.prototype.turnOnDevelopmentExtensions = function (arg) {
+	this.opt.development_extensions = true;
+};
 CSL.Engine.Opt = function () {
 	this.has_disambiguate = false;
 	this.mode = "html";
@@ -2237,6 +2246,7 @@ CSL.Engine.Opt = function () {
 	this.citation_number_slug = false;
 	this.max_number_of_names = 0;
 	this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
+	this.development_extensions = true;
 };
 CSL.Engine.Tmp = function () {
 	this.names_max = new CSL.Stack();
@@ -2315,6 +2325,10 @@ CSL.Engine.Citation = function (state) {
 	this.opt["givenname-disambiguation-rule"] = "none";
 	this.opt["near-note-distance"] = 5;
 	this.opt.topdecor = [];
+	this.opt.layout_decorations = [];
+	this.opt.layout_prefix = "";
+	this.opt.layout_suffix = "";
+	this.opt.layout_delimiter = "";
 };
 CSL.Engine.Bibliography = function () {
 	this.opt = {};
@@ -4379,10 +4393,6 @@ CSL.Node.layout = {
 			this.execs.push(func);
 			func = function (state, Item) {
 				state.tmp.sort_key_flag = false;
-				state[state.tmp.area].opt.delimiter = "";
-				if (this.strings.delimiter) {
-					state[state.tmp.area].opt.delimiter = this.strings.delimiter;
-				}
 			};
 			this.execs.push(func);
 			func = function (state, Item) {
@@ -6169,7 +6179,7 @@ CSL.Node.text = {
 						state.opt.bib_mode = CSL.NUMERIC;
 					}
 					if ("citation-number" === state[state.tmp.area].opt.collapse) {
-						this.range_prefix = "-";
+						this.range_prefix = state.getTerm("range-delimiter");
 					}
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					this.splice_prefix = state[state.build.area].opt.layout_delimiter;
@@ -6201,7 +6211,7 @@ CSL.Node.text = {
 				} else if (this.variables_real[0] === "year-suffix") {
 					state.opt.has_year_suffix = true;
 					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
-						this.range_prefix = "-";
+						this.range_prefix = state.getTerm("range-delimiter");
 					}
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
@@ -8454,6 +8464,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 CSL.Util.PageRangeMangler = {};
 CSL.Util.PageRangeMangler.getFunction = function (state) {
 	var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
+	var range_delimiter = state.getTerm("range-delimiter");
 	rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
 	stringify = function (lst) {
 		len = lst.length;
@@ -8492,13 +8503,13 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 						m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
 					}
 					if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
-						m[3] = "\u2013" + m[1];
+						m[3] = range_delimiter + m[1];
 						lst[pos] = m.slice(1);
 					}
 				}
 			}
 			if ("string" === typeof lst[pos]) {
-				lst[pos] = lst[pos].replace("-", "\u2013");
+				lst[pos] = lst[pos].replace("-", range_delimiter);
 			}
 		}
 		return lst;
@@ -8508,7 +8519,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		for (pos = 1; pos < len; pos += 2) {
 			lst[pos][3] = minimize_internal(lst[pos][1], lst[pos][3]);
 			if (lst[pos][2].slice(1) === lst[pos][0]) {
-				lst[pos][2] = "\u2013";
+				lst[pos][2] = range_delimiter;
 			}
 		}
 		return stringify(lst);
@@ -8545,7 +8556,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 				}
 			}
 			if (m[2].slice(1) === m[0]) {
-				m[2] = "\u2013";
+				m[2] = range_delimiter;
 			}
 		}
 		return stringify(lst);
