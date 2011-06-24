@@ -349,6 +349,10 @@ CSL.Engine.Citation = function (state) {
 	this.opt["near-note-distance"] = 5;
 
 	this.opt.topdecor = [];
+	this.opt.layout_decorations = [];
+	this.opt.layout_prefix = "";
+	this.opt.layout_suffix = "";
+	this.opt.layout_delimiter = "";
 };
 
 
