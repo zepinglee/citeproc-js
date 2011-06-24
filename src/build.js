@@ -370,6 +370,11 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode) {
 		term = term.toLowerCase();
 	}
 	var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
+	// XXXXX Temporary, until locale term is deployed in CSL.
+	if (!ret && term === "range-delimiter") {
+		ret = "\u2013";
+	}
+	// XXXXX Not so good: can be neither strict nor tolerant
 	if (typeof ret === "undefined" && mode === CSL.STRICT) {
 		throw "Error in getTerm: term \"" + term + "\" does not exist.";
 	} else if (mode === CSL.TOLERANT) {

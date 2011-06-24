@@ -117,8 +117,6 @@ CSL.Node.number = {
 				  && state.tmp.area !== "bibliography_sort"
 				  && all_with_spaces 
 				  && !num.match(/[^\- 0-9,&]/)) {
-					// For endash.  Wait for complaints on this one.
-					//num = num.replace("-","\u2013", "g");
 					var nums = num.match(/[0-9]+/g);
 					// Expand ranges
 					var range_ok = true;

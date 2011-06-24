@@ -52,6 +52,9 @@ CSL.Util.PageRangeMangler = {};
 
 CSL.Util.PageRangeMangler.getFunction = function (state) {
 	var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
+	
+	var range_delimiter = state.getTerm("range-delimiter");
+
 	rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
 
 	stringify = function (lst) {
@@ -95,13 +98,13 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 						m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
 					}
 					if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
-						m[3] = "\u2013" + m[1];
+						m[3] = range_delimiter + m[1];
 						lst[pos] = m.slice(1);
 					}
 				}
 			}
 			if ("string" === typeof lst[pos]) {
-				lst[pos] = lst[pos].replace("-", "\u2013");
+				lst[pos] = lst[pos].replace("-", range_delimiter);
 			}
 		}
 		return lst;
@@ -112,7 +115,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		for (pos = 1; pos < len; pos += 2) {
 			lst[pos][3] = minimize_internal(lst[pos][1], lst[pos][3]);
 			if (lst[pos][2].slice(1) === lst[pos][0]) {
-				lst[pos][2] = "\u2013";
+				lst[pos][2] = range_delimiter;
 			}
 		}
 		return stringify(lst);
@@ -151,7 +154,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 				}
 			}
 			if (m[2].slice(1) === m[0]) {
-				m[2] = "\u2013";
+				m[2] = range_delimiter;
 			}
 		}
 		return stringify(lst);
@@ -162,9 +165,6 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 	//
 	if (!state.opt["page-range-format"]) {
 		ret_func = function (str) {
-			// On second thought, don't do this. In some
-			// applications, a style might want these strings
-			// to be output verbatim.
 			//return str.replace("-", "\u2013", "g");
 			return str;
 		};

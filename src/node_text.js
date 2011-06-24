@@ -93,7 +93,7 @@ CSL.Node.text = {
 					}
 					//this.strings.is_rangeable = true;
 					if ("citation-number" === state[state.tmp.area].opt.collapse) {
-						this.range_prefix = "-";
+						this.range_prefix = state.getTerm("range-delimiter");
 					}
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					this.splice_prefix = state[state.build.area].opt.layout_delimiter;
@@ -127,7 +127,8 @@ CSL.Node.text = {
 					state.opt.has_year_suffix = true;
 
 					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
-						this.range_prefix = "-";
+						//this.range_prefix = "-";
+						this.range_prefix = state.getTerm("range-delimiter");
 					}
 					this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
