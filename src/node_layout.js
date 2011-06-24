@@ -68,12 +68,6 @@ CSL.Node.layout = {
 			func = function (state, Item) {
 				// just in case
 				state.tmp.sort_key_flag = false;
-
-				// XXXX: this SHOULD be useless.  layout_delimiter is the right key.
-				state[state.tmp.area].opt.delimiter = "";
-				if (this.strings.delimiter) {
-					state[state.tmp.area].opt.delimiter = this.strings.delimiter;
-				}
 			};
 			this.execs.push(func);
 			
