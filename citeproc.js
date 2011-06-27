@@ -89,7 +89,7 @@ var CSL = {
 	MULTI_FIELDS: ["publisher", "publisher-place", "title","container-title", "collection-title", "institution", "authority","edition"],
 	CITE_FIELDS: ["first-reference-note-number", "locator"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
-	SWAPPING_PUNCTUATION: [".", "!", "?", ":",",",";"],
+	SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
 	TERMINAL_PUNCTUATION: [":", ".", ";", "!", "?", " "],
 	SPLICE_PUNCTUATION: [".", "!", "?", ":", ";", ","],
 	NONE: 0,
@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.182";
+	this.processor_version = "1.0.183";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
