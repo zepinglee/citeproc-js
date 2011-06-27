@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.183";
+	this.processor_version = "1.0.184";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -9736,6 +9736,11 @@ CSL.Registry.NameReg = function (state) {
 	};
 	addname = function (item_id, nameobj, pos) {
 		nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
+		if (state.opt["givenname-disambiguation-rule"]
+			&& state.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
+			&& pos !== 0) {
+				return;
+		}
 		set_keys(this.state, "" + item_id, nameobj);
 		if (pkey) {
 			if ("undefined" === typeof this.namereg[pkey]) {
