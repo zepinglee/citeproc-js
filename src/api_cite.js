@@ -867,7 +867,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 		if (objects.length && "string" === typeof composite[0]) {
 			composite.reverse();
-			objects.push(txt_esc(this.tmp.splice_delimiter) + composite.pop());
+			var tmpstr = composite.pop();
+			if (tmpstr && tmpstr.slice(0, 1) === ",") {
+				objects.push(tmpstr);
+			} else {
+				objects.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
+			}
 		} else {
 			composite.reverse();
 			compie = composite.pop();
@@ -881,6 +886,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			obj = composite[ppos];
 			if ("string" === typeof obj) {
+				print("delim2=" + this.tmp.splice_delimiter)
 				objects.push(txt_esc(this.tmp.splice_delimiter) + obj);
 				continue;
 			}
