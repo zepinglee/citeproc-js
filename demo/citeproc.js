@@ -3273,7 +3273,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		}
 		if (objects.length && "string" === typeof composite[0]) {
 			composite.reverse();
-			objects.push(txt_esc(this.tmp.splice_delimiter) + composite.pop());
+			var tmpstr = composite.pop();
+			if (tmpstr && tmpstr.slice(0, 1) === ",") {
+				objects.push(tmpstr);
+			} else {
+				objects.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
+			}
 		} else {
 			composite.reverse();
 			compie = composite.pop();
@@ -3285,6 +3290,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			obj = composite[ppos];
 			if ("string" === typeof obj) {
+				print("delim2=" + this.tmp.splice_delimiter)
 				objects.push(txt_esc(this.tmp.splice_delimiter) + obj);
 				continue;
 			}
@@ -8959,7 +8965,7 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
 	return CSL.Output.Formatters.undoppelString(str);
 };
 CSL.Output.Formatters.title = function (state, string) {
-	var str, words, isUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
+	var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
 	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
@@ -8972,27 +8978,24 @@ CSL.Output.Formatters.title = function (state, string) {
 		myret.push(lst[pos]);
 	}
 	words = myret.slice();
-	isUpperCase = str.string.toUpperCase() === string;
+	isAllUpperCase = str.string.toUpperCase() === string;
 	newString = "";
 	lastWordIndex = words.length - 1;
 	previousWordIndex = -1;
 	for (pos = 0; pos <= lastWordIndex;  pos += 2) {
-		if (words[pos].length !== 0 && (words[pos].length !== 1 || !/\s+/.test(words[pos]))) {
+		if (words[pos].length !== 0 && words[pos].length !== 1 && !/\s+/.test(words[pos])) {
 			upperCaseVariant = words[pos].toUpperCase();
 			lowerCaseVariant = words[pos].toLowerCase();
 			var totallyskip = false;
-			if (!isUpperCase || (words.length === 1 && words[pos].length < 4)) {
-				for (var j = 0, jlen = lowerCaseVariant.length; j < jlen; j += 1) {
-					if (lowerCaseVariant[j] !== upperCaseVariant[j] && words[pos][j] === upperCaseVariant[j]) {
-						  totallyskip = true;
-					}
+			if (!isAllUpperCase || (words.length === 1 && words[pos].length < 4)) {
+				if (words[pos] === upperCaseVariant) {
+					totallyskip = true;
 				}
 			}
-			if (isUpperCase || words[pos] === lowerCaseVariant) {
+			if (isAllUpperCase || words[pos] === lowerCaseVariant) {
 				skip = false;
-				len = CSL.SKIP_WORDS.length;
-				for (ppos = 0; ppos < len; ppos += 1) {
-					skipword = CSL.SKIP_WORDS[ppos];
+				for (var i = 0, ilen = CSL.SKIP_WORDS.length; i < ilen; i += 1) {
+					skipword = CSL.SKIP_WORDS[i];
 					idx = lowerCaseVariant.indexOf(skipword);
 					if (idx > -1) {
 						tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
@@ -9004,12 +9007,12 @@ CSL.Output.Formatters.title = function (state, string) {
 				notfirst = pos !== 0;
 				notlast = pos !== lastWordIndex;
 				if (words[previousWordIndex]) {
-					aftercolon = words[previousWordIndex].slice(-1) !== ":";
+					aftercolon = words[previousWordIndex].slice(-1) === ":";
 				} else {
 					aftercolon = false;
 				}
 				if (!totallyskip) {
-					if (skip && notfirst && notlast && (firstword || aftercolon)) {
+					if (skip && notfirst && notlast && !aftercolon) {
 						words[pos] = lowerCaseVariant;
 					} else {
 						words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
@@ -9736,11 +9739,6 @@ CSL.Registry.NameReg = function (state) {
 	};
 	addname = function (item_id, nameobj, pos) {
 		nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
-		if (state.opt["givenname-disambiguation-rule"]
-			&& state.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
-			&& pos !== 0) {
-				return;
-		}
 		set_keys(this.state, "" + item_id, nameobj);
 		if (pkey) {
 			if ("undefined" === typeof this.namereg[pkey]) {

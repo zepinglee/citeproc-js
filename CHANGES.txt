@@ -8,8 +8,8 @@ Changes in version 1.0.184
 Mishandled or unimplemented features
 ------------------------------------
 
-- Completely ignore non-primary names when performing
-  primary-names-based disambiguation.
+- Suppress inter-cite delimiter if subsequent prefix begins
+  with a comma.
 
 
 ==========================
