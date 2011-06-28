@@ -152,7 +152,7 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
  * already.
  */
 CSL.Output.Formatters.title = function (state, string) {
-	var str, words, isUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, firstword, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
+	var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
 	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
 	if (!string) {
 		return "";
@@ -168,27 +168,29 @@ CSL.Output.Formatters.title = function (state, string) {
 		myret.push(lst[pos]);
 	}
 	words = myret.slice();
-	isUpperCase = str.string.toUpperCase() === string;
+	isAllUpperCase = str.string.toUpperCase() === string;
 	newString = "";
 	lastWordIndex = words.length - 1;
 	previousWordIndex = -1;
+	// Inspect every word individually
 	for (pos = 0; pos <= lastWordIndex;  pos += 2) {
-		if (words[pos].length !== 0 && (words[pos].length !== 1 || !/\s+/.test(words[pos]))) {
+		// Word has length, is not a single character, and does not consist only of spaces
+		if (words[pos].length !== 0 && words[pos].length !== 1 && !/\s+/.test(words[pos])) {
 			upperCaseVariant = words[pos].toUpperCase();
 			lowerCaseVariant = words[pos].toLowerCase();
 			var totallyskip = false;
-			if (!isUpperCase || (words.length === 1 && words[pos].length < 4)) {
-				for (var j = 0, jlen = lowerCaseVariant.length; j < jlen; j += 1) {
-					if (lowerCaseVariant[j] !== upperCaseVariant[j] && words[pos][j] === upperCaseVariant[j]) {
-						  totallyskip = true;
-					}
+			// Full string is not all-uppercase, or string is one word of three characters or less
+			if (!isAllUpperCase || (words.length === 1 && words[pos].length < 4)) {
+				// This word is all-uppercase
+				if (words[pos] === upperCaseVariant) {
+					totallyskip = true;
 				}
 			}
-			if (isUpperCase || words[pos] === lowerCaseVariant) {
+			// Full string is all-uppercase, or this word is all-lowercase
+			if (isAllUpperCase || words[pos] === lowerCaseVariant) {
 				skip = false;
-				len = CSL.SKIP_WORDS.length;
-				for (ppos = 0; ppos < len; ppos += 1) {
-					skipword = CSL.SKIP_WORDS[ppos];
+				for (var i = 0, ilen = CSL.SKIP_WORDS.length; i < ilen; i += 1) {
+					skipword = CSL.SKIP_WORDS[i];
 					idx = lowerCaseVariant.indexOf(skipword);
 					if (idx > -1) {
 						tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
@@ -200,12 +202,16 @@ CSL.Output.Formatters.title = function (state, string) {
 				notfirst = pos !== 0;
 				notlast = pos !== lastWordIndex;
 				if (words[previousWordIndex]) {
-					aftercolon = words[previousWordIndex].slice(-1) !== ":";
+					aftercolon = words[previousWordIndex].slice(-1) === ":";
 				} else {
 					aftercolon = false;
 				}
+				// Skip if word is all-uppercase, and the full string is in mixed-case
 				if (!totallyskip) {
-					if (skip && notfirst && notlast && (firstword || aftercolon)) {
+					// If word is a stop-word, neither first nor last, and does not follow a colon,
+					// force to lowercase
+					// Otherwise capitalize first character
+					if (skip && notfirst && notlast && !aftercolon) {
 						words[pos] = lowerCaseVariant;
 					} else {
 						words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
