@@ -327,12 +327,6 @@ CSL.Registry.NameReg = function (state) {
 	//
 	addname = function (item_id, nameobj, pos) {
 		nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
-		
-		if (state.opt["givenname-disambiguation-rule"]
-			&& state.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
-			&& pos !== 0) {
-				return;
-		}
 		//CSL.debug("INS");
 		set_keys(this.state, "" + item_id, nameobj);
 		// pkey, ikey and skey should be stored in separate cascading objects.
