@@ -243,11 +243,12 @@ CSL.Node["date-part"] = {
 					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 					number.setFormatter(formatter);
 					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
-						number.range_prefix = "-";
+						number.range_prefix = state.getTerm("range-delimiter");
 					}
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
 						number.successor_prefix = state[state.tmp.area].opt["year-suffix-delimiter"];
 					}
+					number.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 					state.output.append(number, "literal");
 				}
 			}
