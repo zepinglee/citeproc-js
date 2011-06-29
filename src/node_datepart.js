@@ -247,8 +247,9 @@ CSL.Node["date-part"] = {
 					}
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
 						number.successor_prefix = state[state.tmp.area].opt["year-suffix-delimiter"];
+					} else {
+						number.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 					}
-					number.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 					state.output.append(number, "literal");
 				}
 			}
