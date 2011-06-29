@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.184";
+	this.processor_version = "1.0.185";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3879,10 +3879,12 @@ CSL.Node["date-part"] = {
 					formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
 					number.setFormatter(formatter);
 					if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
-						number.range_prefix = "-";
+						number.range_prefix = state.getTerm("range-delimiter");
 					}
 					if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
 						number.successor_prefix = state[state.tmp.area].opt["year-suffix-delimiter"];
+					} else {
+						number.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 					}
 					state.output.append(number, "literal");
 				}

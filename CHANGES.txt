@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.185
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix missing default delimiter and range delimiter
+  affecting styles that use collapse="year-suffix".
+
+
+==========================
 Changes in version 1.0.184
 ==========================
 
