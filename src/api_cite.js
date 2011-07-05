@@ -901,7 +901,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
 	}
 	result += this.output.renderBlobs(objects);
 	if (result) {
-		if (this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
+		if (CSL.TERMINAL_PUNCTUATION.indexOf(this.tmp.last_chr) > -1 
+			&& this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
 			use_layout_suffix = use_layout_suffix.slice(1);
 		}
 		result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(use_layout_suffix);
