@@ -71,7 +71,7 @@ His Anonymous Life (Rocky Mountain Time Zone)
     <layout>
       <group delimiter=" ">
         <text variable="title"/>
-        <text variable="funky-new-variable" prefix="(" suffix=")"/>
+        <text variable="abstract" prefix="(" suffix=")"/>
       </group>
     </layout>
   </citation>
@@ -84,7 +84,7 @@ His Anonymous Life (Rocky Mountain Time Zone)
     {
         "id": "ITEM-1", 
         "title": "His Anonymous Life", 
-        "note": "{:funky-new-variable:Rocky Mountain Time Zone}",
+        "note": "{:abstract:Rocky Mountain Time Zone}",
         "type": "book"
     }
 ]
