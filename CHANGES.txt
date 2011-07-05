@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.186
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Suppress only duplicate punctuation at end of citation
+  (do not suppress duplicate parens).
+
+
+==========================
 Changes in version 1.0.185
 ==========================
 
