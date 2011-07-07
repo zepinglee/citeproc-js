@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.186";
+	this.processor_version = "1.0.187";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2888,7 +2888,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 					thisauthor = sortedItems[i][1].sortkeys[0];
 					thiskey =  sortedItems[i][1].sortkeys[1];
 				}
-				sortedItems[i][1].sortkeys[0] = thiskey;
+				sortedItems[i][1].sortkeys[0] = "" + thiskey + i;
 				lastauthor = thisauthor;
 			}
 		}
@@ -3290,7 +3290,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
 		for (ppos = 0; ppos < llen; ppos += 1) {
 			obj = composite[ppos];
 			if ("string" === typeof obj) {
-				print("delim2=" + this.tmp.splice_delimiter)
 				objects.push(txt_esc(this.tmp.splice_delimiter) + obj);
 				continue;
 			}

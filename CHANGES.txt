@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.187
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Provide a discriminator sequence hint on keys set during
+  author-grouped sorts, to prevent decay of the sequence during
+  final sort.
+
+
+==========================
 Changes in version 1.0.186
 ==========================
 
