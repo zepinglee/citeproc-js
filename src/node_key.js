@@ -282,7 +282,7 @@ CSL.Node.key = {
 			if (debug) {
 				CSL.debug("keystring: " + keystring + " " + typeof keystring);
 			}
-			//print("keystring: (" + keystring + ") " + typeof keystring);
+			//print("keystring: (" + keystring + ") " + typeof keystring + " " + state.tmp.area);
 			//SNIP-END
 			if ("" === keystring) {
 				keystring = undefined;
