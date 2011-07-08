@@ -1688,7 +1688,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.187";
+	this.processor_version = "1.0.188";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3704,7 +3704,6 @@ CSL.Node.date = {
 			tok.dateparts = state.build.date_parts.slice();
 			tok.variables = state.build.date_variables;
 			CSL.Node.key.build.call(tok, state, target);
-			state.build.sort_flag = false;
 		}
 		if (!state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
 			func = function (state, Item) {

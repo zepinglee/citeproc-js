@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.188
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix breakage in second-field-align when macro containing date is 
+  used as sort key in cs:bibliography. Reported by Sebastian Karcher
+  (adamsmith).
+
+
+==========================
 Changes in version 1.0.187
 ==========================
 
