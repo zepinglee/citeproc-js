@@ -189,7 +189,7 @@ CSL.Node.date = {
 			// data constructed in the start tag.
 			tok.variables = state.build.date_variables;
 			CSL.Node.key.build.call(tok, state, target);
-			state.build.sort_flag = false;
+			//state.build.sort_flag = false;
 		}
 
 		if (!state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
