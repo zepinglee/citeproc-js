@@ -215,8 +215,12 @@ CSL.Node.text = {
 				    state.build.plural = false;
 				} else if (this.variables_real.length) {
 					func = function (state, Item) {
-						state.parallel.StartVariable(this.variables[0]);
-						state.parallel.AppendToVariable(Item[this.variables[0]]);
+						var parallel_variable = this.variables[0];
+						if (parallel_variable === "title" && form === "short") {
+							parallel_variable = "shortTitle";
+						}
+						state.parallel.StartVariable(parallel_variable);
+						state.parallel.AppendToVariable(Item[parallel_variable]);
 					};
 					this.execs.push(func);
 
