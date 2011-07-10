@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.188";
+	this.processor_version = "1.0.189";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -537,6 +537,13 @@ CSL.Engine.prototype.retrieveItems = function (ids) {
 CSL.Engine.prototype.retrieveItem = function (id) {
 	var Item, m, pos, len, mm;
 	Item = this.sys.retrieveItem("" + id);
+	// Mandatory data rescue
+	// LEX HACK
+	if (Item.type === "bill" && Item.number && !Item.volume && Item.page) {
+		Item.volume = Item.number;
+		Item.number = undefined;
+	}
+	// Optional development extention
 	if (this.opt.development_extensions && Item.note) {
 		m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
 		if (m) {

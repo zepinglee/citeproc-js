@@ -187,7 +187,7 @@ var CSL = {
 	],
 
 	PARALLEL_MATCH_VARS: ["container-title"],
-	PARALLEL_TYPES: ["legal_case",  "legislation"],
+	PARALLEL_TYPES: ["legal_case",  "legislation", "bill"],
 	PARALLEL_COLLAPSING_MID_VARSET: ["volume", "container-title", "section"],
 
 	LOOSE: 0,

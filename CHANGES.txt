@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.189
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Treat short-form titles as a separate variable
+  when sniffing for parallel cites.
+
+- Remove "names" (encompassing any variable rendered
+  via cs:names) from the list of mid-cite variables.
+
+- Remove legacy code that attempts to work with
+  "names" when sniffing parallel cites.
+
+
+==========================
 Changes in version 1.0.188
 ==========================
 
