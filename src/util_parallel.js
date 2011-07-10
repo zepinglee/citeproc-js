@@ -87,7 +87,8 @@ CSL.Parallel = function (state) {
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
-	return ["names", "section", "volume", "container-title", "issue", "page", "locator"].indexOf(variable) > -1;
+	//return ["names", "section", "volume", "container-title", "issue", "page", "page-first", "locator"].indexOf(variable) > -1;
+	return ["section", "volume", "container-title", "issue", "page", "page-first", "locator"].indexOf(variable) > -1;
 };
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
@@ -115,7 +116,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 	var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
 	if (this.use_parallels) {
-		// print("StartCite");
+		//print("StartCite");
 		if (this.sets.value().length && this.sets.value()[0].itemId == Item.id) {
 			this.ComposeSet();
 		}
@@ -203,7 +204,8 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 		this.data.value = "";
 		this.data.blobs = [];
 		var is_mid = this.isMid(variable);
-		if (this.target === "front" && is_mid && this.cite.front.length && (this.cite.front.length > 1 || this.cite.front.indexOf("names") === -1)) {
+		//if (this.target === "front" && is_mid && this.cite.front.length && (this.cite.front.length > 1 || this.cite.front.indexOf("names") === -1)) {
+		if (this.target === "front" && is_mid) {
 			this.target = "mid";
 		} else if (this.target === "mid" && !is_mid && this.cite.Item.title) {
 			this.target = "back";
@@ -211,6 +213,7 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
 			this.try_cite = true;
 			this.in_series = false;
 		}
+		//print("area=" + this.state.tmp.area + ", variable=" + variable+", target="+this.target);
 		// Exception for docket number.  Necessary for some
 		// civil law cites (France), which put the docket number
 		// at the end of the first of a series of references.
