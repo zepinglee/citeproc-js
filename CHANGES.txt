@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.191
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in near-note position detection. Was true
+  when when distance was zero upon the first reference
+  to the source. Now returns false in this case.
+
+
+==========================
 Changes in version 1.0.190
 ==========================
 

@@ -1691,7 +1691,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.190";
+	this.processor_version = "1.0.191";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2999,7 +2999,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 					}
 					if (onecitation.properties.noteIndex) {
 						var note_distance = parseInt(onecitation.properties.noteIndex, 10) - parseInt(last_ref[item[1].id], 10);
-						if (note_distance <= this.citation.opt["near-note-distance"]) {
+						if (item[1].position !== CSL.POSITION_FIRST 
+							&& note_distance <= this.citation.opt["near-note-distance"]) {
 							item[1]["near-note"] = true;
 						}
 						last_ref[item[1].id] = onecitation.properties.noteIndex;
