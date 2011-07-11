@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.190
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in strip-periods when set on cs:text macro calls or
+  cs:group elements. Thanks to Liam McHugh-Russell for identifying
+  the error.
+
+
+==========================
 Changes in version 1.0.189
 ==========================
 
