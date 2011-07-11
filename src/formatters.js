@@ -64,10 +64,11 @@ CSL.getSafeEscape = function(outputModeOpt, outputArea) {
 	}
 };
 
-CSL.Output.Formatters.strip_periods = function (state, string) {
-    //return string.replace(/\./g, " ").replace(/\s*$/g, "").replace(/\s+/g, " ");
-    return string.replace(/\./g, "");
-};
+// See util_substitute.js and queue.js (append) for code supporting
+// strip-periods.
+//CSL.Output.Formatters.strip_periods = function (state, string) {
+//    return string.replace(/\./g, "");
+//};
 
 
 /**

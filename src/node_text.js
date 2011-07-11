@@ -184,9 +184,7 @@ CSL.Node.text = {
 				if (this.strings.term) {
 				    term = this.strings.term;
 				    term = state.getTerm(term, form, plural);
-				    if (this.strings["strip-periods"]) {
-					term = term.replace(/\./g, "");
-				    }
+
 				    // printterm
 				    func = function (state, Item) {
 					var myterm;
@@ -197,6 +195,7 @@ CSL.Node.text = {
 					    flag[0] = true;
 					    state.tmp.term_sibling.replace(flag);
 					}
+
 					// capitalize the first letter of a term, if it is the
 					// first thing rendered in a citation (or if it is
 					// being rendered immediately after terminal punctuation,
@@ -207,6 +206,18 @@ CSL.Node.text = {
 					} else {
 					    myterm = term;
 					}
+
+					if (state.tmp.strip_periods) {
+						myterm = myterm.replace(/\./g, "");
+					} else {
+						for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
+							if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
+								myterm = myterm.replace(/\./g, "");
+								break
+							}
+						}
+					}
+
 					state.output.append(myterm, this);
 				    };
 				    this.execs.push(func);

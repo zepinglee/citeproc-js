@@ -295,6 +295,9 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	blob = new CSL.Blob(token, str);
 	curr = this.current.value();
 	if ("string" === typeof blob.blobs) {
+		if (this.state.tmp.strip_periods) {
+			blob.blobs = blob.blobs.replace(/\./g, "");
+		}
 		this.state.tmp.term_predecessor = true;
 	}
 	//
@@ -343,7 +346,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	if (blobs.length === 0) {
 		return ret;
 	}
-
 
 	var blob_delimiter = "";
 	if (blob) {

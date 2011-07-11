@@ -98,10 +98,8 @@ CSL.Output.Formats.prototype.html = {
 	"@vertical-align/sup": "<sup>%%STRING%%</sup>",
 	"@vertical-align/sub": "<sub>%%STRING%%</sub>",
 	"@vertical-align/baseline": "<span style=\"baseline\">%%STRING%%</span>",
-	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
-	"@strip-periods/false": function (state, string) {
-		return string;
-	},
+	"@strip-periods/true": CSL.Output.Formatters.passthrough,
+	"@strip-periods/false": CSL.Output.Formatters.passthrough,
 	"@quotes/true": function (state, str) {
 		if ("undefined" === typeof str) {
 			return state.getTerm("open-quote");
@@ -187,10 +185,8 @@ CSL.Output.Formats.prototype.text = {
 	"@vertical-align/baseline": false,
 	"@vertical-align/sup": false,
 	"@vertical-align/sub": false,
-	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
-	"@strip-periods/false": function (state, string) {
-		return string;
-	},
+	"@strip-periods/true": CSL.Output.Formatters.passthrough,
+	"@strip-periods/false": CSL.Output.Formatters.passthrough,
 	"@quotes/true": function (state, str) {
 		if ("undefined" === typeof str) {
 			return state.getTerm("open-quote");
@@ -265,10 +261,8 @@ CSL.Output.Formats.prototype.rtf = {
 	"@vertical-align/baseline":false,
 	"@vertical-align/sup":"\\super %%STRING%%\\nosupersub{}",
 	"@vertical-align/sub":"\\sub %%STRING%%\\nosupersub{}",
-	"@strip-periods/true": CSL.Output.Formatters.strip_periods,
-	"@strip-periods/false": function (state, string) {
-		return string;
-	},
+	"@strip-periods/true": CSL.Output.Formatters.passthrough,
+	"@strip-periods/false": CSL.Output.Formatters.passthrough,
 	"@quotes/true": function (state, str) {
 		if ("undefined" === typeof str) {
 			return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-quote"));

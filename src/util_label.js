@@ -94,10 +94,16 @@ CSL.evaluateStringPluralism = function (str) {
 
 CSL.castLabel = function (state, node, term, plural, mode) {
 	var ret = state.getTerm(term, node.strings.form, plural, false, mode);
-	if (node.strings["strip-periods"]) {
+	// XXXXX strip-periods should be streamlined at some point. 
+	if (state.tmp.strip_periods) {
 		ret = ret.replace(/\./g, "");
+	} else {
+		for (var i = 0, ilen = node.decorations.length; i < ilen; i += 1) {
+			if ("@strip-periods" === node.decorations[i][0] && "true" === node.decorations[i][1]) {
+				ret = ret.replace(/\./g, "");
+				break
+			}
+		}
 	}
 	return ret;
 };
-
-

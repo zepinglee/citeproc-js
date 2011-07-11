@@ -275,14 +275,33 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
 };
 
 
+CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
+	var decor_tok = this[tokname + "_decor"];
+	if (str) {
+		if (this.state.tmp.strip_periods) {
+			str = str.replace(/\./g, "");
+		} else  if (decor_tok) {
+			for (var i = 0, ilen = decor_tok.decorations.length; i < ilen; i += 1) {
+				if ("@strip-periods" === decor_tok.decorations[i][0] && "true" === decor_tok.decorations[i][1]) {
+					str = str.replace(/\./g, "");
+					break
+				}
+			}
+		}
+	}
+	return str;
+}
+
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
-	if (this.state.output.append(name["non-dropping-particle"], this.family_decor, true)) {
+	var str = this._stripPeriods("family", name["non-dropping-particle"]);
+	if (this.state.output.append(str, this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
 };
 
 CSL.NameOutput.prototype._droppingParticle = function (name, pos) {
+	var str = this._stripPeriods("given", name["dropping-particle"]);
 	if (name["dropping-particle"] && name["dropping-particle"].match(/^et.?al[^a-z]$/)) {
 		if (this.name.strings["et-al-use-last"]) {
 			this.etal_spec[pos] = 2;
@@ -290,14 +309,15 @@ CSL.NameOutput.prototype._droppingParticle = function (name, pos) {
 			this.etal_spec[pos] = 1;
 		}
 		name["comma-dropping-particle"] = "";
-	} else if (this.state.output.append(name["dropping-particle"], this.given_decor, true)) {
+	} else if (this.state.output.append(str, this.given_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
 };
 
 CSL.NameOutput.prototype._familyName = function (name) {
-	if (this.state.output.append(name.family, this.family_decor, true)) {
+	var str = this._stripPeriods("family", name.family);
+	if (this.state.output.append(str, this.family_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
@@ -312,14 +332,18 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 		name.given = CSL.Util.Names.unInitialize(this.state, name.given);
 	}
 
-	if (this.state.output.append(name.given, this.given_decor, true)) {
+	var str = this._stripPeriods("given", name.given);
+	if (this.state.output.append(str, this.given_decor, true)) {
 		return this.state.output.pop();
 	}
 	return false;
 };
 
 CSL.NameOutput.prototype._nameSuffix = function (name) {
-	if (this.state.output.append(name.suffix, "empty", true)) {
+
+	var str = this._stripPeriods("family", name.suffix);
+
+	if (this.state.output.append(str, "empty", true)) {
 		return this.state.output.pop();
 	}
 	return false;

@@ -223,6 +223,7 @@ CSL.Engine.Tmp = function () {
 	// Used for conditional locale switching.
 	this.cite_locales = [];
 	this.cite_affixes = false;
+	this.strip_periods = 0;
 };
 
 
