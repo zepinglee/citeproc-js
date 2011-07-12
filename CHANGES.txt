@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.192
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Suppress only author, and only if it is the first-occurring
+  name, when suppress-author toggle is set. (The fix is slightly
+  more aggressive -- suppression will also occur if author is the
+  first of multiple variables set on the variable attribute of 
+  cs:names. This affects only a single style at present (din-1505-2.csl,
+  in which "author" and "composer" are used as a pair).
+
+
+==========================
 Changes in version 1.0.191
 ==========================
 

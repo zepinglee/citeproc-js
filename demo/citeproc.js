@@ -1691,7 +1691,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.191";
+	this.processor_version = "1.0.192";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4731,7 +4731,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 				this.state.tmp.offset_characters = oldchars;
 			} else {
 				this.state.tmp.last_primary_names_string = mystr;
-				if (this.item && this.item["suppress-author"]) {
+				if (this.variables.indexOf("author") > -1 && this.item && this.item["suppress-author"]) {
 					this.state.tmp.name_node.blobs.pop();
 					this.state.tmp.offset_characters = oldchars;
 				}
