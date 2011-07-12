@@ -417,7 +417,10 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			} else {
 				// XX1 print("remembering: "+mystr);
 				this.state.tmp.last_primary_names_string = mystr;
-				if (this.item && this.item["suppress-author"]) {
+
+				// XXXXX A little more precision would be nice.
+				// This will clobber variable="author editor" as well as variable="author".
+				if (this.variables.indexOf("author") > -1 && this.item && this.item["suppress-author"]) {
 					this.state.tmp.name_node.blobs.pop();
 					// If popped, avoid side-effects on character counting: we're only interested
 					// in things that actually render.
