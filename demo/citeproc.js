@@ -1691,7 +1691,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.192";
+	this.processor_version = "1.0.193";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -9879,6 +9879,9 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	this.partners = [];
     var tempResult = this.getItemDesc(Item);
     this.base = tempResult[0];
+	if (!phase) {
+		this.base.disambiguate = false;
+	}
     this.maxvals = tempResult[1];
     this.minval = tempResult[2];
     ItemCite = tempResult[3];

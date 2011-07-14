@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.193
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in disambiguate="true" disambiguation, when used
+  together with disambiguate-add-names. Thanks to user
+  Zotero user bevweber for reporting the fault.
+
+
+==========================
 Changes in version 1.0.192
 ==========================
 
