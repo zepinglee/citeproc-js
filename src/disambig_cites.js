@@ -102,6 +102,9 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 
     var tempResult = this.getItemDesc(Item);
     this.base = tempResult[0];
+	if (!phase) {
+		this.base.disambiguate = false;
+	}
     this.maxvals = tempResult[1];
     this.minval = tempResult[2];
     ItemCite = tempResult[3];
