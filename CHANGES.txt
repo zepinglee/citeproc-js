@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.194
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Render hyphen as en-dash in locator strings.
+
+
+==========================
 Changes in version 1.0.193
 ==========================
 

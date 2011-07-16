@@ -1691,7 +1691,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.193";
+	this.processor_version = "1.0.194";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6394,7 +6394,9 @@ CSL.Node.text = {
 						if (CSL.CITE_FIELDS.indexOf(this.variables_real[0]) > -1) {
 							func = function (state, Item, item) {
 								if (item && item[this.variables[0]]) {
-									state.output.append(item[this.variables[0]], this);
+									var locator = "" + item[this.variables[0]];
+									locator = locator.replace(/--*/g,"\u2013");
+									state.output.append(locator, this);
 								}
 							};
 						} else if (this.variables_real[0] === "page-first") {

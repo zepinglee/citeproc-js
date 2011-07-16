@@ -6,7 +6,6 @@ dojo.require("std.locator");
 dojo.require("std.language");
 dojo.require("std.eclac");
 dojo.require("std.sortseparator");
-dojo.require("std.locators");
 dojo.require("std.spaces");
 dojo.require("std.plural");
 dojo.require("std.testers");
