@@ -310,7 +310,7 @@ CSL.Node.text = {
 							// per-cite fields are read from item, rather than Item
 							func = function (state, Item, item) {
 								if (item && item[this.variables[0]]) {
-									var locator = item[this.variables[0]];
+									var locator = "" + item[this.variables[0]];
 									locator = locator.replace(/--*/g,"\u2013");
 									state.output.append(locator, this);
 								}
