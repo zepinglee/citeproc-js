@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [parental suffix-prefix-uphill]
+One. Two. [parental suffix–prefix–uphill]
 <<===== RESULT =====<<
 
 

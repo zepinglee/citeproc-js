@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [parental delimiter-prefix]
+One. Two. [parental delimiter–prefix]
 <<===== RESULT =====<<
 
 
