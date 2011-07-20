@@ -184,41 +184,43 @@ CSL.Node.text = {
 				if (this.strings.term) {
 				    term = this.strings.term;
 				    term = state.getTerm(term, form, plural);
-
+					
 				    // printterm
 				    func = function (state, Item) {
-					var myterm;
-					// if the term is not an empty string, flag this
-					// same as a variable with content.
-					if (term !== "") {
-					    flag = state.tmp.term_sibling.value();
-					    flag[0] = true;
-					    state.tmp.term_sibling.replace(flag);
-					}
-
-					// capitalize the first letter of a term, if it is the
-					// first thing rendered in a citation (or if it is
-					// being rendered immediately after terminal punctuation,
-					// I guess, actually).
-					if (!state.tmp.term_predecessor) {
-					    //CSL.debug("Capitalize");
-					    myterm = CSL.Output.Formatters["capitalize-first"](state, term);
-					} else {
-					    myterm = term;
-					}
-
-					if (state.tmp.strip_periods) {
-						myterm = myterm.replace(/\./g, "");
-					} else {
-						for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
-							if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
-								myterm = myterm.replace(/\./g, "");
-								break
+						var myterm;
+						// if the term is not an empty string, flag this
+						// same as a variable with content.
+						if (term !== "") {
+							flag = state.tmp.term_sibling.value();
+							flag[0] = true;
+							state.tmp.term_sibling.replace(flag);
+						}
+						
+						// capitalize the first letter of a term, if it is the
+						// first thing rendered in a citation (or if it is
+						// being rendered immediately after terminal punctuation,
+						// I guess, actually).
+						if (!state.tmp.term_predecessor) {
+							//CSL.debug("Capitalize");
+							myterm = CSL.Output.Formatters["capitalize-first"](state, term);
+						} else {
+							myterm = term;
+						}
+						
+						// XXXXX Cut-and-paste code in multiple locations. This code block should be
+						// collected in a function.
+						// Tag: strip-periods-block
+						if (state.tmp.strip_periods) {
+							myterm = myterm.replace(/\./g, "");
+						} else {
+							for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
+								if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
+									myterm = myterm.replace(/\./g, "");
+									break
+								}
 							}
 						}
-					}
-
-					state.output.append(myterm, this);
+						state.output.append(myterm, this);
 				    };
 				    this.execs.push(func);
 				    state.build.term = false;

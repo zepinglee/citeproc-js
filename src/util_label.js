@@ -94,7 +94,9 @@ CSL.evaluateStringPluralism = function (str) {
 
 CSL.castLabel = function (state, node, term, plural, mode) {
 	var ret = state.getTerm(term, node.strings.form, plural, false, mode);
-	// XXXXX strip-periods should be streamlined at some point. 
+	// XXXXX Cut-and-paste code in multiple locations. This code block should be
+	// collected in a function.
+	// Tag: strip-periods-block
 	if (state.tmp.strip_periods) {
 		ret = ret.replace(/\./g, "");
 	} else {
