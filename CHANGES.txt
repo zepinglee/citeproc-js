@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.195
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Wake up strip-periods on month date parts.
+
+
+==========================
 Changes in version 1.0.194
 ==========================
 
