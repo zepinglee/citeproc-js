@@ -63,6 +63,9 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
 		if (this.name.strings["suppress-min"] && values.length >= this.name.strings["suppress-min"]) {
 			values = [];
 		}
+		if (this.name.strings["suppress-max"] && values.length <= this.name.strings["suppress-max"]) {
+			values = [];
+		}
 		this._getFreeters(v, values);
 		this._getPersonsAndInstitutions(v, values);
 	}
