@@ -169,7 +169,7 @@ CSL.Output.Formatters.title = function (state, string) {
 		myret.push(lst[pos]);
 	}
 	words = myret.slice();
-	isAllUpperCase = str.string.toUpperCase() === string;
+	isAllUpperCase = str.string.toUpperCase() === string && !str.string.match(/[0-9]/);
 	newString = "";
 	lastWordIndex = words.length - 1;
 	previousWordIndex = -1;
