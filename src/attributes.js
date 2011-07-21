@@ -744,12 +744,12 @@ CSL.Attributes["@et-al-subsequent-use-first"] = function (state, arg) {
 	state.setOpt(this, "et-al-subsequent-use-first", parseInt(arg, 10));
 };
 
-CSL.Attributes["@truncate-min"] = function (state, arg) {
-	this.strings["truncate-min"] = parseInt(arg, 10);
-};
-
 CSL.Attributes["@suppress-min"] = function (state, arg) {
 	this.strings["suppress-min"] = parseInt(arg, 10);
+};
+
+CSL.Attributes["@suppress-max"] = function (state, arg) {
+	this.strings["suppress-max"] = parseInt(arg, 10);
 };
 
 
