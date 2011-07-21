@@ -1691,7 +1691,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.195";
+	this.processor_version = "1.0.196";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4631,7 +4631,12 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.truncatePersonalNameLists();
 	this.constrainNames();
 	if (this.name.strings.form === "count") {
-		this.state.output.append(this.names_count, "empty");
+		if (this.state.tmp.area.slice(-5) === "_sort" || this.names_count != 0) {
+			this.state.output.append(this.names_count, "empty");
+		} else {
+			this.state.tmp.term_sibling.value()[1] = true;
+			this.state.tmp.term_sibling.value()[2] = false;
+		}
 		return;
 	}
 	this.disambigNames();
@@ -4888,6 +4893,9 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
 		this.variable_offset[v] = this.nameset_offset;
 		var values = this._normalizeVariableValue(Item, v);
 		if (this.name.strings["suppress-min"] && values.length >= this.name.strings["suppress-min"]) {
+			values = [];
+		}
+		if (this.name.strings["suppress-max"] && values.length <= this.name.strings["suppress-max"]) {
 			values = [];
 		}
 		this._getFreeters(v, values);
@@ -5192,7 +5200,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 	for (var i = 0, ilen = this.variables.length - 1; i < ilen; i += 1) {
 		var v = this.variables[i];
 		var vv = this.variables[i + 1];
-		if (this.freeters[v].length) {
+		if (this.freeters[v].length || this.freeters[vv].length) {
 			if (this.etal_spec[this.variable_offset[v]] !== this.etal_spec[this.variable_offset[vv]]
 				|| !this._compareNamesets(this.freeters[v], this.freeters[vv])) {
 				this.common_term = false;
@@ -6986,11 +6994,11 @@ CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
 CSL.Attributes["@et-al-subsequent-use-first"] = function (state, arg) {
 	state.setOpt(this, "et-al-subsequent-use-first", parseInt(arg, 10));
 };
-CSL.Attributes["@truncate-min"] = function (state, arg) {
-	this.strings["truncate-min"] = parseInt(arg, 10);
-};
 CSL.Attributes["@suppress-min"] = function (state, arg) {
 	this.strings["suppress-min"] = parseInt(arg, 10);
+};
+CSL.Attributes["@suppress-max"] = function (state, arg) {
+	this.strings["suppress-max"] = parseInt(arg, 10);
 };
 CSL.Attributes["@and"] = function (state, arg) {
 	state.setOpt(this, "and", arg);
@@ -9066,7 +9074,7 @@ CSL.Output.Formatters.title = function (state, string) {
 		myret.push(lst[pos]);
 	}
 	words = myret.slice();
-	isAllUpperCase = str.string.toUpperCase() === string;
+	isAllUpperCase = str.string.toUpperCase() === string && !str.string.match(/[0-9]/);
 	newString = "";
 	lastWordIndex = words.length - 1;
 	previousWordIndex = -1;
