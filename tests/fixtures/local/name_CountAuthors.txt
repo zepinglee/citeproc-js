@@ -53,7 +53,8 @@ citation
 
 
 >>===== RESULT =====>>
-John Doe
+..[0] Doe, J, Roe, J, Noakes, R, et al. (11 co-authors)
+>>[1] Doe, J, Roe, J, Noakes, R, and Snoakes, H
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
