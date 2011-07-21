@@ -79,7 +79,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 	for (var i = 0, ilen = this.variables.length - 1; i < ilen; i += 1) {
 		var v = this.variables[i];
 		var vv = this.variables[i + 1];
-		if (this.freeters[v].length) {
+		if (this.freeters[v].length || this.freeters[vv].length) {
 			if (this.etal_spec[this.variable_offset[v]] !== this.etal_spec[this.variable_offset[vv]]
 				|| !this._compareNamesets(this.freeters[v], this.freeters[vv])) {
 				
