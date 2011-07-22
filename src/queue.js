@@ -357,6 +357,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 	}
 
 	if (blob && blob.new_locale) {
+		blob.old_locale = state.opt.lang;
 		state.opt.lang = blob.new_locale;
 	}
 
