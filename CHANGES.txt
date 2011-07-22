@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.197
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Properly set and reset discretionary multilingual locale 
+  during output operations. This fixes a bug in multilingual 
+  bibliography generation identified by Maxim Nazarenko.
+
+
+==========================
 Changes in version 1.0.196
 ==========================
 
@@ -11,7 +24,7 @@ Mishandled or unimplemented features
 - Implement suppress-max attribute for cs:names
   and fix bug in implicit conditional behavior within
   cs:group when cs:names renders no output due
-  to suppress-min or supprexx-max. (Note that neither
+  to suppress-min or suppress-max. (Note that neither
   suppress-min nor suppress-max are valid in CSL 1.0).
 
 - Treat numerals as lowercase letters when evaluating

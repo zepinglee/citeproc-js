@@ -649,6 +649,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 		state.tmp.offset_characters = 0;
 	}
 	if (blob && blob.new_locale) {
+		blob.old_locale = state.opt.lang;
 		state.opt.lang = blob.new_locale;
 	}
 	var blobjr, use_suffix, use_prefix, params;
@@ -1691,7 +1692,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.196";
+	this.processor_version = "1.0.197";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
