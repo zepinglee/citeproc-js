@@ -284,10 +284,10 @@ CSL.getBibliographyEntries = function (bibsection) {
 		if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
 			// The output queue stuff needs cleaning up.  the result of
 			// output.current.value() is sometimes a blob, sometimes its list
-			// of blobs.  this is inconsistency is a source of confusion, and
+			// of blobs.  this inconsistency is a source of confusion, and
 			// should be cleaned up across the code base in the first
 			// instance, before making any other changes to output code.
-			if (collapse_parallel) {
+			if (collapse_parallel || !this.output.queue[0].blobs[0].blobs[0].strings) {
 				topblobs = this.output.queue[0].blobs;
 				collapse_parallel = false;
 			} else {

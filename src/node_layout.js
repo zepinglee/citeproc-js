@@ -191,10 +191,12 @@ CSL.Node.layout = {
 				if (state.tmp.cite_affixes) {
 					// If layout_locale_flag is true, write cs:else END
 					// and cs:choose END to the token list.
-					tok = new CSL.Token("else", CSL.END);
-					CSL.Node["else"].build.call(tok, state, target);
-					tok = new CSL.Token("choose", CSL.END);
-					CSL.Node.choose.build.call(tok, state, target);
+					if (state.build.layout_locale_flag) {
+						tok = new CSL.Token("else", CSL.END);
+						CSL.Node["else"].build.call(tok, state, target);
+						tok = new CSL.Token("choose", CSL.END);
+						CSL.Node.choose.build.call(tok, state, target);
+					}
 				}
 				state.build_layout_locale_flag = true;
 				if (state.build.area === "citation") {
