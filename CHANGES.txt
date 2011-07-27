@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.198
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in multiple (multilingual) layouts, affecting styles
+  that use multilingual citation layouts when a bibliography is
+  rendered. Bug spotted by Abbas Shahzadeh.
+
+
+==========================
 Changes in version 1.0.197
 ==========================
 

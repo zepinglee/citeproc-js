@@ -2738,7 +2738,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 		all_item_ids.push(entry_item_ids);
 		this.output.endTag("bib_entry");
 		if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
-			if (collapse_parallel) {
+			if (collapse_parallel || !this.output.queue[0].blobs[0].blobs[0].strings) {
 				topblobs = this.output.queue[0].blobs;
 				collapse_parallel = false;
 			} else {
@@ -4518,10 +4518,12 @@ CSL.Node.layout = {
 			}
 			if (!this.locale_raw) {
 				if (state.tmp.cite_affixes) {
-					tok = new CSL.Token("else", CSL.END);
-					CSL.Node["else"].build.call(tok, state, target);
-					tok = new CSL.Token("choose", CSL.END);
-					CSL.Node.choose.build.call(tok, state, target);
+					if (state.build.layout_locale_flag) {
+						tok = new CSL.Token("else", CSL.END);
+						CSL.Node["else"].build.call(tok, state, target);
+						tok = new CSL.Token("choose", CSL.END);
+						CSL.Node.choose.build.call(tok, state, target);
+					}
 				}
 				state.build_layout_locale_flag = true;
 				if (state.build.area === "citation") {

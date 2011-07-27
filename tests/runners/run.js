@@ -28,6 +28,7 @@ dojo.require("std.nameorder");
 dojo.require("std.textcase");
 dojo.require("std.label");
 dojo.require("std.bugreports");
+dojo.require("std.layout");
 dojo.require("std.nameattr");
 dojo.require("std.punctuation");
 dojo.require("std.bibheader");
