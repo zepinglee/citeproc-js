@@ -294,6 +294,12 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	}
 	blob = new CSL.Blob(token, str);
 	curr = this.current.value();
+	if ("undefined" === typeof curr && this.current.mystack.length === 0) {
+		// XXXX An operation like this is missing somewhere, this should NOT be necessary.
+		// Addresses error triggered in multi-layouts.
+		this.current.mystack.push([]);
+		curr = this.current.value();
+	}
 	if ("string" === typeof blob.blobs) {
 		if (this.state.tmp.strip_periods) {
 			blob.blobs = blob.blobs.replace(/\./g, "");
