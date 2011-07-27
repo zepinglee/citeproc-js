@@ -610,6 +610,10 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	}
 	blob = new CSL.Blob(token, str);
 	curr = this.current.value();
+	if ("undefined" === typeof curr && this.current.mystack.length === 0) {
+		this.current.mystack.push([]);
+		curr = this.current.value();
+	}
 	if ("string" === typeof blob.blobs) {
 		if (this.state.tmp.strip_periods) {
 			blob.blobs = blob.blobs.replace(/\./g, "");
@@ -1692,7 +1696,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.197";
+	this.processor_version = "1.0.199";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
