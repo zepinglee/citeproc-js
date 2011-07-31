@@ -402,6 +402,9 @@ CSL.Registry.prototype.rebuildlist = function () {
 	//     saving off old sequence numbers as we go.
 	//
 	// count = 1;
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.mylist.reverse();
+	}
 	len = this.mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.mylist[pos];
@@ -409,6 +412,9 @@ CSL.Registry.prototype.rebuildlist = function () {
 		this.oldseq[item] = this.registry[item].seq;
 		this.registry[item].seq = (pos + 1);
 		// count += 1;
+	}
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.mylist.reverse();
 	}
 };
 
@@ -504,6 +510,9 @@ CSL.Registry.prototype.renumber = function () {
 	//
 	// 19. Reset citation numbers on list items
 	//
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.reflist.reverse();
+	}
 	len = this.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.reflist[pos];
