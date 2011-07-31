@@ -471,6 +471,30 @@ CSL.Attributes["@match"] = function (state, arg) {
 	}
 };
 
+CSL.Attributes["@jurisdiction"] = function (state, arg) {
+	var lex = arg.split(/\s+/);
+	var func = function (state, Item) {
+		var ret = false;
+		var mylex = false;
+		if (Item.jurisdiction) {
+			mylex = Item.jurisdiction;
+		} else if (Item.language) {
+			var m = Item.language.match(/^.*-x-lex-([.a-zA-Z]+).*$/);
+			if (m) {
+				mylex = m[1];
+			}
+		}
+		for (var i = 0, ilen = lex.length; i < ilen; i += 1) {
+			if (mylex === lex[i]) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+	this.tests.push(func);
+};
+
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
 	var variables, len, pos, func, variable, ret;
 	variables = arg.split(/\s+/);
