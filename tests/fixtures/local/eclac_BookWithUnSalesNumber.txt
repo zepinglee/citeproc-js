@@ -112,7 +112,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   <macro name="un-sales-number-identifier">
     <group delimiter=": ">
       <text term="number-00"/>
-      <text variable="number"/>
+      <text variable="issue"/>
     </group>
   </macro>
   <macro name="issued-month">
@@ -218,7 +218,8 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
         "publisher-place": "Santiago de Chile", 
         "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
         "type": "book", 
-        "un-sales-number": "S.07.II.G.6",
+        "language": "es-x-lex-un.org",
+        "issue": "S.07.II.G.6",
 		"multi":{
 			"_keys":{
 				"publisher":{
