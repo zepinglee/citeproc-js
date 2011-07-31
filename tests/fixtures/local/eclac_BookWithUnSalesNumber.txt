@@ -74,15 +74,15 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   <locale xml:lang="en">
     <style-options punctuation-in-quote="true"/>
     <terms>
-      <term name="un-sales-number-label">United Nations Publication, sales N°</term>
-      <term name="collection-number-label">N°</term>
+      <term name="number-00">United Nations Publication, sales N°</term>
+      <term name="number-01">N°</term>
     </terms>
   </locale>
   <locale xml:lang="es">
     <style-options punctuation-in-quote="true"/>
     <terms>
-      <term name="un-sales-number-label">Publicación de las Naciones Unidas, Nº de venta</term>
-      <term name="collection-number-label">N°</term>
+      <term name="number-00">Publicación de las Naciones Unidas, Nº de venta</term>
+      <term name="number-01">N°</term>
       <term name="month-01">enero</term>
       <term name="month-02">febrero</term>
       <term name="month-03">marzo</term>
@@ -111,8 +111,8 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   </locale>
   <macro name="un-sales-number-identifier">
     <group delimiter=": ">
-      <text term="un-sales-number-label"/>
-      <text variable="un-sales-number"/>
+      <text term="number-00"/>
+      <text variable="number"/>
     </group>
   </macro>
   <macro name="issued-month">
@@ -126,14 +126,18 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   <macro name="publisher-place">
     <text variable="publisher-place"/>
   </macro>
-  <macro name="document-number-parens">
-    <text variable="number" prefix="(" suffix=")"/>
+  <macro name="document-number-parens-un-only">
+    <choose>
+      <if jurisdiction="un.org">
+        <text variable="number" prefix="(" suffix=")"/>
+      </if>
+    </choose>
   </macro>
   <macro name="collection-identifier">
     <group delimiter=", ">
       <text variable="collection-title"/>
       <group delimiter=" ">
-        <text term="collection-number-label" />
+        <text term="number-01" />
         <text variable="collection-number"/>
       </group>
     </group>
@@ -147,6 +151,9 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   <macro name="author-full-sofirst">
     <names variable="author">
       <name name-as-sort-order="first" sort-separator=", " and="text"/>
+      <substitute>
+        <text variable="publisher"/>
+      </substitute>
     </names>
   </macro>
   <citation>
@@ -161,14 +168,18 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
             <text macro="title-quotes"/>
             <group delimiter=" ">
               <text macro="collection-identifier"/>
-              <text macro="document-number-parens"/>
+              <text macro="document-number-parens-un-only"/>
             </group>
             <text macro="publisher-place"/>
             <text macro="publisher"/>
             <text macro="issued-month"/>
           </group>
         </group>
-        <text macro="un-sales-number-identifier"/>
+        <choose>
+          <if jurisdiction="un.org">
+            <text macro="un-sales-number-identifier"/>
+          </if>
+        </choose>
       </group>
     </layout>
   </citation>
