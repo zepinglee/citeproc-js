@@ -1696,7 +1696,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.199";
+	this.processor_version = "1.0.200";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2259,6 +2259,7 @@ CSL.Engine.Opt = function () {
 	this.max_number_of_names = 0;
 	this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
 	this.development_extensions = true;
+    this.gender = {};
 };
 CSL.Engine.Tmp = function () {
 	this.names_max = new CSL.Stack();
@@ -3526,6 +3527,13 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 			}
 		}
 	}
+	nodes = this.sys.xml.getNodesByName(locale, 'type');
+	for (var i = 0, ilen = this.sys.xml.numberofnodes(nodes); i < ilen; i += 1) {
+		var typenode = nodes[i];
+		var type = this.sys.xml.getAttributeValue(typenode, 'name');
+		var gender = this.sys.xml.getAttributeValue(typenode, 'gender');
+		this.opt.gender[type] = gender;
+	}
 	nodes = this.sys.xml.getNodesByName(locale, 'term');
 	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
 		term = nodes[pos];
@@ -4242,8 +4250,11 @@ CSL.Node.key = {
 		target.push(start_key);
 		if (this.variables.length) {
 			var variable = this.variables[0];
-			if (variable === "citation-number" && state.build.area === "citation_sort") {
-				state.opt.citation_number_sort = true;
+			if (variable === "citation-number") {
+				if (state.build.area === "citation_sort") {
+					state.opt.citation_number_sort = true;
+				}
+				state.opt.citation_number_sort_direction = this.strings.sort_direction;
 			}
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				var names_start_token = new CSL.Token("names", CSL.START);
@@ -4363,6 +4374,9 @@ CSL.Node.key = {
 				if (tok && tok.name === "text" && tok.dateparts) {
 					keypos = i;
 					break;
+				}
+				if (tok && tok.variables[0] === "citation-number") {
+					state.opt.citation_number_sort_direction = this.strings.sort_direction;
 				}
 			}
 			if (keypos) {
@@ -6340,9 +6354,10 @@ CSL.Node.text = {
 				}
 			} else {
 				if (this.strings.term) {
-				    term = this.strings.term;
-				    term = state.getTerm(term, form, plural);
 				    func = function (state, Item) {
+						var gender = state.opt.gender[Item.type];
+						var term = this.strings.term;
+						term = state.getTerm(term, form, plural, gender);
 						var myterm;
 						if (term !== "") {
 							flag = state.tmp.term_sibling.value();
@@ -6768,6 +6783,29 @@ CSL.Attributes["@match"] = function (state, arg) {
 		}
 		this.evaluator = evaluator;
 	}
+};
+CSL.Attributes["@jurisdiction"] = function (state, arg) {
+	var lex = arg.split(/\s+/);
+	var func = function (state, Item) {
+		var ret = false;
+		var mylex = false;
+		if (Item.jurisdiction) {
+			mylex = Item.jurisdiction;
+		} else if (Item.language) {
+			var m = Item.language.match(/^.*-x-lex-([.a-zA-Z]+).*$/);
+			if (m) {
+				mylex = m[1];
+			}
+		}
+		for (var i = 0, ilen = lex.length; i < ilen; i += 1) {
+			if (mylex === lex[i]) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+	this.tests.push(func);
 };
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
 	var variables, len, pos, func, variable, ret;
@@ -9463,12 +9501,18 @@ CSL.Registry.prototype.douncited = function () {
 CSL.Registry.prototype.rebuildlist = function () {
 	var count, len, pos, item;
 	this.reflist = [];
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.mylist.reverse();
+	}
 	len = this.mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.mylist[pos];
 		this.reflist.push(this.registry[item]);
 		this.oldseq[item] = this.registry[item].seq;
 		this.registry[item].seq = (pos + 1);
+	}
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.mylist.reverse();
 	}
 };
 CSL.Registry.prototype.dorefreshes = function () {
@@ -9508,6 +9552,9 @@ CSL.Registry.prototype.setdisambigs = function () {
 };
 CSL.Registry.prototype.renumber = function () {
 	var len, pos, item;
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.reflist.reverse();
+	}
 	len = this.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {
 		item = this.reflist[pos];
@@ -9520,6 +9567,9 @@ CSL.Registry.prototype.renumber = function () {
 				this.return_data.bibchange = true;
 			}
 		}
+	}
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.reflist.reverse();
 	}
 };
 CSL.Registry.prototype.setsortkeys = function () {
@@ -9905,8 +9955,12 @@ CSL.Disambiguation.prototype.runDisambig = function () {
 			} else {
 				this.scanItems(this.lists[pos], 0);
 			}
+			var names_used = [];
 			ismax = this.incrementDisambig();
 			this.scanItems(this.lists[pos], 1);
+			if (this.clashes[1] < this.clashes[0]) {
+				this.base.better = this.base.names.slice();
+			}
 			this.evalScan(ismax);
 		}
 	}
@@ -9969,11 +10023,18 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		}
 	} else {
 		if (ismax || this.advance_mode) {
+			if (ismax) {
+				var better = this.lists[this.listpos][0].better;
+				print("-- ejecting in disNames() @ " + better);
+				if (better) {
+					this.base.names = better.slice();
+				} else {
+					this.base = new CSL.AmbigConfig();
+				}
+				this.lists[this.listpos] = [this.base, this.nonpartners];
+			}
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
 				this.state.registry.registerAmbigToken(this.akey, "" + this.partners[pos].id, this.base);
-			}
-			if (ismax) {
-				this.lists[this.listpos] = [this.base, this.nonpartners];
 			}
 		} else {
 			this.rerun = true;
@@ -10017,11 +10078,17 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	} else {
 		this.base = CSL.cloneAmbigConfig(this.oldbase);
 		if (ismax || this.advance_mode) {
+			if (ismax) {
+				var better = this.lists[this.listpos][0].better;
+				if (better) {
+					this.base.names = better.slice();
+				} else {
+					this.base = new CSL.AmbigConfig();
+				}
+				this.lists[this.listpos] = [this.base, this.nonpartners];
+			}
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
 				this.state.registry.registerAmbigToken(this.akey, "" + this.partners[pos].id, this.base);
-			}
-			if (ismax) {
-				this.lists[this.listpos] = [this.base, this.nonpartners];
 			}
 		} else {
 			this.rerun = true;

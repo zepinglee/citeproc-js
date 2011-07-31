@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.200
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- When attempting disambiguation, never include names that
+  fail to reduce the number of clashes.
+
+- Fix typo in xmldom.js. Thanks to Greg Law for identifying
+  the fault.
+
+- When sort order of citation-number is set to "descending",
+  reverse the order of citation numbers without reversing
+  the order of items.
+
+- Implement gender-sensitive rendering of non-numeric
+  terms, based on gender assignment to item type (beyond
+  CSL 1.0).
+
+- Implement jurisdiction conditional.
+
+
+==========================
 Changes in version 1.0.199
 ==========================
 
