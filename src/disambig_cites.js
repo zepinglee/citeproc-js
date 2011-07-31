@@ -188,7 +188,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		if (ismax || this.advance_mode) {
 			if (ismax) {
 				var better = this.lists[this.listpos][0].better;
-				print("-- ejecting in disNames() @ " + better);
+				//print("-- ejecting in disNames() @ " + better);
 				if (better) {
 					this.base.names = better.slice();
 				} else {
