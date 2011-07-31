@@ -521,6 +521,9 @@ CSL.Registry.prototype.renumber = function () {
 			}
 		}
 	}
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+		this.reflist.reverse();
+	}
 };
 
 CSL.Registry.prototype.setsortkeys = function () {

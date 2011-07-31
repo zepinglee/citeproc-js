@@ -107,8 +107,11 @@ CSL.Node.key = {
 			// that variable is set as key in ANY position.  Could
 			// be a little more conservative, but secondary sorts
 			// by this variable seem unlikely.
-			if (variable === "citation-number" && state.build.area === "citation_sort") {
-				state.opt.citation_number_sort = true;
+			if (variable === "citation-number") {
+				if (state.build.area === "citation_sort") {
+					state.opt.citation_number_sort = true;
+				}
+				state.opt.citation_number_sort_direction = this.strings.sort_direction;
 			}
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
@@ -249,6 +252,9 @@ CSL.Node.key = {
 				if (tok && tok.name === "text" && tok.dateparts) {
 					keypos = i;
 					break;
+				}
+				if (tok && tok.variables[0] === "citation-number") {
+					state.opt.citation_number_sort_direction = this.strings.sort_direction;
 				}
 			}
 			if (keypos) {
