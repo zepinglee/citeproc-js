@@ -112,7 +112,7 @@ Only Me, “My Way, the Right Way”, Nov. 13, 1992; 島田紳助、「ネタ作
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0"
+      version="1.1x"
       default-locale="ja-JP">
   <info>
     <id />

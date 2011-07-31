@@ -98,7 +98,7 @@ citation
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1x">
   <info>
     <id />
     <title />
