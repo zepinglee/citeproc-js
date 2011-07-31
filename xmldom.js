@@ -112,7 +112,7 @@ var CSL_CHROME = function () {
 		}
 	};
 	this.parser = new DOMParser();
-	var str = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"><institution-part name=\"long\"></institution></docco>";
+	var str = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"><institution-part name=\"long\"/></institution></docco>";
 	var inst_doc = this.parser.parseFromString(str, "text/xml");
 	var inst_node = inst_doc.getElementsByTagName("institution");
 	this.institution = inst_node.item(0);
