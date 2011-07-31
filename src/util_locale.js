@@ -142,6 +142,16 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 		}
 	}
 	//
+	// Xml: get a list of any cs:type nodes within locale
+	//
+	nodes = this.sys.xml.getNodesByName(locale, 'type');
+	for (var i = 0, ilen = this.sys.xml.numberofnodes(nodes); i < ilen; i += 1) {
+		var typenode = nodes[i];
+		var type = this.sys.xml.getAttributeValue(typenode, 'name');
+		var gender = this.sys.xml.getAttributeValue(typenode, 'gender');
+		this.opt.gender[type] = gender;
+	}
+	//
 	// Xml: get a list of term nodes within locale
 	//
 	nodes = this.sys.xml.getNodesByName(locale, 'term');

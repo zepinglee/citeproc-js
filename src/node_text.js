@@ -182,11 +182,12 @@ CSL.Node.text = {
 				}
 			} else {
 				if (this.strings.term) {
-				    term = this.strings.term;
-				    term = state.getTerm(term, form, plural);
 					
 				    // printterm
 				    func = function (state, Item) {
+						var gender = state.opt.gender[Item.type];
+						var term = this.strings.term;
+						term = state.getTerm(term, form, plural, gender);
 						var myterm;
 						// if the term is not an empty string, flag this
 						// same as a variable with content.
