@@ -87,8 +87,17 @@ CSL.Disambiguation.prototype.runDisambig = function () {
 			} else {
 				this.scanItems(this.lists[pos], 0);
 			}
+			var names_used = [];
 			ismax = this.incrementDisambig();
 			this.scanItems(this.lists[pos], 1);
+
+			// Add to scanItems()
+			if (this.clashes[1] < this.clashes[0]) {
+				//print("Clashes reduced to: "+this.clashes[1]);
+				//print("  setting \"better\" to: ["+this.base.names+"]");
+				this.base.better = this.base.names.slice();
+			}
+
 			this.evalScan(ismax);
 		}
 	}
@@ -177,11 +186,18 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 		}
 	} else {
 		if (ismax || this.advance_mode) {
+			if (ismax) {
+				var better = this.lists[this.listpos][0].better;
+				print("-- ejecting in disNames() @ " + better);
+				if (better) {
+					this.base.names = better.slice();
+				} else {
+					this.base = new CSL.AmbigConfig();
+				}
+				this.lists[this.listpos] = [this.base, this.nonpartners];
+			}
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
 				this.state.registry.registerAmbigToken(this.akey, "" + this.partners[pos].id, this.base);
-			}
-			if (ismax) {
-				this.lists[this.listpos] = [this.base, this.nonpartners];
 			}
 		} else {
 			// Disambiguation actually runs very slightly faster
@@ -235,11 +251,18 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	} else {
 		this.base = CSL.cloneAmbigConfig(this.oldbase);
 		if (ismax || this.advance_mode) {
+			if (ismax) {
+				var better = this.lists[this.listpos][0].better;
+				//print("-- ejecting in disGivens() @ "+ better);
+				if (better) {
+					this.base.names = better.slice();
+				} else {
+					this.base = new CSL.AmbigConfig();
+				}
+				this.lists[this.listpos] = [this.base, this.nonpartners];
+			}
 			for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
 				this.state.registry.registerAmbigToken(this.akey, "" + this.partners[pos].id, this.base);
-			}
-			if (ismax) {
-				this.lists[this.listpos] = [this.base, this.nonpartners];
 			}
 		} else {
 			this.rerun = true;
