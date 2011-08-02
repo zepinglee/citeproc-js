@@ -793,6 +793,12 @@ CSL.Attributes["@initialize-with"] = function (state, arg) {
 	state.setOpt(this, "initialize-with", arg);
 };
 
+CSL.Attributes["@initialize"] = function (state, arg) {
+	if (arg === "false") {
+		state.setOpt(this, "initialize", false);
+	}
+};
+
 CSL.Attributes["@name-as-sort-order"] = function (state, arg) {
 	state.setOpt(this, "name-as-sort-order", arg);
 };

@@ -83,8 +83,8 @@ CSL.Util.Names.unInitialize = function (state, name) {
 /**
  * Initialize a name.
  */
-CSL.Util.Names.initializeWith = function (state, name, terminator) {
-	var i, ilen, j, jlen, n, m;
+CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly) {
+	var i, ilen, j, jlen, n, m, mm, str, lst, ret;
 	if (!name) {
 		return "";
 	}
@@ -95,9 +95,106 @@ CSL.Util.Names.initializeWith = function (state, name, terminator) {
 	if (state.opt["initialize-with-hyphen"] === false) {
 		namelist = namelist.replace(/\-/g, " ");
 	}
-	namelist = namelist.replace(/\./g, " ").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
+
+	// Oh boy.
+	// We need to suss out what is a set of initials or abbreviation,
+	// so that they can be selectively normalized. Steps might be:
+	//   (1) Split the string
+    //   (2) Step through the string, deleting periods and, if initalize="false", then
+    //       (a) note abbreviations and initials (separately).
+    //   (3) If initialize="false" then:
+    //       (a) Do the thing below, but only pushing terminator; or else
+    //       (b) Do the thing below
+
+	// (1) Split the string
+	namelist = namelist.replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
 	// Workaround for Internet Explorer
-	namelist = namelist.split(/(\-|\s+)/);
+	//namelist = namelist.split(/(\-|\s+)/);
+    // Workaround for Internet Explorer
+    mm = namelist.match(/[\-\s]+/g);
+    lst = namelist.split(/[\-\s]+/);
+
+    if (lst.length === 0) {
+        namelist = mm;
+    } else {
+        namelist = [lst[0]];
+        for (i = 1, ilen = lst.length; i < ilen; i += 1) {
+            namelist.push(mm[i - 1]);
+            namelist.push(lst[i]);
+        }
+    }
+	var lst = namelist;
+	// This case remains: John T.S. Smith. Fix up by stepping through
+	// in reverse.
+	for (i = lst.length -1; i > -1; i += -1) {
+		if (lst[i] && lst[i].slice(0, -1).indexOf(".") > -1) {
+			var lstend = lst.slice(i + 1);
+			var lstmid = lst[i].slice(0, -1).split(".");
+			lst = lst.slice(0, i);
+			for (j = 0, jlen = lstmid.length; j < jlen; j += 1) {
+				lst.push(lstmid[j] + ".");
+				if (j < lstmid.length - 1) {
+					lst.push(" ");
+				}
+			}
+			lst = lst.concat(lstend);
+		}
+	}
+
+	// Use doInitializeName or doNormalizeName, depending on requirements.
+	print("terminator is: ("+terminator+")");
+	if (normalizeOnly) {
+		ret = CSL.Util.Names.doNormalize(state, lst, terminator);
+	} else {
+		ret = CSL.Util.Names.doInitialize(state, lst, terminator);
+	}
+	return ret;
+};
+
+CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
+    //   (2) Step through the string, deleting periods and, if initalize="false", then
+    //       (a) note abbreviations and initials (separately).
+
+	var isAbbrev = [];
+	for (i = 0, ilen = namelist.length; i < ilen; i += 1) {
+		if (namelist[i].length > 1 && namelist[i].slice(-1) === ".") {
+			namelist[i] = namelist[i].slice(0, -1);
+			isAbbrev.push(true);
+		} else {
+			isAbbrev.push(false);
+		}
+	}
+    //   (3) If initialize="false" then:
+    //       (a) Do the thing below, but only pushing terminator; or else
+    //       (b) Do the thing below
+	var ret = [];
+	for (i = 0, ilen = namelist.length; i < ilen; i += 2) {
+		if (isAbbrev[i]) {
+			if (i < namelist.length - 2) {
+				namelist[i + 1] = "";
+				// If terminator does not end in a space,
+				// and this is a ROMANESQUE,
+				// and this or partner is not an initial,
+				// add a space.
+				// Otherwise, just use terminator.
+				
+				if ((!terminator || terminator.slice(-1) && terminator.slice(-1) !== " ")
+					&& namelist[i].length && namelist[i].match(CSL.ALL_ROMANESQUE_REGEXP)
+					&& (namelist[i].length > 1 || namelist[i + 2].length > 1)) {
+					namelist[i + 1] = " ";
+				}
+				namelist[i] = namelist[i] + terminator;
+			}
+			if (i === namelist.length - 1) {
+				namelist[i] = namelist[i] + terminator;
+			}
+		}
+	}
+	return namelist.join("").replace(/\s+$/,"");
+};
+
+CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
+	var i, ilen, m, j, jlen, lst;
 	for (i = 0, ilen = namelist.length; i < ilen; i += 2) {
 		n = namelist[i];
 		if (!n) {

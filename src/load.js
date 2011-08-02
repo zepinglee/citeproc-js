@@ -174,6 +174,7 @@ var CSL = {
 		"delimiter-precedes-last",
 		"delimiter-precedes-et-al",
 		"initialize-with",
+		"initialize",
 		"name-as-sort-order",
 		"sort-separator",
 		"et-al-min",

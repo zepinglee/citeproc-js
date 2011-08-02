@@ -325,11 +325,18 @@ CSL.NameOutput.prototype._familyName = function (name) {
 
 CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 
-	if (name.family && 1 === this.state.tmp.disambig_settings.givens[pos][i] && !name.block_initialize) {
-		var initialize_with = this.name.strings["initialize-with"];
-		name.given = CSL.Util.Names.initializeWith(this.state, name.given, initialize_with);
-	} else {
+	if (this.name.strings.initialize === false) {
+		if (name.family && name.given && this.name.strings["initialize"] === false) {
+			name.given = CSL.Util.Names.initializeWith(this.state, name.given, this.name.strings["initialize-with"], true);
+		}
 		name.given = CSL.Util.Names.unInitialize(this.state, name.given);
+	} else {
+		if (name.family && 1 === this.state.tmp.disambig_settings.givens[pos][i] && !name.block_initialize) {
+			var initialize_with = this.name.strings["initialize-with"];
+			name.given = CSL.Util.Names.initializeWith(this.state, name.given, initialize_with);
+		} else {
+			name.given = CSL.Util.Names.unInitialize(this.state, name.given);
+		}
 	}
 
 	var str = this._stripPeriods("given", name.given);
