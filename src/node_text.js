@@ -217,7 +217,7 @@ CSL.Node.text = {
 							for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
 								if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
 									myterm = myterm.replace(/\./g, "");
-									break
+									break;
 								}
 							}
 						}

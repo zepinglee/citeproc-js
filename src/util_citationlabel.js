@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+/*global CSL: true */
+
+
 CSL.Engine.prototype.getCitationLabel = function (Item) {
 	var label = "";
 	var params = this.getTrigraphParams();

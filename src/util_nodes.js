@@ -54,8 +54,9 @@ CSL.tokenExec = function (token, Item, item) {
     next = token.next;
 	maybenext = false;
 	//SNIP-START
-	if (debug) {
+	if (true) {
 		CSL.debug("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
+		print("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
 	}
 	//SNIP-END
 

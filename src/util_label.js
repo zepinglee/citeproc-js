@@ -103,7 +103,7 @@ CSL.castLabel = function (state, node, term, plural, mode) {
 		for (var i = 0, ilen = node.decorations.length; i < ilen; i += 1) {
 			if ("@strip-periods" === node.decorations[i][0] && "true" === node.decorations[i][1]) {
 				ret = ret.replace(/\./g, "");
-				break
+				break;
 			}
 		}
 	}

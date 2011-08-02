@@ -244,7 +244,7 @@ CSL.Output.Formats.prototype.rtf = {
 					 return "\\super " + CSL.SUPERSCRIPTS[aChar] + "\\nosupersub{}";
 				 })
 		.replace(/[\x7F-\uFFFF]/g,
-				 function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}" })
+				 function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}"; })
 		.replace("\t", "\\tab{}", "g");
 	},
 	"@passthrough/true": CSL.Output.Formatters.passthrough,

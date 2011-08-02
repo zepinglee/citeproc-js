@@ -253,7 +253,7 @@ CSL.Transform = function (state) {
 			}
 		}
 		return false;
-	};
+	}
 
 	// Return function appropriate to selected options
 	function getOutputFunction(variables) {

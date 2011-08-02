@@ -50,7 +50,7 @@
 
 CSL.Node.group = {
 	build: function (state, target) {
-		var func, execs;
+		var func, execs, outer_area;
 		if (this.tokentype === CSL.START) {
 
 			CSL.Util.substituteStart.call(this, state, target);
@@ -84,13 +84,13 @@ CSL.Node.group = {
 				// is set on the parent cs:citation or cs:bibliography
 				// node.
 				state.build["publisher-special"] = true;
-				var outer_area = state.build.area.replace(/_sort$/, "");
+				outer_area = state.build.area.replace(/_sort$/, "");
 				if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
 					// Pass variable string values to the closing
 					// tag via a global, iff they conform to expectations.
 					func = function (state, Item) {
-						if (Item["publisher"] && Item["publisher-place"]) {
-							var publisher_lst = Item["publisher"].split(/;\s*/);
+						if (Item.publisher && Item["publisher-place"]) {
+							var publisher_lst = Item.publisher.split(/;\s*/);
 							var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
 							if (publisher_lst.length > 1
 								&& publisher_lst.length === publisher_place_lst.length) {
@@ -101,7 +101,7 @@ CSL.Node.group = {
 								state.publisherOutput.group_tok = this;
 							}
 						}
-					}
+					};
 					this.execs.push(func);
 				}
 			}
@@ -114,11 +114,11 @@ CSL.Node.group = {
 			// hence the global flag on state.build.
 			if (state.build["publisher-special"]) {
 				state.build["publisher-special"] = false;
-				var outer_area = state.build.area.replace(/_sort$/, "");
+				outer_area = state.build.area.replace(/_sort$/, "");
 				if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
 					func = function (state, Item) {
 						if (state.publisherOutput) {
-							var outer_area = state.tmp.area.replace("_sort", "");
+							//outer_area = state.tmp.area.replace("_sort", "");
 							state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
 							state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
 							state.publisherOutput.and = state[outer_area].opt["and"];

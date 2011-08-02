@@ -50,14 +50,14 @@
 
 CSL.Util.substituteStart = function (state, target) {
 	var element_trace, display, bib_first, func, choose_start, if_start, nodetypes;
-	var func = function (state, Item) {
+	func = function (state, Item) {
 		for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
 			if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
 				state.tmp.strip_periods += 1;
 				break;
 			}
 		}
-	}
+	};
 	this.execs.push(func);
 	//
 	// Contains body code for both substitute and first-field/remaining-fields
@@ -157,14 +157,14 @@ CSL.Util.substituteStart = function (state, target) {
 
 CSL.Util.substituteEnd = function (state, target) {
 	var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, str;
-	var func = function (state, Item) {
+	func = function (state, Item) {
 		for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
 			if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
 				state.tmp.strip_periods += -1;
 				break;
 			}
 		}
-	}
+	};
 	this.execs.push(func);
 
 	state.build.render_nesting_level += -1;

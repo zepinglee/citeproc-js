@@ -123,7 +123,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
             namelist.push(lst[i]);
         }
     }
-	var lst = namelist;
+	lst = namelist;
 	// This case remains: John T.S. Smith. Fix up by stepping through
 	// in reverse.
 	for (i = lst.length -1; i > -1; i += -1) {
@@ -151,6 +151,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
 };
 
 CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
+	var i, ilen;
     //   (2) Step through the string, deleting periods and, if initalize="false", then
     //       (a) note abbreviations and initials (separately).
 
@@ -193,7 +194,7 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
 };
 
 CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
-	var i, ilen, m, j, jlen, lst;
+	var i, ilen, m, j, jlen, lst, n;
 	for (i = 0, ilen = namelist.length; i < ilen; i += 2) {
 		n = namelist[i];
 		if (!n) {
@@ -207,7 +208,7 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
 			var extra = "";
 			if (m[2]) {
 				var s = "";
-				var lst = m[2].split("");
+				lst = m[2].split("");
 				for (j = 0, jlen = lst.length; j < jlen; j += 1) {
 					var c = lst[j];
 					if (c === c.toUpperCase()) {

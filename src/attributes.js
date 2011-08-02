@@ -491,7 +491,7 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
 			}
 		}
 		return ret;
-	}
+	};
 	this.tests.push(func);
 };
 
@@ -896,7 +896,7 @@ CSL.Attributes["@text-case"] = function (state, arg) {
 				}
 			}
 		}
-	}
+	};
 	this.execs.push(func);
 };
 

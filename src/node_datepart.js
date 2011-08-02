@@ -50,7 +50,7 @@
 
 CSL.Node["date-part"] = {
 	build: function (state, target) {
-		var func, pos, len, decor, first_date, value, value_end, real, have_collapsed, invoked, precondition, known_year, bc, ad, bc_end, ad_end, ready, curr, dcurr, number, num, formatter, item;
+		var func, pos, len, decor, first_date, value, value_end, real, have_collapsed, invoked, precondition, known_year, bc, ad, bc_end, ad_end, ready, curr, dcurr, number, num, formatter, item, i, ilen;
 		if (!this.strings.form) {
 			this.strings.form = "long";
 		}
@@ -139,10 +139,10 @@ CSL.Node["date-part"] = {
 						if (state.tmp.strip_periods) {
 							value = value.replace(/\./g, "");
 						} else {
-							for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
+							for (i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
 								if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
 									value = value.replace(/\./g, "");
-									break
+									break;
 								}
 							}
 						}
@@ -154,10 +154,10 @@ CSL.Node["date-part"] = {
 							if (state.tmp.strip_periods) {
 								value_end = value_end.replace(/\./g, "");
 							} else {
-								for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
+								for (i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
 									if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
 										value_end = value_end.replace(/\./g, "");
-										break
+										break;
 									}
 								}
 							}

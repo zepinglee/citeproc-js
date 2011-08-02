@@ -580,7 +580,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			this.append(str, "empty", true);
 			var str_blob = this.pop();
 			var count_offset_characters = state.tmp.count_offset_characters;
-			var str = this.string(state, [str_blob], false);
+			str = this.string(state, [str_blob], false);
 			state.tmp.count_offset_characters = count_offset_characters;
 			if (blob.strings["text-case"]) {
 				str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);

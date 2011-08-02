@@ -108,7 +108,7 @@ CSL.Engine.prototype.localeConfigure = function (langspec) {
 // below.
 //
 CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
-	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target;
+	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target, i, ilen;
 	lang_in = lang_in.replace("_", "-");
 	lang_out = lang_out.replace("_", "-");
 
@@ -145,7 +145,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 	// Xml: get a list of any cs:type nodes within locale
 	//
 	nodes = this.sys.xml.getNodesByName(locale, 'type');
-	for (var i = 0, ilen = this.sys.xml.numberofnodes(nodes); i < ilen; i += 1) {
+	for (i = 0, ilen = this.sys.xml.numberofnodes(nodes); i < ilen; i += 1) {
 		var typenode = nodes[i];
 		var type = this.sys.xml.getAttributeValue(typenode, 'name');
 		var gender = this.sys.xml.getAttributeValue(typenode, 'gender');
@@ -223,7 +223,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 	// sub-segments
 	for (termname in this.locale[lang_out].terms) {
 		if (this.locale[lang_out].terms.hasOwnProperty(termname)) {
-		for (var i = 0, ilen = 2; i < ilen; i += 1) {
+		for (i = 0, ilen = 2; i < ilen; i += 1) {
 			genderform = CSL.GENDERS[i];
 			if (this.locale[lang_out].terms[termname][genderform]) {
 				for (form in this.locale[lang_out].terms[termname]) {

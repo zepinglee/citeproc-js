@@ -284,13 +284,13 @@ CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
 			for (var i = 0, ilen = decor_tok.decorations.length; i < ilen; i += 1) {
 				if ("@strip-periods" === decor_tok.decorations[i][0] && "true" === decor_tok.decorations[i][1]) {
 					str = str.replace(/\./g, "");
-					break
+					break;
 				}
 			}
 		}
 	}
 	return str;
-}
+};
 
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
 	var str = this._stripPeriods("family", name["non-dropping-particle"]);
@@ -326,7 +326,7 @@ CSL.NameOutput.prototype._familyName = function (name) {
 CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 
 	if (this.name.strings.initialize === false) {
-		if (name.family && name.given && this.name.strings["initialize"] === false) {
+		if (name.family && name.given && this.name.strings.initialize === false) {
 			name.given = CSL.Util.Names.initializeWith(this.state, name.given, this.name.strings["initialize-with"], true);
 		}
 		name.given = CSL.Util.Names.unInitialize(this.state, name.given);
