@@ -142,7 +142,6 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
 	}
 
 	// Use doInitializeName or doNormalizeName, depending on requirements.
-	print("terminator is: ("+terminator+")");
 	if (normalizeOnly) {
 		ret = CSL.Util.Names.doNormalize(state, lst, terminator);
 	} else {
