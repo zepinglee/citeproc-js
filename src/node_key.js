@@ -164,58 +164,7 @@ CSL.Node.key = {
 						state.output.append(trigraph, this);
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-					func = function (state, Item) {
-						var dp, elem, value, e, yr, prefix, i, ilen, num;
-						dp = Item[variable];
-						if ("undefined" === typeof dp) {
-							dp = {"date-parts": [[0]] };
-							if (!dp.year) {
-								state.tmp.empty_date = true;
-							}
-						}
-						if ("undefined" === typeof this.dateparts) {
-							this.dateparts = ["year", "month", "day"];
-						}
-						if (dp.raw) {
-							dp = state.fun.dateparser.parse(dp.raw);
-						} else if (dp["date-parts"]) {
-							dp = state.dateParseArray(dp);
-						}
-						if ("undefined" === typeof dp) {
-							dp = {};
-						}
-						for (i = 0, ilen = CSL.DATE_PARTS_INTERNAL.length; i < ilen; i += 1) {
-							elem = CSL.DATE_PARTS_INTERNAL[i];
-							value = 0;
-							e = elem;
-							if (e.slice(-4) === "_end") {
-								e = e.slice(0, -4);
-							}
-							if (dp[elem] && this.dateparts.indexOf(e) > -1) {
-								value = dp[elem];
-							}
-							if (elem.slice(0, 4) === "year") {
-								yr = CSL.Util.Dates[e].numeric(state, value);
-								prefix = "Y";
-								if (yr[0] === "-") {
-									prefix = "X";
-									yr = yr.slice(1);
-									yr = 9999 - parseInt(yr, 10);
-								}
-								state.output.append(CSL.Util.Dates[elem.slice(0, 4)].numeric(state, (prefix + yr)));
-							} else {
-								state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state, value));
-							}
-						}
-						if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix) {
-							num = state.registry.registry[Item.id].disambig.year_suffix.toString();
-							num = CSL.Util.padding(num);
-						} else {
-							num = CSL.Util.padding("0");
-						}
-						state.output.append("S"+num);
-
-					};
+					func = CSL.dateAsSortKey;
 				} else if ("title" === variable) {
 					state.transform.init("empty", "title");
 					state.transform.setTransformLocale("locale-sort");
@@ -241,31 +190,13 @@ CSL.Node.key = {
 			//
 			// if it's not a variable, it's a macro
 			var token = new CSL.Token("text", CSL.SINGLETON);
+
 			token.postponed_macro = this.postponed_macro;
 			// careful with the loop below: she's sensitive
 			// to change
 			var tlen = target.length;
 			var keypos = false;
 			CSL.expandMacro.call(state, token);
-			for (i = 0, ilen = target.slice(tlen).length; i < ilen; i += 1) {
-				var tok = target.slice(tlen)[i];
-				if (tok && tok.name === "text" && tok.dateparts) {
-					keypos = i;
-					break;
-				}
-				if (tok && tok.variables[0] === "citation-number") {
-					state.opt.citation_number_sort_direction = this.strings.sort_direction;
-				}
-			}
-			if (keypos) {
-				var saveme = target[(parseInt(keypos, 10) + parseInt(tlen, 10))];
-				for (i = (target.length - 1); i > tlen; i += -1) {
-					target.pop();
-				}
-				target.push(saveme);
-				var gtok = new CSL.Token("group", CSL.END);
-				target.push(gtok);
-			}
 		}
 		//
 		// ops to output the key string result to an array go

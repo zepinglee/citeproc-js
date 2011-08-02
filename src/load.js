@@ -684,6 +684,10 @@ if (!CSL.NumericBlob) {
 if (!CSL.Util.fixDateNode) {
 	load("./src/util_datenode.js");
 }
+
+if (!CSL.dateAsSortKey) {
+	load("./src/util_date.js");
+}
 // jslint OK
 if (!CSL.Util.Names) {
 	load("./src/util_names.js");

@@ -60,113 +60,117 @@ CSL.Node.date = {
 			if (!state.build.sort_flag) {
 				CSL.Util.substituteStart.call(this, state, target);
 			}
-			func = function (state, Item) {
-				var key, dp;
-				state.tmp.element_rendered_ok = false;
-				state.tmp.donesies = [];
-				state.tmp.dateparts = [];
-				dp = [];
-				//if (this.variables.length && Item[this.variables[0]]){
-				if (this.variables.length
-					&& !(state.tmp.just_looking
-						 && this.variables[0] !== "issued")) {
-
-					state.parallel.StartVariable(this.variables[0]);
-					date_obj = Item[this.variables[0]];
-					if ("undefined" === typeof date_obj) {
-						date_obj = {"date-parts": [[0]] };
-					}
-					if (date_obj.raw) {
-						date_obj = state.fun.dateparser.parse(date_obj.raw);
-					}
-					state.tmp.date_object = state.dateParseArray(date_obj);
-					//
-					// Call a function here to analyze the
-					// data and set the name of the date-part that
-					// should collapse for this range, if any.
-					//
-					// (1) build a filtered list, in y-m-d order,
-					// consisting only of items that are (a) in the
-					// date-parts and (b) in the *_end data.
-					// (note to self: remember that season is a
-					// fallback var when month and day are empty)
-
-					//if ("undefined" === typeof this.dateparts) {
-					//	this.dateparts = ["year", "month", "day"];
-					//}
-					len = this.dateparts.length;
-					for (pos = 0; pos < len; pos += 1) {
-						part = this.dateparts[pos];
-						if ("undefined" !== typeof state.tmp.date_object[(part +  "_end")]) {
-							dp.push(part);
-						} else if (part === "month" && "undefined" !== typeof state.tmp.date_object.season_end) {
-							dp.push(part);
+			if (state.build.area.slice(-5) === "_sort") {
+				func = CSL.dateAsSortKey;
+			} else {
+				func = function (state, Item) {
+					var key, dp;
+					state.tmp.element_rendered_ok = false;
+					state.tmp.donesies = [];
+					state.tmp.dateparts = [];
+					dp = [];
+					//if (this.variables.length && Item[this.variables[0]]){
+					if (this.variables.length
+						&& !(state.tmp.just_looking
+							 && this.variables[0] !== "issued")) {
+						
+						state.parallel.StartVariable(this.variables[0]);
+						date_obj = Item[this.variables[0]];
+						if ("undefined" === typeof date_obj) {
+							date_obj = {"date-parts": [[0]] };
 						}
-					}
-					dpx = [];
-					parts = ["year", "month", "day"];
-					len = parts.length;
-					for (pos = 0; pos < len; pos += 1) {
-						if (dp.indexOf(parts[pos]) > -1) {
-							dpx.push(parts[pos]);
+						if (date_obj.raw) {
+							date_obj = state.fun.dateparser.parse(date_obj.raw);
 						}
-					}
-					dp = dpx.slice();
-					// Suppress the year if we're not sorting, and
-					// it's the same as the volume, and we would render
-					// only the year, with not month or day.
-					// Needed for English-style case cites.  Here's hoping it
-					// doesn't have side effects.
-					if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
-						for (key in state.tmp.date_object) {
-							if (state.tmp.date_object.hasOwnProperty(key)) {
-								if (key.slice(0, 4) === "year" && state.tmp.citeblob.can_suppress_identical_year) {
-									delete state.tmp.date_object[key];
+						state.tmp.date_object = state.dateParseArray(date_obj);
+						//
+						// Call a function here to analyze the
+						// data and set the name of the date-part that
+						// should collapse for this range, if any.
+						//
+						// (1) build a filtered list, in y-m-d order,
+						// consisting only of items that are (a) in the
+						// date-parts and (b) in the *_end data.
+						// (note to self: remember that season is a
+						// fallback var when month and day are empty)
+						
+						//if ("undefined" === typeof this.dateparts) {
+						//	this.dateparts = ["year", "month", "day"];
+						//}
+						len = this.dateparts.length;
+						for (pos = 0; pos < len; pos += 1) {
+							part = this.dateparts[pos];
+							if ("undefined" !== typeof state.tmp.date_object[(part +  "_end")]) {
+								dp.push(part);
+							} else if (part === "month" && "undefined" !== typeof state.tmp.date_object.season_end) {
+								dp.push(part);
+							}
+						}
+						dpx = [];
+						parts = ["year", "month", "day"];
+						len = parts.length;
+						for (pos = 0; pos < len; pos += 1) {
+							if (dp.indexOf(parts[pos]) > -1) {
+								dpx.push(parts[pos]);
+							}
+						}
+						dp = dpx.slice();
+						// Suppress the year if we're not sorting, and
+						// it's the same as the volume, and we would render
+						// only the year, with not month or day.
+						// Needed for English-style case cites.  Here's hoping it
+						// doesn't have side effects.
+						if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
+							for (key in state.tmp.date_object) {
+								if (state.tmp.date_object.hasOwnProperty(key)) {
+									if (key.slice(0, 4) === "year" && state.tmp.citeblob.can_suppress_identical_year) {
+										delete state.tmp.date_object[key];
+									}
 								}
 							}
 						}
-					}
-					//
-					// (2) Reverse the list and step through in
-					// reverse order, popping each item if the
-					// primary and *_end data match.
-					mypos = 2;
-					len = dp.length;
-					for (pos = 0; pos < len; pos += 1) {
-						part = dp[pos];
-						start = state.tmp.date_object[part];
-						end = state.tmp.date_object[(part + "_end")];
-						if (start !== end) {
-							mypos = pos;
-							break;
+						//
+						// (2) Reverse the list and step through in
+						// reverse order, popping each item if the
+						// primary and *_end data match.
+						mypos = 2;
+						len = dp.length;
+						for (pos = 0; pos < len; pos += 1) {
+							part = dp[pos];
+							start = state.tmp.date_object[part];
+							end = state.tmp.date_object[(part + "_end")];
+							if (start !== end) {
+								mypos = pos;
+								break;
+							}
 						}
+						
+						//
+						// (3) When finished, the first item in the
+						// list, if any, is the date-part where
+						// the collapse should occur.
+
+						// XXXXX: was that it?
+						state.tmp.date_collapse_at = dp.slice(mypos);
+						//
+						// The collapse itself will be done by appending
+						// string output for the date, less suffix,
+						// placing a delimiter on output, then then
+						// doing the *_end of the range, dropping only
+						// the prefix.  That should give us concise expressions
+						// of ranges.
+						//
+						// Numeric dates should not collapse, though,
+						// and should probably use a slash delimiter.
+						// Scope for configurability will remain (all over
+						// the place), but this will do to get this feature
+						// started.
+						//
+					} else {
+						state.tmp.date_object = false;
 					}
-
-					//
-					// (3) When finished, the first item in the
-					// list, if any, is the date-part where
-					// the collapse should occur.
-
-					// XXXXX: was that it?
-					state.tmp.date_collapse_at = dp.slice(mypos);
-					//
-					// The collapse itself will be done by appending
-					// string output for the date, less suffix,
-					// placing a delimiter on output, then then
-					// doing the *_end of the range, dropping only
-					// the prefix.  That should give us concise expressions
-					// of ranges.
-					//
-					// Numeric dates should not collapse, though,
-					// and should probably use a slash delimiter.
-					// Scope for configurability will remain (all over
-					// the place), but this will do to get this feature
-					// started.
-					//
-				} else {
-					state.tmp.date_object = false;
-				}
-			};
+				};
+			}
 			this.execs.push(func);
 
 			// newoutput
@@ -174,22 +178,6 @@ CSL.Node.date = {
 				state.output.startTag("date", this);
 			};
 			this.execs.push(func);
-		}
-
-		//
-		// XXXXXX: Call back to key if date is in macro
-		//
-		if (state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
-			tok = new CSL.Token("key", CSL.SINGLETON);
-			//tok.date_object = state.tmp.date_object;
-
-			tok.dateparts = state.build.date_parts.slice();
-			// any date variable name will do here; it just triggers
-			// construction of a date key, using the state.tmp.date_object
-			// data constructed in the start tag.
-			tok.variables = state.build.date_variables;
-			CSL.Node.key.build.call(tok, state, target);
-			//state.build.sort_flag = false;
 		}
 
 		if (!state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
