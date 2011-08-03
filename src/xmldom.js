@@ -448,3 +448,14 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 };
 
 
+CSL_CHROME.prototype.flagDateMacros = function(myxml) {
+	var pos, len, thenode, thedate;
+	nodes = myxml.getElementsByTagName("macro");
+	for (pos = 0, len = nodes.length; pos < len; pos += 1) {
+		thenode = nodes.item(pos);
+		thedate = thenode.getElementsByTagName("date");
+		if (thedate.length) {
+			thenode.setAttribute('macro-has-date', 'true');
+		}
+	}
+};

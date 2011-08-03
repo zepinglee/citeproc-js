@@ -312,3 +312,12 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
 		}
 	}
 };
+
+CSL_E4X.prototype.flagDateMacros = function(myxml) {
+	default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
+	for each (node in myxml..macro) {
+		if (node..date.length()) {
+			node.@['macro-has-date'] = 'true';
+		}
+	}
+};

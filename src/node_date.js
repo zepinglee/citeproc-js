@@ -61,7 +61,7 @@ CSL.Node.date = {
 				CSL.Util.substituteStart.call(this, state, target);
 			}
 			if (state.build.area.slice(-5) === "_sort") {
-				func = CSL.dateAsSortKey;
+				func = CSL.dateMacroAsSortKey;
 			} else {
 				func = function (state, Item) {
 					var key, dp;

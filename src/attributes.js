@@ -340,6 +340,11 @@ CSL.Attributes["@variable"] = function (state, arg) {
 CSL.Attributes["@lingo"] = function (state, arg) {
 };
 
+// Used as a flag during dates processing
+CSL.Attributes["@macro-has-date"] = function (state, arg) {
+	this["macro-has-date"] = true;
+};
+
 CSL.Attributes["@locale"] = function (state, arg) {
 	var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
 

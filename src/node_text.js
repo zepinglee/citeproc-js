@@ -91,6 +91,9 @@ CSL.Node.text = {
 					if (state.build.area === "bibliography") {
 						state.opt.bib_mode = CSL.NUMERIC;
 					}
+					if (state.build.area === "bibliography_sort") {
+						state.opt.citation_number_sort_used = true;
+					}
 					//this.strings.is_rangeable = true;
 					if ("citation-number" === state[state.tmp.area].opt.collapse) {
 						this.range_prefix = state.getTerm("range-delimiter");

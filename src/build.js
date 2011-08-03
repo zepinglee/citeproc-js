@@ -95,6 +95,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.sys.xml.addMissingNameNodes(this.cslXml);
 	this.sys.xml.addInstitutionNodes(this.cslXml);
 	this.sys.xml.insertPublisherAndPlace(this.cslXml);
+	this.sys.xml.flagDateMacros(this.cslXml);
 	//
 	// Note for posterity: tried manipulating the XML here to insert
 	// a list of the upcoming date-part names.  The object is apparently

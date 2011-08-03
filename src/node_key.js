@@ -62,6 +62,8 @@ CSL.Node.key = {
 		};
 		start_key.execs.push(func);
 
+		state.opt.citation_number_sort_direction = this.strings.sort_direction;
+
 		// initialize output queue
 		func = function (state, Item) {
 			state.output.openLevel("empty");
@@ -98,6 +100,7 @@ CSL.Node.key = {
 		};
 		start_key.execs.push(func);
 		target.push(start_key);
+		
 		//
 		// ops to initialize the key's output structures
 		if (this.variables.length) {
@@ -111,7 +114,9 @@ CSL.Node.key = {
 				if (state.build.area === "citation_sort") {
 					state.opt.citation_number_sort = true;
 				}
-				state.opt.citation_number_sort_direction = this.strings.sort_direction;
+				if (state.build.area === "bibliography_sort") {
+					state.opt.citation_number_sort_used = true;
+				}
 			}
 			if (CSL.CREATORS.indexOf(variable) > -1) {
 				//
@@ -165,6 +170,7 @@ CSL.Node.key = {
 					};
 				} else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
 					func = CSL.dateAsSortKey;
+					single_text.variables = this.variables;
 				} else if ("title" === variable) {
 					state.transform.init("empty", "title");
 					state.transform.setTransformLocale("locale-sort");
@@ -190,12 +196,7 @@ CSL.Node.key = {
 			//
 			// if it's not a variable, it's a macro
 			var token = new CSL.Token("text", CSL.SINGLETON);
-
 			token.postponed_macro = this.postponed_macro;
-			// careful with the loop below: she's sensitive
-			// to change
-			var tlen = target.length;
-			var keypos = false;
 			CSL.expandMacro.call(state, token);
 		}
 		//
@@ -211,7 +212,7 @@ CSL.Node.key = {
 			//state.output.closeLevel("empty");
 		//};
 		//end_key.execs.push(func);
-
+		
 		// store key for use
 		func = function (state, Item) {
 			var keystring = state.output.string(state, state.output.queue);

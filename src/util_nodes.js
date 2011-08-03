@@ -54,10 +54,10 @@ CSL.tokenExec = function (token, Item, item) {
     next = token.next;
 	maybenext = false;
 	//SNIP-START
-	if (true) {
+	if (debug) {
 		CSL.debug("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
-		print("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
 	}
+	//print("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
 	//SNIP-END
 
 	if (token.evaluator) {
@@ -84,7 +84,7 @@ CSL.tokenExec = function (token, Item, item) {
  * <p>Called on the state object.</p>
  */
 CSL.expandMacro = function (macro_key_token) {
-	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput, end_of_macro;
+	var mkey, start_token, key, end_token, navi, macroxml, newoutput, mergeoutput, end_of_macro, func;
 
 	mkey = macro_key_token.postponed_macro;
 	if (this.build.macro_stack.indexOf(mkey) > -1) {
@@ -92,12 +92,6 @@ CSL.expandMacro = function (macro_key_token) {
 	} else {
 		this.build.macro_stack.push(mkey);
 	}
-
-	//
-	//
-	// (true as the last argument suppresses quashing)
-	macro_key_token.tokentype = CSL.START;
-	CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
 
 	//
 	// Here's where things change pretty dramatically.  We pull
@@ -108,6 +102,22 @@ CSL.expandMacro = function (macro_key_token) {
 	// Xml: get list of nodes by attribute match
 	//
 	macroxml = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
+
+	var hasDate = this.sys.xml.getAttributeValue(macroxml, "macro-has-date");
+	if (hasDate) {
+		func = function (state, Item) {
+			if (state.tmp.area.slice(-5) === "_sort") {
+				state.tmp["doing-macro-with-date"] = true;
+			}
+		};
+		macro_key_token.execs.push(func);
+	}
+	//
+	//
+	// (true as the last argument suppresses quashing)
+	macro_key_token.tokentype = CSL.START;
+	CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
+
 	//
 	// Xml: test for node existence
 	//
@@ -124,6 +134,12 @@ CSL.expandMacro = function (macro_key_token) {
 	// (true as the last argument suppresses quashing)
 	end_of_macro = new CSL.Token("group", CSL.END);
 	CSL.Node.group.build.call(end_of_macro, this, this[this.build.area].tokens, true);
+	func = function (state, Item) {
+		if (state.tmp.area.slice(-5) === "_sort") {
+			state.tmp["doing-macro-with-date"] = false;
+		}
+	};
+	this[this.build.area].tokens[this[this.build.area].tokens.length - 1].execs.push(func);
 
 	this.build.macro_stack.pop();
 

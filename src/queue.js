@@ -173,12 +173,16 @@ CSL.Output.Queue.prototype.popFormats = function (tokenstore) {
 
 CSL.Output.Queue.prototype.startTag = function (name, token) {
 	var tokenstore = {};
+	if (this.state.tmp["doing-macro-with-date"] && this.state.tmp.area.slice(-5) === "_sort") {
+		token = this.empty;
+		name = "empty";
+	}
 	tokenstore[name] = token;
 	this.pushFormats(tokenstore);
 	this.openLevel(name);
 };
 
-CSL.Output.Queue.prototype.endTag = function () {
+CSL.Output.Queue.prototype.endTag = function (name) {
 	this.closeLevel();
 	this.popFormats();
 };
@@ -240,6 +244,17 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
 	var token, blob, curr;
 	var useblob = true;
+	// XXXXX Nasty workaround, but still an improvement
+	// over the reverse calls to the cs:date node build
+	// function that we had before.
+	if (this.state.tmp["doing-macro-with-date"]) {
+		if (tokname !== "macro-with-date") {
+			return false;
+		}
+		if (tokname === "macro-with-date") {
+			tokname = "empty";
+		}
+	}
 	if ("undefined" === typeof str) {
 		return false;
 	}

@@ -131,7 +131,7 @@ class Bundle:
         f.extend(["util_names_common","util_names_constraints","util_names_etalconfig"])
         f.extend(["util_names_render","util_names_etal"])
 
-        f.extend(["util_label", "util_publishers"])
+        f.extend(["util_label", "util_publishers","util_date"])
 
         f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
         f.extend(["node_substitute","node_text","attributes","system"])

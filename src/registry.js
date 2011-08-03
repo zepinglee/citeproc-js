@@ -402,8 +402,9 @@ CSL.Registry.prototype.rebuildlist = function () {
 	//     saving off old sequence numbers as we go.
 	//
 	// count = 1;
-	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
-		this.mylist.reverse();
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
+	   && this.state.opt.citation_number_sort_used) {
+		//this.mylist.reverse();
 	}
 	len = this.mylist.length;
 	for (pos = 0; pos < len; pos += 1) {
@@ -413,8 +414,9 @@ CSL.Registry.prototype.rebuildlist = function () {
 		this.registry[item].seq = (pos + 1);
 		// count += 1;
 	}
-	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
-		this.mylist.reverse();
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
+	   && this.state.opt.citation_number_sort_used) {
+		//this.mylist.reverse();
 	}
 };
 
@@ -510,8 +512,9 @@ CSL.Registry.prototype.renumber = function () {
 	//
 	// 19. Reset citation numbers on list items
 	//
-	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
-		this.reflist.reverse();
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
+	   && this.state.opt.citation_number_sort_used) {
+		//this.reflist.reverse();
 	}
 	len = this.reflist.length;
 	for (pos = 0; pos < len; pos += 1) {
@@ -530,7 +533,8 @@ CSL.Registry.prototype.renumber = function () {
 			}
 		}
 	}
-	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING) {
+	if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
+	   && this.state.opt.citation_number_sort_used) {
 		this.reflist.reverse();
 	}
 };
