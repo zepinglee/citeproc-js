@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.201
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix logic of date key generation from macros. Processor
+  formerly used the first-occurring date in the macro. With
+  the fix, conditional logic is recognized. The only constraints
+  are (1) that macros containing a date (somewhere) will generate
+  date keys only, with other nodes delivering an empty string; and
+  (2) that macros used for key generation should render exactly
+  one date node; rendering multiple nodes will result in a 
+  misformatted sort key.
+
+- Implement new boolean "initialize" attribute. When set to
+  false, full given names are normalized to use the initials
+  punctuation set by initialize-with. Not yet in official
+  CSL 1.0.
+
+
+==========================
 Changes in version 1.0.200
 ==========================
 
