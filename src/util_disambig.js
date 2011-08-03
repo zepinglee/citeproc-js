@@ -105,20 +105,14 @@ CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
 		}
 		ret.givens.push(param);
 	}
-	if (tainters && tainters.length > 1) {
-		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
-			for (i = 0, ilen = tainters.length; i < ilen; i += 1) {
-				var oldYS = this.registry.registry[tainters[i].id].disambig.year_suffix;
-
-				if (tainters && (false === oldYS || oldYS != i)) {
-					this.tmp.taintedItemIDs[tainters[i].id] = true;
-				}
-			}
-			oldconfig = false;
-		}
+	// XXXX Is this necessary at all?
+	if (oldconfig) {
+		ret.year_suffix = oldconfig.year_suffix;
+		ret.disambiguate = oldconfig.disambiguate;
+	} else {
+		ret.year_suffix = config.year_suffix;
+		ret.disambiguate = config.disambiguate;
 	}
-	ret.year_suffix = config.year_suffix;
-	ret.disambiguate = config.disambiguate;
 	return ret;
 };
 

@@ -51,6 +51,7 @@
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
 	// Generate output for a hypothetical citation at the current position,
 	// Leave the registry in the same state in which it was found.
+	//print("################### previewCitationCluster() #################");
 	var oldMode = this.opt.mode;
 	this.setOutputFormat(newMode);
 
@@ -75,6 +76,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
 	var c, i, ilen, j, jlen, k, klen, n, nlen, key, Item, item, noteCitations, textCitations;
 	this.debug = false;
+	//print("################### processCitationCluster() #################");
 	//SNIP-START
 	// this.dumpCslCitation(citation, flag);
 	//SNIP-END

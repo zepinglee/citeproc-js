@@ -68,6 +68,7 @@ CSL.Disambiguation.prototype.run = function(akey) {
 
 CSL.Disambiguation.prototype.runDisambig = function () {
 	var pos, len, ppos, llen, pppos, lllen, ismax;
+	//print("=== runDisambig() ===");
 	//
 	// length is evaluated inside the loop condition by intention
 	// here; items will be added to the list during processing.
@@ -105,6 +106,7 @@ CSL.Disambiguation.prototype.runDisambig = function () {
 
 CSL.Disambiguation.prototype.scanItems = function (list, phase) {
 	var pos, len, Item, otherItem, ItemCite, ignore, base;
+	//print("=== scanItems() ===");
 	Item = list[1][0];
 	this.scanlist = list[1];
 	this.partners = [];
@@ -149,7 +151,7 @@ CSL.Disambiguation.prototype.evalScan = function (ismax) {
 
 CSL.Disambiguation.prototype.disNames = function (ismax) {
 	var pos, len, mybase;
-	// print("== disNames ==")
+	//print("== disNames ==")
 	if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
 		mybase = CSL.cloneAmbigConfig(this.base);
 		mybase.year_suffix = false;
@@ -206,12 +208,13 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 			this.rerun = true;
 		}
 	}
+	//print("== disNames (end) ==")
 };
 
 
 CSL.Disambiguation.prototype.disGivens = function (ismax) {
 	var pos, len, mybase;
-	// print("== disGivens ==")
+	//print("== disGivens ==")
 	if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
 		if (this.clashes[0] === 1) {
 			this.base = this.decrementNames();
@@ -274,6 +277,7 @@ CSL.Disambiguation.prototype.disGivens = function (ismax) {
 CSL.Disambiguation.prototype.disExtraText = function () {
 	var pos, len, mybase;
 	// Try with disambiguate="true""
+	//print("=== disExtraText ==");
 	if (this.clashes[1] === 0) {
 		// See note in disNames, above.
 		mybase = CSL.cloneAmbigConfig(this.base);
@@ -293,8 +297,11 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 
 CSL.Disambiguation.prototype.disYears = function () {
 	var pos, len, tokens, token, item;
-	// print("=== disYears ==");
+	//print("=== disYears ==");
 	tokens = [];
+	//print("=====");
+	//print("IDs: " + [this.lists[this.listpos][1][x].id for (x in this.lists[this.listpos][1])]);
+	//print("=====");
 	for (pos = 0, len = this.lists[this.listpos][1].length; pos < len; pos += 1) {
 		token = this.registry[this.lists[this.listpos][1][pos].id];
 		tokens.push(token);
@@ -304,18 +311,31 @@ CSL.Disambiguation.prototype.disYears = function () {
 		// Only pass this.scanlist on the first iteration.  The
 		// list will be iterated on execution, and should only
 		// be run once, to avoid losing update markers.
+		//print("  ??? [" +pos+ "] " +oldys);
 		if (pos === 0) {
-			this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base, this.scanlist);
+			//this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base, this.scanlist);
+			this.base.year_suffix = ""+pos;
+			this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base);
 		} else {
+			this.base.year_suffix = ""+pos;
 			this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base);
 		}
-		tokens[pos].disambig.year_suffix = ""+pos;
+		//this.state.registry.registry[tokens[pos].id].disambig.year_suffix = ""+pos;
+		//tokens[pos].disambig.year_suffix = ""+pos;
+		//var newys = tokens[pos].disambig.year_suffix;
+		var newys = this.state.registry.registry[tokens[pos].id].disambig.year_suffix;
+		//print("     --> [" +pos+ "] " +newys);
+		if (this.old_desc[tokens[pos].id][0] !== newys) {
+			this.state.tmp.taintedItemIDs[tokens[pos].id] = true;
+		}
 	}
 	this.lists[this.listpos] = [this.base, []];
+	//print("=== disYears (end) ==");
 };
 
 CSL.Disambiguation.prototype.incrementDisambig = function () {
 	var val, maxed;
+	//print("=== incrementDisambig() ===");
 	maxed = false;
 	this.oldbase = CSL.cloneAmbigConfig(this.base);
 	if (this.advance_mode) {
@@ -402,6 +422,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
 
 CSL.Disambiguation.prototype.getItemDesc = function (Item, forceMax) {
 	var str, maxvals, minval, base;
+	//print("=== getItemDesc() ===");
 	//print("getItem with name limits: "+this.base.names);
 	str = CSL.getAmbiguousCite.call(this.state, Item, this.base);
 	maxvals = CSL.getMaxVals.call(this.state);
@@ -412,11 +433,13 @@ CSL.Disambiguation.prototype.getItemDesc = function (Item, forceMax) {
 
 CSL.Disambiguation.prototype.initVars = function (akey) {
 	var i, ilen, myIds, myItemBundles, myItems;
+	//print("=== initVars() ===");
 	this.lists = [];
 	this.base = false;
 	this.akey = akey;
 	this.advance_mode = false;
 	myItemBundles = [];
+	this.old_desc = {};
 	myIds = this.ambigcites[akey];
 	if (myIds && myIds.length > 1) {
 		// Build a composite list of Items and associated
@@ -426,7 +449,9 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 		// with name expansions, the processor will hang.
 		for (i = 0, ilen = myIds.length; i < ilen; i += 1) {
 			var myItem = this.state.retrieveItem("" + myIds[i]);
-			myItemBundles.push([this.getItemDesc(myItem), myItem]);
+			var myDesc = this.getItemDesc(myItem);
+			myItemBundles.push([myDesc, myItem]);
+			this.old_desc[myIds[i]] = [this.state.registry.registry[myIds[i]].disambig.year_suffix, this.state.registry.registry[myIds[i]].disambig.disambiguate];
 		}
 		myItemBundles.sort(
 			function (a, b) {

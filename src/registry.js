@@ -624,7 +624,7 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 	return 0;
 };
 
-CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
+CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
 	//SNIP-START
 	if (!this.registry[id]) {
 		CSL.debug("Warning: unregistered item: itemID=("+id+"), akey=("+akey+")");
@@ -651,12 +651,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, ta
 	}
 	this.registry[id].ambig = akey;
 	var dome = false;
-	// if (this.state.tmp.taintedItemIDs) {
-	if (tainters) {
-		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, tainters);
-	} else {
-		this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
-	}
+	this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
 };
 
 
