@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.202
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in reassignment and updating of year-suffix values.
+  Thanks to Zotero user brazuca for reporting the fault.
+
+
+==========================
 Changes in version 1.0.201
 ==========================
 

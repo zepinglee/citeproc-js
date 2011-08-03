@@ -1230,19 +1230,13 @@ CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
 		}
 		ret.givens.push(param);
 	}
-	if (tainters && tainters.length > 1) {
-		if (tainters.length == 2 || (oldconfig && oldconfig.year_suffix !== config.year_suffix)) {
-			for (i = 0, ilen = tainters.length; i < ilen; i += 1) {
-				var oldYS = this.registry.registry[tainters[i].id].disambig.year_suffix;
-				if (tainters && (false === oldYS || oldYS != i)) {
-					this.tmp.taintedItemIDs[tainters[i].id] = true;
-				}
-			}
-			oldconfig = false;
-		}
+	if (oldconfig) {
+		ret.year_suffix = oldconfig.year_suffix;
+		ret.disambiguate = oldconfig.disambiguate;
+	} else {
+		ret.year_suffix = config.year_suffix;
+		ret.disambiguate = config.disambiguate;
 	}
-	ret.year_suffix = config.year_suffix;
-	ret.disambiguate = config.disambiguate;
 	return ret;
 };
 CSL.getAmbigConfig = function () {
@@ -1724,7 +1718,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.201";
+	this.processor_version = "1.0.202";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -9730,7 +9724,7 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 	}
 	return 0;
 };
-CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, tainters) {
+CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
 	if (this.registry[id] && this.registry[id].disambig && this.registry[id].disambig.names) {
 		for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
 			var new_names_params = ambig_config.names[i];
@@ -9748,11 +9742,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config, ta
 	}
 	this.registry[id].ambig = akey;
 	var dome = false;
-	if (tainters) {
-		this.registry[id].disambig = CSL.cloneAmbigConfig.call(this.state, ambig_config, this.registry[id].disambig, tainters);
-	} else {
-		this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
-	}
+	this.registry[id].disambig = CSL.cloneAmbigConfig(ambig_config);
 };
 CSL.getSortKeys = function (Item, key_type) {
 	var area, strip_prepositions, use_parallels, len, pos;
@@ -10225,11 +10215,16 @@ CSL.Disambiguation.prototype.disYears = function () {
 	tokens.sort(this.state.registry.sorter.compareKeys);
 	for (pos = 0, len = tokens.length; pos < len; pos += 1) {
 		if (pos === 0) {
-			this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base, this.scanlist);
+			this.base.year_suffix = ""+pos;
+			this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base);
 		} else {
+			this.base.year_suffix = ""+pos;
 			this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base);
 		}
-		tokens[pos].disambig.year_suffix = ""+pos;
+		var newys = this.state.registry.registry[tokens[pos].id].disambig.year_suffix;
+		if (this.old_desc[tokens[pos].id][0] !== newys) {
+			this.state.tmp.taintedItemIDs[tokens[pos].id] = true;
+		}
 	}
 	this.lists[this.listpos] = [this.base, []];
 };
@@ -10325,11 +10320,14 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 	this.akey = akey;
 	this.advance_mode = false;
 	myItemBundles = [];
+	this.old_desc = {};
 	myIds = this.ambigcites[akey];
 	if (myIds && myIds.length > 1) {
 		for (i = 0, ilen = myIds.length; i < ilen; i += 1) {
 			var myItem = this.state.retrieveItem("" + myIds[i]);
-			myItemBundles.push([this.getItemDesc(myItem), myItem]);
+			var myDesc = this.getItemDesc(myItem);
+			myItemBundles.push([myDesc, myItem]);
+			this.old_desc[myIds[i]] = [this.state.registry.registry[myIds[i]].disambig.year_suffix, this.state.registry.registry[myIds[i]].disambig.disambiguate];
 		}
 		myItemBundles.sort(
 			function (a, b) {
