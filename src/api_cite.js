@@ -399,14 +399,33 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 							suprame = true;
 						}
 						// conditions
-						var prev_locator, curr_locator;
+						var prev, prev_locator, prev_label, curr_locator, curr_label;
 						if (ibidme) {
 							if (k > 0) {
-								prev_locator = onecitation.sortedItems[(k - 1)][1].locator;
+								prev = onecitation.sortedItems[(k - 1)][1];
 							} else {
-								prev_locator = citations[(j - 1)].sortedItems[0][1].locator;
+								prev = citations[(j - 1)].sortedItems[0][1];
 							}
-							curr_locator = item[1].locator;
+							if (prev.locator) {
+								if (prev.label) {
+									prev_label = prev.label;
+								} else {
+									prev_label = "";
+								}
+								prev_locator = "" + prev.locator + prev_label;
+							} else {
+								prev_locator = prev.locator;
+							}
+							if (item[1].locator) {
+								if (item[1].label) {
+									curr_label = item[1].label;
+								} else {
+									curr_label = "";
+								}
+								curr_locator = "" + item[1].locator + curr_label;
+							} else {
+								curr_locator = item[1].locator;
+							}
 						}
 						// triage
 						if (ibidme && prev_locator && !curr_locator) {
