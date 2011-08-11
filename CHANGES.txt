@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.203
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in position evaluation, in which labels were
+  not taken into account in determining whether a cite
+  referred to exactly the same pinpoint location as its 
+  immediate predecessor.
+
+
+==========================
 Changes in version 1.0.202
 ==========================
 

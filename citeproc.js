@@ -1718,7 +1718,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.202";
+	this.processor_version = "1.0.203";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2992,14 +2992,33 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 						} else {
 							suprame = true;
 						}
-						var prev_locator, curr_locator;
+						var prev, prev_locator, prev_label, curr_locator, curr_label;
 						if (ibidme) {
 							if (k > 0) {
-								prev_locator = onecitation.sortedItems[(k - 1)][1].locator;
+								prev = onecitation.sortedItems[(k - 1)][1];
 							} else {
-								prev_locator = citations[(j - 1)].sortedItems[0][1].locator;
+								prev = citations[(j - 1)].sortedItems[0][1];
 							}
-							curr_locator = item[1].locator;
+							if (prev.locator) {
+								if (prev.label) {
+									prev_label = prev.label;
+								} else {
+									prev_label = "";
+								}
+								prev_locator = "" + prev.locator + prev_label;
+							} else {
+								prev_locator = prev.locator;
+							}
+							if (item[1].locator) {
+								if (item[1].label) {
+									curr_label = item[1].label;
+								} else {
+									curr_label = "";
+								}
+								curr_locator = "" + item[1].locator + curr_label;
+							} else {
+								curr_locator = item[1].locator;
+							}
 						}
 						if (ibidme && prev_locator && !curr_locator) {
 							ibidme = false;
