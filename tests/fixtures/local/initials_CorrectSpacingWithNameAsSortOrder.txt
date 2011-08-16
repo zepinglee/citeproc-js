@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-Marcus Ts. J. W. Blaggyfuddle
+Doe, John J, Jane G Roe &#38; Richard Q Snoakes.
 <<===== RESULT =====<<
 
 
@@ -61,21 +61,32 @@ Marcus Ts. J. W. Blaggyfuddle
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.1x"
-      initialize="false"
-      initialize-with=". ">
+      version="1.1x">
   <info>
     <id />
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
-    <layout>
-      <names variable="author">
-        <name/>
-      </names>
+  <macro name="container-title">
+    <text strip-periods="true" variable="container-title" form="short" />
+  </macro>
+  <macro name="author">
+    <names variable="author" >
+      <name and="symbol" name-as-sort-order="first" delimiter-precedes-last="never">
+	    <name-part name="given" strip-periods="true"/>
+	  </name>
+    </names>
+  </macro>
+  <citation et-al-min="4" et-al-use-first="1" >
+    <layout delimiter="; " suffix="." >
+      <text macro="author"/>
     </layout>
   </citation>
+  <bibliography>
+    <layout>
+      <text macro="author"/>
+    </layout>
+  </bibliography> 
 </style>
 <<===== CSL =====<<
 
@@ -85,8 +96,16 @@ Marcus Ts. J. W. Blaggyfuddle
     {
         "author": [
             {
-                "family": "Blaggyfuddle",
-                "given": "Marcus Ts. J.W."
+                "family": "Doe",
+                "given": "John J."
+            },
+            {
+                "family": "Roe",
+                "given": "Jane G."
+            },
+            {
+                "family": "Snoakes",
+                "given": "Richard Q."
             }
         ], 
         "id": "ITEM-1", 

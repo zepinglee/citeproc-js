@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-Marcus Ts. J. W. Blaggyfuddle
+numbers = 1-3; numbers = 4 &#38; 5; number = 10
 <<===== RESULT =====<<
 
 
@@ -61,19 +61,18 @@ Marcus Ts. J. W. Blaggyfuddle
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.1x"
-      initialize="false"
-      initialize-with=". ">
+      version="1.1x">
   <info>
     <id />
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout>
-      <names variable="author">
-        <name/>
-      </names>
+    <layout delimiter="; ">
+      <group delimiter=" = ">
+        <label variable="issue"/>
+        <text variable="issue" />
+      </group>
     </layout>
   </citation>
 </style>
@@ -83,13 +82,18 @@ Marcus Ts. J. W. Blaggyfuddle
 >>===== INPUT =====>>
 [
     {
-        "author": [
-            {
-                "family": "Blaggyfuddle",
-                "given": "Marcus Ts. J.W."
-            }
-        ], 
         "id": "ITEM-1", 
+        "issue": "1-3", 
+        "type": "book"
+    },
+    {
+        "id": "ITEM-2", 
+        "issue": "4 & 5", 
+        "type": "book"
+    },
+    {
+        "id": "ITEM-3", 
+        "issue": "10", 
         "type": "book"
     }
 ]
