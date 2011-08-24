@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.204
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in date extraction code used in sort key
+  generation, affecting systems relying on xmldom.js.
+
+
+==========================
 Changes in version 1.0.203
 ==========================
 
