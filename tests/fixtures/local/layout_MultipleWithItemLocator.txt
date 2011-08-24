@@ -60,7 +60,7 @@ bibliography
 <style
      xmlns="http://purl.org/net/xbiblio/csl"
      class="in-text"
-     version="1.1x">
+     version="1.1mlz1">
  <info>
    <id>http://pzotero.com/tt2</id>
    <title>second style for test</title>

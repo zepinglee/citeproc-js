@@ -61,7 +61,7 @@ Doe, John J, Jane G Roe &#38; Richard Q Snoakes.
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.1x">
+      version="1.1mlz1">
   <info>
     <id />
     <title />
@@ -72,8 +72,8 @@ Doe, John J, Jane G Roe &#38; Richard Q Snoakes.
   </macro>
   <macro name="author">
     <names variable="author" >
-      <name and="symbol" name-as-sort-order="first" delimiter-precedes-last="never">
-	    <name-part name="given" strip-periods="true"/>
+      <name and="symbol" name-as-sort-order="first" delimiter-precedes-last="never" initialize-with="" initialize="false">
+	    <name-part name="given"/>
 	  </name>
     </names>
   </macro>
