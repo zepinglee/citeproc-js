@@ -83,7 +83,13 @@ var CSL_CHROME = function () {
 		};
 	} else {
 		this.hasAttributes = function (node) {
-			return node["hasAttributes"]();
+			var ret;
+			if (node.attributes && node.attributes.length) {
+				ret = true;
+			} else {
+				ret = false;
+			}
+			return ret;
 		};
 	}
 	this.importNode = function (doc, srcElement) {
