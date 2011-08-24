@@ -88,8 +88,19 @@ var CSL_CHROME = function () {
 			return ret;
 		};
 	} else {
+		/*
 		this.hasAttributes = function (node) {
 			return node["hasAttributes"]();
+		};
+		*/
+		this.hasAttributes = function (node) {
+			var ret;
+			if (node.attributes && node.attributes.length) {
+				ret = true;
+			} else {
+				ret = false;
+			}
+			return ret;
 		};
 	}
 	this.importNode = function (doc, srcElement) {
