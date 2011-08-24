@@ -7,19 +7,19 @@ Integrator's Manual
 
 .. class:: fixed
 
-   `citationstyles.org`__
+   `CitationStylist.org`__
 
-__ http://citationstyles.org/
+__ http://citationstylist.org/documentation/
 
 
 
 .. class:: info-version
 
-   version 1.00##a111##
+   version 1.00##a112##
 
 .. class:: info-date
 
-   =D=2 February 2011=D=
+   =D=20 August 2011=D=
 
 .. class:: contributors
 
