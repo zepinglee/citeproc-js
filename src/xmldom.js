@@ -410,7 +410,7 @@ CSL_CHROME.prototype.addMissingNameNodes = function(myxml) {
 		var names = nameslist.item(i);
 		var namelist = names.getElementsByTagName("name");
 		if ((!namelist || namelist.length === 0)
-			|| names.parentNode.tagName.toLowerCase() !== "substitute") {
+			&& names.parentNode.tagName.toLowerCase() !== "substitute") {
 			
 			var doc = names.ownerDocument;
 			var name = doc.createElement("name");
