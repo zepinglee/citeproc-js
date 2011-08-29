@@ -232,6 +232,11 @@ CSL.Transform = function (state) {
 		len = CSL.MULTI_FIELDS.length;
 		for (pos = 0; pos < len; pos += 1) {
 			vartype = CSL.MULTI_FIELDS[pos];
+			// This needs to change: abbreviations will be held
+			// in a database, and mirrored in JS only for items
+			// that require them. We don't want to pull in ALL
+			// abbreviations, as this seems to do; the volume
+			// could bring us to our knees.
 			this[vartype] = state.sys.getAbbreviations(abbreviations, vartype);
 		}
 	}
