@@ -114,9 +114,14 @@ CSL.Node.number = {
 				    }
 				}
 				if (state.tmp.area !== "citation_sort"
-				  && state.tmp.area !== "bibliography_sort"
-				  && all_with_spaces 
-				  && !num.match(/[^\- 0-9,&]/)) {
+					&& state.tmp.area !== "bibliography_sort"
+					&& num.slice(0, 1) === '"' && num.slice(-1) === '"') {
+					
+					state.output.append(num.slice(1,-1), this);
+				} else if (state.tmp.area !== "citation_sort"
+						   && state.tmp.area !== "bibliography_sort"
+						   && all_with_spaces 
+						   && !num.match(/[^\- 0-9,&]/)) {
 					var nums = num.match(/[0-9]+/g);
 					// Expand ranges
 					var range_ok = true;
@@ -133,7 +138,7 @@ CSL.Node.number = {
 							for (j = start, jlen = end + 1; j < jlen; j += 1) {
 								replacement.push(""+j);
 							}
-								nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
+							nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
 						}
 					}
 					if (range_ok) {
@@ -170,14 +175,16 @@ CSL.Node.number = {
 						state.output.closeLevel("empty");
 					} else {
 						state.output.append(num, this);
-				    }
-				} else if (!all_with_spaces || prefixes.length > 2) {
+					}
+				} else if (state.tmp.area !== "citation_sort"
+						   && state.tmp.area !== "bibliography_sort"
+						   && !all_with_spaces || prefixes.length > 2) {
 				    // Don't attempt to apply numeric formatting
 				    // or to normalize the content for weird
 				    // numbers like "1-505" (no space between the
 				    // numbers and the hyphen suggests that 505 might
 				    // be meant as a leaf number)
-				    state.output.append(num, this);
+					state.output.append(num, this);
 				} else {
 					// Single number
 					m = num.match(/\s*([0-9]+)(?:[^\-]* |[^\-]*$)/);
@@ -186,9 +193,9 @@ CSL.Node.number = {
 						number = new CSL.NumericBlob(num, this);
 						number.gender = state.opt["noun-genders"][varname];
 						state.output.append(number, "literal");
-				    } else {
+					} else {
 						state.output.append(num, this);
-				    }
+					}
 				}
 			}
 			state.parallel.CloseVariable("number");
