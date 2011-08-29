@@ -1724,7 +1724,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.206";
+	this.processor_version = "1.0.207";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6200,9 +6200,13 @@ CSL.Node.number = {
 				    }
 				}
 				if (state.tmp.area !== "citation_sort"
-				  && state.tmp.area !== "bibliography_sort"
-				  && all_with_spaces 
-				  && !num.match(/[^\- 0-9,&]/)) {
+					&& state.tmp.area !== "bibliography_sort"
+					&& num.slice(0, 1) === '"' && num.slice(-1) === '"') {
+					state.output.append(num.slice(1,-1), this);
+				} else if (state.tmp.area !== "citation_sort"
+						   && state.tmp.area !== "bibliography_sort"
+						   && all_with_spaces 
+						   && !num.match(/[^\- 0-9,&]/)) {
 					var nums = num.match(/[0-9]+/g);
 					var range_ok = true;
 					for (i = prefixes.length - 2; i > 0; i += -1) {
@@ -6217,7 +6221,7 @@ CSL.Node.number = {
 							for (j = start, jlen = end + 1; j < jlen; j += 1) {
 								replacement.push(""+j);
 							}
-								nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
+							nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
 						}
 					}
 					if (range_ok) {
@@ -6252,9 +6256,11 @@ CSL.Node.number = {
 						state.output.closeLevel("empty");
 					} else {
 						state.output.append(num, this);
-				    }
-				} else if (!all_with_spaces || prefixes.length > 2) {
-				    state.output.append(num, this);
+					}
+				} else if (state.tmp.area !== "citation_sort"
+						   && state.tmp.area !== "bibliography_sort"
+						   && !all_with_spaces || prefixes.length > 2) {
+					state.output.append(num, this);
 				} else {
 					m = num.match(/\s*([0-9]+)(?:[^\-]* |[^\-]*$)/);
 					if (m) {
@@ -6262,9 +6268,9 @@ CSL.Node.number = {
 						number = new CSL.NumericBlob(num, this);
 						number.gender = state.opt["noun-genders"][varname];
 						state.output.append(number, "literal");
-				    } else {
+					} else {
 						state.output.append(num, this);
-				    }
+					}
 				}
 			}
 			state.parallel.CloseVariable("number");
