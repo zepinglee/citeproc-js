@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.206
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize fa_FA as the standard locale for
+  calls to plain fa.
+
+- Recognize suppress-min="0" as specific to a
+  cs:institution or cs:name node. (This attribute
+  is outside of standard CSL.)
+
+
+==========================
 Changes in version 1.0.205
 ==========================
 

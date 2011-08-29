@@ -270,6 +270,7 @@ var CSL = {
 		en: "en_US",
 		es: "es_ES",
 		et: "et_EE",
+		fa: "fa_FA",
 		fr: "fr_FR",
 		he: "he_IL",
 		hu: "hu_HU",
@@ -1723,7 +1724,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.205";
+	this.processor_version = "1.0.206";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4900,6 +4901,21 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
 		}
 		this._getFreeters(v, values);
 		this._getPersonsAndInstitutions(v, values);
+		if (this.name.strings["suppress-min"] === 0) {
+			this.freeters[v] = [];
+			for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+				this.persons[v][j] = [];
+			}
+		} else if (this.institution.strings["suppress-min"] === 0) {
+			this.institutions[v] = [];
+			this.freeters[v] = this.freeters[v].concat(this.persons[v]);
+			for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+				for (var k = 0, klen = this.persons[v][j].length; k < klen; k += 1) {
+					this.freeters[v].push(this.persons[v][j][k])
+				}
+			}
+			this.persons[v] = [];
+		}
 	}
 };
 CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
