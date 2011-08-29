@@ -359,6 +359,7 @@ var CSL = {
 		en: "en_US",
 		es: "es_ES",
 		et: "et_EE",
+		fa: "fa_FA",
 		fr: "fr_FR",
 		he: "he_IL",
 		hu: "hu_HU",
