@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.208
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Properly escape CSL-supplied affix strings. Fixes problem with superscripted en-dashes
+  in some numeric styles, among other things.
+
+- Fix output queue bug that could cause delimiters to be swallowed (2401:c8960e2cd591).
+
+- Change to API for external abbreviations management, to allow
+  more efficient handling of very large lists. Optional sys.getAbbreviations()
+  function is now sys.getAbbreviation().
+
+- No not rely on quoted escapes, but strip enclosing quotes for the
+  present.
+
+- Adopt extraction conventions for cs:number described at
+  http://gsl-nagoya-u.net/http/pub/citeproc-js-csl.html#cs-number-cs-label-and-is-numeric
+
+
+==========================
 Changes in version 1.0.207
 ==========================
 
