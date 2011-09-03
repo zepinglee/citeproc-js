@@ -1024,6 +1024,7 @@ CSL.citeStart = function (Item, item) {
 	if (!this.tmp.just_looking && item && !item.position && this.registry.registry[Item.id]) {
 		this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
 	}
+	this.tmp.shadow_numbers = {};
 };
 
 CSL.citeEnd = function (Item, item) {

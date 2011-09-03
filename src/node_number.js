@@ -87,115 +87,29 @@ CSL.Node.number = {
 			if (varname === "page-range" || varname === "page-first") {
 				varname = "page";
 			}
-			num = Item[varname];
-			if ("undefined" !== typeof num) {
-				if (this.variables[0] === "page-first") {
-					m = num.split(/\s*(?:&|,|-)\s*/);
-					num = m[0];
-				}
-				// Check for valid multiple items.  If found, 
-				// open a new empty level and iterate this, with 
-				// intervening punctuation set as prefixes to the 
-				// second and succeeding output blobs.
-				//
-				// (If we are in a cs:sort node, we use
-				// the first number encountered only)
-				var prefixes = num.split(/[0-9]+/);
-				var all_with_spaces = true;
-				// all_with_spaces will be false only if it is
-				//   of length >= 3, and has a string with no
-				//   space between position 1 and position length - 2.
-				// Single numbers will evaluate true, because
-				//   the length of prefixes in that case will be 2.
-				for (var i = 1, ilen = prefixes.length - 1; i < ilen; i += 1) {
-				    if (prefixes[i].indexOf(" ") === -1) {
-						all_with_spaces = false;
-						break;
-				    }
-				}
-				if (state.tmp.area !== "citation_sort"
-					&& state.tmp.area !== "bibliography_sort"
-					&& num.slice(0, 1) === '"' && num.slice(-1) === '"') {
-					
-					state.output.append(num.slice(1,-1), this);
-				} else if (state.tmp.area !== "citation_sort"
-						   && state.tmp.area !== "bibliography_sort"
-						   && all_with_spaces 
-						   && !num.match(/[^\- 0-9,&]/)) {
-					var nums = num.match(/[0-9]+/g);
-					// Expand ranges
-					var range_ok = true;
-					for (i = prefixes.length - 2; i > 0; i += -1) {
-						if (prefixes && prefixes[i].indexOf("-") > -1) {
-							var start = parseInt(nums[i - 1], 10);
-							var end = parseInt(nums[i], 10);
-							// Block silly values
-							if (start >= end || start < (end - 1000)) {
-								range_ok = false;
-								break;
-							}
-							var replacement = [];
-							for (j = start, jlen = end + 1; j < jlen; j += 1) {
-								replacement.push(""+j);
-							}
-							nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
+			if (!state.tmp.shadow_numbers[varname]) {
+				state.processNumber(Item, varname);
+			}
+			var value = state.tmp.shadow_numbers[varname].value;
+			if (value) {
+				if ("string" === typeof value) {
+					var blob = new CSL.NumericBlob(value, this);
+					state.output.append(blob, "literal");
+					blob = newblob;
+				} else if ("object" === typeof value) {
+					state.output.openLevel("empty")
+					for (var i = 0, ilen = value.length; i < ilen; i += 1) {
+						var blob = new CSL.NumericBlob(value[i], this);
+						blob.gender = state.opt["noun-genders"][varname];
+						if (i > 0) {
+							// this.output.append(prefixes[i], "empty");
+							blob.successor_prefix = " & ";
+							blob.range_prefix = "-";
+							blob.splice_prefix = ", ";
 						}
+						state.output.append(blob, "literal");
 					}
-					if (range_ok) {
-						nums = nums.sort(function (a,b) {
-							a = parseInt(a, 10);
-							b = parseInt(b, 10);
-							if (a > b) {
-								return 1;
-							} else if (a < b) {
-								return -1;
-							} else {
-								return 0;
-							}
-						});
-						// Eliminate duplicate numbers
-						for (i = nums.length; i > -1; i += -1) {
-							if (nums[i] === nums[i + 1]) {
-								nums = nums.slice(0, i).concat(nums.slice(i + 1));
-							}
-						}
-						state.output.openLevel("empty");
-						for (i = 0, ilen = nums.length; i < ilen; i += 1) {
-							num = parseInt(nums[i], 10);
-							number = new CSL.NumericBlob(num, this);
-							number.gender = state.opt["noun-genders"][varname];
-							if (i > 0) {
-								// state.output.append(prefixes[i], "empty");
-								number.successor_prefix = " & ";
-								number.range_prefix = "-";
-								number.splice_prefix = ", ";
-							}
-							state.output.append(number, "literal");
-						}
-						state.output.closeLevel("empty");
-					} else {
-						state.output.append(num, this);
-					}
-				} else if (state.tmp.area !== "citation_sort"
-						   && state.tmp.area !== "bibliography_sort"
-						   && !all_with_spaces || prefixes.length > 2) {
-				    // Don't attempt to apply numeric formatting
-				    // or to normalize the content for weird
-				    // numbers like "1-505" (no space between the
-				    // numbers and the hyphen suggests that 505 might
-				    // be meant as a leaf number)
-					state.output.append(num, this);
-				} else {
-					// Single number
-					m = num.match(/\s*([0-9]+)(?:[^\-]* |[^\-]*$)/);
-					if (m) {
-						num = parseInt(m[1], 10);
-						number = new CSL.NumericBlob(num, this);
-						number.gender = state.opt["noun-genders"][varname];
-						state.output.append(number, "literal");
-					} else {
-						state.output.append(num, this);
-					}
+					state.output.closeLevel("empty")
 				}
 			}
 			state.parallel.CloseVariable("number");

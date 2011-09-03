@@ -278,6 +278,7 @@ CSL.Node["date-part"] = {
 					} else {
 						number.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
 					}
+					number.UGLY_DELIMITER_SUPPRESS_HACK = true;
 					state.output.append(number, "literal");
 				}
 			}

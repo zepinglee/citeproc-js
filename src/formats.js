@@ -72,15 +72,18 @@ CSL.Output.Formats.prototype.html = {
 		// Numeric entities, in case the output is processed as
 		// xml in an environment in which HTML named entities are
 		// not declared.
+		if (!text) {
+			text = ""
+		}
 		return text.replace(/&/g, "&#38;")
-		.replace(/</g, "&#60;")
-		.replace(/>/g, "&#62;")
-		.replace("  ", "&#160; ", "g")
-		.replace(CSL.SUPERSCRIPTS_REGEXP,
-				 function(aChar) {
-					 // return "&#60;sup&#62;" + CSL.SUPERSCRIPTS[aChar] + "&#60;/sup&#62;";
-					 return "<sup>" + CSL.SUPERSCRIPTS[aChar] + "</sup>";
-				 });
+			.replace(/</g, "&#60;")
+			.replace(/>/g, "&#62;")
+			.replace("  ", "&#160; ", "g")
+			.replace(CSL.SUPERSCRIPTS_REGEXP,
+					 function(aChar) {
+						 // return "&#60;sup&#62;" + CSL.SUPERSCRIPTS[aChar] + "&#60;/sup&#62;";
+						 return "<sup>" + CSL.SUPERSCRIPTS[aChar] + "</sup>";
+					 });
 	},
 	"bibstart": "<div class=\"csl-bib-body\">\n",
 	"bibend": "</div>",

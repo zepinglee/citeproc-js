@@ -100,6 +100,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 	// content should take place after constraints are
 	// imposed)
 	for (i = 0, ilen = names.length; i < ilen; i += 1) {
+
 		names[i] = this.state.transform.name(this.state, names[i], this.state.opt["locale-pri"]);
 		names[i] = this._normalizeNameInput(names[i]);
 	}
@@ -162,7 +163,11 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
 	} else {
 		ret["long"] = this._trimInstitution(value.literal.split(/\s*,\s*/), v, i);
 	}
-	var str = this.state.transform.institution[value.literal];
+
+	// Lazy retrieval of abbreviations.
+	this.state.transform.loadAbbreviation("institution", value.literal);
+
+	var str = this.state.transform.abbrevs.institution[value.literal];
 	if (str) {
 		if (str.slice(0,1) === '"' && str.slice(-1) === '"') {
 			ret["short"] = [str.slice(1,-1)];

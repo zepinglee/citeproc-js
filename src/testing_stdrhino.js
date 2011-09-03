@@ -86,8 +86,12 @@ StdRhinoTest.prototype.retrieveItem = function(id){
 	return this._cache[id];
 };
 
-StdRhinoTest.prototype.getAbbreviations = function(name,vartype){
-	return this._acache[name][vartype];
+StdRhinoTest.prototype.getAbbreviation = function(obj, vartype, key){
+	if (this._acache["default"][vartype][key]) {
+		obj[vartype][key] = this._acache["default"][vartype][key];
+	} else {
+		obj[vartype][key] = "";
+	}
 };
 
 StdRhinoTest.prototype.addAbbreviation = function(name,vartype,key,val){
@@ -138,7 +142,6 @@ StdRhinoTest.prototype.run = function(){
 	var len, pos, ret, id_set, nick;
 	ret = new Array();
 	this.style = new CSL.Engine(this,this.test.csl);
-	this.style.setAbbreviations("default");
 	if (this.test.abbreviations) {
 		for (nick in this.test.abbreviations) {
 			for (field in this.test.abbreviations[nick]) {

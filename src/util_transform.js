@@ -115,16 +115,15 @@ CSL.Transform = function (state) {
 	var debug = false, abbreviations, token, fieldname, subsection, opt;
 
 	// Abbreviation subsections
-	this["container-title"] = {};
-	this["collection-title"] = {};
-	this.institution = {};
-	this.authority = {};
-	this.title = {};
-	this.publisher = {};
-	this["publisher-place"] = {};
-	this.hereinafter = {};
-
-	abbreviations = "default";
+	this.abbrevs = {};
+	this.abbrevs["container-title"] = {};
+	this.abbrevs["collection-title"] = {};
+	this.abbrevs.institution = {};
+	this.abbrevs.authority = {};
+	this.abbrevs.title = {};
+	this.abbrevs.publisher = {};
+	this.abbrevs["publisher-place"] = {};
+	this.abbrevs.hereinafter = {};
 
 	// Initialization method
 	function init(t, f, x) {
@@ -143,20 +142,25 @@ CSL.Transform = function (state) {
 	// Internal function
 	function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
 		var value;
+
 		if (!mysubsection) {
 			return basevalue;
 		}
+
+		// Lazy retrieval of abbreviations.
+		state.transform.loadAbbreviation(mysubsection, basevalue);
+
 		value = "";
-		if (state.transform[mysubsection]) {
-			if (state.transform[mysubsection][basevalue]) {
-				value = state.transform[mysubsection][basevalue];
-			} else if ("string" != typeof state.transform[mysubsection][basevalue]) {
+		if (state.transform.abbrevs[mysubsection]) {
+			if (state.transform.abbrevs[mysubsection][basevalue]) {
+				value = state.transform.abbrevs[mysubsection][basevalue];
+			} else if ("string" != typeof state.transform.abbrevs[mysubsection][basevalue]) {
 				//SNIP-START
 				if (this.debug) {
 					CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
 				}
 				//SNIP-END
-				state.transform[mysubsection][basevalue] = "";
+				state.transform.abbrevs[mysubsection][basevalue] = "";
 			}
 		}
 		if (!value && Item[altvar] && use_field) {
@@ -224,23 +228,25 @@ CSL.Transform = function (state) {
 	this.setTransformFallback = setTransformFallback;
 
 	// Setter for abbreviation lists
-	function setAbbreviations(name) {
-		var vartype, pos, len;
-		if (name) {
-			abbreviations = name;
+	// This initializes a single abbreviation based on known
+	// data.
+	function loadAbbreviation(vartype, key) {
+		var pos, len;
+		if (!this.abbrevs[vartype]) {
+			return;
 		}
-		len = CSL.MULTI_FIELDS.length;
-		for (pos = 0; pos < len; pos += 1) {
-			vartype = CSL.MULTI_FIELDS[pos];
-			// This needs to change: abbreviations will be held
-			// in a database, and mirrored in JS only for items
-			// that require them. We don't want to pull in ALL
-			// abbreviations, as this seems to do; the volume
-			// could bring us to our knees.
-			this[vartype] = state.sys.getAbbreviations(abbreviations, vartype);
+		// The getAbbreviation() function should check the
+		// external DB for the content key. If a value exists
+		// in this[vartype] and no value exists in DB, the entry
+		// in memory is left untouched. If a value does exist in
+		// DB, the memory value is created.
+		//
+		// See testrunner_stdrhino.js for an example.
+		if (state.sys.getAbbreviation && !this.abbrevs[vartype][key]) {
+			state.sys.getAbbreviation(this.abbrevs, vartype, key);
 		}
 	}
-	this.setAbbreviations = setAbbreviations;
+	this.loadAbbreviation = loadAbbreviation;
 
 	function publisherCheck (varname, primary, tok) {
 		if (state.publisherOutput && primary) {
@@ -356,9 +362,15 @@ CSL.Transform = function (state) {
 		// This output method is specific to institutions.
 		// See util_institutions.js
 		//
+
+		print("======================= I AM USED ===========================");
+
 		var shortvalue;
-		//
-		shortvalue = state.transform.institution[basevalue];
+
+		// Lazy retrieval of abbreviations.
+		state.transform.loadAbbreviation(mysubsection, basevalue);
+
+		shortvalue = state.transform.abbrevs.institution[basevalue];
 		if (shortvalue) {
 			state.output.append(shortvalue, token_short);
 		} else {

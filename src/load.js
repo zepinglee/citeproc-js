@@ -235,7 +235,17 @@ var CSL = {
 		"original-author",
 		"recipient"
 	],
-	NUMERIC_VARIABLES: ["edition", "volume", "number-of-volumes", "number", "issue", "citation-number"],
+	NUMERIC_VARIABLES: [
+		"chapter-number",
+		"collection-number",
+		"edition",
+		"issue",
+		"number",
+		"number-of-pages",
+		"number-of-volumes",
+		"volume",
+		"citation-number"
+	],
 	//var x = new Array();
 	//x = x.concat(["title","container-title","issued","page"]);
 	//x = x.concat(["locator","collection-number","original-date"]);

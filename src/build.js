@@ -61,9 +61,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	//this.parallel.use_parallels = true;
 
 	this.transform = new CSL.Transform(this);
-	this.setAbbreviations = function (nick) {
-		this.transform.setAbbreviations(nick);
-	};
 	// true or false
 	this.setParseNames = function (val) {
 		this.opt['parse-names'] = val;

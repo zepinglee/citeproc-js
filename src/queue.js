@@ -448,23 +448,41 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
 			state.tmp.count_offset_characters = false;
 		}
 	}
+	// XXX NOT good here. What happens if we have boy-girl-goy-girl?
 	var span_split = 0;
+	var has_more = false;
 	for (i = 0, ilen = ret.length; i < ilen; i += 1) {
 		if ("string" === typeof ret[i]) {
 			span_split = (parseInt(i, 10) + 1);
+			if (i < ret.length - 1  && "object" === typeof ret[i + 1]) {
+				if (!ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK) {
+					has_more = true;
+				} else {
+					has_more = false;
+				}
+				// One bite of the apple
+				ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK = true;
+			}
+			//span_split = ret.length;
+			//print("XXX ret: "+ret+" -- "+blob_delimiter);
 		}
 	}
+	//if (span_split !== ret.length) {
+	//  print("span_split: "+span_split+", ret.length: "+ret.length);
+	//	print("   "+ret);
+	//}
 	if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
 		span_split = ret.length;
 	}
-	var mytype = "string";
-	for (var q = 0, qlen = ret.length; q < qlen; q += 1) {
-		if (typeof ret[q] !== "string") {
-			mytype = typeof ret[q];
-			break;
-		}
-	}
-	var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter);
+
+	//var mytype = "string";
+	//for (var q = 0, qlen = ret.length; q < qlen; q += 1) {
+	//	if (typeof ret[q] !== "string") {
+	//		mytype = typeof ret[q];
+	//		break;
+	//	}
+	//}
+	var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, has_more);
 	if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
 		if (!state.tmp.suppress_decorations) {
 			for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
@@ -544,7 +562,7 @@ CSL.Output.Queue.prototype.clearlevel = function () {
 	}
 };
 
-CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
+CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
 	var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params, txt_esc;
 	txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
 	if (!delim) {
@@ -587,6 +605,8 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 				//state.tmp.offset_characters += (use_delim.length + blob.length);
 				state.tmp.offset_characters += (use_delim.length);
 			}
+			if (has_more && pos === len - 1) {
+				ret += txt_esc(delim);			}
 		} else if (blob.status !== CSL.SUPPRESS) {
 			str = blob.formatter.format(blob.num, blob.gender);
 			// Workaround to get a more or less accurate value.
@@ -613,13 +633,13 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim) {
 			str = blob.strings.prefix + str + blob.strings.suffix;
 			var addme = "";
 			if (blob.status === CSL.END) {
-				addme = blob.range_prefix;
+				addme = txt_esc(blob.range_prefix);
 			} else if (blob.status === CSL.SUCCESSOR) {
-				addme = blob.successor_prefix;
+				addme = txt_esc(blob.successor_prefix);
 			} else if (blob.status === CSL.START) {
 				addme = "";
 			} else if (blob.status === CSL.SEEN) {
-				addme = blob.splice_prefix;
+				addme = txt_esc(blob.splice_prefix);
 			}
 			ret += addme;
 			ret += str;

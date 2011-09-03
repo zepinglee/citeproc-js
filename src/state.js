@@ -225,6 +225,7 @@ CSL.Engine.Tmp = function () {
 	this.cite_locales = [];
 	this.cite_affixes = false;
 	this.strip_periods = 0;
+	this.shadow_numbers = {};
 };
 
 
