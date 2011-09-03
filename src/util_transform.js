@@ -151,7 +151,7 @@ CSL.Transform = function (state) {
 		state.transform.loadAbbreviation(mysubsection, basevalue);
 
 		value = "";
-		if (state.transform.abbrevs[mysubsection]) {
+		if (state.transform.abbrevs[mysubsection] && basevalue) {
 			if (state.transform.abbrevs[mysubsection][basevalue]) {
 				value = state.transform.abbrevs[mysubsection][basevalue];
 			} else if ("string" != typeof state.transform.abbrevs[mysubsection][basevalue]) {
@@ -160,7 +160,7 @@ CSL.Transform = function (state) {
 					CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
 				}
 				//SNIP-END
-				state.transform.abbrevs[mysubsection][basevalue] = "";
+				//state.transform.abbrevs[mysubsection][basevalue] = "";
 			}
 		}
 		if (!value && Item[altvar] && use_field) {
@@ -232,7 +232,7 @@ CSL.Transform = function (state) {
 	// data.
 	function loadAbbreviation(vartype, key) {
 		var pos, len;
-		if (!this.abbrevs[vartype]) {
+		if (!this.abbrevs[vartype] || !key) {
 			return;
 		}
 		// The getAbbreviation() function should check the
@@ -356,35 +356,6 @@ CSL.Transform = function (state) {
 		}
 	}
 	this.getOutputFunction = getOutputFunction;
-
-	function output(state, basevalue, token_short, token_long, use_fallback) {
-		//
-		// This output method is specific to institutions.
-		// See util_institutions.js
-		//
-
-		print("======================= I AM USED ===========================");
-
-		var shortvalue;
-
-		// Lazy retrieval of abbreviations.
-		state.transform.loadAbbreviation(mysubsection, basevalue);
-
-		shortvalue = state.transform.abbrevs.institution[basevalue];
-		if (shortvalue) {
-			state.output.append(shortvalue, token_short);
-		} else {
-			if (use_fallback) {
-				state.output.append(basevalue, token_long);
-			}
-			//SNIP-START
-			if (this.debug) {
-				CSL.debug("UNKNOWN ABBREVIATION FOR: " + basevalue);
-			}
-			//SNIP-END
-		}
-	}
-	this.output = output;
 
 	function getStaticOrder (name, refresh) {
 		var static_ordering_val = false;
