@@ -86,7 +86,7 @@ var CSL = {
 	MARK_TRAILING_NAMES: true,
 	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-	MULTI_FIELDS: ["publisher", "publisher-place", "title","container-title", "collection-title", "institution", "authority","edition"],
+	MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title","container-title", "collection-title", "institution", "authority","edition"],
 	CITE_FIELDS: ["first-reference-note-number", "locator"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 	SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
@@ -1738,7 +1738,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.207";
+	this.processor_version = "1.0.209";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6440,7 +6440,7 @@ CSL.Node.text = {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
 							} else if (this.variables_real[0] === "title") {
 								state.transform.setAlternativeVariableName("shortTitle");
-							} else if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
+							} else if (["publisher", "publisher-place", "event-place", "edition"].indexOf(this.variables_real[0]) > -1) {
 								state.transform.setTransformLocale("default-locale");
 							}
 							func = state.transform.getOutputFunction(this.variables);
@@ -7359,7 +7359,7 @@ CSL.Transform = function (state) {
 	this.abbrevs.authority = {};
 	this.abbrevs.title = {};
 	this.abbrevs.publisher = {};
-	this.abbrevs["publisher-place"] = {};
+	this.abbrevs.place = {};
 	this.abbrevs.hereinafter = {};
 	function init(t, f, x) {
 		token = t;
@@ -7378,13 +7378,15 @@ CSL.Transform = function (state) {
 		if (!mysubsection) {
 			return basevalue;
 		}
+		if (["publisher-place", "event-place"].indexOf(mysubsection) > -1) {
+			mysubsection = "place";
+		}
 		state.transform.loadAbbreviation(mysubsection, basevalue);
 		value = "";
-		if (state.transform.abbrevs[mysubsection]) {
+		if (state.transform.abbrevs[mysubsection] && basevalue) {
 			if (state.transform.abbrevs[mysubsection][basevalue]) {
 				value = state.transform.abbrevs[mysubsection][basevalue];
 			} else if ("string" != typeof state.transform.abbrevs[mysubsection][basevalue]) {
-				state.transform.abbrevs[mysubsection][basevalue] = "";
 			}
 		}
 		if (!value && Item[altvar] && use_field) {
@@ -7439,7 +7441,7 @@ CSL.Transform = function (state) {
 	this.setTransformFallback = setTransformFallback;
 	function loadAbbreviation(vartype, key) {
 		var pos, len;
-		if (!this.abbrevs[vartype]) {
+		if (!this.abbrevs[vartype] || !key) {
 			return;
 		}
 		if (state.sys.getAbbreviation && !this.abbrevs[vartype][key]) {
@@ -7534,20 +7536,6 @@ CSL.Transform = function (state) {
 		}
 	}
 	this.getOutputFunction = getOutputFunction;
-	function output(state, basevalue, token_short, token_long, use_fallback) {
-		print("======================= I AM USED ===========================");
-		var shortvalue;
-		state.transform.loadAbbreviation(mysubsection, basevalue);
-		shortvalue = state.transform.abbrevs.institution[basevalue];
-		if (shortvalue) {
-			state.output.append(shortvalue, token_short);
-		} else {
-			if (use_fallback) {
-				state.output.append(basevalue, token_long);
-			}
-		}
-	}
-	this.output = output;
 	function getStaticOrder (name, refresh) {
 		var static_ordering_val = false;
 		if (!refresh && name["static-ordering"]) {
@@ -9697,6 +9685,44 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 		item = mylist[pos];
 		if (!this.registry[item]) {
 			Item = this.state.retrieveItem(item);
+			if (this.state.sys.getAbbreviation) {
+				for (var field in this.state.transform.abbrevs) {
+					switch (field) {
+					case "place":
+						if (Item["publisher-place"]) {
+							this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, Item["publisher-place"]);
+						} else if (Item["event-place"]) {
+							this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, Item["event-place"]);
+						}
+						break;
+					case "institution":
+						for (var creatorVar in CSL.CREATORS) {
+							for (var creatorList in Item[creatorVar]) {
+								for (var j = 0, jlen = creatorList.length; j < jlen; j += 1) {
+									if (creatorList[j].isInstitution) {
+										var subOrganizations = creatorList[j].literal;
+										if (!subOrganizations) {
+											subOrganizations = creatorList[j].family;
+										}
+										if (subOrganizations) {
+											subOrganizations = subOrganizations.split(/\s*,\s*/);
+											for (var k = 0, klen = subOrganizations.length; k < klen; k += 1) {
+												this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, subOrganizations[k]);
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					default:
+						if (Item[field]) {
+							this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, Item[field]);
+						}
+						break;
+					}
+				}
+			}
 			akey = CSL.getAmbiguousCite.call(this.state, Item);
 			this.akeys[akey] = true;
 			newitem = {

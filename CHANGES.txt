@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.209
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Screen empty fields from persistent recording by getAbbreviation.
+
+- Initialized abbreviations lists from items added to the registry.
+
+- Recognize event-place as well as publisher-place for list-based
+  abbreviation, and hold abbreviations for both under a single
+  "place" type key.
+
+
+==========================
 Changes in version 1.0.208
 ==========================
 
