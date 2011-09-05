@@ -56,7 +56,7 @@ var StdRhinoTest = function(myname,custom){
 						 "institution":{},
 						 "title":{},
 						 "publisher":{},
-						 "publisher-place":{},
+						 "place":{},
 						 "hereinafter":{}
 					 }
 				   };
