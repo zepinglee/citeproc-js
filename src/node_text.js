@@ -277,7 +277,7 @@ CSL.Node.text = {
 								state.transform.setAlternativeVariableName("journalAbbreviation");
 							} else if (this.variables_real[0] === "title") {
 								state.transform.setAlternativeVariableName("shortTitle");
-							} else if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
+							} else if (["publisher", "publisher-place", "event-place", "edition"].indexOf(this.variables_real[0]) > -1) {
 								// language of publisher and publisher-place follow
 								// the locale of the style.
 								state.transform.setTransformLocale("default-locale");
