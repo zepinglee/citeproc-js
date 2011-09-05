@@ -122,7 +122,7 @@ CSL.Transform = function (state) {
 	this.abbrevs.authority = {};
 	this.abbrevs.title = {};
 	this.abbrevs.publisher = {};
-	this.abbrevs["publisher-place"] = {};
+	this.abbrevs.place = {};
 	this.abbrevs.hereinafter = {};
 
 	// Initialization method
@@ -145,6 +145,10 @@ CSL.Transform = function (state) {
 
 		if (!mysubsection) {
 			return basevalue;
+		}
+
+		if (["publisher-place", "event-place"].indexOf(mysubsection) > -1) {
+			mysubsection = "place";
 		}
 
 		// Lazy retrieval of abbreviations.
