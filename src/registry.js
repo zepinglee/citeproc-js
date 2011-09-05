@@ -321,6 +321,50 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			//  4a. Retrieve entries for items to insert.
 			//
 			Item = this.state.retrieveItem(item);
+
+			// If getAbbreviation is available, run it over any
+			// relevant fields.
+			if (this.state.sys.getAbbreviation) {
+				for (var field in this.state.transform.abbrevs) {
+					switch (field) {
+					case "place":
+						if (Item["publisher-place"]) {
+							this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, Item["publisher-place"]);
+						} else if (Item["event-place"]) {
+							this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, Item["event-place"]);
+						}
+						break;
+
+					case "institution":
+						for (var creatorVar in CSL.CREATORS) {
+							for (var creatorList in Item[creatorVar]) {
+								for (var j = 0, jlen = creatorList.length; j < jlen; j += 1) {
+									if (creatorList[j].isInstitution) {
+										var subOrganizations = creatorList[j].literal;
+										if (!subOrganizations) {
+											subOrganizations = creatorList[j].family;
+										}
+										if (subOrganizations) {
+											subOrganizations = subOrganizations.split(/\s*,\s*/);
+											for (var k = 0, klen = subOrganizations.length; k < klen; k += 1) {
+												this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, subOrganizations[k]);
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+
+					default:
+						if (Item[field]) {
+							this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, Item[field]);
+						}
+						break;
+
+					}
+				}
+			}
 			//
 			//  4b. Generate ambig key.
 			//
