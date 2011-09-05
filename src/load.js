@@ -131,7 +131,7 @@ var CSL = {
 
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
-	MULTI_FIELDS: ["publisher", "publisher-place", "title","container-title", "collection-title", "institution", "authority","edition"],
+	MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title","container-title", "collection-title", "institution", "authority","edition"],
 
 	CITE_FIELDS: ["first-reference-note-number", "locator"],
 
