@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.210
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Small adjustment to name disambiguation when a "*-with-initials"
+  rule is used. Initials will not be added unless they contribute
+  something to disambiguation.
+
+
+==========================
 Changes in version 1.0.209
 ==========================
 

@@ -1738,7 +1738,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.209";
+	this.processor_version = "1.0.210";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -9991,6 +9991,8 @@ CSL.Registry.NameReg = function (state) {
 		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
 			if (this.namereg[pkey].count > 1) {
 				param = 1;
+			} else {
+				param = 0;
 			}
 		}
 		if (param === 0) {
