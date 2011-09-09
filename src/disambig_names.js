@@ -152,6 +152,8 @@ CSL.Registry.NameReg = function (state) {
 		} else if (gdropt === "all-names-with-initials" || gdropt === "primary-name-with-initials") {
 			if (this.namereg[pkey].count > 1) {
 				param = 1;
+			} else {
+				param = 0;
 			}
 		}
 		// an item_id should exist only on one level.  item_id's on levels
