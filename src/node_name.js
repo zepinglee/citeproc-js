@@ -114,7 +114,7 @@ CSL.Node.name = {
 				this.and_prefix_multiple = ", ";
 				// Workaround to allow explicit empty string
 				// on cs:name delimiter.
-				if ("string" === this.strings.delimiter) {
+				if ("string" === typeof this.strings.delimiter) {
 					this.and_prefix_multiple = this.strings.delimiter;
 				}
 				this.and_suffix = " ";
