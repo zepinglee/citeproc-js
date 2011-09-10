@@ -50,6 +50,18 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@require"] = function (state, arg) {
+    // Something goes here.
+}
+
+CSL.Attributes["@type-map"] = function (state, arg) {
+    // Something goes here.
+}
+
+CSL.Attributes["@demote-noise-words"] = function (state, arg) {
+    // Something goes here.
+}
+
 CSL.Attributes["@class"] = function (state, arg) {
 	state.opt["class"] = arg;
 };
