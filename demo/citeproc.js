@@ -1738,7 +1738,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.210";
+	this.processor_version = "1.0.211";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5980,7 +5980,7 @@ CSL.Node.name = {
 			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
 				this.and_prefix_single = " ";
 				this.and_prefix_multiple = ", ";
-				if ("string" === this.strings.delimiter) {
+				if ("string" === typeof this.strings.delimiter) {
 					this.and_prefix_multiple = this.strings.delimiter;
 				}
 				this.and_suffix = " ";
@@ -10139,6 +10139,11 @@ CSL.Registry.NameReg = function (state) {
 	};
 	addname = function (item_id, nameobj, pos) {
 		nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
+		if (state.opt["givenname-disambiguation-rule"]
+			&& state.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
+			&& pos !== 0) {
+				return;
+		}
 		set_keys(this.state, "" + item_id, nameobj);
 		if (pkey) {
 			if ("undefined" === typeof this.namereg[pkey]) {

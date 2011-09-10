@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.211
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in delimiter-precedes-last="always", reported
+  by Sebastian Karcher.
+
+- Disambiguate on "primary-name" rules only if there is
+  a clash with another primary name.
+
+
+==========================
 Changes in version 1.0.210
 ==========================
 
