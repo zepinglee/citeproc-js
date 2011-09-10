@@ -47,13 +47,16 @@
  */
 
 >>===== MODE =====>>
-citation
+bibliography
 <<===== MODE =====<<
 
 
 
 >>===== RESULT =====>>
-van den Doe, John
+<div class="csl-bib-body">
+  <div class="csl-entry">Archimedes, The. <i>See</i> <i>Jones v. Smith</i>, [1990] 15 AC 111</div>
+  <div class="csl-entry"><i>Jones v. Smith</i>, [1990] 15 AC 111</div>
+</div>
 <<===== RESULT =====<<
 
 
@@ -68,9 +71,19 @@ van den Doe, John
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <macro name="oscola-case">
+  <macro name="oscola-bib-case">
+    <choose>
+      <if variable="title-short" match="any">
+        <text macro="oscola-bib-case-crossref"/>
+      </if>
+      <else>
+        <text macro="oscola-bib-case-plain"/>
+      </else>
+    </choose>
+  </macro>
+  <macro name="oscola-bib-case-plain">
     <group delimiter=", ">
-      <text variable="title">
+      <text variable="title" font-style="italic"/>
       <group delimiter=" ">
         <date variable="issued" form="numeric" date-parts="year" prefix="[" suffix="]"/>
         <text variable="volume"/>
@@ -79,11 +92,11 @@ van den Doe, John
       </group>
     </group>
   </macro>
-  <macro name="oscola-crossref>
+  <macro name="oscola-bib-case-crossref">
     <group delimiter=" ">
-      <text variable="title-short"/>
+      <text variable="title-short" demote-noise-words="true" suffix="."/>
       <text value="See" font-style="italic"/>
-      <text macro="oscola-case"/>
+      <text macro="oscola-bib-case-plain"/>
     </group>
   </macro>
   <citation>
@@ -94,8 +107,8 @@ van den Doe, John
     </layout>
   </citation>
   <bibliography>
-    <text macro="oscola-case"/>
-    <generate type-map="legal_case legal_case" require="title-short" macro="oscola-crossref"/>
+    <generate type-map="legal_case legal_case" require="title-short"/>
+    <text macro="oscola-bib-case"/>
   </bibliography>
 </style>
 <<===== CSL =====<<
@@ -104,13 +117,16 @@ van den Doe, John
 >>===== INPUT =====>>
 [
     {
-        "author": [
-            {
-                "family": "\"van den Doe\"", 
-                "given": "John", 
-                "parse-names": "true"
-            }
-        ], 
+        "title": "Jones v. Smith",
+        "issued": {
+            "date-parts": [
+               [1990]
+            ]
+        },
+        "volume": 15,
+        "container-title": "AC",
+        "page": "111-999",
+        "title-short": "The Raven",
         "id": "ITEM-1", 
         "type": "book"
     }
