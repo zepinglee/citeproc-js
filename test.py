@@ -140,7 +140,7 @@ class Bundle:
         f.extend(["util_datenode","util_names","util_dates"])
         f.extend(["util_sort","util_substitute","util_number","util_page","util_flipflop"])
         f.extend(["formatters","formats","registry","disambig_names","disambig_cites"])
-        f.extend(["disambig_citations"])
+        f.extend(["disambig_citations", "node_generate"])
         self.files = f
     
     def deleteOldBundle(self):
