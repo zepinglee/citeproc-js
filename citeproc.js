@@ -1738,7 +1738,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.212";
+	this.processor_version = "1.0.213";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6219,10 +6219,10 @@ CSL.Node.number = {
 			this.formatter = state.fun.long_ordinalizer;
 		}
 		if ("undefined" === typeof this.successor_prefix) {
-			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
+			this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 		}
 		if ("undefined" === typeof this.splice_prefix) {
-			this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
+			this.splice_prefix = state[state.build.area].opt.layout_delimiter;
 		}
 		func = function (state, Item) {
 			var varname, num, number, m, j, jlen;

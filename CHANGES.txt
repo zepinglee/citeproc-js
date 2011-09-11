@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.213
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix delimiter bug reported by user sinophil.
+
+
+==========================
 Changes in version 1.0.212
 ==========================
 
