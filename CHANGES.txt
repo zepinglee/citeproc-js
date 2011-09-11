@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.212
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement cs:generate element, for cross-references
+  to an item with modified details in the bibliography.
+
+- Implement leading-noise-words attribute, for reversal
+  or dropping of insignificant words at the start of a
+  title or other string.
+
+
+==========================
 Changes in version 1.0.211
 ==========================
 
