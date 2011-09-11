@@ -322,6 +322,10 @@ CSL.Transform = function (state) {
 					primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
 				}
 				secondary = getTextSubField(Item, myfieldname, "locale-sec");
+                if ("demote" === this["leading-noise-words"]) {
+                    primary = CSL.demoteNoiseWords(primary);
+                    secondary = CSL.demoteNoiseWords(secondary);
+                }
 				if (secondary && ((state.tmp.area === 'bibliography' || (state.opt.xclass === "note" && state.tmp.area === "citation")))) {
 					// Signifying short form -- again, the variable name is misleading.
 					if (mysubsection) {
@@ -332,7 +336,7 @@ CSL.Transform = function (state) {
 					secondary_tok = new CSL.Token("text", CSL.SINGLETON);
 					secondary_tok.strings.suffix = "]" + this.strings.suffix;
 					secondary_tok.strings.prefix = " [";
-					
+		
 					state.output.append(primary, primary_tok);
 					state.output.append(secondary, secondary_tok);
 				} else {
@@ -351,6 +355,9 @@ CSL.Transform = function (state) {
 				if (publisherCheck(variables[0], primary, this)) {
 					return null;
 				} else {
+                    if ("demote" === this["leading-noise-words"]) {
+                        primary = CSL.demoteNoiseWords(primary);
+                    }
 					// Safe, because when state.tmp["publisher-list"] exists,
 					// the variable must be one of publisher or publisher-place.
 					state.output.append(primary, this);

@@ -50,16 +50,22 @@
 
 CSL.Attributes = {};
 
-CSL.Attributes["@require"] = function (state, arg) {
-    // Something goes here.
+CSL.Attributes["@trigger-fields"] = function (state, arg) {
+    var mylst = arg.split(/\s+/);
+    this.generate_trigger_fields = mylst;
 }
 
 CSL.Attributes["@type-map"] = function (state, arg) {
     // Something goes here.
+    var mymap = arg.split(/\s+/);
+    this.generate_type_map = {};
+    this.generate_type_map.from = mymap[0];
+    this.generate_type_map.to = mymap[1];
 }
 
-CSL.Attributes["@demote-noise-words"] = function (state, arg) {
+CSL.Attributes["@leading-noise-words"] = function (state, arg) {
     // Something goes here.
+    this["leading-noise-words"] = arg;
 }
 
 CSL.Attributes["@class"] = function (state, arg) {

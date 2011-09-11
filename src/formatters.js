@@ -268,3 +268,24 @@ CSL.Output.Formatters.serializeItemAsRdf = function (Item) {
 CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
 	return "";
 };
+
+
+CSL.demoteNoiseWords = function (fld) {
+    if (fld) {
+        fld = fld.split(/\s+/);
+        fld.reverse();
+        var toEnd = [];
+        for (var j  = fld.length - 1; j > -1; j += -1) {
+            if (CSL.SKIP_WORDS.indexOf(fld[j].toLowerCase()) > -1) {
+                toEnd.push(fld.pop());
+            } else {
+                break;
+            }
+        }
+        fld.reverse();
+        var start = fld.join(" ");
+        var end = toEnd.join(" ");
+        fld = [start, end].join(", ");
+    }
+    return fld;
+}

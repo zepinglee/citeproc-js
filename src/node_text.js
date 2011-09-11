@@ -283,7 +283,7 @@ CSL.Node.text = {
 								state.transform.setTransformLocale("default-locale");
 							}
 							func = state.transform.getOutputFunction(this.variables);
-						} else if (["title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
+						} else if (["title-short","title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
 							// among long-form multi-fields, titles are an
 							// exception: they get a locale-sec transform
 							// if a value is available.

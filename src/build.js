@@ -193,12 +193,12 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.locale = {};
 	this.localeConfigure(langspec);
 
+	this.registry = new CSL.Registry(this);
+	this.disambiguate = new CSL.Disambiguation(this);
+
 	this.buildTokenLists("citation");
 	this.buildTokenLists("bibliography");
 	this.configureTokenLists();
-
-	this.registry = new CSL.Registry(this);
-	this.disambiguate = new CSL.Disambiguation(this);
 
 	this.splice_delimiter = false;
 
@@ -522,10 +522,9 @@ CSL.Engine.prototype.configureTokenLists = function () {
 CSL.Engine.prototype.retrieveItems = function (ids) {
 	var ret, pos, len;
 	ret = [];
-	len = ids.length;
-	for (pos = 0; pos < len; pos += 1) {
-		ret.push(this.retrieveItem("" + ids[pos]));
-	}
+    for (var i = 0, ilen = ids.length; i < ilen; i += 1) {
+        ret.push(this.retrieveItem("" + ids[i]));
+    }
 	return ret;
 };
 
@@ -534,7 +533,12 @@ CSL.Engine.prototype.retrieveItems = function (ids) {
 // style development trial and testing purposes.
 CSL.Engine.prototype.retrieveItem = function (id) {
 	var Item, m, pos, len, mm;
-	Item = this.sys.retrieveItem("" + id);
+
+    if (this.registry.generate.genIDs["" + id]) {
+		Item = this.registry.generate.items["" + id];
+    } else {
+	    Item = this.sys.retrieveItem("" + id);
+    }
 	// Mandatory data rescue
 	// LEX HACK
 	if (Item.type === "bill" && Item.number && !Item.volume && Item.page) {

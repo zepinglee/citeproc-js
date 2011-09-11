@@ -136,6 +136,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 
 CSL.Engine.prototype.updateItems = function (idList, nosort) {
 	var debug = false;
+    var oldArea = this.tmp.area;
 	//CSL.debug = print
 	//SNIP-START
 	if (debug) {
@@ -203,6 +204,8 @@ CSL.Engine.prototype.updateItems = function (idList, nosort) {
 	//SNIP-END
 	// taints always
 	//this.registry.yearsuffix();
+
+    this.tmp.area = oldArea;
 
 	return this.registry.getSortedIds();
 };

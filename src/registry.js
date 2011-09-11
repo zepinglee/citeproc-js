@@ -115,6 +115,12 @@ CSL.Registry = function (state) {
 	// See CSL.NameOutput.prototype.outputNames
 	// and CSL.Registry.prototype.doinserts
 	this.authorstrings = {};
+
+    this.generate = {};
+    this.generate.origIDs = {};
+    this.generate.genIDs = {};
+    this.generate.rules = [];
+
 	//
 	// shared scratch vars
 	this.mylist = [];
@@ -134,7 +140,7 @@ CSL.Registry = function (state) {
 	//this.modes = CSL.getModes.call(this.state);
 	//this.checkerator = new CSL.Checkerator();
 
-	this.getSortedIds = function () {
+	this.getSortedIds = function (generatedItems) {
 		ret = [];
 		for (i = 0, ilen = this.reflist.length; i < ilen; i += 1) {
 			ret.push("" + this.reflist[i].id);
@@ -297,6 +303,11 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
 			//  3d. Delete all items in deletion list from hash.
 			//
 			delete this.registry[key];
+            // + delete any generation rule bundles associated with the item.
+            if (this.generate.origIDs[key]) {
+                delete this.generate.origIDs[key];
+                delete this.generate.genIDs[key + ":gen"];
+            }
 			// For processCitationCluster()
 			this.return_data.bibchange = true;
 		}
@@ -321,6 +332,23 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			//  4a. Retrieve entries for items to insert.
 			//
 			Item = this.state.retrieveItem(item);
+
+            // Add a generation rule for this item if appropriate
+            for (var j = 0, jlen = this.generate.rules.length; j < jlen; j += 1) {
+                if (Item.type === this.generate.rules[j].from) {
+                    var needsRule = true;
+                    for (var k = 0, klen = this.generate.rules[j].triggers.length; k < klen; k += 1) {
+                        if (!Item[this.generate.rules[j].triggers[k]]) {
+                            needsRule = false;
+                            break;
+                        }
+                    }
+                    if (needsRule) {
+                        this.generate.origIDs[item] = this.generate.rules[j];
+                        this.generate.genIDs[item + ":gen"] = this.generate.rules[j];
+                    }
+                }
+            }
 
 			// If getAbbreviation is available, run it over any
 			// relevant fields.

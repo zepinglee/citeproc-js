@@ -123,7 +123,56 @@ CSL.getBibliographyEntries = function (bibsection) {
 	this.tmp.last_rendered_name = false;
 	this.tmp.bibliography_errors = [];
 	this.tmp.bibliography_pos = 0;
+
+    // cs:generate needs to be applied here, apparently.
+    // spoof IDs for inserts, and be sure to amend all_item_ids as well.
+    // First, make a note of the original list of IDs
+    
+    // registry.generate has:
+    //   bundles
+    //   rules
+    // rules are used in registry processing to identify items
+    // for which a bundle should be created. A bundle is a set
+    // of rules with an item ID. The actual item is fetched
+    // on demand during bundle processing when the bibliography
+    // is generated (i.e. here).
+
+    var originalIDs = this.registry.getSortedIds();
+    var newIDs = [];
+    this.registry.generate.items = {};
+
+    // generate has two forks: origIDs and genIDs
+    for (var id  in this.registry.generate.origIDs) {
+        // get the bundle
+        var rule = this.registry.generate.origIDs[id];
+        // clone the attached item. clone is shallow, just the top-level keys.
+        var item = this.retrieveItem(id);
+        var clonedItem = {};
+        for (var key in item) {
+            clonedItem[key] = item[key];
+        }
+        // remap the item type
+        clonedItem.type = rule.to;
+        // remove "required" field(s)
+        for (var i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
+            if (clonedItem[rule.triggers[i]]) {
+                delete clonedItem[rule.triggers[i]];
+            }
+        }
+        // amend itemID (to the form set on genIDs fork)
+        var newID = clonedItem.id + ":gen"
+        clonedItem.id = newID;
+        // add to generated items, will be picked up by retrieve function
+        this.registry.generate.items[clonedItem.id] = clonedItem;
+        // add new ID to list
+        newIDs.push(newID);
+    }
+    if (newIDs.length) {
+        this.updateItems(originalIDs.concat(newIDs));
+    }
+    // retrieveItems will pick up the generated items
 	input = this.retrieveItems(this.registry.getSortedIds());
+
 	this.tmp.disambig_override = true;
 	function eval_string(a, b) {
 		if (a === b) {
@@ -315,6 +364,12 @@ CSL.getBibliographyEntries = function (bibsection) {
 		}
 		ret.push(res);
 	}
+
+    // reset list if spoofed entries were included
+    if (newIDs.length) {
+        this.updateItems(originalIDs);
+    }
+
 	this.tmp.disambig_override = false;
 	return [all_item_ids, ret];
 };

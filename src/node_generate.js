@@ -51,7 +51,9 @@
 CSL.Node.generate = {
 	build: function (state, target) {
 		if (state.build.area === "bibliography") {
-            // Something goes here.
+            var obj = this.generate_type_map;
+            obj.triggers = this.generate_trigger_fields;
+            state.registry.generate.rules.push(obj);
 		}
 	}
 };
