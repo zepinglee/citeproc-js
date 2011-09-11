@@ -194,11 +194,12 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 	this.localeConfigure(langspec);
 
 	this.registry = new CSL.Registry(this);
-	this.disambiguate = new CSL.Disambiguation(this);
 
 	this.buildTokenLists("citation");
 	this.buildTokenLists("bibliography");
 	this.configureTokenLists();
+
+	this.disambiguate = new CSL.Disambiguation(this);
 
 	this.splice_delimiter = false;
 
