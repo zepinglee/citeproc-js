@@ -63,10 +63,10 @@ CSL.Node.number = {
 			this.formatter = state.fun.long_ordinalizer;
 		}
 		if ("undefined" === typeof this.successor_prefix) {
-			this.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
+			this.successor_prefix = state[state.build.area].opt.layout_delimiter;
 		}
 		if ("undefined" === typeof this.splice_prefix) {
-			this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
+			this.splice_prefix = state[state.build.area].opt.layout_delimiter;
 		}
 		// is this needed?
 		//if ("undefined" === typeof this.splice_prefix){
