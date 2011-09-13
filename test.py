@@ -423,7 +423,20 @@ command: java -client -jar ./rhino/js-1.7R2.jar -opt 8
     def copySource(self):
         for filename in os.listdir(os.path.join(path("run"), "humans")):
             os.unlink(os.path.join(path("run"), "humans", filename))
-        for sourcedir in [path("local"), path("std")]:
+        if self.opt.teststyles:
+            sourcedirs = []
+            cp = ConfigParser()
+            cp.read(os.path.join(path("config"), "test.cnf"))
+            styletesttopdir = cp.get("style", "testdirs")
+            if os.path.exists(styletesttopdir):
+                for subdir in os.listdir(styletesttopdir):
+                    fullpath = os.path.join(styletesttopdir, subdir)
+                    if not os.path.isdir(fullpath) or subdir == ".git":
+                        continue
+                    sourcedirs.append(fullpath)
+        else:
+            sourcedirs = [path("local"), path("std")]
+        for sourcedir in sourcedirs:
             filenames = os.listdir(sourcedir)
             filenames.sort()
             for filename in filenames:
@@ -456,7 +469,14 @@ class CslTest:
         for element in ["MODE","CSL"]:
             self.extract(element,required=True,is_json=False)
             if element == "CSL" and self.data['csl'].endswith('.csl'):
-                self.data['csl'] = fixEndings(open(os.path.join(path("styles"), self.data['csl'])).read())
+                if self.opt.teststyles:
+                    cp = ConfigParser()
+                    cp.read(os.path.join(path("config"), "test.cnf"))
+                    stylesdir = cp.get("style", "styles")
+                    stylepath = os.path.join(stylesdir, self.data['csl'])
+                else:
+                    stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
+                self.data['csl'] = fixEndings(open(stylepath).read())
         self.extract("RESULT",required=True,is_json=False)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
@@ -617,6 +637,10 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Run tests.')
+    parser.add_option("-S", "--styles", dest="teststyles",
+                      default=False,
+                      action="store_true", 
+                      help='Run style tests only.')
     parser.add_option("-r", "--release", dest="bundle",
                       default=False,
                       action="store_true", 
@@ -641,7 +665,7 @@ if __name__ == "__main__":
 
     if opt.makebundle and opt.makezoterobundle:
         print parser.print_help()
-        print "\nError: The -B and -E options cannot be used together."
+        print "\nError: The -B and -Z options cannot be used together."
         sys.exit()
 
     if opt.makebundle:
@@ -656,7 +680,7 @@ if __name__ == "__main__":
         bundler.createNewBundle()
         sys.exit()
 
-    if not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
+    if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
         parser.print_help()
         sys.exit()
     
@@ -673,21 +697,21 @@ if __name__ == "__main__":
     #
     # Validation
     #
-    if opt.bundle and (opt.processor or opt.grind or opt.cranky or opt.testrun or len(args)):
+    if opt.bundle and (opt.testtyles or opt.processor or opt.grind or opt.cranky or opt.testrun or len(args)):
         print parser.print_help()
         print "\nError: Option -r must be used alone"
         sys.exit()
-    if opt.processor and (opt.grind or opt.cranky or opt.testrun):
+    if opt.processor and (opt.grind or opt.cranky or opt.testrun or opt.teststyles):
         parser.print_help()
-        print "\nError: Option -p cannot be used with options -c, -g or -s.\n"
+        print "\nError: Option -p cannot be used with options -c, -g, -s or -S.\n"
         sys.exit()
     elif opt.processor and len(args) and len(args) != 1:
         parser.print_help()
         print "\nError: Use only one argument (the test name) with the -p option.\n"
         sys.exit()
-    elif (opt.grind or opt.cranky or opt.testrun) and len(args) and len(args) != 2 and len(args) != 1:
+    elif (opt.grind or opt.cranky or opt.testrun or opt.teststyles) and len(args) and len(args) != 2 and len(args) != 1:
         parser.print_help()
-        print "\nError: Use one or two arguments with the -c, -g or -s options (group name plus"
+        print "\nError: Use one or two arguments with the -c, -g, -s or -S options (group name plus"
         print "       optionally the test name).\n"
         sys.exit()
 
@@ -715,7 +739,7 @@ if __name__ == "__main__":
         opt.verbose = True
         opt.testrun = True
     try:
-        if opt.cranky or opt.grind or opt.testrun:
+        if opt.cranky or opt.grind or opt.testrun or opt.teststyles:
             params.getSourcePaths()
             if opt.grind:
                 params.clearSource()
@@ -731,7 +755,7 @@ if __name__ == "__main__":
                 bundle.createNewBundle()
                 license = ApplyLicense()
                 license.apply()
-            if opt.testrun:
+            if opt.testrun or opt.teststyles:
                 params.buildRunner()
                 params.runTests(bundle=opt.bundle)
         elif opt.processor:
