@@ -703,7 +703,7 @@ if __name__ == "__main__":
     #
     # Validation
     #
-    if opt.bundle and (opt.testtyles or opt.processor or opt.grind or opt.cranky or opt.testrun or len(args)):
+    if opt.bundle and (opt.teststyles or opt.processor or opt.grind or opt.cranky or opt.testrun or len(args)):
         print parser.print_help()
         print "\nError: Option -r must be used alone"
         sys.exit()
