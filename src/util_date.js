@@ -109,3 +109,37 @@ CSL.dateAsSortKey = function (state, Item, isMacro) {
 	}
 	state.output.append("S"+num, macroFlag);
 };
+
+CSL.Engine.prototype.dateParseArray = function (date_obj) {
+	var ret, field, dpos, ppos, dp, exts, llen, pos, len, pppos, lllen;
+	ret = {};
+	for (field in date_obj) {
+		if (field === "date-parts") {
+			dp = date_obj["date-parts"];
+			if (dp.length > 1) {
+				if (dp[0].length !== dp[1].length) {
+					CSL.error("CSL data error: element mismatch in date range input.");
+				}
+			}
+			exts = ["", "_end"];
+			llen = dp.length;
+			for (ppos = 0; ppos < llen; ppos += 1) {
+				lllen = CSL.DATE_PARTS.length;
+				for (pppos = 0; pppos < lllen; pppos += 1) {
+					ret[(CSL.DATE_PARTS[pppos] + exts[ppos])] = "" + dp[ppos][pppos];
+				}
+			}
+		} else if (date_obj.hasOwnProperty(field)) {
+
+			// XXXX: temporary workaround
+
+			if (field === "literal" && "object" === typeof date_obj.literal && "string" === typeof date_obj.literal.part) {
+				CSL.debug("Warning: fixing up weird literal date value");
+				ret.literal = date_obj.literal.part;
+			} else {
+				ret[field] = date_obj[field];
+			}
+		}
+	}
+	return ret;
+};
