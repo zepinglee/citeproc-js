@@ -122,12 +122,10 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 				}
 			}
 			exts = ["", "_end"];
-			llen = dp.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				lllen = CSL.DATE_PARTS.length;
-				for (pppos = 0; pppos < lllen; pppos += 1) {
-                    if ("undefined" !== typeof dp[ppos][pppos]) {
-					    ret[(CSL.DATE_PARTS[pppos] + exts[ppos])] = "" + dp[ppos][pppos];
+			for (var i = 0, ilen = dp.length; i < ilen; i += 1) {
+				for (var j = 0, jlen = CSL.DATE_PARTS.length; j < jlen; j += 1) {
+                    if ("undefined" !== typeof dp[i][j]) {
+					    ret[(CSL.DATE_PARTS[j] + exts[i])] = "" + dp[i][j];
                     }
 				}
 			}
