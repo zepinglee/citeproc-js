@@ -35,3 +35,4 @@ UPLOAD.sh$
 ^citeproc-doc.tar.gz$
 ^citeproc_zotero.js$
 ^std$
+^.*/styletests$
