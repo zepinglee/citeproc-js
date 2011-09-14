@@ -124,8 +124,10 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 			exts = ["", "_end"];
 			for (var i = 0, ilen = dp.length; i < ilen; i += 1) {
 				for (var j = 0, jlen = CSL.DATE_PARTS.length; j < jlen; j += 1) {
-                    if ("undefined" !== typeof dp[i][j]) {
-					    ret[(CSL.DATE_PARTS[j] + exts[i])] = "" + dp[i][j];
+                    if ("undefined" === typeof dp[i][j]) {
+					    ret[(CSL.DATE_PARTS[j] + exts[i])] = dp[i][j];
+                    } else {
+					    ret[(CSL.DATE_PARTS[j] + exts[i])] = parseInt(dp[i][j], 10);
                     }
 				}
 			}
