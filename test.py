@@ -49,6 +49,8 @@ def path(name):
         return os.path.join("tests", "fixtures", "run")
     elif name == "bundled":
         return os.path.join("tests", "bundled")
+    elif name == "styletests":
+        return os.path.join("tests", "styletests")
     elif name == "local":
         return os.path.join("tests", "fixtures", "local")
     elif name == "config":
@@ -72,7 +74,7 @@ class ApplyLicense:
         print self.license
 
     def apply(self):
-        for p in [".", "src", path("std"), path("local"), path("bundled"), path("citeproc-js"), path("demo")]:
+        for p in [".", "src", path("std"), path("local"), path("bundled"), path("styletests"), path("citeproc-js"), path("demo")]:
             for file in os.listdir(p):
                 if file == "CHANGES.txt" or file == "DESIDERATA.txt":
                     continue
@@ -177,12 +179,13 @@ class Bundle:
                 open(os.path.join("demo", "%s.js" % f), "w+").write(file)
 
 class Params:
-    def __init__(self,opt,args,force=None):
+    def __init__(self,opt,args,category,force=None):
         self.opt = opt
         self.args = args
         self.script = os.path.split(sys.argv[0])[1]
         self.pickle = ".".join((os.path.splitext( self.script )[0], "pkl"))
         self.force = force
+        self.category = category
         self.files = {}
         self.files['humans'] = {}
         self.files['machines'] = []
@@ -277,7 +280,10 @@ class Params:
                         groups[groupkey]["mtime"] = mmod
         if len(self.args) < 2:
             for group in groups.keys():
-                gp = os.path.join(path("bundled"), "%s.js"%group)
+                if self.opt.teststyles:
+                    gp = os.path.join(path("styletests"), "%s.js"%group)
+                else:
+                    gp = os.path.join(path("bundled"), "%s.js"%group)
                 needs_gp = True
                 if os.path.exists( gp ):
                     needs_gp = False
@@ -286,10 +292,13 @@ class Params:
                 if needs_gp or groups[group]["mtime"] > gt:
                     if self.opt.verbose:
                         sys.stdout.write("!")
-                    ofh = open( os.path.join(path("bundled"), "%s.js" % group), "w+" )
-                    group_text = '''dojo.provide("std.%s");
-doh.register("std.%s", [
-''' % (group,group)
+                    if self.opt.teststyles:
+                        ofh = open( os.path.join(path("styletests"), "%s.js" % group), "w+" )
+                    else:
+                        ofh = open( os.path.join(path("bundled"), "%s.js" % group), "w+" )
+                    group_text = '''dojo.provide("%s.%s");
+doh.register("%s.%s", [
+''' % (self.category,group,self.category,group)
                     ofh.write(group_text)
                     for filename in [x[:-4] for x in groups[group]["tests"]]:
                         if self.opt.verbose:
@@ -309,16 +318,13 @@ doh.register("std.%s", [
         ofh.write(header)
         if self.opt.processor:
             testpath = path("citeproc-js")
-            nick = "citeproc_js"
-        elif self.opt.teststyles and self.opt.teststyles:
-            if len(args) == 0:
-                print "Oops: running all style-level tests across all styles not yet supported."
-                sys.exit()
-            testpath = path("bundled")
-            nick = "std"
+            self.category = "citeproc_js"
+        elif self.opt.teststyles:
+            testpath = path("styletests")
+            self.category = "styletests"
         else:
             testpath = path("bundled")
-            nick = "std"
+            self.category = "std"
         if len(args) == 2:
             keys = self.files['humans'].keys()
             if len(keys):
@@ -339,7 +345,7 @@ doh.register("std.%s", [
                 if not file.endswith('.js'): continue
                 if len(self.args) and not file.startswith('%s.'%args[0]): continue
                 has_files = True
-                ofh.write('dojo.require("%s.%s");\n' % (nick,file[:-3]))
+                ofh.write('dojo.require("%s.%s");\n' % (self.category,file[:-3]))
         ofh.write("tests.run();")
         if not has_files:
             raise NoFilesError
@@ -399,6 +405,9 @@ doh.register("std.%s", [
 
         if not os.path.exists(path("bundled")):
             os.makedirs(path("bundled"))
+
+        if not os.path.exists(path("styletests")):
+            os.makedirs(path("styletests"))
 
         if not os.path.exists(path("std")):
             os.makedirs(path("std"))
@@ -724,12 +733,16 @@ if __name__ == "__main__":
     #
     # Set up paths engine
     # 
-    if opt.processor:
-        params = Params(opt,args,force="citeproc_js")
-    elif len(args) < 2:
-        params = Params(opt,args,force="std")
+    if opt.teststyles:
+        category = "styletests"
     else:
-        params = Params(opt,args)
+        category = "std"
+    if opt.processor:
+        params = Params(opt,args,"citeproc_js",force="citeproc_js")
+    elif len(args) < 2:
+        params = Params(opt,args,category,force="std")
+    else:
+        params = Params(opt,args,category)
 
     #
     # Will do something, so issue date stamp
@@ -747,7 +760,7 @@ if __name__ == "__main__":
     try:
         if opt.cranky or opt.grind or opt.testrun or opt.teststyles:
             params.getSourcePaths()
-            if opt.grind:
+            if opt.grind or ((opt.testrun or opt.teststyles) and opt.bundle):
                 params.clearSource()
                 params.refreshSource(force=True)
                 print ""
