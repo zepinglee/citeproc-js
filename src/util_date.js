@@ -126,7 +126,9 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
 			for (ppos = 0; ppos < llen; ppos += 1) {
 				lllen = CSL.DATE_PARTS.length;
 				for (pppos = 0; pppos < lllen; pppos += 1) {
-					ret[(CSL.DATE_PARTS[pppos] + exts[ppos])] = "" + dp[ppos][pppos];
+                    if ("undefined" !== typeof dp[ppos][pppos]) {
+					    ret[(CSL.DATE_PARTS[pppos] + exts[ppos])] = "" + dp[ppos][pppos];
+                    }
 				}
 			}
 		} else if (date_obj.hasOwnProperty(field)) {
