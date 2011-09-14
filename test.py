@@ -310,6 +310,12 @@ doh.register("std.%s", [
         if self.opt.processor:
             testpath = path("citeproc-js")
             nick = "citeproc_js"
+        elif self.opt.teststyles and self.opt.teststyles:
+            if len(args) == 0:
+                print "Oops: running all style-level tests across all styles not yet supported."
+                sys.exit()
+            testpath = path("bundled")
+            nick = "std"
         else:
             testpath = path("bundled")
             nick = "std"
