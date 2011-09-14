@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.214
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Coerce date-part elements received from calling
+  application to string.
+
+
+==========================
 Changes in version 1.0.213
 ==========================
 

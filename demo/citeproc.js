@@ -1738,7 +1738,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.213";
+	this.processor_version = "1.0.214";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2066,36 +2066,6 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 		}
 	}
 	return Item;
-};
-CSL.Engine.prototype.dateParseArray = function (date_obj) {
-	var ret, field, dpos, ppos, dp, exts, llen, pos, len, pppos, lllen;
-	ret = {};
-	for (field in date_obj) {
-		if (field === "date-parts") {
-			dp = date_obj["date-parts"];
-			if (dp.length > 1) {
-				if (dp[0].length !== dp[1].length) {
-					CSL.error("CSL data error: element mismatch in date range input.");
-				}
-			}
-			exts = ["", "_end"];
-			llen = dp.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				lllen = CSL.DATE_PARTS.length;
-				for (pppos = 0; pppos < lllen; pppos += 1) {
-					ret[(CSL.DATE_PARTS[pppos] + exts[ppos])] = dp[ppos][pppos];
-				}
-			}
-		} else if (date_obj.hasOwnProperty(field)) {
-			if (field === "literal" && "object" === typeof date_obj.literal && "string" === typeof date_obj.literal.part) {
-				CSL.debug("Warning: fixing up weird literal date value");
-				ret.literal = date_obj.literal.part;
-			} else {
-				ret[field] = date_obj[field];
-			}
-		}
-	}
-	return ret;
 };
 CSL.Engine.prototype.setOpt = function (token, name, value) {
 	if (token.name === "style") {
@@ -5968,6 +5938,38 @@ CSL.dateAsSortKey = function (state, Item, isMacro) {
 		num = CSL.Util.padding("0");
 	}
 	state.output.append("S"+num, macroFlag);
+};
+CSL.Engine.prototype.dateParseArray = function (date_obj) {
+	var ret, field, dpos, ppos, dp, exts, llen, pos, len, pppos, lllen;
+	ret = {};
+	for (field in date_obj) {
+		if (field === "date-parts") {
+			dp = date_obj["date-parts"];
+			if (dp.length > 1) {
+				if (dp[0].length !== dp[1].length) {
+					CSL.error("CSL data error: element mismatch in date range input.");
+				}
+			}
+			exts = ["", "_end"];
+			for (var i = 0, ilen = dp.length; i < ilen; i += 1) {
+				for (var j = 0, jlen = CSL.DATE_PARTS.length; j < jlen; j += 1) {
+                    if ("undefined" === typeof dp[i][j]) {
+					    ret[(CSL.DATE_PARTS[j] + exts[i])] = dp[i][j];
+                    } else {
+					    ret[(CSL.DATE_PARTS[j] + exts[i])] = parseInt(dp[i][j], 10);
+                    }
+				}
+			}
+		} else if (date_obj.hasOwnProperty(field)) {
+			if (field === "literal" && "object" === typeof date_obj.literal && "string" === typeof date_obj.literal.part) {
+				CSL.debug("Warning: fixing up weird literal date value");
+				ret.literal = date_obj.literal.part;
+			} else {
+				ret[field] = date_obj[field];
+			}
+		}
+	}
+	return ret;
 };
 CSL.Node.name = {
 	build: function (state, target) {
