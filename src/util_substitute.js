@@ -232,7 +232,7 @@ CSL.Util.substituteEnd = function (state, target) {
                         }
                         // might want to slice this?
 						state.tmp.last_rendered_name = state.tmp.rendered_name;
-                    } else if ("complete-each") {
+                    } else if ("complete-each" === subrule) {
 					    state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
 					    if (state.tmp.rendered_name) {
 						    if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
