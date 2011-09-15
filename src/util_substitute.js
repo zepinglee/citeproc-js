@@ -206,6 +206,7 @@ CSL.Util.substituteEnd = function (state, target) {
 
 	toplevel = "names" === this.name && state.build.substitute_level.value() === 0;
 	hasval = "string" === typeof state[state.build.area].opt["subsequent-author-substitute"];
+    subrule = state[state.build.area].opt["subsequent-author-substitute-rule"];
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
@@ -213,15 +214,46 @@ CSL.Util.substituteEnd = function (state, target) {
 			var printing = !state.tmp.suppress_decorations;
 			if (printing) {
 				if (!state.tmp.rendered_name) {
-					state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.blobs, false);
-					if (state.tmp.rendered_name) {
-						//CSL.debug("TRY! "+state.tmp.rendered_name);
-						if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
-							str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
-							state.tmp.name_node.blobs = [str];
-						}
+                    if ("partial" === subrule) {
+					    state.tmp.rendered_name = [];
+                        var dosub = true;
+                        for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+                            var name = state.output.string(state, state.tmp.name_node.children[i].blobs, false);
+                            if (dosub
+                                && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > i - 1
+                                && state.tmp.last_rendered_name[i] === name) {
+                                
+							    str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+							    state.tmp.name_node.children[i].blobs = [str];
+                            } else {
+                                dosub = false;
+                            }
+                            state.tmp.rendered_name.push(name);
+                        }
+                        // might want to slice this?
 						state.tmp.last_rendered_name = state.tmp.rendered_name;
-					}
+                    } else if ("complete-each") {
+					    state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
+					    if (state.tmp.rendered_name) {
+						    if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
+                                for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+							        str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+							        state.tmp.name_node.children[i].blobs = [str];
+                                }
+                            }
+						    state.tmp.last_rendered_name = state.tmp.rendered_name;
+                        }
+                    } else {
+					    state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
+					    if (state.tmp.rendered_name) {
+						    //CSL.debug("TRY! "+state.tmp.rendered_name);
+						    if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
+							    str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+							    state.tmp.name_node.top.blobs = [str];
+						    }
+						    state.tmp.last_rendered_name = state.tmp.rendered_name;
+					    }
+                    }
 				}
 			}
 		};

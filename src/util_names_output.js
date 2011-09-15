@@ -211,6 +211,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("(10)");
 	}
 	//SNIP-END
+	this.state.tmp.name_node = {};
+    this.state.tmp.name_node.children = [];
 	this.renderAllNames();
 	//SNIP-START
 	if (this.debug) {
@@ -313,7 +315,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 		print("(18)");
 	}
 	//SNIP-END
-	this.state.tmp.name_node = this.state.output.current.value();
+	this.state.tmp.name_node.top = this.state.output.current.value();
 	// Let's try something clever here.
 	this._collapseAuthor();
 	// For name_SubstituteOnNamesSpanNamesSpanFail
@@ -393,7 +395,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 		if (this.state.tmp.authorstring_request) {
 			// Avoid running this on every call to getAmbiguousCite()?
 			mystr = "";
-			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
 			oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
@@ -407,7 +409,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 
 			// XX1 print("RENDER: "+this.Item.id);
 			mystr = "";
-			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
 			oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
@@ -415,7 +417,8 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			if (mystr === this.state.tmp.last_primary_names_string) {
 			
 				// XX1 print("    CUT!");
-				this.state.tmp.name_node.blobs.pop();
+				this.state.tmp.name_node.top.blobs.pop();
+                this.state.tmp.name_node.children = [];
 				// If popped, avoid side-effects on character counting: we're only interested
 				// in things that actually render.
 				this.state.tmp.offset_characters = oldchars;
@@ -426,7 +429,8 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 				// XXXXX A little more precision would be nice.
 				// This will clobber variable="author editor" as well as variable="author".
 				if (this.variables.indexOf("author") > -1 && this.item && this.item["suppress-author"]) {
-					this.state.tmp.name_node.blobs.pop();
+					this.state.tmp.name_node.top.blobs.pop();
+					this.state.tmp.name_node.children = [];
 					// If popped, avoid side-effects on character counting: we're only interested
 					// in things that actually render.
 					this.state.tmp.offset_characters = oldchars;

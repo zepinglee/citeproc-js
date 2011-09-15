@@ -237,6 +237,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 	// notSerious
 	//this.state.output.append(blob, "literal", true);
 	//var ret = this.state.output.pop();
+    this.state.tmp.name_node.children.push(blob);
 	return blob;
 };
 

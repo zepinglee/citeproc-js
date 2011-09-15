@@ -833,6 +833,10 @@ CSL.Attributes["@subsequent-author-substitute"] = function (state, arg) {
 	state[this.name].opt["subsequent-author-substitute"] = arg;
 };
 
+CSL.Attributes["@subsequent-author-substitute-rule"] = function (state, arg) {
+    state[this.name].opt["subsequent-author-substitute-rule"] = arg;
+}
+
 CSL.Attributes["@disambiguate-add-names"] = function (state, arg) {
 	if (arg === "true") {
 		state.opt["disambiguate-add-names"] = true;
