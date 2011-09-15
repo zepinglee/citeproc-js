@@ -62,6 +62,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 			this.freeters[v] = this._truncateNameList(this.freeters, v);
 		}
 	}
+
 	for (v in this.persons) {
 		if (this.persons.hasOwnProperty(v)) {
 			this.institutions_count[v] = this.institutions[v].length;
@@ -131,6 +132,23 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 			}
 		}
 	}
+
+	// Transliteration and abbreviation mapping
+	for (v in this.freeters) {
+        this._transformNameset(this.freeters[v]);
+    }
+    for (v in this.persons) {
+        for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+            this._transformNameset(this.persons[v][i]);
+        }
+        this._transformNameset(this.institutions[v]);
+
+        for (var i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
+	        // Lazy retrieval of institutional abbreviations.
+	        this.state.transform.loadAbbreviation("institution", this.institutions[v][i].literal);
+        }
+    }
+
 	// Could also be factored out to a separate function for clarity.
 	for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
 		if (this.institutions[v].length) {
@@ -143,6 +161,18 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 			this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
 		}
 	}
+
+    // Finally, apply any registered institution name abbreviations to the
+    // (possibly transliterated) name form.
+    for (v in this.institutions) {
+        for (var i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
+            var long_form = this.institutions[v][i]["long"];
+            if (this.state.transform.abbrevs.institution[long_form]) {
+                this.institutions[v][i]["short"] = this.state.transform.abbrevs.institution[long_form]
+            }
+        }
+    }
+
 };
 
 CSL.NameOutput.prototype._truncateNameList = function (container, variable, index) {
