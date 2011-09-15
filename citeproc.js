@@ -1738,7 +1738,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.214";
+	this.processor_version = "1.0.215";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4659,6 +4659,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.disambigNames();
 	this.setEtAlParameters();
 	this.setCommonTerm();
+	this.state.tmp.name_node = {};
+    this.state.tmp.name_node.children = [];
 	this.renderAllNames();
 	var blob_list = [];
 	for (i = 0, ilen = variables.length; i < ilen; i += 1) {
@@ -4692,7 +4694,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.state.output.closeLevel("empty");
 	var blob = this.state.output.pop();
 	this.state.output.append(blob, this.names);
-	this.state.tmp.name_node = this.state.output.current.value();
+	this.state.tmp.name_node.top = this.state.output.current.value();
 	this._collapseAuthor();
 	this.variables = [];
 };
@@ -4755,7 +4757,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 			&& this.state[this.state.tmp.area].opt.collapse.length)) {
 		if (this.state.tmp.authorstring_request) {
 			mystr = "";
-			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
 			oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
@@ -4765,18 +4767,20 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 		} else if (!this.state.tmp.just_looking
 			&& !this.state.tmp.suppress_decorations) {
 			mystr = "";
-			myqueue = this.state.tmp.name_node.blobs.slice(-1)[0].blobs;
+			myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
 			oldchars = this.state.tmp.offset_characters;
 			if (myqueue) {
 				mystr = this.state.output.string(this.state, myqueue, false);
 			}
 			if (mystr === this.state.tmp.last_primary_names_string) {
-				this.state.tmp.name_node.blobs.pop();
+				this.state.tmp.name_node.top.blobs.pop();
+                this.state.tmp.name_node.children = [];
 				this.state.tmp.offset_characters = oldchars;
 			} else {
 				this.state.tmp.last_primary_names_string = mystr;
 				if (this.variables.indexOf("author") > -1 && this.item && this.item["suppress-author"]) {
-					this.state.tmp.name_node.blobs.pop();
+					this.state.tmp.name_node.top.blobs.pop();
+					this.state.tmp.name_node.children = [];
 					this.state.tmp.offset_characters = oldchars;
 				}
 				this.state.tmp.have_collapsed = false;
@@ -5545,6 +5549,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
 		}
 		blob = this._join([given, second], (name["comma-dropping-particle"] + " "));
 	}
+    this.state.tmp.name_node.children.push(blob);
 	return blob;
 };
 CSL.NameOutput.prototype._isShort = function (pos, i) {
@@ -7139,6 +7144,9 @@ CSL.Attributes["@after-collapse-delimiter"] = function (state, arg) {
 CSL.Attributes["@subsequent-author-substitute"] = function (state, arg) {
 	state[this.name].opt["subsequent-author-substitute"] = arg;
 };
+CSL.Attributes["@subsequent-author-substitute-rule"] = function (state, arg) {
+    state[this.name].opt["subsequent-author-substitute-rule"] = arg;
+}
 CSL.Attributes["@disambiguate-add-names"] = function (state, arg) {
 	if (arg === "true") {
 		state.opt["disambiguate-add-names"] = true;
@@ -8607,6 +8615,7 @@ CSL.Util.substituteEnd = function (state, target) {
 	}
 	toplevel = "names" === this.name && state.build.substitute_level.value() === 0;
 	hasval = "string" === typeof state[state.build.area].opt["subsequent-author-substitute"];
+    subrule = state[state.build.area].opt["subsequent-author-substitute-rule"];
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
@@ -8614,14 +8623,43 @@ CSL.Util.substituteEnd = function (state, target) {
 			var printing = !state.tmp.suppress_decorations;
 			if (printing) {
 				if (!state.tmp.rendered_name) {
-					state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.blobs, false);
-					if (state.tmp.rendered_name) {
-						if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
-							str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
-							state.tmp.name_node.blobs = [str];
-						}
+                    if ("partial" === subrule) {
+					    state.tmp.rendered_name = [];
+                        var dosub = true;
+                        for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+                            var name = state.output.string(state, state.tmp.name_node.children[i].blobs, false);
+                            if (dosub
+                                && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > i - 1
+                                && state.tmp.last_rendered_name[i] === name) {
+							    str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+							    state.tmp.name_node.children[i].blobs = [str];
+                            } else {
+                                dosub = false;
+                            }
+                            state.tmp.rendered_name.push(name);
+                        }
 						state.tmp.last_rendered_name = state.tmp.rendered_name;
-					}
+                    } else if ("complete-each" === subrule) {
+					    state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
+					    if (state.tmp.rendered_name) {
+						    if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
+                                for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+							        str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+							        state.tmp.name_node.children[i].blobs = [str];
+                                }
+                            }
+						    state.tmp.last_rendered_name = state.tmp.rendered_name;
+                        }
+                    } else {
+					    state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
+					    if (state.tmp.rendered_name) {
+						    if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
+							    str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+							    state.tmp.name_node.top.blobs = [str];
+						    }
+						    state.tmp.last_rendered_name = state.tmp.rendered_name;
+					    }
+                    }
 				}
 			}
 		};

@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.215
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement fine-grained subsequent author substitution
+  (upcoming CSL 1.0.1 proposal)
+
+
+==========================
 Changes in version 1.0.214
 ==========================
 
