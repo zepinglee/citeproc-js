@@ -316,6 +316,15 @@ CSL.NameOutput.prototype.outputNames = function () {
 	}
 	//SNIP-END
 	this.state.tmp.name_node.top = this.state.output.current.value();
+
+    // TODO
+    // Load and check for author-title abbreviation, ONLY if the
+    // current item has a nil type.
+    //
+    // If found, then (1) disable bibliography rendering, (2) suppress
+    // title rendering, (3) replace the node with the abbreviation
+    // output, and (3) do not run this._collapseAuthor()
+
 	// Let's try something clever here.
 	this._collapseAuthor();
 	// For name_SubstituteOnNamesSpanNamesSpanFail
