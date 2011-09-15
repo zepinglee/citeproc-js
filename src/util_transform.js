@@ -124,6 +124,7 @@ CSL.Transform = function (state) {
 	this.abbrevs.publisher = {};
 	this.abbrevs.place = {};
 	this.abbrevs.hereinafter = {};
+    this.abbrevs["author-title"] = {};
 
 	// Initialization method
 	function init(t, f, x) {
