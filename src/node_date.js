@@ -63,7 +63,7 @@ CSL.Node.date = {
 			if (state.build.area.slice(-5) === "_sort") {
 				func = CSL.dateMacroAsSortKey;
 			} else {
-				func = function (state, Item) {
+				func = function (state, Item, item) {
 					var key, dp;
 					state.tmp.element_rendered_ok = false;
 					state.tmp.donesies = [];
@@ -78,6 +78,11 @@ CSL.Node.date = {
 						date_obj = Item[this.variables[0]];
 						if ("undefined" === typeof date_obj) {
 							date_obj = {"date-parts": [[0]] };
+                            if (state.opt.development_extensions) {
+                                if (item && this.variables[0] === "updated-date" && item["updated-date"]) {
+                                    date_obj = item["updated-date"];
+                                }
+                            }
 						}
 						if (date_obj.raw) {
 							date_obj = state.fun.dateparser.parse(date_obj.raw);
