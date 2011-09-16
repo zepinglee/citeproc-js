@@ -50,14 +50,15 @@ var StdRhinoTest = function(myname,custom){
 	this.myname = myname;
 	this._cache = {};
 	this._acache = { "default": {
-						 "container-title":{},
-						 "collection-title":{},
-						 "authority":{},
-						 "institution":{},
-						 "title":{},
-						 "publisher":{},
-						 "place":{},
-						 "hereinafter":{}
+						"container-title":{},
+						"collection-title":{},
+						"authority":{},
+						"institution":{},
+						"title":{},
+						"publisher":{},
+						"place":{},
+						"hereinafter":{},
+				        "classic":{}
 					 }
 				   };
 	this._ids = [];

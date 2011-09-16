@@ -317,14 +317,24 @@ CSL.NameOutput.prototype.outputNames = function () {
 	//SNIP-END
 	this.state.tmp.name_node.top = this.state.output.current.value();
 
-    // TODO
-    // Load and check for author-title abbreviation, ONLY if the
+    // Load and check for classic abbreviation, ONLY if the
     // current item has a nil type.
     //
-    // If found, then (1) disable bibliography rendering, (2) suppress
-    // title rendering, (3) replace the node with the abbreviation
-    // output, and (3) do not run this._collapseAuthor()
-
+    // If found, then (1) suppress title rendering, (2) replace the node
+    // with the abbreviation output [and (3) do not run this._collapseAuthor() ?]
+    this.state.tmp.name_node.string = this.state.output.string(this.state, this.state.tmp.name_node.top.blobs, false);
+    if ("undefined" === typeof this.Item.type) {
+        var author_title = [this.state.tmp.name_node.string, this.Item.title].join(", ");
+        if (author_title) {
+            this.state.transform.loadAbbreviation("classic", author_title);
+            if (this.state.transform.abbrevs.classic[author_title]) {
+                this.state.tmp.done_vars.push("title");
+			    this.state.output.append(this.state.transform.abbrevs.classic[author_title], "empty", true);
+			    var blob = this.state.output.pop();
+                this.state.tmp.name_node.top.blobs = [blob];
+            }
+        }
+    }
 	// Let's try something clever here.
 	this._collapseAuthor();
 	// For name_SubstituteOnNamesSpanNamesSpanFail
