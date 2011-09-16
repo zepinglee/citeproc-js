@@ -377,11 +377,12 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 				// XXX set singular I guess
 				this.tmp.shadow_numbers[variable].plural = 0;
 				// XXX numeric false
-				if (num.match(/[0-9]/) && is_term) {
-					this.tmp.shadow_numbers[variable].numeric = true;
-				} else {
-					this.tmp.shadow_numbers[variable].numeric = false;
-				}
+				this.tmp.shadow_numbers[variable].numeric = false;
+                if (this.opt.development_extensions) {
+				    if ((num.match(/[0-9]/) && is_term) || (elements.length === 1 && ["spring", "summer", "fall", "autumn", "winter"].indexOf(elements[0].toLowerCase()) > -1)) {
+					    this.tmp.shadow_numbers[variable].numeric = true;
+				    }
+                }
 				//SNIP-START
 				if (debug) {
 					print("  branch 5");
