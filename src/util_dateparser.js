@@ -251,11 +251,12 @@ CSL.DateParser = function () {
 		//
 		m = txt.match(jmd);
 		if (m) {
-			txt = txt.replace(jy, "");
-			txt = txt.replace(jmd, "-");
-			txt = txt.replace(jr, "/");
-			txt = txt.replace("-/", "/");
-			txt = txt.replace(/-$/,"");
+            txt = txt.replace(/\s+/, "", "g");
+			txt = txt.replace(jy, "", "g");
+			txt = txt.replace(jmd, "-", "g");
+			txt = txt.replace(jr, "/", "g");
+			txt = txt.replace("-/", "/", "g");
+			txt = txt.replace(/-$/,"", "g");
 
 			// Not IE6 safe, applying tortuous workaround
 			slst = txt.split(jiysplitter);
