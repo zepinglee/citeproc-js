@@ -257,21 +257,28 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					} else if (Item[variable] && Item[variable].literal) {
 						output = true;
 						break;
-					} else if (Item[variable] && Item[variable]['date-parts'] && Item[variable]['date-parts'].length && this.dateparts && this.dateparts.length) {
-						varlen = Item[variable]['date-parts'][0].length;
-						needlen = 4;
-						if (this.dateparts.indexOf("year") > -1) {
-							needlen = 1;
-						} else if (this.dateparts.indexOf("month") > -1) {
-							needlen = 2;
-						} else if (this.dateparts.indexOf('day') > -1) {
-							needlen = 3;
-						}
-						if (varlen >= needlen) {
-							output = true;
-						}
-						break;
-					}
+					} else {
+                        if (state.opt.development_extensions && "updated-date" === variable) {
+                            // If updated-date is set, it's valid.
+                            output = true;
+                            break;
+                        }
+                        if (Item[variable] && Item[variable]['date-parts'] && Item[variable]['date-parts'].length && this.dateparts && this.dateparts.length) {
+						    varlen = Item[variable]['date-parts'][0].length;
+						    needlen = 4;
+						    if (this.dateparts.indexOf("year") > -1) {
+							    needlen = 1;
+						    } else if (this.dateparts.indexOf("month") > -1) {
+							    needlen = 2;
+						    } else if (this.dateparts.indexOf('day') > -1) {
+							    needlen = 3;
+						    }
+						    if (varlen >= needlen) {
+							    output = true;
+						    }
+						    break;
+					    }
+                    }
 				} else if ("locator" === variable) {
 					if (item && item.locator) {
 						output = true;
@@ -325,7 +332,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 				variable = this.variables[pos];
 				x = false;
 				myitem = Item;
-				if (item && ["locator", "first-reference-note-number"].indexOf(variable) > -1) {
+				if (item && ["locator", "first-reference-note-number", "updated-date"].indexOf(variable) > -1) {
 					myitem = item;
 				}
 				if (myitem[variable]) {
