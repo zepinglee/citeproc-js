@@ -153,6 +153,17 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// attach pointer to item data to shared copy for good measure
 	for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
 		item = citation.citationItems[i];
+        if (this.opt.development_extensions) {
+            // Break out locator elements if necessary
+            if (item.locator && item.locator.indexOf("|") > -1) {
+                var locator = item.locator;
+                item.locator = locator.slice(0, locator.indexOf("|"));
+                var m = locator.match(/.*\|([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
+                if (m) {
+                    item["updated-date"] = this.fun.dateparser.parse(m[1]);
+                }
+            }
+        }
 		Item = this.retrieveItem("" + item.id);
 	    var newitem = [Item, item];
 		sortedItems.push(newitem);
