@@ -346,7 +346,7 @@ CSL.Node.text = {
 									state.output.append(value, this);
 								}
 							};
-						} else if ("volume") {
+						} else if (this.variables_real[0] === "volume") {
 							func = function (state, Item) {
 								if (this.variables[0]) {
 									var value = state.getVariable(Item, this.variables[0], form);
