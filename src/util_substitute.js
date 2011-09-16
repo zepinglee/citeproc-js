@@ -212,7 +212,7 @@ CSL.Util.substituteEnd = function (state, target) {
 		func = function (state, Item) {
 			var text_esc = CSL.getSafeEscape(state.opt.mode, state.tmp.area);
 			var printing = !state.tmp.suppress_decorations;
-			if (printing) {
+			if (printing && state.tmp.area === "bibliography") {
 				if (!state.tmp.rendered_name) {
                     if ("partial" === subrule) {
 					    state.tmp.rendered_name = [];
