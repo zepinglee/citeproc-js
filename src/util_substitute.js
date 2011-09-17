@@ -214,7 +214,7 @@ CSL.Util.substituteEnd = function (state, target) {
 			var printing = !state.tmp.suppress_decorations;
 			if (printing && state.tmp.area === "bibliography") {
 				if (!state.tmp.rendered_name) {
-                    if ("partial" === subrule) {
+                    if ("partial-each" === subrule || "partial-first" === subrule) {
 					    state.tmp.rendered_name = [];
                         var dosub = true;
                         for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
@@ -225,6 +225,9 @@ CSL.Util.substituteEnd = function (state, target) {
                                 
 							    str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
 							    state.tmp.name_node.children[i].blobs = [str];
+                                if ("partial-first" === subrule) {
+                                    dosub = false;
+                                }
                             } else {
                                 dosub = false;
                             }
