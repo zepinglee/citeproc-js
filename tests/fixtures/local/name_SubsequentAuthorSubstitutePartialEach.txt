@@ -75,7 +75,7 @@ bibliography
       <text value="dummy"/>
     </layout>
   </citation>
-  <bibliography subsequent-author-substitute="---" subsequent-author-substitute-rule="partial">
+  <bibliography subsequent-author-substitute="---" subsequent-author-substitute-rule="partial-each">
     <layout>
       <names variable="author"/>
     </layout>
