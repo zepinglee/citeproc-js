@@ -79,8 +79,8 @@ CSL.Node.date = {
 						if ("undefined" === typeof date_obj) {
 							date_obj = {"date-parts": [[0]] };
                             if (state.opt.development_extensions) {
-                                if (item && this.variables[0] === "updated-date" && item["updated-date"]) {
-                                    date_obj = item["updated-date"];
+                                if (item && this.variables[0] === "locator-date" && item["locator-date"]) {
+                                    date_obj = item["locator-date"];
                                 }
                             }
 						}

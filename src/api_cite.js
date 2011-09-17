@@ -157,12 +157,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             // Break out locator elements if necessary
             if (item.locator) {
                 item.locator = "" + item.locator;
-                if (item.locator.indexOf("|") > -1) {
-                    var locator = item.locator;
-                    item.locator = locator.slice(0, locator.indexOf("|"));
-                    var m = locator.match(/.*\|([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
+                var idx = item.locator.indexOf("|");
+                if (idx > -1) {
+                    var raw_locator = item.locator;
+                    item.locator = raw_locator.slice(0, idx);
+                    var m = raw_locator.match(/.*\|([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
                     if (m) {
-                        item["updated-date"] = this.fun.dateparser.parse(m[1]);
+                        item["locator-date"] = this.fun.dateparser.parse(m[1]);
                     }
                 }
             }

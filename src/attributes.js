@@ -258,8 +258,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						output = true;
 						break;
 					} else {
-                        if (state.opt.development_extensions && "updated-date" === variable) {
-                            // If updated-date is set, it's valid.
+                        if (state.opt.development_extensions && "locator-date" === variable) {
+                            // If locator-date is set, it's valid.
                             output = true;
                             break;
                         }
@@ -332,7 +332,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 				variable = this.variables[pos];
 				x = false;
 				myitem = Item;
-				if (item && ["locator", "first-reference-note-number", "updated-date"].indexOf(variable) > -1) {
+				if (item && ["locator", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
 					myitem = item;
 				}
 				if (myitem[variable]) {
