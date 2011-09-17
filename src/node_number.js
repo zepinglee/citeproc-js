@@ -78,7 +78,7 @@ CSL.Node.number = {
 		// contains a pure number.
 		//
 		// push number or text
-		func = function (state, Item) {
+		func = function (state, Item, item) {
 			var varname, num, number, m, j, jlen;
 			varname = this.variables[0];
 			state.parallel.StartVariable(this.variables[0]);
@@ -88,7 +88,11 @@ CSL.Node.number = {
 				varname = "page";
 			}
 			if (!state.tmp.shadow_numbers[varname]) {
-				state.processNumber(Item, varname);
+                if (varname === "locator") {
+                    state.processNumber(item, varname);
+                } else {
+				    state.processNumber(Item, varname);
+                }
 			}
 			var value = state.tmp.shadow_numbers[varname].value;
 			if (value) {
@@ -104,7 +108,7 @@ CSL.Node.number = {
 						if (i > 0) {
 							// this.output.append(prefixes[i], "empty");
 							blob.successor_prefix = " & ";
-							blob.range_prefix = "-";
+							blob.range_prefix = "\u2013";
 							blob.splice_prefix = ", ";
 						}
 						state.output.append(blob, "literal");
