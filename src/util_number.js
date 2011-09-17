@@ -373,12 +373,13 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 				// XXX numeric true
 			} else {
 				this.tmp.shadow_numbers[variable].value = [];
+                num = num.replace("-", "\u2013", "g");
 				this.tmp.shadow_numbers[variable].value.push(num);
 				// XXX set singular I guess
 				this.tmp.shadow_numbers[variable].plural = 0;
 				// XXX numeric false
 				this.tmp.shadow_numbers[variable].numeric = false;
-                if (this.opt.development_extensions) {
+                if (this.opt.development_extensions.season_name_is_numeric_true) {
 				    if ((num.match(/[0-9]/) && is_term) || (elements.length === 1 && ["spring", "summer", "fall", "autumn", "winter"].indexOf(elements[0].toLowerCase()) > -1)) {
 					    this.tmp.shadow_numbers[variable].numeric = true;
 				    }
