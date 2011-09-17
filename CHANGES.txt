@@ -1,6 +1,57 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.216
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement variable "updated-date", parsed out from the
+  user-supplied locator. Like the "note" field hack for
+  CSL 1.0 variables on available on an item type, the parsing-out
+  and insertion of this non-CSL 1.0 variable can be turned
+  off by setting:
+
+    citeproc.opt.development_extensions = false.
+
+  The extension is useful for citing looseleaf services
+  commonly used in law, the dates of which vary depending
+  on the page cited and the time at which the resource
+  was referenced. This permits a single item in Zotero to
+  represent the volume on the library shelf, the page date being
+  optionally supplied by the user when citing into a document.
+
+- Introduce a hack to permit English season names "Winter",
+  "Spring", "Summer", "Fall" and "Autumn" to test true in
+  the is-numeric conditional. This permits styles to supply
+  the standard label term to these strings (as in "Fall edn").
+  This is an acknowledged hack, and the behavior can be turned
+  off by the same setting shown above:
+
+    citeproc.opt.development_extensions = false.
+
+- Remove roman half-width spaces when parsing potential Japanese/Chinese
+  date strings. The same change has been applied to the standalone
+  date parsing module shipped with Multilingual Zotero.
+
+- Evaluate subsequent-author-substitute only under the cs:bibliography
+  node to save a few cycles.
+
+- Perform name transliteration and short-forming after truncating
+  namesets, to save a few cycles.
+
+- Add a "classic" segment to the object that holds abbreviation
+  lists. Keys on this object are populated by author + ", " + title
+  for untyped (plain "document") input objects only. This permits
+  full descriptive information for classic resources (i.e. established
+  sources with citation conventions that are independent of a specific
+  publisher) to be mapped to the commonly accepted abbreviation required
+  by an individual style.
+
+
+==========================
 Changes in version 1.0.215
 ==========================
 
@@ -21,7 +72,7 @@ Mishandled or unimplemented features
 ------------------------------------
 
 - Coerce date-part elements received from calling
-  application to string.
+  application to integer.
 
 
 ==========================
