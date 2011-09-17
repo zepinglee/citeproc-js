@@ -68,7 +68,14 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 	var plural = 0;
 	if ("locator" === node.strings.term) {
 		if (item && item.locator) {
-			plural = CSL.evaluateStringPluralism(item.locator);				
+            if (state.opt.development_extensions) {
+                if (!state.tmp.shadow_numbers.locator) {
+                    state.processNumber(Item, "locator");
+                }
+                plural = state.tmp.shadow_numbers.locator.plural;
+            } else {
+			    plural = CSL.evaluateStringPluralism(item.locator);
+            }
 		}
 	} else if (["page", "page-first"].indexOf(node.variables[0]) > -1) {
 		plural = CSL.evaluateStringPluralism(Item[myterm]);
