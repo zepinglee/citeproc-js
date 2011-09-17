@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.216";
+	this.processor_version = "1.0.217";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -546,8 +546,8 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 		Item.volume = Item.number;
 		Item.number = undefined;
 	}
-	// Optional development extention
-	if (this.opt.development_extensions && Item.note) {
+	// Optional development extension
+	if (this.opt.development_extensions.field_hack && Item.note) {
 		m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
 		if (m) {
 			for (pos = 0, len = m.length; pos < len; pos += 1) {

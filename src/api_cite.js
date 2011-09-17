@@ -153,7 +153,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	// attach pointer to item data to shared copy for good measure
 	for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
 		item = citation.citationItems[i];
-        if (this.opt.development_extensions) {
+        if (this.opt.development_extensions.locator_date) {
             // Break out locator elements if necessary
             if (item.locator) {
                 item.locator = "" + item.locator;
