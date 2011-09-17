@@ -284,6 +284,11 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						output = true;
 					}
 					break;
+				} else if ("locator-revision" === variable) {
+					if (item && item["locator-revision"]) {
+						output = true;
+					}
+					break;
 				} else if (["citation-number","citation-label"].indexOf(variable) > -1) {
 					output = true;
 					break;

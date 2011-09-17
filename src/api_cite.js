@@ -161,10 +161,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 if (idx > -1) {
                     var raw_locator = item.locator;
                     item.locator = raw_locator.slice(0, idx);
-                    var m = raw_locator.match(/.*\|([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
+                    raw_locator = raw_locator.slice(idx + 1);
+                    var m = raw_locator.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
                     if (m) {
                         item["locator-date"] = this.fun.dateparser.parse(m[1]);
+                        raw_locator = raw_locator.slice(m[1].length);
                     }
+                    item["locator-revision"] = raw_locator.replace(/^\s+/, "").replace(/\s+$/, "");
                 }
             }
         }

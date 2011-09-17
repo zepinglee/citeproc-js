@@ -133,7 +133,7 @@ var CSL = {
 
 	MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title","container-title", "collection-title", "institution", "authority","edition","title-short"],
 
-	CITE_FIELDS: ["first-reference-note-number", "locator"],
+	CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
 
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 
