@@ -114,11 +114,3 @@ CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
 		this.opt["auto-vietnamese-names"] = false;
 	}
 };
-
-CSL.Engine.prototype.turnOffDevelopmentExtensions = function (arg) {
-	this.opt.development_extensions = false;
-};
-
-CSL.Engine.prototype.turnOnDevelopmentExtensions = function (arg) {
-	this.opt.development_extensions = true;
-};
