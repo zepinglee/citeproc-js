@@ -168,13 +168,14 @@ var CSL = {
 		"collection-number",
 		"edition",
 		"issue",
+        "locator",
 		"number",
 		"number-of-pages",
 		"number-of-volumes",
 		"volume",
 		"citation-number"
 	],
-	DATE_VARIABLES: ["issued", "event-date", "accessed", "container", "original-date", "updated-date"],
+	DATE_VARIABLES: ["issued", "event-date", "accessed", "container", "original-date", "locator-date"],
 	TAG_ESCAPE: function (str) {
 		var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
 		mx = str.match(/(<span\s+class=\"no(?:case|decor)\">)/g);
@@ -1739,7 +1740,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.216";
+	this.processor_version = "1.0.217";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2051,7 +2052,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 		Item.volume = Item.number;
 		Item.number = undefined;
 	}
-	if (this.opt.development_extensions && Item.note) {
+	if (this.opt.development_extensions.field_hack && Item.note) {
 		m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
 		if (m) {
 			for (pos = 0, len = m.length; pos < len; pos += 1) {
@@ -2243,12 +2244,6 @@ CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
 		this.opt["auto-vietnamese-names"] = false;
 	}
 };
-CSL.Engine.prototype.turnOffDevelopmentExtensions = function (arg) {
-	this.opt.development_extensions = false;
-};
-CSL.Engine.prototype.turnOnDevelopmentExtensions = function (arg) {
-	this.opt.development_extensions = true;
-};
 CSL.Engine.Opt = function () {
 	this.has_disambiguate = false;
 	this.mode = "html";
@@ -2272,7 +2267,11 @@ CSL.Engine.Opt = function () {
 	this.citation_number_slug = false;
 	this.max_number_of_names = 0;
 	this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
-	this.development_extensions = true;
+	this.development_extensions = {};
+    this.development_extensions.field_hack = true;
+    this.development_extensions.locator_date = true;
+    this.development_extensions.locator_parsing = true;
+    this.development_extensions.season_name_is_numeric_true = true;
     this.gender = {};
 };
 CSL.Engine.Tmp = function () {
@@ -2874,15 +2873,16 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 	var sortedItems = [];
 	for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
 		item = citation.citationItems[i];
-        if (this.opt.development_extensions) {
+        if (this.opt.development_extensions.locator_date) {
             if (item.locator) {
                 item.locator = "" + item.locator;
-                if (item.locator.indexOf("|") > -1) {
-                    var locator = item.locator;
-                    item.locator = locator.slice(0, locator.indexOf("|"));
-                    var m = locator.match(/.*\|([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
+                var idx = item.locator.indexOf("|");
+                if (idx > -1) {
+                    var raw_locator = item.locator;
+                    item.locator = raw_locator.slice(0, idx);
+                    var m = raw_locator.match(/.*\|([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
                     if (m) {
-                        item["updated-date"] = this.fun.dateparser.parse(m[1]);
+                        item["locator-date"] = this.fun.dateparser.parse(m[1]);
                     }
                 }
             }
@@ -3749,9 +3749,9 @@ CSL.Node.date = {
 						date_obj = Item[this.variables[0]];
 						if ("undefined" === typeof date_obj) {
 							date_obj = {"date-parts": [[0]] };
-                            if (state.opt.development_extensions) {
-                                if (item && this.variables[0] === "updated-date" && item["updated-date"]) {
-                                    date_obj = item["updated-date"];
+                            if (state.opt.development_extensions.locator_date) {
+                                if (item && this.variables[0] === "locator-date" && item["locator-date"]) {
+                                    date_obj = item["locator-date"];
                                 }
                             }
 						}
@@ -5838,7 +5838,14 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 	var plural = 0;
 	if ("locator" === node.strings.term) {
 		if (item && item.locator) {
-			plural = CSL.evaluateStringPluralism(item.locator);				
+            if (state.opt.development_extensions.locator_parsing) {
+                if (!state.tmp.shadow_numbers.locator) {
+                    state.processNumber(item, "locator");
+                }
+                plural = state.tmp.shadow_numbers.locator.plural;
+            } else {
+			    plural = CSL.evaluateStringPluralism(item.locator);
+            }
 		}
 	} else if (["page", "page-first"].indexOf(node.variables[0]) > -1) {
 		plural = CSL.evaluateStringPluralism(Item[myterm]);
@@ -6288,7 +6295,7 @@ CSL.Node.number = {
 		if ("undefined" === typeof this.splice_prefix) {
 			this.splice_prefix = state[state.build.area].opt.layout_delimiter;
 		}
-		func = function (state, Item) {
+		func = function (state, Item, item) {
 			var varname, num, number, m, j, jlen;
 			varname = this.variables[0];
 			state.parallel.StartVariable(this.variables[0]);
@@ -6297,7 +6304,11 @@ CSL.Node.number = {
 				varname = "page";
 			}
 			if (!state.tmp.shadow_numbers[varname]) {
-				state.processNumber(Item, varname);
+                if (varname === "locator") {
+                    state.processNumber(item, varname);
+                } else {
+				    state.processNumber(Item, varname);
+                }
 			}
 			var value = state.tmp.shadow_numbers[varname].value;
 			if (value) {
@@ -6312,7 +6323,7 @@ CSL.Node.number = {
 						blob.gender = state.opt["noun-genders"][varname];
 						if (i > 0) {
 							blob.successor_prefix = " & ";
-							blob.range_prefix = "-";
+							blob.range_prefix = "\u2013";
 							blob.splice_prefix = ", ";
 						}
 						state.output.append(blob, "literal");
@@ -6747,7 +6758,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						output = true;
 						break;
 					} else {
-                        if (state.opt.development_extensions && "updated-date" === variable) {
+                        if (state.opt.development_extensions.locator_date && "locator-date" === variable) {
                             output = true;
                             break;
                         }
@@ -6818,7 +6829,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 				variable = this.variables[pos];
 				x = false;
 				myitem = Item;
-				if (item && ["locator", "first-reference-note-number", "updated-date"].indexOf(variable) > -1) {
+				if (item && ["locator", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
 					myitem = item;
 				}
 				if (myitem[variable]) {
@@ -8969,10 +8980,11 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 				this.tmp.shadow_numbers[variable].numeric = true;
 			} else {
 				this.tmp.shadow_numbers[variable].value = [];
+                num = num.replace("-", "\u2013", "g");
 				this.tmp.shadow_numbers[variable].value.push(num);
 				this.tmp.shadow_numbers[variable].plural = 0;
 				this.tmp.shadow_numbers[variable].numeric = false;
-                if (this.opt.development_extensions) {
+                if (this.opt.development_extensions.season_name_is_numeric_true) {
 				    if ((num.match(/[0-9]/) && is_term) || (elements.length === 1 && ["spring", "summer", "fall", "autumn", "winter"].indexOf(elements[0].toLowerCase()) > -1)) {
 					    this.tmp.shadow_numbers[variable].numeric = true;
 				    }

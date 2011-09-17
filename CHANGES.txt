@@ -1,5 +1,57 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+========================================
+Changes in version 1.0.217 [API warning]
+========================================
+
+----------------------------------------------------------------
+API change with default citeproc.opt.development_extensions=true
+----------------------------------------------------------------
+
+- Fine-grained control over extended functionality. The following
+  settings are enabled by default in the processor. Each can
+  be turned off by setting the relevant value to false.   A brief 
+  description of each extension is given below.
+
+    citeproc.development_extensions.field_hack = true;
+    citeproc.development_extensions.locator_date = true;
+    citeproc.development_extensions.locator_parsing = true;
+    citeproc.development_extensions.season_name_is_numeric_true = true;
+
+  field_hack
+     This is the hack syntax recognized in the "note" field, as
+     "{:fieldname: value}".
+
+  locator_date:
+     This extension is documented in the citeproc-js CSL supplement.
+     http://gsl-nagoya-u.net/http/pub/citeproc-js-csl.html#locator-date-variable
+
+  locator_parsing:
+     This extension applies the numeric parsing described in the citeproc-js
+     supplement to locators. This affects plural detection, the is-numeric
+     condition, and (the the schema permits) allows the locator to be rendered
+     using cs:number. If this option is enabled, it is advisable to render
+     locators using cs:number.
+
+     This change allows the processor to distinguish between leaf numbers,
+     which might take the form "9-15" and ranges, which the processor will
+     recognize only if written as "9 - 15" (with spaces on either side of
+     the hyphen). Both forms will render in the same way, but the latter
+     will be recognized as plural, and the former as singular. 
+
+  season_name_is_numeric_true
+     When this extension is enabled, the English season names "Winter", "Spring",
+     "Summer", "Fall" and "Autum", when the occur by themselves in a numeric
+     field, will evalute as "true" with the is-numeric conditional.
+
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Change name of "updated-date" to "locator-date".
+
+
 ==========================
 Changes in version 1.0.216
 ==========================
