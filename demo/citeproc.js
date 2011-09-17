@@ -87,7 +87,7 @@ var CSL = {
 	POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 	AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 	MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title","container-title", "collection-title", "institution", "authority","edition","title-short"],
-	CITE_FIELDS: ["first-reference-note-number", "locator"],
+	CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
 	MINIMAL_NAME_FIELDS: ["literal", "family"],
 	SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
 	TERMINAL_PUNCTUATION: [":", ".", ";", "!", "?", " "],
@@ -1740,7 +1740,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.217";
+	this.processor_version = "1.0.218";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2880,10 +2880,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 if (idx > -1) {
                     var raw_locator = item.locator;
                     item.locator = raw_locator.slice(0, idx);
-                    var m = raw_locator.match(/.*\|([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
+                    raw_locator = raw_locator.slice(idx + 1);
+                    var m = raw_locator.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
                     if (m) {
                         item["locator-date"] = this.fun.dateparser.parse(m[1]);
+                        raw_locator = raw_locator.slice(m[1].length);
                     }
+                    item["locator-revision"] = raw_locator.replace(/^\s+/, "").replace(/\s+$/, "");
                 }
             }
         }
@@ -6780,6 +6783,11 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     }
 				} else if ("locator" === variable) {
 					if (item && item.locator) {
+						output = true;
+					}
+					break;
+				} else if ("locator-revision" === variable) {
+					if (item && item["locator-revision"]) {
 						output = true;
 					}
 					break;

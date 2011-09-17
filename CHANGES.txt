@@ -1,5 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+==========================
+Changes in version 1.0.218
+==========================
+
+----------------------------------------------------------------
+API change with default citeproc.opt.development_extensions=true
+----------------------------------------------------------------
+
+- Add locator-revision variable, which consists of the trailing
+  string left over after parsing out locator-date (if any). Disabling
+  of this extension is controlled by the same locator_date toggle.
+
+
 ========================================
 Changes in version 1.0.217 [API warning]
 ========================================
