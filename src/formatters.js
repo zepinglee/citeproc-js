@@ -226,6 +226,9 @@ CSL.Output.Formatters.title = function (state, string) {
 	return CSL.Output.Formatters.undoppelString(str);
 };
 
+/*
+* Based on a suggestion by Shoji Kajita.
+*/
 CSL.Output.Formatters.doppelString = function (string, rex) {
 	var ret, pos, len;
 	ret = {};
