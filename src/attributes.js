@@ -206,7 +206,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 		// the same item variable.  [STILL FUNCTIONAL? 2010.01.15]
 		//
 		// set variable names
-		func = function (state, Item) {
+		func = function (state, Item, item) {
 			variables = this.variables_real.slice();
 			// Clear this.variables in place
 			for (var i = this.variables.length - 1; i > -1; i += -1) {
@@ -215,7 +215,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 
 			len = variables.length;
 			for (pos = 0; pos < len; pos += 1) {
-				if (state.tmp.done_vars.indexOf(variables[pos]) === -1) {
+				if (state.tmp.done_vars.indexOf(variables[pos]) === -1 && !(item && Item.type === "legal_case" && item["suppress-author"] && variables[pos] === "title")) {
 					this.variables.push(variables[pos]);
 				}
 				if (state.tmp.can_block_substitute) {
