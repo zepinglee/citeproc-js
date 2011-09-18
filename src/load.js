@@ -259,33 +259,14 @@ var CSL = {
 	TAG_ESCAPE: function (str) {
 		var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
 		// Workaround for Internet Exporer
-		mx = str.match(/(<span\s+class=\"no(?:case|decor)\">)/g);
-		lst = str.split(/<span\s+class=\"no(?:case|decor)\">/g);
+		mx = str.match(/(\"|\'|<span\s+class=\"no(?:case|decor)\">|<\/?(?:i|sc|b)>|<\/span>)/g);
+		lst = str.split(/(?:\"|\'|<span\s+class=\"no(?:case|decor)\">|<\/?(?:i|sc|b)>|<\/span>)/g);
 		myret = [lst[0]];
 		for (pos = 1, len = lst.length; pos < len; pos += 1) {
 			myret.push(mx[pos - 1]);
 			myret.push(lst[pos]);
 		}
 		lst = myret.slice();
-		len = lst.length - 1;
-		for (pos = len; pos > 1; pos += -2) {
-			m = lst[pos].match(/<\/span>/);
-			if (m) {
-				idx = lst[pos].indexOf("</span>");
-				buf1 = lst[pos].slice(0, idx);
-				buf2 = lst[pos].slice(idx + 7);
-				lst[pos - 1] += buf1 + "</span>";
-				lst[pos] = buf2;
-			} else {
-				buf1 = lst.slice(0, pos - 1);
-				if (pos < (lst.length - 1)) {
-					buf2 = lst[pos - 1] + lst[pos];
-				} else {
-					buf2 = lst[pos - 1] + lst[pos] + lst[pos + 1];
-				}
-				lst = buf1.push(buf2).concat(lst.slice(pos + 2));
-			}
-		}
 		return lst;
 	},
 
