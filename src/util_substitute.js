@@ -206,10 +206,11 @@ CSL.Util.substituteEnd = function (state, target) {
 
 	toplevel = "names" === this.name && state.build.substitute_level.value() === 0;
 	hasval = "string" === typeof state[state.build.area].opt["subsequent-author-substitute"];
-    subrule = state[state.build.area].opt["subsequent-author-substitute-rule"];
+    var subrule = state[state.build.area].opt["subsequent-author-substitute-rule"];
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
+            var i, ilen;
 			var text_esc = CSL.getSafeEscape(state.opt.mode, state.tmp.area);
 			var printing = !state.tmp.suppress_decorations;
 			if (printing && state.tmp.area === "bibliography") {
@@ -217,7 +218,7 @@ CSL.Util.substituteEnd = function (state, target) {
                     if ("partial-each" === subrule || "partial-first" === subrule) {
 					    state.tmp.rendered_name = [];
                         var dosub = true;
-                        for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+                        for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
                             var name = state.output.string(state, state.tmp.name_node.children[i].blobs, false);
                             if (dosub
                                 && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > i - 1
@@ -239,7 +240,7 @@ CSL.Util.substituteEnd = function (state, target) {
 					    state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
 					    if (state.tmp.rendered_name) {
 						    if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
-                                for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+                                for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
 							        str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
 							        state.tmp.name_node.children[i].blobs = [str];
                                 }

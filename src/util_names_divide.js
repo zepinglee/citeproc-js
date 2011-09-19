@@ -49,7 +49,7 @@
 /*global CSL: true */
 
 CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
-	var i, ilen;
+	var i, ilen, j, jlen;
 	var Item = this.Item;
 	var variables = this.variables;
 	this.varnames = variables.slice();
@@ -70,15 +70,15 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
 		this._getPersonsAndInstitutions(v, values);
 		if (this.name.strings["suppress-min"] === 0) {
 			this.freeters[v] = [];
-			for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+			for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
 				this.persons[v][j] = [];
 			}
 		} else if (this.institution.strings["suppress-min"] === 0) {
 			this.institutions[v] = [];
 			this.freeters[v] = this.freeters[v].concat(this.persons[v]);
-			for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+			for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
 				for (var k = 0, klen = this.persons[v][j].length; k < klen; k += 1) {
-					this.freeters[v].push(this.persons[v][j][k])
+					this.freeters[v].push(this.persons[v][j][k]);
 				}
 			}
 			this.persons[v] = [];

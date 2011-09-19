@@ -366,7 +366,7 @@ CSL.Node.text = {
                                 if (hereinafter_key) {
                                     state.output.append(value, this);
                                 }
-                            }
+                            };
                         } else {
 							// anything left over just gets output in the normal way.
 							func = function (state, Item) {

@@ -341,7 +341,7 @@ CSL.NameOutput.prototype.outputNames = function () {
             if (this.state.transform.abbrevs.classic[author_title]) {
                 this.state.tmp.done_vars.push("title");
 			    this.state.output.append(this.state.transform.abbrevs.classic[author_title], "empty", true);
-			    var blob = this.state.output.pop();
+			    blob = this.state.output.pop();
                 this.state.tmp.name_node.top.blobs = [blob];
             }
         }

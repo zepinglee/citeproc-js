@@ -280,7 +280,7 @@ CSL.NameOutput.prototype._transformNameset = function (nameset) {
         nameset[i] = this.state.transform.name(this.state, nameset[i], this.state.opt["locale-pri"]);
 	    nameset[i] = this._normalizeNameInput(nameset[i]);
     }
-}
+};
 
 CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
 	var decor_tok = this[tokname + "_decor"];

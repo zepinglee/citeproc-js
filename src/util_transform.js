@@ -500,7 +500,7 @@ CSL.Transform = function (state) {
                     while (element.length < 2) {
                         element = "0" + element;
                     }
-                    date.push(element)
+                    date.push(element);
                 }
             }
             date = date.join("-");
@@ -511,7 +511,7 @@ CSL.Transform = function (state) {
         if (Item.jurisdiction) {
             hereinafter_metadata.push("jurisdiction:" + Item.jurisdiction);
         }
-        var hereinafter_metadata = hereinafter_metadata.join(", ");
+        hereinafter_metadata = hereinafter_metadata.join(", ");
         if (hereinafter_metadata) {
             hereinafter_metadata = " [" + hereinafter_metadata + "]";
         }

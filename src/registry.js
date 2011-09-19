@@ -317,16 +317,15 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
 };
 
 CSL.Registry.prototype.doinserts = function (mylist) {
-	var len, pos, item, Item, akey, newitem, abase;
+	var len, pos, item, Item, akey, newitem, abase, j, jlen, k, klen, i, ilen;
 	if ("string" === typeof mylist) {
 		mylist = [mylist];
 	}
 	//
 	//  4. Insert loop.
 	//
-	len = mylist.length;
-	for (pos = 0; pos < len; pos += 1) {
-		item = mylist[pos];
+	for (i = 0, ilen = mylist.length; i < ilen; i += 1) {
+		item = mylist[i];
 		if (!this.registry[item]) {
 			//
 			//  4a. Retrieve entries for items to insert.
@@ -334,10 +333,10 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 			Item = this.state.retrieveItem(item);
 
             // Add a generation rule for this item if appropriate
-            for (var j = 0, jlen = this.generate.rules.length; j < jlen; j += 1) {
+            for (j = 0, jlen = this.generate.rules.length; j < jlen; j += 1) {
                 if (Item.type === this.generate.rules[j].from) {
                     var needsRule = true;
-                    for (var k = 0, klen = this.generate.rules[j].triggers.length; k < klen; k += 1) {
+                    for (k = 0, klen = this.generate.rules[j].triggers.length; k < klen; k += 1) {
                         if (!Item[this.generate.rules[j].triggers[k]]) {
                             needsRule = false;
                             break;
@@ -366,7 +365,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 					case "institution":
 						for (var creatorVar in CSL.CREATORS) {
 							for (var creatorList in Item[creatorVar]) {
-								for (var j = 0, jlen = creatorList.length; j < jlen; j += 1) {
+								for (j = 0, jlen = creatorList.length; j < jlen; j += 1) {
 									if (creatorList[j].isInstitution) {
 										var subOrganizations = creatorList[j].literal;
 										if (!subOrganizations) {
@@ -374,7 +373,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 										}
 										if (subOrganizations) {
 											subOrganizations = subOrganizations.split(/\s*,\s*/);
-											for (var k = 0, klen = subOrganizations.length; k < klen; k += 1) {
+											for (k = 0, klen = subOrganizations.length; k < klen; k += 1) {
 												this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, subOrganizations[k]);
 											}
 										}

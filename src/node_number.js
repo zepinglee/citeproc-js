@@ -95,15 +95,15 @@ CSL.Node.number = {
                 }
 			}
 			var value = state.tmp.shadow_numbers[varname].value;
+            var blob;
 			if (value) {
 				if ("string" === typeof value) {
-					var blob = new CSL.NumericBlob(value, this);
+					blob = new CSL.NumericBlob(value, this);
 					state.output.append(blob, "literal");
-					blob = newblob;
 				} else if ("object" === typeof value) {
-					state.output.openLevel("empty")
+					state.output.openLevel("empty");
 					for (var i = 0, ilen = value.length; i < ilen; i += 1) {
-						var blob = new CSL.NumericBlob(value[i], this);
+						blob = new CSL.NumericBlob(value[i], this);
 						blob.gender = state.opt["noun-genders"][varname];
 						if (i > 0) {
 							// this.output.append(prefixes[i], "empty");
@@ -113,7 +113,7 @@ CSL.Node.number = {
 						}
 						state.output.append(blob, "literal");
 					}
-					state.output.closeLevel("empty")
+					state.output.closeLevel("empty");
 				}
 			}
 			state.parallel.CloseVariable("number");

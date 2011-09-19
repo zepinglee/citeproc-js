@@ -121,7 +121,7 @@ CSL.Node.group = {
 							//outer_area = state.tmp.area.replace("_sort", "");
 							state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
 							state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
-							state.publisherOutput.and = state[outer_area].opt["and"];
+							state.publisherOutput.and = state[outer_area].opt.and;
 							state.publisherOutput.render();
 							state.publisherOutput = false;
 						}

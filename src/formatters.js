@@ -291,4 +291,4 @@ CSL.demoteNoiseWords = function (fld) {
         fld = [start, end].join(", ");
     }
     return fld;
-}
+};

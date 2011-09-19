@@ -181,7 +181,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 
 
 CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
-	var num;
+	var num, m, i, ilen, j, jlen;
 	var debug = false;
 	num = ItemObject[variable];
 	//SNIP-START
@@ -220,7 +220,7 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 		//   space between position 1 and position length - 2.
 		// Single numbers will evaluate true, because
 		//   the length of prefixes in that case will be 2.
-		for (var i = 0, ilen = prefixes.length - 1; i < ilen; i += 1) {
+		for (i = 0, ilen = prefixes.length - 1; i < ilen; i += 1) {
 			if (prefixes[i] && (prefixes[i].indexOf(" ") === -1 || [" ",",","&"].indexOf(prefixes[i].slice(-1)) === -1)) {
 				all_with_spaces = false;
 				break;
@@ -228,13 +228,13 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 		}
 		var non_numbers = 0;
 		var elements = num.split(/\s+/);
-		for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
+		for (i = 0, ilen = elements.length; i < ilen; i += 1) {
 			//SNIP-START
 			if (debug) {
 				print("  element: "+elements[i]);
 			}
 			//SNIP-END
-			if (!elements[i].match(/^(?:.*[0-9].*|[-,&])$/)) {
+			if (!elements[i].match(/^(?:.*[0-9].*|[\-,&])$/)) {
 				non_numbers += 1;
 			}
 		}
@@ -346,7 +346,7 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 			var matchterm = this.getTerm(variable, "short");
 			if (matchterm) {
 				matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
-				for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
+				for (i = 0, ilen = elements.length; i < ilen; i += 1) {
 					if (elements[i]) {
 						if (elements[i].match(/[0-9]/)) {
 							continue;

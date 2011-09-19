@@ -73,7 +73,7 @@ CSL.Output.Formats.prototype.html = {
 		// xml in an environment in which HTML named entities are
 		// not declared.
 		if (!text) {
-			text = ""
+			text = "";
 		}
 		return text.replace(/&/g, "&#38;")
 			.replace(/</g, "&#60;")

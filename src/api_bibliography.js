@@ -116,7 +116,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr, entry_item_data;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, chr, entry_item_data;
 	ret = [];
 	entry_item_data = [];
 	this.tmp.area = "bibliography";
@@ -146,7 +146,7 @@ CSL.getBibliographyEntries = function (bibsection) {
         // get the bundle
         var rule = this.registry.generate.origIDs[id];
         // clone the attached item. clone is shallow, just the top-level keys.
-        var item = this.retrieveItem(id);
+        item = this.retrieveItem(id);
         var clonedItem = {};
         for (var key in item) {
             clonedItem[key] = item[key];
@@ -154,13 +154,13 @@ CSL.getBibliographyEntries = function (bibsection) {
         // remap the item type
         clonedItem.type = rule.to;
         // remove "required" field(s)
-        for (var i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
+        for (i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
             if (clonedItem[rule.triggers[i]]) {
                 delete clonedItem[rule.triggers[i]];
             }
         }
         // amend itemID (to the form set on genIDs fork)
-        var newID = clonedItem.id + ":gen"
+        var newID = clonedItem.id + ":gen";
         clonedItem.id = newID;
         // add to generated items, will be picked up by retrieve function
         this.registry.generate.items[clonedItem.id] = clonedItem;
