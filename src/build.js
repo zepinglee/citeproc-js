@@ -562,6 +562,19 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			}
 		}
 	}
+    // not including locator-date
+    for (var i = 1, ilen = CSL.DATE_VARIABLES.length; i < ilen; i += 1) {
+        var dateobj = Item[CSL.DATE_VARIABLES[i]]
+        if (dateobj) {
+            // raw date parsing is harmless, but can be disabled if desired
+            if (this.opt.development_extensions.raw_date_parsing) {
+                if (dateobj.raw) {
+                    dateobj = this.fun.dateparser.parse(dateobj.raw);
+                }
+            }
+            Item[CSL.DATE_VARIABLES[i]] = this.dateParseArray(dateobj);
+        }
+    }
 	return Item;
 };
 
