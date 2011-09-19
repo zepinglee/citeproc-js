@@ -323,8 +323,19 @@ CSL.NameOutput.prototype.outputNames = function () {
     // If found, then (1) suppress title rendering, (2) replace the node
     // with the abbreviation output [and (3) do not run this._collapseAuthor() ?]
     this.state.tmp.name_node.string = this.state.output.string(this.state, this.state.tmp.name_node.top.blobs, false);
+    // for hereinafter support
+    if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
+        this.state.tmp.first_name_string = this.state.tmp.name_node.string;
+    }
     if ("undefined" === typeof this.Item.type) {
-        var author_title = [this.state.tmp.name_node.string, this.Item.title].join(", ");
+        var author_title = [];
+        if (this.state.tmp.name_node.string) {
+            author_title.push(this.state.tmp.name_node.string);
+        }
+        if (this.Item.title) {
+            author_title.push(this.Item.title);
+        }
+        author_title = author_title.join(", ");
         if (author_title) {
             this.state.transform.loadAbbreviation("classic", author_title);
             if (this.state.transform.abbrevs.classic[author_title]) {
