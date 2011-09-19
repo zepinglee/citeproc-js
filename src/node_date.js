@@ -84,10 +84,7 @@ CSL.Node.date = {
                                 }
                             }
 						}
-						if (date_obj.raw) {
-							date_obj = state.fun.dateparser.parse(date_obj.raw);
-						}
-						state.tmp.date_object = state.dateParseArray(date_obj);
+				        state.tmp.date_object = date_obj;
 						//
 						// Call a function here to analyze the
 						// data and set the name of the date-part that
