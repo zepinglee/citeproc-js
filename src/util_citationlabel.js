@@ -98,9 +98,8 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
 	}
 	var year = "0000";
 	if (Item.issued) {
-		var dp = Item.issued["date-parts"];
-		if (dp && dp[0] && dp[0][0]) {
-			year = "" + dp[0][0];
+		if (Item.issued.year) {
+			year = "" + Item.issued.year;
 		}
 	}
 	year = year.slice((config.year * -1));
