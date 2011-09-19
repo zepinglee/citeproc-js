@@ -90,6 +90,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.field_hack = true;
     this.development_extensions.locator_date = true;
     this.development_extensions.locator_parsing = true;
+    this.development_extensions.raw_date_parsing = true;
     this.development_extensions.season_name_is_numeric_true = true;
     this.gender = {};
 };
