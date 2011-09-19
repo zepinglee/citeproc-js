@@ -53,7 +53,7 @@ CSL.Attributes = {};
 CSL.Attributes["@trigger-fields"] = function (state, arg) {
     var mylst = arg.split(/\s+/);
     this.generate_trigger_fields = mylst;
-}
+};
 
 CSL.Attributes["@type-map"] = function (state, arg) {
     // Something goes here.
@@ -61,12 +61,12 @@ CSL.Attributes["@type-map"] = function (state, arg) {
     this.generate_type_map = {};
     this.generate_type_map.from = mymap[0];
     this.generate_type_map.to = mymap[1];
-}
+};
 
 CSL.Attributes["@leading-noise-words"] = function (state, arg) {
     // Something goes here.
     this["leading-noise-words"] = arg;
-}
+};
 
 CSL.Attributes["@class"] = function (state, arg) {
 	state.opt["class"] = arg;
@@ -264,6 +264,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     }
                     if (Item[variable]) {
                         for (var key in Item[variable]) {
+                            if (this.dateparts.indexOf(key) === -1) {
+                                continue;
+                            }
                             if (Item[variable][key]) {
                                 output = true;
                                 break;
@@ -842,7 +845,7 @@ CSL.Attributes["@subsequent-author-substitute"] = function (state, arg) {
 
 CSL.Attributes["@subsequent-author-substitute-rule"] = function (state, arg) {
     state[this.name].opt["subsequent-author-substitute-rule"] = arg;
-}
+};
 
 CSL.Attributes["@disambiguate-add-names"] = function (state, arg) {
 	if (arg === "true") {
