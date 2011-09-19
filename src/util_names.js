@@ -88,6 +88,9 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
 	if (!name) {
 		return "";
 	}
+    if (name === "Lord") {
+        return name;
+    }
 	if (!terminator) {
 		terminator = "";
 	}
