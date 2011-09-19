@@ -1043,6 +1043,7 @@ CSL.citeStart = function (Item, item) {
 		this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
 	}
 	this.tmp.shadow_numbers = {};
+    this.tmp.first_name_string = false;
 };
 
 CSL.citeEnd = function (Item, item) {
