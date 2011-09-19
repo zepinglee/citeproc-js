@@ -1,6 +1,45 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.219
+==========================
+
+----------------------------------------------------------------
+API change with default citeproc.opt.development_extensions=true
+----------------------------------------------------------------
+
+- The internal date structure is now normalized immediately on
+  receipt of input. This change was needed for hereinafter support,
+  described below.
+
+- Fix a small bug that would have affected the "classic" short-form 
+  feature introduced in 1.0.214.
+
+- Recognize publisher abbreviations supplied via an abbreviations
+  list.
+
+- When suppress-author is set on a legal_case item, suppress the
+  title rather than the author. In context, this normally appropriate 
+  even if the item has an author.
+
+- In subsequent-author-substitute-rule options, rename "partial" to
+  "partial-each", and add a "partial-first" option.
+
+- Implement the "hereinafter" segment of the abbreviation list
+  structure. Key is formed from the first-mentioned author, the
+  title, the item type, the date, and the item jurisdiction. The
+  "hereinafter" variable will render only if the user supplies 
+  a value via the abbreviation list mechanism.
+
+- Provide an option to permit raw date parsing to be turned off.
+  As this is triggered by a special date input structure, there
+  will normally not be a reason to disable the behavior on purpose,
+  but just in case it can be turned off with:
+
+    citeproc.development_extensions.raw_date_parsing = false
+
+
+==========================
 Changes in version 1.0.218
 ==========================
 

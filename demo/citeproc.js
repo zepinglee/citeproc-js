@@ -175,36 +175,17 @@ var CSL = {
 		"volume",
 		"citation-number"
 	],
-	DATE_VARIABLES: ["issued", "event-date", "accessed", "container", "original-date", "locator-date"],
+	DATE_VARIABLES: ["locator-date", "issued", "event-date", "accessed", "container", "original-date"],
 	TAG_ESCAPE: function (str) {
 		var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
-		mx = str.match(/(<span\s+class=\"no(?:case|decor)\">)/g);
-		lst = str.split(/<span\s+class=\"no(?:case|decor)\">/g);
+		mx = str.match(/(\"|\'|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
+		lst = str.split(/(?:\"|\'|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
 		myret = [lst[0]];
 		for (pos = 1, len = lst.length; pos < len; pos += 1) {
 			myret.push(mx[pos - 1]);
 			myret.push(lst[pos]);
 		}
 		lst = myret.slice();
-		len = lst.length - 1;
-		for (pos = len; pos > 1; pos += -2) {
-			m = lst[pos].match(/<\/span>/);
-			if (m) {
-				idx = lst[pos].indexOf("</span>");
-				buf1 = lst[pos].slice(0, idx);
-				buf2 = lst[pos].slice(idx + 7);
-				lst[pos - 1] += buf1 + "</span>";
-				lst[pos] = buf2;
-			} else {
-				buf1 = lst.slice(0, pos - 1);
-				if (pos < (lst.length - 1)) {
-					buf2 = lst[pos - 1] + lst[pos];
-				} else {
-					buf2 = lst[pos - 1] + lst[pos] + lst[pos + 1];
-				}
-				lst = buf1.push(buf2).concat(lst.slice(pos + 2));
-			}
-		}
 		return lst;
 	},
 	TAG_USEALL: function (str) {
@@ -1297,7 +1278,7 @@ CSL.expandMacro = function (macro_key_token) {
 		this.build.macro_stack.push(mkey);
 	}
 	var hasDate = false;
-	var macro_nodes = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
+	macro_nodes = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
 	if (macro_nodes.length) {
 		hasDate = this.sys.xml.getAttributeValue(macro_nodes[0], "macro-has-date");
 	}
@@ -1740,7 +1721,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
 	var attrs, langspec, localexml, locale;
-	this.processor_version = "1.0.218";
+	this.processor_version = "1.0.219";
 	this.csl_version = "1.0";
 	this.sys = sys;
 	this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2067,6 +2048,17 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			}
 		}
 	}
+    for (var i = 1, ilen = CSL.DATE_VARIABLES.length; i < ilen; i += 1) {
+        var dateobj = Item[CSL.DATE_VARIABLES[i]];
+        if (dateobj) {
+            if (this.opt.development_extensions.raw_date_parsing) {
+                if (dateobj.raw) {
+                    dateobj = this.fun.dateparser.parse(dateobj.raw);
+                }
+            }
+            Item[CSL.DATE_VARIABLES[i]] = this.dateParseArray(dateobj);
+        }
+    }
 	return Item;
 };
 CSL.Engine.prototype.setOpt = function (token, name, value) {
@@ -2271,6 +2263,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.field_hack = true;
     this.development_extensions.locator_date = true;
     this.development_extensions.locator_parsing = true;
+    this.development_extensions.raw_date_parsing = true;
     this.development_extensions.season_name_is_numeric_true = true;
     this.gender = {};
 };
@@ -2552,9 +2545,8 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
 	}
 	var year = "0000";
 	if (Item.issued) {
-		var dp = Item.issued["date-parts"];
-		if (dp && dp[0] && dp[0][0]) {
-			year = "" + dp[0][0];
+		if (Item.issued.year) {
+			year = "" + Item.issued.year;
 		}
 	}
 	year = year.slice((config.year * -1));
@@ -2630,7 +2622,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
 	return [params, entry_strings];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, siblings, skips, sortedItems, eyetem, chr, entry_item_data;
+	var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, chr, entry_item_data;
 	ret = [];
 	entry_item_data = [];
 	this.tmp.area = "bibliography";
@@ -2642,18 +2634,18 @@ CSL.getBibliographyEntries = function (bibsection) {
     this.registry.generate.items = {};
     for (var id  in this.registry.generate.origIDs) {
         var rule = this.registry.generate.origIDs[id];
-        var item = this.retrieveItem(id);
+        item = this.retrieveItem(id);
         var clonedItem = {};
         for (var key in item) {
             clonedItem[key] = item[key];
         }
         clonedItem.type = rule.to;
-        for (var i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
+        for (i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
             if (clonedItem[rule.triggers[i]]) {
                 delete clonedItem[rule.triggers[i]];
             }
         }
-        var newID = clonedItem.id + ":gen"
+        var newID = clonedItem.id + ":gen";
         clonedItem.id = newID;
         this.registry.generate.items[clonedItem.id] = clonedItem;
         newIDs.push(newID);
@@ -3476,6 +3468,7 @@ CSL.citeStart = function (Item, item) {
 		this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
 	}
 	this.tmp.shadow_numbers = {};
+    this.tmp.first_name_string = false;
 };
 CSL.citeEnd = function (Item, item) {
 	if (this.tmp.disambig_restore) {
@@ -3758,10 +3751,7 @@ CSL.Node.date = {
                                 }
                             }
 						}
-						if (date_obj.raw) {
-							date_obj = state.fun.dateparser.parse(date_obj.raw);
-						}
-						state.tmp.date_object = state.dateParseArray(date_obj);
+				        state.tmp.date_object = date_obj;
 						len = this.dateparts.length;
 						for (pos = 0; pos < len; pos += 1) {
 							part = this.dateparts[pos];
@@ -4140,7 +4130,7 @@ CSL.Node.group = {
 						if (state.publisherOutput) {
 							state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
 							state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
-							state.publisherOutput.and = state[outer_area].opt["and"];
+							state.publisherOutput.and = state[outer_area].opt.and;
 							state.publisherOutput.render();
 							state.publisherOutput = false;
 						}
@@ -4719,14 +4709,24 @@ CSL.NameOutput.prototype.outputNames = function () {
 	this.state.output.append(blob, this.names);
 	this.state.tmp.name_node.top = this.state.output.current.value();
     this.state.tmp.name_node.string = this.state.output.string(this.state, this.state.tmp.name_node.top.blobs, false);
+    if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
+        this.state.tmp.first_name_string = this.state.tmp.name_node.string;
+    }
     if ("undefined" === typeof this.Item.type) {
-        var author_title = [this.state.tmp.name_node.string, this.Item.title].join(", ");
+        var author_title = [];
+        if (this.state.tmp.name_node.string) {
+            author_title.push(this.state.tmp.name_node.string);
+        }
+        if (this.Item.title) {
+            author_title.push(this.Item.title);
+        }
+        author_title = author_title.join(", ");
         if (author_title) {
             this.state.transform.loadAbbreviation("classic", author_title);
             if (this.state.transform.abbrevs.classic[author_title]) {
                 this.state.tmp.done_vars.push("title");
 			    this.state.output.append(this.state.transform.abbrevs.classic[author_title], "empty", true);
-			    var blob = this.state.output.pop();
+			    blob = this.state.output.pop();
                 this.state.tmp.name_node.top.blobs = [blob];
             }
         }
@@ -4814,7 +4814,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 				this.state.tmp.offset_characters = oldchars;
 			} else {
 				this.state.tmp.last_primary_names_string = mystr;
-				if (this.variables.indexOf("author") > -1 && this.item && this.item["suppress-author"]) {
+				if (this.variables.indexOf("author") > -1 && this.item && this.item["suppress-author"] && this.Item.type !== "legal_case") {
 					this.state.tmp.name_node.top.blobs.pop();
 					this.state.tmp.name_node.children = [];
 					this.state.tmp.offset_characters = oldchars;
@@ -4915,11 +4915,11 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
         this._transformNameset(this.freeters[v]);
     }
     for (v in this.persons) {
-        for (var i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
+        for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
             this._transformNameset(this.persons[v][i]);
         }
         this._transformNameset(this.institutions[v]);
-        for (var i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
+        for (i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
 	        this.state.transform.loadAbbreviation("institution", this.institutions[v][i].literal);
         }
     }
@@ -4935,12 +4935,12 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
 		}
 	}
     for (v in this.institutions) {
-        for (var i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
+        for (i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
             var long_form = this.institutions[v][i]["long"];
             if (this.state.transform.abbrevs.institution[long_form.join(", ")]) {
                 var short_form = this.state.transform.abbrevs.institution[long_form.join(", ")].split(", ");
                 if (short_form.length === long_form.length) {
-                    this.institutions[v][i]["short"] = short_form;;
+                    this.institutions[v][i]["short"] = short_form;
                 }
             }
         }
@@ -4961,7 +4961,7 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
 	return lst;
 };
 CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
-	var i, ilen;
+	var i, ilen, j, jlen;
 	var Item = this.Item;
 	var variables = this.variables;
 	this.varnames = variables.slice();
@@ -4982,15 +4982,15 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
 		this._getPersonsAndInstitutions(v, values);
 		if (this.name.strings["suppress-min"] === 0) {
 			this.freeters[v] = [];
-			for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+			for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
 				this.persons[v][j] = [];
 			}
 		} else if (this.institution.strings["suppress-min"] === 0) {
 			this.institutions[v] = [];
 			this.freeters[v] = this.freeters[v].concat(this.persons[v]);
-			for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+			for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
 				for (var k = 0, klen = this.persons[v][j].length; k < klen; k += 1) {
-					this.freeters[v].push(this.persons[v][j][k])
+					this.freeters[v].push(this.persons[v][j][k]);
 				}
 			}
 			this.persons[v] = [];
@@ -5635,7 +5635,7 @@ CSL.NameOutput.prototype._transformNameset = function (nameset) {
         nameset[i] = this.state.transform.name(this.state, nameset[i], this.state.opt["locale-pri"]);
 	    nameset[i] = this._normalizeNameInput(nameset[i]);
     }
-}
+};
 CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
 	var decor_tok = this[tokname + "_decor"];
 	if (str) {
@@ -6314,15 +6314,15 @@ CSL.Node.number = {
                 }
 			}
 			var value = state.tmp.shadow_numbers[varname].value;
+            var blob;
 			if (value) {
 				if ("string" === typeof value) {
-					var blob = new CSL.NumericBlob(value, this);
+					blob = new CSL.NumericBlob(value, this);
 					state.output.append(blob, "literal");
-					blob = newblob;
 				} else if ("object" === typeof value) {
-					state.output.openLevel("empty")
+					state.output.openLevel("empty");
 					for (var i = 0, ilen = value.length; i < ilen; i += 1) {
-						var blob = new CSL.NumericBlob(value[i], this);
+						blob = new CSL.NumericBlob(value[i], this);
 						blob.gender = state.opt["noun-genders"][varname];
 						if (i > 0) {
 							blob.successor_prefix = " & ";
@@ -6331,7 +6331,7 @@ CSL.Node.number = {
 						}
 						state.output.append(blob, "literal");
 					}
-					state.output.closeLevel("empty")
+					state.output.closeLevel("empty");
 				}
 			}
 			state.parallel.CloseVariable("number");
@@ -6614,10 +6614,19 @@ CSL.Node.text = {
 									}
 								}
 							};
-						} else {
+						} else if (this.variables_real[0] === "hereinafter") {
+                            func = function (state, Item) {
+                                var hereinafter_key = state.transform.getHereinafter(Item);
+                                var value = state.transform.abbrevs.hereinafter[hereinafter_key];
+                                if (hereinafter_key) {
+                                    state.output.append(value, this);
+                                }
+                            };
+                        } else {
 							func = function (state, Item) {
+                                var value;
 								if (this.variables[0]) {
-									var value = state.getVariable(Item, this.variables[0], form);
+									value = state.getVariable(Item, this.variables[0], form);
 									if (value) {
 										state.output.append(value, this);
 									}
@@ -6650,16 +6659,16 @@ CSL.Attributes = {};
 CSL.Attributes["@trigger-fields"] = function (state, arg) {
     var mylst = arg.split(/\s+/);
     this.generate_trigger_fields = mylst;
-}
+};
 CSL.Attributes["@type-map"] = function (state, arg) {
     var mymap = arg.split(/\s+/);
     this.generate_type_map = {};
     this.generate_type_map.from = mymap[0];
     this.generate_type_map.to = mymap[1];
-}
+};
 CSL.Attributes["@leading-noise-words"] = function (state, arg) {
     this["leading-noise-words"] = arg;
-}
+};
 CSL.Attributes["@class"] = function (state, arg) {
 	state.opt["class"] = arg;
 };
@@ -6717,16 +6726,20 @@ CSL.Attributes["@variable"] = function (state, arg) {
 	if ("label" === this.name && this.variables[0]) {
 		this.strings.term = this.variables[0];
 	} else if (["names", "date", "text", "number"].indexOf(this.name) > -1) {
-		func = function (state, Item) {
+		func = function (state, Item, item) {
 			variables = this.variables_real.slice();
 			for (var i = this.variables.length - 1; i > -1; i += -1) {
 				this.variables.pop();
 			}
 			len = variables.length;
 			for (pos = 0; pos < len; pos += 1) {
-				if (state.tmp.done_vars.indexOf(variables[pos]) === -1) {
+				if (state.tmp.done_vars.indexOf(variables[pos]) === -1 && !(item && Item.type === "legal_case" && item["suppress-author"] && variables[pos] === "title")) {
 					this.variables.push(variables[pos]);
 				}
+                if ("hereinafter" === variables[pos]) {
+                    var hereinafter_key = state.transform.getHereinafter(Item);
+                    state.transform.loadAbbreviation("hereinafter", hereinafter_key);
+                }
 				if (state.tmp.can_block_substitute) {
 					state.tmp.done_vars.push(variables[pos]);
 				}
@@ -6754,33 +6767,24 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					break;
 				}
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-					if (Item[variable] && Item[variable].raw) {
-						output = true;
-						break;
-					} else if (Item[variable] && Item[variable].literal) {
-						output = true;
-						break;
-					} else {
-                        if (state.opt.development_extensions.locator_date && "locator-date" === variable) {
-                            output = true;
+                    if (state.opt.development_extensions.locator_date && "locator-date" === variable) {
+                        output = true;
+                        break;
+                    }
+                    if (Item[variable]) {
+                        for (var key in Item[variable]) {
+                            if (this.dateparts.indexOf(key) === -1) {
+                                continue;
+                            }
+                            if (Item[variable][key]) {
+                                output = true;
+                                break;
+                            }
+                        }
+                        if (output) {
                             break;
                         }
-                        if (Item[variable] && Item[variable]['date-parts'] && Item[variable]['date-parts'].length && this.dateparts && this.dateparts.length) {
-						    varlen = Item[variable]['date-parts'][0].length;
-						    needlen = 4;
-						    if (this.dateparts.indexOf("year") > -1) {
-							    needlen = 1;
-						    } else if (this.dateparts.indexOf("month") > -1) {
-							    needlen = 2;
-						    } else if (this.dateparts.indexOf('day') > -1) {
-							    needlen = 3;
-						    }
-						    if (varlen >= needlen) {
-							    output = true;
-						    }
-						    break;
-					    }
-                    }
+					}
 				} else if ("locator" === variable) {
 					if (item && item.locator) {
 						output = true;
@@ -6847,6 +6851,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						for (key in myitem[variable]) {
 							if (myitem[variable][key]) {
 								x = true;
+                                break;
 							} else {
 								x = false;
 							}
@@ -7228,7 +7233,7 @@ CSL.Attributes["@subsequent-author-substitute"] = function (state, arg) {
 };
 CSL.Attributes["@subsequent-author-substitute-rule"] = function (state, arg) {
     state[this.name].opt["subsequent-author-substitute-rule"] = arg;
-}
+};
 CSL.Attributes["@disambiguate-add-names"] = function (state, arg) {
 	if (arg === "true") {
 		state.opt["disambiguate-add-names"] = true;
@@ -7668,6 +7673,7 @@ CSL.Transform = function (state) {
 					return null;
 				}
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
+                primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
 				if (publisherCheck(variables[0], primary, this)) {
 					return null;
 				} else {
@@ -7762,6 +7768,45 @@ CSL.Transform = function (state) {
 		return name;
 	}
 	this.name = getName;
+    function getHereinafter (Item) {
+        var hereinafter_author_title = [];
+        if (state.tmp.first_name_string) {
+            hereinafter_author_title.push(state.tmp.first_name_string);
+        }
+        if (Item.title) {
+            hereinafter_author_title.push(Item.title);
+        }
+        var hereinafter_metadata = [];
+        if (Item.type) {
+            hereinafter_metadata.push("type:" + Item.type);
+        }
+        if (Item.issued) {
+            var date = [];
+            for (var j = 0, jlen = CSL.DATE_PARTS.length; j < jlen; j += 1) {
+                if (Item.issued[CSL.DATE_PARTS[j]]) {
+                    var element =  Item.issued[CSL.DATE_PARTS[j]];
+                    while (element.length < 2) {
+                        element = "0" + element;
+                    }
+                    date.push(element);
+                }
+            }
+            date = date.join("-");
+            if (date) {
+                hereinafter_metadata.push("date:" + date);
+            }
+        }
+        if (Item.jurisdiction) {
+            hereinafter_metadata.push("jurisdiction:" + Item.jurisdiction);
+        }
+        hereinafter_metadata = hereinafter_metadata.join(", ");
+        if (hereinafter_metadata) {
+            hereinafter_metadata = " [" + hereinafter_metadata + "]";
+        }
+        var hereinafter_key = hereinafter_author_title.join(", ") + hereinafter_metadata;
+        return hereinafter_key;
+    }
+    this.getHereinafter = getHereinafter;
 };
 CSL.Parallel = function (state) {
 	this.state = state;
@@ -8698,24 +8743,28 @@ CSL.Util.substituteEnd = function (state, target) {
 	}
 	toplevel = "names" === this.name && state.build.substitute_level.value() === 0;
 	hasval = "string" === typeof state[state.build.area].opt["subsequent-author-substitute"];
-    subrule = state[state.build.area].opt["subsequent-author-substitute-rule"];
+    var subrule = state[state.build.area].opt["subsequent-author-substitute-rule"];
 	if (toplevel && hasval) {
 		author_substitute = new CSL.Token("text", CSL.SINGLETON);
 		func = function (state, Item) {
+            var i, ilen;
 			var text_esc = CSL.getSafeEscape(state.opt.mode, state.tmp.area);
 			var printing = !state.tmp.suppress_decorations;
 			if (printing && state.tmp.area === "bibliography") {
 				if (!state.tmp.rendered_name) {
-                    if ("partial" === subrule) {
+                    if ("partial-each" === subrule || "partial-first" === subrule) {
 					    state.tmp.rendered_name = [];
                         var dosub = true;
-                        for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+                        for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
                             var name = state.output.string(state, state.tmp.name_node.children[i].blobs, false);
                             if (dosub
                                 && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > i - 1
                                 && state.tmp.last_rendered_name[i] === name) {
 							    str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
 							    state.tmp.name_node.children[i].blobs = [str];
+                                if ("partial-first" === subrule) {
+                                    dosub = false;
+                                }
                             } else {
                                 dosub = false;
                             }
@@ -8726,7 +8775,7 @@ CSL.Util.substituteEnd = function (state, target) {
 					    state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
 					    if (state.tmp.rendered_name) {
 						    if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
-                                for (var i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
+                                for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
 							        str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
 							        state.tmp.name_node.children[i].blobs = [str];
                                 }
@@ -8860,7 +8909,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 	return key;
 };
 CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
-	var num;
+	var num, m, i, ilen, j, jlen;
 	var debug = false;
 	num = ItemObject[variable];
 	this.tmp.shadow_numbers[variable] = {};
@@ -8879,7 +8928,7 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 		}
 		var prefixes = num.split(/[0-9]+/);
 		var all_with_spaces = true;
-		for (var i = 0, ilen = prefixes.length - 1; i < ilen; i += 1) {
+		for (i = 0, ilen = prefixes.length - 1; i < ilen; i += 1) {
 			if (prefixes[i] && (prefixes[i].indexOf(" ") === -1 || [" ",",","&"].indexOf(prefixes[i].slice(-1)) === -1)) {
 				all_with_spaces = false;
 				break;
@@ -8887,8 +8936,8 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 		}
 		var non_numbers = 0;
 		var elements = num.split(/\s+/);
-		for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
-			if (!elements[i].match(/^(?:.*[0-9].*|[-,&])$/)) {
+		for (i = 0, ilen = elements.length; i < ilen; i += 1) {
+			if (!elements[i].match(/^(?:.*[0-9].*|[\-,&])$/)) {
 				non_numbers += 1;
 			}
 		}
@@ -8968,7 +9017,7 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 			var matchterm = this.getTerm(variable, "short");
 			if (matchterm) {
 				matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
-				for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
+				for (i = 0, ilen = elements.length; i < ilen; i += 1) {
 					if (elements[i]) {
 						if (elements[i].match(/[0-9]/)) {
 							continue;
@@ -9605,12 +9654,12 @@ CSL.demoteNoiseWords = function (fld) {
         fld = [start, end].join(", ");
     }
     return fld;
-}
+};
 CSL.Output.Formats = function () {};
 CSL.Output.Formats.prototype.html = {
 	"text_escape": function (text) {
 		if (!text) {
-			text = ""
+			text = "";
 		}
 		return text.replace(/&/g, "&#38;")
 			.replace(/</g, "&#60;")
@@ -9880,19 +9929,18 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
 	}
 };
 CSL.Registry.prototype.doinserts = function (mylist) {
-	var len, pos, item, Item, akey, newitem, abase;
+	var len, pos, item, Item, akey, newitem, abase, j, jlen, k, klen, i, ilen;
 	if ("string" === typeof mylist) {
 		mylist = [mylist];
 	}
-	len = mylist.length;
-	for (pos = 0; pos < len; pos += 1) {
-		item = mylist[pos];
+	for (i = 0, ilen = mylist.length; i < ilen; i += 1) {
+		item = mylist[i];
 		if (!this.registry[item]) {
 			Item = this.state.retrieveItem(item);
-            for (var j = 0, jlen = this.generate.rules.length; j < jlen; j += 1) {
+            for (j = 0, jlen = this.generate.rules.length; j < jlen; j += 1) {
                 if (Item.type === this.generate.rules[j].from) {
                     var needsRule = true;
-                    for (var k = 0, klen = this.generate.rules[j].triggers.length; k < klen; k += 1) {
+                    for (k = 0, klen = this.generate.rules[j].triggers.length; k < klen; k += 1) {
                         if (!Item[this.generate.rules[j].triggers[k]]) {
                             needsRule = false;
                             break;
@@ -9917,7 +9965,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 					case "institution":
 						for (var creatorVar in CSL.CREATORS) {
 							for (var creatorList in Item[creatorVar]) {
-								for (var j = 0, jlen = creatorList.length; j < jlen; j += 1) {
+								for (j = 0, jlen = creatorList.length; j < jlen; j += 1) {
 									if (creatorList[j].isInstitution) {
 										var subOrganizations = creatorList[j].literal;
 										if (!subOrganizations) {
@@ -9925,7 +9973,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 										}
 										if (subOrganizations) {
 											subOrganizations = subOrganizations.split(/\s*,\s*/);
-											for (var k = 0, klen = subOrganizations.length; k < klen; k += 1) {
+											for (k = 0, klen = subOrganizations.length; k < klen; k += 1) {
 												this.state.sys.getAbbreviation(this.state.transform.abbrevs, field, subOrganizations[k]);
 											}
 										}
