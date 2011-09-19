@@ -215,9 +215,15 @@ CSL.Attributes["@variable"] = function (state, arg) {
 
 			len = variables.length;
 			for (pos = 0; pos < len; pos += 1) {
+                // set variable name if not quashed, and if not the title of a legal case w/suppress-author
 				if (state.tmp.done_vars.indexOf(variables[pos]) === -1 && !(item && Item.type === "legal_case" && item["suppress-author"] && variables[pos] === "title")) {
 					this.variables.push(variables[pos]);
 				}
+                // if hereinafter variable, set/get the abbreviation entry
+                if ("hereinafter" === variables[pos]) {
+                    var hereinafter_key = state.transform.getHereinafter(Item);
+                    state.transform.loadAbbreviation("hereinafter", hereinafter_key);
+                }
 				if (state.tmp.can_block_substitute) {
 					state.tmp.done_vars.push(variables[pos]);
 				}
@@ -251,34 +257,22 @@ CSL.Attributes["@variable"] = function (state, arg) {
 					break;
 				}
 				if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-					if (Item[variable] && Item[variable].raw) {
-						output = true;
-						break;
-					} else if (Item[variable] && Item[variable].literal) {
-						output = true;
-						break;
-					} else {
-                        if (state.opt.development_extensions.locator_date && "locator-date" === variable) {
-                            // If locator-date is set, it's valid.
-                            output = true;
+                    if (state.opt.development_extensions.locator_date && "locator-date" === variable) {
+                        // If locator-date is set, it's valid.
+                        output = true;
+                        break;
+                    }
+                    if (Item[variable]) {
+                        for (var key in Item[variable]) {
+                            if (Item[variable][key]) {
+                                output = true;
+                                break;
+                            }
+                        }
+                        if (output) {
                             break;
                         }
-                        if (Item[variable] && Item[variable]['date-parts'] && Item[variable]['date-parts'].length && this.dateparts && this.dateparts.length) {
-						    varlen = Item[variable]['date-parts'][0].length;
-						    needlen = 4;
-						    if (this.dateparts.indexOf("year") > -1) {
-							    needlen = 1;
-						    } else if (this.dateparts.indexOf("month") > -1) {
-							    needlen = 2;
-						    } else if (this.dateparts.indexOf('day') > -1) {
-							    needlen = 3;
-						    }
-						    if (varlen >= needlen) {
-							    output = true;
-						    }
-						    break;
-					    }
-                    }
+					}
 				} else if ("locator" === variable) {
 					if (item && item.locator) {
 						output = true;
@@ -352,6 +346,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 						for (key in myitem[variable]) {
 							if (myitem[variable][key]) {
 								x = true;
+                                break;
 							} else {
 								x = false;
 							}
