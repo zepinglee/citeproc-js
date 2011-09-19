@@ -253,14 +253,14 @@ var CSL = {
 	//x = x.concat(["reporting-date","decision-date","filing-date"]);
 	//x = x.concat(["revision-date"]);
 	//NUMERIC_VARIABLES = x.slice();
-	DATE_VARIABLES: ["issued", "event-date", "accessed", "container", "original-date", "locator-date"],
+	DATE_VARIABLES: ["locator-date", "issued", "event-date", "accessed", "container", "original-date"],
 
 	// TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
 	TAG_ESCAPE: function (str) {
 		var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
 		// Workaround for Internet Exporer
-		mx = str.match(/(\"|\'|<span\s+class=\"no(?:case|decor)\">|<\/?(?:i|sc|b)>|<\/span>)/g);
-		lst = str.split(/(?:\"|\'|<span\s+class=\"no(?:case|decor)\">|<\/?(?:i|sc|b)>|<\/span>)/g);
+		mx = str.match(/(\"|\'|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
+		lst = str.split(/(?:\"|\'|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
 		myret = [lst[0]];
 		for (pos = 1, len = lst.length; pos < len; pos += 1) {
 			myret.push(mx[pos - 1]);
