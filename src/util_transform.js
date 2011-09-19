@@ -352,6 +352,9 @@ CSL.Transform = function (state) {
 					return null;
 				}
 				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
+
+                primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
+
 				// Factor this out
 				if (publisherCheck(variables[0], primary, this)) {
 					return null;
@@ -476,6 +479,46 @@ CSL.Transform = function (state) {
 		return name;
 	}
 	this.name = getName;
+
+    function getHereinafter (Item) {
+        var hereinafter_author_title = [];
+        if (state.tmp.first_name_string) {
+            hereinafter_author_title.push(state.tmp.first_name_string);
+        }
+        if (Item.title) {
+            hereinafter_author_title.push(Item.title);
+        }
+        var hereinafter_metadata = [];
+        if (Item.type) {
+            hereinafter_metadata.push("type:" + Item.type);
+        }
+        if (Item.issued) {
+            var date = [];
+            for (var j = 0, jlen = CSL.DATE_PARTS.length; j < jlen; j += 1) {
+                if (Item.issued[CSL.DATE_PARTS[j]]) {
+                    var element =  Item.issued[CSL.DATE_PARTS[j]];
+                    while (element.length < 2) {
+                        element = "0" + element;
+                    }
+                    date.push(element)
+                }
+            }
+            date = date.join("-");
+            if (date) {
+                hereinafter_metadata.push("date:" + date);
+            }
+        }
+        if (Item.jurisdiction) {
+            hereinafter_metadata.push("jurisdiction:" + Item.jurisdiction);
+        }
+        var hereinafter_metadata = hereinafter_metadata.join(", ");
+        if (hereinafter_metadata) {
+            hereinafter_metadata = " [" + hereinafter_metadata + "]";
+        }
+        var hereinafter_key = hereinafter_author_title.join(", ") + hereinafter_metadata;
+        return hereinafter_key;
+    }
+    this.getHereinafter = getHereinafter;
 };
 
 
