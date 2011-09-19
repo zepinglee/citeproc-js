@@ -359,11 +359,20 @@ CSL.Node.text = {
 									}
 								}
 							};
-						} else {
+						} else if (this.variables_real[0] === "hereinafter") {
+                            func = function (state, Item) {
+                                var hereinafter_key = state.transform.getHereinafter(Item);
+                                var value = state.transform.abbrevs.hereinafter[hereinafter_key];
+                                if (hereinafter_key) {
+                                    state.output.append(value, this);
+                                }
+                            }
+                        } else {
 							// anything left over just gets output in the normal way.
 							func = function (state, Item) {
+                                var value;
 								if (this.variables[0]) {
-									var value = state.getVariable(Item, this.variables[0], form);
+									value = state.getVariable(Item, this.variables[0], form);
 									if (value) {
 										state.output.append(value, this);
 									}
