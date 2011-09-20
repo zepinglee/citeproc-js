@@ -110,30 +110,34 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		return lst;
 	};
 
-	minimize = function (lst) {
+	minimize = function (lst, minchars, isyear) {
 		len = lst.length;
-		for (pos = 1; pos < len; pos += 2) {
-			lst[pos][3] = minimize_internal(lst[pos][1], lst[pos][3]);
-			if (lst[pos][2].slice(1) === lst[pos][0]) {
-				lst[pos][2] = range_delimiter;
+		for (var i = 1, ilen = lst.length; i < ilen; i += 2) {
+			lst[i][3] = minimize_internal(lst[i][1], lst[i][3], minchars, isyear);
+			if (lst[i][2].slice(1) === lst[i][0]) {
+				lst[i][2] = range_delimiter;
 			}
 		}
-		return stringify(lst);
+        return stringify(lst);
 	};
 
-	minimize_internal = function (begin, end) {
+	minimize_internal = function (begin, end, minchars, isyear) {
 		b = ("" + begin).split("");
 		e = ("" + end).split("");
 		ret = e.slice();
 		ret.reverse();
 		if (b.length === e.length) {
-			llen = b.length;
-			for (ppos = 0; ppos < llen; ppos += 1) {
-				if (b[ppos] === e[ppos]) {
+			for (var i = 0, ilen = b.length; i < ilen; i += 1) {
+				if (b[i] === e[i] && ret.length > minchars) {
 					ret.pop();
 				} else {
-					break;
-				}
+                    if (minchars && isyear && ret.length === 3) {
+                        var front = b.slice(0, i);
+                        front.reverse();
+                        ret = ret.concat(front);
+                    }
+                    break;
+                }
 			}
 		}
 		ret.reverse();
@@ -177,6 +181,11 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
 		ret_func = function (str) {
 			var lst = expand(str);
 			return minimize(lst);
+		};
+	} else if (state.opt["page-range-format"] === "minimal-two") {
+		ret_func = function (str, isyear) {
+			var lst = expand(str);
+			return minimize(lst, 2, isyear);
 		};
 	} else if (state.opt["page-range-format"] === "chicago") {
 		ret_func = function (str) {
