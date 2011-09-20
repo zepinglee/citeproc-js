@@ -181,6 +181,25 @@ CSL.Node["date-part"] = {
 							if (state.dateput.queue.length === 0) {
 								first_date = true;
 							}
+
+                            // OK! So if the actual data has no month, day or season,
+                            // and we reach this block, then we can combine the dates
+                            // to a string, run minimial-two, and output the trailing
+                            // year right here. No impact on other functionality.
+                            
+                            if (state.opt["page-range-format"] === "minimal-two"
+                                && !state.tmp.date_object.day
+                                && !state.tmp.date_object.month
+                                && !state.tmp.date_object.season
+                                && this.strings.name === "year"
+                                && value && value_end) {
+                                
+                                // second argument adjusts collapse as required for years
+                                // See OSCOLA section 1.3.2
+                                value_end = state.fun.page_mangler(value + "-" + value_end, true);
+                                var range_delimiter = state.getTerm("range-delimiter");
+                                value_end = value_end.slice(value_end.indexOf(range_delimiter) + 1);
+                            }
 							state.dateput.append(value_end, this);
 							if (first_date) {
 								state.dateput.current.value()[0].strings.prefix = "";
