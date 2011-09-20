@@ -119,10 +119,8 @@ CSL.Transform = function (state) {
     this.abbrevs["container-title"] = {};
     this.abbrevs["collection-title"] = {};
     this.abbrevs.institution = {};
-    this.abbrevs.authority = {};
-    this.abbrevs.title = {};
-    this.abbrevs.publisher = {};
     this.abbrevs.place = {};
+    this.abbrevs.title = {};
     this.abbrevs.hereinafter = {};
     this.abbrevs.classic = {};
 
@@ -150,6 +148,10 @@ CSL.Transform = function (state) {
 
         if (["publisher-place", "event-place"].indexOf(mysubsection) > -1) {
             mysubsection = "place";
+        }
+
+        if (["publisher", "authority"].indexOf(mysubsection) > -1) {
+            mysubsection = "institution";
         }
 
         // Lazy retrieval of abbreviations.
