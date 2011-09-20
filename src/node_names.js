@@ -49,158 +49,158 @@
 /*global CSL: true */
 
 CSL.Node.names = {
-	build: function (state, target) {
-		var func, len, pos, attrname;
-		var debug = false;
-		// CSL.debug = print;
-		
-		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-			CSL.Util.substituteStart.call(this, state, target);
-			state.build.substitute_level.push(1);
-			
-			state.fixOpt(this, "names-delimiter", "delimiter");
+    build: function (state, target) {
+        var func, len, pos, attrname;
+        var debug = false;
+        // CSL.debug = print;
+        
+        if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+            CSL.Util.substituteStart.call(this, state, target);
+            state.build.substitute_level.push(1);
+            
+            state.fixOpt(this, "names-delimiter", "delimiter");
 
-		}
-		
-		if (this.tokentype === CSL.SINGLETON) {
-			func = function (state, Item, item) {
-				state.nameOutput.reinit(this);
-			};
-			this.execs.push(func);
-		}
-
-
-		if (this.tokentype === CSL.START) {
-
-			state.build.names_flag = true;
-
-			// init can substitute
-			func = function (state, Item) {
-				state.tmp.can_substitute.push(true);
-			};
-			this.execs.push(func);
+        }
+        
+        if (this.tokentype === CSL.SINGLETON) {
+            func = function (state, Item, item) {
+                state.nameOutput.reinit(this);
+            };
+            this.execs.push(func);
+        }
 
 
-			// init names
-			func = function (state, Item, item) {
-				state.parallel.StartVariable("names");
-			};
-			this.execs.push(func);
+        if (this.tokentype === CSL.START) {
 
-			func = function (state, Item, item) {
-				state.nameOutput.init(this);
-			};
-			this.execs.push(func);
+            state.build.names_flag = true;
 
-		}
-		
-		if (this.tokentype === CSL.END) {
+            // init can substitute
+            func = function (state, Item) {
+                state.tmp.can_substitute.push(true);
+            };
+            this.execs.push(func);
 
-			for (var i = 0, ilen = 3; i < ilen; i += 1) {
-				var key = ["family", "given", "et-al"][i];
-				this[key] = state.build[key];
-				state.build[key] = undefined;
-			}
 
-			// Labels, if any
-			this.label = state.build.name_label;
-			state.build.name_label = undefined;
+            // init names
+            func = function (state, Item, item) {
+                state.parallel.StartVariable("names");
+            };
+            this.execs.push(func);
 
-			// The with term. This isn't the right place
-			// for this, but it's all hard-wired at the
-			// moment.
-			var mywith = "with";
+            func = function (state, Item, item) {
+                state.nameOutput.init(this);
+            };
+            this.execs.push(func);
 
-			var with_default_prefix = "";
-			var with_suffix = "";
-			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(mywith)) {
-				with_default_prefix = " ";
-				with_suffix = " ";
-			}
-			this["with"] = {};
-			this["with"].single = new CSL.Blob("empty", mywith);
-			this["with"].single.strings.suffix = with_suffix;
-			this["with"].multiple = new CSL.Blob("empty", mywith);
-			this["with"].multiple.strings.suffix = with_suffix;
-			if (this.strings["delimiter-precedes-last"] === "always") {
-				this["with"].single.strings.prefix = this.strings.delimiter;
-				this["with"].multiple.strings.prefix = this.strings.delimiter;
-			} else if (this.strings["delimiter-precedes-last"] === "contextual") {
-				this["with"].single.strings.prefix = with_default_prefix;
-				this["with"].multiple.strings.prefix = this.strings.delimiter;
-			} else {
-				this["with"].single.strings.prefix = with_default_prefix;
-				this["with"].multiple.strings.prefix = with_default_prefix;
-			}
+        }
+        
+        if (this.tokentype === CSL.END) {
 
-			// Et-al (strings only)
-			// Blob production has to happen inside nameOutput()
-			// since proper escaping requires access to the output
-			// queue.
-			if (state.build.etal_node) {
-				this.etal_style = state.build.etal_node;
-			} else {
-				this.etal_style = "empty";
-			}
-			this.etal_term = state.getTerm(state.build.etal_term, "long", 0);
-			if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
-				this.etal_prefix_single = " ";
-				// Should be name delimiter, not hard-wired.
-				this.etal_prefix_multiple = state.build.name_delimiter;
-				if (state.build["delimiter-precedes-et-al"] === "always") {
-					this.etal_prefix_single = state.build.name_delimiter;
-				} else if (state.build["delimiter-precedes-et-al"] === "never") {
-					this.etal_prefix_multiple = " ";
-				}
-				this.etal_suffix = "";
-			} else {
-				this.etal_prefix_single = "";
-				this.etal_prefix_multiple = "";
-				this.etal_suffix = "";
-			}
-			// et-al affixes are further adjusted in nameOutput(),
-			// after the term (possibly changed in cs:et-al) is known.
-			
+            for (var i = 0, ilen = 3; i < ilen; i += 1) {
+                var key = ["family", "given", "et-al"][i];
+                this[key] = state.build[key];
+                state.build[key] = undefined;
+            }
 
-			// "and" and "ellipsis" are set in node_name.js
-			func = function (state, Item, item) {
-				for (var i = 0, ilen = 3; i < ilen; i += 1) {
-					var key = ["family", "given"][i];
-					state.nameOutput[key] = this[key];
-				}
-				state.nameOutput["with"] = this["with"];
-				state.nameOutput.label = this.label;
-				state.nameOutput.etal_style = this.etal_style;
-				state.nameOutput.etal_term = this.etal_term;
-				state.nameOutput.etal_prefix_single = this.etal_prefix_single;
-				state.nameOutput.etal_prefix_multiple = this.etal_prefix_multiple;
-				state.nameOutput.etal_suffix = this.etal_suffix;
-				state.nameOutput.outputNames();
-				state.tmp["et-al-use-first"] = undefined;
-				state.tmp["et-al-min"] = undefined;
-				state.tmp["et-al-use-last"] = undefined;
-			};
-			this.execs.push(func);
+            // Labels, if any
+            this.label = state.build.name_label;
+            state.build.name_label = undefined;
 
-			// unsets
-			func = function (state, Item) {
-				if (!state.tmp.can_substitute.pop()) {
-					state.tmp.can_substitute.replace(false, CSL.LITERAL);
-				}
-				
-				state.parallel.CloseVariable("names");
+            // The with term. This isn't the right place
+            // for this, but it's all hard-wired at the
+            // moment.
+            var mywith = "with";
 
-				state.tmp.can_block_substitute = false;
-			};
-			this.execs.push(func);
+            var with_default_prefix = "";
+            var with_suffix = "";
+            if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(mywith)) {
+                with_default_prefix = " ";
+                with_suffix = " ";
+            }
+            this["with"] = {};
+            this["with"].single = new CSL.Blob("empty", mywith);
+            this["with"].single.strings.suffix = with_suffix;
+            this["with"].multiple = new CSL.Blob("empty", mywith);
+            this["with"].multiple.strings.suffix = with_suffix;
+            if (this.strings["delimiter-precedes-last"] === "always") {
+                this["with"].single.strings.prefix = this.strings.delimiter;
+                this["with"].multiple.strings.prefix = this.strings.delimiter;
+            } else if (this.strings["delimiter-precedes-last"] === "contextual") {
+                this["with"].single.strings.prefix = with_default_prefix;
+                this["with"].multiple.strings.prefix = this.strings.delimiter;
+            } else {
+                this["with"].single.strings.prefix = with_default_prefix;
+                this["with"].multiple.strings.prefix = with_default_prefix;
+            }
 
-			state.build.name_flag = false;
-		}
-		target.push(this);
+            // Et-al (strings only)
+            // Blob production has to happen inside nameOutput()
+            // since proper escaping requires access to the output
+            // queue.
+            if (state.build.etal_node) {
+                this.etal_style = state.build.etal_node;
+            } else {
+                this.etal_style = "empty";
+            }
+            this.etal_term = state.getTerm(state.build.etal_term, "long", 0);
+            if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
+                this.etal_prefix_single = " ";
+                // Should be name delimiter, not hard-wired.
+                this.etal_prefix_multiple = state.build.name_delimiter;
+                if (state.build["delimiter-precedes-et-al"] === "always") {
+                    this.etal_prefix_single = state.build.name_delimiter;
+                } else if (state.build["delimiter-precedes-et-al"] === "never") {
+                    this.etal_prefix_multiple = " ";
+                }
+                this.etal_suffix = "";
+            } else {
+                this.etal_prefix_single = "";
+                this.etal_prefix_multiple = "";
+                this.etal_suffix = "";
+            }
+            // et-al affixes are further adjusted in nameOutput(),
+            // after the term (possibly changed in cs:et-al) is known.
+            
 
-		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
-			state.build.substitute_level.pop();
-			CSL.Util.substituteEnd.call(this, state, target);
-		}
-	}
+            // "and" and "ellipsis" are set in node_name.js
+            func = function (state, Item, item) {
+                for (var i = 0, ilen = 3; i < ilen; i += 1) {
+                    var key = ["family", "given"][i];
+                    state.nameOutput[key] = this[key];
+                }
+                state.nameOutput["with"] = this["with"];
+                state.nameOutput.label = this.label;
+                state.nameOutput.etal_style = this.etal_style;
+                state.nameOutput.etal_term = this.etal_term;
+                state.nameOutput.etal_prefix_single = this.etal_prefix_single;
+                state.nameOutput.etal_prefix_multiple = this.etal_prefix_multiple;
+                state.nameOutput.etal_suffix = this.etal_suffix;
+                state.nameOutput.outputNames();
+                state.tmp["et-al-use-first"] = undefined;
+                state.tmp["et-al-min"] = undefined;
+                state.tmp["et-al-use-last"] = undefined;
+            };
+            this.execs.push(func);
+
+            // unsets
+            func = function (state, Item) {
+                if (!state.tmp.can_substitute.pop()) {
+                    state.tmp.can_substitute.replace(false, CSL.LITERAL);
+                }
+                
+                state.parallel.CloseVariable("names");
+
+                state.tmp.can_block_substitute = false;
+            };
+            this.execs.push(func);
+
+            state.build.name_flag = false;
+        }
+        target.push(this);
+
+        if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
+            state.build.substitute_level.pop();
+            CSL.Util.substituteEnd.call(this, state, target);
+        }
+    }
 };

@@ -49,9 +49,9 @@
 /*global CSL: true, Zotero: true */
 
 CSL.debug = function (str) {
-	Zotero.debug("CSL: " + str);
+    Zotero.debug("CSL: " + str);
 };
 
 CSL.error = function (str) {
-	Zotero.debug("CSL error: " + str);
+    Zotero.debug("CSL error: " + str);
 };

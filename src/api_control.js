@@ -49,68 +49,68 @@
 /*global CSL: true */
 
 CSL.Engine.prototype.setOutputFormat = function (mode) {
-	this.opt.mode = mode;
-	this.fun.decorate = CSL.Mode(mode);
-	if (!this.output[mode]) {
-		this.output[mode] = {};
-		this.output[mode].tmp = {};
-	}
+    this.opt.mode = mode;
+    this.fun.decorate = CSL.Mode(mode);
+    if (!this.output[mode]) {
+        this.output[mode] = {};
+        this.output[mode].tmp = {};
+    }
 };
 
 CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
-	var i, ilen;
-	this.opt['locale-sort'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-sort'].push(tags[i]);
-	}
+    var i, ilen;
+    this.opt['locale-sort'] = [];
+    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+        this.opt['locale-sort'].push(tags[i]);
+    }
 };
-	
+    
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
-	var i, ilen;
-	this.opt['locale-pri'] = [];	
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-pri'].push(tags[i]);
-	}
+    var i, ilen;
+    this.opt['locale-pri'] = [];    
+    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+        this.opt['locale-pri'].push(tags[i]);
+    }
 };
-	
+    
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
-	var i, ilen;
-	this.opt['locale-sec'] = [];
-	for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-		this.opt['locale-sec'].push(tags[i]);
-	}
+    var i, ilen;
+    this.opt['locale-sec'] = [];
+    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+        this.opt['locale-sec'].push(tags[i]);
+    }
 };
 
-	
+    
 CSL.Engine.prototype.setOriginalCreatorNameFormsOption = function (arg) {
-	if (arg) {
-		this.opt["locale-show-original-names"] = true;
-	} else {
-		this.opt["locale-show-original-names"] = false;
-	}
+    if (arg) {
+        this.opt["locale-show-original-names"] = true;
+    } else {
+        this.opt["locale-show-original-names"] = false;
+    }
 };
 
 
 CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
-	if (arg) {
-		this.opt["locale-use-original-name-format"] = true;
-	} else {
-		this.opt["locale-use-original-name-format"] = false;
-	}
+    if (arg) {
+        this.opt["locale-use-original-name-format"] = true;
+    } else {
+        this.opt["locale-use-original-name-format"] = false;
+    }
 };
 
 CSL.Engine.prototype.setSuppressTitleTransliterationOption = function (arg) {
-	if (arg) {
-		this.opt["locale-suppress-title-transliteration"] = true;
-	} else {
-		this.opt["locale-suppress-title-transliteration"] = false;
-	}
+    if (arg) {
+        this.opt["locale-suppress-title-transliteration"] = true;
+    } else {
+        this.opt["locale-suppress-title-transliteration"] = false;
+    }
 };
 
 CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
-	if (arg) {
-		this.opt["auto-vietnamese-names"] = true;
-	} else {
-		this.opt["auto-vietnamese-names"] = false;
-	}
+    if (arg) {
+        this.opt["auto-vietnamese-names"] = true;
+    } else {
+        this.opt["auto-vietnamese-names"] = false;
+    }
 };

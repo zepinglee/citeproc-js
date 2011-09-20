@@ -49,40 +49,40 @@
 /*global CSL: true */
 
 CSL.NameOutput.prototype.setEtAlParameters = function () {
-	var i, ilen, j, jlen;
-	if (!this.etal_spec) {
-		this.etal_spec = [];
-	}
-	for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
-		var v = this.variables[i];
-		if (this.freeters[v].length) {
-			this._setEtAlParameter("freeters", v);
-		}
-		if (this.institutions[v].length) {
-			this._setEtAlParameter("institutions", v);
-		}
-		for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-			this._setEtAlParameter("persons", v, j);
-		}
-	}
+    var i, ilen, j, jlen;
+    if (!this.etal_spec) {
+        this.etal_spec = [];
+    }
+    for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+        var v = this.variables[i];
+        if (this.freeters[v].length) {
+            this._setEtAlParameter("freeters", v);
+        }
+        if (this.institutions[v].length) {
+            this._setEtAlParameter("institutions", v);
+        }
+        for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+            this._setEtAlParameter("persons", v, j);
+        }
+    }
 };
 
 CSL.NameOutput.prototype._setEtAlParameter = function (type, v, j) {
-	var lst, count;
-	if ("undefined" === typeof j) {
-		lst = this[type][v];
-		count = this[type + "_count"][v];
-	} else {
-		lst = this[type][v][j];
-		count = this[type + "_count"][v][j];
-	}
-	if (lst.length < count && !this.state.tmp.sort_key_flag) {
-		if (this.etal_use_last) {
-			this.etal_spec.push(2);
-		} else {
-			this.etal_spec.push(1);
-		}
-	} else {
-		this.etal_spec.push(0);
-	}
+    var lst, count;
+    if ("undefined" === typeof j) {
+        lst = this[type][v];
+        count = this[type + "_count"][v];
+    } else {
+        lst = this[type][v][j];
+        count = this[type + "_count"][v][j];
+    }
+    if (lst.length < count && !this.state.tmp.sort_key_flag) {
+        if (this.etal_use_last) {
+            this.etal_spec.push(2);
+        } else {
+            this.etal_spec.push(1);
+        }
+    } else {
+        this.etal_spec.push(0);
+    }
 };

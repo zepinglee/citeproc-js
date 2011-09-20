@@ -49,47 +49,47 @@
 /*global CSL: true */
 
 CSL.getSortCompare = function () {
-	var strcmp;
-	try {
-		var Components;
-		var localeService = Components.classes["@mozilla.org/intl/nslocaleservice;1"]
-			.getService(Components.interfaces.nsILocaleService);
-		var collationFactory = Components.classes["@mozilla.org/intl/collation-factory;1"]
-			.getService(Components.interfaces.nsICollationFactory);
-		var collation = collationFactory.CreateCollation(localeService.getApplicationLocale());
-		strcmp = function(a, b) {
-			return collation.compareString(1, a, b);
-		};
-		CSL.debug("Using collation sort");
-	} catch (e) {
-		strcmp = function (a, b) {
-			return a.localeCompare(b);
-		};
-	}
-	var isKana = /^[\u3040-\u309f\u30a0-\u30ff]/;
-	var sortCompare = function (a, b) {
-		// Display rows with empty values last
-		//var cmp = (a == '' && b != '') ? -1 : (a != '' && b == '') ? 1 : 0;
-		//if (cmp) {
-		//	return cmp;
-		//}
-		var ak = isKana.exec(a);
-		var bk = isKana.exec(b);
-		if (ak || bk) {
-			if (!ak) {
-				return -1;
-			} else if (!bk) {
-				return 1;
-			} else if (a < b) {
-				return -1;
-			} else if (a > b) {
-				return 1;
-			} else {
-				return 0;
-			}
-		} else {
-			return strcmp(a, b);
-		}
-	};
-	return sortCompare;
+    var strcmp;
+    try {
+        var Components;
+        var localeService = Components.classes["@mozilla.org/intl/nslocaleservice;1"]
+            .getService(Components.interfaces.nsILocaleService);
+        var collationFactory = Components.classes["@mozilla.org/intl/collation-factory;1"]
+            .getService(Components.interfaces.nsICollationFactory);
+        var collation = collationFactory.CreateCollation(localeService.getApplicationLocale());
+        strcmp = function(a, b) {
+            return collation.compareString(1, a, b);
+        };
+        CSL.debug("Using collation sort");
+    } catch (e) {
+        strcmp = function (a, b) {
+            return a.localeCompare(b);
+        };
+    }
+    var isKana = /^[\u3040-\u309f\u30a0-\u30ff]/;
+    var sortCompare = function (a, b) {
+        // Display rows with empty values last
+        //var cmp = (a == '' && b != '') ? -1 : (a != '' && b == '') ? 1 : 0;
+        //if (cmp) {
+        //    return cmp;
+        //}
+        var ak = isKana.exec(a);
+        var bk = isKana.exec(b);
+        if (ak || bk) {
+            if (!ak) {
+                return -1;
+            } else if (!bk) {
+                return 1;
+            } else if (a < b) {
+                return -1;
+            } else if (a > b) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return strcmp(a, b);
+        }
+    };
+    return sortCompare;
 };

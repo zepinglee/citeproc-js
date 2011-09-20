@@ -49,84 +49,84 @@
 /*global CSL: true */
 
 CSL.evaluateLabel = function (node, state, Item, item) {
-	var myterm;
-	if ("locator" === node.strings.term) {
-		if (item && item.label) {
-			if (item.label === "sub verbo") {
-				myterm = "sub-verbo";
-			} else {
-				myterm = item.label;
-			}
-		}
-		if (!myterm) {
-			myterm = "page";
-		}
-	} else {
-		myterm = node.strings.term;
-	}
-	// Plurals detection.
-	var plural = 0;
-	if ("locator" === node.strings.term) {
-		if (item && item.locator) {
+    var myterm;
+    if ("locator" === node.strings.term) {
+        if (item && item.label) {
+            if (item.label === "sub verbo") {
+                myterm = "sub-verbo";
+            } else {
+                myterm = item.label;
+            }
+        }
+        if (!myterm) {
+            myterm = "page";
+        }
+    } else {
+        myterm = node.strings.term;
+    }
+    // Plurals detection.
+    var plural = 0;
+    if ("locator" === node.strings.term) {
+        if (item && item.locator) {
             if (state.opt.development_extensions.locator_parsing) {
                 if (!state.tmp.shadow_numbers.locator) {
                     state.processNumber(item, "locator");
                 }
                 plural = state.tmp.shadow_numbers.locator.plural;
             } else {
-			    plural = CSL.evaluateStringPluralism(item.locator);
+                plural = CSL.evaluateStringPluralism(item.locator);
             }
-		}
-	} else if (["page", "page-first"].indexOf(node.variables[0]) > -1) {
-		plural = CSL.evaluateStringPluralism(Item[myterm]);
-	} else {
-		if (!state.tmp.shadow_numbers[myterm]) {
-			state.processNumber(Item, myterm);
-		}
-		plural = state.tmp.shadow_numbers[myterm].plural;
-	}
+        }
+    } else if (["page", "page-first"].indexOf(node.variables[0]) > -1) {
+        plural = CSL.evaluateStringPluralism(Item[myterm]);
+    } else {
+        if (!state.tmp.shadow_numbers[myterm]) {
+            state.processNumber(Item, myterm);
+        }
+        plural = state.tmp.shadow_numbers[myterm].plural;
+    }
 /*
-	if ("number" !== typeof plural) {
-		if ("locator" == node.strings.term) {
-			// check for plural flat field in supplementary item
-			if (item) {
-				plural = CSL.evaluateStringPluralism(item.locator);				
-			}
-		} else if (Item[node.strings.term]) {
-			// check for plural flat field in main Item
-			plural = CSL.evaluateStringPluralism(Item[node.strings.term]);			
-		}
-		// cleanup
-		if ("number" !== typeof plural) {
-			plural = 0;
-		}
-	}
+    if ("number" !== typeof plural) {
+        if ("locator" == node.strings.term) {
+            // check for plural flat field in supplementary item
+            if (item) {
+                plural = CSL.evaluateStringPluralism(item.locator);                
+            }
+        } else if (Item[node.strings.term]) {
+            // check for plural flat field in main Item
+            plural = CSL.evaluateStringPluralism(Item[node.strings.term]);            
+        }
+        // cleanup
+        if ("number" !== typeof plural) {
+            plural = 0;
+        }
+    }
 */
-	return CSL.castLabel(state, node, myterm, plural);
+    return CSL.castLabel(state, node, myterm, plural);
 };
 
 CSL.evaluateStringPluralism = function (str) {
-	if (str && str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|[0-9]\s*[\-\u2013]\s*[0-9])/)) {
-		return 1;
-	} else {
-		return 0;
-	}
+    if (str && str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|[0-9]\s*[\-\u2013]\s*[0-9])/)) {
+        return 1;
+    } else {
+        return 0;
+    }
 };
 
 CSL.castLabel = function (state, node, term, plural, mode) {
-	var ret = state.getTerm(term, node.strings.form, plural, false, mode);
-	// XXXXX Cut-and-paste code in multiple locations. This code block should be
-	// collected in a function.
-	// Tag: strip-periods-block
-	if (state.tmp.strip_periods) {
-		ret = ret.replace(/\./g, "");
-	} else {
-		for (var i = 0, ilen = node.decorations.length; i < ilen; i += 1) {
-			if ("@strip-periods" === node.decorations[i][0] && "true" === node.decorations[i][1]) {
-				ret = ret.replace(/\./g, "");
-				break;
-			}
-		}
-	}
-	return ret;
+    var ret = state.getTerm(term, node.strings.form, plural, false, mode);
+    // XXXXX Cut-and-paste code in multiple locations. This code block should be
+    // collected in a function.
+    // Tag: strip-periods-block
+    if (state.tmp.strip_periods) {
+        ret = ret.replace(/\./g, "");
+    } else {
+        for (var i = 0, ilen = node.decorations.length; i < ilen; i += 1) {
+            if ("@strip-periods" === node.decorations[i][0] && "true" === node.decorations[i][1]) {
+                ret = ret.replace(/\./g, "");
+                break;
+            }
+        }
+    }
+    return ret;
 };

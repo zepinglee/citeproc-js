@@ -112,373 +112,373 @@
  */
 
 CSL.Transform = function (state) {
-	var debug = false, abbreviations, token, fieldname, subsection, opt;
+    var debug = false, abbreviations, token, fieldname, subsection, opt;
 
-	// Abbreviation subsections
-	this.abbrevs = {};
-	this.abbrevs["container-title"] = {};
-	this.abbrevs["collection-title"] = {};
-	this.abbrevs.institution = {};
-	this.abbrevs.authority = {};
-	this.abbrevs.title = {};
-	this.abbrevs.publisher = {};
-	this.abbrevs.place = {};
-	this.abbrevs.hereinafter = {};
+    // Abbreviation subsections
+    this.abbrevs = {};
+    this.abbrevs["container-title"] = {};
+    this.abbrevs["collection-title"] = {};
+    this.abbrevs.institution = {};
+    this.abbrevs.authority = {};
+    this.abbrevs.title = {};
+    this.abbrevs.publisher = {};
+    this.abbrevs.place = {};
+    this.abbrevs.hereinafter = {};
     this.abbrevs.classic = {};
 
-	// Initialization method
-	function init(t, f, x) {
-		token = t;
-		fieldname = f;
-		subsection = x;
-		opt = {
-			abbreviation_fallback: false,
-			alternative_varname: false,
-			transform_locale: false,
-			transform_fallback: false
-		};
-	}
-	this.init = init;
+    // Initialization method
+    function init(t, f, x) {
+        token = t;
+        fieldname = f;
+        subsection = x;
+        opt = {
+            abbreviation_fallback: false,
+            alternative_varname: false,
+            transform_locale: false,
+            transform_fallback: false
+        };
+    }
+    this.init = init;
 
-	// Internal function
-	function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
-		var value;
+    // Internal function
+    function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
+        var value;
 
-		if (!mysubsection) {
-			return basevalue;
-		}
+        if (!mysubsection) {
+            return basevalue;
+        }
 
-		if (["publisher-place", "event-place"].indexOf(mysubsection) > -1) {
-			mysubsection = "place";
-		}
+        if (["publisher-place", "event-place"].indexOf(mysubsection) > -1) {
+            mysubsection = "place";
+        }
 
-		// Lazy retrieval of abbreviations.
-		state.transform.loadAbbreviation(mysubsection, basevalue);
+        // Lazy retrieval of abbreviations.
+        state.transform.loadAbbreviation(mysubsection, basevalue);
 
-		value = "";
-		if (state.transform.abbrevs[mysubsection] && basevalue) {
-			if (state.transform.abbrevs[mysubsection][basevalue]) {
-				value = state.transform.abbrevs[mysubsection][basevalue];
-			} else if ("string" != typeof state.transform.abbrevs[mysubsection][basevalue]) {
-				//SNIP-START
-				if (this.debug) {
-					CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
-				}
-				//SNIP-END
-				//state.transform.abbrevs[mysubsection][basevalue] = "";
-			}
-		}
-		if (!value && Item[altvar] && use_field) {
-			value = Item[altvar];
-		}
-		if (!value) {
-			value = basevalue;
-		}
-		return value;
-	}
+        value = "";
+        if (state.transform.abbrevs[mysubsection] && basevalue) {
+            if (state.transform.abbrevs[mysubsection][basevalue]) {
+                value = state.transform.abbrevs[mysubsection][basevalue];
+            } else if ("string" != typeof state.transform.abbrevs[mysubsection][basevalue]) {
+                //SNIP-START
+                if (this.debug) {
+                    CSL.debug("UNKNOWN ABBREVIATION FOR ... " + basevalue);
+                }
+                //SNIP-END
+                //state.transform.abbrevs[mysubsection][basevalue] = "";
+            }
+        }
+        if (!value && Item[altvar] && use_field) {
+            value = Item[altvar];
+        }
+        if (!value) {
+            value = basevalue;
+        }
+        return value;
+    }
 
-	// Internal function
-	function getTextSubField(Item, field, locale_type, use_default) {
-		var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
-		if (!Item[field]) {
-			return "";
-		}
-		ret = "";
+    // Internal function
+    function getTextSubField(Item, field, locale_type, use_default) {
+        var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
+        if (!Item[field]) {
+            return "";
+        }
+        ret = "";
 
-		opts = state.opt[locale_type];
-		if ("undefined" === typeof opts) {
-			opts = state.opt["default-locale"];
-		}
+        opts = state.opt[locale_type];
+        if ("undefined" === typeof opts) {
+            opts = state.opt["default-locale"];
+        }
 
-		for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
-			// Fallback from more to less specific language tag
-			opt = opts[i];
-			o = opt.split(/[\-_]/)[0];
-			if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
-				ret = Item.multi._keys[field][opt];
-				break;
-			} else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
-				ret = Item.multi._keys[field][o];
-				break;
-			}
-		}
-		if (!ret && use_default) {
-			ret = Item[field];
-		}
-		return ret;
-	}
+        for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
+            // Fallback from more to less specific language tag
+            opt = opts[i];
+            o = opt.split(/[\-_]/)[0];
+            if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
+                ret = Item.multi._keys[field][opt];
+                break;
+            } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
+                ret = Item.multi._keys[field][o];
+                break;
+            }
+        }
+        if (!ret && use_default) {
+            ret = Item[field];
+        }
+        return ret;
+    }
 
-	//
-	function setAbbreviationFallback(b) {
-		opt.abbreviation_fallback = b;
-	}
-	this.setAbbreviationFallback = setAbbreviationFallback;
+    //
+    function setAbbreviationFallback(b) {
+        opt.abbreviation_fallback = b;
+    }
+    this.setAbbreviationFallback = setAbbreviationFallback;
 
-	//
-	function setAlternativeVariableName(s) {
-		opt.alternative_varname = s;
-	}
-	this.setAlternativeVariableName = setAlternativeVariableName;
+    //
+    function setAlternativeVariableName(s) {
+        opt.alternative_varname = s;
+    }
+    this.setAlternativeVariableName = setAlternativeVariableName;
 
-	//
-	function setTransformLocale(s) {
-		opt.transform_locale = s;
-	}
-	this.setTransformLocale = setTransformLocale;
+    //
+    function setTransformLocale(s) {
+        opt.transform_locale = s;
+    }
+    this.setTransformLocale = setTransformLocale;
 
-	//
-	function setTransformFallback(b) {
-		opt.transform_fallback = b;
-	}
-	this.setTransformFallback = setTransformFallback;
+    //
+    function setTransformFallback(b) {
+        opt.transform_fallback = b;
+    }
+    this.setTransformFallback = setTransformFallback;
 
-	// Setter for abbreviation lists
-	// This initializes a single abbreviation based on known
-	// data.
-	function loadAbbreviation(vartype, key) {
-		var pos, len;
-		if (!this.abbrevs[vartype] || !key) {
-			return;
-		}
-		// The getAbbreviation() function should check the
-		// external DB for the content key. If a value exists
-		// in this[vartype] and no value exists in DB, the entry
-		// in memory is left untouched. If a value does exist in
-		// DB, the memory value is created.
-		//
-		// See testrunner_stdrhino.js for an example.
-		if (state.sys.getAbbreviation && !this.abbrevs[vartype][key]) {
-			state.sys.getAbbreviation(this.abbrevs, vartype, key);
-		}
-	}
-	this.loadAbbreviation = loadAbbreviation;
+    // Setter for abbreviation lists
+    // This initializes a single abbreviation based on known
+    // data.
+    function loadAbbreviation(vartype, key) {
+        var pos, len;
+        if (!this.abbrevs[vartype] || !key) {
+            return;
+        }
+        // The getAbbreviation() function should check the
+        // external DB for the content key. If a value exists
+        // in this[vartype] and no value exists in DB, the entry
+        // in memory is left untouched. If a value does exist in
+        // DB, the memory value is created.
+        //
+        // See testrunner_stdrhino.js for an example.
+        if (state.sys.getAbbreviation && !this.abbrevs[vartype][key]) {
+            state.sys.getAbbreviation(this.abbrevs, vartype, key);
+        }
+    }
+    this.loadAbbreviation = loadAbbreviation;
 
-	function publisherCheck (varname, primary, tok) {
-		if (state.publisherOutput && primary) {
-			if (["publisher","publisher-place"].indexOf(varname) === -1) {
-				return false;
-			} else {
-				state.publisherOutput[varname + "-token"] = tok;
-				state.publisherOutput.varlist.push(varname);
-				var lst = primary.split(/;\s*/);
-				if (lst.length === state.publisherOutput[varname + "-list"].length) {
-					state.tmp[varname + "-list"] = lst;
-				}
-				state.tmp[varname + "-token"] = tok;
-				return true;
-			}
-		}
-		return false;
-	}
+    function publisherCheck (varname, primary, tok) {
+        if (state.publisherOutput && primary) {
+            if (["publisher","publisher-place"].indexOf(varname) === -1) {
+                return false;
+            } else {
+                state.publisherOutput[varname + "-token"] = tok;
+                state.publisherOutput.varlist.push(varname);
+                var lst = primary.split(/;\s*/);
+                if (lst.length === state.publisherOutput[varname + "-list"].length) {
+                    state.tmp[varname + "-list"] = lst;
+                }
+                state.tmp[varname + "-token"] = tok;
+                return true;
+            }
+        }
+        return false;
+    }
 
-	// Return function appropriate to selected options
-	function getOutputFunction(variables) {
-		var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
+    // Return function appropriate to selected options
+    function getOutputFunction(variables) {
+        var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
 
-		// Freeze mandatory values
-		mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
-		mysubsection = subsection;
-		myfieldname = fieldname;
+        // Freeze mandatory values
+        mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
+        mysubsection = subsection;
+        myfieldname = fieldname;
 
-		// Freeze option values
-		abbreviation_fallback = opt.abbreviation_fallback;
-		alternative_varname = opt.alternative_varname;
-		transform_locale = opt.transform_locale;
-		transform_fallback = opt.transform_fallback;
+        // Freeze option values
+        abbreviation_fallback = opt.abbreviation_fallback;
+        alternative_varname = opt.alternative_varname;
+        transform_locale = opt.transform_locale;
+        transform_fallback = opt.transform_fallback;
 
-		// XXXXX This is a try-and-see change, we'll see how it goes.
-		// Apply uniform transforms to all variables that request
-		// translation.
-		if (transform_locale === "locale-sec") {
-			// Long form, with secondary translation
-			return function (state, Item) {
-				var primary, secondary, primary_tok, secondary_tok, key;
-				if (!variables[0]) {
-					return null;
-				}
-				
-				// Problem for multilingual: we really should be
-				// checking for sanity on the basis of the output
-				// strings to be actually used. (also below)
-				if (state.tmp["publisher-list"]) {
-					if (variables[0] === "publisher") {
-						state.tmp["publisher-token"] = this;
-					} else if (variables[0] === "publisher-place") {
-						state.tmp["publisher-place-token"] = this;
-					}
-					return null;
-				}
-				if (state.opt["locale-suppress-title-transliteration"] 
-					|| !((state.tmp.area === 'bibliography'
-						|| (state.opt.xclass === "note" &&
-							state.tmp.area === "citation"))
-						)
-					) {
-					primary = Item[myfieldname];
-				} else {
-					primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
-				}
-				// Signifying short form -- the variable name is misleading.
-				if (mysubsection) {
-					primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
-				}
-				secondary = getTextSubField(Item, myfieldname, "locale-sec");
+        // XXXXX This is a try-and-see change, we'll see how it goes.
+        // Apply uniform transforms to all variables that request
+        // translation.
+        if (transform_locale === "locale-sec") {
+            // Long form, with secondary translation
+            return function (state, Item) {
+                var primary, secondary, primary_tok, secondary_tok, key;
+                if (!variables[0]) {
+                    return null;
+                }
+                
+                // Problem for multilingual: we really should be
+                // checking for sanity on the basis of the output
+                // strings to be actually used. (also below)
+                if (state.tmp["publisher-list"]) {
+                    if (variables[0] === "publisher") {
+                        state.tmp["publisher-token"] = this;
+                    } else if (variables[0] === "publisher-place") {
+                        state.tmp["publisher-place-token"] = this;
+                    }
+                    return null;
+                }
+                if (state.opt["locale-suppress-title-transliteration"] 
+                    || !((state.tmp.area === 'bibliography'
+                        || (state.opt.xclass === "note" &&
+                            state.tmp.area === "citation"))
+                        )
+                    ) {
+                    primary = Item[myfieldname];
+                } else {
+                    primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
+                }
+                // Signifying short form -- the variable name is misleading.
+                if (mysubsection) {
+                    primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
+                }
+                secondary = getTextSubField(Item, myfieldname, "locale-sec");
                 if ("demote" === this["leading-noise-words"]) {
                     primary = CSL.demoteNoiseWords(primary);
                     secondary = CSL.demoteNoiseWords(secondary);
                 }
-				if (secondary && ((state.tmp.area === 'bibliography' || (state.opt.xclass === "note" && state.tmp.area === "citation")))) {
-					// Signifying short form -- again, the variable name is misleading.
-					if (mysubsection) {
-						secondary = abbreviate(state, Item, alternative_varname, secondary, mysubsection, true);
-					}
-					primary_tok = CSL.Util.cloneToken(this);
-					primary_tok.strings.suffix = "";
-					secondary_tok = new CSL.Token("text", CSL.SINGLETON);
-					secondary_tok.strings.suffix = "]" + this.strings.suffix;
-					secondary_tok.strings.prefix = " [";
-		
-					state.output.append(primary, primary_tok);
-					state.output.append(secondary, secondary_tok);
-				} else {
-					state.output.append(primary, this);
-				}
-				return null;
-			};
-		} else {
-			return function (state, Item) {
-				var primary;
-				if (!variables[0]) {
-					return null;
-				}
-				primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
+                if (secondary && ((state.tmp.area === 'bibliography' || (state.opt.xclass === "note" && state.tmp.area === "citation")))) {
+                    // Signifying short form -- again, the variable name is misleading.
+                    if (mysubsection) {
+                        secondary = abbreviate(state, Item, alternative_varname, secondary, mysubsection, true);
+                    }
+                    primary_tok = CSL.Util.cloneToken(this);
+                    primary_tok.strings.suffix = "";
+                    secondary_tok = new CSL.Token("text", CSL.SINGLETON);
+                    secondary_tok.strings.suffix = "]" + this.strings.suffix;
+                    secondary_tok.strings.prefix = " [";
+        
+                    state.output.append(primary, primary_tok);
+                    state.output.append(secondary, secondary_tok);
+                } else {
+                    state.output.append(primary, this);
+                }
+                return null;
+            };
+        } else {
+            return function (state, Item) {
+                var primary;
+                if (!variables[0]) {
+                    return null;
+                }
+                primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 
                 primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
 
-				// Factor this out
-				if (publisherCheck(variables[0], primary, this)) {
-					return null;
-				} else {
+                // Factor this out
+                if (publisherCheck(variables[0], primary, this)) {
+                    return null;
+                } else {
                     if ("demote" === this["leading-noise-words"]) {
                         primary = CSL.demoteNoiseWords(primary);
                     }
-					// Safe, because when state.tmp["publisher-list"] exists,
-					// the variable must be one of publisher or publisher-place.
-					state.output.append(primary, this);
-				}
-				return null;
-			};
-		}
-	}
-	this.getOutputFunction = getOutputFunction;
+                    // Safe, because when state.tmp["publisher-list"] exists,
+                    // the variable must be one of publisher or publisher-place.
+                    state.output.append(primary, this);
+                }
+                return null;
+            };
+        }
+    }
+    this.getOutputFunction = getOutputFunction;
 
-	function getStaticOrder (name, refresh) {
-		var static_ordering_val = false;
-		if (!refresh && name["static-ordering"]) {
-			static_ordering_val = true;
-		} else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-			static_ordering_val = true;
-		} else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
-			static_ordering_val = true;
-		} else {
-			if (state.opt['auto-vietnamese-names']
-				&& (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
-					&& CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
+    function getStaticOrder (name, refresh) {
+        var static_ordering_val = false;
+        if (!refresh && name["static-ordering"]) {
+            static_ordering_val = true;
+        } else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+            static_ordering_val = true;
+        } else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
+            static_ordering_val = true;
+        } else {
+            if (state.opt['auto-vietnamese-names']
+                && (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
+                    && CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
 
-				static_ordering_val = true;
-			}
-		}
-		return static_ordering_val;
-	}
+                static_ordering_val = true;
+            }
+        }
+        return static_ordering_val;
+    }
 
-	// The name transform code is placed here to keep similar things
-	// in one place.  Obviously this module could do with a little
-	// tidying up.
+    // The name transform code is placed here to keep similar things
+    // in one place.  Obviously this module could do with a little
+    // tidying up.
 
-	/*
-	 * Return a single name object
-	 */
-	function getName (state, name, langTags) {
-		var i, ret, optLangTag, ilen, key, langTag;
-		if (state.tmp.area.slice(-5) === "_sort") {
-			 langTags = state.opt["locale-sort"];
-		}
-		if ("string" === typeof langTags) {
-			langTags = [langTags];
-		}
-		// Normalize to string
-		if (!name.family) {
-			name.family = "";
-		}
-		if (!name.given) {
-			name.given = "";
-		}
-		//
-		// Optionally add a static-ordering toggle for non-roman, non-Cyrillic
-		// names, based on the headline values.
-		//
-		var static_ordering_freshcheck = false;
-		var block_initialize = false;
-		var transliterated = false;
-		var static_ordering_val = getStaticOrder(name);
-		//
-		// Step through the requested languages in sequence
-		// until a match is found
-		//
-		if (langTags && name.multi) {
-			for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
-				langTag = langTags[i];
-				if (name.multi._key[langTag]) {
-					name = name.multi._key[langTag];
-					transliterated = true;
-					if (!state.opt['locale-use-original-name-format']) {
-						static_ordering_freshcheck = true;
-					} else {
-						// Quash initialize-with if original was non-romanesque
-						// and we are trying to preserve the original formatting
-						// conventions.
-						// (i.e. supply as much information as possible if
-						// the transliteration spans radically different
-						// writing conventions)
-						if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-							block_initialize = true;
-						}
-					}
-					break;
-				}
-			}
-		}
-		// var clone the item before writing into it
-		name = {
-			family:name.family,
-			given:name.given,
-			"non-dropping-particle":name["non-dropping-particle"],
-			"dropping-particle":name["dropping-particle"],
-			suffix:name.suffix,
-			"static-ordering":static_ordering_val,
-			"parse-names":name["parse-names"],
-			"comma-suffix":name["comma-suffix"],
-			"comma-dropping-particle":name["comma-dropping-particle"],
-			transliterated:transliterated,
-			block_initialize:block_initialize,
-			literal:name.literal,
-			isInstitution:name.isInstitution
-		};
-		if (static_ordering_freshcheck &&
-			!getStaticOrder(name, true)) {
-			
-			name["static-ordering"] = false;
-		}
-		if (!name.literal && (!name.given && name.family && name.isInstitution)) {
-			name.literal = name.family;
-		}
-		if (name.literal) {
-			delete name.family;
-			delete name.given;
-		}
-		return name;
-	}
-	this.name = getName;
+    /*
+     * Return a single name object
+     */
+    function getName (state, name, langTags) {
+        var i, ret, optLangTag, ilen, key, langTag;
+        if (state.tmp.area.slice(-5) === "_sort") {
+             langTags = state.opt["locale-sort"];
+        }
+        if ("string" === typeof langTags) {
+            langTags = [langTags];
+        }
+        // Normalize to string
+        if (!name.family) {
+            name.family = "";
+        }
+        if (!name.given) {
+            name.given = "";
+        }
+        //
+        // Optionally add a static-ordering toggle for non-roman, non-Cyrillic
+        // names, based on the headline values.
+        //
+        var static_ordering_freshcheck = false;
+        var block_initialize = false;
+        var transliterated = false;
+        var static_ordering_val = getStaticOrder(name);
+        //
+        // Step through the requested languages in sequence
+        // until a match is found
+        //
+        if (langTags && name.multi) {
+            for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
+                langTag = langTags[i];
+                if (name.multi._key[langTag]) {
+                    name = name.multi._key[langTag];
+                    transliterated = true;
+                    if (!state.opt['locale-use-original-name-format']) {
+                        static_ordering_freshcheck = true;
+                    } else {
+                        // Quash initialize-with if original was non-romanesque
+                        // and we are trying to preserve the original formatting
+                        // conventions.
+                        // (i.e. supply as much information as possible if
+                        // the transliteration spans radically different
+                        // writing conventions)
+                        if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+                            block_initialize = true;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        // var clone the item before writing into it
+        name = {
+            family:name.family,
+            given:name.given,
+            "non-dropping-particle":name["non-dropping-particle"],
+            "dropping-particle":name["dropping-particle"],
+            suffix:name.suffix,
+            "static-ordering":static_ordering_val,
+            "parse-names":name["parse-names"],
+            "comma-suffix":name["comma-suffix"],
+            "comma-dropping-particle":name["comma-dropping-particle"],
+            transliterated:transliterated,
+            block_initialize:block_initialize,
+            literal:name.literal,
+            isInstitution:name.isInstitution
+        };
+        if (static_ordering_freshcheck &&
+            !getStaticOrder(name, true)) {
+            
+            name["static-ordering"] = false;
+        }
+        if (!name.literal && (!name.given && name.family && name.isInstitution)) {
+            name.literal = name.family;
+        }
+        if (name.literal) {
+            delete name.family;
+            delete name.given;
+        }
+        return name;
+    }
+    this.name = getName;
 
     function getHereinafter (Item) {
         var hereinafter_author_title = [];

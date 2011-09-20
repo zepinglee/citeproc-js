@@ -49,11 +49,11 @@
 /*global CSL: true */
 
 CSL.Node.generate = {
-	build: function (state, target) {
-		if (state.build.area === "bibliography") {
+    build: function (state, target) {
+        if (state.build.area === "bibliography") {
             var obj = this.generate_type_map;
             obj.triggers = this.generate_trigger_fields;
             state.registry.generate.rules.push(obj);
-		}
-	}
+        }
+    }
 };

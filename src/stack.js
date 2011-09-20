@@ -58,10 +58,10 @@
  * @class
  */
 CSL.Stack = function (val, literal) {
-	this.mystack = [];
-	if (literal || val) {
-		this.mystack.push(val);
-	}
+    this.mystack = [];
+    if (literal || val) {
+        this.mystack.push(val);
+    }
 };
 
 /**
@@ -69,18 +69,18 @@ CSL.Stack = function (val, literal) {
  * <p>This just does what it says.</p>
  */
 CSL.Stack.prototype.push = function (val, literal) {
-	if (literal || val) {
-		this.mystack.push(val);
-	} else {
-		this.mystack.push("");
-	}
+    if (literal || val) {
+        this.mystack.push(val);
+    } else {
+        this.mystack.push("");
+    }
 };
 
 /**
  * Clear the stack
  */
 CSL.Stack.prototype.clear = function () {
-	this.mystack = [];
+    this.mystack = [];
 };
 
 /**
@@ -89,17 +89,17 @@ CSL.Stack.prototype.clear = function () {
  * main code.</p>
  */
 CSL.Stack.prototype.replace = function (val, literal) {
-	//
-	// safety fix after a bug was chased down.  Rhino
-	// JS will process a negative index without error (!).
-	if (this.mystack.length === 0) {
-		throw "Internal CSL processor error: attempt to replace nonexistent stack item with " + val;
-	}
-	if (literal || val) {
-		this.mystack[(this.mystack.length - 1)] = val;
-	} else {
-		this.mystack[(this.mystack.length - 1)] = "";
-	}
+    //
+    // safety fix after a bug was chased down.  Rhino
+    // JS will process a negative index without error (!).
+    if (this.mystack.length === 0) {
+        throw "Internal CSL processor error: attempt to replace nonexistent stack item with " + val;
+    }
+    if (literal || val) {
+        this.mystack[(this.mystack.length - 1)] = val;
+    } else {
+        this.mystack[(this.mystack.length - 1)] = "";
+    }
 };
 
 
@@ -108,7 +108,7 @@ CSL.Stack.prototype.replace = function (val, literal) {
  * <p>Just does what it says.</p>
  */
 CSL.Stack.prototype.pop = function () {
-	return this.mystack.pop();
+    return this.mystack.pop();
 };
 
 
@@ -118,7 +118,7 @@ CSL.Stack.prototype.pop = function () {
  * the main code.</p>
  */
 CSL.Stack.prototype.value = function () {
-	return this.mystack.slice(-1)[0];
+    return this.mystack.slice(-1)[0];
 };
 
 
@@ -128,5 +128,5 @@ CSL.Stack.prototype.value = function () {
  * be handled on the stack</p>
  */
 CSL.Stack.prototype.length = function () {
-	return this.mystack.length;
+    return this.mystack.length;
 };

@@ -49,40 +49,40 @@
 /*global CSL: true */
 
 CSL.Node.label = {
-	build: function (state, target) {
-		var debug = false;
-		
-		if (this.strings.term) {
-			// Non-names labels
-			var plural = false;
-			if (!this.strings.form) {
-				this.strings.form = "long";
-			}
-			var func = function (state, Item, item) {
-				// Must accomplish this without touching strings
-				// shared with the calling application: "sub verbo"
-				// and "sub-verbo" must both pass, as they stand.
-				//if (item && item.label === "sub verbo") {
-				//	item.label = "sub-verbo";
-				//}
-				// This is abstracted away, because the same
-				// logic must be run in cs:names.
-				var termtxt = CSL.evaluateLabel(this, state, Item, item);
-				state.output.append(termtxt, this);
-			};
-			this.execs.push(func);
-		} else {
-			// Names labels
-			// Picked up in names END
-			if (!state.build.name_label) {
-				state.build.name_label = {};
-			}
-			if (!state.build.name_flag) {
-				state.build.name_label.before = this;
-			} else {
-				state.build.name_label.after = this;
-			}
-		}
-		target.push(this);
-	}
+    build: function (state, target) {
+        var debug = false;
+        
+        if (this.strings.term) {
+            // Non-names labels
+            var plural = false;
+            if (!this.strings.form) {
+                this.strings.form = "long";
+            }
+            var func = function (state, Item, item) {
+                // Must accomplish this without touching strings
+                // shared with the calling application: "sub verbo"
+                // and "sub-verbo" must both pass, as they stand.
+                //if (item && item.label === "sub verbo") {
+                //    item.label = "sub-verbo";
+                //}
+                // This is abstracted away, because the same
+                // logic must be run in cs:names.
+                var termtxt = CSL.evaluateLabel(this, state, Item, item);
+                state.output.append(termtxt, this);
+            };
+            this.execs.push(func);
+        } else {
+            // Names labels
+            // Picked up in names END
+            if (!state.build.name_label) {
+                state.build.name_label = {};
+            }
+            if (!state.build.name_flag) {
+                state.build.name_label.before = this;
+            } else {
+                state.build.name_label.after = this;
+            }
+        }
+        target.push(this);
+    }
 };

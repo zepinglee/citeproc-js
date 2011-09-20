@@ -49,21 +49,21 @@
 /*global CSL: true */
 
 CSL.Node.sort = {
-	build: function (state, target) {
-		if (this.tokentype === CSL.START) {
-			if (state.build.area === "citation") {
-				state.parallel.use_parallels = false;
-				state.opt.sort_citations = true;
-			}
-			state.build.sort_flag  = true;
-			state.build.area_return = state.build.area;
-			state.build.area = state.build.area + "_sort";
-		}
-		if (this.tokentype === CSL.END) {
-			state.build.area = state.build.area_return;
-			state.build.sort_flag  = false;
-		}
-	}
+    build: function (state, target) {
+        if (this.tokentype === CSL.START) {
+            if (state.build.area === "citation") {
+                state.parallel.use_parallels = false;
+                state.opt.sort_citations = true;
+            }
+            state.build.sort_flag  = true;
+            state.build.area_return = state.build.area;
+            state.build.area = state.build.area + "_sort";
+        }
+        if (this.tokentype === CSL.END) {
+            state.build.area = state.build.area_return;
+            state.build.sort_flag  = false;
+        }
+    }
 };
 
 

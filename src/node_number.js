@@ -49,80 +49,80 @@
 /*global CSL: true */
 
 CSL.Node.number = {
-	build: function (state, target) {
-		var func;
-		CSL.Util.substituteStart.call(this, state, target);
-		//
-		// This should push a rangeable object to the queue.
-		//
-		if (this.strings.form === "roman") {
-			this.formatter = state.fun.romanizer;
-		} else if (this.strings.form === "ordinal") {
-			this.formatter = state.fun.ordinalizer;
-		} else if (this.strings.form === "long-ordinal") {
-			this.formatter = state.fun.long_ordinalizer;
-		}
-		if ("undefined" === typeof this.successor_prefix) {
-			this.successor_prefix = state[state.build.area].opt.layout_delimiter;
-		}
-		if ("undefined" === typeof this.splice_prefix) {
-			this.splice_prefix = state[state.build.area].opt.layout_delimiter;
-		}
-		// is this needed?
-		//if ("undefined" === typeof this.splice_prefix){
-		//	this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
-		//}
-		//
-		// Whether we actually stick a number object on
-		// the output queue depends on whether the field
-		// contains a pure number.
-		//
-		// push number or text
-		func = function (state, Item, item) {
-			var varname, num, number, m, j, jlen;
-			varname = this.variables[0];
-			state.parallel.StartVariable(this.variables[0]);
-			state.parallel.AppendToVariable(Item[this.variables[0]]);
+    build: function (state, target) {
+        var func;
+        CSL.Util.substituteStart.call(this, state, target);
+        //
+        // This should push a rangeable object to the queue.
+        //
+        if (this.strings.form === "roman") {
+            this.formatter = state.fun.romanizer;
+        } else if (this.strings.form === "ordinal") {
+            this.formatter = state.fun.ordinalizer;
+        } else if (this.strings.form === "long-ordinal") {
+            this.formatter = state.fun.long_ordinalizer;
+        }
+        if ("undefined" === typeof this.successor_prefix) {
+            this.successor_prefix = state[state.build.area].opt.layout_delimiter;
+        }
+        if ("undefined" === typeof this.splice_prefix) {
+            this.splice_prefix = state[state.build.area].opt.layout_delimiter;
+        }
+        // is this needed?
+        //if ("undefined" === typeof this.splice_prefix){
+        //    this.splice_prefix = state[state.tmp.area].opt.layout_delimiter;
+        //}
+        //
+        // Whether we actually stick a number object on
+        // the output queue depends on whether the field
+        // contains a pure number.
+        //
+        // push number or text
+        func = function (state, Item, item) {
+            var varname, num, number, m, j, jlen;
+            varname = this.variables[0];
+            state.parallel.StartVariable(this.variables[0]);
+            state.parallel.AppendToVariable(Item[this.variables[0]]);
 
-			if (varname === "page-range" || varname === "page-first") {
-				varname = "page";
-			}
-			if (!state.tmp.shadow_numbers[varname]) {
+            if (varname === "page-range" || varname === "page-first") {
+                varname = "page";
+            }
+            if (!state.tmp.shadow_numbers[varname]) {
                 if (varname === "locator") {
                     state.processNumber(item, varname);
                 } else {
-				    state.processNumber(Item, varname);
+                    state.processNumber(Item, varname);
                 }
-			}
-			var value = state.tmp.shadow_numbers[varname].value;
+            }
+            var value = state.tmp.shadow_numbers[varname].value;
             var blob;
-			if (value) {
-				if ("string" === typeof value) {
-					blob = new CSL.NumericBlob(value, this);
-					state.output.append(blob, "literal");
-				} else if ("object" === typeof value) {
-					state.output.openLevel("empty");
-					for (var i = 0, ilen = value.length; i < ilen; i += 1) {
-						blob = new CSL.NumericBlob(value[i], this);
-						blob.gender = state.opt["noun-genders"][varname];
-						if (i > 0) {
-							// this.output.append(prefixes[i], "empty");
-							blob.successor_prefix = " & ";
-							blob.range_prefix = "\u2013";
-							blob.splice_prefix = ", ";
-						}
-						state.output.append(blob, "literal");
-					}
-					state.output.closeLevel("empty");
-				}
-			}
-			state.parallel.CloseVariable("number");
-		};
-		this.execs.push(func);
+            if (value) {
+                if ("string" === typeof value) {
+                    blob = new CSL.NumericBlob(value, this);
+                    state.output.append(blob, "literal");
+                } else if ("object" === typeof value) {
+                    state.output.openLevel("empty");
+                    for (var i = 0, ilen = value.length; i < ilen; i += 1) {
+                        blob = new CSL.NumericBlob(value[i], this);
+                        blob.gender = state.opt["noun-genders"][varname];
+                        if (i > 0) {
+                            // this.output.append(prefixes[i], "empty");
+                            blob.successor_prefix = " & ";
+                            blob.range_prefix = "\u2013";
+                            blob.splice_prefix = ", ";
+                        }
+                        state.output.append(blob, "literal");
+                    }
+                    state.output.closeLevel("empty");
+                }
+            }
+            state.parallel.CloseVariable("number");
+        };
+        this.execs.push(func);
 
-		target.push(this);
-		CSL.Util.substituteEnd.call(this, state, target);
-	}
+        target.push(this);
+        CSL.Util.substituteEnd.call(this, state, target);
+    }
 };
 
 

@@ -49,54 +49,54 @@
 /*global CSL: true */
 
 CSL.Node["else-if"] = {
-	//
-	// these function are the same as those in if, might just clone
-	build: function (state, target) {
-		var func, tryposition;
-		if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-			if (this.locale) {
-				state.opt.lang = this.locale;
-			}
-		    if (! this.evaluator) {
-				//
-				// cut and paste of "any"
-				this.evaluator = state.fun.match.any;
-		    }
-		}
-		if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
-			func = function (state, Item) {
-				if (this.locale_default) {
-					// Set plain group closing tag, with locale reversion marker
-					state.output.current.value().old_locale = this.locale_default;
-					state.output.closeLevel("empty");
-					state.opt.lang = this.locale_default;
-				}
-				var next = this[state.tmp.jump.value()];
-				return next;
-			};
-			this.execs.push(func);
-			if (this.locale_default) {
-				state.opt.lang = this.locale_default;
-			}
-		}
-		target.push(this);
-	},
-	configure: function (state, pos) {
-		if (this.tokentype === CSL.START) {
-			// jump index on failure
-			this.fail = state.configure.fail.slice(-1)[0];
-			this.succeed = this.next;
-			state.configure.fail[(state.configure.fail.length - 1)] = pos;
-		} else if (this.tokentype === CSL.SINGLETON) {
-			// jump index on failure
-			this.fail = this.next;
-			this.succeed = state.configure.succeed.slice(-1)[0];
-			state.configure.fail[(state.configure.fail.length - 1)] = pos;
-		} else {
-			// jump index on success
-			this.succeed = state.configure.succeed.slice(-1)[0];
-			this.fail = this.next;
-		}
-	}
+    //
+    // these function are the same as those in if, might just clone
+    build: function (state, target) {
+        var func, tryposition;
+        if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+            if (this.locale) {
+                state.opt.lang = this.locale;
+            }
+            if (! this.evaluator) {
+                //
+                // cut and paste of "any"
+                this.evaluator = state.fun.match.any;
+            }
+        }
+        if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
+            func = function (state, Item) {
+                if (this.locale_default) {
+                    // Set plain group closing tag, with locale reversion marker
+                    state.output.current.value().old_locale = this.locale_default;
+                    state.output.closeLevel("empty");
+                    state.opt.lang = this.locale_default;
+                }
+                var next = this[state.tmp.jump.value()];
+                return next;
+            };
+            this.execs.push(func);
+            if (this.locale_default) {
+                state.opt.lang = this.locale_default;
+            }
+        }
+        target.push(this);
+    },
+    configure: function (state, pos) {
+        if (this.tokentype === CSL.START) {
+            // jump index on failure
+            this.fail = state.configure.fail.slice(-1)[0];
+            this.succeed = this.next;
+            state.configure.fail[(state.configure.fail.length - 1)] = pos;
+        } else if (this.tokentype === CSL.SINGLETON) {
+            // jump index on failure
+            this.fail = this.next;
+            this.succeed = state.configure.succeed.slice(-1)[0];
+            state.configure.fail[(state.configure.fail.length - 1)] = pos;
+        } else {
+            // jump index on success
+            this.succeed = state.configure.succeed.slice(-1)[0];
+            this.fail = this.next;
+        }
+    }
 };
 

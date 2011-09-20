@@ -49,228 +49,228 @@
 /*global CSL: true */
 
 CSL.localeResolve = function (langstr) {
-	var ret, langlst;
-	ret = {};
-	//if ("undefined" === typeof langstr) {
-	//	langstr = "en_US";
-	//}
-	langlst = langstr.split(/[\-_]/);
-	ret.base = CSL.LANG_BASES[langlst[0]];
-	if ("undefined" === typeof ret.base) {
-		CSL.debug("Warning: unknown locale "+langstr+", setting to en-US");
-		return {base:"en-US", best:"en-US", bare:"en"};
-	}
-	if (langlst.length === 1 || langlst[1] === "x") {
-		ret.best = ret.base.replace("_", "-");
-	} else {
-		ret.best = langlst.slice(0, 2).join("-");
-	}
-	ret.base = ret.base.replace("_", "-");
-	ret.bare = langlst[0];
-	return ret;
+    var ret, langlst;
+    ret = {};
+    //if ("undefined" === typeof langstr) {
+    //    langstr = "en_US";
+    //}
+    langlst = langstr.split(/[\-_]/);
+    ret.base = CSL.LANG_BASES[langlst[0]];
+    if ("undefined" === typeof ret.base) {
+        CSL.debug("Warning: unknown locale "+langstr+", setting to en-US");
+        return {base:"en-US", best:"en-US", bare:"en"};
+    }
+    if (langlst.length === 1 || langlst[1] === "x") {
+        ret.best = ret.base.replace("_", "-");
+    } else {
+        ret.best = langlst.slice(0, 2).join("-");
+    }
+    ret.base = ret.base.replace("_", "-");
+    ret.bare = langlst[0];
+    return ret;
 };
 
 CSL.localeParse = function (arg) {
-	// 
-	// Needs fixing.  How do we make the hyphen optional,
-	// but, you know, required?
-	// 
-	//if (arg.match(/^\s+([a-zA-Z]{2})(?:-([a-zA-Z]{2})(?:[^a-zA-Z]|$))/)) {
-	//	
-	//}
-	return arg;
+    // 
+    // Needs fixing.  How do we make the hyphen optional,
+    // but, you know, required?
+    // 
+    //if (arg.match(/^\s+([a-zA-Z]{2})(?:-([a-zA-Z]{2})(?:[^a-zA-Z]|$))/)) {
+    //    
+    //}
+    return arg;
 };
 
 // Use call to invoke this.
 CSL.Engine.prototype.localeConfigure = function (langspec) {
-	var localexml;
-	localexml = this.sys.xml.makeXml(this.sys.retrieveLocale("en-US"));
-	this.localeSet(localexml, "en-US", langspec.best);
-	if (langspec.best !== "en-US") {
-		if (langspec.base !== langspec.best) {
-			localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.base));
-			this.localeSet(localexml, langspec.base, langspec.best);
-		}
-		localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.best));
-		this.localeSet(localexml, langspec.best, langspec.best);		
-	}
-	this.localeSet(this.cslXml, "", langspec.best);
-	this.localeSet(this.cslXml, langspec.bare, langspec.best);
-	if (langspec.base !== langspec.best) {
-		this.localeSet(this.cslXml, langspec.base, langspec.best);
-	}
-	this.localeSet(this.cslXml, langspec.best, langspec.best);
+    var localexml;
+    localexml = this.sys.xml.makeXml(this.sys.retrieveLocale("en-US"));
+    this.localeSet(localexml, "en-US", langspec.best);
+    if (langspec.best !== "en-US") {
+        if (langspec.base !== langspec.best) {
+            localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.base));
+            this.localeSet(localexml, langspec.base, langspec.best);
+        }
+        localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.best));
+        this.localeSet(localexml, langspec.best, langspec.best);        
+    }
+    this.localeSet(this.cslXml, "", langspec.best);
+    this.localeSet(this.cslXml, langspec.bare, langspec.best);
+    if (langspec.base !== langspec.best) {
+        this.localeSet(this.cslXml, langspec.base, langspec.best);
+    }
+    this.localeSet(this.cslXml, langspec.best, langspec.best);
 };
-	
+    
 //
 // XXXXX: Got it.  The locales objects need to be reorganized,
 // with a top-level local specifier, and terms, opts, dates
 // below.
 //
 CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
-	var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target, i, ilen;
-	lang_in = lang_in.replace("_", "-");
-	lang_out = lang_out.replace("_", "-");
+    var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target, i, ilen;
+    lang_in = lang_in.replace("_", "-");
+    lang_out = lang_out.replace("_", "-");
 
-	if (!this.locale[lang_out]) {
-		this.locale[lang_out] = {};
-		this.locale[lang_out].terms = {};
-		this.locale[lang_out].opts = {};
-		this.locale[lang_out].dates = {};
-	}
-	//
-	// Xml: Test if node is "locale" (nb: ns declarations need to be invoked
-	// on every access to the xml object; bundle this with the functions
-	//
-	locale = this.sys.xml.makeXml();
-	if (this.sys.xml.nodeNameIs(myxml, 'locale')) {
-		locale = myxml;
-	} else {
-		//
-		// Xml: get a list of all "locale" nodes
-		//
-		nodes = this.sys.xml.getNodesByName(myxml, "locale");
-		for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-			blob = nodes[pos];
-			//
-			// Xml: get locale xml:lang
-			//
-			if (this.sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
-				locale = blob;
-				break;
-			}
-		}
-	}
-	//
-	// Xml: get a list of any cs:type nodes within locale
-	//
-	nodes = this.sys.xml.getNodesByName(locale, 'type');
-	for (i = 0, ilen = this.sys.xml.numberofnodes(nodes); i < ilen; i += 1) {
-		var typenode = nodes[i];
-		var type = this.sys.xml.getAttributeValue(typenode, 'name');
-		var gender = this.sys.xml.getAttributeValue(typenode, 'gender');
-		this.opt.gender[type] = gender;
-	}
-	//
-	// Xml: get a list of term nodes within locale
-	//
-	nodes = this.sys.xml.getNodesByName(locale, 'term');
-	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-		term = nodes[pos];
-		//
-		// Xml: get string value of attribute
-		//
-		termname = this.sys.xml.getAttributeValue(term, 'name');
-		if (termname === "sub verbo") {
-			termname = "sub-verbo";
-		}
-		if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
-			this.locale[lang_out].terms[termname] = {};
-		}
-		form = "long";
-		genderform = false;
-		//
-		// Xml: get string value of form attribute, if any
-		//
-		if (this.sys.xml.getAttributeValue(term, 'form')) {
-			form = this.sys.xml.getAttributeValue(term, 'form');
-		}
-		//
-		// Xml: get string value of gender attribute, if any
-		// 
-		if (this.sys.xml.getAttributeValue(term, 'gender-form')) {
-			genderform = this.sys.xml.getAttributeValue(term, 'gender-form');
-		}
-		//
-		// Xml: set global gender assignment for variable associated
-		// with term name
-		// 
-		if (this.sys.xml.getAttributeValue(term, 'gender')) {
-			this.opt["noun-genders"][termname] = this.sys.xml.getAttributeValue(term, 'gender');
-		}
-		// Work on main segment or gender-specific sub-segment as appropriate
-		if (genderform) {
-			this.locale[lang_out].terms[termname][genderform] = {};
-			this.locale[lang_out].terms[termname][genderform][form] = [];
-			target = this.locale[lang_out].terms[termname][genderform];
-		} else {
-			this.locale[lang_out].terms[termname][form] = [];
-			target = this.locale[lang_out].terms[termname];
-		}
-		//
-		// Xml: test of existence of node
-		//
-		if (this.sys.xml.numberofnodes(this.sys.xml.getNodesByName(term, 'multiple'))) {
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			target[form][0] = this.sys.xml.getNodeValue(term, 'single');
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			target[form][1] = this.sys.xml.getNodeValue(term, 'multiple');
-		} else {
-			//
-			// Xml: get string value of attribute, plus
-			// Xml: get string value of node content
-			//
-			target[form] = this.sys.xml.getNodeValue(term);
-		}
-	}
-	// Iterate over main segments, and fill in any holes in gender-specific data
-	// sub-segments
-	for (termname in this.locale[lang_out].terms) {
-		if (this.locale[lang_out].terms.hasOwnProperty(termname)) {
-		for (i = 0, ilen = 2; i < ilen; i += 1) {
-			genderform = CSL.GENDERS[i];
-			if (this.locale[lang_out].terms[termname][genderform]) {
-				for (form in this.locale[lang_out].terms[termname]) {
-					if (!this.locale[lang_out].terms[termname][genderform][form]) {
-						this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
-					}
-				}
-			}
-		}
-		}
-	}
-	//
-	// Xml: get list of nodes by node type
-	//
-	nodes = this.sys.xml.getNodesByName(locale, 'style-options');
-	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-		if (true) {
-			styleopts = nodes[pos];
-			//
-			// Xml: get list of attributes on a node
-			//
-			attributes = this.sys.xml.attributes(styleopts);
-			for (attrname in attributes) {
-				if (attributes.hasOwnProperty(attrname)) {
-					if (attributes[attrname] === "true") {
-						// trim off leading @
-						this.locale[lang_out].opts[attrname.slice(1)] = true;
-					} else {
-						// trim off leading @
-						this.locale[lang_out].opts[attrname.slice(1)] = false;
-					}
-				}
-			}
-		}
-	}
-	//
-	// Xml: get list of nodes by type
-	//
-	nodes = this.sys.xml.getNodesByName(locale, 'date');
-	for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
-		if (true) {
-			date = nodes[pos];
-			//
-			// Xml: get string value of attribute
-			//
-			this.locale[lang_out].dates[this.sys.xml.getAttributeValue(date, "form")] = date;
-		}
-	}
+    if (!this.locale[lang_out]) {
+        this.locale[lang_out] = {};
+        this.locale[lang_out].terms = {};
+        this.locale[lang_out].opts = {};
+        this.locale[lang_out].dates = {};
+    }
+    //
+    // Xml: Test if node is "locale" (nb: ns declarations need to be invoked
+    // on every access to the xml object; bundle this with the functions
+    //
+    locale = this.sys.xml.makeXml();
+    if (this.sys.xml.nodeNameIs(myxml, 'locale')) {
+        locale = myxml;
+    } else {
+        //
+        // Xml: get a list of all "locale" nodes
+        //
+        nodes = this.sys.xml.getNodesByName(myxml, "locale");
+        for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+            blob = nodes[pos];
+            //
+            // Xml: get locale xml:lang
+            //
+            if (this.sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
+                locale = blob;
+                break;
+            }
+        }
+    }
+    //
+    // Xml: get a list of any cs:type nodes within locale
+    //
+    nodes = this.sys.xml.getNodesByName(locale, 'type');
+    for (i = 0, ilen = this.sys.xml.numberofnodes(nodes); i < ilen; i += 1) {
+        var typenode = nodes[i];
+        var type = this.sys.xml.getAttributeValue(typenode, 'name');
+        var gender = this.sys.xml.getAttributeValue(typenode, 'gender');
+        this.opt.gender[type] = gender;
+    }
+    //
+    // Xml: get a list of term nodes within locale
+    //
+    nodes = this.sys.xml.getNodesByName(locale, 'term');
+    for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+        term = nodes[pos];
+        //
+        // Xml: get string value of attribute
+        //
+        termname = this.sys.xml.getAttributeValue(term, 'name');
+        if (termname === "sub verbo") {
+            termname = "sub-verbo";
+        }
+        if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
+            this.locale[lang_out].terms[termname] = {};
+        }
+        form = "long";
+        genderform = false;
+        //
+        // Xml: get string value of form attribute, if any
+        //
+        if (this.sys.xml.getAttributeValue(term, 'form')) {
+            form = this.sys.xml.getAttributeValue(term, 'form');
+        }
+        //
+        // Xml: get string value of gender attribute, if any
+        // 
+        if (this.sys.xml.getAttributeValue(term, 'gender-form')) {
+            genderform = this.sys.xml.getAttributeValue(term, 'gender-form');
+        }
+        //
+        // Xml: set global gender assignment for variable associated
+        // with term name
+        // 
+        if (this.sys.xml.getAttributeValue(term, 'gender')) {
+            this.opt["noun-genders"][termname] = this.sys.xml.getAttributeValue(term, 'gender');
+        }
+        // Work on main segment or gender-specific sub-segment as appropriate
+        if (genderform) {
+            this.locale[lang_out].terms[termname][genderform] = {};
+            this.locale[lang_out].terms[termname][genderform][form] = [];
+            target = this.locale[lang_out].terms[termname][genderform];
+        } else {
+            this.locale[lang_out].terms[termname][form] = [];
+            target = this.locale[lang_out].terms[termname];
+        }
+        //
+        // Xml: test of existence of node
+        //
+        if (this.sys.xml.numberofnodes(this.sys.xml.getNodesByName(term, 'multiple'))) {
+            //
+            // Xml: get string value of attribute, plus
+            // Xml: get string value of node content
+            //
+            target[form][0] = this.sys.xml.getNodeValue(term, 'single');
+            //
+            // Xml: get string value of attribute, plus
+            // Xml: get string value of node content
+            //
+            target[form][1] = this.sys.xml.getNodeValue(term, 'multiple');
+        } else {
+            //
+            // Xml: get string value of attribute, plus
+            // Xml: get string value of node content
+            //
+            target[form] = this.sys.xml.getNodeValue(term);
+        }
+    }
+    // Iterate over main segments, and fill in any holes in gender-specific data
+    // sub-segments
+    for (termname in this.locale[lang_out].terms) {
+        if (this.locale[lang_out].terms.hasOwnProperty(termname)) {
+        for (i = 0, ilen = 2; i < ilen; i += 1) {
+            genderform = CSL.GENDERS[i];
+            if (this.locale[lang_out].terms[termname][genderform]) {
+                for (form in this.locale[lang_out].terms[termname]) {
+                    if (!this.locale[lang_out].terms[termname][genderform][form]) {
+                        this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
+                    }
+                }
+            }
+        }
+        }
+    }
+    //
+    // Xml: get list of nodes by node type
+    //
+    nodes = this.sys.xml.getNodesByName(locale, 'style-options');
+    for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+        if (true) {
+            styleopts = nodes[pos];
+            //
+            // Xml: get list of attributes on a node
+            //
+            attributes = this.sys.xml.attributes(styleopts);
+            for (attrname in attributes) {
+                if (attributes.hasOwnProperty(attrname)) {
+                    if (attributes[attrname] === "true") {
+                        // trim off leading @
+                        this.locale[lang_out].opts[attrname.slice(1)] = true;
+                    } else {
+                        // trim off leading @
+                        this.locale[lang_out].opts[attrname.slice(1)] = false;
+                    }
+                }
+            }
+        }
+    }
+    //
+    // Xml: get list of nodes by type
+    //
+    nodes = this.sys.xml.getNodesByName(locale, 'date');
+    for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+        if (true) {
+            date = nodes[pos];
+            //
+            // Xml: get string value of attribute
+            //
+            this.locale[lang_out].dates[this.sys.xml.getAttributeValue(date, "form")] = date;
+        }
+    }
 };
 

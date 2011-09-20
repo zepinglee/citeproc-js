@@ -57,11 +57,11 @@
 CSL.Output.Formatters = {};
 
 CSL.getSafeEscape = function(outputModeOpt, outputArea) {
-	if (["bibliography", "citation"].indexOf(outputArea) > -1) {
-		return CSL.Output.Formats[outputModeOpt].text_escape;
-	} else {
-		return function (txt) { return txt; };
-	}
+    if (["bibliography", "citation"].indexOf(outputArea) > -1) {
+        return CSL.Output.Formats[outputModeOpt].text_escape;
+    } else {
+        return function (txt) { return txt; };
+    }
 };
 
 // See util_substitute.js and queue.js (append) for code supporting
@@ -75,16 +75,16 @@ CSL.getSafeEscape = function(outputModeOpt, outputArea) {
  * A noop that just delivers the string.
  */
 CSL.Output.Formatters.passthrough = function (state, string) {
-	return string;
+    return string;
 };
 
 /**
  * Force all letters in the string to lowercase.
  */
 CSL.Output.Formatters.lowercase = function (state, string) {
-	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
-	str.string = str.string.toLowerCase();
-	return CSL.Output.Formatters.undoppelString(str);
+    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
+    str.string = str.string.toLowerCase();
+    return CSL.Output.Formatters.undoppelString(str);
 };
 
 
@@ -92,9 +92,9 @@ CSL.Output.Formatters.lowercase = function (state, string) {
  * Force all letters in the string to uppercase.
  */
 CSL.Output.Formatters.uppercase = function (state, string) {
-	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
-	str.string = str.string.toUpperCase();
-	return CSL.Output.Formatters.undoppelString(str);
+    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
+    str.string = str.string.toUpperCase();
+    return CSL.Output.Formatters.undoppelString(str);
 };
 
 
@@ -103,13 +103,13 @@ CSL.Output.Formatters.uppercase = function (state, string) {
  * the rest of the characters untouched.
  */
 CSL.Output.Formatters["capitalize-first"] = function (state, string) {
-	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-	if (str.string.length) {
-		str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1);
-		return CSL.Output.Formatters.undoppelString(str);
-	} else {
-		return "";
-	}
+    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    if (str.string.length) {
+        str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1);
+        return CSL.Output.Formatters.undoppelString(str);
+    } else {
+        return "";
+    }
 };
 
 
@@ -118,9 +118,9 @@ CSL.Output.Formatters["capitalize-first"] = function (state, string) {
  * subsequent characters to lowercase.
  */
 CSL.Output.Formatters.sentence = function (state, string) {
-	var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-	str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1).toLowerCase();
-	return CSL.Output.Formatters.undoppelString(str);
+    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1).toLowerCase();
+    return CSL.Output.Formatters.undoppelString(str);
 };
 
 
@@ -131,19 +131,19 @@ CSL.Output.Formatters.sentence = function (state, string) {
  * to uppercase.
  */
 CSL.Output.Formatters["capitalize-all"] = function (state, string) {
-	var str, strings, len, pos;
-	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-	strings = str.string.split(" ");
-	len = strings.length;
-	for (pos = 0; pos < len; pos += 1) {
-		if (strings[pos].length > 1) {
+    var str, strings, len, pos;
+    str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    strings = str.string.split(" ");
+    len = strings.length;
+    for (pos = 0; pos < len; pos += 1) {
+        if (strings[pos].length > 1) {
             strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1).toLowerCase();
         } else if (strings[pos].length === 1) {
             strings[pos] = strings[pos].toUpperCase();
         }
     }
-	str.string = strings.join(" ");
-	return CSL.Output.Formatters.undoppelString(str);
+    str.string = strings.join(" ");
+    return CSL.Output.Formatters.undoppelString(str);
 };
 
 /**
@@ -153,123 +153,123 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
  * already.
  */
 CSL.Output.Formatters.title = function (state, string) {
-	var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
-	str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-	if (!string) {
-		return "";
-	}
+    var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
+    str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    if (!string) {
+        return "";
+    }
 
-	// split words
-	// Workaround for Internet Explorer
-	mx = str.string.match(/(\s+)/g);
-	lst = str.string.split(/\s+/);
-	myret = [lst[0]];
-	for (pos = 1, len = lst.length; pos < len; pos += 1) {
-		myret.push(mx[pos - 1]);
-		myret.push(lst[pos]);
-	}
-	words = myret.slice();
-	isAllUpperCase = str.string.toUpperCase() === string && !str.string.match(/[0-9]/);
-	newString = "";
-	lastWordIndex = words.length - 1;
-	previousWordIndex = -1;
-	// Inspect every word individually
-	for (pos = 0; pos <= lastWordIndex;  pos += 2) {
-		// Word has length, is not a single character, and does not consist only of spaces
-		if (words[pos].length !== 0 && words[pos].length !== 1 && !/\s+/.test(words[pos])) {
-			upperCaseVariant = words[pos].toUpperCase();
-			lowerCaseVariant = words[pos].toLowerCase();
-			var totallyskip = false;
-			// Full string is not all-uppercase, or string is one word of three characters or less
-			if (!isAllUpperCase || (words.length === 1 && words[pos].length < 4)) {
-				// This word is all-uppercase
-				if (words[pos] === upperCaseVariant) {
-					totallyskip = true;
-				}
-			}
-			// Full string is all-uppercase, or this word is all-lowercase
-			if (isAllUpperCase || words[pos] === lowerCaseVariant) {
-				skip = false;
-				for (var i = 0, ilen = CSL.SKIP_WORDS.length; i < ilen; i += 1) {
-					skipword = CSL.SKIP_WORDS[i];
-					idx = lowerCaseVariant.indexOf(skipword);
-					if (idx > -1) {
-						tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
-						if (!tmp.match(/[a-zA-Z]/)) {
-							skip = true;
-						}
-					}
-				}
-				notfirst = pos !== 0;
-				notlast = pos !== lastWordIndex;
-				if (words[previousWordIndex]) {
-					aftercolon = words[previousWordIndex].slice(-1) === ":";
-				} else {
-					aftercolon = false;
-				}
-				// Skip if word is all-uppercase, and the full string is in mixed-case
-				if (!totallyskip) {
-					// If word is a stop-word, neither first nor last, and does not follow a colon,
-					// force to lowercase
-					// Otherwise capitalize first character
-					if (skip && notfirst && notlast && !aftercolon) {
-						words[pos] = lowerCaseVariant;
-					} else {
-						words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
-					}
-				}
-			}
-			previousWordIndex = pos;
-		}
-	}
-	str.string = words.join("");
-	return CSL.Output.Formatters.undoppelString(str);
+    // split words
+    // Workaround for Internet Explorer
+    mx = str.string.match(/(\s+)/g);
+    lst = str.string.split(/\s+/);
+    myret = [lst[0]];
+    for (pos = 1, len = lst.length; pos < len; pos += 1) {
+        myret.push(mx[pos - 1]);
+        myret.push(lst[pos]);
+    }
+    words = myret.slice();
+    isAllUpperCase = str.string.toUpperCase() === string && !str.string.match(/[0-9]/);
+    newString = "";
+    lastWordIndex = words.length - 1;
+    previousWordIndex = -1;
+    // Inspect every word individually
+    for (pos = 0; pos <= lastWordIndex;  pos += 2) {
+        // Word has length, is not a single character, and does not consist only of spaces
+        if (words[pos].length !== 0 && words[pos].length !== 1 && !/\s+/.test(words[pos])) {
+            upperCaseVariant = words[pos].toUpperCase();
+            lowerCaseVariant = words[pos].toLowerCase();
+            var totallyskip = false;
+            // Full string is not all-uppercase, or string is one word of three characters or less
+            if (!isAllUpperCase || (words.length === 1 && words[pos].length < 4)) {
+                // This word is all-uppercase
+                if (words[pos] === upperCaseVariant) {
+                    totallyskip = true;
+                }
+            }
+            // Full string is all-uppercase, or this word is all-lowercase
+            if (isAllUpperCase || words[pos] === lowerCaseVariant) {
+                skip = false;
+                for (var i = 0, ilen = CSL.SKIP_WORDS.length; i < ilen; i += 1) {
+                    skipword = CSL.SKIP_WORDS[i];
+                    idx = lowerCaseVariant.indexOf(skipword);
+                    if (idx > -1) {
+                        tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
+                        if (!tmp.match(/[a-zA-Z]/)) {
+                            skip = true;
+                        }
+                    }
+                }
+                notfirst = pos !== 0;
+                notlast = pos !== lastWordIndex;
+                if (words[previousWordIndex]) {
+                    aftercolon = words[previousWordIndex].slice(-1) === ":";
+                } else {
+                    aftercolon = false;
+                }
+                // Skip if word is all-uppercase, and the full string is in mixed-case
+                if (!totallyskip) {
+                    // If word is a stop-word, neither first nor last, and does not follow a colon,
+                    // force to lowercase
+                    // Otherwise capitalize first character
+                    if (skip && notfirst && notlast && !aftercolon) {
+                        words[pos] = lowerCaseVariant;
+                    } else {
+                        words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+                    }
+                }
+            }
+            previousWordIndex = pos;
+        }
+    }
+    str.string = words.join("");
+    return CSL.Output.Formatters.undoppelString(str);
 };
 
 /*
 * Based on a suggestion by Shoji Kajita.
 */
 CSL.Output.Formatters.doppelString = function (string, rex) {
-	var ret, pos, len;
-	ret = {};
-	// rex is a function that returns an appropriate array.
-	//
-	// XXXXX: Does this work in Internet Explorer?
-	//
-	ret.array = rex(string);
-	// ret.array = string.split(rex);
-	ret.string = "";
-	len = ret.array.length;
-	for (pos = 0; pos < len; pos += 2) {
-		ret.string += ret.array[pos];
-	}
-	return ret;
+    var ret, pos, len;
+    ret = {};
+    // rex is a function that returns an appropriate array.
+    //
+    // XXXXX: Does this work in Internet Explorer?
+    //
+    ret.array = rex(string);
+    // ret.array = string.split(rex);
+    ret.string = "";
+    len = ret.array.length;
+    for (pos = 0; pos < len; pos += 2) {
+        ret.string += ret.array[pos];
+    }
+    return ret;
 };
 
 
 CSL.Output.Formatters.undoppelString = function (str) {
-	var ret, len, pos;
-	ret = "";
-	len = str.array.length;
-	for (pos = 0; pos < len; pos += 1) {
-		if ((pos % 2)) {
-			ret += str.array[pos];
-		} else {
-			ret += str.string.slice(0, str.array[pos].length);
-			str.string = str.string.slice(str.array[pos].length);
-		}
-	}
-	return ret;
+    var ret, len, pos;
+    ret = "";
+    len = str.array.length;
+    for (pos = 0; pos < len; pos += 1) {
+        if ((pos % 2)) {
+            ret += str.array[pos];
+        } else {
+            ret += str.string.slice(0, str.array[pos].length);
+            str.string = str.string.slice(str.array[pos].length);
+        }
+    }
+    return ret;
 };
 
 
 CSL.Output.Formatters.serializeItemAsRdf = function (Item) {
-	return "";
+    return "";
 };
 
 
 CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
-	return "";
+    return "";
 };
 
 

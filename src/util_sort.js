@@ -59,13 +59,13 @@ CSL.Util.Sort = {};
  * <p>Used when generating sort keys.</p>
  */
 CSL.Util.Sort.strip_prepositions = function (str) {
-	var m;
-	if ("string" === typeof str) {
-		m = str.toLocaleLowerCase();
-		m = str.match(/^((a|an|the)\s+)/);
-	}
-	if (m) {
-		str = str.substr(m[1].length);
-	}
-	return str;
+    var m;
+    if ("string" === typeof str) {
+        m = str.toLocaleLowerCase();
+        m = str.match(/^((a|an|the)\s+)/);
+    }
+    if (m) {
+        str = str.substr(m[1].length);
+    }
+    return str;
 };

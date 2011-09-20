@@ -51,86 +51,86 @@
 CSL.Util.PageRangeMangler = {};
 
 CSL.Util.PageRangeMangler.getFunction = function (state) {
-	var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
-	
-	var range_delimiter = state.getTerm("range-delimiter");
+    var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
+    
+    var range_delimiter = state.getTerm("range-delimiter");
 
-	rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
+    rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
 
-	stringify = function (lst) {
-		len = lst.length;
-		for (pos = 1; pos < len; pos += 2) {
-			if ("object" === typeof lst[pos]) {
-				lst[pos] = lst[pos].join("");
-			}
-		}
-		return lst.join("");
-	};
+    stringify = function (lst) {
+        len = lst.length;
+        for (pos = 1; pos < len; pos += 2) {
+            if ("object" === typeof lst[pos]) {
+                lst[pos] = lst[pos].join("");
+            }
+        }
+        return lst.join("");
+    };
 
-	listify = function (str) {
-		var m, lst, ret;
-		str = str.replace("\u2013", "-", "g");
-		// Workaround for Internet Explorer
-		m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
-		lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
+    listify = function (str) {
+        var m, lst, ret;
+        str = str.replace("\u2013", "-", "g");
+        // Workaround for Internet Explorer
+        m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
+        lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
 
-		if (lst.length === 0) {
-			ret = m;
-		} else {
-			ret = [lst[0]];
-			for (pos = 1, len = lst.length; pos < len; pos += 1) {
-				ret.push(m[pos - 1]);
-				ret.push(lst[pos]);
-			}
-		}
-		return ret;
-	};
+        if (lst.length === 0) {
+            ret = m;
+        } else {
+            ret = [lst[0]];
+            for (pos = 1, len = lst.length; pos < len; pos += 1) {
+                ret.push(m[pos - 1]);
+                ret.push(lst[pos]);
+            }
+        }
+        return ret;
+    };
 
-	expand = function (str) {
-		str = "" + str;
-		lst = listify(str);
-		len = lst.length;
-		for (pos = 1; pos < len; pos += 2) {
-			m = lst[pos].match(rangerex);
-			if (m) {
-				if (!m[3] || m[1] === m[3]) {
-					if (m[4].length < m[2].length) {
-						m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
-					}
-					if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
-						m[3] = range_delimiter + m[1];
-						lst[pos] = m.slice(1);
-					}
-				}
-			}
-			if ("string" === typeof lst[pos]) {
-				lst[pos] = lst[pos].replace("-", range_delimiter);
-			}
-		}
-		return lst;
-	};
+    expand = function (str) {
+        str = "" + str;
+        lst = listify(str);
+        len = lst.length;
+        for (pos = 1; pos < len; pos += 2) {
+            m = lst[pos].match(rangerex);
+            if (m) {
+                if (!m[3] || m[1] === m[3]) {
+                    if (m[4].length < m[2].length) {
+                        m[4] = m[2].slice(0, (m[2].length - m[4].length)) + m[4];
+                    }
+                    if (parseInt(m[2], 10) < parseInt(m[4], 10)) {
+                        m[3] = range_delimiter + m[1];
+                        lst[pos] = m.slice(1);
+                    }
+                }
+            }
+            if ("string" === typeof lst[pos]) {
+                lst[pos] = lst[pos].replace("-", range_delimiter);
+            }
+        }
+        return lst;
+    };
 
-	minimize = function (lst, minchars, isyear) {
-		len = lst.length;
-		for (var i = 1, ilen = lst.length; i < ilen; i += 2) {
-			lst[i][3] = minimize_internal(lst[i][1], lst[i][3], minchars, isyear);
-			if (lst[i][2].slice(1) === lst[i][0]) {
-				lst[i][2] = range_delimiter;
-			}
-		}
+    minimize = function (lst, minchars, isyear) {
+        len = lst.length;
+        for (var i = 1, ilen = lst.length; i < ilen; i += 2) {
+            lst[i][3] = minimize_internal(lst[i][1], lst[i][3], minchars, isyear);
+            if (lst[i][2].slice(1) === lst[i][0]) {
+                lst[i][2] = range_delimiter;
+            }
+        }
         return stringify(lst);
-	};
+    };
 
-	minimize_internal = function (begin, end, minchars, isyear) {
-		b = ("" + begin).split("");
-		e = ("" + end).split("");
-		ret = e.slice();
-		ret.reverse();
-		if (b.length === e.length) {
-			for (var i = 0, ilen = b.length; i < ilen; i += 1) {
-				if (b[i] === e[i] && ret.length > minchars) {
-					ret.pop();
-				} else {
+    minimize_internal = function (begin, end, minchars, isyear) {
+        b = ("" + begin).split("");
+        e = ("" + end).split("");
+        ret = e.slice();
+        ret.reverse();
+        if (b.length === e.length) {
+            for (var i = 0, ilen = b.length; i < ilen; i += 1) {
+                if (b[i] === e[i] && ret.length > minchars) {
+                    ret.pop();
+                } else {
                     if (minchars && isyear && ret.length === 3) {
                         var front = b.slice(0, i);
                         front.reverse();
@@ -138,62 +138,62 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
                     }
                     break;
                 }
-			}
-		}
-		ret.reverse();
-		return ret.join("");
-	};
+            }
+        }
+        ret.reverse();
+        return ret.join("");
+    };
 
-	chicago = function (lst) {
-		len = lst.length;
-		for (pos = 1; pos < len; pos += 2) {
-			if ("object" === typeof lst[pos]) {
-				m = lst[pos];
-				begin = parseInt(m[1], 10);
-				end = parseInt(m[3], 10);
-				if (begin > 100 && begin % 100 && parseInt((begin / 100), 10) === parseInt((end / 100), 10)) {
-					m[3] = "" + (end % 100);
-				} else if (begin >= 10000) {
-					m[3] = "" + (end % 1000);
-				}
-			}
-			if (m[2].slice(1) === m[0]) {
-				m[2] = range_delimiter;
-			}
-		}
-		return stringify(lst);
-	};
+    chicago = function (lst) {
+        len = lst.length;
+        for (pos = 1; pos < len; pos += 2) {
+            if ("object" === typeof lst[pos]) {
+                m = lst[pos];
+                begin = parseInt(m[1], 10);
+                end = parseInt(m[3], 10);
+                if (begin > 100 && begin % 100 && parseInt((begin / 100), 10) === parseInt((end / 100), 10)) {
+                    m[3] = "" + (end % 100);
+                } else if (begin >= 10000) {
+                    m[3] = "" + (end % 1000);
+                }
+            }
+            if (m[2].slice(1) === m[0]) {
+                m[2] = range_delimiter;
+            }
+        }
+        return stringify(lst);
+    };
 
-	//
-	// The top-level option handlers.
-	//
-	if (!state.opt["page-range-format"]) {
-		ret_func = function (str) {
-			//return str.replace("-", "\u2013", "g");
-			return str;
-		};
-	} else if (state.opt["page-range-format"] === "expanded") {
-		ret_func = function (str) {
-			var lst = expand(str);
-			return stringify(lst);
-		};
-	} else if (state.opt["page-range-format"] === "minimal") {
-		ret_func = function (str) {
-			var lst = expand(str);
-			return minimize(lst);
-		};
-	} else if (state.opt["page-range-format"] === "minimal-two") {
-		ret_func = function (str, isyear) {
-			var lst = expand(str);
-			return minimize(lst, 2, isyear);
-		};
-	} else if (state.opt["page-range-format"] === "chicago") {
-		ret_func = function (str) {
-			var lst = expand(str);
-			return chicago(lst);
-		};
-	}
+    //
+    // The top-level option handlers.
+    //
+    if (!state.opt["page-range-format"]) {
+        ret_func = function (str) {
+            //return str.replace("-", "\u2013", "g");
+            return str;
+        };
+    } else if (state.opt["page-range-format"] === "expanded") {
+        ret_func = function (str) {
+            var lst = expand(str);
+            return stringify(lst);
+        };
+    } else if (state.opt["page-range-format"] === "minimal") {
+        ret_func = function (str) {
+            var lst = expand(str);
+            return minimize(lst);
+        };
+    } else if (state.opt["page-range-format"] === "minimal-two") {
+        ret_func = function (str, isyear) {
+            var lst = expand(str);
+            return minimize(lst, 2, isyear);
+        };
+    } else if (state.opt["page-range-format"] === "chicago") {
+        ret_func = function (str) {
+            var lst = expand(str);
+            return chicago(lst);
+        };
+    }
 
-	return ret_func;
+    return ret_func;
 };
 

@@ -49,143 +49,143 @@
 /*global CSL: true */
 
 CSL.Node.group = {
-	build: function (state, target) {
-		var func, execs, outer_area;
-		if (this.tokentype === CSL.START) {
+    build: function (state, target) {
+        var func, execs, outer_area;
+        if (this.tokentype === CSL.START) {
 
-			CSL.Util.substituteStart.call(this, state, target);
-			if (state.build.substitute_level.value()) {
-				state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
-			}
-			// fieldcontentflag
-			func = function (state, Item) {
-				// (see below)
-				state.tmp.term_sibling.push([false, false, false], CSL.LITERAL);
-				//print("++ SET: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
-			};
-			this.execs.push(func);
-			// newoutput
-			func = function (state, Item) {
-				state.output.startTag("group", this);
-			};
-			//
-			// Paranoia.  Assure that this init function is the first executed.
-			execs = [];
-			execs.push(func);
-			this.execs = execs.concat(this.execs);
+            CSL.Util.substituteStart.call(this, state, target);
+            if (state.build.substitute_level.value()) {
+                state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
+            }
+            // fieldcontentflag
+            func = function (state, Item) {
+                // (see below)
+                state.tmp.term_sibling.push([false, false, false], CSL.LITERAL);
+                //print("++ SET: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
+            };
+            this.execs.push(func);
+            // newoutput
+            func = function (state, Item) {
+                state.output.startTag("group", this);
+            };
+            //
+            // Paranoia.  Assure that this init function is the first executed.
+            execs = [];
+            execs.push(func);
+            this.execs = execs.concat(this.execs);
 
-			// "Special handling" for nodes that contain only
-			// publisher and place, with no affixes. For such
-			// nodes only, parallel publisher/place pairs
-			// will be parsed out and properly joined, piggybacking on
-			// join parameters set on cs:citation or cs:bibliography.
-			if (this.strings["has-publisher-and-publisher-place"]) {
-				// Set the handling function only if name-delimiter
-				// is set on the parent cs:citation or cs:bibliography
-				// node.
-				state.build["publisher-special"] = true;
-				outer_area = state.build.area.replace(/_sort$/, "");
-				if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
-					// Pass variable string values to the closing
-					// tag via a global, iff they conform to expectations.
-					func = function (state, Item) {
-						if (Item.publisher && Item["publisher-place"]) {
-							var publisher_lst = Item.publisher.split(/;\s*/);
-							var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
-							if (publisher_lst.length > 1
-								&& publisher_lst.length === publisher_place_lst.length) {
-								
-								state.publisherOutput = new CSL.PublisherOutput(state);
-								state.publisherOutput["publisher-list"] = publisher_lst;
-								state.publisherOutput["publisher-place-list"] = publisher_place_lst;
-								state.publisherOutput.group_tok = this;
-							}
-						}
-					};
-					this.execs.push(func);
-				}
-			}
-		} else {
+            // "Special handling" for nodes that contain only
+            // publisher and place, with no affixes. For such
+            // nodes only, parallel publisher/place pairs
+            // will be parsed out and properly joined, piggybacking on
+            // join parameters set on cs:citation or cs:bibliography.
+            if (this.strings["has-publisher-and-publisher-place"]) {
+                // Set the handling function only if name-delimiter
+                // is set on the parent cs:citation or cs:bibliography
+                // node.
+                state.build["publisher-special"] = true;
+                outer_area = state.build.area.replace(/_sort$/, "");
+                if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
+                    // Pass variable string values to the closing
+                    // tag via a global, iff they conform to expectations.
+                    func = function (state, Item) {
+                        if (Item.publisher && Item["publisher-place"]) {
+                            var publisher_lst = Item.publisher.split(/;\s*/);
+                            var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
+                            if (publisher_lst.length > 1
+                                && publisher_lst.length === publisher_place_lst.length) {
+                                
+                                state.publisherOutput = new CSL.PublisherOutput(state);
+                                state.publisherOutput["publisher-list"] = publisher_lst;
+                                state.publisherOutput["publisher-place-list"] = publisher_place_lst;
+                                state.publisherOutput.group_tok = this;
+                            }
+                        }
+                    };
+                    this.execs.push(func);
+                }
+            }
+        } else {
 
-			// Unbundle and print publisher lists
-			// Same constraints on creating the necessary function here
-			// as above. The full content of the group formatting token
-			// is apparently not available on the closing tag here,
-			// hence the global flag on state.build.
-			if (state.build["publisher-special"]) {
-				state.build["publisher-special"] = false;
-				outer_area = state.build.area.replace(/_sort$/, "");
-				if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
-					func = function (state, Item) {
-						if (state.publisherOutput) {
-							//outer_area = state.tmp.area.replace("_sort", "");
-							state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
-							state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
-							state.publisherOutput.and = state[outer_area].opt.and;
-							state.publisherOutput.render();
-							state.publisherOutput = false;
-						}
-					};
-					this.execs.push(func);
-				}
-			}
-			
-			// quashnonfields
-			func = function (state, Item) {
-				var flag = state.tmp.term_sibling.value();
-				//if (false === flag) {
-				//print("X"+state.output.current.value().strings.prefix+"X");
-				//state.output.clearlevel();
-				//print(state.output.queue[0].blobs[2].strings.prefix)
-				//}
-				
-				state.output.endTag();
-				//print("-- QUASHER: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
-				//
-				// 0 marks an intention to render a term or value
-				// 1 marks an attempt to render a variable
-				// 2 marks an actual variable rendering
-				//
-				if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
-					//print("POP!");
-					//state.output.current.pop();
-					if (state.output.current.value().blobs) {
-						//print("pop");
-						state.output.current.value().blobs.pop();
-						//state.output.formats.pop();
-					}
-				}
-				state.tmp.term_sibling.pop();
-				//
-				// Heals group quashing glitch with nested groups.
-				//
+            // Unbundle and print publisher lists
+            // Same constraints on creating the necessary function here
+            // as above. The full content of the group formatting token
+            // is apparently not available on the closing tag here,
+            // hence the global flag on state.build.
+            if (state.build["publisher-special"]) {
+                state.build["publisher-special"] = false;
+                outer_area = state.build.area.replace(/_sort$/, "");
+                if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
+                    func = function (state, Item) {
+                        if (state.publisherOutput) {
+                            //outer_area = state.tmp.area.replace("_sort", "");
+                            state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
+                            state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
+                            state.publisherOutput.and = state[outer_area].opt.and;
+                            state.publisherOutput.render();
+                            state.publisherOutput = false;
+                        }
+                    };
+                    this.execs.push(func);
+                }
+            }
+            
+            // quashnonfields
+            func = function (state, Item) {
+                var flag = state.tmp.term_sibling.value();
+                //if (false === flag) {
+                //print("X"+state.output.current.value().strings.prefix+"X");
+                //state.output.clearlevel();
+                //print(state.output.queue[0].blobs[2].strings.prefix)
+                //}
+                
+                state.output.endTag();
+                //print("-- QUASHER: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
+                //
+                // 0 marks an intention to render a term or value
+                // 1 marks an attempt to render a variable
+                // 2 marks an actual variable rendering
+                //
+                if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
+                    //print("POP!");
+                    //state.output.current.pop();
+                    if (state.output.current.value().blobs) {
+                        //print("pop");
+                        state.output.current.value().blobs.pop();
+                        //state.output.formats.pop();
+                    }
+                }
+                state.tmp.term_sibling.pop();
+                //
+                // Heals group quashing glitch with nested groups.
+                //
 
-				// aha, I think.  There could be conditions that do NOTHING,
-				// which would leave behind an "undefined" on the flag.
-				// We need four states, not three: (1) rendered a variable;
-				// (2) failed to render a variable; (3) rendered a term;
-				// (4) didn't try to do anything.
-				if ((flag[2] || (!flag[1] && flag[0])) && state.tmp.term_sibling.mystack.length > 1) {
-					state.tmp.term_sibling.replace([false, false, true]);
-				}
-			};
-			this.execs.push(func);
-			
-			// mergeoutput
-			//func = function (state, Item) {
-			//	state.output.endTag();
-			//};
-			//this.execs.push(func);
+                // aha, I think.  There could be conditions that do NOTHING,
+                // which would leave behind an "undefined" on the flag.
+                // We need four states, not three: (1) rendered a variable;
+                // (2) failed to render a variable; (3) rendered a term;
+                // (4) didn't try to do anything.
+                if ((flag[2] || (!flag[1] && flag[0])) && state.tmp.term_sibling.mystack.length > 1) {
+                    state.tmp.term_sibling.replace([false, false, true]);
+                }
+            };
+            this.execs.push(func);
+            
+            // mergeoutput
+            //func = function (state, Item) {
+            //    state.output.endTag();
+            //};
+            //this.execs.push(func);
 
-		}
-		target.push(this);
+        }
+        target.push(this);
 
-		if (this.tokentype === CSL.END) {
-			if (state.build.substitute_level.value()) {
-				state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
-			}
-			CSL.Util.substituteEnd.call(this, state, target);
-		}
-	}
+        if (this.tokentype === CSL.END) {
+            if (state.build.substitute_level.value()) {
+                state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
+            }
+            CSL.Util.substituteEnd.call(this, state, target);
+        }
+    }
 };
 
