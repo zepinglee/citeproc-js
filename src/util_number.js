@@ -321,10 +321,17 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
 			// numbers and the hyphen suggests that 505 might
 			// be meant as a leaf number)
 			// ... or if multiple non-number elements exist in string.
+
+            var knownPlural = false;
+            if (num.match(/^[0-9]+[-\u2013][0-9]+$/)) {
+                num = this.fun.page_mangler(num);
+                var knownPlural = true;
+            }
+
 			this.tmp.shadow_numbers[variable].value = [];
 			this.tmp.shadow_numbers[variable].value.push(num);
 			// XXX set singular if only one numeric number, otherwise plural
-			if (elements.length > 1) {
+			if (elements.length > 1 || knownPlural) {
 				this.tmp.shadow_numbers[variable].plural = 1;
 			} else {
 				this.tmp.shadow_numbers[variable].plural = 0;
