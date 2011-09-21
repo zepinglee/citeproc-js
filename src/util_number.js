@@ -258,24 +258,24 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                     }
                     var subelements = elements[i].split(/\s+/);
                     for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
-                        if (subelements[j] && !subelements[j].match(/[0-9]/) && subelements[j].length > 1) {
-                            if (i === elements.length - 1 && j === subelements.length - 1) {
-                                var matchterm = this.getTerm(variable, "short");
-                                if (matchterm) {
-                                    matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
-                                    if (subelements[j].slice(0, matchterm.length).toLowerCase() !== matchterm) {
-                                        numeric = false;
-                                        break;
-                                    } else {
-                                        // Remove the final word, since it looks like it's just a variable label.
-                                        elements[i] = subelements.slice(0, -1).join(" ");
-                                    }
+                        if (!subelements[j].match(/[0-9]/)) {
+                            numeric = false;
+                        }
+                    }
+                    // Possibility of redemption
+                    if (i === elements.length - 1) {
+                        if ((elements.length > 1 || subelements.length > 1)) {
+                            var matchterm = this.getTerm(variable, "long");
+                            if (matchterm && !subelements[subelements.length - 1].match(/[0-9]/)) {
+                                matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
+                                if (subelements[subelements.length - 1].slice(0, matchterm.length).toLowerCase() === matchterm) {
+                                    // Remove the final word, since it looks like it's just a variable label,
+                                    // and force to numeric.
+                                    elements[i] = subelements.slice(0, -1).join(" ");
+                                    numeric = true;
                                 }
-                            } else {
-                                numeric = false;
-                                break;
                             }
-                        } 
+                        }
                     }
                     if (elements[i].match(/^[0-9]+$/)) {
                         elements[i] = parseInt(elements[i], 10);
