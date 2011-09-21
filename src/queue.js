@@ -448,6 +448,26 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             state.tmp.count_offset_characters = false;
         }
     }
+    var span_split = 0;
+    for (i = 0, ilen = ret.length; i < ilen; i += 1) {
+        if ("string" === typeof ret[i]) {
+            span_split = (parseInt(i, 10) + 1);
+            if (i < ret.length - 1  && "object" === typeof ret[i + 1]) {
+                if (!ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK) {
+                    //has_more = true;
+                    ret[i] += txt_esc(blob_delimiter);
+                } else {
+                    //has_more = false;
+                }
+                // One bite of the apple
+                ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK = true;
+            }
+            //span_split = ret.length;
+            //print("XXX ret: "+ret+" -- "+blob_delimiter);
+        }
+    }
+/*
+
     // XXX NOT good here. What happens if we have boy-girl-goy-girl?
     var span_split = 0;
     var has_more = false;
@@ -467,6 +487,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             //print("XXX ret: "+ret+" -- "+blob_delimiter);
         }
     }
+*/
     //if (span_split !== ret.length) {
     //  print("span_split: "+span_split+", ret.length: "+ret.length);
     //    print("   "+ret);
@@ -482,7 +503,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     //        break;
     //    }
     //}
-    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, has_more);
+    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter);
     if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
@@ -605,8 +626,8 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
                 //state.tmp.offset_characters += (use_delim.length + blob.length);
                 state.tmp.offset_characters += (use_delim.length);
             }
-            if (has_more && pos === len - 1) {
-                ret += txt_esc(delim);            }
+            //if (has_more && pos === len - 1) {
+            //    ret += txt_esc(delim);            }
         } else if (blob.status !== CSL.SUPPRESS) {
             str = blob.formatter.format(blob.num, blob.gender);
             // Workaround to get a more or less accurate value.
