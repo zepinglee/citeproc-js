@@ -701,15 +701,13 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         }
     }
     var span_split = 0;
-    var has_more = false;
     for (i = 0, ilen = ret.length; i < ilen; i += 1) {
         if ("string" === typeof ret[i]) {
             span_split = (parseInt(i, 10) + 1);
             if (i < ret.length - 1  && "object" === typeof ret[i + 1]) {
                 if (!ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK) {
-                    has_more = true;
+                    ret[i] += txt_esc(blob_delimiter);
                 } else {
-                    has_more = false;
                 }
                 ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK = true;
             }
@@ -718,7 +716,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         span_split = ret.length;
     }
-    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, has_more);
+    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter);
     if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
@@ -825,8 +823,6 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
             if (state.tmp.count_offset_characters) {
                 state.tmp.offset_characters += (use_delim.length);
             }
-            if (has_more && pos === len - 1) {
-                ret += txt_esc(delim);            }
         } else if (blob.status !== CSL.SUPPRESS) {
             str = blob.formatter.format(blob.num, blob.gender);
             var strlen = str.replace(/<[^>]*>/g, "").length;
@@ -1721,7 +1717,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.220";
+    this.processor_version = "1.0.221";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6327,12 +6323,29 @@ CSL.Node.number = {
             }
             var values = state.tmp.shadow_numbers[varname].values;
             var blob;
-            state.output.openLevel("empty");
-            for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-                var blob = new CSL[values[i][0]](values[i][1], values[i][2]);
-                state.output.append(blob, "literal");
+            if (state.opt["page-range-format"] 
+                && !this.strings.prefix && !this.strings.suffix
+                && !this.strings.form) {
+                var newstr = ""
+                for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                    newstr += values[i][1];
+                }
+                newstr = state.fun.page_mangler(newstr);
+                state.output.append(newstr, this);
+            } else {
+                state.output.openLevel("empty");
+                for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                    var blob = new CSL[values[i][0]](values[i][1], values[i][2]);
+                    if (i > 0) {
+                        blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
+                    }
+                    if (i < values.length - 1) {
+                        blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
+                    }
+                    state.output.append(blob, "literal");
+                }
+                state.output.closeLevel("empty");
             }
-            state.output.closeLevel("empty");
             state.parallel.CloseVariable("number");
         };
         this.execs.push(func);
@@ -8956,23 +8969,21 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                     }
                     var subelements = elements[i].split(/\s+/);
                     for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
-                        if (subelements[j] && !subelements[j].match(/[0-9]/) && subelements[j].length > 1) {
-                            if (i === elements.length - 1 && j === subelements.length - 1) {
-                                var matchterm = this.getTerm(variable, "short");
-                                if (matchterm) {
-                                    matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
-                                    if (subelements[j].slice(0, matchterm.length).toLowerCase() !== matchterm) {
-                                        numeric = false;
-                                        break;
-                                    } else {
-                                        elements[i] = subelements.slice(0, -1).join(" ");
-                                    }
+                        if (!subelements[j].match(/[0-9]/)) {
+                            numeric = false;
+                        }
+                    }
+                    if (i === elements.length - 1) {
+                        if ((elements.length > 1 || subelements.length > 1)) {
+                            var matchterm = this.getTerm(variable, "long");
+                            if (matchterm && !subelements[subelements.length - 1].match(/[0-9]/)) {
+                                matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
+                                if (subelements[subelements.length - 1].slice(0, matchterm.length).toLowerCase() === matchterm) {
+                                    elements[i] = subelements.slice(0, -1).join(" ");
+                                    numeric = true;
                                 }
-                            } else {
-                                numeric = false;
-                                break;
                             }
-                        } 
+                        }
                     }
                     if (elements[i].match(/^[0-9]+$/)) {
                         elements[i] = parseInt(elements[i], 10);

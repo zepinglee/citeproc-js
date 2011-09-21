@@ -4,9 +4,24 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 Changes in version 1.0.220
 ==========================
 
-----------------------------------------------------------------
-API change with default citeproc.opt.development_extensions=true
-----------------------------------------------------------------
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Some small refinements to multiple numbers handling.
+
+- Provide for numeric range mangling when rendering via cs:number.
+
+- Fix a delimiter bug lurking in some recent code.
+
+
+==========================
+Changes in version 1.0.220
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
 
 - Adopt a less aggressive (and less risky) approach to multiple
   numeric elements. Features of the new behavior:
@@ -31,9 +46,9 @@ API change with default citeproc.opt.development_extensions=true
 Changes in version 1.0.219
 ==========================
 
-----------------------------------------------------------------
-API change with default citeproc.opt.development_extensions=true
-----------------------------------------------------------------
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
 
 - The internal date structure is now normalized immediately on
   receipt of input. This change was needed for hereinafter support,
@@ -70,9 +85,9 @@ API change with default citeproc.opt.development_extensions=true
 Changes in version 1.0.218
 ==========================
 
-----------------------------------------------------------------
-API change with default citeproc.opt.development_extensions=true
-----------------------------------------------------------------
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
 
 - Add locator-revision variable, which consists of the trailing
   string left over after parsing out locator-date (if any). Disabling
