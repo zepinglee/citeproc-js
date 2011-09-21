@@ -149,18 +149,14 @@ CSL.NameOutput.prototype._clearValues = function (values) {
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
-    if (value.literal.slice(0,1) === '"' && value.literal.slice(-1) === '"') {
-        ret["long"] = [value.literal.slice(1,-1)];
-    } else {
-        ret["long"] = this._trimInstitution(value.literal.split(/\s*,\s*/), v, i);
-    }
+    ret["long"] = this._trimInstitution(value.literal.split(/\s*\|\s*/), v, i);
 
     var str = value.literal;
     if (str) {
         if (str.slice(0,1) === '"' && str.slice(-1) === '"') {
             ret["short"] = [str.slice(1,-1)];
         } else {
-            ret["short"] = this._trimInstitution(str.split(/\s*,\s*/), v, i);
+            ret["short"] = this._trimInstitution(str.split(/\s*\|\s*/), v, i);
         }
     } else {
         ret["short"] = false;
