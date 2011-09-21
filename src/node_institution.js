@@ -77,9 +77,9 @@ CSL.Node.institution = {
                     and_suffix = "";
                 }
                 this.and = {};
-                this.and.single = new CSL.Blob("empty", myand);
+                this.and.single = new CSL.Blob(myand);
                 this.and.single.strings.suffix = and_suffix;
-                this.and.multiple = new CSL.Blob("empty", myand);
+                this.and.multiple = new CSL.Blob(myand);
                 this.and.multiple.strings.suffix = and_suffix;
                 if (this.strings["delimiter-precedes-last"] === "always") {
                     this.and.single.strings.prefix = this.strings.delimiter;

@@ -48,7 +48,7 @@
 
 /*global CSL: true */
 
-CSL.Blob = function (token, str, levelname) {
+CSL.Blob = function (str, token, levelname) {
     var len, pos, key;
     this.levelname = levelname;
     //print(levelname);

@@ -335,7 +335,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function () {
             prestr = this.strs[(posA - 1)];
             // start by pushing in the trailing text string
             if (prestr) {
-                newblob = new CSL.Blob(false, prestr);
+                newblob = new CSL.Blob(prestr);
                 blob = this.blobstack.value();
                 blob.push(newblob);
             }
@@ -423,7 +423,7 @@ CSL.Util.FlipFlopper.prototype.processTags = function () {
             str = this.strs[(this.strs.length - 1)];
             if (str) {
                 blob = this.blobstack.value();
-                newblob = new CSL.Blob(false, str);
+                newblob = new CSL.Blob(str);
                 blob.push(newblob);
             }
         }

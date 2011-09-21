@@ -224,7 +224,7 @@ CSL.Util.substituteEnd = function (state, target) {
                                 && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > i - 1
                                 && state.tmp.last_rendered_name[i] === name) {
                                 
-                                str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+                                str = new CSL.Blob(text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
                                 state.tmp.name_node.children[i].blobs = [str];
                                 if ("partial-first" === subrule) {
                                     dosub = false;
@@ -241,7 +241,7 @@ CSL.Util.substituteEnd = function (state, target) {
                         if (state.tmp.rendered_name) {
                             if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
                                 for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
-                                    str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+                                    str = new CSL.Blob(text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
                                     state.tmp.name_node.children[i].blobs = [str];
                                 }
                             }
@@ -252,7 +252,7 @@ CSL.Util.substituteEnd = function (state, target) {
                         if (state.tmp.rendered_name) {
                             //CSL.debug("TRY! "+state.tmp.rendered_name);
                             if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
-                                str = new CSL.Blob(false, text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
+                                str = new CSL.Blob(text_esc(state[state.tmp.area].opt["subsequent-author-substitute"]));
                                 state.tmp.name_node.top.blobs = [str];
                             }
                             state.tmp.last_rendered_name = state.tmp.rendered_name;

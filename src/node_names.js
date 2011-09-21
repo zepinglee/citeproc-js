@@ -118,9 +118,9 @@ CSL.Node.names = {
                 with_suffix = " ";
             }
             this["with"] = {};
-            this["with"].single = new CSL.Blob("empty", mywith);
+            this["with"].single = new CSL.Blob(mywith);
             this["with"].single.strings.suffix = with_suffix;
-            this["with"].multiple = new CSL.Blob("empty", mywith);
+            this["with"].multiple = new CSL.Blob(mywith);
             this["with"].multiple.strings.suffix = with_suffix;
             if (this.strings["delimiter-precedes-last"] === "always") {
                 this["with"].single.strings.prefix = this.strings.delimiter;

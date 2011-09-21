@@ -175,20 +175,20 @@ CSL.Node.name = {
                     this.and.multiple.strings.suffix = this.and_suffix;
                 } else if (this.strings.delimiter) {
                     // This is a little weird, but it works.
-                    this.and.single = new CSL.Blob("empty", this.strings.delimiter);
+                    this.and.single = new CSL.Blob(this.strings.delimiter);
                     this.and.single.strings.prefix = "";
                     this.and.single.strings.suffix = "";
-                    this.and.multiple = new CSL.Blob("empty", this.strings.delimiter);
+                    this.and.multiple = new CSL.Blob(this.strings.delimiter);
                     this.and.multiple.strings.prefix = "";
                     this.and.multiple.strings.suffix = "";
                 }
 
                 this.ellipsis = {};
                 if (this.strings["et-al-use-last"]) {
-                    this.ellipsis.single = new CSL.Blob("empty", this.ellipsis_term);
+                    this.ellipsis.single = new CSL.Blob(this.ellipsis_term);
                     this.ellipsis.single.strings.prefix = this.ellipsis_prefix_single;
                     this.ellipsis.single.strings.suffix = this.ellipsis_suffix;
-                    this.ellipsis.multiple = new CSL.Blob("empty", this.ellipsis_term);
+                    this.ellipsis.multiple = new CSL.Blob(this.ellipsis_term);
                     this.ellipsis.multiple.strings.prefix = this.ellipsis_prefix_multiple;
                     this.ellipsis.multiple.strings.suffix = this.ellipsis_suffix;
                 }

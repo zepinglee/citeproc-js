@@ -196,12 +196,12 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
     var blob, curr, x, has_ephemeral;
     if ("object" === typeof token) {
         // delimiter, prefix, suffix, decorations from token
-        blob = new CSL.Blob(token);
+        blob = new CSL.Blob(undefined, token);
     } else if ("undefined" === typeof token) {
     //SNIP-START
     CSL.debug("XXX loc [6]");
     //SNIP-END
-        blob = new CSL.Blob(this.formats.value().empty, false, "empty");
+        blob = new CSL.Blob(undefined, this.formats.value().empty, "empty");
     } else {
         //SNIP-START
         CSL.debug("XXX loc [7]");
@@ -213,7 +213,7 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
     //SNIP-START
     CSL.debug("XXX loc [8]");
     //SNIP-END
-        blob = new CSL.Blob(this.formats.value()[token], false, token);
+        blob = new CSL.Blob(undefined, this.formats.value()[token], token);
     }
     curr = this.current.value();
     curr.push(blob);
@@ -307,7 +307,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
         // signal whether we end with terminal punctuation?
         this.state.tmp.term_predecessor = true;
     }
-    blob = new CSL.Blob(token, str);
+    blob = new CSL.Blob(str, token);
     curr = this.current.value();
     if ("undefined" === typeof curr && this.current.mystack.length === 0) {
         // XXXX An operation like this is missing somewhere, this should NOT be necessary.
