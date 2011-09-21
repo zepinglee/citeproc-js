@@ -99,18 +99,31 @@ CSL.Node.number = {
             }
             var values = state.tmp.shadow_numbers[varname].values;
             var blob;
-            state.output.openLevel("empty");
-            for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-                var blob = new CSL[values[i][0]](values[i][1], values[i][2]);
-                if (i > 0) {
-                    blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
+            // If prefix and suffix are nil, run through the page mangler,
+            // if any. Otherwise, apply styling.
+            if (state.opt["page-range-format"] 
+                && !this.strings.prefix && !this.strings.suffix
+                && !this.strings.form) {
+                var newstr = ""
+                for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                    newstr += values[i][1];
                 }
-                if (i < values.length - 1) {
-                    blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
+                newstr = state.fun.page_mangler(newstr);
+                state.output.append(newstr, this);
+            } else {
+                state.output.openLevel("empty");
+                for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                    var blob = new CSL[values[i][0]](values[i][1], values[i][2]);
+                    if (i > 0) {
+                        blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
+                    }
+                    if (i < values.length - 1) {
+                        blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
+                    }
+                    state.output.append(blob, "literal");
                 }
-                state.output.append(blob, "literal");
+                state.output.closeLevel("empty");
             }
-            state.output.closeLevel("empty");
             state.parallel.CloseVariable("number");
         };
         this.execs.push(func);
