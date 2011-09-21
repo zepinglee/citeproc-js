@@ -68,7 +68,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     var plural = 0;
     if ("locator" === node.strings.term) {
         if (item && item.locator) {
-            if (state.opt.development_extensions.locator_parsing) {
+            if (state.opt.development_extensions.locator_parsing_for_plurals) {
                 if (!state.tmp.shadow_numbers.locator) {
                     state.processNumber(false, item, "locator");
                 }

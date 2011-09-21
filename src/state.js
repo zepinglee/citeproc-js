@@ -88,10 +88,10 @@ CSL.Engine.Opt = function () {
     this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
     this.development_extensions = {};
     this.development_extensions.field_hack = true;
-    this.development_extensions.locator_date = true;
-    this.development_extensions.locator_parsing = true;
+    this.development_extensions.locator_date_and_revision = true;
+    this.development_extensions.locator_parsing_for_plurals = true;
     this.development_extensions.raw_date_parsing = true;
-    this.development_extensions.season_name_is_numeric_true = true;
+    this.development_extensions.clean_up_csl_flaws = true;
     this.gender = {};
 };
 

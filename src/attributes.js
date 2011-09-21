@@ -257,7 +257,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     break;
                 }
                 if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
-                    if (state.opt.development_extensions.locator_date && "locator-date" === variable) {
+                    if (state.opt.development_extensions.locator_date_and_revision && "locator-date" === variable) {
                         // If locator-date is set, it's valid.
                         output = true;
                         break;

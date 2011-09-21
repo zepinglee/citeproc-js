@@ -153,7 +153,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     // attach pointer to item data to shared copy for good measure
     for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
         item = citation.citationItems[i];
-        if (this.opt.development_extensions.locator_date) {
+        if (this.opt.development_extensions.locator_date_and_revision) {
             // Break out locator elements if necessary
             if (item.locator) {
                 item.locator = "" + item.locator;
@@ -710,7 +710,9 @@ CSL.getAmbiguousCite = function (Item, disambig) {
     CSL.getCite.call(this, Item, {position: 1});
     // !!!
     CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
-    CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
+    if (this.opt.development_extensions.clean_up_csl_flaws) {
+        CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
+    }
     ret = this.output.string(this, this.output.queue);
     this.tmp.just_looking = false;
     this.tmp.suppress_decorations = false;
@@ -894,7 +896,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
         if (pos === (myblobs.length - 1)) {
             mystk[0].suffix = use_layout_suffix;
         }
-        CSL.Output.Queue.adjustPunctuation(this, this.output.queue, mystk);
+        if (this.opt.development_extensions.clean_up_csl_flaws) {
+            CSL.Output.Queue.adjustPunctuation(this, this.output.queue, mystk);
+        }
         composite = this.output.string(this, this.output.queue);
         this.tmp.suppress_decorations = false;
         // meaningless assignment
