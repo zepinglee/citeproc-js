@@ -74,7 +74,7 @@ Edition 1 --- ‘Edition 1’ --- non-numeric
 Editions 1–6 --- ‘Editions 1 - 6’ --- non-numeric
 [42] edition --- ‘“42 editionX”’ --- Enclosing quotes stripped, trailing label stripped, numeric, singular
 [42]–[47] editions --- ‘“42 - 47 editionz”’ --- Enclosing quotes stripped, trailing label stripped, numeric, plural
-[T51] edition --- ‘T51 edn.’ --- Trailing label stripped, numeric, singular
+T51 edn. --- ‘T51 edn.’ --- Non-numeric (label must be spelled out in full)
 [T51] & [T53] editions --- ‘T51 &#38; T53’ --- Numeric, plural
 [12:xx] edition --- ‘12:xx’ --- Numeric, singular
 [12 13] edition --- ‘12 13’ --- Numeric, singular
@@ -244,7 +244,7 @@ Editions 1–6 --- ‘Editions 1 - 6’ --- non-numeric
     {
         "id": "item-21", 
         "type": "book", 
-        "title": "Trailing label stripped, numeric, singular", 
+        "title": "Non-numeric (label must be spelled out in full)", 
         "edition": "T51 edn."
     },
     {

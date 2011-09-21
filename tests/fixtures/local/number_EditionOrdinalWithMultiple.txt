@@ -74,7 +74,7 @@ Edition 1 --- ‘Edition 1’ --- not ordinalized, non-numeric
 Editions 1–6th --- ‘Editions 1 - 6’ --- partially ordinalized, non-numeric (bad input, we don’t attempt rescue)
 42nd edition --- ‘“42 editionX”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, singular
 42nd–47th editions --- ‘“42 - 47 editionz”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, plural
-T51 edition --- ‘T51 edn.’ --- Trailing label stripped, not ordinalized, numeric, singular
+T51 edn. --- ‘T51 edn.’ --- Non-numeric (label must be spelled out in full)
 T51 & T53 editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plural
 12:xx edition --- ‘12:xx’ --- not ordinalized, numeric, singular
 12 13 edition --- ‘12 13’ --- not ordinalized, numeric, singular
@@ -241,7 +241,7 @@ T51 & T53 editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plural
     {
         "id": "item-21", 
         "type": "book", 
-        "title": "Trailing label stripped, not ordinalized, numeric, singular", 
+        "title": "Non-numeric (label must be spelled out in full)", 
         "edition": "T51 edn."
     },
     {
