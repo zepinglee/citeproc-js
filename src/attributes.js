@@ -558,9 +558,9 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
         for (pos = 0; pos < len; pos += 1) {
             if (!state.tmp.shadow_numbers[variables[pos]]) {
                 if ("locator" === variables[pos]) {
-                    state.processNumber(item, "locator");
+                    state.processNumber(false, item, "locator");
                 } else {
-                    state.processNumber(Item, variables[pos]);
+                    state.processNumber(false, Item, variables[pos]);
                 }
             }
             if (!state.tmp.shadow_numbers[variables[pos]].numeric) {

@@ -67,6 +67,7 @@ CSL.NumericBlob = function (num, mother_token) {
     this.status = CSL.START;
     this.strings = {};
     if (mother_token) {
+        this.gender = mother_token.gender;
         this.decorations = mother_token.decorations;
         this.strings.prefix = mother_token.strings.prefix;
         this.strings.suffix = mother_token.strings.suffix;

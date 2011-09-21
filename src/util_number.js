@@ -180,7 +180,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 };
 
 
-CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
+CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
     num = ItemObject[variable];
@@ -189,7 +189,13 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
         print("=== "+variable+": "+num+" ===");
     }
     //SNIP-END
+
+    // This carries value, pluralization and numeric info for use in other contexts.
+    // This function does not render.
     this.tmp.shadow_numbers[variable] = {};
+    this.tmp.shadow_numbers[variable].values = [];
+    this.tmp.shadow_numbers[variable].plural = 0;
+    this.tmp.shadow_numbers[variable].numeric = false;
     if ("undefined" !== typeof num) {
         if ("number" === typeof num) {
             num = "" + num;
@@ -199,204 +205,100 @@ CSL.Engine.prototype.processNumber = function (ItemObject, variable) {
         if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
             num = num.slice(1, -1);
         }
-        
+       
+        // Fix up hyphens early
+        num = num.replace(/\s*\-\s*/, "\u2013", "g");
+ 
         if (this.variable === "page-first") {
             m = num.split(/\s*(?:&|,|-)\s*/);
             if (m) {
                 num = m[0];
-            }
-        }
-        // Check for valid multiple items.  If found, 
-        // open a new empty level and iterate this, with 
-        // intervening punctuation set as prefixes to the 
-        // second and succeeding output blobs.
-        //
-        // (If we are in a cs:sort node, we use
-        // the first number encountered only)
-        var prefixes = num.split(/[0-9]+/);
-        var all_with_spaces = true;
-        // all_with_spaces will be false only if it is
-        //   of length >= 3, and has a string with no
-        //   space between position 1 and position length - 2.
-        // Single numbers will evaluate true, because
-        //   the length of prefixes in that case will be 2.
-        for (i = 0, ilen = prefixes.length - 1; i < ilen; i += 1) {
-            if (prefixes[i] && (prefixes[i].indexOf(" ") === -1 || [" ",",","&"].indexOf(prefixes[i].slice(-1)) === -1)) {
-                all_with_spaces = false;
-                break;
-            }
-        }
-        var non_numbers = 0;
-        var elements = num.split(/\s+/);
-        for (i = 0, ilen = elements.length; i < ilen; i += 1) {
-            //SNIP-START
-            if (debug) {
-                print("  element: "+elements[i]);
-            }
-            //SNIP-END
-            if (!elements[i].match(/^(?:.*[0-9].*|[\-,&])$/)) {
-                non_numbers += 1;
-            }
-        }
-        if (this.tmp.area !== "citation_sort"
-            && this.tmp.area !== "bibliography_sort"
-            && all_with_spaces 
-            && non_numbers < 2
-            && !num.match(/[^\- 0-9,&]/)) {
-            var nums = num.match(/[0-9]+/g);
-            // Expand ranges
-            var range_ok = true;
-            for (i = prefixes.length - 2; i > 0; i += -1) {
-                if (prefixes && prefixes[i].indexOf("-") > -1) {
-                    var start = parseInt(nums[i - 1], 10);
-                    var end = parseInt(nums[i], 10);
-                    // Block silly values
-                    if (start >= end || start < (end - 1000)) {
-                        range_ok = false;
-                        break;
-                    }
-                    var replacement = [];
-                    for (j = start, jlen = end + 1; j < jlen; j += 1) {
-                        replacement.push(""+j);
-                    }
-                    nums = nums.slice(0, i - 1).concat(replacement).concat(nums.slice(i + 1));
+                if (num.match(/[0-9]/)) {
+                    this.tmp.shadow_numbers[variable].numeric = true;
                 }
             }
-            if (range_ok) {
-                nums = nums.sort(function (a,b) {
-                    a = parseInt(a, 10);
-                    b = parseInt(b, 10);
-                    if (a > b) {
-                        return 1;
-                    } else if (a < b) {
-                        return -1;
+        }
+        
+        // XXX: The attempt at syntactic parsing was crazy.
+
+        // Sequential number blobs should be reserved for year-suffix
+        // and year, which may need to collapse during cite
+        // composition. For explicit cs:number, we should
+        // use simple heuristics to flag multiple
+        // values, but respect the user's input format.
+        // Ordinals can be applied to pure numeric elements,
+        // but that's as far as our fancy processing
+        // should go.
+        
+        // So.
+        
+        // (1) Split the string on ", ", "\s*[\-\u2013]\s*" and "&".
+        // (2) Set the elements one by one, setting pure numbers
+        //     as numeric blobs, and everything else as text,
+        //     applying "this" for styling to both, with "empty"
+        //     styling on the punctuation elements.
+        
+        var lst = num.split(/(?:,\s+|\s*[\-\u2013]\s*|\s*&\s*)/);
+        var m = num.match(/(,\s+|\s*[\-\u2013]\s*|\s*&\s*)/g);
+        var elements = [];
+        for (var i = 0, ilen = lst.length - 1; i < ilen; i += 1) {
+            elements.push(lst[i]);
+            elements.push(m[i]);
+        }
+        elements.push(lst[lst.length - 1]);
+        var count = 0;
+        var numeric = true;
+        for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
+            var odd = ((i%2) === 0);
+            if (odd) {
+                // Rack up as numeric output if pure numeric, otherwise as text.
+                if (elements[i]) {
+                    if (elements[i].match(/[0-9]/)) {
+                        count = count + 1;
+                    }
+                    var subelements = elements[i].split(/\s+/);
+                    for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
+                        if (subelements[j] && !subelements[j].match(/[0-9]/) && subelements[j].length > 1) {
+                            if (i === elements.length - 1 && j === subelements.length - 1) {
+                                var matchterm = this.getTerm(variable, "short");
+                                if (matchterm) {
+                                    matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
+                                    if (subelements[j].slice(0, matchterm.length).toLowerCase() !== matchterm) {
+                                        numeric = false;
+                                        break;
+                                    } else {
+                                        // Remove the final word, since it looks like it's just a variable label.
+                                        elements[i] = subelements.slice(0, -1).join(" ");
+                                    }
+                                }
+                            } else {
+                                numeric = false;
+                                break;
+                            }
+                        } 
+                    }
+                    if (elements[i].match(/^[0-9]+$/)) {
+                        elements[i] = parseInt(elements[i], 10);
+                        node.gender = this.opt["noun-genders"][variable];
+                        this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
                     } else {
-                        return 0;
-                    }
-                });
-                // Eliminate duplicate numbers
-                for (i = nums.length; i > -1; i += -1) {
-                    if (nums[i] === nums[i + 1]) {
-                        nums = nums.slice(0, i).concat(nums.slice(i + 1));
+                        this.tmp.shadow_numbers[variable].values.push(["Blob", elements[i], node]);
                     }
                 }
-                this.tmp.shadow_numbers[variable].value = [];
-                for (i = 0, ilen = nums.length; i < ilen; i += 1) {
-                    num = parseInt(nums[i], 10);
-                    this.tmp.shadow_numbers[variable].value.push(num);
-                }
-                if (nums.length > 1) {
-                    this.tmp.shadow_numbers[variable].plural = 1;
-                } else {
-                    this.tmp.shadow_numbers[variable].plural = 0;
-                }
-                // XXX If nums is plural, set plural
-                // XXX If nums is 1, set singular
-                this.tmp.shadow_numbers[variable].numeric = true;
-                //SNIP-START
-                if (debug) {
-                    print("  branch 1");
-                }
-                //SNIP-END
-                // XXX set numeric true
             } else {
-                this.tmp.shadow_numbers[variable].value = [];
-                this.tmp.shadow_numbers[variable].value.push(num);
-                // set singular I guess
-                this.tmp.shadow_numbers[variable].plural = 0;
-                // XXX set numeric false
-                this.tmp.shadow_numbers[variable].numeric = false;
-                //SNIP-START
-                if (debug) {
-                    print("  branch 2");
+                // Normalize and output as text with "empty" style.
+                if (elements[i]) {
+                    this.tmp.shadow_numbers[variable].values.push(["Blob", elements[i], undefined]);
                 }
-                //SNIP-END
             }
-        } else if (this.tmp.area !== "citation_sort"
-                   && this.tmp.area !== "bibliography_sort"
-                   && ((!all_with_spaces || prefixes.length > 2) || non_numbers > 1)) {
-            // Don't attempt to apply numeric formatting
-            // or to normalize the content for weird
-            // numbers like "1-505" (no space between the
-            // numbers and the hyphen suggests that 505 might
-            // be meant as a leaf number)
-            // ... or if multiple non-number elements exist in string.
-
-            var knownPlural = false;
-            if (num.match(/^[0-9]+[-\u2013][0-9]+$/)) {
-                num = this.fun.page_mangler(num);
-                var knownPlural = true;
-            }
-
-            this.tmp.shadow_numbers[variable].value = [];
-            this.tmp.shadow_numbers[variable].value.push(num);
-            // XXX set singular if only one numeric number, otherwise plural
-            if (elements.length > 1 || knownPlural) {
-                this.tmp.shadow_numbers[variable].plural = 1;
-            } else {
-                this.tmp.shadow_numbers[variable].plural = 0;
-            }
-            if (non_numbers) {
-                this.tmp.shadow_numbers[variable].numeric = false;
-            } else {
-                this.tmp.shadow_numbers[variable].numeric = true;
-            }
-            //SNIP-START
-            if (debug) {
-                print("  branch 3");
-            }
-            //SNIP-END
-            // XXX set numeric true
+        }
+        if (num.indexOf(" ") === -1 && num.match(/[0-9]/)) {
+            this.tmp.shadow_numbers[variable].numeric = true;
         } else {
-            // Single number with no more than one descriptor
-            var is_term = true;
-            var matchterm = this.getTerm(variable, "short");
-            if (matchterm) {
-                matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
-                for (i = 0, ilen = elements.length; i < ilen; i += 1) {
-                    if (elements[i]) {
-                        if (elements[i].match(/[0-9]/)) {
-                            continue;
-                        }
-                        if (elements[i].slice(0, matchterm.length).toLowerCase() !== matchterm) {
-                            is_term = false;
-                        }
-                    }
-                }
-            }
-            m = num.match(/\s*([0-9]+)(?:[^\-:]* |[^\-:]*$)/);
-            if (m && is_term) {
-                num = parseInt(m[1], 10);
-                this.tmp.shadow_numbers[variable].value = [];
-                this.tmp.shadow_numbers[variable].value.push(num);
-                // XXX set singular
-                this.tmp.shadow_numbers[variable].plural = 0;
-                this.tmp.shadow_numbers[variable].numeric = true;
-                //SNIP-START
-                if (debug) {
-                    print("  branch 4");
-                }
-                //SNIP-END
-                // XXX numeric true
-            } else {
-                this.tmp.shadow_numbers[variable].value = [];
-                num = num.replace("-", "\u2013", "g");
-                this.tmp.shadow_numbers[variable].value.push(num);
-                // XXX set singular I guess
-                this.tmp.shadow_numbers[variable].plural = 0;
-                // XXX numeric false
-                this.tmp.shadow_numbers[variable].numeric = false;
-                if (this.opt.development_extensions.season_name_is_numeric_true) {
-                    if ((num.match(/[0-9]/) && is_term) || (elements.length === 1 && ["spring", "summer", "fall", "autumn", "winter"].indexOf(elements[0].toLowerCase()) > -1)) {
-                        this.tmp.shadow_numbers[variable].numeric = true;
-                    }
-                }
-                //SNIP-START
-                if (debug) {
-                    print("  branch 5");
-                }
-                //SNIP-END
-            }
+             this.tmp.shadow_numbers[variable].numeric = numeric;
+       }
+        if (count > 1) {
+            this.tmp.shadow_numbers[variable].plural = 1;
         }
     }
 };

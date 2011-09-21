@@ -87,35 +87,24 @@ CSL.Node.number = {
             if (varname === "page-range" || varname === "page-first") {
                 varname = "page";
             }
-            if (!state.tmp.shadow_numbers[varname]) {
+            var node = this;
+            if (!state.tmp.shadow_numbers[varname] 
+                || (state.tmp.shadow_numbers[varname].values.length 
+                    && state.tmp.shadow_numbers[varname].values[0][2] === false)) {
                 if (varname === "locator") {
-                    state.processNumber(item, varname);
+                    state.processNumber(node, item, varname);
                 } else {
-                    state.processNumber(Item, varname);
+                    state.processNumber(node, Item, varname);
                 }
             }
-            var value = state.tmp.shadow_numbers[varname].value;
+            var values = state.tmp.shadow_numbers[varname].values;
             var blob;
-            if (value) {
-                if ("string" === typeof value) {
-                    blob = new CSL.NumericBlob(value, this);
-                    state.output.append(blob, "literal");
-                } else if ("object" === typeof value) {
-                    state.output.openLevel("empty");
-                    for (var i = 0, ilen = value.length; i < ilen; i += 1) {
-                        blob = new CSL.NumericBlob(value[i], this);
-                        blob.gender = state.opt["noun-genders"][varname];
-                        if (i > 0) {
-                            // this.output.append(prefixes[i], "empty");
-                            blob.successor_prefix = " & ";
-                            blob.range_prefix = "\u2013";
-                            blob.splice_prefix = ", ";
-                        }
-                        state.output.append(blob, "literal");
-                    }
-                    state.output.closeLevel("empty");
-                }
+            state.output.openLevel("empty");
+            for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                var blob = new CSL[values[i][0]](values[i][1], values[i][2]);
+                state.output.append(blob, "literal");
             }
+            state.output.closeLevel("empty");
             state.parallel.CloseVariable("number");
         };
         this.execs.push(func);
