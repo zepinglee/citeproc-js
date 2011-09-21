@@ -122,6 +122,9 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
     };
 
     minimize_internal = function (begin, end, minchars, isyear) {
+        if (!minchars) {
+            minchars = 0;
+        }
         b = ("" + begin).split("");
         e = ("" + end).split("");
         ret = e.slice();
