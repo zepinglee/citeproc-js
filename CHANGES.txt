@@ -1,6 +1,33 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.220
+==========================
+
+----------------------------------------------------------------
+API change with default citeproc.opt.development_extensions=true
+----------------------------------------------------------------
+
+- Adopt a less aggressive (and less risky) approach to multiple
+  numeric elements. Features of the new behavior:
+
+    o Numbers are no longer sorted;
+    o Ranges are no longer evaluated;
+    o Delimiters entered by the user are respected.
+
+  Apart from those changes, the new machinery delivers the same
+  benefits as the original enhancement: recognition and formatting
+  of multiple numbers, smart plural identification, rcleanup
+  of trailing labels in the input string, and reliable identification
+  of numeric content (which can usefully be affixed with a label) and
+  non-numeric content (which is likely meant to be presented
+  without a label).
+
+  (The new mechanism is safe to apply to the locator string,
+  if CSL extends in that direction.)
+
+
+==========================
 Changes in version 1.0.219
 ==========================
 
