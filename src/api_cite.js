@@ -686,6 +686,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
     var use_parallels, ret;
+    //print("################### getAmbiguousCite() #################");
     // Oh, darn. We need an efficient means of identifying
     // whether an Item object has changed compared with the
     // last-seen form, to invalidate the cached copy.
@@ -917,6 +918,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
             composite.reverse();
             compie = composite.pop();
             if ("undefined" !== typeof compie) {
+                if (objects.length && "string" === typeof objects[objects.length - 1]) {
+                    objects[objects.length - 1] += compie.successor_prefix;
+                }
                 objects.push(compie);
             }
         }
