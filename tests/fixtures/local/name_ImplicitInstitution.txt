@@ -102,7 +102,7 @@ bibliography
                 "static-ordering": false
             }, 
             {
-                "literal": "Department of Alien Weapons Vivisection, Multi-National United"
+                "literal": "Department of Alien Weapons Vivisection|Multi-National United"
             }, 
             {
                 "family": "Noakes", 

@@ -50,6 +50,8 @@
 citation
 <<===== MODE =====<<
 
+Note: With the move to using field separators, quote escapes are
+no longer required, and have been removed from citeproc-js.
 
 
 >>===== RESULT =====>>
@@ -83,7 +85,7 @@ Mercuricon Spittle with Ministry of Fear, Loathing and Error
     {
         "author": [
             {
-                "literal": "\"Ministry of Fear, Loathing and Error\""
+                "literal": "Ministry of Fear, Loathing and Error"
             }, 
             {
                 "family": "Spittle", 

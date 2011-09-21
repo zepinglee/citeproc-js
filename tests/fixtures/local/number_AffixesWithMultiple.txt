@@ -54,31 +54,31 @@ citation
 Normalizes punctuation and grouping when multiple numbers are provided in input.
 
 >>===== RESULT =====>>
-[1] edition --- ‘1’ --- Single number, parsed as number
-[2] &#38; [3] editions --- ‘2 - 3’ --- Numbers joined by hyphen and spaces, parsed as number
-[4] &#38; [6] editions --- ‘4 &#38; 6’ --- Numbers joined by ampersand, parsed as number
-[7]–[9] editions --- ‘7, 8 &#38; 9’ --- Series with ampersand, ranged and parse as number
-[10], [12] &#38; [14] editions --- ‘10, 12 &#38; 14’ --- Series with ampersand, parsed as number
-[15], [17] &#38; [19]–[21] editions --- ‘15, 17, 19, 20, 21’ --- Ordered series, parsed as number
-[16], [28], [30]–[32], [34] &#38; [36] editions --- ‘16, 28, 30, 31, 32, 34, 36’ --- Ordered series, ranged and parsed as number
-[15], [17], [19]–[21] &#38; [23]–[25] editions --- ‘25, 15, 17, 19, 20, 21, 23, 24’ --- Random series, reordered, ranged, and parsed as number
-[37]–[40] editions --- ‘38, 37 - 40’ --- Overlapping numbers, overlap reconciled, parsed as number
-[43-41] edition --- ‘43-41’ --- Numbers joined without spaces, parsed as literal, flagged as number
-205 - 2000 --- ‘205 - 2000’ --- Aborted because ranging algorithm is stupid and slow, parsed as literal for now
-1 vol + 1 CD --- ‘1 vol + 1 CD’ --- Multiple non-number descriptors, parsed as literal
-[12] edition --- ‘12nd’ --- Explicit suffix, parsed as number
-[12a–c] edition --- ‘12a-c’ --- Suffixes on number, parsed as literal, flagged as number
-12th Yellow-tailed Wooly Monkey --- ‘12th Yellow-tailed Wooly Monkey’ --- Multiple non-numbers, parsed as literal, flagged as non-number
-[T51] edition --- ‘T51’ --- Alphabetic prefix on number, parsed as literal, flagged as number
-[1] edition --- ‘Edition 1’ --- Single descriptor with one number, parsed as single number
-Editions 1 - 6 --- ‘Editions 1 - 6’ --- Single descriptor with multiple numbers, parsed as literal
-[42] edition --- ‘“42 editionX”’ --- Enclosing quotes stripped, parsed as single number
-42 - 47 editionz --- ‘“42 - 47 editionz”’ --- Enclosing quotes stripped, parsed as literal
-T51 edn. --- ‘T51 edn.’
-[T51 & T53] editions --- ‘T51 &#38; T53’
-[12:xx] edition --- ‘12:xx’
-[12] &#38; [13] editions --- ‘12 13’
-12th folio --- ‘12th folio’
+[1] edition --- ‘1’ --- numeric, singular
+[2]–[3] editions --- ‘2 - 3’ --- numeric, plural
+[4] & [6] editions --- ‘4 &#38; 6’ --- numeric, plural
+[7], [8] & [9] editions --- ‘7, 8 &#38; 9’ --- numeric, plural
+[10], [12] & [14] editions --- ‘10, 12 &#38; 14’ --- numeric, plural
+[15], [17], [19], [20], [21] editions --- ‘15, 17, 19, 20, 21’ --- numeric, plural
+[16], [28], [30], [31], [32], [34], [36] editions --- ‘16, 28, 30, 31, 32, 34, 36’ --- numeric, plural
+[25], [15], [17], [19], [20], [21], [23], [24] editions --- ‘25, 15, 17, 19, 20, 21, 23, 24’ --- numeric, plural
+[38], [37]–[40] editions --- ‘38, 37 - 40’ --- numeric, plural
+[43]–[41] editions --- ‘43-41’ --- numeric, plural
+[205]–[2000] editions --- ‘205 - 2000’ --- numeric, plural
+1 vol + 1 CD --- ‘1 vol + 1 CD’ --- non-numeric
+[12nd] edition --- ‘12nd’ --- numeric, singular
+[12a]–[c] edition --- ‘12a-c’ --- numeric, singular
+12th Yellow–tailed Wooly Monkey --- ‘12th Yellow-tailed Wooly Monkey’ --- non-numeric
+[T51] edition --- ‘T51’ --- numeric, singular
+Edition 1 --- ‘Edition 1’ --- non-numeric
+Editions 1–6 --- ‘Editions 1 - 6’ --- non-numeric
+[42] edition --- ‘“42 editionX”’ --- Enclosing quotes stripped, trailing label stripped, numeric, singular
+[42]–[47] editions --- ‘“42 - 47 editionz”’ --- Enclosing quotes stripped, trailing label stripped, numeric, plural
+[T51] edition --- ‘T51 edn.’ --- Trailing label stripped, numeric, singular
+[T51] & [T53] editions --- ‘T51 &#38; T53’ --- Numeric, plural
+[12:xx] edition --- ‘12:xx’ --- Numeric, singular
+[12 13] edition --- ‘12 13’ --- Numeric, singular
+12th folio --- ‘12th folio’ --- Unexpected label untouched, non-numeric
 <<===== RESULT =====<<
 
 >>===== CSL =====>>
@@ -123,147 +123,152 @@ T51 edn. --- ‘T51 edn.’
 [
 	{
 		"id": "ITEM-1",
-		"title": "Single number, parsed as number",
+		"title": "numeric, singular",
 		"edition" : "1",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-2",
-		"title": "Numbers joined by hyphen and spaces, parsed as number",
+		"title": "numeric, plural",
 		"edition" : "2 - 3",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-3",
-		"title": "Numbers joined by ampersand, parsed as number",
+		"title": "numeric, plural",
 		"edition" : "4 & 6",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-4",
-		"title": "Series with ampersand, ranged and parse as number",
+		"title": "numeric, plural",
 		"edition" : "7, 8 & 9",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-5",
-		"title": "Series with ampersand, parsed as number",
+		"title": "numeric, plural",
 		"edition" : "10, 12 & 14",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-6",
-		"title": "Ordered series, parsed as number",
+		"title": "numeric, plural",
 		"edition" : "15, 17, 19, 20, 21",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-8",
-		"title": "Ordered series, ranged and parsed as number",
+		"title": "numeric, plural",
 		"edition" : "16, 28, 30, 31, 32, 34, 36",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-7",
-		"title": "Random series, reordered, ranged, and parsed as number",
+		"title": "numeric, plural",
 		"edition" : "25, 15, 17, 19, 20, 21, 23, 24",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-9",
-		"title": "Overlapping numbers, overlap reconciled, parsed as number",
+		"title": "numeric, plural",
 		"edition" : "38, 37 - 40",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-10",
-		"title": "Numbers joined without spaces, parsed as literal, flagged as number",
+		"title": "numeric, plural",
 		"edition" : "43-41",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-11",
-		"title": "Aborted because ranging algorithm is stupid and slow, parsed as literal for now",
+		"title": "numeric, plural",
 		"edition" : "205 - 2000",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-12",
-		"title": "Multiple non-number descriptors, parsed as literal",
+		"title": "non-numeric",
 		"edition" : "1 vol + 1 CD",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-13",
-		"title": "Explicit suffix, parsed as number",
+		"title": "numeric, singular",
 		"edition" : "12nd",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-14",
-		"title": "Suffixes on number, parsed as literal, flagged as number",
+		"title": "numeric, singular",
 		"edition" : "12a-c",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-15",
-		"title": "Multiple non-numbers, parsed as literal, flagged as non-number",
+		"title": "non-numeric",
 		"edition" : "12th Yellow-tailed Wooly Monkey",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-16",
-		"title": "Alphabetic prefix on number, parsed as literal, flagged as number",
+		"title": "numeric, singular",
 		"edition" : "T51",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-17",
-		"title": "Single descriptor with one number, parsed as single number",
+		"title": "non-numeric",
 		"edition" : "Edition 1",
 		"type": "book"
 	},
 	{
 		"id": "ITEM-18",
-		"title": "Single descriptor with multiple numbers, parsed as literal",
+		"title": "non-numeric",
 		"edition" : "Editions 1 - 6",
 		"type": "book"
 	},
     {
         "id": "item-19", 
-        "title": "Enclosing quotes stripped, parsed as single number", 
+        "title": "Enclosing quotes stripped, trailing label stripped, numeric, singular", 
         "type": "book", 
         "edition": "\"42 editionX\""
     },
     {
         "id": "item-20", 
-        "title": "Enclosing quotes stripped, parsed as literal", 
+        "title": "Enclosing quotes stripped, trailing label stripped, numeric, plural", 
         "type": "book", 
         "edition": "\"42 - 47 editionz\""
     },
     {
         "id": "item-21", 
         "type": "book", 
+        "title": "Trailing label stripped, numeric, singular", 
         "edition": "T51 edn."
     },
     {
         "id": "item-22", 
         "type": "book", 
+        "title": "Numeric, plural", 
         "edition": "T51 & T53"
     },
     {
         "id": "item-23", 
         "type": "book", 
+        "title": "Numeric, singular", 
         "edition": "12:xx"
     },
     {
         "id": "item-24", 
         "type": "book", 
+        "title": "Numeric, singular", 
         "edition": "12 13"
     },
     {
         "id": "item-25", 
         "type": "book", 
+        "title": "Unexpected label untouched, non-numeric", 
         "edition": "12th folio"
     }
 ]

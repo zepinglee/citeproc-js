@@ -103,7 +103,7 @@ Doe et al., Big Ministry
                 "given": "Richard"
             }, 
             {
-                "literal": "Tiny Subcommittee, Busy Committee, Big Ministry"
+                "literal": "Tiny Subcommittee|Busy Committee|Big Ministry"
             }
         ], 
         "id": "ITEM-1", 
