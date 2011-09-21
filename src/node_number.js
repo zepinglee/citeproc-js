@@ -102,6 +102,12 @@ CSL.Node.number = {
             state.output.openLevel("empty");
             for (var i = 0, ilen = values.length; i < ilen; i += 1) {
                 var blob = new CSL[values[i][0]](values[i][1], values[i][2]);
+                if (i > 0) {
+                    blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
+                }
+                if (i < values.length - 1) {
+                    blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
+                }
                 state.output.append(blob, "literal");
             }
             state.output.closeLevel("empty");
