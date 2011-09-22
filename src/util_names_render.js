@@ -355,7 +355,13 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 
 CSL.NameOutput.prototype._nameSuffix = function (name) {
 
-    var str = this._stripPeriods("family", name.suffix);
+    var str = name.suffix;
+
+    if ("string" === typeof this.name.strings["initialize-with"]) {
+        str = CSL.Util.Names.initializeWith(this.state, name.suffix, this.name.strings["initialize-with"], true);
+    }
+
+    str = this._stripPeriods("family", str);
 
     if (this.state.output.append(str, "empty", true)) {
         return this.state.output.pop();
