@@ -472,12 +472,15 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
 
                 // XXXXX A little more precision would be nice.
                 // This will clobber variable="author editor" as well as variable="author".
-                if (this.variables.indexOf("author") > -1 && this.item && this.item["suppress-author"] && this.Item.type !== "legal_case") {
+                if (this.variables.indexOf(this._first_creator_variable) > -1 && this.item && this.item["suppress-author"] && this.Item.type !== "legal_case") {
                     this.state.tmp.name_node.top.blobs.pop();
                     this.state.tmp.name_node.children = [];
                     // If popped, avoid side-effects on character counting: we're only interested
                     // in things that actually render.
                     this.state.tmp.offset_characters = oldchars;
+
+                    // A wild guess, but will usually be correct
+                    this.state.tmp.term_predecessor = false;
                 }
                 // Arcane and probably unnecessarily complicated
                 this.state.tmp.have_collapsed = false;
