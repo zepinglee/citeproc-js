@@ -1,7 +1,52 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
-Changes in version 1.0.220
+Changes in version 1.0.222
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- With suppress-author, suppress the first creator of 
+  whatever type, and not only author per se.
+
+- Add a "nickname" segment to the abbreviation lists, for use
+  initially with personal_communication items only. The segment
+  accepts full rendered personal names.
+
+- Also at this symmetric milestone, some tidying up of the 
+  development_extensions options:
+
+  citeproc.development_extensions.clean_up_csl_flaws
+    The processor goes to great lengths to control for duplicate
+    punctuation and spacing. Set this option to false will
+    disable this extra code, resulting in a tiny performance
+    improvement, but at the cost of triggering formatting errors
+    in many styles.
+
+  citeproc.development_extensions.locator_date_and_revision
+    Renamed from "locator_date", since the option relates to
+    two variables parsed out of the locator string.
+
+  citeproc.development_extensions.locator_parsing_for_plurals
+    Renames from "locator_parsing" to better reflect what the
+    option does. If this is true, the mulitple-dates code
+    will be used to identify plural/singular entries, which
+    may yield slightly better results.
+
+  citeproc.development_extensions.season_name_is_numeric_true
+    This hack has been dropped, together with its control
+    option. The same result (triggering is-numeric true for
+    season names) can now be accomplished by appending the field
+    term name after the season name.
+
+  The full set of development_extension toggles can be found
+  in state.js.
+
+
+==========================
+Changes in version 1.0.221
 ==========================
 
 ------------------------------------
