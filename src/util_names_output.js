@@ -346,6 +346,20 @@ CSL.NameOutput.prototype.outputNames = function () {
             }
         }
     }
+    if (this.Item.type === "personal_communication") {
+        var author = "";
+        if (this.state.tmp.name_node.string) {
+            author = this.state.tmp.name_node.string;
+        }
+        if (author) {
+            this.state.transform.loadAbbreviation("nickname", author);
+        }
+        if (this.state.transform.abbrevs.nickname[author]) {
+            this.state.output.append(this.state.transform.abbrevs.nickname[author], "empty", true)
+            blob = this.state.output.pop();
+            this.state.tmp.name_node.top.blobs = [blob];
+        }
+    }
     // Let's try something clever here.
     this._collapseAuthor();
     // For name_SubstituteOnNamesSpanNamesSpanFail

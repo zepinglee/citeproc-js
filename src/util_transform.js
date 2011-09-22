@@ -119,6 +119,7 @@ CSL.Transform = function (state) {
     this.abbrevs["container-title"] = {};
     this.abbrevs["collection-title"] = {};
     this.abbrevs.institution = {};
+    this.abbrevs.nickname = {};
     this.abbrevs.place = {};
     this.abbrevs.title = {};
     this.abbrevs.hereinafter = {};
