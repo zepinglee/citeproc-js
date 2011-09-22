@@ -88,7 +88,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     if (!name) {
         return "";
     }
-    if (name === "Lord") {
+    if (["Lord", "Lady"].indexOf(name) > -1) {
         return name;
     }
     if (!terminator) {
