@@ -64,7 +64,9 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
                 lst[pos] = lst[pos].join("");
             }
         }
-        return lst.join("");
+        var ret = lst.join("");
+        ret = ret.replace(/([0-9])\-/, "$1\u2013", "g").replace(/\-([0-9])/, "\u2013$1", "g")
+        return ret;
     };
 
     listify = function (str) {
