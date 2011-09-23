@@ -1,6 +1,32 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.223
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Extend "Lord" hack (suppressing initialization as given
+  name) to cover "Lady" as well.
+
+- Apply initialize-with string to name suffix as well
+  as given name elements.
+
+- Wake up implicit initial term capitalization when 
+  suppress-author is used.
+
+- Fix bug in recenly added code permitting suppression of any 
+  type of initial creator.
+
+- Small refinement to rejoin numeric elements in cs:number
+  with en-dash.
+
+- Treat numbers with leading zeros as strings in cs:number.
+
+
+==========================
 Changes in version 1.0.222
 ==========================
 
