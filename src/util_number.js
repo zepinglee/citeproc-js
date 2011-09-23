@@ -277,7 +277,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                             }
                         }
                     }
-                    if (elements[i].match(/^[0-9]+$/)) {
+                    if (elements[i].match(/^[1-9][0-9]*$/)) {
                         elements[i] = parseInt(elements[i], 10);
                         node.gender = this.opt["noun-genders"][variable];
                         this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
