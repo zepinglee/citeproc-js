@@ -334,7 +334,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 variable = this.variables[pos];
                 x = false;
                 myitem = Item;
-                if (item && ["locator", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
+                if (item && ["locator", "locator-revision", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
                 }
                 if (myitem[variable]) {
