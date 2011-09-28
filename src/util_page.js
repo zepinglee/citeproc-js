@@ -179,23 +179,39 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
         };
     } else if (state.opt["page-range-format"] === "expanded") {
         ret_func = function (str) {
-            var lst = expand(str);
-            return stringify(lst);
+			var ret = str;
+			if (!str.match(/[^\-\u20130-9 ,&]/)) {
+				var lst = expand(str);
+				ret = stringify(lst);
+			}
+			return ret;
         };
     } else if (state.opt["page-range-format"] === "minimal") {
         ret_func = function (str) {
-            var lst = expand(str);
-            return minimize(lst);
+			var ret = str;
+			if (!str.match(/[^\-\u20130-9 ,&]/)) {
+				var lst = expand(str);
+				return minimize(lst);
+			}
+			return ret;
         };
     } else if (state.opt["page-range-format"] === "minimal-two") {
         ret_func = function (str, isyear) {
-            var lst = expand(str);
-            return minimize(lst, 2, isyear);
+			var ret = str;
+			if (!str.match(/[^\-\u20130-9 ,&]/)) {
+				var lst = expand(str);
+				ret = minimize(lst, 2, isyear);
+			}
+			return ret;
         };
     } else if (state.opt["page-range-format"] === "chicago") {
         ret_func = function (str) {
-            var lst = expand(str);
-            return chicago(lst);
+			var ret = str;
+			if (!str.match(/[^\-\u20130-9 ,&]/)) {
+				var lst = expand(str);
+				ret = chicago(lst);
+			}
+			return ret;
         };
     }
 
