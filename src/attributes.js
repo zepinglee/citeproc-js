@@ -50,13 +50,24 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@context"] = function (state, arg) {
+    func = function (state, Item) {
+		var area = state.tmp.area.slice(0, arg.length);
+		var result = false;
+		if (area === arg) {
+			result = true;
+		}
+		return result;
+    };
+    this.tests.push(func);
+};
+
 CSL.Attributes["@trigger-fields"] = function (state, arg) {
     var mylst = arg.split(/\s+/);
     this.generate_trigger_fields = mylst;
 };
 
 CSL.Attributes["@type-map"] = function (state, arg) {
-    // Something goes here.
     var mymap = arg.split(/\s+/);
     this.generate_type_map = {};
     this.generate_type_map.from = mymap[0];
@@ -64,7 +75,6 @@ CSL.Attributes["@type-map"] = function (state, arg) {
 };
 
 CSL.Attributes["@leading-noise-words"] = function (state, arg) {
-    // Something goes here.
     this["leading-noise-words"] = arg;
 };
 
