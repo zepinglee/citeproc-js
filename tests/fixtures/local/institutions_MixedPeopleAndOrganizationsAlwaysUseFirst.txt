@@ -96,7 +96,7 @@ Noakes with Roe, Tiny Subcommittee, Big Ministry and Doe et al., Trivial Working
                 "given": "Jane"
             }, 
             {
-                "literal": "Tiny Subcommittee|Busy Committee|Big Ministry"
+                "literal": "Big Ministry|Busy Committee|Tiny Subcommittee"
             }, 
             {
                 "family": "Doe", 
@@ -111,7 +111,7 @@ Noakes with Roe, Tiny Subcommittee, Big Ministry and Doe et al., Trivial Working
                 "given": "Richard"
             }, 
             {
-                "literal": "Trivial Working Group|Evil Division|Wasteful Enterprise"
+                "literal": "Wasteful Enterprise|Evil Division|Trivial Working Group"
             }, 
             {
                 "family": "Noakes", 

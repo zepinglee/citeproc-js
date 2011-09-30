@@ -89,7 +89,7 @@ Tiny Subcommittee, Big Ministry
     {
         "author": [
             {
-                "literal": "Tiny Subcommittee|Busy Committee|Big Ministry"
+                "literal": "Big Ministry|Busy Committee|Tiny Subcommittee"
             }
         ], 
         "type": "book"
