@@ -154,6 +154,7 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
  */
 CSL.Output.Formatters.title = function (state, string) {
     var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
+    var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
     str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
     if (!string) {
         return "";
@@ -190,8 +191,8 @@ CSL.Output.Formatters.title = function (state, string) {
             // Full string is all-uppercase, or this word is all-lowercase
             if (isAllUpperCase || words[pos] === lowerCaseVariant) {
                 skip = false;
-                for (var i = 0, ilen = CSL.SKIP_WORDS.length; i < ilen; i += 1) {
-                    skipword = CSL.SKIP_WORDS[i];
+                for (var i = 0, ilen = SKIP_WORDS.length; i < ilen; i += 1) {
+                    skipword = SKIP_WORDS[i];
                     idx = lowerCaseVariant.indexOf(skipword);
                     if (idx > -1) {
                         tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
@@ -273,13 +274,14 @@ CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
 };
 
 
-CSL.demoteNoiseWords = function (fld) {
+CSL.demoteNoiseWords = function (state, fld) {
+    var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
     if (fld) {
         fld = fld.split(/\s+/);
         fld.reverse();
         var toEnd = [];
         for (var j  = fld.length - 1; j > -1; j += -1) {
-            if (CSL.SKIP_WORDS.indexOf(fld[j].toLowerCase()) > -1) {
+            if (SKIP_WORDS.indexOf(fld[j].toLowerCase()) > -1) {
                 toEnd.push(fld.pop());
             } else {
                 break;

@@ -116,6 +116,8 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         this.locale[lang_out] = {};
         this.locale[lang_out].terms = {};
         this.locale[lang_out].opts = {};
+        // Set default skip words. Can be overridden in locale by attribute on style-options node.
+        this.locale[lang_out].opts["skip-words"] = CSL.SKIP_WORDS;
         this.locale[lang_out].dates = {};
     }
     //
@@ -248,12 +250,17 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             attributes = this.sys.xml.attributes(styleopts);
             for (attrname in attributes) {
                 if (attributes.hasOwnProperty(attrname)) {
-                    if (attributes[attrname] === "true") {
-                        // trim off leading @
-                        this.locale[lang_out].opts[attrname.slice(1)] = true;
-                    } else {
-                        // trim off leading @
-                        this.locale[lang_out].opts[attrname.slice(1)] = false;
+                    if (attrname === "@punctuation-in-quote") {
+                        if (attributes[attrname] === "true") {
+                            // trim off leading @
+                            this.locale[lang_out].opts[attrname.slice(1)] = true;
+                        } else {
+                            // trim off leading @
+                            this.locale[lang_out].opts[attrname.slice(1)] = false;
+                        }
+                    } else if (attrname === "@skip-words") {
+                        var skip_words = attributes[attrname].split(/\s+/);
+                        this.locale[lang_out].opts[attrname.slice(1)] = skip_words;
                     }
                 }
             }
