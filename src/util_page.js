@@ -69,28 +69,30 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
         return ret;
     };
 
-    listify = function (str) {
+    listify = function (str, hyphens) {
         var m, lst, ret;
         str = str.replace("\u2013", "-", "g");
         // Workaround for Internet Explorer
-        m = str.match(/([a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+)/g);
-        lst = str.split(/[a-zA-Z]*[0-9]+\s*-\s*[a-zA-Z]*[0-9]+/);
+        var rexm = new RegExp("([a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+)", "g");
+        var rexlst = new RegExp("[a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+");
+        m = str.match(rexm);
+        lst = str.split(rexlst);
 
         if (lst.length === 0) {
             ret = m;
         } else {
             ret = [lst[0]];
             for (pos = 1, len = lst.length; pos < len; pos += 1) {
-                ret.push(m[pos - 1]);
+                ret.push(m[pos - 1].replace(/\s*\-\s*/, "-", "g"));
                 ret.push(lst[pos]);
             }
         }
         return ret;
     };
 
-    expand = function (str) {
+    expand = function (str, hyphens) {
         str = "" + str;
-        lst = listify(str);
+        lst = listify(str, hyphens);
         len = lst.length;
         for (pos = 1; pos < len; pos += 2) {
             m = lst[pos].match(rangerex);
@@ -172,6 +174,18 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
     //
     // The top-level option handlers.
     //
+    var sniff = function (str, func, minchars, isyear) {
+        var ret = str;
+        var lst;
+		if (!str.match(/[^\-\u20130-9 ,&]/)) {
+			lst = expand(str, "-");
+            ret = func(lst, minchars, isyear);
+        } else {
+			lst = expand(str, "\\s+\\-\\s+");
+            ret = func(lst, minchars, isyear);
+        }
+        return ret;
+    }
     if (!state.opt["page-range-format"]) {
         ret_func = function (str) {
             //return str.replace("-", "\u2013", "g");
@@ -179,39 +193,19 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
         };
     } else if (state.opt["page-range-format"] === "expanded") {
         ret_func = function (str) {
-			var ret = str;
-			if (!str.match(/[^\-\u20130-9 ,&]/)) {
-				var lst = expand(str);
-				ret = stringify(lst);
-			}
-			return ret;
+            return sniff(str, stringify);
         };
     } else if (state.opt["page-range-format"] === "minimal") {
         ret_func = function (str) {
-			var ret = str;
-			if (!str.match(/[^\-\u20130-9 ,&]/)) {
-				var lst = expand(str);
-				return minimize(lst);
-			}
-			return ret;
+            return sniff(str, minimize);
         };
     } else if (state.opt["page-range-format"] === "minimal-two") {
         ret_func = function (str, isyear) {
-			var ret = str;
-			if (!str.match(/[^\-\u20130-9 ,&]/)) {
-				var lst = expand(str);
-				ret = minimize(lst, 2, isyear);
-			}
-			return ret;
+            return sniff(str, minimize, 2, isyear);
         };
     } else if (state.opt["page-range-format"] === "chicago") {
         ret_func = function (str) {
-			var ret = str;
-			if (!str.match(/[^\-\u20130-9 ,&]/)) {
-				var lst = expand(str);
-				ret = chicago(lst);
-			}
-			return ret;
+            return sniff(str, chicago);
         };
     }
 
