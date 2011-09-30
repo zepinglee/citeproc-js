@@ -590,7 +590,7 @@ CSL.Engine.prototype.setOpt = function (token, name, value) {
 
 CSL.Engine.prototype.fixOpt = function (token, name, localname) {
     if ("citation" === token.name || "bibliography" === token.name) {
-        if (! this[token.name].opt[name] && "undefined" !== this.opt[name]) {
+        if (! this[token.name].opt[name] && "undefined" !== typeof this.opt[name]) {
             this[token.name].opt[name] = this.opt[name];
         }
     }
