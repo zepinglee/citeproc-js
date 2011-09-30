@@ -299,6 +299,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             collapse_parallel = true;
             this.parallel.StartCitation(sortedItems);
             this.output.queue[0].strings.delimiter = ", ";
+            this.tmp.term_predecessor = false;
             entry_item_ids.push("" + CSL.getCite.call(this, item));
             skips[item.id] = true;
             siblings = this.registry.registry[item.id].siblings;
@@ -311,6 +312,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             this.parallel.ComposeSet();
             this.parallel.PruneOutputQueue();
         } else if (!this.registry.registry[item.id].siblings) {
+            this.tmp.term_predecessor = false;
             entry_item_ids.push("" + CSL.getCite.call(this, item));
             //skips[item.id] = true;
         }
