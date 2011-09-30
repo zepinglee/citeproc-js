@@ -196,3 +196,53 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     return lst;
 };
 
+CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
+    var ret = {};
+	// Note: subunits are reversed by _trimInstitution
+    ret["long"] = this._trimInstitution(value.literal.split(/\s*\|\s*/), v, i);
+
+    var str = value.literal;
+    if (str) {
+        if (str.slice(0,1) === '"' && str.slice(-1) === '"') {
+            str = str.slice(1,-1);
+        }
+		// Note: subunits are reversed by _trimInstitution
+        ret["short"] = this._trimInstitution(str.split(/\s*\|\s*/), v, i);
+    } else {
+        ret["short"] = false;
+    }
+    return ret;
+};
+
+CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
+    var s;
+	// 
+	subunits.reverse();
+    var use_first = this.institution.strings["use-first"];
+    if (!use_first) {
+        if (this.persons[v][i].length === 0) {
+            use_first = this.institution.strings["substitute-use-first"];
+        }
+    }
+    if (!use_first) {
+        use_first = 0;
+    }
+    var append_last = this.institution.strings["use-last"];
+    if (!append_last) {
+        append_last = 0;
+    }
+    if (use_first || append_last) {
+        s = subunits.slice();
+        subunits = subunits.slice(0, use_first);
+        s = s.slice(use_first);
+        if (append_last) {
+            if (append_last > s.length) {
+                append_last = s.length;
+            }
+            if (append_last) {
+                subunits = subunits.concat(s.slice((s.length - append_last)));
+            }
+        }
+    }
+    return subunits;
+};
