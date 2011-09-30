@@ -179,6 +179,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
         //
         // Discretionary sort ordering and inversions
         //
+        if (["Lord", "Lady"].indexOf(name.given) > -1) {
+            sort_sep = ", ";
+        }
         if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
             // Drop non-dropping particle
             //second = this._join([given, dropping_particle, non_dropping_particle], " ");
