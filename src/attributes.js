@@ -51,7 +51,7 @@
 CSL.Attributes = {};
 
 CSL.Attributes["@context"] = function (state, arg) {
-    func = function (state, Item) {
+    var func = function (state, Item) {
 		var area = state.tmp.area.slice(0, arg.length);
 		var result = false;
 		if (area === arg) {
