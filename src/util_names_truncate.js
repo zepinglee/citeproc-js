@@ -142,11 +142,6 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             this._transformNameset(this.persons[v][i]);
         }
         this._transformNameset(this.institutions[v]);
-
-        for (i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
-            // Lazy retrieval of institutional abbreviations.
-            this.state.transform.loadAbbreviation("institution", this.institutions[v][i].literal);
-        }
     }
 
     // Could also be factored out to a separate function for clarity.
@@ -170,12 +165,14 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             // can break the parsing here, so we need to be sure the lengths
             // of the splits match.
             var long_form = this.institutions[v][i]["long"];
-            if (this.state.transform.abbrevs.institution[long_form.join(", ")]) {
-                var short_form = this.state.transform.abbrevs.institution[long_form.join(", ")].split(", ");
-                if (short_form.length === long_form.length) {
-                    this.institutions[v][i]["short"] = short_form;
+            var short_form = long_form.slice();
+            for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
+                this.state.transform.loadAbbreviation("institution", long_form[j]);
+                if (this.state.transform.abbrevs.institution[long_form[j]]) {
+                    short_form[j] = this.state.transform.abbrevs.institution[long_form[j]];
                 }
             }
+            this.institutions[v][i]["short"] = short_form;
         }
     }
 };
@@ -198,16 +195,24 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
-	// Note: subunits are reversed by _trimInstitution
-    ret["long"] = this._trimInstitution(value.literal.split(/\s*\|\s*/), v, i);
+    var splitInstitution = value.literal.replace(/\s*\|\s*/, "|", "g");
+    // check for total and utter abbreviation IFF form="short"
+    if (this.institution.strings.form === "short") {
+        this.state.transform.loadAbbreviation("institution", splitInstitution);
+        if (this.state.transform.abbrevs.institution[splitInstitution]) {
+            splitInstitution = this.state.transform.abbrevs.institution[splitInstitution];
+        }
+    }
+    splitInstitution = splitInstitution.split(/\s*\|\s*/);
+    splitInstitution.reverse();
+    ret["long"] = this._trimInstitution(splitInstitution, v, i);
 
     var str = value.literal;
     if (str) {
         if (str.slice(0,1) === '"' && str.slice(-1) === '"') {
             str = str.slice(1,-1);
         }
-		// Note: subunits are reversed by _trimInstitution
-        ret["short"] = this._trimInstitution(str.split(/\s*\|\s*/), v, i);
+        ret["short"] = this._trimInstitution(splitInstitution, v, i);
     } else {
         ret["short"] = false;
     }
@@ -217,21 +222,22 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
 CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     var s;
 	// 
-	subunits.reverse();
     var use_first = this.institution.strings["use-first"];
     if (!use_first) {
         if (this.persons[v][i].length === 0) {
             use_first = this.institution.strings["substitute-use-first"];
         }
     }
-    if (!use_first) {
-        use_first = 0;
+    // Don't render the largest subunit with use-first, no
+    // matter what its value.
+    if (use_first > subunits.length - 1) {
+        use_first = subunits.length - 1;
     }
     var append_last = this.institution.strings["use-last"];
     if (!append_last) {
         append_last = 0;
     }
-    if (use_first || append_last) {
+    if ("number" === typeof use_first || append_last) {
         s = subunits.slice();
         subunits = subunits.slice(0, use_first);
         s = s.slice(use_first);
