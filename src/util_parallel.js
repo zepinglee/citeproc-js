@@ -88,7 +88,8 @@ CSL.Parallel = function (state) {
 
 CSL.Parallel.prototype.isMid = function (variable) {
     //return ["names", "section", "volume", "container-title", "issue", "page", "page-first", "locator"].indexOf(variable) > -1;
-    return ["section", "volume", "container-title", "issue", "page", "page-first", "locator"].indexOf(variable) > -1;
+    //return ["section", "volume", "container-title", "issue", "page", "page-first", "locator"].indexOf(variable) > -1;
+    return (this.midVars.indexOf(variable) > -1);
 };
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
@@ -100,12 +101,12 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
         this.in_series = true;
         this.delim_counter = 0;
         this.delim_pointers = [];
+        this.midVars = ["section", "volume", "container-title", "issue", "page", "page-first", "locator"];
         if (out) {
             this.out = out;
         } else {
             this.out = this.state.output.queue;
         }
-
     }
 };
 
@@ -136,7 +137,9 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
         for (pos = 0; pos < len; pos += 1) {
             x = CSL.PARALLEL_MATCH_VARS[pos];
             if (!Item[x] || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
-                this.try_cite = false;
+                // ZZZ set true for testing initially, but setting this true
+                // always seems to be safe, at least judging from current tests.
+                this.try_cite = true;
                 if (this.in_series) {
                     // clean list is pushed to stack later.  this.sets.push([]);
                     this.in_series = false;
@@ -199,7 +202,6 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
  */
 CSL.Parallel.prototype.StartVariable = function (variable) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-        this.variable = variable;
         this.data = {};
         this.data.value = "";
         this.data.blobs = [];
@@ -207,22 +209,30 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
         //if (this.target === "front" && is_mid && this.cite.front.length && (this.cite.front.length > 1 || this.cite.front.indexOf("names") === -1)) {
         if (this.target === "front" && is_mid) {
             this.target = "mid";
-        } else if (this.target === "mid" && !is_mid && this.cite.Item.title) {
+        } else if (this.target === "mid" && !is_mid && this.cite.Item.title && variable !== "names") {
             this.target = "back";
         } else if (this.target === "back" && is_mid) {
             this.try_cite = true;
             this.in_series = false;
         }
+
+        if (variable === "names") {
+            this.variable = variable + ":" + this.target;
+        } else {
+            this.variable = variable;
+        }
+
         //print("area=" + this.state.tmp.area + ", variable=" + variable+", target="+this.target);
         // Exception for docket number.  Necessary for some
         // civil law cites (France), which put the docket number
         // at the end of the first of a series of references.
         if (variable === "number") {
-            this.cite.front.push(variable);
+            this.cite.front.push(this.variable);
         } else if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(variable) > -1) {
-            this.cite.front.push(variable);
+            // This looks like it should be mid, but changing it breaks French case/commentary parallels. Not sure why.
+            this.cite.front.push(this.variable);
         } else {
-            this.cite[this.target].push(variable);
+            this.cite[this.target].push(this.variable);
         }
     }
 };
@@ -276,6 +286,16 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
         this.cite[this.variable] = this.data;
         if (this.sets.value().length > 0) {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
+            // ZZZ
+            if (this.target === "front" && this.variable === "issued") {
+                // REMAINING PROBLEM: this works for English-style cites, but not
+                // for the French. Only difference is date-parts (year versus year-month-day).
+                // See code at the bottom of CloseCite() for the other half of this workaround.
+                if (this.data.value && this.data.value.match(/^::[[0-9]{4}$/)) {
+                    this.target = "mid";
+                    //this.cite.front.pop();
+                }
+            }
             if (this.target === "front") {
                 if (!(!prev[this.variable] && !this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
                     // evaluation takes place later, at close of cite.
@@ -368,7 +388,21 @@ CSL.Parallel.prototype.CloseCite = function () {
             }
         } else {
             //print("  renewing");
-            this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
+
+            // This is pretty awful, but it works.
+            // This condition works together with another at the top of CloseVariable()
+            // that jumps to "mid" on "issued" only if it is a year. This allows
+            // the year to stay in place in English cites, and the date to be suppressed
+            // in French cites. The code below is a complement to that.
+            //print("front: "+this.cite.front+", mid: "+this.cite.mid+", back: "+this.cite.back+", id: "+this.cite.itemId);
+            var idx = this.cite.front.indexOf("issued");
+            if (idx === -1) {
+                this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
+            } else {
+                if (this.cite.issued.value.match(/^::[0-9]{4}$/)) {
+                    this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
+                }
+            }
         }
         //print("WooHoo lengtsh fo sets value list: "+this.sets.mystack.length);
         this.sets.value().push(this.cite);
