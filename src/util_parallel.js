@@ -107,6 +107,9 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
         } else {
             this.out = this.state.output.queue;
         }
+        // ZZZ hold this in reserve
+        //this.master_has_rendered_short_element = false;
+        this.master_was_neutral_cite = true;
     }
 };
 
@@ -202,6 +205,9 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
  */
 CSL.Parallel.prototype.StartVariable = function (variable) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
+        if (variable === "container-title" && this.sets.value().length === 0) {
+            this.master_was_neutral_cite = false;
+        }
         this.data = {};
         this.data.value = "";
         this.data.blobs = [];
@@ -386,6 +392,11 @@ CSL.Parallel.prototype.CloseCite = function () {
                 //print("  setting issued in back_forceme variable culling list");
                 this.cite.back_forceme.push("issued");
             }
+            // ZZZ purge trailing court description if first in series was a neutral cite
+            //print(" master: "+this.cite.mid+" "+this.cite.front+" "+this.cite.back+" "+this.cite.back_forceme);
+            if (this.master_was_neutral_cite) {
+                this.cite.back_forceme.push("names:mid");
+            }
         } else {
             //print("  renewing");
 
@@ -396,9 +407,10 @@ CSL.Parallel.prototype.CloseCite = function () {
             // in French cites. The code below is a complement to that.
             //print("front: "+this.cite.front+", mid: "+this.cite.mid+", back: "+this.cite.back+", id: "+this.cite.itemId);
             var idx = this.cite.front.indexOf("issued");
-            if (idx === -1) {
+            if (idx === -1 || this.master_was_neutral_cite) {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
-            } else {
+            }
+            if (idx !== -1) {
                 if (this.cite.issued.value.match(/^::[0-9]{4}$/)) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
@@ -492,9 +504,10 @@ CSL.Parallel.prototype.PruneOutputQueue = function () {
                     if (ppos === 0) {
                         this.purgeVariableBlobs(cite, cite.back);
                     } else if (ppos === (series.length - 1)) {
-                        //print(" a little rumor: "+cite.back_forceme);
+                        //print("  (end)== purge ==> ("+cite.front.concat(cite.back_forceme)+")");
                         this.purgeVariableBlobs(cite, cite.front.concat(cite.back_forceme));
                     } else {
+                        //print("  (mid)== purge ==> ("+cite.front.concat(cite.back)+")");
                         this.purgeVariableBlobs(cite, cite.front.concat(cite.back));
                     }
 
