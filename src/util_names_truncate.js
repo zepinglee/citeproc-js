@@ -197,22 +197,27 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
     var splitInstitution = value.literal.replace(/\s*\|\s*/, "|", "g");
     // check for total and utter abbreviation IFF form="short"
+    splitInstitution = splitInstitution.split("|");
     if (this.institution.strings.form === "short") {
-        this.state.transform.loadAbbreviation("institution", splitInstitution);
-        if (this.state.transform.abbrevs.institution[splitInstitution]) {
-            splitInstitution = this.state.transform.abbrevs.institution[splitInstitution];
+        // End processing before processing last single element, since
+        // that will be picked up by normal element selection and
+        // short-forming.
+        for (var j = splitInstitution.length; j > 1; j += -1) {
+            var str = splitInstitution.slice(0, j).join("|");
+            this.state.transform.loadAbbreviation("institution", str);
+            if (this.state.transform.abbrevs.institution[str]) {
+                str = this.state.transform.abbrevs.institution[str];
+                splitInstitution = [str].concat(splitInstitution.slice(j));
+            }
         }
     }
-    splitInstitution = splitInstitution.split(/\s*\|\s*/);
     splitInstitution.reverse();
     ret["long"] = this._trimInstitution(splitInstitution, v, i);
 
-    var str = value.literal;
-    if (str) {
-        if (str.slice(0,1) === '"' && str.slice(-1) === '"') {
-            str = str.slice(1,-1);
-        }
-        ret["short"] = this._trimInstitution(splitInstitution, v, i);
+    if (splitInstitution.length) {
+        // This doesn't seem to make any sense.
+        //ret["short"] = this._trimInstitution(splitInstitution, v, i);
+        ret["short"] = ret["long"].slice();
     } else {
         ret["short"] = false;
     }
