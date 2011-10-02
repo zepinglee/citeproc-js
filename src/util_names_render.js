@@ -113,8 +113,22 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
 CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
     for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
         if (blobs[i]) {
+            var str = blobs[i];
+            // XXXXX Cut-and-paste code in multiple locations. This code block should be
+            // collected in a function.
+            // Tag: strip-periods-block
+            if (this.state.tmp.strip_periods) {
+                str = str.replace(/\./g, "");
+            } else {
+                for (var j = 0, jlen = style.decorations.length; j < jlen; j += 1) {
+                    if ("@strip-periods" === style.decorations[j][0] && "true" === style.decorations[j][1]) {
+                        str = str.replace(/\./g, "");
+                        break;
+                    }
+                }
+            }
             //this.state.output.append(blobs[i], style, true);
-            this.state.output.append(blobs[i], style, true);
+            this.state.output.append(str, style, true);
             blobs[i] = this.state.output.pop();
         }
     }
