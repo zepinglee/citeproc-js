@@ -278,6 +278,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
     var name = {
         literal:value.literal,
         family:value.family,
+        isInstitution:value.isInstitution,
         given:value.given,
         suffix:value.suffix,
         "comma-suffix":value["comma-suffix"],
