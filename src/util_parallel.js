@@ -411,7 +411,9 @@ CSL.Parallel.prototype.CloseCite = function () {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
             }
             if (idx !== -1) {
-                if (this.cite.issued.value.match(/^::[0-9]{4}$/)) {
+                // If previous cite rendered the year, go ahead and collapse. Otherwise, don't.
+                var prev = this.sets.value()[this.sets.value().length - 1];
+                if (!prev.issued) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
             }
