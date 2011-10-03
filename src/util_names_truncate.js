@@ -193,12 +193,12 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     return lst;
 };
 
-CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
+CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) {
     var ret = {};
     var splitInstitution = value.literal.replace(/\s*\|\s*/, "|", "g");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
-    if (this.institution.strings.form === "short") {
+    if (this.institution.strings.form === "short" || force_test) {
         // End processing before processing last single element, since
         // that will be picked up by normal element selection and
         // short-forming.
@@ -212,7 +212,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
         }
     }
     splitInstitution.reverse();
-    ret["long"] = this._trimInstitution(splitInstitution, v, i);
+    ret["long"] = this._trimInstitution(splitInstitution, v, i, force_test);
 
     if (splitInstitution.length) {
         // This doesn't seem to make any sense.
@@ -224,10 +224,13 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     return ret;
 };
 
-CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
+CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test) {
     var s;
 	// 
     var use_first = this.institution.strings["use-first"];
+    if (force_test) {
+        use_first = 1;
+    }
     if (!use_first) {
         if (this.persons[v][i].length === 0) {
             use_first = this.institution.strings["substitute-use-first"];
@@ -239,7 +242,7 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
         use_first = subunits.length - 1;
     }
     var append_last = this.institution.strings["use-last"];
-    if (!append_last) {
+    if (!append_last || force_test) {
         append_last = 0;
     }
     if ("number" === typeof use_first || append_last) {

@@ -50,6 +50,26 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@institution-use-first"] = function (state, arg) {
+    var func = function (state, Item) {
+        var result = false;
+        var nameset = Item[arg];
+        if (nameset && nameset.length) {
+            var name = nameset[0];
+            // Normalize single name
+            name = state.nameOutput._normalizeNameInput(name);
+            // Run single name through normalization and truncation machinery.
+            // true value forces function to test mode
+            name = state.nameOutput._splitInstitution(name, false, false, true);
+            if (name["long"].length) {
+                result = true;
+            }
+        }
+		return result;
+    };
+    this.tests.push(func);
+}
+
 CSL.Attributes["@context"] = function (state, arg) {
     var func = function (state, Item) {
 		var area = state.tmp.area.slice(0, arg.length);
