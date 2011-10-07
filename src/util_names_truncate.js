@@ -198,7 +198,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
-    if (this.institution.strings.form === "short" || force_test) {
+    if (this.institution.strings.form === "short" && !force_test) {
         // End processing before processing last single element, since
         // that will be picked up by normal element selection and
         // short-forming.
@@ -239,26 +239,32 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test
             use_first = 0;
         }
     }
-    // Don't render the largest subunit with use-first, no
-    // matter what its value.
+    var append_last = this.institution.strings["use-last"];
+    if (!append_last) {
+        if (!use_first) {
+            append_last = subunits.length;
+        } else {
+            append_last = 0;
+        }
+    }
+    // Now that we've determined the value of append_last
+    // (use-last), don't render the largest subunit with use-first, 
+    // no matter what its value.
     if (use_first > subunits.length - 1) {
         use_first = subunits.length - 1;
     }
-    var append_last = this.institution.strings["use-last"];
-    if (!append_last || force_test) {
+    if (force_test) {
         append_last = 0;
     }
-    if ("number" === typeof use_first || append_last) {
-        s = subunits.slice();
-        subunits = subunits.slice(0, use_first);
-        s = s.slice(use_first);
+    s = subunits.slice();
+    subunits = subunits.slice(0, use_first);
+    s = s.slice(use_first);
+    if (append_last) {
+        if (append_last > s.length) {
+            append_last = s.length;
+        }
         if (append_last) {
-            if (append_last > s.length) {
-                append_last = s.length;
-            }
-            if (append_last) {
-                subunits = subunits.concat(s.slice((s.length - append_last)));
-            }
+            subunits = subunits.concat(s.slice((s.length - append_last)));
         }
     }
     return subunits;
