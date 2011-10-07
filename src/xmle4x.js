@@ -280,7 +280,7 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
     for each (node in myxml..names) {
         //print("names");
         if ("xml" == typeof node && node.elements("name").length() > 0) {
-            if (!node.institution.toXMLString()) {
+            if (node.institution.length() === 0) {
                 //print("adding node");
                 institution_long = <institution
                     institution-parts="long"
@@ -289,7 +289,7 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
                 institution_part = <institution-part name="long"/>;
                 node.name += institution_long;
                 node.institution.@delimiter = node.name.@delimiter.toString();
-                if (node.name.@and.toXMLString()) {
+                if (node.name.@and.toString()) {
                     node.institution.@and = "text";
                 }
 
