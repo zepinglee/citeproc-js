@@ -60,9 +60,11 @@ CSL.Attributes["@institution-use-first"] = function (state, arg) {
             name = state.nameOutput._normalizeNameInput(name);
             // Run single name through normalization and truncation machinery.
             // true value forces function to test mode
-            name = state.nameOutput._splitInstitution(name, false, false, true);
-            if (name["long"].length) {
-                result = true;
+            if (name.literal) {
+                name = state.nameOutput._splitInstitution(name, false, false, true);
+                if (name["long"].length) {
+                    result = true;
+                }
             }
         }
 		return result;
