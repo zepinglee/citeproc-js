@@ -195,7 +195,7 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) {
     var ret = {};
-    var splitInstitution = value.literal.replace(/\s*\|\s*/, "|", "g");
+    var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
     if (this.institution.strings.form === "short" || force_test) {
@@ -234,6 +234,9 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test
     if (!use_first) {
         if (this.persons[v][i].length === 0) {
             use_first = this.institution.strings["substitute-use-first"];
+        }
+        if (!use_first) {
+            use_first = 0;
         }
     }
     // Don't render the largest subunit with use-first, no
