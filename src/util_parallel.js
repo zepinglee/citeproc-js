@@ -101,7 +101,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
         this.in_series = true;
         this.delim_counter = 0;
         this.delim_pointers = [];
-        this.midVars = ["section", "volume", "container-title", "issue", "page", "page-first", "locator"];
+        this.midVars = ["section", "volume", "container-title", "collection-title", "collection-number", "issue", "page", "page-first", "locator"];
         if (out) {
             this.out = out;
         } else {
@@ -120,7 +120,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
     var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
     if (this.use_parallels) {
-        //print("StartCite");
+        //print("StartCite: "+Item.id);
         if (this.sets.value().length && this.sets.value()[0].itemId == Item.id) {
             this.ComposeSet();
         }
@@ -136,18 +136,21 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
         // is false.
         //
         this.try_cite = true;
-        len = CSL.PARALLEL_MATCH_VARS.length;
-        for (pos = 0; pos < len; pos += 1) {
-            x = CSL.PARALLEL_MATCH_VARS[pos];
-            if (!Item[x] || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
-                // ZZZ set true for testing initially, but setting this true
-                // always seems to be safe, at least judging from current tests.
-                this.try_cite = true;
-                if (this.in_series) {
-                    // clean list is pushed to stack later.  this.sets.push([]);
-                    this.in_series = false;
-                }
+        var has_required_var = false;
+        for (var i = 0, ilen = CSL.PARALLEL_MATCH_VARS.length; i < ilen; i += 1) {
+            if (Item[CSL.PARALLEL_MATCH_VARS[i]]) {
+                has_required_var = true;
                 break;
+            }
+        }
+        if (!has_required_var || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
+            // ZZZ set true for testing initially, but setting this true
+            // always seems to be safe, at least judging from current tests.
+            this.try_cite = true;
+            if (this.in_series) {
+                // clean list is pushed to stack later.  this.sets.push([]);
+                //print("   IN SERIES FALSE (4)");
+                this.in_series = false;
             }
         }
         this.cite = {};
@@ -205,7 +208,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
  */
 CSL.Parallel.prototype.StartVariable = function (variable) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-        if (variable === "container-title" && this.sets.value().length === 0) {
+        if ((variable === "container-title" || variable === "collection-title") && this.sets.value().length === 0) {
             this.master_was_neutral_cite = false;
         }
         this.data = {};
@@ -214,11 +217,15 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
         var is_mid = this.isMid(variable);
         //if (this.target === "front" && is_mid && this.cite.front.length && (this.cite.front.length > 1 || this.cite.front.indexOf("names") === -1)) {
         if (this.target === "front" && is_mid) {
+            //print("  front-to-mid: "+variable);
             this.target = "mid";
         } else if (this.target === "mid" && !is_mid && this.cite.Item.title && variable !== "names") {
+            //print("  mid-to-back: "+variable);
             this.target = "back";
         } else if (this.target === "back" && is_mid) {
+            //print("  back-to-mid: "+variable);
             this.try_cite = true;
+            //print("   IN SERIES FALSE (3)");
             this.in_series = false;
         }
 
@@ -306,6 +313,7 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
                 if (!(!prev[this.variable] && !this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
                     // evaluation takes place later, at close of cite.
                     //this.try_cite = true;
+                    //print("   IN SERIES FALSE (2)");
                     this.in_series = false;
                 }
             } else if (this.target === "mid") {
@@ -329,6 +337,7 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
                         //this.try_cite = true;
                         //**print("-------------- reset --------------");
                         //print("  breaking series");
+                        //print("   IN SERIES FALSE (1)");
                         this.in_series = false;
                     }
                 }
@@ -346,10 +355,13 @@ CSL.Parallel.prototype.CloseCite = function () {
     var x, pos, len, has_issued, use_journal_info, volume_pos, container_title_pos, section_pos;
     if (this.use_parallels) {
         use_journal_info = false;
-        if (!this.cite.front_collapse["container-title"]) {
+        if (!this.cite.front_collapse["container-title"] && !this.cite.front_collapse["collection-title"]) {
             use_journal_info = true;
         }
         if (this.cite.front_collapse.volume === false) {
+            use_journal_info = true;
+        }
+        if (this.cite.front_collapse["collection-number"] === false) {
             use_journal_info = true;
         }
         if (this.cite.front_collapse.section === false) {
@@ -368,6 +380,14 @@ CSL.Parallel.prototype.CloseCite = function () {
             container_title_pos = this.cite.front.indexOf("container-title");
             if (container_title_pos > -1) {
                 this.cite.front = this.cite.front.slice(0,container_title_pos).concat(this.cite.front.slice(container_title_pos + 1));
+            }
+            collection_title_pos = this.cite.front.indexOf("collection-title");
+            if (collection_title_pos > -1) {
+                this.cite.front = this.cite.front.slice(0,collection_title_pos).concat(this.cite.front.slice(collection_title_pos + 1));
+            }
+            collection_number_pos = this.cite.front.indexOf("collection-number");
+            if (collection_number_pos > -1) {
+                this.cite.front = this.cite.front.slice(0,collection_number_pos).concat(this.cite.front.slice(collection_number_pos + 1));
             }
         }
         if (!this.in_series && !this.force_collapse) {
