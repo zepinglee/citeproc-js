@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.223";
+    this.processor_version = "1.0.224";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -529,11 +529,16 @@ CSL.Engine.prototype.retrieveItems = function (ids) {
     return ret;
 };
 
+CSL.ITERATION = 0;
+
 // Wrapper for sys.retrieveItem supplied by calling application.
 // Adds experimental fields embedded in the note field for
 // style development trial and testing purposes.
 CSL.Engine.prototype.retrieveItem = function (id) {
     var Item, m, pos, len, mm;
+
+    //Zotero.debug("XXX === ITERATION " + CSL.ITERATION + " "+ id +" ===");
+    CSL.ITERATION += 1;
 
     if (this.registry.generate.genIDs["" + id]) {
         Item = this.registry.generate.items["" + id];
@@ -548,14 +553,18 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     // Optional development extension
     if (this.opt.development_extensions.field_hack && Item.note) {
-        m = CSL.NOTE_FIELDS_REGEXP.exec(Item.note);
+        //Zotero.debug("XXX   (1): "+Item.note);
+        m = Item.note.match(CSL.NOTE_FIELDS_REGEXP);
         if (m) {
+            //Zotero.debug("XXX   (2)");
             for (pos = 0, len = m.length; pos < len; pos += 1) {
-                mm = CSL.NOTE_FIELD_REGEXP.exec(m[pos]);
-                if (!Item[mm[1]]) {
+                mm = m[pos].match(CSL.NOTE_FIELD_REGEXP);
+                if (!Item[mm[1]] || true) {
+                    //Zotero.debug("XXX   (3)");
                     if (CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
                         Item[mm[1]] = {raw:mm[2]};
                     } else {
+                        //Zotero.debug("XXX   (4)");
                         Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
                     }
                 }
