@@ -187,9 +187,9 @@ var CSL = {
         "delimiter"
     ],
 
-    PARALLEL_MATCH_VARS: ["container-title"],
+    PARALLEL_MATCH_VARS: ["container-title", "collection-title"],
     PARALLEL_TYPES: ["legal_case",  "legislation", "bill"],
-    PARALLEL_COLLAPSING_MID_VARSET: ["volume", "container-title", "section"],
+    PARALLEL_COLLAPSING_MID_VARSET: ["volume", "container-title", "section", "collection-title", "collection-number"],
 
     LOOSE: 0,
     STRICT: 1,
