@@ -1,6 +1,89 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.224
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+Many fixes and adjustments in this release, mostly in connection
+with work aimed at improved legal style support with the MLZ
+extended CSL schema.
+
+- Do not apply the hard-wired collapse delimiter in numeric styles.
+  (thanks to Sebastian Karcher for reporting this fault).
+
+- Note to self: Do not allow any parameter fed to slice() to be
+  undefined. Ever. It behaves differently on (some versions of)
+  Firefox and (some) other platforms.
+
+- Reverse order of institutional name subunits. We're now
+  little-endian.
+
+- When sniffing for CSL variables inserted via the "note" field hack,
+  use match() on string instead of exec() on compiled regexp. The
+  latter was failing on alternate runs of the processor, not sure why.
+
+- Adjust parallel cite analysis machinery to recognize
+  collection-title as alternative to container-title, and
+  collection-number as alternative to volume.
+
+- Implement an institution-use-first test. Painfully obscure, but
+  necessary.
+
+- Discriminate neutral citations during parallel cite analysis, as
+  cites that contain neither container-title nor collection-title.
+
+- In util_parallel.js, change condition on which to permit leading
+  dates to appear in subsequent cites. With this change, in OSCOLA,
+  dates will not be suppressed on a non-neutral cite without volume
+  number that follows a neutral cite. This seems to be correctly
+  targeted logic, safe for other contexts as well (including French
+  case and commentary clusters).
+
+- Implement form="short" on cs:institution, for refactoring of an
+  entire institution name list. Implement best-match top-level
+  short-forms in institution names.
+
+- Implement configurable skip-words list in locale.
+
+- Implement "context" test attribute, to allow macros to change
+  behavior depending on whether they execute in cs:citation or
+  cs:bibliography.
+
+- Code cleanup and slight increase in discipline for range
+  collapsing. Simple pure numeric ranges like 200-03 will work, and
+  ranges of mixed strings like n23 - n25 will work if the hyphen has
+  spaces on either side.
+
+- Hack in special handling for titles ("Lord", "Lady"). Titles and
+  special sort separator should eventually be placed under locale
+  control, but for the present this gives us something to build on.
+
+- Support text-case on cs:institution-part
+
+- Set term_predecessor at start of each entry rendered via
+  getBibliographyEntries(). Wakes up automagic capitalization of
+  initial letter in leading terms.
+
+- Recognize locator-revision as a segment on item, not Item when
+  evaluating conditionals.
+
+- Pass through isInstitution flag for the benefit of _parseNames. Not
+  clear why this didn't cause problems earlier.
+
+- Fix a silly bug affecting inherited name options
+
+- Use some more orthodox commands to detect the presence of XML
+  things in preprocessing phase (xmle4x.js).
+
+- Code cleanup: Move _splitInstitution and _trimInstitution from
+  util_names_divide.js to util_names_truncate.js, where they are now
+  actually used.
+
+==========================
 Changes in version 1.0.223
 ==========================
 
