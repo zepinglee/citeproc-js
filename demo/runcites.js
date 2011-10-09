@@ -215,7 +215,7 @@ var citationBB2 = {
         {
 			id: "ITEM-6",
 			locator: "15",
-			prefix:"<i>but see</i>"
+			prefix:"<i>but see</i> "
 		}
 	],
 	"properties": {
@@ -324,7 +324,7 @@ var citationBB8 = {
 	"citationItems": [
         {
 			id: "ITEM-19",
-			"suffix":"(appeal taken from Scot.)"
+			"suffix":" (appeal taken from Scot.)"
 		}
 	],
 	"properties": {
@@ -336,7 +336,7 @@ var citationBB9 = {
 	"citationItems": [
         {
 			id: "ITEM-20",
-			suffix:"(appeal taken from B.C.)"
+			suffix:" (appeal taken from B.C.)"
 		}
 	],
 	"properties": {
@@ -348,12 +348,12 @@ var citationBB10 = {
 	"citationItems": [
         {
 			id: "ITEM-3",
-			prefix:"<b>En sinn Scholl beschéngt ass, da Mamm frësch blénken hun?</b> <i>See, e.g.</i>"
+			prefix:"<b>En sinn Scholl beschéngt ass, da Mamm frësch blénken hun?</b> <i>See, e.g.</i> "
 		},
         {
-			prefix:"<b>Der mä gutt Dach, eng onser bléit geplot mä.</b>  <i>See generally</i>",
+			prefix:"<b>Der mä gutt Dach, eng onser bléit geplot mä.</b>  <i>See generally</i> ",
 			id: "ITEM-3",
-			suffix:"<b>(Iwer Engel Milliounen nei fu, blëtzen néierens d'Gaassen rou do.)</b>"
+			suffix:" <b>(Iwer Engel Milliounen nei fu, blëtzen néierens d'Gaassen rou do.)</b>"
 		}
 	],
 	"properties": {
