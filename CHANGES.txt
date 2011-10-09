@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.225
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Force a possible number to string before
+  performing a string match, in util_page.js.
+
+- Set static midVars array on instantiation of
+  parallel evaluation engine, rather than on
+  StartCitation().
+
+- Restore setAbbreviations() function to citeproc
+  object. (Will default to a noop unless the
+  abbreviations mechanism attached to sys
+  supplies a corresponding hook function.)
+
+- Prevent updateItems() from ever setting duplicate
+  items in the bibliography. Thanks to an anonymous
+  user who reported this possibility to the citeproc-js
+  bug tracker.
+
+==========================
 Changes in version 1.0.224
 ==========================
 

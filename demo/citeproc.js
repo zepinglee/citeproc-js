@@ -1717,7 +1717,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.224";
+    this.processor_version = "1.0.225";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2234,6 +2234,11 @@ CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
         this.opt["auto-vietnamese-names"] = false;
     }
 };
+CSL.Engine.prototype.setAbbreviations = function (arg) {
+	if (this.sys.setAbbreviations) {
+		this.sys.setAbbreviations(arg);
+	}
+}
 CSL.Engine.Opt = function () {
     this.has_disambiguate = false;
     this.mode = "html";
@@ -5048,17 +5053,17 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test
     if (force_test) {
         append_last = 0;
     }
-        s = subunits.slice();
-        subunits = subunits.slice(0, use_first);
-        s = s.slice(use_first);
-        if (append_last) {
-            if (append_last > s.length) {
-                append_last = s.length;
-            }
-            if (append_last) {
-                subunits = subunits.concat(s.slice((s.length - append_last)));
-            }
+    s = subunits.slice();
+    subunits = subunits.slice(0, use_first);
+    s = s.slice(use_first);
+    if (append_last) {
+        if (append_last > s.length) {
+            append_last = s.length;
         }
+        if (append_last) {
+            subunits = subunits.concat(s.slice((s.length - append_last)));
+        }
+    }
     return subunits;
 };
 CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
@@ -7916,6 +7921,7 @@ CSL.Parallel = function (state) {
     this.sets = new CSL.Stack([]);
     this.try_cite = true;
     this.use_parallels = true;
+    this.midVars = ["section", "volume", "container-title", "collection-title", "collection-number", "issue", "page", "page-first", "locator"];
 };
 CSL.Parallel.prototype.isMid = function (variable) {
     return (this.midVars.indexOf(variable) > -1);
@@ -7929,7 +7935,6 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
         this.in_series = true;
         this.delim_counter = 0;
         this.delim_pointers = [];
-        this.midVars = ["section", "volume", "container-title", "collection-title", "collection-number", "issue", "page", "page-first", "locator"];
         if (out) {
             this.out = out;
         } else {
@@ -9250,7 +9255,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
         return stringify(lst);
     };
     var sniff = function (str, func, minchars, isyear) {
-        var ret = str;
+        var ret;
+		str = "" + str;
         var lst;
 		if (!str.match(/[^\-\u20130-9 ,&]/)) {
 			lst = expand(str, "-");
@@ -9986,6 +9992,14 @@ CSL.Registry = function (state) {
 CSL.Registry.prototype.init = function (myitems, uncited_flag) {
     var i, ilen;
     this.oldseq = {};
+	var tmphash = {};
+	for (i = myitems.length - 1; i > -1; i += -1) {
+		if (tmphash[myitems[i]]) {
+			myitems = myitems.slice(0, i).concat(myitems.slice(i + 1));
+		} else {
+			tmphash[myitems[i]] = true;
+		}
+	}
     if (uncited_flag && this.mylist && this.mylist.length) {
         this.uncited = myitems;
         for (i = 0, ilen = myitems.length; i < ilen; i += 1) {
