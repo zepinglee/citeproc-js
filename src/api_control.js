@@ -114,3 +114,9 @@ CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
         this.opt["auto-vietnamese-names"] = false;
     }
 };
+
+CSL.Engine.prototype.setAbbreviations = function (arg) {
+	if (this.sys.setAbbreviations) {
+		this.sys.setAbbreviations(arg);
+	}
+}
