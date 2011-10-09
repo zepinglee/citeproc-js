@@ -84,6 +84,7 @@ CSL.Parallel = function (state) {
     this.sets = new CSL.Stack([]);
     this.try_cite = true;
     this.use_parallels = true;
+    this.midVars = ["section", "volume", "container-title", "collection-title", "collection-number", "issue", "page", "page-first", "locator"];
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
@@ -101,7 +102,6 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
         this.in_series = true;
         this.delim_counter = 0;
         this.delim_pointers = [];
-        this.midVars = ["section", "volume", "container-title", "collection-title", "collection-number", "issue", "page", "page-first", "locator"];
         if (out) {
             this.out = out;
         } else {
