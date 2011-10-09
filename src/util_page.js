@@ -175,7 +175,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
     // The top-level option handlers.
     //
     var sniff = function (str, func, minchars, isyear) {
-        var ret = str;
+        var ret;
+		str = "" + str;
         var lst;
 		if (!str.match(/[^\-\u20130-9 ,&]/)) {
 			lst = expand(str, "-");
