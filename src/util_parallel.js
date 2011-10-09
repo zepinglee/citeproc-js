@@ -84,7 +84,7 @@ CSL.Parallel = function (state) {
     this.sets = new CSL.Stack([]);
     this.try_cite = true;
     this.use_parallels = true;
-    this.midVars = ["section", "volume", "container-title", "collection-title", "collection-number", "issue", "page", "page-first", "locator"];
+    this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "locator"];
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
@@ -208,7 +208,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
  */
 CSL.Parallel.prototype.StartVariable = function (variable) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-        if ((variable === "container-title" || variable === "collection-title") && this.sets.value().length === 0) {
+        if (variable === "container-title" && this.sets.value().length === 0) {
             this.master_was_neutral_cite = false;
         }
         this.data = {};
@@ -304,17 +304,20 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
                 // REMAINING PROBLEM: this works for English-style cites, but not
                 // for the French. Only difference is date-parts (year versus year-month-day).
                 // See code at the bottom of CloseCite() for the other half of this workaround.
-                if (this.data.value && this.data.value.match(/^::[[0-9]{4}$/)) {
+                //if (this.data.value && this.data.value.match(/^::[[0-9]{4}$/)) {
+                if (this.data.value && this.master_was_neutral_cite) {
                     this.target = "mid";
                     //this.cite.front.pop();
                 }
             }
             if (this.target === "front") {
-                if (!(!prev[this.variable] && !this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
+                if ((prev[this.variable] || this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
                     // evaluation takes place later, at close of cite.
                     //this.try_cite = true;
-                    //print("   IN SERIES FALSE (2)");
-                    this.in_series = false;
+                    // Ignore differences in issued
+                    if ("issued" !== this.variable) {
+                        this.in_series = false;
+                    }
                 }
             } else if (this.target === "mid") {
                 if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(this.variable) > -1) {
@@ -355,7 +358,7 @@ CSL.Parallel.prototype.CloseCite = function () {
     var x, pos, len, has_issued, use_journal_info, volume_pos, container_title_pos, section_pos;
     if (this.use_parallels) {
         use_journal_info = false;
-        if (!this.cite.front_collapse["container-title"] && !this.cite.front_collapse["collection-title"]) {
+        if (!this.cite.front_collapse["container-title"]) {
             use_journal_info = true;
         }
         if (this.cite.front_collapse.volume === false) {
@@ -380,10 +383,6 @@ CSL.Parallel.prototype.CloseCite = function () {
             container_title_pos = this.cite.front.indexOf("container-title");
             if (container_title_pos > -1) {
                 this.cite.front = this.cite.front.slice(0,container_title_pos).concat(this.cite.front.slice(container_title_pos + 1));
-            }
-            collection_title_pos = this.cite.front.indexOf("collection-title");
-            if (collection_title_pos > -1) {
-                this.cite.front = this.cite.front.slice(0,collection_title_pos).concat(this.cite.front.slice(collection_title_pos + 1));
             }
             collection_number_pos = this.cite.front.indexOf("collection-number");
             if (collection_number_pos > -1) {
@@ -412,30 +411,28 @@ CSL.Parallel.prototype.CloseCite = function () {
                 //print("  setting issued in back_forceme variable culling list");
                 this.cite.back_forceme.push("issued");
             }
-            // ZZZ purge trailing court description if first in series was a neutral cite
-            //print(" master: "+this.cite.mid+" "+this.cite.front+" "+this.cite.back+" "+this.cite.back_forceme);
-            if (this.master_was_neutral_cite) {
-                this.cite.back_forceme.push("names:mid");
-            }
         } else {
             //print("  renewing");
 
-            // This is pretty awful, but it works.
             // This condition works together with another at the top of CloseVariable()
-            // that jumps to "mid" on "issued" only if it is a year. This allows
-            // the year to stay in place in English cites, and the date to be suppressed
-            // in French cites. The code below is a complement to that.
+            // that jumps to "mid" on "issued" only if the preceding cite was a neutral
+            // one.
             //print("front: "+this.cite.front+", mid: "+this.cite.mid+", back: "+this.cite.back+", id: "+this.cite.itemId);
             var idx = this.cite.front.indexOf("issued");
             if (idx === -1 || this.master_was_neutral_cite) {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
             }
-            if (idx !== -1) {
+            if (idx > -1) {
                 // If previous cite rendered the year, go ahead and collapse. Otherwise, don't.
                 var prev = this.sets.value()[this.sets.value().length - 1];
                 if (!prev.issued) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
+            }
+            // This is a little bit aggressive, but quash all names:mid on cites
+            // that follow a neutral cite.
+            if (this.master_was_neutral_cite && this.cite.mid.indexOf("names:mid") > -1) {
+                this.cite.front.push("names:mid");
             }
         }
         //print("WooHoo lengtsh fo sets value list: "+this.sets.mystack.length);
