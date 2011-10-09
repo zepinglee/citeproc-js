@@ -62,7 +62,12 @@ var abbreviations = {
 		},
 		"institution":{
 			"U.S. Bureau of the Census":"U.S. Bureau of the Census"
-		}
+		},
+		"title":{},
+		"classic":{},
+		"hereinafter":{},
+		"nickname":{},
+		"place":{}
 	},
 	"slightly_weird": {
 		"container-title":{
@@ -79,7 +84,12 @@ var abbreviations = {
 		},
 		"institution":{
 			"U.S. Bureau of the Census":"U.S. Census Bureau"
-		}
+		},
+		"title":{},
+		"classic":{},
+		"hereinafter":{},
+		"nickname":{},
+		"place":{}
 	}
 };
 
