@@ -48,6 +48,7 @@
 
 var Sys = function(abbreviations){
 	this.abbreviations = abbreviations;
+	this.abbrevsname = "default";
 };
 
 Sys.prototype.retrieveItem = function(id){
@@ -58,6 +59,14 @@ Sys.prototype.retrieveLocale = function(lang){
 	return locale[lang];
 };
 
-Sys.prototype.getAbbreviations = function(name,vartype){
-	return this.abbreviations[name][vartype];
+Sys.prototype.getAbbreviation = function(obj, vartype, key){
+    if (this.abbreviations[this.abbrevsname][vartype][key]) {
+        obj[vartype][key] = this.abbreviations[this.abbrevsname][vartype][key];
+    } else {
+        obj[vartype][key] = "";
+    }
 };
+
+Sys.prototype.setAbbreviations = function (abbrevsname) {
+	this.abbrevsname = abbrevsname;
+}
