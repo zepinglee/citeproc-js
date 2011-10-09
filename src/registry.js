@@ -217,6 +217,17 @@ CSL.Registry = function (state) {
 CSL.Registry.prototype.init = function (myitems, uncited_flag) {
     var i, ilen;
     this.oldseq = {};
+	//  0. Before doing anything, purge any duplicate items from
+	//     the list. Avoids the issue reported here:
+	//         https://bitbucket.org/fbennett/citeproc-js/issue/132/differences-in-behaviour-from
+	var tmphash = {};
+	for (i = myitems.length - 1; i > -1; i += -1) {
+		if (tmphash[myitems[i]]) {
+			myitems = myitems.slice(0, i).concat(myitems.slice(i + 1));
+		} else {
+			tmphash[myitems[i]] = true;
+		}
+	}
     //
     //  1. Receive list as function argument, store as hash and as list.
     //
