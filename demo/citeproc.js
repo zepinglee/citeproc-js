@@ -130,9 +130,9 @@ var CSL = {
         "suffix",
         "delimiter"
     ],
-    PARALLEL_MATCH_VARS: ["container-title", "collection-title"],
+    PARALLEL_MATCH_VARS: ["container-title"],
     PARALLEL_TYPES: ["legal_case",  "legislation", "bill"],
-    PARALLEL_COLLAPSING_MID_VARSET: ["volume", "container-title", "section", "collection-title", "collection-number"],
+    PARALLEL_COLLAPSING_MID_VARSET: ["volume", "issue", "container-title", "section", "collection-number"],
     LOOSE: 0,
     STRICT: 1,
     TOLERANT: 2,
@@ -1717,7 +1717,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.225";
+    this.processor_version = "1.0.226";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7921,7 +7921,7 @@ CSL.Parallel = function (state) {
     this.sets = new CSL.Stack([]);
     this.try_cite = true;
     this.use_parallels = true;
-    this.midVars = ["section", "volume", "container-title", "collection-title", "collection-number", "issue", "page", "page-first", "locator"];
+    this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "locator"];
 };
 CSL.Parallel.prototype.isMid = function (variable) {
     return (this.midVars.indexOf(variable) > -1);
@@ -8009,7 +8009,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
 };
 CSL.Parallel.prototype.StartVariable = function (variable) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-        if ((variable === "container-title" || variable === "collection-title") && this.sets.value().length === 0) {
+        if (variable === "container-title" && this.sets.value().length === 0) {
             this.master_was_neutral_cite = false;
         }
         this.data = {};
@@ -8065,13 +8065,15 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
         if (this.sets.value().length > 0) {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
             if (this.target === "front" && this.variable === "issued") {
-                if (this.data.value && this.data.value.match(/^::[[0-9]{4}$/)) {
+                if (this.data.value && this.master_was_neutral_cite) {
                     this.target = "mid";
                 }
             }
             if (this.target === "front") {
-                if (!(!prev[this.variable] && !this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
-                    this.in_series = false;
+                if ((prev[this.variable] || this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
+                    if ("issued" !== this.variable) {
+                        this.in_series = false;
+                    }
                 }
             } else if (this.target === "mid") {
                 if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(this.variable) > -1) {
@@ -8100,7 +8102,7 @@ CSL.Parallel.prototype.CloseCite = function () {
     var x, pos, len, has_issued, use_journal_info, volume_pos, container_title_pos, section_pos;
     if (this.use_parallels) {
         use_journal_info = false;
-        if (!this.cite.front_collapse["container-title"] && !this.cite.front_collapse["collection-title"]) {
+        if (!this.cite.front_collapse["container-title"]) {
             use_journal_info = true;
         }
         if (this.cite.front_collapse.volume === false) {
@@ -8126,10 +8128,6 @@ CSL.Parallel.prototype.CloseCite = function () {
             if (container_title_pos > -1) {
                 this.cite.front = this.cite.front.slice(0,container_title_pos).concat(this.cite.front.slice(container_title_pos + 1));
             }
-            collection_title_pos = this.cite.front.indexOf("collection-title");
-            if (collection_title_pos > -1) {
-                this.cite.front = this.cite.front.slice(0,collection_title_pos).concat(this.cite.front.slice(collection_title_pos + 1));
-            }
             collection_number_pos = this.cite.front.indexOf("collection-number");
             if (collection_number_pos > -1) {
                 this.cite.front = this.cite.front.slice(0,collection_number_pos).concat(this.cite.front.slice(collection_number_pos + 1));
@@ -8150,19 +8148,19 @@ CSL.Parallel.prototype.CloseCite = function () {
             if (!has_issued) {
                 this.cite.back_forceme.push("issued");
             }
-            if (this.master_was_neutral_cite) {
-                this.cite.back_forceme.push("names:mid");
-            }
         } else {
             var idx = this.cite.front.indexOf("issued");
             if (idx === -1 || this.master_was_neutral_cite) {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
             }
-            if (idx !== -1) {
+            if (idx > -1) {
                 var prev = this.sets.value()[this.sets.value().length - 1];
                 if (!prev.issued) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
+            }
+            if (this.master_was_neutral_cite && this.cite.mid.indexOf("names:mid") > -1) {
+                this.cite.front.push("names:mid");
             }
         }
         this.sets.value().push(this.cite);
