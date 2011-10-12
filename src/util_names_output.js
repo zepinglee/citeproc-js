@@ -179,7 +179,7 @@ CSL.NameOutput.prototype.outputNames = function () {
     //SNIP-END
     // form="count"
     if (this.name.strings.form === "count") {
-        if (this.state.tmp.area.slice(-5) === "_sort" || this.names_count != 0) {
+        if (this.state.tmp.extension || this.names_count != 0) {
             this.state.output.append(this.names_count, "empty");
         } else {
             this.state.tmp.term_sibling.value()[1] = true;

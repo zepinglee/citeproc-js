@@ -173,7 +173,7 @@ CSL.Output.Queue.prototype.popFormats = function (tokenstore) {
 
 CSL.Output.Queue.prototype.startTag = function (name, token) {
     var tokenstore = {};
-    if (this.state.tmp["doing-macro-with-date"] && this.state.tmp.area.slice(-5) === "_sort") {
+    if (this.state.tmp["doing-macro-with-date"] && this.state.tmp.extension) {
         token = this.empty;
         name = "empty";
     }

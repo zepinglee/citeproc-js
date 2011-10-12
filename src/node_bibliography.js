@@ -54,6 +54,9 @@ CSL.Node.bibliography = {
     build: function (state, target) {
         if (this.tokentype === CSL.START) {
 
+            state.build.area = "bibliography";
+            state.build.root = "bibliography";
+
             //state.parallel.use_parallels = false;
 
             state.fixOpt(this, "names-delimiter", "delimiter");
@@ -74,12 +77,6 @@ CSL.Node.bibliography = {
             state.fixOpt(this, "et-al-use-last", "et-al-use-last");
             state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
             state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
-
-            state.build.area_return = state.build.area;
-            state.build.area = "bibliography";
-        }
-        if (this.tokentype === CSL.END) {
-            state.build.area = state.build.area_return;
         }
         target.push(this);
     }

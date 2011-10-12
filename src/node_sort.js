@@ -55,13 +55,12 @@ CSL.Node.sort = {
                 state.parallel.use_parallels = false;
                 state.opt.sort_citations = true;
             }
-            state.build.sort_flag  = true;
-            state.build.area_return = state.build.area;
-            state.build.area = state.build.area + "_sort";
+            state.build.area = state.build.root + "_sort";
+            state.build.extension = "_sort";
         }
         if (this.tokentype === CSL.END) {
-            state.build.area = state.build.area_return;
-            state.build.sort_flag  = false;
+            state.build.area = state.build.root;
+            state.build.extension = "";
         }
     }
 };

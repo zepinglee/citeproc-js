@@ -108,7 +108,7 @@ CSL.expandMacro = function (macro_key_token) {
     }
     if (hasDate) {
         func = function (state, Item) {
-            if (state.tmp.area.slice(-5) === "_sort") {
+            if (state.tmp.extension) {
                 state.tmp["doing-macro-with-date"] = true;
             }
         };
@@ -137,7 +137,7 @@ CSL.expandMacro = function (macro_key_token) {
     end_of_macro = new CSL.Token("group", CSL.END);
     if (hasDate) {
         func = function (state, Item) {
-            if (state.tmp.area.slice(-5) === "_sort") {
+            if (state.tmp.extension) {
                 state.tmp["doing-macro-with-date"] = false;
             }
         };

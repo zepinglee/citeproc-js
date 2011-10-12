@@ -127,6 +127,8 @@ CSL.Engine.Tmp = function () {
     // configuration to the appropriateo objects inside
     // state.  the default is "citation".
     this.area = "citation";
+    this.root = "citation";
+    this.extension = "";
     //
     // controls the implicit conditional wrappers applied
     // to top-level elements inside a names substitute span.
@@ -313,6 +315,8 @@ CSL.Engine.Build = function () {
     // should be able to run uninitialized; may attract some
     // cruft this way.
     this.area = "citation";
+    this.root = "citation";
+    this.extension = "";
     //
     // controls the application of implicit conditional wrappers
     // to top-level elements inside a names substitute span.

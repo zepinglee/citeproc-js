@@ -50,7 +50,7 @@
 
 CSL.Node.group = {
     build: function (state, target) {
-        var func, execs, outer_area;
+        var func, execs;
         if (this.tokentype === CSL.START) {
 
             CSL.Util.substituteStart.call(this, state, target);
@@ -84,8 +84,7 @@ CSL.Node.group = {
                 // is set on the parent cs:citation or cs:bibliography
                 // node.
                 state.build["publisher-special"] = true;
-                outer_area = state.build.area.replace(/_sort$/, "");
-                if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
+                if ("string" === typeof state[state.build.root].opt["name-delimiter"]) {
                     // Pass variable string values to the closing
                     // tag via a global, iff they conform to expectations.
                     func = function (state, Item) {
@@ -114,14 +113,12 @@ CSL.Node.group = {
             // hence the global flag on state.build.
             if (state.build["publisher-special"]) {
                 state.build["publisher-special"] = false;
-                outer_area = state.build.area.replace(/_sort$/, "");
-                if ("string" === typeof state[outer_area].opt["name-delimiter"]) {
+                if ("string" === typeof state[state.build.root].opt["name-delimiter"]) {
                     func = function (state, Item) {
                         if (state.publisherOutput) {
-                            //outer_area = state.tmp.area.replace("_sort", "");
-                            state.publisherOutput.name_delimiter = state[outer_area].opt["name-delimiter"];
-                            state.publisherOutput.delimiter_precedes_last = state[outer_area].opt["delimiter-precedes-last"];
-                            state.publisherOutput.and = state[outer_area].opt.and;
+                            state.publisherOutput.name_delimiter = state[state.build.root].opt["name-delimiter"];
+                            state.publisherOutput.delimiter_precedes_last = state[state.build.root].opt["delimiter-precedes-last"];
+                            state.publisherOutput.and = state[state.build.root].opt.and;
                             state.publisherOutput.render();
                             state.publisherOutput = false;
                         }

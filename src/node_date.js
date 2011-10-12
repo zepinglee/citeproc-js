@@ -57,10 +57,10 @@ CSL.Node.date = {
             // in macros
             state.build.date_parts = [];
             state.build.date_variables = this.variables;
-            if (!state.build.sort_flag) {
+            if (!state.build.extension) {
                 CSL.Util.substituteStart.call(this, state, target);
             }
-            if (state.build.area.slice(-5) === "_sort") {
+            if (state.build.extension) {
                 func = CSL.dateMacroAsSortKey;
             } else {
                 func = function (state, Item, item) {
@@ -122,7 +122,7 @@ CSL.Node.date = {
                         // only the year, with not month or day.
                         // Needed for English-style case cites.  Here's hoping it
                         // doesn't have side effects.
-                        if (state.tmp.area.slice(-5) !== "_sort" && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
+                        if (!state.tmp.extension && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
                             for (key in state.tmp.date_object) {
                                 if (state.tmp.date_object.hasOwnProperty(key)) {
                                     if (key.slice(0, 4) === "year" && state.tmp.citeblob.can_suppress_identical_year) {
@@ -182,7 +182,7 @@ CSL.Node.date = {
             this.execs.push(func);
         }
 
-        if (!state.build.sort_flag && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
+        if (!state.build.extension && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
             // mergeoutput
             func = function (state, Item) {
                 state.output.endTag();
@@ -193,7 +193,7 @@ CSL.Node.date = {
         target.push(this);
 
         if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
-            if (!state.build.sort_flag) {
+            if (!state.build.extension) {
                 CSL.Util.substituteEnd.call(this, state, target);
             }
         }

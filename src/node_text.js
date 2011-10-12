@@ -91,7 +91,7 @@ CSL.Node.text = {
                     if (state.build.area === "bibliography") {
                         state.opt.bib_mode = CSL.NUMERIC;
                     }
-                    if (state.build.area === "bibliography_sort") {
+                    if (state.build.area === "bibliography" && state.build.extension) {
                         state.opt.citation_number_sort_used = true;
                     }
                     //this.strings.is_rangeable = true;
@@ -255,7 +255,7 @@ CSL.Node.text = {
                         } else {
                             state.transform.init(this, this.variables_real[0]);
                         }
-                        if (state.build.area.slice(-5) === "_sort") {
+                        if (state.build.extension) {
                             // multi-fields for sorting get a sort transform,
                             // (abbreviated if the short form was selected)
                             state.transform.init(this, this.variables_real[0], this.variables_real[0]);

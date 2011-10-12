@@ -403,7 +403,7 @@ CSL.Transform = function (state) {
      */
     function getName (state, name, langTags) {
         var i, ret, optLangTag, ilen, key, langTag;
-        if (state.tmp.area.slice(-5) === "_sort") {
+        if (state.tmp.extension) {
              langTags = state.opt["locale-sort"];
         }
         if ("string" === typeof langTags) {

@@ -70,7 +70,6 @@ CSL.Node.citation = {
             state.fixOpt(this, "et-al-subsequent-min", "et-al-subsequent-min");
             state.fixOpt(this, "et-al-subsequent-use-first", "et-al-subsequent-use-first");
 
-            state.build.area_return = state.build.area;
             state.build.area = "citation";
         }
         if (this.tokentype === CSL.END) {
@@ -94,7 +93,6 @@ CSL.Node.citation = {
             }
             // print("creating new comparifier");
             state.citation.srt = new CSL.Registry.Comparifier(state, "citation_sort");
-            state.build.area = state.build.area_return;
         }
     }
 };

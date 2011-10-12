@@ -77,8 +77,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
     }
     // Could be factored out to a separate function for clarity.
     if (this.etal_min === 1 && this.etal_use_first === 1 
-        && !(this.state.tmp.area === "bibliography_sort" 
-             || this.state.tmp.area === "citation_sort" 
+        && !(this.state.tmp.extension
              || this.state.tmp.just_looking)) {
         chopvar = v;
     } else {

@@ -604,8 +604,8 @@ CSL.Engine.prototype.fixOpt = function (token, name, localname) {
         }
     }
     if ("name" === token.name || "names" === token.name) {
-        if ("undefined" === typeof token.strings[localname] && "undefined" !== typeof this[this.build.area.replace("_sort","")].opt[name]) {
-            token.strings[localname] = this[this.build.area.replace("_sort","")].opt[name];
+        if ("undefined" === typeof token.strings[localname] && "undefined" !== typeof this[this.build.root].opt[name]) {
+            token.strings[localname] = this[this.build.root].opt[name];
         }
     }
 };

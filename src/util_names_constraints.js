@@ -93,14 +93,6 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     // Mappings, to allow existing disambiguation machinery to
     // remain untouched.
     if (this.state.tmp.suppress_decorations) {
-        /*
-        if (this.state.tmp.area === "bibliography_sort" || this.state.tmp.area === "citation_sort") {
-            print("OK ------> "+this.state.tmp.area);
-            if (this.name.strings["et-al-use-last"] && discretionary_names_length > (this.etal_min - 2)) {
-                discretionary_names_length = this.etal_min - 2;
-            }
-        }
-        */
         if (this.state.tmp.disambig_request) {
             // Oh. Trouble.
             // state.tmp.nameset_counter is the number of the nameset

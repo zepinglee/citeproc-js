@@ -702,7 +702,7 @@ CSL.Attributes["@position"] = function (state, arg) {
 
     var factory = function (tryposition) {
         return  function (state, Item, item) {
-            if (state.tmp.area === "bibliography" || state.tmp.area === "bibliography_sort") {
+            if (state.tmp.area === "bibliography") {
                 return false;
             }
             if (item && "undefined" === typeof item.position) {
