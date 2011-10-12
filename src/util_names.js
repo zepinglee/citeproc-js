@@ -163,6 +163,8 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
         if (namelist[i].length > 1 && namelist[i].slice(-1) === ".") {
             namelist[i] = namelist[i].slice(0, -1);
             isAbbrev.push(true);
+        } else if (namelist[i].length === 1 && namelist[i].toUpperCase() === namelist[i]) {
+            isAbbrev.push(true);
         } else {
             isAbbrev.push(false);
         }
