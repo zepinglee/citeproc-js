@@ -111,10 +111,10 @@ CSL.Node.key = {
             // be a little more conservative, but secondary sorts
             // by this variable seem unlikely.
             if (variable === "citation-number") {
-                if (state.build.area === "citation" && state.build.extension) {
+                if (state.build.area === "citation_sort") {
                     state.opt.citation_number_sort = true;
                 }
-                if (state.build.area === "bibliography" && state.build.extension) {
+                if (state.build.area === "bibliography_sort") {
                     state.opt.citation_number_sort_used = true;
                 }
             }

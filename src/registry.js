@@ -140,7 +140,7 @@ CSL.Registry = function (state) {
     //this.modes = CSL.getModes.call(this.state);
     //this.checkerator = new CSL.Checkerator();
 
-    this.getSortedIds = function (generatedItems) {
+    this.getSortedIds = function () {
         ret = [];
         for (i = 0, ilen = this.reflist.length; i < ilen; i += 1) {
             ret.push("" + this.reflist[i].id);
@@ -742,15 +742,17 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
  * <p>This is used internally by the Registry.</p>
  */
 CSL.getSortKeys = function (Item, key_type) {
-    var area, strip_prepositions, use_parallels, len, pos;
+    var area, extension, strip_prepositions, use_parallels, len, pos;
     //SNIP-START
     if (false) {
         CSL.debug("KEY TYPE: " + key_type);
     }
     //SNIP-END
     area = this.tmp.area;
+    extension = this.tmp.extension;
     strip_prepositions = CSL.Util.Sort.strip_prepositions;
     this.tmp.area = key_type;
+    this.tmp.extension = "_sort";
     this.tmp.disambig_override = true;
     this.tmp.disambig_request = false;
     use_parallels = this.parallel.use_parallels;
@@ -769,7 +771,9 @@ CSL.getSortKeys = function (Item, key_type) {
         CSL.debug("sort keys (" + key_type + "): " + this[key_type].keys);
     }
     //SNIP-END
+    
     this.tmp.area = area;
+    this.tmp.extension = extension;
     return this[key_type].keys;
 };
 

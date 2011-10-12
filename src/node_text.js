@@ -85,13 +85,13 @@ CSL.Node.text = {
                 // different set of formatting parameters on the output
                 // queue.
                 if (this.variables_real[0] === "citation-number") {
-                    if (state.build.area === "citation") {
+                    if (state.build.root === "citation") {
                         state.opt.update_mode = CSL.NUMERIC;
                     }
-                    if (state.build.area === "bibliography") {
+                    if (state.build.root === "bibliography") {
                         state.opt.bib_mode = CSL.NUMERIC;
                     }
-                    if (state.build.area === "bibliography" && state.build.extension) {
+                    if (state.build.area === "bibliography_sort") {
                         state.opt.citation_number_sort_used = true;
                     }
                     //this.strings.is_rangeable = true;
