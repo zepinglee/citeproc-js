@@ -1,12 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.227
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Clean up "tmp.area" and "build.area" flags, providing separate 
+  flags for area key (area), _sort extension (extension), and 
+  root area node name (root).
+
+- Fix breakage in bugfix for generation of sort keys via macros
+  containing cs:names.
+
+==========================
 Changes in version 1.0.226
 ==========================
 
 ------------------------------------
 Mishandled or unimplemented features
 ------------------------------------
+
+- Fix bug in generation of sort keys via macros containing
+  cs:names.
 
 - Small adjustments to parallel citation handling.
 
