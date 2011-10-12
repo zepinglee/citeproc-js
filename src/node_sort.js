@@ -57,11 +57,26 @@ CSL.Node.sort = {
             }
             state.build.area = state.build.root + "_sort";
             state.build.extension = "_sort";
+            
+            var func = function (state, Item) {
+                //state.tmp.area = state.tmp.root + "_sort";
+                //state.tmp.extension = "_sort";
+            }
+            this.execs.push(func);
+            
         }
         if (this.tokentype === CSL.END) {
             state.build.area = state.build.root;
             state.build.extension = "";
+            /*
+            var func = function (state, Item) {
+                state.tmp.area = state.tmp.root;
+                state.tmp.extension = "";
+            }
+            this.execs.push(func);
+            */
         }
+        target.push(this);
     }
 };
 
