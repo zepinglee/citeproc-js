@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.229
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in registry updating that could trigger
+  a processor crash under some circumstances. Many thanks
+  to Zotero user anark for patient work on reproducing
+  the bug.
+
+
+==========================
 Changes in version 1.0.228
 ==========================
 

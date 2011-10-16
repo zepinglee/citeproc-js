@@ -1717,7 +1717,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.228";
+    this.processor_version = "1.0.229";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -10178,6 +10178,7 @@ CSL.Registry.prototype.dorefreshes = function () {
             regtoken.sortkeys = undefined;
             regtoken.ambig = undefined;
             Item = this.state.retrieveItem(key);
+            var akey = regtoken.ambig;
             if ("undefined" === typeof akey) {
                 akey = CSL.getAmbiguousCite.call(this.state, Item);
                 this.state.tmp.taintedItemIDs[key] = true;
