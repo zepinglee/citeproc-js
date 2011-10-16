@@ -1,17 +1,6 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
-Changes in version 1.0.229
-==========================
-
-------------------------------------
-Mishandled or unimplemented features
-------------------------------------
-
-- Fix bug in suppression behavior of cs:group.
-
-
-==========================
 Changes in version 1.0.228
 ==========================
 
@@ -20,6 +9,8 @@ Mishandled or unimplemented features
 ------------------------------------
 
 - Fix a bug in initialize="false" behavior.
+
+- Fix bug in suppression behavior of cs:group.
 
 
 ==========================
