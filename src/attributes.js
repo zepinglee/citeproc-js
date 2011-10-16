@@ -348,10 +348,12 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (variable !== "citation-number" || state.tmp.area !== "bibliography") {
                     state.tmp.cite_renders_content = true;
                 }
+                //print("  setting [2] to true based on: " + arg);
                 flag[2] = true;
                 state.tmp.term_sibling.replace(flag);
                 state.tmp.can_substitute.replace(false,  CSL.LITERAL);
             } else {
+                //print("  setting [1] to true based on: " + arg);
                 flag[1] = true;
             }
         };

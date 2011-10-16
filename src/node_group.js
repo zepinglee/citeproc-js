@@ -61,7 +61,6 @@ CSL.Node.group = {
             func = function (state, Item) {
                 // (see below)
                 state.tmp.term_sibling.push([false, false, false], CSL.LITERAL);
-                //print("++ SET: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
             };
             this.execs.push(func);
             // newoutput
@@ -129,41 +128,25 @@ CSL.Node.group = {
             
             // quashnonfields
             func = function (state, Item) {
-                var flag = state.tmp.term_sibling.value();
-                //if (false === flag) {
-                //print("X"+state.output.current.value().strings.prefix+"X");
-                //state.output.clearlevel();
-                //print(state.output.queue[0].blobs[2].strings.prefix)
-                //}
+                var flag = state.tmp.term_sibling.pop();
                 
                 state.output.endTag();
-                //print("-- QUASHER: "+typeof state.tmp.term_sibling.value()+" ["+state.tmp.term_sibling.mystack.length+"]");
                 //
                 // 0 marks an intention to render a term or value
                 // 1 marks an attempt to render a variable
                 // 2 marks an actual variable rendering
                 //
-                if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
-                    //print("POP!");
-                    //state.output.current.pop();
-                    if (state.output.current.value().blobs) {
-                        //print("pop");
-                        state.output.current.value().blobs.pop();
-                        //state.output.formats.pop();
-                    }
+                var upperflag = state.tmp.term_sibling.value();
+                // print("leaving with flags: "+flag+" (stack length: "+ (state.tmp.term_sibling.mystack.length + 1) +")");
+                if (flag[1]) {
+                    state.tmp.term_sibling.value()[1] = true;
                 }
-                state.tmp.term_sibling.pop();
-                //
-                // Heals group quashing glitch with nested groups.
-                //
-
-                // aha, I think.  There could be conditions that do NOTHING,
-                // which would leave behind an "undefined" on the flag.
-                // We need four states, not three: (1) rendered a variable;
-                // (2) failed to render a variable; (3) rendered a term;
-                // (4) didn't try to do anything.
-                if ((flag[2] || (!flag[1] && flag[0])) && state.tmp.term_sibling.mystack.length > 1) {
-                    state.tmp.term_sibling.replace([false, false, true]);
+                if (flag[2] || (flag[0] && !flag[1])) {
+                    state.tmp.term_sibling.value()[2] = true;
+                } else {
+                    if (state.output.current.value().blobs) {
+                        state.output.current.value().blobs.pop();
+                    }
                 }
             };
             this.execs.push(func);

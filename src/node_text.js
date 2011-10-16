@@ -192,10 +192,11 @@ CSL.Node.text = {
                         var term = this.strings.term;
                         term = state.getTerm(term, form, plural, gender);
                         var myterm;
-                        // if the term is not an empty string, flag this
-                        // same as a variable with content.
+                        // if the term is not an empty string, say
+                        // that we rendered a term
                         if (term !== "") {
                             flag = state.tmp.term_sibling.value();
+                            //print("setting TERM to true [0]");
                             flag[0] = true;
                             state.tmp.term_sibling.replace(flag);
                         }
@@ -390,6 +391,8 @@ CSL.Node.text = {
                     func = function (state, Item) {
                         var flag;
                         flag = state.tmp.term_sibling.value();
+                        // say that we rendered a term
+                        //print("  setting [0] to true based on: " + this.strings.value);
                         flag[0] = true;
                         state.tmp.term_sibling.replace(flag);
                         state.output.append(this.strings.value, this);
