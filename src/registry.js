@@ -538,6 +538,7 @@ CSL.Registry.prototype.dorefreshes = function () {
             //    print("Does this happen? If so: "+old_akey+" :: "+akey);
             //    this.state.tmp.taintedItemIDs[key] = true;
             //}
+            var akey = regtoken.ambig;
             if ("undefined" === typeof akey) {
                 akey = CSL.getAmbiguousCite.call(this.state, Item);
                 this.state.tmp.taintedItemIDs[key] = true;
