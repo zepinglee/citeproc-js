@@ -31,7 +31,7 @@
  *
  * The Initial Developer of the Original Code is Frank G. Bennett,
  * Jr. All portions of the code written by Frank G. Bennett, Jr. are
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ * Copyright (c) 2009, 2010 and 2011 Frank G. Bennett, Jr. All Rights Reserved.
  *
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU Affero General Public License (the [AGPLv3]
@@ -1717,7 +1717,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.227";
+    this.processor_version = "1.0.229";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4164,16 +4164,18 @@ CSL.Node.group = {
                 }
             }
             func = function (state, Item) {
-                var flag = state.tmp.term_sibling.value();
+                var flag = state.tmp.term_sibling.pop();
                 state.output.endTag();
-                if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
+                var upperflag = state.tmp.term_sibling.value();
+                if (flag[1]) {
+                    state.tmp.term_sibling.value()[1] = true;
+                }
+                if (flag[2] || (flag[0] && !flag[1])) {
+                    state.tmp.term_sibling.value()[2] = true;
+                } else {
                     if (state.output.current.value().blobs) {
                         state.output.current.value().blobs.pop();
                     }
-                }
-                state.tmp.term_sibling.pop();
-                if ((flag[2] || (!flag[1] && flag[0])) && state.tmp.term_sibling.mystack.length > 1) {
-                    state.tmp.term_sibling.replace([false, false, true]);
                 }
             };
             this.execs.push(func);
@@ -8557,6 +8559,8 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
     for (i = 0, ilen = namelist.length; i < ilen; i += 1) {
         if (namelist[i].length > 1 && namelist[i].slice(-1) === ".") {
             namelist[i] = namelist[i].slice(0, -1);
+            isAbbrev.push(true);
+        } else if (namelist[i].length === 1 && namelist[i].toUpperCase() === namelist[i]) {
             isAbbrev.push(true);
         } else {
             isAbbrev.push(false);
