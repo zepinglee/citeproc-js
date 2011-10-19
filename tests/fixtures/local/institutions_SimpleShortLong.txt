@@ -59,7 +59,7 @@ BoGUS (Bureau of Gaseous Unformed Stuff)
 >>== ABBREVIATIONS ==>>
 {
     "default": {
-        "institution": {
+        "institution-part": {
             "Bureau of Gaseous Unformed Stuff": "BoGUS"
         }
     }
