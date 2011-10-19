@@ -1717,7 +1717,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.229";
+    this.processor_version = "1.0.230";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4977,9 +4977,9 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             var long_form = this.institutions[v][i]["long"];
             var short_form = long_form.slice();
             for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
-                this.state.transform.loadAbbreviation("institution", long_form[j]);
-                if (this.state.transform.abbrevs.institution[long_form[j]]) {
-                    short_form[j] = this.state.transform.abbrevs.institution[long_form[j]];
+                this.state.transform.loadAbbreviation("institution-part", long_form[j]);
+                if (this.state.transform.abbrevs["institution-part"][long_form[j]]) {
+                    short_form[j] = this.state.transform.abbrevs["institution-part"][long_form[j]];
                 }
             }
             this.institutions[v][i]["short"] = short_form;
@@ -5007,9 +5007,9 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     if (this.institution.strings.form === "short" && !force_test) {
         for (var j = splitInstitution.length; j > 1; j += -1) {
             var str = splitInstitution.slice(0, j).join("|");
-            this.state.transform.loadAbbreviation("institution", str);
-            if (this.state.transform.abbrevs.institution[str]) {
-                str = this.state.transform.abbrevs.institution[str];
+            this.state.transform.loadAbbreviation("institution-entire", str);
+            if (this.state.transform.abbrevs["institution-entire"][str]) {
+                str = this.state.transform.abbrevs["institution-entire"][str];
                 splitInstitution = [str].concat(splitInstitution.slice(j));
             }
         }
@@ -7604,7 +7604,8 @@ CSL.Transform = function (state) {
     this.abbrevs = {};
     this.abbrevs["container-title"] = {};
     this.abbrevs["collection-title"] = {};
-    this.abbrevs.institution = {};
+    this.abbrevs["institution-entire"] = {};
+    this.abbrevs["institution-part"] = {};
     this.abbrevs.nickname = {};
     this.abbrevs.place = {};
     this.abbrevs.title = {};

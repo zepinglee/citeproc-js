@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.230
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Separate abbreviation segment for transforms of entire 
+  institution string from that for institution parts.
+  
+
+==========================
 Changes in version 1.0.229
 ==========================
 
