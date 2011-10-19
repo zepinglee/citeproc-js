@@ -166,9 +166,10 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             var long_form = this.institutions[v][i]["long"];
             var short_form = long_form.slice();
             for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
-                this.state.transform.loadAbbreviation("institution", long_form[j]);
-                if (this.state.transform.abbrevs.institution[long_form[j]]) {
-                    short_form[j] = this.state.transform.abbrevs.institution[long_form[j]];
+                // true is for noPhrases
+                this.state.transform.loadAbbreviation("institution-part", long_form[j]);
+                if (this.state.transform.abbrevs["institution-part"][long_form[j]]) {
+                    short_form[j] = this.state.transform.abbrevs["institution-part"][long_form[j]];
                 }
             }
             this.institutions[v][i]["short"] = short_form;
@@ -203,9 +204,9 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
         // short-forming.
         for (var j = splitInstitution.length; j > 1; j += -1) {
             var str = splitInstitution.slice(0, j).join("|");
-            this.state.transform.loadAbbreviation("institution", str);
-            if (this.state.transform.abbrevs.institution[str]) {
-                str = this.state.transform.abbrevs.institution[str];
+            this.state.transform.loadAbbreviation("institution-entire", str);
+            if (this.state.transform.abbrevs["institution-entire"][str]) {
+                str = this.state.transform.abbrevs["institution-entire"][str];
                 splitInstitution = [str].concat(splitInstitution.slice(j));
             }
         }
