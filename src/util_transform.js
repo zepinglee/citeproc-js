@@ -153,7 +153,7 @@ CSL.Transform = function (state) {
         }
 
         if (["publisher", "authority"].indexOf(mysubsection) > -1) {
-            mysubsection = "institution";
+            mysubsection = "institution-part";
         }
 
         // Lazy retrieval of abbreviations.
