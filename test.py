@@ -481,6 +481,7 @@ class CslTest:
         self.raw = fixEndings(open(os.path.sep.join(hpath)).read())
 
     def parse(self):
+        ## print "kkk: %s" % (self.testname,)
         for element in ["MODE","CSL"]:
             self.extract(element,required=True,is_json=False)
             if element == "CSL" and self.data['csl'].endswith('.csl'):
