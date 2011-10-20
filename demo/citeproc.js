@@ -1717,7 +1717,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.230";
+    this.processor_version = "1.0.231";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7632,7 +7632,7 @@ CSL.Transform = function (state) {
             mysubsection = "place";
         }
         if (["publisher", "authority"].indexOf(mysubsection) > -1) {
-            mysubsection = "institution";
+            mysubsection = "institution-part";
         }
         state.transform.loadAbbreviation(mysubsection, basevalue);
         value = "";

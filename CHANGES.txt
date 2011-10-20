@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.231
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in abbreviation segment assignments
+  that affected the publisher field.
+
+
+==========================
 Changes in version 1.0.230
 ==========================
 
