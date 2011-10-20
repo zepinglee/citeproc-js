@@ -53,7 +53,7 @@ var StdRhinoTest = function(myname,custom){
         "default": {
             "container-title":{},
             "collection-title":{},
-            "institution-all":{},
+            "institution-entire":{},
             "institution-part":{},
             "nickname":{},
             "title":{},
