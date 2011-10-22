@@ -53,6 +53,10 @@ CSL.Node.text = {
         var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, flag;
         CSL.Util.substituteStart.call(this, state, target);
         if (this.postponed_macro) {
+            //func = function(state, Item) {
+            //    print("XXX macro_name: "+this.postponed_macro);
+            //}
+            //this.execs.push(func);
             CSL.expandMacro.call(state, this);
         } else {
             // ...
