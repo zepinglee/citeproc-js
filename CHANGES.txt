@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.232
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid crashing processor when (extended, off-CSL
+  institution-use-first test attribute is invoked before
+  any names have been rendered.
+
+- Come minor code cleanup.
+
+==========================
 Changes in version 1.0.231
 ==========================
 

@@ -1049,15 +1049,6 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
                     }
                 }
             }
-            if ("string" === typeof doblob.blobs && doblob.blobs) {
-                for (var ppos = doblob.decorations.length - 1; ppos > -1; ppos += -1) {
-                    var params = doblob.decorations[ppos];
-                    if (params[0] === "@strip-periods" && params[1] === "true") {
-                        doblob.blobs = state.fun.decorate[params[0]][params[1]](state, doblob.blobs);
-                        doblob.decorations = doblob.decorations.slice(0, ppos).concat(doblob.decorations.slice(ppos + 1));
-                    }
-                }
-            }
             if (state.getOpt('punctuation-in-quote')) {
                 var decorations = doblob.decorations;
                 for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
@@ -1717,7 +1708,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.231";
+    this.processor_version = "1.0.232";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5004,7 +4995,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     var ret = {};
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     splitInstitution = splitInstitution.split("|");
-    if (this.institution.strings.form === "short" && !force_test) {
+    if (!force_test && this.institution.strings.form === "short") {
         for (var j = splitInstitution.length; j > 1; j += -1) {
             var str = splitInstitution.slice(0, j).join("|");
             this.state.transform.loadAbbreviation("institution-entire", str);
@@ -5025,7 +5016,12 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
 };
 CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test) {
     var s;
-    var use_first = this.institution.strings["use-first"];
+    var use_first = false;
+    var append_last = false;
+    if (this.institution) {
+        use_first = this.institution.strings["use-first"];
+        append_last = this.institution.strings["use-last"];
+    }
     if (force_test) {
         use_first = 1;
     }
@@ -5037,7 +5033,6 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test
             use_first = 0;
         }
     }
-    var append_last = this.institution.strings["use-last"];
     if (!append_last) {
         if (!use_first) {
             append_last = subunits.length;
