@@ -198,7 +198,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
-    if (this.institution.strings.form === "short" && !force_test) {
+    if (!force_test && this.institution.strings.form === "short") {
         // End processing before processing last single element, since
         // that will be picked up by normal element selection and
         // short-forming.
@@ -227,7 +227,12 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
 CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test) {
     var s;
 	// 
-    var use_first = this.institution.strings["use-first"];
+    var use_first = false;
+    var append_last = false;
+    if (this.institution) {
+        use_first = this.institution.strings["use-first"];
+        append_last = this.institution.strings["use-last"];
+    }
     if (force_test) {
         use_first = 1;
     }
@@ -239,7 +244,6 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test
             use_first = 0;
         }
     }
-    var append_last = this.institution.strings["use-last"];
     if (!append_last) {
         if (!use_first) {
             append_last = subunits.length;
