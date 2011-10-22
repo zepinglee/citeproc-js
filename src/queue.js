@@ -918,20 +918,6 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
                 }
             }
 
-            // Run strip-periods.  This cleans affected field
-            // content before is is processed by the first
-            // "string" === typeof function above, at the next
-            // iteration.
-            if ("string" === typeof doblob.blobs && doblob.blobs) {
-                for (var ppos = doblob.decorations.length - 1; ppos > -1; ppos += -1) {
-                    var params = doblob.decorations[ppos];
-                    if (params[0] === "@strip-periods" && params[1] === "true") {
-                        doblob.blobs = state.fun.decorate[params[0]][params[1]](state, doblob.blobs);
-                        doblob.decorations = doblob.decorations.slice(0, ppos).concat(doblob.decorations.slice(ppos + 1));
-                    }
-                }
-            }
-
             // Swap punctuation into quotation marks as required.
             //if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
             if (state.getOpt('punctuation-in-quote')) {
