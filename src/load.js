@@ -87,6 +87,21 @@ if (!Array.indexOf) {
 
 var CSL = {
 
+    AbbreviationSegments: function () {
+        this["container-title"] = {};
+        this["collection-title"] = {};
+        this["institution-entire"] = {};
+        this["institution-part"] = {};
+        this["nickname"] = {};
+        this["number"] = {};
+        this["title"] = {};
+        this["place"] = {};
+        this["hereinafter"] = {};
+        this["classic"] = {};
+        this["container-phrase"] = {};
+        this["title-phrase"] = {};
+    },
+
     GENDERS: ["masculine", "feminine"],
     
     ERROR_NO_RENDERED_FORM: 1,

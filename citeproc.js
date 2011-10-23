@@ -57,6 +57,20 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
+    AbbreviationSegments: function () {
+        this["container-title"] = {};
+        this["collection-title"] = {};
+        this["institution-entire"] = {};
+        this["institution-part"] = {};
+        this["nickname"] = {};
+        this["number"] = {};
+        this["title"] = {};
+        this["place"] = {};
+        this["hereinafter"] = {};
+        this["classic"] = {};
+        this["container-phrase"] = {};
+        this["title-phrase"] = {};
+    },
     GENDERS: ["masculine", "feminine"],
     ERROR_NO_RENDERED_FORM: 1,
     PREVIEW: "Just for laughs.",
@@ -1708,7 +1722,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.232";
+    this.processor_version = "1.0.233";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4740,10 +4754,10 @@ CSL.NameOutput.prototype.outputNames = function () {
         }
         author_title = author_title.join(", ");
         if (author_title) {
-            this.state.transform.loadAbbreviation("classic", author_title);
-            if (this.state.transform.abbrevs.classic[author_title]) {
+            this.state.transform.loadAbbreviation("default", "classic", author_title);
+            if (this.state.transform.abbrevs["default"].classic[author_title]) {
                 this.state.tmp.done_vars.push("title");
-                this.state.output.append(this.state.transform.abbrevs.classic[author_title], "empty", true);
+                this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);
                 blob = this.state.output.pop();
                 this.state.tmp.name_node.top.blobs = [blob];
             }
@@ -4755,10 +4769,10 @@ CSL.NameOutput.prototype.outputNames = function () {
             author = this.state.tmp.name_node.string;
         }
         if (author) {
-            this.state.transform.loadAbbreviation("nickname", author);
+            this.state.transform.loadAbbreviation("default", "nickname", author);
         }
-        if (this.state.transform.abbrevs.nickname[author]) {
-            this.state.output.append(this.state.transform.abbrevs.nickname[author], "empty", true)
+        if (this.state.transform.abbrevs["default"].nickname[author]) {
+            this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
             blob = this.state.output.pop();
             this.state.tmp.name_node.top.blobs = [blob];
         }
@@ -4967,10 +4981,11 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
         for (i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
             var long_form = this.institutions[v][i]["long"];
             var short_form = long_form.slice();
+            var jurisdiction = this.Item.jurisdiction;
             for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
-                this.state.transform.loadAbbreviation("institution-part", long_form[j]);
-                if (this.state.transform.abbrevs["institution-part"][long_form[j]]) {
-                    short_form[j] = this.state.transform.abbrevs["institution-part"][long_form[j]];
+                var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
+                if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
+                    short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
                 }
             }
             this.institutions[v][i]["short"] = short_form;
@@ -4996,11 +5011,12 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     splitInstitution = splitInstitution.split("|");
     if (!force_test && this.institution.strings.form === "short") {
+        var jurisdiction = this.Item.jurisdiction;
         for (var j = splitInstitution.length; j > 1; j += -1) {
             var str = splitInstitution.slice(0, j).join("|");
-            this.state.transform.loadAbbreviation("institution-entire", str);
-            if (this.state.transform.abbrevs["institution-entire"][str]) {
-                str = this.state.transform.abbrevs["institution-entire"][str];
+            var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", str);
+            if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][str]) {
+                str = this.state.transform.abbrevs[jurisdiction]["institution-entire"][str];
                 splitInstitution = [str].concat(splitInstitution.slice(j));
             }
         }
@@ -6690,7 +6706,7 @@ CSL.Node.text = {
                         } else if (this.variables_real[0] === "hereinafter") {
                             func = function (state, Item) {
                                 var hereinafter_key = state.transform.getHereinafter(Item);
-                                var value = state.transform.abbrevs.hereinafter[hereinafter_key];
+                                var value = state.transform.abbrevs["default"].hereinafter[hereinafter_key];
                                 if (hereinafter_key) {
                                     state.output.append(value, this);
                                 }
@@ -6840,7 +6856,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 }
                 if ("hereinafter" === variables[pos]) {
                     var hereinafter_key = state.transform.getHereinafter(Item);
-                    state.transform.loadAbbreviation("hereinafter", hereinafter_key);
+                    state.transform.loadAbbreviation("default", "hereinafter", hereinafter_key);
                 }
                 if (state.tmp.can_block_substitute) {
                     state.tmp.done_vars.push(variables[pos]);
@@ -7597,15 +7613,17 @@ CSL.Util.Match = function () {
 CSL.Transform = function (state) {
     var debug = false, abbreviations, token, fieldname, subsection, opt;
     this.abbrevs = {};
-    this.abbrevs["container-title"] = {};
-    this.abbrevs["collection-title"] = {};
-    this.abbrevs["institution-entire"] = {};
-    this.abbrevs["institution-part"] = {};
-    this.abbrevs.nickname = {};
-    this.abbrevs.place = {};
-    this.abbrevs.title = {};
-    this.abbrevs.hereinafter = {};
-    this.abbrevs.classic = {};
+    this.abbrevs["default"] = {};
+    this.abbrevs["default"]["container-title"] = {};
+    this.abbrevs["default"]["collection-title"] = {};
+    this.abbrevs["default"]["institution-entire"] = {};
+    this.abbrevs["default"]["institution-part"] = {};
+    this.abbrevs["default"].nickname = {};
+    this.abbrevs["default"].number = {};
+    this.abbrevs["default"].place = {};
+    this.abbrevs["default"].title = {};
+    this.abbrevs["default"].hereinafter = {};
+    this.abbrevs["default"].classic = {};
     function init(t, f, x) {
         token = t;
         fieldname = f;
@@ -7629,12 +7647,11 @@ CSL.Transform = function (state) {
         if (["publisher", "authority"].indexOf(mysubsection) > -1) {
             mysubsection = "institution-part";
         }
-        state.transform.loadAbbreviation(mysubsection, basevalue);
+        var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, mysubsection, basevalue);
         value = "";
-        if (state.transform.abbrevs[mysubsection] && basevalue) {
-            if (state.transform.abbrevs[mysubsection][basevalue]) {
-                value = state.transform.abbrevs[mysubsection][basevalue];
-            } else if ("string" != typeof state.transform.abbrevs[mysubsection][basevalue]) {
+        if (state.transform.abbrevs[jurisdiction][mysubsection] && basevalue) {
+            if (state.transform.abbrevs[jurisdiction][mysubsection][basevalue]) {
+                value = state.transform.abbrevs[jurisdiction][mysubsection][basevalue];
             }
         }
         if (!value && Item[altvar] && use_field) {
@@ -7687,14 +7704,18 @@ CSL.Transform = function (state) {
         opt.transform_fallback = b;
     }
     this.setTransformFallback = setTransformFallback;
-    function loadAbbreviation(vartype, key) {
+    function loadAbbreviation(jurisdiction, category, orig) {
         var pos, len;
-        if (!this.abbrevs[vartype] || !key) {
-            return;
+        if (!jurisdiction) {
+            jurisdiction = "default";
         }
-        if (state.sys.getAbbreviation && !this.abbrevs[vartype][key]) {
-            state.sys.getAbbreviation(this.abbrevs, vartype, key);
+        if (!this.abbrevs[jurisdiction][category] || !orig) {
+            return jurisdiction;
         }
+        if (!this.abbrevs[jurisdiction][category][orig]) {
+            state.sys.getAbbreviation(this.abbrevs, jurisdiction, category, orig);
+        }
+        return jurisdiction;
     }
     this.loadAbbreviation = loadAbbreviation;
     function publisherCheck (varname, primary, tok) {
@@ -9121,7 +9142,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                         node.gender = this.opt["noun-genders"][variable];
                         this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
                     } else {
-                        this.tmp.shadow_numbers[variable].values.push(["Blob", elements[i], node]);
+                        var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", elements[i]);
+                        var str = elements[i];
+                        if (this.transform.abbrevs[jurisdiction].number[str]) {
+                            str = this.transform.abbrevs[jurisdiction].number[str];
+                        }
+                        this.tmp.shadow_numbers[variable].values.push(["Blob", str, node]);
                     }
                 }
             } else {

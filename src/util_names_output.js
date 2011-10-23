@@ -337,10 +337,10 @@ CSL.NameOutput.prototype.outputNames = function () {
         }
         author_title = author_title.join(", ");
         if (author_title) {
-            this.state.transform.loadAbbreviation("classic", author_title);
-            if (this.state.transform.abbrevs.classic[author_title]) {
+            this.state.transform.loadAbbreviation("default", "classic", author_title);
+            if (this.state.transform.abbrevs["default"].classic[author_title]) {
                 this.state.tmp.done_vars.push("title");
-                this.state.output.append(this.state.transform.abbrevs.classic[author_title], "empty", true);
+                this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);
                 blob = this.state.output.pop();
                 this.state.tmp.name_node.top.blobs = [blob];
             }
@@ -352,10 +352,10 @@ CSL.NameOutput.prototype.outputNames = function () {
             author = this.state.tmp.name_node.string;
         }
         if (author) {
-            this.state.transform.loadAbbreviation("nickname", author);
+            this.state.transform.loadAbbreviation("default", "nickname", author);
         }
-        if (this.state.transform.abbrevs.nickname[author]) {
-            this.state.output.append(this.state.transform.abbrevs.nickname[author], "empty", true)
+        if (this.state.transform.abbrevs["default"].nickname[author]) {
+            this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
             blob = this.state.output.pop();
             this.state.tmp.name_node.top.blobs = [blob];
         }

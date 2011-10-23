@@ -49,19 +49,9 @@
 var StdRhinoTest = function(myname,custom){
     this.myname = myname;
     this._cache = {};
-    this._acache = { 
-        "default": {
-            "container-title":{},
-            "collection-title":{},
-            "institution-entire":{},
-            "institution-part":{},
-            "nickname":{},
-            "title":{},
-            "place":{},
-            "hereinafter":{},
-            "classic":{}
-        }
-    }
+    // "default" now actually means something: the default jurisdiction.
+    this._acache = {};
+    this._acache["default"] = new CSL.AbbreviationSegments();
     this._ids = [];
     if (myname){
         var test;
@@ -88,16 +78,53 @@ StdRhinoTest.prototype.retrieveItem = function(id){
     return this._cache[id];
 };
 
-StdRhinoTest.prototype.getAbbreviation = function(obj, vartype, key){
-    if (this._acache["default"][vartype][key]) {
-        obj[vartype][key] = this._acache["default"][vartype][key];
+StdRhinoTest.prototype.getAbbreviation = function(obj, jurisdiction, category, key){
+    var newkey = key;
+    if (!this._acache[jurisdiction]) {
+        this._acache[jurisdiction] = new CSL.AbbreviationSegments();
+    }
+    if (!obj[jurisdiction]) {
+        obj[jurisdiction] = new CSL.AbbreviationSegments();
+    }
+    if (this._acache[jurisdiction][category][key]) {
+        obj[jurisdiction][category][key] = this._acache[jurisdiction][category][key];
     } else {
-        obj[vartype][key] = "";
+
+        // XXX HERE AND ONLY HERE, WE ITERATE!
+        var jurisdictions = ["default"];
+        if (jurisdiction !== "default") {
+            jurisdictions.push(jurisdiction);
+        }
+        jurisdictions.reverse();
+        for (var i = 0, ilen = jurisdictions.length; i < ilen; i += 1) {
+            if (["container-title", "collection-title", "number"].indexOf(category) > -1) {
+                // Let's just be inefficient
+                for (var phrase in this._acache[jurisdictions[i]]["container-phrase"]) {
+                    var newphrase = this._acache[jurisdictions[i]]["container-phrase"][phrase];
+                    newkey = newkey.replace(phrase, newphrase);
+                }
+            } else if (["institution-part", "title", "place"].indexOf(category) > -1) {
+                // And again
+                for (var phrase in this._acache[jurisdictions[i]]["title-phrase"]) {
+                    var newphrase = this._acache[jurisdictions[i]]["title-phrase"][phrase];
+                    newkey = newkey.replace(phrase, newphrase);
+                }
+            }
+        }
+
+        if (key !== newkey) {
+            obj[jurisdiction][category][key] = newkey;
+        } else {
+            obj[jurisdiction][category][key] = "";
+        }
     }
 };
 
-StdRhinoTest.prototype.addAbbreviation = function(name,vartype,key,val){
-    this._acache[name][vartype][key] = val;
+StdRhinoTest.prototype.addAbbreviation = function(jurisdiction,category,key,val){
+    if (!this._acache[jurisdiction]) {
+        this._acache[jurisdiction] = new CSL.AbbreviationSegments();
+    }
+    this._acache[jurisdiction][category][key] = val;
 };
 
 //
@@ -145,10 +172,10 @@ StdRhinoTest.prototype.run = function(){
     ret = new Array();
     this.style = new CSL.Engine(this,this.test.csl);
     if (this.test.abbreviations) {
-        for (nick in this.test.abbreviations) {
-            for (field in this.test.abbreviations[nick]) {
-                for (key in this.test.abbreviations[nick][field]) {
-                    this.addAbbreviation(nick,field,key,this.test.abbreviations[nick][field][key]);
+        for (jurisdiction in this.test.abbreviations) {
+            for (field in this.test.abbreviations[jurisdiction]) {
+                for (key in this.test.abbreviations[jurisdiction][field]) {
+                    this.addAbbreviation(jurisdiction,field,key,this.test.abbreviations[jurisdiction][field][key]);
                 }
             }
         }

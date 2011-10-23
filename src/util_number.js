@@ -282,7 +282,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                         node.gender = this.opt["noun-genders"][variable];
                         this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
                     } else {
-                        this.tmp.shadow_numbers[variable].values.push(["Blob", elements[i], node]);
+                        // XXX Abbreviate elements[i] here, if ... well, always, for the present
+                        var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", elements[i]);
+                        var str = elements[i];
+                        if (this.transform.abbrevs[jurisdiction].number[str]) {
+                            str = this.transform.abbrevs[jurisdiction].number[str];
+                        }
+                        this.tmp.shadow_numbers[variable].values.push(["Blob", str, node]);
                     }
                 }
             } else {
