@@ -252,7 +252,8 @@ CSL.Transform = function (state) {
         //
         // See testrunner_stdrhino.js for an example.
         if (!this.abbrevs[jurisdiction][category][orig]) {
-            state.sys.getAbbreviation(this.abbrevs, jurisdiction, category, orig);
+            // jurisdiction could change to "default"
+            jurisdiction = state.sys.getAbbreviation(this.abbrevs, jurisdiction, category, orig);
         }
         return jurisdiction;
     }

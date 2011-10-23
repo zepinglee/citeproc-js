@@ -85,17 +85,23 @@ StdRhinoTest.prototype.getAbbreviation = function(obj, jurisdiction, category, k
     }
     if (!obj[jurisdiction]) {
         obj[jurisdiction] = new CSL.AbbreviationSegments();
+    }    
+    var jurisdictions = ["default"];
+    if (jurisdiction !== "default") {
+        jurisdictions.push(jurisdiction);
     }
-    if (this._acache[jurisdiction][category][key]) {
-        obj[jurisdiction][category][key] = this._acache[jurisdiction][category][key];
-    } else {
-
-        // XXX HERE AND ONLY HERE, WE ITERATE!
-        var jurisdictions = ["default"];
-        if (jurisdiction !== "default") {
-            jurisdictions.push(jurisdiction);
+    jurisdictions.reverse();
+    var haveHit = false;
+    for (var i = 0, ilen = jurisdictions.length; i < ilen; i += 1) {
+        var myjurisdiction = jurisdictions[i];
+        if (this._acache[myjurisdiction][category][key]) {
+            obj[myjurisdiction][category][key] = this._acache[myjurisdiction][category][key];
+            jurisdiction = myjurisdiction;
+            haveHit = true;
+            break;
         }
-        jurisdictions.reverse();
+    }
+    if (!haveHit) {
         for (var i = 0, ilen = jurisdictions.length; i < ilen; i += 1) {
             if (["container-title", "collection-title", "number"].indexOf(category) > -1) {
                 // Let's just be inefficient
@@ -111,13 +117,13 @@ StdRhinoTest.prototype.getAbbreviation = function(obj, jurisdiction, category, k
                 }
             }
         }
-
         if (key !== newkey) {
             obj[jurisdiction][category][key] = newkey;
         } else {
             obj[jurisdiction][category][key] = "";
         }
     }
+    return jurisdiction;
 };
 
 StdRhinoTest.prototype.addAbbreviation = function(jurisdiction,category,key,val){
