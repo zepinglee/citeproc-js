@@ -8,7 +8,15 @@ Changes in version 1.0.233
 Mishandled or unimplemented features
 ------------------------------------
 
+- Protect against attempts to abbreviate when getAbbreviation is undefined.
+
+- Avoid attempt to append an undefined to the output string in queue.js
+
 - Extend abbreviations mechanism with a jurisdiction segment.
+
+- Step through specific jurisdiction and the default segment when performing 
+  full-field matches, and return default from getAbbreviation() 
+  if the hit occurs there.
 
 ==========================
 Changes in version 1.0.232
