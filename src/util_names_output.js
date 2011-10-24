@@ -336,7 +336,7 @@ CSL.NameOutput.prototype.outputNames = function () {
             author_title.push(this.Item.title);
         }
         author_title = author_title.join(", ");
-        if (author_title) {
+        if (author_title && this.state.transform.getAbbreviation) {
             this.state.transform.loadAbbreviation("default", "classic", author_title);
             if (this.state.transform.abbrevs["default"].classic[author_title]) {
                 this.state.tmp.done_vars.push("title");
@@ -351,13 +351,13 @@ CSL.NameOutput.prototype.outputNames = function () {
         if (this.state.tmp.name_node.string) {
             author = this.state.tmp.name_node.string;
         }
-        if (author) {
+        if (author && this.state.transform.getAbbreviation) {
             this.state.transform.loadAbbreviation("default", "nickname", author);
-        }
-        if (this.state.transform.abbrevs["default"].nickname[author]) {
-            this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
-            blob = this.state.output.pop();
-            this.state.tmp.name_node.top.blobs = [blob];
+            if (this.state.transform.abbrevs["default"].nickname[author]) {
+                this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
+                blob = this.state.output.pop();
+                this.state.tmp.name_node.top.blobs = [blob];
+            }
         }
     }
     // Let's try something clever here.

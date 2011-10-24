@@ -165,11 +165,13 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             // of the splits match.
             var long_form = this.institutions[v][i]["long"];
             var short_form = long_form.slice();
-            var jurisdiction = this.Item.jurisdiction;
-            for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
-                var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
-                if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
-                    short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
+            if (this.state.transform.getAbbreviation) {
+                var jurisdiction = this.Item.jurisdiction;
+                for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
+                    var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
+                    if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
+                        short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
+                    }
                 }
             }
             this.institutions[v][i]["short"] = short_form;
@@ -198,7 +200,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
-    if (!force_test && this.institution.strings.form === "short") {
+    if (!force_test && this.institution.strings.form === "short" && this.state.transform.getAbbreviation) {
         // End processing before processing last single element, since
         // that will be picked up by normal element selection and
         // short-forming.

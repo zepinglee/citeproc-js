@@ -146,7 +146,7 @@ CSL.Transform = function (state) {
     function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
         var value;
 
-        if (!mysubsection) {
+        if (!mysubsection || !state.transform.getAbbreviation) {
             return basevalue;
         }
 
