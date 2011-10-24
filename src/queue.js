@@ -453,7 +453,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         if ("string" === typeof ret[i]) {
             span_split = (parseInt(i, 10) + 1);
             if (i < ret.length - 1  && "object" === typeof ret[i + 1]) {
-                if (!ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK) {
+                if (blob_delimiter && !ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK) {
                     //has_more = true;
                     ret[i] += txt_esc(blob_delimiter);
                 } else {
