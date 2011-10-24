@@ -146,7 +146,7 @@ CSL.Transform = function (state) {
     function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
         var value;
 
-        if (!mysubsection || !state.transform.getAbbreviation) {
+        if (!mysubsection) {
             return basevalue;
         }
 
@@ -163,7 +163,7 @@ CSL.Transform = function (state) {
 
         // XXX Need a fallback mechanism here. Other to default.
         value = "";
-        if (state.transform.abbrevs[jurisdiction][mysubsection] && basevalue) {
+        if (state.transform.abbrevs[jurisdiction][mysubsection] && basevalue && state.sys.getAbbreviation) {
             if (state.transform.abbrevs[jurisdiction][mysubsection][basevalue]) {
                 value = state.transform.abbrevs[jurisdiction][mysubsection][basevalue];
             }

@@ -165,7 +165,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             // of the splits match.
             var long_form = this.institutions[v][i]["long"];
             var short_form = long_form.slice();
-            if (this.state.transform.getAbbreviation) {
+            if (this.state.sys.getAbbreviation) {
                 var jurisdiction = this.Item.jurisdiction;
                 for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
                     var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
@@ -200,7 +200,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
-    if (!force_test && this.institution.strings.form === "short" && this.state.transform.getAbbreviation) {
+    if (!force_test && this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
         // End processing before processing last single element, since
         // that will be picked up by normal element selection and
         // short-forming.
