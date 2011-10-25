@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.234
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Assure that processor cannot crash when getAbbreviation
+  is undefined.
+
+==========================
 Changes in version 1.0.233
 ==========================
 
