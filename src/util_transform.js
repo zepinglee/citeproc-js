@@ -251,7 +251,7 @@ CSL.Transform = function (state) {
         // DB, the memory value is created.
         //
         // See testrunner_stdrhino.js for an example.
-        if (!this.abbrevs[jurisdiction][category][orig]) {
+        if (!this.abbrevs[jurisdiction][category][orig] && state.sys.getAbbreviation) {
             // jurisdiction could change to "default"
             jurisdiction = state.sys.getAbbreviation(this.abbrevs, jurisdiction, category, orig);
         }
