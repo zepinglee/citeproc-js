@@ -49,6 +49,7 @@
 /*global CSL: true */
 
 CSL.NameOutput.prototype.renderAllNames = function () {
+
     // Note that et-al/ellipsis parameters are set on the basis
     // of rendering order through the whole cite.
     var pos = this.nameset_base;
@@ -131,6 +132,9 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
             this.state.output.append(str, style, true);
             blobs[i] = this.state.output.pop();
         }
+    }
+    if (blobs.length) {
+        this.state.tmp.term_sibling.value()[2] = true;
     }
     return this._join(blobs, this.name.strings.delimiter);
 };
@@ -251,6 +255,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
         }
         blob = this._join([given, second], (name["comma-dropping-particle"] + " "));
     }
+    // XXX Just generally assume for the present that personal names render something
+    this.state.tmp.term_sibling.value()[2] = true;
     // notSerious
     //this.state.output.append(blob, "literal", true);
     //var ret = this.state.output.pop();
