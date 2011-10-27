@@ -195,12 +195,12 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     return lst;
 };
 
-CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) {
+CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
-    if (!force_test && this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
+    if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
         // End processing before processing last single element, since
         // that will be picked up by normal element selection and
         // short-forming.
@@ -215,7 +215,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
         }
     }
     splitInstitution.reverse();
-    ret["long"] = this._trimInstitution(splitInstitution, v, i, force_test);
+    ret["long"] = this._trimInstitution(splitInstitution, v, i);
 
     if (splitInstitution.length) {
         // This doesn't seem to make any sense.
@@ -227,17 +227,19 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i, force_test) 
     return ret;
 };
 
-CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test) {
+CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     var s;
 	// 
     var use_first = false;
     var append_last = false;
     if (this.institution) {
         use_first = this.institution.strings["use-first"];
-        append_last = this.institution.strings["use-last"];
+        stop_last = this.institution.strings["stop-last"];
+        if (stop_last) {
+            append_last = stop_last;
+        } else {
+            append_last = this.institution.strings["use-last"];
     }
-    if (force_test) {
-        use_first = 1;
     }
     if (!use_first) {
         if (this.persons[v][i].length === 0) {
@@ -255,12 +257,11 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i, force_test
         }
     }
     // Now that we've determined the value of append_last
-    // (use-last), don't render the largest subunit with use-first, 
-    // no matter what its value.
-    if (use_first > subunits.length - 1) {
-        use_first = subunits.length - 1;
+    // (use-last), avoid overlaps.
+    if (use_first > subunits.length - append_last) {
+        use_first = subunits.length - append_last;
     }
-    if (force_test) {
+    if (stop_last) {
         append_last = 0;
     }
     s = subunits.slice();
