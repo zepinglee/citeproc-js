@@ -788,6 +788,15 @@ CSL.Attributes["@name-form"] = function (state, arg) {
     state.setOpt(this, "name-form", arg);
 };
 
+CSL.Attributes["@subgroup-delimiter"] = function (state, arg) {
+    this.strings["subgroup-delimiter"] = arg;
+};
+
+CSL.Attributes["@subgroup-delimiter-precedes-last"] = function (state, arg) {
+    this.strings["subgroup-delimiter-precedes-last"] = arg;
+};
+
+
 CSL.Attributes["@name-delimiter"] = function (state, arg) {
     state.setOpt(this, "name-delimiter", arg);
 };
