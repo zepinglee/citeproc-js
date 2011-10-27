@@ -88,6 +88,10 @@ CSL.NameOutput.prototype.init = function (names) {
     //this.namepart = {};
     // before, after
     //this.label = {};
+
+    this.state.tmp.term_sibling.value()[1] = true;
+    // Set to true if something happens
+    this.state.tmp.term_sibling.value()[2] = false;
 };
 
 
@@ -98,6 +102,9 @@ CSL.NameOutput.prototype.reinit = function (names) {
         // names node, and on what conditions? For each attribute,
         // and decoration, is it an override, or is it additive?
         this.variables = names.variables;
+        if (this.state.tmp.term_sibling.value()[2]) {
+            this.state.tmp.term_sibling.value()[2] = true;
+        }
     }
 };
 
@@ -187,6 +194,7 @@ CSL.NameOutput.prototype.outputNames = function () {
         }
         return;
     }
+
     //SNIP-START
     if (this.debug) {
         print("(7)");
@@ -346,6 +354,7 @@ CSL.NameOutput.prototype.outputNames = function () {
             }
         }
     }
+
     if (this.Item.type === "personal_communication") {
         var author = "";
         if (this.state.tmp.name_node.string) {
@@ -362,6 +371,7 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     // Let's try something clever here.
     this._collapseAuthor();
+
     // For name_SubstituteOnNamesSpanNamesSpanFail
     this.variables = [];
     //SNIP-START
