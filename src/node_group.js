@@ -60,12 +60,15 @@ CSL.Node.group = {
             // fieldcontentflag
             func = function (state, Item) {
                 // (see below)
-                state.tmp.term_sibling.push([false, false, false], CSL.LITERAL);
+                state.tmp.term_sibling.push([false, false, false, false], CSL.LITERAL);
             };
             this.execs.push(func);
             // newoutput
             func = function (state, Item) {
                 state.output.startTag("group", this);
+                if (this.strings.oops) {
+                    state.tmp.term_sibling.value()[3] = this.strings.oops;
+                }
             };
             //
             // Paranoia.  Assure that this init function is the first executed.
@@ -130,6 +133,7 @@ CSL.Node.group = {
                 // 0 marks an intention to render a term or value
                 // 1 marks an attempt to render a variable
                 // 2 marks an actual variable rendering
+                // 3 is an oops substitute string, rendered when nothing else does
                 //
                 var upperflag = state.tmp.term_sibling.value();
                 // print("leaving with flags: "+flag+" (stack length: "+ (state.tmp.term_sibling.mystack.length + 1) +")");
@@ -141,6 +145,14 @@ CSL.Node.group = {
                 } else {
                     if (state.output.current.value().blobs) {
                         state.output.current.value().blobs.pop();
+                    }
+                    // Oops. Replace the delimiter TWO levels above the
+                    // current level with the oops string value. Used for
+                    // very rare cases in which the ACTUAL rendering/non-rendering
+                    // of a name value (not the presence/non-presence of field
+                    // content) alters delimiter joins.
+                    if (state.tmp.term_sibling.value()[3]) {
+                        state.output.current.mystack[state.output.current.mystack.length - 2].strings.delimiter = state.tmp.term_sibling.value()[3];
                     }
                 }
             };
