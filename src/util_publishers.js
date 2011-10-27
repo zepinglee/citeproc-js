@@ -48,8 +48,9 @@
 
 /*global CSL: true */
 
-CSL.PublisherOutput = function (state) {
+CSL.PublisherOutput = function (state, group_tok) {
     this.state = state;
+    this.group_tok = group_tok;
     this.varlist = [];
 };
 
@@ -62,12 +63,19 @@ CSL.PublisherOutput.prototype.render = function () {
 };
 
 
+// XXX Figure out how to adapt this to the House of Lords / House of Commons
+// joint committee case
+
+// name_delimiter
+// delimiter_precedes_last
+// and
+
 CSL.PublisherOutput.prototype.composeAndBlob = function () {
     this.and_blob = {};
-    var and_term;
-    if (this.and === "text") {
+    var and_term = false;
+    if (this.group_tok.and === "text") {
         and_term = this.state.getTerm("and");
-    } else if (this.and === "symbol") {
+    } else if (this.group_tok.and === "symbol") {
         and_term = "&";
     }
     var tok = new CSL.Token();
@@ -76,18 +84,22 @@ CSL.PublisherOutput.prototype.composeAndBlob = function () {
     this.state.output.append(and_term, tok, true);
     var no_delim = this.state.output.pop();
 
-    tok.strings.prefix = this.name_delimiter;
+    tok.strings.prefix = this.group_tok.strings["subgroup-delimiter"];
     this.state.output.append(and_term, tok, true);
     var with_delim = this.state.output.pop();
     
-    if (this.delimiter_precedes_last === "always") {
-        this.and_blob.single = with_delim;
-    } else if (this.delimiter_precedes_last === "never") {
-        this.and_blob.single = no_delim;
-        this.and_blob.multiple = no_delim;
-    } else {
-        this.and_blob.single = no_delim;
-        this.and_blob.multiple = with_delim;
+    this.and_blob.single = false;
+    this.and_blob.multiple = false;
+    if (and_term) {
+        if (this.group_tok.strings["subgroup-delimiter-precedes-last"] === "always") {
+            this.and_blob.single = with_delim;
+        } else if (this.group_tok.strings["subgroup-delimiter-precedes-last"] === "never") {
+            this.and_blob.single = no_delim;
+            this.and_blob.multiple = no_delim;
+        } else {
+            this.and_blob.single = no_delim;
+            this.and_blob.multiple = with_delim;
+        }
     }
 };
 
@@ -119,7 +131,7 @@ CSL.PublisherOutput.prototype.composePublishers = function () {
 CSL.PublisherOutput.prototype.joinPublishers = function () {
     var blobs = this["publisher-list"];
     var delim = this.name_delimiter;
-    var publishers = this._join(blobs, delim, this.and_blob.single, this.and_blob.multiple, this.group_tok);
+    var publishers = this._join(blobs, this.group_tok.strings["subgroup-delimiter"], this.and_blob.single, this.and_blob.multiple, this.group_tok);
     this.state.output.append(publishers, "literal");
 };
 
@@ -137,4 +149,3 @@ CSL.PublisherOutput.prototype.clearVars = function () {
     this.state.tmp["publisher-token"] = false;
     this.state.tmp["publisher-place-token"] = false;
 };
-
