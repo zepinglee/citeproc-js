@@ -83,25 +83,23 @@ CSL.Node.group = {
                 // is set on the parent cs:citation or cs:bibliography
                 // node.
                 state.build["publisher-special"] = true;
-                if ("string" === typeof state[state.build.root].opt["name-delimiter"]) {
-                    // Pass variable string values to the closing
-                    // tag via a global, iff they conform to expectations.
-                    func = function (state, Item) {
-                        if (Item.publisher && Item["publisher-place"]) {
-                            var publisher_lst = Item.publisher.split(/;\s*/);
-                            var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
-                            if (publisher_lst.length > 1
-                                && publisher_lst.length === publisher_place_lst.length) {
-                                
-                                state.publisherOutput = new CSL.PublisherOutput(state);
-                                state.publisherOutput["publisher-list"] = publisher_lst;
-                                state.publisherOutput["publisher-place-list"] = publisher_place_lst;
-                                state.publisherOutput.group_tok = this;
-                            }
+                // Pass variable string values to the closing
+                // tag via a global, iff they conform to expectations.
+                func = function (state, Item) {
+                    if (this.strings["subgroup-delimiter"]
+                        && Item.publisher && Item["publisher-place"]) {
+                        var publisher_lst = Item.publisher.split(/;\s*/);
+                        var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
+                        if (publisher_lst.length > 1
+                            && publisher_lst.length === publisher_place_lst.length) {
+                            
+                            state.publisherOutput = new CSL.PublisherOutput(state, this);
+                            state.publisherOutput["publisher-list"] = publisher_lst;
+                            state.publisherOutput["publisher-place-list"] = publisher_place_lst;
                         }
-                    };
-                    this.execs.push(func);
-                }
+                    }
+                };
+                this.execs.push(func);
             }
         } else {
 
@@ -115,9 +113,6 @@ CSL.Node.group = {
                 if ("string" === typeof state[state.build.root].opt["name-delimiter"]) {
                     func = function (state, Item) {
                         if (state.publisherOutput) {
-                            state.publisherOutput.name_delimiter = state[state.build.root].opt["name-delimiter"];
-                            state.publisherOutput.delimiter_precedes_last = state[state.build.root].opt["delimiter-precedes-last"];
-                            state.publisherOutput.and = state[state.build.root].opt.and;
                             state.publisherOutput.render();
                             state.publisherOutput = false;
                         }
