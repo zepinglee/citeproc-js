@@ -158,17 +158,23 @@ CSL.Transform = function (state) {
             mysubsection = "institution-part";
         }
 
-        // Lazy retrieval of abbreviations.
-        var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, mysubsection, basevalue);
+        if (["genre"].indexOf(mysubsection) > -1) {
+            mysubsection = "title";
+        }
 
-        // XXX Need a fallback mechanism here. Other to default.
+        // Lazy retrieval of abbreviations.
         value = "";
-        if (state.transform.abbrevs[jurisdiction][mysubsection] && basevalue && state.sys.getAbbreviation) {
-            if (state.transform.abbrevs[jurisdiction][mysubsection][basevalue]) {
-                value = state.transform.abbrevs[jurisdiction][mysubsection][basevalue];
+        if (state.sys.getAbbreviation) {
+            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, mysubsection, basevalue);
+
+            // XXX Need a fallback mechanism here. Other to default.
+            if (state.transform.abbrevs[jurisdiction][mysubsection] && basevalue && state.sys.getAbbreviation) {
+                if (state.transform.abbrevs[jurisdiction][mysubsection][basevalue]) {
+                    value = state.transform.abbrevs[jurisdiction][mysubsection][basevalue];
+                }
             }
         }
-        if (!value && Item[altvar] && use_field) {
+        if (!value && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
         if (!value) {
@@ -241,9 +247,6 @@ CSL.Transform = function (state) {
             jurisdiction = "default";
         }
 
-        if (!this.abbrevs[jurisdiction][category] || !orig) {
-            return jurisdiction;
-        }
         // The getAbbreviation() function should check the
         // external DB for the content key. If a value exists
         // in this[category] and no value exists in DB, the entry
@@ -251,7 +254,9 @@ CSL.Transform = function (state) {
         // DB, the memory value is created.
         //
         // See testrunner_stdrhino.js for an example.
-        if (!this.abbrevs[jurisdiction][category][orig] && state.sys.getAbbreviation) {
+        if (state.sys.getAbbreviation 
+            && (!this.abbrevs[jurisdiction]
+                || !this.abbrevs[jurisdiction][category][orig])) {
             // jurisdiction could change to "default"
             jurisdiction = state.sys.getAbbreviation(this.abbrevs, jurisdiction, category, orig);
         }
@@ -259,16 +264,23 @@ CSL.Transform = function (state) {
     }
     this.loadAbbreviation = loadAbbreviation;
 
-    function publisherCheck (varname, primary, tok) {
+    function publisherCheck (tok, Item, primary) {
+        var varname = tok.variables[0];
         if (state.publisherOutput && primary) {
             if (["publisher","publisher-place"].indexOf(varname) === -1) {
                 return false;
             } else {
+                // In this case, the publisher bundle will be rendered
+                // at the close of the group, by the closing group node.
                 state.publisherOutput[varname + "-token"] = tok;
                 state.publisherOutput.varlist.push(varname);
                 var lst = primary.split(/;\s*/);
                 if (lst.length === state.publisherOutput[varname + "-list"].length) {
-                    state.tmp[varname + "-list"] = lst;
+                    state.publisherOutput[varname + "-list"] = lst;
+                }
+                // XXX Abbreviate each of the items in the list here!
+                for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
+                    lst[i] = abbreviate(state, Item, false, lst[i], "institution-part", true);
                 }
                 state.tmp[varname + "-token"] = tok;
                 return true;
@@ -359,10 +371,8 @@ CSL.Transform = function (state) {
                 }
                 primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
 
-                primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
-
                 // Factor this out
-                if (publisherCheck(variables[0], primary, this)) {
+                if (publisherCheck(this, Item, primary)) {
                     return null;
                 } else {
                     if ("demote" === this["leading-noise-words"]) {
@@ -370,6 +380,7 @@ CSL.Transform = function (state) {
                     }
                     // Safe, because when state.tmp["publisher-list"] exists,
                     // the variable must be one of publisher or publisher-place.
+                    primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
                     state.output.append(primary, this);
                 }
                 return null;
