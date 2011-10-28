@@ -129,12 +129,11 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
                 }
             }
             //this.state.output.append(blobs[i], style, true);
+            this.state.tmp.term_sibling.value()[2] = true;
+            this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
             this.state.output.append(str, style, true);
             blobs[i] = this.state.output.pop();
         }
-    }
-    if (blobs.length) {
-        this.state.tmp.term_sibling.value()[2] = true;
     }
     return this._join(blobs, this.name.strings.delimiter);
 };
@@ -257,6 +256,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
     }
     // XXX Just generally assume for the present that personal names render something
     this.state.tmp.term_sibling.value()[2] = true;
+    this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
     // notSerious
     //this.state.output.append(blob, "literal", true);
     //var ret = this.state.output.pop();
