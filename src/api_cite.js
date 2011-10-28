@@ -686,17 +686,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
     var use_parallels, ret;
-    //print("################### getAmbiguousCite() #################");
-    // Oh, darn. We need an efficient means of identifying
-    // whether an Item object has changed compared with the
-    // last-seen form, to invalidate the cached copy.
-    //
-    // Without requiring the calling application to raise
-    // an explicit flag on the object (not very friendly),
-    // I don't see any way forward other than outright
-    // serialization every time the object passes through
-    // here. Certainly faster than rerendering the cite,
-    // but it's still overhead. Yuck.
+    var oldTermSiblingLayer = this.tmp.term_sibling.value().slice();
     if (disambig) {
         this.tmp.disambig_request = disambig;
     } else {
@@ -718,6 +708,7 @@ CSL.getAmbiguousCite = function (Item, disambig) {
     this.tmp.suppress_decorations = false;
     this.parallel.use_parallels = use_parallels;
     // Cache the result.
+    this.tmp.term_sibling.replace(oldTermSiblingLayer, "literal");
     return ret;
 };
 
