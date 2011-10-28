@@ -88,43 +88,51 @@ CSL.NameOutput.prototype.init = function (names) {
     //this.namepart = {};
     // before, after
     //this.label = {};
-
+    
     this.state.tmp.term_sibling.value()[1] = true;
+
+    if (!this.state.tmp.value.length) {
+        return;
+    }
+
     // Set to true if something happens
     this.state.tmp.term_sibling.value()[2] = false;
 };
 
 
 CSL.NameOutput.prototype.reinit = function (names) {
-    if (!this._hasValues()) {
+    // Wrong control var, surely
+    //if (true) {
+    if (this.state.tmp.can_substitute.value()) {
+    //if (!this.state.tmp.term_sibling.value()[2]) {
         this.nameset_offset = 0;
         // What-all should be carried across from the subsidiary
         // names node, and on what conditions? For each attribute,
         // and decoration, is it an override, or is it additive?
         this.variables = names.variables;
-        if (this.state.tmp.term_sibling.value()[2]) {
-            this.state.tmp.term_sibling.value()[2] = true;
+        // Set to true if something happens
+        //this.state.tmp.term_sibling.value()[2] = false;
+        //if (this.state.tmp.term_sibling.value()[2]) {
+        //    this.state.tmp.term_sibling.value()[2] = true;
+        //}
+        var oldval = this.state.tmp.value.slice();
+        this.state.tmp.value = [];
+        for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
+            if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
+                this.state.tmp.value = this.state.tmp.value.concat(this.Item[this.variables[i]]);
+            }
         }
-    }
-};
-
-CSL.NameOutput.prototype._hasValues = function () {
-    for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
-        var v = this.variables[i];
-        if (this.Item[v]) {
-            // ??? If substitution is working correctly,
-            // this check should not be necessary
-            return true;
+        if (this.state.tmp.value.length) {
+            this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
         }
+        this.state.tmp.value = oldval;
     }
-    return false;
 };
 
 CSL.NameOutput.prototype.outputNames = function () {
     var i, ilen;
     var variables = this.variables;
     this.variable_offset = {};
-
     if (this.family) {
         this.family_decor = CSL.Util.cloneToken(this.family);
         this.family_decor.strings.prefix = "";
@@ -188,10 +196,13 @@ CSL.NameOutput.prototype.outputNames = function () {
     if (this.name.strings.form === "count") {
         if (this.state.tmp.extension || this.names_count != 0) {
             this.state.output.append(this.names_count, "empty");
-        } else {
-            this.state.tmp.term_sibling.value()[1] = true;
-            this.state.tmp.term_sibling.value()[2] = false;
+            this.state.tmp.term_sibling.value()[2] = true;
         }
+        //else {
+        //    this.state.tmp.term_sibling.value()[1] = true;
+        //    
+        //    this.state.tmp.term_sibling.value()[2] = false;
+        //}
         return;
     }
 
