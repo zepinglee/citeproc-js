@@ -60,14 +60,14 @@ CSL.Node.group = {
             // fieldcontentflag
             func = function (state, Item) {
                 // (see below)
-                state.tmp.term_sibling.push([false, false, false, false], CSL.LITERAL);
+                state.tmp.group_context.push([false, false, false, false], CSL.LITERAL);
             };
             this.execs.push(func);
             // newoutput
             func = function (state, Item) {
                 state.output.startTag("group", this);
                 if (this.strings.oops) {
-                    state.tmp.term_sibling.value()[3] = this.strings.oops;
+                    state.tmp.group_context.value()[3] = this.strings.oops;
                 }
             };
             //
@@ -126,7 +126,7 @@ CSL.Node.group = {
             
             // quashnonfields
             func = function (state, Item) {
-                var flag = state.tmp.term_sibling.pop();
+                var flag = state.tmp.group_context.pop();
                 
                 state.output.endTag();
                 //
@@ -135,13 +135,13 @@ CSL.Node.group = {
                 // 2 marks an actual variable rendering
                 // 3 is an oops substitute string, rendered when nothing else does
                 //
-                var upperflag = state.tmp.term_sibling.value();
-                // print("leaving with flags: "+flag+" (stack length: "+ (state.tmp.term_sibling.mystack.length + 1) +")");
+                var upperflag = state.tmp.group_context.value();
+                // print("leaving with flags: "+flag+" (stack length: "+ (state.tmp.group_context.mystack.length + 1) +")");
                 if (flag[1]) {
-                    state.tmp.term_sibling.value()[1] = true;
+                    state.tmp.group_context.value()[1] = true;
                 }
                 if (flag[2] || (flag[0] && !flag[1])) {
-                    state.tmp.term_sibling.value()[2] = true;
+                    state.tmp.group_context.value()[2] = true;
                 } else {
                     if (state.output.current.value().blobs) {
                         state.output.current.value().blobs.pop();
@@ -151,8 +151,8 @@ CSL.Node.group = {
                     // very rare cases in which the ACTUAL rendering/non-rendering
                     // of a name value (not the presence/non-presence of field
                     // content) alters delimiter joins.
-                    if (state.tmp.term_sibling.value()[3]) {
-                        state.output.current.mystack[state.output.current.mystack.length - 2].strings.delimiter = state.tmp.term_sibling.value()[3];
+                    if (state.tmp.group_context.value()[3]) {
+                        state.output.current.mystack[state.output.current.mystack.length - 2].strings.delimiter = state.tmp.group_context.value()[3];
                     }
                 }
             };

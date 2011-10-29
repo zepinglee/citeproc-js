@@ -154,15 +154,15 @@ CSL.Node.text = {
                             // obviously the variable naming scheme needs
                             // a little touching up
                             firstoutput = false;
-                            len = state.tmp.term_sibling.mystack.length;
+                            len = state.tmp.group_context.mystack.length;
                             for (pos = 0; pos < len; pos += 1) {
-                                flag = state.tmp.term_sibling.mystack[pos];
+                                flag = state.tmp.group_context.mystack[pos];
                                 if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
                                     firstoutput = true;
                                     break;
                                 }
                             }
-                            // firstoutput = state.tmp.term_sibling.mystack.indexOf(true) === -1;
+                            // firstoutput = state.tmp.group_context.mystack.indexOf(true) === -1;
                             specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
                             if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag) {
                                 state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
@@ -199,10 +199,10 @@ CSL.Node.text = {
                         // if the term is not an empty string, say
                         // that we rendered a term
                         if (term !== "") {
-                            flag = state.tmp.term_sibling.value();
+                            flag = state.tmp.group_context.value();
                             //print("setting TERM to true [0]");
                             flag[0] = true;
-                            state.tmp.term_sibling.replace(flag);
+                            state.tmp.group_context.replace(flag);
                         }
                         
                         // capitalize the first letter of a term, if it is the
@@ -394,11 +394,11 @@ CSL.Node.text = {
                     // for the text value attribute.
                     func = function (state, Item) {
                         var flag;
-                        flag = state.tmp.term_sibling.value();
+                        flag = state.tmp.group_context.value();
                         // say that we rendered a term
                         //print("  setting [0] to true based on: " + this.strings.value);
                         flag[0] = true;
-                        state.tmp.term_sibling.replace(flag);
+                        state.tmp.group_context.replace(flag);
                         state.output.append(this.strings.value, this);
                     };
                     this.execs.push(func);

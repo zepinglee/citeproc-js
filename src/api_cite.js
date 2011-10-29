@@ -686,7 +686,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  */
 CSL.getAmbiguousCite = function (Item, disambig) {
     var use_parallels, ret;
-    var oldTermSiblingLayer = this.tmp.term_sibling.value().slice();
+    var oldTermSiblingLayer = this.tmp.group_context.value().slice();
     if (disambig) {
         this.tmp.disambig_request = disambig;
     } else {
@@ -708,7 +708,7 @@ CSL.getAmbiguousCite = function (Item, disambig) {
     this.tmp.suppress_decorations = false;
     this.parallel.use_parallels = use_parallels;
     // Cache the result.
-    this.tmp.term_sibling.replace(oldTermSiblingLayer, "literal");
+    this.tmp.group_context.replace(oldTermSiblingLayer, "literal");
     return ret;
 };
 

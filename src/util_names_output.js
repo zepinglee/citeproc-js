@@ -89,14 +89,14 @@ CSL.NameOutput.prototype.init = function (names) {
     // before, after
     //this.label = {};
     
-    this.state.tmp.term_sibling.value()[1] = true;
+    this.state.tmp.group_context.value()[1] = true;
 
     if (!this.state.tmp.value.length) {
         return;
     }
 
     // Set to true if something happens
-    this.state.tmp.term_sibling.value()[2] = false;
+    this.state.tmp.group_context.value()[2] = false;
 };
 
 
@@ -104,16 +104,16 @@ CSL.NameOutput.prototype.reinit = function (names) {
     // Wrong control var, surely
     //if (true) {
     if (this.state.tmp.can_substitute.value()) {
-    //if (!this.state.tmp.term_sibling.value()[2]) {
+    //if (!this.state.tmp.group_context.value()[2]) {
         this.nameset_offset = 0;
         // What-all should be carried across from the subsidiary
         // names node, and on what conditions? For each attribute,
         // and decoration, is it an override, or is it additive?
         this.variables = names.variables;
         // Set to true if something happens
-        //this.state.tmp.term_sibling.value()[2] = false;
-        //if (this.state.tmp.term_sibling.value()[2]) {
-        //    this.state.tmp.term_sibling.value()[2] = true;
+        //this.state.tmp.group_context.value()[2] = false;
+        //if (this.state.tmp.group_context.value()[2]) {
+        //    this.state.tmp.group_context.value()[2] = true;
         //}
         var oldval = this.state.tmp.value.slice();
         this.state.tmp.value = [];
@@ -196,12 +196,12 @@ CSL.NameOutput.prototype.outputNames = function () {
     if (this.name.strings.form === "count") {
         if (this.state.tmp.extension || this.names_count != 0) {
             this.state.output.append(this.names_count, "empty");
-            this.state.tmp.term_sibling.value()[2] = true;
+            this.state.tmp.group_context.value()[2] = true;
         }
         //else {
-        //    this.state.tmp.term_sibling.value()[1] = true;
+        //    this.state.tmp.group_context.value()[1] = true;
         //    
-        //    this.state.tmp.term_sibling.value()[2] = false;
+        //    this.state.tmp.group_context.value()[2] = false;
         //}
         return;
     }
