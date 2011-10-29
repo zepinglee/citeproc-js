@@ -1,6 +1,48 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.235
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Rename obscure "term_sibling" stack variable to slightly less
+  obscure "group_context".
+
+- Introduce new attributes subgroup-delimiter and 
+  subgroup-delimiter-precedes-last on cs:group element, and recognize
+  the and delimiter as well. The publisher and publisher-place
+  variables will now be read nad rendered in parallel only when
+  subgroup-delimiter has been set to a value.
+
+- Introduce new stop-last attribute on cs:institution, and loosen
+  default behavior of use-first to allow inclusion of the first element 
+  even if it is the only element. The stop-last attribute has the same
+  effect as use-last (i.e. it trumps use-first in the event of an overlap),
+  but renders nothing for the portion of the name that it covers.
+
+- Introduce oops attribute on cs:group. This is a very specialized
+  attribute for the specific situation where a name with content may
+  render as nil due to abbreviation logic. In this case, the oops string
+  value will be substituted for the group delimiter two levels above
+  the group on which the oops is set. While messy, this avoids the need
+  for (even messier) syntax that would be needed to check whether
+  a cs:names element will produce output under various combinations of
+  options, translation, transliteration and abbreviation transformations.
+
+- Remove instituition-use-first attribute.
+
+- Widespread refactoring of group-conditional logic, particular as
+  related to cs:names and cs:substitute. Our tests all pass.
+
+- Apply title abbreviations to "genre" and "title-short". The former
+  as just overlooked. The latter may seem a little odd, but including
+  this field for abbreviation purposes will help consistency.
+
+
+==========================
 Changes in version 1.0.234
 ==========================
 
