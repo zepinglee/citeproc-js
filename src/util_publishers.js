@@ -73,9 +73,9 @@ CSL.PublisherOutput.prototype.render = function () {
 CSL.PublisherOutput.prototype.composeAndBlob = function () {
     this.and_blob = {};
     var and_term = false;
-    if (this.group_tok.and === "text") {
+    if (this.group_tok.strings.and === "text") {
         and_term = this.state.getTerm("and");
-    } else if (this.group_tok.and === "symbol") {
+    } else if (this.group_tok.strings.and === "symbol") {
         and_term = "&";
     }
     var tok = new CSL.Token();
