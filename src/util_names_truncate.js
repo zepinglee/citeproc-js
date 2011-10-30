@@ -241,7 +241,7 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
             append_last = this.institution.strings["use-last"];
     }
     }
-    if (!use_first) {
+    if (false === use_first) {
         if (this.persons[v][i].length === 0) {
             use_first = this.institution.strings["substitute-use-first"];
         }
@@ -249,7 +249,7 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
             use_first = 0;
         }
     }
-    if (!append_last) {
+    if (false === append_last) {
         if (!use_first) {
             append_last = subunits.length;
         } else {
