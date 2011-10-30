@@ -233,12 +233,16 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     var use_first = false;
     var append_last = false;
     if (this.institution) {
-        use_first = this.institution.strings["use-first"];
+        if (this.institution.strings["use-first"]) {
+            use_first = this.institution.strings["use-first"];
+        }
         stop_last = this.institution.strings["stop-last"];
         if (stop_last) {
             append_last = stop_last;
         } else {
-            append_last = this.institution.strings["use-last"];
+            if (this.institution.strings["use-last"]) {
+                append_last = this.institution.strings["use-last"];
+            }
     }
     }
     if (false === use_first) {
