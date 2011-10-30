@@ -97,6 +97,7 @@ Bl Comm; Bankton <span style="font-variant:small-caps;">Institute</span> II.
               "family": "Blackstone"
            }
         ],
+        "type": "classic",
         "id": "ITEM-1", 
         "title": "Commentaries"
     },
@@ -106,6 +107,7 @@ Bl Comm; Bankton <span style="font-variant:small-caps;">Institute</span> II.
               "family": "Bankton"
            }
         ],
+        "type": "classic",
         "id": "ITEM-2", 
         "title": "Institute II"
     }
