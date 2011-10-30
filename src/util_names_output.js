@@ -341,15 +341,23 @@ CSL.NameOutput.prototype.outputNames = function () {
     //
     // If found, then (1) suppress title rendering, (2) replace the node
     // with the abbreviation output [and (3) do not run this._collapseAuthor() ?]
-    this.state.tmp.name_node.string = this.state.output.string(this.state, this.state.tmp.name_node.top.blobs, false);
+    var oldSuppressDecorations = this.state.tmp.suppress_decorations;
+    this.state.tmp.suppress_decorations = true;
+    var lastBlob = this.state.tmp.name_node.top.blobs.pop();
+    var name_node_string = this.state.output.string(this.state, lastBlob.blobs, false);
+    this.state.tmp.name_node.top.blobs.push(lastBlob);
+    if (name_node_string) {
+        this.state.tmp.name_node.string = name_node_string;
+    }
+    this.state.tmp.suppress_decorations = oldSuppressDecorations;
     // for hereinafter support
     if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
     }
-    if ("undefined" === typeof this.Item.type) {
+    if ("classic" === this.Item.type) {
         var author_title = [];
-        if (this.state.tmp.name_node.string) {
-            author_title.push(this.state.tmp.name_node.string);
+        if (this.state.tmp.first_name_string) {
+            author_title.push(this.state.tmp.first_name_string);
         }
         if (this.Item.title) {
             author_title.push(this.Item.title);
@@ -366,17 +374,23 @@ CSL.NameOutput.prototype.outputNames = function () {
         }
     }
 
-    if (this.Item.type === "personal_communication") {
+    if (this.Item.type === "personal_communication" || this.Item.type === "interview") {
         var author = "";
-        if (this.state.tmp.name_node.string) {
-            author = this.state.tmp.name_node.string;
+        if (this.state.tmp.first_name_string === this.state.tmp.name_node.string) {
+            author = this.state.tmp.first_name_string;
         }
         if (author && this.state.sys.getAbbreviation) {
             this.state.transform.loadAbbreviation("default", "nickname", author);
-            if (this.state.transform.abbrevs["default"].nickname[author]) {
-                this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
-                blob = this.state.output.pop();
-                this.state.tmp.name_node.top.blobs = [blob];
+            var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
+            if (myLocalName) {
+                if (myLocalName === "{suppress}") {
+                    this.state.tmp.name_node.top.blobs.pop();
+                    this.state.tmp.group_context.value()[2] = false;
+                } else {
+                    this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
+                    blob = this.state.output.pop();
+                    this.state.tmp.name_node.top.blobs = [blob];
+                }
             }
         }
     }
