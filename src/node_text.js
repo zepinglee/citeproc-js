@@ -368,7 +368,8 @@ CSL.Node.text = {
                             func = function (state, Item) {
                                 var hereinafter_key = state.transform.getHereinafter(Item);
                                 var value = state.transform.abbrevs["default"].hereinafter[hereinafter_key];
-                                if (hereinafter_key) {
+                                if (value) {
+                                    state.tmp.group_context.value()[2] = true;
                                     state.output.append(value, this);
                                 }
                             };

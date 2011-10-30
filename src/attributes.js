@@ -350,7 +350,13 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (item && ["locator", "locator-revision", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
                 }
-                if (myitem[variable]) {
+                if (variable === "hereinafter" && state.sys.getAbbreviation) {
+                    var hereinafter_key = state.transform.getHereinafter(myitem);
+                    state.transform.loadAbbreviation("default", "hereinafter", hereinafter_key);
+                    if (state.transform.abbrevs["default"].hereinafter[hereinafter_key]) {
+                        x = true
+                    }
+                } else if (myitem[variable]) {
                     if ("number" === typeof myitem[variable] || "string" === typeof myitem[variable]) {
                         x = true;
                     } else if ("object" === typeof myitem[variable]) {
