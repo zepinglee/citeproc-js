@@ -1722,7 +1722,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.235";
+    this.processor_version = "1.0.236";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4748,14 +4748,22 @@ CSL.NameOutput.prototype.outputNames = function () {
     var blob = this.state.output.pop();
     this.state.output.append(blob, this.names);
     this.state.tmp.name_node.top = this.state.output.current.value();
-    this.state.tmp.name_node.string = this.state.output.string(this.state, this.state.tmp.name_node.top.blobs, false);
+    var oldSuppressDecorations = this.state.tmp.suppress_decorations;
+    this.state.tmp.suppress_decorations = true;
+    var lastBlob = this.state.tmp.name_node.top.blobs.pop();
+    var name_node_string = this.state.output.string(this.state, lastBlob.blobs, false);
+    this.state.tmp.name_node.top.blobs.push(lastBlob);
+    if (name_node_string) {
+        this.state.tmp.name_node.string = name_node_string;
+    }
+    this.state.tmp.suppress_decorations = oldSuppressDecorations;
     if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
     }
-    if ("undefined" === typeof this.Item.type) {
+    if ("classic" === this.Item.type) {
         var author_title = [];
-        if (this.state.tmp.name_node.string) {
-            author_title.push(this.state.tmp.name_node.string);
+        if (this.state.tmp.first_name_string) {
+            author_title.push(this.state.tmp.first_name_string);
         }
         if (this.Item.title) {
             author_title.push(this.Item.title);
@@ -4771,17 +4779,21 @@ CSL.NameOutput.prototype.outputNames = function () {
             }
         }
     }
-    if (this.Item.type === "personal_communication") {
+    if (this.Item.type === "personal_communication" || this.Item.type === "interview") {
         var author = "";
-        if (this.state.tmp.name_node.string) {
-            author = this.state.tmp.name_node.string;
-        }
-        if (author && this.state.sys.getAbbreviation) {
+        author = this.state.tmp.name_node.string;
+        if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
             this.state.transform.loadAbbreviation("default", "nickname", author);
-            if (this.state.transform.abbrevs["default"].nickname[author]) {
-                this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
-                blob = this.state.output.pop();
-                this.state.tmp.name_node.top.blobs = [blob];
+            var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
+            if (myLocalName) {
+                if (myLocalName === "{suppress}") {
+                    this.state.tmp.name_node.top.blobs.pop();
+                    this.state.tmp.group_context.value()[2] = false;
+                } else {
+                    this.state.output.append(myLocalName, "empty", true)
+                    blob = this.state.output.pop();
+                    this.state.tmp.name_node.top.blobs = [blob];
+                }
             }
         }
     }
@@ -5045,15 +5057,19 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     var use_first = false;
     var append_last = false;
     if (this.institution) {
-        use_first = this.institution.strings["use-first"];
+        if ("undefined" !== typeof this.institution.strings["use-first"]) {
+            use_first = this.institution.strings["use-first"];
+        }
         stop_last = this.institution.strings["stop-last"];
         if (stop_last) {
             append_last = stop_last;
         } else {
-            append_last = this.institution.strings["use-last"];
+            if ("undefined" !== typeof this.institution.strings["use-last"]) {
+                append_last = this.institution.strings["use-last"];
+            }
+        }
     }
-    }
-    if (!use_first) {
+    if (false === use_first) {
         if (this.persons[v][i].length === 0) {
             use_first = this.institution.strings["substitute-use-first"];
         }
@@ -5061,7 +5077,7 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
             use_first = 0;
         }
     }
-    if (!append_last) {
+    if (false === append_last) {
         if (!use_first) {
             append_last = subunits.length;
         } else {
@@ -6728,7 +6744,8 @@ CSL.Node.text = {
                             func = function (state, Item) {
                                 var hereinafter_key = state.transform.getHereinafter(Item);
                                 var value = state.transform.abbrevs["default"].hereinafter[hereinafter_key];
-                                if (hereinafter_key) {
+                                if (value) {
+                                    state.tmp.group_context.value()[2] = true;
                                     state.output.append(value, this);
                                 }
                             };
@@ -6964,7 +6981,13 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (item && ["locator", "locator-revision", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
                 }
-                if (myitem[variable]) {
+                if (variable === "hereinafter" && state.sys.getAbbreviation) {
+                    var hereinafter_key = state.transform.getHereinafter(myitem);
+                    state.transform.loadAbbreviation("default", "hereinafter", hereinafter_key);
+                    if (state.transform.abbrevs["default"].hereinafter[hereinafter_key]) {
+                        x = true
+                    }
+                } else if (myitem[variable]) {
                     if ("number" === typeof myitem[variable] || "string" === typeof myitem[variable]) {
                         x = true;
                     } else if ("object" === typeof myitem[variable]) {

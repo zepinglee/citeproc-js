@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.236
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Tie "classic" abbreviations to new "classic" type 
+  of MLZ extended schema.
+
+- Introduce "{suppress}" token for suppressing person 
+  name output via an abbreviation list engine.
+
+- Allow value of zero (0) on use-first and use-last 
+  attributes to cs:institution, to suppress institutional 
+  affiliations.
+
+- Bugfixes for hereinafter support.
+
+- Make hereinafter abbreviation variable testable.
+
+
+==========================
 Changes in version 1.0.235
 ==========================
 
