@@ -233,17 +233,17 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     var use_first = false;
     var append_last = false;
     if (this.institution) {
-        if (this.institution.strings["use-first"]) {
+        if ("undefined" !== typeof this.institution.strings["use-first"]) {
             use_first = this.institution.strings["use-first"];
         }
         stop_last = this.institution.strings["stop-last"];
         if (stop_last) {
             append_last = stop_last;
         } else {
-            if (this.institution.strings["use-last"]) {
+            if ("undefined" !== typeof this.institution.strings["use-last"]) {
                 append_last = this.institution.strings["use-last"];
             }
-    }
+        }
     }
     if (false === use_first) {
         if (this.persons[v][i].length === 0) {
