@@ -376,10 +376,8 @@ CSL.NameOutput.prototype.outputNames = function () {
 
     if (this.Item.type === "personal_communication" || this.Item.type === "interview") {
         var author = "";
-        if (this.state.tmp.first_name_string === this.state.tmp.name_node.string) {
-            author = this.state.tmp.first_name_string;
-        }
-        if (author && this.state.sys.getAbbreviation) {
+        author = this.state.tmp.name_node.string;
+        if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
             this.state.transform.loadAbbreviation("default", "nickname", author);
             var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
             if (myLocalName) {
@@ -387,7 +385,7 @@ CSL.NameOutput.prototype.outputNames = function () {
                     this.state.tmp.name_node.top.blobs.pop();
                     this.state.tmp.group_context.value()[2] = false;
                 } else {
-                    this.state.output.append(this.state.transform.abbrevs["default"].nickname[author], "empty", true)
+                    this.state.output.append(myLocalName, "empty", true)
                     blob = this.state.output.pop();
                     this.state.tmp.name_node.top.blobs = [blob];
                 }
