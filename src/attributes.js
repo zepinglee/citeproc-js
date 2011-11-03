@@ -50,6 +50,10 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@part-separator"] = function (state, arg) {
+    this.strings["part-separator"] = arg;
+}
+
 CSL.Attributes["@context"] = function (state, arg) {
     var func = function (state, Item) {
 		var area = state.tmp.area.slice(0, arg.length);
