@@ -691,52 +691,53 @@ CSL.Attributes["@position"] = function (state, arg) {
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
 
-    var factory = function (tryposition) {
-        return  function (state, Item, item) {
-            if (state.tmp.area === "bibliography") {
-                return false;
-            }
-            if (item && "undefined" === typeof item.position) {
-                item.position = 0;
-            }
-            if (item && typeof item.position === "number") {
-                if (item.position === 0 && tryposition === 0) {
-                    return true;
-                } else if (tryposition > 0 && item.position >= tryposition) {
-                    return true;
-                }
-            } else if (tryposition === 0) {
+    if ("near-note" === arg) {
+        var near_note_func = function (state, Item, item) {
+            if (item && item["near-note"]) {
                 return true;
             }
             return false;
         };
-    };
-    var near_note_func = function (state, Item, item) {
-        if (item && item["near-note"]) {
-            return true;
-        }
-        return false;
-    };
-    var lst = arg.split(/\s+/);
-    for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
-        if (lst[i] === "first") {
-            tryposition = CSL.POSITION_FIRST;
-        } else if (lst[i] === "subsequent") {
-            tryposition = CSL.POSITION_SUBSEQUENT;
-        } else if (lst[i] === "ibid") {
-            tryposition = CSL.POSITION_IBID;
-        } else if (lst[i] === "ibid-with-locator") {
-            tryposition = CSL.POSITION_IBID_WITH_LOCATOR;
-        }
-        // A factory function, similar
+        this.tests.push(near_note_func);
+    } else {
+        var factory = function (tryposition) {
+            return  function (state, Item, item) {
+                if (state.tmp.area === "bibliography") {
+                    return false;
+                }
+                if (item && "undefined" === typeof item.position) {
+                    item.position = 0;
+                }
+                if (item && typeof item.position === "number") {
+                    if (item.position === 0 && tryposition === 0) {
+                        return true;
+                    } else if (tryposition > 0 && item.position >= tryposition) {
+                        return true;
+                    }
+                } else if (tryposition === 0) {
+                    return true;
+                }
+                return false;
+            };
+        };
+        var lst = arg.split(/\s+/);
+        for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
+            if (lst[i] === "first") {
+                tryposition = CSL.POSITION_FIRST;
+            } else if (lst[i] === "subsequent") {
+                tryposition = CSL.POSITION_SUBSEQUENT;
+            } else if (lst[i] === "ibid") {
+                tryposition = CSL.POSITION_IBID;
+            } else if (lst[i] === "ibid-with-locator") {
+                tryposition = CSL.POSITION_IBID_WITH_LOCATOR;
+            }
+            // A factory function, similar
         // to what we do for decorations.
-        var func = factory(tryposition);
-        this.tests.push(func);
-        if (lst[i] === "near-note") {
-            this.tests.push(near_note_func);
+            var func = factory(tryposition);
+            this.tests.push(func);
         }
     }
-};
+}
 
 
 CSL.Attributes["@disambiguate"] = function (state, arg) {
