@@ -77,6 +77,10 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
         var v = this.variables[i];
         for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
             var institution, institution_short, institution_long, short_style, long_style;
+            if (this.institution.strings["reverse-order"]) {
+                this.institutions[v][j]["short"].reverse();
+                this.institutions[v][j]["long"].reverse();
+            }
             switch (this.institution.strings["institution-parts"]) {
             case "short":
                 if (this.institutions[v][j]["short"].length) {
@@ -135,7 +139,10 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
             blobs[i] = this.state.output.pop();
         }
     }
-    return this._join(blobs, this.name.strings.delimiter);
+    if ("undefined" === typeof this.institution.strings["part-separator"]) {
+        this.institution.strings["part-separator"] = this.name.strings.delimiter;
+    }
+    return this._join(blobs, this.institution.strings["part-separator"]);
 };
 
 CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
