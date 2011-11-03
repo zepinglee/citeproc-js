@@ -1024,7 +1024,7 @@ CSL.Attributes["@use-first"] = function (state, arg) {
 };
 
 CSL.Attributes["@stop-last"] = function (state, arg) {
-    this.strings["stop-last"] = parseInt(arg, 10);
+    this.strings["stop-last"] = parseInt(arg, 10) * -1;
 }
 
 CSL.Attributes["@oops"] = function (state, arg) {
