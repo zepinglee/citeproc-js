@@ -228,21 +228,21 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
 };
 
 CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
-    var s;
 	// 
     var use_first = false;
     var append_last = false;
+    var stop_last = false;
+    var s = subunits.slice();
     if (this.institution) {
         if ("undefined" !== typeof this.institution.strings["use-first"]) {
             use_first = this.institution.strings["use-first"];
         }
-        stop_last = this.institution.strings["stop-last"];
-        if (stop_last) {
-            append_last = stop_last;
-        } else {
-            if ("undefined" !== typeof this.institution.strings["use-last"]) {
-                append_last = this.institution.strings["use-last"];
-            }
+        if ("undefined" !== typeof this.institution.strings["stop-last"]) {
+            // stop-last is negative when present
+            s = s.slice(0, this.institution.strings["stop-last"]);
+        }
+        if ("undefined" !== typeof this.institution.strings["use-last"]) {
+            append_last = this.institution.strings["use-last"];
         }
     }
     if (false === use_first) {
@@ -268,7 +268,8 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     if (stop_last) {
         append_last = 0;
     }
-    s = subunits.slice();
+    // This could be more clear. use-last takes priority
+    // in the event of overlap, because of adjustment above
     subunits = subunits.slice(0, use_first);
     s = s.slice(use_first);
     if (append_last) {
