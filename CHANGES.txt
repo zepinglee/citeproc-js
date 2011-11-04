@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.237
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in stop-last attribute to cs:institution
+
+- Allow match of parent jurisdiction when item jurisdiction
+  field contains additional subelements.
+
+- Fix bug in near-note evaluation
+
+- Implement reverse-order attribute on cs:institution, which
+  had been overlooked
+
+- Fix bug in "classic" abbreviation substitution
+
+- Add part-separator for use on cs:institution
+
+
+==========================
 Changes in version 1.0.236
 ==========================
 
