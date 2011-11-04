@@ -209,8 +209,10 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
             var str = splitInstitution.slice(0, j).join("|");
             var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", str);
             if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][str]) {
-                str = this.state.transform.abbrevs[jurisdiction]["institution-entire"][str];
-                splitInstitution = [str].concat(splitInstitution.slice(j));
+                var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][str];
+                var splitLst = splitLst.replace(/\s*\|\s*/g, "|");
+                var splitLst = splitLst.split("|");
+                splitInstitution = splitLst.concat(splitInstitution.slice(j));
             }
         }
     }
@@ -240,6 +242,7 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
         if ("undefined" !== typeof this.institution.strings["stop-last"]) {
             // stop-last is negative when present
             s = s.slice(0, this.institution.strings["stop-last"]);
+            subunits = subunits.slice(0, this.institution.strings["stop-last"]);
         }
         if ("undefined" !== typeof this.institution.strings["use-last"]) {
             append_last = this.institution.strings["use-last"];
