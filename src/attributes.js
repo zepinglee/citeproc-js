@@ -530,20 +530,29 @@ CSL.Attributes["@match"] = function (state, arg) {
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
     var lex = arg.split(/\s+/);
     var func = function (state, Item) {
-        var ret = false;
         var mylex = false;
+        var ret = false;
         if (Item.jurisdiction) {
             mylex = Item.jurisdiction;
         } else if (Item.language) {
-            var m = Item.language.match(/^.*-x-lex-([.a-zA-Z]+).*$/);
+            var m = Item.language.match(/^.*-x-lex-([.;a-zA-Z]+).*$/);
             if (m) {
                 mylex = m[1];
             }
         }
-        for (var i = 0, ilen = lex.length; i < ilen; i += 1) {
-            if (mylex === lex[i]) {
-                ret = true;
-                break;
+        if (mylex) {
+            var mylexlst = mylex.split(";");
+            outerLoop: for (var i = 0, ilen = lex.length; i < ilen; i += 1) {
+                if (!lex[i]) {
+                    continue;
+                }
+                var lexlst = lex[i].split(";");
+                innerLoop: for (var j = 0, jlen = lexlst.length; j < jlen; j += 1) {
+                    if (mylexlst[j] && mylexlst[j] === lexlst[j] && j === lexlst.length - 1) {
+                        ret = true;
+                        break outerLoop;
+                    }
+                }
             }
         }
         return ret;
