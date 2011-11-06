@@ -255,7 +255,7 @@ CSL.Transform = function (state) {
             && (!this.abbrevs[jurisdiction]
                 || !this.abbrevs[jurisdiction][category][orig])) {
             // jurisdiction could change to "default"
-            jurisdiction = state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
+            state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
         }
         return jurisdiction;
     }
