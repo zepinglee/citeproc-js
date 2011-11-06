@@ -8,6 +8,18 @@ Changes in version 1.0.239
 Mishandled or unimplemented features
 ------------------------------------
 
+- Introduce subsequent-parallel position attribute
+  value for conditions.
+
+
+==========================
+Changes in version 1.0.239
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
 - Guarantee that loadAbbreviation returns a meaningful
   jurisdiction key even if raw string for abbreviation is empty.
 

@@ -95,8 +95,9 @@ var CSL = {
     FINISH: 1,
     POSITION_FIRST: 0,
     POSITION_SUBSEQUENT: 1,
-    POSITION_IBID: 2,
-    POSITION_IBID_WITH_LOCATOR: 3,
+    POSITION_SUBSEQUENT_PARALLEL: 2,
+    POSITION_IBID: 3,
+    POSITION_IBID_WITH_LOCATOR: 4,
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
@@ -1722,7 +1723,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.239";
+    this.processor_version = "1.0.240";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3085,7 +3086,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                         }
                         if (suprame) {
-                            item[1].position = CSL.POSITION_SUBSEQUENT;
+                            if (this.registry.registry[item[1].id].parallel) {
+                                item[1].position = CSL.POSITION_SUBSEQUENT_PARALLEL;
+                            } else {
+                                item[1].position = CSL.POSITION_SUBSEQUENT;
+                            }
                             if (first_ref[item[1].id] != onecitation.properties.noteIndex) {
                                 item[1]["first-reference-note-number"] = first_ref[item[1].id];
                             }
@@ -7289,6 +7294,8 @@ CSL.Attributes["@position"] = function (state, arg) {
         for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
             if (lst[i] === "first") {
                 tryposition = CSL.POSITION_FIRST;
+            } else if (lst[i] === "subsequent-parallel") {
+                tryposition = CSL.POSITION_SUBSEQUENT_PARALLEL;
             } else if (lst[i] === "subsequent") {
                 tryposition = CSL.POSITION_SUBSEQUENT;
             } else if (lst[i] === "ibid") {
