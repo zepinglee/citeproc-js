@@ -688,12 +688,16 @@ if __name__ == "__main__":
         bundler = Bundle()
         bundler.deleteOldBundle()
         bundler.createNewBundle()
+        license = ApplyLicense()
+        license.apply()
         sys.exit()
 
     if opt.makezoterobundle:
         bundler = Bundle(mode="zotero")
         bundler.deleteOldBundle()
         bundler.createNewBundle()
+        license = ApplyLicense()
+        license.apply()
         sys.exit()
 
     if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
