@@ -116,17 +116,7 @@ CSL.Transform = function (state) {
 
     // Abbreviation subsections
     this.abbrevs = {};
-    this.abbrevs["default"] = {};
-    this.abbrevs["default"]["container-title"] = {};
-    this.abbrevs["default"]["collection-title"] = {};
-    this.abbrevs["default"]["institution-entire"] = {};
-    this.abbrevs["default"]["institution-part"] = {};
-    this.abbrevs["default"].nickname = {};
-    this.abbrevs["default"].number = {};
-    this.abbrevs["default"].place = {};
-    this.abbrevs["default"].title = {};
-    this.abbrevs["default"].hereinafter = {};
-    this.abbrevs["default"].classic = {};
+    this.abbrevs["default"] = new CSL.AbbreviationSegments();
 
     // Initialization method
     function init(t, f, x) {
@@ -249,6 +239,9 @@ CSL.Transform = function (state) {
         var pos, len;
         if (!jurisdiction) {
             jurisdiction = "default";
+        }
+        if (!orig) {
+            return jurisdiction;
         }
 
         // The getAbbreviation() function should check the
