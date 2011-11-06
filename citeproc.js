@@ -1723,7 +1723,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.240";
+    this.processor_version = "1.0.241";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7780,7 +7780,7 @@ CSL.Transform = function (state) {
         if (state.sys.getAbbreviation 
             && (!this.abbrevs[jurisdiction]
                 || !this.abbrevs[jurisdiction][category][orig])) {
-            jurisdiction = state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
+            state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
         }
         return jurisdiction;
     }

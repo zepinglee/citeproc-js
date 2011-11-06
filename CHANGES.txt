@@ -1,7 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
-Changes in version 1.0.239
+Changes in version 1.0.241
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Always honor the requested jurisdiction when returning
+  abbreviations.
+
+
+==========================
+Changes in version 1.0.240
 ==========================
 
 ------------------------------------
