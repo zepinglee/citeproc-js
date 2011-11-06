@@ -483,7 +483,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                         }
                         if (suprame) {
-                            item[1].position = CSL.POSITION_SUBSEQUENT;
+                            if (this.registry.registry[item[1].id].parallel) {
+                                item[1].position = CSL.POSITION_SUBSEQUENT_PARALLEL;
+                            } else {
+                                item[1].position = CSL.POSITION_SUBSEQUENT;
+                            }
                             if (first_ref[item[1].id] != onecitation.properties.noteIndex) {
                                 item[1]["first-reference-note-number"] = first_ref[item[1].id];
                             }
