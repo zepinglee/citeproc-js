@@ -1722,12 +1722,15 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.237";
+    this.processor_version = "1.0.238";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
     if ("string" !== typeof style) {
         style = "";
+    }
+    if (CSL.getAbbreviation) {
+        this.sys.getAbbreviation = CSL.getAbbreviation;
     }
     this.parallel = new CSL.Parallel(this);
     this.transform = new CSL.Transform(this);
@@ -7777,7 +7780,7 @@ CSL.Transform = function (state) {
         if (state.sys.getAbbreviation 
             && (!this.abbrevs[jurisdiction]
                 || !this.abbrevs[jurisdiction][category][orig])) {
-            jurisdiction = state.sys.getAbbreviation(this.abbrevs, jurisdiction, category, orig);
+            jurisdiction = state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
         }
         return jurisdiction;
     }
@@ -10174,29 +10177,28 @@ CSL.Registry.prototype.doinserts = function (mylist) {
                 }
             }
             if (this.state.sys.getAbbreviation) {
-                for (var jurisdiction in this.state.transform.abbrevs) {
-                    for (var field in this.state.transform.abbrevs[jurisdiction]) {
-                        switch (field) {
-                        case "place":
-                            if (Item["publisher-place"]) {
-                                this.state.sys.getAbbreviation(this.state.transform.abbrevs, jurisdiction, field, Item["publisher-place"]);
-                            } else if (Item["event-place"]) {
-                                this.state.sys.getAbbreviation(this.state.transform.abbrevs, jurisdiction, field, Item["event-place"]);
-                            }
-                            break;
-                        case "institution-part":
-                            for (var creatorVar in CSL.CREATORS) {
-                                for (var creatorList in Item[creatorVar]) {
-                                    for (j = 0, jlen = creatorList.length; j < jlen; j += 1) {
-                                        if (creatorList[j].isInstitution) {
-                                            var subOrganizations = creatorList[j].literal;
-                                            if (!subOrganizations) {
-                                                subOrganizations = creatorList[j].family;
-                                            }
-                                            if (subOrganizations) {
-                                                subOrganizations = subOrganizations.split(/\s*|\s*/);
-                                                for (k = 0, klen = subOrganizations.length; k < klen; k += 1) {
-                                                    this.state.sys.getAbbreviation(this.state.transform.abbrevs, jurisdiction, field, subOrganizations[k]);
+                for (var field in this.state.transform.abbrevs["default"]) {
+                    switch (field) {
+                    case "place":
+                        if (Item["publisher-place"]) {
+                            this.state.transform.loadAbbreviation(Item.jurisdiction, "place", Item["publisher-place"]);
+                        } else if (Item["event-place"]) {
+                            this.state.transform.loadAbbreviation(Item.jurisdiction, "place", Item["event-place"]);
+                        }
+                        break;
+                    case "institution-part":
+                        for (var creatorVar in CSL.CREATORS) {
+                            for (var creatorList in Item[creatorVar]) {
+                                for (j = 0, jlen = creatorList.length; j < jlen; j += 1) {
+                                    if (creatorList[j].isInstitution) {
+                                        var subOrganizations = creatorList[j].literal;
+                                        if (!subOrganizations) {
+                                            subOrganizations = creatorList[j].family;
+                                        }
+                                        if (subOrganizations) {
+                                            subOrganizations = subOrganizations.split(/\s*|\s*/);
+                                            for (k = 0, klen = subOrganizations.length; k < klen; k += 1) {
+                                                this.state.transform.loadAbbreviation(Item.jurisdiction, "institution-part", subOrganizations[k]);
                                                 }
                                             }
                                         }
@@ -10206,12 +10208,11 @@ CSL.Registry.prototype.doinserts = function (mylist) {
                             break;
                         default:
                             if (Item[field]) {
-                                this.state.sys.getAbbreviation(this.state.transform.abbrevs, jurisdiction, field, Item[field]);
+                                this.state.transform.loadAbbreviation(Item.jurisdiction, field, Item[field]);
                             }
                             break;
                         }
                     }
-                }
             }
             akey = CSL.getAmbiguousCite.call(this.state, Item);
             this.akeys[akey] = true;
