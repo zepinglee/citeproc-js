@@ -57,6 +57,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if ("string" !== typeof style) {
         style = "";
     }
+    if (CSL.getAbbreviation) {
+        this.sys.getAbbreviation = CSL.getAbbreviation;
+    }
     this.parallel = new CSL.Parallel(this);
     //this.parallel.use_parallels = true;
 
