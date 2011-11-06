@@ -78,7 +78,7 @@ StdRhinoTest.prototype.retrieveItem = function(id){
     return this._cache[id];
 };
 
-StdRhinoTest.prototype.getAbbreviation = function(obj, jurisdiction, category, key){
+StdRhinoTest.prototype.getAbbreviation = function(dummyListNameVar, obj, jurisdiction, category, key){
     var newkey = key;
     if (!this._acache[jurisdiction]) {
         this._acache[jurisdiction] = new CSL.AbbreviationSegments();
