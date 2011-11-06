@@ -45,7 +45,6 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
-
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -1723,7 +1722,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.238";
+    this.processor_version = "1.0.239";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7674,17 +7673,7 @@ CSL.Util.Match = function () {
 CSL.Transform = function (state) {
     var debug = false, abbreviations, token, fieldname, subsection, opt;
     this.abbrevs = {};
-    this.abbrevs["default"] = {};
-    this.abbrevs["default"]["container-title"] = {};
-    this.abbrevs["default"]["collection-title"] = {};
-    this.abbrevs["default"]["institution-entire"] = {};
-    this.abbrevs["default"]["institution-part"] = {};
-    this.abbrevs["default"].nickname = {};
-    this.abbrevs["default"].number = {};
-    this.abbrevs["default"].place = {};
-    this.abbrevs["default"].title = {};
-    this.abbrevs["default"].hereinafter = {};
-    this.abbrevs["default"].classic = {};
+    this.abbrevs["default"] = new CSL.AbbreviationSegments();
     function init(t, f, x) {
         token = t;
         fieldname = f;
@@ -7777,6 +7766,9 @@ CSL.Transform = function (state) {
         var pos, len;
         if (!jurisdiction) {
             jurisdiction = "default";
+        }
+        if (!orig) {
+            return jurisdiction;
         }
         if (state.sys.getAbbreviation 
             && (!this.abbrevs[jurisdiction]
