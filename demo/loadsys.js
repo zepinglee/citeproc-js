@@ -49,6 +49,9 @@
 var Sys = function(abbreviations){
 	this.abbreviations = abbreviations;
 	this.abbrevsname = "default";
+    if (!this.abbreviations) {
+        this.abbreviations = {};
+    }
 };
 
 Sys.prototype.retrieveItem = function(id){
@@ -59,11 +62,15 @@ Sys.prototype.retrieveLocale = function(lang){
 	return locale[lang];
 };
 
-Sys.prototype.getAbbreviation = function(obj, vartype, key){
+Sys.prototype.getAbbreviation = function(dummy, obj, jurisdiction, vartype, key){
+    try {
     if (this.abbreviations[this.abbrevsname][vartype][key]) {
-        obj[vartype][key] = this.abbreviations[this.abbrevsname][vartype][key];
+        obj["default"][vartype][key] = this.abbreviations[this.abbrevsname][vartype][key];
     } else {
-        obj[vartype][key] = "";
+        obj["default"][vartype][key] = "";
+    }
+    } catch (e) {
+        // There is breakage here that needs investigating.
     }
 };
 
