@@ -135,8 +135,10 @@ CSL.expandMacro = function (macro_key_token) {
     // infinite loop.
     // (true as the last argument suppresses quashing)
     end_of_macro = new CSL.Token("group", CSL.END);
-    end_of_macro.decorations = macro_key_token.decorations.slice();
-    
+	if (macro_key_token.decorations) {
+		end_of_macro.decorations = macro_key_token.decorations.slice();
+    }
+
     if (hasDate) {
         func = function (state, Item) {
             if (state.tmp.extension) {
