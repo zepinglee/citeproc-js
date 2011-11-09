@@ -1300,6 +1300,9 @@ CSL.expandMacro = function (macro_key_token) {
     navi = new this.getNavi(this, macro_nodes);
     CSL.buildStyle.call(this, navi);
     end_of_macro = new CSL.Token("group", CSL.END);
+	if (macro_key_token.decorations) {
+		end_of_macro.decorations = macro_key_token.decorations.slice();
+    }
     if (hasDate) {
         func = function (state, Item) {
             if (state.tmp.extension) {
@@ -1723,7 +1726,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.241";
+    this.processor_version = "1.0.242";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();

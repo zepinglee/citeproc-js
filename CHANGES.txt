@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.242
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in strip-periods. Thanks to Liam McHugh-Russell
+  for reporting.
+
+==========================
 Changes in version 1.0.241
 ==========================
 
