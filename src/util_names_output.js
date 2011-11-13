@@ -70,9 +70,6 @@ CSL.NameOutput.prototype.init = function (names) {
     this.nameset_offset = 0;
     this.names = names;
     this.variables = names.variables;
-    if (this.nameset_base === 0 && !this._first_creator_variable) {
-        this._first_creator_variable = this.variables[0];
-    }
     this.state.tmp.value = [];
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
@@ -466,6 +463,9 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
     var myqueue, mystr, oldchars;
     // collapse can be undefined, an array of length zero, and probably
     // other things ... ugh.
+    if (this.nameset_base === 0 && this.Item[this.variables[0]] && !this._first_creator_variable) {
+        this._first_creator_variable = this.variables[0];
+    }
     if ((this.item && this.item["suppress-author"] && this._first_creator_variable == this.variables[0])
         || (this.state[this.state.tmp.area].opt.collapse 
             && this.state[this.state.tmp.area].opt.collapse.length)) {
