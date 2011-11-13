@@ -1726,7 +1726,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.243";
+    this.processor_version = "1.0.244";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5758,7 +5758,8 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
         "static-ordering":value["static-ordering"],
         "parse-names":value["parse-names"],
         "comma-dropping-particle": "",
-        block_initialize:value.block_initialize
+        block_initialize:value.block_initialize,
+		multi:value.multi
     };
     this._parseName(name);
     return name;
@@ -7952,7 +7953,8 @@ CSL.Transform = function (state) {
             transliterated:transliterated,
             block_initialize:block_initialize,
             literal:name.literal,
-            isInstitution:name.isInstitution
+            isInstitution:name.isInstitution,
+			multi:name.multi
         };
         if (static_ordering_freshcheck &&
             !getStaticOrder(name, true)) {

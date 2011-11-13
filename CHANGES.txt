@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.244
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Preserve multi segment when cloning names.
+
+
+==========================
 Changes in version 1.0.243
 ==========================
 
