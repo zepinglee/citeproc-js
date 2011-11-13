@@ -476,7 +476,8 @@ CSL.Transform = function (state) {
             transliterated:transliterated,
             block_initialize:block_initialize,
             literal:name.literal,
-            isInstitution:name.isInstitution
+            isInstitution:name.isInstitution,
+			multi:name.multi
         };
         if (static_ordering_freshcheck &&
             !getStaticOrder(name, true)) {

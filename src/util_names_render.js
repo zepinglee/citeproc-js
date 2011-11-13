@@ -300,7 +300,8 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
         "static-ordering":value["static-ordering"],
         "parse-names":value["parse-names"],
         "comma-dropping-particle": "",
-        block_initialize:value.block_initialize
+        block_initialize:value.block_initialize,
+		multi:value.multi
     };
     this._parseName(name);
     return name;
