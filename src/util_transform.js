@@ -443,6 +443,7 @@ CSL.Transform = function (state) {
             for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
                 langTag = langTags[i];
                 if (name.multi._key[langTag]) {
+                    var origName = name;
                     name = name.multi._key[langTag];
                     transliterated = true;
                     if (!state.opt['locale-use-original-name-format']) {
@@ -477,7 +478,7 @@ CSL.Transform = function (state) {
             block_initialize:block_initialize,
             literal:name.literal,
             isInstitution:name.isInstitution,
-			multi:name.multi
+            orig:origName
         };
         if (static_ordering_freshcheck &&
             !getStaticOrder(name, true)) {
