@@ -301,12 +301,13 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
         "parse-names":value["parse-names"],
         "comma-dropping-particle": "",
         block_initialize:value.block_initialize,
-		multi:value.multi
+        multi:value.multi
     };
     this._parseName(name);
     return name;
 };
 
+// XXX Here is where we lose the original form of personal names.
 CSL.NameOutput.prototype._transformNameset = function (nameset) {
     for (var i = 0, ilen = nameset.length; i < ilen; i += 1) {
         nameset[i] = this.state.transform.name(this.state, nameset[i], this.state.opt["locale-pri"]);
