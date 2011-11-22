@@ -57,15 +57,22 @@ CSL.Node.group = {
             if (state.build.substitute_level.value()) {
                 state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
             }
-            // fieldcontentflag
-            func = function (state, Item) {
-                // (see below)
-                state.tmp.group_context.push([false, false, false, false], CSL.LITERAL);
-            };
-            this.execs.push(func);
             // newoutput
             func = function (state, Item) {
                 state.output.startTag("group", this);
+                if (state.tmp.group_context.mystack.length) {
+                    state.output.current.value().parent = state.tmp.group_context.value()[4];
+                }
+                // fieldcontentflag
+                state.tmp.group_context.push([false, false, false, false, state.output.current.value()], CSL.LITERAL);
+
+                // Oops is triggered in two situations:
+                //   (1) Where rendering of content fails; and
+                //   (2) Where content is rendered, but the rendered
+                //       content within the group is entirely removed
+                //       before the output queue is flattened.
+                // The "this" value above should be used to grab
+                // the target of the "oops" delimiter in both cases.
                 if (this.strings.oops) {
                     state.tmp.group_context.value()[3] = this.strings.oops;
                 }

@@ -560,6 +560,11 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
                 for (ppos = llen; ppos > -1; ppos += -1) {
                     b = cite[varname].blobs[ppos];
                     b[0].blobs = b[0].blobs.slice(0, b[1]).concat(b[0].blobs.slice((b[1] + 1)));
+                    if (b[0] && b[0].strings && "string" == typeof b[0].strings.oops
+                        && b[0].parent && b[0].parent) {
+
+                        b[0].parent.parent.strings.delimiter = b[0].strings.oops;
+                    }
                 }
             }
         }
