@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.245
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Extend delimiter oops to cover objects removed
+  from output queue during parallel cite processing.
+
+==========================
 Changes in version 1.0.244
 ==========================
 

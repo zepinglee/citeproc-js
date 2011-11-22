@@ -1726,7 +1726,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.244";
+    this.processor_version = "1.0.245";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4137,11 +4137,11 @@ CSL.Node.group = {
                 state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
             }
             func = function (state, Item) {
-                state.tmp.group_context.push([false, false, false, false], CSL.LITERAL);
-            };
-            this.execs.push(func);
-            func = function (state, Item) {
                 state.output.startTag("group", this);
+                if (state.tmp.group_context.mystack.length) {
+                    state.output.current.value().parent = state.tmp.group_context.value()[4];
+                }
+                state.tmp.group_context.push([false, false, false, false, state.output.current.value()], CSL.LITERAL);
                 if (this.strings.oops) {
                     state.tmp.group_context.value()[3] = this.strings.oops;
                 }
@@ -5759,7 +5759,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
         "parse-names":value["parse-names"],
         "comma-dropping-particle": "",
         block_initialize:value.block_initialize,
-		multi:value.multi
+        multi:value.multi
     };
     this._parseName(name);
     return name;
@@ -7927,6 +7927,7 @@ CSL.Transform = function (state) {
             for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
                 langTag = langTags[i];
                 if (name.multi._key[langTag]) {
+                    var origName = name;
                     name = name.multi._key[langTag];
                     transliterated = true;
                     if (!state.opt['locale-use-original-name-format']) {
@@ -7954,7 +7955,7 @@ CSL.Transform = function (state) {
             block_initialize:block_initialize,
             literal:name.literal,
             isInstitution:name.isInstitution,
-			multi:name.multi
+            orig:origName
         };
         if (static_ordering_freshcheck &&
             !getStaticOrder(name, true)) {
@@ -8351,6 +8352,10 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
                 for (ppos = llen; ppos > -1; ppos += -1) {
                     b = cite[varname].blobs[ppos];
                     b[0].blobs = b[0].blobs.slice(0, b[1]).concat(b[0].blobs.slice((b[1] + 1)));
+                    if (b[0] && b[0].strings && "string" == typeof b[0].strings.oops
+                        && b[0].parent && b[0].parent) {
+                        b[0].parent.parent.strings.delimiter = b[0].strings.oops;
+                    }
                 }
             }
         }
