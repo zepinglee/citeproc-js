@@ -269,17 +269,17 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
     }
     blob = false;
     if (!tokname) {
-    //SNIP-START
-    CSL.debug("XXX loc [9]");
-    //SNIP-END
+		//SNIP-START
+		CSL.debug("XXX loc [9]");
+		//SNIP-END
         token = this.formats.value().empty;
     } else if (tokname === "literal") {
         token = true;
         useblob = false;
     } else if ("string" === typeof tokname) {
-    //SNIP-START
-    CSL.debug("XXX loc [10]");
-    //SNIP-END
+		//SNIP-START
+		CSL.debug("XXX loc [10]");
+		//SNIP-END
         token = this.formats.value()[tokname];
     } else {
         token = tokname;
@@ -289,7 +289,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
     }
     // Unset delimiters must be left undefined until they reach the queue
     // in order to discriminate unset from explicitly empty delimiters
-    // when inheriting a default value from a superior node.
+    // when inheriting a default value from a superior node. [??? really ???]
     if (token.strings && "undefined" === typeof token.strings.delimiter) {
         token.strings.delimiter = "";
     }
