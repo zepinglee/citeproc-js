@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.246
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Large changes to multilingual language configuration
+  and rendering. A distinction is now drawn between
+  language roles (original, transliterated, and translated
+  forms of a field) and roles assigned to particular
+  field categories: persons, institutions, titles,
+  publishers and places. For each category, any of the 
+  original, transliterated and translated forms can be 
+  used as the primary entry, and any remaining forms can
+  be used in the trailing brace-enclosed supplement.
+
+  (If the explanation above sounds confusing, take a look
+  at the Preferences -> Languages panel in the MLZ client,
+  it should be immediately apparent how things work.)
+
+
+==========================
 Changes in version 1.0.245
 ==========================
 
