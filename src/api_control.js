@@ -67,44 +67,50 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
     
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
     var i, ilen;
-    this.opt['locale-pri'] = [];    
+    this.opt['locale-translit'] = [];    
     for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-pri'].push(tags[i]);
+        this.opt['locale-translit'].push(tags[i]);
     }
 };
     
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     var i, ilen;
-    this.opt['locale-sec'] = [];
+    this.opt['locale-translat'] = [];
     for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-sec'].push(tags[i]);
+        this.opt['locale-translat'].push(tags[i]);
     }
 };
 
-    
-CSL.Engine.prototype.setOriginalCreatorNameFormsOption = function (arg) {
-    if (arg) {
-        this.opt["locale-show-original-names"] = true;
-    } else {
-        this.opt["locale-show-original-names"] = false;
-    }
-};
-
-
-CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
-    if (arg) {
-        this.opt["locale-use-original-name-format"] = true;
-    } else {
-        this.opt["locale-use-original-name-format"] = false;
-    }
-};
-
-CSL.Engine.prototype.setSuppressTitleTransliterationOption = function (arg) {
-    if (arg) {
-        this.opt["locale-suppress-title-transliteration"] = true;
-    } else {
-        this.opt["locale-suppress-title-transliteration"] = false;
-    }
+CSL.Engine.prototype.setLangPrefsForCites = function (params) {
+	var opt = this.opt['cite-lang-prefs'];
+	// Set values in place
+	for (var segment in params) {
+        //
+        // Normalize the sequence of secondary and tertiary
+        // in the provided params list.
+        //
+        var supplements = [];
+        while (params[segment].length > 1) {
+            supplements.push(params[segment].pop());
+        }
+        var sortval = {orig:1,translit:2,translat:3};
+        if (supplements.length === 2 && sortval[supplements[0]] < sortval[supplements[1]]) {
+            supplements.reverse();
+        }
+        while (supplements.length) {
+            params[segment].push(supplements.pop());
+        }
+        //
+        // normalization done.
+        //
+		var lst = opt[segment];
+		while (lst.length) {
+			lst.pop();
+		}
+		for (var i = 0, ilen = params[segment].length; i < ilen; i += 1) {
+			lst.push(params[segment][i]);
+		}
+	}
 };
 
 CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {

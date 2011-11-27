@@ -69,7 +69,8 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
                 if (j === config.authors.length) {
                     break;
                 }
-                var name = this.transform.name(this, names[j], this.opt["locale-pri"]);
+                var res = this.nameOutput.getName(names[j], "locale-translit", true);
+                var name = res.name;
                 if (name && name.family) {
                     myname = name.family;
                     myname = myname.replace(/^([ \'\u2019a-z]+\s+)/, "");

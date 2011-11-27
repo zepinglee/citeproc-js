@@ -77,43 +77,140 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
         var v = this.variables[i];
         for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
             var institution, institution_short, institution_long, short_style, long_style;
-            if (this.institution.strings["reverse-order"]) {
-                this.institutions[v][j]["short"].reverse();
-                this.institutions[v][j]["long"].reverse();
+
+            var name = this.institutions[v][j];
+
+            // XXX Start here for institutions
+            // Figure out the three segments: primary, secondary, tertiary
+            var j, ret, optLangTag, jlen, key, localesets;
+            if (this.state.tmp.extension) {
+                localesets = ["sort"];
+            } else if (name.isInstitution) {
+                // Will never hit this in this function, but preserving
+                // in case we factor this out.
+                localesets = this.state.opt['cite-lang-prefs'].institutions;
+            } else {
+                localesets = this.state.opt['cite-lang-prefs'].persons;
             }
+
+            slot = {primary:false,secondary:false,tertiary:false};
+	        if (localesets) {
+		        var slotnames = ["primary", "secondary", "tertiary"];
+		        for (var k = 0, klen = slotnames.length; k < klen; k += 1) {
+			        if (localesets.length - 1 <  j) {
+				        break;
+			        }
+                    if (localesets[k]) {
+			            slot[slotnames[k]] = 'locale-' + localesets[k];
+                    }
+		        }
+	        } else {
+		        slot.primary = 'locale-translat';
+	        }
+	        if (this.state.tmp.area !== "bibliography"
+		        && !(this.state.tmp.area === "citation"
+			         && this.state.opt.xclass === "note"
+			         && this.item && !this.item.position)) {
+                
+		        slot.secondary = false;
+		        slot.tertiary = false;
+	        }
+            // Get normalized name object for a start.
+            // true invokes fallback
+            var res;
+            res = this.getName(name, slot.primary, true);
+            var primary = res.name;
+            var usedOrig = res.usedOrig;
+            if (primary) {
+                primary = this.fixupInstitution(primary, v, j);
+            }
+
+			secondary = false;
+			if (slot.secondary) {
+                res = this.getName(name, slot.secondary, false, usedOrig);
+                secondary = res.name;
+                usedOrig = res.usedOrig;
+                if (secondary) {
+				    secondary = this.fixupInstitution(secondary, v, j);
+                }
+			}
+            //Zotero.debug("XXX [2] secondary: "+secondary["long"].literal+", slot.secondary: "+slot.secondary);
+			tertiary = false;
+			if (slot.tertiary) {
+                res = this.getName(name, slot.tertiary, false, usedOrig);
+                tertiary = res.name;
+                if (tertiary) {
+				    tertiary = this.fixupInstitution(tertiary, v, j);
+                }
+			}
             switch (this.institution.strings["institution-parts"]) {
             case "short":
-                if (this.institutions[v][j]["short"].length) {
+                // No multilingual for pure short form institution names.
+                if (primary["short"].length) {
                     short_style = this._getShortStyle();
-                    institution = [this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style)];
+                    institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
                 } else {
-                    long_style = this._getLongStyle(v, j);
-                    institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style)];
+                    // Fail over to long.
+
+                    long_style = this._getLongStyle(primary, v, j);
+                    institution = [this._renderOneInstitutionPart(primary["long"], long_style)];
                 }
                 break;
             case "short-long":
-                long_style = this._getLongStyle(v, j);
+                long_style = this._getLongStyle(primary, v, j);
                 short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style);
-                institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
+                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+                // true is to include multilingual supplement
+                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], long_style);
                 institution = [institution_short, institution_long];
                 break;
             case "long-short":
-                long_style = this._getLongStyle(v, j);
+                long_style = this._getLongStyle(primary, v, j);
                 short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style);
-                institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
+                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+                // true is to include multilingual supplement
+                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], long_style, true);
                 institution = [institution_long, institution_short];
                 break;
             default:
-                long_style = this._getLongStyle(v, j);
-                institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style)];
+                long_style = this._getLongStyle(primary, v, j);
+                // true is to include multilingual supplement
+                institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], long_style)];
                 break;
             }
             this.institutions[v][j] = this._join(institution, "");
         }
     }
 };
+
+CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, style) {
+    var primary = false, secondary = false, tertiary = false;
+    if (names[0]) {
+        primary = this._renderOneInstitutionPart(names[0]["long"], style);
+    }
+    if (names[1]) {
+        secondary = this._renderOneInstitutionPart(names[1]["long"], style);
+    }
+    if (names[2]) {
+        tertiary = this._renderOneInstitutionPart(names[2]["long"], style);
+    }
+    // Compose
+    var institutionblob;
+    if (secondary || tertiary) {
+        var multiblob = this._join([secondary, tertiary], ", ");
+        var group_tok = new CSL.Token();
+        group_tok.strings.prefix = " [";
+        group_tok.strings.suffix = "]";
+        this.state.output.openLevel(group_tok);
+        this.state.output.append(multiblob);
+        this.state.output.closeLevel();
+        multiblob = this.state.output.pop();
+        institutionblob = this._join([primary, multiblob], "");
+    } else {
+        institutionblob = primary;
+    }
+    return institutionblob;
+}
 
 CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
     for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
@@ -151,8 +248,75 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
     if (values.length) {
         var names = [];
         for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-            var val = values[i];
-            names.push(this._renderOnePersonalName(val, pos, i));
+            var name = values[i];
+            
+            // XXX We'll start here with attempts.
+            // Figure out the three segments: primary, secondary, tertiary
+            var j, ret, optLangTag, jlen, key, localesets;
+            if (this.state.tmp.extension) {
+                localesets = ["sort"];
+            } else if (name.isInstitution) {
+                // Will never hit this in this function, but preserving
+                // in case we factor this out.
+                localesets = this.state.opt['cite-lang-prefs'].institutions;
+            } else {
+                localesets = this.state.opt['cite-lang-prefs'].persons;
+            }
+            slot = {primary:false,secondary:false,tertiary:false};
+	        if (localesets) {
+		        var slotnames = ["primary", "secondary", "tertiary"];
+		        for (var j = 0, jlen = slotnames.length; j < jlen; j += 1) {
+			        if (localesets.length - 1 <  j) {
+				        break;
+			        }
+			        slot[slotnames[j]] = 'locale-' + localesets[j];
+		        }
+	        } else {
+		        slot.primary = 'locale-translat';
+	        }
+	        if (this.state.tmp.area !== "bibliography"
+		        && !(this.state.tmp.area === "citation"
+			         && this.state.opt.xclass === "note"
+			         && this.item && !this.item.position)) {
+                
+		        slot.secondary = false;
+		        slot.tertiary = false;
+	        }
+
+            // primary
+            // true is for fallback
+            var res = this.getName(name, slot.primary, true);
+            var primary = this._renderOnePersonalName(res.name, pos, i);
+			secondary = false;
+			if (slot.secondary) {
+                res = this.getName(name, slot.secondary, false, res.usedOrig);
+                if (res.name) {
+				    secondary = this._renderOnePersonalName(res.name, pos, i);
+                }
+			}
+			tertiary = false;
+			if (slot.tertiary) {
+                res = this.getName(name, slot.tertiary, false, res.usedOrig);
+                if (res.name) {
+				    tertiary = this._renderOnePersonalName(res.name, pos, i);
+                }
+			}
+            // Now compose them to a unit
+            var personblob;
+            if (secondary || tertiary) {
+                var multiblob = this._join([secondary, tertiary], ", ");
+                var group_tok = new CSL.Token();
+                group_tok.strings.prefix = " [";
+                group_tok.strings.suffix = "]";
+                this.state.output.openLevel(group_tok);
+                this.state.output.append(multiblob);
+                this.state.output.closeLevel();
+                multiblob = this.state.output.pop();
+                personblob = this._join([primary, multiblob], "");
+            } else {
+                personblob = primary;
+            }
+            names.push(personblob);
         }
         ret = this.joinPersons(names, pos);
     }
@@ -307,13 +471,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
     return name;
 };
 
-// XXX Here is where we lose the original form of personal names.
-CSL.NameOutput.prototype._transformNameset = function (nameset) {
-    for (var i = 0, ilen = nameset.length; i < ilen; i += 1) {
-        nameset[i] = this.state.transform.name(this.state, nameset[i], this.state.opt["locale-pri"]);
-        nameset[i] = this._normalizeNameInput(nameset[i]);
-    }
-};
+// _transformNameset() replaced with enhanced transform.name().
 
 CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
     var decor_tok = this[tokname + "_decor"];
@@ -402,9 +560,9 @@ CSL.NameOutput.prototype._nameSuffix = function (name) {
     return false;
 };
 
-CSL.NameOutput.prototype._getLongStyle = function (v, i) {
+CSL.NameOutput.prototype._getLongStyle = function (name, v, i) {
     var long_style, short_style;
-    if (this.institutions[v][i]["short"].length) {
+    if (name["short"].length) {
         if (this.institutionpart["long-with-short"]) {
             long_style = this.institutionpart["long-with-short"];
         } else {
@@ -483,4 +641,254 @@ CSL.NameOutput.prototype._parseName = function (name) {
             name["dropping-particle"] = m[2];
         }
     }
+};
+
+
+/*
+ * Return a single name object
+  */
+
+// The interface is a mess, but this should serve.
+
+CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stopOrig) {
+
+    // Needs to tell us whether we used orig or not.
+    
+    if (stopOrig && slotLocaleset === 'locale-orig') {
+        return {name:false,usedOrig:stopOrig};
+    }
+
+    // Normalize to string
+    if (!name.family) {
+        name.family = "";
+    }
+    if (!name.given) {
+        name.given = "";
+    }
+    //
+    // Optionally add a static-ordering toggle for non-roman, non-Cyrillic
+    // names, based on the headline values.
+    //
+    var static_ordering_freshcheck = false;
+    var block_initialize = false;
+    var transliterated = false;
+    var static_ordering_val = this.getStaticOrder(name);
+
+    // The stuff below should move to this._getName()?
+
+    // The code below is run up to three times, to get the forms
+    // for each name-form segment.
+    
+    //
+    // Step through the requested languages in sequence
+    // until a match is found
+    //
+    var foundTag = true;
+    if (slotLocaleset !== 'locale-orig') {
+        foundTag = false;
+        if (name.multi) {
+            var langTags = this.state.opt[slotLocaleset]
+            for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
+                langTag = langTags[i];
+                if (name.multi._key[langTag]) {
+                    foundTag = true;
+                    name = name.multi._key[langTag];
+                    transliterated = true;
+                    if (!this.state.opt['locale-use-original-name-format'] && false) {
+                        // We may reintroduce this option later, but for now, pretend
+                        // it's always turned on.
+                        static_ordering_freshcheck = true;
+                    } else {
+                        // Quash initialize-with if original was non-romanesque
+                        // and we are trying to preserve the original formatting
+                        // conventions.
+                        // (i.e. supply as much information as possible if
+                        // the transliteration spans radically different
+                        // writing conventions)
+                        if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+                            block_initialize = true;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+    if (!fallback && !foundTag) {
+        return {name:false,usedOrig:stopOrig};
+    }
+    
+    // Normalize to string (again)
+    if (!name.family) {
+        name.family = "";
+    }
+    if (!name.given) {
+        name.given = "";
+    }
+    
+    
+    // var clone the item before writing into it
+    name = {
+        family:name.family,
+        given:name.given,
+        "non-dropping-particle":name["non-dropping-particle"],
+        "dropping-particle":name["dropping-particle"],
+        suffix:name.suffix,
+        "static-ordering":static_ordering_val,
+        "parse-names":name["parse-names"],
+        "comma-suffix":name["comma-suffix"],
+        "comma-dropping-particle":name["comma-dropping-particle"],
+        transliterated:transliterated,
+        block_initialize:block_initialize,
+        literal:name.literal,
+        isInstitution:name.isInstitution,
+    };
+    if (static_ordering_freshcheck &&
+        !this.getStaticOrder(name, true)) {
+        
+        name["static-ordering"] = false;
+    }
+    
+    if (!name.literal && (!name.given && name.family && name.isInstitution)) {
+        name.literal = name.family;
+    }
+    if (name.literal) {
+        delete name.family;
+        delete name.given;
+    }
+    name = this._normalizeNameInput(name);
+    var usedOrig;
+    if (stopOrig) {
+        usedOrig = stopOrig;
+    } else {
+        usedOrig = !foundTag;
+    }
+    return {name:name,usedOrig:usedOrig};
+}
+
+CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
+
+    name = this._splitInstitution(name, varname, listpos);
+    // XXX This should be embedded in the institution name function.
+    if (this.institution.strings["reverse-order"]) {
+        name["long"].reverse();
+    }
+        
+    var long_form = name["long"];
+    var short_form = long_form.slice();
+    if (this.state.sys.getAbbreviation) {
+        var jurisdiction = this.Item.jurisdiction;
+        for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
+            var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
+            if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
+                short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
+            }
+        }
+    }
+    name["short"] = short_form;
+    return name;
+}
+
+
+CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
+    var static_ordering_val = false;
+    if (!refresh && name["static-ordering"]) {
+        static_ordering_val = true;
+    } else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+        static_ordering_val = true;
+    } else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
+        static_ordering_val = true;
+    } else {
+        if (this.state.opt['auto-vietnamese-names']
+            && (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
+                && CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
+            
+            static_ordering_val = true;
+        }
+    }
+    return static_ordering_val;
+}
+
+CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
+    var ret = {};
+    var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
+    // check for total and utter abbreviation IFF form="short"
+    splitInstitution = splitInstitution.split("|");
+    if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
+        // End processing before processing last single element, since
+        // that will be picked up by normal element selection and
+        // short-forming.
+        var jurisdiction = this.Item.jurisdiction;
+        for (var j = splitInstitution.length; j > 1; j += -1) {
+            var str = splitInstitution.slice(0, j).join("|");
+            var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", str);
+            if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][str]) {
+                var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][str];
+                var splitLst = splitLst.replace(/\s*\|\s*/g, "|");
+                var splitLst = splitLst.split("|");
+                splitInstitution = splitLst.concat(splitInstitution.slice(j));
+            }
+        }
+    }
+    splitInstitution.reverse();
+    ret["long"] = this._trimInstitution(splitInstitution, v, i);
+    return ret;
+};
+
+CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
+	// 
+    var use_first = false;
+    var append_last = false;
+    var stop_last = false;
+    var s = subunits.slice();
+    if (this.institution) {
+        if ("undefined" !== typeof this.institution.strings["use-first"]) {
+            use_first = this.institution.strings["use-first"];
+        }
+        if ("undefined" !== typeof this.institution.strings["stop-last"]) {
+            // stop-last is negative when present
+            s = s.slice(0, this.institution.strings["stop-last"]);
+            subunits = subunits.slice(0, this.institution.strings["stop-last"]);
+        }
+        if ("undefined" !== typeof this.institution.strings["use-last"]) {
+            append_last = this.institution.strings["use-last"];
+        }
+    }
+    if (false === use_first) {
+        if (this.persons[v].length === 0) {
+            use_first = this.institution.strings["substitute-use-first"];
+        }
+        if (!use_first) {
+            use_first = 0;
+        }
+    }
+    if (false === append_last) {
+        if (!use_first) {
+            append_last = subunits.length;
+        } else {
+            append_last = 0;
+        }
+    }
+    // Now that we've determined the value of append_last
+    // (use-last), avoid overlaps.
+    if (use_first > subunits.length - append_last) {
+        use_first = subunits.length - append_last;
+    }
+    if (stop_last) {
+        append_last = 0;
+    }
+    // This could be more clear. use-last takes priority
+    // in the event of overlap, because of adjustment above
+    subunits = subunits.slice(0, use_first);
+    s = s.slice(use_first);
+    if (append_last) {
+        if (append_last > s.length) {
+            append_last = s.length;
+        }
+        if (append_last) {
+            subunits = subunits.concat(s.slice((s.length - append_last)));
+        }
+    }
+    return subunits;
 };

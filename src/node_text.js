@@ -254,9 +254,12 @@ CSL.Node.text = {
                         // Initialize transform factory according to whether
                         // abbreviation is desired.
                         if (form === "short") {
-                            // shouldn't third arg be "short"?
-                            //state.transform.init(this, this.variables[0], this.variables[0]);
                             state.transform.init(this, this.variables_real[0], this.variables_real[0]);
+                            if (this.variables_real[0] === "container-title") {
+                                state.transform.setAlternativeVariableName("journalAbbreviation");
+                            } else if (this.variables_real[0] === "title") {
+                                state.transform.setAlternativeVariableName("shortTitle");
+                            }
                         } else {
                             state.transform.init(this, this.variables_real[0]);
                         }
@@ -264,49 +267,13 @@ CSL.Node.text = {
                             // multi-fields for sorting get a sort transform,
                             // (abbreviated if the short form was selected)
                             state.transform.init(this, this.variables_real[0], this.variables_real[0]);
-                            state.transform.setTransformLocale("locale-sort");
-                            state.transform.setTransformFallback(true);
-                            func = state.transform.getOutputFunction(this.variables);
-                        } else if (form === "short") {
-                             if (["title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
-                                 // short-form title things get translations maybe
-                                 state.transform.setTransformLocale("locale-sec");
-                             } else {
-                                 // all other short-form multi-fields for rendering get a locale-pri
-                                 // transform before abbreviation.
-                                 state.transform.setTransformLocale("locale-pri");
-                             }
-                             state.transform.setTransformFallback(true);
-                             state.transform.setAbbreviationFallback(true);
-                            if (this.variables_real[0] === "container-title") {
-                                state.transform.setAlternativeVariableName("journalAbbreviation");
-                            } else if (this.variables_real[0] === "title") {
-                                state.transform.setAlternativeVariableName("shortTitle");
-                            } else if (["publisher", "publisher-place", "event-place", "edition"].indexOf(this.variables_real[0]) > -1) {
-                                // language of publisher and publisher-place follow
-                                // the locale of the style.
-                                state.transform.setTransformLocale("default-locale");
-                            }
-                            func = state.transform.getOutputFunction(this.variables);
-                        } else if (["title-short","title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
-                            // among long-form multi-fields, titles are an
-                            // exception: they get a locale-sec transform
-                            // if a value is available.
-                            state.transform.setTransformLocale("locale-sec");
                             state.transform.setTransformFallback(true);
                             func = state.transform.getOutputFunction(this.variables);
                         } else {
-                            // ordinary long-form multi-fields get a locale-pri
-                            // transform only.
-                            state.transform.setTransformLocale("locale-pri");
                             state.transform.setTransformFallback(true);
-                            if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
-                                // language of publisher and publisher-place follow
-                                // the locale of the style.
-                                state.transform.setTransformLocale("default-locale");
-                            }
+                            state.transform.setAbbreviationFallback(true);
                             func = state.transform.getOutputFunction(this.variables);
-                        }
+						}
                         if (this.variables_real[0] === "container-title") {
                             var xfunc = function (state, Item, item) {
                                 if (Item['container-title'] && state.tmp.citeblob.has_volume) {

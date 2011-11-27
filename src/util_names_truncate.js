@@ -133,6 +133,21 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
     }
 
     // Transliteration and abbreviation mapping
+
+    // Hmm. This could produce three lists for each nameset:
+    //   - primary (transformed in place)
+    //   - secondary
+    //   - tertiary
+    // with items that produce no result in the secondary and tertiary
+    // transforms set to false. Maybe.
+
+    // Actually that would be insane, so forget it.
+    // What we need is to add suitable parameters to getName(), and merge
+    // the single-name-level operations below into that function. Then the
+    // operation can be applied in util_names_render.js, and the logic
+    // becomes very similar to what we already have running in util_transform.js.
+
+/*
     for (v in this.freeters) {
         this._transformNameset(this.freeters[v]);
     }
@@ -142,8 +157,10 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
         }
         this._transformNameset(this.institutions[v]);
     }
+*/
 
     // Could also be factored out to a separate function for clarity.
+    // ???? XXX Does this belong?
     for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         if (this.institutions[v].length) {
             this.nameset_offset += 1;
@@ -152,9 +169,10 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             if (this.persons[v][i].length) {
                 this.nameset_offset += 1;
             }
-            this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
+            // this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
         }
     }
+/*
 
     // Finally, apply any registered institution name abbreviations to the
     // (possibly transliterated) name form.
@@ -177,6 +195,7 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             this.institutions[v][i]["short"] = short_form;
         }
     }
+*/
 };
 
 CSL.NameOutput.prototype._truncateNameList = function (container, variable, index) {
@@ -195,93 +214,3 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     return lst;
 };
 
-CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
-    var ret = {};
-    var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
-    // check for total and utter abbreviation IFF form="short"
-    splitInstitution = splitInstitution.split("|");
-    if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
-        // End processing before processing last single element, since
-        // that will be picked up by normal element selection and
-        // short-forming.
-        var jurisdiction = this.Item.jurisdiction;
-        for (var j = splitInstitution.length; j > 1; j += -1) {
-            var str = splitInstitution.slice(0, j).join("|");
-            var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", str);
-            if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][str]) {
-                var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][str];
-                var splitLst = splitLst.replace(/\s*\|\s*/g, "|");
-                var splitLst = splitLst.split("|");
-                splitInstitution = splitLst.concat(splitInstitution.slice(j));
-            }
-        }
-    }
-    splitInstitution.reverse();
-    ret["long"] = this._trimInstitution(splitInstitution, v, i);
-
-    if (splitInstitution.length) {
-        // This doesn't seem to make any sense.
-        //ret["short"] = this._trimInstitution(splitInstitution, v, i);
-        ret["short"] = ret["long"].slice();
-    } else {
-        ret["short"] = false;
-    }
-    return ret;
-};
-
-CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
-	// 
-    var use_first = false;
-    var append_last = false;
-    var stop_last = false;
-    var s = subunits.slice();
-    if (this.institution) {
-        if ("undefined" !== typeof this.institution.strings["use-first"]) {
-            use_first = this.institution.strings["use-first"];
-        }
-        if ("undefined" !== typeof this.institution.strings["stop-last"]) {
-            // stop-last is negative when present
-            s = s.slice(0, this.institution.strings["stop-last"]);
-            subunits = subunits.slice(0, this.institution.strings["stop-last"]);
-        }
-        if ("undefined" !== typeof this.institution.strings["use-last"]) {
-            append_last = this.institution.strings["use-last"];
-        }
-    }
-    if (false === use_first) {
-        if (this.persons[v][i].length === 0) {
-            use_first = this.institution.strings["substitute-use-first"];
-        }
-        if (!use_first) {
-            use_first = 0;
-        }
-    }
-    if (false === append_last) {
-        if (!use_first) {
-            append_last = subunits.length;
-        } else {
-            append_last = 0;
-        }
-    }
-    // Now that we've determined the value of append_last
-    // (use-last), avoid overlaps.
-    if (use_first > subunits.length - append_last) {
-        use_first = subunits.length - append_last;
-    }
-    if (stop_last) {
-        append_last = 0;
-    }
-    // This could be more clear. use-last takes priority
-    // in the event of overlap, because of adjustment above
-    subunits = subunits.slice(0, use_first);
-    s = s.slice(use_first);
-    if (append_last) {
-        if (append_last > s.length) {
-            append_last = s.length;
-        }
-        if (append_last) {
-            subunits = subunits.concat(s.slice((s.length - append_last)));
-        }
-    }
-    return subunits;
-};

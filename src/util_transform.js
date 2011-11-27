@@ -50,60 +50,48 @@
 
 /*
  * Fields can be transformed by translation/transliteration, or by
- * abbreviation.  Two levels of translation/transliteration
- * are available: primary-only (a one-to-one transform) or
- * primary+secondary (a transform resulting in two fields of
- * output, with implicit punctuation formatting).
+ * abbreviation.  Transformations are performed in that order.
  *
- * The primary+secondary transliteration/translation level is
- * available only with full-form fields.  Primary-only
- * transliteration/translation is available with both full-form
- * and short-form fields.  In this case, the abbreviation is
- * applied after the language transform.
+ * Renderings of original, translated or transliterated content
+ * (followed by abbreviation if requested) are placed in the primary
+ * output slot or the (implicitly punctuated) secondary and tertiary
+ * output slots according to the settings registered in the
+ * state.opt['cite-lang-prefs'] arrays. The array has five segments:
+ * 'persons', 'institutions', 'titles', 'publishers', and
+ * 'places'. Each segment always contains at least one item, and may
+ * hold values 'orig', 'translit' or 'translat'. The array defaults to
+ * a single item 'orig'.
  *
- * The transformation object here applies the most aggressive
- * transformation available under a given set of parameters.
- * It works only with simple string fields; multilingual
- * dates are handled by a separate mechanism, and numeric
- * fields are not subject to transformation.
+ * All multilingual variables are associated with segments,
+ * with the exception of 'edition' and 'genre'. These two
+ * exceptions are always rendered with the first matching
+ * language form found in state.opt['locale-translit'] or, if
+ * composing a sort key, state.opt['locale-sort']. No secondary
+ * slot rendering is performed for this two variables.
  *
- * The transformed output is written directly to the output
- * queue.  This is necessary to cover the possibility of
- * two output fields with separate formatting requirements.
+ * The balance of multilingual variables are rendered with
+ * the first matching value in the transform locales spec
+ * (no transform, state.opt['locale-translit'], or 
+ * state.opt['locale-translat']) mapped to the target
+ * slot.
  *
- * This object itself returns an appropriate token function
- * with a standard interface, for use at runtime.
- *
- * Instantiation arguments:
- *   state object
- *
- * Initialization arguments
- *
- *   Required arguments
- *     default formatting token
- *     field name
- *
- *   Optional argument (used only if abbreviation is required)
- *     subsection
- *
- * Abbreviation
+ * Full primary+secondary+tertiary rendering is performed only in
+ * note-style citations and the bibliography.  In-text citations are
+ * rendered in the primary output slot only, following the same spec
+ * parameters.
  *
  *   Optional setters:
  *     .setAbbreviationFallback(); fallback flag
  *       (if true, a failed abbreviation will fallback to long)
+ *
  *     .setAlternativeVariableName(): alternative variable name in Item,
  *       for use as a fallback abbreviation source
  *
  * Translation/transliteration
  *
- *   Required setter:
- *     .setTransformLocale(): mode (one of "default-locale", "locale-pri",
- *       "locale-sec" or "locale-sort")
- *
  *   Optional setter:
  *     .setTransformFallback():
  *       default flag (if true, the original field value will be used as a fallback)
- *
  *
  * The getTextSubField() method may be used to obtain a string transform
  * of a field, without abbreviation, as needed for setting sort keys
@@ -112,59 +100,58 @@
  */
 
 CSL.Transform = function (state) {
-    var debug = false, abbreviations, token, fieldname, subsection, opt;
+    var debug = false, abbreviations, token, fieldname, abbrev_family, opt;
 
-    // Abbreviation subsections
+    // Abbreviation families
     this.abbrevs = {};
     this.abbrevs["default"] = new CSL.AbbreviationSegments();
 
     // Initialization method
-    function init(t, f, x) {
-        token = t;
-        fieldname = f;
-        subsection = x;
+    function init(mytoken, myfieldname, myabbrev_family) {
+        token = mytoken;
+        fieldname = myfieldname;
+        abbrev_family = myabbrev_family;
         opt = {
             abbreviation_fallback: false,
             alternative_varname: false,
-            transform_locale: false,
             transform_fallback: false
         };
     }
     this.init = init;
 
     // Internal function
-    function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
+    function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {
         var value;
 
-        if (!mysubsection) {
+        if (!myabbrev_family) {
             return basevalue;
         }
 
-        if (["publisher-place", "event-place"].indexOf(mysubsection) > -1) {
-            mysubsection = "place";
+        if (["publisher-place", "event-place"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "place";
         }
 
-        if (["publisher", "authority"].indexOf(mysubsection) > -1) {
-            mysubsection = "institution-part";
+        if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "institution-part";
         }
 
-        if (["genre"].indexOf(mysubsection) > -1) {
-            mysubsection = "title";
+        if (["genre"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "title";
         }
 
-        if (["title-short"].indexOf(mysubsection) > -1) {
-            mysubsection = "title";
+        if (["title-short"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "title";
         }
 
         // Lazy retrieval of abbreviations.
         value = "";
         if (state.sys.getAbbreviation) {
-            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, mysubsection, basevalue);
+            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, basevalue);
 
             // XXX Need a fallback mechanism here. Other to default.
-            if (state.transform.abbrevs[jurisdiction][mysubsection] && basevalue && state.sys.getAbbreviation) {
-                if (state.transform.abbrevs[jurisdiction][mysubsection][basevalue]) {
-                    value = state.transform.abbrevs[jurisdiction][mysubsection][basevalue];
+            if (state.transform.abbrevs[jurisdiction][myabbrev_family] && basevalue && state.sys.getAbbreviation) {
+                if (state.transform.abbrevs[jurisdiction][myabbrev_family][basevalue]) {
+                    value = state.transform.abbrevs[jurisdiction][myabbrev_family][basevalue];
                 }
             }
         }
@@ -178,16 +165,27 @@ CSL.Transform = function (state) {
     }
 
     // Internal function
-    function getTextSubField(Item, field, locale_type, use_default) {
+    function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
         var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
+        var usedOrig = stopOrig;
+
         if (!Item[field]) {
-            return "";
+            return {name:"", usedOrig:stopOrig};
         }
-        ret = "";
+        ret = {name:"", usedOrig:stopOrig};
 
         opts = state.opt[locale_type];
-        if ("undefined" === typeof opts) {
-            opts = state.opt["default-locale"];
+        if (locale_type === 'locale-orig') {
+            if (stopOrig) {
+                ret = {name:"", usedOrig:stopOrig};
+            } else {
+                ret = {name:Item[field], usedOrig:false};
+            }
+            return ret;
+        } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
+			// If we want the original, or if we don't have any specific guidance and we 
+            // definitely want output, just return the original value.
+            return {name:Item[field], usedOrig:true};
         }
 
         for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
@@ -195,15 +193,15 @@ CSL.Transform = function (state) {
             opt = opts[i];
             o = opt.split(/[\-_]/)[0];
             if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
-                ret = Item.multi._keys[field][opt];
+                ret.name = Item.multi._keys[field][opt];
                 break;
             } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
-                ret = Item.multi._keys[field][o];
+                ret.name = Item.multi._keys[field][o];
                 break;
             }
         }
-        if (!ret && use_default) {
-            ret = Item[field];
+        if (!ret.name && use_default) {
+            ret = {name:Item[field], usedOrig:true};
         }
         return ret;
     }
@@ -219,12 +217,6 @@ CSL.Transform = function (state) {
         opt.alternative_varname = s;
     }
     this.setAlternativeVariableName = setAlternativeVariableName;
-
-    //
-    function setTransformLocale(s) {
-        opt.transform_locale = s;
-    }
-    this.setTransformLocale = setTransformLocale;
 
     //
     function setTransformFallback(b) {
@@ -288,78 +280,139 @@ CSL.Transform = function (state) {
 
     // Return function appropriate to selected options
     function getOutputFunction(variables) {
-        var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
+		// var mytoken;
+        var myabbrev_family, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
 
         // Freeze mandatory values
-        mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
-        mysubsection = subsection;
+        //mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
+
+		// the Abbreviation Family set by init(), if any.
+        myabbrev_family = abbrev_family;
+
+		// The fieldname set by init().
         myfieldname = fieldname;
 
         // Freeze option values
+		// These are also from init(), adjusted by configuration helper functions.
         abbreviation_fallback = opt.abbreviation_fallback;
         alternative_varname = opt.alternative_varname;
-        transform_locale = opt.transform_locale;
         transform_fallback = opt.transform_fallback;
 
-        // XXXXX This is a try-and-see change, we'll see how it goes.
-        // Apply uniform transforms to all variables that request
-        // translation.
-        if (transform_locale === "locale-sec") {
-            // Long form, with secondary translation
-            return function (state, Item) {
-                var primary, secondary, primary_tok, secondary_tok, key;
-                if (!variables[0]) {
-                    return null;
-                }
+        // Set the primary_locale and secondary_locale lists appropriately.
+		// No instance helper function for this; everything can be derived
+		// from processor settings and rendering context.
+
+		var localesets;
+        var langPrefs = CSL.LangPrefsMap[myfieldname];
+        if (!langPrefs) {
+            localesets = false;
+        } else {
+            localesets = state.opt['cite-lang-prefs'][langPrefs];
+        }
+
+        return function (state, Item, item, usedOrig) {
+            var primary, secondary, tertiary, primary_tok, group_tok, key;
+            if (!variables[0]) {
+                return null;
+            }
+            
+		    var slot = {primary:false, secondary:false, tertiary:false};
+		    if (state.tmp.area.slice(-5) === "_sort") {
+			    slot.primary = 'locale-sort';
+		    } else {
+			    if (localesets) {
+				    var slotnames = ["primary", "secondary", "tertiary"];
+				    for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
+					    if (localesets.length - 1 <  i) {
+						    break;
+					    }
+                        if (localesets[i]) {
+						    slot[slotnames[i]] = 'locale-' + localesets[i];
+                        }
+				    }
+			    } else {
+					slot.primary = 'locale-translat';
+			    }
+            }
+            
+			if (state.tmp.area !== "bibliography"
+				&& !(state.tmp.area === "citation"
+					 && state.opt.xclass === "note"
+					 && item && !item.position)) {
                 
-                // Problem for multilingual: we really should be
-                // checking for sanity on the basis of the output
-                // strings to be actually used. (also below)
-                if (state.tmp["publisher-list"]) {
-                    if (variables[0] === "publisher") {
-                        state.tmp["publisher-token"] = this;
-                    } else if (variables[0] === "publisher-place") {
-                        state.tmp["publisher-place-token"] = this;
-                    }
-                    return null;
-                }
-                if (state.opt["locale-suppress-title-transliteration"] 
-                    || !((state.tmp.area === 'bibliography'
-                        || (state.opt.xclass === "note" &&
-                            state.tmp.area === "citation"))
-                        )
-                    ) {
-                    primary = Item[myfieldname];
-                } else {
-                    primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
-                }
-                // Signifying short form -- the variable name is misleading.
-                if (mysubsection) {
-                    primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
-                }
-                secondary = getTextSubField(Item, myfieldname, "locale-sec");
-                if ("demote" === this["leading-noise-words"]) {
-                    primary = CSL.demoteNoiseWords(state, primary);
-                    secondary = CSL.demoteNoiseWords(state, secondary);
-                }
-                if (secondary && ((state.tmp.area === 'bibliography' || (state.opt.xclass === "note" && state.tmp.area === "citation")))) {
-                    // Signifying short form -- again, the variable name is misleading.
-                    if (mysubsection) {
-                        secondary = abbreviate(state, Item, alternative_varname, secondary, mysubsection, true);
-                    }
-                    primary_tok = CSL.Util.cloneToken(this);
-                    primary_tok.strings.suffix = "";
-                    secondary_tok = new CSL.Token("text", CSL.SINGLETON);
-                    secondary_tok.strings.suffix = "]" + this.strings.suffix;
-                    secondary_tok.strings.prefix = " [";
-        
-                    state.output.append(primary, primary_tok);
-                    state.output.append(secondary, secondary_tok);
-                } else {
-                    state.output.append(primary, this);
+				slot.secondary = false;
+				slot.tertiary = false;
+			}
+            
+            // Problem for multilingual: we really should be
+            // checking for sanity on the basis of the output
+            // strings to be actually used. (also below)
+            if (state.tmp["publisher-list"]) {
+                if (variables[0] === "publisher") {
+                    state.tmp["publisher-token"] = this;
+                } else if (variables[0] === "publisher-place") {
+                    state.tmp["publisher-place-token"] = this;
                 }
                 return null;
-            };
+            }
+
+			// True is for transform fallback
+            var res = getTextSubField(Item, myfieldname, slot.primary, true);
+            primary = res.name;
+
+            if (publisherCheck(this, Item, primary)) {
+                return null;
+            }
+
+			// No fallback for secondary and tertiary
+			secondary = false;
+			tertiary = false;
+			if (slot.secondary) {
+				res = getTextSubField(Item, myfieldname, slot.secondary, false, res.usedOrig);
+                secondary = res.name;
+			}
+			if (slot.tertiary) {
+				res = getTextSubField(Item, myfieldname, slot.tertiary, false, res.usedOrig);
+                tertiary = res.name;
+			}
+            
+            // Abbreviate if requested and if poss.
+			// (We don't yet control for the possibility that full translations may not
+			// be provided on the alternative variable.)
+            if (myabbrev_family) {
+                primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
+                secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
+                tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
+            }
+            
+            if ("demote" === this["leading-noise-words"]) {
+                primary = CSL.demoteNoiseWords(state, primary);
+                secondary = CSL.demoteNoiseWords(state, secondary);
+                tertiary = CSL.demoteNoiseWords(state, tertiary);
+            }
+            if (secondary || tertiary) {
+                primary_tok = CSL.Util.cloneToken(this);
+                primary_tok.strings.suffix = "";
+                state.output.append(primary, primary_tok);
+                
+                group_tok = new CSL.Token();
+                group_tok.strings.prefix = " [";
+                group_tok.strings.delimiter = ", ";
+                group_tok.strings.suffix = "]" + this.strings.suffix;
+				state.output.openLevel(group_tok);
+				if (secondary) {
+					state.output.append(secondary);
+				}
+				if (tertiary) {
+					state.output.append(tertiary);
+				}
+				state.output.closeLevel();
+            } else {
+                state.output.append(primary, this);
+            }
+            return null;
+        };
+        /*
         } else {
             return function (state, Item) {
                 var primary;
@@ -377,124 +430,20 @@ CSL.Transform = function (state) {
                     }
                     // Safe, because when state.tmp["publisher-list"] exists,
                     // the variable must be one of publisher or publisher-place.
-                    primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
+                    primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
                     state.output.append(primary, this);
                 }
                 return null;
             };
         }
+        */
     }
     this.getOutputFunction = getOutputFunction;
-
-    function getStaticOrder (name, refresh) {
-        var static_ordering_val = false;
-        if (!refresh && name["static-ordering"]) {
-            static_ordering_val = true;
-        } else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-            static_ordering_val = true;
-        } else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
-            static_ordering_val = true;
-        } else {
-            if (state.opt['auto-vietnamese-names']
-                && (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
-                    && CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
-
-                static_ordering_val = true;
-            }
-        }
-        return static_ordering_val;
-    }
 
     // The name transform code is placed here to keep similar things
     // in one place.  Obviously this module could do with a little
     // tidying up.
 
-    /*
-     * Return a single name object
-     */
-    function getName (state, name, langTags) {
-        var i, ret, optLangTag, ilen, key, langTag;
-        if (state.tmp.extension) {
-             langTags = state.opt["locale-sort"];
-        }
-        if ("string" === typeof langTags) {
-            langTags = [langTags];
-        }
-        // Normalize to string
-        if (!name.family) {
-            name.family = "";
-        }
-        if (!name.given) {
-            name.given = "";
-        }
-        //
-        // Optionally add a static-ordering toggle for non-roman, non-Cyrillic
-        // names, based on the headline values.
-        //
-        var static_ordering_freshcheck = false;
-        var block_initialize = false;
-        var transliterated = false;
-        var static_ordering_val = getStaticOrder(name);
-        //
-        // Step through the requested languages in sequence
-        // until a match is found
-        //
-        if (langTags && name.multi) {
-            for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
-                langTag = langTags[i];
-                if (name.multi._key[langTag]) {
-                    var origName = name;
-                    name = name.multi._key[langTag];
-                    transliterated = true;
-                    if (!state.opt['locale-use-original-name-format']) {
-                        static_ordering_freshcheck = true;
-                    } else {
-                        // Quash initialize-with if original was non-romanesque
-                        // and we are trying to preserve the original formatting
-                        // conventions.
-                        // (i.e. supply as much information as possible if
-                        // the transliteration spans radically different
-                        // writing conventions)
-                        if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-                            block_initialize = true;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        // var clone the item before writing into it
-        name = {
-            family:name.family,
-            given:name.given,
-            "non-dropping-particle":name["non-dropping-particle"],
-            "dropping-particle":name["dropping-particle"],
-            suffix:name.suffix,
-            "static-ordering":static_ordering_val,
-            "parse-names":name["parse-names"],
-            "comma-suffix":name["comma-suffix"],
-            "comma-dropping-particle":name["comma-dropping-particle"],
-            transliterated:transliterated,
-            block_initialize:block_initialize,
-            literal:name.literal,
-            isInstitution:name.isInstitution,
-            orig:origName
-        };
-        if (static_ordering_freshcheck &&
-            !getStaticOrder(name, true)) {
-            
-            name["static-ordering"] = false;
-        }
-        if (!name.literal && (!name.given && name.family && name.isInstitution)) {
-            name.literal = name.family;
-        }
-        if (name.literal) {
-            delete name.family;
-            delete name.given;
-        }
-        return name;
-    }
-    this.name = getName;
 
     function getHereinafter (Item) {
         var hereinafter_author_title = [];

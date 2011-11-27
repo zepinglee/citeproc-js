@@ -68,7 +68,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.setParseNames = function (val) {
         this.opt['parse-names'] = val;
     };
-
+    
     this.opt = new CSL.Engine.Opt();
     this.tmp = new CSL.Engine.Tmp();
     this.build = new CSL.Engine.Build();

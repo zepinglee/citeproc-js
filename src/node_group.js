@@ -102,7 +102,6 @@ CSL.Node.group = {
                         var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
                         if (publisher_lst.length > 1
                             && publisher_lst.length === publisher_place_lst.length) {
-                            
                             state.publisherOutput = new CSL.PublisherOutput(state, this);
                             state.publisherOutput["publisher-list"] = publisher_lst;
                             state.publisherOutput["publisher-place-list"] = publisher_place_lst;

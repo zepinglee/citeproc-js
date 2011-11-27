@@ -982,13 +982,13 @@ CSL.Attributes["@default-locale"] = function (state, arg) {
     // Workaround for Internet Exploder 6 (doesn't recognize
     // groups in str.split(/something(braced-group)something/)
     //
-    m = arg.match(/-x-(sort|pri|sec|name)-/g);
+    m = arg.match(/-x-(sort|translit|translat)-/g);
     if (m) {
         for (pos = 0, len = m.length; pos < len; pos += 1) {
             m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/, "");
         }
     }
-    lst = arg.split(/-x-(?:sort|pri|sec|name)-/);
+    lst = arg.split(/-x-(?:sort|translit|translat)-/);
     ret = [lst[0]];
     for (pos = 1, len = lst.length; pos < len; pos += 1) {
         ret.push(m[pos - 1]);

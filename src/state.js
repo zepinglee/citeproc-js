@@ -53,10 +53,9 @@ CSL.Engine.Opt = function () {
     this.mode = "html";
     this.dates = {};
     this["locale-sort"] = [];
-    this["locale-pri"] = [];
-    this["locale-sec"] = [];
+    this["locale-translit"] = [];
+    this["locale-translat"] = [];
     this["default-locale"] = [];
-    this["locale-use-original-name-format"] = false;
     
     this["noun-genders"] = {};
 
@@ -93,6 +92,13 @@ CSL.Engine.Opt = function () {
     this.development_extensions.raw_date_parsing = true;
     this.development_extensions.clean_up_csl_flaws = true;
     this.gender = {};
+	this['cite-lang-prefs'] = {
+		persons:['orig'],
+		institutions:['orig'],
+		titles:['orig','translat'],
+		publishers:['orig'],
+		places:['orig']
+	}
 };
 
 

@@ -90,7 +90,8 @@ CSL.Registry.NameReg = function (state) {
         if (state.tmp.area === "bibliography" && !form && "string" !== typeof initials) {
               return 2;
         }
-        nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
+        var res = state.nameOutput.getName(nameobj, "locale-translit", true);
+        nameobj = res.name;
         set_keys(this.state, "" + item_id, nameobj);
         //
         // possible options are:
@@ -328,8 +329,9 @@ CSL.Registry.NameReg = function (state) {
     // style.
     //
     addname = function (item_id, nameobj, pos) {
-        nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
-        
+        var res = state.nameOutput.getName(nameobj, "locale-translit", true);
+        nameobj = res.name;
+
         if (state.opt["givenname-disambiguation-rule"]
             && state.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
             && pos !== 0) {

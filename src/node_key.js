@@ -173,7 +173,6 @@ CSL.Node.key = {
                     single_text.variables = this.variables;
                 } else if ("title" === variable) {
                     state.transform.init("empty", "title");
-                    state.transform.setTransformLocale("locale-sort");
                     state.transform.setTransformFallback(true);
                     func = state.transform.getOutputFunction(this.variables);
                     //func = function (state, Item) {

@@ -87,6 +87,19 @@ if (!Array.indexOf) {
 
 var CSL = {
 
+    LangPrefsMap: {
+        "title":"titles",
+        "title-short":"titles",
+        "container-title":"titles",
+        "collection-title":"titles",
+        "publisher":"publishers",
+        "authority":"publishers",
+        "publisher-place": "places",
+        "event-place": "places"
+    },
+
+
+
     AbbreviationSegments: function () {
         this["container-title"] = {};
         this["collection-title"] = {};
@@ -147,7 +160,7 @@ var CSL = {
 
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
-    MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "institution", "authority","edition","genre","title-short"],
+    MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short"],
 
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
 
