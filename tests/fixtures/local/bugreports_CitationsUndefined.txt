@@ -86,7 +86,7 @@ citation
        xmlns="http://purl.org/net/xbiblio/csl"
        class="in-text"
        version="1.0"
-       default-locale="en-US-x-sort-ja-alalc97-x-sec-en">
+       default-locale="en-US-x-sort-ja-alalc97-x-translat-en">
   <!-- BOGUS COMMENT -->
   <info>
     <title>

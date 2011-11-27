@@ -58,7 +58,7 @@ names, but cannot be tested through the standard test suit
 machinery.
 
 >>===== RESULT =====>>
-T. Beato, T. Kitano, R. Atkinson
+Beato Takeshi, Kitano Takeshi, R. Atkinson
 <<===== RESULT =====<<
 
 
@@ -67,7 +67,7 @@ T. Beato, T. Kitano, R. Atkinson
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-pri-ja-alalc97-x-pri-en">
+      default-locale="en-US-x-translit-ja-alalc97-x-translit-en">
   <info>
     <id />
     <title />

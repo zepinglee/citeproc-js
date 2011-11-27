@@ -62,7 +62,7 @@ citation
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-sec-ja-Latn-hepburn">
+      default-locale="en-US-x-translat-ja-Latn-hepburn">
   <info>
     <id />
     <title />

@@ -71,7 +71,7 @@ Minpō [Japanese Civil Code].
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-pri-ja-alalc97-x-sec-en">
+      default-locale="en-US-x-translit-ja-alalc97-x-translat-en">
   <info>
     <id />
     <title />

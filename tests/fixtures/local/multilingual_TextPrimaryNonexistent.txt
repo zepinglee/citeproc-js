@@ -62,7 +62,7 @@ Aardvaark; Zzzzzzzzz
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-pri-ja-Hrkt">
+      default-locale="en-US-x-translit-ja-Hrkt">
   <info>
     <id />
     <title />

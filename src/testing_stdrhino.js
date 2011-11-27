@@ -177,6 +177,14 @@ StdRhinoTest.prototype.run = function(){
     var len, pos, ret, id_set, nick;
     ret = new Array();
     this.style = new CSL.Engine(this,this.test.csl);
+    var langParams = {
+        persons:["translit"],
+        institutions:["translit"],
+        titles:["translit", "translat"],
+        publishers:["translat"],
+        places:["translat"]
+    }
+    this.style.setLangPrefsForCites(langParams);
     if (this.test.abbreviations) {
         for (jurisdiction in this.test.abbreviations) {
             for (field in this.test.abbreviations[jurisdiction]) {
