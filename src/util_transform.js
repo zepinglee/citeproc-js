@@ -253,7 +253,7 @@ CSL.Transform = function (state) {
     }
     this.loadAbbreviation = loadAbbreviation;
 
-    function publisherCheck (tok, Item, primary) {
+    function publisherCheck (tok, Item, primary, myabbrev_family) {
         var varname = tok.variables[0];
         if (state.publisherOutput && primary) {
             if (["publisher","publisher-place"].indexOf(varname) === -1) {
@@ -269,7 +269,8 @@ CSL.Transform = function (state) {
                 }
                 // XXX Abbreviate each of the items in the list here!
                 for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
-                    lst[i] = abbreviate(state, Item, false, lst[i], "institution-part", true);
+					// myabbrev_family just turns abbreviation on if it has a value (any value)
+                    lst[i] = abbreviate(state, Item, false, lst[i], myabbrev_family, true);
                 }
                 state.tmp[varname + "-token"] = tok;
                 return true;
@@ -335,10 +336,11 @@ CSL.Transform = function (state) {
 			    }
             }
             
-			if (state.tmp.area !== "bibliography"
-				&& !(state.tmp.area === "citation"
-					 && state.opt.xclass === "note"
-					 && item && !item.position)) {
+			if ((state.tmp.area !== "bibliography"
+				 && !(state.tmp.area === "citation"
+					  && state.opt.xclass === "note"
+					  && item && !item.position))
+				|| myabbrev_family) {
                 
 				slot.secondary = false;
 				slot.tertiary = false;
@@ -360,7 +362,7 @@ CSL.Transform = function (state) {
             var res = getTextSubField(Item, myfieldname, slot.primary, true);
             primary = res.name;
 
-            if (publisherCheck(this, Item, primary)) {
+            if (publisherCheck(this, Item, primary, myabbrev_family)) {
                 return null;
             }
 
