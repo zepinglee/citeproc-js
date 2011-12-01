@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.247
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Provide for abbreviation of the publisher field.
+
+- Do not capitalize first-occurring term when it is
+  preceded by a prefix that does not end in terminal
+  punctuation.
+
+==========================
 Changes in version 1.0.246
 ==========================
 

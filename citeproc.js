@@ -45,7 +45,6 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
-
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -58,6 +57,16 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
+    LangPrefsMap: {
+        "title":"titles",
+        "title-short":"titles",
+        "container-title":"titles",
+        "collection-title":"titles",
+        "publisher":"publishers",
+        "authority":"publishers",
+        "publisher-place": "places",
+        "event-place": "places"
+    },
     AbbreviationSegments: function () {
         this["container-title"] = {};
         this["collection-title"] = {};
@@ -102,7 +111,7 @@ var CSL = {
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-    MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "institution", "authority","edition","genre","title-short"],
+    MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short"],
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
     MINIMAL_NAME_FIELDS: ["literal", "family"],
     SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
@@ -1727,7 +1736,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.245";
+    this.processor_version = "1.0.247";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2207,38 +2216,40 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
 };
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
     var i, ilen;
-    this.opt['locale-pri'] = [];    
+    this.opt['locale-translit'] = [];    
     for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-pri'].push(tags[i]);
+        this.opt['locale-translit'].push(tags[i]);
     }
 };
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     var i, ilen;
-    this.opt['locale-sec'] = [];
+    this.opt['locale-translat'] = [];
     for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-sec'].push(tags[i]);
+        this.opt['locale-translat'].push(tags[i]);
     }
 };
-CSL.Engine.prototype.setOriginalCreatorNameFormsOption = function (arg) {
-    if (arg) {
-        this.opt["locale-show-original-names"] = true;
-    } else {
-        this.opt["locale-show-original-names"] = false;
-    }
-};
-CSL.Engine.prototype.setOriginalCreatorNameFormatOption = function (arg) {
-    if (arg) {
-        this.opt["locale-use-original-name-format"] = true;
-    } else {
-        this.opt["locale-use-original-name-format"] = false;
-    }
-};
-CSL.Engine.prototype.setSuppressTitleTransliterationOption = function (arg) {
-    if (arg) {
-        this.opt["locale-suppress-title-transliteration"] = true;
-    } else {
-        this.opt["locale-suppress-title-transliteration"] = false;
-    }
+CSL.Engine.prototype.setLangPrefsForCites = function (params) {
+	var opt = this.opt['cite-lang-prefs'];
+	for (var segment in params) {
+        var supplements = [];
+        while (params[segment].length > 1) {
+            supplements.push(params[segment].pop());
+        }
+        var sortval = {orig:1,translit:2,translat:3};
+        if (supplements.length === 2 && sortval[supplements[0]] < sortval[supplements[1]]) {
+            supplements.reverse();
+        }
+        while (supplements.length) {
+            params[segment].push(supplements.pop());
+        }
+		var lst = opt[segment];
+		while (lst.length) {
+			lst.pop();
+		}
+		for (var i = 0, ilen = params[segment].length; i < ilen; i += 1) {
+			lst.push(params[segment][i]);
+		}
+	}
 };
 CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
     if (arg) {
@@ -2257,10 +2268,9 @@ CSL.Engine.Opt = function () {
     this.mode = "html";
     this.dates = {};
     this["locale-sort"] = [];
-    this["locale-pri"] = [];
-    this["locale-sec"] = [];
+    this["locale-translit"] = [];
+    this["locale-translat"] = [];
     this["default-locale"] = [];
-    this["locale-use-original-name-format"] = false;
     this["noun-genders"] = {};
     this.update_mode = CSL.NONE;
     this.bib_mode = CSL.NONE;
@@ -2282,6 +2292,13 @@ CSL.Engine.Opt = function () {
     this.development_extensions.raw_date_parsing = true;
     this.development_extensions.clean_up_csl_flaws = true;
     this.gender = {};
+	this['cite-lang-prefs'] = {
+		persons:['orig'],
+		institutions:['orig'],
+		titles:['orig','translat'],
+		publishers:['orig'],
+		places:['orig']
+	}
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
@@ -2537,7 +2554,8 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
                 if (j === config.authors.length) {
                     break;
                 }
-                var name = this.transform.name(this, names[j], this.opt["locale-pri"]);
+                var res = this.nameOutput.getName(names[j], "locale-translit", true);
+                var name = res.name;
                 if (name && name.family) {
                     myname = name.family;
                     myname = myname.replace(/^([ \'\u2019a-z]+\s+)/, "");
@@ -4427,7 +4445,6 @@ CSL.Node.key = {
                     single_text.variables = this.variables;
                 } else if ("title" === variable) {
                     state.transform.init("empty", "title");
-                    state.transform.setTransformLocale("locale-sort");
                     state.transform.setTransformFallback(true);
                     func = state.transform.getOutputFunction(this.variables);
                 } else {
@@ -4990,15 +5007,6 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             }
         }
     }
-    for (v in this.freeters) {
-        this._transformNameset(this.freeters[v]);
-    }
-    for (v in this.persons) {
-        for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-            this._transformNameset(this.persons[v][i]);
-        }
-        this._transformNameset(this.institutions[v]);
-    }
     for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         if (this.institutions[v].length) {
             this.nameset_offset += 1;
@@ -5007,23 +5015,6 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
             if (this.persons[v][i].length) {
                 this.nameset_offset += 1;
             }
-            this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
-        }
-    }
-    for (v in this.institutions) {
-        for (i = 0, ilen = this.institutions[v].length; i < ilen; i += 1) {
-            var long_form = this.institutions[v][i]["long"];
-            var short_form = long_form.slice();
-            if (this.state.sys.getAbbreviation) {
-                var jurisdiction = this.Item.jurisdiction;
-                for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
-                    var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
-                    if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
-                        short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
-                    }
-                }
-            }
-            this.institutions[v][i]["short"] = short_form;
         }
     }
 };
@@ -5040,82 +5031,6 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
         lst = lst.slice(0, this.state.opt.max_number_of_names + 2);
     }
     return lst;
-};
-CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
-    var ret = {};
-    var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
-    splitInstitution = splitInstitution.split("|");
-    if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
-        var jurisdiction = this.Item.jurisdiction;
-        for (var j = splitInstitution.length; j > 1; j += -1) {
-            var str = splitInstitution.slice(0, j).join("|");
-            var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", str);
-            if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][str]) {
-                var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][str];
-                var splitLst = splitLst.replace(/\s*\|\s*/g, "|");
-                var splitLst = splitLst.split("|");
-                splitInstitution = splitLst.concat(splitInstitution.slice(j));
-            }
-        }
-    }
-    splitInstitution.reverse();
-    ret["long"] = this._trimInstitution(splitInstitution, v, i);
-    if (splitInstitution.length) {
-        ret["short"] = ret["long"].slice();
-    } else {
-        ret["short"] = false;
-    }
-    return ret;
-};
-CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
-    var use_first = false;
-    var append_last = false;
-    var stop_last = false;
-    var s = subunits.slice();
-    if (this.institution) {
-        if ("undefined" !== typeof this.institution.strings["use-first"]) {
-            use_first = this.institution.strings["use-first"];
-        }
-        if ("undefined" !== typeof this.institution.strings["stop-last"]) {
-            s = s.slice(0, this.institution.strings["stop-last"]);
-            subunits = subunits.slice(0, this.institution.strings["stop-last"]);
-        }
-        if ("undefined" !== typeof this.institution.strings["use-last"]) {
-            append_last = this.institution.strings["use-last"];
-        }
-    }
-    if (false === use_first) {
-        if (this.persons[v][i].length === 0) {
-            use_first = this.institution.strings["substitute-use-first"];
-        }
-        if (!use_first) {
-            use_first = 0;
-        }
-    }
-    if (false === append_last) {
-        if (!use_first) {
-            append_last = subunits.length;
-        } else {
-            append_last = 0;
-        }
-    }
-    if (use_first > subunits.length - append_last) {
-        use_first = subunits.length - append_last;
-    }
-    if (stop_last) {
-        append_last = 0;
-    }
-    subunits = subunits.slice(0, use_first);
-    s = s.slice(use_first);
-    if (append_last) {
-        if (append_last > s.length) {
-            append_last = s.length;
-        }
-        if (append_last) {
-            subunits = subunits.concat(s.slice((s.length - append_last)));
-        }
-    }
-    return subunits;
 };
 CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
     var i, ilen, j, jlen;
@@ -5569,43 +5484,120 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
         var v = this.variables[i];
         for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
             var institution, institution_short, institution_long, short_style, long_style;
-            if (this.institution.strings["reverse-order"]) {
-                this.institutions[v][j]["short"].reverse();
-                this.institutions[v][j]["long"].reverse();
+            var name = this.institutions[v][j];
+            var j, ret, optLangTag, jlen, key, localesets;
+            if (this.state.tmp.extension) {
+                localesets = ["sort"];
+            } else if (name.isInstitution) {
+                localesets = this.state.opt['cite-lang-prefs'].institutions;
+            } else {
+                localesets = this.state.opt['cite-lang-prefs'].persons;
             }
+            slot = {primary:false,secondary:false,tertiary:false};
+	        if (localesets) {
+		        var slotnames = ["primary", "secondary", "tertiary"];
+		        for (var k = 0, klen = slotnames.length; k < klen; k += 1) {
+			        if (localesets.length - 1 <  j) {
+				        break;
+			        }
+                    if (localesets[k]) {
+			            slot[slotnames[k]] = 'locale-' + localesets[k];
+                    }
+		        }
+	        } else {
+		        slot.primary = 'locale-translat';
+	        }
+	        if (this.state.tmp.area !== "bibliography"
+		        && !(this.state.tmp.area === "citation"
+			         && this.state.opt.xclass === "note"
+			         && this.item && !this.item.position)) {
+		        slot.secondary = false;
+		        slot.tertiary = false;
+	        }
+            var res;
+            res = this.getName(name, slot.primary, true);
+            var primary = res.name;
+            var usedOrig = res.usedOrig;
+            if (primary) {
+                primary = this.fixupInstitution(primary, v, j);
+            }
+			secondary = false;
+			if (slot.secondary) {
+                res = this.getName(name, slot.secondary, false, usedOrig);
+                secondary = res.name;
+                usedOrig = res.usedOrig;
+                if (secondary) {
+				    secondary = this.fixupInstitution(secondary, v, j);
+                }
+			}
+			tertiary = false;
+			if (slot.tertiary) {
+                res = this.getName(name, slot.tertiary, false, usedOrig);
+                tertiary = res.name;
+                if (tertiary) {
+				    tertiary = this.fixupInstitution(tertiary, v, j);
+                }
+			}
             switch (this.institution.strings["institution-parts"]) {
             case "short":
-                if (this.institutions[v][j]["short"].length) {
+                if (primary["short"].length) {
                     short_style = this._getShortStyle();
-                    institution = [this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style)];
+                    institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
                 } else {
-                    long_style = this._getLongStyle(v, j);
-                    institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style)];
+                    long_style = this._getLongStyle(primary, v, j);
+                    institution = [this._renderOneInstitutionPart(primary["long"], long_style)];
                 }
                 break;
             case "short-long":
-                long_style = this._getLongStyle(v, j);
+                long_style = this._getLongStyle(primary, v, j);
                 short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style);
-                institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
+                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], long_style);
                 institution = [institution_short, institution_long];
                 break;
             case "long-short":
-                long_style = this._getLongStyle(v, j);
+                long_style = this._getLongStyle(primary, v, j);
                 short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(this.institutions[v][j]["short"], short_style);
-                institution_long = this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style);
+                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], long_style, true);
                 institution = [institution_long, institution_short];
                 break;
             default:
-                long_style = this._getLongStyle(v, j);
-                institution = [this._renderOneInstitutionPart(this.institutions[v][j]["long"], long_style)];
+                long_style = this._getLongStyle(primary, v, j);
+                institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], long_style)];
                 break;
             }
             this.institutions[v][j] = this._join(institution, "");
         }
     }
 };
+CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, style) {
+    var primary = false, secondary = false, tertiary = false;
+    if (names[0]) {
+        primary = this._renderOneInstitutionPart(names[0]["long"], style);
+    }
+    if (names[1]) {
+        secondary = this._renderOneInstitutionPart(names[1]["long"], style);
+    }
+    if (names[2]) {
+        tertiary = this._renderOneInstitutionPart(names[2]["long"], style);
+    }
+    var institutionblob;
+    if (secondary || tertiary) {
+        var multiblob = this._join([secondary, tertiary], ", ");
+        var group_tok = new CSL.Token();
+        group_tok.strings.prefix = " [";
+        group_tok.strings.suffix = "]";
+        this.state.output.openLevel(group_tok);
+        this.state.output.append(multiblob);
+        this.state.output.closeLevel();
+        multiblob = this.state.output.pop();
+        institutionblob = this._join([primary, multiblob], "");
+    } else {
+        institutionblob = primary;
+    }
+    return institutionblob;
+}
 CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
     for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
         if (blobs[i]) {
@@ -5636,8 +5628,65 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
     if (values.length) {
         var names = [];
         for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-            var val = values[i];
-            names.push(this._renderOnePersonalName(val, pos, i));
+            var name = values[i];
+            var j, ret, optLangTag, jlen, key, localesets;
+            if (this.state.tmp.extension) {
+                localesets = ["sort"];
+            } else if (name.isInstitution) {
+                localesets = this.state.opt['cite-lang-prefs'].institutions;
+            } else {
+                localesets = this.state.opt['cite-lang-prefs'].persons;
+            }
+            slot = {primary:false,secondary:false,tertiary:false};
+	        if (localesets) {
+		        var slotnames = ["primary", "secondary", "tertiary"];
+		        for (var j = 0, jlen = slotnames.length; j < jlen; j += 1) {
+			        if (localesets.length - 1 <  j) {
+				        break;
+			        }
+			        slot[slotnames[j]] = 'locale-' + localesets[j];
+		        }
+	        } else {
+		        slot.primary = 'locale-translat';
+	        }
+	        if (this.state.tmp.area !== "bibliography"
+		        && !(this.state.tmp.area === "citation"
+			         && this.state.opt.xclass === "note"
+			         && this.item && !this.item.position)) {
+		        slot.secondary = false;
+		        slot.tertiary = false;
+	        }
+            var res = this.getName(name, slot.primary, true);
+            var primary = this._renderOnePersonalName(res.name, pos, i);
+			secondary = false;
+			if (slot.secondary) {
+                res = this.getName(name, slot.secondary, false, res.usedOrig);
+                if (res.name) {
+				    secondary = this._renderOnePersonalName(res.name, pos, i);
+                }
+			}
+			tertiary = false;
+			if (slot.tertiary) {
+                res = this.getName(name, slot.tertiary, false, res.usedOrig);
+                if (res.name) {
+				    tertiary = this._renderOnePersonalName(res.name, pos, i);
+                }
+			}
+            var personblob;
+            if (secondary || tertiary) {
+                var multiblob = this._join([secondary, tertiary], ", ");
+                var group_tok = new CSL.Token();
+                group_tok.strings.prefix = " [";
+                group_tok.strings.suffix = "]";
+                this.state.output.openLevel(group_tok);
+                this.state.output.append(multiblob);
+                this.state.output.closeLevel();
+                multiblob = this.state.output.pop();
+                personblob = this._join([primary, multiblob], "");
+            } else {
+                personblob = primary;
+            }
+            names.push(personblob);
         }
         ret = this.joinPersons(names, pos);
     }
@@ -5765,12 +5814,6 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
     this._parseName(name);
     return name;
 };
-CSL.NameOutput.prototype._transformNameset = function (nameset) {
-    for (var i = 0, ilen = nameset.length; i < ilen; i += 1) {
-        nameset[i] = this.state.transform.name(this.state, nameset[i], this.state.opt["locale-pri"]);
-        nameset[i] = this._normalizeNameInput(nameset[i]);
-    }
-};
 CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
     var decor_tok = this[tokname + "_decor"];
     if (str) {
@@ -5846,9 +5889,9 @@ CSL.NameOutput.prototype._nameSuffix = function (name) {
     }
     return false;
 };
-CSL.NameOutput.prototype._getLongStyle = function (v, i) {
+CSL.NameOutput.prototype._getLongStyle = function (name, v, i) {
     var long_style, short_style;
-    if (this.institutions[v][i]["short"].length) {
+    if (name["short"].length) {
         if (this.institutionpart["long-with-short"]) {
             long_style = this.institutionpart["long-with-short"];
         } else {
@@ -5923,6 +5966,194 @@ CSL.NameOutput.prototype._parseName = function (name) {
             name["dropping-particle"] = m[2];
         }
     }
+};
+CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stopOrig) {
+    if (stopOrig && slotLocaleset === 'locale-orig') {
+        return {name:false,usedOrig:stopOrig};
+    }
+    if (!name.family) {
+        name.family = "";
+    }
+    if (!name.given) {
+        name.given = "";
+    }
+    var static_ordering_freshcheck = false;
+    var block_initialize = false;
+    var transliterated = false;
+    var static_ordering_val = this.getStaticOrder(name);
+    var foundTag = true;
+    if (slotLocaleset !== 'locale-orig') {
+        foundTag = false;
+        if (name.multi) {
+            var langTags = this.state.opt[slotLocaleset]
+            for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
+                langTag = langTags[i];
+                if (name.multi._key[langTag]) {
+                    foundTag = true;
+                    name = name.multi._key[langTag];
+                    transliterated = true;
+                    if (!this.state.opt['locale-use-original-name-format'] && false) {
+                        static_ordering_freshcheck = true;
+                    } else {
+                        if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+                            block_initialize = true;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    if (!fallback && !foundTag) {
+        return {name:false,usedOrig:stopOrig};
+    }
+    if (!name.family) {
+        name.family = "";
+    }
+    if (!name.given) {
+        name.given = "";
+    }
+    name = {
+        family:name.family,
+        given:name.given,
+        "non-dropping-particle":name["non-dropping-particle"],
+        "dropping-particle":name["dropping-particle"],
+        suffix:name.suffix,
+        "static-ordering":static_ordering_val,
+        "parse-names":name["parse-names"],
+        "comma-suffix":name["comma-suffix"],
+        "comma-dropping-particle":name["comma-dropping-particle"],
+        transliterated:transliterated,
+        block_initialize:block_initialize,
+        literal:name.literal,
+        isInstitution:name.isInstitution,
+    };
+    if (static_ordering_freshcheck &&
+        !this.getStaticOrder(name, true)) {
+        name["static-ordering"] = false;
+    }
+    if (!name.literal && (!name.given && name.family && name.isInstitution)) {
+        name.literal = name.family;
+    }
+    if (name.literal) {
+        delete name.family;
+        delete name.given;
+    }
+    name = this._normalizeNameInput(name);
+    var usedOrig;
+    if (stopOrig) {
+        usedOrig = stopOrig;
+    } else {
+        usedOrig = !foundTag;
+    }
+    return {name:name,usedOrig:usedOrig};
+}
+CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
+    name = this._splitInstitution(name, varname, listpos);
+    if (this.institution.strings["reverse-order"]) {
+        name["long"].reverse();
+    }
+    var long_form = name["long"];
+    var short_form = long_form.slice();
+    if (this.state.sys.getAbbreviation) {
+        var jurisdiction = this.Item.jurisdiction;
+        for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
+            var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
+            if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
+                short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
+            }
+        }
+    }
+    name["short"] = short_form;
+    return name;
+}
+CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
+    var static_ordering_val = false;
+    if (!refresh && name["static-ordering"]) {
+        static_ordering_val = true;
+    } else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
+        static_ordering_val = true;
+    } else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
+        static_ordering_val = true;
+    } else {
+        if (this.state.opt['auto-vietnamese-names']
+            && (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
+                && CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
+            static_ordering_val = true;
+        }
+    }
+    return static_ordering_val;
+}
+CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
+    var ret = {};
+    var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
+    splitInstitution = splitInstitution.split("|");
+    if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
+        var jurisdiction = this.Item.jurisdiction;
+        for (var j = splitInstitution.length; j > 1; j += -1) {
+            var str = splitInstitution.slice(0, j).join("|");
+            var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", str);
+            if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][str]) {
+                var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][str];
+                var splitLst = splitLst.replace(/\s*\|\s*/g, "|");
+                var splitLst = splitLst.split("|");
+                splitInstitution = splitLst.concat(splitInstitution.slice(j));
+            }
+        }
+    }
+    splitInstitution.reverse();
+    ret["long"] = this._trimInstitution(splitInstitution, v, i);
+    return ret;
+};
+CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
+    var use_first = false;
+    var append_last = false;
+    var stop_last = false;
+    var s = subunits.slice();
+    if (this.institution) {
+        if ("undefined" !== typeof this.institution.strings["use-first"]) {
+            use_first = this.institution.strings["use-first"];
+        }
+        if ("undefined" !== typeof this.institution.strings["stop-last"]) {
+            s = s.slice(0, this.institution.strings["stop-last"]);
+            subunits = subunits.slice(0, this.institution.strings["stop-last"]);
+        }
+        if ("undefined" !== typeof this.institution.strings["use-last"]) {
+            append_last = this.institution.strings["use-last"];
+        }
+    }
+    if (false === use_first) {
+        if (this.persons[v].length === 0) {
+            use_first = this.institution.strings["substitute-use-first"];
+        }
+        if (!use_first) {
+            use_first = 0;
+        }
+    }
+    if (false === append_last) {
+        if (!use_first) {
+            append_last = subunits.length;
+        } else {
+            append_last = 0;
+        }
+    }
+    if (use_first > subunits.length - append_last) {
+        use_first = subunits.length - append_last;
+    }
+    if (stop_last) {
+        append_last = 0;
+    }
+    subunits = subunits.slice(0, use_first);
+    s = s.slice(use_first);
+    if (append_last) {
+        if (append_last > s.length) {
+            append_last = s.length;
+        }
+        if (append_last) {
+            subunits = subunits.concat(s.slice((s.length - append_last)));
+        }
+    }
+    return subunits;
 };
 CSL.NameOutput.prototype.setEtAlParameters = function () {
     var i, ilen, j, jlen;
@@ -6634,7 +6865,7 @@ CSL.Node.text = {
                 }
             } else {
                 if (this.strings.term) {
-                    func = function (state, Item) {
+                    func = function (state, Item, item) {
                         var gender = state.opt.gender[Item.type];
                         var term = this.strings.term;
                         term = state.getTerm(term, form, plural, gender);
@@ -6647,7 +6878,16 @@ CSL.Node.text = {
                         if (!state.tmp.term_predecessor) {
                             myterm = CSL.Output.Formatters["capitalize-first"](state, term);
                         } else {
-                            myterm = term;
+                            if (item && item.prefix) {
+                                var prefix = item.prefix.replace(/\s+$/, "");
+                                if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(prefix.slice(-1)) > -1) {
+                                    myterm = CSL.Output.Formatters["capitalize-first"](state, term);
+                                } else {
+                                    myterm = term;
+                                }
+                            } else {
+                                myterm = term;
+                            }
                         }
                         if (state.tmp.strip_periods) {
                             myterm = myterm.replace(/\./g, "");
@@ -6678,42 +6918,23 @@ CSL.Node.text = {
                     if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1) {
                         if (form === "short") {
                             state.transform.init(this, this.variables_real[0], this.variables_real[0]);
+                            if (this.variables_real[0] === "container-title") {
+                                state.transform.setAlternativeVariableName("journalAbbreviation");
+                            } else if (this.variables_real[0] === "title") {
+                                state.transform.setAlternativeVariableName("shortTitle");
+                            }
                         } else {
                             state.transform.init(this, this.variables_real[0]);
                         }
                         if (state.build.extension) {
                             state.transform.init(this, this.variables_real[0], this.variables_real[0]);
-                            state.transform.setTransformLocale("locale-sort");
-                            state.transform.setTransformFallback(true);
-                            func = state.transform.getOutputFunction(this.variables);
-                        } else if (form === "short") {
-                             if (["title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
-                                 state.transform.setTransformLocale("locale-sec");
-                             } else {
-                                 state.transform.setTransformLocale("locale-pri");
-                             }
-                             state.transform.setTransformFallback(true);
-                             state.transform.setAbbreviationFallback(true);
-                            if (this.variables_real[0] === "container-title") {
-                                state.transform.setAlternativeVariableName("journalAbbreviation");
-                            } else if (this.variables_real[0] === "title") {
-                                state.transform.setAlternativeVariableName("shortTitle");
-                            } else if (["publisher", "publisher-place", "event-place", "edition"].indexOf(this.variables_real[0]) > -1) {
-                                state.transform.setTransformLocale("default-locale");
-                            }
-                            func = state.transform.getOutputFunction(this.variables);
-                        } else if (["title-short","title", "container-title", "collection-title"].indexOf(this.variables_real[0]) > -1) {
-                            state.transform.setTransformLocale("locale-sec");
                             state.transform.setTransformFallback(true);
                             func = state.transform.getOutputFunction(this.variables);
                         } else {
-                            state.transform.setTransformLocale("locale-pri");
                             state.transform.setTransformFallback(true);
-                            if (["publisher", "publisher-place", "edition"].indexOf(this.variables_real[0]) > -1) {
-                                state.transform.setTransformLocale("default-locale");
-                            }
+                            state.transform.setAbbreviationFallback(true);
                             func = state.transform.getOutputFunction(this.variables);
-                        }
+						}
                         if (this.variables_real[0] === "container-title") {
                             var xfunc = function (state, Item, item) {
                                 if (Item['container-title'] && state.tmp.citeblob.has_volume) {
@@ -7488,13 +7709,13 @@ CSL.Attributes["@page-range-format"] = function (state, arg) {
 };
 CSL.Attributes["@default-locale"] = function (state, arg) {
     var lst, len, pos, m, ret;
-    m = arg.match(/-x-(sort|pri|sec|name)-/g);
+    m = arg.match(/-x-(sort|translit|translat)-/g);
     if (m) {
         for (pos = 0, len = m.length; pos < len; pos += 1) {
             m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/, "");
         }
     }
-    lst = arg.split(/-x-(?:sort|pri|sec|name)-/);
+    lst = arg.split(/-x-(?:sort|translit|translat)-/);
     ret = [lst[0]];
     for (pos = 1, len = lst.length; pos < len; pos += 1) {
         ret.push(m[pos - 1]);
@@ -7683,44 +7904,43 @@ CSL.Util.Match = function () {
     };
 };
 CSL.Transform = function (state) {
-    var debug = false, abbreviations, token, fieldname, subsection, opt;
+    var debug = false, abbreviations, token, fieldname, abbrev_family, opt;
     this.abbrevs = {};
     this.abbrevs["default"] = new CSL.AbbreviationSegments();
-    function init(t, f, x) {
-        token = t;
-        fieldname = f;
-        subsection = x;
+    function init(mytoken, myfieldname, myabbrev_family) {
+        token = mytoken;
+        fieldname = myfieldname;
+        abbrev_family = myabbrev_family;
         opt = {
             abbreviation_fallback: false,
             alternative_varname: false,
-            transform_locale: false,
             transform_fallback: false
         };
     }
     this.init = init;
-    function abbreviate(state, Item, altvar, basevalue, mysubsection, use_field) {
+    function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {
         var value;
-        if (!mysubsection) {
+        if (!myabbrev_family) {
             return basevalue;
         }
-        if (["publisher-place", "event-place"].indexOf(mysubsection) > -1) {
-            mysubsection = "place";
+        if (["publisher-place", "event-place"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "place";
         }
-        if (["publisher", "authority"].indexOf(mysubsection) > -1) {
-            mysubsection = "institution-part";
+        if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "institution-part";
         }
-        if (["genre"].indexOf(mysubsection) > -1) {
-            mysubsection = "title";
+        if (["genre"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "title";
         }
-        if (["title-short"].indexOf(mysubsection) > -1) {
-            mysubsection = "title";
+        if (["title-short"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "title";
         }
         value = "";
         if (state.sys.getAbbreviation) {
-            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, mysubsection, basevalue);
-            if (state.transform.abbrevs[jurisdiction][mysubsection] && basevalue && state.sys.getAbbreviation) {
-                if (state.transform.abbrevs[jurisdiction][mysubsection][basevalue]) {
-                    value = state.transform.abbrevs[jurisdiction][mysubsection][basevalue];
+            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, basevalue);
+            if (state.transform.abbrevs[jurisdiction][myabbrev_family] && basevalue && state.sys.getAbbreviation) {
+                if (state.transform.abbrevs[jurisdiction][myabbrev_family][basevalue]) {
+                    value = state.transform.abbrevs[jurisdiction][myabbrev_family][basevalue];
                 }
             }
         }
@@ -7732,29 +7952,37 @@ CSL.Transform = function (state) {
         }
         return value;
     }
-    function getTextSubField(Item, field, locale_type, use_default) {
+    function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
         var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
+        var usedOrig = stopOrig;
         if (!Item[field]) {
-            return "";
+            return {name:"", usedOrig:stopOrig};
         }
-        ret = "";
+        ret = {name:"", usedOrig:stopOrig};
         opts = state.opt[locale_type];
-        if ("undefined" === typeof opts) {
-            opts = state.opt["default-locale"];
+        if (locale_type === 'locale-orig') {
+            if (stopOrig) {
+                ret = {name:"", usedOrig:stopOrig};
+            } else {
+                ret = {name:Item[field], usedOrig:false};
+            }
+            return ret;
+        } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
+            return {name:Item[field], usedOrig:true};
         }
         for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
             opt = opts[i];
             o = opt.split(/[\-_]/)[0];
             if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
-                ret = Item.multi._keys[field][opt];
+                ret.name = Item.multi._keys[field][opt];
                 break;
             } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
-                ret = Item.multi._keys[field][o];
+                ret.name = Item.multi._keys[field][o];
                 break;
             }
         }
-        if (!ret && use_default) {
-            ret = Item[field];
+        if (!ret.name && use_default) {
+            ret = {name:Item[field], usedOrig:true};
         }
         return ret;
     }
@@ -7766,10 +7994,6 @@ CSL.Transform = function (state) {
         opt.alternative_varname = s;
     }
     this.setAlternativeVariableName = setAlternativeVariableName;
-    function setTransformLocale(s) {
-        opt.transform_locale = s;
-    }
-    this.setTransformLocale = setTransformLocale;
     function setTransformFallback(b) {
         opt.transform_fallback = b;
     }
@@ -7790,7 +8014,7 @@ CSL.Transform = function (state) {
         return jurisdiction;
     }
     this.loadAbbreviation = loadAbbreviation;
-    function publisherCheck (tok, Item, primary) {
+    function publisherCheck (tok, Item, primary, myabbrev_family) {
         var varname = tok.variables[0];
         if (state.publisherOutput && primary) {
             if (["publisher","publisher-place"].indexOf(varname) === -1) {
@@ -7803,7 +8027,7 @@ CSL.Transform = function (state) {
                     state.publisherOutput[varname + "-list"] = lst;
                 }
                 for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
-                    lst[i] = abbreviate(state, Item, false, lst[i], "institution-part", true);
+                    lst[i] = abbreviate(state, Item, false, lst[i], myabbrev_family, true);
                 }
                 state.tmp[varname + "-token"] = tok;
                 return true;
@@ -7812,166 +8036,106 @@ CSL.Transform = function (state) {
         return false;
     }
     function getOutputFunction(variables) {
-        var mytoken, mysubsection, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
-        mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
-        mysubsection = subsection;
+        var myabbrev_family, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
+        myabbrev_family = abbrev_family;
         myfieldname = fieldname;
         abbreviation_fallback = opt.abbreviation_fallback;
         alternative_varname = opt.alternative_varname;
-        transform_locale = opt.transform_locale;
         transform_fallback = opt.transform_fallback;
-        if (transform_locale === "locale-sec") {
-            return function (state, Item) {
-                var primary, secondary, primary_tok, secondary_tok, key;
-                if (!variables[0]) {
-                    return null;
-                }
-                if (state.tmp["publisher-list"]) {
-                    if (variables[0] === "publisher") {
-                        state.tmp["publisher-token"] = this;
-                    } else if (variables[0] === "publisher-place") {
-                        state.tmp["publisher-place-token"] = this;
-                    }
-                    return null;
-                }
-                if (state.opt["locale-suppress-title-transliteration"] 
-                    || !((state.tmp.area === 'bibliography'
-                        || (state.opt.xclass === "note" &&
-                            state.tmp.area === "citation"))
-                        )
-                    ) {
-                    primary = Item[myfieldname];
-                } else {
-                    primary = getTextSubField(Item, myfieldname, "locale-pri", transform_fallback);
-                }
-                if (mysubsection) {
-                    primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
-                }
-                secondary = getTextSubField(Item, myfieldname, "locale-sec");
-                if ("demote" === this["leading-noise-words"]) {
-                    primary = CSL.demoteNoiseWords(state, primary);
-                    secondary = CSL.demoteNoiseWords(state, secondary);
-                }
-                if (secondary && ((state.tmp.area === 'bibliography' || (state.opt.xclass === "note" && state.tmp.area === "citation")))) {
-                    if (mysubsection) {
-                        secondary = abbreviate(state, Item, alternative_varname, secondary, mysubsection, true);
-                    }
-                    primary_tok = CSL.Util.cloneToken(this);
-                    primary_tok.strings.suffix = "";
-                    secondary_tok = new CSL.Token("text", CSL.SINGLETON);
-                    secondary_tok.strings.suffix = "]" + this.strings.suffix;
-                    secondary_tok.strings.prefix = " [";
-                    state.output.append(primary, primary_tok);
-                    state.output.append(secondary, secondary_tok);
-                } else {
-                    state.output.append(primary, this);
-                }
-                return null;
-            };
+		var localesets;
+        var langPrefs = CSL.LangPrefsMap[myfieldname];
+        if (!langPrefs) {
+            localesets = false;
         } else {
-            return function (state, Item) {
-                var primary;
-                if (!variables[0]) {
-                    return null;
-                }
-                primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
-                if (publisherCheck(this, Item, primary)) {
-                    return null;
-                } else {
-                    if ("demote" === this["leading-noise-words"]) {
-                        primary = CSL.demoteNoiseWords(state, primary);
-                    }
-                    primary = abbreviate(state, Item, alternative_varname, primary, mysubsection, true);
-                    state.output.append(primary, this);
+            localesets = state.opt['cite-lang-prefs'][langPrefs];
+        }
+        return function (state, Item, item, usedOrig) {
+            var primary, secondary, tertiary, primary_tok, group_tok, key;
+            if (!variables[0]) {
+                return null;
+            }
+		    var slot = {primary:false, secondary:false, tertiary:false};
+		    if (state.tmp.area.slice(-5) === "_sort") {
+			    slot.primary = 'locale-sort';
+		    } else {
+			    if (localesets) {
+				    var slotnames = ["primary", "secondary", "tertiary"];
+				    for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
+					    if (localesets.length - 1 <  i) {
+						    break;
+					    }
+                        if (localesets[i]) {
+						    slot[slotnames[i]] = 'locale-' + localesets[i];
+                        }
+				    }
+			    } else {
+					slot.primary = 'locale-translat';
+			    }
+            }
+			if ((state.tmp.area !== "bibliography"
+				 && !(state.tmp.area === "citation"
+					  && state.opt.xclass === "note"
+					  && item && !item.position))
+				|| myabbrev_family) {
+				slot.secondary = false;
+				slot.tertiary = false;
+			}
+            if (state.tmp["publisher-list"]) {
+                if (variables[0] === "publisher") {
+                    state.tmp["publisher-token"] = this;
+                } else if (variables[0] === "publisher-place") {
+                    state.tmp["publisher-place-token"] = this;
                 }
                 return null;
-            };
-        }
+            }
+            var res = getTextSubField(Item, myfieldname, slot.primary, true);
+            primary = res.name;
+            if (publisherCheck(this, Item, primary, myabbrev_family)) {
+                return null;
+            }
+			secondary = false;
+			tertiary = false;
+			if (slot.secondary) {
+				res = getTextSubField(Item, myfieldname, slot.secondary, false, res.usedOrig);
+                secondary = res.name;
+			}
+			if (slot.tertiary) {
+				res = getTextSubField(Item, myfieldname, slot.tertiary, false, res.usedOrig);
+                tertiary = res.name;
+			}
+            if (myabbrev_family) {
+                primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
+                secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
+                tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
+            }
+            if ("demote" === this["leading-noise-words"]) {
+                primary = CSL.demoteNoiseWords(state, primary);
+                secondary = CSL.demoteNoiseWords(state, secondary);
+                tertiary = CSL.demoteNoiseWords(state, tertiary);
+            }
+            if (secondary || tertiary) {
+                primary_tok = CSL.Util.cloneToken(this);
+                primary_tok.strings.suffix = "";
+                state.output.append(primary, primary_tok);
+                group_tok = new CSL.Token();
+                group_tok.strings.prefix = " [";
+                group_tok.strings.delimiter = ", ";
+                group_tok.strings.suffix = "]" + this.strings.suffix;
+				state.output.openLevel(group_tok);
+				if (secondary) {
+					state.output.append(secondary);
+				}
+				if (tertiary) {
+					state.output.append(tertiary);
+				}
+				state.output.closeLevel();
+            } else {
+                state.output.append(primary, this);
+            }
+            return null;
+        };
     }
     this.getOutputFunction = getOutputFunction;
-    function getStaticOrder (name, refresh) {
-        var static_ordering_val = false;
-        if (!refresh && name["static-ordering"]) {
-            static_ordering_val = true;
-        } else if (!(name.family.replace('"', '', 'g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-            static_ordering_val = true;
-        } else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
-            static_ordering_val = true;
-        } else {
-            if (state.opt['auto-vietnamese-names']
-                && (CSL.VIETNAMESE_NAMES.exec(name.family + " " + name.given)
-                    && CSL.VIETNAMESE_SPECIALS.exec(name.family + name.given))) {
-                static_ordering_val = true;
-            }
-        }
-        return static_ordering_val;
-    }
-    function getName (state, name, langTags) {
-        var i, ret, optLangTag, ilen, key, langTag;
-        if (state.tmp.extension) {
-             langTags = state.opt["locale-sort"];
-        }
-        if ("string" === typeof langTags) {
-            langTags = [langTags];
-        }
-        if (!name.family) {
-            name.family = "";
-        }
-        if (!name.given) {
-            name.given = "";
-        }
-        var static_ordering_freshcheck = false;
-        var block_initialize = false;
-        var transliterated = false;
-        var static_ordering_val = getStaticOrder(name);
-        if (langTags && name.multi) {
-            for (i = 0, ilen = langTags.length; i < ilen; i += 1) {
-                langTag = langTags[i];
-                if (name.multi._key[langTag]) {
-                    var origName = name;
-                    name = name.multi._key[langTag];
-                    transliterated = true;
-                    if (!state.opt['locale-use-original-name-format']) {
-                        static_ordering_freshcheck = true;
-                    } else {
-                        if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-                            block_initialize = true;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        name = {
-            family:name.family,
-            given:name.given,
-            "non-dropping-particle":name["non-dropping-particle"],
-            "dropping-particle":name["dropping-particle"],
-            suffix:name.suffix,
-            "static-ordering":static_ordering_val,
-            "parse-names":name["parse-names"],
-            "comma-suffix":name["comma-suffix"],
-            "comma-dropping-particle":name["comma-dropping-particle"],
-            transliterated:transliterated,
-            block_initialize:block_initialize,
-            literal:name.literal,
-            isInstitution:name.isInstitution,
-            orig:origName
-        };
-        if (static_ordering_freshcheck &&
-            !getStaticOrder(name, true)) {
-            name["static-ordering"] = false;
-        }
-        if (!name.literal && (!name.given && name.family && name.isInstitution)) {
-            name.literal = name.family;
-        }
-        if (name.literal) {
-            delete name.family;
-            delete name.given;
-        }
-        return name;
-    }
-    this.name = getName;
     function getHereinafter (Item) {
         var hereinafter_author_title = [];
         if (state.tmp.first_name_string) {
@@ -10458,7 +10622,8 @@ CSL.Registry.NameReg = function (state) {
         if (state.tmp.area === "bibliography" && !form && "string" !== typeof initials) {
               return 2;
         }
-        nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
+        var res = state.nameOutput.getName(nameobj, "locale-translit", true);
+        nameobj = res.name;
         set_keys(this.state, "" + item_id, nameobj);
         param = 2;
         dagopt = state.opt["disambiguate-add-givenname"];
@@ -10644,7 +10809,8 @@ CSL.Registry.NameReg = function (state) {
         return ret;
     };
     addname = function (item_id, nameobj, pos) {
-        nameobj = state.transform.name(state, nameobj, state.opt["locale-pri"]);
+        var res = state.nameOutput.getName(nameobj, "locale-translit", true);
+        nameobj = res.name;
         if (state.opt["givenname-disambiguation-rule"]
             && state.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
             && pos !== 0) {

@@ -45,7 +45,6 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
-
 var ActiveXObject;
 var XMLHttpRequest;
 var DOMParser;
