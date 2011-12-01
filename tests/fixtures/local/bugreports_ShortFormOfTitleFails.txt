@@ -79,7 +79,7 @@ Minpō [Japanese Civil Code].
   </info>
   <citation>
     <layout suffix=".">
-      <text variable="title" form="short"/>
+      <text variable="title"/>
     </layout>
   </citation>
 </style>
