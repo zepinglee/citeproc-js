@@ -191,7 +191,7 @@ CSL.Node.text = {
                 if (this.strings.term) {
                     
                     // printterm
-                    func = function (state, Item) {
+                    func = function (state, Item, item) {
                         var gender = state.opt.gender[Item.type];
                         var term = this.strings.term;
                         term = state.getTerm(term, form, plural, gender);
@@ -210,10 +210,17 @@ CSL.Node.text = {
                         // being rendered immediately after terminal punctuation,
                         // I guess, actually).
                         if (!state.tmp.term_predecessor) {
-                            //CSL.debug("Capitalize");
                             myterm = CSL.Output.Formatters["capitalize-first"](state, term);
+                            //CSL.debug("Capitalize");
                         } else {
-                            myterm = term;
+                            if (item.prefix) {
+                                var prefix = item.prefix.replace(/\s+$/, "");
+                                if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(prefix.slice(-1)) > -1) {
+                                    myterm = CSL.Output.Formatters["capitalize-first"](state, term);
+                                } else {
+                                    myterm = term;
+                                }
+                            }
                         }
                         
                         // XXXXX Cut-and-paste code in multiple locations. This code block should be
