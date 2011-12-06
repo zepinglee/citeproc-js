@@ -54,8 +54,10 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
         ret = this._joinEtAl(blobs, "name");
     } else if (this.etal_spec[pos] === 2) {
         ret = this._joinEllipsis(blobs, "name");
-    } else {
+    } else if (!this.state.tmp.sort_key_flag) {
         ret = this._joinAnd(blobs, "name");
+    } else {
+        ret = this._join(blobs, " ");
     }
     return ret;
 };
