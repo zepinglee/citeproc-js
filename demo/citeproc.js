@@ -1736,7 +1736,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.247";
+    this.processor_version = "1.0.248";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -5132,8 +5132,10 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
         ret = this._joinEtAl(blobs, "name");
     } else if (this.etal_spec[pos] === 2) {
         ret = this._joinEllipsis(blobs, "name");
-    } else {
+    } else if (!this.state.tmp.sort_key_flag) {
         ret = this._joinAnd(blobs, "name");
+    } else {
+        ret = this._join(blobs, " ");
     }
     return ret;
 };
@@ -5649,10 +5651,10 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 	        } else {
 		        slot.primary = 'locale-translat';
 	        }
-	        if (this.state.tmp.area !== "bibliography"
+	        if (this.state.tmp.sort_key_flag || (this.state.tmp.area !== "bibliography"
 		        && !(this.state.tmp.area === "citation"
 			         && this.state.opt.xclass === "note"
-			         && this.item && !this.item.position)) {
+			         && this.item && !this.item.position))) {
 		        slot.secondary = false;
 		        slot.tertiary = false;
 	        }
@@ -5723,12 +5725,12 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
     } else if (this.state.tmp.sort_key_flag) {
         if (this.state.opt["demote-non-dropping-particle"] === "never") {
             first = this._join([non_dropping_particle, family, dropping_particle], " ");
-            merged = this._join([first, given], sort_sep);
-            blob = this._join([merged, suffix], suffix_sep);
+            merged = this._join([first, given], " ");
+            blob = this._join([merged, suffix], " ");
         } else {
             second = this._join([given, dropping_particle, non_dropping_particle], " ");
-            merged = this._join([family, second], sort_sep);
-            blob = this._join([merged, suffix], suffix_sep);
+            merged = this._join([family, second], " ");
+            blob = this._join([merged, suffix], " ");
         }
     } else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0)) {
         if (["Lord", "Lady"].indexOf(name.given) > -1) {
