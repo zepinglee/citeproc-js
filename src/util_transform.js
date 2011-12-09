@@ -235,7 +235,6 @@ CSL.Transform = function (state) {
         if (!orig) {
             return jurisdiction;
         }
-
         // The getAbbreviation() function should check the
         // external DB for the content key. If a value exists
         // in this[category] and no value exists in DB, the entry
@@ -243,11 +242,14 @@ CSL.Transform = function (state) {
         // DB, the memory value is created.
         //
         // See testrunner_stdrhino.js for an example.
-        if (state.sys.getAbbreviation 
-            && (!this.abbrevs[jurisdiction]
-                || !this.abbrevs[jurisdiction][category][orig])) {
-            // jurisdiction could change to "default"
-            state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
+        if (state.sys.getAbbreviation) {
+            if (!this.abbrevs[jurisdiction]) {
+                this.abbrevs[jurisdiction] = new CSL.AbbreviationSegments();
+            }
+            if (!this.abbrevs[jurisdiction][category][orig]) {
+                // jurisdiction could change to "default"
+                state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
+            }
         }
         return jurisdiction;
     }
