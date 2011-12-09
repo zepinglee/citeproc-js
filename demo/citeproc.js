@@ -1736,7 +1736,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.248";
+    this.processor_version = "1.0.249";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8008,10 +8008,13 @@ CSL.Transform = function (state) {
         if (!orig) {
             return jurisdiction;
         }
-        if (state.sys.getAbbreviation 
-            && (!this.abbrevs[jurisdiction]
-                || !this.abbrevs[jurisdiction][category][orig])) {
-            state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
+        if (state.sys.getAbbreviation) {
+            if (!this.abbrevs[jurisdiction]) {
+                this.abbrevs[jurisdiction] = new CSL.AbbreviationSegments();
+            }
+            if (!this.abbrevs[jurisdiction][category][orig]) {
+                state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
+            }
         }
         return jurisdiction;
     }

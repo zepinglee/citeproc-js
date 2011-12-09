@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.249
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Open a new abbreviations segment if it is
+  missing when called.
+
+==========================
 Changes in version 1.0.248
 ==========================
 
