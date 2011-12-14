@@ -109,6 +109,9 @@ CSL.Node.name = {
             } else if ("symbol" === this.strings.and) {
                 this.and_term = "&";
             }
+
+            state.build.and_term = this.and_term;
+
             if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
                 this.and_prefix_single = " ";
                 this.and_prefix_multiple = ", ";
@@ -151,15 +154,6 @@ CSL.Node.name = {
                 this.ellipsis_prefix_single = " ";
                 this.ellipsis_prefix_multiple =  this.strings.delimiter;
                 this.ellipsis_suffix = " ";
-            }
-            if (this.strings["delimiter-precedes-et-al"] === "always") {
-                this.and_prefix_single = this.strings.delimiter;
-            } else if (this.strings["delimiter-precedes-last"] === "never") {
-                // Slightly fragile, as explained above in the code
-                // for "and".
-                if (this.and_prefix_multiple) {
-                    this.and_prefix_multiple = " ";
-                }
             }
 
             func = function (state, Item) {
