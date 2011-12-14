@@ -54,8 +54,8 @@ citation
 
 >>===== RESULT =====>>
 John Doe &#38; Jane Roe
-Doe John Co, Roe Jane Co and Noakes Richard Co
-John Doe, Jane Roe, Richard Noakes and Deacon Snoakes
+Doe John Co, Roe Jane Co, and Noakes Richard Co
+John Doe, Jane Roe, Richard Noakes, and Deacon Snoakes
 <<===== RESULT =====<<
 
 
