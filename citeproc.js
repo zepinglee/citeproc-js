@@ -1736,7 +1736,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.249";
+    this.processor_version = "1.0.250";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4280,40 +4280,55 @@ CSL.Node.info = {
 CSL.Node.institution = {
     build: function (state, target) {
         if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
-            if ("string" === typeof state.build.name_delimiter) {
+            if ("string" === typeof state.build.name_delimiter && !this.strings.delimiter) {
                 this.strings.delimiter = state.build.name_delimiter;
             }
-            var func = function (state, Item) {
-                var myand, and_default_prefix, and_suffix;
-                if ("text" === this.strings.and) {
-                    myand = state.getTerm("and", "long", 0);
-                } else if ("symbol" === this.strings.and) {
-                    myand = "&";
+            var myand, and_default_prefix, and_suffix;
+            if ("text" === this.strings.and) {
+                this.and_term = state.getTerm("and", "long", 0);
+            } else if ("symbol" === this.strings.and) {
+                this.and_term = "&";
+            }
+            if ("undefined" === typeof this.and_term && state.build.and_term) {
+                this.and_term = state.getTerm("and", "long", 0);
+            }
+            if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
+                this.and_prefix_single = " ";
+                this.and_prefix_multiple = ", ";
+                if ("string" === typeof this.strings.delimiter) {
+                    this.and_prefix_multiple = this.strings.delimiter;
                 }
-                if (state.nameOutput.name.and_term) {
-                    myand = state.getTerm("and", "long", 0);
+                this.and_suffix = " ";
+            } else {
+                this.and_prefix_single = "";
+                this.and_prefix_multiple = "";
+                this.and_suffix = "";
+            }
+            if (this.strings["delimiter-precedes-last"] === "always") {
+                this.and_prefix_single = this.strings.delimiter;
+            } else if (this.strings["delimiter-precedes-last"] === "never") {
+                if (this.and_prefix_multiple) {
+                    this.and_prefix_multiple = " ";
                 }
-                if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(myand)) {
-                    and_default_prefix = " ";
-                    and_suffix = " ";
-                } else {
-                    and_default_prefix = "";
-                    and_suffix = "";
-                }
+            }
+            func = function (state, Item) {
                 this.and = {};
-                this.and.single = new CSL.Blob(myand);
-                this.and.single.strings.suffix = and_suffix;
-                this.and.multiple = new CSL.Blob(myand);
-                this.and.multiple.strings.suffix = and_suffix;
-                if (this.strings["delimiter-precedes-last"] === "always") {
-                    this.and.single.strings.prefix = this.strings.delimiter;
-                    this.and.multiple.strings.prefix = this.strings.delimiter;
-                } else if (this.strings["delimiter-precedes-last"] === "contextual") {
-                    this.and.single.strings.prefix = and_default_prefix;
-                    this.and.multiple.strings.prefix = this.strings.delimiter;
-                } else {
-                    this.and.single.strings.prefix = and_default_prefix;
-                    this.and.multiple.strings.prefix = and_default_prefix;
+                if ("undefined" !== typeof this.and_term) {
+                    state.output.append(this.and_term, "empty", true);
+                    this.and.single = state.output.pop();
+                    this.and.single.strings.prefix = this.and_prefix_single;
+                    this.and.single.strings.suffix = this.and_suffix;
+                    state.output.append(this.and_term, "empty", true);
+                    this.and.multiple = state.output.pop();
+                    this.and.multiple.strings.prefix = this.and_prefix_multiple;
+                    this.and.multiple.strings.suffix = this.and_suffix;
+                } else if ("undefined" !== this.strings.delimiter) {
+                    this.and.single = new CSL.Blob(this.strings.delimiter);
+                    this.and.single.strings.prefix = "";
+                    this.and.single.strings.suffix = "";
+                    this.and.multiple = new CSL.Blob(this.strings.delimiter);
+                    this.and.multiple.strings.prefix = "";
+                    this.and.multiple.strings.suffix = "";
                 }
                 state.nameOutput.institution = this;
             };
@@ -4703,6 +4718,14 @@ CSL.NameOutput.prototype.reinit = function (names) {
 CSL.NameOutput.prototype.outputNames = function () {
     var i, ilen;
     var variables = this.variables;
+    if (this.institution.and) {
+        if (!this.institution.and.single.blobs && !this.institution.and.single.blobs.length) {
+            this.institution.and.single.blobs = this.name.and.single.blobs;
+        }
+        if (!this.institution.and.single.blobs && !this.institution.and.multiple.blobs.length) {
+            this.institution.and.multiple.blobs = this.name.and.multiple.blobs;
+        }
+    }
     this.variable_offset = {};
     if (this.family) {
         this.family_decor = CSL.Util.cloneToken(this.family);
@@ -6460,6 +6483,7 @@ CSL.Node.name = {
             } else if ("symbol" === this.strings.and) {
                 this.and_term = "&";
             }
+            state.build.and_term = this.and_term;
             if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
                 this.and_prefix_single = " ";
                 this.and_prefix_multiple = ", ";
@@ -6485,13 +6509,6 @@ CSL.Node.name = {
                 this.ellipsis_prefix_single = " ";
                 this.ellipsis_prefix_multiple =  this.strings.delimiter;
                 this.ellipsis_suffix = " ";
-            }
-            if (this.strings["delimiter-precedes-et-al"] === "always") {
-                this.and_prefix_single = this.strings.delimiter;
-            } else if (this.strings["delimiter-precedes-last"] === "never") {
-                if (this.and_prefix_multiple) {
-                    this.and_prefix_multiple = " ";
-                }
             }
             func = function (state, Item) {
                 this.and = {};
