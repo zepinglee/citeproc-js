@@ -233,6 +233,9 @@ CSL.Transform = function (state) {
             jurisdiction = "default";
         }
         if (!orig) {
+            if (!this.abbrevs[jurisdiction]) {
+                this.abbrevs[jurisdiction] = new CSL.AbbreviationSegments();
+            }
             return jurisdiction;
         }
         // The getAbbreviation() function should check the
