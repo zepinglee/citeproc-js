@@ -111,7 +111,7 @@ CSL.Output.DefaultFormatter.prototype.format = function (num) {
 
 CSL.NumericBlob.prototype.checkNext = function (next) {
     if (next && this.id == next.id) {
-        this.status = CSL.END;
+        this.status = CSL.START;
     } else if (! next || !next.num || this.type !== next.type || next.num !== (this.num + 1)) {
         if (this.status === CSL.SUCCESSOR_OF_SUCCESSOR) {
             this.status = CSL.END;
