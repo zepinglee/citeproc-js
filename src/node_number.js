@@ -101,19 +101,21 @@ CSL.Node.number = {
             var blob;
             // If prefix and suffix are nil, run through the page mangler,
             // if any. Otherwise, apply styling.
+            var newstr = ""
             if (state.opt["page-range-format"] 
                 && !this.strings.prefix && !this.strings.suffix
                 && !this.strings.form) {
-                var newstr = ""
                 for (var i = 0, ilen = values.length; i < ilen; i += 1) {
                     newstr += values[i][1];
                 }
                 newstr = state.fun.page_mangler(newstr);
+            }
+            if (newstr && !newstr.match(/^[0-9]+$/)) {
                 state.output.append(newstr, this);
             } else {
                 state.output.openLevel("empty");
                 for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-                    var blob = new CSL[values[i][0]](values[i][1], values[i][2]);
+                    var blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
                     if (i > 0) {
                         blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
                     }
