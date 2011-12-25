@@ -820,7 +820,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
         // that will be picked up by normal element selection and
         // short-forming.
         var jurisdiction = this.Item.jurisdiction;
-        for (var j = splitInstitution.length; j > 1; j += -1) {
+        for (var j = splitInstitution.length; j > 0; j += -1) {
             var str = splitInstitution.slice(0, j).join("|");
             var jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", str);
             if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][str]) {
