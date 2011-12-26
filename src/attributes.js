@@ -50,6 +50,57 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@has-year-only"] = function (state, arg) {
+    trydates = arg.split(/\s+/);
+    func = function (state, Item, item) {
+        var ret = [];
+        for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
+            var trydate = Item[trydates[i]];
+            if (!trydate || trydate.month || trydate.season) {
+                ret.push(false)
+            } else {
+                ret.push(true)
+            }
+        }
+        return ret;
+    };
+    this.tests.push(func);
+}
+
+CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
+    trydates = arg.split(/\s+/);
+    func = function (state, Item, item) {
+        var ret = [];
+        for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
+            var trydate = Item[trydates[i]];
+            if (!trydate || (!trydate.month && !trydate.season) || trydate.day) {
+                ret.push(false)
+            } else {
+                ret.push(true)
+            }
+        }
+        return ret;
+    };
+    this.tests.push(func);
+}
+
+CSL.Attributes["@has-day-only"] = function (state, arg) {
+    trydates = arg.split(/\s+/);
+    func = function (state, Item, item) {
+        var ret = [];
+        for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
+            var trydate = Item[trydates[i]];
+            if (!trydate || !trydate.day) {
+                ret.push(false)
+            } else {
+                ret.push(true)
+            }
+        }
+        return ret;
+    };
+    this.tests.push(func);
+}
+
 CSL.Attributes["@part-separator"] = function (state, arg) {
     this.strings["part-separator"] = arg;
 }
