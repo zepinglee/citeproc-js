@@ -171,6 +171,15 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 }
             }
         }
+        if (this.opt.development_extensions.locator_label_parse) {
+            if (item.locator && (!item.label || item.label === 'page')) {
+                var m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
+                if (m) {
+                    item.label = CSL.LOCATOR_LABELS_MAP[m[2]];
+                    item.locator = m[3];
+                }
+            }
+        }
         Item = this.retrieveItem("" + item.id);
         var newitem = [Item, item];
         sortedItems.push(newitem);
