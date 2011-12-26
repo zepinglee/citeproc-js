@@ -1,6 +1,40 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.251
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in term capitalization following an item prefix ending in a
+  full stop.
+
+- Fix bug in number collapsing; assure that numeric delimiter joins
+  are only imposed if the number nodes occur in different citations.
+
+- Fix bug in abbreviations handling; open a requested jurisdiction segment
+  even if the string to be abbreviated is empty.
+
+- Implement parsing of locator labels from locator string, when
+  locator label is empty or "page". This is a first step toward proper
+  statute support, which will require localized locator labels
+  embedded in the locator string. If not desired, the behavior can be
+  turned off with:
+
+    citeproc.opt.development_extensions.locator_label_parse = false
+
+- Implement three attributes for testing the characteristics of a
+  date variable:
+
+    has-year-only
+    has-month-or-season-only
+    has-day-only
+
+  These attributes are experimental, not yet in the official CSL schema.
+
+==========================
 Changes in version 1.0.250
 ==========================
 
