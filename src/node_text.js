@@ -213,16 +213,7 @@ CSL.Node.text = {
                             myterm = CSL.Output.Formatters["capitalize-first"](state, term);
                             //CSL.debug("Capitalize");
                         } else {
-                            if (item && item.prefix) {
-                                var prefix = item.prefix.replace(/\s+$/, "");
-                                if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(prefix.slice(-1)) > -1) {
-                                    myterm = CSL.Output.Formatters["capitalize-first"](state, term);
-                                } else {
-                                    myterm = term;
-                                }
-                            } else {
-                                myterm = term;
-                            }
+                            myterm = term;
                         }
                         
                         // XXXXX Cut-and-paste code in multiple locations. This code block should be

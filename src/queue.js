@@ -241,7 +241,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 // that the blob it pushes has text content,
 // and the current pointer is not moved after the push.
 
-CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
+CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePredecessor) {
     var token, blob, curr;
     var useblob = true;
     // XXXXX Nasty workaround, but still an improvement
@@ -305,7 +305,9 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
         str = str.replace(/\s+'/g, "  \'").replace(/^'/g, " \'");
 
         // signal whether we end with terminal punctuation?
-        this.state.tmp.term_predecessor = true;
+        if (!ignorePredecessor) {
+            this.state.tmp.term_predecessor = true;
+        }
     }
     blob = new CSL.Blob(str, token);
     curr = this.current.value();
@@ -319,7 +321,9 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious) {
         if (this.state.tmp.strip_periods) {
             blob.blobs = blob.blobs.replace(/\./g, "");
         }
-        this.state.tmp.term_predecessor = true;
+        if (!ignorePredecessor) {
+            this.state.tmp.term_predecessor = true;
+        }
     }
     //
     // Caution: The parallel detection machinery will blow up if tracking

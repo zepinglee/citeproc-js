@@ -97,7 +97,13 @@ CSL.Node.layout = {
                         if (item.prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
                             sp = " ";
                         }
-                        state.output.append((item.prefix + sp), this);
+                        var prefix = item.prefix.replace(/\s+$/, "");
+                        var ignorePredecessor = false;
+                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(prefix.slice(-1)) > -1) {
+                            state.tmp.term_predecessor = false;
+                            ignorePredecessor = true;
+                        }
+                        state.output.append((item.prefix + sp), this, false, ignorePredecessor);
                     }
                 };
                 prefix_token.execs.push(func);
