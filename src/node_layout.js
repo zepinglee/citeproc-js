@@ -94,16 +94,23 @@ CSL.Node.layout = {
                     var sp;
                     if (item && item.prefix) {
                         sp = "";
-                        if (item.prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
+                        // We need the raw string, without decorations
+                        // of any kind. Markup scheme is known, though, so
+                        // markup can be safely stripped at string level.
+                        var prefix = item.prefix.replace(/<[^>]+>/g, "").replace(/\s+$/, "").replace(/^\s+/, "");
+                        if (prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
                             sp = " ";
                         }
-                        var prefix = item.prefix.replace(/\s+$/, "");
                         var ignorePredecessor = false;
-                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(prefix.slice(-1)) > -1) {
+                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(prefix.slice(-1)) > -1
+                            && prefix[0] != prefix[0].toLowerCase()) {
                             state.tmp.term_predecessor = false;
                             ignorePredecessor = true;
                         }
-                        state.output.append((item.prefix + sp), this, false, ignorePredecessor);
+                        // Protect against double spaces, which would trigger an extra,
+                        // explicit, non-breaking space.
+                        prefix = (item.prefix + sp).replace(/\s+/g, " ")
+                        state.output.append(prefix, this, false, ignorePredecessor);
                     }
                 };
                 prefix_token.execs.push(func);
