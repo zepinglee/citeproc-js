@@ -45,15 +45,15 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
-var ActiveXObject;
-var XMLHttpRequest;
-var DOMParser;
 var CSL_IS_IE;
 var CSL_CHROME = function () {
+    var DOMParser;
     if ("undefined" == typeof DOMParser || CSL_IS_IE) {
         CSL_IS_IE = true;
         DOMParser = function() {};
         DOMParser.prototype.parseFromString = function(str, contentType) {
+            var ActiveXObject;
+            var XMLHttpRequest;
             if ("undefined" != typeof ActiveXObject) {
                 var xmldata = new ActiveXObject('MSXML.DomDocument');
                 xmldata.async = false;

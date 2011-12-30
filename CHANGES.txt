@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.252
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Declare ActiveXObject and XMLHttpRequest inside function
+  rather than globally in xmldom.js.
+
+- Allow declaration of in-style locales for which there is
+  no corresponding CSL locale file.
+
+- Bugfixes for prefix terminal punctuation logic.
+
+==========================
 Changes in version 1.0.251
 ==========================
 
