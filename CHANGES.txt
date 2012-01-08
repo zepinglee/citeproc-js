@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.254
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement year ranges in institutional abbreviations,
+  for use in generating official reporter names for
+  legal cases.
+
+
+==========================
 Changes in version 1.0.253
 ==========================
 
