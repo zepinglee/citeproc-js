@@ -835,6 +835,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
         myparams.push(params);
     }
 
+    this.tmp.has_purged_parallel = false;
     this.parallel.PruneOutputQueue(this);
     //
     // output.queue is a simple array.  do a slice
@@ -912,14 +913,18 @@ CSL.getCitationCluster = function (inputList, citationID) {
             return composite;
         }
         if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
-            composite.push("[CSL STYLE ERROR: reference with no printed form.]");
+            if (this.tmp.has_purged_parallel) {
+                composite.push("");
+            } else {
+                composite.push("[CSL STYLE ERROR: reference with no printed form.]");
+            }
         }
         if (objects.length && "string" === typeof composite[0]) {
             composite.reverse();
             var tmpstr = composite.pop();
             if (tmpstr && tmpstr.slice(0, 1) === ",") {
                 objects.push(tmpstr);
-            } else {
+            } else if (tmpstr) {
                 objects.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
             }
         } else {
