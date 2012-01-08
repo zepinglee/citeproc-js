@@ -52,8 +52,6 @@ var CSL_CHROME = function () {
         CSL_IS_IE = true;
         DOMParser = function() {};
         DOMParser.prototype.parseFromString = function(str, contentType) {
-            var ActiveXObject;
-            var XMLHttpRequest;
             if ("undefined" != typeof ActiveXObject) {
                 var xmldata = new ActiveXObject('MSXML.DomDocument');
                 xmldata.async = false;

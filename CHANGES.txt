@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.253
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not throw a warning to output if parallel cite
+  truncation results in an empty cite, and quash superfluous
+  delimiters for cites that render empty in this case.
+
+- Remove ActiveXObject and XMLHttpRequest var declarations
+  from xmldom.js. These had bad side effects because a var
+  declaration of a global function wipes out the function
+  within the scope. Go figure.
+
+
+==========================
 Changes in version 1.0.252
 ==========================
 
