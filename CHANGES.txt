@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.256
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Remove DOMParser declaration from xmldom.js,
+  that wasn't deleted in the earlier change.
+
+==========================
 Changes in version 1.0.255
 ==========================
 

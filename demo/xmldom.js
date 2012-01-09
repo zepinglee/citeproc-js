@@ -47,7 +47,6 @@
  */
 var CSL_IS_IE;
 var CSL_CHROME = function () {
-    var DOMParser;
     if ("undefined" == typeof DOMParser || CSL_IS_IE) {
         CSL_IS_IE = true;
         DOMParser = function() {};
