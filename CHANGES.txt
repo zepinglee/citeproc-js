@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.255
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix abbreviations fallback. "default" entries
+  and senior jurisdiction abbreviations will be
+  applied to juniors, and copied to them for
+  editing.
+
+
+==========================
 Changes in version 1.0.254
 ==========================
 
