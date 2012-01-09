@@ -246,12 +246,36 @@ CSL.Transform = function (state) {
         //
         // See testrunner_stdrhino.js for an example.
         if (state.sys.getAbbreviation) {
-            if (!this.abbrevs[jurisdiction]) {
-                this.abbrevs[jurisdiction] = new CSL.AbbreviationSegments();
+            // Build a list of trial keys, and step through them.
+            // When a match is hit, open an entry under the requested
+            // jurisdiction.
+            // Build the list of candidate keys.
+            var tryList = ['default'];
+            if (jurisdiction !== 'default') {
+                var workLst = jurisdiction.split(/\s*;\s*/);
+                for (var i=0, ilen=workLst.length; i < ilen; i += 1) {
+                    tryList.push(workLst.slice(0,i+1).join(';'));
+                }
             }
-            if (!this.abbrevs[jurisdiction][category][orig]) {
-                // jurisdiction could change to "default"
-                state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, jurisdiction, category, orig);
+            // Step through them, from most to least specific.
+            for (var i=tryList.length - 1; i > -1; i += -1) {
+                // Protect against a missing jurisdiction list in memory.
+                if (!this.abbrevs[tryList[i]]) {
+                    this.abbrevs[tryList[i]] = new CSL.AbbreviationSegments();
+                }
+                // Refresh from DB if no entry is found in memory.
+                if (!this.abbrevs[tryList[i]][category][orig]) {
+                    state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, tryList[i], category, orig);
+                }
+                // Did we find something?
+                if (this.abbrevs[tryList[i]][category][orig]) {
+                    // If we found a match, but in a less-specific list, add the entry to the most
+                    // specific list before breaking.
+                    if (i < tryList.length) {
+                        this.abbrevs[jurisdiction][category][orig] = this.abbrevs[tryList[i]][category][orig];
+                    }
+                    break;
+                }
             }
         }
         return jurisdiction;
