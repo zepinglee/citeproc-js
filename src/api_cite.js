@@ -781,13 +781,15 @@ CSL.getCitationCluster = function (inputList, citationID) {
         var parasets = [];
         var lastTitle = false;
         var lastPosition = false;
+        var lastID = false;
         for (var i=0, ilen = inputList.length; i < ilen; i += 1) {
             var type = inputList[i][0].type;
             var title = inputList[i][0].title;
             var position = inputList[i][1].position;
-            if (title && position && type === "legal_case") {
+            var id = inputList[i][0].id;
+            if (title && type === "legal_case" && id !== lastID && position) {
                 // Start a fresh sublist if the item title does not match the last one
-                if (title !== lastTitle) {
+                if (title !== lastTitle || parasets.length === 0) {
                     var lst = [];
                     parasets.push(lst);
                 }
@@ -795,6 +797,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             }
             lastTitle = title;
             lastPosition = position;
+            lastID = id;
         }
         // We now have a list of sublists, each w/matching titles
         for (var i=0, ilen=parasets.length; i < ilen; i += 1) {
