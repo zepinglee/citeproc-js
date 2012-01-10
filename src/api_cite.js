@@ -786,7 +786,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
             var title = inputList[i][0].title;
             var position = inputList[i][1].position;
             if (title && position && type === "legal_case") {
-                if (title !== lastTitle || position !== lastPosition) {
+                // Start a fresh sublist if the item title does not match the last one
+                if (title !== lastTitle) {
                     var lst = [];
                     parasets.push(lst);
                 }
@@ -1130,51 +1131,3 @@ CSL.citeEnd = function (Item, item) {
 
     this.tmp.cite_locales.push(this.tmp.last_cite_locale);
 };
-
-
-// More on personal names, I think
-// This should be run after all names have been sent to
-// output, no? It's used to determine what join should be
-// applied -- maybe that itself is not necessary, since
-// alternative joins are really only needed for author-date
-// styles, in which case we'd be looking at collapsing
-// anyway.
-//
-// I seem to remember that the collapse toggle raises too late,
-// though.
-/*
-                    if (!state.tmp.suppress_decorations
-                        && state.tmp.last_names_used.length === state.tmp.names_used.length
-                        && state.tmp.area === "citation") {
-                        // lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-                        lastones = state.tmp.last_names_used[state.tmp.nameset_counter];
-                        //lastones = state.tmp.last_names_used;
-                        currentones = state.tmp.names_used[state.tmp.nameset_counter];
-                        //currentones = state.tmp.names_used;
-                        compset = [currentones, lastones];
-                        if (CSL.Util.Names.compareNamesets(lastones,currentones)) {
-                            state.tmp.same_author_as_previous_cite = true;
-                        }
-                    }
-
-                    if (!state.tmp.suppress_decorations && (state[state.tmp.area].opt.collapse === "year" || state[state.tmp.area].opt.collapse === "year-suffix" || state[state.tmp.area].opt.collapse === "year-suffix-ranged")) {
-                        //
-                        // This is fine, but the naming of the comparison
-                        // function is confusing.  This is just checking whether the
-                        // current name is the same as the last name rendered
-                        // in the last cite, and it works.  Set a toggle if the
-                        // test fails, so we can avoid further suppression in the
-                        // cite.
-                        //
-
-                        //if (state.tmp.last_names_used.length === state.tmp.names_used.length) {
-                        if (state.tmp.same_author_as_previous_cite) {
-                            continue;
-                        } else {
-                            state.tmp.have_collapsed = false;
-                        }
-                    } else {
-                        state.tmp.have_collapsed = false;
-                    }
-
- */
