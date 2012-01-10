@@ -105,9 +105,8 @@ var CSL = {
     FINISH: 1,
     POSITION_FIRST: 0,
     POSITION_SUBSEQUENT: 1,
-    POSITION_SUBSEQUENT_PARALLEL: 2,
-    POSITION_IBID: 3,
-    POSITION_IBID_WITH_LOCATOR: 4,
+    POSITION_IBID: 2,
+    POSITION_IBID_WITH_LOCATOR: 3,
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
@@ -3139,11 +3138,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                         }
                         if (suprame) {
-                            if (this.registry.registry[item[1].id].parallel) {
-                                item[1].position = CSL.POSITION_SUBSEQUENT_PARALLEL;
-                            } else {
-                                item[1].position = CSL.POSITION_SUBSEQUENT;
-                            }
+                            item[1].position = CSL.POSITION_SUBSEQUENT;
                             if (first_ref[item[1].id] != onecitation.properties.noteIndex) {
                                 item[1]["first-reference-note-number"] = first_ref[item[1].id];
                             }
@@ -3338,12 +3333,14 @@ CSL.getCitationCluster = function (inputList, citationID) {
         var parasets = [];
         var lastTitle = false;
         var lastPosition = false;
+        var lastID = false;
         for (var i=0, ilen = inputList.length; i < ilen; i += 1) {
             var type = inputList[i][0].type;
             var title = inputList[i][0].title;
             var position = inputList[i][1].position;
-            if (title && position && type === "legal_case") {
-                if (title !== lastTitle) {
+            var id = inputList[i][0].id;
+            if (title && type === "legal_case" && id !== lastID && position) {
+                if (title !== lastTitle || parasets.length === 0) {
                     var lst = [];
                     parasets.push(lst);
                 }
@@ -3351,6 +3348,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             }
             lastTitle = title;
             lastPosition = position;
+            lastID = id;
         }
         for (var i=0, ilen=parasets.length; i < ilen; i += 1) {
             var lst = parasets[i];
@@ -7676,8 +7674,6 @@ CSL.Attributes["@position"] = function (state, arg) {
         for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
             if (lst[i] === "first") {
                 tryposition = CSL.POSITION_FIRST;
-            } else if (lst[i] === "subsequent-parallel") {
-                tryposition = CSL.POSITION_SUBSEQUENT_PARALLEL;
             } else if (lst[i] === "subsequent") {
                 tryposition = CSL.POSITION_SUBSEQUENT;
             } else if (lst[i] === "ibid") {
@@ -10139,7 +10135,7 @@ CSL.Output.Formatters.title = function (state, string) {
             lowerCaseVariant = words[pos].toLowerCase();
             var totallyskip = false;
             if (!isAllUpperCase || (words.length === 1 && words[pos].length < 4)) {
-                if (words[pos] === upperCaseVariant) {
+                if (words[pos] !== lowerCaseVariant) {
                     totallyskip = true;
                 }
             }

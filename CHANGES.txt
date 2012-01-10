@@ -14,6 +14,10 @@ Mishandled or unimplemented features
   style, in which subsequent parallels disappear in
   subsequent references.
 
+- Fix a small bug in text-case="title" (leave things with
+  capital letters in them alone, if the title as a whole
+  isn't all caps).
+
 ==========================
 Changes in version 1.0.256
 ==========================
