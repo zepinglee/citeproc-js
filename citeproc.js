@@ -1757,7 +1757,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.256";
+    this.processor_version = "1.0.257";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3333,6 +3333,47 @@ CSL.getCitationCluster = function (inputList, citationID) {
     if (citationID) {
         this.registry.citationreg.citationById[citationID].properties.backref_index = false;
         this.registry.citationreg.citationById[citationID].properties.backref_citation = false;
+    }
+    if (this.opt.xclass === "note") {
+        var parasets = [];
+        var lastTitle = false;
+        var lastPosition = false;
+        for (var i=0, ilen = inputList.length; i < ilen; i += 1) {
+            var type = inputList[i][0].type;
+            var title = inputList[i][0].title;
+            var position = inputList[i][1].position;
+            if (title && position && type === "legal_case") {
+                if (title !== lastTitle) {
+                    var lst = [];
+                    parasets.push(lst);
+                }
+                lst.push(inputList[i][1]);
+            }
+            lastTitle = title;
+            lastPosition = position;
+        }
+        for (var i=0, ilen=parasets.length; i < ilen; i += 1) {
+            var lst = parasets[i];
+            if (lst.length < 2) {
+                continue;
+            }
+            var locatorInLastPosition = lst.slice(-1)[0].locator;
+            if (locatorInLastPosition) {
+                for (var j=0, jlen=lst.length - 1; j < jlen; j += 1) {
+                    if (lst[j].locator) {
+                        locatorInLastPosition = false;
+                    }
+                }
+            }
+            if (locatorInLastPosition) {
+                lst[0].locator = locatorInLastPosition;
+                delete lst.slice(-1)[0].locator;
+                lst[0].label = lst.slice(-1)[0].label;
+                if (lst.slice(-1)[0].label) {
+                    delete lst.slice(-1)[0].label;
+                }
+            }
+       }
     }
     myparams = [];
     len = inputList.length;

@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.257
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Migrate a lone locator at the end of a parallel
+  series of legal_case references to the same case
+  (by title) to first position. Needed for the OSCOLA
+  style, in which subsequent parallels disappear in
+  subsequent references.
+
+==========================
 Changes in version 1.0.256
 ==========================
 
