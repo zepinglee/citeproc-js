@@ -492,11 +492,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                         }
                         if (suprame) {
-                            if (this.registry.registry[item[1].id].parallel) {
-                                item[1].position = CSL.POSITION_SUBSEQUENT_PARALLEL;
-                            } else {
-                                item[1].position = CSL.POSITION_SUBSEQUENT;
-                            }
+                            item[1].position = CSL.POSITION_SUBSEQUENT;
                             if (first_ref[item[1].id] != onecitation.properties.noteIndex) {
                                 item[1]["first-reference-note-number"] = first_ref[item[1].id];
                             }
@@ -790,7 +786,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             var title = inputList[i][0].title;
             var position = inputList[i][1].position;
             if (title && position && type === "legal_case") {
-                if (title !== lastTitle) {
+                if (title !== lastTitle || position !== lastPosition) {
                     var lst = [];
                     parasets.push(lst);
                 }

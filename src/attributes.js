@@ -784,8 +784,6 @@ CSL.Attributes["@position"] = function (state, arg) {
         for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
             if (lst[i] === "first") {
                 tryposition = CSL.POSITION_FIRST;
-            } else if (lst[i] === "subsequent-parallel") {
-                tryposition = CSL.POSITION_SUBSEQUENT_PARALLEL;
             } else if (lst[i] === "subsequent") {
                 tryposition = CSL.POSITION_SUBSEQUENT;
             } else if (lst[i] === "ibid") {
