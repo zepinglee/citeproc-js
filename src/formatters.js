@@ -184,7 +184,7 @@ CSL.Output.Formatters.title = function (state, string) {
             // Full string is not all-uppercase, or string is one word of three characters or less
             if (!isAllUpperCase || (words.length === 1 && words[pos].length < 4)) {
                 // This word is all-uppercase
-                if (words[pos] === upperCaseVariant) {
+                if (words[pos] !== lowerCaseVariant) {
                     totallyskip = true;
                 }
             }
