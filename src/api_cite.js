@@ -780,6 +780,52 @@ CSL.getCitationCluster = function (inputList, citationID) {
         this.registry.citationreg.citationById[citationID].properties.backref_citation = false;
     }
 
+    // Adjust locator positions if that looks like a sensible thing to do.
+    if (this.opt.xclass === "note") {
+        var parasets = [];
+        var lastTitle = false;
+        var lastPosition = false;
+        for (var i=0, ilen = inputList.length; i < ilen; i += 1) {
+            var type = inputList[i][0].type;
+            var title = inputList[i][0].title;
+            var position = inputList[i][1].position;
+            if (title && position && type === "legal_case") {
+                if (title !== lastTitle) {
+                    var lst = [];
+                    parasets.push(lst);
+                }
+                lst.push(inputList[i][1]);
+            }
+            lastTitle = title;
+            lastPosition = position;
+        }
+        // We now have a list of sublists, each w/matching titles
+        for (var i=0, ilen=parasets.length; i < ilen; i += 1) {
+            var lst = parasets[i];
+            if (lst.length < 2) {
+                continue;
+            }
+            // Get the locator in last position, but only if it's the only one in the set.
+            var locatorInLastPosition = lst.slice(-1)[0].locator;
+            if (locatorInLastPosition) {
+                for (var j=0, jlen=lst.length - 1; j < jlen; j += 1) {
+                    if (lst[j].locator) {
+                        locatorInLastPosition = false;
+                    }
+                }
+            }
+            // move the locator here, if it's called for.
+            if (locatorInLastPosition) {
+                lst[0].locator = locatorInLastPosition;
+                delete lst.slice(-1)[0].locator;
+                lst[0].label = lst.slice(-1)[0].label;
+                if (lst.slice(-1)[0].label) {
+                    delete lst.slice(-1)[0].label;
+                }
+            }
+       }
+    }
+
     myparams = [];
     len = inputList.length;
     for (pos = 0; pos < len; pos += 1) {
