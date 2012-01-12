@@ -332,6 +332,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
     var citations;
     if (this.opt.update_mode === CSL.POSITION) {
+        var citationsInNote = {};
         for (i = 0; i < 2; i += 1) {
             citations = [textCitations, noteCitations][i];
             var first_ref = {};
@@ -340,6 +341,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 var onecitation = citations[j];
                 if (!onecitation.properties.noteIndex) {
                     onecitation.properties.noteIndex = 0;
+                }
+                if (!citationsInNote[onecitation.properties.noteIndex]) {
+                    citationsInNote[onecitation.properties.noteIndex] = 1;
+                } else {
+                    citationsInNote[onecitation.properties.noteIndex] += 1;
                 }
                 // Set the following:
                 //
@@ -398,7 +404,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             var items = citations[(j - 1)].sortedItems;
                             var useme = false;
                             if ((citations[(j - 1)].sortedItems[0][1].id  == item[1].id && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1)) || citations[(j - 1)].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
-                                useme = true;
+                                if (citationsInNote[citations[j - 1].properties.noteIndex] === 1) {
+                                    useme = true;
+                                }
                             }
                             for (n = 0, nlen = items.slice(1).length; n < nlen; n += 1) {
                                 var itmp = items.slice(1)[n];
@@ -419,7 +427,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             // Case 2: immediately preceding source in this onecitation
                             // (1) Threshold conditions
                             //     (a) there must be an imediately preceding reference to  the
-                            //         same item in this onecitation
+                            //         same item in this onecitation; and
                             ibidme = true;
                         } else {
                             // everything else is definitely subsequent
@@ -762,7 +770,8 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
 CSL.getCitationCluster = function (inputList, citationID) {
     var result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object;
     this.tmp.last_primary_names_string = false;
-    txt_esc = CSL.Output.Formats[this.opt.mode].text_escape;
+    this.tmp.nestedBraces = false;
+    txt_esc = CSL.getSafeEscape(this);
     this.tmp.area = "citation";
     result = "";
     objects = [];
@@ -1007,6 +1016,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             && this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
             use_layout_suffix = use_layout_suffix.slice(1);
         }
+        this.output.nestedBraces = false;
         result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(use_layout_suffix);
         if (!this.tmp.suppress_decorations) {
             len = this.citation.opt.layout_decorations.length;
@@ -1107,6 +1117,17 @@ CSL.citeStart = function (Item, item) {
     }
     this.tmp.shadow_numbers = {};
     this.tmp.first_name_string = false;
+
+    // Set up for nested parens conversion if appropriate.
+    if (item && item.prefix) {
+        var openBrace = CSL.checkNestedBraceOpen.exec(item.prefix);
+        var closeBrace = CSL.checkNestedBraceClose.exec(item.prefix);
+        if (openBrace) {
+            if (!closeBrace || closeBrace[0].length < openBrace[0].length) {
+                this.output.nestedBraces = CSL.NestedBraces;
+            }
+        }
+    }
 };
 
 CSL.citeEnd = function (Item, item) {
@@ -1133,4 +1154,15 @@ CSL.citeEnd = function (Item, item) {
     this.tmp.disambig_request = false;
 
     this.tmp.cite_locales.push(this.tmp.last_cite_locale);
+    // Turn off nested parens conversion if appropriate.
+    // We don't try to track nesting in a serious way. User beware.
+    if (item && item.suffix) {
+        var openBrace = CSL.checkNestedBraceOpen.exec(item.suffix);
+        var closeBrace = CSL.checkNestedBraceClose.exec(item.suffix);
+        if (closeBrace) {
+            if (!openBrace || openBrace[0].length < closeBrace[0].length) {
+                this.output.nestedBraces = false;
+            }
+        }
+    }
 };

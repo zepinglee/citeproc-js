@@ -87,6 +87,13 @@ if (!Array.indexOf) {
 
 var CSL = {
 
+    NestedBraces: [
+        ["(", "["],
+        [")", "]"]
+    ],
+    checkNestedBraceOpen: new RegExp(".*\\("),
+    checkNestedBraceClose: new RegExp(".*\\)"),
+
     LangPrefsMap: {
         "title":"titles",
         "title-short":"titles",

@@ -157,7 +157,7 @@ CSL.Util.FlipFlopper = function (state) {
 };
 
 CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
-    this.txt_esc = CSL.getSafeEscape(this.state.opt.mode, this.state.tmp.area);
+    this.txt_esc = CSL.getSafeEscape(this.state);
     // CSL.debug("(flipflopper received blob decorations): "+blob.decorations);
     // CSL.debug("(blob alldecor): "+blob.alldecor);
     str = this._normalizeString(str);
