@@ -1774,7 +1774,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.258";
+    this.processor_version = "1.0.259";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3630,9 +3630,15 @@ CSL.citeStart = function (Item, item) {
         var openBrace = CSL.checkNestedBraceOpen.exec(item.prefix);
         var closeBrace = CSL.checkNestedBraceClose.exec(item.prefix);
         if (openBrace) {
-            if (!closeBrace || closeBrace[0].length < openBrace[0].length) {
+            if (!closeBrace) {
                 this.output.nestedBraces = CSL.NestedBraces;
+            } else if (closeBrace[0].length < openBrace[0].length) {
+                this.output.nestedBraces = CSL.NestedBraces;
+            } else {
+                this.output.nestedBraces = false;
             }
+        } else if (closeBrace) {
+            this.output.nestedBraces = false;
         }
     }
 };
@@ -3652,9 +3658,15 @@ CSL.citeEnd = function (Item, item) {
         var openBrace = CSL.checkNestedBraceOpen.exec(item.suffix);
         var closeBrace = CSL.checkNestedBraceClose.exec(item.suffix);
         if (closeBrace) {
-            if (!openBrace || openBrace[0].length < closeBrace[0].length) {
+            if (!openBrace) {
                 this.output.nestedBraces = false;
+            } else if (openBrace[0].length < closeBrace[0].length) {
+                this.output.nestedBraces = false;
+            } else {
+                this.output.nestedBraces = CSL.NestedBraces;
             }
+        } else if (openBrace) {
+            this.output.nestedBraces = CSL.NestedBraces;
         }
     }
 };
