@@ -1119,7 +1119,7 @@ CSL.citeStart = function (Item, item) {
     this.tmp.first_name_string = false;
 
     // Set up for nested parens conversion if appropriate.
-    if (item && item.prefix) {
+    if (this.development_extensions.flip_parentheses_to_braces && item && item.prefix) {
         var openBrace = CSL.checkNestedBraceOpen.exec(item.prefix);
         var closeBrace = CSL.checkNestedBraceClose.exec(item.prefix);
         if (openBrace) {
@@ -1156,7 +1156,7 @@ CSL.citeEnd = function (Item, item) {
     this.tmp.cite_locales.push(this.tmp.last_cite_locale);
     // Turn off nested parens conversion if appropriate.
     // We don't try to track nesting in a serious way. User beware.
-    if (item && item.suffix) {
+    if (this.development_extensions.flip_parentheses_to_braces && item && item.suffix) {
         var openBrace = CSL.checkNestedBraceOpen.exec(item.suffix);
         var closeBrace = CSL.checkNestedBraceClose.exec(item.suffix);
         if (closeBrace) {
