@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.258
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Flipflop parenthesis and square brackets based on
+  citation prefix/suffix content. A simple and slightly
+  rough implementation that will probably cover all use
+  cases for  this without causing confusion (touch wood).
+  This behavior can be turned off with the following toggle
+  if it causes any trouble:
+
+    citeproc.opt.development_extensions.flip_parentheses_to_braces = false;
+
+- Use subsequent, not ibid, if multiple discrete citations
+  exist in the preceding footnote.
+
+
+==========================
 Changes in version 1.0.257
 ==========================
 
