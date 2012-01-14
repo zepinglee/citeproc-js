@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.260
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix disambiguation logic, with a hat tip to Andrea Rossato
+  for pointing out the logical flaw in the citeproc-js code.
+  In the new configuration, some disambiguation operations
+  will run faster, there is less code, and it is a bit easier
+  to follow.
+
+  The mail relating to this has apparently disappeared from the
+  xbiblio-devel archive on SourceForge, but has been archived for
+  posterity in the ./attic.
+
+
+==========================
 Changes in version 1.0.259
 ==========================
 
