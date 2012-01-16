@@ -239,22 +239,25 @@ CSL.Disambiguation.prototype.disExtraText = function () {
     var pos, len, mybase;
     // Try with disambiguate="true""
     //print("=== disExtraText ==");
-    if (this.clashes[1] === 0) {
-        // See note in disNames, above.
-        mybase = CSL.cloneAmbigConfig(this.base);
-        mybase.year_suffix = false;
-        this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
+    mybase = CSL.cloneAmbigConfig(this.base);
+    mybase.year_suffix = false;
 
-        // This looks wrong. (a) is it ever reached? and (b) turn off disambiguate first?
-        if (this.nonpartners.length === 1) {
-            this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
-            this.lists[this.listpos] = [this.base,[]];
-        } else {
-            this.lists[this.listpos] = [this.base, this.nonpartners];
+    // See note in disNames, above (?)
+    if (this.clashes[1] === 0 || this.clashes[1] < this.clashes[0]) {
+        this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
+        for (var i=0, ilen=this.partners.length; i < ilen; i += 1) {
+            this.state.registry.registerAmbigToken(this.akey, "" + this.partners[i].id, mybase);
+        }
+        for (var i=0, ilen=this.nonpartners.length; i < ilen; i += 1) {
+            this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[i].id, mybase);
         }
     } else {
-        this.base.disambiguate = false;
+        // If adding text would be fruitless, don't bother.
+        for (var i=0, ilen=this.partners.length; i < ilen; i += 1) {
+            this.state.registry.registerAmbigToken(this.akey, "" + this.partners[i].id, this.betterbase);
+        }
     }
+    this.lists[this.listpos] = [this.base, []];
 };
 
 CSL.Disambiguation.prototype.disYears = function () {
@@ -416,14 +419,17 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
                     }
                 }
             }
+        } else if (increment_name) {
+            maxed = true;
+            if (this.modeindex < this.modes.length - 1) {
+                this.modeindex += 1;
+            }
         }
     }
-    if (!maxed && "disExtraText" === this.modes[this.modeindex]) {
+    if ("disExtraText" === this.modes[this.modeindex]) {
         this.base.disambiguate = true;
-        maxed = true;
     }
-    if (!maxed && "disYears" === this.modes[this.modeindex]) {
-        maxed = true;
+    if ("disYears" === this.modes[this.modeindex]) {
     }
     return maxed;
 };
