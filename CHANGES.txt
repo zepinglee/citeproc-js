@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.261
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in disambiguation logic that could cause a
+  hang when disambiguate="true" was used, but did not
+  succeed.
+
+==========================
 Changes in version 1.0.260
 ==========================
 
