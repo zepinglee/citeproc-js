@@ -979,6 +979,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
             var tmpstr = composite.pop();
             if (tmpstr && tmpstr.slice(0, 1) === ",") {
                 objects.push(tmpstr);
+            } else if ("string" == typeof objects.slice(-1)[0] && objects.slice(-1)[0].slice(-1) === ",") {
+                objects.push(" " + tmpstr)
             } else if (tmpstr) {
                 objects.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
             }
