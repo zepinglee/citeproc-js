@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.262
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Suppress cite delimiter when cite suffix ends in a comma.
+
+==========================
 Changes in version 1.0.261
 ==========================
 
