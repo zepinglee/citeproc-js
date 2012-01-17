@@ -174,7 +174,6 @@ var CSL = {
 
     SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
     TERMINAL_PUNCTUATION: [":", ".", ";", "!", "?", " "],
-    SPLICE_PUNCTUATION: [".", "!", "?", ":", ";", ","],
 
     // update modes
     NONE: 0,
