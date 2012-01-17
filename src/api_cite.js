@@ -977,9 +977,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
         if (objects.length && "string" === typeof composite[0]) {
             composite.reverse();
             var tmpstr = composite.pop();
-            if (tmpstr && CSL.SPLICE_PUNCTUATION.indexOf(tmpstr.slice(0, 1)) > -1) {
+            if (tmpstr && tmpstr.slice(0, 1) === ",") {
                 objects.push(tmpstr);
-            } else if ("string" == typeof objects.slice(-1)[0] && CSL.SPLICE_PUNCTUATION.indexOf(objects.slice(-1)[0].slice(-1)) > -1) {
+            } else if ("string" == typeof objects.slice(-1)[0] && objects.slice(-1)[0].slice(-1) === ",") {
                 objects.push(" " + tmpstr)
             } else if (tmpstr) {
                 objects.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
