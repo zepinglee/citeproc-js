@@ -208,9 +208,10 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         this.lists[this.listpos] = [this.base, this.partners];
     } else if (this.clashes[1] < this.clashes[0]) {
         // Improved, but not resolved
+        this.betterbase = CSL.cloneAmbigConfig(this.base);
         //SNIP-START
         if (this.debug) {
-            print("not resolved");
+            print("improved but not resolved");
         }
         //SNIP-END
         this.lists[this.listpos] = [this.base, this.partners];
@@ -301,7 +302,7 @@ CSL.Disambiguation.prototype.disYears = function () {
 CSL.Disambiguation.prototype.incrementDisambig = function () {
     var val, maxed;
     //print("=== incrementDisambig() ===");
-    maxed = false;
+    var maxed = false;
     if ("disNames" === this.modes[this.modeindex]) {
         var increment_name = false;
         var increment_nameset = false;
@@ -409,6 +410,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
                 } else {
                     // This will just be a return value. ...
                     maxed = true;
+                    this.base = CSL.cloneAmbigConfig(this.betterbase);
                     if (this.modeindex < this.modes.length - 1) {
                         //SNIP-START
                         if (this.debug) {
