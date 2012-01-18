@@ -121,7 +121,6 @@ var CSL = {
     MINIMAL_NAME_FIELDS: ["literal", "family"],
     SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
     TERMINAL_PUNCTUATION: [":", ".", ";", "!", "?", " "],
-    SPLICE_PUNCTUATION: [".", "!", "?", ":", ";", ","],
     NONE: 0,
     NUMERIC: 1,
     POSITION: 2,
@@ -1774,7 +1773,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.262";
+    this.processor_version = "1.0.263";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -11178,6 +11177,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.betterbase);
         this.lists[this.listpos] = [this.base, this.partners];
     } else if (this.clashes[1] < this.clashes[0]) {
+        this.betterbase = CSL.cloneAmbigConfig(this.base);
         this.lists[this.listpos] = [this.base, this.partners];
         this.lists.push([this.base, this.nonpartners]);
     } else {
@@ -11236,7 +11236,7 @@ CSL.Disambiguation.prototype.disYears = function () {
 };
 CSL.Disambiguation.prototype.incrementDisambig = function () {
     var val, maxed;
-    maxed = false;
+    var maxed = false;
     if ("disNames" === this.modes[this.modeindex]) {
         var increment_name = false;
         var increment_nameset = false;
@@ -11277,6 +11277,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
                     }
                 } else {
                     maxed = true;
+                    this.base = CSL.cloneAmbigConfig(this.betterbase);
                     if (this.modeindex < this.modes.length - 1) {
                         this.modeindex += 1;
                     }

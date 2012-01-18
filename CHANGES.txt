@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.263
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fall back to next-best disambiguation form on final failure when
+  performing names-based disambiguation.
+
+
+==========================
 Changes in version 1.0.262
 ==========================
 
