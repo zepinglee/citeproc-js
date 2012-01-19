@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.264
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid clobbering name-part decor when a cs:names
+  element is used in the context of cs:substitute.
+
+==========================
 Changes in version 1.0.263
 ==========================
 
