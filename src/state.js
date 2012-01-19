@@ -334,6 +334,7 @@ CSL.Engine.Build = function () {
     // group end tag decrements by 1.  conditional wrappers are
     // only applied if value is exactly 1.
     this.substitute_level = new CSL.Stack(0, CSL.LITERAL);
+    this.names_level = 0;
     this.render_nesting_level = 0;
     this.render_seen = false;
 };
