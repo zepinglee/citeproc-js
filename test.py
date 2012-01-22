@@ -238,6 +238,9 @@ class Params:
                     filenames = os.listdir(os.path.join(path,"humans"))
                     filenames.sort()
                     for filename in filenames:
+                        # citeproc-js can only reconcile one level of flip-floppery
+                        #if filename == "decorations_NestedQuotesInnerReverse.txt":
+                        #    continue
                         if not filename.endswith(".txt"): continue
                         if args:
                             if not filename.startswith("%s_" % self.args[0]): continue
@@ -473,7 +476,7 @@ class CslTest:
         self.hp = os.path.sep.join(hpath)
 	self.CREATORS = ["author","editor","translator","recipient","interviewer"]
         self.CREATORS += ["composer","original-author","container-author","collection-editor"]
-        self.RE_ELEMENT = '(?sm)^(.*>>=.*%s[^\n]+)(.*)(\n<<=.*%s.*)'
+        self.RE_ELEMENT = '(?sm)^(.*>>=.*%s[^\n]+)\n(.*)(\n<<=.*%s.*)'
         self.RE_FILENAME = '^[-a-z]+_[a-zA-Z0-9]+\.txt$'
         self.script = os.path.split(sys.argv[0])[1]
         self.pickle = ".".join((os.path.splitext( self.script )[0], "pkl"))
@@ -493,7 +496,7 @@ class CslTest:
                 else:
                     stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
                 self.data['csl'] = fixEndings(open(stylepath).read())
-        self.extract("RESULT",required=True,is_json=False)
+        self.extract("RESULT",required=True,is_json=False,rstrip=True)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
         self.extract("CITATIONS",required=False,is_json=True)
