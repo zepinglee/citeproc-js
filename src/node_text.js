@@ -353,8 +353,6 @@ CSL.Node.text = {
                                         if (m) {
                                             var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
                                             var lst = [];
-                                            print("splt: "+splt);
-                                            print("m: "+m);
                                             if (!lst[0]) {
                                                 for (var i=1, ilen=splt.length; i < ilen; i += 1) {
                                                     var subdiv = m[i - 1].replace(/^\s*/, "");
