@@ -93,6 +93,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.raw_date_parsing = true;
     this.development_extensions.clean_up_csl_flaws = true;
     this.development_extensions.flip_parentheses_to_braces = true;
+    this.development_extensions.parse_section_variable = true;
 
     this.gender = {};
 	this['cite-lang-prefs'] = {

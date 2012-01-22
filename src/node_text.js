@@ -348,7 +348,8 @@ CSL.Node.text = {
                                 var value;
                                 value = state.getVariable(Item, this.variables[0], form);
                                 if (value) {
-                                    if (Item.type === "bill" || Item.type === "legislation") {
+                                    if ((Item.type === "bill" || Item.type === "legislation")
+                                       && state.opt.development_extensions.parse_section_variable) {
                                         var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                                         if (m) {
                                             var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
