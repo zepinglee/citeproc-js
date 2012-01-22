@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.266";
+    this.processor_version = "1.0.267";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2340,6 +2340,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.raw_date_parsing = true;
     this.development_extensions.clean_up_csl_flaws = true;
     this.development_extensions.flip_parentheses_to_braces = true;
+    this.development_extensions.parse_section_variable = true;
     this.gender = {};
 	this['cite-lang-prefs'] = {
 		persons:['orig'],
@@ -7178,12 +7179,14 @@ CSL.Node.text = {
                                 var value;
                                 value = state.getVariable(Item, this.variables[0], form);
                                 if (value) {
-                                    if (Item.type === "bill" || Item.type === "legislation") {
+                                    if ((Item.type === "bill" || Item.type === "legislation")
+                                       && state.opt.development_extensions.parse_section_variable) {
                                         var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                                         if (m) {
                                             var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
                                             var lst = [];
                                             if (!lst[0]) {
+                                                var parsed = false;
                                                 for (var i=1, ilen=splt.length; i < ilen; i += 1) {
                                                     var subdiv = m[i - 1].replace(/^\s*/, "");
                                                     subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
@@ -7192,10 +7195,15 @@ CSL.Node.text = {
                                                         plural = true;
                                                     }
                                                     subdiv = state.getTerm(subdiv, "symbol", plural);
+                                                    if (subdiv) {
+                                                        parsed = true;
+                                                    }
                                                     lst.push(subdiv);
                                                     lst.push(splt[i].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
                                                 }
-                                                value = lst.join(" ");
+                                                if (parsed) {
+                                                    value = lst.join(" ");
+                                                }
                                             }
                                         }
                                     }
