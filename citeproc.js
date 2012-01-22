@@ -57,6 +57,16 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
+    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:pt\.|ch\.|subch\.|sec\.|art\.|para\.))/g,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:pt\.|ch\.|subch\.|sec\.|art\.|para\.))/,
+    STATUTE_SUBDIV_STRINGS: {
+        "pt.": "part",
+        "ch.": "chapter",
+        "subch.": "subchapter",
+        "sec.": "section",
+        "art.": "article",
+        "para.": "paragraph"
+    },
     NestedBraces: [
         ["(", "["],
         [")", "]"]
@@ -116,7 +126,7 @@ var CSL = {
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-    MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short"],
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
     MINIMAL_NAME_FIELDS: ["literal", "family"],
     SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
@@ -1773,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.264";
+    this.processor_version = "1.0.265";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7163,6 +7173,35 @@ CSL.Node.text = {
                                     state.output.append(value, this);
                                 }
                             };
+                        } else if (this.variables_real[0] === "section") {
+                            func = function (state, Item) {
+                                var value;
+                                value = state.getVariable(Item, this.variables[0], form);
+                                if (value) {
+                                    if (Item.type === "bill" || Item.type === "legislation") {
+                                        var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+                                        if (m) {
+                                            var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                                            var lst = [];
+                                            if (!lst[0]) {
+                                                for (var i=1, ilen=splt.length; i < ilen; i += 1) {
+                                                    var subdiv = m[i - 1].replace(/^\s*/, "");
+                                                    subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
+                                                    var plural = false;
+                                                    if (splt[i].match(/(?:&|, | and )/)) {
+                                                        plural = true;
+                                                    }
+                                                    subdiv = state.getTerm(subdiv, "symbol", plural);
+                                                    lst.push(subdiv);
+                                                    lst.push(splt[i].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
+                                                }
+                                                value = lst.join(" ");
+                                            }
+                                        }
+                                    }
+                                    state.output.append(value, this);
+                                }
+                            };
                         } else {
                             func = function (state, Item) {
                                 var value;
@@ -8146,7 +8185,7 @@ CSL.Transform = function (state) {
         if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "institution-part";
         }
-        if (["genre"].indexOf(myabbrev_family) > -1) {
+        if (["genre", "event"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "title";
         }
         if (["title-short"].indexOf(myabbrev_family) > -1) {
