@@ -87,6 +87,17 @@ if (!Array.indexOf) {
 
 var CSL = {
 
+    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:pt\.|ch\.|subch\.|sec\.|art\.|para\.))/g,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:pt\.|ch\.|subch\.|sec\.|art\.|para\.))/,
+    STATUTE_SUBDIV_STRINGS: {
+        "pt.": "part",
+        "ch.": "chapter",
+        "subch.": "subchapter",
+        "sec.": "section",
+        "art.": "article",
+        "para.": "paragraph"
+    },
+
     NestedBraces: [
         ["(", "["],
         [")", "]"]
@@ -166,7 +177,7 @@ var CSL = {
 
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
-    MULTI_FIELDS: ["publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short"],
 
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
 
