@@ -16,6 +16,7 @@ dojo.require("std.page");
 dojo.require("std.disambiguate");
 dojo.require("std.etal");
 dojo.require("std.bibsection");
+dojo.require("std.decor");
 dojo.require("std.locale");
 dojo.require("std.style-as");
 dojo.require("std.quotes");
