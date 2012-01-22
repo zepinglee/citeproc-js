@@ -354,6 +354,7 @@ CSL.Node.text = {
                                             var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
                                             var lst = [];
                                             if (!lst[0]) {
+                                                var parsed = false;
                                                 for (var i=1, ilen=splt.length; i < ilen; i += 1) {
                                                     var subdiv = m[i - 1].replace(/^\s*/, "");
                                                     subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
@@ -364,10 +365,15 @@ CSL.Node.text = {
                                                     }
                                                     // Needs gender too, but that's a stretch too far this evening.
                                                     subdiv = state.getTerm(subdiv, "symbol", plural);
+                                                    if (subdiv) {
+                                                        parsed = true;
+                                                    }
                                                     lst.push(subdiv);
                                                     lst.push(splt[i].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
                                                 }
-                                                value = lst.join(" ");
+                                                if (parsed) {
+                                                    value = lst.join(" ");
+                                                }
                                             }
                                         }
                                     }
