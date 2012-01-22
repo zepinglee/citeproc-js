@@ -340,6 +340,42 @@ CSL.Node.text = {
                                     state.output.append(value, this);
                                 }
                             };
+                        } else if (this.variables_real[0] === "section") {
+                            // Sections for statutes are special. This is an uncommon
+                            // variable, so we save the cost of the runtime check
+                            // unless it's being used.
+                            func = function (state, Item) {
+                                var value;
+                                value = state.getVariable(Item, this.variables[0], form);
+                                if (value) {
+                                    if (Item.type === "bill" || Item.type === "legislation") {
+                                        var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+                                        if (m) {
+                                            var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                                            var lst = [];
+                                            print("splt: "+splt);
+                                            print("m: "+m);
+                                            if (!lst[0]) {
+                                                for (var i=1, ilen=splt.length; i < ilen; i += 1) {
+                                                    var subdiv = m[i - 1].replace(/^\s*/, "");
+                                                    subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
+                                                    // A rough guess at pluralism
+                                                    var plural = false;
+                                                    if (splt[i].match(/(?:&|, | and )/)) {
+                                                        plural = true;
+                                                    }
+                                                    // Needs gender too, but that's a stretch too far this evening.
+                                                    subdiv = state.getTerm(subdiv, "symbol", plural);
+                                                    lst.push(subdiv);
+                                                    lst.push(splt[i].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
+                                                }
+                                                value = lst.join(" ");
+                                            }
+                                        }
+                                    }
+                                    state.output.append(value, this);
+                                }
+                            };
                         } else {
                             // anything left over just gets output in the normal way.
                             func = function (state, Item) {
