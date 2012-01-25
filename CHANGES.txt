@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.268
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in by-cite disambiguation affecting cites with two
+  names sharing the same surname.
+
+==========================
 Changes in version 1.0.267
 ==========================
 
