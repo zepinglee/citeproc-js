@@ -127,8 +127,9 @@ CSL.Registry.NameReg = function (state) {
         // adjust value upward if appropriate -- only if running
         // a non-names-global disambiguation strategy
         //
-        if (gdropt_orig === "by-cite" && param < request_base) {
-            param = request_base;
+        if (gdropt_orig === "by-cite" && param <= request_base) {
+            //param = request_base;
+            return request_base;
         }
         if (!dagopt) {
             return param;
