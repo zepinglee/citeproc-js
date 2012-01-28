@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.270
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Allow "hereinafter" variable (CSL 1.0mlz1 schema)
+  in parallel legal citations.
+
+
+==========================
 Changes in version 1.0.269
 ==========================
 
