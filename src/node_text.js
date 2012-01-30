@@ -290,7 +290,8 @@ CSL.Node.text = {
                                 if (item && item[this.variables[0]]) {
                                     var locator = "" + item[this.variables[0]];
                                     locator = locator.replace(/--*/g,"\u2013");
-                                    state.output.append(locator, this);
+                                    // true is for non-suppression of periods
+                                    state.output.append(locator, this, false, false, true);
                                 }
                             };
                         } else if (this.variables_real[0] === "page-first") {
@@ -305,7 +306,8 @@ CSL.Node.text = {
                                     if (idx > -1) {
                                         value = value.slice(0, idx);
                                     }
-                                    state.output.append(value, this);
+                                    // true is for non-suppression of periods
+                                    state.output.append(value, this, false, false, true);
                                 }
                             };
                         } else  if (this.variables_real[0] === "page") {
@@ -315,7 +317,8 @@ CSL.Node.text = {
                                 var value = state.getVariable(Item, "page", form);
                                 if (value) {
                                     value = state.fun.page_mangler(value);
-                                    state.output.append(value, this);
+                                    // true is for non-suppression of periods
+                                    state.output.append(value, this, false, false, true);
                                 }
                             };
                         } else if (this.variables_real[0] === "volume") {
@@ -338,6 +341,17 @@ CSL.Node.text = {
                                 if (value) {
                                     state.tmp.group_context.value()[2] = true;
                                     state.output.append(value, this);
+                                }
+                            };
+                        } else if (this.variables_real[0] === "URL") {
+                            func = function (state, Item) {
+                                var value;
+                                if (this.variables[0]) {
+                                    value = state.getVariable(Item, this.variables[0], form);
+                                    if (value) {
+                                        // true is for non-suppression of periods
+                                        state.output.append(value, this, false, false, true);
+                                    }
                                 }
                             };
                         } else if (this.variables_real[0] === "section") {

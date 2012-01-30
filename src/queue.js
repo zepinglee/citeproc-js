@@ -248,7 +248,7 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 // that the blob it pushes has text content,
 // and the current pointer is not moved after the push.
 
-CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePredecessor) {
+CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePredecessor, noStripPeriods) {
     var token, blob, curr;
     var useblob = true;
     // XXXXX Nasty workaround, but still an improvement
@@ -332,7 +332,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         curr = this.current.value();
     }
     if ("string" === typeof blob.blobs) {
-        if (this.state.tmp.strip_periods) {
+        if (this.state.tmp.strip_periods && !noStripPeriods) {
             blob.blobs = blob.blobs.replace(/\./g, "");
         }
         if (!ignorePredecessor) {

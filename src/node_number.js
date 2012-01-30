@@ -110,7 +110,7 @@ CSL.Node.number = {
                 }
                 newstr = state.fun.page_mangler(newstr);
             }
-            if (newstr && !newstr.match(/^[0-9]+$/)) {
+            if (newstr && !newstr.match(/^[-.\u20130-9]+$/)) {
                 state.output.append(newstr, this);
             } else {
                 state.output.openLevel("empty");
@@ -122,7 +122,7 @@ CSL.Node.number = {
                     if (i < values.length - 1) {
                         blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
                     }
-                    state.output.append(blob, "literal");
+                    state.output.append(blob, "literal", false, false, true);
                 }
                 state.output.closeLevel("empty");
             }
