@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.271
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Ignore "strip-periods" on URLs, true numbers and
+  locators. This may face some more adjustment as reports
+  roll in, but it seems to be broadly right.
+
+
+==========================
 Changes in version 1.0.270
 ==========================
 
