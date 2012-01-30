@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.272
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Correctly handle given names that have a
+  lowercase suffix appended with a hyphen
+  when converting to the initialed form.
+
+==========================
 Changes in version 1.0.271
 ==========================
 
