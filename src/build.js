@@ -554,7 +554,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         Item.volume = Item.number;
         Item.number = undefined;
     }
-    // Optional development extension
+    // Optional development extensions
     if (this.opt.development_extensions.field_hack && Item.note) {
         //Zotero.debug("XXX   (1): "+Item.note);
         m = Item.note.match(CSL.NOTE_FIELDS_REGEXP);
@@ -570,7 +570,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                     if (!Item[mm[1]]) {
                         Item[mm[1]] = []
                     }
-                    var lst = mm[2].split(/\s*||\s*/)
+                    var lst = mm[2].split(/\s*\|\|\s*/)
                     if (lst.length === 1) {
                         Item[mm[1]].push({family:lst[0],isInstitution:true});
                     } else if (lst.length === 2) {
@@ -582,6 +582,12 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                 }
                 Item.note.replace(CSL.NOTE_FIELD_REGEXP, "")
             }
+        }
+    }
+    if (this.opt.development_extensions.jurisdiction_subfield && Item.jurisdiction) {
+        var subjurisdictions = Item.jurisdiction.split(";");
+        if (subjurisdictions.length > 1) {
+            Item.subjurisdiction = subjurisdictions[1];
         }
     }
     // not including locator-date
