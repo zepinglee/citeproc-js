@@ -571,7 +571,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                         if (!Item[mm[1]]) {
                             Item[mm[1]] = []
                         }
-                        var lst = mm[2].split("||")
+                        var lst = mm[2].split(/\s*||\s*/)
                         if (lst.length === 1) {
                             Item[mm[1]].push({family:lst[0],isInstitution:true});
                         } else if (lst.length === 2) {
