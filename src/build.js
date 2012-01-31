@@ -563,26 +563,24 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             var names = {};
             for (pos = 0, len = m.length; pos < len; pos += 1) {
                 mm = m[pos].match(CSL.NOTE_FIELD_REGEXP);
-                if (true) {
-                    //Zotero.debug("XXX   (3)");
-                    if (!Item[mm[1]] && CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
-                        Item[mm[1]] = {raw:mm[2]};
-                    } else if (!Item[mm[1]] && CSL.NAME_VARIABLES.indexOf(mm[1]) > -1) {
-                        if (!Item[mm[1]]) {
-                            Item[mm[1]] = []
-                        }
-                        var lst = mm[2].split(/\s*||\s*/)
-                        if (lst.length === 1) {
-                            Item[mm[1]].push({family:lst[0],isInstitution:true});
-                        } else if (lst.length === 2) {
-                            Item[mm[1]].push({family:lst[0],given:lst[1]});
-                        }
-                    } else if (!Item[mm[1]] || mm[1] === "type") {
-                        //Zotero.debug("XXX   (4)");
-                        Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+                //Zotero.debug("XXX   (3)");
+                if (!Item[mm[1]] && CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
+                    Item[mm[1]] = {raw:mm[2]};
+                } else if (!Item[mm[1]] && CSL.NAME_VARIABLES.indexOf(mm[1]) > -1) {
+                    if (!Item[mm[1]]) {
+                        Item[mm[1]] = []
                     }
-                    Item.note.replace(CSL.NOTE_FIELD_REGEXP, "")
+                    var lst = mm[2].split(/\s*||\s*/)
+                    if (lst.length === 1) {
+                        Item[mm[1]].push({family:lst[0],isInstitution:true});
+                    } else if (lst.length === 2) {
+                        Item[mm[1]].push({family:lst[0],given:lst[1]});
+                    }
+                } else if (!Item[mm[1]] || mm[1] === "type") {
+                    //Zotero.debug("XXX   (4)");
+                    Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
                 }
+                Item.note.replace(CSL.NOTE_FIELD_REGEXP, "")
             }
         }
     }
