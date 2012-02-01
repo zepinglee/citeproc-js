@@ -646,7 +646,10 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                     state.processNumber(false, Item, variables[pos]);
                 }
             }
-            if (!state.tmp.shadow_numbers[variables[pos]].numeric) {
+            if (!state.tmp.shadow_numbers[variables[pos]].numeric
+                && !(variables[pos] === 'title'
+                     && Item[variables[pos]] 
+                     && Item[variables[pos]].slice(-1) === "" + parseInt(Item[variables[pos]].slice(-1)))) {
                 numeric = false;
                 break;
             }
