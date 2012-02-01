@@ -587,7 +587,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     if (this.opt.development_extensions.jurisdiction_subfield && Item.jurisdiction) {
         var subjurisdictions = Item.jurisdiction.split(";");
         if (subjurisdictions.length > 1) {
-            Item.subjurisdiction = subjurisdictions[1];
+            Item.subjurisdiction = subjurisdictions.slice(0,2).join(";");
         }
     }
     // not including locator-date
