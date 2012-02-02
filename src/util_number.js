@@ -254,7 +254,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 // Rack up as numeric output if pure numeric, otherwise as text.
                 if (elements[i]) {
                     if (elements[i].match(/[0-9]/)) {
-                        count = count + 1;
+                        if (elements[i - 1] && elements[i - 1].match(/\s*[\-\u2013]\s*/)) {
+                            if (elements[i - 2] && ("" + elements[i - 2]).match(/^[0-9]+$/)
+                                && elements[i].match(/^[0-9]+$/)
+                                && parseInt(elements[i - 2]) < parseInt(elements[i])) {
+                                
+                                count = count + 1;
+                            }
+                        } else {
+                            count = count + 1;
+                        }
                     }
                     var subelements = elements[i].split(/\s+/);
                     for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
@@ -304,7 +313,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             this.tmp.shadow_numbers[variable].numeric = true;
         } else {
              this.tmp.shadow_numbers[variable].numeric = numeric;
-       }
+        }
         if (count > 1) {
             this.tmp.shadow_numbers[variable].plural = 1;
         }
