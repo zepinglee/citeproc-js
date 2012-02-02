@@ -108,11 +108,13 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 };
 
 CSL.evaluateStringPluralism = function (str) {
-    if (str && str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|[0-9]\s*[\-\u2013]\s*[0-9])/)) {
-        return 1;
-    } else {
-        return 0;
+    if (str) {
+        var m = str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|([0-9]+)\s*[\-\u2013]\s*([0-9]+))/)
+        if (m && (!m[1] || parseInt(m[1]) < parseInt(m[2]))) {
+            return 1
+        }
     }
+    return 0;
 };
 
 CSL.castLabel = function (state, node, term, plural, mode) {
