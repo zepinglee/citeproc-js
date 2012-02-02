@@ -126,7 +126,7 @@ var CSL = {
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","subjurisdiction"],
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
     MINIMAL_NAME_FIELDS: ["literal", "family"],
     SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.272";
+    this.processor_version = "1.0.273";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2103,16 +2103,32 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     if (this.opt.development_extensions.field_hack && Item.note) {
         m = Item.note.match(CSL.NOTE_FIELDS_REGEXP);
         if (m) {
+            var names = {};
             for (pos = 0, len = m.length; pos < len; pos += 1) {
                 mm = m[pos].match(CSL.NOTE_FIELD_REGEXP);
-                if (!Item[mm[1]] || true) {
-                    if (CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
-                        Item[mm[1]] = {raw:mm[2]};
-                    } else {
-                        Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+                if (!Item[mm[1]] && CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
+                    Item[mm[1]] = {raw:mm[2]};
+                } else if (!Item[mm[1]] && CSL.NAME_VARIABLES.indexOf(mm[1]) > -1) {
+                    if (!Item[mm[1]]) {
+                        Item[mm[1]] = []
                     }
+                    var lst = mm[2].split(/\s*\|\|\s*/)
+                    if (lst.length === 1) {
+                        Item[mm[1]].push({family:lst[0],isInstitution:true});
+                    } else if (lst.length === 2) {
+                        Item[mm[1]].push({family:lst[0],given:lst[1]});
+                    }
+                } else if (!Item[mm[1]] || mm[1] === "type") {
+                    Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
                 }
+                Item.note.replace(CSL.NOTE_FIELD_REGEXP, "")
             }
+        }
+    }
+    if (this.opt.development_extensions.jurisdiction_subfield && Item.jurisdiction) {
+        var subjurisdictions = Item.jurisdiction.split(";");
+        if (subjurisdictions.length > 1) {
+            Item.subjurisdiction = subjurisdictions.slice(0,2).join(";");
         }
     }
     for (var i = 1, ilen = CSL.DATE_VARIABLES.length; i < ilen; i += 1) {
@@ -2341,6 +2357,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.clean_up_csl_flaws = true;
     this.development_extensions.flip_parentheses_to_braces = true;
     this.development_extensions.parse_section_variable = true;
+    this.development_extensions.jurisdiction_subfield = true;
     this.gender = {};
 	this['cite-lang-prefs'] = {
 		persons:['orig'],
@@ -6424,11 +6441,13 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     return CSL.castLabel(state, node, myterm, plural);
 };
 CSL.evaluateStringPluralism = function (str) {
-    if (str && str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|[0-9]\s*[\-\u2013]\s*[0-9])/)) {
-        return 1;
-    } else {
-        return 0;
+    if (str) {
+        var m = str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|([0-9]+)\s*[\-\u2013]\s*([0-9]+))/)
+        if (m && (!m[1] || parseInt(m[1]) < parseInt(m[2]))) {
+            return 1
+        }
     }
+    return 0;
 };
 CSL.castLabel = function (state, node, term, plural, mode) {
     var ret = state.getTerm(term, node.strings.form, plural, false, mode);
@@ -7133,6 +7152,12 @@ CSL.Node.text = {
                                 if (item && item[this.variables[0]]) {
                                     var locator = "" + item[this.variables[0]];
                                     locator = locator.replace(/--*/g,"\u2013");
+                                    var m = locator.match(/^([0-9]+)\s*\u2013\s*([0-9]+)$/)
+                                    if (m) {
+                                        if (parseInt(m[1]) >= parseInt(m[2])) {
+                                            locator = m[1] + "-" + m[2];
+                                        }
+                                    }
                                     state.output.append(locator, this, false, false, true);
                                 }
                             };
@@ -7681,7 +7706,10 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                     state.processNumber(false, Item, variables[pos]);
                 }
             }
-            if (!state.tmp.shadow_numbers[variables[pos]].numeric) {
+            if (!state.tmp.shadow_numbers[variables[pos]].numeric
+                && !(variables[pos] === 'title'
+                     && Item[variables[pos]] 
+                     && Item[variables[pos]].slice(-1) === "" + parseInt(Item[variables[pos]].slice(-1)))) {
                 numeric = false;
                 break;
             }
@@ -8199,7 +8227,7 @@ CSL.Transform = function (state) {
         if (!myabbrev_family) {
             return basevalue;
         }
-        if (["publisher-place", "event-place"].indexOf(myabbrev_family) > -1) {
+        if (["publisher-place", "event-place", "subjurisdiction"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
         if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
@@ -9581,11 +9609,11 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
     str = num.toString();
     if ((num / 10) % 10 === 1 || (num > 10 && num < 20)) {
         str += this.suffixes[gender][3];
-    } else if (num % 10 === 1) {
+    } else if (num % 10 === 1 && num % 100 !== 11) {
         str += this.suffixes[gender][0];
-    } else if (num % 10 === 2) {
+    } else if (num % 10 === 2 && num % 100 !== 12) {
         str += this.suffixes[gender][1];
-    } else if (num % 10 === 3) {
+    } else if (num % 10 === 3 && num % 100 !== 13) {
         str += this.suffixes[gender][2];
     } else {
         str += this.suffixes[gender][3];
@@ -9666,7 +9694,17 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             if (odd) {
                 if (elements[i]) {
                     if (elements[i].match(/[0-9]/)) {
-                        count = count + 1;
+                        if (elements[i - 1] && elements[i - 1].match(/\s*[\-\u2013]\s*/)) {
+                            if (elements[i - 2] && ("" + elements[i - 2]).match(/^[0-9]+$/)
+                                && elements[i].match(/^[0-9]+$/)
+                                && parseInt(elements[i - 2]) < parseInt(elements[i])) {
+                                count = count + 1;
+                            } else {
+                                this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "-";
+                            }
+                        } else {
+                            count = count + 1;
+                        }
                     }
                     var subelements = elements[i].split(/\s+/);
                     for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
@@ -9711,7 +9749,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             this.tmp.shadow_numbers[variable].numeric = true;
         } else {
              this.tmp.shadow_numbers[variable].numeric = numeric;
-       }
+        }
         if (count > 1) {
             this.tmp.shadow_numbers[variable].plural = 1;
         }

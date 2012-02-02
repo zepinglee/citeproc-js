@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.273
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Return is-numeric true against title variable
+  when it ends with a number (used in styles that
+  require a comma after title only in this case).
+
+- Some improvements to en-dash delimiter assignment
+  and to plurals detection.
+
+
+==========================
 Changes in version 1.0.272
 ==========================
 
