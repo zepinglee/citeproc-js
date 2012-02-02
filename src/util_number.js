@@ -260,6 +260,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                                 && parseInt(elements[i - 2]) < parseInt(elements[i])) {
                                 
                                 count = count + 1;
+                            } else {
+                                // This actually does work. Trust me.
+                                this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "-";
                             }
                         } else {
                             count = count + 1;
