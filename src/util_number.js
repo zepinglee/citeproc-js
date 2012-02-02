@@ -207,7 +207,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         }
        
         // Fix up hyphens early
-        num = num.replace(/\s*\-\s*/, "\u2013", "g");
+        //num = num.replace(/\s*\-\s*/, "\u2013", "g");
  
         if (this.variable === "page-first") {
             m = num.split(/\s*(?:&|,|-)\s*/);
@@ -255,14 +255,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 if (elements[i]) {
                     if (elements[i].match(/[0-9]/)) {
                         if (elements[i - 1] && elements[i - 1].match(/\s*[\-\u2013]\s*/)) {
-                            if (elements[i - 2] && ("" + elements[i - 2]).match(/^[0-9]+$/)
-                                && elements[i].match(/^[0-9]+$/)
-                                && parseInt(elements[i - 2]) < parseInt(elements[i])) {
+                            if (elements[i - 2] && ("" + elements[i - 2]).match(/[0-9]+$/)
+                                && elements[i].match(/^[0-9]+/)
+                                && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
                                 
+                                this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "\u2013";
                                 count = count + 1;
-                            } else {
-                                // This actually does work. Trust me.
-                                this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "-";
                             }
                         } else {
                             count = count + 1;
