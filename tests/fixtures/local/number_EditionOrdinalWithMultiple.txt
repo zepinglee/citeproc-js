@@ -63,15 +63,15 @@ Normalizes punctuation and grouping when multiple numbers are provided in input.
 16th, 28th, 30th, 31st, 32nd, 34th, 36th editions --- ‘16, 28, 30, 31, 32, 34, 36’ --- ordinalized, numeric, plural
 25th, 15th, 17th, 19th, 20th, 21st, 23rd, 24th editions --- ‘25, 15, 17, 19, 20, 21, 23, 24’ --- ordinalized, numeric, plural
 38th, 37th–40th editions --- ‘38, 37 - 40’ --- ordinalized, numeric, plural
-43rd–41st editions --- ‘43-41’ --- ordinalized, numeric, plural
+41st–43rd editions --- ‘41-43’ --- ordinalized, numeric, plural
 205th–2000th editions --- ‘205 - 2000’ --- ordinalized, numeric, plural
 1 vol + 1 CD --- ‘1 vol + 1 CD’ --- not ordinalized, non-numeric
 12nd edition --- ‘12nd’ --- Suffix left untouched, not ordinalized, numeric, singular
-12a–c edition --- ‘12a-c’ --- Suffix left untouched, not ordinalized, numeric, singular
-12th Yellow–tailed Wooly Monkey --- ‘12th Yellow-tailed Wooly Monkey’ --- not ordinalized, non-numeric
+12a-c edition --- ‘12a-c’ --- Suffix left untouched, not ordinalized, numeric, singular
+12th Yellow-tailed Wooly Monkey --- ‘12th Yellow-tailed Wooly Monkey’ --- not ordinalized, non-numeric
 T51 edition --- ‘T51’ --- not ordinalized, numeric, singular
 Edition 1 --- ‘Edition 1’ --- not ordinalized, non-numeric
-Editions 1–6th --- ‘Editions 1 - 6’ --- partially ordinalized, non-numeric (bad input, we don’t attempt rescue)
+Editions 1 - 6th --- ‘Editions 1 - 6’ --- partially ordinalized, non-numeric (bad input, we don’t attempt rescue)
 42nd edition --- ‘“42 editionX”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, singular
 42nd–47th editions --- ‘“42 - 47 editionz”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, plural
 T51 edn. --- ‘T51 edn.’ --- Non-numeric (label must be spelled out in full)
@@ -175,7 +175,7 @@ T51 & T53 editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plural
 	{
 		"id": "ITEM-10",
 		"title": "ordinalized, numeric, plural",
-		"edition" : "43-41",
+		"edition" : "41-43",
 		"type": "book"
 	},
 	{
