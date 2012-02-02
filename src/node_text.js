@@ -290,6 +290,12 @@ CSL.Node.text = {
                                 if (item && item[this.variables[0]]) {
                                     var locator = "" + item[this.variables[0]];
                                     locator = locator.replace(/--*/g,"\u2013");
+                                    var m = locator.match(/^([0-9]+)\s*\u2013\s*([0-9]+)$/)
+                                    if (m) {
+                                        if (parseInt(m[1]) >= parseInt(m[2])) {
+                                            locator = m[1] + "-" + m[2];
+                                        }
+                                    }
                                     // true is for non-suppression of periods
                                     state.output.append(locator, this, false, false, true);
                                 }
