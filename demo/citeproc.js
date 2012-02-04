@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.275";
+    this.processor_version = "1.0.276";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -9669,7 +9669,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
             num = num.slice(1, -1);
         }
-        if (num.indexOf("&") > -1) {
+        if (num.indexOf("&") > -1 || num.indexOf("--") > -1) {
             this.tmp.shadow_numbers[variable].plural = 1;
         }
         if (this.variable === "page-first") {
@@ -9681,8 +9681,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 }
             }
         }
-        var lst = num.split(/(?:,\s+|\s*[\-\u2013]\s*|\s*&\s*)/);
-        var m = num.match(/(,\s+|\s*[\-\u2013]\s*|\s*&\s*)/g);
+        var lst = num.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
+        var m = num.match(/(,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
         var elements = [];
         for (var i = 0, ilen = lst.length - 1; i < ilen; i += 1) {
             elements.push(lst[i]);
@@ -9696,19 +9696,26 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             if (odd) {
                 if (elements[i]) {
                     if (elements[i].match(/[0-9]/)) {
-                        if (elements[i - 1] && elements[i - 1].match(/\s*[\-\u2013]\s*/)) {
-                            if (elements[i - 2] && ("" + elements[i - 2]).match(/[0-9]+$/)
-                                && elements[i].match(/^[0-9]+/)
-                                && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
-                                this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "\u2013";
-                                if (this.opt["page-range-format"] ) {
-                                    var start = this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 2][1];
-                                    var end = elements[i];
-                                    var newstr = this.fun.page_mangler(start +"-"+end);
-                                    newstr = newstr.split(/\u2013/);
-                                    elements[i] = newstr[1];
+                        if (elements[i - 1] && elements[i - 1].match(/^\s*\\*[\-\u2013]+\s*$/)) {
+                            var middle = this.tmp.shadow_numbers[variable].values.slice(-1);
+                            if (middle[0][1].indexOf("\\") == -1) {
+                                if (elements[i - 2] && ("" + elements[i - 2]).match(/[0-9]+$/)
+                                    && elements[i].match(/^[0-9]+/)
+                                    && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
+                                    var start = this.tmp.shadow_numbers[variable].values.slice(-2);
+                                    middle[0][1] = "\u2013";
+                                    if (this.opt["page-range-format"] ) {
+                                        var newstr = this.fun.page_mangler(start[0][1] +"-"+elements[i]);
+                                        newstr = newstr.split(/\u2013/);
+                                        elements[i] = newstr[1];
+                                    }
+                                    count = count + 1;
                                 }
-                                count = count + 1;
+                                if (middle[0][1].indexOf("--") > -1) {
+                                    middle[0][1] = middle[0][1].replace(/--*/, "\u2013");
+                                }
+                            } else {
+                                middle[0][1] = middle[0][1].replace(/\\/, "", "g");
                             }
                         } else {
                             count = count + 1;

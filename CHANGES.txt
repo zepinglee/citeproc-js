@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.276
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize \- and -- as overrides forcing hyphen or
+  en-dash respectively, in numeric variable processing.
+  As noted under 1.0.275 below, most entries will be rendered
+  correctly, the override syntax can be used to address cases
+  where the syntactic meaning of a plain hyphen in input cannot
+  be derived reliable from context.
+
+
+==========================
 Changes in version 1.0.275
 ==========================
 
