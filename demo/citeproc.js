@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.273";
+    this.processor_version = "1.0.274";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -6904,7 +6904,6 @@ CSL.Node.number = {
                 for (var i = 0, ilen = values.length; i < ilen; i += 1) {
                     newstr += values[i][1];
                 }
-                newstr = state.fun.page_mangler(newstr);
             }
             if (newstr && !newstr.match(/^[-.\u20130-9]+$/)) {
                 state.output.append(newstr, this);
@@ -9669,7 +9668,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
             num = num.slice(1, -1);
         }
-        num = num.replace(/\s*\-\s*/, "\u2013", "g");
+        if (num.indexOf("&") > -1) {
+            this.tmp.shadow_numbers[variable].plural = 1;
+        }
         if (this.variable === "page-first") {
             m = num.split(/\s*(?:&|,|-)\s*/);
             if (m) {
@@ -9695,12 +9696,18 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 if (elements[i]) {
                     if (elements[i].match(/[0-9]/)) {
                         if (elements[i - 1] && elements[i - 1].match(/\s*[\-\u2013]\s*/)) {
-                            if (elements[i - 2] && ("" + elements[i - 2]).match(/^[0-9]+$/)
-                                && elements[i].match(/^[0-9]+$/)
-                                && parseInt(elements[i - 2]) < parseInt(elements[i])) {
+                            if (elements[i - 2] && ("" + elements[i - 2]).match(/[0-9]+$/)
+                                && elements[i].match(/^[0-9]+/)
+                                && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
+                                this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "\u2013";
+                                if (this.opt["page-range-format"] ) {
+                                    var start = this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 2][1];
+                                    var end = elements[i];
+                                    var newstr = this.fun.page_mangler(start +"-"+end);
+                                    newstr = newstr.split(/\u2013/);
+                                    elements[i] = newstr[1];
+                                }
                                 count = count + 1;
-                            } else {
-                                this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "-";
                             }
                         } else {
                             count = count + 1;

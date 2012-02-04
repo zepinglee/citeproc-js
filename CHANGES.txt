@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.274
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Set any numeric string with "&" to plural when testing for pluralism.
+  This fixes a regression that appears to have crept in around processor
+  version 1.0.220.
+
+- Move page mangling inside numeric element parse, when using numeric
+  processing for locators. Not perfect: leaf numbers formatted like
+  1-15 will get an en-dash. But leaf numbers are rare, and that small
+  error will be rarer still. The alternative would be to require
+  users to enter en-dash rather than hyphen as appropriate, which
+  seems a poorer choice.
+
+
+==========================
 Changes in version 1.0.273
 ==========================
 
