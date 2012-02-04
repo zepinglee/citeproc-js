@@ -108,7 +108,6 @@ CSL.Node.number = {
                 for (var i = 0, ilen = values.length; i < ilen; i += 1) {
                     newstr += values[i][1];
                 }
-                newstr = state.fun.page_mangler(newstr);
             }
             if (newstr && !newstr.match(/^[-.\u20130-9]+$/)) {
                 state.output.append(newstr, this);

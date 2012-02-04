@@ -205,9 +205,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
             num = num.slice(1, -1);
         }
-       
-        // Fix up hyphens early
-        //num = num.replace(/\s*\-\s*/, "\u2013", "g");
+
+        // Any & character in the string should force plural.
+        // This covers cases like "23 & seq". Cases like "23 et seq"
+        // will be caught out; that's for later, if need arises.
+        if (num.indexOf("&") > -1) {
+            this.tmp.shadow_numbers[variable].plural = 1;
+        }
  
         if (this.variable === "page-first") {
             m = num.split(/\s*(?:&|,|-)\s*/);
@@ -260,6 +264,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                                 && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
                                 
                                 this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 1][1] = "\u2013";
+                                if (this.opt["page-range-format"] ) {
+                                    // This is a hack. The page mangler strings were originally
+                                    // used directly.
+                                    var start = this.tmp.shadow_numbers[variable].values[this.tmp.shadow_numbers[variable].values.length - 2][1];
+                                    var end = elements[i];
+                                    var newstr = this.fun.page_mangler(start +"-"+end);
+                                    newstr = newstr.split(/\u2013/);
+                                    elements[i] = newstr[1];
+                                }
+
                                 count = count + 1;
                             }
                         } else {
