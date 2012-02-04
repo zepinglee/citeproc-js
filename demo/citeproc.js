@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.274";
+    this.processor_version = "1.0.275";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7217,6 +7217,7 @@ CSL.Node.text = {
                                 if (value) {
                                     if ((Item.type === "bill" || Item.type === "legislation")
                                        && state.opt.development_extensions.parse_section_variable) {
+                                        value = "" + value;
                                         var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                                         if (m) {
                                             var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);

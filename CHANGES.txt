@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.275
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Assure that the section variable is a string
+  when parsing as string.
+
+
+==========================
 Changes in version 1.0.274
 ==========================
 
