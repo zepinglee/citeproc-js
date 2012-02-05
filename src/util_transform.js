@@ -504,9 +504,6 @@ CSL.Transform = function (state) {
                 hereinafter_metadata.push("date:" + date);
             }
         }
-        if (Item.jurisdiction) {
-            hereinafter_metadata.push("jurisdiction:" + Item.jurisdiction);
-        }
         hereinafter_metadata = hereinafter_metadata.join(", ");
         if (hereinafter_metadata) {
             hereinafter_metadata = " [" + hereinafter_metadata + "]";
