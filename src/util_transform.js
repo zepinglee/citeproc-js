@@ -135,7 +135,7 @@ CSL.Transform = function (state) {
             myabbrev_family = "institution-part";
         }
 
-        if (["genre", "event"].indexOf(myabbrev_family) > -1) {
+        if (["genre", "event", "medium"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "title";
         }
 
