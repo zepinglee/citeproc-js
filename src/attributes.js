@@ -286,8 +286,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 }
                 // if hereinafter variable, set/get the abbreviation entry
                 if ("hereinafter" === variables[pos] && state.sys.getAbbreviation) {
-                    var hereinafter_key = state.transform.getHereinafter(Item);
-                    state.transform.loadAbbreviation("default", "hereinafter", hereinafter_key);
+                    var hereinafter_info = state.transform.getHereinafter(Item);
+                    state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
                 }
                 if (state.tmp.can_block_substitute) {
                     state.tmp.done_vars.push(variables[pos]);
@@ -406,9 +406,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     myitem = item;
                 }
                 if (variable === "hereinafter" && state.sys.getAbbreviation) {
-                    var hereinafter_key = state.transform.getHereinafter(myitem);
-                    state.transform.loadAbbreviation("default", "hereinafter", hereinafter_key);
-                    if (state.transform.abbrevs["default"].hereinafter[hereinafter_key]) {
+                    var hereinafter_info = state.transform.getHereinafter(myitem);
+                    state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
+                    if (state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]]) {
                         x = true
                     }
                 } else if (myitem[variable]) {
