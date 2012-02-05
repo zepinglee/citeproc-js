@@ -8,8 +8,10 @@ Changes in version 1.0.277
 Mishandled or unimplemented features
 ------------------------------------
 
-- Recognize ibid position for in-text citations.
+- Recognize ibid position for in-text citations (fixes a regression).
 
+- Streamline key structure for "hereinafter" (an as-yet-off-CSL
+  variable accessible through the abbreviations list facility).
 
 ==========================
 Changes in version 1.0.276
