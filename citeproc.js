@@ -126,7 +126,7 @@ var CSL = {
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","subjurisdiction"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","subjurisdiction","medium"],
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
     MINIMAL_NAME_FIELDS: ["literal", "family"],
     SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.276";
+    this.processor_version = "1.0.277";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -3126,7 +3126,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             var items = citations[(j - 1)].sortedItems;
                             var useme = false;
                             if ((citations[(j - 1)].sortedItems[0][1].id  == item[1].id && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1)) || citations[(j - 1)].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
-                                if (citationsInNote[citations[j - 1].properties.noteIndex] === 1) {
+                                if (citationsInNote[citations[j - 1].properties.noteIndex] === 1 || citations[j - 1].properties.noteIndex === 0) {
                                     useme = true;
                                 }
                             }
@@ -7193,8 +7193,8 @@ CSL.Node.text = {
                             };
                         } else if (this.variables_real[0] === "hereinafter") {
                             func = function (state, Item) {
-                                var hereinafter_key = state.transform.getHereinafter(Item);
-                                var value = state.transform.abbrevs["default"].hereinafter[hereinafter_key];
+                                var hereinafter_info = state.transform.getHereinafter(Item);
+                                var value = state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]];
                                 if (value) {
                                     state.tmp.group_context.value()[2] = true;
                                     state.output.append(value, this);
@@ -7424,8 +7424,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     this.variables.push(variables[pos]);
                 }
                 if ("hereinafter" === variables[pos] && state.sys.getAbbreviation) {
-                    var hereinafter_key = state.transform.getHereinafter(Item);
-                    state.transform.loadAbbreviation("default", "hereinafter", hereinafter_key);
+                    var hereinafter_info = state.transform.getHereinafter(Item);
+                    state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
                 }
                 if (state.tmp.can_block_substitute) {
                     state.tmp.done_vars.push(variables[pos]);
@@ -7531,9 +7531,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     myitem = item;
                 }
                 if (variable === "hereinafter" && state.sys.getAbbreviation) {
-                    var hereinafter_key = state.transform.getHereinafter(myitem);
-                    state.transform.loadAbbreviation("default", "hereinafter", hereinafter_key);
-                    if (state.transform.abbrevs["default"].hereinafter[hereinafter_key]) {
+                    var hereinafter_info = state.transform.getHereinafter(myitem);
+                    state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
+                    if (state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]]) {
                         x = true
                     }
                 } else if (myitem[variable]) {
@@ -8233,7 +8233,7 @@ CSL.Transform = function (state) {
         if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "institution-part";
         }
-        if (["genre", "event"].indexOf(myabbrev_family) > -1) {
+        if (["genre", "event", "medium"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "title";
         }
         if (["title-short"].indexOf(myabbrev_family) > -1) {
@@ -8489,15 +8489,16 @@ CSL.Transform = function (state) {
                 hereinafter_metadata.push("date:" + date);
             }
         }
+        var jurisdiction = "default";
         if (Item.jurisdiction) {
-            hereinafter_metadata.push("jurisdiction:" + Item.jurisdiction);
+            jurisdiction = Item.jurisdiction;
         }
         hereinafter_metadata = hereinafter_metadata.join(", ");
         if (hereinafter_metadata) {
             hereinafter_metadata = " [" + hereinafter_metadata + "]";
         }
         var hereinafter_key = hereinafter_author_title.join(", ") + hereinafter_metadata;
-        return hereinafter_key;
+        return [jurisdiction, hereinafter_key];
     }
     this.getHereinafter = getHereinafter;
 };

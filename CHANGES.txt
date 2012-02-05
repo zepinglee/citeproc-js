@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.277
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize ibid position for in-text citations.
+
+
+==========================
 Changes in version 1.0.276
 ==========================
 
