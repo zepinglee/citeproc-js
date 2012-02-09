@@ -306,6 +306,12 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (variable === "page-first") {
                     variable = "page";
                 }
+                if (variable === "authority"
+                    && "string" === typeof Item[variable]
+                    && "names" === this.name) {
+                    
+                    Item[variable] = [{family:Item[variable],isInstitution:true}]
+                }
                 if (this.strings.form === "short" && !Item[variable]) {
                     if (variable === "title") {
                         variable = "shortTitle";
