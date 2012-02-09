@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.278
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not apply year suffixes if the first increment of disambig parameters returns no clashes.
+
+- Allow authority variable to be handled via cs:names
+
+
+==========================
 Changes in version 1.0.277
 ==========================
 
