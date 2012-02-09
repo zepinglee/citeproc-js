@@ -268,9 +268,13 @@ CSL.Disambiguation.prototype.disYears = function () {
     //print("=====");
     //print("IDs: " + [this.lists[this.listpos][1][x].id for (x in this.lists[this.listpos][1])]);
     //print("=====");
-    for (pos = 0, len = this.lists[this.listpos][1].length; pos < len; pos += 1) {
-        token = this.registry[this.lists[this.listpos][1][pos].id];
-        tokens.push(token);
+    if (this.clashes[1]) {
+        // That is, if the initial increment on the ambigs group returns no
+        // clashes, don't apply suffix. The condition is a failsafe.
+        for (pos = 0, len = this.lists[this.listpos][1].length; pos < len; pos += 1) {
+            token = this.registry[this.lists[this.listpos][1][pos].id];
+            tokens.push(token);
+        }
     }
     tokens.sort(this.state.registry.sorter.compareKeys);
     for (pos = 0, len = tokens.length; pos < len; pos += 1) {
