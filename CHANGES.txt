@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.279
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Convert hyphen to en-dash when rendering page variable
+  as cs:text, limiting to simple numeric ranges and allowing
+  overrides, with -- forcing en-dash and \- forcing hyphen.
+  (override behavior aligns with that of cs:number)
+
+
+==========================
 Changes in version 1.0.278
 ==========================
 

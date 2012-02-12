@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.278";
+    this.processor_version = "1.0.279";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7156,6 +7156,8 @@ CSL.Node.text = {
                                         if (parseInt(m[1]) >= parseInt(m[2])) {
                                             locator = m[1] + "-" + m[2];
                                         }
+                                    } else {
+                                        locator = locator.replace(/\u2013/g,"-");
                                     }
                                     state.output.append(locator, this, false, false, true);
                                 }
@@ -7177,6 +7179,15 @@ CSL.Node.text = {
                             func = function (state, Item) {
                                 var value = state.getVariable(Item, "page", form);
                                 if (value) {
+                                    value = value.replace(/--*/g,"\u2013");
+                                    var m = value.match(/^([0-9]+)\s*\u2013\s*([0-9]+)$/)
+                                    if (m) {
+                                        if (parseInt(m[1]) >= parseInt(m[2])) {
+                                            value = m[1] + "-" + m[2];
+                                        }
+                                    } else {
+                                        value = value.replace(/\u2013/g,"-");
+                                    }
                                     value = state.fun.page_mangler(value);
                                     state.output.append(value, this, false, false, true);
                                 }
