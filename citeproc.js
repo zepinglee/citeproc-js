@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.279";
+    this.processor_version = "1.0.280";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -10497,6 +10497,9 @@ CSL.Output.Formats.prototype.html = {
 };
 CSL.Output.Formats.prototype.text = {
     "text_escape": function (text) {
+        if (!text) {
+            text = "";
+        }
         return text;
     },
     "bibstart": "",
@@ -10548,6 +10551,9 @@ CSL.Output.Formats.prototype.text = {
 };
 CSL.Output.Formats.prototype.rtf = {
     "text_escape": function (text) {
+        if (!text) {
+            text = "";
+        }
         return text
         .replace(/([\\{}])/g, "\\$1", "g")
         .replace(CSL.SUPERSCRIPTS_REGEXP,

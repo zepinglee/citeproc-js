@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.280
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not crash when attempting to normalize undefined affix value
+  in rtf or plain text mode (html mode was already protected, the
+  other modes had been overlooked).
+
+
+==========================
 Changes in version 1.0.279
 ==========================
 
