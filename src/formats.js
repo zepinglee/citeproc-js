@@ -170,6 +170,9 @@ CSL.Output.Formats.prototype.text = {
     // need not be idempotent.
     //
     "text_escape": function (text) {
+        if (!text) {
+            text = "";
+        }
         return text;
     },
     "bibstart": "",
@@ -240,6 +243,9 @@ CSL.Output.Formats.prototype.rtf = {
     // need not be idempotent.
     //
     "text_escape": function (text) {
+        if (!text) {
+            text = "";
+        }
         return text
         .replace(/([\\{}])/g, "\\$1", "g")
         .replace(CSL.SUPERSCRIPTS_REGEXP,
