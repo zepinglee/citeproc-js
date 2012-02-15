@@ -488,11 +488,15 @@ CSL.Transform = function (state) {
         if (Item.type) {
             hereinafter_metadata.push("type:" + Item.type);
         }
-        if (Item.issued) {
+        var date_segment = Item.issued
+        if (["legal_case", "bill", "legislation"].indexOf(Item.type) > -1) {
+            date_segment = Item["original-date"];
+        }
+        if (date_segment) {
             var date = [];
             for (var j = 0, jlen = CSL.DATE_PARTS.length; j < jlen; j += 1) {
-                if (Item.issued[CSL.DATE_PARTS[j]]) {
-                    var element =  Item.issued[CSL.DATE_PARTS[j]];
+                if (date_segment[CSL.DATE_PARTS[j]]) {
+                    var element =  date_segment[CSL.DATE_PARTS[j]];
                     while (element.length < 2) {
                         element = "0" + element;
                     }
