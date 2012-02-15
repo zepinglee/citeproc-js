@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.280";
+    this.processor_version = "1.0.281";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8666,14 +8666,14 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
         this.cite[this.variable] = this.data;
         if (this.sets.value().length > 0) {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
-            if (this.target === "front" && this.variable === "issued") {
+            if (this.target === "front" && this.variable === "original-date") {
                 if (this.data.value && this.master_was_neutral_cite) {
                     this.target = "mid";
                 }
             }
             if (this.target === "front") {
                 if ((prev[this.variable] || this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
-                    if ("issued" !== this.variable) {
+                    if ("original-date" !== this.variable) {
                         this.in_series = false;
                     }
                 }
@@ -8739,25 +8739,25 @@ CSL.Parallel.prototype.CloseCite = function () {
             this.ComposeSet(true);
         }
         if (this.sets.value().length === 0) {
-            has_issued = false;
+            has_date = false;
             for (pos = 0, len = this.cite.back.length; pos < len; pos += 1) {
                 x = this.cite.back[pos];
-                if (x === "issued" && this.cite.issued && this.cite.issued.value) {
-                    has_issued = true;
+                if (x === "original-date" && this.cite["original-date"] && this.cite["original-date"].value) {
+                    has_date = true;
                     break;
                 }
             }
-            if (!has_issued) {
-                this.cite.back_forceme.push("issued");
+            if (!has_date) {
+                this.cite.back_forceme.push("original-date");
             }
         } else {
-            var idx = this.cite.front.indexOf("issued");
+            var idx = this.cite.front.indexOf("original-date");
             if (idx === -1 || this.master_was_neutral_cite) {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
             }
             if (idx > -1) {
                 var prev = this.sets.value()[this.sets.value().length - 1];
-                if (!prev.issued) {
+                if (!prev["original-date"]) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
             }
@@ -10052,7 +10052,11 @@ CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
     if (str.indexOf(this.quotechars[1]) > -1) {
         for (var i = 0, ilen = 2; i < ilen; i += 1) {
             if (this.quotechars[i + 4]) {
-                str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+                if (i === 0) {
+                    str = str.replace(this.quotechars[i + 4], " " + this.quotechars[1]);
+                } else {
+                    str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+                }
             }
         }
     }

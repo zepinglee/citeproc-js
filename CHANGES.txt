@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.281
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in nested quote flipflop handling.
+
+- Use CSL original-date rather than issued for
+  legal types capable of parallel referencing
+  (legal_case, bill, legislation).
+
+
+==========================
 Changes in version 1.0.280
 ==========================
 
