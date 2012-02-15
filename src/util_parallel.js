@@ -300,7 +300,7 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
         if (this.sets.value().length > 0) {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
             // ZZZ
-            if (this.target === "front" && this.variable === "issued") {
+            if (this.target === "front" && this.variable === "original-date") {
                 // REMAINING PROBLEM: this works for English-style cites, but not
                 // for the French. Only difference is date-parts (year versus year-month-day).
                 // See code at the bottom of CloseCite() for the other half of this workaround.
@@ -315,7 +315,7 @@ CSL.Parallel.prototype.CloseVariable = function (hello) {
                     // evaluation takes place later, at close of cite.
                     //this.try_cite = true;
                     // Ignore differences in issued
-                    if ("issued" !== this.variable) {
+                    if ("original-date" !== this.variable) {
                         this.in_series = false;
                     }
                 }
@@ -394,22 +394,22 @@ CSL.Parallel.prototype.CloseCite = function () {
         }
         //**print("[pushing cite]");
         if (this.sets.value().length === 0) {
-            has_issued = false;
+            has_date = false;
             for (pos = 0, len = this.cite.back.length; pos < len; pos += 1) {
                 x = this.cite.back[pos];
                 //**print("  ->issued="+this.cite.issued);
                 //for (var x in this.cite.issued) {
                 //    print("..."+x);
                 //}
-                if (x === "issued" && this.cite.issued && this.cite.issued.value) {
+                if (x === "original-date" && this.cite["original-date"] && this.cite["original-date"].value) {
                     //print("HAS ISSUED");
-                    has_issued = true;
+                    has_date = true;
                     break;
                 }
             }
-            if (!has_issued) {
+            if (!has_date) {
                 //print("  setting issued in back_forceme variable culling list");
-                this.cite.back_forceme.push("issued");
+                this.cite.back_forceme.push("original-date");
             }
         } else {
             //print("  renewing");
@@ -418,14 +418,14 @@ CSL.Parallel.prototype.CloseCite = function () {
             // that jumps to "mid" on "issued" only if the preceding cite was a neutral
             // one.
             //print("front: "+this.cite.front+", mid: "+this.cite.mid+", back: "+this.cite.back+", id: "+this.cite.itemId);
-            var idx = this.cite.front.indexOf("issued");
+            var idx = this.cite.front.indexOf("original-date");
             if (idx === -1 || this.master_was_neutral_cite) {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
             }
             if (idx > -1) {
                 // If previous cite rendered the year, go ahead and collapse. Otherwise, don't.
                 var prev = this.sets.value()[this.sets.value().length - 1];
-                if (!prev.issued) {
+                if (!prev["original-date"]) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
             }
