@@ -183,7 +183,11 @@ CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
     if (str.indexOf(this.quotechars[1]) > -1) {
         for (var i = 0, ilen = 2; i < ilen; i += 1) {
             if (this.quotechars[i + 4]) {
-                str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+                if (i === 0) {
+                    str = str.replace(this.quotechars[i + 4], " " + this.quotechars[1]);
+                } else {
+                    str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+                }
             }
         }
     }
