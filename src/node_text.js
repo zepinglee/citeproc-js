@@ -346,14 +346,17 @@ CSL.Node.text = {
                                 }
                             };
                         } else if (this.variables_real[0] === "hereinafter") {
-                            func = function (state, Item) {
-                                var hereinafter_info = state.transform.getHereinafter(Item);
-                                var value = state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]];
-                                if (value) {
-                                    state.tmp.group_context.value()[2] = true;
-                                    state.output.append(value, this);
-                                }
-                            };
+                            if (state.sys.getAbbreviation) {
+                                func = function (state, Item) {
+                                    var hereinafter_info = state.transform.getHereinafter(Item);
+                                    Zotero.debug("VVV (1) "+hereinafter_info[0]);
+                                    var value = state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]];
+                                    if (value) {
+                                        state.tmp.group_context.value()[2] = true;
+                                        state.output.append(value, this);
+                                    }
+                                };
+                            }
                         } else if (this.variables_real[0] === "URL") {
                             func = function (state, Item) {
                                 var value;
