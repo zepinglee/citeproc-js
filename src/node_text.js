@@ -349,7 +349,6 @@ CSL.Node.text = {
                             if (state.sys.getAbbreviation) {
                                 func = function (state, Item) {
                                     var hereinafter_info = state.transform.getHereinafter(Item);
-                                    Zotero.debug("VVV (1) "+hereinafter_info[0]);
                                     var value = state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]];
                                     if (value) {
                                         state.tmp.group_context.value()[2] = true;
