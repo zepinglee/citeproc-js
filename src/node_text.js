@@ -291,15 +291,8 @@ CSL.Node.text = {
                                     // Code copied to page variable as well; both
                                     // become cs:number in MLZ extended schema
                                     var locator = "" + item[this.variables[0]];
-                                    locator = locator.replace(/--*/g,"\u2013");
-                                    var m = locator.match(/^([0-9]+)\s*\u2013\s*([0-9]+)$/)
-                                    if (m) {
-                                        if (parseInt(m[1]) >= parseInt(m[2])) {
-                                            locator = m[1] + "-" + m[2];
-                                        }
-                                    } else {
-                                        locator = locator.replace(/\u2013/g,"-");
-                                    }
+                                    locator = locator.replace(/([^\\])--*/g,"$1\u2013");
+                                    locator = locator.replace(/\\-/g,"-");
 
                                     // true is for non-suppression of periods
                                     state.output.append(locator, this, false, false, true);
@@ -327,15 +320,8 @@ CSL.Node.text = {
                             func = function (state, Item) {
                                 var value = state.getVariable(Item, "page", form);
                                 if (value) {
-                                    value = value.replace(/--*/g,"\u2013");
-                                    var m = value.match(/^([0-9]+)\s*\u2013\s*([0-9]+)$/)
-                                    if (m) {
-                                        if (parseInt(m[1]) >= parseInt(m[2])) {
-                                            value = m[1] + "-" + m[2];
-                                        }
-                                    } else {
-                                        value = value.replace(/\u2013/g,"-");
-                                    }
+                                    value = value.replace(/([^\\])--*/g,"$1\u2013");
+                                    value = value.replace(/\\-/g,"-");
                                     value = state.fun.page_mangler(value);
                                     // true is for non-suppression of periods
                                     state.output.append(value, this, false, false, true);
