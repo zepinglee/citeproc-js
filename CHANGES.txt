@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.282
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in DOM parsing module, affecting styles
+  formatted with closing tags on the same line.
+
+
+==========================
 Changes in version 1.0.281
 ==========================
 

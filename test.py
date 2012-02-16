@@ -115,7 +115,7 @@ class Bundle:
         self.mode = mode
         f = ["load"]
         if mode == "zotero":
-            f.extend(["print_zotero", "xmle4x"])
+            f.extend(["print_zotero", "xmldom"])
         else:
             f.extend(["print"])
         f.extend(["sort","queue","util_disambig"])
