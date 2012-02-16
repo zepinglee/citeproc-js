@@ -272,6 +272,11 @@ CSL.Node.text = {
                         } else {
                             state.transform.setTransformFallback(true);
                             state.transform.setAbbreviationFallback(true);
+                            if (this.variables_real[0] === "subjurisdiction") {
+                                // XXX Suppress if subjurisdiction short and start of
+                                // container-title matches.
+                                state.transform.setSuppressMonitor("container-title");
+                            }
                             func = state.transform.getOutputFunction(this.variables);
 						}
                         if (this.variables_real[0] === "container-title") {
