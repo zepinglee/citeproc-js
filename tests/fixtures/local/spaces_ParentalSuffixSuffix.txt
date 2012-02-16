@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [parental suffix-suffix]
+One. Two. [parental suffix–suffix]
 <<===== RESULT =====<<
 
 
