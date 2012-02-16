@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.285
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Protect against crash when attempting to render
+  the (off-CSL) hereinafter variable without
+  abbreviations support.
+
+
+==========================
 Changes in version 1.0.284
 ==========================
 
