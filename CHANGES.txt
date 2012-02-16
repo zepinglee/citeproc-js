@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.284
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement suppression of subjurisdiction "short-form"
+  if it matches the beginning of container-title "short-form".
+  The subjurisdiction variable, and so this facility, are used
+  when rendering legal items only.
+
+
+==========================
 Changes in version 1.0.283
 ==========================
 

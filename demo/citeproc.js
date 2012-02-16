@@ -1783,7 +1783,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.283";
+    this.processor_version = "1.0.284";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7135,6 +7135,9 @@ CSL.Node.text = {
                         } else {
                             state.transform.setTransformFallback(true);
                             state.transform.setAbbreviationFallback(true);
+                            if (this.variables_real[0] === "subjurisdiction") {
+                                state.transform.setSuppressMonitor("container-title");
+                            }
                             func = state.transform.getOutputFunction(this.variables);
 						}
                         if (this.variables_real[0] === "container-title") {
@@ -8220,7 +8223,8 @@ CSL.Transform = function (state) {
         opt = {
             abbreviation_fallback: false,
             alternative_varname: false,
-            transform_fallback: false
+            transform_fallback: false,
+            suppress_monitor: false
         };
     }
     this.init = init;
@@ -8296,6 +8300,10 @@ CSL.Transform = function (state) {
         opt.abbreviation_fallback = b;
     }
     this.setAbbreviationFallback = setAbbreviationFallback;
+    function setSuppressMonitor(b) {
+        opt.suppress_monitor = b;
+    }
+    this.setSuppressMonitor = setSuppressMonitor;
     function setAlternativeVariableName(s) {
         opt.alternative_varname = s;
     }
@@ -8366,9 +8374,10 @@ CSL.Transform = function (state) {
         var myabbrev_family, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
         myabbrev_family = abbrev_family;
         myfieldname = fieldname;
-        abbreviation_fallback = opt.abbreviation_fallback;
-        alternative_varname = opt.alternative_varname;
-        transform_fallback = opt.transform_fallback;
+        var abbreviation_fallback = opt.abbreviation_fallback;
+        var alternative_varname = opt.alternative_varname;
+        var transform_fallback = opt.transform_fallback;
+        var suppress_monitor = opt.suppress_monitor;
 		var localesets;
         var langPrefs = CSL.LangPrefsMap[myfieldname];
         if (!langPrefs) {
@@ -8432,6 +8441,12 @@ CSL.Transform = function (state) {
 			}
             if (myabbrev_family) {
                 primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
+                if (suppress_monitor && primary) {
+                    suppressing_partner = abbreviate(state, Item, false, Item["container-title"], "container-title", true);
+                    if (suppressing_partner && suppressing_partner.slice(0, primary.length) === primary) {
+                        return null;
+                    }
+                }
                 secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
                 tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
             }
