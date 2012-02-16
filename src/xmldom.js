@@ -373,21 +373,35 @@ CSL_CHROME.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
     myxml = this.importNode(node.ownerDocument, datexml);
     parent.replaceChild(myxml, node);
      return parent;
- };
+};
 
 CSL_CHROME.prototype.insertPublisherAndPlace = function(myxml) {
     var group = myxml.getElementsByTagName("group");
     for (var i = 0, ilen = group.length; i < ilen; i += 1) {
         var node = group.item(i);
-        if (node.childNodes.length === 2) {
+        var skippers = [];
+        for (var j = 0, jlen = node.childNodes.length; j < jlen; j += 1) {
+            if (node.childNodes.item(j).nodeType !== 1) {
+                skippers.push(j);
+            }
+        }
+        if (node.childNodes.length - skippers.length === 2) {
             var twovars = [];
             for (var j = 0, jlen = 2; j < jlen; j += 1) {
-                var child = node.childNodes.item(j);
-                if (child.childNodes.length === 0) {
+                if (skippers.indexOf(j) > -1) {
+                    continue;
+                }
+                var child = node.childNodes.item(j);                    
+                var subskippers = [];
+                for (var k = 0, klen = child.childNodes.length; k < klen; k += 1) {
+                    if (child.childNodes.item(k).nodeType !== 1) {
+                        subskippers.push(k);
+                    }
+                }
+                if (child.childNodes.length - subskippers.length === 0) {
                     twovars.push(child.getAttribute('variable'));
                     if (child.getAttribute('suffix')
                         || child.getAttribute('prefix')) {
-                        
                         twovars = [];
                         break;
                     }
@@ -399,7 +413,6 @@ CSL_CHROME.prototype.insertPublisherAndPlace = function(myxml) {
         }
     }
 };
-
 
 CSL_CHROME.prototype.addMissingNameNodes = function(myxml) {
     var nameslist = myxml.getElementsByTagName("names");
