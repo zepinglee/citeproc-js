@@ -237,11 +237,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     if (this.opt.update_mode === CSL.POSITION) {
         textCitations = [];
         noteCitations = [];
+        var citationsInNote = {};
     }
     var update_items = [];
     for (i = 0, ilen = citationByIndex.length; i < ilen; i += 1) {
         citationByIndex[i].properties.index = i;
-            for (j = 0, jlen = citationByIndex[i].sortedItems.length; j < jlen; j += 1) {
+        for (j = 0, jlen = citationByIndex[i].sortedItems.length; j < jlen; j += 1) {
             item = citationByIndex[i].sortedItems[j];
             if (!this.registry.citationreg.citationsByItemId[item[1].id]) {
                 this.registry.citationreg.citationsByItemId[item[1].id] = [];
@@ -255,6 +256,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             if (citationByIndex[i].properties.noteIndex) {
                 noteCitations.push(citationByIndex[i]);
             } else {
+                citationByIndex[i].properties.noteIndex = 0;
                 textCitations.push(citationByIndex[i]);
             }
         }
@@ -332,20 +334,20 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
     var citations;
     if (this.opt.update_mode === CSL.POSITION) {
-        var citationsInNote = {};
         for (i = 0; i < 2; i += 1) {
             citations = [textCitations, noteCitations][i];
             var first_ref = {};
             var last_ref = {};
             for (j = 0, jlen = citations.length; j < jlen; j += 1) {
                 var onecitation = citations[j];
-                if (!onecitation.properties.noteIndex) {
-                    onecitation.properties.noteIndex = 0;
-                }
-                if (!citationsInNote[onecitation.properties.noteIndex]) {
-                    citationsInNote[onecitation.properties.noteIndex] = 1;
-                } else {
-                    citationsInNote[onecitation.properties.noteIndex] += 1;
+                for (var k = 0, klen = onecitation.sortedItems.length; k < klen; k += 1) {
+                    if (!this.registry.registry[onecitation.sortedItems[k][1].id].parallel) {
+                        if (!citationsInNote[onecitation.properties.noteIndex]) {
+                            citationsInNote[onecitation.properties.noteIndex] = 1;
+                        } else {
+                            citationsInNote[onecitation.properties.noteIndex] += 1;
+                        }
+                    }
                 }
                 // Set the following:
                 //
@@ -404,7 +406,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             var items = citations[(j - 1)].sortedItems;
                             var useme = false;
                             if ((citations[(j - 1)].sortedItems[0][1].id  == item[1].id && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1)) || citations[(j - 1)].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
-                                if (citationsInNote[citations[j - 1].properties.noteIndex] === 1 || citations[j - 1].properties.noteIndex === 0) {
+                                if (citationsInNote[citations[j - 1].properties.noteIndex] == 1 || citations[j - 1].properties.noteIndex == 0) {
                                     useme = true;
                                 }
                             }
