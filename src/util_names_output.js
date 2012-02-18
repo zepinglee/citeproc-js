@@ -348,15 +348,17 @@ CSL.NameOutput.prototype.outputNames = function () {
     //
     // If found, then (1) suppress title rendering, (2) replace the node
     // with the abbreviation output [and (3) do not run this._collapseAuthor() ?]
-    var oldSuppressDecorations = this.state.tmp.suppress_decorations;
-    this.state.tmp.suppress_decorations = true;
-    var lastBlob = this.state.tmp.name_node.top.blobs.pop();
-    var name_node_string = this.state.output.string(this.state, lastBlob.blobs, false);
-    this.state.tmp.name_node.top.blobs.push(lastBlob);
-    if (name_node_string) {
-        this.state.tmp.name_node.string = name_node_string;
+    if (variables[0] !== "authority") {
+        var oldSuppressDecorations = this.state.tmp.suppress_decorations;
+        this.state.tmp.suppress_decorations = true;
+        var lastBlob = this.state.tmp.name_node.top.blobs.pop();
+        var name_node_string = this.state.output.string(this.state, lastBlob.blobs, false);
+        this.state.tmp.name_node.top.blobs.push(lastBlob);
+        if (name_node_string) {
+            this.state.tmp.name_node.string = name_node_string;
+        }
+        this.state.tmp.suppress_decorations = oldSuppressDecorations;
     }
-    this.state.tmp.suppress_decorations = oldSuppressDecorations;
     // for hereinafter support
     if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
@@ -387,6 +389,7 @@ CSL.NameOutput.prototype.outputNames = function () {
         author = this.state.tmp.name_node.string;
         if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
             this.state.transform.loadAbbreviation("default", "nickname", author);
+            // XXX Why does this have to happen here?
             var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
             if (myLocalName) {
                 if (myLocalName === "{suppress}") {
