@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.286
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Use entire jurisdiction string for subjurisdiction
+
+- Include _ in regexp to permit archive_location variable in hack syntax.
+
+- More certain logic for discriminating between in-text and in-note references
+  for ibid purposes.
+
+- Never remember output from the authority variable as author for name suppression
+  et cetera.
+
+
+==========================
 Changes in version 1.0.285
 ==========================
 
