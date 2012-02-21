@@ -1,6 +1,43 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.287
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add Arabic/Persian character ranges to the "romanesque" test groups,
+  to apply roman-style conventions when formatting names. This addresses
+  a Zotero forum comment:
+
+    http://forums.zotero.org/discussion/21076/separate-firstname-of-lastname/
+
+- Force locales in the "fr" domain to use hyphen rather than en-dash as
+  page range delimiter. This also addresses a Zotero forum comment:
+
+    http://forums.zotero.org/discussion/5915/automatically-choose-whether-hyphen-en-dash-or-em-dash-should-be-used/#Item_39
+
+- Add fall-forward entry (fi -> fi_FI) for Finnish locale.
+
+- Fixups for control of text-case by language:
+
+  (1) Normalize the extracted field content to lowercase for
+  comparison.
+
+  (2) Treat unparseable values as non-English.
+
+  (3) Supply a method for registering exceptional strings that should
+  be recognized as English, regardless of other logic. Usage is:
+
+      citeproc.setEnglishLocaleEscapes(["angl", "ingl"])
+
+  With the setting above, a value of "Anglais" in the language field
+  will treated as equivalent to "en".
+
+
+==========================
 Changes in version 1.0.286
 ==========================
 
