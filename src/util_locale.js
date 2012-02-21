@@ -225,17 +225,22 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     // sub-segments
     for (termname in this.locale[lang_out].terms) {
         if (this.locale[lang_out].terms.hasOwnProperty(termname)) {
-        for (i = 0, ilen = 2; i < ilen; i += 1) {
-            genderform = CSL.GENDERS[i];
-            if (this.locale[lang_out].terms[termname][genderform]) {
-                for (form in this.locale[lang_out].terms[termname]) {
-                    if (!this.locale[lang_out].terms[termname][genderform][form]) {
-                        this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
+            for (i = 0, ilen = 2; i < ilen; i += 1) {
+                genderform = CSL.GENDERS[i];
+                if (this.locale[lang_out].terms[termname][genderform]) {
+                    for (form in this.locale[lang_out].terms[termname]) {
+                        if (!this.locale[lang_out].terms[termname][genderform][form]) {
+                            this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
+                        }
                     }
                 }
             }
         }
-        }
+    }
+    if (lang_out && lang_out.slice(0, 2) === "fr") {
+        this.locale[lang_out].terms["page-range-delimiter"] = "-";
+    } else {
+        this.locale[lang_out].terms["page-range-delimiter"] = "\u2013";
     }
     //
     // Xml: get list of nodes by node type

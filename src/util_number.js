@@ -266,12 +266,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                                     && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
                                     
                                     var start = this.tmp.shadow_numbers[variable].values.slice(-2);
-                                    middle[0][1] = "\u2013";
+                                    middle[0][1] = this.getTerm("page-range-delimiter");
                                     if (this.opt["page-range-format"] ) {
                                         // This is a hack. The page mangler strings were originally
                                         // used directly.
                                         var newstr = this.fun.page_mangler(start[0][1] +"-"+elements[i]);
-                                        newstr = newstr.split(/\u2013/);
+                                        newstr = newstr.split(this.getTerm("page-range-delimiter"));
                                         elements[i] = newstr[1];
                                     }
                                     

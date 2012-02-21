@@ -296,7 +296,7 @@ CSL.Node.text = {
                                     // Code copied to page variable as well; both
                                     // become cs:number in MLZ extended schema
                                     var locator = "" + item[this.variables[0]];
-                                    locator = locator.replace(/([^\\])--*/g,"$1\u2013");
+                                    locator = locator.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
                                     locator = locator.replace(/\\-/g,"-");
 
                                     // true is for non-suppression of periods
@@ -325,7 +325,7 @@ CSL.Node.text = {
                             func = function (state, Item) {
                                 var value = state.getVariable(Item, "page", form);
                                 if (value) {
-                                    value = value.replace(/([^\\])--*/g,"$1\u2013");
+                                    value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
                                     value = value.replace(/\\-/g,"-");
                                     value = state.fun.page_mangler(value);
                                     // true is for non-suppression of periods
