@@ -125,4 +125,19 @@ CSL.Engine.prototype.setAbbreviations = function (arg) {
 	if (this.sys.setAbbreviations) {
 		this.sys.setAbbreviations(arg);
 	}
-}
+};
+
+CSL.Engine.prototype.setEnglishLocaleEscapes = function (arg) {
+    if ("string" === typeof arg) {
+        arg = arg.split(/\s+,\s+/);
+    }
+    if (!arg || !arg.length) {
+        arg = [];
+    }
+    for (var i = 0, ilen = arg.length; i < ilen; i += 1) {
+	    if (this.opt.english_locale_escapes.indexOf(arg[i]) === -1) {
+            this.opt.english_locale_escapes.push(arg[i]);
+        }
+    }
+};
+

@@ -1010,18 +1010,22 @@ CSL.Attributes["@text-case"] = function (state, arg) {
         this.strings["text-case"] = arg;
         if (arg === "title") {
             var m = false;
+            var default_locale = state.opt["default-locale"][0].slice(0, 2);
             if (Item.language) {
-                m = Item.language.match(/^\s*([a-z]{2})(?:$|-| )/);
-            }
-            if (state.opt["default-locale"][0].slice(0, 2) === "en") {
-                if (m && m[1] !== "en") {
+                m = Item.language.match(/^\s*([A-Za-z]{2})(?:$|-| )/);
+                if (!m) {
                     this.strings["text-case"] = "passthrough";
+                } else if (m[1].toLowerCase() !== "en") {
+                    this.strings["text-case"] = "passthrough";
+                    for (var i = 0, ilen = state.opt.english_locale_escapes.length; i < ilen; i += 1) {
+                        var escaper = state.opt.english_locale_escapes[i];
+                        if (m[1].slice(0, escaper.length).toLowerCase() === escaper) {
+                            this.strings["text-case"] = arg;
+                        }
+                    }
                 }
-            } else {
+            } else if (default_locale !== "en") {
                 this.strings["text-case"] = "passthrough";
-                if (m && m[1] === "en") {
-                    this.strings["text-case"] = arg;
-                }
             }
         }
     };
