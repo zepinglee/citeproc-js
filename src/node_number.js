@@ -97,6 +97,10 @@ CSL.Node.number = {
                     state.processNumber(node, Item, varname);
                 }
             }
+            if (varname === "locator") {
+                // Only render the locator variable once in a cite.
+                state.tmp.done_vars.push("locator");
+            }
             var values = state.tmp.shadow_numbers[varname].values;
             var blob;
             // If prefix and suffix are nil, run through the page mangler,
