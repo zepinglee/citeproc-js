@@ -129,6 +129,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
     } else {
         this.registry = new CSL.Registry(this);
         this.tmp = new CSL.Engine.Tmp();
+        this.disambiguate = new CSL.Disambiguation(this);
     }
     return ret;
 };
