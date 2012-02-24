@@ -81,6 +81,9 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         //
         // register the name in the global names disambiguation
         // registry
+        if (!lst[i].given || !lst[i].family) {
+            continue;
+        }
         this.state.registry.namereg.addname("" + this.Item.id, lst[i], i);
         chk = this.state.tmp.disambig_settings.givens[pos];
         if ("undefined" === typeof chk) {
