@@ -783,12 +783,6 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
             jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
             if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
                 short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
-                if (this.Item["container-title"]) {
-                    var suppressing_partner = this.state.transform.abbrevs[jurisdiction]["container-title"][this.Item["container-title"]];
-                    if (varname === "authority" && suppressing_partner && suppressing_partner === short_form[j]) {
-                        short_form[j] = false;
-                    }
-                }
             }
         }
     }

@@ -114,8 +114,7 @@ CSL.Transform = function (state) {
         opt = {
             abbreviation_fallback: false,
             alternative_varname: false,
-            transform_fallback: false,
-            suppress_monitor: false
+            transform_fallback: false
         };
     }
     this.init = init;
@@ -212,12 +211,6 @@ CSL.Transform = function (state) {
         opt.abbreviation_fallback = b;
     }
     this.setAbbreviationFallback = setAbbreviationFallback;
-
-    //
-    function setSuppressMonitor(b) {
-        opt.suppress_monitor = b;
-    }
-    this.setSuppressMonitor = setSuppressMonitor;
 
     //
     function setAlternativeVariableName(s) {
@@ -334,7 +327,6 @@ CSL.Transform = function (state) {
         var abbreviation_fallback = opt.abbreviation_fallback;
         var alternative_varname = opt.alternative_varname;
         var transform_fallback = opt.transform_fallback;
-        var suppress_monitor = opt.suppress_monitor;
         
         // Set the primary_locale and secondary_locale lists appropriately.
 		// No instance helper function for this; everything can be derived
@@ -421,15 +413,17 @@ CSL.Transform = function (state) {
             if (myabbrev_family) {
                 primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
 
-                if (suppress_monitor && primary) {
-                    // If short-form primary matches front of short-form suppress_monitor value,
-                    // suppress all output
-                    var suppressing_partner = abbreviate(state, Item, false, Item["container-title"], "container-title", true);
-                    if (suppressing_partner && suppressing_partner.slice(0, primary.length) === primary) {
-                        return null;
+                if (primary) {
+                    // Suppress subsequent use of another variable if requested by
+                    // hack syntax in this abbreviation short form.
+                    var m = primary.match(/^!([-_a-z]+)<<</);
+                    if (m) {
+                        primary = primary.slice(m[0].length);
+                        if (state.tmp.done_vars.indexOf(m[1]) === -1) {
+                            state.tmp.done_vars.push(m[1]);
+                        }
                     }
                 }
-    
                 secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
                 tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
             }
