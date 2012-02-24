@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.288
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Render locator variable only once per cite.
+
+- Add missing disambiguation reinitialization in 
+  restoreProcessorState().
+
+- Fix crash error when handling page ranges in the
+  French locale.
+
+==========================
 Changes in version 1.0.287
 ==========================
 
