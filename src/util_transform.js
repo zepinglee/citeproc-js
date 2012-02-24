@@ -424,7 +424,7 @@ CSL.Transform = function (state) {
                 if (suppress_monitor && primary) {
                     // If short-form primary matches front of short-form suppress_monitor value,
                     // suppress all output
-                    suppressing_partner = abbreviate(state, Item, false, Item["container-title"], "container-title", true);
+                    var suppressing_partner = abbreviate(state, Item, false, Item["container-title"], "container-title", true);
                     if (suppressing_partner && suppressing_partner.slice(0, primary.length) === primary) {
                         return null;
                     }
