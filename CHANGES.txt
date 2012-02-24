@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.289
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix serious hanging bug affecting styles that use
+  initialize-with in combinatin with names-based
+  disambiguation and the by-cite rule. Bug was triggered
+  by a name on items in the same disambiguation group with no
+  given-name element.
+
+- Suppress a short-form authority name element if it matches
+  a short-form container-title. This may be superceded by
+  something more explicit implemented through the Abbreviations
+  Plugin.
+
+
+==========================
 Changes in version 1.0.288
 ==========================
 
