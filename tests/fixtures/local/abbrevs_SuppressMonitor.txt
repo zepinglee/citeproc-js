@@ -55,7 +55,7 @@ citation
 {
     "us": {
         "container-title": {
-            "New York Supreme Court Reports": "N.Y.S."
+            "New York Supreme Court Reports": "!subjurisdiction<<<N.Y.S."
         },
         "place": {
             "us;ny": "N.Y."
