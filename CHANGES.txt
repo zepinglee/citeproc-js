@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.292
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug by which a cs:number node with no
+  content could generate a stray group delimiter.
+
+==========================
 Changes in version 1.0.291
 ==========================
 
