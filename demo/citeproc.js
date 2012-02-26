@@ -475,7 +475,6 @@ if ("object" === typeof console && "function" === typeof console.log) {
 CSL.getSortCompare = function () {
     var strcmp;
     try {
-        var Components;
         var localeService = Components.classes["@mozilla.org/intl/nslocaleservice;1"]
             .getService(Components.interfaces.nsILocaleService);
         var collationFactory = Components.classes["@mozilla.org/intl/collation-factory;1"]
@@ -486,6 +485,7 @@ CSL.getSortCompare = function () {
         };
         CSL.debug("Using collation sort");
     } catch (e) {
+        CSL.debug("NOT using collation sort because: "+e);
         strcmp = function (a, b) {
             return a.localeCompare(b);
         };
@@ -1784,7 +1784,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.290";
+    this.processor_version = "1.0.291";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();

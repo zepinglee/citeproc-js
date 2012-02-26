@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.291
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Remove a var declaration that was clobbering the
+  Components object even if it was originally available.
+
+
+==========================
 Changes in version 1.0.290
 ==========================
 
