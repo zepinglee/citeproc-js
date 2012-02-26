@@ -51,7 +51,6 @@
 CSL.getSortCompare = function () {
     var strcmp;
     try {
-        var Components;
         var localeService = Components.classes["@mozilla.org/intl/nslocaleservice;1"]
             .getService(Components.interfaces.nsILocaleService);
         var collationFactory = Components.classes["@mozilla.org/intl/collation-factory;1"]
@@ -62,6 +61,7 @@ CSL.getSortCompare = function () {
         };
         CSL.debug("Using collation sort");
     } catch (e) {
+        CSL.debug("NOT using collation sort because: "+e);
         strcmp = function (a, b) {
             return a.localeCompare(b);
         };
