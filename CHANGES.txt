@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.293
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Make hyphen the page range delimiter in Portuguese
+  as well as French.
+
+==========================
 Changes in version 1.0.292
 ==========================
 
