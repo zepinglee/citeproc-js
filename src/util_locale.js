@@ -237,7 +237,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             }
         }
     }
-    if (lang_out && ["fr", "pt"].indexOf(lang_out.slice(0, 2).toLowerCase()) {
+    if (lang_out && ["fr", "pt"].indexOf(lang_out.slice(0, 2).toLowerCase()) > -1) {
         this.locale[lang_out].terms["page-range-delimiter"] = "-";
     } else {
         this.locale[lang_out].terms["page-range-delimiter"] = "\u2013";
