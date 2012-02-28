@@ -305,6 +305,7 @@ CSL.Node.text = {
                                 var idx, value;
                                 value = state.getVariable(Item, "page", form);
                                 if (value) {
+                                    value = ""+value;
                                     value = value.replace("\u2013", "-", "g");
                                     idx = value.indexOf("-");
                                     if (idx > -1) {
@@ -320,6 +321,7 @@ CSL.Node.text = {
                             func = function (state, Item) {
                                 var value = state.getVariable(Item, "page", form);
                                 if (value) {
+                                    value = ""+value;
                                     value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
                                     value = value.replace(/\\-/g,"-");
                                     value = state.fun.page_mangler(value);
