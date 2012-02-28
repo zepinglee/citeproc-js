@@ -61,7 +61,6 @@ CSL.getSortCompare = function () {
         };
         CSL.debug("Using collation sort");
     } catch (e) {
-        CSL.debug("NOT using collation sort because: "+e);
         strcmp = function (a, b) {
             return a.localeCompare(b);
         };
