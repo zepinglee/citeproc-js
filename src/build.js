@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.293";
+    this.processor_version = "1.0.294";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -607,7 +607,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 };
 
 CSL.Engine.prototype.setOpt = function (token, name, value) {
-    if (token.name === "style") {
+    if (token.name === "style" || token.name === "cslstyle") {
         this.opt[name] = value;
     } else if (["citation", "bibliography"].indexOf(token.name) > -1) {
         this[token.name].opt[name] = value;
