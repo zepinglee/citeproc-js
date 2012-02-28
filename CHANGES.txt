@@ -1,6 +1,35 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.295
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix parallel citation bug affecting some bibliographies
+  in some styles.
+
+- Don't crash when a number value of type number is passed 
+  to cs:number.
+
+- Drop an unnecessary var declaration that may have blocked
+  console reporting on some installations.
+
+
+==========================
+Changes in version 1.0.294
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Various tweaks to make the citeproc.js module
+  play nice with citeproc-node.
+
+==========================
 Changes in version 1.0.293
 ==========================
 
