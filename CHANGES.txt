@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.296
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a minor bug in givenname disambiguation using
+  the by-cite rule, by which an existing clash partner
+  failed to update in the document.
+
+
+==========================
 Changes in version 1.0.295
 ==========================
 

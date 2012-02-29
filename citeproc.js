@@ -1787,7 +1787,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.295";
+    this.processor_version = "1.0.296";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -11364,6 +11364,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         mybase.year_suffix = false;
         this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
         this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
+        this.state.tmp.taintedItemIDs[this.nonpartners[0].id] = true;
         this.lists[this.listpos] = [this.base, []];
     } else if (this.clashes[1] === 0) {
         this.betterbase = CSL.cloneAmbigConfig(this.base);
