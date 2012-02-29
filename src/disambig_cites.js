@@ -181,6 +181,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         //SNIP-END
         this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
         this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
+        this.state.tmp.taintedItemIDs[this.nonpartners[0].id] = true;
         this.lists[this.listpos] = [this.base, []];
     } else if (this.clashes[1] === 0) {
         // Partially resolved
