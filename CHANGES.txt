@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.297
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Permit installation of abbreviation lists and the
+  getAbbreviationList function after instantiation of the process or.
+
+- Expose abbreviation list instantiation function on instantiated processor
+  instance. Useful for running the processor with abbreviation list support
+  in some environments.
+
+- Fix potential bug in rendering of label terms.
+
+==========================
 Changes in version 1.0.296
 ==========================
 
