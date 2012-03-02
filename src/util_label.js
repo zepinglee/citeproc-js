@@ -104,7 +104,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
         }
     }
 */
-    return CSL.castLabel(state, node, myterm, plural);
+    return CSL.castLabel(state, node, myterm, plural, CSL.TOLERANT);
 };
 
 CSL.evaluateStringPluralism = function (str) {

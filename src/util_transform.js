@@ -104,7 +104,7 @@ CSL.Transform = function (state) {
 
     // Abbreviation families
     this.abbrevs = {};
-    this.abbrevs["default"] = new CSL.AbbreviationSegments();
+    this.abbrevs["default"] = new state.sys.AbbreviationSegments();
 
     // Initialization method
     function init(mytoken, myfieldname, myabbrev_family) {
@@ -234,7 +234,7 @@ CSL.Transform = function (state) {
         }
         if (!orig) {
             if (!this.abbrevs[jurisdiction]) {
-                this.abbrevs[jurisdiction] = new CSL.AbbreviationSegments();
+                this.abbrevs[jurisdiction] = new state.sys..AbbreviationSegments();
             }
             return jurisdiction;
         }
@@ -261,7 +261,7 @@ CSL.Transform = function (state) {
             for (var i=tryList.length - 1; i > -1; i += -1) {
                 // Protect against a missing jurisdiction list in memory.
                 if (!this.abbrevs[tryList[i]]) {
-                    this.abbrevs[tryList[i]] = new CSL.AbbreviationSegments();
+                    this.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
                 }
                 // Refresh from DB if no entry is found in memory.
                 if (!this.abbrevs[tryList[i]][category][orig]) {

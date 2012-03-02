@@ -466,7 +466,7 @@ CSL.NameOutput.prototype._buildLabel = function (term, plural, position) {
     var ret = false;
     var node = this.label[position];
     if (node) {
-        ret = CSL.castLabel(this.state, node, term, plural);
+        ret = CSL.castLabel(this.state, node, term, plural, CSL.TOLERANT);
     }
     return ret;
 };
