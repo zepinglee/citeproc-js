@@ -8358,7 +8358,7 @@ CSL.Transform = function (state) {
         }
         if (!orig) {
             if (!this.abbrevs[jurisdiction]) {
-                this.abbrevs[jurisdiction] = new state.sys..AbbreviationSegments();
+                this.abbrevs[jurisdiction] = new state.sys.AbbreviationSegments();
             }
             return jurisdiction;
         }
