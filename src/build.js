@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.296";
+    this.processor_version = "1.0.297";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -60,6 +60,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if (CSL.getAbbreviation) {
         this.sys.getAbbreviation = CSL.getAbbreviation;
     }
+    this.sys.AbbreviationSegments = CSL.AbbreviationSegments;
     this.parallel = new CSL.Parallel(this);
     //this.parallel.use_parallels = true;
 
@@ -377,10 +378,12 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode) {
         ret = "\u2013";
     }
     // XXXXX Not so good: can be neither strict nor tolerant
-    if (typeof ret === "undefined" && mode === CSL.STRICT) {
-        throw "Error in getTerm: term \"" + term + "\" does not exist.";
-    } else if (mode === CSL.TOLERANT) {
-        ret = false;
+    if (typeof ret === "undefined") {
+        if (mode === CSL.STRICT) {
+            throw "Error in getTerm: term \"" + term + "\" does not exist.";
+        } else if (mode === CSL.TOLERANT) {
+            ret = "";
+        }
     }
     if (ret) {
         this.tmp.cite_renders_content = true;
