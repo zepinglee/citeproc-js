@@ -359,53 +359,6 @@ CSL.Registry.prototype.doinserts = function (mylist) {
                     }
                 }
             }
-
-            // If getAbbreviation is available, run it over any
-            // relevant fields.
-            // XXXX Is this necessary? It seems kind of pointless to do this
-            // here, since abbreviations will be loaded on demand anyway.
-            if (this.state.sys.getAbbreviation) {
-                for (var field in this.state.transform.abbrevs["default"]) {
-                    
-                    switch (field) {
-                    case "place":
-                        if (Item["publisher-place"]) {
-                            this.state.transform.loadAbbreviation(Item.jurisdiction, "place", Item["publisher-place"]);
-                        } else if (Item["event-place"]) {
-                            this.state.transform.loadAbbreviation(Item.jurisdiction, "place", Item["event-place"]);
-                        }
-                        break;
-                        
-                    case "institution-part":
-                        for (var creatorVar in CSL.CREATORS) {
-                            for (var creatorList in Item[creatorVar]) {
-                                for (j = 0, jlen = creatorList.length; j < jlen; j += 1) {
-                                    if (creatorList[j].isInstitution) {
-                                        var subOrganizations = creatorList[j].literal;
-                                        if (!subOrganizations) {
-                                            subOrganizations = creatorList[j].family;
-                                        }
-                                        if (subOrganizations) {
-                                            subOrganizations = subOrganizations.split(/\s*|\s*/);
-                                            for (k = 0, klen = subOrganizations.length; k < klen; k += 1) {
-                                                this.state.transform.loadAbbreviation(Item.jurisdiction, "institution-part", subOrganizations[k]);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-
-                        default:
-                            if (Item[field]) {
-                                this.state.transform.loadAbbreviation(Item.jurisdiction, field, Item[field]);
-                            }
-                            break;
-
-                        }
-                    }
-            }
             //
             //  4b. Generate ambig key.
             //
