@@ -762,7 +762,7 @@ CSL.Attributes["@position"] = function (state, arg) {
 
     if ("near-note" === arg) {
         var near_note_func = function (state, Item, item) {
-            if (item && item["near-note"]) {
+            if (item && item["position"] === CSL.POSITION_SUBSEQUENT && item["near-note"]) {
                 return true;
             }
             return false;
