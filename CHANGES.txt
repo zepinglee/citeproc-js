@@ -8,6 +8,15 @@ Changes in version 1.0.298
 Mishandled or unimplemented features
 ------------------------------------
 
+- Do not needlessly register abbreviation segment entries for all item fields.
+
+- Simplify the ordinary field transformation mess.
+
+- Recognize near-note as true only when subsequent is also set.
+
+- Fix typeo.
+
+
 ==========================
 Changes in version 1.0.297
 ==========================
@@ -17,7 +26,7 @@ Mishandled or unimplemented features
 ------------------------------------
 
 - Permit installation of abbreviation lists and the
-  getAbbreviationList function after instantiation of the process or.
+  getAbbreviationList function after instantiation of the processor.
 
 - Expose abbreviation list instantiation function on instantiated processor
   instance. Useful for running the processor with abbreviation list support
