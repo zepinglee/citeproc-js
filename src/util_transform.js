@@ -106,19 +106,6 @@ CSL.Transform = function (state) {
     this.abbrevs = {};
     this.abbrevs["default"] = new state.sys.AbbreviationSegments();
 
-    // Initialization method
-    function init(mytoken, myfieldname, myabbrev_family) {
-        token = mytoken;
-        fieldname = myfieldname;
-        abbrev_family = myabbrev_family;
-        opt = {
-            abbreviation_fallback: false,
-            alternative_varname: false,
-            transform_fallback: false
-        };
-    }
-    this.init = init;
-
     // Internal function
     function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {
         var value;
@@ -206,24 +193,6 @@ CSL.Transform = function (state) {
         return ret;
     }
 
-    //
-    function setAbbreviationFallback(b) {
-        opt.abbreviation_fallback = b;
-    }
-    this.setAbbreviationFallback = setAbbreviationFallback;
-
-    //
-    function setAlternativeVariableName(s) {
-        opt.alternative_varname = s;
-    }
-    this.setAlternativeVariableName = setAlternativeVariableName;
-
-    //
-    function setTransformFallback(b) {
-        opt.transform_fallback = b;
-    }
-    this.setTransformFallback = setTransformFallback;
-
     // Setter for abbreviation lists
     // This initializes a single abbreviation based on known
     // data.
@@ -309,31 +278,15 @@ CSL.Transform = function (state) {
     }
 
     // Return function appropriate to selected options
-    function getOutputFunction(variables) {
+    function getOutputFunction(variables, myabbrev_family, abbreviation_fallback, alternative_varname, transform_fallback) {
 		// var mytoken;
-        var myabbrev_family, myfieldname, abbreviation_fallback, alternative_varname, transform_locale, transform_fallback, getTextSubfield;
 
-        // Freeze mandatory values
-        //mytoken = CSL.Util.cloneToken(token); // the token isn't needed, is it?
-
-		// the Abbreviation Family set by init(), if any.
-        myabbrev_family = abbrev_family;
-
-		// The fieldname set by init().
-        myfieldname = fieldname;
-
-        // Freeze option values
-		// These are also from init(), adjusted by configuration helper functions.
-        var abbreviation_fallback = opt.abbreviation_fallback;
-        var alternative_varname = opt.alternative_varname;
-        var transform_fallback = opt.transform_fallback;
-        
         // Set the primary_locale and secondary_locale lists appropriately.
 		// No instance helper function for this; everything can be derived
 		// from processor settings and rendering context.
 
 		var localesets;
-        var langPrefs = CSL.LangPrefsMap[myfieldname];
+        var langPrefs = CSL.LangPrefsMap[variables[0]];
         if (!langPrefs) {
             localesets = false;
         } else {
@@ -388,7 +341,7 @@ CSL.Transform = function (state) {
             }
 
 			// True is for transform fallback
-            var res = getTextSubField(Item, myfieldname, slot.primary, true);
+            var res = getTextSubField(Item, variables[0], slot.primary, true);
             primary = res.name;
 
             if (publisherCheck(this, Item, primary, myabbrev_family)) {
@@ -399,11 +352,11 @@ CSL.Transform = function (state) {
 			secondary = false;
 			tertiary = false;
 			if (slot.secondary) {
-				res = getTextSubField(Item, myfieldname, slot.secondary, false, res.usedOrig);
+				res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
                 secondary = res.name;
 			}
 			if (slot.tertiary) {
-				res = getTextSubField(Item, myfieldname, slot.tertiary, false, res.usedOrig);
+				res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
                 tertiary = res.name;
 			}
         
@@ -418,6 +371,8 @@ CSL.Transform = function (state) {
                     // hack syntax in this abbreviation short form.
                     var m = primary.match(/^!([-_a-z]+)<<</);
                     if (m) {
+
+
                         primary = primary.slice(m[0].length);
                         if (state.tmp.done_vars.indexOf(m[1]) === -1) {
                             state.tmp.done_vars.push(m[1]);

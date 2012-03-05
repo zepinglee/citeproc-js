@@ -172,16 +172,11 @@ CSL.Node.key = {
                     func = CSL.dateAsSortKey;
                     single_text.variables = this.variables;
                 } else if ("title" === variable) {
-                    state.transform.init("empty", "title");
-                    state.transform.setTransformFallback(true);
-                    func = state.transform.getOutputFunction(this.variables);
-                    //func = function (state, Item) {
-                    //    var value = Item[variable];
-                    //    if (value) {
-                    //        value = state.transform.getTextSubField(value, "locale-sort", true);
-                    //        state.output.append(value, "empty");
-                    //    }
-                    //};
+                    var abbrevfam = "title";
+                    var abbrfall = false;
+                    var altvar = false;
+                    var transfall = true;
+                    func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                 } else {
                     func = function (state, Item) {
                         var varval = Item[variable];
