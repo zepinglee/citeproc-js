@@ -68,7 +68,6 @@ CSL.Node.group = {
                 if (this.strings.label_form_override) {
                     label_form = this.strings.label_form_override;
                 }
-                print("label_form: "+label_form);
                 state.tmp.group_context.push([false, false, false, false, state.output.current.value(), label_form], CSL.LITERAL);
 
                 // Oops is triggered in two situations:
