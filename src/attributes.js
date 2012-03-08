@@ -50,9 +50,16 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@label-form"] = function (state, arg) {
+    var func = function (state, Item, item) {
+        this.strings.label_form_override = arg;
+    }
+    this.execs.push(func);
+}
+
 CSL.Attributes["@has-year-only"] = function (state, arg) {
-    trydates = arg.split(/\s+/);
-    func = function (state, Item, item) {
+    var trydates = arg.split(/\s+/);
+    var func = function (state, Item, item) {
         var ret = [];
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
@@ -68,8 +75,8 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
 }
 
 CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
-    trydates = arg.split(/\s+/);
-    func = function (state, Item, item) {
+    var trydates = arg.split(/\s+/);
+    var func = function (state, Item, item) {
         var ret = [];
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
@@ -85,8 +92,8 @@ CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
 }
 
 CSL.Attributes["@has-day-only"] = function (state, arg) {
-    trydates = arg.split(/\s+/);
-    func = function (state, Item, item) {
+    var trydates = arg.split(/\s+/);
+    var func = function (state, Item, item) {
         var ret = [];
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
