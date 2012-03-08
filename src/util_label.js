@@ -118,7 +118,11 @@ CSL.evaluateStringPluralism = function (str) {
 };
 
 CSL.castLabel = function (state, node, term, plural, mode) {
-    var ret = state.getTerm(term, node.strings.form, plural, false, mode);
+    var label_form = node.strings.form;
+    if (state.tmp.group_context.value()[5]) {
+        label_form = state.tmp.group_context.value()[5];
+    }
+    var ret = state.getTerm(term, label_form, plural, false, mode);
     // XXXXX Cut-and-paste code in multiple locations. This code block should be
     // collected in a function.
     // Tag: strip-periods-block

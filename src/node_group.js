@@ -63,8 +63,13 @@ CSL.Node.group = {
                 if (state.tmp.group_context.mystack.length) {
                     state.output.current.value().parent = state.tmp.group_context.value()[4];
                 }
-                // fieldcontentflag
-                state.tmp.group_context.push([false, false, false, false, state.output.current.value()], CSL.LITERAL);
+                // fieldcontextflag
+                var label_form = state.tmp.group_context.value()[5];
+                if (this.strings.label_form_override) {
+                    label_form = this.strings.label_form_override;
+                }
+                print("label_form: "+label_form);
+                state.tmp.group_context.push([false, false, false, false, state.output.current.value(), label_form], CSL.LITERAL);
 
                 // Oops is triggered in two situations:
                 //   (1) Where rendering of content fails; and
