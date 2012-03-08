@@ -1787,7 +1787,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.298";
+    this.processor_version = "1.0.299";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -4354,7 +4354,11 @@ CSL.Node.group = {
                 if (state.tmp.group_context.mystack.length) {
                     state.output.current.value().parent = state.tmp.group_context.value()[4];
                 }
-                state.tmp.group_context.push([false, false, false, false, state.output.current.value()], CSL.LITERAL);
+                var label_form = state.tmp.group_context.value()[5];
+                if (this.strings.label_form_override) {
+                    label_form = this.strings.label_form_override;
+                }
+                state.tmp.group_context.push([false, false, false, false, state.output.current.value(), label_form], CSL.LITERAL);
                 if (this.strings.oops) {
                     state.tmp.group_context.value()[3] = this.strings.oops;
                 }
@@ -6487,7 +6491,11 @@ CSL.evaluateStringPluralism = function (str) {
     return 0;
 };
 CSL.castLabel = function (state, node, term, plural, mode) {
-    var ret = state.getTerm(term, node.strings.form, plural, false, mode);
+    var label_form = node.strings.form;
+    if (state.tmp.group_context.value()[5]) {
+        label_form = state.tmp.group_context.value()[5];
+    }
+    var ret = state.getTerm(term, label_form, plural, false, mode);
     if (state.tmp.strip_periods) {
         ret = ret.replace(/\./g, "");
     } else {
@@ -7325,9 +7333,15 @@ CSL.Node.text = {
     }
 };
 CSL.Attributes = {};
+CSL.Attributes["@label-form"] = function (state, arg) {
+    var func = function (state, Item, item) {
+        this.strings.label_form_override = arg;
+    }
+    this.execs.push(func);
+}
 CSL.Attributes["@has-year-only"] = function (state, arg) {
-    trydates = arg.split(/\s+/);
-    func = function (state, Item, item) {
+    var trydates = arg.split(/\s+/);
+    var func = function (state, Item, item) {
         var ret = [];
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
@@ -7342,8 +7356,8 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
     this.tests.push(func);
 }
 CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
-    trydates = arg.split(/\s+/);
-    func = function (state, Item, item) {
+    var trydates = arg.split(/\s+/);
+    var func = function (state, Item, item) {
         var ret = [];
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
@@ -7358,8 +7372,8 @@ CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
     this.tests.push(func);
 }
 CSL.Attributes["@has-day-only"] = function (state, arg) {
-    trydates = arg.split(/\s+/);
-    func = function (state, Item, item) {
+    var trydates = arg.split(/\s+/);
+    var func = function (state, Item, item) {
         var ret = [];
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];

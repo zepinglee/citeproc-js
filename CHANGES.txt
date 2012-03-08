@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.299
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add an (off-CSL) label-form attribute, for use in overriding
+  the form of labels in standard macros shared between styles.
+
+
+==========================
 Changes in version 1.0.298
 ==========================
 
