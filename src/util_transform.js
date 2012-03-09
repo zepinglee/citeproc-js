@@ -369,13 +369,14 @@ CSL.Transform = function (state) {
                 if (primary) {
                     // Suppress subsequent use of another variable if requested by
                     // hack syntax in this abbreviation short form.
-                    var m = primary.match(/^!([-_a-z]+)<<</);
+                    var m = primary.match(/^!([-,_a-z]+)<<</);
                     if (m) {
-
-
+                        var fields = m[1].split(",");
                         primary = primary.slice(m[0].length);
-                        if (state.tmp.done_vars.indexOf(m[1]) === -1) {
-                            state.tmp.done_vars.push(m[1]);
+                        for (var i = 0, ilen = fields.length; i < ilen; i += 1) {
+                            if (state.tmp.done_vars.indexOf(fields[i]) === -1) {
+                                state.tmp.done_vars.push(fields[i]);
+                            }
                         }
                     }
                 }
