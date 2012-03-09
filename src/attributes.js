@@ -50,6 +50,25 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@subjurisdictions"] = function (state, arg) {
+    var trysubjurisdictions = parseInt(arg, 10);
+    var func = function (state, Item, item) {
+        var subjurisdictions = 0;
+        if (Item.jurisdiction) {
+            var subjurisdictions = Item.jurisdiction.split(";").length;
+        }
+        if (subjurisdictions) {
+            subjurisdictions += 1;
+        }
+        var ret = false;
+        if (subjurisdictions >= trysubjurisdictions) {
+            ret = true;
+        }
+        return [ret];
+    };
+    this.tests.push(func);
+}
+
 CSL.Attributes["@label-form"] = function (state, arg) {
     var func = function (state, Item, item) {
         this.strings.label_form_override = arg;
