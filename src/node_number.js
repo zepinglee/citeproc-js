@@ -84,9 +84,6 @@ CSL.Node.number = {
             state.parallel.StartVariable(this.variables[0]);
             state.parallel.AppendToVariable(Item[this.variables[0]]);
 
-            if (varname === "page-range" || varname === "page-first") {
-                varname = "page";
-            }
             var node = this;
             if (!state.tmp.shadow_numbers[varname] 
                 || (state.tmp.shadow_numbers[varname].values.length 
