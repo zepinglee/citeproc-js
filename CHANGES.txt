@@ -1,6 +1,32 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.300
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Eliminate "subjurisdiction" label, as "jurisdiction"
+  seems adequate for use cases.
+
+- Introduce a "subjurisdictions" test with a numeric
+  value. Evaluates true if number of jurisdiction levels
+  in jurisdiction variable (minus one) is equal to or greater
+  than value.
+
+- Make page-first a first-class variable on receipt
+  (deriving value from page variable), and eliminate
+  (most) reprocessing code from cs:text and cs:number.
+
+- Fix a bug that prevented strip-periods from taking effect
+  when text-case was used.
+
+- Allow suppression of multiple variables with in-abbreviation 
+  "!varname1,varname2<<<abbreviationtext" syntax.
+
+==========================
 Changes in version 1.0.299
 ==========================
 
