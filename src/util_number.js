@@ -212,17 +212,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         if (num.indexOf("&") > -1 || num.indexOf("--") > -1) {
             this.tmp.shadow_numbers[variable].plural = 1;
         }
- 
-        if (this.variable === "page-first") {
-            m = num.split(/\s*(?:&|,|-)\s*/);
-            if (m) {
-                num = m[0];
-                if (num.match(/[0-9]/)) {
-                    this.tmp.shadow_numbers[variable].numeric = true;
-                }
-            }
-        }
-        
+
         // XXX: The attempt at syntactic parsing was crazy.
 
         // Sequential number blobs should be reserved for year-suffix
