@@ -304,15 +304,9 @@ CSL.Node.text = {
                             // of the front slice of page.
                             func = function (state, Item) {
                                 var idx, value;
-                                value = state.getVariable(Item, "page", form);
+                                value = state.getVariable(Item, "page-first", form);
                                 if (value) {
-                                    value = ""+value;
-                                    value = value.replace("\u2013", "-", "g");
-                                    idx = value.indexOf("-");
-                                    if (idx > -1) {
-                                        value = value.slice(0, idx);
-                                    }
-                                    // true is for non-suppression of periods
+                                    value = value.replace("\\", "");
                                     state.output.append(value, this, false, false, true);
                                 }
                             };
