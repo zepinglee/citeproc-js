@@ -114,7 +114,7 @@ CSL.Transform = function (state) {
             return basevalue;
         }
 
-        if (["publisher-place", "event-place", "subjurisdiction"].indexOf(myabbrev_family) > -1) {
+        if (["publisher-place", "event-place", "jurisdiction"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
 
