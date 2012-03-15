@@ -58,7 +58,7 @@ CSL.Attributes["@subjurisdictions"] = function (state, arg) {
             var subjurisdictions = Item.jurisdiction.split(";").length;
         }
         if (subjurisdictions) {
-            subjurisdictions += 1;
+            subjurisdictions += -1;
         }
         var ret = false;
         if (subjurisdictions >= trysubjurisdictions) {
@@ -70,10 +70,7 @@ CSL.Attributes["@subjurisdictions"] = function (state, arg) {
 }
 
 CSL.Attributes["@label-form"] = function (state, arg) {
-    var func = function (state, Item, item) {
-        this.strings.label_form_override = arg;
-    }
-    this.execs.push(func);
+    this.strings.label_form_override = arg;
 }
 
 CSL.Attributes["@has-year-only"] = function (state, arg) {
@@ -329,9 +326,6 @@ CSL.Attributes["@variable"] = function (state, arg) {
             len = this.variables.length;
             for (pos = 0; pos < len; pos += 1) {
                 variable = this.variables[pos];
-                if (variable === "page-first") {
-                    variable = "page";
-                }
                 if (variable === "authority"
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
