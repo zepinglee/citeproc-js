@@ -557,6 +557,14 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         Item.volume = Item.number;
         Item.number = undefined;
     }
+    if (Item.page) {
+        Item["page-first"] = Item.page;
+        var num = "" + Item.page;
+        m = num.split(/\s*(?:&|,|-)\s*/);
+        if (m[0].slice(-1) !== "\\") {
+            Item["page-first"] = m[0];
+        }
+    }
     // Optional development extensions
     if (this.opt.development_extensions.field_hack && Item.note) {
         //Zotero.debug("XXX   (1): "+Item.note);
@@ -585,12 +593,6 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                 }
                 Item.note.replace(CSL.NOTE_FIELD_REGEXP, "")
             }
-        }
-    }
-    if (this.opt.development_extensions.jurisdiction_subfield && Item.jurisdiction) {
-        var subjurisdictions = Item.jurisdiction.split(";");
-        if (subjurisdictions.length > 1) {
-            Item.subjurisdiction = subjurisdictions.join(";");
         }
     }
     // not including locator-date
