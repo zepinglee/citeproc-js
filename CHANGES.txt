@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.302
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Detect ibid correctly when separate citations are in
+  the same note.
+
+==========================
 Changes in version 1.0.301
 ==========================
 
