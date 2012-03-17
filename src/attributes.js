@@ -1031,7 +1031,9 @@ CSL.Attributes["@text-case"] = function (state, arg) {
         if (arg === "title") {
             var m = false;
             var default_locale = state.opt["default-locale"][0].slice(0, 2);
-            if (Item.language) {
+            if (Item.jurisdiction) {
+                this.strings["text-case"] = "passthrough";
+            } else if (Item.language) {
                 m = Item.language.match(/^\s*([A-Za-z]{2})(?:$|-| )/);
                 if (!m) {
                     this.strings["text-case"] = "passthrough";
