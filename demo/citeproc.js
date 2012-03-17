@@ -1790,7 +1790,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.300";
+    this.processor_version = "1.0.301";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -8064,7 +8064,9 @@ CSL.Attributes["@text-case"] = function (state, arg) {
         if (arg === "title") {
             var m = false;
             var default_locale = state.opt["default-locale"][0].slice(0, 2);
-            if (Item.language) {
+            if (Item.jurisdiction) {
+                this.strings["text-case"] = "passthrough";
+            } else if (Item.language) {
                 m = Item.language.match(/^\s*([A-Za-z]{2})(?:$|-| )/);
                 if (!m) {
                     this.strings["text-case"] = "passthrough";
