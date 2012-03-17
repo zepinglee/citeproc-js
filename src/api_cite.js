@@ -394,7 +394,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         //
                         var ibidme = false;
                         var suprame = false;
-                        if (j > 0 && parseInt(k, 10) === 0) {
+                        if (j > 0 && parseInt(k, 10) === 0 && citations[j - 1].properties.noteIndex !== citations[j].properties.noteIndex) {
                             // Case 1: source in previous onecitation
                             // (1) Threshold conditions
                             //     (a) there must be a previous onecitation with one item
@@ -405,7 +405,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             // (this has some jiggery-pokery in it for parallels)
                             var items = citations[(j - 1)].sortedItems;
                             var useme = false;
-                            if ((citations[(j - 1)].sortedItems[0][1].id  == item[1].id && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1)) || citations[(j - 1)].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
+                            if ((citations[j - 1].sortedItems[0][1].id  == item[1].id && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1)) || citations[j - 1].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
                                 if (citationsInNote[citations[j - 1].properties.noteIndex] == 1 || citations[j - 1].properties.noteIndex == 0) {
                                     useme = true;
                                 }
@@ -425,8 +425,17 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             } else {
                                 suprame = true;
                             }
-                        } else if (k > 0 && onecitation.sortedItems[(k - 1)][1].id == item[1].id) {
+                        } else if (k > 0 && onecitation.sortedItems[k - 1][1].id == item[1].id) {
                             // Case 2: immediately preceding source in this onecitation
+                            // (1) Threshold conditions
+                            //     (a) there must be an imediately preceding reference to  the
+                            //         same item in this onecitation; and
+                            ibidme = true;
+                        } else if (k == 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
+                                   && citations[j - 1].sortedItems.length 
+                                   && citations[j - 1].sortedItems.slice(-1)[0][1].id == item[1].id) {
+                            // ... in case there are separate citations in the same note ...
+                            // Case 2 [take 2]: immediately preceding source in this onecitation
                             // (1) Threshold conditions
                             //     (a) there must be an imediately preceding reference to  the
                             //         same item in this onecitation; and
