@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.303
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug affecting numeric styles with second-field-align
+  with some combinations of input.
+
+- Allow use of (off-CSL) text-case="normal" attribute
+  value to suppress multi-number rendering on cs:number.
+
+
+==========================
 Changes in version 1.0.302
 ==========================
 
