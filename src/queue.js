@@ -462,7 +462,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         }
         if (blobjr.strings.first_blob) {
             // The Item.id of the entry being rendered.
-            state.registry.registry[state.tmp.count_offset_characters].offset = state.tmp.offset_characters;
+            state.registry.registry[blobjr.strings.first_blob].offset = state.tmp.offset_characters;
             state.tmp.count_offset_characters = false;
         }
     }
