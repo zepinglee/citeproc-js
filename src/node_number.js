@@ -84,48 +84,56 @@ CSL.Node.number = {
             state.parallel.StartVariable(this.variables[0]);
             state.parallel.AppendToVariable(Item[this.variables[0]]);
 
-            var node = this;
-            if (!state.tmp.shadow_numbers[varname] 
-                || (state.tmp.shadow_numbers[varname].values.length 
-                    && state.tmp.shadow_numbers[varname].values[0][2] === false)) {
-                if (varname === "locator") {
-                    state.processNumber(node, item, varname);
-                } else {
-                    state.processNumber(node, Item, varname);
+            if (this.text_case_normal) {
+                var value = Item[this.variables[0]];
+                if (value) {
+                    value = value.replace("\\", "");
+                    state.output.append(value, this)
                 }
-            }
-            if (varname === "locator") {
-                // Only render the locator variable once in a cite.
-                state.tmp.done_vars.push("locator");
-            }
-            var values = state.tmp.shadow_numbers[varname].values;
-            var blob;
-            // If prefix and suffix are nil, run through the page mangler,
-            // if any. Otherwise, apply styling.
-            var newstr = ""
-            if (state.opt["page-range-format"] 
-                && !this.strings.prefix && !this.strings.suffix
-                && !this.strings.form) {
-                for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-                    newstr += values[i][1];
-                }
-            }
-            if (newstr && !newstr.match(/^[-.\u20130-9]+$/)) {
-                state.output.append(newstr, this);
             } else {
-                if (values.length) {
-                    state.output.openLevel("empty");
-                    for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-                        var blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
-                        if (i > 0) {
-                            blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
-                        }
-                        if (i < values.length - 1) {
-                            blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
-                        }
-                        state.output.append(blob, "literal", false, false, true);
+                var node = this;
+                if (!state.tmp.shadow_numbers[varname] 
+                    || (state.tmp.shadow_numbers[varname].values.length 
+                        && state.tmp.shadow_numbers[varname].values[0][2] === false)) {
+                    if (varname === "locator") {
+                        state.processNumber(node, item, varname);
+                    } else {
+                        state.processNumber(node, Item, varname);
                     }
-                    state.output.closeLevel("empty");
+                }
+                if (varname === "locator") {
+                    // Only render the locator variable once in a cite.
+                    state.tmp.done_vars.push("locator");
+                }
+                var values = state.tmp.shadow_numbers[varname].values;
+                var blob;
+                // If prefix and suffix are nil, run through the page mangler,
+                // if any. Otherwise, apply styling.
+                var newstr = ""
+                if (state.opt["page-range-format"] 
+                    && !this.strings.prefix && !this.strings.suffix
+                    && !this.strings.form) {
+                    for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                        newstr += values[i][1];
+                    }
+                }
+                if (newstr && !newstr.match(/^[-.\u20130-9]+$/)) {
+                    state.output.append(newstr, this);
+                } else {
+                    if (values.length) {
+                        state.output.openLevel("empty");
+                        for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                            var blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
+                            if (i > 0) {
+                                blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
+                            }
+                            if (i < values.length - 1) {
+                                blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
+                            }
+                            state.output.append(blob, "literal", false, false, true);
+                        }
+                        state.output.closeLevel("empty");
+                    }
                 }
             }
             state.parallel.CloseVariable("number");

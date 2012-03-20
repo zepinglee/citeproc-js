@@ -1027,27 +1027,31 @@ CSL.Attributes["@page-range-format"] = function (state, arg) {
 
 CSL.Attributes["@text-case"] = function (state, arg) {
     var func = function (state, Item) {
-        this.strings["text-case"] = arg;
-        if (arg === "title") {
-            var m = false;
-            var default_locale = state.opt["default-locale"][0].slice(0, 2);
-            if (Item.jurisdiction) {
-                this.strings["text-case"] = "passthrough";
-            } else if (Item.language) {
-                m = Item.language.match(/^\s*([A-Za-z]{2})(?:$|-| )/);
-                if (!m) {
+        if (arg === "normal") {
+            this.text_case_normal = true;
+        } else {
+            this.strings["text-case"] = arg;
+            if (arg === "title") {
+                var m = false;
+                var default_locale = state.opt["default-locale"][0].slice(0, 2);
+                if (Item.jurisdiction) {
                     this.strings["text-case"] = "passthrough";
-                } else if (m[1].toLowerCase() !== "en") {
-                    this.strings["text-case"] = "passthrough";
-                    for (var i = 0, ilen = state.opt.english_locale_escapes.length; i < ilen; i += 1) {
-                        var escaper = state.opt.english_locale_escapes[i];
-                        if (m[1].slice(0, escaper.length).toLowerCase() === escaper) {
-                            this.strings["text-case"] = arg;
+                } else if (Item.language) {
+                    m = Item.language.match(/^\s*([A-Za-z]{2})(?:$|-| )/);
+                    if (!m) {
+                        this.strings["text-case"] = "passthrough";
+                    } else if (m[1].toLowerCase() !== "en") {
+                        this.strings["text-case"] = "passthrough";
+                        for (var i = 0, ilen = state.opt.english_locale_escapes.length; i < ilen; i += 1) {
+                            var escaper = state.opt.english_locale_escapes[i];
+                            if (m[1].slice(0, escaper.length).toLowerCase() === escaper) {
+                                this.strings["text-case"] = arg;
+                            }
                         }
                     }
+                } else if (default_locale !== "en") {
+                    this.strings["text-case"] = "passthrough";
                 }
-            } else if (default_locale !== "en") {
-                this.strings["text-case"] = "passthrough";
             }
         }
     };
