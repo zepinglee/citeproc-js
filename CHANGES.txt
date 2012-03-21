@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.305
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Detect unparsable strings as renderable date content.
+
+
+==========================
 Changes in version 1.0.304
 ==========================
 
