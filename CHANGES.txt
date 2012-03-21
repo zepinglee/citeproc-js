@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.304
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Restore is-plural test, for use with names. Off-CSL
+  extension, allows use of item-type-specific non-standard 
+  pluralized labels set with value="txt" with standard cs:names 
+  variables. Styles can change first, followed by data if
+  new names variables a adopted in CSL and supported by
+  Zotero and other CSL-consuming applications.
+
+==========================
 Changes in version 1.0.303
 ==========================
 
