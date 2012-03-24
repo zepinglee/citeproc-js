@@ -183,6 +183,9 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
+    if (!ItemObject) {
+        return;
+    }
     num = ItemObject[variable];
     //SNIP-START
     if (debug) {
