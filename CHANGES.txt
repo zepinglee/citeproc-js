@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.308
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize !varname<<< subsequent var quash syntax
+  in institution-entire abbreviation segment.
+
+==========================
 Changes in version 1.0.307
 ==========================
 
