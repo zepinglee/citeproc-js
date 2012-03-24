@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.307
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid crash when cs:number is used to render locator
+  on an item with no supplementary data object.
+
+
+==========================
 Changes in version 1.0.306
 ==========================
 
