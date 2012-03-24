@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.309
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- 
+
+==========================
 Changes in version 1.0.308
 ==========================
 
