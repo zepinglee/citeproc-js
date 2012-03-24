@@ -756,7 +756,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                         if (state.normalDecorIsOrphan(blobjr, params)) {
                             continue;
                         }
-                        b = state.fun.decorate[params[0]][params[1]](state, b);
+                        b = state.fun.decorate[params[0]][params[1]](state, b, params[2]);
                     }
                 }
                 if (b && b.length) {
@@ -803,7 +803,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (state.normalDecorIsOrphan(blobjr, params)) {
                     continue;
                 }
-                blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
+                blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start, params[2]);
             }
         }
         b = blobs_start;
@@ -822,7 +822,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
                     continue;
                 }
-                blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start);
+                blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
             }
         }
     }
@@ -920,7 +920,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
                     if (state.normalDecorIsOrphan(blob, params)) {
                         continue;
                     }
-                    str = state.fun.decorate[params[0]][params[1]](state, str);
+                    str = state.fun.decorate[params[0]][params[1]](state, str, params[2]);
                 }
             }
             str = blob.strings.prefix + str + blob.strings.suffix;
@@ -1345,6 +1345,7 @@ CSL.expandMacro = function (macro_key_token) {
     }
     var hasDate = false;
     macro_nodes = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
+    var macroid = this.sys.xml.getAttributeValue(macro_nodes,'cslid');
     if (macro_nodes.length) {
         hasDate = this.sys.xml.getAttributeValue(macro_nodes[0], "macro-has-date");
     }
@@ -1357,6 +1358,7 @@ CSL.expandMacro = function (macro_key_token) {
         macro_key_token.execs.push(func);
     }
     macro_key_token.tokentype = CSL.START;
+    macro_key_token.cslid = macroid;
     CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
     if (!this.sys.xml.getNodeValue(macro_nodes)) {
         throw "CSL style error: undefined macro \"" + mkey + "\"";
@@ -1790,7 +1792,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.305";
+    this.processor_version = "1.0.306";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -1818,6 +1820,22 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.output = new CSL.Output.Queue(this);
     this.dateput = new CSL.Output.Queue(this);
     this.cslXml = this.sys.xml.makeXml(style);
+    if (this.opt.development_extensions.csl_reverse_lookup_support) {
+        this.build.cslNodeId = 0;
+        this.setCslNodeIds = function(myxml, nodename) {
+            var children = this.sys.xml.children(myxml);
+            this.sys.xml.setAttribute(myxml, 'cslid', this.build.cslNodeId);
+            this.opt.nodenames.push(nodename);
+            this.build.cslNodeId += 1;
+            for (var i = 0, ilen = this.sys.xml.numberofnodes(children); i < ilen; i += 1) {
+                nodename = this.sys.xml.nodename(children[i]);
+                if (nodename) {
+                    this.setCslNodeIds(children[i], nodename);
+                }
+            }
+        }
+        this.setCslNodeIds(this.cslXml, "style");
+    }
     this.sys.xml.addMissingNameNodes(this.cslXml);
     this.sys.xml.addInstitutionNodes(this.cslXml);
     this.sys.xml.insertPublisherAndPlace(this.cslXml);
@@ -2384,6 +2402,8 @@ CSL.Engine.Opt = function () {
     this.development_extensions.flip_parentheses_to_braces = true;
     this.development_extensions.parse_section_variable = true;
     this.development_extensions.jurisdiction_subfield = true;
+    this.development_extensions.csl_reverse_lookup_support = false;
+    this.nodenames = [];
     this.gender = {};
 	this['cite-lang-prefs'] = {
 		persons:['orig'],
@@ -6291,12 +6311,8 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         name.literal = name.family;
     }
     if (name.literal) {
-        if (name.family) {
-            delete name.family;
-        }
-        if (name.given) {
-            delete name.given;
-        }
+        delete name.family;
+        delete name.given;
     }
     name = this._normalizeNameInput(name);
     var usedOrig;
@@ -7354,6 +7370,9 @@ CSL.Node.text = {
     }
 };
 CSL.Attributes = {};
+CSL.Attributes["@cslid"] = function (state, arg) {
+    this.cslid = parseInt(arg, 10);
+}
 CSL.Attributes["@is-plural"] = function (state, arg) {
     var func = function (state, Item, item) {
         var nameList = Item[arg];
@@ -9513,6 +9532,11 @@ CSL.Util.substituteStart = function (state, target) {
         }
     };
     this.execs.push(func);
+    if (this.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
+        this.decorations.reverse();
+        this.decorations.push(["@showid","true", this.cslid]);
+        this.decorations.reverse();
+    }
     nodetypes = ["number", "date", "names"];
     if (("text" === this.name && !this.postponed_macro) || nodetypes.indexOf(this.name) > -1) {
         element_trace = function (state, Item, item) {
@@ -10603,6 +10627,9 @@ CSL.Output.Formats.prototype.html = {
     },
     "@display/indent": function (state, str) {
         return "<div class=\"csl-indent\">" + str + "</div>\n  ";
+    },
+    "@showid/true": function (state, str, cslid) {
+        return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
     }
 };
 CSL.Output.Formats.prototype.text = {

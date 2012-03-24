@@ -223,13 +223,14 @@ CSL_E4X.prototype.addInstitutionNodes = function(myxml) {
     default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
     for each (node in myxml..names) {
         if ("xml" == typeof node && node.elements("name").length() > 0) {
+            var name = node.name[0];
             if (node.institution.length() === 0) {
                 institution_long = <institution
                     institution-parts="long"
                     substitute-use-first="1"
                     use-last="1"/>
                 institution_part = <institution-part name="long"/>;
-                node.name.appendChild(institution_long);
+                node.insertChildAfter(name,institution_long);
                 node.institution.@delimiter = node.name.@delimiter.toString();
                 if (node.name.@and.toString()) {
                     node.institution.@and = "text";

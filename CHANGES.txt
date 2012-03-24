@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.306
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement wrappers to flag the group, macro
+  and rendering nodes traversed to produce each
+  element of output. This is off by default. To turn
+  it on (with HTML output only), in 
+
+   this.development_extensions.csl_reverse_lookup_support = true;
+
+  There is no runtime option for this behavior; the
+  change must be made in the source.
+
+- Simplify the tracking and substitution of names, for use
+  with hereinafter refs and personal name (i.e. "the author")
+  substitution when citing personal correspondence.
+
+
+==========================
 Changes in version 1.0.305
 ==========================
 
