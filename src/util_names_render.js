@@ -643,7 +643,6 @@ CSL.NameOutput.prototype._parseName = function (name) {
     }
 };
 
-
 /*
  * Return a single name object
   */

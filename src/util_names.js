@@ -269,6 +269,17 @@ CSL.Util.Names.stripRight = function (str) {
     return str.slice(0, end);
 };
 
+CSL.Util.Names.getRawName = function (name) {
+    var ret = [];
+    if (name.given) {
+        ret.push(name.given);
+    }
+    if (name.family) {
+        ret.push(name.family);
+    }
+    return ret.join(" ");
+};
+
 // deleted CSL.Util.Names.initNameSlices()
 // no longer used.
 
