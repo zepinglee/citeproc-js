@@ -102,9 +102,10 @@ CSL.expandMacro = function (macro_key_token) {
     // Xml: get list of nodes by attribute match
     //
     var hasDate = false;
+    var macroid = false;
     macro_nodes = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
-    var macroid = this.sys.xml.getAttributeValue(macro_nodes,'cslid');
     if (macro_nodes.length) {
+        macroid = this.sys.xml.getAttributeValue(macro_nodes[0],'cslid');
         hasDate = this.sys.xml.getAttributeValue(macro_nodes[0], "macro-has-date");
     }
     if (hasDate) {
