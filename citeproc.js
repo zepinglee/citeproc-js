@@ -4913,7 +4913,6 @@ CSL.NameOutput.prototype.init = function (names) {
     if (!this.state.tmp.value.length) {
         return;
     }
-    this.state.tmp.group_context.value()[2] = false;
 };
 CSL.NameOutput.prototype.reinit = function (names) {
     if (this.state.tmp.can_substitute.value()) {
@@ -5015,15 +5014,20 @@ CSL.NameOutput.prototype.outputNames = function () {
     this.state.output.append(blob, this.names);
     this.state.tmp.name_node.top = this.state.output.current.value();
     if (variables[0] !== "authority") {
-        var oldSuppressDecorations = this.state.tmp.suppress_decorations;
-        this.state.tmp.suppress_decorations = true;
-        var lastBlob = this.state.tmp.name_node.top.blobs.pop();
-        var name_node_string = this.state.output.string(this.state, lastBlob.blobs, false);
-        this.state.tmp.name_node.top.blobs.push(lastBlob);
+        var name_node_string = [];
+        var nameobjs = this.Item[variables[0]];
+        if (nameobjs) {
+            for (var i = 0, ilen = nameobjs.length; i < ilen; i += 1) {
+                substring = CSL.Util.Names.getRawName(nameobjs[i]);
+                if (substring) {
+                    name_node_string.push(substring);
+                }
+            }
+        }
+        name_node_string = name_node_string.join(", ");
         if (name_node_string) {
             this.state.tmp.name_node.string = name_node_string;
         }
-        this.state.tmp.suppress_decorations = oldSuppressDecorations;
     }
     if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
@@ -5045,24 +5049,6 @@ CSL.NameOutput.prototype.outputNames = function () {
                 blob = this.state.output.pop();
 				this.state.tmp.name_node.top.blobs.pop();
                 this.state.tmp.name_node.top.blobs.push(blob);
-            }
-        }
-    }
-    if (this.Item.type === "personal_communication" || this.Item.type === "interview") {
-        var author = "";
-        author = this.state.tmp.name_node.string;
-        if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
-            this.state.transform.loadAbbreviation("default", "nickname", author);
-            var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
-            if (myLocalName) {
-                if (myLocalName === "{suppress}") {
-                    this.state.tmp.name_node.top.blobs.pop();
-                    this.state.tmp.group_context.value()[2] = false;
-                } else {
-                    this.state.output.append(myLocalName, "empty", true)
-                    blob = this.state.output.pop();
-                    this.state.tmp.name_node.top.blobs = [blob];
-                }
             }
         }
     }
@@ -5326,7 +5312,10 @@ CSL.NameOutput.prototype._getFreeters = function (v, values) {
     this.freeters[v] = [];
     for (var i = values.length - 1; i > -1; i += -1) {
         if (this.isPerson(values[i])) {
-            this.freeters[v].push(values.pop());
+            var value = this._checkNickname(values.pop());
+            if (value) {
+                this.freeters[v].push(value);
+            }
         } else {
             break;
         }
@@ -5344,7 +5333,10 @@ CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
     var first = true;
     for (var i = values.length - 1; i > -1; i += -1) {
         if (this.isPerson(values[i])) {
-            persons.push(values[i]);
+            var value = this._checkNickname(values[i]);
+            if (value) {
+                persons.push(value);
+            }
         } else {
             has_affiliates = true;
             this.institutions[v].push(values[i]);
@@ -5368,6 +5360,22 @@ CSL.NameOutput.prototype._clearValues = function (values) {
         values.pop();
     }
 };
+CSL.NameOutput.prototype._checkNickname = function (name) {
+    var author = "";
+    author = CSL.Util.Names.getRawName(name);
+    if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
+        this.state.transform.loadAbbreviation("default", "nickname", author);
+        var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
+        if (myLocalName) {
+            if (myLocalName === "{suppress}") {
+                name = false;
+            } else {
+                name = {family:myLocalName,given:''};
+            }
+        }
+    }
+    return name;
+}
 CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
     var ret;
     if (this.etal_spec[pos] === 1) {
@@ -6283,8 +6291,12 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         name.literal = name.family;
     }
     if (name.literal) {
-        delete name.family;
-        delete name.given;
+        if (name.family) {
+            delete name.family;
+        }
+        if (name.given) {
+            delete name.given;
+        }
     }
     name = this._normalizeNameInput(name);
     var usedOrig;
@@ -9354,6 +9366,16 @@ CSL.Util.Names.stripRight = function (str) {
         }
     }
     return str.slice(0, end);
+};
+CSL.Util.Names.getRawName = function (name) {
+    var ret = [];
+    if (name.given) {
+        ret.push(name.given);
+    }
+    if (name.family) {
+        ret.push(name.family);
+    }
+    return ret.join(" ");
 };
 CSL.Util.Dates = {};
 CSL.Util.Dates.year = {};
