@@ -811,6 +811,7 @@ CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
+    value.literal = this.state.transform.quashCheck(value.literal);
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");

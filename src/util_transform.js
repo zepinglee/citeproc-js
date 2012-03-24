@@ -369,16 +369,7 @@ CSL.Transform = function (state) {
                 if (primary) {
                     // Suppress subsequent use of another variable if requested by
                     // hack syntax in this abbreviation short form.
-                    var m = primary.match(/^!([-,_a-z]+)<<</);
-                    if (m) {
-                        var fields = m[1].split(",");
-                        primary = primary.slice(m[0].length);
-                        for (var i = 0, ilen = fields.length; i < ilen; i += 1) {
-                            if (state.tmp.done_vars.indexOf(fields[i]) === -1) {
-                                state.tmp.done_vars.push(fields[i]);
-                            }
-                        }
-                    }
+                    primary = quashCheck(primary);
                 }
                 secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
                 tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
@@ -488,6 +479,21 @@ CSL.Transform = function (state) {
         return [jurisdiction, hereinafter_key];
     }
     this.getHereinafter = getHereinafter;
+
+    function quashCheck(value) {
+        var m = value.match(/^!([-,_a-z]+)<<</);
+        if (m) {
+            var fields = m[1].split(",");
+            value = value.slice(m[0].length);
+            for (var i = 0, ilen = fields.length; i < ilen; i += 1) {
+                if (state.tmp.done_vars.indexOf(fields[i]) === -1) {
+                    state.tmp.done_vars.push(fields[i]);
+                }
+            }
+        }
+        return value;
+    }
+    this.quashCheck = quashCheck;
 };
 
 
