@@ -103,6 +103,7 @@ CSL.expandMacro = function (macro_key_token) {
     //
     var hasDate = false;
     macro_nodes = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
+    var macroid = this.sys.xml.getAttributeValue(macro_nodes,'cslid');
     if (macro_nodes.length) {
         hasDate = this.sys.xml.getAttributeValue(macro_nodes[0], "macro-has-date");
     }
@@ -118,6 +119,7 @@ CSL.expandMacro = function (macro_key_token) {
     //
     // (true as the last argument suppresses quashing)
     macro_key_token.tokentype = CSL.START;
+    macro_key_token.cslid = macroid;
     CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
 
     //

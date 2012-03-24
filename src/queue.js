@@ -425,7 +425,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                         if (state.normalDecorIsOrphan(blobjr, params)) {
                             continue;
                         }
-                        b = state.fun.decorate[params[0]][params[1]](state, b);
+                        b = state.fun.decorate[params[0]][params[1]](state, b, params[2]);
                     }
                 }
                 //
@@ -532,7 +532,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (state.normalDecorIsOrphan(blobjr, params)) {
                     continue;
                 }
-                blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start);
+                blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start, params[2]);
             }
         }
         //
@@ -554,7 +554,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
                     continue;
                 }
-                blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start);
+                blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
             }
         }
     }
@@ -669,7 +669,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
                     if (state.normalDecorIsOrphan(blob, params)) {
                         continue;
                     }
-                    str = state.fun.decorate[params[0]][params[1]](state, str);
+                    str = state.fun.decorate[params[0]][params[1]](state, str, params[2]);
                 }
             }
             str = blob.strings.prefix + str + blob.strings.suffix;

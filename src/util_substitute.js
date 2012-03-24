@@ -59,6 +59,11 @@ CSL.Util.substituteStart = function (state, target) {
         }
     };
     this.execs.push(func);
+    if (this.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
+        this.decorations.reverse();
+        this.decorations.push(["@showid","true", this.cslid]);
+        this.decorations.reverse();
+    }
     //
     // Contains body code for both substitute and first-field/remaining-fields
     // formatting.

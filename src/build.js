@@ -93,10 +93,27 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.dateput = new CSL.Output.Queue(this);
 
     this.cslXml = this.sys.xml.makeXml(style);
+    if (this.opt.development_extensions.csl_reverse_lookup_support) {
+        this.build.cslNodeId = 0;
+        this.setCslNodeIds = function(myxml, nodename) {
+            var children = this.sys.xml.children(myxml);
+            this.sys.xml.setAttribute(myxml, 'cslid', this.build.cslNodeId);
+            this.opt.nodenames.push(nodename);
+            this.build.cslNodeId += 1;
+            for (var i = 0, ilen = this.sys.xml.numberofnodes(children); i < ilen; i += 1) {
+                nodename = this.sys.xml.nodename(children[i]);
+                if (nodename) {
+                    this.setCslNodeIds(children[i], nodename);
+                }
+            }
+        }
+        this.setCslNodeIds(this.cslXml, "style");
+    }
     this.sys.xml.addMissingNameNodes(this.cslXml);
     this.sys.xml.addInstitutionNodes(this.cslXml);
     this.sys.xml.insertPublisherAndPlace(this.cslXml);
     this.sys.xml.flagDateMacros(this.cslXml);
+
     //
     // Note for posterity: tried manipulating the XML here to insert
     // a list of the upcoming date-part names.  The object is apparently
@@ -165,7 +182,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
 
-
     // We seem to have two language specs flying around:
     //   this.opt["default-locale"], and this.opt.lang
     // Keeping them aligned for safety's sake, pending
@@ -200,6 +216,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.registry = new CSL.Registry(this);
 
     this.buildTokenLists("citation");
+
     this.buildTokenLists("bibliography");
     this.configureTokenLists();
 
@@ -271,6 +288,8 @@ CSL.Engine.prototype.setStyleAttributes = function () {
         }
     }
 };
+
+
 
 CSL.buildStyle  = function (navi) {
     if (navi.getkids()) {

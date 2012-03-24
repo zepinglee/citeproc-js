@@ -50,6 +50,20 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@cslid"] = function (state, arg) {
+    // @cslid is a noop
+    // The value set on this attribute is used to
+    // generate reverse lookup wrappers on output when 
+    // this.development_extensions.csl_reverse_lookup_support is
+    // set to true in state.js (there is no runtime option,
+    // it must be set in state.js)
+    //
+    // See the @showid method in the html output
+    // section of formats.js for the function that
+    // renders the wrappers.
+    this.cslid = parseInt(arg, 10);
+}
+
 CSL.Attributes["@is-plural"] = function (state, arg) {
     var func = function (state, Item, item) {
         var nameList = Item[arg];
