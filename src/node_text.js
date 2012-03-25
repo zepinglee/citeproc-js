@@ -277,7 +277,7 @@ CSL.Node.text = {
                         func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                         if (this.variables_real[0] === "container-title") {
                             var xfunc = function (state, Item, item) {
-                                if (Item['container-title'] && state.tmp.citeblob.has_volume) {
+                                if (Item['container-title'] && state.tmp.citeblob.has_collection_number) {
                                     state.tmp.citeblob.can_suppress_identical_year = true;
                                 }
                             };
@@ -329,10 +329,6 @@ CSL.Node.text = {
                                 if (this.variables[0]) {
                                     var value = state.getVariable(Item, this.variables[0], form);
                                     if (value) {
-                                        // Only allow the suppression of a year identical
-                                        // to the volume number if the container-title
-                                        // is rendered after the volume number.
-                                        state.tmp.citeblob.has_volume = true;
                                         state.output.append(value, this);
                                     }
                                 }

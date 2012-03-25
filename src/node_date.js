@@ -118,11 +118,11 @@ CSL.Node.date = {
                         }
                         dp = dpx.slice();
                         // Suppress the year if we're not sorting, and
-                        // it's the same as the volume, and we would render
+                        // it's the same as the collection-number, and we would render
                         // only the year, with not month or day.
                         // Needed for English-style case cites.  Here's hoping it
                         // doesn't have side effects.
-                        if (!state.tmp.extension && ("" + Item.volume) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
+                        if (!state.tmp.extension && ("" + Item["collection-number"]) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
                             for (key in state.tmp.date_object) {
                                 if (state.tmp.date_object.hasOwnProperty(key)) {
                                     if (key.slice(0, 4) === "year" && state.tmp.citeblob.can_suppress_identical_year) {
