@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.311
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Be safer when skipping past a nil ItemObject in
+  processNumber()
+
+
+==========================
 Changes in version 1.0.310
 ==========================
 
