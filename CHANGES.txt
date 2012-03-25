@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.310
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Quash year if it matches collection-number rather
+  than volume, to align behavior with expectations of
+  legal style suite.
+
+
+==========================
 Changes in version 1.0.309
 ==========================
 
@@ -8,7 +21,9 @@ Changes in version 1.0.309
 Mishandled or unimplemented features
 ------------------------------------
 
-- 
+- Fix bug in institution-entire var quash code
+
+- Fix bug in macro id tracking code.
 
 ==========================
 Changes in version 1.0.308
