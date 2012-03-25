@@ -183,9 +183,6 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
-    if (!ItemObject) {
-        return;
-    }
     num = ItemObject[variable];
     //SNIP-START
     if (debug) {
@@ -199,6 +196,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     this.tmp.shadow_numbers[variable].values = [];
     this.tmp.shadow_numbers[variable].plural = 0;
     this.tmp.shadow_numbers[variable].numeric = false;
+    if (!ItemObject) {
+        return;
+    }
     if ("undefined" !== typeof num) {
         if ("number" === typeof num) {
             num = "" + num;
