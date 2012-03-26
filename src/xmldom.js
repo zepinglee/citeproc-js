@@ -322,12 +322,15 @@ CSL_CHROME.prototype.deleteAttribute = function (myxml,attr) {
 }
 
 CSL_CHROME.prototype.setAttribute = function (myxml,attr,val) {
-    var attribute;
     if (!myxml.ownerDocument) {
         myxml = myxml.firstChild;
     }
-    attribute = myxml.ownerDocument.createAttribute(attr);
-    myxml.setAttribute(attr, val);
+    if (myxml.setAttribute) {
+        // This line is needless, yes?
+        // var attribute = myxml.ownerDocument.createAttribute(attr);
+        myxml.setAttribute(attr, val);
+    }
+    // Looks like we could save the trouble here ...
     return false;
 }
 
