@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.312
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Be indifferent to the relative position of collection-number
+  and original-date in the cite when suppressing the latter
+  for equivalence. Restrict behavior to legal_case type.
+
+==========================
 Changes in version 1.0.311
 ==========================
 
