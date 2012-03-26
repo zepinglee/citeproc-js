@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.313
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- The change intended in the previous release, but in a 
+  form that actually works.
+
+- Avoid crash on comment node when this.development
+  _extensions.csl_reverse_lookup_support = true;
+
+
+==========================
 Changes in version 1.0.312
 ==========================
 

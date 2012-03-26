@@ -269,12 +269,12 @@ CSL_CHROME.prototype.deleteAttribute = function (myxml,attr) {
     myxml.removeAttribute(attr);
 }
 CSL_CHROME.prototype.setAttribute = function (myxml,attr,val) {
-    var attribute;
     if (!myxml.ownerDocument) {
         myxml = myxml.firstChild;
     }
-    attribute = myxml.ownerDocument.createAttribute(attr);
-    myxml.setAttribute(attr, val);
+    if (myxml.setAttribute) {
+        myxml.setAttribute(attr, val);
+    }
     return false;
 }
 CSL_CHROME.prototype.nodeCopy = function (myxml) {
