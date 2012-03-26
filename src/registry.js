@@ -386,10 +386,6 @@ CSL.Registry.prototype.doinserts = function (mylist) {
                 "disambig": false,
                 "ref": Item
             };
-            if (this.state.tmp.renders_collection_number) {
-                newitem.renders_collection_number = true;
-                this.state.tmp.renders_collection_number = false;
-            }
             //
             //
             //  4f. Add item ID to hash.

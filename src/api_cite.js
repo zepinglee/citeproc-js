@@ -1173,6 +1173,23 @@ CSL.citeEnd = function (Item, item) {
     this.tmp.disambig_request = false;
 
     this.tmp.cite_locales.push(this.tmp.last_cite_locale);
+
+    if (this.tmp.original_date && this.tmp.renders_collection_number) {
+        var buf = [];
+        for (var i = this.tmp.original_date.list.length - 1; i > this.tmp.original_date.pos; i += -1) {
+            buf.push(this.tmp.original_date.list.pop());
+        }
+        // Throw away the unwanted blob
+        this.tmp.original_date.list.pop();
+        // Put the other stuff back
+        for (var i = buf.length - 1; i > -1; i += -1) {
+            this.tmp.original_date.list.push(buf.pop());
+        }
+        // Notice the deletion to parallels machinery
+        this.parallel.cite["original-date"] = false;
+    }
+    this.tmp.original_date = false;
+    this.tmp.renders_collection_number = false;
     // Turn off nested parens conversion if appropriate.
     // We don't try to track nesting in a serious way. User beware.
     if (this.opt.development_extensions.flip_parentheses_to_braces && item && item.suffix) {
