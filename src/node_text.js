@@ -275,14 +275,6 @@ CSL.Node.text = {
                             abbrfall = true;
 						}
                         func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
-                        if (this.variables_real[0] === "container-title") {
-                            var xfunc = function (state, Item, item) {
-                                if (Item['container-title'] && state.tmp.citeblob.has_collection_number) {
-                                    state.tmp.citeblob.can_suppress_identical_year = true;
-                                }
-                            };
-                            this.execs.push(xfunc);
-                        }
                     } else {
                         // ordinary fields
                         if (CSL.CITE_FIELDS.indexOf(this.variables_real[0]) > -1) {

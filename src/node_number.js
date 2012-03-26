@@ -84,14 +84,14 @@ CSL.Node.number = {
             state.parallel.StartVariable(this.variables[0]);
             state.parallel.AppendToVariable(Item[this.variables[0]]);
 
+            if (varname === 'collection-number' && Item.type === 'legal_case') {
+                state.tmp.renders_collection_number = true;
+            }
             
             // Only allow the suppression of a year identical
             // to collection-number if the container-title
             // is rendered after collection-number.
             var value = Item[this.variables[0]];
-            if (value && this.variables[0] === "collection-number") {
-                state.tmp.citeblob.has_collection_number = true;
-            }
                        
             if (this.text_case_normal) {
                 if (value) {

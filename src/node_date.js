@@ -122,10 +122,10 @@ CSL.Node.date = {
                         // only the year, with not month or day.
                         // Needed for English-style case cites.  Here's hoping it
                         // doesn't have side effects.
-                        if (!state.tmp.extension && ("" + Item["collection-number"]) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year") {
+                        if (!state.tmp.extension && ("" + Item["collection-number"]) === "" + state.tmp.date_object.year && this.dateparts.length === 1 && this.dateparts[0] === "year" && state.registry.registry[Item.id] && state.registry.registry[Item.id].renders_collection_number) {
                             for (key in state.tmp.date_object) {
                                 if (state.tmp.date_object.hasOwnProperty(key)) {
-                                    if (key.slice(0, 4) === "year" && state.tmp.citeblob.can_suppress_identical_year) {
+                                    if (key.slice(0, 4) === "year") {
                                         delete state.tmp.date_object[key];
                                     }
                                 }
