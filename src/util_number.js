@@ -183,13 +183,6 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
-    num = ItemObject[variable];
-    //SNIP-START
-    if (debug) {
-        print("=== "+variable+": "+num+" ===");
-    }
-    //SNIP-END
-
     // This carries value, pluralization and numeric info for use in other contexts.
     // This function does not render.
     this.tmp.shadow_numbers[variable] = {};
@@ -199,6 +192,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     if (!ItemObject) {
         return;
     }
+    num = ItemObject[variable];
+    //SNIP-START
+    if (debug) {
+        print("=== "+variable+": "+num+" ===");
+    }
+    //SNIP-END
+
     if ("undefined" !== typeof num) {
         if ("number" === typeof num) {
             num = "" + num;
