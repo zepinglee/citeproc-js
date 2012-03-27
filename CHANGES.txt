@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.314
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix the ItemObject crash bug. I mean it this time.
+
+==========================
 Changes in version 1.0.313
 ==========================
 
