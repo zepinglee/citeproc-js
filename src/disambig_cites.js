@@ -132,9 +132,11 @@ CSL.Disambiguation.prototype.scanItems = function (list, phase) {
         this.base.disambiguate = false;
     }
     var clashes = 0;
+
+    this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.base);
     for (pos = 1, len = list[1].length; pos < len; pos += 1) {
         otherItem = list[1][pos];
-        var otherItemCite = this.getCiteData(otherItem, this.base);
+        var otherItemCite = CSL.getAmbiguousCite.call(this.state, otherItem, this.base);
 
         //var otherItemCite = CSL.getAmbiguousCite.call(this.state, otherItem, this.base);
         //ZZZ
@@ -182,6 +184,27 @@ CSL.Disambiguation.prototype.evalScan = function (ismax) {
 
 CSL.Disambiguation.prototype.disNames = function (ismax) {
     var pos, len, mybase;
+    
+    // New design
+    // this.base is a forward-only counter. Values are never
+    // reduced, and the counter object is never overwritten.
+    // It is methodically pushed forward in single-unit increments
+    // in incrementDisambig() until disNames() wipes out the list.
+
+    // this.betterbase is cloned from this.base exactly once,
+    // at the start of a disambiguation run. Whenever an operation
+    // results in improvement, the just-incremented elements
+    // identified as this.base.names[this.gnameset] (number of
+    // names)and as this.base.givens[this.gnameset][this.gname]
+    // (level of given name) are copied from this.base.
+
+    // The this.base object is used to control disambiguation
+    // renderings. These will be more fully expanded than the final
+    // text, but the flip side of the fact that the extra data does
+    // not contribute anything to disambiguation is that leaving
+    // it in does no harm -- it is the cold dark matter of
+    // disambiguation.
+
     //SNIP-START
     if (this.debug) {
         print("== disNames() ==: "+this.partners);
@@ -189,57 +212,56 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
     //SNIP-END
     if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
         // Fully resolved
-        mybase = CSL.cloneAmbigConfig(this.base);
-        mybase.year_suffix = false;
+        this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
             print("RESOLVE [a]: "+this.partners[0].id);
         }
         //SNIP-END
-        this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-        this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, mybase);
+        this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.betterbase);
+        this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.betterbase);
         this.state.tmp.taintedItemIDs[this.nonpartners[0].id] = true;
         this.lists[this.listpos] = [this.base, []];
     } else if (this.clashes[1] === 0) {
         // Partially resolved
         // Capture better-base
-        this.betterbase = CSL.cloneAmbigConfig(this.base);
-        this.betterbase.year_suffix = false;
+        this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
             print("RESOLVE [b]: "+this.partners[0].id);
         }
         //SNIP-END
-        this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.betterbase);
-        this.lists[this.listpos] = [this.base, this.nonpartners];
+        var base = CSL.cloneAmbigConfig(this.betterbase);
+        this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, base);
+        this.lists[this.listpos] = [this.betterbase, this.nonpartners];
         if (this.nonpartners.length) {
             this.Item = this.nonpartners[0];
-            this.ItemCite = this.getCiteData(this.Item, this.base);
+            //this.ItemCite = this.getCiteData(this.Item, this.base);
             //this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.base);
-            //this.initGivens = true;
+            this.initGivens = true;
         }
     } else if (this.nonpartners.length === 1) {
         // Partially resolved
         // Capture better-base
-        this.betterbase = CSL.cloneAmbigConfig(this.base);
-        this.betterbase.year_suffix = false;
+        this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
             print("RESOLVE [c]: "+this.nonpartners[0].id);
         }
         //SNIP-END
         this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[0].id, this.betterbase);
-        this.lists[this.listpos] = [this.base, this.partners];
+        this.lists[this.listpos] = [this.betterbase, this.partners];
     } else if (this.clashes[1] < this.clashes[0]) {
         // Improved, but not resolved
-        this.betterbase = CSL.cloneAmbigConfig(this.base);
+        this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
             print("  RESOLVE [d]: improved but not resolved");
         }
         //SNIP-END
-        this.lists[this.listpos] = [this.base, this.partners];
-        this.lists.push([this.base, this.nonpartners]);
+        this.lists[this.listpos] = [this.betterbase, this.partners];
+        print("NON-PART: "+this.nonpartners[0].id+" "+this.nonpartners[1].id)
+        this.lists.push([this.betterbase, this.nonpartners]);
     } else {
         // No change
         if (ismax) {
@@ -248,7 +270,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
                 print("maxed out: "+this.clashes);
             }
             //SNIP-END
-            this.lists[this.listpos] = [this.base, this.nonpartners];
+            this.lists[this.listpos] = [this.betterbase, this.nonpartners];
             //for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
             //    this.state.registry.registerAmbigToken(this.akey, "" + this.partners[pos].id, this.betterbase);
             //}
@@ -261,7 +283,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
                 }
             }
             //this.base = CSL.cloneAmbigConfig(this.betterbase);
-            this.ItemCite = this.getCiteData(this.Item, this.betterbase);
+            this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.betterbase);
             //this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.betterbase);
             this.lists.push([this.base, this.partners]);
             if (this.modeindex === this.modes.length - 1) {
@@ -276,6 +298,14 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 
 CSL.Disambiguation.prototype.disExtraText = function () {
     var pos, len, mybase;
+    
+    if (!this.base.disambiguate) {
+        this.base.disambiguate = true;
+        return;
+    }
+    // If disambiguate is false, set it to true and roll.
+    // If 
+
     // Try with disambiguate="true""
     //SNIP-START
     if (this.debug) {
@@ -430,7 +460,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
                 //}
             } else {
                 var increment_names = true;
-                this.base.givens[this.gnameset][this.gname] = 0;
+                //this.base.givens[this.gnameset][this.gname] = 0;
                 //if (this.gnameset === 0 && this.gname === 0) {
                 //    print("SET given DOWN TO: "+this.base.givens[this.gnameset][this.gname]);
                 //}
@@ -440,14 +470,14 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             increment_namesets = false;
             //SNIP-START
             if (this.debug) {
-                print("  increment names");
-                print("  base nams: "+this.gnameset+" "+this.base.names[this.gnameset]+" "+this.namesMax);
+                print("  base names: gns:"+this.gnameset+" bn:"+this.base.names[this.gnameset]+" nmx:"+this.namesMax);
             }
             //SNIP-END
             if (this.base.names[this.gnameset] < this.namesMax) {
                 this.base.names[this.gnameset] += 1;
                 this.gname += 1;
-                this.base.names[this.gnameset][this.gname] = 0;
+
+                //this.base.names[this.gnameset][this.gname] = 0;
             } else {
                 //SNIP-START
                 if (this.debug) {
@@ -462,13 +492,14 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
                 this.gnameset += 1;
                 this.base.names[this.gnameset] = 1;
                 this.gname = 0;
-                this.base.names[this.gnameset][this.gname] = 1;
+
+                //this.base.names[this.gnameset][this.gname] = 1;
             } else {
                 var increment_mode = true;
             }
         }
         // Refresh item string
-        this.ItemCite = this.getCiteData(this.Item, this.base);
+        this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.base);
         //this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.base);
         // Acquire new max values if there was significant change
         if (!increment_mode && increment_namesets) {
@@ -497,7 +528,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
         //SNIP-END
         if (("number" !== typeof this.namesetsMax || this.gnameset === this.namesetsMax)
             && ("number" !== typeof this.namesMax || this.base.names[this.gnameset] === this.namesMax)
-            && ("number" != typeof this.givensMax || this.base.givens[this.gnameset][this.gname] === this.givensMax)) {
+            && ("number" != typeof this.givensMax || "undefined" === typeof this.base.givens[this.gnameset][this.gname] || this.base.givens[this.gnameset][this.gname] === this.givensMax)) {
         
             maxed = true;
 
@@ -508,22 +539,9 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             //SNIP-END
         }
     }
-    if ("disExtraText" === this.modes[this.modeindex]) {
-        this.base.disambiguate = true;
-    }
     if ("disYears" === this.modes[this.modeindex]) {
     }
     return maxed;
-};
-
-CSL.Disambiguation.prototype.getItemDesc = function (Item, forceMax) {
-    var str, maxvals, minval, base;
-    //print("=== getItemDesc() ===");
-    //print("getItem with name limits: "+this.base.names);
-    str = this.getCiteData(Item, this.base);
-
-    base = CSL.getAmbigConfig.call(this.state);
-    return [base, maxvals];
 };
 
 CSL.Disambiguation.prototype.initVars = function (akey) {
@@ -548,10 +566,6 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
         for (i = 0, ilen = myIds.length; i < ilen; i += 1) {
             var myItem = this.state.retrieveItem("" + myIds[i]);
             this.getCiteData(myItem);
-            if (!this.betterbase) {
-                this.base = CSL.getAmbigConfig.call(this.state);
-                this.betterbase = CSL.cloneAmbigConfig(this.base);
-            }
             myItemBundles.push([this.maxNamesByItemId[myItem.id], myItem]);
         }
         myItemBundles.sort(
@@ -585,14 +599,26 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
     } else {
         this.Item = this.state.retrieveItem("" + myIds[0]);
     }
-    this.ItemCite = this.getCiteData(this.Item, this.base);
-    //this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item);
-    this.base = CSL.getAmbigConfig.call(this.state);
+
+    this.modeindex = 0;
+    this.ItemCite = this.getCiteData(this.Item);
     this.namesMax = this.maxNamesByItemId[this.Item.id][0];
+    for (var i = 0, ilen = this.base.givens.length; i < ilen; i += 1) {
+        for (var j = 0, jlen = this.namesMax; j < jlen; j += 1) {
+            if (!this.base.givens[i][j]) {
+                this.base.givens[i][j] = 0;
+                this.betterbase.givens[i][j] = 0;
+            }
+        }
+    }
+    this.base.year_suffix = false;
+    this.base.disambiguate = false;
+    this.betterbase.year_suffix = false;
+    this.betterbase.disambiguate = false;
     if (this.state.opt["givenname-disambiguation-rule"] === "by-cite") {
         this.givensMax = 2;
     }
-    this.modeindex = 0;
+
 };
 
 /**
@@ -622,6 +648,35 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
         this.state.registry.registry[Item.id].disambig.givens = this.state.tmp.disambig_settings.givens.slice();
         this.etAlMin = CSL.getMinVal.call(this.state);
         this.namesetsMax = this.state.registry.registry[Item.id].disambig.names.length - 1;
+        var base = CSL.getAmbigConfig.call(this.state);
+        if (!this.base) {
+            this.base = base;
+            this.betterbase = CSL.cloneAmbigConfig(base);
+        }
+        var oldBase = this.base;
+        this.base = base;
+        var base = oldBase;
+        if (base.names.length < this.base.names.length) {
+            // I don't know what would happen with discrepancies in the number
+            // of namesets rendered on items, so we use the fewer of the two
+            // and limit the other to that size.
+            this.base = base;
+        } else {
+            // Within namesets, we use the longer of the two throughout.
+            var update = false;
+            for (var i = 0, ilen = base.names.length; i < ilen; i += 1) {
+                if (base.names[i] > this.base.names[i]) {
+                    this.base.givens[i] = this.base.givens[i].concat(this.base.givens[i].slice(this.base.names[i]));
+                    this.base.names[i] = base.names[i];
+                }
+            }
+        }
     }
+
     return ret;
+};
+
+CSL.Disambiguation.prototype.captureStepToBase = function() {
+    this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
+    this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
 };
