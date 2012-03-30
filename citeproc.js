@@ -1244,7 +1244,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
     state.tmp.last_chr = lastchr;
     return lastchr;
 };
-CSL.compareAmbigConfig = function(a, b) {
+CSL.ambigConfigDiff = function(a, b) {
     var ret, pos, len, ppos, llen;
     if (a.names.length !== b.names.length) {
         return 1;
@@ -1272,23 +1272,11 @@ CSL.cloneAmbigConfig = function (config, oldconfig, tainters) {
     ret.disambiguate = false;
     for (i = 0, ilen = config.names.length; i < ilen; i += 1) {
         param = config.names[i];
-        if (oldconfig && (!oldconfig.names[i] || oldconfig.names[i] !== param)) {
-            for (j = 0, jlen = tainters.length; j < jlen; j += 1) {
-                this.tmp.taintedItemIDs[tainters[j].id] = true;
-            }
-            oldconfig = false;
-        }
         ret.names[i] = param;
     }
     for (i  = 0, ilen = config.givens.length; i < ilen; i += 1) {
         param = [];
         for (j = 0, jlen = config.givens[i].length; j < jlen; j += 1) {
-            if (oldconfig && oldconfig.givens[i][j] !== config.givens[i][j]) {
-                for (k = 0, klen = tainters.length; k < klen; k += 1) {
-                    this.tmp.taintedItemIDs[tainters[k].id] = true;
-                }
-                oldconfig = false;
-            }
             param.push(config.givens[i][j]);
         }
         ret.givens.push(param);
@@ -1793,7 +1781,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.314";
+    this.processor_version = "1.0.315";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -11384,6 +11372,7 @@ CSL.Disambiguation.prototype.run = function(akey) {
         return;
     }
     this.initVars(akey);
+    this.initGivens = true;
     this.runDisambig();
 };
 CSL.Disambiguation.prototype.runDisambig = function () {
@@ -11451,7 +11440,8 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         this.betterbase = CSL.cloneAmbigConfig(this.base);
         this.betterbase.year_suffix = false;
         this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.betterbase);
-        this.lists[this.listpos] = [this.base, []];
+        this.lists[this.listpos] = [this.base, this.nonpartners];
+        this.initGivens = true;
     } else if (this.nonpartners.length === 1) {
         this.betterbase = CSL.cloneAmbigConfig(this.base);
         this.betterbase.year_suffix = false;
@@ -11469,6 +11459,10 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
             this.lists[this.listpos] = [this.base, this.nonpartners];
             for (pos = 0, len = this.partners.length; pos < len; pos += 1) {
                 this.state.registry.registerAmbigToken(this.akey, "" + this.partners[pos].id, this.base);
+            }
+        } else {
+            if (this.debug) {
+                print("not maxed out");
             }
         }
     }
@@ -11503,15 +11497,10 @@ CSL.Disambiguation.prototype.disYears = function () {
     }
     tokens.sort(this.state.registry.sorter.compareKeys);
     for (pos = 0, len = tokens.length; pos < len; pos += 1) {
-        if (pos === 0) {
-            this.base.year_suffix = ""+pos;
-            this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base);
-        } else {
-            this.base.year_suffix = ""+pos;
-            this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base);
-        }
-        var newys = this.state.registry.registry[tokens[pos].id].disambig.year_suffix;
-        if (this.old_desc[tokens[pos].id][0] !== newys) {
+        this.base.year_suffix = ""+pos;
+        this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, this.base);
+        var oldBase = this.state.registry.registry[tokens[pos].id].disambig;
+        if (CSL.ambigConfigDiff(oldBase,this.base)) {
             this.state.tmp.taintedItemIDs[tokens[pos].id] = true;
         }
     }
@@ -11519,6 +11508,10 @@ CSL.Disambiguation.prototype.disYears = function () {
 };
 CSL.Disambiguation.prototype.incrementDisambig = function () {
     var val, maxed;
+    if (this.initGivens) {
+        this.initGivens = false;
+        return false;
+    }
     var maxed = false;
     if ("disNames" === this.modes[this.modeindex]) {
         var increment_name = false;
@@ -11563,12 +11556,14 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
                     this.base = CSL.cloneAmbigConfig(this.betterbase);
                     if (this.modeindex < this.modes.length - 1) {
                         this.modeindex += 1;
+                        increment_nameset = true;
                     }
                 }
             }
-        } else if (increment_name) {
+        }
+        if (increment_name && increment_nameset) {
             maxed = true;
-            if (this.modeindex < this.modes.length - 1) {
+            if (this.modeindex < this.modes.length) {
                 this.modeindex += 1;
             }
         }
@@ -11595,7 +11590,6 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
     this.betterbase = false;
     this.akey = akey;
     myItemBundles = [];
-    this.old_desc = {};
     myIds = this.ambigcites[akey];
     if (myIds && myIds.length > 1) {
         for (i = 0, ilen = myIds.length; i < ilen; i += 1) {
@@ -11608,7 +11602,6 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
                 this.minval = myDesc[2];
             }
             myItemBundles.push([myDesc, myItem]);
-            this.old_desc[myIds[i]] = [this.state.registry.registry[myIds[i]].disambig.year_suffix, this.state.registry.registry[myIds[i]].disambig.disambiguate];
         }
         myItemBundles.sort(
             function (a, b) {

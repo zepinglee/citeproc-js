@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.315
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in disambguation, reported by Zotero
+  user @gauthamg
+
+==========================
 Changes in version 1.0.314
 ==========================
 
