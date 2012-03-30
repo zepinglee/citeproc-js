@@ -135,4 +135,5 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             this.state.tmp.disambig_settings.givens[pos][i] = param;
         }
     }
+    //this.state.registry.registry[this.Item.id].disambig.givens = this.state.tmp.disambig_settings.givens.slice();
 };
