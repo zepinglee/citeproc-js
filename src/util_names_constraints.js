@@ -89,7 +89,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     // display_names starts as the original length of this list of names.
     var display_names = lst[key];
     var discretionary_names_length = this.state.tmp["et-al-min"];
-
+    
     // Mappings, to allow existing disambiguation machinery to
     // remain untouched.
     if (this.state.tmp.suppress_decorations) {

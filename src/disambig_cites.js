@@ -74,7 +74,7 @@ CSL.Disambiguation.prototype.runDisambig = function () {
     var pos, len, ppos, llen, pppos, lllen, ismax;
     //SNIP-START
     if (this.debug) {
-        print("[B] === runDisambig() ===");
+        print("[C] === runDisambig() ===");
     }
     //SNIP-END
     this.initGivens = true;
@@ -253,12 +253,14 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
             // et-al-min is larger than request
             // This is late, of course: the increment should have STARTED
             // at the threshold!
+/*
             var namelength = this.maxNamesByItemId[this.Item.id][this.gnameset];
             for (var j = 0, jlen = this.betterbase.names.length; j < jlen; j += 1) {
                 if (this.betterbase.names[j] < this.etAlMin && namelength < this.etAlMin) {
                     this.betterbase.names[j] = namelength;
                 }
             }
+*/
             this.lists.push([this.betterbase, this.partners]);
             if (this.modeindex === this.modes.length - 1) {
                 //SNIP-START
@@ -331,12 +333,14 @@ CSL.Disambiguation.prototype.disYears = function () {
     for (pos = 0, len = tokens.length; pos < len; pos += 1) {
         base.year_suffix = ""+pos;
         var oldBase = this.state.registry.registry[tokens[pos].id].disambig;
+/*
         var namelength = this.maxNamesByItemId[tokens[pos].id][this.gnameset];
         for (var j = 0, jlen = base.names.length; j < jlen; j += 1) {
             if (base.names[j] < this.etAlMin && namelength < this.etAlMin) {
                 base.names[j] = namelength;
             }
         }
+*/
         this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, base);
         if (CSL.ambigConfigDiff(oldBase,base)) {
             this.state.tmp.taintedItemIDs[tokens[pos].id] = true;
@@ -446,7 +450,11 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
 
 CSL.Disambiguation.prototype.initVars = function (akey) {
     var i, ilen, myIds, myItemBundles, myItems;
-    //print("=== initVars() ===");
+    //SNIP-START
+    if (this.debug) {
+        print("[B] === initVars() ===");
+    }
+    //SNIP-END
     this.lists = [];
     this.base = false;
     this.betterbase = false;
@@ -553,7 +561,7 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
         base = CSL.getAmbigConfig.call(this.state);
         this.maxNamesByItemId[Item.id] = CSL.getMaxVals.call(this.state);
         this.state.registry.registry[Item.id].disambig.givens = this.state.tmp.disambig_settings.givens.slice();
-        this.etAlMin = CSL.getMinVal.call(this.state);
+        //this.etAlMin = CSL.getMinVal.call(this.state);
         this.namesetsMax = this.state.registry.registry[Item.id].disambig.names.length - 1;
         if (!this.base) {
             this.base = base;

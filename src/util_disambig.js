@@ -57,7 +57,7 @@ CSL.ambigConfigDiff = function(a, b) {
     } else {
         for (pos = 0, len = a.names.length; pos < len; pos += 1) {
             if (a.names[pos] !== b.names[pos]) {
-        //print("   (2) "+typeof a.names[pos]+" "+typeof b.names[pos]);
+        //print("   (2) "+a.names[pos]+" "+b.names[pos]);
                 return 1;
             } else {
                 for (ppos = 0, llen = a.givens[pos]; ppos < llen; ppos += 1) {
@@ -69,12 +69,12 @@ CSL.ambigConfigDiff = function(a, b) {
             }
         }
     }
-    if (a.disambiguate !== b.disambiguate) {
-        //print("   (4)");
+    if (a.disambiguate != b.disambiguate) {
+        //print("   (4) "+a.disambiguate+" "+b.disambiguate);
         return 1;
     }
     if (a.year_suffix !== b.year_suffix) {
-        //print("   (5)");
+        //print("   (5) "+a.year_suffix+" "+b.year_suffix);
         return 1;
     }
     return 0;
