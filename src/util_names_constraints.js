@@ -147,7 +147,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     this.state.tmp.disambig_settings.names[pos] = lst[key].length;
 
     // ???
-    if (!this.state.tmp.disambig_request) {
-        this.state.tmp.disambig_settings.givens[pos] = [];
-    }
+    //if (!this.state.tmp.disambig_request) {
+    //    this.state.tmp.disambig_settings.givens[pos] = [];
+    //}
 };

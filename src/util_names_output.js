@@ -186,17 +186,27 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     //SNIP-END
     // util_names_truncate.js
+
     this.truncatePersonalNameLists();
     //SNIP-START
     if (this.debug) {
         print("(5)");
     }
     //SNIP-END
+
+    //SNIP-START
+    if (this.debug) {
+        print("(6)");
+    }
+    //SNIP-END
+    // util_names_disambig.js
+    this.disambigNames();
+
     // util_names_constraints.js
     this.constrainNames();
     //SNIP-START
     if (this.debug) {
-        print("(6)");
+        print("(7)");
     }
     //SNIP-END
     // form="count"
@@ -213,13 +223,6 @@ CSL.NameOutput.prototype.outputNames = function () {
         return;
     }
 
-    //SNIP-START
-    if (this.debug) {
-        print("(7)");
-    }
-    //SNIP-END
-    // util_names_disambig.js
-    this.disambigNames();
     //SNIP-START
     if (this.debug) {
         print("(8)");
