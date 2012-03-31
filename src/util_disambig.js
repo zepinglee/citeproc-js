@@ -60,7 +60,7 @@ CSL.ambigConfigDiff = function(a, b) {
         //print("   (2) "+typeof a.names[pos]+" "+typeof b.names[pos]);
                 return 1;
             } else {
-                for (ppos = 0, llen = a.names[pos]; ppos < llen; ppos += 1) {
+                for (ppos = 0, llen = a.givens[pos]; ppos < llen; ppos += 1) {
                     if (a.givens[pos][ppos] !== b.givens[pos][ppos]) {
         //print("   (3): "+a.givens[pos][ppos]+" "+b.givens[pos][ppos]+" "+pos+"/"+ppos+" "+b.givens[pos]);
                         return 1;

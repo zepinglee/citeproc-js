@@ -54,7 +54,7 @@ CSL.Disambiguation = function (state) {
     this.registry = state.registry.registry;
     this.ambigcites = state.registry.ambigcites;
     this.configModes();
-    this.debug = true;
+    this.debug = false;
 };
 
 CSL.Disambiguation.prototype.run = function(akey) {
@@ -196,7 +196,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
-            print("  ** RESOLUTION [A]: lone partner, one nonpartner");
+            print("  ** RESOLUTION [a]: lone partner, one nonpartner");
             print("  registering "+this.partners[0].id+" and "+this.nonpartners[0].id);
         }
         //SNIP-END
@@ -269,7 +269,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
                 for (var i = 0, ilen = this.partners.length; i < ilen; i += 1) {
                     this.state.registry.registerAmbigToken(this.akey, "" + this.partners[i].id, this.betterbase);
                 }
-                this.lists.push([this.betterbase, []]);
+                this.lists[this.listpos] = [this.betterbase, []];
                 //this.lists[this.listpos + 1] = [this.betterbase, []];
                 //this.lists = this.lists.slice(0, this.listpos + 2);
             }
@@ -286,33 +286,28 @@ CSL.Disambiguation.prototype.disExtraText = function () {
     }
     //SNIP-END
 
-    if (!this.base.disambiguate) {
+    // If first encounter in this cycle and multiple modes are
+    // available, decrement mode and reset base
+    if (this.modes.length > 1 && !this.base.disambiguate) {
+        this.modeindex = 0;
+        this.base = CSL.cloneAmbigConfig(this.betterbase);
+    }
+    // If disambiguate is false set to true
+    if (!this.betterbase.disambiguate) {
         this.base.disambiguate = true;
-        return;
-    }
-    // If disambiguate is false, set it to true and roll.
-    // If 
-
-    // Try with disambiguate="true""
-    mybase = CSL.cloneAmbigConfig(this.base);
-    mybase.year_suffix = false;
-
-    // See note in disNames, above (?)
-    if (this.clashes[1] === 0 || this.clashes[1] < this.clashes[0]) {
-        this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, mybase);
-        for (var i=0, ilen=this.partners.length; i < ilen; i += 1) {
-            this.state.registry.registerAmbigToken(this.akey, "" + this.partners[i].id, mybase);
-        }
-        for (var i=0, ilen=this.nonpartners.length; i < ilen; i += 1) {
-            this.state.registry.registerAmbigToken(this.akey, "" + this.nonpartners[i].id, mybase);
-        }
+        this.betterbase.disambiguate = true;
+        this.initGivens = true;
     } else {
-        // If adding text would be fruitless, don't bother.
-        for (var i=0, ilen=this.partners.length; i < ilen; i += 1) {
-            this.state.registry.registerAmbigToken(this.akey, "" + this.partners[i].id, this.betterbase);
+        if (this.modeindex === this.modes.length - 1) {
+            // Give up at the second try if 
+            // If we reach this, we will not have disambiguated fully.
+            var base = this.lists[this.listpos][0];
+            for (var i = 0, ilen = this.lists[this.listpos][1].length; i < ilen; i += 1) {
+                this.state.registry.registerAmbigToken(this.akey, "" + this.lists[this.listpos][1][i].id, base);
+            }
+            this.lists[this.listpos] = [this.betterbase, []];
         }
     }
-    this.lists[this.listpos] = [this.betterbase, []];
 };
 
 CSL.Disambiguation.prototype.disYears = function () {
@@ -421,7 +416,11 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             print("    | gnameset: "+this.gnameset);
             print("    | gname: "+this.gname);
             print("    | names value: "+this.base.names[this.gnameset]);
-            print("    | givens value: "+this.base.givens[this.gnameset][this.gname]);
+            if (this.base.givens.length) {
+                print("    | givens value: "+this.base.givens[this.gnameset][this.gname]);
+            } else {
+                print("    | givens value: nil");
+            }
             print("    | namesetsMax: "+this.namesetsMax);
             print("    | namesMax: "+this.namesMax);
             print("    | givensMax: "+this.givensMax);
@@ -563,6 +562,7 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
             // I don't know what would happen with discrepancies in the number
             // of namesets rendered on items, so we use the fewer of the two
             // and limit the other to that size.
+            print("ALERT");
             this.base = base;
         } else {
             // Padding. Within namesets, we use the longer of the two throughout.
