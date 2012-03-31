@@ -11,6 +11,14 @@ Mishandled or unimplemented features
 - Fix a bug in disambguation, reported by Zotero
   user @gauthamg
 
+  The reported fault led to substantial revision
+  of the disambiguation module, and fixes for several
+  small but significant bugs, including revisions to
+  three test fixtures that were demanding incorrect
+  output, and a memory leak on the givens segment of
+  registry disambig objects.
+
+
 ==========================
 Changes in version 1.0.314
 ==========================
