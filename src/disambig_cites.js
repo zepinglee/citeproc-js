@@ -188,11 +188,10 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
     // renderings. These will be more fully expanded than the final
     // text, but the flip side of the fact that the extra data does
     // not contribute anything to disambiguation is that leaving
-    // it in does no harm -- it is the cold dark matter of
+    // it in does no harm -- think of it as the Cold Dark Matter of
     // disambiguation.
 
     if (this.clashes[1] === 0 && this.nonpartners.length === 1) {
-        // Fully resolved
         this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
@@ -204,8 +203,6 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         this.state.registry.registerAmbigToken(this.akey, "" + this.partners[0].id, this.betterbase);
         this.lists[this.listpos] = [this.betterbase, []];
     } else if (this.clashes[1] === 0) {
-        // Partially resolved
-        // Capture better-base
         this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
@@ -219,8 +216,6 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
             this.initGivens = true;
         }
     } else if (this.nonpartners.length === 1) {
-        // Partially resolved
-        // Capture better-base
         this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
@@ -232,7 +227,6 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         //this.lists[this.listpos] = [this.betterbase, this.partners];
         this.lists[this.listpos] = [this.betterbase, this.partners];
     } else if (this.clashes[1] < this.clashes[0]) {
-        // Improved, but not resolved
         this.captureStepToBase();
         //SNIP-START
         if (this.debug) {
@@ -249,18 +243,6 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         //SNIP-END
         if (ismax) {
             this.lists[this.listpos] = [this.betterbase, this.nonpartners];
-            // Check requested names against et-al-min, and set to base if
-            // et-al-min is larger than request
-            // This is late, of course: the increment should have STARTED
-            // at the threshold!
-/*
-            var namelength = this.maxNamesByItemId[this.Item.id][this.gnameset];
-            for (var j = 0, jlen = this.betterbase.names.length; j < jlen; j += 1) {
-                if (this.betterbase.names[j] < this.etAlMin && namelength < this.etAlMin) {
-                    this.betterbase.names[j] = namelength;
-                }
-            }
-*/
             this.lists.push([this.betterbase, this.partners]);
             if (this.modeindex === this.modes.length - 1) {
                 //SNIP-START
@@ -272,8 +254,6 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
                     this.state.registry.registerAmbigToken(this.akey, "" + this.partners[i].id, this.betterbase);
                 }
                 this.lists[this.listpos] = [this.betterbase, []];
-                //this.lists[this.listpos + 1] = [this.betterbase, []];
-                //this.lists = this.lists.slice(0, this.listpos + 2);
             }
         }
     }
@@ -323,7 +303,7 @@ CSL.Disambiguation.prototype.disYears = function () {
     var base = this.lists[this.listpos][0];
     if (this.clashes[1]) {
         // That is, if the initial increment on the ambigs group returns no
-        // clashes, don't apply suffix. The condition is a failsafe.
+        // clashes, don't apply suffix. The condition is a necessary failsafe.
         for (pos = 0, len = this.lists[this.listpos][1].length; pos < len; pos += 1) {
             token = this.registry[this.lists[this.listpos][1][pos].id];
             tokens.push(token);
@@ -333,14 +313,6 @@ CSL.Disambiguation.prototype.disYears = function () {
     for (pos = 0, len = tokens.length; pos < len; pos += 1) {
         base.year_suffix = ""+pos;
         var oldBase = this.state.registry.registry[tokens[pos].id].disambig;
-/*
-        var namelength = this.maxNamesByItemId[tokens[pos].id][this.gnameset];
-        for (var j = 0, jlen = base.names.length; j < jlen; j += 1) {
-            if (base.names[j] < this.etAlMin && namelength < this.etAlMin) {
-                base.names[j] = namelength;
-            }
-        }
-*/
         this.state.registry.registerAmbigToken(this.akey, "" + tokens[pos].id, base);
         if (CSL.ambigConfigDiff(oldBase,base)) {
             this.state.tmp.taintedItemIDs[tokens[pos].id] = true;
@@ -472,7 +444,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
     if (myIds && myIds.length > 1) {
         myItemBundles.push([this.maxNamesByItemId[myItem.id], myItem]);
         // Build a composite list of Items and associated
-        // disambig objects. This is messy, but it's the only
+        // max names. This is messy, but it's the only
         // way to get the items sorted by the number of names
         // to be disambiguated. If they are in descending order
         // with name expansions, the processor will hang.
@@ -502,11 +474,6 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
         for (i = 0, ilen = myItemBundles.length; i < ilen; i += 1) {
             myItems.push(myItemBundles[i][1]);
         }
-        // FIXED
-        //print("Item sequence: "+[myItems[x].id for (x in myItems)]);
-        
-        // first element is the base disambig, which is false for the initial
-        // list.
         this.lists.push([this.base, myItems]);
         this.Item = this.lists[0][1][0];
     } else {
@@ -561,7 +528,6 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
         base = CSL.getAmbigConfig.call(this.state);
         this.maxNamesByItemId[Item.id] = CSL.getMaxVals.call(this.state);
         this.state.registry.registry[Item.id].disambig.givens = this.state.tmp.disambig_settings.givens.slice();
-        //this.etAlMin = CSL.getMinVal.call(this.state);
         this.namesetsMax = this.state.registry.registry[Item.id].disambig.names.length - 1;
         if (!this.base) {
             this.base = base;
@@ -584,8 +550,9 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
         }
         // This shouldn't be necessary
         // getAmbiguousCite() should return a valid and complete
-        // givens segment under all conditions, but it does not,
-        // so we clean up after it here.
+        // givens segment under all conditions, but it does not
+        // do so for institution authors, so we clean up after it
+        // here.
         // Relevant test: sort_ChicagoYearSuffix2
         this.betterbase.givens = this.base.givens.slice();
         for (var j = 0, jlen = this.base.givens.length; j < jlen; j += 1) {
