@@ -454,6 +454,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 
     this.maxNamesByItemId = {};
 
+
     myItemBundles = [];
     myIds = this.ambigcites[akey];
     var Item = false;
@@ -562,17 +563,25 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
             // I don't know what would happen with discrepancies in the number
             // of namesets rendered on items, so we use the fewer of the two
             // and limit the other to that size.
-            print("ALERT");
             this.base = base;
-        } else {
-            // Padding. Within namesets, we use the longer of the two throughout.
-            var update = false;
-            for (var i = 0, ilen = base.names.length; i < ilen; i += 1) {
-                if (base.names[i] > this.base.names[i]) {
-                    this.base.givens[i] = this.base.givens[i].concat(this.base.givens[i].slice(this.base.names[i]));
-                    this.base.names[i] = base.names[i];
-                }
+        }
+        // Padding. Within namesets, we use the longer of the two throughout.
+        var update = false;
+        for (var i = 0, ilen = base.names.length; i < ilen; i += 1) {
+            if (base.names[i] > this.base.names[i]) {
+                this.base.givens[i] = this.base.givens[i].concat(this.base.givens[i].slice(this.base.names[i]));
+                this.base.names[i] = base.names[i];
+                this.betterbase.names = this.base.names.slice();
             }
+        }
+        // This shouldn't be necessary
+        // getAmbiguousCite() should return a valid and complete
+        // givens segment under all conditions, but it does not,
+        // so we clean up after it here.
+        // Relevant test: sort_ChicagoYearSuffix2
+        this.betterbase.givens = this.base.givens.slice();
+        for (var j = 0, jlen = this.base.givens.length; j < jlen; j += 1) {
+            this.betterbase.givens[j] = this.base.givens[j].slice();
         }
     }
 };

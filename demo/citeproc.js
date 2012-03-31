@@ -11666,16 +11666,19 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
             this.betterbase = CSL.cloneAmbigConfig(base);
         }
         if (base.names.length < this.base.names.length) {
-            print("ALERT");
             this.base = base;
-        } else {
-            var update = false;
-            for (var i = 0, ilen = base.names.length; i < ilen; i += 1) {
-                if (base.names[i] > this.base.names[i]) {
-                    this.base.givens[i] = this.base.givens[i].concat(this.base.givens[i].slice(this.base.names[i]));
-                    this.base.names[i] = base.names[i];
-                }
+        }
+        var update = false;
+        for (var i = 0, ilen = base.names.length; i < ilen; i += 1) {
+            if (base.names[i] > this.base.names[i]) {
+                this.base.givens[i] = this.base.givens[i].concat(this.base.givens[i].slice(this.base.names[i]));
+                this.base.names[i] = base.names[i];
+                this.betterbase.names = this.base.names.slice();
             }
+        }
+        this.betterbase.givens = this.base.givens.slice();
+        for (var j = 0, jlen = this.base.givens.length; j < jlen; j += 1) {
+            this.betterbase.givens[j] = this.base.givens[j].slice();
         }
     }
 };
