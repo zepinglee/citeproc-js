@@ -81,7 +81,6 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         //
         // register the name in the global names disambiguation
         // registry
-
         if (!lst[i].given && !lst[i].family) {
             continue;
         }
@@ -90,7 +89,13 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         this.state.registry.namereg.addname("" + this.Item.id, lst[i], i);
         chk = this.state.tmp.disambig_settings.givens[pos];
         if ("undefined" === typeof chk) {
-            this.state.tmp.disambig_settings.givens.push([]);
+            // Holes can appear in the list, probably due to institutional
+            // names that this doesn't touch. Maybe. This fills them up.
+            for (var j = 0, jlen = pos + 1; j < jlen; j += 1) {
+                if (!this.state.tmp.disambig_settings.givens[j]) {
+                    this.state.tmp.disambig_settings.givens[j] = [];
+                }
+            }
         }
         chk = this.state.tmp.disambig_settings.givens[pos][i];
         if ("undefined" === typeof chk) {

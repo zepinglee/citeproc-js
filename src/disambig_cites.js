@@ -426,7 +426,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             print("    | givensMax: "+this.givensMax);
         }
         //SNIP-END
-        if (("number" !== typeof this.namesetsMax || this.gnameset === this.namesetsMax)
+        if (("number" !== typeof this.namesetsMax || this.namesetsMax === -1 || this.gnameset === this.namesetsMax)
             && ("number" !== typeof this.namesMax || this.base.names[this.gnameset] === this.namesMax)
             && ("number" != typeof this.givensMax || "undefined" === typeof this.base.givens[this.gnameset][this.gname] || this.base.givens[this.gnameset][this.gname] === this.givensMax)) {
   
