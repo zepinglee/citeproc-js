@@ -177,7 +177,7 @@ StdRhinoTest.prototype.run = function(){
     var len, pos, ret, id_set, nick;
     ret = new Array();
     this.style = new CSL.Engine(this,this.test.csl);
-    this.style.opt.development_extensions.atomic_statutes = true;
+    this.style.opt.development_extensions.static_statute_locator = true;
     var langParams = {
         persons:["translit"],
         institutions:["translit"],
