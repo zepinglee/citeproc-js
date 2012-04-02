@@ -355,38 +355,6 @@ CSL.Node.text = {
                                 var value;
                                 value = state.getVariable(Item, this.variables[0], form);
                                 if (value) {
-                                    if ((Item.type === "bill" || Item.type === "legislation")
-                                       && state.opt.development_extensions.parse_section_variable) {
-                                        // Could be a number.
-                                        value = "" + value;
-                                        var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
-                                        if (m) {
-                                            var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
-                                            var lst = [];
-                                            if (!lst[0]) {
-                                                var parsed = false;
-                                                for (var i=1, ilen=splt.length; i < ilen; i += 1) {
-                                                    var subdiv = m[i - 1].replace(/^\s*/, "");
-                                                    subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
-                                                    // A rough guess at pluralism
-                                                    var plural = false;
-                                                    if (splt[i].match(/(?:&|, | and )/)) {
-                                                        plural = true;
-                                                    }
-                                                    // Needs gender too, but that's a stretch too far this evening.
-                                                    subdiv = state.getTerm(subdiv, "symbol", plural);
-                                                    if (subdiv) {
-                                                        parsed = true;
-                                                    }
-                                                    lst.push(subdiv);
-                                                    lst.push(splt[i].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
-                                                }
-                                                if (parsed) {
-                                                    value = lst.join(" ");
-                                                }
-                                            }
-                                        }
-                                    }
                                     state.output.append(value, this);
                                 }
                             };
