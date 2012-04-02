@@ -51,24 +51,29 @@ citation
 <<== MODE ==<<
 
 
->>== ABBREVIATIONS ==>>
-{
-    "us": {
-        "title": {
-            "1st Session": "1st Sess."
+>>===== CITATIONS =====>>
+[
+  [
+    {
+      "citationID": "CITATION-1",
+      "citationItems": [
+        {
+          "id": "ITEM-1"
         }
+      ],
+      "properties": {
+        "noteIndex": 1
+      }
     },
-    "default": {
-        "title": {
-            "1st Session": "1st Sess."
-        }
-    }
-}
-<<== ABBREVIATIONS ==<<
+    [],
+    []
+  ]
+]
+<<===== CITATIONS =====<<
 
 
 >>== RESULT ==>>
-§ 23 ¶ 6
+>>[0] § 23 ¶ 6
 <<== RESULT ==<<
 
 >>===== CSL =====>>
@@ -83,7 +88,10 @@ citation
   </info>
   <citation>
     <layout>
-       <text variable="section"/>
+       <group delimiter=" ">
+         <label form="symbol" variable="locator"/>
+         <number variable="locator"/>
+       </group>
     </layout>
   </citation>
 </style>
