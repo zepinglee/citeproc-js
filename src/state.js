@@ -94,9 +94,8 @@ CSL.Engine.Opt = function () {
     this.development_extensions.raw_date_parsing = true;
     this.development_extensions.clean_up_csl_flaws = true;
     this.development_extensions.flip_parentheses_to_braces = true;
-    this.development_extensions.parse_section_variable = true;
     this.development_extensions.jurisdiction_subfield = true;
-    this.development_extensions.atomic_statutes = false;
+    this.development_extensions.static_statute_locator = false;
     this.development_extensions.csl_reverse_lookup_support = false;
 
     this.nodenames = [];
