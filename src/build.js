@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.315";
+    this.processor_version = "1.0.316";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -520,25 +520,6 @@ CSL.Engine.prototype.configureTokenLists = function () {
                 CSL.Node[token.name].configure.call(token, this, ppos);
             }
         }
-        //var offset = "";
-        //var lnum = 0;
-        //if (area === "citation" && true) {
-        //    ret.reverse();
-        //    for (ppos = 0, llen = ret.length; ppos < llen; ppos += 1) {
-        //        lnum = (ppos);
-        //        while ((""+lnum).length < 3) {
-        //            lnum = " " + lnum;
-        //        }
-                //if (ret[ppos].tokentype === CSL.START) {
-                //    offset += "  ";
-                //} else if (ret[ppos].tokentype === CSL.END) {
-                //    offset = offset.slice(0,-2);
-                //    print(lnum+offset+"</"+ret[ppos].name+">");
-                //} else {
-                //    print(lnum+offset+"<"+ret[ppos].name+"/>");
-                //}
-        //    }
-        //}
     }
     this.version = CSL.version;
     return this.state;
@@ -614,7 +595,22 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    // not including locator-date
+    if (this.opt.development_extensions.atomic_statutes) {
+        if (Item.type && ["legislation","bill"].indexOf(Item.type) > -1
+            && Item.title 
+            && Item.jurisdiction) {
+            
+            var legislation_id = [];
+            for (var i = 0, ilen = 3; i < ilen; i += 1) {
+                var varname = ["type", "genre", "jurisdiction"][i];
+                if (Item[varname]) {
+                    legislation_id.push(Item[varname]);
+                }
+            }
+            Item.legislation_id = legislation_id.join("::");
+        }
+    }
+   // not including locator-date
     for (var i = 1, ilen = CSL.DATE_VARIABLES.length; i < ilen; i += 1) {
         var dateobj = Item[CSL.DATE_VARIABLES[i]];
         if (dateobj) {
