@@ -182,7 +182,10 @@ recommended.
         <else-if position="ibid-with-locator">
           <group delimiter=" ">
             <text value="ibid"/>
-            <text variable="section"/>
+            <group delimiter=" ">
+              <label form="symbol" variable="locator"/>
+              <number variable="locator"/>
+            </group>
           </group>
         </else-if>
         <else-if position="ibid">
@@ -192,7 +195,10 @@ recommended.
           <group delimiter=" ">
             <number variable="volume"/>
             <text variable="container-title"/>
-            <text variable="section"/>
+            <group delimiter=" ">
+              <label form="symbol" variable="locator"/>
+              <number variable="locator"/>
+            </group>
             <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
           </group>
         </else-if>
@@ -202,7 +208,10 @@ recommended.
             <group delimiter=" ">
               <number variable="volume"/>
               <text variable="container-title"/>
-              <text variable="section"/>
+              <group delimiter=" ">
+                <label form="symbol" variable="locator"/>
+                <number variable="locator"/>
+              </group>
               <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
             </group>
           </group>
