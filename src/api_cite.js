@@ -173,9 +173,14 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 if (splt.length > 1) {
                     var lst = [];
                     lst.push(splt[1].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
-                    for (var j=2, jlen=splt.length; j < ilen; j += 1) {
+                    for (var j=2, jlen=splt.length; j < jlen; j += 1) {
                         var subdiv = m[j - 1].replace(/^\s*/, "");
                         subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
+                        // A rough guess at pluralism
+                        var plural = false;
+                        if (splt[i].match(/(?:&|, | and )/)) {
+                            plural = true;
+                        }
                         // Needs gender too, but that's a stretch too far this evening.
                         subdiv = this.getTerm(subdiv, "symbol", plural);
                         lst.push(subdiv);
