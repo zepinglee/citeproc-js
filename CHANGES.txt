@@ -1,6 +1,39 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.316
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Introduce new logic for bill and legislation items, controlled
+  by the following toggle:
+
+     citeproc.development_extensions.atomic_statutes = true;
+
+  By default, this toggle is currently set to false, which disables
+  the new behavior.
+
+  If the toggle is set to true, locator terms in the CSL section field
+  on bill and legislation items are rendered with locators parsed out
+  of the field using the abbreviation conventions here (with the
+  abbrev followed by a period in the field):
+
+    https://bitbucket.org/fbennett/citeproc-js/src/9bfa1bbd729c/src/load.js#cl-539
+
+  The effect is to force (or at least strongly encourage) the storing
+  of individual statutes as a set of multiple items in the calling
+  application, one per cited subunit. This is convenient where
+  research notes need to be associated with specific provisions,
+  rather than the entire statute. This is a better fit for the way
+  statutes are referenced in legal research and writing.
+
+  As noted above, this behavior is currently turned off by default.
+
+
+==========================
 Changes in version 1.0.315
 ==========================
 
