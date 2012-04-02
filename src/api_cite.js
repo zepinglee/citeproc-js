@@ -153,6 +153,39 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     // attach pointer to item data to shared copy for good measure
     for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
         item = citation.citationItems[i];
+        Item = this.retrieveItem("" + item.id);
+        if (Item.section
+            && (Item.type === "bill" || Item.type === "legislation")
+            && this.opt.development_extensions.static_statute_locator) {
+            // Could be a number.
+            value = "" + Item.section;
+            var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            if (m) {
+                var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
+                    item.label = CSL.STATUTE_SUBDIV_STRINGS[slt[0]];
+                    splt.reverse();
+                    splt.pop();
+                    splt.reverse();
+                } else {
+                    item.label = "section";
+                }
+                if (splt.length > 1) {
+                    var lst = [];
+                    lst.push(splt[1].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
+                    for (var j=2, jlen=splt.length; j < ilen; j += 1) {
+                        var subdiv = m[j - 1].replace(/^\s*/, "");
+                        subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
+                        // Needs gender too, but that's a stretch too far this evening.
+                        subdiv = this.getTerm(subdiv, "symbol", plural);
+                        lst.push(subdiv);
+                        lst.push(splt[j].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
+                    }
+                    value = lst.join(" ");
+                }
+            }
+            item.locator = value;
+        }
         if (this.opt.development_extensions.locator_date_and_revision) {
             // Break out locator elements if necessary
             if (item.locator) {
@@ -180,7 +213,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 }
             }
         }
-        Item = this.retrieveItem("" + item.id);
         var newitem = [Item, item];
         sortedItems.push(newitem);
         citation.citationItems[i].item = Item;
@@ -369,8 +401,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     var mylabel = item[1].label;
                     if (item[0].legislation_id) {
                         myid = item[0].legislation_id;
-                        mylocator = item[0].section;
-                        mylabel = "";
                     }
                     var incitationid;
                     if (k > 0) {
@@ -479,34 +509,20 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         // conditions
                         var prev, prev_locator, prev_label, curr_locator, curr_label;
                         if (ibidme) {
-                            var myprev_locator;
-                            var myprev_label;
                             if (k > 0) {
-                                if (onecitation.sortedItems[(k - 1)][0].legislation_id) {
-                                    myprev_locator = onecitation.sortedItems[(k - 1)][0].section;
-                                    myprev_label = "";
-                                } else {
-                                    myprev_locator = onecitation.sortedItems[(k - 1)][1].locator;
-                                    myprev_label = onecitation.sortedItems[(k - 1)][1].label;
-                                }
+                                prev = onecitation.sortedItems[(k - 1)][1];
                             } else {
-                                if (citations[(j - 1)].sortedItems[0][0].legislation_id) {
-                                    myprev_locator = citations[(j - 1)].sortedItems[0][0].section;
-                                    myprev_label = "";
-                                } else {
-                                    myprev_locator = citations[(j - 1)].sortedItems[0][1].locator;
-                                    myprev_label = citations[(j - 1)].sortedItems[0][1].label;
-                                }
+                                prev = citations[(j - 1)].sortedItems[0][1];
                             }
-                            if (myprev_locator) {
-                                if (myprev_label) {
-                                    prev_label = myprev_label;
+                            if (prev.locator) {
+                                if (prev.label) {
+                                    prev_label = prev.label;
                                 } else {
                                     prev_label = "";
                                 }
-                                prev_locator = "" + myprev_locator + prev_label;
+                                prev_locator = "" + prev.locator + prev_label;
                             } else {
-                                prev_locator = myprev_locator;
+                                prev_locator = prev.locator;
                             }
                             if (mylocator) {
                                 if (mylabel) {
