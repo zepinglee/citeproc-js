@@ -101,7 +101,11 @@ CSL.Engine.prototype.localeConfigure = function (langspec) {
     }
     this.localeSet(this.cslXml, langspec.best, langspec.best);
     if ("undefined" === typeof this.locale[langspec.best].terms["page-range-delimiter"]) {
-        this.locale[langspec.best].terms["page-range-delimiter"] = "\u2013";
+        if (["fr", "pt"].indexOf(langspec.best.slice(0, 2).toLowerCase()) > -1) {
+            this.locale[langspec.best].terms["page-range-delimiter"] = "-";
+        } else {
+            this.locale[langspec.best].terms["page-range-delimiter"] = "\u2013";
+        }
     }
 };
     
@@ -239,9 +243,6 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                 }
             }
         }
-    }
-    if (lang_out && ["fr", "pt"].indexOf(lang_out.slice(0, 2).toLowerCase()) > -1) {
-        this.locale[lang_out].terms["page-range-delimiter"] = "-";
     }
     //
     // Xml: get list of nodes by node type
