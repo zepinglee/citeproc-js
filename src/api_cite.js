@@ -157,11 +157,26 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         if (Item.section
             && (Item.type === "bill" || Item.type === "legislation")
             && this.opt.development_extensions.static_statute_locator) {
-            // Could be a number.
-            value = "" + Item.section;
+            // Could be a number, stringify
+            var value = "" + Item.section;
+            // Brew up the label + locator as a string
+            var locator = "";
+            var labelstr = "";
+            if (item.locator) {
+                locator = item.locator;
+                if (item.label && CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label]) {
+                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " ";
+                }
+                locator = labelstr + locator;
+                if (locator.slice(0,1) === "&") {
+                    locator = " " + locator;
+                }
+                value = value + locator;
+            }
             var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             if (m) {
                 var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                // normalize. Extract leading label from string if needed.
                 if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
                     item.label = CSL.STATUTE_SUBDIV_STRINGS[slt[0]];
                     splt.reverse();
@@ -171,22 +186,41 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     item.label = "section";
                 }
                 if (splt.length > 1) {
+                    // Two passes, one to collect label and plural info,
+                    // and a second to apply labels.
                     var lst = [];
-                    lst.push(splt[1].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
+                    lst.push(splt[1].replace(/\s*$/, "").replace(/^\s*/, ""));
+                    var has_repeat_label = false;
+                    var has_sublabel = false;
                     for (var j=2, jlen=splt.length; j < jlen; j += 1) {
                         var subdiv = m[j - 1].replace(/^\s*/, "");
                         subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
+                        if (subdiv === item.label) {
+                            has_repeat_label = true;
+                        } else {
+                            has_sublabel = true;
+                        }
                         // A rough guess at pluralism
-                        var plural = false;
-                        if (splt[i].match(/(?:&|, | and )/)) {
-                            plural = true;
+                        var subplural = false;
+                        if (splt[j].match(/(?:&|, | and )/)) {
+                            subplural = true;
                         }
                         // Needs gender too, but that's a stretch too far this evening.
-                        subdiv = this.getTerm(subdiv, "symbol", plural);
-                        lst.push(subdiv);
-                        lst.push(splt[j].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
+                        lst.push(this.getTerm(subdiv, "symbol", subplural));
+                        //lst.push(splt[j].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
+                        lst.push(splt[j].replace(/\s*$/, "").replace(/^\s*/, ""));
+                    }
+                    for (var j=lst.length - 2; j > 0; j += -2) {
+                        if (!has_sublabel) {
+                            lst = lst.slice(0,j).concat(lst.slice(j + 1));
+                        }
                     }
                     value = lst.join(" ");
+                    if (!has_sublabel && has_repeat_label) {
+                        item.force_pluralism = true;
+                    } else {
+                        item.force_pluralism = false;
+                    }
                 }
             }
             item.locator = value;

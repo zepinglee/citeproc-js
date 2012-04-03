@@ -323,7 +323,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                     this.tmp.shadow_numbers[variable].values.push(["Blob", elements[i], undefined]);
                 }
             }
-        }
+                    };
         if (num.indexOf(" ") === -1 && num.match(/[0-9]/)) {
             this.tmp.shadow_numbers[variable].numeric = true;
         } else {
@@ -331,6 +331,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         }
         if (count > 1) {
             this.tmp.shadow_numbers[variable].plural = 1;
+        }
+        // Force plural/singular if requested (see static_statute_locator
+        // condition in api_cite.js)
+        if (ItemObject.force_pluralism === true) {
+            this.tmp.shadow_numbers[variable].plural = 1;
+        } else if (ItemObject.force_pluralism) {
+            this.tmp.shadow_numbers[variable].plural = 0;
         }
     }
 };

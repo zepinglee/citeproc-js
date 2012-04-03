@@ -97,6 +97,14 @@ var CSL = {
         "art.": "article",
         "para.": "paragraph"
     },
+    STATUTE_SUBDIV_STRINGS_REVERSE: {
+        "part": "pt.",
+        "chapter": "ch.",
+        "subchapter": "subch.",
+        "section": "sec.",
+        "article": "art.",
+        "paragraph": "para."
+    },
 
     NestedBraces: [
         ["(", "["],
