@@ -78,7 +78,13 @@ recommended.
 ..[1] ibid § 4330
 ..[2] ibid
 ..[3] Some book or other
->>[4] 42 USC § 4322 (2006)
+..[4] 42 USC § 4322 ¶ 6 (2006)
+..[5] Some book or other
+..[6] 42 USC § 4330(4) (2006)
+..[7] Some book or other
+..[8] 42 USC §§ 4322 & 4335 (2006)
+..[9] Some book or other
+>>[10] 42 USC §§ 4322, 4360 (2006)
 <<===== RESULT =====<<
 
 
@@ -149,7 +155,9 @@ recommended.
       "citationID": "CITATION-5",
       "citationItems": [
         {
-          "id": "ITEM-1"
+          "id": "ITEM-1",
+          "label": "paragraph",
+          "locator": "6"
         }
       ],
       "properties": {
@@ -157,6 +165,99 @@ recommended.
       }
     },
     [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4]],
+    []
+  ],
+  [
+    {
+      "citationID": "CITATION-6",
+      "citationItems": [
+        {
+          "id": "ITEM-3"
+        }
+      ],
+      "properties": {
+        "noteIndex": 6
+      }
+    },
+    [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5]],
+    []
+  ],
+  [
+    {
+      "citationID": "CITATION-7",
+      "citationItems": [
+        {
+          "id": "ITEM-2",
+          "locator": "(4)"
+        }
+      ],
+      "properties": {
+        "noteIndex": 7
+      }
+    },
+    [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6]],
+    []
+  ],
+  [
+    {
+      "citationID": "CITATION-8",
+      "citationItems": [
+        {
+          "id": "ITEM-3"
+        }
+      ],
+      "properties": {
+        "noteIndex": 8
+      }
+    },
+    [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7]],
+    []
+  ],
+  [
+    {
+      "citationID": "CITATION-9",
+      "citationItems": [
+        {
+          "id": "ITEM-1",
+          "locator": "& sec. 4335"
+        }
+      ],
+      "properties": {
+        "noteIndex": 9
+      }
+    },
+    [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8]],
+    []
+  ],
+  [
+    {
+      "citationID": "CITATION-10",
+      "citationItems": [
+        {
+          "id": "ITEM-3"
+        }
+      ],
+      "properties": {
+        "noteIndex": 10
+      }
+    },
+    [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9]],
+    []
+  ],
+  [
+    {
+      "citationID": "CITATION-11",
+      "citationItems": [
+        {
+          "id": "ITEM-1",
+          "locator": ", sec. 4360"
+        }
+      ],
+      "properties": {
+        "noteIndex": 11
+      }
+    },
+    [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10]],
     []
   ]
 ]
