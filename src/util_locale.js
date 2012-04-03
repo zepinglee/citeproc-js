@@ -239,7 +239,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     }
     if (lang_out && ["fr", "pt"].indexOf(lang_out.slice(0, 2).toLowerCase()) > -1) {
         this.locale[lang_out].terms["page-range-delimiter"] = "-";
-    } else {
+    } else if ("undefined" === typeof this.locale[lang_out].terms["page-range-delimiter"]) {
         this.locale[lang_out].terms["page-range-delimiter"] = "\u2013";
     }
     //
