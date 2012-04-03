@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.318
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Enable code from previous checkin on makeCitationCluster()
+  as well as processCitationCluster()
+
+==========================
 Changes in version 1.0.317
 ==========================
 
