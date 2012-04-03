@@ -613,6 +613,7 @@ if (!CSL.DateParser) {
 // jslint OK
 if (!CSL.Engine) {
     load("./src/build.js");
+    load("./src/util_static_locator.js");
 }
 // jslint OK
 if (!CSL.Mode) {

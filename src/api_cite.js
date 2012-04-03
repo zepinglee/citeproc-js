@@ -154,77 +154,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
         item = citation.citationItems[i];
         Item = this.retrieveItem("" + item.id);
-        if (Item.section
-            && (Item.type === "bill" || Item.type === "legislation")
-            && this.opt.development_extensions.static_statute_locator) {
-            // Could be a number, stringify
-            var value = "" + Item.section;
-            // Brew up the label + locator as a string
-            var locator = "";
-            var labelstr = "";
-            if (item.locator) {
-                locator = item.locator;
-                if (item.label && CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label]) {
-                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " ";
-                }
-                locator = labelstr + locator;
-                if (locator.slice(0,1) === "&") {
-                    locator = " " + locator;
-                }
-                value = value + locator;
-            }
-            var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
-            if (m) {
-                var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
-                // normalize. Extract leading label from string if needed.
-                if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
-                    item.label = CSL.STATUTE_SUBDIV_STRINGS[slt[0]];
-                    splt.reverse();
-                    splt.pop();
-                    splt.reverse();
-                } else {
-                    item.label = "section";
-                }
-                if (splt.length > 1) {
-                    // Two passes, one to collect label and plural info,
-                    // and a second to apply labels.
-                    var lst = [];
-                    lst.push(splt[1].replace(/\s*$/, "").replace(/^\s*/, ""));
-                    var has_repeat_label = false;
-                    var has_sublabel = false;
-                    for (var j=2, jlen=splt.length; j < jlen; j += 1) {
-                        var subdiv = m[j - 1].replace(/^\s*/, "");
-                        subdiv = CSL.STATUTE_SUBDIV_STRINGS[subdiv];
-                        if (subdiv === item.label) {
-                            has_repeat_label = true;
-                        } else {
-                            has_sublabel = true;
-                        }
-                        // A rough guess at pluralism
-                        var subplural = false;
-                        if (splt[j].match(/(?:&|, | and )/)) {
-                            subplural = true;
-                        }
-                        // Needs gender too, but that's a stretch too far this evening.
-                        lst.push(this.getTerm(subdiv, "symbol", subplural));
-                        //lst.push(splt[j].replace(/\s*,*\s*$/, "").replace(/^\s*,*\s*/, ""));
-                        lst.push(splt[j].replace(/\s*$/, "").replace(/^\s*/, ""));
-                    }
-                    for (var j=lst.length - 2; j > 0; j += -2) {
-                        if (!has_sublabel) {
-                            lst = lst.slice(0,j).concat(lst.slice(j + 1));
-                        }
-                    }
-                    value = lst.join(" ");
-                    if (!has_sublabel && has_repeat_label) {
-                        item.force_pluralism = true;
-                    } else {
-                        item.force_pluralism = false;
-                    }
-                }
-            }
-            item.locator = value;
-        }
+        this.remapSectionVariable([[Item,item]]);
         if (this.opt.development_extensions.locator_date_and_revision) {
             // Break out locator elements if necessary
             if (item.locator) {
@@ -795,6 +725,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
         newitem = [Item, item];
         inputList.push(newitem);
     }
+    this.remapSectionVariable(inputList);
     if (inputList && inputList.length > 1 && this.citation_sort.tokens.length > 0) {
         len = inputList.length;
         for (pos = 0; pos < len; pos += 1) {

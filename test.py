@@ -119,7 +119,7 @@ class Bundle:
         else:
             f.extend(["print"])
         f.extend(["sort","queue","util_disambig"])
-        f.extend(["util_nodes","util_dateparser","build","util_processor","api_control"])
+        f.extend(["util_nodes","util_dateparser","build","util_static_locator","util_processor","api_control"])
         f.extend(["state","util_integration","api_update","util_citationlabel"])
         f.extend(["api_bibliography","api_cite","node_bibliography","node_choose"])
         f.extend(["util_locale"])
