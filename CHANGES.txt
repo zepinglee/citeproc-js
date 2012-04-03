@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.317
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add the ability to extend the static statute locator
+  through the normal item.locator to the 1.0.316 version
+  checkin.
+
+==========================
 Changes in version 1.0.316
 ==========================
 
