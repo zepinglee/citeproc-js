@@ -65,7 +65,7 @@ CSL.Node.group = {
                 }
                 // fieldcontextflag
                 var label_form = state.tmp.group_context.value()[5];
-                if (this.strings.label_form_override) {
+                if (!label_form && this.strings.label_form_override) {
                     label_form = this.strings.label_form_override;
                 }
                 state.tmp.group_context.push([false, false, false, false, state.output.current.value(), label_form], CSL.LITERAL);

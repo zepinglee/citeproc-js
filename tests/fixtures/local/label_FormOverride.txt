@@ -84,10 +84,13 @@ citation
         <text variable="locator"/>
       </group>
   </macro>
+  <macro name="middleman">
+    <text label-form="long" macro="cite"/>
+  </macro>
   <citation>
     <layout>
       <group delimiter="; " prefix="[" suffix="]">
-        <text macro="cite" label-form="symbol"/>
+        <text label-form="symbol" macro="middleman"/>
         <group delimiter=" ">
           <number variable="edition" form="ordinal"/>
           <label form="short" variable="edition"/>
