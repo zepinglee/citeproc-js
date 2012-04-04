@@ -2227,9 +2227,14 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
     for (var i = 0, ilen = inputList.length; i < ilen; i += 1) {
         var Item = inputList[i][0];
         var item = inputList[i][1];
-        if (Item.section
+        if (!Item.section
+            && ["bill", "legislation"].indexOf(Item.type) > -1
+            && this.opt.development_extensions.clobber_locator_if_no_statute_section) {
+            item.locator = undefined;
+            item.label = undefined;
+        } else if (Item.section
             && item
-            && (Item.type === "bill" || Item.type === "legislation")
+            && ["bill", "legislation"].indexOf(Item.type) > -1
             && this.opt.development_extensions.static_statute_locator) {
             var value = "" + Item.section;
             var locator = "";
@@ -2497,6 +2502,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.jurisdiction_subfield = true;
     this.development_extensions.static_statute_locator = false;
     this.development_extensions.csl_reverse_lookup_support = false;
+    this.development_extensions.clobber_locator_if_no_statute_section = false;
     this.nodenames = [];
     this.gender = {};
 	this['cite-lang-prefs'] = {

@@ -20,6 +20,10 @@ Mishandled or unimplemented features
 - Always respect the outermost value of label-form applied
   to a macro via cs:text.
 
+- Use only the first element of a locator set on a bill
+  or legislation item for is-numeric evaluation.
+
+
 ==========================
 Changes in version 1.0.319
 ==========================
