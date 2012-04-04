@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [parental suffix–prefix–uphill]
+One
 <<===== RESULT =====<<
 
 
@@ -62,7 +62,7 @@ One. Two. [parental suffix–prefix–uphill]
     [
         {
             "id": "ITEM-5", 
-            "locator": "parental suffix-prefix-uphill"
+            "locator": "locator string should be ignored too"
         }
     ]
 ]
@@ -79,22 +79,13 @@ One. Two. [parental suffix–prefix–uphill]
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <macro name="parental-suffix-prefix-uphill">
-    <group>
-      <text variable="title" suffix=". "/>
-    </group>
-    <text variable="note" prefix=" "/>
-  </macro>
   <citation>
     <layout delimiter="&#x0A;">
-      <choose>
-        <if type="book">
-          <text macro="parental-suffix-prefix-uphill"/>
-        </if>
-      </choose>
-      <text value=". ["/>
-      <text variable="locator"/>
-      <text value="]"/>
+      <text variable="title"/>
+      <group delimiter=", " prefix="{" suffix="}">
+        <text value="label should be ignored"/>
+        <text variable="locator" prefix="[" suffix="]"/>
+      </group>
     </layout>
   </citation>
 </style>
@@ -106,8 +97,7 @@ One. Two. [parental suffix–prefix–uphill]
     {
         "id": "ITEM-5", 
         "title": "One", 
-        "note": "Two",
-        "type": "book"
+        "type": "bill"
     }
 ]
 <<===== INPUT =====<<
