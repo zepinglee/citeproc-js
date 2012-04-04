@@ -180,7 +180,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 };
 
 
-CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
+CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
     // This carries value, pluralization and numeric info for use in other contexts.
@@ -226,9 +226,18 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         // Ordinals can be applied to pure numeric elements,
         // but that's as far as our fancy processing
         // should go.
-        
+
         // So.
         
+        // ... for locator on bill and legislation, we evaluate only
+        // the first element of a split. The lone element will not be
+        // used for rendering, (that is handled inside node_number
+        // directly), but only for is-numeric evaluation.
+
+        if (variable === "locator" && ["bill", "legislation"].indexOf(type) > -1) {
+            num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
+        }
+
         // (1) Split the string on ", ", "\s*[\-\u2013]\s*" and "&".
         // (2) Set the elements one by one, setting pure numbers
         //     as numeric blobs, and everything else as text,
