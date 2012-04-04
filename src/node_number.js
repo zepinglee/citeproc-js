@@ -98,6 +98,60 @@ CSL.Node.number = {
                     value = value.replace("\\", "");
                     state.output.append(value, this);
                 }
+            } else if (varname === "locator"
+                       && item.locator
+                       && Item.type 
+                       && ["bill", "legislation"].indexOf(Item.type) > -1) {
+                
+                // For bill or legislation items that have a label-form
+                // attribute set on the cs:number node rendering the locator,
+                // the form and pluralism of locator terms are controlled
+                // separately from those of the initial label. Form is
+                // straightforward: the label uses the value set on
+                // the cs:label node that renders it, and the embedded
+                // labels use the value of label-form set on the cs:number
+                // node. Both default to "long".
+                //
+                // Pluralism is more complicated. For embedded labels,
+                // pluralism is evaluated using a simple heuristic that
+                // can be found below (it just looks for comma, ampersand etc).
+                // The item.label rendered independently via cs:label
+                // defaults to singular. It is always singular if embedded
+                // labels exist that (when expanded to their valid CSL
+                // value) do not match the value of item.label. Otherwise,
+                // if one or more matching embedded labels exist, the
+                // cs:label is set to plural.
+                //
+                // The code that does all this is divided between this module,
+                // util_static_locator.js, and util_label.js. It's not easy
+                // to follow, but seems to do the job. Let's home for good
+                // luck out there in the wild.
+                var m = item.locator.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+                if (m) {
+                    var lst = item.locator.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                    var newlst = [lst[0]];
+                    
+                    // Get form
+                    for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
+                        // For leading label: it is always singular if we are specifying subdivisions
+                        // Rough guess at pluralism
+                        var subplural = 0;
+                        if (lst[i].match(/(?:&|, | and )/)) {
+                            subplural = 1;
+                        }
+                        var term = CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s*/,"")];
+                        var form = "long";
+                        if (this.strings.label_form_override) {
+                            form = this.strings.label_form_override;
+                        }
+                        newlst.push(state.getTerm(term, form, subplural));
+                        newlst.push(lst[i].replace(/^\s*/,""));
+                    }
+                    value = newlst.join(" ");
+                    state.output.append(value, this);
+                } else {
+                    state.output.append(item.locator, this);
+                }
             } else {
                 var node = this;
                 if (!state.tmp.shadow_numbers[varname] 

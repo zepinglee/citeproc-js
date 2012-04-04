@@ -332,11 +332,10 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         if (count > 1) {
             this.tmp.shadow_numbers[variable].plural = 1;
         }
-        // Force plural/singular if requested (see static_statute_locator
-        // condition in api_cite.js)
-        if (ItemObject.force_pluralism === true) {
+        // Force plural/singular if requested (see util_static_locator.js)
+        if (ItemObject.force_pluralism === 1) {
             this.tmp.shadow_numbers[variable].plural = 1;
-        } else if (ItemObject.force_pluralism) {
+        } else if (ItemObject.force_pluralism === 0) {
             this.tmp.shadow_numbers[variable].plural = 0;
         }
     }

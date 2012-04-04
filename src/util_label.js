@@ -66,7 +66,9 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     }
     // Plurals detection.
     var plural = node.strings.plural;
-    if ("number" !== typeof plural) {
+    if (item && "number" === typeof item.force_pluralism) {
+        plural = item.force_pluralism;
+    } else if ("number" !== typeof plural) {
         if ("locator" === node.strings.term) {
             if (item && item.locator) {
                 if (state.opt.development_extensions.locator_parsing_for_plurals) {
