@@ -4527,7 +4527,7 @@ CSL.Node.group = {
                     state.output.current.value().parent = state.tmp.group_context.value()[4];
                 }
                 var label_form = state.tmp.group_context.value()[5];
-                if (this.strings.label_form_override) {
+                if (!label_form && this.strings.label_form_override) {
                     label_form = this.strings.label_form_override;
                 }
                 state.tmp.group_context.push([false, false, false, false, state.output.current.value(), label_form], CSL.LITERAL);
@@ -6648,7 +6648,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             if (item && item.locator) {
                 if (state.opt.development_extensions.locator_parsing_for_plurals) {
                     if (!state.tmp.shadow_numbers.locator) {
-                        state.processNumber(false, item, "locator");
+                        state.processNumber(false, item, "locator", Item.type);
                     }
                     plural = state.tmp.shadow_numbers.locator.plural;
                 } else {
@@ -6659,7 +6659,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             plural = CSL.evaluateStringPluralism(Item[myterm]);
         } else {
             if (!state.tmp.shadow_numbers[myterm]) {
-                state.processNumber(false, Item, myterm);
+                state.processNumber(false, Item, myterm, Item.type);
             }
             plural = state.tmp.shadow_numbers[myterm].plural;
         }
@@ -7099,7 +7099,7 @@ CSL.Node.number = {
     build: function (state, target) {
         var func;
         CSL.Util.substituteStart.call(this, state, target);
-        if (this.strings.form=== "roman") {
+        if (this.strings.form === "roman") {
             this.formatter = state.fun.romanizer;
         } else if (this.strings.form === "ordinal") {
             this.formatter = state.fun.ordinalizer;
@@ -7158,13 +7158,10 @@ CSL.Node.number = {
                     || (state.tmp.shadow_numbers[varname].values.length 
                         && state.tmp.shadow_numbers[varname].values[0][2] === false)) {
                     if (varname === "locator") {
-                        state.processNumber(node, item, varname);
+                        state.processNumber(node, item, varname, Item.type);
                     } else {
-                        state.processNumber(node, Item, varname);
+                        state.processNumber(node, Item, varname, Item.type);
                     }
-                }
-                if (varname === "locator") {
-                    state.tmp.done_vars.push("locator");
                 }
                 var values = state.tmp.shadow_numbers[varname].values;
                 var blob;
@@ -7194,6 +7191,9 @@ CSL.Node.number = {
                         state.output.closeLevel("empty");
                     }
                 }
+            }
+            if (varname === "locator") {
+                state.tmp.done_vars.push("locator");
             }
             state.parallel.CloseVariable("number");
         };
@@ -7989,9 +7989,9 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
         for (pos = 0; pos < len; pos += 1) {
             if (!state.tmp.shadow_numbers[variables[pos]]) {
                 if ("locator" === variables[pos]) {
-                    state.processNumber(false, item, "locator");
+                    state.processNumber(false, item, "locator", Item.type);
                 } else {
-                    state.processNumber(false, Item, variables[pos]);
+                    state.processNumber(false, Item, variables[pos], Item.type);
                 }
             }
             if (!state.tmp.shadow_numbers[variables[pos]].numeric
@@ -9959,7 +9959,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
     } while ( N !== 0 );
     return key;
 };
-CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
+CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
     this.tmp.shadow_numbers[variable] = {};
@@ -9979,6 +9979,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         }
         if (num.indexOf("&") > -1 || num.indexOf("--") > -1) {
             this.tmp.shadow_numbers[variable].plural = 1;
+        }
+        if (variable === "locator" && ["bill", "legislation"].indexOf(type) > -1) {
+            num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
         var lst = num.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
         var m = num.match(/(,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);

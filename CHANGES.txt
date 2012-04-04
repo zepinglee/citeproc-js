@@ -13,6 +13,12 @@ Mishandled or unimplemented features
   cs:number, and provide a freshly coded but simpler mechanism
   for guessing plurality of the elements on these items.
 
+- Always suppress subsequent renderings of the locator
+  variable when once rendered via cs:number, regardless
+  of how it is handled internally.
+
+- Always respect the outermost value of label-form applied
+  to a macro via cs:text.
 
 ==========================
 Changes in version 1.0.319
