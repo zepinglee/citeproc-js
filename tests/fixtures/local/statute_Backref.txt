@@ -82,7 +82,7 @@ recommended.
 ..[5] Some book or other
 ..[6] 42 USC § 4330(4) (2006)
 ..[7] Some book or other
-..[8] 42 USC §§ 4322 & 4335 (2006)
+..[8] 42 USC §§ 4322 &#38; 4335 (2006)
 ..[9] Some book or other
 >>[10] 42 USC §§ 4322, 4360 (2006)
 <<===== RESULT =====<<
@@ -285,7 +285,7 @@ recommended.
             <text value="ibid"/>
             <group delimiter=" ">
               <label form="symbol" variable="locator"/>
-              <number variable="locator"/>
+              <number label-form="symbol" variable="locator"/>
             </group>
           </group>
         </else-if>
@@ -298,7 +298,7 @@ recommended.
             <text variable="container-title"/>
             <group delimiter=" ">
               <label form="symbol" variable="locator"/>
-              <number variable="locator"/>
+              <number label-form="symbol" variable="locator"/>
             </group>
             <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
           </group>
@@ -311,7 +311,7 @@ recommended.
               <text variable="container-title"/>
               <group delimiter=" ">
                 <label form="symbol" variable="locator"/>
-                <number variable="locator"/>
+                <number label-form="symbol" variable="locator"/>
               </group>
               <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
             </group>

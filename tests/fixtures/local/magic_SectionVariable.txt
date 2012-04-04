@@ -73,7 +73,7 @@ citation
 
 
 >>== RESULT ==>>
->>[0] § 23 ¶ 6
+>>[0] § 23 paragraph 6
 <<== RESULT ==<<
 
 >>===== CSL =====>>
