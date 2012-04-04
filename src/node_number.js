@@ -158,14 +158,10 @@ CSL.Node.number = {
                     || (state.tmp.shadow_numbers[varname].values.length 
                         && state.tmp.shadow_numbers[varname].values[0][2] === false)) {
                     if (varname === "locator") {
-                        state.processNumber(node, item, varname);
+                        state.processNumber(node, item, varname, Item.type);
                     } else {
-                        state.processNumber(node, Item, varname);
+                        state.processNumber(node, Item, varname, Item.type);
                     }
-                }
-                if (varname === "locator") {
-                    // Only render the locator variable once in a cite.
-                    state.tmp.done_vars.push("locator");
                 }
                 var values = state.tmp.shadow_numbers[varname].values;
                 var blob;
@@ -197,6 +193,10 @@ CSL.Node.number = {
                         state.output.closeLevel("empty");
                     }
                 }
+            }
+            if (varname === "locator") {
+                // Only render the locator variable once in a cite.
+                state.tmp.done_vars.push("locator");
             }
             state.parallel.CloseVariable("number");
         };
