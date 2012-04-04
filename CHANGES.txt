@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.320
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Allow the form of locator labels on bill and legislation
+  items to be controlled with a label-form attribute on
+  cs:number, and provide a freshly coded but simpler mechanism
+  for guessing plurality of the elements on these items.
+
+
+==========================
 Changes in version 1.0.319
 ==========================
 
