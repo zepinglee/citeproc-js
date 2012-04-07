@@ -238,6 +238,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
 
+        var rangeType = "page";
+        if (["bill", "legislation", "legal_case"].indexOf(type) > -1
+            && variable === "collection-number") {
+
+            rangeType = "year";
+        }
+
         // (1) Split the string on ", ", "\s*[\-\u2013]\s*" and "&".
         // (2) Set the elements one by one, setting pure numbers
         //     as numeric blobs, and everything else as text,
@@ -268,12 +275,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                                     && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
                                     
                                     var start = this.tmp.shadow_numbers[variable].values.slice(-2);
-                                    middle[0][1] = this.getTerm("page-range-delimiter");
+                                    middle[0][1] = this.getTerm(rangeType + "-range-delimiter");
                                     if (this.opt["page-range-format"] ) {
                                         // This is a hack. The page mangler strings were originally
                                         // used directly.
                                         var newstr = this.fun.page_mangler(start[0][1] +"-"+elements[i]);
-                                        newstr = newstr.split(this.getTerm("page-range-delimiter"));
+                                        newstr = newstr.split(this.getTerm(rangeType + "-range-delimiter"));
                                         elements[i] = newstr[1];
                                     }
                                     

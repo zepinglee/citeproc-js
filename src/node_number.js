@@ -168,7 +168,13 @@ CSL.Node.number = {
                 // If prefix and suffix are nil, run through the page mangler,
                 // if any. Otherwise, apply styling.
                 var newstr = ""
-                if (state.opt["page-range-format"] 
+                var rangeType = "page";
+                if (["bill", "legislation", "legal_case"].indexOf(Item.type) > -1
+                    && varname === "collection-number") {
+
+                    rangeType = "year";
+                }
+                if (state.opt[rangeType + "-range-format"] 
                     && !this.strings.prefix && !this.strings.suffix
                     && !this.strings.form) {
                     for (var i = 0, ilen = values.length; i < ilen; i += 1) {
