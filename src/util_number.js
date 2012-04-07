@@ -276,10 +276,10 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                                     
                                     var start = this.tmp.shadow_numbers[variable].values.slice(-2);
                                     middle[0][1] = this.getTerm(rangeType + "-range-delimiter");
-                                    if (this.opt["page-range-format"] ) {
+                                    if (this.opt[rangeType + "-range-format"] ) {
                                         // This is a hack. The page mangler strings were originally
                                         // used directly.
-                                        var newstr = this.fun.page_mangler(start[0][1] +"-"+elements[i]);
+                                        var newstr = this.fun[rangeType + "_mangler"](start[0][1] +"-"+elements[i]);
                                         newstr = newstr.split(this.getTerm(rangeType + "-range-delimiter"));
                                         elements[i] = newstr[1];
                                     }
