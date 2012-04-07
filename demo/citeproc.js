@@ -1888,7 +1888,8 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.setCloseQuotesArray();
     this.fun.ordinalizer.init(this);
     this.fun.long_ordinalizer.init(this);
-    this.fun.page_mangler = CSL.Util.PageRangeMangler.getFunction(this);
+    this.fun.page_mangler = CSL.Util.PageRangeMangler.getFunction(this, "page");
+    this.fun.year_mangler = CSL.Util.PageRangeMangler.getFunction(this, "year");
     this.setOutputFormat("html");
 };
 CSL.Engine.prototype.setCloseQuotesArray = function () {
@@ -3991,6 +3992,12 @@ CSL.Engine.prototype.localeConfigure = function (langspec) {
             this.locale[langspec.best].terms["page-range-delimiter"] = "\u2013";
         }
     }
+    if ("undefined" === typeof this.locale[langspec.best].terms["year-range-delimiter"]) {
+        this.locale[langspec.best].terms["year-range-delimiter"] = "\u2013";
+    }
+    if ("undefined" === typeof this.locale[langspec.best].terms["citation-range-delimiter"]) {
+        this.locale[langspec.best].terms["citation-range-delimiter"] = "\u2013";
+    }
 };
 CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target, i, ilen;
@@ -4356,14 +4363,15 @@ CSL.Node["date-part"] = {
                             if (state.dateput.queue.length === 0) {
                                 first_date = true;
                             }
-                            if (state.opt["page-range-format"] === "minimal-two"
+                            if (state.opt["year-range-format"]
+                                && state.opt["year-range-format"] !== "expanded"
                                 && !state.tmp.date_object.day
                                 && !state.tmp.date_object.month
                                 && !state.tmp.date_object.season
                                 && this.strings.name === "year"
                                 && value && value_end) {
-                                value_end = state.fun.page_mangler(value + "-" + value_end, true);
-                                var range_delimiter = state.getTerm("range-delimiter");
+                                value_end = state.fun.year_mangler(value + "-" + value_end, true);
+                                var range_delimiter = state.getTerm("year-range-delimiter");
                                 value_end = value_end.slice(value_end.indexOf(range_delimiter) + 1);
                             }
                             state.dateput.append(value_end, this);
@@ -4374,7 +4382,7 @@ CSL.Node["date-part"] = {
                         state.output.append(value, this);
                         curr = state.output.current.value();
                         curr.blobs[(curr.blobs.length - 1)].strings.suffix = "";
-                        state.output.append(this.strings["range-delimiter"], "empty");
+                        state.output.append(state.getTerm("year-range-delimiter"), "empty");
                         dcurr = state.dateput.current.value();
                         curr.blobs = curr.blobs.concat(dcurr);
                         state.dateput.string(state, state.dateput.queue);
@@ -4433,7 +4441,7 @@ CSL.Node["date-part"] = {
                     formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
                     number.setFormatter(formatter);
                     if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
-                        number.range_prefix = state.getTerm("range-delimiter");
+                        number.range_prefix = state.getTerm("citation-range-delimiter");
                     }
                     if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
                         number.successor_prefix = state[state.tmp.area].opt["year-suffix-delimiter"];
@@ -4446,9 +4454,6 @@ CSL.Node["date-part"] = {
             }
         };
         this.execs.push(func);
-        if ("undefined" === typeof this.strings["range-delimiter"]) {
-            this.strings["range-delimiter"] = "\u2013";
-        }
         target.push(this);
     }
 };
@@ -7276,7 +7281,7 @@ CSL.Node.text = {
                         state.opt.citation_number_sort_used = true;
                     }
                     if ("citation-number" === state[state.tmp.area].opt.collapse) {
-                        this.range_prefix = state.getTerm("range-delimiter");
+                        this.range_prefix = state.getTerm("citation-range-delimiter");
                     }
                     this.successor_prefix = state[state.build.area].opt.layout_delimiter;
                     this.splice_prefix = state[state.build.area].opt.layout_delimiter;
@@ -7308,7 +7313,7 @@ CSL.Node.text = {
                 } else if (this.variables_real[0] === "year-suffix") {
                     state.opt.has_year_suffix = true;
                     if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
-                        this.range_prefix = state.getTerm("range-delimiter");
+                        this.range_prefix = state.getTerm("citation-range-delimiter");
                     }
                     this.successor_prefix = state[state.build.area].opt.layout_delimiter;
                     if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
@@ -8277,9 +8282,6 @@ CSL.Attributes["@entry-spacing"] = function (state, arg) {
 CSL.Attributes["@near-note-distance"] = function (state, arg) {
     state[this.name].opt["near-note-distance"] = parseInt(arg, 10);
 };
-CSL.Attributes["@page-range-format"] = function (state, arg) {
-    state.opt["page-range-format"] = arg;
-};
 CSL.Attributes["@text-case"] = function (state, arg) {
     var func = function (state, Item) {
         if (arg === "normal") {
@@ -8314,6 +8316,9 @@ CSL.Attributes["@text-case"] = function (state, arg) {
 };
 CSL.Attributes["@page-range-format"] = function (state, arg) {
     state.opt["page-range-format"] = arg;
+};
+CSL.Attributes["@year-range-format"] = function (state, arg) {
+    state.opt["year-range-format"] = arg;
 };
 CSL.Attributes["@default-locale"] = function (state, arg) {
     var lst, len, pos, m, ret;
@@ -10084,9 +10089,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     }
 };
 CSL.Util.PageRangeMangler = {};
-CSL.Util.PageRangeMangler.getFunction = function (state) {
+CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
-    var range_delimiter = state.getTerm("page-range-delimiter");
+    var range_delimiter = state.getTerm(rangeType + "-range-delimiter");
     rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
     stringify = function (lst) {
         len = lst.length;
@@ -10096,7 +10101,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
             }
         }
         var ret = lst.join("");
-        ret = ret.replace(/([0-9])\-/, "$1"+state.getTerm("page-range-delimiter"), "g").replace(/\-([0-9])/, state.getTerm("page-range-delimiter")+"$1", "g")
+        ret = ret.replace(/([0-9])\-/, "$1"+state.getTerm(rangeType + "-range-delimiter"), "g").replace(/\-([0-9])/, state.getTerm(rangeType + "-range-delimiter")+"$1", "g")
         return ret;
     };
     listify = function (str, hyphens) {
@@ -10207,23 +10212,23 @@ CSL.Util.PageRangeMangler.getFunction = function (state) {
         }
         return ret;
     }
-    if (!state.opt["page-range-format"]) {
+    if (!state.opt[rangeType + "-range-format"]) {
         ret_func = function (str) {
             return str;
         };
-    } else if (state.opt["page-range-format"] === "expanded") {
+    } else if (state.opt[rangeType + "-range-format"] === "expanded") {
         ret_func = function (str) {
             return sniff(str, stringify);
         };
-    } else if (state.opt["page-range-format"] === "minimal") {
+    } else if (state.opt[rangeType + "-range-format"] === "minimal") {
         ret_func = function (str) {
             return sniff(str, minimize);
         };
-    } else if (state.opt["page-range-format"] === "minimal-two") {
+    } else if (state.opt[rangeType + "-range-format"] === "minimal-two") {
         ret_func = function (str, isyear) {
             return sniff(str, minimize, 2, isyear);
         };
-    } else if (state.opt["page-range-format"] === "chicago") {
+    } else if (state.opt[rangeType + "-range-format"] === "chicago") {
         ret_func = function (str) {
             return sniff(str, chicago);
         };
