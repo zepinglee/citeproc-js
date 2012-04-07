@@ -23,6 +23,11 @@ Mishandled or unimplemented features
 - Use only the first element of a locator set on a bill
   or legislation item for is-numeric evaluation.
 
+- Implement year-range-format as an option separate from
+  page-range-format
+
+- Add optional terms year-range-delimiter and citation-range-delimiter
+
 
 ==========================
 Changes in version 1.0.319
