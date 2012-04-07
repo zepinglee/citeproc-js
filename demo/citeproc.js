@@ -10027,8 +10027,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                                     && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
                                     var start = this.tmp.shadow_numbers[variable].values.slice(-2);
                                     middle[0][1] = this.getTerm(rangeType + "-range-delimiter");
-                                    if (this.opt["page-range-format"] ) {
-                                        var newstr = this.fun.page_mangler(start[0][1] +"-"+elements[i]);
+                                    if (this.opt[rangeType + "-range-format"] ) {
+                                        var newstr = this.fun[rangeType + "_mangler"](start[0][1] +"-"+elements[i]);
                                         newstr = newstr.split(this.getTerm(rangeType + "-range-delimiter"));
                                         elements[i] = newstr[1];
                                     }
