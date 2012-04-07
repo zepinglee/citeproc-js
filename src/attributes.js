@@ -1064,11 +1064,6 @@ CSL.Attributes["@near-note-distance"] = function (state, arg) {
     state[this.name].opt["near-note-distance"] = parseInt(arg, 10);
 };
 
-CSL.Attributes["@page-range-format"] = function (state, arg) {
-    state.opt["page-range-format"] = arg;
-};
-
-
 CSL.Attributes["@text-case"] = function (state, arg) {
     var func = function (state, Item) {
         if (arg === "normal") {
@@ -1105,6 +1100,11 @@ CSL.Attributes["@text-case"] = function (state, arg) {
 
 CSL.Attributes["@page-range-format"] = function (state, arg) {
     state.opt["page-range-format"] = arg;
+};
+
+
+CSL.Attributes["@year-range-format"] = function (state, arg) {
+    state.opt["year-range-format"] = arg;
 };
 
 

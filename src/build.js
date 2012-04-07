@@ -247,7 +247,8 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     //
     // set up page mangler
     //
-    this.fun.page_mangler = CSL.Util.PageRangeMangler.getFunction(this);
+    this.fun.page_mangler = CSL.Util.PageRangeMangler.getFunction(this, "page");
+    this.fun.year_mangler = CSL.Util.PageRangeMangler.getFunction(this, "year");
 
     this.setOutputFormat("html");
 };

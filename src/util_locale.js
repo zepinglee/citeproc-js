@@ -107,6 +107,12 @@ CSL.Engine.prototype.localeConfigure = function (langspec) {
             this.locale[langspec.best].terms["page-range-delimiter"] = "\u2013";
         }
     }
+    if ("undefined" === typeof this.locale[langspec.best].terms["year-range-delimiter"]) {
+        this.locale[langspec.best].terms["year-range-delimiter"] = "\u2013";
+    }
+    if ("undefined" === typeof this.locale[langspec.best].terms["citation-range-delimiter"]) {
+        this.locale[langspec.best].terms["citation-range-delimiter"] = "\u2013";
+    }
 };
     
 //
