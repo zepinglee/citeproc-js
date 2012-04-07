@@ -7177,7 +7177,12 @@ CSL.Node.number = {
                 var values = state.tmp.shadow_numbers[varname].values;
                 var blob;
                 var newstr = ""
-                if (state.opt["page-range-format"] 
+                var rangeType = "page";
+                if (["bill", "legislation", "legal_case"].indexOf(Item.type) > -1
+                    && varname === "collection-number") {
+                    rangeType = "year";
+                }
+                if (state.opt[rangeType + "-range-format"] 
                     && !this.strings.prefix && !this.strings.suffix
                     && !this.strings.form) {
                     for (var i = 0, ilen = values.length; i < ilen; i += 1) {
@@ -9994,6 +9999,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         if (variable === "locator" && ["bill", "legislation"].indexOf(type) > -1) {
             num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
+        var rangeType = "page";
+        if (["bill", "legislation", "legal_case"].indexOf(type) > -1
+            && variable === "collection-number") {
+            rangeType = "year";
+        }
         var lst = num.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
         var m = num.match(/(,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
         var elements = [];
@@ -10016,10 +10026,10 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                                     && elements[i].match(/^[0-9]+/)
                                     && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
                                     var start = this.tmp.shadow_numbers[variable].values.slice(-2);
-                                    middle[0][1] = this.getTerm("page-range-delimiter");
+                                    middle[0][1] = this.getTerm(rangeType + "-range-delimiter");
                                     if (this.opt["page-range-format"] ) {
                                         var newstr = this.fun.page_mangler(start[0][1] +"-"+elements[i]);
-                                        newstr = newstr.split(this.getTerm("page-range-delimiter"));
+                                        newstr = newstr.split(this.getTerm(rangeType + "-range-delimiter"));
                                         elements[i] = newstr[1];
                                     }
                                     count = count + 1;
