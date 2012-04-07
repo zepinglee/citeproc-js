@@ -28,6 +28,9 @@ Mishandled or unimplemented features
 
 - Add optional terms year-range-delimiter and citation-range-delimiter
 
+- Apply year-range-format to collection-number on legal types when 
+  rendered via cs:number
+
 
 ==========================
 Changes in version 1.0.319
