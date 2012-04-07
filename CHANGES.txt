@@ -31,6 +31,9 @@ Mishandled or unimplemented features
 - Apply year-range-format to collection-number on legal types when 
   rendered via cs:number
 
+- Parse out embedded labels from page and page-first as well as locator 
+  when rendering via cs:number
+
 
 ==========================
 Changes in version 1.0.319
