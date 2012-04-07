@@ -9996,7 +9996,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         if (num.indexOf("&") > -1 || num.indexOf("--") > -1) {
             this.tmp.shadow_numbers[variable].plural = 1;
         }
-        if (variable === "locator" && ["bill", "legislation"].indexOf(type) > -1) {
+        if ((["locator", "page", "page-first"].indexOf(variable) > -1)
+            && ["legal_case", "bill", "legislation"].indexOf(type) > -1) {
             num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
         var rangeType = "page";
