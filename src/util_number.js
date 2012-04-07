@@ -234,7 +234,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         // used for rendering, (that is handled inside node_number
         // directly), but only for is-numeric evaluation.
 
-        if (variable === "locator" && ["bill", "legislation"].indexOf(type) > -1) {
+        if ((["locator", "page", "page-first"].indexOf(variable) > -1)
+            && ["legal_case", "bill", "legislation"].indexOf(type) > -1) {
             num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
 
