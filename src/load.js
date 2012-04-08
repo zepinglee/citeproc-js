@@ -553,7 +553,7 @@ var CSL = {
         "n": "note",
         "op": "opus",
         "p": "page",
-        "para": "para",
+        "para": "paragraph",
         "pt": "part",
         "sec": "section",
         "sv": "sub-verbo",
