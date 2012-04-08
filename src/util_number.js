@@ -189,6 +189,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     this.tmp.shadow_numbers[variable].values = [];
     this.tmp.shadow_numbers[variable].plural = 0;
     this.tmp.shadow_numbers[variable].numeric = false;
+    this.tmp.shadow_numbers[variable].label = false;
     if (!ItemObject) {
         return;
     }
@@ -203,6 +204,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         if ("number" === typeof num) {
             num = "" + num;
         }
+        this.tmp.shadow_numbers[variable].label = variable;
         // Strip off enclosing quotes, if any. Parsing logic
         // does not depend on them, but we'll strip them if found.
         if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
@@ -234,8 +236,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         // used for rendering, (that is handled inside node_number
         // directly), but only for is-numeric evaluation.
 
-        if ((["locator", "page", "page-first"].indexOf(variable) > -1)
-            && ["legal_case", "bill", "legislation"].indexOf(type) > -1) {
+        if ("locator" === variable
+            && ["bill", "legislation"].indexOf(type) > -1) {
             num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
 
@@ -244,6 +246,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             && variable === "collection-number") {
 
             rangeType = "year";
+        }
+
+        // Works with code in node_number.js
+        if (["page", "page-first"].indexOf(variable) > -1) {
+            var m = num.split(" ")[0].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            if (m){
+                this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
+                var mm = num.match(/[^ ]+\s+(.*)/);
+                num = mm[1];
+            }
         }
 
         // (1) Split the string on ", ", "\s*[\-\u2013]\s*" and "&".
