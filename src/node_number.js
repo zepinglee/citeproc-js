@@ -93,6 +93,11 @@ CSL.Node.number = {
             // is rendered after collection-number.
             var value = Item[this.variables[0]];
                        
+            var form = "long";
+            if (this.strings.label_form_override) {
+                form = this.strings.label_form_override;
+            }
+
             if (this.text_case_normal) {
                 if (value) {
                     value = value.replace("\\", "");
@@ -100,8 +105,7 @@ CSL.Node.number = {
                 }
             } else if (varname === "locator"
                        && item.locator
-                       && Item.type 
-                       && ["bill", "legislation"].indexOf(Item.type) > -1) {
+                       && ["legal_case", "bill", "legislation"].indexOf(Item.type) > -1) {
                 
                 // For bill or legislation items that have a label-form
                 // attribute set on the cs:number node rendering the locator,
@@ -140,10 +144,6 @@ CSL.Node.number = {
                             subplural = 1;
                         }
                         var term = CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s*/,"")];
-                        var form = "long";
-                        if (this.strings.label_form_override) {
-                            form = this.strings.label_form_override;
-                        }
                         newlst.push(state.getTerm(term, form, subplural));
                         newlst.push(lst[i].replace(/^\s*/,""));
                     }
