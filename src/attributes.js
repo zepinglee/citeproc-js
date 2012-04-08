@@ -799,6 +799,37 @@ CSL.Attributes["@locator"] = function (state, arg) {
     }
 };
 
+// duplicates code above
+CSL.Attributes["@page"] = function (state, arg) {
+    var func;
+    var trylabels = arg.replace("sub verbo", "sub-verbo");
+    trylabels = trylabels.split(/\s+/);
+    if (["if",  "else-if"].indexOf(this.name) > -1) {
+        // check for variable value
+        func = function (state, Item, item) {
+            var ret = [];
+            var label;
+            state.processNumber(false, Item, "page", Item.type);
+            if (!state.tmp.shadow_numbers["page"].label) {
+                label = "page";
+            } else if (state.tmp.shadow_numbers["page"].label === "sub verbo") {
+                label = "sub-verbo";
+            } else {
+                label = state.tmp.shadow_numbers["page"].label;
+            }
+            for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
+                if (trylabels[i] === label) {
+                    ret.push(true);
+                } else {
+                    ret.push(false);
+                }
+            }
+            return ret;
+        };
+        this.tests.push(func);
+    }
+};
+
 CSL.Attributes["@has-publisher-and-publisher-place"] = function (state, arg) {
     this.strings["has-publisher-and-publisher-place"] = true;
 };
