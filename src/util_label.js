@@ -64,6 +64,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     } else {
         myterm = node.strings.term;
     }
+    
     // Plurals detection.
     var plural = node.strings.plural;
     if (item && "number" === typeof item.force_pluralism) {
@@ -81,7 +82,9 @@ CSL.evaluateLabel = function (node, state, Item, item) {
                 }
             }
         } else if (["page", "page-first"].indexOf(node.variables[0]) > -1) {
-            plural = CSL.evaluateStringPluralism(Item[myterm]);
+            state.processNumber(false, Item, myterm, Item.type);
+            plural = state.tmp.shadow_numbers[myterm].plural;
+            myterm = state.tmp.shadow_numbers[myterm].label;
         } else {
             if (!state.tmp.shadow_numbers[myterm]) {
                 state.processNumber(false, Item, myterm, Item.type);
@@ -94,23 +97,6 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             node.decorations.reverse();
         }
     }
-/*
-    if ("number" !== typeof plural) {
-        if ("locator" == node.strings.term) {
-            // check for plural flat field in supplementary item
-            if (item) {
-                plural = CSL.evaluateStringPluralism(item.locator);                
-            }
-        } else if (Item[node.strings.term]) {
-            // check for plural flat field in main Item
-            plural = CSL.evaluateStringPluralism(Item[node.strings.term]);            
-        }
-        // cleanup
-        if ("number" !== typeof plural) {
-            plural = 0;
-        }
-    }
-*/
     return CSL.castLabel(state, node, myterm, plural, CSL.TOLERANT);
 };
 
