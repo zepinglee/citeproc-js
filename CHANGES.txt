@@ -34,6 +34,11 @@ Mishandled or unimplemented features
 - Parse out embedded labels from page and page-first as well as locator 
   when rendering via cs:number
 
+- Render parsed-out page/page-first labels via cs:label, and implement
+  a page label test similar to locator label test to control
+  output. Introducing a page-label variable would be a cleaner way to
+  do this on the input side, but for the moment this serves the
+  purpose for style development.
 
 ==========================
 Changes in version 1.0.319

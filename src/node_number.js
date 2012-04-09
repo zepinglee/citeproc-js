@@ -136,6 +136,9 @@ CSL.Node.number = {
                     var newlst = [lst[0]];
                     
                     // Get form
+                    if (!this.strings.form && state.tmp.group_context.value()[5]) {
+                        form = state.tmp.group_context.value()[5];
+                    }
                     for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
                         // For leading label: it is always singular if we are specifying subdivisions
                         // Rough guess at pluralism

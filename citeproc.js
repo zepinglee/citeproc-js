@@ -452,7 +452,7 @@ var CSL = {
         "n": "note",
         "op": "opus",
         "p": "page",
-        "para": "para",
+        "para": "paragraph",
         "pt": "part",
         "sec": "section",
         "sv": "sub-verbo",
@@ -6667,7 +6667,9 @@ CSL.evaluateLabel = function (node, state, Item, item) {
                 }
             }
         } else if (["page", "page-first"].indexOf(node.variables[0]) > -1) {
-            plural = CSL.evaluateStringPluralism(Item[myterm]);
+            state.processNumber(false, Item, myterm, Item.type);
+            plural = state.tmp.shadow_numbers[myterm].plural;
+            myterm = state.tmp.shadow_numbers[myterm].label;
         } else {
             if (!state.tmp.shadow_numbers[myterm]) {
                 state.processNumber(false, Item, myterm, Item.type);
@@ -7132,6 +7134,10 @@ CSL.Node.number = {
                 state.tmp.renders_collection_number = true;
             }
             var value = Item[this.variables[0]];
+            var form = "long";
+            if (this.strings.label_form_override) {
+                form = this.strings.label_form_override;
+            }
             if (this.text_case_normal) {
                 if (value) {
                     value = value.replace("\\", "");
@@ -7139,22 +7145,20 @@ CSL.Node.number = {
                 }
             } else if (varname === "locator"
                        && item.locator
-                       && Item.type 
-                       && ["bill", "legislation"].indexOf(Item.type) > -1) {
+                       && ["legal_case", "bill", "legislation"].indexOf(Item.type) > -1) {
                 var m = item.locator.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                 if (m) {
                     var lst = item.locator.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
                     var newlst = [lst[0]];
+                    if (!this.strings.form && state.tmp.group_context.value()[5]) {
+                        form = state.tmp.group_context.value()[5];
+                    }
                     for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
                         var subplural = 0;
                         if (lst[i].match(/(?:&|, | and )/)) {
                             subplural = 1;
                         }
                         var term = CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s*/,"")];
-                        var form = "long";
-                        if (this.strings.label_form_override) {
-                            form = this.strings.label_form_override;
-                        }
                         newlst.push(state.getTerm(term, form, subplural));
                         newlst.push(lst[i].replace(/^\s*/,""));
                     }
@@ -8067,6 +8071,34 @@ CSL.Attributes["@locator"] = function (state, arg) {
                 label = "sub-verbo";
             } else {
                 label = item.label;
+            }
+            for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
+                if (trylabels[i] === label) {
+                    ret.push(true);
+                } else {
+                    ret.push(false);
+                }
+            }
+            return ret;
+        };
+        this.tests.push(func);
+    }
+};
+CSL.Attributes["@page"] = function (state, arg) {
+    var func;
+    var trylabels = arg.replace("sub verbo", "sub-verbo");
+    trylabels = trylabels.split(/\s+/);
+    if (["if",  "else-if"].indexOf(this.name) > -1) {
+        func = function (state, Item, item) {
+            var ret = [];
+            var label;
+            state.processNumber(false, Item, "page", Item.type);
+            if (!state.tmp.shadow_numbers["page"].label) {
+                label = "page";
+            } else if (state.tmp.shadow_numbers["page"].label === "sub verbo") {
+                label = "sub-verbo";
+            } else {
+                label = state.tmp.shadow_numbers["page"].label;
             }
             for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
                 if (trylabels[i] === label) {
@@ -9982,6 +10014,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     this.tmp.shadow_numbers[variable].values = [];
     this.tmp.shadow_numbers[variable].plural = 0;
     this.tmp.shadow_numbers[variable].numeric = false;
+    this.tmp.shadow_numbers[variable].label = false;
     if (!ItemObject) {
         return;
     }
@@ -9990,20 +10023,29 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         if ("number" === typeof num) {
             num = "" + num;
         }
+        this.tmp.shadow_numbers[variable].label = variable;
         if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
             num = num.slice(1, -1);
         }
         if (num.indexOf("&") > -1 || num.indexOf("--") > -1) {
             this.tmp.shadow_numbers[variable].plural = 1;
         }
-        if ((["locator", "page", "page-first"].indexOf(variable) > -1)
-            && ["legal_case", "bill", "legislation"].indexOf(type) > -1) {
+        if ("locator" === variable
+            && ["bill", "legislation"].indexOf(type) > -1) {
             num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
         var rangeType = "page";
         if (["bill", "legislation", "legal_case"].indexOf(type) > -1
             && variable === "collection-number") {
             rangeType = "year";
+        }
+        if (["page", "page-first"].indexOf(variable) > -1) {
+            var m = num.split(" ")[0].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            if (m){
+                this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
+                var mm = num.match(/[^ ]+\s+(.*)/);
+                num = mm[1];
+            }
         }
         var lst = num.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
         var m = num.match(/(,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
