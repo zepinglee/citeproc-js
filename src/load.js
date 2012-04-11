@@ -87,9 +87,10 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:pt\.|ch\.|subch\.|sec\.|art\.|para\.))/g,
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:pt\.|ch\.|subch\.|sec\.|art\.|para\.))/,
+    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:p\.|pt\.|ch\.|subch\.|sec\.|art\.|para\.))/g,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:p\.|pt\.|ch\.|subch\.|sec\.|art\.|para\.))/,
     STATUTE_SUBDIV_STRINGS: {
+        "p.": "page",
         "pt.": "part",
         "ch.": "chapter",
         "subch.": "subchapter",
@@ -98,6 +99,7 @@ var CSL = {
         "para.": "paragraph"
     },
     STATUTE_SUBDIV_STRINGS_REVERSE: {
+        "page": "p.",
         "part": "pt.",
         "chapter": "ch.",
         "subchapter": "subch.",
@@ -542,7 +544,7 @@ var CSL = {
         "\u06E6": "\u064A"
     },
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((ch|col|fig|no|l|n|op|p|para|pt|sec|sv|vrs|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((ch|col|fig|no|l|n|op|p|pp|para|pt|sec|sv|vrs|vol)\\.)\\s+(.*)"),
 
     LOCATOR_LABELS_MAP: {
         "ch": "chapter",
@@ -553,6 +555,7 @@ var CSL = {
         "n": "note",
         "op": "opus",
         "p": "page",
+        "pp": "page",
         "para": "paragraph",
         "pt": "part",
         "sec": "section",
