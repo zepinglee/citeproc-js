@@ -66,7 +66,9 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             var labelstr = "";
             if (item.locator) {
                 locator = item.locator;
-                if (item.label && CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label]) {
+                // Needs work around here.
+                var firstword = item.locator.split(/\s/)[0];
+                if (item.label && !CSL.STATUTE_SUBDIV_STRINGS[firstword] && [",", "&"].indexOf(firstword) === -1) {
                     labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " ";
                 }
                 locator = labelstr + locator;
@@ -75,17 +77,22 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 }
                 value = value + locator;
             }
+            // Modify locator if appropriate.
+            // This should happen on import, no? Or does it already
+            // Questions, questions. The code could use some cleanup
+            // around here.
+            item.label = "section";
+            if (value) {
+                var splt = value.split(/\s+/);
+                if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
+                    item.label = CSL.STATUTE_SUBDIV_STRINGS[splt[0]];
+                } else {
+                    value = "sec. " + value;
+                }
+            }
             var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             if (m) {
                 var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
-                if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
-                    item.label = CSL.STATUTE_SUBDIV_STRINGS[slt[0]];
-                    splt.reverse();
-                    splt.pop();
-                    splt.reverse();
-                } else {
-                    item.label = "section";
-                }
                 if (splt.length > 1) {
                     var lst = [];
                     lst.push(splt[1].replace(/\s*$/, "").replace(/^\s*/, ""));
