@@ -152,7 +152,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     // retrieve item data and compose items for use in rendering
     // attach pointer to item data to shared copy for good measure
     for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
-        item = citation.citationItems[i];
+        // Protect against caller-side overwrites to locator strings etc
+        var item = {};
+        for (var key in citation.citationItems[i]) {
+            item[key] = citation.citationItems[i][key];
+        }
         Item = this.retrieveItem("" + item.id);
         this.remapSectionVariable([[Item,item]]);
         if (this.opt.development_extensions.locator_date_and_revision) {
@@ -721,6 +725,16 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
     len = rawList.length;
     for (pos = 0; pos < len; pos += 1) {
         item = rawList[pos];
+        // Code block is copied from processCitationCluster() above
+        if (this.opt.development_extensions.locator_label_parse) {
+            if (item.locator && (!item.label || item.label === 'page')) {
+                var m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
+                if (m) {
+                    item.label = CSL.LOCATOR_LABELS_MAP[m[2]];
+                    item.locator = m[3];
+                }
+            }
+        }
         Item = this.retrieveItem("" + item.id);
         newitem = [Item, item];
         inputList.push(newitem);
