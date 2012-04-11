@@ -84,7 +84,7 @@ CSL.Parallel = function (state) {
     this.sets = new CSL.Stack([]);
     this.try_cite = true;
     this.use_parallels = true;
-    this.midVars = ["hereinafter", "section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "locator"];
+    this.midVars = ["hereinafter", "section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "locator", "number"];
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
