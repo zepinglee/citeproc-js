@@ -136,7 +136,7 @@ CSL.Node.number = {
                     var newlst = [lst[0]];
                     
                     // Get form
-                    if (!this.strings.form && state.tmp.group_context.value()[5]) {
+                    if (!this.strings.label_form_override && state.tmp.group_context.value()[5]) {
                         form = state.tmp.group_context.value()[5];
                     }
                     for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
@@ -189,6 +189,9 @@ CSL.Node.number = {
                 } else {
                     if (values.length) {
                         state.output.openLevel("empty");
+                        if ("number" === varname && state.tmp.shadow_numbers[varname].label !== "number") {
+                            state.output.append(state.getTerm(state.tmp.shadow_numbers[varname].label, this.strings.label_form_override) + " ");
+                        }
                         for (var i = 0, ilen = values.length; i < ilen; i += 1) {
                             var blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
                             if (i > 0) {
