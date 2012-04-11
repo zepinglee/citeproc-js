@@ -249,7 +249,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         }
 
         // Works with code in node_number.js
-        if (["page", "page-first"].indexOf(variable) > -1) {
+        if (["page", "page-first", "number"].indexOf(variable) > -1) {
             var m = num.split(" ")[0].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             if (m){
                 this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
