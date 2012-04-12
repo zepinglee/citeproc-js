@@ -745,8 +745,8 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
     this.remapSectionVariable(inputList);
     if (inputList && inputList.length > 1 && this.citation_sort.tokens.length > 0) {
         len = inputList.length;
-        for (pos = 0; pos < len; pos += 1) {
-            inputList[pos].sortkeys = CSL.getSortKeys.call(this, inputList[pos][0], "citation_sort");
+        for (var pos = 0; pos < len; pos += 1) {
+            inputList[pos][1].sortkeys = CSL.getSortKeys.call(this, inputList[pos][0], "citation_sort");
         }
         inputList.sort(this.citation.srt.compareCompositeKeys);
     }
