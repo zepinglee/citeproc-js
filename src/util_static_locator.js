@@ -65,6 +65,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             var value = "" + Item.section;
 
             // Add locator label if needed
+            var old_label = item.label;
             item.label = "section";
             if (value) {
                 var splt = value.split(/\s+/);
@@ -84,8 +85,10 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 locator = item.locator;
                 // Needs work around here.
                 var firstword = item.locator.split(/\s/)[0];
-                if (item.label && firstword && firstword.match(/^[0-9]/)) {
-                    labelstr = ", " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " ";
+                if (item.label === old_label && firstword && firstword.match(/^[0-9]/)) {
+                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[old_label];
+                } else if (item.label !== old_label && firstword && firstword.match(/^[0-9]/)) {
+                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[old_label] + " ";
                 } else if (CSL.STATUTE_SUBDIV_STRINGS[firstword]) {
                     labelstr = " ";
                 }
