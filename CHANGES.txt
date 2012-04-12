@@ -40,6 +40,20 @@ Mishandled or unimplemented features
   do this on the input side, but for the moment this serves the
   purpose for style development.
 
+- Provide for override of section marker on bill and legislation
+  pinpoint with abbrev. at start of section string.
+
+- Insulate changes to item.locator and item.label from copy
+  held by calling application.
+
+- Recognized pp. as equivalent to p. when parsing locator
+  abbrev. labels.
+
+- Introduce a new "gazette" type for official gazettes
+  published by government, which contain amending acts and
+  legislation prior to codification.
+
+
 ==========================
 Changes in version 1.0.319
 ==========================
