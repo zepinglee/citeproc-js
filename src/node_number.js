@@ -147,7 +147,7 @@ CSL.Node.number = {
                         // For leading label: it is always singular if we are specifying subdivisions
                         // Rough guess at pluralism
                         var subplural = 0;
-                        var rex = new RegExp("(?::&|, | and |" + state.getTerm("page-range-delimiter") + ")")
+                        var rex = new RegExp("(?:&|, | and |" + state.getTerm("page-range-delimiter") + ")")
                         if (lst[i].match(rex)) {
                             subplural = 1;
                         }
