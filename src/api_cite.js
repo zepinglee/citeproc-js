@@ -178,7 +178,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             }
         }
         if (this.opt.development_extensions.locator_label_parse) {
-            if (item.locator && (!item.label || item.label === 'page')) {
+            if (item.locator && ["bill","gazette","legislation"].indexOf(Item.type) === -1 && (!item.label || item.label === 'page')) {
                 var m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
                 if (m) {
                     item.label = CSL.LOCATOR_LABELS_MAP[m[2]];
@@ -724,10 +724,14 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
     inputList = [];
     len = rawList.length;
     for (pos = 0; pos < len; pos += 1) {
-        item = rawList[pos];
+        item = {};
+        for (var key in rawList[pos]) {
+            item[key] = rawList[pos][key];
+        }
+        Item = this.retrieveItem("" + item.id);
         // Code block is copied from processCitationCluster() above
         if (this.opt.development_extensions.locator_label_parse) {
-            if (item.locator && (!item.label || item.label === 'page')) {
+            if (item.locator && ["bill","gazette","legislation"].indexOf(Item.type) === -1 && (!item.label || item.label === 'page')) {
                 var m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
                 if (m) {
                     item.label = CSL.LOCATOR_LABELS_MAP[m[2]];
@@ -735,7 +739,6 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
                 }
             }
         }
-        Item = this.retrieveItem("" + item.id);
         newitem = [Item, item];
         inputList.push(newitem);
     }
@@ -743,7 +746,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
     if (inputList && inputList.length > 1 && this.citation_sort.tokens.length > 0) {
         len = inputList.length;
         for (pos = 0; pos < len; pos += 1) {
-            rawList[pos].sortkeys = CSL.getSortKeys.call(this, inputList[pos][0], "citation_sort");
+            inputList[pos].sortkeys = CSL.getSortKeys.call(this, inputList[pos][0], "citation_sort");
         }
         inputList.sort(this.citation.srt.compareCompositeKeys);
     }

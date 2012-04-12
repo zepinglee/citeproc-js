@@ -554,10 +554,10 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     // Mandatory data rescue
     // LEX HACK
-    if (Item.type === "bill" && Item.number && !Item.volume && Item.page) {
-        Item.volume = Item.number;
-        Item.number = undefined;
-    }
+    //if (Item.type === "bill" && Item.number && !Item.volume && Item.page) {
+    //    Item.volume = Item.number;
+    //    Item.number = undefined;
+    //}
     if (Item.page) {
         Item["page-first"] = Item.page;
         var num = "" + Item.page;
@@ -610,7 +610,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         }
     }
     if (this.opt.development_extensions.static_statute_locator) {
-        if (Item.type && ["legislation","bill"].indexOf(Item.type) > -1
+        if (Item.type && ["bill","gazette","legislation"].indexOf(Item.type) > -1
             && Item.title 
             && Item.jurisdiction) {
             

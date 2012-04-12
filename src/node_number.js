@@ -105,8 +105,9 @@ CSL.Node.number = {
                 }
             } else if (varname === "locator"
                        && item.locator
-                       && ["legal_case", "bill", "legislation"].indexOf(Item.type) > -1) {
+                       && ["bill","gazette","legislation","legal_case"].indexOf(Item.type) > -1) {
                 
+
                 // For bill or legislation items that have a label-form
                 // attribute set on the cs:number node rendering the locator,
                 // the form and pluralism of locator terms are controlled
@@ -130,6 +131,9 @@ CSL.Node.number = {
                 // util_static_locator.js, and util_label.js. It's not easy
                 // to follow, but seems to do the job. Let's home for good
                 // luck out there in the wild.
+                
+                // Do replacements here
+                item.locator = item.locator.replace(/([^\\])-/, "$1" + state.getTerm("page-range-delimiter"));
                 var m = item.locator.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                 if (m) {
                     var lst = item.locator.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
@@ -143,11 +147,16 @@ CSL.Node.number = {
                         // For leading label: it is always singular if we are specifying subdivisions
                         // Rough guess at pluralism
                         var subplural = 0;
-                        if (lst[i].match(/(?:&|, | and )/)) {
+                        var rex = new RegExp("(?::&|, | and |" + state.getTerm("page-range-delimiter") + ")")
+                        if (lst[i].match(rex)) {
                             subplural = 1;
                         }
                         var term = CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s*/,"")];
-                        newlst.push(state.getTerm(term, form, subplural));
+                        var myform = form;
+                        if (item.section_label_count > i && item.section_form_override) {
+                            myform = item.section_form_override;
+                        }
+                        newlst.push(state.getTerm(term, myform, subplural));
                         newlst.push(lst[i].replace(/^\s*/,""));
                     }
                     value = newlst.join(" ");
@@ -172,7 +181,7 @@ CSL.Node.number = {
                 // if any. Otherwise, apply styling.
                 var newstr = ""
                 var rangeType = "page";
-                if (["bill", "legislation", "legal_case"].indexOf(Item.type) > -1
+                if (["bill","gazette","legislation","legal_case"].indexOf(Item.type) > -1
                     && varname === "collection-number") {
 
                     rangeType = "year";
@@ -189,9 +198,6 @@ CSL.Node.number = {
                 } else {
                     if (values.length) {
                         state.output.openLevel("empty");
-                        if ("number" === varname && state.tmp.shadow_numbers[varname].label !== "number") {
-                            state.output.append(state.getTerm(state.tmp.shadow_numbers[varname].label, this.strings.label_form_override) + " ");
-                        }
                         for (var i = 0, ilen = values.length; i < ilen; i += 1) {
                             var blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
                             if (i > 0) {

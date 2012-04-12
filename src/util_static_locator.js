@@ -50,37 +50,21 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
     for (var i = 0, ilen = inputList.length; i < ilen; i += 1) {
         var Item = inputList[i][0];
         var item = inputList[i][1];
+        var section_label_count = 0;
         if (!Item.section
-            && ["bill", "legislation"].indexOf(Item.type) > -1
+            && ["bill","gazette","legislation"].indexOf(Item.type) > -1
             && this.opt.development_extensions.clobber_locator_if_no_statute_section) {
             
             item.locator = undefined;
             item.label = undefined;
         } else if (Item.section
-            && item
-            && ["bill", "legislation"].indexOf(Item.type) > -1
-            && this.opt.development_extensions.static_statute_locator) {
+                   && item
+                   && ["bill","gazette","legislation"].indexOf(Item.type) > -1
+                   && this.opt.development_extensions.static_statute_locator) {
 
             var value = "" + Item.section;
-            var locator = "";
-            var labelstr = "";
-            if (item.locator) {
-                locator = item.locator;
-                // Needs work around here.
-                var firstword = item.locator.split(/\s/)[0];
-                if (item.label && !CSL.STATUTE_SUBDIV_STRINGS[firstword] && [",", "&"].indexOf(firstword) === -1) {
-                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " ";
-                }
-                locator = labelstr + locator;
-                if (locator.slice(0,1) === "&") {
-                    locator = " " + locator;
-                }
-                value = value + locator;
-            }
-            // Modify locator if appropriate.
-            // This should happen on import, no? Or does it already
-            // Questions, questions. The code could use some cleanup
-            // around here.
+
+            // Add locator label if needed
             item.label = "section";
             if (value) {
                 var splt = value.split(/\s+/);
@@ -89,6 +73,27 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 } else {
                     value = "sec. " + value;
                 }
+            }
+            var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            // Count the number of parseable labels
+            item.section_label_count = m.length;
+
+            var locator = "";
+            var labelstr = "";
+            if (item.locator) {
+                locator = item.locator;
+                // Needs work around here.
+                var firstword = item.locator.split(/\s/)[0];
+                if (item.label && firstword && firstword.match(/^[0-9]/)) {
+                    labelstr = ", " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " ";
+                } else if (CSL.STATUTE_SUBDIV_STRINGS[firstword]) {
+                    labelstr = " ";
+                }
+                locator = labelstr + locator;
+                if (locator.slice(0,1) === "&") {
+                    locator = " " + locator;
+                }
+                value = value + locator;
             }
             var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             if (m) {

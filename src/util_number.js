@@ -237,19 +237,19 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         // directly), but only for is-numeric evaluation.
 
         if ("locator" === variable
-            && ["bill", "legislation"].indexOf(type) > -1) {
+            && ["bill","gazette","legislation"].indexOf(type) > -1) {
             num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
         }
 
         var rangeType = "page";
-        if (["bill", "legislation", "legal_case"].indexOf(type) > -1
+        if (["bill","gazette","legislation","legal_case"].indexOf(type) > -1
             && variable === "collection-number") {
 
             rangeType = "year";
         }
 
         // Works with code in node_number.js
-        if (["page", "page-first", "number"].indexOf(variable) > -1) {
+        if (["page", "page-first"].indexOf(variable) > -1) {
             var m = num.split(" ")[0].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             if (m){
                 this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
