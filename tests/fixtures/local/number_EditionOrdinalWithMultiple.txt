@@ -71,7 +71,7 @@ Normalizes punctuation and grouping when multiple numbers are provided in input.
 12th Yellow-tailed Wooly Monkey --- ‘12th Yellow-tailed Wooly Monkey’ --- not ordinalized, non-numeric
 T51 edition --- ‘T51’ --- not ordinalized, numeric, singular
 Edition 1 --- ‘Edition 1’ --- not ordinalized, non-numeric
-Editions 1 - 6th --- ‘Editions 1 - 6’ --- partially ordinalized, non-numeric (bad input, we don’t attempt rescue)
+Editions 1–6th --- ‘Editions 1 - 6’ --- partially ordinalized, non-numeric (bad input, we don’t attempt rescue)
 42nd edition --- ‘“42 editionX”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, singular
 42nd–47th editions --- ‘“42 - 47 editionz”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, plural
 T51 edn. --- ‘T51 edn.’ --- Non-numeric (label must be spelled out in full)
