@@ -283,12 +283,15 @@ CSL.Node.text = {
                                 if (item && item[this.variables[0]]) {
                                     // Code copied to page variable as well; both
                                     // become cs:number in MLZ extended schema
-                                    var locator = "" + item[this.variables[0]];
-                                    locator = locator.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
-                                    locator = locator.replace(/\\-/g,"-");
+                                    var value = "" + item[this.variables[0]];
+                                    value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
+                                    value = value.replace(/\\-/g,"-");
+                                    if (this.variables_real[0] !== "first-reference-note-number"
+                                       || !state.registry.registry[item.id].parallel) {
 
-                                    // true is for non-suppression of periods
-                                    state.output.append(locator, this, false, false, true);
+                                        // true is for non-suppression of periods
+                                        state.output.append(value, this, false, false, true);
+                                    }
                                 }
                             };
                         } else if (this.variables_real[0] === "page-first") {
