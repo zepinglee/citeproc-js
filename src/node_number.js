@@ -84,6 +84,8 @@ CSL.Node.number = {
             state.parallel.StartVariable(this.variables[0]);
             state.parallel.AppendToVariable(Item[this.variables[0]]);
 
+            var rex = new RegExp("(?:&|, | and |" + state.getTerm("page-range-delimiter") + ")");
+
             if (varname === 'collection-number' && Item.type === 'legal_case') {
                 state.tmp.renders_collection_number = true;
             }
@@ -104,8 +106,8 @@ CSL.Node.number = {
                     state.output.append(value, this);
                 }
             } else if (varname === "locator"
-                       && item.locator
-                       && ["bill","gazette","legislation","legal_case"].indexOf(Item.type) > -1) {
+                       && item.locator) {
+                       //&& ["bill","gazette","legislation","legal_case"].indexOf(Item.type) > -1
                 
 
                 // For bill or legislation items that have a label-form
@@ -133,10 +135,16 @@ CSL.Node.number = {
                 // luck out there in the wild.
                 
                 // Do replacements here
-                item.locator = item.locator.replace(/([^\\])-/, "$1" + state.getTerm("page-range-delimiter"));
+                item.locator = item.locator.replace(/([^\\])\s*-\s*/, "$1" + state.getTerm("page-range-delimiter"));
+                // (actually, if numeric parsing is happening as it ought to, this won't be necessary)
+                // or ... maybe note. We need to account for a missing page-range-format attribute.
+
                 var m = item.locator.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                 if (m) {
                     var lst = item.locator.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                    for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
+                        lst[i] = state.fun.page_mangler(lst[i]);
+                    }
                     var newlst = [lst[0]];
                     
                     // Get form
@@ -147,7 +155,7 @@ CSL.Node.number = {
                         // For leading label: it is always singular if we are specifying subdivisions
                         // Rough guess at pluralism
                         var subplural = 0;
-                        var rex = new RegExp("(?:&|, | and |" + state.getTerm("page-range-delimiter") + ")")
+                        
                         if (lst[i].match(rex)) {
                             subplural = 1;
                         }
@@ -160,9 +168,12 @@ CSL.Node.number = {
                         newlst.push(lst[i].replace(/^\s*/,""));
                     }
                     value = newlst.join(" ");
+                    value = value.replace(/\\/, "", "g");
                     state.output.append(value, this);
                 } else {
-                    state.output.append(item.locator, this);
+                    value = state.fun.page_mangler(item.locator);
+                    value = value.replace(/\\/, "", "g");
+                    state.output.append(value, this);
                 }
             } else {
                 var node = this;

@@ -284,8 +284,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                             var middle = this.tmp.shadow_numbers[variable].values.slice(-1);
                             if (middle[0][1].indexOf("\\") == -1) {
                                 if (elements[i - 2] && ("" + elements[i - 2]).match(/[0-9]+$/)
-                                    && elements[i].match(/^[0-9]+/)
-                                    && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))) {
+                                    && elements[i].match(/^[0-9]+/)) {
+
+                                    // Removed from condition to allow manually collapsed
+                                    // number ranges to be recognized as plural. Leaf number
+                                    // delimiter of hyphen (-) can be specified with \\-
+                                    // in the input.
+                                    // && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))
+
                                     
                                     var start = this.tmp.shadow_numbers[variable].values.slice(-2);
                                     middle[0][1] = this.getTerm(rangeType + "-range-delimiter");

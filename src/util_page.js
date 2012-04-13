@@ -65,13 +65,13 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
             }
         }
         var ret = lst.join("");
-        ret = ret.replace(/([0-9])\-/, "$1"+state.getTerm(rangeType + "-range-delimiter"), "g").replace(/\-([0-9])/, state.getTerm(rangeType + "-range-delimiter")+"$1", "g")
+        ret = ret.replace(/([^\\])\-/g, "$1"+state.getTerm(rangeType + "-range-delimiter"));
         return ret;
     };
 
     listify = function (str, hyphens) {
         var m, lst, ret;
-        str = str.replace("\u2013", "-", "g");
+        str = str.replace(/([^\\])\u2013/g, "$1-").replace(/\s+\u2013\s+/g, " - ");
         // Workaround for Internet Explorer
         var rexm = new RegExp("([a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+)", "g");
         var rexlst = new RegExp("[a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+");
@@ -108,7 +108,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
                 }
             }
             if ("string" === typeof lst[pos]) {
-                lst[pos] = lst[pos].replace("-", range_delimiter);
+                lst[pos] = lst[pos].replace("-", range_delimiter, "g");
             }
         }
         return lst;
