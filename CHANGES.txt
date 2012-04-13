@@ -53,6 +53,12 @@ Mishandled or unimplemented features
   published by government, which contain amending acts and
   legislation prior to codification.
 
+- Suppress note number in parallel cites attached to a
+  master backreference.
+
+- Be slightly more aggressive about applying page-range-delimiter
+  to ranges and detecting plural numbers.
+
 
 ==========================
 Changes in version 1.0.319
