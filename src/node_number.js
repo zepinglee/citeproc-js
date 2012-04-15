@@ -79,6 +79,12 @@ CSL.Node.number = {
         //
         // push number or text
         func = function (state, Item, item) {
+            // NOTE: this works because this is the ONLY function in this node.
+            // If further functions are added, they need to start with the same
+            // abort condition.
+            if (this.variables.length === 0) {
+                return;
+            }
             var varname, num, number, m, j, jlen;
             varname = this.variables[0];
             state.parallel.StartVariable(this.variables[0]);
