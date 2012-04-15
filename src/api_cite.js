@@ -547,6 +547,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         }
                         if (suprame) {
                             item[1].position = CSL.POSITION_SUBSEQUENT;
+                        }
+                        if (suprame || ibidme) {
                             if (first_ref[myid] != onecitation.properties.noteIndex) {
                                 item[1]["first-reference-note-number"] = first_ref[myid];
                             }
