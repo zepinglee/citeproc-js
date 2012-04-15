@@ -84,7 +84,10 @@ CSL.Parallel = function (state) {
     this.sets = new CSL.Stack([]);
     this.try_cite = true;
     this.use_parallels = true;
-    this.midVars = ["hereinafter", "section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "locator", "number"];
+
+    this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "number"];
+    this.ignoreVars = ["locator", "first-reference-note-number"];
+
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
@@ -208,6 +211,14 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
  */
 CSL.Parallel.prototype.StartVariable = function (variable) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
+        if (variable === "names") {
+            this.variable = variable + ":" + this.target;
+        } else {
+            this.variable = variable;
+        }
+        if (this.ignoreVars.indexOf(variable) > -1) {
+            return;
+        }
         if (variable === "container-title" && this.sets.value().length === 0) {
             this.master_was_neutral_cite = false;
         }
@@ -227,12 +238,6 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
             this.try_cite = true;
             //print("   IN SERIES FALSE (3)");
             this.in_series = false;
-        }
-
-        if (variable === "names") {
-            this.variable = variable + ":" + this.target;
-        } else {
-            this.variable = variable;
         }
 
         //print("area=" + this.state.tmp.area + ", variable=" + variable+", target="+this.target);
@@ -257,6 +262,9 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
  * after parallels detection is complete.
  */
 CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
+    if (this.ignoreVars.indexOf(this.variable) > -1) {
+        return;
+    }
     if (this.use_parallels && this.variable && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
         this.data.blobs.push([blob, blob.blobs.length]);
     }
@@ -267,6 +275,9 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
  * in the variables tracking object.
  */
 CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
+    if (this.ignoreVars.indexOf(this.variable) > -1) {
+        return;
+    }
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
             // ZZZZZ
         if (this.target !== "back" || true) {
@@ -294,7 +305,10 @@ CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
  * item can't necessarily be discarded; it might be the first
  * member of an upcoming sequence ???]
  */
-CSL.Parallel.prototype.CloseVariable = function (hello) {
+CSL.Parallel.prototype.CloseVariable = function () {
+    if (this.ignoreVars.indexOf(this.variable) > -1) {
+        return;
+    }
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
         this.cite[this.variable] = this.data;
         if (this.sets.value().length > 0) {
