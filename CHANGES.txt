@@ -19,6 +19,8 @@ Mishandled or unimplemented features
 - Use a more proper method of suppressing first-reference-note-number
   on parallel cites.
 
+- Add rule and title and statute and locator label terms.
+
 ==========================
 Changes in version 1.0.320
 ==========================
