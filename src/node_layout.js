@@ -60,6 +60,9 @@ CSL.Node.layout = {
             // initalize done vars
             func = function (state, Item) {
                 state.tmp.done_vars = [];
+                if (!state.tmp.just_looking && state.registry.registry[Item.id].parallel) {
+                    state.tmp.done_vars.push("first-reference-note-number");
+                }
                 //CSL.debug(" === init rendered_name === ");
                 state.tmp.rendered_name = false;
                 state.tmp.name_node = {};

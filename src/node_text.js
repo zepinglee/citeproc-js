@@ -286,12 +286,8 @@ CSL.Node.text = {
                                     var value = "" + item[this.variables[0]];
                                     value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
                                     value = value.replace(/\\-/g,"-");
-                                    if (this.variables_real[0] !== "first-reference-note-number"
-                                       || !state.registry.registry[item.id].parallel) {
-
-                                        // true is for non-suppression of periods
-                                        state.output.append(value, this, false, false, true);
-                                    }
+                                    // true is for non-suppression of periods
+                                    state.output.append(value, this, false, false, true);
                                 }
                             };
                         } else if (this.variables_real[0] === "page-first") {
