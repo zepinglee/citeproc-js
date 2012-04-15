@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.321
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Set first-reference-note-number when ibid is detected.
+  The note number is needed in some styles (e.g. New Zealand Law)
+  that set ibid back-references without an ibid term, and so need
+  to use a supra-style short form reference to refer to the same
+  location in the source in this context.
+
+- Avoid nil variables in parallel detection machinery.
+
+- Use a more proper method of suppressing first-reference-note-number
+  on parallel cites.
+
+==========================
 Changes in version 1.0.320
 ==========================
 
