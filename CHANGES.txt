@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.322
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Use s. rather than sec. as the primary embedded abbrev
+  of section, with sec. mapping to exceptional Section term.
+
+- Fill in missing bits of embedded locator label mappings
+  and reverse mappings.
+
+
+==========================
 Changes in version 1.0.321
 ==========================
 
