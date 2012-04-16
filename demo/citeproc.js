@@ -62,7 +62,7 @@ var CSL = {
     STATUTE_SUBDIV_STRINGS: {
         "p.": "page",
         "pp.": "page",
-		"r.": "rule",
+        "r.": "rule",
         "pt.": "part",
         "ch.": "chapter",
         "subch.": "subchapter",
@@ -460,7 +460,7 @@ var CSL = {
         "pp": "page",
         "para": "paragraph",
         "pt": "part",
-		"r": "rule",
+        "r": "rule",
         "sec": "section",
         "tit": "title",
         "vrs": "verse",
