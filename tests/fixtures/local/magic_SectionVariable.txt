@@ -103,7 +103,7 @@ citation
     {
         "id": "ITEM-1", 
         "title": "Hello",
-        "section": "sec. 23 para. 6",
+        "section": "s. 23 para. 6",
         "type": "bill"
     }
 ]
