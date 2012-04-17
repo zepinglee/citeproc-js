@@ -63,21 +63,18 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                    && this.opt.development_extensions.static_statute_locator) {
 
             var value = "" + Item.section;
-            // Add locator label if needed
-            var old_label = item.label;
-            item.label = "section";
+            var later_label = item.label;
             if (value) {
                 var splt = value.split(/\s+/);
                 if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
                     item.label = CSL.STATUTE_SUBDIV_STRINGS[splt[0]];
-					zcite.debug("XXX "+item.label);
                 } else {
-                    value = "sec. " + value;
+					item.label = "section";
+                    value = "s. " + value;
                 }
             }
-			old_label = item.label;
-			if (!old_label) {
-				old_label = "page";
+			if (!later_label) {
+				later_label = item.label;
 			}
             // Count the number of parseable labels
             var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
@@ -88,10 +85,10 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 locator = item.locator;
                 // Needs work around here.
                 var firstword = item.locator.split(/\s/)[0];
-                if (item.label === old_label && firstword && firstword.match(/^[0-9]/)) {
-                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[old_label];
-                } else if (item.label !== old_label && firstword && firstword.match(/^[0-9]/)) {
-                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[old_label] + " ";
+                if (item.label === later_label && firstword && firstword.match(/^[0-9]/)) {
+                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[later_label];
+                } else if (item.label !== later_label && firstword && firstword.match(/^[0-9]/)) {
+                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[later_label] + " ";
                 } else if (CSL.STATUTE_SUBDIV_STRINGS[firstword]) {
                     labelstr = " ";
                 }
