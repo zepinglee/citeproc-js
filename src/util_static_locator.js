@@ -86,7 +86,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 // Needs work around here.
                 var firstword = item.locator.split(/\s/)[0];
                 if (item.label === later_label && firstword && firstword.match(/^[0-9]/)) {
-                    labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[later_label];
+                    labelstr = ", " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[later_label];
                 } else if (item.label !== later_label && firstword && firstword.match(/^[0-9]/)) {
                     labelstr = " " + CSL.STATUTE_SUBDIV_STRINGS_REVERSE[later_label] + " ";
                 } else if (CSL.STATUTE_SUBDIV_STRINGS[firstword]) {
