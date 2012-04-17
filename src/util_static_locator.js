@@ -63,7 +63,6 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                    && this.opt.development_extensions.static_statute_locator) {
 
             var value = "" + Item.section;
-
             // Add locator label if needed
             var old_label = item.label;
             item.label = "section";
@@ -71,14 +70,18 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 var splt = value.split(/\s+/);
                 if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
                     item.label = CSL.STATUTE_SUBDIV_STRINGS[splt[0]];
+					zcite.debug("XXX "+item.label);
                 } else {
                     value = "sec. " + value;
                 }
             }
-            var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+			old_label = item.label;
+			if (!old_label) {
+				old_label = "page";
+			}
             // Count the number of parseable labels
+            var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             item.section_label_count = m.length;
-
             var locator = "";
             var labelstr = "";
             if (item.locator) {
