@@ -1808,7 +1808,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.322";
+    this.processor_version = "1.0.323";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2258,6 +2258,10 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                     value = "sec. " + value;
                 }
             }
+			old_label = item.label;
+			if (!old_label) {
+				old_label = "page";
+			}
             var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             item.section_label_count = m.length;
             var locator = "";

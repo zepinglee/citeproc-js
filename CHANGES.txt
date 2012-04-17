@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.323
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in embedded locator parsing, affecting legislation, bill
+  and order items in the extended processor.
+
+
+==========================
 Changes in version 1.0.322
 ==========================
 
