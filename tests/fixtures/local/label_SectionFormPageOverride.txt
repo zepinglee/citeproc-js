@@ -84,14 +84,11 @@ citation
 <<===== CITATION-ITEMS =====<<
 
 
-The fourth result is misformatted: it should have a comma delimiter.
-Supplying joining punctuation is a job for the user.
-
 >>== RESULT ==>>
 White Slave Traffic (Mann) Act 36 Stat. p. 825 ¶ 10 (1910)
 White Slave Traffic (Mann) Act 36 Stat. p. 825, §§ 100 &#38; 153 (1910)
 White Slave Traffic (Mann) Act 36 Stat. pp. 825, 827 (1910)
-White Slave Traffic (Mann) Act 36 Stat. pp. 825 829 (1910)
+White Slave Traffic (Mann) Act 36 Stat. pp. 825, 829 (1910)
 <<== RESULT ==<<
 
 >>===== CSL =====>>
