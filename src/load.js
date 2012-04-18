@@ -87,33 +87,39 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:p\.|pp\.|r\.|pt\.|ch\.|subch\.|s\.|sec\.|tit\.|art\.|para\.))/g,
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:p\.|pp\.|r\.|pt\.|ch\.|subch\.|s\.|sec\.|tit\.|art\.|para\.))/,
+    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|s|sub-s|sec|sch|tit)\.)/g,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|s|sub-s|sec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
-        "p.": "page",
-        "pp.": "page",
-        "r.": "rule",
-        "pt.": "part",
+        "art.": "article",
         "ch.": "chapter",
         "subch.": "subchapter",
+        "p.": "page",
+        "pp.": "page",
+        "para.": "paragraph",
+        "subpara.": "subparagraph",
+        "pt.": "part",
+        "r.": "rule",
         "s.": "section",
+        "sub-s.": "subsection",
         "sec.": "Section",
-        "tit.": "title",
-        "art.": "article",
-        "para.": "paragraph"
+        "sch.": "schedule",
+        "tit.": "title"
     },
     STATUTE_SUBDIV_STRINGS_REVERSE: {
-        "page": "p.",
-		"page": "pp.",
-		"rule": "r.",
-        "part": "pt.",
+        "article": "art.",
         "chapter": "ch.",
         "subchapter": "subch.",
+        "page": "p.",
+        "page": "pp.",
+        "paragraph": "para.",
+        "subparagraph": "subpara.",
+        "part": "pt.",
+        "rule": "r.",
+        "section": "s.",
+        "subsection": "sub-s.",
         "Section": "sec.",
-		"section": "s.",
-		"title": "tit.",
-        "article": "art.",
-        "paragraph": "para."
+        "schedule": "sch.",
+        "title": "tit."
     },
 
     NestedBraces: [
@@ -552,23 +558,29 @@ var CSL = {
         "\u06E6": "\u064A"
     },
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((ch|col|fig|no|l|n|op|p|pp|para|pt|r|tit|s|sec|sv|vrs|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|s|sub-s|sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
     LOCATOR_LABELS_MAP: {
+        "art": "article",
         "ch": "chapter",
+        "subch": "subchapter",
         "col": "column",
         "fig": "figure",
-        "no": "issue",
         "l": "line",
         "n": "note",
+        "no": "issue",
         "op": "opus",
         "p": "page",
         "pp": "page",
         "para": "paragraph",
+        "subpara": "subparagraph",
         "pt": "part",
         "r": "rule",
 		"s": "section",
+		"sub-s": "subsection",
         "sec": "Section",
+		"sv": "sub-verbo",
+        "sch": "schedule",
         "tit": "title",
         "vrs": "verse",
         "vol": "volume"
