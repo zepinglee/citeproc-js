@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.324
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add locator labels needed for citing UK legislation.
+
+- Implement embedded labels on number variable via cs:number.
+  This permits clean separation of label and locator for
+  amending act and target, needed for OSCOLA cites to
+  statutes with regnal dates, and probably other forms as
+  well.
+
+- Consistently apply text escape to all output
+  strings. Repairs a fault identified by Rintze
+  Zelle.
+
+
+==========================
 Changes in version 1.0.323
 ==========================
 
