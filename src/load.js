@@ -87,11 +87,12 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|s|sub-s|sec|sch|tit)\.)/g,
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|s|sub-s|sec|sch|tit)\.)/,
+    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
         "art.": "article",
         "ch.": "chapter",
+        "Ch.": "Chapter",
         "subch.": "subchapter",
         "p.": "page",
         "pp.": "page",
@@ -99,15 +100,16 @@ var CSL = {
         "subpara.": "subparagraph",
         "pt.": "part",
         "r.": "rule",
-        "s.": "section",
-        "sub-s.": "subsection",
-        "sec.": "Section",
+        "sec.": "section",
+        "subsec.": "subsection",
+        "Sec.": "Section",
         "sch.": "schedule",
         "tit.": "title"
     },
     STATUTE_SUBDIV_STRINGS_REVERSE: {
         "article": "art.",
         "chapter": "ch.",
+        "Chapter": "Ch.",
         "subchapter": "subch.",
         "page": "p.",
         "page": "pp.",
@@ -115,9 +117,9 @@ var CSL = {
         "subparagraph": "subpara.",
         "part": "pt.",
         "rule": "r.",
-        "section": "s.",
-        "subsection": "sub-s.",
-        "Section": "sec.",
+        "section": "sec.",
+        "subsection": "subsec.",
+        "Section": "Sec.",
         "schedule": "sch.",
         "title": "tit."
     },
@@ -558,11 +560,12 @@ var CSL = {
         "\u06E6": "\u064A"
     },
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|s|sub-s|sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
     LOCATOR_LABELS_MAP: {
         "art": "article",
         "ch": "chapter",
+        "Ch": "Chapter",
         "subch": "subchapter",
         "col": "column",
         "fig": "figure",
@@ -576,9 +579,9 @@ var CSL = {
         "subpara": "subparagraph",
         "pt": "part",
         "r": "rule",
-		"s": "section",
-		"sub-s": "subsection",
-        "sec": "Section",
+		"sec": "section",
+		"subsec": "subsection",
+        "Sec": "Section",
 		"sv": "sub-verbo",
         "sch": "schedule",
         "tit": "title",
