@@ -62,7 +62,7 @@ citation
     [
         {
             "id": "ITEM-1",
-            "locator": ", s. 100 & 153",
+            "locator": ", sec. 100 & 153",
             "label": "page"
         }
     ],

@@ -219,7 +219,7 @@ recommended.
       "citationItems": [
         {
           "id": "ITEM-1",
-          "locator": "& s. 4335"
+          "locator": "& sec. 4335"
         }
       ],
       "properties": {
@@ -250,7 +250,7 @@ recommended.
       "citationItems": [
         {
           "id": "ITEM-1",
-          "locator": ", s. 4360"
+          "locator": ", sec. 4360"
         }
       ],
       "properties": {
@@ -330,7 +330,7 @@ recommended.
         "title": "National Environmental Policy Act of 1969 § 102",
         "container-title": "USC",
         "volume": "42",
-        "section": "s. 4322",
+        "section": "sec. 4322",
         "issued": {
            "date-parts": [
              [2006]
@@ -344,7 +344,7 @@ recommended.
         "title": "National Environmental Policy Act of 1969 § 102",
         "container-title": "USC",
         "volume": "42",
-        "section": "s. 4330",
+        "section": "sec. 4330",
         "issued": {
            "date-parts": [
              [2006]

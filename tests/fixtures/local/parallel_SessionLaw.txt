@@ -54,8 +54,7 @@ citation
 [
     [
         {
-            "id": "ITEM-1",
-            "locator": ", s. 223"
+            "id": "ITEM-1"
         },
         {
             "id": "ITEM-2",
@@ -83,6 +82,8 @@ White Slave Traffic (Mann) Act, ch. 395, sec. 10, § 223, 36 Stat. 825 ¶¶ 835�
   </info>
   <locale>
     <terms>
+      <term form="short" name="Chapter">ch.</term>
+      <term form="short" name="Section">sec.</term>
       <term form="short" name="chapter">ch.</term>
       <term form="symbol" name="chapter">ch.</term>
       <term form="symbol" name="page"></term>
@@ -92,7 +93,7 @@ White Slave Traffic (Mann) Act, ch. 395, sec. 10, § 223, 36 Stat. 825 ¶¶ 835�
     <group delimiter=" ">
       <choose>
         <if locator="page" match="none">
-          <label form="short" variable="locator"/>
+          <label form="symbol" variable="locator"/>
         </if>
       </choose>
       <number label-form="symbol" variable="locator"/>
@@ -106,7 +107,10 @@ White Slave Traffic (Mann) Act, ch. 395, sec. 10, § 223, 36 Stat. 825 ¶¶ 835�
           <group delimiter=" ">
             <number variable="volume"/>
             <text variable="container-title"/>
-            <text macro="locator"/>
+            <group delimiter=", ">
+              <number label-form="short" variable="number"/>
+              <text macro="locator"/>
+            </group>
           </group>
         </group>
         <date variable="original-date" prefix="(" suffix=")" form="text" date-parts="year"/>
@@ -123,7 +127,8 @@ White Slave Traffic (Mann) Act, ch. 395, sec. 10, § 223, 36 Stat. 825 ¶¶ 835�
         "type": "gazette",
         "id": "ITEM-1",
         "title": "White Slave Traffic (Mann) Act",
-        "section": "ch. 395, s. 10",
+        "number": "ch. 395, sec. 10",
+        "section": "sec. 223",
         "original-date": {
           "raw": "1910"
         },

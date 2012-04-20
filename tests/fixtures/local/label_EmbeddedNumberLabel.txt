@@ -68,7 +68,7 @@ citation
 
 
 >>== RESULT ==>>
-Some Statute, Pub. L. No. ch. 888
+Some Statute, ch. 888
 Some Other Statute, Pub. L. No. 999
 <<== RESULT ==<<
 
@@ -82,13 +82,18 @@ Some Other Statute, Pub. L. No. 999
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+    <terms>
+      <term form="short" name="Chapter">ch.</term>
+    </terms>
+  </locale>
   <citation>
     <layout>
       <group delimiter=", ">
         <text variable="title"/>
         <group delimiter=" ">
           <choose>
-            <if number="number">
+            <if is-numeric="number">
               <text value="Pub. L. No."/>
             </if>
           </choose>
