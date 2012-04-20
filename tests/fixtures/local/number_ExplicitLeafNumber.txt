@@ -52,7 +52,7 @@ citation
 
 
 >>== RESULT ==>>
-(54-1) : (54-1)
+(54-1) : (54-1); (65-2) : (65-2)
 <<== RESULT ==<<
 
 >>===== CSL =====>>
@@ -66,7 +66,7 @@ citation
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout>
+    <layout delimiter="; ">
       <group delimiter=") : (" prefix="(" suffix=")">
         <number variable="page-first"/>
         <text variable="page-first"/>
@@ -88,7 +88,7 @@ citation
     },
     {
         "type": "book",
-        "id": "ITEM-1", 
+        "id": "ITEM-2", 
         "number": "65\\-2"
     }
 ]
