@@ -226,7 +226,7 @@ CSL.Node.number = {
                                 if (m) {
                                     var lst = str.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
                                     for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
-                                        newlst.push(state.getTerm(CSL.STATUTE_SUBDIV_STRINGS[m[i - 1]], this.strings.label_form_override));
+                                        newlst.push(state.getTerm(CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s+/, "")], this.strings.label_form_override));
                                         newlst.push(lst[i].replace(/^\s+/, ""));
                                     }
                                     values[0][1] = newlst.join(" ");
