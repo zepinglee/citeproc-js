@@ -1180,6 +1180,7 @@ CSL.citeStart = function (Item, item) {
         this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
     }
     this.tmp.shadow_numbers = {};
+    this.setNumberLabels(Item);
     this.tmp.first_name_string = false;
 
     // Set up for nested parens conversion if appropriate.

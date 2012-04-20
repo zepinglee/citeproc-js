@@ -183,6 +183,15 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
+    // XXX short-circuit if object exists: if numeric, set styling, no other action
+    if (this.tmp.shadow_numbers[variable]) {
+        if (this.tmp.shadow_numbers[variable].numeric) {
+            for (var i = 0, ilen = this.tmp.shadow_numbers[variable].values.length; i < ilen; i += 2) {
+                this.tmp.shadow_numbers[variable].values[i][2] = node;
+            }
+        }
+        return;
+    }
     // This carries value, pluralization and numeric info for use in other contexts.
     // This function does not render.
     this.tmp.shadow_numbers[variable] = {};

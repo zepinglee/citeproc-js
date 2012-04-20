@@ -134,3 +134,48 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
         }
     }
 }
+
+
+CSL.Engine.prototype.setNumberLabels = function (Item) {
+    if (Item.number
+        && ["bill", "gazette", "legislation"].indexOf(Item.type) > -1
+        && this.opt.development_extensions.static_statute_locator
+        && !this.tmp.shadow_numbers["number"]) {
+        
+        this.tmp.shadow_numbers["number"] = {};
+        this.tmp.shadow_numbers["number"].values = [];
+        this.tmp.shadow_numbers["number"].plural = 0;
+        this.tmp.shadow_numbers["number"].numeric = false;
+        this.tmp.shadow_numbers["number"].label = false;
+        
+        // Labels embedded in number variable
+        var value = "" + Item.number;
+        // Get first word, parse out labels only if it parses
+        var firstword = value.split(/\s/)[0];
+        var firstlabel = CSL.STATUTE_SUBDIV_STRINGS[firstword];
+        if (firstlabel) {
+            // Get list and match
+            var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+            if (splt.length > 1) {
+                // Convert matches to localized form
+                var lst = [];
+                for (var j=1, jlen=splt.length; j < jlen; j += 1) {
+                    var subdiv = m[j - 1].replace(/^\s*/, "");
+                    //subdiv = this.getTerm(CSL.STATUTE_SUBDIV_STRINGS[subdiv]);
+                    lst.push(subdiv);
+                    lst.push(splt[j].replace(/\s*$/, "").replace(/^\s*/, ""));
+                }
+                // Preemptively save to shadow_numbers
+                value = lst.join(" ");
+            } else {
+                value = splt[0];
+            }
+            this.tmp.shadow_numbers["number"].values.push(["Blob", value, false]);
+            this.tmp.shadow_numbers["number"].numeric = false;
+        } else {
+            this.tmp.shadow_numbers["number"].values.push(["Blob", value, false]);
+            this.tmp.shadow_numbers["number"].numeric = true;
+        }
+    }
+}
