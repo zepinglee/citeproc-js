@@ -321,7 +321,10 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
     len = strs.length;
     for (pos = 0; pos < len; pos += 2) {
         strs[pos] = strs[pos].replace("'", "\u2019", "g");
-        strs[pos] = this.txt_esc(strs[pos]);
+        // Erroneous. Flipflop is run during queue append.
+        // Escaping should be limited to output operations.
+        // Anomaly spotted by Rintze Zelle, 2012-04-20
+        //strs[pos] = this.txt_esc(strs[pos]);
     }
     // XXXZ FIXME (done): swap punctuation for locators
     return strs;

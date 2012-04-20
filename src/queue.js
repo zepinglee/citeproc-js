@@ -416,7 +416,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             } else if (blobjr.blobs) {
                 // (skips empty strings)
                 //b = txt_esc(blobjr.blobs);
-                b = blobjr.blobs;
+                b = txt_esc(blobjr.blobs);
                 var blen = b.length;
 
                 if (!state.tmp.suppress_decorations) {
