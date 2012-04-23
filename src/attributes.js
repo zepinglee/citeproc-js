@@ -64,6 +64,14 @@ CSL.Attributes["@cslid"] = function (state, arg) {
     this.cslid = parseInt(arg, 10);
 }
 
+CSL.Attributes["@is-parallel"] = function (state, arg) {
+    if ("true" === arg) {
+        this.strings.set_parallel_condition = true;
+    } else {
+        this.strings.set_parallel_condition = false;
+    }
+}
+
 CSL.Attributes["@is-plural"] = function (state, arg) {
     var func = function (state, Item, item) {
         var nameList = Item[arg];
