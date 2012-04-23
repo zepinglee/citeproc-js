@@ -97,6 +97,7 @@ CSL.Parallel.prototype.isMid = function (variable) {
 };
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
+    this.parallel_conditional_blobs_list = [];
     if (this.use_parallels) {
         this.sortedItems = sortedItems;
         this.sortedItemsPos = -1;
@@ -464,8 +465,13 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
     if (this.use_parallels) {
         // a bit loose here: zero-length sets relate to one cite,
         // apparently.
-        if (this.sets.value().length === 1) {
+        if (this.sets.value().length === 0) {
+            // Do stuff for false here
+            this.purgeGroupsIfParallel(false);
+        } else if (this.sets.value().length === 1) {
             if (!this.in_series) {
+                // Um ... probably shouldn't just throw this away. What if
+                // two collapsed parallel citations appear in sequence? Hmm?
                 this.sets.value().pop();
                 this.delim_counter += 1;
             }
@@ -475,6 +481,7 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
             //**print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
             //this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme = [];
         } else {
+            this.purgeGroupsIfParallel(true);
             len = this.sets.value().length;
             for (pos = 0; pos < len; pos += 1) {
                 cite = this.sets.value()[pos];
@@ -586,3 +593,23 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
     }
 };
 
+
+CSL.Parallel.prototype.purgeGroupsIfParallel = function (opposite_condition) {
+    var condition = !opposite_condition;
+    for (var i = 0, ilen = this.parallel_conditional_blobs_list.length; i < ilen; i += 1) {
+        var obj = this.parallel_conditional_blobs_list[i];
+        if (obj.condition === true) {
+            var buffer = [];
+            while (obj.blobs.length > obj.pos) {
+                buffer.push(obj.blobs.pop());
+            }
+            if (buffer.length) {
+                buffer.pop();
+            }
+            while (buffer.length) {
+                obj.blobs.push(buffer.pop());
+            }
+            
+        }
+    }
+}
