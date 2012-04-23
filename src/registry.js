@@ -372,7 +372,9 @@ CSL.Registry.prototype.doinserts = function (mylist) {
             //  4d. Record ambig pool key on akey list (used for updating further
             //      down the chain).
             //
-            this.akeys[akey] = true;
+            if (!Item.legislation_id) {
+                this.akeys[akey] = true;
+            }
             //
             //  4e. Create registry token.
             //
@@ -504,7 +506,9 @@ CSL.Registry.prototype.dorefreshes = function () {
             abase = CSL.getAmbigConfig.call(this.state);
             this.registerAmbigToken(akey, key, abase);
 
-            this.akeys[akey] = true;
+            if (!Item.legislation_id) {
+                this.akeys[akey] = true;
+            }
             this.touched[key] = true;
         }
     }
@@ -532,14 +536,12 @@ CSL.Registry.prototype.setdisambigs = function () {
     //  8.  Set disambiguation parameters on each inserted item token.
     //
     for (akey in this.akeys) {
-        if (this.akeys.hasOwnProperty(akey)) {
-            //
-            // Disambiguation is fully encapsulated.
-            // Disambiguator will run only if there are multiple
-            // items, and at least one disambiguation mode is
-            // in effect.
-            this.state.disambiguate.run(akey);
-        }
+        //
+        // Disambiguation is fully encapsulated.
+        // Disambiguator will run only if there are multiple
+        // items, and at least one disambiguation mode is
+        // in effect.
+        this.state.disambiguate.run(akey);
     }
     this.akeys = {};
 };
