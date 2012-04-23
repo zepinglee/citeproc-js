@@ -201,7 +201,9 @@ CSL.Node.number = {
 
                     rangeType = "year";
                 }
-                if (state.opt[rangeType + "-range-format"] 
+                if (((varname === "number" 
+                    && ["bill","gazette","legislation"].indexOf(Item.type) > -1)
+                     || state.opt[rangeType + "-range-format"]) 
                     && !this.strings.prefix && !this.strings.suffix
                     && !this.strings.form) {
                     for (var i = 0, ilen = values.length; i < ilen; i += 1) {
@@ -209,30 +211,27 @@ CSL.Node.number = {
                     }
                 }
                 if (newstr && !newstr.match(/^[-.\u20130-9]+$/)) {
+                    if (varname === "number" 
+                        && ["bill","gazette","legislation"].indexOf(Item.type) > -1) {
+                        
+                        var firstword = newstr.split(/\s/)[0];
+                        if (firstword) {
+                            var newlst = [];
+                            var m = newstr.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+                            if (m) {
+                                var lst = newstr.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                                for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
+                                    newlst.push(state.getTerm(CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s+/, "")], this.strings.label_form_override));
+                                    newlst.push(lst[i].replace(/^\s+/, ""));
+                                }
+                                newstr = newlst.join(" ");
+                            }
+                        }
+                    }
                     state.output.append(newstr, this);
                 } else {
                     if (values.length) {
                         state.output.openLevel("empty");
-                        if (varname === "number" 
-                            && ["bill","gazette","legislation"].indexOf(Item.type) > -1) {
-
-                            values = values.slice();
-                            values[0] = values[0].slice();
-                            var firstword = values[0][1].split(/\s/)[0];
-                            if (firstword) {
-                                var newlst = [];
-                                var str = values[0][1];
-                                var m = str.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
-                                if (m) {
-                                    var lst = str.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
-                                    for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
-                                        newlst.push(state.getTerm(CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s+/, "")], this.strings.label_form_override));
-                                        newlst.push(lst[i].replace(/^\s+/, ""));
-                                    }
-                                    values[0][1] = newlst.join(" ");
-                                }
-                            }
-                        }
                         for (var i = 0, ilen = values.length; i < ilen; i += 1) {
                             var blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
                             if (i > 0) {
