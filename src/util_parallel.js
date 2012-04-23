@@ -598,7 +598,7 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function (opposite_condition) {
     var condition = !opposite_condition;
     for (var i = 0, ilen = this.parallel_conditional_blobs_list.length; i < ilen; i += 1) {
         var obj = this.parallel_conditional_blobs_list[i];
-        if (obj.condition === true) {
+        if (obj.condition === condition) {
             var buffer = [];
             while (obj.blobs.length > obj.pos) {
                 buffer.push(obj.blobs.pop());
