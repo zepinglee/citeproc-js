@@ -475,6 +475,7 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
                 this.sets.value().pop();
                 this.delim_counter += 1;
             }
+            this.purgeGroupsIfParallel(false);
             // XXXXX: hackaround that could be used maybe, if nothing cleaner pans out.
             //
             //print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
