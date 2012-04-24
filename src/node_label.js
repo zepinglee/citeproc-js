@@ -68,7 +68,7 @@ CSL.Node.label = {
                 // This is abstracted away, because the same
                 // logic must be run in cs:names.
                 var termtxt = CSL.evaluateLabel(this, state, Item, item);
-                if (this.strings.term === "locator") {
+                if (item && this.strings.term === "locator") {
                     item.section_form_override = this.strings.form;
                 }
                 state.output.append(termtxt, this);
