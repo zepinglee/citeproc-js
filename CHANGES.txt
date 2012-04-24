@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.325
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid disambiguation for statutory types
+  (bill, gazette, legislation).
+
+- Make numeric evaluation of number variable
+  rendered via cs:number not depend on whether
+  page-range-format has been set.
+
+- Introduce is-parallel condition. Condition is
+  robust; suppressing an element on which detection
+  of the parallel depends will not break detection.
+
+- Fix a bug in static section labels code, with
+  thanks to Faolan Cheslack-Postava for reporting
+  the fault.
+
+
+==========================
 Changes in version 1.0.324
 ==========================
 
