@@ -597,7 +597,7 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 
 CSL.Parallel.prototype.purgeGroupsIfParallel = function (opposite_condition) {
     var condition = !opposite_condition;
-    for (var i = 0, ilen = this.parallel_conditional_blobs_list.length; i < ilen; i += 1) {
+    for (var i = this.parallel_conditional_blobs_list.length - 1; i > -1; i += -1) {
         var obj = this.parallel_conditional_blobs_list[i];
         if (obj.condition === condition) {
             var buffer = [];
@@ -612,5 +612,6 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function (opposite_condition) {
             }
             
         }
+        this.parallel_conditional_blobs_list.pop();
     }
 }
