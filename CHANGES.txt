@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.327
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Remove requirement of title variable for
+  generation of internal legislation_id value
+  on statutory items, and use either original-date
+  or issued in the value, but not both.
+
+
+==========================
 Changes in version 1.0.326
 ==========================
 
