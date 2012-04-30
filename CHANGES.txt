@@ -13,6 +13,9 @@ Mishandled or unimplemented features
   on statutory items, and use either original-date
   or issued in the value, but not both.
 
+- Allow locator on statutory types if page variable
+  is non-nil.
+
 
 ==========================
 Changes in version 1.0.326
