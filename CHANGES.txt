@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.328
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Apply leading embedded locator label to
+  item label if section is not present.
+
+==========================
 Changes in version 1.0.327
 ==========================
 
