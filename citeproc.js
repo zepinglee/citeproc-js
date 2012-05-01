@@ -45,7 +45,6 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
-
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -2279,11 +2278,10 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 var splt = item.locator.split(/\s+/);
                 if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
                     item.label = CSL.STATUTE_SUBDIV_STRINGS[splt[0]];
-                } else if (item.label) {
-                    item.locator = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " " + item.locator;
-                } else {
-					item.label = "page";
-                    item.locator = "p. " + item.locator;
+                    item.locator = splt.slice(1).join(" ");
+                }
+                if ((!item.label || item.label === "page") && item.locator && item.locator.match(/^[0-9].*/)) {
+                    item.locator = ", " + item.locator;
                 }
             }
             if (value) {
