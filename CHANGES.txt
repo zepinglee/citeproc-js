@@ -11,6 +11,10 @@ Mishandled or unimplemented features
 - Apply leading embedded locator label to
   item label if section is not present.
 
+- Remove redundant text escapes (bug unmasked
+  by 1.0.324).
+
+
 ==========================
 Changes in version 1.0.327
 ==========================
