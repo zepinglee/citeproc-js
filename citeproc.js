@@ -1823,7 +1823,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.328";
+    this.processor_version = "1.0.329";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2254,7 +2254,6 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
         var value = false;
         if (["bill","gazette","legislation"].indexOf(Item.type) > -1) {
             if (!Item.section
-                && !Item.page
                 && this.opt.development_extensions.clobber_locator_if_no_statute_section) {
                 item.locator = undefined;
                 item.label = undefined;
@@ -12107,7 +12106,9 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
     }
 };
 CSL.Disambiguation.prototype.captureStepToBase = function() {
-    this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
+    if (this.state.opt["givenname-disambiguation-rule"] === "by-cite") {
+        this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
+    }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
 };
 CSL.Registry.CitationReg = function (state) {

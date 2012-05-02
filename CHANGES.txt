@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.329
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Reverse requirement of page variable for rendering
+  of locator on statutory types, introduced at
+  1.0.327.
+
+- Fix bug in relatively new code in disambiguation machinery,
+  triggered by an attempt to access a name form parameter
+  that has not been set in that case.
+
+==========================
 Changes in version 1.0.328
 ==========================
 
