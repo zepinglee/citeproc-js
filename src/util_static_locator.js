@@ -55,7 +55,6 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
         var value = false;
         if (["bill","gazette","legislation"].indexOf(Item.type) > -1) {
             if (!Item.section
-                && !Item.page
                 && this.opt.development_extensions.clobber_locator_if_no_statute_section) {
                 
                 item.locator = undefined;
