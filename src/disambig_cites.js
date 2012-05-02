@@ -562,6 +562,8 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
 };
 
 CSL.Disambiguation.prototype.captureStepToBase = function() {
-    this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
+    if (this.state.opt["givenname-disambiguation-rule"] === "by-cite") {
+        this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
+    }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
 };
