@@ -16,6 +16,9 @@ Mishandled or unimplemented features
   triggered by an attempt to access a name form parameter
   that has not been set in that case.
 
+- Allow personal name replacement only on interview and
+  personal communication items.
+
 ==========================
 Changes in version 1.0.328
 ==========================
