@@ -154,17 +154,19 @@ CSL.NameOutput.prototype._clearValues = function (values) {
 };
 
 CSL.NameOutput.prototype._checkNickname = function (name) {
-    var author = "";
-    author = CSL.Util.Names.getRawName(name);
-    if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
-        this.state.transform.loadAbbreviation("default", "nickname", author);
-        // XXX Why does this have to happen here?
-        var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
-        if (myLocalName) {
-            if (myLocalName === "{suppress}") {
-                name = false;
-            } else {
-                name = {family:myLocalName,given:''};
+    if (["interview", "personal_communication"].indexOf(this.Item.type) > -1) {
+        var author = "";
+        author = CSL.Util.Names.getRawName(name);
+        if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
+            this.state.transform.loadAbbreviation("default", "nickname", author);
+            // XXX Why does this have to happen here?
+            var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
+            if (myLocalName) {
+                if (myLocalName === "{suppress}") {
+                    name = false;
+                } else {
+                    name = {family:myLocalName,given:''};
+                }
             }
         }
     }
