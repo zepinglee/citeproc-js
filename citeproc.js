@@ -744,7 +744,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
             blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
         }
         if (this.state.tmp.strip_periods && !noStripPeriods) {
-            blob.blobs = blob.blobs.replace(/\./g, "");
+            blob.blobs = blob.blobs.replace(/\.([^a-z]|$)/g, "$1");
         }
         this.state.fun.flipflopper.init(str, blob);
         this.state.fun.flipflopper.processTags();
@@ -947,7 +947,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
                 str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
             }
             if (str && this.state.tmp.strip_periods && !noStripPeriods) {
-                str = str.replace(/\./g, "");
+                str = str.replace(/\.([^a-z]|$)/g, "$1");
             }
             if (!state.tmp.suppress_decorations) {
                 llen = blob.decorations.length;
@@ -1823,7 +1823,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.329";
+    this.processor_version = "1.0.330";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();

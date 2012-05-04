@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.330
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Do not strip periods embedded in ordinary field strings
+  if they don't appear to be part of an abbreviation.
+
+
+==========================
 Changes in version 1.0.329
 ==========================
 
