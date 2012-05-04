@@ -357,7 +357,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
             blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
         }
         if (this.state.tmp.strip_periods && !noStripPeriods) {
-            blob.blobs = blob.blobs.replace(/\./g, "");
+            blob.blobs = blob.blobs.replace(/\.([^a-z]|$)/g, "$1");
         }
         //
         // XXX: Beware superfluous code in your code.  str in this
@@ -660,7 +660,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
                 str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
             }
             if (str && this.state.tmp.strip_periods && !noStripPeriods) {
-                str = str.replace(/\./g, "");
+                str = str.replace(/\.([^a-z]|$)/g, "$1");
             }
             if (!state.tmp.suppress_decorations) {
                 llen = blob.decorations.length;
