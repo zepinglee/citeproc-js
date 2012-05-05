@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.331
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Break parallel detection when title exists on
+  either item, and title values do not match.
+
+
+==========================
 Changes in version 1.0.330
 ==========================
 
