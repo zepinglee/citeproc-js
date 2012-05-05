@@ -147,7 +147,14 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
                 break;
             }
         }
-        if (!has_required_var || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
+        var title_ok = true;
+        var last_cite = this.sets.value().slice(-1)[0];
+        if (last_cite && (last_cite.Item.title || Item.title)) {
+            if (last_cite.Item.title !== Item.title) {
+                title_ok = false;
+            }
+        }
+        if (!title_ok || !has_required_var || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
             // ZZZ set true for testing initially, but setting this true
             // always seems to be safe, at least judging from current tests.
             this.try_cite = true;
