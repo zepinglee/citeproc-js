@@ -789,6 +789,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (!state.tmp.suppress_decorations) {
                     for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
                         params = blobjr.decorations[j];
+                        if (params[0] === "@showid") {
+                            continue;
+                        }
                         if (state.normalDecorIsOrphan(blobjr, params)) {
                             continue;
                         }
@@ -797,6 +800,14 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 }
                 if (b && b.length) {
                     b = txt_esc(blobjr.strings.prefix, state.tmp.nestedBraces) + b + txt_esc(blobjr.strings.suffix, state.tmp.nestedBraces);
+                    if (state.opt.development_extensions.csl_reverse_lookup_support && !state.tmp.suppress_decorations) {
+                        for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
+                            params = blobjr.decorations[j];
+                            if (params[0] === "@showid") {
+                                b = state.fun.decorate[params[0]][params[1]](state, b, params[2]);
+                            }
+                        }
+                    }
                     ret.push(b);
                     if (state.tmp.count_offset_characters) {
                         state.tmp.offset_characters += (blen + blobjr.strings.suffix.length + blobjr.strings.prefix.length);
@@ -833,7 +844,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
-                if (["@bibliography", "@display"].indexOf(params[0]) > -1) {
+                if (["@bibliography", "@display", "@showid"].indexOf(params[0]) > -1) {
                     continue;
                 }
                 if (state.normalDecorIsOrphan(blobjr, params)) {
@@ -855,7 +866,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
-                if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
+                if (["@bibliography", "@display", "@showid"].indexOf(params[0]) === -1) {
                     continue;
                 }
                 blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
@@ -1823,7 +1834,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.330";
+    this.processor_version = "1.0.331";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -9606,10 +9617,12 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     prefix = this.sys.xml.getAttributeValue(node, "prefix");
     suffix = this.sys.xml.getAttributeValue(node, "suffix");
     display = this.sys.xml.getAttributeValue(node, "display");
+    cslid = this.sys.xml.getAttributeValue(node, "cslid");
     datexml = this.sys.xml.nodeCopy(this.state.getDate(form));
     this.sys.xml.setAttribute(datexml, 'lingo', this.state.opt.lang);
     this.sys.xml.setAttribute(datexml, 'form', form);
     this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
+    this.sys.xml.setAttribute(datexml, "cslid", cslid);
     this.sys.xml.setAttribute(datexml, 'variable', variable);
     if (prefix) {
         this.sys.xml.setAttribute(datexml, "prefix", prefix);

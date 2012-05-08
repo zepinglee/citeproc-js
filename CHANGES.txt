@@ -11,6 +11,9 @@ Mishandled or unimplemented features
 - Break parallel detection when title exists on
   either item, and title values do not match.
 
+- In tracing markup mode (citeproc.opt.development_extensions.csl_reverse_lookup_support),
+  capture affixes in trace tag.
+
 
 ==========================
 Changes in version 1.0.330
