@@ -64,6 +64,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     prefix = this.sys.xml.getAttributeValue(node, "prefix");
     suffix = this.sys.xml.getAttributeValue(node, "suffix");
     display = this.sys.xml.getAttributeValue(node, "display");
+    cslid = this.sys.xml.getAttributeValue(node, "cslid");
     
     //
     // Xml: Copy a node
@@ -72,6 +73,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     this.sys.xml.setAttribute(datexml, 'lingo', this.state.opt.lang);
     this.sys.xml.setAttribute(datexml, 'form', form);
     this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
+    this.sys.xml.setAttribute(datexml, "cslid", cslid);
     //
     // Xml: Set attribute
     //
