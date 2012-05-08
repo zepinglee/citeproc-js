@@ -422,6 +422,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (!state.tmp.suppress_decorations) {
                     for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
                         params = blobjr.decorations[j];
+                        if (params[0] === "@showid") {
+                            continue;
+                        }
                         if (state.normalDecorIsOrphan(blobjr, params)) {
                             continue;
                         }
@@ -435,6 +438,15 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 // empty.
                 if (b && b.length) {
                     b = txt_esc(blobjr.strings.prefix, state.tmp.nestedBraces) + b + txt_esc(blobjr.strings.suffix, state.tmp.nestedBraces);
+                    if (state.opt.development_extensions.csl_reverse_lookup_support && !state.tmp.suppress_decorations) {
+                        for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
+                            params = blobjr.decorations[j];
+
+                            if (params[0] === "@showid") {
+                                b = state.fun.decorate[params[0]][params[1]](state, b, params[2]);
+                            }
+                        }
+                    }
                     ret.push(b);
                     if (state.tmp.count_offset_characters) {
                         state.tmp.offset_characters += (blen + blobjr.strings.suffix.length + blobjr.strings.prefix.length);
@@ -526,7 +538,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
-                if (["@bibliography", "@display"].indexOf(params[0]) > -1) {
+                if (["@bibliography", "@display", "@showid"].indexOf(params[0]) > -1) {
                     continue;
                 }
                 if (state.normalDecorIsOrphan(blobjr, params)) {
@@ -551,7 +563,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
-                if (["@bibliography", "@display"].indexOf(params[0]) === -1) {
+                if (["@bibliography", "@display", "@showid"].indexOf(params[0]) === -1) {
                     continue;
                 }
                 blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
