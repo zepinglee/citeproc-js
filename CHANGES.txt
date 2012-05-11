@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.332
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add "director" to the list of creator names.
+
+- Fix weird fault triggered in IE8 when setAttribute
+  function property is checked directly. Many thanks
+  to Phil Lord for tracking down the source of the
+  fault and identifying a means of addressing it.
+
+==========================
 Changes in version 1.0.331
 ==========================
 

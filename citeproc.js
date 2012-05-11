@@ -223,6 +223,7 @@ var CSL = {
         "collection-editor",
         "composer",
         "container-author",
+        "director",
         "editorial-director",
         "interviewer",
         "original-author",
@@ -1834,7 +1835,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.331";
+    this.processor_version = "1.0.332";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();

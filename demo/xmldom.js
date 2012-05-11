@@ -272,7 +272,7 @@ CSL_CHROME.prototype.setAttribute = function (myxml,attr,val) {
     if (!myxml.ownerDocument) {
         myxml = myxml.firstChild;
     }
-    if (myxml.setAttribute) {
+    if (["function", "unknown"].indexOf(typeof myxml.setAttribute) > -1) {
         myxml.setAttribute(attr, val);
     }
     return false;
