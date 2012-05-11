@@ -304,6 +304,7 @@ var CSL = {
         "collection-editor",
         "composer",
         "container-author",
+        "director",
         "editorial-director",
         "interviewer",
         "original-author",
