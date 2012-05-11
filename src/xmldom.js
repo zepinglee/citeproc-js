@@ -325,12 +325,13 @@ CSL_CHROME.prototype.setAttribute = function (myxml,attr,val) {
     if (!myxml.ownerDocument) {
         myxml = myxml.firstChild;
     }
-    if (myxml.setAttribute) {
-        // This line is needless, yes?
-        // var attribute = myxml.ownerDocument.createAttribute(attr);
+    // "unknown" to satisfy IE8, which crashes when setAttribute
+    // is checked directly as a property, and report its type as
+    // "unknown".
+    // Many thanks to Phil Lord for tracing the cause of the fault.
+    if (["function", "unknown"].indexOf(typeof myxml.setAttribute) > -1) {
         myxml.setAttribute(attr, val);
     }
-    // Looks like we could save the trouble here ...
     return false;
 }
 
