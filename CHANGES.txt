@@ -15,6 +15,12 @@ Mishandled or unimplemented features
   to Phil Lord for tracking down the source of the
   fault and identifying a means of addressing it.
 
+- Fix a small bug in handling et-al in some
+  configurations. For details see:
+
+    http://forums.zotero.org/discussion/23322
+
+
 ==========================
 Changes in version 1.0.331
 ==========================

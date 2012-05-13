@@ -5198,6 +5198,7 @@ CSL.NameOutput = function(state, Item, item, variables) {
     this.Item = Item;
     this.item = item;
     this.nameset_base = 0;
+    this.etal_spec = [];
     this._first_creator_variable = false;
     this._please_chop = false;
 };
@@ -5981,6 +5982,9 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
         } else {
             lst[key] = display_names.slice(0, discretionary_names_length);
         }
+        if (!lst[key].length) {
+            this.etal_spec.push(0);
+        }
     }
     this.state.tmp.disambig_settings.names[pos] = lst[key].length;
 };
@@ -6738,9 +6742,6 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
 };
 CSL.NameOutput.prototype.setEtAlParameters = function () {
     var i, ilen, j, jlen;
-    if (!this.etal_spec) {
-        this.etal_spec = [];
-    }
     for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
         if (this.freeters[v].length) {

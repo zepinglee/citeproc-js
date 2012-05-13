@@ -50,7 +50,10 @@
  * Functions for parsing an XML object using E4X.
  */
 
-var CSL_IS_IE;
+// Don't clobber an existing value if this has already been declared.
+if ("undefined" === typeof CSL_IS_IE) {
+    var CSL_IS_IE;
+};
 
 var CSL_CHROME = function () {
     if ("undefined" == typeof DOMParser || CSL_IS_IE) {
