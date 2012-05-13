@@ -143,6 +143,12 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
         } else {
             lst[key] = display_names.slice(0, discretionary_names_length);
         }
+        if (!lst[key].length) {
+            // Add a placeholder to etal spec list if we just wiped out
+            // an existing set of names. This can happen with et-al-use-first="0"
+            // See http://forums.zotero.org/discussion/23322
+            this.etal_spec.push(0);
+        }
     }
     this.state.tmp.disambig_settings.names[pos] = lst[key].length;
 

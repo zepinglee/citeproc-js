@@ -59,6 +59,7 @@ CSL.NameOutput = function(state, Item, item, variables) {
     this.Item = Item;
     this.item = item;
     this.nameset_base = 0;
+    this.etal_spec = [];
     this._first_creator_variable = false;
     this._please_chop = false;
 };
