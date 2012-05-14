@@ -724,10 +724,14 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                     state.processNumber(false, Item, variables[pos], Item.type);
                 }
             }
+            var myitem = Item;
+            if (["locator-revision"].indexOf(variables[pos]) > -1) {
+                myitem = item;
+            }
             if (!state.tmp.shadow_numbers[variables[pos]].numeric
-                && !(variables[pos] === 'title'
-                     && Item[variables[pos]] 
-                     && Item[variables[pos]].slice(-1) === "" + parseInt(Item[variables[pos]].slice(-1)))) {
+                && !(['title', 'locator-revision'].indexOf(variables[pos]) > -1
+                     && myitem[variables[pos]] 
+                     && myitem[variables[pos]].slice(-1) === "" + parseInt(myitem[variables[pos]].slice(-1)))) {
                 numeric = false;
                 break;
             }
