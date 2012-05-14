@@ -263,7 +263,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             if (m){
                 this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
                 var mm = num.match(/[^ ]+\s+(.*)/);
-                num = mm[1];
+                if (mm) {
+                    num = mm[1];
+                }
             }
         }
 
