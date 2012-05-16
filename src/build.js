@@ -50,7 +50,7 @@
 
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.332";
+    this.processor_version = "1.0.333";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -596,7 +596,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-   // not including locator-date
+    // not including locator-date
     for (var i = 1, ilen = CSL.DATE_VARIABLES.length; i < ilen; i += 1) {
         var dateobj = Item[CSL.DATE_VARIABLES[i]];
         if (dateobj) {

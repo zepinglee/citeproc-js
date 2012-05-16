@@ -328,7 +328,8 @@ var CSL = {
         en: "en_US",
         es: "es_ES",
         et: "et_EE",
-        fa: "fa_FA",
+        eu: "eu",
+        fa: "fa_IR",
         fi: "fi_FI",
         fr: "fr_FR",
         he: "he_IL",
@@ -341,6 +342,7 @@ var CSL = {
         mn: "mn_MN",
         nb: "nb_NO",
         nl: "nl_NL",
+        nn: "nn-NO",
         pl: "pl_PL",
         pt: "pt_PT",
         ro: "ro_RO",
@@ -1835,7 +1837,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.332";
+    this.processor_version = "1.0.333";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2945,13 +2947,15 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
     ret = CSL.getBibliographyEntries.call(this, bibsection);
     entry_ids = ret[0];
     entry_strings = ret[1];
+    var done = ret[2];
     params = {
         "maxoffset": 0,
         "entryspacing": this.bibliography.opt["entry-spacing"],
         "linespacing": this.bibliography.opt["line-spacing"],
         "second-field-align": false,
         "entry_ids": entry_ids,
-        "bibliography_errors": this.tmp.bibliography_errors.slice()
+        "bibliography_errors": this.tmp.bibliography_errors.slice(),
+        "done": done
     };
     if (this.bibliography.opt["second-field-align"]) {
         params["second-field-align"] = this.bibliography.opt["second-field-align"];
@@ -2980,31 +2984,35 @@ CSL.getBibliographyEntries = function (bibsection) {
     this.tmp.last_rendered_name = false;
     this.tmp.bibliography_errors = [];
     this.tmp.bibliography_pos = 0;
-    var originalIDs = this.registry.getSortedIds();
-    var newIDs = [];
-    this.registry.generate.items = {};
-    for (var id  in this.registry.generate.origIDs) {
-        var rule = this.registry.generate.origIDs[id];
-        item = this.retrieveItem(id);
-        var clonedItem = {};
-        for (var key in item) {
-            clonedItem[key] = item[key];
-        }
-        clonedItem.type = rule.to;
-        for (i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
-            if (clonedItem[rule.triggers[i]]) {
-                delete clonedItem[rule.triggers[i]];
+    if (bibsection && bibsection.page_start && bibsection.page_length) {
+        input = this.registry.getSortedIds();        
+    } else {
+        var originalIDs = this.registry.getSortedIds();
+        var newIDs = [];
+        this.registry.generate.items = {};
+        for (var id  in this.registry.generate.origIDs) {
+            var rule = this.registry.generate.origIDs[id];
+            item = this.retrieveItem(id);
+            var clonedItem = {};
+            for (var key in item) {
+                clonedItem[key] = item[key];
             }
+            clonedItem.type = rule.to;
+            for (i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
+                if (clonedItem[rule.triggers[i]]) {
+                    delete clonedItem[rule.triggers[i]];
+                }
+            }
+            var newID = clonedItem.id + ":gen";
+            clonedItem.id = newID;
+            this.registry.generate.items[clonedItem.id] = clonedItem;
+            newIDs.push(newID);
         }
-        var newID = clonedItem.id + ":gen";
-        clonedItem.id = newID;
-        this.registry.generate.items[clonedItem.id] = clonedItem;
-        newIDs.push(newID);
+        if (newIDs.length) {
+            this.updateItems(originalIDs.concat(newIDs));
+        }
+        input = this.retrieveItems(this.registry.getSortedIds());
     }
-    if (newIDs.length) {
-        this.updateItems(originalIDs.concat(newIDs));
-    }
-    input = this.retrieveItems(this.registry.getSortedIds());
     this.tmp.disambig_override = true;
     function eval_string(a, b) {
         if (a === b) {
@@ -3034,20 +3042,39 @@ CSL.getBibliographyEntries = function (bibsection) {
         }
     }
     skips = {};
-    all_item_ids = [];
-    len = input.length;
-    for (pos = 0; pos < len; pos += 1) {
-        item = input[pos];
-        if (skips[item.id]) {
-            continue;
+    if (bibsection && bibsection.page_start && bibsection.page_length) {
+        var page_item_count = 0;
+        if (bibsection.page_start !== true) {
+            for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+                skips[input[i]] = true;
+                if (bibsection.page_start == input[i]) {
+                    break;
+                }
+            }
+        }
+    }
+    processed_item_ids = [];
+    for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+        if (bibsection && bibsection.page_start && bibsection.page_length) {
+            item = this.retrieveItem(input[i]);
+            if (skips[item[i]]) {
+                continue;
+            }
+            if (page_item_count === bibsection.page_length) {
+                break;
+            }
+        } else {
+            item = input[i];
+            if (skips[item.id]) {
+                continue;
+            }
         }
         if (bibsection) {
             include = true;
             if (bibsection.include) {
                 include = false;
-                llen = bibsection.include.length;
-                for (ppos = 0; ppos < llen; ppos += 1) {
-                    spec = bibsection.include[ppos];
+                for (j = 0, jlen = bibsection.include.length; j < jlen; j += 1) {
+                    spec = bibsection.include[j];
                     if (eval_spec(spec.value, item[spec.field])) {
                         include = true;
                         break;
@@ -3055,9 +3082,8 @@ CSL.getBibliographyEntries = function (bibsection) {
                 }
             } else if (bibsection.exclude) {
                 anymatch = false;
-                llen = bibsection.exclude.length;
-                for (ppos = 0; ppos < llen; ppos += 1) {
-                    spec = bibsection.exclude[ppos];
+                for (j = 0, jlen = bibsection.exclude.length; j < jlen; j += 1) {
+                    spec = bibsection.exclude[j];
                     if (eval_spec(spec.value, item[spec.field])) {
                         anymatch = true;
                         break;
@@ -3069,9 +3095,8 @@ CSL.getBibliographyEntries = function (bibsection) {
             } else if (bibsection.select) {
                 include = false;
                 allmatch = true;
-                llen = bibsection.select.length;
-                for (ppos = 0; ppos < llen; ppos += 1) {
-                    spec = bibsection.select[ppos];
+                for (j = 0, jlen = bibsection.select.length; j < jlen; j += 1) {
+                    spec = bibsection.select[j];
                     if (!eval_spec(spec.value, item[spec.field])) {
                         allmatch = false;
                     }
@@ -3082,9 +3107,8 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             if (bibsection.quash) {
                 allmatch = true;
-                llen = bibsection.quash.length;
-                for (ppos = 0; ppos < llen; ppos += 1) {
-                    spec = bibsection.quash[ppos];
+                for (j = 0, jlen = bibsection.quash.length; j < jlen; j += 1) {
+                    spec = bibsection.quash[j];
                     if (!eval_spec(spec.value, item[spec.field])) {
                         allmatch = false;
                     }
@@ -3103,7 +3127,8 @@ CSL.getBibliographyEntries = function (bibsection) {
         this.output.current.value().item_id = item.id;
         sortedItems = [[{id: "" + item.id}, item]];
         entry_item_ids = [];
-        if (this.registry.registry[item.id].master) {
+        if (this.registry.registry[item.id].master 
+            && !(bibsection && bibsection.page_start && bibsection.page_length)) {
             collapse_parallel = true;
             this.parallel.StartCitation(sortedItems);
             this.output.queue[0].strings.delimiter = ", ";
@@ -3111,9 +3136,9 @@ CSL.getBibliographyEntries = function (bibsection) {
             entry_item_ids.push("" + CSL.getCite.call(this, item));
             skips[item.id] = true;
             siblings = this.registry.registry[item.id].siblings;
-            for (ppos = 0, llen = siblings.length; ppos < llen; ppos += 1) {
-                i = this.registry.registry[item.id].siblings[ppos];
-                eyetem = this.retrieveItem(i);
+            for (var j = 0, jlen = siblings.length; j < jlen; j += 1) {
+                var k = this.registry.registry[item.id].siblings[j];
+                eyetem = this.retrieveItem(k);
                 entry_item_ids.push("" + CSL.getCite.call(this, eyetem));
                 skips[eyetem.id] = true;
             }
@@ -3123,10 +3148,13 @@ CSL.getBibliographyEntries = function (bibsection) {
             this.parallel.StartCitation(sortedItems);
             this.tmp.term_predecessor = false;
             entry_item_ids.push("" + CSL.getCite.call(this, item));
+            if (bibsection && bibsection.page_start && bibsection.page_length) {
+                page_item_count += 1;
+            }
         }
         entry_item_data.push("");
         this.tmp.bibliography_pos += 1;
-        all_item_ids.push(entry_item_ids);
+        processed_item_ids.push(entry_item_ids);
         this.output.endTag("bib_entry");
         if (this.output.queue[0].blobs.length && this.output.queue[0].blobs[0].blobs.length) {
             if (collapse_parallel || !this.output.queue[0].blobs[0].blobs[0].strings) {
@@ -3135,14 +3163,13 @@ CSL.getBibliographyEntries = function (bibsection) {
             } else {
                 topblobs = this.output.queue[0].blobs[0].blobs;
             }
-            llen = topblobs.length - 1;
-            for (ppos = llen; ppos > -1; ppos += -1) {
-                if (topblobs[ppos].blobs && topblobs[ppos].blobs.length !== 0) {
+            for (var j  = topblobs.length - 1; j > -1; j += -1) {
+                if (topblobs[j].blobs && topblobs[j].blobs.length !== 0) {
                     chr = this.bibliography.opt.layout_suffix.slice(0, 1);
-                    if (chr && topblobs[ppos].strings.suffix.slice(-1) === chr) {
-                        topblobs[ppos].strings.suffix = topblobs[ppos].strings.suffix.slice(0, -1);
+                    if (chr && topblobs[j].strings.suffix.slice(-1) === chr) {
+                        topblobs[j].strings.suffix = topblobs[j].strings.suffix.slice(0, -1);
                     }
-                    topblobs[ppos].strings.suffix += this.bibliography.opt.layout_suffix;
+                    topblobs[j].strings.suffix += this.bibliography.opt.layout_suffix;
                     break;
                 }
             }
@@ -3156,11 +3183,20 @@ CSL.getBibliographyEntries = function (bibsection) {
         }
         ret.push(res);
     }
-    if (newIDs.length) {
-        this.updateItems(originalIDs);
+    var done = false;
+    if (bibsection && bibsection.page_start && bibsection.page_length) {
+        var last_expected_id = input.slice(-1)[0];
+        var last_seen_id = processed_item_ids.slice(-1)[0];
+        if (!last_expected_id || !last_seen_id || last_expected_id == last_seen_id) {
+            done = true;
+        }
+    } else {
+        if (newIDs.length) {
+            this.updateItems(originalIDs);
+        }
     }
     this.tmp.disambig_override = false;
-    return [all_item_ids, ret];
+    return [processed_item_ids, ret, done];
 };
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
     var oldMode = this.opt.mode;
@@ -8194,10 +8230,14 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                     state.processNumber(false, Item, variables[pos], Item.type);
                 }
             }
+            var myitem = Item;
+            if (["locator-revision"].indexOf(variables[pos]) > -1) {
+                myitem = item;
+            }
             if (!state.tmp.shadow_numbers[variables[pos]].numeric
-                && !(variables[pos] === 'title'
-                     && Item[variables[pos]] 
-                     && Item[variables[pos]].slice(-1) === "" + parseInt(Item[variables[pos]].slice(-1)))) {
+                && !(['title', 'locator-revision'].indexOf(variables[pos]) > -1
+                     && myitem[variables[pos]] 
+                     && myitem[variables[pos]].slice(-1) === "" + parseInt(myitem[variables[pos]].slice(-1)))) {
                 numeric = false;
                 break;
             }
@@ -10305,7 +10345,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             if (m){
                 this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
                 var mm = num.match(/[^ ]+\s+(.*)/);
-                num = mm[1];
+                if (mm) {
+                    num = mm[1];
+                }
             }
         }
         var lst = num.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);

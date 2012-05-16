@@ -1,6 +1,28 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.333
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Halfway to you-know-where.
+
+- Allow locator-revision to be check with is-numeric
+  on the same terms as title (i.e. true if ends in a
+  number).
+
+- Correct internal list of default locale mappings
+  to reflect currently available CSL locale files
+  and naming conventions.
+
+- Protect against crash when locale term abbreviation
+  is entered in pages field without a following value.
+
+
+==========================
 Changes in version 1.0.332
 ==========================
 
