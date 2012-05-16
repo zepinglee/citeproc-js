@@ -220,12 +220,14 @@ CSL.getBibliographyEntries = function (bibsection) {
     skips = {};
 
     // For paged returns
-    if (bibsection && bibsection.page_start && bibsection.page_length && bibsection.page_start !== true) {
+    if (bibsection && bibsection.page_start && bibsection.page_length) {
         var page_item_count = 0;
-        for (var i = 0, ilen = input.length; i < ilen; i += 1) {
-            skips[input[i]] = true;
-            if (bibsection.page_start == input[i]) {
-                break;
+        if (bibsection.page_start !== true) {
+            for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+                skips[input[i]] = true;
+                if (bibsection.page_start == input[i]) {
+                    break;
+                }
             }
         }
     }
@@ -331,7 +333,7 @@ CSL.getBibliographyEntries = function (bibsection) {
         sortedItems = [[{id: "" + item.id}, item]];
         entry_item_ids = [];
         if (this.registry.registry[item.id].master 
-            && !(bibsection && bibsection.page_start && bibsection.length)) {
+            && !(bibsection && bibsection.page_start && bibsection.page_length)) {
 
             collapse_parallel = true;
             this.parallel.StartCitation(sortedItems);
@@ -352,7 +354,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             this.parallel.StartCitation(sortedItems);
             this.tmp.term_predecessor = false;
             entry_item_ids.push("" + CSL.getCite.call(this, item));
-            if (bibsection && bibsection.page_start && bibsection.length) {
+            if (bibsection && bibsection.page_start && bibsection.page_length) {
                 page_item_count += 1;
             }
             //skips[item.id] = true;
