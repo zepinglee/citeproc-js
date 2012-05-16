@@ -53,7 +53,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
         var section_label_count = 0;
         var later_label = false;
         var value = false;
-        if (["bill","gazette","legislation"].indexOf(Item.type) > -1) {
+        if (["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1) {
             if (!Item.section
                 && this.opt.development_extensions.clobber_locator_if_no_statute_section) {
                 
@@ -154,7 +154,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
 
 CSL.Engine.prototype.setNumberLabels = function (Item) {
     if (Item.number
-        && ["bill", "gazette", "legislation"].indexOf(Item.type) > -1
+        && ["bill", "gazette", "legislation", "treaty"].indexOf(Item.type) > -1
         && this.opt.development_extensions.static_statute_locator
         && !this.tmp.shadow_numbers["number"]) {
         

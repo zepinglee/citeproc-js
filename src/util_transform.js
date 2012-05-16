@@ -448,7 +448,7 @@ CSL.Transform = function (state) {
             hereinafter_metadata.push("type:" + Item.type);
         }
         var date_segment = Item.issued
-        if (["bill","gazette","legislation","legal_case"].indexOf(Item.type) > -1) {
+        if (["bill","gazette","legislation","legal_case","treaty"].indexOf(Item.type) > -1) {
             date_segment = Item["original-date"];
         }
         if (date_segment) {
