@@ -238,10 +238,10 @@ CSL.getBibliographyEntries = function (bibsection) {
         
         // For paged returns
         if (bibsection && bibsection.page_start && bibsection.page_length) {
-            item = this.retrieveItem(input[i]);
-            if (skips[item[i]]) {
+            if (skips[input[i]]) {
                 continue;
             }
+            item = this.retrieveItem(input[i]);
             if (page_item_count === bibsection.page_length) {
                 break;
             }
