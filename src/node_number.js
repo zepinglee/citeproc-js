@@ -88,7 +88,11 @@ CSL.Node.number = {
             var varname, num, number, m, j, jlen;
             varname = this.variables[0];
             state.parallel.StartVariable(this.variables[0]);
-            state.parallel.AppendToVariable(Item[this.variables[0]]);
+            if (this.variables[0] === "locator") {
+                state.parallel.AppendToVariable(Item["section"]);
+            } else {
+                state.parallel.AppendToVariable(Item[this.variables[0]]);
+            }
 
             var rex = new RegExp("(?:&|, | and |" + state.getTerm("page-range-delimiter") + ")");
 
