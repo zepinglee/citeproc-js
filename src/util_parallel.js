@@ -86,8 +86,8 @@ CSL.Parallel = function (state) {
     this.use_parallels = true;
 
     this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "number"];
-    this.ignoreVars = ["locator", "first-reference-note-number"];
-
+    this.ignoreVarsOther = ["first-reference-note-number", "locator", "label"];
+    this.ignoreVarsOrders = ["first-reference-note-number"];
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
@@ -123,6 +123,11 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
  */
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
     var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
+    if (["treaty"].indexOf(Item.type) > -1) {
+        this.ignoreVars = this.ignoreVarsOrders;
+    } else {
+        this.ignoreVars = this.ignoreVarsOther;
+    }
     if (this.use_parallels) {
         //print("StartCite: "+Item.id);
         if (this.sets.value().length && this.sets.value()[0].itemId == Item.id) {
@@ -289,7 +294,7 @@ CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
             // ZZZZZ
         if (this.target !== "back" || true) {
-            //print("  setting: "+str);
+            //zcite.debug("  setting: "+str);
             this.data.value += "::" + str;
         } else {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
@@ -342,6 +347,9 @@ CSL.Parallel.prototype.CloseVariable = function () {
                     }
                 }
             } else if (this.target === "mid") {
+                // How to set label and locator for suppression only if
+                // BOTH match? First, push what ya got by pushing both
+                // in below ... ? No, that didn't work.
                 if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(this.variable) > -1) {
                     if (prev[this.variable]) {
                         if (prev[this.variable].value === this.data.value) {
@@ -355,7 +363,8 @@ CSL.Parallel.prototype.CloseVariable = function () {
                 }
             } else if (this.target === "back") {
                 if (prev[this.variable]) {
-                    if (this.data.value !== prev[this.variable].value && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
+                    if (this.data.value !== prev[this.variable].value 
+                        && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
                         //print(this.variable);
                         //print(this.sets.value().slice(-1)[0].back_forceme);
                         // evaluation takes place later, at close of cite.
