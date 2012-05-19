@@ -33,6 +33,7 @@ dojo.require("std.affix");
 dojo.require("std.virtual");
 dojo.require("std.bibheader");
 dojo.require("std.position");
+dojo.require("std.wrappers");
 dojo.require("std.locator");
 dojo.require("std.sort");
 dojo.require("std.variables");

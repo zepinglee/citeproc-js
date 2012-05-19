@@ -1,6 +1,49 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.334
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Align new treaty with legislation, bill and
+  gazette for purposes of internal backref ID
+  generation and section variable remangling.
+
+- Implement paged returns from makeBibliography()
+
+- Implement URL and DOI link wrappers in HTML output.
+  This is turned off by default. To enable, either
+  change the following value in state.js to true:
+  
+    this.development_extensions.wrap_url_and_doi = true;
+
+  or set the value to true on the instantiated
+  processor:
+
+    citeproc.opt.development_extensions.wrap_url_and_doi = true;
+
+- Implement "master" and "servant" conditions to complement
+  existing "true" and "false" on is-parallel attribute to
+  cs:group.
+
+- Render locator-revision variable only once (aligns with
+  behavior of locator itself).
+
+- Introduce new "treaty" item type, with optional locator
+  behavior similar to bill and legislation.
+
+- Recognize "none" as a possible value on the and attribute
+  to cs:institution. This allows a inherited value to be
+  turned off.
+
+- Some fine tuning of parallels detection mechanism for
+  legal types.
+
+
+==========================
 Changes in version 1.0.333
 ==========================
 
