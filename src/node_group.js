@@ -159,8 +159,9 @@ CSL.Node.group = {
                     if (!state.tmp.just_looking && "undefined" !== typeof flag[6]) {
                         var parallel_condition_object = {
                             blobs: blobs,
-                            pos: pos,
-                            condition: flag[6]
+                            conditions: flag[6],
+                            id: Item.id,
+                            pos: pos
                         }
                         state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
                     }
