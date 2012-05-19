@@ -156,6 +156,12 @@ CSL.Output.Formats.prototype.html = {
     },
     "@showid/true": function (state, str, cslid) {
         return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
+    },
+    "@URL/true": function (state, str) {
+        return "<a href=\"" + str + "\">" + str + "</a>";
+    },
+    "@DOI/true": function (state, str) {
+        return "<a href=\"http://dx.doi.org/" + str + "\">" + str + "</a>";
     }
 };
 
@@ -229,6 +235,12 @@ CSL.Output.Formats.prototype.text = {
     },
     "@display/indent": function (state, str) {
         return "\n    "+str;
+    },
+    "@url/true": function (state, str) {
+        return str;
+    },
+    "@doi/true": function (state, str) {
+        return str;
     }
 };
 
@@ -302,6 +314,12 @@ CSL.Output.Formats.prototype.rtf = {
     },
     "@display/indent": function (state, str) {
         return "\n\\tab "+str;
+    },
+    "@url/true": function (state, str) {
+        return str;
+    },
+    "@doi/true": function (state, str) {
+        return str;
     }
 };
 
