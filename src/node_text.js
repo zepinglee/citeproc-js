@@ -288,6 +288,9 @@ CSL.Node.text = {
                                     value = value.replace(/\\-/g,"-");
                                     // true is for non-suppression of periods
                                     state.output.append(value, this, false, false, true);
+                                    if (this.variables[0] === "locator-revision") { 
+                                        state.tmp.done_vars.push("locator-revision");
+                                    }
                                 }
                             };
                         } else if (this.variables_real[0] === "page-first") {
@@ -335,13 +338,18 @@ CSL.Node.text = {
                                     }
                                 }
                             }
-                        } else if (this.variables_real[0] === "URL") {
+                        } else if (["URL", "DOI"].indexOf(this.variables_real[0]) > -1) {
                             func = function (state, Item) {
                                 var value;
                                 if (this.variables[0]) {
                                     value = state.getVariable(Item, this.variables[0], form);
                                     if (value) {
                                         // true is for non-suppression of periods
+                                        if (state.opt.development_extensions.wrap_url_and_doi) {
+                                            if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
+                                                this.decorations = [["@" + this.variables[0], "true"]].concat(this.decorations);
+                                            }
+                                        }
                                         state.output.append(value, this, false, false, true);
                                     }
                                 }
