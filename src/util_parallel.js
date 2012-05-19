@@ -481,24 +481,21 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
     if (this.use_parallels) {
         // a bit loose here: zero-length sets relate to one cite,
         // apparently.
-        if (this.sets.value().length === 0) {
-            // Do stuff for false here
-            this.purgeGroupsIfParallel(false);
-        } else if (this.sets.value().length === 1) {
+        var lengthCheck = this.sets.value().length;
+        // Do stuff for false here
+        if (this.sets.value().length === 1) {
             if (!this.in_series) {
                 // Um ... probably shouldn't just throw this away. What if
                 // two collapsed parallel citations appear in sequence? Hmm?
                 this.sets.value().pop();
                 this.delim_counter += 1;
             }
-            this.purgeGroupsIfParallel(false);
             // XXXXX: hackaround that could be used maybe, if nothing cleaner pans out.
             //
             //print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
             //**print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
             //this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme = [];
         } else {
-            this.purgeGroupsIfParallel(true);
             len = this.sets.value().length;
             for (pos = 0; pos < len; pos += 1) {
                 cite = this.sets.value()[pos];
@@ -539,6 +536,11 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
             this.sets.push([]);
             //this.in_series = false;
 
+        }
+        if (lengthCheck < 2) {
+            this.purgeGroupsIfParallel(false);
+        } else {
+            this.purgeGroupsIfParallel(true);
         }
         this.in_series = true;
         //print(this.sets.mystack.slice(-2,-1)[0].slice(-1)[0].back_forceme);
@@ -611,11 +613,22 @@ CSL.Parallel.prototype.purgeVariableBlobs = function (cite, varnames) {
 };
 
 
-CSL.Parallel.prototype.purgeGroupsIfParallel = function (opposite_condition) {
-    var condition = !opposite_condition;
+CSL.Parallel.prototype.purgeGroupsIfParallel = function (original_condition) {
     for (var i = this.parallel_conditional_blobs_list.length - 1; i > -1; i += -1) {
         var obj = this.parallel_conditional_blobs_list[i];
-        if (obj.condition === condition) {
+        // Tricky double-negatives here.
+        var purgeme = true;
+        for (var j = 0, jlen = obj.conditions.length; j < jlen; j += 1) {
+            if (!(!obj.conditions[j] === !!original_condition
+                || ("master" === obj.conditions[j]
+                    && !this.state.registry.registry[obj.id].master)
+                || ("servant" === obj.conditions[j]
+                    && !this.state.registry.registry[obj.id].parallel))) {
+                var purgeme = false;
+                break;
+            }
+        }
+        if (purgeme) {
             var buffer = [];
             while (obj.blobs.length > obj.pos) {
                 buffer.push(obj.blobs.pop());
@@ -626,7 +639,6 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function (opposite_condition) {
             while (buffer.length) {
                 obj.blobs.push(buffer.pop());
             }
-            
         }
         this.parallel_conditional_blobs_list.pop();
     }
