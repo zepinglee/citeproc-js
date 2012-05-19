@@ -179,6 +179,7 @@ StdRhinoTest.prototype.run = function(){
     this.style = new CSL.Engine(this,this.test.csl);
     this.style.opt.development_extensions.static_statute_locator = true;
     this.style.opt.development_extensions.clobber_locator_if_no_statute_section = true;
+    //this.style.opt.development_extensions.wrap_url_and_doi = true;
     var langParams = {
         persons:["translit"],
         institutions:["translit"],
