@@ -65,11 +65,15 @@ CSL.Attributes["@cslid"] = function (state, arg) {
 }
 
 CSL.Attributes["@is-parallel"] = function (state, arg) {
-    if ("true" === arg) {
-        this.strings.set_parallel_condition = true;
-    } else {
-        this.strings.set_parallel_condition = false;
+    var values = arg.split(" ");
+    for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+        if (values[i] === "true") {
+            values[i] = true;
+        } else if (values[i] === "false") {
+            values[i] = false;
+        }
     }
+    this.strings.set_parallel_condition = values;
 }
 
 CSL.Attributes["@is-plural"] = function (state, arg) {
@@ -398,8 +402,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     // to control formatting.
                     output = true;
                     break;
-                }
-                if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
+                } else if (CSL.DATE_VARIABLES.indexOf(variable) > -1) {
                     if (state.opt.development_extensions.locator_date_and_revision && "locator-date" === variable) {
                         // If locator-date is set, it's valid.
                         output = true;
