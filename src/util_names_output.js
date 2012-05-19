@@ -132,10 +132,10 @@ CSL.NameOutput.prototype.outputNames = function () {
     var variables = this.variables;
 
     if (this.institution.and) {
-        if (!this.institution.and.single.blobs && !this.institution.and.single.blobs.length) {
+        if (!this.institution.and.single.blobs || !this.institution.and.single.blobs.length) {
             this.institution.and.single.blobs = this.name.and.single.blobs;
         }
-        if (!this.institution.and.single.blobs && !this.institution.and.multiple.blobs.length) {
+        if (!this.institution.and.multiple.blobs || !this.institution.and.multiple.blobs.length) {
             this.institution.and.multiple.blobs = this.name.and.multiple.blobs;
         }
     }
