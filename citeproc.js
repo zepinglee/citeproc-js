@@ -1837,7 +1837,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.334";
+    this.processor_version = "1.0.335";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -7519,7 +7519,11 @@ CSL.Node.text = {
                         if (!state.tmp.just_looking) {
                             if (item && item["author-only"]) {
                                 state.tmp.element_trace.replace("do-not-suppress-me");
-                                term = CSL.Output.Formatters["capitalize-first"](state, state.getTerm("reference", "long", "singular"));
+                                var reference_term = state.getTerm("reference", "long", "singular");
+                                if ("undefined" === typeof reference_term) {
+                                    reference_term = "reference";
+                                }
+                                term = CSL.Output.Formatters["capitalize-first"](state, reference_term);
                                 state.output.append(term + " ");
                                 state.tmp.last_element_trace = true;
                             }

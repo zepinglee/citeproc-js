@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.335
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in author-only. A crash was caused in
+  numeric styles when the processor attempted to
+  handle the undefined "reference" term. Thanks to
+  James Jardine for reporting the fault.
+
+
+==========================
 Changes in version 1.0.334
 ==========================
 
