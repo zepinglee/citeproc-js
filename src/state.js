@@ -199,7 +199,7 @@ CSL.Engine.Tmp = function () {
     this.years_used = [];
     this.names_used = [];
 
-    this.taintedItemIDs = false;
+    this.taintedItemIDs = {};
     this.taintedCitationIDs = false;
     //
     // scratch stack containing initialize-with strings or null values
