@@ -565,7 +565,13 @@ CSL.Registry.prototype.renumber = function () {
         item.seq = (pos + 1);
         // update_mode is set to CSL.NUMERIC if citation-number is rendered
         // in citations.
-        if (this.state.tmp.taintedItemIDs && item.seq != this.oldseq[item.id]) {
+        var hasTaints = false;
+        for (var key in this.state.tmp.taintedItemIDs) {
+            hasTaints = true;
+            break;
+        }
+        if (hasTaints && item.seq != this.oldseq[item.id]) {
+
             if (this.state.opt.update_mode === CSL.NUMERIC) {
                 this.state.tmp.taintedItemIDs[item.id] = true;
             }
