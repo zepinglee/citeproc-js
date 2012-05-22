@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.336
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in the flagging of taints resulting
+  from changes in the year-suffix assigned to an
+  item.
+
+- Recognize taints flagged by updateItems() when
+  processCitationCluster() is run.
+
+
+==========================
 Changes in version 1.0.335
 ==========================
 

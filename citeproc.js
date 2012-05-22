@@ -1837,7 +1837,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.335";
+    this.processor_version = "1.0.336";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2638,7 +2638,7 @@ CSL.Engine.Tmp = function () {
     this.last_years_used = [];
     this.years_used = [];
     this.names_used = [];
-    this.taintedItemIDs = false;
+    this.taintedItemIDs = {};
     this.taintedCitationIDs = false;
     this.initialize_with = new CSL.Stack();
     this.disambig_request = false;
@@ -3220,7 +3220,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     this.debug = false;
     this.tmp.citation_errors = [];
     var return_data = {"bibchange": false};
-    this.registry.return_data = return_data;
     this.setCitationId(citation);
     var oldCitationList;
     var oldItemList;
@@ -3251,7 +3250,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             }
         }
     }
-    this.tmp.taintedItemIDs = {};
     this.tmp.taintedCitationIDs = {};
     var sortedItems = [];
     for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
@@ -3601,7 +3599,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 this.tmp.citation_pos += 1;
             }
         }
-        this.tmp.taintedItemIDs = false;
+        this.tmp.taintedItemIDs = {};
         this.tmp.taintedCitationIDs = false;
         this.tmp.citation_pos = citation.properties.index;
         this.tmp.citation_note_index = citation.properties.noteIndex;
@@ -11560,7 +11558,12 @@ CSL.Registry.prototype.renumber = function () {
     for (pos = 0; pos < len; pos += 1) {
         item = this.reflist[pos];
         item.seq = (pos + 1);
-        if (this.state.tmp.taintedItemIDs && item.seq != this.oldseq[item.id]) {
+        var hasTaints = false;
+        for (var key in this.state.tmp.taintedItemIDs) {
+            hasTaints = true;
+            break;
+        }
+        if (hasTaints && item.seq != this.oldseq[item.id]) {
             if (this.state.opt.update_mode === CSL.NUMERIC) {
                 this.state.tmp.taintedItemIDs[item.id] = true;
             }
