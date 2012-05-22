@@ -82,7 +82,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     //SNIP-END
     this.tmp.citation_errors = [];
     var return_data = {"bibchange": false};
-    this.registry.return_data = return_data;
 
     // make sure this citation has a unique ID, and register it in citationById.
     this.setCitationId(citation);
@@ -145,7 +144,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         //SNIP-END
     }
 
-    this.tmp.taintedItemIDs = {};
     this.tmp.taintedCitationIDs = {};
     var sortedItems = [];
 
@@ -682,7 +680,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 this.tmp.citation_pos += 1;
             }
         }
-        this.tmp.taintedItemIDs = false;
+        this.tmp.taintedItemIDs = {};
         this.tmp.taintedCitationIDs = false;
 
         // For error reporting again
