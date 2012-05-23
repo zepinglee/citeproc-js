@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.337
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Clean up given names disambiguation updates.
+  (Code was not working correctly, but was being
+  rescued by inefficient calls in disambiguation
+  engine.)
+
+- Eliminate memory leak in main disambiguation
+  loop.
+
+==========================
 Changes in version 1.0.336
 ==========================
 
