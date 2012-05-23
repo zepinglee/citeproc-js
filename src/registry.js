@@ -258,6 +258,7 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
     //
     this.refreshes = {};
     this.touched = {};
+    this.ambigsTouched = {};
 };
 
 CSL.Registry.prototype.dodeletes = function (myhash) {
@@ -270,7 +271,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
     //  3. Delete loop.
     //
     for (key in this.registry) {
-        if (this.registry.hasOwnProperty(key) && !myhash[key]) {
+        if (!myhash[key]) {
             // skip items explicitly marked as uncited
             if (this.registry[key].uncited) {
                 continue;
@@ -286,9 +287,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
             //      in the registry.
             //
             for (kkey in otheritems) {
-                if (otheritems.hasOwnProperty(kkey)) {
-                    this.refreshes[kkey] = true;
-                }
+                this.refreshes[kkey] = true;
             }
             //
             //  3c. Delete all items to be deleted from their disambig pools.
@@ -368,6 +367,7 @@ CSL.Registry.prototype.doinserts = function (mylist) {
             //      (implicit in getAmbiguousCite).
             //
             akey = CSL.getAmbiguousCite.call(this.state, Item);
+            this.ambigsTouched[akey] = true;
             //
             //  4d. Record ambig pool key on akey list (used for updating further
             //      down the chain).
@@ -479,38 +479,28 @@ CSL.Registry.prototype.dorefreshes = function () {
     // (4) Register the item ID in this.touched
     //
     for (key in this.refreshes) {
-        if (this.refreshes.hasOwnProperty(key)) {
-            regtoken = this.registry[key];
-            delete this.registry[key];
-            if (!regtoken) {
-                continue;
-            }
-            regtoken.disambig = undefined;
-            regtoken.sortkeys = undefined;
-            regtoken.ambig = undefined;
-
-            Item = this.state.retrieveItem(key);
-            //old_akey = akey;
-            //akey = CSL.getAmbiguousCite.call(this.state, Item);
-            //if (this.state.tmp.taintedItemIDs && this.state.opt.update_mode !== CSL.NUMERIC && old_akey !== akey) {
-            //    print("Does this happen? If so: "+old_akey+" :: "+akey);
-            //    this.state.tmp.taintedItemIDs[key] = true;
-            //}
-            var akey = regtoken.ambig;
-            if ("undefined" === typeof akey) {
-                akey = CSL.getAmbiguousCite.call(this.state, Item);
-                this.state.tmp.taintedItemIDs[key] = true;
-            }
-            this.registry[key] = regtoken;
-
-            abase = CSL.getAmbigConfig.call(this.state);
-            this.registerAmbigToken(akey, key, abase);
-
-            if (!Item.legislation_id) {
-                this.akeys[akey] = true;
-            }
-            this.touched[key] = true;
+        regtoken = this.registry[key];
+        delete this.registry[key];
+        if (!regtoken) {
+            continue;
         }
+        regtoken.disambig = undefined;
+        regtoken.sortkeys = undefined;
+        regtoken.ambig = undefined;
+        Item = this.state.retrieveItem(key);
+        var akey = regtoken.ambig;
+        if ("undefined" === typeof akey) {
+            akey = CSL.getAmbiguousCite.call(this.state, Item);
+            this.state.tmp.taintedItemIDs[key] = true;
+        }
+        this.ambigsTouched[akey] = true;
+        this.registry[key] = regtoken;
+        abase = CSL.getAmbigConfig.call(this.state);
+        this.registerAmbigToken(akey, key, abase);
+        if (!Item.legislation_id) {
+            this.akeys[akey] = true;
+        }
+        this.touched[key] = true;
     }
 
 };
@@ -535,7 +525,7 @@ CSL.Registry.prototype.setdisambigs = function () {
     //
     //  8.  Set disambiguation parameters on each inserted item token.
     //
-    for (akey in this.akeys) {
+    for (akey in this.ambigsTouched) {
         //
         // Disambiguation is fully encapsulated.
         // Disambiguator will run only if there are multiple

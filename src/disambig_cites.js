@@ -66,8 +66,10 @@ CSL.Disambiguation.prototype.run = function(akey) {
         print("[A] === RUN ===");
     }
     //SNIP-END
-    this.initVars(akey);
-    this.runDisambig();
+    if (this.initVars(akey)) {
+        this.runDisambig();
+    }
+
 };
 
 CSL.Disambiguation.prototype.runDisambig = function () {
@@ -80,22 +82,23 @@ CSL.Disambiguation.prototype.runDisambig = function () {
     this.initGivens = true;
     //
     // Length of list may change during processing
-    for (pos = 0; pos < this.lists.length; pos += 1) {
+    while (this.lists.length) {
         this.gnameset = 0;
         this.gname = 0;
         this.clashes = [1, 0];
         // each list is scanned repeatedly until all
         // items either succeed or ultimately fail.
-        while(this.lists[pos][1].length) {
-            this.listpos = pos;
+        while(this.lists[0][1].length) {
+            this.listpos = 0;
             if (!this.base) {
-                this.base = this.lists[pos][0];
+                this.base = this.lists[0][0];
             }
             var names_used = [];
             var ismax = this.incrementDisambig();
-            this.scanItems(this.lists[pos]);
+            this.scanItems(this.lists[0]);
             this.evalScan(ismax);
         }
+        this.lists = this.lists.slice(1);
     }
 };
 
@@ -437,6 +440,9 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 
     myItemBundles = [];
     myIds = this.ambigcites[akey];
+    if (!myIds || !myIds.length) {
+        return false;
+    }
     var Item = false;
     var myItem = this.state.retrieveItem("" + myIds[0]);
     this.getCiteData(myItem);
@@ -499,6 +505,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
     if (this.state.opt["givenname-disambiguation-rule"] === "by-cite") {
         this.givensMax = 2;
     }
+    return true;
 };
 
 /**
