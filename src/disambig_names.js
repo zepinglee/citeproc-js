@@ -213,7 +213,7 @@ CSL.Registry.NameReg = function (state) {
                         if (posB > -1) {
                             this.namereg[pkey].ikey[ikey].skey[skey].items = myitems.slice(0, posB).concat(myitems.slice([(posB + 1)]));
                         }
-                        if (this.namereg[pkey].ikey[ikey].skey[skey].items.length < 2) {
+                        if (this.namereg[pkey].ikey[ikey].skey[skey].items.length === 0) {
                             delete this.namereg[pkey].ikey[ikey].skey[skey];
                             this.namereg[pkey].ikey[ikey].count += -1;
                             if (this.namereg[pkey].ikey[ikey].count < 2) {
@@ -229,7 +229,7 @@ CSL.Registry.NameReg = function (state) {
                             items = this.namereg[pkey].ikey[ikey].items.slice();
                             this.namereg[pkey].ikey[ikey].items = items.slice(0, posB).concat(items.slice([posB + 1]));
                         }
-                        if (this.namereg[pkey].ikey[ikey].items.length < 2) {
+                        if (this.namereg[pkey].ikey[ikey].items.length === 0) {
                             delete this.namereg[pkey].ikey[ikey];
                             this.namereg[pkey].count += -1;
                             if (this.namereg[pkey].count < 2) {
@@ -328,7 +328,7 @@ CSL.Registry.NameReg = function (state) {
                         state.tmp.taintedItemIDs[this.namereg[pkey].ikey[ikey].items[i]] = true;
                     }
                 }
-            } else if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) > -1) {
+            } else if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
                 this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
             }
 //            if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
