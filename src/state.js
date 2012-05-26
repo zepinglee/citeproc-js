@@ -200,7 +200,7 @@ CSL.Engine.Tmp = function () {
     this.names_used = [];
 
     this.taintedItemIDs = {};
-    this.taintedCitationIDs = false;
+    this.taintedCitationIDs = {};
     //
     // scratch stack containing initialize-with strings or null values
     this.initialize_with = new CSL.Stack();

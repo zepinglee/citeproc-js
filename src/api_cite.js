@@ -664,24 +664,21 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         //
         var obj;
         for (key in this.tmp.taintedCitationIDs) {
-            if (this.tmp.taintedCitationIDs.hasOwnProperty(key)) {
-                if (key == citation.citationID) {
-                    continue;
-                }
-                var mycitation = this.registry.citationreg.citationById[key];
-                // For error reporting
-                this.tmp.citation_pos = mycitation.properties.index;
-                this.tmp.citation_note_index = mycitation.properties.noteIndex;
-                this.tmp.citation_id = "" + mycitation.citationID;
-                obj = [];
-                obj.push(mycitation.properties.index);
-                obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems, mycitation.citationID));
-                ret.push(obj);
-                this.tmp.citation_pos += 1;
+            if (key == citation.citationID) {
+                continue;
             }
+            var mycitation = this.registry.citationreg.citationById[key];
+            // For error reporting
+            this.tmp.citation_pos = mycitation.properties.index;
+            this.tmp.citation_note_index = mycitation.properties.noteIndex;
+            this.tmp.citation_id = "" + mycitation.citationID;
+            obj = [];
+            obj.push(mycitation.properties.index);
+            obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems, mycitation.citationID));
+            ret.push(obj);
         }
         this.tmp.taintedItemIDs = {};
-        this.tmp.taintedCitationIDs = false;
+        this.tmp.taintedCitationIDs = {};
 
         // For error reporting again
         this.tmp.citation_pos = citation.properties.index;
