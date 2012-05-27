@@ -106,7 +106,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
                     this.setCslNodeIds(children[i], nodename);
                 }
             }
-        }
+        };
         this.setCslNodeIds(this.cslXml, "style");
     }
     this.sys.xml.addMissingNameNodes(this.cslXml);
@@ -580,9 +580,9 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                     Item[mm[1]] = {raw:mm[2]};
                 } else if (!Item[mm[1]] && CSL.NAME_VARIABLES.indexOf(mm[1]) > -1) {
                     if (!Item[mm[1]]) {
-                        Item[mm[1]] = []
+                        Item[mm[1]] = [];
                     }
-                    var lst = mm[2].split(/\s*\|\|\s*/)
+                    var lst = mm[2].split(/\s*\|\|\s*/);
                     if (lst.length === 1) {
                         Item[mm[1]].push({family:lst[0],isInstitution:true});
                     } else if (lst.length === 2) {
@@ -592,7 +592,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                     //Zotero.debug("XXX   (4)");
                     Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
                 }
-                Item.note.replace(CSL.NOTE_FIELD_REGEXP, "")
+                Item.note.replace(CSL.NOTE_FIELD_REGEXP, "");
             }
         }
     }
@@ -612,21 +612,22 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     if (this.opt.development_extensions.static_statute_locator) {
         if (Item.type && ["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1) {
             
+            var varname;
             var elements = ["type", "title", "jurisdiction", "genre", "volume", "container-title"];
             var legislation_id = [];
-            for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
-                var varname = elements[i];
+            for (i = 0, ilen = elements.length; i < ilen; i += 1) {
+                varname = elements[i];
 				if (Item[varname]) {
 					legislation_id.push(Item[varname]);
 				}
 			}
-			for (var i = 0, ilen = 2; i < ilen; i += 1) {
-				if (["original-date", "issued"].indexOf(varname) > -1) {
-					if (Item[varname] && Item[varname].year) {
-						value = Item[varname].year;
-						legislation_id.push(value);
-						break;
-					}
+            elements = ["original-date", "issued"];
+			for (i = 0, elements.length; i < ilen; i += 1) {
+                varname = elements[i];
+				if (Item[varname] && Item[varname].year) {
+					var value = Item[varname].year;
+					legislation_id.push(value);
+					break;
 				}
 			}
 			Item.legislation_id = legislation_id.join("::");

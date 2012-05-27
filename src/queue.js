@@ -671,7 +671,9 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
             if (blob.strings["text-case"]) {
                 str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
             }
-            if (str && this.state.tmp.strip_periods && !noStripPeriods) {
+            // jshint picked up that noStripPeriods is undefined
+            //if (str && this.state.tmp.strip_periods && !noStripPeriods) {
+            if (str && this.state.tmp.strip_periods) {
                 str = str.replace(/\.([^a-z]|$)/g, "$1");
             }
             if (!state.tmp.suppress_decorations) {

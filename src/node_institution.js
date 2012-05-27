@@ -92,7 +92,7 @@ CSL.Node.institution = {
                 }
             }
             
-            func = function (state, Item) {
+            var func = function (state, Item) {
                 this.and = {};
                 if ("undefined" !== typeof this.and_term) {
                     state.output.append(this.and_term, "empty", true);

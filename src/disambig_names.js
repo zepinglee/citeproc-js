@@ -49,7 +49,7 @@
 /*global CSL: true */
 
 CSL.Registry.NameReg = function (state) {
-    var pkey, ikey, skey, floor, ceiling, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems;
+    var pkey, ikey, skey, floor, ceiling, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems, i, ilen;
     this.state = state;
     this.namereg = {};
     this.nameind = {};
@@ -175,7 +175,7 @@ CSL.Registry.NameReg = function (state) {
     // a print trace, and seems to work okay.
     //
     delitems = function (ids) {
-        var i, item, pos, len, posA, posB, id, fullkey, llen, ppos, otherid;
+        var item, pos, len, posA, posB, id, fullkey, llen, ppos, otherid;
         if ("string" === typeof ids || "number" === typeof ids) {
             ids = ["" + ids];
         }
@@ -217,7 +217,7 @@ CSL.Registry.NameReg = function (state) {
                             delete this.namereg[pkey].ikey[ikey].skey[skey];
                             this.namereg[pkey].ikey[ikey].count += -1;
                             if (this.namereg[pkey].ikey[ikey].count < 2) {
-                                for (var i = 0, ilen = this.namereg[pkey].ikey[ikey].items.length; i < ilen; i += 1) {
+                                for (i = 0, ilen = this.namereg[pkey].ikey[ikey].items.length; i < ilen; i += 1) {
                                     state.tmp.taintedItemIDs[this.namereg[pkey].ikey[ikey].items[i]] = true;
                                 }
                             }
@@ -233,7 +233,7 @@ CSL.Registry.NameReg = function (state) {
                             delete this.namereg[pkey].ikey[ikey];
                             this.namereg[pkey].count += -1;
                             if (this.namereg[pkey].count < 2) {
-                                for (var i = 0, ilen = this.namereg[pkey].items.length; i < ilen; i += 1) {
+                                for (i = 0, ilen = this.namereg[pkey].items.length; i < ilen; i += 1) {
                                     state.tmp.taintedItemIDs[this.namereg[pkey].items[i]] = true;
                                 }
                             }
@@ -267,6 +267,7 @@ CSL.Registry.NameReg = function (state) {
     // style.
     //
     addname = function (item_id, nameobj, pos) {
+        var i, ilen;
         var res = state.nameOutput.getName(nameobj, "locale-translit", true);
         nameobj = res.name;
 
@@ -307,7 +308,7 @@ CSL.Registry.NameReg = function (state) {
                 this.namereg[pkey].ikey[ikey].items = [item_id];
                 this.namereg[pkey].count += 1;
                 if (this.namereg[pkey].count === 2) {
-                    for (var i = 0, ilen = this.namereg[pkey].items.length; i < ilen; i += 1) {
+                    for (i = 0, ilen = this.namereg[pkey].items.length; i < ilen; i += 1) {
                         state.tmp.taintedItemIDs[this.namereg[pkey].items[i]] = true;
                     }
                 }
@@ -324,7 +325,7 @@ CSL.Registry.NameReg = function (state) {
                 this.namereg[pkey].ikey[ikey].skey[skey].items = [item_id];
                 this.namereg[pkey].ikey[ikey].count += 1;
                 if (this.namereg[pkey].ikey[ikey].count === 2) {
-                    for (var i = 0, ilen = this.namereg[pkey].ikey[ikey].items.length; i < ilen; i += 1) {
+                    for (i = 0, ilen = this.namereg[pkey].ikey[ikey].items.length; i < ilen; i += 1) {
                         state.tmp.taintedItemIDs[this.namereg[pkey].ikey[ikey].items[i]] = true;
                     }
                 }

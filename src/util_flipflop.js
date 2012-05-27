@@ -173,15 +173,16 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 };
 
 CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
+    var i, ilen;
     if (str.indexOf(this.quotechars[0]) > -1) {
-        for (var i = 0, ilen = 2; i < ilen; i += 1) {
+        for (i = 0, ilen = 2; i < ilen; i += 1) {
             if (this.quotechars[i + 2]) {
                 str = str.replace(this.quotechars[i + 2], this.quotechars[0]);
             }
         }
     }
     if (str.indexOf(this.quotechars[1]) > -1) {
-        for (var i = 0, ilen = 2; i < ilen; i += 1) {
+        for (i = 0, ilen = 2; i < ilen; i += 1) {
             if (this.quotechars[i + 4]) {
                 if (i === 0) {
                     str = str.replace(this.quotechars[i + 4], " " + this.quotechars[1]);

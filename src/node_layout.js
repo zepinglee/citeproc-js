@@ -109,7 +109,7 @@ CSL.Node.layout = {
                         }
                         // Protect against double spaces, which would trigger an extra,
                         // explicit, non-breaking space.
-                        prefix = (item.prefix + sp).replace(/\s+/g, " ")
+                        prefix = (item.prefix + sp).replace(/\s+/g, " ");
                         state.output.append(prefix, this, false, ignorePredecessor);
                     }
                 };

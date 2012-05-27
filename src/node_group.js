@@ -162,7 +162,7 @@ CSL.Node.group = {
                             conditions: flag[6],
                             id: Item.id,
                             pos: pos
-                        }
+                        };
                         state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
                     }
                 } else {

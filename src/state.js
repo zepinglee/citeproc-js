@@ -109,7 +109,7 @@ CSL.Engine.Opt = function () {
 		titles:['orig','translat'],
 		publishers:['orig'],
 		places:['orig']
-	}
+	};
 };
 
 

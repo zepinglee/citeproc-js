@@ -79,6 +79,7 @@ CSL.Node.number = {
         //
         // push number or text
         func = function (state, Item, item) {
+            var i, ilen, newlst, lst;
             // NOTE: this works because this is the ONLY function in this node.
             // If further functions are added, they need to start with the same
             // abort condition.
@@ -89,7 +90,7 @@ CSL.Node.number = {
             varname = this.variables[0];
             state.parallel.StartVariable(this.variables[0]);
             if (this.variables[0] === "locator") {
-                state.parallel.AppendToVariable(Item["section"]);
+                state.parallel.AppendToVariable(Item.section);
             } else {
                 state.parallel.AppendToVariable(Item[this.variables[0]]);
             }
@@ -147,19 +148,19 @@ CSL.Node.number = {
                 // (actually, if numeric parsing is happening as it ought to, this won't be necessary)
                 // or ... maybe note. We need to account for a missing page-range-format attribute.
 
-                var m = item.locator.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+                m = item.locator.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                 if (m) {
-                    var lst = item.locator.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
-                    for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
+                    lst = item.locator.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                    for (i = 0, ilen = lst.length; i < ilen; i += 1) {
                         lst[i] = state.fun.page_mangler(lst[i]);
                     }
-                    var newlst = [lst[0]];
+                    newlst = [lst[0]];
                     
                     // Get form
                     if (!this.strings.label_form_override && state.tmp.group_context.value()[5]) {
                         form = state.tmp.group_context.value()[5];
                     }
-                    for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
+                    for (i = 1, ilen = lst.length; i < ilen; i += 1) {
                         // For leading label: it is always singular if we are specifying subdivisions
                         // Rough guess at pluralism
                         var subplural = 0;
@@ -198,7 +199,7 @@ CSL.Node.number = {
                 var blob;
                 // If prefix and suffix are nil, run through the page mangler,
                 // if any. Otherwise, apply styling.
-                var newstr = ""
+                var newstr = "";
                 var rangeType = "page";
                 if (["bill","gazette","legislation","legal_case","treaty"].indexOf(Item.type) > -1
                     && varname === "collection-number") {
@@ -210,21 +211,21 @@ CSL.Node.number = {
                      || state.opt[rangeType + "-range-format"]) 
                     && !this.strings.prefix && !this.strings.suffix
                     && !this.strings.form) {
-                    for (var i = 0, ilen = values.length; i < ilen; i += 1) {
+                    for (i = 0, ilen = values.length; i < ilen; i += 1) {
                         newstr += values[i][1];
                     }
                 }
-                if (newstr && !newstr.match(/^[-.\u20130-9]+$/)) {
+                if (newstr && !newstr.match(/^[\-.\u20130-9]+$/)) {
                     if (varname === "number" 
                         && ["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1) {
                         
                         var firstword = newstr.split(/\s/)[0];
                         if (firstword) {
-                            var newlst = [];
-                            var m = newstr.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+                            newlst = [];
+                            m = newstr.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
                             if (m) {
-                                var lst = newstr.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
-                                for (var i = 1, ilen = lst.length; i < ilen; i += 1) {
+                                lst = newstr.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                                for (i = 1, ilen = lst.length; i < ilen; i += 1) {
                                     newlst.push(state.getTerm(CSL.STATUTE_SUBDIV_STRINGS[m[i - 1].replace(/^\s+/, "")], this.strings.label_form_override));
                                     newlst.push(lst[i].replace(/^\s+/, ""));
                                 }
@@ -236,8 +237,8 @@ CSL.Node.number = {
                 } else {
                     if (values.length) {
                         state.output.openLevel("empty");
-                        for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-                            var blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
+                        for (i = 0, ilen = values.length; i < ilen; i += 1) {
+                            blob = new CSL[values[i][0]](values[i][1], values[i][2], Item.id);
                             if (i > 0) {
                                 blob.strings.prefix = blob.strings.prefix.replace(/^\s*/, "");
                             }

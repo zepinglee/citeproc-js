@@ -178,7 +178,7 @@ CSL.Node.date = {
                     // blob will be popped from output if at the end of processing for
                     // this cite we find that we have rendered the collection-number
                     // variable also.
-                    for (key in state.tmp.date_object) {
+                    for (var key in state.tmp.date_object) {
                         if (state.tmp.date_object.hasOwnProperty(key)) {
                             if (key.slice(0, 4) === "year") {
 

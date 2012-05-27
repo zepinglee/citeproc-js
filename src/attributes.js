@@ -62,7 +62,7 @@ CSL.Attributes["@cslid"] = function (state, arg) {
     // section of formats.js for the function that
     // renders the wrappers.
     this.cslid = parseInt(arg, 10);
-}
+};
 
 CSL.Attributes["@is-parallel"] = function (state, arg) {
     var values = arg.split(" ");
@@ -74,7 +74,7 @@ CSL.Attributes["@is-parallel"] = function (state, arg) {
         }
     }
     this.strings.set_parallel_condition = values;
-}
+};
 
 CSL.Attributes["@is-plural"] = function (state, arg) {
     var func = function (state, Item, item) {
@@ -102,16 +102,16 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
             }
         }
         return ret;
-    }
+    };
     this.tests.push(func);
-}
+};
 
 CSL.Attributes["@subjurisdictions"] = function (state, arg) {
     var trysubjurisdictions = parseInt(arg, 10);
     var func = function (state, Item, item) {
         var subjurisdictions = 0;
         if (Item.jurisdiction) {
-            var subjurisdictions = Item.jurisdiction.split(";").length;
+            subjurisdictions = Item.jurisdiction.split(";").length;
         }
         if (subjurisdictions) {
             subjurisdictions += -1;
@@ -123,11 +123,11 @@ CSL.Attributes["@subjurisdictions"] = function (state, arg) {
         return [ret];
     };
     this.tests.push(func);
-}
+};
 
 CSL.Attributes["@label-form"] = function (state, arg) {
     this.strings.label_form_override = arg;
-}
+};
 
 CSL.Attributes["@has-year-only"] = function (state, arg) {
     var trydates = arg.split(/\s+/);
@@ -136,15 +136,15 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
             if (!trydate || trydate.month || trydate.season) {
-                ret.push(false)
+                ret.push(false);
             } else {
-                ret.push(true)
+                ret.push(true);
             }
         }
         return ret;
     };
     this.tests.push(func);
-}
+};
 
 CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
     var trydates = arg.split(/\s+/);
@@ -153,15 +153,15 @@ CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
             if (!trydate || (!trydate.month && !trydate.season) || trydate.day) {
-                ret.push(false)
+                ret.push(false);
             } else {
-                ret.push(true)
+                ret.push(true);
             }
         }
         return ret;
     };
     this.tests.push(func);
-}
+};
 
 CSL.Attributes["@has-day-only"] = function (state, arg) {
     var trydates = arg.split(/\s+/);
@@ -170,19 +170,19 @@ CSL.Attributes["@has-day-only"] = function (state, arg) {
         for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
             var trydate = Item[trydates[i]];
             if (!trydate || !trydate.day) {
-                ret.push(false)
+                ret.push(false);
             } else {
-                ret.push(true)
+                ret.push(true);
             }
         }
         return ret;
     };
     this.tests.push(func);
-}
+};
 
 CSL.Attributes["@part-separator"] = function (state, arg) {
     this.strings["part-separator"] = arg;
-}
+};
 
 CSL.Attributes["@context"] = function (state, arg) {
     var func = function (state, Item) {
@@ -386,7 +386,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
                     
-                    Item[variable] = [{family:Item[variable],isInstitution:true}]
+                    Item[variable] = [{family:Item[variable],isInstitution:true}];
                 }
                 if (this.strings.form === "short" && !Item[variable]) {
                     if (variable === "title") {
@@ -490,7 +490,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     var hereinafter_info = state.transform.getHereinafter(myitem);
                     state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
                     if (state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]]) {
-                        x = true
+                        x = true;
                     }
                 } else if (myitem[variable]) {
                     if ("number" === typeof myitem[variable] || "string" === typeof myitem[variable]) {
@@ -734,7 +734,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
             if (!state.tmp.shadow_numbers[variables[pos]].numeric
                 && !(['title', 'locator-revision'].indexOf(variables[pos]) > -1
                      && myitem[variables[pos]] 
-                     && myitem[variables[pos]].slice(-1) === "" + parseInt(myitem[variables[pos]].slice(-1)))) {
+                     && myitem[variables[pos]].slice(-1) === "" + parseInt(myitem[variables[pos]].slice(-1), 10))) {
                 numeric = false;
                 break;
             }
@@ -825,12 +825,12 @@ CSL.Attributes["@page"] = function (state, arg) {
             var ret = [];
             var label;
             state.processNumber(false, Item, "page", Item.type);
-            if (!state.tmp.shadow_numbers["page"].label) {
+            if (!state.tmp.shadow_numbers.page.label) {
                 label = "page";
-            } else if (state.tmp.shadow_numbers["page"].label === "sub verbo") {
+            } else if (state.tmp.shadow_numbers.page.label === "sub verbo") {
                 label = "sub-verbo";
             } else {
-                label = state.tmp.shadow_numbers["page"].label;
+                label = state.tmp.shadow_numbers.page.label;
             }
             for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
                 if (trylabels[i] === label) {
@@ -856,12 +856,12 @@ CSL.Attributes["@number"] = function (state, arg) {
             var ret = [];
             var label;
             state.processNumber(false, Item, "number", Item.type);
-            if (!state.tmp.shadow_numbers["number"].label) {
+            if (!state.tmp.shadow_numbers.number.label) {
                 label = "number";
-            } else if (state.tmp.shadow_numbers["number"].label === "sub verbo") {
+            } else if (state.tmp.shadow_numbers.number.label === "sub verbo") {
                 label = "sub-verbo";
             } else {
-                label = state.tmp.shadow_numbers["number"].label;
+                label = state.tmp.shadow_numbers.number.label;
             }
             for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
                 if (trylabels[i] === label) {
@@ -903,7 +903,7 @@ CSL.Attributes["@position"] = function (state, arg) {
 
     if ("near-note" === arg) {
         var near_note_func = function (state, Item, item) {
-            if (item && item["position"] === CSL.POSITION_SUBSEQUENT && item["near-note"]) {
+            if (item && item.position === CSL.POSITION_SUBSEQUENT && item["near-note"]) {
                 return true;
             }
             return false;
@@ -947,7 +947,7 @@ CSL.Attributes["@position"] = function (state, arg) {
             this.tests.push(func);
         }
     }
-}
+};
 
 
 CSL.Attributes["@disambiguate"] = function (state, arg) {
@@ -1245,11 +1245,11 @@ CSL.Attributes["@use-first"] = function (state, arg) {
 
 CSL.Attributes["@stop-last"] = function (state, arg) {
     this.strings["stop-last"] = parseInt(arg, 10) * -1;
-}
+};
 
 CSL.Attributes["@oops"] = function (state, arg) {
     this.strings.oops = arg;
-}
+};
 
 CSL.Attributes["@use-last"] = function (state, arg) {
     this.strings["use-last"] = parseInt(arg, 10);

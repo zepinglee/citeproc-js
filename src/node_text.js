@@ -341,7 +341,7 @@ CSL.Node.text = {
                                         state.output.append(value, this);
                                     }
                                 }
-                            }
+                            };
                         } else if (["URL", "DOI"].indexOf(this.variables_real[0]) > -1) {
                             func = function (state, Item) {
                                 var value;

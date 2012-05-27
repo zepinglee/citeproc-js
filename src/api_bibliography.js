@@ -123,7 +123,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-    var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, chr, entry_item_data;
+    var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, chr, entry_item_data, j, jlen, newIDs, originalIDs;
     ret = [];
     entry_item_data = [];
     this.tmp.area = "bibliography";
@@ -150,8 +150,8 @@ CSL.getBibliographyEntries = function (bibsection) {
     if (bibsection && bibsection.page_start && bibsection.page_length) {
         input = this.registry.getSortedIds();        
     } else {
-        var originalIDs = this.registry.getSortedIds();
-        var newIDs = [];
+        originalIDs = this.registry.getSortedIds();
+        newIDs = [];
         this.registry.generate.items = {};
 
         // generate has two forks: origIDs and genIDs
@@ -220,10 +220,11 @@ CSL.getBibliographyEntries = function (bibsection) {
     skips = {};
 
     // For paged returns
+    var page_item_count;
     if (bibsection && bibsection.page_start && bibsection.page_length) {
-        var page_item_count = 0;
+        page_item_count = 0;
         if (bibsection.page_start !== true) {
-            for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+            for (i = 0, ilen = input.length; i < ilen; i += 1) {
                 skips[input[i]] = true;
                 if (bibsection.page_start == input[i]) {
                     break;
@@ -232,9 +233,9 @@ CSL.getBibliographyEntries = function (bibsection) {
         }
     }
 
-    processed_item_ids = [];
+    var processed_item_ids = [];
 
-    for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+    for (i = 0, ilen = input.length; i < ilen; i += 1) {
         
         // For paged returns
         if (bibsection && bibsection.page_start && bibsection.page_length) {
@@ -342,7 +343,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             entry_item_ids.push("" + CSL.getCite.call(this, item));
             skips[item.id] = true;
             siblings = this.registry.registry[item.id].siblings;
-            for (var j = 0, jlen = siblings.length; j < jlen; j += 1) {
+            for (j = 0, jlen = siblings.length; j < jlen; j += 1) {
                 var k = this.registry.registry[item.id].siblings[j];
                 eyetem = this.retrieveItem(k);
                 entry_item_ids.push("" + CSL.getCite.call(this, eyetem));
@@ -387,7 +388,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             } else {
                 topblobs = this.output.queue[0].blobs[0].blobs;
             }
-            for (var j  = topblobs.length - 1; j > -1; j += -1) {
+            for (j  = topblobs.length - 1; j > -1; j += -1) {
                 if (topblobs[j].blobs && topblobs[j].blobs.length !== 0) {
                     // Fix up duplicate terminal punctuation, reported by Carles Pina 2010-07-15
                     chr = this.bibliography.opt.layout_suffix.slice(0, 1);

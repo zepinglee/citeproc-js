@@ -171,4 +171,4 @@ CSL.NameOutput.prototype._checkNickname = function (name) {
         }
     }
     return name;
-}
+};

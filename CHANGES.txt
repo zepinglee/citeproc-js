@@ -8,7 +8,9 @@ Changes in version 1.0.338
 Mishandled or unimplemented features
 ------------------------------------
 
-- Fix two small bugs in names update machinery.
+- Tiny cleanup, dropping some unneeded code lines.
+
+- Always set taintedCitationIDs as Object()
 
 
 ==========================

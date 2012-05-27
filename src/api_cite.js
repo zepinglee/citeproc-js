@@ -74,7 +74,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 
 
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
-    var c, i, ilen, j, jlen, k, klen, n, nlen, key, Item, item, noteCitations, textCitations;
+    var c, i, ilen, j, jlen, k, klen, n, nlen, key, Item, item, noteCitations, textCitations, m, citationsInNote;
     this.debug = false;
     //print("################### processCitationCluster() #################");
     //SNIP-START
@@ -151,8 +151,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     // attach pointer to item data to shared copy for good measure
     for (i = 0, ilen = citation.citationItems.length; i < ilen; i += 1) {
         // Protect against caller-side overwrites to locator strings etc
-        var item = {};
-        for (var key in citation.citationItems[i]) {
+        item = {};
+        for (key in citation.citationItems[i]) {
             item[key] = citation.citationItems[i][key];
         }
         Item = this.retrieveItem("" + item.id);
@@ -166,7 +166,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     var raw_locator = item.locator;
                     item.locator = raw_locator.slice(0, idx);
                     raw_locator = raw_locator.slice(idx + 1);
-                    var m = raw_locator.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
+                    m = raw_locator.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
                     if (m) {
                         item["locator-date"] = this.fun.dateparser.parse(m[1]);
                         raw_locator = raw_locator.slice(m[1].length);
@@ -177,7 +177,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         }
         if (this.opt.development_extensions.locator_label_parse) {
             if (item.locator && ["bill","gazette","legislation","treaty"].indexOf(Item.type) === -1 && (!item.label || item.label === 'page')) {
-                var m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
+                m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
                 if (m) {
                     item.label = CSL.LOCATOR_LABELS_MAP[m[2]];
                     item.locator = m[3];
@@ -240,7 +240,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     if (this.opt.update_mode === CSL.POSITION) {
         textCitations = [];
         noteCitations = [];
-        var citationsInNote = {};
+        citationsInNote = {};
     }
     var update_items = [];
     for (i = 0, ilen = citationByIndex.length; i < ilen; i += 1) {
@@ -343,12 +343,16 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             var last_ref = {};
             for (j = 0, jlen = citations.length; j < jlen; j += 1) {
                 var onecitation = citations[j];
+                if (!citations[j].properties.noteIndex) {
+                    citations[j].properties.noteIndex = 0;
+                }
+                citations[j].properties.noteIndex = parseInt(citations[j].properties.noteIndex, 10);
                 if (j > 0 && citations[j - 1].properties.noteIndex > citations[j].properties.noteIndex) {
                     citationsInNote = {};
                     first_ref = {};
                     last_ref = {};
                 }
-                for (var k = 0, klen = onecitation.sortedItems.length; k < klen; k += 1) {
+                for (k = 0, klen = onecitation.sortedItems.length; k < klen; k += 1) {
                     if (!this.registry.registry[onecitation.sortedItems[k][1].id].parallel) {
                         if (!citationsInNote[onecitation.properties.noteIndex]) {
                             citationsInNote[onecitation.properties.noteIndex] = 1;
@@ -386,7 +390,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         if (onecitation.sortedItems[k - 1][0].legislation_id) {
                             incitationid = onecitation.sortedItems[k - 1][0].legislation_id;
                         } else {
-                            incitationid = onecitation.sortedItems[k - 1][1].id
+                            incitationid = onecitation.sortedItems[k - 1][1].id;
                         }
                     }
                     // Don't touch item data of other cites when previewing
@@ -407,7 +411,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     oldvalue["near-note"] = item[1]["near-note"];
                     item[1]["first-reference-note-number"] = 0;
                     item[1]["near-note"] = false;
-                    
+                    var oldlastid;
+
                     if ("undefined" === typeof first_ref[myid]) {
                         first_ref[myid] = onecitation.properties.noteIndex;
                         last_ref[myid] = onecitation.properties.noteIndex;
@@ -422,7 +427,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         var suprame = false;
                         // XXX Ugly, but This is used in the second else-if branch condition below.
                         if (j > 0) {
-                            var oldlastid =  citations[j - 1].sortedItems.slice(-1)[0][1].id;
+                            oldlastid =  citations[j - 1].sortedItems.slice(-1)[0][1].id;
                             if (citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id) {
                                 oldlastid = citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id;
                             }
@@ -444,7 +449,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                                 oldid = citations[j - 1].sortedItems[0][0].legislation_id;
                             }
                             if ((oldid  == myid && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1)) || citations[j - 1].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
-                                if (citationsInNote[citations[j - 1].properties.noteIndex] == 1 || citations[j - 1].properties.noteIndex == 0) {
+                                if (citationsInNote[citations[j - 1].properties.noteIndex] === 1 || citations[j - 1].properties.noteIndex === 0) {
                                     useme = true;
                                 }
                             }
@@ -469,7 +474,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             //     (a) there must be an imediately preceding reference to  the
                             //         same item in this onecitation; and
                             ibidme = true;
-                        } else if (k == 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
+                        } else if (k === 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
                                    && citations[j - 1].sortedItems.length 
                                    && oldlastid == myid) {
                             // ... in case there are separate citations in the same note ...
@@ -747,7 +752,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
     this.remapSectionVariable(inputList);
     if (inputList && inputList.length > 1 && this.citation_sort.tokens.length > 0) {
         len = inputList.length;
-        for (var pos = 0; pos < len; pos += 1) {
+        for (pos = 0; pos < len; pos += 1) {
             inputList[pos][1].sortkeys = CSL.getSortKeys.call(this, inputList[pos][0], "citation_sort");
         }
         inputList.sort(this.citation.srt.compareCompositeKeys);
@@ -853,6 +858,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
         var lastTitle = false;
         var lastPosition = false;
         var lastID = false;
+        var lst = [];
         for (var i=0, ilen = inputList.length; i < ilen; i += 1) {
             var type = inputList[i][0].type;
             var title = inputList[i][0].title;
@@ -861,7 +867,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             if (title && type === "legal_case" && id !== lastID && position) {
                 // Start a fresh sublist if the item title does not match the last one
                 if (title !== lastTitle || parasets.length === 0) {
-                    var lst = [];
+                    lst = [];
                     parasets.push(lst);
                 }
                 lst.push(inputList[i][1]);
@@ -871,8 +877,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
             lastID = id;
         }
         // We now have a list of sublists, each w/matching titles
-        for (var i=0, ilen=parasets.length; i < ilen; i += 1) {
-            var lst = parasets[i];
+        for (i=0, ilen=parasets.length; i < ilen; i += 1) {
+            lst = parasets[i];
             if (lst.length < 2) {
                 continue;
             }
@@ -1042,7 +1048,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             if (tmpstr && tmpstr.slice(0, 1) === ",") {
                 objects.push(tmpstr);
             } else if ("string" == typeof objects.slice(-1)[0] && objects.slice(-1)[0].slice(-1) === ",") {
-                objects.push(" " + tmpstr)
+                objects.push(" " + tmpstr);
             } else if (tmpstr) {
                 objects.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
             }
@@ -1234,7 +1240,7 @@ CSL.citeEnd = function (Item, item) {
         // Throw away the unwanted blob
         this.tmp.original_date.list.pop();
         // Put the other stuff back
-        for (var i = buf.length - 1; i > -1; i += -1) {
+        for (i = buf.length - 1; i > -1; i += -1) {
             this.tmp.original_date.list.push(buf.pop());
         }
         // Notice the deletion to parallels machinery
