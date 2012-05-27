@@ -12,6 +12,17 @@ Mishandled or unimplemented features
 
 - Always set taintedCitationIDs as Object()
 
+- Small changes to satisfy JSHint on some files.
+
+- Be more disciplined about preserving submission
+  order when building registry from updateItems()
+
+- Include year-suffix as sort key only in cs:citation.
+  cs:bibliography must be allowed to float freely.
+
+- Provide for the forced rerunning of ambig sets
+  via updateItems()
+
 
 ==========================
 Changes in version 1.0.337
