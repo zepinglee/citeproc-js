@@ -135,7 +135,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
 };
 
 
-CSL.Engine.prototype.updateItems = function (idList, nosort) {
+CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs) {
     var debug = false;
     var oldArea = this.tmp.area;
     //CSL.debug = print
@@ -145,6 +145,13 @@ CSL.Engine.prototype.updateItems = function (idList, nosort) {
     }
     //SNIP-END
     this.registry.init(idList);
+
+	if (rerun_ambigs) {
+		for (var ambig in this.registry.ambigcites) {
+			this.registry.ambigsTouched[ambig] = true;
+		}
+	}
+
     //SNIP-START
     if (debug) {
         CSL.debug("--> dodeletes <--");
