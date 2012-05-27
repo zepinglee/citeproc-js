@@ -221,6 +221,7 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 	//     the list. Avoids the issue reported here:
 	//         https://bitbucket.org/fbennett/citeproc-js/issue/132/differences-in-behaviour-from
 	var tmphash = {};
+	myitems.reverse();
 	for (i = myitems.length - 1; i > -1; i += -1) {
 		if (tmphash[myitems[i]]) {
 			myitems = myitems.slice(0, i).concat(myitems.slice(i + 1));
@@ -228,6 +229,7 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 			tmphash[myitems[i]] = true;
 		}
 	}
+	myitems.reverse();
     //
     //  1. Receive list as function argument, store as hash and as list.
     //
@@ -480,23 +482,19 @@ CSL.Registry.prototype.dorefreshes = function () {
     //
     for (key in this.refreshes) {
         regtoken = this.registry[key];
-        delete this.registry[key];
         if (!regtoken) {
             continue;
         }
-        regtoken.disambig = undefined;
         regtoken.sortkeys = undefined;
-        regtoken.ambig = undefined;
         Item = this.state.retrieveItem(key);
         var akey = regtoken.ambig;
         if ("undefined" === typeof akey) {
             akey = CSL.getAmbiguousCite.call(this.state, Item);
-            this.state.tmp.taintedItemIDs[key] = true;
         }
-        this.ambigsTouched[akey] = true;
-        this.registry[key] = regtoken;
+		this.state.tmp.taintedItemIDs[key] = true;
         abase = CSL.getAmbigConfig.call(this.state);
         this.registerAmbigToken(akey, key, abase);
+        this.ambigsTouched[akey] = true;
         if (!Item.legislation_id) {
             this.akeys[akey] = true;
         }
@@ -581,12 +579,12 @@ CSL.Registry.prototype.setsortkeys = function () {
     //
     // 17. Set sort keys on each item token.
     //
-    for (key in this.touched) {
-        if (this.touched.hasOwnProperty(key)) {
-            this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
-            //CSL.debug("touched: "+item+" ... "+this.registry[item].sortkeys);
-        }
-    }
+	for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
+		var key = this.mylist[i];
+		if (this.touched[key] || this.state.tmp.taintedItemIDs[key]) {
+			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
+		}
+	}
 };
 
 CSL.Registry.prototype.sorttokens = function () {
