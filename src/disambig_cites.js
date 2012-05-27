@@ -94,7 +94,7 @@ CSL.Disambiguation.prototype.runDisambig = function () {
                 this.base = this.lists[0][0];
             }
             var names_used = [];
-            var ismax = this.incrementDisambig();
+            ismax = this.incrementDisambig();
             this.scanItems(this.lists[0]);
             this.evalScan(ismax);
         }
@@ -164,13 +164,13 @@ CSL.Disambiguation.prototype.evalScan = function (maxed) {
 };
 
 CSL.Disambiguation.prototype.disNames = function (ismax) {
-    var pos, len, mybase;
+    var pos, len, mybase, i, ilen;
     
     //SNIP-START
     if (this.debug) {
         print("[3] == disNames() ==");
-        print("       partners: "+[this.partners[i].id for (i in this.partners)].join(", "));
-        print("    nonpartners: "+[this.nonpartners[i].id for (i in this.nonpartners)].join(", "));
+        //print("       partners: "+[this.partners[i].id for (i in this.partners)].join(", "));
+        //print("    nonpartners: "+[this.nonpartners[i].id for (i in this.nonpartners)].join(", "));
     }
     //SNIP-END
 
@@ -237,7 +237,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
         }
         //SNIP-END
         this.lists[this.listpos] = [this.betterbase, this.partners];
-        this.lists.push([this.betterbase, this.nonpartners])
+        this.lists.push([this.betterbase, this.nonpartners]);
     } else {
         //SNIP-START
         if (this.debug) {
@@ -253,7 +253,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
                     print("     (registering clashing entries because we've run out of options)");
                 }
                 //SNIP-END
-                for (var i = 0, ilen = this.partners.length; i < ilen; i += 1) {
+                for (i = 0, ilen = this.partners.length; i < ilen; i += 1) {
                     this.state.registry.registerAmbigToken(this.akey, "" + this.partners[i].id, this.betterbase);
                 }
                 this.lists[this.listpos] = [this.betterbase, []];
@@ -307,10 +307,18 @@ CSL.Disambiguation.prototype.disYears = function () {
     if (this.clashes[1]) {
         // That is, if the initial increment on the ambigs group returns no
         // clashes, don't apply suffix. The condition is a necessary failsafe.
-        for (pos = 0, len = this.lists[this.listpos][1].length; pos < len; pos += 1) {
-            token = this.registry[this.lists[this.listpos][1][pos].id];
-            tokens.push(token);
-        }
+		// In original submission order
+		for (var i = 0, ilen = this.state.registry.mylist.length; i < ilen; i += 1) {
+			var origid = this.state.registry.mylist[i];
+			for (var j = 0, jlen = this.lists[this.listpos][1].length; j < jlen; j += 1) {
+				var token = this.lists[this.listpos][1][j];
+				// Warning: token.id can be number. This should be fixed at a higher level in citeproc-js if poss.
+				if (token.id == origid) {
+					tokens.push(this.registry[token.id]);
+					break;
+				}
+			}
+		}
     }
     tokens.sort(this.state.registry.sorter.compareKeys);
     for (pos = 0, len = tokens.length; pos < len; pos += 1) {
@@ -335,9 +343,9 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
         this.initGivens = false;
         return false;
     }
-    maxed = false;
-    increment_names = true;
-    increment_givens = true;
+    var maxed = false;
+    var increment_names = true;
+    var increment_givens = true;
     if ("disNames" === this.modes[this.modeindex]) {
         // this.gnameset: the index pos of the current nameset
         // this.gname: the index pos of the current name w/in the current nameset
@@ -366,7 +374,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             if (this.base.givens[this.gnameset][this.gname] < this.givensMax) {
                 this.base.givens[this.gnameset][this.gname] += 1;
             } else {
-                var increment_names = true;
+                increment_names = true;
             }
         }
         if ("number" === typeof this.namesMax && increment_names) {
@@ -375,7 +383,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
                 this.base.names[this.gnameset] += 1;
                 this.gname += 1;
             } else {
-                var increment_namesets = true;
+                increment_namesets = true;
             }
         }
         if ("number" === typeof this.namesetsMax && increment_namesets) {
@@ -489,7 +497,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
     this.modeindex = 0;
     this.namesMax = this.maxNamesByItemId[this.Item.id][0];
 
-    for (var i = 0, ilen = this.base.givens.length; i < ilen; i += 1) {
+    for (i = 0, ilen = this.base.givens.length; i < ilen; i += 1) {
         for (var j = 0, jlen = this.namesMax; j < jlen; j += 1) {
             if (!this.base.givens[i][j]) {
                 this.base.givens[i][j] = 0;
