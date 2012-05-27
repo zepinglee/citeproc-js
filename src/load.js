@@ -112,7 +112,6 @@ var CSL = {
         "Chapter": "Ch.",
         "subchapter": "subch.",
         "page": "p.",
-        "page": "pp.",
         "paragraph": "para.",
         "subparagraph": "subpara.",
         "part": "pt.",
@@ -149,12 +148,12 @@ var CSL = {
         this["collection-title"] = {};
         this["institution-entire"] = {};
         this["institution-part"] = {};
-        this["nickname"] = {};
-        this["number"] = {};
-        this["title"] = {};
-        this["place"] = {};
-        this["hereinafter"] = {};
-        this["classic"] = {};
+        this.nickname = {};
+        this.number = {};
+        this.title = {};
+        this.place = {};
+        this.hereinafter = {};
+        this.classic = {};
         this["container-phrase"] = {};
         this["title-phrase"] = {};
     },
