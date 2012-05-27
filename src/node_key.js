@@ -83,6 +83,10 @@ CSL.Node.key = {
         }
         state[state.build.area].opt.sort_directions.push(sort_direction);
 
+        if (CSL.DATE_VARIABLES.indexOf(this.variables[0]) > -1) {
+            state.build.date_key = true;
+        }
+
         // et al init
         func = function (state, Item) {
             state.tmp.sort_key_flag = true;
@@ -227,6 +231,26 @@ CSL.Node.key = {
             state.tmp.value = [];
         };
         end_key.execs.push(func);
+
+        // Set year-suffix key on anything that looks like a date
+        if (state.build.date_key) {
+            if (state.build.area === "citation_sort") {
+                // ascending sort always
+                state[state.build.area].opt.sort_directions.push([-1,1]);
+                func = function (state, Item) {
+                    // year-suffix Key
+                    var year_suffix = state.registry.registry[Item.id].disambig.year_suffix;
+                    if (!year_suffix) {
+                        year_suffix = 0;
+                    }
+                    var key = CSL.Util.padding("" + year_suffix);
+                    state[state.tmp.area].keys.push(key);
+                }
+                end_key.execs.push(func);
+            }
+            state.build.date_key = false;
+        }
+
         // reset key params
         func = function (state, Item) {
             // state.tmp.name_quash = new Object();
