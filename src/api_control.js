@@ -59,25 +59,31 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
 
 CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
     var i, ilen;
-    this.opt['locale-sort'] = [];
-    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-sort'].push(tags[i]);
+    if (tags) {
+        this.opt['locale-sort'] = [];
+        for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+            this.opt['locale-sort'].push(tags[i]);
+        }
     }
 };
     
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
     var i, ilen;
-    this.opt['locale-translit'] = [];    
-    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-translit'].push(tags[i]);
+    this.opt['locale-translit'] = [];
+    if (tags) {
+        for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+            this.opt['locale-translit'].push(tags[i]);
+        }
     }
 };
     
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     var i, ilen;
     this.opt['locale-translat'] = [];
-    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-translat'].push(tags[i]);
+    if (tags) {
+        for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+            this.opt['locale-translat'].push(tags[i]);
+        }
     }
 };
 
