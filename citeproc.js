@@ -1836,7 +1836,7 @@ CSL.DateParser = function () {
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
-    this.processor_version = "1.0.338";
+    this.processor_version = "1.0.339";
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
@@ -2501,23 +2501,29 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
 };
 CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
     var i, ilen;
-    this.opt['locale-sort'] = [];
-    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-sort'].push(tags[i]);
+    if (tags) {
+        this.opt['locale-sort'] = [];
+        for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+            this.opt['locale-sort'].push(tags[i]);
+        }
     }
 };
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
     var i, ilen;
-    this.opt['locale-translit'] = [];    
-    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-translit'].push(tags[i]);
+    this.opt['locale-translit'] = [];
+    if (tags) {
+        for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+            this.opt['locale-translit'].push(tags[i]);
+        }
     }
 };
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     var i, ilen;
     this.opt['locale-translat'] = [];
-    for (i = 0, ilen = tags.length; i < ilen; i += 1) {
-        this.opt['locale-translat'].push(tags[i]);
+    if (tags) {
+        for (i = 0, ilen = tags.length; i < ilen; i += 1) {
+            this.opt['locale-translat'].push(tags[i]);
+        }
     }
 };
 CSL.Engine.prototype.setLangPrefsForCites = function (params) {
@@ -2604,6 +2610,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.csl_reverse_lookup_support = false;
     this.development_extensions.clobber_locator_if_no_statute_section = false;
     this.development_extensions.wrap_url_and_doi = false;
+    this.development_extensions.allow_force_lowercase = false;
     this.nodenames = [];
     this.gender = {};
 	this['cite-lang-prefs'] = {
@@ -11035,7 +11042,11 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
     len = strings.length;
     for (pos = 0; pos < len; pos += 1) {
         if (strings[pos].length > 1) {
-            strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1).toLowerCase();
+			if (state.opt.development_extensions.allow_force_lowercase) {
+				strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1).toLowerCase();
+			} else {
+				strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1);
+			}
         } else if (strings[pos].length === 1) {
             strings[pos] = strings[pos].toUpperCase();
         }
@@ -11093,9 +11104,15 @@ CSL.Output.Formatters.title = function (state, string) {
                 }
                 if (!totallyskip) {
                     if (skip && notfirst && notlast && !aftercolon) {
-                        words[pos] = lowerCaseVariant;
+						if (state.opt.development_extensions.allow_force_lowercase) {
+							words[pos] = lowerCaseVariant;
+						}
                     } else {
-                        words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+						if (state.opt.development_extensions.allow_force_lowercase) {
+							words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+						} else {
+							words[pos] = upperCaseVariant.slice(0, 1) + words[pos].substr(1);
+						}
                     }
                 }
             }
@@ -11567,6 +11584,7 @@ CSL.Registry.prototype.setdisambigs = function () {
     for (akey in this.ambigsTouched) {
         this.state.disambiguate.run(akey);
     }
+	this.ambigsTouched = {};
     this.akeys = {};
 };
 CSL.Registry.prototype.renumber = function () {

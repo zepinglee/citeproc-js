@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.339
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid breaking when multilingual when nil values are passed 
+  to language configuration methods
+
+- Disable lowercasing of characters with text-case="capitalize-all"
+  and text-case="title". The old behavior can be obtained by
+  setting citeproc.opt.development_extensions.allow_force_lowercase
+  to true.
+
+- Reset internal ambigsTouched variable after use. This avoids
+  unnecessary busy-ness in repeated document refreshes on some systems.
+
+
+==========================
 Changes in version 1.0.338
 ==========================
 
