@@ -531,6 +531,7 @@ CSL.Registry.prototype.setdisambigs = function () {
         // in effect.
         this.state.disambiguate.run(akey);
     }
+	this.ambigsTouched = {};
     this.akeys = {};
 };
 
