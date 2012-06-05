@@ -99,6 +99,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.csl_reverse_lookup_support = false;
     this.development_extensions.clobber_locator_if_no_statute_section = false;
     this.development_extensions.wrap_url_and_doi = false;
+    this.development_extensions.allow_force_lowercase = false;
 
     this.nodenames = [];
 
