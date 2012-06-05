@@ -126,8 +126,8 @@ CSL.Output.Formatters.sentence = function (state, string) {
 
 /**
  * Force the first letter of each space-delimited
- * word in the string to uppercase, and force remaining
- * letters to lowercase.  Single characters are forced
+ * word in the string to uppercase, and leave the remainder
+ * of the string untouched.  Single characters are forced
  * to uppercase.
  */
 CSL.Output.Formatters["capitalize-all"] = function (state, string) {
@@ -137,7 +137,11 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
     len = strings.length;
     for (pos = 0; pos < len; pos += 1) {
         if (strings[pos].length > 1) {
-            strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1).toLowerCase();
+			if (state.opt.development_extensions.allow_force_lowercase) {
+				strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1).toLowerCase();
+			} else {
+				strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1);
+			}
         } else if (strings[pos].length === 1) {
             strings[pos] = strings[pos].toUpperCase();
         }
@@ -211,12 +215,18 @@ CSL.Output.Formatters.title = function (state, string) {
                 // Skip if word is all-uppercase, and the full string is in mixed-case
                 if (!totallyskip) {
                     // If word is a stop-word, neither first nor last, and does not follow a colon,
-                    // force to lowercase
+                    // leave untouched
                     // Otherwise capitalize first character
                     if (skip && notfirst && notlast && !aftercolon) {
-                        words[pos] = lowerCaseVariant;
+						if (state.opt.development_extensions.allow_force_lowercase) {
+							words[pos] = lowerCaseVariant;
+						}
                     } else {
-                        words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+						if (state.opt.development_extensions.allow_force_lowercase) {
+							words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
+						} else {
+							words[pos] = upperCaseVariant.slice(0, 1) + words[pos].substr(1);
+						}
                     }
                 }
             }
