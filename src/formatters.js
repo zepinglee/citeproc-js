@@ -131,19 +131,17 @@ CSL.Output.Formatters.sentence = function (state, string) {
  * to uppercase.
  */
 CSL.Output.Formatters["capitalize-all"] = function (state, string) {
-    var str, strings, len, pos;
-    str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-    strings = str.string.split(" ");
-    len = strings.length;
-    for (pos = 0; pos < len; pos += 1) {
-        if (strings[pos].length > 1) {
+    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    var strings = str.string.split(" ");
+    for (var i = 0, ilen = strings.length; i < ilen; i += 1) {
+        if (strings[i].length > 1) {
 			if (state.opt.development_extensions.allow_force_lowercase) {
-				strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1).toLowerCase();
+				strings[i] = strings[i].slice(0, 1).toUpperCase() + strings[i].substr(1).toLowerCase();
 			} else {
-				strings[pos] = strings[pos].slice(0, 1).toUpperCase() + strings[pos].substr(1);
+				strings[i] = strings[i].slice(0, 1).toUpperCase() + strings[i].substr(1);
 			}
-        } else if (strings[pos].length === 1) {
-            strings[pos] = strings[pos].toUpperCase();
+        } else if (strings[i].length === 1) {
+            strings[i] = strings[i].toUpperCase();
         }
     }
     str.string = strings.join(" ");
