@@ -353,6 +353,10 @@ CSL.Node.text = {
                                             if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
                                                 this.decorations = [["@" + this.variables[0], "true"]].concat(this.decorations);
                                             }
+                                        } else {
+                                            if (this.decorations.length && this.decorations[0][0] === "@" + this.variables[0]) {
+                                                this.decorations = this.decorations.slice(1);
+                                            }
                                         }
                                         state.output.append(value, this, false, false, true);
                                     }
