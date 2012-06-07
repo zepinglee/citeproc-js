@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.340
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Provide for reversal of wrap_doi_and_url toggle in
+  a running processor, with thanks to Faolan for
+  pointing out this didn't work.
+
+- Set processor version on uninstantiated CSL object,
+  with thanks to Carles Pina for pointing out that
+  previous treatment was cumbersome.
+
+
+==========================
 Changes in version 1.0.339
 ==========================
 
