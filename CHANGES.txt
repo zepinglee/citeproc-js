@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.341
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Be less shy about updating numeric citations when
+  reference list sequence numbers change.
+
+
+==========================
 Changes in version 1.0.340
 ==========================
 

@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.340",
+    PROCESSOR_VERSION: "1.0.341",
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
@@ -11599,18 +11599,11 @@ CSL.Registry.prototype.renumber = function () {
     for (pos = 0; pos < len; pos += 1) {
         item = this.reflist[pos];
         item.seq = (pos + 1);
-        var hasTaints = false;
-        for (var key in this.state.tmp.taintedItemIDs) {
-            hasTaints = true;
-            break;
+        if (this.state.opt.update_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
+            this.state.tmp.taintedItemIDs[item.id] = true;
         }
-        if (hasTaints && item.seq != this.oldseq[item.id]) {
-            if (this.state.opt.update_mode === CSL.NUMERIC) {
-                this.state.tmp.taintedItemIDs[item.id] = true;
-            }
-            if (this.state.opt.bib_mode === CSL.NUMERIC) {
-                this.return_data.bibchange = true;
-            }
+        if (this.state.opt.bib_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
+            this.return_data.bibchange = true;
         }
     }
     if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
