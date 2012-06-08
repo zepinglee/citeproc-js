@@ -554,19 +554,11 @@ CSL.Registry.prototype.renumber = function () {
         item.seq = (pos + 1);
         // update_mode is set to CSL.NUMERIC if citation-number is rendered
         // in citations.
-        var hasTaints = false;
-        for (var key in this.state.tmp.taintedItemIDs) {
-            hasTaints = true;
-            break;
+        if (this.state.opt.update_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
+            this.state.tmp.taintedItemIDs[item.id] = true;
         }
-        if (hasTaints && item.seq != this.oldseq[item.id]) {
-
-            if (this.state.opt.update_mode === CSL.NUMERIC) {
-                this.state.tmp.taintedItemIDs[item.id] = true;
-            }
-            if (this.state.opt.bib_mode === CSL.NUMERIC) {
-                this.return_data.bibchange = true;
-            }
+        if (this.state.opt.bib_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
+            this.return_data.bibchange = true;
         }
     }
     if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
