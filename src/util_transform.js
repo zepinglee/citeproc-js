@@ -295,7 +295,7 @@ CSL.Transform = function (state) {
 
         return function (state, Item, item, usedOrig) {
             var primary, secondary, tertiary, primary_tok, group_tok, key;
-            if (!variables[0]) {
+            if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
                 return null;
             }
             
