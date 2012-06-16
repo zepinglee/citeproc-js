@@ -352,11 +352,11 @@ CSL.Transform = function (state) {
 			secondary = false;
 			tertiary = false;
 			if (slot.secondary) {
-				res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
+				res = getTextSubField(Item, variables[0], slot.secondary, true, res.usedOrig);
                 secondary = res.name;
 			}
 			if (slot.tertiary) {
-				res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
+				res = getTextSubField(Item, variables[0], slot.tertiary, true, res.usedOrig);
                 tertiary = res.name;
 			}
         
