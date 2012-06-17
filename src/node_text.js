@@ -181,12 +181,14 @@ CSL.Node.text = {
                         if (!label) {
                             label = state.getCitationLabel(Item);
                         }
-                        suffix = "";
-                        if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false) {
-                            num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
-                            suffix = state.fun.suffixator.format(num);
+                        if (!state.tmp.just_looking) {
+                            suffix = "";
+                            if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false) {
+                                num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
+                                suffix = state.fun.suffixator.format(num);
+                            }
+                            label += suffix;
                         }
-                        label += suffix;
                         state.output.append(label, this);
                     };
                     this.execs.push(func);
