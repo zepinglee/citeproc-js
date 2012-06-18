@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.346
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Be a little smarter about mixed romanesque/non-romanesque
+  script in names, and allow explicit zh and ja set on name
+  to override name ordering assumptions derived from the
+  script used.
+
+==========================
 Changes in version 1.0.345
 ==========================
 
