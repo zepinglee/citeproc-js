@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.345
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement preferred form of <span style="font-variant:small-caps;">
+  for small caps in rich text.
+
+
+==========================
 Changes in version 1.0.344
 ==========================
 
