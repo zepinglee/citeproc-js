@@ -6693,7 +6693,7 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         transliterated:transliterated,
         block_initialize:block_initialize,
         literal:name.literal,
-        isInstitution:name.isInstitution,
+        isInstitution:name.isInstitution
     };
     if (static_ordering_freshcheck &&
         !this.getStaticOrder(name, true)) {
