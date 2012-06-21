@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.349
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Derive language of name from language of entry, if
+  no explicit value set on name.
+
+==========================
 Changes in version 1.0.348
 ==========================
 
