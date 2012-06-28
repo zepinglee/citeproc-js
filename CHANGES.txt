@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.350
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement slot-specific affixes on multilingual
+  fields.
+
+==========================
 Changes in version 1.0.349
 ==========================
 
