@@ -161,7 +161,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
                 short_style = this._getShortStyle();
                 institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
                 // true is to include multilingual supplement
-                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], long_style);
+                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
                 institution = [institution_short, institution_long];
                 break;
             case "long-short":
@@ -169,13 +169,13 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
                 short_style = this._getShortStyle();
                 institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
                 // true is to include multilingual supplement
-                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], long_style, true);
+                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style, true);
                 institution = [institution_long, institution_short];
                 break;
             default:
                 long_style = this._getLongStyle(primary, v, j);
                 // true is to include multilingual supplement
-                institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], long_style)];
+                institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style)];
                 break;
             }
             this.institutions[v][j] = this._join(institution, "");
@@ -183,7 +183,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
     }
 };
 
-CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, style) {
+CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, style) {
     var primary = false, secondary = false, tertiary = false;
     if (names[0]) {
         primary = this._renderOneInstitutionPart(names[0]["long"], style);
@@ -197,15 +197,35 @@ CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, style) {
     // Compose
     var institutionblob;
     if (secondary || tertiary) {
-        var multiblob = this._join([secondary, tertiary], ", ");
-        var group_tok = new CSL.Token();
-        group_tok.strings.prefix = " [";
-        group_tok.strings.suffix = "]";
-        this.state.output.openLevel(group_tok);
-        this.state.output.append(multiblob);
+        this.state.output.openLevel("empty");
+
+        this.state.output.append(primary);
+
+        secondary_tok = CSL.Util.cloneToken(style);
+        if (slot.secondary) {
+            secondary_tok.strings.prefix = this.state.opt.citeAffixes.institutions[slot.secondary].prefix;
+            secondary_tok.strings.suffix = this.state.opt.citeAffixes.institutions[slot.secondary].suffix;
+            // Add a space if empty
+            if (!secondary_tok.strings.prefix) {
+                secondary_tok.strings.prefix = " ";
+            }
+        }
+        this.state.output.append(secondary, secondary_tok);
+
+        tertiary_tok = CSL.Util.cloneToken(style);
+        if (slot.tertiary) {
+            tertiary_tok.strings.prefix = this.state.opt.citeAffixes.institutions[slot.tertiary].prefix;
+            tertiary_tok.strings.suffix = this.state.opt.citeAffixes.institutions[slot.tertiary].suffix;
+            // Add a space if empty
+            if (!tertiary_tok.strings.prefix) {
+                tertiary_tok.strings.prefix = " ";
+            }
+        }
+        this.state.output.append(tertiary, tertiary_tok);
+
         this.state.output.closeLevel();
-        multiblob = this.state.output.pop();
-        institutionblob = this._join([primary, multiblob], "");
+
+        institutionblob = this.state.output.pop();
     } else {
         institutionblob = primary;
     }
@@ -304,15 +324,36 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
             // Now compose them to a unit
             var personblob;
             if (secondary || tertiary) {
-                var multiblob = this._join([secondary, tertiary], ", ");
-                var group_tok = new CSL.Token();
-                group_tok.strings.prefix = " [";
-                group_tok.strings.suffix = "]";
-                this.state.output.openLevel(group_tok);
-                this.state.output.append(multiblob);
+
+                this.state.output.openLevel("empty");
+
+                this.state.output.append(primary);
+
+                secondary_tok = new CSL.Token();
+                if (slot.secondary) {
+                    secondary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.secondary].prefix;
+                    secondary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.secondary].suffix;
+                    // Add a space if empty
+                    if (!secondary_tok.strings.prefix) {
+                        secondary_tok.strings.prefix = " ";
+                    }
+                }
+                this.state.output.append(secondary, secondary_tok);
+
+                tertiary_tok = new CSL.Token();
+                if (slot.tertiary) {
+                    tertiary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.tertiary].prefix;
+                    tertiary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.tertiary].suffix;
+                    // Add a space if empty
+                    if (!tertiary_tok.strings.prefix) {
+                        tertiary_tok.strings.prefix = " ";
+                    }
+                }
+                this.state.output.append(tertiary, tertiary_tok);
+
                 this.state.output.closeLevel();
-                multiblob = this.state.output.pop();
-                personblob = this._join([primary, multiblob], "");
+
+                personblob = this.state.output.pop();
             } else {
                 personblob = primary;
             }

@@ -306,16 +306,16 @@ CSL.Transform = function (state) {
 			    if (localesets) {
 				    var slotnames = ["primary", "secondary", "tertiary"];
 				    for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
-					    if (localesets.length - 1 <  i) {
-						    break;
-					    }
-                        if (localesets[i]) {
-						    slot[slotnames[i]] = 'locale-' + localesets[i];
+                        if (localesets.length - 1 <  i) {
+                            break;
                         }
-				    }
-			    } else {
-					slot.primary = 'locale-translat';
-			    }
+                        if (localesets[i]) {
+                            slot[slotnames[i]] = 'locale-' + localesets[i];
+                        }
+                    }
+                } else {
+                    slot.primary = 'locale-orig';
+                }
             }
             
 			if ((state.tmp.area !== "bibliography"
@@ -380,52 +380,52 @@ CSL.Transform = function (state) {
                 tertiary = CSL.demoteNoiseWords(state, tertiary);
             }
             if (secondary || tertiary) {
+
+                state.output.openLevel("empty");
+
                 primary_tok = CSL.Util.cloneToken(this);
+                // A little too aggressive maybe.
                 primary_tok.strings.suffix = "";
                 state.output.append(primary, primary_tok);
-                
-                group_tok = new CSL.Token();
-                group_tok.strings.prefix = " [";
-                group_tok.strings.delimiter = ", ";
-                group_tok.strings.suffix = "]" + this.strings.suffix;
-				state.output.openLevel(group_tok);
-				if (secondary) {
-					state.output.append(secondary);
-				}
-				if (tertiary) {
-					state.output.append(tertiary);
-				}
+
+                if (secondary) {
+                    secondary_tok = CSL.Util.cloneToken(primary_tok);
+                    secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
+                    secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
+                    // Add a space if empty
+                    if (!secondary_tok.strings.prefix) {
+                        secondary_tok.strings.prefix = " ";
+                    }
+                    // Remove quotes
+                    for (var i = secondary_tok.decorations.length - 1; i > -1; i += -1) {
+                        if (secondary_tok.decorations[i][0] === '@quotes') {
+                            secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
+                        }
+                    }
+					state.output.append(secondary, secondary_tok);
+                }
+                if (tertiary) {
+                    tertiary_tok = CSL.Util.cloneToken(primary_tok);
+                    tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
+                    tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
+                    // Add a space if empty
+                    if (!tertiary_tok.strings.prefix) {
+                        tertiary_tok.strings.prefix = " ";
+                    }
+                    // Remove quotes
+                    for (var i = tertiary_tok.decorations.length - 1; i > -1; i += -1) {
+                        if (tertiary_tok.decorations[i][0] === '@quotes') {
+                            tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1))
+                        }
+                    }
+					state.output.append(tertiary, tertiary_tok);
+                }
 				state.output.closeLevel();
             } else {
                 state.output.append(primary, this);
             }
             return null;
         };
-        /*
-        } else {
-            return function (state, Item) {
-                var primary;
-                if (!variables[0]) {
-                    return null;
-                }
-                primary = getTextSubField(Item, myfieldname, transform_locale, transform_fallback);
-
-                // Factor this out
-                if (publisherCheck(this, Item, primary)) {
-                    return null;
-                } else {
-                    if ("demote" === this["leading-noise-words"]) {
-                        primary = CSL.demoteNoiseWords(state, primary);
-                    }
-                    // Safe, because when state.tmp["publisher-list"] exists,
-                    // the variable must be one of publisher or publisher-place.
-                    primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
-                    state.output.append(primary, this);
-                }
-                return null;
-            };
-        }
-        */
     }
     this.getOutputFunction = getOutputFunction;
 

@@ -55,6 +55,78 @@ CSL.Engine.Opt = function () {
     this["locale-sort"] = [];
     this["locale-translit"] = [];
     this["locale-translat"] = [];
+    this.citeAffixes = {
+        persons:{
+            "locale-orig":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translit":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translat":{
+                prefix:"",
+                suffix:""
+            }
+        },
+        institutions:{
+            "locale-orig":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translit":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translat":{
+                prefix:"",
+                suffix:""
+            }
+        },
+        titles:{
+            "locale-orig":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translit":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translat":{
+                prefix:"",
+                suffix:""
+            }
+        },
+        publishers:{
+            "locale-orig":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translit":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translat":{
+                prefix:"",
+                suffix:""
+            }
+        },
+        places:{
+            "locale-orig":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translit":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translat":{
+                prefix:"",
+                suffix:""
+            }
+        }
+    };
     this["default-locale"] = [];
     
     this["noun-genders"] = {};

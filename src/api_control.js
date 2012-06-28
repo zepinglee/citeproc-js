@@ -119,6 +119,35 @@ CSL.Engine.prototype.setLangPrefsForCites = function (params) {
 	}
 };
 
+CSL.Engine.prototype.setLangPrefsForCiteAffixes = function (affixList) {
+    if (affixList && affixList.length === 30) {
+        var affixes = this.opt.citeAffixes;
+        var count = 0;
+        var settings = ["persons", "institutions", "titles", "publishers", "places"];
+        var forms = ["orig", "translit", "translat"];
+        for (var i = 0, ilen = settings.length; i < ilen; i += 1) {
+            for (var j = 0, jlen = forms.length; j < jlen; j += 1) {
+
+                var value = affixList[count];
+                if (!value) {
+                    value = "";
+                }
+                affixes[settings[i]]["locale-" + forms[j]].prefix = value;
+                count += 1;
+
+                var value = affixList[count];
+                if (!value) {
+                    value = "";
+                }
+                affixes[settings[i]]["locale-" + forms[j]].suffix = value;
+                count += 1;
+
+            }
+        }
+        this.opt.citeAffixes = affixes;
+    }
+};
+
 CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
     if (arg) {
         this.opt["auto-vietnamese-names"] = true;
@@ -146,4 +175,5 @@ CSL.Engine.prototype.setEnglishLocaleEscapes = function (arg) {
         }
     }
 };
+
 
