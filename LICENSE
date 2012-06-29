@@ -1,4 +1,6 @@
-Common Public Attribution License Version 1.0 (CPAL)
+Common Public Attribution License Version 1.0 (CPAL) [modified]
+
+[Section 1.13 added, Section 14 modified vis-a-vis CPAL 1.0]
 
 1. DEFINITIONS
 
@@ -78,6 +80,11 @@ Common Public Attribution License Version 1.0 (CPAL)
      of such entity, whether by contract or otherwise, or (b)
      ownership of more than fifty percent (50%) of the outstanding
      shares or beneficial ownership of such entity.
+
+1.13 “Associated Website” means any website (in the ordinary meaning
+     of that term) within Your control that is offered or maintained
+     in connection with distribution of the Source Code, Executable,
+     or Larger Work.
 
 2. SOURCE CODE LICENSE
 
@@ -487,52 +494,26 @@ Initial Developer in the file described in Exhibit A.
     (a) As a modest attribution to the organizer of the development of
     the Original Code (“Original Developer”), in the hope that its
     promotional value may help justify the time, money and effort
-    invested in writing the Original Code, the Original Developer may
-    include in Exhibit B (“Attribution Information”) a requirement
-    that each time an Executable and Source Code or a Larger Work is
-    launched or initially run (which includes initiating a session), a
-    prominent display of the Original Developer’s Attribution
-    Information (as defined below) must occur on the graphic user
-    interface employed by the end user to access such Covered Code
-    (which may include display on a splash screen), if any.  The size
-    of the graphic image should be consistent with the size of the
-    other elements of the Attribution Information. If the access by
-    the end user to the Executable and Source Code does not create a
-    graphic user interface for access to the Covered Code, this
-    obligation shall not apply.  If the Original Code displays such
-    Attribution Information in a particular form (such as in the form
-    of a splash screen, notice at login, an “about” display, or
-    dedicated attribution area on user interface screens), continued
-    use of such form for that Attribution Information is one way of
-    meeting this requirement for notice.
+    invested in writing the Original Code, and in order to promote
+    uniformity in the processing of bibliographic data (which you
+    acknowledge to be a major concern and incentive of the Original
+    Developer in connection with the Covered Code), the Original
+    Developer may include in Exhibit B (“Attribution Information”) a
+    requirement that each time an Executable and Source Code, a Larger
+    Work or an Associated Website is launched or initially run (which
+    includes initiating a session), the Attribution Information (as
+    defined below) be made available for display to the end user in
+    the same size, form, manner and location as any other attribution
+    information displayed by the Executable, Source Code or Larger
+    Work, including that of the Executable, Source Code or Larger Work
+    itself. If the Original Code displays such Attribution Information
+    in a particular form (such as in the form of a splash screen,
+    notice at login, an “about” display, or dedicated attribution area
+    on user interface screens), continued use of such form for that
+    Attribution Information is one way of meeting this requirement for
+    notice.
 
-    (b) Attribution information may only include a copyright notice, a
-    brief phrase, graphic image and a URL (“Attribution Information”)
-    and is subject to the Attribution Limits as defined below.  For
-    these purposes, prominent shall mean display for sufficient
-    duration to give reasonable notice to the user of the identity of
-    the Original Developer and that if You include Attribution
-    Information or similar information for other parties, You must
-    ensure that the Attribution Information for the Original Developer
-    shall be no less prominent than such Attribution Information or
-    similar information for the other party.  For greater certainty,
-    the Original Developer may choose to specify in Exhibit B below
-    that the above attribution requirement only applies to an
-    Executable and Source Code resulting from the Original Code or any
-    Modification, but not a Larger Work.  The intent is to provide for
-    reasonably modest attribution, therefore the Original Developer
-    cannot require that You display, at any time, more than the
-    following information as Attribution Information: (a) a copyright
-    notice including the name of the Original Developer; (b) a word or
-    one phrase (not exceeding 10 words); (c) one graphic image
-    provided by the Original Developer; and (d) a URL (collectively,
-    the “Attribution Limits”).
-
-    (c) If Exhibit B does not include any Attribution Information,
-    then there are no requirements for You to display any Attribution
-    Information of the Original Developer.
-
-    (d) You acknowledge that all trademarks, service marks and/or
+    (b) You acknowledge that all trademarks, service marks and/or
     trade names contained within the Attribution Information
     distributed with the Covered Code are the exclusive property of
     their owners and may only be used with the permission of their
@@ -580,7 +561,7 @@ Developer.
 
 The Initial Developer of the Original Code is Frank G. Bennett,
 Jr. All portions of the code written by Frank G. Bennett, Jr. are
-Copyright (c) Frank G. Bennett, Jr. 2009. All Rights Reserved.
+Copyright (c) Frank G. Bennett, Jr. 2009, 2010, 2011, 2012. All Rights Reserved.
 
 Contributor ______________________.
 
@@ -607,7 +588,7 @@ Attribution Information
 
 Attribution Copyright Notice: [no separate attribution copyright notice is required]
 
-Attribution Phrase (not exceeding 10 words): "Citations by CSL (citeproc-js)"
+Attribution Phrase: "Citations by CSL (citeproc-js)"
 
 Attribution URL: http://citationstyles.org/
 
@@ -617,5 +598,7 @@ Display of Attribution Information is REQUIRED in Larger Works which
 are defined in the CPAL as a work which combines Covered Code or
 portions thereof with code not governed by the terms of the CPAL.
 
+Display of Attribution Information is also REQUIRED on Associated
+Websites.
 
-[ citeproc-js license :: version 1.0 :: 2009.08.16 ]
+[ citeproc-js license :: version 1.1 :: 2012.06.30 ]
