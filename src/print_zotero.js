@@ -23,7 +23,7 @@
  * The Original Code is the citation formatting software known as
  * "citeproc-js" (an implementation of the Citation Style Language
  * [CSL]), including the original test fixtures and software located
- * under the ./std subdirectory of the distribution archive.
+ * under the ./tests subdirectory of the distribution archive.
  *
  * The Original Developer is not the Initial Developer and is
  * __________. If left blank, the Original Developer is the Initial
