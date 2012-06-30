@@ -284,13 +284,27 @@ CSL.Disambiguation.prototype.disExtraText = function () {
         this.initGivens = true;
     } else {
         if (this.modeindex === this.modes.length - 1) {
-            // Give up at the second try if 
-            // If we reach this, we will not have disambiguated fully.
+            // If this is the end, disambiguation failed.
+            // Discard disambiguate=true and set parameters
             var base = this.lists[this.listpos][0];
             for (var i = 0, ilen = this.lists[this.listpos][1].length; i < ilen; i += 1) {
                 this.state.registry.registerAmbigToken(this.akey, "" + this.lists[this.listpos][1][i].id, base);
             }
             this.lists[this.listpos] = [this.betterbase, []];
+        } else {
+            // If this is followed by year-suffix, keep
+            // parameters and set disambiguate=true since it MIGHT
+            // include the date, needed for year-suffix.
+            // This is a bit over-aggressive for cases in which the
+            // disambiguate condition does not add the date
+            this.modeindex = this.modes.length - 1;
+            var base = this.lists[this.listpos][0];
+            base.disambiguate = true;
+            for (var i = 0, ilen = this.lists[this.listpos][1].length; i < ilen; i += 1) {
+                // Always tainting here might be a little over-aggressive, but a taint may be required.
+                this.state.tmp.taintedItemIDs[this.lists[this.listpos][1][i].id] = true;
+                this.state.registry.registerAmbigToken(this.akey, "" + this.lists[this.listpos][1][i].id, base);
+            }
         }
     }
 };
