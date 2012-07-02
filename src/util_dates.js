@@ -111,8 +111,40 @@ CSL.Util.Dates.year.numeric = function (state, num) {
 
 /*
  * MONTH manglers
+ * normalize
  * long, short, numeric, numeric-leading-zeros
  */
+CSL.Util.Dates.normalizeMonth = function (num, useSeason) {
+    var ret;
+    if (!num) {
+        num = 0;
+    }
+    num = "" + num;
+    if (!num.match(/^[0-9]+$/)) {
+        num = 0;
+    }
+    num = parseInt(num, 10);
+    if (useSeason) {
+        var res = {stub: "month-", num: num};
+        if (res.num < 1 || res.num > 20) {
+            res.num = 0;
+        } else if (res.num > 16) {
+            res.stub = "season-";
+            res.num = res.num - 16;
+        } else if (res.num > 12) {
+            res.stub = "season-";
+            res.num = res.num - 12;
+        }
+        ret = res;
+    } else {
+        if (num < 1 || num > 12) {
+            num = 0;
+        }
+        ret = num;
+    }
+    return ret;
+}
+
 CSL.Util.Dates.month = {};
 
 /**
@@ -120,15 +152,11 @@ CSL.Util.Dates.month = {};
  * <p>This just passes the number back as a string.</p>
  */
 CSL.Util.Dates.month.numeric = function (state, num) {
-    if (num) {
-        num = parseInt(num, 10);
-        // Quash value if it's a season.
-        if (num > 12) {
-            num = "";
-        }
+    var num = CSL.Util.Dates.normalizeMonth(num);
+    if (!num) {
+        num = "";
     }
-    var ret = "" + num;
-    return ret;
+    return num;
 };
 
 /**
@@ -136,18 +164,16 @@ CSL.Util.Dates.month.numeric = function (state, num) {
  * <p>This just passes the number back as string padded with zeros.</p>
  */
 CSL.Util.Dates.month["numeric-leading-zeros"] = function (state, num) {
+    var num = CSL.Util.Dates.normalizeMonth(num);
     if (!num) {
-        num = 0;
+        num = "";
+    } else {
+        num = "" + num;
+        while (num.length < 2) {
+            num = "0" + num;
+        }
     }
-    num = parseInt(num, 10);
-    if (num > 12) {
-        num = 0;
-    }
-    num = "" + num;
-    while (num.length < 2) {
-        num = "0" + num;
-    }
-    return num.toString();
+    return num;
 };
 
 /**
@@ -155,22 +181,18 @@ CSL.Util.Dates.month["numeric-leading-zeros"] = function (state, num) {
  * <p>This passes back the month of the locale in long form.</p>
  */
 CSL.Util.Dates.month["long"] = function (state, num) {
-    var stub = "month-";
-    num = parseInt(num, 10);
-    if (num > 12) {
-        stub = "season-";
-        if (num > 16) {
-            num = num - 16;
-        } else {
-            num = num - 12;
+    var res = CSL.Util.Dates.normalizeMonth(num, true);
+    var num = res.num;
+    if (!num) {
+        num = "";
+    } else {
+        num = "" + num;
+        while (num.length < 2) {
+            num = "0" + num;
         }
+        num = state.getTerm(res.stub + num, "long", 0);
     }
-    num = "" + num;
-    while (num.length < 2) {
-        num = "0" + num;
-    }
-    num = stub + num;
-    return state.getTerm(num, "long", 0);
+    return num;
 };
 
 /**
@@ -178,24 +200,19 @@ CSL.Util.Dates.month["long"] = function (state, num) {
  * <p>This passes back the month of the locale in short form.</p>
  */
 CSL.Util.Dates.month["short"] = function (state, num) {
-    var stub = "month-";
-    num = parseInt(num, 10);
-    if (num > 12) {
-        stub = "season-";
-        if (num > 16) {
-            num = num - 16;
-        } else {
-            num = num - 12;
+    var res = CSL.Util.Dates.normalizeMonth(num, true);
+    var num = res.num;
+    if (!num) {
+        num = "";
+    } else {
+        num = "" + num;
+        while (num.length < 2) {
+            num = "0" + num;
         }
+        num = state.getTerm(res.stub + num, "short", 0);
     }
-    num = "" + num;
-    while (num.length < 2) {
-        num = "0" + num;
-    }
-    num = "month-" + num;
-    return state.getTerm(num, "short", 0);
+    return num;
 };
-
 
 /*
  * DAY manglers
