@@ -398,7 +398,7 @@ CSL.Transform = function (state) {
                     }
                     // Remove quotes
                     for (var i = secondary_tok.decorations.length - 1; i > -1; i += -1) {
-                        if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(tertiary_tok.decorations[i].join('/')) > -1) {
+                        if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(secondary_tok.decorations[i].join('/')) > -1) {
                             secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
                         }
                     }
