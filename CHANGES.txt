@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.352
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Suppress bold, oblique and italic font characteristics
+  on multilingual secondary and tertiary content.
+
+==========================
 Changes in version 1.0.351
 ==========================
 
