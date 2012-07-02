@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-民法 Minpō; 刑法 Keihō
+« 民法 » Minpō; « 刑法 » Keihō
 <<===== RESULT =====<<
 
 
@@ -62,7 +62,7 @@ citation
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="en-US-x-translat-ja-Latn-hepburn">
+      default-locale="fr-FR-x-translat-ja-Latn-hepburn">
   <info>
     <id />
     <title />
@@ -70,7 +70,7 @@ citation
   </info>
   <citation>
     <layout delimiter="; ">
-      <text variable="title"/>
+      <text variable="title" quotes="true"/>
     </layout>
   </citation>
 </style>
