@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.353
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix long-standing bug affecting month names
+  when strip-periods was used on the date node.
+
+==========================
 Changes in version 1.0.352
 ==========================
 
