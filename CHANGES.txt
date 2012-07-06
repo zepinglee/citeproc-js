@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.354
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize endash when splitting out page-first
+  value.
+
+==========================
 Changes in version 1.0.353
 ==========================
 
@@ -34,11 +45,10 @@ Mishandled or unimplemented features
   and disambiguate-add-year-suffix="true" are both
   set by the style.
 
-- Amend processor license terms to require CSL attribution
-  in a website used to distribute an application that
-  makes use of citeproc-js as well, as in the application
-  itself.
-
+- Amend processor CPAL license option to require display of
+  CSL attribution on a website used to distribute an 
+  application that makes use of citeproc-js, as well 
+  as in the application itself.
 
 ==========================
 Changes in version 1.0.350
