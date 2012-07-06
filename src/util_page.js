@@ -55,7 +55,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     
     var range_delimiter = state.getTerm(rangeType + "-range-delimiter");
 
-    rangerex = /([a-zA-Z]*)([0-9]+)\s*-\s*([a-zA-Z]*)([0-9]+)/;
+    rangerex = /([a-zA-Z]*)([0-9]+)\s*(?:\u2013|-)\s*([a-zA-Z]*)([0-9]+)/;
 
     stringify = function (lst) {
         len = lst.length;

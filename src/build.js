@@ -561,7 +561,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     if (Item.page) {
         Item["page-first"] = Item.page;
         var num = "" + Item.page;
-        m = num.split(/\s*(?:&|,|-)\s*/);
+        m = num.split(/\s*(?:&|,|-|\u2013)\s*/);
         if (m[0].slice(-1) !== "\\") {
             Item["page-first"] = m[0];
         }
