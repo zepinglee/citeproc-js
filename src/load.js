@@ -87,7 +87,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.0.354",
+    PROCESSOR_VERSION: "1.0.355",
 
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -281,12 +281,12 @@ var CSL = {
     // \u0600-\u06ff is Arabic/Persian
     // \u200c-\u200e and \u202a-\u202e are special spaces and left-right 
     // control characters
-    NAME_INITIAL_REGEXP: /^([A-Z\u0080-\u017f\u0400-\u042f\u0600-\u06ff])([a-zA-Z\u0080-\u017f\u0400-\u052f\u0600-\u06ff]*|)/,
-    ROMANESQUE_REGEXP: /[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]/,
-    ROMANESQUE_NOT_REGEXP: /[^a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]/g,
-    STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]/,
-    ENDSWITH_ROMANESQUE_REGEXP: /[.;:&a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]$/,
-    ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]+$/,
+    NAME_INITIAL_REGEXP: /^([A-Z\u0590-\u05ff\u0080-\u017f\u0400-\u042f\u0600-\u06ff])([a-zA-Z\u0080-\u017f\u0400-\u052f\u0600-\u06ff]*|)/,
+    ROMANESQUE_REGEXP: /[a-zA-Z\u0590-\u05ff\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]/,
+    ROMANESQUE_NOT_REGEXP: /[^a-zA-Z\u0590-\u05ff\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]/g,
+    STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0590-\u05ff\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]/,
+    ENDSWITH_ROMANESQUE_REGEXP: /[.;:&a-zA-Z\u0590-\u05ff\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]$/,
+    ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0590-\u05ff\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]+$/,
 
     VIETNAMESE_SPECIALS: /[\u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]/,
 
