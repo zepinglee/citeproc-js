@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.356
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Clean up code for combining section variable
+  with label and locator on statutory items.
+
+==========================
 Changes in version 1.0.355
 ==========================
 
