@@ -84,11 +84,15 @@ citation
 <<===== CITATION-ITEMS =====<<
 
 
+Note the simple space in the final test. Intervening punctuation
+must be supplied on the locator explicitly when supplementing a
+value in the section variable.
+
 >>== RESULT ==>>
 White Slave Traffic (Mann) Act 36 Stat. p. 825 ¶ 10 (1910)
 White Slave Traffic (Mann) Act 36 Stat. p. 825, §§ 100 &#38; 153 (1910)
 White Slave Traffic (Mann) Act 36 Stat. pp. 825, 827 (1910)
-White Slave Traffic (Mann) Act 36 Stat. pp. 825, 829 (1910)
+White Slave Traffic (Mann) Act 36 Stat. pp. 825 829 (1910)
 <<== RESULT ==<<
 
 >>===== CSL =====>>

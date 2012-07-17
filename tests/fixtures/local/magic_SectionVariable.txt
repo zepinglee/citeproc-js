@@ -90,7 +90,7 @@ citation
     <layout>
        <group delimiter=" ">
          <label form="symbol" variable="locator"/>
-         <number variable="locator"/>
+         <number label-form="symbol" variable="locator"/>
        </group>
     </layout>
   </citation>
