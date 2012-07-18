@@ -57,6 +57,8 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             
             // Extract and assemble
             
+            item.force_pluralism = 0;
+
             var loci = ["section","","",""];
             var split;
             if (Item.section) {
@@ -102,11 +104,12 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 // If not loc_label, set loc_label to sec_label
                 loci[2] = loci[0];
             }
-            item.force_pluralism = 0;
             if (loci[3]) {
                 if (loci[3].match(/^[^0-9a-zA-Z]/)) {
                     // If loc_locator and loc_locator starts with non-[a-zA-Z0-9], set loc_label to nil
-                    if (loci[0] === loci[2]) {
+                    var loclst = loci[3].split(/\s+/);
+                    if (loci[0] === loci[2] && !loclst[1] && !CSL.STATUTE_SUBDIV_STRINGS[loclst[1].replace(/\s+/, "").replace(/\s+/, "")]) {
+                        print("WOW: "+loci[3].split(/\s+/)[0].match(/[0-9a-zA-Z]/));
                         item.force_pluralism = 1;
                     }
                     loci[2] = "";
