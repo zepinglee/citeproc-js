@@ -64,10 +64,10 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 // Set remainder of section value in sec_label
                 splt = Item.section.replace(/^\s+/,"").replace(/\s+$/, "").split(/\s+/);
                 if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
-                    loci[0] = splt[0] + " ";
+                    loci[0] = " " + splt[0] + " ";
                     loci[1] = splt.slice(1).join(" ");
                 } else {
-                    loci[0] = "sec. ";
+                    loci[0] = " sec. ";
                     loci[1] = splt.slice(0).join(" ");
                 }
             } else {
