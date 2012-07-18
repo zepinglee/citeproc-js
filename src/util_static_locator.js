@@ -125,7 +125,6 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             
             // Parse, store item.label, and evaluate for pluralism
 
-            item.force_pluralism = 0;
             if (value) {
                 splt = value.split(/\s+/);
                 if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
