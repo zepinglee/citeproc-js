@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.358
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in plurals detection in section
+  + label + locator code.
+
+==========================
 Changes in version 1.0.357
 ==========================
 
