@@ -102,9 +102,13 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                 // If not loc_label, set loc_label to sec_label
                 loci[2] = loci[0];
             }
+            item.force_pluralism = 0;
             if (loci[3]) {
                 if (loci[3].match(/^[^0-9a-zA-Z]/)) {
                     // If loc_locator and loc_locator starts with non-[a-zA-Z0-9], set loc_label to nil
+                    if (loci[0] === loci[2]) {
+                        item.force_pluralism = 1;
+                    }
                     loci[2] = "";
                 }
             } else {
@@ -128,7 +132,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                     // Evaluate pluralism here
                     // (force plural if multiple first-occurring labels)
                     var has_other = false;
-                    for (var j = splt.length - 2; j > 0; j += -1) {
+                    for (var j = splt.length - 2; j > 0; j += -2) {
                         if (splt[j] === splt[0]) {
                             item.force_pluralism = 1;
                             // Remove embedded labels that match top-level label
