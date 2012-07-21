@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.359
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Honor {suppress} string on name parts
+  and ordinary variables.
+
+- Refactor code for is-numeric test to
+  avoid unneeded runs of processNumber()
+  and to fix potential faults with tests
+  of multiple variables.
+
+==========================
 Changes in version 1.0.358
 ==========================
 
