@@ -148,6 +148,9 @@ CSL.Transform = function (state) {
         if (!value) {
             value = basevalue;
         }
+        if (value === "{suppress}") {
+            value = false;
+        }
         return value;
     }
 
