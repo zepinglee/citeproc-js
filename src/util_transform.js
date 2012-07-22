@@ -405,7 +405,17 @@ CSL.Transform = function (state) {
                             secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
                         }
                     }
-					state.output.append(secondary, secondary_tok);
+                    state.output.append(secondary, secondary_tok);
+
+                    var blob_obj = state.output.current.value();
+                    var blobs_pos = state.output.current.value().blobs.length - 1;
+                    // Suppress supplementary multilingual info on subsequent
+                    // partners of a parallel cite.
+                    // The logic of this is obscure. Parent blob is used by parallels
+                    // detection machinery (leveraged here), while parent list (blob.blobs)
+                    // is used by the is-parallel conditional available on cs:group.
+                    state.parallel.cite.front.push(variables[0] + ":secondary");
+                    state.parallel.cite[variables[0] + ":secondary"] = {blobs:[[blob_obj, blobs_pos]]};
                 }
                 if (tertiary) {
                     tertiary_tok = CSL.Util.cloneToken(primary_tok);
@@ -421,7 +431,15 @@ CSL.Transform = function (state) {
                             tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1))
                         }
                     }
-					state.output.append(tertiary, tertiary_tok);
+                    state.output.append(tertiary, tertiary_tok);
+
+                    var blob_obj = state.output.current.value();
+                    var blobs_pos = state.output.current.value().blobs.length - 1;
+                    // Suppress supplementary multilingual info on subsequent
+                    // partners of a parallel cite.
+                    // See note above.
+                    state.parallel.cite.front.push(variables[0] + ":secondary");
+                    state.parallel.cite[variables[0] + ":secondary"] = {blobs:[[blob_obj, blobs_pos]]};
                 }
 				state.output.closeLevel();
             } else {
