@@ -70,7 +70,7 @@ bibliography
 
     <div class="csl-block">梶田将司</div>
 
-    <div class="csl-left-margin">2007</div><div class="csl-right-inline">高等教育機関における次世代教育学習支援プラットフォームの構築に向けて. <i>日本教育工学会論文誌</i>. December. (co-authorship: 角所考, 中澤篤志, 竹村治雄, 美濃導彦, and 間瀬健二)</div>
+    <div class="csl-left-margin">2007</div><div class="csl-right-inline">高等教育機関における次世代教育学習支援プラットフォームの構築に向けて. 日本教育工学会論文誌. December. (co-authorship: 角所考, 中澤篤志, 竹村治雄, 美濃導彦, and 間瀬健二)</div>
   </div>
   <div class="csl-entry">
 
