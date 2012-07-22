@@ -1,6 +1,32 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.360
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Optionally loosen conditions for parallel citations to include
+  article-journal and article-magazine types. Because the rules for
+  citing the segments of a serialized article (the use case for this)
+  vary between styles this cannot be made perfect for all cases
+  automatically, but this code gets something readable into place that
+  can either be used directly or tweaked to suit.
+
+  This feature is disabled by default. It can be enabled by setting:
+
+    citeproc.opt.development_extensions.handle_parallel_articles = true;
+
+- Suppress italics when applied directly to non-romanesque strings in
+  a rendering node.
+
+- Suppress supplementary multilingual info on subsequent partners of a
+  parallel citation.
+
+
+==========================
 Changes in version 1.0.359
 ==========================
 
