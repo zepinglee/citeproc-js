@@ -359,6 +359,13 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         if (this.state.tmp.strip_periods && !noStripPeriods) {
             blob.blobs = blob.blobs.replace(/\.([^a-z]|$)/g, "$1");
         }
+        if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
+            for (var i = blob.decorations.length - 1; i > -1; i += -1) {
+                if (blob.decorations[i][0] === "@font-style") {
+                    blob.decorations = blob.decorations.slice(0, i).concat(blob.decorations.slice(i + 1));
+                }
+            }
+        }
         //
         // XXX: Beware superfluous code in your code.  str in this
         // case is not the source of the final rendered string.
