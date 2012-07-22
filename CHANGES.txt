@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.361
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix the logic of the jurisdiction conditional test.
+
+- Restore page and page-first to midVars list in the
+  parallel detection machinery.
+
+==========================
 Changes in version 1.0.360
 ==========================
 
