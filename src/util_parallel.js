@@ -85,9 +85,10 @@ CSL.Parallel = function (state) {
     this.try_cite = true;
     this.use_parallels = true;
 
-    this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page", "page-first", "number"];
-    this.ignoreVarsOther = ["first-reference-note-number", "locator", "label"];
+    this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "number"];
+    this.ignoreVarsLawGeneral = ["first-reference-note-number", "locator", "label","page-first","page"];
     this.ignoreVarsOrders = ["first-reference-note-number"];
+    this.ignoreVarsOther = ["first-reference-note-number", "locator", "label","section","page-first","page"];
 };
 
 CSL.Parallel.prototype.isMid = function (variable) {
@@ -125,8 +126,10 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
     var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
     if (["treaty"].indexOf(Item.type) > -1) {
         this.ignoreVars = this.ignoreVarsOrders;
-    } else {
+    } else if (["article-journal","article-magazine"].indexOf(Item.type) > -1) {
         this.ignoreVars = this.ignoreVarsOther;
+    } else {
+        this.ignoreVars = this.ignoreVarsLawGeneral;
     }
     if (this.use_parallels) {
         //print("StartCite: "+Item.id);
@@ -152,14 +155,23 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
                 break;
             }
         }
-        var title_ok = true;
+        var basics_ok = true;
         var last_cite = this.sets.value().slice(-1)[0];
-        if (last_cite && (last_cite.Item.title || Item.title)) {
+        if (last_cite && last_cite.Item) {
             if (last_cite.Item.title !== Item.title) {
-                title_ok = false;
+                basics_ok = false;
+            } else if (last_cite.Item.type !== Item.type) {
+                basics_ok = false;
+            } else if (["article-journal","article-magazine"].indexOf(Item.type) > -1) {
+                if (!this.state.opt.development_extensions.handle_parallel_articles
+                   || last_cite.Item["container-title"] !== Item["container-title"]) {
+                 
+                    basics_ok = false;
+                }
             }
         }
-        if (!title_ok || !has_required_var || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
+
+        if (!basics_ok || !has_required_var || CSL.PARALLEL_TYPES.indexOf(Item.type) === -1) {
             // ZZZ set true for testing initially, but setting this true
             // always seems to be safe, at least judging from current tests.
             this.try_cite = true;
@@ -260,12 +272,16 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
         if (variable === "number") {
             this.cite.front.push(this.variable);
         } else if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(variable) > -1) {
-            // This looks like it should be mid, but changing it breaks French case/commentary parallels. Not sure why.
-            this.cite.front.push(this.variable);
+            if (["article-journal","article-magazine"].indexOf(this.cite.Item.type) > -1) {
+                this.cite.mid.push(this.variable);
+            } else {
+                // This looks like it should be mid also, but changing it breaks French case/commentary parallels. Not sure why.
+                this.cite.front.push(this.variable);
+            }
         } else {
             this.cite[this.target].push(this.variable);
         }
-    }
+   }
 };
 
 /**
@@ -278,8 +294,18 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
     if (this.ignoreVars.indexOf(this.variable) > -1) {
         return;
     }
-    if (this.use_parallels && this.variable && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
-        this.data.blobs.push([blob, blob.blobs.length]);
+    if (this.use_parallels) {
+        if (["article-journal", "article-magazine"].indexOf(this.cite.Item.type) > -1) {
+            if (["volume","page","page-first","issue"].indexOf(this.variable) > -1) {
+                return;
+            }
+            if ("container-title" === this.variable && this.cite.mid.length > 1) {
+                return;
+            }
+        }
+        if (this.variable && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
+            this.data.blobs.push([blob, blob.blobs.length]);
+        }
     }
 };
 
@@ -292,7 +318,6 @@ CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
         return;
     }
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-            // ZZZZZ
         if (this.target !== "back" || true) {
             //zcite.debug("  setting: "+str);
             this.data.value += "::" + str;
@@ -326,7 +351,6 @@ CSL.Parallel.prototype.CloseVariable = function () {
         this.cite[this.variable] = this.data;
         if (this.sets.value().length > 0) {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
-            // ZZZ
             if (this.target === "front" && this.variable === "original-date") {
                 // REMAINING PROBLEM: this works for English-style cites, but not
                 // for the French. Only difference is date-parts (year versus year-month-day).
