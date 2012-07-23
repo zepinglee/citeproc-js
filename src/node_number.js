@@ -86,6 +86,9 @@ CSL.Node.number = {
             if (this.variables.length === 0) {
                 return;
             }
+            if ("undefined" === typeof item) {
+                var item = {};
+            }
             var varname, num, number, m, j, jlen;
             varname = this.variables[0];
             state.parallel.StartVariable(this.variables[0]);
