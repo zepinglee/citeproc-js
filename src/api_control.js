@@ -87,36 +87,39 @@ CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     }
 };
 
-CSL.Engine.prototype.setLangPrefsForCites = function (params) {
-	var opt = this.opt['cite-lang-prefs'];
-	// Set values in place
-	for (var segment in params) {
+CSL.Engine.prototype.setLangPrefsForCites = function (obj) {
+    var opt = this.opt['cite-lang-prefs'];
+    // Set values in place
+    var segments = ['Persons', 'Institutions', 'Titles', 'Publishers', 'Places'];
+    for (var i = 0, ilen = segments.length; i < ilen; i += 1) {
+        var zoteroSegment = 'citationLangPrefs'+segments[i];
+        var citeprocSegment = segments[i].toLowerCase();
         //
         // Normalize the sequence of secondary and tertiary
-        // in the provided params list.
+        // in the provided obj segment list.
         //
         var supplements = [];
-        while (params[segment].length > 1) {
-            supplements.push(params[segment].pop());
+        while (obj[zoteroSegment].length > 1) {
+            supplements.push(obj[zoteroSegment].pop());
         }
         var sortval = {orig:1,translit:2,translat:3};
         if (supplements.length === 2 && sortval[supplements[0]] < sortval[supplements[1]]) {
             supplements.reverse();
         }
         while (supplements.length) {
-            params[segment].push(supplements.pop());
+            obj[zoteroSegment].push(supplements.pop());
         }
         //
         // normalization done.
         //
-		var lst = opt[segment];
-		while (lst.length) {
-			lst.pop();
-		}
-		for (var i = 0, ilen = params[segment].length; i < ilen; i += 1) {
-			lst.push(params[segment][i]);
-		}
-	}
+        var lst = opt[citeprocSegment];
+        while (lst.length) {
+            lst.pop();
+        }
+        for (var i = 0, ilen = obj[zoteroSegment].length; i < ilen; i += 1) {
+            lst.push(obj[zoteroSegment][i]);
+        }
+    }
 };
 
 CSL.Engine.prototype.setLangPrefsForCiteAffixes = function (affixList) {
@@ -157,9 +160,9 @@ CSL.Engine.prototype.setAutoVietnameseNamesOption = function (arg) {
 };
 
 CSL.Engine.prototype.setAbbreviations = function (arg) {
-	if (this.sys.setAbbreviations) {
-		this.sys.setAbbreviations(arg);
-	}
+    if (this.sys.setAbbreviations) {
+        this.sys.setAbbreviations(arg);
+    }
 };
 
 CSL.Engine.prototype.setEnglishLocaleEscapes = function (arg) {
@@ -170,7 +173,7 @@ CSL.Engine.prototype.setEnglishLocaleEscapes = function (arg) {
         arg = [];
     }
     for (var i = 0, ilen = arg.length; i < ilen; i += 1) {
-	    if (this.opt.english_locale_escapes.indexOf(arg[i]) === -1) {
+        if (this.opt.english_locale_escapes.indexOf(arg[i]) === -1) {
             this.opt.english_locale_escapes.push(arg[i]);
         }
     }
