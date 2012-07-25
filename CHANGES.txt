@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.364
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Allow trailing content after {suppress} in a jurisdiction
+  "abbreviation" entry to leak through for patent and treaty 
+  items types.
+
+==========================
 Changes in version 1.0.363
 ==========================
 

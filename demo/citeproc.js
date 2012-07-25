@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.362",
+    PROCESSOR_VERSION: "1.0.364",
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
@@ -9023,6 +9023,7 @@ CSL.Transform = function (state) {
         if (!myabbrev_family) {
             return basevalue;
         }
+        var variable = myabbrev_family;
         if (["publisher-place", "event-place", "jurisdiction"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
@@ -9050,9 +9051,13 @@ CSL.Transform = function (state) {
         if (!value) {
             value = basevalue;
         }
-        if (value === "{suppress}") {
-            value = false;
-        }
+        if (value && value.slice(0, 10) === "{suppress}") {
+            if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(variable) > -1) {
+                value = value.slice(10);
+            } else {
+                value = false;
+            }
+        } 
         return value;
     }
     function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
