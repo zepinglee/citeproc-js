@@ -87,27 +87,35 @@ CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     }
 };
 
-CSL.Engine.prototype.setLangPrefsForCites = function (obj) {
+CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
     var opt = this.opt['cite-lang-prefs'];
-    // Set values in place
+    if (!conv) {
+        conv = function (key) {
+            return key.toLowerCase();
+        };
+    }
     var segments = ['Persons', 'Institutions', 'Titles', 'Publishers', 'Places'];
+    // Set values in place
     for (var i = 0, ilen = segments.length; i < ilen; i += 1) {
-        var zoteroSegment = 'citationLangPrefs'+segments[i];
+        var clientSegment = conv(segments[i]);
         var citeprocSegment = segments[i].toLowerCase();
+        if (!obj[clientSegment]) {
+            continue;
+        }
         //
         // Normalize the sequence of secondary and tertiary
         // in the provided obj segment list.
         //
         var supplements = [];
-        while (obj[zoteroSegment].length > 1) {
-            supplements.push(obj[zoteroSegment].pop());
+        while (obj[clientSegment].length > 1) {
+            supplements.push(obj[clientSegment].pop());
         }
         var sortval = {orig:1,translit:2,translat:3};
         if (supplements.length === 2 && sortval[supplements[0]] < sortval[supplements[1]]) {
             supplements.reverse();
         }
         while (supplements.length) {
-            obj[zoteroSegment].push(supplements.pop());
+            obj[clientSegment].push(supplements.pop());
         }
         //
         // normalization done.
@@ -116,8 +124,8 @@ CSL.Engine.prototype.setLangPrefsForCites = function (obj) {
         while (lst.length) {
             lst.pop();
         }
-        for (var i = 0, ilen = obj[zoteroSegment].length; i < ilen; i += 1) {
-            lst.push(obj[zoteroSegment][i]);
+        for (var j = 0, jlen = obj[clientSegment].length; j < jlen; j += 1) {
+            lst.push(obj[clientSegment][j]);
         }
     }
 };
