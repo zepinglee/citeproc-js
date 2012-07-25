@@ -1,5 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+
+==========================
+Changes in version 1.0.363
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Filter field category keys on object received 
+  as argument to setLangPrefsForCites()
+
+
 ==========================
 Changes in version 1.0.362
 ==========================
