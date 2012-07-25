@@ -114,6 +114,8 @@ CSL.Transform = function (state) {
             return basevalue;
         }
 
+        var variable = myabbrev_family;
+
         if (["publisher-place", "event-place", "jurisdiction"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
@@ -148,9 +150,18 @@ CSL.Transform = function (state) {
         if (!value) {
             value = basevalue;
         }
-        if (value === "{suppress}") {
-            value = false;
-        }
+        // If starts with suppress
+        //   then if variable is jurisdiction,
+        //   and Item.type is treaty or patent
+        //   print the remainder
+        // Otherwise return false
+        if (value && value.slice(0, 10) === "{suppress}") {
+            if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(variable) > -1) {
+                value = value.slice(10);
+            } else {
+                value = false;
+            }
+        } 
         return value;
     }
 
