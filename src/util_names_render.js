@@ -252,7 +252,7 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
             //this.state.output.append(blobs[i], style, true);
             this.state.tmp.group_context.value()[2] = true;
             this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
-            if (str === "{suppress}") {
+            if (str === "!here>>>") {
                 blobs[i] = false;
             } else {
                 this.state.output.append(str, style, true);

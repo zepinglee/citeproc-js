@@ -155,7 +155,7 @@ CSL.Transform = function (state) {
         //   and Item.type is treaty or patent
         //   print the remainder
         // Otherwise return false
-        if (value && value.slice(0, 10) === "{suppress}") {
+        if (value && value.slice(0, 10) === "!here>>>") {
             if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(variable) > -1) {
                 value = value.slice(10);
             } else {
@@ -512,7 +512,7 @@ CSL.Transform = function (state) {
     this.getHereinafter = getHereinafter;
 
     function quashCheck(value) {
-        var m = value.match(/^!([-,_a-z]+)<<</);
+        var m = value.match(/^!([-,_a-z]+)>>>/);
         if (m) {
             var fields = m[1].split(",");
             value = value.slice(m[0].length);

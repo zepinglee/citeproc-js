@@ -162,7 +162,7 @@ CSL.NameOutput.prototype._checkNickname = function (name) {
             // XXX Why does this have to happen here?
             var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
             if (myLocalName) {
-                if (myLocalName === "{suppress}") {
+                if (myLocalName === "!here>>>") {
                     name = false;
                 } else {
                     name = {family:myLocalName,given:''};
