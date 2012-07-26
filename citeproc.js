@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.364",
+    PROCESSOR_VERSION: "1.0.365",
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
@@ -5852,7 +5852,7 @@ CSL.NameOutput.prototype._checkNickname = function (name) {
             this.state.transform.loadAbbreviation("default", "nickname", author);
             var myLocalName = this.state.transform.abbrevs["default"].nickname[author];
             if (myLocalName) {
-                if (myLocalName === "{suppress}") {
+                if (myLocalName === "!here>>>") {
                     name = false;
                 } else {
                     name = {family:myLocalName,given:''};
@@ -6374,7 +6374,7 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
             }
             this.state.tmp.group_context.value()[2] = true;
             this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
-            if (str === "{suppress}") {
+            if (str === "!here>>>") {
                 blobs[i] = false;
             } else {
                 this.state.output.append(str, style, true);
@@ -9051,7 +9051,7 @@ CSL.Transform = function (state) {
         if (!value) {
             value = basevalue;
         }
-        if (value && value.slice(0, 10) === "{suppress}") {
+        if (value && value.slice(0, 10) === "!here>>>") {
             if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(variable) > -1) {
                 value = value.slice(10);
             } else {
@@ -9320,7 +9320,7 @@ CSL.Transform = function (state) {
     }
     this.getHereinafter = getHereinafter;
     function quashCheck(value) {
-        var m = value.match(/^!([-,_a-z]+)<<</);
+        var m = value.match(/^!([-,_a-z]+)>>>/);
         if (m) {
             var fields = m[1].split(",");
             value = value.slice(m[0].length);

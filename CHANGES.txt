@@ -2,6 +2,34 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.365
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- New syntax for embedding suppression requests
+  in abbreviation lists. Old (undocumented) syntax 
+  to suppress subsequent fields was::
+
+     !authority,jurisdiction<<<SCC
+
+  Old syntax to suppress current field was::
+
+     {suppress}
+
+  New syntax to suppress subsequent fields (meant to be less likely to trip up on actual content) is::
+
+     !authority,jurisdiction>>>SCC
+
+  New syntax to suppress current field (which permits content to leak through on treaty or patent types) is::
+
+     !here>>>US
+
+
+
+==========================
 Changes in version 1.0.364
 ==========================
 
