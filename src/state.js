@@ -173,6 +173,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.wrap_url_and_doi = false;
     this.development_extensions.allow_force_lowercase = false;
     this.development_extensions.handle_parallel_articles = false;
+    this.development_extensions.thin_non_breaking_space_html_hack = false;
 
     this.nodenames = [];
 

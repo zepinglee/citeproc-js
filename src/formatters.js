@@ -58,7 +58,14 @@ CSL.Output.Formatters = {};
 
 CSL.getSafeEscape = function(state) {
     if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
-        return CSL.Output.Formats[state.opt.mode].text_escape;
+        if (state.opt.development_extensions.thin_non_breaking_space_html_hack && state.opt.mode === "html") {
+            return function (txt) {
+                return CSL.Output.Formats.html.text_escape(txt)
+                    .replace(/\u202f/g, '<span style="white-space:nowrap">&thinsp;</span>');
+            }
+        } else {
+            return CSL.Output.Formats[state.opt.mode].text_escape;
+        }
     } else {
         return function (txt) { return txt; };
     }
