@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.366",
+    PROCESSOR_VERSION: "1.0.367",
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
@@ -2708,6 +2708,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.wrap_url_and_doi = false;
     this.development_extensions.allow_force_lowercase = false;
     this.development_extensions.handle_parallel_articles = false;
+    this.development_extensions.thin_non_breaking_space_html_hack = false;
     this.nodenames = [];
     this.gender = {};
 	this['cite-lang-prefs'] = {
@@ -11238,7 +11239,14 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function (blob, fun) {
 CSL.Output.Formatters = {};
 CSL.getSafeEscape = function(state) {
     if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
-        return CSL.Output.Formats[state.opt.mode].text_escape;
+        if (state.opt.development_extensions.thin_non_breaking_space_html_hack && state.opt.mode === "html") {
+            return function (txt) {
+                return CSL.Output.Formats.html.text_escape(txt)
+                    .replace(/\u202f/g, '<span style="white-space:nowrap">&thinsp;</span>');
+            }
+        } else {
+            return CSL.Output.Formats[state.opt.mode].text_escape;
+        }
     } else {
         return function (txt) { return txt; };
     }

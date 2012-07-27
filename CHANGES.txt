@@ -2,6 +2,26 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.367
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Option to apply a workaround in HTML output for thin non-breaking
+  spaces, which render incorrectly on Windows XP systems. The
+  option is off by default. To turn the option on, set a toggle
+  on the instantiated processor:
+
+    citeproc.opt.development_extensions.thin_non_breaking_space_html_hack = true;
+
+  This should be used only for HTML intended for rendering by
+  browsers on the Web, and not for output intended for use as an
+  intermediate conversion format.
+
+
+==========================
 Changes in version 1.0.366
 ==========================
 
