@@ -93,7 +93,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
                 localesets = this.state.opt['cite-lang-prefs'].persons;
             }
 
-            slot = {primary:false,secondary:false,tertiary:false};
+            slot = {primary:'locale-orig',secondary:false,tertiary:false};
 	        if (localesets) {
 		        var slotnames = ["primary", "secondary", "tertiary"];
 		        for (var k = 0, klen = slotnames.length; k < klen; k += 1) {
@@ -286,7 +286,7 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
             } else {
                 localesets = this.state.opt['cite-lang-prefs'].persons;
             }
-            slot = {primary:false,secondary:false,tertiary:false};
+            slot = {primary:'locale-orig',secondary:false,tertiary:false};
 	        if (localesets) {
 		        var slotnames = ["primary", "secondary", "tertiary"];
 		        for (var j = 0, jlen = slotnames.length; j < jlen; j += 1) {
