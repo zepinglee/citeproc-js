@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.368
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add support for multilingual affix option on transliterated
+  content in the primary slot. Changes the control UI, which
+  now expects a list of 40 elements rather than 30 as before.
+
+==========================
 Changes in version 1.0.367
 ==========================
 
