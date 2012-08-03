@@ -131,7 +131,7 @@ CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
 };
 
 CSL.Engine.prototype.setLangPrefsForCiteAffixes = function (affixList) {
-    if (affixList && affixList.length === 30) {
+    if (affixList && affixList.length === 40) {
         var affixes = this.opt.citeAffixes;
         var count = 0;
         var settings = ["persons", "institutions", "titles", "publishers", "places"];
@@ -140,13 +140,18 @@ CSL.Engine.prototype.setLangPrefsForCiteAffixes = function (affixList) {
             for (var j = 0, jlen = forms.length; j < jlen; j += 1) {
 
                 var value = affixList[count];
+                if (!value && ((count/2) % 4) === 2) {
+                    value = affixList[count - 4];
+                }
                 if (!value) {
                     value = "";
                 }
                 affixes[settings[i]]["locale-" + forms[j]].prefix = value;
                 count += 1;
 
-                var value = affixList[count];
+                if (!value && (((count - 1)/2) % 4) === 2) {
+                    value = affixList[count - 4];
+                }
                 if (!value) {
                     value = "";
                 }

@@ -393,11 +393,34 @@ CSL.Transform = function (state) {
                 secondary = CSL.demoteNoiseWords(state, secondary);
                 tertiary = CSL.demoteNoiseWords(state, tertiary);
             }
+
+            // Decoration of primary (currently translit only) goes here
+            var primary_tok = CSL.Util.cloneToken(this);
+            var primaryPrefix;
+            if (slot.primary === "locale-translit") {
+                primaryPrefix = state.opt.citeAffixes[langPrefs][slot.primary].prefix;
+            }                
+            // XXX This should probably protect against italics at higher
+            // levels.
+
+            if (primaryPrefix === "<i>") {
+                var hasItalic = false;
+                for (var i = 0, ilen = primary_tok.decorations.length; i < ilen; i += 1) {
+                    if (primary_tok.decorations[i][0] === "@font-style"
+                        && primary_tok.decorations[i][1] === "italic") {
+                        
+                        hasItalic = true;
+                    }
+                }
+                if (!hasItalic) {
+                    primary_tok.decorations.push(["@font-style", "italic"])
+                }
+            }
+
             if (secondary || tertiary) {
 
                 state.output.openLevel("empty");
 
-                primary_tok = CSL.Util.cloneToken(this);
                 // A little too aggressive maybe.
                 primary_tok.strings.suffix = "";
                 state.output.append(primary, primary_tok);
@@ -454,7 +477,7 @@ CSL.Transform = function (state) {
                 }
 				state.output.closeLevel();
             } else {
-                state.output.append(primary, this);
+                state.output.append(primary, primary_tok);
             }
             return null;
         };
