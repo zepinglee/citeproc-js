@@ -2,6 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.369
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- When rendering via cs:number, attempt to translate
+  the field string before processing.
+
+==========================
 Changes in version 1.0.368
 ==========================
 
