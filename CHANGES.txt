@@ -1,5 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+==========================
+Changes in version 1.0.370
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix an unfortunate bug in the assignment of affixes
+  to multilingual elements.
+
 
 ==========================
 Changes in version 1.0.369
