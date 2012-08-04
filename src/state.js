@@ -178,13 +178,14 @@ CSL.Engine.Opt = function () {
     this.nodenames = [];
 
     this.gender = {};
-	this['cite-lang-prefs'] = {
-		persons:['orig'],
-		institutions:['orig'],
-		titles:['orig','translat'],
-		publishers:['orig'],
-		places:['orig']
-	};
+    this['cite-lang-prefs'] = {
+        persons:['orig'],
+        institutions:['orig'],
+        titles:['orig','translat'],
+        publishers:['orig'],
+        places:['orig'],
+        number:['translat']
+    };
 };
 
 

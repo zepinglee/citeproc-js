@@ -105,6 +105,7 @@ CSL.Transform = function (state) {
     // Abbreviation families
     this.abbrevs = {};
     this.abbrevs["default"] = new state.sys.AbbreviationSegments();
+    this.getTextSubField = getTextSubField;
 
     // Internal function
     function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {

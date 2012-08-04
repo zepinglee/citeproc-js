@@ -140,7 +140,11 @@ var CSL = {
         "publisher":"publishers",
         "authority":"publishers",
         "publisher-place": "places",
-        "event-place": "places"
+        "event-place": "places",
+        "number": "number",
+        "edition":"number",
+        "issue":"number",
+        "volume":"number"
     },
 
     

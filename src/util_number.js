@@ -202,7 +202,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     if (!ItemObject) {
         return;
     }
-    num = ItemObject[variable];
+
+    // Possibly apply multilingual transform
+    var languageRole = CSL.LangPrefsMap[variable];
+    if (languageRole) {
+        var localeType = this.opt["cite-lang-prefs"][languageRole][0];
+        num = this.transform.getTextSubField(ItemObject, variable, "locale-"+localeType, true);
+        num = num.name;
+    } else {
+        num = ItemObject[variable];
+    }
     //SNIP-START
     if (debug) {
         print("=== "+variable+": "+num+" ===");
