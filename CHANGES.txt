@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.371
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Apply requested italics on transliterations only where
+  content has actually been transliterated.
+
+==========================
 Changes in version 1.0.370
 ==========================
 
