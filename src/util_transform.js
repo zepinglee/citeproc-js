@@ -357,6 +357,7 @@ CSL.Transform = function (state) {
 			// True is for transform fallback
             var res = getTextSubField(Item, variables[0], slot.primary, true);
             primary = res.name;
+            var primaryUsedOrig = res.usedOrig;
 
             if (publisherCheck(this, Item, primary, myabbrev_family)) {
                 return null;
@@ -404,7 +405,7 @@ CSL.Transform = function (state) {
             // XXX This should probably protect against italics at higher
             // levels.
 
-            if (primaryPrefix === "<i>") {
+            if (primaryPrefix === "<i>" && !primaryUsedOrig) {
                 var hasItalic = false;
                 for (var i = 0, ilen = primary_tok.decorations.length; i < ilen; i += 1) {
                     if (primary_tok.decorations[i][0] === "@font-style"
