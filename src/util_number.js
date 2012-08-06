@@ -212,6 +212,29 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     } else {
         num = ItemObject[variable];
     }
+
+    // Possibly apply short form.
+    // This is done for all number values (it is not controlled by
+    // a CSL option).
+    // The abbreviation attempt is split into two halves. The first,
+    // here, attempts to load an abbreviation, but does not add an
+    // abbreviation entry to the UI if none is found. The entry is
+    // added only if the is-numeric test later turns up false.
+    if (num && this.sys.getAbbreviation) {
+        // true as the fourth argument suppresses update of the UI
+        num = ("" + num).replace(/^\"/, "").replace(/\"$/, "");
+        var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", num);
+        if (this.transform.abbrevs[jurisdiction].number[num]) {
+            num = this.transform.abbrevs[jurisdiction].number[num];
+        } else {
+            // Strings rendered via cs:number should not be added to the abbreviations
+            // UI unless they test non-numeric. The test happens below.
+            if ("undefined" !== typeof this.transform.abbrevs[jurisdiction].number[num]) {
+                delete this.transform.abbrevs[jurisdiction].number[num];
+            }
+        }
+    }
+
     //SNIP-START
     if (debug) {
         print("=== "+variable+": "+num+" ===");
@@ -341,34 +364,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                             numeric = false;
                         }
                     }
-                    // Possibility of redemption
-                    if (i === elements.length - 1) {
-                        if ((elements.length > 1 || subelements.length > 1)) {
-                            var matchterm = this.getTerm(variable, "long");
-                            if (matchterm && !subelements[subelements.length - 1].match(/[0-9]/)) {
-                                matchterm = matchterm.replace(".", "").toLowerCase().split(/\s+/)[0];
-                                if (subelements[subelements.length - 1].slice(0, matchterm.length).toLowerCase() === matchterm) {
-                                    // Remove the final word, since it looks like it's just a variable label,
-                                    // and force to numeric.
-                                    elements[i] = subelements.slice(0, -1).join(" ");
-                                    numeric = true;
-                                }
-                            }
-                        }
-                    }
                     if (elements[i].match(/^[1-9][0-9]*$/)) {
                         elements[i] = parseInt(elements[i], 10);
                         node.gender = this.opt["noun-genders"][variable];
                         this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
                     } else {
-                        // XXX Abbreviate elements[i] here, if ... well, always, for the present
                         var str = elements[i];
-                        if (this.sys.getAbbreviation) {
-                            var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", elements[i]);
-                            if (this.transform.abbrevs[jurisdiction].number[str]) {
-                                str = this.transform.abbrevs[jurisdiction].number[str];
-                            }
-                        }
                         this.tmp.shadow_numbers[variable].values.push(["Blob", str, node]);
                     }
                 }
@@ -383,6 +384,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             this.tmp.shadow_numbers[variable].numeric = true;
         } else {
              this.tmp.shadow_numbers[variable].numeric = numeric;
+        }
+        if (!this.tmp.shadow_numbers[variable].numeric) {
+            this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", num);
         }
         if (count > 1) {
             this.tmp.shadow_numbers[variable].plural = 1;
