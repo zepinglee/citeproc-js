@@ -51,6 +51,19 @@ citation
 <<===== MODE =====<<
 
 
+>>===== ABBREVIATIONS =====>>
+{
+  "default": {
+    "number": {
+      "42 - 47 editionz": "42nd–47th editions",
+      "42 editionX": "42nd edition"
+    }
+  }
+}
+<<===== ABBREVIATIONS =====<<
+
+
+
 Normalizes punctuation and grouping when multiple numbers are provided in input.
 
 >>===== RESULT =====>>
@@ -72,8 +85,8 @@ Normalizes punctuation and grouping when multiple numbers are provided in input.
 T51 edition --- ‘T51’ --- not ordinalized, numeric, singular
 Edition 1 --- ‘Edition 1’ --- not ordinalized, non-numeric
 Editions 1–6th --- ‘Editions 1 - 6’ --- partially ordinalized, non-numeric (bad input, we don’t attempt rescue)
-42nd edition --- ‘“42 editionX”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, singular
-42nd–47th editions --- ‘“42 - 47 editionz”’ --- Quotes stripped, trailing label stripped, ordinalized, numeric, plural
+42nd edition --- ‘“42 editionX”’ --- Quotes stripped, non-numeric, abbreviated
+42nd–47th editions --- ‘“42 - 47 editionz”’ --- Quotes stripped, non-numeric, abbreviated
 T51 edn. --- ‘T51 edn.’ --- Non-numeric (label must be spelled out in full)
 T51 &#38; T53 editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plural
 12:xx edition --- ‘12:xx’ --- not ordinalized, numeric, singular
@@ -228,13 +241,13 @@ T51 &#38; T53 editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plu
 	},
     {
         "id": "item-19", 
-        "title": "Quotes stripped, trailing label stripped, ordinalized, numeric, singular", 
+        "title": "Quotes stripped, non-numeric, abbreviated", 
         "type": "book", 
         "edition": "\"42 editionX\""
     },
     {
         "id": "item-20", 
-        "title": "Quotes stripped, trailing label stripped, ordinalized, numeric, plural", 
+        "title": "Quotes stripped, non-numeric, abbreviated", 
         "type": "book", 
         "edition": "\"42 - 47 editionz\""
     },
