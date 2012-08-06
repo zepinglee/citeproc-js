@@ -114,12 +114,16 @@ CSL.Node.number = {
                 form = this.strings.label_form_override;
             }
 
-            if (this.text_case_normal) {
-                if (value) {
-                    value = value.replace("\\", "");
-                    state.output.append(value, this);
-                }
-            } else if (varname === "locator"
+            // Seems to be an early attempt to support backslash
+            // escapes on hyphen delimiters. We can do better,
+            // and probably already have done.
+            //if (this.text_case_normal && false) {
+            //    if (value) {
+            //        value = value.replace("\\", "", "g");
+            //        state.output.append(value, this);
+            //    }
+            //} else if (varname === "locator"
+            if (varname === "locator"
                        && item.locator) {
                 
                 // For bill or legislation items that have a label-form
