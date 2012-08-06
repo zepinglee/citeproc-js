@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.372
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Tighten conditions for is-numeric test to conform
+  more closely to CSL specification.
+
+- Abbreviate all numeric variables fed to cs:text with
+  form="short" using the "number" segment.
+
+- Apply abbreviations before processing to entire strings
+  rendered via cs:number unconditionally on "number" segment,
+  but add entries to UI only if variable tests false for
+  is-numeric.
+
+==========================
 Changes in version 1.0.371
 ==========================
 
