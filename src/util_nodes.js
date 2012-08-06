@@ -204,14 +204,15 @@ CSL.XmlToToken = function (state, tokentype) {
                     continue;
                 }
                 if (attributes.hasOwnProperty(key)) {
-                    try {
-                        CSL.Attributes[key].call(token, state, "" + attributes[key]);
-                    } catch (e) {
-                        if (e === "TypeError: Cannot call method \"call\" of undefined") {
-                            throw "Unknown attribute \"" + key + "\" in node \"" + name + "\" while processing CSL file";
-                        } else {
+                    if (CSL.Attributes[key]) {
+                        try {
+                            CSL.Attributes[key].call(token, state, "" + attributes[key]);
+                        } catch (e) {
+                            CSL.error(e);
                             throw "CSL processor error, " + key + " attribute: " + e;
                         }
+                    } else {
+                        CSL.debug("warning: undefined attribute \""+key+"\" in style");
                     }
                 }
             }
