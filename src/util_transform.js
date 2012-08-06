@@ -117,6 +117,10 @@ CSL.Transform = function (state) {
 
         var variable = myabbrev_family;
 
+        if (CSL.NUMERIC_VARIABLES.indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "number";
+        }
+
         if (["publisher-place", "event-place", "jurisdiction"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
