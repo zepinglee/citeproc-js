@@ -222,7 +222,9 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
                     curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
                 }
             }
-        }
+         } else {
+            this.state.registry.registry[Item.id].parallel = false;
+         }
         this.force_collapse = false;
         if (this.state.registry.registry[Item.id].parallel) {
             this.force_collapse = true;
@@ -537,8 +539,12 @@ CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
                 if (CSL.POSITION_FIRST === cite.position) {
                     if (pos === 0) {
                         this.state.registry.registry[cite.itemId].master = true;
-                        //this.state.registry.registry[cite.itemId].parallel = cite.itemId;
                         this.state.registry.registry[cite.itemId].siblings = [];
+                        // This helps to handle rearrangement of citations, but it is
+                        // not perfect by a long shot: a refresh is needed to pick
+                        // up the new value and fix parallels. A hack to handle some
+                        // common cases immediately is above at line 226.
+                        this.state.registry.registry[cite.itemId].parallel = false;
                     } else {
                         if (cite.prevItemID) {
                             if (!this.state.registry.registry[cite.prevItemID].parallel) {
