@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.373
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Handle reformatting parallel citations in a live document
+  more correctly.
+
+
+==========================
 Changes in version 1.0.372
 ==========================
 
