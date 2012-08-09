@@ -81,34 +81,38 @@ Smith v Jones [2008] UKHC (Ch) 33, [2008] AC, 23
   </info>
   <citation>
     <layout>
-      <group delimiter=" ">
-        <text variable="title"/>
-        <text variable="collection-number" prefix="[" suffix="]"/>
-        <group delimiter=" ">
-          <choose>
-            <if variable="container-title">
-              <text variable="container-title"/>
-            </if>
-            <else>
-              <names variable="author">
-                <name/>
-                <institution form="short" use-last="1"/>
-              </names>
-            </else>
-          </choose>
+      <choose>
+        <if position="first">
           <group delimiter=" ">
-            <group oops=", ">
-              <names variable="author" prefix="(" suffix=")">
-                <name/>
-                <institution form="short" use-first="1" institution-parts="short">
-                  <institution-part name="short"/>
-                </institution>
-              </names>
+            <text variable="title"/>
+            <text variable="collection-number" prefix="[" suffix="]"/>
+            <group delimiter=" ">
+              <choose>
+                <if variable="container-title">
+                  <text variable="container-title"/>
+                </if>
+                <else>
+                  <names variable="author">
+                    <name/>
+                    <institution form="short" use-last="1"/>
+                  </names>
+                </else>
+              </choose>
+              <group delimiter=" ">
+                <group oops=", ">
+                  <names variable="author" prefix="(" suffix=")">
+                    <name/>
+                    <institution use-first="1" stop-last="1" institution-parts="short">
+                      <institution-part name="short"/>
+                    </institution>
+                  </names>
+                </group>
+                <number variable="page"/>
+              </group>
             </group>
-            <number variable="page"/>
           </group>
-        </group>
-      </group>
+        </if>
+      </choose>
     </layout>
   </citation>
 </style>

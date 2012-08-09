@@ -101,20 +101,24 @@ White Slave Traffic (Mann) Act, ch. 395, sec. 10, § 223, 36 Stat. 825 ¶¶ 835�
   </macro>
   <citation>
     <layout delimiter="; ">
-      <group delimiter=" ">
-        <group delimiter=", ">
-          <text form="short" variable="title"/>
+      <choose>
+        <if position="first">
           <group delimiter=" ">
-            <number variable="volume"/>
-            <text variable="container-title"/>
             <group delimiter=", ">
-              <number label-form="short" variable="number"/>
-              <text macro="locator"/>
+              <text form="short" variable="title"/>
+              <group delimiter=" ">
+                <number variable="volume"/>
+                <text variable="container-title"/>
+                <group delimiter=", ">
+                  <number label-form="short" variable="number"/>
+                  <text macro="locator"/>
+                </group>
+              </group>
             </group>
+            <date variable="original-date" prefix="(" suffix=")" form="text" date-parts="year"/>
           </group>
-        </group>
-        <date variable="original-date" prefix="(" suffix=")" form="text" date-parts="year"/>
-      </group>
+        </if>
+      </choose>
     </layout>
   </citation>
 </style>
