@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.374
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Enable parallel cites only in position-sensitive
+  styles (already enabled only for legal item types).
+
+
+==========================
 Changes in version 1.0.373
 ==========================
 
