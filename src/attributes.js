@@ -906,7 +906,7 @@ CSL.Attributes["@newdate"] = function (state, arg) {
 CSL.Attributes["@position"] = function (state, arg) {
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
-
+    state.parallel.use_parallels = true;
     if ("near-note" === arg) {
         var near_note_func = function (state, Item, item) {
             if (item && item.position === CSL.POSITION_SUBSEQUENT && item["near-note"]) {

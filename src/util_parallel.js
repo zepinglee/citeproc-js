@@ -83,7 +83,7 @@ CSL.Parallel = function (state) {
     this.state = state;
     this.sets = new CSL.Stack([]);
     this.try_cite = true;
-    this.use_parallels = true;
+    this.use_parallels = false;
 
     this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page-first", "page", "number"];
     this.ignoreVarsLawGeneral = ["first-reference-note-number", "locator", "label","page-first","page"];
