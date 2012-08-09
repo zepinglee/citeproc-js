@@ -889,9 +889,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
     if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
-        // End processing before processing last single element, since
-        // that will be picked up by normal element selection and
-        // short-forming.
+        // On a match, drop unused elements to yield a single key.
         var jurisdiction = this.Item.jurisdiction;
         for (var j = splitInstitution.length; j > 0; j += -1) {
             var str = splitInstitution.slice(0, j).join("|");
@@ -906,17 +904,16 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
                 var splitSplitLst = splitLst.split(/>>[0-9]{4}>>/);
                 var m = splitLst.match(/>>([0-9]{4})>>/);
                 splitLst = splitSplitLst.pop();
-                if (splitSplitLst.length > 0 && this.Item.issued && this.Item.issued.year) {
+                if (splitSplitLst.length > 0 && this.Item["original-date"] && this.Item["original-date"].year) {
                     for (var k=m.length - 1; k > 0; k += -1) {
-                        if (parseInt(this.Item.issued.year, 10) >= parseInt(m[k], 10)) {
+                        if (parseInt(this.Item["original-date"].year, 10) >= parseInt(m[k], 10)) {
                             break;
                         }
                         splitLst = splitSplitLst.pop();
                     }
                 }
                 splitLst = splitLst.replace(/\s*\|\s*/g, "|");
-                splitLst = splitLst.split("|");
-                splitInstitution = splitLst.concat(splitInstitution.slice(j));
+                splitInstitution = [splitLst];
             }
         }
     }
