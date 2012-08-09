@@ -1244,7 +1244,9 @@ CSL.citeEnd = function (Item, item) {
             this.tmp.original_date.list.push(buf.pop());
         }
         // Notice the deletion to parallels machinery
-        this.parallel.cite["original-date"] = false;
+        if (this.parallel.use_parallels) {
+            this.parallel.cite["original-date"] = false;
+        }
     }
     this.tmp.original_date = false;
     this.tmp.renders_collection_number = false;
