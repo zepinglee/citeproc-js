@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.376
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bugs in evaluation of per-layout locales.
+
+- Fix a bug affecting numeric formatting of the
+  trailing date of a range -- zero-padding was not
+  being applied when requested.
+
+
+==========================
 Changes in version 1.0.375
 ==========================
 
