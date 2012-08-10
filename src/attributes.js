@@ -569,16 +569,22 @@ CSL.Attributes["@locale"] = function (state, arg) {
         func = function (state, Item, item) {
             var key, res;
             ret = [];
+            res = false;
+            var langspec = false;
             if (Item.language) {
                 lang = CSL.localeParse(Item.language);
                 langspec = CSL.localeResolve(lang);
+                if (langspec.best === state.opt["default-locale"][0]) {
+                    langspec = false;
+                }
+            }
+            if (langspec) {
                 // We attempt to match a specific locale from the
                 // list of parameters.  If that fails, we fall back
                 // to the base locale of the first element.  The
                 // locale applied is always the first local 
                 // in the list of parameters (or base locale, for a 
                 // single two-character language code) 
-                res = false;
                 for (i = 0, ilen = this.locale_list.length; i < ilen; i += 1) {
                     if (langspec.best === this.locale_list[i].best) {
                         state.opt.lang = this.locale;
