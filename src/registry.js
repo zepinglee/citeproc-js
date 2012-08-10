@@ -312,6 +312,40 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
                 this.refreshes[id] = true;
             }
             //
+            // 3d-0. Remove parallel id references and realign
+            // parallel ID refs.
+            //
+            if (this.registry[key].siblings) {
+                if (this.registry[key].siblings.length == 1) {
+                    var loneSiblingID = this.registry[key].siblings[0];
+                    this.registry[loneSiblingID].master = true;
+                    this.registry[loneSiblingID].siblings.pop();
+                    this.registry[loneSiblingID].parallel = false;
+                } else if (this.registry[key].siblings.length > 1) {
+                    var removeIDs = [key];
+                    if (this.registry[key].master) {
+                        var newmasterID = this.registry[key].siblings[0];
+                        var newmaster = this.registry[newmasterID];
+                        newmaster.master = true;
+                        newmaster.parallel = false;
+                        removeIDs.push(newmasterID);
+                        for (var k = 0, klen = this.registry[key].siblings.length; k < klen; k += 1) {
+                            this.registry[this.registry[key].siblings[k]].parallel = newmasterID;
+                        }
+                    }
+                    var buffer = [];
+                    for (var k = this.registry[key].siblings.length - 1; k > -1; k += -1) {
+                        var siblingID = this.registry[key].siblings.pop();
+                        if (removeIDs.indexOf(siblingID) === -1) {
+                            buffer.push(siblingID)
+                        }
+                    }
+                    for (var k = buffer.length - 1; k > -1; k += -1) {
+                        this.registry[key].siblings.push(buffer[k]);
+                    }
+                }
+            }
+            //
             //  3d. Delete all items in deletion list from hash.
             //
             delete this.registry[key];

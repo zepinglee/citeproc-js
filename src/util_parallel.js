@@ -222,9 +222,13 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
                     curr.position = CSL.POSITION_IBID_WITH_LOCATOR;
                 }
             }
-         } else {
+        } else if (this.state.registry.registry[Item.id]) {
             this.state.registry.registry[Item.id].parallel = false;
-         }
+        } else {
+            this.try_cite = false;
+            this.force_collapse = false;
+            return;
+        }
         this.force_collapse = false;
         if (this.state.registry.registry[Item.id].parallel) {
             this.force_collapse = true;
@@ -296,7 +300,7 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
     if (this.ignoreVars.indexOf(this.variable) > -1) {
         return;
     }
-    if (this.use_parallels) {
+    if (this.use_parallels && (this.force_collapse || this.try_cite)) {
         if (["article-journal", "article-magazine"].indexOf(this.cite.Item.type) > -1) {
             if (["volume","page","page-first","issue"].indexOf(this.variable) > -1) {
                 return;
@@ -413,7 +417,7 @@ CSL.Parallel.prototype.CloseVariable = function () {
  */
 CSL.Parallel.prototype.CloseCite = function () {
     var x, pos, len, has_issued, use_journal_info, volume_pos, container_title_pos, section_pos;
-    if (this.use_parallels) {
+    if (this.use_parallels && (this.force_collapse || this.try_cite)) {
         use_journal_info = false;
         if (!this.cite.front_collapse["container-title"]) {
             use_journal_info = true;
@@ -504,7 +508,7 @@ CSL.Parallel.prototype.CloseCite = function () {
  */
 CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
     var cite, pos, master, len;
-    if (this.use_parallels) {
+    if (this.use_parallels && (this.force_collapse || this.try_cite)) {
         // a bit loose here: zero-length sets relate to one cite,
         // apparently.
         var lengthCheck = this.sets.value().length;
