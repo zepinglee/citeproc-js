@@ -360,13 +360,13 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
             blob.blobs = blob.blobs.replace(/\.([^a-z]|$)/g, "$1");
         }
         for (var i = blob.decorations.length - 1; i > -1; i += -1) {
+            if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] === "true") {
+                blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote")
+            }
             if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
                 if (blob.decorations[i][0] === "@font-style") {
                     blob.decorations = blob.decorations.slice(0, i).concat(blob.decorations.slice(i + 1));
                 }
-            }
-            if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] === "true") {
-                blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote")
             }
         }
         //
