@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.377
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug that masked from view all locale nodes 
+  embedded in a style that had an explicit xml:lang 
+  attribute. Many thanks to MLZ user maras for putting
+  forward the use case that forced identification of
+  the fault.
+
+==========================
 Changes in version 1.0.376
 ==========================
 
