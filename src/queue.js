@@ -359,11 +359,14 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         if (this.state.tmp.strip_periods && !noStripPeriods) {
             blob.blobs = blob.blobs.replace(/\.([^a-z]|$)/g, "$1");
         }
-        if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
-            for (var i = blob.decorations.length - 1; i > -1; i += -1) {
+        for (var i = blob.decorations.length - 1; i > -1; i += -1) {
+            if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
                 if (blob.decorations[i][0] === "@font-style") {
                     blob.decorations = blob.decorations.slice(0, i).concat(blob.decorations.slice(i + 1));
                 }
+            }
+            if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] === "true") {
+                blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote")
             }
         }
         //
@@ -962,7 +965,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 
             // Swap punctuation into quotation marks as required.
             //if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
-            if (state.getOpt('punctuation-in-quote')) {
+            if (doblob.punctuation_in_quote) {
                 var decorations = doblob.decorations;
                 for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
                     if (decorations[j][0] === '@quotes' && decorations[j][1] === 'true') {
