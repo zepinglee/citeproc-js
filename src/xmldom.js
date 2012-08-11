@@ -254,6 +254,9 @@ CSL_CHROME.prototype.getAttributeName = function (attr) {
 
 CSL_CHROME.prototype.getAttributeValue = function (myxml,name,namespace) {
     var ret = "";
+    if (namespace) {
+        name = namespace+":"+name;
+    }
     if (myxml && this.hasAttributes(myxml) && myxml.getAttribute(name)) {
         ret = myxml.getAttribute(name);
     }
