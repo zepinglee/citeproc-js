@@ -423,7 +423,7 @@ CSL.Engine.prototype.getOpt = function (arg) {
     if ("undefined" !== typeof this.locale[this.opt.lang].opts[arg]) {
         return this.locale[this.opt.lang].opts[arg];
     } else {
-        return this.locale[this.opt.lang].opts[arg];
+        return false;
     }
 };
 
