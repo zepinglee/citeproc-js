@@ -541,7 +541,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
         lst = arg.split(/\s+/);
 
         // Expand each list element
-        this.locale_bases = [];
+        this.locale_bares = [];
         for (i = 0, ilen = lst.length; i < ilen; i += 1) {
             // Parse out language string
             lang = CSL.localeParse(lst[i]);
@@ -550,7 +550,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
             langspec = CSL.localeResolve(lang);
             if (lst[i].length === 2) {
                 // For fallback
-                this.locale_bases.push(langspec.base);
+                this.locale_bares.push(langspec.bare);
             }
             // Load the locale terms etc.
             state.localeConfigure(langspec);
@@ -596,7 +596,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
                         break;
                     }
                 }
-                if (!res && this.locale_bases.indexOf(langspec.bare) > -1) {
+                if (!res && this.locale_bares.indexOf(langspec.bare) > -1) {
                     state.opt.lang = this.locale;
                     state.tmp.last_cite_locale = this.locale;
                     // Set empty group open tag with locale set marker
