@@ -596,7 +596,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
                         break;
                     }
                 }
-                if (!res && this.locale_bases.indexOf(langspec.base) > -1) {
+                if (!res && this.locale_bases.indexOf(langspec.bare) > -1) {
                     state.opt.lang = this.locale;
                     state.tmp.last_cite_locale = this.locale;
                     // Set empty group open tag with locale set marker
