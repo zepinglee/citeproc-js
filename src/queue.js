@@ -792,7 +792,7 @@ CSL.Output.Queue.purgeNearsideSuffixSpaces = function(myblob, chr) {
     return chr;
 };
 
-CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
+CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
     var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr, firstchr, exposed_suffixes, exposed, j, jlen, i, ilen;
 
     var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
@@ -800,7 +800,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
     var SWAPS = CSL.SWAPPING_PUNCTUATION;
     
     if (!stk) {
-        stk = [{suffix: "", delimiter: ""}];
+        stk = [{suffix: "", delimiter: "", lastNode:true}];        
     }
 
     slast = stk.length - 1;
@@ -965,46 +965,49 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
 
             // Swap punctuation into quotation marks as required.
             //if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
-            if (doblob.punctuation_in_quote) {
+            if (stk[slast].lastNode && state.getOpt("punctuation-in-quote")) {
                 var decorations = doblob.decorations;
                 for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
                     if (decorations[j][0] === '@quotes' && decorations[j][1] === 'true') {
-                        var swapchar = doblob.strings.suffix.slice(0, 1);
-                        var swapblob = false;
-                        if (SWAPS.indexOf(swapchar) > -1) {
-                            swapblob = doblob;
-                        } else if (SWAPS.indexOf(suffix) > -1 && i === (myblobs.length - 1)) {
-                            swapchar = suffix;
-                            swapblob = blob;
-                        } else {
-                            swapchar = false;
-                        }
-                        // This reflects Chicago 16th.
-                        if (swapchar) {
-                            // For both possible case, if ending punctuation is 
-                            // not in SWAPS, add the swapchar.
+                        doblob.punctuation_in_quote = true;
+                    }
+                }
+            }
+            if (doblob.punctuation_in_quote) {
+                var swapchar = doblob.strings.suffix.slice(0, 1);
+                var swapblob = false;
+                if (SWAPS.indexOf(swapchar) > -1) {
+                    swapblob = doblob;
+                } else if (SWAPS.indexOf(suffix) > -1 && i === (myblobs.length - 1)) {
+                    swapchar = suffix;
+                    swapblob = blob;
+                } else {
+                    swapchar = false;
+                }
+                // This reflects Chicago 16th.
+                if (swapchar) {
+                    // For both possible case, if ending punctuation is 
+                    // not in SWAPS, add the swapchar.
                             // Otherwise add the swapchar only if ending punctuation 
-                            // is in TERMS, and the swapchar is in SWAPS and not in TERMS.
-                            //
-                            // Code could do with some pruning, but that's the logic of it.
-                            if ("string" === typeof doblob.blobs) {
-                                if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1 ||
-                                   (TERMS.indexOf(doblob.blobs.slice(-1)) > -1 &&
-                                    SWAPS.indexOf(swapchar) > -1 &&
-                                    TERMS.indexOf(swapchar) === -1)) {
-                                        doblob.blobs += swapchar;
-                                }
-                            } else {
-                                if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1 ||
-                                    (TERMS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) > -1 &&
-                                     SWAPS.indexOf(swapchar) > -1 &&
-                                     TERMS.indexOf(swapchar) === -1)) {
-                                         doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
-                                }
-                            }
-                            swapblob.strings.suffix = swapblob.strings.suffix.slice(1);
+                    // is in TERMS, and the swapchar is in SWAPS and not in TERMS.
+                    //
+                    // Code could do with some pruning, but that's the logic of it.
+                    if ("string" === typeof doblob.blobs) {
+                        if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1 ||
+                            (TERMS.indexOf(doblob.blobs.slice(-1)) > -1 &&
+                             SWAPS.indexOf(swapchar) > -1 &&
+                             TERMS.indexOf(swapchar) === -1)) {
+                            doblob.blobs += swapchar;
+                        }
+                    } else {
+                        if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1 ||
+                            (TERMS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) > -1 &&
+                             SWAPS.indexOf(swapchar) > -1 &&
+                             TERMS.indexOf(swapchar) === -1)) {
+                            doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
                         }
                     }
+                    swapblob.strings.suffix = swapblob.strings.suffix.slice(1);
                 }
             }
 
@@ -1094,8 +1097,15 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk, finish) {
             
             delimiterX = doblob.strings.delimiter;
 
+            var lastNode
+            if (i === (myblobs.length - 1) && stk[slast].lastNode) {
+                lastNode = true;
+            } else {
+                lastNode = false;
+            }
+
             // Push variables to stack and recurse.
-            stk.push({suffix: suffixX, dsuff:dsuffX, blob:blobX, delimiter:delimiterX, prefix:prefixX, dpref: dprefX, dsufff: dsufffX});
+            stk.push({suffix: suffixX, dsuff:dsuffX, blob:blobX, delimiter:delimiterX, prefix:prefixX, dpref: dprefX, dsufff: dsufffX, lastNode: lastNode});
             lastchr = CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
         }
         

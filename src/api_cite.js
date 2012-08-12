@@ -996,7 +996,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
         {
             suffix: "",
             delimiter: delimiter,
-            blob: fakeblob
+            blob: fakeblob,
+            lastNode: true
         }
     ];
     //print("=== FROM CITE ===");
