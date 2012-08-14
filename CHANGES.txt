@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.381
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix sorting of strings that begin or end in [, " or '.
+  No special handling for such characters inside the string
+  yet, we'll see if there are complaints.
+
+==========================
 Changes in version 1.0.380
 ==========================
 
