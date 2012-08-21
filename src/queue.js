@@ -696,7 +696,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
                     str = state.fun.decorate[params[0]][params[1]](state, str, params[2]);
                 }
             }
-            str = blob.strings.prefix + str + blob.strings.suffix;
+            str = txt_esc(blob.strings.prefix) + str + txt_esc(blob.strings.suffix);
             var addme = "";
             if (blob.status === CSL.END) {
                 addme = txt_esc(blob.range_prefix);
