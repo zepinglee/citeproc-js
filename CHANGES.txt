@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.386
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Be a little more conservative in pluralisation.
+
+- Use default locale always for accessed term,
+  aligning behaviour with accessed date variable.
+
+==========================
 Changes in version 1.0.385
 ==========================
 
