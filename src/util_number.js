@@ -255,9 +255,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         // Any & character in the string should force plural.
         // This covers cases like "23 & seq". Cases like "23 et seq"
         // will be caught out; that's for later, if need arises.
-        if (num.indexOf("&") > -1 || num.indexOf("--") > -1) {
-            this.tmp.shadow_numbers[variable].plural = 1;
-        }
+
+        // SUSPEND
+        //if (num.indexOf("&") > -1) {
+        //    this.tmp.shadow_numbers[variable].plural = 1;
+        //}
 
         // XXX: The attempt at syntactic parsing was crazy.
 
@@ -322,12 +324,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             if (odd) {
                 // Rack up as numeric output if pure numeric, otherwise as text.
                 if (elements[i]) {
-                    if (elements[i].match(/[0-9]/)) {
+                    if (elements[i].match(/(?:[0-9]|[xivcmlXIVCML])/)) {
                         if (elements[i - 1] && elements[i - 1].match(/^\s*\\*[\-\u2013]+\s*$/)) {
                             var middle = this.tmp.shadow_numbers[variable].values.slice(-1);
                             if (middle[0][1].indexOf("\\") == -1) {
-                                if (elements[i - 2] && ("" + elements[i - 2]).match(/[a-zA-Z]*[0-9]+$/)
-                                    && elements[i].match(/^[a-zA-Z]*[0-9]+/)) {
+                                if (elements[i - 2] && ("" + elements[i - 2]).match(/(:?[a-zA-Z]*[0-9]+$|^[ivxlcmIVXLCM]+$)/)
+                                    && elements[i].match(/(?:^[a-zA-Z]*[0-9]+|^[ivxlcmIVXLCM]+$)/)) {
 
                                     // Removed from condition to allow manually collapsed
                                     // number ranges to be recognized as plural. Leaf number
