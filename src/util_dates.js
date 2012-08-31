@@ -180,7 +180,10 @@ CSL.Util.Dates.month["numeric-leading-zeros"] = function (state, num) {
  * Convert month to long form
  * <p>This passes back the month of the locale in long form.</p>
  */
-CSL.Util.Dates.month["long"] = function (state, num) {
+
+// Gender is not currently used. Is it needed?
+
+CSL.Util.Dates.month["long"] = function (state, num, gender, forceDefaultLocale) {
     var res = CSL.Util.Dates.normalizeMonth(num, true);
     var num = res.num;
     if (!num) {
@@ -190,7 +193,7 @@ CSL.Util.Dates.month["long"] = function (state, num) {
         while (num.length < 2) {
             num = "0" + num;
         }
-        num = state.getTerm(res.stub + num, "long", 0);
+        num = state.getTerm(res.stub + num, "long", 0, 0, false, forceDefaultLocale);
     }
     return num;
 };
@@ -199,7 +202,10 @@ CSL.Util.Dates.month["long"] = function (state, num) {
  * Convert month to long form
  * <p>This passes back the month of the locale in short form.</p>
  */
-CSL.Util.Dates.month["short"] = function (state, num) {
+
+// See above.
+
+CSL.Util.Dates.month["short"] = function (state, num, gender, forceDefaultLocale) {
     var res = CSL.Util.Dates.normalizeMonth(num, true);
     var num = res.num;
     if (!num) {
@@ -209,7 +215,7 @@ CSL.Util.Dates.month["short"] = function (state, num) {
         while (num.length < 2) {
             num = "0" + num;
         }
-        num = state.getTerm(res.stub + num, "short", 0);
+        num = state.getTerm(res.stub + num, "short", 0, 0, false, forceDefaultLocale);
     }
     return num;
 };

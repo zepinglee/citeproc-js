@@ -355,23 +355,11 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
         // convert if appropriate
 //        for (pos = 0, len = sneakpeek.length; pos < len; pos += 1) {
         for (pos in sneakpeek) {
-            //
-            // Aha!  If we're to be cross-platform, we can't
-            // rely on E4X type discrimination to identify
-            // an XML object.
-            //
-            //if ("xml" === typeof sneakpeek[pos]) {
-            //
-            // lie to jslint, for the benefit of Rhino
-            //
-            if (true) {
-                node = sneakpeek[pos];
-                if ("date" === this.sys.xml.nodename(node)) {
-                    currnode = CSL.Util.fixDateNode.call(this, currnode, pos, node);
-                    sneakpeek = this.sys.xml.children(currnode);
-                }
+            node = sneakpeek[pos];
+            if ("date" === this.sys.xml.nodename(node)) {
+                currnode = CSL.Util.fixDateNode.call(this, currnode, pos, node);
+                sneakpeek = this.sys.xml.children(currnode);
             }
-            //}
         }
         //
         // if first node of a span, process it, then descend
@@ -387,12 +375,18 @@ CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function () {
     return this.nodeList[this.depth][1];
 };
 
-CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode) {
+CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode, forceDefaultLocale) {
     if (term && term.match(/[A-Z]/) && term === term.toUpperCase()) {
         CSL.debug("Warning: term key is in uppercase form: "+term);
         term = term.toLowerCase();
     }
-    var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[this.opt.lang].terms, term, form, plural, gender);
+    var lang;
+    if (forceDefaultLocale) {
+        lang = this.opt["default-locale"][0];
+    } else {
+        lang = this.opt.lang;
+    }
+    var ret = CSL.Engine.getField(CSL.LOOSE, this.locale[lang].terms, term, form, plural, gender);
     // XXXXX Temporary, until locale term is deployed in CSL.
     if (!ret && term === "range-delimiter") {
         ret = "\u2013";
@@ -411,9 +405,15 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode) {
     return ret;
 };
 
-CSL.Engine.prototype.getDate = function (form) {
-    if (this.locale[this.opt.lang].dates[form]) {
-        return this.locale[this.opt.lang].dates[form];
+CSL.Engine.prototype.getDate = function (form, forceDefaultLocale) {
+    var lang;
+    if (forceDefaultLocale) {
+        lang = this.opt["default-locale"];
+    } else {
+        lang = this.opt.lang;
+    }
+    if (this.locale[lang].dates[form]) {
+        return this.locale[lang].dates[form];
     } else {
         return false;
     }

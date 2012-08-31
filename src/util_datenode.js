@@ -56,7 +56,12 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     this.state.build.date_key = true;
 
     form = this.sys.xml.getAttributeValue(node, "form");
-    var lingo = this.sys.xml.getAttributeValue(node, "lingo");
+    var lingo;
+    if ("accessed" === this.sys.xml.getAttributeValue(node, "variable")) {
+        lingo = this.state.opt["default-locale"][0];
+    } else {
+        lingo = this.sys.xml.getAttributeValue(node, "lingo");
+    }
 
     if (!this.state.getDate(form)) {
         return parent;
@@ -73,7 +78,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     //
     // Xml: Copy a node
     //
-    datexml = this.sys.xml.nodeCopy(this.state.getDate(form));
+    datexml = this.sys.xml.nodeCopy(this.state.getDate(form, ("accessed" === variable)));
     this.sys.xml.setAttribute(datexml, 'lingo', this.state.opt.lang);
     this.sys.xml.setAttribute(datexml, 'form', form);
     this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
