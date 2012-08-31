@@ -356,7 +356,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                             } else {
                                 middle[0][1] = middle[0][1].replace(/\\/, "", "g");
                             }
-                        } else {
+                        } else if (elements[i].indexOf(" ") === -1) {
                             count = count + 1;
                         }
                     }
