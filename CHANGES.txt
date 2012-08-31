@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.384
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Pluralize terms for all numeric variables containing
+  a hyphen without backslash escape or an en-dash.
+
+==========================
 Changes in version 1.0.383
 ==========================
 
