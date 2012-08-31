@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.385
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- In multiple (multi-lingual) layouts, always use
+  the default-locale (explicit or en-US implicit) to
+  render the "accessed" date variable.
+
+==========================
 Changes in version 1.0.384
 ==========================
 
