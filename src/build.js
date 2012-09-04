@@ -73,7 +73,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt = new CSL.Engine.Opt();
     this.tmp = new CSL.Engine.Tmp();
     this.build = new CSL.Engine.Build();
-    this.fun = new CSL.Engine.Fun();
+    this.fun = new CSL.Engine.Fun(this);
     this.configure = new CSL.Engine.Configure();
     // Build citation before citation_sort in order to pick up
     // state.opt.update_mode, needed it determine whether

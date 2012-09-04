@@ -329,7 +329,7 @@ CSL.Engine.Tmp = function () {
 };
 
 
-CSL.Engine.Fun = function () {
+CSL.Engine.Fun = function (state) {
     //
     // matcher
     this.match = new  CSL.Util.Match();
@@ -341,7 +341,7 @@ CSL.Engine.Fun = function () {
     this.romanizer = new CSL.Util.Romanizer();
     //
     // utility to make an ordinal form of a number
-    this.ordinalizer = new CSL.Util.Ordinalizer();
+    this.ordinalizer = new CSL.Util.Ordinalizer(state);
     //
     // utility to make the long ordinal form of a number, if possible
     this.long_ordinalizer = new CSL.Util.LongOrdinalizer();

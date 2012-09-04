@@ -132,6 +132,8 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         // Set default skip words. Can be overridden in locale by attribute on style-options node.
         this.locale[lang_out].opts["skip-words"] = CSL.SKIP_WORDS;
         this.locale[lang_out].dates = {};
+        // For ordinals
+        this.locale[lang_out].ordinals101 = false;
     }
     //
     // Xml: Test if node is "locale" (nb: ns declarations need to be invoked
@@ -170,6 +172,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     // Xml: get a list of term nodes within locale
     //
     nodes = this.sys.xml.getNodesByName(locale, 'term');
+    // Collect ordinals info as for 1.0.1, but save only if 1.0.1 toggle triggers
+    var ordinals101 = {"last-digit":{},"last-two-digits":{},"whole-number":{}};
+    var ordinals101_toggle = false;
     for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
         term = nodes[pos];
         //
@@ -178,6 +183,25 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         termname = this.sys.xml.getAttributeValue(term, 'name');
         if (termname === "sub verbo") {
             termname = "sub-verbo";
+        }
+        if (termname.slice(0,7) === "ordinal") {
+            var termstring = this.sys.xml.getNodeValue(term);
+            if (termname === "ordinal") {
+                ordinals101_toggle = true;
+            } else {
+                var match = this.sys.xml.getAttributeValue(term, 'match');
+                var termstub = termname.slice(8);
+                if (!match) {
+                    match = "last-two-digits";
+                    if (termstub.slice(0,1) === "0") {
+                        match = "last-digit";
+                    }
+                }
+                if (termstub.slice(0,1) === "0") {
+                    termstub = termstub.slice(1);
+                }
+                ordinals101[match][termstub] = termname;
+            }
         }
         if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
             this.locale[lang_out].terms[termname] = {};
@@ -233,6 +257,10 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             //
             target[form] = this.sys.xml.getNodeValue(term);
         }
+    }
+    // If locale had a CSL 1.0.1-style ordinal definition, install and sort them.
+    if (ordinals101_toggle) {
+        this.locale[lang_out].ordinals101 = ordinals101;
     }
     // Iterate over main segments, and fill in any holes in gender-specific data
     // sub-segments

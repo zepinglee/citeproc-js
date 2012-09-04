@@ -91,20 +91,25 @@ CSL.Util.LongOrdinalizer.prototype.format = function (num, gender) {
 };
 
 
-CSL.Util.Ordinalizer = function () {};
-
-CSL.Util.Ordinalizer.prototype.init = function (state) {
+CSL.Util.Ordinalizer = function (state) {
+    this.state = state;
     this.suffixes = {};
-    for (var i = 0, ilen = 3; i < ilen; i += 1) {
-        var gender = [undefined, "masculine", "feminine"][i];
-        this.suffixes[gender] = [];
-        for (var j = 1; j < 5; j += 1) {
-            var ordinal = state.getTerm("ordinal-0" + j, "long", false, gender);
-            if ("undefined" === typeof ordinal) {
-                delete this.suffixes[gender];
-                break;
+};
+
+CSL.Util.Ordinalizer.prototype.init = function () {
+    if (!this.suffixes[this.state.opt.lang]) {
+        this.suffixes[this.state.opt.lang] = {};
+        for (var i = 0, ilen = 3; i < ilen; i += 1) {
+            var gender = [undefined, "masculine", "feminine"][i];
+            this.suffixes[this.state.opt.lang][gender] = [];
+            for (var j = 1; j < 5; j += 1) {
+                var ordinal = this.state.getTerm("ordinal-0" + j, "long", false, gender);
+                if ("undefined" === typeof ordinal) {
+                    delete this.suffixes[this.state.opt.lang][gender];
+                    break;
+                }
+                this.suffixes[this.state.opt.lang][gender].push(ordinal);            
             }
-            this.suffixes[gender].push(ordinal);            
         }
     }
 };
@@ -112,18 +117,34 @@ CSL.Util.Ordinalizer.prototype.init = function (state) {
 CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
     var str;
     num = parseInt(num, 10);
-    str = num.toString();
-    if ((num / 10) % 10 === 1 || (num > 10 && num < 20)) {
-        str += this.suffixes[gender][3];
-    } else if (num % 10 === 1 && num % 100 !== 11) {
-        str += this.suffixes[gender][0];
-    } else if (num % 10 === 2 && num % 100 !== 12) {
-        str += this.suffixes[gender][1];
-    } else if (num % 10 === 3 && num % 100 !== 13) {
-        str += this.suffixes[gender][2];
+    str = "" + num;
+    var suffix = "";
+    if (this.state.locale[this.state.opt.lang].ordinals101) {
+        suffix = this.state.getTerm("ordinal");
+        if (this.state.locale[this.state.opt.lang].ordinals101["whole-number"][str]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["whole-number"][str]);
+        } else if (this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"][str.slice(str.length - 2)]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"][str.slice(str.length - 2)]);
+        } else if (str === "0" && this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"][str.slice(str.length - 1)]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"]["00"]);
+        } else if (this.state.locale[this.state.opt.lang].ordinals101["last-digit"][str.slice(str.length - 1)]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["last-digit"][str.slice(str.length - 1)]);
+        }
     } else {
-        str += this.suffixes[gender][3];
+        this.state.fun.ordinalizer.init();
+        if ((num / 10) % 10 === 1 || (num > 10 && num < 20)) {
+            suffix = this.suffixes[this.state.opt.lang][gender][3];
+        } else if (num % 10 === 1 && num % 100 !== 11) {
+            suffix = this.suffixes[this.state.opt.lang][gender][0];
+        } else if (num % 10 === 2 && num % 100 !== 12) {
+            suffix = this.suffixes[this.state.opt.lang][gender][1];
+        } else if (num % 10 === 3 && num % 100 !== 13) {
+            suffix = this.suffixes[this.state.opt.lang][gender][2];
+        } else {
+            suffix = this.suffixes[this.state.opt.lang][gender][3];
+        }
     }
+    str = str += suffix;
     return str;
 };
 
