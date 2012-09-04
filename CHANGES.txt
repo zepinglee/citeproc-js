@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.387
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement CSL 1.0.1 ordinals.
+
+
+==========================
 Changes in version 1.0.386
 ==========================
 
