@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.388
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bugs in locale ordinals affecting gender
+  alignment and CSL 1.0.1 ordinal term sets provided by a
+  style.
+
+
+==========================
 Changes in version 1.0.387
 ==========================
 
