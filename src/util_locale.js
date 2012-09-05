@@ -331,7 +331,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             attributes = this.sys.xml.attributes(styleopts);
             for (attrname in attributes) {
                 if (attributes.hasOwnProperty(attrname)) {
-                    if (attrname === "@punctuation-in-quote") {
+                    if (attrname === "@punctuation-in-quote" || attrname === "@limit-day-ordinals-to-day-1") {
                         if (attributes[attrname] === "true") {
                             // trim off leading @
                             this.locale[lang_out].opts[attrname.slice(1)] = true;

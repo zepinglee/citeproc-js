@@ -134,7 +134,16 @@ CSL.Node["date-part"] = {
                 monthnameid = "month-"+monthnameid;
                 var gender = state.opt["noun-genders"][monthnameid];
                 if (this.strings.form) {
-                    value = CSL.Util.Dates[this.strings.name][this.strings.form](state, value, gender, ("accessed" === date_variable));
+                    var myform = this.strings.form;
+                    if (this.strings.name === "day") {
+                        if (myform === "ordinal"
+                            && state.locale[state.opt.lang].opts["limit-day-ordinals-to-day-1"]
+                            && ("" + value) !== "1") {
+
+                            myform = "numeric";
+                        }
+                    }
+                    value = CSL.Util.Dates[this.strings.name][myform](state, value, gender, ("accessed" === date_variable));
                     if ("month" === this.strings.name) {
                         // XXXXX Cut-and-paste code in multiple locations. This code block should be
                         // collected in a function.
@@ -151,7 +160,7 @@ CSL.Node["date-part"] = {
                         }
                     }
                     if (value_end) {
-                        value_end = CSL.Util.Dates[this.strings.name][this.strings.form](state, value_end, gender, ("accessed" === date_variable));
+                        value_end = CSL.Util.Dates[this.strings.name][myform](state, value_end, gender, ("accessed" === date_variable));
                         // XXXXX Cut-and-paste code in multiple locations. This code block should be
                         // collected in a function.
                         // Tag: strip-periods-block
