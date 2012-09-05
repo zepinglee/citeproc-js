@@ -124,7 +124,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target, i, ilen;
     lang_in = lang_in.replace("_", "-");
     lang_out = lang_out.replace("_", "-");
-
+    
     if (!this.locale[lang_out]) {
         this.locale[lang_out] = {};
         this.locale[lang_out].terms = {};
@@ -133,8 +133,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         this.locale[lang_out].opts["skip-words"] = CSL.SKIP_WORDS;
         this.locale[lang_out].dates = {};
         // For ordinals
-        this.locale[lang_out].ordinals101 = false;
+        this.locale[lang_out].ord = {'1.0.1':false,keys:{}};
     }
+
     //
     // Xml: Test if node is "locale" (nb: ns declarations need to be invoked
     // on every access to the xml object; bundle this with the functions
@@ -171,6 +172,17 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     //
     // Xml: get a list of term nodes within locale
     //
+
+    // If we are setting CSL 1.0.1 ordinals inside a style, wipe the
+    // slate clean and start over.
+    var hasCslOrdinals101 = this.sys.xml.getNodesByName(locale, 'term', 'ordinal').length;
+    if (hasCslOrdinals101) {
+        for (var key in this.locale[lang_out].ord.keys) {
+            delete this.locale[lang_out].terms[key];
+        }
+        this.locale[lang_out].ord = {"1.0.1":false,keys:{}};
+    }
+
     nodes = this.sys.xml.getNodesByName(locale, 'term');
     // Collect ordinals info as for 1.0.1, but save only if 1.0.1 toggle triggers
     var ordinals101 = {"last-digit":{},"last-two-digits":{},"whole-number":{}};
@@ -202,6 +214,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                 }
                 ordinals101[match][termstub] = termname;
             }
+            this.locale[lang_out].ord.keys[termname] = true;
         }
         if ("undefined" === typeof this.locale[lang_out].terms[termname]) {
             this.locale[lang_out].terms[termname] = {};
@@ -260,19 +273,18 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     }
     // If locale had a CSL 1.0.1-style ordinal definition, install and sort them.
     if (ordinals101_toggle) {
-        this.locale[lang_out].ordinals101 = ordinals101;
+        this.locale[lang_out].ord['1.0.1'] = ordinals101;
     }
+
     // Iterate over main segments, and fill in any holes in gender-specific data
     // sub-segments
     for (termname in this.locale[lang_out].terms) {
-        if (this.locale[lang_out].terms.hasOwnProperty(termname)) {
-            for (i = 0, ilen = 2; i < ilen; i += 1) {
-                genderform = CSL.GENDERS[i];
-                if (this.locale[lang_out].terms[termname][genderform]) {
-                    for (form in this.locale[lang_out].terms[termname]) {
-                        if (!this.locale[lang_out].terms[termname][genderform][form]) {
-                            this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
-                        }
+        for (i = 0, ilen = 2; i < ilen; i += 1) {
+            genderform = CSL.GENDERS[i];
+            if (this.locale[lang_out].terms[termname][genderform]) {
+                for (form in this.locale[lang_out].terms[termname]) {
+                    if (!this.locale[lang_out].terms[termname][genderform][form]) {
+                        this.locale[lang_out].terms[termname][genderform][form] = this.locale[lang_out].terms[termname][form];
                     }
                 }
             }

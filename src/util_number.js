@@ -119,16 +119,16 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
     num = parseInt(num, 10);
     str = "" + num;
     var suffix = "";
-    if (this.state.locale[this.state.opt.lang].ordinals101) {
+    if (this.state.locale[this.state.opt.lang].ord["1.0.1"]) {
         suffix = this.state.getTerm("ordinal");
-        if (this.state.locale[this.state.opt.lang].ordinals101["whole-number"][str]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["whole-number"][str]);
-        } else if (this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"][str.slice(str.length - 2)]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"][str.slice(str.length - 2)]);
-        } else if (str === "0" && this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"][str.slice(str.length - 1)]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["last-two-digits"]["00"]);
-        } else if (this.state.locale[this.state.opt.lang].ordinals101["last-digit"][str.slice(str.length - 1)]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ordinals101["last-digit"][str.slice(str.length - 1)]);
+        if (this.state.locale[this.state.opt.lang].ord["1.0.1"]["whole-number"][str]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["whole-number"][str],false,0,gender);
+        } else if (this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 2)]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 2)],false,0,gender);
+        } else if (str === "0" && this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 1)]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"]["00"],false,0,gender);
+        } else if (this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-digit"][str.slice(str.length - 1)]) {
+            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-digit"][str.slice(str.length - 1)],false,0,gender);
         }
     } else {
         this.state.fun.ordinalizer.init();
