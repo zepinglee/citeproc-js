@@ -4361,6 +4361,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     nodes = this.sys.xml.getNodesByName(locale, 'term');
     var ordinals101 = {"last-digit":{},"last-two-digits":{},"whole-number":{}};
     var ordinals101_toggle = false;
+    var genderized_terms = {};
     for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
         term = nodes[pos];
         termname = this.sys.xml.getAttributeValue(term, 'name');
@@ -4405,6 +4406,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             this.locale[lang_out].terms[termname][genderform] = {};
             this.locale[lang_out].terms[termname][genderform][form] = [];
             target = this.locale[lang_out].terms[termname][genderform];
+            genderized_terms[termname] = true;
         } else {
             this.locale[lang_out].terms[termname][form] = [];
             target = this.locale[lang_out].terms[termname];
@@ -4417,6 +4419,28 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         }
     }
     if (ordinals101_toggle) {
+        for (var ikey in genderized_terms) {
+            var gender_segments = {};
+            var form_segments = 0;
+            for (var jkey in this.locale[lang_out].terms[ikey]) {
+                if (["masculine","feminine"].indexOf(jkey) > -1) {
+                    gender_segments[jkey] = this.locale[lang_out].terms[ikey][jkey];
+                } else {
+                    form_segments += 1;
+                }
+            }
+            if (!form_segments) {
+                if (gender_segments.feminine) {
+                    for (var jkey in gender_segments.feminine) {
+                        this.locale[lang_out].terms[ikey][jkey] = gender_segments.feminine[jkey];
+                    }
+                } else if (gender_segments.masculine) {
+                    for (var jkey in gender_segments.masculine) {
+                        this.locale[lang_out].terms[ikey][jkey] = gender_segments.masculine[jkey];
+                    }
+                }
+            }
+        }
         this.locale[lang_out].ord['1.0.1'] = ordinals101;
     }
     for (termname in this.locale[lang_out].terms) {

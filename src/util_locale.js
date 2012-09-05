@@ -187,6 +187,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     // Collect ordinals info as for 1.0.1, but save only if 1.0.1 toggle triggers
     var ordinals101 = {"last-digit":{},"last-two-digits":{},"whole-number":{}};
     var ordinals101_toggle = false;
+    var genderized_terms = {};
     for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
         term = nodes[pos];
         //
@@ -245,6 +246,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             this.locale[lang_out].terms[termname][genderform] = {};
             this.locale[lang_out].terms[termname][genderform][form] = [];
             target = this.locale[lang_out].terms[termname][genderform];
+            genderized_terms[termname] = true;
         } else {
             this.locale[lang_out].terms[termname][form] = [];
             target = this.locale[lang_out].terms[termname];
@@ -271,8 +273,34 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             target[form] = this.sys.xml.getNodeValue(term);
         }
     }
-    // If locale had a CSL 1.0.1-style ordinal definition, install and sort them.
+    // If locale had a CSL 1.0.1-style ordinal definition, install the logic object
+    // and iterate over gendered terms, filling in default values for use by getTerm.
     if (ordinals101_toggle) {
+        for (var ikey in genderized_terms) {
+            var gender_segments = {};
+            var form_segments = 0;
+            for (var jkey in this.locale[lang_out].terms[ikey]) {
+                if (["masculine","feminine"].indexOf(jkey) > -1) {
+                    gender_segments[jkey] = this.locale[lang_out].terms[ikey][jkey];
+                } else {
+                    form_segments += 1;
+                }
+            }
+            if (!form_segments) {
+                if (gender_segments.feminine) {
+                    // Link each feminine form segment to default
+                    // (no need to filter, these will not have gender segments mixed in)
+                    for (var jkey in gender_segments.feminine) {
+                        this.locale[lang_out].terms[ikey][jkey] = gender_segments.feminine[jkey];
+                    }
+                } else if (gender_segments.masculine) {
+                    // Otherwise link each masculine form segment to default 
+                    for (var jkey in gender_segments.masculine) {
+                        this.locale[lang_out].terms[ikey][jkey] = gender_segments.masculine[jkey];
+                    }
+                }
+            }
+        }
         this.locale[lang_out].ord['1.0.1'] = ordinals101;
     }
 
