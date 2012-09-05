@@ -116,7 +116,13 @@ CSL_E4X.prototype.namespace = {
 }
 
 CSL_E4X.prototype.numberofnodes = function (myxml) {
-    return myxml.length();
+    if (typeof myxml === "xml") {
+        return myxml.length();
+    } else if (myxml) {
+        return myxml.length;
+    } else {
+        return 0;
+    }
 };
 
 CSL_E4X.prototype.getAttributeName = function (attr) {
@@ -182,11 +188,19 @@ CSL_E4X.prototype.nodeCopy = function (myxml) {
 }
 
 CSL_E4X.prototype.getNodesByName = function (myxml,name,nameattrval) {
-    var xml, ret;
+    var xml, ret, retnodes;
     default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-    ret = myxml.descendants(name);
+    retnodes = myxml.descendants(name);
+    ret = [];
     if (nameattrval){
-        ret = ret.(@name == nameattrval);
+        retnodes = retnodes.(@name == nameattrval);
+        if (retnodes.toXMLString()) {
+            ret.push(retnodes);
+        }
+    } else {
+        for each(var retnode in retnodes) {
+            ret.push(retnode);
+        }
     }
     return ret;
 }
