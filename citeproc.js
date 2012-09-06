@@ -4375,6 +4375,10 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             } else {
                 var match = this.sys.xml.getAttributeValue(term, 'match');
                 var termstub = termname.slice(8);
+                var genderform = this.sys.xml.getAttributeValue(term, 'gender-form');
+                if (!genderform) {
+                    genderform = "neuter";
+                }
                 if (!match) {
                     match = "last-two-digits";
                     if (termstub.slice(0,1) === "0") {
@@ -4384,7 +4388,10 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                 if (termstub.slice(0,1) === "0") {
                     termstub = termstub.slice(1);
                 }
-                ordinals101[match][termstub] = termname;
+                if (!ordinals101[match][termstub]) {
+                    ordinals101[match][termstub] = {};
+                }
+                ordinals101[match][termstub][genderform] = termname;
             }
             this.locale[lang_out].ord.keys[termname] = true;
         }
@@ -10711,7 +10718,7 @@ CSL.Util.Ordinalizer.prototype.init = function () {
                     delete this.suffixes[this.state.opt.lang][gender];
                     break;
                 }
-                this.suffixes[this.state.opt.lang][gender].push(ordinal);            
+                this.suffixes[this.state.opt.lang][gender].push(ordinal);
             }
         }
     }
@@ -10721,16 +10728,27 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
     num = parseInt(num, 10);
     str = "" + num;
     var suffix = "";
+    var trygenders = [];
+    if (gender) {
+        trygenders.push(gender);
+    }
+    trygenders.push("neuter");
     if (this.state.locale[this.state.opt.lang].ord["1.0.1"]) {
-        suffix = this.state.getTerm("ordinal");
-        if (this.state.locale[this.state.opt.lang].ord["1.0.1"]["whole-number"][str]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["whole-number"][str],false,0,gender);
-        } else if (this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 2)]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 2)],false,0,gender);
-        } else if (str === "0" && this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 1)]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"]["00"],false,0,gender);
-        } else if (this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-digit"][str.slice(str.length - 1)]) {
-            suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-digit"][str.slice(str.length - 1)],false,0,gender);
+        suffix = this.state.getTerm("ordinal",false,0,gender);
+        var trygender;
+        for (var i = 0, ilen = trygenders.length; i < ilen; i += 1) {
+            trygender = trygenders[i];
+            var ordinfo = this.state.locale[this.state.opt.lang].ord["1.0.1"];
+            if (ordinfo["whole-number"][str] && ordinfo["whole-number"][str][trygender]) {
+                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["whole-number"][str][trygender],false,0,gender);
+            } else if (ordinfo["last-two-digits"][str.slice(str.length - 2)] && ordinfo["last-two-digits"][str.slice(str.length - 2)][trygender]) {
+                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 2)][trygender],false,0,gender);
+            } else if (ordinfo["last-digit"][str.slice(str.length - 1)] && ordinfo["last-digit"][str.slice(str.length - 1)][trygender]) {
+                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-digit"][str.slice(str.length - 1)][trygender],false,0,gender);
+            }
+            if (suffix) {
+                break;
+            }
         }
     } else {
         this.state.fun.ordinalizer.init();
