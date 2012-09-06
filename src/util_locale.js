@@ -124,7 +124,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target, i, ilen;
     lang_in = lang_in.replace("_", "-");
     lang_out = lang_out.replace("_", "-");
-    
+
     if (!this.locale[lang_out]) {
         this.locale[lang_out] = {};
         this.locale[lang_out].terms = {};
@@ -204,6 +204,10 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             } else {
                 var match = this.sys.xml.getAttributeValue(term, 'match');
                 var termstub = termname.slice(8);
+                var genderform = this.sys.xml.getAttributeValue(term, 'gender-form');
+                if (!genderform) {
+                    genderform = "neuter";
+                }
                 if (!match) {
                     match = "last-two-digits";
                     if (termstub.slice(0,1) === "0") {
@@ -213,7 +217,10 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                 if (termstub.slice(0,1) === "0") {
                     termstub = termstub.slice(1);
                 }
-                ordinals101[match][termstub] = termname;
+                if (!ordinals101[match][termstub]) {
+                    ordinals101[match][termstub] = {};
+                }
+                ordinals101[match][termstub][genderform] = termname;
             }
             this.locale[lang_out].ord.keys[termname] = true;
         }
