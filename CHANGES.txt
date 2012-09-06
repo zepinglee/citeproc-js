@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.391
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in raw date parser affecting partial
+  Chinese/Japanese dates.
+
+==========================
 Changes in version 1.0.390
 ==========================
 
