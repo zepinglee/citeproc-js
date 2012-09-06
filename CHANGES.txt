@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.390
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Use gender fallbacks when evaluating ordinals only
+  if neutral term was explicitly defined.
+
+
+==========================
 Changes in version 1.0.389
 ==========================
 
