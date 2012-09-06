@@ -262,17 +262,21 @@ CSL.DateParser = function () {
             slst = txt.split(jiysplitter);
             lst = [];
             mm = txt.match(jiymatcher);
-            var mmx = [];
-            for (pos = 0, len = mm.length; pos < len; pos += 1) {
-                mmx = mmx.concat(mm[pos].match(/([^0-9]+)([0-9]+)/).slice(1));
-            }
-            for (pos = 0, len = slst.length; pos < len; pos += 1) {
-                lst.push(slst[pos]);
-                if (pos !== (len - 1)) {
-                    mmpos = (pos * 2);
-                    lst.push(mmx[mmpos]);
-                    lst.push(mmx[mmpos + 1]);
+            if (mm) {
+                var mmx = [];
+                for (pos = 0, len = mm.length; pos < len; pos += 1) {
+                    mmx = mmx.concat(mm[pos].match(/([^0-9]+)([0-9]+)/).slice(1));
                 }
+                for (pos = 0, len = slst.length; pos < len; pos += 1) {
+                    lst.push(slst[pos]);
+                    if (pos !== (len - 1)) {
+                        mmpos = (pos * 2);
+                        lst.push(mmx[mmpos]);
+                        lst.push(mmx[mmpos + 1]);
+                    }
+                }
+            } else {
+                lst = slst;
             }
             // workaround duly applied, this now works
             l = lst.length;
