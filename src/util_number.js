@@ -215,6 +215,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type) {
     var num, m, i, ilen, j, jlen;
     var debug = false;
+
     // XXX short-circuit if object exists: if numeric, set styling, no other action
     if (this.tmp.shadow_numbers[variable]) {
         if (this.tmp.shadow_numbers[variable].numeric) {
@@ -400,7 +401,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                     }
                     if (elements[i].match(/^[1-9][0-9]*$/)) {
                         elements[i] = parseInt(elements[i], 10);
-                        node.gender = this.opt["noun-genders"][variable];
+                        if (node) {
+                            node.gender = this.locale[this.opt.lang]["noun-genders"][variable];
+                        }
                         this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
                     } else {
                         var str = elements[i];

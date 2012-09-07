@@ -129,8 +129,6 @@ CSL.Engine.Opt = function () {
     };
     this["default-locale"] = [];
     
-    this["noun-genders"] = {};
-
     this.update_mode = CSL.NONE;
     this.bib_mode = CSL.NONE;
     this.sort_citations = false;

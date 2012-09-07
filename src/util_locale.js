@@ -134,6 +134,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         this.locale[lang_out].dates = {};
         // For ordinals
         this.locale[lang_out].ord = {'1.0.1':false,keys:{}};
+        this.locale[lang_out]["noun-genders"] = {};
     }
 
     //
@@ -246,7 +247,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         // with term name
         // 
         if (this.sys.xml.getAttributeValue(term, 'gender')) {
-            this.opt["noun-genders"][termname] = this.sys.xml.getAttributeValue(term, 'gender');
+            this.locale[lang_out]["noun-genders"][termname] = this.sys.xml.getAttributeValue(term, 'gender');
         }
         // Work on main segment or gender-specific sub-segment as appropriate
         if (genderform) {
