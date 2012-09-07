@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.392
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in gender assignment affecting some variables
+  in some styles (including edition in CMS). Thanks to
+  Gracile for reporting the fault.
+
+==========================
 Changes in version 1.0.391
 ==========================
 
