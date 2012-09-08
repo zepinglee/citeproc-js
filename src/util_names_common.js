@@ -60,8 +60,12 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
     }
 
     var has_term = false;
-    if (this.label) {
-        has_term = this.state.getTerm(this.common_term, "long", 0);
+    if (this.label && this.label[this.variables[0]]) {
+        if (this.label[this.variables[0]].before) {
+            has_term = this.state.getTerm(this.common_term, this.label[this.variables[0]].before.strings.form, 0);
+        } else if (this.label[this.variables[0]].after) {
+            has_term = this.state.getTerm(this.common_term, this.label[this.variables[0]].after.strings.form, 0);
+        }
     }
 
     if (!this.state.locale[this.state.opt.lang].terms[this.common_term]
