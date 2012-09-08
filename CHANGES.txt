@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.393
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in cs:substitute suppression affecting nested names
+  constructs. Many thanks Sebastian Karcher for the fault report.
+
+- Fix a bug in name label overrides with nested names
+  constructs.
+
+  Test covering both issues is here:
+
+    https://bitbucket.org/bdarcus/citeproc-test/src/ab136a6aa8f2/processor-tests/humans/substitute_SuppressOrdinaryVariable.txt
+
+
+==========================
 Changes in version 1.0.392
 ==========================
 
