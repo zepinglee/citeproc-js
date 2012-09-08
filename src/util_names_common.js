@@ -61,11 +61,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
 
     var has_term = false;
     if (this.label) {
-        if (this.label.before) {
-            has_term = this.state.getTerm(this.common_term, this.label.before.strings.form, 0);
-        } else if (this.label.after) {
-            has_term = this.state.getTerm(this.common_term, this.label.after.strings.form, 0);
-        }
+        has_term = this.state.getTerm(this.common_term, "long", 0);
     }
 
     if (!this.state.locale[this.state.opt.lang].terms[this.common_term]

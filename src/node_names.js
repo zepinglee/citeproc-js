@@ -74,6 +74,11 @@ CSL.Node.names = {
 
             state.build.names_flag = true;
             state.build.names_level += 1;
+            if (state.build.names_level === 1) {
+                state.build.names_variables = [];
+                state.build.name_label = {};
+            }
+            state.build.names_variables.push(this.variables);
 
             // init can substitute
             // init names
@@ -98,8 +103,12 @@ CSL.Node.names = {
             state.build.names_level += -1;
 
             // Labels, if any
+            // (XXX should set label format for target variables of this node only)
+            // (XXX segmented assignment is performed inside node_label.js)
             this.label = state.build.name_label;
             state.build.name_label = undefined;
+
+            state.build.names_variables.pop();
 
             // The with term. This isn't the right place
             // for this, but it's all hard-wired at the
@@ -164,7 +173,11 @@ CSL.Node.names = {
                     state.nameOutput[key] = this[key];
                 }
                 state.nameOutput["with"] = this["with"];
+
+                // XXX label style should be set per variable, since they may differ
+                // XXX with full-form nested names constructs
                 state.nameOutput.label = this.label;
+
                 state.nameOutput.etal_style = this.etal_style;
                 state.nameOutput.etal_term = this.etal_term;
                 state.nameOutput.etal_prefix_single = this.etal_prefix_single;
@@ -185,7 +198,21 @@ CSL.Node.names = {
                 
                 state.parallel.CloseVariable("names");
 
-                state.tmp.can_block_substitute = false;
+                // For posterity ...
+                //
+                // This was enough to fix the issue reported here:
+                //
+                //   http://forums.zotero.org/discussion/25223/citeproc-bug-substitute-doesnt-work-correctly-for-title-macro/
+                //
+                // The remainder of the changes applied in the same patch
+                // relate to a label assignments, which were found to be
+                // buggy while working on the issue. The test covering
+                // both problems is here:
+                //
+                //   https://bitbucket.org/bdarcus/citeproc-test/src/ab136a6aa8f2/processor-tests/humans/substitute_SuppressOrdinaryVariable.txt
+                if (state.tmp.can_substitute.mystack.length === 1) {
+                    state.tmp.can_block_substitute = false;
+                }
             };
             this.execs.push(func);
 
