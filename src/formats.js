@@ -302,9 +302,7 @@ CSL.Output.Formats.prototype.rtf = {
     "@quotes/false": false,
     "bibstart":"{\\rtf ",
     "bibend":"}",
-    "@display/block": function(state, str){
-        return str + "\\line\r\n";
-    },
+    "@display/block": "\\line{}%%STRING%%\\line\r\n",
     "@bibliography/entry": function(state,str){
         return str;
     },
