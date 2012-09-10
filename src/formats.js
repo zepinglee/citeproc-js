@@ -236,10 +236,10 @@ CSL.Output.Formats.prototype.text = {
     "@display/indent": function (state, str) {
         return "\n    "+str;
     },
-    "@url/true": function (state, str) {
+    "@URL/true": function (state, str) {
         return str;
     },
-    "@doi/true": function (state, str) {
+    "@DOI/true": function (state, str) {
         return str;
     }
 };
@@ -315,10 +315,10 @@ CSL.Output.Formats.prototype.rtf = {
     "@display/indent": function (state, str) {
         return "\n\\tab "+str;
     },
-    "@url/true": function (state, str) {
+    "@URL/true": function (state, str) {
         return str;
     },
-    "@doi/true": function (state, str) {
+    "@DOI/true": function (state, str) {
         return str;
     }
 };
