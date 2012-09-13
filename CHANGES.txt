@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.394
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix infinite loop in by-cite disambiguation with
+  disambiguate-add-givenname when given name values
+  are empty. Thanks to johannes.kruse for reporting
+  the fault.
+
+==========================
 Changes in version 1.0.393
 ==========================
 
