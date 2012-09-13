@@ -114,13 +114,18 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             // of initials is not a global parameter.
             var val = this.state.tmp.disambig_settings.givens[pos][i];
             // This is limited to by-cite disambiguation.
+            // 2012-09-13: added lst[i].given check to condition
             if (val === 1 && 
                 this.state.opt["givenname-disambiguation-rule"] === "by-cite" && 
-                "undefined" === typeof this.name.strings["initialize-with"]) {
+                ("undefined" === typeof this.name.strings["initialize-with"]
+                 || "undefined" === typeof lst[i].given)) {
                 val = 2;
             }
             param = val;
-            if (this.state.opt["disambiguate-add-givenname"]) {
+            // 2012-09-13: lst[i].given check protects against personal names
+            // that have no first name element. These were causing an infinite loop,
+            // this prevents that.
+            if (this.state.opt["disambiguate-add-givenname"] && lst[i].given) {
                 param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, param, this.name.strings.form, this.name.strings["initialize-with"]);
             }
         } else {
