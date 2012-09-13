@@ -440,8 +440,6 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             //SNIP-END
         }
     }
-    if ("disYears" === this.modes[this.modeindex]) {
-    }
     return maxed;
 };
 
