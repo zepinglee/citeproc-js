@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.393",
+    PROCESSOR_VERSION: "1.0.395",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -876,7 +876,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
-                if (["@bibliography", "@display", "@showid"].indexOf(params[0]) > -1) {
+                if (["@cite","@bibliography", "@display", "@showid"].indexOf(params[0]) > -1) {
                     continue;
                 }
                 if (state.normalDecorIsOrphan(blobjr, params)) {
@@ -898,7 +898,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
-                if (["@bibliography", "@display", "@showid"].indexOf(params[0]) === -1) {
+                if (["@cite","@bibliography", "@display", "@showid"].indexOf(params[0]) === -1) {
                     continue;
                 }
                 blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
@@ -2759,6 +2759,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.allow_force_lowercase = false;
     this.development_extensions.handle_parallel_articles = false;
     this.development_extensions.thin_non_breaking_space_html_hack = false;
+    this.development_extensions.apply_citation_wrapper = false;
     this.nodenames = [];
     this.gender = {};
     this['cite-lang-prefs'] = {
@@ -3285,9 +3286,13 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
         }
         bib_entry = new CSL.Token("group", CSL.START);
-        bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
+        bib_entry.decorations = [["@bibliography", "entry"]].concat(this.bibliography.opt.layout_decorations);
         this.output.startTag("bib_entry", bib_entry);
-        this.output.current.value().item_id = item.id;
+        if (item.system_id && this.sys.embedBibliographyEntry) {
+            this.output.current.value().item_id = item.system_id;
+        } else {
+            this.output.current.value().system_id = item.id;
+        }
         sortedItems = [[{id: "" + item.id}, item]];
         entry_item_ids = [];
         if (this.registry.registry[item.id].master 
@@ -5356,6 +5361,21 @@ CSL.Node.label = {
 CSL.Node.layout = {
     build: function (state, target) {
         var func, prefix_token, suffix_token, tok;
+		if (this.tokentype === CSL.START) {
+			func = function (state, Item) {
+				if (state.opt.development_extensions.apply_citation_wrapper
+					&& state.sys.wrapCitationEntry
+					&& !state.tmp.just_looking
+					&& Item.system_id 
+					&& state.tmp.area === "citation") { 
+					cite_entry = new CSL.Token("group", CSL.START);
+					cite_entry.decorations = [["@cite", "entry"]];
+					state.output.startTag("cite_entry", cite_entry);
+					state.output.current.value().item_id = Item.system_id;
+				}
+			}
+			this.execs.push(func);
+		}
         if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
             func = function (state, Item) {
                 state.tmp.done_vars = [];
@@ -5493,6 +5513,16 @@ CSL.Node.layout = {
                     state.output.closeLevel();
                 };
                 this.execs.push(func);
+				func = function (state, Item) {
+					if (state.opt.development_extensions.apply_citation_wrapper
+						&& state.sys.wrapCitationEntry
+						&& !state.tmp.just_looking
+						&& Item.system_id 
+						&& state.tmp.area === "citation") { 
+						state.output.endTag(); // closes citation link wrapper
+					}
+				}
+				this.execs.push(func);
                 target.push(this);
                 state.build.layout_flag = false;
                 state.build.layout_locale_flag = false;
@@ -11696,6 +11726,9 @@ CSL.Output.Formats.prototype.html = {
         return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
     },
     "@quotes/false": false,
+    "@cite/entry": function (state, str) {
+		return state.sys.wrapCitationEntry(str, this.item_id);
+	},
     "@bibliography/entry": function (state, str) {
         var insert = "";
         if (state.sys.embedBibliographyEntry) {
