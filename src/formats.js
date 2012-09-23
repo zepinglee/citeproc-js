@@ -122,6 +122,9 @@ CSL.Output.Formats.prototype.html = {
     //"@bibliography/body": function (state,str){
     //    return "<div class=\"csl-bib-body\">\n"+str+"</div>";
     //},
+    "@cite/entry": function (state, str) {
+		return state.sys.wrapCitationEntry(str, this.item_id);
+	},
     "@bibliography/entry": function (state, str) {
         // Test for this.item_id to add decorations to
         // bibliography output of individual entries.

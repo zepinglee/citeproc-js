@@ -322,11 +322,13 @@ CSL.getBibliographyEntries = function (bibsection) {
         }
         //SNIP-END
         bib_entry = new CSL.Token("group", CSL.START);
-        bib_entry.decorations = [["@bibliography", "entry"]].concat(this[this.build.area].opt.layout_decorations);
-
+        bib_entry.decorations = [["@bibliography", "entry"]].concat(this.bibliography.opt.layout_decorations);
         this.output.startTag("bib_entry", bib_entry);
-        this.output.current.value().item_id = item.id;
-
+        if (item.system_id && this.sys.embedBibliographyEntry) {
+            this.output.current.value().item_id = item.system_id;
+        } else {
+            this.output.current.value().system_id = item.id;
+        }
         // The needs fixing.  Parallel cite should be generated
         // by arrival of either a master or a sibling, with the
         // same result.
