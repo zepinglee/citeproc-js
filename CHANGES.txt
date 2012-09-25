@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.396
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Capture locator_txt and suffix_txt values for use with 
+  cite wrappers in next-generation RTF Scan.
+
+==========================
 Changes in version 1.0.395
 ==========================
 
