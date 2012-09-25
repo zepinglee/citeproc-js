@@ -52,23 +52,27 @@ CSL.Node.layout = {
     build: function (state, target) {
         var func, prefix_token, suffix_token, tok;
 
-		if (this.tokentype === CSL.START) {
-			func = function (state, Item) {
+        if (this.tokentype === CSL.START) {
+            func = function (state, Item, item) {
 
-				if (state.opt.development_extensions.apply_citation_wrapper
-					&& state.sys.wrapCitationEntry
-					&& !state.tmp.just_looking
-					&& Item.system_id 
-					&& state.tmp.area === "citation") { 
+                if (state.opt.development_extensions.apply_citation_wrapper
+                    && state.sys.wrapCitationEntry
+                    && !state.tmp.just_looking
+                    && Item.system_id 
+                    && state.tmp.area === "citation") { 
 
-					cite_entry = new CSL.Token("group", CSL.START);
-					cite_entry.decorations = [["@cite", "entry"]];
-					state.output.startTag("cite_entry", cite_entry);
-					state.output.current.value().item_id = Item.system_id;
-				}
-			}
-			this.execs.push(func);
-		}
+                    cite_entry = new CSL.Token("group", CSL.START);
+                    cite_entry.decorations = [["@cite", "entry"]];
+                    state.output.startTag("cite_entry", cite_entry);
+                    state.output.current.value().item_id = Item.system_id;
+                    if (item) {
+                        state.output.current.value().locator_txt = item.locator_txt;
+                        state.output.current.value().suffix_txt = item.suffix_txt;
+                    }
+                }
+            }
+            this.execs.push(func);
+        }
 
         if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
             //
@@ -258,17 +262,17 @@ CSL.Node.layout = {
                     state.output.closeLevel();
                 };
                 this.execs.push(func);
-				func = function (state, Item) {
-					if (state.opt.development_extensions.apply_citation_wrapper
-						&& state.sys.wrapCitationEntry
-						&& !state.tmp.just_looking
-						&& Item.system_id 
-						&& state.tmp.area === "citation") { 
-						
-						state.output.endTag(); // closes citation link wrapper
-					}
-				}
-				this.execs.push(func);
+                func = function (state, Item) {
+                    if (state.opt.development_extensions.apply_citation_wrapper
+                        && state.sys.wrapCitationEntry
+                        && !state.tmp.just_looking
+                        && Item.system_id 
+                        && state.tmp.area === "citation") { 
+                        
+                        state.output.endTag(); // closes citation link wrapper
+                    }
+                }
+                this.execs.push(func);
                 target.push(this);
                 state.build.layout_flag = false;
                 state.build.layout_locale_flag = false;

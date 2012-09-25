@@ -123,7 +123,7 @@ CSL.Output.Formats.prototype.html = {
     //    return "<div class=\"csl-bib-body\">\n"+str+"</div>";
     //},
     "@cite/entry": function (state, str) {
-		return state.sys.wrapCitationEntry(str, this.item_id);
+        return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
 	},
     "@bibliography/entry": function (state, str) {
         // Test for this.item_id to add decorations to
@@ -224,6 +224,9 @@ CSL.Output.Formats.prototype.text = {
     //"@bibliography/body": function (state,str){
     //    return "<div class=\"csl-bib-body\">\n"+str+"</div>";
     //},
+    "@cite/entry": function (state, str) {
+		return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
+	},
     "@bibliography/entry": function (state, str) {
         return str+"\n";
     },
@@ -306,6 +309,14 @@ CSL.Output.Formats.prototype.rtf = {
     "bibstart":"{\\rtf ",
     "bibend":"}",
     "@display/block": "\\line{}%%STRING%%\\line\r\n",
+    "@cite/entry": function (state, str) {
+        return str;
+	},
+    "@cite/entry": function (state, str) {
+        // If wrapCitationEntry does not exist, cite/entry 
+        // is not applied.
+		return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
+	},
     "@bibliography/entry": function(state,str){
         return str;
     },
