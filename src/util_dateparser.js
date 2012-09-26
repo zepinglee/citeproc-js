@@ -539,7 +539,7 @@ CSL.DateParser = function () {
         //
         // month and day parse
         //
-        if (lst.length === 1) {
+        if (lst.length === 1 || (lst.length === 2 && !lst[1])) {
             ret[("month" + suff)] = "" + lst[0];
         } else if (lst.length === 2) {
             if (lst[this.monthguess] > 12) {
