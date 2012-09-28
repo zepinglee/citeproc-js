@@ -189,7 +189,7 @@ CSL.Transform = function (state) {
             }
             return ret;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
-			// If we want the original, or if we don't have any specific guidance and we 
+            // If we want the original, or if we don't have any specific guidance and we 
             // definitely want output, just return the original value.
             return {name:Item[field], usedOrig:true};
         }
@@ -286,7 +286,7 @@ CSL.Transform = function (state) {
                 }
                 // XXX Abbreviate each of the items in the list here!
                 for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
-					// myabbrev_family just turns abbreviation on if it has a value (any value)
+                    // myabbrev_family just turns abbreviation on if it has a value (any value)
                     lst[i] = abbreviate(state, Item, false, lst[i], myabbrev_family, true);
                 }
                 state.tmp[varname + "-token"] = tok;
@@ -298,13 +298,13 @@ CSL.Transform = function (state) {
 
     // Return function appropriate to selected options
     function getOutputFunction(variables, myabbrev_family, abbreviation_fallback, alternative_varname, transform_fallback) {
-		// var mytoken;
+        // var mytoken;
 
         // Set the primary_locale and secondary_locale lists appropriately.
-		// No instance helper function for this; everything can be derived
-		// from processor settings and rendering context.
+        // No instance helper function for this; everything can be derived
+        // from processor settings and rendering context.
 
-		var localesets;
+        var localesets;
         var langPrefs = CSL.LangPrefsMap[variables[0]];
         if (!langPrefs) {
             localesets = false;
@@ -322,13 +322,13 @@ CSL.Transform = function (state) {
                 alternative_varname = false;
             }
             
-		    var slot = {primary:false, secondary:false, tertiary:false};
-		    if (state.tmp.area.slice(-5) === "_sort") {
-			    slot.primary = 'locale-sort';
-		    } else {
-			    if (localesets) {
-				    var slotnames = ["primary", "secondary", "tertiary"];
-				    for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
+            var slot = {primary:false, secondary:false, tertiary:false};
+            if (state.tmp.area.slice(-5) === "_sort") {
+                slot.primary = 'locale-sort';
+            } else {
+                if (localesets) {
+                    var slotnames = ["primary", "secondary", "tertiary"];
+                    for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
                         if (localesets.length - 1 <  i) {
                             break;
                         }
@@ -341,14 +341,14 @@ CSL.Transform = function (state) {
                 }
             }
             
-			if ((state.tmp.area !== "bibliography"
-				 && !(state.tmp.area === "citation"
-					  && state.opt.xclass === "note"
-					  && item && !item.position))) {
+            if ((state.tmp.area !== "bibliography"
+                 && !(state.tmp.area === "citation"
+                      && state.opt.xclass === "note"
+                      && item && !item.position))) {
                 
-				slot.secondary = false;
-				slot.tertiary = false;
-			}
+                slot.secondary = false;
+                slot.tertiary = false;
+            }
             
             // Problem for multilingual: we really should be
             // checking for sanity on the basis of the output
@@ -362,7 +362,7 @@ CSL.Transform = function (state) {
                 return null;
             }
 
-			// True is for transform fallback
+            // True is for transform fallback
             var res = getTextSubField(Item, variables[0], slot.primary, true);
             primary = res.name;
             var primaryUsedOrig = res.usedOrig;
@@ -371,21 +371,21 @@ CSL.Transform = function (state) {
                 return null;
             }
 
-			// No fallback for secondary and tertiary
-			secondary = false;
-			tertiary = false;
-			if (slot.secondary) {
-				res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
+            // No fallback for secondary and tertiary
+            secondary = false;
+            tertiary = false;
+            if (slot.secondary) {
+                res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
                 secondary = res.name;
-			}
-			if (slot.tertiary) {
-				res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
+            }
+            if (slot.tertiary) {
+                res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
                 tertiary = res.name;
-			}
+            }
         
             // Abbreviate if requested and if poss.
-			// (We don't yet control for the possibility that full translations may not
-			// be provided on the alternative variable.)
+            // (We don't yet control for the possibility that full translations may not
+            // be provided on the alternative variable.)
             if (myabbrev_family) {
                 primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
 
@@ -489,7 +489,7 @@ CSL.Transform = function (state) {
                         state.parallel.cite[variables[0] + ":tertiary"] = {blobs:[[blob_obj, blobs_pos]]};
                     }
                 }
-				state.output.closeLevel();
+                state.output.closeLevel();
             } else {
                 state.output.append(primary, primary_tok);
             }
