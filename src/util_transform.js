@@ -318,6 +318,10 @@ CSL.Transform = function (state) {
                 return null;
             }
             
+            if (variables[0] === "title" && state.opt.development_extensions.main_title_from_short_title) {
+                alternative_varname = false;
+            }
+            
 		    var slot = {primary:false, secondary:false, tertiary:false};
 		    if (state.tmp.area.slice(-5) === "_sort") {
 			    slot.primary = 'locale-sort';

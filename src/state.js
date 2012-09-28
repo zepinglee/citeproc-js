@@ -173,6 +173,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.handle_parallel_articles = false;
     this.development_extensions.thin_non_breaking_space_html_hack = false;
     this.development_extensions.apply_citation_wrapper = false;
+    this.development_extensions.main_title_from_short_title = false;
 
     this.nodenames = [];
 

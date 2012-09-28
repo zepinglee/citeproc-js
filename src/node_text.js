@@ -244,7 +244,12 @@ CSL.Node.text = {
                 } else if (this.variables_real.length) {
                     func = function (state, Item, item) {
                         var parallel_variable = this.variables[0];
-                        if (parallel_variable === "title" && form === "short") {
+                        
+                        if (parallel_variable === "title" 
+                            && form === "short" 
+                            && !state.opt.development_extensions.main_title_from_short_title) {
+                            
+                            // Only if not main_title_from_short_title
                             parallel_variable = "shortTitle";
                         }
                         state.parallel.StartVariable(parallel_variable);
