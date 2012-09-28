@@ -1,6 +1,44 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.399
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add option to disable shortTitle as short form
+  and enable main title / short title parsing
+  (the latter remains to be implemented)
+
+- Protect against Day Zero in the embedded date
+  parser.
+
+- Suppress affixes when generating wrapped cites.
+
+
+==========================
+Changes in version 1.0.398
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Strip affixes from citation rendered with link wrapper.
+
+==========================
+Changes in version 1.0.397
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Protect against zero as a day value in date parser.
+
+==========================
 Changes in version 1.0.396
 ==========================
 
