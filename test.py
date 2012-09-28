@@ -375,6 +375,7 @@ doh.register("%s.%s", [
         if bundle:
             bundleext = "-bundled"
         runpath = os.path.join(path("runners"), "%s%s.js" %(nick,bundleext))
+
         command = "%s %s" % (engine,runpath)
         ifh = sub.Popen(command,shell=True, stdout=sub.PIPE).stdout
         while 1:
@@ -503,6 +504,7 @@ class CslTest:
         self.extract("BIBENTRIES",required=False,is_json=True)
         self.extract("BIBSECTION",required=False,is_json=True)
         self.extract("ABBREVIATIONS",required=False,is_json=True)
+        self.extract("OPTIONS",required=False,is_json=True)
 
     def extract(self,tag,required=False,is_json=False,rstrip=False):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
@@ -526,6 +528,10 @@ class CslTest:
         input_str = json.dumps(self.data["input"],indent=4,sort_keys=True,ensure_ascii=False)
         m = re.match(self.RE_ELEMENT % ("INPUT", "INPUT"),self.raw)
         newraw = m.group(1) + "\n" + input_str + m.group(3)
+        if self.data["options"]:
+            options_str = json.dumps(self.data["options"],indent=4,sort_keys=True,ensure_ascii=False)
+            m = re.match(self.RE_ELEMENT % ("OPTIONS", "OPTIONS"),self.raw)
+            newraw = m.group(1) + "\n" + options_str + m.group(3)
         if self.data["citation_items"]:
             citations_str = json.dumps(self.data["citation_items"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("CITATION-ITEMS", "CITATION-ITEMS"),self.raw)
