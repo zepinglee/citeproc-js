@@ -63,7 +63,7 @@ CSL.getSortCompare = function () {
         CSL.debug("Using collation sort");
     } catch (e) {
         strcmp = function (a, b) {
-            return a.localeCompare(b);
+            return a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase());
         };
     }
     if (!strcmp("\u3044", "\u3046")) {
