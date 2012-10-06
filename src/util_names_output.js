@@ -287,7 +287,9 @@ CSL.NameOutput.prototype.outputNames = function () {
         //SNIP-END
         if (varblob) {
             // Apply labels, if any
-            varblob = this._applyLabels(varblob, v);
+            if (this.state.tmp.area.slice(-5) !== "_sort") {
+                varblob = this._applyLabels(varblob, v);
+            }
             blob_list.push(varblob);
         }
         //SNIP-START
