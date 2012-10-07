@@ -86,7 +86,7 @@ CSL.Parallel = function (state) {
     this.use_parallels = false;
 
     this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page-first", "page", "number"];
-    this.ignoreVarsLawGeneral = ["first-reference-note-number", "locator", "label","page-first","page"];
+    this.ignoreVarsLawGeneral = ["first-reference-note-number", "locator", "label","page-first","page","genre"];
     this.ignoreVarsOrders = ["first-reference-note-number"];
     this.ignoreVarsOther = ["first-reference-note-number", "locator", "label","section","page-first","page"];
 };
