@@ -364,6 +364,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     this.variables.push(variables[pos]);
                 }
                 // if hereinafter variable, set/get the abbreviation entry
+                // XXX not necessary maybe?
                 if ("hereinafter" === variables[pos] && state.sys.getAbbreviation) {
                     var hereinafter_info = state.transform.getHereinafter(Item);
                     state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
