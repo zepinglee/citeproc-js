@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.400
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Drop creator labels when generating sort keys.
+
+- Ignore genre variable when evaluating parallels for legal types.
+
+==========================
 Changes in version 1.0.399
 ==========================
 
