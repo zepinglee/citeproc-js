@@ -52,30 +52,11 @@ CSL.Node.choose = {
     build: function (state, target) {
         var func;
         if (this.tokentype === CSL.START) {
-            
-            if (state.build.substitute_level.value() === 0) {
-                state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
-                choose_start = new CSL.Token("choose", CSL.START);
-                CSL.Node.choose.build.call(choose_start, state, target);
-                if_start = new CSL.Token("if", CSL.START);
-                func = function (state, Item) {
-                    if (state.tmp.can_substitute.value()) {
-                        return true;
-                    }
-                    return false;
-                };
-                if_start.tests.push(func);
-                if_start.evaluator = state.fun.match.any;
-                target.push(if_start);
-            }
-            
             //open condition
             func = function (state, Item) {
-                print("Hello: "+state.build.substitute_level.value());
                 state.tmp.jump.push(undefined, CSL.LITERAL);
             };
         }
-
         if (this.tokentype === CSL.END) {
             //close condition
             func = function (state, Item) {
@@ -84,14 +65,6 @@ CSL.Node.choose = {
         }
         this.execs.push(func);
         target.push(this);
-
-        if (state.build.substitute_level.value() === 1) {
-            state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
-            if_end = new CSL.Token("if", CSL.END);
-            target.push(if_end);
-            choose_end = new CSL.Token("choose", CSL.END);
-            CSL.Node.choose.build.call(choose_end, state, target);
-        }
     },
 
     configure: function (state, pos) {
