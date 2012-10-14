@@ -1,5 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+
+==========================
+Changes in version 1.0.401
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Treat a top-level cs:choose as a unit within cs:substitute
+
+- Fix hereinafter support
+
 ==========================
 Changes in version 1.0.400
 ==========================
