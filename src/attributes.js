@@ -363,12 +363,6 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (state.tmp.done_vars.indexOf(variables[pos]) === -1 && !(item && Item.type === "legal_case" && item["suppress-author"] && variables[pos] === "title")) {
                     this.variables.push(variables[pos]);
                 }
-                // if hereinafter variable, set/get the abbreviation entry
-                // XXX not necessary maybe?
-                if ("hereinafter" === variables[pos] && state.sys.getAbbreviation) {
-                    var hereinafter_info = state.transform.getHereinafter(Item);
-                    state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
-                }
                 if (state.tmp.can_block_substitute) {
                     state.tmp.done_vars.push(variables[pos]);
                 }
@@ -441,6 +435,14 @@ CSL.Attributes["@variable"] = function (state, arg) {
                         output = true;
                     }
                     break;
+                } else if ("hereinafter" === variable) {
+                    if (state.transform.abbrevs["default"].hereinafter[Item.system_id]
+                        && state.sys.getAbbreviation
+                        && Item.system_id) {
+						
+                        output = true;
+                    }
+                    break;
                 } else if ("object" === typeof Item[variable]) {
                     if (Item[variable].length) {
                         //output = true;
@@ -487,10 +489,11 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (item && ["locator", "locator-revision", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
                 }
-                if (variable === "hereinafter" && state.sys.getAbbreviation) {
-                    var hereinafter_info = state.transform.getHereinafter(myitem);
-                    state.transform.loadAbbreviation(hereinafter_info[0], "hereinafter", hereinafter_info[1]);
-                    if (state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]]) {
+                // We don't run loadAbbreviation() here; it is run by the application-supplied
+                // retrieveItem() if hereinafter functionality is to be used, so this key will
+                // always exist in memory, possibly with a nil value.
+                if (variable === "hereinafter" && state.sys.getAbbreviation && myitem.system_id) {
+                    if (state.transform.abbrevs["default"].hereinafter[myitem.system_id]) {
                         x = true;
                     }
                 } else if (myitem[variable]) {

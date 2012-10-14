@@ -502,52 +502,6 @@ CSL.Transform = function (state) {
     // in one place.  Obviously this module could do with a little
     // tidying up.
 
-
-    function getHereinafter (Item) {
-        var hereinafter_author_title = [];
-        if (state.tmp.first_name_string) {
-            hereinafter_author_title.push(state.tmp.first_name_string);
-        }
-        if (Item.title) {
-            hereinafter_author_title.push(Item.title);
-        }
-        var hereinafter_metadata = [];
-        if (Item.type) {
-            hereinafter_metadata.push("type:" + Item.type);
-        }
-        var date_segment = Item.issued
-        if (["bill","gazette","legislation","legal_case","treaty"].indexOf(Item.type) > -1) {
-            date_segment = Item["original-date"];
-        }
-        if (date_segment) {
-            var date = [];
-            for (var j = 0, jlen = CSL.DATE_PARTS.length; j < jlen; j += 1) {
-                if (date_segment[CSL.DATE_PARTS[j]]) {
-                    var element =  date_segment[CSL.DATE_PARTS[j]];
-                    while (element.length < 2) {
-                        element = "0" + element;
-                    }
-                    date.push(element);
-                }
-            }
-            date = date.join("-");
-            if (date) {
-                hereinafter_metadata.push("date:" + date);
-            }
-        }
-        var jurisdiction = "default";
-        if (Item.jurisdiction) {
-            jurisdiction = Item.jurisdiction;
-        }
-        hereinafter_metadata = hereinafter_metadata.join(", ");
-        if (hereinafter_metadata) {
-            hereinafter_metadata = " [" + hereinafter_metadata + "]";
-        }
-        var hereinafter_key = hereinafter_author_title.join(", ") + hereinafter_metadata;
-        return [jurisdiction, hereinafter_key];
-    }
-    this.getHereinafter = getHereinafter;
-
     function quashCheck(value) {
         var m = value.match(/^!([-,_a-z]+)>>>/);
         if (m) {

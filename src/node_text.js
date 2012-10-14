@@ -338,17 +338,6 @@ CSL.Node.text = {
                                     }
                                 }
                             };
-                        } else if (this.variables_real[0] === "hereinafter") {
-                            func = function (state, Item) {
-                                var hereinafter_info = state.transform.getHereinafter(Item);
-                                if (state.transform.abbrevs[hereinafter_info[0]]) {
-                                    var value = state.transform.abbrevs[hereinafter_info[0]].hereinafter[hereinafter_info[1]];
-                                    if (value) {
-                                        state.tmp.group_context.value()[2] = true;
-                                        state.output.append(value, this);
-                                    }
-                                }
-                            };
                         } else if (["URL", "DOI"].indexOf(this.variables_real[0]) > -1) {
                             func = function (state, Item) {
                                 var value;
@@ -380,6 +369,13 @@ CSL.Node.text = {
                                     state.output.append(value, this);
                                 }
                             };
+                        } else if (this.variables_real[0] === "hereinafter") {
+                            func = function (state, Item) {
+                                var value = state.transform.abbrevs["default"]["hereinafter"][Item.system_id];
+                                if (value) {
+                                    state.output.append(value, this);
+                                }
+                            }
                         } else {
                             // anything left over just gets output in the normal way.
                             func = function (state, Item) {

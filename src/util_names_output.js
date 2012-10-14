@@ -371,7 +371,8 @@ CSL.NameOutput.prototype.outputNames = function () {
             this.state.tmp.name_node.string = name_node_string;
         }
     }
-    // for hereinafter support
+    // for classic support
+    // This may be more convoluted than it needs to be. Or maybe not.
     if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
     }
