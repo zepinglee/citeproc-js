@@ -335,6 +335,9 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     //SNIP-END
     this.state.output.append(blob, this.names);
+    if (this.state.tmp.term_predecessor_name) {
+        this.state.tmp.term_predecessor = true;
+    }
     //SNIP-START
     if (this.debug) {
         print("(17)");

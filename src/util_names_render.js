@@ -457,6 +457,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
             blob = this._join([merged, suffix], sort_sep);
         } else {
             // Don't drop particle.
+            if (!this.state.tmp.term_predecessor && non_dropping_particle) {
+                non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
+            }
             first = this._join([non_dropping_particle, family], " ");
             if (first && this.family) {
                 first.strings.prefix = this.family.strings.prefix;
@@ -478,6 +481,15 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
             if (["'","\u02bc","\u2019"].indexOf(name["dropping-particle"].slice(-1)) > -1) {
                 family = this._join([dropping_particle, family], "");
                 dropping_particle = false;
+            }
+        }
+        if (!this.state.tmp.term_predecessor) {
+            if (!given) {
+                if (!dropping_particle && non_dropping_particle) {
+                    non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
+                } else if (dropping_particle) {
+                    dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, dropping_particle.blobs)
+                }
             }
         }
         second = this._join([dropping_particle, non_dropping_particle, family], " ");
@@ -562,9 +574,6 @@ CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
 
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
     var str = this._stripPeriods("family", name["non-dropping-particle"]);
-    if (str && !this.state.tmp.term_predecessor) {
-        str = CSL.Output.Formatters["capitalize-first"](this.state, str);
-    }
     if (this.state.output.append(str, this.family_decor, true)) {
         return this.state.output.pop();
     }
@@ -573,9 +582,6 @@ CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
 
 CSL.NameOutput.prototype._droppingParticle = function (name, pos) {
     var str = this._stripPeriods("given", name["dropping-particle"]);
-    if (str && !this.state.tmp.term_predecessor) {
-        str = CSL.Output.Formatters["capitalize-first"](this.state, str);
-    }
     if (name["dropping-particle"] && name["dropping-particle"].match(/^et.?al[^a-z]$/)) {
         if (this.name.strings["et-al-use-last"]) {
             this.etal_spec[pos] = 2;

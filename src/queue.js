@@ -317,6 +317,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         // signal whether we end with terminal punctuation?
         if (!ignorePredecessor) {
             this.state.tmp.term_predecessor = true;
+        } else if (notSerious) {
+            this.state.tmp.term_predecessor_name = true;
         }
     }
     blob = new CSL.Blob(str, token);
@@ -337,6 +339,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     if ("string" === typeof blob.blobs) {
         if (!ignorePredecessor) {
             this.state.tmp.term_predecessor = true;
+        } else if (notSerious) {
+            this.state.tmp.term_predecessor_name = true;
         }
     }
     //
