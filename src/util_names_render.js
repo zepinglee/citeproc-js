@@ -562,6 +562,9 @@ CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
 
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
     var str = this._stripPeriods("family", name["non-dropping-particle"]);
+    if (str && !this.state.tmp.term_predecessor) {
+        str = CSL.Output.Formatters["capitalize-first"](this.state, str);
+    }
     if (this.state.output.append(str, this.family_decor, true)) {
         return this.state.output.pop();
     }
@@ -570,6 +573,9 @@ CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
 
 CSL.NameOutput.prototype._droppingParticle = function (name, pos) {
     var str = this._stripPeriods("given", name["dropping-particle"]);
+    if (str && !this.state.tmp.term_predecessor) {
+        str = CSL.Output.Formatters["capitalize-first"](this.state, str);
+    }
     if (name["dropping-particle"] && name["dropping-particle"].match(/^et.?al[^a-z]$/)) {
         if (this.name.strings["et-al-use-last"]) {
             this.etal_spec[pos] = 2;
