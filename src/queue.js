@@ -251,6 +251,9 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
 CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePredecessor, noStripPeriods) {
     var token, blob, curr;
     var useblob = true;
+    if (notSerious) {
+        ignorePredecessor = true;
+    }
     // XXXXX Nasty workaround, but still an improvement
     // over the reverse calls to the cs:date node build
     // function that we had before.
