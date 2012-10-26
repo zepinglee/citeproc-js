@@ -870,7 +870,9 @@ CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
         static_ordering_val = true;
     } else if (this._isRomanesque(name) === 0) {
         static_ordering_val = true;
-    } else if (name.multi && name.multi.main && name.multi.main.slice(0,2) == 'vn') {
+    } else if ((!name.multi || !name.multi.main) && this.Item.language && ['vi', 'hu'].indexOf(this.Item.language) > -1) {
+        static_ordering_val = true;
+    } else if (name.multi && name.multi.main && ['vi', 'hu'].indexOf(name.multi.main.slice(0,2)) > -1) {
         static_ordering_val = true;
     } else {
         if (this.state.opt['auto-vietnamese-names']
@@ -882,6 +884,7 @@ CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
     }
     return static_ordering_val;
 }
+
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
