@@ -2,6 +2,33 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.403
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Capitalise the first letter of a name particle if
+  it is the first-occurring word in a citation.
+
+
+==========================
+Changes in version 1.0.402
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Add an exception for Hungarian names, to control name ordering. To
+  invoke the exception, set the item default language to "hu", or set
+  an "hu" tag on the name field. The behaviour for the Vietnamese
+  exception ("vi" -- previously implemented incorrectly as "vn") has
+  aligned to recognise a default language on the item.
+
+
+==========================
 Changes in version 1.0.401
 ==========================
 
