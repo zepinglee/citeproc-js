@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.404
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Limit transliteration italics to title (exclude
+  container-title).
+
+
+==========================
 Changes in version 1.0.403
 ==========================
 
