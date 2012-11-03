@@ -184,6 +184,8 @@ StdRhinoTest.prototype.run = function(){
 		this.style.opt.development_extensions[opt] = this.test.options[opt];
 	}
 
+    
+
     //this.style.opt.development_extensions.thin_non_breaking_space_html_hack = true;
     //this.style.opt.development_extensions.wrap_url_and_doi = true;
     var langParams = {
@@ -194,6 +196,9 @@ StdRhinoTest.prototype.run = function(){
         places:["translat"]
     }
     this.style.setLangPrefsForCites(langParams);
+    if (this.test.multiaffix) {
+        this.style.setLangPrefsForCiteAffixes(this.test.multiaffix);
+    }
     if (this.test.abbreviations) {
         for (jurisdiction in this.test.abbreviations) {
             for (field in this.test.abbreviations[jurisdiction]) {

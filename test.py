@@ -505,6 +505,7 @@ class CslTest:
         self.extract("BIBSECTION",required=False,is_json=True)
         self.extract("ABBREVIATIONS",required=False,is_json=True)
         self.extract("OPTIONS",required=False,is_json=True)
+        self.extract("MULTIAFFIX",required=False,is_json=True)
 
     def extract(self,tag,required=False,is_json=False,rstrip=False):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
@@ -532,6 +533,10 @@ class CslTest:
             options_str = json.dumps(self.data["options"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("OPTIONS", "OPTIONS"),self.raw)
             newraw = m.group(1) + "\n" + options_str + m.group(3)
+        if self.data["multiaffix"]:
+            multiaffix_str = json.dumps(self.data["multiaffix"],indent=4,sort_keys=True,ensure_ascii=False)
+            m = re.match(self.RE_ELEMENT % ("MULTIAFFIX", "MULTIAFFIX"),self.raw)
+            newraw = m.group(1) + "\n" + multiaffix_str + m.group(3)
         if self.data["citation_items"]:
             citations_str = json.dumps(self.data["citation_items"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("CITATION-ITEMS", "CITATION-ITEMS"),self.raw)
