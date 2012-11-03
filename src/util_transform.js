@@ -413,7 +413,7 @@ CSL.Transform = function (state) {
             // XXX This should probably protect against italics at higher
             // levels.
 
-            if (primaryPrefix === "<i>" && !primaryUsedOrig) {
+            if (primaryPrefix === "<i>" && variables[0] === 'title' && !primaryUsedOrig) {
                 var hasItalic = false;
                 for (var i = 0, ilen = primary_tok.decorations.length; i < ilen; i += 1) {
                     if (primary_tok.decorations[i][0] === "@font-style"
