@@ -195,6 +195,11 @@ StdRhinoTest.prototype.run = function(){
         publishers:["translat"],
         places:["translat"]
     }
+    if (this.test.langparams) {
+        for (var key in this.test.langparams) {
+            langParams[key] = this.test.langparams[key];
+        }
+    }
     this.style.setLangPrefsForCites(langParams);
     if (this.test.multiaffix) {
         this.style.setLangPrefsForCiteAffixes(this.test.multiaffix);
