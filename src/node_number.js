@@ -51,6 +51,7 @@
 CSL.Node.number = {
     build: function (state, target) {
         var func;
+        if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
         CSL.Util.substituteStart.call(this, state, target);
         //
         // This should push a rangeable object to the queue.
@@ -91,6 +92,9 @@ CSL.Node.number = {
             }
             var varname, num, number, m, j, jlen;
             varname = this.variables[0];
+            if (varname === "locator" && state.tmp.just_looking) {
+                return;
+            }
             state.parallel.StartVariable(this.variables[0]);
             if (this.variables[0] === "locator") {
                 state.parallel.AppendToVariable(Item.section);
@@ -266,9 +270,11 @@ CSL.Node.number = {
             state.parallel.CloseVariable("number");
         };
         this.execs.push(func);
-
         target.push(this);
-        CSL.Util.substituteEnd.call(this, state, target);
+        }
+
+        if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
+            CSL.Util.substituteEnd.call(this, state, target);}
     }
 };
 
