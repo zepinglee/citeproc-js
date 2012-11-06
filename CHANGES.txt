@@ -2,6 +2,19 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.405
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Never apply initials to given names that begin with a non-romanesque character.
+
+- Fix bug that prevented pluralisation of terms set by a single leading in-field
+  label abbreviation, with thanks to Ty Vichet for reporting the fault.
+
+==========================
 Changes in version 1.0.404
 ==========================
 
