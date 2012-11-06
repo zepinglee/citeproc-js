@@ -142,6 +142,9 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                     }
                     item.label = CSL.STATUTE_SUBDIV_STRINGS[splt[0]];
                     item.locator = splt.slice(1).join(" ");
+                    if (item.force_pluralism === 0) {
+                        delete item.force_pluralism;
+                    }
                 } else {
                     item.locator = splt.slice(0).join(" ");
                 }
