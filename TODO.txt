@@ -46,22 +46,17 @@
  * or the [AGPLv3] License.”
  */
 
-Allow use of an explicit year-suffix variable with citation-label.
+Fix locale bug.
+  code: https://gist.github.com/raw/884932/ddf13ca00588bf3d259df78f36aaa7e32f76e5bc/de-buck-v1-0.csl
+  discussion: http://forums.zotero.org/discussion/13964/style-sheet-de-buck/?Focus=138629#Comment_138629
 
-Test true for dates where date is in literal format delivered
-by Zotero (a plain string? a raw segment?).
+Look into tainting of names with/without quotes to peg a particle:
+  discussion: http://forums.zotero.org/discussion/20926/double-surnames-alphabetical-order-in-bibliography-solved/
 
-As the raw input format now seems to cover every reasonable
-requirement for generating citations (in the Gregorian calendar, at
-least), some further testing would get us ready to prove up, from
-trials in the wild, what to screen out of EDTF when it eventually
-arrives.  Particular targets are:
+Investigate failure of collation on some systems:
+  discussion: http://forums.zotero.org/discussion/20926/double-surnames-alphabetical-order-in-bibliography-solved/
 
-  - sorting of seasons
-  - availability of unknown dates (i.e. 192?)
-  - compatibility of unknown dates with date ranges
-  - sorting with unknown dates
+Merge latest changes from 3.0.
 
-Otherwise, just awaiting further bug reports, and the finalization of
-the EDTF specification.
+Eliminate E4X from cite.js, if the merge doesn't get rid of it.
 
