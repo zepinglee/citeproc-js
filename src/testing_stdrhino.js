@@ -177,6 +177,7 @@ StdRhinoTest.prototype.run = function(){
     var len, pos, ret, id_set, nick;
     ret = new Array();
     this.style = new CSL.Engine(this,this.test.csl);
+    //this.style.setParseNames(true);
     this.style.opt.development_extensions.static_statute_locator = true;
     this.style.opt.development_extensions.clobber_locator_if_no_statute_section = true;
     this.style.opt.development_extensions.handle_parallel_articles = true;
@@ -242,6 +243,10 @@ StdRhinoTest.prototype.run = function(){
         for each (var citation in this.test.citations.slice(0,-1)){
             this.style.processCitationCluster(citation[0],citation[1],citation[2]);
         };
+        if (this.test.input2) {
+            this.test.input = this.test.input2;
+            this._setCache();
+        }
         var citation = this.test.citations.slice(-1)[0];
         [data, result] = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
     };
