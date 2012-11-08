@@ -137,6 +137,13 @@ CSL.Node.name = {
                 if (this.and_prefix_multiple) {
                     this.and_prefix_multiple = " ";
                 }
+            } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
+                if (this.and_prefix_single) {
+                    this.and_prefix_single = this.strings.delimiter;;
+                }
+                if (this.and_prefix_multiple) {
+                    this.and_prefix_multiple = " ";
+                }
             }
 
             if (this.strings["et-al-use-last"]) {

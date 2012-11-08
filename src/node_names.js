@@ -136,6 +136,9 @@ CSL.Node.names = {
             } else if (this.strings["delimiter-precedes-last"] === "contextual") {
                 this["with"].single.strings.prefix = with_default_prefix;
                 this["with"].multiple.strings.prefix = this.strings.delimiter;
+            } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
+                this["with"].single.strings.prefix = this.strings.delimiter;
+                this["with"].multiple.strings.prefix = with_default_prefix;
             } else {
                 this["with"].single.strings.prefix = with_default_prefix;
                 this["with"].multiple.strings.prefix = with_default_prefix;
