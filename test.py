@@ -507,6 +507,7 @@ class CslTest:
         self.extract("OPTIONS",required=False,is_json=True)
         self.extract("MULTIAFFIX",required=False,is_json=True)
         self.extract("LANGPARAMS",required=False,is_json=True)
+        self.extract("INPUT2",required=False,is_json=True)
 
     def extract(self,tag,required=False,is_json=False,rstrip=False):
         m = re.match(self.RE_ELEMENT %(tag,tag),self.raw)
@@ -542,6 +543,10 @@ class CslTest:
             langparams_str = json.dumps(self.data["langparams"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("LANGPARAMS", "LANGPARAMS"),self.raw)
             newraw = m.group(1) + "\n" + langparams_str + m.group(3)
+        if self.data["input2"]:
+            input2_str = json.dumps(self.data["input2"],indent=4,sort_keys=True,ensure_ascii=False)
+            m = re.match(self.RE_ELEMENT % ("INPUT2", "INPUT2"),self.raw)
+            newraw = m.group(1) + "\n" + input2_str + m.group(3)
         if self.data["citation_items"]:
             citations_str = json.dumps(self.data["citation_items"],indent=4,sort_keys=True,ensure_ascii=False)
             m = re.match(self.RE_ELEMENT % ("CITATION-ITEMS", "CITATION-ITEMS"),self.raw)

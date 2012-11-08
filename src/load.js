@@ -87,7 +87,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.0.406",
+    PROCESSOR_VERSION: "1.0.407",
 
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
 

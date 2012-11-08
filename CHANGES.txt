@@ -2,6 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.407
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement delimiter-precedes-et-al="after-inverted-name"
+  and delimiter-precedes-last="after-inverted-name"
+
+==========================
 Changes in version 1.0.406
 ==========================
 

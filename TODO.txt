@@ -46,12 +46,13 @@
  * or the [AGPLv3] License.”
  */
 
-Fix locale bug.
-  code: https://gist.github.com/raw/884932/ddf13ca00588bf3d259df78f36aaa7e32f76e5bc/de-buck-v1-0.csl
-  discussion: http://forums.zotero.org/discussion/13964/style-sheet-de-buck/?Focus=138629#Comment_138629
+Implement after-inverted-name on delimiter-precedes-et-al:
+  http://citationstyles.org/downloads/specification.html#name
 
 Look into tainting of names with/without quotes to peg a particle:
   discussion: http://forums.zotero.org/discussion/20926/double-surnames-alphabetical-order-in-bibliography-solved/
+  Possible approach: just use the sort form of names with just_looking?
+
 
 Investigate failure of collation on some systems:
   discussion: http://forums.zotero.org/discussion/20926/double-surnames-alphabetical-order-in-bibliography-solved/
@@ -59,4 +60,3 @@ Investigate failure of collation on some systems:
 Merge latest changes from 3.0.
 
 Eliminate E4X from cite.js, if the merge doesn't get rid of it.
-

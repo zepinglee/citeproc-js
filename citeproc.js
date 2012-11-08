@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.406",
+    PROCESSOR_VERSION: "1.0.407",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -7504,6 +7504,13 @@ CSL.Node.name = {
                 if (this.and_prefix_multiple) {
                     this.and_prefix_multiple = " ";
                 }
+            } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
+                if (this.and_prefix_single) {
+                    this.and_prefix_single = this.strings.delimiter;;
+                }
+                if (this.and_prefix_multiple) {
+                    this.and_prefix_multiple = " ";
+                }
             }
             if (this.strings["et-al-use-last"]) {
                 this.ellipsis_term = "\u2026";
@@ -7625,6 +7632,9 @@ CSL.Node.names = {
             } else if (this.strings["delimiter-precedes-last"] === "contextual") {
                 this["with"].single.strings.prefix = with_default_prefix;
                 this["with"].multiple.strings.prefix = this.strings.delimiter;
+            } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
+                this["with"].single.strings.prefix = this.strings.delimiter;
+                this["with"].multiple.strings.prefix = with_default_prefix;
             } else {
                 this["with"].single.strings.prefix = with_default_prefix;
                 this["with"].multiple.strings.prefix = with_default_prefix;
@@ -7641,6 +7651,9 @@ CSL.Node.names = {
                 if (state.build["delimiter-precedes-et-al"] === "always") {
                     this.etal_prefix_single = state.build.name_delimiter;
                 } else if (state.build["delimiter-precedes-et-al"] === "never") {
+                    this.etal_prefix_multiple = " ";
+                } else if (state.build["delimiter-precedes-et-al"] === "after-inverted-name") {
+                    this.etal_prefix_single = state.build.name_delimiter;
                     this.etal_prefix_multiple = " ";
                 }
                 this.etal_suffix = "";
