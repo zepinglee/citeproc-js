@@ -159,6 +159,9 @@ CSL.Node.names = {
                     this.etal_prefix_single = state.build.name_delimiter;
                 } else if (state.build["delimiter-precedes-et-al"] === "never") {
                     this.etal_prefix_multiple = " ";
+                } else if (state.build["delimiter-precedes-et-al"] === "after-inverted-name") {
+                    this.etal_prefix_single = state.build.name_delimiter;
+                    this.etal_prefix_multiple = " ";
                 }
                 this.etal_suffix = "";
             } else {
