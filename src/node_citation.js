@@ -78,8 +78,10 @@ CSL.Node.citation = {
             // grouped sorts.
             // print("in cs:citation END");
             state.opt.grouped_sort = state.opt.xclass === "in-text" 
-                && state.citation.opt.collapse 
-                && state.citation.opt.collapse.length
+                && (state.citation.opt.collapse 
+                    && state.citation.opt.collapse.length)
+                || (state.citation.opt.cite_group_delimiter
+                    && state.citation.opt.cite_group_delimiter.length)
                 && state.opt.update_mode !== CSL.POSITION
                 && state.opt.update_mode !== CSL.NUMERIC;
             
@@ -87,7 +89,7 @@ CSL.Node.citation = {
                 && state.citation_sort.opt.sort_directions.length) {
                 
                 var firstkey = state.citation_sort.opt.sort_directions[0].slice();
-                // print("extending sort keys "+state.citation_sort.opt.sort_directions+" with "+firstkey);
+                //print("extending sort keys "+state.citation_sort.opt.sort_directions+" with "+firstkey);
                 state.citation_sort.opt.sort_directions = [firstkey].concat(state.citation_sort.opt.sort_directions);
                 // print("new key directions in effect: "+state.citation_sort.opt.sort_directions);
             }

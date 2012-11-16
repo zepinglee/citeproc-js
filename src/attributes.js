@@ -994,6 +994,12 @@ CSL.Attributes["@collapse"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@cite-group-delimiter"] = function (state, arg) {
+    if (arg) {
+        state[state.tmp.area].opt.cite_group_delimiter = arg;
+    }
+};
+
 
 
 CSL.Attributes["@names-delimiter"] = function (state, arg) {

@@ -62,6 +62,7 @@ CSL.getSortCompare = function () {
         };
         CSL.debug("Using collation sort");
     } catch (e) {
+        CSL.debug("Using localeCompare sort");
         strcmp = function (a, b) {
             return a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase());
         };

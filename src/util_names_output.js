@@ -478,7 +478,9 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
     }
     if ((this.item && this.item["suppress-author"] && this._first_creator_variable == this.variables[0])
         || (this.state[this.state.tmp.area].opt.collapse 
-            && this.state[this.state.tmp.area].opt.collapse.length)) {
+            && this.state[this.state.tmp.area].opt.collapse.length)
+        || (this.state[this.state.tmp.area].opt.cite_group_delimiter 
+            && this.state[this.state.tmp.area].opt.cite_group_delimiter.length)) {
 
         if (this.state.tmp.authorstring_request) {
             // Avoid running this on every call to getAmbiguousCite()?
@@ -493,8 +495,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             this.state.tmp.offset_characters = oldchars;
             this.state.registry.authorstrings[this.Item.id] = mystr;
         } else if (!this.state.tmp.just_looking
-            && !this.state.tmp.suppress_decorations) {
-
+                   && !this.state.tmp.suppress_decorations && (this.item["suppress-author"] || (this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
             // XX1 print("RENDER: "+this.Item.id);
             mystr = "";
             myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
@@ -504,12 +505,16 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             }
             if (mystr === this.state.tmp.last_primary_names_string) {
             
-                // XX1 print("    CUT!");
-                this.state.tmp.name_node.top.blobs.pop();
-                this.state.tmp.name_node.children = [];
-                // If popped, avoid side-effects on character counting: we're only interested
-                // in things that actually render.
-                this.state.tmp.offset_characters = oldchars;
+                if (this.item["suppress-author"] || (this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length)) {
+                    // XX1 print("    CUT!");
+                    this.state.tmp.name_node.top.blobs.pop();
+                    this.state.tmp.name_node.children = [];
+                    // If popped, avoid side-effects on character counting: we're only interested
+                    // in things that actually render.
+                    this.state.tmp.offset_characters = oldchars;
+                }
+                // Needed
+                this.state.tmp.use_cite_group_delimiter = false;
             } else {
                 // XX1 print("remembering: "+mystr);
                 this.state.tmp.last_primary_names_string = mystr;
@@ -526,8 +531,12 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
                     // A wild guess, but will usually be correct
                     this.state.tmp.term_predecessor = false;
                 }
-                // Arcane and probably unnecessarily complicated
+                // Arcane and probably unnecessarily complicated?
                 this.state.tmp.have_collapsed = false;
+                // Needed
+                if (this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter) {
+                    this.state.tmp.use_cite_group_delimiter = true;
+                }
             }
         }
     }
