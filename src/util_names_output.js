@@ -514,7 +514,9 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
                     this.state.tmp.offset_characters = oldchars;
                 }
                 // Needed
-                this.state.tmp.use_cite_group_delimiter = false;
+                if (this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter) {
+                    this.state.tmp.use_cite_group_delimiter = true;
+                }
             } else {
                 // XX1 print("remembering: "+mystr);
                 this.state.tmp.last_primary_names_string = mystr;
@@ -535,7 +537,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
                 this.state.tmp.have_collapsed = false;
                 // Needed
                 if (this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter) {
-                    this.state.tmp.use_cite_group_delimiter = true;
+                    this.state.tmp.use_cite_group_delimiter = false;
                 }
             }
         }
