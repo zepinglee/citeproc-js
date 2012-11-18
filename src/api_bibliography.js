@@ -170,6 +170,12 @@ CSL.getBibliographyEntries = function (bibsection) {
             for (i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
                 if (clonedItem[rule.triggers[i]]) {
                     delete clonedItem[rule.triggers[i]];
+                    if (rule.triggers[i] === "title-short") {
+                        delete clonedItem.shortTitle;
+                    }
+                    if (rule.triggers[i] === "container-title-short") {
+                        delete clonedItem.journalAbbreviation;
+                    }
                 }
             }
             // amend itemID (to the form set on genIDs fork)

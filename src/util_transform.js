@@ -133,10 +133,6 @@ CSL.Transform = function (state) {
             myabbrev_family = "title";
         }
 
-        if (["title-short"].indexOf(myabbrev_family) > -1) {
-            myabbrev_family = "title";
-        }
-
         // Lazy retrieval of abbreviations.
         value = "";
         if (state.sys.getAbbreviation) {
