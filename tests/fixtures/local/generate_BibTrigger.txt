@@ -155,7 +155,7 @@ bibliography
         "volume": 15,
         "container-title": "AC",
         "page": "111-999",
-        "title-short": "The Archimedes",
+        "shortTitle": "The Archimedes",
         "id": "ITEM-1", 
         "type": "legal_case"
     }
