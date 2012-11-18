@@ -110,7 +110,7 @@ CSL.Node.names = {
             // (XXX should set label format for target variables of this node only)
             // (XXX segmented assignment is performed inside node_label.js)
             this.label = state.build.name_label;
-            state.build.name_label = undefined;
+            state.build.name_label = {};
 
             state.build.names_variables.pop();
 
