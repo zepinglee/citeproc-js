@@ -210,7 +210,7 @@ var CSL = {
 
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
 
-    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","medium","jurisdiction"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","medium","jurisdiction","archive","archive-place"],
 
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
 

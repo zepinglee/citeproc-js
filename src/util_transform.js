@@ -121,7 +121,7 @@ CSL.Transform = function (state) {
             myabbrev_family = "number";
         }
 
-        if (["publisher-place", "event-place", "jurisdiction"].indexOf(myabbrev_family) > -1) {
+        if (["publisher-place", "event-place", "jurisdiction", "archive-place"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
 
@@ -131,6 +131,10 @@ CSL.Transform = function (state) {
 
         if (["genre", "event", "medium"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "title";
+        }
+
+        if (["archive"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "collection-title";
         }
 
         // Lazy retrieval of abbreviations.
