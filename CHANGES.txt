@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.410
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Make archive and archive-place variables multilingual
+  and open to abbreviation, addressing a need pointed
+  out by Titus Nemeth.
+
+==========================
 Changes in version 1.0.409
 ==========================
 

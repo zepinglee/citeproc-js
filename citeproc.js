@@ -157,7 +157,7 @@ var CSL = {
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","medium","jurisdiction"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","medium","jurisdiction","archive","archive-place"],
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
     MINIMAL_NAME_FIELDS: ["literal", "family"],
     SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
@@ -9311,7 +9311,7 @@ CSL.Transform = function (state) {
         if (CSL.NUMERIC_VARIABLES.indexOf(myabbrev_family) > -1) {
             myabbrev_family = "number";
         }
-        if (["publisher-place", "event-place", "jurisdiction"].indexOf(myabbrev_family) > -1) {
+        if (["publisher-place", "event-place", "jurisdiction", "archive-place"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
         if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
@@ -9319,6 +9319,9 @@ CSL.Transform = function (state) {
         }
         if (["genre", "event", "medium"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "title";
+        }
+        if (["archive"].indexOf(myabbrev_family) > -1) {
+            myabbrev_family = "collection-title";
         }
         value = "";
         if (state.sys.getAbbreviation) {
