@@ -2,6 +2,16 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.411
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix "section" bug affecting statutory types
+
+==========================
 Changes in version 1.0.410
 ==========================
 
