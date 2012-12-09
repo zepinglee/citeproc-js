@@ -56,9 +56,10 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
         if (["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1) {
             
             // Extract and assemble
-            
             item.force_pluralism = 0;
-
+            if (!item.label) {
+                item.label = "page"
+            }
             var loci = ["section","","",""];
             var split;
             if (Item.section) {
