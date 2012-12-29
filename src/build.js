@@ -552,6 +552,47 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     } else {
         Item = this.sys.retrieveItem("" + id);
     }
+    // Optionally normalize keys to lowercase()
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        if (Item.multi) {
+            if (Item.multi._keys) {
+                for (var field in Item.multi._keys) {
+                    for (var key in Item.multi._keys[field]) {
+                        if (key !== key.toLowerCase()) {
+                            Item.multi._keys[field][key.toLowerCase()] = Item.multi._keys[field][key];
+                            delete Item.multi._keys[field][key];
+                        }
+                    }
+                }
+            }
+            if (Item.multi.main) {
+                for (var field in Item.multi.main) {
+                    Item.multi.main[field] = Item.multi.main[field].toLowerCase();
+                }
+            }
+        }
+        for (var i=0, ilen=CSL.CREATORS.length; i>ilen; i+=1) {
+            var ctype = CSL.CREATORS[i];
+            if (Item[ctype] && Item[ctype].multi) {
+                for (var j=0, jlen=Item[ctype].length; j<jlen; j+=1) {
+                    var creator = Item[ctype][j];
+                    if (creator.multi) {
+                        if (creator.multi._key) {
+                            for (var key in creator.multi._key) {
+                                if (key !== key.toLowerCase()) {
+                                    creator.multi._key[key.toLowerCase()] = creator.multi._key[key];
+                                    delete creator.multi._key[key];
+                                }
+                            }
+                        }
+                        if (creator.multi.main) {
+                            creator.multi.main = creator.multi.main.toLowerCase();
+                        }
+                    }
+                }
+            }
+        }
+    }
     // Mandatory data rescue
     // LEX HACK
     //if (Item.type === "bill" && Item.number && !Item.volume && Item.page) {

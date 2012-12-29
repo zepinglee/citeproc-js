@@ -1209,6 +1209,13 @@ CSL.Attributes["@year-range-format"] = function (state, arg) {
 
 CSL.Attributes["@default-locale"] = function (state, arg) {
     var lst, len, pos, m, ret;
+    // Optionally normalize keys to lowercase. See also code in
+    // build.js
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        if (arg) {
+            arg = arg.toLowerCase();
+        }
+    }
     //
     // Workaround for Internet Exploder 6 (doesn't recognize
     // groups in str.split(/something(braced-group)something/)
