@@ -4,7 +4,6 @@ dojo.require("std.abbrevs");
 dojo.require("std.affix");
 dojo.require("std.api");
 dojo.require("std.bibheader");
-dojo.require("std.bibliography");
 dojo.require("std.bibsection");
 dojo.require("std.bugreports");
 dojo.require("std.citeprocjs");
