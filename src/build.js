@@ -544,6 +544,21 @@ CSL.ITERATION = 0;
 CSL.Engine.prototype.retrieveItem = function (id) {
     var Item, m, pos, len, mm;
 
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase &&
+        "boolean" === typeof this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        // This is a hack. Should properly be configured by a processor method after build.
+        for (var i=0,ilen=this.opt["default-locale"].length; i<ilen; i+=1) {
+            this.opt["default-locale"][i] = this.opt["default-locale"][i].toLowerCase();
+        }
+        for (var i=0,ilen=this.opt["locale-translit"].length; i<ilen; i+=1) {
+            this.opt["locale-translit"][i] = this.opt["locale-translit"][i].toLowerCase();
+        }
+        for (var i=0,ilen=this.opt["locale-translat"].length; i<ilen; i+=1) {
+            this.opt["locale-translat"][i] = this.opt["locale-translat"][i].toLowerCase();
+        }
+        this.opt.development_extensions.normalize_lang_keys_to_lowercase = 100;
+    }
+
     //Zotero.debug("XXX === ITERATION " + CSL.ITERATION + " "+ id +" ===");
     CSL.ITERATION += 1;
 

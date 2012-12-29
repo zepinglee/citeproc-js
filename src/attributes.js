@@ -1211,7 +1211,7 @@ CSL.Attributes["@default-locale"] = function (state, arg) {
     var lst, len, pos, m, ret;
     // Optionally normalize keys to lowercase. See also code in
     // build.js
-    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+    if (state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
         if (arg) {
             arg = arg.toLowerCase();
         }
