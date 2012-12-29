@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.413
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Set locale properly on language transform elements,
+  and suppress text-case="title" as appropriate within
+  each element.
+
+==========================
 Changes in version 1.0.412
 ==========================
 
