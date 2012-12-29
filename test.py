@@ -482,7 +482,7 @@ class CslTest:
         self.script = os.path.split(sys.argv[0])[1]
         self.pickle = ".".join((os.path.splitext( self.script )[0], "pkl"))
         self.data = {}
-        self.raw = fixEndings(open(os.path.sep.join(hpath), "rb").read())
+        self.raw = fixEndings(unicode(open(os.path.sep.join(hpath), "rb").read()))
 
     def parse(self):
         ## print "kkk: %s" % (self.testname,)
@@ -589,8 +589,9 @@ class CslTest:
                         self.data["input"][pos][k]["date-parts"] = newdate
 
     def dump(self, mpath):
-        json.dump(self.data, open(mpath,"w+b"), indent=4, sort_keys=True, ensure_ascii=False )
-
+        s = json.dumps(self.data, indent=4, sort_keys=True, ensure_ascii=False )
+        s = s.replace(u"\u200b", "\\u200b")
+        open(mpath,"w+b").write(s)
     def validate(self):
         if self.opt.verbose:
             print self.testname
