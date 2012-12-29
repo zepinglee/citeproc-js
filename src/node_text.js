@@ -246,9 +246,7 @@ CSL.Node.text = {
                         var parallel_variable = this.variables[0];
                         
                         if (parallel_variable === "title" 
-                            && form === "short" 
-                            && !state.opt.development_extensions.main_title_from_short_title) {
-                            
+                            && form === "short") { 
                             // Only if not main_title_from_short_title
                             parallel_variable = "shortTitle";
                         }

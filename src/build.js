@@ -633,7 +633,19 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			Item.legislation_id = legislation_id.join("::");
         }
     }
-    // XXX Add getAbbreviation() call for title-short and container-title-short
+    // Add support for main_title_from_short_title
+    if (this.opt.development_extensions.main_title_from_short_title) {
+        Item["title-main"] = Item.title;
+        Item["title-sub"] = false;
+        if (Item.title && Item.shortTitle) {
+            offset = Item.shortTitle.length;
+            if (Item.title.slice(0,offset) === Item.shortTitle && Item.title.slice(offset).match(/^\s*:/)) {
+                Item["title-main"] = Item.title.slice(0,offset).replace(/\s+$/,"");
+                Item["title-sub"] = Item.title.slice(offset).replace(/^\s*:\s*/,"");
+            }
+        }
+    }
+    // Add getAbbreviation() call for title-short and container-title-short
     Item["title-short"] = Item.shortTitle;
     if (Item.title && this.sys.getAbbreviation) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title);
