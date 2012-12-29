@@ -185,13 +185,13 @@ CSL.Transform = function (state) {
             if (stopOrig) {
                 ret = {name:"", usedOrig:stopOrig};
             } else {
-                ret = {name:Item[field], usedOrig:false};
+                ret = {name:Item[field], usedOrig:false, locale:state.opt["default-locale"][0].slice(0, 2)};
             }
             return ret;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
             // If we want the original, or if we don't have any specific guidance and we 
             // definitely want output, just return the original value.
-            return {name:Item[field], usedOrig:true};
+            return {name:Item[field], usedOrig:true, locale:state.opt["default-locale"][0].slice(0, 2)};
         }
 
         for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
@@ -200,14 +200,16 @@ CSL.Transform = function (state) {
             o = opt.split(/[\-_]/)[0];
             if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
                 ret.name = Item.multi._keys[field][opt];
+                ret.locale = o;
                 break;
             } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
                 ret.name = Item.multi._keys[field][o];
+                ret.locale = o;
                 break;
             }
         }
         if (!ret.name && use_default) {
-            ret = {name:Item[field], usedOrig:true};
+            ret = {name:Item[field], usedOrig:true, locale:state.opt["default-locale"][0].slice(0, 2)};
         }
         return ret;
     }
@@ -313,7 +315,7 @@ CSL.Transform = function (state) {
         }
 
         return function (state, Item, item, usedOrig) {
-            var primary, secondary, tertiary, primary_tok, group_tok, key;
+            var primary, primary_locale, secondary, secondary_locale, tertiary, tertiary_locale, primary_tok, group_tok, key;
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
                 return null;
             }
@@ -361,6 +363,7 @@ CSL.Transform = function (state) {
             // True is for transform fallback
             var res = getTextSubField(Item, variables[0], slot.primary, true);
             primary = res.name;
+            primary_locale = res.locale;
             var primaryUsedOrig = res.usedOrig;
 
             if (publisherCheck(this, Item, primary, myabbrev_family)) {
@@ -373,10 +376,12 @@ CSL.Transform = function (state) {
             if (slot.secondary) {
                 res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
                 secondary = res.name;
+                secondary_locale = res.locale;
             }
             if (slot.tertiary) {
                 res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
                 tertiary = res.name;
+                tertiary_locale = res.locale;
             }
         
             // Abbreviate if requested and if poss.
@@ -429,6 +434,9 @@ CSL.Transform = function (state) {
 
                 // A little too aggressive maybe.
                 primary_tok.strings.suffix = "";
+                if (primary_locale !== "en") {
+                    primary_tok.strings["text-case"] = "passthrough";
+                }
                 state.output.append(primary, primary_tok);
 
                 if (secondary) {
@@ -444,6 +452,9 @@ CSL.Transform = function (state) {
                         if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(secondary_tok.decorations[i].join('/')) > -1) {
                             secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
                         }
+                    }
+                    if (secondary_locale !== "en") {
+                        secondary_tok.strings["text-case"] = "passthrough";
                     }
                     state.output.append(secondary, secondary_tok);
 
@@ -472,6 +483,9 @@ CSL.Transform = function (state) {
                         if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(tertiary_tok.decorations[i].join('/')) > -1) {
                             tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1))
                         }
+                    }
+                    if (tertiary_locale !== "en") {
+                        tertiary_tok.strings["text-case"] = "passthrough";
                     }
                     state.output.append(tertiary, tertiary_tok);
 
