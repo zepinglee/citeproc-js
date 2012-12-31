@@ -1174,18 +1174,6 @@ CSL.Attributes["@text-case"] = function (state, arg) {
                 var default_locale = state.opt["default-locale"][0].slice(0, 2);
                 if (Item.jurisdiction) {
                     this.strings["text-case"] = "passthrough";
-                } else if (Item.language) {
-                    m = Item.language.match(/^\s*([A-Za-z]{2})(?:$|-| )/);
-                    if (!m) {
-                        print("Huh?");
-                        this.strings["text-case"] = "passthrough";
-                    } else if (m[1].toLowerCase() !== "en") {
-                        print("What?? "+m[1].toLowerCase());
-                        this.strings["text-case"] = "passthrough";
-                    }
-                } else if (default_locale !== "en") {
-                    print("I don't know???");
-                    this.strings["text-case"] = "passthrough";
                 }
             }
         }
