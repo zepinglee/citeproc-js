@@ -185,13 +185,23 @@ CSL.Transform = function (state) {
             if (stopOrig) {
                 ret = {name:"", usedOrig:stopOrig};
             } else {
-                ret = {name:Item[field], usedOrig:false, locale:state.opt["default-locale"][0].slice(0, 2)};
+                // XXX repetitive
+                var main_locale = state.opt["default-locale"][0].slice(0, 2)
+                if (Item.multi && Item.multi && Item.multi.main) {
+                    main_locale = Item.multi.main[field];
+                }
+                ret = {name:Item[field], usedOrig:false, locale:main_locale};
             }
             return ret;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
             // If we want the original, or if we don't have any specific guidance and we 
             // definitely want output, just return the original value.
-            return {name:Item[field], usedOrig:true, locale:state.opt["default-locale"][0].slice(0, 2)};
+            // XXX repetitive
+            var main_locale = state.opt["default-locale"][0].slice(0, 2)
+            if (Item.multi && Item.multi && Item.multi.main) {
+                main_locale = Item.multi.main[field];
+            }
+            return {name:Item[field], usedOrig:true, locale:main_locale};
         }
 
         for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
@@ -209,7 +219,12 @@ CSL.Transform = function (state) {
             }
         }
         if (!ret.name && use_default) {
-            ret = {name:Item[field], usedOrig:true, locale:state.opt["default-locale"][0].slice(0, 2)};
+            // XXX repetitive
+            var main_locale = state.opt["default-locale"][0].slice(0, 2)
+            if (Item.multi && Item.multi && Item.multi.main) {
+                main_locale = Item.multi.main[field];
+            }
+            ret = {name:Item[field], usedOrig:true, locale:main_locale};
         }
         return ret;
     }
@@ -406,6 +421,7 @@ CSL.Transform = function (state) {
             }
 
             // Decoration of primary (currently translit only) goes here
+            var template_tok = CSL.Util.cloneToken(this);
             var primary_tok = CSL.Util.cloneToken(this);
             var primaryPrefix;
             if (slot.primary === "locale-translit") {
@@ -440,7 +456,7 @@ CSL.Transform = function (state) {
                 state.output.append(primary, primary_tok);
 
                 if (secondary) {
-                    secondary_tok = CSL.Util.cloneToken(primary_tok);
+                    secondary_tok = CSL.Util.cloneToken(template_tok);
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
                     // Add a space if empty
@@ -471,7 +487,7 @@ CSL.Transform = function (state) {
                     }
                 }
                 if (tertiary) {
-                    tertiary_tok = CSL.Util.cloneToken(primary_tok);
+                    tertiary_tok = CSL.Util.cloneToken(template_tok);
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
                     tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
                     // Add a space if empty
