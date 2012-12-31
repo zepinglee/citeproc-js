@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.413",
+    PROCESSOR_VERSION: "1.0.414",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -9431,11 +9431,19 @@ CSL.Transform = function (state) {
             if (stopOrig) {
                 ret = {name:"", usedOrig:stopOrig};
             } else {
-                ret = {name:Item[field], usedOrig:false, locale:state.opt["default-locale"][0].slice(0, 2)};
+                var main_locale = state.opt["default-locale"][0].slice(0, 2)
+                if (Item.multi && Item.multi && Item.multi.main) {
+                    main_locale = Item.multi.main[field];
+                }
+                ret = {name:Item[field], usedOrig:false, locale:main_locale};
             }
             return ret;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
-            return {name:Item[field], usedOrig:true, locale:state.opt["default-locale"][0].slice(0, 2)};
+            var main_locale = state.opt["default-locale"][0].slice(0, 2)
+            if (Item.multi && Item.multi && Item.multi.main) {
+                main_locale = Item.multi.main[field];
+            }
+            return {name:Item[field], usedOrig:true, locale:main_locale};
         }
         for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
             opt = opts[i];
@@ -9451,7 +9459,11 @@ CSL.Transform = function (state) {
             }
         }
         if (!ret.name && use_default) {
-            ret = {name:Item[field], usedOrig:true, locale:state.opt["default-locale"][0].slice(0, 2)};
+            var main_locale = state.opt["default-locale"][0].slice(0, 2)
+            if (Item.multi && Item.multi && Item.multi.main) {
+                main_locale = Item.multi.main[field];
+            }
+            ret = {name:Item[field], usedOrig:true, locale:main_locale};
         }
         return ret;
     }
@@ -9591,6 +9603,7 @@ CSL.Transform = function (state) {
                 secondary = CSL.demoteNoiseWords(state, secondary);
                 tertiary = CSL.demoteNoiseWords(state, tertiary);
             }
+            var template_tok = CSL.Util.cloneToken(this);
             var primary_tok = CSL.Util.cloneToken(this);
             var primaryPrefix;
             if (slot.primary === "locale-translit") {
@@ -9616,7 +9629,7 @@ CSL.Transform = function (state) {
                 }
                 state.output.append(primary, primary_tok);
                 if (secondary) {
-                    secondary_tok = CSL.Util.cloneToken(primary_tok);
+                    secondary_tok = CSL.Util.cloneToken(template_tok);
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
                     if (!secondary_tok.strings.prefix) {
@@ -9639,7 +9652,7 @@ CSL.Transform = function (state) {
                     }
                 }
                 if (tertiary) {
-                    tertiary_tok = CSL.Util.cloneToken(primary_tok);
+                    tertiary_tok = CSL.Util.cloneToken(template_tok);
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
                     tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
                     if (!tertiary_tok.strings.prefix) {
