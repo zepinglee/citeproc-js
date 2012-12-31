@@ -170,6 +170,26 @@ CSL.Transform = function (state) {
         return value;
     }
 
+    function getFieldLocale(Item,field) {
+        var ret = state.opt["default-locale"][0].slice(0, 2)
+        if (Item.language) {
+            m = ("" + Item.language).match(/^([a-zA-Z]{2})(?:$|-.*| .*)/);
+            if (m) {
+                ret = m[1];
+            } else {
+                // Set garbage to "Klingon".
+                ret = "tlh";
+            }
+        }
+        if (Item.multi && Item.multi && Item.multi.main) {
+            ret = Item.multi.main[field];
+        }
+        if (state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+            ret = ret.toLowerCase();
+        }
+        return ret;
+    };
+
     // Internal function
     function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
         var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
@@ -178,30 +198,20 @@ CSL.Transform = function (state) {
         if (!Item[field]) {
             return {name:"", usedOrig:stopOrig};
         }
-        ret = {name:"", usedOrig:stopOrig};
+        ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
 
         opts = state.opt[locale_type];
         if (locale_type === 'locale-orig') {
             if (stopOrig) {
                 ret = {name:"", usedOrig:stopOrig};
             } else {
-                // XXX repetitive
-                var main_locale = state.opt["default-locale"][0].slice(0, 2)
-                if (Item.multi && Item.multi && Item.multi.main) {
-                    main_locale = Item.multi.main[field];
-                }
-                ret = {name:Item[field], usedOrig:false, locale:main_locale};
+                ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
             }
             return ret;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
             // If we want the original, or if we don't have any specific guidance and we 
             // definitely want output, just return the original value.
-            // XXX repetitive
-            var main_locale = state.opt["default-locale"][0].slice(0, 2)
-            if (Item.multi && Item.multi && Item.multi.main) {
-                main_locale = Item.multi.main[field];
-            }
-            return {name:Item[field], usedOrig:true, locale:main_locale};
+            return {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
         }
 
         for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
@@ -219,12 +229,7 @@ CSL.Transform = function (state) {
             }
         }
         if (!ret.name && use_default) {
-            // XXX repetitive
-            var main_locale = state.opt["default-locale"][0].slice(0, 2)
-            if (Item.multi && Item.multi && Item.multi.main) {
-                main_locale = Item.multi.main[field];
-            }
-            ret = {name:Item[field], usedOrig:true, locale:main_locale};
+            ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
         }
         return ret;
     }
@@ -392,11 +397,13 @@ CSL.Transform = function (state) {
                 res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
                 secondary = res.name;
                 secondary_locale = res.locale;
+                //print("XXX secondary_locale: "+secondary_locale);
             }
             if (slot.tertiary) {
                 res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
                 tertiary = res.name;
                 tertiary_locale = res.locale;
+                //print("XXX tertiary_locale: "+tertiary_locale);
             }
         
             // Abbreviate if requested and if poss.
@@ -444,15 +451,17 @@ CSL.Transform = function (state) {
                 }
             }
 
+            //print("XXX "+primary_tok.strings["text-case"]);
+            if (primary_locale !== "en" && primary_tok.strings["text-case"] === "title") {
+                primary_tok.strings["text-case"] = "passthrough";
+            }
+
             if (secondary || tertiary) {
 
                 state.output.openLevel("empty");
 
                 // A little too aggressive maybe.
                 primary_tok.strings.suffix = "";
-                if (primary_locale !== "en") {
-                    primary_tok.strings["text-case"] = "passthrough";
-                }
                 state.output.append(primary, primary_tok);
 
                 if (secondary) {
@@ -469,7 +478,7 @@ CSL.Transform = function (state) {
                             secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
                         }
                     }
-                    if (secondary_locale !== "en") {
+                    if (secondary_locale !== "en" && secondary_tok.strings["text-case"] === "title") {
                         secondary_tok.strings["text-case"] = "passthrough";
                     }
                     state.output.append(secondary, secondary_tok);
@@ -500,7 +509,7 @@ CSL.Transform = function (state) {
                             tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1))
                         }
                     }
-                    if (tertiary_locale !== "en") {
+                    if (tertiary_locale !== "en" && tertiary_tok.strings["text-case"] === "title") {
                         tertiary_tok.strings["text-case"] = "passthrough";
                     }
                     state.output.append(tertiary, tertiary_tok);
