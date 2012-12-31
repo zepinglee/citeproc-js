@@ -1177,17 +1177,14 @@ CSL.Attributes["@text-case"] = function (state, arg) {
                 } else if (Item.language) {
                     m = Item.language.match(/^\s*([A-Za-z]{2})(?:$|-| )/);
                     if (!m) {
+                        print("Huh?");
                         this.strings["text-case"] = "passthrough";
                     } else if (m[1].toLowerCase() !== "en") {
+                        print("What?? "+m[1].toLowerCase());
                         this.strings["text-case"] = "passthrough";
-                        for (var i = 0, ilen = state.opt.english_locale_escapes.length; i < ilen; i += 1) {
-                            var escaper = state.opt.english_locale_escapes[i];
-                            if (m[1].slice(0, escaper.length).toLowerCase() === escaper) {
-                                this.strings["text-case"] = arg;
-                            }
-                        }
                     }
                 } else if (default_locale !== "en") {
+                    print("I don't know???");
                     this.strings["text-case"] = "passthrough";
                 }
             }
