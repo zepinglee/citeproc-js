@@ -53,14 +53,14 @@ citation
 
 
 >>===== RESULT =====>>
-My Title in English [Ye olde title in Chinese]
+My title in Chinese [Ye Olde Title in English]
 <<===== RESULT =====<<
 
 >>===== LANGPARAMS =====>>
 {
     "persons":["translit"],
     "institutions":["translit"],
-    "titles":["orig","translit"],
+    "titles":["orig","translat"],
     "publishers":["translat"],
     "places":["translat"]
 }
@@ -70,7 +70,7 @@ My Title in English [Ye olde title in Chinese]
 [
   null,null,null,null,null,null,null,null,
   null,null,null,null,null,null,null,null,
-  null,null,null,null," [","]",null,null,
+  null,null,null,null,null,null," [","]",
   null,null,null,null,null,null,null,null,
   null,null,null,null,null,null,null,null
 ]
@@ -90,7 +90,7 @@ This option controls for it.
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
       version="1.0"
-      default-locale="EN-x-translit-ZH-alalc97">
+      default-locale="EN-x-translat-en">
   <info>
     <id />
     <title />
@@ -109,16 +109,19 @@ This option controls for it.
 [
     {
         "id": "ITEM-1", 
-        "title": "My title in English", 
+        "title": "My title in Chinese", 
 		"multi":{
+            "main":{
+                "title":"zh"
+            },
 			"_keys":{
 				"title":{
-					"zh-alaLC97":"Ye olde title in Chinese"
+					"en":"Ye olde title in English"
 				}
 			}
 		},
         "type": "book",
-        "note": "Headline entry should capitalise, Chinese variant should not."
+        "note": "Headline entry should not capitalise, English variant should do."
     }
 ]
 <<===== INPUT =====<<
