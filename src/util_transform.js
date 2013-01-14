@@ -181,7 +181,7 @@ CSL.Transform = function (state) {
                 ret = "tlh";
             }
         }
-        if (Item.multi && Item.multi && Item.multi.main) {
+        if (Item.multi && Item.multi && Item.multi.main && Item.multi.main[field]) {
             ret = Item.multi.main[field];
         }
         if (state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
