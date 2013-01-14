@@ -121,6 +121,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     lst = namelist.split(/[\-\s]+/);
 
     if (lst.length === 0) {
+        // This doesn't make much sense, and may be impossible.
         namelist = mm;
     } else {
         namelist = [lst[0]];
@@ -130,10 +131,12 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
         }
     }
     lst = namelist;
+
     // This case remains: John T.S. Smith. Fix up by stepping through
     // in reverse.
     for (i = lst.length -1; i > -1; i += -1) {
         if (lst[i] && lst[i].slice(0, -1).indexOf(".") > -1) {
+            
             var lstend = lst.slice(i + 1);
             var lstmid = lst[i].slice(0, -1).split(".");
             lst = lst.slice(0, i);
@@ -252,23 +255,9 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
             namelist[i] = " " + n;
         }
     }
-    var ret = CSL.Util.Names.stripRight(namelist.join(""));
-    ret = ret.replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
+    var ret = namelist.join("");
+    ret = ret.replace(/\s+$/,"").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
     return ret;
-};
-
-
-CSL.Util.Names.stripRight = function (str) {
-    var end, pos, len;
-    end = 0;
-    len = str.length - 1;
-    for (pos = len; pos > -1; pos += -1) {
-        if (str[pos] !== " ") {
-            end = pos + 1;
-            break;
-        }
-    }
-    return str.slice(0, end);
 };
 
 CSL.Util.Names.getRawName = function (name) {
