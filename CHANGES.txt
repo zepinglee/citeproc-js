@@ -2,6 +2,28 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.416
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in space stripping that affected
+  some JavaScript engines.
+
+==========================
+Changes in version 1.0.415
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in text-case. Thanks to MTadd for the fault
+  report.
+
+==========================
 Changes in version 1.0.414
 ==========================
 
