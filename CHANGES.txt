@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.417
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug in trigraph support affecting
+  some JavaScript engines. Thanks to Simon
+  Hewitt for pinning these down.
+
+==========================
 Changes in version 1.0.416
 ==========================
 
