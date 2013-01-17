@@ -436,9 +436,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     }
                     break;
                 } else if ("hereinafter" === variable) {
-                    if (state.transform.abbrevs["default"].hereinafter[Item.system_id]
+                    if (state.transform.abbrevs["default"].hereinafter[Item.id]
                         && state.sys.getAbbreviation
-                        && Item.system_id) {
+                        && Item.id) {
 						
                         output = true;
                     }
@@ -492,8 +492,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 // We don't run loadAbbreviation() here; it is run by the application-supplied
                 // retrieveItem() if hereinafter functionality is to be used, so this key will
                 // always exist in memory, possibly with a nil value.
-                if (variable === "hereinafter" && state.sys.getAbbreviation && myitem.system_id) {
-                    if (state.transform.abbrevs["default"].hereinafter[myitem.system_id]) {
+                if (variable === "hereinafter" && state.sys.getAbbreviation && myitem.id) {
+                    if (state.transform.abbrevs["default"].hereinafter[myitem.id]) {
                         x = true;
                     }
                 } else if (myitem[variable]) {

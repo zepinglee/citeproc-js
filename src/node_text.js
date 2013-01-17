@@ -369,9 +369,10 @@ CSL.Node.text = {
                             };
                         } else if (this.variables_real[0] === "hereinafter") {
                             func = function (state, Item) {
-                                var value = state.transform.abbrevs["default"]["hereinafter"][Item.system_id];
+                                var value = state.transform.abbrevs["default"]["hereinafter"][Item.id];
                                 if (value) {
                                     state.output.append(value, this);
+                                    state.tmp.group_context.value()[2] = true;
                                 }
                             }
                         } else {

@@ -156,8 +156,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             item[key] = citation.citationItems[i][key];
         }
         Item = this.retrieveItem("" + item.id);
-        if (Item.system_id) {
-            this.transform.loadAbbreviation("default", "hereinafter", Item.system_id);
+        if (Item.id) {
+            this.transform.loadAbbreviation("default", "hereinafter", Item.id);
         }
         this.remapSectionVariable([[Item,item]]);
         if (this.opt.development_extensions.locator_date_and_revision) {
