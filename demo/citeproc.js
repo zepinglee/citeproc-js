@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.417",
+    PROCESSOR_VERSION: "1.0.418",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -3515,8 +3515,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             item[key] = citation.citationItems[i][key];
         }
         Item = this.retrieveItem("" + item.id);
-        if (Item.system_id) {
-            this.transform.loadAbbreviation("default", "hereinafter", Item.system_id);
+        if (Item.id) {
+            this.transform.loadAbbreviation("default", "hereinafter", Item.id);
         }
         this.remapSectionVariable([[Item,item]]);
         if (this.opt.development_extensions.locator_date_and_revision) {
@@ -8233,9 +8233,10 @@ CSL.Node.text = {
                             };
                         } else if (this.variables_real[0] === "hereinafter") {
                             func = function (state, Item) {
-                                var value = state.transform.abbrevs["default"]["hereinafter"][Item.system_id];
+                                var value = state.transform.abbrevs["default"]["hereinafter"][Item.id];
                                 if (value) {
                                     state.output.append(value, this);
+                                    state.tmp.group_context.value()[2] = true;
                                 }
                             }
                         } else {
@@ -8545,9 +8546,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     }
                     break;
                 } else if ("hereinafter" === variable) {
-                    if (state.transform.abbrevs["default"].hereinafter[Item.system_id]
+                    if (state.transform.abbrevs["default"].hereinafter[Item.id]
                         && state.sys.getAbbreviation
-                        && Item.system_id) {
+                        && Item.id) {
                         output = true;
                     }
                     break;
@@ -8591,8 +8592,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (item && ["locator", "locator-revision", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
                 }
-                if (variable === "hereinafter" && state.sys.getAbbreviation && myitem.system_id) {
-                    if (state.transform.abbrevs["default"].hereinafter[myitem.system_id]) {
+                if (variable === "hereinafter" && state.sys.getAbbreviation && myitem.id) {
+                    if (state.transform.abbrevs["default"].hereinafter[myitem.id]) {
                         x = true;
                     }
                 } else if (myitem[variable]) {
