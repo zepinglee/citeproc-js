@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.418",
+    PROCESSOR_VERSION: "1.0.419",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -2363,7 +2363,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         }
     }
     Item["title-short"] = Item.shortTitle;
-    if (Item.title && this.sys.getAbbreviation) {
+    if (Item.title && this.sys.getAbbreviation && ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) === -1) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title);
         if (this.transform.abbrevs[jurisdiction].title) {
             if (this.transform.abbrevs[jurisdiction].title[Item.title]) {
@@ -9361,7 +9361,7 @@ CSL.Transform = function (state) {
         if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "institution-part";
         }
-        if (["genre", "event", "medium"].indexOf(myabbrev_family) > -1) {
+        if (["genre", "event", "medium", "title-short"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "title";
         }
         if (["archive"].indexOf(myabbrev_family) > -1) {
