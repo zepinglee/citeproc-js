@@ -562,11 +562,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     //Zotero.debug("XXX === ITERATION " + CSL.ITERATION + " "+ id +" ===");
     CSL.ITERATION += 1;
 
-    if (this.registry.generate.genIDs["" + id]) {
-        Item = this.registry.generate.items["" + id];
-    } else {
-        Item = this.sys.retrieveItem("" + id);
-    }
+    Item = this.sys.retrieveItem("" + id);
     // Optionally normalize keys to lowercase()
     if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
         if (Item.multi) {
@@ -703,7 +699,8 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     // Add getAbbreviation() call for title-short and container-title-short
     Item["title-short"] = Item.shortTitle;
-    if (Item.title && this.sys.getAbbreviation && ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) === -1) {
+    var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
+    if (Item.title && this.sys.getAbbreviation && !isLegalType) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title);
         if (this.transform.abbrevs[jurisdiction].title) {
             if (this.transform.abbrevs[jurisdiction].title[Item.title]) {

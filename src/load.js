@@ -858,8 +858,5 @@ if (!CSL.Registry.CitationReg) {
 if (!CSL.Registry.prototype.disambiguateCites) {
     load("./src/disambig_cites.js");
 }
-if (!CSL.Registry.prototype.generate) {
-    load("./src/node_generate.js");
-}
 
 //SNIP-END

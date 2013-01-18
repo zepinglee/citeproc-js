@@ -116,11 +116,6 @@ CSL.Registry = function (state) {
     // and CSL.Registry.prototype.doinserts
     this.authorstrings = {};
 
-    this.generate = {};
-    this.generate.origIDs = {};
-    this.generate.genIDs = {};
-    this.generate.rules = [];
-
     //
     // shared scratch vars
     this.mylist = [];
@@ -349,11 +344,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
             //  3d. Delete all items in deletion list from hash.
             //
             delete this.registry[key];
-            // + delete any generation rule bundles associated with the item.
-            if (this.generate.origIDs[key]) {
-                delete this.generate.origIDs[key];
-                delete this.generate.genIDs[key + ":gen"];
-            }
+
             // For processCitationCluster()
             this.return_data.bibchange = true;
         }
@@ -378,22 +369,6 @@ CSL.Registry.prototype.doinserts = function (mylist) {
             //
             Item = this.state.retrieveItem(item);
 
-            // Add a generation rule for this item if appropriate
-            for (j = 0, jlen = this.generate.rules.length; j < jlen; j += 1) {
-                if (Item.type === this.generate.rules[j].from) {
-                    var needsRule = true;
-                    for (k = 0, klen = this.generate.rules[j].triggers.length; k < klen; k += 1) {
-                        if (!Item[this.generate.rules[j].triggers[k]]) {
-                            needsRule = false;
-                            break;
-                        }
-                    }
-                    if (needsRule) {
-                        this.generate.origIDs[item] = this.generate.rules[j];
-                        this.generate.genIDs[item + ":gen"] = this.generate.rules[j];
-                    }
-                }
-            }
             //
             //  4b. Generate ambig key.
             //

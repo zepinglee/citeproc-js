@@ -196,18 +196,6 @@ CSL.Attributes["@context"] = function (state, arg) {
     this.tests.push(func);
 };
 
-CSL.Attributes["@trigger-fields"] = function (state, arg) {
-    var mylst = arg.split(/\s+/);
-    this.generate_trigger_fields = mylst;
-};
-
-CSL.Attributes["@type-map"] = function (state, arg) {
-    var mymap = arg.split(/\s+/);
-    this.generate_type_map = {};
-    this.generate_type_map.from = mymap[0];
-    this.generate_type_map.to = mymap[1];
-};
-
 CSL.Attributes["@leading-noise-words"] = function (state, arg) {
     this["leading-noise-words"] = arg;
 };

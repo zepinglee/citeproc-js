@@ -131,66 +131,12 @@ CSL.getBibliographyEntries = function (bibsection) {
     this.tmp.bibliography_errors = [];
     this.tmp.bibliography_pos = 0;
 
-    // cs:generate needs to be applied here, apparently.
-    // spoof IDs for inserts, and be sure to amend all_item_ids as well.
-    // First, make a note of the original list of IDs
-    
-    // registry.generate has:
-    //   bundles
-    //   rules
-    // rules are used in registry processing to identify items
-    // for which a bundle should be created. A bundle is a set
-    // of rules with an item ID. The actual item is fetched
-    // on demand during bundle processing when the bibliography
-    // is generated (i.e. here).
-
     // For paged returns: disable generated entries and
     // do not fetch full items as a batch (input variable
     // consists of ids only in this case)
     if (bibsection && bibsection.page_start && bibsection.page_length) {
         input = this.registry.getSortedIds();        
     } else {
-        originalIDs = this.registry.getSortedIds();
-        newIDs = [];
-        this.registry.generate.items = {};
-
-        // generate has two forks: origIDs and genIDs
-        for (var id  in this.registry.generate.origIDs) {
-            // get the bundle
-            var rule = this.registry.generate.origIDs[id];
-            // clone the attached item. clone is shallow, just the top-level keys.
-            item = this.retrieveItem(id);
-            var clonedItem = {};
-            for (var key in item) {
-                clonedItem[key] = item[key];
-            }
-            // remap the item type
-            clonedItem.type = rule.to;
-            // remove "required" field(s)
-            for (i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
-                if (clonedItem[rule.triggers[i]]) {
-                    delete clonedItem[rule.triggers[i]];
-                    if (rule.triggers[i] === "title-short") {
-                        delete clonedItem.shortTitle;
-                    }
-                    if (rule.triggers[i] === "container-title-short") {
-                        delete clonedItem.journalAbbreviation;
-                    }
-                }
-            }
-            // amend itemID (to the form set on genIDs fork)
-            var newID = clonedItem.id + ":gen";
-            clonedItem.id = newID;
-            // add to generated items, will be picked up by retrieve function
-            this.registry.generate.items[clonedItem.id] = clonedItem;
-            // add new ID to list
-            newIDs.push(newID);
-        }
-        if (newIDs.length) {
-            this.updateItems(originalIDs.concat(newIDs));
-        }
-
-        // retrieveItems will pick up the generated items
         input = this.retrieveItems(this.registry.getSortedIds());
     }
     
@@ -418,7 +364,6 @@ CSL.getBibliographyEntries = function (bibsection) {
         ret.push(res);
     }
 
-    // reset list if spoofed entries were included
     var done = false;
     if (bibsection && bibsection.page_start && bibsection.page_length) {
         var last_expected_id = input.slice(-1)[0];
@@ -426,12 +371,7 @@ CSL.getBibliographyEntries = function (bibsection) {
         if (!last_expected_id || !last_seen_id || last_expected_id == last_seen_id) {
             done = true;
         }
-    } else {
-        if (newIDs.length) {
-            this.updateItems(originalIDs);
-        }
     }
-
     this.tmp.disambig_override = false;
 
     // XXX done

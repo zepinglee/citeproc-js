@@ -21,7 +21,6 @@ dojo.require("std.etal");
 dojo.require("std.flipflop");
 dojo.require("std.form");
 dojo.require("std.fullstyles");
-dojo.require("std.generate");
 dojo.require("std.group");
 dojo.require("std.initials");
 dojo.require("std.institutions");
