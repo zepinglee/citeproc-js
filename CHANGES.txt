@@ -2,6 +2,20 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.420
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Eliminate the cs:generate node, as more trouble
+  than it will be worth.
+
+- Use title as implicit fallback for title-short on legal
+  types.
+
+==========================
 Changes in version 1.0.419
 ==========================
 

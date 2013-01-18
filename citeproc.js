@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.419",
+    PROCESSOR_VERSION: "1.0.420",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -2239,11 +2239,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         this.opt.development_extensions.normalize_lang_keys_to_lowercase = 100;
     }
     CSL.ITERATION += 1;
-    if (this.registry.generate.genIDs["" + id]) {
-        Item = this.registry.generate.items["" + id];
-    } else {
-        Item = this.sys.retrieveItem("" + id);
-    }
+    Item = this.sys.retrieveItem("" + id);
     if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
         if (Item.multi) {
             if (Item.multi._keys) {
@@ -2363,7 +2359,8 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         }
     }
     Item["title-short"] = Item.shortTitle;
-    if (Item.title && this.sys.getAbbreviation && ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) === -1) {
+    var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
+    if (Item.title && this.sys.getAbbreviation && !isLegalType) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title);
         if (this.transform.abbrevs[jurisdiction].title) {
             if (this.transform.abbrevs[jurisdiction].title[Item.title]) {
@@ -3234,36 +3231,6 @@ CSL.getBibliographyEntries = function (bibsection) {
     if (bibsection && bibsection.page_start && bibsection.page_length) {
         input = this.registry.getSortedIds();        
     } else {
-        originalIDs = this.registry.getSortedIds();
-        newIDs = [];
-        this.registry.generate.items = {};
-        for (var id  in this.registry.generate.origIDs) {
-            var rule = this.registry.generate.origIDs[id];
-            item = this.retrieveItem(id);
-            var clonedItem = {};
-            for (var key in item) {
-                clonedItem[key] = item[key];
-            }
-            clonedItem.type = rule.to;
-            for (i = 0, ilen = rule.triggers.length; i < ilen; i += 1) {
-                if (clonedItem[rule.triggers[i]]) {
-                    delete clonedItem[rule.triggers[i]];
-                    if (rule.triggers[i] === "title-short") {
-                        delete clonedItem.shortTitle;
-                    }
-                    if (rule.triggers[i] === "container-title-short") {
-                        delete clonedItem.journalAbbreviation;
-                    }
-                }
-            }
-            var newID = clonedItem.id + ":gen";
-            clonedItem.id = newID;
-            this.registry.generate.items[clonedItem.id] = clonedItem;
-            newIDs.push(newID);
-        }
-        if (newIDs.length) {
-            this.updateItems(originalIDs.concat(newIDs));
-        }
         input = this.retrieveItems(this.registry.getSortedIds());
     }
     this.tmp.disambig_override = true;
@@ -3447,10 +3414,6 @@ CSL.getBibliographyEntries = function (bibsection) {
         var last_seen_id = processed_item_ids.slice(-1)[0];
         if (!last_expected_id || !last_seen_id || last_expected_id == last_seen_id) {
             done = true;
-        }
-    } else {
-        if (newIDs.length) {
-            this.updateItems(originalIDs);
         }
     }
     this.tmp.disambig_override = false;
@@ -8401,16 +8364,6 @@ CSL.Attributes["@context"] = function (state, arg) {
     };
     this.tests.push(func);
 };
-CSL.Attributes["@trigger-fields"] = function (state, arg) {
-    var mylst = arg.split(/\s+/);
-    this.generate_trigger_fields = mylst;
-};
-CSL.Attributes["@type-map"] = function (state, arg) {
-    var mymap = arg.split(/\s+/);
-    this.generate_type_map = {};
-    this.generate_type_map.from = mymap[0];
-    this.generate_type_map.to = mymap[1];
-};
 CSL.Attributes["@leading-noise-words"] = function (state, arg) {
     this["leading-noise-words"] = arg;
 };
@@ -12027,10 +11980,6 @@ CSL.Registry = function (state) {
     this.namereg = new CSL.Registry.NameReg(state);
     this.citationreg = new CSL.Registry.CitationReg(state);
     this.authorstrings = {};
-    this.generate = {};
-    this.generate.origIDs = {};
-    this.generate.genIDs = {};
-    this.generate.rules = [];
     this.mylist = [];
     this.myhash = {};
     this.deletes = [];
@@ -12147,10 +12096,6 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
                 }
             }
             delete this.registry[key];
-            if (this.generate.origIDs[key]) {
-                delete this.generate.origIDs[key];
-                delete this.generate.genIDs[key + ":gen"];
-            }
             this.return_data.bibchange = true;
         }
     }
@@ -12164,21 +12109,6 @@ CSL.Registry.prototype.doinserts = function (mylist) {
         item = mylist[i];
         if (!this.registry[item]) {
             Item = this.state.retrieveItem(item);
-            for (j = 0, jlen = this.generate.rules.length; j < jlen; j += 1) {
-                if (Item.type === this.generate.rules[j].from) {
-                    var needsRule = true;
-                    for (k = 0, klen = this.generate.rules[j].triggers.length; k < klen; k += 1) {
-                        if (!Item[this.generate.rules[j].triggers[k]]) {
-                            needsRule = false;
-                            break;
-                        }
-                    }
-                    if (needsRule) {
-                        this.generate.origIDs[item] = this.generate.rules[j];
-                        this.generate.genIDs[item + ":gen"] = this.generate.rules[j];
-                    }
-                }
-            }
             akey = CSL.getAmbiguousCite.call(this.state, Item);
             this.ambigsTouched[akey] = true;
             if (!Item.legislation_id) {
@@ -12928,13 +12858,4 @@ CSL.Disambiguation.prototype.captureStepToBase = function() {
 CSL.Registry.CitationReg = function (state) {
     this.citationById = {};
     this.citationByIndex = [];
-};
-CSL.Node.generate = {
-    build: function (state, target) {
-        if (state.build.area === "bibliography") {
-            var obj = this.generate_type_map;
-            obj.triggers = this.generate_trigger_fields;
-            state.registry.generate.rules.push(obj);
-        }
-    }
 };
