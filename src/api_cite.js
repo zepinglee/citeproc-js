@@ -1244,23 +1244,23 @@ CSL.citeEnd = function (Item, item) {
 
     this.tmp.cite_locales.push(this.tmp.last_cite_locale);
 
-    if (this.tmp.original_date && this.tmp.renders_collection_number) {
+    if (this.tmp.issued_date && this.tmp.renders_collection_number) {
         var buf = [];
-        for (var i = this.tmp.original_date.list.length - 1; i > this.tmp.original_date.pos; i += -1) {
-            buf.push(this.tmp.original_date.list.pop());
+        for (var i = this.tmp.issued_date.list.length - 1; i > this.tmp.issued_date.pos; i += -1) {
+            buf.push(this.tmp.issued_date.list.pop());
         }
         // Throw away the unwanted blob
-        this.tmp.original_date.list.pop();
+        this.tmp.issued_date.list.pop();
         // Put the other stuff back
         for (i = buf.length - 1; i > -1; i += -1) {
-            this.tmp.original_date.list.push(buf.pop());
+            this.tmp.issued_date.list.push(buf.pop());
         }
         // Notice the deletion to parallels machinery
         if (this.parallel.use_parallels) {
-            this.parallel.cite["original-date"] = false;
+            this.parallel.cite["issued"] = false;
         }
     }
-    this.tmp.original_date = false;
+    this.tmp.issued_date = false;
     this.tmp.renders_collection_number = false;
     // Turn off nested parens conversion if appropriate.
     // We don't try to track nesting in a serious way. User beware.

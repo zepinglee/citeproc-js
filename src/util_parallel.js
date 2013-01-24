@@ -357,7 +357,7 @@ CSL.Parallel.prototype.CloseVariable = function () {
         this.cite[this.variable] = this.data;
         if (this.sets.value().length > 0) {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
-            if (this.target === "front" && this.variable === "original-date") {
+            if (this.target === "front" && this.variable === "issued") {
                 // REMAINING PROBLEM: this works for English-style cites, but not
                 // for the French. Only difference is date-parts (year versus year-month-day).
                 // See code at the bottom of CloseCite() for the other half of this workaround.
@@ -372,7 +372,7 @@ CSL.Parallel.prototype.CloseVariable = function () {
                     // evaluation takes place later, at close of cite.
                     //this.try_cite = true;
                     // Ignore differences in issued
-                    if ("original-date" !== this.variable) {
+                    if ("issued" !== this.variable) {
                         this.in_series = false;
                     }
                 }
@@ -462,7 +462,7 @@ CSL.Parallel.prototype.CloseCite = function () {
                 //for (var x in this.cite.issued) {
                 //    print("..."+x);
                 //}
-                if (x === "original-date" && this.cite["original-date"] && this.cite["original-date"].value) {
+                if (x === "issued" && this.cite["issued"] && this.cite["issued"].value) {
                     //print("HAS ISSUED");
                     has_date = true;
                     break;
@@ -470,7 +470,7 @@ CSL.Parallel.prototype.CloseCite = function () {
             }
             if (!has_date) {
                 //print("  setting issued in back_forceme variable culling list");
-                this.cite.back_forceme.push("original-date");
+                this.cite.back_forceme.push("issued");
             }
         } else {
             //print("  renewing");
@@ -479,14 +479,14 @@ CSL.Parallel.prototype.CloseCite = function () {
             // that jumps to "mid" on "issued" only if the preceding cite was a neutral
             // one.
             //print("front: "+this.cite.front+", mid: "+this.cite.mid+", back: "+this.cite.back+", id: "+this.cite.itemId);
-            var idx = this.cite.front.indexOf("original-date");
+            var idx = this.cite.front.indexOf("issued");
             if (idx === -1 || this.master_was_neutral_cite) {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
             }
             if (idx > -1) {
                 // If previous cite rendered the year, go ahead and collapse. Otherwise, don't.
                 var prev = this.sets.value()[this.sets.value().length - 1];
-                if (!prev["original-date"]) {
+                if (!prev["issued"]) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
             }

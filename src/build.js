@@ -698,7 +698,9 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         }
     }
     // Add getAbbreviation() call for title-short and container-title-short
-    Item["title-short"] = Item.shortTitle;
+    if (!Item["title-short"]) {
+        Item["title-short"] = Item.shortTitle;
+    }
     var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (isLegalType) {
         if (!Item["title-short"]) {

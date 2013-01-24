@@ -164,7 +164,7 @@ CSL.Node.date = {
             // newoutput
             func = function (state, Item) {
                 state.output.startTag("date", this);
-                if (this.variables[0] === "original-date"
+                if (this.variables[0] === "issued"
                     && Item.type === "legal_case"
                     && !state.tmp.extension
                     && "" + Item["collection-number"] === "" + state.tmp.date_object.year
@@ -182,10 +182,10 @@ CSL.Node.date = {
                         if (state.tmp.date_object.hasOwnProperty(key)) {
                             if (key.slice(0, 4) === "year") {
 
-                                state.tmp.original_date = {};
+                                state.tmp.issued_date = {};
                                 var lst = state.output.current.mystack.slice(-2)[0].blobs;
-                                state.tmp.original_date.list = lst;
-                                state.tmp.original_date.pos = lst.length - 1;
+                                state.tmp.issued_date.list = lst;
+                                state.tmp.issued_date.pos = lst.length - 1;
                             }
                         }
                     }
