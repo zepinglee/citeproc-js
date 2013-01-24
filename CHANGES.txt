@@ -2,6 +2,35 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.422
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize all-uppercase variable names in input
+  field hack.
+
+==========================
+Changes in version 1.0.421
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Recognize extended date variables.
+
+- Shift same-year suppression from original-date
+  back to issued.
+
+- Provide a gender attribute on cs:number to allow
+  gender to be set to an explicit value. Useful when
+  alternative labels are applied to a variable on a
+  particular type.
+
+==========================
 Changes in version 1.0.420
 ==========================
 

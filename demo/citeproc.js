@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.420",
+    PROCESSOR_VERSION: "1.0.422",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -217,8 +217,8 @@ var CSL = {
     ALL_ROMANESQUE_REGEXP: /^[a-zA-Z\u0590-\u05ff\u0080-\u017f\u0400-\u052f\u0386-\u03fb\u1f00-\u1ffe\u0600-\u06ff\u200c\u200d\u200e\u202a-\u202e]+$/,
     VIETNAMESE_SPECIALS: /[\u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]/,
     VIETNAMESE_NAMES: /^(?:(?:[.AaBbCcDdEeGgHhIiKkLlMmNnOoPpQqRrSsTtUuVvXxYy \u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]{2,6})(\s+|$))+$/,
-    NOTE_FIELDS_REGEXP: /\{:[\-_a-z]+:[^\}]+\}/g,
-    NOTE_FIELD_REGEXP: /\{:([\-_a-z]+):\s*([^\}]+)\}/,
+    NOTE_FIELDS_REGEXP: /\{:(?:[\-_a-z]+|[A-Z]+):[^\}]+\}/g,
+    NOTE_FIELD_REGEXP: /\{:([\-_a-z]+|[A-Z]+):\s*([^\}]+)\}/,
     DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
     NAME_VARIABLES: [
         "author",
@@ -246,7 +246,18 @@ var CSL = {
         "volume",
         "citation-number"
     ],
-    DATE_VARIABLES: ["locator-date", "issued", "event-date", "accessed", "container", "original-date"],
+    DATE_VARIABLES: [
+        "locator-date", 
+        "issued", 
+        "event-date", 
+        "accessed", 
+        "container", 
+        "original-date",
+        "publication-date",
+        "original-date",
+        "available-date",
+        "submitted"
+    ],
     TAG_ESCAPE: function (str) {
         var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
         mx = str.match(/(\"|\'|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
@@ -2358,9 +2369,15 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    Item["title-short"] = Item.shortTitle;
+    if (!Item["title-short"]) {
+        Item["title-short"] = Item.shortTitle;
+    }
     var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
-    if (Item.title && this.sys.getAbbreviation && !isLegalType) {
+    if (isLegalType) {
+        if (!Item["title-short"]) {
+            Item["title-short"] = Item.title;
+        }
+    } else if (Item.title && this.sys.getAbbreviation) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title);
         if (this.transform.abbrevs[jurisdiction].title) {
             if (this.transform.abbrevs[jurisdiction].title[Item.title]) {
@@ -4254,20 +4271,20 @@ CSL.citeEnd = function (Item, item) {
     this.tmp.cut_var = false;
     this.tmp.disambig_request = false;
     this.tmp.cite_locales.push(this.tmp.last_cite_locale);
-    if (this.tmp.original_date && this.tmp.renders_collection_number) {
+    if (this.tmp.issued_date && this.tmp.renders_collection_number) {
         var buf = [];
-        for (var i = this.tmp.original_date.list.length - 1; i > this.tmp.original_date.pos; i += -1) {
-            buf.push(this.tmp.original_date.list.pop());
+        for (var i = this.tmp.issued_date.list.length - 1; i > this.tmp.issued_date.pos; i += -1) {
+            buf.push(this.tmp.issued_date.list.pop());
         }
-        this.tmp.original_date.list.pop();
+        this.tmp.issued_date.list.pop();
         for (i = buf.length - 1; i > -1; i += -1) {
-            this.tmp.original_date.list.push(buf.pop());
+            this.tmp.issued_date.list.push(buf.pop());
         }
         if (this.parallel.use_parallels) {
-            this.parallel.cite["original-date"] = false;
+            this.parallel.cite["issued"] = false;
         }
     }
-    this.tmp.original_date = false;
+    this.tmp.issued_date = false;
     this.tmp.renders_collection_number = false;
     if (this.opt.development_extensions.flip_parentheses_to_braces && item && item.suffix) {
         var openBrace = CSL.checkNestedBraceOpen.exec(item.suffix);
@@ -4671,7 +4688,7 @@ CSL.Node.date = {
             this.execs.push(func);
             func = function (state, Item) {
                 state.output.startTag("date", this);
-                if (this.variables[0] === "original-date"
+                if (this.variables[0] === "issued"
                     && Item.type === "legal_case"
                     && !state.tmp.extension
                     && "" + Item["collection-number"] === "" + state.tmp.date_object.year
@@ -4680,10 +4697,10 @@ CSL.Node.date = {
                     for (var key in state.tmp.date_object) {
                         if (state.tmp.date_object.hasOwnProperty(key)) {
                             if (key.slice(0, 4) === "year") {
-                                state.tmp.original_date = {};
+                                state.tmp.issued_date = {};
                                 var lst = state.output.current.mystack.slice(-2)[0].blobs;
-                                state.tmp.original_date.list = lst;
-                                state.tmp.original_date.pos = lst.length - 1;
+                                state.tmp.issued_date.list = lst;
+                                state.tmp.issued_date.pos = lst.length - 1;
                             }
                         }
                     }
@@ -7891,7 +7908,9 @@ CSL.Node.number = {
                             if (i < values.length - 1) {
                                 blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
                             }
-                            blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
+                            if ("undefined" === typeof blob.gender) {
+                                blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
+                            }
                             state.output.append(blob, "literal", false, false, true);
                         }
                         state.output.closeLevel("empty");
@@ -8238,6 +8257,9 @@ CSL.Node.text = {
     }
 };
 CSL.Attributes = {};
+CSL.Attributes["@gender"] = function (state, arg) {
+    this.gender = arg;
+}
 CSL.Attributes["@cslid"] = function (state, arg) {
     this.cslid = parseInt(arg, 10);
 };
@@ -9833,14 +9855,14 @@ CSL.Parallel.prototype.CloseVariable = function () {
         this.cite[this.variable] = this.data;
         if (this.sets.value().length > 0) {
             var prev = this.sets.value()[(this.sets.value().length - 1)];
-            if (this.target === "front" && this.variable === "original-date") {
+            if (this.target === "front" && this.variable === "issued") {
                 if (this.data.value && this.master_was_neutral_cite) {
                     this.target = "mid";
                 }
             }
             if (this.target === "front") {
                 if ((prev[this.variable] || this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
-                    if ("original-date" !== this.variable) {
+                    if ("issued" !== this.variable) {
                         this.in_series = false;
                     }
                 }
@@ -9910,22 +9932,22 @@ CSL.Parallel.prototype.CloseCite = function () {
             has_date = false;
             for (pos = 0, len = this.cite.back.length; pos < len; pos += 1) {
                 x = this.cite.back[pos];
-                if (x === "original-date" && this.cite["original-date"] && this.cite["original-date"].value) {
+                if (x === "issued" && this.cite["issued"] && this.cite["issued"].value) {
                     has_date = true;
                     break;
                 }
             }
             if (!has_date) {
-                this.cite.back_forceme.push("original-date");
+                this.cite.back_forceme.push("issued");
             }
         } else {
-            var idx = this.cite.front.indexOf("original-date");
+            var idx = this.cite.front.indexOf("issued");
             if (idx === -1 || this.master_was_neutral_cite) {
                 this.cite.back_forceme = this.sets.value().slice(-1)[0].back_forceme;
             }
             if (idx > -1) {
                 var prev = this.sets.value()[this.sets.value().length - 1];
-                if (!prev["original-date"]) {
+                if (!prev["issued"]) {
                     this.cite.front = this.cite.front.slice(0, idx).concat(this.cite.front.slice(idx + 1));
                 }
             }
@@ -11048,8 +11070,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                     }
                     if (elements[i].match(/^[1-9][0-9]*$/)) {
                         elements[i] = parseInt(elements[i], 10);
-                        if (node) {
+                        if (node && "undefined" === typeof node.gender) {
                             node.gender = this.locale[this.opt.lang]["noun-genders"][variable];
+                            if (!node.gender) {
+                                node.gender = "";
+                            }
                         }
                         this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
                     } else {
