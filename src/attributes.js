@@ -50,6 +50,10 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@gender"] = function (state, arg) {
+    this.gender = arg;
+}
+
 CSL.Attributes["@cslid"] = function (state, arg) {
     // @cslid is a noop
     // The value set on this attribute is used to

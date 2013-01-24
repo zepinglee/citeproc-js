@@ -255,7 +255,9 @@ CSL.Node.number = {
                             if (i < values.length - 1) {
                                 blob.strings.suffix = blob.strings.suffix.replace(/\s*$/, "");
                             }
-                            blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
+                            if ("undefined" === typeof blob.gender) {
+                                blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
+                            }
                             state.output.append(blob, "literal", false, false, true);
                         }
                         state.output.closeLevel("empty");

@@ -401,8 +401,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                     }
                     if (elements[i].match(/^[1-9][0-9]*$/)) {
                         elements[i] = parseInt(elements[i], 10);
-                        if (node) {
+                        if (node && "undefined" === typeof node.gender) {
                             node.gender = this.locale[this.opt.lang]["noun-genders"][variable];
+                            if (!node.gender) {
+                                node.gender = "";
+                            }
                         }
                         this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
                     } else {
