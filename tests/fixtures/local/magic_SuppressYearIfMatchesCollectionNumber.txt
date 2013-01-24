@@ -119,7 +119,7 @@ British Columbia Elec. Ry. v. Loach, [1916] 1 App. Cas. 719 (P.C. 1915).
           <text variable="page"/>
           <group prefix="(" suffix=")" delimiter=" ">
             <text variable="authority"/>
-            <date variable="original-date" date-parts="year" form="text"/>
+            <date variable="issued" date-parts="year" form="text"/>
           </group>
         </group>
       </group>
@@ -136,7 +136,7 @@ British Columbia Elec. Ry. v. Loach, [1916] 1 App. Cas. 719 (P.C. 1915).
         "container-title": "App. Cas.", 
         "id": "ITEM-3", 
         "issue": 1, 
-        "original-date": {
+        "issued": {
             "date-parts": [
                 [
                     "1915"
@@ -152,7 +152,7 @@ British Columbia Elec. Ry. v. Loach, [1916] 1 App. Cas. 719 (P.C. 1915).
         "authority": "Eng. C.A.", 
         "container-title": "P.", 
         "id": "ITEM-2", 
-        "original-date": {
+        "issued": {
             "date-parts": [
                 [
                     "1930",
@@ -170,7 +170,7 @@ British Columbia Elec. Ry. v. Loach, [1916] 1 App. Cas. 719 (P.C. 1915).
         "authority": "K.B.", 
         "container-title": "Eng. Rep.", 
         "id": "ITEM-1", 
-        "original-date": {
+        "issued": {
             "date-parts": [
                 [
                     "1782"
