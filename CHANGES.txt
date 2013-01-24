@@ -12,9 +12,9 @@ Mishandled or unimplemented features
 - Recognize all-uppercase variable names in input
   field hack.
 
-==========================
-Changes in version 1.0.421
-==========================
+========================================================
+Changes in version 1.0.421 [API CHANGE] (parallels only)
+========================================================
 
 ------------------------------------
 Mishandled or unimplemented features
