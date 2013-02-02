@@ -2,6 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.423
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix a bug affecting date sort keys consisting of less
+  than a full date generated via macro.
+
+==========================
 Changes in version 1.0.422
 ==========================
 

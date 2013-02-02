@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.422",
+    PROCESSOR_VERSION: "1.0.423",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -7481,7 +7481,11 @@ CSL.dateAsSortKey = function (state, Item, isMacro) {
             }
             state.output.append(CSL.Util.Dates[elem.slice(0, 4)].numeric(state, (prefix + yr)), macroFlag);
         } else {
-            state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state, value), macroFlag);
+            value = CSL.Util.Dates[e]["numeric-leading-zeros"](state, value);
+            if (!value) {
+                value = "00";
+            }
+            state.output.append(value, macroFlag);
         }
     }
 };
