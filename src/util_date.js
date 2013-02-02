@@ -98,7 +98,12 @@ CSL.dateAsSortKey = function (state, Item, isMacro) {
             }
             state.output.append(CSL.Util.Dates[elem.slice(0, 4)].numeric(state, (prefix + yr)), macroFlag);
         } else {
-            state.output.append(CSL.Util.Dates[e]["numeric-leading-zeros"](state, value), macroFlag);
+            value = CSL.Util.Dates[e]["numeric-leading-zeros"](state, value);
+            // Ugh.
+            if (!value) {
+                value = "00";
+            }
+            state.output.append(value, macroFlag);
         }
     }
 };
