@@ -49,6 +49,9 @@
 /*global CSL: true */
 
 CSL.getSortCompare = function () {
+    if (CSL.stringCompare) {
+        return CSL.stringCompare;
+    }
     var strcmp;
     var sortCompare;
     try {

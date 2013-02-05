@@ -60,6 +60,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if (CSL.getAbbreviation) {
         this.sys.getAbbreviation = CSL.getAbbreviation;
     }
+    if (this.sys.stringCompare) {
+        CSL.stringCompare = this.sys.stringCompare;
+    }
     this.sys.AbbreviationSegments = CSL.AbbreviationSegments;
     this.parallel = new CSL.Parallel(this);
     //this.parallel.use_parallels = true;
