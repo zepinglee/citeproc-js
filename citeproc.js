@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.423",
+    PROCESSOR_VERSION: "1.0.424",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
@@ -533,6 +533,9 @@ if ("object" === typeof console && "function" === typeof console.log) {
     };
 }
 CSL.getSortCompare = function () {
+    if (CSL.stringCompare) {
+        return CSL.stringCompare;
+    }
     var strcmp;
     var sortCompare;
     try {
@@ -1908,6 +1911,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     }
     if (CSL.getAbbreviation) {
         this.sys.getAbbreviation = CSL.getAbbreviation;
+    }
+    if (this.sys.stringCompare) {
+        CSL.stringCompare = this.sys.stringCompare;
     }
     this.sys.AbbreviationSegments = CSL.AbbreviationSegments;
     this.parallel = new CSL.Parallel(this);

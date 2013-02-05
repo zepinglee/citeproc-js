@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.424
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Optionally a custom introduce stringCompare
+  function through sys. Thanks to Carles Pina
+  for the patch.
+
+==========================
 Changes in version 1.0.423
 ==========================
 
