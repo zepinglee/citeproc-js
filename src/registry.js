@@ -605,7 +605,7 @@ CSL.Registry.Comparifier = function (state, keyset) {
     var sortCompare = CSL.getSortCompare();
     sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function (a, b) {
-        len = a.sortkeys.length;
+        len = a.sortkeys ? a.sortkeys.length : 0;
         for (pos = 0; pos < len; pos += 1) {
             //
             // for ascending sort 1 uses 1, -1 uses -1.
