@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.425",
+    PROCESSOR_VERSION: "1.0.426",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
@@ -12281,7 +12281,7 @@ CSL.Registry.Comparifier = function (state, keyset) {
     var sortCompare = CSL.getSortCompare();
     sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function (a, b) {
-        len = a.sortkeys.length;
+        len = a.sortkeys ? a.sortkeys.length : 0;
         for (pos = 0; pos < len; pos += 1) {
             var cmp = 0;
             if (a.sortkeys[pos] === b.sortkeys[pos]) {
