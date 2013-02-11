@@ -308,7 +308,20 @@ StdRhinoTest.prototype.run = function(){
 // this method.)
 //
 StdRhinoTest.prototype.retrieveLocale = function(lang){
-    var ret = readFile( "./locale/locales-"+lang+".xml", "UTF-8");
-    // ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+    if ("undefined" === typeof CSL_JSON) {
+        try {
+            var ret = readFile("./locale/locales-"+lang+".xml", "UTF-8");
+            ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+        } catch (e) {
+            ret = false;
+        }
+    } else {
+        try {
+            var s = readFile("./locale/locales-"+lang+".json");
+            ret = JSON.parse(s);
+        } catch (e) {
+            ret = false;
+        }
+    }
     return ret;
 };

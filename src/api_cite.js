@@ -725,7 +725,6 @@ CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citationID
     var str;
     this.parallel.StartCitation(sortedItems);
     str = CSL.getCitationCluster.call(this, sortedItems, citationID);
-
     return str;
 };
 
@@ -1007,7 +1006,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
     ];
     //print("=== FROM CITE ===");
     var use_layout_suffix = suffix;
-    
     for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
         CSL.Output.Queue.purgeEmptyBlobs(this.output.queue, true);
     }

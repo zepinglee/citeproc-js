@@ -53,7 +53,7 @@ CSL.Node.names = {
         var func, len, pos, attrname;
         var debug = false;
         // CSL.debug = print;
-        
+
         if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
             CSL.Util.substituteStart.call(this, state, target);
             state.build.substitute_level.push(1);
@@ -72,7 +72,6 @@ CSL.Node.names = {
             };
             this.execs.push(func);
         }
-
 
         if (this.tokentype === CSL.START) {
 

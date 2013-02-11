@@ -54,7 +54,8 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.csl_version = "1.0";
     this.sys = sys;
     this.sys.xml = new CSL.System.Xml.Parsing();
-    if ("string" !== typeof style) {
+    // XXXX This should be restored -- temporarily suspended for testing of JSON style support.
+    if ("undefined" === typeof CSL_JSON && "string" !== typeof style) {
         style = "";
     }
     if (CSL.getAbbreviation) {
@@ -77,6 +78,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.tmp = new CSL.Engine.Tmp();
     this.build = new CSL.Engine.Build();
     this.fun = new CSL.Engine.Fun(this);
+
     this.configure = new CSL.Engine.Configure();
     // Build citation before citation_sort in order to pick up
     // state.opt.update_mode, needed it determine whether
@@ -96,6 +98,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.dateput = new CSL.Output.Queue(this);
 
     this.cslXml = this.sys.xml.makeXml(style);
+
     if (this.opt.development_extensions.csl_reverse_lookup_support) {
         this.build.cslNodeId = 0;
         this.setCslNodeIds = function(myxml, nodename) {
@@ -126,10 +129,12 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     // in the compile phase, in the flattened version of the style,
     // which should be simpler anyway.
     //
+
     attrs = this.sys.xml.attributes(this.cslXml);
     if ("undefined" === typeof attrs["@sort-separator"]) {
         this.sys.xml.setAttribute(this.cslXml, "sort-separator", ", ");
     }
+
     //if ("undefined" === typeof attrs["@name-delimiter"]) {
     //    this.sys.xml.setAttribute(this.cslXml, "name-delimiter", ", ");
     //}
@@ -221,6 +226,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.buildTokenLists("citation");
 
     this.buildTokenLists("bibliography");
+
     this.configureTokenLists();
 
     this.disambiguate = new CSL.Disambiguation(this);
@@ -350,8 +356,12 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
     sneakpeek = this.sys.xml.children(currnode);
     //var sneakpeek = currnode.children();
     if (this.sys.xml.numberofnodes(sneakpeek) === 0) {
-        // singleton, process immediately
-        CSL.XmlToToken.call(currnode, this.state, CSL.SINGLETON);
+        // singleton, process immediately IF we are at depth ... maybe?
+        // No idea why, but the JSON style input objects insist on throwing date-part
+        // output at level zero.
+        if (this.depth) {
+            CSL.XmlToToken.call(currnode, this.state, CSL.SINGLETON);
+        }
         return false;
     } else {
         // if there are children, check for date nodes and

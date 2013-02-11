@@ -726,6 +726,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
 
 CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
     var res, i, ilen, j, jlen, tmpblobs;
+    //print("XXX myblobs type = "+typeof myblobs);
     if ("string" === typeof myblobs || !myblobs.length) {
         return;
     }

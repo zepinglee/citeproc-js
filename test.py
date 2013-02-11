@@ -8,6 +8,7 @@ from cStringIO import StringIO
 from cPickle import Pickler, Unpickler
 import subprocess as sub 
 import string
+from MAKE_STYLE import jsonwalker
 
 reload(sys)
 sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
@@ -368,6 +369,9 @@ doh.register("%s.%s", [
             
             engine = cp.get("tracemonkey","command")
             nick = "tracemonkey"
+        elif self.opt.rhino_json:
+            engine = cp.get("rhino","command")
+            nick = "rhino-json"
         else:
             engine = cp.get("rhino","command")
             nick = "rhino"
@@ -433,7 +437,7 @@ doh.register("%s.%s", [
 command: /home/bennett/src/jslibs/Linux_32_opt/jshost -u
 
 [rhino]
-command: java -client -jar ./rhino/js-1.7R2.jar -opt 8
+command: java -client -jar ./rhino/js-1.7R3.jar -opt 8
 '''
             ofh = open(os.path.join(path("config"), "test.cnf"), "w+b" )
             ofh.write(test_template)
@@ -497,6 +501,12 @@ class CslTest:
                 else:
                     stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
                 self.data['csl'] = fixEndings(open(stylepath, "rb").read())
+            if element == "CSL" and self.opt.rhino_json:
+                w = jsonwalker()
+                doc = w.makedoc(self.data['csl'])
+                self.data['csl'] = w.walktojson(doc)
+                #print self.data['csl']
+
         self.extract("RESULT",required=True,is_json=False,rstrip=True)
         self.extract("INPUT",required=True,is_json=True)
         self.extract("CITATION-ITEMS",required=False,is_json=True)
@@ -666,6 +676,10 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Use the tracemonkey JS engine, rather than the Rhino default.')
+    parser.add_option("-J", "--rhino-json", dest="rhino_json",
+                      default=False,
+                      action="store_true", 
+                      help='Use the rhino JS engine with JSON input.')
     parser.add_option("-c", "--cranky", dest="cranky",
                       default=False,
                       action="store_true", 
@@ -703,6 +717,11 @@ if __name__ == "__main__":
                       action="store_true", 
                       help='Create a citeproce4x.js bundle with embedded e4x support suitable for use in Zotero, and exit.')
     (opt, args) = parser.parse_args()
+
+    if opt.tracemonkey and opt.rhino_json:
+        print parser.print_help()
+        print "\nError: The -T and -J options cannot be used together."
+        sys.exit()
 
     if opt.makebundle and opt.makezoterobundle:
         print parser.print_help()

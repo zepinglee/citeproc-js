@@ -659,12 +659,12 @@ if (!CSL.System) {
 if (!CSL.getSortCompare) {
     load("./src/sort.js");
 }
-if (!CSL.System.Xml.E4X) {
-    load("./src/xmle4x.js");
-}
-if (!CSL.System.Xml.DOM) {
-    load("./src/xmldom.js");
-}
+//if (!CSL.System.Xml.E4X) {
+//    load("./src/xmle4x.js");
+//}
+//if (!CSL.System.Xml.DOM) {
+//    load("./src/xmldom.js");
+//}
 // jslint OK
 if (!CSL.cloneAmbigConfig) {
     load("./src/util_disambig.js");

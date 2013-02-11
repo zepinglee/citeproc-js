@@ -56,8 +56,8 @@ citation
 1st (1)
 2nd (2)
 10th (10)
-10th–20th (10 - 20)
-11th (11)
+11th–20th (11 - 20)
+12th (12)
 <<===== RESULT =====<<
 
 
@@ -89,12 +89,12 @@ citation
     {
         "id": "ITEM-1", 
         "type": "book",
-        "volume": "11"
+        "volume": "12"
     },
     {
         "id": "ITEM-2", 
         "type": "book",
-        "volume": "10 - 20"
+        "volume": "11 - 20"
     },
     {
         "id": "ITEM-3", 

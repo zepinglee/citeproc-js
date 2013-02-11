@@ -176,7 +176,7 @@ CSL.expandMacro = function (macro_key_token) {
 CSL.XmlToToken = function (state, tokentype) {
     var name, txt, attrfuncs, attributes, decorations, token, key, target;
     name = state.sys.xml.nodename(this);
-    // CSL.debug(tokentype + " : " + name);
+    //CSL.debug(tokentype + " : " + name);
     if (state.build.skip && state.build.skip !== name) {
         return;
     }
