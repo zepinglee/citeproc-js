@@ -2,6 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.427
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Introducing JSON style and locale loading. Code is
+  contained in xmljson.js
+
+==========================
 Changes in version 1.0.426
 ==========================
 
