@@ -54,6 +54,9 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
     var params = this.getTrigraphParams();
     var config = params[0];
     var myname = this.getTerm("reference", "short", 0);
+    if ("undefined" === typeof myname) {
+        myname = "reference";
+    }
     myname = myname.replace(".", "");
     myname = myname.slice(0, 1).toUpperCase() + myname.slice(1);
     for (var i = 0, ilen = CSL.CREATORS.length; i < ilen; i += 1) {
@@ -118,7 +121,7 @@ CSL.Engine.prototype.getTrigraphParams = function () {
         var str = ilst[i];
         var config = {authors:[], year:0};
         for (var j = 0, jlen = str.length; j < jlen; j += 1) {
-            switch (str[j]) {
+            switch (str.slice(j,j+1)) {
             case "A":
                 config.authors.push(1);
                 break;
