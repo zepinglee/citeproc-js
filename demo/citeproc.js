@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.426",
+    PROCESSOR_VERSION: "1.0.428",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
@@ -2095,7 +2095,9 @@ CSL.Engine.prototype.getNavi.prototype.getkids = function () {
     currnode = this.nodeList[this.depth][1][this.nodeList[this.depth][0]];
     sneakpeek = this.sys.xml.children(currnode);
     if (this.sys.xml.numberofnodes(sneakpeek) === 0) {
-        CSL.XmlToToken.call(currnode, this.state, CSL.SINGLETON);
+        if (this.depth) {
+            CSL.XmlToToken.call(currnode, this.state, CSL.SINGLETON);
+        }
         return false;
     } else {
         for (pos in sneakpeek) {
@@ -3201,7 +3203,7 @@ CSL.Engine.prototype.getTrigraphParams = function () {
         var str = ilst[i];
         var config = {authors:[], year:0};
         for (var j = 0, jlen = str.length; j < jlen; j += 1) {
-            switch (str[j]) {
+            switch (str.slice(j,j+1)) {
             case "A":
                 config.authors.push(1);
                 break;
