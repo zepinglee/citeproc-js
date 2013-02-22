@@ -47,9 +47,6 @@
  */
 
 CSL.Engine.prototype.remapSectionVariable = function (inputList) {
-    if (!this.opt.development_extensions.static_statute_locator) {
-        return;
-    }
     for (var i = 0, ilen = inputList.length; i < ilen; i += 1) {
         var Item = inputList[i][0];
         var item = inputList[i][1];
