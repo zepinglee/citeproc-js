@@ -64,8 +64,6 @@ citation
     "static_statute_locator": false,
     "csl_reverse_lookup_support": false,
     "clobber_locator_if_no_statute_section": false
-
-
 }
 <<===== OPTIONS ===== <<
 
@@ -145,7 +143,6 @@ citation
 	{
 		"id": "ITEM-1",
 		"type": "legislation",
-		"key": "CW7UNBXK",
 		"title": "Some Statute Name",
 		"note": "{:jurisdiction:kh}",
 		"issued": {
