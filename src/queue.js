@@ -641,9 +641,13 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
     ret_last_char = [];
     use_delim = "";
     len = blobs.length;
+    var start = true;
     for (pos = 0; pos < len; pos += 1) {
         if (blobs[pos].checkNext) {
-            blobs[pos].checkNext(blobs[(pos + 1)]);
+            blobs[pos].checkNext(blobs[(pos + 1)],start);
+            start = false;
+        } else {
+            start = true;
         }
     }
     // Fix last non-range join

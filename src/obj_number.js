@@ -109,9 +109,16 @@ CSL.Output.DefaultFormatter.prototype.format = function (num) {
     return num.toString();
 };
 
-CSL.NumericBlob.prototype.checkNext = function (next) {
-    if (next && this.id == next.id) {
+CSL.NumericBlob.prototype.checkNext = function (next,start) {
+    if (start) {
         this.status = CSL.START;
+        if ("object" === typeof next) {
+            if (next.num === (this.num + 1)) {
+                next.status = CSL.SUCCESSOR;
+            } else {
+                next.status = CSL.SEEN;
+            }
+        }
     } else if (! next || !next.num || this.type !== next.type || next.num !== (this.num + 1)) {
         if (this.status === CSL.SUCCESSOR_OF_SUCCESSOR) {
             this.status = CSL.END;
@@ -134,7 +141,6 @@ CSL.NumericBlob.prototype.checkNext = function (next) {
         //if (this.status === CSL.SEEN) {
         //    this.status = CSL.SUCCESSOR;
         //}
-
     }
 };
 
