@@ -2,6 +2,20 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.430
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix numerous small issues around static section
+  locators. Disabling the option (the default) should
+  entirely disable the behaviour. Was not the case, now
+  fixed. Internal mappings for book, folio, sub verbo,
+  and issue labels were broken, also now fixed.
+
+==========================
 Changes in version 1.0.429
 ==========================
 
