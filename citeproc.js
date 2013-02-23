@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.430",
+    PROCESSOR_VERSION: "1.0.431",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
@@ -998,9 +998,13 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
     ret_last_char = [];
     use_delim = "";
     len = blobs.length;
+    var start = true;
     for (pos = 0; pos < len; pos += 1) {
         if (blobs[pos].checkNext) {
-            blobs[pos].checkNext(blobs[(pos + 1)]);
+            blobs[pos].checkNext(blobs[(pos + 1)],start);
+            start = false;
+        } else {
+            start = true;
         }
     }
     var doit = true;
@@ -10271,9 +10275,16 @@ CSL.Output.DefaultFormatter = function () {};
 CSL.Output.DefaultFormatter.prototype.format = function (num) {
     return num.toString();
 };
-CSL.NumericBlob.prototype.checkNext = function (next) {
-    if (next && this.id == next.id) {
+CSL.NumericBlob.prototype.checkNext = function (next,start) {
+    if (start) {
         this.status = CSL.START;
+        if ("object" === typeof next) {
+            if (next.num === (this.num + 1)) {
+                next.status = CSL.SUCCESSOR;
+            } else {
+                next.status = CSL.SEEN;
+            }
+        }
     } else if (! next || !next.num || this.type !== next.type || next.num !== (this.num + 1)) {
         if (this.status === CSL.SUCCESSOR_OF_SUCCESSOR) {
             this.status = CSL.END;
