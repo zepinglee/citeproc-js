@@ -2464,7 +2464,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             }
             var loci = ["section","","",""];
             var split;
-            if (Item.section) {
+            if (this.opt.development_extensions.static_statute_locator && Item.section) {
                 splt = Item.section.replace(/^\s+/,"").replace(/\s+$/, "").split(/\s+/);
                 if (CSL.STATUTE_SUBDIV_STRINGS[splt[0]]) {
                     loci[0] = " " + splt[0] + " ";
