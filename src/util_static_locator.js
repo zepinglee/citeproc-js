@@ -62,7 +62,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             }
             var loci = ["section","","",""];
             var split;
-            if (Item.section) {
+            if (this.opt.development_extensions.static_statute_locator && Item.section) {
                 // If section starts with a term, set that in sec_label, otherwise set "section" there
                 // Set remainder of section value in sec_label
                 splt = Item.section.replace(/^\s+/,"").replace(/\s+$/, "").split(/\s+/);
