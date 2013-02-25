@@ -766,8 +766,11 @@ CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
         return;
     }
     if ("object" === typeof myblob) {
-        if ((CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1 && 
-             CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1)) {
+        // The third condition below until I come up with something less bad
+        // Addresses http://forums.zotero.org/discussion/28021/the-magically-vanished-delimiter/
+        if ((CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1
+             && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1)
+            && !(myblob.strings.prefix.slice(0,1) === ";" && chr === ".")) {
             myblob.strings.prefix = myblob.strings.prefix.slice(1);
         } else if ("object" === typeof myblob.blobs) {
             CSL.Output.Queue.purgeNearsidePrefixChars(myblob.blobs[0], chr);
