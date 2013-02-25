@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.432
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Avoid suppressing a semicolon following a period
+  in names. Addresses a fault report from Zotero
+  user Mira Bulo.
+
+==========================
 Changes in version 1.0.431
 ==========================
 
