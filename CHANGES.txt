@@ -2,6 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.433
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix erroneous parallel treatment of Japanese case
+  cites in MLZ AmLaw/CMSFull.
+
+==========================
 Changes in version 1.0.432
 ==========================
 
