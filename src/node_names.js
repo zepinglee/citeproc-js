@@ -87,7 +87,7 @@ CSL.Node.names = {
             // init names
             func = function (state, Item, item) {
                 state.tmp.can_substitute.push(true);
-                state.parallel.StartVariable("names");
+                state.parallel.StartVariable("names",this.variables[0]);
                 state.nameOutput.init(this);
             };
             this.execs.push(func);

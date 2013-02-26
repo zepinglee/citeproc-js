@@ -240,7 +240,7 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
  * Initializes scratch object and variable name string
  * for tracking a single variable.
  */
-CSL.Parallel.prototype.StartVariable = function (variable) {
+CSL.Parallel.prototype.StartVariable = function (variable, real_variable) {
     if (this.use_parallels && (this.try_cite || this.force_collapse)) {
         if (variable === "names") {
             this.variable = variable + ":" + this.target;
@@ -258,7 +258,10 @@ CSL.Parallel.prototype.StartVariable = function (variable) {
         this.data.blobs = [];
         var is_mid = this.isMid(variable);
         //if (this.target === "front" && is_mid && this.cite.front.length && (this.cite.front.length > 1 || this.cite.front.indexOf("names") === -1)) {
-        if (this.target === "front" && is_mid) {
+        if (real_variable === "authority" && this.variable === "names:front") {
+            this.try_cite = true;
+            this.in_series = false;
+        } else if (this.target === "front" && is_mid) {
             //print("  front-to-mid: "+variable);
             this.target = "mid";
         } else if (this.target === "mid" && !is_mid && this.cite.Item.title && variable !== "names") {
