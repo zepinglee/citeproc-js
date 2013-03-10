@@ -249,6 +249,10 @@ CSL.DateParser = function () {
         //
         // Normalize the format and the year if it's a Japanese date
         //
+	if (txt) {
+        txt = "" + txt;
+        // Remove things that look like times
+        txt = txt.replace(/\s*[0-9]{2}:[0-9]{2}(?::[0-9]+)/,"");
         m = txt.match(jmd);
         if (m) {
             txt = txt.replace(/\s+/, "", "g");
@@ -296,6 +300,7 @@ CSL.DateParser = function () {
             slash = txt.indexOf("/");
             dash = txt.indexOf("-");
         }
+	}
         // drop punctuation from a.d., b.c.
         txt = txt.replace(/([A-Za-z])\./g, "$1");
 
