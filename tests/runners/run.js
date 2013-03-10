@@ -25,6 +25,7 @@ dojo.require("std.group");
 dojo.require("std.initials");
 dojo.require("std.institutions");
 dojo.require("std.integration");
+dojo.require("std.itemtypes");
 dojo.require("std.label");
 dojo.require("std.language");
 dojo.require("std.layout");

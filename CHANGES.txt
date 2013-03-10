@@ -2,6 +2,28 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.435
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Apply subsequent-author-substitute without regard
+  to name labels.
+
+==========================
+Changes in version 1.0.434
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug in date parser that mistook a portion of a
+  time as a date element.
+
+==========================
 Changes in version 1.0.433
 ==========================
 
