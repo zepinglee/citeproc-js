@@ -461,7 +461,17 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 //print("  setting [2] to true based on: " + arg);
                 flag[2] = true;
                 state.tmp.group_context.replace(flag);
+
+                // For util_substitute.js, subsequent-author-substitute
+                if (state.tmp.can_substitute.value() 
+                    && state.tmp.area === "bibliography"
+                    && "string" === typeof Item[variable]) {
+
+                    state.tmp.rendered_name.push(Item[variable]);
+                }
+
                 state.tmp.can_substitute.replace(false,  CSL.LITERAL);
+
             } else {
                 //print("  setting [1] to true based on: " + arg);
                 flag[1] = true;

@@ -219,12 +219,15 @@ CSL.Util.substituteEnd = function (state, target) {
             //var text_esc = CSL.getSafeEscape(state);
             var printing = !state.tmp.suppress_decorations;
             if (printing && state.tmp.area === "bibliography") {
-                if (!state.tmp.rendered_name) {
+                if (state.tmp.rendered_name) {
                     if ("partial-each" === subrule || "partial-first" === subrule) {
-                        state.tmp.rendered_name = [];
                         var dosub = true;
+                        var rendered_name = [];
+                        // This is a wee bit risky, as we're assuming that the name
+                        // children and the list of stringified names are congruent.
+                        // That *should* always be true, but you never know.
                         for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
-                            var name = state.output.string(state, state.tmp.name_node.children[i].blobs, false);
+                            var name = state.tmp.rendered_name[i];
                             if (dosub
                                 && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > i - 1
                                 && state.tmp.last_rendered_name[i] === name) {
@@ -237,30 +240,33 @@ CSL.Util.substituteEnd = function (state, target) {
                             } else {
                                 dosub = false;
                             }
-                            state.tmp.rendered_name.push(name);
+                            rendered_name.push(name);
                         }
                         // might want to slice this?
-                        state.tmp.last_rendered_name = state.tmp.rendered_name;
+                        state.tmp.last_rendered_name = rendered_name;
                     } else if ("complete-each" === subrule) {
-                        state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
-                        if (state.tmp.rendered_name) {
-                            if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
+                        var rendered_name = state.tmp.rendered_name.join(",");
+                        if (rendered_name) {
+                            if (rendered_name === state.tmp.last_rendered_name) {
                                 for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
                                     str = new CSL.Blob(state[state.tmp.area].opt["subsequent-author-substitute"]);
                                     state.tmp.name_node.children[i].blobs = [str];
                                 }
                             }
-                            state.tmp.last_rendered_name = state.tmp.rendered_name;
+                            state.tmp.last_rendered_name = rendered_name;
                         }
                     } else {
-                        state.tmp.rendered_name = state.output.string(state, state.tmp.name_node.top.blobs, false);
-                        if (state.tmp.rendered_name) {
-                            //CSL.debug("TRY! "+state.tmp.rendered_name);
-                            if (state.tmp.rendered_name === state.tmp.last_rendered_name) {
+                        var rendered_name = state.tmp.rendered_name.join(",");
+                        if (rendered_name) {
+                            if (rendered_name === state.tmp.last_rendered_name) {
                                 str = new CSL.Blob(state[state.tmp.area].opt["subsequent-author-substitute"]);
-                                state.tmp.name_node.top.blobs = [str];
+                                if (state.tmp.label_blob) {
+                                    state.tmp.name_node.top.blobs = [str,state.tmp.label_blob];
+                                } else {
+                                    state.tmp.name_node.top.blobs = [str];
+                                }
                             }
-                            state.tmp.last_rendered_name = state.tmp.rendered_name;
+                            state.tmp.last_rendered_name = rendered_name;
                         }
                     }
                 }

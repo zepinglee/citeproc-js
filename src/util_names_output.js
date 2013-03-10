@@ -72,6 +72,8 @@ CSL.NameOutput.prototype.init = function (names) {
     this.names = names;
     this.variables = names.variables;
     this.state.tmp.value = [];
+    this.state.tmp.rendered_name = [];
+    this.state.tmp.label_blob = false;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
             this.state.tmp.value = this.state.tmp.value.concat(this.Item[this.variables[i]]);
@@ -113,8 +115,11 @@ CSL.NameOutput.prototype.reinit = function (names) {
         //if (this.state.tmp.group_context.value()[2]) {
         //    this.state.tmp.group_context.value()[2] = true;
         //}
+
+        // Not sure why this is necessary. Guards against a memory leak perhaps?
         var oldval = this.state.tmp.value.slice();
         this.state.tmp.value = [];
+
         for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
             if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
                 this.state.tmp.value = this.state.tmp.value.concat(this.Item[this.variables[i]]);
@@ -123,7 +128,9 @@ CSL.NameOutput.prototype.reinit = function (names) {
         if (this.state.tmp.value.length) {
             this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
         }
+
         this.state.tmp.value = oldval;
+
     }
 };
 
@@ -449,6 +456,8 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
         this.state.output.openLevel("empty");
         this.state.output.append(blob, "literal", true);
         this.state.output.append(txt, this.label[v].after, true);
+        this.state.tmp.label_blob = this.state.output.pop();
+        this.state.output.append(this.state.tmp.label_blob,"literal",true);
         this.state.output.closeLevel("empty");
         blob = this.state.output.pop();
     }

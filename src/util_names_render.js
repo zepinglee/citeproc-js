@@ -118,6 +118,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
             // Get normalized name object for a start.
             // true invokes fallback
             var res;
+            this.setRenderedName(name);
             res = this.getName(name, slot.primary, true);
             var primary = res.name;
             var usedOrig = res.usedOrig;
@@ -309,6 +310,7 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
 
             // primary
             // true is for fallback
+            this.setRenderedName(name);
             var res = this.getName(name, slot.primary, true);
             var primary = this._renderOnePersonalName(res.name, pos, i);
 			secondary = false;
@@ -850,6 +852,18 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         usedOrig = !foundTag;
     }
     return {name:name,usedOrig:usedOrig};
+}
+
+CSL.NameOutput.prototype.setRenderedName = function (name) {
+    if (this.state.tmp.area === "bibliography") {
+        var strname = "";
+        for (var j=0,jlen=CSL.NAME_PARTS.length;j<jlen;j+=1) {
+            if (name[CSL.NAME_PARTS[j]]) {
+                strname += name[CSL.NAME_PARTS[j]];
+            }
+        }
+        this.state.tmp.rendered_name.push(strname);
+    }
 }
 
 CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
