@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.435",
+    PROCESSOR_VERSION: "1.0.436",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
@@ -8818,7 +8818,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                 if (!state.tmp.shadow_numbers[variables[i]]) {
                     state.processNumber(false, myitem, variables[i], Item.type);
                 }
-                if (state.tmp.shadow_numbers[variables[i]].numeric) {
+                if (myitem[variables[i]] && state.tmp.shadow_numbers[variables[i]].numeric) {
                     ret.push(true);
                 } else {
                     ret.push(false);
@@ -8830,6 +8830,8 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                     } else {
                         ret.push(false);
                     }
+                } else {
+                    ret.push(false);
                 }
             }
         }
