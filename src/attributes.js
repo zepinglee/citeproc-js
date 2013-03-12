@@ -742,7 +742,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                 if (!state.tmp.shadow_numbers[variables[i]]) {
                     state.processNumber(false, myitem, variables[i], Item.type);
                 }
-                if (state.tmp.shadow_numbers[variables[i]].numeric) {
+                if (myitem[variables[i]] && state.tmp.shadow_numbers[variables[i]].numeric) {
                     ret.push(true);
                 } else {
                     ret.push(false);
@@ -754,6 +754,8 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                     } else {
                         ret.push(false);
                     }
+                } else {
+                    ret.push(false);
                 }
             }
         }
