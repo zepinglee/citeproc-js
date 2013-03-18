@@ -512,6 +512,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
     // XXX Just generally assume for the present that personal names render something
     this.state.tmp.group_context.value()[2] = true;
     this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
+    this.state.tmp.term_predecessor = true;
     // notSerious
     //this.state.output.append(blob, "literal", true);
     //var ret = this.state.output.pop();
