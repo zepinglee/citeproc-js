@@ -550,7 +550,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
         this.locale_bares = [];
         for (i = 0, ilen = lst.length; i < ilen; i += 1) {
             // Parse out language string
-            lang = CSL.localeParse(lst[i]);
+            lang = lst[i];
         
             // Analyze the locale
             langspec = CSL.localeResolve(lang);
@@ -578,7 +578,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
             res = false;
             var langspec = false;
             if (Item.language) {
-                lang = CSL.localeParse(Item.language);
+                lang = Item.language;
                 langspec = CSL.localeResolve(lang);
                 if (langspec.best === state.opt["default-locale"][0]) {
                     langspec = false;
@@ -1198,13 +1198,6 @@ CSL.Attributes["@year-range-format"] = function (state, arg) {
 
 CSL.Attributes["@default-locale"] = function (state, arg) {
     var lst, len, pos, m, ret;
-    // Optionally normalize keys to lowercase. See also code in
-    // build.js
-    if (state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
-        if (arg) {
-            arg = arg.toLowerCase();
-        }
-    }
     //
     // Workaround for Internet Exploder 6 (doesn't recognize
     // groups in str.split(/something(braced-group)something/)
