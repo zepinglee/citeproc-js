@@ -172,8 +172,14 @@ CSL.Transform = function (state) {
 
     function getFieldLocale(Item,field) {
         var ret = state.opt["default-locale"][0].slice(0, 2)
+        var localeRex;
+        if (state.opt.development_extensions.strict_text_case_locales) {
+            localeRex = new RegExp("^([a-zA-Z]{2})(?:$|-.*| .*)");
+        } else {
+            localeRex = new RegExp("^([a-zA-Z]{2})(?:$|-.*|.*)");
+        }
         if (Item.language) {
-            m = ("" + Item.language).match(/^([a-zA-Z]{2})(?:$|-.*| .*)/);
+            m = ("" + Item.language).match(localeRex);
             if (m) {
                 ret = m[1];
             } else {
@@ -184,7 +190,9 @@ CSL.Transform = function (state) {
         if (Item.multi && Item.multi && Item.multi.main && Item.multi.main[field]) {
             ret = Item.multi.main[field];
         }
-        if (state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        if (!state.opt.development_extensions.strict_text_case_locales
+           || state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+
             ret = ret.toLowerCase();
         }
         return ret;

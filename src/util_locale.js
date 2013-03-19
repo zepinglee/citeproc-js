@@ -70,17 +70,6 @@ CSL.localeResolve = function (langstr) {
     return ret;
 };
 
-CSL.localeParse = function (arg) {
-    // 
-    // Needs fixing.  How do we make the hyphen optional,
-    // but, you know, required?
-    // 
-    //if (arg.match(/^\s+([a-zA-Z]{2})(?:-([a-zA-Z]{2})(?:[^a-zA-Z]|$))/)) {
-    //    
-    //}
-    return arg;
-};
-
 // Use call to invoke this.
 CSL.Engine.prototype.localeConfigure = function (langspec) {
     var localexml;
@@ -100,6 +89,11 @@ CSL.Engine.prototype.localeConfigure = function (langspec) {
         this.localeSet(this.cslXml, langspec.base, langspec.best);
     }
     this.localeSet(this.cslXml, langspec.best, langspec.best);
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        langspec.best = langspec.best.toLowerCase();
+        langspec.bare = langspec.bare.toLowerCase();
+        langspec.base = langspec.base.toLowerCase();
+    }
     if ("undefined" === typeof this.locale[langspec.best].terms["page-range-delimiter"]) {
         if (["fr", "pt"].indexOf(langspec.best.slice(0, 2).toLowerCase()) > -1) {
             this.locale[langspec.best].terms["page-range-delimiter"] = "-";
@@ -113,6 +107,15 @@ CSL.Engine.prototype.localeConfigure = function (langspec) {
     if ("undefined" === typeof this.locale[langspec.best].terms["citation-range-delimiter"]) {
         this.locale[langspec.best].terms["citation-range-delimiter"] = "\u2013";
     }
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        var localeLists = ["default-locale","locale-sort","locale-translit","locale-translat"];
+        for (var i=0,ilen=localeLists.length;i<ilen;i+=1) {
+            for (var j=0,jlen=this.opt[localeLists[i]].length;j<jlen;j+=1) {
+                this.opt[localeLists[i]][j] = this.opt[localeLists[i]][j].toLowerCase();
+            }
+        }
+        this.opt.lang = this.opt.lang.toLowerCase();
+    }
 };
     
 //
@@ -124,6 +127,11 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     var blob, locale, nodes, attributes, pos, ppos, term, form, termname, styleopts, attr, date, attrname, len, genderform, target, i, ilen;
     lang_in = lang_in.replace("_", "-");
     lang_out = lang_out.replace("_", "-");
+
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        lang_in = lang_in.toLowerCase();
+        lang_out = lang_out.toLowerCase();
+    }
 
     if (!this.locale[lang_out]) {
         this.locale[lang_out] = {};
