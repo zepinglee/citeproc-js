@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-Van Doe, John
+van Doe, John
 <<===== RESULT =====<<
 
 
