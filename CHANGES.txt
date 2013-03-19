@@ -2,6 +2,46 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.438
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Implement loose matching of language variable for text-case
+  only. If the first two characters in the "language" variable
+  are "en" (case-insensitive), the language will be read as "en".
+  If the "language" variable has a value and it does not begin
+  with "en", the language is set to "tlh" (Klingon).
+
+  The behaviour is controlled by a processor toggle, with the
+  following default:
+
+    citeproc.opt.development_extensions.strict_text_case_locales [false]
+
+  Although loose matching behaviour is set as the processor default,
+  it diverges from the CSL Specification:
+
+    http://citationstyles.org/downloads/specification.html#non-english-items
+
+  For strict CSL-conformant behaviour, set the toggle as follows:
+
+    citeproc.opt.development_extensions.strict_text_case_locales [true]
+
+==========================
+Changes in version 1.0.437
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Be less aggressive about capitalising name
+  particles. Force particles to lowercase when
+  names are rendered in ordinary name order.
+
+==========================
 Changes in version 1.0.436
 ==========================
 
