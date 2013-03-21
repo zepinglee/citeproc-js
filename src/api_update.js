@@ -48,9 +48,51 @@
 
 /*global CSL: true */
 
+CSL.Engine.prototype.rebuildProcessorState = function (citations, mode) {
+    // Rebuilds the processor from scratch, based on a list of citation
+    // objects. In a dynamic application, once the internal state of processor
+    // is established, citations should edited with individual invocations
+    // of processCitationCluster().
+
+    // citations is a list of citation objects in document order.
+    // mode is one of "html", "text" or "rtf".
+    // Returns a list of [citationID,noteIndex,string] triples in document order.
+    // Set citation.properties.noteIndex to 0 for in-text citations.
+    // It is not necessary to run updateItems() before this function.
+    var itemIDs = [];
+    for (var i=0,ilen=citations.length;i<ilen;i+=1) {
+        for (var j=0,jlen=citations[i].citationItems.length;j<jlen;j+=1) {
+            itemIDs.push("" + citations[i].citationItems[j].id);
+        }
+    }
+    this.updateItems(itemIDs);
+    var pre = [];
+    var post = [];
+    var ret = [];
+    for (var i=0,ilen=citations.length;i<ilen;i+=1) {
+        // res contains a result report and a list of [index,string] pairs
+        // index begins at 0
+        var res = this.processCitationCluster(citations[i],pre,post);
+        pre.push([citations[i].citationID,citations[i].properties.noteIndex]);
+        for (var j=0,jlen=res[1].length;j<jlen;j+=1) {
+            var index = res[1][j][0];
+            ret[index] = [
+                pre[index][0],
+                pre[index][1],
+                res[1][j][1]
+            ];
+        }
+    }
+    return ret;
+}
+
+
 CSL.Engine.prototype.restoreProcessorState = function (citations) {
     var i, ilen, j, jlen, item, Item, newitem, citationList, itemList, sortedItems;
     
+    // This function is deprecated.
+    // Use rebuildProcessorState() instead.
+
     // Quickly restore state from citation details retained by
     // calling application.
     //
