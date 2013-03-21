@@ -2,6 +2,26 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.439
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- New rebuildProcessorState() function provides a simple
+  API for building valid cites from a list of citation
+  objects.
+
+  The restoreProcessorState() has frequently been
+  misunderstood to provide the service of the new
+  function. I have not heard of any instances in which
+  restoreProcessorState() is used for its originally
+  intended purpose. I've noted in a comment that it is
+  deprecated, and unless there are objections, it will
+  be removed from the code at some point in the future.
+
+==========================
 Changes in version 1.0.438
 ==========================
 

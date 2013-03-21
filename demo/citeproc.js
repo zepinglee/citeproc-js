@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.438",
+    PROCESSOR_VERSION: "1.0.439",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
@@ -3053,6 +3053,31 @@ CSL.Engine.prototype.setCitationId = function (citation, force) {
     this.registry.citationreg.citationById[citation.citationID] = citation;
     return ret;
 };
+CSL.Engine.prototype.rebuildProcessorState = function (citations, mode) {
+    var itemIDs = [];
+    for (var i=0,ilen=citations.length;i<ilen;i+=1) {
+        for (var j=0,jlen=citations[i].citationItems.length;j<jlen;j+=1) {
+            itemIDs.push("" + citations[i].citationItems[j].id);
+        }
+    }
+    this.updateItems(itemIDs);
+    var pre = [];
+    var post = [];
+    var ret = [];
+    for (var i=0,ilen=citations.length;i<ilen;i+=1) {
+        var res = this.processCitationCluster(citations[i],pre,post);
+        pre.push([citations[i].citationID,citations[i].properties.noteIndex]);
+        for (var j=0,jlen=res[1].length;j<jlen;j+=1) {
+            var index = res[1][j][0];
+            ret[index] = [
+                pre[index][0],
+                pre[index][1],
+                res[1][j][1]
+            ];
+        }
+    }
+    return ret;
+}
 CSL.Engine.prototype.restoreProcessorState = function (citations) {
     var i, ilen, j, jlen, item, Item, newitem, citationList, itemList, sortedItems;
     citationList = [];
