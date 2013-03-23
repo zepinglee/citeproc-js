@@ -463,7 +463,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
         } else {
             // Don't drop particle.
             if (this.state.tmp.area === "bibliography" && !this.state.tmp.term_predecessor && non_dropping_particle) {
-                non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
+                if (!has_hyphenated_non_dropping_particle) {
+                    non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
+                }
             }
             if (has_hyphenated_non_dropping_particle) {
                 first = this._join([non_dropping_particle, family], "");
@@ -495,7 +497,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
         if (!this.state.tmp.term_predecessor) {
             if (!given && this.state.tmp.area === "bibliography") {
                 if (!dropping_particle && non_dropping_particle) {
-                    non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
+                    if (!has_hyphenated_non_dropping_particle) {
+                        non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
+                    }
                 } else if (dropping_particle) {
                     dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, dropping_particle.blobs)
                 }
