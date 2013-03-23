@@ -57,18 +57,19 @@ var mycsl = "<style>"
 	  + "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
 	  + "  </layout>"
 	  + "</citation>"
-	+ "</style>";
-
-var mycsl2 = "<style>"
-	  + "<citation disambiguate-add-givenname=\"true\" disambiguate-add-year-suffix=\"true\">"
-	  + "  <layout delimiter=\"; \" prefix=\"(\" suffix=\")\">"
+	  + "<bibliography>"
+      + "  <sort>"
+      + "    <key variable=\"author\"/>"
+      + "  </sort>"
+	  + "  <layout>"
 	  + "    <names variable=\"author\">"
 	  + "    <name form=\"short\" initialize-with=\". \"/>"
 	  + "    </names>"
 	  + "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
 	  + "  </layout>"
-	  + "</citation>"
+	  + "</bibliography>"
 	+ "</style>";
+
 
 var ITEM1 = {
 	"id": "ITEM-1",
@@ -182,5 +183,42 @@ doh.register("citeproc_js.rebuild", [
 		doh.assertEqual("CITATION-4", res[2][0]);
 		doh.assertEqual("4", res[2][1]);
 		doh.assertEqual("(Wallbanger, Smith 1999)", res[2][2]);
+	},
+	function testRebuildCitationsWithUncitedItems() {
+		var sys = new RhinoTest([ITEM1,ITEM2,ITEM3]);
+        var citations = [CITATION1,CITATION4];
+        var uncitedItemIDs = {}
+        uncitedItemIDs[ITEM2.id] = true;
+		var style = new CSL.Engine(sys,mycsl);
+		var res = style.rebuildProcessorState(citations, "html", uncitedItemIDs);
+        // First citation
+		doh.assertEqual("CITATION-1", res[0][0]);
+		doh.assertEqual("1", res[0][1]);
+		doh.assertEqual("(Doe, J. Roe)", res[0][2]);
+        // Second citation
+		doh.assertEqual("CITATION-4", res[1][0]);
+		doh.assertEqual("4", res[1][1]);
+		doh.assertEqual("(Wallbanger, Smith 1999)", res[1][2]);
+	},
+	function testRebuildBibliographyWithUncitedItems() {
+		var sys = new RhinoTest([ITEM1,ITEM2,ITEM3]);
+        var citations = [CITATION1,CITATION4];
+        var uncitedItemIDs = {}
+        uncitedItemIDs[ITEM2.id] = true;
+		var style = new CSL.Engine(sys,mycsl);
+		style.rebuildProcessorState(citations, "html",uncitedItemIDs);
+        var bib = style.makeBibliography();
+
+        // bib count
+        doh.assertEqual(3, bib[1].length)
+        // First entry
+        var bibzero = bib[1][0].replace(/^\s*(.*?)\s*$/,"$1")
+		doh.assertEqual("<div class=\"csl-entry\">Doe, J. Roe</div>", bibzero);
+
+        var bibone = bib[1][1].replace(/^\s*(.*?)\s*$/,"$1")
+		doh.assertEqual("<div class=\"csl-entry\">Doe, R. Roe</div>", bibone);
+
+        var bibtwo = bib[1][2].replace(/^\s*(.*?)\s*$/,"$1")
+		doh.assertEqual("<div class=\"csl-entry\">Wallbanger, Smith 1999</div>", bibtwo);
 	}
 ]);
