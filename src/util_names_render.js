@@ -418,6 +418,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
         suffix_sep = " ";
     }
     var romanesque = this._isRomanesque(name);
+    var has_hyphenated_non_dropping_particle = non_dropping_particle && non_dropping_particle.blobs.slice(-1) === "-";
     var blob, merged, first, second;
     if (romanesque === 0) {
         // XXX handle affixes for given and family
@@ -442,10 +443,12 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
         if (["Lord", "Lady"].indexOf(name.given) > -1) {
             sort_sep = ", ";
         }
-        if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
+        if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1 && !has_hyphenated_non_dropping_particle) {
             // Drop non-dropping particle
             //second = this._join([given, dropping_particle, non_dropping_particle], " ");
             second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
+        
+            // This would be a problem with al-Ghazali. Avoided by has_hyphenated_non_dropping_particle check above.
             second = this._join([second, non_dropping_particle], " ");
             if (second && this.given) {
                 second.strings.prefix = this.given.strings.prefix;
@@ -462,7 +465,11 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
             if (this.state.tmp.area === "bibliography" && !this.state.tmp.term_predecessor && non_dropping_particle) {
                 non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
             }
-            first = this._join([non_dropping_particle, family], " ");
+            if (has_hyphenated_non_dropping_particle) {
+                first = this._join([non_dropping_particle, family], "");
+            } else {
+                first = this._join([non_dropping_particle, family], " ");
+            }
             if (first && this.family) {
                 first.strings.prefix = this.family.strings.prefix;
                 first.strings.suffix = this.family.strings.suffix;
@@ -485,13 +492,6 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
                 dropping_particle = false;
             }
         }
-        if (given) {
-            if (!dropping_particle && non_dropping_particle) {
-                non_dropping_particle.blobs = CSL.Output.Formatters["lowercase"](this.state, non_dropping_particle.blobs)
-            } else if (dropping_particle) {
-                dropping_particle.blobs = CSL.Output.Formatters["lowercase"](this.state, dropping_particle.blobs)
-            }
-        }
         if (!this.state.tmp.term_predecessor) {
             if (!given && this.state.tmp.area === "bibliography") {
                 if (!dropping_particle && non_dropping_particle) {
@@ -501,7 +501,12 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
                 }
             }
         }
-        second = this._join([dropping_particle, non_dropping_particle, family], " ");
+        if (has_hyphenated_non_dropping_particle) {
+            second = this._join([non_dropping_particle, family], "");
+            second = this._join([dropping_particle, second], " ");
+        } else {
+            second = this._join([dropping_particle, non_dropping_particle, family], " ");
+        }
         second = this._join([second, suffix], suffix_sep);
         if (second && this.family) {
             second.strings.prefix = this.family.strings.prefix;
@@ -701,7 +706,7 @@ CSL.NameOutput.prototype._parseName = function (name) {
         noparse = false;
     }
     if (!name["non-dropping-particle"] && name.family && !noparse) {
-        m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[\s+|\'\u2019]|[DVL][^ ]\s+[a-z]*\s*|[DVL][^ ][^ ]\s+[a-z]*\s*))/);
+        m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[-|\s+|\'\u2019]|[ABDVL][^ ][-|\s+][a-z]*\s*|[ABDVL][^ ][^ ][-|\s+][a-z]*\s*))/);
         if (m) {
             name.family = name.family.slice(m[1].length);
             name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
