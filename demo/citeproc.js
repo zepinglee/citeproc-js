@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.441",
+    PROCESSOR_VERSION: "1.0.442",
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
@@ -1259,15 +1259,16 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
                     }
                 }
             }
-            if (stk[slast].lastNode && state.getOpt("punctuation-in-quote")) {
+            if (state.getOpt('punctuation-in-quote')) {
                 var decorations = doblob.decorations;
                 for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
                     if (decorations[j][0] === '@quotes' && decorations[j][1] === 'true') {
                         doblob.punctuation_in_quote = true;
+                        stk[slast].lastNode = true;
                     }
                 }
             }
-            if (doblob.punctuation_in_quote) {
+            if (doblob.punctuation_in_quote && stk[slast].lastNode) {
                 var swapchar = doblob.strings.suffix.slice(0, 1);
                 var swapblob = false;
                 if (SWAPS.indexOf(swapchar) > -1) {
