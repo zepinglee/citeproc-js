@@ -980,15 +980,16 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
 
             // Swap punctuation into quotation marks as required.
             //if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
-            if (stk[slast].lastNode && state.getOpt("punctuation-in-quote")) {
+            if (state.getOpt('punctuation-in-quote')) {
                 var decorations = doblob.decorations;
                 for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
                     if (decorations[j][0] === '@quotes' && decorations[j][1] === 'true') {
                         doblob.punctuation_in_quote = true;
+                        stk[slast].lastNode = true;
                     }
                 }
             }
-            if (doblob.punctuation_in_quote) {
+            if (doblob.punctuation_in_quote && stk[slast].lastNode) {
                 var swapchar = doblob.strings.suffix.slice(0, 1);
                 var swapblob = false;
                 if (SWAPS.indexOf(swapchar) > -1) {
@@ -1144,4 +1145,3 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
     state.tmp.last_chr = lastchr;
     return lastchr;
 };
-
