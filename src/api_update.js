@@ -48,7 +48,7 @@
 
 /*global CSL: true */
 
-CSL.Engine.prototype.rebuildProcessorState = function (citations, mode) {
+CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedItemIDs) {
     // Rebuilds the processor from scratch, based on a list of citation
     // objects. In a dynamic application, once the internal state of processor
     // is established, citations should edited with individual invocations
@@ -56,16 +56,32 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode) {
 
     // citations is a list of citation objects in document order.
     // mode is one of "html", "text" or "rtf".
+    // uncitedItemIDs is a JS object with itemIDs as keys, and values that evaluate true.
     // Returns a list of [citationID,noteIndex,string] triples in document order.
     // Set citation.properties.noteIndex to 0 for in-text citations.
     // It is not necessary to run updateItems() before this function.
+    if (!citations) {
+        citations = [];
+    }
+    if (!uncitedItemIDs) {
+        uncitedItemIDs = {};
+    }
     var itemIDs = [];
+    var myUncitedItemIDs = [];
     for (var i=0,ilen=citations.length;i<ilen;i+=1) {
         for (var j=0,jlen=citations[i].citationItems.length;j<jlen;j+=1) {
-            itemIDs.push("" + citations[i].citationItems[j].id);
+            var itemID = "" + citations[i].citationItems[j].id;
+            itemIDs.push(itemID);
+            if (uncitedItemIDs[itemID]) {
+                delete uncitedItemIDs[itemID];
+            }
         }
     }
     this.updateItems(itemIDs);
+    for (var key in uncitedItemIDs) {
+        myUncitedItemIDs.push(key);
+    }
+    this.updateUncitedItems(myUncitedItemIDs);
     var pre = [];
     var post = [];
     var ret = [];
