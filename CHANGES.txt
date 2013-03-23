@@ -2,6 +2,21 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.440
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Handle hyphenated name particles.
+
+- Remove forced lowercasing of name particles with normal
+  name ordering.
+
+- Refinements to new rebuildProcessorState() function.
+
+==========================
 Changes in version 1.0.439
 ==========================
 
