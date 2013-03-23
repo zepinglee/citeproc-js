@@ -88,7 +88,7 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
     for (var i=0,ilen=citations.length;i<ilen;i+=1) {
         // res contains a result report and a list of [index,string] pairs
         // index begins at 0
-        var res = this.processCitationCluster(citations[i],pre,post);
+        var res = this.processCitationCluster(citations[i],pre,post,mode);
         pre.push([citations[i].citationID,citations[i].properties.noteIndex]);
         for (var j=0,jlen=res[1].length;j<jlen;j+=1) {
             var index = res[1][j][0];
