@@ -2,6 +2,16 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.443
+==========================
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+- Fix bug affecting updateUncitedItems().
+
+==========================
 Changes in version 1.0.442
 ==========================
 
