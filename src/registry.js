@@ -229,9 +229,8 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
     //  1. Receive list as function argument, store as hash and as list.
     //
     // (be additive if only marking uncited items)
-    if (uncited_flag && this.mylist && this.mylist.length) {
-        this.uncited = myitems;
-        for (i = 0, ilen = myitems.length; i < ilen; i += 1) {
+    if (uncited_flag) {
+        for (var i = myitems.length - 1; i > -1; i += -1) {
             // XXXX Checking whether this is where the extra copy of uncited IDs creeps in.
             // Confirmed: it is
             // This could be more efficient, but for the time being,
@@ -240,8 +239,11 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
             myitems[i] = "" + myitems[i];
             if (!this.myhash[myitems[i]] && this.mylist.indexOf(myitems[i]) === -1) {
                 this.mylist.push(myitems[i]);
+            } else {
+                myitems = myitems.slice(0,i).concat(myitems.slice(i + 1))
             }
         }
+        this.uncited = myitems;
     } else {
         this.mylist = myitems.concat(this.uncited);
     }
