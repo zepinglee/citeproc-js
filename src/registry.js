@@ -433,10 +433,11 @@ CSL.Registry.prototype.doinserts = function (mylist) {
 
 CSL.Registry.prototype.douncited = function () {
     var pos, len;
-    for (pos = 0, len = this.mylist.length; pos < len; pos += 1) {
+    var cited_len = this.mylist.length - this.uncited.length;
+    for (pos = 0, len = cited_len; pos < len; pos += 1) {
         this.registry[this.mylist[pos]].uncited = false;
     }
-    for (pos = 0, len = this.uncited.length; pos < len; pos += 1) {
+    for (pos = cited_len, len = this.uncited.length; pos < len; pos += 1) {
         this.registry[this.mylist[pos]].uncited = true;
     }
 };
