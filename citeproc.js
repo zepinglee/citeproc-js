@@ -12208,14 +12208,16 @@ CSL.Registry.prototype.init = function (myitems, uncited_flag) {
 		}
 	}
 	myitems.reverse();
-    if (uncited_flag && this.mylist && this.mylist.length) {
-        this.uncited = myitems;
-        for (i = 0, ilen = myitems.length; i < ilen; i += 1) {
+    if (uncited_flag) {
+        for (var i = myitems.length - 1; i > -1; i += -1) {
             myitems[i] = "" + myitems[i];
             if (!this.myhash[myitems[i]] && this.mylist.indexOf(myitems[i]) === -1) {
                 this.mylist.push(myitems[i]);
+            } else {
+                myitems = myitems.slice(0,i).concat(myitems.slice(i + 1))
             }
         }
+        this.uncited = myitems;
     } else {
         this.mylist = myitems.concat(this.uncited);
     }
