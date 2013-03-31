@@ -12329,7 +12329,7 @@ CSL.Registry.prototype.douncited = function () {
     for (pos = 0, len = cited_len; pos < len; pos += 1) {
         this.registry[this.mylist[pos]].uncited = false;
     }
-    for (pos = cited_len, len = this.uncited.length; pos < len; pos += 1) {
+    for (pos = cited_len, len = this.mylist.length; pos < len; pos += 1) {
         this.registry[this.mylist[pos]].uncited = true;
     }
 };
