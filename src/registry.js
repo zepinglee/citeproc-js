@@ -122,7 +122,7 @@ CSL.Registry = function (state) {
     this.myhash = {};
     this.deletes = [];
     this.inserts = [];
-    this.uncited = [];
+    this.uncited = {};
     this.refreshes = {};
     this.akeys = {};
     this.oldseq = {};
@@ -212,45 +212,40 @@ CSL.Registry = function (state) {
 CSL.Registry.prototype.init = function (myitems, uncited_flag) {
     var i, ilen;
     this.oldseq = {};
-	//  0. Before doing anything, purge any duplicate items from
-	//     the list. Avoids the issue reported here:
-	//         https://bitbucket.org/fbennett/citeproc-js/issue/132/differences-in-behaviour-from
-	var tmphash = {};
-	myitems.reverse();
-	for (i = myitems.length - 1; i > -1; i += -1) {
-		if (tmphash[myitems[i]]) {
-			myitems = myitems.slice(0, i).concat(myitems.slice(i + 1));
-		} else {
-			tmphash[myitems[i]] = true;
-		}
-	}
-	myitems.reverse();
-    //
     //  1. Receive list as function argument, store as hash and as list.
     //
-    // (be additive if only marking uncited items)
+    // Result:
+    //   this.myitems: a list of all itemIDs of referenced items, cited and uncited.
+    //   this.myhash: a hash of index positions in this.myitems.
+    //   this.uncited: hash of uncited itemIDs.
+    //
+    // Proceed as follows.
+    //
     if (uncited_flag) {
-        for (var i = myitems.length - 1; i > -1; i += -1) {
-            // XXXX Checking whether this is where the extra copy of uncited IDs creeps in.
-            // Confirmed: it is
-            // This could be more efficient, but for the time being,
-            // refresh following a manual insert to the bibliography works
-            // as expected.
-            myitems[i] = "" + myitems[i];
-            if (!this.myhash[myitems[i]] && this.mylist.indexOf(myitems[i]) === -1) {
-                this.mylist.push(myitems[i]);
-            } else {
-                myitems = myitems.slice(0,i).concat(myitems.slice(i + 1))
+        // If uncited_flag is non-nil, add any missing itemIDs to this.myitems
+        // from myitems input list, and set itemIDs in myitems on this.uncited.
+        this.uncited = {};
+        for (var i=0,ilen=mylist.length;i<ilen; i += 1) {
+            if (!this.myhash[mylist[i]]) {
+                this.mylist.push(mylist[i]);
             }
+            this.uncited[mylist[i]] = true;
+            this.myhash[mylist[i]] = true;
         }
-        this.uncited = myitems;
     } else {
-        this.mylist = myitems.concat(this.uncited);
-    }
-    this.myhash = {};
-    for (i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
-        this.mylist[i] = "" + this.mylist[i];
-        this.myhash[this.mylist[i]] = true;
+        // If uncited_flag is nil, remove duplicate itemIDs from myitems input
+        // list, set the result on this.myitems, and add missing itemIDs to
+        // this.myitems from myitems input list.
+	    var myhash = {};
+	    for (i=myitems.length-1;i>-1; i += -1) {
+		    if (myhash[myitems[i]]) {
+			    myitems = myitems.slice(0, i).concat(myitems.slice(i + 1));
+		    } else {
+			    myhash[myitems[i]] = true;
+		    }
+	    }
+        this.mylist = myitems.slice();
+        this.myhash = myhash;
     }
     //
     //  2. Initialize refresh list.  Never needs sorting, only hash required.
@@ -272,7 +267,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
     for (key in this.registry) {
         if (!myhash[key]) {
             // skip items explicitly marked as uncited
-            if (this.registry[key].uncited) {
+            if (this.uncited[key]) {
                 continue;
             }
             //
@@ -433,6 +428,8 @@ CSL.Registry.prototype.doinserts = function (mylist) {
     // this.state.fun.decorate.items_add( this.state.output[this.state.opt.mode].tmp, mylist );
 };
 
+/*
+// No longer required.
 CSL.Registry.prototype.douncited = function () {
     var pos, len;
     var cited_len = this.mylist.length - this.uncited.length;
@@ -443,6 +440,7 @@ CSL.Registry.prototype.douncited = function () {
         this.registry[this.mylist[pos]].uncited = true;
     }
 };
+*/
 
 CSL.Registry.prototype.rebuildlist = function () {
     var count, len, pos, item;
@@ -512,7 +510,6 @@ CSL.Registry.prototype.dorefreshes = function () {
         }
         this.touched[key] = true;
     }
-
 };
 
 /*

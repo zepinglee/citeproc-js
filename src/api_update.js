@@ -282,14 +282,15 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     // prepare extended list of items
     this.registry.init(idList, true);
 
-    // don't delete things
+    // don't bother trying to delete things
     // this.registry.dodeletes(this.registry.myhash);
 
     // add anything that's missing
     this.registry.doinserts(this.registry.mylist);
 
+    // This is now handled by the true toggle on init(), above
     // mark uncited entries
-    this.registry.douncited();
+    //this.registry.douncited();
 
     // refreshes are only triggered by dodeletes, so skip it
     //this.registry.dorefreshes();
