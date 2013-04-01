@@ -261,9 +261,12 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
 CSL.Registry.prototype.dopurge = function (myhash) {
     // Remove any uncited items not in myhash
     for (var i=this.mylist.length-1;i>-1;i+=-1) {
-        if (!this.citationreg.citationsByItemId[this.mylist[i]] && !myhash[this.mylist[i]]) {
-            delete this.myhash[this.mylist[i]];
-            this.mylist = this.mylist.slice(0,i).concat(this.mylist[i+1]);
+        // Might not want to be quite this restrictive.
+        if (this.citationreg.citationsByItemId) {
+            if (!this.citationreg.citationsByItemId[this.mylist[i]] && !myhash[this.mylist[i]]) {
+                delete this.myhash[this.mylist[i]];
+                this.mylist = this.mylist.slice(0,i).concat(this.mylist.slice(i+1));
+            }
         }
     }
     this.dodeletes(this.myhash);
