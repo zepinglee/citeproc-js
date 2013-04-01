@@ -3182,6 +3182,9 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs) {
 };
 CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     var debug = false;
+    if (!idList) {
+        idList = [];
+    }
     if ("object" == typeof idList) {
         if ("undefined" == typeof idList.length) {
             var idHash = idList;
@@ -3189,7 +3192,7 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
             for (var key in idHash) {
                 idList.push(key);
             }
-        } else if ("number" == typeof idList) {
+        } else if ("number" == typeof idList.length) {
             var idHash = {};
             for (var i=0,ilen=idList.length;i<ilen;i+=1) {
                 idHash[idList[i]] = true;
