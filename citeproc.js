@@ -3182,8 +3182,23 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs) {
 };
 CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     var debug = false;
+    if ("object" == typeof idList) {
+        if ("undefined" == typeof idList.length) {
+            var idHash = idList;
+            idList = [];
+            for (var key in idHash) {
+                idList.push(key);
+            }
+        } else if ("number" == typeof idList) {
+            var idHash = {};
+            for (var i=0,ilen=idList.length;i<ilen;i+=1) {
+                idHash[idList[i]] = true;
+            }
+        }
+    }
     this.registry.init(idList, true);
     this.registry.doinserts(this.registry.mylist);
+    this.registry.dopurge(idHash);
     this.registry.rebuildlist();
     this.registry.setsortkeys();
     this.registry.setdisambigs();
@@ -12222,6 +12237,14 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
     this.touched = {};
     this.ambigsTouched = {};
 };
+CSL.Registry.prototype.dopurge = function (myhash) {
+    for (var i=this.mylist.length-1;i>-1;i+=-1) {
+        if (!this.citationreg.citationsByItemId[this.mylist[i]] && !myhash[this.mylist[i]]) {
+            this.mylist = this.mylist.slice(0,i).concat(this.mylist.slice(i+1));
+            delete this.myhash[this.mylist[i]];
+        }
+    }
+};
 CSL.Registry.prototype.dodeletes = function (myhash) {
     var otheritems, key, ambig, pos, len, items, kkey, mypos, id;
     if ("string" === typeof myhash) {
@@ -12389,7 +12412,7 @@ CSL.Registry.prototype.setsortkeys = function () {
     var key;
 	for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
 		var key = this.mylist[i];
-		if (this.touched[key] || this.state.tmp.taintedItemIDs[key]) {
+		if (this.touched[key] || this.state.tmp.taintedItemIDs[key] || !this.registry[key].sortkeys) {
 			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
 		}
 	}
