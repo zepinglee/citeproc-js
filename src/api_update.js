@@ -278,22 +278,34 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs) {
 
 CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     var debug = false;
+    // This should be a utility function
+    if ("object" == typeof idList) {
+        if ("undefined" == typeof idList.length) {
+            var idHash = idList;
+            idList = [];
+            for (var key in idHash) {
+                idList.push(key);
+            }
+        } else if ("number" == typeof idList) {
+            var idHash = {};
+            for (var i=0,ilen=idList.length;i<ilen;i+=1) {
+                idHash[idList[i]] = true;
+            }
+        }
+    }
 
     // prepare extended list of items
     this.registry.init(idList, true);
 
-    // don't bother trying to delete things
+    // don't bother trying to delete things based on citations, they have not changed.
     // this.registry.dodeletes(this.registry.myhash);
 
     // add anything that's missing
     this.registry.doinserts(this.registry.mylist);
 
-    // This is now handled by the true toggle on init(), above
-    // mark uncited entries
-    //this.registry.douncited();
-
-    // refreshes are only triggered by dodeletes, so skip it
+    // refreshes are only triggered by dodeletes, so skip it. Use purge instead.
     //this.registry.dorefreshes();
+    this.registry.dopurge(idHash);
 
     // everything else is the same as updateItems()
     this.registry.rebuildlist();

@@ -255,6 +255,16 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
     this.ambigsTouched = {};
 };
 
+CSL.Registry.prototype.dopurge = function (myhash) {
+    // Remove any uncited items not in myhash
+    for (var i=this.mylist.length-1;i>-1;i+=-1) {
+        if (!this.citationreg.citationsByItemId[this.mylist[i]] && !myhash[this.mylist[i]]) {
+            this.mylist = this.mylist.slice(0,i).concat(this.mylist.slice(i+1));
+            delete this.myhash[this.mylist[i]];
+        }
+    }
+};
+
 CSL.Registry.prototype.dodeletes = function (myhash) {
     var otheritems, key, ambig, pos, len, items, kkey, mypos, id;
     if ("string" === typeof myhash) {
@@ -583,7 +593,8 @@ CSL.Registry.prototype.setsortkeys = function () {
     //
 	for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
 		var key = this.mylist[i];
-		if (this.touched[key] || this.state.tmp.taintedItemIDs[key]) {
+        // The last of these conditions may create some thrashing on styles that do not require sorting.
+		if (this.touched[key] || this.state.tmp.taintedItemIDs[key] || !this.registry[key].sortkeys) {
 			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
 		}
 	}
