@@ -227,7 +227,7 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
         this.uncited = {};
         for (var i=0,ilen=itemIDs.length;i<ilen; i += 1) {
             if (!this.myhash[itemIDs[i]]) {
-                this.mylist.push(itemIDs[i]);
+                this.mylist.push("" + itemIDs[i]);
             }
             this.uncited[itemIDs[i]] = true;
             this.myhash[itemIDs[i]] = true;
@@ -244,7 +244,10 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
 			    myhash[itemIDs[i]] = true;
 		    }
 	    }
-        this.mylist = itemIDs.slice();
+        this.mylist = [];
+        for (var i=0,ilen=itemIDs.length;i<ilen;i+=1) {
+            this.mylist.push("" + itemIDs[i]);
+        }
         this.myhash = myhash;
     }
     //
@@ -259,10 +262,11 @@ CSL.Registry.prototype.dopurge = function (myhash) {
     // Remove any uncited items not in myhash
     for (var i=this.mylist.length-1;i>-1;i+=-1) {
         if (!this.citationreg.citationsByItemId[this.mylist[i]] && !myhash[this.mylist[i]]) {
-            this.mylist = this.mylist.slice(0,i).concat(this.mylist.slice(i+1));
             delete this.myhash[this.mylist[i]];
+            this.mylist = this.mylist.slice(0,i).concat(this.mylist[i+1]);
         }
     }
+    this.dodeletes(this.myhash);
 };
 
 CSL.Registry.prototype.dodeletes = function (myhash) {

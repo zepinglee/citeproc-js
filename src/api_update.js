@@ -300,15 +300,14 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     // prepare extended list of items
     this.registry.init(idList, true);
 
-    // don't bother trying to delete things based on citations, they have not changed.
+    // Use purge instead of delete.
     // this.registry.dodeletes(this.registry.myhash);
+    this.registry.dopurge(idHash);
 
     // add anything that's missing
     this.registry.doinserts(this.registry.mylist);
 
-    // refreshes are only triggered by dodeletes, so skip it. Use purge instead.
-    //this.registry.dorefreshes();
-    this.registry.dopurge(idHash);
+    this.registry.dorefreshes();
 
     // everything else is the same as updateItems()
     this.registry.rebuildlist();
