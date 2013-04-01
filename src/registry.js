@@ -209,42 +209,42 @@ CSL.Registry = function (state) {
 // 19. (o) [renumber] Reset citation numbers on list items
 //
 
-CSL.Registry.prototype.init = function (myitems, uncited_flag) {
+CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
     var i, ilen;
     this.oldseq = {};
     //  1. Receive list as function argument, store as hash and as list.
     //
     // Result:
-    //   this.myitems: a list of all itemIDs of referenced items, cited and uncited.
-    //   this.myhash: a hash of index positions in this.myitems.
+    //   this.mylist: a list of all itemIDs of referenced items, cited and uncited.
+    //   this.myhash: a hash of index positions in this.mylist.
     //   this.uncited: hash of uncited itemIDs.
     //
     // Proceed as follows.
     //
     if (uncited_flag) {
-        // If uncited_flag is non-nil, add any missing itemIDs to this.myitems
-        // from myitems input list, and set itemIDs in myitems on this.uncited.
+        // If uncited_flag is non-nil, add any missing itemIDs to this.mylist
+        // from itemIDs input list, and set the itemIDs in itemIDs on this.uncited.
         this.uncited = {};
-        for (var i=0,ilen=mylist.length;i<ilen; i += 1) {
-            if (!this.myhash[mylist[i]]) {
-                this.mylist.push(mylist[i]);
+        for (var i=0,ilen=itemIDs.length;i<ilen; i += 1) {
+            if (!this.myhash[itemIDs[i]]) {
+                this.mylist.push(itemIDs[i]);
             }
-            this.uncited[mylist[i]] = true;
-            this.myhash[mylist[i]] = true;
+            this.uncited[itemIDs[i]] = true;
+            this.myhash[itemIDs[i]] = true;
         }
     } else {
-        // If uncited_flag is nil, remove duplicate itemIDs from myitems input
-        // list, set the result on this.myitems, and add missing itemIDs to
-        // this.myitems from myitems input list.
+        // If uncited_flag is nil, remove duplicate itemIDs from itemIDs input
+        // list, set the result on this.mylist, and add missing itemIDs to
+        // this.mylist from itemIDs input list.
 	    var myhash = {};
-	    for (i=myitems.length-1;i>-1; i += -1) {
-		    if (myhash[myitems[i]]) {
-			    myitems = myitems.slice(0, i).concat(myitems.slice(i + 1));
+	    for (i=itemIDs.length-1;i>-1; i += -1) {
+		    if (myhash[itemIDs[i]]) {
+			    itemIDs = itemIDs.slice(0, i).concat(itemIDs.slice(i + 1));
 		    } else {
-			    myhash[myitems[i]] = true;
+			    myhash[itemIDs[i]] = true;
 		    }
 	    }
-        this.mylist = myitems.slice();
+        this.mylist = itemIDs.slice();
         this.myhash = myhash;
     }
     //
