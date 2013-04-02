@@ -1157,6 +1157,11 @@ CSL.getCite = function (Item, item, prevItemID) {
 
 CSL.citeStart = function (Item, item) {
     this.tmp.same_author_as_previous_cite = false;
+    if (!this.tmp.suppress_decorations) {
+        this.tmp.subsequent_author_substitute_ok = true;
+    } else {
+        this.tmp.subsequent_author_substitute_ok = false;
+    }
     this.tmp.lastchr = "";
     if (this.tmp.area === "citation" && this.citation.opt.collapse && this.citation.opt.collapse.length) {
         this.tmp.have_collapsed = true;
