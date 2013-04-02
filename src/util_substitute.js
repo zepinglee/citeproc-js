@@ -218,7 +218,7 @@ CSL.Util.substituteEnd = function (state, target) {
             var i, ilen;
             //var text_esc = CSL.getSafeEscape(state);
             var printing = !state.tmp.suppress_decorations;
-            if (printing && state.tmp.area === "bibliography") {
+            if (printing && state.tmp.area === "bibliography" && state.tmp.subsequent_author_substitute_ok) {
                 if (state.tmp.rendered_name) {
                     if ("partial-each" === subrule || "partial-first" === subrule) {
                         var dosub = true;

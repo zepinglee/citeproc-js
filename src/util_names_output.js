@@ -65,6 +65,9 @@ CSL.NameOutput = function(state, Item, item, variables) {
 };
 
 CSL.NameOutput.prototype.init = function (names) {
+    if (this.state.tmp.term_predecessor) {
+        this.state.tmp.subsequent_author_substitute_ok = false;
+    }
     if (this.nameset_offset) {
         this.nameset_base = this.nameset_base + this.nameset_offset;
     }
