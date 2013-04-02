@@ -66,6 +66,7 @@ CSL.Disambiguation.prototype.run = function(akey) {
         print("[A] === RUN ===");
     }
     //SNIP-END
+    this.akey = akey;
     if (this.initVars(akey)) {
         this.runDisambig();
     }
@@ -273,16 +274,14 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 
     // If first encounter in this cycle and multiple modes are
     // available, decrement mode and reset base
-    if (this.modes.length > 1 && !this.base.disambiguate) {
+    if (!this.base.disambiguate) {
+        this.initVars(this.akey)
         this.modeindex = 0;
-        this.base = CSL.cloneAmbigConfig(this.betterbase);
-    }
-    // If disambiguate is false set to true
-    if (!this.betterbase.disambiguate) {
+        // If disambiguate is false set to true
         this.base.disambiguate = true;
         this.betterbase.disambiguate = true;
         this.initGivens = true;
-    } else {
+    } else if (this.lists[this.listpos][1].length > 1) {
         if (this.modeindex === this.modes.length - 1) {
             // If this is the end, disambiguation failed.
             // Discard disambiguate=true and set parameters
