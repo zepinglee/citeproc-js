@@ -149,7 +149,7 @@ CSL.Transform = function (state) {
                 }
             }
         }
-        if (!value && altvar && Item[altvar] && use_field) {
+        if (!value && Item.type !== 'legal_case' && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
         if (!value) {
