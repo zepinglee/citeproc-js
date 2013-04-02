@@ -253,7 +253,7 @@ var CSL = {
         "delimiter"
     ],
     PARALLEL_MATCH_VARS: ["container-title"],
-    PARALLEL_TYPES: ["bill","gazette","legislation","legal_case","treaty","article-magazine","article-journal"],
+    PARALLEL_TYPES: ["bill","gazette","regulation","legislation","legal_case","treaty","article-magazine","article-journal"],
     PARALLEL_COLLAPSING_MID_VARSET: ["volume", "issue", "container-title", "section", "collection-number"],
     LOOSE: 0,
     STRICT: 1,
@@ -9511,7 +9511,7 @@ CSL.Transform = function (state) {
                 }
             }
         }
-        if (!value && altvar && Item[altvar] && use_field) {
+        if (!value && Item.type !== 'legal_case' && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
         if (!value) {
