@@ -2,6 +2,25 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.444
+==========================
+
+- Final fix for updateUncitedItems() (I hope).
+
+- Apply subsequent-author-substitute only to namesets
+  rendered at the very beginning of a bibliography entry.
+
+- Handle disambiguate="true" correctly.
+
+- Render transformed long and short legal_case names with
+  variable="title" + form="short" and variable="title-short"
+  + form="short" respectively.
+
+------------------------------------
+Mishandled or unimplemented features
+------------------------------------
+
+==========================
 Changes in version 1.0.443
 ==========================
 
