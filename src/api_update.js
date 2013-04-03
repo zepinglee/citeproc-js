@@ -78,10 +78,12 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
     var pre = [];
     var post = [];
     var ret = [];
+    var oldMode = this.opt.mode;
+    this.setOutputFormat(mode);
     for (var i=0,ilen=citations.length;i<ilen;i+=1) {
         // res contains a result report and a list of [index,string] pairs
         // index begins at 0
-        var res = this.processCitationCluster(citations[i],pre,post,mode);
+        var res = this.processCitationCluster(citations[i],pre,post,CSL.ASSUME_ALL_ITEMS_REGISTERED);
         pre.push([citations[i].citationID,citations[i].properties.noteIndex]);
         for (var j=0,jlen=res[1].length;j<jlen;j+=1) {
             var index = res[1][j][0];
@@ -92,6 +94,7 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
             ];
         }
     }
+    this.setOutputFormat(oldMode);
     return ret;
 }
 
