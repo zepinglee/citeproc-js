@@ -2,6 +2,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.446
+==========================
+
+- Run updateItems() exactly once in rebuildProcessorState()
+
+- Fix output mode selection in rebuildProcessorState()
+
+==========================
 Changes in version 1.0.445
 ==========================
 
