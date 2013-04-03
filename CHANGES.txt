@@ -2,6 +2,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.445
+==========================
+
+- Do not remove uncited items in updateItems()
+
+- Simplify code in rebuildProcessorState()
+
+==========================
 Changes in version 1.0.444
 ==========================
 
