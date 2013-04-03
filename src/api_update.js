@@ -56,32 +56,25 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
 
     // citations is a list of citation objects in document order.
     // mode is one of "html", "text" or "rtf".
-    // uncitedItemIDs is a JS object with itemIDs as keys, and values that evaluate true.
+    // uncitedItemIDs is a list of itemIDs or a JS object with itemIDs as keys.
     // Returns a list of [citationID,noteIndex,string] triples in document order.
     // Set citation.properties.noteIndex to 0 for in-text citations.
     // It is not necessary to run updateItems() before this function.
     if (!citations) {
         citations = [];
     }
-    if (!uncitedItemIDs) {
-        uncitedItemIDs = {};
+    if (!mode) {
+        mode = 'html';
     }
     var itemIDs = [];
-    var myUncitedItemIDs = [];
     for (var i=0,ilen=citations.length;i<ilen;i+=1) {
         for (var j=0,jlen=citations[i].citationItems.length;j<jlen;j+=1) {
             var itemID = "" + citations[i].citationItems[j].id;
             itemIDs.push(itemID);
-            if (uncitedItemIDs[itemID]) {
-                delete uncitedItemIDs[itemID];
-            }
         }
     }
     this.updateItems(itemIDs);
-    for (var key in uncitedItemIDs) {
-        myUncitedItemIDs.push(key);
-    }
-    this.updateUncitedItems(myUncitedItemIDs);
+    this.updateUncitedItems(uncitedItemIDs);
     var pre = [];
     var post = [];
     var ret = [];

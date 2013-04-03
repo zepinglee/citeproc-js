@@ -236,14 +236,17 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
         // If uncited_flag is nil, remove duplicate itemIDs from itemIDs input
         // list, set the result on this.mylist, and add missing itemIDs to
         // this.mylist from itemIDs input list.
-	    var myhash = {};
-	    for (i=itemIDs.length-1;i>-1; i += -1) {
-		    if (myhash[itemIDs[i]]) {
-			    itemIDs = itemIDs.slice(0, i).concat(itemIDs.slice(i + 1));
-		    } else {
-			    myhash[itemIDs[i]] = true;
-		    }
-	    }
+        for (var key in this.uncited) {
+            itemIDs.push(key);
+        }
+        var myhash = {};
+        for (i=itemIDs.length-1;i>-1; i += -1) {
+            if (myhash[itemIDs[i]]) {
+                itemIDs = itemIDs.slice(0, i).concat(itemIDs.slice(i + 1));
+            } else {
+                myhash[itemIDs[i]] = true;
+            }
+        }
         this.mylist = [];
         for (var i=0,ilen=itemIDs.length;i<ilen;i+=1) {
             this.mylist.push("" + itemIDs[i]);
@@ -518,7 +521,7 @@ CSL.Registry.prototype.dorefreshes = function () {
         if ("undefined" === typeof akey) {
             akey = CSL.getAmbiguousCite.call(this.state, Item);
         }
-		this.state.tmp.taintedItemIDs[key] = true;
+        this.state.tmp.taintedItemIDs[key] = true;
         abase = CSL.getAmbigConfig.call(this.state);
         this.registerAmbigToken(akey, key, abase);
         this.ambigsTouched[akey] = true;
@@ -557,7 +560,7 @@ CSL.Registry.prototype.setdisambigs = function () {
         // in effect.
         this.state.disambiguate.run(akey);
     }
-	this.ambigsTouched = {};
+    this.ambigsTouched = {};
     this.akeys = {};
 };
 
@@ -598,13 +601,13 @@ CSL.Registry.prototype.setsortkeys = function () {
     //
     // 17. Set sort keys on each item token.
     //
-	for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
-		var key = this.mylist[i];
+    for (var i = 0, ilen = this.mylist.length; i < ilen; i += 1) {
+        var key = this.mylist[i];
         // The last of these conditions may create some thrashing on styles that do not require sorting.
-		if (this.touched[key] || this.state.tmp.taintedItemIDs[key] || !this.registry[key].sortkeys) {
-			this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
-		}
-	}
+        if (this.touched[key] || this.state.tmp.taintedItemIDs[key] || !this.registry[key].sortkeys) {
+            this.registry[key].sortkeys = CSL.getSortKeys.call(this.state, this.state.retrieveItem(key), "bibliography_sort");
+        }
+    }
 };
 
 CSL.Registry.prototype.sorttokens = function () {
