@@ -300,12 +300,11 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     // this.registry.dodeletes(this.registry.myhash);
     this.registry.dopurge(idHash);
 
-    // add anything that's missing
+    // everything else is the same as updateItems()
     this.registry.doinserts(this.registry.mylist);
 
     this.registry.dorefreshes();
 
-    // everything else is the same as updateItems()
     this.registry.rebuildlist();
 
     this.registry.setsortkeys();
