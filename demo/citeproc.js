@@ -902,6 +902,13 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             state.tmp.count_offset_characters = false;
         }
     }
+    for (i=0,ilen=ret.length - 1;i<ilen;i+=1) {
+        if ("number" === typeof ret[i].num && "number" === typeof ret[i+1].num && !ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK) {
+            ret[i].strings.suffix = txt_esc(blob_delimiter);
+            ret[i+1].successor_prefix = "";
+            ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK = true;
+        }
+    }
     var span_split = 0;
     for (i = 0, ilen = ret.length; i < ilen; i += 1) {
         if ("string" === typeof ret[i]) {
@@ -909,7 +916,6 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             if (i < ret.length - 1  && "object" === typeof ret[i + 1]) {
                 if (blob_delimiter && !ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK) {
                     ret[i] += txt_esc(blob_delimiter);
-                } else {
                 }
                 ret[i + 1].UGLY_DELIMITER_SUPPRESS_HACK = true;
             }
@@ -918,7 +924,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         span_split = ret.length;
     }
-    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter);
+    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, true);
     if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
@@ -965,19 +971,15 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         this.current.mystack = [];
         this.current.mystack.push(this.queue);
         if (state.tmp.suppress_decorations) {
-            ret = state.output.renderBlobs(ret);
+            ret = state.output.renderBlobs(ret, undefined, true);
         }
     } else if ("boolean" === typeof blob) {
-        ret = state.output.renderBlobs(ret);
+        ret = state.output.renderBlobs(ret, undefined, true);
     }
     if (blob && blob.new_locale) {
         state.opt.lang = blob.old_locale;
     }
-    if (blob) {
-        return ret;
-    } else {
-        return ret;
-    }
+    return ret;
 };
 CSL.Output.Queue.prototype.clearlevel = function () {
     var blob, pos, len;
@@ -987,7 +989,7 @@ CSL.Output.Queue.prototype.clearlevel = function () {
         blob.blobs.pop();
     }
 };
-CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, has_more) {
+CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite) {
     var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params, txt_esc;
     txt_esc = CSL.getSafeEscape(this.state);
     if (!delim) {

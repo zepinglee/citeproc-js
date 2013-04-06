@@ -2,6 +2,13 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.447
+==========================
+
+- Fix loss of delimiters on adjacent cs:number
+  nodes.
+
+==========================
 Changes in version 1.0.446
 ==========================
 
