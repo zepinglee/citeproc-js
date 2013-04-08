@@ -215,7 +215,7 @@ CSL.Node.text = {
                         // first thing rendered in a citation (or if it is
                         // being rendered immediately after terminal punctuation,
                         // I guess, actually).
-                        if (!state.tmp.term_predecessor) {
+                        if (!state.tmp.term_predecessor && !(state.opt["class"] === "in-text" && state.tmp.area === "citation")) {
                             myterm = CSL.Output.Formatters["capitalize-first"](state, term);
                             //CSL.debug("Capitalize");
                         } else {
