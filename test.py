@@ -8,7 +8,7 @@ from cStringIO import StringIO
 from cPickle import Pickler, Unpickler
 import subprocess as sub 
 import string
-from MAKE_STYLE import jsonwalker
+from makejson import jsonwalker
 
 reload(sys)
 sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
