@@ -142,6 +142,11 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
             }
         }
     } else {
+        if (!gender) {
+            // XXX hack to prevent crash on CSL 1.0 styles.
+            // Reported by Carles.
+            gender = undefined;
+        }
         this.state.fun.ordinalizer.init();
         if ((num / 10) % 10 === 1 || (num > 10 && num < 20)) {
             suffix = this.suffixes[this.state.opt.lang][gender][3];
