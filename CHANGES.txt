@@ -2,6 +2,35 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.449
+==========================
+
+- Code cleanup for conditional statements.
+
+- Implement + and - prefixes on individual argument elements
+  in the following condition attributes:
+    * is-numeric
+    * is-uncertain-date
+    * locator
+    * page (MLZ only)
+    * type
+    * variable
+    * jurisdiction (MLZ only)
+
+- Implement *-any and *-all forms of the following attributes:
+    * is-numeric
+    * is-uncertain-date
+    * locator
+    * page (MLZ only)
+    * type
+    * variable
+    * jurisdiction (MLZ only)
+
+  The changes above will make more compact CSL code possible
+  in complex citation styles.
+    
+
+==========================
 Changes in version 1.0.448
 ==========================
 

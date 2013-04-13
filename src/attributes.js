@@ -101,6 +101,15 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
     var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
     this.tests.push(func);
 };
+CSL.Attributes["@is-numeric-any"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@is-numeric"].call(this, state, arg, "any");
+};
+CSL.Attributes["@is-numeric-all"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@is-numeric"].call(this, state, arg, "all");
+};
+
 
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
     if (this.tokentype === CSL.END) return;
@@ -123,6 +132,15 @@ CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
     var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
     this.tests.push(func);
 };
+CSL.Attributes["@is-uncertain-date-any"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@is-uncertain-date"].call(this, state, arg, "any");
+};
+CSL.Attributes["@is-uncertain-date-all"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@is-uncertain-date"].call(this, state, arg, "all");
+};
+
 
 CSL.Attributes["@locator"] = function (state, arg) {
     if (this.tokentype === CSL.END) return;
@@ -154,6 +172,15 @@ CSL.Attributes["@locator"] = function (state, arg) {
     var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
     this.tests.push(func);
 };
+CSL.Attributes["@locator-any"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@locator"].call(this, state, arg, "any");
+};
+CSL.Attributes["@locator-all"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@locator"].call(this, state, arg, "all");
+};
+
 
 CSL.Attributes["@page"] = function (state, arg) {
     if (this.tokentype === CSL.END) return;
@@ -186,6 +213,15 @@ CSL.Attributes["@page"] = function (state, arg) {
     var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
     this.tests.push(func);
 };
+CSL.Attributes["@page-any"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@page"].call(this, state, arg, "any");
+};
+CSL.Attributes["@page-all"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@page"].call(this, state, arg, "all");
+};
+
 
 CSL.Attributes["@position"] = function (state, arg) {
     if (this.tokentype === CSL.END) return;
@@ -193,8 +229,6 @@ CSL.Attributes["@position"] = function (state, arg) {
     state.opt.update_mode = CSL.POSITION;
     state.parallel.use_parallels = true;
     var trypositions = arg.split(/\s+/);
-    // Strip off any boolean prefix.
-    CSL.Util.setReverseConditions.call(this, trypositions);
     var maketest = function(tryposition) {
         return function (Item, item) {
             if (state.tmp.area === "bibliography") {
@@ -464,6 +498,15 @@ CSL.Attributes["@variable"] = function (state, arg) {
         this.tests.push(func);
     }
 };
+CSL.Attributes["@variable-any"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@variable"].call(this, state, arg, "any");
+};
+CSL.Attributes["@variable-all"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@variable"].call(this, state, arg, "all");
+};
+
 
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
     if (this.tokentype === CSL.END) return;
@@ -501,6 +544,15 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
     var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
     this.tests.push(func);
 };
+CSL.Attributes["@jurisdiction-any"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@jurisdiction"].call(this, state, arg, "any");
+};
+CSL.Attributes["@jurisdiction-all"] = function (state, arg) {
+    if (this.tokentype === CSL.END) return;
+    CSL.Attributes["@jurisdiction"].call(this, state, arg, "all");
+};
+
 
 CSL.Attributes["@context"] = function (state, arg) {
     if (this.tokentype === CSL.END) return;
