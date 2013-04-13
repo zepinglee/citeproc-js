@@ -56,9 +56,19 @@ CSL.Node["if"] = {
                 state.opt.lang = this.locale;
             }
             if (!this.evaluator) {
-                //
-                // cut and paste of "any"
-                this.evaluator = state.fun.match.any;
+                this.evaluator = function (token, state, Item, item) {
+                    var record = function (result) {
+                        if (result) {
+                            state.tmp.jump.replace("succeed");
+                            return token.succeed;
+                        } else {
+                            state.tmp.jump.replace("fail");
+                            return token.fail;
+                        }
+                    }
+                    // True argument indicates this is an explict call from the schema.
+                    return record(state.fun.match.any(token, state, token.tests, true)(Item, item));
+                };
             }
         }
         if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {

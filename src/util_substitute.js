@@ -142,7 +142,7 @@ CSL.Util.substituteStart = function (state, target) {
         // macro if we have acquired a name value.
 
         // check for variable
-        func = function (state, Item) {
+        func = function (Item,item) {
             if (state.tmp.can_substitute.value()) {
                 return true;
             }
@@ -154,7 +154,18 @@ CSL.Util.substituteStart = function (state, target) {
         // function, from Attributes.  These functions
         // should be defined in a namespace for reuse.
         // Sometime.
-        if_start.evaluator = state.fun.match.any;
+        if_start.evaluator = function (token, state, Item, item) {
+            var record = function (result) {
+                if (result) {
+                    state.tmp.jump.replace("succeed");
+                    return token.succeed;
+                } else {
+                    state.tmp.jump.replace("fail");
+                    return token.fail;
+                }
+            }
+            return record(state.fun.match.any(token, state, token.tests)(Item, item));
+        };
         target.push(if_start);
     }
 };

@@ -49,107 +49,47 @@
 /*global CSL: true */
 
 
-/**
- * Utilities for various things.
- * @namespace Utilities
- */
 CSL.Util = {};
 
-/*
- * Also dumping this stuff here temporarily.
- */
 CSL.Util.Match = function () {
 
-    this.any = function (token, state, Item, item) {
-        //
-        // assume false, return true on any single true hit
-        //
-        var ret = false;
-        for (var i = 0, ilen = token.tests.length; i < ilen; i += 1) {
-            var func = token.tests[i];
-            var reslist = func.call(token, state, Item, item);
-            if ("object" !== typeof reslist) {
-                reslist = [reslist];
-            }
-            for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
-                if (reslist[j]) {
-                    ret = true;
-                    break;
+    this.any = function (token, state, tests) {
+        return function (Item, item) {
+            for (var i=0, ilen=tests.length; i < ilen; i += 1) {
+                result = tests[i](Item, item);
+                if (result) {
+                    return true;
                 }
             }
-            if (ret) {
-                break;
-            }
-        }
-        if (ret) {
-            ret = token.succeed;
-            state.tmp.jump.replace("succeed");
-        } else {
-            ret = token.fail;
-            state.tmp.jump.replace("fail");
-        }
-        return ret;
+            return false;
+        };
     };
 
-    this.none = function (token, state, Item, item) {
-        //
-        // assume true, return false on any single true hit
-        //
-        var ret = true;
-        for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
-            var func = this.tests[i];
-            var reslist = func.call(token, state, Item, item);
-            if ("object" !== typeof reslist) {
-                reslist = [reslist];
-            }
-            for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
-                if (reslist[j]) {
-                    ret = false;
-                    break;
-                }
-            }
-            if (!ret) {
-                break;
-            }
-        }
-        if (ret) {
-            ret = token.succeed;
-            state.tmp.jump.replace("succeed");
-        } else {
-            ret = token.fail;
-            state.tmp.jump.replace("fail");
-        }
-        return ret;
-    };
+    this[undefined] = this.any;
 
-    this.all = function (token, state, Item, item) {
-        //
-        // assume true, return false on any single false hit
-        //
-        var ret = true;
-        for (var i = 0, ilen = this.tests.length; i < ilen; i += 1) {
-            var func = this.tests[i];
-            var reslist = func.call(token, state, Item, item);
-            if ("object" !== typeof reslist) {
-                reslist = [reslist];
-            }
-            for (var j = 0, jlen = reslist.length; j < jlen; j += 1) {
-                if (!reslist[j]) {
-                    ret = false;
-                    break;
+    this.none = function (token, state, tests, topLevel) {
+        if (!topLevel) {
+            return this.any(token, state, tests);
+        }
+        return function (Item, item) {
+            for (var i=0,ilen=tests.length;i<ilen;i+=1) {
+                result = tests[i](Item,item);
+                if (result) {
+                    return false;
                 }
             }
-            if (!ret) {
-                break;
+            return true;
+        };
+    };
+    this.all = function (token, state, tests) {
+        return function (Item, item) {
+            for (var i=0,ilen=tests.length;i<ilen;i+=1) {
+                result = tests[i](Item,item);
+                if (!result) {
+                    return false;
+                }
             }
-        }
-        if (ret) {
-            ret = token.succeed;
-            state.tmp.jump.replace("succeed");
-        } else {
-            ret = token.fail;
-            state.tmp.jump.replace("fail");
-        }
-        return ret;
+            return true;
+        };
     };
 };
