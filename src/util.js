@@ -51,18 +51,19 @@
 
 CSL.Util = {
     setReverseConditions: function (lst) {
-        this.reverse_conditions = [];
+        reverses = [];
         for (var i=0,ilen=lst.length;i<ilen;i+=1) {
             if (lst[i][0] === "-") {
                 lst[i] = lst[i].slice(1);
-                this.reverse_conditions.push(true);
+                reverses.push(true);
             } else if (lst[i][0] === "+") {
                 lst[i] = lst[i].slice(1);
-                this.reverse_conditions.push(false);
+                reverses.push(false);
             } else {
-                this.reverse_conditions.push(false);
+                reverses.push(false);
             }
         }
+        return reverses;
     }
 };
 
@@ -72,11 +73,6 @@ CSL.Util.Match = function () {
         return function (Item, item) {
             for (var i=0, ilen=tests.length; i < ilen; i += 1) {
                 result = tests[i](Item, item);
-                if (level === CSL.CONDITION_LEVEL_BOTTOM && token.reverse_conditions) {
-                    if (token.reverse_conditions[i]) {
-                        result = !result;
-                    }
-                }
                 if (result) {
                     return true;
                 }
@@ -105,11 +101,6 @@ CSL.Util.Match = function () {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
-                if (level === CSL.CONDITION_LEVEL_BOTTOM && token.reverse_conditions) {
-                    if (token.reverse_conditions[i]) {
-                        result = !result;
-                    }
-                }
                 if (!result) {
                     return false;
                 }
