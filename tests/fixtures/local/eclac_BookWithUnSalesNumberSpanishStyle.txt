@@ -220,7 +220,8 @@ Rosales, Osvaldo y Mikio Kuwayama (2007), «América latina y china e india: ha
         "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
         "type": "book", 
         "issue": "S.07.II.G.6",
-        "language": "es-x-lex-un.org",
+        "language": "es",
+        "jurisdiction": "un.org",
 		"multi":{
 			"_keys":{
 				"publisher":{
