@@ -49,14 +49,34 @@
 /*global CSL: true */
 
 
-CSL.Util = {};
+CSL.Util = {
+    setReverseConditions: function (lst) {
+        this.reverse_conditions = [];
+        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+            if (lst[i][0] === "-") {
+                lst[i] = lst[i].slice(1);
+                this.reverse_conditions.push(true);
+            } else if (lst[i][0] === "+") {
+                lst[i] = lst[i].slice(1);
+                this.reverse_conditions.push(false);
+            } else {
+                this.reverse_conditions.push(false);
+            }
+        }
+    }
+};
 
 CSL.Util.Match = function () {
 
-    this.any = function (token, state, tests) {
+    this.any = function (token, state, tests, level) {
         return function (Item, item) {
             for (var i=0, ilen=tests.length; i < ilen; i += 1) {
                 result = tests[i](Item, item);
+                if (level === CSL.CONDITION_LEVEL_BOTTOM && token.reverse_conditions) {
+                    if (token.reverse_conditions[i]) {
+                        result = !result;
+                    }
+                }
                 if (result) {
                     return true;
                 }
@@ -67,9 +87,9 @@ CSL.Util.Match = function () {
 
     this[undefined] = this.any;
 
-    this.none = function (token, state, tests, topLevel) {
-        if (!topLevel) {
-            return this.any(token, state, tests);
+    this.none = function (token, state, tests, level) {
+        if (CSL.CONDITION_LEVEL_TOP !== level) {
+            return this.any(token, state, tests, level);
         }
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
@@ -81,10 +101,15 @@ CSL.Util.Match = function () {
             return true;
         };
     };
-    this.all = function (token, state, tests) {
+    this.all = function (token, state, tests, level) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
+                if (level === CSL.CONDITION_LEVEL_BOTTOM && token.reverse_conditions) {
+                    if (token.reverse_conditions[i]) {
+                        result = !result;
+                    }
+                }
                 if (!result) {
                     return false;
                 }

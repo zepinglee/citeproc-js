@@ -67,7 +67,7 @@ CSL.Node["if"] = {
                         }
                     }
                     // True argument indicates this is an explict call from the schema.
-                    return record(state.fun.match.any(token, state, token.tests, true)(Item, item));
+                    return record(state.fun.match.any(token, state, token.tests, CSL.CONDITION_LEVEL_TOP)(Item, item));
                 };
             }
         }

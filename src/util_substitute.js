@@ -164,7 +164,7 @@ CSL.Util.substituteStart = function (state, target) {
                     return token.fail;
                 }
             }
-            return record(state.fun.match.any(token, state, token.tests)(Item, item));
+            return record(state.fun.match.any(token, state, token.tests, CSL.CONDITION_LEVEL_BOTTOM)(Item, item));
         };
         target.push(if_start);
     }
