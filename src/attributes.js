@@ -232,21 +232,21 @@ CSL.Attributes["@position"] = function (state, arg) {
     var maketest = function(tryposition) {
         return function (Item, item) {
             if (state.tmp.area === "bibliography") {
-                return reverse ? true : false;
+                return false;
             }
             if (item && "undefined" === typeof item.position) {
                 item.position = 0;
             }
             if (item && typeof item.position === "number") {
                 if (item.position === 0 && tryposition === 0) {
-                    return reverse ? false : true;
+                    return true;
                 } else if (tryposition > 0 && item.position >= tryposition) {
-                    return reverse ? false : true;
+                    return true;
                 }
             } else if (tryposition === 0) {
-                return reverse ? false : true;
+                return true;
             }
-            return reverse ? true : false;
+            return false;
         }
     }
     var mytests = [];
