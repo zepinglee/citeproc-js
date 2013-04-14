@@ -53,9 +53,11 @@ citation
 
 
 >>===== RESULT =====>>
-Item One is not an article, but does have an Edition value
-Item Two is a book, but has no edition
-Item Three is a chapter, and has a title
+Item One is not an ARTICLE-JOURNAL, and has an EDITION
+Item Two is a BOOK, but has no EDITION
+Item Three is a CHAPTER, and has an AUTHOR
+Item Four is an ARTICLE-JOURNAL with both VOLUME and ISSUE, but one of them is non-numeric
+Item Five is an ARTICLE-JOURNAL with both VOLUME and ISSUE, and both of them are numeric
 <<===== RESULT =====<<
 
 
@@ -74,14 +76,20 @@ Item Three is a chapter, and has a title
       <group delimiter=" ">
         <text variable="title"/>
         <choose>
-          <if type-all="-article-journal" variable-all="+edition" match="all">
-            <text value="is not an article, but does have an Edition value"/>
+          <if type-all="article-journal" variable-all="volume issue" is-numeric-any="not:volume not:issue" match="all">
+            <text value="is an ARTICLE-JOURNAL with both VOLUME and ISSUE, but one of them is non-numeric"/>
           </if>
-          <else-if type="book" variable="-edition" match="all">
-            <text value="is a book, but has no edition"/>
+          <else-if type-all="article-journal" variable-all="volume issue" is-numeric-all="volume issue" match="all">
+            <text value="is an ARTICLE-JOURNAL with both VOLUME and ISSUE, and both of them are numeric"/>
           </else-if>
-          <else-if type="chapter" variable="title" match="all">
-            <text value="is a chapter, and has a title"/>
+          <else-if type-all="not:article-journal" variable-all="edition" match="all">
+            <text value="is not an ARTICLE-JOURNAL, and has an EDITION"/>
+          </else-if>
+          <else-if type-all="book" variable-all="not:edition" match="all">
+            <text value="is a BOOK, but has no EDITION"/>
+          </else-if>
+          <else-if type-all="chapter" variable-all="author" match="all">
+            <text value="is a CHAPTER, and has an AUTHOR"/>
           </else-if>
         </choose>
       </group>
@@ -107,7 +115,27 @@ Item Three is a chapter, and has a title
     {
         "id": "ITEM-3", 
         "title": "Item Three", 
-        "type": "chapter"
+        "type": "chapter",
+        "author": [
+          {
+             "family": "Snoapes",
+             "given": "John"
+          }
+        ]
+    },
+    {
+        "id": "ITEM-4", 
+        "title": "Item Four", 
+        "type": "article-journal",
+        "volume": "Supplement",
+        "issue": "1"
+    },
+    {
+        "id": "ITEM-5", 
+        "title": "Item Five", 
+        "type": "article-journal",
+        "volume": "2",
+        "issue": "4"
     }
 ]
 <<===== INPUT =====<<
