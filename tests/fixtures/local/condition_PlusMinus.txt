@@ -52,7 +52,7 @@ citation
 
 
 This test supports a proposal for extending CSL's conditional attributes.
-The proposal introduces two changes:
+The proposal would introduce two changes:
 
   * An optional not: prefix on elements of the list argument to
     certain condition attributes; and
