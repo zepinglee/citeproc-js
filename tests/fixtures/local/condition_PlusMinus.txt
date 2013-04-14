@@ -77,8 +77,7 @@ follows:
       "all" or "any" as described in the CSL Specification,
       returning an overall test value of "true" or "false".
 
-This would allow two testing patterns that are not possible in
-current the CSL implementation:
+This would allow two testing patterns that are not currently possible:
 
   * A single test can require both true and false values; and
 
