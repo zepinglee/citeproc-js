@@ -9514,12 +9514,9 @@ CSL.Util = {
     setReverseConditions: function (lst) {
         reverses = [];
         for (var i=0,ilen=lst.length;i<ilen;i+=1) {
-            if (lst[i][0] === "-") {
-                lst[i] = lst[i].slice(1);
+            if (lst[i].slice(0,4) === "not:") {
+                lst[i] = lst[i].slice(4);
                 reverses.push(true);
-            } else if (lst[i][0] === "+") {
-                lst[i] = lst[i].slice(1);
-                reverses.push(false);
             } else {
                 reverses.push(false);
             }
