@@ -51,7 +51,6 @@
 CSL.Attributes = {};
 
 CSL.Attributes["@disambiguate"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     if (arg === "true") {
         state.opt.has_disambiguate = true;
         var func = function (Item, item) {
@@ -66,7 +65,6 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-numeric"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var variables = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var reverses = CSL.Util.setReverseConditions.call(this, variables);
@@ -102,17 +100,14 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
     this.tests.push(func);
 };
 CSL.Attributes["@is-numeric-any"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@is-numeric"].call(this, state, arg, "any");
 };
 CSL.Attributes["@is-numeric-all"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@is-numeric"].call(this, state, arg, "all");
 };
 
 
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var variables = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var reverses = CSL.Util.setReverseConditions.call(this, variables);
@@ -133,17 +128,14 @@ CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
     this.tests.push(func);
 };
 CSL.Attributes["@is-uncertain-date-any"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@is-uncertain-date"].call(this, state, arg, "any");
 };
 CSL.Attributes["@is-uncertain-date-all"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@is-uncertain-date"].call(this, state, arg, "all");
 };
 
 
 CSL.Attributes["@locator"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     // Strip off any boolean prefix.
@@ -173,58 +165,14 @@ CSL.Attributes["@locator"] = function (state, arg) {
     this.tests.push(func);
 };
 CSL.Attributes["@locator-any"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@locator"].call(this, state, arg, "any");
 };
 CSL.Attributes["@locator-all"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@locator"].call(this, state, arg, "all");
 };
 
 
-CSL.Attributes["@page"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
-    var trylabels = arg.replace("sub verbo", "sub-verbo");
-    trylabels = trylabels.split(/\s+/);
-    // Strip off any boolean prefix.
-    var reverses = CSL.Util.setReverseConditions.call(this, trylabels);
-    var maketest = function (trylabel, reverse) {
-        return function(Item, item) {
-            var label;
-            state.processNumber(false, Item, "page", Item.type);
-            if (!state.tmp.shadow_numbers.page.label) {
-                label = "page";
-            } else if (state.tmp.shadow_numbers.page.label === "sub verbo") {
-                label = "sub-verbo";
-            } else {
-                label = state.tmp.shadow_numbers.page.label;
-            }
-            if (trylabel === label) {
-                return reverse ? false : true;
-            } else {
-                return reverse ? true : false;
-            }
-        }
-    }
-    var mytests = [];
-    for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
-        mytests.push(maketest(trylabels[i], reverses[i]));
-    }
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
-};
-CSL.Attributes["@page-any"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
-    CSL.Attributes["@page"].call(this, state, arg, "any");
-};
-CSL.Attributes["@page-all"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
-    CSL.Attributes["@page"].call(this, state, arg, "all");
-};
-
-
 CSL.Attributes["@position"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
     state.parallel.use_parallels = true;
@@ -277,7 +225,6 @@ CSL.Attributes["@position"] = function (state, arg) {
 };
 
 CSL.Attributes["@type"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var types = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var reverses = CSL.Util.setReverseConditions.call(this, types);
@@ -299,16 +246,13 @@ CSL.Attributes["@type"] = function (state, arg) {
     this.tests.push(func);
 };
 CSL.Attributes["@type-any"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@type"].call(this, state, arg, "any");
 };
 CSL.Attributes["@type-all"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@type"].call(this, state, arg, "all");
 };
 
 CSL.Attributes["@variable"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     this.variables = arg.split(/\s+/);
     this.variables_real = this.variables.slice();
 
@@ -504,17 +448,52 @@ CSL.Attributes["@variable"] = function (state, arg) {
     }
 };
 CSL.Attributes["@variable-any"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@variable"].call(this, state, arg, "any");
 };
 CSL.Attributes["@variable-all"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@variable"].call(this, state, arg, "all");
 };
 
 
+CSL.Attributes["@page"] = function (state, arg) {
+    var trylabels = arg.replace("sub verbo", "sub-verbo");
+    trylabels = trylabels.split(/\s+/);
+    // Strip off any boolean prefix.
+    var reverses = CSL.Util.setReverseConditions.call(this, trylabels);
+    var maketest = function (trylabel, reverse) {
+        return function(Item, item) {
+            var label;
+            state.processNumber(false, Item, "page", Item.type);
+            if (!state.tmp.shadow_numbers.page.label) {
+                label = "page";
+            } else if (state.tmp.shadow_numbers.page.label === "sub verbo") {
+                label = "sub-verbo";
+            } else {
+                label = state.tmp.shadow_numbers.page.label;
+            }
+            if (trylabel === label) {
+                return reverse ? false : true;
+            } else {
+                return reverse ? true : false;
+            }
+        }
+    }
+    var mytests = [];
+    for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
+        mytests.push(maketest(trylabels[i], reverses[i]));
+    }
+    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
+    this.tests.push(func);
+};
+CSL.Attributes["@page-any"] = function (state, arg) {
+    CSL.Attributes["@page"].call(this, state, arg, "any");
+};
+CSL.Attributes["@page-all"] = function (state, arg) {
+    CSL.Attributes["@page"].call(this, state, arg, "all");
+};
+
+
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var tryjurisdictions = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var reverses = CSL.Util.setReverseConditions.call(this, tryjurisdictions);
@@ -549,17 +528,14 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
     this.tests.push(func);
 };
 CSL.Attributes["@jurisdiction-any"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@jurisdiction"].call(this, state, arg, "any");
 };
 CSL.Attributes["@jurisdiction-all"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     CSL.Attributes["@jurisdiction"].call(this, state, arg, "all");
 };
 
 
 CSL.Attributes["@context"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var func = function (Item, item) {
 		var area = state.tmp.area.slice(0, arg.length);
 		if (area === arg) {
@@ -571,7 +547,6 @@ CSL.Attributes["@context"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-year-only"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item,item){
@@ -592,7 +567,6 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item,item){
@@ -613,7 +587,6 @@ CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-day-only"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item,item){
@@ -634,7 +607,6 @@ CSL.Attributes["@has-day-only"] = function (state, arg) {
 };
 
 CSL.Attributes["@subjurisdictions"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var trysubjurisdictions = parseInt(arg, 10);
     var func = function (Item, item) {
         var subjurisdictions = 0;
@@ -653,7 +625,6 @@ CSL.Attributes["@subjurisdictions"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-plural"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var func = function (Item, item) {
         var nameList = Item[arg];
         if (nameList && nameList.length) {
@@ -773,7 +744,6 @@ CSL.Attributes["@locale"] = function (state, arg) {
 // sets some parameters that are picked up during
 // processing.
 CSL.Attributes["@is-parallel"] = function (state, arg) {
-    if (this.tokentype === CSL.END) return;
     var values = arg.split(" ");
     for (var i = 0, ilen = values.length; i < ilen; i += 1) {
         if (values[i] === "true") {
