@@ -51,6 +51,104 @@ citation
 <<===== MODE =====<<
 
 
+This test supports a proposal for extending CSL's conditional attributes.
+The proposal introduces two changes:
+
+  * An optional not: prefix on elements of the list argument to
+    certain condition attributes; and
+
+  * Alternative forms of several condition attributes, identified
+    by an *-all or *-any suffix.
+
+Under the proposal, conditional evaluation would take place as
+follows:
+
+  (1) Each attribute argument list element is evaluated, returning
+      "true" or "false";
+
+  (2) For each attribute, the results from (1) are evaluated using "all"
+      (if the attribute suffix is "-all") or "any" (if the attribute
+      suffix is "-any"), following the rules described in the CSL
+      Specification. Legacy attributes with no suffix follow the value
+      of the "match" attribute, or "all" if no companion "match"
+      attribute is present).
+
+  (3) The "match" attribute evaluates the results from (2) using
+      "all" or "any" as described in the CSL Specification,
+      returning an overall test value of "true" or "false".
+
+This would allow two testing patterns that are not possible in
+current the CSL implementation:
+
+  * A single test can require both true and false values; and
+
+  * Attributes can set an evaluation method ("all" or "any") independent
+    of the "match" attribute that controls inter-attribute evaluation.
+
+This flexibility makes it possible to reduce the bulk of CSL code.
+As one example, the construct below is found in several styles in the 
+CSL repository:
+
+    <macro name="year-date">
+      <choose>
+        <if type="webpage">
+          <choose>
+            <if variable="issued">
+              <date variable="issued">
+                <date-part name="year"/>
+              </date>
+            </if>
+            <else>
+              <date variable="accessed">
+                <date-part name="year"/>
+              </date>
+            </else>
+          </choose>
+        </if>
+        <else>
+          <date variable="issued">
+            <date-part name="year"/>
+          </date>
+        </else>
+      </choose>
+    </macro>
+
+What the code does is to print the "accessed" date if the item is a
+webpage and has no "issued" date, and otherwise to print the "issued"
+date, regardless of item type. A nested cs:choose statement is needed,
+because negative and positive conditions cannot be declared together
+on the same cs:if or cs:else-if element.
+
+With the proposed syntax, the code sample above can be rewritten as a
+single cs:choose statement:
+
+    <macro name="year-date">
+      <choose>
+        <if type="webpage" variable="not:issued" match="all">
+          <date variable="accessed">
+            <date-part name="year"/>
+          </date>
+        </if>
+        <else>
+          <date variable="issued">
+            <date-part name="year"/>
+          </date>
+        </else>
+      </choose>
+    </macro>
+
+Condition attributes that would accept a not: prefix on argument
+elements and be given alternative *-all and *-not forms under the
+proposal are the following:
+
+    * is-numeric
+    * is-uncertain-date
+    * locator
+    * type
+    * variable
+    * jurisdiction (MLZ only)
+    * page (MLZ only)
+
 
 >>===== RESULT =====>>
 Item One is not an ARTICLE-JOURNAL, and has an EDITION
