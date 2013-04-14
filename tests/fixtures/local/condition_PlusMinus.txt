@@ -137,7 +137,7 @@ single cs:choose statement:
     </macro>
 
 Condition attributes that would accept a not: prefix on argument
-elements and be given alternative *-all and *-not forms under the
+elements and be given alternative *-all and *-any forms under the
 proposal are the following:
 
     * is-numeric
