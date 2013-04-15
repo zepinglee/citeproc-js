@@ -49,25 +49,28 @@
 dojo.provide("citeproc_js.rebuild");
 
 var mycsl = "<style>"
-	  + "<citation disambiguate-add-givenname=\"true\">"
-	  + "  <layout delimiter=\"; \" prefix=\"(\" suffix=\")\">"
-	  + "    <names variable=\"author\">"
-	  + "    <name form=\"short\" initialize-with=\". \"/>"
-	  + "    </names>"
-	  + "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
-	  + "  </layout>"
-	  + "</citation>"
-	  + "<bibliography>"
-      + "  <sort>"
-      + "    <key variable=\"author\"/>"
-      + "  </sort>"
-	  + "  <layout>"
-	  + "    <names variable=\"author\">"
-	  + "    <name form=\"short\" initialize-with=\". \"/>"
-	  + "    </names>"
-	  + "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
-	  + "  </layout>"
-	  + "</bibliography>"
+	+ "<citation disambiguate-add-givenname=\"true\">"
+    + "<sort>"
+    + "  <key variable=\"author\"/>"
+    + "</sort>"
+	+ "  <layout delimiter=\"; \" prefix=\"(\" suffix=\")\">"
+	+ "    <names variable=\"author\">"
+	+ "    <name form=\"short\" initialize-with=\". \"/>"
+	+ "    </names>"
+	+ "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
+	+ "  </layout>"
+	+ "</citation>"
+	+ "<bibliography>"
+    + "  <sort>"
+    + "    <key variable=\"author\"/>"
+    + "  </sort>"
+	+ "  <layout>"
+	+ "    <names variable=\"author\">"
+	+ "    <name form=\"short\" initialize-with=\". \"/>"
+	+ "    </names>"
+	+ "    <date variable=\"issued\" form=\"text\" date-parts=\"year\" prefix=\" \"/>"
+	+ "  </layout>"
+	+ "</bibliography>"
 	+ "</style>";
 
 
@@ -190,6 +193,7 @@ doh.register("citeproc_js.rebuild", [
         var uncitedItemIDs = {}
         uncitedItemIDs[ITEM2.id] = true;
 		var style = new CSL.Engine(sys,mycsl);
+		var res = style.rebuildProcessorState([citations[0]], "html", uncitedItemIDs);
 		var res = style.rebuildProcessorState(citations, "html", uncitedItemIDs);
         // First citation
 		doh.assertEqual("CITATION-1", res[0][0]);
@@ -206,6 +210,7 @@ doh.register("citeproc_js.rebuild", [
         var uncitedItemIDs = {}
         uncitedItemIDs[ITEM2.id] = true;
 		var style = new CSL.Engine(sys,mycsl);
+		style.rebuildProcessorState([citations[0]], "html",uncitedItemIDs);
 		style.rebuildProcessorState(citations, "html",uncitedItemIDs);
         var bib = style.makeBibliography();
 
