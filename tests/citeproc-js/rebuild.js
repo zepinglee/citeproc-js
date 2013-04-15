@@ -72,7 +72,7 @@ var mycsl = "<style>"
 
 
 var ITEM1 = {
-	"id": "ITEM-1",
+	"id": 1,
 	"type": "book",
 	"author": [
 		{
@@ -87,7 +87,7 @@ var ITEM1 = {
 };
 
 var ITEM2 = {
-	"id": "ITEM-2",
+	"id": 2,
 	"type": "book",
 	"author": [
 		{
@@ -102,7 +102,7 @@ var ITEM2 = {
 };
 
 var ITEM3 = {
-	"id": "ITEM-3",
+	"id": 3,
 	"type": "book",
 	"author": [
 		{
@@ -128,7 +128,7 @@ var CITATION1 = {
 	"citationID": "CITATION-1",
 	"citationItems": [
 		{
-			"id": "ITEM-1"
+			"id": 1
 		}
 	],
 	"properties": {
@@ -141,7 +141,7 @@ var CITATION2 = {
 	"citationID": "CITATION-2",
 	"citationItems": [
 		{
-			"id": "ITEM-2"
+			"id": 2
 		}
 	],
 	"properties": {
@@ -154,7 +154,7 @@ var CITATION4 = {
 	"citationID": "CITATION-4",
 	"citationItems": [
 		{
-			"id": "ITEM-3"
+			"id": 3
 		}
 	],
 	"properties": {
