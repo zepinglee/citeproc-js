@@ -5,6 +5,10 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 Changes in version 1.0.449
 ==========================
 
+- Fix a bug in rebuildProcessorState() that struck when
+  run a second time against an instantiated processor.
+  Thanks to Simon Hewitt for reporting.
+
 - Add van, von, de and d' to the title-case capitalisation
   suppression list.
 
