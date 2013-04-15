@@ -5,26 +5,20 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 Changes in version 1.0.449
 ==========================
 
+- Add van, von, de and d' to the title-case capitalisation
+  suppression list.
+
 - Code cleanup for conditional statements.
 
-- Implement + and - prefixes on individual argument elements
-  in the following condition attributes:
+- Implement an optional not: prefix on individual argument elements
+  and add *-any and *-all forms for the following condition attributes:
     * is-numeric
     * is-uncertain-date
     * locator
-    * page (MLZ only)
     * type
     * variable
     * jurisdiction (MLZ only)
-
-- Implement *-any and *-all forms of the following attributes:
-    * is-numeric
-    * is-uncertain-date
-    * locator
     * page (MLZ only)
-    * type
-    * variable
-    * jurisdiction (MLZ only)
 
   The changes above will make more compact CSL code possible
   in complex citation styles.
