@@ -74,7 +74,6 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
         }
     }
     this.updateItems(itemIDs);
-    this.updateUncitedItems(uncitedItemIDs);
     var pre = [];
     var post = [];
     var ret = [];
@@ -94,6 +93,7 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
             ];
         }
     }
+    this.updateUncitedItems(uncitedItemIDs);
     this.setOutputFormat(oldMode);
     return ret;
 }
