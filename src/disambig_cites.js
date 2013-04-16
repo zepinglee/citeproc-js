@@ -525,7 +525,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
     this.base.disambiguate = false;
     this.betterbase.year_suffix = false;
     this.betterbase.disambiguate = false;
-    if (this.state.opt["givenname-disambiguation-rule"] === "by-cite") {
+    if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite") {
         this.givensMax = 2;
     }
     return true;
@@ -539,7 +539,7 @@ CSL.Disambiguation.prototype.configModes = function () {
     // Modes are function names prototyped to this instance.
     this.modes = [];
     dagopt = this.state.opt["disambiguate-add-givenname"];
-    gdropt = this.state.opt["givenname-disambiguation-rule"];
+    gdropt = this.state.citation.opt["givenname-disambiguation-rule"];
     if (this.state.opt['disambiguate-add-names'] || (dagopt && gdropt === "by-cite")) {
         this.modes.push("disNames");
     }
@@ -592,7 +592,7 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
 };
 
 CSL.Disambiguation.prototype.captureStepToBase = function() {
-    if (this.state.opt["givenname-disambiguation-rule"] === "by-cite") {
+    if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite") {
         this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
     }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];

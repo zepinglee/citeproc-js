@@ -80,7 +80,7 @@ CSL.Registry.NameReg = function (state) {
         // The %s terminator enables normal initialization behavior
         // with non-Byzantine names.
         ikey = CSL.Util.Names.initializeWith(state, skey, "%s");
-        if (state.opt["givenname-disambiguation-rule"] === "by-cite") {
+        if (state.citation.opt["givenname-disambiguation-rule"] === "by-cite") {
             pkey = "" + itemid + pkey;
         }
     };
@@ -105,7 +105,7 @@ CSL.Registry.NameReg = function (state) {
         //
         param = 2;
         dagopt = state.opt["disambiguate-add-givenname"];
-        gdropt = state.opt["givenname-disambiguation-rule"];
+        gdropt = state.citation.opt["givenname-disambiguation-rule"];
         var gdropt_orig = gdropt;
         if (gdropt === "by-cite") {
             gdropt = "all-names";
@@ -271,8 +271,8 @@ CSL.Registry.NameReg = function (state) {
         var res = state.nameOutput.getName(nameobj, "locale-translit", true);
         nameobj = res.name;
 
-        if (state.opt["givenname-disambiguation-rule"]
-            && state.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
+        if (state.citation.opt["givenname-disambiguation-rule"]
+            && state.citation.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
             && pos !== 0) {
                 return;
         }

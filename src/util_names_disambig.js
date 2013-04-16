@@ -116,7 +116,7 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             // This is limited to by-cite disambiguation.
             // 2012-09-13: added lst[i].given check to condition
             if (val === 1 && 
-                this.state.opt["givenname-disambiguation-rule"] === "by-cite" && 
+                this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite" && 
                 ("undefined" === typeof this.name.strings["initialize-with"]
                  || "undefined" === typeof lst[i].given)) {
                 val = 2;

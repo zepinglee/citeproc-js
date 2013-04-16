@@ -1042,7 +1042,7 @@ CSL.Attributes["@newdate"] = function (state, arg) {
 
 CSL.Attributes["@givenname-disambiguation-rule"] = function (state, arg) {
     if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(arg) > -1) {
-        state.opt["givenname-disambiguation-rule"] = arg;
+        state.citation.opt["givenname-disambiguation-rule"] = arg;
     }
 };
 
