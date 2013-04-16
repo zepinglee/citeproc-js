@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.449",
+    PROCESSOR_VERSION: "1.0.450",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -2998,7 +2998,7 @@ CSL.Engine.Citation = function (state) {
     this.opt["disambiguate-add-names"] = false;
     this.opt["disambiguate-add-givenname"] = false;
     this.opt["disambiguate-add-year-suffix"] = false;
-    this.opt["givenname-disambiguation-rule"] = "none";
+    this.opt["givenname-disambiguation-rule"] = "by-cite";
     this.opt["near-note-distance"] = 5;
     this.opt.topdecor = [];
     this.opt.layout_decorations = [];

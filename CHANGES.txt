@@ -2,6 +2,13 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.450
+==========================
+
+- Fix a bug in default disambiguation rule selection.
+  Thanks to @adamsmith and @mattchoj for reporting this.
+
+==========================
 Changes in version 1.0.449
 ==========================
 
