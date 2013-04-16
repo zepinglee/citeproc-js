@@ -452,7 +452,7 @@ CSL.Engine.Citation = function (state) {
     this.opt["disambiguate-add-names"] = false;
     this.opt["disambiguate-add-givenname"] = false;
     this.opt["disambiguate-add-year-suffix"] = false;
-    this.opt["givenname-disambiguation-rule"] = "none";
+    this.opt["givenname-disambiguation-rule"] = "by-cite";
     this.opt["near-note-distance"] = 5;
 
     this.opt.topdecor = [];
