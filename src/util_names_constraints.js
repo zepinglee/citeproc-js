@@ -151,6 +151,8 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
         }
     }
     this.state.tmp.disambig_settings.names[pos] = lst[key].length;
+    this.state.disambiguate.padBase(this.state.tmp.disambig_settings);
+    
 
     // ???
     //if (!this.state.tmp.disambig_request) {
