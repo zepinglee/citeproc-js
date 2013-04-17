@@ -170,8 +170,8 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
     //SNIP-START
     if (this.debug) {
         print("[3] == disNames() ==");
-        //print("       partners: "+[this.partners[i].id for (i in this.partners)].join(", "));
-        //print("    nonpartners: "+[this.nonpartners[i].id for (i in this.nonpartners)].join(", "));
+        print("       partners: "+[this.partners[i].id for (i in this.partners)].join(", "));
+        print("    nonpartners: "+[this.nonpartners[i].id for (i in this.nonpartners)].join(", "));
     }
     //SNIP-END
 
@@ -265,7 +265,7 @@ CSL.Disambiguation.prototype.disNames = function (ismax) {
 
 CSL.Disambiguation.prototype.disExtraText = function () {
     var pos, len, mybase;
-    
+
     //SNIP-START
     if (this.debug) {
         print("[3] === disExtraText ==");
@@ -274,20 +274,28 @@ CSL.Disambiguation.prototype.disExtraText = function () {
 
     // If first encounter in this cycle and multiple modes are
     // available, decrement mode and reset base
-    if (!this.base.disambiguate) {
-        this.initVars(this.akey)
+    if (!this.base.disambiguate || this.state.tmp.disambiguate_count !== this.state.tmp.disambiguate_maxMax) {
+        // Rerun everything on each subcycle? This doesn't work currently.
+        //this.initVars(this.akey)
         this.modeindex = 0;
-        // If disambiguate is false set to true
-        this.base.disambiguate = true;
-        this.betterbase.disambiguate = true;
-        this.initGivens = true;
-        for (var i = 0, ilen = this.lists[this.listpos][1].length; i < ilen; i += 1) {
-            this.state.tmp.taintedItemIDs[this.lists[this.listpos][1][i].id] = true;
+        this.base.disambiguate = this.state.tmp.disambiguate_count;
+        this.betterbase.disambiguate = this.state.tmp.disambiguate_count;
+        if (!this.base.disambiguate) {
+            // Evaluate here?
+            this.initGivens = true;
+            // If disambiguate is false set to true
+            this.base.disambiguate = 1;
+            // There may be changes
+            for (var i = 0, ilen = this.lists[this.listpos][1].length; i < ilen; i += 1) {
+                this.state.tmp.taintedItemIDs[this.lists[this.listpos][1][i].id] = true;
+            }
+        } else {
+            this.disNames();
         }
-    } else if (this.lists[this.listpos][1].length > 1) {
+    } else if (this.state.tmp.disambiguate_count === this.state.tmp.disambiguate_maxMax) {
         if (this.modeindex === this.modes.length - 1) {
             // If this is the end, disambiguation failed.
-            // Discard disambiguate=true and set parameters
+            // Discard disambiguate=true (?) and set parameters
             var base = this.lists[this.listpos][0];
             for (var i = 0, ilen = this.lists[this.listpos][1].length; i < ilen; i += 1) {
                 this.state.tmp.taintedItemIDs[this.lists[this.listpos][1][i].id] = true;
@@ -298,7 +306,7 @@ CSL.Disambiguation.prototype.disExtraText = function () {
             // If this is followed by year-suffix, keep
             // parameters and set disambiguate=true since it MIGHT
             // include the date, needed for year-suffix.
-            // This is a bit over-aggressive for cases in which the
+            // This may be a bit over-aggressive for cases in which the
             // disambiguate condition does not add the date
             this.modeindex = this.modes.length - 1;
             var base = this.lists[this.listpos][0];
@@ -377,6 +385,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
         // this.betterbase, which is used to set the disambig parameters
         // in the processor registry.
         
+
         // Increment
         // Max val is always true if a level is inactive.
         increment_names = false;
@@ -388,17 +397,23 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             increment_namesets = true;
         }
         if ("number" === typeof this.givensMax) {
-            if (this.base.givens[this.gnameset][this.gname] < this.givensMax) {
+            if (this.base.givens.length && this.base.givens[this.gnameset][this.gname] < this.givensMax) {
                 this.base.givens[this.gnameset][this.gname] += 1;
             } else {
                 increment_names = true;
             }
         }
-        if ("number" === typeof this.namesMax && increment_names) {
-            increment_namesets = false;
-            if (this.base.names[this.gnameset] < this.namesMax) {
-                this.base.names[this.gnameset] += 1;
-                this.gname += 1;
+        if ("number" === typeof this.namesMax 
+            && increment_names) {
+            if (this.state.opt["disambiguate-add-names"]) {
+                increment_namesets = false;
+                if (this.base.names[this.gnameset] < this.namesMax) {
+                    this.base.names[this.gnameset] += 1;
+                    this.gname += 1;
+                } else {
+                    
+                    increment_namesets = true;
+                }
             } else {
                 increment_namesets = true;
             }
@@ -431,8 +446,8 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
         }
         //SNIP-END
         if (("number" !== typeof this.namesetsMax || this.namesetsMax === -1 || this.gnameset === this.namesetsMax)
-            && ("number" !== typeof this.namesMax || this.base.names[this.gnameset] === this.namesMax)
-            && ("number" != typeof this.givensMax || "undefined" === typeof this.base.givens[this.gnameset][this.gname] || this.base.givens[this.gnameset][this.gname] === this.givensMax)) {
+            && (!this.state.opt["disambiguate-add-names"] || "number" !== typeof this.namesMax || this.base.names[this.gnameset] === this.namesMax)
+            && ("number" != typeof this.givensMax || "undefined" === typeof this.base.givens[this.gnameset] || "undefined" === typeof this.base.givens[this.gnameset][this.gname] || this.base.givens[this.gnameset][this.gname] === this.givensMax)) {
   
 
             maxed = true;
@@ -442,6 +457,9 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             }
             //SNIP-END
         }
+    } else if ("disExtraText" === this.modes[this.modeindex]) {
+        this.base.disambiguate += 1;
+        this.betterbase.disambiguate += 1;
     }
     return maxed;
 };
@@ -510,26 +528,42 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
     }
 
     this.modeindex = 0;
-    this.namesMax = this.maxNamesByItemId[this.Item.id][0];
-
-    for (i = 0, ilen = this.base.givens.length; i < ilen; i += 1) {
-        for (var j = 0, jlen = this.namesMax; j < jlen; j += 1) {
-            if (!this.base.givens[i][j]) {
-                this.base.givens[i][j] = 0;
-                this.betterbase.givens[i][j] = 0;
-            }
+    if (this.state.citation.opt["disambiguate-add-names"] || true) {
+        this.namesMax = this.maxNamesByItemId[this.Item.id][0];
+    } else {
+        var namesMax = this.base.names[0];
+        for (var i=1,ilen=this.base.names.length;i<ilen;i+=1){
+            namesMax = Math.max(namesMax,this.base.names.names[i]);
         }
     }
 
+
+    this.padBase(this.base);
+    this.padBase(this.betterbase);
     this.base.year_suffix = false;
     this.base.disambiguate = false;
     this.betterbase.year_suffix = false;
     this.betterbase.disambiguate = false;
-    if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite") {
+    if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite"
+       && this.state.opt["disambiguate-add-givenname"]) {
         this.givensMax = 2;
     }
     return true;
 };
+
+
+CSL.Disambiguation.prototype.padBase = function (base) {
+    for (i = 0, ilen = base.names.length; i < ilen; i += 1) {
+        if (!base.givens[i]) {
+            base.givens[i] = [];
+        }
+        for (var j=0,jlen=base.names[i];j<jlen;j+=1) {
+            if (!base.givens[i][j]) {
+                base.givens[i][j] = 0;
+            }
+        }
+    }
+}
 
 /**
  * Set available modes for disambiguation
@@ -558,6 +592,10 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
         base = CSL.getAmbigConfig.call(this.state);
         this.maxNamesByItemId[Item.id] = CSL.getMaxVals.call(this.state);
         this.state.registry.registry[Item.id].disambig.givens = this.state.tmp.disambig_settings.givens.slice();
+        // Slice the nested lists as well. Without this, disambiguate_YearSuffixFiftyTwoEntriesByCite fails.
+        for (var i=0,ilen=this.state.registry.registry[Item.id].disambig.givens.length;i<ilen;i+=1) {
+            this.state.registry.registry[Item.id].disambig.givens[i] = this.state.tmp.disambig_settings.givens[i].slice();
+        }
         this.namesetsMax = this.state.registry.registry[Item.id].disambig.names.length - 1;
         if (!this.base) {
             this.base = base;
@@ -573,9 +611,14 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
         var update = false;
         for (var i = 0, ilen = base.names.length; i < ilen; i += 1) {
             if (base.names[i] > this.base.names[i]) {
-                this.base.givens[i] = this.base.givens[i].concat(this.base.givens[i].slice(this.base.names[i]));
+                // XXX The old must have been wrong surely. The new, I'm not sure.
+                //this.base.givens[i] = this.base.givens[i].concat(this.base.givens[i].slice(this.base.names[i]));
+                this.base.givens[i] = base.givens[i].slice();
                 this.base.names[i] = base.names[i];
                 this.betterbase.names = this.base.names.slice();
+                this.betterbase.givens = this.base.givens.slice();
+                this.padBase(this.base);
+                this.padBase(this.betterbase);
             }
         }
         // This shouldn't be necessary

@@ -55,7 +55,10 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
         state.opt.has_disambiguate = true;
         var func = function (Item, item) {
             var ret;
-            if (state.tmp.disambig_settings.disambiguate) {
+            state.tmp.disambiguate_maxMax += 1;
+            if (state.tmp.disambig_settings.disambiguate
+               && state.tmp.disambiguate_count < state.tmp.disambig_settings.disambiguate) {
+                state.tmp.disambiguate_count += 1;
                 return true;
             }
             return false;

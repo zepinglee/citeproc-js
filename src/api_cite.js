@@ -1156,6 +1156,8 @@ CSL.getCite = function (Item, item, prevItemID) {
 
 
 CSL.citeStart = function (Item, item) {
+    this.tmp.disambiguate_count = 0;
+    this.tmp.disambiguate_maxMax = 0;
     this.tmp.same_author_as_previous_cite = false;
     if (!this.tmp.suppress_decorations) {
         this.tmp.subsequent_author_substitute_ok = true;
