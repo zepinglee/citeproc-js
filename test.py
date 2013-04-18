@@ -119,31 +119,22 @@ class Bundle:
             f.extend(["print_zotero", "xmldom"])
         else:
             f.extend(["print"])
-        f.extend(["sort","queue","util_disambig"])
-        f.extend(["util_nodes","util_dateparser","build","util_static_locator","util_processor","api_control"])
-        f.extend(["state","util_integration","api_update","util_citationlabel"])
-        f.extend(["api_bibliography","api_cite","node_bibliography","node_choose"])
-        f.extend(["util_locale"])
-        f.extend(["node_citation","node_date","node_datepart","node_elseif","node_else"])
-        f.extend(["node_comment"])
-        f.extend(["node_etal","node_group","node_if","node_info","node_institution"])
-        f.extend(["node_institutionpart","node_key","node_label","node_layout","node_macro"])
-
-        f.extend(["util_names_output","util_names_tests","util_names_truncate"])
-        f.extend(["util_names_divide","util_names_join","util_names_disambig"])
-        f.extend(["util_names_common","util_names_constraints","util_names_etalconfig"])
-        f.extend(["util_names_render","util_names_etal"])
-
-        f.extend(["util_label", "util_publishers","util_date"])
-
-        f.extend(["node_name","node_namepart","node_names","node_number","node_sort"])
-        f.extend(["node_substitute","node_text","attributes","system"])
-        f.extend(["stack","util","util_transform"])
-        f.extend(["util_parallel","obj_token","obj_ambigconfig","obj_blob","obj_number"])
-        f.extend(["util_datenode","util_names","util_dates"])
-        f.extend(["util_sort","util_substitute","util_number","util_page","util_flipflop"])
-        f.extend(["formatters","formats","registry","disambig_names","disambig_cites"])
-        f.extend(["disambig_citations"])
+        f.extend(["system","sort","util_disambig","util_nodes","util_dateparser","build"]);
+        f.extend(["util_static_locator","util_processor","util_citationlabel","api_control"]);
+        f.extend(["queue","state","api_cite","api_bibliography","util_integration","api_update"]);
+        f.extend(["util_locale","node_bibliography","node_choose","node_citation","node_comment"]);
+        f.extend(["node_date","node_datepart","node_elseif","node_else","node_etal","node_group"]);
+        f.extend(["node_if","node_info","node_institution","node_institutionpart","node_key"]);
+        f.extend(["node_label","node_layout","node_macro","util_names_output","util_names_tests"]);
+        f.extend(["util_names_truncate","util_names_divide","util_names_join","util_names_common"]);
+        f.extend(["util_names_constraints","util_names_disambig","util_names_etalconfig","util_names_etal"]);
+        f.extend(["util_names_render","util_publishers","util_label","node_name","node_namepart"]);
+        f.extend(["node_names","node_number","node_sort","node_substitute","node_text","attributes"]);
+        f.extend(["stack","util_parallel","util","util_transform","obj_token","obj_ambigconfig"]);
+        f.extend(["obj_blob","obj_number","util_datenode","util_date","util_names","util_dates"]);
+        f.extend(["util_sort","util_substitute","util_number","util_page","util_flipflop"]);
+        f.extend(["formatters","formats","registry","disambig_names","disambig_citations"]);
+        f.extend(["disambig_cites"]);
         self.files = f
     
     def deleteOldBundle(self):
