@@ -1,5 +1,11 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+==========================
+Changes in version 1.0.452
+==========================
+
+- Fix bug in new conditional evaluation code exposed in some
+  JavaScript implementations.
 
 ==========================
 Changes in version 1.0.451
