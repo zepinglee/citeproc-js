@@ -57,6 +57,8 @@ CSL.Node["else-if"] = {
             if (this.locale) {
                 state.opt.lang = this.locale;
             }
+            var func = state.fun.match[this.match](this, state, this.rawtests, CSL.CONDITION_LEVEL_BOTTOM);
+            this.tests.push(func);
             if (!this.evaluator) {
                 this.evaluator = function (token, state, Item, item) {
                     var record = function (result) {

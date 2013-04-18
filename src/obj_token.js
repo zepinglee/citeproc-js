@@ -121,6 +121,7 @@ CSL.Token = function (name, tokentype) {
      * </p>
      */
     this.tests = [];
+    this.rawtests = [];
     /**
      * Jump point on success.
      * <p>This holds the list jump point to be used when the
@@ -176,6 +177,7 @@ CSL.Util.cloneToken = function (token) {
     if (token.execs) {
         newtok.execs = token.execs.slice();
         newtok.tests = token.tests.slice();
+        newtok.rawtests = token.tests.slice();
     }
     return newtok;
 };

@@ -67,14 +67,13 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@is-numeric"] = function (state, arg) {
+CSL.Attributes["@is-numeric"] = function (state, arg, joiner) {
     var variables = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var reverses = CSL.Util.setReverseConditions.call(this, variables);
     var maketest = function(variable, reverse) {
         return function (Item, item) {
             var myitem = Item;
-            var mytests = [];
             if (["locator","locator-revision"].indexOf(variable) > -1) {
                 myitem = item;
             }
@@ -95,18 +94,9 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
             return reverse ? true : false;
         }
     }
-    var mytests = [];
     for (var i=0; i<variables.length; i+=1) {
-        mytests.push(maketest(variables[i], reverses[i]));
+        this.rawtests.push(maketest(variables[i], reverses[i]));
     }
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
-};
-CSL.Attributes["@is-numeric-any"] = function (state, arg) {
-    CSL.Attributes["@is-numeric"].call(this, state, arg, "any");
-};
-CSL.Attributes["@is-numeric-all"] = function (state, arg) {
-    CSL.Attributes["@is-numeric"].call(this, state, arg, "all");
 };
 
 
@@ -123,18 +113,9 @@ CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
             }
         }
     }
-    var mytests = [];
     for (var i=0,ilen=variables.length;i<ilen;i+=1) {
-        mytests.push(maketest(variables[i], reverses[i]));
+        this.rawtests.push(maketest(variables[i], reverses[i]));
     };
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
-};
-CSL.Attributes["@is-uncertain-date-any"] = function (state, arg) {
-    CSL.Attributes["@is-uncertain-date"].call(this, state, arg, "any");
-};
-CSL.Attributes["@is-uncertain-date-all"] = function (state, arg) {
-    CSL.Attributes["@is-uncertain-date"].call(this, state, arg, "all");
 };
 
 
@@ -160,18 +141,9 @@ CSL.Attributes["@locator"] = function (state, arg) {
             }
         }
     }
-    var mytests = [];
     for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
-        mytests.push(maketest(trylabels[i], reverses[i]));
+        this.rawtests.push(maketest(trylabels[i], reverses[i]));
     }
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
-};
-CSL.Attributes["@locator-any"] = function (state, arg) {
-    CSL.Attributes["@locator"].call(this, state, arg, "any");
-};
-CSL.Attributes["@locator-all"] = function (state, arg) {
-    CSL.Attributes["@locator"].call(this, state, arg, "all");
 };
 
 
@@ -200,7 +172,6 @@ CSL.Attributes["@position"] = function (state, arg) {
             return false;
         }
     }
-    var mytests = [];
     for (var i=0,ilen=trypositions.length;i<ilen;i+=1) {
         var tryposition = trypositions[i];
         if (tryposition === "first") {
@@ -213,18 +184,16 @@ CSL.Attributes["@position"] = function (state, arg) {
             tryposition = CSL.POSITION_IBID_WITH_LOCATOR;
         }
         if ("near-note" === tryposition) {
-            mytests.push(function (Item, item) {
+            this.rawtests.push(function (Item, item) {
                 if (item && item.position === CSL.POSITION_SUBSEQUENT && item["near-note"]) {
                     return true;
                 }
                 return false;
             });
         } else {
-            mytests.push(maketest(tryposition));
+            this.rawtests.push(maketest(tryposition));
         }
     }
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
 };
 
 CSL.Attributes["@type"] = function (state, arg) {
@@ -241,21 +210,14 @@ CSL.Attributes["@type"] = function (state, arg) {
             }
         }
     }
-    var mytests = [];
     for (var i=0,ilen=types.length;i<ilen;i+=1) {
-        mytests.push(maketest(types[i], reverses[i]));
+        this.rawtests.push(maketest(types[i], reverses[i]));
     }
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
-};
-CSL.Attributes["@type-any"] = function (state, arg) {
-    CSL.Attributes["@type"].call(this, state, arg, "any");
-};
-CSL.Attributes["@type-all"] = function (state, arg) {
-    CSL.Attributes["@type"].call(this, state, arg, "all");
 };
 
+
 CSL.Attributes["@variable"] = function (state, arg) {
+    var func;
     this.variables = arg.split(/\s+/);
     this.variables_real = this.variables.slice();
 
@@ -442,19 +404,10 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 return reverse ? true : false;
             }
         }
-        var mytests = [];
         for (var i=0,ilen=this.variables.length;i<ilen;i+=1) {
-            mytests.push(maketest(this.variables[i], reverses[i]));
+            this.rawtests.push(maketest(this.variables[i], reverses[i]));
         }
-        var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-        this.tests.push(func);
     }
-};
-CSL.Attributes["@variable-any"] = function (state, arg) {
-    CSL.Attributes["@variable"].call(this, state, arg, "any");
-};
-CSL.Attributes["@variable-all"] = function (state, arg) {
-    CSL.Attributes["@variable"].call(this, state, arg, "all");
 };
 
 
@@ -481,18 +434,9 @@ CSL.Attributes["@page"] = function (state, arg) {
             }
         }
     }
-    var mytests = [];
     for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
-        mytests.push(maketest(trylabels[i], reverses[i]));
+        this.rawtests.push(maketest(trylabels[i], reverses[i]));
     }
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
-};
-CSL.Attributes["@page-any"] = function (state, arg) {
-    CSL.Attributes["@page"].call(this, state, arg, "any");
-};
-CSL.Attributes["@page-all"] = function (state, arg) {
-    CSL.Attributes["@page"].call(this, state, arg, "all");
 };
 
 
@@ -522,19 +466,10 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
             return reverse ? true : false;
         }
     }
-    var mytests = [];
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
         var tryjurisdictionSlice = tryjurisdictions[i].slice();
-        mytests.push(maketests(tryjurisdictionSlice, reverses[i]));
+        this.rawtests.push(maketests(tryjurisdictionSlice, reverses[i]));
     }
-    var func = state.fun.match[this.match](this, state, mytests, CSL.CONDITION_LEVEL_BOTTOM);
-    this.tests.push(func);
-};
-CSL.Attributes["@jurisdiction-any"] = function (state, arg) {
-    CSL.Attributes["@jurisdiction"].call(this, state, arg, "any");
-};
-CSL.Attributes["@jurisdiction-all"] = function (state, arg) {
-    CSL.Attributes["@jurisdiction"].call(this, state, arg, "all");
 };
 
 
@@ -561,12 +496,9 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
             }
         }
     }
-    var mytests = [];
     for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
-        mytests.push(maketest(trydates[i]));
+        this.rawtests.push(maketest(trydates[i]));
     }
-    var func = state.fun.match[this.match](this, state, mytests);
-    this.tests.push(func);
 };
 
 CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
@@ -581,12 +513,9 @@ CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
             }
         }
     }
-    var mytests = [];
     for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
-        mytests.push(maketest(trydates[i]));
+        this.rawtests.push(maketest(trydates[i]));
     }
-    var func = state.fun.match[this.match](this, state, mytests);
-    this.tests.push(func);
 };
 
 CSL.Attributes["@has-day-only"] = function (state, arg) {
@@ -601,12 +530,9 @@ CSL.Attributes["@has-day-only"] = function (state, arg) {
             }
         }
     }
-    var mytests = [];
     for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
-        mytests.push(maketest(trydates[i]));
+        this.rawtests.push(maketest(trydates[i]));
     };
-    var func = state.fun.match[this.match](this, state, mytests);
-    this.tests.push(func);
 };
 
 CSL.Attributes["@subjurisdictions"] = function (state, arg) {
