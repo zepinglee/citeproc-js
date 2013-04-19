@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.452",
+    PROCESSOR_VERSION: "1.0.453",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1660,11 +1660,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         Item["title-short"] = Item.shortTitle;
     }
     var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
-    if (isLegalType) {
-        if (!Item["title-short"]) {
-            Item["title-short"] = Item.title;
-        }
-    } else if (Item.title && this.sys.getAbbreviation) {
+    if (!isLegalType && Item.title && this.sys.getAbbreviation) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title);
         if (this.transform.abbrevs[jurisdiction].title) {
             if (this.transform.abbrevs[jurisdiction].title[Item.title]) {

@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.453
+==========================
+
+- Do not sub title for title-short on legal types (aligns
+  behaviour with other types).
+
+==========================
 Changes in version 1.0.452
 ==========================
 
