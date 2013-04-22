@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.454
+==========================
+
+- Treat page as a numeric variable in is-numeric.
+  The is-numeric test should be generally available
+  on all variables, but this covers the most common
+  gotcha.
+
+==========================
 Changes in version 1.0.453
 ==========================
 
