@@ -87,7 +87,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.0.453",
+    PROCESSOR_VERSION: "1.0.454",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -379,6 +379,7 @@ var CSL = {
         "chapter-number",
         "collection-number",
         "edition",
+        "page",
         "issue",
         "locator",
         "number",
