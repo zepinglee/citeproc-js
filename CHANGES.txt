@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.455
+==========================
+
+- When comparing before-and-after name disambiguation
+  settings, avoid comparing given name settings when
+  the number of names is known to differ, as this can
+  potentially throw an error.
+
+==========================
 Changes in version 1.0.454
 ==========================
 
