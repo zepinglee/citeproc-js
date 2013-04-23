@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.456
+==========================
+
+- Add "before", "after", "c" and "et" to capitalisation
+  skip list.
+
+==========================
 Changes in version 1.0.455
 ==========================
 
