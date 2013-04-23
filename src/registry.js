@@ -697,12 +697,14 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
             var old_names_params = this.registry[id].disambig.names[i];
             if (new_names_params !== old_names_params) {
                 this.state.tmp.taintedItemIDs[id] = true;
-            }
-            for (var j=0,jlen=ambig_config.givens[i].length;j<jlen;j+=1) {
-                var new_gnames_params = ambig_config.givens[i][j];
-                var old_gnames_params = this.registry[id].disambig.givens[i][j];
-                if (new_gnames_params !== old_gnames_params) {
-                    this.state.tmp.taintedItemIDs[id] = true;
+            } else {
+                // Compare givenses only if the number of names is aligned.
+                for (var j=0,jlen=ambig_config.givens[i].length;j<jlen;j+=1) {
+                    var new_gnames_params = ambig_config.givens[i][j];
+                    var old_gnames_params = this.registry[id].disambig.givens[i][j];
+                    if (new_gnames_params !== old_gnames_params) {
+                        this.state.tmp.taintedItemIDs[id] = true;
+                    }
                 }
             }
         }
