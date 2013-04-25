@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.459
+==========================
+
+- Provide item type to getAbbreviation() where category may
+  be container-title and type may be chapter.
+
+==========================
 Changes in version 1.0.458
 ==========================
 
