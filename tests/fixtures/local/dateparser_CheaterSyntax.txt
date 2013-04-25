@@ -53,7 +53,7 @@ citation
 
 
 >>===== RESULT =====>>
-Some Book or Other, 1965 [October 03, 1855]
+Some Book or Other, 1965 [October 3, 1855]
 <<===== RESULT =====<<
 
 
