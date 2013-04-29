@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.460
+==========================
+
+- Allow trailing matter on all cites in a procedural history
+  citation.
+
+==========================
 Changes in version 1.0.459
 ==========================
 
