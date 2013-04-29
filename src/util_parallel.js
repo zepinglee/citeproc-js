@@ -87,6 +87,7 @@ CSL.Parallel = function (state) {
 
     this.midVars = ["section", "volume", "container-title", "collection-number", "issue", "page-first", "page", "number"];
     this.ignoreVarsLawGeneral = ["first-reference-note-number", "locator", "label","page-first","page","genre"];
+    this.ignoreVarsLawProceduralHistory = ["issued", "first-reference-note-number", "locator", "label","page-first","page","genre","jurisdiction"];
     this.ignoreVarsOrders = ["first-reference-note-number"];
     this.ignoreVarsOther = ["first-reference-note-number", "locator", "label","section","page-first","page"];
 };
@@ -124,13 +125,6 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
  */
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
     var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
-    if (["treaty"].indexOf(Item.type) > -1) {
-        this.ignoreVars = this.ignoreVarsOrders;
-    } else if (["article-journal","article-magazine"].indexOf(Item.type) > -1) {
-        this.ignoreVars = this.ignoreVarsOther;
-    } else {
-        this.ignoreVars = this.ignoreVarsLawGeneral;
-    }
     if (this.use_parallels) {
         //print("StartCite: "+Item.id);
         if (this.sets.value().length && this.sets.value()[0].itemId == Item.id) {
@@ -192,6 +186,28 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
         this.cite.itemId = "" + Item.id;
         this.cite.prevItemID = "" + prevItemID;
         this.target = "front";
+
+        if (["treaty"].indexOf(Item.type) > -1) {
+            this.ignoreVars = this.ignoreVarsOrders;
+        } else if (["article-journal","article-magazine"].indexOf(Item.type) > -1) {
+            this.ignoreVars = this.ignoreVarsOther;
+        } else if (item && item.prefix) {
+            // This prevents suppression of trailing matter in 
+            // procedural history strings. Without this, trailing matter
+            // on all but the last cite is suppressed.
+            this.ignoreVars = this.ignoreVarsLawProceduralHistory;
+            this.cite.useProceduralHistory = true;
+            var prev = this.sets.value()[(this.sets.value().length - 1)];
+            if (prev && prev.back) {
+                for (var i=prev.back.length-1;i>-1;i+=-1) {
+                    if (prev.back[i] && prev[prev.back[i]]) {
+                        delete prev[prev.back[i]];
+                    }
+                }
+            }
+        } else {
+            this.ignoreVars = this.ignoreVarsLawGeneral;
+        }
         //
         // Reevaluate position of this cite, if it follows another, in case it
         // is a lurking ibid reference.
@@ -300,20 +316,24 @@ CSL.Parallel.prototype.StartVariable = function (variable, real_variable) {
  * after parallels detection is complete.
  */
 CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
-    if (this.ignoreVars.indexOf(this.variable) > -1) {
-        return;
-    }
-    if (this.use_parallels && (this.force_collapse || this.try_cite)) {
-        if (["article-journal", "article-magazine"].indexOf(this.cite.Item.type) > -1) {
-            if (["volume","page","page-first","issue"].indexOf(this.variable) > -1) {
-                return;
-            }
-            if ("container-title" === this.variable && this.cite.mid.length > 1) {
-                return;
-            }
+    if (this.use_parallels) {
+        if (this.ignoreVars.indexOf(this.variable) > -1) {
+            return;
         }
-        if (this.variable && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
-            this.data.blobs.push([blob, blob.blobs.length]);
+        if (this.use_parallels && (this.force_collapse || this.try_cite)) {
+            if (["article-journal", "article-magazine"].indexOf(this.cite.Item.type) > -1) {
+                if (["volume","page","page-first","issue"].indexOf(this.variable) > -1) {
+                    return;
+                }
+                if ("container-title" === this.variable && this.cite.mid.length > 1) {
+                    return;
+                }
+            }
+            if (this.variable && (this.try_cite || this.force_collapse) && blob && blob.blobs) {
+                if (!(this.cite.useProceduralHistory && this.target === "back")) {
+                    this.data.blobs.push([blob, blob.blobs.length]);
+                }
+            }
         }
     }
 };
@@ -323,20 +343,25 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
  * in the variables tracking object.
  */
 CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
-    if (this.ignoreVars.indexOf(this.variable) > -1) {
-        return;
-    }
-    if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-        if (this.target !== "back" || true) {
-            //zcite.debug("  setting: "+str);
-            this.data.value += "::" + str;
-        } else {
-            var prev = this.sets.value()[(this.sets.value().length - 1)];
-            if (prev) {
-                if (prev[this.variable]) {
-                    if (prev[this.variable].value) {
-                        //**print("append var "+this.variable+" as value "+this.data.value);
-                        this.data.value += "::" + str;
+    if (this.use_parallels) {
+        if (this.ignoreVars.indexOf(this.variable) > -1) {
+            return;
+        }
+        if (str && varname === "jurisdiction") {
+            str = str.split(';')[0];
+        }
+        if (this.try_cite || this.force_collapse) {
+            if (this.target !== "back" || true) {
+                //zcite.debug("  setting: "+str);
+                this.data.value += "::" + str;
+            } else {
+                var prev = this.sets.value()[(this.sets.value().length - 1)];
+                if (prev) {
+                    if (prev[this.variable]) {
+                        if (prev[this.variable].value) {
+                            //**print("append var "+this.variable+" as value "+this.data.value);
+                            this.data.value += "::" + str;
+                        }
                     }
                 }
             }
@@ -353,65 +378,67 @@ CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
  * member of an upcoming sequence ???]
  */
 CSL.Parallel.prototype.CloseVariable = function () {
-    if (this.ignoreVars.indexOf(this.variable) > -1) {
-        return;
-    }
-    if (this.use_parallels && (this.try_cite || this.force_collapse)) {
-        this.cite[this.variable] = this.data;
-        if (this.sets.value().length > 0) {
-            var prev = this.sets.value()[(this.sets.value().length - 1)];
-            if (this.target === "front" && this.variable === "issued") {
-                // REMAINING PROBLEM: this works for English-style cites, but not
-                // for the French. Only difference is date-parts (year versus year-month-day).
-                // See code at the bottom of CloseCite() for the other half of this workaround.
-                //if (this.data.value && this.data.value.match(/^::[[0-9]{4}$/)) {
-                if (this.data.value && this.master_was_neutral_cite) {
-                    this.target = "mid";
-                    //this.cite.front.pop();
-                }
-            }
-            if (this.target === "front") {
-                if ((prev[this.variable] || this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
-                    // evaluation takes place later, at close of cite.
-                    //this.try_cite = true;
-                    // Ignore differences in issued
-                    if ("issued" !== this.variable) {
-                        this.in_series = false;
+    if (this.use_parallels) {
+        if (this.ignoreVars.indexOf(this.variable) > -1) {
+            return;
+        }
+        if (this.try_cite || this.force_collapse) {
+            this.cite[this.variable] = this.data;
+            if (this.sets.value().length > 0) {
+                var prev = this.sets.value()[(this.sets.value().length - 1)];
+                if (this.target === "front" && this.variable === "issued") {
+                    // REMAINING PROBLEM: this works for English-style cites, but not
+                    // for the French. Only difference is date-parts (year versus year-month-day).
+                    // See code at the bottom of CloseCite() for the other half of this workaround.
+                    //if (this.data.value && this.data.value.match(/^::[[0-9]{4}$/)) {
+                    if (this.data.value && this.master_was_neutral_cite) {
+                        this.target = "mid";
+                        //this.cite.front.pop();
                     }
                 }
-            } else if (this.target === "mid") {
-                // How to set label and locator for suppression only if
-                // BOTH match? First, push what ya got by pushing both
-                // in below ... ? No, that didn't work.
-                if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(this.variable) > -1) {
-                    if (prev[this.variable]) {
-                        if (prev[this.variable].value === this.data.value) {
-                            this.cite.front_collapse[this.variable] = true;
+                if (this.target === "front") {
+                    if ((prev[this.variable] || this.data.value) && (!prev[this.variable] || this.data.value !== prev[this.variable].value)) {
+                        // evaluation takes place later, at close of cite.
+                        //this.try_cite = true;
+                        // Ignore differences in issued
+                        if ("issued" !== this.variable) {
+                            this.in_series = false;
+                        }
+                    }
+                } else if (this.target === "mid") {
+                    // How to set label and locator for suppression only if
+                    // BOTH match? First, push what ya got by pushing both
+                    // in below ... ? No, that didn't work.
+                    if (CSL.PARALLEL_COLLAPSING_MID_VARSET.indexOf(this.variable) > -1) {
+                        if (prev[this.variable]) {
+                            if (prev[this.variable].value === this.data.value) {
+                                this.cite.front_collapse[this.variable] = true;
+                            } else {
+                                this.cite.front_collapse[this.variable] = false;
+                            }
                         } else {
                             this.cite.front_collapse[this.variable] = false;
                         }
-                    } else {
-                        this.cite.front_collapse[this.variable] = false;
                     }
-                }
-            } else if (this.target === "back") {
-                if (prev[this.variable]) {
-                    if (this.data.value !== prev[this.variable].value 
-                        && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
-                        //print(this.variable);
-                        //print(this.sets.value().slice(-1)[0].back_forceme);
-                        // evaluation takes place later, at close of cite.
-                        //this.try_cite = true;
-                        //**print("-------------- reset --------------");
-                        //print("  breaking series");
-                        //print("   IN SERIES FALSE (1)");
-                        this.in_series = false;
+                } else if (this.target === "back") {
+                    if (prev[this.variable]) {
+                        if (this.data.value !== prev[this.variable].value 
+                            && this.sets.value().slice(-1)[0].back_forceme.indexOf(this.variable) === -1) {
+                            //print(this.variable);
+                            //print(this.sets.value().slice(-1)[0].back_forceme);
+                            // evaluation takes place later, at close of cite.
+                            //this.try_cite = true;
+                            //**print("-------------- reset --------------");
+                            //print("  breaking series");
+                            //print("   IN SERIES FALSE (1)");
+                            this.in_series = false;
+                        }
                     }
                 }
             }
         }
+        this.variable = false;
     }
-    this.variable = false;
 };
 
 /**
