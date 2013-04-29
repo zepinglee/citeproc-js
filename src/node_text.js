@@ -251,7 +251,7 @@ CSL.Node.text = {
                             parallel_variable = "shortTitle";
                         }
                         state.parallel.StartVariable(parallel_variable);
-                        state.parallel.AppendToVariable(Item[parallel_variable]);
+                        state.parallel.AppendToVariable(Item[parallel_variable],parallel_variable);
                     };
                     this.execs.push(func);
 
