@@ -635,7 +635,9 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
 };
 
 CSL.Disambiguation.prototype.captureStepToBase = function() {
-    if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite") {
+    // Be paranoid about the presence of givens
+    if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite"
+        && this.base.givens && this.base.givens.length) {
         this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
     }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
