@@ -49,6 +49,7 @@
 /*global CSL: true */
 
 CSL.tokenExec = function (token, Item, item) {
+    // Called on state object
     var next, maybenext, exec, pos, len, debug;
     debug = false;
     next = token.next;
@@ -59,9 +60,19 @@ CSL.tokenExec = function (token, Item, item) {
     }
     //print("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
     //SNIP-END
+    
+    var record = function (result) {
+        if (result) {
+            this.tmp.jump.replace("succeed");
+            return token.succeed;
+        } else {
+            this.tmp.jump.replace("fail");
+            return token.fail;
+        }
+    }
 
-    if (token.evaluator) {
-        next = token.evaluator(token, this, Item, item);
+    if (token.test) {
+        next = record(this.test(Item, item));
     }
     len = token.execs.length;
     for (pos = 0; pos < len; pos += 1) {
