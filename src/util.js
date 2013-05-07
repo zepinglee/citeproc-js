@@ -49,24 +49,11 @@
 /*global CSL: true */
 
 
-CSL.Util = {
-    setReverseConditions: function (lst) {
-        reverses = [];
-        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
-            if (lst[i].slice(0,4) === "not:") {
-                lst[i] = lst[i].slice(4);
-                reverses.push(true);
-            } else {
-                reverses.push(false);
-            }
-        }
-        return reverses;
-    }
-};
+CSL.Util = {};
 
 CSL.Util.Match = function () {
 
-    this.any = function (token, state, tests, level) {
+    this.any = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0, ilen=tests.length; i < ilen; i += 1) {
                 result = tests[i](Item, item);
@@ -80,10 +67,7 @@ CSL.Util.Match = function () {
 
     this[undefined] = this.any;
 
-    this.none = function (token, state, tests, level) {
-        if (CSL.CONDITION_LEVEL_TOP !== level) {
-            return this.any(token, state, tests, level);
-        }
+    this.none = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
@@ -94,7 +78,8 @@ CSL.Util.Match = function () {
             return true;
         };
     };
-    this.all = function (token, state, tests, level) {
+
+    this.all = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
@@ -105,4 +90,17 @@ CSL.Util.Match = function () {
             return true;
         };
     };
+
+    this.nand = function (token, state, tests) {
+        return function (Item, item) {
+            for (var i=0,ilen=tests.length;i<ilen;i+=1) {
+                result = tests[i](Item,item);
+                if (!result) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    };
+
 };

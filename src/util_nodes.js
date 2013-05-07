@@ -72,7 +72,7 @@ CSL.tokenExec = function (token, Item, item) {
     }
 
     if (token.test) {
-        next = record(this.test(Item, item));
+        next = record.call(this,token.test(Item, item));
     }
     len = token.execs.length;
     for (pos = 0; pos < len; pos += 1) {

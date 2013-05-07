@@ -806,6 +806,9 @@ if (!CSL.Node) {
     load("./src/node_group.js");
     // jslint OK
     load("./src/node_if.js");
+    load("./src/node_conditions.js");
+    load("./src/node_condition.js");
+    load("./src/util_conditions.js");
     // jslint OK
     load("./src/node_info.js");
     // jslint OK

@@ -124,7 +124,8 @@ class Bundle:
         f.extend(["queue","state","api_cite","api_bibliography","util_integration","api_update"]);
         f.extend(["util_locale","node_bibliography","node_choose","node_citation","node_comment"]);
         f.extend(["node_date","node_datepart","node_elseif","node_else","node_etal","node_group"]);
-        f.extend(["node_if","node_info","node_institution","node_institutionpart","node_key"]);
+        f.extend(["node_if","node_conditions","node_condition","util_conditions","node_info"]);
+        f.extend(["node_institution","node_institutionpart","node_key"]);
         f.extend(["node_label","node_layout","node_macro","util_names_output","util_names_tests"]);
         f.extend(["util_names_truncate","util_names_divide","util_names_join","util_names_common"]);
         f.extend(["util_names_constraints","util_names_disambig","util_names_etalconfig","util_names_etal"]);

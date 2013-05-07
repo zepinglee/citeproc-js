@@ -333,7 +333,7 @@ CSL.Engine.Tmp = function () {
 CSL.Engine.Fun = function (state) {
     //
     // matcher
-    this.match = new  CSL.Util.Match();
+    this.match = new CSL.Util.Match;
     //
     // utility to get standard suffixes for disambiguation
     this.suffixator = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);

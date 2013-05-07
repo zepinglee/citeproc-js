@@ -52,63 +52,10 @@ CSL.Node["else-if"] = {
     //
     // these function are the same as those in if, might just clone
     build: function (state, target) {
-        var func, tryposition;
-        if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-            if (this.locale) {
-                state.opt.lang = this.locale;
-            }
-            var func = state.fun.match[this.match](this, state, this.rawtests, CSL.CONDITION_LEVEL_BOTTOM);
-            this.tests.push(func);
-            if (!this.evaluator) {
-                this.evaluator = function (token, state, Item, item) {
-                    var record = function (result) {
-                        if (result) {
-                            state.tmp.jump.replace("succeed");
-                            return token.succeed;
-                        } else {
-                            state.tmp.jump.replace("fail");
-                            return token.fail;
-                        }
-                    }
-                    // True argument indicates this is an explict call from the schema.
-                    return record(state.fun.match.any(token, state, token.tests, CSL.CONDITION_LEVEL_TOP)(Item, item));
-                };
-            }
-        }
-        if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
-            func = function (state, Item) {
-                if (this.locale_default) {
-                    // Set plain group closing tag, with locale reversion marker
-                    state.output.current.value().old_locale = this.locale_default;
-                    state.output.closeLevel("empty");
-                    state.opt.lang = this.locale_default;
-                }
-                var next = this[state.tmp.jump.value()];
-                return next;
-            };
-            this.execs.push(func);
-            if (this.locale_default) {
-                state.opt.lang = this.locale_default;
-            }
-        }
+        CSL.Conditions.TopNode.call(this, state, target);
         target.push(this);
     },
     configure: function (state, pos) {
-        if (this.tokentype === CSL.START) {
-            // jump index on failure
-            this.fail = state.configure.fail.slice(-1)[0];
-            this.succeed = this.next;
-            state.configure.fail[(state.configure.fail.length - 1)] = pos;
-        } else if (this.tokentype === CSL.SINGLETON) {
-            // jump index on failure
-            this.fail = this.next;
-            this.succeed = state.configure.succeed.slice(-1)[0];
-            state.configure.fail[(state.configure.fail.length - 1)] = pos;
-        } else {
-            // jump index on success
-            this.succeed = state.configure.succeed.slice(-1)[0];
-            this.fail = this.next;
-        }
+        CSL.Conditions.Configure.call(this, state, pos);
     }
 };
-

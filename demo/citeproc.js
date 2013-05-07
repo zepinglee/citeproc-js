@@ -752,8 +752,17 @@ CSL.tokenExec = function (token, Item, item) {
     debug = false;
     next = token.next;
     maybenext = false;
-    if (token.evaluator) {
-        next = token.evaluator(token, this, Item, item);
+    var record = function (result) {
+        if (result) {
+            this.tmp.jump.replace("succeed");
+            return token.succeed;
+        } else {
+            this.tmp.jump.replace("fail");
+            return token.fail;
+        }
+    }
+    if (token.test) {
+        next = record.call(this,token.test(Item, item));
     }
     len = token.execs.length;
     for (pos = 0; pos < len; pos += 1) {
@@ -3107,7 +3116,7 @@ CSL.Engine.Tmp = function () {
     this.shadow_numbers = {};
 };
 CSL.Engine.Fun = function (state) {
-    this.match = new  CSL.Util.Match();
+    this.match = new CSL.Util.Match;
     this.suffixator = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
     this.romanizer = new CSL.Util.Romanizer();
     this.ordinalizer = new CSL.Util.Ordinalizer(state);
@@ -5133,58 +5142,11 @@ CSL.Node["date-part"] = {
 };
 CSL.Node["else-if"] = {
     build: function (state, target) {
-        var func, tryposition;
-        if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-            if (this.locale) {
-                state.opt.lang = this.locale;
-            }
-            var func = state.fun.match[this.match](this, state, this.rawtests, CSL.CONDITION_LEVEL_BOTTOM);
-            this.tests.push(func);
-            if (!this.evaluator) {
-                this.evaluator = function (token, state, Item, item) {
-                    var record = function (result) {
-                        if (result) {
-                            state.tmp.jump.replace("succeed");
-                            return token.succeed;
-                        } else {
-                            state.tmp.jump.replace("fail");
-                            return token.fail;
-                        }
-                    }
-                    return record(state.fun.match.any(token, state, token.tests, CSL.CONDITION_LEVEL_TOP)(Item, item));
-                };
-            }
-        }
-        if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
-            func = function (state, Item) {
-                if (this.locale_default) {
-                    state.output.current.value().old_locale = this.locale_default;
-                    state.output.closeLevel("empty");
-                    state.opt.lang = this.locale_default;
-                }
-                var next = this[state.tmp.jump.value()];
-                return next;
-            };
-            this.execs.push(func);
-            if (this.locale_default) {
-                state.opt.lang = this.locale_default;
-            }
-        }
+        CSL.Conditions.TopNode.call(this, state, target);
         target.push(this);
     },
     configure: function (state, pos) {
-        if (this.tokentype === CSL.START) {
-            this.fail = state.configure.fail.slice(-1)[0];
-            this.succeed = this.next;
-            state.configure.fail[(state.configure.fail.length - 1)] = pos;
-        } else if (this.tokentype === CSL.SINGLETON) {
-            this.fail = this.next;
-            this.succeed = state.configure.succeed.slice(-1)[0];
-            state.configure.fail[(state.configure.fail.length - 1)] = pos;
-        } else {
-            this.succeed = state.configure.succeed.slice(-1)[0];
-            this.fail = this.next;
-        }
+        CSL.Conditions.Configure.call(this, state, pos);
     }
 };
 CSL.Node["else"] = {
@@ -5304,57 +5266,86 @@ CSL.Node.group = {
 };
 CSL.Node["if"] = {
     build: function (state, target) {
-        var func;
-        if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
-            if (this.locale) {
-                state.opt.lang = this.locale;
-            }
-            var func = state.fun.match[this.match](this, state, this.rawtests, CSL.CONDITION_LEVEL_BOTTOM);
-            this.tests.push(func);
-            if (!this.evaluator) {
-                this.evaluator = function (token, state, Item, item) {
-                    var record = function (result) {
-                        if (result) {
-                            state.tmp.jump.replace("succeed");
-                            return token.succeed;
-                        } else {
-                            state.tmp.jump.replace("fail");
-                            return token.fail;
-                        }
-                    }
-                    return record(state.fun.match.any(token, state, token.tests, CSL.CONDITION_LEVEL_TOP)(Item, item));
-                };
-            }
-        }
-        if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
-            func = function (state, Item) {
-                if (this.locale_default) {
-                    state.output.current.value().old_locale = this.locale_default;
-                    state.output.closeLevel("empty");
-                    state.opt.lang = this.locale_default;
-                }
-                var next = this[state.tmp.jump.value()];
-                return next;
-            };
-            this.execs.push(func);
-            if (this.locale_default) {
-                state.opt.lang = this.locale_default;
-            }
-        }
+        CSL.Conditions.TopNode.call(this, state, target);
         target.push(this);
     },
     configure: function (state, pos) {
+        CSL.Conditions.Configure.call(this, state, pos);
+    }
+};
+CSL.Node["conditions"] = {
+    build: function (state, target) {
         if (this.tokentype === CSL.START) {
-            this.fail = state.configure.fail.slice(-1)[0];
-            this.succeed = this.next;
-        } else if (this.tokentype === CSL.SINGLETON) {
-            this.fail = this.next;
-            this.succeed = state.configure.succeed.slice(-1)[0];
-        } else {
-            this.succeed = state.configure.succeed.slice(-1)[0];
-            this.fail = this.next;
+            state.tmp.conditions.addMatch(this.match);
+        }
+        if (this.tokentype === CSL.END) {
+            state.tmp.conditions.matchCombine();
         }
     }
+};
+CSL.Node["condition"] = {
+    build: function (state, target) {
+        if (this.tokentype === CSL.SINGLETON) {
+            var test = state.fun.match[this.match](this, state, this.tests);
+            state.tmp.conditions.addTest(test);
+        }
+    }
+};
+CSL.Conditions = {};
+CSL.Conditions.TopNode = function (state, target) {
+    var func;
+    if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+        if (this.locale) {
+            state.opt.lang = this.locale;
+        }
+        if (!this.tests || !this.tests.length) {
+            state.tmp.conditions = new CSL.Conditions.Engine(state, this);
+        } else {
+            this.test = state.fun.match[this.match](this, state, this.tests);
+        }
+    }
+    if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
+        func = function (state, Item) {
+            if (this.locale_default) {
+                state.output.current.value().old_locale = this.locale_default;
+                state.output.closeLevel("empty");
+                state.opt.lang = this.locale_default;
+            }
+            var next = this[state.tmp.jump.value()];
+            return next;
+        };
+        this.execs.push(func);
+        if (this.locale_default) {
+            state.opt.lang = this.locale_default;
+        }
+    }
+};
+CSL.Conditions.Configure = function (state, pos) {
+    if (this.tokentype === CSL.START) {
+        this.fail = state.configure.fail.slice(-1)[0];
+        this.succeed = this.next;
+        state.configure.fail[(state.configure.fail.length - 1)] = pos;
+    } else if (this.tokentype === CSL.SINGLETON) {
+        this.fail = this.next;
+        this.succeed = state.configure.succeed.slice(-1)[0];
+        state.configure.fail[(state.configure.fail.length - 1)] = pos;
+    } else {
+        this.succeed = state.configure.succeed.slice(-1)[0];
+        this.fail = this.next;
+    }
+};
+CSL.Conditions.Engine = function (state, token) {
+    this.token = token;
+    this.state = state;
+};
+CSL.Conditions.Engine.prototype.addTest = function (test) {
+    this.token.tests.push(test);
+};
+CSL.Conditions.Engine.prototype.addMatch = function (match) {
+    this.token.match = match;
+};
+CSL.Conditions.Engine.prototype.matchCombine = function () {
+    this.token.test = this.state.fun.match[this.token.match](this.token, this.state, this.token.tests);
 };
 CSL.Node.info = {
     build: function (state, target) {
@@ -8441,8 +8432,7 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
 };
 CSL.Attributes["@is-numeric"] = function (state, arg, joiner) {
     var variables = arg.split(/\s+/);
-    var reverses = CSL.Util.setReverseConditions.call(this, variables);
-    var maketest = function(variable, reverse) {
+    var maketest = function(variable) {
         return function (Item, item) {
             var myitem = Item;
             if (["locator","locator-revision"].indexOf(variable) > -1) {
@@ -8453,43 +8443,41 @@ CSL.Attributes["@is-numeric"] = function (state, arg, joiner) {
                     state.processNumber(false, myitem, variable, Item.type);
                 }
                 if (myitem[variable] && state.tmp.shadow_numbers[variable].numeric) {
-                    return reverse ? false : true;
+                    return true;
                 }
             } else if (["title", "locator-revision","version"].indexOf(variable) > -1) {
                 if (myitem[variable]) {
                     if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
-                        return reverse ? false : true;
+                        return true;
                     }
                 }
             }
-            return reverse ? true : false;
+            return false;
         }
     }
     for (var i=0; i<variables.length; i+=1) {
-        this.rawtests.push(maketest(variables[i], reverses[i]));
+        this.tests.push(maketest(variables[i]));
     }
 };
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
     var variables = arg.split(/\s+/);
-    var reverses = CSL.Util.setReverseConditions.call(this, variables);
-    var maketest = function (myvariable, reverse) {
+    var maketest = function (myvariable) {
         return function(Item, item) {
             if (Item[myvariable] && Item[myvariable].circa) {
-                return reverse ? false : true;
+                return true;
             } else {
-                return reverse ? true : false;
+                return false;
             }
         }
     }
     for (var i=0,ilen=variables.length;i<ilen;i+=1) {
-        this.rawtests.push(maketest(variables[i], reverses[i]));
+        this.tests.push(maketest(variables[i]));
     };
 };
 CSL.Attributes["@locator"] = function (state, arg) {
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
-    var reverses = CSL.Util.setReverseConditions.call(this, trylabels);
-    var maketest = function (trylabel, reverse) {
+    var maketest = function (trylabel) {
         return function(Item, item) {
             var label;
             if ("undefined" === typeof item || !item.label) {
@@ -8500,14 +8488,14 @@ CSL.Attributes["@locator"] = function (state, arg) {
                 label = item.label;
             }
             if (trylabel === label) {
-                return reverse ? false : true;
+                return true;
             } else {
-                return reverse ? true : false;
+                return false;
             }
         }
     }
     for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
-        this.rawtests.push(maketest(trylabels[i], reverses[i]));
+        this.tests.push(maketest(trylabels[i]));
     }
 };
 CSL.Attributes["@position"] = function (state, arg) {
@@ -8547,32 +8535,31 @@ CSL.Attributes["@position"] = function (state, arg) {
             tryposition = CSL.POSITION_IBID_WITH_LOCATOR;
         }
         if ("near-note" === tryposition) {
-            this.rawtests.push(function (Item, item) {
+            this.tests.push(function (Item, item) {
                 if (item && item.position === CSL.POSITION_SUBSEQUENT && item["near-note"]) {
                     return true;
                 }
                 return false;
             });
         } else {
-            this.rawtests.push(maketest(tryposition));
+            this.tests.push(maketest(tryposition));
         }
     }
 };
 CSL.Attributes["@type"] = function (state, arg) {
     var types = arg.split(/\s+/);
-    var reverses = CSL.Util.setReverseConditions.call(this, types);
-    var maketest = function (mytype, reverse) {
+    var maketest = function (mytype) {
         return function(Item,item) {
             var ret = (Item.type === mytype);
             if (ret) {
-                return reverse ? false : true;
+                return true;
             } else {
-                return reverse ? true : false;
+                return false;
             }
         }
     }
     for (var i=0,ilen=types.length;i<ilen;i+=1) {
-        this.rawtests.push(maketest(types[i], reverses[i]));
+        this.tests.push(maketest(types[i]));
     }
 };
 CSL.Attributes["@variable"] = function (state, arg) {
@@ -8696,9 +8683,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
             }
         };
         this.execs.push(func);
-    } else if (["if",  "else-if"].indexOf(this.name) > -1) {
-        var reverses = CSL.Util.setReverseConditions.call(this, this.variables);
-        var maketest = function (variable, reverse) {
+    } else if (["if",  "else-if", "condition"].indexOf(this.name) > -1) {
+        var maketest = function (variable) {
             return function(Item,item){
                 var myitem = Item;
                 if (item && ["locator", "locator-revision", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
@@ -8706,32 +8692,31 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 }
                 if (variable === "hereinafter" && state.sys.getAbbreviation && myitem.id) {
                     if (state.transform.abbrevs["default"].hereinafter[myitem.id]) {
-                        return reverse ? false : true;
+                        return true;
                     }
                 } else if (myitem[variable]) {
                     if ("number" === typeof myitem[variable] || "string" === typeof myitem[variable]) {
-                        return reverse ? false : true;
+                        return true;
                     } else if ("object" === typeof myitem[variable]) {
                         for (key in myitem[variable]) {
                             if (myitem[variable][key]) {
-                                return reverse ? false : true;
+                                return true;
                             }
                         }
                     }
                 }
-                return reverse ? true : false;
+                return false;
             }
         }
         for (var i=0,ilen=this.variables.length;i<ilen;i+=1) {
-            this.rawtests.push(maketest(this.variables[i], reverses[i]));
+            this.tests.push(maketest(this.variables[i]));
         }
     }
 };
 CSL.Attributes["@page"] = function (state, arg) {
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
-    var reverses = CSL.Util.setReverseConditions.call(this, trylabels);
-    var maketest = function (trylabel, reverse) {
+    var maketest = function (trylabel) {
         return function(Item, item) {
             var label;
             state.processNumber(false, Item, "page", Item.type);
@@ -8743,26 +8728,25 @@ CSL.Attributes["@page"] = function (state, arg) {
                 label = state.tmp.shadow_numbers.page.label;
             }
             if (trylabel === label) {
-                return reverse ? false : true;
+                return true;
             } else {
-                return reverse ? true : false;
+                return false;
             }
         }
     }
     for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
-        this.rawtests.push(maketest(trylabels[i], reverses[i]));
+        this.tests.push(maketest(trylabels[i]));
     }
 };
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
     var tryjurisdictions = arg.split(/\s+/);
-    var reverses = CSL.Util.setReverseConditions.call(this, tryjurisdictions);
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
         tryjurisdictions[i] = tryjurisdictions[i].split(";");
     }
-    var maketests = function (tryjurisdiction, reverse) {
+    var maketests = function (tryjurisdiction) {
         return function(Item,item){
             if (!Item.jurisdiction) {
-                return reverse ? true : false;
+                return false;
             }
             var jurisdictions = Item.jurisdiction.split(";");
             for (var i=0,ilen=jurisdictions.length;i<ilen;i+=1) {
@@ -8772,15 +8756,15 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
                 var tryjurisdictionStr = tryjurisdiction.slice(0,i).join(";");
                 var jurisdiction = jurisdictions.slice(0,i).join(";");
                 if (tryjurisdictionStr === jurisdiction) {
-                    return reverse ? false : true;
+                    return true;
                 }
             }
-            return reverse ? true : false;
+            return false;
         }
     }
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
         var tryjurisdictionSlice = tryjurisdictions[i].slice();
-        this.rawtests.push(maketests(tryjurisdictionSlice, reverses[i]));
+        this.tests.push(maketests(tryjurisdictionSlice));
     }
 };
 CSL.Attributes["@context"] = function (state, arg) {
@@ -8806,7 +8790,7 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
         }
     }
     for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
-        this.rawtests.push(maketest(trydates[i]));
+        this.tests.push(maketest(trydates[i]));
     }
 };
 CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
@@ -8822,7 +8806,7 @@ CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
         }
     }
     for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
-        this.rawtests.push(maketest(trydates[i]));
+        this.tests.push(maketest(trydates[i]));
     }
 };
 CSL.Attributes["@has-day-only"] = function (state, arg) {
@@ -8838,7 +8822,7 @@ CSL.Attributes["@has-day-only"] = function (state, arg) {
         }
     }
     for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
-        this.rawtests.push(maketest(trydates[i]));
+        this.tests.push(maketest(trydates[i]));
     };
 };
 CSL.Attributes["@subjurisdictions"] = function (state, arg) {
@@ -9026,22 +9010,7 @@ CSL.Attributes["@delimiter"] = function (state, arg) {
     }
 };
 CSL.Attributes["@match"] = function (state, arg) {
-    var match;
-    if (this.tokentype === CSL.START || CSL.SINGLETON) {
-        this.match = arg;
-        this.evaluator = function (token, state, Item, item) {
-            var record = function (result) {
-                if (result) {
-                    state.tmp.jump.replace("succeed");
-                    return token.succeed;
-                } else {
-                    state.tmp.jump.replace("fail");
-                    return token.fail;
-                }
-            }
-            return record(state.fun.match[arg](token, state, token.tests, CSL.CONDITION_LEVEL_TOP)(Item, item));
-        };
-    }
+    this.match = arg;
 };
 CSL.Attributes["@names-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
@@ -9845,22 +9814,9 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function (original_condition) {
         this.parallel_conditional_blobs_list.pop();
     }
 }
-CSL.Util = {
-    setReverseConditions: function (lst) {
-        reverses = [];
-        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
-            if (lst[i].slice(0,4) === "not:") {
-                lst[i] = lst[i].slice(4);
-                reverses.push(true);
-            } else {
-                reverses.push(false);
-            }
-        }
-        return reverses;
-    }
-};
+CSL.Util = {};
 CSL.Util.Match = function () {
-    this.any = function (token, state, tests, level) {
+    this.any = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0, ilen=tests.length; i < ilen; i += 1) {
                 result = tests[i](Item, item);
@@ -9872,10 +9828,7 @@ CSL.Util.Match = function () {
         };
     };
     this[undefined] = this.any;
-    this.none = function (token, state, tests, level) {
-        if (CSL.CONDITION_LEVEL_TOP !== level) {
-            return this.any(token, state, tests, level);
-        }
+    this.none = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
@@ -9886,7 +9839,7 @@ CSL.Util.Match = function () {
             return true;
         };
     };
-    this.all = function (token, state, tests, level) {
+    this.all = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
@@ -9895,6 +9848,17 @@ CSL.Util.Match = function () {
                 }
             }
             return true;
+        };
+    };
+    this.nand = function (token, state, tests) {
+        return function (Item, item) {
+            for (var i=0,ilen=tests.length;i<ilen;i+=1) {
+                result = tests[i](Item,item);
+                if (!result) {
+                    return true;
+                }
+            }
+            return false;
         };
     };
 };
@@ -10951,18 +10915,7 @@ CSL.Util.substituteStart = function (state, target) {
             return false;
         };
         if_start.tests.push(func);
-        if_start.evaluator = function (token, state, Item, item) {
-            var record = function (result) {
-                if (result) {
-                    state.tmp.jump.replace("succeed");
-                    return token.succeed;
-                } else {
-                    state.tmp.jump.replace("fail");
-                    return token.fail;
-                }
-            }
-            return record(state.fun.match.any(token, state, token.tests, CSL.CONDITION_LEVEL_BOTTOM)(Item, item));
-        };
+        if_start.test = state.fun.match.any(this, state, if_start.tests);
         target.push(if_start);
     }
 };

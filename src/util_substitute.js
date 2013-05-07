@@ -149,23 +149,7 @@ CSL.Util.substituteStart = function (state, target) {
             return false;
         };
         if_start.tests.push(func);
-        //
-        // this is cut-and-paste of the "any" evaluator
-        // function, from Attributes.  These functions
-        // should be defined in a namespace for reuse.
-        // Sometime.
-        if_start.evaluator = function (token, state, Item, item) {
-            var record = function (result) {
-                if (result) {
-                    state.tmp.jump.replace("succeed");
-                    return token.succeed;
-                } else {
-                    state.tmp.jump.replace("fail");
-                    return token.fail;
-                }
-            }
-            return record(state.fun.match.any(token, state, token.tests, CSL.CONDITION_LEVEL_BOTTOM)(Item, item));
-        };
+        if_start.test = state.fun.match.any(this, state, if_start.tests);
         target.push(if_start);
     }
 };

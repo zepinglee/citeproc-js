@@ -45,16 +45,11 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
-
-/*global CSL: true */
-
-CSL.Node["if"] = {
+CSL.Node["condition"] = {
     build: function (state, target) {
-        CSL.Conditions.TopNode.call(this, state, target);
-        target.push(this);
-    },
-    configure: function (state, pos) {
-        CSL.Conditions.Configure.call(this, state, pos);
+        if (this.tokentype === CSL.SINGLETON) {
+            var test = state.fun.match[this.match](this, state, this.tests);
+            state.tmp.conditions.addTest(test);
+        }
     }
 };
-
