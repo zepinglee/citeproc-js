@@ -52,7 +52,7 @@ citation
 
 
 This test supports a proposal for extending CSL's conditional attributes.
-The proposal would introduce two new nodes and associated schema adjustments:
+The proposal introduces two new nodes and associated schema adjustments:
 
   * A cs:conditions element, as an optional first child of cs:if or cs:else-if,
     with a sole match attribute. When cs:conditions is used, its parent (cs:if 
@@ -60,6 +60,8 @@ The proposal would introduce two new nodes and associated schema adjustments:
     as children of cs:condition, and there must be at least one such child. 
 
   * A cs:condition element, with the same attributes as cs:if or cs:else-if.
+
+The proposal also introduces a new value "anynot" for the match attribute.
 
 Under the proposal, conditional evaluation would take place as
 follows:
@@ -157,7 +159,7 @@ Item Five is an ARTICLE-JOURNAL with both VOLUME and ISSUE, and both of them are
               <conditions match="all">
                 <condition type="article-journal" variable="volume issue" match="all"/>
                 <condition variable="volume issue" match="all"/>
-                <condition is-numeric="volume issue" match="nand"/>
+                <condition is-numeric="volume issue" match="anynot"/>
               </conditions>
               <text value="is an ARTICLE-JOURNAL with both VOLUME and ISSUE, but one of them is non-numeric"/>
             </if>
