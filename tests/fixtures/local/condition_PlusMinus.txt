@@ -52,41 +52,30 @@ citation
 
 
 This test supports a proposal for extending CSL's conditional attributes.
-The proposal would introduce two changes:
+The proposal would introduce two new nodes and associated schema adjustments:
 
-  * An optional not: prefix on elements of the list argument to
-    certain condition attributes; and
+  * A cs:conditions element, as an optional first child of cs:if or cs:else-if,
+    with a sole match attribute. When cs:conditions is used, its parent (cs:if 
+    or cs:else-if) must have no attributes. Only cs:condition elements are permitted
+    as children of cs:condition, and there must be at least one such child. 
 
-  * Alternative forms of several condition attributes, identified
-    by an *-all or *-any suffix.
+  * A cs:condition element, with the same attributes as cs:if or cs:else-if.
 
 Under the proposal, conditional evaluation would take place as
 follows:
 
-  (1) Each attribute argument list element is evaluated, returning
-      "true" or "false";
+  (1) cs:if and cs:else-if elements with attributes process exactly as under the
+      current schema and specification.
 
-  (2) For each attribute, the results from (1) are evaluated using "all"
-      (if the attribute suffix is "-all") or "any" (if the attribute
-      suffix is "-any"), following the rules described in the CSL
-      Specification. Legacy attributes with no suffix follow the value
-      of the "match" attribute, or "all" if no companion "match"
-      attribute is present).
+  (2) cs:if and cs:else-if element with no attributes apply the conditions
+      provided by the immediate cs:conditions child and its cs:condition
+      children. The cs:condition children are evaluated first, according
+      to the same logic as cs:if and cs:else-if. The results are then
+      combined according to the match element on cs:conditions, returning
+      a single boolean result for the parent cs:fi or cs:else-if element.
 
-  (3) The "match" attribute evaluates the results from (2) using
-      "all" or "any" as described in the CSL Specification,
-      returning an overall test value of "true" or "false".
-
-This would allow two testing patterns that are not currently possible:
-
-  * A single test can require both true and false values; and
-
-  * Attributes can set an evaluation method ("all" or "any") independent
-    of the "match" attribute that controls inter-attribute evaluation.
-
-This flexibility makes it possible to reduce the bulk of CSL code.
-As one example, the construct below is found in several styles in the 
-CSL repository:
+This change makes it possible to reduce the bulk of CSL code. As one example,
+the construct below is found in several styles in the CSL repository:
 
     <macro name="year-date">
       <choose>
@@ -123,7 +112,11 @@ single cs:choose statement:
 
     <macro name="year-date">
       <choose>
-        <if type="webpage" variable="not:issued" match="all">
+        <if>
+          <conditions match="all">
+            <condition type="webpage" match="all"/>
+            <condition variable="issued" match="none"/>
+          </conditions>
           <date variable="accessed">
             <date-part name="year"/>
           </date>
@@ -135,19 +128,6 @@ single cs:choose statement:
         </else>
       </choose>
     </macro>
-
-Condition attributes that would accept a not: prefix on argument
-elements and be given alternative *-all and *-any forms under the
-proposal are the following:
-
-    * is-numeric
-    * is-uncertain-date
-    * locator
-    * type
-    * variable
-    * jurisdiction (MLZ only)
-    * page (MLZ only)
-
 
 >>===== RESULT =====>>
 Item One is not an ARTICLE-JOURNAL, and has an EDITION
