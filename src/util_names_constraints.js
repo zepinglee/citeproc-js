@@ -93,7 +93,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     // Mappings, to allow existing disambiguation machinery to
     // remain untouched.
     if (this.state.tmp.suppress_decorations) {
-        if (this.state.tmp.disambig_request) {
+        if (this.state.tmp.disambig_request && this.state.tmp.disambig_request.names[pos]) {
             // Oh. Trouble.
             // state.tmp.nameset_counter is the number of the nameset
             // in the disambiguation try-sequence. Ouch.

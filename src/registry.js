@@ -131,6 +131,7 @@ CSL.Registry = function (state) {
     // each ambig is a list of the ids of other objects
     // that have the same base-level rendering
     this.ambigcites = {};
+    this.ambigresets = {};
     this.sorter = new CSL.Registry.Comparifier(state, "bibliography_sort");
     //this.modes = CSL.getModes.call(this.state);
     //this.checkerator = new CSL.Checkerator();
@@ -259,6 +260,7 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
     this.refreshes = {};
     this.touched = {};
     this.ambigsTouched = {};
+    this.ambigresets = {};
 };
 
 CSL.Registry.prototype.dopurge = function (myhash) {
@@ -311,6 +313,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
             if (mypos > -1) {
                 items = this.ambigcites[ambig].slice();
                 this.ambigcites[ambig] = items.slice(0, mypos).concat(items.slice(mypos+1, items.length));
+                this.ambigresets[ambig] = this.ambigcites[ambig].length;
             }
             //
             // XX. What we've missed is to provide an update of all
@@ -518,12 +521,25 @@ CSL.Registry.prototype.dorefreshes = function () {
         regtoken.sortkeys = undefined;
         Item = this.state.retrieveItem(key);
         var akey = regtoken.ambig;
+
         if ("undefined" === typeof akey) {
+            this.state.tmp.disambig_settings = false;
             akey = CSL.getAmbiguousCite.call(this.state, Item);
+            abase = CSL.getAmbigConfig.call(this.state);
+            this.registerAmbigToken(akey, key, abase);
+        }
+        for (var akkey in this.ambigresets) {
+            if (this.ambigresets[akkey] === 1) {
+                var loneKey = this.ambigcites[akey][0];
+                var Item = this.state.retrieveItem(loneKey);
+                this.registry[loneKey].disambig = new CSL.AmbigConfig;
+                this.state.tmp.disambig_settings = false;
+                var akey = CSL.getAmbiguousCite.call(this.state, Item);
+                var abase = CSL.getAmbigConfig.call(this.state);
+                this.registerAmbigToken(akey, loneKey, abase);
+            }
         }
         this.state.tmp.taintedItemIDs[key] = true;
-        abase = CSL.getAmbigConfig.call(this.state);
-        this.registerAmbigToken(akey, key, abase);
         this.ambigsTouched[akey] = true;
         if (!Item.legislation_id) {
             this.akeys[akey] = true;
