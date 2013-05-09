@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.462
+==========================
+
+- Fix leakage of name formatting parameters between bibliography
+  and citations.
+
+- Boost disambiguation levels in bibliography if required.
+
+- Gracefully degrade disambiguation levels when partners of
+  a disambiguated cite are removed from a document.
+
+==========================
 Changes in version 1.0.461
 ==========================
 

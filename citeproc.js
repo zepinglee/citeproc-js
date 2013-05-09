@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.461",
+    PROCESSOR_VERSION: "1.0.462",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3984,10 +3984,25 @@ CSL.citeStart = function (Item, item) {
     } else {
         this.tmp.disambig_settings = new CSL.AmbigConfig();
     }
-    if (this.tmp.area === 'bibliography' && this.opt["disambiguate-add-names"] && this.registry.registry[Item.id] && this.tmp.disambig_override) {
-        this.tmp.disambig_request = this.tmp.disambig_settings;
-        this.tmp.disambig_request.names = this.registry.registry[Item.id].disambig.names.slice();
-        this.tmp.disambig_settings.names = this.registry.registry[Item.id].disambig.names.slice();
+    if (this.tmp.area !== 'citation' && this.registry.registry[Item.id]) {
+        this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
+        if (this.tmp.area === 'bibliography' && this.tmp.disambig_settings && this.tmp.disambig_override) {
+            if (this.opt["disambiguate-add-names"]) {
+                this.tmp.disambig_settings.names = this.registry.registry[Item.id].disambig.names.slice();
+                this.tmp.disambig_request.names = this.registry.registry[Item.id].disambig.names.slice();
+            }
+            if (this.opt["disambiguate-add-givenname"]) {
+                this.tmp.disambig_request = this.tmp.disambig_settings;
+                this.tmp.disambig_settings.givens = this.registry.registry[Item.id].disambig.givens.slice();
+                this.tmp.disambig_request.givens = this.registry.registry[Item.id].disambig.givens.slice();
+                for (var i=0,ilen=this.tmp.disambig_settings.givens.length;i<ilen;i+=1) {
+                    this.tmp.disambig_settings.givens[i] = this.registry.registry[Item.id].disambig.givens[i].slice();
+                }
+                for (var i=0,ilen=this.tmp.disambig_request.givens.length;i<ilen;i+=1) {
+                    this.tmp.disambig_request.givens[i] = this.registry.registry[Item.id].disambig.givens[i].slice();
+                }
+            }
+        }
     }
     this.tmp.names_used = [];
     this.tmp.nameset_counter = 0;
@@ -4022,8 +4037,11 @@ CSL.citeStart = function (Item, item) {
 };
 CSL.citeEnd = function (Item, item) {
     if (this.tmp.disambig_restore) {
-        this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names;
-        this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens;
+        this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names.slice();
+        this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens.slice();
+        for (var i=0,ilen=this.registry.registry[Item.id].disambig.givens.length;i<ilen;i+=1) {
+            this.registry.registry[Item.id].disambig.givens[i] = this.tmp.disambig_restore.givens[i].slice();
+        }
     }
     this.tmp.disambig_restore = false;
     this.tmp.last_suffix_used = this.tmp.suffix.value();
@@ -6534,7 +6552,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     var display_names = lst[key];
     var discretionary_names_length = this.state.tmp["et-al-min"];
     if (this.state.tmp.suppress_decorations) {
-        if (this.state.tmp.disambig_request) {
+        if (this.state.tmp.disambig_request && this.state.tmp.disambig_request.names[pos]) {
             discretionary_names_length = this.state.tmp.disambig_request.names[pos];
         } else if (count[key] >= this.etal_min) {
             discretionary_names_length = this.etal_use_first;
@@ -9850,7 +9868,7 @@ CSL.Util.Match = function () {
             return true;
         };
     };
-    this.nand = function (token, state, tests) {
+    this.anynot = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
@@ -12228,6 +12246,7 @@ CSL.Registry = function (state) {
     this.oldseq = {};
     this.return_data = {};
     this.ambigcites = {};
+    this.ambigresets = {};
     this.sorter = new CSL.Registry.Comparifier(state, "bibliography_sort");
     this.getSortedIds = function () {
         ret = [];
@@ -12277,6 +12296,7 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
     this.refreshes = {};
     this.touched = {};
     this.ambigsTouched = {};
+    this.ambigresets = {};
 };
 CSL.Registry.prototype.dopurge = function (myhash) {
     for (var i=this.mylist.length-1;i>-1;i+=-1) {
@@ -12309,6 +12329,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
             if (mypos > -1) {
                 items = this.ambigcites[ambig].slice();
                 this.ambigcites[ambig] = items.slice(0, mypos).concat(items.slice(mypos+1, items.length));
+                this.ambigresets[ambig] = this.ambigcites[ambig].length;
             }
             len = this.ambigcites[ambig].length;
             for (pos = 0; pos < len; pos += 1) {
@@ -12410,11 +12431,23 @@ CSL.Registry.prototype.dorefreshes = function () {
         Item = this.state.retrieveItem(key);
         var akey = regtoken.ambig;
         if ("undefined" === typeof akey) {
+            this.state.tmp.disambig_settings = false;
             akey = CSL.getAmbiguousCite.call(this.state, Item);
+            abase = CSL.getAmbigConfig.call(this.state);
+            this.registerAmbigToken(akey, key, abase);
+        }
+        for (var akkey in this.ambigresets) {
+            if (this.ambigresets[akkey] === 1) {
+                var loneKey = this.ambigcites[akey][0];
+                var Item = this.state.retrieveItem(loneKey);
+                this.registry[loneKey].disambig = new CSL.AmbigConfig;
+                this.state.tmp.disambig_settings = false;
+                var akey = CSL.getAmbiguousCite.call(this.state, Item);
+                var abase = CSL.getAmbigConfig.call(this.state);
+                this.registerAmbigToken(akey, loneKey, abase);
+            }
         }
         this.state.tmp.taintedItemIDs[key] = true;
-        abase = CSL.getAmbigConfig.call(this.state);
-        this.registerAmbigToken(akey, key, abase);
         this.ambigsTouched[akey] = true;
         if (!Item.legislation_id) {
             this.akeys[akey] = true;
