@@ -1179,10 +1179,26 @@ CSL.citeStart = function (Item, item) {
     } else {
         this.tmp.disambig_settings = new CSL.AmbigConfig();
     }
-    if (this.tmp.area === 'bibliography' && this.opt["disambiguate-add-names"] && this.registry.registry[Item.id] && this.tmp.disambig_override) {
-        this.tmp.disambig_request = this.tmp.disambig_settings;
-        this.tmp.disambig_request.names = this.registry.registry[Item.id].disambig.names.slice();
-        this.tmp.disambig_settings.names = this.registry.registry[Item.id].disambig.names.slice();
+    if (this.tmp.area !== 'citation' && this.registry.registry[Item.id]) {
+        this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
+        if (this.tmp.area === 'bibliography' && this.tmp.disambig_settings && this.tmp.disambig_override) {
+            if (this.opt["disambiguate-add-names"]) {
+                this.tmp.disambig_settings.names = this.registry.registry[Item.id].disambig.names.slice();
+                this.tmp.disambig_request.names = this.registry.registry[Item.id].disambig.names.slice();
+            }
+            if (this.opt["disambiguate-add-givenname"]) {
+                // This is weird and delicate and not fully understood
+                this.tmp.disambig_request = this.tmp.disambig_settings;
+                this.tmp.disambig_settings.givens = this.registry.registry[Item.id].disambig.givens.slice();
+                this.tmp.disambig_request.givens = this.registry.registry[Item.id].disambig.givens.slice();
+                for (var i=0,ilen=this.tmp.disambig_settings.givens.length;i<ilen;i+=1) {
+                    this.tmp.disambig_settings.givens[i] = this.registry.registry[Item.id].disambig.givens[i].slice();
+                }
+                for (var i=0,ilen=this.tmp.disambig_request.givens.length;i<ilen;i+=1) {
+                    this.tmp.disambig_request.givens[i] = this.registry.registry[Item.id].disambig.givens[i].slice();
+                }
+            }
+        }
     }
     this.tmp.names_used = [];
     this.tmp.nameset_counter = 0;
@@ -1227,8 +1243,11 @@ CSL.citeStart = function (Item, item) {
 CSL.citeEnd = function (Item, item) {
     // RESTORE PARAMETERS IF APPROPRIATE
     if (this.tmp.disambig_restore) {
-        this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names;
-        this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens;
+        this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names.slice();
+        this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens.slice();
+        for (var i=0,ilen=this.registry.registry[Item.id].disambig.givens.length;i<ilen;i+=1) {
+            this.registry.registry[Item.id].disambig.givens[i] = this.tmp.disambig_restore.givens[i].slice();
+        }
     }
     this.tmp.disambig_restore = false;
 
