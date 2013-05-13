@@ -91,7 +91,7 @@ CSL.Util.Match = function () {
         };
     };
 
-    this.anynot = function (token, state, tests) {
+    this.nand = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
                 result = tests[i](Item,item);
