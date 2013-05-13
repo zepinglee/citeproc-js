@@ -333,7 +333,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         if (["page", "page-first"].indexOf(variable) > -1) {
             var m = num.split(" ")[0].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             if (m){
-                this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
+                if (this.opt.development_extensions.static_statute_locator) {
+                    this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
+                }
                 var mm = num.match(/[^ ]+\s+(.*)/);
                 if (mm) {
                     num = mm[1];
