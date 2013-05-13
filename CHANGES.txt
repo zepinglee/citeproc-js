@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.463
+==========================
+
+- Fix broken sort of single-field names sent to the
+  processor as ordinary personal names.
+
+- Do not change page label from field content unless
+  citeproc.opt.development_extensions.static_statute_locator
+  is enabled.
+
+==========================
 Changes in version 1.0.462
 ==========================
 
