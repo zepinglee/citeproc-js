@@ -451,11 +451,13 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
             for (i=tryjurisdiction.length;i>0;i+=-1) {
                 var tryjurisdictionStr = tryjurisdiction.slice(0,i).join(";");
                 var jurisdiction = jurisdictions.slice(0,i).join(";");
-                if (tryjurisdictionStr === jurisdiction) {
-                    return true;
+                if (tryjurisdictionStr !== jurisdiction) {
+                    return false;
                 }
+                // this should be okay to enable.
+                // break;
             }
-            return false;
+            return true;
         }
     }
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
