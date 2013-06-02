@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.465
+==========================
+
+- Fix bug in jurisdiction condition evaluation.
+
+- Recognize {stet} as shorthand for original field
+  content in ordinary field abbreviations.
+
+==========================
 Changes in version 1.0.464
 ==========================
 

@@ -66,19 +66,6 @@ CSL.getSafeEscape = function(state) {
                 return txt.replace(/\u202f/g, '<span style="white-space:nowrap">&thinsp;</span>');
             });
         }
-        // XXX I think this is wrong.
-        // XXX The directionality of each field inserted to the queue should
-        // XXX be preserved, with directionality forced back to the style
-        // XXX context on the outside. Unicode directionality hint characters
-        // XXX allow that, but this implementation just forces all surrounding
-        // XXX text back to style context direction. This will break parens
-        // XXX embedded in a field (and/or the position of their content), I think.
-        if (state.opt.force_parens_char) {
-            callbacks.push(function (txt) {
-                return txt.replace(/([\(\<\[])/g, state.opt.force_parens_char + "$1")
-                    .replace(/([\)\>\]])/g, "$1" + state.opt.force_parens_char);
-            });
-        }
         if (callbacks.length) {
             return function (txt) {
                 for (var i = 0, ilen = callbacks.length; i < ilen; i += 1) {

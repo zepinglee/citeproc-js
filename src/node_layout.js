@@ -105,7 +105,16 @@ CSL.Node.layout = {
                 
             // declare thyself [once only???  This is getting messed up again]
             func = function (state, Item) {
-                state.output.openLevel("empty");
+                var tok = "empty";
+                // RTL adjustment happens here
+                if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
+                    tok = new CSL.Token();
+                    tok.strings.prefix = "\u202b";
+                    tok.strings.suffix = "\u202c";
+                    state.citation.opt.layout_prefix = state.citation.opt.layout_prefix.replace(/\(([^\u200e]|$)/g,"(\u200e$1");
+                    state.citation.opt.layout_suffix = state.citation.opt.layout_suffix.replace(/\)([^\u200e]|$)/g,")\u200e$1");
+                }
+                state.output.openLevel(tok);
             };
             this.execs.push(func);
             target.push(this);
