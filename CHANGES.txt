@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.466
+==========================
+
+- Fix hanging bug in disambig_cites.js
+
+- Force "any" when testing for multiple item types
+
+- Add Romanian s with hanging comma (like cedilla) to
+  Romanesque character pattern match
+
+- Add some code in an attempt to patch up parens behaviour
+  in some RTL environments (MS Word).
+
+==========================
 Changes in version 1.0.465
 ==========================
 

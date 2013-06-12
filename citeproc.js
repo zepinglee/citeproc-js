@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.465",
+    PROCESSOR_VERSION: "1.0.466",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -8584,9 +8584,11 @@ CSL.Attributes["@type"] = function (state, arg) {
             }
         }
     }
+    var tests = [];
     for (var i=0,ilen=types.length;i<ilen;i+=1) {
-        this.tests.push(maketest(types[i]));
+        tests.push(maketest(types[i]));
     }
+    this.tests.push(state.fun.match.any(this, state, tests));
 };
 CSL.Attributes["@variable"] = function (state, arg) {
     var func;
@@ -13013,7 +13015,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             && increment_names) {
             if (this.state.opt["disambiguate-add-names"]) {
                 increment_namesets = false;
-                if (this.base.names[this.gnameset] < this.namesMax) {
+                if (this.gname < this.namesMax) {
                     this.base.names[this.gnameset] += 1;
                     this.gname += 1;
                 } else {
@@ -13033,7 +13035,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             }
         }
         if (("number" !== typeof this.namesetsMax || this.namesetsMax === -1 || this.gnameset === this.namesetsMax)
-            && (!this.state.opt["disambiguate-add-names"] || "number" !== typeof this.namesMax || this.base.names[this.gnameset] === this.namesMax)
+            && (!this.state.opt["disambiguate-add-names"] || "number" !== typeof this.namesMax || this.gname === this.namesMax)
             && ("number" != typeof this.givensMax || "undefined" === typeof this.base.givens[this.gnameset] || "undefined" === typeof this.base.givens[this.gnameset][this.gname] || this.base.givens[this.gnameset][this.gname] === this.givensMax)) {
             maxed = true;
         }
