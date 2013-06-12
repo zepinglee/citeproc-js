@@ -407,11 +407,10 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
             && increment_names) {
             if (this.state.opt["disambiguate-add-names"]) {
                 increment_namesets = false;
-                if (this.base.names[this.gnameset] < this.namesMax) {
+                if (this.gname < this.namesMax) {
                     this.base.names[this.gnameset] += 1;
                     this.gname += 1;
                 } else {
-                    
                     increment_namesets = true;
                 }
             } else {
@@ -446,7 +445,7 @@ CSL.Disambiguation.prototype.incrementDisambig = function () {
         }
         //SNIP-END
         if (("number" !== typeof this.namesetsMax || this.namesetsMax === -1 || this.gnameset === this.namesetsMax)
-            && (!this.state.opt["disambiguate-add-names"] || "number" !== typeof this.namesMax || this.base.names[this.gnameset] === this.namesMax)
+            && (!this.state.opt["disambiguate-add-names"] || "number" !== typeof this.namesMax || this.gname === this.namesMax)
             && ("number" != typeof this.givensMax || "undefined" === typeof this.base.givens[this.gnameset] || "undefined" === typeof this.base.givens[this.gnameset][this.gname] || this.base.givens[this.gnameset][this.gname] === this.givensMax)) {
   
 
