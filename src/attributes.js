@@ -193,6 +193,7 @@ CSL.Attributes["@position"] = function (state, arg) {
 };
 
 CSL.Attributes["@type"] = function (state, arg) {
+    // XXX This is ALWAYS composed as an "any" match
     var types = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var maketest = function (mytype) {
@@ -205,9 +206,11 @@ CSL.Attributes["@type"] = function (state, arg) {
             }
         }
     }
+    var tests = [];
     for (var i=0,ilen=types.length;i<ilen;i+=1) {
-        this.tests.push(maketest(types[i]));
+        tests.push(maketest(types[i]));
     }
+    this.tests.push(state.fun.match.any(this, state, tests));
 };
 
 
