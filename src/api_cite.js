@@ -1096,6 +1096,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             && !this.tmp.just_looking
               && this.tmp.area === "citation")) { 
 			
+            //print("TRY");
 			result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(use_layout_suffix);
 		}
         if (!this.tmp.suppress_decorations) {
@@ -1111,6 +1112,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
                 result = this.fun.decorate[params[0]][params[1]](this, result);
             }
         }
+        //result = "\u202b" + result + "\u202c";
     }
     this.tmp.suppress_decorations = false;
     return result;

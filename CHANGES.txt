@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.468
+==========================
+
+- Attempt to solve LTR/RTL quandary (parens only, may mess
+  up RTL cite content).
+
+==========================
+Changes in version 1.0.467
+==========================
+
+- Add African Union, Arbitration, and ICJ (subjurisdiction to UN)
+  to jurisdiction data.
+
+==========================
 Changes in version 1.0.466
 ==========================
 

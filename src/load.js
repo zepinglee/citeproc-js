@@ -73,6 +73,12 @@
 // IE6 does not implement Array.indexOf().
 // IE7 neither, according to rumour.
 
+
+// Potential skip words:
+// under; along; out; between; among; outside; inside; amid; amidst; against; toward; towards.
+// See https://forums.zotero.org/discussion/30484/?Focus=159613#Comment_159613
+
+
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -87,7 +93,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.0.466",
+    PROCESSOR_VERSION: "1.0.468",
 
     CONDITION_LEVEL_TOP: 1,
 

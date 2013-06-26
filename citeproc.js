@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.466",
+    PROCESSOR_VERSION: "1.0.468",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3064,6 +3064,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.main_title_from_short_title = false;
     this.development_extensions.normalize_lang_keys_to_lowercase = false;
     this.development_extensions.strict_text_case_locales = false;
+    this.development_extensions.rtl_support = true;
     this.nodenames = [];
     this.gender = {};
     this['cite-lang-prefs'] = {
@@ -3941,6 +3942,14 @@ CSL.getCite = function (Item, item, prevItemID) {
     this.tmp.cite_renders_content = false;
     this.parallel.StartCite(Item, item, prevItemID);
     CSL.citeStart.call(this, Item, item);
+    if (this.opt.development_extensions.rtl_support) {
+        if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
+            var tok = new CSL.Token();
+            tok.strings.prefix = "\u202b";
+            tok.strings.suffix = "\u202c";
+            this.output.openLevel(tok);
+        }
+    }
     next = 0;
     this.nameOutput = new CSL.NameOutput(this, Item, item);
     while (next < this[this.tmp.area].tokens.length) {
@@ -5705,15 +5714,13 @@ CSL.Node.layout = {
             this.execs.push(func);
             func = function (state, Item) {
                 var tok = "empty";
-                if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
+                if (state.opt.development_extensions.rtl_support) {
                     tok = new CSL.Token();
-                    tok.strings.prefix = "\u202b";
+                    tok.strings.prefix = "\u202a";
                     tok.strings.suffix = "\u202c";
-                    state.citation.opt.layout_prefix = state.citation.opt.layout_prefix.replace(/\(([^\u200e]|$)/g,"(\u200e$1");
-                    state.citation.opt.layout_suffix = state.citation.opt.layout_suffix.replace(/\)([^\u200e]|$)/g,")\u200e$1");
-                }
+                };
                 state.output.openLevel(tok);
-            };
+            }
             this.execs.push(func);
             target.push(this);
             if (state.build.area === "citation") {
