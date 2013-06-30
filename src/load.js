@@ -93,7 +93,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.0.468",
+    PROCESSOR_VERSION: "1.0.469",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -382,6 +382,7 @@ var CSL = {
         "recipient"
     ],
     NUMERIC_VARIABLES: [
+        "call-number",
         "chapter-number",
         "collection-number",
         "edition",
