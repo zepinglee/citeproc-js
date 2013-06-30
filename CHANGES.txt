@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.469
+==========================
+
+- Allow call-number variable (exceptionally) to abbreviate as a non-numeric number var,
+  despite being (presently) non-numeric in CSL-m.
+
+==========================
 Changes in version 1.0.468
 ==========================
 

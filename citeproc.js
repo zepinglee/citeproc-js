@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.468",
+    PROCESSOR_VERSION: "1.0.469",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -289,6 +289,7 @@ var CSL = {
         "recipient"
     ],
     NUMERIC_VARIABLES: [
+        "call-number",
         "chapter-number",
         "collection-number",
         "edition",
@@ -3942,14 +3943,6 @@ CSL.getCite = function (Item, item, prevItemID) {
     this.tmp.cite_renders_content = false;
     this.parallel.StartCite(Item, item, prevItemID);
     CSL.citeStart.call(this, Item, item);
-    if (this.opt.development_extensions.rtl_support) {
-        if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
-            var tok = new CSL.Token();
-            tok.strings.prefix = "\u202b";
-            tok.strings.suffix = "\u202c";
-            this.output.openLevel(tok);
-        }
-    }
     next = 0;
     this.nameOutput = new CSL.NameOutput(this, Item, item);
     while (next < this[this.tmp.area].tokens.length) {
@@ -5715,14 +5708,20 @@ CSL.Node.layout = {
             func = function (state, Item) {
                 var tok = "empty";
                 if (state.opt.development_extensions.rtl_support) {
-                    tok = new CSL.Token();
-                    tok.strings.prefix = "\u202a";
-                    tok.strings.suffix = "\u202c";
-                };
+                    if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
+                        tok = new CSL.Token();
+                        tok.strings.prefix = "\u202b";
+                        tok.strings.suffix = "\u202c";
+                    }
+                }
                 state.output.openLevel(tok);
             }
             this.execs.push(func);
             target.push(this);
+            if (state.opt.development_extensions.rtl_support && false) {
+                this.strings.prefix = this.strings.prefix.replace(/\((.|$)/g,"(\u200e$1");
+                this.strings.suffix = this.strings.suffix.replace(/\)(.|$)/g,")\u200e$1");
+            }
             if (state.build.area === "citation") {
                 prefix_token = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item, item) {
