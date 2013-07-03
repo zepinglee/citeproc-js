@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.470
+==========================
+
+- Avoid crash observed with CMS Full Note in MLZ.
+
+==========================
 Changes in version 1.0.469
 ==========================
 
