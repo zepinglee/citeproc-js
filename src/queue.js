@@ -686,6 +686,10 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
         return;
     }
     for (i = myblobs.length - 1; i > -1; i += -1) {
+        // ZZZ HORRIBLE HACK
+        if ("undefined" === typeof myblobs[i].blobs) {
+            myblobs[i].blobs = [];
+        }
         CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs, endOnly);
     }
     for (i = myblobs.length - 1; i > -1; i += -1) {
