@@ -686,7 +686,10 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
         return;
     }
     for (i = myblobs.length - 1; i > -1; i += -1) {
-        // ZZZ HORRIBLE HACK
+        // XXX This should not happen, but I have seen an error triggered
+        // XXX by an undefined blobs object. This masks the fault, which
+        // XXX is harmless. It's not really the right way to fix this,
+        // XXX but processor crashes are intolerable.
         if ("undefined" === typeof myblobs[i].blobs) {
             myblobs[i].blobs = [];
         }
