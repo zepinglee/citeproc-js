@@ -594,9 +594,9 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
     ret_last_char = [];
     use_delim = "";
     len = blobs.length;
-    if (len === 1 && typeof blobs[0] === "object" && parent) {
-        blobs[0].strings.prefix = parent.strings.prefix;
-        blobs[0].strings.suffix = parent.strings.suffix;
+    if (this.state.tmp.area === "citation" && !this.state.tmp.just_looking && len === 1 && typeof blobs[0] === "object" && parent) {
+        blobs[0].strings.prefix = parent.strings.prefix + blobs[0].strings.prefix;
+        blobs[0].strings.suffix = blobs[0].strings.suffix + parent.strings.suffix;
         return blobs[0];
     }
     var start = true;
