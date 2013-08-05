@@ -486,7 +486,8 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     // Provide delimiters on adjacent numeric blobs
     for (i=0,ilen=ret.length - 1;i<ilen;i+=1) {
         if ("number" === typeof ret[i].num && "number" === typeof ret[i+1].num && !ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK) {
-            ret[i].strings.suffix = txt_esc(blob_delimiter);
+            // XXX watch this
+            ret[i].strings.suffix = ret[i].strings.suffix + txt_esc(blob_delimiter);
             ret[i+1].successor_prefix = "";
             ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK = true;
         }
@@ -625,7 +626,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
         if (ret) {
             use_delim = delim;
         }
-        if (blob && "string" === typeof blob) {
+        if ("string" === typeof blob) {
             ret += txt_esc(use_delim);
             // XXX Blob should be run through flipflop and flattened here.
             // (I think it must be a fragment of text around a numeric
