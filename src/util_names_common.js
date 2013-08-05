@@ -71,7 +71,6 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
     if (!this.state.locale[this.state.opt.lang].terms[this.common_term]
         || !has_term
         || this.variables.length < 2) {
-
         this.common_term = false;
         return;
     }
@@ -80,16 +79,15 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
         var v = this.variables[i];
         var vv = this.variables[i + 1];
         if (this.freeters[v].length || this.freeters[vv].length) {
-            if (this.etal_spec[this.variable_offset[v]] !== this.etal_spec[this.variable_offset[vv]]
+            if (this.etal_spec[this.nameset_base + this.variable_offset[v]] !== this.etal_spec[this.nameset_base + this.variable_offset[vv]]
                 || !this._compareNamesets(this.freeters[v], this.freeters[vv])) {
-                
                 this.common_term = false;
                 return;
             }
             freeters_offset += 1;
         }
         for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-            if (this.etal_spec[this.variable_offset[v] + freeters_offset + j + 1] !== this.etal_spec[this.variable_offset + freeters_offset + j + 1]
+            if (this.etal_spec[this.nameset_base + this.variable_offset[v] + freeters_offset + j + 1] !== this.etal_spec[this.nameset_base + this.variable_offset + freeters_offset + j + 1]
                 || !this._compareNamesets(this.persons[v][j], this.persons[vv][j])) {
                 this.common_term = false;
                 return;
