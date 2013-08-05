@@ -1,6 +1,11 @@
 #!/usr/bin/python
-''' Make me a module
+''' makejson
+    Converts a CSL style or locale given as the single argument
+    from XML to JSON. The JSON representation can be read by
+    citeproc-js using the xmltojson.js parsing module.
 '''
+
+
 
 from xml.dom import minidom
 import json,re
