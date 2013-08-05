@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.474
+==========================
+
+- Fix a recently introduced bug that caused the suffix to be lost on the
+  leading partner of two consecutive numeric blobs.
+
+==========================
+Changes in version 1.0.473
+==========================
+
+- Fix bug in editortranslator collapsing (caused by a missing
+  offset value).
+
+==========================
+Changes in version 1.0.472
+==========================
+
+- Fix bug in empty string elements included in a numeric
+  blob series.
+
+==========================
 Changes in version 1.0.471
 ==========================
 
