@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.475
+==========================
+
+- Don't corrupt citation order in rebuildProcessorState()
+
+==========================
 Changes in version 1.0.474
 ==========================
 

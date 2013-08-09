@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.474",
+    PROCESSOR_VERSION: "1.0.475",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -4365,11 +4365,15 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
     if (!mode) {
         mode = 'html';
     }
+    var doneIDs = {};
     var itemIDs = [];
     for (var i=0,ilen=citations.length;i<ilen;i+=1) {
         for (var j=0,jlen=citations[i].citationItems.length;j<jlen;j+=1) {
             var itemID = "" + citations[i].citationItems[j].id;
-            itemIDs.push(itemID);
+            if (!doneIDs[itemID]) {
+                itemIDs.push(itemID);
+            }
+            doneIDs[itemID] = true;
         }
     }
     this.updateItems(itemIDs);
