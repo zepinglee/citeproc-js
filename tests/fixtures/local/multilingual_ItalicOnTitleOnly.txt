@@ -62,6 +62,7 @@ citation
   null,null,null,null,null,null,null,null,
   "<i>","</i>",null,null,"<i>","</i>",null,null,
   null,null,null,null,null,null,null,null,
+  null,null,null,null,null,null,null,null,
   null,null,null,null,null,null,null,null
 ]
 <<===== MULTIAFFIX =====<<

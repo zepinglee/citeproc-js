@@ -69,8 +69,19 @@ The result string is a mess, but it confirms that things are working.
 (2) The "translation" should be omitted on the second cite.
 (3) Italics should be suppressed on the non-romaneque title.
 
->>== RESULT ==>>
+NOTE: This test has been rolled back to doing transliteration only on
+the container-title variable. The more demanding test case described
+above (with orig as main, and translit as variant) is not represented
+here because of limitations in the test suite (and lack of time and
+incentive to fix it). The test did run as described before the
+reversion though, like this:
+
 林秀弥, 競争法における関連市場の画定基準, 126 <span style="font-variant:small-caps;">民商法雑誌</span> <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 1, at 23, 126 <span style="font-variant:small-caps;">民商法雑誌</span>, no. 2, 2002, at 56.
+
+
+
+>>== RESULT ==>>
+林秀弥, 競争法における関連市場の画定基準, 126 <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 1, at 23, 126 <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 2, 2002, at 56.
 <<== RESULT ==<<
 
 >>===== CSL =====>>
