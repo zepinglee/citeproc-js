@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.475",
+    PROCESSOR_VERSION: "1.0.476",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -157,8 +157,8 @@ var CSL = {
     LangPrefsMap: {
         "title":"titles",
         "title-short":"titles",
-        "container-title":"titles",
-        "collection-title":"titles",
+        "container-title":"journals",
+        "collection-title":"journals",
         "publisher":"publishers",
         "authority":"publishers",
         "publisher-place": "places",
@@ -2075,6 +2075,27 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
         this.output[mode].tmp = {};
     }
 };
+CSL.Engine.prototype.getSortFunc = function () {
+    return function (a,b) {
+        a = a.split("-");
+        b = b.split("-");
+        if (a.length < b.length) {
+            return 1
+        } else if (a.length > b.length) {
+            return -1
+        } else {
+            a = a.slice(-1)[0];
+            b = b.slice(-1)[0];
+            if (a.length < b.length) {
+                return 1;
+            } else if (a.length > b.length) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    };
+};
 CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
     var i, ilen;
     if (tags) {
@@ -2083,6 +2104,7 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
             this.opt['locale-sort'].push(tags[i]);
         }
     }
+    this.opt['locale-sort'].sort(this.getSortFunc());
 };
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
     var i, ilen;
@@ -2092,6 +2114,7 @@ CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
             this.opt['locale-translit'].push(tags[i]);
         }
     }
+    this.opt['locale-translit'].sort(this.getSortFunc());
 };
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     var i, ilen;
@@ -2101,6 +2124,7 @@ CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
             this.opt['locale-translat'].push(tags[i]);
         }
     }
+    this.opt['locale-translat'].sort(this.getSortFunc());
 };
 CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
     var opt = this.opt['cite-lang-prefs'];
@@ -2109,7 +2133,7 @@ CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
             return key.toLowerCase();
         };
     }
-    var segments = ['Persons', 'Institutions', 'Titles', 'Publishers', 'Places'];
+    var segments = ['Persons', 'Institutions', 'Titles', 'Journals', 'Publishers', 'Places'];
     for (var i = 0, ilen = segments.length; i < ilen; i += 1) {
         var clientSegment = conv(segments[i]);
         var citeprocSegment = segments[i].toLowerCase();
@@ -2137,10 +2161,10 @@ CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
     }
 };
 CSL.Engine.prototype.setLangPrefsForCiteAffixes = function (affixList) {
-    if (affixList && affixList.length === 40) {
+    if (affixList && affixList.length === 48) {
         var affixes = this.opt.citeAffixes;
         var count = 0;
-        var settings = ["persons", "institutions", "titles", "publishers", "places"];
+        var settings = ["persons", "institutions", "titles", "journals", "publishers", "places"];
         var forms = ["translit", "orig", "translit", "translat"];
         var value;
         for (var i = 0, ilen = settings.length; i < ilen; i += 1) {
@@ -3010,6 +3034,20 @@ CSL.Engine.Opt = function () {
                 suffix:""
             }
         },
+        journals:{
+            "locale-orig":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translit":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translat":{
+                prefix:"",
+                suffix:""
+            }
+        },
         publishers:{
             "locale-orig":{
                 prefix:"",
@@ -3080,6 +3118,7 @@ CSL.Engine.Opt = function () {
         persons:['orig'],
         institutions:['orig'],
         titles:['orig','translat'],
+        journals:['translit'],
         publishers:['orig'],
         places:['orig'],
         number:['translat']
