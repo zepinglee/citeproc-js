@@ -1,5 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+==========================
+Changes in version 1.0.477
+==========================
+
+- Ignore hyphens when applying title-case etc. Fixes bug
+  reported by Sebastian Karcher.
+
 ================================================
 Changes in version 1.0.476 [language API change]
 ================================================
