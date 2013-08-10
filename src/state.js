@@ -198,7 +198,7 @@ CSL.Engine.Opt = function () {
         persons:['orig'],
         institutions:['orig'],
         titles:['orig','translat'],
-        journals:['orig','translat'],
+        journals:['translit'],
         publishers:['orig'],
         places:['orig'],
         number:['translat']
