@@ -98,6 +98,20 @@ CSL.Engine.Opt = function () {
                 suffix:""
             }
         },
+        journals:{
+            "locale-orig":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translit":{
+                prefix:"",
+                suffix:""
+            },
+            "locale-translat":{
+                prefix:"",
+                suffix:""
+            }
+        },
         publishers:{
             "locale-orig":{
                 prefix:"",
@@ -184,6 +198,7 @@ CSL.Engine.Opt = function () {
         persons:['orig'],
         institutions:['orig'],
         titles:['orig','translat'],
+        journals:['orig','translat'],
         publishers:['orig'],
         places:['orig'],
         number:['translat']

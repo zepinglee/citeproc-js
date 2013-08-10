@@ -56,8 +56,8 @@
  * (followed by abbreviation if requested) are placed in the primary
  * output slot or the (implicitly punctuated) secondary and tertiary
  * output slots according to the settings registered in the
- * state.opt['cite-lang-prefs'] arrays. The array has five segments:
- * 'persons', 'institutions', 'titles', 'publishers', and
+ * state.opt['cite-lang-prefs'] arrays. The array has six segments:
+ * 'persons', 'institutions', 'titles', 'journals', 'publishers', and
  * 'places'. Each segment always contains at least one item, and may
  * hold values 'orig', 'translit' or 'translat'. The array defaults to
  * a single item 'orig'.

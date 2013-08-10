@@ -201,8 +201,8 @@ var CSL = {
     LangPrefsMap: {
         "title":"titles",
         "title-short":"titles",
-        "container-title":"titles",
-        "collection-title":"titles",
+        "container-title":"journals",
+        "collection-title":"journals",
         "publisher":"publishers",
         "authority":"publishers",
         "publisher-place": "places",

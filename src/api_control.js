@@ -57,6 +57,28 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
     }
 };
 
+CSL.Engine.prototype.getSortFunc = function () {
+    return function (a,b) {
+        a = a.split("-");
+        b = b.split("-");
+        if (a.length < b.length) {
+            return 1
+        } else if (a.length > b.length) {
+            return -1
+        } else {
+            a = a.slice(-1)[0];
+            b = b.slice(-1)[0];
+            if (a.length < b.length) {
+                return 1;
+            } else if (a.length > b.length) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    };
+};
+
 CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
     var i, ilen;
     if (tags) {
@@ -65,6 +87,7 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
             this.opt['locale-sort'].push(tags[i]);
         }
     }
+    this.opt['locale-sort'].sort(this.getSortFunc());
 };
     
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
@@ -75,6 +98,7 @@ CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
             this.opt['locale-translit'].push(tags[i]);
         }
     }
+    this.opt['locale-translit'].sort(this.getSortFunc());
 };
     
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
@@ -85,6 +109,7 @@ CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
             this.opt['locale-translat'].push(tags[i]);
         }
     }
+    this.opt['locale-translat'].sort(this.getSortFunc());
 };
 
 CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
@@ -94,7 +119,7 @@ CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
             return key.toLowerCase();
         };
     }
-    var segments = ['Persons', 'Institutions', 'Titles', 'Publishers', 'Places'];
+    var segments = ['Persons', 'Institutions', 'Titles', 'Journals', 'Publishers', 'Places'];
     // Set values in place
     for (var i = 0, ilen = segments.length; i < ilen; i += 1) {
         var clientSegment = conv(segments[i]);
@@ -131,10 +156,10 @@ CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
 };
 
 CSL.Engine.prototype.setLangPrefsForCiteAffixes = function (affixList) {
-    if (affixList && affixList.length === 40) {
+    if (affixList && affixList.length === 48) {
         var affixes = this.opt.citeAffixes;
         var count = 0;
-        var settings = ["persons", "institutions", "titles", "publishers", "places"];
+        var settings = ["persons", "institutions", "titles", "journals", "publishers", "places"];
         var forms = ["translit", "orig", "translit", "translat"];
         var value;
         for (var i = 0, ilen = settings.length; i < ilen; i += 1) {
