@@ -1,11 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
-==========================
-Changes in version 1.0.476
-==========================
+================================================
+Changes in version 1.0.476 [language API change]
+================================================
 
 - Separate main title from journals etc in language configuration
-  control interface.
+  control interface. This changes the expected input on the language
+  control functions in api_control.js.
 
 ==========================
 Changes in version 1.0.475
