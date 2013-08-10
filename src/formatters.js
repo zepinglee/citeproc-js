@@ -178,7 +178,6 @@ CSL.Output.Formatters.title = function (state, string) {
     if (!string) {
         return "";
     }
-
     // split words
     // Workaround for Internet Explorer
     mx = str.string.match(/(\s+)/g);
@@ -265,9 +264,12 @@ CSL.Output.Formatters.doppelString = function (string, rex) {
     ret.array = rex(string);
     // ret.array = string.split(rex);
     ret.string = "";
-    len = ret.array.length;
-    for (pos = 0; pos < len; pos += 2) {
-        ret.string += ret.array[pos];
+    for (var i=0,ilen=ret.array.length; i<ilen; i += 2) {
+        if (ret.array[i-1] === "-") {
+            ret.string += " " + ret.array[i];
+        } else {
+            ret.string += ret.array[i];
+        }
     }
     return ret;
 };
@@ -276,13 +278,17 @@ CSL.Output.Formatters.doppelString = function (string, rex) {
 CSL.Output.Formatters.undoppelString = function (str) {
     var ret, len, pos;
     ret = "";
-    len = str.array.length;
-    for (pos = 0; pos < len; pos += 1) {
-        if ((pos % 2)) {
-            ret += str.array[pos];
+    for (var i=0,ilen=str.array.length; i<ilen; i+=1) {
+        if ((i % 2)) {
+            ret += str.array[i];
         } else {
-            ret += str.string.slice(0, str.array[pos].length);
-            str.string = str.string.slice(str.array[pos].length);
+            if (str.array[i-1] === "-") {
+                ret += str.string.slice(0, str.array[i].length+1).slice(1);
+                str.string = str.string.slice(str.array[i].length+1);
+            } else {
+                ret += str.string.slice(0, str.array[i].length);
+                str.string = str.string.slice(str.array[i].length);
+            }
         }
     }
     return ret;
