@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.477",
+    PROCESSOR_VERSION: "1.0.478",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -11300,6 +11300,15 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         this.tmp.shadow_numbers[variable].label = variable;
         if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
             num = num.slice(1, -1);
+        }
+        if (num && ["number-of-volumes","number-of-pages"].indexOf(variable) > -1) {
+            var m = num.match(/[^0-9]*([0-9]+).*/);
+            if (m) {
+                this.tmp.shadow_numbers[variable].numeric = true;
+                if (m[1] !== "1") {
+                    this.tmp.shadow_numbers[variable].plural = 1;
+                }
+            }
         }
         if ("locator" === variable
             && ["bill","gazette","legislation","treaty"].indexOf(type) > -1) {
