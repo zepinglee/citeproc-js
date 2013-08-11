@@ -290,6 +290,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             num = num.slice(1, -1);
         }
 
+        if (num && ["number-of-volumes","number-of-pages"].indexOf(variable) > -1) {
+            var m = num.match(/[^0-9]*([0-9]+).*/);
+            if (m) {
+                this.tmp.shadow_numbers[variable].numeric = true;
+                if (m[1] !== "1") {
+                    this.tmp.shadow_numbers[variable].plural = 1;
+                }
+            }
+        }
+
         // Any & character in the string should force plural.
         // This covers cases like "23 & seq". Cases like "23 et seq"
         // will be caught out; that's for later, if need arises.
