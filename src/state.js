@@ -142,7 +142,7 @@ CSL.Engine.Opt = function () {
         }
     };
     this["default-locale"] = [];
-    
+    this["force-locale-terms-to-default"] = false;    
     this.update_mode = CSL.NONE;
     this.bib_mode = CSL.NONE;
     this.sort_citations = false;

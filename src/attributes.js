@@ -681,7 +681,9 @@ CSL.Attributes["@is-parallel"] = function (state, arg) {
     this.strings.set_parallel_condition = values;
 };
 
-
+CSL.Attributes["@force-locale-terms-to-default"] = function (state, arg) {
+    state.opt["force-locale-terms-to-default"] = arg;
+};
 
 CSL.Attributes["@gender"] = function (state, arg) {
     this.gender = arg;
