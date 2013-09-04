@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.480
+==========================
+
+- Remove force-locale-terms-to-default. A bare locale inside
+  the style has the same effect.
+
+- Implement stricter conditions for page number is-numeric
+  evaluation, control via strict_page_numbers development
+  extensions option. Off by default.
+
+==========================
+Changes in version 1.0.479
+==========================
+
+- Add force-locale-terms-to-default attribute, for styles that
+  use locale-based conditions.
+
+==========================
 Changes in version 1.0.478
 ==========================
 

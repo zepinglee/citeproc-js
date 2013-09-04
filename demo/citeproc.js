@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.478",
+    PROCESSOR_VERSION: "1.0.480",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3112,6 +3112,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.normalize_lang_keys_to_lowercase = false;
     this.development_extensions.strict_text_case_locales = false;
     this.development_extensions.rtl_support = true;
+    this.development_extensions.strict_page_numbers = false;
     this.nodenames = [];
     this.gender = {};
     this['cite-lang-prefs'] = {
@@ -8983,9 +8984,6 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 if (Item.language) {
                     lang = Item.language;
                     langspec = CSL.localeResolve(lang);
-                    if (langspec.best === state.opt["default-locale"][0]) {
-                        langspec = false;
-                    }
                 }
                 if (langspec) {
                     for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
@@ -11372,7 +11370,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                     }
                     var subelements = elements[i].split(/\s+/);
                     for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
-                        if (!subelements[j].match(/[0-9]/)) {
+                        if (this.opt.development_extensions.strict_page_numbers
+                            && variable === "page"
+                            && !subelements[j].match(/^-*[0-9]/)) {
+                            numeric = false;
+                        } else if (!subelements[j].match(/[-0-9]/)) {
                             numeric = false;
                         }
                     }
@@ -11395,11 +11397,19 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                     this.tmp.shadow_numbers[variable].values.push(["Blob", elements[i], undefined]);
                 }
             }
-                    };
-        if (num.indexOf(" ") === -1 && num.match(/[0-9]/)) {
-            this.tmp.shadow_numbers[variable].numeric = true;
+        };
+        if (this.opt.development_extensions.strict_page_numbers && variable === "page") {
+            if (num.indexOf(" ") === -1 && num.match(/^-*[0-9]/)) {
+                this.tmp.shadow_numbers[variable].numeric = true;
+            } else {
+                this.tmp.shadow_numbers[variable].numeric = numeric;
+            }
         } else {
-             this.tmp.shadow_numbers[variable].numeric = numeric;
+            if (num.indexOf(" ") === -1 && num.match(/[0-9]/)) {
+                this.tmp.shadow_numbers[variable].numeric = true;
+            } else {
+                this.tmp.shadow_numbers[variable].numeric = numeric;
+            }
         }
         if (!this.tmp.shadow_numbers[variable].numeric) {
             this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", num);
@@ -12244,7 +12254,7 @@ CSL.Output.Formats.prototype.rtf = {
                  function(aChar) {
                      return "\\super " + CSL.SUPERSCRIPTS[aChar] + "\\nosupersub{}";
                  })
-        .replace(/[\x7F-\uFFFF]/g,
+        .replace(/[\u007F-\uFFFF]/g,
                  function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}"; })
         .replace("\t", "\\tab{}", "g");
     },
