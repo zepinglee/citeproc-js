@@ -412,7 +412,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                     }
                     var subelements = elements[i].split(/\s+/);
                     for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
-                        if (!subelements[j].match(/[0-9]/)) {
+                        if (!subelements[j].match(/^[-0-9]/)) {
                             numeric = false;
                         }
                     }
@@ -437,7 +437,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 }
             }
                     };
-        if (num.indexOf(" ") === -1 && num.match(/[0-9]/)) {
+        if (num.indexOf(" ") === -1 && num.match(/^[-0-9]/)) {
             this.tmp.shadow_numbers[variable].numeric = true;
         } else {
              this.tmp.shadow_numbers[variable].numeric = numeric;
