@@ -394,7 +394,7 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode, force
         term = term.toLowerCase();
     }
     var lang;
-    if (forceDefaultLocale || this.opt["force-locale-terms-to-default"]) {
+    if (forceDefaultLocale) {
         lang = this.opt["default-locale"][0];
     } else {
         lang = this.opt.lang;
@@ -420,7 +420,7 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode, force
 
 CSL.Engine.prototype.getDate = function (form, forceDefaultLocale) {
     var lang;
-    if (forceDefaultLocale || this.opt["force-locale-terms-to-default"]) {
+    if (forceDefaultLocale) {
         lang = this.opt["default-locale"];
     } else {
         lang = this.opt.lang;

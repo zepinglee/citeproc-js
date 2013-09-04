@@ -627,9 +627,9 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 if (Item.language) {
                     lang = Item.language;
                     langspec = CSL.localeResolve(lang);
-                    if (langspec.best === state.opt["default-locale"][0]) {
-                        langspec = false;
-                    }
+                //    if (langspec.best === state.opt["default-locale"][0]) {
+                //        langspec = false;
+                //    }
                 }
                 if (langspec) {
                     // We attempt to match a specific locale from the
@@ -679,10 +679,6 @@ CSL.Attributes["@is-parallel"] = function (state, arg) {
         }
     }
     this.strings.set_parallel_condition = values;
-};
-
-CSL.Attributes["@force-locale-terms-to-default"] = function (state, arg) {
-    state.opt["force-locale-terms-to-default"] = arg;
 };
 
 CSL.Attributes["@gender"] = function (state, arg) {
