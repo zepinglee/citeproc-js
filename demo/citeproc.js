@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.481",
+    PROCESSOR_VERSION: "1.0.482",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -4574,8 +4574,11 @@ CSL.localeResolve = function (langstr) {
     ret.bare = langlst[0];
     return ret;
 };
-CSL.Engine.prototype.localeConfigure = function (langspec) {
+CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     var localexml;
+    if (beShy && this.locale[langspec.best]) {
+        return;
+    }
     localexml = this.sys.xml.makeXml(this.sys.retrieveLocale("en-US"));
     this.localeSet(localexml, "en-US", langspec.best);
     if (langspec.best !== "en-US") {
@@ -5831,11 +5834,11 @@ CSL.Node.layout = {
                     var choose_tok = new CSL.Token("choose", CSL.START);
                     CSL.Node.choose.build.call(choose_tok, state, target);
                     my_tok.name = "if";
-                    CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+                    CSL.Attributes["@locale-internal"].call(my_tok, state, this.locale_raw);
                     CSL.Node["if"].build.call(my_tok, state, target);
                 } else {
                     my_tok.name = "else-if";
-                    CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+                    CSL.Attributes["@locale-internal"].call(my_tok, state, this.locale_raw);
                     CSL.Node["else-if"].build.call(my_tok, state, target);
                 }
                 state.tmp.cite_affixes[my_tok.locale] = {};
@@ -5848,13 +5851,13 @@ CSL.Node.layout = {
                 if (!state.build.layout_locale_flag) {
                     my_tok.name = "if";
                     my_tok.tokentype = CSL.END;
-                    CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+                    CSL.Attributes["@locale-internal"].call(my_tok, state, this.locale_raw);
                     CSL.Node["if"].build.call(my_tok, state, target);
                     state.build.layout_locale_flag = true;
                 } else {
                     my_tok.name = "else-if";
                     my_tok.tokentype = CSL.END;
-                    CSL.Attributes["@locale"].call(my_tok, state, this.locale_raw);
+                    CSL.Attributes["@locale-internal"].call(my_tok, state, this.locale_raw);
                     CSL.Node["else-if"].build.call(my_tok, state, target);
                 }
             }
@@ -8973,6 +8976,46 @@ CSL.Attributes["@locale"] = function (state, arg) {
             if (lst[i].length === 2) {
                 this.locale_bares.push(langspec.bare);
             }
+            state.localeConfigure(langspec, true);
+            lst[i] = langspec;
+        }
+        this.locale_list = lst.slice();
+        var maketest = function (me) {
+            return function (Item, item) {
+                var key, res;
+                ret = [];
+                res = false;
+                var langspec = false;
+                if (Item.language) {
+                    lang = Item.language;
+                    langspec = CSL.localeResolve(lang);
+                    for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
+                        if (langspec.best === me.locale_list[i].best) {
+                            res = true;
+                            break;
+                        }
+                    }
+                    if (!res && me.locale_bares.indexOf(langspec.bare) > -1) {
+                        res = true;
+                    }
+                    return res;
+                }
+            }
+        }
+        var me = this;
+        this.tests.push(maketest(me));
+    }
+};
+CSL.Attributes["@locale-internal"] = function (state, arg) {
+    var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
+        lst = arg.split(/\s+/);
+        this.locale_bares = [];
+        for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+            lang = lst[i];
+            langspec = CSL.localeResolve(lang);
+            if (lst[i].length === 2) {
+                this.locale_bares.push(langspec.bare);
+            }
             state.localeConfigure(langspec);
             lst[i] = langspec;
         }
@@ -8988,6 +9031,9 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 if (Item.language) {
                     lang = Item.language;
                     langspec = CSL.localeResolve(lang);
+                    if (langspec.best === state.opt["default-locale"][0]) {
+                        langspec = false;
+                    }
                 }
                 if (langspec) {
                     for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
@@ -9013,8 +9059,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
         }
         var me = this;
         this.tests.push(maketest(me));
-    }
-};
+}
 CSL.Attributes["@is-parallel"] = function (state, arg) {
     var values = arg.split(" ");
     for (var i = 0, ilen = values.length; i < ilen; i += 1) {
