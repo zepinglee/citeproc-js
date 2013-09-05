@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.480",
+    PROCESSOR_VERSION: "1.0.481",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5234,11 +5234,15 @@ CSL.Node["else"] = {
 CSL.Node["et-al"] = {
     build: function (state, target) {
         if (state.build.area === "citation" || state.build.area === "bibliography") {
-            state.build.etal_node = this;
-            if ("string" === typeof this.strings.term) {
-                state.build.etal_term = this.strings.term;
+            var func = function (state, Item, item) {
+                state.tmp.etal_node = this;
+                if ("string" === typeof this.strings.term) {
+                    state.tmp.etal_term = this.strings.term;
+                }
             }
+            this.execs.push(func);
         }
+        target.push(this);
     }
 };
 CSL.Node.group = {
@@ -5431,40 +5435,40 @@ CSL.Node.info = {
 CSL.Node.institution = {
     build: function (state, target) {
         if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
-            if ("string" === typeof state.build.name_delimiter && !this.strings.delimiter) {
-                this.strings.delimiter = state.build.name_delimiter;
-            }
-            var myand, and_default_prefix, and_suffix;
-            if ("text" === this.strings.and) {
-                this.and_term = state.getTerm("and", "long", 0);
-            } else if ("symbol" === this.strings.and) {
-                this.and_term = "&";
-            } else if ("none" === this.strings.and) {
-                this.and_term = this.strings.delimiter;
-            }
-            if ("undefined" === typeof this.and_term && state.build.and_term) {
-                this.and_term = state.getTerm("and", "long", 0);
-            }
-            if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
-                this.and_prefix_single = " ";
-                this.and_prefix_multiple = ", ";
-                if ("string" === typeof this.strings.delimiter) {
-                    this.and_prefix_multiple = this.strings.delimiter;
-                }
-                this.and_suffix = " ";
-            } else {
-                this.and_prefix_single = "";
-                this.and_prefix_multiple = "";
-                this.and_suffix = "";
-            }
-            if (this.strings["delimiter-precedes-last"] === "always") {
-                this.and_prefix_single = this.strings.delimiter;
-            } else if (this.strings["delimiter-precedes-last"] === "never") {
-                if (this.and_prefix_multiple) {
-                    this.and_prefix_multiple = " ";
-                }
-            }
             var func = function (state, Item) {
+                if ("string" === typeof state.build.name_delimiter && !this.strings.delimiter) {
+                    this.strings.delimiter = state.tmp.name_delimiter;
+                }
+                var myand, and_default_prefix, and_suffix;
+                if ("text" === this.strings.and) {
+                    this.and_term = state.getTerm("and", "long", 0);
+                } else if ("symbol" === this.strings.and) {
+                    this.and_term = "&";
+                } else if ("none" === this.strings.and) {
+                    this.and_term = this.strings.delimiter;
+                }
+                if ("undefined" === typeof this.and_term && state.tmp.and_term) {
+                    this.and_term = state.getTerm("and", "long", 0);
+                }
+                if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
+                    this.and_prefix_single = " ";
+                    this.and_prefix_multiple = ", ";
+                    if ("string" === typeof this.strings.delimiter) {
+                        this.and_prefix_multiple = this.strings.delimiter;
+                    }
+                    this.and_suffix = " ";
+                } else {
+                    this.and_prefix_single = "";
+                    this.and_prefix_multiple = "";
+                    this.and_suffix = "";
+                }
+                if (this.strings["delimiter-precedes-last"] === "always") {
+                    this.and_prefix_single = this.strings.delimiter;
+                } else if (this.strings["delimiter-precedes-last"] === "never") {
+                    if (this.and_prefix_multiple) {
+                        this.and_prefix_multiple = " ";
+                    }
+                }
                 this.and = {};
                 if ("undefined" !== typeof this.and_term) {
                     state.output.append(this.and_term, "empty", true);
@@ -7785,46 +7789,10 @@ CSL.Node.name = {
                 && (this.strings["et-al-subsequent-use-first"] !== this.strings["et-al-use-first"])) {
                 state.opt.update_mode = CSL.POSITION;
             }
-            state.build.etal_term = "et-al";
-            state.build.name_delimiter = this.strings.delimiter;
-            state.build["delimiter-precedes-et-al"] = this.strings["delimiter-precedes-et-al"];
             if ("undefined" == typeof this.strings.name_delimiter) {
                 this.strings.delimiter = ", ";
             } else {
                 this.strings.delimiter = this.strings.name_delimiter;
-            }
-            if ("text" === this.strings.and) {
-                this.and_term = state.getTerm("and", "long", 0);
-            } else if ("symbol" === this.strings.and) {
-                this.and_term = "&";
-            }
-            state.build.and_term = this.and_term;
-            if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
-                this.and_prefix_single = " ";
-                this.and_prefix_multiple = ", ";
-                if ("string" === typeof this.strings.delimiter) {
-                    this.and_prefix_multiple = this.strings.delimiter;
-                }
-                this.and_suffix = " ";
-                state.build.name_delimiter = this.strings.delimiter;
-            } else {
-                this.and_prefix_single = "";
-                this.and_prefix_multiple = "";
-                this.and_suffix = "";
-            }
-            if (this.strings["delimiter-precedes-last"] === "always") {
-                this.and_prefix_single = this.strings.delimiter;
-            } else if (this.strings["delimiter-precedes-last"] === "never") {
-                if (this.and_prefix_multiple) {
-                    this.and_prefix_multiple = " ";
-                }
-            } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
-                if (this.and_prefix_single) {
-                    this.and_prefix_single = this.strings.delimiter;;
-                }
-                if (this.and_prefix_multiple) {
-                    this.and_prefix_multiple = " ";
-                }
             }
             if (this.strings["et-al-use-last"]) {
                 this.ellipsis_term = "\u2026";
@@ -7833,6 +7801,42 @@ CSL.Node.name = {
                 this.ellipsis_suffix = " ";
             }
             func = function (state, Item) {
+                state.tmp.etal_term = "et-al";
+                state.tmp.name_delimiter = this.strings.delimiter;
+                state.tmp["delimiter-precedes-et-al"] = this.strings["delimiter-precedes-et-al"];
+                if ("text" === this.strings.and) {
+                    this.and_term = state.getTerm("and", "long", 0);
+                } else if ("symbol" === this.strings.and) {
+                    this.and_term = "&";
+                }
+                state.tmp.and_term = this.and_term;
+                if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
+                    this.and_prefix_single = " ";
+                    this.and_prefix_multiple = ", ";
+                    if ("string" === typeof this.strings.delimiter) {
+                        this.and_prefix_multiple = this.strings.delimiter;
+                    }
+                    this.and_suffix = " ";
+                    state.build.name_delimiter = this.strings.delimiter;
+                } else {
+                    this.and_prefix_single = "";
+                    this.and_prefix_multiple = "";
+                    this.and_suffix = "";
+                }
+                if (this.strings["delimiter-precedes-last"] === "always") {
+                    this.and_prefix_single = this.strings.delimiter;
+                } else if (this.strings["delimiter-precedes-last"] === "never") {
+                    if (this.and_prefix_multiple) {
+                        this.and_prefix_multiple = " ";
+                    }
+                } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
+                    if (this.and_prefix_single) {
+                        this.and_prefix_single = this.strings.delimiter;;
+                    }
+                    if (this.and_prefix_multiple) {
+                        this.and_prefix_multiple = " ";
+                    }
+                }
                 this.and = {};
                 if (this.strings.and) {
                     state.output.append(this.and_term, "empty", true);
@@ -7953,30 +7957,30 @@ CSL.Node.names = {
                 this["with"].single.strings.prefix = with_default_prefix;
                 this["with"].multiple.strings.prefix = with_default_prefix;
             }
-            if (state.build.etal_node) {
-                this.etal_style = state.build.etal_node;
-            } else {
-                this.etal_style = "empty";
-            }
-            this.etal_term = state.getTerm(state.build.etal_term, "long", 0);
-            if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
-                this.etal_prefix_single = " ";
-                this.etal_prefix_multiple = state.build.name_delimiter;
-                if (state.build["delimiter-precedes-et-al"] === "always") {
-                    this.etal_prefix_single = state.build.name_delimiter;
-                } else if (state.build["delimiter-precedes-et-al"] === "never") {
-                    this.etal_prefix_multiple = " ";
-                } else if (state.build["delimiter-precedes-et-al"] === "after-inverted-name") {
-                    this.etal_prefix_single = state.build.name_delimiter;
-                    this.etal_prefix_multiple = " ";
-                }
-                this.etal_suffix = "";
-            } else {
-                this.etal_prefix_single = "";
-                this.etal_prefix_multiple = "";
-                this.etal_suffix = "";
-            }
             func = function (state, Item, item) {
+                if (state.tmp.etal_node) {
+                    this.etal_style = state.tmp.etal_node;
+                } else {
+                    this.etal_style = "empty";
+                }
+                this.etal_term = state.getTerm(state.tmp.etal_term, "long", 0);
+                if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
+                    this.etal_prefix_single = " ";
+                    this.etal_prefix_multiple = state.tmp.name_delimiter;
+                    if (state.tmp["delimiter-precedes-et-al"] === "always") {
+                        this.etal_prefix_single = state.tmp.name_delimiter;
+                    } else if (state.tmp["delimiter-precedes-et-al"] === "never") {
+                        this.etal_prefix_multiple = " ";
+                    } else if (state.tmp["delimiter-precedes-et-al"] === "after-inverted-name") {
+                        this.etal_prefix_single = state.tmp.name_delimiter;
+                        this.etal_prefix_multiple = " ";
+                    }
+                    this.etal_suffix = "";
+                } else {
+                    this.etal_prefix_single = "";
+                    this.etal_prefix_multiple = "";
+                    this.etal_suffix = "";
+                }
                 for (var i = 0, ilen = 3; i < ilen; i += 1) {
                     var key = ["family", "given"][i];
                     state.nameOutput[key] = this[key];

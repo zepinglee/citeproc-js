@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.481
+==========================
+
+- Move name term and connector evaluation from build to
+  runtime. It was a nice thought to save a little overhead,
+  but multilingual breaks without runtime evaluation based
+  on item content.
+
+==========================
 Changes in version 1.0.480
 ==========================
 
