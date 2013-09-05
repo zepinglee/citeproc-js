@@ -71,8 +71,11 @@ CSL.localeResolve = function (langstr) {
 };
 
 // Use call to invoke this.
-CSL.Engine.prototype.localeConfigure = function (langspec) {
+CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     var localexml;
+    if (beShy && this.locale[langspec.best]) {
+        return;
+    }
     localexml = this.sys.xml.makeXml(this.sys.retrieveLocale("en-US"));
     this.localeSet(localexml, "en-US", langspec.best);
     if (langspec.best !== "en-US") {

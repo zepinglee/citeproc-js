@@ -604,6 +604,66 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 this.locale_bares.push(langspec.bare);
             }
             // Load the locale terms etc.
+            // (second argument causes immediate return if locale already exists)
+            state.localeConfigure(langspec, true);
+            
+            // Replace string with locale spec object
+            lst[i] = langspec;
+        }
+        // Locales to test
+        this.locale_list = lst.slice();
+        
+        // check for variable value
+        // Closure probably not necessary here.
+        var maketest = function (me) {
+            return function (Item, item) {
+                var key, res;
+                ret = [];
+                res = false;
+                var langspec = false;
+                if (Item.language) {
+                    lang = Item.language;
+                    langspec = CSL.localeResolve(lang);
+                    
+                    for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
+                        if (langspec.best === me.locale_list[i].best) {
+                            res = true;
+                            break;
+                        }
+                    }
+                    if (!res && me.locale_bares.indexOf(langspec.bare) > -1) {
+                        res = true;
+                    }
+                    return res;
+                }
+            }
+        }
+        var me = this;
+        this.tests.push(maketest(me));
+    }
+};
+
+
+CSL.Attributes["@locale-internal"] = function (state, arg) {
+    var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
+        // For if and if-else
+
+        // Split argument
+        lst = arg.split(/\s+/);
+
+        // Expand each list element
+        this.locale_bares = [];
+        for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+            // Parse out language string
+            lang = lst[i];
+        
+            // Analyze the locale
+            langspec = CSL.localeResolve(lang);
+            if (lst[i].length === 2) {
+                // For fallback
+                this.locale_bares.push(langspec.bare);
+            }
+            // Load the locale terms etc.
             state.localeConfigure(langspec);
             
             // Replace string with locale spec object
@@ -627,9 +687,9 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 if (Item.language) {
                     lang = Item.language;
                     langspec = CSL.localeResolve(lang);
-                //    if (langspec.best === state.opt["default-locale"][0]) {
-                //        langspec = false;
-                //    }
+                    if (langspec.best === state.opt["default-locale"][0]) {
+                        langspec = false;
+                    }
                 }
                 if (langspec) {
                     // We attempt to match a specific locale from the
@@ -663,8 +723,8 @@ CSL.Attributes["@locale"] = function (state, arg) {
         }
         var me = this;
         this.tests.push(maketest(me));
-    }
-};
+}
+
 
 // This one is not evaluated as a condition: it only
 // sets some parameters that are picked up during
