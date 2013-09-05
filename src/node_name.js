@@ -89,12 +89,6 @@ CSL.Node.name = {
                 state.opt.update_mode = CSL.POSITION;
             }
 
-            // Et-al (onward processing in node_etal.js and node_names.js)
-            // XXXXX Why is this necessary? This is available on this.name, right?
-            state.build.etal_term = "et-al";
-            state.build.name_delimiter = this.strings.delimiter;
-            state.build["delimiter-precedes-et-al"] = this.strings["delimiter-precedes-et-al"];
-            
             // Fix default delimiter, in a way that allows explicit
             // empty strings.
             if ("undefined" == typeof this.strings.name_delimiter) {
@@ -103,48 +97,6 @@ CSL.Node.name = {
                 this.strings.delimiter = this.strings.name_delimiter;
             }
 
-            // And
-            if ("text" === this.strings.and) {
-                this.and_term = state.getTerm("and", "long", 0);
-            } else if ("symbol" === this.strings.and) {
-                this.and_term = "&";
-            }
-
-            state.build.and_term = this.and_term;
-
-            if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
-                this.and_prefix_single = " ";
-                this.and_prefix_multiple = ", ";
-                // Workaround to allow explicit empty string
-                // on cs:name delimiter.
-                if ("string" === typeof this.strings.delimiter) {
-                    this.and_prefix_multiple = this.strings.delimiter;
-                }
-                this.and_suffix = " ";
-
-                state.build.name_delimiter = this.strings.delimiter;
-
-            } else {
-                this.and_prefix_single = "";
-                this.and_prefix_multiple = "";
-                this.and_suffix = "";
-            }
-            if (this.strings["delimiter-precedes-last"] === "always") {
-                this.and_prefix_single = this.strings.delimiter;
-            } else if (this.strings["delimiter-precedes-last"] === "never") {
-                // Slightly fragile: could test for charset here to make
-                // this more certain.
-                if (this.and_prefix_multiple) {
-                    this.and_prefix_multiple = " ";
-                }
-            } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
-                if (this.and_prefix_single) {
-                    this.and_prefix_single = this.strings.delimiter;;
-                }
-                if (this.and_prefix_multiple) {
-                    this.and_prefix_multiple = " ";
-                }
-            }
 
             if (this.strings["et-al-use-last"]) {
                 // We use the dedicated Unicode ellipsis character because
@@ -164,6 +116,53 @@ CSL.Node.name = {
             }
 
             func = function (state, Item) {
+                // Et-al (onward processing in node_etal.js and node_names.js)
+                // XXXXX Why is this necessary? This is available on this.name, right?
+                state.tmp.etal_term = "et-al";
+                state.tmp.name_delimiter = this.strings.delimiter;
+                state.tmp["delimiter-precedes-et-al"] = this.strings["delimiter-precedes-et-al"];
+                
+                // And
+                if ("text" === this.strings.and) {
+                    this.and_term = state.getTerm("and", "long", 0);
+                } else if ("symbol" === this.strings.and) {
+                    this.and_term = "&";
+                }
+                state.tmp.and_term = this.and_term;
+                if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
+                    this.and_prefix_single = " ";
+                    this.and_prefix_multiple = ", ";
+                    // Workaround to allow explicit empty string
+                    // on cs:name delimiter.
+                    if ("string" === typeof this.strings.delimiter) {
+                        this.and_prefix_multiple = this.strings.delimiter;
+                    }
+                    this.and_suffix = " ";
+
+                    state.build.name_delimiter = this.strings.delimiter;
+
+                } else {
+                    this.and_prefix_single = "";
+                    this.and_prefix_multiple = "";
+                    this.and_suffix = "";
+                }
+                if (this.strings["delimiter-precedes-last"] === "always") {
+                    this.and_prefix_single = this.strings.delimiter;
+                } else if (this.strings["delimiter-precedes-last"] === "never") {
+                    // Slightly fragile: could test for charset here to make
+                    // this more certain.
+                    if (this.and_prefix_multiple) {
+                        this.and_prefix_multiple = " ";
+                    }
+                } else if (this.strings["delimiter-precedes-last"] === "after-inverted-name") {
+                    if (this.and_prefix_single) {
+                        this.and_prefix_single = this.strings.delimiter;;
+                    }
+                    if (this.and_prefix_multiple) {
+                        this.and_prefix_multiple = " ";
+                    }
+                }
+
                 this.and = {};
                 if (this.strings.and) {
                     state.output.append(this.and_term, "empty", true);

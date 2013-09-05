@@ -51,10 +51,14 @@
 CSL.Node["et-al"] = {
     build: function (state, target) {
         if (state.build.area === "citation" || state.build.area === "bibliography") {
-            state.build.etal_node = this;
-            if ("string" === typeof this.strings.term) {
-                state.build.etal_term = this.strings.term;
+            var func = function (state, Item, item) {
+                state.tmp.etal_node = this;
+                if ("string" === typeof this.strings.term) {
+                    state.tmp.etal_term = this.strings.term;
+                }
             }
+            this.execs.push(func);
         }
+        target.push(this);
     }
 };
