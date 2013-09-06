@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.482",
+    PROCESSOR_VERSION: "1.0.483",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -8969,41 +8969,44 @@ CSL.Attributes["@locale"] = function (state, arg) {
         this.locale_raw = arg;
     } else {
         lst = arg.split(/\s+/);
-        this.locale_bares = [];
+        var locale_bares = [];
         for (i = 0, ilen = lst.length; i < ilen; i += 1) {
             lang = lst[i];
             langspec = CSL.localeResolve(lang);
             if (lst[i].length === 2) {
-                this.locale_bares.push(langspec.bare);
+                locale_bares.push(langspec.bare);
             }
             state.localeConfigure(langspec, true);
             lst[i] = langspec;
         }
-        this.locale_list = lst.slice();
-        var maketest = function (me) {
+        var locale_list = lst.slice();
+        var locale_default = state.opt["default-locale"][0];
+        var maketest = function (locale_list, locale_default,locale_bares) {
             return function (Item, item) {
                 var key, res;
                 ret = [];
                 res = false;
                 var langspec = false;
-                if (Item.language) {
+                var lang;
+                if (!Item.language) {
+                    lang = locale_default;
+                } else {
                     lang = Item.language;
-                    langspec = CSL.localeResolve(lang);
-                    for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
-                        if (langspec.best === me.locale_list[i].best) {
-                            res = true;
-                            break;
-                        }
-                    }
-                    if (!res && me.locale_bares.indexOf(langspec.bare) > -1) {
-                        res = true;
-                    }
-                    return res;
                 }
+                langspec = CSL.localeResolve(lang);
+                for (i = 0, ilen = locale_list.length; i < ilen; i += 1) {
+                    if (langspec.best === locale_list[i].best) {
+                        res = true;
+                        break;
+                    }
+                }
+                if (!res && locale_bares.indexOf(langspec.bare) > -1) {
+                    res = true;
+                }
+                return res;
             }
         }
-        var me = this;
-        this.tests.push(maketest(me));
+        this.tests.push(maketest(locale_list,locale_default,locale_bares));
     }
 };
 CSL.Attributes["@locale-internal"] = function (state, arg) {
