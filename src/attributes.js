@@ -592,7 +592,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
         lst = arg.split(/\s+/);
 
         // Expand each list element
-        this.locale_bares = [];
+        var locale_bares = [];
         for (i = 0, ilen = lst.length; i < ilen; i += 1) {
             // Parse out language string
             lang = lst[i];
@@ -601,7 +601,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
             langspec = CSL.localeResolve(lang);
             if (lst[i].length === 2) {
                 // For fallback
-                this.locale_bares.push(langspec.bare);
+                locale_bares.push(langspec.bare);
             }
             // Load the locale terms etc.
             // (second argument causes immediate return if locale already exists)
@@ -611,35 +611,40 @@ CSL.Attributes["@locale"] = function (state, arg) {
             lst[i] = langspec;
         }
         // Locales to test
-        this.locale_list = lst.slice();
+        var locale_list = lst.slice();
+
+        // Style default
+        var locale_default = state.opt["default-locale"][0];
         
         // check for variable value
         // Closure probably not necessary here.
-        var maketest = function (me) {
+        var maketest = function (locale_list, locale_default,locale_bares) {
             return function (Item, item) {
                 var key, res;
                 ret = [];
                 res = false;
                 var langspec = false;
-                if (Item.language) {
+
+                var lang;
+                if (!Item.language) {
+                    lang = locale_default;
+                } else {
                     lang = Item.language;
-                    langspec = CSL.localeResolve(lang);
-                    
-                    for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
-                        if (langspec.best === me.locale_list[i].best) {
-                            res = true;
-                            break;
-                        }
-                    }
-                    if (!res && me.locale_bares.indexOf(langspec.bare) > -1) {
-                        res = true;
-                    }
-                    return res;
                 }
+                langspec = CSL.localeResolve(lang);
+                for (i = 0, ilen = locale_list.length; i < ilen; i += 1) {
+                    if (langspec.best === locale_list[i].best) {
+                        res = true;
+                        break;
+                    }
+                }
+                if (!res && locale_bares.indexOf(langspec.bare) > -1) {
+                    res = true;
+                }
+                return res;
             }
         }
-        var me = this;
-        this.tests.push(maketest(me));
+        this.tests.push(maketest(locale_list,locale_default,locale_bares));
     }
 };
 
