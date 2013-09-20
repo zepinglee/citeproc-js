@@ -160,11 +160,11 @@ class Bundle:
             file += self.cleanFile(ifh.read())
         open(self.citeproc,"w+b").write(file)
         if self.mode == "zotero":
-            print "Wrote bundle code with e4x support and Zotero error handling to ./citeproc_zotero.js "
+            print "Wrote bundle code with dom (not e4x) support and Zotero error handling to ./citeproc_zotero.js "
         if self.mode == None:
             open(os.path.join("demo", self.citeproc),"w+b").write(file)
 
-            for f in ["xmle4x", "xmldom"]:
+            for f in ["xmldom"]:
                 filename = os.path.join( "src", "%s.js" % f)
                 ifh = open(filename, "rb")
                 file = self.cleanFile(ifh.read())
@@ -707,7 +707,7 @@ if __name__ == "__main__":
     parser.add_option("-Z", "--zotero-bundle-only", dest="makezoterobundle",
                       default=False,
                       action="store_true", 
-                      help='Create a citeproce4x.js bundle with embedded e4x support suitable for use in Zotero, and exit.')
+                      help='Create a citeproc_zotero.js bundle with embedded dom (not e4x) support suitable for use in Zotero, and exit.')
     (opt, args) = parser.parse_args()
 
     if opt.tracemonkey and opt.rhino_json:
