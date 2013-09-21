@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.484
+==========================
+
+- Fix several bugs in the handling of names with institution
+  elements and et-al rendering parameters. Thanks to Tom Philpot
+  for reporting the fault:
+
+    https://bitbucket.org/fbennett/citeproc-js/issue/152/error-rendering-literal-translator-in
+
+==========================
 Changes in version 1.0.483
 ==========================
 
