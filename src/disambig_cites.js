@@ -552,7 +552,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
 
 
 CSL.Disambiguation.prototype.padBase = function (base) {
-    for (i = 0, ilen = base.names.length; i < ilen; i += 1) {
+    for (var i = 0, ilen = base.names.length; i < ilen; i += 1) {
         if (!base.givens[i]) {
             base.givens[i] = [];
         }
