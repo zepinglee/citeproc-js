@@ -52,19 +52,15 @@ CSL.NameOutput.prototype.renderAllNames = function () {
 
     // Note that et-al/ellipsis parameters are set on the basis
     // of rendering order through the whole cite.
-    var pos = this.nameset_base;
+    var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
+        pos = this.nameset_base + i;
         if (this.freeters[v].length) {
             this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
-            pos += 1;
-        }
-        if (this.institutions[v].length) {
-            pos += 1;
         }
         for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
-            this.persons[v][j] = this._renderPersonalNames(this.persons[v][j], pos);
-            pos += 1;
+            this.persons[v][j] = this._renderPersonalNames(this.persons[v][j], pos, j);
         }
     }
     this.renderInstitutionNames();
@@ -267,7 +263,7 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
     return this._join(blobs, this.institution.strings["part-separator"]);
 };
 
-CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
+CSL.NameOutput.prototype._renderPersonalNames = function (values, pos, j) {
     //
     var ret = false;
     if (values.length) {
@@ -290,11 +286,11 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
             slot = {primary:'locale-orig',secondary:false,tertiary:false};
 	        if (localesets) {
 		        var slotnames = ["primary", "secondary", "tertiary"];
-		        for (var j = 0, jlen = slotnames.length; j < jlen; j += 1) {
-			        if (localesets.length - 1 <  j) {
+		        for (var k = 0, klen = slotnames.length; k < klen; k += 1) {
+			        if (localesets.length - 1 <  k) {
 				        break;
 			        }
-			        slot[slotnames[j]] = 'locale-' + localesets[j];
+			        slot[slotnames[k]] = 'locale-' + localesets[k];
 		        }
 	        } else {
 		        slot.primary = 'locale-translat';
@@ -312,19 +308,19 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
             // true is for fallback
             this.setRenderedName(name);
             var res = this.getName(name, slot.primary, true);
-            var primary = this._renderOnePersonalName(res.name, pos, i);
+            var primary = this._renderOnePersonalName(res.name, pos, i, j);
 			secondary = false;
 			if (slot.secondary) {
                 res = this.getName(name, slot.secondary, false, res.usedOrig);
                 if (res.name) {
-				    secondary = this._renderOnePersonalName(res.name, pos, i);
+				    secondary = this._renderOnePersonalName(res.name, pos, i, j);
                 }
 			}
 			tertiary = false;
 			if (slot.tertiary) {
                 res = this.getName(name, slot.tertiary, false, res.usedOrig);
                 if (res.name) {
-				    tertiary = this._renderOnePersonalName(res.name, pos, i);
+				    tertiary = this._renderOnePersonalName(res.name, pos, i, j);
                 }
 			}
             // Now compose them to a unit
@@ -365,7 +361,7 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos) {
             }
             names.push(personblob);
         }
-        ret = this.joinPersons(names, pos);
+        ret = this.joinPersons(names, pos, j);
     }
     return ret;
 };
@@ -395,9 +391,9 @@ CSL.NameOutput.prototype._isRomanesque = function (name) {
     return ret;
 };
 
-CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i) {
+CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
     var name = value;
-    var dropping_particle = this._droppingParticle(name, pos);
+    var dropping_particle = this._droppingParticle(name, pos, j);
     var family = this._familyName(name);
     var non_dropping_particle = this._nonDroppingParticle(name);
     var given = this._givenName(name, pos, i);
@@ -599,13 +595,21 @@ CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
     return false;
 };
 
-CSL.NameOutput.prototype._droppingParticle = function (name, pos) {
+CSL.NameOutput.prototype._droppingParticle = function (name, pos, j) {
     var str = this._stripPeriods("given", name["dropping-particle"]);
     if (name["dropping-particle"] && name["dropping-particle"].match(/^et.?al[^a-z]$/)) {
         if (this.name.strings["et-al-use-last"]) {
-            this.etal_spec[pos] = 2;
+            if ("undefined" === typeof j) { 
+                this.etal_spec[pos].freeters = 2;
+            } else {
+                this.etal_spec[pos].persons = 2;
+            }
         } else {
-            this.etal_spec[pos] = 1;
+            if ("undefined" === typeof j) { 
+                this.etal_spec[pos].freeters = 1;
+            } else {
+                this.etal_spec[pos].persons = 1;
+            }
         }
         name["comma-dropping-particle"] = "";
     } else if (this.state.output.append(str, this.given_decor, true)) {

@@ -79,7 +79,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
         var v = this.variables[i];
         var vv = this.variables[i + 1];
         if (this.freeters[v].length || this.freeters[vv].length) {
-            if (this.etal_spec[this.nameset_base + this.variable_offset[v]] !== this.etal_spec[this.nameset_base + this.variable_offset[vv]]
+            if (this.etal_spec[v].freeters !== this.etal_spec[vv].freeters
                 || !this._compareNamesets(this.freeters[v], this.freeters[vv])) {
                 this.common_term = false;
                 return;
@@ -87,7 +87,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
             freeters_offset += 1;
         }
         for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-            if (this.etal_spec[this.nameset_base + this.variable_offset[v] + freeters_offset + j + 1] !== this.etal_spec[this.nameset_base + this.variable_offset + freeters_offset + j + 1]
+            if (this.etal_spec[v].persons[j] !== this.etal_spec[vv].persons[j]
                 || !this._compareNamesets(this.persons[v][j], this.persons[vv][j])) {
                 this.common_term = false;
                 return;

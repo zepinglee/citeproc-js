@@ -48,16 +48,28 @@
 
 /*global CSL: true */
 
-CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
+CSL.NameOutput.prototype.joinPersons = function (blobs, pos, j) {
     var ret;
-    if (this.etal_spec[pos] === 1) {
-        ret = this._joinEtAl(blobs, "name");
-    } else if (this.etal_spec[pos] === 2) {
-        ret = this._joinEllipsis(blobs, "name");
-    } else if (!this.state.tmp.sort_key_flag) {
-        ret = this._joinAnd(blobs, "name");
+    if ("undefined" === typeof j) {
+        if (this.etal_spec[pos].freeters === 1) {
+            ret = this._joinEtAl(blobs, "name");
+        } else if (this.etal_spec[pos].freeters === 2) {
+            ret = this._joinEllipsis(blobs, "name");
+        } else if (!this.state.tmp.sort_key_flag) {
+            ret = this._joinAnd(blobs, "name");
+        } else {
+            ret = this._join(blobs, " ");
+        }
     } else {
-        ret = this._join(blobs, " ");
+        if (this.etal_spec[pos].persons[j] === 1) {
+            ret = this._joinEtAl(blobs, "name");
+        } else if (this.etal_spec[pos].persons[j] === 2) {
+            ret = this._joinEllipsis(blobs, "name");
+        } else if (!this.state.tmp.sort_key_flag) {
+            ret = this._joinAnd(blobs, "name");
+        } else {
+            ret = this._join(blobs, " ");
+        }
     }
     return ret;
 };
@@ -65,9 +77,9 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, pos) {
 
 CSL.NameOutput.prototype.joinInstitutionSets = function (blobs, pos) {
     var ret;
-    if (this.etal_spec[pos] === 1) {
+    if (this.etal_spec[pos].institutions === 1) {
         ret = this._joinEtAl(blobs, "institution");
-    } else if (this.etal_spec[pos] === 2) {
+    } else if (this.etal_spec[pos].institutions === 2) {
         ret = this._joinEllipsis(blobs, "institution");
     } else {
         ret = this._joinAnd(blobs, "institution");

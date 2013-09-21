@@ -52,24 +52,27 @@
 /*global CSL: true */
 
 CSL.NameOutput.prototype.disambigNames = function () {
-    var pos = this.nameset_base;
+    var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
+        pos = this.nameset_base + i;
         if (this.freeters[v].length) {
             this._runDisambigNames(this.freeters[v], pos);
-            //this.state.tmp.disambig_settings.givens.push([]);
-            pos += 1;
         }
-        // We're skipping institutions, so another +1
+        // Is this even necessary???
         if (this.institutions[v].length) {
-            //this.state.tmp.disambig_settings.givens.push([]);
-            pos += 1;
+            if ("undefined" === typeof this.state.tmp.disambig_settings.givens[pos]) {
+                this.state.tmp.disambig_settings.givens[pos] = [];
+            }
+            for (var j=0,jlen=this.institutions[v].length;j<jlen;j+=1) {
+                if ("undefined" === typeof this.state.tmp.disambig_settings.givens[pos][j]) {
+                    this.state.tmp.disambig_settings.givens[pos].push(2);
+                }
+            }
         }
         for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
             if (this.persons[v][j].length) {
                 this._runDisambigNames(this.persons[v][j], pos);
-                this.state.tmp.disambig_settings.givens.push([]);
-                pos += 1;
             }
         }
     }
@@ -81,6 +84,7 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         //
         // register the name in the global names disambiguation
         // registry
+
         if (!lst[i].given && !lst[i].family) {
             continue;
         }

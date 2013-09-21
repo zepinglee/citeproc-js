@@ -53,15 +53,15 @@ CSL.NameOutput.prototype.constrainNames = function () {
     //
     this.names_count = 0;
     //var pos = 0;
-    var pos = this.nameset_base;
+    var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
+        pos = this.nameset_base + i;
         // Constrain independent authors here
         if (this.freeters[v].length) {
             this.state.tmp.names_max.push(this.freeters[v].length, "literal");
             this._imposeNameConstraints(this.freeters, this.freeters_count, v, pos);
             this.names_count += this.freeters[v].length;
-            pos += 1;
         }
 
         // Constrain institutions here
@@ -70,7 +70,6 @@ CSL.NameOutput.prototype.constrainNames = function () {
             this._imposeNameConstraints(this.institutions, this.institutions_count, v, pos);
             this.persons[v] = this.persons[v].slice(0, this.institutions[v].length);
             this.names_count += this.institutions[v].length;
-            pos += 1;
         }
 
         for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
@@ -79,7 +78,6 @@ CSL.NameOutput.prototype.constrainNames = function () {
                 this.state.tmp.names_max.push(this.persons[v][j].length, "literal");
                 this._imposeNameConstraints(this.persons[v], this.persons_count[v], j, pos);
                 this.names_count += this.persons[v][j].length;
-                pos += 1;
             }
         }
     }
@@ -142,12 +140,6 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
             lst[key] = display_names.slice(0, discretionary_names_length).concat(display_names.slice(-1));
         } else {
             lst[key] = display_names.slice(0, discretionary_names_length);
-        }
-        if (!lst[key].length) {
-            // Add a placeholder to etal spec list if we just wiped out
-            // an existing set of names. This can happen with et-al-use-first="0"
-            // See http://forums.zotero.org/discussion/23322
-            this.etal_spec.push(0);
         }
     }
     this.state.tmp.disambig_settings.names[pos] = lst[key].length;

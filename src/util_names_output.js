@@ -59,12 +59,13 @@ CSL.NameOutput = function(state, Item, item, variables) {
     this.Item = Item;
     this.item = item;
     this.nameset_base = 0;
-    this.etal_spec = [];
+    this.etal_spec = {};
     this._first_creator_variable = false;
     this._please_chop = false;
 };
 
 CSL.NameOutput.prototype.init = function (names) {
+
     if (this.state.tmp.term_predecessor) {
         this.state.tmp.subsequent_author_substitute_ok = false;
     }
@@ -74,6 +75,7 @@ CSL.NameOutput.prototype.init = function (names) {
     this.nameset_offset = 0;
     this.names = names;
     this.variables = names.variables;
+
     this.state.tmp.value = [];
     this.state.tmp.rendered_name = [];
     this.state.tmp.label_blob = false;
