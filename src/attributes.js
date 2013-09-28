@@ -75,6 +75,9 @@ CSL.Attributes["@is-numeric"] = function (state, arg, joiner) {
             if (["locator","locator-revision"].indexOf(variable) > -1) {
                 myitem = item;
             }
+            if ("undefined" === typeof myitem) {
+                return false;
+            }
             if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1) {
                 if (!state.tmp.shadow_numbers[variable]) {
                     state.processNumber(false, myitem, variable, Item.type);
