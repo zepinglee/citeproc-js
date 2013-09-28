@@ -705,8 +705,6 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
     }
     //SNIP-END
     // Taint if number of names to be included has changed
-    // ZZZZZ Hullo, this might be the place to slot in cache invalidation
-    // for cached disambiguation. That idea might have some life in it yet.
     if (this.registry[id] && this.registry[id].disambig && this.registry[id].disambig.names) {
         for (var i = 0, ilen = ambig_config.names.length; i < ilen; i += 1) {
             var new_names_params = ambig_config.names[i];
