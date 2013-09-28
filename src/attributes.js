@@ -501,7 +501,7 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
+CSL.Attributes["@has-to-month-or-season"] = function (state, arg) {
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item,item){
@@ -518,7 +518,7 @@ CSL.Attributes["@has-month-or-season-only"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@has-day-only"] = function (state, arg) {
+CSL.Attributes["@has-day"] = function (state, arg) {
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item,item){
