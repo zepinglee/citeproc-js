@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.485
+==========================
+
+- Move punctuation on inner as well as outer quotes.
+
+==========================
 Changes in version 1.0.484
 ==========================
 
