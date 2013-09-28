@@ -947,7 +947,7 @@ CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
             if (state.getOpt('punctuation-in-quote')) {
                 var decorations = doblob.decorations;
                 for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
-                    if (decorations[j][0] === '@quotes' && decorations[j][1] === 'true') {
+                    if (decorations[j][0] === '@quotes' && (decorations[j][1] === 'true' || decorations[j][1] === 'inner')) {
                         doblob.punctuation_in_quote = true;
                         stk[slast].lastNode = true;
                     }
