@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.486
+==========================
+
+- Fix "this.registry[id].givens[i] is undefined" bug.
+
+==========================
 Changes in version 1.0.485
 ==========================
 

@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.485",
+    PROCESSOR_VERSION: "1.0.486",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -13352,7 +13352,9 @@ CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
 CSL.Disambiguation.prototype.captureStepToBase = function() {
     if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite"
         && this.base.givens && this.base.givens.length) {
-        this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
+        if ("undefined" !== typeof this.base.givens[this.gnameset][this.gname]) {
+            this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
+        }
     }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
 };
