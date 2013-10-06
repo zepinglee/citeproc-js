@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.487
+==========================
+
+- Fix error in application of affixes with multiple locales.
+  Error reported by Zotero forum user mlwang:
+  https://forums.zotero.org/discussion/32329/mlz-bugs-with-multilocale-citation
+
+==========================
 Changes in version 1.0.486
 ==========================
 
