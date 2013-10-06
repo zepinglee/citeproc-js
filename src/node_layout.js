@@ -74,7 +74,8 @@ CSL.Node.layout = {
             this.execs.push(func);
         }
 
-        if (this.tokentype === CSL.START && !state.tmp.cite_affixes) {
+        // XXX Works, but using state.tmp looks wrong here? We're in the build layer ...
+        if (this.tokentype === CSL.START && !state.tmp.cite_affixes[state.build.area]) {
             //
             // done_vars is used to prevent the repeated
             // rendering of variables
@@ -162,8 +163,8 @@ CSL.Node.layout = {
             my_tok.locale = this.locale_raw;
             my_tok.strings.delimiter = this.strings.delimiter;
             my_tok.strings.suffix = this.strings.suffix;
-            if (!state.tmp.cite_affixes) {
-                state.tmp.cite_affixes = {};
+            if (!state.tmp.cite_affixes[state.build.area]) {
+                state.tmp.cite_affixes[state.build.area] = {};
             }
         }
 
@@ -185,7 +186,7 @@ CSL.Node.layout = {
                 state[state.build.area].opt.layout_decorations = this.decorations;
                 
                 // Only do this if we're running conditionals
-                if (state.tmp.cite_affixes) {
+                if (state.tmp.cite_affixes[state.build.area]) {
                     // if build_layout_locale_flag is true,
                     // write cs:else START to the token list.
                     tok = new CSL.Token("else", CSL.START);
@@ -213,9 +214,9 @@ CSL.Node.layout = {
                     CSL.Node["else-if"].build.call(my_tok, state, target);
                 }
                 // cite_affixes for this node
-                state.tmp.cite_affixes[my_tok.locale] = {};
-                state.tmp.cite_affixes[my_tok.locale].delimiter = this.strings.delimiter;
-                state.tmp.cite_affixes[my_tok.locale].suffix = this.strings.suffix;
+                state.tmp.cite_affixes[state.build.area][my_tok.locale] = {};
+                state.tmp.cite_affixes[state.build.area][my_tok.locale].delimiter = this.strings.delimiter;
+                state.tmp.cite_affixes[state.build.area][my_tok.locale].suffix = this.strings.suffix;
             }
         }
         if (this.tokentype === CSL.END) {
@@ -239,7 +240,7 @@ CSL.Node.layout = {
             }
             if (!this.locale_raw) {
                 // Only add this if we're running conditionals
-                if (state.tmp.cite_affixes) {
+                if (state.tmp.cite_affixes[state.build.area]) {
                     // If layout_locale_flag is true, write cs:else END
                     // and cs:choose END to the token list.
                     if (state.build.layout_locale_flag) {

@@ -822,7 +822,7 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
     } else if (this.tmp.cite_locales[pos - 1]) {
         //
         // Must have a value to take effect.  Use zero width space to force empty delimiter.
-        var alt_affixes = this.tmp.cite_affixes[this.tmp.cite_locales[pos - 1]];
+        var alt_affixes = this.tmp.cite_affixes[this.tmp.area][this.tmp.cite_locales[pos - 1]];
         if (alt_affixes && alt_affixes.delimiter) {
             this.tmp.splice_delimiter = alt_affixes.delimiter;
         }
@@ -983,8 +983,8 @@ CSL.getCitationCluster = function (inputList, citationID) {
     var last_locale = this.tmp.cite_locales[this.tmp.cite_locales.length - 1];
     //
     // Must have a value to take effect.  Use zero width space to force empty suffix.
-    if (last_locale && this.tmp.cite_affixes[last_locale] && this.tmp.cite_affixes[last_locale].suffix) {
-        suffix = this.tmp.cite_affixes[last_locale].suffix;
+    if (last_locale && this.tmp.cite_affixes[this.tmp.area][last_locale] && this.tmp.cite_affixes[this.tmp.area][last_locale].suffix) {
+        suffix = this.tmp.cite_affixes[this.tmp.area][last_locale].suffix;
     }
     if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix.slice(0, 1)) > -1) {
         suffix = suffix.slice(0, 1);

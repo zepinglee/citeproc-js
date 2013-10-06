@@ -340,7 +340,12 @@ CSL.Engine.Tmp = function () {
     //
     // Used for conditional locale switching.
     this.cite_locales = [];
-    this.cite_affixes = false;
+    this.cite_affixes = {
+        citation: false, 
+        bibliography: false,
+        citation_sort: false, 
+        bibliography_sort: false
+    };
     this.strip_periods = 0;
     this.shadow_numbers = {};
 };

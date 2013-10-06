@@ -344,12 +344,20 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             for (j  = topblobs.length - 1; j > -1; j += -1) {
                 if (topblobs[j].blobs && topblobs[j].blobs.length !== 0) {
+
+                    var last_locale = this.tmp.cite_locales[this.tmp.cite_locales.length - 1];
+                    var suffix;
+                    if (this.tmp.cite_affixes[this.tmp.area][last_locale]) {
+                        suffix = this.tmp.cite_affixes[this.tmp.area][last_locale].suffix;
+                    } else {
+                        suffix = this.bibliography.opt.layout_suffix;
+                    }
                     // Fix up duplicate terminal punctuation, reported by Carles Pina 2010-07-15
-                    chr = this.bibliography.opt.layout_suffix.slice(0, 1);
+                    chr = suffix.slice(0, 1);
                     if (chr && topblobs[j].strings.suffix.slice(-1) === chr) {
                         topblobs[j].strings.suffix = topblobs[j].strings.suffix.slice(0, -1);
                     }
-                    topblobs[j].strings.suffix += this.bibliography.opt.layout_suffix;
+                    topblobs[j].strings.suffix += suffix;
                     break;
                 }
             }
