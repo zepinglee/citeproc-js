@@ -282,8 +282,12 @@ CSL.Transform = function (state) {
                     this.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
                 }
                 // Refresh from DB if no entry is found in memory.
+                var noHints = false;
+                if (tryList[i] === "default" && variable === "title") {
+                    noHints = true;
+                }
                 if (!this.abbrevs[tryList[i]][category][orig]) {
-                    state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, tryList[i], category, orig, itemType);
+                    state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, tryList[i], category, orig, itemType, noHints);
                 }
                 // Did we find something?
                 if (this.abbrevs[tryList[i]][category][orig]) {
