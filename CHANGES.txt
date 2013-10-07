@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.488
+==========================
+
+- Avoid applying abbreviation hint lists to non-legal item titles.
+
+==========================
 Changes in version 1.0.487
 ==========================
 
