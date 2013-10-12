@@ -220,7 +220,7 @@ CSL_E4X.prototype.makeXml = function (myxml) {
     // Per https://www.zotero.org/trac/ticket/1780
     XML.ignoreComments = true;
     XML.ignoreProcessingInstructions = true;
-     XML.ignoreWhitespace = true;
+    XML.ignoreWhitespace = true;
     XML.prettyPrinting = true;
     XML.prettyIndent = 2;
     
