@@ -117,6 +117,11 @@ CSL.Transform = function (state) {
 
         var variable = myabbrev_family;
 
+        var noHints = false;
+        if (["title", "title-short"].indexOf(variable) > -1 && !Item.jurisdiction) {
+            noHints = true;
+        }
+
         if (CSL.NUMERIC_VARIABLES.indexOf(myabbrev_family) > -1) {
             myabbrev_family = "number";
         }
@@ -140,7 +145,7 @@ CSL.Transform = function (state) {
         // Lazy retrieval of abbreviations.
         value = "";
         if (state.sys.getAbbreviation) {
-            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, basevalue, Item.type);
+            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, basevalue, Item.type, noHints);
 
             // XXX Need a fallback mechanism here. Other to default.
             if (state.transform.abbrevs[jurisdiction][myabbrev_family] && basevalue && state.sys.getAbbreviation) {
@@ -245,7 +250,7 @@ CSL.Transform = function (state) {
     // Setter for abbreviation lists
     // This initializes a single abbreviation based on known
     // data.
-    function loadAbbreviation(jurisdiction, category, orig, itemType) {
+    function loadAbbreviation(jurisdiction, category, orig, itemType, noHints) {
         var pos, len;
         if (!jurisdiction) {
             jurisdiction = "default";
@@ -282,10 +287,6 @@ CSL.Transform = function (state) {
                     this.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
                 }
                 // Refresh from DB if no entry is found in memory.
-                var noHints = false;
-                if (tryList[i] === "default" && variable === "title") {
-                    noHints = true;
-                }
                 if (!this.abbrevs[tryList[i]][category][orig]) {
                     state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, tryList[i], category, orig, itemType, noHints);
                 }
