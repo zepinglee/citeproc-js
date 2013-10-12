@@ -272,16 +272,53 @@ CSL.Engine.prototype.setCloseQuotesArray = function () {
     this.opt.close_quotes_array = ret;
 };
 
+CSL.makeBuilder = function (me) {
+    function enterFunc (node) {
+        CSL.XmlToToken.call(node, me, CSL.START);
+    };
+    function leaveFunc (node) {
+        CSL.XmlToToken.call(node, me, CSL.END);
+    };
+    function singletonFunc (node) {
+        CSL.XmlToToken.call(node, me, CSL.SINGLETON);
+    };
+    function buildStyle (node) {
+        var starttag, origparent;
+        if (me.sys.xml.numberofnodes(me.sys.xml.children(node))) {
+            origparent = node;
+            enterFunc(origparent);
+            for (var i=0;i<me.sys.xml.numberofnodes(me.sys.xml.children(origparent));i+=1) {
+                node = me.sys.xml.children(origparent)[i];
+                if (me.sys.xml.nodename(node) === null) {
+                    continue;
+                }
+                if (me.sys.xml.nodename(node) === "date") {
+                    CSL.Util.fixDateNode.call(me, origparent, i, node)
+                    node = me.sys.xml.children(origparent)[i];
+                }
+                buildStyle(node, enterFunc, leaveFunc, singletonFunc);
+            }
+            leaveFunc(origparent);
+        } else {
+            singletonFunc(node);
+        }
+    }
+    return buildStyle;
+};
+
+
 CSL.Engine.prototype.buildTokenLists = function (area) {
-    var area_nodes, navi;
+    var builder = CSL.makeBuilder(this);
+    var area_nodes;
     area_nodes = this.sys.xml.getNodesByName(this.cslXml, area);
     if (!this.sys.xml.getNodeValue(area_nodes)) {
         return;
     }
-    navi = new this.getNavi(this, area_nodes);
     this.build.area = area;
-    CSL.buildStyle.call(this, navi);
+    var mynode = area_nodes[0];
+    builder(mynode);
 };
+
 
 CSL.Engine.prototype.setStyleAttributes = function () {
     var dummy, attr, key, attributes, attrname;
@@ -297,95 +334,6 @@ CSL.Engine.prototype.setStyleAttributes = function () {
             CSL.Attributes[attrname].call(dummy, this, attributes[attrname]);
         }
     }
-};
-
-
-
-CSL.buildStyle  = function (navi) {
-    if (navi.getkids()) {
-        CSL.buildStyle.call(this, navi);
-    } else {
-        if (navi.getbro()) {
-            CSL.buildStyle.call(this, navi);
-        } else {
-            while (navi.nodeList.length > 1) {
-                if (navi.remember()) {
-                    CSL.buildStyle.call(this, navi);
-                }
-            }
-        }
-    }
-};
-
-
-CSL.Engine.prototype.getNavi = function (state, myxml) {
-    this.sys = state.sys;
-    this.state = state;
-    this.nodeList = [];
-    this.nodeList.push([0, myxml]);
-    this.depth = 0;
-};
-
-
-CSL.Engine.prototype.getNavi.prototype.remember = function () {
-    var node;
-    this.depth += -1;
-    this.nodeList.pop();
-    // closing node, process result of children
-    node = this.nodeList[this.depth][1][(this.nodeList[this.depth][0])];
-    CSL.XmlToToken.call(node, this.state, CSL.END);
-    return this.getbro();
-};
-
-
-CSL.Engine.prototype.getNavi.prototype.getbro = function () {
-    var sneakpeek;
-    sneakpeek = this.nodeList[this.depth][1][(this.nodeList[this.depth][0] + 1)];
-    if (sneakpeek) {
-        this.nodeList[this.depth][0] += 1;
-        return true;
-    } else {
-        return false;
-    }
-};
-
-
-CSL.Engine.prototype.getNavi.prototype.getkids = function () {
-    var currnode, sneakpeek, pos, node, len;
-    currnode = this.nodeList[this.depth][1][this.nodeList[this.depth][0]];
-    sneakpeek = this.sys.xml.children(currnode);
-    //var sneakpeek = currnode.children();
-    if (this.sys.xml.numberofnodes(sneakpeek) === 0) {
-        // singleton, process immediately IF we are at depth ... maybe?
-        // No idea why, but the JSON style input objects insist on throwing date-part
-        // output at level zero.
-        if (this.depth) {
-            CSL.XmlToToken.call(currnode, this.state, CSL.SINGLETON);
-        }
-        return false;
-    } else {
-        // if there are children, check for date nodes and
-        // convert if appropriate
-//        for (pos = 0, len = sneakpeek.length; pos < len; pos += 1) {
-        for (pos in sneakpeek) {
-            node = sneakpeek[pos];
-            if ("date" === this.sys.xml.nodename(node)) {
-                currnode = CSL.Util.fixDateNode.call(this, currnode, pos, node);
-                sneakpeek = this.sys.xml.children(currnode);
-            }
-        }
-        //
-        // if first node of a span, process it, then descend
-        CSL.XmlToToken.call(currnode, this.state, CSL.START);
-        this.depth += 1;
-        this.nodeList.push([0, sneakpeek]);
-        return true;
-    }
-};
-
-
-CSL.Engine.prototype.getNavi.prototype.getNodeListValue = function () {
-    return this.nodeList[this.depth][1];
 };
 
 CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode, forceDefaultLocale) {
@@ -716,7 +664,11 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (!isLegalType && Item.title && this.sys.getAbbreviation) {
-        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title);
+        var noHints = false;
+        if (!Item.jurisdiction) {
+            noHints = true;
+        }
+        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title, Item.type, true);
         if (this.transform.abbrevs[jurisdiction].title) {
             if (this.transform.abbrevs[jurisdiction].title[Item.title]) {
                 Item["title-short"] = this.transform.abbrevs[jurisdiction].title[Item.title];
