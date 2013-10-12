@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.489
+==========================
+
+- Simplified rewrite of style build code. The old version was written while I was
+  struggling to learn JavaScript. Citeproc-js began raising a recursion error
+  in Firefox 24 with the MLZ American Law style, and in background reading preparatory 
+  to filing a bug report it became clear that "in any case, if you're getting a recursion
+  error, there are serious problems with your code." The next build function is based on a
+  sample from Douglas Crockford. From this version, the American Law style loads without
+  a hitch under FF 24, and (of course) all tests still pass.
+
+==========================
 Changes in version 1.0.488
 ==========================
 
