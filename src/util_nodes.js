@@ -140,8 +140,8 @@ CSL.expandMacro = function (macro_key_token) {
     if (!this.sys.xml.getNodeValue(macro_nodes)) {
         throw "CSL style error: undefined macro \"" + mkey + "\"";
     }
-    navi = new this.getNavi(this, macro_nodes);
-    CSL.buildStyle.call(this, navi);
+    var builder = CSL.makeBuilder(this);
+    builder(macro_nodes[0]);
 
     //
     // can't use the same token for the end of the group, since

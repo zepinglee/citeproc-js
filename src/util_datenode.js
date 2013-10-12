@@ -53,17 +53,17 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     
     // Raise date flag, used to control inclusion of year-suffix key in sorts
     // This may be a little reckless: not sure what happens on no-date conditions
-    this.state.build.date_key = true;
+    this.build.date_key = true;
 
     form = this.sys.xml.getAttributeValue(node, "form");
     var lingo;
     if ("accessed" === this.sys.xml.getAttributeValue(node, "variable")) {
-        lingo = this.state.opt["default-locale"][0];
+        lingo = this.opt["default-locale"][0];
     } else {
         lingo = this.sys.xml.getAttributeValue(node, "lingo");
     }
 
-    if (!this.state.getDate(form)) {
+    if (!this.getDate(form)) {
         return parent;
     }
 
@@ -78,8 +78,8 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     //
     // Xml: Copy a node
     //
-    datexml = this.sys.xml.nodeCopy(this.state.getDate(form, ("accessed" === variable)));
-    this.sys.xml.setAttribute(datexml, 'lingo', this.state.opt.lang);
+    datexml = this.sys.xml.nodeCopy(this.getDate(form, ("accessed" === variable)));
+    this.sys.xml.setAttribute(datexml, 'lingo', this.opt.lang);
     this.sys.xml.setAttribute(datexml, 'form', form);
     this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
     this.sys.xml.setAttribute(datexml, "cslid", cslid);
@@ -131,7 +131,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
                         if ("@name" === attr) {
                             continue;
                         }
-                        if (lingo && lingo !== this.state.opt.lang) {
+                        if (lingo && lingo !== this.opt.lang) {
                             if (["@suffix", "@prefix", "@form"].indexOf(attr) > -1) {
                                 continue;
                             }
