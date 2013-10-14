@@ -160,7 +160,7 @@ CSL.Node["date-part"] = {
                         }
                     }
                     if (value_end) {
-                        value_end = CSL.Util.Dates[this.strings.name][myform](state, value_end, gender, ("accessed" === date_variable));
+                        value_end = CSL.Util.Dates[this.strings.name][myform](state, value_end, gender, ("accessed" === date_variable), "_end");
                         // XXXXX Cut-and-paste code in multiple locations. This code block should be
                         // collected in a function.
                         // Tag: strip-periods-block

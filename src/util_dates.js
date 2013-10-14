@@ -76,6 +76,42 @@ CSL.Util.Dates.year["long"] = function (state, num) {
 };
 
 /**
+ * Crudely convert to Japanese Imperial form.
+ * <p>Returns the result as a string.</p>
+ */
+CSL.Util.Dates.year.imperial = function (state, num, end) {
+    if (!num) {
+        if ("boolean" === typeof num) {
+            num = "";
+        } else {
+            num = 0;
+        }
+    }
+    end = end ? "_end" : "";
+    var month = state.tmp.date_object["month" + end];
+    month = month ? ""+month : "1";
+    while (month.length < 2) {
+        month = "0" + month;
+    }
+    var day = state.tmp.date_object["day" + end];
+    day = day ? ""+day : "1";
+    while (day.length < 2) {
+        day = "0" + day;
+    }
+    var date = parseInt(num + month + day, 10);
+    if (date >= 18680908 && date < 19120730) {
+        year = "明治" + (num - 1867);
+    } else if (date >= 19120730 && date < 19261225) {
+        year = "対象" + (num - 1911);
+    } else if (date >= 19261225 && date < 19890108) {
+        year = "昭和" + (num - 1925);
+    } else if (date >= 19890108) {
+        year = "平成" + (num - 1988);
+    }
+    return year;
+};
+
+/**
  * Convert year to short form
  * <p>Just crops any 4-digit year to the last two digits.</p>
  */
