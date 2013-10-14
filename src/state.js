@@ -188,7 +188,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.main_title_from_short_title = false;
     this.development_extensions.normalize_lang_keys_to_lowercase = false;
     this.development_extensions.strict_text_case_locales = false;
-    this.development_extensions.rtl_support = true;
+    this.development_extensions.rtl_support = false;
     this.development_extensions.strict_page_numbers = false;
 
     this.nodenames = [];
