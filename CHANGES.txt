@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.490
+==========================
+
+- Simple support for Japanese imperial date output. Covers only
+  post-1867 era.
+
+- Turn off experimental RTL support by default.
+
+==========================
 Changes in version 1.0.489
 ==========================
 
