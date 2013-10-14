@@ -1,0 +1,948 @@
+/*
+ * Copyright (c) 2009-2013 Frank G. Bennett, Jr. All Rights
+ * Reserved.
+ *
+ * The contents of this file are subject to the Common Public
+ * Attribution License Version 1.0 (the “License”); you may not use
+ * this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ *
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 1.13, 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./tests subdirectory of the distribution archive.
+ *
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ *
+ * The Initial Developer of the Original Code is Frank G. Bennett,
+ * Jr. All portions of the code written by Frank G. Bennett, Jr. are
+ * Copyright (c) 2009-2013 Frank G. Bennett, Jr. All Rights Reserved.
+ *
+ * Alternatively, the contents of this file may be used under the
+ * terms of the GNU Affero General Public License (the [AGPLv3]
+ * License), in which case the provisions of [AGPLv3] License are
+ * applicable instead of those above. If you wish to allow use of your
+ * version of this file only under the terms of the [AGPLv3] License
+ * and not to allow others to use your version of this file under the
+ * CPAL, indicate your decision by deleting the provisions above and
+ * replace them with the notice and other provisions required by the
+ * [AGPLv3] License. If you do not delete the provisions above, a
+ * recipient may use your version of this file under either the CPAL
+ * or the [AGPLv3] License.”
+ */
+
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1",
+                    "label": "page",
+                    "locator": "125"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-2", 
+            "citationItems": [
+                {
+                    "id": "ITEM-2",
+                    "label": "page",
+                    "locator": "397"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 2
+            }
+        }, 
+        [["CITATION-1",1]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-3", 
+            "citationItems": [
+                {
+                    "id": "ITEM-3",
+                    "label": "page",
+                    "locator": "124"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 3
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-4", 
+            "citationItems": [
+                {
+                    "id": "ITEM-4",
+                    "label": "page",
+                    "locator": "159"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 4
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-5", 
+            "citationItems": [
+                {
+                    "id": "ITEM-5",
+                    "label": "page",
+                    "locator": "9"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 5
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-6", 
+            "citationItems": [
+                {
+                    "id": "ITEM-6",
+                    "label": "page",
+                    "locator": "205"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 6
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-7", 
+            "citationItems": [
+                {
+                    "id": "ITEM-7",
+                    "label": "page",
+                    "locator": "46"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 7
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-8", 
+            "citationItems": [
+                {
+                    "id": "ITEM-8",
+                    "label": "page",
+                    "locator": "153"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 8
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-9", 
+            "citationItems": [
+                {
+                    "id": "ITEM-9"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 9
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-10", 
+            "citationItems": [
+                {
+                    "id": "ITEM-10"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 10
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-11", 
+            "citationItems": [
+                {
+                    "id": "ITEM-11"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 11
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-12", 
+            "citationItems": [
+                {
+                    "id": "ITEM-12",
+                    "label": "page",
+                    "locator": "1"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 12
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-13", 
+            "citationItems": [
+                {
+                    "id": "ITEM-13" 
+                }
+            ], 
+            "properties": {
+                "noteIndex": 13
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-14", 
+            "citationItems": [
+                {
+                    "id": "ITEM-14",
+                    "locator": "1285",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 14
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-15", 
+            "citationItems": [
+                {
+                    "id": "ITEM-15"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 15
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-16", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1",
+                    "locator": "126",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 16
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-17", 
+            "citationItems": [
+                {
+                    "id": "ITEM-2",
+                    "locator": "398",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 17
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-18", 
+            "citationItems": [
+                {
+                    "id": "ITEM-3",
+                    "locator": "125",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 18
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-19", 
+            "citationItems": [
+                {
+                    "id": "ITEM-4",
+                    "locator": "160",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 19
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-20", 
+            "citationItems": [
+                {
+                    "id": "ITEM-5",
+                    "locator": "10",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 20
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-21", 
+            "citationItems": [
+                {
+                    "id": "ITEM-6",
+                    "locator": "206",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 21
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-22", 
+            "citationItems": [
+                {
+                    "id": "ITEM-7",
+                    "locator": "47",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 22
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-23", 
+            "citationItems": [
+                {
+                    "id": "ITEM-8",
+                    "locator": "154",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 23
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-24", 
+            "citationItems": [
+                {
+                    "id": "ITEM-9",
+                    "locator": "2",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 24
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-25", 
+            "citationItems": [
+                {
+                    "id": "ITEM-10",
+                    "locator": "2",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 25
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-26", 
+            "citationItems": [
+                {
+                    "id": "ITEM-11",
+                    "locator": "2",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 26
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24],["CITATION-25",25]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-27", 
+            "citationItems": [
+                {
+                    "id": "ITEM-12",
+                    "locator": "2",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 27
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24],["CITATION-25",25],["CITATION-26",26]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-28", 
+            "citationItems": [
+                {
+                    "id": "ITEM-13",
+                    "locator": "20",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 28
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24],["CITATION-25",25],["CITATION-26",26],["CITATION-27",27]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-29", 
+            "citationItems": [
+                {
+                    "id": "ITEM-14",
+                    "locator": "1283",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 29
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24],["CITATION-25",25],["CITATION-26",26],["CITATION-27",27],["CITATION-28",28]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-30", 
+            "citationItems": [
+                {
+                    "id": "ITEM-15",
+                    "locator": "2396",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 30
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24],["CITATION-25",25],["CITATION-26",26],["CITATION-27",27],["CITATION-28",28],["CITATION-29",29]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-31", 
+            "citationItems": [
+                {
+                    "id": "ITEM-15",
+                    "locator": "2397",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 31
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24],["CITATION-25",25],["CITATION-26",26],["CITATION-27",27],["CITATION-28",28],["CITATION-29",29],["CITATION-30",30]], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-32", 
+            "citationItems": [
+                {
+                    "id": "ITEM-15",
+                    "locator": "2397",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 32
+            }
+        }, 
+        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9],["CITATION-10",10],["CITATION-11",11],["CITATION-12",12],["CITATION-13",13],["CITATION-14",14],["CITATION-15",15],["CITATION-16",16],["CITATION-17",17],["CITATION-18",18],["CITATION-19",19],["CITATION-20",20],["CITATION-21",21],["CITATION-22",22],["CITATION-23",23],["CITATION-24",24],["CITATION-25",25],["CITATION-26",26],["CITATION-27",27],["CITATION-28",28],["CITATION-29",29],["CITATION-30",30],["CITATION-31",31]], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
+
+>>== ABBREVIATIONS ==>>
+{
+    "jp": {
+        "place": {
+            "jp;saiko-saibansho": "最判",
+            "jp;tokyo-chiho-saibansho;hachioji-shibu": "東京地八王子支判"
+        }
+    }
+}
+<<== ABBREVIATIONS ==<<
+
+
+>>===== RESULT =====>>
+John Doe
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+mlz-horitsu-henshu-sha-konwa-kai.csl
+<<===== CSL =====<<
+
+>>===== LANGPARAMS =====>>
+{
+    "persons":["translit"],
+    "institutions":["orig"],
+    "titles":["orig"],
+    "publishers":["orig"],
+    "places":["orig"]
+}
+<<===== LANGPARAMS =====<<
+
+
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "三ケ月",
+                "given": "章"
+            }
+        ], 
+        "title": "民事訴訟法",
+        "publisher": "弘文堂",
+        "edition": "3",
+        "issued": {
+          "date-parts":[[1992]]
+        },
+        "id": "ITEM-1", 
+        "type": "book"
+    },
+    {
+        "author": [
+            {
+                "family": "竹内",
+                "given": "昭夫"
+            }
+        ], 
+        "container-author": [
+            {
+                "family": "竹内",
+                "given": "昭夫"
+            },
+            {
+                "family": "Smith",
+                "given": "Simon"
+            },
+            {
+                "family": "Brown",
+                "given": "Bob"
+            }
+        ], 
+        "title": "消費者保護",
+        "container-title": "現代の経済構造と法",
+        "publisher": "筑摩書房",
+        "issued": {
+          "date-parts":[[1975]]
+        },
+        "id": "ITEM-2", 
+        "type": "chapter"
+    },
+    {
+        "author": [
+            {
+                "family": "林",
+                "given": "良平"
+            }
+        ],
+        "container-author": [
+            {
+                "family": "林",
+                "given": "良平"
+            },
+            {
+                "family": "Smith",
+                "given": "Simon"
+            },
+            {
+                "family": "Brown",
+                "given": "Bob"
+            }
+        ], 
+        "container-title": "債権総論",
+        "publisher": "青林書院",
+        "issued": {
+          "date-parts":[[1978]]
+        },
+        "id": "ITEM-3", 
+        "type": "chapter"
+    },
+    {
+        "author": [
+            {
+                "family": "金沢",
+                "given": "良雄"
+            }
+        ],
+        "editor": [
+            {
+                "family": "経済法学会",
+                "isInstitution": true
+            }
+        ], 
+        "title": "独占禁止法の理論―構造 (目的)",
+        "volume-title": "総論",
+        "collection-title": "独占禁止法講座",
+        "collection-number": "Ｉ",
+        "publisher": "商事法務研究会",
+        "issued": {
+          "date-parts":[[1974]]
+        },
+        "id": "ITEM-4", 
+        "type": "book"
+    },
+    {
+        "author": [
+            {
+                "family": "平野",
+                "given": "竜一"
+            }
+        ],
+        "title": "現代における刑法の機能",
+        "volume-title": "現代法",
+        "collection-title": "岩波講座",
+        "volume": "11",
+        "publisher": "岩波書店",
+        "issued": {
+          "date-parts":[[1965]]
+        },
+        "id": "ITEM-5", 
+        "type": "book"
+    },
+    {
+        "editor": [
+            {
+                "family": "幾代",
+                "given": "通"
+            }
+        ],
+        "author": [
+            {
+                "family": "広中",
+                "given": "俊雄"
+            }
+        ],
+        "title": "注釈民法",
+        "volume": "15",
+        "publisher": "有斐閣",
+        "issued": {
+          "date-parts":[[1966]]
+        },
+        "id": "ITEM-6", 
+        "type": "book"
+    },
+    {
+        "author": [
+            {
+                "family": "我妻",
+                "given": "栄"
+            }
+        ],
+        "recipient": [
+            {
+                "family": "末川",
+                "given": "博"
+            }
+        ],
+        "title": "公共の福祉・信義則・権利濫用相互の関係",
+        "container-title": "権利の濫用",
+        "volume": "上",
+        "publisher": "有斐閣",
+        "edition":"古稀記念",
+        "issued": {
+          "date-parts":[[1962]]
+        },
+        "id": "ITEM-7", 
+        "type": "chapter"
+    },
+    {
+        "editor": [
+            {
+                "family": "von Mehren",
+                "given": "Arthur Taylor",
+                "multi": {
+                    "_key": {
+                        "ja-hrkt": {
+                             "family": "ヴォン・メーレン",
+                             "given": ""
+                        }
+                    }
+                }
+            }
+        ],
+        "translator": [
+            {
+                "family": "末川",
+                "given": "博"
+            }
+        ],
+        "title": "公共の福祉・信義則・権利濫用相互の関係",
+        "volume": "上",
+        "publisher": "有斐閣",
+        "issued": {
+          "date-parts":[[1975]]
+        },
+        "id": "ITEM-8", 
+        "type": "book"
+    },
+    {
+        "author": [
+            {
+                "family": "横田",
+                "given": "喜三郎"
+            }
+        ],
+        "title": "条約の違憲審査権―砂川判決を中心として",
+        "container-title": "国家",
+        "volume": "73",
+        "issue": "7-8",
+        "page": "1",
+        "issued": {
+          "date-parts":[[1960]]
+        },
+        "id": "ITEM-9", 
+        "type": "article-journal"
+    },
+    {
+        "author": [
+            {
+                "family": "末弘",
+                "given": "厳太郎"
+            }
+        ],
+        "title": "物権的請求権理論の再検討",
+        "container-title": "法時",
+        "volume": "11",
+        "issue": "5",
+        "page": "1",
+        "issued": {
+          "date-parts":[[1939]]
+        },
+        "id": "ITEM-10", 
+        "type": "article-journal"
+    },
+    {
+        "author": [
+            {
+                "family": "大隅",
+                "given": "健一郎"
+            }
+        ],
+        "title": "A long story about a difficult case",
+        "jurisdiction":"jp",
+        "container-title": "商事",
+        "volume": "140",
+        "page": "1",
+        "issue": "7",
+        "issued": {
+          "date-parts":[[1959]]
+        },
+        "id": "ITEM-11", 
+        "type": "article-journal"
+    },
+    {
+        "author": [
+            {
+                "family": "鈴木",
+                "given": "竹雄"
+            }
+        ],
+        "title": "判例民事法昭 41 年度 18 事件評釈",
+        "jurisdiction":"jp",
+        "publisher": "有斐閣",
+        "issued": {
+          "date-parts":[[1977]]
+        },
+        "id": "ITEM-12", 
+        "type": "book"
+    },
+    {
+        "author": [
+            {
+                "family": "池原",
+                "given": "季雄"
+            },
+            {
+                "family": "Smith",
+                "given": "Samuel"
+            },
+            {
+                "family": "Jones",
+                "given": "Joseph"
+            }
+        ],
+        "title": "法例改正をめぐる諸問題と今後の課題",
+        "container-title": "ジュリ",
+        "issue": "943",
+        "page":"19",
+        "event-place":"溜池",
+        "issued": {
+          "date-parts":[[1989]]
+        },
+        "id": "ITEM-13", 
+        "type": "paper-conference"
+    },
+    {
+        "container-title": "ジュリ",
+        "jurisdiction": "jp;saiko-saibansho",
+        "authority": "最判",
+        "volume": "37",
+        "issue": "8",
+        "page":"1282",
+        "container-title":"民集",
+        "issued": {
+          "date-parts":[[1983, 10, 7]]
+        },
+        "id": "ITEM-14", 
+        "type": "legal_case"
+    },
+    {
+        "container-title": "ジュリ",
+        "jurisdiction": "jp;tokyo-chiho-saibansho;hachioji-shibu",
+        "authority": "東京地八王子支判",
+        "volume": "13",
+        "issue": "11",
+        "page":"2395",
+        "container-title":"下民",
+        "issued": {
+          "date-parts":[[1962, 11, 28]]
+        },
+        "id": "ITEM-15", 
+        "type": "legal_case"
+    }
+]
+<<===== INPUT =====<<
