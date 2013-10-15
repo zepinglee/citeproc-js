@@ -80,11 +80,17 @@ citation
 >>===== CSL =====>>
 mcgill-guide-v7.csl
 <<===== CSL===== <<
+
+    "references": "Entered into force 03 September 1981, ratification by Canada 10 Dec 1981",
+
+    "references": "Entered into force 03 September 1981, ratification by Canada 10 Dec 1981",
+
+
 >>===== INPUT =====>>
 [
   {
     "id": 21,
-    "type": "bill",
+    "type": "treaty",
     "multi": {
       "_keys": {}
     },
@@ -92,9 +98,8 @@ mcgill-guide-v7.csl
     "container-title": "UNTS",
     "page": "13",
     "volume": "1",
-    "references": "Entered into force 03 September 1981, ratification by Canada 10 Dec 1981",
     "shortTitle": "CEDAW",
-    "issued": {
+    "event-date": {
       "date-parts": [
         [
           "1980",
@@ -106,7 +111,7 @@ mcgill-guide-v7.csl
   },
   {
     "id": 27,
-    "type": "bill",
+    "type": "treaty",
     "multi": {
       "_keys": {}
     },
@@ -114,9 +119,8 @@ mcgill-guide-v7.csl
     "container-title": "Canadian TS",
     "page": "2222",
     "volume": "1111",
-    "references": "Entered into force 03 September 1981, ratification by Canada 10 Dec 1981",
     "shortTitle": "CEDAW",
-    "issued": {
+    "event-date": {
       "date-parts": [
         [
           "1980",
