@@ -347,9 +347,9 @@ CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
         if (this.ignoreVars.indexOf(this.variable) > -1) {
             return;
         }
-        if (str && varname === "jurisdiction") {
-            str = str.split(';')[0];
-        }
+        //if (str && varname === "jurisdiction") {
+        //    str = str.split(';')[0];
+        //}
         if (this.try_cite || this.force_collapse) {
             if (this.target !== "back" || true) {
                 //zcite.debug("  setting: "+str);
