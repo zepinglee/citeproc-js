@@ -174,81 +174,58 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
 CSL.Output.Formatters.title = function (state, string) {
     var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
     var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
-    str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
     if (!string) {
         return "";
     }
-    // split words
-    // Workaround for Internet Explorer
-    mx = str.string.match(/(\s+)/g);
-    lst = str.string.split(/\s+/);
-    myret = [lst[0]];
-    for (pos = 1, len = lst.length; pos < len; pos += 1) {
-        myret.push(mx[pos - 1]);
-        myret.push(lst[pos]);
+    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    function capitalise (word) {
+        var m = word.match(/(:\s+|-|^)(.)(.*)/);
+        if (m) {
+            return m[1] + m[2].toUpperCase() + m[3];
+        }
+        return word;
     }
-    words = myret.slice();
-    isAllUpperCase = str.string.toUpperCase() === string && !str.string.match(/[0-9]/);
-    newString = "";
-    lastWordIndex = words.length - 1;
-    previousWordIndex = -1;
-    // Inspect every word individually
-    for (pos = 0; pos <= lastWordIndex;  pos += 2) {
-        // Word has length, is not a single character, and does not consist only of spaces
-        if (words[pos].length !== 0 && words[pos].length !== 1 && !/\s+/.test(words[pos])) {
-            upperCaseVariant = words[pos].toUpperCase();
-            lowerCaseVariant = words[pos].toLowerCase();
-            var totallyskip = false;
-            // Full string is not all-uppercase, or string is one word of three characters or less
-            if (!isAllUpperCase || (words.length === 1 && words[pos].length < 4)) {
-                // This word is all-uppercase
-                if (words[pos] !== lowerCaseVariant) {
-                    totallyskip = true;
-                }
-            }
-            // Full string is all-uppercase, or this word is all-lowercase
-            if (isAllUpperCase || words[pos] === lowerCaseVariant) {
-                skip = false;
-                for (var i = 0, ilen = SKIP_WORDS.length; i < ilen; i += 1) {
-                    skipword = SKIP_WORDS[i];
-                    idx = lowerCaseVariant.indexOf(skipword);
-                    if (idx > -1) {
-                        tmp = lowerCaseVariant.slice(0, idx) + lowerCaseVariant.slice(idx + skipword.length);
-                        if (!tmp.match(/[a-zA-Z]/)) {
-                            skip = true;
-                        }
-                    }
-                }
-                notfirst = pos !== 0;
-                notlast = pos !== lastWordIndex;
-                if (words[previousWordIndex]) {
-                    aftercolon = words[previousWordIndex].slice(-1) === ":";
-                } else {
-                    aftercolon = false;
-                }
-                // Skip if word is all-uppercase, and the full string is in mixed-case
-                if (!totallyskip) {
-                    // If word is a stop-word, neither first nor last, and does not follow a colon,
-                    // leave untouched
-                    // Otherwise capitalize first character
-                    if (skip && notfirst && notlast && !aftercolon) {
-						if (state.opt.development_extensions.allow_force_lowercase) {
-							words[pos] = lowerCaseVariant;
-						}
-                    } else {
-						if (state.opt.development_extensions.allow_force_lowercase) {
-							words[pos] = upperCaseVariant.slice(0, 1) + lowerCaseVariant.substr(1);
-						} else {
-							words[pos] = upperCaseVariant.slice(0, 1) + words[pos].substr(1);
-						}
-                    }
-                }
-            }
-            previousWordIndex = pos;
+    // Split on skip words
+    var str = doppel.string;
+    var lst = str.split(state.locale[state.opt.lang].opts["skip-words-regexp"])
+    // Capitalise stop-words that occur after a colon
+    for (i=1,ilen=lst.length;i<ilen;i+=2) {
+        if (lst[i].slice(0) === ":") {
+            lst[i] = capitalise(word);
         }
     }
-    str.string = words.join("");
-    return CSL.Output.Formatters.undoppelString(str);
+    // Capitalise stop-words if they are the first or last words
+    if (!lst[0]) {
+        lst[1] = capitalise(lst[1]);
+    }
+    if (lst.length > 2 && !lst[lst.length-1]) {
+        lst[lst.length-2] = capitalise(lst[lst.length-2]);
+    }
+    for (var i=0,ilen=lst.length;i<ilen;i+=2) {
+        var words = lst[i].split(/(:?\s+|-)/);
+        // Inspect each word individually
+        for (k=0,klen=words.length;k<klen;k+=2) {
+            // Word has length
+            if (words[k].length !== 0) {
+                //print("Word: ("+words[k]+")");
+                upperCaseVariant = words[k].toUpperCase();
+                lowerCaseVariant = words[k].toLowerCase();
+                // Always leave untouched if word contains a number
+                if (words[k].match(/[0-9]/)) {
+                    continue;
+                }
+                // Transform word only if all lowercase
+                if (words[k] === lowerCaseVariant) {
+                    //print("   do: "+capitalise(words[k]));
+                    words[k] = capitalise(words[k]);
+                }
+            }
+        }
+        lst[i] = words.join("");
+    }
+    doppel.string = lst.join("");
+    var ret = CSL.Output.Formatters.undoppelString(doppel);
+    return ret;
 };
 
 /*
@@ -265,7 +242,7 @@ CSL.Output.Formatters.doppelString = function (string, rex) {
     // ret.array = string.split(rex);
     ret.string = "";
     for (var i=0,ilen=ret.array.length; i<ilen; i += 2) {
-        if (ret.array[i-1] === "-") {
+        if (ret.array[i-1] === "-" && false) {
             ret.string += " " + ret.array[i];
         } else {
             ret.string += ret.array[i];
@@ -282,7 +259,7 @@ CSL.Output.Formatters.undoppelString = function (str) {
         if ((i % 2)) {
             ret += str.array[i];
         } else {
-            if (str.array[i-1] === "-") {
+            if (str.array[i-1] === "-" && false) {
                 ret += str.string.slice(0, str.array[i].length+1).slice(1);
                 str.string = str.string.slice(str.array[i].length+1);
             } else {

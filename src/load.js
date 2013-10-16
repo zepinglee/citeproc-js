@@ -418,8 +418,8 @@ var CSL = {
     TAG_ESCAPE: function (str) {
         var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
         // Workaround for Internet Exporer
-        mx = str.match(/(\"|\'|-|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
-        lst = str.split(/(?:\"|\'|-|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
+        mx = str.match(/(\"|\'|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
+        lst = str.split(/(?:\"|\'|<span\s+class=\"no(?:case|decor)\">.*?<\/span>|<\/?(?:i|sc|b)>|<\/span>)/g);
         myret = [lst[0]];
         for (pos = 1, len = lst.length; pos < len; pos += 1) {
             myret.push(mx[pos - 1]);
@@ -457,8 +457,7 @@ var CSL = {
         return ret;
     },
 
-
-    SKIP_WORDS: ["but", "or", "yet", "so", "for", "and", "nor", "a", "an", "the", "at", "by", "from", "in", "into", "of", "on", "to", "with", "up", "down", "as", "via", "onto", "over", "till", "de", "d'", "von", "van", "before", "after", "c", "et", "through","ca"],
+    SKIP_WORDS: ["about","above","across","afore","after","against","along","alongside","amid","amidst","among","amongst","anenst","apropos","apud","around","as","aside","astride","at","athwart","atop","barring","before","behind","below","beneath","beside","besides","between","beyond","but","by","circa","despite","down","during","except","for","forenenst","from","given","in","inside","into","lest","like","modulo","near","next","notwithstanding","of","off","on","onto","out","over","per","plus","pro","qua","sans","since","than","through"," thru","throughout","thruout","till","to","toward","towards","under","underneath","until","unto","up","upon","versus","vs.","v.","vs","v","via","vis-à-vis","with","within","without","according to","ahead of","apart from","as for","as of","as per","as regards","aside from","back to","because of","close to","due to","except for","far from","inside of","instead of","near to","next to","on to","out from","out of","outside of","prior to","pursuant to","rather than","regardless of","such as","that of","up to","where as","or", "yet", "so", "for", "and", "nor", "a", "an", "the", "de", "d'", "von", "van", "c", "et", "ca"],
 
     FORMAT_KEY_SEQUENCE: [
         "@strip-periods",

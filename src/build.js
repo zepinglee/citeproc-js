@@ -221,6 +221,15 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.locale = {};
     this.localeConfigure(langspec);
 
+    // Build skip-word regexp
+    function makeRegExp(lst) {
+        var lst = lst.slice();
+        var ret = new RegExp( "((?::?\\s+|-|^)(?:" + lst.join("|") + ")(?::?\\s+|-|$))" );
+        return ret;
+    }
+    this.locale[this.opt.lang].opts["skip-words-regexp"] = makeRegExp(this.locale[this.opt.lang].opts["skip-words"]);
+
+
     this.registry = new CSL.Registry(this);
 
     this.buildTokenLists("citation");
