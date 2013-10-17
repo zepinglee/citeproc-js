@@ -190,8 +190,8 @@ CSL.Output.Formatters.title = function (state, string) {
     var lst = str.split(state.locale[state.opt.lang].opts["skip-words-regexp"])
     // Capitalise stop-words that occur after a colon
     for (i=1,ilen=lst.length;i<ilen;i+=2) {
-        if (lst[i].slice(0) === ":") {
-            lst[i] = capitalise(word);
+        if (lst[i].slice(0,1) === ":") {
+            lst[i] = capitalise(lst[i]);
         }
     }
     // Capitalise stop-words if they are the first or last words
