@@ -179,7 +179,7 @@ CSL.Output.Formatters.title = function (state, string) {
     }
     var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
     function capitalise (word) {
-        var m = word.match(/(:\s+|-|^)(.)(.*)/);
+        var m = word.match(/([:?!]+\s+|-|^)(.)(.*)/);
         if (m) {
             return m[1] + m[2].toUpperCase() + m[3];
         }
@@ -190,7 +190,7 @@ CSL.Output.Formatters.title = function (state, string) {
     var lst = str.split(state.locale[state.opt.lang].opts["skip-words-regexp"])
     // Capitalise stop-words that occur after a colon
     for (i=1,ilen=lst.length;i<ilen;i+=2) {
-        if (lst[i].slice(0,1) === ":") {
+        if (lst[i].match(/^[:?!]/)) {
             lst[i] = capitalise(lst[i]);
         }
     }
@@ -202,7 +202,7 @@ CSL.Output.Formatters.title = function (state, string) {
         lst[lst.length-2] = capitalise(lst[lst.length-2]);
     }
     for (var i=0,ilen=lst.length;i<ilen;i+=2) {
-        var words = lst[i].split(/(:?\s+|-)/);
+        var words = lst[i].split(/([:?!]*\s+|-)/);
         // Inspect each word individually
         for (k=0,klen=words.length;k<klen;k+=2) {
             // Word has length

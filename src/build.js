@@ -224,7 +224,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     // Build skip-word regexp
     function makeRegExp(lst) {
         var lst = lst.slice();
-        var ret = new RegExp( "((?::?\\s+|-|^)(?:" + lst.join("|") + ")(?::?\\s+|-|$))" );
+        var ret = new RegExp( "((?:[?!:]*\\s+|-|^)(?:" + lst.join("|") + ")(?=[!?:]*\\s+|-|$))" );
         return ret;
     }
     this.locale[this.opt.lang].opts["skip-words-regexp"] = makeRegExp(this.locale[this.opt.lang].opts["skip-words"]);
