@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.493
+==========================
+
+- Control for double spacing before leading apostrophes
+  (as with '09).
+
+==========================
 Changes in version 1.0.492
 ==========================
 
