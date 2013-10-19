@@ -432,7 +432,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             merged = this._join([family, second], " ");
             blob = this._join([merged, suffix], " ");
         }
-    } else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0)) {
+    } else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0 && j === 0)) {
         //
         // Discretionary sort ordering and inversions
         //
