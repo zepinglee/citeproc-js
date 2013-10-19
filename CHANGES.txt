@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.492
+==========================
+
+- Use localised symbolic form of "and" ("&") when rendering names.
+  Disabled by default. Option is:
+
+    citeproc.opt.development_extensions.expect_and_symbol_form = true
+
+==========================
 Changes in version 1.0.491
 ==========================
 
