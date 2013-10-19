@@ -273,7 +273,8 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos, j) {
             
             // XXX We'll start here with attempts.
             // Figure out the three segments: primary, secondary, tertiary
-            var j, ret, optLangTag, jlen, key, localesets;
+            var ret, optLangTag, jlen, key, localesets;
+            
             if (this.state.tmp.extension) {
                 localesets = ["sort"];
             } else if (name.isInstitution) {
@@ -432,7 +433,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             merged = this._join([family, second], " ");
             blob = this._join([merged, suffix], " ");
         }
-    } else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0 && j === 0)) {
+    } else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0 && (j === 0 || "undefined" === typeof j))) {
         //
         // Discretionary sort ordering and inversions
         //
