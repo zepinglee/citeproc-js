@@ -45,6 +45,7 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
+
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;

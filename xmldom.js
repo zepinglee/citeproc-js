@@ -45,6 +45,7 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
+
 if ("undefined" === typeof CSL_IS_IE) {
     var CSL_IS_IE;
 };

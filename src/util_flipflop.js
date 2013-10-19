@@ -324,6 +324,8 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
     len = strs.length;
     for (pos = 0; pos < len; pos += 2) {
         strs[pos] = strs[pos].replace("'", "\u2019", "g");
+        // Control for double spacing before leading apostrophes (e.g. '09)
+        strs[pos] = strs[pos].replace("  \u2019", " \u2019", "g");
         // Erroneous. Flipflop is run during queue append.
         // Escaping should be limited to output operations.
         // Anomaly spotted by Rintze Zelle, 2012-04-20
