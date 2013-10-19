@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.494
+==========================
+
+- Limit name-as-sort-order="first" to the first name rendered
+  in a nameset, accounting for multiple blocks of personal
+  names. Thanks to MLZ user mlwang for pointing out the need
+  for the restriction.
+
+==========================
 Changes in version 1.0.493
 ==========================
 
