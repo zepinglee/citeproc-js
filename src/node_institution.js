@@ -65,7 +65,11 @@ CSL.Node.institution = {
                 if ("text" === this.strings.and) {
                     this.and_term = state.getTerm("and", "long", 0);
                 } else if ("symbol" === this.strings.and) {
-                    this.and_term = "&";
+                    if (state.opt.development_extensions.expect_and_symbol_form) {
+                        this.and_term = state.getTerm("and", "symbol", 0);
+                    } else {
+                        this.and_term = "&";
+                    }
                 } else if ("none" === this.strings.and) {
                     this.and_term = this.strings.delimiter;
                 }
