@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.495
+==========================
+
+- Use safe string values for hard-coded kanji era labels
+  in Japanese imperial data function.
+
+==========================
 Changes in version 1.0.494
 ==========================
 
