@@ -948,8 +948,6 @@ mlz-horitsu-henshu-sha-konwa-kai.csl
         "type": "paper-conference"
     },
     {
-        "container-title": "ジュリ",
-        "jurisdiction": "jp;saiko-saibansho",
         "authority": "最判",
         "volume": "37",
         "issue": "8",
@@ -962,7 +960,6 @@ mlz-horitsu-henshu-sha-konwa-kai.csl
         "type": "legal_case"
     },
     {
-        "container-title": "ジュリ",
         "jurisdiction": "jp;tokyo-chiho-saibansho;hachioji-shibu",
         "authority": "東京地八王子支判",
         "volume": "13",

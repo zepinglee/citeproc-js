@@ -46,17 +46,7 @@
  * or the [AGPLv3] License.”
  */
 
-Implement after-inverted-name on delimiter-precedes-et-al:
-  http://citationstyles.org/downloads/specification.html#name
+Treat prefix of following cite, with no preceding suffix, the same
+as a suffix on the preceding cite with no following prefix.
 
-Look into tainting of names with/without quotes to peg a particle:
-  discussion: http://forums.zotero.org/discussion/20926/double-surnames-alphabetical-order-in-bibliography-solved/
-  Possible approach: just use the sort form of names with just_looking?
-
-
-Investigate failure of collation on some systems:
-  discussion: http://forums.zotero.org/discussion/20926/double-surnames-alphabetical-order-in-bibliography-solved/
-
-Merge latest changes from 3.0.
-
-Eliminate E4X from cite.js, if the merge doesn't get rid of it.
+Capitalise Ibid term following a prefix ending in a full stop.
