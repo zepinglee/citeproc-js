@@ -135,13 +135,13 @@ CSL.Node.layout = {
                         // We need the raw string, without decorations
                         // of any kind. Markup scheme is known, though, so
                         // markup can be safely stripped at string level.
-                        var prefix = item.prefix.replace(/<[^>]+>/g, "").replace(/\s+$/, "").replace(/^\s+/, "");
+                        var prefix = item.prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019]/g,"").replace(/\s+$/, "").replace(/^[.\s]+/, "");
                         if (prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
                             sp = " ";
                         }
                         var ignorePredecessor = false;
                         if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(prefix.slice(-1)) > -1
-                            && prefix[0] != prefix[0].toLowerCase()) {
+                            && prefix.slice(0, 1) != prefix.slice(0, 1).toLowerCase()) {
                             state.tmp.term_predecessor = false;
                             ignorePredecessor = true;
                         }

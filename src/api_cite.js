@@ -943,9 +943,14 @@ CSL.getCitationCluster = function (inputList, citationID) {
 
         if (pos > 0) {
             preceding_item = inputList[pos - 1][1];
-            if (preceding_item.suffix && pos > 0 && preceding_item.suffix.slice(-1) === ".") {
+
+            // XXX OR if preceding suffix is empty, and the current prefix begins with a full stop.
+
+            var precedingEndsInPeriod = preceding_item.suffix && preceding_item.suffix.slice(-1) === ".";
+            var currentStartsWithPeriod = !preceding_item.suffix && item.prefix && item.prefix.slice(0, 1) === ".";
+            if (precedingEndsInPeriod || currentStartsWithPeriod) {
                 var spaceidx = params.splice_delimiter.indexOf(" ");
-                if (spaceidx > -1) {
+                if (spaceidx > -1 && !currentStartsWithPeriod) {
                     params.splice_delimiter = params.splice_delimiter.slice(spaceidx);
                 } else {
                     params.splice_delimiter = "";
@@ -1253,7 +1258,12 @@ CSL.citeEnd = function (Item, item) {
     }
     this.tmp.disambig_restore = false;
 
-    this.tmp.last_suffix_used = this.tmp.suffix.value();
+    if (item && item.suffix) {
+        //this.tmp.last_suffix_used = this.tmp.suffix.value();
+        this.tmp.last_suffix_used = item.suffix;
+    } else {
+        this.tmp.last_suffix_used = "";
+    }
     this.tmp.last_years_used = this.tmp.years_used.slice();
     this.tmp.last_names_used = this.tmp.names_used.slice();
     this.tmp.cut_var = false;
