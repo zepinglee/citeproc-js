@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.497
+==========================
+
+- Recognize a full stop in a quotation mark within a cite prefix
+  for term capitalisation purposes.
+
+- Recognize a leading full stop on a cite prefix for delimiter purposes,
+  where the preceding cite suffix is empty.
+
+==========================
 Changes in version 1.0.496
 ==========================
 

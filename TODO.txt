@@ -46,7 +46,7 @@
  * or the [AGPLv3] License.”
  */
 
-Treat prefix of following cite, with no preceding suffix, the same
-as a suffix on the preceding cite with no following prefix.
+For punctuation and capitalisation, treat prefix of following cite,
+with no preceding suffix, the same as a suffix on the preceding cite.
 
 Capitalise Ibid term following a prefix ending in a full stop.
