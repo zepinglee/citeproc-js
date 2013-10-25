@@ -487,7 +487,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     for (i=0,ilen=ret.length - 1;i<ilen;i+=1) {
         if ("number" === typeof ret[i].num && "number" === typeof ret[i+1].num && !ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK) {
             // XXX watch this
-            ret[i].strings.suffix = ret[i].strings.suffix + txt_esc(blob_delimiter);
+            ret[i].strings.suffix = ret[i].strings.suffix + (blob_delimiter ? blob_delimiter : "");
             ret[i+1].successor_prefix = "";
             ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK = true;
         }
