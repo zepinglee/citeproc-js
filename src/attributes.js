@@ -1258,6 +1258,11 @@ CSL.Attributes["@default-locale"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@default-locale-sort"] = function (state, arg) {
+    var lst, len, pos, m, ret;
+    state.opt["default-locale-sort"] = arg;
+};
+
 CSL.Attributes["@demote-non-dropping-particle"] = function (state, arg) {
     state.opt["demote-non-dropping-particle"] = arg;
 };
