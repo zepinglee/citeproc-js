@@ -73,13 +73,16 @@ CSL.getSortCompare = function (default_locale) {
         };
     }
     var isKana = /^[\[\]\'\"]*[\u3040-\u309f\u30a0-\u30ff]/;
+    var stripPunct = function (str) {
+        return str.replace(/^[\[\]\'\"]*/g, "");
+    }
     var getKanaPreSort = function () {
         if (strcmp("\u3044", "\u3046")) {
             return false;
         } else {
             return function (a, b) {
-                a = a.replace(/^[\[\]\'\"]*/g, "");
-                b = b.replace(/^[\[\]\'\"]*/g, "");
+                a = stripPunct(a);
+                b = stripPunct(b);
                 var ak = isKana.exec(a);
                 var bk = isKana.exec(b);
                 if (ak || bk) {
@@ -105,9 +108,7 @@ CSL.getSortCompare = function (default_locale) {
             return false;
         } else {
             return function (a, b) {
-                a = a.replace(/^[\[\]\'\"]*/g, "");
-                b = b.replace(/^[\[\]\'\"]*/g, "");
-                return strcmp(a, b);
+                return strcmp(stripPunct(a), stripPunct(b));
             }
         }
     }
