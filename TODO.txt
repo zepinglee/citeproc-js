@@ -46,7 +46,7 @@
  * or the [AGPLv3] License.”
  */
 
-For punctuation and capitalisation, treat prefix of following cite,
-with no preceding suffix, the same as a suffix on the preceding cite.
+Do something for stop-words and quoted titles, and journal names:
 
-Capitalise Ibid term following a prefix ending in a full stop.
+  https://forums.zotero.org/discussion/814/alphabetize-records-without-a-or-the/#Comment_170201
+  https://forums.zotero.org/discussion/32226/omitting-initial-the-in-journal-titles-for-chicago/#Item_5

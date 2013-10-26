@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.498
+==========================
+
+- Avoid repeated text escaping of delimiters between numeric
+  blobs.
+
+- Fix Firefox branch of locale sort function to use processor instance
+  default-locale, without reference to "applicationLocale".
+
+==========================
 Changes in version 1.0.497
 ==========================
 
