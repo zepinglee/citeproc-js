@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.499
+==========================
+
+- Limit loss of suffix on elements receiving multilingual
+  supplements to comma, space and full stop (preserving
+  parens). This adjustment may see further refinement in the
+  light of experience.
+
+- Avoid attempting to create a locale object with undefined
+  as locale string, which triggers an error on Mac OS X.
+
+==========================
 Changes in version 1.0.498
 ==========================
 

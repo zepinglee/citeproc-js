@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.498",
+    PROCESSOR_VERSION: "1.0.499",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -630,6 +630,9 @@ CSL.getSortCompare = function (default_locale) {
         return CSL.stringCompare;
     }
     var strcmp;
+    if (!default_locale) {
+        default_locale = "en-US";
+    }
     try {
         var localeService = Components.classes["@mozilla.org/intl/nslocaleservice;1"]
             .getService(Components.interfaces.nsILocaleService);
@@ -1347,6 +1350,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     langspec = CSL.localeResolve(lang);
     this.opt.lang = langspec.best;
     this.opt["default-locale"][0] = langspec.best;
+    if (!this.opt["default-locale-sort"]) {
+        this.opt["default-locale-sort"] = this.opt["default-locale"][0];
+    }
     this.locale = {};
     this.localeConfigure(langspec);
     function makeRegExp(lst) {
@@ -9469,6 +9475,10 @@ CSL.Attributes["@default-locale"] = function (state, arg) {
         state.opt["default-locale"] = ["en"];
     }
 };
+CSL.Attributes["@default-locale-sort"] = function (state, arg) {
+    var lst, len, pos, m, ret;
+    state.opt["default-locale-sort"] = arg;
+};
 CSL.Attributes["@demote-non-dropping-particle"] = function (state, arg) {
     state.opt["demote-non-dropping-particle"] = arg;
 };
@@ -10333,7 +10343,7 @@ CSL.Transform = function (state) {
             }
             if (secondary || tertiary) {
                 state.output.openLevel("empty");
-                primary_tok.strings.suffix = "";
+                primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
                 if (secondary) {
                     secondary_tok = CSL.Util.cloneToken(template_tok);
@@ -12717,7 +12727,7 @@ CSL.Registry.prototype.sorttokens = function () {
 };
 CSL.Registry.Comparifier = function (state, keyset) {
     var sort_directions, len, pos, compareKeys;
-    var sortCompare = CSL.getSortCompare(state.opt["default-locale"]);
+    var sortCompare = CSL.getSortCompare(state.opt["default-locale-sort"]);
     sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function (a, b) {
         len = a.sortkeys ? a.sortkeys.length : 0;
