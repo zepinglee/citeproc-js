@@ -56,6 +56,9 @@ CSL.getSortCompare = function (default_locale) {
     // In order, attempt the following:
     //   (1) Set locale collation from processor language
     //   (2) Use localeCompare()
+    if (!default_locale) {
+        default_locale = "en-US";
+    }
     try {
         var localeService = Components.classes["@mozilla.org/intl/nslocaleservice;1"]
             .getService(Components.interfaces.nsILocaleService);
