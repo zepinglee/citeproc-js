@@ -474,7 +474,7 @@ CSL.Transform = function (state) {
                 state.output.openLevel("empty");
 
                 // A little too aggressive maybe.
-                primary_tok.strings.suffix = "";
+                primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
 
                 if (secondary) {
