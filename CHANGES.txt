@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.500
+==========================
+
+- Avoid redundant calls to substituteStart and substituteEnd
+  when casting macros.
+
+- Avoid quashing labels when full cs:names nodes are nested.
+
+==========================
 Changes in version 1.0.499
 ==========================
 
