@@ -103,14 +103,14 @@ CSL.Node.names = {
                     state.build[key] = undefined;
                 }
             }
-            state.build.names_level += -1;
-
             // Labels, if any
             // (XXX should set label format for target variables of this node only)
             // (XXX segmented assignment is performed inside node_label.js)
             this.label = state.build.name_label;
-            state.build.name_label = {};
-
+            if (state.build.names_level === 1) {
+                state.build.name_label = {};
+            }
+            state.build.names_level += -1;
             state.build.names_variables.pop();
 
             // The with term. This isn't the right place
