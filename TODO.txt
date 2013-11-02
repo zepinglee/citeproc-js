@@ -46,6 +46,9 @@
  * or the [AGPLv3] License.”
  */
 
+When a macro is used in cs:substitute, we're losing a trailing label (maybe leading
+labels too?). This should not happen, unless the macro is actually rendered.
+
 Do something for stop-words and quoted titles, and journal names:
 
   https://forums.zotero.org/discussion/814/alphabetize-records-without-a-or-the/#Comment_170201
