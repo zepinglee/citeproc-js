@@ -51,14 +51,14 @@
 CSL.Node.text = {
     build: function (state, target) {
         var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, flag;
-        CSL.Util.substituteStart.call(this, state, target);
         if (this.postponed_macro) {
             //func = function(state, Item) {
             //    print("XXX macro_name: "+this.postponed_macro);
             //}
             //this.execs.push(func);
-            CSL.expandMacro.call(state, this);
+            return CSL.expandMacro.call(state, this);
         } else {
+            CSL.Util.substituteStart.call(this, state, target);
             // ...
             //
             // Do non-macro stuff
@@ -411,8 +411,8 @@ CSL.Node.text = {
                 }
             }
             target.push(this);
+            CSL.Util.substituteEnd.call(this, state, target);
         }
-        CSL.Util.substituteEnd.call(this, state, target);
     }
 };
 
