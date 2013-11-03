@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.501
+==========================
+
+- Implement CSL-m specific test of genre field content
+  (limited to "email" and "instant-message" options).
+  This plays with genre field content supplied by MLZ on
+  the respective types, and is needed for localisation.
+
+==========================
 Changes in version 1.0.500
 ==========================
 
