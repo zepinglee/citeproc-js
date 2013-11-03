@@ -50,6 +50,18 @@
 
 CSL.Attributes = {};
 
+CSL.Attributes["@genre"] = function (state, arg) {
+    arg = arg.replace("-", " ");
+    var func = function (Item, item) {
+        var ret;
+        if (arg === Item.genre) {
+            return true;
+        }
+        return false;
+    }
+    this.tests.push(func);
+}
+
 CSL.Attributes["@disambiguate"] = function (state, arg) {
     if (arg === "true") {
         state.opt.has_disambiguate = true;
