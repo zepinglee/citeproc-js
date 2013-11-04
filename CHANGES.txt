@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.502
+==========================
+
+- Disable requiring explicit title-short on legal_case type
+  by default (i.e. form="short" will now call shortTitle).
+
+- Toggle options based on the version of the loaded style
+  (i.e. CSL-m styles will automatically be run in CSL-m mode).
+
+==========================
 Changes in version 1.0.501
 ==========================
 

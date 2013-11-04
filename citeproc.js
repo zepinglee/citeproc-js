@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.501",
+    PROCESSOR_VERSION: "1.0.502",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1326,6 +1326,15 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.setStyleAttributes();
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
+    if (this.opt.version.slice(0,4) === "1.1m") {
+        this.opt.development_extensions.static_statute_locator = true;
+        this.opt.development_extensions.handle_parallel_articles = true;
+        this.opt.development_extensions.main_title_from_short_title = true;
+        this.opt.development_extensions.strict_page_numbers = true;
+        this.opt.development_extensions.rtl_support = true;
+        this.opt.development_extensions.expect_and_symbol_form = true;
+        this.opt.development_extensions.require_explicit_legal_case_title_short = true;
+    }
     if (lang) {
         lang = lang.replace("_", "-");
     }
@@ -3120,6 +3129,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.rtl_support = false;
     this.development_extensions.strict_page_numbers = false;
     this.development_extensions.expect_and_symbol_form = false;
+    this.development_extensions.require_explicit_legal_case_title_short = false;
     this.nodenames = [];
     this.gender = {};
     this['cite-lang-prefs'] = {
@@ -10121,7 +10131,9 @@ CSL.Transform = function (state) {
                 }
             }
         }
-        if (!value && Item.type !== 'legal_case' && altvar && Item[altvar] && use_field) {
+        if (!value 
+            && (!state.opt.development_extensions.require_explicit_legal_case_title_short || Item.type !== 'legal_case') 
+            && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
         if (!value) {
