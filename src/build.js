@@ -190,6 +190,15 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
 
+    if (this.opt.version.slice(0,4) === "1.1m") {
+        this.opt.development_extensions.static_statute_locator = true;
+        this.opt.development_extensions.handle_parallel_articles = true;
+        this.opt.development_extensions.main_title_from_short_title = true;
+        this.opt.development_extensions.strict_page_numbers = true;
+        this.opt.development_extensions.rtl_support = true;
+        this.opt.development_extensions.expect_and_symbol_form = true;
+        this.opt.development_extensions.require_explicit_legal_case_title_short = true;
+    }
     // We seem to have two language specs flying around:
     //   this.opt["default-locale"], and this.opt.lang
     // Keeping them aligned for safety's sake, pending
