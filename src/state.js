@@ -205,6 +205,8 @@ CSL.Engine.Opt = function () {
         places:['orig'],
         number:['translat']
     };
+
+    this.has_layout_locale = false;
 };
 
 
@@ -484,6 +486,9 @@ CSL.Engine.Citation = function (state) {
     this.opt.layout_prefix = "";
     this.opt.layout_suffix = "";
     this.opt.layout_delimiter = "";
+    //
+    // sorting
+    this.opt.sort_locales = {};
 };
 
 
@@ -500,6 +505,9 @@ CSL.Engine.Bibliography = function () {
     this.opt.layout_delimiter = "";
     this.opt["line-spacing"] = 1;
     this.opt["entry-spacing"] = 1;
+    //
+    // sorting
+    this.opt.sort_locales = {};
 };
 
 

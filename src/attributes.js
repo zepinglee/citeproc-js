@@ -600,6 +600,14 @@ CSL.Attributes["@locale"] = function (state, arg) {
     if (this.name === "layout") {
         // For layout
         this.locale_raw = arg;
+        // Register the primary locale in the set, and others that "map" to it, 
+        // so that they can be used when generating sort keys. See node_sort.js.
+        var locales = arg.split(/\s+/);
+        state[state.build.area].opt.sort_locales[locales[0]] = CSL.localeResolve(locales[0]);
+        for (var i=1,ilen=locales.length;i<ilen;i+=1) {
+            state[state.build.area].opt.sort_locales[locales[i]] = CSL.localeResolve(locales[0]);
+        }
+        state.opt.has_layout_locale = true;
     } else {
         // For if and if-else
 

@@ -48,8 +48,16 @@
 
 /*global CSL: true */
 
+/*
+ * Yikes, these functions were running out of scope for yonks.
+ * now that they are set in the correct token list,
+ * they might be useful for things.
+ * FB 2013.11.09
+*/
+
 CSL.Node.sort = {
     build: function (state, target) {
+        target = state[state.build.root + "_sort"].tokens;
         if (this.tokentype === CSL.START) {
             if (state.build.area === "citation") {
                 state.parallel.use_parallels = false;
@@ -61,6 +69,12 @@ CSL.Node.sort = {
             var func = function (state, Item) {
                 //state.tmp.area = state.tmp.root + "_sort";
                 //state.tmp.extension = "_sort";
+                if (state.opt.has_layout_locale) {
+                    var lang = Item.language ? Item.language : state.opt["default-locale-sort"];
+                    var langspec = CSL.localeResolve(lang);
+                    state.tmp.lang_sort_hold = state.opt.lang;
+                    state.opt.lang = langspec.best;
+                }
             }
             this.execs.push(func);
             
@@ -68,6 +82,13 @@ CSL.Node.sort = {
         if (this.tokentype === CSL.END) {
             state.build.area = state.build.root;
             state.build.extension = "";
+            var func = function (state, Item) {
+                if (state.opt.has_layout_locale) {
+                    state.opt.lang = state.tmp.lang_sort_hold;
+                    delete state.tmp.lang_sort_hold;
+                }
+            }
+            this.execs.push(func);
             /*
             var func = function (state, Item) {
                 state.tmp.area = state.tmp.root;
