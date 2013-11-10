@@ -227,10 +227,13 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     langspec = CSL.localeResolve(lang);
     this.opt.lang = langspec.best;
     this.opt["default-locale"][0] = langspec.best;
+    this.locale = {};
     if (!this.opt["default-locale-sort"]) {
         this.opt["default-locale-sort"] = this.opt["default-locale"][0];
+    } else {
+        var sortlangspec = CSL.localeResolve(this.opt["default-locale-sort"]);
+        this.localeConfigure(sortlangspec);
     }
-    this.locale = {};
     this.localeConfigure(langspec);
 
     // Build skip-word regexp
