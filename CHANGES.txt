@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.505
+==========================
+
+- Allow push/pop on output stack inside macros that render
+  a date.
+
+==========================
 Changes in version 1.0.504
 ==========================
 
