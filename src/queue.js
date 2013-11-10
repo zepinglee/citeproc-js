@@ -257,7 +257,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     // XXXXX Nasty workaround, but still an improvement
     // over the reverse calls to the cs:date node build
     // function that we had before.
-    if (this.state.tmp["doing-macro-with-date"]) {
+    if (this.state.tmp["doing-macro-with-date"] && !notSerious) {
         if (tokname !== "macro-with-date") {
             return false;
         }
