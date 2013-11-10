@@ -70,10 +70,11 @@ CSL.Node.sort = {
                 //state.tmp.area = state.tmp.root + "_sort";
                 //state.tmp.extension = "_sort";
                 if (state.opt.has_layout_locale) {
-                    var lang = Item.language ? Item.language : state.opt["default-locale-sort"];
-                    var langspec = CSL.localeResolve(lang);
+                    var langspec = CSL.localeResolve(Item.language, state.opt["default-locale"][0]);
+                    var sort_locales = state[state.tmp.area.slice(0,-5)].opt.sort_locales;
+                    var langForItem = sort_locales[langspec.best] ? sort_locales[langspec.best] : sort_locales[langspec.base];
                     state.tmp.lang_sort_hold = state.opt.lang;
-                    state.opt.lang = langspec.best;
+                    state.opt.lang = langForItem;
                 }
             }
             this.execs.push(func);

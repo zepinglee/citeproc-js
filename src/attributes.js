@@ -596,6 +596,8 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
 
 CSL.Attributes["@locale"] = function (state, arg) {
     var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;
+    // Style default
+    var locale_default = state.opt["default-locale"][0];
 
     if (this.name === "layout") {
         // For layout
@@ -603,9 +605,14 @@ CSL.Attributes["@locale"] = function (state, arg) {
         // Register the primary locale in the set, and others that "map" to it, 
         // so that they can be used when generating sort keys. See node_sort.js.
         var locales = arg.split(/\s+/);
-        state[state.build.area].opt.sort_locales[locales[0]] = CSL.localeResolve(locales[0]);
+        state[state.build.area].opt.sort_locales[state.opt["default-locale"][0]] = state.opt["default-locale"][0];
+        var localeMaster = CSL.localeResolve(locales[0], locale_default);
+        state[state.build.area].opt.sort_locales[localeMaster.best] = localeMaster.best;
+        state[state.build.area].opt.sort_locales[localeMaster.base] = localeMaster.best;
         for (var i=1,ilen=locales.length;i<ilen;i+=1) {
-            state[state.build.area].opt.sort_locales[locales[i]] = CSL.localeResolve(locales[0]);
+            var localeServant = CSL.localeResolve(locales[i], locale_default);
+            state[state.build.area].opt.sort_locales[localeServant.best] = localeMaster.best;
+            state[state.build.area].opt.sort_locales[localeServant.base] = localeMaster.best;
         }
         state.opt.has_layout_locale = true;
     } else {
@@ -621,7 +628,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
             lang = lst[i];
         
             // Analyze the locale
-            langspec = CSL.localeResolve(lang);
+            langspec = CSL.localeResolve(lang, locale_default);
             if (lst[i].length === 2) {
                 // For fallback
                 locale_bares.push(langspec.bare);
@@ -636,9 +643,6 @@ CSL.Attributes["@locale"] = function (state, arg) {
         // Locales to test
         var locale_list = lst.slice();
 
-        // Style default
-        var locale_default = state.opt["default-locale"][0];
-        
         // check for variable value
         // Closure probably not necessary here.
         var maketest = function (locale_list, locale_default,locale_bares) {
@@ -654,7 +658,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 } else {
                     lang = Item.language;
                 }
-                langspec = CSL.localeResolve(lang);
+                langspec = CSL.localeResolve(lang, locale_default);
                 for (i = 0, ilen = locale_list.length; i < ilen; i += 1) {
                     if (langspec.best === locale_list[i].best) {
                         res = true;
@@ -686,7 +690,7 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
             lang = lst[i];
         
             // Analyze the locale
-            langspec = CSL.localeResolve(lang);
+            langspec = CSL.localeResolve(lang, state.opt["default-locale"][0]);
             if (lst[i].length === 2) {
                 // For fallback
                 this.locale_bares.push(langspec.bare);
@@ -714,7 +718,7 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
                 var langspec = false;
                 if (Item.language) {
                     lang = Item.language;
-                    langspec = CSL.localeResolve(lang);
+                    langspec = CSL.localeResolve(lang, state.opt["default-locale"][0]);
                     if (langspec.best === state.opt["default-locale"][0]) {
                         langspec = false;
                     }

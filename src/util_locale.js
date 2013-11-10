@@ -48,8 +48,14 @@
 
 /*global CSL: true */
 
-CSL.localeResolve = function (langstr) {
+CSL.localeResolve = function (langstr, defaultLocale) {
     var ret, langlst;
+    if (!defaultLocale) {
+        defaultLocale = "en-US";
+    }
+    if (!langstr) {
+        langstr = defaultLocale;
+    }
     ret = {};
     //if ("undefined" === typeof langstr) {
     //    langstr = "en_US";
@@ -57,8 +63,8 @@ CSL.localeResolve = function (langstr) {
     langlst = langstr.split(/[\-_]/);
     ret.base = CSL.LANG_BASES[langlst[0]];
     if ("undefined" === typeof ret.base) {
-        CSL.debug("Warning: unknown locale "+langstr+", setting fallback to en-US");
-        return {base:"en-US", best:langstr, bare:langlst[0]};
+        CSL.debug("Warning: unknown locale "+langstr+", setting fallback to "+defaultLocale);
+        return {base:defaultLocale, best:langstr, bare:langlst[0]};
     }
     if (langlst.length === 1 || langlst[1] === "x") {
         ret.best = ret.base.replace("_", "-");

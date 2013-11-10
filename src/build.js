@@ -230,9 +230,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.locale = {};
     if (!this.opt["default-locale-sort"]) {
         this.opt["default-locale-sort"] = this.opt["default-locale"][0];
-    } else {
-        var sortlangspec = CSL.localeResolve(this.opt["default-locale-sort"]);
-        this.localeConfigure(sortlangspec);
     }
     this.localeConfigure(langspec);
 
