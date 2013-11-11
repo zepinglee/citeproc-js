@@ -66,6 +66,9 @@ CSL.localeResolve = function (langstr, defaultLocale) {
         CSL.debug("Warning: unknown locale "+langstr+", setting fallback to "+defaultLocale);
         return {base:defaultLocale, best:langstr, bare:langlst[0]};
     }
+    if (langlst.length === 1) {
+        ret.generic = true;
+    }
     if (langlst.length === 1 || langlst[1] === "x") {
         ret.best = ret.base.replace("_", "-");
     } else {

@@ -602,17 +602,28 @@ CSL.Attributes["@locale"] = function (state, arg) {
     if (this.name === "layout") {
         // For layout
         this.locale_raw = arg;
-        // Register the primary locale in the set, and others that "map" to it, 
-        // so that they can be used when generating sort keys. See node_sort.js.
-        var locales = arg.split(/\s+/);
-        state[state.build.area].opt.sort_locales[state.opt["default-locale"][0]] = state.opt["default-locale"][0];
-        var localeMaster = CSL.localeResolve(locales[0], locale_default);
-        state[state.build.area].opt.sort_locales[localeMaster.best] = localeMaster.best;
-        state[state.build.area].opt.sort_locales[localeMaster.base] = localeMaster.best;
-        for (var i=1,ilen=locales.length;i<ilen;i+=1) {
-            var localeServant = CSL.localeResolve(locales[i], locale_default);
-            state[state.build.area].opt.sort_locales[localeServant.best] = localeMaster.best;
-            state[state.build.area].opt.sort_locales[localeServant.base] = localeMaster.best;
+        if (this.tokentype === CSL.START) {
+            // Register the primary locale in the set, and others that "map" to it, 
+            // so that they can be used when generating sort keys. See node_sort.js.
+            // Not idempotent. Only do this once.
+            var locales = arg.split(/\s+/);
+            var sort_locale = {};
+            var localeMaster = CSL.localeResolve(locales[0], locale_default);
+            if (localeMaster.generic) {
+                sort_locale[localeMaster.generic] = localeMaster.best;
+            } else {
+                sort_locale[localeMaster.best] = localeMaster.best;
+            }
+            for (var i=1,ilen=locales.length;i<ilen;i+=1) {
+                var localeServant = CSL.localeResolve(locales[i], locale_default);
+                if (localeServant.generic) {
+                    sort_locale[localeServant.generic] = localeMaster.best;
+                } else {
+                    sort_locale[localeServant.best] = localeMaster.best;
+                }
+
+            }
+            state[state.build.area].opt.sort_locales.push(sort_locale);
         }
         state.opt.has_layout_locale = true;
     } else {

@@ -488,7 +488,7 @@ CSL.Engine.Citation = function (state) {
     this.opt.layout_delimiter = "";
     //
     // sorting
-    this.opt.sort_locales = {};
+    this.opt.sort_locales = [];
 };
 
 
@@ -507,7 +507,7 @@ CSL.Engine.Bibliography = function () {
     this.opt["entry-spacing"] = 1;
     //
     // sorting
-    this.opt.sort_locales = {};
+    this.opt.sort_locales = [];
 };
 
 
