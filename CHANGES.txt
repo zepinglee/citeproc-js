@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.506
+==========================
+
+- Recognise generic (single-element) locales as such
+  in cs:layout and cs:sort, and respect the matching
+  priorities set in cs:layout when applying locales
+  in cs:sort.
+
+==========================
 Changes in version 1.0.505
 ==========================
 
