@@ -589,7 +589,11 @@ CSL.NameOutput.prototype._stripPeriods = function (tokname, str) {
 };
 
 CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
-    var str = this._stripPeriods("family", name["non-dropping-particle"]);
+    var ndp = name["non-dropping-particle"];
+    if (ndp && this.state.tmp.sort_key_flag) {
+        ndp = ndp.replace(/[\'\u2019]/, "");
+    }
+    var str = this._stripPeriods("family", ndp);
     if (this.state.output.append(str, this.family_decor, true)) {
         return this.state.output.pop();
     }
@@ -597,7 +601,11 @@ CSL.NameOutput.prototype._nonDroppingParticle = function (name) {
 };
 
 CSL.NameOutput.prototype._droppingParticle = function (name, pos, j) {
-    var str = this._stripPeriods("given", name["dropping-particle"]);
+    var dp = name["dropping-particle"];
+    if (dp && this.state.tmp.sort_key_flag) {
+        dp = dp.replace(/[\'\u2019]/, "");
+    }
+    var str = this._stripPeriods("given", dp);
     if (name["dropping-particle"] && name["dropping-particle"].match(/^et.?al[^a-z]$/)) {
         if (this.name.strings["et-al-use-last"]) {
             if ("undefined" === typeof j) { 
@@ -715,11 +723,10 @@ CSL.NameOutput.prototype._parseName = function (name) {
         noparse = false;
     }
     if (!name["non-dropping-particle"] && name.family && !noparse && name.given) {
-        m = name.family.match(/^((?:[a-z][ \'\u2019a-z]*[-|\s+|\'\u2019]|[ABDVL][^ ][-|\s+][a-z]*\s*|[ABDVL][^ ][^ ][-|\s+][a-z]*\s*))/);
+        m = name.family.match(/^((?:[\'\u2019a-z][ \'\u2019a-z]*[-\s\'\u2019]+|[ABDVL][^ ][-\s]+[a-z]*\s*|[ABDVL][^ ][^ ][-\s]+[a-z]*\s*))/);
         if (m) {
             name.family = name.family.slice(m[1].length);
-            name["non-dropping-particle"] = m[1].replace(/\s+$/, "");
-
+            name["non-dropping-particle"] = m[1].replace(/\s+$/, "").replace("'", "\u2019");
         }
     }
     if (!name.suffix && name.given) {
