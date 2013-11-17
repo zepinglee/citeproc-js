@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.508
+==========================
+
+- Fix bug in date parser toArray() method reported by
+  Michel Krämer.
+
+- Fix bug in name constraints when et-al-min is not set
+  in cs:bibliography, reported by Sebastian Karcher.
+
+==========================
+Changes in version 1.0.507
+==========================
+
+- Handle dropping and non-dropping name particles that begin with an apostrophe.
+
+==========================
 Changes in version 1.0.506
 ==========================
 
