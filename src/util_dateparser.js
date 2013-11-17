@@ -511,13 +511,17 @@ CSL.DateParser = function () {
             thedate["date-parts"][0].push(thedate[part]);
             delete thedate[part];
         }
+        thedate["date-parts"].push([]);
         for (i = 0, ilen = slicelen; i < ilen; i += 1) {
             part = ["year_end", "month_end", "day_end"][i];
-            if (thedate[part] && thedate["date-parts"].length === 1) {
-                thedate["date-parts"].push([]);
+            if (!thedate[part]) {
+                break;
             }
             thedate["date-parts"][1].push(thedate[part]);
             delete thedate[part];
+        }
+        if (thedate["date-parts"][0].length !== thedate["date-parts"][1].length) {
+            thedate["date-parts"].pop();
         }
     };
 
