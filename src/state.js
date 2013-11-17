@@ -166,7 +166,6 @@ CSL.Engine.Opt = function () {
     // this["auto-vietnamese-names"] = true;
 
     this.citation_number_slug = false;
-    this.max_number_of_names = 0;
     this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
     this.development_extensions = {};
     this.development_extensions.field_hack = true;
@@ -489,6 +488,8 @@ CSL.Engine.Citation = function (state) {
     //
     // sorting
     this.opt.sort_locales = [];
+    this.opt.max_number_of_names = 0;
+    this.root = "citation";
 };
 
 
@@ -508,6 +509,8 @@ CSL.Engine.Bibliography = function () {
     //
     // sorting
     this.opt.sort_locales = [];
+    this.opt.max_number_of_names = 0;
+    this.root = "bibliography";
 };
 
 
@@ -517,6 +520,7 @@ CSL.Engine.BibliographySort = function () {
     this.opt.sort_directions = [];
     this.keys = [];
     this.opt.topdecor = [];
+    this.root = "bibliography";
 };
 
 
@@ -526,4 +530,5 @@ CSL.Engine.CitationSort = function () {
     this.opt.sort_directions = [];
     this.keys = [];
     this.opt.topdecor = [];
+    this.root = "citation";
 };

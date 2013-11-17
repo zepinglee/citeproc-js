@@ -181,11 +181,11 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     } else {
         lst = container[variable][index];
     }
-    if (this.state.opt.max_number_of_names 
+    if (this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names 
         && lst.length > 50 
-        && lst.length > (this.state.opt.max_number_of_names + 2)) {
+        && lst.length > (this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names + 2)) {
         
-        lst = lst.slice(0, this.state.opt.max_number_of_names + 2);
+        lst = lst.slice(0, this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names + 2);
     }
     return lst;
 };

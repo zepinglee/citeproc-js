@@ -962,8 +962,8 @@ CSL.Attributes["@match"] = function (state, arg) {
 
 CSL.Attributes["@names-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
-    if (state.opt.max_number_of_names < val) {
-        state.opt.max_number_of_names = val;
+    if (state[state.tmp.area].opt.max_number_of_names < val) {
+        state[state.tmp.area].opt.max_number_of_names = val;
     }
     this.strings["et-al-min"] = val;
 };
@@ -1096,8 +1096,8 @@ CSL.Attributes["@name-delimiter"] = function (state, arg) {
 
 CSL.Attributes["@et-al-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
-    if (state.opt.max_number_of_names < val) {
-        state.opt.max_number_of_names = val;
+    if (state[state.tmp.area].opt.max_number_of_names < val) {
+        state[state.tmp.area].opt.max_number_of_names = val;
     }
     state.setOpt(this, "et-al-min", val);
 };
@@ -1116,8 +1116,8 @@ CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
-    if (state.opt.max_number_of_names < val) {
-        state.opt.max_number_of_names = val;
+    if (state[state.tmp.area].opt.max_number_of_names < val) {
+        state[state.tmp.area].opt.max_number_of_names = val;
     }
     state.setOpt(this, "et-al-subsequent-min", val);
 };
