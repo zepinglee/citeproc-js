@@ -437,12 +437,6 @@ CSL.Transform = function (state) {
                 tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
             }
             
-            if ("demote" === this["leading-noise-words"]) {
-                primary = CSL.demoteNoiseWords(state, primary);
-                secondary = CSL.demoteNoiseWords(state, secondary);
-                tertiary = CSL.demoteNoiseWords(state, tertiary);
-            }
-
             // Decoration of primary (currently translit only) goes here
             var template_tok = CSL.Util.cloneToken(this);
             var primary_tok = CSL.Util.cloneToken(this);
@@ -470,6 +464,10 @@ CSL.Transform = function (state) {
             //print("XXX "+primary_tok.strings["text-case"]);
             if (primary_locale !== "en" && primary_tok.strings["text-case"] === "title") {
                 primary_tok.strings["text-case"] = "passthrough";
+            }
+            
+            if ("title" === variables[0]) {
+                primary = CSL.demoteNoiseWords(state, primary, this["leading-noise-words"]);
             }
 
             if (secondary || tertiary) {
@@ -568,6 +566,3 @@ CSL.Transform = function (state) {
     }
     this.quashCheck = quashCheck;
 };
-
-
-

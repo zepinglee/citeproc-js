@@ -282,9 +282,9 @@ CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
 };
 
 
-CSL.demoteNoiseWords = function (state, fld) {
-    var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
-    if (fld) {
+CSL.demoteNoiseWords = function (state, fld, drop_or_demote) {
+    var SKIP_WORDS = state.locale[state.opt.lang].opts["leading-noise-words"];
+    if (fld && drop_or_demote) {
         fld = fld.split(/\s+/);
         fld.reverse();
         var toEnd = [];
@@ -298,7 +298,11 @@ CSL.demoteNoiseWords = function (state, fld) {
         fld.reverse();
         var start = fld.join(" ");
         var end = toEnd.join(" ");
-        fld = [start, end].join(", ");
+        if ("drop" === drop_or_demote || !end) {
+            fld = start;
+        } else if ("demote" === drop_or_demote) {
+            fld = [start, end].join(", ");
+        }
     }
     return fld;
 };
