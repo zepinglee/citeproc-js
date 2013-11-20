@@ -82,6 +82,11 @@ CSL.localeResolve = function (langstr, defaultLocale) {
 // Use call to invoke this.
 CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     var localexml;
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        langspec.best = langspec.best.toLowerCase();
+        langspec.bare = langspec.bare.toLowerCase();
+        langspec.base = langspec.base.toLowerCase();
+    }
     if (beShy && this.locale[langspec.best]) {
         return;
     }
@@ -101,11 +106,6 @@ CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
         this.localeSet(this.cslXml, langspec.base, langspec.best);
     }
     this.localeSet(this.cslXml, langspec.best, langspec.best);
-    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
-        langspec.best = langspec.best.toLowerCase();
-        langspec.bare = langspec.bare.toLowerCase();
-        langspec.base = langspec.base.toLowerCase();
-    }
     if ("undefined" === typeof this.locale[langspec.best].terms["page-range-delimiter"]) {
         if (["fr", "pt"].indexOf(langspec.best.slice(0, 2).toLowerCase()) > -1) {
             this.locale[langspec.best].terms["page-range-delimiter"] = "-";
@@ -151,6 +151,10 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         this.locale[lang_out].opts = {};
         // Set default skip words. Can be overridden in locale by attribute on style-options node.
         this.locale[lang_out].opts["skip-words"] = CSL.SKIP_WORDS;
+        // Initialise leading noise word to false. Actual assignment is below. Empty by default, can be overridden in locale by attribute on style-options node.
+        if (!this.locale[lang_out].opts["leading-noise-words"]) {
+            this.locale[lang_out].opts["leading-noise-words"] = [];
+        }
         this.locale[lang_out].dates = {};
         // For ordinals
         this.locale[lang_out].ord = {'1.0.1':false,keys:{}};
@@ -368,8 +372,11 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                             this.locale[lang_out].opts[attrname.slice(1)] = false;
                         }
                     } else if (attrname === "@skip-words") {
-                        var skip_words = attributes[attrname].split(/\s+/);
+                        var skip_words = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts[attrname.slice(1)] = skip_words;
+                    } else if (attrname === "@leading-noise-words" && lang_in === lang_out) {
+                        var leading_noise_words = attributes[attrname].split(/\s*,\s*/);
+                        this.locale[lang_out].opts[attrname.slice(1)] = leading_noise_words;
                     }
                 }
             }
