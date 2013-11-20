@@ -364,11 +364,6 @@ CSL.NameOutput.prototype.outputNames = function () {
     //SNIP-END
     this.state.tmp.name_node.top = this.state.output.current.value();
 
-    // Load and check for classic abbreviation, ONLY if the
-    // current item has a nil type.
-    //
-    // If found, then (1) suppress title rendering, (2) replace the node
-    // with the abbreviation output [and (3) do not run this._collapseAuthor() ?]
     if (variables[0] !== "authority") {
         // Just grab the string values in the name
         var name_node_string = [];
@@ -388,6 +383,11 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     // for classic support
     // This may be more convoluted than it needs to be. Or maybe not.
+    //
+    // Check for classic abbreviation
+    //
+    // If found, then (1) suppress title rendering, (2) replace the node
+    // with the abbreviation output [and (3) do not run this._collapseAuthor() ?]
     if (this.state.tmp.name_node.string && !this.state.tmp.first_name_string) {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
     }
