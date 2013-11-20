@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.509
+==========================
+
+- Always fail-up locales to the CSL default (this was not occurring
+  under some conditions).
+
+- Recognize a cs:style-options attribute "leading-noise-words".
+  The attribute is optional in CSL-m locales, and takes a comma delimited
+  list of words as its argument. The value is locale-specific, and
+  will not fall back. Currently relevant only in CSL-m.
+
+==========================
 Changes in version 1.0.508
 ==========================
 

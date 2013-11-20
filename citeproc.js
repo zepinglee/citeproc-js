@@ -57,7 +57,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.508",
+    PROCESSOR_VERSION: "1.0.509",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -4632,6 +4632,11 @@ CSL.localeResolve = function (langstr, defaultLocale) {
 };
 CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     var localexml;
+    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+        langspec.best = langspec.best.toLowerCase();
+        langspec.bare = langspec.bare.toLowerCase();
+        langspec.base = langspec.base.toLowerCase();
+    }
     if (beShy && this.locale[langspec.best]) {
         return;
     }
@@ -4651,11 +4656,6 @@ CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
         this.localeSet(this.cslXml, langspec.base, langspec.best);
     }
     this.localeSet(this.cslXml, langspec.best, langspec.best);
-    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
-        langspec.best = langspec.best.toLowerCase();
-        langspec.bare = langspec.bare.toLowerCase();
-        langspec.base = langspec.base.toLowerCase();
-    }
     if ("undefined" === typeof this.locale[langspec.best].terms["page-range-delimiter"]) {
         if (["fr", "pt"].indexOf(langspec.best.slice(0, 2).toLowerCase()) > -1) {
             this.locale[langspec.best].terms["page-range-delimiter"] = "-";
@@ -4692,6 +4692,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         this.locale[lang_out].terms = {};
         this.locale[lang_out].opts = {};
         this.locale[lang_out].opts["skip-words"] = CSL.SKIP_WORDS;
+        if (!this.locale[lang_out].opts["leading-noise-words"]) {
+            this.locale[lang_out].opts["leading-noise-words"] = [];
+        }
         this.locale[lang_out].dates = {};
         this.locale[lang_out].ord = {'1.0.1':false,keys:{}};
         this.locale[lang_out]["noun-genders"] = {};
@@ -4841,8 +4844,11 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                             this.locale[lang_out].opts[attrname.slice(1)] = false;
                         }
                     } else if (attrname === "@skip-words") {
-                        var skip_words = attributes[attrname].split(/\s+/);
+                        var skip_words = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts[attrname.slice(1)] = skip_words;
+                    } else if (attrname === "@leading-noise-words" && lang_in === lang_out) {
+                        var leading_noise_words = attributes[attrname].split(/\s*,\s*/);
+                        this.locale[lang_out].opts[attrname.slice(1)] = leading_noise_words;
                     }
                 }
             }
@@ -10416,11 +10422,6 @@ CSL.Transform = function (state) {
                 secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
                 tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
             }
-            if ("demote" === this["leading-noise-words"]) {
-                primary = CSL.demoteNoiseWords(state, primary);
-                secondary = CSL.demoteNoiseWords(state, secondary);
-                tertiary = CSL.demoteNoiseWords(state, tertiary);
-            }
             var template_tok = CSL.Util.cloneToken(this);
             var primary_tok = CSL.Util.cloneToken(this);
             var primaryPrefix;
@@ -10441,6 +10442,9 @@ CSL.Transform = function (state) {
             }
             if (primary_locale !== "en" && primary_tok.strings["text-case"] === "title") {
                 primary_tok.strings["text-case"] = "passthrough";
+            }
+            if ("title" === variables[0]) {
+                primary = CSL.demoteNoiseWords(state, primary, this["leading-noise-words"]);
             }
             if (secondary || tertiary) {
                 state.output.openLevel("empty");
@@ -12322,9 +12326,9 @@ CSL.Output.Formatters.serializeItemAsRdf = function (Item) {
 CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
     return "";
 };
-CSL.demoteNoiseWords = function (state, fld) {
-    var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
-    if (fld) {
+CSL.demoteNoiseWords = function (state, fld, drop_or_demote) {
+    var SKIP_WORDS = state.locale[state.opt.lang].opts["leading-noise-words"];
+    if (fld && drop_or_demote) {
         fld = fld.split(/\s+/);
         fld.reverse();
         var toEnd = [];
@@ -12338,7 +12342,11 @@ CSL.demoteNoiseWords = function (state, fld) {
         fld.reverse();
         var start = fld.join(" ");
         var end = toEnd.join(" ");
-        fld = [start, end].join(", ");
+        if ("drop" === drop_or_demote || !end) {
+            fld = start;
+        } else if ("demote" === drop_or_demote) {
+            fld = [start, end].join(", ");
+        }
     }
     return fld;
 };
