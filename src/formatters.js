@@ -239,6 +239,7 @@ CSL.Output.Formatters.doppelString = function (string, rex) {
     // XXXXX: Does this work in Internet Explorer?
     //
     ret.array = rex(string);
+    //print("ret.array: "+ret.array);
     // ret.array = string.split(rex);
     ret.string = "";
     for (var i=0,ilen=ret.array.length; i<ilen; i += 2) {
