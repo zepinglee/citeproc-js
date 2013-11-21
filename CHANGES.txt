@@ -12,6 +12,9 @@ Changes in version 1.0.509
   list of words as its argument. The value is locale-specific, and
   will not fall back. Currently relevant only in CSL-m.
 
+- Fix up pre-parsing regexps used with title- and sentence-case functions
+  to produce cleaner string lists.
+
 ==========================
 Changes in version 1.0.508
 ==========================
