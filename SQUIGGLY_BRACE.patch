@@ -1,6 +1,6 @@
-diff -r eb9e3ec630e6 src/util_flipflop.js
---- a/src/util_flipflop.js	Thu Nov 21 08:57:36 2013 +0900
-+++ b/src/util_flipflop.js	Thu Nov 21 09:04:14 2013 +0900
+diff -r 12bbb2eed623 src/util_flipflop.js
+--- a/src/util_flipflop.js	Thu Nov 21 10:19:47 2013 +0900
++++ b/src/util_flipflop.js	Thu Nov 21 10:20:29 2013 +0900
 @@ -65,7 +65,9 @@
          ["<sub>", "</sub>", "subscript", "@vertical-align", ["sub", "sub","baseline"], true],
          ["<sc>", "</sc>", "smallcaps", "@font-variant", ["small-caps", "small-caps","normal"], true],
