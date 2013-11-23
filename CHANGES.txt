@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.510
+==========================
+
+- Fix bug in decorations applied to a macro containing a cs:number
+  element, exposed by code simplification at tag 1.0.498.
+
+==========================
 Changes in version 1.0.509
 ==========================
 
