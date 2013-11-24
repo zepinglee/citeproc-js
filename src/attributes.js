@@ -196,7 +196,7 @@ CSL.Attributes["@position"] = function (state, arg) {
         }
         if ("near-note" === tryposition) {
             this.tests.push(function (Item, item) {
-                if (item && item.position === CSL.POSITION_SUBSEQUENT && item["near-note"]) {
+                if (item && item.position >= CSL.POSITION_SUBSEQUENT && item["near-note"]) {
                     return true;
                 }
                 return false;
