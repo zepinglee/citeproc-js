@@ -385,6 +385,13 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                         for (var i=0,ilen=lst.length;i<ilen;i+=1) {
                             this.locale[lang_out].opts["name-as-sort-order"][lst[i]] = true;
                         }
+                    } else if (attrname === "@name-as-reverse-order") {
+                        // Fallback is okay here.
+                        this.locale[lang_out].opts["name-as-reverse-order"] = {};
+                        var lst = attributes[attrname].split(/\s+/);
+                        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+                            this.locale[lang_out].opts["name-as-reverse-order"][lst[i]] = true;
+                        }
                     } else if (attrname === "@name-never-short") {
                         // Here too.
                         this.locale[lang_out].opts["name-never-short"] = {};

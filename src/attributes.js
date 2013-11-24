@@ -1161,6 +1161,10 @@ CSL.Attributes["@initialize"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@name-as-reverse-order"] = function (state, arg) {
+    this["name-as-reverse-order"] = arg;
+};
+
 CSL.Attributes["@name-as-sort-order"] = function (state, arg) {
     if (this.name === "style-options") {
         this["name-as-sort-order"] = arg;
