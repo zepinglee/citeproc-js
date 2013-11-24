@@ -46,8 +46,20 @@
  * or the [AGPLv3] License.”
  */
 
-Do something for stop-words and quoted titles, and journal names:
+Do something for stop-words and quoted titles, and journal names
+(pretty-much done, needs check against threads below):
 
   https://forums.zotero.org/discussion/814/alphabetize-records-without-a-or-the/#Comment_170201
   https://forums.zotero.org/discussion/32226/omitting-initial-the-in-journal-titles-for-chicago/#Item_5
 
+Refine handling of names, with flexible style-specific handling for
+Myanmar, Japanese, Mongolian, etc.
+
+  cs:style-options name-as-sort-order="ja zh kr my" (done)
+  cs:style-options name-never-short="ja zh kr my"   (done)
+
+  cs:style-options multilingual-suppress-tag="ja" multilingual-suppress-family="names"
+  (??? or somesuch)
+
+The explicit name-as-sort-order and name-never-short options take
+precedence over the regexp-based guesswork.

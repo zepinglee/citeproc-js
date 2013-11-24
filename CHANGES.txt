@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.511
+==========================
+
+- Implement locale style options name-as-sort-order and
+  name-never-short. Yields much more flexible handling of
+  non-Romanesque names (Vietnamese, Chinese, Hungarian, Japanese,
+  Myanmar ...)
+
+g==========================
 Changes in version 1.0.510
 ==========================
 
