@@ -4858,6 +4858,12 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                         for (var i=0,ilen=lst.length;i<ilen;i+=1) {
                             this.locale[lang_out].opts["name-as-sort-order"][lst[i]] = true;
                         }
+                    } else if (attrname === "@name-as-reverse-order") {
+                        this.locale[lang_out].opts["name-as-reverse-order"] = {};
+                        var lst = attributes[attrname].split(/\s+/);
+                        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+                            this.locale[lang_out].opts["name-as-reverse-order"][lst[i]] = true;
+                        }
                     } else if (attrname === "@name-never-short") {
                         this.locale[lang_out].opts["name-never-short"] = {};
                         var lst = attributes[attrname].split(/\s+/);
@@ -7235,6 +7241,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         blob = this._join([non_dropping_particle, family, given], "");
     } else if (romanesque === 1 || name["static-ordering"]) { // entry likes sort order
         blob = this._join([non_dropping_particle, family, given], " ");
+    } else if (name["reverse-ordering"]) { // entry likes reverse order
+        blob = this._join([given, non_dropping_particle, family], " ");
     } else if (this.state.tmp.sort_key_flag) {
         if (this.state.opt["demote-non-dropping-particle"] === "never") {
             first = this._join([non_dropping_particle, family, dropping_particle], " ");
@@ -7347,6 +7355,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
         "non-dropping-particle":value["non-dropping-particle"],
         "dropping-particle":value["dropping-particle"],
         "static-ordering":value["static-ordering"],
+        "reverse-ordering":value["reverse-ordering"],
         "full-form-always": value["full-form-always"],
         "parse-names":value["parse-names"],
         "comma-dropping-particle": "",
@@ -7581,6 +7590,7 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         "dropping-particle":name["dropping-particle"],
         suffix:name.suffix,
         "static-ordering":name_params["static-ordering"],
+        "reverse-ordering":name_params["reverse-ordering"],
         "full-form-always": name_params["full-form-always"],
         "parse-names":name["parse-names"],
         "comma-suffix":name["comma-suffix"],
@@ -7612,10 +7622,16 @@ CSL.NameOutput.prototype.getNameParams = function (langTag) {
     var langspec = CSL.localeResolve(this.Item.language, this.state.opt["default-locale"][0]);
     var try_locale = this.state.locale[langspec.best] ? langspec.best : this.state.opt["default-locale"][0];
     var name_as_sort_order = this.state.locale[try_locale].opts["name-as-sort-order"]
+    var name_as_reverse_order = this.state.locale[try_locale].opts["name-as-reverse-order"]
     var name_never_short = this.state.locale[try_locale].opts["name-never-short"]
     var field_lang_bare = langTag.split("-")[0];
     if (name_as_sort_order && name_as_sort_order[field_lang_bare]) {
         ret["static-ordering"] = true;
+        ret["reverse-ordering"] = false;
+    }
+    if (name_as_reverse_order && name_as_reverse_order[field_lang_bare]) {
+        ret["reverse-ordering"] = true;
+        ret["static-ordering"] = false;
     }
     if (name_never_short && name_never_short[field_lang_bare]) {
         ret["full-form-always"] = true;
@@ -9512,6 +9528,9 @@ CSL.Attributes["@initialize"] = function (state, arg) {
     if (arg === "false") {
         state.setOpt(this, "initialize", false);
     }
+};
+CSL.Attributes["@name-as-reverse-order"] = function (state, arg) {
+    this["name-as-reverse-order"] = arg;
 };
 CSL.Attributes["@name-as-sort-order"] = function (state, arg) {
     if (this.name === "style-options") {
