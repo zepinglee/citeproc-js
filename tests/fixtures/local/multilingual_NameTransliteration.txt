@@ -57,8 +57,12 @@ more intuitive control over formatting of transliterated
 names, but cannot be tested through the standard test suit
 machinery.
 
+Yay-ho. At processor revision 1.0.511, we have fine-grained
+control over name formatting, and the original test result
+is again valid.
+
 >>===== RESULT =====>>
-Beato Takeshi, Kitano Takeshi, R. Atkinson
+Beato Takeshi, T. Kitano, R. Atkinson
 <<===== RESULT =====<<
 
 
