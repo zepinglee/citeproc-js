@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.512
+==========================
+
+- Fix bug in near-note reported by Devin Roza.
+
+==========================
 Changes in version 1.0.511
 ==========================
 
