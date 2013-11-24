@@ -399,7 +399,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
     var non_dropping_particle = this._nonDroppingParticle(name);
     var given = this._givenName(name, pos, i);
     var suffix = this._nameSuffix(name);
-    if (this._isShort(pos, i)) {
+    if (this._isShort(pos, i) && !name["full-form-always"]) {
         dropping_particle = false;
         given = false;
         suffix = false;
@@ -560,6 +560,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
         "non-dropping-particle":value["non-dropping-particle"],
         "dropping-particle":value["dropping-particle"],
         "static-ordering":value["static-ordering"],
+        "full-form-always": value["full-form-always"],
         "parse-names":value["parse-names"],
         "comma-dropping-particle": "",
         block_initialize:value.block_initialize,
@@ -777,24 +778,20 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
     if (!name.given) {
         name.given = "";
     }
-    //
-    // Optionally add a static-ordering toggle for non-roman, non-Cyrillic
-    // names, based on the headline values.
-    //
-    var static_ordering_freshcheck = false;
-    var block_initialize = false;
-    var transliterated = false;
-    var static_ordering_val = this.getStaticOrder(name);
 
-    // The stuff below should move to this._getName()?
+    // Recognized params are:
+    //  block-initialize
+    //  transliterated
+    //  static-ordering
+    //  full-form-always
+    // All default to false, except for static-ordering, which is initialized
+    // with a sniff.
+    var name_params = {};
+    // Determines the default static-order setting based on the characters
+    // used in the headline field. Will be overridden by locale-based
+    // parameters evaluated against explicit lang tags set on the (sub)field.
+    name_params["static-ordering"] = this.getStaticOrder(name);
 
-    // The code below is run up to three times, to get the forms
-    // for each name-form segment.
-    
-    //
-    // Step through the requested languages in sequence
-    // until a match is found
-    //
     var foundTag = true;
     if (slotLocaleset !== 'locale-orig') {
         foundTag = false;
@@ -805,31 +802,27 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
                 if (name.multi._key[langTag]) {
                     foundTag = true;
                     name = name.multi._key[langTag];
-                    transliterated = true;
-                    //
-                    // This generally needs help.
-                    //
-                    if (!this.state.opt['locale-use-original-name-format'] && false) {
-                        // We may reintroduce this option later, but for now, pretend
-                        // it's always turned on.
-                        static_ordering_freshcheck = true;
-                    } else {
-                        // Quash initialize-with if original was non-romanesque
-                        // and we are trying to preserve the original formatting
-                        // conventions.
-                        // (i.e. supply as much information as possible if
-                        // the transliteration spans radically different
-                        // writing conventions)
-                        if ((name.family.replace('"','','g') + name.given).match(CSL.ROMANESQUE_REGEXP)) {
-                            block_initialize = true;
-                        }
-                    }
+                    // Set name formatting params
+                    name_params = this.getNameParams(langTag);
+                    name_params.transliterated = true;
                     break;
                 }
             }
         }
     }
-    
+
+    if (!foundTag) {
+        var langTag;
+        if (name.multi && name.multi.main) {
+            langTag = name.multi.main;
+        } else if (this.Item.language) {
+            langTag = this.Item.language;
+        }
+        if (langTag) {
+            name_params = this.getNameParams(langTag);
+        }
+    }
+
     if (!fallback && !foundTag) {
         return {name:false,usedOrig:stopOrig};
     }
@@ -842,7 +835,6 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         name.given = "";
     }
     
-    
     // var clone the item before writing into it
     name = {
         family:name.family,
@@ -850,21 +842,17 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         "non-dropping-particle":name["non-dropping-particle"],
         "dropping-particle":name["dropping-particle"],
         suffix:name.suffix,
-        "static-ordering":static_ordering_val,
+        "static-ordering":name_params["static-ordering"],
+        "full-form-always": name_params["full-form-always"],
         "parse-names":name["parse-names"],
         "comma-suffix":name["comma-suffix"],
         "comma-dropping-particle":name["comma-dropping-particle"],
-        transliterated:transliterated,
-        block_initialize:block_initialize,
+        transliterated: name_params.transliterated,
+        block_initialize: name_params["block-initialize"],
         literal:name.literal,
         isInstitution:name.isInstitution,
         multi:name.multi
     };
-    if (static_ordering_freshcheck &&
-        !this.getStaticOrder(name, true)) {
-        
-        name["static-ordering"] = false;
-    }
     
     if (!name.literal && (!name.given && name.family && name.isInstitution)) {
         name.literal = name.family;
@@ -881,6 +869,26 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         usedOrig = !foundTag;
     }
     return {name:name,usedOrig:usedOrig};
+}
+
+CSL.NameOutput.prototype.getNameParams = function (langTag) {
+    var ret = {};
+    var langspec = CSL.localeResolve(this.Item.language, this.state.opt["default-locale"][0]);
+    var try_locale = this.state.locale[langspec.best] ? langspec.best : this.state.opt["default-locale"][0];
+    var name_as_sort_order = this.state.locale[try_locale].opts["name-as-sort-order"]
+    var name_never_short = this.state.locale[try_locale].opts["name-never-short"]
+    var field_lang_bare = langTag.split("-")[0];
+    if (name_as_sort_order && name_as_sort_order[field_lang_bare]) {
+        ret["static-ordering"] = true;
+    }
+    if (name_never_short && name_never_short[field_lang_bare]) {
+        ret["full-form-always"] = true;
+    }
+    
+    if (ret["static-ordering"]) {
+        ret["block-initialize"] = true;
+    }
+    return ret;
 }
 
 CSL.NameOutput.prototype.setRenderedName = function (name) {

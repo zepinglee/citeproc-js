@@ -814,6 +814,10 @@ CSL.Attributes["@leading-noise-words"] = function (state, arg) {
     this["leading-noise-words"] = arg;
 };
 
+CSL.Attributes["@name-never-short"] = function (state, arg) {
+    this["name-never-short"] = arg;
+};
+
 CSL.Attributes["@class"] = function (state, arg) {
     state.opt["class"] = arg;
 };
@@ -1158,7 +1162,11 @@ CSL.Attributes["@initialize"] = function (state, arg) {
 };
 
 CSL.Attributes["@name-as-sort-order"] = function (state, arg) {
-    state.setOpt(this, "name-as-sort-order", arg);
+    if (this.name === "style-options") {
+        this["name-as-sort-order"] = arg;
+    } else {
+        state.setOpt(this, "name-as-sort-order", arg);
+    }
 };
 
 CSL.Attributes["@sort-separator"] = function (state, arg) {

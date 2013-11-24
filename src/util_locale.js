@@ -375,8 +375,23 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                         var skip_words = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts[attrname.slice(1)] = skip_words;
                     } else if (attrname === "@leading-noise-words" && lang_in === lang_out) {
-                        var leading_noise_words = attributes[attrname].split(/\s*,\s*/);
-                        this.locale[lang_out].opts[attrname.slice(1)] = leading_noise_words;
+                        // For this parameter, we don't want fallback.
+                        var val = attributes[attrname].split(/\s*,\s*/);
+                        this.locale[lang_out].opts["leading-noise-words"] = val;
+                    } else if (attrname === "@name-as-sort-order") {
+                        // Fallback is okay here.
+                        this.locale[lang_out].opts["name-as-sort-order"] = {};
+                        var lst = attributes[attrname].split(/\s+/);
+                        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+                            this.locale[lang_out].opts["name-as-sort-order"][lst[i]] = true;
+                        }
+                    } else if (attrname === "@name-never-short") {
+                        // Here too.
+                        this.locale[lang_out].opts["name-never-short"] = {};
+                        var lst = attributes[attrname].split(/\s+/);
+                        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+                            this.locale[lang_out].opts["name-never-short"][lst[i]] = true;
+                        }
                     }
                 }
             }
