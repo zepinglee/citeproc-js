@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.513
+==========================
+
+- Exclude Hebrew vav (&#x05d5;) from romanesque regexp, so that
+  spacing can be set explicitly on the "and" term.
+
+==========================
 Changes in version 1.0.512
 ==========================
 
