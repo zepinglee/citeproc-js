@@ -815,7 +815,7 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
     }
 
     if (!foundTag) {
-        var langTag;
+        var langTag = false;
         if (name.multi && name.multi.main) {
             langTag = name.multi.main;
         } else if (this.Item.language) {
