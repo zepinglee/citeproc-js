@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.515
+==========================
+
+- Fix bug that dropped multilingual variants when rendering
+  institution names. Reported by MLZ user egrebnev.
+
+==========================
 Changes in version 1.0.514
 ==========================
 
