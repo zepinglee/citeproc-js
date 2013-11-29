@@ -93,7 +93,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
 	        if (localesets) {
 		        var slotnames = ["primary", "secondary", "tertiary"];
 		        for (var k = 0, klen = slotnames.length; k < klen; k += 1) {
-			        if (localesets.length - 1 <  j) {
+			        if (localesets.length - 1 <  k) {
 				        break;
 			        }
                     if (localesets[k]) {
