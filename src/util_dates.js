@@ -79,7 +79,7 @@ CSL.Util.Dates.year["long"] = function (state, num) {
  * Crudely convert to Japanese Imperial form.
  * <p>Returns the result as a string.</p>
  */
-CSL.Util.Dates.year.imperial = function (state, num, end) {
+CSL.Util.Dates.year.imperial = function (state, num, end, makeShort) {
     if (!num) {
         if ("boolean" === typeof num) {
             num = "";
@@ -99,14 +99,29 @@ CSL.Util.Dates.year.imperial = function (state, num, end) {
         day = "0" + day;
     }
     var date = parseInt(num + month + day, 10);
+    var label;
+    var offset;
     if (date >= 18680908 && date < 19120730) {
-        year = '\u660e\u6cbb' + (num - 1867);
+        label = '\u660e\u6cbb';
+        offset = 1867;
     } else if (date >= 19120730 && date < 19261225) {
-        year = '\u5927\u6b63' + (num - 1911);
+        label = '\u5927\u6b63';
+        offset = 1911;
     } else if (date >= 19261225 && date < 19890108) {
-        year = '\u662d\u548c' + (num - 1925);
+        label = '\u662d\u548c';
+        offset = 1925;
     } else if (date >= 19890108) {
-        year = '\u5e73\u6210' + (num - 1988);
+        label = '\u5e73\u6210';
+        offset = 1988;
+    }
+    if (label && offset) {
+        if (!state.transform.abbrevs['default']['number'][label]) {
+            state.transform.loadAbbreviation('default', "number", label);
+        }
+        if (state.transform.abbrevs['default']['number'][label]) {
+            label = state.transform.abbrevs['default']['number'][label];
+        };
+        year = label + (num - offset);
     }
     return year;
 };
