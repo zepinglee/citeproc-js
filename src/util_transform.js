@@ -259,8 +259,8 @@ CSL.Transform = function (state) {
             jurisdiction = "default";
         }
         if (!orig) {
-            if (!this.abbrevs[jurisdiction]) {
-                this.abbrevs[jurisdiction] = new state.sys.AbbreviationSegments();
+            if (!state.transform.abbrevs[jurisdiction]) {
+                state.transform.abbrevs[jurisdiction] = new state.sys.AbbreviationSegments();
             }
             return jurisdiction;
         }
@@ -286,19 +286,19 @@ CSL.Transform = function (state) {
             // Step through them, from most to least specific.
             for (var i=tryList.length - 1; i > -1; i += -1) {
                 // Protect against a missing jurisdiction list in memory.
-                if (!this.abbrevs[tryList[i]]) {
-                    this.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
+                if (!state.transform.abbrevs[tryList[i]]) {
+                    state.transform.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
                 }
                 // Refresh from DB if no entry is found in memory.
-                if (!this.abbrevs[tryList[i]][category][orig]) {
-                    state.sys.getAbbreviation(state.opt.styleID, this.abbrevs, tryList[i], category, orig, itemType, noHints);
+                if (!state.transform.abbrevs[tryList[i]][category][orig]) {
+                    state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, noHints);
                 }
                 // Did we find something?
-                if (this.abbrevs[tryList[i]][category][orig]) {
+                if (state.transform.abbrevs[tryList[i]][category][orig]) {
                     // If we found a match, but in a less-specific list, add the entry to the most
                     // specific list before breaking.
                     if (i < tryList.length) {
-                        this.abbrevs[jurisdiction][category][orig] = this.abbrevs[tryList[i]][category][orig];
+                        state.transform.abbrevs[jurisdiction][category][orig] = state.transform.abbrevs[tryList[i]][category][orig];
                     }
                     break;
                 }
