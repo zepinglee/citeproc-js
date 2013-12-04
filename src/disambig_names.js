@@ -87,8 +87,12 @@ CSL.Registry.NameReg = function (state) {
 
     evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
         var pos, len, items, param;
-        if (state.tmp.area === "bibliography" && !form && "string" !== typeof initials) {
-              return 2;
+        if (state.tmp.area.slice(0, 12) === "bibliography" && !form) {
+            if ("string" === typeof initials) {
+                return 1;
+            } else {
+                return 2;
+            }
         }
         var res = state.nameOutput.getName(nameobj, "locale-translit", true);
         nameobj = res.name;
