@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.516
+==========================
+
+- Allow initials-only format in bibliography with
+  all-names-with-initials and primary-name-with-initials
+  disambiguation rules. Fixes bug identified by tipichris
+  and adamsmith.
+
+==========================
 Changes in version 1.0.515
 ==========================
 
