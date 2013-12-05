@@ -79,6 +79,8 @@ CSL.NameOutput.prototype.init = function (names) {
     this.state.tmp.value = [];
     this.state.tmp.rendered_name = [];
     this.state.tmp.label_blob = false;
+    this.state.tmp.etal_node = false;
+    this.state.tmp.etal_term = false;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         if (this.Item[this.variables[i]] && this.Item[this.variables[i]].length) {
             this.state.tmp.value = this.state.tmp.value.concat(this.Item[this.variables[i]]);
