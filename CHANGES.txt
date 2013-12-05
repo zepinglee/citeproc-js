@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.517
+==========================
+
+- Prevent et-al decorations and term selections in cs:citation
+  from affecting cs:bibliography. Bug identified by adamsmith.
+
+==========================
 Changes in version 1.0.516
 ==========================
 
