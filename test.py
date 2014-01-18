@@ -72,14 +72,19 @@ class ApplyLicense:
             self.license = "%s\n" % m.group(1).strip()
         else:
             raise NoLicense
-        print self.license
 
-    def apply(self):
+    def apply(self,suppressConsole=False):
+        if not suppressConsole:
+            print self.license
         for p in [".", "src", path("std"), path("local"), path("bundled"), path("styletests"), path("citeproc-js"), path("demo")]:
             for file in os.listdir(p):
                 if file == "CHANGES.txt" or file == "DESIDERATA.txt":
                     continue
                 if file.endswith(".src"):
+                    continue
+                if file.endswith(".xml"):
+                    continue
+                if file.endswith(".json"):
                     continue
                 if file.endswith(".sh"):
                     continue
@@ -111,12 +116,16 @@ class Bundle:
     def __init__(self, mode=None):
         if mode == "zotero":
             self.citeproc = "citeproc_zotero.js"
+        elif mode == "generic":
+            self.citeproc = "citeproc_generic.js"
         else:
             self.citeproc = "citeproc.js"
         self.mode = mode
         f = ["load"]
         if mode == "zotero":
             f.extend(["print_zotero", "xmldom"])
+        elif mode == "generic":
+            f.extend(["print", "xmldom"])
         else:
             f.extend(["print"])
         f.extend(["system","sort","util_disambig","util_nodes","util_dateparser","build"]);
@@ -161,15 +170,10 @@ class Bundle:
         open(self.citeproc,"w+b").write(file)
         if self.mode == "zotero":
             print "Wrote bundle code with dom (not e4x) support and Zotero error handling to ./citeproc_zotero.js "
-        if self.mode == None:
+        elif self.mode == "generic":
+            print "Wrote bundle code with dom (not e4x) support and generic error handling to ./citeproc_generic.js "
+        if self.mode == "generic":
             open(os.path.join("demo", self.citeproc),"w+b").write(file)
-
-            for f in ["xmldom"]:
-                filename = os.path.join( "src", "%s.js" % f)
-                ifh = open(filename, "rb")
-                file = self.cleanFile(ifh.read())
-                open("%s.js" % f, "w+b").write(file)
-                open(os.path.join("demo", "%s.js" % f), "w+b").write(file)
 
 class Params:
     def __init__(self,opt,args,category,force=None):
@@ -708,6 +712,10 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Create a citeproc_zotero.js bundle with embedded dom (not e4x) support suitable for use in Zotero, and exit.')
+    parser.add_option("-G", "--generic-bundle-only", dest="makegenericbundle",
+                      default=False,
+                      action="store_true", 
+                      help='Create a citeproc_generic.js bundle with embedded dom (not e4x) support suitable for use in most environments, and exit.')
     (opt, args) = parser.parse_args()
 
     if opt.tracemonkey and opt.rhino_json:
@@ -715,9 +723,17 @@ if __name__ == "__main__":
         print "\nError: The -T and -J options cannot be used together."
         sys.exit()
 
-    if opt.makebundle and opt.makezoterobundle:
+    bundlecount = 0
+    if opt.makebundle:
+        bundlecount += 1
+    if opt.makezoterobundle:
+        bundlecount += 1
+    if opt.makegenericbundle:
+        bundlecount += 1
+
+    if bundlecount > 1:
         print parser.print_help()
-        print "\nError: The -B and -Z options cannot be used together."
+        print "\nError: Only one of the -B, -G and -Z options can be used at one time."
         sys.exit()
 
     if opt.makebundle:
@@ -733,7 +749,15 @@ if __name__ == "__main__":
         bundler.deleteOldBundle()
         bundler.createNewBundle()
         license = ApplyLicense()
-        license.apply()
+        license.apply(True)
+        sys.exit()
+
+    if opt.makegenericbundle:
+        bundler = Bundle(mode="generic")
+        bundler.deleteOldBundle()
+        bundler.createNewBundle()
+        license = ApplyLicense()
+        license.apply(True)
         sys.exit()
 
     if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
