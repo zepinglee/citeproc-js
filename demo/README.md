@@ -1,7 +1,7 @@
 # `citeproc-js` Demo Page
 
 The code in this folder can be used to spin up a local `citeproc-js`
-demo page.  It is mainly intended as a code sample of running for
+demo page.  It is mainly intended as a sample of running code for
 developers working with the processor.
 
 The demo requires `node.js`, so install that first. The page is
