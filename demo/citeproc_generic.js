@@ -45,6 +45,7 @@
  * recipient may use your version of this file under either the CPAL
  * or the [AGPLv3] License.”
  */
+
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -598,19 +599,18 @@ if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports"
 }
 CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
 CSL.CLOSURES = new RegExp(".*[\\]\\)]");
-CSL.debug = function (str) {
-    console.log("CSL: " + str);
-};
-CSL.error = function (str) {
-    console.log("CSL error: " + str);
-};
-if (Components && Components.classes) {
-    function DOMParser() {
-	    return Components.classes["@mozilla.org/xmlextras/domparser;1"]
-		    .createInstance(Components.interfaces.nsIDOMParser);
+if ("object" === typeof console && "function" === typeof console.log) {
+    CSL.debug = function (str) {
+        console.log("CSL: " + str);
+    };
+    CSL.error = function (str) {
+        console.log("CSL error: " + str);
     };
 } else {
-    console.log("No Components object, assuming this is not Firefox");
+    CSL.debug = function () {};
+    CSL.error = function (str) {
+        throw "CSL error: " + str;
+    };
 }
 if ("undefined" === typeof CSL_IS_IE) {
     var CSL_IS_IE;
@@ -684,7 +684,6 @@ var CSL_CHROME = function () {
         }
     };
     this.parser = new DOMParser();
-    console.log("Using weirdly coded dom parser code");
     var str = "<docco><institution institution-parts=\"long\" delimiter=\", \" substitute-use-first=\"1\" use-last=\"1\"><institution-part name=\"long\"/></institution></docco>";
     var inst_doc = this.parser.parseFromString(str, "text/xml");
     var inst_node = inst_doc.getElementsByTagName("institution");
@@ -876,12 +875,11 @@ CSL_CHROME.prototype.nodeNameIs = function (myxml,name) {
 CSL_CHROME.prototype.makeXml = function (myxml) {
     var ret, topnode;
     if (!myxml) {
-        myxml = "<doccox><bogus/></doccox>";
+        myxml = "<docco><bogus/></docco>";
     }
     myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
     var nodetree = this.parser.parseFromString(myxml, "application/xml");
-    var node = nodetree.firstChild.cloneNode(true);
-    return node;
+    return nodetree.firstChild;
 };
 CSL_CHROME.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
     var myxml, xml;
