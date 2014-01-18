@@ -24,7 +24,7 @@ The code is in four files, which are:
 : This contains a bare JavaScript object with two functions, `retrieveItem()` and `retrieveLocale()`. The former must return a valid CSL JSON object. The latter must return a valid *serialized* CSL locale (the processor will fail on a native XML object or buffer).
 
 `builder.js`
-: This contains an arbitrary function used in the page to build a processor instance, and places a dummy database object in memory for use by the `retrieveItem()` function contained in `sys.js`. Note that the CSL style code fed to the process must, like the locale, be *serialized* XML.
+: This defines a function used in the page to build processor instances, and places a dummy database object in memory for use by the `retrieveItem()` function contained in `sys.js`. Note that the CSL style code fed to the processor must, like the locale, be *serialized* XML.
 
 `runner.js`
 : This contains the JavaScript that runs the installed processor on the page.
