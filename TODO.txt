@@ -63,3 +63,23 @@ Myanmar, Japanese, Mongolian, etc.
 
 The explicit name-as-sort-order and name-never-short options take
 precedence over the regexp-based guesswork.
+
+Fix this one:
+
+  https://forums.zotero.org/discussion/33667/quote-marks/#Comment_175014
+
+Account for this when the output routine is completely rewritten:
+
+  https://forums.zotero.org/discussion/33789/space-between-nameparts/#Comment_175016
+
+Fix this:
+
+  https://forums.zotero.org/discussion/33793?page=1#Item_13
+
+Fix this:
+
+  https://forums.zotero.org/discussion/32322/mlz-how-is-the-hints-file-used/#Item_22
+
+Remove xmle4x.js from the demo page.
+
+Look at the bookmarks on the iPad for some more recent issues.
