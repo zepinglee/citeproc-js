@@ -17,5 +17,24 @@ demo page should appear.
 
 The code is in four files, which are:
 
-`one`
-: this is a pen
+`citeproc_generic.js`
+: This contains the processor itself, bundled with the xmldom.js parser.
+
+`sys.js`
+: This contains a bare JavaScript object with two functions, `retrieveItem()` and `retrieveLocale()`. The former must return a valid CSL JSON object. The latter must return a valid *serialized* CSL locale (the processor will fail on a native XML object or buffer).
+
+`builder.js`
+: This contains an arbitrary function used in the page to build a processor instance, and places a dummy database object in memory for use by the `retrieveItem()` function contained in `sys.js`. Note that the CSL style code fed to the process must, like the locale, be *serialized* XML.
+
+`runner.js`
+: This contains the JavaScript that runs the installed processor on the page.
+
+This particular demo runs `citeproc-js` in the browser client, but the processor
+can (of course) be run on the server side as well. It depends on your preferred
+tradeoff between snappiness and server burden.
+
+Hope this helps. If you run into any snags, feel free to give me a shout.
+
+Frank Bennett
+Nagoya
+Japan
