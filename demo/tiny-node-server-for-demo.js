@@ -9,6 +9,7 @@ var filesToServe = [
     'sys.js',
     'builder.js',
     'runner.js',
+    'database.json',
     'locales-en-US.xml',
     'chicago-fullnote-bibliography.csl'
 ]

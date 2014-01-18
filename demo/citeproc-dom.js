@@ -873,16 +873,13 @@ CSL_CHROME.prototype.nodeNameIs = function (myxml,name) {
     }
     return false;
 }
-CSL_CHROME.prototype.makeXml = function (myxmlx) {
+CSL_CHROME.prototype.makeXml = function (myxml) {
     var ret, topnode;
-    console.log("myxmlx, anyway, is: "+typeof myxmlx+" ("+myxmlx+")");
-    if (!myxmlx) {
-        console.log("Using another weirdly coded dom parse code frag");
-        myxmlx = "<doccox><bogus/></doccox>";
+    if (!myxml) {
+        myxml = "<doccox><bogus/></doccox>";
     }
-    myxmlx = myxmlx.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
-    var nodetree = this.parser.parseFromString(myxmlx, "application/xml");
-    console.log("nodetree: "+nodetree.firstChild);
+    myxml = myxml.replace(/\s*<\?[^>]*\?>\s*\n*/g, "");
+    var nodetree = this.parser.parseFromString(myxml, "application/xml");
     var node = nodetree.firstChild.cloneNode(true);
     return node;
 };
@@ -1681,7 +1678,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.bibliography = new CSL.Engine.Bibliography();
     this.output = new CSL.Output.Queue(this);
     this.dateput = new CSL.Output.Queue(this);
-    console.log("XXXX (1)");
     this.cslXml = this.sys.xml.makeXml(style);
     if (this.opt.development_extensions.csl_reverse_lookup_support) {
         this.build.cslNodeId = 0;
@@ -2146,7 +2142,6 @@ CSL.Engine.prototype.setOpt = function (token, name, value) {
     } else if (["citation", "bibliography"].indexOf(token.name) > -1) {
         this[token.name].opt[name] = value;
     } else if (["name-form", "name-delimiter", "names-delimiter"].indexOf(name) === -1) {
-        console.log("XXX "+JSON.stringify(token,null,2));
         token.strings[name] = value;
     }
 };
@@ -5025,16 +5020,13 @@ CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     if (beShy && this.locale[langspec.best]) {
         return;
     }
-    console.log("XXXX (2)");
     localexml = this.sys.xml.makeXml(this.sys.retrieveLocale("en-US"));
     this.localeSet(localexml, "en-US", langspec.best);
     if (langspec.best !== "en-US") {
         if (langspec.base !== langspec.best) {
-            console.log("XXXX (3)");
             localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.base));
             this.localeSet(localexml, langspec.base, langspec.best);
         }
-        console.log("XXXX (4)");
         localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.best));
         this.localeSet(localexml, langspec.best, langspec.best);        
     }
@@ -5087,7 +5079,6 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         this.locale[lang_out].ord = {'1.0.1':false,keys:{}};
         this.locale[lang_out]["noun-genders"] = {};
     }
-    console.log("XXXX (5)");
     locale = this.sys.xml.makeXml();
     if (this.sys.xml.nodeNameIs(myxml, 'locale')) {
         locale = myxml;
