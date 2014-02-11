@@ -65,8 +65,6 @@ CSL.Util.Match = function () {
         };
     };
 
-    this[undefined] = this.any;
-
     this.none = function (token, state, tests) {
         return function (Item, item) {
             for (var i=0,ilen=tests.length;i<ilen;i+=1) {
@@ -90,6 +88,8 @@ CSL.Util.Match = function () {
             return true;
         };
     };
+
+    this[undefined] = this.all;
 
     this.nand = function (token, state, tests) {
         return function (Item, item) {
