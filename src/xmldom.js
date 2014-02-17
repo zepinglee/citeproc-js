@@ -267,7 +267,7 @@ CSL_CHROME.prototype.getAttributeValue = function (myxml,name,namespace) {
 // Can't this be, you know ... simplified?
 //
 CSL_CHROME.prototype.getNodeValue = function (myxml,name) {
-    var ret = "";
+    var ret = null;
     if (name){
         var vals = myxml.getElementsByTagName(name);
         if (vals.length > 0) {
@@ -279,17 +279,18 @@ CSL_CHROME.prototype.getNodeValue = function (myxml,name) {
                 ret = vals[0].text;
             }
         }
-    } else {
-        ret = myxml;
     }
-    if (ret && ret.childNodes && (ret.childNodes.length == 0 || (ret.childNodes.length == 1 && ret.firstChild.nodeName == "#text"))) {
-        if ("undefined" != typeof ret.textContent) {
-            ret = ret.textContent;
-        } else if ("undefined" != typeof ret.innerText) {
-            ret = ret.innerText;
+    if (ret === null && myxml && myxml.childNodes && (myxml.childNodes.length == 0 || (myxml.childNodes.length == 1 && myxml.firstChild.nodeName == "#text"))) {
+        if ("undefined" != typeof myxml.textContent) {
+            ret = myxml.textContent;
+        } else if ("undefined" != typeof myxml.innerText) {
+            ret = myxml.innerText;
         } else {
-            ret = ret.text;
+            ret = myxml.text;
         }
+    }
+    if (ret === null) {
+        ret = myxml;
     }
     return ret;
 }

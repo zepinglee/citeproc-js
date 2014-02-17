@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.518
+==========================
+
+- Ignore false blobs when pushing to output queue. Avoids a
+  crash condition when rendering names with multilingual
+  elements.
+
+==========================
 Changes in version 1.0.517
 ==========================
 
