@@ -742,24 +742,24 @@ if __name__ == "__main__":
         bundler = Bundle()
         bundler.deleteOldBundle()
         bundler.createNewBundle()
-        license = ApplyLicense()
-        license.apply()
+        #license = ApplyLicense()
+        #license.apply()
         sys.exit()
 
     if opt.makezoterobundle:
         bundler = Bundle(mode="zotero")
         bundler.deleteOldBundle()
         bundler.createNewBundle()
-        license = ApplyLicense()
-        license.apply(True)
+        #license = ApplyLicense()
+        #license.apply(True)
         sys.exit()
 
     if opt.makegenericbundle:
         bundler = Bundle(mode="generic")
         bundler.deleteOldBundle()
         bundler.createNewBundle()
-        license = ApplyLicense()
-        license.apply(True)
+        #license = ApplyLicense()
+        #license.apply(True)
         sys.exit()
 
     if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
@@ -839,8 +839,8 @@ if __name__ == "__main__":
                 bundle = Bundle()
                 bundle.deleteOldBundle()
                 bundle.createNewBundle()
-                license = ApplyLicense()
-                license.apply()
+                #license = ApplyLicense()
+                #license.apply()
             if opt.testrun or opt.teststyles:
                 params.buildRunner()
                 params.runTests(bundle=opt.bundle)
