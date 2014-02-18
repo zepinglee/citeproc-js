@@ -67,17 +67,20 @@ class ApplyLicense:
 
     def __init__(self):
         self.rex = "(?sm)^^(/\*.*?^\s*\*/\n*)(.*)"
-        m = re.match(self.rex, fixEndings(open( os.path.join("src","load.js")).read()) )
-        if m:
-            self.license = "%s\n" % m.group(1).strip()
-        else:
-            raise NoLicense
+        lines = open(os.path.join("LICENSE")).read().strip()
+        lines = lines.split('\n')
+        for pos in range(0,len(lines),1):
+            lines[pos] = " * %s" % lines[pos]
+        self.license = '/*\n%s\n */\n' % '\n'.join(lines)
 
     def apply(self,suppressConsole=False):
         if not suppressConsole:
             print self.license
-        for p in [".", "src", path("std"), path("local"), path("bundled"), path("styletests"), path("citeproc-js"), path("demo")]:
+        #for p in [".", "src", path("std"), path("local"), path("bundled"), path("styletests"), path("citeproc-js"), path("demo")]:
+        for p in ["."]:
             for file in os.listdir(p):
+                if not file.startswith("citeproc"):
+                    continue
                 if file == "CHANGES.txt" or file == "DESIDERATA.txt":
                     continue
                 if file.endswith(".src"):
@@ -96,6 +99,7 @@ class ApplyLicense:
                     continue
                 if file.endswith(".css"):
                     continue
+                print("PROCESS");
                 self.process_file(p,file)
 
     def process_file(self,p,file):
@@ -105,11 +109,11 @@ class ApplyLicense:
         oldtext = text
         m = re.match(self.rex,text)
         if m:
-            #text = "%s\n%s" % (self.license, m.group(2))
-            text = "%s" % (m.group(2),)
+            text = "%s\n%s" % (self.license, m.group(2))
+            #text = "%s" % (m.group(2),)
         else:
-            #text = "%s%s" % (self.license, text)
-            pass
+            text = "%s%s" % (self.license, text)
+            #pass
         if text.strip() != oldtext.strip():
             open(filepath,"w+b").write(text)
 
@@ -742,24 +746,24 @@ if __name__ == "__main__":
         bundler = Bundle()
         bundler.deleteOldBundle()
         bundler.createNewBundle()
-        #license = ApplyLicense()
-        #license.apply()
+        license = ApplyLicense()
+        license.apply()
         sys.exit()
 
     if opt.makezoterobundle:
         bundler = Bundle(mode="zotero")
         bundler.deleteOldBundle()
         bundler.createNewBundle()
-        #license = ApplyLicense()
-        #license.apply(True)
+        license = ApplyLicense()
+        license.apply(True)
         sys.exit()
 
     if opt.makegenericbundle:
         bundler = Bundle(mode="generic")
         bundler.deleteOldBundle()
         bundler.createNewBundle()
-        #license = ApplyLicense()
-        #license.apply(True)
+        license = ApplyLicense()
+        license.apply(True)
         sys.exit()
 
     if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
