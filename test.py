@@ -105,9 +105,11 @@ class ApplyLicense:
         oldtext = text
         m = re.match(self.rex,text)
         if m:
-            text = "%s\n%s" % (self.license, m.group(2))
+            #text = "%s\n%s" % (self.license, m.group(2))
+            text = "%s" % (m.group(2),)
         else:
-            text = "%s%s" % (self.license, text)
+            #text = "%s%s" % (self.license, text)
+            pass
         if text.strip() != oldtext.strip():
             open(filepath,"w+b").write(text)
 
