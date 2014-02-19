@@ -229,7 +229,23 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
                     
-                    Item[variable] = [{family:Item[variable],isInstitution:true}];
+                    var creatorParent = {
+                        family:Item[variable],
+                        isInstitution:true,
+                        multi:{
+                            _key:{}
+                        }
+                    };
+                    if (Item.multi && Item.multi._keys && Item.multi._keys[variable]) {
+                        for (var langTag in Item.multi._keys[variable]) {
+                            creatorChild = {
+                                family:Item.multi._keys[variable][langTag],
+                                isInstitution:true
+                            }
+                            creatorParent.multi._key[langTag] = creatorChild;
+                        }
+                    }
+                    Item[variable] = [creatorParent];
                 }
                 if (this.strings.form === "short" && !Item[variable]) {
                     if (variable === "title") {
