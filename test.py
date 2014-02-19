@@ -67,7 +67,7 @@ class ApplyLicense:
 
     def __init__(self):
         self.rex = "(?sm)^^(/\*.*?^\s*\*/\n*)(.*)"
-        lines = open(os.path.join("LICENSE")).read().strip()
+        lines = fixEndings(open(os.path.join("LICENSE")).read()).strip()
         lines = lines.split('\n')
         for pos in range(0,len(lines),1):
             lines[pos] = " * %s" % lines[pos]
