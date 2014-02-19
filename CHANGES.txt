@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.520
+==========================
+
+- Include multilingual variants when remapping to authority
+  creator variable. Error reported by MLZ user wonblee.
+
+==========================
 Changes in version 1.0.519
 ==========================
 
