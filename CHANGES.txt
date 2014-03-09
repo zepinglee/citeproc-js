@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.521
+==========================
+
+- Fix global variable in formatters.js, with thanks to
+  anonymous user reporting to the citeproc-js bug tracker.
+
+==========================
 Changes in version 1.0.520
 ==========================
 

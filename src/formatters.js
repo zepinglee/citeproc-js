@@ -156,7 +156,7 @@ CSL.Output.Formatters.title = function (state, string) {
     for (var i=0,ilen=lst.length;i<ilen;i+=2) {
         var words = lst[i].split(/([:?!]*\s+|-)/);
         // Inspect each word individually
-        for (k=0,klen=words.length;k<klen;k+=2) {
+        for (var k=0,klen=words.length;k<klen;k+=2) {
             // Word has length
             if (words[k].length !== 0) {
                 //print("Word: ("+words[k]+")");
