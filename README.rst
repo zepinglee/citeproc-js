@@ -18,7 +18,7 @@ behavior of the processor, in that order. To set up the archive
 for either, install the processor locales with the following
 command::
 
-   git clone git://github.com/citation-style-language/locales.git locale
+   git clone git://github.com/fbennett/locales.git locale
 
 (The official CSL locales live elsewhere, [#]_ but you'll want to use this set
 for processor testing. Note the explicit target directory "locale" [singular]
