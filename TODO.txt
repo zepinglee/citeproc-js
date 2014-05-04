@@ -35,3 +35,36 @@ Fix this:
 Remove xmle4x.js from the demo page.
 
 Look at the bookmarks on the iPad for some more recent issues.
+
+Check the assignment of title vs container-title in the Abbreviation
+Filter (I think this is right, but check)
+
+Check operation of <text variable="authority" form="short"/> when used
+in bibliography.
+
+Look into German parallel cites.
+
+Add some arbitration panels maybe. These may not require special cite
+conventions, but it would be useful for organizing research to be able
+to identify them:
+
+    International Centre for Settlement of Investment Disputes (ICSID)
+    Permanent Court of Arbitration (PCA)
+    Permanent Court of International Justice (PCIJ)
+    International Tribunal for the Law of the Sea (ITLOS)
+    International Chamber of Commerce (ICC)
+    Stockholm Chamber of Commerce (SCC)
+    London Court of International Arbitration (LCIA)
+    Cairo Regional Centre for International Commercial Arbitration (CRCICA)
+    China International Economic and Trade Arbitration Commission (CIETAC)
+    Court Of Justice of the European Free Trade Agreement (EFTA)
+    Inter-American Court Of Human Rights (IACHR)
+    Court of Justice of the Andean Community (TJAC)
+    Central American Court Of Justice (CCJ)
+    African Court on Human and Peoples' Rights (ACHPR)
+    Court Of Justice of the Common Market for Eastern and Southern Africa (COMESA)
+    International Criminal Tribunal for the Former Yugoslavia (ICTY)
+    International Criminal Tribunal for Rwanda (ICTR)
+
+See JULIA_NOTE.pdf for an issue relating to New Zealand Law style.
+
