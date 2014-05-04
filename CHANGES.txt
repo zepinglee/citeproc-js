@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.522
+==========================
+
+- Remove workaround code for Unicode sorting. localeCompare() now
+  seems to be generally working in JavaScript implementations.
+
+==========================
 Changes in version 1.0.521
 ==========================
 
