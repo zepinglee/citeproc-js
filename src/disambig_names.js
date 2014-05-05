@@ -25,9 +25,9 @@ CSL.Registry.NameReg = function (state) {
         skey = strip_periods(nameobj.given);
         // Drop lowercase suffixes (such as et al.) from given name field
         // for disambiguation purposes.
-        var m = skey.match(/,\!* [^,]$/);
+        var m = skey.match(/[,\!]* ([^,]+)$/);
         if (m && m[1] === m[1].toLowerCase()) {
-            skey = skey.replace(/,\!* [^,]$/, "");
+            skey = skey.replace(/[,\!]* [^,]+$/, "");
         }
         // The %s terminator enables normal initialization behavior
         // with non-Byzantine names.

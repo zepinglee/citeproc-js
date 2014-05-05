@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.523
+==========================
+
+- Fix typo in regexp that could trigger a processor crash.
+  Thanks to Carles Pina for reporting this fault.
+
+==========================
 Changes in version 1.0.522
 ==========================
 
