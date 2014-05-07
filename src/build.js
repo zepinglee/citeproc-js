@@ -144,7 +144,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
 
     if (CSL.getSuppressJurisdictions) {
-        this.opt.suppressJurisdictions = CSL.getSuppressJurisdictions(styleID);
+        this.opt.suppressJurisdictions = CSL.getSuppressJurisdictions(this.opt.styleID);
     }
 
     if (this.opt.version.slice(0,4) === "1.1m") {

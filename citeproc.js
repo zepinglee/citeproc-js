@@ -1237,7 +1237,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
     this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
     if (CSL.getSuppressJurisdictions) {
-        this.opt.suppressJurisdictions = CSL.getSuppressJurisdictions(styleID);
+        this.opt.suppressJurisdictions = CSL.getSuppressJurisdictions(this.opt.styleID);
     }
     if (this.opt.version.slice(0,4) === "1.1m") {
         this.opt.development_extensions.static_statute_locator = true;
@@ -8475,25 +8475,31 @@ CSL.Node.text = {
                     };
                     this.execs.push(func);
                     if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1) {
-                        var abbrevfam = this.variables[0];
-                        var abbrfall = false;
-                        var altvar = false;
-                        var transfall = false;
-                        if (form === "short") {
-                            if (this.variables_real[0] === "container-title") {
-                                altvar = "journalAbbreviation";
-                            } else if (this.variables_real[0] === "title") {
-                                altvar = "shortTitle";
+                        if (state.suppressJurisdictions
+                            && this.variables_real[0] === "jurisdiction" 
+                            && state.suppressJurisdictions[Item.jurisdiction]
+                            && ["legal_case","gazette","regulation","legislation"].indexOf(Item.type) > -1) {
+                        } else {
+                            var abbrevfam = this.variables[0];
+                            var abbrfall = false;
+                            var altvar = false;
+                            var transfall = false;
+                            if (form === "short") {
+                                if (this.variables_real[0] === "container-title") {
+                                    altvar = "journalAbbreviation";
+                                } else if (this.variables_real[0] === "title") {
+                                    altvar = "shortTitle";
+                                }
+                            } else {
+                                abbrevfam = false;
                             }
-                        } else {
-                            abbrevfam = false;
+                            if (state.build.extension) {
+                                transfall = true;
+                            } else {
+                                transfall = true;
+                                abbrfall = true;
+						    }
                         }
-                        if (state.build.extension) {
-                            transfall = true;
-                        } else {
-                            transfall = true;
-                            abbrfall = true;
-						}
                         func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                     } else {
                         if (CSL.CITE_FIELDS.indexOf(this.variables_real[0]) > -1) {

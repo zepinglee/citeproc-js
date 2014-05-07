@@ -211,30 +211,39 @@ CSL.Node.text = {
 
                     // Deal with multi-fields and ordinary fields separately.
                     if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1) {
-                        // multi-fields
-                        // Initialize transform factory according to whether
-                        // abbreviation is desired.
-                        var abbrevfam = this.variables[0];
-                        var abbrfall = false;
-                        var altvar = false;
-                        var transfall = false;
-                        if (form === "short") {
-                            if (this.variables_real[0] === "container-title") {
-                                altvar = "journalAbbreviation";
-                            } else if (this.variables_real[0] === "title") {
-                                altvar = "shortTitle";
+                        // Do not print the jurisdiction on these types
+                        if (state.suppressJurisdictions
+                            && this.variables_real[0] === "jurisdiction" 
+                            && state.suppressJurisdictions[Item.jurisdiction]
+                            && ["legal_case","gazette","regulation","legislation"].indexOf(Item.type) > -1) {
+
+                            // Nada
+                        } else {
+                            // multi-fields
+                            // Initialize transform factory according to whether
+                            // abbreviation is desired.
+                            var abbrevfam = this.variables[0];
+                            var abbrfall = false;
+                            var altvar = false;
+                            var transfall = false;
+                            if (form === "short") {
+                                if (this.variables_real[0] === "container-title") {
+                                    altvar = "journalAbbreviation";
+                                } else if (this.variables_real[0] === "title") {
+                                    altvar = "shortTitle";
+                                }
+                            } else {
+                                abbrevfam = false;
                             }
-                        } else {
-                            abbrevfam = false;
+                            if (state.build.extension) {
+                                // multi-fields for sorting get a sort transform,
+                                // (abbreviated if the short form was selected)
+                                transfall = true;
+                            } else {
+                                transfall = true;
+                                abbrfall = true;
+						    }
                         }
-                        if (state.build.extension) {
-                            // multi-fields for sorting get a sort transform,
-                            // (abbreviated if the short form was selected)
-                            transfall = true;
-                        } else {
-                            transfall = true;
-                            abbrfall = true;
-						}
                         func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                     } else {
                         // ordinary fields
