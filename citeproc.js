@@ -8475,31 +8475,25 @@ CSL.Node.text = {
                     };
                     this.execs.push(func);
                     if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1) {
-                        if (state.suppressJurisdictions
-                            && this.variables_real[0] === "jurisdiction" 
-                            && state.suppressJurisdictions[Item.jurisdiction]
-                            && ["legal_case","gazette","regulation","legislation"].indexOf(Item.type) > -1) {
-                        } else {
-                            var abbrevfam = this.variables[0];
-                            var abbrfall = false;
-                            var altvar = false;
-                            var transfall = false;
-                            if (form === "short") {
-                                if (this.variables_real[0] === "container-title") {
-                                    altvar = "journalAbbreviation";
-                                } else if (this.variables_real[0] === "title") {
-                                    altvar = "shortTitle";
-                                }
-                            } else {
-                                abbrevfam = false;
+                        var abbrevfam = this.variables[0];
+                        var abbrfall = false;
+                        var altvar = false;
+                        var transfall = false;
+                        if (form === "short") {
+                            if (this.variables_real[0] === "container-title") {
+                                altvar = "journalAbbreviation";
+                            } else if (this.variables_real[0] === "title") {
+                                altvar = "shortTitle";
                             }
-                            if (state.build.extension) {
-                                transfall = true;
-                            } else {
-                                transfall = true;
-                                abbrfall = true;
-						    }
+                        } else {
+                            abbrevfam = false;
                         }
+                        if (state.build.extension) {
+                            transfall = true;
+                        } else {
+                            transfall = true;
+                            abbrfall = true;
+						}
                         func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                     } else {
                         if (CSL.CITE_FIELDS.indexOf(this.variables_real[0]) > -1) {
@@ -10353,6 +10347,12 @@ CSL.Transform = function (state) {
         return function (state, Item, item, usedOrig) {
             var primary, primary_locale, secondary, secondary_locale, tertiary, tertiary_locale, primary_tok, group_tok, key;
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
+                return null;
+            }
+            if (state.opt.suppressJurisdictions
+                && variables[0] === "jurisdiction" 
+                && state.opt.suppressJurisdictions[Item.jurisdiction]
+                && ["legal_case","gazette","regulation","legislation"].indexOf(Item.type) > -1) {
                 return null;
             }
             var slot = {primary:false, secondary:false, tertiary:false};

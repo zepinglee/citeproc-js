@@ -307,6 +307,14 @@ CSL.Transform = function (state) {
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
                 return null;
             }
+            // Suppress from jurisdiction list if item is a primary legal source and suppression is requested.
+            if (state.opt.suppressJurisdictions
+                && variables[0] === "jurisdiction" 
+                && state.opt.suppressJurisdictions[Item.jurisdiction]
+                && ["legal_case","gazette","regulation","legislation"].indexOf(Item.type) > -1) {
+                
+                return null;
+            }
             
             var slot = {primary:false, secondary:false, tertiary:false};
             if (state.tmp.area.slice(-5) === "_sort") {
