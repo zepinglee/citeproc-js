@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.525
+==========================
+
+- Add optional call to getSuppressJurisdictions() offered
+  by the Abbreviation Filter.
+
+==========================
+Changes in version 1.0.524
+==========================
+
+- Expose the style name as citeproc.opt.styleName
+
+==========================
 Changes in version 1.0.523
 ==========================
 
