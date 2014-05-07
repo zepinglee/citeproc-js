@@ -18,10 +18,14 @@ CSL_E4X.prototype.clean = function (xml) {
 /**
  * Methods to call on a node.
  */
-CSL_E4X.prototype.getStyleId = function (myxml) {
+CSL_E4X.prototype.getStyleId = function (myxml, styleName) {
     var text = "";
     default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
-    var node = myxml..id;
+    var tagName = 'id';
+    if (styleName) {
+        tagName = 'title';
+    }
+    var node = myxml..[tagName];
     if (node && node.length()) {
         text = node[0].toString();
     }

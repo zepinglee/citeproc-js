@@ -118,9 +118,13 @@ CSL_CHROME.prototype.clean = function (xml) {
 /**
  * Methods to call on a node.
  */
-CSL_CHROME.prototype.getStyleId = function (myxml) {
+CSL_CHROME.prototype.getStyleId = function (myxml, styleName) {
     var text = "";
-    var node = myxml.getElementsByTagName("id");
+    var tagName = "id";
+    if (styleName) {
+        tagName = "title";
+    }
+    var node = myxml.getElementsByTagName(tagName);
     if (node && node.length) {
         node = node.item(0);
     }

@@ -104,8 +104,12 @@ CSL_JSON.prototype.clean = function (json) {
 /**
  * Methods to call on a node.
  */
-CSL_JSON.prototype.getStyleId = function (myjson) {
-    return myjson.attrs.id;
+CSL_JSON.prototype.getStyleId = function (myjson, styleName) {
+    var tagName = 'id';
+    if (styleName) {
+        tagName = 'title';
+    }
+    return myjson.attrs[tagName];
 };
 
 CSL_JSON.prototype.children = function (myjson) {
