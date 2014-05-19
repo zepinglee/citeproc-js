@@ -22,10 +22,10 @@ CSL_E4X.prototype.getStyleId = function (myxml, styleName) {
     var text = "";
     default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
     var tagName = 'id';
+    var node = myxml..id;
     if (styleName) {
-        tagName = 'title';
+        tagName = myxml..title;
     }
-    var node = myxml..[tagName];
     if (node && node.length()) {
         text = node[0].toString();
     }
