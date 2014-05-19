@@ -23,7 +23,9 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
 
     listify = function (str, hyphens) {
         var m, lst, ret;
-        str = str.replace(/([^\\])\u2013/g, "$1-").replace(/\s+\u2013\s+/g, " - ");
+        // Normalize delimiters to hyphen wrapped in single spaces
+        var delimRex = new RegExp("([^\\\\])[" + range_delimiter + "\\u2013]", "g");
+        str = str.replace(delimRex, "$1 - ").replace(/\s+-\s+/g, " - ");
         // Workaround for Internet Explorer
         var rexm = new RegExp("([a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+)", "g");
         var rexlst = new RegExp("[a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+");
