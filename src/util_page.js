@@ -21,8 +21,10 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         return ret;
     };
 
-    listify = function (str, hyphens) {
+    listify = function (str) {
         var m, lst, ret;
+        // Normalized delimiter form, for use in regexps
+        var hyphens = "\\s+\\-\\s+";
         // Normalize delimiters to hyphen wrapped in single spaces
         var delimRex = new RegExp("([^\\\\])[" + range_delimiter + "\\u2013]", "g");
         str = str.replace(delimRex, "$1 - ").replace(/\s+-\s+/g, " - ");
@@ -31,7 +33,6 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         var rexlst = new RegExp("[a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+");
         m = str.match(rexm);
         lst = str.split(rexlst);
-
         if (lst.length === 0) {
             ret = m;
         } else {
@@ -44,9 +45,9 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         return ret;
     };
 
-    expand = function (str, hyphens) {
+    expand = function (str) {
         str = "" + str;
-        lst = listify(str, hyphens);
+        lst = listify(str);
         len = lst.length;
         for (pos = 1; pos < len; pos += 2) {
             m = lst[pos].match(rangerex);
@@ -131,14 +132,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     var sniff = function (str, func, minchars, isyear) {
         var ret;
 		str = "" + str;
-        var lst;
-		if (!str.match(/[^\-\u20130-9 ,&]/)) {
-			lst = expand(str, "-");
-            ret = func(lst, minchars, isyear);
-        } else {
-			lst = expand(str, "\\s+\\-\\s+");
-            ret = func(lst, minchars, isyear);
-        }
+		var lst = expand(str);
+        var ret = func(lst, minchars, isyear);
         return ret;
     }
     if (!state.opt[rangeType + "-range-format"]) {
