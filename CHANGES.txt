@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.526
+==========================
+
+- Fix bug in page-range-format affecting certain locales. Addresses
+  https://forums.zotero.org/discussion/33793?page=1#Item_13
+
+==========================
 Changes in version 1.0.525
 ==========================
 

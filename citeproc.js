@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.525",
+    PROCESSOR_VERSION: "1.0.526",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -11712,9 +11712,11 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         ret = ret.replace(/([^\\])\-/g, "$1"+state.getTerm(rangeType + "-range-delimiter"));
         return ret;
     };
-    listify = function (str, hyphens) {
+    listify = function (str) {
         var m, lst, ret;
-        str = str.replace(/([^\\])\u2013/g, "$1-").replace(/\s+\u2013\s+/g, " - ");
+        var hyphens = "\\s+\\-\\s+";
+        var delimRex = new RegExp("([^\\\\])[" + range_delimiter + "\\u2013]", "g");
+        str = str.replace(delimRex, "$1 - ").replace(/\s+-\s+/g, " - ");
         var rexm = new RegExp("([a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+)", "g");
         var rexlst = new RegExp("[a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+");
         m = str.match(rexm);
@@ -11730,9 +11732,9 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         }
         return ret;
     };
-    expand = function (str, hyphens) {
+    expand = function (str) {
         str = "" + str;
-        lst = listify(str, hyphens);
+        lst = listify(str);
         len = lst.length;
         for (pos = 1; pos < len; pos += 2) {
             m = lst[pos].match(rangerex);
@@ -11810,14 +11812,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     var sniff = function (str, func, minchars, isyear) {
         var ret;
 		str = "" + str;
-        var lst;
-		if (!str.match(/[^\-\u20130-9 ,&]/)) {
-			lst = expand(str, "-");
-            ret = func(lst, minchars, isyear);
-        } else {
-			lst = expand(str, "\\s+\\-\\s+");
-            ret = func(lst, minchars, isyear);
-        }
+		var lst = expand(str);
+        var ret = func(lst, minchars, isyear);
         return ret;
     }
     if (!state.opt[rangeType + "-range-format"]) {
