@@ -68,3 +68,11 @@ to identify them:
 
 See JULIA_NOTE.pdf for an issue relating to New Zealand Law style.
 
+Documentation
+
+* Describe punctuation suppression for Rintze
+
+    SWAPPING_PUNCTUATION: [".", "!", "?", ":",","],
+    TERMINAL_PUNCTUATION: [":", ".", ";", "!", "?", " "],
+
+* Describe parsing of names in Zotero wiki page, as requested by Rintze
