@@ -315,8 +315,19 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
         }
-        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
-        CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[j]);
+            //print("XXX: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+        }
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            //print("ONE: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            CSL.Output.Queue.adjustNearsideSuffixes(this.output.queue[j]);
+            //print("TWO: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            CSL.Output.Queue.adjustNearsidePrefixes(this.output.queue[j]);
+            //print("THREE: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            CSL.Output.Queue.adjustPunctuation(this.output.queue[j], this.getOpt("punctuation-in-quote"));
+            //print("FOUR: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+        }
         res = this.output.string(this, this.output.queue)[0];
         if (!res) {
             res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";

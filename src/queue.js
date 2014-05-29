@@ -320,7 +320,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         }
         for (var i = blob.decorations.length - 1; i > -1; i += -1) {
             if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] === "true") {
-                blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote")
+                blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote");
             }
             if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
                 if (blob.decorations[i][0] === "@font-style") {
@@ -640,37 +640,27 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
     return ret;
 };
 
-CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
-    var res, i, ilen, j, jlen, tmpblobs;
-    //print("XXX myblobs type = "+typeof myblobs);
-    if ("string" === typeof myblobs || !myblobs.length) {
+CSL.Output.Queue.purgeEmptyBlobs = function (parent) {
+    //print("START1");
+    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
         return;
     }
-    for (i = myblobs.length - 1; i > -1; i += -1) {
-        // XXX This should not happen, but I have seen an error triggered
-        // XXX by an undefined blobs object. This masks the fault, which
-        // XXX is harmless. It's not really the right way to fix this,
-        // XXX but processor crashes are intolerable.
-        if ("undefined" === typeof myblobs[i].blobs) {
-            myblobs[i].blobs = [];
-        }
-        CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs, endOnly);
-    }
-    for (i = myblobs.length - 1; i > -1; i += -1) {
-        // Edit myblobs in place
-        if (!myblobs[i].blobs.length) {
-            tmpblobs = myblobs.slice(i + 1);
-            for (j = i, jlen = myblobs.length; j < jlen; j += 1) {
-                myblobs.pop();
+    // back-to-front, bottom-first
+    for (var i=parent.blobs.length-1;i>-1;i--) {
+        CSL.Output.Queue.purgeEmptyBlobs(parent.blobs[i]);
+        var child = parent.blobs[i];
+        if (!child || !child.blobs || !child.blobs.length) {
+            var buf = [];
+            while ((parent.blobs.length-1) > i) {
+                buf.push(parent.blobs.pop());
             }
-            for (j = 0, jlen = tmpblobs.length; j < jlen; j += 1) {
-                myblobs.push(tmpblobs[j]);
+            parent.blobs.pop();
+            while (buf.length) {
+                parent.blobs.push(buf.pop());
             }
         }
-        if (endOnly) {
-            break;
-        }
     }
+    //print("   end");
 };
 
 // XXXXX: Okay, stop and think about the following two functions.
@@ -680,387 +670,160 @@ CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
 // functions are applied to spaces, we can get more robust 
 // behavior without breaking things all over the place.
 
-CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
-    if (!chr) {
+CSL.Output.Queue.adjustNearsidePrefixes = function(parent) {
+    //print("START2");
+    var SWAPS = CSL.SWAPPING_PUNCTUATION;
+    // Terminus if no blobs
+    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
         return;
     }
-    if ("object" === typeof myblob) {
-        // The third condition below until I come up with something less bad
-        // Addresses http://forums.zotero.org/discussion/28021/the-magically-vanished-delimiter/
-        if ((CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1
-             && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1)
-            && !(myblob.strings.prefix.slice(0,1) === ";" && chr === ".")) {
-            myblob.strings.prefix = myblob.strings.prefix.slice(1);
-        } else if ("object" === typeof myblob.blobs) {
-            CSL.Output.Queue.purgeNearsidePrefixChars(myblob.blobs[0], chr);
-        }
-    }
-};
-
-CSL.Output.Queue.purgeNearsidePrefixSpaces = function(myblob, chr) {
-    //if (!chr) {
-    //    return;
-    //}
-    if ("object" === typeof myblob) {
-        if (" " === chr && " " === myblob.strings.prefix.slice(0, 1)) {
-            myblob.strings.prefix = myblob.strings.prefix.slice(1);
-        } else if ("object" === typeof myblob.blobs) {
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(myblob.blobs[0], chr);
-        }
-    }
-};
-
-CSL.Output.Queue.purgeNearsideSuffixSpaces = function(myblob, chr) {
-    if ("object" === typeof myblob) {
-        if (" " === chr && " " === myblob.strings.suffix.slice(-1)) {
-            myblob.strings.suffix = myblob.strings.suffix.slice(0, -1);
-        } else if ("object" === typeof myblob.blobs) {
-            if (!chr) {
-                chr = myblob.strings.suffix.slice(-1);
+    // back-to-front, bottom-first
+    for (var i=parent.blobs.length-1;i>-1;i--) {
+        CSL.Output.Queue.adjustNearsidePrefixes(parent.blobs[i]);
+        var parentStrings = parent.strings;
+        var childStrings = parent.blobs[i].strings;
+        if (i === 0) {
+            // Remove leading space on first-position child node prefix if there is a trailing space on the node prefix above 
+            if (" " === parentStrings.prefix.slice(-1) && " " === childStrings.prefix.slice(0, 1)) {
+                childStrings.prefix = childStrings.prefix.slice(1);
             }
-            chr = CSL.Output.Queue.purgeNearsideSuffixSpaces(myblob.blobs[myblob.blobs.length - 1], chr);
-        } else {
-            chr = myblob.strings.suffix.slice(-1);
+            // Migrate leading punctuation or space on a first-position prefix upward
+            var childChar = childStrings.prefix.slice(0, 1);
+            if (SWAPS.concat([" "]).indexOf(childChar) > -1 && !parentStrings.prefix) {
+
+                // XXX This may carry us beyond reach of a quoted node
+                // XXX May not be necessary
+                parentStrings.prefix += childChar;
+                childStrings.prefix = childStrings.prefix.slice(1);
+            }
+        } else if (parentStrings.delimiter) {
+            // Remove leading space on mid-position child node prefix if there is a trailing space on delimiter above
+            if (SWAPS.concat([" "]).indexOf(parentStrings.delimiter.slice(-1)) > -1 
+                && parentStrings.delimiter.slice(-1) === childStrings.prefix.slice(0, 1)) {
+
+                childStrings.prefix = childStrings.prefix.slice(1);
+            }
         }
+        // Siblings are handled in adjustNearsideSuffixes()
     }
-    return chr;
+    //print("   end");
 };
 
-CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
-    var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr, firstchr, exposed_suffixes, exposed, j, jlen, i, ilen;
+CSL.Output.Queue.adjustNearsideSuffixes = function(parent) {
+    //print("START3");
+    var SWAPS = CSL.SWAPPING_PUNCTUATION;
+    // Terminus if no blobs
+    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+        return;
+    }
+    var parentStrings = parent.strings;
+    // If there is a leading swappable character on delimiter, copy it to suffixes
+    if (parentStrings.delimiter && SWAPS.indexOf(parentStrings.delimiter.slice(0, 1)) > -1) {
+        var delimChar = parentStrings.delimiter.slice(0, 1);
+        for (var i=parent.blobs.length-2;i>-1;i--) {
+            var childStrings = parent.blobs[i].strings;
+            childStrings.suffix += delimChar;
+        }
+        parentStrings.delimiter = parentStrings.delimiter.slice(1);
+    }
+    // back-to-front, top-first
+    for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
+        var child = parent.blobs[i];
+        var childStrings = parent.blobs[i].strings;
+        if (i === (parent.blobs.length - 1)) {
+            // Remove any duplicate punctuation on child node
+            if (SWAPS.concat([" "]).indexOf(parentStrings.suffix.slice(-1)) > -1
+                && childStrings.suffix.slice(-1) === parentStrings.suffix.slice(0, 1)) {
 
+                childStrings.suffix = childStrings.suffix.slice(0, -1);
+            }
+            // Migrate trailing punctuation or space on a last-position suffix DOWNWARD, stopping at any @quotes
+            var parentChar = parentStrings.suffix.slice(0, 1);
+            if (SWAPS.indexOf(parentChar) > -1) {
+                childStrings.suffix += parentChar;
+                parent.strings.suffix = parent.strings.suffix.slice(1);
+            }
+        } else if (parentStrings.delimiter) {
+            // Remove trailing space on mid-position child node suffix if there is a leading space on delimiter above
+            if (SWAPS.concat([" "]).indexOf(parentStrings.delimiter.slice(0, 1)) > -1
+                && parentStrings.delimiter.slice(0, 1) === childStrings.prefix.slice(-1)) {
+
+                childStrings.suffix = childStrings.suffix.slice(0, -1);
+            }
+            // no downward migration: that happens only in adjustNearsidePrefixes()
+        } else {
+            // Otherwise it's a sibling. We don't care about moving spaces here, just suppress a duplicate
+            var siblingStrings = parent.blobs[i+1].strings;
+            if (SWAPS.indexOf(childStrings.prefix.slice(-1)) > -1
+                && childStrings.prefix.slice(-1) === siblingStrings.suffix.slice(0, 1)) {
+
+                siblingStrings.suffix = siblingStrings.suffix.slice(1);
+            }
+        }
+        // If field content ends with swappable punctuation, suppress swappable punctuation in style suffix.
+        if (SWAPS.indexOf(childStrings.suffix.slice(0,1)) > -1
+            && "string" === typeof child.blobs
+            && child.blobs.slice(-1) === childStrings.suffix.slice(0,1)) {
+            
+            // WHAT SHOULD BE THE CONDITIONS HERE??? CURRENTLY JUST SUPPRESSES DUPLICATES
+
+            childStrings.suffix = childStrings.suffix.slice(1);
+        }
+        CSL.Output.Queue.adjustNearsideSuffixes(parent.blobs[i]);
+    }
+    // If there is a trailing swappable character on a sibling prefix with no intervening delimiter, copy it to suffix
+    if (!parentStrings.delimiter) {
+        for (var i=parent.blobs.length-2;i>-1;i--) {
+            var child = parent.blobs[i];
+            var sibling = parent.blobs[i+1];
+            var siblingChar = sibling.strings.prefix.slice(0, 1);
+            if (SWAPS.indexOf(siblingChar) > -1) {
+                child.strings.suffix += siblingChar;
+                sibling.strings.prefix = sibling.strings.prefix.slice(1);
+            }
+        }
+    }
+    //print("  end");
+};
+
+CSL.Output.Queue.adjustPunctuation = function (parent, punctInQuote) {
+    //print("START4");
     var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
     var TERM_OR_SPACE = CSL.TERMINAL_PUNCTUATION;
+
     var SWAPS = CSL.SWAPPING_PUNCTUATION;
-    
-    if (!stk) {
-        stk = [{suffix: "", delimiter: "", lastNode:true}];        
+    // Terminus if no blobs
+    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+        return;
     }
-
-    slast = stk.length - 1;
-
-    delimiter = stk[slast].delimiter;
-    dpref = stk[slast].dpref;
-    dsuff = stk[slast].dsuff;
-    dsufff = stk[slast].dsufff;
-    prefix = stk[slast].prefix;
-    suffix = stk[slast].suffix;
-    blob = stk[slast].blob;
-
-    if ("string" === typeof myblobs) {
-        // Note that (1) the "suffix" variable is set 
-        // non-nil only if it contains terminal punctuation;
-        // (2) "myblobs" is a string in this case; (3) we
-        // don't try to control duplicate spaces, because
-        // if they're in the user-supplied string somehow, 
-        // they've been put there by intention.
-        if (suffix) {
-            if (blob && 
-                TERMS.indexOf(myblobs.slice(-1)) > -1 &&
-                TERMS.slice(1).indexOf(suffix) > -1 &&
-                blob.strings.suffix !== " ") {
-                    blob.strings.suffix = blob.strings.suffix.slice(1);
+    // Do the swap, front-to-back, bottom-first
+    var lastChar;
+    for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
+        lastChar = CSL.Output.Queue.adjustPunctuation(parent.blobs[i], punctInQuote);
+        var child = parent.blobs[i];
+        var childPunctInQuote = false;
+        var quoteSwap = false;
+        for (var j=0,jlen=child.decorations.length;j<jlen;j++) {
+            var decoration = child.decorations[j];
+            if (decoration[0] === "@quotes" && decoration[1] === "true") {
+                quoteSwap = true;
             }
         }
-        lastchr = myblobs.slice(-1);
-        firstchr = myblobs.slice(0,1);
-    } else {
-        // Complete the move of a leading terminal punctuation 
-        // from superior delimiter to suffix at this level,
-        // to allow selective suppression.
-        if (dpref) {
-            for (j = 0, jlen = myblobs.length - 1; j < jlen; j += 1) {
-                var t = myblobs[j].strings.suffix.slice(-1);
-                // print("hey: ["+j+"] ("+dpref+") ("+myblobs[0].blobs+")")
-
-                if (TERMS.indexOf(t) === -1 ||
-                    TERMS.indexOf(dpref) === -1) {
-                    // Drop duplicate space
-                    if (dpref !== " " || dpref !== myblobs[j].strings.suffix.slice(-1)) {
-                        myblobs[j].strings.suffix += dpref;                        
-                    }
+        if (quoteSwap) {
+            var childChar = child.strings.suffix.slice(0, 1);
+            if (punctInQuote) {
+                // in: from sibling prefix IFF no delimiter
+                if ("string" === typeof child.blobs) {
+                    child.blobs += childChar;
+                } else {
+                    child.blobs[child.blobs.length-1].strings.suffix += childChar;
                 }
+                child.strings.suffix = child.strings.suffix.slice(1);
             }
         }
-
-        // For ParentalSuffixPrefixUphill
-        if (suffix === " ") {
-            CSL.Output.Queue.purgeNearsideSuffixSpaces(myblobs[myblobs.length - 1], " ");
-        }
-        var lst = [];
-        var doblob;
-        for (i = 0, ilen = myblobs.length - 1; i < ilen; i += 1) {
-            doblob = myblobs[i];
-            var following_prefix = myblobs[i + 1].strings.prefix;
-            chr = false;
-            // A record of the suffix leading character
-            // nearest to each empty delimiter, for use
-            // in comparisons in the next function.
-            var ret = CSL.Output.Queue.purgeNearsideSuffixSpaces(doblob, chr);
-            if (!dsuff) {
-                lst.push(ret);
-            } else {
-                lst.push(false);
-            }
-        }
-
-        // For ParentalSuffixPrefixDownhill
-        chr = false;
-        for (i = 1, ilen = myblobs.length; i < ilen; i += 1) {
-            doblob = myblobs[i];
-            chr = "";
-            var preceding_suffix = myblobs[i - 1].strings.suffix;
-            if (dsuff === " ") {
-                chr = dsuff;
-            } else if (preceding_suffix) {
-                chr = preceding_suffix.slice(-1);
-            } else if (lst[i - 1]) {
-                chr = lst[i - 1];
-            }
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(doblob, chr);
-        }
-        if (dsufff) {
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
-        } else if (prefix === " ") {
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
-        }
-
-        // Descend down the nearest blobs until we run into
-        // a string blob or a prefix, and if we find a
-        // prefix with an initial character that conflicts
-        // with the lastchr found so far, quash the prefix char.
-        for (i = 0, ilen = myblobs.length; i < ilen; i += 1) {
-            doblob = myblobs[i];
-
-            CSL.Output.Queue.purgeNearsidePrefixChars(doblob, lastchr);
-            
-            // Prefix and suffix
-            if (i === 0) {
-                if (prefix) {
-                    if (doblob.strings.prefix.slice(0, 1) === " ") {
-                        //doblob.strings.prefix = doblob.strings.prefix.slice(1);
-                    }
-                }
-            }
-            
-            if (dsufff) {
-                if (doblob.strings.prefix) {
-                    if (i === 0) {
-                        if (doblob.strings.prefix.slice(0, 1) === " ") {
-                            //doblob.strings.prefix = doblob.strings.prefix.slice(1);
-                        }
-                    }
-                }
-            }
-            if (dsuff) {
-                if (i > 0) {
-                    if (doblob.strings.prefix.slice(0, 1) === " ") {
-                        //doblob.strings.prefix = doblob.strings.prefix.slice(1);
-                    }
-                }
-            }
-
-            if (i < (myblobs.length - 1)) {
-                // Migrate any leading terminal punctuation on a subsequent
-                // prefix to the current suffix, iff the
-                // (remainder of the) intervening delimiter is empty.
-                // Needed for CSL of the Chicago styles.
-                var nextprefix = myblobs[i + 1].strings.prefix;
-                if (!delimiter) {
-                    if (nextprefix) {
-                        var nxtchr = nextprefix.slice(0, 1);
-                        if (SWAPS.indexOf(nxtchr) > -1) {
-                            myblobs[i + 1].strings.prefix = nextprefix.slice(1);
-                            if (TERMS.indexOf(nxtchr) === -1 ||
-                                (TERMS.indexOf(nxtchr) > -1 &&
-                                 TERMS.indexOf(doblob.strings.suffix.slice(-1)) === -1)) {
-                                     doblob.strings.suffix += nxtchr;
-                            }
-                        } else if (nxtchr === " " &&
-                                    doblob.strings.suffix.slice(-1) === " ") {
-                            doblob.strings.suffix = doblob.strings.suffix.slice(0, -1);
-                        }
-                    }
-                }
-            }
-
-            // If duplicate punctuation on superior suffix,
-            // quash on superior object.
-            if (i === (myblobs.length - 1)) {
-                if (suffix) {
-                    if (doblob.strings.suffix && 
-//                        (suffix === doblob.strings.suffix.slice(-1) ||
-                        (TERMS.slice(1).indexOf(suffix) > -1 &&
-                          TERMS.indexOf(doblob.strings.suffix.slice(-1)) > -1)) {
-                            blob.strings.suffix = blob.strings.suffix.slice(1);
-                    }
-                }
-            }
-
-            // Swap punctuation into quotation marks as required.
-            //if (i === (myblobs.length - 1) && state.getOpt('punctuation-in-quote')) {
-            if (state.getOpt('punctuation-in-quote')) {
-                var decorations = doblob.decorations;
-                for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
-                    if (decorations[j][0] === '@quotes' && (decorations[j][1] === 'true' || decorations[j][1] === 'inner')) {
-                        doblob.punctuation_in_quote = true;
-                        stk[slast].lastNode = true;
-                    }
-                }
-            }
-            if (doblob.punctuation_in_quote && stk[slast].lastNode) {
-                var swapchar = doblob.strings.suffix.slice(0, 1);
-                var swapblob = false;
-                if (SWAPS.indexOf(swapchar) > -1) {
-                    swapblob = doblob;
-                } else if (SWAPS.indexOf(suffix) > -1 && i === (myblobs.length - 1)) {
-                    swapchar = suffix;
-                    swapblob = blob;
-                } else {
-                    swapchar = false;
-                }
-                // This reflects Chicago 16th.
-                if (swapchar) {
-                    // For both possible case, if ending punctuation is 
-                    // not in SWAPS, add the swapchar.
-                            // Otherwise add the swapchar only if ending punctuation 
-                    // is in TERMS, and the swapchar is in SWAPS and not in TERMS.
-                    //
-                    // Code could do with some pruning, but that's the logic of it.
-                    if ("string" === typeof doblob.blobs) {
-                        if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1 ||
-                            (TERMS.indexOf(doblob.blobs.slice(-1)) > -1 &&
-                             SWAPS.indexOf(swapchar) > -1 &&
-                             TERMS.indexOf(swapchar) === -1)) {
-                            doblob.blobs += swapchar;
-                        }
-                    } else {
-                        if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1 ||
-                            (TERMS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) > -1 &&
-                             SWAPS.indexOf(swapchar) > -1 &&
-                             TERMS.indexOf(swapchar) === -1)) {
-                            doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
-                        }
-                    }
-                    swapblob.strings.suffix = swapblob.strings.suffix.slice(1);
-                }
-            }
-
-            // Prepare variables for the sniffing stack, for use
-            // in the next recursion.
-
-            if (i === (myblobs.length - 1)) {
-                // If last blob in series, use superior suffix if current
-                // level has none.
-                if (doblob.strings.suffix) {
-                    suffixX = doblob.strings.suffix.slice(0, 1);
-                    blobX = doblob;
-                } else {
-                    suffixX = stk[stk.length - 1].suffix;
-                    blobX = stk[stk.length - 1].blob;
-                }
-            } else {
-                // If NOT last blob in series, use only the current
-                // level suffix for sniffing.
-                if (doblob.strings.suffix) {
-                    suffixX = doblob.strings.suffix.slice(0, 1);
-                    blobX = doblob;
-                } else {
-                    suffixX = "";
-                    blobX = false;
-                }
-                
-            }
-
-            // Use leading suffix char for sniffing only if it
-            // is a terminal punctuation character.
-            if (SWAPS.concat([" "]).indexOf(suffixX) === -1) {
-            //if (SWAPS.indexOf(suffixX) === -1) {
-                suffixX = "";
-                blobX = false;
-            }
-
-            // Use leading delimiter char for sniffing only if it
-            // is a terminal punctuation character.
-            if (doblob.strings.delimiter && 
-                doblob.blobs.length > 1) {
-                dprefX = doblob.strings.delimiter.slice(0, 1);
-                if (SWAPS.concat([" "]).indexOf(dprefX) > -1) {
-                //if (SWAPS.indexOf(dprefX) > -1) {
-                    doblob.strings.delimiter = doblob.strings.delimiter.slice(1);
-                } else {
-                    dprefX = "";
-                }
-            } else {
-                dprefX = "";
-            }
-            
-            if (doblob.strings.prefix) {
-                if (doblob.strings.prefix.slice(-1) === " ") {
-                    // Marker copy only, no slice at this level before descending.
-                    prefixX = " ";
-                } else {
-                    prefixX = "";
-                }
-            } else {
-                if (i === 0) {
-                    prefixX = prefix;                    
-                } else {
-                    prefixX = "";
-                }
-            }
-
-            if (dsuff) {
-                dsufffX = dsuff;
-            } else {
-                if (i === 0) {
-                    dsufffX = dsufff;                    
-                } else {
-                    dsufffX = "";
-                }
-            }
-            if (doblob.strings.delimiter) {
-                if (doblob.strings.delimiter.slice(-1) === " " &&
-                    "object" === typeof doblob.blobs && doblob.blobs.length > 1) {
-                       dsuffX = doblob.strings.delimiter.slice(-1);
-                } else {
-                    dsuffX = "";                        
-                }
-            } else {
-                dsuffX = "";                    
-            }
-            
-            delimiterX = doblob.strings.delimiter;
-
-            var lastNode
-            if (i === (myblobs.length - 1) && stk[slast].lastNode) {
-                lastNode = true;
-            } else {
-                lastNode = false;
-            }
-
-            // Push variables to stack and recurse.
-            stk.push({suffix: suffixX, dsuff:dsuffX, blob:blobX, delimiter:delimiterX, prefix:prefixX, dpref: dprefX, dsufff: dsufffX, lastNode: lastNode});
-            lastchr = CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
-        }
-        
-        // cmd_cite.js needs a report of the last character to be
-        // rendered, to suppress extraneous trailing periods in
-        // rare cases.
-        if (myblobs && myblobs.length) {
-            var last_suffix = myblobs[myblobs.length - 1].strings.suffix;
-            if (last_suffix) {
-                lastchr = last_suffix.slice(-1);
-            }
+        if (child.blobs && "string" === typeof child.blobs) {
+            lastChar = child.blobs.slice(-1);
         }
     }
-    // Always pop the stk when returning, unless it's the end of the line
-    // (return value is needed in cmd_cite.js, so that the adjusted
-    // suffix can be extracted from the fake blob used at top level).
-    if (stk.length > 1) {
-        stk.pop();
-    }
-    // Are these needed?
-    state.tmp.last_chr = lastchr;
-    return lastchr;
+    return lastChar;
 };

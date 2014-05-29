@@ -26,13 +26,7 @@ Account for this when the output routine is completely rewritten:
 
 Fix this:
 
-  https://forums.zotero.org/discussion/33793?page=1#Item_13
-
-Fix this:
-
   https://forums.zotero.org/discussion/32322/mlz-how-is-the-hints-file-used/#Item_22
-
-Remove xmle4x.js from the demo page.
 
 Look at the bookmarks on the iPad for some more recent issues.
 

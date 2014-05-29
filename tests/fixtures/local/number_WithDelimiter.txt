@@ -25,7 +25,7 @@ citation
         <group delimiter="/">
           <number variable="volume"/>
           <group>
-          <number variable="issue"/>
+            <number variable="issue"/>
           </group>
         </group>
         <group>

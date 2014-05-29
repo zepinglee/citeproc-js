@@ -737,9 +737,15 @@ CSL.getAmbiguousCite = function (Item, disambig) {
     this.tmp.just_looking = true;
     CSL.getCite.call(this, Item, {position: 1});
     // !!!
-    CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
+    for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
+        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
+    }
     if (this.opt.development_extensions.clean_up_csl_flaws) {
-        CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            CSL.Output.Queue.adjustNearsidePrefixes(this.output.queue[j]);
+            CSL.Output.Queue.adjustNearsideSuffixes(this.output.queue[j]);
+            CSL.Output.Queue.adjustPunctuation(this.output.queue[j], this.getOpt("punctuation-in-quote"));
+        }
     }
     ret = this.output.string(this, this.output.queue);
     this.tmp.just_looking = false;
@@ -953,18 +959,10 @@ CSL.getCitationCluster = function (inputList, citationID) {
     if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter.slice(0, 1)) > -1) {
         delimiter = delimiter.slice(0, 1);
     }
-    var mystk = [
-        {
-            suffix: "",
-            delimiter: delimiter,
-            blob: fakeblob,
-            lastNode: true
-        }
-    ];
     //print("=== FROM CITE ===");
     var use_layout_suffix = suffix;
-    for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
-        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue, true);
+    for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
+        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
     }
     for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
         this.output.queue = [myblobs[pos]];
@@ -982,11 +980,18 @@ CSL.getCitationCluster = function (inputList, citationID) {
 
         // No purgeEmptyBlobs() with this housecleaning adjustment
         // to punctuation.
-        if (pos === (myblobs.length - 1)) {
-            mystk[0].suffix = use_layout_suffix;
-        }
+        var lastChar;
         if (this.opt.development_extensions.clean_up_csl_flaws) {
-            CSL.Output.Queue.adjustPunctuation(this, this.output.queue, mystk);
+            for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+                //print("ONE: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+                CSL.Output.Queue.adjustNearsidePrefixes(this.output.queue[j]);
+                //print("TWO: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+                CSL.Output.Queue.adjustNearsideSuffixes(this.output.queue[j]);
+                //print("THREE: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+                this.tmp.last_chr = CSL.Output.Queue.adjustPunctuation(this.output.queue[j], this.getOpt("punctuation-in-quote"));
+                //print("FOUR: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2));
+                var blob = this.output.queue[j];
+            }
         }
         composite = this.output.string(this, this.output.queue);
         this.tmp.suppress_decorations = false;
@@ -1041,6 +1046,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             empties += 1;
         }
     }
+    print(objects);
     result += this.output.renderBlobs(objects);
     if (result) {
         if (CSL.TERMINAL_PUNCTUATION.indexOf(this.tmp.last_chr) > -1 
