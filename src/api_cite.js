@@ -742,9 +742,10 @@ CSL.getAmbiguousCite = function (Item, disambig) {
     }
     if (this.opt.development_extensions.clean_up_csl_flaws) {
         for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
-            CSL.Output.Queue.adjustNearsidePrefixes(this.output.queue[j]);
-            CSL.Output.Queue.adjustNearsideSuffixes(this.output.queue[j]);
-            CSL.Output.Queue.adjustPunctuation(this.output.queue[j], this.getOpt("punctuation-in-quote"));
+            this.output.adjust.upward(this.output.queue[j]);
+            this.output.adjust.leftward(this.output.queue[j]);
+            this.output.adjust.downward(this.output.queue[j]);
+            this.output.adjust.fix(this.output.queue[j]);
         }
     }
     ret = this.output.string(this, this.output.queue);
@@ -964,6 +965,30 @@ CSL.getCitationCluster = function (inputList, citationID) {
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
         CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
     }
+    if (!this.tmp.suppress_decorations) {
+        if (!(this.opt.development_extensions.apply_citation_wrapper
+              && this.sys.wrapCitationEntry
+              && !this.tmp.just_looking
+              && this.tmp.area === "citation")) { 
+
+            this.output.queue[this.output.queue.length - 1].strings.suffix = use_layout_suffix;
+            this.output.queue[0].strings.prefix = this.citation.opt.layout_prefix;
+        }
+    }
+    if (this.opt.development_extensions.clean_up_csl_flaws) {
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            //print("OUTPUT[5]: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            this.output.adjust.upward(this.output.queue[j]);
+            //print("OUTPUT[4]: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            this.output.adjust.leftward(this.output.queue[j]);
+            //print("OUTPUT[3]: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            this.output.adjust.downward(this.output.queue[j]);
+            //print("OUTPUT[2]: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            this.tmp.last_chr = this.output.adjust.fix(this.output.queue[j]);
+            //print("OUTPUT[1]: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations','num'],2))
+        }
+    }
+    //print("this.tmp.last_chr="+this.tmp.last_chr);
     for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
         this.output.queue = [myblobs[pos]];
 
@@ -978,21 +1003,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
         }
         this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
-        // No purgeEmptyBlobs() with this housecleaning adjustment
-        // to punctuation.
-        var lastChar;
-        if (this.opt.development_extensions.clean_up_csl_flaws) {
-            for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
-                //print("ONE: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
-                CSL.Output.Queue.adjustNearsidePrefixes(this.output.queue[j]);
-                //print("TWO: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
-                CSL.Output.Queue.adjustNearsideSuffixes(this.output.queue[j]);
-                //print("THREE: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
-                this.tmp.last_chr = CSL.Output.Queue.adjustPunctuation(this.output.queue[j], this.getOpt("punctuation-in-quote"));
-                //print("FOUR: " + JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2));
-                var blob = this.output.queue[j];
-            }
-        }
         composite = this.output.string(this, this.output.queue);
         this.tmp.suppress_decorations = false;
         // meaningless assignment
@@ -1005,7 +1015,10 @@ CSL.getCitationCluster = function (inputList, citationID) {
             if (this.tmp.has_purged_parallel) {
                 composite.push("");
             } else {
-                composite.push("[CSL STYLE ERROR: reference with no printed form.]");
+                var errStr = "[CSL STYLE ERROR: reference with no printed form.]";
+                var preStr = pos === 0 ? txt_esc(this.citation.opt.layout_prefix) : "";
+                var sufStr = pos === (myblobs.length - 1) ? txt_esc(this.citation.opt.layout_suffix) : "";
+                composite.push(preStr + errStr + sufStr);
             }
         }
         if (objects.length && "string" === typeof composite[0]) {
@@ -1046,22 +1059,13 @@ CSL.getCitationCluster = function (inputList, citationID) {
             empties += 1;
         }
     }
-    print(objects);
     result += this.output.renderBlobs(objects);
     if (result) {
-        if (CSL.TERMINAL_PUNCTUATION.indexOf(this.tmp.last_chr) > -1 
-            && this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
-            use_layout_suffix = use_layout_suffix.slice(1);
-        }
+        //if (CSL.TERMINAL_PUNCTUATION.indexOf(this.tmp.last_chr) > -1 
+        //    && this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
+        //    use_layout_suffix = use_layout_suffix.slice(1);
+        //}
         this.output.nestedBraces = false;
-        if (!(this.opt.development_extensions.apply_citation_wrapper
-            && this.sys.wrapCitationEntry
-            && !this.tmp.just_looking
-              && this.tmp.area === "citation")) { 
-			
-            //print("TRY");
-			result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(use_layout_suffix);
-		}
         if (!this.tmp.suppress_decorations) {
             len = this.citation.opt.layout_decorations.length;
             for (pos = 0; pos < len; pos += 1) {

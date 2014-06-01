@@ -198,6 +198,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     }
     this.locale[this.opt.lang].opts["skip-words-regexp"] = makeRegExp(this.locale[this.opt.lang].opts["skip-words"]);
 
+    this.output.adjust = new CSL.Output.Queue.adjust(this.getOpt('punctuation-in-quote'));
 
     this.registry = new CSL.Registry(this);
 

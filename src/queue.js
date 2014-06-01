@@ -663,167 +663,448 @@ CSL.Output.Queue.purgeEmptyBlobs = function (parent) {
     //print("   end");
 };
 
-// XXXXX: Okay, stop and think about the following two functions.
-// Spaces have no formatting characteristics, so they can be
-// safely purged at lower levels.  If a separate function is used
-// for punctuation (i.e. the original setup), and special-purpose
-// functions are applied to spaces, we can get more robust 
-// behavior without breaking things all over the place.
+// Adjustments to be made:
+//
+// * Never migrate beyond a @quotes node
+// * Never migrate into a num node.
 
-CSL.Output.Queue.adjustNearsidePrefixes = function(parent) {
-    //print("START2");
-    var SWAPS = CSL.SWAPPING_PUNCTUATION;
-    // Terminus if no blobs
-    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
-        return;
+CSL.Output.Queue.adjust = function (punctInQuote) {
+
+    var NO_SWAP_IN = {
+        ";": true,
+        ":": true
     }
-    // back-to-front, bottom-first
-    for (var i=parent.blobs.length-1;i>-1;i--) {
-        CSL.Output.Queue.adjustNearsidePrefixes(parent.blobs[i]);
-        var parentStrings = parent.strings;
-        var childStrings = parent.blobs[i].strings;
-        if (i === 0) {
-            // Remove leading space on first-position child node prefix if there is a trailing space on the node prefix above 
-            if (" " === parentStrings.prefix.slice(-1) && " " === childStrings.prefix.slice(0, 1)) {
-                childStrings.prefix = childStrings.prefix.slice(1);
-            }
-            // Migrate leading punctuation or space on a first-position prefix upward
-            var childChar = childStrings.prefix.slice(0, 1);
-            if (SWAPS.concat([" "]).indexOf(childChar) > -1 && !parentStrings.prefix) {
 
-                // XXX This may carry us beyond reach of a quoted node
-                // XXX May not be necessary
-                parentStrings.prefix += childChar;
-                childStrings.prefix = childStrings.prefix.slice(1);
-            }
-        } else if (parentStrings.delimiter) {
-            // Remove leading space on mid-position child node prefix if there is a trailing space on delimiter above
-            if (SWAPS.concat([" "]).indexOf(parentStrings.delimiter.slice(-1)) > -1 
-                && parentStrings.delimiter.slice(-1) === childStrings.prefix.slice(0, 1)) {
-
-                childStrings.prefix = childStrings.prefix.slice(1);
-            }
-        }
-        // Siblings are handled in adjustNearsideSuffixes()
+    var NO_SWAP_OUT = {
+        ".": true,
+        "!": true,
+        "?": true
     }
-    //print("   end");
-};
 
-CSL.Output.Queue.adjustNearsideSuffixes = function(parent) {
-    //print("START3");
-    var SWAPS = CSL.SWAPPING_PUNCTUATION;
-    // Terminus if no blobs
-    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
-        return;
-    }
-    var parentStrings = parent.strings;
-    // If there is a leading swappable character on delimiter, copy it to suffixes
-    if (parentStrings.delimiter && SWAPS.indexOf(parentStrings.delimiter.slice(0, 1)) > -1) {
-        var delimChar = parentStrings.delimiter.slice(0, 1);
-        for (var i=parent.blobs.length-2;i>-1;i--) {
-            var childStrings = parent.blobs[i].strings;
-            childStrings.suffix += delimChar;
-        }
-        parentStrings.delimiter = parentStrings.delimiter.slice(1);
-    }
-    // back-to-front, top-first
-    for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
-        var child = parent.blobs[i];
-        var childStrings = parent.blobs[i].strings;
-        if (i === (parent.blobs.length - 1)) {
-            // Remove any duplicate punctuation on child node
-            if (SWAPS.concat([" "]).indexOf(parentStrings.suffix.slice(-1)) > -1
-                && childStrings.suffix.slice(-1) === parentStrings.suffix.slice(0, 1)) {
+    this.upward = upward;
+    this.leftward = leftward;
+    this.downward = downward;
+    this.fix = fix;
 
-                childStrings.suffix = childStrings.suffix.slice(0, -1);
-            }
-            // Migrate trailing punctuation or space on a last-position suffix DOWNWARD, stopping at any @quotes
-            var parentChar = parentStrings.suffix.slice(0, 1);
-            if (SWAPS.indexOf(parentChar) > -1) {
-                childStrings.suffix += parentChar;
-                parent.strings.suffix = parent.strings.suffix.slice(1);
-            }
-        } else if (parentStrings.delimiter) {
-            // Remove trailing space on mid-position child node suffix if there is a leading space on delimiter above
-            if (SWAPS.concat([" "]).indexOf(parentStrings.delimiter.slice(0, 1)) > -1
-                && parentStrings.delimiter.slice(0, 1) === childStrings.prefix.slice(-1)) {
-
-                childStrings.suffix = childStrings.suffix.slice(0, -1);
-            }
-            // no downward migration: that happens only in adjustNearsidePrefixes()
-        } else {
-            // Otherwise it's a sibling. We don't care about moving spaces here, just suppress a duplicate
-            var siblingStrings = parent.blobs[i+1].strings;
-            if (SWAPS.indexOf(childStrings.prefix.slice(-1)) > -1
-                && childStrings.prefix.slice(-1) === siblingStrings.suffix.slice(0, 1)) {
-
-                siblingStrings.suffix = siblingStrings.suffix.slice(1);
-            }
-        }
-        // If field content ends with swappable punctuation, suppress swappable punctuation in style suffix.
-        if (SWAPS.indexOf(childStrings.suffix.slice(0,1)) > -1
-            && "string" === typeof child.blobs
-            && child.blobs.slice(-1) === childStrings.suffix.slice(0,1)) {
-            
-            // WHAT SHOULD BE THE CONDITIONS HERE??? CURRENTLY JUST SUPPRESSES DUPLICATES
-
-            childStrings.suffix = childStrings.suffix.slice(1);
-        }
-        CSL.Output.Queue.adjustNearsideSuffixes(parent.blobs[i]);
-    }
-    // If there is a trailing swappable character on a sibling prefix with no intervening delimiter, copy it to suffix
-    if (!parentStrings.delimiter) {
-        for (var i=parent.blobs.length-2;i>-1;i--) {
-            var child = parent.blobs[i];
-            var sibling = parent.blobs[i+1];
-            var siblingChar = sibling.strings.prefix.slice(0, 1);
-            if (SWAPS.indexOf(siblingChar) > -1) {
-                child.strings.suffix += siblingChar;
-                sibling.strings.prefix = sibling.strings.prefix.slice(1);
-            }
+    var LtoR_MAP = {
+        "!": {
+            ".": "!",
+            "?": "!?",
+            ":": "!",
+            ",": "!,",
+            ";": "!;"
+        },
+        "?": {
+            "!": "?!",
+            ".": "?",
+            ":": "?",
+            ",": "?,",
+            ";": "?;"
+        },
+        ".": {
+            "!": ".!",
+            "?": ".?",
+            ":": ".:",
+            ",": ".,",
+            ";": ".;"
+        },
+        ":": {
+            "!": "!",
+            "?": "?",
+            ".": ":",
+            ",": ":,",
+            ";": ":;"
+        },
+        ",": {
+            "!": ",!",
+            "?": ",?",
+            ":": ",:",
+            ".": ",.",
+            ";": ",;"
+        },
+        ";": {
+            "!": "!",
+            "?": "?",
+            ":": ";",
+            ",": ";,",
+            ".": ";"
         }
     }
-    //print("  end");
-};
 
-CSL.Output.Queue.adjustPunctuation = function (parent, punctInQuote) {
-    //print("START4");
-    var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
-    var TERM_OR_SPACE = CSL.TERMINAL_PUNCTUATION;
-
-    var SWAPS = CSL.SWAPPING_PUNCTUATION;
-    // Terminus if no blobs
-    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
-        return;
-    }
-    // Do the swap, front-to-back, bottom-first
-    var lastChar;
-    for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
-        lastChar = CSL.Output.Queue.adjustPunctuation(parent.blobs[i], punctInQuote);
-        var child = parent.blobs[i];
-        var childPunctInQuote = false;
-        var quoteSwap = false;
-        for (var j=0,jlen=child.decorations.length;j<jlen;j++) {
-            var decoration = child.decorations[j];
-            if (decoration[0] === "@quotes" && decoration[1] === "true") {
-                quoteSwap = true;
-            }
+    var SWAP_IN = {};
+    var SWAP_OUT = {};
+    var PUNCT = {};
+    var PUNCT_OR_SPACE = {};
+    for (var key in LtoR_MAP) {
+        PUNCT[key] = true;
+        PUNCT_OR_SPACE[key] = true;
+        if (!NO_SWAP_IN[key]) {
+            SWAP_IN[key] = true;
         }
-        if (quoteSwap) {
-            var childChar = child.strings.suffix.slice(0, 1);
-            if (punctInQuote) {
-                // in: from sibling prefix IFF no delimiter
-                if ("string" === typeof child.blobs) {
-                    child.blobs += childChar;
-                } else {
-                    child.blobs[child.blobs.length-1].strings.suffix += childChar;
+        if (!NO_SWAP_OUT[key]) {
+            SWAP_OUT[key] = true;
+        }
+    }
+    PUNCT_OR_SPACE[" "] = true;
+
+    var RtoL_MAP = {};
+    for (var key in LtoR_MAP) {
+        for (var subkey in LtoR_MAP[key]) {
+            if (!RtoL_MAP[subkey]) {
+                RtoL_MAP[subkey] = {};
+            }
+            RtoL_MAP[subkey][key] = LtoR_MAP[key][subkey];
+        }
+    }
+
+    function blobIsNumber(blob) {
+        return ("number" === typeof blob.num || (blob.blobs && blob.blobs.length === 1 && "number" === typeof blob.blobs[0].num));
+    };
+
+    function blobEndsInNumber(blob) {
+        if ("number" === typeof blob.num) {
+            return true;
+        }
+        if (!blob.blobs || "object" !==  typeof blob.blobs) return false;
+        if (blobEndsInNumber(blob.blobs[blob.blobs.length-1])) return true;
+    }
+    
+    function blobHasDecorations(blob,includeQuotes) {
+        var ret = false;
+        var decorlist = ['@font-style','@font-variant','@font-weight','@text-decoration','@vertical-align'];
+        if (includeQuotes) {
+            decorlist.push('@quotes');
+        }
+        if (blob.decorations) {
+            for (var i=0,ilen=blob.decorations.length;i<ilen;i++) {
+                if (decorlist.indexOf(blob.decorations[i][0]) > -1) {
+                    ret = true;
+                    break;
                 }
-                child.strings.suffix = child.strings.suffix.slice(1);
             }
         }
-        if (child.blobs && "string" === typeof child.blobs) {
-            lastChar = child.blobs.slice(-1);
+        return ret;
+    };
+    
+    function matchLastChar(blob, chr) {
+        if (blob.strings.suffix.slice(0, 1) === chr) {
+            return true;
+        } else if ("string" === typeof blob.blobs) {
+            if (blob.blobs.slice(-1) === chr) {
+                return true;
+            } else {
+                return false;
+            }
         }
-    }
-    return lastChar;
-};
+        for (var i=0,ilen=blob.blobs.length;i<ilen;i++) {
+            if (matchLastChar(blob.blobs[i])) return true;
+        }
+        return false;
+    };
+    
+    function mergeChars (First, first, Second, second, merge_right) {
+        FirstStrings = "blobs" === first ? First : First.strings;
+        SecondStrings = "blobs" === second ? Second: Second.strings;
+        var firstChar = FirstStrings[first].slice(-1);
+        var secondChar = SecondStrings[second].slice(0,1);
+        function cullRight () {
+            SecondStrings[second] = SecondStrings[second].slice(1);
+        };
+        function cullLeft () {
+            FirstStrings[first] = FirstStrings[first].slice(0,-1);
+        };
+        function addRight (chr) {
+            SecondStrings[second] = chr + SecondStrings[second];
+        }
+        function addLeft (chr) {
+            FirstStrings[first] += chr;
+        }
+        var cull = merge_right ? cullLeft : cullRight;
+        function matchOnRight () {
+            return RtoL_MAP[secondChar];
+        }
+        function matchOnLeft () {
+            var chr = FirstStrings[first].slice(-1);
+            return LtoR_MAP[firstChar];
+        }
+        var match = merge_right ? matchOnLeft : matchOnRight;
+        function mergeToRight () {
+            var chr = LtoR_MAP[firstChar][secondChar];
+            if ("string" === typeof chr) {
+                cullLeft();
+                cullRight();
+                addRight(chr);
+            } else {
+                addRight(firstChar);
+                cullLeft();
+            }
+        }
+        function mergeToLeft () {
+            var chr = RtoL_MAP[secondChar][firstChar];
+            if ("string" === typeof chr) {
+                cullLeft();
+                cullRight();
+                addLeft(chr);
+            } else {
+                addLeft(secondChar);
+                cullRight();
+            }
+        }
+        var merge = merge_right ? mergeToRight: mergeToLeft;
+
+        var isDuplicate = firstChar === secondChar;
+        if (isDuplicate) {
+            cull();
+        } else {
+            if (match()) {
+                merge();
+            }
+        }
+    };
+    
+    function upward (parent) {
+        //print("START2");
+        // Terminus if no blobs
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+        // back-to-front, bottom-first
+        var parentDecorations = blobHasDecorations(parent,true);
+        for (var i=parent.blobs.length-1;i>-1;i--) {
+            var endFlag = i === (parent.blobs.length-1);
+            this.upward(parent.blobs[i]);
+            var parentStrings = parent.strings;
+            var childStrings = parent.blobs[i].strings;
+            if (i === 0) {
+                // Remove leading space on first-position child node prefix if there is a trailing space on the node prefix above 
+                if (" " === parentStrings.prefix.slice(-1) && " " === childStrings.prefix.slice(0, 1)) {
+                    childStrings.prefix = childStrings.prefix.slice(1);
+                }
+                // Migrate leading punctuation or space on a first-position prefix upward
+                var childChar = childStrings.prefix.slice(0, 1);
+                if (!parentDecorations && PUNCT_OR_SPACE[childChar] && !parentStrings.prefix) {
+                    parentStrings.prefix += childChar;
+                    childStrings.prefix = childStrings.prefix.slice(1);
+                }
+            }
+            if (i === (parent.blobs.length - 1)) {
+                // Migrate trailing space ONLY on a last-position suffix upward, controlling for duplicates
+                var childChar = childStrings.suffix.slice(-1);
+                if (!parentDecorations && [" "].indexOf(childChar) > -1) {
+                    if (parentStrings.suffix.slice(0,1) !== childChar) {
+                        parentStrings.suffix = childChar + parentStrings.suffix;
+                    }
+                    childStrings.suffix = childStrings.suffix.slice(0, -1);
+                }
+            }
+            if (parentStrings.delimiter && i > 0) {
+                // Remove leading space on mid-position child node prefix if there is a trailing space on delimiter above
+                if (PUNCT_OR_SPACE[parentStrings.delimiter.slice(-1)]
+                    && parentStrings.delimiter.slice(-1) === childStrings.prefix.slice(0, 1)) {
+
+                    childStrings.prefix = childStrings.prefix.slice(1);
+                }
+            }
+            // Siblings are handled in adjustNearsideSuffixes()
+        }
+        //print("   end");
+    };
+
+    function leftward (parent) {
+        // Terminus if no blobs
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+
+        for (var i=parent.blobs.length-1;i>-1;i--) {
+            this.leftward(parent.blobs[i]);
+            // This is a delicate one.
+            //
+            // Migrate if:
+            // * there is no umbrella delimiter [ok]
+            // * neither the child nor its sibling is a number [ok]
+            // * decorations exist neither on the child nor on the sibling [ok]
+            // * sibling prefix char is a swapping char [ok]
+            //
+            // Suppress without migration if:
+            // * sibling prefix char matches child suffix char or
+            // * child suffix is empty and sibling prefix char match last field char
+            if ((i < parent.blobs.length -1) && !parent.strings.delimiter) {
+                // If there is a trailing swappable character on a sibling prefix with no intervening delimiter, copy it to suffix,
+                // controlling for duplicates
+                var child = parent.blobs[i];
+                var childChar = child.strings.suffix.slice(-1);
+                var sibling = parent.blobs[i+1];
+                var siblingChar = sibling.strings.prefix.slice(0, 1);
+                var hasDecorations = blobHasDecorations(child) || blobHasDecorations(sibling);
+                var hasNumber = "number" === typeof childChar || "number" === typeof siblingChar;
+
+                if (!hasDecorations && !hasNumber && PUNCT[siblingChar] && !hasNumber) {
+                    var suffixAndPrefixMatch = siblingChar === child.strings.suffix.slice(-1);
+                    var suffixAndFieldMatch = (!child.strings.suffix && "string" === typeof child.blobs && child.blobs.slice(-1) === siblingChar);
+                    if (!suffixAndPrefixMatch && !suffixAndFieldMatch) {
+                        mergeChars(child, 'suffix', sibling, 'prefix');
+                        //child.strings.suffix += siblingChar;
+                    } else {
+                        sibling.strings.prefix = sibling.strings.prefix.slice(1);
+                    }
+                }
+            }
+        }
+    };
+
+    function downward (parent) {
+        //print("START3");
+        // Terminus if no blobs
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+        var parentStrings = parent.strings;
+        // Check for numeric child
+        var someChildrenAreNumbers = false;
+        for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
+            if (blobIsNumber(parent.blobs[i])) {
+                someChildrenAreNumbers = true;
+                break;
+            }
+        }
+        if (!someChildrenAreNumbers) {
+            // If there is a leading swappable character on delimiter, copy it to suffixes IFF none of the targets are numbers
+            if (parentStrings.delimiter && PUNCT[parentStrings.delimiter.slice(0, 1)]) {
+                var delimChar = parentStrings.delimiter.slice(0, 1);
+                for (var i=parent.blobs.length-2;i>-1;i--) {
+                    var childStrings = parent.blobs[i].strings;
+                    childStrings.suffix += delimChar;
+                }
+                parentStrings.delimiter = parentStrings.delimiter.slice(1);
+            }
+        }
+        // back-to-front, top-first
+        var parentDecorations = blobHasDecorations(parent, true);
+        var parentIsNumber = blobIsNumber(parent);
+        for (var i=parent.blobs.length-1;i>-1;i--) {
+            var child = parent.blobs[i];
+            var childStrings = parent.blobs[i].strings;
+            var childDecorations = blobHasDecorations(child, true);
+            var childIsNumber = blobIsNumber(child);
+            if (i === (parent.blobs.length - 1)) {
+                if (true || !someChildrenAreNumbers) {
+                    if (!parentDecorations) {
+                        // Migrate trailing punctuation or space on a last-position suffix DOWNWARD, stopping at any @quotes and controlling for duplicates
+                        var parentChar = parentStrings.suffix.slice(0, 1);
+                        if (PUNCT[parentChar]) {
+                            if (!blobEndsInNumber(child)) {
+                                mergeChars(child, 'suffix', parent, 'suffix');
+                            }
+                        }
+                    } else {
+                        // If we have decorations, stop here, but drill down to see if there is duplicate punctuation below
+                        if (matchLastChar(child,parent.strings.suffix.slice(0,1))) {
+                            parent.strings.suffix = parent.strings.suffix.slice(1);
+                        }   
+                    }
+                    // More duplicates control
+                    if (PUNCT_OR_SPACE[childStrings.suffix.slice(0,1)]) {
+                        // Field inspection also done by second branch above. This is useful for catching !parentDecorations cases, but
+                        // can they be combined?
+                        if ("string" === typeof child.blobs && child.blobs.slice(-1) === childStrings.suffix.slice(0,1)) {
+                            // Remove parent punctuation of it duplicates the last character of a field
+                            childStrings.suffix = childStrings.suffix.slice(1);
+                        }
+                        if (childStrings.suffix.slice(-1) === parentStrings.suffix.slice(0, 1)) {
+                            // Remove duplicate punctuation on child suffix
+                            childStrings.suffix = childStrings.suffix.slice(0, -1);
+                        }
+                    }
+                }
+            } else if (parentStrings.delimiter) {
+                // Remove trailing space on mid-position child node suffix if there is a leading space on delimiter above
+                if (PUNCT_OR_SPACE[parentStrings.delimiter.slice(0,1)]
+                    && parentStrings.delimiter.slice(0, 1) === childStrings.suffix.slice(-1)) {
+
+                    parent.blobs[i].strings.suffix = parent.blobs[i].strings.suffix.slice(0, -1);
+                    
+                }
+            } else {
+                // Otherwise it's a sibling. We don't care about moving spaces here, just suppress a duplicate
+                var siblingStrings = parent.blobs[i+1].strings;
+                if (!blobIsNumber(child) 
+                    && !childDecorations
+                    && PUNCT_OR_SPACE[childStrings.suffix.slice(-1)]
+                    && childStrings.suffix.slice(-1) === siblingStrings.prefix.slice(0, 1)) {
+
+                    siblingStrings.prefix = siblingStrings.prefix.slice(1);
+                }
+            }
+            // If field content ends with swappable punctuation, suppress swappable punctuation in style suffix.
+            if (!childIsNumber && !childDecorations && PUNCT[childStrings.suffix.slice(0,1)]
+                && "string" === typeof child.blobs) {
+                
+                mergeChars(child, 'blobs', child, 'suffix')
+            }
+            this.downward(parent.blobs[i]);
+        }
+        //print("  end");
+    };
+
+    function fix (parent) {
+        // Terminus if no blobs
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+        
+        //print("START4");
+        // Do the swap, front-to-back, bottom-first
+        var lastChar;
+
+        // XXX Two things to fix with this:
+        // XXX (1) Stalls after one character
+        // XXX (2) Moves colon and semicolon, both of which SHOULD stall
+
+        for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
+            var child = parent.blobs[i];
+            var quoteSwap = false;
+            for (var j=0,jlen=child.decorations.length;j<jlen;j++) {
+                var decoration = child.decorations[j];
+                if (decoration[0] === "@quotes") {
+                    quoteSwap = true;
+                }
+            }
+            if (quoteSwap) {
+                if (punctInQuote) {
+                    var childChar = child.strings.suffix.slice(0,1);
+                    if ("string" === typeof child.blobs) {
+                        while (SWAP_IN[childChar]) {
+                            mergeChars(child, 'blobs', child, 'suffix');
+                            childChar = child.strings.suffix.slice(0,1);
+                        }                                
+                    } else {
+                        while (SWAP_IN[childChar]) {
+                            mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix');
+                            childChar = child.strings.suffix.slice(0,1);
+                        }
+                    }
+                } else {
+                    if ("string" === typeof child.blobs) {
+                        var childChar = child.blobs.slice(-1);
+                        while (SWAP_OUT[childChar]) {
+                            mergeChars(child, 'blobs', child, 'suffix', true);
+                            childChar = child.blobs.slice(-1);
+                        }
+                    } else {
+                        var childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
+                        while (SWAP_OUT[childChar]) {
+                            mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix', true);
+                            childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
+                        }
+                    }
+                }
+            }
+            lastChar = this.fix(parent.blobs[i]);
+            if (child.blobs && "string" === typeof child.blobs) {
+                lastChar = child.blobs.slice(-1);
+            }
+        }
+        return lastChar;
+    };
+}

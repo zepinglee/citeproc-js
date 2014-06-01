@@ -320,13 +320,11 @@ CSL.getBibliographyEntries = function (bibsection) {
             //print("XXX: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
         }
         for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
-            //print("ONE: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
-            CSL.Output.Queue.adjustNearsideSuffixes(this.output.queue[j]);
-            //print("TWO: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
-            CSL.Output.Queue.adjustNearsidePrefixes(this.output.queue[j]);
-            //print("THREE: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
-            CSL.Output.Queue.adjustPunctuation(this.output.queue[j], this.getOpt("punctuation-in-quote"));
-            //print("FOUR: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
+            this.output.adjust.upward(this.output.queue[j]);
+            this.output.adjust.leftward(this.output.queue[j]);
+            this.output.adjust.downward(this.output.queue[j]);
+            this.output.adjust.fix(this.output.queue[j]);
+            //print("OUTPUT: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
         }
         res = this.output.string(this, this.output.queue)[0];
         if (!res) {

@@ -71,6 +71,9 @@ Only Me, “My Way, the Right Way,” Nov. 13, 1992; 島田紳助、「ネタ作
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+    <style-options punctuation-in-quote="true"/>
+  </locale>
   <locale xml:lang="ja-JP">
     <terms>
       <term name="open-quote">「</term>
