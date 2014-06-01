@@ -166,6 +166,9 @@ CSL.Node.key = {
         // store key for use
         func = function (state, Item) {
             var keystring = state.output.string(state, state.output.queue);
+            if (state.sys.normalizeUnicode) {
+                keystring = state.sys.normalizeUnicode(keystring);
+            }
             //SNIP-START
             if (debug) {
                 CSL.debug("keystring: " + keystring + " " + typeof keystring);
