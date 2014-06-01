@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.527
+==========================
+
+- Reimplement duplicate space and punctuation suppression,
+  punctuation merging, and quote swapping. Related discussion
+  is here:
+
+      https://forums.zotero.org/discussion/37091/citeproc-bug-punctuation-in-quotes/
+
+- Introduce a hook for normalizing Unicode to avoid sort failures.
+  Thread prompting the change is here (thanks to user isabel-h1 for reporting):
+
+      https://forums.zotero.org/discussion/37201/mlz-sorting-problem-in-chinese-transliteration/
+
+==========================
 Changes in version 1.0.526
 ==========================
 

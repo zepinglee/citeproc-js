@@ -1,73 +1,3 @@
-/*
- * Copyright (c) 2009-2014 Frank G. Bennett
- * 
- * Unless otherwise indicated, the files in this repository are subject
- * to the Common Public Attribution License Version 1.0 (the “License”);
- * you may not use this file except in compliance with the License. You
- * may obtain a copy of the License at:
- * 
- * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
- * 
- * (See also the note on attribution information below)
- * 
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 1.13, 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
- * 
- * Software distributed under the License is distributed on an “AS IS”
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- * 
- * The Original Code is the citation formatting software known as
- * "citeproc-js" (an implementation of the Citation Style Language
- * [CSL]), including the original test fixtures and software located
- * under the ./tests subdirectory of the distribution archive.
- * 
- * The Original Developer is not the Initial Developer and is
- * __________. If left blank, the Original Developer is the Initial
- * Developer.
- * 
- * The Initial Developer of the Original Code is Frank Bennett. All
- * portions of the code written by Frank Bennett are Copyright (c)
- * 2009-2014 Frank Bennett.
- * 
- * ***
- * 
- * Alternatively, the files in this repository may be used under the
- * terms of the GNU Affero General Public License (the [AGPLv3] License),
- * in which case the provisions of [AGPLv3] License are applicable
- * instead of those above. If you wish to allow use of your version of
- * this file only under the terms of the [AGPLv3] License and not to
- * allow others to use your version of this file under the CPAL, indicate
- * your decision by deleting the provisions above and replace them with
- * the notice and other provisions required by the [AGPLv3] License. If
- * you do not delete the provisions above, a recipient may use your
- * version of this file under either the CPAL or the [AGPLv3] License.
- * 
- * ***
- * 
- * Attribution Information (CPAL)
- * 
- * Attribution Copyright Notice: [no separate attribution copyright notice is required]
- * 
- * Attribution Phrase: "Citations by CSL (citeproc-js)"
- * 
- * Attribution URL: http://citationstyles.org/
- * 
- * Graphic Image: [there is no requirement to display a Graphic Image]
- * 
- * Display of Attribution Information is REQUIRED in Larger Works which
- * are defined in the CPAL as a work which combines Covered Code or
- * portions thereof with code not governed by the terms of the CPAL.
- * 
- * Display of Attribution Information is also REQUIRED on Associated
- * Websites.
- * 
- * [ citeproc-js license :: version 1.1 :: 2012.06.30 ]
- */
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -80,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.526",
+    PROCESSOR_VERSION: "1.0.527",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1353,6 +1283,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         return ret;
     }
     this.locale[this.opt.lang].opts["skip-words-regexp"] = makeRegExp(this.locale[this.opt.lang].opts["skip-words"]);
+    this.output.adjust = new CSL.Output.Queue.adjust(this.getOpt('punctuation-in-quote'));
     this.registry = new CSL.Registry(this);
     this.buildTokenLists("citation");
     this.buildTokenLists("bibliography");
@@ -2404,7 +2335,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         }
         for (var i = blob.decorations.length - 1; i > -1; i += -1) {
             if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] === "true") {
-                blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote")
+                blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote");
             }
             if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
                 if (blob.decorations[i][0] === "@font-style") {
@@ -2670,321 +2601,405 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
     }
     return ret;
 };
-CSL.Output.Queue.purgeEmptyBlobs = function (myblobs, endOnly) {
-    var res, i, ilen, j, jlen, tmpblobs;
-    if ("string" === typeof myblobs || !myblobs.length) {
+CSL.Output.Queue.purgeEmptyBlobs = function (parent) {
+    if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
         return;
     }
-    for (i = myblobs.length - 1; i > -1; i += -1) {
-        if ("undefined" === typeof myblobs[i].blobs) {
-            myblobs[i].blobs = [];
-        }
-        CSL.Output.Queue.purgeEmptyBlobs(myblobs[i].blobs, endOnly);
-    }
-    for (i = myblobs.length - 1; i > -1; i += -1) {
-        if (!myblobs[i].blobs.length) {
-            tmpblobs = myblobs.slice(i + 1);
-            for (j = i, jlen = myblobs.length; j < jlen; j += 1) {
-                myblobs.pop();
+    for (var i=parent.blobs.length-1;i>-1;i--) {
+        CSL.Output.Queue.purgeEmptyBlobs(parent.blobs[i]);
+        var child = parent.blobs[i];
+        if (!child || !child.blobs || !child.blobs.length) {
+            var buf = [];
+            while ((parent.blobs.length-1) > i) {
+                buf.push(parent.blobs.pop());
             }
-            for (j = 0, jlen = tmpblobs.length; j < jlen; j += 1) {
-                myblobs.push(tmpblobs[j]);
+            parent.blobs.pop();
+            while (buf.length) {
+                parent.blobs.push(buf.pop());
             }
-        }
-        if (endOnly) {
-            break;
         }
     }
 };
-CSL.Output.Queue.purgeNearsidePrefixChars = function(myblob, chr) {
-    if (!chr) {
-        return;
+CSL.Output.Queue.adjust = function (punctInQuote) {
+    var NO_SWAP_IN = {
+        ";": true,
+        ":": true
     }
-    if ("object" === typeof myblob) {
-        if ((CSL.TERMINAL_PUNCTUATION.indexOf(chr) > -1
-             && CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(myblob.strings.prefix.slice(0, 1)) > -1)
-            && !(myblob.strings.prefix.slice(0,1) === ";" && chr === ".")) {
-            myblob.strings.prefix = myblob.strings.prefix.slice(1);
-        } else if ("object" === typeof myblob.blobs) {
-            CSL.Output.Queue.purgeNearsidePrefixChars(myblob.blobs[0], chr);
+    var NO_SWAP_OUT = {
+        ".": true,
+        "!": true,
+        "?": true
+    }
+    this.upward = upward;
+    this.leftward = leftward;
+    this.downward = downward;
+    this.fix = fix;
+    var LtoR_MAP = {
+        "!": {
+            ".": "!",
+            "?": "!?",
+            ":": "!",
+            ",": "!,",
+            ";": "!;"
+        },
+        "?": {
+            "!": "?!",
+            ".": "?",
+            ":": "?",
+            ",": "?,",
+            ";": "?;"
+        },
+        ".": {
+            "!": ".!",
+            "?": ".?",
+            ":": ".:",
+            ",": ".,",
+            ";": ".;"
+        },
+        ":": {
+            "!": "!",
+            "?": "?",
+            ".": ":",
+            ",": ":,",
+            ";": ":;"
+        },
+        ",": {
+            "!": ",!",
+            "?": ",?",
+            ":": ",:",
+            ".": ",.",
+            ";": ",;"
+        },
+        ";": {
+            "!": "!",
+            "?": "?",
+            ":": ";",
+            ",": ";,",
+            ".": ";"
         }
     }
-};
-CSL.Output.Queue.purgeNearsidePrefixSpaces = function(myblob, chr) {
-    if ("object" === typeof myblob) {
-        if (" " === chr && " " === myblob.strings.prefix.slice(0, 1)) {
-            myblob.strings.prefix = myblob.strings.prefix.slice(1);
-        } else if ("object" === typeof myblob.blobs) {
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(myblob.blobs[0], chr);
+    var SWAP_IN = {};
+    var SWAP_OUT = {};
+    var PUNCT = {};
+    var PUNCT_OR_SPACE = {};
+    for (var key in LtoR_MAP) {
+        PUNCT[key] = true;
+        PUNCT_OR_SPACE[key] = true;
+        if (!NO_SWAP_IN[key]) {
+            SWAP_IN[key] = true;
+        }
+        if (!NO_SWAP_OUT[key]) {
+            SWAP_OUT[key] = true;
         }
     }
-};
-CSL.Output.Queue.purgeNearsideSuffixSpaces = function(myblob, chr) {
-    if ("object" === typeof myblob) {
-        if (" " === chr && " " === myblob.strings.suffix.slice(-1)) {
-            myblob.strings.suffix = myblob.strings.suffix.slice(0, -1);
-        } else if ("object" === typeof myblob.blobs) {
-            if (!chr) {
-                chr = myblob.strings.suffix.slice(-1);
+    PUNCT_OR_SPACE[" "] = true;
+    var RtoL_MAP = {};
+    for (var key in LtoR_MAP) {
+        for (var subkey in LtoR_MAP[key]) {
+            if (!RtoL_MAP[subkey]) {
+                RtoL_MAP[subkey] = {};
             }
-            chr = CSL.Output.Queue.purgeNearsideSuffixSpaces(myblob.blobs[myblob.blobs.length - 1], chr);
-        } else {
-            chr = myblob.strings.suffix.slice(-1);
+            RtoL_MAP[subkey][key] = LtoR_MAP[key][subkey];
         }
     }
-    return chr;
-};
-CSL.Output.Queue.adjustPunctuation = function (state, myblobs, stk) {
-    var chr, suffix, dpref, blob, delimiter, suffixX, dprefX, blobX, delimiterX, prefix, prefixX, dsuffX, dsuff, slast, dsufff, dsufffX, lastchr, firstchr, exposed_suffixes, exposed, j, jlen, i, ilen;
-    var TERMS = CSL.TERMINAL_PUNCTUATION.slice(0, -1);
-    var TERM_OR_SPACE = CSL.TERMINAL_PUNCTUATION;
-    var SWAPS = CSL.SWAPPING_PUNCTUATION;
-    if (!stk) {
-        stk = [{suffix: "", delimiter: "", lastNode:true}];        
-    }
-    slast = stk.length - 1;
-    delimiter = stk[slast].delimiter;
-    dpref = stk[slast].dpref;
-    dsuff = stk[slast].dsuff;
-    dsufff = stk[slast].dsufff;
-    prefix = stk[slast].prefix;
-    suffix = stk[slast].suffix;
-    blob = stk[slast].blob;
-    if ("string" === typeof myblobs) {
-        if (suffix) {
-            if (blob && 
-                TERMS.indexOf(myblobs.slice(-1)) > -1 &&
-                TERMS.slice(1).indexOf(suffix) > -1 &&
-                blob.strings.suffix !== " ") {
-                    blob.strings.suffix = blob.strings.suffix.slice(1);
-            }
+    function blobIsNumber(blob) {
+        return ("number" === typeof blob.num || (blob.blobs && blob.blobs.length === 1 && "number" === typeof blob.blobs[0].num));
+    };
+    function blobEndsInNumber(blob) {
+        if ("number" === typeof blob.num) {
+            return true;
         }
-        lastchr = myblobs.slice(-1);
-        firstchr = myblobs.slice(0,1);
-    } else {
-        if (dpref) {
-            for (j = 0, jlen = myblobs.length - 1; j < jlen; j += 1) {
-                var t = myblobs[j].strings.suffix.slice(-1);
-                if (TERMS.indexOf(t) === -1 ||
-                    TERMS.indexOf(dpref) === -1) {
-                    if (dpref !== " " || dpref !== myblobs[j].strings.suffix.slice(-1)) {
-                        myblobs[j].strings.suffix += dpref;                        
-                    }
+        if (!blob.blobs || "object" !==  typeof blob.blobs) return false;
+        if (blobEndsInNumber(blob.blobs[blob.blobs.length-1])) return true;
+    }
+    function blobHasDecorations(blob,includeQuotes) {
+        var ret = false;
+        var decorlist = ['@font-style','@font-variant','@font-weight','@text-decoration','@vertical-align'];
+        if (includeQuotes) {
+            decorlist.push('@quotes');
+        }
+        if (blob.decorations) {
+            for (var i=0,ilen=blob.decorations.length;i<ilen;i++) {
+                if (decorlist.indexOf(blob.decorations[i][0]) > -1) {
+                    ret = true;
+                    break;
                 }
             }
         }
-        if (suffix === " ") {
-            CSL.Output.Queue.purgeNearsideSuffixSpaces(myblobs[myblobs.length - 1], " ");
+        return ret;
+    };
+    function blobHasDescendantQuotes(blob) {
+        if (blob.decorations) {
+            for (var i=0,ilen=blob.decorations.length;i<ilen;i++) {
+                if (blob.decorations[i][0] === '@quotes') {
+                    return true;
+                }
+            }
         }
-        var lst = [];
-        var doblob;
-        for (i = 0, ilen = myblobs.length - 1; i < ilen; i += 1) {
-            doblob = myblobs[i];
-            var following_prefix = myblobs[i + 1].strings.prefix;
-            chr = false;
-            var ret = CSL.Output.Queue.purgeNearsideSuffixSpaces(doblob, chr);
-            if (!dsuff) {
-                lst.push(ret);
+        if ("object" !== typeof blob.blobs) return false;
+        if (blobHasDescendantQuotes(blob.blobs[blob.blobs.length-1])) return true;
+        return false;
+    }
+    function matchLastChar(blob, chr) {
+        if (blob.strings.suffix.slice(0, 1) === chr) {
+            return true;
+        } else if ("string" === typeof blob.blobs) {
+            if (blob.blobs.slice(-1) === chr) {
+                return true;
             } else {
-                lst.push(false);
+                return false;
             }
         }
-        chr = false;
-        for (i = 1, ilen = myblobs.length; i < ilen; i += 1) {
-            doblob = myblobs[i];
-            chr = "";
-            var preceding_suffix = myblobs[i - 1].strings.suffix;
-            if (dsuff === " ") {
-                chr = dsuff;
-            } else if (preceding_suffix) {
-                chr = preceding_suffix.slice(-1);
-            } else if (lst[i - 1]) {
-                chr = lst[i - 1];
+        for (var i=0,ilen=blob.blobs.length;i<ilen;i++) {
+            if (matchLastChar(blob.blobs[i])) return true;
+        }
+        return false;
+    };
+    function mergeChars (First, first, Second, second, merge_right) {
+        FirstStrings = "blobs" === first ? First : First.strings;
+        SecondStrings = "blobs" === second ? Second: Second.strings;
+        var firstChar = FirstStrings[first].slice(-1);
+        var secondChar = SecondStrings[second].slice(0,1);
+        function cullRight () {
+            SecondStrings[second] = SecondStrings[second].slice(1);
+        };
+        function cullLeft () {
+            FirstStrings[first] = FirstStrings[first].slice(0,-1);
+        };
+        function addRight (chr) {
+            SecondStrings[second] = chr + SecondStrings[second];
+        }
+        function addLeft (chr) {
+            FirstStrings[first] += chr;
+        }
+        var cull = merge_right ? cullLeft : cullRight;
+        function matchOnRight () {
+            return RtoL_MAP[secondChar];
+        }
+        function matchOnLeft () {
+            var chr = FirstStrings[first].slice(-1);
+            return LtoR_MAP[firstChar];
+        }
+        var match = merge_right ? matchOnLeft : matchOnRight;
+        function mergeToRight () {
+            var chr = LtoR_MAP[firstChar][secondChar];
+            if ("string" === typeof chr) {
+                cullLeft();
+                cullRight();
+                addRight(chr);
+            } else {
+                addRight(firstChar);
+                cullLeft();
             }
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(doblob, chr);
         }
-        if (dsufff) {
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
-        } else if (prefix === " ") {
-            CSL.Output.Queue.purgeNearsidePrefixSpaces(myblobs[0], " ");
+        function mergeToLeft () {
+            var chr = RtoL_MAP[secondChar][firstChar];
+            if ("string" === typeof chr) {
+                cullLeft();
+                cullRight();
+                addLeft(chr);
+            } else {
+                addLeft(secondChar);
+                cullRight();
+            }
         }
-        for (i = 0, ilen = myblobs.length; i < ilen; i += 1) {
-            doblob = myblobs[i];
-            CSL.Output.Queue.purgeNearsidePrefixChars(doblob, lastchr);
+        var merge = merge_right ? mergeToRight: mergeToLeft;
+        var isDuplicate = firstChar === secondChar;
+        if (isDuplicate) {
+            cull();
+        } else {
+            if (match()) {
+                merge();
+            }
+        }
+    };
+    function upward (parent) {
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+        var parentDecorations = blobHasDecorations(parent,true);
+        for (var i=parent.blobs.length-1;i>-1;i--) {
+            var endFlag = i === (parent.blobs.length-1);
+            this.upward(parent.blobs[i]);
+            var parentStrings = parent.strings;
+            var childStrings = parent.blobs[i].strings;
             if (i === 0) {
-                if (prefix) {
-                    if (doblob.strings.prefix.slice(0, 1) === " ") {
+                if (" " === parentStrings.prefix.slice(-1) && " " === childStrings.prefix.slice(0, 1)) {
+                    childStrings.prefix = childStrings.prefix.slice(1);
+                }
+                var childChar = childStrings.prefix.slice(0, 1);
+                if (!parentDecorations && PUNCT_OR_SPACE[childChar] && !parentStrings.prefix) {
+                    parentStrings.prefix += childChar;
+                    childStrings.prefix = childStrings.prefix.slice(1);
+                }
+            }
+            if (i === (parent.blobs.length - 1)) {
+                var childChar = childStrings.suffix.slice(-1);
+                if (!parentDecorations && [" "].indexOf(childChar) > -1) {
+                    if (parentStrings.suffix.slice(0,1) !== childChar) {
+                        parentStrings.suffix = childChar + parentStrings.suffix;
+                    }
+                    childStrings.suffix = childStrings.suffix.slice(0, -1);
+                }
+            }
+            if (parentStrings.delimiter && i > 0) {
+                if (PUNCT_OR_SPACE[parentStrings.delimiter.slice(-1)]
+                    && parentStrings.delimiter.slice(-1) === childStrings.prefix.slice(0, 1)) {
+                    childStrings.prefix = childStrings.prefix.slice(1);
+                }
+            }
+        }
+    };
+    function leftward (parent) {
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+        for (var i=parent.blobs.length-1;i>-1;i--) {
+            this.leftward(parent.blobs[i]);
+            if ((i < parent.blobs.length -1) && !parent.strings.delimiter) {
+                var child = parent.blobs[i];
+                var childChar = child.strings.suffix.slice(-1);
+                var sibling = parent.blobs[i+1];
+                var siblingChar = sibling.strings.prefix.slice(0, 1);
+                var hasDecorations = blobHasDecorations(child) || blobHasDecorations(sibling);
+                var hasNumber = "number" === typeof childChar || "number" === typeof siblingChar;
+                if (!hasDecorations && !hasNumber && PUNCT[siblingChar] && !hasNumber) {
+                    var suffixAndPrefixMatch = siblingChar === child.strings.suffix.slice(-1);
+                    var suffixAndFieldMatch = (!child.strings.suffix && "string" === typeof child.blobs && child.blobs.slice(-1) === siblingChar);
+                    if (!suffixAndPrefixMatch && !suffixAndFieldMatch) {
+                        mergeChars(child, 'suffix', sibling, 'prefix');
+                    } else {
+                        sibling.strings.prefix = sibling.strings.prefix.slice(1);
                     }
                 }
             }
-            if (dsufff) {
-                if (doblob.strings.prefix) {
-                    if (i === 0) {
-                        if (doblob.strings.prefix.slice(0, 1) === " ") {
-                        }
-                    }
-                }
+        }
+    };
+    function downward (parent) {
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+        var parentStrings = parent.strings;
+        var someChildrenAreNumbers = false;
+        for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
+            if (blobIsNumber(parent.blobs[i])) {
+                someChildrenAreNumbers = true;
+                break;
             }
-            if (dsuff) {
-                if (i > 0) {
-                    if (doblob.strings.prefix.slice(0, 1) === " ") {
-                    }
+        }
+        if (!someChildrenAreNumbers) {
+            if (parentStrings.delimiter && PUNCT[parentStrings.delimiter.slice(0, 1)]) {
+                var delimChar = parentStrings.delimiter.slice(0, 1);
+                for (var i=parent.blobs.length-2;i>-1;i--) {
+                    var childStrings = parent.blobs[i].strings;
+                    childStrings.suffix += delimChar;
                 }
+                parentStrings.delimiter = parentStrings.delimiter.slice(1);
             }
-            if (i < (myblobs.length - 1)) {
-                var nextprefix = myblobs[i + 1].strings.prefix;
-                if (!delimiter) {
-                    if (nextprefix) {
-                        var nxtchr = nextprefix.slice(0, 1);
-                        if (SWAPS.indexOf(nxtchr) > -1) {
-                            myblobs[i + 1].strings.prefix = nextprefix.slice(1);
-                            if (TERMS.indexOf(nxtchr) === -1 ||
-                                (TERMS.indexOf(nxtchr) > -1 &&
-                                 TERMS.indexOf(doblob.strings.suffix.slice(-1)) === -1)) {
-                                     doblob.strings.suffix += nxtchr;
+        }
+        var parentDecorations = blobHasDecorations(parent, true);
+        var parentIsNumber = blobIsNumber(parent);
+        for (var i=parent.blobs.length-1;i>-1;i--) {
+            var child = parent.blobs[i];
+            var childStrings = parent.blobs[i].strings;
+            var childDecorations = blobHasDecorations(child, true);
+            var childIsNumber = blobIsNumber(child);
+            if (i === (parent.blobs.length - 1)) {
+                if (true || !someChildrenAreNumbers) {
+                    if (!parentDecorations || blobHasDescendantQuotes(child)) {
+                        var parentChar = parentStrings.suffix.slice(0, 1);
+                        if (PUNCT[parentChar]) {
+                            if (!blobEndsInNumber(child)) {
+                                mergeChars(child, 'suffix', parent, 'suffix');
                             }
-                        } else if (nxtchr === " " &&
-                                    doblob.strings.suffix.slice(-1) === " ") {
-                            doblob.strings.suffix = doblob.strings.suffix.slice(0, -1);
-                        }
-                    }
-                }
-            }
-            if (i === (myblobs.length - 1)) {
-                if (suffix) {
-                    if (doblob.strings.suffix && 
-                        (TERMS.slice(1).indexOf(suffix) > -1 &&
-                          TERMS.indexOf(doblob.strings.suffix.slice(-1)) > -1)) {
-                            blob.strings.suffix = blob.strings.suffix.slice(1);
-                    }
-                }
-            }
-            if (state.getOpt('punctuation-in-quote')) {
-                var decorations = doblob.decorations;
-                for (j = 0, jlen = decorations.length; j < jlen; j += 1) {
-                    if (decorations[j][0] === '@quotes' && (decorations[j][1] === 'true' || decorations[j][1] === 'inner')) {
-                        doblob.punctuation_in_quote = true;
-                        stk[slast].lastNode = true;
-                    }
-                }
-            }
-            if (doblob.punctuation_in_quote && stk[slast].lastNode) {
-                var swapchar = doblob.strings.suffix.slice(0, 1);
-                var swapblob = false;
-                if (SWAPS.indexOf(swapchar) > -1) {
-                    swapblob = doblob;
-                } else if (SWAPS.indexOf(suffix) > -1 && i === (myblobs.length - 1)) {
-                    swapchar = suffix;
-                    swapblob = blob;
-                } else {
-                    swapchar = false;
-                }
-                if (swapchar) {
-                    if ("string" === typeof doblob.blobs) {
-                        if (SWAPS.indexOf(doblob.blobs.slice(-1)) === -1 ||
-                            (TERMS.indexOf(doblob.blobs.slice(-1)) > -1 &&
-                             SWAPS.indexOf(swapchar) > -1 &&
-                             TERMS.indexOf(swapchar) === -1)) {
-                            doblob.blobs += swapchar;
                         }
                     } else {
-                        if (SWAPS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) === -1 ||
-                            (TERMS.indexOf(doblob.blobs.slice(-1)[0].strings.suffix.slice(-1)) > -1 &&
-                             SWAPS.indexOf(swapchar) > -1 &&
-                             TERMS.indexOf(swapchar) === -1)) {
-                            doblob.blobs.slice(-1)[0].strings.suffix += swapchar;
+                        if (matchLastChar(child,parent.strings.suffix.slice(0,1))) {
+                            parent.strings.suffix = parent.strings.suffix.slice(1);
+                        }   
+                    }
+                    if (PUNCT_OR_SPACE[childStrings.suffix.slice(0,1)]) {
+                        if ("string" === typeof child.blobs && child.blobs.slice(-1) === childStrings.suffix.slice(0,1)) {
+                            childStrings.suffix = childStrings.suffix.slice(1);
+                        }
+                        if (childStrings.suffix.slice(-1) === parentStrings.suffix.slice(0, 1)) {
+                            childStrings.suffix = childStrings.suffix.slice(0, -1);
                         }
                     }
-                    swapblob.strings.suffix = swapblob.strings.suffix.slice(1);
                 }
-            }
-            if (i === (myblobs.length - 1)) {
-                if (doblob.strings.suffix) {
-                    suffixX = doblob.strings.suffix.slice(0, 1);
-                    blobX = doblob;
-                } else {
-                    suffixX = stk[stk.length - 1].suffix;
-                    blobX = stk[stk.length - 1].blob;
+            } else if (parentStrings.delimiter) {
+                if (PUNCT_OR_SPACE[parentStrings.delimiter.slice(0,1)]
+                    && parentStrings.delimiter.slice(0, 1) === childStrings.suffix.slice(-1)) {
+                    parent.blobs[i].strings.suffix = parent.blobs[i].strings.suffix.slice(0, -1);
                 }
             } else {
-                if (doblob.strings.suffix) {
-                    suffixX = doblob.strings.suffix.slice(0, 1);
-                    blobX = doblob;
-                } else {
-                    suffixX = "";
-                    blobX = false;
+                var siblingStrings = parent.blobs[i+1].strings;
+                if (!blobIsNumber(child) 
+                    && !childDecorations
+                    && PUNCT_OR_SPACE[childStrings.suffix.slice(-1)]
+                    && childStrings.suffix.slice(-1) === siblingStrings.prefix.slice(0, 1)) {
+                    siblingStrings.prefix = siblingStrings.prefix.slice(1);
                 }
             }
-            if (SWAPS.concat([" "]).indexOf(suffixX) === -1) {
-                suffixX = "";
-                blobX = false;
+            if (!childIsNumber && !childDecorations && PUNCT[childStrings.suffix.slice(0,1)]
+                && "string" === typeof child.blobs) {
+                mergeChars(child, 'blobs', child, 'suffix')
             }
-            if (doblob.strings.delimiter && 
-                doblob.blobs.length > 1) {
-                dprefX = doblob.strings.delimiter.slice(0, 1);
-                if (SWAPS.concat([" "]).indexOf(dprefX) > -1) {
-                    doblob.strings.delimiter = doblob.strings.delimiter.slice(1);
-                } else {
-                    dprefX = "";
-                }
-            } else {
-                dprefX = "";
-            }
-            if (doblob.strings.prefix) {
-                if (doblob.strings.prefix.slice(-1) === " ") {
-                    prefixX = " ";
-                } else {
-                    prefixX = "";
-                }
-            } else {
-                if (i === 0) {
-                    prefixX = prefix;                    
-                } else {
-                    prefixX = "";
-                }
-            }
-            if (dsuff) {
-                dsufffX = dsuff;
-            } else {
-                if (i === 0) {
-                    dsufffX = dsufff;                    
-                } else {
-                    dsufffX = "";
-                }
-            }
-            if (doblob.strings.delimiter) {
-                if (doblob.strings.delimiter.slice(-1) === " " &&
-                    "object" === typeof doblob.blobs && doblob.blobs.length > 1) {
-                       dsuffX = doblob.strings.delimiter.slice(-1);
-                } else {
-                    dsuffX = "";                        
-                }
-            } else {
-                dsuffX = "";                    
-            }
-            delimiterX = doblob.strings.delimiter;
-            var lastNode
-            if (i === (myblobs.length - 1) && stk[slast].lastNode) {
-                lastNode = true;
-            } else {
-                lastNode = false;
-            }
-            stk.push({suffix: suffixX, dsuff:dsuffX, blob:blobX, delimiter:delimiterX, prefix:prefixX, dpref: dprefX, dsufff: dsufffX, lastNode: lastNode});
-            lastchr = CSL.Output.Queue.adjustPunctuation(state, doblob.blobs, stk);
+            this.downward(parent.blobs[i]);
         }
-        if (myblobs && myblobs.length) {
-            var last_suffix = myblobs[myblobs.length - 1].strings.suffix;
-            if (last_suffix) {
-                lastchr = last_suffix.slice(-1);
+    };
+    function fix (parent) {
+        if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
+            return;
+        }
+        var lastChar;
+        for (var i=0,ilen=parent.blobs.length;i<ilen;i++) {
+            var child = parent.blobs[i];
+            var quoteSwap = false;
+            for (var j=0,jlen=child.decorations.length;j<jlen;j++) {
+                var decoration = child.decorations[j];
+                if (decoration[0] === "@quotes") {
+                    quoteSwap = true;
+                }
+            }
+            if (quoteSwap) {
+                if (punctInQuote) {
+                    var childChar = child.strings.suffix.slice(0,1);
+                    if ("string" === typeof child.blobs) {
+                        while (SWAP_IN[childChar]) {
+                            mergeChars(child, 'blobs', child, 'suffix');
+                            childChar = child.strings.suffix.slice(0,1);
+                        }                                
+                    } else {
+                        while (SWAP_IN[childChar]) {
+                            mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix');
+                            childChar = child.strings.suffix.slice(0,1);
+                        }
+                    }
+                } else {
+                    if ("string" === typeof child.blobs) {
+                        var childChar = child.blobs.slice(-1);
+                        while (SWAP_OUT[childChar]) {
+                            mergeChars(child, 'blobs', child, 'suffix', true);
+                            childChar = child.blobs.slice(-1);
+                        }
+                    } else {
+                        var childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
+                        while (SWAP_OUT[childChar]) {
+                            mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix', true);
+                            childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
+                        }
+                    }
+                }
+            }
+            lastChar = this.fix(parent.blobs[i]);
+            if (child.blobs && "string" === typeof child.blobs) {
+                lastChar = child.blobs.slice(-1);
             }
         }
-    }
-    if (stk.length > 1) {
-        stk.pop();
-    }
-    state.tmp.last_chr = lastchr;
-    return lastchr;
-};
+        return lastChar;
+    };
+}
 CSL.Engine.Opt = function () {
     this.has_disambiguate = false;
     this.mode = "html";
@@ -3738,9 +3753,16 @@ CSL.getAmbiguousCite = function (Item, disambig) {
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
     CSL.getCite.call(this, Item, {position: 1});
-    CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
+    for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
+        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
+    }
     if (this.opt.development_extensions.clean_up_csl_flaws) {
-        CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            this.output.adjust.upward(this.output.queue[j]);
+            this.output.adjust.leftward(this.output.queue[j]);
+            this.output.adjust.downward(this.output.queue[j]);
+            this.output.adjust.fix(this.output.queue[j]);
+        }
     }
     ret = this.output.string(this, this.output.queue);
     this.tmp.just_looking = false;
@@ -3902,17 +3924,26 @@ CSL.getCitationCluster = function (inputList, citationID) {
     if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter.slice(0, 1)) > -1) {
         delimiter = delimiter.slice(0, 1);
     }
-    var mystk = [
-        {
-            suffix: "",
-            delimiter: delimiter,
-            blob: fakeblob,
-            lastNode: true
-        }
-    ];
     var use_layout_suffix = suffix;
-    for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
-        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue, true);
+    for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
+        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
+    }
+    if (!this.tmp.suppress_decorations) {
+        if (!(this.opt.development_extensions.apply_citation_wrapper
+              && this.sys.wrapCitationEntry
+              && !this.tmp.just_looking
+              && this.tmp.area === "citation")) { 
+            this.output.queue[this.output.queue.length - 1].strings.suffix = use_layout_suffix;
+            this.output.queue[0].strings.prefix = this.citation.opt.layout_prefix;
+        }
+    }
+    if (this.opt.development_extensions.clean_up_csl_flaws) {
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            this.output.adjust.upward(this.output.queue[j]);
+            this.output.adjust.leftward(this.output.queue[j]);
+            this.output.adjust.downward(this.output.queue[j]);
+            this.tmp.last_chr = this.output.adjust.fix(this.output.queue[j]);
+        }
     }
     for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
         this.output.queue = [myblobs[pos]];
@@ -3922,12 +3953,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
             this.tmp.splice_delimiter = myblobs[pos].parallel_delimiter;
         }
         this.tmp.have_collapsed = myparams[pos].have_collapsed;
-        if (pos === (myblobs.length - 1)) {
-            mystk[0].suffix = use_layout_suffix;
-        }
-        if (this.opt.development_extensions.clean_up_csl_flaws) {
-            CSL.Output.Queue.adjustPunctuation(this, this.output.queue, mystk);
-        }
         composite = this.output.string(this, this.output.queue);
         this.tmp.suppress_decorations = false;
         if ("string" === typeof composite) {
@@ -3938,7 +3963,10 @@ CSL.getCitationCluster = function (inputList, citationID) {
             if (this.tmp.has_purged_parallel) {
                 composite.push("");
             } else {
-                composite.push("[CSL STYLE ERROR: reference with no printed form.]");
+                var errStr = "[CSL STYLE ERROR: reference with no printed form.]";
+                var preStr = pos === 0 ? txt_esc(this.citation.opt.layout_prefix) : "";
+                var sufStr = pos === (myblobs.length - 1) ? txt_esc(this.citation.opt.layout_suffix) : "";
+                composite.push(preStr + errStr + sufStr);
             }
         }
         if (objects.length && "string" === typeof composite[0]) {
@@ -3979,17 +4007,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
     }
     result += this.output.renderBlobs(objects);
     if (result) {
-        if (CSL.TERMINAL_PUNCTUATION.indexOf(this.tmp.last_chr) > -1 
-            && this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
-            use_layout_suffix = use_layout_suffix.slice(1);
-        }
         this.output.nestedBraces = false;
-        if (!(this.opt.development_extensions.apply_citation_wrapper
-            && this.sys.wrapCitationEntry
-            && !this.tmp.just_looking
-              && this.tmp.area === "citation")) { 
-			result = txt_esc(this.citation.opt.layout_prefix) + result + txt_esc(use_layout_suffix);
-		}
         if (!this.tmp.suppress_decorations) {
             len = this.citation.opt.layout_decorations.length;
             for (pos = 0; pos < len; pos += 1) {
@@ -4382,8 +4400,15 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
         }
-        CSL.Output.Queue.purgeEmptyBlobs(this.output.queue);
-        CSL.Output.Queue.adjustPunctuation(this, this.output.queue);
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[j]);
+        }
+        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+            this.output.adjust.upward(this.output.queue[j]);
+            this.output.adjust.leftward(this.output.queue[j]);
+            this.output.adjust.downward(this.output.queue[j]);
+            this.output.adjust.fix(this.output.queue[j]);
+        }
         res = this.output.string(this, this.output.queue)[0];
         if (!res) {
             res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";
@@ -5710,6 +5735,9 @@ CSL.Node.key = {
         var end_key = new CSL.Token("key", CSL.END);
         func = function (state, Item) {
             var keystring = state.output.string(state, state.output.queue);
+            if (state.sys.normalizeUnicode) {
+                keystring = state.sys.normalizeUnicode(keystring);
+            }
             if ("" === keystring) {
                 keystring = undefined;
             }
@@ -6576,6 +6604,9 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
     if (!blobs.length) {
         return false;
     } else if (single && blobs.length === 2) {
+        if (single) {
+            single = new CSL.Blob(single.blobs,single);
+        }
         blobs = [blobs[0], single, blobs[1]];
     } else {
         var delimiter_offset;
@@ -6590,8 +6621,12 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
         if (blobs.length > 1) {
             var blob = blobs.pop();
             if (multiple) {
+                multiple = new CSL.Blob(multiple.blobs,multiple);
                 blobs.push(multiple);
             } else {
+                if (single) {
+                    single = new CSL.Blob(single.blobs,single);
+                }
                 blobs.push(single);
             }
             blobs.push(blob);
@@ -9562,7 +9597,7 @@ CSL.Attributes["@disambiguate-add-givenname"] = function (state, arg) {
     }
 };
 CSL.Attributes["@disambiguate-add-year-suffix"] = function (state, arg) {
-    if (arg === "true") {
+    if (arg === "true" && state.opt.xclass !== "numeric") {
         state.opt["disambiguate-add-year-suffix"] = true;
     }
 };
