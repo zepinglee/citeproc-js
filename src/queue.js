@@ -786,6 +786,19 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         return ret;
     };
     
+    function blobHasDescendantQuotes(blob) {
+        if (blob.decorations) {
+            for (var i=0,ilen=blob.decorations.length;i<ilen;i++) {
+                if (blob.decorations[i][0] === '@quotes') {
+                    return true;
+                }
+            }
+        }
+        if ("object" !== typeof blob.blobs) return false;
+        if (blobHasDescendantQuotes(blob.blobs[blob.blobs.length-1])) return true;
+        return false;
+    }
+    
     function matchLastChar(blob, chr) {
         if (blob.strings.suffix.slice(0, 1) === chr) {
             return true;
@@ -989,7 +1002,11 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             var childIsNumber = blobIsNumber(child);
             if (i === (parent.blobs.length - 1)) {
                 if (true || !someChildrenAreNumbers) {
-                    if (!parentDecorations) {
+                    // If we have decorations, drill down to see if there are quotes below.
+                    // If so, we allow migration anyway.
+                    // Original discussion is here:
+                    // https://forums.zotero.org/discussion/37091/citeproc-bug-punctuation-in-quotes/
+                    if (!parentDecorations || blobHasDescendantQuotes(child)) {
                         // Migrate trailing punctuation or space on a last-position suffix DOWNWARD, stopping at any @quotes and controlling for duplicates
                         var parentChar = parentStrings.suffix.slice(0, 1);
                         if (PUNCT[parentChar]) {
@@ -998,7 +1015,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                             }
                         }
                     } else {
-                        // If we have decorations, stop here, but drill down to see if there is duplicate punctuation below
+                        // If we have decorations and there are no quotes below, stop here, but drill down to see if there is duplicate punctuation below
                         if (matchLastChar(child,parent.strings.suffix.slice(0,1))) {
                             parent.strings.suffix = parent.strings.suffix.slice(1);
                         }   
