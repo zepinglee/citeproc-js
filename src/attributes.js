@@ -1176,7 +1176,7 @@ CSL.Attributes["@disambiguate-add-givenname"] = function (state, arg) {
 };
 
 CSL.Attributes["@disambiguate-add-year-suffix"] = function (state, arg) {
-    if (arg === "true") {
+    if (arg === "true" && !state.opt.xclass === "numeric") {
         state.opt["disambiguate-add-year-suffix"] = true;
     }
 };
