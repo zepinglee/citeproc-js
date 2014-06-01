@@ -98,6 +98,10 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
     if (!blobs.length) {
         return false;
     } else if (single && blobs.length === 2) {
+        // Clone to avoid corruption of style by affix migration during output
+        if (single) {
+            single = new CSL.Blob(single.blobs,single);
+        }
         blobs = [blobs[0], single, blobs[1]];
     } else {
         var delimiter_offset;
@@ -113,8 +117,14 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
         if (blobs.length > 1) {
             var blob = blobs.pop();
             if (multiple) {
+                // Clone to avoid corruption of style by affix migration during output
+                multiple = new CSL.Blob(multiple.blobs,multiple);
                 blobs.push(multiple);
             } else {
+                // Clone to avoid corruption of style by affix migration during output
+                if (single) {
+                    single = new CSL.Blob(single.blobs,single);
+                }
                 blobs.push(single);
             }
             blobs.push(blob);
