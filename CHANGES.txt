@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.529
+==========================
+
+- Derive CSL-m variables title-main and title-sub from either
+  shortTitle or title-short.
+
+- Protect against DOM engines that set the root document above
+  above cs:style node. This happens with jsdom, and possibly
+  others. Implementers shouldn't need to worry about this.
+
+==========================
 Changes in version 1.0.528
 ==========================
 
