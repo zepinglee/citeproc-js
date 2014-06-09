@@ -302,11 +302,20 @@ CSL.Engine.prototype.buildTokenLists = function (area) {
 CSL.Engine.prototype.setStyleAttributes = function () {
     var dummy, attr, key, attributes, attrname;
     dummy = {};
-    dummy.name = this.sys.xml.nodename(this.cslXml);
+    // Protect against DOM engines that deliver a top-level document
+    // (needed for createElement) that does not contain our top-level node.
+    // This happens in jsdom, at least, maybe elsewhere.
+    var cslXml = this.cslXml;
+    if (!this.cslXml.tagName || this.cslXml.tagName.toLowerCase() !== 'style') {
+        if (this.cslXml.getElementsByTagName) {
+            var cslXml = this.cslXml.getElementsByTagName('style')[0];
+        }
+    }
+    dummy.name = this.sys.xml.nodename(cslXml);
     //
     // Xml: more of it
     //
-    attributes = this.sys.xml.attributes(this.cslXml);
+    attributes = this.sys.xml.attributes(cslXml);
     for (attrname in attributes) {
         if (attributes.hasOwnProperty(attrname)) {
             // attr = attributes[key];
