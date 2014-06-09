@@ -306,7 +306,7 @@ CSL.Engine.prototype.setStyleAttributes = function () {
     // (needed for createElement) that does not contain our top-level node.
     // This happens in jsdom, at least, maybe elsewhere.
     var cslXml = this.cslXml;
-    if (!this.cslXml.tagName || this.cslXml.tagName.toLowerCase() !== 'style') {
+    if (!this.cslXml.tagName || ("" + this.cslXml.tagName).toLowerCase() !== 'style') {
         if (this.cslXml.getElementsByTagName) {
             var cslXml = this.cslXml.getElementsByTagName('style')[0];
         }
