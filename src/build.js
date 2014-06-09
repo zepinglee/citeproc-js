@@ -638,9 +638,10 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     if (this.opt.development_extensions.main_title_from_short_title) {
         Item["title-main"] = Item.title;
         Item["title-sub"] = false;
-        if (Item.title && Item.shortTitle) {
-            offset = Item.shortTitle.length;
-            if (Item.title.slice(0,offset) === Item.shortTitle && Item.title.slice(offset).match(/^\s*:/)) {
+        if (Item.title && (Item.shortTitle || Item['title-short'])) {
+            var shortTitle = Item.shortTitle ? Item.shortTitle : Item['title-short'];
+            offset = shortTitle.length;
+            if (Item.title.slice(0,offset) === shortTitle && Item.title.slice(offset).match(/^\s*:/)) {
                 Item["title-main"] = Item.title.slice(0,offset).replace(/\s+$/,"");
                 Item["title-sub"] = Item.title.slice(offset).replace(/^\s*:\s*/,"");
             }
