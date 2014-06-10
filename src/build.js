@@ -304,7 +304,12 @@ CSL.Engine.prototype.setStyleAttributes = function () {
     dummy = {};
     // Protect against DOM engines that deliver a top-level document
     // (needed for createElement) that does not contain our top-level node.
-    // This happens in jsdom, at least, maybe elsewhere.
+    // 
+    // The string coercion on this.cslXml.tagName addresses a bizarre
+    // condition on the top-level node in jsdom running under node.js, in which:
+    //   (1) typeof this.cslXml.tagName === "undefined"; and
+    //   (2) !this.cslXml.tagName === false
+    // Coerced, it becomes an empty string.
     var cslXml = this.cslXml;
     if (!this.cslXml.tagName || ("" + this.cslXml.tagName).toLowerCase() !== 'style') {
         if (this.cslXml.getElementsByTagName) {
