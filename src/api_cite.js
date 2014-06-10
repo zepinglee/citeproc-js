@@ -369,7 +369,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     var oldlastid;
 
                     if ("undefined" === typeof first_ref[myid]) {
-                        first_ref[myid] = onecitation.properties.noteIndex;
+                        first_ref[myid] = this.registry.registry[myid]['first-reference-note-number'] = onecitation.properties.noteIndex;
                         last_ref[myid] = onecitation.properties.noteIndex;
                         item[1].position = CSL.POSITION_FIRST;
                     } else {
@@ -513,7 +513,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         }
                         if (suprame || ibidme) {
                             if (first_ref[myid] != onecitation.properties.noteIndex) {
-                                item[1]["first-reference-note-number"] = first_ref[myid];
+                                item[1]["first-reference-note-number"] = this.registry.registry[myid]['first-reference-note-number'] = first_ref[myid];
                             }
                         }
                     }
@@ -545,6 +545,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             sortedItems.sort(this.citation.srt.compareCompositeKeys);
         }
     }
+    for (i=0,ilen=sortedItems.length;i<ilen;i++) {
+        if (this.registry.registry[sortedItems[i][0].id].disambig.disambiguate) {
+            this.tmp.taintedItemIDs[sortedItems[i][0].id] = true;
+        }
+    }                
     for (key in this.tmp.taintedItemIDs) {
         if (this.tmp.taintedItemIDs.hasOwnProperty(key)) {
             citations = this.registry.citationreg.citationsByItemId[key];
@@ -730,12 +735,20 @@ CSL.getAmbiguousCite = function (Item, disambig) {
     } else {
         this.tmp.disambig_request = false;
     }
+    var itemSupp = {
+        position: 1
+    };
+    if (this.registry.registry[Item.id]) {
+        if (this.citation.opt["givenname-disambiguation-rule"] === "by-cite") {
+            itemSupp['first-reference-note-number'] = this.registry.registry[Item.id]['first-reference-note-number'];
+        }
+    }
     this.tmp.area = "citation";
     use_parallels = this.parallel.use_parallels;
     this.parallel.use_parallels = false;
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
-    CSL.getCite.call(this, Item, {position: 1});
+    CSL.getCite.call(this, Item, itemSupp);
     // !!!
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
         CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);

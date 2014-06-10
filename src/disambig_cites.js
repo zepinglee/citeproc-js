@@ -223,10 +223,16 @@ CSL.Disambiguation.prototype.disExtraText = function () {
         print("[3] === disExtraText ==");
     }
     //SNIP-END
+    
+    var done = false;
+    if (this.partners.length < 2) {
+        // Max it out
+        done = true;
+    }
 
     // If first encounter in this cycle and multiple modes are
     // available, decrement mode and reset base
-    if (!this.base.disambiguate || this.state.tmp.disambiguate_count !== this.state.tmp.disambiguate_maxMax) {
+    if (!done && (!this.base.disambiguate || this.state.tmp.disambiguate_count !== this.state.tmp.disambiguate_maxMax)) {
         // Rerun everything on each subcycle? This doesn't work currently.
         //this.initVars(this.akey)
         this.modeindex = 0;
@@ -244,8 +250,8 @@ CSL.Disambiguation.prototype.disExtraText = function () {
         } else {
             this.disNames();
         }
-    } else if (this.state.tmp.disambiguate_count === this.state.tmp.disambiguate_maxMax) {
-        if (this.modeindex === this.modes.length - 1) {
+    } else if (done || this.state.tmp.disambiguate_count === this.state.tmp.disambiguate_maxMax) {
+        if (done || this.modeindex === this.modes.length - 1) {
             // If this is the end, disambiguation failed.
             // Discard disambiguate=true (?) and set parameters
             var base = this.lists[this.listpos][0];
