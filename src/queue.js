@@ -746,6 +746,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         }
     }
     PUNCT_OR_SPACE[" "] = true;
+    PUNCT_OR_SPACE[" "] = true;
 
     var RtoL_MAP = {};
     for (var key in LtoR_MAP) {
@@ -1013,6 +1014,9 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                             if (!blobEndsInNumber(child)) {
                                 mergeChars(child, 'suffix', parent, 'suffix');
                             }
+                        }
+                        if (childStrings.suffix.slice(-1) === " " && parentStrings.suffix.slice(0,1)) {
+                            parentStrings.suffix = parentStrings.suffix.slice(1);
                         }
                     } else {
                         // If we have decorations and there are no quotes below, stop here, but drill down to see if there is duplicate punctuation below
