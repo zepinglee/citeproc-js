@@ -10,7 +10,7 @@ names, but cannot be tested through the standard test suit
 machinery.
 
 >>===== RESULT =====>>
-葉俊榮, 台大法律系與林子儀 &#38; 簡資修, 中研院法律所
+葉俊榮, 台大法律系與林子儀、簡資修, 中研院法律所
 <<===== RESULT =====<<
 
 
