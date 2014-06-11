@@ -256,7 +256,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 }
                 if (this.strings.form === "short" && !Item[variable]) {
                     if (variable === "title") {
-                        variable = "shortTitle";
+                        variable = "title-short";
                     } else if (variable === "container-title") {
                         variable = "journalAbbreviation";
                     }

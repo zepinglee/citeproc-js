@@ -639,22 +639,22 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			Item.legislation_id = legislation_id.join("::");
         }
     }
+    // Add getAbbreviation() call for title-short and container-title-short
+    if (!Item["title-short"]) {
+        Item["title-short"] = Item.shortTitle;
+    }
     // Add support for main_title_from_short_title
     if (this.opt.development_extensions.main_title_from_short_title) {
         Item["title-main"] = Item.title;
         Item["title-sub"] = false;
-        if (Item.title && (Item.shortTitle || Item['title-short'])) {
-            var shortTitle = Item.shortTitle ? Item.shortTitle : Item['title-short'];
+        if (Item.title && Item['title-short']) {
+            var shortTitle = Item['title-short'];
             offset = shortTitle.length;
             if (Item.title.slice(0,offset) === shortTitle && Item.title.slice(offset).match(/^\s*:/)) {
                 Item["title-main"] = Item.title.slice(0,offset).replace(/\s+$/,"");
                 Item["title-sub"] = Item.title.slice(offset).replace(/^\s*:\s*/,"");
             }
         }
-    }
-    // Add getAbbreviation() call for title-short and container-title-short
-    if (!Item["title-short"]) {
-        Item["title-short"] = Item.shortTitle;
     }
     var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (!isLegalType && Item.title && this.sys.getAbbreviation) {

@@ -200,7 +200,7 @@ CSL.Node.text = {
                         if (parallel_variable === "title" 
                             && (form === "short" || Item["title-short"])) { 
                             // Only if not main_title_from_short_title
-                            parallel_variable = "shortTitle";
+                            parallel_variable = "title-short";
                         }
                         state.parallel.StartVariable(parallel_variable);
                         state.parallel.AppendToVariable(Item[parallel_variable],parallel_variable);
@@ -222,7 +222,7 @@ CSL.Node.text = {
                             if (this.variables_real[0] === "container-title") {
                                 altvar = "journalAbbreviation";
                             } else if (this.variables_real[0] === "title") {
-                                altvar = "shortTitle";
+                                altvar = "title-short";
                             }
                         } else {
                             abbrevfam = false;
