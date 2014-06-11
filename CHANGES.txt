@@ -1,6 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.530
+==========================
+
+- Include note numbers in rendered disambiguation strings when
+  givenname-disambiguation-rule="by-cite" (the default rule) is 
+  in force.
+
+- Add disambiguate="check-ambiguity-and-backreference" option,
+  for use on first-position cites that must check whether
+  disambiguation is true without affecting the incremental 
+  truthiness of the disambiguation conditionals.
+
+- Improve backreference updates for styles that use the
+  disambiguate conditional.
+
+- Control for the non-breaking-space suffix used to join names
+  in some French citation styles.
+
+==========================
 Changes in version 1.0.529
 ==========================
 
