@@ -64,7 +64,7 @@ CSL.Disambiguation.prototype.scanItems = function (list) {
     //SNIP-END
 
     this.Item = list[1][0];
-    this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.base);
+    this.ItemCite = CSL.getAmbiguousCite.call(this.state, this.Item, this.base, true);
 
     this.scanlist = list[1];
     this.partners = [];
@@ -74,7 +74,7 @@ CSL.Disambiguation.prototype.scanItems = function (list) {
 
     for (pos = 1, len = list[1].length; pos < len; pos += 1) {
         otherItem = list[1][pos];
-        var otherItemCite = CSL.getAmbiguousCite.call(this.state, otherItem, this.base);
+        var otherItemCite = CSL.getAmbiguousCite.call(this.state, otherItem, this.base, true);
         //SNIP-START
         if (this.debug) {
             if (pos > 1) {
@@ -225,8 +225,8 @@ CSL.Disambiguation.prototype.disExtraText = function () {
     //SNIP-END
     
     var done = false;
-    if (this.partners.length < 2) {
-        // Max it out
+
+    if (this.clashes[1] === 0 && this.nonpartners.length < 2) {
         done = true;
     }
 

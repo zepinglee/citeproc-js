@@ -377,6 +377,13 @@ CSL.Registry.prototype.doinserts = function (mylist) {
             //
             this.registry[item] = newitem;
             //
+            //  4f(a). Add first reference note number
+            //         (this may be redundant)
+            if (this.citationreg.citationsByItemId && this.citationreg.citationsByItemId[item]) {
+                this.registry[item]["first-reference-note-number"] = this.citationreg.citationsByItemId[item][0].properties.noteIndex;
+            }
+
+            //
             //  4g. Set and record the base token to hold disambiguation
             //      results ("disambig" in the object above).
             //
