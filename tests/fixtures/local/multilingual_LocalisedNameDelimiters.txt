@@ -9,17 +9,28 @@ more intuitive control over formatting of transliterated
 names, but cannot be tested through the standard test suit
 machinery.
 
+Among other things, this test illustrates the effect of the
+expect_and_symbol_form on the citeproc-js CSL processor. When the
+option is set, the symbol (&) is drawn from a term, rather than
+being hard-wired into the processor.
+
 >>===== RESULT =====>>
 葉俊榮, 台大法律系與林子儀、簡資修, 中研院法律所
 <<===== RESULT =====<<
+
+>>===== OPTIONS =====>>
+{
+    "expect_and_symbol_form": true
+}
+<<===== OPTIONS =====<<
+
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0"
-      default-locale="en-US-x-translit-ja-alalc97-x-translit-en">
+      version="1.o">
   <info>
     <id />
     <title />
