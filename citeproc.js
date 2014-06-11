@@ -1637,20 +1637,20 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			Item.legislation_id = legislation_id.join("::");
         }
     }
+    if (!Item["title-short"]) {
+        Item["title-short"] = Item.shortTitle;
+    }
     if (this.opt.development_extensions.main_title_from_short_title) {
         Item["title-main"] = Item.title;
         Item["title-sub"] = false;
-        if (Item.title && (Item.shortTitle || Item['title-short'])) {
-            var shortTitle = Item.shortTitle ? Item.shortTitle : Item['title-short'];
+        if (Item.title && Item['title-short']) {
+            var shortTitle = Item['title-short'];
             offset = shortTitle.length;
             if (Item.title.slice(0,offset) === shortTitle && Item.title.slice(offset).match(/^\s*:/)) {
                 Item["title-main"] = Item.title.slice(0,offset).replace(/\s+$/,"");
                 Item["title-sub"] = Item.title.slice(offset).replace(/^\s*:\s*/,"");
             }
         }
-    }
-    if (!Item["title-short"]) {
-        Item["title-short"] = Item.shortTitle;
     }
     var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (!isLegalType && Item.title && this.sys.getAbbreviation) {
@@ -8636,7 +8636,7 @@ CSL.Node.text = {
                         var parallel_variable = this.variables[0];
                         if (parallel_variable === "title" 
                             && (form === "short" || Item["title-short"])) { 
-                            parallel_variable = "shortTitle";
+                            parallel_variable = "title-short";
                         }
                         state.parallel.StartVariable(parallel_variable);
                         state.parallel.AppendToVariable(Item[parallel_variable],parallel_variable);
@@ -8651,7 +8651,7 @@ CSL.Node.text = {
                             if (this.variables_real[0] === "container-title") {
                                 altvar = "journalAbbreviation";
                             } else if (this.variables_real[0] === "title") {
-                                altvar = "shortTitle";
+                                altvar = "title-short";
                             }
                         } else {
                             abbrevfam = false;
@@ -8999,7 +8999,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 }
                 if (this.strings.form === "short" && !Item[variable]) {
                     if (variable === "title") {
-                        variable = "shortTitle";
+                        variable = "title-short";
                     } else if (variable === "container-title") {
                         variable = "journalAbbreviation";
                     }

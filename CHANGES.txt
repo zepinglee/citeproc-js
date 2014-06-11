@@ -19,6 +19,9 @@ Changes in version 1.0.530
 - Control for the non-breaking-space suffix used to join names
   in some French citation styles.
 
+- Treat title-short on input as fully equivalent to shortTitle
+  for the purposes of form="short" on the title variable.
+
 ==========================
 Changes in version 1.0.529
 ==========================
