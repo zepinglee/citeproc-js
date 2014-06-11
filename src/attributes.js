@@ -20,17 +20,16 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
         var func = function (Item, item) {
             state.tmp.disambiguate_maxMax += 1;
             if (state.tmp.disambig_settings.disambiguate
-               && state.tmp.disambiguate_count < state.tmp.disambig_settings.disambiguate) {
+                && state.tmp.disambiguate_count < state.tmp.disambig_settings.disambiguate) {
                 state.tmp.disambiguate_count += 1;
                 return true;
             }
             return false;
         };
         this.tests.push(func);
-    } else if (arg === "checkonly") {
+    } else if (arg === "check-ambiguity-and-backreference") {
         var func = function (Item, item) {
-            var citecount = state.registry.citationreg.citationsByItemId[Item.id].length;
-            if (state.tmp.disambig_settings.disambiguate && citecount > 1) {
+            if (state.registry.registry[Item.id].disambig.disambiguate && state.registry.registry[Item.id]["citation-count"] > 1) {
                 return true;
             }
             return false;
