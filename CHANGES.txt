@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.531
+==========================
+
+- Implement field-level citation wrappers as a caller-provided
+  variableWrapper() function hook on the sys object. Example:
+
+  sys.variableWrapper = function (itemData, variableNames, str, punct) {
+      if (variableNames[0] === 'title' && itemData.URL) {
+          return '<a href="' + itemData.URL + '">' + str + '</a>' + punct;
+      } else {
+          return (str + punct);
+      }
+  }
+
+==========================
 Changes in version 1.0.530
 ==========================
 

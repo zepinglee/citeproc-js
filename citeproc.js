@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.530",
+    PROCESSOR_VERSION: "1.0.531",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -11448,9 +11448,31 @@ CSL.Util.substituteStart = function (state, target) {
         if_start.test = state.fun.match.any(this, state, if_start.tests);
         target.push(if_start);
     }
+    if (state.sys.variableWrapper
+        && this.variables
+        && this.variables[0]
+        && !state.tmp.just_looking) {
+        func = function (state, Item) {
+            variable_entry = new CSL.Token("text", CSL.START);
+            variable_entry.decorations = [["@showid", "true"]];
+            state.output.startTag("variable_entry", variable_entry);
+            state.output.current.value().itemData = Item;
+            state.output.current.value().variableNames = this.variables;
+        }
+        this.execs.push(func);
+    }
 };
 CSL.Util.substituteEnd = function (state, target) {
     var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, str;
+    if (this.decorations && state.sys.variableWrapper
+        && this.variables
+        && this.variables[0]
+        && !state.tmp.just_looking) {
+        func = function (state,Item) {
+            state.output.endTag("variable_entry");
+        }
+        this.execs.push(func);
+    }
     func = function (state, Item) {
         for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
             if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
@@ -12598,7 +12620,16 @@ CSL.Output.Formats.prototype.html = {
         return "<div class=\"csl-indent\">" + str + "</div>\n  ";
     },
     "@showid/true": function (state, str, cslid) {
-        return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
+        if (cslid) {
+            return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
+        } else {
+            var punct = "";
+            if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
+                punct = str.slice(-1);
+                str = str.slice(0,-1);
+            }
+            return state.sys.variableWrapper(this.itemData, this.variableNames, str, punct);
+        }
     },
     "@URL/true": function (state, str) {
         return "<a href=\"" + str + "\">" + str + "</a>";

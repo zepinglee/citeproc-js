@@ -51,6 +51,7 @@ dojo.require("std.statute");
 dojo.require("std.style-as");
 dojo.require("std.style-hhkk");
 dojo.require("std.substitute");
+dojo.require("std.sys");
 dojo.require("std.test");
 dojo.require("std.testers");
 dojo.require("std.textcase");
