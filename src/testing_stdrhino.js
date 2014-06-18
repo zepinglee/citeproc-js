@@ -128,6 +128,15 @@ StdRhinoTest.prototype.run = function(){
     // print(this.myname);
     var len, pos, ret, id_set, nick;
     ret = new Array();
+
+    //this.variableWrapper = function (itemData, variableNames, str, punct) {
+    //    if (variableNames[0] === 'title') {
+    //        return '<a href="' + itemData.URL + '">' + str + '</a>' + punct;
+    //    } else {
+    //        return (str + punct);
+    //    }
+    //};
+
     this.style = new CSL.Engine(this,this.test.csl);
     //this.style.setOutputFormat("rtf");
     //this.style.setParseNames(true);
