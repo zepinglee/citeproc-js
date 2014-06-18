@@ -104,11 +104,40 @@ CSL.Util.substituteStart = function (state, target) {
         if_start.test = state.fun.match.any(this, state, if_start.tests);
         target.push(if_start);
     }
+
+    if (state.sys.variableWrapper
+        && this.variables
+        && this.variables[0]
+        && !state.tmp.just_looking) {
+
+        func = function (state, Item) {
+            // Attach item data and variable names.
+            // Do with them what you will.
+            variable_entry = new CSL.Token("text", CSL.START);
+            variable_entry.decorations = [["@showid", "true"]];
+            state.output.startTag("variable_entry", variable_entry);
+            state.output.current.value().itemData = Item;
+            state.output.current.value().variableNames = this.variables;
+        }
+        this.execs.push(func);
+    }
 };
 
 
 CSL.Util.substituteEnd = function (state, target) {
     var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, str;
+
+    if (this.decorations && state.sys.variableWrapper
+        && this.variables
+        && this.variables[0]
+        && !state.tmp.just_looking) {
+        
+        func = function (state,Item) {
+            state.output.endTag("variable_entry");
+        }
+        this.execs.push(func);
+    }
+
     func = function (state, Item) {
         for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
             if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
