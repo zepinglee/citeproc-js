@@ -181,6 +181,8 @@ CSL.XmlToToken = function (state, tokentype) {
             }
         }
         token.decorations = decorations;
+    } else if (tokentype === CSL.END && attributes['@variable']) {
+        token.hasVariable = true;
     }
     //
     // !!!!!: eliminate diversion of tokens to separate

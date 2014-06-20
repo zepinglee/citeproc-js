@@ -5,6 +5,12 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.processor_version = CSL.PROCESSOR_VERSION;
     this.csl_version = "1.0";
     this.sys = sys;
+    // XXX This may be excess code. Given the normalization performed on
+    // XXX the output queue before variableWrapper() is run, a single
+    // XXX space should be the most cruft that we ever see before a variable.
+    if (sys.variableWrapper) {
+        CSL.VARIABLE_WRAPPER_PREPUNCT_REX = new RegExp('^([' + [" "].concat(CSL.SWAPPING_PUNCTUATION).join("") + ']*)(.*)');
+    }
     this.sys.xml = new CSL.System.Xml.Parsing();
     // XXXX This should be restored -- temporarily suspended for testing of JSON style support.
     if ("undefined" === typeof CSL_JSON && "string" !== typeof style) {

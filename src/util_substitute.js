@@ -106,18 +106,56 @@ CSL.Util.substituteStart = function (state, target) {
     }
 
     if (state.sys.variableWrapper
-        && this.variables
-        && this.variables[0]
-        && !state.tmp.just_looking) {
+        && this.variables_real
+        && this.variables_real.length) {
 
-        func = function (state, Item) {
-            // Attach item data and variable names.
-            // Do with them what you will.
-            variable_entry = new CSL.Token("text", CSL.START);
-            variable_entry.decorations = [["@showid", "true"]];
-            state.output.startTag("variable_entry", variable_entry);
-            state.output.current.value().itemData = Item;
-            state.output.current.value().variableNames = this.variables;
+        func = function (state, Item, item) {
+            if (!state.tmp.just_looking) {
+                // Attach item data and variable names.
+                // Do with them what you will.
+                variable_entry = new CSL.Token("text", CSL.START);
+                variable_entry.decorations = [["@showid", "true"]];
+                state.output.startTag("variable_entry", variable_entry);
+                var position = null;
+                if (item) {
+                    position = item.position;
+                }
+                if (!position) position = 0;
+                var positionMap = [
+                    "first",
+                    "subsequent",
+                    "ibid",
+                    "ibid-with-locator"
+                ]
+                var noteNumber = 0;
+                if (item && item.noteIndex) {
+                    noteNumber = item.noteIndex;
+                }
+                var firstReferenceNoteNumber = 0;
+                if (item && item['first-reference-note-number']) {
+                    firstReferenceNoteNumber = item['first-reference-note-number'];
+                }
+                var citationNumber = 0;
+                if (item && item['citation-number']) {
+                    citationNumber = item['citation-number'];
+                }
+                var index = 0;
+                if (item && item.index) {
+                    index = item.index;
+                }
+                var params = {
+                    itemData: Item,
+                    variableNames: this.variables,
+                    context: state.tmp.area,
+                    xclass: state.opt.xclass,
+                    position: positionMap[position],
+                    "note-number": noteNumber,
+                    "first-reference-note-number": firstReferenceNoteNumber,
+                    "citation-number": citationNumber,
+                    "index": index
+                };
+                state.output.current.value().params = params;
+            }
         }
         this.execs.push(func);
     }
@@ -127,13 +165,13 @@ CSL.Util.substituteStart = function (state, target) {
 CSL.Util.substituteEnd = function (state, target) {
     var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, str;
 
-    if (this.decorations && state.sys.variableWrapper
-        && this.variables
-        && this.variables[0]
-        && !state.tmp.just_looking) {
+    if (state.sys.variableWrapper
+        && (this.hasVariable || (this.variables_real && this.variables_real.length))) {
         
         func = function (state,Item) {
-            state.output.endTag("variable_entry");
+            if (!state.tmp.just_looking) {
+               state.output.endTag("variable_entry");
+            }
         }
         this.execs.push(func);
     }

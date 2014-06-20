@@ -129,13 +129,27 @@ StdRhinoTest.prototype.run = function(){
     var len, pos, ret, id_set, nick;
     ret = new Array();
 
-    //this.variableWrapper = function (itemData, variableNames, str, punct) {
-    //    if (variableNames[0] === 'title') {
-    //        return '<a href="' + itemData.URL + '">' + str + '</a>' + punct;
-    //    } else {
-    //        return (str + punct);
-    //    }
-    //};
+    // XXX Uncomment for local sys_VariableWrapper.txt test.
+
+/*
+    this.variableWrapper = function (params, prePunct, str, postPunct) {
+        //print(JSON.stringify(params,null,2));
+        if (params.variableNames[0] === 'title' 
+            && params.itemData.URL 
+            && params.context === "citation" 
+            && params.position === "first") {
+
+            return prePunct + '<a href="' + params.itemData.URL + '">' + str + '</a>' + postPunct;
+        } else if (params.variableNames[0] === 'first-reference-note-number' 
+                   && params.context === "citation" 
+                   && params.position !== "first") {
+
+            return prePunct + '<b>' + str + '</b>' + postPunct;
+        } else {
+            return (prePunct + str + postPunct);
+        }
+    };
+*/
 
     this.style = new CSL.Engine(this,this.test.csl);
     //this.style.setOutputFormat("rtf");

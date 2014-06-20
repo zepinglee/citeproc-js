@@ -579,6 +579,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                         }
                     }
+                    if (this.sys.variableWrapper) {
+                        item[1].index = onecitation.properties.index;
+                        item[1].noteIndex = onecitation.properties.noteIndex;
+                    }
                 }
             }
         }

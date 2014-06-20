@@ -110,15 +110,27 @@ CSL.Output.Formats.prototype.html = {
         return "<div class=\"csl-indent\">" + str + "</div>\n  ";
     },
     "@showid/true": function (state, str, cslid) {
-        if (cslid) {
-            return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
-        } else {
-            var punct = "";
-            if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
-                punct = str.slice(-1);
-                str = str.slice(0,-1);
+        if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
+            if (cslid) {
+                return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
+            } else if ("string" === typeof str) {
+                var prePunct = "";
+                if (str) {
+                    var m = str.match(CSL.VARIABLE_WRAPPER_PREPUNCT_REX);
+                    prePunct = m[1];
+                    str = m[2];
+                }
+                var postPunct = "";
+                if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
+                    postPunct = str.slice(-1);
+                    str = str.slice(0,-1);
+                }
+                return state.sys.variableWrapper(this.params, prePunct, str, postPunct);
+            } else {
+                return str;
             }
-            return state.sys.variableWrapper(this.itemData, this.variableNames, str, punct);
+        } else {
+            return str;
         }
     },
     "@URL/true": function (state, str) {
