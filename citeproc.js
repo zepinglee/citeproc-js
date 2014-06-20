@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.531",
+    PROCESSOR_VERSION: "1.0.532",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -792,6 +792,8 @@ CSL.XmlToToken = function (state, tokentype) {
             }
         }
         token.decorations = decorations;
+    } else if (tokentype === CSL.END && attributes['@variable']) {
+        token.hasVariable = true;
     }
     target = state[state.build.area].tokens;
     CSL.Node[name].build.call(token, state, target);
@@ -1179,6 +1181,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.processor_version = CSL.PROCESSOR_VERSION;
     this.csl_version = "1.0";
     this.sys = sys;
+    if (sys.variableWrapper) {
+        CSL.VARIABLE_WRAPPER_PREPUNCT_REX = new RegExp('^([' + [" "].concat(CSL.SWAPPING_PUNCTUATION).join("") + ']*)(.*)');
+    }
     this.sys.xml = new CSL.System.Xml.Parsing();
     if ("undefined" === typeof CSL_JSON && "string" !== typeof style) {
         style = "";
@@ -2399,7 +2404,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                         if (state.normalDecorIsOrphan(blobjr, params)) {
                             continue;
                         }
-                        b = state.fun.decorate[params[0]][params[1]](state, b, params[2]);
+                        b = state.fun.decorate[params[0]][params[1]].call(blobjr, state, b, params[2]);
                     }
                 }
                 if (b && b.length) {
@@ -2408,7 +2413,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                         for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
                             params = blobjr.decorations[j];
                             if (params[0] === "@showid") {
-                                b = state.fun.decorate[params[0]][params[1]](state, b, params[2]);
+                                b = state.fun.decorate[params[0]][params[1]].call(blobjr, state, b, params[2]);
                             }
                         }
                     }
@@ -2461,7 +2466,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                     continue;
                 }
                 if ("string" === typeof blobs_start) {
-                    blobs_start = state.fun.decorate[params[0]][params[1]](state, blobs_start, params[2]);
+                    blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
                 }
             }
         }
@@ -2531,6 +2536,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
         blobs[0].strings.prefix = parent.strings.prefix + blobs[0].strings.prefix;
         blobs[0].strings.suffix = blobs[0].strings.suffix + parent.strings.suffix;
         blobs[0].decorations = blobs[0].decorations.concat(parent.decorations);
+        blobs[0].params = parent.params;
         return blobs[0];
     }
     var start = true;
@@ -2585,7 +2591,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
                     if (state.normalDecorIsOrphan(blob, params)) {
                         continue;
                     }
-                    str = state.fun.decorate[params[0]][params[1]](state, str, params[2]);
+                    str = state.fun.decorate[params[0]][params[1]].call(blob, state, str, params[2]);
                 }
             }
             str = txt_esc(blob.strings.prefix) + str + txt_esc(blob.strings.suffix);
@@ -3664,6 +3670,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                                 }
                             }
                         }
+                    }
+                    if (this.sys.variableWrapper) {
+                        item[1].index = onecitation.properties.index;
+                        item[1].noteIndex = onecitation.properties.noteIndex;
                     }
                 }
             }
@@ -11449,27 +11459,65 @@ CSL.Util.substituteStart = function (state, target) {
         target.push(if_start);
     }
     if (state.sys.variableWrapper
-        && this.variables
-        && this.variables[0]
-        && !state.tmp.just_looking) {
-        func = function (state, Item) {
-            variable_entry = new CSL.Token("text", CSL.START);
-            variable_entry.decorations = [["@showid", "true"]];
-            state.output.startTag("variable_entry", variable_entry);
-            state.output.current.value().itemData = Item;
-            state.output.current.value().variableNames = this.variables;
+        && this.variables_real
+        && this.variables_real.length) {
+        func = function (state, Item, item) {
+            if (!state.tmp.just_looking) {
+                variable_entry = new CSL.Token("text", CSL.START);
+                variable_entry.decorations = [["@showid", "true"]];
+                state.output.startTag("variable_entry", variable_entry);
+                var position = null;
+                if (item) {
+                    position = item.position;
+                }
+                if (!position) position = 0;
+                var positionMap = [
+                    "first",
+                    "subsequent",
+                    "ibid",
+                    "ibid-with-locator"
+                ]
+                var noteNumber = 0;
+                if (item && item.noteIndex) {
+                    noteNumber = item.noteIndex;
+                }
+                var firstReferenceNoteNumber = 0;
+                if (item && item['first-reference-note-number']) {
+                    firstReferenceNoteNumber = item['first-reference-note-number'];
+                }
+                var citationNumber = 0;
+                if (item && item['citation-number']) {
+                    citationNumber = item['citation-number'];
+                }
+                var index = 0;
+                if (item && item.index) {
+                    index = item.index;
+                }
+                var params = {
+                    itemData: Item,
+                    variableNames: this.variables,
+                    context: state.tmp.area,
+                    xclass: state.opt.xclass,
+                    position: positionMap[position],
+                    "note-number": noteNumber,
+                    "first-reference-note-number": firstReferenceNoteNumber,
+                    "citation-number": citationNumber,
+                    "index": index
+                };
+                state.output.current.value().params = params;
+            }
         }
         this.execs.push(func);
     }
 };
 CSL.Util.substituteEnd = function (state, target) {
     var func, bib_first_end, bib_other, if_end, choose_end, toplevel, hasval, author_substitute, str;
-    if (this.decorations && state.sys.variableWrapper
-        && this.variables
-        && this.variables[0]
-        && !state.tmp.just_looking) {
+    if (state.sys.variableWrapper
+        && (this.hasVariable || (this.variables_real && this.variables_real.length))) {
         func = function (state,Item) {
-            state.output.endTag("variable_entry");
+            if (!state.tmp.just_looking) {
+               state.output.endTag("variable_entry");
+            }
         }
         this.execs.push(func);
     }
@@ -12620,15 +12668,27 @@ CSL.Output.Formats.prototype.html = {
         return "<div class=\"csl-indent\">" + str + "</div>\n  ";
     },
     "@showid/true": function (state, str, cslid) {
-        if (cslid) {
-            return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
-        } else {
-            var punct = "";
-            if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
-                punct = str.slice(-1);
-                str = str.slice(0,-1);
+        if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
+            if (cslid) {
+                return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
+            } else if ("string" === typeof str) {
+                var prePunct = "";
+                if (str) {
+                    var m = str.match(CSL.VARIABLE_WRAPPER_PREPUNCT_REX);
+                    prePunct = m[1];
+                    str = m[2];
+                }
+                var postPunct = "";
+                if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
+                    postPunct = str.slice(-1);
+                    str = str.slice(0,-1);
+                }
+                return state.sys.variableWrapper(this.params, prePunct, str, postPunct);
+            } else {
+                return str;
             }
-            return state.sys.variableWrapper(this.itemData, this.variableNames, str, punct);
+        } else {
+            return str;
         }
     },
     "@URL/true": function (state, str) {

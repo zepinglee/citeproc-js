@@ -1,5 +1,35 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+
+
+==========================
+Changes in version 1.0.532
+==========================
+
+- Use localCompare() for title comparisons needed by
+  subsequent-author-substitute. Thanks to @aurimas for
+  this suggestion.
+
+- Improved interface for variableWrapper() method:
+
+    this.variableWrapper = function (params, prePunct, str, postPunct) {
+        if (params.variableNames[0] === 'title' 
+            && params.itemData.URL 
+            && params.context === "citation" 
+            && params.position === "first") {
+
+            return prePunct + '<a href="' + params.itemData.URL + '">' + str + '</a>' + postPunct;
+        } else if (params.variableNames[0] === 'first-reference-note-number' 
+                   && params.context === "citation" 
+                   && params.position !== "first") {
+
+            return prePunct + '<b>' + str + '</b>' + postPunct;
+        } else {
+            return (prePunct + str + postPunct);
+        }
+    };
+
+
 ==========================
 Changes in version 1.0.531
 ==========================
