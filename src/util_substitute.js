@@ -243,8 +243,8 @@ CSL.Util.substituteEnd = function (state, target) {
                         for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
                             var name = state.tmp.rendered_name[i];
                             if (dosub
-                                && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > i - 1
-                                && state.tmp.last_rendered_name[i] === name) {
+                                && state.tmp.last_rendered_name && state.tmp.last_rendered_name.length > (i - 1)
+                                && name && !name.localeCompare(state.tmp.last_rendered_name[i])) {
                                 
                                 str = new CSL.Blob(state[state.tmp.area].opt["subsequent-author-substitute"]);
                                 state.tmp.name_node.children[i].blobs = [str];
@@ -261,7 +261,7 @@ CSL.Util.substituteEnd = function (state, target) {
                     } else if ("complete-each" === subrule) {
                         var rendered_name = state.tmp.rendered_name.join(",");
                         if (rendered_name) {
-                            if (rendered_name === state.tmp.last_rendered_name) {
+                            if (!rendered_name.localeCompare(state.tmp.last_rendered_name)) {
                                 for (i = 0, ilen = state.tmp.name_node.children.length; i < ilen; i += 1) {
                                     str = new CSL.Blob(state[state.tmp.area].opt["subsequent-author-substitute"]);
                                     state.tmp.name_node.children[i].blobs = [str];
@@ -272,7 +272,7 @@ CSL.Util.substituteEnd = function (state, target) {
                     } else {
                         var rendered_name = state.tmp.rendered_name.join(",");
                         if (rendered_name) {
-                            if (rendered_name === state.tmp.last_rendered_name) {
+                            if (!rendered_name.localeCompare(state.tmp.last_rendered_name)) {
                                 str = new CSL.Blob(state[state.tmp.area].opt["subsequent-author-substitute"]);
                                 if (state.tmp.label_blob) {
                                     state.tmp.name_node.top.blobs = [str,state.tmp.label_blob];
