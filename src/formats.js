@@ -215,6 +215,9 @@ CSL.Output.Formats.prototype.text = {
     "@display/indent": function (state, str) {
         return "\n    "+str;
     },
+    "@showid/true": function (state, str, cslid) {
+        return str;
+    },
     "@URL/true": function (state, str) {
         return str;
     },
@@ -301,6 +304,24 @@ CSL.Output.Formats.prototype.rtf = {
     },
     "@display/indent": function (state, str) {
         return "\n\\tab "+str;
+    },
+    "@showid/true": function (state, str, cslid) {
+        if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
+            var prePunct = "";
+            if (str) {
+                var m = str.match(CSL.VARIABLE_WRAPPER_PREPUNCT_REX);
+                prePunct = m[1];
+                str = m[2];
+            }
+            var postPunct = "";
+            if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
+                postPunct = str.slice(-1);
+                str = str.slice(0,-1);
+            }
+            return state.sys.variableWrapper(this.params, prePunct, str, postPunct);
+        } else {
+            return str;
+        }
     },
     "@URL/true": function (state, str) {
         return str;
