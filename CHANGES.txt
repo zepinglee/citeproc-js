@@ -1,6 +1,10 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+==========================
+Changes in version 1.0.533
+==========================
 
+- Fix potential bugs in code around variableWrapper().
 
 ==========================
 Changes in version 1.0.532
