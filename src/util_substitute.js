@@ -110,7 +110,7 @@ CSL.Util.substituteStart = function (state, target) {
         && this.variables_real.length) {
 
         func = function (state, Item, item) {
-            if (!state.tmp.just_looking) {
+            if (!state.tmp.just_looking && !state.tmp.suppress_decorations) {
                 // Attach item data and variable names.
                 // Do with them what you will.
                 variable_entry = new CSL.Token("text", CSL.START);
@@ -152,7 +152,8 @@ CSL.Util.substituteStart = function (state, target) {
                     "note-number": noteNumber,
                     "first-reference-note-number": firstReferenceNoteNumber,
                     "citation-number": citationNumber,
-                    "index": index
+                    "index": index,
+                    "mode": state.opt.mode
                 };
                 state.output.current.value().params = params;
             }
@@ -169,8 +170,8 @@ CSL.Util.substituteEnd = function (state, target) {
         && (this.hasVariable || (this.variables_real && this.variables_real.length))) {
         
         func = function (state,Item) {
-            if (!state.tmp.just_looking) {
-               state.output.endTag("variable_entry");
+            if (!state.tmp.just_looking && !state.tmp.suppress_decorations) {
+                state.output.endTag("variable_entry");
             }
         }
         this.execs.push(func);
