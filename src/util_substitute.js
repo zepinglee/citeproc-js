@@ -11,7 +11,7 @@ CSL.Util.substituteStart = function (state, target) {
         }
     };
     this.execs.push(func);
-    if (this.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
+    if (this.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
         this.decorations.reverse();
         this.decorations.push(["@showid","true", this.cslid]);
         this.decorations.reverse();

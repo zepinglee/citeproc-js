@@ -57,7 +57,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     this.cslXml = this.sys.xml.makeXml(style);
 
-    if (this.opt.development_extensions.csl_reverse_lookup_support) {
+    if (this.opt.development_extensions.csl_reverse_lookup_support || this.sys.csl_reverse_lookup_support) {
         this.build.cslNodeId = 0;
         this.setCslNodeIds = function(myxml, nodename) {
             var children = this.sys.xml.children(myxml);

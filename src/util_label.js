@@ -43,7 +43,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             }
             plural = state.tmp.shadow_numbers[myterm].plural;
         }
-        if (node.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
+        if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
             node.decorations.reverse();
             node.decorations.push(["@showid","true", node.cslid]);
             node.decorations.reverse();
