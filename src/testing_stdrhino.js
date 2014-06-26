@@ -151,6 +151,8 @@ StdRhinoTest.prototype.run = function(){
     };
 */
 
+    // this.csl_reverse_lookup_support = true;
+
     this.style = new CSL.Engine(this,this.test.csl);
     //this.style.setOutputFormat("rtf");
     //this.style.setParseNames(true);
