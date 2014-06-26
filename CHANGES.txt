@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.534
+==========================
+
+* Add a space after trailing closing parens or bracket on user-supplied
+  prefix. A response to Gracile here:
+
+    https://forums.zotero.org/discussion/37875/citeprocjs-should-add-a-whitespace-after-a-prefixbefore-a-suffix-in-more-cases
+
+==========================
 Changes in version 1.0.533
 ==========================
 
