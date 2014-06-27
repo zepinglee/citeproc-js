@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.535
+==========================
+
+* Fix misrendering of numbers under some condition (most importantly, the
+  CSL Visual Editor). Thanks to Steve Ridout for reporting the fault.
+
+==========================
 Changes in version 1.0.534
 ==========================
 
