@@ -1038,7 +1038,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
         CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
     }
-    if (!this.tmp.suppress_decorations) {
+    if (!this.tmp.suppress_decorations && this.output.queue.length) {
         if (!(this.opt.development_extensions.apply_citation_wrapper
               && this.sys.wrapCitationEntry
               && !this.tmp.just_looking
