@@ -497,7 +497,9 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (["@cite","@bibliography", "@display", "@showid"].indexOf(params[0]) === -1) {
                     continue;
                 }
-                blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
+                if ("string" === typeof blobs_start) {
+                    blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
+                }
             }
         }
     }
