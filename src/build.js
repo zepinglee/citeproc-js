@@ -317,7 +317,11 @@ CSL.Engine.prototype.setStyleAttributes = function () {
     //   (2) !this.cslXml.tagName === false
     // Coerced, it becomes an empty string.
     var cslXml = this.cslXml;
-    if (!this.cslXml.tagName || ("" + this.cslXml.tagName).toLowerCase() !== 'style') {
+
+    // Some releases of citeproc-node call the top-level node "cslstyle":
+    //   https://bitbucket.org/fbennett/citeproc-js/issue/165/citeproc-now-failing-to-run-on-nodejs
+	var tagName = this.cslXml.tagName ? ("" + this.cslXml.tagName).toLowerCase() : "";
+    if (tagName !== 'style' && tagName !== 'cslstyle') {
         if (this.cslXml.getElementsByTagName) {
             var cslXml = this.cslXml.getElementsByTagName('style')[0];
         }
