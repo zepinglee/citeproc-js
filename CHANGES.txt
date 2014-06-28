@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.536
+==========================
+
+* Recognize "cslstyle" as the top-level node containing cs:style 
+  (for some releases of citeproc-node). Thanks again to Steve Ridout
+  for tracking this down.
+
+==========================
 Changes in version 1.0.535
 ==========================
 
