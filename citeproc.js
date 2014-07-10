@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.536",
+    PROCESSOR_VERSION: "1.0.537",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -583,11 +583,16 @@ CSL.getSortCompare = function (default_locale) {
         return CSL.stringCompare;
     }
     var strcmp;
+    var strcmp_opts = {
+        sensitivity:"base",
+        ignorePunctuation:true,
+        numeric:true
+   }
     if (!default_locale) {
         default_locale = "en-US";
     }
     strcmp = function (a, b) {
-        return a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase());
+        return a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase(),default_locale,strcmp_opts);
     };
     var stripPunct = function (str) {
         return str.replace(/^[\[\]\'\"]*/g, "");
