@@ -93,10 +93,11 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             param = paramx;
         }
         // Need to save off the settings based on subsequent
-        // form, when first cites are rendered.  Otherwise you
-        // get full form names everywhere.
+        // form, when first cites are rendered.
         if (!this.state.tmp.just_looking && this.item && this.item.position === CSL.POSITION_FIRST) {
-            param = paramx;
+            if (paramx > param) {
+                param = paramx;
+            }
         }
         if (!this.state.tmp.sort_key_flag) {
             this.state.tmp.disambig_settings.givens[pos][i] = param;
