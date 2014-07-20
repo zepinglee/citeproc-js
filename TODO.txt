@@ -1,3 +1,7 @@
+Bilingual output in separate entry blocks.
+  https://forums.zotero.org/discussion/38335/mlz-is-it-possible-to-access-the-multilingual-fields-through-csl-directly-/#Comment_194178
+
+
 Do something for stop-words and quoted titles, and journal names
 (pretty-much done, needs check against threads below):
 
