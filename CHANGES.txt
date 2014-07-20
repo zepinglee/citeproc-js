@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.538
+==========================
+
+- Fix a disambiguation bug affecting styles that use by-cite
+  givenname disambiguation with differing values for et-al-min and
+  et-al-subsequent-min.
+
+  https://forums.zotero.org/discussion/38512/help-with-disambiguation
+
+==========================
 Changes in version 1.0.537
 ==========================
 

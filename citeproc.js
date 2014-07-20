@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.537",
+    PROCESSOR_VERSION: "1.0.538",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -6921,7 +6921,9 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             param = paramx;
         }
         if (!this.state.tmp.just_looking && this.item && this.item.position === CSL.POSITION_FIRST) {
-            param = paramx;
+            if (paramx > param) {
+                param = paramx;
+            }
         }
         if (!this.state.tmp.sort_key_flag) {
             this.state.tmp.disambig_settings.givens[pos][i] = param;
