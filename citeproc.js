@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.538",
+    PROCESSOR_VERSION: "1.0.539",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3821,6 +3821,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
     };
     if (this.registry.registry[Item.id] 
         && this.registry.citationreg.citationsByItemId
+        && this.registry.citationreg.citationsByItemId[Item.id]
         && this.registry.citationreg.citationsByItemId[Item.id].length 
         && visualForm) {
         if (this.citation.opt["givenname-disambiguation-rule"] === "by-cite") {

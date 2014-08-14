@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.539
+==========================
+
+- Fix crashing bug triggered by certain update operations. Reported
+  by Markus Piipari, with this fix:
+  
+    https://bitbucket.org/fbennett/citeproc-js/issue/166/second-call-to-updateitems-fails-with
+
+  The fix might also address the following error report on the Zotero forums:
+
+    https://forums.zotero.org/discussion/39244/error-mlz-citation-processor-only-works-second-time/
+
+
+==========================
 Changes in version 1.0.538
 ==========================
 
