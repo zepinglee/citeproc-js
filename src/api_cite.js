@@ -797,6 +797,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
 
     if (this.registry.registry[Item.id] 
         && this.registry.citationreg.citationsByItemId
+        && this.registry.citationreg.citationsByItemId[Item.id]
         && this.registry.citationreg.citationsByItemId[Item.id].length 
         && visualForm) {
         if (this.citation.opt["givenname-disambiguation-rule"] === "by-cite") {
