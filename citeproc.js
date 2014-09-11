@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.539",
+    PROCESSOR_VERSION: "1.0.540",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -6199,7 +6199,7 @@ CSL.NameOutput.prototype.outputNames = function () {
     this.state.tmp.name_node.children = [];
     this.renderAllNames();
     var blob_list = [];
-    for (i = 0, ilen = variables.length; i < ilen; i += 1) {
+    for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
         var v = variables[i];
         var institution_sets = [];
         var institutions = false;
@@ -6768,6 +6768,10 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
             }
             freeters_offset += 1;
         }
+        if (this.persons[v].length !== this.persons[vv].length) {
+            this.common_term = false;
+            return;
+        }
         for (var j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
             if (this.etal_spec[v].persons[j] !== this.etal_spec[vv].persons[j]
                 || !this._compareNamesets(this.persons[v][j], this.persons[vv][j])) {
@@ -7209,7 +7213,8 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
     if ("undefined" === typeof this.institution.strings["part-separator"]) {
         this.institution.strings["part-separator"] = this.name.strings.delimiter;
     }
-    return this._join(blobs, this.institution.strings["part-separator"]);
+    var ret =  this._join(blobs, this.institution.strings["part-separator"]);
+    return ret;
 };
 CSL.NameOutput.prototype._renderPersonalNames = function (values, pos, j) {
     var ret = false;

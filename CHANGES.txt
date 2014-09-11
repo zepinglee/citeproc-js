@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.540
+==========================
+
+- Fix bug in editor + translator rendering with institution names
+  (affects only CSL-m styles)
+
+==========================
 Changes in version 1.0.539
 ==========================
 
