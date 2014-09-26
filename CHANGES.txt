@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.542
+==========================
+
+- Fix duplicate punctuation caused by initialized names with
+  leading punctuation on suffix separated by styling
+  decoration at arbitrary level. Thanks to Sebastian
+  Karcher for reporting:
+
+    https://twitter.com/adam42smith/status/515321387062284288
+
+==========================
+Changes in version 1.0.541
+==========================
+
+- Fix prefix-cite interspace handling (was erroneously adding
+  space on almost all non-alpha characters).
+
+- Add support for suppression of trailing punctuation on
+  note styles (currently in MLZ only).
+
+==========================
 Changes in version 1.0.540
 ==========================
 
