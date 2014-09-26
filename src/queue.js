@@ -1067,6 +1067,10 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                         }
                     }
                 }
+                // Squash dupes
+                if (matchLastChar(parent,parent.strings.suffix.slice(0,1))) {
+                    parent.strings.suffix = parent.strings.suffix.slice(1);
+                }
             } else if (parentStrings.delimiter) {
                 // Remove trailing space on mid-position child node suffix if there is a leading space on delimiter above
                 if (PUNCT_OR_SPACE[parentStrings.delimiter.slice(0,1)]
@@ -1085,10 +1089,6 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
 
                     siblingStrings.prefix = siblingStrings.prefix.slice(1);
                 }
-            }
-            // Squash dupes
-            if (matchLastChar(parent,parent.strings.suffix.slice(0,1))) {
-                parent.strings.suffix = parent.strings.suffix.slice(1);
             }
             // If field content ends with swappable punctuation, suppress swappable punctuation in style suffix.
             if (!childIsNumber && !childDecorations && PUNCT[childStrings.suffix.slice(0,1)]
