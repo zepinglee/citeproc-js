@@ -804,10 +804,12 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
     }
     
     function matchLastChar(blob, chr) {
+        if (!PUNCT[chr]) {
+            return false;
+        }
         if ("string" === typeof blob.blobs) {
 
             if (blob.blobs.slice(-1) === chr) {
-                //blob.matchLastChar_B_MATCHED_FOR_CHRISSAKE = true;
                 return true;
             } else {
                 return false;
@@ -893,18 +895,15 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         //print("START2");
         // Terminus if no blobs
         if (parent.blobs && "string" == typeof parent.blobs) {
-            if (matchLastChar(parent,parent.strings.suffix.slice(0,1))) {
-                //parent.MATCH_THREE = true;
+            if (PUNCT[parent.strings.suffix.slice(0,1)]
+                && parent.strings.suffix.slice(0,1) === parent.blobs.slice(-1)) {
+
                 parent.strings.suffix = parent.strings.suffix.slice(1);
             }
             return;
         } else if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
             return;
         }
-
-        //if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
-        //    return;
-        //}
 
         // back-to-front, bottom-first
         var parentDecorations = blobHasDecorations(parent,true);
@@ -928,13 +927,8 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             if (i === (parent.blobs.length - 1)) {
                 // Migrate trailing space ONLY on a last-position suffix upward, controlling for duplicates
                 var childChar = childStrings.suffix.slice(-1);
-		// ZZZ Loosened to fix initialized names wrapped in a span and followed by a period
                 if (!parentDecorations && [" "].indexOf(childChar) > -1) {
-                    //if (childChar === ".") {
-                    //    print("XXX |"+childChar+"| |"+parentStrings.suffix+"|");
-                    //}
                     if (parentStrings.suffix.slice(0,1) !== childChar) {
-                        //parent.MATCH_FOUR = true;
                         parentStrings.suffix = childChar + parentStrings.suffix;
                     }
                     childStrings.suffix = childStrings.suffix.slice(0, -1);
@@ -1000,8 +994,9 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         //print("START3");
         // Terminus if no blobs
         if (parent.blobs && "string" == typeof parent.blobs) {
-            if (matchLastChar(parent,parent.strings.suffix.slice(0,1))) {
-                //parent.MATCH_TWO = true;
+            if (PUNCT[parent.strings.suffix.slice(0,1)]
+                && parent.strings.suffix.slice(0,1) === parent.blobs.slice(-1)) {
+
                 parent.strings.suffix = parent.strings.suffix.slice(1);
             }
             return;
@@ -1051,16 +1046,12 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                                 if (parentStrings.suffix.slice(0,1) === ".") {
                                     childStrings.suffix += parentStrings.suffix.slice(0,1);
                                     parentStrings.suffix = parentStrings.suffix.slice(1);
-                                    //parent.MATCH_FIVE_MIGRATE = true;
                                 }
                             }
                         }
                         if (childStrings.suffix.slice(-1) === " " && parentStrings.suffix.slice(0,1)) {
-                            //parent.MATCH_SIX = true;
                             parentStrings.suffix = parentStrings.suffix.slice(1);
                         }
-                    } else {
-                        // If we have decorations and there are no quotes below, stop here, but drill down to see if there is duplicate punctuation below
                     }
                     // More duplicates control
                     if (PUNCT_OR_SPACE[childStrings.suffix.slice(0,1)]) {
@@ -1068,12 +1059,10 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                         // can they be combined?
                         if ("string" === typeof child.blobs && child.blobs.slice(-1) === childStrings.suffix.slice(0,1)) {
                             // Remove parent punctuation of it duplicates the last character of a field
-                            //parent.MATCH_SEVEN = true;
                             childStrings.suffix = childStrings.suffix.slice(1);
                         }
                         if (childStrings.suffix.slice(-1) === parentStrings.suffix.slice(0, 1)) {
                             // Remove duplicate punctuation on child suffix
-                            //parent.MATCH_EIGHT = true;
                             parentStrings.suffix = parentStrings.suffix.slice(0, -1);
                         }
                     }
@@ -1082,8 +1071,6 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 // Remove trailing space on mid-position child node suffix if there is a leading space on delimiter above
                 if (PUNCT_OR_SPACE[parentStrings.delimiter.slice(0,1)]
                     && parentStrings.delimiter.slice(0, 1) === childStrings.suffix.slice(-1)) {
-
-                    //parent.MATCH_NINE = true;
 
                     parent.blobs[i].strings.suffix = parent.blobs[i].strings.suffix.slice(0, -1);
                     
@@ -1099,9 +1086,8 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                     siblingStrings.prefix = siblingStrings.prefix.slice(1);
                 }
             }
-            // Squash dupes zzz
+            // Squash dupes
             if (matchLastChar(parent,parent.strings.suffix.slice(0,1))) {
-                //parent.MATCH_ONE = true;
                 parent.strings.suffix = parent.strings.suffix.slice(1);
             }
             // If field content ends with swappable punctuation, suppress swappable punctuation in style suffix.
