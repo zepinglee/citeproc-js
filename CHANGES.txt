@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.543
+==========================
+
+- Fix potential crash in util_flipflop.js on weird spaced-off
+  straight single quote marks. Fault reported by Carles Pina.
+  https://bitbucket.org/fbennett/citeproc-js/src/tip/tests/fixtures/local/bugreports_MendeleyApostrophe.txt
+  Thanks to Carles also for the long wait in clearing this one -
+  it took awhile.
+
+==========================
 Changes in version 1.0.542
 ==========================
 
