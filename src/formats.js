@@ -300,10 +300,10 @@ CSL.Output.Formats.prototype.rtf = {
         return str+"\\tab ";
     },
     "@display/right-inline": function (state, str) {
-        return str+"\n";
+        return str+"\\line\r\n";
     },
     "@display/indent": function (state, str) {
-        return "\n\\tab "+str;
+        return "\n\\tab "+str+"\\line\r\n";
     },
     "@showid/true": function (state, str, cslid) {
         if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
