@@ -26,7 +26,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         // Normalized delimiter form, for use in regexps
         var hyphens = "\\s+\\-\\s+";
         // Normalize delimiters to hyphen wrapped in single spaces
-        var delimRex = new RegExp("([^\\\\])[" + range_delimiter + "\\u2013]", "g");
+        var this_range_delimiter = range_delimiter === "-" ? "" : range_delimiter;
+        var delimRex = new RegExp("([^\\\\])[-" + this_range_delimiter + "\\u2013]", "g");
         str = str.replace(delimRex, "$1 - ").replace(/\s+-\s+/g, " - ");
         // Workaround for Internet Explorer
         var rexm = new RegExp("([a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+)", "g");
