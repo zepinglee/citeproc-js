@@ -1,73 +1,3 @@
-/*
- * Copyright (c) 2009-2014 Frank G. Bennett
- * 
- * Unless otherwise indicated, the files in this repository are subject
- * to the Common Public Attribution License Version 1.0 (the “License”);
- * you may not use this file except in compliance with the License. You
- * may obtain a copy of the License at:
- * 
- * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
- * 
- * (See also the note on attribution information below)
- * 
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 1.13, 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
- * 
- * Software distributed under the License is distributed on an “AS IS”
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- * 
- * The Original Code is the citation formatting software known as
- * "citeproc-js" (an implementation of the Citation Style Language
- * [CSL]), including the original test fixtures and software located
- * under the ./tests subdirectory of the distribution archive.
- * 
- * The Original Developer is not the Initial Developer and is
- * __________. If left blank, the Original Developer is the Initial
- * Developer.
- * 
- * The Initial Developer of the Original Code is Frank Bennett. All
- * portions of the code written by Frank Bennett are Copyright (c)
- * 2009-2014 Frank Bennett.
- * 
- * ***
- * 
- * Alternatively, the files in this repository may be used under the
- * terms of the GNU Affero General Public License (the [AGPLv3] License),
- * in which case the provisions of [AGPLv3] License are applicable
- * instead of those above. If you wish to allow use of your version of
- * this file only under the terms of the [AGPLv3] License and not to
- * allow others to use your version of this file under the CPAL, indicate
- * your decision by deleting the provisions above and replace them with
- * the notice and other provisions required by the [AGPLv3] License. If
- * you do not delete the provisions above, a recipient may use your
- * version of this file under either the CPAL or the [AGPLv3] License.
- * 
- * ***
- * 
- * Attribution Information (CPAL)
- * 
- * Attribution Copyright Notice: [no separate attribution copyright notice is required]
- * 
- * Attribution Phrase: "Citations by CSL (citeproc-js)"
- * 
- * Attribution URL: http://citationstyles.org/
- * 
- * Graphic Image: [there is no requirement to display a Graphic Image]
- * 
- * Display of Attribution Information is REQUIRED in Larger Works which
- * are defined in the CPAL as a work which combines Covered Code or
- * portions thereof with code not governed by the terms of the CPAL.
- * 
- * Display of Attribution Information is also REQUIRED on Associated
- * Websites.
- * 
- * [ citeproc-js license :: version 1.1 :: 2012.06.30 ]
- */
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -80,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.542",
+    PROCESSOR_VERSION: "1.0.544",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -6078,7 +6008,7 @@ CSL.Node.layout = {
                             sp = " ";
                         }
                         var ignorePredecessor = false;
-                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1) {
+                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1 && item.prefix.indexOf(" ") > -1) {
                             state.tmp.term_predecessor = false;
                             ignorePredecessor = true;
                         }
@@ -12086,7 +12016,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     listify = function (str) {
         var m, lst, ret;
         var hyphens = "\\s+\\-\\s+";
-        var delimRex = new RegExp("([^\\\\])[" + range_delimiter + "\\u2013]", "g");
+        var this_range_delimiter = range_delimiter === "-" ? "" : range_delimiter;
+        var delimRex = new RegExp("([^\\\\])[-" + this_range_delimiter + "\\u2013]", "g");
         str = str.replace(delimRex, "$1 - ").replace(/\s+-\s+/g, " - ");
         var rexm = new RegExp("([a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+)", "g");
         var rexlst = new RegExp("[a-zA-Z]*[0-9]+" + hyphens + "[a-zA-Z]*[0-9]+");
@@ -12320,7 +12251,7 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 };
 CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
     var i, ilen;
-    str = str.replace(/\s+'\s+/," ’ ","g");
+    str = str.replace(/\s+'\s+/g," ’ ");
     if (str.indexOf(this.quotechars[0]) > -1) {
         for (i = 0, ilen = 2; i < ilen; i += 1) {
             if (this.quotechars[i + 2]) {
@@ -12950,10 +12881,10 @@ CSL.Output.Formats.prototype.rtf = {
         return str+"\\tab ";
     },
     "@display/right-inline": function (state, str) {
-        return str+"\n";
+        return str+"\\line\r\n";
     },
     "@display/indent": function (state, str) {
-        return "\n\\tab "+str;
+        return "\n\\tab "+str+"\\line\r\n";
     },
     "@showid/true": function (state, str, cslid) {
         if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {

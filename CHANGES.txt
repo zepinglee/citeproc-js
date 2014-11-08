@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.545
+==========================
+
+- Do not assume first character when prefix ending in a period
+  has no spaces. Heuristic proposed by Sebastian Karcher (adamsmith):
+
+    https://forums.zotero.org/discussion/41775/first-character-lowercase-ibid/
+
+==========================
+Changes in version 1.0.544
+==========================
+
+- Fix display="indent" in RTF output.
+
+- Fix page-range-format, broken by a recent commit.
+
+==========================
 Changes in version 1.0.543
 ==========================
 
