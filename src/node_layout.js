@@ -103,7 +103,7 @@ CSL.Node.layout = {
                             sp = " ";
                         }
                         var ignorePredecessor = false;
-                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1) {
+                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1 && item.prefix.indexOf(" ") > -1) {
                         //    && test_prefix.slice(0, 1) != test_prefix.slice(0, 1).toLowerCase()) {
                             state.tmp.term_predecessor = false;
                             ignorePredecessor = true;
