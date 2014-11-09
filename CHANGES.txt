@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.546
+==========================
+
+- Recognize an option to capitalize the first word in subtitles.
+  May need to be controlled for language.
+
+==========================
 Changes in version 1.0.545
 ==========================
 

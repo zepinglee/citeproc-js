@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.545",
+    PROCESSOR_VERSION: "1.0.546",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1660,6 +1660,11 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             if (Item.title.slice(0,offset) === shortTitle && Item.title.slice(offset).match(/^\s*:/)) {
                 Item["title-main"] = Item.title.slice(0,offset).replace(/\s+$/,"");
                 Item["title-sub"] = Item.title.slice(offset).replace(/^\s*:\s*/,"");
+                if (this.opt.development_extensions.uppercase_subtitles && Item["title-sub"]) {
+                    Item["title-sub"] = Item["title-sub"].slice(0,1).toUpperCase() + Item["title-sub"].slice(1);
+                }
+                var mainPlusJoinOffset = offset + Item.title.length - Item["title-main"].length - Item["title-sub"].length;
+                Item.title = Item.title.slice(0,mainPlusJoinOffset) + Item["title-sub"];
             }
         }
     }
@@ -3160,6 +3165,18 @@ CSL.Engine.Opt = function () {
     this["parse-names"] = true;
     this.citation_number_slug = false;
     this.trigraph = "Aaaa00:AaAa00:AaAA00:AAAA00";
+    this.nodenames = [];
+    this.gender = {};
+    this['cite-lang-prefs'] = {
+        persons:['orig'],
+        institutions:['orig'],
+        titles:['orig','translat'],
+        journals:['translit'],
+        publishers:['orig'],
+        places:['orig'],
+        number:['translat']
+    };
+    this.has_layout_locale = false;
     this.development_extensions = {};
     this.development_extensions.field_hack = true;
     this.development_extensions.locator_date_and_revision = true;
@@ -3178,24 +3195,13 @@ CSL.Engine.Opt = function () {
     this.development_extensions.thin_non_breaking_space_html_hack = false;
     this.development_extensions.apply_citation_wrapper = false;
     this.development_extensions.main_title_from_short_title = false;
+    this.development_extensions.uppercase_subtitles = false;
     this.development_extensions.normalize_lang_keys_to_lowercase = false;
     this.development_extensions.strict_text_case_locales = false;
     this.development_extensions.rtl_support = false;
     this.development_extensions.strict_page_numbers = false;
     this.development_extensions.expect_and_symbol_form = false;
     this.development_extensions.require_explicit_legal_case_title_short = false;
-    this.nodenames = [];
-    this.gender = {};
-    this['cite-lang-prefs'] = {
-        persons:['orig'],
-        institutions:['orig'],
-        titles:['orig','translat'],
-        journals:['translit'],
-        publishers:['orig'],
-        places:['orig'],
-        number:['translat']
-    };
-    this.has_layout_locale = false;
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
