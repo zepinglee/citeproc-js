@@ -99,7 +99,6 @@ class ApplyLicense:
                     continue
                 if file.endswith(".css"):
                     continue
-                print("PROCESS");
                 self.process_file(p,file)
 
     def process_file(self,p,file):
