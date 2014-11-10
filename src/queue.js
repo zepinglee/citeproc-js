@@ -803,6 +803,20 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         return false;
     }
     
+    function blobHasDescendantMergingPunctuation(parentChar,blob) {
+        var childChar = blob.strings.suffix.slice(-1);
+        if (!childChar && "string" === typeof blob.blobs) {
+            childChar = blob.blobs.slice(-1);
+        }
+        var mergedChars = RtoL_MAP[parentChar][childChar];
+        if (mergedChars && mergedChars.length === 1) {
+            return true;
+        }
+        if ("object" !== typeof blob.blobs) return false;
+        if (blobHasDescendantMergingPunctuation(parentChar,blob.blobs[blob.blobs.length-1])) return true;
+        return false;
+    }
+    
     function matchLastChar(blob, chr) {
         if (!PUNCT[chr]) {
             return false;
@@ -926,8 +940,8 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             if (i === (parent.blobs.length - 1)) {
                 // Migrate trailing space ONLY on a last-position suffix upward, controlling for duplicates
                 var childChar = childStrings.suffix.slice(-1);
-		// ZZZ Loosened to fix initialized names wrapped in a span and followed by a period
-                if (!parentDecorations && [" ","."].indexOf(childChar) > -1) {
+                // ZZZ Loosened to fix initialized names wrapped in a span and followed by a period
+                if (!parentDecorations && [" "].indexOf(childChar) > -1) {
                     if (parentStrings.suffix.slice(0,1) !== childChar) {
                         parentStrings.suffix = childChar + parentStrings.suffix;
                     }
@@ -1018,7 +1032,9 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 var delimChar = parentStrings.delimiter.slice(0, 1);
                 for (var i=parent.blobs.length-2;i>-1;i--) {
                     var childStrings = parent.blobs[i].strings;
-                    childStrings.suffix += delimChar;
+                    if (childStrings.suffix.slice(-1) !== delimChar) {
+                        childStrings.suffix += delimChar;
+                    }
                 }
                 parentStrings.delimiter = parentStrings.delimiter.slice(1);
             }
@@ -1037,30 +1053,36 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                     // If so, we allow migration anyway.
                     // Original discussion is here:
                     // https://forums.zotero.org/discussion/37091/citeproc-bug-punctuation-in-quotes/
-                    if (!parentDecorations || blobHasDescendantQuotes(child)) {
-                        // Migrate trailing punctuation or space on a last-position suffix DOWNWARD, stopping at any @quotes and controlling for duplicates
-                        var parentChar = parentStrings.suffix.slice(0, 1);
+                    var parentChar = parentStrings.suffix.slice(0, 1);
+
+                    // Hmm.
+                    // Consider writing out the matching child from blobHasDescendant functions.
+                    // It should save some cycles, and produce the same result.
+
+                    var allowMigration = blobHasDescendantQuotes(child);
+                    if (!allowMigration && PUNCT[parentChar]) {
+                        allowMigration = blobHasDescendantMergingPunctuation(parentChar,child);
+                    }
+                    if (allowMigration) {
                         if (PUNCT[parentChar]) {
                             if (!blobEndsInNumber(child)) {
-				if ("string" === typeof child.blobs) {
-				    mergeChars(child, 'blobs', parent, 'suffix');
-				} else {
+                                if ("string" === typeof child.blobs) {
+                                    mergeChars(child, 'blobs', parent, 'suffix');
+                                } else {
                                     mergeChars(child, 'suffix', parent, 'suffix');
-				}
+                                }
                                 if (parentStrings.suffix.slice(0,1) === ".") {
                                     childStrings.suffix += parentStrings.suffix.slice(0,1);
                                     parentStrings.suffix = parentStrings.suffix.slice(1);
                                 }
                             }
                         }
-                        if (childStrings.suffix.slice(-1) === " " && parentStrings.suffix.slice(0,1)) {
-                            parentStrings.suffix = parentStrings.suffix.slice(1);
-                        }
+                    }
+                    if (childStrings.suffix.slice(-1) === " " && parentStrings.suffix.slice(0,1) === " ") {
+                        parentStrings.suffix = parentStrings.suffix.slice(1);
                     }
                     // More duplicates control
                     if (PUNCT_OR_SPACE[childStrings.suffix.slice(0,1)]) {
-                        // Field inspection also done by second branch above. This is useful for catching !parentDecorations cases, but
-                        // can they be combined?
                         if ("string" === typeof child.blobs && child.blobs.slice(-1) === childStrings.suffix.slice(0,1)) {
                             // Remove parent punctuation of it duplicates the last character of a field
                             childStrings.suffix = childStrings.suffix.slice(1);
@@ -1102,7 +1124,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             }
             this.downward(parent.blobs[i]);
         }
-        /*
+/*
         if (top) {
 
             var seen = [];
@@ -1116,9 +1138,40 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 return val
             },2));
         }
-        */
+*/
+
         //print("  end");
     };
+    // Abstract out a couple of utility functions, used in fix() below.
+    function swapToTheLeft (child) {
+        var childChar = child.strings.suffix.slice(0,1);
+        if ("string" === typeof child.blobs) {
+            while (SWAP_IN[childChar]) {
+                mergeChars(child, 'blobs', child, 'suffix');
+                childChar = child.strings.suffix.slice(0,1);
+            }                                
+        } else {
+            while (SWAP_IN[childChar]) {
+                mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix');
+                childChar = child.strings.suffix.slice(0,1);
+            }
+        }
+    }
+    function swapToTheRight (child) {
+        if ("string" === typeof child.blobs) {
+            var childChar = child.blobs.slice(-1);
+            while (SWAP_OUT[childChar]) {
+                mergeChars(child, 'blobs', child, 'suffix', true);
+                childChar = child.blobs.slice(-1);
+            }
+        } else {
+            var childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
+            while (SWAP_OUT[childChar]) {
+                mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix', true);
+                childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
+            }
+        }
+    }
 
     function fix (parent) {
         // Terminus if no blobs
@@ -1145,32 +1198,9 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             }
             if (quoteSwap) {
                 if (punctInQuote) {
-                    var childChar = child.strings.suffix.slice(0,1);
-                    if ("string" === typeof child.blobs) {
-                        while (SWAP_IN[childChar]) {
-                            mergeChars(child, 'blobs', child, 'suffix');
-                            childChar = child.strings.suffix.slice(0,1);
-                        }                                
-                    } else {
-                        while (SWAP_IN[childChar]) {
-                            mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix');
-                            childChar = child.strings.suffix.slice(0,1);
-                        }
-                    }
+                    swapToTheLeft(child);
                 } else {
-                    if ("string" === typeof child.blobs) {
-                        var childChar = child.blobs.slice(-1);
-                        while (SWAP_OUT[childChar]) {
-                            mergeChars(child, 'blobs', child, 'suffix', true);
-                            childChar = child.blobs.slice(-1);
-                        }
-                    } else {
-                        var childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
-                        while (SWAP_OUT[childChar]) {
-                            mergeChars(child.blobs[child.blobs.length-1], 'suffix', child, 'suffix', true);
-                            childChar = child.blobs[child.blobs.length-1].strings.suffix.slice(-1);
-                        }
-                    }
+                    swapToTheRight(child);
                 }
             }
             lastChar = this.fix(parent.blobs[i]);
