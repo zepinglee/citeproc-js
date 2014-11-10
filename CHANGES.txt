@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.547
+==========================
+
+- Fix punctuation migration, merger and duplicates control code.
+  Prompted by bug report from Brenton Wiernik:
+
+    https://forums.zotero.org/discussion/41934/suppressing-period-in-citations-with-other-punctuation/
+
+==========================
 Changes in version 1.0.546
 ==========================
 
