@@ -853,7 +853,6 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             return RtoL_MAP[secondChar];
         }
         function matchOnLeft () {
-            var chr = FirstStrings[first].slice(-1);
             return LtoR_MAP[firstChar];
         }
         var match = merge_right ? matchOnLeft : matchOnRight;
@@ -927,7 +926,8 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             if (i === (parent.blobs.length - 1)) {
                 // Migrate trailing space ONLY on a last-position suffix upward, controlling for duplicates
                 var childChar = childStrings.suffix.slice(-1);
-                if (!parentDecorations && [" "].indexOf(childChar) > -1) {
+		// ZZZ Loosened to fix initialized names wrapped in a span and followed by a period
+                if (!parentDecorations && [" ","."].indexOf(childChar) > -1) {
                     if (parentStrings.suffix.slice(0,1) !== childChar) {
                         parentStrings.suffix = childChar + parentStrings.suffix;
                     }
@@ -1042,7 +1042,11 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                         var parentChar = parentStrings.suffix.slice(0, 1);
                         if (PUNCT[parentChar]) {
                             if (!blobEndsInNumber(child)) {
-                                mergeChars(child, 'suffix', parent, 'suffix');
+				if ("string" === typeof child.blobs) {
+				    mergeChars(child, 'blobs', parent, 'suffix');
+				} else {
+                                    mergeChars(child, 'suffix', parent, 'suffix');
+				}
                                 if (parentStrings.suffix.slice(0,1) === ".") {
                                     childStrings.suffix += parentStrings.suffix.slice(0,1);
                                     parentStrings.suffix = parentStrings.suffix.slice(1);

@@ -608,8 +608,16 @@ CSL.NameOutput.prototype._givenName = function (name, pos, i) {
     }
 
     var str = this._stripPeriods("given", name.given);
-    if (this.state.output.append(str, this.given_decor, true)) {
-        return this.state.output.pop();
+    var toSuffix = '';
+    if (str && str.slice(-1) === '.') {
+	str = str.slice(0, -1);
+	toSuffix = '.';
+    }
+    var rendered = this.state.output.append(str, this.given_decor, true);
+    if (rendered) {
+        ret = this.state.output.pop();
+	ret.strings.suffix = toSuffix + ret.strings.suffix;
+	return ret;
     }
     return false;
 };
@@ -623,9 +631,16 @@ CSL.NameOutput.prototype._nameSuffix = function (name) {
     }
 
     str = this._stripPeriods("family", str);
-
-    if (this.state.output.append(str, "empty", true)) {
-        return this.state.output.pop();
+    var toSuffix = '';
+    if (str && str.slice(-1) === '.') {
+	str = str.slice(0, -1);
+	toSuffix = '.';
+    }
+    var rendered = this.state.output.append(str, "empty", true);
+    if (rendered) {
+        ret = this.state.output.pop();
+	ret.strings.suffix = toSuffix + ret.strings.suffix;
+	return ret;
     }
     return false;
 };
