@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.548
+==========================
+
+- Allow parallel cite treatment only if top-level jurisdiction matches.
+
+==========================
 Changes in version 1.0.547
 ==========================
 
