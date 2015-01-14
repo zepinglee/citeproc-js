@@ -664,7 +664,13 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                 Item["title-main"] = Item.title.slice(0,offset).replace(/\s+$/,"");
                 Item["title-sub"] = Item.title.slice(offset).replace(/^\s*:\s*/,"");
                 if (this.opt.development_extensions.uppercase_subtitles && Item["title-sub"]) {
-                    Item["title-sub"] = Item["title-sub"].slice(0,1).toUpperCase() + Item["title-sub"].slice(1);
+                    var subtitle = Item["title-sub"]
+                    for (var i=0,ilen=subtitle.length;i<ilen;i++) {
+                        if (subtitle.charAt(i).toLowerCase() !== subtitle.charAt(i).toUpperCase()) {
+                            Item["title-sub"] = subtitle.slice(0,i) + subtitle.charAt(i).toUpperCase() + subtitle.slice(i+1);
+                            break
+                        }
+                    }
                 }
                 var mainPlusJoinOffset = offset + Item.title.length - Item["title-main"].length - Item["title-sub"].length;
                 Item.title = Item.title.slice(0,mainPlusJoinOffset) + Item["title-sub"];
