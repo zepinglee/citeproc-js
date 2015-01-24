@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.550
+==========================
+
+- Fix bug in xmldom.js. When extracting a node by attribute value,
+  code failed to discriminate non-matching nodes from nodes with
+  no such attribute. Thanks to Carles Pina for reporting the fault.
+
+==========================
 Changes in version 1.0.549
 ==========================
 
