@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.550",
+    PROCESSOR_VERSION: "1.0.551",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -7847,6 +7847,9 @@ CSL.NameOutput.prototype.setRenderedName = function (name) {
     }
 }
 CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
+    if (this.state.sys.getHumanForm && "legal_case" === this.Item.type && "authority" === varname) {
+        name.literal = this.state.sys.getHumanForm(this.Item.jurisdiction, name.literal);
+    }
     name = this._splitInstitution(name, varname, listpos);
     if (this.institution.strings["reverse-order"]) {
         name["long"].reverse();
@@ -10485,6 +10488,9 @@ CSL.Transform = function (state) {
         if (["archive"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "collection-title";
         }
+        if (variable === "jurisdiction" && state.sys.getHumanForm && basevalue) {
+            basevalue = state.sys.getHumanForm(basevalue);
+        }
         value = "";
         if (state.sys.getAbbreviation) {
             var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, basevalue, Item.type, noHints);
@@ -10502,9 +10508,9 @@ CSL.Transform = function (state) {
         if (!value) {
             value = basevalue;
         }
-        if (value && value.slice(0, 10) === "!here>>>") {
-            if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(variable) > -1) {
-                value = value.slice(10);
+        if (value && value.match(/^\!(?:[^>]+,)*here(?:,[^>]+)*>>>/)) {
+            if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(Item.type) > -1) {
+                value = value.replace(/^\![^>]*>>>\s*/, "");
             } else {
                 value = false;
             }

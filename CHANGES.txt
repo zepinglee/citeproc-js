@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.551
+==========================
+
+- Send human-readable form of identifiers to the abbreviation
+  function, if a citeproc.getHumanForm() hook function
+  is defined.
+
+==========================
 Changes in version 1.0.550
 ==========================
 
