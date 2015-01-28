@@ -876,6 +876,12 @@ CSL.NameOutput.prototype.setRenderedName = function (name) {
 
 CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
 
+    // Convert identifiers to human-readable form before "abbreviating"
+    // In MLZ w/legal support, "authority" is a name variable, and on "legal_case" it may be an identifier.
+    if (this.state.sys.getHumanForm && "legal_case" === this.Item.type && "authority" === varname) {
+        name.literal = this.state.sys.getHumanForm(this.Item.jurisdiction, name.literal);
+    }
+
     name = this._splitInstitution(name, varname, listpos);
     // XXX This should be embedded in the institution name function.
     if (this.institution.strings["reverse-order"]) {

@@ -94,6 +94,13 @@ CSL.Transform = function (state) {
             myabbrev_family = "collection-title";
         }
 
+        // Convert identifiers to human-readable form before "abbreviating"
+        // In MLZ w/legal support, we won't see "authority" here, only "jurisdiction"
+        if (variable === "jurisdiction" && state.sys.getHumanForm && basevalue) {
+            // Use external method to look up base value in identifier table
+            basevalue = state.sys.getHumanForm(basevalue);
+        }
+
         // Lazy retrieval of abbreviations.
         value = "";
         if (state.sys.getAbbreviation) {
@@ -120,9 +127,9 @@ CSL.Transform = function (state) {
         //   and Item.type is treaty or patent
         //   print the remainder
         // Otherwise return false
-        if (value && value.slice(0, 10) === "!here>>>") {
-            if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(variable) > -1) {
-                value = value.slice(10);
+        if (value && value.match(/^\!(?:[^>]+,)*here(?:,[^>]+)*>>>/)) {
+            if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(Item.type) > -1) {
+                value = value.replace(/^\![^>]*>>>\s*/, "");
             } else {
                 value = false;
             }
