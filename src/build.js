@@ -146,6 +146,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.setStyleAttributes();
 
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
+    this.opt.class = this.opt.xclass;
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
     this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
 
