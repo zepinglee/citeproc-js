@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.552
+==========================
+
+- Reflect style class attribute on citeproc.opt.class as well
+  as citeproc.opt.xclass, per promise made here:
+
+    https://github.com/zotero/zotero/commit/d894fdb1d445f02aa8ee1f46f9fc3ee0cbb71462
+
+==========================
 Changes in version 1.0.551
 ==========================
 

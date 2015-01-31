@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.551",
+    PROCESSOR_VERSION: "1.0.552",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1244,6 +1244,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt["initialize-with-hyphen"] = true;
     this.setStyleAttributes();
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
+    this.opt.class = this.opt.xclass;
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
     this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
     if (CSL.getSuppressJurisdictions) {
