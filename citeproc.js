@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.552",
+    PROCESSOR_VERSION: "1.0.553",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -9261,20 +9261,20 @@ CSL.Attributes["@page"] = function (state, arg) {
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
     var tryjurisdictions = arg.split(/\s+/);
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
-        tryjurisdictions[i] = tryjurisdictions[i].split(";");
+        tryjurisdictions[i] = tryjurisdictions[i].split(":");
     }
     var maketests = function (tryjurisdiction) {
         return function(Item,item){
             if (!Item.jurisdiction) {
                 return false;
             }
-            var jurisdictions = Item.jurisdiction.split(";");
+            var jurisdictions = Item.jurisdiction.split(":");
             for (var i=0,ilen=jurisdictions.length;i<ilen;i+=1) {
-                jurisdictions[i] = jurisdictions[i].split(";");
+                jurisdictions[i] = jurisdictions[i].split(":");
             }
             for (i=tryjurisdiction.length;i>0;i+=-1) {
-                var tryjurisdictionStr = tryjurisdiction.slice(0,i).join(";");
-                var jurisdiction = jurisdictions.slice(0,i).join(";");
+                var tryjurisdictionStr = tryjurisdiction.slice(0,i).join(":");
+                var jurisdiction = jurisdictions.slice(0,i).join(":");
                 if (tryjurisdictionStr !== jurisdiction) {
                     return false;
                 }
@@ -9350,7 +9350,7 @@ CSL.Attributes["@subjurisdictions"] = function (state, arg) {
     var func = function (Item, item) {
         var subjurisdictions = 0;
         if (Item.jurisdiction) {
-            subjurisdictions = Item.jurisdiction.split(";").length;
+            subjurisdictions = Item.jurisdiction.split(":").length;
         }
         if (subjurisdictions) {
             subjurisdictions += -1;
@@ -9992,8 +9992,8 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
         var basics_ok = true;
         var last_cite = this.sets.value().slice(-1)[0];
         if (last_cite && last_cite.Item) {
-            var lastJuris = last_cite.Item.jurisdiction ? last_cite.Item.jurisdiction.split(";")[0] : "";
-            var thisJuris = Item.jurisdiction ? Item.jurisdiction.split(";")[0] : "";
+            var lastJuris = last_cite.Item.jurisdiction ? last_cite.Item.jurisdiction.split(":")[0] : "";
+            var thisJuris = Item.jurisdiction ? Item.jurisdiction.split(":")[0] : "";
             if (last_cite.Item.title !== Item.title) {
                 basics_ok = false;
             } else if (lastJuris !== thisJuris) {
@@ -10593,9 +10593,9 @@ CSL.Transform = function (state) {
         if (state.sys.getAbbreviation) {
             var tryList = ['default'];
             if (jurisdiction !== 'default') {
-                var workLst = jurisdiction.split(/\s*;\s*/);
+                var workLst = jurisdiction.split(":");
                 for (var i=0, ilen=workLst.length; i < ilen; i += 1) {
-                    tryList.push(workLst.slice(0,i+1).join(';'));
+                    tryList.push(workLst.slice(0,i+1).join(":"));
                 }
             }
             for (var i=tryList.length - 1; i > -1; i += -1) {
