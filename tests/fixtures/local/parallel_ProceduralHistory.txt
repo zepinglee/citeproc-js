@@ -12,7 +12,7 @@ citation
 {
   "us": {
     "place": {
-      "us;federal;mn": "D. Minn."
+      "us:federal:mn": "D. Minn."
      },
      "container-title": {
        "F.2d": "!jurisdiction>>>F.2d",
@@ -2685,7 +2685,7 @@ citation
 		"container-title": "F. Supp.",
 		"page": "1571",
 		"volume": "616",
-		"jurisdiction": "us;federal;mn",
+		"jurisdiction": "us:federal:mn",
 		"issued": {
 			"date-parts": [
 				[

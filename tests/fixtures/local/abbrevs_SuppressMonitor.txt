@@ -10,7 +10,7 @@ citation
             "New York Supreme Court Reports": "!subjurisdiction>>>N.Y.S."
         },
         "place": {
-            "us;ny": "N.Y."
+            "us:ny": "N.Y."
         }
     }
 }
@@ -50,7 +50,7 @@ Smith v. Jones N.Y.S.
         "id": "ITEM-1", 
         "title": "Smith v. Jones",
         "container-title": "New York Supreme Court Reports",
-        "note": "{:jurisdiction:us;ny}",
+        "note": "{:jurisdiction:us:ny}",
         "type": "legal_case"
     }
 ]
