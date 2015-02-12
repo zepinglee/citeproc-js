@@ -245,9 +245,9 @@ CSL.Transform = function (state) {
             // Build the list of candidate keys.
             var tryList = ['default'];
             if (jurisdiction !== 'default') {
-                var workLst = jurisdiction.split(/\s*;\s*/);
+                var workLst = jurisdiction.split(":");
                 for (var i=0, ilen=workLst.length; i < ilen; i += 1) {
-                    tryList.push(workLst.slice(0,i+1).join(';'));
+                    tryList.push(workLst.slice(0,i+1).join(":"));
                 }
             }
             // Step through them, from most to least specific.

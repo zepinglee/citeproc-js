@@ -430,20 +430,20 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
     var tryjurisdictions = arg.split(/\s+/);
     // Strip off any boolean prefix.
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
-        tryjurisdictions[i] = tryjurisdictions[i].split(";");
+        tryjurisdictions[i] = tryjurisdictions[i].split(":");
     }
     var maketests = function (tryjurisdiction) {
         return function(Item,item){
             if (!Item.jurisdiction) {
                 return false;
             }
-            var jurisdictions = Item.jurisdiction.split(";");
+            var jurisdictions = Item.jurisdiction.split(":");
             for (var i=0,ilen=jurisdictions.length;i<ilen;i+=1) {
-                jurisdictions[i] = jurisdictions[i].split(";");
+                jurisdictions[i] = jurisdictions[i].split(":");
             }
             for (i=tryjurisdiction.length;i>0;i+=-1) {
-                var tryjurisdictionStr = tryjurisdiction.slice(0,i).join(";");
-                var jurisdiction = jurisdictions.slice(0,i).join(";");
+                var tryjurisdictionStr = tryjurisdiction.slice(0,i).join(":");
+                var jurisdiction = jurisdictions.slice(0,i).join(":");
                 if (tryjurisdictionStr !== jurisdiction) {
                     return false;
                 }
@@ -527,7 +527,7 @@ CSL.Attributes["@subjurisdictions"] = function (state, arg) {
     var func = function (Item, item) {
         var subjurisdictions = 0;
         if (Item.jurisdiction) {
-            subjurisdictions = Item.jurisdiction.split(";").length;
+            subjurisdictions = Item.jurisdiction.split(":").length;
         }
         if (subjurisdictions) {
             subjurisdictions += -1;

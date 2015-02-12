@@ -104,8 +104,8 @@ CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
         var basics_ok = true;
         var last_cite = this.sets.value().slice(-1)[0];
         if (last_cite && last_cite.Item) {
-            var lastJuris = last_cite.Item.jurisdiction ? last_cite.Item.jurisdiction.split(";")[0] : "";
-            var thisJuris = Item.jurisdiction ? Item.jurisdiction.split(";")[0] : "";
+            var lastJuris = last_cite.Item.jurisdiction ? last_cite.Item.jurisdiction.split(":")[0] : "";
+            var thisJuris = Item.jurisdiction ? Item.jurisdiction.split(":")[0] : "";
             if (last_cite.Item.title !== Item.title) {
                 basics_ok = false;
         //    str = str.split(';')[0];
