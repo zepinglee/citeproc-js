@@ -326,7 +326,7 @@ CSL.Transform = function (state) {
             if (state.opt.suppressJurisdictions
                 && variables[0] === "jurisdiction" 
                 && state.opt.suppressJurisdictions[Item.jurisdiction]
-                && ["legal_case","gazette","regulation","legislation"].indexOf(Item.type) > -1) {
+                && ["legal_case","gazette","regulation","legislation","hearing"].indexOf(Item.type) > -1) {
                 
                 return null;
             }
