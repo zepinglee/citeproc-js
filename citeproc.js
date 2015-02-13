@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.553",
+    PROCESSOR_VERSION: "1.0.554",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -10653,7 +10653,7 @@ CSL.Transform = function (state) {
             if (state.opt.suppressJurisdictions
                 && variables[0] === "jurisdiction" 
                 && state.opt.suppressJurisdictions[Item.jurisdiction]
-                && ["legal_case","gazette","regulation","legislation"].indexOf(Item.type) > -1) {
+                && ["legal_case","gazette","regulation","legislation","hearing"].indexOf(Item.type) > -1) {
                 return null;
             }
             var slot = {primary:false, secondary:false, tertiary:false};
