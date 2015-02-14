@@ -2,6 +2,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.0.556
+==========================
+
+- When suppressing initial-term capitalization on items with a
+  single-word prefix, ignore leading and trailing spaces on the
+  prefix when determining whether it consists of a single word.
+
+==========================
 Changes in version 1.0.555
 ==========================
 
