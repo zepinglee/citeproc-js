@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.554",
+    PROCESSOR_VERSION: "1.0.555",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -6570,7 +6570,8 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     if (this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names 
         && lst.length > 50 
         && lst.length > (this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names + 2)) {
-        lst = lst.slice(0, this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names + 2);
+        var limit = this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names;
+        lst = lst.slice(0, limit+1).concat(lst.slice(-1));
     }
     return lst;
 };
@@ -9599,8 +9600,8 @@ CSL.Attributes["@match"] = function (state, arg) {
 };
 CSL.Attributes["@names-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
-    if (state[state.tmp.area].opt.max_number_of_names < val) {
-        state[state.tmp.area].opt.max_number_of_names = val;
+    if (state[state.build.area].opt.max_number_of_names < val) {
+        state[state.build.area].opt.max_number_of_names = val;
     }
     this.strings["et-al-min"] = val;
 };
@@ -9702,8 +9703,8 @@ CSL.Attributes["@name-delimiter"] = function (state, arg) {
 };
 CSL.Attributes["@et-al-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
-    if (state[state.tmp.area].opt.max_number_of_names < val) {
-        state[state.tmp.area].opt.max_number_of_names = val;
+    if (state[state.build.area].opt.max_number_of_names < val) {
+        state[state.build.area].opt.max_number_of_names = val;
     }
     state.setOpt(this, "et-al-min", val);
 };
@@ -9719,8 +9720,8 @@ CSL.Attributes["@et-al-use-last"] = function (state, arg) {
 };
 CSL.Attributes["@et-al-subsequent-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
-    if (state[state.tmp.area].opt.max_number_of_names < val) {
-        state[state.tmp.area].opt.max_number_of_names = val;
+    if (state[state.build.area].opt.max_number_of_names < val) {
+        state[state.build.area].opt.max_number_of_names = val;
     }
     state.setOpt(this, "et-al-subsequent-min", val);
 };

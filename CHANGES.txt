@@ -1,5 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+
+==========================
+Changes in version 1.0.555
+==========================
+
+- Preserve the last name in the list, in case we're rendering with a 
+  PI ellipsis (et-al-use-last). Fault reported by Chris Maloney.
+
 ==========================
 Changes in version 1.0.554
 ==========================
