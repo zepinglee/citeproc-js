@@ -136,8 +136,10 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     if (this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names 
         && lst.length > 50 
         && lst.length > (this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names + 2)) {
-        
-        lst = lst.slice(0, this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names + 2);
+
+        // Preserve the last name in the list, in case we're rendering with a PI ellipsis (et-al-use-last)
+        var limit = this.state[this.state[this.state.tmp.area].root].opt.max_number_of_names;
+        lst = lst.slice(0, limit+1).concat(lst.slice(-1));
     }
     return lst;
 };
