@@ -213,6 +213,8 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     this.buildTokenLists("bibliography");
 
+    this.juris = {};
+
     this.configureTokenLists();
 
     this.disambiguate = new CSL.Disambiguation(this);

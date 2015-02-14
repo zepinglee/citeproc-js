@@ -2,7 +2,7 @@
 
 CSL.tokenExec = function (token, Item, item) {
     // Called on state object
-    var next, maybenext, exec, pos, len, debug;
+    var next, maybenext, exec, debug;
     debug = false;
     next = token.next;
     maybenext = false;
@@ -22,13 +22,11 @@ CSL.tokenExec = function (token, Item, item) {
             return token.fail;
         }
     }
-
     if (token.test) {
         next = record.call(this,token.test(Item, item));
     }
-    len = token.execs.length;
-    for (pos = 0; pos < len; pos += 1) {
-        exec = token.execs[pos];
+    for (var i=0,ilen=token.execs.length;i<ilen;i++) {
+        exec = token.execs[i];
         maybenext = exec.call(token, this, Item, item);
         if (maybenext) {
             next = maybenext;
@@ -84,6 +82,14 @@ CSL.expandMacro = function (macro_key_token) {
     // (true as the last argument suppresses quashing)
     macro_key_token.tokentype = CSL.START;
     macro_key_token.cslid = macroid;
+
+    // XXX If macro name starts with "juris-", then flag it
+    // XXX on the start and end nodes.
+
+    // XXX The special runtime handling will have be go into
+    // XXX group (which is already a mess, but there you go).
+    macro_key_token.juris = mkey;
+
     CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
 
     //
